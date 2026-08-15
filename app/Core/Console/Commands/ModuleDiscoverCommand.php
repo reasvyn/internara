@@ -11,6 +11,12 @@ use RuntimeException;
 
 class ModuleDiscoverCommand extends Command
 {
+    public function __construct(
+        private readonly ModuleService $service,
+    ) {
+        parent::__construct();
+    }
+
     protected $signature = 'module:discover';
 
     protected $description = 'Rediscover and register module components (Livewire, policies, views)';
@@ -18,8 +24,6 @@ class ModuleDiscoverCommand extends Command
     public function handle(): int
     {
         try {
-            $service = app(ModuleService::class);
-
             $providers = $this->getLaravel()->getLoadedProviders();
 
             if (! isset($providers['App\Providers\AppServiceProvider']) || ! $providers['App\Providers\AppServiceProvider']) {
@@ -28,17 +32,17 @@ class ModuleDiscoverCommand extends Command
 
             $this->components->task(
                 __('setup.cli.tasks.discover_livewire'),
-                fn () => $service->discoverLivewireComponents(),
+                fn () => $this->service->discoverLivewireComponents(),
             );
 
             $this->components->task(
                 __('setup.cli.tasks.discover_policies'),
-                fn () => $service->discoverPolicies(),
+                fn () => $this->service->discoverPolicies(),
             );
 
             $this->components->task(
                 __('setup.cli.tasks.discover_views'),
-                fn () => $service->registerBladeNamespaces(),
+                fn () => $this->service->registerBladeNamespaces(),
             );
 
             $this->newLine();

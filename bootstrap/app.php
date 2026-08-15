@@ -8,8 +8,8 @@ use App\Core\Exceptions\AppException;
 use App\Core\Exceptions\ModuleException;
 use App\Core\Exceptions\UnauthorizedException;
 use App\Core\Exceptions\ValidationFailedException;
-use App\Core\Http\Middleware\LogContext;
-use App\Core\Http\Middleware\SecurityHeaders;
+use App\Core\Http\Middleware\LogContextMiddleware;
+use App\Core\Http\Middleware\SecurityHeadersMiddleware;
 use App\Providers\EventServiceProvider;
 use App\Settings\Locale\Http\Middleware\SetLocaleMiddleware;
 use App\Setup\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
@@ -53,8 +53,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(
             append: [
-                SecurityHeaders::class,
-                LogContext::class,
+                SecurityHeadersMiddleware::class,
+                LogContextMiddleware::class,
                 RequireSetupAccessMiddleware::class,
                 SetLocaleMiddleware::class,
             ],

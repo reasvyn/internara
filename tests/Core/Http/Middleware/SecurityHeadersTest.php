@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Http\Middleware\SecurityHeaders;
+use App\Core\Http\Middleware\SecurityHeadersMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ function securityHeadersRun(?Request $request = null): Response
     $request ??= Request::create('/');
     $next = fn (Request $r) => new Response('ok');
 
-    return (new SecurityHeaders)->handle($request, $next);
+    return (new SecurityHeadersMiddleware)->handle($request, $next);
 }
 
 it('FR-SEC1/FR-SEC2: every response carries a CSP header with default-src self', function () {

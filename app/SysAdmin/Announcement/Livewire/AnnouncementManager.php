@@ -84,8 +84,10 @@ class AnnouncementManager extends BaseRecordManager
         $this->showConfirm = true;
     }
 
-    public function confirmAction(): void
-    {
+    public function confirmAction(
+        DeleteAnnouncementAction $delete,
+        PublishAnnouncementAction $publish,
+    ): void {
         $id = $this->confirmId;
 
         if ($id === null) {
@@ -94,7 +96,7 @@ class AnnouncementManager extends BaseRecordManager
 
         if ($this->confirmActionType === 'delete') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
-            app(DeleteAnnouncementAction::class)->execute($announcement);
+            $delete->execute($announcement);
             flash()->success(__('announcement.deleted'));
         } elseif ($this->confirmActionType === 'publish') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
@@ -105,7 +107,7 @@ class AnnouncementManager extends BaseRecordManager
                 return;
             }
 
-            app(PublishAnnouncementAction::class)->execute($announcement);
+            $publish->execute($announcement);
             flash()->success(__('announcement.published'));
         }
 

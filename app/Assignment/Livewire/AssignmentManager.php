@@ -14,6 +14,7 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 
 class AssignmentManager extends BaseRecordManager
@@ -81,7 +82,7 @@ class AssignmentManager extends BaseRecordManager
     }
 
     #[Computed]
-    public function assignmentTypes(): \Illuminate\Support\Collection
+    public function assignmentTypes(): Collection
     {
         return collect([
             ['id' => 'project', 'name' => 'Project'],
@@ -103,7 +104,7 @@ class AssignmentManager extends BaseRecordManager
     #[Computed]
     public function internships()
     {
-        return Internship::all();
+        return Internship::query()->orderBy('name')->get(['id', 'name']);
     }
 
     public function create(): void

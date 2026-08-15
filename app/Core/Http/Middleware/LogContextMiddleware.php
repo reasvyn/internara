@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogContext
+class LogContextMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {

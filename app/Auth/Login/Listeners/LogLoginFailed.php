@@ -6,8 +6,9 @@ namespace App\Auth\Login\Listeners;
 
 use App\Auth\Login\Events\LoginFailed;
 use App\Core\Services\SmartLogger;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-final class LogLoginFailed
+final class LogLoginFailed implements ShouldQueue
 {
     public function handle(LoginFailed $event): void
     {

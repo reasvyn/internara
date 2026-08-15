@@ -28,9 +28,13 @@ final class BackupManager extends BaseRecordManager
 
     public string $filterStatus = '';
 
-    public function boot(): void
+    private ReadBackupStatsAction $statsAction;
+
+    public function boot(ReadBackupStatsAction $statsAction): void
     {
         $this->authorize('viewAny', Backup::class);
+
+        $this->statsAction = $statsAction;
     }
 
     public function headers(): array
@@ -60,17 +64,17 @@ final class BackupManager extends BaseRecordManager
     #[Computed]
     public function stats(): array
     {
-        return app(ReadBackupStatsAction::class)->execute();
+        return $this->statsAction->execute();
     }
 
-    public function createBackup(string $type): void
+    public function createBackup(string $type, CreateBackupAction $action): void
     {
         $this->authorize('create', Backup::class);
 
         $backupType = BackupType::from($type);
 
         try {
-            app(CreateBackupAction::class)->execute($backupType, auth()->user());
+            $action->execute($backupType, auth()->user());
             flash()->success(__('backups.create_success'));
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());

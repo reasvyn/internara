@@ -75,7 +75,7 @@ LOG_LEVEL=debug
 
 ### Log Context Enrichment
 
-Every HTTP request log entry is enriched by `LogContext` middleware with:
+Every HTTP request log entry is enriched by `LogContextMiddleware` with:
 
 - Unique request ID
 - HTTP method and URL
@@ -214,7 +214,7 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 
 - `app/Core/Support/SmartLogger.php` — SmartLogger implementation
 - `app/Core/Support/PiiMasker.php` — PII masking logic
-- `app/Core/Http/Middleware/LogContext.php` — Log context enrichment
+- `app/Core/Http/Middleware/LogContextMiddleware.php` — Log context enrichment
 - `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health command
 - `app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Cleanup command
 - `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming

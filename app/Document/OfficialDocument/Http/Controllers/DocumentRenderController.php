@@ -15,6 +15,10 @@ use Illuminate\Http\Response;
 
 class DocumentRenderController extends BaseController
 {
+    public function __construct(
+        private readonly DocumentRenderer $renderer,
+    ) {}
+
     public function show(
         Document $document,
         Registration $registration,
@@ -25,7 +29,7 @@ class DocumentRenderController extends BaseController
             'placement.company',
         ]);
 
-        $html = app(DocumentRenderer::class)->renderHtml($document, $target);
+        $html = $this->renderer->renderHtml($document, $target);
 
         return Pdf::loadHTML($html)
             ->setPaper('A4', 'portrait')

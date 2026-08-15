@@ -100,7 +100,7 @@ Events extending `BaseEvent` integrate automatically with SmartLogger via `event
 - **Positive**: Activity logs are queryable via Eloquent scopes — no raw log file grepping for audit
   questions.
 - **Positive**: System logs are enriched with request context (user ID, role, duration) by
-  `LogContext` middleware.
+  `LogContextMiddleware`.
 - **Negative**: Two storage systems to manage (log files + database table). Database pruning via
   scheduled commands is essential.
 - **Negative**: PII masking is key-name-based, not content-aware. Non-standard keys bypass masking.
@@ -110,7 +110,7 @@ Events extending `BaseEvent` integrate automatically with SmartLogger via `event
 - `app/Core/Support/SmartLogger.php` — Fluent dual-channel logger
 - `app/Core/Support/PiiMasker.php` — PII masking engine
 - `app/Core/Actions/BaseAction.php` — `log()` convenience wrapper
-- `app/Core/Http/Middleware/LogContext.php` — System log enrichment
+- `app/Core/Http/Middleware/LogContextMiddleware.php` — System log enrichment
 - `app/Core/Models/ActivityLog.php` — Queryable activity log model
 - `app/Core/Events/BaseEvent.php` — Abstract base event with SmartLogger integration
 - `config/activitylog.php` — 365-day retention configuration
