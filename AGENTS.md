@@ -218,8 +218,9 @@ Choose verification level. Run targeted checks first, full suite once at end.
   files against their previous state: confirm only intended files changed, no unrelated edits,
   and no content was lost in any edit (version-control verification, Edit Policy).
 - **Run incremental checks** during development:
-  - `php -l path/to/file.php` — syntax check
-  - `vendor/bin/pint --dirty --format agent` — code style
+  - `vendor/bin/pint --dirty --test --format agent` — PHP syntax + style check
+  - `npx prettier --check <files>` — Blade/frontend formatting check
+  - `vendor/bin/pint --dirty --format agent` — auto-fix code style
 - **Run targeted tests** after completing a logical unit:
   - `vendor/bin/pest --testsuite={ModuleName}`
   - `php artisan test --compact --filter={ClassName}`
@@ -548,12 +549,12 @@ safety", ask which requirement it verifies; no requirement means don't write it.
 **Full suite + PHPStan are on-demand only.** Do NOT run `php artisan test --compact` (full suite) or
 `vendor/bin/phpstan analyse` as part of routine work — they are slow (~2GB+ RAM, 10+ minutes) and are
 only run when the user explicitly asks for them. Default verification is the targeted per-change
-checks in the table below (module suite, `--filter`, `php -l`, pint, arch-guard scanners). The full
+checks in the table below (module suite, `--filter`, pint, prettier, arch-guard scanners). The full
 suite / PHPStan stay reserved for merge-day or user-requested full verification.
 
 | Change Type | Verification |
 |-------------|-------------|
-| Translation keys (`lang/*.php`) | `php -l` + `php artisan tinker --execute="echo __('key');"` |
+| Translation keys (`lang/*.php`) | `vendor/bin/pint --dirty --test --format agent` + `php artisan tinker --execute="echo __('key');"` |
 | Config/docs/markdown | Visual inspection, no tests |
 | Blade/CSS/JS | `npm run build` only |
 | Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
@@ -570,7 +571,7 @@ git diff --stat           # confirm only intended files were touched
 # Targeted tests
 vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
 php artisan test --compact --filter={ClassName}
-php -l path/to/file.php
+vendor/bin/pint --dirty --test --format agent   # PHP syntax + style check
 php artisan system:health
 
 # Full verification (after refactoring or before merge) — ONLY when the user explicitly asks

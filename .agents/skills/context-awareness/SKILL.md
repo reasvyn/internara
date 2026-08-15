@@ -171,7 +171,7 @@ test suite. The full suite consumes ~2GB+ RAM and 10+ minutes.
 
 | Change type | Lightest verification |
 |-------------|----------------------|
-| Translation keys | `php -l` + tinker echo |
+| Translation keys | `vendor/bin/pint --dirty --test` + tinker echo |
 | Config / docs | Visual inspection |
 | Blade / CSS / JS | `npm run build` |
 | Single method refactor | `php artisan test --compact --filter={ClassName}` |

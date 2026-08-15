@@ -51,7 +51,7 @@ does it verify?** No requirement → don't write it.
 
 | Change Type | What to Run | Why Not Full Suite |
 |---|---|---|
-| **Translation keys** (`lang/*.php`) | `php -l` each file, then `php artisan tinker --execute="echo __('key');"` for both `en` and `id` | No logic change; full suite won't catch missing keys |
+| **Translation keys** (`lang/*.php`) | `vendor/bin/pint --dirty --test` each file, then `php artisan tinker --execute="echo __('key');"` for both `en` and `id` | No logic change; full suite won't catch missing keys |
 | **Config files** (`config/*.php`) | `php artisan config:cache` (dry run) or visual inspection | Config is loaded at boot; full suite irrelevant |
 | **Docs / Markdown** | Visual inspection only | Zero runtime impact |
 | **Blade templates** | `npm run build` (if using Vite) | Frontend only; no PHP test needed |
@@ -66,8 +66,11 @@ does it verify?** No requirement → don't write it.
 ### Lightweight Verification Toolkit
 
 ```bash
-# Syntax check (0.1s)
-php -l path/to/file.php
+# PHP syntax + style check (0.2s)
+vendor/bin/pint --dirty --test --format agent
+
+# Frontend/Blade formatting check (0.5s)
+npx prettier --check path/to/file.blade.php
 
 # Translation resolve check (0.5s)
 php artisan tinker --execute="echo __('my.key', [], 'en'); echo PHP_EOL; echo __('my.key', [], 'id');"
@@ -124,7 +127,7 @@ php artisan test --compact                        # All tests
 **NEVER run tests after every individual change.** Follow this order:
 
 1. Make ALL planned changes to ALL files
-2. Run `php -l` on every changed PHP file (quick syntax check)
+2. Run `vendor/bin/pint --dirty --test` on every changed PHP file (quick syntax + style check)
 3. Verify logic with tinker or artisan commands if possible
 4. Run targeted test(s) — only the affected test class(es)
 5. Only if changes affect core infrastructure → run full suite
