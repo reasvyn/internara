@@ -52,9 +52,13 @@ class UserManager extends BaseRecordManager
 
     public UserForm $form;
 
-    public function boot(): void
+    private ReadUserManagerStatsAction $statsAction;
+
+    public function boot(ReadUserManagerStatsAction $statsAction): void
     {
         $this->authorize('viewAny', User::class);
+
+        $this->statsAction = $statsAction;
     }
 
     public function headers(): array
@@ -129,7 +133,7 @@ class UserManager extends BaseRecordManager
     #[Computed]
     public function stats(): array
     {
-        return app(ReadUserManagerStatsAction::class)->execute();
+        return $this->statsAction->execute();
     }
 
     public function createUser(): void
@@ -328,10 +332,10 @@ class UserManager extends BaseRecordManager
 
     // --- Import / Export ---
 
-    public function updatedImportFile(): void
+    public function updatedImportFile(CsvHandler $csv, CreateUserAction $create): void
     {
         if ($this->importFile) {
-            $this->import(app(CsvHandler::class), app(CreateUserAction::class));
+            $this->import($csv, $create);
         }
     }
 

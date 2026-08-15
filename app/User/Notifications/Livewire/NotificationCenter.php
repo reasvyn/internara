@@ -23,12 +23,12 @@ class NotificationCenter extends BaseRecordManager
 
     public ?string $viewingNotificationId = null;
 
-    public function viewNotification(string $id): void
+    public function viewNotification(string $id, MarkAsReadAction $action): void
     {
         $notification = Notification::where('user_id', Auth::id())->findOrFail($id);
 
         if (! $notification->is_read) {
-            app(MarkAsReadAction::class)->execute($notification);
+            $action->execute($notification);
             $this->dispatch('notification-read');
         }
 

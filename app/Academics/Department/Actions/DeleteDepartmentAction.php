@@ -16,7 +16,7 @@ final class DeleteDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department): void
     {
-        if ($department->profiles()->count() > 0) {
+        if ($department->profiles()->exists()) {
             throw new RejectedException(__('department.cannot_delete_with_profiles'));
         }
 

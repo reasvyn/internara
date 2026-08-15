@@ -4,19 +4,15 @@ declare(strict_types=1);
 
 namespace App\Settings\Theme\Support;
 
-use App\Core\Contracts\SettingsStore;
 use App\Core\Support\Color;
+use App\Settings\Services\Settings;
 use Illuminate\Support\Facades\Cache;
 
 final class Theme
 {
     private static function getSetting(string $key, mixed $default = null): mixed
     {
-        if (app()->bound(SettingsStore::class)) {
-            return app(SettingsStore::class)->get($key, $default);
-        }
-
-        return $default;
+        return Settings::get($key, $default);
     }
 
     public static function defaults(): array

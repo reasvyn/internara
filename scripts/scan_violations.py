@@ -246,6 +246,10 @@ def scan_c2_service_locator(files: list[Path], module: str | None) -> list[Findi
         rel = relative_path(fp)
         if "/Providers/" in rel or "/config/" in rel:
             continue
+        # Global helper files (helpers.php) define functions, not classes — constructor
+        # injection is impossible there, so `app()` is the documented Laravel idiom.
+        if Path(rel).name == "helpers.php":
+            continue
         for i, line in enumerate(content.split("\n"), 1):
             if is_comment_or_doc(line):
                 continue
@@ -476,6 +480,11 @@ def scan_c7_action_params(files: list[Path], module: str | None) -> list[Finding
 # ─── C8: RuntimeException instead of RejectedException ─────────────────────
 
 RE_RUNTIME_EXCEPTION = re.compile(r"throw\s+new\s+\\?(?:RuntimeException|Exception)\s*\(")
+# A RuntimeException/Exception whose final argument is a previous exception (e.g. `, 0, $e)`)
+# is a generic wrapper around an unexpected failure — documented in
+# docs/architecture/exception-pattern.md §Error Handling in Actions. It is not a business-rule
+# violation, so it must not be flagged as C8.
+RE_WRAPPER_EXCEPTION = re.compile(r"throw\s+new\s+\\?(?:RuntimeException|Exception)\s*\(.*,\s*\$\w+\s*\)")
 
 
 def scan_c8_runtime_exception(files: list[Path], module: str | None) -> list[Finding]:
@@ -490,7 +499,7 @@ def scan_c8_runtime_exception(files: list[Path], module: str | None) -> list[Fin
         for i, line in enumerate(content.split("\n"), 1):
             if is_comment_or_doc(line):
                 continue
-            if RE_RUNTIME_EXCEPTION.search(line):
+            if RE_RUNTIME_EXCEPTION.search(line) and not RE_WRAPPER_EXCEPTION.search(line):
                 findings.append(Finding(
                     id=f"C8-{len(findings)+1:03d}",
                     rule="C8",

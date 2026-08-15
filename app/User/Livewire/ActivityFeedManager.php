@@ -14,7 +14,7 @@ class ActivityFeedManager extends Component
 {
     use WithPagination;
 
-    public function render(): View
+    public function render(ReadActivityLogAction $action): View
     {
         $userId = auth()->id();
 
@@ -28,7 +28,7 @@ class ActivityFeedManager extends Component
             ]);
         }
 
-        $activities = app(ReadActivityLogAction::class)->execute(userId: (string) $userId);
+        $activities = $action->execute(userId: (string) $userId);
 
         return view('user.activity-feed', [
             'activities' => $activities,

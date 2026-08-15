@@ -65,7 +65,7 @@ final class Settings
         try {
             return Cache::rememberForever(
                 config('cache-keys.settings_all'),
-                fn() => Setting::all()->pluck('value', 'key'),
+                fn () => Setting::query()->select(['key', 'value'])->pluck('value', 'key'),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch all settings from database', $e);
@@ -76,19 +76,19 @@ final class Settings
 
     public static function has(string $key): bool
     {
-        return !is_null(self::get($key));
+        return ! is_null(self::get($key));
     }
 
     public static function group(string $name, bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(config('cache-keys.settings_group') . $name);
+            Cache::forget(config('cache-keys.settings_group').$name);
         }
 
         try {
             return Cache::rememberForever(
-                config('cache-keys.settings_group') . $name,
-                fn() => Setting::group($name)->get(),
+                config('cache-keys.settings_group').$name,
+                fn () => Setting::group($name)->get(),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch settings group from database', $e, [
@@ -124,7 +124,7 @@ final class Settings
 
     public static function forgetGroup(string $name): void
     {
-        Cache::forget(config('cache-keys.settings_group') . $name);
+        Cache::forget(config('cache-keys.settings_group').$name);
         Cache::forget(config('cache-keys.settings_all'));
         Cache::forget(config('cache-keys.theme_css_variables'));
 
@@ -132,7 +132,7 @@ final class Settings
             $keys = Setting::group($name)->pluck('key');
 
             foreach ($keys as $key) {
-                Cache::forget(config('cache-keys.settings_key') . $key);
+                Cache::forget(config('cache-keys.settings_key').$key);
             }
         } catch (QueryException $e) {
             self::logQuery('warning', 'Failed to forget group cache keys', $e, [
@@ -150,7 +150,7 @@ final class Settings
         try {
             return Cache::rememberForever(
                 config('cache-keys.settings_keys'),
-                fn() => Setting::query()->orderBy('key')->pluck('key'),
+                fn () => Setting::query()->orderBy('key')->pluck('key'),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch setting keys', $e);
@@ -192,16 +192,16 @@ final class Settings
 
     public static function forget(string $key, ?string $group = null): void
     {
-        Cache::forget(config('cache-keys.settings_key') . $key);
+        Cache::forget(config('cache-keys.settings_key').$key);
 
         if ($group !== null) {
-            Cache::forget(config('cache-keys.settings_group') . $group);
+            Cache::forget(config('cache-keys.settings_group').$group);
         } else {
             try {
                 $setting = Setting::where('key', $key)->first();
 
                 if ($setting?->group) {
-                    Cache::forget(config('cache-keys.settings_group') . $setting->group);
+                    Cache::forget(config('cache-keys.settings_group').$setting->group);
                 }
             } catch (QueryException $e) {
                 self::logQuery('warning', 'Failed to invalidate setting group cache', $e, [
@@ -233,12 +233,12 @@ final class Settings
         }
 
         if ($skipCache) {
-            Cache::forget(config('cache-keys.settings_key') . $key);
+            Cache::forget(config('cache-keys.settings_key').$key);
         }
 
         try {
             $dbValue = Cache::rememberForever(
-                config('cache-keys.settings_key') . $key,
+                config('cache-keys.settings_key').$key,
                 function () use ($key) {
                     $setting = Setting::where('key', $key)->first();
 
@@ -253,7 +253,7 @@ final class Settings
             $dbValue = null;
         }
 
-        if (!is_null($dbValue)) {
+        if (! is_null($dbValue)) {
             return $dbValue;
         }
 

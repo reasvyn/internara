@@ -11,6 +11,10 @@ use RuntimeException;
 
 class SystemProvisioner
 {
+    public function __construct(
+        private readonly SetupSeeder $seeder,
+    ) {}
+
     public function getTasks(): array
     {
         return [
@@ -82,8 +86,7 @@ class SystemProvisioner
 
     private function runSeeders(): void
     {
-        $seeder = app(SetupSeeder::class);
-        $seeder->run();
+        $this->seeder->run();
     }
 
     private function createStorageSymlink(): void

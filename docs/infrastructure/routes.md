@@ -140,16 +140,16 @@ The following middleware runs on every web request, in order:
 ```mermaid
 flowchart LR
     A[Request] --> B[web<br/>Laravel core]
-    B --> C[SecurityHeaders]
-    C --> D[LogContext]
+    B --> C[SecurityHeadersMiddleware]
+    C --> D[LogContextMiddleware]
     D --> E[RequireSetupAccessMiddleware]
     E --> F[SetLocaleMiddleware]
     F --> G[Route Handler]
 ```
 
 1. `web` (Laravel core) — session, CSRF, encryption, cookies
-2. `SecurityHeaders` — Content-Security-Policy, X-Frame-Options, Permissions-Policy
-3. `LogContext` — request tracing (request ID, session ID)
+2. `SecurityHeadersMiddleware` — Content-Security-Policy, X-Frame-Options, Permissions-Policy
+3. `LogContextMiddleware` — request tracing (request ID, session ID)
 4. `RequireSetupAccessMiddleware` — redirects unauthenticated visitors to `/setup` when the system
    has not been installed yet. Allows bypass for Livewire subrequests and the `/setup` route itself.
 5. `SetLocaleMiddleware` — language preference from session/database
@@ -160,8 +160,8 @@ Global middleware is registered in `bootstrap/app.php`:
 ```php
 $middleware->web(
     append: [
-        SecurityHeaders::class,
-        LogContext::class,
+        SecurityHeadersMiddleware::class,
+        LogContextMiddleware::class,
         RequireSetupAccessMiddleware::class,
         SetLocaleMiddleware::class,
     ],

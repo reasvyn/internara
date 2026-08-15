@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response;
 
-class SecurityHeaders
+class SecurityHeadersMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {

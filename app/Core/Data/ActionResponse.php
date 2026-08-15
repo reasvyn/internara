@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Data;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Support\Arrayable;
 use JsonSerializable;
 
 final readonly class ActionResponse implements JsonSerializable
@@ -62,7 +62,7 @@ final readonly class ActionResponse implements JsonSerializable
     {
         return array_filter([
             'success' => $this->success,
-            'data' => $this->data instanceof Model ? $this->data->toArray() : $this->data,
+            'data' => $this->data instanceof Arrayable ? $this->data->toArray() : $this->data,
             'message' => $this->message,
             'redirect' => $this->redirect,
             'errors' => $this->errors,

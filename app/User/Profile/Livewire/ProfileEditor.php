@@ -77,13 +77,13 @@ class ProfileEditor extends BaseFormView
 
     public bool $showConfirm = false;
 
-    public function updatedAvatar(): void
+    public function updatedAvatar(UpdateProfileAction $updateProfile): void
     {
         $this->authorize('update', $this->user);
 
         $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
 
-        app(UpdateProfileAction::class)->execute($this->user, [], avatar: $this->avatar);
+        $updateProfile->execute($this->user, [], avatar: $this->avatar);
 
         flash()->success(__('profile.avatar_saved'));
     }
@@ -103,7 +103,7 @@ class ProfileEditor extends BaseFormView
         $this->authorize('update', $this->user);
 
         $rules = [
-            'profileForm.email' => 'required|email|unique:users,email,' . $this->user->id,
+            'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
             'profileForm.phone' => 'nullable|string|max:20',
             'profileForm.address' => 'nullable|string|max:500',
             'profileForm.bio' => 'nullable|string|max:1000',
@@ -115,7 +115,7 @@ class ProfileEditor extends BaseFormView
 
         if ($this->canChangeUsername) {
             $rules['profileForm.username'] =
-                'required|string|alpha_num|lowercase|max:50|unique:users,username,' .
+                'required|string|alpha_num|lowercase|max:50|unique:users,username,'.
                 $this->user->id;
         }
 
@@ -189,7 +189,7 @@ class ProfileEditor extends BaseFormView
 
     protected function passwordThrottleKey(): string
     {
-        return Str::transliterate('change-password|' . $this->user->id . '|' . request()->ip());
+        return Str::transliterate('change-password|'.$this->user->id.'|'.request()->ip());
     }
 
     public function avatarPreviewUrl(): ?string

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Http\Middleware\LogContext;
+use App\Core\Http\Middleware\LogContextMiddleware;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
@@ -15,7 +15,7 @@ function logContextRun(Request $request): Response
 {
     $next = fn (Request $r) => new Response('ok', 201);
 
-    return (new LogContext)->handle($request, $next);
+    return (new LogContextMiddleware)->handle($request, $next);
 }
 
 it('FR-LC1/FR-LC2/FR-LC4/FR-LC5: injects request_id, method, url, ip, duration and status into log context', function () {

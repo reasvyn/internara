@@ -290,10 +290,10 @@ class InternshipManager extends BaseRecordManager
 
     // --- Import / Export / Template ---
 
-    public function updatedImportFile(): void
+    public function updatedImportFile(CsvHandler $csv, CreateInternshipAction $create): void
     {
         if ($this->importFile) {
-            $this->import(app(CsvHandler::class), app(CreateInternshipAction::class));
+            $this->import($csv, $create);
         }
     }
 

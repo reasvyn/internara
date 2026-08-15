@@ -7,9 +7,10 @@ namespace App\Auth\SuperAdmin\Listeners;
 use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
 use App\Auth\SuperAdmin\Notifications\SuperAdminRecoveredNotification;
 use App\User\Models\User;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Notification;
 
-final class NotifySuperAdminsOfRecovery
+final class NotifySuperAdminsOfRecovery implements ShouldQueue
 {
     public function handle(SuperAdminRecovered $event): void
     {

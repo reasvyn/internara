@@ -28,7 +28,7 @@ policies, see [Policy Pattern](../architecture/policy-pattern.md).
 
 ### Headers
 
-All responses include security headers via `SecurityHeaders` middleware (applied globally in the
+All responses include security headers via `SecurityHeadersMiddleware` (applied globally in the
 `web` middleware group):
 
 | Header | Value | Purpose |
@@ -42,7 +42,7 @@ All responses include security headers via `SecurityHeaders` middleware (applied
 
 > **CSP enforcement:** The CSP is enforced, not report-only. Violations break pages. Test
 > thoroughly before adding new external resources. Add new domains to the CSP directives in
-> `SecurityHeaders` before use.
+> `SecurityHeadersMiddleware` before use.
 
 ---
 
@@ -191,7 +191,7 @@ Full policy: [SECURITY.md](../../SECURITY.md).
 | 1 | `APP_DEBUG=false` and `APP_ENV=production` | — |
 | 2 | `APP_KEY` set to random 32-char base64 string | — |
 | 3 | HTTPS enforced at web server / reverse proxy | — |
-| 4 | `SecurityHeaders` middleware active (CSP, HSTS, X-Frame-Options) | — |
+| 4 | `SecurityHeadersMiddleware` active (CSP, HSTS, X-Frame-Options) | — |
 | 5 | Fail2ban configured for SSH | — |
 | 6 | Firewall allows only ports 80, 443 | — |
 | 7 | Rate limiting active on all auth endpoints | — |

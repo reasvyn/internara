@@ -205,10 +205,10 @@ class DepartmentManager extends BaseRecordManager
 
     // --- Import / Export / Template ---
 
-    public function updatedImportFile(): void
+    public function updatedImportFile(CsvHandler $csv, CreateDepartmentAction $create): void
     {
         if ($this->importFile) {
-            $this->import(app(CsvHandler::class), app(CreateDepartmentAction::class));
+            $this->import($csv, $create);
         }
     }
 

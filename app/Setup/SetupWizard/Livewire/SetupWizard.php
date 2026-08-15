@@ -15,8 +15,8 @@ use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
-use Livewire\Features\SupportRedirects\Redirector;
 use Livewire\Attributes\Layout;
+use Livewire\Features\SupportRedirects\Redirector;
 
 #[Layout('setup.layouts.setup')]
 class SetupWizard extends BaseWizard
@@ -44,7 +44,7 @@ class SetupWizard extends BaseWizard
 
     public string $recoveryKey = '';
 
-    public function mount(): void
+    public function mount(EnvironmentAuditor $auditor): void
     {
         try {
             $state = SetupEntity::get();
@@ -76,7 +76,7 @@ class SetupWizard extends BaseWizard
         $this->initDefaults();
 
         try {
-            $this->runAudit(app(EnvironmentAuditor::class));
+            $this->runAudit($auditor);
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard audit failed during mount')
                 ->module('Setup')
@@ -161,7 +161,7 @@ class SetupWizard extends BaseWizard
         foreach ($report->checks as $check) {
             $categoryKey = $check->category->value;
 
-            if (!isset($categories[$categoryKey])) {
+            if (! isset($categories[$categoryKey])) {
                 $categories[$categoryKey] = [
                     'label' => $check->category->label(),
                     'checks' => [],
@@ -194,7 +194,7 @@ class SetupWizard extends BaseWizard
 
     public function nextStep(): void
     {
-        if ($this->currentStep === 1 && !$this->auditPassed) {
+        if ($this->currentStep === 1 && ! $this->auditPassed) {
             flash()->error(__('setup.wizard.audit_must_pass'));
 
             return;

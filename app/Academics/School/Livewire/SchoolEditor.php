@@ -71,11 +71,11 @@ class SchoolEditor extends BaseFormView
         return $this->getLogoUrl();
     }
 
-    public function confirmAction(): void
+    public function confirmAction(RemoveBrandAssetAction $action): void
     {
         $this->authorize('update', Setting::class);
 
-        app(RemoveBrandAssetAction::class)->execute('logo');
+        $action->execute('logo');
 
         Settings::forget('brand_logo');
 

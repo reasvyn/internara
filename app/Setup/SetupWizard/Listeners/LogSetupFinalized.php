@@ -6,9 +6,10 @@ namespace App\Setup\SetupWizard\Listeners;
 
 use App\Core\Services\SmartLogger;
 use App\Setup\SetupWizard\Events\SetupFinalized;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Cache;
 
-class LogSetupFinalized
+class LogSetupFinalized implements ShouldQueue
 {
     public function handle(SetupFinalized $event): void
     {

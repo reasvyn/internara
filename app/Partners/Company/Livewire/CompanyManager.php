@@ -240,10 +240,10 @@ class CompanyManager extends BaseRecordManager
 
     // --- Import / Export ---
 
-    public function updatedImportFile(): void
+    public function updatedImportFile(CsvHandler $csv, CreateCompanyAction $create): void
     {
         if ($this->importFile) {
-            $this->import(app(CsvHandler::class), app(CreateCompanyAction::class));
+            $this->import($csv, $create);
         }
     }
 
