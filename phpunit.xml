@@ -11,6 +11,9 @@
         <testsuite name="Program">
             <directory>tests/Program</directory>
         </testsuite>
+        <testsuite name="Setup">
+            <directory>tests/Setup</directory>
+        </testsuite>
         <!-- Test suites for other modules are re-added as their spec-driven
              suites are rewritten (Academics, Assessment, Assignment, Auth,
              Certification, Document, Enrollment, Evaluation, Incident,

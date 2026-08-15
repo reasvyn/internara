@@ -1,6 +1,8 @@
 # Dummy Data — Factory-Generated Demo Dataset via DummySeeder
 
-> **Last updated:** 2026-08-15 **Changes:** amend — reuse base-seeded data (roles, settings, active
+> **Last updated:** 2026-08-15 **Changes:** amend — `setup:install --with-dummy` seeds demo data
+> after provisioning without registering `DummySeeder` (installation FR-C10, DD-3 trade-off,
+> §9 Next Steps); amend — reuse base-seeded data (roles, settings, active
 > academic year) and supplement only (FR-E4, FR-C1, FR-H14, G8, DD-9); amend — one placement per
 > company per internship (FR-C6, DD-10); amend — no superadmin in demo data (DD-8, FR-C7);
 > amend — Indonesian-locale demo content (DD-7); amend — wrap entire generation in a single DB
@@ -300,8 +302,9 @@ explicitly by the developer.
 **Rationale:** The base seeders run in production installs (`setup:install`, Docker entrypoint).
 Registering a dev-only seeder that loads a tests-autoloaded helper there would break production.
 Opt-in keeps the door closed by default.
-**Trade-off:** One extra command for developers — documented in this spec and the seeding
-documentation.
+**Trade-off:** One extra command for developers — mitigated by `setup:install --with-dummy`
+(installation spec FR-C10), which keeps the seeder unregistered while making demo seeding one
+flag away on a fresh install.
 
 ### DD-4 — Deterministic Demo Accounts
 
@@ -448,7 +451,8 @@ states in their module reference docs.
 | Order | Spec | Connection |
 |-------|------|------------|
 | 1 | [system-maintenance.md](system-maintenance.md) (#54) | `system:health` can assert demo dataset integrity after a dummy seed |
-| 2 | — | End of lifecycle — no downstream consumers |
+| 2 | [installation.md](installation.md) (#14) | `setup:install --with-dummy` invokes `DummySeeder` after provisioning (FR-C10, NFR-S13) — removes the DD-3 "extra command" trade-off on fresh installs |
+| 3 | — | End of lifecycle — no downstream consumers |
 
 ---
 

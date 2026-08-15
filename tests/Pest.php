@@ -26,6 +26,7 @@ use Tests\TestCase;
 $modules = [
     'Core',
     'Program',
+    'Setup',
 ];
 
 $extraDirs = ['Stubs', 'Support'];
