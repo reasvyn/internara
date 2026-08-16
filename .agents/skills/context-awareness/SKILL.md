@@ -11,14 +11,12 @@ downstream:
   - medialibrary-development
   - pest-testing
   - pulse-development
-  - roadmap-planning
   - spec-audit
   - security-audit
   - sync-docs
   - tailwindcss-development
   - test-writing
   - arch-guard
-  - script-automation
 ---
 
 # Context Awareness

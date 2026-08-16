@@ -3,7 +3,6 @@ name: qa-protocol
 description: "SDLC Phase: QUALITY GATE. Independent blind QA audit against global industry standards (OWASP, ISO 25010, CWE/SANS, WCAG, PSR, Laravel best practices). 6-phase protocol producing GitHub Issues and a compliance scorecard. No project-specific rules — purely external benchmarks."
 downstream:
   - issue-writing
-  - roadmap-planning
   - code-refactoring
   - security-audit
 ---
@@ -591,7 +590,7 @@ Deliver a final summary to the user:
 2. ...
 
 ## Next Steps
-- Triage findings and assign to roadmap
+- Triage findings and assign to GitHub Issues
 - Critical/High findings should be addressed before next release
 - Low findings are tracked as technical debt
 ```

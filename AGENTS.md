@@ -101,8 +101,7 @@ Internalize the user's **intent**, not just literal words. Clarify ambiguities. 
 - **Locate the governing spec** in `docs/specs/` (foundation, module, or feature) — it is the
   source of truth for intent, scope, and acceptance criteria (Spec-First Doctrine, above). No
   instruction may proceed without a governing spec or an explicit recorded decision.
-- **Check `docs/roadmap.md`** for current development status and phase progress (for planning
-  work, load the `roadmap-planning` skill).
+
 
 ### 2-9. Remaining Steps
 
@@ -290,7 +289,6 @@ Full definition: `docs/foundation/product-definition.md`
 | Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
 | Syncing docs with code | `sync-docs` | Automated verification |
 | Writing GitHub issues | `issue-writing` | Structured issue format |
-| Planning the roadmap | `roadmap-planning` | Phased planning, priorities, dependencies |
 | Security review | `security-audit` | OWASP, PII, auth patterns |
 | Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
@@ -446,7 +444,7 @@ python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
 python3 scripts/scan_security.py           # XSS, SQLi, CSRF, auth
 python3 scripts/scan_naming.py             # Naming conventions
 python3 scripts/scan_conventions.py        # strict_types, Fillable, debug
-python3 scripts/scan_doc_links.py          # Broken links in docs + `.agents/contexts/`
+python3 scripts/scan_doc_links.py          # Broken links in docs + .agents/contexts/ + outdated/missing metadata detection
 ```
 
 ---

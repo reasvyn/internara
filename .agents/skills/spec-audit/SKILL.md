@@ -3,7 +3,6 @@ name: spec-audit
 description: "SDLC Phase: ANALYSIS. Bidirectional spec-implementation audit — verifies specs match code and code matches specs, and that agent guides & skills stay consistent with specs. Determines which side (spec or implementation) needs fixing. Fixes the spec immediately when it lags the implementation; creates GitHub Issues for significant findings. Flexible scope: audit by spec, module, phase, audit area, or agent guides & skills."
 downstream:
   - issue-writing
-  - roadmap-planning
   - code-refactoring
   - feature-building
   - sync-docs
@@ -66,7 +65,6 @@ Before executing, ask the user (or infer from context) which scope to audit:
 | `tests` | Test files exist for spec'd components |
 | `coverage` | Spec'd features are actually implemented (not just stubs) |
 | `cross-refs` | Internal spec cross-references are correct (names, spec IDs) |
-| `roadmap` | §9 Roadmap prerequisites and next-steps are valid |
 | `guides` | Agent guides & skills are consistent with specs (see [Area 8](#area-8-agent-guides--skills)) |
 | `all` | All areas combined (default for full audit) |
 
@@ -79,7 +77,7 @@ channel maps to specific audit areas (see Phase 2):
 |---------|----------------|-------------|
 | **Implementation** | The spec's FR/NFR/contracts are actually delivered in code (`app/`, `routes/`, `database/`, `config/`) — no missing, stubbed, or drifted behavior | `paths`, `contracts`, `requirements`, `coverage` |
 | **Testing** | Every spec'd component has a test file and every FR/NFR is exercised by a spec-traceable test — no orphan tests, no spec gaps | `tests` (+ cross-check each test name against FR/NFR IDs) |
-| **Documentation** | Docs reflect the spec and code: Quick Reference paths exist, cross-refs are valid, `docs/architecture/*` and `docs/modules/*` match the spec's contracts, and **agent guides & skills** (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`) stay consistent with the spec | `cross-refs`, `roadmap`, `paths`, `guides`, §6 completeness + doc-to-code sync |
+| **Documentation** | Docs reflect the spec and code: Quick Reference paths exist, cross-refs are valid, `docs/architecture/*` and `docs/modules/*` match the spec's contracts, and **agent guides & skills** (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`) stay consistent with the spec | `cross-refs`, `paths`, `guides`, §6 completeness + doc-to-code sync |
 
 Run all three channels for a work scope. Deliver a **per-channel verdict** (Implementation /
 Testing / Documentation) in the report, each with its own findings and decision-matrix outcome,
@@ -89,7 +87,7 @@ instead of a single flat finding list.
 
 If no scope is specified:
 1. If recent git commits touched specific modules → audit those modules
-2. If `docs/roadmap.md` has "Active Work" → audit those specs
+2. If GitHub Issues have "Active Work" labels → audit those specs
 3. Otherwise → prompt user for scope
 
 ---
@@ -113,7 +111,7 @@ SCOPE → DISCOVER → AUDIT (6 areas) → TRIAGE → FIX/ISSUE → FINALIZE →
 
 - Read `docs/specs/index.md` for spec list and lifecycle phases
 - Read `docs/modules/index.md` for module structure
-- Read `docs/roadmap.md` for current development status
+- Check GitHub Issues for current development status
 
 #### 1.1.1 Size Triage
 
@@ -177,8 +175,8 @@ For each spec, produce a structured audit map:
   "fr_ids": [...],
   "nfr_ids": [...],
   "cross_refs": [...],
-  "roadmap_prereqs": [...],
-  "roadmap_next": [...]
+  "issues_prereqs": [...],
+  "issues_next": [...]
 }
 ```
 
@@ -433,14 +431,14 @@ For each finding from Phase 2, determine:
 
 | Drift Direction | Evidence | Resolution |
 |----------------|----------|------------|
-| Spec→Code (missing impl) | Spec exists, code doesn't | **Update roadmap** — spec is ahead of code |
+| Spec→Code (missing impl) | Spec exists, code doesn't | **Create GitHub Issue** — spec is ahead of code |
 | Code→Spec (unspecified) | Code exists, spec doesn't | **Update spec immediately** — code is ahead of spec, spec lags |
 | Contract mismatch (spec older) | Git log shows code changed after spec | **Update spec immediately** to match code |
 | Contract mismatch (code older) | Git log shows spec changed after code | **Update code** to match spec (or update spec if behavior is intentional) |
 | Broken cross-ref | Wrong ID/name in spec | **Fix spec** — trivial fix |
 | Missing test | Code exists, no test | **Create GitHub Issue** — test gap |
 | Spec incomplete | Section missing/empty | **Update spec** — fill gap from code |
-| FR not implemented | Spec FR has no code | **Update roadmap** — track as TODO |
+| FR not implemented | Spec FR has no code | **Create GitHub Issue** — track as TODO |
 | Guide lags spec | Guide documents old value/section, spec amended | **Fix guide immediately** — align guide to spec |
 
 #### 3.3 Severity Classification
@@ -491,7 +489,7 @@ the spec must catch up the moment drift is detected. Apply this to:
 - Agent guides & skills that document stale values a spec amendment changed (align to spec)
 
 This overrides the general "no spec rewriting" rule for the lagging case only — a spec that is
-**ahead** of code (missing implementation) still goes to the roadmap as a TODO.
+**ahead** of code (missing implementation) still goes to GitHub Issues as a TODO.
 
 #### 4.2 GitHub Issue Criteria
 
@@ -539,11 +537,11 @@ Examples:
 
 ### Phase 5 — Finalize
 
-**Goal:** Update `docs/roadmap.md`, commit, and push.
+**Goal:** Update GitHub Issues, commit, and push.
 
-#### 5.1 Update Roadmap
+#### 5.1 Update Issues
 
-Update `docs/roadmap.md` based on findings:
+Update GitHub Issues based on findings:
 
 - **Phase status:** If audit reveals a phase has more implementation than tracked, update status
 - **Active work:** Add any new findings that need tracking
@@ -552,7 +550,7 @@ Update `docs/roadmap.md` based on findings:
 
 #### 5.2 Commit
 
-If any files were modified (auto-fixes, roadmap update):
+If any files were modified (auto-fixes, issues update):
 
 ```bash
 git status          # confirm only intended files changed
@@ -710,7 +708,7 @@ to a single module. See `scripts/README.md` for full documentation.
 6. **Major → Issue** — non-trivial findings become GitHub Issues with full context
 7. **No spec rewriting** — if a spec needs major rewrites, create an Issue; don't rewrite in-place
 8. **No code fixing** — if code needs changes, create an Issue; don't modify business logic
-9. **Always update roadmap** — reflect audit findings in `docs/roadmap.md`
+9. **Always update GitHub Issues** — reflect audit findings in GitHub Issues
 10. **Always report** — deliver the visual report even if zero findings
 11. **Audit every module** — not just the one being changed
 12. **Record issues even if fixing is out of scope** — prioritization happens downstream
@@ -749,7 +747,7 @@ to a single module. See `scripts/README.md` for full documentation.
 - [ ] All findings recorded as GitHub Issues with scope, severity, and fix recommendation
 - [ ] No fixes applied during audit (scope discipline, except minor auto-fix and spec-lagging catch-up)
 - [ ] Existing issues checked for duplicates before filing
-- [ ] `docs/roadmap.md` updated
+- [ ] GitHub Issues updated
 - [ ] Changes committed
 - [ ] Pushed (if requested or full audit)
 - [ ] Visual report delivered to user
@@ -762,7 +760,7 @@ to a single module. See `scripts/README.md` for full documentation.
 |------|-------|
 | **Upstream** | `context-awareness` (project orientation), `spec-writing` (spec conventions) |
 | **This skill** | **ANALYSIS** — bidirectional spec-implementation audit + agent guides & skills consistency |
-| **Downstream** | `issue-writing` (GitHub Issues), `roadmap-planning` (prioritize), `code-refactoring` (fix code), `sync-docs` (fix docs), `feature-building` (implement gaps) |
+| **Downstream** | `issue-writing` (GitHub Issues), `code-refactoring` (fix code), `sync-docs` (fix docs), `feature-building` (implement gaps) |
 
 ---
 
@@ -787,7 +785,7 @@ to a single module. See `scripts/README.md` for full documentation.
 | Security conventions | `docs/conventions.md` (§3) |
 | RBAC & authorization | `docs/foundation/rbac.md` |
 | Critical invariants | `AGENTS.md` (§Critical Invariants) |
-| Development status | `docs/roadmap.md` |
+| Development status | GitHub Issues |
 | Issue writing | `.agents/skills/issue-writing/SKILL.md` |
 | Architecture guard | `.agents/skills/arch-guard/SKILL.md` |
 | Doc sync | `.agents/skills/sync-docs/SKILL.md` |

@@ -127,7 +127,7 @@ The main categories of debt, in priority order:
 
 ## What's Next
 
-See [roadmap.md](../roadmap.md) for development status and phase progress.
+Track work via GitHub Issues (see the Issues tab).
 
 Current priorities:
 - Fix P0 runtime errors in broken modules

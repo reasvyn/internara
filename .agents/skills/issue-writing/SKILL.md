@@ -2,7 +2,6 @@
 name: issue-writing
 description: "SDLC Phase: ANALYSIS / PLANNING. Structured GitHub Issues writing for bugs, features, security, refactoring, and tech debt — with clear scope, impact, recommendations, and design decisions. Produces issues that are actionable by both developers and AI agents."
 downstream:
-  - roadmap-planning
   - feature-building
   - code-refactoring
   - security-audit
