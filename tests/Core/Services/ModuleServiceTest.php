@@ -63,7 +63,7 @@ beforeEach(function () {
     moduleServiceWriteFixtures();
 });
 
-it('I1BCV-FR-LW3/FR-LW5: Livewire discovery registers Component classes with kebab aliases', function () {
+test('I1BCV-FR-LW3/FR-LW5: Livewire discovery registers Component classes with kebab aliases', function () {
     moduleServiceConfigure()->discoverLivewireComponents();
 
     $discovered = Cache::get('module.discovered_livewire');
@@ -73,7 +73,7 @@ it('I1BCV-FR-LW3/FR-LW5: Livewire discovery registers Component classes with keb
     expect($discovered)->not->toHaveKey('fixture-module.not-a-component');
 });
 
-it('I1BCV-FR-LW2: Livewire discovery skips excluded Concerns directories', function () {
+test('I1BCV-FR-LW2: Livewire discovery skips excluded Concerns directories', function () {
     moduleServiceConfigure()->discoverLivewireComponents();
 
     $discovered = Cache::get('module.discovered_livewire');
@@ -82,14 +82,14 @@ it('I1BCV-FR-LW2: Livewire discovery skips excluded Concerns directories', funct
     expect($discovered)->not->toHaveKey('fixture-module.skipped-widget');
 });
 
-it('I1BCV-FR-LW6: Livewire discovery results are cached', function () {
+test('I1BCV-FR-LW6: Livewire discovery results are cached', function () {
     $service = moduleServiceConfigure();
     $service->discoverLivewireComponents();
 
     expect(Cache::has('module.discovered_livewire'))->toBeTrue();
 });
 
-it('I1BCV-FR-LW1/FR-LW7: discovery only scans registered modules', function () {
+test('I1BCV-FR-LW1/FR-LW7: discovery only scans registered modules', function () {
     $service = moduleServiceConfigure();
     $service->discoverLivewireComponents();
 
@@ -105,7 +105,7 @@ it('I1BCV-FR-LW1/FR-LW7: discovery only scans registered modules', function () {
     }
 });
 
-it('I1BCV-FR-MR1-FR-MR8: policy discovery maps policies to their models', function () {
+test('I1BCV-FR-MR1-FR-MR8: policy discovery maps policies to their models', function () {
     moduleServiceConfigure()->discoverPolicies();
 
     $discovered = Cache::get('module.discovered_policies');
@@ -119,7 +119,7 @@ it('I1BCV-FR-MR1-FR-MR8: policy discovery maps policies to their models', functi
     expect($policy)->toBeInstanceOf($policyClass);
 });
 
-it('I1BCV-FR-V1/FR-V3/FR-V5: Blade namespaces are registered only for registered modules', function () {
+test('I1BCV-FR-V1/FR-V3/FR-V5: Blade namespaces are registered only for registered modules', function () {
     moduleServiceConfigure()->registerBladeNamespaces();
 
     $discovered = Cache::get('module.discovered_views');
@@ -132,7 +132,7 @@ it('I1BCV-FR-V1/FR-V3/FR-V5: Blade namespaces are registered only for registered
     expect($hints['FixtureModule'])->toContain(resource_path('views/FixtureModule'));
 });
 
-it('I1BCV-FR-V4: Blade namespace discovery results are cached', function () {
+test('I1BCV-FR-V4: Blade namespace discovery results are cached', function () {
     moduleServiceConfigure()->registerBladeNamespaces();
 
     expect(Cache::has('module.discovered_views'))->toBeTrue();

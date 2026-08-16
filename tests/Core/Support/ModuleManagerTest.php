@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use App\Core\Support\ModuleManager;
 
-it('B114U-FR-MG1: names() returns the registered module list', function () {
+test('B114U-FR-MG1: names() returns the registered module list', function () {
     config()->set('module.list', ['Core', 'Setup']);
 
     expect(ModuleManager::names())->toBe(['Core', 'Setup']);
 });
 
-it('B114U-FR-MG2: isModule() is a strict membership check', function () {
+test('B114U-FR-MG2: isModule() is a strict membership check', function () {
     config()->set('module.list', ['Core', 'Setup']);
 
     expect(ModuleManager::isModule('Core'))->toBeTrue();
@@ -18,25 +18,25 @@ it('B114U-FR-MG2: isModule() is a strict membership check', function () {
     expect(ModuleManager::isModule('Nope'))->toBeFalse();
 });
 
-it('B114U-FR-MG3: registry() returns the module to submodule mapping', function () {
+test('B114U-FR-MG3: registry() returns the module to submodule mapping', function () {
     config()->set('module.registry', ['Enrollment' => ['Wizard', 'Placement']]);
 
     expect(ModuleManager::registry()['Enrollment'])->toBe(['Wizard', 'Placement']);
 });
 
-it('B114U-FR-MG4: submodules() returns an empty list for unknown modules', function () {
+test('B114U-FR-MG4: submodules() returns an empty list for unknown modules', function () {
     config()->set('module.registry', []);
 
     expect(ModuleManager::submodules('Unknown'))->toBe([]);
 });
 
-it('B114U-FR-MG5: testDirs() returns the non-module test directories', function () {
+test('B114U-FR-MG5: testDirs() returns the non-module test directories', function () {
     config()->set('module.test_dirs', ['Common']);
 
     expect(ModuleManager::testDirs())->toBe(['Common']);
 });
 
-it('B114U-FR-MG6: path accessors return the configured module paths', function () {
+test('B114U-FR-MG6: path accessors return the configured module paths', function () {
     config()->set('module.paths', [
         'base' => '/code/app',
         'views' => '/code/resources/views',
@@ -48,7 +48,7 @@ it('B114U-FR-MG6: path accessors return the configured module paths', function (
     expect(ModuleManager::routesPath())->toBe('/code/routes/web');
 });
 
-it('B114U-FR-MG7: feature flags are typed boolean accessors', function () {
+test('B114U-FR-MG7: feature flags are typed boolean accessors', function () {
     config()->set('module.policies.enabled', false);
     config()->set('module.livewire.enabled', true);
     config()->set('module.views.enabled', true);
@@ -60,7 +60,7 @@ it('B114U-FR-MG7: feature flags are typed boolean accessors', function () {
     expect(ModuleManager::factoriesEnabled())->toBeFalse();
 });
 
-it('B114U-FR-MG8: Livewire directory and exclude paths are configurable', function () {
+test('B114U-FR-MG8: Livewire directory and exclude paths are configurable', function () {
     config()->set('module.livewire.directory', 'Livewire');
     config()->set('module.livewire.exclude_paths', ['Concerns']);
 
@@ -68,7 +68,7 @@ it('B114U-FR-MG8: Livewire directory and exclude paths are configurable', functi
     expect(ModuleManager::livewireExcludePaths())->toBe(['Concerns']);
 });
 
-it('B114U-FR-MG9: policy directory, exclude paths and model namespace are configurable', function () {
+test('B114U-FR-MG9: policy directory, exclude paths and model namespace are configurable', function () {
     config()->set('module.policies.directory', 'Policies');
     config()->set('module.policies.exclude_paths', ['Traits']);
     config()->set('module.policies.model_namespace', 'App\\{domain}\\Models\\{model}');
@@ -78,7 +78,7 @@ it('B114U-FR-MG9: policy directory, exclude paths and model namespace are config
     expect(ModuleManager::policyModelNamespace())->toBe('App\\{domain}\\Models\\{model}');
 });
 
-it('B114U-FR-MG10: viewsExcludeDirectories() returns the default excluded view directories', function () {
+test('B114U-FR-MG10: viewsExcludeDirectories() returns the default excluded view directories', function () {
     $excluded = ModuleManager::viewsExcludeDirectories();
 
     expect($excluded)->toContain('components');
@@ -86,13 +86,13 @@ it('B114U-FR-MG10: viewsExcludeDirectories() returns the default excluded view d
     expect($excluded)->toContain('layouts');
 });
 
-it('B114U-FR-MG11: routeFilePath() lowercases the module name', function () {
+test('B114U-FR-MG11: routeFilePath() lowercases the module name', function () {
     config()->set('module.paths.routes', '/code/routes/web');
 
     expect(ModuleManager::routeFilePath('Enrollment'))->toBe('/code/routes/web/enrollment.php');
 });
 
-it('B114U-FR-MG12: isRegisteredDirectory() compares module names case-insensitively', function () {
+test('B114U-FR-MG12: isRegisteredDirectory() compares module names case-insensitively', function () {
     config()->set('module.list', ['Core', 'Setup']);
 
     expect(ModuleManager::isRegisteredDirectory('enrollment'))->toBeFalse();
@@ -102,7 +102,7 @@ it('B114U-FR-MG12: isRegisteredDirectory() compares module names case-insensitiv
     expect(ModuleManager::isRegisteredDirectory('Enrollment'))->toBeTrue();
 });
 
-it('B114U-FR-MG14: ModuleManager is a static-only gateway with no constructor', function () {
+test('B114U-FR-MG14: ModuleManager is a static-only gateway with no constructor', function () {
     expect((new ReflectionClass(ModuleManager::class))->getConstructor())->toBeNull();
     expect((new ReflectionMethod(ModuleManager::class, 'names'))->isStatic())->toBeTrue();
 });

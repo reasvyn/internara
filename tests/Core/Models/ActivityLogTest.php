@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 uses(LazilyRefreshDatabase::class);
 
-it('SE5Q9-FR-M7: forUser() filters entries by causer_id', function () {
+test('SE5Q9-FR-M7: forUser() filters entries by causer_id', function () {
     $user = User::factory()->create();
     $other = User::factory()->create();
 
@@ -23,7 +23,7 @@ it('SE5Q9-FR-M7: forUser() filters entries by causer_id', function () {
     expect($rows->first()->description)->toBe('mine');
 });
 
-it('SE5Q9-FR-M7: whereSubject() filters by subject type and optional id', function () {
+test('SE5Q9-FR-M7: whereSubject() filters by subject type and optional id', function () {
     $profile = Profile::factory()->create();
     activity()->performedOn($profile)->log('changed');
 
@@ -31,7 +31,7 @@ it('SE5Q9-FR-M7: whereSubject() filters by subject type and optional id', functi
     expect(ActivityLog::whereSubject(Profile::class)->count())->toBe(1);
 });
 
-it('SE5Q9-FR-M7: ofAction() filters by the event column', function () {
+test('SE5Q9-FR-M7: ofAction() filters by the event column', function () {
     activity()->event('created')->log('a');
     activity()->event('updated')->log('b');
 
@@ -39,7 +39,7 @@ it('SE5Q9-FR-M7: ofAction() filters by the event column', function () {
     expect(ActivityLog::ofAction('updated')->get())->toHaveCount(1);
 });
 
-it('SE5Q9-FR-M7: inLog() filters by one or more log names', function () {
+test('SE5Q9-FR-M7: inLog() filters by one or more log names', function () {
     activity()->useLog('User')->log('a');
     activity()->useLog('Enrollment')->log('b');
 
@@ -47,7 +47,7 @@ it('SE5Q9-FR-M7: inLog() filters by one or more log names', function () {
     expect(ActivityLog::inLog('User', 'Enrollment')->count())->toBe(2);
 });
 
-it('SE5Q9-FR-M7: recent() limits to the latest N entries', function () {
+test('SE5Q9-FR-M7: recent() limits to the latest N entries', function () {
     activity()->log('a');
     activity()->log('b');
     activity()->log('c');
@@ -55,7 +55,7 @@ it('SE5Q9-FR-M7: recent() limits to the latest N entries', function () {
     expect(ActivityLog::recent(2)->get())->toHaveCount(2);
 });
 
-it('SE5Q9-FR-M7: lastDays() filters by created_at within the window', function () {
+test('SE5Q9-FR-M7: lastDays() filters by created_at within the window', function () {
     activity()->log('fresh');
     DB::table('activity_log')->insert([
         'description' => 'stale',
@@ -68,7 +68,7 @@ it('SE5Q9-FR-M7: lastDays() filters by created_at within the window', function (
     expect(ActivityLog::lastDays(7)->get())->toHaveCount(1);
 });
 
-it('SE5Q9-FR-M7: forModule() matches by subject namespace or log name', function () {
+test('SE5Q9-FR-M7: forModule() matches by subject namespace or log name', function () {
     $profile = Profile::factory()->create();
     activity()->performedOn($profile)->log('on-profile');
     activity()->useLog('User')->log('in-log');
@@ -76,7 +76,7 @@ it('SE5Q9-FR-M7: forModule() matches by subject namespace or log name', function
     expect(ActivityLog::forModule('User')->count())->toBe(2);
 });
 
-it('SE5Q9-FR-M7: groupedByDay() scope returns daily counts', function () {
+test('SE5Q9-FR-M7: groupedByDay() scope returns daily counts', function () {
     activity()->log('a');
     activity()->log('b');
 
@@ -87,7 +87,7 @@ it('SE5Q9-FR-M7: groupedByDay() scope returns daily counts', function () {
     expect((int) $grouped->first()['count'])->toBe(2);
 });
 
-it('SE5Q9-FR-M7: getSubjectModelAttribute() exposes the short subject class name', function () {
+test('SE5Q9-FR-M7: getSubjectModelAttribute() exposes the short subject class name', function () {
     $profile = Profile::factory()->create();
     activity()->performedOn($profile)->log('changed');
 

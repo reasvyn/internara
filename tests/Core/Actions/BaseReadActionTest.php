@@ -54,14 +54,14 @@ final class TestReadAction extends BaseReadAction
     }
 }
 
-it('SE5Q9-FR-A3: remember() caches values with a TTL', function () {
+test('SE5Q9-FR-A3: remember() caches values with a TTL', function () {
     $action = new TestReadAction;
 
     expect($action->doRemember('core.key', fn () => 42, 60))->toBe(42);
     expect(Cache::has('core.key'))->toBeTrue();
 });
 
-it('SE5Q9-FR-A3: rememberForever() caches values indefinitely and forget() clears them', function () {
+test('SE5Q9-FR-A3: rememberForever() caches values indefinitely and forget() clears them', function () {
     $action = new TestReadAction;
 
     expect($action->doRememberForever('core.forever', fn () => 'value'))->toBe('value');
@@ -72,19 +72,19 @@ it('SE5Q9-FR-A3: rememberForever() caches values indefinitely and forget() clear
     expect(Cache::has('core.forever'))->toBeFalse();
 });
 
-it('SE5Q9-FR-A3: cacheKey() builds a module-prefixed dot-notation key', function () {
+test('SE5Q9-FR-A3: cacheKey() builds a module-prefixed dot-notation key', function () {
     expect((new TestReadAction)->doCacheKey('list', '1'))->toBe('Unknown.list.1');
     expect((new TestReadAction)->doCacheKey('list', '1', '2'))->toBe('Unknown.list.1.2');
 });
 
-it('SE5Q9-FR-A3: mask() masks all sensitive keys or only the requested fields', function () {
+test('SE5Q9-FR-A3: mask() masks all sensitive keys or only the requested fields', function () {
     $action = new TestReadAction;
 
     expect($action->doMask(['password' => 'secret', 'count' => 1]))->toBe(['password' => '***', 'count' => 1]);
     expect($action->doMask(['email' => 'a@b.com', 'count' => 1], ['email']))->toBe(['email' => 'a***@b.com', 'count' => 1]);
 });
 
-it('SE5Q9-FR-A3: paginate() returns a length-aware paginator', function () {
+test('SE5Q9-FR-A3: paginate() returns a length-aware paginator', function () {
     User::factory()->count(3)->create();
 
     $paginator = (new TestReadAction)->doPaginate(User::query(), 2);
@@ -93,7 +93,7 @@ it('SE5Q9-FR-A3: paginate() returns a length-aware paginator', function () {
     expect($paginator->perPage())->toBe(2);
 });
 
-it('SE5Q9-FR-A3: format() wraps data with pagination metadata', function () {
+test('SE5Q9-FR-A3: format() wraps data with pagination metadata', function () {
     $action = new TestReadAction;
 
     expect($action->doFormat([1, 2, 3]))->toBe([

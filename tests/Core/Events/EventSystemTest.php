@@ -39,7 +39,7 @@ function eventSystemEventsOnDisk(): array
     return $classes;
 }
 
-it('NUCY3-FR-EV1: every event class in the codebase extends BaseEvent', function () {
+test('NUCY3-FR-EV1: every event class in the codebase extends BaseEvent', function () {
     $events = eventSystemEventsOnDisk();
 
     expect($events)->not->toBeEmpty();
@@ -50,7 +50,7 @@ it('NUCY3-FR-EV1: every event class in the codebase extends BaseEvent', function
     }
 });
 
-it('NUCY3-FR-EV5/NFR-EV5: every config/event.php mapping is boot-valid', function () {
+test('NUCY3-FR-EV5/NFR-EV5: every config/event.php mapping is boot-valid', function () {
     $mappings = config('event.listen');
 
     expect($mappings)->toBeArray()->not->toBeEmpty();
@@ -66,13 +66,13 @@ it('NUCY3-FR-EV5/NFR-EV5: every config/event.php mapping is boot-valid', functio
     }
 });
 
-it('NUCY3-FR-EV6: every registered event has at least one listener', function () {
+test('NUCY3-FR-EV6: every registered event has at least one listener', function () {
     foreach (config('event.listen') as $event => $listeners) {
         expect($listeners)->not->toBeEmpty("Event {$event} must have a listener");
     }
 });
 
-it('NUCY3-FR-EV6: every config-registered listener is wired to a real event class', function () {
+test('NUCY3-FR-EV6: every config-registered listener is wired to a real event class', function () {
     $mappings = config('event.listen');
 
     foreach ($mappings as $event => $listeners) {

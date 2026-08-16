@@ -20,7 +20,7 @@ function checkRoleRun(Request $request, string ...$roles): Response
     return (new CheckRoleMiddleware)->handle($request, $next, ...$roles);
 }
 
-it('T4B26-FR-AUTH5: CheckRoleMiddleware lets a user with the required role through', function () {
+test('2CF4Y-FR-MW6/T4B26-FR-AUTH5: CheckRoleMiddleware lets a user with the required role through', function () {
     $user = User::factory()->create()->assignRole('admin');
     $request = Request::create('/admin');
     $request->setUserResolver(fn () => $user);
@@ -30,7 +30,7 @@ it('T4B26-FR-AUTH5: CheckRoleMiddleware lets a user with the required role throu
     expect($response->getContent())->toBe('ok');
 });
 
-it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects a user without the required role', function () {
+test('2CF4Y-FR-MW6/T4B26-FR-AUTH5: CheckRoleMiddleware rejects a user without the required role', function () {
     $user = User::factory()->create()->assignRole('teacher');
     $request = Request::create('/admin');
     $request->headers->set('Accept', 'application/json');
@@ -41,7 +41,7 @@ it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects a user without the required role
     expect($response->getStatusCode())->toBe(403);
 });
 
-it('T4B26-FR-AUTH5: CheckRoleMiddleware aborts with 403 on non-JSON requests', function () {
+test('T4B26-FR-AUTH5: CheckRoleMiddleware aborts with 403 on non-JSON requests', function () {
     $user = User::factory()->create()->assignRole('teacher');
     $request = Request::create('/admin');
     $request->setUserResolver(fn () => $user);
@@ -49,7 +49,7 @@ it('T4B26-FR-AUTH5: CheckRoleMiddleware aborts with 403 on non-JSON requests', f
     expect(fn () => checkRoleRun($request, 'admin'))->toThrow(HttpException::class);
 });
 
-it('T4B26-FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', function () {
+test('T4B26-FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', function () {
     $user = User::factory()->create()->assignRole('student');
     $request = Request::create('/guardian');
     $request->setUserResolver(fn () => $user);
@@ -59,7 +59,7 @@ it('T4B26-FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', func
     expect($response->getContent())->toBe('ok');
 });
 
-it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON', function () {
+test('T4B26-FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON', function () {
     $request = Request::create('/admin');
     $request->headers->set('X-Livewire', 'true');
     $request->setUserResolver(fn () => null);
@@ -69,13 +69,13 @@ it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON
     expect($response->getStatusCode())->toBe(401);
 });
 
-it('T4B26-FR-AUTH8: UserPolicy is registered manually for the User model', function () {
+test('T4B26-FR-AUTH8: UserPolicy is registered manually for the User model', function () {
     $policy = Gate::getPolicyFor(new User);
 
     expect($policy)->toBeInstanceOf(UserPolicy::class);
 });
 
-it('T4B26-FR-AUTH9: super_admin role is normalized to superadmin for storage and lookups', function () {
+test('T4B26-FR-AUTH9: super_admin role is normalized to superadmin for storage and lookups', function () {
     $user = User::factory()->create()->assignRole('super_admin');
 
     expect($user->hasRole('super_admin'))->toBeTrue();
@@ -83,7 +83,7 @@ it('T4B26-FR-AUTH9: super_admin role is normalized to superadmin for storage and
     expect($user->getRoleNames()->first())->toBe('superadmin');
 });
 
-it('T4B26-FR-AUTH12: every concrete policy class extends BasePolicy', function () {
+test('T4B26-FR-AUTH12: every concrete policy class extends BasePolicy', function () {
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator(app_path(), RecursiveDirectoryIterator::SKIP_DOTS),
     );

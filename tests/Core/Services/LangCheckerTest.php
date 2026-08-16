@@ -9,11 +9,11 @@ function makeLangChecker(string $locale): LangChecker
     return new LangChecker(app('translator')->getLoader(), $locale);
 }
 
-it('C8F0D-FR-SUP10: get() returns the translation for an existing key', function () {
+test('C8F0D-FR-SUP10: get() returns the translation for an existing key', function () {
     expect(makeLangChecker('en')->get('core.csv.created'))->toBe('Created');
 });
 
-it('C8F0D-FR-SUP10: get() returns the key itself and warns for a missing key', function () {
+test('C8F0D-FR-SUP10: get() returns the key itself and warns for a missing key', function () {
     $logs = captureLogs();
 
     $result = makeLangChecker('en')->get('core.nonexistent_key');

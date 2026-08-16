@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Core\Support\PasswordRules;
 use Illuminate\Validation\Rules\Password;
 
-it('C8F0D-FR-SUP3: default() enforces required, string, and a strong password rule', function () {
+test('C8F0D-FR-SUP3: default() enforces required, string, and a strong password rule', function () {
     $rules = PasswordRules::default();
 
     expect($rules)->toHaveCount(3);

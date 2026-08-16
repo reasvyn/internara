@@ -63,14 +63,14 @@ final class TestProcessAction extends BaseProcessAction
     }
 }
 
-it('SE5Q9-FR-A4: step() records success and returns the step result', function () {
+test('SE5Q9-FR-A4: step() records success and returns the step result', function () {
     $action = new TestProcessAction;
 
     expect($action->doStep('import', fn () => 42))->toBe(42);
     expect($action->doGetResults())->toBe(['import' => ['success' => true]]);
 });
 
-it('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () {
+test('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () {
     $action = new TestProcessAction;
 
     expect(fn () => $action->doStep('import', fn () => throw new RuntimeException('nope')))
@@ -79,7 +79,7 @@ it('SE5Q9-FR-A4: step() records failure and rethrows the exception', function ()
     expect($action->doGetResults()['import']['error'])->toBe('nope');
 });
 
-it('SE5Q9-FR-A4: trackProgress() clamps the percentage between 0 and 100', function () {
+test('SE5Q9-FR-A4: trackProgress() clamps the percentage between 0 and 100', function () {
     $action = new TestProcessAction;
 
     $action->doTrackProgress(150, 'over');
@@ -89,7 +89,7 @@ it('SE5Q9-FR-A4: trackProgress() clamps the percentage between 0 and 100', funct
     expect($action->doGetProgress()['percent'])->toBe(0.0);
 });
 
-it('SE5Q9-FR-A4: allStepsSucceeded() reflects every step outcome', function () {
+test('SE5Q9-FR-A4: allStepsSucceeded() reflects every step outcome', function () {
     $action = new TestProcessAction;
 
     $action->doStep('a', fn () => null);
@@ -99,7 +99,7 @@ it('SE5Q9-FR-A4: allStepsSucceeded() reflects every step outcome', function () {
     expect($action->doAllSucceeded())->toBeFalse();
 });
 
-it('SE5Q9-FR-A4: notify() sends through the Notification facade', function () {
+test('SE5Q9-FR-A4: notify() sends through the Notification facade', function () {
     NotificationFacade::fake();
     $user = User::factory()->create();
 
@@ -108,7 +108,7 @@ it('SE5Q9-FR-A4: notify() sends through the Notification facade', function () {
     NotificationFacade::assertSentTo($user, TestProcessNotification::class);
 });
 
-it('SE5Q9-FR-A4: logProgress() writes progress and step results to the system log', function () {
+test('SE5Q9-FR-A4: logProgress() writes progress and step results to the system log', function () {
     $logs = captureLogs();
     $action = new TestProcessAction;
 
