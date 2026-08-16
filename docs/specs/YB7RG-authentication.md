@@ -383,17 +383,16 @@ final readonly class LoginData extends BaseData
 // app/Auth/Login/Actions/LoginAction.php
 final class LoginAction extends BaseCommandAction
 {
-    public function execute(string $identifier, string $password, bool $remember = false): Authenticatable;
+    public function execute(LoginData $data): Authenticatable;
 
     // Pipeline:
-    // 1. DTO creation (LoginData)
-    // 2. Lockout check — cache key auth.login.lockout:{crc32b(identifier)}
-    // 3. User lookup — User::where(detectedField, identifier)->first()
-    // 4. Account status — $user->asApprentice()->status()->allowsLogin()
-    // 5. Credential validation — Auth::attempt()
-    // 6. On success: clear attempts + lockout counters
-    // 7. Session regeneration — session()->regenerate()
-    // 8. Dispatch LoginSucceeded / LoginFailed events
+    // 1. Lockout check — cache key auth.login.lockout:{crc32b(identifier)}
+    // 2. User lookup — User::where(detectedField, identifier)->first()
+    // 3. Account status — $user->asApprentice()->status()->allowsLogin()
+    // 4. Credential validation — Auth::attempt()
+    // 5. On success: clear attempts + lockout counters
+    // 6. Session regeneration — session()->regenerate()
+    // 7. Dispatch LoginSucceeded / LoginFailed events
 }
 ```
 
@@ -512,8 +511,8 @@ class AccessToken extends BaseModel {
 ```php
 // app/Auth/Account/Actions/ActivateAccountAction.php
 final class ActivateAccountAction extends BaseCommandAction {
-    public function execute(User $user, string $code, string $password): User;
-    // Pipeline: verify token → revoke → set password → log
+    public function execute(ActivateAccountData $data): User;
+    // Pipeline: resolve user by ID → verify token → revoke → set password → log
 }
 ```
 

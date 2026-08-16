@@ -1,7 +1,7 @@
 # Dummy Data — Factory-Generated Demo Dataset via DummySeeder
 
 > **Spec ID:** 3UOZP
-> **Last updated:** 2026-08-16 **Changes:** amend — student names generated without
+> **Last updated:** 2026-08-16 **Changes:** amend — super admin default name is `Super Admin`; amend — student names generated without
 > academic titles (FR-C19, DD-11); amend — `setup:install --with-dummy` seeds demo data
 > after provisioning without registering `DummySeeder` (installation FR-C10, DD-3 trade-off,
 > §9 Next Steps); amend — reuse base-seeded data (roles, settings, active
@@ -362,7 +362,7 @@ maintenance liability DD-1 rejects, and duplicating text per-locale is unmaintai
 **Decision:** `DummyData` seeds `admin`, `teacher`, `supervisor`, and `student` accounts only —
 never `superadmin`. The sole superadmin account is created by `SetupSuperAdminAction` during
 installation and is protected by strict integrity rules (`SuperAdminIntegrityRules`: immutable name
-`Administrator`, immutable username `superadmin`, single-account invariant, cannot be locked or
+`Super Admin`, immutable username `superadmin`, single-account invariant, cannot be locked or
 deleted).
 **Rationale:** Creating a second superadmin — or a superadmin that violates the immutable
 name/username contract — would break the single-account invariant and the setup module's integrity

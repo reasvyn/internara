@@ -1,6 +1,6 @@
 # Project Requirements — High-Level Feature Specifications
 
-> **Last updated:** 2026-08-10 **Changes:** full deduplication — merged duplicated feature entries (System Health, CSV Handler, Language/Theme Switchers, Compliance Monitoring, Cross-Role Proxy, Rate Limiting, Audit Trail) into authoritative sections, consolidated 7 cross-role usability indicators, and added CSV to output-format requirements
+> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
 
 ## Description
 
@@ -72,7 +72,7 @@ One-time guided installation.
 | Environment Audit     | PHP version, extensions, directory permissions, database, terminal                    | Installer     |
 | Setup Token           | Encrypted random token gates wizard access, single-use                                | System        |
 | School Initialization | Create first school profile in settings                                               | Installer     |
-| Super Admin Creation  | Name always "Administrator", username "superadmin"                                    | Installer     |
+| Super Admin Creation  | Name always "Super Admin", username "superadmin"                                    | Installer     |
 | Recovery Key          | 64-char random key, stored hashed in DB, saved to `storage/app/private/.recovery-key` | Installer     |
 | CLI Install           | `php artisan setup:install` with `--check-only` and `--force`                         | CLI           |
 | Super Admin Recovery  | `php artisan admin:recover` — emergency CLI recovery                                  | CLI           |
@@ -104,7 +104,7 @@ Login, password management, account recovery, RBAC.
 | Recovery Slip            | Admin generates 10 one-time codes, delivered offline, no expiry                        | Admin        |
 | Account Recovery         | User redeems code to unlock account and set new password                               | Guest        |
 | RBAC                     | 5 roles + 2 functional roles (mentor, mentee) with `Role::resolvesTo()`                | All          |
-| Super Admin Integrity    | Name/username immutable (Administrator/superadmin), non-deletable                      | System       |
+| Super Admin Integrity    | Name/username immutable (Super Admin/superadmin), non-deletable                      | System       |
 
 #### User — Identity & Profiles
 

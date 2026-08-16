@@ -1,7 +1,7 @@
 # Setup Wizard — Feature Specification
 
 > **Spec ID:** VEJCX
-> **Last updated:** 2026-08-16 **Changes:** align — recovery key setting name corrected to `setup.install_recovery_key` (see [installation.md](8NZAU-installation.md) §6.1)
+> **Last updated:** 2026-08-16 **Changes:** align — super admin default name is `Super Admin`; recovery key setting name corrected to `setup.install_recovery_key` (see [installation.md](8NZAU-installation.md) §6.1)
 
 ## Description
 
@@ -73,7 +73,7 @@ wizard rather than seeing a broken or empty application.
    session ID
 3. **Step 1 — Welcome:** Environment audit results displayed. Installer must see all checks pass
    (or click "Recheck") before "Start Setup" button enables.
-4. **Step 2 — Super Admin:** Name ("Administrator") and username ("superadmin") are locked. Installer
+4. **Step 2 — Super Admin:** Name ("Super Admin") and username ("superadmin") are locked. Installer
    enters email and password. Password requires 8+ chars, mixed case, numbers.
 5. **Step 3 — School:** Installer enters school name, NPSN code, email, phone (optional), website
    (optional), address (optional), principal name (optional).

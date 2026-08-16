@@ -343,7 +343,7 @@ final class SendNotificationAction extends BaseCommandAction implements SendsNot
 ### 6.4 NotificationData DTO
 
 ```php
-// app/User/Notifications/Data/NotificationData.php (19 lines)
+// app/Core/Channels/Data/NotificationData.php (19 lines)
 final readonly class NotificationData extends BaseData
 {
     public function __construct(
@@ -657,7 +657,7 @@ dispatch notifications through this infrastructure.
 - `app/User/Notifications/Actions/MarkBatchAsReadAction.php` — batch mark-selected-as-read (32 lines)
 - `app/User/Notifications/Actions/DeleteNotificationAction.php` — single notification delete (33 lines)
 - `app/User/Notifications/Models/Notification.php` — Eloquent model with `#[Fillable]` (33 lines)
-- `app/User/Notifications/Data/NotificationData.php` — DTO for notification payload (19 lines)
+- `app/Core/Channels/Data/NotificationData.php` — DTO for notification payload (19 lines)
 - `app/User/Notifications/Events/NotificationSent.php` — event emitted on notification create (18 lines)
 - `app/User/Notifications/Events/NotificationRead.php` — event emitted on notification read (18 lines)
 - `app/User/Notifications/Listeners/ClearUnreadNotificationCache.php` — cache invalidation listener (25 lines)

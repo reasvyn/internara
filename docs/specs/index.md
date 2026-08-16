@@ -1,6 +1,8 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-15 **Changes:** add — Dummy Data spec (3UOZP, Maintenance); add —
+> **Last updated:** 2026-08-16 **Changes:** add — Architecture Design spec (D2FT3, Foundation, first
+> in build order); add — Core & Infrastructure Services spec (ZT6VS, Foundation, after Tech Stack);
+> tech-stack (FB792) refocused on the dependency manifest; Dummy Data spec (3UOZP, Maintenance); add —
 > Conditional Deployment spec (06IB6, Maintenance); Foundation specs (FB792–B114U) verified against the
 > rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers,
 > shared-utilities); migrated all specs to alphanumeric 5-char IDs (XXXXX-description.md)
@@ -45,8 +47,10 @@ Core technology, architectural base classes, and shared utilities. Everything el
 
 | ID | Spec | Module | Depends On |
 | -- | ---- | ------ | ---------- |
-| FB792 | [Tech Stack](FB792-tech-stack.md) | Core | —
-| SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | FB792
+| D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | —
+| FB792 | [Tech Stack](FB792-tech-stack.md) | Core | D2FT3
+| ZT6VS | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Core | FB792
+| SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | FB792, ZT6VS
 | C8F0D | [Shared Utilities](C8F0D-shared-utilities.md) | Core | FB792, SE5Q9
 | J68GZ | [System Requirements](J68GZ-system-requirements.md) | Core | FB792
 | I1BCV | [Module Discovery](I1BCV-module-discovery.md) | Core | FB792, SE5Q9
