@@ -1,6 +1,6 @@
 # Academics — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix SchoolEditor extends, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** add `AcademicYearPeriod` support class
 
 ## Description
 
@@ -43,6 +43,12 @@ Manages educational structure: academic years, departments (jurusan), and school
 | ---------------------------------------- | ------------------ | ---------- |
 | `AcademicYear/Data/AcademicYearData.php` | `AcademicYearData` | `BaseData` |
 | `Department/Data/DepartmentData.php`     | `DepartmentData`   | `BaseData` |
+
+## Support
+
+| File                                                | Class                | Purpose                                                          |
+| --------------------------------------------------- | -------------------- | ---------------------------------------------------------------- |
+| `AcademicYear/Support/AcademicYearPeriod.php`       | `AcademicYearPeriod` | Active school-year computation (July–June convention), shared by seeders and settings UI (FR-AY40) |
 
 ## Entities
 

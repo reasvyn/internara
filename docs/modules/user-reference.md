@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** move NotificationData entry to Core (Channels/Data); link core-reference
+> **Last updated:** 2026-08-16 **Changes:** add User Data DTOs (UpdateProfileData, CreateUserData, UpdateUserData, SetUserStatusData); move NotificationData entry to Core; spec-driven tests section
 
 ## Description
 
@@ -142,7 +142,14 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Data / DTOs
 
-No Data/DTO classes in the User module. The notification payload DTO `NotificationData` lives in
+| File                                                           | Class              | Extends    |
+| -------------------------------------------------------------- | ------------------ | ---------- |
+| `Profile/Data/UpdateProfileData.php`                           | `UpdateProfileData` | `BaseData` |
+| `UserManagement/Data/CreateUserData.php`                       | `CreateUserData`    | `BaseData` |
+| `UserManagement/Data/UpdateUserData.php`                       | `UpdateUserData`    | `BaseData` |
+| `UserManagement/Data/SetUserStatusData.php`                    | `SetUserStatusData` | `BaseData` |
+
+The notification payload DTO `NotificationData` lives in
 `app/Core/Channels/Data/NotificationData.php` (see [Core reference](core-reference.md)).
 
 ## Events
@@ -219,36 +226,9 @@ system.
 ## Tests
 
 Tests are located in `tests/User/`. See [Testing](../infrastructure/testing.md) for
-the testing conventions.
-
-| File                                                                   | What It Tests                                                            |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `User/Enums/AccountStatusTest.php`                                | AccountStatus: allowsLogin, isTerminal, transitions, color               |
-| `User/Enums/UserEnumsTest.php`                                    | BloodType, Gender, EmploymentStatus, StructuralPosition cases and labels |
-| `User/Entities/ApprenticeTest.php`                                | Apprentice: status, locked, setup required, transitions                  |
-| `User/Rules/ReservedAuthoritativeNameTest.php`                    | Reserved name validation                                                 |
-| `User/Rules/SystemUsernameTest.php`                               | Username format validation                                               |
-| `User/Services/DashboardServiceTest.php`                          | Dashboard routing by role                                                |
-| `User/Services/UserIdentifierGeneratorTest.php`                   | Username generation from email, collision handling                       |
-| `User/Profile/ProfileModelTest.php`                            | Profile model: relationships, fields, cascade delete                     |
-| `User/Profile/UpdateProfileActionTest.php`                     | UpdateProfileAction                                                      |
-| `User/Dashboard/*Test.php`                                     | Dashboard data actions                                                   |
-| `User/AccountStatus/*Test.php`                                 | Lock/Unlock account actions                                              |
-| `User/Notifications/*Test.php`                                 | Send, mark read, notification events                                     |
-| `User/Models/UserTest.php`                                     | User model: roles, UUID, scopes                                          |
-| `User/UserManagement/CreateUserActionTest.php`                 | CreateUserAction                                                         |
-| `User/UserManagement/UpdateUserActionTest.php`                 | UpdateUserAction                                                         |
-| `User/UserManagement/DeleteUserActionTest.php`                 | DeleteUserAction                                                         |
-| `User/UserManagement/BatchDeleteUserActionTest.php`            | BatchDeleteUserAction                                                    |
-| `User/UserManagement/ReadUserManagerStatsActionTest.php`       | ReadUserManagerStatsAction                                               |
-| `User/UserManagement/ArchiveStudentAccountsActionTest.php`     | ArchiveStudentAccountsAction                                             |
-| `User/UserManagement/ToggleUserStatusActionTest.php`           | ToggleUserStatusAction                                                   |
-| `User/UserManagement/SetUserStatusActionTest.php`              | SetUserStatusAction                                                      |
-| `User/UserManagement/RevokeUserActivationTokensActionTest.php` | RevokeUserActivationTokensAction                                         |
-| `User/UserManagement/GenerateAccountSlipActionTest.php`        | GenerateAccountSlipAction                                                |
-| `User/UserManagement/Actions/SaveRecoveryKeyActionTest.php`    | SaveRecoveryKeyAction                                                    |
-| `User/UserManagement/Actions/ReadRecoveryKeyActionTest.php`    | ReadRecoveryKeyAction                                                    |
-| `User/UserManagement/AutoInactivateAccountsCommandTest.php`    | AutoInactivateAccounts command                                           |
+the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
+(`FR-*` / `NFR-*` / `UC-*`) using the `test("{SPECID}-{REQ}: ...")` convention; there is no
+one-test-per-class mandate.
 
 ## Factories
 

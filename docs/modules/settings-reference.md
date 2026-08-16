@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — add RemoveBrandAssetAction + BrandData, fix SystemSetting extends + SettingUpdated dispatchers, route names, flat test paths
+> **Last updated:** 2026-08-16 **Changes:** add `SettingCaster` support class; spec-driven tests section (drop stale test table)
 
 ## Description
 
@@ -111,6 +111,7 @@ feature toggles.
 | --------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
 | `Services/Settings.php`     | `Settings` | Runtime settings manager with cached reads (note: includes write path that bypasses Actions) |
 | `Support/Brand.php`         | `Brand`    | Dynamic branding values from database                                                        |
+| `Support/SettingCaster.php` | `SettingCaster` | Type casting logic for setting values                                                   |
 | `Support/helpers.php`       | —          | `setting()`, `brand()` global helpers                                                        |
 | `Locale/Support/Locale.php` | `Locale`   | Locale management                                                                            |
 | `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)                                                                 |
@@ -141,38 +142,9 @@ system.
 ## Tests
 
 Tests are located in `tests/Settings/`. See [Testing](../infrastructure/testing.md)
-for the testing conventions.
-
-| File                                                           | What It Tests                                                      |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `Settings/Enums/SettingGroupTest.php`                     | SettingGroup enum cases, labels, defaults                          |
-| `Settings/Enums/SettingTypeTest.php`                      | SettingType detect, cast, values, labels                           |
-| `Settings/Enums/MediaCollectionTest.php`                  | MediaCollection cases                                              |
-| `Settings/Data/SettingDataTest.php`                       | SettingData DTO construction and serialization                     |
-| `Settings/Data/SettingGroupDataTest.php`                  | SettingGroupData DTO                                               |
-| `Settings/Entities/SettingEntityTest.php`                 | SettingEntity fromModel, type checks, boolean/json/int helpers     |
-| `Settings/Models/SettingModelTest.php`                    | Setting model scopes, casts, media collections                     |
-| `Settings/Casts/SettingValueCastTest.php`                 | SettingValueCast get/set for all types                             |
-| `Settings/Policies/SettingPolicyTest.php`                 | Policy authorization gates                                         |
-| `Settings/Rules/ValidSettingKeyTest.php`                  | Key validation rule                                                |
-| `Settings/Support/SettingsTest.php`                       | Settings facade: get, set, has, groups, forget, cache invalidation |
-| `Settings/Support/BrandTest.php`                          | Brand facade: name, logo, colors, get routing                      |
-| `Settings/Support/ThemeTest.php`                          | Theme: defaults, presets, cssVariables, color computation          |
-| `Settings/Support/LocaleTest.php`                         | Locale switching, supported locales, metadata                      |
-| `Settings/Branding/Data/BrandDataTest.php`                | BrandData DTO, get(), immutability                                 |
-| `Settings/Livewire/LangSwitcherTest.php`                  | LangSwitcher component                                             |
-| `Settings/Livewire/ThemeSwitcherTest.php`                 | ThemeSwitcher component                                            |
-| `Settings/Actions/SetSettingActionTest.php`            | SetSettingAction execute, type detection, validation               |
-| `Settings/Actions/BatchSetSettingActionTest.php`       | BatchSetSettingAction, transactional, array config                 |
-| `Settings/Actions/DeleteSettingActionTest.php`         | DeleteSettingAction, key deletion                                  |
-| `Settings/Actions/SaveSystemSettingsActionTest.php`    | SaveSystemSettingsAction, combined form save                       |
-| `Settings/Actions/ReadAcademicYearActionTest.php`      | `ReadAcademicYearAction`                                           |
-| `Settings/Actions/TestMailSettingsActionTest.php`      | TestMailSettingsAction SMTP test                                   |
-| `Settings/Actions/UploadBrandAssetActionTest.php`      | UploadBrandAssetAction, media upload                               |
-| `Settings/Events/SettingUpdatedEventTest.php`          | SettingUpdated event dispatch                                      |
-| `Settings/Observers/SettingObserverTest.php`           | SettingObserver: cache invalidation on create/update/delete        |
-| `Settings/Http/Middleware/SetLocaleMiddlewareTest.php` | SetLocaleMiddleware locale resolution                              |
-| `Settings/SettingsRouteTest.php`                       | Settings route accessibility                                       |
+for the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
+(`FR-*` / `NFR-*` / `UC-*`) using the `test("{SPECID}-{REQ}: ...")` convention; there is no
+one-test-per-class mandate.
 
 ## Factories
 

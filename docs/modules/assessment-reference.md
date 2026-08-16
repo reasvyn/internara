@@ -1,6 +1,6 @@
 # Assessment — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix AssessmentGrading extends, add AssessmentFinalized event, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** add `LogAssessmentFinalized` listener
 
 ## Description
 
@@ -77,6 +77,12 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | File                            | Event                    | Dispatched By               |
 | ------------------------------- | ------------------------ | --------------------------- |
 | `Events/AssessmentFinalized.php` | `AssessmentFinalized`    | `FinalizeAssessmentAction`  |
+
+## Listeners
+
+| File                                   | Listener                   | Listens To           |
+| -------------------------------------- | -------------------------- | -------------------- |
+| `Listeners/LogAssessmentFinalized.php` | `LogAssessmentFinalized`   | `AssessmentFinalized` |
 
 ---
 

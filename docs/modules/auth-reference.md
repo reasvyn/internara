@@ -1,6 +1,6 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix Role enum value (superadmin), move RecoverAdminCommand to SysAdmin, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** add Data DTOs — `ActivateAccountData`, `RedeemRecoverySlipData`, `ResetPasswordData`
 
 ## Description
 
@@ -73,6 +73,9 @@ permissions.
 | ------------------------------------------- | ------------------ | ---------- |
 | `Login/Data/LoginData.php`                  | `LoginData`        | `BaseData` |
 | `AccountRecovery/Data/RecoveryCodeData.php` | `RecoveryCodeData` | `BaseData` |
+| `Account/Data/ActivateAccountData.php`      | `ActivateAccountData` | `BaseData` |
+| `AccountRecovery/Data/RedeemRecoverySlipData.php` | `RedeemRecoverySlipData` | `BaseData` |
+| `Password/Data/ResetPasswordData.php`       | `ResetPasswordData` | `BaseData` |
 
 ## Events
 
