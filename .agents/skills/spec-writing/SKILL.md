@@ -33,36 +33,23 @@ Use this skill when:
 
 ---
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting — a spec split
+into multiple initiatives is multi-session work; propose a plan to the user), verification strategy,
+and commit format. This skill adds the 11-section template, requirement ID conventions, scoping
+rules, indexing, and spec lifecycle — nothing else.
 
-### 1. Construct — Research & Scope
-
-- Load `context-awareness` and `doc-writing` skills
-- Read primary references:
-  - `docs/specs/index.md` — feature specifications index
-  - `docs/foundation/project-requirements.md` — high-level feature specs
-  - `docs/foundation/product-definition.md` — scope, personas, system boundary
-  - `docs/modules/{module}.md` and `docs/modules/{module}-reference.md` — if feature belongs to a module
-- Read existing code if implementation exists (verify against docs)
-- Read any existing specs in `docs/specs/` to follow established patterns
-- Identify the feature boundary: what's in scope, what's not
-- Determine the target audience: developers implementing, testers verifying, PMs reviewing
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage — a spec split into multiple initiatives
-  is multi-session work; propose a plan to the user before writing
-
-### 2. Execute — Write Specification
+### Execute — Write Specification
 
 - Follow the 11-section spec template (see below)
 - Use `edit` tool for existing files, `write` tool only for new files
 - Every statement must be verifiable or actionable
 - Reference source code with file paths where implementation exists
-- Reference config values with exact keys and defaults
 - Cross-reference related docs instead of duplicating content
 
-### 3. Verify — Quality Gates
+### Verify — Quality Gates
 
 - Verify with git: `git status` + `git diff` — confirm only the intended spec file(s) changed and
   no content was lost (version-control verification)
@@ -72,18 +59,13 @@ Verify = 7, Report & Commit = 8-9):
 - Every design decision has a unique ID (`DD-{number}`)
 - §9 Roadmap has Prerequisites (with specific artifacts), Build Guide (1-2 sentences), and Next Steps
 - All cross-references resolve to existing files
-- All file paths reference real files in the codebase
-- Metadata block present with current date
-- `> **Spec ID:** XXXXX` metadata line present and matching the filename (see Spec IDs below)
+- Metadata block present with current date; `> **Spec ID:** XXXXX` line matching the filename
 - No duplicate content across sections (cross-reference instead)
 
-### 4. Report — Deliver
+### Report — Deliver
 
-- Deliver a report to the user:
-  - File created/updated
-  - Number of requirements defined
-  - Number of design decisions documented
-  - Any gaps or assumptions flagged
+- Deliver a report to the user: file created/updated, number of requirements and design decisions,
+  any gaps or assumptions flagged
 
 ---
 
@@ -437,26 +419,6 @@ The index table has a `Depends On` column with spec-ID references to earlier spe
 
 **Documentation-first:** The spec is written BEFORE implementation. Code matches the spec, not the
 other way around.
-
----
-
-## Phase Context
-
-| Role | Skill |
-|------|-------|
-| **Upstream** | `context-awareness` (project orientation), `doc-writing` (documentation conventions) |
-| **This skill** | **SPEC WRITING** — defines feature specifications before implementation |
-| **Downstream** | `feature-building` (implementation), `code-writing` (coding), `pest-testing` (verification), `issue-writing` (if spec reveals gaps) |
-
-## Skill Handoffs (Actionable)
-
-| Condition | Action |
-|-----------|--------|
-| Spec approved, implementation starts | Load `feature-building` (orchestrator) |
-| Implementation hits a missing spec section | Amend the spec here first, then continue |
-| Spec reveals existing bugs/gaps | Load `issue-writing` to file issues |
-| Spec needs doc conventions | Load `doc-writing` |
-| Initiative spans multiple specs | Split per "One Initiative = One Spec" — plan across sessions, inform user |
 
 ---
 

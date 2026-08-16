@@ -1,6 +1,6 @@
 ---
 name: sync-docs
-description: "SDLC Phase: MAINTENANCE. Comprehensive markdown documentation sync against actual code implementation. Discovers patterns and rules from authoritative docs, then verifies them against code."
+description: "SDLC Phase: MAINTENANCE. Comprehensive documentation sync against actual code implementation and feature specs — covering `docs/`, module docs, AND agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`). Discovers patterns and rules from authoritative docs, then verifies them against code and specs."
 upstream:
   - feature-building
   - code-refactoring
@@ -21,67 +21,42 @@ upstream:
 ## When to Activate
 
 Use this skill after any implementation, refactoring, or audit to keep documentation in sync with
-the actual codebase. Documentation is the single source of truth (see conventions) — code and docs
-must agree.
+the actual codebase and its feature specs. Documentation is the single source of truth (see
+conventions) — code, docs, and specs must agree. **This includes agent guides & skills:**
+`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, and `.agents/plans/` must stay
+consistent with the specs and code they document. A spec amendment (renamed default, new invariant,
+changed path) must be mirrored in any guide or skill that documents it.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (docs stay in sync with the **governing spec**), **Size Triage** (S/M/L session splitting —
+a multi-module sync is M/L, stage by module), verification strategy, and commit format. This skill
+adds the doc-sync workflow, audit scope, key rules, and verification checklist below — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
+### Construct — Context & Scope
 
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — docs stay in sync with specs and code; a spec
-  requirement with no matching doc is a sync gap (Spec-First Doctrine)
-- Review last 10 git commits (`git log --oneline -10`) to understand recent changes before syncing
-  - Run `git log -10 --stat` to see which files were touched per commit
-  - Run `git diff HEAD~10..HEAD --name-status` for a consolidated view of added/modified/deleted files
-  - This context prevents re-syncing already-correct docs and focuses effort on actual changes
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; a multi-module sync is **M/L** — stage by
-  module, inform the user before committing if **L**
+- Locate the governing spec and the agent guides/skills that reference it — `AGENTS.md`,
+  `.agents/skills/*/SKILL.md`, `.agents/contexts/*.md`, `.agents/plans/` (a spec/code change must be
+  mirrored there too)
+- Review last 10 git commits (`git log --oneline -10`, `git log -10 --stat`,
+  `git diff HEAD~10..HEAD --name-status`) to focus on actual changes
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
 
-### 2. Execute — Documentation Sync
+### Execute — Documentation Sync
 
-- Identify changes: git diff for new/deleted/modified files
-- Update reference docs: add/remove file listings, class names, schemas
-- Update conceptual docs: adjust business rules, boundaries
+- Identify changes: `git diff` for new/deleted/modified files
+- Update reference docs (file listings, class names, schemas), conceptual docs (business rules),
+  and agent guides & skills (rule tables, skill scopes, context states) per the governing spec
 - Verify all relative links are still valid
-- Update metadata: Last updated date + Changes description
-- Output: updated documentation with verified file paths, class names, schemas, and metadata
+- Update metadata: `Last updated` date + `Changes` description
 
-### 3. Verify — Quality Gates
+### Verify — Quality Gates
 
 - **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (doc changes don't need
   pint/phpstan/tests)
 - Cross-check against `rules/sync-verification.md` (the automated sync-verification rule asset)
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- PHPStan/Pint only if PHP files were touched: `vendor/bin/phpstan analyse --no-progress`,
-  `vendor/bin/pint --dirty --format agent`
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of documentation changes
-    - Files updated (conceptual and reference docs)
-    - Broken links found and fixed
-    - Metadata updated
-- Final step in SDLC cycle — no downstream skill expected
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                       |
-| -------------- | ------------------------------------------- |
-| **Upstream**   | All implementation/analysis/planning skills |
-| **This skill** | **MAINTENANCE** — verifies and updates docs |
-| **Downstream** | None (final quality gate)                   |
+- PHPStan/Pint only if PHP files were touched
 
 ## Sync Workflow
 
@@ -119,10 +94,14 @@ git log -10 --format="%h %s"               # commit messages for context
 | ADR                  | `docs/adr/` (if decision is notable)                                 |
 | Feature specs        | `docs/specs/index.md`                                                |
 | Config               | `docs/infrastructure/configuration.md`                               |
+| Agent guides         | `AGENTS.md` (module map, invariants, rule pointers)                  |
+| Agent skills         | `.agents/skills/{skill}/SKILL.md` (skill scope, rules, references)   |
+| Agent contexts       | `.agents/contexts/*.md` (intentional states, deploy caveats, pins)   |
+| Agent plans          | `.agents/plans/` (session plans, decisions)                          |
 
 ### 3. Documentation Audit Scope
 
-When auditing documentation against code, verify these items:
+When auditing documentation against code and specs, verify these items:
 
 - File paths in docs point to existing files
 - Class names and method signatures match actual code
@@ -131,6 +110,10 @@ When auditing documentation against code, verify these items:
 - No broken relative links
 - Metadata (`Last updated`, `Changes`) present on every `.md` file
 - Module structure docs match actual `app/` directory layout
+- **Agent guides & skills match specs and code** — spec IDs referenced in `AGENTS.md` and
+  `.agents/skills/*/SKILL.md` exist in `docs/specs/index.md`; invariant values (names, config
+  defaults, convention IDs C1-C8 / D1-D6) match the governing spec; "where to find" tables point to
+  sections that actually exist; skill scope covers what the governing spec promises
 
 ### 4. Verify Documentation Accuracy
 
@@ -186,6 +169,7 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 - [ ] Module index (`index.md`) updated with new dependencies
 - [ ] Feature specs in `docs/specs/` match implementation (FR, NFR, data contracts)
 - [ ] Spec index (`docs/specs/index.md`) lists all specs
+- [ ] Agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`) match specs and code
 - [ ] File paths in docs verified against actual codebase
 - [ ] Class names and method signatures verified
 - [ ] Migration schemas match actual database
@@ -202,3 +186,4 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 | Full doc catalog             | `docs/index.md`                              |
 | Module index                 | `docs/modules/index.md`                      |
 | Feature specs                | `docs/specs/index.md`                        |
+| Agent guides & skills        | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/` |

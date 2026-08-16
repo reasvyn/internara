@@ -23,72 +23,12 @@ Use this as a cross-cutting reference when implementing any feature. It document
 conventions diverge from standard Laravel practices. Only covers the decisions that are non-standard
 or commonly misunderstood.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
-
-### 1. Construct — Knowledge, Context & Scope
-
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — confirm the FR/NFR/UC IDs the implementation
-  must satisfy (Spec-First Doctrine: no behavior without a requirement; if the spec is missing,
-  write it first via `spec-writing`)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
-  session plan
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — Apply Internara Conventions
-
-- Apply Internara conventions that differ from stock Laravel
-- Module colocation: logic in `app/{Module}/`, not `app/Models/`
-- Actions for business logic, Services for infrastructure logic
-- #[Fillable] attribute, foreignUuid(), declare(strict_types=1)
-- DTO for 3+ params input, ActionResponse for output
-- Cache keys in config/cache-keys.php, event-driven invalidation
-- Output: verified convention compliance — code follows Internara-specific Laravel patterns
-
-### 3. Verify — Quality Gates
-
-- Run change-type-appropriate verification (see AGENTS.md Verification Strategy — not a fixed
-  command set)
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
-- Run arch-guard scripts: `scan_violations.py` (C1-C8, D1-D6), `scan_class_contracts.py`
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of conventions applied
-    - Key deviations from stock Laravel noted
-    - Common pitfalls avoided
-- Feeds into: feature-building, livewire-development (cross-cutting reference during implementation)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                              |
-| -------------- | ------------------------------------------------------------------ |
-| **Upstream**   | `feature-building`, `code-refactoring`, `livewire-development`     |
-| **This skill** | **IMPLEMENTATION (Cross-cutting)** — overrides default conventions |
-| **Downstream** | All implementation skills                                          |
-
-## Skill Handoffs (Actionable)
-
-| Condition | Action |
-|-----------|--------|
-| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
-| Convention violation suspected | Run arch-guard scripts (`scan_violations.py`) or load `arch-guard` |
-| Refactoring existing code | Load `code-refactoring` |
-| Feature is **L** size | Split into sessions; inform user first |
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
+strategy, and commit format. This skill is a cross-cutting reference — it documents where Internara's
+conventions diverge from stock Laravel. Apply the conventions below during implementation.
 
 ## Key Differences from Stock Laravel
 

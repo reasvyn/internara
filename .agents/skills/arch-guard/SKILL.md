@@ -16,6 +16,10 @@ This is the **single source of truth** for all quality rules — every other ski
 
 ## When to Use
 
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model — this skill is
+the **Verify-phase quality gate**, not an SDLC phase of its own. It delegates to the canonical
+**Size Triage** for scan scoping (see below).
+
 Use this skill when performing a systematic audit of the codebase. Audits focus on pattern
 violations, code smells, security holes, and convention drift — NOT feature enhancements.
 Activates during ANALYSIS phase or as a periodic quality gate.
@@ -28,10 +32,10 @@ Activates during ANALYSIS phase or as a periodic quality gate.
 | Onboarding new code | Validate against all contracts |
 | CI/CD gate | Run automated checks in pipeline |
 
-**Size-aware:** if the audit spans multiple modules or the codebase is **L** size (AGENTS.md Size
-Triage), split the scan by module into sessions — inform the user and propose a plan first, then run
-module-scoped scans (`--module {Name}`) session by session. Never run all 6+ scripts blindly on a
-full-module set without batching.
+**Size-aware:** if the audit spans multiple modules or the codebase is **L** size (per the
+`agent-workflow` Size Triage), split the scan by module into sessions — inform the user and propose
+a plan first, then run module-scoped scans (`--module {Name}`) session by session. Never run all
+6+ scripts blindly on a full-module set without batching.
 
 ## Rule Reference Hierarchy
 

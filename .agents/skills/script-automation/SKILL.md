@@ -13,7 +13,9 @@ Standards for writing, maintaining, and integrating Python devtool scripts in `s
 
 ## Agent Workflow
 
-This is a TOOLING standards reference — not a 4-phase implementation flow. When creating or
+This is a TOOLING standards reference — not a 4-phase implementation flow. Follow the
+`agent-workflow` skill for the canonical 9-step / 4-phase model, **Size Triage** and commit
+format — this skill adds script-writing standards below — nothing else. When creating or
 modifying a script, follow the same decision discipline as other skills:
 
 - **Spec-first:** only add a scanner/script when a governing spec (or a documented automation need)
@@ -21,7 +23,8 @@ modifying a script, follow the same decision discipline as other skills:
   covers.
 - **Reuse before create:** check `scripts/README.md` and the `## Automation Scripts` tables in other
   skills before writing a new script. If the pattern is covered, use the existing tool.
-- **Size-aware:** a multi-scanner initiative is **M/L** per AGENTS.md Size Triage — stage it per
+- **Size-aware:** a multi-scanner initiative is **M/L** per the `agent-workflow` Size Triage —
+  stage it per
   script, and inform the user before committing if it crosses into **L**.
 - **Verify:** run `python3 scripts/{name}.py --module {Module} --strict` and confirm the JSON output
   schema before integrating into any skill.

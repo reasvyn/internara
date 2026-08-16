@@ -31,7 +31,9 @@ being reviewed for the first time.
 
 This skill follows **6 phases**, each corresponding to a major quality domain. Execute phases
 in order. Each phase can produce blockers — if a phase encounters a blocker that prevents
-execution, fix it before continuing (minimal intervention only).
+execution, fix it before continuing (minimal intervention only). Follow the `agent-workflow`
+skill for the canonical 9-step / 4-phase model, **Size Triage** and commit format — this skill
+adds the 6-phase QA protocol below — nothing else.
 
 ```
 PHASE 1: Automated Scanning
@@ -42,9 +44,9 @@ PHASE 1: Automated Scanning
           → PHASE 6: Report, Issues & Commit
 ```
 
-**Size-aware:** classify the audit per AGENTS.md Size Triage. A full-project QA is **L** — inform the
-user, propose a session plan (e.g., by module), and run each phase per session. Never attempt all 6
-phases on the entire codebase in a single pass.
+**Size-aware:** classify the audit per `agent-workflow` Size Triage. A full-project QA is **L** —
+inform the user, propose a session plan (e.g., by module), and run each phase per session. Never
+attempt all 6 phases on the entire codebase in a single pass.
 
 ---
 

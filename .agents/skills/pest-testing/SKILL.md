@@ -45,63 +45,29 @@ Use this skill when:
 - Filling a **spec gap** — a requirement in a spec with no corresponding test
 - Reviewing whether existing tests still match their specs
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (read the spec's FR/NFR/UC IDs first), **Size Triage** (S/M/L session splitting),
+verification strategy, and commit format. This skill adds Pest-specific guidance — spec
+traceability, test structure, mocking boundaries, and quality gates — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
-
-- Load `context-awareness` skill for project orientation
-- **Read the spec first** (`docs/specs/{ID}-{feature}.md`) — list the FR/NFR/UC IDs it defines
-- Read relevant docs: module docs, pattern docs, reference docs
-- Identify which requirements are already tested and which are gaps
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if test work spans multiple modules or is
-  **L**, inform the user and propose a session plan
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — Write Tests
+### Execute — Write Tests
 
 - Write **one test per requirement**, named with the requirement ID (see Spec Traceability)
 - Test only the scenarios the spec names: the happy path, and each rejection/validation rule the
   spec explicitly defines
-- Use LazilyRefreshDatabase, factories, assertModelExists()
+- Use `LazilyRefreshDatabase`, factories, `assertModelExists()`
 - Do not mock Eloquent — use real database
 - **Do not pad** — skip edge-case matrices, implementation internals, and framework behavior that
   no requirement mentions
-- Output: test files covering exactly the requirements in scope, each traceable to its ID
 
-### 3. Verify — Quality Gates
+### Verify — Quality Gates
 
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run targeted tests: `php artisan test --compact --filter={TestName}` (module suite for
-  module-scoped changes: `vendor/bin/pest --testsuite={ModuleName}`)
-- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
-  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
+- Targeted tests: `php artisan test --compact --filter={TestName}`; module suite:
+  `vendor/bin/pest --testsuite={ModuleName}`
 - **Do not run the full suite unless the user asks** — batch all changes, then verify once
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Spec requirements covered by new tests (with IDs)
-    - Spec gaps still open (requirements without tests)
-    - Tests removed and why (no spec mapping)
-- Feeds into: feature-building (quality gate), sync-docs (test documentation)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                                                                                                              |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Upstream**   | `feature-building` (code to test), `code-refactoring` (refactored code), `livewire-development` (components), `medialibrary-development` (uploads) |
-| **This skill** | **TESTING** — writes and verifies tests                                                                                                            |
-| **Downstream** | `feature-building` (integrated), `sync-docs` (doc updates)                                                                                         |
+- Report: requirements covered (with IDs), spec gaps still open, tests removed and why
 
 ## Test Structure
 
