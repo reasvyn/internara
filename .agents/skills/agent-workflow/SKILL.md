@@ -98,7 +98,7 @@ Every sentence must carry new information or a decision; if it does neither, dro
 - Final git review (`git status` + `git diff`); stage only intended files, never secrets
 - Commit format: `type(scope): description` — types: `feat`, `fix`, `refactor`, `docs`, `chore`,
   `test`, `perf`, `security`; scope = module name
-- Report: what changed, what was verified, caveats
+- Report: what changed, what was verified, caveats, **recommended next steps** (if any pending work, follow-ups, or L-size session plans)
 
 ## Phase Classification — Adaptive Depth
 
