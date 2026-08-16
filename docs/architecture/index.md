@@ -1,5 +1,7 @@
 # Architecture Patterns
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern catalog matches 18 architecture patterns governing the codebase
+
 Design patterns and conventions that govern the Internara codebase. See
 [`docs/architecture.md`](../architecture.md) for the high-level architecture overview.
 

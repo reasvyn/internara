@@ -1,5 +1,7 @@
 # Foundation Documents
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify foundation catalog matches 9 docs (product-definition, project-requirements, rbac, project-overview, branding, installation, post-setup, system-health, system-observability, upgrading, ui-ux, account-recovery)
+
 Product scope, security model, and design foundations.
 
 - **[Product Definition](product-definition.md)** — Core product scope, design principles, user
