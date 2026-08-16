@@ -44,6 +44,9 @@ npm-debug.log
 yarn-error.log
 .phpunit.result.cache
 
+# Volatile Files
+/scripts/outputs
+
 # Docker Sail — only keep 8.4
 /docker/8.0/
 /docker/8.1/
