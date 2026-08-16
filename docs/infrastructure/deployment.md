@@ -1,9 +1,8 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-08-15 **Changes:** CI/CD moved out of this repo — the build-and-deploy
-> pipeline now lives in a separate private repository, triggered from here via `repository_dispatch`;
-> the deploy workflow/script were removed from this repo (no production credential or mechanism is
-> exposed)
+> **Last updated:** 2026-08-16 **Changes:** feat — CI/CD moved back into this repo; direct
+> build-and-deploy workflow (`.github/workflows/build-and-deploy.yml`) replaces the private-repo
+> `repository_dispatch` pipeline; deploy script prunes build cache to bound VPS disk usage
 
 ## Description
 
@@ -459,18 +458,22 @@ curl -s https://internara.web.id | grep -c localhost                     # 0 (ap
 curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
 ```
 
-### Continuous deployment (orchestrated from a private repo)
+### Continuous deployment (direct build-and-deploy)
 
-Pushes to `docker-deploy` are auto-deployed to the production server. The build-and-deploy pipeline
-(build test + `docker compose up -d --build`) is orchestrated from a **separate private repository**
-that only the owner's GitHub account can access; this public repo contains no deploy workflow,
-script, or credential.
+Pushes to `docker-deploy` are auto-deployed to the production server by
+`.github/workflows/build-and-deploy.yml` in this repo. The workflow has two jobs:
 
-A push to `docker-deploy` here only fires a `repository_dispatch` notification
-(`.github/workflows/dispatch.yml`, using the `DEPLOY_TRIGGER_TOKEN` secret). The private deploy repo
-then runs its pipeline: it checks out `docker-deploy` and verifies the Docker build succeeds, then
-SSHs to the server and recreates the stack (`git fetch origin docker-deploy && git reset --hard
-origin/docker-deploy`, followed by `docker compose up -d --build`).
+1. **build** — verifies both Docker images (`app` + `web`) compile from the current source.
+2. **deploy** — SSHs to the VPS (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`), syncs the local
+   clone (`git fetch origin docker-deploy && git reset --hard origin/docker-deploy`), then runs
+   `.github/scripts/deploy.sh`: `docker compose up -d --build --remove-orphans`, followed by image
+   pruning and a 60s health check against `HEALTH_URL`.
+
+Build cache is pruned on every deploy (`docker builder prune --keep-storage <limit>`, default `2g`)
+so the Docker build cache stays bounded on the low-disk VPS instead of growing into the multi-GB
+range — dangling images are pruned too. Only the deploy workflow file and the credentials-free
+deploy script are committed here; production secrets live in GitHub Actions secrets, never in the
+repo.
 
 ### Low-memory profile (1 GB RAM VPS)
 

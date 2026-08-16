@@ -1,7 +1,9 @@
 # Known Issues — Intentional States & Developer Notes
 
-> **Last updated:** 2026-08-15 **Changes:** amend — fix dummy account label (`admin@example.com` is admin, not superadmin); intentional production-guard/seed constraints,
-> deploy topology, dependency pins, pre-existing scanner baselines
+> **Last updated:** 2026-08-16 **Changes:** amend — deploy topology switched back to direct
+> build-and-deploy workflow in this repo (private-repo dispatch removed); dummy account label
+> (`admin@example.com` is admin, not superadmin); intentional production-guard/seed constraints,
+> dependency pins, pre-existing scanner baselines
 
 ## Description
 
@@ -68,9 +70,9 @@ repository because the repo's spec forbids production seeding.
 
 ## Deploy Topology & Caveats
 
-- **Public repo (`internara`) push to `docker-deploy`** fires `.github/workflows/dispatch.yml` →
-  `repository_dispatch` → the **private repo `reasvyn/internara-deploy`** runs its pipeline
-  (`.github/workflows/deploy.yml`): Docker build test, then SSH deploy to the VPS.
+- **Public repo (`internara`) push to `docker-deploy`** fires `.github/workflows/build-and-deploy.yml`
+  directly: a `build` job verifies both Docker images compile, then a `deploy` job SSHs to the VPS
+  (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) and runs `.github/scripts/deploy.sh`.
 - **VPS layout:** app source at `~/apps/internara` on branch `docker-deploy`; stack is 3 containers
   (`app`, `db`=mysql:8, `web`=nginx) with `NGINX_PORT=8080`; reverse proxy is host-level
   aaPanel/BT nginx for `https://internara.web.id`.

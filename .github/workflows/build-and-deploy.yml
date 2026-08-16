@@ -1,0 +1,65 @@
+name: Build and Deploy
+
+on:
+    push:
+        branches: [docker-deploy]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: deploy-vps
+    cancel-in-progress: false
+
+jobs:
+    build:
+        name: Verify Docker images
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Build app image (verify)
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: Dockerfile
+                  push: false
+                  tags: internara-app:verify
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Build web image (verify)
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: .docker/nginx.Dockerfile
+                  push: false
+                  tags: internara-web:verify
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+    deploy:
+        name: Recreate containers on VPS
+        runs-on: ubuntu-latest
+        needs: build
+
+        steps:
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: 22
+                  script: |
+                      set -euo pipefail
+                      cd /home/andreas/apps/internara
+                      git fetch --quiet origin docker-deploy
+                      git reset --hard --quiet origin/docker-deploy
+                      bash .github/scripts/deploy.sh
