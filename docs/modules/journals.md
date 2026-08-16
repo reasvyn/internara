@@ -1,6 +1,6 @@
 # Journals — Logbooks, Attendance, Absence & Monitoring Visits
 
-> **Last updated:** 2026-07-21 **Changes:** sync — absorb MonitoringVisit from Guidance module
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Cross-Role Proxy Verification, Compliance Monitoring, One-Entry-Per-Day Enforcement, Submodules: Logbook, Attendance, AbsenceRequest, SupervisionLog, MonitoringVisit)
 
 ## Description
 
