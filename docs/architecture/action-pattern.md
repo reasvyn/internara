@@ -531,7 +531,7 @@ tests/{Module}/{SubModule}/{Name}Test.php
 
 - Use `LazilyRefreshDatabase` over `RefreshDatabase`
 - Use `assertModelExists()` over `assertDatabaseHas()`
-- Use Pest `it()` with descriptive strings
+- Use Pest `test("{SPECID}-{REQ}: ...")` with spec-traceable descriptions (or `describe('{SPECID}')` grouping)
 - Mock SmartLogger in unit tests, use real SmartLogger in feature tests
 - Do NOT test Eloquent relationships or model scopes through Actions — test them separately
 

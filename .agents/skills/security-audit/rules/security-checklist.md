@@ -16,7 +16,7 @@ Quick-reference checklist to ensure no critical attack vector is missed. Do NOT 
 - [ ] All Blade output: `{{ }}` (escaped)
 - [ ] Every `{!! !!}` has inline justification comment
 - [ ] No inline `<script>` — all via Alpine.js
-- [ ] CSP active via `SecurityHeaders` middleware
+- [ ] CSP active via `SecurityHeadersMiddleware`
 
 ## SQL Injection
 

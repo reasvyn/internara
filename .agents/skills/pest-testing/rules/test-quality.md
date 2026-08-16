@@ -13,8 +13,8 @@ Checklist to ensure tests are spec-traceable and free of noise.
 
 ## Spec Traceability
 
-- [ ] Each test description prefixes its requirement ID, e.g. `it('FR-A1: ...')`
-- [ ] Group with `describe('{spec}')` or `describe('FR-{area}')` when useful
+- [ ] Each test description prefixes its spec + requirement ID, e.g. `test('SE5Q9-FR-A4: ...')`
+- [ ] Group with `describe('{SPECID}')` when useful (spec ID once, `test('{REQ}: ...')` inside)
 - [ ] Scenarios tested are exactly the ones the spec names (happy path + named rejections)
 - [ ] No test for behavior no requirement mentions
 

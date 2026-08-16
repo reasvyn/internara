@@ -1,8 +1,7 @@
 # Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements
-> (FR/NFR/UC IDs); coverage measured in requirements, not lines; minimalism rationale (speed, resource
-> use, cognitive load)
+> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
+> replaces `it()`; `describe('{SPECID}')` alternative
 
 ## Description
 
@@ -45,10 +44,11 @@ when a requirement is removed, its test is removed.
 Every test description prefixes its requirement ID:
 
 ```php
-it('FR-A1: allows a supervisor to approve attendance', function () { ... });
+test('89SRA-FR-EH*: wraps unknown exceptions in a RuntimeException with logging', function () { ... });
 ```
 
-Use `describe('{spec}')` or `describe('FR-{area}')` to group requirements of one feature.
+Use `describe('{SPECID}')` to carry the spec ID once, then `test('{REQ}: ...')` per requirement;
+or prefix the full `{SPECID}-{REQ}:` on each `test()` when not grouping.
 
 ### 1.4 Layer-by-Layer Entry Points
 
@@ -125,17 +125,17 @@ Files use PascalCase with `Test.php` suffix.
 
 ### 4.2 Test Descriptions
 
-Use `it()` with the requirement ID prefix. The description completes the sentence: "it **FR-A1:
-allows a supervisor to approve attendance**".
+Use `test()` with the spec + requirement ID prefix: `test("{SPECID}-{REQ}: description")`. The
+description reads as a complete statement of the behavior, e.g. **89SRA-FR-EH***.
 
 ### 4.3 Grouping with `describe()`
 
-Use `describe()` to group related requirements by spec or by requirement area
-(e.g., `describe('FR-ATT')`).
+Use `describe('{SPECID}')` to carry the spec ID once, then prefix each `test()` with the
+requirement ID only (e.g., `describe('SE5Q9')` → `test('FR-A4: ...')`).
 
-### 4.4 Simple `test()` for Flat Structure
+### 4.4 Flat Structure
 
-For simple tests without grouping, use `test()`.
+For simple files without grouping, prefix the full `{SPECID}-{REQ}:` on each `test()`.
 
 ---
 

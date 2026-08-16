@@ -1,14 +1,13 @@
 # Security Headers — HTTP Response Protection
 
 > **Spec ID:** 1PGM4
-> **Last updated:** 2026-08-08 **Changes:** sync — HSTS config-gated (hsts_enabled) instead of
-> APP_ENV-based; FR-SEC11/DD-3 updated
+> **Last updated:** 2026-08-16 **Changes:** align middleware class name to `SecurityHeadersMiddleware`
 
 ## Description
 
 Defines the HTTP security headers infrastructure: Content Security Policy (CSP), HTTP Strict
 Transport Security (HSTS), X-Frame-Options, Referrer-Policy, Permissions-Policy, and the
-`SecurityHeaders` middleware that injects them. Covers production CSP policy, development-mode
+`SecurityHeadersMiddleware` middleware that injects them. Covers production CSP policy, development-mode
 relaxation for Vite, and configuration via `config/security-headers.php`.
 
 ---
@@ -62,7 +61,7 @@ man-in-the-middle attacks.
 **Actor:** DevOps / Deployer
 **Preconditions:** Application deployed to production with HTTPS
 **Flow:**
-1. `SecurityHeaders` middleware reads `config/security-headers.php`
+1. `SecurityHeadersMiddleware` middleware reads `config/security-headers.php`
 2. Applies CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy to response
 3. Browser enforces CSP policy, blocks unauthorized script sources
 **Postconditions:** All responses carry security headers
@@ -72,7 +71,7 @@ man-in-the-middle attacks.
 **Actor:** Developer
 **Preconditions:** `APP_ENV=local`, Vite dev server running
 **Flow:**
-1. `SecurityHeaders` detects local environment
+1. `SecurityHeadersMiddleware` detects local environment
 2. Injects Vite dev server URL (`http://localhost:5173`) into CSP `script-src` and `connect-src`
 3. HSTS disabled (HTTP is acceptable in development)
 **Postconditions:** Vite hot reload works, CSP is relaxed but still present
@@ -93,7 +92,7 @@ man-in-the-middle attacks.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SEC1 | `SecurityHeaders` middleware MUST set `Content-Security-Policy` header on all responses |
+| FR-SEC1 | `SecurityHeadersMiddleware` middleware MUST set `Content-Security-Policy` header on all responses |
 | FR-SEC2 | CSP MUST include `default-src 'self'` as baseline |
 | FR-SEC3 | CSP MUST include `script-src 'self'` (production) or with Vite dev URL (development) |
 | FR-SEC4 | CSP MUST include `style-src 'self' 'unsafe-inline'` (Tailwind requires inline styles) |
@@ -121,10 +120,10 @@ man-in-the-middle attacks.
 
 ## 6. API / Data Contracts
 
-### SecurityHeaders Middleware
+### SecurityHeadersMiddleware
 
 ```php
-class SecurityHeaders
+class SecurityHeadersMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
@@ -239,7 +238,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [middleware-pipeline.md](2CF4Y-middleware-pipeline.md) | `SecurityHeaders` middleware registration in the global stack |
+| [middleware-pipeline.md](2CF4Y-middleware-pipeline.md) | `SecurityHeadersMiddleware` middleware registration in the global stack |
 
 ### Build Guide
 After implementing this spec, every HTTP response has CSP, HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy headers. This spec is a leaf in the foundation chain — the headers are applied automatically by the middleware. The next step is to build the job queue infrastructure for async processing.
@@ -253,7 +252,7 @@ After implementing this spec, every HTTP response has CSP, HSTS, X-Frame-Options
 
 ## Quick References
 
-- `app/Core/Http/Middleware/SecurityHeaders.php` — Security headers middleware
+- `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security headers middleware
 - `config/security-headers.php` — Header configuration
 - `docs/specs/middleware-pipeline.md` — Middleware execution order
 - `docs/conventions.md` — Security conventions

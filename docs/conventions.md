@@ -1,6 +1,7 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-08 **Changes:** spec-driven testing — replace line-coverage mandates with spec-requirement traceability (§12.2, review checklist)
+> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
+> replaces `it()` (§4 naming table, §12.2)
 
 ## Description
 
@@ -206,11 +207,11 @@ doc rather than duplicating conventions here:
 
 ### 3.5 Content Security Policy
 
-- The `SecurityHeaders` middleware (applied globally in the `web` group) sets a strict CSP header.
+- The `SecurityHeadersMiddleware` middleware (applied globally in the `web` group) sets a strict CSP header.
 - Inline `<script>` tags are blocked by default. Use Alpine.js `x-data` / `@click` / `x-on` for
   interactivity instead of inline `onclick` handlers.
 - External resources (scripts, fonts, images) must be added to the CSP `default-src` / `script-src`
-  / `img-src` directives in `SecurityHeaders` before use.
+  / `img-src` directives in `SecurityHeadersMiddleware` before use.
 - The CSP is enforced via `Content-Security-Policy` header, not
   `Content-Security-Policy-Report-Only`. Violations break the page — test thoroughly.
 
@@ -264,7 +265,7 @@ doc rather than duplicating conventions here:
 | Config key                 | `snake_case` with `{file}.{key}`                              | `app.name`, `database.default`                                        |
 | Column / table             | `snake_case`                                                  | `user_id`, `academic_year_id`, `academic_years`                       |
 | Boolean method             | `is`/`has`/`can`/`should` prefix                              | `isActive()`, `allowsLogin()`, `canTransitionTo()`                    |
-| Test method                | Pest `it()` with descriptive string                           | `it('creates a user with valid data')`                                |
+| Test method                | Pest `test()` with `{SPECID}-{REQ}:` prefix             | `test('SE5Q9-FR-A4: step() records success')`                        |
 | Test file                  | `{Name}Test.php`                                              | `CreateUserActionTest.php`, `UserManagerTest.php`                     |
 | Factory                    | `{Name}Factory`                                               | `UserFactory`, `InternshipFactory`                                    |
 | Migration                  | `YYYY_MM_DD_HHMMSS_create_{table}_table.php`                  | `2026_04_29_092750_create_users_table.php`                            |
@@ -656,11 +657,14 @@ to read, less to maintain.
 | Test with no requirement | **Orphan noise** | Candidate for deletion |
 | Scenario beyond the spec | **Padding** | Do not write / remove |
 
-Every test description prefixes its requirement ID so traceability is visible in test output:
+Every test description prefixes its spec + requirement ID so traceability is visible in test output:
 
 ```php
-it('FR-REG1: creates a registration with valid data', function () { ... });
+test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
 ```
+
+Alternatively, `describe('{SPECID}')` can carry the spec ID once, with `test('{REQ}: ...')` per
+requirement inside it.
 
 Code coverage (`php artisan test --coverage`) is a **diagnostic only** — never a mandate for
 writing padding tests. A PR is judged on spec requirements covered, not on line-coverage

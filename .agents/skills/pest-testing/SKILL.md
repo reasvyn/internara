@@ -90,15 +90,15 @@ The spec is the source of truth. Tests are written per requirement, not per clas
 | §6 Data contract | Unit test of the DTO/Enum/Entity shape only if the spec defines it |
 | Nothing in any spec | **Do not write a test** |
 
-**Test description convention** — prefix with the requirement ID so traceability is visible in test
-output:
+**Test description convention** — prefix with the full `{SPECID}-{REQ}:` so traceability is
+visible in test output:
 
 ```php
-it('FR-REG1: creates a registration with valid data', function () { ... });
-it('FR-PL2: rejects placement when quota is full', function () { ... })->throws(RejectedException::class);
+test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
+test('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () { ... })->throws(RejectedException::class);
 ```
 
-Use `describe('{spec}')` or `describe('FR-{area}')` when grouping many requirements of one feature.
+Use `describe('{SPECID}')` to carry the spec ID once, then `test('{REQ}: ...')` per requirement.
 
 **When a spec changes, its tests change.** Requirement removed → remove its tests. Requirement
 rewritten → rewrite the test to match. A test left behind with no current requirement is orphaned
@@ -126,7 +126,7 @@ Use `--module {Name}` to run tests for a single module. Output:
 Test files must also pass arch-guard checks:
 - Test files must have `declare(strict_types=1)` (D1)
 - No debug calls in tests (D2) — use `->dd()` or `->dump()` Pest methods instead
-- Test naming follows `it_{behavior}()` convention
+- Test naming follows `test("{SPECID}-{REQ}: ...")` convention
 - See `arch-guard` skill for full rule reference
 
 ### Mocking
@@ -146,7 +146,7 @@ If you're using `shouldReceive()`, reconsider — prefer `fake()` methods.
 ### Action Test Pattern
 
 ```php
-it('FR-X1: creates a resource with valid data', function () {
+test('SE5Q9-FR-A1: a failing callback rolls back the transaction', function () {
     // Arrange
     $data = CreateResourceData::from([...]);
 
@@ -161,7 +161,7 @@ it('FR-X1: creates a resource with valid data', function () {
 ```
 
 ```php
-it('FR-X2: rejects invalid state transitions', function () {
+test('SE5Q9-FR-A1: nested transactions run without double-wrapping', function () {
     $record = Record::factory()->create(['status' => 'finalized']);
 
     app(FinalizeAction::class)->execute($record);

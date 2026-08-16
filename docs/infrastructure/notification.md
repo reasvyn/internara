@@ -1,6 +1,6 @@
 # Notification — Multi-Channel Notification System
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** update SendsNotifications contract to `NotificationData` DTO; add `NotificationData` path
 
 ## Description
 
@@ -261,13 +261,13 @@ public function __construct(
 
 public function execute(): void
 {
-    $this->notifications->execute(
+    $this->notifications->execute(new NotificationData(
         userId: $user->id,
         type: 'account_activated',
         title: 'Account Activated',
         message: 'Your account has been activated.',
         link: route('dashboard'),
-    );
+    ));
 }
 ```
 
@@ -303,7 +303,8 @@ Created (via Action/Event)
 - `app/Core/Channels/CustomDatabaseChannel.php` — custom database channel
 - `app/*/Notifications/` — notification classes organized by module
 - `app/User/Notifications/Actions/SendNotificationAction.php` — notification dispatch action
-- `app/Core/Contracts/SendsNotifications.php` — notification contract
+- `app/Core/Contracts/SendsNotifications.php` — notification contract (`execute(NotificationData $data): mixed`)
+- `app/Core/Channels/Data/NotificationData.php` — notification payload DTO
 - `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout

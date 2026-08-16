@@ -1,7 +1,7 @@
 # Logging & Error Handling — SmartLogger, PII Masking & Exception Hierarchy
 
 > **Spec ID:** 89SRA
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
+> **Last updated:** 2026-08-16 **Changes:** align middleware class name to `LogContextMiddleware` (§6.8, quick ref)
 
 ## Description
 
@@ -9,7 +9,7 @@ Complete specification of Internara's logging and error handling infrastructure.
 SmartLogger dual-channel architecture (system log + activity log), PII masking rules, bilingual
 translation resolution, the dual exception hierarchy (AppException + ModuleException), error
 handling in the Action layer via `HandlesActionErrors`, and request context injection via
-`LogContext` middleware. These subsystems ensure every mutation is auditable, every error is
+`LogContextMiddleware` middleware. These subsystems ensure every mutation is auditable, every error is
 safe to display, and debugging is possible without exposing sensitive data.
 
 ---
@@ -133,7 +133,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 **Actor:** System (automatic, via middleware)
 **Preconditions:** Any HTTP request arrives
 **Flow:**
-1. `LogContext` middleware runs, generates UUID `request_id`
+1. `LogContextMiddleware` middleware runs, generates UUID `request_id`
 2. Adds `method`, `url`, `ip`, `user_id`, `user_role` to log context
 3. After response, adds `duration_ms` and `status` code
 4. All subsequent log entries within this request include this context automatically
@@ -423,8 +423,8 @@ $exceptions->render(function (ModuleException $e, Request $request) {
 ### 6.8 LogContext Middleware
 
 ```php
-// app/Core/Http/Middleware/LogContext.php
-class LogContext
+// app/Core/Http/Middleware/LogContextMiddleware.php
+class LogContextMiddleware
 {
     public function handle(Request $request, Closure $next): Response;
     // Injects: request_id (UUID), method, url, ip, user_id, user_role
@@ -504,7 +504,7 @@ methods with no business logic.
 
 ### DD-6 — LogContext Middleware for Request Tracing
 
-**Decision:** A global `LogContext` middleware generates a UUID `request_id` and injects request
+**Decision:** A global `LogContextMiddleware` middleware generates a UUID `request_id` and injects request
 metadata into every log entry.
 **Rationale:** In a system with 18 modules, tracing a single user action across multiple log entries
 requires a correlation ID. Without request context, debugging production issues requires manual
@@ -546,7 +546,7 @@ correlation of timestamps, user IDs, and IP addresses.
 | ------ | ------ | ----------- |
 | Activity log graceful failure | Action succeeds on DB outage | SmartLogger `writeActivityLog()` try-catch |
 | System log critical | Unwritable logs propagate | No try-catch on `writeSystemLog()` |
-| Request tracing | 100% of requests have request_id | `LogContext` middleware on every request |
+| Request tracing | 100% of requests have request_id | `LogContextMiddleware` middleware on every request |
 
 ---
 
@@ -561,7 +561,7 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [event-system.md](NUCY3-event-system.md) | Event dispatch logs via `SmartLogger`, listeners handle `LogContext` |
+| 1 | [event-system.md](NUCY3-event-system.md) | Event dispatch logs via `SmartLogger`, listeners handle `LogContextMiddleware` |
 
 ## Quick References
 
@@ -575,7 +575,7 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 - `app/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait (hint, context, CLI)
 - `app/Core/Actions/BaseAction.php` — `log()`, `fail()`, `dispatchEvent()` methods
 - `app/Core/Actions/Concerns/HandlesActionErrors.php` — Action error wrapping trait
-- `app/Core/Http/Middleware/LogContext.php` — request context injection middleware
+- `app/Core/Http/Middleware/LogContextMiddleware.php` — request context injection middleware
 - `bootstrap/app.php` — exception rendering configuration
 - `docs/architecture/exception-pattern.md` — dual hierarchy rationale and patterns
 - `docs/architecture/logging-pattern.md` — SmartLogger architecture, PII masking, translation

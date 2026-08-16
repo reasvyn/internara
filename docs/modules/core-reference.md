@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** feat — add ModuleManager/ModuleService
-> (replaces ModuleDiscoverService), renumber specs #11-#54, migration to config gateway
+> **Last updated:** 2026-08-16 **Changes:** middleware renamed to `SecurityHeadersMiddleware`/`LogContextMiddleware`;
+> add Channels section (`CustomDatabaseChannel` + `NotificationData`); SendsNotifications contract
 
 ## Description
 
@@ -29,7 +29,7 @@ depends on.
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 3 (`RejectedException`, `UnauthorizedException`,
   `ValidationFailedException`)
-- **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
+- **Middleware**: 2 (`SecurityHeadersMiddleware`, `LogContextMiddleware`)
 - **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
   `PiiMasker`, `Spotlight`, `helpers.php`)
 - **Action Traits**: 1 (`HandlesActionErrors`)
@@ -42,7 +42,7 @@ depends on.
   `BaseFormView`, `BaseWizard`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
-- **Channels**: 1 (`CustomDatabaseChannel`)
+- **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
 - **Console Commands**: 1 (`module:discover`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
@@ -129,6 +129,17 @@ Located in `app/Core/Enums/`. All implement `LabelEnum`:
 
 ---
 
+## Channels
+
+Located in `app/Core/Channels/`:
+
+| File                            | Class                  | Purpose                                                    |
+| ------------------------------- | ---------------------- | ---------------------------------------------------------- |
+| `Channels/CustomDatabaseChannel.php` | `CustomDatabaseChannel` | Sends `Notification` instances to the database via `SendsNotifications` |
+| `Channels/Data/NotificationData.php` | `NotificationData`     | DTO carrying `userId`, `type`, `title`, optional `message`/`data`/`link` (extends `BaseData`) |
+
+---
+
 ## Exception Hierarchy
 
 Full hierarchy in `app/Core/Exceptions/`. All use `HasExceptionContext` trait (hint, context, CLI
@@ -150,10 +161,10 @@ ModuleException (abstract, extends RuntimeException)
 
 ## Middleware
 
-| Middleware        | Path                                  | Purpose                                                   |
-| ----------------- | ------------------------------------- | --------------------------------------------------------- |
-| `SecurityHeaders` | `Http/Middleware/SecurityHeaders.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy |
-| `LogContext`      | `Http/Middleware/LogContext.php`      | Request tracing: request_id, method, URL, IP, user_id     |
+| Middleware             | Path                                      | Purpose                                                   |
+| ---------------------- | ----------------------------------------- | --------------------------------------------------------- |
+| `SecurityHeadersMiddleware` | `Http/Middleware/SecurityHeadersMiddleware.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy |
+| `LogContextMiddleware` | `Http/Middleware/LogContextMiddleware.php` | Request tracing: request_id, method, URL, IP, user_id     |
 
 ---
 

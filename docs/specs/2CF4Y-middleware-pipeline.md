@@ -1,9 +1,8 @@
 # Middleware Pipeline — HTTP Request Processing Chain
 
 > **Spec ID:** 2CF4Y
-> **Last updated:** 2026-08-10 **Changes:** align — centralize auth rate limits as canonical values
-> (login/forgot/reset/recovery/confirm); clarify enforcement points (AuthThrottleMiddleware config-driven
-> for login, inline RateLimiter for others); correct global limiter 120→30/min per IP per project-requirements §7
+> **Last updated:** 2026-08-16 **Changes:** align middleware class names to `LogContextMiddleware`/
+> `SecurityHeadersMiddleware`; fix quick-reference paths
 
 ## Description
 
@@ -95,9 +94,9 @@ limiter to apply to which route group.
 | ID     | Requirement |
 | ------ | ----------- |
 | FR-MW1 | Core middleware MUST apply to all HTTP requests globally |
-| FR-MW2 | `LogContext` MUST attach `request_id` (UUID), `user_id`, `user_role`, `duration_ms` to log context |
-| FR-MW3 | `SecurityHeaders` MUST set CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy headers |
-| FR-MW4 | `SecurityHeaders` MUST inject Vite dev URL into CSP when `APP_ENV=local` |
+| FR-MW2 | `LogContextMiddleware` MUST attach `request_id` (UUID), `user_id`, `user_role`, `duration_ms` to log context |
+| FR-MW3 | `SecurityHeadersMiddleware` MUST set CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy headers |
+| FR-MW4 | `SecurityHeadersMiddleware` MUST inject Vite dev URL into CSP when `APP_ENV=local` |
 | FR-MW5 | `AuthThrottleMiddleware` MUST enforce login rate limiting per config keys `auth.throttle.login_max_attempts` (5) / `login_decay_seconds` (60) — 5 attempts/60s per IP (see `authentication.md` FR-LT1) |
 | FR-MW6 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
 | FR-MW7 | `SetLocaleMiddleware` MUST set locale from user preference or session |
@@ -115,7 +114,7 @@ limiter to apply to which route group.
 | NFR-MW1 | Middleware execution overhead MUST be < 2ms per layer |
 | NFR-MW2 | Security headers MUST NOT break Vite hot module replacement in development |
 | NFR-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
-| NFR-MW4 | `LogContext` MUST NOT fail the request if logging infrastructure is down |
+| NFR-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
 
 ---
 
@@ -125,8 +124,8 @@ limiter to apply to which route group.
 
 ```
 Request
-  → LogContext (attach request context)
-  → SecurityHeaders (set security headers)
+  → LogContextMiddleware (attach request context)
+  → SecurityHeadersMiddleware (set security headers)
   → ValidateCsrfToken (Laravel built-in)
   → Authenticate (Laravel built-in)
   → CheckRoleMiddleware (if route requires role)
@@ -170,7 +169,7 @@ Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->
 > Implementations MUST use these values; never ad-hoc numbers. Note `global` is per-IP at
 > 30/min per project-requirements §7 (an update from the code's current 120/min — see `git log`).
 
-### LogContext Payload
+### LogContextMiddleware Payload
 
 ```php
 [
@@ -190,7 +189,7 @@ Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->
 
 ### DD-1 — LogContext as First Middleware
 
-**Decision:** `LogContext` is the first middleware in the pipeline.
+**Decision:** `LogContextMiddleware` is the first middleware in the pipeline.
 
 **Rationale:** Every subsequent middleware and the route handler can rely on request context
 being available. Placing it later would mean some operations lack traceability.
@@ -200,7 +199,7 @@ benefit.
 
 ### DD-2 — Security Headers Before Route Handling
 
-**Decision:** `SecurityHeaders` runs before the route handler, not as a response middleware.
+**Decision:** `SecurityHeadersMiddleware` runs before the route handler, not as a response middleware.
 
 **Rationale:** Headers must be set before any response content is generated. Running as
 response middleware risks headers being omitted on early returns or exceptions.
@@ -238,7 +237,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) | `SecurityHeaders`, `LogContext`, `RequireSetupAccessMiddleware`, `SetLocaleMiddleware` base implementations |
+| [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) | `SecurityHeadersMiddleware`, `LogContextMiddleware`, `RequireSetupAccessMiddleware`, `SetLocaleMiddleware` base implementations |
 | [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) | `CheckRoleMiddleware` for route-level role enforcement |
 
 ### Build Guide
@@ -247,14 +246,14 @@ After implementing this spec, the system has a complete middleware stack: securi
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [security-headers.md](1PGM4-security-headers.md) | `SecurityHeaders` middleware from this spec applies CSP, HSTS, X-Frame-Options defined in that spec |
+| 1 | [security-headers.md](1PGM4-security-headers.md) | `SecurityHeadersMiddleware` middleware from this spec applies CSP, HSTS, X-Frame-Options defined in that spec |
 
 ---
 
 ## Quick References
 
-- `app/Core/Http/Middleware/LogContext.php` — Request context enrichment
-- `app/Core/Http/Middleware/SecurityHeaders.php` — Security header injection
+- `app/Core/Http/Middleware/LogContextMiddleware.php` — Request context enrichment
+- `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security header injection
 - `app/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — Login rate limiting
 - `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Role-based access
 - `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Locale switching

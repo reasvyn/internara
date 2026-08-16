@@ -237,7 +237,7 @@ Rules are checked in this priority order:
 | Model entity | `entity(): {Entity}Entity` | `entity(): StudentEntity` |
 | LabelEnum label | `label(): string` | `label(): string` |
 | StatusEnum transitions | `validTransitions(): array` | `validTransitions(): array` |
-| Test methods | `it_{behavior}()` or `test_{behavior}()` | `it_rejects_invalid_email()` |
+| Test methods | `test("{SPECID}-{REQ}: ...")` | `test('SE5Q9-FR-A4: step() records success')` |
 
 ### Variable/Property Naming
 
