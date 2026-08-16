@@ -53,6 +53,28 @@ model that all subsequent skills depend on.
 - Verify paths, class names, signatures against actual code — never trust docs blindly; on
   code/doc mismatch, check git history before deciding which side is correct
 
+### 1.5 Agent Memory — Maintain `.agents/contexts/`
+
+`.agents/contexts/` is the **AI Agent memory**: a living record of evolving project knowledge that
+agents write to so no context is lost between sessions. It is both **read** (orientation) and
+**written** (maintenance). Treat it like a shared, append-only project memory — never let a discovery
+die in a conversation.
+
+- **Update on inconsistency:** whenever you detect that a context file no longer matches reality
+  (code, spec, docs, config, or environment changed), update that context file **directly in the
+  same run** — fix the stale fact, bump its `**Changes:**` metadata. Do not just note it to the user
+  or leave it for a later pass.
+- **Create when critical:** if you learn something **highly important** for future agents that is not
+  yet recorded — a non-obvious constraint, a working workaround, an environment quirk, a deliberate
+  decision — create a new context file `.agents/contexts/{context}-{issue-name}.md` (flat,
+  kebab-case) and register it in `.agents/contexts/index.md`. Rules of thumb:
+  - Would a future agent make a costly wrong assumption without this knowledge? → **record it**
+  - Does the fact change often or is it trivial/obvious? → **do not record it**
+- **Keep it self-contained and deduplicated:** each file stands alone (paths, commands, rationale
+  included); never duplicate a fact already recorded elsewhere — update the existing file instead.
+- **House style:** metadata line (`> **Last updated:**` + `**Changes:**`), `## Description`, plain
+  language, an `## AI Agent Guides` decision table where helpful.
+
 ### 2. Execute — Build Mental Model
 
 - Read `docs/architecture.md`, `docs/conventions.md`, `docs/modules/index.md`
