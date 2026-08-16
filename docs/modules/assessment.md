@@ -1,6 +1,6 @@
 # Assessment — Rubrics, Evaluation & Grading
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (JSON Rubric Structure, Assessment Finalization, Cross-Role Proxy, Submodules: Rubric & Assessment Record)
 
 ## Description
 

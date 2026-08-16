@@ -1,7 +1,6 @@
 # Settings — Config, Branding & Feature Flags
 
-> **Last updated:** 2026-07-21 **Changes:** sync — update cache strategy to reflect
-> SettingObserver-based invalidation
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Resolution Chain, Brand Resolution, Cache Strategy, Superadmin-Only Mutations, Submodules: SettingStore, Branding, Locale, Theme)
 
 ## Description
 

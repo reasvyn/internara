@@ -1,6 +1,6 @@
 # User — Profiles, Notifications & Dashboards
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct soft-delete and unique-email claims
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Account-Profile Separation, Username Generation, Super Admin Role Mapping, Submodules: AccountStatus, Profile, Notification, Dashboard)
 
 ## Description
 
