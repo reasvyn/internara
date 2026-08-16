@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
+use App\Auth\Password\Data\ResetPasswordData;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Data\ActionResponse;
 use App\Core\Exceptions\RejectedException;
@@ -16,19 +17,15 @@ use Illuminate\Support\Str;
 
 final class ResetPasswordAction extends BaseCommandAction
 {
-    public function execute(
-        string $email,
-        string $token,
-        string $password,
-        string $passwordConfirmation,
-    ): ActionResponse {
-        $throttleKey = 'reset-password:' . Str::lower($email) . '|' . request()->ip();
+    public function execute(ResetPasswordData $data): ActionResponse
+    {
+        $throttleKey = 'reset-password:'.Str::lower($data->email).'|'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
 
             $this->log('password_reset_throttled', null, [
-                'email' => $email,
+                'email' => $data->email,
                 'seconds' => $seconds,
             ]);
 
@@ -37,11 +34,11 @@ final class ResetPasswordAction extends BaseCommandAction
 
         RateLimiter::hit($throttleKey, 300);
 
-        if ($password !== $passwordConfirmation) {
+        if ($data->password !== $data->passwordConfirmation) {
             SmartLogger::info('password_reset_confirmation_mismatch')
                 ->event('password_reset_confirmation_mismatch')
                 ->module('Auth')
-                ->withPayload(['email' => $email])
+                ->withPayload(['email' => $data->email])
                 ->withPiiMasking()
                 ->activityOnly()
                 ->save();
@@ -50,10 +47,10 @@ final class ResetPasswordAction extends BaseCommandAction
         }
 
         $credentials = [
-            'email' => $email,
-            'token' => $token,
-            'password' => $password,
-            'password_confirmation' => $passwordConfirmation,
+            'email' => $data->email,
+            'token' => $data->token,
+            'password' => $data->password,
+            'password_confirmation' => $data->passwordConfirmation,
         ];
 
         $status = Password::reset($credentials, function (User $user, string $password) {

@@ -94,7 +94,7 @@ class SetupWizard extends BaseWizard
 
     protected function initDefaults(): void
     {
-        $this->superAdminForm->name = config('setup.defaults.admin_name', 'Administrator');
+        $this->superAdminForm->name = config('setup.defaults.admin_name', 'Super Admin');
         $this->superAdminForm->username = config('setup.defaults.admin_username', 'superadmin');
     }
 

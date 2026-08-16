@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace App\Core\Contracts;
 
+use App\Core\Channels\Data\NotificationData;
+
 interface SendsNotifications
 {
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): mixed;
+    public function execute(NotificationData $data): mixed;
 }

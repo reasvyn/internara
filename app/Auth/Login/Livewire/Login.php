@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Login\Livewire;
 
 use App\Auth\Login\Actions\LoginAction;
+use App\Auth\Login\Data\LoginData;
 use App\Auth\Login\Livewire\Forms\LoginForm;
 use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
@@ -32,11 +33,11 @@ class Login extends Component
         }
 
         try {
-            $user = $loginAction->execute(
+            $user = $loginAction->execute(new LoginData(
                 identifier: $this->form->identifier,
                 password: $this->form->password,
                 remember: $this->form->remember,
-            );
+            ));
 
             RateLimiter::clear($throttleKey);
 

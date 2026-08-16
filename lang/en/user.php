@@ -6,6 +6,7 @@ return [
     'manager' => [
         'title' => 'User Manager',
         'subtitle' => 'Manage all system users',
+        'not_found' => 'User not found.',
         'name' => 'Name',
         'email' => 'Account Info',
         'roles' => 'Roles',
@@ -36,6 +37,7 @@ return [
         'status_invalid' => 'Invalid status selected.',
         'status_updated_reason' => 'Status updated by administrator.',
         'status_archived_bulk' => 'Account archived via bulk operation.',
+        'status_locked_bulk' => 'Account locked via bulk operation.',
         'account' => 'Account',
         'name_placeholder' => 'e.g. John Doe',
         'email_placeholder' => 'e.g. john@example.com',
@@ -56,6 +58,8 @@ return [
         'protected' => 'Protected',
         'cannot_delete_super_admin' => 'Cannot delete super administrator account.',
         'cannot_edit_super_admin' => 'Cannot edit super administrator account.',
+        'cannot_change_own_status' => 'Cannot change your own status.',
+        'cannot_change_super_admin_status' => 'Cannot change super admin account status.',
         'profile' => 'Profile Information',
     ],
     'fields' => [

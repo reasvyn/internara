@@ -8,6 +8,7 @@ use App\Auth\Permissions\Enums\Role;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\SetUserStatusAction;
+use App\User\UserManagement\Data\SetUserStatusData;
 use Illuminate\Console\Command;
 
 class AutoInactivateAccounts extends Command
@@ -68,12 +69,12 @@ class AutoInactivateAccounts extends Command
         $bar->start();
 
         foreach ($users as $user) {
-            $this->setStatus->execute(
-                $user,
-                AccountStatus::INACTIVE,
-                __('user.user_management.auto_inactivate.reason'),
+            $this->setStatus->execute(new SetUserStatusData(
+                userId: $user->id,
+                newStatus: AccountStatus::INACTIVE,
+                reason: __('user.user_management.auto_inactivate.reason'),
                 skipAuthCheck: true,
-            );
+            ));
 
             $bar->advance();
         }

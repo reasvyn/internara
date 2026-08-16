@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\User\Notifications\Data;
+namespace App\Core\Channels\Data;
 
 use App\Core\Data\BaseData;
 

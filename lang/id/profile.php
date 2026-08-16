@@ -15,6 +15,8 @@ return [
     'avatar_removed' => 'Avatar berhasil dihapus.',
     'avatar_remove_confirm' => 'Apakah Anda yakin ingin menghapus foto profil?',
     'avatar_upload_failed' => 'Gagal mengunggah avatar. Silakan coba lagi.',
+    'cannot_change_super_admin_name' => 'Tidak dapat mengubah nama super administrator.',
+    'cannot_change_super_admin_username' => 'Tidak dapat mengubah username super administrator.',
 
     'name_placeholder' => 'Nama lengkap Anda',
     'email_placeholder' => 'email@example.com',

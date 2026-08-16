@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\ColorableEnum;
 use App\Core\Contracts\LabelEnum;
 use App\Core\Contracts\SendsNotifications;
@@ -76,12 +77,14 @@ test('SE5Q9-FR-C3: ColorableEnum requires a color() string for badges', function
     expect(TestColorableEnum::Success->color())->toBeString();
 });
 
-test('SE5Q9-FR-C4: SendsNotifications contract declares execute(userId, type, title, ...)', function () {
+test('SE5Q9-FR-C4: SendsNotifications contract declares execute(NotificationData)', function () {
     $method = (new ReflectionMethod(SendsNotifications::class, 'execute'));
-    $names = array_map(fn (ReflectionParameter $p) => $p->getName(), $method->getParameters());
+    $params = $method->getParameters();
 
     expect($method->isPublic())->toBeTrue();
-    expect($names)->toBe(['userId', 'type', 'title', 'message', 'data', 'link']);
+    expect($params)->toHaveCount(1);
+    expect($params[0]->getName())->toBe('data');
+    expect((string) $params[0]->getType())->toBe(NotificationData::class);
     expect($method->getReturnType())->not->toBeNull();
 });
 

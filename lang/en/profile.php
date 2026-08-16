@@ -15,6 +15,8 @@ return [
     'avatar_removed' => 'Avatar removed successfully.',
     'avatar_remove_confirm' => 'Are you sure you want to remove your profile picture?',
     'avatar_upload_failed' => 'Avatar upload failed. Please try again.',
+    'cannot_change_super_admin_name' => 'Cannot change super admin name.',
+    'cannot_change_super_admin_username' => 'Cannot change super admin username.',
 
     'name_placeholder' => 'Your full name',
     'email_placeholder' => 'email@example.com',

@@ -27,7 +27,7 @@ final class SetupSuperAdminAction extends BaseCommandAction
 
         return $this->transaction(function () use ($email, $password) {
             $username = config('setup.defaults.admin_username', 'superadmin');
-            $adminName = config('setup.defaults.admin_name', 'Administrator');
+            $adminName = config('setup.defaults.admin_name', 'Super Admin');
 
             $existing = User::where('username', $username)->first();
 

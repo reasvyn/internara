@@ -7,71 +7,67 @@ namespace App\User\Profile\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
+use App\User\Profile\Data\UpdateProfileData;
 use App\User\Profile\Events\ProfileUpdated;
 use App\User\Profile\Models\Profile;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 
 final class UpdateProfileAction extends BaseCommandAction
 {
-    public function execute(
-        User $user,
-        array $data,
-        ?string $name = null,
-        ?string $email = null,
-        ?UploadedFile $avatar = null,
-        ?string $username = null,
-    ): Profile {
+    public function execute(UpdateProfileData $data): Profile
+    {
+        $user = User::findOrFail($data->userId);
+
         $integrity = $user->asSuperAdminIntegrityRules();
 
-        if ($name !== null && !$integrity->canChangeName()) {
-            throw new RejectedException('Cannot change super admin name.');
+        if ($data->name !== null && ! $integrity->canChangeName()) {
+            throw new RejectedException(__('profile.cannot_change_super_admin_name'));
         }
 
-        if ($username !== null && !$integrity->canChangeUsername()) {
-            throw new RejectedException('Cannot change super admin username.');
+        if ($data->username !== null && ! $integrity->canChangeUsername()) {
+            throw new RejectedException(__('profile.cannot_change_super_admin_username'));
         }
 
         $userRules = [];
         $userData = [];
-        if ($name !== null) {
+        if ($data->name !== null) {
             $userRules['name'] = ['required', 'string', 'max:255'];
-            $userData['name'] = $name;
+            $userData['name'] = $data->name;
         }
-        if ($email !== null) {
-            $userRules['email'] = ['required', 'email', 'unique:users,email,' . $user->id];
-            $userData['email'] = $email;
+        if ($data->email !== null) {
+            $userRules['email'] = ['required', 'email', 'unique:users,email,'.$user->id];
+            $userData['email'] = $data->email;
         }
-        if ($username !== null) {
+        if ($data->username !== null) {
             $userRules['username'] = [
                 'required',
                 'string',
                 'alpha_num',
                 'lowercase',
                 'max:50',
-                'unique:users,username,' . $user->id,
+                'unique:users,username,'.$user->id,
             ];
-            $userData['username'] = $username;
+            $userData['username'] = $data->username;
         }
 
         if ($userRules !== []) {
             Validator::make($userData, $userRules)->validate();
         }
 
-        $this->validateProfileData($data);
+        $this->validateProfileData($data->profile);
 
-        $data = array_filter($data, fn($v) => $v !== null);
+        $profileData = array_filter($data->profile, fn ($v) => $v !== null);
 
-        return $this->transaction(function () use ($user, $data, $userData, $avatar) {
+        return $this->transaction(function () use ($user, $profileData, $userData, $data) {
             if ($userData !== []) {
                 $user->update($userData);
             }
 
-            if ($avatar !== null) {
-                $user->addMedia($avatar)->toMediaCollection('avatar');
+            if ($data->avatar !== null) {
+                $user->addMedia($data->avatar)->toMediaCollection('avatar');
             }
 
-            $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
+            $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
 
             $this->dispatchEvent(
                 new ProfileUpdated(
@@ -81,7 +77,7 @@ final class UpdateProfileAction extends BaseCommandAction
                 ),
             );
 
-            $this->log('profile_updated', $profile, array_keys($data));
+            $this->log('profile_updated', $profile, array_keys($profileData));
 
             return $profile;
         });

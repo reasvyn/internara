@@ -12,6 +12,8 @@ use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
+use App\User\UserManagement\Data\CreateUserData;
+use App\User\UserManagement\Data\UpdateUserData;
 use App\User\UserManagement\Livewire\Forms\AdminUserForm;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -120,18 +122,21 @@ class AdminManager extends BaseRecordManager
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
             $this->authorize('update', $user);
-            $updateAction->execute($user, [
-                'name' => $this->form->name,
-                'email' => $this->form->email,
-            ]);
+            $updateAction->execute(new UpdateUserData(
+                userId: $user->id,
+                user: [
+                    'name' => $this->form->name,
+                    'email' => $this->form->email,
+                ],
+            ));
             flash()->success(__('user.admin.success_updated'));
         } else {
             $this->authorize('create', User::class);
-            $createAction->execute(
-                ['name' => $this->form->name, 'email' => $this->form->email],
-                [],
-                $this->form->roles,
-            );
+            $createAction->execute(new CreateUserData(
+                user: ['name' => $this->form->name, 'email' => $this->form->email],
+                profile: [],
+                roles: $this->form->roles,
+            ));
             flash()->success(__('user.admin.success_created'));
         }
 

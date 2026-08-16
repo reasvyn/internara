@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Account\Livewire;
 
 use App\Auth\Account\Actions\ActivateAccountAction;
+use App\Auth\Account\Data\ActivateAccountData;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
@@ -42,7 +43,7 @@ class ActivateAccount extends Component
 
         $user = User::where('email', $this->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('email', __('auth.activate.invalid_email'));
 
@@ -50,7 +51,11 @@ class ActivateAccount extends Component
         }
 
         try {
-            $action->execute($user, $this->code, $this->password);
+            $action->execute(new ActivateAccountData(
+                userId: $user->id,
+                code: $this->code,
+                password: $this->password,
+            ));
         } catch (RejectedException $e) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('code', $e->getMessage());
@@ -69,7 +74,7 @@ class ActivateAccount extends Component
 
     protected function throttleKey(): string
     {
-        return Str::transliterate('activate|' . $this->email . '|' . request()->ip());
+        return Str::transliterate('activate|'.$this->email.'|'.request()->ip());
     }
 
     #[Layout('auth::layouts.auth', ['title' => 'Activate Account'])]

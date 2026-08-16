@@ -9,6 +9,7 @@ use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Rules\ReservedAuthoritativeName;
 use App\User\Rules\SystemUsername;
+use App\User\UserManagement\Data\UpdateUserData;
 use App\User\UserManagement\Events\UserUpdated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -23,31 +24,28 @@ final class UpdateUserAction extends BaseCommandAction
     /**
      * Update an existing user.
      *
-     * @param array<string, mixed> $userData
-     * @param array<string, mixed>|null $profileData
-     * @param list<string>|null $roles
-     *
      * @throws RuntimeException when update fails
      */
-    public function execute(
-        User $user,
-        array $userData,
-        ?array $profileData = null,
-        ?array $roles = null,
-    ): User {
+    public function execute(UpdateUserData $data): User
+    {
+        $user = User::findOrFail($data->userId);
+        $userData = $data->user;
+
         $integrity = $user->asSuperAdminIntegrityRules();
 
         if (isset($userData['name']) && ! $integrity->canChangeName()) {
-            throw new RejectedException('Cannot change super admin name.');
+            throw new RejectedException(__('profile.cannot_change_super_admin_name'));
         }
 
         if (isset($userData['username']) && ! $integrity->canChangeUsername()) {
-            throw new RejectedException('Cannot change super admin username.');
+            throw new RejectedException(__('profile.cannot_change_super_admin_username'));
         }
 
         $this->validateUserData($userData, $user);
 
-        return $this->transaction(function () use ($user, $userData, $profileData, $roles) {
+        return $this->transaction(function () use ($user, $data) {
+            $userData = $data->user;
+
             $updateData = array_filter(
                 [
                     'name' => $userData['name'] ?? null,
@@ -71,17 +69,17 @@ final class UpdateUserAction extends BaseCommandAction
                 $user->update($updateData);
             }
 
-            if ($profileData !== null && $profileData !== []) {
-                $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
+            if ($data->profile !== null && $data->profile !== []) {
+                $user->profile()->updateOrCreate(['user_id' => $user->id], $data->profile);
             }
 
-            if ($roles !== null) {
-                $user->syncRoles($roles);
+            if ($data->roles !== null) {
+                $user->syncRoles($data->roles);
             }
 
             $this->log('user_updated', $user, [
                 'email' => $user->email,
-                'roles' => $roles,
+                'roles' => $data->roles,
             ]);
 
             event(new UserUpdated($user));

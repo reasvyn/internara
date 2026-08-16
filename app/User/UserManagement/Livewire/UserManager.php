@@ -18,6 +18,9 @@ use App\User\UserManagement\Actions\ReadUserManagerStatsAction;
 use App\User\UserManagement\Actions\RevokeUserActivationTokensAction;
 use App\User\UserManagement\Actions\SetUserStatusAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
+use App\User\UserManagement\Data\CreateUserData;
+use App\User\UserManagement\Data\SetUserStatusData;
+use App\User\UserManagement\Data\UpdateUserData;
 use App\User\UserManagement\Livewire\Concerns\DownloadsAccountSlips;
 use App\User\UserManagement\Livewire\Forms\UserForm;
 use Illuminate\Contracts\View\View;
@@ -179,10 +182,10 @@ class UserManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute(
-                $user,
-                ['name' => $this->form->name, 'email' => $this->form->email],
-                [
+            $updateAction->execute(new UpdateUserData(
+                userId: $user->id,
+                user: ['name' => $this->form->name, 'email' => $this->form->email],
+                profile: [
                     'phone' => $this->form->phone ?: null,
                     'address' => $this->form->address ?: null,
                     'bio' => $this->form->bio ?: null,
@@ -193,15 +196,15 @@ class UserManager extends BaseRecordManager
                     'emergency_contact_phone' => $this->form->emergency_contact_phone ?: null,
                     'emergency_contact_address' => $this->form->emergency_contact_address ?: null,
                 ],
-                $this->form->roles,
-            );
+                roles: $this->form->roles,
+            ));
             flash()->success(__('user.manager.success_updated'));
         } else {
-            $user = $createAction->execute(
-                ['name' => $this->form->name, 'email' => $this->form->email],
-                [],
-                $this->form->roles,
-            );
+            $user = $createAction->execute(new CreateUserData(
+                user: ['name' => $this->form->name, 'email' => $this->form->email],
+                profile: [],
+                roles: $this->form->roles,
+            ));
             $this->userModal = false;
             $this->redirect(route('admin.users.account-slip', $user));
 
@@ -277,7 +280,11 @@ class UserManager extends BaseRecordManager
             $setStatus,
         ): void {
             $user = User::findOrFail($id);
-            $setStatus->execute($user, AccountStatus::SUSPENDED, 'Batch lock by administrator');
+            $setStatus->execute(new SetUserStatusData(
+                userId: $user->id,
+                newStatus: AccountStatus::SUSPENDED,
+                reason: __('user.manager.status_locked_bulk'),
+            ));
         });
     }
 
@@ -287,7 +294,10 @@ class UserManager extends BaseRecordManager
             $setStatus,
         ): void {
             $user = User::findOrFail($id);
-            $setStatus->execute($user, AccountStatus::ACTIVATED);
+            $setStatus->execute(new SetUserStatusData(
+                userId: $user->id,
+                newStatus: AccountStatus::ACTIVATED,
+            ));
         });
     }
 
@@ -318,7 +328,11 @@ class UserManager extends BaseRecordManager
         $user = User::findOrFail($this->statusTarget);
 
         try {
-            $setStatus->execute($user, $status, $this->statusReason ?: null);
+            $setStatus->execute(new SetUserStatusData(
+                userId: $user->id,
+                newStatus: $status,
+                reason: $this->statusReason ?: null,
+            ));
             flash()->success(__('user.manager.status_changed'));
         } catch (RejectedException $e) {
             flash()->error($e->getMessage());
@@ -358,16 +372,16 @@ class UserManager extends BaseRecordManager
                 return CsvRowResult::SKIPPED;
             }
 
-            $create->execute(
-                [
+            $create->execute(new CreateUserData(
+                user: [
                     'name' => $name,
                     'email' => trim($row[1] ?? ''),
                 ],
-                [
+                profile: [
                     'phone' => trim($row[2] ?? '') ?: null,
                 ],
-                [],
-            );
+                roles: [],
+            ));
 
             return CsvRowResult::CREATED;
         });

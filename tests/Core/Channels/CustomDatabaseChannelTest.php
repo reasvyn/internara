@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Core\Channels\CustomDatabaseChannel;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -12,15 +13,16 @@ final class CustomDatabaseChannelTestSendsNotifications implements SendsNotifica
 {
     public array $calls = [];
 
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): mixed {
-        $this->calls[] = compact('userId', 'type', 'title', 'message', 'data', 'link');
+    public function execute(NotificationData $data): mixed
+    {
+        $this->calls[] = [
+            'userId' => $data->userId,
+            'type' => $data->type,
+            'title' => $data->title,
+            'message' => $data->message,
+            'data' => $data->data,
+            'link' => $data->link,
+        ];
 
         return null;
     }

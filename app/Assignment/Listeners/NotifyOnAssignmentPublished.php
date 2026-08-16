@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Assignment\Listeners;
 
 use App\Assignment\Events\AssignmentPublished;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -18,12 +19,12 @@ final class NotifyOnAssignmentPublished implements ShouldQueue
     {
         $assignment = $event->assignment;
 
-        $this->sendNotification->execute(
+        $this->sendNotification->execute(new NotificationData(
             userId: $assignment->created_by,
             type: 'assignment_published',
             title: __('notifications.assignment_published.title'),
             message: __('notifications.assignment_published.message', ['name' => $assignment->title]),
             link: route('assignment.show', $assignment),
-        );
+        ));
     }
 }

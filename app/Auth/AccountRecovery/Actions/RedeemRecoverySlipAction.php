@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\AccountRecovery\Actions;
 
 use App\Auth\AccessTokens\Models\AccessToken;
+use App\Auth\AccountRecovery\Data\RedeemRecoverySlipData;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -12,10 +13,10 @@ use Illuminate\Support\Facades\Hash;
 
 final class RedeemRecoverySlipAction extends BaseCommandAction
 {
-    public function execute(string $username, string $code, string $newPassword): User
+    public function execute(RedeemRecoverySlipData $data): User
     {
-        return $this->transaction(function () use ($username, $code, $newPassword) {
-            $user = User::where('username', $username)->first();
+        return $this->transaction(function () use ($data) {
+            $user = User::where('username', $data->username)->first();
 
             if (! $user) {
                 throw new RejectedException(__('auth.failed'));
@@ -32,7 +33,7 @@ final class RedeemRecoverySlipAction extends BaseCommandAction
 
             $matchedCode = null;
             foreach ($recoveryCodes as $rc) {
-                if (Hash::check(strtoupper($code), $rc->token)) {
+                if (Hash::check(strtoupper($data->code), $rc->token)) {
                     $matchedCode = $rc;
                     break;
                 }
@@ -44,7 +45,7 @@ final class RedeemRecoverySlipAction extends BaseCommandAction
                 throw new RejectedException(__('passwords.token'));
             }
 
-            $user->update(['password' => Hash::make($newPassword)]);
+            $user->update(['password' => Hash::make($data->newPassword)]);
             $matchedCode->update(['last_used_at' => now()]);
 
             $this->log('recovery_slip_redeemed', $user);

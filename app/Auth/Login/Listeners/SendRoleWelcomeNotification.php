@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Login\Listeners;
 
 use App\Auth\Login\Events\LoginSucceeded;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 
 class SendRoleWelcomeNotification
@@ -28,20 +29,20 @@ class SendRoleWelcomeNotification
         }
 
         $role = collect(array_keys($this->roleWelcomeMap))->first(
-            fn($role) => $user->hasRole($role),
+            fn ($role) => $user->hasRole($role),
         );
 
         if ($role === null) {
             return;
         }
 
-        $this->sendNotification->execute(
+        $this->sendNotification->execute(new NotificationData(
             userId: $user->id,
             type: 'welcome',
             title: __('notifications.welcome_to_dashboard.title'),
             message: __($this->roleWelcomeMap[$role]),
             link: route('user.dashboard'),
-        );
+        ));
 
         $user->update(['first_login_at' => now()]);
     }
