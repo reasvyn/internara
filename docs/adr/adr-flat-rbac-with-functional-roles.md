@@ -1,9 +1,6 @@
 # ADR-008: Flat RBAC with Functional Roles
 
-> **Last updated:** 2026-07-05
->
-> **Changes:** sync — add ADMIN as functional role for role grouping; fix role names; add
-> functionalRolesFor() documentation
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current flat RBAC (5 static roles, functional roles via group membership, Gate::before super_admin bypass)
 
 ## Description
 

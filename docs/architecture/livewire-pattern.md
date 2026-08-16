@@ -1,6 +1,6 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Livewire (thin components, Action injection, BaseRecordManager, Form Objects, C1 no Model mutations)
 
 ## Description
 

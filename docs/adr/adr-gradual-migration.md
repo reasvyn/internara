@@ -1,6 +1,6 @@
 # ADR-012: Gradual Migration
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current gradual migration (arrays→DTOs, direct reads→Read Actions, optional complexity)
 
 ## Description
 

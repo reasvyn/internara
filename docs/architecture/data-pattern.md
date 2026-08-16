@@ -1,6 +1,6 @@
 # Data / DTO Pattern Reference — DTO Lifecycle, Immutability & Boundary Rules
 
-> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current DTO contracts (BaseData, fromArray/toArray, ActionResponse, C6 forbidden imports, C7 3+ params)
 
 ## Description
 

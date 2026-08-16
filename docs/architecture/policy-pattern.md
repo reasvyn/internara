@@ -1,6 +1,6 @@
 # Policy Pattern — Authorization Gates, RBAC & Functional Roles
 
-> **Last updated:** 2026-06-13 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Policy contracts (BasePolicy, flat RBAC, 5 roles, functional roles, Gate::before, three-layer auth)
 
 ## Description
 

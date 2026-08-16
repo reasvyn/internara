@@ -1,6 +1,6 @@
 # Cache Pattern — Cache Philosophy, Key Management & Invalidation
 
-> **Last updated:** 2026-06-14 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current cache strategy (centralized key registry, TTL categories, event-driven invalidation, C4 inline cache keys forbidden)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # ADR-010: Self-Hosted Single-Tenant Architecture
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current single-tenant architecture (no multi-tenant overhead, self-hosted, data sovereignty)
 
 ## Description
 

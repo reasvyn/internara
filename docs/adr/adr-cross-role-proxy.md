@@ -1,6 +1,6 @@
 # ADR-014: Cross-Role Proxy
 
-> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current cross-role proxy (teacher as supervisor proxy, inactivity windows, compliance stamping)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # Enum Pattern Reference — LabelEnum, StatusEnum & State Machine Patterns
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Enum contracts (LabelEnum, StatusEnum, ColorableEnum, state machines)
 
 ## Description
 

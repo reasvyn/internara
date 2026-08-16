@@ -1,6 +1,6 @@
 # Entity Pattern — Entity-Model Separation & Purity Rules
 
-> **Last updated:** 2026-06-13 **Changes:** sync — fix broken link to architecture.md
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Entity contracts (final readonly, fromModel bridge, business rules in Entity, C5 forbidden imports)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # Repository Pattern — Why Internara Doesn't Use It
 
-> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify rationale for no Repository layer (direct Eloquent via Models, Read Actions, query tiers)
 
 ## Description
 

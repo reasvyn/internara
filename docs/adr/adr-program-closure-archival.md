@@ -1,6 +1,6 @@
 # ADR-013: Program Closure & Archival
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current program closure/archival (read-only snapshots, data retention, no deletion)
 
 ## Description
 

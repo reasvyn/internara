@@ -1,6 +1,6 @@
 # ADR-006: Base Class Mandate
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current base class mandate (BaseModel, BaseCommandAction, BasePolicy, etc.)
 
 ## Description
 
