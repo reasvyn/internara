@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan_security.py — Security Pattern Detection (v2.0.0)
+scan_security.py — Security Pattern Detection
 
 Scans PHP/Blade for security anti-patterns across the S1-S9 rule set:
 S1 XSS, S2 SQL injection, S3 mass assignment, S4 CSRF, S5 CSP / inline script,
@@ -29,7 +29,6 @@ VIEWS_DIR = ROOT / "resources" / "views"
 ROUTES_DIR = ROOT / "routes"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "security"
-SCAN_VERSION = "2.0.0"
 
 REF_XSS = "docs/conventions.md#31-xss-prevention"
 REF_SQLI = "docs/conventions.md#32-sql-injection-prevention"
@@ -112,7 +111,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -536,7 +534,6 @@ def build_report(
 
     rules = set(f.rule for f in findings)
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,

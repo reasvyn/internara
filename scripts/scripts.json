@@ -1,0 +1,53 @@
+{
+  "purpose": "Registry of scripts/ scanners and the output category each writes to scripts/outputs/{YYYYMMDDHHMMSS}-{category}.json. Consumed by clean_outputs.py --prune to keep only the latest timestamped output per category.",
+  "outputs": {
+    "architecture": {
+      "script": "scan_architecture.py",
+      "description": "Component counts per module, submodule structure"
+    },
+    "class-contracts": {
+      "script": "scan_class_contracts.py",
+      "description": "Action/Entity/DTO/Model/Enum contract compliance"
+    },
+    "conventions": {
+      "script": "scan_conventions.py",
+      "description": "D1 strict_types, D4 Fillable, D2 debug calls, hardcoded strings"
+    },
+    "dead-code": {
+      "script": "scan_dead_code.py",
+      "description": "Unregistered observers, orphan events, unused DTOs/Actions/Jobs"
+    },
+    "doc-links": {
+      "script": "scan_doc_links.py",
+      "description": "Broken relative links and anchors in markdown"
+    },
+    "files": {
+      "script": "scan_files.py",
+      "description": "File counts and lines of code per module"
+    },
+    "issues": {
+      "script": "scan_issues.py",
+      "description": "GitHub issue metrics"
+    },
+    "naming": {
+      "script": "scan_naming.py",
+      "description": "File and class naming conventions"
+    },
+    "security": {
+      "script": "scan_security.py",
+      "description": "XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting"
+    },
+    "skills": {
+      "script": "scan_skills.py",
+      "description": "Agent SKILL.md meta-framework consistency"
+    },
+    "tests": {
+      "script": "scan_tests.py",
+      "description": "Test suite pass/fail results"
+    },
+    "violations": {
+      "script": "scan_violations.py",
+      "description": "C1-C8, D1-D6 architecture invariant violations"
+    }
+  }
+}

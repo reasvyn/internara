@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan_dead_code.py — Dead Code Detection (v2.0.0)
+scan_dead_code.py — Dead Code Detection
 Detects unregistered observers, events without listeners, unused DTOs,
 unused Actions, and unused Jobs.
 """
@@ -23,7 +23,6 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "dead-code"
-SCAN_VERSION = "2.0.0"
 
 RE_CLASS = re.compile(r"^\s*(?:final\s+|abstract\s+)*(?:class|enum|interface|trait)\s+(\w+)", re.M)
 
@@ -46,7 +45,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -241,7 +239,6 @@ def build_report(
 
     rules = set(f.rule for f in findings)
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,

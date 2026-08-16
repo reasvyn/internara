@@ -3,7 +3,7 @@
 Focused automation scripts for Internara's AI agent workflows. Each script performs one job
 and outputs a timestamped JSON report to `scripts/outputs/`.
 
-## Standard CLI (v2.0.0)
+## Standard CLI
 
 Every scanner shares the same interface:
 
@@ -31,13 +31,31 @@ python3 scripts/{script}.py --quiet             # suppress stdout noise
 Default output: `scripts/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
 (`scripts/outputs/` is gitignored).
 
+The mapping of each script to its output category (the `{scan_name}` suffix) is
+registered in `scripts/scripts.json` — the source of truth for `clean_outputs.py --prune`.
+
+### Pruning outputs
+
+```bash
+# Keep only the latest timestamped output per category, delete the rest
+python3 scripts/clean_outputs.py --prune
+
+# See what would be deleted first
+python3 scripts/clean_outputs.py --prune --dry-run
+
+# Keep latest plus show which file is retained per category
+python3 scripts/clean_outputs.py --prune -v
+```
+
+Categories come from `scripts/scripts.json`. Files that are not registered there, or whose
+filename does not match `{YYYYMMDDHHMMSS}-{category}.json`, are never deleted.
+
 ## Output Schema
 
-All v2.0.0 reports share a common schema:
+All reports share a common schema:
 
 ```json
 {
-  "scan_version": "2.0.0",
   "scan_name": "violations",
   "scan_type": "full",
   "module": null,
@@ -84,15 +102,16 @@ contract source.
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | issue-writing, arch-guard |
 | `scan_naming.py` | File and class naming conventions | `FILE_NAMING`, `CLASS_NAMING` | arch-guard |
 | `scan_security.py` | XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting | `S1`–`S9` | arch-guard, security-audit |
-| `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, phase map, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_PHASE_MAP`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |
+| `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, `agent-workflow` reference, no duplicated workflow boilerplate, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_WORKFLOW_REF`, `SKILL_NO_DUP_WORKFLOW`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |
 | `scan_tests.py` | Run test suite, parse per-module results | — (data fetch) | pest-testing, test-writing |
 | `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `C1`–`C8`, `D1`–`D6`, `P2`, `P5` | arch-guard |
-| `clean_outputs.py` | Remove old JSON output files by age or date range | — | maintenance |
+| `clean_outputs.py` | Remove old JSON output files by age/date range, or `--prune` (keep latest per category) | — | maintenance |
+| `scripts.json` | Registry mapping each scanner to its output category (used by `clean_outputs.py --prune`) | — | maintenance |
 
-## Calibration Notes (v2.0.0)
+## Calibration Notes
 
 Scanners were re-written to be calibrated against the actual codebase, eliminating the
-v1 baseline false positives:
+old-baseline false positives:
 
 - **scan_violations** — 59 findings: C2×19, C7×32, C5×2, P2×2, P5×2, C6×1, C8×1.
   D4/D6 false positives fixed (attribute-based fillable, FK with onDelete).

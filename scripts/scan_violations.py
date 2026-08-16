@@ -26,7 +26,6 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "violations"
-SCAN_VERSION = "2.0.0"
 
 ENTITY_FORBIDDEN_IMPORTS = [
     "Actions\\",
@@ -66,7 +65,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -906,7 +904,6 @@ def build_report(
     rules_checked = len(RULES)
     rules_passed = len(set(RULES) - set(f.rule for f in findings))
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,

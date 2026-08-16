@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-Clean Old Outputs — Remove script output files based on age or date range.
+Clean Old Outputs — Remove script output files based on age, date range, or prune.
 Deletes JSON files from scripts/outputs/ based on file modification time.
 
 Presets:  --yesterday, --3days, --7days (default), --2weeks, --1month
 Custom:   --older-than YYYY-MM-DD [--newer-than YYYY-MM-DD]
 Numeric:  --days N
+Prune:    --prune (keep only the latest timestamped output per category)
 """
 
 from __future__ import annotations
 
 import argparse
+import json
+import re
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -21,8 +24,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = Path(__file__).parent / "outputs"
+SCRIPTS_JSON = Path(__file__).parent / "scripts.json"
 SCAN_NAME = "clean-outputs"
-SCAN_VERSION = "1.1.0"
 
 PRESETS: dict[str, int] = {
     "yesterday": 1,
@@ -32,20 +35,13 @@ PRESETS: dict[str, int] = {
     "1month": 30,
 }
 
-PRESET_LABELS: dict[str, str] = {
-    "yesterday": "1 day (yesterday)",
-    "3days": "3 days",
-    "7days": "7 days (default)",
-    "2weeks": "14 days (2 weeks)",
-    "1month": "30 days (1 month)",
-}
+RE_OUTPUT_NAME = re.compile(r"^(\d{14})-([a-z0-9-]+)\.json$")
 
 
 # ─── Data ───────────────────────────────────────────────────────────────────
 
 @dataclass
 class CleanupResult:
-    scan_version: str
     scan_name: str
     timestamp: str
     filter_desc: str
@@ -87,6 +83,26 @@ def parse_date(value: str) -> datetime:
         )
 
 
+def parse_output_name(filepath: Path) -> tuple[datetime, str] | None:
+    """Parse '{YYYYMMDDHHMMSS}-{category}.json' into (timestamp, category)."""
+    m = RE_OUTPUT_NAME.match(filepath.name)
+    if not m:
+        return None
+    return datetime.strptime(m.group(1), "%Y%m%d%H%M%S"), m.group(2)
+
+
+def load_script_categories() -> dict[str, dict[str, Any]]:
+    """Load output-category registry from scripts/scripts.json."""
+    if not SCRIPTS_JSON.exists():
+        return {}
+    try:
+        data = json.loads(SCRIPTS_JSON.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    outputs = data.get("outputs")
+    return outputs if isinstance(outputs, dict) else {}
+
+
 # ─── Core ───────────────────────────────────────────────────────────────────
 
 def clean_outputs(
@@ -115,7 +131,6 @@ def clean_outputs(
         filter_desc = f"newer than {newer_than:%Y-%m-%d}"
 
     result = CleanupResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         timestamp=now.isoformat(),
         filter_desc=filter_desc,
@@ -145,7 +160,8 @@ def clean_outputs(
 
             if should_delete:
                 size = filepath.stat().st_size
-                filepath.unlink()
+                if not dry_run:
+                    filepath.unlink()
                 result.deleted.append(
                     f"{rel} ({format_size(size)}, modified {mtime:%Y-%m-%d %H:%M})"
                 )
@@ -156,6 +172,81 @@ def clean_outputs(
                 )
         except Exception as e:
             result.errors.append({"file": filepath.name, "error": str(e)})
+
+    result.summary = {
+        "deleted_count": len(result.deleted),
+        "kept_count": len(result.kept),
+        "error_count": len(result.errors),
+        "total_size_deleted_bytes": total_deleted_size,
+        "total_size_deleted": format_size(total_deleted_size),
+    }
+
+    return result
+
+
+def prune_outputs(
+    dry_run: bool = False,
+    verbose: bool = False,
+) -> CleanupResult:
+    """Delete all output files except the latest timestamped file per category.
+
+    Categories come from the scripts/scripts.json registry. Files whose
+    category is not registered, or whose name is not a timestamped output,
+    are kept untouched.
+    """
+    now = datetime.now()
+
+    result = CleanupResult(
+        scan_name=SCAN_NAME,
+        timestamp=now.isoformat(),
+        filter_desc="prune: keep latest timestamped output per category",
+        dry_run=dry_run,
+    )
+
+    categories = load_script_categories()
+    if not categories:
+        result.errors.append({
+            "file": SCRIPTS_JSON.name,
+            "error": "no categories found or scripts.json missing",
+        })
+        return result
+
+    grouped: dict[str, list[tuple[datetime, Path]]] = {c: [] for c in categories}
+
+    for filepath in get_output_files():
+        parsed = parse_output_name(filepath)
+        if parsed is None:
+            result.kept.append(
+                f"scripts/outputs/{filepath.name} (non-standard name, kept)"
+            )
+            continue
+        _, category = parsed
+        if category not in grouped:
+            result.kept.append(
+                f"scripts/outputs/{filepath.name} (unknown category '{category}', kept)"
+            )
+            continue
+        grouped[category].append((parsed[0], filepath))
+
+    total_deleted_size = 0
+
+    for category, entries in grouped.items():
+        if not entries:
+            continue
+        entries.sort(key=lambda e: e[0], reverse=True)
+        keep_path = entries[0][1]
+        for _, filepath in entries[1:]:
+            size = filepath.stat().st_size
+            if not dry_run:
+                filepath.unlink()
+            result.deleted.append(
+                f"scripts/outputs/{filepath.name} ({format_size(size)})"
+            )
+            total_deleted_size += size
+        if verbose:
+            result.kept.append(
+                f"scripts/outputs/{keep_path.name} (latest {category})"
+            )
 
     result.summary = {
         "deleted_count": len(result.deleted),
@@ -224,47 +315,58 @@ custom range:
 numeric:
   --days N                  Files older than N days
 
+prune:
+  --prune                   Keep only the latest timestamped output per category
+                            (categories from scripts/scripts.json), delete the rest
+
 examples:
   python3 scripts/clean_outputs.py --yesterday --dry-run
   python3 scripts/clean_outputs.py --older-than 2026-07-01 --newer-than 2026-06-15
   python3 scripts/clean_outputs.py --days 3 -v
+  python3 scripts/clean_outputs.py --prune --dry-run
+  python3 scripts/clean_outputs.py --prune -v
 """,
     )
 
-    preset = parser.add_mutually_exclusive_group()
-    preset.add_argument(
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--prune",
+        action="store_true",
+        help="Keep only the latest timestamped output per category",
+    )
+    mode.add_argument(
         "--yesterday",
         action="store_const",
-        const=1,
-        dest="days",
+        const="yesterday",
+        dest="preset",
         help="Files older than 1 day",
     )
-    preset.add_argument(
+    mode.add_argument(
         "--3days",
         action="store_const",
-        const=3,
-        dest="days",
+        const="3days",
+        dest="preset",
         help="Files older than 3 days",
     )
-    preset.add_argument(
+    mode.add_argument(
         "--7days",
         action="store_const",
-        const=7,
-        dest="days",
+        const="7days",
+        dest="preset",
         help="Files older than 7 days (default)",
     )
-    preset.add_argument(
+    mode.add_argument(
         "--2weeks",
         action="store_const",
-        const=14,
-        dest="days",
+        const="2weeks",
+        dest="preset",
         help="Files older than 14 days",
     )
-    preset.add_argument(
+    mode.add_argument(
         "--1month",
         action="store_const",
-        const=30,
-        dest="days",
+        const="1month",
+        dest="preset",
         help="Files older than 30 days",
     )
 
@@ -306,32 +408,41 @@ examples:
         action="store_true",
         help="Force JSON output to stdout",
     )
-    return parser.parse_args()
+    return parser
 
 
 def main() -> None:
-    args = parse_args()
+    parser = parse_args()
+    args = parser.parse_args()
 
-    # Determine cutoff from --older-than / --newer-than or --days
-    if args.older_than is not None or args.newer_than is not None:
-        cutoff = args.older_than
-        newer_than = args.newer_than
+    if args.prune:
+        if args.older_than is not None or args.newer_than is not None:
+            parser.error("--prune cannot be combined with --older-than/--newer-than")
+        if args.days != 7:
+            parser.error("--prune cannot be combined with --days")
+        result = prune_outputs(
+            dry_run=args.dry_run,
+            verbose=args.verbose,
+        )
+    elif args.older_than is not None or args.newer_than is not None:
+        result = clean_outputs(
+            cutoff=args.older_than,
+            newer_than=args.newer_than,
+            dry_run=args.dry_run,
+            verbose=args.verbose,
+        )
     else:
+        days = PRESETS[args.preset] if args.preset else args.days
         now = datetime.now()
-        cutoff = now - timedelta(days=args.days)
-        newer_than = None
-
-    result = clean_outputs(
-        cutoff=cutoff,
-        newer_than=newer_than,
-        dry_run=args.dry_run,
-        verbose=args.verbose,
-    )
+        result = clean_outputs(
+            cutoff=now - timedelta(days=days),
+            newer_than=None,
+            dry_run=args.dry_run,
+            verbose=args.verbose,
+        )
 
     if args.json:
-        import json
         print(json.dumps({
-            "scan_version": result.scan_version,
             "scan_name": result.scan_name,
             "timestamp": result.timestamp,
             "filter_desc": result.filter_desc,

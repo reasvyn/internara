@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan_naming.py — Naming Convention Compliance (v2.0.0)
+scan_naming.py — Naming Convention Compliance
 
 Checks file, class, method, and directory naming conventions against
 docs/conventions.md §4. Calibrated: layer directories are detected at any
@@ -28,7 +28,6 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "naming"
-SCAN_VERSION = "2.0.0"
 
 REF_FILE = "docs/conventions.md#4-naming-conventions"
 REF_ACTION = "docs/architecture/action-pattern.md"
@@ -194,7 +193,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -441,7 +439,6 @@ def build_report(
 
     rules = set(f.rule for f in findings)
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,
