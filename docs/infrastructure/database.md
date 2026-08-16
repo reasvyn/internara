@@ -137,6 +137,9 @@ On a fresh install, `php artisan setup:install --with-dummy` seeds it right afte
 - Demo account/password values live in `config/dummy.php` (`dummy.accounts.*`, `dummy.password`) —
   no hardcoding. Accounts: `admin@example.com`, `teacher1..4@example.com`,
   `supervisor1..6@example.com`, `student1..24@example.com` (no superadmin, DD-8).
+- Student names are generated without academic titles (`firstName` + `lastName`, no faker `id_ID`
+  `suffix`) — an SMK student holds no degree (FR-C19). Teachers/supervisors/admin keep the default
+  titled format.
 - Never registered in `DatabaseSeeder` or `SetupSeeder` — opt-in only (FR-E3).
 
 ---

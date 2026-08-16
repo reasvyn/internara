@@ -1,7 +1,8 @@
 # Dummy Data — Factory-Generated Demo Dataset via DummySeeder
 
 > **Spec ID:** 3UOZP
-> **Last updated:** 2026-08-15 **Changes:** amend — `setup:install --with-dummy` seeds demo data
+> **Last updated:** 2026-08-16 **Changes:** amend — student names generated without
+> academic titles (FR-C19, DD-11); amend — `setup:install --with-dummy` seeds demo data
 > after provisioning without registering `DummySeeder` (installation FR-C10, DD-3 trade-off,
 > §9 Next Steps); amend — reuse base-seeded data (roles, settings, active
 > academic year) and supplement only (FR-E4, FR-C1, FR-H14, G8, DD-9); amend — one placement per
@@ -172,6 +173,7 @@ code can never run in a production deployment.
 | FR-C16 | Assessments: `midterm` + `final` for active registrations; reports: `draft` for current, `finalized` for completed |
 | FR-C17 | Certificates: `issued` for completed-internship registrations with unique `certificate_number` and `qr_hash` |
 | FR-C18 | Incident reports: 1–2 with mixed severities and statuses |
+| FR-C19 | Student names must be generated without academic titles (no faker `id_ID` `suffix` like S.Pd/S.Kom/M.TI.) — an SMK student does not hold a degree; teachers, supervisors, and admin may retain the default titled format |
 
 ---
 
@@ -404,6 +406,20 @@ demonstrate placement saturation.
 schema intentionally models one placement (one PKL program) per company per internship.
 **Rejected alternative:** Relaxing the DB constraint to allow 2–4 placements per company —
 contradicts FR-P2 and requires a migration with no product need.
+
+### DD-11 — Student Names Carry No Academic Titles
+
+**Decision:** Student names are generated without the faker `id_ID` `suffix` provider (S.Pd, S.Kom,
+M.TI., etc.) — only `firstName` + `lastName`. Teachers, supervisors, and the admin keep the default
+`fake()->name()` format (FR-C19).
+**Rationale:** A student at an SMK has not earned a degree title; a titled demo student name is
+obviously fake and undermines demo credibility. Teachers and supervisors plausibly hold academic or
+professional titles, so only the student role is restricted.
+**Trade-off:** `firstName`+`lastName` yields slightly shorter names than `fake()->name()`; acceptable
+because it is still realistic Indonesian nomenclature and keeps idempotency (FR-H5) intact — the
+name is not a natural key.
+**Rejected alternative:** Stripping the suffix post-hoc via regex — brittle against future faker
+suffix additions; constructing the name explicitly at generation is deterministic.
 
 ---
 
