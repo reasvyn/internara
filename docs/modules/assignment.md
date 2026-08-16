@@ -1,6 +1,6 @@
 # Assignment — Tasks, Submissions & Grading
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Draft→Submit→Grade workflow, Version History, Late Submission Handling, Submodules: Assignment Task & Submission)
 
 ## Description
 

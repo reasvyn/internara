@@ -1,6 +1,6 @@
 # Enrollment — Registration, Placement & Change Requests
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Capacity Atomicity, Guest-to-Student Pipeline, Status-Driven Access, Submodules: Registration, AccountApplication, RegistrationDocument, Placement, PlacementChangeRequest)
 
 ## Description
 

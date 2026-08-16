@@ -1,6 +1,6 @@
 # Document — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — add Handbook submodule, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Policies, HTTP Controllers, Form Requests, Livewire, Support Services, Handbook Submodule, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

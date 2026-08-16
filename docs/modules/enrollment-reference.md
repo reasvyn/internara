@@ -1,6 +1,6 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — add account-application events, fix Livewire extends, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, DTOs, Entities, Enums, Events, Listeners, Livewire Components, Forms, Policies, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

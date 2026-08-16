@@ -1,6 +1,6 @@
 # Evaluation — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Models, Enums, Routes, Views, Tests, Factories, Migrations; no Actions/Entities/Policies/Livewire yet)
 
 ## Description
 

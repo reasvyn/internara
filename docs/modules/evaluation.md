@@ -1,6 +1,6 @@
 # Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
-> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Evaluation Forms, Question Types, Score Calculation, Immutable Submissions, Integration Patterns; no submodules, no Actions/Livewire yet)
 
 ## Description
 
