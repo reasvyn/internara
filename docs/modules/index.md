@@ -1,6 +1,6 @@
 # Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module, verify module count
+> **Last updated:** 2026-08-16 **Changes:** sync — verify module index matches 18 business modules with reference + conceptual docs
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire

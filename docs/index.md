@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
+> **Last updated:** 2026-08-16 **Changes:** sync — verify catalog matches current project structure (18 modules, 58 specs, 18 architecture patterns, 16 ADRs, 11 infrastructure docs, 9 foundation docs)
 
 Complete catalog of all documentation files, organized by topic and audience.
 

@@ -1,5 +1,7 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify agent workflow matches current 9-step pipeline, skill map, phase classification, size triage, and verification strategy
+
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
 
