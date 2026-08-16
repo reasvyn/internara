@@ -276,7 +276,7 @@ solely on this — these utilities are used broadly.
 - `app/Core/Services/AppIntegrity.php` — Attribution verification
 - `app/Core/Services/LangChecker.php` — Missing translation detection
 - `composer.json` — Source of truth for app metadata
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel infrastructure
+- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel dependency manifest
 - **Related specs:** [base-classes.md](SE5Q9-base-classes.md) — Architectural base classes
 - **Related specs:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — SmartLogger, PiiMasker
 - **Related specs:** [csv-import-export.md](O2KCR-csv-import-export.md) — CsvHandler utility

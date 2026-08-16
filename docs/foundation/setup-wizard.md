@@ -1,6 +1,6 @@
 # Setup Wizard — Browser-Based Initial Configuration
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/02-setup-wizard.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
 
 ## Description
 
@@ -44,7 +44,7 @@ Items display as green (pass), yellow (warning), or red (fail). Wizard blocks on
 
 | Field | Required | Behavior |
 | ----- | -------- | -------- |
-| Name | Auto-filled | Hardcoded to `Administrator` — not editable |
+| Name | Auto-filled | Hardcoded to `Super Admin` — not editable |
 | Username | Auto-filled | Hardcoded to `superadmin` — not editable |
 | Email | Yes | Login email for super admin |
 | Password | Yes | Min 8 chars, uppercase + lowercase + number |

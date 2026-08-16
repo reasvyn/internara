@@ -1,6 +1,6 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-07-11
+> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
 >
 > **Changes:** sync — add ADMIN functional role; add Cross-Role Proxy section; update functional
 > role docs
@@ -121,7 +121,7 @@ All policies extend `app/Core/Policies/BasePolicy.php` and use:
 ## 5. Super Admin Integrity Rules
 
 - **Uniqueness:** Exactly one super_admin account in the database
-- **Immutability:** Name always "Administrator", username always "superadmin"
+- **Immutability:** Name always "Super Admin", username always "superadmin"
 - **Non-deletable:** All delete operations throw `RuntimeException`
 - **Role Mapping:** `super_admin` → `superadmin` mapping for spatie compatibility
 

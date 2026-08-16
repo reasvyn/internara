@@ -28,7 +28,7 @@ User clicks "Forgot Password" on login page
   → User clicks link
     → ResetPassword Livewire (token from URL)
       → User enters email + new password
-        → ResetPasswordAction::execute(email, token, password)
+        → ResetPasswordAction::execute(ResetPasswordData)
           → Password::reset() → Password updated
           → SmartLogger: password_reset_success
   → Redirect to login
@@ -79,7 +79,7 @@ User → /recover-account
   ├── Step 1: Enter username
   ├── Step 2: Enter recovery code
   ├── Step 3: Set new password + confirm
-  └── RedeemRecoverySlipAction::execute(username, code, password)
+  └── RedeemRecoverySlipAction::execute(RedeemRecoverySlipData)
       ├── Find user by username
       ├── Validate code (Hash::check)
       ├── Update password

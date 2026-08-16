@@ -1,15 +1,20 @@
-# Tech Stack — Language, Framework & Infrastructure Configuration
+# Tech Stack — Language, Framework & Dependency Manifest
 
 > **Spec ID:** FB792
-> **Last updated:** 2026-08-10 **Changes:** add — FR-Q6 separate `default`/`documents` queue pipelines
-> (project-requirements §5 NFR Queue); PHP/Laravel versions, cache, session, queue, database, mail configuration
+> **Last updated:** 2026-08-16 **Changes:** refactor — runtime service behavior (database, cache,
+> session, queue, mail, storage) split into [core-infra-services.md](ZT6VS-core-infra-services.md);
+> this spec now owns the dependency manifest only (PHP/Laravel/packages, versions, lockfile).
 
 ## Description
 
-Technology stack and infrastructure configuration for Internara. Defines the PHP version,
-framework versions, database/cache/session/queue drivers, cache key registry, and session
-security configuration. Base classes and shared utilities are separate initiatives — see
-[base-classes.md](SE5Q9-base-classes.md) and [shared-utilities.md](C8F0D-shared-utilities.md).
+Technology stack and **dependency manifest** for Internara. Defines the minimum PHP version,
+framework and package versions, and the lockfile contract that makes deployments reproducible.
+Every runtime service built on these dependencies (database, cache, session, queue, mail,
+filesystem/storage) is specified in [core-infra-services.md](ZT6VS-core-infra-services.md). The
+architectural model these dependencies serve is defined in
+[architecture-design.md](D2FT3-architecture.md). Base classes and shared utilities are separate
+initiatives — see [base-classes.md](SE5Q9-base-classes.md) and
+[shared-utilities.md](C8F0D-shared-utilities.md).
 
 ---
 
@@ -17,33 +22,19 @@ security configuration. Base classes and shared utilities are separate initiativ
 
 ### PS-1 — Version-Pinned Dependencies
 
-A self-hosted application deployed on diverse school infrastructure (shared hosting, VPS,
-local servers) must pin its technology versions to avoid "works on my machine" issues. PHP 8.4
-features (readonly properties, enums, fibers) are used throughout; deploying on PHP 8.1 causes
-silent failures. Framework version mismatches cause breaking changes in middleware registration,
-queue configuration, and migration syntax. The stack must be documented as the single source of
-truth for deployment requirements.
+A self-hosted application deployed on diverse school infrastructure (shared hosting, VPS, local
+servers) must pin its technology versions to avoid "works on my machine" issues. PHP 8.4 features
+(readonly properties, enums, fibers) are used throughout; deploying on PHP 8.1 causes silent
+failures. Framework version mismatches cause breaking changes in middleware registration, queue
+configuration, and migration syntax. The stack must be documented as the single source of truth
+for deployment requirements.
 
-### PS-2 — Cache Coherence
+### PS-2 — Dependency Registry
 
-Caching improves performance but introduces staleness risk. Without a centralized key registry
-and invalidation strategy, cached data can silently diverge from the database, causing
-hard-to-debug inconsistencies across modules. The system must enforce a single cache key
-registry and event-driven invalidation.
-
-### PS-3 — Session Security
-
-Sessions hold authentication state, CSRF tokens, wizard progress, and locale preferences. A
-compromised session means a compromised account. Session configuration must enforce encryption,
-HTTP-only cookies, SameSite protection, and proper lifetime limits. Default drivers must work
-without external services (Redis) for shared hosting deployments.
-
-### PS-4 — Zero-Config Deployment
-
-Indonesian vocational schools typically run on shared hosting or small VPS instances without
-Redis, Memcached, or dedicated queue workers. The default configuration must work with zero
-external dependencies: SQLite for database, file for cache, database for sessions, sync for
-queue. Scaling to Redis/database queue should be a single `.env` change.
+With 25+ Composer packages and a JS toolchain, undeclared or un-pinned dependencies produce
+non-reproducible builds. The lockfile must be the contract: `composer install --locked` must yield
+the exact tested dependency set, and every package a module uses must be registered in the
+manifest (no undeclared direct dependencies).
 
 ---
 
@@ -54,56 +45,45 @@ queue. Scaling to Redis/database queue should be a single `.env` change.
 | ID  | Goal |
 | --- | ---- |
 | G1  | Pin PHP 8.4, Laravel 13, Livewire 4, Tailwind CSS v4, DaisyUI v5 as minimum versions |
-| G2  | Default to file cache with centralized key registry in `config/cache-keys.php` |
-| G3  | Default to database sessions with encryption and SameSite protection |
-| G4  | Default to sync queue with database/redis drivers available |
-| G5  | Support SQLite (dev), MySQL 8, MariaDB 10.6, PostgreSQL 15 (production) |
-| G6  | Provide `system:cache-warm` artisan command for deployment |
+| G2  | Complete, registered dependency manifest (Composer runtime + dev, JS toolchain) |
+| G3  | Reproducible installs via the committed `composer.lock` (and `package-lock.json`) |
+| G4  | Security: dependency vulnerabilities are scanned and resolved before release |
 
 ### Non-Goals
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Real-time WebSocket infrastructure (out of scope per product definition) |
-| NG2  | GraphQL or REST API layer (Livewire-only frontend) |
-| NG3  | Message queue abstraction beyond Laravel's built-in queue drivers |
+| NG1  | Runtime service behavior (drivers, lifetimes, security flags) — owned by [core-infra-services.md](ZT6VS-core-infra-services.md) |
+| NG2  | Logging pipelines and error handling — owned by [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) |
+| NG3  | Queue/job lifecycle, retries, batches — owned by [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) |
+| NG4  | Real-time WebSocket infrastructure (out of scope per product definition) |
+| NG5  | GraphQL or REST API layer (Livewire-only frontend) |
+| NG6  | Message queue abstraction beyond Laravel's built-in queue drivers |
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Developer Deploys on Shared Hosting
+### UC-1 — Developer Reproduces the Tested Environment
 
 **Actor:** Developer
-**Preconditions:** PHP 8.4+ available, Composer installed
+**Preconditions:** Git checkout, PHP 8.4+, Composer, Node available
 **Flow:**
-1. Developer clones repo, runs `composer install --optimize`
-2. Copies `.env.example` to `.env`, sets `APP_URL`, `DB_CONNECTION=sqlite`
-3. Runs `php artisan setup:install` — creates DB, runs migrations, seeds defaults
-4. Cache driver defaults to `file`, session to `database`, queue to `sync`
-5. Application works without Redis, Memcached, or queue workers
-**Postconditions:** Zero-config deployment on shared hosting
+1. Developer runs `composer install --locked --optimize-autoloader`
+2. Composer resolves the exact versions recorded in `composer.lock`
+3. Developer runs `npm ci` for the locked JS toolchain
+4. The resulting environment matches the tested dependency set
+**Postconditions:** Identical dependency set on every machine — no version drift
 
-### UC-2 — Cache Invalidates on Settings Change
+### UC-2 — Release Gate Scans for Vulnerable Dependencies
 
-**Actor:** Super Admin
-**Preconditions:** System installed, admin changing a setting
+**Actor:** Developer / CI
+**Preconditions:** Release candidate branch
 **Flow:**
-1. Admin updates setting via Settings UI
-2. `SettingObserver` fires on Eloquent model event
-3. Observer calls `Cache::forget()` for affected key
-4. Next request reads fresh value from database
-**Postconditions:** No stale cached values, no full cache flush needed
-
-### UC-3 — Deployment Warms Cache
-
-**Actor:** DevOps / CI pipeline
-**Preconditions:** Code deployed, `.env` configured
-**Flow:**
-1. Pipeline runs `php artisan config:cache route:cache view:cache event:cache`
-2. Pipeline runs `php artisan system:cache-warm`
-3. First user request hits warm cache, no cold-start penalty
-**Postconditions:** First-request latency reduced by ~60%
+1. CI runs `composer audit` and `npm audit` against the manifest
+2. Any known vulnerability fails the gate until upgraded or accepted
+3. Version bumps are recorded here before release
+**Postconditions:** No known-vulnerable dependencies in a release
 
 ---
 
@@ -119,63 +99,23 @@ queue. Scaling to Redis/database queue should be a single `.env` change.
 | FR-TS4 | Tailwind CSS >= 4.3 required (v4 `@theme` directive, CSS-first config) |
 | FR-TS5 | DaisyUI >= 5.6 required (v5 themes, `data-theme` attribute) |
 
-### Database
+### Dependency Manifest
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-DB1 | Default (development): SQLite via `DB_CONNECTION=sqlite` |
-| FR-DB2 | Production supported: MySQL >= 8.0, MariaDB >= 10.6, PostgreSQL >= 15 |
-| FR-DB3 | UTF-8 charset enforced: `DB_CHARSET=utf8mb4` |
-| FR-DB4 | UUID v7 primary keys via `HasUuids` trait — no auto-increment IDs |
+| FR-DEP1 | `composer.json` registers every runtime and dev dependency; `composer.lock` is committed and used for installs |
+| FR-DEP2 | Runtime installs use `composer install --locked --optimize-autoloader` |
+| FR-DEP3 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` |
+| FR-DEP4 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages |
+| FR-DEP5 | Package version constraints in `composer.json`/`package.json` are the source of truth for AGENTS.md and install docs |
+| FR-DEP6 | Dependency additions/upgrades are recorded in this spec's changelog with their version |
 
-### Cache Infrastructure
-
-| ID     | Requirement |
-| ------ | ----------- |
-| FR-CACHE1 | Default cache driver: `file` (zero-config, shared hosting compatible) |
-| FR-CACHE2 | Supported drivers: `file`, `database`, `redis`, `memcached`, `dynamodb`, `array` (testing) |
-| FR-CACHE3 | All cache keys MUST be registered in `config/cache-keys.php` (C4 invariant) |
-| FR-CACHE4 | Cache key naming: `{module}.{purpose}[.{qualifier}]` |
-| FR-CACHE5 | TTL categories: short (<5min), medium (5min–1h), long (1h–24h), forever (explicit invalidation) |
-| FR-CACHE6 | Invalidation: event-driven preferred (Command Action → Event → Listener → Cache::forget) |
-| FR-CACHE7 | Invalidation: direct inline for simple cases (`Cache::forget(config('cache-keys.xxx'))`) |
-| FR-CACHE8 | Application caches: `config:cache`, `route:cache`, `view:cache`, `event:cache` on deployment |
-| FR-CACHE9 | Cache warming command: `php artisan system:cache-warm` |
-| FR-CACHE10 | Redis prefix: `internara-cache-` (via `CACHE_PREFIX` env) |
-
-### Session Infrastructure
+### Verification
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SESS1 | Default session driver: `database` (auto-migrated, zero-config) |
-| FR-SESS2 | Supported drivers: `database`, `redis`, `file`, `array` (testing) |
-| FR-SESS3 | Session lifetime: 120 minutes of inactivity (configurable via `SESSION_LIFETIME`) |
-| FR-SESS4 | Session encryption: enabled (`SESSION_ENCRYPT=true`) |
-| FR-SESS5 | Cookie flags: HTTP-only, SameSite=lax, secure in production |
-| FR-SESS6 | Session fixation prevention: ID regenerated on login/logout and privilege changes |
-| FR-SESS7 | Garbage collection: probabilistic `[2, 100]` (2% chance per request) for database driver |
-| FR-SESS8 | Redis driver: key expiry handles GC automatically (no application-level GC) |
-| FR-SESS9 | Session stores: auth state, CSRF token, locale preference, wizard progress, setup authorization |
-
-### Queue
-
-| ID     | Requirement |
-| ------ | ----------- |
-| FR-Q1  | Default queue connection: `sync` (synchronous, no worker needed) |
-| FR-Q2  | Supported connections: `sync`, `database`, `redis`, `beanstalkd` |
-| FR-Q3  | Queue-specific tables auto-created by migration for `database` driver |
-| FR-Q4  | Failed jobs table: `failed_jobs` with full exception trace |
-| FR-Q5  | Horizon available for Redis queue monitoring (optional) |
-| FR-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (project-requirements §5 NFR Queue; see [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) and [official-documents.md](7H5D6-official-documents.md)) |
-
-### Mail
-
-| ID     | Requirement |
-| ------ | ----------- |
-| FR-M1  | Default mailer: `log` (development), `smtp` (production) |
-| FR-M2  | SMTP configuration via `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` env |
-| FR-M3  | `TestMailSettingsAction` validates SMTP config before persisting |
-| FR-M4  | Mail from address: `MAIL_FROM_ADDRESS` env, fallback `support_email` setting |
+| FR-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
+| FR-VER2 | PHPStan analysis targets the pinned PHP 8.4 baseline (level 8, see [system-requirements.md](J68GZ-system-requirements.md)) |
 
 ---
 
@@ -183,207 +123,138 @@ queue. Scaling to Redis/database queue should be a single `.env` change.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | Session cookie must be HTTP-only, SameSite=lax, secure in production |
-| NFR-S2 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
-| NFR-P1 | Cache warming reduces first-request latency after deployment |
-| NFR-P2 | Application cache (config/route/view/event) reduces bootstrap time by ~60% |
-| NFR-P3 | Redis connection pool: persistent connections optional (`REDIS_PERSISTENT`) |
-| NFR-R1 | Graceful degradation: cache miss returns fresh data, never cached error |
-| NFR-R2 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
-| NFR-M1 | Cache key registry in single file (`config/cache-keys.php`) — discoverable, auditable |
+| NFR-DEP1 | Lockfiles (`composer.lock`, package lockfile) are committed to the repository |
+| NFR-DEP2 | No end-of-life (EOL) major dependencies; upgrades planned before EOL |
+| NFR-DEP3 | Dependency changes land as explicit, reviewable commits — never hidden in feature work |
+| NFR-DEP4 | The manifest matches the environment audit (`composer show` = lockfile) |
 
 ---
 
 ## 6. API / Data Contracts
 
-### Cache Key Registry
+### Composer Runtime Dependencies
 
-```php
-// config/cache-keys.php
-return [
-    'setup_installed'       => 'setup.is_installed',
-    'setup_token_generation'=> 'setup.token.generation',
-    'admin_dashboard_stats' => 'sysadmin.dashboard.stats',
-    'theme_css_variables'   => 'theme.css_variables',
-    'brand_colors'          => 'brand.colors',
-    'notification_unread'   => 'notification.unread:',
-    'settings_all'          => 'settings.all',
-    'settings_group'        => 'settings.group.',
-    'school_entity'         => 'academics.school.entity',
-    'auth_login_lockout'    => 'auth.login.lockout:',
-    'health_check'          => 'system.health_check',
-    // ... 25+ registered keys
-];
-```
+| Package | Constraint | Layer |
+| ------- | ---------- | ----- |
+| `php` | `^8.4` | Language |
+| `laravel/framework` | `^13.0` | Framework |
+| `livewire/livewire` | `^4.0` | Frontend |
+| `robsontenorio/mary` | `^2.4` | UI Component |
+| `barryvdh/laravel-dompdf` | `^3.1` | PDF Generation |
+| `laravel-lang/lang` | `^15.26` | Localization |
+| `laravel/pulse` | `*` | Monitoring |
+| `laravel/tinker` | `^3.0` | REPL |
+| `php-flasher/flasher-laravel` | `^2.4` | Flash Messages |
+| `spatie/laravel-activitylog` | `^5.0` | Audit Log |
+| `spatie/laravel-medialibrary` | `^11.17` | Media Upload |
+| `spatie/laravel-model-status` | `^1.18` | Model Status |
+| `spatie/laravel-permission` | `^8.0` | RBAC |
 
-### Session Configuration
+### Composer Dev Dependencies
 
-```php
-// config/session.php
-return [
-    'driver'       => env('SESSION_DRIVER', 'database'),
-    'lifetime'     => 120,       // minutes
-    'encrypt'      => true,
-    'http_only'    => true,
-    'secure'       => env('APP_ENV') === 'production',
-    'same_site'    => 'lax',
-    'lottery'      => [2, 100],  // 2% GC chance per request
-];
-```
+| Package | Constraint | Purpose |
+| ------- | ---------- | ------- |
+| `pestphp/pest` + `pest-plugin-laravel` | `^4.2` / `^4.0` | Testing |
+| `larastan/larastan` | `^3.10` | Static Analysis |
+| `phpstan/phpstan` (+ deprecation-rules) | `^2.1` | Static Analysis |
+| `laravel/pint` | `^1.24` | Code Style |
+| `mockery/mockery` | `^1.6` | Mocking |
+| `fakerphp/faker` | `^1.23` | Test Data |
+| `nunomaduro/collision` | `^8.6` | Error Handler |
+| `laravel/pail` | `^1.2.2` | Log Viewer |
+| `laravel/sail` | `^1.41` | Docker Dev |
+| `laravel/boost` | `^2.4` | Dev Tools |
 
-### Queue Configuration
+### JS Toolchain (`package.json`)
 
-```php
-// config/queue.php
-return [
-    'default' => env('QUEUE_CONNECTION', 'sync'),
-    'connections' => [
-        'sync' => ['driver' => 'sync'],
-        'database' => ['driver' => 'database', 'table' => 'jobs', 'queue' => 'default', 'retry_after' => 90],
-        'redis' => ['driver' => 'redis', 'connection' => 'default', 'queue' => 'default', 'retry_after' => 90],
-    ],
-    'failed' => ['driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'), 'database' => 'failed_jobs', 'table' => 'failed_jobs'],
-];
+| Package | Constraint | Kind |
+| ------- | ---------- | ---- |
+| `vite` | `^8.1` | Build Tool |
+| `laravel-vite-plugin` | `^3.1` | Build Plugin |
+| `tailwindcss` + `@tailwindcss/vite` | `^4.3.3` | CSS |
+| `daisyui` | `^5.7.0` | UI Component |
+| `flatpickr` | `^4.6.13` | Date Picker |
+| `marked` | `^18.0.7` | Markdown Parser |
+| `prettier` + `@prettier/plugin-php` + `prettier-plugin-blade` | `^3.9.6` / `^0.25.0` / `^3.2` | Formatter |
+| `concurrently` | `^10.0` | Task Runner |
 
-// Batch document generation uses the 'documents' pipeline (FR-Q6):
-dispatch(new GenerateDocumentJob(...))->onQueue('documents');
-```
+### Lockfile Contract
 
-### Mail Configuration
-
-```php
-// config/mail.php — key env vars
-MAIL_MAILER=smtp          // log | smtp | sendmail | ses
-MAIL_HOST=smtp.mailtrap.org
-MAIL_PORT=2525
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_ENCRYPTION=null      // tls | ssl
-MAIL_FROM_ADDRESS="hello@internara.example"
-MAIL_FROM_NAME="${APP_NAME}"
-```
-
-### Environment Variables
-
-```env
-# .env.example — key infrastructure vars
-APP_NAME=Internara
-APP_ENV=local
-APP_DEBUG=true
-APP_URL=http://localhost:8000
-
-DB_CONNECTION=sqlite
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=internara
-# DB_USERNAME=root
-# DB_PASSWORD=
-
-CACHE_STORE=file          // file | database | redis
-SESSION_DRIVER=database   // database | redis | file
-QUEUE_CONNECTION=sync     // sync | database | redis
-
-MAIL_MAILER=log           // log | smtp
+```bash
+# Reproducible install (UC-1)
+composer install --locked --optimize-autoloader
+npm ci
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Centralized Cache Key Registry
+### DD-1 — Committed Lockfiles
 
-**Decision:** All cache keys MUST be declared in `config/cache-keys.php`, never inline.
-**Rationale:** Prevents key collisions across modules, makes cache dependencies discoverable,
-enables systematic flushing. Without centralized keys, modules would independently invent naming
-conventions leading to conflicts.
-**Trade-off:** Extra step when adding new cache keys. Mitigated by the clear naming convention
-(`{module}.{purpose}[.{qualifier}]`).
+**Decision:** `composer.lock` and the JS package lockfile are committed to the repository and are
+the source of truth for exact versions.
+**Rationale:** Reproducible installs across the school's heterogeneous infrastructure (PS-1).
+**Trade-off:** Lockfile churn on upgrades — managed through FR-DEP3/FR-DEP6.
 
-### DD-2 — File Cache as Default
+### DD-2 — Runtime Services Split into a Dedicated Spec
 
-**Decision:** Default cache driver is `file`, not Redis.
-**Rationale:** Shared hosting deployments cannot install Redis. File cache works without external
-services. For Tier 2+ deployments, switching to Redis is a one-line `.env` change.
-**Trade-off:** File cache is slower than Redis and doesn't support atomic operations. Acceptable
-for single-tenant workloads.
+**Decision:** Database/cache/session/queue/mail/storage behavior moved to
+[core-infra-services.md](ZT6VS-core-infra-services.md); this spec keeps versions and manifest.
+**Rationale:** A dependency manifest and a service-behavior contract evolve at different cadences
+and serve different readers (PS-2).
+**Trade-off:** Service topics now span two specs — mitigated by explicit cross-references
+(DD-8 in [core-infra-services.md](ZT6VS-core-infra-services.md)).
 
-### DD-3 — Database Session as Default
+### DD-3 — Security Scans as a Release Gate
 
-**Decision:** Default session driver is `database`, not `file`.
-**Rationale:** Database sessions survive process restarts (important for queue workers), support
-multi-process deployments, and the sessions table is auto-created by migration. File sessions
-can be lost on deploy.
-**Trade-off:** Slightly higher DB load per request. Negligible for single-tenant with <1000
-concurrent users.
-
-### DD-4 — Sync Queue as Default
-
-**Decision:** Default queue connection is `sync` (synchronous execution).
-**Rationale:** Shared hosting has no queue workers. Sync queue executes jobs inline during the
-request. For production, switching to `database` or `redis` queue is a two-line `.env` change
-plus `php artisan queue:work`.
-**Trade-off:** No background processing on default config. All notifications, backups, and
-queued jobs run synchronously. Acceptable for small-scale deployments.
+**Decision:** `composer audit` / `npm audit` gate releases (FR-VER1).
+**Rationale:** Known-vulnerable dependencies are the cheapest class of vulnerability to fix; the
+gate makes it routine.
+**Trade-off:** Occasionally blocks a release on a transitive advisory — resolved via upgrade or a
+recorded acceptance.
 
 ---
 
 ## 8. Success Metrics
 
-### Cache
-
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Key registration | 100% of cache keys in registry | `grep -r "Cache::" app/` → all keys resolve to config |
-| Stale data window | < 5 seconds for settings changes | Observer fires on every model event |
-| Cache warm time | < 5 seconds | `time php artisan system:cache-warm` |
-
-### Session
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Encryption | Always enabled | `SESSION_ENCRYPT=true` in default config |
-| Lifetime | 120 minutes | Default config value |
-| Fixation prevention | Regenerated on auth change | `session()->regenerate()` in login/logout flow |
-
-### Deployment
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Zero-config startup | Works with `composer install` + `.env` copy | No Redis/Memcached/queue worker required |
-| First-request cold | < 2s without cache warming | `ab -n 1` on fresh deploy |
-| First-request warm | < 500ms with cache warming | After `artisan config:cache route:cache view:cache` |
+| Lockfile committed | `composer.lock` + JS lockfile in VCS | `git ls-files | grep lock` |
+| Manifest completeness | 100% of used packages declared | `composer show --direct` vs `composer.json` |
+| Vulnerability scan | 0 known vulnerabilities | `composer audit` / `npm audit` |
+| Version drift | 0 | `composer install --locked` succeeds in CI |
+| Install reproducibility | `composer install --locked` + `npm ci` on fresh checkout | CI job (see [installation.md](8NZAU-installation.md)) |
 
 ---
 
 ## 9. Roadmap
 
 ### Prerequisites
-No prerequisites — this is a foundational spec.
+
+- [architecture-design.md](D2FT3-architecture.md) — defines the layer model these dependencies serve
 
 ### Build Guide
-This spec establishes the technology platform: PHP 8.4, Laravel 13, database drivers, cache
-key registry, session security, queue defaults, and mail configuration. Every other spec in the
-system depends on this infrastructure being in place. The next step is to build the base
-classes that define the architectural patterns.
+
+This spec establishes the technology platform: PHP 8.4, Laravel 13, and every runtime/dev
+dependency with pinned versions and committed lockfiles. It is a manifest — dependencies are
+added here, versions are bumped here, and every other spec builds on the resulting platform.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [base-classes.md](SE5Q9-base-classes.md) | Action Triad, Entity, DTO, Model, Policy base classes extend framework |
-| 2 | [shared-utilities.md](C8F0D-shared-utilities.md) | Cross-cutting helpers (AppInfo, Color, PasswordRules) built on PHP/Laravel |
+| 1 | [core-infra-services.md](ZT6VS-core-infra-services.md) | Runtime behavior of the services these packages provide |
+| 2 | [base-classes.md](SE5Q9-base-classes.md) | Action Triad, Entity, DTO, Model, Policy base classes extend framework |
+| 3 | [shared-utilities.md](C8F0D-shared-utilities.md) | Cross-cutting helpers (AppInfo, Color, PasswordRules) built on PHP/Laravel |
 
 ---
 
 ## Quick References
 
-- `config/cache-keys.php` — Centralized cache key registry
-- `config/cache.php` — Cache store definitions
-- `config/session.php` — Session driver and cookie settings
-- `config/queue.php` — Queue connection and worker settings
-- `config/mail.php` — Mail driver and SMTP configuration
+- `composer.json` — Composer package and version constraints
+- `composer.lock` — Exact resolved dependency versions
+- `package.json` — JS toolchain versions
 - `.env.example` — Template environment variables
-- `composer.json` — PHP and package version constraints
-- `docs/architecture/cache-pattern.md` — Cache strategy and key registry
-- **Related specs:** [base-classes.md](SE5Q9-base-classes.md) — Action Triad, Entity, DTO, Model base classes
-- **Related specs:** [shared-utilities.md](C8F0D-shared-utilities.md) — Cross-cutting utility classes
-- **Related specs:** [system-requirements.md](J68GZ-system-requirements.md) — Dependencies and platform details
+- `docs/architecture.md` — Layer model these dependencies serve
+- **Related specs:** [architecture-design.md](D2FT3-architecture.md) — layer model; [core-infra-services.md](ZT6VS-core-infra-services.md) — runtime service behavior; [base-classes.md](SE5Q9-base-classes.md) — base classes; [shared-utilities.md](C8F0D-shared-utilities.md) — utility classes; [system-requirements.md](J68GZ-system-requirements.md) — platform dependencies and details

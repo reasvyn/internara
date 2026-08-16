@@ -35,13 +35,13 @@ test('FB792-FR-TS5: requires DaisyUI >= 5.6', function () {
     expect($package['devDependencies']['daisyui'])->toBe('^5.7.0');
 });
 
-test('FB792-FR-DB1: defaults to SQLite for development', function () {
+test('ZT6VS-FR-DB1: defaults to SQLite for development', function () {
     $config = (string) File::get(config_path('database.php'));
 
     expect($config)->toContain("'default' => env('DB_CONNECTION', 'sqlite')");
 });
 
-test('FB792-FR-DB2: supports MySQL, MariaDB and PostgreSQL connections', function () {
+test('ZT6VS-FR-DB2: supports MySQL, MariaDB and PostgreSQL connections', function () {
     $connections = array_keys(config('database.connections'));
 
     expect($connections)->toContain('mysql')
@@ -49,19 +49,19 @@ test('FB792-FR-DB2: supports MySQL, MariaDB and PostgreSQL connections', functio
         ->toContain('pgsql');
 });
 
-test('FB792-FR-DB3: enforces utf8mb4 charset', function () {
+test('ZT6VS-FR-DB3: enforces utf8mb4 charset', function () {
     expect(config('database.connections.mysql.charset'))->toBe('utf8mb4')
         ->and(config('database.connections.mariadb.charset'))->toBe('utf8mb4')
         ->and(config('database.connections.pgsql.charset'))->toBe('utf8');
 });
 
-test('FB792-FR-CACHE1: defaults to the file cache driver', function () {
+test('ZT6VS-FR-CACHE1: defaults to the file cache driver', function () {
     $config = (string) File::get(config_path('cache.php'));
 
     expect($config)->toContain("'default' => env('CACHE_STORE', 'file')");
 });
 
-test('FB792-FR-CACHE2: supports file, database, redis, memcached, dynamodb and array stores', function () {
+test('ZT6VS-FR-CACHE2: supports file, database, redis, memcached, dynamodb and array stores', function () {
     $stores = array_keys(config('cache.stores'));
 
     expect($stores)->toContain('file')
@@ -72,7 +72,7 @@ test('FB792-FR-CACHE2: supports file, database, redis, memcached, dynamodb and a
         ->toContain('array');
 });
 
-test('FB792-FR-CACHE3: registers all cache keys in config/cache-keys.php', function () {
+test('ZT6VS-FR-CACHE3: registers all cache keys in config/cache-keys.php', function () {
     expect(File::exists(config_path('cache-keys.php')))->toBeTrue();
 
     $keys = config('cache-keys');
@@ -80,7 +80,7 @@ test('FB792-FR-CACHE3: registers all cache keys in config/cache-keys.php', funct
     expect($keys)->toBeArray()->not->toBeEmpty();
 });
 
-test('FB792-FR-CACHE4: every cache key follows the {module}.{purpose}[.{qualifier}] pattern', function () {
+test('ZT6VS-FR-CACHE4: every cache key follows the {module}.{purpose}[.{qualifier}] pattern', function () {
     $keys = config('cache-keys');
 
     foreach ($keys as $key) {
@@ -88,14 +88,14 @@ test('FB792-FR-CACHE4: every cache key follows the {module}.{purpose}[.{qualifie
     }
 });
 
-test('FB792-FR-CACHE10: uses the internara-cache- redis prefix', function () {
+test('ZT6VS-FR-CACHE10: uses the internara-cache- redis prefix', function () {
     $config = (string) File::get(config_path('cache.php'));
 
     expect($config)->toContain("'prefix' => env('CACHE_PREFIX', Str::slug")
         ->and(config('cache.prefix'))->toBe('internara-cache-');
 });
 
-test('FB792-FR-SESS1: defaults the session driver to database (auto-migrated)', function () {
+test('ZT6VS-FR-SESS1: defaults the session driver to database (auto-migrated)', function () {
     $config = (string) File::get(config_path('session.php'));
 
     expect($config)->toContain("'driver' => env('SESSION_DRIVER', 'database')");
@@ -105,19 +105,19 @@ test('FB792-FR-SESS1: defaults the session driver to database (auto-migrated)', 
     expect($usersMigration)->toContain("Schema::create('sessions'");
 });
 
-test('FB792-FR-SESS3: session lifetime defaults to 120 minutes', function () {
+test('ZT6VS-FR-SESS3: session lifetime defaults to 120 minutes', function () {
     $config = (string) File::get(config_path('session.php'));
 
     expect($config)->toContain("'lifetime' => (int) env('SESSION_LIFETIME', 120)");
 });
 
-test('FB792-FR-SESS4: session encryption is enabled by default', function () {
+test('ZT6VS-FR-SESS4: session encryption is enabled by default', function () {
     $config = (string) File::get(config_path('session.php'));
 
     expect($config)->toContain("'encrypt' => env('SESSION_ENCRYPT', true)");
 });
 
-test('FB792-FR-SESS5: cookies are HTTP-only with SameSite=lax and secure in production', function () {
+test('ZT6VS-FR-SESS5: cookies are HTTP-only with SameSite=lax and secure in production', function () {
     $config = (string) File::get(config_path('session.php'));
 
     expect($config)->toContain("'http_only' => env('SESSION_HTTP_ONLY', true)")
@@ -125,17 +125,17 @@ test('FB792-FR-SESS5: cookies are HTTP-only with SameSite=lax and secure in prod
         ->toContain("'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV', 'production') === 'production')");
 });
 
-test('FB792-FR-SESS7: garbage collection lottery is [2, 100]', function () {
+test('ZT6VS-FR-SESS7: garbage collection lottery is [2, 100]', function () {
     expect(config('session.lottery'))->toBe([2, 100]);
 });
 
-test('FB792-FR-Q1: defaults the queue connection to sync', function () {
+test('ZT6VS-FR-Q1: defaults the queue connection to sync', function () {
     $config = (string) File::get(config_path('queue.php'));
 
     expect($config)->toContain("'default' => env('QUEUE_CONNECTION', 'sync')");
 });
 
-test('FB792-FR-Q2: supports sync, database, redis and beanstalkd connections', function () {
+test('ZT6VS-FR-Q2: supports sync, database, redis and beanstalkd connections', function () {
     $connections = array_keys(config('queue.connections'));
 
     expect($connections)->toContain('sync')
@@ -144,7 +144,7 @@ test('FB792-FR-Q2: supports sync, database, redis and beanstalkd connections', f
         ->toContain('beanstalkd');
 });
 
-test('FB792-FR-Q3: queue tables are auto-created by migration', function () {
+test('ZT6VS-FR-Q3: queue tables are auto-created by migration', function () {
     $migration = (string) File::get(database_path('migrations/2026_01_01_000003_create_jobs_table.php'));
 
     expect($migration)->toContain("Schema::create('jobs'")
@@ -152,19 +152,19 @@ test('FB792-FR-Q3: queue tables are auto-created by migration', function () {
         ->toContain("Schema::create('job_batches'");
 });
 
-test('FB792-FR-Q4: failed_jobs table records the exception trace', function () {
+test('ZT6VS-FR-Q4: failed_jobs table records the exception trace', function () {
     $migration = (string) File::get(database_path('migrations/2026_01_01_000003_create_jobs_table.php'));
 
     expect($migration)->toContain('exception');
 });
 
-test('FB792-FR-M1: defaults to the log mailer for development', function () {
+test('ZT6VS-FR-M1: defaults to the log mailer for development', function () {
     $config = (string) File::get(config_path('mail.php'));
 
     expect($config)->toContain("'default' => env('MAIL_MAILER', 'log')");
 });
 
-test('FB792-FR-M2: exposes SMTP configuration via env vars', function () {
+test('ZT6VS-FR-M2: exposes SMTP configuration via env vars', function () {
     $config = (string) File::get(config_path('mail.php'));
 
     expect($config)->toContain("'host' => env('MAIL_HOST'")
@@ -173,7 +173,7 @@ test('FB792-FR-M2: exposes SMTP configuration via env vars', function () {
         ->toContain("'password' => env('MAIL_PASSWORD')");
 });
 
-test('FB792-FR-M4: mail from address falls back from MAIL_FROM_ADDRESS env', function () {
+test('ZT6VS-FR-M4: mail from address falls back from MAIL_FROM_ADDRESS env', function () {
     $config = (string) File::get(config_path('mail.php'));
 
     expect($config)->toContain("'address' => env('MAIL_FROM_ADDRESS'");

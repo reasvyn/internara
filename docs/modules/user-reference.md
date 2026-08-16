@@ -231,7 +231,6 @@ the testing conventions.
 | `User/Rules/SystemUsernameTest.php`                               | Username format validation                                               |
 | `User/Services/DashboardServiceTest.php`                          | Dashboard routing by role                                                |
 | `User/Services/UserIdentifierGeneratorTest.php`                   | Username generation from email, collision handling                       |
-| `User/Notifications/Data/NotificationDataTest.php`                | NotificationData DTO                                                     |
 | `User/Profile/ProfileModelTest.php`                            | Profile model: relationships, fields, cascade delete                     |
 | `User/Profile/UpdateProfileActionTest.php`                     | UpdateProfileAction                                                      |
 | `User/Dashboard/*Test.php`                                     | Dashboard data actions                                                   |

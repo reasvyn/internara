@@ -173,7 +173,7 @@ final class GenerateRecoverySlipAction extends BaseCommandAction
 // app/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php
 final class RedeemRecoverySlipAction extends BaseCommandAction
 {
-    public function execute(string $username, string $recoveryCode, string $newPassword): ActionResponse;
+    public function execute(RedeemRecoverySlipData $data): ActionResponse;
     // Throttle: max 3 per 300s by IP
     // Hash::check against each valid token
     // Updates password on match, marks token used

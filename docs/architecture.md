@@ -1,8 +1,13 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18 in module index link
+> **Last updated:** 2026-08-16 **Changes:** link — reference the governing architecture spec
+> (D2FT3-architecture.md) as the authoritative contract for this document
 
 ## Description
+
+> **Authoritative spec:** The governing architecture contract is
+> [D2FT3 — Architecture Design](specs/D2FT3-architecture.md). This document is the living
+> reference (patterns, data flow, naming) for that spec; when they disagree, the spec wins.
 
 > **Pattern deep-dives:** For focused documentation on specific domains, see the dedicated pattern
 > references listed in each section below.

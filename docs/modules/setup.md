@@ -1,6 +1,6 @@
 # Setup — One-Time Install Wizard
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — add §Super Admin section (AGENTS.md reference), super admin name is `Super Admin`
 
 ## Description
 
@@ -59,6 +59,22 @@ finalization completes. Running `php artisan setup:install` on an installed syst
 The setup token follows a strict lifecycle: generated encrypted → stored in database → one-time
 redeem during finalization → invalidated on completion. The token file (`.setup-token`) is created
 during CLI installation for headless environments and must be secured appropriately.
+
+### Super Admin
+
+The super admin account has a fixed, immutable identity provisioned during setup:
+
+| Rule | Value |
+|------|-------|
+| Name | Always `Super Admin` (from `config('setup.defaults.admin_name')`) — not editable |
+| Username | Always `superadmin` — not editable |
+| Status | `PROTECTED` — cannot be deleted, locked, or suspended |
+| Role | `superadmin` — single account invariant |
+
+Creation flows: `SetupSuperAdminAction` (wizard) and `InitializeSuperAdminAction` (CLI) both read
+the name/username from config. Integrity is enforced by `SuperAdminIntegrityRules` — the name and
+username must match the config values, so a config change alone does not rename an existing account
+(spec 8NZAU DD-4).
 
 ## Dependencies
 

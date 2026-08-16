@@ -1,7 +1,7 @@
 # Installation & Provisioning — Feature Specification
 
 > **Spec ID:** 8NZAU
-> **Last updated:** 2026-08-16 **Changes:** amend — align to implementation: fix extension count
+> **Last updated:** 2026-08-16 **Changes:** amend — super admin default name is `Super Admin`; align to implementation: fix extension count
 > (12), recovery key setting name (`setup.install_recovery_key`), replace module-discovery FRs with
 > cross-reference to I1BCV, add HTTP middleware/routes/controller contracts (FR-H1–H9), complete
 > `config/setup.php` contract, record ADR for dead `InstallSystemAction`
@@ -445,7 +445,7 @@ class SetupFinalized extends BaseEvent
         'finalize_steps' => ['account', 'school', 'department'],
     ],
     'defaults' => [
-        'admin_name' => 'Administrator',
+        'admin_name' => 'Super Admin',
         'admin_username' => 'superadmin',
         'username_max_length' => 20,
     ],
@@ -506,7 +506,7 @@ server-side — the session's `token_version` is compared against the stored ver
 
 ### DD-4 — Super Admin Immutability
 
-**Decision:** Super admin name ("Administrator") and username ("superadmin") are hardcoded from
+**Decision:** Super admin name ("Super Admin") and username ("superadmin") are hardcoded from
 config and cannot be changed during setup.
 
 **Rationale:** These invariants are enforced system-wide (other modules check for them). Making

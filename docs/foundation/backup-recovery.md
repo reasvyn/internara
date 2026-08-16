@@ -1,6 +1,6 @@
 # Backup & Recovery — Account and System Recovery
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/06-admin-recovery.md`, `docs/infrastructure/backup-recovery.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
 
 ## Description
 
@@ -18,7 +18,7 @@ The super admin has fixed identity properties:
 
 | Property | Value |
 | -------- | ----- |
-| Name | `Administrator` (not editable) |
+| Name | `Super Admin` (not editable) |
 | Username | `superadmin` (not editable) |
 | Status | `PROTECTED` (cannot be deleted, locked, or suspended) |
 | Access | Bypasses all permission checks via `Gate::before` |

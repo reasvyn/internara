@@ -7,8 +7,10 @@
 
 Architectural base classes and contracts that every module in Internara extends. Defines the
 Action Triad (Command/Read/Process), Entity/DTO/Model data layer, Livewire UI base classes,
-Policy authorization, enum contracts, and audit data structures. Tech stack and infrastructure
-configuration are a separate initiative — see [tech-stack.md](FB792-tech-stack.md). Cross-cutting
+Policy authorization, enum contracts, and audit data structures. Tech stack and dependency
+versions are a separate initiative — see [tech-stack.md](FB792-tech-stack.md); runtime service
+behavior (cache, session, queue, mail) is a separate initiative — see
+[core-infra-services.md](ZT6VS-core-infra-services.md). Cross-cutting
 utility classes are a separate initiative — see [shared-utilities.md](C8F0D-shared-utilities.md).
 
 ---
@@ -46,7 +48,7 @@ violations compile-time errors rather than runtime surprises.
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Cache/session infrastructure (see [tech-stack.md](FB792-tech-stack.md)) |
+| NG1  | Cache/session infrastructure (see [core-infra-services.md](ZT6VS-core-infra-services.md)) |
 | NG2  | SmartLogger, PiiMasker, PasswordRules (see [shared-utilities.md](C8F0D-shared-utilities.md)) |
 | NG3  | Middleware ordering and execution (see [middleware-pipeline.md](2CF4Y-middleware-pipeline.md)) |
 | NG4  | Exception rendering and error handling details (see [logging-and-error-handling.md](89SRA-logging-and-error-handling.md)) |
@@ -129,7 +131,7 @@ violations compile-time errors rather than runtime surprises.
 | FR-C1 | `LabelEnum` — interface requiring `label(): string` on all enums |
 | FR-C2 | `StatusEnum` — extends `LabelEnum`, adds `isTerminal()`, `canTransitionTo()`, `validTransitions()` |
 | FR-C3 | `ColorableEnum` — interface requiring `color(): string` for badge styling |
-| FR-C4 | `SendsNotifications` — interface for notification dispatch: `execute(userId, type, title, ...)` |
+| FR-C4 | `SendsNotifications` — interface for notification dispatch: `execute(NotificationData $data)` |
 | FR-C5 | `SettingsStore` — interface for settings retrieval: `get(key, default)` |
 | FR-CH1 | `CustomDatabaseChannel` — notification channel: receives `SendsNotifications`, calls `toCustomDatabase()` on notification, validates `type`/`title` keys, delegates to `SendsNotifications::execute()` |
 
@@ -277,7 +279,7 @@ interface ColorableEnum {
 }
 
 interface SendsNotifications {
-    public function execute(string $userId, string $type, string $title, ?string $message = null, ?array $data = null, ?string $link = null): mixed;
+    public function execute(NotificationData $data): mixed;
 }
 
 interface SettingsStore {
@@ -325,6 +327,17 @@ final readonly class AuditReport extends BaseData {
     public function passed(): bool;
     /** @return AuditCheck[] */
     public function forCategory(AuditCategory $category): array;
+}
+
+final readonly class NotificationData extends BaseData {
+    public function __construct(
+        public string $userId,
+        public string $type,
+        public string $title,
+        public ?string $message = null,
+        public ?array $data = null,
+        public ?string $link = null,
+    ) {}
 }
 ```
 
@@ -412,7 +425,8 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [tech-stack.md](FB792-tech-stack.md) | PHP 8.4, Laravel 13, Eloquent Model base, queue/mail configuration |
+| [tech-stack.md](FB792-tech-stack.md) | PHP 8.4, Laravel 13, Eloquent Model base, queue/mail packages |
+| [core-infra-services.md](ZT6VS-core-infra-services.md) | Cache/session/queue/mail runtime behavior the base classes consume |
 
 ### Build Guide
 This spec defines the architectural vocabulary: Action Triad for business logic, Entity/DTO for
@@ -452,9 +466,11 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 - `app/Core/Policies/` — BasePolicy, AuthorizesRoles, AuthorizesOwnership
 - `app/Core/Contracts/` — LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore
 - `app/Core/Channels/CustomDatabaseChannel.php` — Queued database notification channel
+- `app/Core/Channels/Data/NotificationData.php` — In-app notification payload DTO (`SendsNotifications::execute()` argument)
 - `app/Core/Exceptions/` — AppException, ModuleException, RejectedException, and hierarchy
 - `bootstrap/app.php` — Middleware registration
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel versions, cache, session, queue, mail
+- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel versions, dependency manifest
+- **Related specs:** [core-infra-services.md](ZT6VS-core-infra-services.md) — cache, session, queue, mail runtime behavior
 - **Related specs:** [shared-utilities.md](C8F0D-shared-utilities.md) — Cross-cutting utility classes
 - **Related specs:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — Exception hierarchy, SmartLogger, error handling
 - **Related specs:** [middleware-pipeline.md](2CF4Y-middleware-pipeline.md) — Middleware execution order and registration

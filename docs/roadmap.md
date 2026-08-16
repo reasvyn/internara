@@ -32,7 +32,7 @@ Specs are ordered by lifecycle phase. See `docs/specs/index.md` for full depende
 
 | Phase | Name | Specs | Status |
 |-------|------|-------|--------|
-| 1 | Foundation | #1–#11 | ✅ Complete |
+| 1 | Foundation | #1–#13 | ✅ Complete |
 | 2 | Configuration | #12–#17 | 🔲 Not started |
 | 3 | Identity & Auth | #18–#25 | 🔲 Not started |
 | 4 | Institutional | #26–#27 | 🔲 Not started |
@@ -77,7 +77,7 @@ Not a milestone, but a description of the state the project should reach:
 ## Quick References
 
 - `docs/specs/index.md` — Full spec dependency graph with lifecycle phases
-- `docs/specs/` — All feature specifications (56 specs)
+- `docs/specs/` — All feature specifications (58 specs)
 - `docs/architecture.md` — 4-layer model, Action Triad, conventions
 - `docs/conventions.md` — Coding standards, invariants C1-C8, D1-D6
 - `docs/modules/index.md` — All 18 modules with links

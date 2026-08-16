@@ -135,12 +135,7 @@ final class SendPasswordResetLinkAction extends BaseCommandAction
 // app/Auth/Password/Actions/ResetPasswordAction.php
 final class ResetPasswordAction extends BaseCommandAction
 {
-    public function execute(
-        string $email,
-        string $token,
-        string $password,
-        string $passwordConfirmation,
-    ): ActionResponse;
+    public function execute(ResetPasswordData $data): ActionResponse;
     // Throttle: 'reset-password:{email}|{ip}', max 5, decay 300
     // Throws: RejectedException on throttle, mismatch, invalid token
 }

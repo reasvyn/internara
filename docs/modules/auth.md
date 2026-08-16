@@ -1,6 +1,6 @@
 # Auth — Authentication, RBAC & Account Recovery
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — super admin default name is `Super Admin`
 
 ## Description
 
@@ -27,7 +27,7 @@ transparently maps `super_admin` to Spatie's `superadmin` guard name.
 
 ### SuperAdmin
 
-Integrity constraints enforcing exactly one super admin instance. Name is locked to `Administrator`
+Integrity constraints enforcing exactly one super admin instance. Name is locked to `Super Admin`
 (from config), username to `superadmin`. The account cannot be deleted, renamed, or duplicated.
 Status is permanently `PROTECTED`.
 
