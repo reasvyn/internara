@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan_doc_links.py — Documentation Link Validation (v2.0.0)
+scan_doc_links.py — Documentation Link Validation
 Validates all relative markdown links across docs/, .agents/contexts/ (plus README.md, AGENTS.md):
 file targets must exist, and in-page anchors must resolve to a heading.
 """
@@ -23,7 +23,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"
-SCAN_VERSION = "2.0.0"
 
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 ANCHOR_TARGET = re.compile(r"^#(.+)$")
@@ -52,7 +51,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -279,7 +277,6 @@ def build_report(
 
     rules = set(f.rule for f in findings)
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type="full",
         module=None,

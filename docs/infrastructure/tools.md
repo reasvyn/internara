@@ -18,7 +18,6 @@ All scripts follow the same output schema:
 
 ```json
 {
-  "scan_version": "1.0.0",
   "scan_name": "violations",
   "scan_type": "full|module",
   "module": null,

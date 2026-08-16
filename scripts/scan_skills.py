@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """
-scan_skills.py — Agent Skill Consistency Scan (v2.0.0)
+scan_skills.py — Agent Skill Consistency Scan
 
 Validates structural consistency of `.agents/skills/{name}/SKILL.md` files against
-the AGENTS.md meta-framework: frontmatter, 4-phase workflow mapping to the 9-step
-pipeline, spec-first doctrine, size triage, git verification, and cross-skill
-handoffs. Skills with legitimately different structures (orientation, quality gate,
-blind audit, tooling standards, custom pipelines) are documented per-rule exemptions.
+the AGENTS.md meta-framework: frontmatter, reference to the canonical `agent-workflow`
+skill (single source of truth for the 9-step pipeline / 4-phase model), spec-first
+doctrine, size triage, git verification, cross-skill handoffs, and — critically —
+NO duplicated generic workflow boilerplate (skills must reference `agent-workflow`
+instead of restating the workflow). Skills with legitimately different structures
+(orientation hub, quality gate, blind audit, tooling standards, custom pipelines) are
+documented per-rule exemptions.
 """
 
 from __future__ import annotations
@@ -27,10 +30,10 @@ ROOT = Path(__file__).resolve().parent.parent
 SKILLS_DIR = ROOT / ".agents" / "skills"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "skills"
-SCAN_VERSION = "2.0.0"
 
 REF_META = "AGENTS.md #Agent-Workflow"
 REF_SIZE = "AGENTS.md #Size-Triage"
+REF_WORKFLOW_SKILL = ".agents/skills/agent-workflow/SKILL.md"
 
 # ─── Rules ──────────────────────────────────────────────────────────────────
 # Each rule is a dict: id, severity, category, exempt (skills excluded from the
@@ -48,14 +51,26 @@ RULES: list[dict[str, Any]] = [
         "reference": "AGENTS.md #Skill-Map",
     },
     {
-        "id": "SKILL_PHASE_MAP",
-        "severity": "medium",
+        "id": "SKILL_WORKFLOW_REF",
+        "severity": "high",
         "category": "convention",
         "exempt": [],
-        "name": "4-phase → 9-step mapping",
-        "description": "Standard workflow skills (`### 1. Construct`) must map phases to the "
-        "AGENTS.md 9-step pipeline",
-        "reference": REF_META,
+        "name": "References agent-workflow skill",
+        "description": "Skill must reference the canonical `agent-workflow` skill (the single "
+        "source of truth for the 9-step pipeline / 4-phase model) instead of restating the "
+        "workflow. Standard workflow skills must NOT duplicate the 4-phase skeleton.",
+        "reference": REF_WORKFLOW_SKILL,
+    },
+    {
+        "id": "SKILL_NO_DUP_WORKFLOW",
+        "severity": "high",
+        "category": "convention",
+        "exempt": ["agent-workflow"],
+        "name": "No duplicated workflow boilerplate",
+        "description": "Skill must NOT restate the generic workflow steps that live in "
+        "`agent-workflow` (9-step → 4-phase mapping, generic Construct/Verify/Report steps). "
+        "Restating them re-injects the same workflow into context on every skill load.",
+        "reference": REF_WORKFLOW_SKILL,
     },
     {
         "id": "SKILL_SPEC_FIRST",
@@ -87,7 +102,6 @@ RULES: list[dict[str, Any]] = [
         "(version-control verification, Edit Policy). Exempt: arch-guard (quality gate "
         "runs scanners, not code changes), context-awareness (orientation only, no code)",
         "reference": REF_META,
-        "reference": REF_META,
     },
     {
         "id": "SKILL_HANDOFFS",
@@ -101,7 +115,11 @@ RULES: list[dict[str, Any]] = [
     },
 ]
 
-RE_PHASE_MAP = re.compile(r"mapped to AGENTS\.md 9-step", re.IGNORECASE)
+RE_WORKFLOW_REF = re.compile(r"agent-workflow|Agent Workflow|`agent-workflow`", re.IGNORECASE)
+RE_NO_DUP_WORKFLOW = re.compile(
+    r"Using this skill follows 4 phases|mapped to AGENTS\.md 9-step",
+    re.IGNORECASE,
+)
 RE_SPEC_FIRST = re.compile(
     r"governing spec|spec[-\s]?first|Spec[-\s]?First|spec requirements", re.IGNORECASE
 )
@@ -110,9 +128,8 @@ RE_SIZE = re.compile(
 )
 RE_GIT = re.compile(r"git status[\s\S]{0,200}?git diff|git diff[\s\S]{0,200}?git status", re.IGNORECASE)
 RE_HANDOFFS = re.compile(
-    r"Skill Handoffs|Phase Context|Integration with Other Skills"
+    r"Skill Handoffs|Phase Context|Integration with Other Skills|upstream:|downstream:"
 )
-RE_CONSTRUCT = re.compile(r"###\s*1\.\s*Construct")
 RE_LAST_UPDATED = re.compile(r">\s*\*\*Last updated:\*\*")
 
 # ─── Data ───────────────────────────────────────────────────────────────────
@@ -134,7 +151,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -229,29 +245,47 @@ def scan_frontmatter(path: Path, content: str, name: str) -> list[Finding]:
     return findings
 
 
-def scan_phase_map(path: Path, content: str, name: str) -> list[Finding]:
-    # Only standard workflow skills (`### 1. Construct`) require the mapping line.
-    if not RE_CONSTRUCT.search(content):
+def scan_workflow_ref(path: Path, content: str, name: str) -> list[Finding]:
+    if name in RULES[1]["exempt"]:
         return []
-    if RE_PHASE_MAP.search(content):
+    if RE_WORKFLOW_REF.search(content):
         return []
     return [Finding(
-        id=f"SKILL-PM-{name}",
-        rule="SKILL_PHASE_MAP",
-        severity="medium",
+        id=f"SKILL-WR-{name}",
+        rule="SKILL_WORKFLOW_REF",
+        severity="high",
         category="convention",
         file=relative_path(path),
         line=1,
-        message=f"Skill '{name}' uses the standard 4-phase workflow but does not map "
-        "phases to the AGENTS.md 9-step pipeline",
-        suggestion="Add to the workflow intro: 'Using this skill follows 4 phases (mapped to "
-        "AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6, Verify = 7, Report & Commit = 8-9)'",
+        message=f"Skill '{name}' does not reference the canonical `agent-workflow` skill",
+        suggestion="Add a one-line reference to the workflow: 'Follow the `agent-workflow` "
+        "skill (9-step pipeline / 4-phase model) — this skill adds task-specific steps.'",
         reference=RULES[1]["reference"],
     )]
 
 
-def scan_spec_first(path: Path, content: str, name: str) -> list[Finding]:
+def scan_no_dup_workflow(path: Path, content: str, name: str) -> list[Finding]:
     if name in RULES[2]["exempt"]:
+        return []
+    if not RE_NO_DUP_WORKFLOW.search(content):
+        return []
+    return [Finding(
+        id=f"SKILL-NDW-{name}",
+        rule="SKILL_NO_DUP_WORKFLOW",
+        severity="high",
+        category="convention",
+        file=relative_path(path),
+        line=1,
+        message=f"Skill '{name}' duplicates the canonical workflow (4-phase skeleton / "
+        "Construct header / AGENTS.md 9-step mapping) instead of referencing `agent-workflow`",
+        suggestion="Remove the duplicated workflow section and reference `agent-workflow`: "
+        "keep only this skill's unique execution steps, rules, and references",
+        reference=RULES[2]["reference"],
+    )]
+
+
+def scan_spec_first(path: Path, content: str, name: str) -> list[Finding]:
+    if name in RULES[3]["exempt"]:
         return []
     if RE_SPEC_FIRST.search(content):
         return []
@@ -265,7 +299,7 @@ def scan_spec_first(path: Path, content: str, name: str) -> list[Finding]:
         message=f"Skill '{name}' does not reference the governing spec / spec-first doctrine",
         suggestion="Add to the Construct phase: locate the governing spec (`docs/specs/`) and "
         "list the FR/NFR/UC IDs it defines before any work (Spec-First Doctrine)",
-        reference=RULES[2]["reference"],
+        reference=RULES[3]["reference"],
     )]
 
 
@@ -282,14 +316,16 @@ def scan_size_triage(path: Path, content: str, name: str) -> list[Finding]:
         message=f"Skill '{name}' does not reference AGENTS.md Size Triage",
         suggestion="Add to the Construct phase: classify the size (S/M/L) per AGENTS.md Size "
         "Triage; if L-size, inform the user and split into sessions",
-        reference=RULES[3]["reference"],
+        reference=RULES[4]["reference"],
     )]
 
 
 def scan_git_verify(path: Path, content: str, name: str) -> list[Finding]:
-    if name in RULES[4]["exempt"]:
+    if name in RULES[5]["exempt"]:
         return []
-    if RE_GIT.search(content):
+    # Satisfied by a direct git status/diff reference OR by referencing agent-workflow
+    # (which owns the generic version-control verification step).
+    if RE_GIT.search(content) or RE_WORKFLOW_REF.search(content):
         return []
     return [Finding(
         id=f"SKILL-GV-{name}",
@@ -301,12 +337,12 @@ def scan_git_verify(path: Path, content: str, name: str) -> list[Finding]:
         message=f"Skill '{name}' does not reference git status/diff verification",
         suggestion="Add to the Verify phase: run `git status` + `git diff` to confirm only "
         "intended files changed (version-control verification)",
-        reference=RULES[4]["reference"],
+        reference=RULES[5]["reference"],
     )]
 
 
 def scan_handoffs(path: Path, content: str, name: str) -> list[Finding]:
-    if name in RULES[5]["exempt"]:
+    if name in RULES[6]["exempt"]:
         return []
     if RE_HANDOFFS.search(content):
         return []
@@ -320,7 +356,7 @@ def scan_handoffs(path: Path, content: str, name: str) -> list[Finding]:
         message=f"Skill '{name}' does not document cross-skill handoffs",
         suggestion="Add a 'Phase Context' table (upstream/this/downstream) or a "
         "'Skill Handoffs (Actionable)' condition→action table",
-        reference=RULES[5]["reference"],
+        reference=RULES[6]["reference"],
     )]
 
 
@@ -339,7 +375,6 @@ def build_report(
         by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
 
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,
@@ -417,7 +452,8 @@ def main() -> None:
             continue
         name = skill_name_of(fp)
         findings.extend(scan_frontmatter(fp, content, name))
-        findings.extend(scan_phase_map(fp, content, name))
+        findings.extend(scan_workflow_ref(fp, content, name))
+        findings.extend(scan_no_dup_workflow(fp, content, name))
         findings.extend(scan_spec_first(fp, content, name))
         findings.extend(scan_size_triage(fp, content, name))
         findings.extend(scan_git_verify(fp, content, name))

@@ -22,7 +22,6 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "class-contracts"
-SCAN_VERSION = "2.0.0"
 
 # ─── Data ───────────────────────────────────────────────────────────────────
 
@@ -43,7 +42,6 @@ class Finding:
 
 @dataclass
 class ScanResult:
-    scan_version: str
     scan_name: str
     scan_type: str
     module: str | None
@@ -763,7 +761,6 @@ def build_report(
     rules = {f.rule.split("_")[0] for f in findings}
 
     return ScanResult(
-        scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
         scan_type=scan_type,
         module=module,
