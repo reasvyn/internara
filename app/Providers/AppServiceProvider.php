@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('admin', fn () => Limit::perMinute(60));
         RateLimiter::for(
             'global',
-            fn (Request $request) => Limit::perMinute(120)->by($request->ip()),
+            fn (Request $request) => Limit::perMinute(30)->by($request->ip()),
         );
 
         if (ModuleManager::policiesEnabled()) {
