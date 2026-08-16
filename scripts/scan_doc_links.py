@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 scan_doc_links.py — Documentation Link Validation (v2.0.0)
-Validates all relative markdown links across docs/ (plus README.md, AGENTS.md):
+Validates all relative markdown links across docs/, .agents/contexts/ (plus README.md, AGENTS.md):
 file targets must exist, and in-page anchors must resolve to a heading.
 """
 
@@ -103,6 +103,9 @@ def find_markdown_files(module: str | None = None) -> list[Path]:
             return sorted(module_path.rglob("*.md"))
         return []
     files = list(DOCS_DIR.rglob("*.md"))
+    contexts_dir = ROOT / ".agents" / "contexts"
+    if contexts_dir.exists():
+        files.extend(contexts_dir.rglob("*.md"))
     for name in ["README.md", "AGENTS.md"]:
         f = ROOT / name
         if f.exists():
