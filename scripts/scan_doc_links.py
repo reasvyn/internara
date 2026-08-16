@@ -355,6 +355,8 @@ def build_report(
             "by_severity": by_severity,
             "total_links": total_links,
             "valid_links": total_links - len(findings),
+            "outdated_docs": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
+            "missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
         },
         findings=[vars(f) for f in findings],
         metadata={
@@ -388,8 +390,8 @@ def print_summary(result: ScanResult) -> None:
     print(f"  Files scanned:      {result.metadata['files_scanned']}")
     print(f"  Total links:        {s['total_links']}")
     print(f"  Valid links:        {s['valid_links']}")
-    print(f"  Outdated docs:      {result.metadata['doc_rule_outdated']}")
-    print(f"  Missing metadata:   {result.metadata['doc_rule_missing_metadata']}")
+    print(f"  Outdated docs:      {s['outdated_docs']}")
+    print(f"  Missing metadata:   {s['missing_metadata']}")
     print(f"  Categories passed:  {s['passed']}")
     print(f"  Findings:           {s['failed']}")
     print(f"    Critical: {bs.get('critical', 0)}")

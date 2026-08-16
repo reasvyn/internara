@@ -9,6 +9,8 @@ downstream:
 
 # Issue Writing
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify issue-writing format produces actionable GitHub Issues per spec/traceability requirements
+
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

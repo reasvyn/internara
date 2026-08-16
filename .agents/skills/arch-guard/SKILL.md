@@ -11,6 +11,8 @@ description: >
 
 # Architecture Guard
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify skill matches current arch-guard scans (C1-C8, D1-D6, class contracts, naming, security, performance)
+
 Comprehensive enforcement of Internara's architecture, conventions, and patterns.
 This is the **single source of truth** for all quality rules — every other skill defers here.
 
