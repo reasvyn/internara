@@ -214,7 +214,7 @@ pass, Pint clean. See: `docs/conventions.md` §11.
 **Static Utilities** — `Color`, `PiiMasker`, `CsvHandler`, `PasswordRules`, `Environment`,
 `AppInfo`, `AppIntegrity`, `LangChecker`. **Livewire Concerns** — `WithRecordSelection`,
 `WithSorting`. **CustomDatabaseChannel** — in-app DB notifications. **Security Middleware** —
-`SecurityHeaders` (CSP, X-Frame-Options, etc.), `LogContext` (request tracing).
+`SecurityHeadersMiddleware` (CSP, X-Frame-Options, etc.), `LogContextMiddleware` (request tracing).
 
 ---
 

@@ -319,7 +319,7 @@ enum {Name}: string implements LabelEnum, StatusEnum
 | Config key | `snake_case` with `{file}.{key}` | `app.name` |
 | Column/table | `snake_case` | `user_id`, `academic_years` |
 | Boolean methods | `is`/`has`/`can`/`should` prefix | `isActive()`, `allowsLogin()` |
-| Test method | Pest `it()` with descriptive string | `it('creates a user with valid data')` |
+| Test method | Pest `test()` with `{SPECID}-{REQ}:` prefix | `test('SE5Q9-FR-A4: step() records success')` |
 | Test file | `{Name}Test.php` | `CreateUserActionTest.php` |
 | Factory | `{Name}Factory` | `UserFactory` |
 | Migration | `YYYY_MM_DD_HHMMSS_create_{table}_table.php` | `2026_04_29_092750_create_users_table.php` |

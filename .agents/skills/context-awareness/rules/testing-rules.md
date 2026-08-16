@@ -32,7 +32,7 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 ### Every Test
 
 ```
-[ ] Description prefixes the requirement ID: it('FR-A1: ...')
+[ ] Description prefixes the spec + requirement ID: test('SE5Q9-FR-A4: ...')
 [ ] Scenario is named by the spec (happy path or a named rejection/alternative)
 [ ] No padding — no edge-case matrices, internals, or framework behavior the spec doesn't name
 [ ] If it maps to no requirement → orphan: candidate for deletion
