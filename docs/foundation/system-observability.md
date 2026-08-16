@@ -1,6 +1,6 @@
 # System Observability — Monitoring, Logging & Audit
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/22-system-observability.md`, `docs/infrastructure/observability.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — verify observability stack matches current (SmartLogger dual-channel, Pulse dashboard, health checks, audit trail, GDPR compliance)
 
 ## Description
 

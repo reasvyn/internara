@@ -1,7 +1,6 @@
 # Product Definition — Scope, Personas & System Boundary
 
-> **Last updated:** 2026-07-22 **Changes:** feat — expand business problems & values, enrich
-> personas/boundary/deployment/localization/licensing with rationale and market context
+> **Last updated:** 2026-08-16 **Changes:** sync — verify product definition matches current scope (Indonesian SMA/SMK PKL management, 3S principles, single-tenant, CSV import/export)
 
 ## Description
 

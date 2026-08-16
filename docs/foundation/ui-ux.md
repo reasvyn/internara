@@ -1,6 +1,6 @@
 # UI/UX Design — Principles & Guidelines
 
-> **Last updated:** 2026-07-21 **Changes:** feat — expand accessibility (§6), add routing (§8) and localization (§9)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify UI/UX principles match current (DaisyUI, maryUI, Tailwind CSS v4, accessibility, routing, localization)
 
 ## Description
 

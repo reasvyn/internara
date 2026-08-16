@@ -1,6 +1,6 @@
 # Installation — Server Preparation & CLI Provisioning
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/01-installation.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — verify installation procedure matches current implementation (prerequisite checks, dependency install, env config, DB provisioning, setup token generation)
 
 ## Description
 
