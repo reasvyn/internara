@@ -1,7 +1,7 @@
 # Docker — Container Configuration & Setup Environments
 
-> **Last updated:** 2026-08-13
-> **Changes:** amend — document low-memory production defaults (scheduler off, MySQL caps, PHP-FPM cap, multi-stage image)
+> **Last updated:** 2026-08-16
+> **Changes:** amend — document low-memory production defaults (scheduler off, MySQL caps, PHP-FPM cap, multi-stage image); add Docker build cache optimization (.dockerignore, lockfile-first layers, BuildKit cache mounts, builder-stage node_modules removal)
 
 ## Description
 Internara provides three Docker environments for different use cases.
@@ -42,6 +42,19 @@ runs with capped memory (`innodb_buffer_pool_size=64M`, `performance_schema=OFF`
 has a `mem_limit` (`app` 256m, `db` 384m, `web` 64m), and PHP-FPM is capped at 2 workers
 (`docker/php-fpm/www.conf`). The runtime `app` image is multi-stage — it excludes `node_modules` and
 the build toolchain.
+
+**Build cache stays small (no multi-GB bloat):**
+
+- `.dockerignore` excludes `.git`, `node_modules`, `vendor`, `tests`, `docs`, and local `storage`
+  artifacts from the build context — the daemon only receives what the image needs.
+- `composer.json`/`composer.lock` are copied and installed **before** `package.json`/`package-lock.json`
+  (and both before the rest of the source), so dependency layers are only rebuilt when a lockfile
+  changes — not on every source commit.
+- BuildKit cache mounts (`--mount=type=cache`) persist the Composer and npm download caches between
+  builds, so repeated builds reuse already-downloaded packages.
+- `node_modules` is removed at the end of the **builder** stage, so it never enters the runtime image
+  (deleting it in the runtime stage would still leave its bytes in an earlier layer).
+- Prune stale layers periodically: `docker builder prune -af` (or `docker buildx prune`).
 
 See `docker-compose.yml` for service definitions. See `docs/foundation/installation.md` for production setup
 guide.

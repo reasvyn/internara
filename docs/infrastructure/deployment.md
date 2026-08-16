@@ -487,6 +487,12 @@ The default compose is tuned to run on a **1 GB RAM** VPS:
   (start 1, max spare 2) — enough for demo/school-scale traffic and keeps resident memory small.
 - **Multi-stage image.** The runtime `app` image excludes `node_modules`, build toolchain, and the Git
   history, keeping the image lean and build memory low.
+- **Build cache stays small.** `.dockerignore` keeps the build context lean; `composer`/`npm`
+  dependency layers are copied and installed from lockfiles **before** the rest of the source, so they
+  are only rebuilt when a lockfile changes; BuildKit `--mount=type=cache` reuses the Composer and npm
+  download caches between builds; `node_modules` is removed at the end of the builder stage so it never
+  enters the runtime image. Without these, every source commit re-installs all dependencies and the
+  Docker build cache grows into the multi-GB range. Prune stale layers with `docker builder prune -af`.
 
 To opt back in to background processing, export `RUN_SCHEDULER=true` (and add a `redis` service +
 `RUN_QUEUE=true` for async queues) when running compose.
