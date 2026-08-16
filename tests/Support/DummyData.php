@@ -424,7 +424,7 @@ final class DummyData
 
         $this->students = collect();
         foreach (range(1, config('dummy.accounts.student_count')) as $i) {
-            $user = $this->ensureUser("student{$i}@example.com", 'student', 'users');
+            $user = $this->ensureUser("student{$i}@example.com", 'student', 'users', $this->studentName());
             $this->students->push($user);
             $department = $this->departments->get(($i - 1) % $this->departments->count());
             $this->ensureProfile($user, Profile::factory()->forStudent($department), [
@@ -1212,13 +1212,13 @@ final class DummyData
         }
     }
 
-    private function ensureUser(string $email, string $role, string $countKey): User
+    private function ensureUser(string $email, string $role, string $countKey, ?string $name = null): User
     {
         $user = User::firstWhere('email', $email);
 
         if ($user === null) {
             $user = User::factory()->create([
-                'name' => fake()->name(),
+                'name' => $name ?? fake()->name(),
                 'email' => $email,
                 'username' => Str::before($email, '@'),
                 'password' => Hash::make($this->password),
@@ -1235,6 +1235,15 @@ final class DummyData
         $user->assignRole($role);
 
         return $user;
+    }
+
+    /**
+     * FR-C19 — a student name carries no academic title: `firstName` + `lastName` only,
+     * skipping the faker `id_ID` `suffix` provider (S.Pd, S.Kom, M.TI., ...). See DD-11.
+     */
+    private function studentName(): string
+    {
+        return fake()->firstName().' '.fake()->lastName();
     }
 
     private function ensureProfile(User $user, Factory $factory, array $values, string $countKey): Profile

@@ -19,7 +19,7 @@ use Tests\Support\DummyData;
 
 uses(LazilyRefreshDatabase::class);
 
-it('3UOZP-NFR-S1: DummySeeder refuses to run in production', function () {
+test('3UOZP-NFR-S1: DummySeeder refuses to run in production', function () {
     app()->detectEnvironment(fn () => 'production');
 
     try {
@@ -30,7 +30,7 @@ it('3UOZP-NFR-S1: DummySeeder refuses to run in production', function () {
     }
 });
 
-it('3UOZP-FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent dataset with deterministic demo accounts', function () {
+test('3UOZP-FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent dataset with deterministic demo accounts', function () {
     $counts = DummyData::make()->run();
 
     // FR-H1 — per-entity counts returned, matching the database.
@@ -71,7 +71,7 @@ it('3UOZP-FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent datase
     expect(User::count())->toBe(1 + config('dummy.accounts.teacher_count') + config('dummy.accounts.supervisor_count') + config('dummy.accounts.student_count'));
 });
 
-it('3UOZP-FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point with base-data gating and a summary', function () {
+test('3UOZP-FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point with base-data gating and a summary', function () {
     // Start from an empty base state to prove the seeder bootstraps it.
     DB::table('roles')->delete();
     DB::table('settings')->delete();
@@ -99,7 +99,22 @@ it('3UOZP-FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry
     expect(Setting::count())->toBeGreaterThan(0);
 });
 
-it('3UOZP-FR-E4/FR-H14: gates each base seeder independently when base data is only partially present', function () {
+test('3UOZP-FR-C19: student names are generated without academic titles', function () {
+    DummyData::make()->run();
+
+    $titles = [
+        'S.Ked', 'S.Gz', 'S.Pt', 'S.IP', 'S.E.I', 'S.E.', 'S.Kom', 'S.H.', 'S.T.',
+        'S.Pd', 'S.Psi', 'S.I.Kom', 'S.Sos', 'S.Farm', 'M.M.', 'M.Kom.', 'M.TI.',
+        'M.Pd', 'M.Farm', 'M.Ak',
+    ];
+
+    User::role('student')->each(function (User $student) use ($titles): void {
+        $lastToken = collect(preg_split('/\s+/', trim($student->name)))->last();
+        expect($lastToken)->not->toBeIn($titles);
+    });
+});
+
+test('3UOZP-FR-E4/FR-H14: gates each base seeder independently when base data is only partially present', function () {
     // Roles exist (from setUp) — prove RolePermissionSeeder is skipped by deleting one role
     // and asserting it is NOT re-created, while settings/years (absent) are still seeded.
     DB::table('roles')->where('name', 'superadmin')->delete();
@@ -115,7 +130,7 @@ it('3UOZP-FR-E4/FR-H14: gates each base seeder independently when base data is o
     expect(AcademicYear::where('is_active', true)->count())->toBe(1);
 });
 
-it('3UOZP-FR-H13/NFR-R2: a mid-run failure rolls back the entire dataset', function () {
+test('3UOZP-FR-H13/NFR-R2: a mid-run failure rolls back the entire dataset', function () {
     Hash::shouldReceive('make')->andThrow(new RuntimeException('hash failure'));
 
     expect(fn () => DummyData::make()->run())
