@@ -18,7 +18,7 @@ function logContextRun(Request $request): Response
     return (new LogContextMiddleware)->handle($request, $next);
 }
 
-it('89SRA-FR-LC1/FR-LC2/FR-LC4/FR-LC5: injects request_id, method, url, ip, duration and status into log context', function () {
+test('2CF4Y-FR-MW2/89SRA-FR-LC1/FR-LC2/FR-LC4/FR-LC5: injects request_id, method, url, ip, duration and status into log context', function () {
     $logs = captureLogs();
     $request = Request::create('/some/path?q=1', 'GET');
     $request->server->set('REMOTE_ADDR', '127.0.0.1');
@@ -36,7 +36,7 @@ it('89SRA-FR-LC1/FR-LC2/FR-LC4/FR-LC5: injects request_id, method, url, ip, dura
     expect($entry->context['duration_ms'])->toBeNumeric();
 });
 
-it('89SRA-FR-LC3: injects user_id and user_role when a user is authenticated', function () {
+test('2CF4Y-FR-MW2/89SRA-FR-LC3: injects user_id and user_role when a user is authenticated', function () {
     $logs = captureLogs();
     $user = User::factory()->create()->assignRole('admin');
     $request = Request::create('/');
@@ -51,7 +51,7 @@ it('89SRA-FR-LC3: injects user_id and user_role when a user is authenticated', f
     expect($entry->context['user_role'])->toBe('admin');
 });
 
-it('89SRA-FR-LC3: omits user context for guest requests', function () {
+test('89SRA-FR-LC3: omits user context for guest requests', function () {
     $logs = captureLogs();
     $request = Request::create('/');
 

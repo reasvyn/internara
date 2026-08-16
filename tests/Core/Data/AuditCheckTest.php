@@ -6,7 +6,7 @@ use App\Core\Data\AuditCheck;
 use App\Core\Enums\AuditCategory;
 use App\Core\Enums\AuditStatus;
 
-it('SE5Q9-FR-D1: exposes the defined DTO shape', function () {
+test('SE5Q9-FR-D1: exposes the defined DTO shape', function () {
     $check = new AuditCheck(
         category: AuditCategory::REQUIREMENTS,
         nameKey: 'setup.wizard.requirements',
@@ -26,7 +26,7 @@ it('SE5Q9-FR-D1: exposes the defined DTO shape', function () {
     expect($data['messageParams'])->toBe(['value' => 42]);
 });
 
-it('SE5Q9-FR-D1: can be reconstructed from an array with defaults', function () {
+test('SE5Q9-FR-D1: can be reconstructed from an array with defaults', function () {
     $check = AuditCheck::fromArray([
         'category' => AuditCategory::DATABASE,
         'nameKey' => 'setup.wizard.database',

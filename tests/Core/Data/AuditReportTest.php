@@ -17,7 +17,7 @@ function auditCheck(AuditCategory $category, AuditStatus $status): AuditCheck
     );
 }
 
-it('SE5Q9-FR-D2: passed() is true when no check has failed', function () {
+test('SE5Q9-FR-D2: passed() is true when no check has failed', function () {
     $report = new AuditReport([
         auditCheck(AuditCategory::REQUIREMENTS, AuditStatus::PASS),
         auditCheck(AuditCategory::DATABASE, AuditStatus::WARN),
@@ -26,7 +26,7 @@ it('SE5Q9-FR-D2: passed() is true when no check has failed', function () {
     expect($report->passed())->toBeTrue();
 });
 
-it('SE5Q9-FR-D2: passed() is false when a check has failed', function () {
+test('SE5Q9-FR-D2: passed() is false when a check has failed', function () {
     $report = new AuditReport([
         auditCheck(AuditCategory::REQUIREMENTS, AuditStatus::PASS),
         auditCheck(AuditCategory::DATABASE, AuditStatus::FAIL),
@@ -35,7 +35,7 @@ it('SE5Q9-FR-D2: passed() is false when a check has failed', function () {
     expect($report->passed())->toBeFalse();
 });
 
-it('SE5Q9-FR-D2: forCategory() filters checks by category', function () {
+test('SE5Q9-FR-D2: forCategory() filters checks by category', function () {
     $report = new AuditReport([
         auditCheck(AuditCategory::REQUIREMENTS, AuditStatus::PASS),
         auditCheck(AuditCategory::DATABASE, AuditStatus::FAIL),

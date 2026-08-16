@@ -15,15 +15,15 @@ final class BaseFormRequestTestStub extends BaseFormRequest
     }
 }
 
-it('SE5Q9-FR-L7: authorize returns true by default', function () {
+test('SE5Q9-FR-L7: authorize returns true by default', function () {
     expect((new BaseFormRequestTestStub)->authorize())->toBeTrue();
 });
 
-it('SE5Q9-FR-L7: rules returns an empty array by default on the base class', function () {
+test('SE5Q9-FR-L7: rules returns an empty array by default on the base class', function () {
     expect((new class extends BaseFormRequest {})->rules())->toBe([]);
 });
 
-it('SE5Q9-FR-L7: failed validation throws ValidationFailedException with errors context', function () {
+test('SE5Q9-FR-L7: failed validation throws ValidationFailedException with errors context', function () {
     $request = BaseFormRequestTestStub::create('/submit', 'POST', ['name' => '']);
     $request->setContainer(app());
     app()->instance('request', $request);
@@ -38,7 +38,7 @@ it('SE5Q9-FR-L7: failed validation throws ValidationFailedException with errors 
         });
 });
 
-it('SE5Q9-FR-L7: valid input passes validation without exception', function () {
+test('SE5Q9-FR-L7: valid input passes validation without exception', function () {
     $request = BaseFormRequestTestStub::create('/submit', 'POST', ['name' => 'valid']);
     $request->setContainer(app());
     app()->instance('request', $request);

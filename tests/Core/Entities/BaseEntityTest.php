@@ -21,22 +21,22 @@ final readonly class TestEntity extends BaseEntity
     }
 }
 
-it('SE5Q9-FR-M3: cannot be instantiated directly (abstract)', function () {
+test('SE5Q9-FR-M3: cannot be instantiated directly (abstract)', function () {
     expect((new ReflectionClass(BaseEntity::class))->isAbstract())->toBeTrue();
 });
 
-it('SE5Q9-FR-M3: fromArray() builds the entity from constructor params', function () {
+test('SE5Q9-FR-M3: fromArray() builds the entity from constructor params', function () {
     $entity = TestEntity::fromArray(['name' => 'Adit', 'age' => 18]);
 
     expect($entity->name)->toBe('Adit');
     expect($entity->age)->toBe(18);
 });
 
-it('SE5Q9-FR-M3: fromArray() throws when a required param is missing', function () {
+test('SE5Q9-FR-M3: fromArray() throws when a required param is missing', function () {
     TestEntity::fromArray(['age' => 18]);
 })->throws(InvalidArgumentException::class, 'Missing required constructor parameter "name"');
 
-it('SE5Q9-FR-M3: fromModel() bridges a model to the entity', function () {
+test('SE5Q9-FR-M3: fromModel() bridges a model to the entity', function () {
     $model = new class extends Model
     {
         protected $table = 'test_entities';
@@ -51,14 +51,14 @@ it('SE5Q9-FR-M3: fromModel() bridges a model to the entity', function () {
     expect($entity->age)->toBe(18);
 });
 
-it('SE5Q9-FR-M3: toArray() and jsonSerialize() expose the entity values', function () {
+test('SE5Q9-FR-M3: toArray() and jsonSerialize() expose the entity values', function () {
     $entity = TestEntity::fromArray(['name' => 'Adit', 'age' => 18]);
 
     expect($entity->toArray())->toBe(['name' => 'Adit', 'age' => 18]);
     expect($entity->jsonSerialize())->toBe(['name' => 'Adit', 'age' => 18]);
 });
 
-it('SE5Q9-FR-M3: equals() compares value, with() returns a modified copy', function () {
+test('SE5Q9-FR-M3: equals() compares value, with() returns a modified copy', function () {
     $entity = TestEntity::fromArray(['name' => 'Adit', 'age' => 18]);
 
     expect($entity->equals(TestEntity::fromArray(['name' => 'Adit', 'age' => 18])))->toBeTrue();

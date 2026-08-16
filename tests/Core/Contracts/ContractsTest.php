@@ -52,7 +52,7 @@ enum TestColorableEnum: string implements ColorableEnum
     }
 }
 
-it('SE5Q9-FR-C1: Core enums implement LabelEnum and expose a label()', function () {
+test('SE5Q9-FR-C1: Core enums implement LabelEnum and expose a label()', function () {
     foreach ([AuditCategory::class, AuditStatus::class, CsvRowResult::class] as $enum) {
         expect($enum)->toImplement(LabelEnum::class);
         foreach ($enum::cases() as $case) {
@@ -61,7 +61,7 @@ it('SE5Q9-FR-C1: Core enums implement LabelEnum and expose a label()', function 
     }
 });
 
-it('SE5Q9-FR-C2: StatusEnum extends LabelEnum with lifecycle methods', function () {
+test('SE5Q9-FR-C2: StatusEnum extends LabelEnum with lifecycle methods', function () {
     expect(StatusEnum::class)->toImplement(LabelEnum::class);
     expect(TestStatusEnum::Draft->isTerminal())->toBeFalse();
     expect(TestStatusEnum::Archived->isTerminal())->toBeTrue();
@@ -71,12 +71,12 @@ it('SE5Q9-FR-C2: StatusEnum extends LabelEnum with lifecycle methods', function 
     expect(TestStatusEnum::Draft->validTransitions())->toBe([TestStatusEnum::Active]);
 });
 
-it('SE5Q9-FR-C3: ColorableEnum requires a color() string for badges', function () {
+test('SE5Q9-FR-C3: ColorableEnum requires a color() string for badges', function () {
     expect(TestColorableEnum::class)->toImplement(ColorableEnum::class);
     expect(TestColorableEnum::Success->color())->toBeString();
 });
 
-it('SE5Q9-FR-C4: SendsNotifications contract declares execute(userId, type, title, ...)', function () {
+test('SE5Q9-FR-C4: SendsNotifications contract declares execute(userId, type, title, ...)', function () {
     $method = (new ReflectionMethod(SendsNotifications::class, 'execute'));
     $names = array_map(fn (ReflectionParameter $p) => $p->getName(), $method->getParameters());
 
@@ -85,7 +85,7 @@ it('SE5Q9-FR-C4: SendsNotifications contract declares execute(userId, type, titl
     expect($method->getReturnType())->not->toBeNull();
 });
 
-it('SE5Q9-FR-C5: SettingsStore contract declares get(key, default)', function () {
+test('SE5Q9-FR-C5: SettingsStore contract declares get(key, default)', function () {
     $method = (new ReflectionMethod(SettingsStore::class, 'get'));
 
     expect($method->isPublic())->toBeTrue();

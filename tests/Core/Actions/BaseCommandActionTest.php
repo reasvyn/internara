@@ -45,7 +45,7 @@ final class TestCommandAction extends BaseCommandAction
     }
 }
 
-it('SE5Q9-FR-A2: respond() returns ok() or created() based on the flag', function () {
+test('SE5Q9-FR-A2: respond() returns ok() or created() based on the flag', function () {
     $action = new TestCommandAction;
 
     expect($action->doRespond('data'))->toBeInstanceOf(ActionResponse::class);
@@ -54,32 +54,32 @@ it('SE5Q9-FR-A2: respond() returns ok() or created() based on the flag', functio
     expect($action->doRespond('data', 'Custom message')->message)->toBe('Custom message');
 });
 
-it('SE5Q9-FR-A2: respondDeleted() returns a deleted response', function () {
+test('SE5Q9-FR-A2: respondDeleted() returns a deleted response', function () {
     $response = (new TestCommandAction)->doRespondDeleted();
 
     expect($response->success)->toBeTrue();
     expect($response->message)->toBe(__('common.deleted'));
 });
 
-it('SE5Q9-FR-A2: respondError() returns a failed response with errors', function () {
+test('SE5Q9-FR-A2: respondError() returns a failed response with errors', function () {
     $response = (new TestCommandAction)->doRespondError('Nope', ['name' => ['required']]);
 
     expect($response->failed())->toBeTrue();
     expect($response->errors)->toBe(['name' => ['required']]);
 });
 
-it('SE5Q9-FR-A2: validate() validates data and throws ValidationException on failure', function () {
+test('SE5Q9-FR-A2: validate() validates data and throws ValidationException on failure', function () {
     $action = new TestCommandAction;
 
     expect($action->doValidate(['name' => 'John'], ['name' => 'required']))->toBe(['name' => 'John']);
     expect(fn () => $action->doValidate([], ['name' => 'required']))->toThrow(ValidationException::class);
 });
 
-it('SE5Q9-FR-A2: authorize() throws AuthorizationException when denied', function () {
+test('SE5Q9-FR-A2: authorize() throws AuthorizationException when denied', function () {
     expect(fn () => (new TestCommandAction)->doAuthorize('missing.ability'))->toThrow(AuthorizationException::class);
 });
 
-it('SE5Q9-FR-A2: flash() queues success, error, warning and info notifications', function () {
+test('SE5Q9-FR-A2: flash() queues success, error, warning and info notifications', function () {
     $action = new TestCommandAction;
 
     foreach (['success', 'error', 'warning', 'info'] as $type) {

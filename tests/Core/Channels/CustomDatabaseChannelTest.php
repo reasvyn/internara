@@ -51,7 +51,7 @@ final class CustomDatabaseChannelTestPlainNotification extends Notification
 
 uses(LazilyRefreshDatabase::class);
 
-it('NUCY3-FR-EV*: send forwards full notification payload to SendsNotifications', function () {
+test('NUCY3-FR-EV*: send forwards full notification payload to SendsNotifications', function () {
     $sender = new CustomDatabaseChannelTestSendsNotifications;
     $channel = new CustomDatabaseChannel($sender);
     $user = User::factory()->create();
@@ -75,7 +75,7 @@ it('NUCY3-FR-EV*: send forwards full notification payload to SendsNotifications'
     ]);
 });
 
-it('NUCY3-FR-EV*: defaults type and title when missing and logs warnings', function () {
+test('NUCY3-FR-EV*: defaults type and title when missing and logs warnings', function () {
     $logs = captureLogs();
     $sender = new CustomDatabaseChannelTestSendsNotifications;
     $channel = new CustomDatabaseChannel($sender);
@@ -92,7 +92,7 @@ it('NUCY3-FR-EV*: defaults type and title when missing and logs warnings', funct
     expect($warnings)->toContain('Notification missing title key');
 });
 
-it('NUCY3-FR-EV*: is a no-op when the notification has no toCustomDatabase method', function () {
+test('NUCY3-FR-EV*: is a no-op when the notification has no toCustomDatabase method', function () {
     $sender = new CustomDatabaseChannelTestSendsNotifications;
     $channel = new CustomDatabaseChannel($sender);
     $user = User::factory()->create();
@@ -102,7 +102,7 @@ it('NUCY3-FR-EV*: is a no-op when the notification has no toCustomDatabase metho
     expect($sender->calls)->toBe([]);
 });
 
-it('NUCY3-FR-EV*: is a no-op when the notifiable has no id', function () {
+test('NUCY3-FR-EV*: is a no-op when the notifiable has no id', function () {
     $sender = new CustomDatabaseChannelTestSendsNotifications;
     $channel = new CustomDatabaseChannel($sender);
 
