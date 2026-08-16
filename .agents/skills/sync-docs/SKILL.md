@@ -11,7 +11,6 @@ upstream:
   - pulse-development
   - pest-testing
   - security-audit
-  - roadmap-planning
 ---
 
 # Sync Docs
@@ -39,8 +38,8 @@ adds the doc-sync workflow, audit scope, key rules, and verification checklist b
 - Locate the governing spec and the agent guides/skills that reference it — `AGENTS.md`,
   `.agents/skills/*/SKILL.md`, `.agents/contexts/*.md`, `.agents/plans/` (a spec/code change must be
   mirrored there too)
-- Review last 10 git commits (`git log --oneline -10`, `git log -10 --stat`,
-  `git diff HEAD~10..HEAD --name-status`) to focus on actual changes
+- Review git commits from the last 7 days (`git log --since="7 days ago" --oneline`,
+  `git log --since="7 days ago" --stat`) to focus on actual changes
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 
 ### Execute — Documentation Sync
@@ -62,12 +61,12 @@ adds the doc-sync workflow, audit scope, key rules, and verification checklist b
 
 ### 0. Review Recent Git History
 
-Before making any doc changes, review what actually changed in the last 10 commits:
+Before making any doc changes, review what actually changed in the last 7 days:
 
 ```bash
-git log -10 --stat                          # summary per commit
-git diff HEAD~10..HEAD --name-status        # consolidated file changes
-git log -10 --format="%h %s"               # commit messages for context
+git log --since="7 days ago" --stat              # summary per commit
+git log --since="7 days ago" --name-status       # consolidated file changes
+git log --since="7 days ago" --format="%h %s"    # commit messages for context
 ```
 
 - Note which modules, layers, and files were affected
@@ -159,7 +158,7 @@ Update both fields when content changes.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 scripts/scan_doc_links.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files and flag docs whose `Last updated` metadata is missing or older than 7 days | `python3 scripts/scan_doc_links.py` |
 
 Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
 

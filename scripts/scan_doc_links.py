@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-scan_doc_links.py — Documentation Link Validation
+scan_doc_links.py — Documentation Link & Freshness Validation
 Validates all relative markdown links across docs/, .agents/contexts/ (plus README.md, AGENTS.md):
-file targets must exist, and in-page anchors must resolve to a heading.
+file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec
+filename convention and flags docs whose `Last updated` metadata is missing or older than 7 days.
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"
+STALE_DAYS = 7
 
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 ANCHOR_TARGET = re.compile(r"^#(.+)$")
@@ -30,6 +32,16 @@ HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$")
 SPECS_DIR = ROOT / "docs" / "specs"
 SPEC_FILE_PATTERN = re.compile(r"^([A-Z0-9]{5})-[a-z0-9-]+\.md$")
 SPEC_ID_LINE = re.compile(r"^>\s*\*\*Spec ID:\*\*\s+([A-Z0-9]{5})\s*$", re.MULTILINE)
+LAST_UPDATED_LINE = re.compile(r"\*\*Last updated:\*\*\s+(\d{4}-\d{2}-\d{2})")
+
+RULE_TYPES = [
+    "BROKEN_FILE_LINK",
+    "BROKEN_ANCHOR",
+    "SPEC_ID",
+    "SPEC_ID_METADATA",
+    "OUTDATED_DOC",
+    "MISSING_METADATA",
+]
 
 
 # ─── Data ───────────────────────────────────────────────────────────────────
@@ -262,6 +274,60 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
     return added
 
 
+# ─── Doc freshness validation ────────────────────────────────────────────────
+
+def scan_doc_freshness(files: list[Path], findings: list[Finding]) -> int:
+    """Flag markdown files whose `Last updated` metadata is older than STALE_DAYS.
+
+    Rules:
+      F-1  `> **Last updated:** YYYY-MM-DD` date is older than STALE_DAYS → OUTDATED_DOC
+      F-2  `> **Last updated:**` metadata line missing → MISSING_METADATA
+    Returns the number of freshness-related findings added.
+    """
+    added = 0
+    cutoff = datetime.now(timezone(timedelta(hours=7))).date() - timedelta(days=STALE_DAYS)
+
+    for filepath in files:
+        rel = relative_path(filepath)
+        if rel in ("README.md", "AGENTS.md"):
+            continue
+        try:
+            content = filepath.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        match = LAST_UPDATED_LINE.search(content)
+        if not match:
+            findings.append(Finding(
+                id=f"STALE-{len(findings)+1:03d}",
+                rule="MISSING_METADATA",
+                severity="low",
+                category="documentation",
+                file=rel,
+                line=1,
+                message="Missing `> **Last updated:** YYYY-MM-DD` metadata line",
+                suggestion="Add the metadata blockquote per doc conventions (line 3 after H1)",
+                reference="docs/conventions.md §Documentation Conventions",
+            ))
+            added += 1
+            continue
+        last_updated = datetime.strptime(match.group(1), "%Y-%m-%d").date()
+        if last_updated < cutoff:
+            findings.append(Finding(
+                id=f"STALE-{len(findings)+1:03d}",
+                rule="OUTDATED_DOC",
+                severity="medium",
+                category="documentation",
+                file=rel,
+                line=1,
+                message=f"`Last updated` {match.group(1)} is older than {STALE_DAYS} days (cutoff {cutoff})",
+                suggestion="Run a docs sync pass: refresh content against code/specs and bump `Last updated`",
+                reference=".agents/skills/sync-docs/SKILL.md §Review Recent Git History",
+            ))
+            added += 1
+
+    return added
+
+
 # ─── Report ──────────────────────────────────────────────────────────────────
 
 def build_report(
@@ -283,8 +349,8 @@ def build_report(
         timestamp=datetime.now(timezone(timedelta(hours=7))).isoformat(),
         execution_time_ms=elapsed_ms,
         summary={
-            "total_checks": 2,
-            "passed": 2 - len(rules),
+            "total_checks": len(RULE_TYPES),
+            "passed": len(RULE_TYPES) - len(rules),
             "failed": len(findings),
             "by_severity": by_severity,
             "total_links": total_links,
@@ -295,6 +361,8 @@ def build_report(
             "files_scanned": len(files),
             "link_rule_broken_file": sum(1 for f in findings if f.rule == "BROKEN_FILE_LINK"),
             "link_rule_broken_anchor": sum(1 for f in findings if f.rule == "BROKEN_ANCHOR"),
+            "doc_rule_outdated": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
+            "doc_rule_missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
         },
     )
 
@@ -315,11 +383,13 @@ def print_summary(result: ScanResult) -> None:
     s = result.summary
     bs = s["by_severity"]
     print(f"\n{'='*60}")
-    print(f"  DOC LINK SCAN RESULTS")
+    print(f"  DOC LINK & FRESHNESS SCAN RESULTS")
     print(f"{'='*60}")
     print(f"  Files scanned:      {result.metadata['files_scanned']}")
     print(f"  Total links:        {s['total_links']}")
     print(f"  Valid links:        {s['valid_links']}")
+    print(f"  Outdated docs:      {result.metadata['doc_rule_outdated']}")
+    print(f"  Missing metadata:   {result.metadata['doc_rule_missing_metadata']}")
     print(f"  Categories passed:  {s['passed']}")
     print(f"  Findings:           {s['failed']}")
     print(f"    Critical: {bs.get('critical', 0)}")
@@ -361,6 +431,7 @@ def main() -> None:
 
     if not args.module:
         total_links += validate_spec_conventions(findings)
+        scan_doc_freshness(files, findings)
 
     for filepath in files:
         rel = relative_path(filepath)

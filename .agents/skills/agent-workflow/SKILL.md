@@ -15,7 +15,6 @@ downstream:
   - pest-testing
   - pulse-development
   - qa-protocol
-  - roadmap-planning
   - script-automation
   - security-audit
   - spec-audit
@@ -61,7 +60,8 @@ Every sentence must carry new information or a decision; if it does neither, dro
 
 - **Understand** the user's intent, not just literal words; classify SDLC phase (table below) and
   size (S/M/L); locate the governing spec in `docs/specs/` (Spec-First Doctrine: no behavior
-  without a requirement ID; if none exists, write the spec first)
+  without a requirement ID; if none exists, write the spec first); if the message batches multiple
+  instructions, reorder them by impact-to-effort ratio (§Instruction Ordering below)
 - **Define & Scope** — list affected modules/layers/files; check blockers (migrations, config,
   registration)
 - **Explore** — read module docs, architecture docs, and the full current content of every file you
@@ -130,6 +130,27 @@ broad for a single pass — I will split it into N sessions"* + the session list
 order; each session ends with `git status` + `git diff` review, targeted verification, and a short
 report. Never attempt L-size in one pass.
 
+## Instruction Ordering — High-Impact, Low-Effort First
+
+The user sometimes batches instructions in random order. Before executing any of them, reorder the
+batch by **impact-to-effort ratio** — quick wins first, heavy lifts scheduled. Apply this to every
+multi-instruction message; run the scoring silently and surface only the resulting order.
+
+| Quadrant | Impact | Effort | Handling |
+|----------|--------|--------|----------|
+| **Quick win** | High | Low | Execute first — highest impact-to-effort ratio |
+| **Strategic** | High | High | Split into sessions (Size Triage L); schedule after quick wins |
+| **Fill-in** | Low | Low | Batch opportunistically alongside larger work; do not skip |
+| **Questionable** | Low | High | Challenge or defer; confirm with the user before investing |
+
+**Ordering algorithm:**
+1. **Decompose** the batch into discrete, independently-executable instructions
+2. **Score** each by impact (reach × importance) and effort (files × complexity × verification)
+3. **Sort** by impact-to-effort ratio, quick wins first
+4. **Honor dependencies** — if instruction B depends on A, execute A first even if B scores higher
+5. **Group** same-area instructions into one pass (batch file touches, batch verification)
+6. **Surface** the resulting order in one short paragraph when it differs from the user's sequence
+
 ## Computational Thinking — Decision Loop
 
 Before each action: *predict outcome → act → verify → adjust*. Anticipate the next step. Resolve
@@ -160,6 +181,7 @@ or architecture.
 4. Narration discipline: never narrate the 9 steps; surface only ambiguity, decisions, session plans,
    checkpoints, and the final report
 5. Batch verification; full suite only when the user asks
+6. Batch instructions run by impact-to-effort ratio, quick wins first (§Instruction Ordering)
 
 ## References
 

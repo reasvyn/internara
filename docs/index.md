@@ -130,7 +130,6 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 
 ## Roadmap & Planning
 
-- **[Roadmap](roadmap.md)** — Development status tracker, phase progress, production readiness
 - **[GitHub Issues](https://github.com/reasvyn/internara/issues)** — Bug tracker, known issues, feature requests
 - **[GitHub Discussions](https://github.com/reasvyn/internara/discussions)** — Q&A, ideas, community
 
@@ -179,6 +178,6 @@ flowchart LR
 
 - **Developer** — Start with `contributing.md`, `architecture.md`, then architecture patterns and module index
 - **DevOps** — Start with infrastructure overview, deployment, CI/CD, then troubleshooting
-- **Product** — Start with product definition, philosophy, key features, and roadmap
+- **Product** — Start with product definition, philosophy, key features
 - **QA/Tester** — Start with testing guide, testing patterns, and per-module reference docs
 - **New Hire** — Start with contributing guide, getting started, architecture overview, conventions, then module index
