@@ -41,7 +41,7 @@ COPY docker/fpm-healthcheck /usr/local/bin/fpm-healthcheck
 COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fpm-healthcheck \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage \
-    && cp -al /app /opt/app-src
+    && cp -a /app /opt/app-src
 
 EXPOSE 9000
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
