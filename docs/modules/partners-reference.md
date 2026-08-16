@@ -1,6 +1,6 @@
 # Partners — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — add missing partnership listeners, fix dashboard listener events, route naming, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, DTOs, Events, Listeners, Entities, Policies, Livewire Components, Forms, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # Program — Internship Lifecycle, Groups & Phases
 
-> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc; remove duplicate Grading Weights section
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (JSON-Inlined Configuration, Grading Weights, Program State Machine, Closure Readiness, Integration Patterns, Submodules: Internship & InternshipGroup)
 
 ## Description
 

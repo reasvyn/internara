@@ -1,6 +1,6 @@
 # Partners — Companies, Partnerships & MoU
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Partnership Lifecycle, Company→Partnership→Placement Chain, MoU Document Management, Submodules: Company & Partnership)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix Livewire extends, add backup migration/factory, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, Livewire Components, Forms, Events, Services, Notifications, Listeners, Console Commands, Pulse Recorders, HTTP Controllers, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

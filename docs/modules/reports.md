@@ -1,6 +1,6 @@
 # Reports — Grade Cards & Score Aggregation
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix grade formula to include assignment weight
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Grade Aggregation Formula, Status Flow, Finalization Immutability, Standalone Archiving, Cross-Role Proxy, Submodule: Report)
 
 ## Description
 

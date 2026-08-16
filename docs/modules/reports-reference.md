@@ -1,6 +1,6 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — flat test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, DTOs, Models, Enums, Events, HTTP Controllers, Observers, Routes, Tests, Factories, Migrations)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # SysAdmin — User Management, Announcements & Audit
 
-> **Last updated:** 2026-07-31 **Changes:** sync — remove unverified dismissal-tracking claim
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Super Admin Integrity, GDPR Compliance, Audit Trail, Submodules: Account, Announcement, Observability)
 
 ## Description
 

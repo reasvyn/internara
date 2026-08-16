@@ -1,6 +1,6 @@
 # Journals — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix LogbookStatus/SupervisionType/SupervisionLogStatus values, Livewire extends, add attendance events, factories, migrations, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, Events, Livewire Components, Forms, Form Requests, HTTP Controllers, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 
