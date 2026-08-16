@@ -17,16 +17,34 @@ use Tests\TestCase;
 | config() is not available at Pest discovery time, so this list is
 | maintained manually. When adding a new module, update BOTH files.
 |
-| Currently only the Core module suite exists (spec-driven rewrite).
-| As each module's spec-driven suite is rewritten, re-register it here
-| and in phpunit.xml.
+| All modules are registered in build order (docs/specs/index.md §Build
+| Order): Core, Setup, Settings, Academics, Auth, User, SysAdmin, Partners,
+| Program, Enrollment, Journals, Incident, Assessment, Evaluation,
+| Assignment, Document, Certification, Reports. Empty directories are
+| registered too — suites get their spec-driven tests as each module is
+| rewritten.
 |
 */
 
 $modules = [
     'Core',
-    'Program',
     'Setup',
+    'Settings',
+    'Academics',
+    'Auth',
+    'User',
+    'SysAdmin',
+    'Partners',
+    'Program',
+    'Enrollment',
+    'Journals',
+    'Incident',
+    'Assessment',
+    'Evaluation',
+    'Assignment',
+    'Document',
+    'Certification',
+    'Reports',
 ];
 
 $extraDirs = ['Stubs', 'Support'];
