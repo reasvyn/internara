@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM php:8.4-fpm AS builder
 
 RUN apt-get update && apt-get install -y \
@@ -10,12 +11,21 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
-COPY . .
 
-RUN composer install --no-dev --optimize-autoloader \
-    && npm ci --legacy-peer-deps && npm run build \
+COPY composer.json composer.lock ./
+RUN --mount=type=cache,target=/root/.composer/cache \
+    composer install --no-dev --no-scripts --no-autoloader
+
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --legacy-peer-deps
+
+COPY . .
+RUN composer dump-autoload --no-dev --optimize \
+    && npm run build \
     && php artisan storage:link \
-    && chown -R www-data:www-data storage bootstrap/cache public/storage
+    && chown -R www-data:www-data storage bootstrap/cache public/storage \
+    && rm -rf node_modules
 
 FROM php:8.4-fpm
 
@@ -31,7 +41,6 @@ COPY docker/fpm-healthcheck /usr/local/bin/fpm-healthcheck
 COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fpm-healthcheck \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage \
-    && rm -rf /app/node_modules /app/.git \
     && cp -a /app /opt/app-src
 
 EXPOSE 9000
