@@ -18,71 +18,20 @@ downstream:
 Use this skill when building or styling UI — Blade templates, responsive layouts, dark mode,
 component styling with daisyUI and maryUI, and Tailwind CSS v4 utilities.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
+strategy, and commit format. This skill adds UI/styling guidance — the UI stack, maryUI/DaisyUI
+patterns, dark mode, and accessibility — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
-
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — list the FR/NFR/UC IDs the UI must satisfy
-  (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first
-  via `spec-writing`)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
-  session plan
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — UI/Styling Development
+### Execute — UI/Styling Development
 
 - Use maryUI components for consistency (table, modal, form)
 - Use DaisyUI theme colors (primary, secondary, accent)
 - Ensure responsive on mobile, tablet, desktop
 - Ensure dark mode works without visual breakage
 - Avoid custom CSS if DaisyUI/maryUI suffice
-- Output: styled Blade views with consistent maryUI/DaisyUI components, responsive layout, and dark
-  mode support
-
-### 3. Verify — Quality Gates
-
-- **Blade/CSS/JS changes:** run `npm run build` (frontend-only work doesn't need pint/phpstan/tests)
-- Run arch-guard scripts relevant to UI: `scan_violations.py`, `scan_security.py` (XSS),
-  `scan_conventions.py` (debug calls, hardcoded strings)
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
-- PHPStan/Pint only if PHP/Livewire files were touched
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of UI work done
-    - Files created or modified
-    - Responsive breakpoints and dark mode tested
-- Feeds into: sync-docs (UI documentation)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                                               |
-| -------------- | ----------------------------------------------------------------------------------- |
-| **Upstream**   | `feature-building` (implementation), `livewire-development` (components needing UI) |
-| **This skill** | **IMPLEMENTATION (Sub-skill)** — UI/styling                                         |
-| **Downstream** | `sync-docs`                                                                         |
-
-## Skill Handoffs (Actionable)
-
-| Condition | Action |
-|-----------|--------|
-| Styling Livewire components | Load `livewire-development` for component structure |
-| Component work needs UI | Load this skill (`tailwindcss-development`) from `livewire-development` |
-| Accessibility requirements | See `docs/foundation/ui-ux.md` §6 + `docs/architecture/modular-pattern.md` §22 |
-| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
-| Feature is **L** size | Split into sessions; inform user first |
 
 ## UI Stack
 

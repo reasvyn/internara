@@ -1,6 +1,6 @@
 ---
 name: spec-audit
-description: "SDLC Phase: ANALYSIS. Bidirectional spec-implementation audit — verifies specs match code and code matches specs. Determines which side (spec or implementation) needs fixing. Creates GitHub Issues for significant findings, fixes minor issues directly. Flexible scope: audit by spec, module, phase, or audit area."
+description: "SDLC Phase: ANALYSIS. Bidirectional spec-implementation audit — verifies specs match code and code matches specs, and that agent guides & skills stay consistent with specs. Determines which side (spec or implementation) needs fixing. Fixes the spec immediately when it lags the implementation; creates GitHub Issues for significant findings. Flexible scope: audit by spec, module, phase, audit area, or agent guides & skills."
 downstream:
   - issue-writing
   - roadmap-planning
@@ -16,12 +16,17 @@ downstream:
 ## When to Activate
 
 Use this skill to verify that feature specifications (`docs/specs/`) and code implementation
-(`app/`, `tests/`, `routes/`, `database/migrations/`) are in sync. Detects three categories of
-drift:
+(`app/`, `tests/`, `routes/`, `database/migrations/`) are in sync, and that **agent guides & skills**
+(`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`) accurately reflect
+the specs they reference. Detects three categories of drift:
 
 1. **Spec → Code:** Spec promises something the code doesn't deliver (missing implementation)
 2. **Code → Spec:** Code does something the spec doesn't document (unspecified behavior)
 3. **Both stale:** Spec and code disagree on shared contracts (signatures, paths, names)
+
+Agent guides & skills must stay aligned with the specs: a spec change with no matching update in the
+skill/guide that documents it is a **Code → Spec** drift (guide lagging). See
+[Area 8: Agent Guides & Skills](#area-8-agent-guides--skills).
 
 **Key distinction from `arch-guard`:**
 - `arch-guard` checks code against conventions and architecture rules (C1-C8, D1-D6)
@@ -44,10 +49,12 @@ Before executing, ask the user (or infer from context) which scope to audit:
 | Scope | What It Audits | Example |
 |-------|---------------|---------|
 | **Single spec** | One spec against its implementation | `spec-audit authentication.md` |
+| **Work scope** | One spec across all three work channels — **implementation, testing, documentation** | `spec-audit --work D2FT3` |
 | **Module** | All specs for a module | `spec-audit --module Auth` |
 | **Phase** | All specs in a lifecycle phase | `spec-audit --phase 3` |
 | **Audit area** | Specific dimension across all/some specs | `spec-audit --area contracts` |
-| **Full audit** | All 53 specs, all areas | `spec-audit --all` |
+| **Agent guides & skills** | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/` against the specs they reference | `spec-audit --guides` |
+| **Full audit** | All 53 specs, all areas + agent guides & skills | `spec-audit --all` |
 
 ### Audit Areas
 
@@ -60,7 +67,23 @@ Before executing, ask the user (or infer from context) which scope to audit:
 | `coverage` | Spec'd features are actually implemented (not just stubs) |
 | `cross-refs` | Internal spec cross-references are correct (names, spec IDs) |
 | `roadmap` | §9 Roadmap prerequisites and next-steps are valid |
+| `guides` | Agent guides & skills are consistent with specs (see [Area 8](#area-8-agent-guides--skills)) |
 | `all` | All areas combined (default for full audit) |
+
+### Work Scope — Implementation, Testing & Documentation
+
+A **work scope** audits one spec across the three work channels that deliver and sustain it. Each
+channel maps to specific audit areas (see Phase 2):
+
+| Channel | What It Audits | Audit Areas |
+|---------|----------------|-------------|
+| **Implementation** | The spec's FR/NFR/contracts are actually delivered in code (`app/`, `routes/`, `database/`, `config/`) — no missing, stubbed, or drifted behavior | `paths`, `contracts`, `requirements`, `coverage` |
+| **Testing** | Every spec'd component has a test file and every FR/NFR is exercised by a spec-traceable test — no orphan tests, no spec gaps | `tests` (+ cross-check each test name against FR/NFR IDs) |
+| **Documentation** | Docs reflect the spec and code: Quick Reference paths exist, cross-refs are valid, `docs/architecture/*` and `docs/modules/*` match the spec's contracts, and **agent guides & skills** (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`) stay consistent with the spec | `cross-refs`, `roadmap`, `paths`, `guides`, §6 completeness + doc-to-code sync |
+
+Run all three channels for a work scope. Deliver a **per-channel verdict** (Implementation /
+Testing / Documentation) in the report, each with its own findings and decision-matrix outcome,
+instead of a single flat finding list.
 
 ### Default Scope
 
@@ -73,6 +96,11 @@ If no scope is specified:
 
 ## Agent Workflow
 
+This skill runs a **custom pipeline** (`SCOPE → DISCOVER → AUDIT → TRIAGE → FIX/ISSUE → FINALIZE →
+REPORT`) — it is an ANALYSIS skill, not a standard implementation workflow. Follow the
+`agent-workflow` skill for the canonical 9-step / 4-phase model, **Size Triage** (see below), and
+commit format; this skill adds the audit pipeline below — nothing else.
+
 ```
 SCOPE → DISCOVER → AUDIT (6 areas) → TRIAGE → FIX/ISSUE → FINALIZE → REPORT
 ```
@@ -83,18 +111,18 @@ SCOPE → DISCOVER → AUDIT (6 areas) → TRIAGE → FIX/ISSUE → FINALIZE →
 
 #### 1.1 Load Context
 
-- Load `context-awareness` skill for project orientation
 - Read `docs/specs/index.md` for spec list and lifecycle phases
 - Read `docs/modules/index.md` for module structure
 - Read `docs/roadmap.md` for current development status
 
 #### 1.1.1 Size Triage
 
-Classify the audit scope per AGENTS.md Size Triage **before** auditing:
+Classify the audit scope per `agent-workflow` Size Triage **before** auditing:
 
 | Scope | Size | Execution |
 |-------|------|-----------|
 | Single spec | S | Single pass |
+| Work scope (3 channels) | M | Single session, staged by channel (implementation → testing → documentation) |
 | Module / phase / area | M | Single session, staged by area |
 | Full audit (`--all`, 50+ specs) | **L** | **Split into sessions** — inform the user, propose a plan (e.g., by phase), audit session by session |
 
@@ -109,6 +137,10 @@ Based on user input or context:
 - If `--all`: list all specs from `docs/specs/index.md`
 - If `--module {Name}`: filter specs by Module column in index
 - If `--phase {N}`: filter specs by phase section in index
+- If `--work {SpecID}`: resolve to the single spec AND set the work scope (implementation,
+  testing, documentation channels — see [Work Scope](#work-scope--implementation-testing--documentation))
+- If `--guides`: resolve to the agent guides & skills surface (AGENTS.md, `.agents/skills/*/SKILL.md`,
+  `.agents/contexts/*.md`, `.agents/plans/`) and audit Area 8 against the specs they reference
 - If spec name: resolve to single file
 
 #### 1.3 Discover Artifacts
@@ -157,6 +189,12 @@ For each spec, produce a structured audit map:
 ### Phase 2 — Audit (6 Areas)
 
 Execute each audit area against the audit map. Run areas in order; each area produces findings.
+
+For a **work scope**, group the areas into the three channels and run them in order:
+**Implementation** (Area 1 paths, Area 2 contracts, Area 3 requirements, coverage) →
+**Testing** (Area 4 tests, cross-checking FR/NFR traceability) →
+**Documentation** (Area 5 cross-refs, Area 6 completeness, Area 8 guides, doc-to-code sync).
+Emit findings tagged with their channel so triage and the report stay per-channel.
 
 #### Area 1: Path Verification
 
@@ -340,6 +378,42 @@ composer outdated --direct 2>&1
 | D-2 | Outdated | `{package}` is {versions_behind} versions behind current |
 | D-3 | Misplaced | `{package}` is dev-only but in `require` section |
 
+#### Area 8: Agent Guides & Skills
+
+**Goal:** Verify that agent guides & skills stay consistent with the specs they reference, so every
+document (specs, code docs, and agent guides) agrees. This closes the documentation loop — a spec
+that drifts from an agent guide makes agents act on stale rules.
+
+Audit surface: `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/*.md`, `.agents/plans/`.
+
+For each guide/skill that references a spec, module, invariant, or config value:
+
+1. **Spec references exist:** referenced spec IDs (`docs/specs/{ID}-*.md`) and names exist in
+   `docs/specs/index.md`
+2. **Invariant values match:** hardcoded names, config defaults, and rule values match the governing
+   spec (e.g., super admin name, module names, convention IDs C1-C8 / D1-D6)
+3. **Rule locations resolve:** "where to find" tables point to sections that actually exist in the
+   referenced doc
+4. **Skill scope covers spec:** if a skill claims a scope (e.g., spec-audit's audit areas), that
+   scope includes every channel the spec's §6/§9 promises
+5. **Stale rule values:** a spec amendment (e.g., renamed default) must be mirrored in the guide that
+   documents it — otherwise the guide is **Code → Spec** drift (guide lagging behind spec)
+
+```
+For each guide/skill with spec references:
+  grep -n "docs/specs/|spec ID|invariant value" .agents/skills/{skill}/SKILL.md AGENTS.md
+  Verify each reference against docs/specs/index.md and the governing spec
+```
+
+**Findings:**
+
+| ID | Type | Finding |
+|----|------|---------|
+| G-1 | Code→Spec | `{guide}` documents `{value}` but the governing spec `{spec}` defines `{spec_value}` |
+| G-2 | Broken ref | `{guide}` references `{spec}` / `{doc}` §{section} which does not exist |
+| G-3 | Stale scope | `{skill}` scope omits a channel the governing spec promises |
+| G-4 | Missing mirror | `{spec}` amended `{value}` but `{guide}` still documents the old value |
+
 ---
 
 ### Phase 3 — Triage & Decision
@@ -360,13 +434,14 @@ For each finding from Phase 2, determine:
 | Drift Direction | Evidence | Resolution |
 |----------------|----------|------------|
 | Spec→Code (missing impl) | Spec exists, code doesn't | **Update roadmap** — spec is ahead of code |
-| Code→Spec (unspecified) | Code exists, spec doesn't | **Update spec** — code is ahead of spec |
-| Contract mismatch (spec older) | Git log shows code changed after spec | **Update spec** to match code |
+| Code→Spec (unspecified) | Code exists, spec doesn't | **Update spec immediately** — code is ahead of spec, spec lags |
+| Contract mismatch (spec older) | Git log shows code changed after spec | **Update spec immediately** to match code |
 | Contract mismatch (code older) | Git log shows spec changed after code | **Update code** to match spec (or update spec if behavior is intentional) |
 | Broken cross-ref | Wrong ID/name in spec | **Fix spec** — trivial fix |
 | Missing test | Code exists, no test | **Create GitHub Issue** — test gap |
 | Spec incomplete | Section missing/empty | **Update spec** — fill gap from code |
 | FR not implemented | Spec FR has no code | **Update roadmap** — track as TODO |
+| Guide lags spec | Guide documents old value/section, spec amended | **Fix guide immediately** — align guide to spec |
 
 #### 3.3 Severity Classification
 
@@ -379,9 +454,10 @@ For each finding from Phase 2, determine:
 
 ---
 
-### Phase 4 — Fix (Minor) or Issue (Major)
+### Phase 4 — Fix Now (Spec-Lagging & Minor) or Issue (Major)
 
-**Goal:** Resolve each finding — either fix directly or create a GitHub Issue.
+**Goal:** Resolve each finding — fix spec-lagging drift and minor issues directly, create GitHub
+Issues for the rest.
 
 #### 4.1 Auto-Fix Criteria
 
@@ -403,12 +479,25 @@ Fix directly (no GitHub Issue) when ALL of these are true:
 | Wrong file path in Quick Reference | Update the path |
 | Missing §9 Build Guide text | Write brief build guide |
 | Spec section empty with obvious content | Fill from code inspection |
+| **Spec lags implementation** | **Update spec immediately** — code is authoritative, spec catches up now |
+
+**Spec-Lagging Fix Rule (mandatory):** Whenever an audit finding shows the **spec is behind the
+implementation** — the code (or a spec it depends on) documents something the spec doesn't yet —
+fix the spec **immediately in this run**, not as a GitHub Issue. The implementation is the evidence;
+the spec must catch up the moment drift is detected. Apply this to:
+
+- Code→Spec drift (code exists, spec doesn't document it)
+- Spec whose contracts (signatures, names, paths, values) are older than the code
+- Agent guides & skills that document stale values a spec amendment changed (align to spec)
+
+This overrides the general "no spec rewriting" rule for the lagging case only — a spec that is
+**ahead** of code (missing implementation) still goes to the roadmap as a TODO.
 
 #### 4.2 GitHub Issue Criteria
 
 Create a GitHub Issue when:
 
-- **Non-trivial fix** requiring code changes or significant spec rewrites
+- **Non-trivial fix** requiring code changes or **spec rewrites that are NOT a lagging catch-up**
 - **Behavior question:** Spec and code disagree and it's unclear which is correct
 - **Missing implementation:** An FR has no corresponding code
 - **Missing tests:** A critical Action has no test file
@@ -527,6 +616,21 @@ Legend: ✅ synced | ⚠️ drift (auto-fixed) | ❌ drift (issue created)
 
 ---
 
+## Work Scope Verdict (per-channel)
+
+For a **work scope**, replace the flat findings list with a per-channel verdict:
+
+| Channel | Verdict | Findings | Resolved |
+|---------|---------|----------|----------|
+| Implementation | ✅ / ⚠️ / ❌ | {count} | {auto-fixed / issues} |
+| Testing | ✅ / ⚠️ / ❌ | {count} | {auto-fixed / issues} |
+| Documentation | ✅ / ⚠️ / ❌ | {count} | {auto-fixed / issues} |
+
+Each channel lists its own findings, drift direction, and decision-matrix outcome in
+**Findings Detail** below.
+
+---
+
 ## Findings Detail
 
 ### Auto-Fixed (Minor)
@@ -610,9 +714,14 @@ to a single module. See `scripts/README.md` for full documentation.
 10. **Always report** — deliver the visual report even if zero findings
 11. **Audit every module** — not just the one being changed
 12. **Record issues even if fixing is out of scope** — prioritization happens downstream
-13. **Do NOT fix issues during audit** — that is the refactoring phase (except minor auto-fix)
+13. **Do NOT fix issues during audit** — that is the refactoring phase (except minor auto-fix and
+    **spec-lagging catch-up**: a spec behind the implementation is fixed immediately, per the
+    [Spec-Lagging Fix Rule](#phase-4--fix-now-spec-lagging--minor-or-issue-major))
 14. **Verify findings against actual code** — docs and skills may be stale
 15. **Check existing issues before filing** — prevent duplicates
+16. **Audit agent guides & skills too** — `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`,
+    `.agents/plans/` must stay consistent with the specs (Area 8); a spec amendment must be mirrored in
+    any guide that documents it
 
 ---
 
@@ -620,6 +729,7 @@ to a single module. See `scripts/README.md` for full documentation.
 
 - [ ] Scope determined and confirmed
 - [ ] All specs in scope read and audit maps built
+- [ ] **Work scope** — all three channels audited: Implementation, Testing, Documentation
 - [ ] **Code** — All 4 layers audited: UI, Business, Data, Infra
 - [ ] Area 1 (Paths): All file paths verified
 - [ ] Area 2 (Contracts): All signatures and class declarations verified
@@ -628,14 +738,16 @@ to a single module. See `scripts/README.md` for full documentation.
 - [ ] Area 5 (Cross-refs): All internal spec references verified
 - [ ] Area 6 (Completeness): All spec sections checked for content
 - [ ] Area 7 (Dependencies): Package versions and vulnerabilities checked
-- [ ] **Testing** — Coverage, structure, mocking conventions checked
+- [ ] Area 8 (Guides): Agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`) consistent with specs
+- [ ] **Testing** — Coverage, structure, mocking conventions checked; every FR/NFR traceable to a test
 - [ ] **Security** — XSS, SQLi, mass assignment, auth, PII, CSP, CSRF checked
-- [ ] **Documentation** — Doc-to-code sync verified
+- [ ] **Documentation** — Doc-to-code sync verified; spec cross-refs, Quick Reference paths, and agent guides valid
 - [ ] Findings triaged with decision matrix
+- [ ] **Spec-lagging drift fixed immediately** — code ahead of spec → spec updated in this run
 - [ ] Minor issues auto-fixed
 - [ ] Major issues created as GitHub Issues
 - [ ] All findings recorded as GitHub Issues with scope, severity, and fix recommendation
-- [ ] No fixes applied during audit (scope discipline, except minor auto-fix)
+- [ ] No fixes applied during audit (scope discipline, except minor auto-fix and spec-lagging catch-up)
 - [ ] Existing issues checked for duplicates before filing
 - [ ] `docs/roadmap.md` updated
 - [ ] Changes committed
@@ -649,7 +761,7 @@ to a single module. See `scripts/README.md` for full documentation.
 | Role | Skill |
 |------|-------|
 | **Upstream** | `context-awareness` (project orientation), `spec-writing` (spec conventions) |
-| **This skill** | **ANALYSIS** — bidirectional spec-implementation audit |
+| **This skill** | **ANALYSIS** — bidirectional spec-implementation audit + agent guides & skills consistency |
 | **Downstream** | `issue-writing` (GitHub Issues), `roadmap-planning` (prioritize), `code-refactoring` (fix code), `sync-docs` (fix docs), `feature-building` (implement gaps) |
 
 ---
@@ -660,6 +772,7 @@ to a single module. See `scripts/README.md` for full documentation.
 |-------|-----|
 | Feature specs | `docs/specs/index.md` |
 | Spec template | `.agents/skills/spec-writing/SKILL.md` |
+| Agent guides & skills | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/` |
 | Module structure | `docs/modules/index.md` |
 | Architecture & layer rules | `docs/architecture.md` |
 | Architecture patterns | `docs/architecture/{pattern}-pattern.md` |

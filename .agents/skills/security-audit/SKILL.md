@@ -17,61 +17,25 @@ Use this skill for a dedicated security and privacy audit. Covers OWASP Top 10, 
 authentication, authorization, session security, rate limiting, secrets management, and dependency
 vulnerabilities.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (verify each audited behavior maps to a **governing spec** FR/NFR/UC ID — a finding with
+no requirement is a spec gap), **Size Triage** (S/M/L session splitting — a full-project security
+audit is L, split by module or category), verification strategy, and commit format. This skill adds
+the audit categories, issue format, and key rules below — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
-
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — verify that each audited behavior maps to a
-  requirement (FR/NFR/UC ID); a finding with no requirement is a spec gap (Spec-First Doctrine)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; a full-project security audit is **L** —
-  inform the user and propose a session plan (by module or audit category)
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — Security Audit Execution
+### Execute — Security Audit Execution
 
 - Run `python3 scripts/scan_security.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
 - Audit authentication: password hashing, rate limiting, recovery flows
 - Audit authorization: Policy methods, super admin bypass, permissions config
-- Audit XSS: Blade escaping, {!! !!} occurrences, CSP headers
+- Audit XSS: Blade escaping, `{!! !!}` occurrences, CSP headers
 - Audit SQL injection: parameterized binding, raw SQL check
-- Audit mass assignment: #[Fillable], no $request->all()
+- Audit mass assignment: `#[Fillable]`, no `$request->all()`
 - Audit PII: data isolation, log masking, GDPR deletion path
 - Output: GitHub Issues with security vulnerability reports including severity, impact, and fix
   recommendations
-
-### 3. Verify — Quality Gates
-
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of security findings by category
-    - Severity distribution (critical/high/medium/low)
-    - Vulnerabilities confirmed closed
-- Feeds into: roadmap-planning (prioritize security fixes), code-refactoring (fix vulnerabilities)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                                  |
-| -------------- | ---------------------------------------------------------------------- |
-| **Upstream**   | `arch-guard` (baseline audit)                                          |
-| **This skill** | **ANALYSIS** — security-specific                                       |
-| **Downstream** | `roadmap-planning` (prioritize fixes), `code-refactoring` (fix issues) |
 
 ## Audit Categories
 

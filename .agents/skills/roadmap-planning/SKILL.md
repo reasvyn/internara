@@ -18,61 +18,29 @@ downstream:
 Use this skill when planning the work roadmap — prioritizing bug fixes, security patches, features,
 or performance improvements. Produces structured phases in `docs/roadmap.md`.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (each planned phase must trace to a **governing spec** FR/NFR/UC ID), **Size Triage**
+(S/M/L session splitting — each planned phase should be completable in one session), verification
+strategy, and commit format. This skill adds the planning process, prioritization categories, and
+roadmap table below — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
+### Execute — Planning & Prioritization
 
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — each planned phase must trace to a requirement
-  (FR/NFR/UC ID); no behavior without a requirement (Spec-First Doctrine)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Read `docs/roadmap.md` (current status) and `docs/specs/index.md` (dependency graph)
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage — planning output must map directly to
-  session-sized work units, so each planned phase should be completable in one session
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — Planning & Prioritization
-
-- Collect inputs: audit findings, security issues, bug reports, feature requests
+- Collect inputs: audit findings, security issues, bug reports, feature requests (run
+  `python3 scripts/scan_issues.py` for a summary)
 - Categorize by severity and urgency
-- Evaluate dependencies between modules (use index.md)
+- Evaluate dependencies between modules (use `docs/modules/index.md`)
 - Define phases with clear scope and acceptance criteria
-- **Size each phase (S/M/L)** — flag L-size phases for session-splitting so the implementing agent
-  knows to inform the user and split
-- Update docs/roadmap.md with prioritized phases
-- Output: updated `docs/roadmap.md` with prioritized phases, clear scope, dependencies, and
-  acceptance criteria
+- **Size each phase (S/M/L)** — flag L-size phases for session-splitting
+- Update `docs/roadmap.md` with prioritized phases
 
-### 3. Verify — Quality Gates
+### Verify — Quality Gates
 
 - **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (roadmap edits don't need
   pint/phpstan/tests)
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
 - PHPStan/Pint only if PHP files were touched
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of planned phases
-    - Priority ordering with rationale
-    - Dependencies and blockers identified
-- Feeds into: feature-building (implementation), code-refactoring (refactoring tasks)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                               |
-| -------------- | ------------------------------------------------------------------- |
-| **Upstream**   | `arch-guard` (code quality), `security-audit` (vulnerabilities), `spec-audit` (spec drift) |
-| **This skill** | **PLANNING** — prioritizes and sequences work                       |
-| **Downstream** | `feature-building` (implements planned work)                        |
 
 ## Planning Process
 

@@ -23,34 +23,21 @@ downstream:
 
 Use this skill when implementing any new feature, bug fix, security patch, or performance
 optimization. This is the orchestrator that coordinates specialized sub-skills for each layer of the
-implementation. For features classified **L** (AGENTS.md Size Triage), split the build into multiple
-sessions — see Size Triage below.
+implementation.
 
-## Size Triage (AGENTS.md)
+## Workflow
 
-| Size | Criteria | Execution | User check-in |
-|------|----------|-----------|---------------|
-| **S** | ≤3 files, single concern | Single pass | None |
-| **M** | 4-10 files, 2-3 concerns | Single session, staged, batch verify | One checkpoint before commit |
-| **L** | >10 files, multi-module, cross-cutting | **Split into sessions** | **MUST inform user first** |
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (read the **governing spec** from `docs/specs/`, map FR/NFR/UC IDs), **Size Triage**
+(S/M/L session splitting — L-size MUST inform the user and split into sessions), verification
+strategy, and commit format. This skill adds the feature build order, sub-skill delegation, and key
+rules below — nothing else.
 
-**L-size:** after Construct, tell the user *"This feature is too broad for a single pass — I will
-split it into N sessions"*, propose a session plan (each session = one layer or one concern with its
-own verify + report), then execute session by session — never all at once.
+### Construct — Context & Scope
 
-## Agent Workflow
-
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
-
-### 1. Construct — Knowledge, Context & Scope
-
-- Load `context-awareness` skill for project orientation
 - Read the governing spec from `docs/specs/` — list the FR/NFR/UC IDs this feature must satisfy
   (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** and, if **L**, inform the user + propose a session plan
+- Read relevant module docs and pattern docs
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -58,36 +45,13 @@ Verify = 7, Report & Commit = 8-9):
 
 - Follow the build order (see Implementation Flow §4 — single source of truth for ordering)
 - Delegate sub-skills as needed (livewire, tailwindcss, medialibrary, pulse)
-- Follow Action Triad: Command for mutations, Read for queries, Process for orchestration
-- Ensure DTO for 3+ params, ActionResponse for structured returns
-- For **M/L** tasks: stage the build by layer/concern; after each stage, run `git status` + `git diff`
-  to confirm only intended files changed
-- Output: implemented feature with tests, translations, routes, and updated docs
+- For **M/L** tasks: stage the build by layer/concern; verify each stage before the next
 
-### 3. Verify — Quality Gates
+### 3. Report & Commit
 
-- Run change-type-appropriate verification (see Verify Matrix below — not a fixed command set)
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run targeted tests: `php artisan test --compact --filter={TestName}` (full suite ONCE at the end)
-- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
-  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of work done
-    - Files created or modified
-    - Test suite status (pass/fail)
-    - Deviation from original plan (if any)
-    - Identified blockers or risks
-    - If sessions were split: per-session summary + what remains
+- Deliver a comprehensive report to the user (summary, files changed, test status, deviations,
+  blockers, per-session summary if split)
 - Feeds into: pest-testing (test suite), sync-docs (doc updates)
-- Commit using format: `type(scope): description`
-- Push if requested
 
 ## Phase Context
 
@@ -107,7 +71,6 @@ Verify = 7, Report & Commit = 8-9):
 | UI / styling / layout | Load `tailwindcss-development` before Blade/CSS |
 | Pulse dashboard | Load `pulse-development` before dashboard code |
 | Refactoring involved | Load `code-refactoring` for verification |
-| Feature is **L** size | Split into sessions; inform user first |
 
 ## Implementation Flow
 
@@ -165,22 +128,10 @@ slices across sessions per Size Triage.
 
 ### 5. Verify
 
-- Use the Verify Matrix below (change-type-appropriate), then run the arch-guard scripts
-- Run lint + static analysis + tests
-- Check pre-commit checklist from `context-awareness`
+- Use the change-type verification matrix in `agent-workflow` (translation keys, config/docs,
+  Blade/CSS/JS, PHP refactor, new feature), then run the arch-guard scanners on touched code
+- Check pre-commit checklist from `agent-workflow`
 - If refactoring was involved, load `code-refactoring` for verification
-
-## Verify Matrix
-
-| Change type | Verification |
-|-------------|-------------|
-| Config/docs/markdown | Visual inspection, no tests |
-| Blade/CSS/JS | `npm run build` only |
-| Translation keys | `vendor/bin/pint --dirty --test` + tinker echo |
-| PHP single file | `vendor/bin/pint --dirty --test` + targeted test |
-| PHP module refactor | `vendor/bin/pest --testsuite={ModuleName}` |
-| New feature / business logic | Full suite ONCE after all changes batched |
-| Always | `git status` + `git diff`, arch-guard scripts |
 
 ## Key Rules
 

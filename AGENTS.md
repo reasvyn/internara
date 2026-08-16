@@ -7,28 +7,32 @@ Mental model, workflow, and navigation map for AI agents.
 
 **Every instruction MUST run the full cycle. No step may be skipped.** This applies to
 **any instruction, in any form** — a one-line question, a bug report, a feature request, a docs
-tweak, or an audit. Steps are **adaptive**: their depth scales with the instruction's SDLC phase
-(see table below). Omission is never allowed; when a step is not applicable to the phase, note
-it explicitly with the reason and move on.
+tweak, or an audit. Steps are **adaptive**: their depth scales with the instruction's SDLC phase.
+
+**ALWAYS load the `agent-workflow` skill first** — on every instruction, before any other skill. It
+is the single source of truth for the workflow: the 9-step pipeline, the 4-phase mapping
+(Construct → Execute → Verify → Report & Commit), narration discipline, phase classification
+(adaptive depth), size triage (S/M/L session splitting), verification strategy, and the L-size
+protocol. Do NOT restate the workflow in other skills — reference `agent-workflow` instead.
 
 ```
 UNDERSTAND → DEFINE & SCOPE → EXPLORE → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
 ```
 
-### Workflow Vocabulary — 9-Step Pipeline ↔ Skill 4-Phase
+### Narration & Context Discipline — Non-Negotiable
 
-Skills use a compact 4-phase model (**Construct → Execute → Verify → Report & Commit**). They are the
-same process at different granularity — a skill's phases are the 9 steps collapsed, and every skill
-phase maps back to this pipeline:
+The pipeline runs **silently**. The 9 steps are internal reasoning — do not narrate them, do not
+restate the task, do not list the steps you took, do not explain reasoning already visible in your
+tool use. Surface to the user **only**:
 
-| Skill 4-phase | AGENTS.md 9-step |
-|---------------|------------------|
-| **1. Construct** — spec, context, scope, approach | Steps 1-5 (Understand → Design) |
-| **2. Execute** — do the work | Step 6 (Develop) |
-| **3. Verify** — quality gates | Step 7 (Test & Verify) |
-| **4. Report & Commit** | Steps 8-9 (Document → Commit & Report) |
+1. Ambiguity that needs their input.
+2. A decision that changes scope, structure, or behavior.
+3. An L-size session plan (one short paragraph).
+4. One checkpoint before commit (M-size) or per-session (L-size).
+5. The final report (what changed, what was verified, caveats).
 
-Always map a skill's phases to these 9 steps — never treat them as separate processes.
+Every sentence sent to the user must carry new information or a decision; if it does neither,
+drop it. This keeps responses short and context usage low.
 
 ### Spec-First Doctrine — Non-Negotiable
 
@@ -67,197 +71,50 @@ questions alike.
 - **Align spec ↔ code ↔ docs ↔ tests:** when one side drifts from the others, align the outlier to
   the spec (Spec-First Doctrine) instead of tolerating the drift. No documented behavior without
   code, no code without a requirement, no duplicated requirement across specs.
-- **Inform the user before every decision:** any decision the agent takes beyond the literal ask —
-  extraction, dedup, refactor, doc merge, re-scoping — **must be stated to the user first** with the
-  rationale, and confirmed when it changes scope, structure, or behavior. Dedup and alignment are
-  expected; silent structural changes are not.
+- **Surface structural decisions only:** decisions beyond the literal ask — extraction, dedup,
+  refactor, doc merge, re-scoping — are stated to the user briefly when they change scope, structure,
+  or behavior, and confirmed when they do. Routine dedup and alignment run silently (Narration
+  Discipline); never narrate every decision, only the ones that affect the user.
 - **Record decisions:** if a dedup/alignment decision affects a spec or an invariant, record it
   (ADR or spec amendment) rather than leaving it implicit.
 
-### Phase Classification — Adaptive Depth
+### Phase Classification & Size Triage
 
-Before acting, classify the instruction into an SDLC phase (Step 1). The phase sets the depth of
-each step for that run: **Full** = mandatory, complete depth · **Light** = executed but minimal ·
-**Note** = note the reason and skip. Anything not listed under Full/Light defaults to Note.
-
-| SDLC Phase | Instruction examples | Full (mandatory) | Light | Note (skip w/ reason) |
-|------------|----------------------|------------------|-------|----------------------|
-| **Support** | questions, "what does X do", explanations | Understand, Explore | Document | Define, Plan, Design, Develop, Test, Commit |
-| **Analysis** | spec/QA/security audits, reviews, PII checks | Understand, Define, Explore, Document | Plan | Develop, Test, Commit (findings only — unless a fix is requested) |
-| **Planning** | specs, roadmap, GitHub issues | Understand, Define, Plan, Document | Explore | Develop, Test, Commit (unless implementation requested) |
-| **Design** | architecture, refactor design, class contracts | Understand, Define, Plan, Design, Document | Explore | Develop, Test, Commit (unless implementation requested) |
-| **Implementation** | new feature, bug fix, refactor | **All 9 steps** | — | — |
-| **Testing** | writing/fixing tests, verification | Understand, Define, Develop, Test, Document | Explore, Plan | Commit (unless requested) |
-| **Documentation** | docs updates, sync-docs | Understand, Explore, Document | Define, Plan | Develop, Test, Commit |
-| **Tooling** | scripts, devtools, automation | Understand, Define, Plan, Develop, Test, Document | Explore | Commit (unless requested) |
-| **Maintenance** | dependency updates, cleanup, migrations | Understand, Define, Test, Document | Explore, Plan, Develop | Commit (unless requested) |
-
-Even for Support/Analysis, the full cycle is still traversed — the table only controls depth, not
-attendance. A step skipped without a recorded reason is a workflow violation.
-
-### Size Triage — Session Splitting (Mandatory)
-
-Before acting, classify the instruction by **size**, not just phase. Size decides whether the work
-runs in a single pass or **must be split into multiple sessions**. Both dimensions apply: phase sets
-depth, size sets duration.
-
-| Size | Criteria | Execution | User check-in |
-|------|----------|-----------|---------------|
-| **S** | ≤3 files, single concern, no cross-module | Single pass, full 9 steps at phase depth | None required |
-| **M** | 4-10 files, 2-3 concerns, or cross-layer | Single session, staged internally, batch verification | One checkpoint before commit |
-| **L** | >10 files, multi-module, cross-cutting, heavy effort, or long runtime | **MUST split into multiple sessions** | **MUST inform the user first** |
-
-**L-size protocol (non-negotiable):**
-1. After Step 1 (Understand), tell the user plainly: *"This instruction is too broad for a single
-   pass — I will split it into N sessions."*
-2. Propose a session plan (each session = one deliverable unit with its own scope, verify, and report).
-3. Execute sessions in order; each session starts from the verified state of the previous one.
-4. Each session ends with: `git status` + `git diff` review, targeted verification, and a short
-   user report. Commit per-session if requested.
-5. Never attempt an L-size task in one pass — context overload degrades quality and risks lost work.
-
-All 9 steps, skills, and verification rules below still apply **per session** at the appropriate depth.
+Before acting, classify the instruction by **phase** (adaptive depth: Full/Light/Note) and **size**
+(S/M/L). If **L**, inform the user and split into sessions. The classification tables, the L-size
+protocol, and the per-step detail (Steps 1-9) live in the `agent-workflow` skill — follow them there.
 
 ### 1. Understand
 
 Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints.
 
-- **ALWAYS load `context-awareness` first** — before any other action, on every instruction,
-  whether or not the user asked for it. It is the universal orientation layer; all other skills
-  assume it. There is no exception, not even for trivial questions.
-- **Load related skill(s)** from the Skill Map that match the instruction (bug fix → `code-writing`,
-  tests → `pest-testing`, scripts → `script-automation`, etc.). Load **every** skill that applies —
-  loading a skill is cheap, a wrong assumption is not.
-- **Classify the SDLC phase** using the Phase Classification table — it sets the depth of the
-  9 steps for this run (Computational Thinking: pattern recognition).
-- **Classify the size** (S/M/L) using Size Triage — if **L**, inform the user and propose a session
-  plan before proceeding (session splitting is mandatory, never optional).
+- **ALWAYS load `agent-workflow` first** — before any other action, on every instruction, whether or
+  not the user asked for it. Then **ALWAYS load `context-awareness`** — the universal orientation
+  layer; all other skills assume it. There is no exception, not even for trivial questions.
+- **Load only the skills the task actually uses** from the Skill Map (bug fix → `code-writing`,
+  tests → `pest-testing`, scripts → `script-automation`, etc.). Every skill load consumes context,
+  so skip any skill the task will not exercise; an unneeded skill is cheap to skip, a bloated
+  context is not.
+- **Classify phase + size** per `agent-workflow` (Phase Classification + Size Triage) — if **L**,
+  inform the user and propose a session plan before proceeding.
 - **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
 - **Locate the governing spec** in `docs/specs/` (foundation, module, or feature) — it is the
   source of truth for intent, scope, and acceptance criteria (Spec-First Doctrine, above). No
   instruction may proceed without a governing spec or an explicit recorded decision.
 - **Check `docs/roadmap.md`** for current development status and phase progress (for planning
   work, load the `roadmap-planning` skill).
-- Output: clear restatement of the task + phase classification + loaded skills, confirmed with
-  user if ambiguous.
 
-### 2. Define & Scope
+### 2-9. Remaining Steps
 
-Identify affected module(s), layer(s), files. Check dependencies.
+Steps 2-9 (Define & Scope → Explore → Plan → Design → Develop → Test & Verify → Document →
+Commit & Report) are defined in full detail in the `agent-workflow` skill. Follow them there —
+do not re-derive or skip them. Key anchors kept here:
 
-- **List affected modules** using Module Quick Reference below.
-- **Identify affected layers:** Presentation (Livewire/Blade), Business (Action/Entity), Data (Model/DTO), Infrastructure.
-- **Check for blockers:** migrations needed? config changes? service provider registration?
-- **Select skills to load** based on task type (see Skill Map).
-- **Scope the change surface** so work stays minimal — the smallest set of files that satisfies
-  the instruction (Computational Thinking: decomposition).
-- Output: scope statement with affected files and required skills.
-
-### 3. Explore
-
-Read the relevant docs and existing code. Build mental model before writing.
-
-- **Load required skills** from Skill Map.
-- **Survey existing tooling first** — check `scripts/` and devtools for an existing scanner or
-  helper before doing manual or repeated work (Automation-First).
-- **Read module docs** (`docs/modules/{module}.md`) for affected modules.
-- **Read architecture docs** (`docs/architecture/`) for relevant patterns.
-- **Read the full current content of every file you may touch** — before any edit, understand the
-  existing code, patterns, naming, and structure so changes stay surgical (Edit Policy).
-- **Check conventions** (`docs/conventions.md`) for invariants C1-C8, D1-D6.
-- Output: complete understanding of existing patterns and code.
-
-### 4. Plan
-
-Consider 2+ approaches. Choose the best fit.
-
-- **Action type:** Command (write), Read (query), Process (business logic).
-- **Entity boundaries:** what goes in Entity vs Action vs DTO.
-- **DTO needs:** required if Command/Process has 3+ parameters (C7).
-- **Automation:** if the work is repetitive, batch, mechanical, or pattern-based (scanning,
-  bulk renames, mass edits, seed data), plan to script it or reuse an existing devtool instead
-  of doing it by hand (Automation-First, Computational Thinking: algorithm design).
-- **Test strategy:** which test type, which verification commands (see Verification Strategy).
-- **Document changes:** what docs need updating.
-- Output: implementation plan with chosen approach.
-
-### 5. Design
-
-Define class contracts before coding.
-
-- **Action signature:** constructor params, return type (ActionResponse).
-- **Entity contract:** `final readonly`, `fromModel()`, forbidden imports (C5).
-- **DTO contract:** extends `BaseData`, forbidden imports (C6).
-- **Model contract:** `#[Fillable]`, entity bridge method.
-- **Error handling:** which exceptions (C8: RejectedException, not RuntimeException).
-- **Cache strategy:** key registration (C4), TTL, invalidation.
-- Output: class signatures, data flow, error handling plan.
-
-### 6. Develop
-
-Write code matching the design. Follow conventions.
-
-- **Edit Policy — never full-rewrite by default.** First check what already exists. Edit
-  surgically (smallest possible change), preserve unrelated code, formatting, and context. A
-  full rewrite is only justified for small files where the rewrite IS the intent — never as a
-  shortcut on large files (risk of silently dropping important information).
-- **`declare(strict_types=1)`** in every PHP file (D1).
-- **No debug calls** — `dd/dump/ray/var_dump/print_r/die` (D2).
-- **`__()` for all user-facing strings** (D3).
-- **No raw request** for create/update — use validated DTOs (D5).
-- **No Model mutations in Livewire** — use Actions (C1).
-- **No service locator** — use constructor injection (C2).
-- Output: working code matching design, produced by surgical edits.
-
-### 7. Test & Verify
-
-Choose verification level. Run targeted checks first, full suite once at end.
-
-- **Batch changes** before running full suite (expensive: ~2GB+, 10+ min).
-- **Verify with git before and after** — run `git status` + `git diff` to compare the changed
-  files against their previous state: confirm only intended files changed, no unrelated edits,
-  and no content was lost in any edit (version-control verification, Edit Policy).
-- **Run incremental checks** during development:
-  - `vendor/bin/pint --dirty --test --format agent` — PHP syntax + style check
-  - `npx prettier --check <files>` — Blade/frontend formatting check
-  - `vendor/bin/pint --dirty --format agent` — auto-fix code style
-- **Run targeted tests** after completing a logical unit:
-  - `vendor/bin/pest --testsuite={ModuleName}`
-  - `php artisan test --compact --filter={ClassName}`
-- **Run arch-guard scripts** before commit (Automation-First — never skip these in favor of
-  manual greps; they are faster and deterministic):
-  - `python3 scripts/scan_violations.py` — C1-C8, D1-D6
-  - `python3 scripts/scan_class_contracts.py` — class contracts
-  - `python3 scripts/scan_security.py` — security patterns
-  - `python3 scripts/scan_naming.py` — naming conventions
-  - `python3 scripts/scan_conventions.py` — strict_types, Fillable, debug
-  - `python3 scripts/scan_doc_links.py` — broken links in docs + `.agents/contexts/`
-- **Run full suite** only when the user explicitly asks (on-demand only, never routine):
-  - `php artisan test --compact`
-  - `vendor/bin/phpstan analyse --no-progress`
-- Output: all tests pass, linter clean, arch-guard clean, git diff reviewed.
-
-### 8. Document
-
-Update docs before/after code changes (documentation-first).
-
-- **Module docs** (`docs/modules/{module}.md`) — update if features/API changed.
-- **Architecture docs** (`docs/architecture/`) — update if patterns changed.
-- **Conventions** (`docs/conventions.md`) — update if new rules added.
-- **PHPDoc blocks** — required on all public methods.
-- Output: docs match code.
-
-### 9. Commit & Report
-
-Deliver report. Commit with conventional format.
-
-- **Final git review** — `git status` + `git diff` before committing: stage only intended files,
-  never secrets, never unrelated changes. Confirm the final state matches the verified diff.
-- **Conventional format:** `type(scope): description`
-- **Scope = module name** (e.g., `feat(enrollment): add bulk placement`)
-- **Types:** `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
-- **Report:** summarize what changed, what was verified, any caveats.
-- Output: clean commit, user informed.
+- **Edit Policy** (Step 6): never full-rewrite by default — edit surgically, preserve unrelated
+  code, verify with `git status` + `git diff` (see §Edit Policy below).
+- **Verification** (Step 7): see §Verification Strategy below.
+- **Commit format** (Step 9): `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`,
+  `chore`, `test`, `perf`, `security`; scope = module name.
 
 ---
 
@@ -420,7 +277,8 @@ Full definition: `docs/foundation/product-definition.md`
 
 | Task | Skill | Notes |
 |------|-------|-------|
-| Every instruction, any task | `context-awareness` | **ALWAYS load first** — universal orientation layer, no exceptions |
+| Every instruction, any task | `agent-workflow` | **ALWAYS load first** — canonical workflow SSOT (9-step, 4-phase, size triage, verification) |
+| Every instruction, any task | `context-awareness` | **ALWAYS load second** — universal orientation layer, no exceptions |
 | Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
@@ -518,7 +376,7 @@ Full spec list with build order: `docs/specs/index.md`
 
 | Rule | Where to find |
 |------|--------------|
-| Name always `Administrator` | `docs/modules/setup.md` §Super Admin |
+| Name always `Super Admin` | `docs/modules/setup.md` §Super Admin |
 | Username always `superadmin` | `docs/modules/setup.md` §Super Admin |
 | SetupSuperAdminAction signature | `docs/modules/setup.md` §Super Admin |
 | InitializeSuperAdminAction uses config | `docs/modules/setup.md` §Super Admin |

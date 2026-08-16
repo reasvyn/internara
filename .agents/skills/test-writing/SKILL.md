@@ -24,6 +24,13 @@ Use this skill when:
 - Auditing tests against their specs (spec gaps, orphan tests)
 - Determining whether running the full test suite is necessary
 
+## Workflow
+
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
+strategy, and commit format. This skill adds verification strategy selection, efficient test
+execution, and failing-test diagnosis — nothing else.
+
 ## Core Principles
 
 **1. Verify first, test second.** The full test suite consumes ~2GB+ RAM and takes 10+ minutes.
@@ -34,9 +41,9 @@ Use this skill when:
 Doctrine: no behavior without a requirement). Tests with no spec mapping are noise — audit them
 out, never write them.
 
-**3. Size first.** Classify the change per AGENTS.md Size Triage. If the verification/test work spans
-multiple modules or is **L** size, split it into sessions — inform the user and propose a plan
-before running anything.
+**3. Size first.** Classify the change per the `agent-workflow` Size Triage. If the
+verification/test work spans multiple modules or is **L** size, split it into sessions — inform
+the user and propose a plan before running anything.
 
 **4. Minimalism — only the tests the spec requires.** Spec-driven testing is about writing the
 minimum tests that prove the spec, then stopping. It accelerates development and verification
@@ -286,30 +293,6 @@ During full suite run:
 - Do NOT fix and re-run the full suite — just run the failing test class
 
 ---
-
-## Phase Context
-
-| Role | Skill |
-|------|-------|
-| **Upstream** | `feature-building` (code to verify), `code-refactoring` (refactored code) |
-| **This skill** | **VERIFY & TEST** — verification strategy, efficient test execution, fix diagnosis |
-| **Downstream** | `pest-testing` (detailed test writing), `sync-docs` (doc updates after verification) |
-
-## Automation Scripts
-
-| Script | What it does | Command |
-|--------|-------------|---------|
-| `scan_tests.py` | Run test suite, parse per-module results | `python3 scripts/scan_tests.py` |
-
-Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-tests.json`.
-
-## Quality Gate — arch-guard
-
-Test files must also pass arch-guard checks:
-- Test files must have `declare(strict_types=1)` (D1)
-- No debug calls in tests (D2) — use `->dd()` or `->dump()` Pest methods instead
-- Test naming follows `it_{behavior}()` convention
-- See `arch-guard` skill for full rule reference
 
 ## References
 

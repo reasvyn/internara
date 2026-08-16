@@ -20,76 +20,20 @@ downstream:
 Use this skill when building or modifying Livewire components. Covers component structure, form
 handling, validation, file uploads, table components, and reactive patterns.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
+strategy, and commit format. This skill adds Livewire-specific guidance — thin components, Form
+Objects, Action delegation, accessibility, localization, and routing — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
+### Execute — Build/Modify Livewire Component
 
-- Load `context-awareness` skill for project orientation
-- **Locate the governing spec** (`docs/specs/`) — list the FR/NFR/UC IDs this component must satisfy
-  (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first
-  via `spec-writing`)
-- Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
-  session plan
-- Verify paths, class names, signatures against actual code (don't trust docs blindly)
-- Determine approach: at least 2 options before deciding
-
-### 2. Execute — Build/Modify Livewire Component
-
-- Build/modify thin Livewire component — delegate to Actions
+- Build/modify thin Livewire component — delegate to Actions (Thin Component Rule below)
 - Use Form Object for 5+ fields
-- Ensure no Model::create/update/delete in component
+- Ensure no `Model::create/update/delete` in component
 - Use method injection for Action calls
-- Catch RejectedException specifically before Throwable
-- Output: thin Livewire component with Form Objects, Action delegation, and proper exception
-  handling
-
-### 3. Verify — Quality Gates
-
-- Run change-type-appropriate verification (see AGENTS.md Verification Strategy — not a fixed
-  command set)
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
-- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
-  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-- Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
-
-### 4. Report & Commit
-
-- Deliver a comprehensive report to the user:
-    - Summary of component work
-    - Files created or modified
-    - Test suite status (pass/fail)
-- Feeds into: pest-testing (component tests), tailwindcss-development (UI styling), sync-docs (doc
-  updates)
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                                         |
-| -------------- | ----------------------------------------------------------------------------- |
-| **Upstream**   | `feature-building` (implementation flow)                                      |
-| **This skill** | **IMPLEMENTATION (Sub-skill)** — Livewire-specific                            |
-| **Downstream** | `pest-testing` (component tests), `tailwindcss-development` (UI), `sync-docs` |
-
-## Skill Handoffs (Actionable)
-
-| Condition | Action |
-|-----------|--------|
-| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
-| File uploads in component | Load `medialibrary-development` — Spatie MediaLibrary handles the actual upload |
-| UI / styling / layout | Load `tailwindcss-development` before Blade/CSS |
-| Writing component tests | Load `pest-testing` |
-| Component exceeds 300 lines | Load `code-refactoring` (Workflow C — thin Livewire) |
-| Feature is **L** size | Split into sessions; inform user first |
+- Catch `RejectedException` specifically before `Throwable`
 
 ## Thin Component Rule
 

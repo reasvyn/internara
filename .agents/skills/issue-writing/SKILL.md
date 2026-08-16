@@ -29,76 +29,38 @@ Activation triggers include:
 - **Feature requests / bug reports / refactors / tech debt** that arrive as instructions or emerge
   from code review.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+doctrine (cite the **governing spec** FR/NFR/UC IDs an issue refers to), **Size Triage** (S/M/L
+session splitting — an L-size issue notes the session-split plan in its body), verification
+strategy, and commit format. This skill adds the issue types, unified template, key rules, and
+labels reference below — nothing else.
 
-### 1. Construct — Knowledge, Context & Scope
+### Construct — Context & Scope
 
-- Load `context-awareness` skill for project orientation
 - Understand affected modules and submodules
-- **Locate the governing spec** (`docs/specs/`) — cite the FR/NFR/UC ID an issue refers to when
-  applicable (a bug that contradicts a spec must reference that requirement)
 - **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 scripts/scan_issues.py`
-  and search existing open issues for the same concern/module. Never file a second issue for
-  something already tracked — link to the existing one instead (or comment with new evidence)
+  and search existing open issues for the same concern/module; link to the existing one instead
 - Gather all relevant information (error logs, stack traces, user reports, code references)
 - Identify the correct issue type (bug/feature/security/refactor/perf/docs/chore)
 - Determine severity and priority
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage; an L-size issue (multi-module scope)
-  should note the session-split plan in its body so the implementing agent knows to stage it
 
-### 2. Execute — Issue Writing
+### Execute — Issue Writing
 
 - Write issue using the appropriate template type
 - Ensure scope and impact are clearly defined
 - Include at least 2 approaches for recommendation (if relevant)
 - Document design decisions and trade-offs
 - Ensure reproducible steps (for bug) or acceptance criteria (for feature)
-- Output: structured GitHub Issue with title, description, scope, impact, recommendations, and
-  design decisions
 
-### 3. Verify — Quality Gates
+### Verify — Quality Gates
 
-- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
-  (version-control verification)
 - Review: can the issue be understood without additional context?
 - Review: is the scope specific enough (not multiple issues in one)?
 - Review: are all technical terms explained?
 - Check: no sensitive information/credentials exposed
-
-### 4. Report & Commit
-
-- Deliver a report to the user:
-    - Summary of issues created
-    - Type, severity, priority
-    - Files that will be affected
-    - Recommended approach with pros/cons
-- Feeds into: roadmap-planning (prioritization), feature-building or code-refactoring
-  (implementation)
-- Create issue on GitHub
-- Add appropriate labels
-- Commit using format: `type(scope): description`
-- Push if requested
-
-## Phase Context
-
-| Role           | Skill                                                                                                      |
-| -------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Upstream**   | `arch-guard` (code quality), `security-audit` (security findings), `code-refactoring` (tech debt)    |
-| **This skill** | **ANALYSIS / PLANNING** — produces GitHub Issues                                                           |
-| **Downstream** | `roadmap-planning` (prioritization), `feature-building` (implementation), `code-refactoring` (refactoring) |
-
-## Skill Handoffs (Actionable)
-
-| Condition | Action |
-|-----------|--------|
-| Spec missing or incomplete for a feature/refactor issue | Load `spec-writing`, write/amend the spec, then file the issue against it |
-| Issue needs design decision | Load `spec-writing` (record decision) or `doc-writing` (ADR) before filing |
-| Finding from an audit | Load the source skill (`spec-audit` / `qa-protocol` / `security-audit` / `arch-guard`) to cite the finding ID and severity |
-| Issue is **L** size | Note the session-split plan in the body; inform user |
-| Implementation of the issue begins | Load `feature-building` or `code-refactoring` |
+- Create issue on GitHub with appropriate labels
 
 ## Issue Types
 

@@ -30,20 +30,17 @@ downstream:
 Load this skill at the start of every session. It provides the mental model needed by all other
 skills. Without it, you lack the architectural context to make sound decisions.
 
-## Agent Workflow
+## Workflow
 
-Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
-Verify = 7, Report & Commit = 8-9):
+This is the **orientation layer** — it does NOT write code or run tests; it builds the mental model
+all downstream skills depend on. Follow the `agent-workflow` skill for the canonical 9-step pipeline
+/ 4-phase model and **Size Triage** (S/M/L session splitting) for the overall instruction; this skill
+adds the orientation steps and the memory-keeping duties below — nothing else.
 
-This skill is the **orientation phase** — it does NOT write code or run tests. It builds the mental
-model that all subsequent skills depend on.
-
-### 1. Construct — Knowledge, Context & Scope
+### Construct — Orientation
 
 - Read the user's instruction carefully; identify the **intent**, not just the literal request
-- Determine scope: is this a single file change, a cross-module refactor, or a new feature?
-- **Classify the size (S/M/L)** per AGENTS.md Size Triage — if **L**, inform the user that the
-  instruction is too broad for a single pass and propose a session plan before proceeding
+- Determine scope: single file change, cross-module refactor, or new feature
 - **Locate the governing spec** in `docs/specs/` (via `docs/specs/index.md`) — read the relevant
   FR/NFR/UC IDs; if no spec exists for the work, stop and raise it (write the spec first)
 - Identify which module(s) are affected
@@ -53,7 +50,7 @@ model that all subsequent skills depend on.
 - Verify paths, class names, signatures against actual code — never trust docs blindly; on
   code/doc mismatch, check git history before deciding which side is correct
 
-### 1.5 Agent Memory — Maintain `.agents/contexts/`
+### Agent Memory — Maintain `.agents/contexts/`
 
 `.agents/contexts/` is the **AI Agent memory**: a living record of evolving project knowledge that
 agents write to so no context is lost between sessions. It is both **read** (orientation) and
@@ -75,7 +72,7 @@ die in a conversation.
 - **House style:** metadata line (`> **Last updated:**` + `**Changes:**`), `## Description`, plain
   language, an `## AI Agent Guides` decision table where helpful.
 
-### 2. Execute — Build Mental Model
+### Execute — Build Mental Model
 
 - Read `docs/architecture.md`, `docs/conventions.md`, `docs/modules/index.md`
 - Understand 4-layer architecture, Action Triad, DTO boundaries
@@ -84,7 +81,7 @@ die in a conversation.
 - Identify which layer the task touches and what constraints apply
 - Output: project mental model — architecture, module boundaries, critical rules
 
-### 3. Verify — Orientation Completeness
+### Verify — Orientation Completeness
 
 Before handing off to any downstream skill, confirm:
 - [ ] Which module(s) and layer(s) are affected
@@ -93,7 +90,7 @@ Before handing off to any downstream skill, confirm:
 - [ ] What existing code can be followed as a pattern
 - [ ] What docs need to be read before writing code
 
-### 4. Report — Hand Off to Downstream Skill
+### Report — Hand Off to Downstream Skill
 
 - Deliver orientation summary to the user:
   - Affected modules and layers
