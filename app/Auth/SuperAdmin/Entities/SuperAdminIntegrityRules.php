@@ -40,7 +40,7 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
             return true;
         }
 
-        return $this->name === config('setup.defaults.admin_name', 'Administrator');
+        return $this->name === config('setup.defaults.admin_name', 'Super Admin');
     }
 
     public function isUsernameValid(): bool

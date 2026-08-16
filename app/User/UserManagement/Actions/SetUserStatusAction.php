@@ -9,20 +9,24 @@ use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
+use App\User\UserManagement\Data\SetUserStatusData;
 use App\User\UserManagement\Events\UserStatusChanged;
 
 final class SetUserStatusAction extends BaseCommandAction
 {
-    public function execute(User $user, AccountStatus $newStatus, ?string $reason = null, bool $skipAuthCheck = false): User
+    public function execute(SetUserStatusData $data): User
     {
-        if (! $skipAuthCheck && $user->id === auth()->id()) {
-            throw new RejectedException('Cannot change your own status.');
+        $user = User::findOrFail($data->userId);
+        $newStatus = $data->newStatus;
+
+        if (! $data->skipAuthCheck && $user->id === auth()->id()) {
+            throw new RejectedException(__('user.manager.cannot_change_own_status'));
         }
 
         $integrity = $user->asSuperAdminIntegrityRules();
 
         if (! $integrity->canBeLocked()) {
-            throw new RejectedException('Cannot change super admin account status.');
+            throw new RejectedException(__('user.manager.cannot_change_super_admin_status'));
         }
 
         $currentStatusName = $user->status?->value;
@@ -40,7 +44,7 @@ final class SetUserStatusAction extends BaseCommandAction
             }
         }
 
-        $reason ??= __('user.manager.status_updated_reason');
+        $reason = $data->reason ?? __('user.manager.status_updated_reason');
 
         $user->setStatus($newStatus->value, $reason);
 

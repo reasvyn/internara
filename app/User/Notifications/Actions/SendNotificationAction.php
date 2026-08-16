@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
-use App\User\Notifications\Data\NotificationData;
 use App\User\Notifications\Events\NotificationSent;
 use App\User\Notifications\Models\Notification;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -21,28 +20,13 @@ use Illuminate\Support\Facades\Validator;
  */
 final class SendNotificationAction extends BaseCommandAction implements SendsNotifications
 {
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): Notification {
-        $notificationData = NotificationData::from([
-            'userId' => $userId,
-            'type' => $type,
-            'title' => $title,
-            'message' => $message,
-            'data' => $data,
-            'link' => $link,
-        ]);
-
+    public function execute(NotificationData $data): Notification
+    {
         Validator::make(
             [
-                'userId' => $notificationData->userId,
-                'type' => $notificationData->type,
-                'title' => $notificationData->title,
+                'userId' => $data->userId,
+                'type' => $data->type,
+                'title' => $data->title,
             ],
             [
                 'userId' => 'required|string',
@@ -51,22 +35,22 @@ final class SendNotificationAction extends BaseCommandAction implements SendsNot
             ],
         )->validate();
 
-        $user = User::findOrFail($notificationData->userId);
+        $user = User::findOrFail($data->userId);
 
-        return $this->transaction(function () use ($user, $notificationData) {
+        return $this->transaction(function () use ($user, $data) {
             $notification = Notification::create([
                 'user_id' => $user->id,
-                'type' => $notificationData->type,
-                'title' => $notificationData->title,
-                'message' => $notificationData->message,
-                'data' => $notificationData->data,
-                'link' => $notificationData->link,
+                'type' => $data->type,
+                'title' => $data->title,
+                'message' => $data->message,
+                'data' => $data->data,
+                'link' => $data->link,
                 'is_read' => false,
             ]);
 
             $this->log('notification_sent', $notification, [
                 'user_id' => $user->id,
-                'type' => $notificationData->type,
+                'type' => $data->type,
             ]);
 
             event(new NotificationSent($notification));

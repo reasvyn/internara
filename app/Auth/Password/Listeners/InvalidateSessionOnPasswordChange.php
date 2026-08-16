@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Password\Listeners;
 
 use App\Auth\Password\Events\PasswordUpdated;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -16,12 +17,12 @@ final class InvalidateSessionOnPasswordChange implements ShouldQueue
     {
         $user = $event->user;
 
-        $this->sendNotification->execute(
+        $this->sendNotification->execute(new NotificationData(
             userId: $user->id,
             type: 'password_changed',
             title: __('notifications.password_changed.title'),
             message: __('notifications.password_changed.message'),
             link: route('profile'),
-        );
+        ));
     }
 }

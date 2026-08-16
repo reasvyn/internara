@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\AccountRecovery\Livewire;
 
 use App\Auth\AccountRecovery\Actions\RedeemRecoverySlipAction;
+use App\Auth\AccountRecovery\Data\RedeemRecoverySlipData;
 use App\Auth\AccountRecovery\Livewire\Forms\AccountRecoveryForm;
 use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
@@ -32,11 +33,11 @@ class AccountRecovery extends Component
         }
 
         try {
-            $action->execute(
+            $action->execute(new RedeemRecoverySlipData(
                 username: $this->form->username,
                 code: $this->form->recoveryCode,
                 newPassword: $this->form->password,
-            );
+            ));
 
             RateLimiter::clear($throttleKey);
 

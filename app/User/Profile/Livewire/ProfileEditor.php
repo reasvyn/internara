@@ -9,6 +9,7 @@ use App\Core\Livewire\BaseFormView;
 use App\User\Models\User;
 use App\User\Profile\Actions\ReadProfileFormAction;
 use App\User\Profile\Actions\UpdateProfileAction;
+use App\User\Profile\Data\UpdateProfileData;
 use App\User\Profile\Livewire\Forms\PasswordForm;
 use App\User\Profile\Livewire\Forms\ProfileForm;
 use Illuminate\Http\UploadedFile;
@@ -83,7 +84,11 @@ class ProfileEditor extends BaseFormView
 
         $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
 
-        $updateProfile->execute($this->user, [], avatar: $this->avatar);
+        $updateProfile->execute(new UpdateProfileData(
+            userId: $this->user->id,
+            profile: [],
+            avatar: $this->avatar,
+        ));
 
         flash()->success(__('profile.avatar_saved'));
     }
@@ -144,13 +149,13 @@ class ProfileEditor extends BaseFormView
             ]);
         }
 
-        $updateProfile->execute(
-            $this->user,
-            $data,
+        $updateProfile->execute(new UpdateProfileData(
+            userId: $this->user->id,
+            profile: $data,
             name: $this->canChangeName ? $this->profileForm->name : null,
             email: $this->profileForm->email,
             username: $this->canChangeUsername ? $this->profileForm->username : null,
-        );
+        ));
 
         flash()->success(__('profile.saved'));
     }

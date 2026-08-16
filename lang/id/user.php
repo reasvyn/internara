@@ -6,6 +6,7 @@ return [
     'manager' => [
         'title' => 'Manajemen Pengguna',
         'subtitle' => 'Kelola semua pengguna sistem',
+        'not_found' => 'Pengguna tidak ditemukan.',
         'name' => 'Nama',
         'email' => 'Info Akun',
         'roles' => 'Peran',
@@ -37,6 +38,7 @@ return [
         'status_invalid' => 'Status yang dipilih tidak valid.',
         'status_updated_reason' => 'Status diperbarui oleh administrator.',
         'status_archived_bulk' => 'Akun diarsipkan melalui operasi massal.',
+        'status_locked_bulk' => 'Akun dikunci melalui operasi massal.',
         'account' => 'Akun',
         'name_placeholder' => 'Contoh: John Doe',
         'email_placeholder' => 'Contoh: john@example.com',
@@ -58,6 +60,8 @@ return [
         'protected' => 'Dilindungi',
         'cannot_delete_super_admin' => 'Tidak dapat menghapus akun super administrator.',
         'cannot_edit_super_admin' => 'Tidak dapat mengubah akun super administrator.',
+        'cannot_change_own_status' => 'Tidak dapat mengubah status akun Anda sendiri.',
+        'cannot_change_super_admin_status' => 'Tidak dapat mengubah status akun super administrator.',
     ],
     'mentor' => [
         'title' => 'Manajemen Mentor',

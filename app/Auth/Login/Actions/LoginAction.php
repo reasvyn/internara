@@ -17,13 +17,9 @@ use Illuminate\Support\Facades\Cache;
 
 final class LoginAction extends BaseCommandAction
 {
-    public function execute(
-        string $identifier,
-        string $password,
-        bool $remember = false,
-    ): Authenticatable {
-        return $this->transaction(function () use ($identifier, $password, $remember) {
-            $data = new LoginData(identifier: $identifier, password: $password, remember: $remember);
+    public function execute(LoginData $data): Authenticatable
+    {
+        return $this->transaction(function () use ($data) {
             $identifierHash = hash('crc32b', $data->identifier);
 
             $this->checkLockout($identifierHash);

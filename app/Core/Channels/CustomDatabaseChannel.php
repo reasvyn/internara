@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Channels;
 
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Services\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
@@ -43,13 +44,13 @@ class CustomDatabaseChannel
                 ->save();
         }
 
-        $this->sendNotification->execute(
+        $this->sendNotification->execute(new NotificationData(
             userId: (string) $userId,
             type: $data['type'] ?? 'general',
             title: $data['title'] ?? 'Notification',
             message: $data['message'] ?? null,
             data: $data['data'] ?? null,
             link: $data['link'] ?? null,
-        );
+        ));
     }
 }

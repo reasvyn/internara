@@ -7,6 +7,7 @@ namespace App\Jobs\User;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\SetUserStatusAction;
+use App\User\UserManagement\Data\SetUserStatusData;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -32,12 +33,12 @@ class ArchiveStudentAccountsJob implements ShouldQueue
             ->get();
 
         foreach ($users as $user) {
-            $setUserStatus->execute(
-                $user,
-                AccountStatus::ARCHIVED,
+            $setUserStatus->execute(new SetUserStatusData(
+                userId: $user->id,
+                newStatus: AccountStatus::ARCHIVED,
                 reason: __('user.manager.status_archived_bulk'),
                 skipAuthCheck: true,
-            );
+            ));
         }
     }
 

@@ -75,7 +75,7 @@ return [
     */
 
     'defaults' => [
-        'admin_name' => 'Administrator',
+        'admin_name' => 'Super Admin',
         'admin_username' => 'superadmin',
         'username_max_length' => 20,
     ],

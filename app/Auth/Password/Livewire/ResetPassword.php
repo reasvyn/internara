@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Password\Livewire;
 
 use App\Auth\Password\Actions\ResetPasswordAction;
+use App\Auth\Password\Data\ResetPasswordData;
 use App\Auth\Password\Livewire\Forms\ResetPasswordForm;
 use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
@@ -37,12 +38,12 @@ class ResetPassword extends Component
         }
 
         try {
-            $action->execute(
+            $action->execute(new ResetPasswordData(
                 email: $this->form->email,
                 token: $this->form->token,
                 password: $this->form->password,
                 passwordConfirmation: $this->form->password_confirmation,
-            );
+            ));
 
             RateLimiter::clear($throttleKey);
 

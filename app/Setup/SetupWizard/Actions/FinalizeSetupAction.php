@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Channels\Data\NotificationData;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Exceptions\RejectedException;
-use App\Settings\Data\SettingEntryData;
 use App\Settings\Actions\BatchSetSettingAction;
-use Illuminate\Support\Facades\Cache;
+use App\Settings\Data\SettingEntryData;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -56,7 +57,7 @@ final class FinalizeSetupAction extends BaseCommandAction
             $completedSteps = $state->completedSteps();
 
             foreach ($stepsToComplete as $step) {
-                if (!in_array($step, $completedSteps)) {
+                if (! in_array($step, $completedSteps)) {
                     $completedSteps[] = $step;
                 }
             }
@@ -108,13 +109,13 @@ final class FinalizeSetupAction extends BaseCommandAction
 
         Cache::forget(config('cache-keys.setup_installed'));
 
-        $this->sendNotification->execute(
+        $this->sendNotification->execute(new NotificationData(
             userId: $result['adminId'],
             type: 'system',
             title: __('notifications.system_installed.title'),
             message: __('notifications.system_installed.message'),
             link: route('sysadmin.dashboard'),
-        );
+        ));
 
         Session::forget([
             'setup.authorized',

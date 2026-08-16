@@ -12,6 +12,8 @@ use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
+use App\User\UserManagement\Data\CreateUserData;
+use App\User\UserManagement\Data\UpdateUserData;
 use App\User\UserManagement\Livewire\Concerns\DownloadsAccountSlips;
 use App\User\UserManagement\Livewire\Forms\TeacherForm;
 use Illuminate\Contracts\View\View;
@@ -119,19 +121,19 @@ class TeacherManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute(
-                $user,
-                ['name' => $this->form->name, 'email' => $this->form->email],
-                $profileData,
-            );
+            $updateAction->execute(new UpdateUserData(
+                userId: $user->id,
+                user: ['name' => $this->form->name, 'email' => $this->form->email],
+                profile: $profileData,
+            ));
             flash()->success(__('user.teacher.success_updated'));
         } else {
-            $user = $createAction->execute(
-                ['name' => $this->form->name, 'email' => $this->form->email],
-                $profileData,
-                [RoleEnum::TEACHER->value],
-                false,
-            );
+            $user = $createAction->execute(new CreateUserData(
+                user: ['name' => $this->form->name, 'email' => $this->form->email],
+                profile: $profileData,
+                roles: [RoleEnum::TEACHER->value],
+                sendNotification: false,
+            ));
             $this->userModal = false;
             $this->redirect(route('admin.users.account-slip', $user));
 

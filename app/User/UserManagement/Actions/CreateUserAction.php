@@ -18,34 +18,30 @@ use Illuminate\Support\Facades\Validator;
 
 final class CreateUserAction extends BaseCommandAction
 {
-    public function execute(
-        array $userData,
-        array $profileData = [],
-        array $roles = [],
-        bool $sendNotification = true,
-    ): User {
+    public function execute(CreateUserData $data): User
+    {
+        $userData = $data->user;
         $userData['username'] =
             $userData['username'] ??
             UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
         $plainPassword = $userData['password'] ?? str()->random(12);
-        $shouldSendWelcome = $sendNotification && !isset($userData['password']);
+        $shouldSendWelcome = $data->sendNotification && ! isset($userData['password']);
 
         Validator::make($userData, [
-            'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName()],
+            'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName],
             'username' => [
                 'required',
                 'string',
                 'unique:users,username',
-                new SystemUsername(),
-                new ReservedAuthoritativeName(),
+                new SystemUsername,
+                new ReservedAuthoritativeName,
             ],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 
         $user = $this->transaction(function () use (
             $userData,
-            $profileData,
-            $roles,
+            $data,
             $plainPassword,
         ) {
             $user = User::create([
@@ -56,17 +52,17 @@ final class CreateUserAction extends BaseCommandAction
                 'setup_required' => $userData['setup_required'] ?? false,
             ]);
 
-            if (!empty($profileData)) {
-                $user->profile()->create($profileData);
+            if (! empty($data->profile)) {
+                $user->profile()->create($data->profile);
             }
 
-            if (!empty($roles)) {
-                $user->syncRoles($roles);
+            if (! empty($data->roles)) {
+                $user->syncRoles($data->roles);
             }
 
             $this->log('user_created', $user, [
                 'email' => $user->email,
-                'roles' => $roles,
+                'roles' => $data->roles,
             ]);
 
             event(new UserCreated($user));
