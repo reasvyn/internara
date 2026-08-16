@@ -1,6 +1,6 @@
 # Upgrading Internara
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite from end-user guide to developer reference; merge from `docs/guide/05-upgrading-from-previous.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — verify upgrade procedure matches current implementation (standard upgrade, rollback strategy, version numbering, major version considerations)
 
 ## Description
 

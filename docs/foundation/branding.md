@@ -1,6 +1,6 @@
 # Branding — Visual Identity & Brand Assets
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify brand assets, colors, logo usage match current implementation (Spatie Media Library, dynamic CSS variables, 6-digit hex validation)
 
 ## Description
 

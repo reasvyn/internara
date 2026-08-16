@@ -1,6 +1,6 @@
 # System Health, Troubleshooting & Diagnostics
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/04`, `docs/infrastructure/troubleshooting.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — verify system health commands match current implementation (system:health, cache warming, cleanup, pulse snapshots)
 
 ## Description
 

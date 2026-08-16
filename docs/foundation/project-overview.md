@@ -1,6 +1,6 @@
 # Project Overview
 
-> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module from known issues
+> **Last updated:** 2026-08-16 **Changes:** sync — verify project overview matches current stack (Laravel 13, PHP 8.4, Livewire 4, Pest 4, 18 modules, MIT license)
 
 ---
 

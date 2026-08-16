@@ -1,6 +1,6 @@
 # Post-Setup — Initial Data Population & Configuration
 
-> **Last updated:** 2026-07-22 **Changes:** feat — rewrite to developer reference; merge from `docs/guide/03-post-setup.md`
+> **Last updated:** 2026-08-16 **Changes:** sync — verify post-setup steps match current implementation (settings init, academic structure, partnerships, user provisioning, program config)
 
 ## Description
 
