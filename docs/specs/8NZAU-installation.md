@@ -1,8 +1,10 @@
 # Installation & Provisioning — Feature Specification
 
 > **Spec ID:** 8NZAU
-> **Last updated:** 2026-08-15 **Changes:** amend — add `setup:install --with-dummy` demo-seed
-> flag (UC-5, FR-C10, NFR-S13)
+> **Last updated:** 2026-08-16 **Changes:** amend — align to implementation: fix extension count
+> (12), recovery key setting name (`setup.install_recovery_key`), replace module-discovery FRs with
+> cross-reference to I1BCV, add HTTP middleware/routes/controller contracts (FR-H1–H9), complete
+> `config/setup.php` contract, record ADR for dead `InstallSystemAction`
 
 ## Description
 
@@ -158,7 +160,7 @@ accessible via token.
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
 | FR-A1 | System must check PHP version >= 8.4.0                                 |
-| FR-A2 | System must check 11 required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
+| FR-A2 | System must check 12 required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
 | FR-A3 | System must warn about recommended extensions: redis, pcntl, posix      |
 | FR-A4 | System must verify directory permissions: storage/, bootstrap/cache/     |
 | FR-A5 | System must verify database connectivity                                |
@@ -215,12 +217,26 @@ accessible via token.
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-D1 | System must discover Livewire components from registered modules at boot |
-| FR-D2 | System must discover authorization policies from registered modules at boot |
-| FR-D3 | System must register Blade view namespaces for registered modules        |
-| FR-D4 | Discovery must use `ModuleManager::names()` to scope which directories are valid modules |
-| FR-D5 | `module:discover` artisan command must re-run all discovery methods      |
-| FR-D6 | Discovery results must be cached (24h TTL) to avoid repeated filesystem scans |
+| FR-D1 | `setup:install` must run `module:discover` after provisioning            |
+| FR-D2 | Boot-time discovery (Livewire, policies, view namespaces) is governed by [module-discovery.md](I1BCV-module-discovery.md) — not re-specified here |
+
+Full discovery requirements (FR-V*, FR-CLI*, FR-R*, FR-T*, NFR-*) live in
+[module-discovery.md](I1BCV-module-discovery.md). This spec only adds the installation
+integration point (FR-D1) and defers the rest to that spec.
+
+### 4.6 HTTP Middleware, Routes & Controller
+
+| ID    | Requirement                                                              |
+| ----- | ------------------------------------------------------------------------ |
+| FR-H1 | Before installation, all non-setup web routes must redirect to `/setup` (`RequireSetupAccessMiddleware`) |
+| FR-H2 | `RequireSetupAccessMiddleware` must allow Livewire requests and static assets through |
+| FR-H3 | Setup routes must be protected by `setup.protected` alias → `ProtectSetupRouteMiddleware` |
+| FR-H4 | When installed, setup routes must be unreachable (404) except during the post-finalization window |
+| FR-H5 | `GET/POST /setup` and `POST /setup/cleanup` (name `setup.cleanup`) must exist under the protected group |
+| FR-H6 | The `setup` route must be excluded from CSRF verification (token-based auth instead) |
+| FR-H7 | Session authorization (`setup.authorized` + `token_version`) must gate access instead of re-validating the token on every request |
+| FR-H8 | Session ID must be regenerated after successful token validation |
+| FR-H9 | `/setup/cleanup` must purge all setup session state (`authorized`, `token`, `token_input`, `form_data`, `completed`) |
 
 ---
 
@@ -252,7 +268,7 @@ accessible via token.
 | NFR-P2 | Full provisioning (migrations + seeders) must complete within 30 seconds |
 | NFR-P3 | Token generation must use cache lock to prevent race conditions      |
 | NFR-P4 | Post-install cache invalidation must complete within 2 seconds       |
-| NFR-P5 | Module discovery must complete within 2 seconds (cached)             |
+| NFR-P5 | Module discovery performance is governed by [module-discovery.md](I1BCV-module-discovery.md) (NFR-P1–P5) — not re-specified here |
 
 ### 5.3 Reliability
 
@@ -294,7 +310,7 @@ All setup state is stored in the `settings` table with `group = 'setup'`:
 | `setup.token_expires_at` | datetime | Token expiry timestamp (null after use)  |
 | `setup.token_version`    | integer  | Increments on each generation            |
 | `setup.completed_steps`  | JSON     | Array of completed wizard step keys      |
-| `setup.recovery_key`     | string   | Hashed recovery key (bcrypt)             |
+| `setup.install_recovery_key` | string   | Hashed recovery key (bcrypt)         |
 | `setup.updated_at`       | datetime | Last setup state modification            |
 
 ### 6.2 Setup Entity Contract
@@ -361,13 +377,6 @@ class ValidateSetupTokenAction extends BaseCommandAction
     // @throws RejectedException when token missing/expired/malformed/mismatch
 }
 
-// InstallSystemAction
-class InstallSystemAction extends BaseProcessAction
-{
-    public function execute(bool $force = false, ?AuditReport $report = null): SetupTokenData;
-    // @throws RejectedException when audit fails
-}
-
 // SetupSuperAdminAction
 class SetupSuperAdminAction extends BaseCommandAction
 {
@@ -375,6 +384,14 @@ class SetupSuperAdminAction extends BaseCommandAction
     // @throws RejectedException when super admin immutable
 }
 ```
+
+> **ADR — `InstallSystemAction` removed.** An earlier revision of this spec defined
+> `InstallSystemAction extends BaseProcessAction` as the orchestration entry point
+> (audit → provision → token). The implementation never wired it: `setup:install`
+> performs that orchestration inline (`SetupInstallCommand` composes `EnvironmentAuditor`,
+> `SystemProvisioner`, `GenerateSetupTokenAction`). The class shipped as dead code and has
+> been removed from this contract. If a reusable process action is desired later, extract
+> it from `SetupInstallCommand::handle()` rather than re-adding a standalone action.
 
 ### 6.5 Module Registry Config
 
@@ -423,6 +440,10 @@ class SetupFinalized extends BaseEvent
     'recovery_key' => [
         'length' => 64,
     ],
+    'wizard' => [
+        'step_keys' => ['welcome', 'account', 'school', 'department', 'finalize', 'complete'],
+        'finalize_steps' => ['account', 'school', 'department'],
+    ],
     'defaults' => [
         'admin_name' => 'Administrator',
         'admin_username' => 'superadmin',
@@ -431,9 +452,17 @@ class SetupFinalized extends BaseEvent
     'security' => [
         'rate_limit_attempts' => 20,
         'rate_limit_decay_seconds' => 60,
+        'finalization_window_seconds' => 30,
     ],
     'provisioning' => [
-        'paths' => ['env' => base_path('.env'), 'env_example' => base_path('.env.example'), 'storage_link' => public_path('storage')],
+        'paths' => ['env' => '.env', 'env_example' => '.env.example', 'storage_link' => 'storage'],
+    ],
+    'audit_categories' => [
+        AuditCategory::REQUIREMENTS,
+        AuditCategory::PERMISSIONS,
+        AuditCategory::DATABASE,
+        AuditCategory::TERMINAL,
+        AuditCategory::RECOMMENDATIONS,
     ],
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
 ]
@@ -580,7 +609,7 @@ production install.
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
 | PHP 8.4+ detection              | Always      | Audit correctly identifies version    |
-| Extension check coverage        | 11 required | All required extensions verified      |
+| Extension check coverage        | 12 required | All required extensions verified      |
 | Permission check accuracy       | Always      | Correctly detects writable/unwritable |
 
 ### 8.4 Operational
@@ -588,7 +617,7 @@ production install.
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
 | Time to provision (CLI)         | < 30s       | From `setup:install` to token display |
-| Module discovery (cached)       | < 2s        | Boot-time discovery with cache        |
+| Module discovery (cached)       | < 2s        | See [module-discovery.md](I1BCV-module-discovery.md) NFR-P1 |
 
 ---
 
@@ -608,7 +637,7 @@ After implementing this spec, the system can provision itself from zero: environ
 | Order | Spec | Connection |
 |-------|------|------------|
 | 1 | [setup-wizard.md](VEJCX-setup-wizard.md) | Uses setup token from §6.3, reads `setup.is_installed` flag, extends `BaseWizard` |
-| 2 | [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Verifies recovery key hash stored in `setup.recovery_key` during finalization |
+| 2 | [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Verifies recovery key hash stored in `setup.install_recovery_key` during finalization |
 
 ---
 
@@ -624,5 +653,6 @@ After implementing this spec, the system can provision itself from zero: environ
 - **Related specs:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) — Super admin emergency access, CLI commands, OTP
 - `config/setup.php` — Setup configuration values
 - `config/module.php` — Module registry (SSOT)
-- `app/Setup/` — Full module source code
+- `app/Setup/Installation/` — CLI installation module (commands, services, middleware, token actions)
+- `app/SysAdmin/Observability/Services/EnvironmentAuditor.php` — cross-module dependency: environment audit lives in the SysAdmin/Observability module, not under `app/Setup/`
 - `app/Core/Services/ModuleService.php` — Module discovery implementation
