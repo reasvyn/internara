@@ -1,6 +1,6 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix AssignmentStatus values, SubmitAssignment extends, add NotifyOnAssignmentPublished listener, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, DTOs, Events, Listeners, Notifications, Livewire, Form Requests, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

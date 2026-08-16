@@ -1,6 +1,6 @@
 # Certification — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix CertificateStatus interface, add CertificateIssued event, template migration/factory, Livewire extends, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Events, Policies, HTTP Controllers, Livewire, Support Services, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 

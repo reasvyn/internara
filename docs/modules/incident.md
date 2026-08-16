@@ -1,6 +1,6 @@
 # Incident — Issue Reporting & Resolution
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct notification routing
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Severity Classification, Investigation Workflow, Resolution Outcomes, Integration Patterns, Submodule: IncidentReport)
 
 ## Description
 

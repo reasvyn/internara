@@ -1,6 +1,6 @@
 # Document — Templates, Handbooks & Rendering
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct cache invalidation target
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Unified Document Table, PDF Rendering Pipeline, Policy Acknowledgement Tracking, Integration Patterns, Submodules: OfficialDocument & Handbook)
 
 ## Description
 

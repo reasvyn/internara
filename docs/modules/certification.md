@@ -1,6 +1,6 @@
 # Certification — Certificates, Templates & QR
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix status values, mark verification API and batch queue as not implemented
+> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (QR Cryptographic Verification, Final Grade Prerequisite, Revocation Terminal, Embedded Layout Snapshots, Verification API planned, Batch Issuance, Submodule: Certificate)
 
 ## Description
 

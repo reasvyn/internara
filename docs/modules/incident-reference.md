@@ -1,6 +1,6 @@
 # Incident — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix IncidentStatus/IncidentType, IncidentForm extends, route names, test paths
+> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Policies, Notifications, Livewire, Routes, Views, Tests, Factories, Migrations)
 
 ## Description
 
