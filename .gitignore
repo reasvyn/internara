@@ -12,6 +12,10 @@
 /.temp
 /.tmp
 
+# Secrets & Credentials
+/**/.credentials
+/**/.secrets
+
 # Environment & Private Config
 .env
 .env.*
