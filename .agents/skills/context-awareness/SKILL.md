@@ -48,6 +48,8 @@ model that all subsequent skills depend on.
   FR/NFR/UC IDs; if no spec exists for the work, stop and raise it (write the spec first)
 - Identify which module(s) are affected
 - Read relevant docs: module docs, pattern docs, reference docs
+- **Check evolving project context** — read `.agents/contexts/index.md` and load any context file
+  matching the task topic (intentional constraints, deploy caveats, dependency pins, known states)
 - Verify paths, class names, signatures against actual code — never trust docs blindly; on
   code/doc mismatch, check git history before deciding which side is correct
 
@@ -419,7 +421,7 @@ Start here for any topic:
 | Database schema                     | `docs/infrastructure/database.md`                                |
 | Full doc catalog                    | `docs/index.md`                                                  |
 | ADRs                                | `docs/adr/index.md`                                              |
-| Known issues                        | GitHub Issues                                                    |
+| Known issues / project contexts   | `.agents/contexts/index.md`                                |
 
 ## Automation Scripts
 

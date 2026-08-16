@@ -36,7 +36,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Configuration](infrastructure/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
 - **[CI/CD Pipeline](infrastructure/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
 - **[System Health & Troubleshooting](foundation/system-health.md)** — Health checks, common problems, diagnostics
-- **[Known Issues](known-issues.md)** — Intentional design constraints, deploy caveats, and developer notes
+- **[Project Contexts](../.agents/contexts/index.md)** — Intentional design constraints, deploy caveats, dependency pins, and codebase intentional states (agent-oriented)
 
 ---
 

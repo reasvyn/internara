@@ -231,7 +231,7 @@ Choose verification level. Run targeted checks first, full suite once at end.
   - `python3 scripts/scan_security.py` — security patterns
   - `python3 scripts/scan_naming.py` — naming conventions
   - `python3 scripts/scan_conventions.py` — strict_types, Fillable, debug
-  - `python3 scripts/scan_doc_links.py` — broken links in docs
+  - `python3 scripts/scan_doc_links.py` — broken links in docs + `.agents/contexts/`
 - **Run full suite** only when the user explicitly asks (on-demand only, never routine):
   - `php artisan test --compact`
   - `vendor/bin/phpstan analyse --no-progress`
@@ -457,6 +457,7 @@ Full spec list with build order: `docs/specs/index.md`
 
 | I need to know about... | Look at |
 |-------------------------|---------|
+| Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/contexts/index.md` |
 | 4-Layer model | `docs/architecture.md` §4-Layer Model |
 | Action Triad (Command/Read/Process) | `docs/architecture/action-pattern.md` |
 | Entity contracts (`final readonly`) | `docs/architecture/entity-pattern.md` |
@@ -587,7 +588,7 @@ python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
 python3 scripts/scan_security.py           # XSS, SQLi, CSRF, auth
 python3 scripts/scan_naming.py             # Naming conventions
 python3 scripts/scan_conventions.py        # strict_types, Fillable, debug
-python3 scripts/scan_doc_links.py          # Broken links in docs
+python3 scripts/scan_doc_links.py          # Broken links in docs + `.agents/contexts/`
 ```
 
 ---
