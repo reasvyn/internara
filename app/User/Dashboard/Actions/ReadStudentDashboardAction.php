@@ -23,9 +23,9 @@ final class ReadStudentDashboardAction extends BaseReadAction
     public function execute(string $userId): array
     {
         return Cache::remember(
-            config('cache-keys.dashboard_student') . $userId,
+            config('cache-keys.dashboard_student').$userId,
             300,
-            fn() => $this->computeData($userId),
+            fn () => $this->computeData($userId),
         );
     }
 
@@ -33,7 +33,7 @@ final class ReadStudentDashboardAction extends BaseReadAction
     {
         $user = User::find($userId);
 
-        if (!$user) {
+        if (! $user) {
             throw new RejectedException('User not found.');
         }
 
@@ -85,7 +85,7 @@ final class ReadStudentDashboardAction extends BaseReadAction
         $handbookReadCount = Activity::causedBy($user)
             ->inLog('document')
             ->forEvent('acknowledged')
-            ->whereHas('subject', fn($q) => $q->where('type', 'handbook'))
+            ->whereHasMorph('subject', [Document::class], fn ($q) => $q->where('type', 'handbook'))
             ->count();
 
         return [
