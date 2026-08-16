@@ -1,7 +1,6 @@
 # Support Pattern — Static Utilities, Purity Rules & Boundaries
 
-> **Last updated:** 2026-06-27 **Changes:** rewrite — Support is now purely static utilities with no
-> constructor injection; instance+framework classes moved to Service pattern
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Support layer (purely static utilities, no constructor injection, minimal framework deps)
 
 ## Description
 

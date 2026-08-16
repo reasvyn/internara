@@ -1,6 +1,6 @@
 # Model Pattern Reference — Persistence, Relationships & Entity Bridges
 
-> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Model contracts (BaseModel, UUID v7 PK, #[Fillable], scopes, relationships, Entity bridge, D4)
 
 ## Description
 

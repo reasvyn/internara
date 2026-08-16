@@ -1,8 +1,6 @@
 # Service Pattern — Infrastructure Logic, Scope & Constructor Injection
 
-> **Last updated:** 2026-06-27 **Changes:** rewrite — clarify "domain business logic" vs
-> infrastructure logic; Service = instance methods with constructor injection; Support = static
-> utilities only
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Service/Support/Action boundaries (infrastructure logic vs domain logic, constructor injection, static utilities)
 
 ## Description
 

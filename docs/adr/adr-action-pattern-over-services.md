@@ -1,6 +1,6 @@
 # ADR-003: Action Pattern over Service Classes
 
-> **Last updated:** 2026-06-18 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current Action Triad (Command/Read/Process actions with single execute())
 
 ## Description
 

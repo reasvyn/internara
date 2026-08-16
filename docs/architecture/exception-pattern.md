@@ -1,6 +1,6 @@
 # Exception Pattern — Dual Exception Hierarchy & Error Handling
 
-> **Last updated:** 2026-06-13 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current dual exception hierarchy (AppException/ModuleException, HasExceptionContext, RejectedException not RuntimeException, C8)
 
 ## Description
 

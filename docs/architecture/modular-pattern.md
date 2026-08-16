@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current modular architecture (18 modules, colocation, Action Triad, module config discovery)
 
 ## Description
 

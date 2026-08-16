@@ -1,7 +1,6 @@
 # ADR-007: Exception Hierarchy
 
-> **Last updated:** 2026-07-21 **Changes:** sync — remove ConflictException, NotFoundException,
-> RateLimitException (deleted); update hierarchy and selection guide
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current dual exception hierarchy (AppException/ModuleException trees, HasExceptionContext, RejectedException not RuntimeException)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # ADR-001: UUID Primary Keys
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current UUID v7 PKs (no enumeration attacks, distributed ID, consistent key types)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # ADR-005: SmartLogger Dual-Channel Logging
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current SmartLogger (dual-channel, PII masking, deduplication, translation resolution)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # ADR-009: Performance & Optimization Strategy
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current performance strategy (query optimization, caching, queue offloading, pagination)
 
 ## Description
 

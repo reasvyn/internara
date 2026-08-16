@@ -1,7 +1,6 @@
 # Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-08-08 **Changes:** spec-driven testing — Action tests exist per spec
-> requirement, organized under modular tests/{Module}/ scope
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Action Triad (Command/Read/Process, BaseAction, ActionResponse, C1 no Model mutations in Livewire, C7 DTO for 3+ params)
 
 ## Description
 

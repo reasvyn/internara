@@ -1,6 +1,6 @@
 # ADR-011: Cross-Module Communication Discipline
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current cross-module communication (direct imports, Action delegation, module events, core contracts)
 
 ## Description
 

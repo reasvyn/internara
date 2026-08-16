@@ -1,6 +1,6 @@
 # ADR-004: Entity-Model Separation
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current Entity-Model separation (final readonly Entity classes, fromModel bridge, business rules in Entity)
 
 ## Description
 

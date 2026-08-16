@@ -1,6 +1,6 @@
 # ADR-015: Eloquent Observers for Model-Level Side Effects
 
-> **Last updated:** 2026-07-23 **Changes:** feat — initial ADR for observer pattern
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current observer usage (cache invalidation, snapshots, deletion guards, synchronous transaction)
 
 ## Description
 

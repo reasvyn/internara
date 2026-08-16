@@ -1,6 +1,6 @@
 # Logging & Error Handling Pattern — SmartLogger, PII Masking & Error Handling
 
-> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current SmartLogger (dual-channel, PII masking, translation resolution, activity log)
 
 ## Description
 

@@ -1,6 +1,6 @@
 # ADR-002: Action-based MVC Architecture
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
+> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current Action-based MVC architecture (module-first vertical slicing, module-owned stack)
 
 ## Description
 
