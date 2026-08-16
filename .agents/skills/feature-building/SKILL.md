@@ -17,6 +17,8 @@ downstream:
 
 # Feature Building
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify feature-building orchestrator coordinates sub-skills per spec-driven implementation
+
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

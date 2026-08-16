@@ -13,6 +13,8 @@ downstream:
 
 # Code Writing
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify code-writing patterns match current Action Triad, Entity/DTO/Model contracts, naming conventions, security patterns, C1-C8, D1-D6
+
 > **Prerequisite:** Load `context-awareness` for project orientation and `laravel-best-practices` for
 > Laravel-specific guidance.
 
