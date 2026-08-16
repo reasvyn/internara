@@ -1,6 +1,6 @@
 # Core — Base Classes, Contracts & Exceptions
 
-> **Last updated:** 2026-07-11 **Changes:** sync — replace class-by-class listing with conceptual overview
+> **Last updated:** 2026-08-16 **Changes:** middleware renamed to `SecurityHeadersMiddleware`/`LogContextMiddleware`
 
 ## Description
 
@@ -37,7 +37,8 @@ SendsNotifications, SettingsStore).
 `Data/AuditCheck`, `Data/AuditReport`, `Enums/` (CsvRowResult, AuditCategory, AuditStatus),
 `Exceptions/` (full dual hierarchy with HasExceptionContext), `Livewire/BaseRecordManager` and
 concerns (WithSorting, WithRecordSelection), `Policies/Concerns/` (AuthorizesRoles,
-AuthorizesOwnership), `Http/Middleware/` (SecurityHeaders, LogContext), `Support/` (Color,
+AuthorizesOwnership), `Http/Middleware/` (SecurityHeadersMiddleware, LogContextMiddleware),
+`Support/` (Color,
 CsvHandler, Environment, ModuleManager, PasswordRules, PiiMasker, Spotlight).
 
 **Infrastructure services** (system-level, not domain logic): `Services/SmartLogger` (dual-channel

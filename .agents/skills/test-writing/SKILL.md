@@ -106,7 +106,7 @@ When auditing tests against specs, verify these items:
 - Every requirement in the spec (`FR-*` / `NFR-*` / `UC-*` / §6 contracts) has a matching test —
   **spec gaps** to fill
 - Every test maps to a requirement ID — **orphan tests** to remove
-- Test descriptions carry the requirement ID (e.g., `it('FR-A1: ...')`)
+- Test descriptions carry the spec + requirement ID (e.g., `test('SE5Q9-FR-A4: ...')`)
 - No padding: no tests for behavior the spec doesn't define
 - Feature tests use `LazilyRefreshDatabase` (not `RefreshDatabase`)
 - `assertModelExists()` preferred over `assertDatabaseHas()`

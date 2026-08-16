@@ -1,7 +1,7 @@
 # Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
 
-> **Last updated:** 2026-07-11 **Changes:** clarify: events are for async communication only — not
-> mandatory; only create when a listener exists
+> **Last updated:** 2026-08-16 **Changes:** SendsNotifications contract now takes a single
+> `NotificationData` argument; clarify cross-module notification dispatch
 
 ## Description
 
@@ -478,19 +478,14 @@ if (!isset($data['type'])) {
 ```php
 interface SendsNotifications
 {
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): mixed;
+    public function execute(NotificationData $data): mixed;
 }
 ```
 
 An action implementing this interface validates the input, creates the `Notification` model record,
-and dispatches `{Entity}Sent`.
+and dispatches `{Entity}Sent`. The single `NotificationData` argument
+(`app/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional
+`message`, `data`, `link`.
 
 ---
 

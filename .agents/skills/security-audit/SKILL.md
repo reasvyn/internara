@@ -60,7 +60,7 @@ the audit categories, issue format, and key rules below — nothing else.
 - All Blade output uses `{{ }}` (double curly braces) — escaped
 - Every `{!! !!}` (unescaped) has an inline justification comment
 - No inline `<script>` tags — everything uses Alpine.js
-- CSP enforced via `SecurityHeaders` middleware; no bypass without justification
+- CSP enforced via `SecurityHeadersMiddleware`; no bypass without justification
 - Check CSP allows only necessary external resources
 
 ### SQL Injection
@@ -137,7 +137,7 @@ Each finding should include:
 | RBAC & authentication | `docs/foundation/rbac.md`                      |
 | Account recovery      | `docs/foundation/account-recovery.md`          |
 | Exception hierarchy   | `docs/architecture/exception-pattern.md`       |
-| CSP & middleware      | `app/Core/Http/Middleware/SecurityHeaders.php` |
+| CSP & middleware      | `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` |
 | File upload security  | `docs/infrastructure/media-library.md`         |
 | Session configuration | `docs/infrastructure/session.md`               |
 | Rate limiting         | `bootstrap/app.php`                            |

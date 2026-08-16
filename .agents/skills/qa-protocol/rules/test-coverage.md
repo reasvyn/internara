@@ -25,7 +25,7 @@ cover business logic, edge cases, and failure paths, not just happy paths.
 
 ```php
 // GOOD — clear structure
-it('calculates total price with tax', function () {
+test('calculates total price with tax', function () {
     // Arrange
     $order = Order::factory()->create();
     $item = OrderItem::factory()->create([
@@ -46,13 +46,13 @@ it('calculates total price with tax', function () {
 
 ```php
 // BAD — testing implementation details
-it('calls the database', function () {
+test('calls the database', function () {
     Mockery::mock(DB::class)->shouldReceive('table')->once();
     $service->process();
 });
 
 // GOOD — testing behavior
-it('creates an order when valid data is provided', function () {
+test('creates an order when valid data is provided', function () {
     $service->process($validData);
     $this->assertDatabaseHas('orders', ['status' => 'pending']);
 });
@@ -62,47 +62,47 @@ it('creates an order when valid data is provided', function () {
 
 ```php
 // BAD — only happy path
-it('creates a user', function () {
+test('creates a user', function () {
     $user = User::factory()->create();
     expect($user)->not->toBeNull();
 });
 
 // GOOD — happy path + edge cases
-it('creates a user with valid data', function () { ... });
-it('rejects user with duplicate email', function () { ... });
-it('rejects user with invalid email format', function () { ... });
-it('rejects user with password less than 8 characters', function () { ... });
-it('handles user creation with maximum length fields', function () { ... });
-it('creates user with unicode characters in name', function () { ... });
+test('creates a user with valid data', function () { ... });
+test('rejects user with duplicate email', function () { ... });
+test('rejects user with invalid email format', function () { ... });
+test('rejects user with password less than 8 characters', function () { ... });
+test('handles user creation with maximum length fields', function () { ... });
+test('creates user with unicode characters in name', function () { ... });
 ```
 
 ### Test Failure Paths
 
 ```php
 // BAD — only testing success
-it('processes payment', function () {
+test('processes payment', function () {
     $result = $payment->process($validCard);
     expect($result->success)->toBeTrue();
 });
 
 // GOOD — testing both success and failure
-it('processes payment with valid card', function () {
+test('processes payment with valid card', function () {
     $result = $payment->process($validCard);
     expect($result->success)->toBeTrue();
 });
 
-it('rejects payment with expired card', function () {
+test('rejects payment with expired card', function () {
     $result = $payment->process($expiredCard);
     expect($result->success)->toBeFalse();
     expect($result->error)->toBe('Card expired');
 });
 
-it('rejects payment with insufficient funds', function () {
+test('rejects payment with insufficient funds', function () {
     $result = $payment->process($lowBalanceCard);
     expect($result->success)->toBeFalse();
 });
 
-it('handles payment gateway timeout', function () {
+test('handles payment gateway timeout', function () {
     $gateway->shouldReceive('charge')->andThrow(new TimeoutException());
     $result = $payment->process($validCard);
     expect($result->success)->toBeFalse();
@@ -116,7 +116,7 @@ it('handles payment gateway timeout', function () {
 ```php
 // Test classes in isolation
 // No database, no HTTP, no framework dependencies
-it('validates email format', function () {
+test('validates email format', function () {
     $validator = new EmailValidator();
     expect($validator->isValid('user@example.com'))->toBeTrue();
     expect($validator->isValid('invalid'))->toBeFalse();
@@ -128,7 +128,7 @@ it('validates email format', function () {
 
 ```php
 // Test full request lifecycle
-it('allows authenticated user to create post', function () {
+test('allows authenticated user to create post', function () {
     $user = User::factory()->create();
     
     $response = $this->actingAs($user)
@@ -138,7 +138,7 @@ it('allows authenticated user to create post', function () {
     $this->assertDatabaseHas('posts', ['title' => 'Test']);
 });
 
-it('prevents unauthenticated user from creating post', function () {
+test('prevents unauthenticated user from creating post', function () {
     $response = $this->post('/posts', ['title' => 'Test']);
     $response->assertRedirect('/login');
 });
@@ -148,7 +148,7 @@ it('prevents unauthenticated user from creating post', function () {
 
 ```php
 // Test multiple components working together
-it('processes order end-to-end', function () {
+test('processes order end-to-end', function () {
     $order = Order::factory()->create();
     $item = OrderItem::factory()->create(['order_id' => $order->id]);
     
@@ -167,7 +167,7 @@ it('processes order end-to-end', function () {
 
 ```php
 // BAD — testing that Eloquent works
-it('can save a model', function () {
+test('can save a model', function () {
     $user = new User();
     $user->name = 'Test';
     $user->save();
@@ -175,7 +175,7 @@ it('can save a model', function () {
 });
 
 // GOOD — testing your logic, not Eloquent
-it('generates username from email', function () {
+test('generates username from email', function () {
     $user = User::factory()->create(['email' => 'john@example.com']);
     expect($user->username)->toBe('john');
 });
@@ -187,22 +187,22 @@ it('generates username from email', function () {
 // BAD — tests depend on each other
 $sharedUser = null;
 
-it('creates a user', function () use (&$sharedUser) {
+test('creates a user', function () use (&$sharedUser) {
     $sharedUser = User::factory()->create();
 });
 
-it('updates the user', function () use (&$sharedUser) {
+test('updates the user', function () use (&$sharedUser) {
     // Depends on previous test!
     $sharedUser->update(['name' => 'Updated']);
 });
 
 // GOOD — each test is independent
-it('creates a user', function () {
+test('creates a user', function () {
     $user = User::factory()->create();
     expect($user->name)->not->toBeNull();
 });
 
-it('updates a user name', function () {
+test('updates a user name', function () {
     $user = User::factory()->create();
     $user->update(['name' => 'Updated']);
     expect($user->name)->toBe('Updated');
@@ -213,7 +213,7 @@ it('updates a user name', function () {
 
 ```php
 // BAD — mocking everything defeats the purpose
-it('processes order', function () {
+test('processes order', function () {
     Mockery::mock(Order::class);
     Mockery::mock(PaymentService::class);
     Mockery::mock(InventoryService::class);
@@ -222,7 +222,7 @@ it('processes order', function () {
 });
 
 // GOOD — use real objects, mock only external services
-it('processes order', function () {
+test('processes order', function () {
     $order = Order::factory()->create();
     // Use real DB, real services
     // Mock only: payment gateway, email service, external APIs
