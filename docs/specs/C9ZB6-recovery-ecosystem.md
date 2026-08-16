@@ -1,7 +1,7 @@
 # Recovery Ecosystem — Super Admin Emergency Access
 
 > **Spec ID:** C9ZB6
-> **Last updated:** 2026-08-10 **Changes:** review — fix PS-2 step reference (Step 6, not Step 7)
+> **Last updated:** 2026-08-16 **Changes:** align — recovery key setting name corrected from `setup.recovery_key` to `setup.install_recovery_key` (matches implementation; see [installation.md](8NZAU-installation.md) §6.1)
 
 ## Description
 
@@ -139,7 +139,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 **Preconditions:** Setup wizard completing Step 6 (finalization)
 **Flow:**
 1. `FinalizeSetupAction` generates 64-char random string
-2. Hash with `Hash::make()`, store in `setup.recovery_key` setting
+2. Hash with `Hash::make()`, store in `setup.install_recovery_key` setting
 3. Save plaintext to `storage/app/private/.recovery-key` via `SaveRecoveryKeyAction`
 4. Display key on finalization screen with copy button
 **Postconditions:** Key in two locations, user has copied/printed it.
@@ -155,7 +155,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 | FR-K1 | `ReadRecoveryKeyAction` reads plaintext from `storage/app/private/.recovery-key`, skips comments (`#`) and blank lines |
 | FR-K2 | `SaveRecoveryKeyAction` writes plaintext to `storage/app/private/.recovery-key` with header comments and `chmod 0600` |
 | FR-K3 | Recovery key is 64-character cryptographically random string (via `Str::random`) |
-| FR-K4 | Recovery key hash stored in `setup.recovery_key` setting (bcrypt via `Hash::make()`) |
+| FR-K4 | Recovery key hash stored in `setup.install_recovery_key` setting (bcrypt via `Hash::make()`) |
 | FR-K5 | Recovery key file path is `storage/app/private/.recovery-key` (not web-accessible) |
 | FR-K6 | File header includes generation timestamp in ISO 8601 format |
 
@@ -202,7 +202,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 | ID    | Requirement |
 | ----- | ----------- |
 | FR-R1 | After successful recovery, system generates new 64-char recovery key |
-| FR-R2 | New key hashed and stored in `setup.recovery_key` setting via `BatchSetSettingAction` |
+| FR-R2 | New key hashed and stored in `setup.install_recovery_key` setting via `BatchSetSettingAction` |
 | FR-R3 | New key saved to file via `SaveRecoveryKeyAction` |
 | FR-R4 | File write failure does not block recovery (warning displayed, key still shown) |
 | FR-R5 | New plaintext key displayed to administrator after successful recovery |
@@ -349,7 +349,7 @@ class RecoveryOtpNotification extends Notification implements ShouldQueue
 
 | Key | Type | Description |
 | --- | ---- | ----------- |
-| `setup.recovery_key` | string | Bcrypt hash of recovery key (set during setup finalization) |
+| `setup.install_recovery_key` | string | Bcrypt hash of recovery key (set during setup finalization) |
 
 ### 6.7 Events
 
@@ -463,7 +463,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [installation.md](8NZAU-installation.md) | `setup.recovery_key` setting (bcrypt hash), `SetupEntity` for key verification |
+| [installation.md](8NZAU-installation.md) | `setup.install_recovery_key` setting (bcrypt hash), `SetupEntity` for key verification |
 | [setup-wizard.md](VEJCX-setup-wizard.md) | Recovery key generated during finalization, saved to `storage/app/private/.recovery-key` |
 
 ### Build Guide

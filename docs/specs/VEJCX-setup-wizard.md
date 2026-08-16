@@ -1,8 +1,7 @@
 # Setup Wizard — Feature Specification
 
 > **Spec ID:** VEJCX
-> **Last updated:** 2026-08-10 **Changes:** review — record school email required-at-setup vs
-> nullable-in-editor decision (DD-5, §6.1 note)
+> **Last updated:** 2026-08-16 **Changes:** align — recovery key setting name corrected to `setup.install_recovery_key` (see [installation.md](8NZAU-installation.md) §6.1)
 
 ## Description
 
@@ -455,7 +454,7 @@ After implementing this spec, the system has a 6-step browser wizard that create
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Recovery key hash stored in `setup.recovery_key` during finalization; `admin:recover` verifies against this hash |
+| 1 | [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Recovery key hash stored in `setup.install_recovery_key` during finalization; `admin:recover` verifies against this hash |
 
 ---
 
