@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix Action base classes, AccountStatus/EmploymentStatus, add events + listeners, Livewire extends, route names, flat test paths
+> **Last updated:** 2026-08-16 **Changes:** move NotificationData entry to Core (Channels/Data); link core-reference
 
 ## Description
 
@@ -142,9 +142,8 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Data / DTOs
 
-| File                                      | Class              | Extends    |
-| ----------------------------------------- | ------------------ | ---------- |
-| `Notifications/Data/NotificationData.php` | `NotificationData` | `BaseData` |
+No Data/DTO classes in the User module. The notification payload DTO `NotificationData` lives in
+`app/Core/Channels/Data/NotificationData.php` (see [Core reference](core-reference.md)).
 
 ## Events
 

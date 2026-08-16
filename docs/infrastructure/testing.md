@@ -1,7 +1,7 @@
 # Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements;
-> coverage as diagnostic, not mandate; minimalism rationale
+> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
+> replaces `it()`; `describe('{SPECID}')` alternative for spec-ID grouping
 
 ## Description
 
@@ -96,17 +96,23 @@ The three Action types map to distinct approaches:
 
 ### Test Naming Convention
 
-Tests use descriptive `it()` statements that prefix the requirement ID:
+Tests use `test()` with the requirement ID prefixed, so traceability is visible in test output:
 
 ```php
-describe('CreateInternshipAction', function () {
-    it('FR-INT1: creates an internship with an active academic year', function () { ... });
-    it('FR-INT2: rejects creation when the academic year is missing', function () { ... });
-});
+test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
+test('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () { ... });
 ```
 
-The `it()` description completes the sentence: "it **FR-INT1: creates an internship with an active
-academic year**".
+The description carries the spec ID and the requirement ID (`{SPECID}-{REQ}: description`). For
+flat files, use `describe('{SPECID}')` to carry the spec ID once, then prefix each `test()` with the
+requirement ID only:
+
+```php
+describe('SE5Q9', function () {
+    test('FR-A4: step() records success and returns the step result', function () { ... });
+    test('FR-A4: step() records failure and rethrows the exception', function () { ... });
+});
+```
 
 ### Running Tests Efficiently
 
@@ -115,7 +121,7 @@ academic year**".
 php artisan test --compact --filter=CreateInternshipAction
 
 # Single test method
-php artisan test --compact --filter='it creates an internship'
+php artisan test --compact --filter='FR-A4: step records success'
 
 # All tests for a submodule
 php artisan test --compact --filter=Internship

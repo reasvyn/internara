@@ -1,9 +1,8 @@
 # Notification Infrastructure — Cross-Module In-App & Multi-Channel Notifications
 
 > **Spec ID:** TXR2H
-> **Last updated:** 2026-07-24 **Changes:** feat — initial spec documenting the notification
-> infrastructure: custom database channel, notification center UI, bell badge, unread count caching,
-> event-driven cache invalidation, and cross-module notification dispatch
+> **Last updated:** 2026-08-16 **Changes:** align SendsNotifications contract to single
+> `NotificationData` argument (FR-C6, FR-S1, §6.1, §6.3)
 
 ## Description
 
@@ -171,14 +170,14 @@ center. A custom channel is required to persist notifications with the right sha
 | FR-C3 | `CustomDatabaseChannel::send()` must silently return if the notifiable has no valid user ID (null or empty) |
 | FR-C4 | `CustomDatabaseChannel::send()` must call `$notification->toCustomDatabase($notifiable)` to get structured data |
 | FR-C5 | `CustomDatabaseChannel::send()` must log a warning via `SmartLogger` if `type` or `title` keys are missing from the returned data |
-| FR-C6 | `CustomDatabaseChannel::send()` must delegate to `SendsNotifications::execute()` with `userId`, `type`, `title`, `message`, `data`, and `link` |
+| FR-C6 | `CustomDatabaseChannel::send()` must delegate to `SendsNotifications::execute()` with a single `NotificationData` (`userId`, `type`, `title`, optional `message`, `data`, `link`) |
 | FR-C7 | All notification classes must implement `toCustomDatabase($notifiable)` returning an array with keys: `type` (string), `title` (string), `message` (?string), `link` (?string), `data` (?array) |
 
 ### SendsNotifications Contract
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-S1 | `SendsNotifications` interface must define `execute(string $userId, string $type, string $title, ?string $message, ?array $data, ?string $link): mixed` |
+| FR-S1 | `SendsNotifications` interface must define `execute(NotificationData $data): mixed`, where `NotificationData` (`app/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional `message`, `data`, `link` |
 | FR-S2 | `SendNotificationAction` must implement `SendsNotifications` and extend `BaseCommandAction` |
 | FR-S3 | `SendNotificationAction::execute()` must validate `userId`, `type` (max 50), and `title` (max 255) via `Validator` |
 | FR-S4 | `SendNotificationAction::execute()` must find the `User` by ID or throw `ModelNotFoundException` |
@@ -297,16 +296,11 @@ center. A custom channel is required to persist notifications with the right sha
 
 ```php
 // app/Core/Contracts/SendsNotifications.php
+use App\Core\Channels\Data\NotificationData;
+
 interface SendsNotifications
 {
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): mixed;
+    public function execute(NotificationData $data): mixed;
 }
 ```
 
@@ -327,13 +321,10 @@ class CustomDatabaseChannel
 ### 6.3 SendNotificationAction
 
 ```php
-// app/User/Notifications/Actions/SendNotificationAction.php (77 lines)
+// app/User/Notifications/Actions/SendNotificationAction.php
 final class SendNotificationAction extends BaseCommandAction implements SendsNotifications
 {
-    public function execute(
-        string $userId, string $type, string $title,
-        ?string $message = null, ?array $data = null, ?string $link = null,
-    ): Notification;
+    public function execute(NotificationData $data): Notification;
     // Validates via NotificationData DTO and Validator
     // Creates Notification within transaction
     // Logs 'notification_sent', emits NotificationSent event
