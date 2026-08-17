@@ -136,6 +136,9 @@ The user sometimes batches instructions in random order. Before executing any of
 batch by **impact-to-effort ratio** — quick wins first, heavy lifts scheduled. Apply this to every
 multi-instruction message; run the scoring silently and surface only the resulting order.
 
+The full rule (the impact-to-effort rule, scoring scale, worked examples, and commit grouping) lives
+in `rules/instruction-ordering.md` — apply that rule, not the summary below.
+
 | Quadrant | Impact | Effort | Handling |
 |----------|--------|--------|----------|
 | **Quick win** | High | Low | Execute first — highest impact-to-effort ratio |
@@ -143,7 +146,7 @@ multi-instruction message; run the scoring silently and surface only the resulti
 | **Fill-in** | Low | Low | Batch opportunistically alongside larger work; do not skip |
 | **Questionable** | Low | High | Challenge or defer; confirm with the user before investing |
 
-**Ordering algorithm:**
+**Ordering algorithm (summary — see the rule file for scoring):**
 1. **Decompose** the batch into discrete, independently-executable instructions
 2. **Score** each by impact (reach × importance) and effort (files × complexity × verification)
 3. **Sort** by impact-to-effort ratio, quick wins first
@@ -192,3 +195,4 @@ or architecture.
 | Pre-commit checklist | `AGENTS.md` §Pre-commit Checklist |
 | Skill map | `AGENTS.md` §Skill Map |
 | Conventions & invariants | `docs/conventions.md` |
+| Instruction ordering rule | `rules/instruction-ordering.md` (this skill) |
