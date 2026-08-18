@@ -7,6 +7,9 @@ downstream:
 
 # Security Audit
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline audit categories & rules into
+> `rules/` rule assets with a `## Skill Rules` mapping section
+
 > **Prerequisite:** Load `context-awareness` for project orientation. Running `arch-guard` first
 > provides the baseline code quality audit.
 
@@ -22,7 +25,7 @@ Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase mo
 doctrine (verify each audited behavior maps to a **governing spec** FR/NFR/UC ID — a finding with
 no requirement is a spec gap), **Size Triage** (S/M/L session splitting — a full-project security
 audit is L, split by module or category), verification strategy, and commit format. This skill adds
-the audit categories, issue format, and key rules below — nothing else.
+the audit categories, issue format, and key rules defined in the Skill Rules section — nothing else.
 
 ### Execute — Security Audit Execution
 
@@ -127,6 +130,17 @@ Each finding should include:
 3. Do NOT fix during audit — separate concerns
 4. Check existing issues before filing duplicates
 5. Automation-First — run `scan_security.py` and `scan_violations.py` before manual checks
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Audit coverage & execution (categories, cross-cutting, issue format) | `rules/security-checklist.md` | Setting up or running any security audit |
+| Authentication & authorization | `rules/authentication-authorization.md` | Auditing login, recovery, policies, permissions |
+| XSS & injection (output encoding, SQL safety) | `rules/xss-and-injection.md` | Auditing Blade output, CSP, raw SQL |
+| Mass assignment & file uploads | `rules/mass-assignment-and-uploads.md` | Auditing model writes and media uploads |
+| PII & data protection (privacy, GDPR) | `rules/pii-data-protection.md` | Auditing log masking, profile separation, deletion |
+| Secrets, configuration & dependencies | `rules/secrets-and-dependencies.md` | Auditing keys, `.env`, `composer`/`npm` |
 
 ## References
 

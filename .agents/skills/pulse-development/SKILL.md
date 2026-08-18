@@ -9,6 +9,8 @@ downstream:
 
 # Pulse Development
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Configuration, §Authorization, §Recorders, §Adding Custom Cards, §Verification Checklist) into `rules/` rule assets with a `## Skill Rules` mapping section
+
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate
@@ -78,6 +80,15 @@ as standalone Livewire components.
 - [ ] Custom cards have proper authorization
 - [ ] Ingest configured appropriately for the deployment tier
 - [ ] Pulse data retention set in config
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Dashboard & configuration (domain, middleware, recorders, ingest, retention) | `rules/dashboard-configuration.md` | Setting up or changing Pulse config |
+| Authorization (viewPulse Gate, admin/superadmin-only) | `rules/authorization.md` | Granting or testing dashboard access |
+| Recorders & ingest (recorder set, production Redis ingest) | `rules/recorders-and-ingest.md` | Choosing what Pulse captures and how |
+| Custom cards (Card extension, registration, authorize) | `rules/custom-cards.md` | Building a custom dashboard card |
 
 ## References
 

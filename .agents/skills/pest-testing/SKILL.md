@@ -15,6 +15,10 @@ downstream:
 
 # Pest Testing
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (Test Structure, Spec
+> Traceability, Key Conventions, Mocking) into `rules/` rule assets with a `## Skill Rules` mapping
+> section
+
 > **Prerequisite:** Load `context-awareness` for testing conventions.
 
 ## Core Doctrine — Tests Verify the Spec
@@ -50,7 +54,8 @@ Use this skill when:
 Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
 doctrine (read the spec's FR/NFR/UC IDs first), **Size Triage** (S/M/L session splitting),
 verification strategy, and commit format. This skill adds Pest-specific guidance — spec
-traceability, test structure, mocking boundaries, and quality gates — nothing else.
+traceability, test structure, mocking boundaries, and quality gates, all defined in the Skill Rules
+section — nothing else.
 
 ### Execute — Write Tests
 
@@ -90,15 +95,16 @@ The spec is the source of truth. Tests are written per requirement, not per clas
 | §6 Data contract | Unit test of the DTO/Enum/Entity shape only if the spec defines it |
 | Nothing in any spec | **Do not write a test** |
 
-**Test description convention** — prefix with the full `{SPECID}-{REQ}:` so traceability is
+**Test description convention** — prefix with the full `{SpecID}-{ReqID}:` so traceability is
 visible in test output:
 
 ```php
-test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
-test('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () { ... })->throws(RejectedException::class);
+test("{SpecID}-{ReqID}: Test description...", function () { ... });
+test("{SpecID}-{ReqID}: Test description...", function () { ... })->throws(RejectedException::class);
 ```
 
-Use `describe('{SPECID}')` to carry the spec ID once, then `test('{REQ}: ...')` per requirement.
+Group tests under `describe("{SpecID}: Test description...")` (spec ID plus a short description);
+each `test()` inside still prefixes the full `{SpecID}-{ReqID}:`.
 
 **When a spec changes, its tests change.** Requirement removed → remove its tests. Requirement
 rewritten → rewrite the test to match. A test left behind with no current requirement is orphaned
@@ -126,7 +132,7 @@ Use `--module {Name}` to run tests for a single module. Output:
 Test files must also pass arch-guard checks:
 - Test files must have `declare(strict_types=1)` (D1)
 - No debug calls in tests (D2) — use `->dd()` or `->dump()` Pest methods instead
-- Test naming follows `test("{SPECID}-{REQ}: ...")` convention
+- Test naming follows `test("{SpecID}-{ReqID}: Test description...")` grouped under `describe("{SpecID}: Test description...")` convention
 - See `arch-guard` skill for full rule reference
 
 ### Mocking
@@ -146,7 +152,7 @@ If you're using `shouldReceive()`, reconsider — prefer `fake()` methods.
 ### Action Test Pattern
 
 ```php
-test('SE5Q9-FR-A1: a failing callback rolls back the transaction', function () {
+test("{SpecID}-{ReqID}: Test description...", function () {
     // Arrange
     $data = CreateResourceData::from([...]);
 
@@ -161,7 +167,7 @@ test('SE5Q9-FR-A1: a failing callback rolls back the transaction', function () {
 ```
 
 ```php
-test('SE5Q9-FR-A1: nested transactions run without double-wrapping', function () {
+test("{SpecID}-{ReqID}: Test description...", function () {
     $record = Record::factory()->create(['status' => 'finalized']);
 
     app(FinalizeAction::class)->execute($record);
@@ -178,6 +184,17 @@ test('SE5Q9-FR-A1: nested transactions run without double-wrapping', function ()
 - [ ] `assertModelExists()` preferred over `assertDatabaseHas()`
 - [ ] Tests are isolated — no shared state between tests
 - [ ] Targeted tests pass (`php artisan test --compact --filter={TestName}`)
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Spec-driven minimalism (write only spec-required tests) | `rules/spec-driven-minimalism.md` | Deciding what to test for any requirement |
+| Test naming / `describe()` grouping conventions | `rules/test-naming-conventions.md` | Writing any `test()` / `describe()` block |
+| Layer test patterns (Action/Livewire/Entity/DTO/Enum/Policy) | `rules/layer-test-patterns.md` | Structuring tests for each class type |
+| Mocking boundaries (fake at the edge, never the core) | `rules/mocking-boundaries.md` | Any test that touches HTTP/FS/queue/events/cache |
+| Spec-gap & orphan detection (coverage as spec compliance) | `rules/spec-gap-orphan-detection.md` | Auditing coverage, filling gaps, pruning orphans |
+| Test quality gates (structure, database, noise control) | `rules/test-quality.md` | Every test file before commit |
 
 ## References
 

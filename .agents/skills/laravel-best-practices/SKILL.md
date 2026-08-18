@@ -15,6 +15,8 @@ downstream:
 
 # Laravel Best Practices (Internara Edition)
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Differences, §Key Conventions, §Common Pitfalls) into `rules/` rule assets with a `## Skill Rules` mapping section
+
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate
@@ -77,6 +79,15 @@ conventions diverge from stock Laravel. Apply the conventions below during imple
 3. **Hardcoding cache keys** — register in `config/cache-keys.php` first
 4. **Missing `declare(strict_types=1)`** — required in every PHP file except migrations/config
 5. **Skipping lang files** — every `__()` call needs keys in both `lang/en/` and `lang/id/`
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Module-first architecture (placement, Actions vs Services, no FormRequest, DTO over array) | `rules/module-first-architecture.md` | Creating files or classes, or reviewing where logic lives |
+| Data & cache conventions (mass assignment, scopes, relationships, caching) | `rules/data-and-cache-conventions.md` | Touching Models, queries, or cache |
+| Validation, authorization & exceptions (form objects, policies, super-admin bypass, RejectedException) | `rules/validation-authorization-exceptions.md` | Adding validation, authorization, or exception handling |
+| Cross-cutting conventions (uploads, localization, structural guards) | `rules/cross-cutting-conventions.md` | Any feature using uploads, `__()` strings, or stock-Laravel habits |
 
 ## References
 

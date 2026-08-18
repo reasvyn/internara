@@ -12,6 +12,8 @@ downstream:
 
 # Livewire Development
 
+> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in `rules/` (thin component, component structure & routing, tables & uploads, accessibility, localization, component verification)
+
 > **Prerequisite:** Load `context-awareness` for project orientation. Loading `feature-building`
 > provides the broader implementation flow.
 
@@ -25,257 +27,20 @@ handling, validation, file uploads, table components, and reactive patterns.
 Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
 strategy, and commit format. This skill adds Livewire-specific guidance — thin components, Form
-Objects, Action delegation, accessibility, localization, and routing — nothing else.
-
-### Execute — Build/Modify Livewire Component
-
-- Build/modify thin Livewire component — delegate to Actions (Thin Component Rule below)
-- Use Form Object for 5+ fields
-- Ensure no `Model::create/update/delete` in component
-- Use method injection for Action calls
-- Catch `RejectedException` specifically before `Throwable`
-
-## Thin Component Rule
-
-Livewire components must be thin. They should contain ONLY:
-
-- Public properties for UI state (form bindings, modal visibility, search/filter)
-- Validation rules for UX feedback
-- Delegation to Actions via method parameter injection
-- Read-only queries (or via Read Actions)
-- Authorization checks via Policies
-
-**Never in a Livewire component:**
-
-- `Model::create/update/delete/save` — delegate to Command Action
-- `DB::transaction()` — handled by Action
-- `event()` or `dispatch()` — handled by Action's `$this->dispatchEvent()`
-- Business rules on record state — delegate to Entity
-- `app()->make()` / `new Action()` — inject via method parameter
-
-## Component Structure
-
-### Directory
-
-```
-app/{Module}/{SubModule}/Livewire/{Name}.php
-resources/views/{module}/{submodule}/{name}.blade.php
-```
-
-### Recommended Build Order
-
-1. Define form properties and validation rules
-2. Implement `render()` with eager-loaded query
-3. Implement action methods that inject Actions
-4. Add authorization via `$this->authorize()`
-5. Add Blade view with maryUI components
-
-### Form Objects
-
-For components with 5+ form fields, extract to a Form Object:
-
-```
-app/{Module}/{SubModule}/Livewire/Forms/{Name}Form.php
-```
-
-Extends `Livewire\Form`. Contains properties, validation rules, and `toArray()`.
-
-## Key Patterns
-
-### Action Delegation
-
-```php
-public function save(CreateUserAction $action): void
-{
-    $this->form->validate();
-    $result = $action->execute($this->form->toArray());
-
-    if ($result->failed()) {
-        flash()->error($result->message);
-        return;
-    }
-
-    $this->resetForm();
-    flash()->success($result->message);
-    $this->redirect('/users');
-}
-```
-
-Always catch `RejectedException` before `Throwable`:
-
-```php
-try {
-    $action->execute($data);
-} catch (RejectedException $e) {
-    flash()->error($e->getMessage());
-} catch (\Throwable $e) {
-    flash()->error(__('common.error'));
-}
-```
-
-### Read-Only Entity Checks
-
-Entities may be used for UI-level decisions:
-
-```php
-public function canDelete(): bool
-{
-    return $this->record->asEntity()->canBeDeleted();
-}
-```
-
-### Tables
-
-Use maryUI's `x-mary-table` component with sorting and pagination. For CRUD tables, extend
-`BaseRecordManager` (check current implementation).
-
-## File Uploads
-
-> Load `medialibrary-development` for Spatie MediaLibrary specifics (collections, conversions,
-> responsive images, retrieval).
-
-Use Livewire's `WithFileUploads` trait + Spatie MediaLibrary:
-
-```php
-use Livewire\WithFileUploads;
-
-class ProfileEditor extends Component
-{
-    use WithFileUploads;
-
-    public UploadedFile $avatar;
-
-    public function save(UpdateProfileAction $action): void
-    {
-        $action->execute($this->avatar, ...);
-    }
-}
-```
-
-Action handles the media library call.
-
-## Accessibility (WCAG 2.1 AA)
-
-All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/architecture/livewire-pattern.md`
-§13 and `docs/foundation/ui-ux.md` §6 for full rules.
-
-### Focus Management
-
-- **Modal open:** Focus moves to first focusable element inside the modal (maryUI default).
-- **Modal close:** Focus returns to the trigger element. Implement via Alpine:
-  `x-on:close.window="$focus(target)"`.
-- **wire:navigate transitions:** Focus resets to `<h1>` or first interactive element after page
-  transition.
-
-### Dynamic Content
-
-- Livewire partial DOM updates are invisible to screen readers — wrap in `aria-live="polite"`
-  containers.
-- Flash messages: verify `aria-live` is present on the flash container.
-- Loading states: use `aria-busy="true"` and `role="status"`.
-
-### Form Accessibility
-
-- Every `<x-mary-input>` must have a `label` prop (renders `<label>` with proper `for`).
-- Use `required` prop (HTML `required` attribute) — not just visual indicators.
-- Validation errors from `$this->validate()` are announced by maryUI's `aria-live` regions.
-- After failed validation, focus must move to the first invalid field or error summary.
-
-### Table Accessibility
-
-- `x-mary-table` headers use `scope` attributes by default — verify not overridden.
-- Sortable headers must include `aria-sort`.
-- Bulk selection header checkbox must have `aria-label="Select all rows"`.
-
-### Icon-Only Elements
-
-Any button or link with only an icon MUST include `aria-label`:
-
-```blade
-<x-mary-button icon="o-trash" wire:click="delete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
-```
-
-## Localization
-
-See `docs/conventions.md` §14 and `docs/architecture/modular-pattern.md` §23.
-
-### Rules
-
-- Every user-facing string in component or Blade view MUST use `__()` — no hardcoded text.
-- Flash messages: `__('{module}.{entity}.{action}_success')` — never hardcoded strings.
-- Status labels: use `LabelEnum::label()` (calls `__()` internally) — never translate in view.
-- Modal titles, button labels, table headers: all via `__()`.
-- Form Object `messages()`: return translated validation messages via `__()`.
-- Every key must exist in both `lang/en/` and `lang/id/`.
-
-### Key Patterns
-
-| Scope            | Pattern                | Example                            |
-| ---------------- | ---------------------- | ---------------------------------- |
-| Module-level     | `{module}.key`         | `__('enrollment.register')`        |
-| Submodule-level  | `{submodule}.key`      | `__('internship.create_success')`  |
-| Shared           | `common.key`           | `__('common.actions.save')`        |
-
-### Confirmation Dialog
-
-```blade
-<x-core::ui.confirm
-    :title="__('internship.confirm_delete_title')"
-    :message="__('internship.confirm_delete_message')"
-    :confirmText="__('common.actions.delete')"
-    :cancelText="__('common.actions.cancel')"
-/>
-```
-
-## Routing
-
-See `docs/infrastructure/routes.md` and `docs/architecture/modular-pattern.md` §13.
-
-### Route Registration
-
-Livewire components are registered directly in route files:
-
-```php
-// routes/web/{submodule}.php (no module prefix)
-Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
-```
-
-### Route File Convention
-
-- Module-level: `routes/web/{module}.php`
-- Submodule-level: `routes/web/{submodule}.php` (no module prefix)
-
-### Route Naming
-
-Flexible — describe the URL path. No rigid convention.
-
-### Middleware
-
-Applied at route level: `auth`, `guest`, `role:{roles}`, `auth.throttle`.
-
-### URL Structure
-
-| Scope       | Pattern                         | Example                                  |
-| ----------- | ------------------------------- | ---------------------------------------- |
-| Guest       | `/{resource}`                   | `/apply`, `/login`                       |
-| Student     | `/student/{module}/{resource}`  | `/student/internships/placement-change`  |
-| Admin       | `/admin/{module}/{resource}`    | `/admin/internships/placements`          |
-
-## Verification Checklist
-
-- [ ] No `Model::create/update/delete` in component
-- [ ] No `DB::transaction()` in component
-- [ ] No `app()->make()` or `new Action()` — uses method injection
-- [ ] `RejectedException` caught before `Throwable`
-- [ ] Form Objects used for 5+ fields
-- [ ] Validation rules defined (component or Form Object)
-- [ ] Component test exists in `tests/`
-- [ ] All user-facing strings use `__()` for localization
-- [ ] Focus management correct (modal open/close, wire:navigate)
-- [ ] Dynamic content wrapped in `aria-live` containers
-- [ ] Icon-only buttons include `aria-label`
-- [ ] Form inputs have associated labels (via maryUI `label` prop)
-- [ ] Status labels use `LabelEnum::label()` (not hardcoded text)
+Objects, Action delegation, accessibility, localization, and routing — rule assets in the Skill
+Rules section. Load the rule file only when the component reaches that concern (thin component /
+structure / tables-uploads / accessibility / localization / verification).
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Thin component (delegation, boundaries, method injection, read-only entities) | `rules/thin-component.md` | Building or reviewing any Livewire component |
+| Component structure & routing (placement, build order, Form Objects, routes) | `rules/component-structure.md` | Creating a component, form, or route |
+| Tables & file uploads (maryUI tables, BaseRecordManager, WithFileUploads + MediaLibrary) | `rules/tables-and-uploads.md` | Any listing/CRUD table or file upload |
+| Accessibility (WCAG 2.1 AA: focus, dynamic content, forms, tables, icons) | `rules/accessibility.md` | Every component before release |
+| Localization (every user-facing string, keying patterns, confirm dialogs) | `rules/localization.md` | Any user-facing string in a component or view |
+| Component verification (thin/safe/complete gate) | `rules/component-verification.md` | Before commit of any component change |
 
 ## References
 

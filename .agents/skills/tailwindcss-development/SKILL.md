@@ -10,6 +10,8 @@ downstream:
 
 # Tailwind CSS Development
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§UI Stack, §Key Patterns, §Styling Principles, §Accessibility, §Localization, §Routing) into `rules/` rule assets with a `## Skill Rules` mapping section
+
 > **Prerequisite:** Load `context-awareness` for project orientation. Loading `livewire-development`
 > provides component context.
 
@@ -205,6 +207,16 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 - [ ] Color is not the sole indicator for status/errors
 - [ ] Color contrast meets WCAG 2.1 AA (4.5:1 normal, 3:1 large)
 - [ ] No horizontal scrolling at 320px viewport width
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| UI stack & component usage (maryUI primacy, DaisyUI theme colors, no custom CSS) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
+| Layout, responsiveness & dark mode (drawer/navbar, breakpoints, theming, Tailwind v4) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
+| View structure & routing (Blade placement, route files, Livewire routes) | `rules/view-structure-and-routing.md` | Creating views or routes |
+| Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `rules/accessibility-wcag.md` | Every styled component before release |
+| Localization in views (bilingual `__()`, keys, dates, lang attribute) | `rules/localization-in-views.md` | Any user-facing string or date in a view |
 
 ## References
 
