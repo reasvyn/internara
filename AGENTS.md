@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-17 **Changes:** skill map now points to per-skill rules — skills are rules-first (each skill's rules live in `skills/{name}/rules/*.md`, comprehensive prose, mapped by its `## Skill Rules` table; `scan_skills.py` enforces this via SKILL_RULES_DIR)
+> **Last updated:** 2026-08-18 **Changes:** markdown excluded from prettier checks — specs/docs use deliberate compact tables (issue #384) — docs gate updated to visual inspection only
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -420,7 +420,7 @@ suite / PHPStan stay reserved for merge-day or user-requested full verification.
 |-------------|-------------|
 | Translation keys (`lang/*.php`) | `vendor/bin/pint --dirty --test --format agent` + `php artisan tinker --execute="echo __('key');"` |
 | Blade templates | `vendor/bin/pint --dirty --test --format agent` (Blade via `Pint/laravel_blade` rule) + `npm run build` |
-| Config/docs/markdown | `npx prettier --check` + visual inspection |
+| Config/docs/markdown | Visual inspection (`*.md` is prettier-ignored — specs/docs use deliberate compact tables; see issue #384) |
 | CSS/JS/JSON/non-PHP | `npx prettier --check` + `npm run build` |
 | Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
 | New feature / business logic | Full suite ONCE after all changes batched |
@@ -437,7 +437,7 @@ git diff --stat           # confirm only intended files were touched
 vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
 php artisan test --compact --filter={ClassName}
 vendor/bin/pint --dirty --test --format agent   # PHP + Blade syntax & style (Pint/laravel_blade rule)
-npx prettier --check <file>                     # Non-PHP only (CSS/JS/markdown/JSON — *.php & *.blade.php ignored)
+npx prettier --check <file>                     # Non-PHP only (CSS/JS/JSON — *.php, *.blade.php, *.md ignored)
 php artisan system:health
 
 # Full verification (after refactoring or before merge) — ONLY when the user explicitly asks
