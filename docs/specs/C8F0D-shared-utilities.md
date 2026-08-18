@@ -1,7 +1,7 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
 > **Spec ID:** C8F0D
-> **Last updated:** 2026-08-18 **Changes:** add — cross-reference `setting()`/`brand()` helpers (project-requirements §4.4) to settings-infrastructure.md
+> **Last updated:** 2026-08-18 **Changes:** add — cross-reference `setting()`/`brand()` helpers (internara-project §7.4) to settings-infrastructure.md
 
 ## Description
 
@@ -87,7 +87,7 @@ in production while allowing development flexibility.
 | FR-SUP7 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
 | FR-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
 | FR-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
-| FR-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by project-requirements §4.4 |
+| FR-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by internara-project §7.4 |
 
 ### Cross-References (Dedicated Specs)
 
@@ -98,7 +98,7 @@ in production while allowing development flexibility.
 | ModuleService/ModuleManager | [module-manager.md](B114U-module-manager.md) |
 | `setting()` / `brand()` global helpers | [settings-infrastructure.md](YB22J-settings-infrastructure.md) |
 
-> **Note:** project-requirements §4.4 lists three global helpers. `app_info()` (FR-SUP11) is
+> **Note:** internara-project §7.4 lists three global helpers. `app_info()` (FR-SUP11) is
 > specified here; `setting()` and `brand()` are specified in settings-infrastructure.md and
 > cross-referenced above to avoid duplication.
 

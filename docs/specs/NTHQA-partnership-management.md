@@ -3,7 +3,7 @@
 > **Spec ID:** NTHQA
 > **Last updated:** 2026-08-18 **Changes:** review — add `ExpirePartnershipAction` for ACTIVE→EXPIRED
 > (FR-ST11–ST13), expiry-warning delivery mechanism via scheduled command + queued notification
-> (FR-EX1–EX5); align with project-requirements §3.2 "Expiry Detection Warns 30 days"
+> (FR-EX1–EX5); align with internara-project §6.2 "Expiry Detection Warns 30 days"
 
 ## Description
 
@@ -236,7 +236,7 @@ new placements can be created under that agreement.
 
 ### Expiry Warning Delivery
 
-The requirement (project-requirements §3.2 "Expiry Detection | Warns 30 days before partnership
+The requirement (internara-project §6.2 "Expiry Detection | Warns 30 days before partnership
 expiry | System") demands a proactive warning, not only a dashboard count. Delivery is a queued
 notification dispatched by a scheduled command; the status transition itself stays manual
 (FR-ST11) so no partnership silently expires without an admin decision.

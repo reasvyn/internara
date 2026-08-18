@@ -20,7 +20,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 - **[Foundation Index](foundation/index.md)** — Browse all foundation documents
 - **[Product Definition](foundation/product-definition.md)** — Core product scope, design principles, user personas, system boundary
-- **[Project Requirements](foundation/project-requirements.md)** — Functional, non-functional, and UI/UX requirements
+- **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables

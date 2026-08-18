@@ -209,7 +209,7 @@ behave at runtime** (this spec).
 | FR-Q3  | Queue-specific tables auto-created by migration for `database` driver |
 | FR-Q4  | Failed jobs table: `failed_jobs` with full exception trace |
 | FR-Q5  | Horizon available for Redis queue monitoring (optional) |
-| FR-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (project-requirements §5 NFR Queue; see [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md) and [official-documents](7H5D6-official-documents.md)) |
+| FR-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (internara-project §8 NFR-Q1; see [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md) and [official-documents](7H5D6-official-documents.md)) |
 
 ### Mail
 

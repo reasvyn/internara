@@ -1,12 +1,12 @@
 # Foundation Documents
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify foundation catalog matches 9 docs (product-definition, project-requirements, rbac, project-overview, branding, installation, post-setup, system-health, system-observability, upgrading, ui-ux, account-recovery)
+> **Last updated:** 2026-08-18 **Changes:** sync — catalog link for high-level requirements now points to the merged umbrella spec `docs/specs/QLHDO-internara-project.md` (former `project-requirements.md` deleted)
 
 Product scope, security model, and design foundations.
 
 - **[Product Definition](product-definition.md)** — Core product scope, design principles, user
   personas, system boundary, deployment model, localization, and licensing
-- **[Project Requirements](project-requirements.md)** — Functional and non-functional requirements
+- **[Internara Project Spec](../specs/QLHDO-internara-project.md)** — Functional and non-functional requirements
   for Indonesian SMA/SMK PKL management, UI/UX standards, scalability targets, and compliance
 - **[RBAC & Authentication](rbac.md)** — Authentication flow, flat role hierarchy, functional roles,
   permissions model, Gate::before bypass

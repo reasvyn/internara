@@ -2,7 +2,7 @@
 
 > **Spec ID:** 3S55V
 > **Last updated:** 2026-08-18 **Changes:** review — resolve ownership-scope vs broadcast-tension
-> (DD-6); cross-reference project-requirements §3.1 SysAdmin (role-targeted delivery)
+> (DD-6); cross-reference internara-project §6.1 SysAdmin (role-targeted delivery)
 
 ## Description
 
@@ -535,7 +535,7 @@ for a rich text renderer without changing the data model.
 
 ### DD-6 — Broadcast Delivery, Ownership-Scoped Management
 
-**Decision:** Delivery is broadcast to the targeted roles (project-requirements §3.1 SysAdmin,
+**Decision:** Delivery is broadcast to the targeted roles (internara-project §6.1 SysAdmin,
 "Announcement Manager … role-targeted"), but the management UI is scoped to the creator
 (`where('created_by', Auth::id())`, FR-L2).
 

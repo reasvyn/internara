@@ -1,7 +1,7 @@
 # System Requirements — Dependencies, Platform & Database
 
 > **Spec ID:** J68GZ
-> **Last updated:** 2026-08-18 **Changes:** add — System Health 15-point contract (§4.5, project-requirements §3.1), cross-referencing system-maintenance.md
+> **Last updated:** 2026-08-18 **Changes:** add — System Health 15-point contract (§4.5, internara-project §6.1), cross-referencing system-maintenance.md
 
 ## Description
 
@@ -167,8 +167,8 @@ They are not part of the domain schema but coexist in the same database.
 
 > **Governing spec:** [system-maintenance.md](E1MSJ-system-maintenance.md) — the `system:health` command,
 > its 15-point check, CLI/JSON output, and admin-accessible surface are fully specified there
-> (Phase 12). This section records the Foundation-level contract referenced by project-requirements
-> §3.1 (System Health).
+> (Phase 12). This section records the Foundation-level contract referenced by internara-project
+> §6.1 (System Health).
 
 | ID    | Requirement |
 | ----- | ----------- |

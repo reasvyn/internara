@@ -463,7 +463,7 @@ After implementing this spec, the system has a 6-step browser wizard that create
 - `docs/modules/setup.md` — Module conceptual overview
 - `docs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/installation.md` — CLI provisioning initiative
-- `docs/foundation/project-requirements.md` — High-level feature specs
+- `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/foundation/setup-wizard.md` — Wizard walkthrough
 - `docs/foundation/post-setup.md` — Post-wizard configuration guide
 - `config/setup.php` — Setup configuration values

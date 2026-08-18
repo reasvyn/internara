@@ -286,7 +286,7 @@ to script execution. Acceptable because the writer is already `super_admin` (hig
 **Decision:** `Locale::current()` resolves cookie → stored `default_locale` setting → config →
 constant (FR-L7).
 **Rationale:** The project requirement ("Locale Management … resolved from stored setting",
-project-requirements §3.2) demands an admin-configurable default. The per-browser cookie
+internara-project §6.1 Settings) demands an admin-configurable default. The per-browser cookie
 preserves the "preference, not account setting" property (DD-1) while the stored `default_locale`
 drives fresh browsers and unauthenticated visitors. `DEFAULT_LOCALE = 'en'` remains the last
 resort only.

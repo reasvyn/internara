@@ -486,5 +486,5 @@ Registration model. Seed the document type registry.
 - `docs/specs/partnership-management.md` — MoU document storage (separate initiative)
 - `docs/modules/document.md` — Document module overview
 - `docs/modules/document-reference.md` — Document module technical reference
-- `docs/foundation/project-requirements.md` — High-level feature list
+- `docs/specs/QLHDO-internara-project.md` — High-level feature list
 - `docs/conventions.md` — Naming conventions, `LabelEnum` contract

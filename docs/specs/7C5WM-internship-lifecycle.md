@@ -3,7 +3,7 @@
 > **Spec ID:** 7C5WM
 > **Last updated:** 2026-08-18 **Changes:** review — add department_id + type fields to Program
 > Manager (FR-IC13/14), add Requirement Manager with typed requirements DOCUMENT/SKILL/TEXT
-> (FR-RM1–RM5, DD-6), reconcile Phase Manager NG2 with project-requirements §3.3
+> (FR-RM1–RM5, DD-6), reconcile Phase Manager NG2 with internara-project §6.3
 
 ## Description
 
