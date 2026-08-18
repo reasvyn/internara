@@ -32,4 +32,22 @@ return [
     'resolve_success' => 'Incident resolved successfully.',
     'resolution_notes' => 'Resolution Notes',
     'resolution_notes_placeholder' => 'Describe how this incident was resolved',
+
+    'types' => [
+        'accident' => 'Accident',
+        'safety_violation' => 'Safety Violation',
+        'harassment' => 'Harassment',
+        'disciplinary' => 'Disciplinary',
+        'other' => 'Other',
+    ],
+    'severities' => [
+        'low' => 'Low',
+        'medium' => 'Medium',
+        'high' => 'High',
+        'critical' => 'Critical',
+    ],
+    'statuses' => [
+        'resolved' => 'Resolved',
+        'closed' => 'Closed',
+    ],
 ];

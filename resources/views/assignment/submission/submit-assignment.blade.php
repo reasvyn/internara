@@ -50,7 +50,7 @@
                         </div>
                         <div class="shrink-0 text-right">
                             <div class="text-base-content/40 text-sm font-black">
-                                {{ $assignment->due_date?->format('d M Y') ?? 'No due date' }}
+                                {{ $assignment->due_date?->format('d M Y') ?? __('submission.no_due_date') }}
                             </div>
                             @php
                                 $submission = $assignment->submissions->first();
@@ -101,7 +101,7 @@
             </h2>
 
             <div class="text-base-content/40 mb-6 text-sm">
-                Due: {{ $selectedAssignment->due_date?->format('l, d F Y') ?? 'No due date' }}
+                Due: {{ $selectedAssignment->due_date?->format('l, d F Y') ?? __('submission.no_due_date') }}
             </div>
 
             @if ($selectedAssignment->description)
@@ -178,7 +178,7 @@
                         </div>
                         <div class="border-base-content/5 flex justify-end border-t pt-4">
                             <x-mary-button
-                                label="Resubmit"
+                                label="{{ __('submission.resubmit') }}"
                                 icon-right="o-paper-airplane"
                                 class="btn-warning shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 wire:click="submit"
@@ -197,7 +197,7 @@
                         <div>
                             <h4 class="text-success text-sm font-black tracking-tight uppercase">Submitted</h4>
                             <p class="text-success/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
-                                {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? 'Just now' }}
+                                {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? __('submission.just_now') }}
                             </p>
                         </div>
                     </div>

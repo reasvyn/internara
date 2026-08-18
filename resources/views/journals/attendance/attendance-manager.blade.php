@@ -1,52 +1,66 @@
 <div>
-    <x-slot:title>Attendance</x-slot:title>
+    <x-slot:title>{{ __('journals.attendance.title') }}</x-slot:title>
 
-    <x-core::ui.page-header title="Attendance Management" description="Record daily attendance for your supervised students." />
+    <x-core::ui.page-header
+        :title="__('journals.attendance.management_title')"
+        :description="__('journals.attendance.management_subtitle')"
+    />
 
     <x-mary-card>
-        <div class="flex gap-4 mb-6 items-end">
+        <div class="mb-6 flex items-end gap-4">
             <div>
-                <x-mary-input wire:model.live="date" type="date" label="Date" class="w-48" />
+                <x-mary-input wire:model.live="date" type="date" :label="__('journals.date')" class="w-48" />
             </div>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
+            <table class="table-zebra table w-full">
                 <thead>
                     <tr>
-                        <th>Student</th>
-                        <th>Placement</th>
-                        <th>Status</th>
-                        <th>Notes</th>
-                        <th>Existing</th>
+                        <th>{{ __('journals.student') }}</th>
+                        <th>{{ __('journals.attendance.placement') }}</th>
+                        <th>{{ __('journals.status') }}</th>
+                        <th>{{ __('journals.attendance.notes') }}</th>
+                        <th>{{ __('journals.attendance.existing') }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($students as $registration)
+                    @foreach ($students as $registration)
                         <tr>
                             <td>{{ $registration->mentee?->user?->name ?? 'N/A' }}</td>
                             <td class="text-sm">{{ $registration->placement?->company?->name ?? 'N/A' }}</td>
                             <td>
-                                @if(isset($existing[$registration->id]))
+                                @if (isset($existing[$registration->id]))
                                     <x-mary-badge :value="$existing[$registration->id]->status?->label() ?? 'N/A'" />
                                 @else
-                                    <select wire:model="records.{{ $registration->id }}.status" class="select select-bordered select-sm">
-                                        <option value="">Select...</option>
-                                        @foreach($statuses as $s)
+                                    <select
+                                        wire:model="records.{{ $registration->id }}.status"
+                                        class="select select-bordered select-sm"
+                                    >
+                                        <option value="">{{ __('journals.attendance.select') }}</option>
+                                        @foreach ($statuses as $s)
                                             <option value="{{ $s->value }}">{{ $s->label() }}</option>
                                         @endforeach
                                     </select>
                                 @endif
                             </td>
                             <td>
-                                @if(!isset($existing[$registration->id]))
-                                    <x-mary-input wire:model="records.{{ $registration->id }}.notes" placeholder="Notes..." class="input-sm" />
+                                @if (! isset($existing[$registration->id]))
+                                    <x-mary-input
+                                        wire:model="records.{{ $registration->id }}.notes"
+                                        placeholder="Notes..."
+                                        class="input-sm"
+                                    />
                                 @endif
                             </td>
                             <td>
-                                @if(isset($existing[$registration->id]))
-                                    @if(!$existing[$registration->id]->is_verified)
-                                        <x-mary-button wire:click="verifyAttendance('{{ $existing[$registration->id]->id }}')" icon="o-check" class="btn-xs btn-success" />
+                                @if (isset($existing[$registration->id]))
+                                    @if (! $existing[$registration->id]->is_verified)
+                                        <x-mary-button
+                                            wire:click="verifyAttendance('{{ $existing[$registration->id]->id }}')"
+                                            icon="o-check"
+                                            class="btn-xs btn-success"
+                                        />
                                     @else
                                         <x-mary-icon name="o-check-badge" class="text-success" />
                                     @endif
@@ -58,9 +72,14 @@
             </table>
         </div>
 
-        @if(count($students) > 0)
+        @if (count($students) > 0)
             <div class="mt-4">
-                <x-mary-button wire:click="markAttendance" label="Save Attendance" icon="o-check" class="btn-primary" />
+                <x-mary-button
+                    wire:click="markAttendance"
+                    :label="__('journals.attendance.save')"
+                    icon="o-check"
+                    class="btn-primary"
+                />
             </div>
         @endif
     </x-mary-card>
