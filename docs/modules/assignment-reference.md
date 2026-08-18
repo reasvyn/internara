@@ -1,6 +1,7 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, DTOs, Events, Listeners, Notifications, Livewire, Form Requests, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-18 **Changes:** add CreateAssignmentData, UpdateAssignmentData,
+> GradeSubmissionData to Data/DTOs
 
 ## Description
 
@@ -40,7 +41,7 @@ Manages course assignments and submission tracking with grading and revision wor
 
 | File                                    | Enum               | Implements                | Values                                                |
 | --------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------------- |
-| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed                         |
+| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed                              |
 | `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, graded, revision_required |
 
 ---
@@ -67,6 +68,9 @@ Manages course assignments and submission tracking with grading and revision wor
 
 | File                                       | Class                  | Extends    |
 | ------------------------------------------ | ---------------------- | ---------- |
+| `Data/CreateAssignmentData.php`            | `CreateAssignmentData` | `BaseData` |
+| `Data/UpdateAssignmentData.php`            | `UpdateAssignmentData` | `BaseData` |
+| `Submission/Data/GradeSubmissionData.php`  | `GradeSubmissionData`  | `BaseData` |
 | `Submission/Data/SubmitAssignmentData.php` | `SubmitAssignmentData` | `BaseData` |
 
 ## Events
@@ -78,9 +82,9 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Listeners
 
-| File                                                 | Listener                       | Listens To                     |
-| ---------------------------------------------------- | ------------------------------ | ------------------------------ |
-| `Listeners/NotifyOnAssignmentPublished.php`          | `NotifyOnAssignmentPublished`  | `AssignmentPublished`          |
+| File                                        | Listener                      | Listens To            |
+| ------------------------------------------- | ----------------------------- | --------------------- |
+| `Listeners/NotifyOnAssignmentPublished.php` | `NotifyOnAssignmentPublished` | `AssignmentPublished` |
 
 ## Notifications
 
@@ -119,8 +123,8 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Assignment/`. See [Testing](../infrastructure/testing.md)
-for the testing conventions.
+Tests are located in `tests/Assignment/`. See [Testing](../infrastructure/testing.md) for the
+testing conventions.
 
 ## Factories
 

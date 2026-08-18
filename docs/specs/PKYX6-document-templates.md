@@ -1,7 +1,7 @@
 # Document Templates — Template Management, PDF Rendering & Report Generation
 
 > **Spec ID:** PKYX6
-> **Last updated:** 2026-07-22 **Changes:** feat — split from document.md; template infrastructure:
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > document template CRUD, DocumentRenderer service, 4 admin-generated report types
 
 ## Description

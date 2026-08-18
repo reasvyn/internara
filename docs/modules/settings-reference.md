@@ -143,8 +143,8 @@ system.
 
 Tests are located in `tests/Settings/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
-(`FR-*` / `NFR-*` / `UC-*`) using the `test("{SPECID}-{REQ}: ...")` convention; there is no
-one-test-per-class mandate.
+(`FR-*` / `NFR-*` / `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention
+(grouped under `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.
 
 ## Factories
 

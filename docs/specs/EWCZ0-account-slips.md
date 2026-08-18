@@ -1,7 +1,7 @@
 # Account Slips — PDF Credential Distribution
 
 > **Spec ID:** EWCZ0
-> **Last updated:** 2026-07-22 **Changes:** feat — split from `user-management.md` to cover PDF
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > account slip generation, single/batch delivery, email distribution, and the
 > `DownloadsAccountSlips` trait as an independent initiative
 

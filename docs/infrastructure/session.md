@@ -1,6 +1,6 @@
 # Session — Session Configuration & Security
 
-> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings (#Session → ## Session)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify session driver, secure cookie settings, lifetime against current session.php config and HTTPS deployment
 
 ## Description
 

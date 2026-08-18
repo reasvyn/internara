@@ -1,6 +1,9 @@
 # Setup — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Entities, DTOs, Events, Listeners, Livewire Components, Forms, Middleware, HTTP Controllers, Support Services, Console Commands, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-18 **Changes:** add SeedDummyDataAction to Actions; sync — verify
+> reference doc against current code structure (Actions, Entities, DTOs, Events, Listeners, Livewire
+> Components, Forms, Middleware, HTTP Controllers, Support Services, Console Commands, Routes,
+> Views, Tests, Factories, Migrations)
 
 ## Description
 
@@ -20,6 +23,7 @@ lifecycle, and the interactive setup wizard for initial configuration.
 | `Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseCommandAction` |
 | `Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseCommandAction` |
 | `Installation/Actions/InstallSystemAction.php`      | `InstallSystemAction`      | `BaseProcessAction` |
+| `Installation/Actions/SeedDummyDataAction.php`      | `SeedDummyDataAction`      | `BaseProcessAction` |
 | `SetupWizard/Actions/SetupSuperAdminAction.php`     | `SetupSuperAdminAction`    | `BaseCommandAction` |
 | `SetupWizard/Actions/SetupSchoolAction.php`         | `SetupSchoolAction`        | `BaseCommandAction` |
 | `SetupWizard/Actions/SetupDepartmentAction.php`     | `SetupDepartmentAction`    | `BaseCommandAction` |
@@ -57,8 +61,8 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 ## Livewire Components
 
-| File                                   | Component     | Extends     |
-| -------------------------------------- | ------------- | ----------- |
+| File                                   | Component     | Extends      |
+| -------------------------------------- | ------------- | ------------ |
 | `SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `BaseWizard` |
 
 ## Livewire Forms
@@ -84,8 +88,8 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 ## Support
 
-| File                                         | Class               | Purpose                           |
-| -------------------------------------------- | ------------------- | --------------------------------- |
+| File                                          | Class               | Purpose                           |
+| --------------------------------------------- | ------------------- | --------------------------------- |
 | `Installation/Services/SystemProvisioner.php` | `SystemProvisioner` | System provisioning orchestration |
 
 ## Console Commands
@@ -114,8 +118,8 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Setup/`. See [Testing](../infrastructure/testing.md) for
-the testing conventions.
+Tests are located in `tests/Setup/`. See [Testing](../infrastructure/testing.md) for the testing
+conventions.
 
 ## Factories
 

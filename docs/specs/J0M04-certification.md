@@ -1,7 +1,7 @@
 # Certification — Certificate Templates, Issuance, Batch Processing & QR Verification
 
 > **Spec ID:** J0M04
-> **Last updated:** 2026-07-22 **Changes:** feat — initial spec covering certificate template management,
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > single/batch issuance, PDF rendering with 17 placeholders, QR hash generation, revocation,
 > and student certificate view
 

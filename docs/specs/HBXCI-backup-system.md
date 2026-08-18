@@ -1,7 +1,7 @@
 # Backup System — Database & Storage Backup, Restore, and Retention
 
 > **Spec ID:** HBXCI
-> **Last updated:** 2026-07-24 **Changes:** feat — initial spec documenting the backup system:
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > backup creation (database, storage, combined), backup runner with multi-driver support, retention
 > cleanup, CLI command, Livewire management UI, admin-only authorization, and failure notifications
 

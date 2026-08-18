@@ -1,6 +1,6 @@
 # Cache — Caching Strategy & Configuration
 
-> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings and code block comments (#Cache → ## Cache)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify cache strategy, key registry (config/cache-keys.php), TTL categories, event-driven invalidation, and driver strategy against current implementation
 
 ## Description
 

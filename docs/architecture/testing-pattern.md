@@ -1,7 +1,7 @@
 # Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
-> replaces `it()`; `describe('{SPECID}')` alternative
+> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
+> `test("{SpecID}-{ReqID}: Test description...")` replaces `it()` / `describe('{SPECID}')`
 
 ## Description
 
@@ -44,11 +44,12 @@ when a requirement is removed, its test is removed.
 Every test description prefixes its requirement ID:
 
 ```php
-test('89SRA-FR-EH*: wraps unknown exceptions in a RuntimeException with logging', function () { ... });
+test("{SpecID}-{ReqID}: Test description...", function () { ... });
 ```
 
-Use `describe('{SPECID}')` to carry the spec ID once, then `test('{REQ}: ...')` per requirement;
-or prefix the full `{SPECID}-{REQ}:` on each `test()` when not grouping.
+Group tests under `describe("{SpecID}: Test description...")` (spec ID + short description); each
+`test()` inside prefixes the full `{SpecID}-{ReqID}:`. For flat files without grouping, prefix the
+full `{SpecID}-{ReqID}:` on each `test()`.
 
 ### 1.4 Layer-by-Layer Entry Points
 
@@ -112,7 +113,7 @@ scenarios the spec names — happy path plus each rejection/alternative the requ
 
 - A spec's requirements map to test files by subject (e.g., one Action implementing an FR gets its
   own file)
-- A spec with many requirements may group related ones under `describe('{spec}')`
+- A spec with many requirements may group related ones under `describe("{SpecID}: Test description...")`
 - Never split a single requirement's tests across files unless it spans distinct layers
 
 ---
@@ -125,17 +126,17 @@ Files use PascalCase with `Test.php` suffix.
 
 ### 4.2 Test Descriptions
 
-Use `test()` with the spec + requirement ID prefix: `test("{SPECID}-{REQ}: description")`. The
-description reads as a complete statement of the behavior, e.g. **89SRA-FR-EH***.
+Use `test()` with the spec + requirement ID prefix: `test("{SpecID}-{ReqID}: Test description...")`.
+The description reads as a complete statement of the behavior.
 
 ### 4.3 Grouping with `describe()`
 
-Use `describe('{SPECID}')` to carry the spec ID once, then prefix each `test()` with the
-requirement ID only (e.g., `describe('SE5Q9')` → `test('FR-A4: ...')`).
+Use `describe("{SpecID}: Test description...")` to carry the spec ID once (plus a short description),
+then prefix each `test()` inside with the full `{SpecID}-{ReqID}:`.
 
 ### 4.4 Flat Structure
 
-For simple files without grouping, prefix the full `{SPECID}-{REQ}:` on each `test()`.
+For simple files without grouping, prefix the full `{SpecID}-{ReqID}:` on each `test()`.
 
 ---
 

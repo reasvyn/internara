@@ -1,7 +1,6 @@
 # Database — Schema Design & Migration Strategy
 
-> **Last updated:** 2026-07-21 **Changes:** sync — add single-column indexes (users.email,
-> attendances.registration_id, attendances.is_verified)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify schema docs against migrations; add single-column indexes (users.email, attendances.registration_id, attendances.is_verified); document demo seeder and setup:install --with-dummy flag
 
 ## Description
 

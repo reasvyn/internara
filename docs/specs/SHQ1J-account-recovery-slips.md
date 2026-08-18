@@ -1,7 +1,7 @@
 # Account Recovery Slips — User-Facing Backup Access
 
 > **Spec ID:** SHQ1J
-> **Last updated:** 2026-07-24 **Changes:** feat — new spec for Phase 3 Identity & Auth;
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > recovery slip generation, redemption, admin management
 
 ## Description

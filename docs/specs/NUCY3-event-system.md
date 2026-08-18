@@ -1,7 +1,7 @@
 # Event System — Decoupled Communication Infrastructure
 
 > **Spec ID:** NUCY3
-> **Last updated:** 2026-07-23 **Changes:** feat — initial event system specification
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 
 ## Description
 

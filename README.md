@@ -7,6 +7,8 @@
 
 # Internara — Vocational Fieldwork Management System
 
+> **Last updated:** 2026-08-16 **Changes:** sync — verify project description, tech badges, and feature highlights against current codebase
+
 Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs (PKL —
 _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institutions.
 

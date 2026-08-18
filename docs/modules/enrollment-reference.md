@@ -1,6 +1,8 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, DTOs, Entities, Enums, Events, Listeners, Livewire Components, Forms, Policies, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-18 **Changes:** add RejectAccountApplicationData to Data/DTOs; sync —
+> RegistrationDocumentUpload view renders `$documents` (Document models) passed by the component,
+> not a non-existent `$requirements`
 
 ## Description
 
@@ -48,9 +50,10 @@ applications, and registration document uploads.
 
 ## Data / DTOs
 
-| File                                     | Class              | Extends    |
-| ---------------------------------------- | ------------------ | ---------- |
-| `Registration/Data/RegistrationData.php` | `RegistrationData` | `BaseData` |
+| File                                                       | Class                          | Extends    |
+| ---------------------------------------------------------- | ------------------------------ | ---------- |
+| `Registration/Data/RegistrationData.php`                   | `RegistrationData`             | `BaseData` |
+| `AccountApplication/Data/RejectAccountApplicationData.php` | `RejectAccountApplicationData` | `BaseData` |
 
 ## Entities
 
@@ -70,11 +73,11 @@ applications, and registration document uploads.
 
 ## Events
 
-| File                                        | Class               | Dispatched By              |
-| ------------------------------------------- | ------------------- | -------------------------- |
-| `Registration/Events/StudentRegistered.php` | `StudentRegistered` | `RegisterInternshipAction` |
+| File                                                       | Class                        | Dispatched By                     |
+| ---------------------------------------------------------- | ---------------------------- | --------------------------------- |
+| `Registration/Events/StudentRegistered.php`                | `StudentRegistered`          | `RegisterInternshipAction`        |
 | `AccountApplication/Events/AccountApplicationApproved.php` | `AccountApplicationApproved` | `ApproveAccountApplicationAction` |
-| `AccountApplication/Events/AccountApplicationRejected.php` | `AccountApplicationRejected` | `RejectAccountApplicationAction` |
+| `AccountApplication/Events/AccountApplicationRejected.php` | `AccountApplicationRejected` | `RejectAccountApplicationAction`  |
 
 ## Listeners
 
@@ -84,17 +87,17 @@ applications, and registration document uploads.
 
 ## Livewire Components
 
-| File                                                   | Component                       | Extends     |
-| ------------------------------------------------------ | ------------------------------- | ----------- |
-| `Registration/Livewire/RegistrationCenter.php`         | `RegistrationCenter`            | `Component` |
-| `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload`    | `BaseFormView` |
-| `Registration/Livewire/RegistrationVerification.php`   | `RegistrationVerification`      | `Component` |
-| `Registration/Livewire/RegistrationWizard.php`         | `RegistrationWizard`            | `Component` |
-| `Placement/Livewire/DirectPlacementManager.php`        | `DirectPlacementManager`        | `BaseFormView` |
+| File                                                   | Component                       | Extends             |
+| ------------------------------------------------------ | ------------------------------- | ------------------- |
+| `Registration/Livewire/RegistrationCenter.php`         | `RegistrationCenter`            | `Component`         |
+| `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload`    | `BaseFormView`      |
+| `Registration/Livewire/RegistrationVerification.php`   | `RegistrationVerification`      | `Component`         |
+| `Registration/Livewire/RegistrationWizard.php`         | `RegistrationWizard`            | `Component`         |
+| `Placement/Livewire/DirectPlacementManager.php`        | `DirectPlacementManager`        | `BaseFormView`      |
 | `Placement/Livewire/PlacementChangeManager.php`        | `PlacementChangeManager`        | `BaseRecordManager` |
 | `Placement/Livewire/PlacementIndex.php`                | `PlacementIndex`                | `BaseRecordManager` |
-| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `BaseFormView` |
-| `AccountApplication/Livewire/ApplyPage.php`            | `ApplyPage`                     | `BaseFormView` |
+| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `BaseFormView`      |
+| `AccountApplication/Livewire/ApplyPage.php`            | `ApplyPage`                     | `BaseFormView`      |
 
 ## Livewire Forms
 
@@ -132,8 +135,8 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Enrollment/`. See [Testing](../infrastructure/testing.md)
-for the testing conventions.
+Tests are located in `tests/Enrollment/`. See [Testing](../infrastructure/testing.md) for the
+testing conventions.
 
 ## Factories
 

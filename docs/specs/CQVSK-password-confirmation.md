@@ -1,7 +1,7 @@
 # Password Confirmation — Re-Authentication Gate
 
 > **Spec ID:** CQVSK
-> **Last updated:** 2026-07-24 **Changes:** feat — new spec for Phase 3 Identity & Auth;
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > password confirmation for sensitive actions
 
 ## Description

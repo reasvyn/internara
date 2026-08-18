@@ -1,7 +1,7 @@
 # GDPR Compliance — Data Deletion, Anonymization, and Audit Logging
 
 > **Spec ID:** 7HNCF
-> **Last updated:** 2026-07-24 **Changes:** feat — initial spec documenting GDPR compliance:
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > user-initiated and admin-initiated data deletion, PII anonymization, GDPR deletion audit logging,
 > schema migration to add missing columns, and admin-facing deletion log viewer
 

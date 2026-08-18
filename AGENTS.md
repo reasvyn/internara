@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify agent workflow matches current 9-step pipeline, skill map, phase classification, size triage, and verification strategy
+> **Last updated:** 2026-08-17 **Changes:** skill map now points to per-skill rules — skills are rules-first (each skill's rules live in `skills/{name}/rules/*.md`, comprehensive prose, mapped by its `## Skill Rules` table; `scan_skills.py` enforces this via SKILL_RULES_DIR)
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -96,7 +96,10 @@ Internalize the user's **intent**, not just literal words. Clarify ambiguities. 
 - **Load only the skills the task actually uses** from the Skill Map (bug fix → `code-writing`,
   tests → `pest-testing`, scripts → `script-automation`, etc.). Every skill load consumes context,
   so skip any skill the task will not exercise; an unneeded skill is cheap to skip, a bloated
-  context is not.
+  context is not. Skills are **rules-first**: each skill's rules live in
+  `skills/{name}/rules/{rule}.md` (comprehensive prose — intent, rationale, how-to-apply, pitfalls,
+  verification — never bare checklists) and are mapped by its `## Skill Rules` table in SKILL.md.
+  Load a rule file only when the task reaches that rule; the mapping table is the index.
 - **Classify phase + size** per `agent-workflow` (Phase Classification + Size Triage) — if **L**,
   inform the user and propose a session plan before proceeding.
 - **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
@@ -234,9 +237,9 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Laravel Tinker | REPL | v3.0 |
 | Laravel Pail | Log Viewer | v1.2 |
 | Laravel Sail | Docker Dev | v1.65 |
-| Prettier | Formatter | v3.9 |
-| @prettier/plugin-php | PHP Formatter | v0.25 |
-| prettier-plugin-blade | Blade Formatter | v3.2 |
+| Prettier | Formatter (non-PHP only) | v3.9 |
+| prettier-plugin-blade | Blade Formatter (via Pint) | v3.2 |
+| prettier-plugin-tailwindcss | Tailwind Class Sorter (via Pint) | v0.8 |
 | concurrently | Task Runner | v10.0 |
 
 ---
@@ -395,8 +398,8 @@ Full spec list with build order: `docs/specs/index.md`
 **Batch ALL changes first, then verify ONCE.** Full suite is ~2GB+ memory, 10+ minutes.
 
 **Tests verify the spec — nothing more.** Every test traces to a requirement ID (`FR-*` / `NFR-*` /
-`UC-*`) in `docs/specs/{ID}-{feature}.md`. Test descriptions are prefixed with the spec's ID:
-`{ID}-{REQ}: description` (e.g., `3UOZP-FR-C10: refuses to seed in production`). Coverage is
+`UC-*`) in `docs/specs/{ID}-{feature}.md`. Test descriptions use the `{SpecID}-{ReqID}: Test
+description...` format, grouped under `describe("{SpecID}: Test description...")`. Coverage is
 measured in spec requirements covered, not lines
 of code. A requirement with no test is a spec gap (fill it); a test with no requirement is orphan
 noise (remove it).
@@ -416,8 +419,9 @@ suite / PHPStan stay reserved for merge-day or user-requested full verification.
 | Change Type | Verification |
 |-------------|-------------|
 | Translation keys (`lang/*.php`) | `vendor/bin/pint --dirty --test --format agent` + `php artisan tinker --execute="echo __('key');"` |
-| Config/docs/markdown | Visual inspection, no tests |
-| Blade/CSS/JS | `npm run build` only |
+| Blade templates | `vendor/bin/pint --dirty --test --format agent` (Blade via `Pint/laravel_blade` rule) + `npm run build` |
+| Config/docs/markdown | `npx prettier --check` + visual inspection |
+| CSS/JS/JSON/non-PHP | `npx prettier --check` + `npm run build` |
 | Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
 | New feature / business logic | Full suite ONCE after all changes batched |
 | Dependency updates | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) |
@@ -432,7 +436,8 @@ git diff --stat           # confirm only intended files were touched
 # Targeted tests
 vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
 php artisan test --compact --filter={ClassName}
-vendor/bin/pint --dirty --test --format agent   # PHP syntax + style check
+vendor/bin/pint --dirty --test --format agent   # PHP + Blade syntax & style (Pint/laravel_blade rule)
+npx prettier --check <file>                     # Non-PHP only (CSS/JS/markdown/JSON — *.php & *.blade.php ignored)
 php artisan system:health
 
 # Full verification (after refactoring or before merge) — ONLY when the user explicitly asks

@@ -1,6 +1,6 @@
 # Filesystem — File Storage & Directory Layout
 
-> **Last updated:** 2026-07-11 **Changes:** sync — consolidate Media Library content into media-library.md reference
+> **Last updated:** 2026-08-16 **Changes:** sync — verify filesystem config, disk setup, and directory layout against current config/filesystems.php and MediaLibrary integration
 
 ## Description
 

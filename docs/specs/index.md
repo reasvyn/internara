@@ -1,11 +1,13 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-16 **Changes:** add — Architecture Design spec (D2FT3, Foundation, first
-> in build order); add — Core & Infrastructure Services spec (ZT6VS, Foundation, after Tech Stack);
-> tech-stack (FB792) refocused on the dependency manifest; Dummy Data spec (3UOZP, Maintenance); add —
-> Conditional Deployment spec (06IB6, Maintenance); Foundation specs (FB792–B114U) verified against the
-> rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers,
-> shared-utilities); migrated all specs to alphanumeric 5-char IDs (XXXXX-description.md)
+> **Last updated:** 2026-08-17 **Changes:** add — Layout & UI System spec (8XMYS, Core, Phase 3 —
+> Identity & Auth); add — Implementation Checklist Matrix (priority-ordered,
+> 4-scale critical/high/medium/low with red/yellow/green/blue symbols); add — Architecture Design spec
+> (D2FT3, Foundation, first in build order); add — Core & Infrastructure Services spec (ZT6VS, Foundation,
+> after Tech Stack); tech-stack (FB792) refocused on the dependency manifest; Dummy Data spec (3UOZP,
+> Maintenance); add — Conditional Deployment spec (06IB6, Maintenance); Foundation specs (FB792–B114U)
+> verified against the rewritten Core suite (266 tests); spec↔code deviations reconciled
+> (security-headers, shared-utilities); migrated all specs to alphanumeric 5-char IDs (XXXXX-description.md)
 
 ## Description
 
@@ -80,6 +82,7 @@ Authentication, password management, profile, notifications, and dashboards. Dep
 
 | ID | Spec | Module | Depends On |
 | -- | ---- | ------ | ---------- |
+| 8XMYS | [Layout & UI System](8XMYS-layout-and-ui-system.md) | Core | SE5Q9, I1BCV, YB22J, 52O1I |
 | YB7RG | [Authentication](YB7RG-authentication.md) | Auth | SE5Q9, T4B26
 | TXR2H | [Notification Infrastructure](TXR2H-notification-infrastructure.md) | User | SE5Q9, NUCY3
 | 3S55V | [Announcement System](3S55V-announcement-system.md) | SysAdmin | YB22J, TXR2H
@@ -182,6 +185,81 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI
 | 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | J68GZ, 8NZAU, 8FVZA, E1MSJ
 | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | T4B26, 4HWSB, XW6F5, XI3LB, NTHQA, 7C5WM, IT0OE, MBB5R, J9GBH, 1KSWL, 2EHSE, 3RU9S, ARDA6, AXKZW, T657Z, J0M04, R6BMW
+
+---
+
+## Implementation Checklist Matrix — Priority-Ordered
+
+This matrix tracks implementation fulfillment, test coverage, and verification status ordered by **business criticality** (most vital PKL features first), not build order. Update status as work progresses.
+
+**Priority:** `🔴 Critical` (system cannot boot, secure, or provision without) • `🟡 High` (core PKL workflow) • `🟢 Medium` (assessment / certification / reporting output) • `🔵 Low` (maintenance & supporting infra)  
+**Status Legend:** `⬜ Not Started` • `🟨 In Progress` • `🟩 Implemented` • `🟦 Verified`  
+**Test Coverage:** `⬜ None` • `🟨 Partial` • `🟩 Full` • `🟧 Spec-Gap` (requirement exists, no test)  
+**Last Verified:** Date of last spec↔code audit or test run
+
+| Priority | ID | Spec | Module | Impl Status | Test Coverage | Last Verified | Notes |
+|----------|----|------|--------|-------------|---------------|---------------|-------|
+| 🔴 Critical | D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Governing architecture contract; 266 Core tests |
+| 🔴 Critical | FB792 | [Tech Stack](FB792-tech-stack.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Dependency manifest; pinned versions |
+| 🔴 Critical | ZT6VS | [Core & Infra Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | SmartLogger, SettingsStore, SendsNotifications |
+| 🔴 Critical | SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | BaseAction, BaseModel, BaseEntity, BasePolicy |
+| 🔴 Critical | T4B26 | [RBAC & Authorization](T4B26-rbac-and-authorization.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Flat roles, Gate::before, Policy pattern |
+| 🔴 Critical | 89SRA | [Logging & Error Handling](89SRA-logging-and-error-handling.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Dual AppException/ModuleException trees |
+| 🔴 Critical | 2CF4Y | [Middleware Pipeline](2CF4Y-middleware-pipeline.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Global + module middleware groups |
+| 🔴 Critical | 1PGM4 | [Security Headers](1PGM4-security-headers.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | CSP, HSTS, frame options |
+| 🔴 Critical | YB7RG | [Authentication](YB7RG-authentication.md) | Auth | 🟦 Verified | 🟩 Full | 2026-08-16 | Login, throttling, session security |
+| 🔴 Critical | 95EVB | [User CRUD & Status](95EVB-user-crud-and-status.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | 8-state lifecycle, role assignment |
+| 🔴 Critical | D9TKW | [Password Reset](D9TKW-password-reset.md) | Auth | 🟦 Verified | 🟩 Full | 2026-08-16 | Token-based, rate limited |
+| 🔴 Critical | SHQ1J | [Account Recovery Slips](SHQ1J-account-recovery-slips.md) | Auth | 🟦 Verified | 🟩 Full | 2026-08-16 | Recovery codes, CLI admin recovery |
+| 🔴 Critical | CQVSK | [Password Confirmation](CQVSK-password-confirmation.md) | Auth | 🟦 Verified | 🟩 Full | 2026-08-16 | Sensitive action re-auth |
+| 🔴 Critical | OCEMS | [Profile Management](OCEMS-profile-management.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | Avatar, notifications, preferences |
+| 🔴 Critical | 8NZAU | [Installation](8NZAU-installation.md) | Setup | 🟦 Verified | 🟩 Full | 2026-08-16 | `setup:install` audits env, runs migrations |
+| 🔴 Critical | VEJCX | [Setup Wizard](VEJCX-setup-wizard.md) | Setup | 🟦 Verified | 🟩 Full | 2026-08-16 | 6-step signed URL wizard |
+| 🔴 Critical | C9ZB6 | [Recovery Ecosystem](C9ZB6-recovery-ecosystem.md) | Setup | 🟦 Verified | 🟩 Full | 2026-08-16 | Super admin recovery, token validation |
+| 🟡 High | 81SMS | [School Profile](81SMS-school-profile.md) | Academics | 🟦 Verified | 🟩 Full | 2026-08-16 | NPSN, branding, contact info |
+| 🟡 High | 4HWSB | [Department Management](4HWSB-department-management.md) | Academics | 🟦 Verified | 🟩 Full | 2026-08-16 | Jurusan CRUD, academic structure |
+| 🟡 High | XW6F5 | [Academic Year Management](XW6F5-academic-year-management.md) | Academics | 🟦 Verified | 🟩 Full | 2026-08-16 | Active year, semester, date ranges |
+| 🟡 High | YB22J | [Settings Infrastructure](YB22J-settings-infrastructure.md) | Settings | 🟦 Verified | 🟩 Full | 2026-08-16 | Key-value store, cached resolution |
+| 🟡 High | 52O1I | [Branding, Theme & Locale](52O1I-branding-theme-locale.md) | Settings | 🟦 Verified | 🟩 Full | 2026-08-16 | Dynamic theming, color presets, EN/ID |
+| 🟡 High | 8XMYS | [Layout & UI System](8XMYS-layout-and-ui-system.md) | Core | 🟩 Implemented | 🟧 Spec-Gap | 2026-08-17 | Shells, role-filtered sidebar, `core::ui.*` — no tests yet |
+| 🟡 High | XI3LB | [Company Management](XI3LB-company-management.md) | Partners | 🟦 Verified | 🟩 Full | 2026-08-16 | DUDI registry, MoU tracking, slots |
+| 🟡 High | NTHQA | [Partnership Management](NTHQA-partnership-management.md) | Partners | 🟦 Verified | 🟩 Full | 2026-08-16 | Partnership lifecycle, quota mgmt |
+| 🟡 High | 7C5WM | [Internship Lifecycle](7C5WM-internship-lifecycle.md) | Program | 🟦 Verified | 🟩 Full | 2026-08-16 | Phases, document requirements, state machine |
+| 🟡 High | IT0OE | [Internship Groups](IT0OE-internship-groups.md) | Program | 🟦 Verified | 🟩 Full | 2026-08-16 | Cohort grouping, teacher assignment |
+| 🟡 High | MBB5R | [Registration](MBB5R-registration.md) | Enrollment | 🟦 Verified | 🟩 Full | 2026-08-16 | Student wizard, capacity enforcement |
+| 🟡 High | J9GBH | [Placement](J9GBH-placement.md) | Enrollment | 🟦 Verified | 🟩 Full | 2026-08-16 | Slot-based, change requests |
+| 🟡 High | 920SO | [Account Application](920SO-account-application.md) | Enrollment | 🟦 Verified | 🟩 Full | 2026-08-16 | Guest→student atomic provisioning |
+| 🟡 High | O2KCR | [CSV Import & Export](O2KCR-csv-import-export.md) | Enrollment | 🟦 Verified | 🟩 Full | 2026-08-16 | Bulk ops, validation, templates |
+| 🟡 High | EWCZ0 | [Account Slips](EWCZ0-account-slips.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | Printable credentials |
+| 🟡 High | 1KSWL | [Daily Activity](1KSWL-daily-activity.md) | Journals | 🟦 Verified | 🟩 Full | 2026-08-16 | Geotagged attendance, reflective logbook |
+| 🟡 High | 2EHSE | [Supervision](2EHSE-supervision.md) | Journals | 🟦 Verified | 🟩 Full | 2026-08-16 | Teacher logs, monitoring visits |
+| 🟡 High | 3RU9S | [Incident](3RU9S-incident.md) | Incident | 🟦 Verified | 🟩 Full | 2026-08-16 | Reports, severity, resolution workflow |
+| 🟢 Medium | ARDA6 | [Assessment](ARDA6-assessment.md) | Assessment | 🟦 Verified | 🟩 Full | 2026-08-16 | Rubrics, competency scoring, multi-eval |
+| 🟢 Medium | AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | 🟦 Verified | 🟩 Full | 2026-08-16 | Google Forms-like, auto-scoring |
+| 🟢 Medium | T657Z | [Assignment](T657Z-assignment.md) | Assignment | 🟦 Verified | 🟩 Full | 2026-08-16 | Tasks, submissions, grading |
+| 🟢 Medium | J0M04 | [Certification](J0M04-certification.md) | Certification | 🟦 Verified | 🟩 Full | 2026-08-16 | Templates, batch issuance, QR verify |
+| 🟢 Medium | PKYX6 | [Document Templates](PKYX6-document-templates.md) | Document | 🟦 Verified | 🟩 Full | 2026-08-16 | Blade-based, variable substitution |
+| 🟢 Medium | ZUFG8 | [Handbooks](ZUFG8-handbooks.md) | Document | 🟦 Verified | 🟩 Full | 2026-08-16 | Policy handbooks, acknowledgements |
+| 🟢 Medium | R6BMW | [Reports](R6BMW-reports.md) | Reports | 🟦 Verified | 🟩 Full | 2026-08-16 | Grade card only (no thesis) |
+| 🟢 Medium | 7H5D6 | [Official Documents](7H5D6-official-documents.md) | Document | 🟦 Verified | 🟩 Full | 2026-08-16 | Correspondence, snapshots |
+| 🟢 Medium | WQGTP | [File Uploads & Media](WQGTP-file-uploads-media.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Spatie MediaLibrary, collections |
+| 🟢 Medium | 7UB7S | [PDF Generation](7UB7S-pdf-generation.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | barryvdh/laravel-dompdf |
+| 🔵 Low | 8FVZA | [Job & Queue Infrastructure](8FVZA-job-queue-infrastructure.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Redis, Supervisor, job lifecycle |
+| 🔵 Low | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Automated, retention, restoration |
+| 🔵 Low | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Export, erasure, consent |
+| 🔵 Low | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Cleanup, archiving, health checks |
+| 🔵 Low | 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | 3-tier deploy, env detection |
+| 🔵 Low | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Production guard (NFR-S1), demo accounts |
+| 🔵 Low | CKKZC | [Dashboard](CKKZC-dashboard.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | Role-based widgets, stats |
+| 🔵 Low | 3S55V | [Announcement System](3S55V-announcement-system.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | School-wide, targeted, scheduling |
+| 🔵 Low | TXR2H | [Notification Infrastructure](TXR2H-notification-infrastructure.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | Multi-channel, mail deliverability |
+| 🔵 Low | I1BCV | [Module Discovery](I1BCV-module-discovery.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Auto-registration, config/module.php |
+| 🔵 Low | C8F0D | [Shared Utilities](C8F0D-shared-utilities.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Helpers: `setting()`, `brand()`, `app_info()` |
+| 🔵 Low | J68GZ | [System Requirements](J68GZ-system-requirements.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | 37 domain tables, schema philosophy |
+| 🔵 Low | NUCY3 | [Event System](NUCY3-event-system.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | BaseEvent, dispatch patterns, listeners |
+| 🔵 Low | B114U | [Module Manager & Service](B114U-module-manager.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Module registry, service resolution |
+
+> **How to update:** When implementation or test status changes, edit this table. Bump the `> **Last updated:**` date at the top of this file. Keep status honest — `🟧 Spec-Gap` means a requirement has no test; `🟨 Partial` means some requirements covered.
 
 ---
 
