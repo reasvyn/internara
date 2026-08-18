@@ -76,7 +76,6 @@ class StudentHandbookList extends Component
         }
 
         $acknowledgments = Activity::causedBy($user)
-            ->inLog('document')
             ->forEvent('acknowledged')
             ->where('subject_type', Document::class)
             ->latest()
