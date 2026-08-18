@@ -4,34 +4,30 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
+use App\Assessment\Rubric\Data\UpdateIndicatorData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 
 final class UpdateIndicatorAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,
-        string $competencyId,
-        string $indicatorId,
-        string $name,
-        ?string $description = null,
-        int $maxScore = 100,
-        int $weight = 0,
-        int $order = 0,
-    ): Rubric {
-        return $this->transaction(function () use ($rubric, $competencyId, $indicatorId, $name, $description, $maxScore, $weight, $order) {
+        UpdateIndicatorData $data,
+    ): ActionResponse {
+        return $this->transaction(function () use ($rubric, $data) {
             $structure = $rubric->structure;
 
             $competencies = &$structure['competencies'];
             foreach ($competencies as &$competency) {
-                if ($competency['id'] === $competencyId) {
+                if ($competency['id'] === $data->competencyId) {
                     foreach ($competency['indicators'] as &$indicator) {
-                        if ($indicator['id'] === $indicatorId) {
-                            $indicator['name'] = $name;
-                            $indicator['description'] = $description;
-                            $indicator['max_score'] = $maxScore;
-                            $indicator['weight'] = $weight;
-                            $indicator['order'] = $order;
+                        if ($indicator['id'] === $data->indicatorId) {
+                            $indicator['name'] = $data->name;
+                            $indicator['description'] = $data->description;
+                            $indicator['max_score'] = $data->maxScore;
+                            $indicator['weight'] = $data->weight;
+                            $indicator['order'] = $data->order;
                             break 2;
                         }
                     }
@@ -42,12 +38,12 @@ final class UpdateIndicatorAction extends BaseCommandAction
 
             $this->log('indicator_updated', $rubric, [
                 'rubric_id' => $rubric->id,
-                'competency_id' => $competencyId,
-                'indicator_id' => $indicatorId,
-                'indicator_name' => $name,
+                'competency_id' => $data->competencyId,
+                'indicator_id' => $data->indicatorId,
+                'indicator_name' => $data->name,
             ]);
 
-            return $rubric;
+            return ActionResponse::updated($rubric);
         });
     }
 }

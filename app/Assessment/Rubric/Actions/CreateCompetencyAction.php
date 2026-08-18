@@ -4,29 +4,27 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
+use App\Assessment\Rubric\Data\CreateCompetencyData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use Illuminate\Support\Str;
 
 final class CreateCompetencyAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,
-        string $name,
-        ?string $description = null,
-        int $weight = 0,
-        string $evaluatorRole = 'teacher',
-        int $order = 0,
-    ): Rubric {
-        return $this->transaction(function () use ($rubric, $name, $description, $weight, $evaluatorRole, $order) {
+        CreateCompetencyData $data,
+    ): ActionResponse {
+        return $this->transaction(function () use ($rubric, $data) {
             $structure = $rubric->structure ?? ['competencies' => []];
             $structure['competencies'][] = [
                 'id' => (string) Str::uuid(),
-                'name' => $name,
-                'description' => $description,
-                'weight' => $weight,
-                'evaluator_role' => $evaluatorRole,
-                'order' => $order,
+                'name' => $data->name,
+                'description' => $data->description,
+                'weight' => $data->weight,
+                'evaluator_role' => $data->evaluatorRole,
+                'order' => $data->order,
                 'indicators' => [],
             ];
 
@@ -34,10 +32,10 @@ final class CreateCompetencyAction extends BaseCommandAction
 
             $this->log('competency_created', $rubric, [
                 'rubric_id' => $rubric->id,
-                'competency_name' => $name,
+                'competency_name' => $data->name,
             ]);
 
-            return $rubric;
+            return ActionResponse::created($rubric);
         });
     }
 }

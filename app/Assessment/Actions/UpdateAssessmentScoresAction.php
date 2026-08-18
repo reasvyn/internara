@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Assessment\Actions;
 
+use App\Assessment\Data\UpdateAssessmentScoresData;
 use App\Assessment\Models\Assessment;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 
 final class UpdateAssessmentScoresAction extends BaseCommandAction
 {
@@ -14,28 +16,26 @@ final class UpdateAssessmentScoresAction extends BaseCommandAction
      */
     public function execute(
         Assessment $assessment,
-        string $competencyId,
-        string $indicatorId,
-        ?float $score,
-    ): Assessment {
+        UpdateAssessmentScoresData $data,
+    ): ActionResponse {
         $scoresData = $assessment->scores_data ?? [];
         $scoresData['competencies'] ??= [];
-        $scoresData['competencies'][$competencyId]['evaluator_id'] = auth()->id();
-        $scoresData['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();
+        $scoresData['competencies'][$data->competencyId]['evaluator_id'] = auth()->id();
+        $scoresData['competencies'][$data->competencyId]['evaluated_at'] = now()->toIso8601String();
 
-        if ($score === null || $score < 0) {
-            unset($scoresData['competencies'][$competencyId]['indicators'][$indicatorId]);
+        if ($data->score === null || $data->score < 0) {
+            unset($scoresData['competencies'][$data->competencyId]['indicators'][$data->indicatorId]);
         } else {
-            $scoresData['competencies'][$competencyId]['indicators'][$indicatorId] = $score;
+            $scoresData['competencies'][$data->competencyId]['indicators'][$data->indicatorId] = $data->score;
         }
 
         $assessment->update(['scores_data' => $scoresData]);
 
         $this->log('assessment_scores_updated', $assessment, [
-            'competency_id' => $competencyId,
-            'indicator_id' => $indicatorId,
+            'competency_id' => $data->competencyId,
+            'indicator_id' => $data->indicatorId,
         ]);
 
-        return $assessment->fresh();
+        return ActionResponse::updated($assessment->fresh());
     }
 }

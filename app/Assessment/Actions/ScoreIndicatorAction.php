@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Assessment\Actions;
 
+use App\Assessment\Data\ScoreIndicatorData;
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
@@ -15,11 +17,9 @@ final class ScoreIndicatorAction extends BaseCommandAction
     public function execute(
         Assessment $assessment,
         Rubric $rubric,
-        string $competencyId,
-        string $indicatorId,
-        float $score,
+        ScoreIndicatorData $data,
         User $evaluator,
-    ): Assessment {
+    ): ActionResponse {
         if ($assessment->finalized_at !== null) {
             throw new RejectedException('Cannot modify a finalized assessment.');
         }
@@ -29,10 +29,10 @@ final class ScoreIndicatorAction extends BaseCommandAction
         $indicator = null;
 
         foreach ($structure['competencies'] as $c) {
-            if ($c['id'] === $competencyId) {
+            if ($c['id'] === $data->competencyId) {
                 $competency = $c;
                 foreach ($c['indicators'] as $i) {
-                    if ($i['id'] === $indicatorId) {
+                    if ($i['id'] === $data->indicatorId) {
                         $indicator = $i;
                         break 2;
                     }
@@ -46,7 +46,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
 
         $this->ensureAuthorized($assessment, $competency, $evaluator);
 
-        if ($score < 0 || $score > $indicator['max_score']) {
+        if ($data->score < 0 || $data->score > $indicator['max_score']) {
             throw new RejectedException("Score must be between 0 and {$indicator['max_score']}.");
         }
 
@@ -55,8 +55,8 @@ final class ScoreIndicatorAction extends BaseCommandAction
 
         $found = false;
         foreach ($scoresData['competencies'] as &$compData) {
-            if (($compData['id'] ?? null) === $competencyId) {
-                $compData['indicators'][$indicatorId] = $score;
+            if (($compData['id'] ?? null) === $data->competencyId) {
+                $compData['indicators'][$data->indicatorId] = $data->score;
                 $compData['evaluator_id'] = $evaluator->id;
                 $compData['evaluated_at'] = now()->toIso8601String();
                 $found = true;
@@ -66,11 +66,11 @@ final class ScoreIndicatorAction extends BaseCommandAction
 
         if (! $found) {
             $scoresData['competencies'][] = [
-                'id' => $competencyId,
+                'id' => $data->competencyId,
                 'evaluator_id' => $evaluator->id,
                 'evaluated_at' => now()->toIso8601String(),
                 'indicators' => [
-                    $indicatorId => $score,
+                    $data->indicatorId => $data->score,
                 ],
             ];
         }
@@ -78,12 +78,12 @@ final class ScoreIndicatorAction extends BaseCommandAction
         $assessment->update(['scores_data' => $scoresData]);
 
         $this->log('indicator_scored', $assessment, [
-            'competency_id' => $competencyId,
-            'indicator_id' => $indicatorId,
-            'score' => $score,
+            'competency_id' => $data->competencyId,
+            'indicator_id' => $data->indicatorId,
+            'score' => $data->score,
         ]);
 
-        return $assessment->fresh();
+        return ActionResponse::updated($assessment->fresh());
     }
 
     private function ensureAuthorized(

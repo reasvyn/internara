@@ -4,31 +4,28 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
+use App\Assessment\Rubric\Data\UpdateCompetencyData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 
 final class UpdateCompetencyAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,
-        string $competencyId,
-        string $name,
-        ?string $description = null,
-        int $weight = 0,
-        string $evaluatorRole = 'teacher',
-        int $order = 0,
-    ): Rubric {
-        return $this->transaction(function () use ($rubric, $competencyId, $name, $description, $weight, $evaluatorRole, $order) {
+        UpdateCompetencyData $data,
+    ): ActionResponse {
+        return $this->transaction(function () use ($rubric, $data) {
             $structure = $rubric->structure;
 
             $competencies = &$structure['competencies'];
             foreach ($competencies as &$competency) {
-                if ($competency['id'] === $competencyId) {
-                    $competency['name'] = $name;
-                    $competency['description'] = $description;
-                    $competency['weight'] = $weight;
-                    $competency['evaluator_role'] = $evaluatorRole;
-                    $competency['order'] = $order;
+                if ($competency['id'] === $data->competencyId) {
+                    $competency['name'] = $data->name;
+                    $competency['description'] = $data->description;
+                    $competency['weight'] = $data->weight;
+                    $competency['evaluator_role'] = $data->evaluatorRole;
+                    $competency['order'] = $data->order;
                     break;
                 }
             }
@@ -37,11 +34,11 @@ final class UpdateCompetencyAction extends BaseCommandAction
 
             $this->log('competency_updated', $rubric, [
                 'rubric_id' => $rubric->id,
-                'competency_id' => $competencyId,
-                'competency_name' => $name,
+                'competency_id' => $data->competencyId,
+                'competency_name' => $data->name,
             ]);
 
-            return $rubric;
+            return ActionResponse::updated($rubric);
         });
     }
 }

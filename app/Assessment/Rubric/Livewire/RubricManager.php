@@ -14,6 +14,13 @@ use App\Assessment\Rubric\Actions\DeleteRubricAction;
 use App\Assessment\Rubric\Actions\UpdateCompetencyAction;
 use App\Assessment\Rubric\Actions\UpdateIndicatorAction;
 use App\Assessment\Rubric\Actions\UpdateRubricAction;
+use App\Assessment\Rubric\Data\CreateCompetencyData;
+use App\Assessment\Rubric\Data\CreateIndicatorData;
+use App\Assessment\Rubric\Data\CreateRubricData;
+use App\Assessment\Rubric\Data\DeleteIndicatorData;
+use App\Assessment\Rubric\Data\UpdateCompetencyData;
+use App\Assessment\Rubric\Data\UpdateIndicatorData;
+use App\Assessment\Rubric\Data\UpdateRubricData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Exceptions\RejectedException;
 use Illuminate\Contracts\View\View;
@@ -121,18 +128,20 @@ class RubricManager extends Component
         if ($this->rubricForm['id']) {
             $rubric = Rubric::findOrFail($this->rubricForm['id']);
             $updateAction->execute(
-                rubric: $rubric,
-                name: $this->rubricForm['name'],
-                description: $this->rubricForm['description'],
-                isActive: $this->rubricForm['is_active'],
+                $rubric,
+                new UpdateRubricData(
+                    name: $this->rubricForm['name'],
+                    description: $this->rubricForm['description'],
+                    isActive: $this->rubricForm['is_active'],
+                ),
             );
             flash()->success('Rubric updated.');
         } else {
-            $createAction->execute(
+            $createAction->execute(new CreateRubricData(
                 name: $this->rubricForm['name'],
                 description: $this->rubricForm['description'],
                 isActive: $this->rubricForm['is_active'],
-            );
+            ));
             flash()->success('Rubric created.');
         }
 
@@ -180,8 +189,10 @@ class RubricManager extends Component
                 ),
                 'indicator' => $deleteIndicator->execute(
                     Rubric::findOrFail($this->confirmTargetId),
-                    $this->confirmCompetencyId,
-                    $this->confirmIndicatorId,
+                    new DeleteIndicatorData(
+                        competencyId: $this->confirmCompetencyId,
+                        indicatorId: $this->confirmIndicatorId,
+                    ),
                 ),
             };
 
@@ -257,23 +268,27 @@ class RubricManager extends Component
 
         if ($this->competencyForm['id']) {
             $updateAction->execute(
-                rubric: $rubric,
-                competencyId: $this->competencyForm['id'],
-                name: $this->competencyForm['name'],
-                description: $this->competencyForm['description'],
-                weight: (int) $this->competencyForm['weight'],
-                evaluatorRole: $evaluatorRole,
-                order: (int) $this->competencyForm['order'],
+                $rubric,
+                new UpdateCompetencyData(
+                    competencyId: $this->competencyForm['id'],
+                    name: $this->competencyForm['name'],
+                    description: $this->competencyForm['description'],
+                    weight: (int) $this->competencyForm['weight'],
+                    evaluatorRole: $evaluatorRole,
+                    order: (int) $this->competencyForm['order'],
+                ),
             );
             flash()->success('Competency updated.');
         } else {
             $createAction->execute(
-                rubric: $rubric,
-                name: $this->competencyForm['name'],
-                description: $this->competencyForm['description'],
-                weight: (int) $this->competencyForm['weight'],
-                evaluatorRole: $evaluatorRole,
-                order: (int) $this->competencyForm['order'],
+                $rubric,
+                new CreateCompetencyData(
+                    name: $this->competencyForm['name'],
+                    description: $this->competencyForm['description'],
+                    weight: (int) $this->competencyForm['weight'],
+                    evaluatorRole: $evaluatorRole,
+                    order: (int) $this->competencyForm['order'],
+                ),
             );
             flash()->success('Competency created.');
         }
@@ -335,25 +350,29 @@ class RubricManager extends Component
 
         if ($this->indicatorForm['id']) {
             $updateAction->execute(
-                rubric: $rubric,
-                competencyId: $this->selectedCompetencyId,
-                indicatorId: $this->indicatorForm['id'],
-                name: $this->indicatorForm['name'],
-                description: $this->indicatorForm['description'],
-                maxScore: (int) $this->indicatorForm['max_score'],
-                weight: (int) $this->indicatorForm['weight'],
-                order: (int) $this->indicatorForm['order'],
+                $rubric,
+                new UpdateIndicatorData(
+                    competencyId: $this->selectedCompetencyId,
+                    indicatorId: $this->indicatorForm['id'],
+                    name: $this->indicatorForm['name'],
+                    description: $this->indicatorForm['description'],
+                    maxScore: (int) $this->indicatorForm['max_score'],
+                    weight: (int) $this->indicatorForm['weight'],
+                    order: (int) $this->indicatorForm['order'],
+                ),
             );
             flash()->success('Indicator updated.');
         } else {
             $createAction->execute(
-                rubric: $rubric,
-                competencyId: $this->selectedCompetencyId,
-                name: $this->indicatorForm['name'],
-                description: $this->indicatorForm['description'],
-                maxScore: (int) $this->indicatorForm['max_score'],
-                weight: (int) $this->indicatorForm['weight'],
-                order: (int) $this->indicatorForm['order'],
+                $rubric,
+                new CreateIndicatorData(
+                    competencyId: $this->selectedCompetencyId,
+                    name: $this->indicatorForm['name'],
+                    description: $this->indicatorForm['description'],
+                    maxScore: (int) $this->indicatorForm['max_score'],
+                    weight: (int) $this->indicatorForm['weight'],
+                    order: (int) $this->indicatorForm['order'],
+                ),
             );
             flash()->success('Indicator created.');
         }
