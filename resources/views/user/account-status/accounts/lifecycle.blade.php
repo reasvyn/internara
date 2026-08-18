@@ -1,23 +1,33 @@
 <div class="p-8">
-    <x-mary-header :title="__('auth.lifecycle.title')" :subtitle="__('auth.lifecycle.subtitle')" separator progress-indicator>
+    <x-mary-header
+        :title="__('auth.lifecycle.title')"
+        :subtitle="__('auth.lifecycle.subtitle')"
+        separator
+        progress-indicator
+    >
         <x-slot:actions>
-            <x-mary-button label="Detect Clones" icon="o-user-group" class="btn-secondary" href="{{ route('admin.accounts.clones') }}" />
+            <x-mary-button
+                :label="__('auth.lifecycle.detect_clones')"
+                icon="o-user-group"
+                class="btn-secondary"
+                href="{{ route('admin.accounts.clones') }}"
+            />
         </x-slot:actions>
     </x-mary-header>
 
-    <x-mary-card shadow class="bg-base-100 border border-base-200">
+    <x-mary-card shadow class="bg-base-100 border-base-200 border">
         @if ($users->isEmpty())
-            <div class="text-center py-8 opacity-60">
-                <x-mary-icon name="o-users" class="w-12 h-12 mx-auto mb-3" />
-                <p class="text-lg">No users found.</p>
+            <div class="py-8 text-center opacity-60">
+                <x-mary-icon name="o-users" class="mx-auto mb-3 h-12 w-12" />
+                <p class="text-lg">{{ __('auth.recovery_slip.no_users_found') }}</p>
             </div>
         @else
             @php
                 $headers = [
-                    ['key' => 'name', 'label' => 'User'],
-                    ['key' => 'status', 'label' => 'Status'],
-                    ['key' => 'locked', 'label' => 'Locked'],
-                    ['key' => 'created_at', 'label' => 'Created'],
+                    ['key' => 'name', 'label' => __('auth.lifecycle.user')],
+                    ['key' => 'status', 'label' => __('auth.lifecycle.status')],
+                    ['key' => 'locked', 'label' => __('auth.lifecycle.locked')],
+                    ['key' => 'created_at', 'label' => __('auth.lifecycle.created')],
                     ['key' => 'actions', 'label' => ''],
                 ];
             @endphp
@@ -46,9 +56,9 @@
 
                 @scope('cell_locked', $user)
                     @if ($user->locked_at)
-                        <x-mary-badge value="Locked" class="badge-error" />
+                        <x-mary-badge :value="__('auth.lifecycle.locked')" class="badge-error" />
                     @else
-                        <x-mary-badge value="Unlocked" class="badge-success" />
+                        <x-mary-badge :value="__('auth.lifecycle.unlocked')" class="badge-success" />
                     @endif
                 @endscope
 

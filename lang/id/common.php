@@ -22,6 +22,12 @@ return [
     'skip_to_content' => 'Lompat ke konten',
     'open_menu' => 'Buka menu',
     'app_tagline' => 'Sistem Manajemen Magang Profesional',
+    'management_system' => 'Sistem Manajemen',
+    'professional_internship_management' => 'Manajemen Magang Profesional',
+    'industry_ready' => 'Siap Industri',
+    'enterprise_secured' => 'Keamanan Enterprise',
+    'open_source' => 'Sumber Terbuka',
+    'avatar' => 'Avatar',
     'all_rights_reserved' => 'Hak cipta dilindungi.',
     'built_with_love' => 'Dibuat dengan ❤️ oleh',
 
@@ -80,6 +86,7 @@ return [
     ],
     'yes' => 'Ya',
     'no' => 'Tidak',
+    'unknown' => 'Tidak Diketahui',
     'status' => [
         'active' => 'Aktif',
         'inactive' => 'Tidak Aktif',

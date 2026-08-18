@@ -39,6 +39,17 @@ return [
         'base_color' => 'Background Color',
     ],
 
+    'locales' => [
+        'id' => 'Bahasa Indonesia',
+        'en' => 'English',
+    ],
+
+    'encryptions' => [
+        'tls' => 'TLS',
+        'ssl' => 'SSL',
+        'none' => 'None',
+    ],
+
     'hints' => [
         'brand_logo' => 'Recommended: Square PNG, max 1MB. Used for sidebar and reports.',
         'site_favicon' => 'Recommended: Square PNG or ICO, 32x32px. Used for browser tabs.',

@@ -78,6 +78,13 @@ return [
     'lifecycle' => [
         'title' => 'Account Lifecycle',
         'subtitle' => 'Manage user account statuses and restrictions',
+        'detect_clones' => 'Detect Clones',
+        'user' => 'User',
+        'status' => 'Status',
+        'locked' => 'Locked',
+        'created' => 'Created',
+        'unlocked' => 'Unlocked',
+        'unknown' => 'Unknown',
     ],
 
     'account_locked' => 'Account locked successfully.',
@@ -90,11 +97,9 @@ return [
         'title' => 'Recovery Slip',
         'subtitle' => 'Generate a one-time credential slip for offline delivery',
         'generated_title' => 'Credential Slip Generated',
-        'generated_desc' =>
-            'Deliver these codes to the user offline. Each code can only be used once.',
+        'generated_desc' => 'Deliver these codes to the user offline. Each code can only be used once.',
         'security_note' => 'Security Note',
-        'security_note_desc' =>
-            'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
+        'security_note_desc' => 'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
         'generate_another' => 'Generate Another',
         'search_user' => 'Search User',
         'search_placeholder' => 'Name, username, or email...',
@@ -107,15 +112,10 @@ return [
     'notifications' => [
         'credential_changed_subject' => 'Security Notice: Account Credential Updated',
         'credential_changed_greeting' => 'Dear :name,',
-        'password_changed_line' =>
-            'Your password has been updated successfully. If you did not make this change, please contact your system administrator immediately.',
-        'email_changed_line' =>
-            'Your email address has been updated. If you did not authorize this change, please contact your system administrator immediately.',
-        'username_changed_line' =>
-            'Your username has been updated. If you did not make this change, please contact your system administrator immediately.',
-        'credential_changed_warning' =>
-            'If you did not make this change, please contact your system administrator immediately.',
-        'credential_changed_warning_with_email' =>
-            'If you did not make this change, please contact your system administrator at :support_email.',
+        'password_changed_line' => 'Your password has been updated successfully. If you did not make this change, please contact your system administrator immediately.',
+        'email_changed_line' => 'Your email address has been updated. If you did not authorize this change, please contact your system administrator immediately.',
+        'username_changed_line' => 'Your username has been updated. If you did not make this change, please contact your system administrator immediately.',
+        'credential_changed_warning' => 'If you did not make this change, please contact your system administrator immediately.',
+        'credential_changed_warning_with_email' => 'If you did not make this change, please contact your system administrator at :support_email.',
     ],
 ];

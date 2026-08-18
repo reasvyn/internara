@@ -94,6 +94,8 @@ return [
     'clone_detection' => [
         'title' => 'Deteksi Klon Akun',
         'subtitle' => 'Akun duplikat yang mencurigakan',
+        'potential_clone' => 'Terduga klon potensial',
+        'no_suspicious' => 'Tidak ada akun mencurigakan yang terdeteksi.',
     ],
 
     'activity_title' => 'Log Aktivitas',
@@ -101,6 +103,30 @@ return [
     'activity_filter_user' => 'Semua pengguna',
     'activity_filter_module' => 'Semua modul',
     'activity_filter_action' => 'Semua aksi',
+    'activity_filter_user_label' => 'Saring menurut Pengguna',
+    'activity_filter_module_label' => 'Saring menurut Modul',
+    'activity_filter_action_label' => 'Saring menurut Aksi',
+    'activity_reset_filters' => 'Atur Ulang Saringan',
+    'activity_timestamp' => 'Waktu',
+    'activity_user' => 'Pengguna',
+    'activity_action' => 'Aksi',
+    'activity_module' => 'Modul',
+    'activity_subject' => 'Subjek',
+    'activity_ip' => 'Alamat IP',
+    'activity_no_entries' => 'Tidak ada entri log aktivitas.',
+    'activity_adjust_filters' => 'Coba sesuaikan saringan Anda.',
+    'activity_system' => 'Sistem',
+
+    'pulse' => [
+        'registrations' => 'Pendaftaran',
+        'total' => 'Total',
+        'pending' => 'Tertunda',
+        'active' => 'Aktif',
+        'completed' => 'Selesai',
+        'system' => 'Sistem',
+        'users' => 'Pengguna',
+        'unread_notifications' => 'Notifikasi Belum Dibaca',
+    ],
 
     'recovery_show' => [
         'description' => 'Tampilkan kunci pemulihan dari file penyimpanan',

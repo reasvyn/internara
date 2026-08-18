@@ -78,6 +78,13 @@ return [
     'lifecycle' => [
         'title' => 'Siklus Hidup Akun',
         'subtitle' => 'Kelola status dan pembatasan akun pengguna',
+        'detect_clones' => 'Deteksi Klon',
+        'user' => 'Pengguna',
+        'status' => 'Status',
+        'locked' => 'Terkunci',
+        'created' => 'Dibuat',
+        'unlocked' => 'Tidak Terkunci',
+        'unknown' => 'Tidak Diketahui',
     ],
 
     'account_locked' => 'Akun berhasil dikunci.',
@@ -90,11 +97,9 @@ return [
         'title' => 'Slip Pemulihan',
         'subtitle' => 'Hasilkan slip kredensial satu kali untuk pengiriman offline',
         'generated_title' => 'Slip Kredensial Berhasil Dibuat',
-        'generated_desc' =>
-            'Kirimkan kode-kode ini ke pengguna secara offline. Setiap kode hanya bisa digunakan sekali.',
+        'generated_desc' => 'Kirimkan kode-kode ini ke pengguna secara offline. Setiap kode hanya bisa digunakan sekali.',
         'security_note' => 'Catatan Keamanan',
-        'security_note_desc' =>
-            'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
+        'security_note_desc' => 'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
         'generate_another' => 'Hasilkan Lagi',
         'search_user' => 'Cari Pengguna',
         'search_placeholder' => 'Nama, username, atau email...',
@@ -107,15 +112,10 @@ return [
     'notifications' => [
         'credential_changed_subject' => 'Pemberitahuan Keamanan: Kredensial Akun Diperbarui',
         'credential_changed_greeting' => 'Yth. :name,',
-        'password_changed_line' =>
-            'Kata sandi Anda telah berhasil diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
-        'email_changed_line' =>
-            'Alamat email Anda telah diperbarui. Jika Anda tidak menyetujui perubahan ini, segera hubungi administrator sistem Anda.',
-        'username_changed_line' =>
-            'Nama pengguna Anda telah diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
-        'credential_changed_warning' =>
-            'Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
-        'credential_changed_warning_with_email' =>
-            'Jika Anda tidak melakukan perubahan ini, hubungi administrator sistem Anda di :support_email.',
+        'password_changed_line' => 'Kata sandi Anda telah berhasil diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
+        'email_changed_line' => 'Alamat email Anda telah diperbarui. Jika Anda tidak menyetujui perubahan ini, segera hubungi administrator sistem Anda.',
+        'username_changed_line' => 'Nama pengguna Anda telah diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
+        'credential_changed_warning' => 'Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
+        'credential_changed_warning_with_email' => 'Jika Anda tidak melakukan perubahan ini, hubungi administrator sistem Anda di :support_email.',
     ],
 ];

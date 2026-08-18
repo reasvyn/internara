@@ -94,6 +94,8 @@ return [
     'clone_detection' => [
         'title' => 'Account Clone Detection',
         'subtitle' => 'Suspicious duplicate accounts',
+        'potential_clone' => 'Potential clone detected',
+        'no_suspicious' => 'No suspicious accounts detected.',
     ],
 
     'activity_title' => 'Activity Log',
@@ -101,6 +103,30 @@ return [
     'activity_filter_user' => 'All users',
     'activity_filter_module' => 'All modules',
     'activity_filter_action' => 'All actions',
+    'activity_filter_user_label' => 'Filter by User',
+    'activity_filter_module_label' => 'Filter by Module',
+    'activity_filter_action_label' => 'Filter by Action',
+    'activity_reset_filters' => 'Reset Filters',
+    'activity_timestamp' => 'Timestamp',
+    'activity_user' => 'User',
+    'activity_action' => 'Action',
+    'activity_module' => 'Module',
+    'activity_subject' => 'Subject',
+    'activity_ip' => 'IP Address',
+    'activity_no_entries' => 'No activity log entries found.',
+    'activity_adjust_filters' => 'Try adjusting your filters.',
+    'activity_system' => 'System',
+
+    'pulse' => [
+        'registrations' => 'Registrations',
+        'total' => 'Total',
+        'pending' => 'Pending',
+        'active' => 'Active',
+        'completed' => 'Completed',
+        'system' => 'System',
+        'users' => 'Users',
+        'unread_notifications' => 'Unread Notifications',
+    ],
 
     'recovery_show' => [
         'description' => 'Display the recovery key from the stored file',

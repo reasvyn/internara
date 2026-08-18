@@ -44,6 +44,10 @@ return [
     'batch_issue_info' => 'Certificates will be issued to all registrations matching the selected filter that do not already have a certificate.',
     'batch_results' => 'Results: :success issued, :failed failed.',
     'filter_status' => 'Registration Status',
+    'filter_active_registrations' => 'Active Registrations',
+    'filter_completed_registrations' => 'Completed Registrations',
+    'layout_portrait' => 'Portrait',
+    'layout_landscape' => 'Landscape',
 
     'issued_title' => 'Issued Certificates',
     'issued_subtitle' => 'View and manage issued certificates',

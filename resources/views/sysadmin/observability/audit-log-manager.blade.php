@@ -1,10 +1,15 @@
 <div class="p-8">
-    <x-mary-header :title="__('sysadmin.activity_title')" :subtitle="__('sysadmin.activity_subtitle')" separator progress-indicator />
+    <x-mary-header
+        :title="__('sysadmin.activity_title')"
+        :subtitle="__('sysadmin.activity_subtitle')"
+        separator
+        progress-indicator
+    />
 
-    <x-mary-card shadow class="bg-base-100 border border-base-200 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <x-mary-card shadow class="bg-base-100 border-base-200 mb-6 border">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <x-mary-select
-                label="Filter by User"
+                :label="__('sysadmin.activity_filter_user_label')"
                 wire:model="filterUser"
                 :options="$users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name])"
                 option-value="id"
@@ -14,7 +19,7 @@
             />
 
             <x-mary-select
-                label="Filter by Module"
+                :label="__('sysadmin.activity_filter_module_label')"
                 wire:model="filterModule"
                 :options="$modules->map(fn ($m) => ['id' => $m, 'name' => ucfirst($m)])"
                 option-value="id"
@@ -24,7 +29,7 @@
             />
 
             <x-mary-select
-                label="Filter by Action"
+                :label="__('sysadmin.activity_filter_action_label')"
                 wire:model="filterAction"
                 :options="$actions->map(fn ($a) => ['id' => $a, 'name' => ucfirst($a)])"
                 option-value="id"
@@ -34,37 +39,40 @@
             />
         </div>
 
-        <div class="flex justify-end mt-4">
-            <x-mary-button label="Reset Filters" icon="o-x-mark" class="btn-ghost" wire:click="resetFilters" />
+        <div class="mt-4 flex justify-end">
+            <x-mary-button
+                :label="__('sysadmin.activity_reset_filters')"
+                icon="o-x-mark"
+                class="btn-ghost"
+                wire:click="resetFilters"
+            />
         </div>
     </x-mary-card>
 
-    <x-mary-card shadow class="bg-base-100 border border-base-200">
+    <x-mary-card shadow class="bg-base-100 border-base-200 border">
         @if ($logs->isEmpty())
-            <div class="text-center py-8 opacity-60">
-                <x-mary-icon name="o-shield-check" class="w-12 h-12 mx-auto mb-3" />
-                <p class="text-lg">No activity log entries found.</p>
+            <div class="py-8 text-center opacity-60">
+                <x-mary-icon name="o-shield-check" class="mx-auto mb-3 h-12 w-12" />
+                <p class="text-lg">{{ __('sysadmin.activity_no_entries') }}</p>
                 @if ($filterUser || $filterModule || $filterAction)
-                    <p class="text-sm">Try adjusting your filters.</p>
+                    <p class="text-sm">{{ __('sysadmin.activity_adjust_filters') }}</p>
                 @endif
             </div>
         @else
             @php
                 $headers = [
-                    ['key' => 'timestamp', 'label' => 'Timestamp'],
-                    ['key' => 'user', 'label' => 'User'],
-                    ['key' => 'action', 'label' => 'Action'],
-                    ['key' => 'module', 'label' => 'Module'],
-                    ['key' => 'subject', 'label' => 'Subject'],
-                    ['key' => 'ip', 'label' => 'IP Address'],
+                    ['key' => 'timestamp', 'label' => __('sysadmin.activity_timestamp')],
+                    ['key' => 'user', 'label' => __('sysadmin.activity_user')],
+                    ['key' => 'action', 'label' => __('sysadmin.activity_action')],
+                    ['key' => 'module', 'label' => __('sysadmin.activity_module')],
+                    ['key' => 'subject', 'label' => __('sysadmin.activity_subject')],
+                    ['key' => 'ip', 'label' => __('sysadmin.activity_ip')],
                 ];
             @endphp
 
             <x-mary-table :headers="$headers" :rows="$logs" with-pagination>
                 @scope('cell_timestamp', $log)
-                    <div class="text-sm whitespace-nowrap">
-                        {{ $log->created_at->format('d M Y H:i:s') }}
-                    </div>
+                    <div class="text-sm whitespace-nowrap">{{ $log->created_at->format('d M Y H:i:s') }}</div>
                 @endscope
 
                 @scope('cell_user', $log)
@@ -74,7 +82,7 @@
                             <div class="text-xs opacity-50">{{ $log->causer->email }}</div>
                         </div>
                     @else
-                        <span class="text-xs opacity-50">System</span>
+                        <span class="text-xs opacity-50">{{ __('sysadmin.activity_system') }}</span>
                     @endif
                 @endscope
 
@@ -90,7 +98,7 @@
                     @if ($log->subject)
                         <div class="text-xs">
                             <span class="opacity-50">{{ class_basename($log->subject_type) }}</span>
-                            <span class="font-mono ml-1">{{ Str::limit($log->subject_id, 8) }}</span>
+                            <span class="ml-1 font-mono">{{ Str::limit($log->subject_id, 8) }}</span>
                         </div>
                     @else
                         -

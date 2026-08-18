@@ -1,28 +1,36 @@
 <div>
-    <x-mary-header :title="__('assessment.my_assessments')" :subtitle="__('assessment.my_assessments_subtitle')" separator />
+    <x-mary-header
+        :title="__('assessment.my_assessments')"
+        :subtitle="__('assessment.my_assessments_subtitle')"
+        separator
+    />
 
-    @forelse($this->assessments as $assessment)
+    @forelse ($this->assessments as $assessment)
         <x-mary-card class="mb-4">
-            <div class="flex items-center justify-between mb-3">
+            <div class="mb-3 flex items-center justify-between">
                 <div>
-                    <p class="font-medium">{{ $assessment->registration?->internship?->name ?? 'Internship' }}</p>
-                    <p class="text-sm text-base-content/60">Finalized {{ $assessment->finalized_at->format('d M Y') }}</p>
+                    <p class="font-medium">
+                        {{ $assessment->registration?->internship?->name ?? __('common.unknown') }}
+                    </p>
+                    <p class="text-base-content/60 text-sm">
+                        Finalized {{ $assessment->finalized_at->format('d M Y') }}
+                    </p>
                 </div>
                 <div class="text-right">
-                    <p class="text-3xl font-bold text-primary">{{ number_format($assessment->score ?? 0, 1) }}</p>
-                    <p class="text-xs text-base-content/40">{{ __('assessment.final_score') }}</p>
+                    <p class="text-primary text-3xl font-bold">{{ number_format($assessment->score ?? 0, 1) }}</p>
+                    <p class="text-base-content/40 text-xs">{{ __('assessment.final_score') }}</p>
                 </div>
             </div>
 
-            @if($assessment->rubric)
-                <div class="divider text-xs text-base-content/40 my-2">{{ __('assessment.competencies') }}</div>
+            @if ($assessment->rubric)
+                <div class="divider text-base-content/40 my-2 text-xs">{{ __('assessment.competencies') }}</div>
 
                 @php
                     $content = $assessment->content ?? [];
                     $competenciesData = $content['competencies'] ?? [];
                 @endphp
 
-                @foreach($assessment->rubric->competencies as $competency)
+                @foreach ($assessment->rubric->competencies as $competency)
                     @php
                         $compData = $competenciesData[$competency->id] ?? [];
                         $indicatorsData = $compData['indicators'] ?? [];
@@ -30,13 +38,13 @@
                         $indicatorCount = 0;
                     @endphp
 
-                    <div class="mb-3 p-3 bg-base-200/50 rounded-xl">
-                        <div class="flex items-center gap-2 mb-2">
-                            <p class="font-medium text-sm">{{ $competency->name }}</p>
+                    <div class="bg-base-200/50 mb-3 rounded-xl p-3">
+                        <div class="mb-2 flex items-center gap-2">
+                            <p class="text-sm font-medium">{{ $competency->name }}</p>
                             <span class="badge badge-ghost badge-xs">{{ $competency->weight }}%</span>
                         </div>
 
-                        @foreach($competency->indicators as $indicator)
+                        @foreach ($competency->indicators as $indicator)
                             @php
                                 $score = $indicatorsData[$indicator->id] ?? null;
                                 $indicatorCount++;
@@ -52,8 +60,8 @@
                             </div>
                         @endforeach
 
-                        @if($indicatorCount > 0)
-                            <div class="text-right text-xs text-base-content/50 mt-1">
+                        @if ($indicatorCount > 0)
+                            <div class="text-base-content/50 mt-1 text-right text-xs">
                                 {{ __('assessment.competency_score') }}: {{ number_format($compScore, 1) }} / 100
                             </div>
                         @endif
@@ -61,17 +69,17 @@
                 @endforeach
             @endif
 
-            @if($assessment->feedback)
-                <div class="mt-2 p-3 bg-base-100 rounded-xl">
-                    <p class="text-xs text-base-content/40 mb-1">{{ __('assessment.feedback') }}</p>
+            @if ($assessment->feedback)
+                <div class="bg-base-100 mt-2 rounded-xl p-3">
+                    <p class="text-base-content/40 mb-1 text-xs">{{ __('assessment.feedback') }}</p>
                     <p class="text-sm">{{ $assessment->feedback }}</p>
                 </div>
             @endif
         </x-mary-card>
     @empty
         <x-mary-card>
-            <div class="text-center py-12 text-base-content/40">
-                <x-mary-icon name="o-document-text" class="size-16 mx-auto mb-4 opacity-30" />
+            <div class="text-base-content/40 py-12 text-center">
+                <x-mary-icon name="o-document-text" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_assessments_yet') }}</p>
                 <p class="text-sm">{{ __('assessment.no_assessments_desc') }}</p>
             </div>

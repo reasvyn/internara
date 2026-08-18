@@ -36,6 +36,12 @@ return [
         'link_placeholder' => 'https://...',
         'target_roles' => 'Target Roles',
     ],
+    'types' => [
+        'info' => 'Info',
+        'success' => 'Success',
+        'warning' => 'Warning',
+        'error' => 'Error',
+    ],
 
     'guide' => [
         'title' => 'Announcement Guide',

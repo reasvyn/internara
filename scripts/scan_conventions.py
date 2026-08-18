@@ -37,6 +37,16 @@ RE_DEBUG_CALLS = re.compile(
 RE_FILLABLE_ATTR = re.compile(r"#\[\s*Fillable.*?\]", re.S)
 RE_HARDCODED = re.compile(r"""(?<![A-Za-z])['"]([A-Z][A-Za-z ]{3,})['"]""")
 
+# Technical tokens that are not user-facing display text (fonts, HTTP verbs,
+# JS events, CSS keywords). Skipped by the hardcoded-string scan.
+TECHNICAL_STRINGS = {
+    "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "CONNECT", "TRACE",
+    "DOMContentLoaded", "Breadcrumb",
+    "Arial", "Calibri", "Cambria", "Courier New", "Georgia", "Helvetica Neue",
+    "Noto Sans", "Noto Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Times New Roman", "Trebuchet MS", "Verdana", "Apple Color Emoji", "Roboto",
+}
+
 # D1: files that must declare strict_types (all PHP except a small allowlist)
 STRICT_ALLOWLIST = {
     "config/", "database/", "bootstrap/", "routes/", "resources/views/vendor/",
@@ -213,16 +223,26 @@ def scan_hardcoded_strings(blade_files: list[Path], module: str | None) -> list[
         if not content:
             continue
         lines = content.split("\n")
+        in_block = False
         for i, line in enumerate(lines, 1):
             stripped = line.strip()
             if stripped.startswith(("//", "*", "{{--")):
                 continue
+            # Skip CSS/JS blocks — their content is technical, not user-facing
+            if "<style" in stripped or "<script" in stripped:
+                in_block = True
+            if in_block:
+                if "</style" in stripped or "</script" in stripped:
+                    in_block = False
+                continue
             for m in RE_HARDCODED.finditer(stripped):
                 string_val = m.group(1)
-                # Skip HTML attributes, icon names, and data-tags
+                # Skip HTML attributes, icon names, data-tags, and technical tokens
                 if re.match(r"^[A-Z][A-Za-z ]*:$", string_val):
                     continue
                 if string_val in ("Blade", "Livewire", "PHP", "HTML", "CSS", "JavaScript"):
+                    continue
+                if string_val in TECHNICAL_STRINGS:
                     continue
                 findings.append(Finding(
                     id=f"L10N-{len(findings)+1:03d}",

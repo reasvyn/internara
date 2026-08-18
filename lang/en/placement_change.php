@@ -16,6 +16,9 @@ return [
     'reject' => 'Reject',
     'reject_success' => 'Placement change rejected.',
     'rejection_reason' => 'Rejection Reason',
+    'status_pending' => 'Pending',
+    'status_approved' => 'Approved',
+    'status_rejected' => 'Rejected',
 
     'request_title' => 'Request Placement Change',
     'request_subtitle' => 'Submit a request to change your internship placement',

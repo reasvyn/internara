@@ -1,9 +1,11 @@
-<x-core::ui.record-manager
-    :title="__('certificate.title')"
-    :subtitle="__('certificate.subtitle')"
->
+<x-core::ui.record-manager :title="__('certificate.title')" :subtitle="__('certificate.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('certificate.add_template')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button
+            :label="__('certificate.add_template')"
+            icon="o-plus"
+            class="btn-primary btn-sm"
+            wire:click="create"
+        />
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
@@ -15,8 +17,10 @@
             class="table-sm"
         >
             @scope('cell_is_active', $t)
-                <x-mary-badge :value="$t->is_active ? __('certificate.active') : __('certificate.inactive')"
-                    :class="$t->is_active ? 'badge-success' : 'badge-ghost'" />
+                <x-mary-badge
+                    :value="$t->is_active ? __('certificate.active') : __('certificate.inactive')"
+                    :class="$t->is_active ? 'badge-success' : 'badge-ghost'"
+                />
             @endscope
 
             @scope('cell_layout', $t)
@@ -32,21 +36,41 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="__('certificate.template_form')" class="backdrop-blur-sm max-w-2xl">
+        <x-mary-modal
+            wire:model="showModal"
+            :title="__('certificate.template_form')"
+            class="max-w-2xl backdrop-blur-sm"
+        >
             <x-mary-form wire:submit="saveTemplate">
                 <div class="space-y-5">
                     <x-mary-input :label="__('certificate.template_name')" wire:model="formData.name" />
-                    <x-mary-select :label="__('certificate.layout')" wire:model="formData.layout"
-                        :options="['portrait' => 'Portrait', 'landscape' => 'Landscape']" />
-                    <x-mary-textarea :label="__('certificate.content_template')" wire:model="formData.content_template" rows="10" />
+                    <x-mary-select
+                        :label="__('certificate.layout')"
+                        wire:model="formData.layout"
+                        :options="['portrait' => __('certificate.layout_portrait'), 'landscape' => __('certificate.layout_landscape')]"
+                    />
+                    <x-mary-textarea
+                        :label="__('certificate.content_template')"
+                        wire:model="formData.content_template"
+                        rows="10"
+                    />
                     <x-mary-checkbox :label="__('certificate.is_active')" wire:model="formData.is_active" />
                 </div>
                 <x-slot:actions>
-                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('certificate.save_template')" class="btn-primary btn-sm" type="submit" spinner="saveTemplate" />
+                    <x-mary-button
+                        :label="__('common.actions.cancel')"
+                        wire:click="$set('showModal', false)"
+                        class="btn-ghost btn-sm"
+                    />
+                    <x-mary-button
+                        :label="__('certificate.save_template')"
+                        class="btn-primary btn-sm"
+                        type="submit"
+                        spinner="saveTemplate"
+                    />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-@include('certification.certificate.components.certificate-template-guide')
+    @include('certification.certificate.components.certificate-template-guide')
 </x-core::ui.record-manager>
