@@ -17,7 +17,7 @@ downstream:
 
 # Feature Building
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify feature-building orchestrator coordinates sub-skills per spec-driven implementation
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules into `rules/` rule assets (spec-driven implementation, build order, sub-skill delegation, artifact contracts, localization & docs, deliverable quality) with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -146,6 +146,17 @@ slices across sessions per Size Triage.
 5. New query? Use Read Action if complex (aggregations, cross-module); Model scopes if simple
 6. New user-facing string? Must exist in BOTH `lang/en/` and `lang/id/`
 7. New feature? Must update relevant docs (documentation-first approach)
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Spec-driven implementation (spec-first, requirement IDs, missing-spec handling, approach comparison, path verification) | `rules/spec-driven-implementation.md` | Any feature build starts; spec is read or written |
+| Build order (14-step sequence, design alignment, staged verification for M/L) | `rules/build-order.md` | Planning the file structure and implementing slices |
+| Sub-skill delegation (orchestrator handoffs, per-concern skill loading) | `rules/sub-skill-delegation.md` | Any specialized concern (Livewire, media, UI, Pulse, refactor) is written |
+| Artifact contracts (Entity/Model/Action/Query non-negotiable shapes) | `rules/artifact-contracts.md` | Creating or modifying an Entity, Model, or Action |
+| Localization & docs (both languages, documentation-first) | `rules/localization-and-docs.md` | Any user-facing string or any new feature |
+| Deliverable quality (completion criteria and quality gates) | `rules/deliverable-quality.md` | Before review/merge of any deliverable |
 
 ## References
 

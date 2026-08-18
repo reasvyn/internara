@@ -10,6 +10,8 @@ downstream:
 
 # MediaLibrary Development
 
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Core Rules, §Collection Definition, §Usage Patterns, §Key Configurations, §Verification Checklist) into `rules/` rule assets with a `## Skill Rules` mapping section
+
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate
@@ -107,6 +109,15 @@ $model->deleteMedia($mediaId); // specific
 - [ ] Conversions defined if image processing needed
 - [ ] Upload handled in Command Action, not Livewire
 - [ ] Test covers upload and retrieval
+
+## Skill Rules
+
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Media collections (definition, per-collection validation, MIME, filenames) | `rules/media-collections.md` | Declaring collections or guarding uploads |
+| Media conversions & responsive images (conversion config, disk, queue) | `rules/media-conversions.md` | Image processing or performance of media views |
+| Upload & retrieval (Action ownership, accessors, deletion) | `rules/upload-retrieval-deletion.md` | Writing upload, retrieval, or delete code |
+| Storage & governance (disks, queues, verification gate) | `rules/storage-and-governance.md` | Deploying media features or reviewing config |
 
 ## References
 

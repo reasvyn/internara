@@ -118,16 +118,12 @@ lines.
 - **Magic numbers to constants:** Extract named constants
 - **Flatten conditionals:** Early returns over nested `if` blocks
 
-## Verification Checklist
+## Skill Rules
 
-- [ ] Tests pass before and after refactoring
-- [ ] Action: correct base class, single `execute()`, DTO for 3+ params
-- [ ] Entity: `final readonly`, zero I/O, `fromModel()`, bridge on Model
-- [ ] Model: no business methods, `#[Fillable]`, entity bridges only
-- [ ] DTO: `final readonly`, scalars/enums/Carbon only
-- [ ] No `dd/dump/ray` introduced
-- [ ] `declare(strict_types=1)` in new files
-- [ ] Pint clean; PHPStan passes
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Refactoring safety gates | `rules/refactoring-safety.md` | Before, during, and after any refactor |
+| Verification checklist | `rules/verification-checklist.md` | Before declaring a refactor complete |
 
 ## Automation Scripts
 

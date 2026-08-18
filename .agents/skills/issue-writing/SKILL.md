@@ -9,7 +9,7 @@ downstream:
 
 # Issue Writing
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify issue-writing format produces actionable GitHub Issues per spec/traceability requirements
+> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — issue quality, template usage and types/labels prose live in `rules/`; unified template kept inline (per `rules/issue-template.md`)
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -38,43 +38,12 @@ session splitting — an L-size issue notes the session-split plan in its body),
 strategy, and commit format. This skill adds the issue types, unified template, key rules, and
 labels reference below — nothing else.
 
-### Construct — Context & Scope
-
-- Understand affected modules and submodules
 - **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 scripts/scan_issues.py`
-  and search existing open issues for the same concern/module; link to the existing one instead
-- Gather all relevant information (error logs, stack traces, user reports, code references)
-- Identify the correct issue type (bug/feature/security/refactor/perf/docs/chore)
-- Determine severity and priority
-
-### Execute — Issue Writing
-
-- Write issue using the appropriate template type
-- Ensure scope and impact are clearly defined
-- Include at least 2 approaches for recommendation (if relevant)
-- Document design decisions and trade-offs
-- Ensure reproducible steps (for bug) or acceptance criteria (for feature)
-
-### Verify — Quality Gates
-
-- Review: can the issue be understood without additional context?
-- Review: is the scope specific enough (not multiple issues in one)?
-- Review: are all technical terms explained?
-- Check: no sensitive information/credentials exposed
-- Create issue on GitHub with appropriate labels
-
-## Issue Types
-
-| Type            | Label         | When to Use                                   |
-| --------------- | ------------- | --------------------------------------------- |
-| **Bug**         | `bug`         | Behavior doesn't match specification          |
-| **Feature**     | `enhancement` | New capability                                |
-| **Security**    | `security`    | Security vulnerability                        |
-| **Refactor**    | `refactor`    | Structure improvement without behavior change |
-| **Performance** | `perf`        | Speed/memory optimization                     |
-| **Test**        | `test`        | Test addition or fixes                        |
-| **Docs**        | `docs`        | Documentation update                          |
-| **Chore**       | `chore`       | Tooling, dependencies, config                 |
+  and search existing open issues for the same concern/module; link to the existing one instead.
+- Write the issue using the **Unified Issue Template** below (every issue follows it; irrelevant
+  sections may be removed).
+- Apply the key rules for issue quality (`rules/issue-quality.md`), use the template usage guidance
+  (`rules/issue-template.md`), and classify type/labels correctly (`rules/issue-types-and-labels.md`).
 
 ## Unified Issue Template
 
@@ -209,12 +178,6 @@ preventing repeated questions during code review.}
 | {Decision} | {Chosen option} | {Rationale} |
 | {Decision} | {Chosen option} | {Rationale} |
 
-**Example:** | Decision | Chosen | Rationale | |----------|--------|-----------| | Locking strategy
-| Pessimistic lock via `lockForUpdate()` | Optimistic lock retry logic adds complexity; registration
-volume is low (< 10/min) so pessimistic is acceptable | | Where to enforce | Command Action, not DB
-constraint | Business rule (quota check) belongs in domain layer; DB constraint is defense-in-depth
-|
-
 ---
 
 ## Related
@@ -235,26 +198,8 @@ constraint | Business rule (quota check) belongs in domain layer; DB constraint 
 - Note invariants: {relevant AGENTS.md critical rules}
 ```
 
-## Key Rules
-
-1. **One issue = one concern.** Do not combine bug + feature in a single issue
-2. **Scope must be specific.** "Fix enrollment module" is too broad. "Prevent duplicate registration
-   on concurrent submit" is precise
-3. **Impact must be measurable.** Not "system becomes slow" but "query takes 3s instead of 200ms for
-   1000 students"
-4. **Recommended Approach is mandatory for technical issues.** Not just "fix this" but "how to fix
-   this"
-5. **Design Decisions are mandatory.** Document why Approach A was chosen over Approach B
-6. **DO NOT include credentials, tokens, or sensitive data** in the issue
-7. **Use relative paths** for file references within the project
-8. **Label according to type** — use labels already defined in the repo
-9. **Spec-first:** a bug must reference the FR/NFR/UC ID it contradicts; a feature/refactor issue
-   must reference the governing spec (or note that a spec must be written first). No behavior
-   without a requirement.
-10. **Deduplicate before filing** — never file a second issue for a tracked concern; dedup with
-    existing open issues first (Dedup-Align Doctrine).
-11. **Pre-existing defect discovered?** File it immediately (AGENTS.md Pre-existing Defects —
-    Fix or File), don't leave it until the session ends.
+For section-by-section filling guidance, the key rules, and the label set, load
+`rules/issue-quality.md`, `rules/issue-template.md`, and `rules/issue-types-and-labels.md`.
 
 ## Automation Scripts
 
@@ -264,34 +209,13 @@ constraint | Business rule (quota check) belongs in domain layer; DB constraint 
 
 Output: `scripts/outputs/{timestamp}-issues.json`.
 
-## Labels Reference
+## Skill Rules
 
-| Label              | Color     | Description                |
-| ------------------ | --------- | -------------------------- |
-| `bug`              | `#d73a4a` | Something isn't working    |
-| `enhancement`      | `#a2eeef` | New feature or request     |
-| `security`         | `#000000` | Security vulnerability     |
-| `refactor`         | `#fbca04` | Code restructuring         |
-| `perf`             | `#0e8a16` | Performance improvement    |
-| `test`             | `#fef2c0` | Test additions or fixes    |
-| `docs`             | `#0075ca` | Documentation              |
-| `chore`            | `#bfdadc` | Maintenance, tooling, deps |
-| `good first issue` | `#7057ff` | Good for newcomers         |
-| `help wanted`      | `#008672` | Extra attention needed     |
-| `duplicate`        | `#cfd3d7` | Already reported           |
-| `wontfix`          | `#ffffff` | Will not be addressed      |
-
-## Verification Checklist
-
-- [ ] Title is clear with format `type: module/submodule — description`
-- [ ] Description explains the problem, not the solution
-- [ ] Scope & Impact defined with specific module and files
-- [ ] Severity and priority are filled
-- [ ] Recommended Approach has pros/cons
-- [ ] Design Decisions are documented
-- [ ] No sensitive information
-- [ ] Label matches the issue type
-- [ ] No duplication with existing issues (check GitHub Issues)
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Issue quality (completeness, actionability, quality gates, destructive patterns) | `rules/issue-quality.md` | Every issue before submission |
+| Issue template (section-by-section guidance for the unified template) | `rules/issue-template.md` | Filling in each section of the unified template |
+| Issue types & labels (classification, severity/priority, label set) | `rules/issue-types-and-labels.md` | Selecting type and labels for an issue |
 
 ## References
 
@@ -299,6 +223,8 @@ Output: `scripts/outputs/{timestamp}-issues.json`.
 | --------------------- | ---------------------------------------- |
 | GitHub Issues         | {url repo}/issues                        |
 | Issue workflow/rules  | `rules/issue-quality.md` (this skill)    |
+| Issue template rules  | `rules/issue-template.md` (this skill)   |
+| Issue types & labels  | `rules/issue-types-and-labels.md` (this skill) |
 | Pre-existing defects  | `AGENTS.md` (§ Pre-existing Defects)     |
 | Dedup & alignment     | `AGENTS.md` (§ Clean Code & Dedup-Align Doctrine) |
 | Module structure      | `docs/modules/index.md`                  |

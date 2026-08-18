@@ -406,17 +406,14 @@ Strictly downward — each layer depends only on layers below.
 | D5  | No raw `$request->all()` for create/update — use validated DTOs         |
 | D6  | FK columns with `onDelete`/`onUpdate` constraints                       |
 
-## Pre-commit Checklist
+## Skill Rules
 
-- `declare(strict_types=1)` present
-- No debug calls in code
-- Action uses correct triad base class
-- DTO for 3+ params; ActionResponse for structured returns
-- Business rules in Entity, not inline
-- Cache keys registered
-- No N+1 queries
-- Tests pass; Pint clean; PHPStan passes
-- Docs updated for new/changed behavior
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Layer boundaries & Action Triad checks | `rules/architecture-rules.md` | Classifying or reviewing code against the 4-layer model / triad base classes |
+| Practical coding application guide | `rules/coding-rules.md` | Creating or reviewing Actions, Entities, DTOs, Models, Enums, translation keys |
+| What to verify when testing | `rules/testing-rules.md` | Writing or reviewing tests |
+| Pre-commit gate | `rules/pre-commit-checklist.md` | Before committing any change |
 
 ## Documentation Map
 

@@ -176,15 +176,12 @@ or architecture.
 - **Cannot fix? File a GitHub issue immediately** (`issue-writing` skill) — a defect noticed is a
   defect tracked.
 
-## Key Rules
+## Skill Rules
 
-1. Load `agent-workflow` first on every instruction, then the task-specific skill
-2. Never restate this workflow inside another skill — reference `agent-workflow` instead
-3. Follow the governing spec before any work (Spec-First Doctrine)
-4. Narration discipline: never narrate the 9 steps; surface only ambiguity, decisions, session plans,
-   checkpoints, and the final report
-5. Batch verification; full suite only when the user asks
-6. Batch instructions run by impact-to-effort ratio, quick wins first (§Instruction Ordering)
+| Rule | Asset | Applies when |
+|------|-------|--------------|
+| Key rules (non-negotiable) | `rules/key-rules.md` | Every instruction |
+| Instruction ordering (impact-to-effort) | `rules/instruction-ordering.md` | Batched/multi-instruction messages |
 
 ## References
 

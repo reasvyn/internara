@@ -1,6 +1,7 @@
 # Testing Rules — What to Verify
 
-> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements,
+> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
+> `test("{SpecID}-{ReqID}: Test description...")`; spec-driven doctrine — tests trace to spec requirements,
 > coverage measured in requirements not lines; minimalism rationale
 
 This is NOT a replacement for `docs/architecture/testing-pattern.md` or
@@ -32,7 +33,7 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 ### Every Test
 
 ```
-[ ] Description prefixes the spec + requirement ID: test('SE5Q9-FR-A4: ...')
+[ ] Description prefixes the full spec + requirement ID: test("{SpecID}-{ReqID}: Test description..."), grouped under describe("{SpecID}: Test description...")
 [ ] Scenario is named by the spec (happy path or a named rejection/alternative)
 [ ] No padding — no edge-case matrices, internals, or framework behavior the spec doesn't name
 [ ] If it maps to no requirement → orphan: candidate for deletion
