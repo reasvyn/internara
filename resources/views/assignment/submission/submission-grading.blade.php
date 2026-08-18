@@ -15,7 +15,7 @@
             <div class="group relative w-full lg:max-w-md">
                 <x-mary-input
                     wire:model.live.debounce.300ms="search"
-                    placeholder="Search student name..."
+                    placeholder="{{ __('submission.search_placeholder') }}"
                     icon="o-magnifying-glass"
                     clearable
                     class="border-base-content/5 focus:border-primary/30 bg-base-200/50 focus:bg-base-100 relative z-10 h-14 rounded-[1.5rem] transition-all duration-300"
@@ -24,13 +24,13 @@
             <div class="flex w-full gap-4 lg:w-auto">
                 <x-mary-select
                     wire:model.live="statusFilter"
-                    placeholder="Status"
-                    :options="['submitted' => 'Submitted', 'revision_required' => 'Revision Required']"
+                    placeholder="{{ __('submission.status') }}"
+                    :options="['submitted' => __('submission.statuses.submitted'), 'revision_required' => __('submission.statuses.revision_required')]"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
                 />
                 <x-mary-select
                     wire:model.live="assignmentFilter"
-                    placeholder="Assignment"
+                    placeholder="{{ __('submission.assignment') }}"
                     :options="$assignments->pluck('title', 'id')"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[200px] rounded-[1.5rem]"
                 />
@@ -188,7 +188,7 @@
                             <x-mary-select
                                 :label="__('submission.status')"
                                 wire:model="gradeStatus"
-                                :options="['graded' => 'Grade & Accept', 'revision_required' => 'Request Revision']"
+                                :options="['graded' => __('submission.grade_accept'), 'revision_required' => __('submission.request_revision')]"
                                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                             />
                         </div>

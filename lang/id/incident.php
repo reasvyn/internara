@@ -32,4 +32,22 @@ return [
     'resolve_success' => 'Insiden berhasil diselesaikan.',
     'resolution_notes' => 'Catatan Penyelesaian',
     'resolution_notes_placeholder' => 'Jelaskan bagaimana insiden ini diselesaikan',
+
+    'types' => [
+        'accident' => 'Kecelakaan',
+        'safety_violation' => 'Pelanggaran Keselamatan',
+        'harassment' => 'Pelecehan',
+        'disciplinary' => 'Disipliner',
+        'other' => 'Lainnya',
+    ],
+    'severities' => [
+        'low' => 'Rendah',
+        'medium' => 'Sedang',
+        'high' => 'Tinggi',
+        'critical' => 'Kritis',
+    ],
+    'statuses' => [
+        'resolved' => 'Selesai',
+        'closed' => 'Ditutup',
+    ],
 ];
