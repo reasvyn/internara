@@ -1,7 +1,7 @@
 # Base Classes — Action Triad, Data Layer, UI Layer, Policies & Contracts
 
 > **Spec ID:** SE5Q9
-> **Last updated:** 2026-08-18 **Changes:** add — BaseRecordManager Extra Menu capability (import/export/template download, internara-project §9.2)
+> **Last updated:** 2026-08-18 **Changes:** FR-M7 — corrected `getGroupedByDay()` to `groupedByDay()` scope + added `getSubjectModelAttribute()` (matches code + tests). Prior: add — BaseRecordManager Extra Menu capability (import/export/template download, internara-project §9.2)
 
 ## Description
 
@@ -110,7 +110,7 @@ violations compile-time errors rather than runtime surprises.
 | FR-M4 | `BaseData` — abstract, `final readonly`, implements `JsonSerializable`, `fromArray()` with camelCase/snake_case fallback |
 | FR-M5 | `ActionResponse` — final readonly DTO: `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()` |
 | FR-M6 | `HasCommonScopes` — `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()` |
-| FR-M7 | `ActivityLog` — extends Spatie `Activity` model: scopes `forUser()`, `whereSubject()`, `ofAction()`, `inLog()`, `recent()`, `lastDays()`, `forModule()`, helper `getGroupedByDay()` |
+| FR-M7 | `ActivityLog` — extends Spatie `Activity` model: scopes `forUser()`, `whereSubject()`, `ofAction()`, `inLog()`, `recent()`, `lastDays()`, `forModule()`, `groupedByDay()` scope, `getSubjectModelAttribute()` |
 
 ### 4.3 UI Layer — Livewire Base Classes
 
