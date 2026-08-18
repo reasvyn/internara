@@ -1,7 +1,7 @@
 # Tech Stack — Language, Framework & Dependency Manifest
 
 > **Spec ID:** FB792
-> **Last updated:** 2026-08-16 **Changes:** refactor — runtime service behavior (database, cache,
+> **Last updated:** 2026-08-18 **Changes:** sync JS toolchain table with `package.json` — removed `@prettier/plugin-php`, added `prettier-plugin-tailwindcss` ^0.8.1. Prior: refactor — runtime service behavior (database, cache,
 > session, queue, mail, storage) split into [core-infra-services.md](ZT6VS-core-infra-services.md);
 > this spec now owns the dependency manifest only (PHP/Laravel/packages, versions, lockfile).
 
@@ -175,7 +175,7 @@ manifest (no undeclared direct dependencies).
 | `daisyui` | `^5.7.0` | UI Component |
 | `flatpickr` | `^4.6.13` | Date Picker |
 | `marked` | `^18.0.7` | Markdown Parser |
-| `prettier` + `@prettier/plugin-php` + `prettier-plugin-blade` | `^3.9.6` / `^0.25.0` / `^3.2` | Formatter |
+| `prettier` + `prettier-plugin-blade` + `prettier-plugin-tailwindcss` | `^3.9.6` / `^3.2` / `^0.8.1` | Formatter |
 | `concurrently` | `^10.0` | Task Runner |
 
 ### Lockfile Contract
