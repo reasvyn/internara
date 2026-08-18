@@ -10,6 +10,7 @@ public/storage/
 .git/
 *.php
 *.blade.php
+*.md
 composer.lock
 package-lock.json
 test-results/
