@@ -754,10 +754,13 @@ separate rows. Rows will be merged (not duplicated) as additional roles are adde
 ### Global Helpers
 
 ```php
-setting(string $key, mixed $default = null, bool $skipCache = false): mixed
+setting(string|array|null $key = null, mixed $default = null, bool $skipCache = false): mixed
 brand(string $key, mixed $default = null): mixed
-app_info(): array
+app_info(?string $key = null, mixed $default = null): mixed
 ```
+
+Full contracts in [C8F0D-shared-utilities](C8F0D-shared-utilities.md) (FR-SUP11) and
+[YB22J-settings-infrastructure](YB22J-settings-infrastructure.md).
 
 ### Module Landscape (18 modules)
 
