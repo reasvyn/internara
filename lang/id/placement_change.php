@@ -16,6 +16,9 @@ return [
     'reject' => 'Tolak',
     'reject_success' => 'Mutasi penempatan ditolak.',
     'rejection_reason' => 'Alasan Penolakan',
+    'status_pending' => 'Menunggu',
+    'status_approved' => 'Disetujui',
+    'status_rejected' => 'Ditolak',
 
     'request_title' => 'Ajukan Mutasi Penempatan',
     'request_subtitle' => 'Ajukan permintaan perubahan tempat PKL',

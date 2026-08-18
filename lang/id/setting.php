@@ -39,6 +39,17 @@ return [
         'base_color' => 'Warna Latar',
     ],
 
+    'locales' => [
+        'id' => 'Bahasa Indonesia',
+        'en' => 'English',
+    ],
+
+    'encryptions' => [
+        'tls' => 'TLS',
+        'ssl' => 'SSL',
+        'none' => 'Tidak Ada',
+    ],
+
     'hints' => [
         'brand_logo' => 'Disarankan: PNG persegi, maks 1MB. Digunakan untuk sidebar dan laporan.',
         'site_favicon' => 'Disarankan: PNG atau ICO persegi, 32x32px. Digunakan untuk tab browser.',

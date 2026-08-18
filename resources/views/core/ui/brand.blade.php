@@ -6,7 +6,7 @@
 ])
 
 @php
-    $sizeClasses = match($size) {
+    $sizeClasses = match ($size) {
         'xs' => 'size-6',
         'sm' => 'size-8',
         'md' => 'size-10',
@@ -15,7 +15,7 @@
         default => 'size-10',
     };
 
-    $nameClasses = match($size) {
+    $nameClasses = match ($size) {
         'xs' => 'text-xs',
         'sm' => 'text-sm',
         'md' => 'text-xl',
@@ -31,22 +31,25 @@
         @class([
             'object-contain transition-transform group-hover:scale-110 duration-500',
             'brightness-0 invert' => $invert,
-            $sizeClasses
+            $sizeClasses,
         ])
         alt="{{ brand('name') }}"
     />
 
-    @if($withName)
-        <div class="flex flex-col min-w-0">
-            <span @class([
-                'font-black tracking-tighter leading-none transition-colors group-hover:text-primary truncate',
-                $nameClasses
-            ]) title="{{ brand('name') }}">
+    @if ($withName)
+        <div class="flex min-w-0 flex-col">
+            <span
+                @class([
+                    'font-black tracking-tighter leading-none transition-colors group-hover:text-primary truncate',
+                    $nameClasses,
+                ])
+                title="{{ brand('name') }}"
+            >
                 {{ brand('name') }}
             </span>
-            @if($withTagline)
-                <span class="text-[9px] uppercase tracking-[0.3em] font-black opacity-30 mt-1">
-                    {{ brand('tagline') ?? 'Management System' }}
+            @if ($withTagline)
+                <span class="mt-1 text-[9px] font-black tracking-[0.3em] uppercase opacity-30">
+                    {{ brand('tagline') ?? __('common.management_system') }}
                 </span>
             @endif
         </div>

@@ -36,6 +36,12 @@ return [
         'link_placeholder' => 'https://...',
         'target_roles' => 'Peran Target',
     ],
+    'types' => [
+        'info' => 'Info',
+        'success' => 'Sukses',
+        'warning' => 'Peringatan',
+        'error' => 'Kesalahan',
+    ],
 
     'guide' => [
         'title' => 'Panduan Pengumuman',

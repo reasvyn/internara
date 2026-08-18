@@ -1,31 +1,47 @@
 <div class="py-4">
-    <div class="mb-6 flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">
+    <div class="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
             <h2 class="text-xl font-bold">{{ __('announcement.title') }}</h2>
-            <p class="text-sm text-base-content/50 mt-1">{{ __('announcement.subtitle') }}</p>
+            <p class="text-base-content/50 mt-1 text-sm">{{ __('announcement.subtitle') }}</p>
         </div>
-        <x-mary-button :label="__('announcement.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="$set('showForm', true)" />
+        <x-mary-button
+            :label="__('announcement.create')"
+            icon="o-plus"
+            class="btn-primary btn-sm"
+            wire:click="$set('showForm', true)"
+        />
     </div>
 
-    @if($showForm)
-        <x-mary-card class="bg-base-100 border border-base-content/10 mb-6">
+    @if ($showForm)
+        <x-mary-card class="bg-base-100 border-base-content/10 mb-6 border">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
                     <x-mary-input :label="__('announcement.fields.title')" wire:model="form.title" />
-                    <x-core::ui.markdown-editor :label="__('announcement.fields.message')" model="form.message" rows="6" :hint="__('announcement.markdown_hint')" />
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select :label="__('announcement.fields.type')" wire:model="form.type"
+                    <x-core::ui.markdown-editor
+                        :label="__('announcement.fields.message')"
+                        model="form.message"
+                        rows="6"
+                        :hint="__('announcement.markdown_hint')"
+                    />
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <x-mary-select
+                            :label="__('announcement.fields.type')"
+                            wire:model="form.type"
                             :options="[
-                                ['id' => 'info', 'name' => 'Info'],
-                                ['id' => 'success', 'name' => 'Success'],
-                                ['id' => 'warning', 'name' => 'Warning'],
-                                ['id' => 'error', 'name' => 'Error'],
+                                ['id' => 'info', 'name' => __('announcement.types.info')],
+                                ['id' => 'success', 'name' => __('announcement.types.success')],
+                                ['id' => 'warning', 'name' => __('announcement.types.warning')],
+                                ['id' => 'error', 'name' => __('announcement.types.error')],
                             ]"
                         />
-                        <x-mary-input :label="__('announcement.fields.link')" wire:model="form.link" :placeholder="__('announcement.fields.link_placeholder')" />
+                        <x-mary-input
+                            :label="__('announcement.fields.link')"
+                            wire:model="form.link"
+                            :placeholder="__('announcement.fields.link_placeholder')"
+                        />
                     </div>
 
-                    <div class="border-t border-base-content/10 pt-4 space-y-4">
+                    <div class="border-base-content/10 space-y-4 border-t pt-4">
                         <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
                         <x-mary-radio
                             wire:model.live="form.status"
@@ -36,7 +52,7 @@
                             ]"
                         />
 
-                        @if($form->status === 'scheduled')
+                        @if ($form->status === 'scheduled')
                             <x-mary-input
                                 :label="__('announcement.fields.scheduled_at')"
                                 type="datetime-local"
@@ -47,32 +63,46 @@
 
                         <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="form.sendToAll" />
 
-                        @if(!$form->sendToAll)
+                        @if (! $form->sendToAll)
                             <div class="mt-4">
-                                <x-mary-choices :label="__('announcement.fields.target_roles')" wire:model="form.target_roles" :options="$roles" multiple :hint="__('announcement.roles_hint')" />
+                                <x-mary-choices
+                                    :label="__('announcement.fields.target_roles')"
+                                    wire:model="form.target_roles"
+                                    :options="$roles"
+                                    multiple
+                                    :hint="__('announcement.roles_hint')"
+                                />
                             </div>
                         @endif
                     </div>
                 </div>
 
                 <x-slot:actions>
-                    <x-mary-button :label="__('common.actions.cancel')" wire:click="resetForm" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('announcement.send')" type="submit" class="btn-primary btn-sm" icon-right="o-paper-airplane" spinner="save" />
+                    <x-mary-button
+                        :label="__('common.actions.cancel')"
+                        wire:click="resetForm"
+                        class="btn-ghost btn-sm"
+                    />
+                    <x-mary-button
+                        :label="__('announcement.send')"
+                        type="submit"
+                        class="btn-primary btn-sm"
+                        icon-right="o-paper-airplane"
+                        spinner="save"
+                    />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-card>
     @endif
 
-    <x-mary-card class="bg-base-100 border border-base-content/10">
-        @if($announcements->isEmpty())
-            <div class="text-center py-12 text-sm text-base-content/40">
-                {{ __('announcement.empty') }}
-            </div>
+    <x-mary-card class="bg-base-100 border-base-content/10 border">
+        @if ($announcements->isEmpty())
+            <div class="text-base-content/40 py-12 text-center text-sm">{{ __('announcement.empty') }}</div>
         @else
-            <div class="divide-y divide-base-content/10">
-                @foreach($announcements as $announcement)
-                    <div class="py-4 flex items-start justify-between gap-4">
-                        <div class="flex items-start gap-3 min-w-0">
+            <div class="divide-base-content/10 divide-y">
+                @foreach ($announcements as $announcement)
+                    <div class="flex items-start justify-between gap-4 py-4">
+                        <div class="flex min-w-0 items-start gap-3">
                             <div @class([
                                 'size-8 rounded-lg flex items-center justify-center shrink-0',
                                 'bg-info/10 text-info' => $announcement->type === 'info',
@@ -80,29 +110,37 @@
                                 'bg-warning/10 text-warning' => $announcement->type === 'warning',
                                 'bg-error/10 text-error' => $announcement->type === 'error',
                             ])>
-                                <x-mary-icon :name="match($announcement->type) {
+                                <x-mary-icon
+                                    :name="match($announcement->type) {
                                     'success' => 'o-check-circle',
                                     'warning' => 'o-exclamation-triangle',
                                     'error' => 'o-x-circle',
                                     default => 'o-information-circle',
-                                }" class="size-4" />
+                                }"
+                                    class="size-4"
+                                />
                             </div>
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h4 class="text-sm font-medium">{{ $announcement->title }}</h4>
-                                    <x-mary-badge :value="__('announcement.status.' . $announcement->status->value)" class="badge-sm
+                                    <x-mary-badge
+                                        :value="__('announcement.status.'.$announcement->status->value)"
+                                        class="badge-sm
                                         @if($announcement->isDraft()) badge-ghost
                                         @elseif($announcement->isScheduled()) badge-warning
                                         @else badge-success
-                                        @endif" />
+                                        @endif"
+                                    />
                                 </div>
-                                <div class="text-xs text-base-content/60 mt-0.5 line-clamp-2 prose prose-sm max-w-none">{!! Str::markdown($announcement->message, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}</div>
-                                <p class="text-[10px] text-base-content/40 mt-1.5">
+                                <div class="text-base-content/60 prose prose-sm mt-0.5 line-clamp-2 max-w-none text-xs">
+                                    {!! Str::markdown($announcement->message, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
+                                </div>
+                                <p class="text-base-content/40 mt-1.5 text-[10px]">
                                     {{ $announcement->created_at->format('d M Y H:i') }}
-                                    @if($announcement->isScheduled() && $announcement->scheduled_at)
+                                    @if ($announcement->isScheduled() && $announcement->scheduled_at)
                                         &middot; {{ __('announcement.scheduled_for') }} {{ $announcement->scheduled_at->format('d M Y H:i') }}
                                     @endif
-                                    @if($announcement->target_roles)
+                                    @if ($announcement->target_roles)
                                         &middot; {{ implode(', ', $announcement->target_roles) }}
                                     @else
                                         &middot; {{ __('announcement.all_users') }}
@@ -110,15 +148,21 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-1 shrink-0">
-                            @if($announcement->isDraft() || $announcement->isScheduled())
-                                <x-mary-button icon-right="o-paper-airplane" class="btn-ghost btn-sm text-success"
+                        <div class="flex shrink-0 items-center gap-1">
+                            @if ($announcement->isDraft() || $announcement->isScheduled())
+                                <x-mary-button
+                                    icon-right="o-paper-airplane"
+                                    class="btn-ghost btn-sm text-success"
                                     wire:click="confirmPublish('{{ $announcement->id }}')"
-                                    :aria-label="__('announcement.publish_now')" />
+                                    :aria-label="__('announcement.publish_now')"
+                                />
                             @endif
-                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
+                            <x-mary-button
+                                icon="o-trash"
+                                class="btn-ghost btn-sm text-error"
                                 wire:click="confirmDelete('{{ $announcement->id }}')"
-                                :aria-label="__('common.actions.delete')" />
+                                :aria-label="__('common.actions.delete')"
+                            />
                         </div>
                     </div>
                 @endforeach

@@ -43,6 +43,10 @@ return [
     'batch_issue_info' => 'Sertifikat akan diterbitkan untuk semua registrasi yang sesuai filter dan belum memiliki sertifikat.',
     'batch_results' => 'Hasil: :success berhasil, :failed gagal.',
     'filter_status' => 'Status Registrasi',
+    'filter_active_registrations' => 'Registrasi Aktif',
+    'filter_completed_registrations' => 'Registrasi Selesai',
+    'layout_portrait' => 'Potret',
+    'layout_landscape' => 'Lanskap',
 
     'issued_title' => 'Sertifikat Terbit',
     'issued_subtitle' => 'Lihat dan kelola sertifikat yang telah diterbitkan',

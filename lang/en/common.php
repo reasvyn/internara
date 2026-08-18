@@ -22,6 +22,12 @@ return [
     'skip_to_content' => 'Skip to content',
     'open_menu' => 'Open menu',
     'app_tagline' => 'Professional Internship Management System',
+    'management_system' => 'Management System',
+    'professional_internship_management' => 'Professional Internship Management',
+    'industry_ready' => 'Industry Ready',
+    'enterprise_secured' => 'Enterprise Secured',
+    'open_source' => 'Open Source',
+    'avatar' => 'Avatar',
     'all_rights_reserved' => 'All rights reserved.',
     'built_with_love' => 'Built with ❤️ by',
 
@@ -80,6 +86,7 @@ return [
     ],
     'yes' => 'Yes',
     'no' => 'No',
+    'unknown' => 'Unknown',
     'status' => [
         'active' => 'Active',
         'inactive' => 'Inactive',
