@@ -6,6 +6,7 @@ if [ ! -f /app/artisan ]; then
     cp -a /opt/app-src/. /app/
 fi
 
+mkdir -p /app/storage/framework/cache/data /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs /app/bootstrap/cache
 chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage
 
 echo "[entrypoint] running migrations"

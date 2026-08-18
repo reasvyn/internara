@@ -29,7 +29,7 @@ class SubmitAssignment extends BaseFormView
 
     public function viewDetail(Assignment $assignment): void
     {
-        $this->selectedAssignment = $assignment->load(['type', 'document']);
+        $this->selectedAssignment = $assignment->load(['document']);
         $this->assignmentId = $assignment->id;
         $this->showDetail = true;
     }
@@ -79,7 +79,6 @@ class SubmitAssignment extends BaseFormView
         $assignments = Assignment::where('internship_id', $registration->internship_id)
             ->where('status', 'published')
             ->with([
-                'type',
                 'document',
                 'submissions' => fn ($q) => $q->where('student_id', $studentId),
             ])

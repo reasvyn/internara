@@ -8,6 +8,8 @@ use App\Assignment\Actions\CreateAssignmentAction;
 use App\Assignment\Actions\DeleteAssignmentAction;
 use App\Assignment\Actions\PublishAssignmentAction;
 use App\Assignment\Actions\UpdateAssignmentAction;
+use App\Assignment\Data\CreateAssignmentData;
+use App\Assignment\Data\UpdateAssignmentData;
 use App\Assignment\Models\Assignment;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
@@ -157,23 +159,25 @@ class AssignmentManager extends BaseRecordManager
             $this->authorize('update', $assignment);
             $updateAction->execute(
                 $assignment,
-                assignmentType: $this->formData['assignment_type'],
-                title: $this->formData['title'],
-                description: $this->formData['description'] ?: null,
-                isMandatory: $this->formData['is_mandatory'],
-                dueDate: $this->formData['due_date'],
+                new UpdateAssignmentData(
+                    assignmentType: $this->formData['assignment_type'],
+                    title: $this->formData['title'],
+                    description: $this->formData['description'] ?: null,
+                    isMandatory: $this->formData['is_mandatory'],
+                    dueDate: $this->formData['due_date'],
+                ),
             );
             flash()->success('Assignment updated.');
         } else {
             $this->authorize('create', Assignment::class);
-            $createAction->execute(
+            $createAction->execute(new CreateAssignmentData(
                 assignmentType: $this->formData['assignment_type'],
                 internshipId: $this->formData['internship_id'],
                 title: $this->formData['title'],
                 description: $this->formData['description'] ?: null,
                 isMandatory: $this->formData['is_mandatory'],
                 dueDate: $this->formData['due_date'],
-            );
+            ));
             flash()->success('Assignment created.');
         }
 

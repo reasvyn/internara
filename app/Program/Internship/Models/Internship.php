@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
         'name',
         'start_date',
         'end_date',
+        'registration_start_date',
+        'registration_end_date',
         'description',
         'status',
         'phases',
@@ -37,6 +39,8 @@ class Internship extends BaseModel
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'registration_start_date' => 'date',
+        'registration_end_date' => 'date',
         'status' => InternshipStatus::class,
         'phases' => 'json',
         'required_document_ids' => 'json',

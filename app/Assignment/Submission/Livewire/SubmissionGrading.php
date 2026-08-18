@@ -7,6 +7,7 @@ namespace App\Assignment\Submission\Livewire;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\GradeSubmissionAction;
 use App\Assignment\Submission\Actions\RequestSubmissionRevisionAction;
+use App\Assignment\Submission\Data\GradeSubmissionData;
 use App\Assignment\Submission\Models\Submission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -40,7 +41,7 @@ class SubmissionGrading extends Component
 
     public function viewSubmission(string $submissionId): void
     {
-        $submission = Submission::with(['student', 'assignment.type', 'registration'])->findOrFail(
+        $submission = Submission::with(['student', 'assignment', 'registration'])->findOrFail(
             $submissionId,
         );
 
@@ -76,8 +77,10 @@ class SubmissionGrading extends Component
         } else {
             $gradeAction->execute(
                 $submission,
-                (int) $this->score,
-                $this->feedback,
+                new GradeSubmissionData(
+                    score: (int) $this->score,
+                    feedback: $this->feedback,
+                ),
             );
             flash()->success('Submission graded successfully.');
         }
@@ -88,7 +91,7 @@ class SubmissionGrading extends Component
     public function render(): View
     {
         $query = Submission::query()
-            ->with(['student', 'assignment.type'])
+            ->with(['student', 'assignment'])
             ->whereIn('status', ['submitted', 'revision_required']);
 
         if ($this->search) {

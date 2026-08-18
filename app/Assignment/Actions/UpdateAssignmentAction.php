@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\Assignment\Actions;
 
+use App\Assignment\Data\UpdateAssignmentData;
 use App\Assignment\Models\Assignment;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 
 final class UpdateAssignmentAction extends BaseCommandAction
 {
     public function execute(
         Assignment $assignment,
-        ?string $assignmentType = null,
-        ?string $title = null,
-        ?string $description = null,
-        ?bool $isMandatory = null,
-        ?string $dueDate = null,
-    ): Assignment {
-        return $this->transaction(function () use ($assignment, $assignmentType, $title, $description, $isMandatory, $dueDate) {
+        UpdateAssignmentData $data,
+    ): ActionResponse {
+        return $this->transaction(function () use ($assignment, $data) {
             $assignment->update(
                 array_filter(
                     [
-                        'assignment_type' => $assignmentType,
-                        'title' => $title,
-                        'description' => $description,
-                        'is_mandatory' => $isMandatory,
-                        'due_date' => $dueDate,
+                        'assignment_type' => $data->assignmentType,
+                        'title' => $data->title,
+                        'description' => $data->description,
+                        'is_mandatory' => $data->isMandatory,
+                        'due_date' => $data->dueDate,
                     ],
                     fn ($value) => ! is_null($value),
                 ),
@@ -33,7 +31,7 @@ final class UpdateAssignmentAction extends BaseCommandAction
 
             $this->log('assignment_updated', $assignment, ['title' => $assignment->title]);
 
-            return $assignment->fresh();
+            return ActionResponse::updated($assignment->fresh());
         });
     }
 }

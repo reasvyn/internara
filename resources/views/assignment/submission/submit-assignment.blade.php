@@ -1,53 +1,66 @@
 <div class="animate-in fade-in slide-in-from-bottom-8 duration-1000">
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+    <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-            <h2 class="text-3xl font-black tracking-tightest text-base-content">My Assignments</h2>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">Submit your internship tasks</p>
+            <h2 class="tracking-tightest text-base-content text-3xl font-black">My Assignments</h2>
+            <p class="text-base-content/40 mt-2 text-[10px] font-black tracking-[0.3em] uppercase">
+                Submit your internship tasks
+            </p>
         </div>
     </div>
 
-    @if($assignments->isEmpty())
-        <x-mary-card shadow class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
-            <div class="flex flex-col items-center justify-center py-20 gap-4">
-                <x-mary-icon name="o-document-text" class="size-16 text-base-content/20" />
-                <h3 class="text-xl font-black tracking-tight text-base-content/40">No assignments yet</h3>
-                <p class="text-sm text-base-content/30">Assignments will appear here once published by your school.</p>
+    @if ($assignments->isEmpty())
+        <x-mary-card
+            shadow
+            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
+        >
+            <div class="flex flex-col items-center justify-center gap-4 py-20">
+                <x-mary-icon name="o-document-text" class="text-base-content/20 size-16" />
+                <h3 class="text-base-content/40 text-xl font-black tracking-tight">No assignments yet</h3>
+                <p class="text-base-content/30 text-sm">Assignments will appear here once published by your school.</p>
             </div>
         </x-mary-card>
-    @elseif(!$showDetail)
+    @elseif (! $showDetail)
         {{-- Assignment List --}}
         <div class="grid grid-cols-1 gap-6">
-            @foreach($assignments as $assignment)
-                <x-mary-card shadow class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden hover:border-primary/20 transition-all duration-300 cursor-pointer" wire:click="viewDetail('{{ $assignment->id }}')">
+            @foreach ($assignments as $assignment)
+                <x-mary-card
+                    shadow
+                    class="!bg-base-100 shadow-base-content/5 border-base-content/5 hover:border-primary/20 cursor-pointer overflow-hidden border shadow-2xl transition-all duration-300"
+                    wire:click="viewDetail('{{ $assignment->id }}')"
+                >
                     <div class="flex items-start justify-between gap-6">
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="badge badge-sm badge-soft badge-primary font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                                    {{ $assignment->type->name }}
+                        <div class="min-w-0 flex-1">
+                            <div class="mb-3 flex items-center gap-3">
+                                <span class="badge badge-sm badge-soft badge-primary rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">
+                                    {{ $assignment->assignment_type }}
                                 </span>
-                                @if($assignment->is_mandatory)
-                                    <span class="badge badge-sm badge-soft badge-error font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">Required</span>
+                                @if ($assignment->is_mandatory)
+                                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Required</span>
                                 @else
-                                    <span class="badge badge-sm badge-soft badge-ghost font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">Optional</span>
+                                    <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Optional</span>
                                 @endif
                             </div>
-                            <h3 class="text-xl font-black tracking-tight text-base-content mb-2">{{ $assignment->title }}</h3>
-                            @if($assignment->description)
-                                <p class="text-sm text-base-content/60 line-clamp-2">{{ $assignment->description }}</p>
+                            <h3 class="text-base-content mb-2 text-xl font-black tracking-tight">
+                                {{ $assignment->title }}
+                            </h3>
+                            @if ($assignment->description)
+                                <p class="text-base-content/60 line-clamp-2 text-sm">{{ $assignment->description }}</p>
                             @endif
                         </div>
-                        <div class="text-right shrink-0">
-                            <div class="text-sm font-black text-base-content/40">{{ $assignment->due_date?->format('d M Y') ?? 'No due date' }}</div>
+                        <div class="shrink-0 text-right">
+                            <div class="text-base-content/40 text-sm font-black">
+                                {{ $assignment->due_date?->format('d M Y') ?? 'No due date' }}
+                            </div>
                             @php
                                 $submission = $assignment->submissions->first();
                             @endphp
-                            @if($submission)
-                                <span class="badge badge-sm badge-soft badge-success font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl mt-2">Submitted</span>
-                            @elseif($assignment->asAssignmentRules()->isOverdue())
-                                <span class="badge badge-sm badge-soft badge-error font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl mt-2">Overdue</span>
+                            @if ($submission)
+                                <span class="badge badge-sm badge-soft badge-success mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Submitted</span>
+                            @elseif ($assignment->asAssignmentRules()->isOverdue(now()))
+                                <span class="badge badge-sm badge-soft badge-error mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Overdue</span>
                             @else
-                                <span class="badge badge-sm badge-soft badge-warning font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl mt-2">Pending</span>
+                                <span class="badge badge-sm badge-soft badge-warning mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Pending</span>
                             @endif
                         </div>
                     </div>
@@ -56,50 +69,66 @@
         </div>
     @else
         {{-- Assignment Detail --}}
-        <x-mary-card shadow class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
+        <x-mary-card
+            shadow
+            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
+        >
             <div class="mb-6">
-                <x-mary-button icon="o-arrow-left" :label="__('common.actions.back')" wire:click="back" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px]" />
+                <x-mary-button
+                    icon="o-arrow-left"
+                    :label="__('common.actions.back')"
+                    wire:click="back"
+                    class="btn-ghost rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
+                />
             </div>
 
-            <div class="flex items-center gap-3 mb-4">
-                <span class="badge badge-sm badge-soft badge-primary font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                    {{ $selectedAssignment->type->name }}
+            <div class="mb-4 flex items-center gap-3">
+                <span class="badge badge-sm badge-soft badge-primary rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">
+                    {{ $selectedAssignment->assignment_type }}
                 </span>
-                @if($selectedAssignment->is_mandatory)
-                    <span class="badge badge-sm badge-soft badge-error font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">Required</span>
+                @if ($selectedAssignment->is_mandatory)
+                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Required</span>
                 @else
-                    <span class="badge badge-sm badge-soft badge-ghost font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">Optional</span>
+                    <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Optional</span>
                 @endif
-                @if($selectedAssignment->asAssignmentRules()->isOverdue())
-                    <span class="badge badge-sm badge-soft badge-error font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">Overdue</span>
+                @if ($selectedAssignment->asAssignmentRules()->isOverdue(now()))
+                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Overdue</span>
                 @endif
             </div>
 
-            <h2 class="text-3xl font-black tracking-tightest text-base-content mb-2">{{ $selectedAssignment->title }}</h2>
+            <h2 class="tracking-tightest text-base-content mb-2 text-3xl font-black">
+                {{ $selectedAssignment->title }}
+            </h2>
 
-            <div class="text-sm text-base-content/40 mb-6">
+            <div class="text-base-content/40 mb-6 text-sm">
                 Due: {{ $selectedAssignment->due_date?->format('l, d F Y') ?? 'No due date' }}
             </div>
 
-            @if($selectedAssignment->description)
-                <div class="prose prose-sm max-w-none mb-8 text-base-content/80">
+            @if ($selectedAssignment->description)
+                <div class="prose prose-sm text-base-content/80 mb-8 max-w-none">
                     {{ $selectedAssignment->description }}
                 </div>
             @endif
 
             {{-- Template Document --}}
-            @if($selectedAssignment->document)
-                <div class="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-[2rem] flex items-center justify-between shadow-xl shadow-primary/5">
+            @if ($selectedAssignment->document)
+                <div class="bg-primary/5 border-primary/20 shadow-primary/5 mb-8 flex items-center justify-between rounded-[2rem] border p-4 shadow-xl">
                     <div class="flex items-center gap-4">
-                        <div class="size-12 rounded-[1.5rem] bg-primary text-primary-content flex items-center justify-center shadow-lg shadow-primary/30">
+                        <div class="bg-primary text-primary-content shadow-primary/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
                             <x-mary-icon name="o-document" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="font-black text-sm text-primary">{{ $selectedAssignment->document->name }}</h4>
-                            <p class="text-[9px] uppercase font-black tracking-[0.3em] text-primary/40 mt-1">Template / Guide</p>
+                            <h4 class="text-primary text-sm font-black">{{ $selectedAssignment->document->name }}</h4>
+                            <p class="text-primary/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                                Template / Guide
+                            </p>
                         </div>
                     </div>
-                    <a href="{{ $selectedAssignment->document->getFirstMediaUrl('file') }}" target="_blank" class="btn btn-primary btn-sm rounded-[1.5rem] font-black uppercase tracking-wider text-[10px] px-6 shadow-lg shadow-primary/20">
+                    <a
+                        href="{{ $selectedAssignment->document->getFirstMediaUrl('file') }}"
+                        target="_blank"
+                        class="btn btn-primary btn-sm shadow-primary/20 rounded-[1.5rem] px-6 text-[10px] font-black tracking-wider uppercase shadow-lg"
+                    >
                         <x-mary-icon name="o-arrow-down-tray" class="size-4" />
                         Download
                     </a>
@@ -110,29 +139,33 @@
                 $existingSubmission = $selectedAssignment->submissions->first();
             @endphp
 
-            @if($existingSubmission && $existingSubmission->status->value === 'revision_required')
+            @if ($existingSubmission && $existingSubmission->status->value === 'revision_required')
                 {{-- Revision Required --}}
-                <div class="p-6 bg-warning/5 border border-warning/20 rounded-[2rem] shadow-xl shadow-warning/5 mb-6">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="size-12 rounded-[1.5rem] bg-warning text-warning-content flex items-center justify-center shadow-lg shadow-warning/30">
+                <div class="bg-warning/5 border-warning/20 shadow-warning/5 mb-6 rounded-[2rem] border p-6 shadow-xl">
+                    <div class="mb-4 flex items-center gap-4">
+                        <div class="bg-warning text-warning-content shadow-warning/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
                             <x-mary-icon name="o-exclamation-triangle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="font-black text-sm text-warning uppercase tracking-tight">Revision requested</h4>
-                            <p class="text-[9px] uppercase font-black tracking-[0.3em] text-warning/40 mt-1">Please revise and resubmit</p>
+                            <h4 class="text-warning text-sm font-black tracking-tight uppercase">Revision requested</h4>
+                            <p class="text-warning/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                                Please revise and resubmit
+                            </p>
                         </div>
                     </div>
-                    @if($existingSubmission->feedback)
-                        <div class="p-4 bg-base-200/50 rounded-[1.5rem]">
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Feedback</span>
-                            <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
+                    @if ($existingSubmission->feedback)
+                        <div class="bg-base-200/50 rounded-[1.5rem] p-4">
+                            <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">Feedback</span>
+                            <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                         </div>
                     @endif
                 </div>
 
                 {{-- Resubmission Form --}}
-                <div class="p-6 bg-base-200/30 border border-base-content/5 rounded-[2rem]">
-                    <h4 class="font-black text-sm uppercase tracking-tight text-base-content mb-6">Revise & Resubmit</h4>
+                <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
+                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                        Revise & Resubmit
+                    </h4>
                     <div class="space-y-6">
                         <div>
                             <x-mary-textarea
@@ -140,65 +173,67 @@
                                 wire:model="content"
                                 placeholder="Update your work based on the feedback..."
                                 rows="5"
-                                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
+                                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                             />
                         </div>
-                        <div class="flex justify-end pt-4 border-t border-base-content/5">
+                        <div class="border-base-content/5 flex justify-end border-t pt-4">
                             <x-mary-button
                                 label="Resubmit"
                                 icon-right="o-paper-airplane"
-                                class="btn-warning rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-warning/30 hover:scale-[1.02] transition-transform"
+                                class="btn-warning shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 wire:click="submit"
                                 spinner="submit"
                             />
                         </div>
                     </div>
                 </div>
-            @elseif($existingSubmission)
+            @elseif ($existingSubmission)
                 {{-- Already Submitted --}}
-                <div class="p-6 bg-success/5 border border-success/20 rounded-[2rem] shadow-xl shadow-success/5">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="size-12 rounded-[1.5rem] bg-success text-success-content flex items-center justify-center shadow-lg shadow-success/30">
+                <div class="bg-success/5 border-success/20 shadow-success/5 rounded-[2rem] border p-6 shadow-xl">
+                    <div class="mb-4 flex items-center gap-4">
+                        <div class="bg-success text-success-content shadow-success/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
                             <x-mary-icon name="o-check-circle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="font-black text-sm text-success uppercase tracking-tight">Submitted</h4>
-                            <p class="text-[9px] uppercase font-black tracking-[0.3em] text-success/40 mt-1">{{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? 'Just now' }}</p>
+                            <h4 class="text-success text-sm font-black tracking-tight uppercase">Submitted</h4>
+                            <p class="text-success/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
+                                {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? 'Just now' }}
+                            </p>
                         </div>
                     </div>
-                    @if($existingSubmission->content)
-                        <div class="text-sm text-base-content/70 mb-4 p-4 bg-base-200/50 rounded-[1.5rem]">
+                    @if ($existingSubmission->content)
+                        <div class="text-base-content/70 bg-base-200/50 mb-4 rounded-[1.5rem] p-4 text-sm">
                             {{ $existingSubmission->content }}
                         </div>
                     @endif
-                    @if($existingSubmission->status->value === 'verified')
-                        <div class="flex items-center gap-4 p-4 bg-success/10 rounded-[1.5rem]">
-                            <x-mary-icon name="o-shield-check" class="size-5 text-success" />
-                            <span class="font-black text-sm text-success uppercase tracking-tight">Verified by mentor</span>
+                    @if ($existingSubmission->status->value === 'verified')
+                        <div class="bg-success/10 flex items-center gap-4 rounded-[1.5rem] p-4">
+                            <x-mary-icon name="o-shield-check" class="text-success size-5" />
+                            <span class="text-success text-sm font-black tracking-tight uppercase">Verified by mentor</span>
                         </div>
-                        @if($existingSubmission->feedback)
-                            <div class="mt-3 p-4 bg-base-200/50 rounded-[1.5rem]">
-                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Feedback</span>
-                                <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
+                        @if ($existingSubmission->feedback)
+                            <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
+                                <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">Feedback</span>
+                                <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             </div>
                         @endif
-                    @elseif($existingSubmission->status->value === 'graded')
-                        <div class="mt-3 p-4 bg-base-200/50 rounded-[1.5rem]">
-                            @if($existingSubmission->score)
-                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Score</span>
-                                <p class="text-sm font-black text-base-content">{{ $existingSubmission->score }}/100</p>
+                    @elseif ($existingSubmission->status->value === 'graded')
+                        <div class="bg-base-200/50 mt-3 rounded-[1.5rem] p-4">
+                            @if ($existingSubmission->score)
+                                <span class="text-base-content/40 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">Score</span>
+                                <p class="text-base-content text-sm font-black">{{ $existingSubmission->score }}/100</p>
                             @endif
-                            @if($existingSubmission->feedback)
-                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mt-3 mb-2">Feedback</span>
-                                <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
+                            @if ($existingSubmission->feedback)
+                                <span class="text-base-content/40 mt-3 mb-2 block text-[9px] font-black tracking-[0.2em] uppercase">Feedback</span>
+                                <p class="text-base-content/70 text-sm">{{ $existingSubmission->feedback }}</p>
                             @endif
                         </div>
                     @endif
                 </div>
-            @elseif(!$selectedAssignment->asAssignmentRules()->isOverdue())
+            @elseif (! $selectedAssignment->asAssignmentRules()->isOverdue(now()))
                 {{-- Submission Form --}}
-                <div class="p-6 bg-base-200/30 border border-base-content/5 rounded-[2rem]">
-                    <h4 class="font-black text-sm uppercase tracking-tight text-base-content mb-6">Submit Your Work</h4>
+                <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
+                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">Submit Your Work</h4>
 
                     <div class="space-y-6">
                         <div>
@@ -207,7 +242,7 @@
                                 wire:model="content"
                                 placeholder="Describe your work or paste your report content..."
                                 rows="5"
-                                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
+                                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                             />
                         </div>
 
@@ -215,15 +250,15 @@
                             <x-mary-file
                                 :label="__('submission.upload_file')"
                                 wire:model="file"
-                                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
+                                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                             />
                         </div>
 
-                        <div class="flex justify-end pt-4 border-t border-base-content/5">
+                        <div class="border-base-content/5 flex justify-end border-t pt-4">
                             <x-mary-button
                                 :label="__('submission.submit')"
                                 icon-right="o-paper-airplane"
-                                class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform"
+                                class="btn-primary shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
                                 spinner="submit"
                             />
