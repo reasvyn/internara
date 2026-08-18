@@ -7,6 +7,7 @@ namespace App\SysAdmin\Livewire;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\AccountApplication\Actions\ApproveAccountApplicationAction;
 use App\Enrollment\AccountApplication\Actions\RejectAccountApplicationAction;
+use App\Enrollment\AccountApplication\Data\RejectAccountApplicationData;
 use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 use Illuminate\Database\Eloquent\Collection;
@@ -57,7 +58,10 @@ class ApplicationReview extends Component
         $this->authorize('update', AccountApplication::findOrFail($this->rejectId));
 
         try {
-            $action->execute($this->rejectId, auth()->user(), $this->rejectionReason);
+            $action->execute(new RejectAccountApplicationData(
+                applicationId: $this->rejectId,
+                reason: $this->rejectionReason,
+            ));
             flash()->success(__('internship.applications.success_rejected'));
         } catch (RejectedException $e) {
             flash()->error($e->getMessage());

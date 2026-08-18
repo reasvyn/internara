@@ -4,27 +4,26 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
+use App\Assessment\Rubric\Data\CreateRubricData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 
 final class CreateRubricAction extends BaseCommandAction
 {
-    public function execute(
-        string $name,
-        ?string $description = null,
-        bool $isActive = true,
-    ): Rubric {
-        return $this->transaction(function () use ($name, $description, $isActive) {
+    public function execute(CreateRubricData $data): ActionResponse
+    {
+        return $this->transaction(function () use ($data) {
             $rubric = Rubric::create([
-                'name' => $name,
-                'description' => $description,
-                'is_active' => $isActive,
+                'name' => $data->name,
+                'description' => $data->description,
+                'is_active' => $data->isActive,
                 'created_by' => auth()->id(),
             ]);
 
             $this->log('rubric_created', $rubric, ['name' => $rubric->name]);
 
-            return $rubric;
+            return ActionResponse::created($rubric);
         });
     }
 }

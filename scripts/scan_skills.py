@@ -113,6 +113,18 @@ RULES: list[dict[str, Any]] = [
         "'Phase Context', or 'Integration with Other Skills'",
         "reference": "AGENTS.md #Skill-Handoffs",
     },
+    {
+        "id": "SKILL_RULES_DIR",
+        "severity": "medium",
+        "category": "convention",
+        "exempt": [],
+        "name": "Rules directory and Skill Rules mapping",
+        "description": "Every skill must be rules-first: extract its rules into "
+        "`skills/{name}/rules/*.md` (comprehensive prose — intent, rationale, how-to-apply, "
+        "pitfalls, verification — never bare checklists) and map them in a `## Skill Rules` "
+        "table in SKILL.md. Keeps rule context lean and the rules aliasable.",
+        "reference": "AGENTS.md #Skill-Map",
+    },
 ]
 
 RE_WORKFLOW_REF = re.compile(r"agent-workflow|Agent Workflow|`agent-workflow`", re.IGNORECASE)
@@ -130,6 +142,7 @@ RE_GIT = re.compile(r"git status[\s\S]{0,200}?git diff|git diff[\s\S]{0,200}?git
 RE_HANDOFFS = re.compile(
     r"Skill Handoffs|Phase Context|Integration with Other Skills|upstream:|downstream:"
 )
+RE_SKILL_RULES = re.compile(r"^##\s+Skill Rules$", re.MULTILINE)
 RE_LAST_UPDATED = re.compile(r">\s*\*\*Last updated:\*\*")
 
 # ─── Data ───────────────────────────────────────────────────────────────────
@@ -360,6 +373,58 @@ def scan_handoffs(path: Path, content: str, name: str) -> list[Finding]:
     )]
 
 
+def scan_rules_dir(path: Path, content: str, name: str) -> list[Finding]:
+    if name in RULES[7]["exempt"]:
+        return []
+    rules_dir = path.parent / "rules"
+    if not rules_dir.is_dir():
+        return [Finding(
+            id=f"SKILL-RD-{name}",
+            rule="SKILL_RULES_DIR",
+            severity="medium",
+            category="convention",
+            file=relative_path(path),
+            line=1,
+            message=f"Skill '{name}' has no `rules/` directory",
+            suggestion="Extract the skill's rules into `skills/{name}/rules/*.md` "
+            "(comprehensive prose, never bare checklists) and map them in a `## Skill Rules` "
+            "table in SKILL.md",
+            reference=RULES[7]["reference"],
+        )]
+    findings: list[Finding] = []
+    if not RE_SKILL_RULES.search(content):
+        findings.append(Finding(
+            id=f"SKILL-RD-{name}",
+            rule="SKILL_RULES_DIR",
+            severity="medium",
+            category="convention",
+            file=relative_path(path),
+            line=1,
+            message=f"Skill '{name}' has a `rules/` dir but SKILL.md has no `## Skill Rules` "
+            "mapping table",
+            suggestion="Add a `## Skill Rules` table ('| Rule | Asset | Applies when |') "
+            "mapping each rule file, one row per asset",
+            reference=RULES[7]["reference"],
+        ))
+    rule_files = sorted(rules_dir.glob("*.md"))
+    if rule_files and not any(f.stem in content for f in rule_files):
+        if not re.search(r"rules/", content):
+            findings.append(Finding(
+                id=f"SKILL-RD-{name}",
+                rule="SKILL_RULES_DIR",
+                severity="medium",
+                category="convention",
+                file=relative_path(path),
+                line=1,
+                message=f"Skill '{name}' has {len(rule_files)} rule file(s) in `rules/` but "
+                "SKILL.md does not reference any of them",
+                suggestion="Ensure every rule file is referenced in the `## Skill Rules` table "
+                "(asset links like `rules/{file}.md`)",
+                reference=RULES[7]["reference"],
+            ))
+    return findings
+
+
 # ─── Report ─────────────────────────────────────────────────────────────────
 
 def build_report(
@@ -458,6 +523,7 @@ def main() -> None:
         findings.extend(scan_size_triage(fp, content, name))
         findings.extend(scan_git_verify(fp, content, name))
         findings.extend(scan_handoffs(fp, content, name))
+        findings.extend(scan_rules_dir(fp, content, name))
 
     result = build_report(
         findings, scan_type, args.module, start_time,

@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
+use App\Assessment\Rubric\Data\CreateIndicatorData;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use Illuminate\Support\Str;
 
 final class CreateIndicatorAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,
-        string $competencyId,
-        string $name,
-        ?string $description = null,
-        int $maxScore = 100,
-        int $weight = 0,
-        int $order = 0,
-    ): Rubric {
-        return $this->transaction(function () use ($rubric, $competencyId, $name, $description, $maxScore, $weight, $order) {
+        CreateIndicatorData $data,
+    ): ActionResponse {
+        return $this->transaction(function () use ($rubric, $data) {
             $structure = $rubric->structure;
 
             $competencies = &$structure['competencies'];
             foreach ($competencies as &$competency) {
-                if ($competency['id'] === $competencyId) {
+                if ($competency['id'] === $data->competencyId) {
                     $competency['indicators'][] = [
                         'id' => (string) Str::uuid(),
-                        'name' => $name,
-                        'description' => $description,
-                        'max_score' => $maxScore,
-                        'weight' => $weight,
-                        'order' => $order,
+                        'name' => $data->name,
+                        'description' => $data->description,
+                        'max_score' => $data->maxScore,
+                        'weight' => $data->weight,
+                        'order' => $data->order,
                     ];
                     break;
                 }
@@ -41,11 +38,11 @@ final class CreateIndicatorAction extends BaseCommandAction
 
             $this->log('indicator_created', $rubric, [
                 'rubric_id' => $rubric->id,
-                'competency_id' => $competencyId,
-                'indicator_name' => $name,
+                'competency_id' => $data->competencyId,
+                'indicator_name' => $data->name,
             ]);
 
-            return $rubric;
+            return ActionResponse::created($rubric);
         });
     }
 }

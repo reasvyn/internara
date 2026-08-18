@@ -8,6 +8,7 @@ use App\Assessment\Actions\AutoCalculateAssessmentAction;
 use App\Assessment\Actions\FinalizeAssessmentAction;
 use App\Assessment\Actions\InitializeAssessmentAction;
 use App\Assessment\Actions\UpdateAssessmentScoresAction;
+use App\Assessment\Data\UpdateAssessmentScoresData;
 use App\Assessment\Models\Assessment;
 use App\Core\Livewire\BaseFormView;
 use App\Enrollment\Registration\Models\Registration;
@@ -163,7 +164,11 @@ class AssessmentGrading extends BaseFormView
 
         $score = is_numeric($value) ? (float) $value : null;
 
-        $action->execute($assessment, $competencyId, $indicatorId, $score);
+        $action->execute($assessment, new UpdateAssessmentScoresData(
+            competencyId: $competencyId,
+            indicatorId: $indicatorId,
+            score: $score,
+        ));
     }
 
     public function autoImport(AutoCalculateAssessmentAction $action): void

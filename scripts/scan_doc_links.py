@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 scan_doc_links.py — Documentation Link & Freshness Validation
-Validates all relative markdown links across docs/, .agents/contexts/ (plus README.md, AGENTS.md):
+Validates all relative markdown links across docs/, .agents/contexts/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec
-filename convention and flags docs whose `Last updated` metadata is missing or older than 7 days.
+filename convention and flags ALL markdown files whose `Last updated` metadata is missing or older than 7 days.
 """
 
 from __future__ import annotations
@@ -289,8 +289,6 @@ def scan_doc_freshness(files: list[Path], findings: list[Finding]) -> int:
 
     for filepath in files:
         rel = relative_path(filepath)
-        if rel in ("README.md", "AGENTS.md"):
-            continue
         try:
             content = filepath.read_text(encoding="utf-8", errors="replace")
         except OSError:
@@ -319,9 +317,9 @@ def scan_doc_freshness(files: list[Path], findings: list[Finding]) -> int:
                 category="documentation",
                 file=rel,
                 line=1,
-                message=f"`Last updated` {match.group(1)} is older than {STALE_DAYS} days (cutoff {cutoff})",
-                suggestion="Run a docs sync pass: refresh content against code/specs and bump `Last updated`",
-                reference=".agents/skills/sync-docs/SKILL.md §Review Recent Git History",
+message=f"`Last updated` {match.group(1)} is older than {STALE_DAYS} days (cutoff {cutoff})",
+            suggestion="Verify and synchronize this document's content against the actual codebase and governing specs to ensure consistency, then update `Last updated`",
+            reference=".agents/skills/sync-docs/SKILL.md §Review Recent Git History",
             ))
             added += 1
 

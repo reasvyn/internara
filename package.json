@@ -7,8 +7,8 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "format": "prettier --write .",
-        "lint": "prettier --check ."
+        "format": "vendor/bin/pint && prettier --write .",
+        "lint": "vendor/bin/pint --test && prettier --check ."
     },
     "dependencies": {
         "concurrently": "^10.0",
@@ -23,11 +23,11 @@
         "lightningcss-linux-x64-gnu": "^1.33.0"
     },
     "devDependencies": {
-        "@prettier/plugin-php": "^0.25.0",
         "@tailwindcss/vite": "^4.3.3",
         "daisyui": "^5.7.0",
         "prettier": "^3.9.6",
-        "prettier-plugin-blade": "^3.2",
+        "prettier-plugin-blade": "^3.2.2",
+        "prettier-plugin-tailwindcss": "^0.8.1",
         "tailwindcss": "^4.3.3"
     }
 }

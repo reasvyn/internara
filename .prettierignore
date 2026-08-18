@@ -8,6 +8,8 @@ public/storage/
 .temp/
 .vscode/
 .git/
+*.php
+*.blade.php
 composer.lock
 package-lock.json
 test-results/
