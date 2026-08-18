@@ -1,13 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-17 **Changes:** add — Layout & UI System spec (8XMYS, Core, Phase 3 —
-> Identity & Auth); add — Implementation Checklist Matrix (priority-ordered,
-> 4-scale critical/high/medium/low with red/yellow/green/blue symbols); add — Architecture Design spec
-> (D2FT3, Foundation, first in build order); add — Core & Infrastructure Services spec (ZT6VS, Foundation,
-> after Tech Stack); tech-stack (FB792) refocused on the dependency manifest; Dummy Data spec (3UOZP,
-> Maintenance); add — Conditional Deployment spec (06IB6, Maintenance); Foundation specs (FB792–B114U)
-> verified against the rewritten Core suite (266 tests); spec↔code deviations reconciled
-> (security-headers, shared-utilities); migrated all specs to alphanumeric 5-char IDs (XXXXX-description.md)
+> **Last updated:** 2026-08-18 **Changes:** register QLHDO umbrella spec as first entry (Spec-Zero, Build Order + Implementation Checklist Matrix); add Layout & UI System spec (8XMYS); add Implementation Checklist Matrix; add Architecture Design spec (D2FT3); add Core & Infrastructure Services spec (ZT6VS); tech-stack (FB792) refocused on dependency manifest; Dummy Data spec (3UOZP); Conditional Deployment spec (06IB6); Foundation specs (FB792–B114U) verified against rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers, shared-utilities); migrated all specs to alphanumeric 5-char IDs
 
 ## Description
 
@@ -42,6 +35,16 @@ Reporting      → Maintenance
 (grade cards,     (backup, GDPR, job queues,
  snapshots)        archiving, cleanup)
 ```
+
+### Spec-Zero — Umbrella
+
+The initial project specification. A blanket spec-zero over all phase specs: product scope,
+lifecycle, module landscape, role model, global (cross-cutting) requirements every feature spec
+inherits, and the project-level roadmap. No dependency — everything depends on it.
+
+| ID | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| QLHDO | [Internara Project (Umbrella)](QLHDO-internara-project.md) | Core | — |
 
 ### Phase 1 — Foundation
 
@@ -199,9 +202,10 @@ This matrix tracks implementation fulfillment, test coverage, and verification s
 
 | Priority | ID | Spec | Module | Impl Status | Test Coverage | Last Verified | Notes |
 |----------|----|------|--------|-------------|---------------|---------------|-------|
+| 🔴 Critical | QLHDO | [Internara Project (Umbrella)](QLHDO-internara-project.md) | Core | 🟩 Implemented | 🟧 Spec-Gap | 2026-08-18 | Spec-zero blanket: roles, localization, audit, UUID, health; lifecycle FR-L1–L12 map to phase specs |
 | 🔴 Critical | D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Governing architecture contract; 266 Core tests |
 | 🔴 Critical | FB792 | [Tech Stack](FB792-tech-stack.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Dependency manifest; pinned versions |
-| 🔴 Critical | ZT6VS | [Core & Infra Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | SmartLogger, SettingsStore, SendsNotifications |
+| 🔴 Critical | ZT6VS | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | SmartLogger, SettingsStore, SendsNotifications |
 | 🔴 Critical | SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | BaseAction, BaseModel, BaseEntity, BasePolicy |
 | 🔴 Critical | T4B26 | [RBAC & Authorization](T4B26-rbac-and-authorization.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Flat roles, Gate::before, Policy pattern |
 | 🔴 Critical | 89SRA | [Logging & Error Handling](89SRA-logging-and-error-handling.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Dual AppException/ModuleException trees |
