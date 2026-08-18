@@ -127,7 +127,7 @@ type at the storage layer.
 
 ### Feature Flags
 
-Feature flags are runtime toggles for module behavior (project-requirements §3.2 Settings).
+Feature flags are runtime toggles for module behavior (internara-project §6.1 Settings).
 They reuse the standard settings store under the `features.*` namespace with `BOOLEAN` type —
 no separate table, no separate cache. A dedicated `feature()` helper hides the key namespace.
 
@@ -142,7 +142,7 @@ no separate table, no separate cache. A dedicated `feature()` helper hides the k
 
 ### Image & Color Settings
 
-The high-level requirement (project-requirements §3.2 Settings) lists "image" and "color" among
+The high-level requirement (internara-project §6.1 Settings) lists "image" and "color" among
 enforced setting types. These are **not** dedicated `SettingType` cases — they are `STRING`/
 `JSON` values with domain-level validation (see DD-5). The requirements below make that contract
 explicit.

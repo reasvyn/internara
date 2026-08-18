@@ -297,5 +297,5 @@ Every spec follows the 11-section format defined in `.agents/skills/spec-writing
 
 - `.agents/skills/spec-writing/SKILL.md` — Spec writing conventions and template
 - `.agents/skills/feature-building/SKILL.md` — How specs feed into implementation
-- `docs/foundation/project-requirements.md` — High-level feature specs
+- `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/modules/index.md` — Module dependency graph

@@ -569,7 +569,7 @@ Every page with a non-trivial workflow MUST include a `*-guide.blade.php` compon
 contextual help for the user. The pattern follows the setup wizard's guide component at
 `resources/views/setup/components/setup-guide.blade.php`.
 
-> **See also:** [Project Requirements §6.1](../foundation/project-requirements.md#61-user-guide-components)
+> **See also:** [Internara Project §9.1](../specs/QLHDO-internara-project.md#91-user-guide-components)
 > for the authoritative requirement specification.
 
 ### Requirements

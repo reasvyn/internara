@@ -148,7 +148,7 @@ Request
 | Name | Limit | Use Case |
 |------|-------|----------|
 | `admin` | 60/min per user | Admin actions (settings, user management) |
-| `global` | 30/min per IP | General authenticated routes (project-requirements §7) |
+| `global` | 30/min per IP | General authenticated routes (internara-project §10) |
 
 Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->middleware('throttle:admin')` / `throttle:global` on route groups.
 
@@ -163,11 +163,11 @@ Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->
 | Password confirmation | 5/300s per user+IP | `ConfirmPassword` component (inline `RateLimiter`) | [password-confirmation.md](CQVSK-password-confirmation.md) FR-PC5 |
 
 > The table above is the **single registration point** for the canonical values of
-> project-requirements §7 (login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s) plus
+> internara-project §10 (login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s) plus
 > password confirmation. Enforcement mechanics live in the governing specs (linked above) —
 > login via `AuthThrottleMiddleware`, the others via inline `RateLimiter` in Actions/Components.
 > Implementations MUST use these values; never ad-hoc numbers. Note `global` is per-IP at
-> 30/min per project-requirements §7 (an update from the code's current 120/min — see `git log`).
+> 30/min per internara-project §10 (an update from the code's current 120/min — see `git log`).
 
 ### LogContextMiddleware Payload
 

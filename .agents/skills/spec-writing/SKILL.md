@@ -98,7 +98,7 @@ rules, indexing, and spec lifecycle — nothing else.
 | Documentation conventions | `docs/conventions.md`                     |
 | Doc-writing skill         | `.agents/skills/doc-writing/SKILL.md`     |
 | Feature specs             | `docs/specs/index.md`                     |
-| High-level specs          | `docs/foundation/project-requirements.md` |
+| High-level specs          | `docs/specs/QLHDO-internara-project.md` |
 | Product definition        | `docs/foundation/product-definition.md`   |
 | Module index              | `docs/modules/index.md`                   |
 | Existing specs            | `docs/specs/`                             |
