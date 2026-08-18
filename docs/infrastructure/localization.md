@@ -1,6 +1,6 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-07-21 **Changes:** add submodule translation file convention
+> **Last updated:** 2026-08-16 **Changes:** sync — verify locale system, translation file conventions, RTL support against current lang/ directory and localization.php config
 
 ## Description
 

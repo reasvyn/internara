@@ -1,6 +1,7 @@
 # Assessment — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** add `LogAssessmentFinalized` listener
+> **Last updated:** 2026-08-18 **Changes:** add Data/DTOs section (ScoreIndicator,
+> UpdateAssessmentScores, Rubric Data classes)
 
 ## Description
 
@@ -64,25 +65,41 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 ---
 
+## Data / DTOs
+
+| File                                   | Class                        | Extends    |
+| -------------------------------------- | ---------------------------- | ---------- |
+| `Data/ScoreIndicatorData.php`          | `ScoreIndicatorData`         | `BaseData` |
+| `Data/UpdateAssessmentScoresData.php`  | `UpdateAssessmentScoresData` | `BaseData` |
+| `Rubric/Data/CreateRubricData.php`     | `CreateRubricData`           | `BaseData` |
+| `Rubric/Data/UpdateRubricData.php`     | `UpdateRubricData`           | `BaseData` |
+| `Rubric/Data/CreateCompetencyData.php` | `CreateCompetencyData`       | `BaseData` |
+| `Rubric/Data/UpdateCompetencyData.php` | `UpdateCompetencyData`       | `BaseData` |
+| `Rubric/Data/CreateIndicatorData.php`  | `CreateIndicatorData`        | `BaseData` |
+| `Rubric/Data/UpdateIndicatorData.php`  | `UpdateIndicatorData`        | `BaseData` |
+| `Rubric/Data/DeleteIndicatorData.php`  | `DeleteIndicatorData`        | `BaseData` |
+
+---
+
 ## Livewire Components
 
-| File                                | Component           | Extends     |
-| ----------------------------------- | ------------------- | ----------- |
+| File                                | Component           | Extends        |
+| ----------------------------------- | ------------------- | -------------- |
 | `Livewire/AssessmentGrading.php`    | `AssessmentGrading` | `BaseFormView` |
-| `Livewire/AssessmentView.php`       | `AssessmentView`    | `Component` |
-| `Rubric/Livewire/RubricManager.php` | `RubricManager`     | `Component` |
+| `Livewire/AssessmentView.php`       | `AssessmentView`    | `Component`    |
+| `Rubric/Livewire/RubricManager.php` | `RubricManager`     | `Component`    |
 
 ## Events
 
-| File                            | Event                    | Dispatched By               |
-| ------------------------------- | ------------------------ | --------------------------- |
-| `Events/AssessmentFinalized.php` | `AssessmentFinalized`    | `FinalizeAssessmentAction`  |
+| File                             | Event                 | Dispatched By              |
+| -------------------------------- | --------------------- | -------------------------- |
+| `Events/AssessmentFinalized.php` | `AssessmentFinalized` | `FinalizeAssessmentAction` |
 
 ## Listeners
 
-| File                                   | Listener                   | Listens To           |
-| -------------------------------------- | -------------------------- | -------------------- |
-| `Listeners/LogAssessmentFinalized.php` | `LogAssessmentFinalized`   | `AssessmentFinalized` |
+| File                                   | Listener                 | Listens To            |
+| -------------------------------------- | ------------------------ | --------------------- |
+| `Listeners/LogAssessmentFinalized.php` | `LogAssessmentFinalized` | `AssessmentFinalized` |
 
 ---
 
@@ -98,8 +115,8 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Assessment/`. See [Testing](../infrastructure/testing.md)
-for the testing conventions.
+Tests are located in `tests/Assessment/`. See [Testing](../infrastructure/testing.md) for the
+testing conventions.
 
 ## Factories
 

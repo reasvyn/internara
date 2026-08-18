@@ -1,6 +1,6 @@
 # Getting Started — From Clone to Running Application
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify installation steps, Docker setup, setup wizard, demo data seeding against current setup:install and docker-compose
 
 ## Description
 

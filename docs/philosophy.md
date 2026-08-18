@@ -1,6 +1,6 @@
 # Project Philosophy — Guiding Principles, Values & Vision
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify guiding principles (3S Doctrine, module-first, spec-first) align with current AGENTS.md and architecture
 
 ## Description
 

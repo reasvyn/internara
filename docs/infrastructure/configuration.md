@@ -1,6 +1,6 @@
 # Configuration — Three-Tier Config System
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify three-tier config system (.env, config files, runtime DB settings) against current config/ directory and Settings service
 
 ## Description
 

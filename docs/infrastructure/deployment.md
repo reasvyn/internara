@@ -1,8 +1,7 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-08-16 **Changes:** feat — CI/CD moved back into this repo; direct
-> build-and-deploy workflow (`.github/workflows/build-and-deploy.yml`) replaces the private-repo
-> `repository_dispatch` pipeline; deploy script prunes build cache to bound VPS disk usage
+> **Last updated:** 2026-08-17 **Changes:** fix — PHP-FPM pool `max_children` 2 → 6 (finding #9);
+> entrypoint creates framework dirs + chowns storage at boot (finding #8)
 
 ## Description
 
@@ -486,8 +485,14 @@ The default compose is tuned to run on a **1 GB RAM** VPS:
   `performance_schema=OFF`, `max_connections=50`, etc.) cutting idle memory from ~460 MB to ~125 MB.
 - **Per-service memory limits.** `app` is capped at `256m`, `db` at `384m`, `web` at `64m` — the total
   hard ceiling (~700 MB) plus the host OS fits comfortably in 1 GB and no service can OOM the host.
-- **PHP-FPM is worker-capped.** `docker/php-fpm/www.conf` limits the pool to `pm.max_children=2`
-  (start 1, max spare 2) — enough for demo/school-scale traffic and keeps resident memory small.
+- **PHP-FPM is worker-capped.** `docker/php-fpm/www.conf` limits the pool to `pm.max_children=6`
+  (start 2, max spare 3) — 6 workers stay within the 256 MB `app` cap (~20-40 MB each) while
+  absorbing burst traffic that saturated the previous `max_children=2` pool. Each worker's
+  `php_admin_value[memory_limit] = 128M` bounds a single request's ceiling.
+- **Storage permissions are repaired at boot.** The entrypoint creates the framework dirs
+  (`storage/framework/cache/data`, `sessions`, `views`, `logs`, `bootstrap/cache`) and `chown`s
+  `/app/storage` to `www-data` before PHP-FPM starts, fixing the intermittent cache write
+  `Permission denied` seen when those dirs were created root-owned.
 - **Multi-stage image.** The runtime `app` image excludes `node_modules`, build toolchain, and the Git
   history, keeping the image lean and build memory low.
 - **Build cache stays small.** `.dockerignore` keeps the build context lean; `composer`/`npm`

@@ -1,7 +1,7 @@
 # School Profile — Settings-Based Entity Management
 
 > **Spec ID:** 81SMS
-> **Last updated:** 2026-08-10 **Changes:** review — cross-note email required-at-setup vs
+> **Last updated:** 2026-08-18 **Changes:** review — cross-note email required-at-setup vs
 > nullable-in-editor (see setup-wizard.md DD-5)
 
 ## Description

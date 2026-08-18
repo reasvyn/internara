@@ -1,6 +1,6 @@
 # CI/CD — Pipeline, Automation & Quality Gates
 
-> **Last updated:** 2026-07-10 **Changes:** initial — comprehensive CI/CD pipeline documentation
+> **Last updated:** 2026-08-16 **Changes:** sync — verify CI/CD pipeline against current workflows (ci.yml: quality, architecture, tests, security jobs; build-and-deploy.yml: Docker build/verify + VPS deploy via SSH; deploy.sh: compose up, health check)
 
 ## Description
 

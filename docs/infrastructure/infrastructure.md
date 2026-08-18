@@ -1,6 +1,6 @@
 # Infrastructure — System Architecture Overview
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-16 **Changes:** sync — verify tiered deployment architecture (Tier 1-4), Docker compose, VPS topology against current docker-compose.yml and deployment docs
 
 ## Description
 

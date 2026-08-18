@@ -1,7 +1,7 @@
 # Module Discovery — Feature Specification
 
 > **Spec ID:** I1BCV
-> **Last updated:** 2026-07-31 **Changes:** feat — defer discovery API to module-manager (B114U);
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > ModuleService replaces ModuleDiscoverService, config reads via ModuleManager
 
 ## Description

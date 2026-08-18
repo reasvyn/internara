@@ -1,6 +1,6 @@
 # Developer Tools — Scripts Documentation
 
-> **Last updated:** 2026-07-11 **Changes:** feat — initial documentation of 11 scan scripts
+> **Last updated:** 2026-08-16 **Changes:** sync — verify and align with current scan scripts (scan_violations, scan_class_contracts, scan_security, scan_naming, scan_conventions, scan_doc_links)
 
 ## Description
 

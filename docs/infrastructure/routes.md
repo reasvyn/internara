@@ -1,6 +1,6 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-07-21 **Changes:** fix submodule route file convention — remove module prefix, clarify route naming
+> **Last updated:** 2026-08-16 **Changes:** sync — update middleware class names (SecurityHeadersMiddleware, LogContextMiddleware) per arch-guard fixes; verify route structure against current route files
 
 ## Description
 

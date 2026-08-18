@@ -1,7 +1,7 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
-> replaces `it()` (§4 naming table, §12.2)
+> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
+> `test("{SpecID}-{ReqID}: Test description...")` (§4 naming table, §12.2)
 
 ## Description
 
@@ -265,7 +265,7 @@ doc rather than duplicating conventions here:
 | Config key                 | `snake_case` with `{file}.{key}`                              | `app.name`, `database.default`                                        |
 | Column / table             | `snake_case`                                                  | `user_id`, `academic_year_id`, `academic_years`                       |
 | Boolean method             | `is`/`has`/`can`/`should` prefix                              | `isActive()`, `allowsLogin()`, `canTransitionTo()`                    |
-| Test method                | Pest `test()` with `{SPECID}-{REQ}:` prefix             | `test('SE5Q9-FR-A4: step() records success')`                        |
+| Test method                | Pest `test()` with `{SpecID}-{ReqID}:` prefix, grouped by `describe("{SpecID}: Test description...")` | `test("{SpecID}-{ReqID}: Test description...")`              |
 | Test file                  | `{Name}Test.php`                                              | `CreateUserActionTest.php`, `UserManagerTest.php`                     |
 | Factory                    | `{Name}Factory`                                               | `UserFactory`, `InternshipFactory`                                    |
 | Migration                  | `YYYY_MM_DD_HHMMSS_create_{table}_table.php`                  | `2026_04_29_092750_create_users_table.php`                            |
@@ -641,8 +641,8 @@ methods where the container is not available (e.g., `database/factories/`).
 
 Tests verify the spec — nothing more. A test exists because a requirement in
 `docs/specs/{ID}-{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
-Test descriptions are prefixed with the spec's 5-char ID: `{ID}-{REQ}: description`
-(e.g., `3UOZP-FR-C10: refuses to seed in production`). The ID appears in the filename
+Test descriptions use the `{SpecID}-{ReqID}: Test description...` format, grouped under
+`describe("{SpecID}: Test description...")`. The ID appears in the filename
 (`{ID}-{feature}.md`), the file's `> **Spec ID:**` metadata line, and the index `ID` column.
 
 **Minimalism by design:** write only the tests the spec requires, then stop. This speeds up
@@ -660,11 +660,17 @@ to read, less to maintain.
 Every test description prefixes its spec + requirement ID so traceability is visible in test output:
 
 ```php
-test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
+test("{SpecID}-{ReqID}: Test description...", function () { ... });
 ```
 
-Alternatively, `describe('{SPECID}')` can carry the spec ID once, with `test('{REQ}: ...')` per
-requirement inside it.
+Tests are grouped under `describe("{SpecID}: Test description...")`, which carries the spec ID plus
+a short description; each `test()` inside still prefixes the full `{SpecID}-{ReqID}:`.
+
+```php
+describe("{SpecID}: Test description...", function () {
+    test("{SpecID}-{ReqID}: Test description...", function () { ... });
+});
+```
 
 Code coverage (`php artisan test --coverage`) is a **diagnostic only** — never a mandate for
 writing padding tests. A PR is judged on spec requirements covered, not on line-coverage

@@ -1,6 +1,8 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** add User Data DTOs (UpdateProfileData, CreateUserData, UpdateUserData, SetUserStatusData); move NotificationData entry to Core; spec-driven tests section
+> **Last updated:** 2026-08-18 **Changes:** add GenerateAccountSlipBatchAction,
+> RenderAccountSlipAction to Actions; add User Data DTOs (UpdateProfileData, CreateUserData,
+> UpdateUserData, SetUserStatusData); move NotificationData entry to Core; spec-driven tests section
 
 ## Description
 
@@ -22,7 +24,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Notifications/Actions/DeleteNotificationAction.php`          | `DeleteNotificationAction`         | `BaseCommandAction` |
 | `Notifications/Actions/MarkAllAsReadAction.php`               | `MarkAllAsReadAction`              | `BaseCommandAction` |
 | `Notifications/Actions/MarkAsReadAction.php`                  | `MarkAsReadAction`                 | `BaseCommandAction` |
-| `Notifications/Actions/MarkBatchAsReadAction.php`             | `MarkBatchAsReadAction`            | `BaseCommandAction`  |
+| `Notifications/Actions/MarkBatchAsReadAction.php`             | `MarkBatchAsReadAction`            | `BaseCommandAction` |
 | `Notifications/Actions/SendNotificationAction.php`            | `SendNotificationAction`           | `BaseCommandAction` |
 | `Dashboard/Actions/ReadStudentDashboardAction.php`            | `ReadStudentDashboardAction`       | `BaseReadAction`    |
 | `Dashboard/Actions/ReadSupervisorDashboardAction.php`         | `ReadSupervisorDashboardAction`    | `BaseReadAction`    |
@@ -35,8 +37,10 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `UserManagement/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseCommandAction` |
 | `UserManagement/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseCommandAction` |
 | `UserManagement/Actions/GenerateAccountSlipAction.php`        | `GenerateAccountSlipAction`        | `BaseCommandAction` |
+| `UserManagement/Actions/GenerateAccountSlipBatchAction.php`   | `GenerateAccountSlipBatchAction`   | `BaseProcessAction` |
 | `UserManagement/Actions/ReadRecoveryKeyAction.php`            | `ReadRecoveryKeyAction`            | `BaseReadAction`    |
 | `UserManagement/Actions/ReadUserManagerStatsAction.php`       | `ReadUserManagerStatsAction`       | `BaseReadAction`    |
+| `UserManagement/Actions/RenderAccountSlipAction.php`          | `RenderAccountSlipAction`          | `BaseProcessAction` |
 | `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseCommandAction` |
 | `UserManagement/Actions/SaveRecoveryKeyAction.php`            | `SaveRecoveryKeyAction`            | `BaseCommandAction` |
 | `UserManagement/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseCommandAction` |
@@ -57,26 +61,26 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Enums
 
-| File                           | Enum                 | Implements                | Values                                                                                 |
-| ------------------------------ | -------------------- | ------------------------- | -------------------------------------------------------------------------------------- |
+| File                           | Enum                 | Implements                    | Values                                                                                 |
+| ------------------------------ | -------------------- | ----------------------------- | -------------------------------------------------------------------------------------- |
 | `Enums/AccountStatus.php`      | `AccountStatus`      | `ColorableEnum`, `StatusEnum` | provisioned, activated, verified, protected, restricted, suspended, inactive, archived |
-| `Enums/BloodType.php`          | `BloodType`          | `LabelEnum`               | A, B, AB, O                                                                            |
-| `Enums/EmploymentStatus.php`   | `EmploymentStatus`   | `LabelEnum`               | full_time, part_time, contract, temporary, volunteer                                   |
-| `Enums/Gender.php`             | `Gender`             | `LabelEnum`               | male, female                                                                           |
-| `Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum`               | principal, vice_principal, head_department, teacher, staff                             |
+| `Enums/BloodType.php`          | `BloodType`          | `LabelEnum`                   | A, B, AB, O                                                                            |
+| `Enums/EmploymentStatus.php`   | `EmploymentStatus`   | `LabelEnum`                   | full_time, part_time, contract, temporary, volunteer                                   |
+| `Enums/Gender.php`             | `Gender`             | `LabelEnum`                   | male, female                                                                           |
+| `Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum`                   | principal, vice_principal, head_department, teacher, staff                             |
 
 ---
 
 ## Entities
 
-| File                            | Class              | Extends      |
-| ------------------------------- | ------------------ | ------------ |
-| `Entities/Apprentice.php`       | `Apprentice`       | `BaseEntity` |
-| `Entities/AdminEntity.php`      | `AdminEntity`      | `BaseEntity` |
-| `Entities/StudentEntity.php`    | `StudentEntity`    | `BaseEntity` |
-| `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
-| `Entities/TeacherEntity.php`    | `TeacherEntity`    | `BaseEntity` |
-| `Mentor/Entities/MentorEntity.php` | `MentorEntity` | `BaseEntity` |
+| File                               | Class              | Extends      |
+| ---------------------------------- | ------------------ | ------------ |
+| `Entities/Apprentice.php`          | `Apprentice`       | `BaseEntity` |
+| `Entities/AdminEntity.php`         | `AdminEntity`      | `BaseEntity` |
+| `Entities/StudentEntity.php`       | `StudentEntity`    | `BaseEntity` |
+| `Entities/SupervisorEntity.php`    | `SupervisorEntity` | `BaseEntity` |
+| `Entities/TeacherEntity.php`       | `TeacherEntity`    | `BaseEntity` |
+| `Mentor/Entities/MentorEntity.php` | `MentorEntity`     | `BaseEntity` |
 
 ---
 
@@ -97,19 +101,19 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Listeners
 
-| File                                                            | Class                                   | Listens To                                     |
-| --------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------- |
+| File                                                            | Class                                   | Listens To                                                                                   |
+| --------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------- |
 | `Dashboard/Listeners/ClearDashboardCacheOnYearChange.php`       | `ClearDashboardCacheOnYearChange`       | `AcademicYearCreated`, `AcademicYearActivated`, `AcademicYearUpdated`, `AcademicYearDeleted` |
-| `Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | `DepartmentCreated`, `DepartmentDeleted`, `DepartmentUpdated`       |
-| `Notifications/Listeners/ClearUnreadNotificationCache.php`      | `ClearUnreadNotificationCache`          | `NotificationSent`, `NotificationRead`, `ProfileUpdated`         |
-| `Profile/Listeners/SendProfileChangedMail.php`                  | `SendProfileChangedMail`                | `ProfileUpdated`                                             |
-| `UserManagement/Listeners/InvalidateUserCache.php`              | `InvalidateUserCache`                   | `object` (user model events)                                       |
+| `Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | `DepartmentCreated`, `DepartmentDeleted`, `DepartmentUpdated`                                |
+| `Notifications/Listeners/ClearUnreadNotificationCache.php`      | `ClearUnreadNotificationCache`          | `NotificationSent`, `NotificationRead`, `ProfileUpdated`                                     |
+| `Profile/Listeners/SendProfileChangedMail.php`                  | `SendProfileChangedMail`                | `ProfileUpdated`                                                                             |
+| `UserManagement/Listeners/InvalidateUserCache.php`              | `InvalidateUserCache`                   | `object` (user model events)                                                                 |
 
 ## Livewire Components
 
 | File                                                         | Component                       | Extends             |
 | ------------------------------------------------------------ | ------------------------------- | ------------------- |
-| `Profile/Livewire/ProfileEditor.php`                         | `ProfileEditor`                 | `BaseFormView`     |
+| `Profile/Livewire/ProfileEditor.php`                         | `ProfileEditor`                 | `BaseFormView`      |
 | `Notifications/Livewire/NotificationBell.php`                | `NotificationBell`              | `Component`         |
 | `Notifications/Livewire/NotificationCenter.php`              | `NotificationCenter`            | `BaseRecordManager` |
 | `Livewire/HomePage.php`                                      | `HomePage`                      | `Component`         |
@@ -142,29 +146,29 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Data / DTOs
 
-| File                                                           | Class              | Extends    |
-| -------------------------------------------------------------- | ------------------ | ---------- |
-| `Profile/Data/UpdateProfileData.php`                           | `UpdateProfileData` | `BaseData` |
-| `UserManagement/Data/CreateUserData.php`                       | `CreateUserData`    | `BaseData` |
-| `UserManagement/Data/UpdateUserData.php`                       | `UpdateUserData`    | `BaseData` |
-| `UserManagement/Data/SetUserStatusData.php`                    | `SetUserStatusData` | `BaseData` |
+| File                                        | Class               | Extends    |
+| ------------------------------------------- | ------------------- | ---------- |
+| `Profile/Data/UpdateProfileData.php`        | `UpdateProfileData` | `BaseData` |
+| `UserManagement/Data/CreateUserData.php`    | `CreateUserData`    | `BaseData` |
+| `UserManagement/Data/UpdateUserData.php`    | `UpdateUserData`    | `BaseData` |
+| `UserManagement/Data/SetUserStatusData.php` | `SetUserStatusData` | `BaseData` |
 
 The notification payload DTO `NotificationData` lives in
 `app/Core/Channels/Data/NotificationData.php` (see [Core reference](core-reference.md)).
 
 ## Events
 
-| File                                        | Class              | Dispatched By            | Consumed By                    |
-| ------------------------------------------- | ------------------ | ------------------------ | ------------------------------ |
-| `Notifications/Events/NotificationSent.php` | `NotificationSent` | `SendNotificationAction` | `ClearUnreadNotificationCache` |
-| `Notifications/Events/NotificationRead.php` | `NotificationRead` | `MarkAsReadAction`       | `ClearUnreadNotificationCache` |
-| `Profile/Events/ProfileUpdated.php`         | `ProfileUpdated`   | `UpdateProfileAction`    | `ClearUnreadNotificationCache`, `SendProfileChangedMail` |
-| `AccountStatus/Events/UserAccountLocked.php` | `UserAccountLocked` | `LockUserAccountAction` | — |
-| `AccountStatus/Events/UserAccountUnlocked.php` | `UserAccountUnlocked` | `UnlockUserAccountAction` | — |
-| `UserManagement/Events/UserCreated.php`     | `UserCreated`       | `CreateUserAction`       | — |
-| `UserManagement/Events/UserUpdated.php`     | `UserUpdated`       | `UpdateUserAction`       | — |
-| `UserManagement/Events/UserDeleted.php`     | `UserDeleted`       | `DeleteUserAction`       | — |
-| `UserManagement/Events/UserStatusChanged.php` | `UserStatusChanged` | `SetUserStatusAction`, `ToggleUserStatusAction` | — |
+| File                                           | Class                 | Dispatched By                                   | Consumed By                                              |
+| ---------------------------------------------- | --------------------- | ----------------------------------------------- | -------------------------------------------------------- |
+| `Notifications/Events/NotificationSent.php`    | `NotificationSent`    | `SendNotificationAction`                        | `ClearUnreadNotificationCache`                           |
+| `Notifications/Events/NotificationRead.php`    | `NotificationRead`    | `MarkAsReadAction`                              | `ClearUnreadNotificationCache`                           |
+| `Profile/Events/ProfileUpdated.php`            | `ProfileUpdated`      | `UpdateProfileAction`                           | `ClearUnreadNotificationCache`, `SendProfileChangedMail` |
+| `AccountStatus/Events/UserAccountLocked.php`   | `UserAccountLocked`   | `LockUserAccountAction`                         | —                                                        |
+| `AccountStatus/Events/UserAccountUnlocked.php` | `UserAccountUnlocked` | `UnlockUserAccountAction`                       | —                                                        |
+| `UserManagement/Events/UserCreated.php`        | `UserCreated`         | `CreateUserAction`                              | —                                                        |
+| `UserManagement/Events/UserUpdated.php`        | `UserUpdated`         | `UpdateUserAction`                              | —                                                        |
+| `UserManagement/Events/UserDeleted.php`        | `UserDeleted`         | `DeleteUserAction`                              | —                                                        |
+| `UserManagement/Events/UserStatusChanged.php`  | `UserStatusChanged`   | `SetUserStatusAction`, `ToggleUserStatusAction` | —                                                        |
 
 ## Notifications (Mail)
 
@@ -184,10 +188,10 @@ The notification payload DTO `NotificationData` lives in
 
 ## Support
 
-| File                                  | Class                     | Purpose                             |
-| ------------------------------------- | ------------------------- | ----------------------------------- |
+| File                                   | Class                     | Purpose                             |
+| -------------------------------------- | ------------------------- | ----------------------------------- |
 | `Services/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates usernames and identifiers |
-| `Services/DashboardService.php`       | `DashboardService`        | Dashboard data aggregation          |
+| `Services/DashboardService.php`        | `DashboardService`        | Dashboard data aggregation          |
 
 ## Rules
 
@@ -215,8 +219,8 @@ The notification payload DTO `NotificationData` lives in
 
 File: `routes/web/user.php` Named routes: `home`, `dashboard`, `user.dashboard`, `profile`,
 `profile.recovery`, `notifications`, `logout`, `password.request`, `password.reset`,
-`recover.account`, `password.confirm`; role dashboards at `sysadmin.dashboard`,
-`student.dashboard`, `teacher.dashboard`, `supervisor.dashboard`
+`recover.account`, `password.confirm`; role dashboards at `sysadmin.dashboard`, `student.dashboard`,
+`teacher.dashboard`, `supervisor.dashboard`
 
 ## Views
 
@@ -225,10 +229,10 @@ system.
 
 ## Tests
 
-Tests are located in `tests/User/`. See [Testing](../infrastructure/testing.md) for
-the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
-(`FR-*` / `NFR-*` / `UC-*`) using the `test("{SPECID}-{REQ}: ...")` convention; there is no
-one-test-per-class mandate.
+Tests are located in `tests/User/`. See [Testing](../infrastructure/testing.md) for the testing
+conventions. Tests are spec-driven: each test traces to a spec requirement ID (`FR-*` / `NFR-*` /
+`UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention (grouped under
+`describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.
 
 ## Factories
 

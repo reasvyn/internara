@@ -1,7 +1,7 @@
 # RBAC & Authorization — Role-Based Access Control
 
 > **Spec ID:** T4B26
-> **Last updated:** 2026-08-10 **Changes:** add — canonical Cross-Role Proxy contract (§4.2, project-requirements §4.1): proxy matrix, configurable inactivity window, admin proxy, proxy metadata tagging; align FR-AUTH10
+> **Last updated:** 2026-08-18 **Changes:** add — canonical Cross-Role Proxy contract (§4.2, project-requirements §4.1): proxy matrix, configurable inactivity window, admin proxy, proxy metadata tagging; align FR-AUTH10
 
 ## Description
 

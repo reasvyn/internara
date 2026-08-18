@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, DTOs, Events, Listeners, Notifications, Livewire Components, Forms, Rules, Form Requests, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-17 **Changes:** add `add_registration_dates_to_internships_table` migration to Migrations table
 
 ## Description
 
@@ -151,6 +151,7 @@ for the testing conventions.
 | Migration                                | Table                         |
 | ---------------------------------------- | ----------------------------- |
 | `create_internships_table`               | `internships`                 |
+| `add_registration_dates_to_internships_table` | `internships`             |
 | `create_internship_groups_table`         | `internship_groups` + `internship_group_members` |
 
 ---

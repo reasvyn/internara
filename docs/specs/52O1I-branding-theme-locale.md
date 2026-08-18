@@ -1,7 +1,7 @@
 # Branding, Theme & Locale — Identity, Appearance & Language Switching
 
 > **Spec ID:** 52O1I
-> **Last updated:** 2026-08-10 **Changes:** review — add custom CSS (FR-B11–FR-B13, DD-4),
+> **Last updated:** 2026-08-18 **Changes:** review — add custom CSS (FR-B11–FR-B13, DD-4),
 > define locale resolution chain from stored `default_locale` setting (FR-L7, DD-5)
 
 ## Description

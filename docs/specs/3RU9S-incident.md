@@ -1,7 +1,7 @@
 # Incident — Workplace Incident Reporting, Investigation & Resolution
 
 > **Spec ID:** 3RU9S
-> **Last updated:** 2026-07-22 **Changes:** feat — initial spec covering incident report creation,
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > investigation workflow, severity classification, resolution tracking, and notification dispatch
 
 ## Description

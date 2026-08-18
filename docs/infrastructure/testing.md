@@ -1,7 +1,7 @@
 # Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-08-16 **Changes:** test naming convention — `test("{SPECID}-{REQ}: ...")`
-> replaces `it()`; `describe('{SPECID}')` alternative for spec-ID grouping
+> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
+> `test("{SpecID}-{ReqID}: Test description...")` replaces `it()` / `describe('{SPECID}')`
 
 ## Description
 
@@ -99,18 +99,18 @@ The three Action types map to distinct approaches:
 Tests use `test()` with the requirement ID prefixed, so traceability is visible in test output:
 
 ```php
-test('SE5Q9-FR-A4: step() records success and returns the step result', function () { ... });
-test('SE5Q9-FR-A4: step() records failure and rethrows the exception', function () { ... });
+test("{SpecID}-{ReqID}: Test description...", function () { ... });
+test("{SpecID}-{ReqID}: Test description...", function () { ... });
 ```
 
-The description carries the spec ID and the requirement ID (`{SPECID}-{REQ}: description`). For
-flat files, use `describe('{SPECID}')` to carry the spec ID once, then prefix each `test()` with the
-requirement ID only:
+The description carries the spec ID and the requirement ID (`{SpecID}-{ReqID}: description`). Group
+tests under `describe("{SpecID}: Test description...")` (spec ID plus a short description), and keep
+the full `{SpecID}-{ReqID}:` prefix on each `test()` inside:
 
 ```php
-describe('SE5Q9', function () {
-    test('FR-A4: step() records success and returns the step result', function () { ... });
-    test('FR-A4: step() records failure and rethrows the exception', function () { ... });
+describe("{SpecID}: Test description...", function () {
+    test("{SpecID}-{ReqID}: Test description...", function () { ... });
+    test("{SpecID}-{ReqID}: Test description...", function () { ... });
 });
 ```
 

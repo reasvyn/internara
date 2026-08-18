@@ -1,7 +1,7 @@
 # User CRUD & Account Status — Multi-Role Management & State Machine
 
 > **Spec ID:** 95EVB
-> **Last updated:** 2026-07-22 **Changes:** feat — split from `user-management.md` covering user
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > CRUD operations, AccountStatus state machine with 8 states, profile editing, role-specific
 > Livewire managers, super admin protection, batch operations, password reset, account lifecycle
 > auto-inactivation, and recovery key management

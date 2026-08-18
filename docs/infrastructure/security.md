@@ -1,6 +1,6 @@
 # Security — Infrastructure, Privacy & Compliance
 
-> **Last updated:** 2026-07-22 **Changes:** initial — create infrastructure security reference
+> **Last updated:** 2026-08-16 **Changes:** sync — update middleware class names (SecurityHeadersMiddleware); verify security headers, rate limiting, and PII handling against current implementation
 
 ## Description
 

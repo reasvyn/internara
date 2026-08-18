@@ -1,7 +1,7 @@
 # Company Management — CRUD, Deletion Guards, CSV Import & Dashboard Stats
 
 > **Spec ID:** XI3LB
-> **Last updated:** 2026-08-10 **Changes:** review — align `CompanyPolicy::delete()` guard with
+> **Last updated:** 2026-08-18 **Changes:** review — align `CompanyPolicy::delete()` guard with
 > `CompanyState::canBeDeleted()` (deny on placements **or** partnerships, FR-CC6, DD-1); policy
 > and entity guards must never diverge
 

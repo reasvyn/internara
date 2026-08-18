@@ -1,7 +1,7 @@
 # CSV Import & Export — Bulk Data Operations
 
 > **Spec ID:** O2KCR
-> **Last updated:** 2026-07-22 **Changes:** feat — consolidated cross-module CSV import/export from
+> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
 > `user-crud-and-status.md`, `company-management.md`, and `department-management.md` into standalone spec
 
 ## Description

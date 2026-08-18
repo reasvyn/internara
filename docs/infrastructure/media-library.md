@@ -1,6 +1,6 @@
 # Media Library — File Uploads & Media Management
 
-> **Last updated:** 2026-07-11 **Changes:** sync — consolidate S3 config into filesystem.md, keep migration guidance
+> **Last updated:** 2026-08-16 **Changes:** sync — verify Spatie MediaLibrary collections, conversions, responsive images against current medialibrary.php config and module usage
 
 ## Description
 

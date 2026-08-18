@@ -1,7 +1,7 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
 > **Spec ID:** C8F0D
-> **Last updated:** 2026-08-10 **Changes:** add — cross-reference `setting()`/`brand()` helpers (project-requirements §4.4) to settings-infrastructure.md
+> **Last updated:** 2026-08-18 **Changes:** add — cross-reference `setting()`/`brand()` helpers (project-requirements §4.4) to settings-infrastructure.md
 
 ## Description
 

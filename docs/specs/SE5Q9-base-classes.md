@@ -1,7 +1,7 @@
 # Base Classes — Action Triad, Data Layer, UI Layer, Policies & Contracts
 
 > **Spec ID:** SE5Q9
-> **Last updated:** 2026-08-10 **Changes:** add — BaseRecordManager Extra Menu capability (import/export/template download, project-requirements §6.2)
+> **Last updated:** 2026-08-18 **Changes:** add — BaseRecordManager Extra Menu capability (import/export/template download, project-requirements §6.2)
 
 ## Description
 

@@ -1,7 +1,7 @@
 # System Requirements — Dependencies, Platform & Database
 
 > **Spec ID:** J68GZ
-> **Last updated:** 2026-08-10 **Changes:** add — System Health 15-point contract (§4.5, project-requirements §3.1), cross-referencing system-maintenance.md
+> **Last updated:** 2026-08-18 **Changes:** add — System Health 15-point contract (§4.5, project-requirements §3.1), cross-referencing system-maintenance.md
 
 ## Description
 

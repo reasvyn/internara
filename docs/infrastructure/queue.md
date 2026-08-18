@@ -1,6 +1,6 @@
 # Queue — Queue Configuration & Job Processing
 
-> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed heading and typo (#Queue → ## Processing, Processinging → Processing)
+> **Last updated:** 2026-08-16 **Changes:** sync — verify queue driver, job classes (SysAdmin/SendAnnouncementJob, User/ArchiveStudentAccountsJob), failure handling against current queue.php config and jobs
 
 ## Description
 
