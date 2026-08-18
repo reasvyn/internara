@@ -203,7 +203,7 @@ This matrix tracks implementation fulfillment, test coverage, and verification s
 | Priority | ID | Spec | Module | Impl Status | Test Coverage | Last Verified | Notes |
 |----------|----|------|--------|-------------|---------------|---------------|-------|
 | 🔴 Critical | QLHDO | [Internara Project (Umbrella)](QLHDO-internara-project.md) | Core | 🟩 Implemented | 🟧 Spec-Gap | 2026-08-18 | Spec-zero blanket: roles, localization, audit, UUID, health; lifecycle FR-L1–L12 map to phase specs |
-| 🔴 Critical | D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Governing architecture contract; 266 Core tests |
+| 🔴 Critical | D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Governing architecture contract; 280 Core tests |
 | 🔴 Critical | FB792 | [Tech Stack](FB792-tech-stack.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Dependency manifest; pinned versions |
 | 🔴 Critical | ZT6VS | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | SmartLogger, SettingsStore, SendsNotifications |
 | 🔴 Critical | SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | BaseAction, BaseModel, BaseEntity, BasePolicy |
