@@ -7,6 +7,12 @@ return [
     'rate_limited' => 'Too many setup attempts. Please try again in :seconds seconds.',
     'invalid_token' => 'The setup token is invalid or has expired.',
 
+    'audit_failed' => 'System audit check failed.',
+    'token_missing' => 'Setup token is missing from the system.',
+    'token_expired' => 'Setup token has expired.',
+    'token_malformed' => 'Setup token is malformed or corrupted.',
+    'token_mismatch' => 'The provided setup token does not match.',
+
     'checks' => [
         'php_version' => 'PHP Version >= :required',
         'php_version_pass' => 'PHP :current installed',

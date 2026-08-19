@@ -49,6 +49,7 @@ return [
     'complete_filtered' => 'Complete All Filtered',
     'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
     'import_summary' => ':created internships imported, :skipped skipped (duplicates).',
+    'delete_group_blocked' => 'Cannot delete a group with active members.',
     'template_example_name' => 'e.g. PKL Semester Ganjil 2026/2027',
     'template_example_description' => 'e.g. Internship program for odd semester',
     'requirements' => 'Document Requirements',

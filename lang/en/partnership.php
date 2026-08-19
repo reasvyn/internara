@@ -56,6 +56,7 @@ return [
     'terminate' => 'Terminate',
     'terminate_success' => 'Partnership terminated successfully.',
     'terminate_confirm' => 'Terminate this partnership? This action cannot be undone.',
+    'terminate_blocked' => 'Only active partnerships can be terminated.',
 
     'guide' => [
         'title' => 'Partnership Guide',

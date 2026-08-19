@@ -32,6 +32,7 @@ return [
     'resolve_success' => 'Incident resolved successfully.',
     'resolution_notes' => 'Resolution Notes',
     'resolution_notes_placeholder' => 'Describe how this incident was resolved',
+    'already_closed' => 'This incident is already closed.',
 
     'types' => [
         'accident' => 'Accident',

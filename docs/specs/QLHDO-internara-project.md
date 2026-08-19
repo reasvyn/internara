@@ -1,19 +1,13 @@
-# Internara Project — Initial Specification (Umbrella)
+# Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-18 **Changes:** merge — absorbed
-> `docs/foundation/project-requirements.md` (role model, feature specifications per lifecycle phase,
-> cross-cutting features, UI/UX requirements, security, regulatory compliance, per-role usability
-> indicators) so the umbrella spec is the single home for high-level requirements; anchors the full
-> build order as the **spec-zero** blanket over all phase specs; defines product scope, lifecycle,
-> module landscape, roles, global (cross-cutting) requirements, design decisions, and the
-> project-level roadmap.
+> **Last updated:** 2026-08-19 **Changes:** title updated from "Umbrella" to "Initial Specification"; spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
 
 ## Description
 
 This is the **initial specification** of the Internara system — a self-hosted, single-tenant web
 application for managing compulsory industrial fieldwork programs (PKL — _Praktik Kerja Lapangan_)
-at Indonesian vocational schools (SMA/SMK). It is the **umbrella/blanket spec**: it establishes the
+at Indonesian vocational schools (SMA/SMK). It is the **spec-zero blanket spec**: it establishes the
 product boundary, the 12-phase lifecycle, the 18-module landscape, the role model, the global
 (cross-cutting) requirements every feature spec inherits, and the **high-level feature
 specifications** per lifecycle phase. All other specs in `docs/specs/` derive scope and defaults
@@ -838,7 +832,7 @@ run those systems externally.
 
 ### Prerequisites
 
-None — this is the foundational, **spec-zero** umbrella specification. Every other spec (and the
+None — this is the foundational, **spec-zero** initial specification. Every other spec (and the
 architecture-first build order) operates inside its scope.
 
 ### Build Guide
@@ -847,7 +841,7 @@ Implement the lifecycle in dependency order — the Foundation phase specs first
 ([D2FT3](D2FT3-architecture.md) architecture, then [FB792](FB792-tech-stack.md) tech stack,
 [ZT6VS](ZT6VS-core-infra-services.md) infra services, [SE5Q9](SE5Q9-base-classes.md) base classes),
 then each subsequent phase in build order as listed in [docs/specs/index.md](index.md). Each phase's
-feature spec drives its own implementation; this spec remains the umbrella reference for global
+feature spec drives its own implementation; this spec remains the spec-zero reference for global
 cross-cutting requirements (roles, localization, security, audit).
 
 ### Next Steps
@@ -869,5 +863,5 @@ cross-cutting requirements (roles, localization, security, audit).
 - `docs/modules/index.md` — module dependency graph and registration
 - `config/module.php` — module bootstrap order
 - `docs/architecture.md` — 4-layer model, Action Triad
-- **Related specs:** every spec in this directory — each derives scope from this umbrella and/or is
+- **Related specs:** every spec in this directory — each derives scope from this spec-zero and/or is
   indexed under [index.md](index.md)
