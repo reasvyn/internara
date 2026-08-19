@@ -41,7 +41,7 @@ test('89SRA-FR-EH7: ValidationFailedException extends ActionException with statu
     expect($exception->getHint())->not->toBeNull();
 });
 
-test('89SRA-FR-E5: UnauthorizedException extends PresentationException with status 403', function () {
+test('89SRA-FR-EH8: UnauthorizedException extends PresentationException with status 403', function () {
     $exception = new UnauthorizedException;
 
     expect($exception)->toBeInstanceOf(PresentationException::class);
@@ -57,7 +57,7 @@ test('89SRA-FR-EH9: InfrastructureException defaults to status 500 and is not us
     expect($exception->isUserFacing())->toBeFalse();
 });
 
-test('89SRA-FR-E7: HasExceptionContext provides hint, context, CLI output and reporting', function () {
+test('89SRA-FR-EH4: HasExceptionContext provides hint, context, CLI output and reporting', function () {
     $exception = new RejectedException('Nope')
         ->withHint('Provide a valid value.')
         ->withContext(['password' => 'secret-value', 'visible' => 'kept']);
