@@ -2,42 +2,59 @@
     <button
         type="button"
         x-on:click="showGuide = true"
-        class="fixed bottom-6 right-6 z-50 flex items-center justify-center size-12 rounded-full shadow-xl bg-primary text-primary-content hover:bg-primary-focus transition-all duration-200 hover:scale-110 active:scale-95"
+        class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
         aria-label="{{ __('certificate.guide.template_title') }}"
     >
         <x-mary-icon name="o-question-mark-circle" class="size-6" />
     </button>
 
     <template x-teleport="body">
-        <div x-show="showGuide" x-cloak class="fixed inset-0 z-[60] flex items-center justify-center">
+        <div
+            x-show="showGuide"
+            x-cloak
+            x-on:keydown.escape.window="showGuide = false"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="guide-title"
+            class="fixed inset-0 z-[60] flex items-center justify-center"
+        >
             <div x-on:click="showGuide = false" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-            <div class="relative w-full max-w-lg bg-base-100 rounded-2xl shadow-2xl border border-base-content/10 max-h-[85vh] overflow-y-auto">
-                <div class="sticky top-0 bg-base-100 border-b border-base-content/10 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                    <h3 class="text-lg font-bold">{{ __('certificate.guide.template_title') }}</h3>
-                    <button type="button" x-on:click="showGuide = false" class="btn btn-ghost btn-sm btn-square">
+            <div class="bg-base-100 border-base-content/10 relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border shadow-2xl">
+                <div class="bg-base-100 border-base-content/10 sticky top-0 flex items-center justify-between rounded-t-2xl border-b px-6 py-4">
+                    <h3 id="guide-title" class="text-lg font-bold">{{ __('certificate.guide.template_title') }}</h3>
+                    <button
+                        type="button"
+                        x-on:click="showGuide = false"
+                        aria-label="{{ __('common.actions.close') }}"
+                        class="btn btn-ghost btn-sm btn-square"
+                    >
                         <x-mary-icon name="o-x-mark" class="size-5" />
                     </button>
                 </div>
-                <div class="p-6 space-y-5">
-                    <p class="text-sm text-base-content/60">{{ __('certificate.guide.template_intro') }}</p>
+                <div class="space-y-5 p-6">
+                    <p class="text-base-content/60 text-sm">{{ __('certificate.guide.template_intro') }}</p>
 
                     <div class="flex gap-4">
-                        <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5">
+                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
                             <x-mary-icon name="o-plus-circle" class="size-4" />
                         </div>
                         <div>
-                            <h4 class="font-semibold text-sm">{{ __('certificate.guide.template_create_title') }}</h4>
-                            <p class="text-xs text-base-content/60 mt-1 leading-relaxed">{{ __('certificate.guide.template_create_desc') }}</p>
+                            <h4 class="text-sm font-semibold">{{ __('certificate.guide.template_create_title') }}</h4>
+                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
+                                {{ __('certificate.guide.template_create_desc') }}
+                            </p>
                         </div>
                     </div>
 
                     <div class="flex gap-4">
-                        <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary shrink-0 mt-0.5">
+                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
                             <x-mary-icon name="o-paint-brush" class="size-4" />
                         </div>
                         <div>
-                            <h4 class="font-semibold text-sm">{{ __('certificate.guide.template_design_title') }}</h4>
-                            <p class="text-xs text-base-content/60 mt-1 leading-relaxed">{{ __('certificate.guide.template_design_desc') }}</p>
+                            <h4 class="text-sm font-semibold">{{ __('certificate.guide.template_design_title') }}</h4>
+                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
+                                {{ __('certificate.guide.template_design_desc') }}
+                            </p>
                         </div>
                     </div>
                 </div>

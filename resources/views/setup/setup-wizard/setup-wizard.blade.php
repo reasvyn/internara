@@ -1,11 +1,10 @@
 <div>
     {{-- Progress Bar --}}
     <div class="mb-10" role="group" aria-label="{{ __('setup.wizard.progress_label') }}">
-        <div class="flex items-center justify-between mb-2">
+        <div class="mb-2 flex items-center justify-between">
             <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.wizard.title') }}</h1>
-            <span class="text-xs font-medium text-base-content/50" aria-live="polite">
-                {{ __('setup.wizard.step_of', ['current' => $currentStep, 'total' => count($stepKeys)]) }}
-                &middot; {{ $appName }} v{{ $appVersion }}
+            <span class="text-base-content/50 text-xs font-medium" aria-live="polite">
+                {{ __('setup.wizard.step_of', ['current' => $currentStep, 'total' => count($stepKeys)]) }} &middot; {{ $appName }} v{{ $appVersion }}
             </span>
         </div>
 
@@ -17,27 +16,27 @@
             aria-label="{{ __('setup.wizard.progress_aria', ['current' => $currentStep, 'total' => count($stepKeys)]) }}"
             class="flex items-center justify-between"
         >
-            @foreach($stepKeys as $index => $stepKey)
+            @foreach ($stepKeys as $index => $stepKey)
                 @php
                     $stepNum = $index + 1;
                     $isCompleted = $stepNum < $currentStep;
                     $isCurrent = $stepNum === $currentStep;
-                    $label = __('setup.wizard.step_labels.' . $stepKey);
+                    $label = __('setup.wizard.step_labels.'.$stepKey);
                 @endphp
-                <div class="flex flex-col items-center gap-1.5 flex-1">
+                <div class="flex flex-1 flex-col items-center gap-1.5">
                     <div
                         @class([
                             'size-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 shrink-0',
                             'bg-primary text-primary-content' => $isCompleted,
                             'bg-primary/20 text-primary ring-2 ring-primary' => $isCurrent,
-                            'bg-base-content/10 text-base-content/30' => !$isCompleted && !$isCurrent,
+                            'bg-base-content/10 text-base-content/60' => ! $isCompleted && ! $isCurrent,
                         ])
-                        @if($isCurrent)
+                        @if ($isCurrent)
                             wire:key="step-indicator-{{ $stepNum }}"
                         @endif
                         role="status"
                     >
-                        @if($isCompleted)
+                        @if ($isCompleted)
                             <x-mary-icon name="o-check" class="size-4" />
                         @else
                             {{ $stepNum }}
@@ -46,18 +45,18 @@
                     <span @class([
                         'text-[10px] font-medium uppercase tracking-wider transition-colors text-center leading-tight',
                         'text-primary' => $isCurrent,
-                        'text-base-content/30' => !$isCurrent && !$isCompleted,
-                        'text-base-content/50' => $isCompleted && !$isCurrent,
+                        'text-base-content/60' => ! $isCurrent && ! $isCompleted,
+                        'text-base-content/50' => $isCompleted && ! $isCurrent,
                     ])>
                         {{ $label }}
                     </span>
                 </div>
-                @if(!$loop->last)
+                @if (! $loop->last)
                     <div
                         @class([
                             'flex-1 h-0.5 mx-1 transition-colors duration-300 -mt-5',
                             'bg-primary' => $isCompleted,
-                            'bg-base-content/10' => !$isCompleted,
+                            'bg-base-content/10' => ! $isCompleted,
                         ])
                         aria-hidden="true"
                     ></div>
@@ -67,7 +66,8 @@
     </div>
 
     {{-- Step Content with Transition --}}
-    <div class="bg-base-100 border border-base-content/10 rounded-xl relative"
+    <div
+        class="bg-base-100 border-base-content/10 relative rounded-xl border"
         x-data="{ loading: false }"
         x-on:finishing.window="loading = true"
         x-on:finished.window="loading = false"
@@ -78,46 +78,47 @@
             x-transition:enter-start="opacity-0 translate-y-2"
             x-transition:enter-end="opacity-100 translate-y-0"
         >
-            @if($currentStep === 1)
+            @if ($currentStep === 1)
                 @include('setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
             @endif
 
-            @if($currentStep === 2)
+            @if ($currentStep === 2)
                 @include('setup.components.admin-step')
             @endif
 
-            @if($currentStep === 3)
+            @if ($currentStep === 3)
                 @include('setup.components.school-step')
             @endif
 
-            @if($currentStep === 4)
+            @if ($currentStep === 4)
                 @include('setup.components.department-step')
             @endif
 
-            @if($currentStep === 5)
+            @if ($currentStep === 5)
                 @include('setup.components.finalize-step')
             @endif
 
-            @if($currentStep === 6)
+            @if ($currentStep === 6)
                 @include('setup.components.complete-step')
             @endif
         </div>
 
         {{-- Loading Overlay for Finalization --}}
         <div
-            wire:loading wire:target="finish"
-            class="absolute inset-0 z-20 bg-base-100/90 backdrop-blur-sm rounded-xl flex items-center justify-center"
+            wire:loading
+            wire:target="finish"
+            class="bg-base-100/90 absolute inset-0 z-20 flex items-center justify-center rounded-xl backdrop-blur-sm"
         >
-            <div class="text-center p-8">
-                <div class="flex items-center justify-center mb-5">
+            <div class="p-8 text-center">
+                <div class="mb-5 flex items-center justify-center">
                     <div class="loading loading-spinner loading-lg text-primary"></div>
                 </div>
-                <h3 class="text-lg font-bold mb-2">{{ __('setup.wizard.installing_title') }}</h3>
-                <p class="text-sm text-base-content/50 max-w-xs mx-auto">{{ __('setup.wizard.installing_desc') }}</p>
-                <div class="flex items-center justify-center gap-1.5 mt-5">
-                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
-                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0.15s"></span>
-                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0.3s"></span>
+                <h3 class="mb-2 text-lg font-bold">{{ __('setup.wizard.installing_title') }}</h3>
+                <p class="text-base-content/50 mx-auto max-w-xs text-sm">{{ __('setup.wizard.installing_desc') }}</p>
+                <div class="mt-5 flex items-center justify-center gap-1.5">
+                    <span class="bg-primary size-2 animate-bounce rounded-full" style="animation-delay: 0s"></span>
+                    <span class="bg-primary size-2 animate-bounce rounded-full" style="animation-delay: 0.15s"></span>
+                    <span class="bg-primary size-2 animate-bounce rounded-full" style="animation-delay: 0.3s"></span>
                 </div>
             </div>
         </div>

@@ -174,6 +174,7 @@
 
                     <x-slot:actions>
                         <x-mary-button
+                            aria-label="{{ __('common.actions.remove') }}"
                             :label="__('profile.update_password')"
                             type="submit"
                             class="btn-primary"

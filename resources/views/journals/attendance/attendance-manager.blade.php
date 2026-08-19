@@ -57,6 +57,7 @@
                                 @if (isset($existing[$registration->id]))
                                     @if (! $existing[$registration->id]->is_verified)
                                         <x-mary-button
+                                            aria-label="{{ __('journals.verify') }}"
                                             wire:click="verifyAttendance('{{ $existing[$registration->id]->id }}')"
                                             icon="o-check"
                                             class="btn-xs btn-success"

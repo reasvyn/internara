@@ -194,6 +194,8 @@
                     </div>
                     <div class="mt-4 flex justify-end">
                         <x-mary-button
+                            aria-label="{{ __('common.actions.remove') }}"
+                            aria-label="{{ __('common.actions.remove') }}"
                             label="{{ __('setting.buttons.test_mail') }}"
                             icon-right="o-paper-airplane"
                             class="btn-ghost btn-sm"

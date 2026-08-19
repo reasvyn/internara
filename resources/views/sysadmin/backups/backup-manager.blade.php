@@ -1,6 +1,6 @@
 @php
-    use App\SysAdmin\Backups\Enums\BackupType;
     use App\SysAdmin\Backups\Enums\BackupStatus;
+    use App\SysAdmin\Backups\Enums\BackupType;
 @endphp
 
 <div>
@@ -10,14 +10,26 @@
                 <x-slot:trigger>
                     <x-mary-button label="{{ __('backups.create_button') }}" icon="o-arrow-path" class="btn-primary" />
                 </x-slot:trigger>
-                <x-mary-menu-item title="{{ BackupType::DATABASE->label() }}" wire:click="createBackup('{{ BackupType::DATABASE->value }}')" icon="o-circle-stack" />
-                <x-mary-menu-item title="{{ BackupType::STORAGE->label() }}" wire:click="createBackup('{{ BackupType::STORAGE->value }}')" icon="o-folder" />
-                <x-mary-menu-item title="{{ BackupType::BOTH->label() }}" wire:click="createBackup('{{ BackupType::BOTH->value }}')" icon="o-archive-box" />
+                <x-mary-menu-item
+                    title="{{ BackupType::DATABASE->label() }}"
+                    wire:click="createBackup('{{ BackupType::DATABASE->value }}')"
+                    icon="o-circle-stack"
+                />
+                <x-mary-menu-item
+                    title="{{ BackupType::STORAGE->label() }}"
+                    wire:click="createBackup('{{ BackupType::STORAGE->value }}')"
+                    icon="o-folder"
+                />
+                <x-mary-menu-item
+                    title="{{ BackupType::BOTH->label() }}"
+                    wire:click="createBackup('{{ BackupType::BOTH->value }}')"
+                    icon="o-archive-box"
+                />
             </x-mary-dropdown>
         </x-slot:actions>
     </x-mary-header>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
         <x-mary-stat
             title="{{ __('backups.total') }}"
             value="{{ $this->stats['total'] }}"
@@ -45,7 +57,7 @@
     </div>
 
     <x-mary-card>
-        <div class="flex gap-4 mb-4">
+        <div class="mb-4 flex gap-4">
             <x-mary-select
                 label="{{ __('backups.filter_type') }}"
                 wire:model.live="filterType"
@@ -91,6 +103,7 @@
                 <div class="flex gap-1">
                     @if ($backup->asBackupState()->isDeletable())
                         <x-mary-button
+                            aria-label="{{ __('common.actions.delete') }}"
                             icon="o-trash"
                             class="btn-ghost btn-sm text-error"
                             wire:click="confirmDelete('{{ $backup->id }}')"

@@ -42,7 +42,7 @@
             </div>
         </x-mary-card>
     @else
-        <div class="text-base-content/20 py-12 text-center">
+        <div class="text-base-content/60 py-12 text-center">
             <x-mary-icon name="o-document" class="mb-3 size-12" />
             <p class="text-sm font-medium">{{ __('registration.doc_no_registration') }}</p>
         </div>

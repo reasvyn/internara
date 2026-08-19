@@ -127,7 +127,7 @@
                             {{ \Illuminate\Support\Str::limit($entry->supervisor_note, 60) }}
                         </div>
                     @else
-                        <span class="text-base-content/30 text-xs italic">{{ __('logbook.no_supervisor_note') }}</span>
+                        <span class="text-base-content/60 text-xs italic">{{ __('logbook.no_supervisor_note') }}</span>
                     @endif
                 @endscope
 

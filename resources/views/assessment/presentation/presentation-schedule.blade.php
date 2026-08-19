@@ -3,12 +3,20 @@
     :subtitle="__('assessment.presentation_subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button :label="__('assessment.presentation_add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button
+            :label="__('assessment.presentation_add')"
+            icon="o-plus"
+            class="btn-primary btn-sm"
+            wire:click="create"
+        />
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <x-mary-select wire:model.live="filters.status" :placeholder="__('assessment.presentation_status')"
-            :options="collect($statusOptions)->mapWithKeys(fn($s) => [$s->value => $s->label()])->toArray()" />
+        <x-mary-select
+            wire:model.live="filters.status"
+            :placeholder="__('assessment.presentation_status')"
+            :options="collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+        />
     </x-slot:filters>
 
     <div class="overflow-x-auto">
@@ -20,9 +28,12 @@
             class="table-sm"
         >
             @scope('cell_status', $p)
-                <x-mary-badge :value="$p->status->label()" :class="match($p->status->value) {
+                <x-mary-badge
+                    :value="$p->status->label()"
+                    :class="match($p->status->value) {
                     'scheduled' => 'badge-info', 'completed' => 'badge-success', 'cancelled' => 'badge-error', default => 'badge-ghost',
-                }" />
+                }"
+                />
             @endscope
 
             @scope('cell_scheduled_at', $p)
@@ -39,8 +50,13 @@
 
             @scope('actions', $p)
                 <div class="flex justify-end gap-1">
-                    @if($p->status->value === 'scheduled')
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="setupScoring('{{ $p->id }}')" />
+                    @if ($p->status->value === 'scheduled')
+                        <x-mary-button
+                            aria-label="{{ __('common.actions.edit') }}"
+                            icon="o-pencil"
+                            class="btn-ghost btn-sm"
+                            wire:click="setupScoring('{{ $p->id }}')"
+                        />
                     @endif
                 </div>
             @endscope
@@ -48,22 +64,53 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showScheduleModal" :title="__('assessment.presentation_schedule_title')" class="backdrop-blur-sm max-w-lg">
+        <x-mary-modal
+            wire:model="showScheduleModal"
+            :title="__('assessment.presentation_schedule_title')"
+            class="max-w-lg backdrop-blur-sm"
+        >
             <x-mary-form wire:submit="saveSchedule">
                 <div class="space-y-5">
-                    <x-mary-select :label="__('assessment.presentation_registration')" wire:model="scheduleData.registration_id"
+                    <x-mary-select
+                        :label="__('assessment.presentation_registration')"
+                        wire:model="scheduleData.registration_id"
                         :placeholder="__('assessment.presentation_registration_placeholder')"
                         :options="$this->activeRegistrations ?? []"
-                        option-label="name" option-value="id" />
-                    <x-mary-input :label="__('assessment.presentation_scheduled_at')" wire:model="scheduleData.scheduled_at" type="datetime-local" />
+                        option-label="name"
+                        option-value="id"
+                    />
+                    <x-mary-input
+                        :label="__('assessment.presentation_scheduled_at')"
+                        wire:model="scheduleData.scheduled_at"
+                        type="datetime-local"
+                    />
                     <x-mary-input :label="__('assessment.presentation_location')" wire:model="scheduleData.location" />
-                    <x-mary-select :label="__('assessment.presentation_examiners')" wire:model="scheduleData.examiner_ids"
-                        :options="$this->teachers" option-label="name" option-value="id" multiple />
-                    <x-mary-textarea :label="__('assessment.presentation_notes')" wire:model="scheduleData.notes" rows="2" />
+                    <x-mary-select
+                        :label="__('assessment.presentation_examiners')"
+                        wire:model="scheduleData.examiner_ids"
+                        :options="$this->teachers"
+                        option-label="name"
+                        option-value="id"
+                        multiple
+                    />
+                    <x-mary-textarea
+                        :label="__('assessment.presentation_notes')"
+                        wire:model="scheduleData.notes"
+                        rows="2"
+                    />
                 </div>
                 <x-slot:actions>
-                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showScheduleModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('assessment.presentation_schedule')" class="btn-primary btn-sm" type="submit" spinner="saveSchedule" />
+                    <x-mary-button
+                        :label="__('common.actions.cancel')"
+                        wire:click="$set('showScheduleModal', false)"
+                        class="btn-ghost btn-sm"
+                    />
+                    <x-mary-button
+                        :label="__('assessment.presentation_schedule')"
+                        class="btn-primary btn-sm"
+                        type="submit"
+                        spinner="saveSchedule"
+                    />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-modal>

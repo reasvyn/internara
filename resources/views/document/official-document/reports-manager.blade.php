@@ -34,6 +34,7 @@
                         {{ __('document.download') }}
                     </a>
                     <x-mary-button
+                        aria-label="{{ __('common.actions.delete') }}"
                         wire:click="deleteReport('{{ $report->id }}')"
                         icon="o-trash"
                         class="btn-sm btn-ghost text-error"
