@@ -16,13 +16,13 @@ final class ToggleUserStatusAction extends BaseCommandAction
     public function execute(User $user, ?string $reason = null): User
     {
         if ($user->id === auth()->id()) {
-            throw new RejectedException('Cannot change your own status.');
+            throw new RejectedException(__('user.manager.cannot_change_own_status'));
         }
 
         $integrity = $user->asSuperAdminIntegrityRules();
 
-        if (!$integrity->canBeLocked()) {
-            throw new RejectedException('Cannot toggle super admin account status.');
+        if (! $integrity->canBeLocked()) {
+            throw new RejectedException(__('user.manager.cannot_change_super_admin_status'));
         }
 
         return $this->transaction(function () use ($user, $reason) {

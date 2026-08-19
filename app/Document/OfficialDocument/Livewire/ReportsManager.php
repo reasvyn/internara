@@ -30,13 +30,13 @@ class ReportsManager extends Component
             'type' => $type,
         ]);
 
-        flash()->success("Report '{$report->name}' generated. Use download to retrieve it.");
+        flash()->success(__('document.report_generated', ['name' => $report->name]));
     }
 
     public function deleteReport(Document $report, DeleteReportAction $action): void
     {
         $action->execute($report);
-        flash()->success('Report deleted.');
+        flash()->success(__('document.report_deleted'));
     }
 
     #[Layout('core::layouts.app')]

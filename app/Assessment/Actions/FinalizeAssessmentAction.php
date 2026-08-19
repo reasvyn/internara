@@ -16,13 +16,13 @@ final class FinalizeAssessmentAction extends BaseCommandAction
     {
         return $this->transaction(function () use ($assessment, $finalizer) {
             if ($assessment->finalized_at !== null) {
-                throw new RejectedException('Assessment is already finalized.');
+                throw new RejectedException(__('assessment.already_finalized'));
             }
 
             $rubric = $assessment->rubric;
 
             if ($rubric === null) {
-                throw new RejectedException('Assessment must have a rubric to finalize.');
+                throw new RejectedException(__('assessment.rubric_required'));
             }
 
             $structure = $rubric->structure ?? ['competencies' => []];
@@ -52,14 +52,14 @@ final class FinalizeAssessmentAction extends BaseCommandAction
             }
 
             if (empty($scoredCompetencies)) {
-                throw new RejectedException('No competencies have been scored.');
+                throw new RejectedException(__('assessment.no_competencies_scored'));
             }
 
             $originalTotalWeight = (int) collect($competencies)->sum('weight');
             $scoredTotalWeight = (int) collect($scoredCompetencies)->sum('weight');
 
             if ($scoredTotalWeight === 0) {
-                throw new RejectedException('No competencies have been scored.');
+                throw new RejectedException(__('assessment.no_competencies_scored'));
             }
 
             $totalWeightedScore = 0.0;

@@ -21,6 +21,9 @@ return [
     'log_deleted' => 'Supervision log deleted successfully.',
     'log_not_submitted' => 'Only submitted logs can be reviewed.',
     'log_reviewed' => 'Supervision log reviewed successfully.',
+    'log_recorded' => 'Supervision log recorded successfully.',
+    'log_verified' => 'Log verified successfully.',
+    'log_already_verified' => 'This supervision log has already been verified.',
     'only_draft_can_be_deleted' => 'Only draft logs can be deleted.',
     'no_active_registration' => 'No active registration found.',
 
@@ -107,6 +110,10 @@ return [
         'my_requests' => 'My Requests',
         'no_requests' => 'No absence requests yet.',
         'pending' => 'Pending',
+        'submitted' => 'Absence request submitted successfully.',
+        'approved' => 'Absence request approved.',
+        'rejected' => 'Absence request rejected.',
+        'already_processed' => 'This absence request has already been processed.',
     ],
 
     'attendance' => [
@@ -126,5 +133,13 @@ return [
         'clock_in' => 'Clock In',
         'clock_out' => 'Clock Out',
         'not_clocked_in' => 'Not clocked in today.',
+        'recorded' => 'Attendance recorded successfully.',
+        'record_failed' => 'Failed to record attendance: :message',
+        'verified' => 'Attendance verified.',
+        'clocked_in' => 'Clocked in successfully.',
+        'clocked_out' => 'Clocked out successfully.',
+        'already_clocked_in' => 'Already clocked in for today.',
+        'must_clock_in_first' => 'You must clock in first.',
+        'already_clocked_out' => 'Already clocked out for today.',
     ],
 ];

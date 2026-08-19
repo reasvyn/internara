@@ -273,7 +273,7 @@ class InternshipManager extends BaseRecordManager
 
     private function executeDeleteSelected(DeleteInternshipAction $action): void
     {
-        $this->performBulkAction('Delete', function ($id) use ($action) {
+        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($action) {
             $internship = Internship::find($id);
             if ($internship && $internship->asInternshipState()->canBeDeleted()) {
                 $action->execute($internship);

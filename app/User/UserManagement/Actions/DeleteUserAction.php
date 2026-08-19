@@ -15,11 +15,11 @@ final class DeleteUserAction extends BaseCommandAction
     public function execute(User $user): void
     {
         if ($user->hasRole('super_admin')) {
-            throw new RejectedException('Super administrator accounts cannot be deleted.');
+            throw new RejectedException(__('user.manager.cannot_delete_super_admin'));
         }
 
         if (Auth::id() === $user->id) {
-            throw new RejectedException('You cannot delete your own account.');
+            throw new RejectedException(__('user.manager.cannot_delete_self'));
         }
 
         $this->transaction(function () use ($user) {

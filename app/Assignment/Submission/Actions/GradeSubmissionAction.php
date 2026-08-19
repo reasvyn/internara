@@ -18,7 +18,7 @@ final class GradeSubmissionAction extends BaseCommandAction
         GradeSubmissionData $data,
     ): ActionResponse {
         if ($data->score < 0 || $data->score > 100) {
-            throw new RejectedException('Score must be between 0 and 100.');
+            throw new RejectedException(__('submission.score_range'));
         }
 
         return $this->transaction(function () use ($submission, $data) {

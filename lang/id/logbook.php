@@ -19,6 +19,8 @@ return [
     'success_updated' => 'Entri logbook berhasil diperbarui.',
     'success_deleted' => 'Entri logbook berhasil dihapus.',
     'success_verified' => 'Entri logbook berhasil diverifikasi.',
+    'success_saved' => 'Entri jurnal berhasil disimpan.',
+    'already_submitted_today' => 'Entri jurnal untuk hari ini sudah dikirim.',
     'supervisor_note' => 'Catatan Pembimbing Industri',
     'supervisor_note_saved' => 'Catatan pembimbing industri berhasil disimpan.',
     'add_supervisor_note' => 'Tambah Catatan',

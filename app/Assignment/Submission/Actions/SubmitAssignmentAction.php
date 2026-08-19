@@ -19,11 +19,11 @@ final class SubmitAssignmentAction extends BaseCommandAction
     public function execute(User $student, Assignment $assignment, SubmitAssignmentData $data): Submission
     {
         if ($assignment->status !== AssignmentStatus::PUBLISHED) {
-            throw new RejectedException('Cannot submit to unpublished assignment.');
+            throw new RejectedException(__('assignment.cannot_submit_unpublished'));
         }
 
         if ($assignment->asAssignmentRules()->isOverdue(now())) {
-            throw new RejectedException('Assignment is overdue.');
+            throw new RejectedException(__('assignment.overdue'));
         }
 
         return $this->transaction(function () use ($student, $assignment, $data) {
@@ -33,7 +33,7 @@ final class SubmitAssignmentAction extends BaseCommandAction
                 ->first();
 
             if (! $registration) {
-                throw new RejectedException('No active registration found for this assignment.');
+                throw new RejectedException(__('assignment.no_active_registration'));
             }
 
             $existing = Submission::where('student_id', $student->id)
@@ -57,7 +57,7 @@ final class SubmitAssignmentAction extends BaseCommandAction
             }
 
             if ($existing) {
-                throw new RejectedException('You have already submitted this assignment.');
+                throw new RejectedException(__('assignment.already_submitted'));
             }
 
             $submission = Submission::create([

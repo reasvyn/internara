@@ -173,7 +173,7 @@ class User extends BaseAuthenticatable implements HasMedia
     public function delete(): ?bool
     {
         if (! $this->asSuperAdminIntegrityRules()->canBeDeleted()) {
-            throw new RejectedException('Super administrator accounts cannot be deleted.');
+            throw new RejectedException(__('user.manager.cannot_delete_super_admin'));
         }
 
         return parent::delete();

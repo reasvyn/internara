@@ -16,7 +16,7 @@ final class VerifySupervisionLogAction extends BaseCommandAction
     public function execute(SupervisionLog $log, User $verifier): SupervisionLog
     {
         if ($log->status === SupervisionLogStatus::VERIFIED) {
-            throw new RejectedException('This supervision log has already been verified.');
+            throw new RejectedException(__('journals.log_already_verified'));
         }
 
         return $this->transaction(function () use ($log, $verifier) {

@@ -74,7 +74,7 @@ class LogbookEntry extends BaseRecordEntry
             ]);
 
             $this->showModal = false;
-            flash()->success('Journal entry saved successfully.');
+            flash()->success(__('logbook.success_saved'));
         });
     }
 

@@ -42,7 +42,7 @@ class AbsenceRequestForm extends BaseFormView
             ->first(fn ($reg) => $reg->hasStatus('active'));
 
         if (! $registration) {
-            flash()->error('No active internship registration found.');
+            flash()->error(__('journals.no_active_registration'));
 
             return;
         }
@@ -55,7 +55,7 @@ class AbsenceRequestForm extends BaseFormView
             ]);
 
             $this->reset(['startDate', 'reasonType', 'reasonDescription']);
-            flash()->success('Absence request submitted successfully.');
+            flash()->success(__('journals.absence.submitted'));
         });
     }
 

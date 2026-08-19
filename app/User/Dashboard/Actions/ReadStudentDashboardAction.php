@@ -34,7 +34,7 @@ final class ReadStudentDashboardAction extends BaseReadAction
         $user = User::find($userId);
 
         if (! $user) {
-            throw new RejectedException('User not found.');
+            throw new RejectedException(__('user.manager.not_found'));
         }
 
         $registration = $user->getActiveRegistration();

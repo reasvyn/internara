@@ -58,6 +58,8 @@ return [
         'status_provisioned' => 'Disediakan',
         'status_archived' => 'Diarsipkan',
         'protected' => 'Dilindungi',
+        'cannot_delete_self' => 'Tidak dapat menghapus akun Anda sendiri.',
+        'cannot_lock_super_admin' => 'Tidak dapat mengunci akun super administrator.',
         'cannot_delete_super_admin' => 'Tidak dapat menghapus akun super administrator.',
         'cannot_edit_super_admin' => 'Tidak dapat mengubah akun super administrator.',
         'cannot_change_own_status' => 'Tidak dapat mengubah status akun Anda sendiri.',

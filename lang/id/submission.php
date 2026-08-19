@@ -21,4 +21,9 @@ return [
     'no_due_date' => 'Tidak ada tanggal jatuh tempo',
     'resubmit' => 'Kirim Ulang',
     'just_now' => 'Baru saja',
+    'submitted_success' => 'Tugas berhasil dikumpulkan.',
+    'revision_requested' => 'Revisi berhasil diminta.',
+    'graded_success' => 'Pengumpulan berhasil dinilai.',
+    'score_range' => 'Nilai harus antara 0 dan 100.',
+    'only_submitted_can_revise' => 'Hanya pengumpulan yang sudah dikirim yang dapat direvisi.',
 ];
