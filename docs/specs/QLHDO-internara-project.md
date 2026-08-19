@@ -1,7 +1,7 @@
 # Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-19 **Changes:** spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
+> **Last updated:** 2026-08-19 **Changes:** implementation matrix references moved to `docs/specs/implementation-matrix.md` (extracted from index); spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
 
 ## Description
 
@@ -817,7 +817,7 @@ run those systems externally.
 
 | Metric                                 | Target                                     | Measurement                                        |
 | -------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/index.md` matrix (green/verified rows) |
+| Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/implementation-matrix.md` (green/verified rows) |
 | Module colocation                      | 100% of `app/` under modules + Core        | `scan_naming.py`, directory audit                  |
 | Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `scripts/scan_violations.py`                       |
 | Spec↔code alignment                    | 0 spec gaps, 0 orphan tests                | per-module spec audits, `scan_issues.py`           |
@@ -859,7 +859,8 @@ cross-cutting requirements (roles, localization, security, audit).
 ## Quick References
 
 - `docs/foundation/product-definition.md` — scope, personas, 3S doctrine, system boundary
-- `docs/specs/index.md` — full spec index and implementation checklist matrix
+- `docs/specs/index.md` — full spec index and build order
+- `docs/specs/implementation-matrix.md` — implementation status matrix (priority-ordered)
 - `docs/modules/index.md` — module dependency graph and registration
 - `config/module.php` — module bootstrap order
 - `docs/architecture.md` — 4-layer model, Action Triad
