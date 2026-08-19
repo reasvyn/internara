@@ -21,7 +21,7 @@ final class SubmitLogbookAction extends BaseCommandAction
             $registration = $user->getActiveRegistration();
 
             if (! $registration) {
-                throw new RejectedException('No active internship registration found.');
+                throw new RejectedException(__('journals.no_active_registration'));
             }
 
             $existing = Logbook::where('user_id', $user->id)
@@ -30,7 +30,7 @@ final class SubmitLogbookAction extends BaseCommandAction
                 ->first();
 
             if ($existing) {
-                throw new RejectedException('Journal entry for today has already been submitted.');
+                throw new RejectedException(__('logbook.already_submitted_today'));
             }
 
             $journal = Logbook::updateOrCreate(

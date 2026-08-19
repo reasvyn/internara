@@ -20,7 +20,7 @@ final class ProcessAbsenceAction extends BaseCommandAction
     ): Attendance {
         $currentStatus = AbsenceRequestStatus::tryFrom($absence->absence_status);
         if ($currentStatus && $currentStatus->isProcessed()) {
-            throw new RejectedException('This absence request has already been processed.');
+            throw new RejectedException(__('journals.absence.already_processed'));
         }
 
         return $this->transaction(function () use ($absence, $processor, $status, $notes) {

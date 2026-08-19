@@ -21,7 +21,7 @@ final class ClockInAction extends BaseCommandAction
             $registration = $user->getActiveRegistration();
 
             if (! $registration) {
-                throw new RejectedException('No active internship registration found.');
+                throw new RejectedException(__('journals.no_active_registration'));
             }
 
             $existingLog = Attendance::where('user_id', $user->id)
@@ -29,7 +29,7 @@ final class ClockInAction extends BaseCommandAction
                 ->first();
 
             if ($existingLog) {
-                throw new RejectedException('Already clocked in for today.');
+                throw new RejectedException(__('journals.attendance.already_clocked_in'));
             }
 
             $log = Attendance::create([

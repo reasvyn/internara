@@ -19,6 +19,8 @@ return [
     'success_updated' => 'Logbook entry updated successfully.',
     'success_deleted' => 'Logbook entry deleted successfully.',
     'success_verified' => 'Logbook entry verified successfully.',
+    'success_saved' => 'Journal entry saved successfully.',
+    'already_submitted_today' => 'Journal entry for today has already been submitted.',
     'supervisor_note' => 'Supervisor Note',
     'supervisor_note_saved' => 'Supervisor note saved successfully.',
     'add_supervisor_note' => 'Add Supervisor Note',

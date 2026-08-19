@@ -56,6 +56,8 @@ return [
         'status_provisioned' => 'Provisioned',
         'status_archived' => 'Archived',
         'protected' => 'Protected',
+        'cannot_delete_self' => 'Cannot delete your own account.',
+        'cannot_lock_super_admin' => 'Cannot lock super administrator account.',
         'cannot_delete_super_admin' => 'Cannot delete super administrator account.',
         'cannot_edit_super_admin' => 'Cannot edit super administrator account.',
         'cannot_change_own_status' => 'Cannot change your own status.',

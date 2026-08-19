@@ -21,7 +21,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
         User $evaluator,
     ): ActionResponse {
         if ($assessment->finalized_at !== null) {
-            throw new RejectedException('Cannot modify a finalized assessment.');
+            throw new RejectedException(__('assessment.cannot_modify_finalized'));
         }
 
         $structure = $rubric->structure;
@@ -41,7 +41,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
         }
 
         if ($competency === null || $indicator === null) {
-            throw new RejectedException('Competency or indicator not found.');
+            throw new RejectedException(__('assessment.not_found'));
         }
 
         $this->ensureAuthorized($assessment, $competency, $evaluator);
@@ -98,7 +98,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
         $allowedRole = $competency['evaluator_role'];
 
         if (! $evaluator->hasRole($allowedRole)) {
-            throw new RejectedException('You are not authorized to score this competency.');
+            throw new RejectedException(__('assessment.not_authorized'));
         }
 
         $isAssignedToRegistration = $assessment
@@ -109,7 +109,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
             ->exists();
 
         if (! $isAssignedToRegistration) {
-            throw new RejectedException('You are not assigned as a mentor for this registration.');
+            throw new RejectedException(__('assessment.not_assigned_mentor'));
         }
     }
 }

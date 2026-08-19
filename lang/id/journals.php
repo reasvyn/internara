@@ -21,6 +21,9 @@ return [
     'log_deleted' => 'Log bimbingan berhasil dihapus.',
     'log_not_submitted' => 'Hanya log yang sudah dikirim yang dapat ditinjau.',
     'log_reviewed' => 'Log bimbingan berhasil ditinjau.',
+    'log_recorded' => 'Log bimbingan berhasil dicatat.',
+    'log_verified' => 'Log berhasil diverifikasi.',
+    'log_already_verified' => 'Log bimbingan ini sudah diverifikasi.',
     'only_draft_can_be_deleted' => 'Hanya log draf yang dapat dihapus.',
     'no_active_registration' => 'Tidak ada pendaftaran aktif yang ditemukan.',
 
@@ -107,6 +110,10 @@ return [
         'my_requests' => 'Permohonan Saya',
         'no_requests' => 'Belum ada permohonan izin.',
         'pending' => 'Menunggu',
+        'submitted' => 'Permohonan izin berhasil dikirim.',
+        'approved' => 'Permohonan izin disetujui.',
+        'rejected' => 'Permohonan izin ditolak.',
+        'already_processed' => 'Permohonan izin ini sudah diproses.',
     ],
 
     'attendance' => [
@@ -126,5 +133,13 @@ return [
         'clock_in' => 'Clock In',
         'clock_out' => 'Clock Out',
         'not_clocked_in' => 'Belum clock in hari ini.',
+        'recorded' => 'Kehadiran berhasil dicatat.',
+        'record_failed' => 'Gagal mencatat kehadiran: :message',
+        'verified' => 'Kehadiran berhasil diverifikasi.',
+        'clocked_in' => 'Clock in berhasil.',
+        'clocked_out' => 'Clock out berhasil.',
+        'already_clocked_in' => 'Sudah clock in hari ini.',
+        'must_clock_in_first' => 'Anda harus clock in terlebih dahulu.',
+        'already_clocked_out' => 'Sudah clock out hari ini.',
     ],
 ];

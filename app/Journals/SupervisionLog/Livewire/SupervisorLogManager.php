@@ -71,7 +71,7 @@ class SupervisorLogManager extends Component
         ]);
 
         $this->showModal = false;
-        flash()->success('Supervision log recorded successfully.');
+        flash()->success(__('journals.log_recorded'));
     }
 
     public function verify(SupervisionLog $log, VerifySupervisionLogAction $verifyAction): void
@@ -79,7 +79,7 @@ class SupervisorLogManager extends Component
         $this->authorize('update', $log);
 
         $verifyAction->execute($log, auth()->user());
-        flash()->success('Log verified successfully.');
+        flash()->success(__('journals.log_verified'));
     }
 
     #[Layout('core::layouts.app')]

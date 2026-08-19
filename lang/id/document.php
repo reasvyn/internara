@@ -28,4 +28,7 @@ return [
     'name' => 'Nama',
     'generated' => 'Dibuat',
     'download' => 'Unduh',
+    'template_saved' => 'Template berhasil disimpan.',
+    'report_generated' => "Laporan ':name' berhasil dibuat. Gunakan unduhan untuk mengambilnya.",
+    'report_deleted' => 'Laporan berhasil dihapus.',
 ];

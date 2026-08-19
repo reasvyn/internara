@@ -23,11 +23,11 @@ final class ClockOutAction extends BaseCommandAction
                 ->first();
 
             if (! $log) {
-                throw new RejectedException('You must clock in first.');
+                throw new RejectedException(__('journals.attendance.must_clock_in_first'));
             }
 
             if ($log->clock_out) {
-                throw new RejectedException('Already clocked out for today.');
+                throw new RejectedException(__('journals.attendance.already_clocked_out'));
             }
 
             $log->update([

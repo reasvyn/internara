@@ -18,7 +18,7 @@ final class PublishAssignmentAction extends BaseCommandAction
     public function execute(Assignment $assignment): Assignment
     {
         if ($assignment->status !== AssignmentStatus::DRAFT) {
-            throw new RejectedException('Only draft assignments can be published.');
+            throw new RejectedException(__('assignment.cannot_publish_non_draft'));
         }
 
         return $this->transaction(function () use ($assignment) {

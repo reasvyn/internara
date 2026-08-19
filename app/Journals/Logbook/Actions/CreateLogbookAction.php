@@ -19,7 +19,7 @@ final class CreateLogbookAction extends BaseCommandAction
             $registration = $user->getActiveRegistration();
 
             if (! $registration) {
-                throw new RejectedException('No active internship registration found.');
+                throw new RejectedException(__('journals.no_active_registration'));
             }
 
             $entry = Logbook::create([

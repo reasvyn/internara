@@ -73,7 +73,7 @@ class SubmissionGrading extends Component
 
         if ($this->gradeStatus === 'revision_required') {
             $revisionAction->execute($submission, $this->feedback);
-            flash()->success('Revision requested successfully.');
+            flash()->success(__('submission.revision_requested'));
         } else {
             $gradeAction->execute(
                 $submission,
@@ -82,7 +82,7 @@ class SubmissionGrading extends Component
                     feedback: $this->feedback,
                 ),
             );
-            flash()->success('Submission graded successfully.');
+            flash()->success(__('submission.graded_success'));
         }
 
         $this->back();

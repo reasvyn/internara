@@ -15,7 +15,7 @@ final class RequestSubmissionRevisionAction extends BaseCommandAction
     public function execute(Submission $submission, string $feedback): Submission
     {
         if ($submission->status !== SubmissionStatus::SUBMITTED) {
-            throw new RejectedException('Only submitted submissions can be revised.');
+            throw new RejectedException(__('submission.only_submitted_can_revise'));
         }
 
         return $this->transaction(function () use ($submission, $feedback) {

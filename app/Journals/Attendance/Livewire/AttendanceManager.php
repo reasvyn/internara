@@ -85,32 +85,32 @@ class AttendanceManager extends Component
                     'notes' => $data['notes'] ?? null,
                 ]);
             } catch (\Throwable $e) {
-                flash()->error("Failed to record attendance: {$e->getMessage()}");
+                flash()->error(__('journals.attendance.record_failed', ['message' => $e->getMessage()]));
             }
         }
 
-        flash()->success('Attendance recorded successfully.');
+        flash()->success(__('journals.attendance.recorded'));
         $this->records = [];
     }
 
     public function verifyAttendance(Attendance $log, VerifyAttendanceAction $action): void
     {
         $action->execute($log);
-        flash()->success('Attendance verified.');
+        flash()->success(__('journals.attendance.verified'));
     }
 
     public function approveAbsence(string $id, ProcessAbsenceAction $action): void
     {
         $absence = AbsenceRequest::findOrFail($id);
         $action->execute($absence, auth()->user(), AbsenceRequestStatus::APPROVED);
-        flash()->success('Absence request approved.');
+        flash()->success(__('journals.absence.approved'));
     }
 
     public function rejectAbsence(string $id, ProcessAbsenceAction $action): void
     {
         $absence = AbsenceRequest::findOrFail($id);
         $action->execute($absence, auth()->user(), AbsenceRequestStatus::REJECTED);
-        flash()->success('Absence request rejected.');
+        flash()->success(__('journals.absence.rejected'));
     }
 
     #[Layout('core::layouts.app')]

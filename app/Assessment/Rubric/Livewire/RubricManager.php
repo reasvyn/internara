@@ -135,14 +135,14 @@ class RubricManager extends Component
                     isActive: $this->rubricForm['is_active'],
                 ),
             );
-            flash()->success('Rubric updated.');
+            flash()->success(__('assessment.rubric_updated'));
         } else {
             $createAction->execute(new CreateRubricData(
                 name: $this->rubricForm['name'],
                 description: $this->rubricForm['description'],
                 isActive: $this->rubricForm['is_active'],
             ));
-            flash()->success('Rubric created.');
+            flash()->success(__('assessment.rubric_created'));
         }
 
         $this->rubricModal = false;
@@ -197,9 +197,9 @@ class RubricManager extends Component
             };
 
             flash()->success(match ($this->confirmActionType) {
-                'rubric' => 'Rubric removed.',
-                'competency' => 'Competency removed.',
-                'indicator' => 'Indicator removed.',
+                'rubric' => __('assessment.rubric_removed'),
+                'competency' => __('assessment.competency_removed'),
+                'indicator' => __('assessment.indicator_removed'),
             });
         } catch (RejectedException $e) {
             flash()->error($e->getMessage());
@@ -278,7 +278,7 @@ class RubricManager extends Component
                     order: (int) $this->competencyForm['order'],
                 ),
             );
-            flash()->success('Competency updated.');
+            flash()->success(__('assessment.competency_updated'));
         } else {
             $createAction->execute(
                 $rubric,
@@ -290,7 +290,7 @@ class RubricManager extends Component
                     order: (int) $this->competencyForm['order'],
                 ),
             );
-            flash()->success('Competency created.');
+            flash()->success(__('assessment.competency_created'));
         }
 
         $this->competencyModal = false;
@@ -361,7 +361,7 @@ class RubricManager extends Component
                     order: (int) $this->indicatorForm['order'],
                 ),
             );
-            flash()->success('Indicator updated.');
+            flash()->success(__('assessment.indicator_updated'));
         } else {
             $createAction->execute(
                 $rubric,
@@ -374,7 +374,7 @@ class RubricManager extends Component
                     order: (int) $this->indicatorForm['order'],
                 ),
             );
-            flash()->success('Indicator created.');
+            flash()->success(__('assessment.indicator_created'));
         }
 
         $this->indicatorModal = false;

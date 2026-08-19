@@ -179,7 +179,7 @@ class AssessmentGrading extends BaseFormView
         }
 
         $action->execute($assessment);
-        flash()->success('Submission & logbook scores imported.');
+        flash()->success(__('assessment.auto_scores_imported'));
     }
 
     public function askFinalize(): void
@@ -197,7 +197,7 @@ class AssessmentGrading extends BaseFormView
         $this->handleSave(function () use ($action, $assessment) {
             $action->execute($assessment, auth()->user());
             $this->isFinalized = true;
-            flash()->success('Assessment finalized.');
+            flash()->success(__('assessment.finalized_success'));
         });
 
         $this->showConfirm = false;

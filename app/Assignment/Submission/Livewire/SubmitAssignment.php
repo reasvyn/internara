@@ -60,7 +60,7 @@ class SubmitAssignment extends BaseFormView
 
             $this->reset(['content', 'file', 'assignmentId']);
             $this->showDetail = false;
-            flash()->success('Assignment submitted successfully.');
+            flash()->success(__('submission.submitted_success'));
         });
     }
 

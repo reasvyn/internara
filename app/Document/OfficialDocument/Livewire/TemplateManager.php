@@ -98,7 +98,7 @@ class TemplateManager extends Component
 
         $action->execute($this->templateData);
 
-        flash()->success('Template saved successfully.');
+        flash()->success(__('document.template_saved'));
         $this->templateModal = false;
     }
 

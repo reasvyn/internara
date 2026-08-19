@@ -16,7 +16,7 @@ final class LockUserAccountAction extends BaseCommandAction
         if ($user->hasRole('super_admin')) {
             $this->log('super_admin_lock_blocked', $user, ['reason' => $reason]);
 
-            throw new RejectedException('Super administrator accounts cannot be locked.');
+            throw new RejectedException(__('user.manager.cannot_lock_super_admin'));
         }
 
         if ($user->locked_at !== null) {

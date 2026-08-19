@@ -12,7 +12,7 @@ class UserObserver
     public function deleting(User $user): void
     {
         if ($user->hasRole('superadmin')) {
-            throw new RejectedException('Super administrator accounts cannot be deleted.');
+            throw new RejectedException(__('user.manager.cannot_delete_super_admin'));
         }
     }
 }

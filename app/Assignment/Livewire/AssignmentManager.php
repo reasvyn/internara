@@ -42,12 +42,12 @@ class AssignmentManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => 'Title', 'sortable' => true],
-            ['key' => 'assignment_type', 'label' => 'Type'],
-            ['key' => 'internship.name', 'label' => 'Internship'],
-            ['key' => 'is_mandatory', 'label' => 'Mandatory'],
-            ['key' => 'status', 'label' => 'Status'],
-            ['key' => 'due_date', 'label' => 'Due Date', 'sortable' => true],
+            ['key' => 'title', 'label' => __('assignment.title'), 'sortable' => true],
+            ['key' => 'assignment_type', 'label' => __('assignment.type')],
+            ['key' => 'internship.name', 'label' => __('assignment.internship')],
+            ['key' => 'is_mandatory', 'label' => __('assignment.mandatory')],
+            ['key' => 'status', 'label' => __('assignment.status')],
+            ['key' => 'due_date', 'label' => __('assignment.due_date'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
@@ -167,7 +167,7 @@ class AssignmentManager extends BaseRecordManager
                     dueDate: $this->formData['due_date'],
                 ),
             );
-            flash()->success('Assignment updated.');
+            flash()->success(__('assignment.updated'));
         } else {
             $this->authorize('create', Assignment::class);
             $createAction->execute(new CreateAssignmentData(
@@ -178,7 +178,7 @@ class AssignmentManager extends BaseRecordManager
                 isMandatory: $this->formData['is_mandatory'],
                 dueDate: $this->formData['due_date'],
             ));
-            flash()->success('Assignment created.');
+            flash()->success(__('assignment.created'));
         }
 
         $this->assignmentModal = false;
@@ -188,7 +188,7 @@ class AssignmentManager extends BaseRecordManager
     {
         $this->authorize('publish', $assignment);
         $action->execute($assignment);
-        flash()->success('Assignment published.');
+        flash()->success(__('assignment.published'));
     }
 
     public function askDelete(string $id): void
@@ -211,9 +211,9 @@ class AssignmentManager extends BaseRecordManager
                 $assignment = Assignment::findOrFail($this->confirmTarget);
                 $this->authorize('delete', $assignment);
                 $action->execute($assignment);
-                flash()->success('Assignment deleted.');
+                flash()->success(__('assignment.deleted'));
             } elseif ($this->confirmActionType === 'deleteSelected') {
-                $this->performBulkAction('Delete', function ($id) use ($action) {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($action) {
                     $assignment = Assignment::find($id);
                     if ($assignment && auth()->user()->can('delete', $assignment)) {
                         $action->execute($assignment);
