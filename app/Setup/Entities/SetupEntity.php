@@ -124,7 +124,7 @@ final readonly class SetupEntity extends BaseEntity
 
     public function isTokenExpired(?Carbon $now = null): bool
     {
-        $now ??= new Carbon();
+        $now ??= new Carbon;
 
         return $this->tokenExpiresAt === null || $now->greaterThan($this->tokenExpiresAt);
     }
@@ -159,7 +159,7 @@ final readonly class SetupEntity extends BaseEntity
             return $this->completedSteps !== [];
         }
 
-        return !array_diff($expectedSteps, $this->completedSteps);
+        return ! array_diff($expectedSteps, $this->completedSteps);
     }
 
     public function updatedAt(): ?Carbon

@@ -43,12 +43,12 @@ class RecoverAdminCommand extends Command
             $this->components->info(__('sysadmin.recover.key_detected'));
         }
 
-        if (!$this->verifyRecoveryKey()) {
+        if (! $this->verifyRecoveryKey()) {
             return self::FAILURE;
         }
 
         if ($this->requiresOtp()) {
-            if (!$this->sendAndVerifyOtp()) {
+            if (! $this->sendAndVerifyOtp()) {
                 return self::FAILURE;
             }
         }
@@ -60,14 +60,14 @@ class RecoverAdminCommand extends Command
             text(
                 label: __('sysadmin.field_email'),
                 required: true,
-                validate: fn(string $value) => !filter_var($value, FILTER_VALIDATE_EMAIL)
+                validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL)
                     ? __('sysadmin.recover.invalid_email')
                     : null,
             );
 
         $userExists = User::where('email', $email)->exists();
 
-        if (!$userExists) {
+        if (! $userExists) {
             SmartLogger::warning('super_admin_recovery_blocked_not_found')
                 ->module('setup')
                 ->event('super_admin.recovery.blocked_not_found')
@@ -84,7 +84,7 @@ class RecoverAdminCommand extends Command
         $password = password(
             label: __('sysadmin.field_new_password'),
             required: true,
-            validate: fn(string $value) => strlen($value) < 8
+            validate: fn (string $value) => strlen($value) < 8
                 ? __('sysadmin.recover.password_min')
                 : null,
         );
@@ -99,7 +99,7 @@ class RecoverAdminCommand extends Command
 
         $this->newLine();
 
-        if (!$this->confirmRecovery($email)) {
+        if (! $this->confirmRecovery($email)) {
             return self::FAILURE;
         }
 
@@ -150,7 +150,7 @@ class RecoverAdminCommand extends Command
             $email = text(
                 label: __('sysadmin.field_email'),
                 required: true,
-                validate: fn(string $value) => !filter_var($value, FILTER_VALIDATE_EMAIL)
+                validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL)
                     ? __('sysadmin.recover.invalid_email')
                     : null,
             );
@@ -164,7 +164,7 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        Cache::put(config('cache-keys.recovery_otp_hash') . $email, Hash::make($otp), 300);
+        Cache::put(config('cache-keys.recovery_otp_hash').$email, Hash::make($otp), 300);
 
         try {
             $user->notify(new RecoveryOtpNotification($otp));
@@ -180,13 +180,13 @@ class RecoverAdminCommand extends Command
             label: __('sysadmin.recover.otp_prompt'),
             required: true,
             validate: function (string $value) use ($email) {
-                $stored = Cache::get(config('cache-keys.recovery_otp_hash') . $email);
+                $stored = Cache::get(config('cache-keys.recovery_otp_hash').$email);
 
                 if ($stored === null) {
                     return __('sysadmin.recover.otp_expired');
                 }
 
-                if (!Hash::check($value, $stored)) {
+                if (! Hash::check($value, $stored)) {
                     return __('sysadmin.recover.otp_invalid');
                 }
 
@@ -194,7 +194,7 @@ class RecoverAdminCommand extends Command
             },
         );
 
-        Cache::forget(config('cache-keys.recovery_otp_hash') . $email);
+        Cache::forget(config('cache-keys.recovery_otp_hash').$email);
 
         return true;
     }
@@ -202,12 +202,12 @@ class RecoverAdminCommand extends Command
     private function displayHeader(): void
     {
         $this->newLine();
-        $this->line('  <fg=white;options=bold;bg=blue> ' . __('sysadmin.title') . ' </>');
+        $this->line('  <fg=white;options=bold;bg=blue> '.__('sysadmin.title').' </>');
         $this->line(
-            '  <fg=blue>' .
-                __('sysadmin.recover.subtitle') .
-                '</> <fg=gray>' .
-                __('sysadmin.version', ['version' => AppInfo::version()]) .
+            '  <fg=blue>'.
+                __('sysadmin.recover.subtitle').
+                '</> <fg=gray>'.
+                __('sysadmin.version', ['version' => AppInfo::version()]).
                 '</>',
         );
         $this->newLine();
@@ -215,7 +215,7 @@ class RecoverAdminCommand extends Command
 
     private function displayGuide(): void
     {
-        $this->line('  <fg=gray>' . __('sysadmin.recover.guide') . '</>');
+        $this->line('  <fg=gray>'.__('sysadmin.recover.guide').'</>');
         $this->newLine();
     }
 
@@ -223,7 +223,7 @@ class RecoverAdminCommand extends Command
     {
         $this->newLine();
         $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
-        $this->line('  <fg=red>' . $message . '</>');
+        $this->line('  <fg=red>'.$message.'</>');
     }
 
     private function verifyRecoveryKey(): bool
@@ -243,7 +243,7 @@ class RecoverAdminCommand extends Command
         $storedHash = SetupEntity::get()->recoveryKey();
         $keyValid = $storedHash !== null && Hash::check($key, $storedHash);
 
-        if (!$keyValid) {
+        if (! $keyValid) {
             SmartLogger::warning('super_admin_recovery_invalid_key')
                 ->module('setup')
                 ->event('super_admin.recovery.invalid_key')
@@ -286,28 +286,28 @@ class RecoverAdminCommand extends Command
         $this->components->info(__('sysadmin.recover.success_reset'));
         $this->newLine();
         $this->line(
-            '  <fg=yellow>' .
-                __('sysadmin.field_email_result') .
-                '</>  <fg=cyan>' .
-                $user->email .
+            '  <fg=yellow>'.
+                __('sysadmin.field_email_result').
+                '</>  <fg=cyan>'.
+                $user->email.
                 '</>',
         );
         $this->line(
-            '  <fg=yellow>' .
-                __('sysadmin.field_username') .
-                '</> <fg=cyan>' .
-                $user->username .
+            '  <fg=yellow>'.
+                __('sysadmin.field_username').
+                '</> <fg=cyan>'.
+                $user->username.
                 '</>',
         );
         $this->newLine();
         $this->line(
-            '  <fg=white;options=bold;bg=yellow> ' .
-                mb_strtoupper(__('sysadmin.recover.recovery_key_title')) .
+            '  <fg=white;options=bold;bg=yellow> '.
+                mb_strtoupper(__('sysadmin.recover.recovery_key_title')).
                 ' </>',
         );
-        $this->line('  <fg=yellow>' . __('sysadmin.recover.recovery_key_desc') . '</>');
+        $this->line('  <fg=yellow>'.__('sysadmin.recover.recovery_key_desc').'</>');
         $this->newLine();
-        $this->line('  <fg=black;bg=yellow> ' . $recoveryKey . ' </>');
+        $this->line('  <fg=black;bg=yellow> '.$recoveryKey.' </>');
         $this->newLine();
         $this->components->warn(__('sysadmin.recover.change_password'));
     }

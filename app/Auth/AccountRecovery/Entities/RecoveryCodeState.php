@@ -19,7 +19,7 @@ final readonly class RecoveryCodeState extends BaseEntity
 
     public function isValid(?Carbon $now = null): bool
     {
-        $now ??= new Carbon();
+        $now ??= new Carbon;
 
         if ($this->usedAt !== null) {
             return false;

@@ -39,7 +39,7 @@ final class SetupSchoolAction extends BaseCommandAction
 
             $this->batchSetSetting->execute(
                 ...array_map(
-                    fn(string $key, array $config) => new SettingEntryData(
+                    fn (string $key, array $config) => new SettingEntryData(
                         key: $key,
                         value: $config['value'],
                         group: $config['group'],

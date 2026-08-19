@@ -10,6 +10,8 @@ use App\Core\Contracts\SettingsStore;
 use App\Core\Services\LangChecker;
 use App\Core\Services\ModuleService;
 use App\Core\Support\ModuleManager;
+use App\Reports\Report\Models\Report;
+use App\Reports\Report\Observers\ReportObserver;
 use App\Settings\Services\Settings;
 use App\User\Models\User;
 use App\User\Notifications\Actions\SendNotificationAction;
@@ -67,6 +69,8 @@ class AppServiceProvider extends ServiceProvider
         if (ModuleManager::viewsEnabled()) {
             $this->service()->registerBladeNamespaces();
         }
+
+        Report::observe(ReportObserver::class);
     }
 
     protected function service(): ModuleService

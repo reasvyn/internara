@@ -14,7 +14,7 @@ final class SendPasswordResetLinkAction extends BaseCommandAction
 {
     public function execute(string $email): ActionResponse
     {
-        $throttleKey = 'forgot-password:' . Str::lower($email) . '|' . request()->ip();
+        $throttleKey = 'forgot-password:'.Str::lower($email).'|'.request()->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);

@@ -38,6 +38,10 @@ use App\Partners\Partnership\Listeners\ClearDashboardOnPartnershipChange;
 use App\Partners\Partnership\Listeners\NotifyOnPartnershipTerminated;
 use App\Program\Internship\Events\InternshipCreated;
 use App\Program\Internship\Listeners\NotifyAdminsInternshipCreated;
+use App\Reports\Report\Events\GradeCalculated;
+use App\Reports\Report\Events\ReportFinalized;
+use App\Reports\Report\Listeners\LogGradeCalculated;
+use App\Reports\Report\Listeners\LogReportFinalized;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
 use App\SysAdmin\Backups\Events\BackupCompleted;
@@ -121,6 +125,10 @@ return [
         SuperAdminRecovered::class => [NotifySuperAdminsOfRecovery::class],
 
         BackupFailed::class => [SendBackupFailedNotification::class],
+
+        GradeCalculated::class => [LogGradeCalculated::class],
+
+        ReportFinalized::class => [LogReportFinalized::class],
 
         // Fire-and-forget events (intentionally no listeners):
         // AssessmentFinalized — logged in FinalizeAssessmentAction, no side effects
