@@ -1,9 +1,6 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
->
-> **Changes:** sync — add ADMIN functional role; add Cross-Role Proxy section; update functional
-> role docs
+> **Last updated:** 2026-08-19 **Changes:** dedupe metadata blockquote to single latest-change line (per metadata convention)
 
 ## Description
 

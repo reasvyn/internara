@@ -1,7 +1,7 @@
 # Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-19 **Changes:** implementation matrix references moved to `docs/specs/implementation-matrix.md` (extracted from index); spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
+> **Last updated:** 2026-08-19 **Changes:** sync FR-G2 — three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) per ADR-008/Role enum
 
 ## Description
 
@@ -142,10 +142,10 @@ participant can query, and no consistent reporting base.
 | Student     | `student`     | Program participation: attendance, logbooks, assignments, certificate download            |
 | Supervisor  | `supervisor`  | Industry-side supervision: attendance verification, journal review, competency evaluation |
 
-Each user is assigned exactly one role. Two additional **functional roles** (`mentor`, `mentee`) are
-resolved at runtime via `Role::resolvesTo()` for business logic — never stored or used in
-middleware. See FR-G2 for the requirement binding and [T4B26](T4B26-rbac-and-authorization.md) for
-the RBAC specification.
+Each user is assigned exactly one role. Three additional **functional roles** (`admin-group`, `mentor`,
+`mentee`) are resolved at runtime via `Role::resolvesTo()` for business logic — never stored or used
+in middleware. `admin-group` is the administrative grouping (`super_admin`/`admin`). See FR-G2 for the
+requirement binding and [T4B26](T4B26-rbac-and-authorization.md) for the RBAC specification.
 
 ---
 
@@ -160,7 +160,7 @@ document is authoritative for that concern.
 | ID    | Requirement                                                                                                                                                                                                        |
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | FR-G1 | Every user-facing string MUST use the `__()` helper; all modules ship `lang/en/` and `lang/id/` (D3)                                                                                                               |
-| FR-G2 | The system MUST expose exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus two runtime-resolved functional roles (`mentor`, `mentee`) via `Role::resolvesTo()` (see §4)  |
+| FR-G2 | The system MUST expose exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) via `Role::resolvesTo()` (see §4)  |
 | FR-G3 | The system MUST enforce `superadmin` integrity: name is always `Super Admin`, username always `superadmin`, immutable and non-deletable                                                                            |
 | FR-G4 | All administrative mutations MUST be audit-logged (activity channel) with PII masking (S1)                                                                                                                         |
 | FR-G5 | Sensitive endpoints MUST be rate-limited (global 30/min/IP; login 5/60s; forgot 3/3600s; reset 5/300s; recovery 3/300s)                                                                                            |
@@ -262,7 +262,7 @@ Login, password management, account recovery, RBAC.
 | Confirm Password         | Re-authenticate before sensitive operations                             | Auth   |
 | Recovery Slip            | Admin generates 10 one-time codes, delivered offline, no expiry         | Admin  |
 | Account Recovery         | User redeems code to unlock account and set new password                | Guest  |
-| RBAC                     | 5 roles + 2 functional roles (mentor, mentee) with `Role::resolvesTo()` | All    |
+| RBAC                     | 5 roles + 3 functional roles (admin-group, mentor, mentee) with `Role::resolvesTo()` | All    |
 | Super Admin Integrity    | Name/username immutable (Super Admin/superadmin), non-deletable         | System |
 
 #### User — Identity & Profiles
@@ -743,7 +743,7 @@ separate rows. Rows will be merged (not duplicated) as additional roles are adde
 - `users` table via `BaseModel` + `HasUuids` (UUID PK); one row per person; role column references
   the `Role` enum.
 - `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`, with
-  `Role::resolvesTo()` mapping runtime functional roles `mentor`/`mentee`.
+  `Role::resolvesTo()` mapping runtime functional roles `admin-group`/`mentor`/`mentee`.
 
 ### Global Helpers
 

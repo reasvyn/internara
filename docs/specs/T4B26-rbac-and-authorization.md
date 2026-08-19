@@ -1,11 +1,11 @@
 # RBAC & Authorization — Role-Based Access Control
 
 > **Spec ID:** T4B26
-> **Last updated:** 2026-08-18 **Changes:** add — canonical Cross-Role Proxy contract (§4.2, internara-project §7.1): proxy matrix, configurable inactivity window, admin proxy, proxy metadata tagging; align FR-AUTH10
+> **Last updated:** 2026-08-19 **Changes:** sync — functional roles are three (admin-group, mentor, mentee) per ADR-008/Role enum, not two; FR-AUTH11 resolution mechanism corrected to Role::resolvesTo()/functionalRolesFor(); broken cross-ref fixed to YB7RG-authentication.md
 
 ## Description
 
-Defines the flat role-based access control system: 5 user roles, 2 functional roles, three-layer
+Defines the flat role-based access control system: 5 user roles, 3 functional roles, three-layer
 authorization stack (middleware → Livewire → Policy), `BasePolicy` contract with role and
 ownership traits, super admin bypass, and policy auto-discovery. This spec is the authoritative
 source for all authorization decisions in Internara.
@@ -117,7 +117,7 @@ role model with explicit capabilities per role prevents this.
 | FR-AUTH8 | `UserPolicy` MUST be registered manually in `AppServiceProvider` (exception to auto-discovery) |
 | FR-AUTH9 | Role normalization: code uses `super_admin`, Spatie stores `superadmin` |
 | FR-AUTH10 | Cross-Role Proxy — teachers may act as supervisors for assigned students (canonical contract in §4.2 Cross-Role Proxy below) |
-| FR-AUTH11 | Functional roles (`mentor`, `mentee`) MUST be resolved at runtime via profile accessor |
+| FR-AUTH11 | Functional roles (`admin-group`, `mentor`, `mentee`) MUST be resolved at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()` (never stored in DB, never used in route middleware) |
 | FR-AUTH12 | Every policy MUST extend `BasePolicy` |
 
 ### 4.2 Cross-Role Proxy (Canonical Contract)
@@ -203,8 +203,14 @@ abstract class BasePolicy
 
 | Role | Resolution | Scope |
 |------|-----------|-------|
-| `mentor` | Teacher assigned to internship group | Supervises specific students |
+| `admin-group` | `super_admin`, `admin` | Administrative grouping for shared permission checks |
+| `mentor` | Teacher assigned to internship group / supervisor | Supervises specific students |
 | `mentee` | Student assigned to internship group | Supervised by specific teacher |
+
+Functional roles are resolved at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()` in
+`app/Auth/Permissions/Enums/Role.php` — never stored in the database, never used in route middleware.
+The MentorEntity bridge (`Registration::asMentorEntity()`) resolves mentor/mentee relationships from
+internship-group membership.
 
 ---
 
@@ -283,4 +289,4 @@ After implementing this spec, the system has role-based access control with 5 ro
 - `docs/foundation/rbac.md` — Role definitions and capabilities
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — ADR for flat role model
 - `docs/adr/adr-cross-role-proxy.md` — Cross-role proxy protocol
-- `docs/specs/authentication.md` — Login and session lifecycle
+- `docs/specs/YB7RG-authentication.md` — Login and session lifecycle

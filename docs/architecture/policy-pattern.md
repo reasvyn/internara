@@ -41,8 +41,9 @@ No role inherits permissions from another — adding a permission to one role ne
 Functional roles exist for business logic only. They are resolved at runtime — never stored in the
 database, never used in route middleware.
 
-| Functional Role | Code          | Resolves From           | Purpose                        |
-| --------------- | ------------- | ----------------------- | ------------------------------ |
+| Functional Role | Code       | Resolves From           | Purpose                        |
+| --------------- | ---------- | ----------------------- | ------------------------------ |
+| `admin-group`   | `admin`    | `super_admin`, `admin`  | Administrative grouping for permission checks |
 | `mentor`        | `func_mentor` | `teacher`, `supervisor` | Anyone who supervises students |
 | `mentee`        | `func_mentee` | `student`               | Anyone being supervised        |
 
