@@ -1,9 +1,7 @@
 # Architecture Design — Module-First 4-Layer Architecture
 
 > **Spec ID:** D2FT3
-> **Last updated:** 2026-08-16 **Changes:** add — governing architecture spec (module-first vertical
-> slicing, 4-layer model, Action Triad, boundary objects, data-flow contracts, cross-module dependency
-> rules); established as the first spec in the build order.
+> **Last updated:** 2026-08-19 **Changes:** spec audit completed — 6 C6 DTO violations (Journals), 4 C7 Action violations (Journals), 11 security findings (XSS + CSP) filed as GitHub issues #401-#403
 
 ## Description
 
