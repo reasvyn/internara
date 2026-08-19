@@ -10,7 +10,7 @@ use App\User\Enums\AccountStatus;
 final readonly class SetUserStatusData extends BaseData
 {
     public function __construct(
-        public int $userId,
+        public string $userId,
         public AccountStatus $newStatus,
         public ?string $reason = null,
         public bool $skipAuthCheck = false,
