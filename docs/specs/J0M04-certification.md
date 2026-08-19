@@ -1,7 +1,7 @@
 # Certification — Certificate Templates, Issuance, Batch Processing & QR Verification
 
 > **Spec ID:** J0M04
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-19 **Changes:** sync — add revoked_by/revoked_at to Certificate contract (issue #297)
 > single/batch issuance, PDF rendering with 17 placeholders, QR hash generation, revocation,
 > and student certificate view
 
@@ -227,8 +227,8 @@ Without self-service access, every certificate request becomes a support ticket.
 ```
 App\Certification\Certificate\Models\Certificate
   Table: certificates (UUID PK)
-  Fillable: registration_id, certificate_number, qr_hash, status, template_content, issued_by, issued_at
-  Casts: status → CertificateStatus, issued_at → datetime
+  Fillable: registration_id, certificate_number, qr_hash, status, template_content, issued_by, issued_at, revoked_by, revoked_at
+  Casts: status → CertificateStatus, issued_at → datetime, revoked_at → datetime
   Default: status = CertificateStatus::ISSUED
   Relations: registration() BelongsTo Registration, issuer() BelongsTo User
   Factory: CertificateFactory
@@ -265,6 +265,7 @@ App\Certification\Certificate\Services\CertificateRenderer (final readonly)
     renderHtml(Registration, Certificate): string
     renderPdf(Registration, Certificate): string
     storePdf(Registration, Certificate): string — returns stored file path
+    pdfPath(Certificate): string — deterministic disk path for the certificate PDF
     getDiskPath(string): string — full filesystem path
 ```
 
@@ -311,6 +312,8 @@ certificates:
   template_content: text (nullable)
   issued_by: foreignUuid → users.id (nullOnDelete, nullable)
   issued_at: dateTime
+  revoked_by: foreignUuid → users.id (nullOnDelete, nullable)
+  revoked_at: dateTime (nullable)
   timestamps
 
 certificate_templates:
