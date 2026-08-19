@@ -1,7 +1,7 @@
 # Logging & Error Handling — SmartLogger, PII Masking & Exception Hierarchy
 
 > **Spec ID:** 89SRA
-> **Last updated:** 2026-08-16 **Changes:** align middleware class name to `LogContextMiddleware` (§6.8, quick ref)
+> **Last updated:** 2026-08-19 **Changes:** audit — sync SmartLogger line count; verified contracts, cross-refs, docs, agent guides; FR IDs corrected in exception/action-error tests; FR-ER1-5 rendering tests added
 
 ## Description
 
@@ -565,7 +565,7 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 
 ## Quick References
 
-- `app/Core/Services/SmartLogger.php` — single entry point for all logging (336 lines)
+- `app/Core/Services/SmartLogger.php` — single entry point for all logging (340 lines)
 - `app/Core/Support/PiiMasker.php` — PII masking rules and methods (187 lines)
 - `app/Core/Exceptions/AppException.php` — abstract root for application exceptions
 - `app/Core/Exceptions/ModuleException.php` — abstract root for business exceptions

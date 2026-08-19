@@ -6,6 +6,7 @@ use App\Core\Actions\BaseCommandAction;
 use App\Core\Data\ActionResponse;
 use App\Core\Events\BaseEvent;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\Logbook\Actions\CreateLogbookAction;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -94,7 +95,7 @@ test('SE5Q9-FR-A7: execute() logs a successful mutation to the activity log', fu
     expect(DB::table('activity_log')->where('description', 'test.action_completed')->count())->toBe(1);
 });
 
-test('SE5Q9-FR-A1: fail() throws a RejectedException carrying context', function () {
+test('89SRA-FR-AE5: fail() throws a RejectedException carrying context', function () {
     $action = new TestAction(fn () => null);
 
     try {
@@ -103,7 +104,16 @@ test('SE5Q9-FR-A1: fail() throws a RejectedException carrying context', function
     } catch (RejectedException $e) {
         expect($e->getMessage())->toBe('Business rule violated');
         expect($e->getContext())->toBe(['field' => 'value']);
+        expect($e->statusCode())->toBe(400);
     }
+});
+
+test('89SRA-FR-AE6: log() auto-derives the module name from the Action namespace', function () {
+    $reflection = new ReflectionClass(CreateLogbookAction::class);
+    $method = $reflection->getMethod('moduleName');
+    $method->setAccessible(true);
+
+    expect($method->invoke($reflection->newInstanceWithoutConstructor()))->toBe('Journals');
 });
 
 test('SE5Q9-FR-A1: queued events dispatch after the transaction commits', function () {
