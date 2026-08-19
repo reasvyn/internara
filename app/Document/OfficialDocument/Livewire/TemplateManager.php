@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Livewire;
 
+use App\Document\Enums\DocumentCategory;
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use Illuminate\Contracts\View\View;
@@ -22,8 +23,8 @@ class TemplateManager extends Component
 
     public array $templateData = [
         'id' => null,
-        'name' => '',
-        'category' => 'application',
+        'title' => '',
+        'type' => 'application',
         'description' => '',
         'content' => '',
         'is_active' => true,
@@ -32,8 +33,8 @@ class TemplateManager extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'category', 'label' => 'Category'],
+            ['key' => 'title', 'label' => 'Name', 'sortable' => true],
+            ['key' => 'type', 'label' => 'Category'],
             ['key' => 'is_active', 'label' => 'Active'],
             ['key' => 'created_at', 'label' => 'Created', 'sortable' => true],
         ];
@@ -42,9 +43,21 @@ class TemplateManager extends Component
     public function templates(): LengthAwarePaginator
     {
         return Document::query()
-            ->when($this->search, fn (Builder $q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->where('type', '!=', 'report')
+            ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%{$this->search}%"))
             ->latest()
             ->paginate(10);
+    }
+
+    public function categories(): array
+    {
+        return array_map(
+            fn (DocumentCategory $category): array => [
+                'id' => $category->value,
+                'name' => $category->label(),
+            ],
+            DocumentCategory::cases(),
+        );
     }
 
     public function createTemplate(): void
@@ -52,8 +65,8 @@ class TemplateManager extends Component
         $this->resetErrorBag();
         $this->templateData = [
             'id' => null,
-            'name' => '',
-            'category' => 'application',
+            'title' => '',
+            'type' => 'application',
             'description' => '',
             'content' => '',
             'is_active' => true,
@@ -64,15 +77,22 @@ class TemplateManager extends Component
     public function editTemplate(Document $template): void
     {
         $this->resetErrorBag();
-        $this->templateData = $template->toArray();
+        $this->templateData = [
+            'id' => $template->id,
+            'title' => $template->title,
+            'type' => $template->type,
+            'description' => $template->metadata['description'] ?? '',
+            'content' => (string) $template->content,
+            'is_active' => (bool) $template->is_active,
+        ];
         $this->templateModal = true;
     }
 
     public function saveTemplate(SaveDocumentTemplateAction $action): void
     {
         $this->validate([
-            'templateData.name' => 'required|string|max:255',
-            'templateData.category' => 'required|string',
+            'templateData.title' => 'required|string|max:255',
+            'templateData.type' => 'required|string',
             'templateData.content' => 'required|string',
         ]);
 

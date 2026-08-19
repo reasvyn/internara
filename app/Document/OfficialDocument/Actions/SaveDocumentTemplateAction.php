@@ -12,21 +12,25 @@ final class SaveDocumentTemplateAction extends BaseCommandAction
 {
     public function execute(array $data): Document
     {
-        $slug = Str::of($data['name'])->slug()->toString();
+        $title = $data['title'] ?? '';
+        $slug = Str::of($title)->slug()->toString();
 
-        return $this->transaction(function () use ($data, $slug) {
+        return $this->transaction(function () use ($data, $slug, $title) {
             $document = Document::updateOrCreate(
                 ['id' => $data['id'] ?? null],
                 [
-                    'title' => $data['name'] ?? $data['title'] ?? '',
+                    'title' => $title,
                     'slug' => $slug,
                     'content' => $data['content'] ?? null,
                     'type' => $data['type'] ?? 'template',
+                    'metadata' => array_filter([
+                        'description' => $data['description'] ?? null,
+                    ]),
                     'is_active' => $data['is_active'] ?? true,
                 ],
             );
 
-            $this->log('document_template_saved', $document, ['name' => $document->name]);
+            $this->log('document_template_saved', $document, ['title' => $document->title]);
 
             return $document;
         });

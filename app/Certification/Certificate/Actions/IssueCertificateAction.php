@@ -7,14 +7,11 @@ namespace App\Certification\Certificate\Actions;
 use App\Certification\Certificate\Events\CertificateIssued;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Certification\Certificate\Services\CertificateRenderer;
 use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Registration\Models\Registration;
 
 final class IssueCertificateAction extends BaseCommandAction
 {
-    public function __construct(protected readonly CertificateRenderer $renderer) {}
-
     public function execute(Registration $registration, CertificateTemplate $template): Certificate
     {
         return $this->transaction(function () use ($registration, $template) {
@@ -34,15 +31,6 @@ final class IssueCertificateAction extends BaseCommandAction
 
             $report = $registration->report;
 
-            $metadata = [
-                'student_name' => $registration->mentee?->user?->name ?? '',
-                'school_name' => $registration->internship?->academicYear?->name ?? '',
-                'company_name' => $registration->placement?->company?->name ?? '',
-                'start_date' => $registration->start_date?->format('Y-m-d'),
-                'end_date' => $registration->end_date?->format('Y-m-d'),
-                'score' => $report?->score,
-            ];
-
             $qrHash = hash('sha256', implode('|', [
                 $registration->mentee?->user?->id ?? '',
                 setting('school.name', ''),
@@ -54,16 +42,11 @@ final class IssueCertificateAction extends BaseCommandAction
             $certificate = Certificate::create([
                 'registration_id' => $registration->id,
                 'certificate_number' => $certificateNumber,
-                'template_id' => $template->id,
+                'template_content' => $template->content_template,
                 'issued_by' => auth()->id(),
                 'issued_at' => now(),
                 'qr_hash' => $qrHash,
-                'metadata' => $metadata,
             ]);
-
-            $pdfPath = $this->renderer->storePdf($registration, $certificate);
-
-            $certificate->update(['metadata' => array_merge($metadata, ['pdf_path' => $pdfPath])]);
 
             $this->log('certificate_issued', $certificate, [
                 'certificate_number' => $certificateNumber,

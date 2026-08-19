@@ -29,14 +29,10 @@ class CertificateDownloadController extends BaseController
             abort(403);
         }
 
-        $metadata = $certificate->metadata;
-        $pdfPath = $metadata['pdf_path'] ?? null;
+        $pdfPath = $this->renderer->pdfPath($certificate);
 
-        if (! $pdfPath || ! Storage::disk('local')->exists($pdfPath)) {
-            $registration = $certificate->registration;
-            $pdfPath = $this->renderer->storePdf($registration, $certificate);
-            $metadata['pdf_path'] = $pdfPath;
-            $certificate->update(['metadata' => $metadata]);
+        if (! Storage::disk('local')->exists($pdfPath)) {
+            $this->renderer->storePdf($certificate->registration, $certificate);
         }
 
         $fileName = 'certificate_'.$certificate->certificate_number.'.pdf';

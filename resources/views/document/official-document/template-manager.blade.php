@@ -28,6 +28,10 @@
                 />
             @endscope
 
+            @scope('cell_type', $template)
+                {{ \App\Document\Enums\DocumentCategory::tryFrom($template->type)?->label() ?? $template->type }}
+            @endscope
+
             @scope('actions', $template)
                 <x-mary-button
                     icon="o-pencil"
@@ -46,11 +50,11 @@
     >
         <x-mary-form wire:submit="saveTemplate">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-mary-input :label="__('document.template_name')" wire:model="templateData.name" />
+                <x-mary-input :label="__('document.template_name')" wire:model="templateData.title" />
                 <x-mary-select
                     :label="__('document.category')"
-                    wire:model="templateData.category"
-                    :options="[['id' => 'application', 'name' => __('document.category_application')], ['id' => 'permit', 'name' => __('document.category_permit')], ['id' => 'certificate', 'name' => __('document.category_certificate')]]"
+                    wire:model="templateData.type"
+                    :options="$this->categories()"
                 />
 
                 <x-mary-textarea

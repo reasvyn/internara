@@ -57,7 +57,7 @@ final readonly class CertificateRenderer
     public function renderHtml(Registration $registration, Certificate $certificate): string
     {
         $placeholders = $this->resolvePlaceholders($registration, $certificate);
-        $template = $certificate->template?->content_template ?? '<p>Certificate</p>';
+        $template = $certificate->template_content ?? '<p>Certificate</p>';
 
         $html = str_replace(array_keys($placeholders), array_values($placeholders), $template);
 
@@ -81,12 +81,16 @@ final readonly class CertificateRenderer
     {
         $pdf = $this->renderPdf($registration, $certificate);
 
-        $fileName = 'certificate_'.$certificate->certificate_number.'.pdf';
-        $path = self::STORAGE_PATH.'/'.$fileName;
+        $path = $this->pdfPath($certificate);
 
         Storage::disk('local')->put($path, $pdf);
 
         return $path;
+    }
+
+    public function pdfPath(Certificate $certificate): string
+    {
+        return self::STORAGE_PATH.'/certificate_'.$certificate->certificate_number.'.pdf';
     }
 
     public function getDiskPath(string $storagePath): string
