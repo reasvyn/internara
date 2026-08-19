@@ -6,6 +6,7 @@ namespace App\Journals\AbsenceRequest\Livewire;
 
 use App\Core\Livewire\BaseFormView;
 use App\Journals\AbsenceRequest\Actions\SubmitAbsenceAction;
+use App\Journals\AbsenceRequest\Data\SubmitAbsenceData;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\Journals\Attendance\Models\Attendance;
@@ -48,11 +49,15 @@ class AbsenceRequestForm extends BaseFormView
         }
 
         $this->handleSave(function () use ($registration, $action) {
-            $action->execute(auth()->user(), $registration->id, [
-                'start_date' => $this->startDate,
-                'reason_type' => $this->reasonType,
-                'reason_description' => $this->reasonDescription,
-            ]);
+            $action->execute(new SubmitAbsenceData(
+                user: auth()->user(),
+                registrationId: $registration->id,
+                data: [
+                    'start_date' => $this->startDate,
+                    'reason_type' => $this->reasonType,
+                    'reason_description' => $this->reasonDescription,
+                ],
+            ));
 
             $this->reset(['startDate', 'reasonType', 'reasonDescription']);
             flash()->success(__('journals.absence.submitted'));

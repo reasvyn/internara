@@ -13,38 +13,33 @@ use Illuminate\Support\Facades\Validator;
 
 final class SetSettingAction extends BaseCommandAction
 {
-    public function execute(
-        string $key,
-        mixed $value,
-        ?string $group = null,
-        ?string $description = null,
-        ?string $type = null,
-    ): Setting {
+    public function execute(SettingData $data): Setting
+    {
         Validator::validate(
-            ['key' => $key],
+            ['key' => $data->key],
             ['key' => ['required', new ValidSettingKey]],
         );
 
-        return $this->transaction(function () use ($key, $value, $group, $description, $type) {
-            $setting = Setting::updateOrCreate(['key' => $key]);
-            $setting->type = $type ?? $this->detectType($value);
-            $setting->value = $value;
-            $setting->group = $group;
-            $setting->description = $description;
+        return $this->transaction(function () use ($data) {
+            $setting = Setting::updateOrCreate(['key' => $data->key]);
+            $setting->type = $data->type ?? $this->detectType($data->value);
+            $setting->value = $data->value;
+            $setting->group = $data->group;
+            $setting->description = $data->description;
             $setting->save();
 
             $this->log('setting.updated', $setting, [
-                'key' => $key,
-                'group' => $group,
+                'key' => $data->key,
+                'group' => $data->group,
                 'type' => $setting->type,
             ]);
 
             $this->dispatchEvent(new SettingUpdated(
                 setting: new SettingData(
-                    key: $key,
-                    value: $value,
+                    key: $data->key,
+                    value: $data->value,
                     type: $setting->type,
-                    group: $group,
+                    group: $data->group,
                 ),
                 wasRecentlyCreated: $setting->wasRecentlyCreated,
             ));

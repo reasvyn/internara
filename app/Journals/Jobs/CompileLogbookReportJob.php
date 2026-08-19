@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\Journals;
+namespace App\Journals\Jobs;
 
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Logbook\Actions\CompileLogbookReportAction;

@@ -10,6 +10,7 @@ use App\Core\Livewire\BaseFormView;
 use App\Settings\Actions\SetSettingAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
+use App\Settings\Data\SettingData;
 use App\Settings\Models\Setting;
 use App\Settings\Services\Settings;
 use Illuminate\View\View;
@@ -41,7 +42,11 @@ class SchoolEditor extends BaseFormView
 
         $url = $uploadBrand->execute($this->logo_file);
 
-        $setSetting->execute(key: 'brand_logo', value: $url, group: 'branding');
+        $setSetting->execute(new SettingData(
+            key: 'brand_logo',
+            value: $url,
+            group: 'branding',
+        ));
 
         $this->logo_file = null;
         flash()->success(__('school.logo_saved'));

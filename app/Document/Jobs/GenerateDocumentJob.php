@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\Document;
+namespace App\Document\Jobs;
 
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\GenerateDocumentAction;

@@ -11,6 +11,7 @@ use App\Core\Exceptions\RejectedException;
 use App\Settings\Actions\BatchSetSettingAction;
 use App\Settings\Data\SettingEntryData;
 use App\Setup\Entities\SetupEntity;
+use App\Setup\SetupWizard\Data\FinalizeSetupData;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Support\Facades\Cache;
@@ -29,34 +30,24 @@ final class FinalizeSetupAction extends BaseCommandAction
         protected readonly BatchSetSettingAction $batchSetSetting,
     ) {}
 
-    public function execute(
-        array $schoolData,
-        array $departmentData,
-        array $adminData,
-        array $stepsToComplete = ['account', 'school', 'department'],
-    ): string {
+    public function execute(FinalizeSetupData $data): string
+    {
         $state = SetupEntity::get();
 
         if ($state->isInstalled()) {
             throw new RejectedException('System is already installed.');
         }
 
-        $result = $this->transaction(function () use (
-            $schoolData,
-            $departmentData,
-            $adminData,
-            $stepsToComplete,
-            $state,
-        ) {
-            $this->setupSchool->execute($schoolData);
+        $result = $this->transaction(function () use ($data, $state) {
+            $this->setupSchool->execute($data->schoolData);
 
-            $department = $this->setupDept->execute($departmentData);
+            $department = $this->setupDept->execute($data->departmentData);
 
-            $admin = $this->setupAdmin->execute($adminData['email'], $adminData['password']);
+            $admin = $this->setupAdmin->execute($data->adminData['email'], $data->adminData['password']);
 
             $completedSteps = $state->completedSteps();
 
-            foreach ($stepsToComplete as $step) {
+            foreach ($data->stepsToComplete as $step) {
                 if (! in_array($step, $completedSteps)) {
                     $completedSteps[] = $step;
                 }
@@ -66,7 +57,7 @@ final class FinalizeSetupAction extends BaseCommandAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
-            $schoolName = $schoolData['name'] ?? config('app.name', 'Internara');
+            $schoolName = $data->schoolData['name'] ?? config('app.name', 'Internara');
 
             $this->batchSetSetting->execute(
                 ...[

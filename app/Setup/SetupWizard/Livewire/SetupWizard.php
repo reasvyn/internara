@@ -10,6 +10,7 @@ use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
+use App\Setup\SetupWizard\Data\FinalizeSetupData;
 use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;
 use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
@@ -236,7 +237,7 @@ class SetupWizard extends BaseWizard
         ]);
 
         try {
-            $this->recoveryKey = $finalizeSetup->execute(
+            $this->recoveryKey = $finalizeSetup->execute(new FinalizeSetupData(
                 schoolData: [
                     'name' => $this->schoolForm->name,
                     'institutional_code' => $this->schoolForm->institutional_code,
@@ -254,7 +255,7 @@ class SetupWizard extends BaseWizard
                     'email' => $this->superAdminForm->email,
                     'password' => $this->superAdminForm->password,
                 ],
-            );
+            ));
 
             $this->currentStep = 6;
             session()->put('setup.completed', true);
