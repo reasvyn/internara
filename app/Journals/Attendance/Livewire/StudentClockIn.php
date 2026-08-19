@@ -7,6 +7,7 @@ namespace App\Journals\Attendance\Livewire;
 use App\Core\Livewire\BaseFormView;
 use App\Journals\Attendance\Actions\ClockInAction;
 use App\Journals\Attendance\Actions\ClockOutAction;
+use App\Journals\Attendance\Data\ClockOutData;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -24,7 +25,10 @@ class StudentClockIn extends BaseFormView
     public function clockOut(ClockOutAction $action): void
     {
         $this->handleSave(function () use ($action) {
-            $action->execute(auth()->user(), []);
+            $action->execute(new ClockOutData(
+                user: auth()->user(),
+                data: [],
+            ));
             flash()->success(__('journals.attendance.clocked_out'));
         });
     }

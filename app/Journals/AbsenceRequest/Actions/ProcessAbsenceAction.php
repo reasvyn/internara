@@ -6,36 +6,32 @@ namespace App\Journals\AbsenceRequest\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\AbsenceRequest\Data\ProcessAbsenceData;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\Attendance\Models\Attendance;
-use App\User\Models\User;
 
 final class ProcessAbsenceAction extends BaseCommandAction
 {
-    public function execute(
-        Attendance $absence,
-        User $processor,
-        AbsenceRequestStatus $status,
-        ?string $notes = null,
-    ): Attendance {
-        $currentStatus = AbsenceRequestStatus::tryFrom($absence->absence_status);
+    public function execute(ProcessAbsenceData $data): Attendance
+    {
+        $currentStatus = AbsenceRequestStatus::tryFrom($data->absence->absence_status);
         if ($currentStatus && $currentStatus->isProcessed()) {
             throw new RejectedException(__('journals.absence.already_processed'));
         }
 
-        return $this->transaction(function () use ($absence, $processor, $status, $notes) {
-            $absence->update([
-                'absence_status' => $status,
-                'absence_processed_by' => $processor->id,
+        return $this->transaction(function () use ($data) {
+            $data->absence->update([
+                'absence_status' => $data->status,
+                'absence_processed_by' => $data->processor->id,
                 'absence_processed_at' => now(),
-                'absence_admin_notes' => $notes,
+                'absence_admin_notes' => $data->notes,
             ]);
 
-            $this->log('absence_request_'.$status->value, $absence, [
-                'status' => $status->value,
+            $this->log('absence_request_'.$data->status->value, $data->absence, [
+                'status' => $data->status->value,
             ]);
 
-            return $absence;
+            return $data->absence;
         });
     }
 }

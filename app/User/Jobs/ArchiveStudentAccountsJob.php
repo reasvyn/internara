@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\User;
+namespace App\User\Jobs;
 
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;

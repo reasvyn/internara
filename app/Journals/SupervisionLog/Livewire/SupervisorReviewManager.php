@@ -7,6 +7,7 @@ namespace App\Journals\SupervisionLog\Livewire;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Journals\SupervisionLog\Actions\ReviewLogAction;
+use App\Journals\SupervisionLog\Data\ReviewLogData;
 use App\Journals\SupervisionLog\Models\SupervisionLog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,7 +58,11 @@ class SupervisorReviewManager extends BaseRecordManager
         try {
             $log = SupervisionLog::findOrFail($this->reviewTarget);
             $this->authorize('review', $log);
-            $action->execute($log, auth()->user(), $this->feedback);
+            $action->execute(new ReviewLogData(
+                log: $log,
+                supervisor: auth()->user(),
+                feedback: $this->feedback,
+            ));
             flash()->success(__('journals.log_reviewed'));
         } catch (RejectedException $e) {
             flash()->error($e->getMessage());

@@ -103,7 +103,11 @@ class AttendanceManager extends Component
     {
         $absence = AbsenceRequest::findOrFail($id);
         $this->authorize('update', $absence);
-        $action->execute($absence, auth()->user(), AbsenceRequestStatus::APPROVED);
+        $action->execute(new ProcessAbsenceData(
+            absence: $absence,
+            processor: auth()->user(),
+            status: AbsenceRequestStatus::APPROVED,
+        ));
         flash()->success(__('journals.absence.approved'));
     }
 
@@ -111,7 +115,11 @@ class AttendanceManager extends Component
     {
         $absence = AbsenceRequest::findOrFail($id);
         $this->authorize('update', $absence);
-        $action->execute($absence, auth()->user(), AbsenceRequestStatus::REJECTED);
+        $action->execute(new ProcessAbsenceData(
+            absence: $absence,
+            processor: auth()->user(),
+            status: AbsenceRequestStatus::REJECTED,
+        ));
         flash()->success(__('journals.absence.rejected'));
     }
 

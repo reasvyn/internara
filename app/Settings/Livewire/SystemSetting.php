@@ -14,6 +14,7 @@ use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
+use App\Settings\Data\SettingData;
 use App\Settings\Data\SystemSettingsData;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
 use App\Settings\Livewire\Forms\MailSettingsForm;
@@ -122,7 +123,11 @@ class SystemSetting extends BaseFormView
 
         if ($this->brandingForm->brand_logo instanceof UploadedFile) {
             $url = $uploadBrand->execute($this->brandingForm->brand_logo);
-            $setSetting->execute(key: 'brand_logo', value: $url, group: 'branding');
+            $setSetting->execute(new SettingData(
+                key: 'brand_logo',
+                value: $url,
+                group: 'branding',
+            ));
             $this->brandingForm->current_logo_url = $url;
             flash()->success(__('setting.messages.logo_saved'));
         }
@@ -137,7 +142,11 @@ class SystemSetting extends BaseFormView
 
         if ($this->brandingForm->site_favicon instanceof UploadedFile) {
             $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
-            $setSetting->execute(key: 'site_favicon', value: $url, group: 'branding');
+            $setSetting->execute(new SettingData(
+                key: 'site_favicon',
+                value: $url,
+                group: 'branding',
+            ));
             $this->brandingForm->current_favicon_url = $url;
             flash()->success(__('setting.messages.favicon_saved'));
         }

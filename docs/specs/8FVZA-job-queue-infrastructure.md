@@ -240,7 +240,12 @@ After implementing this spec, the system has async job processing via Laravel qu
 
 ## Quick References
 
-- `app/Jobs/` — All queued jobs (5 files)
+- `app/{Module}/Jobs/` — Queued jobs colocated with their owning module:
+  - `app/SysAdmin/Announcement/Jobs/SendAnnouncementJob.php`
+  - `app/Document/Jobs/GenerateDocumentJob.php`
+  - `app/User/Jobs/ArchiveStudentAccountsJob.php`
+  - `app/Journals/Jobs/CompileLogbookReportJob.php`
+  - `app/Certification/Jobs/BatchIssueCertificatesJob.php`
 - `config/queue.php` — Queue driver configuration
 - `docs/architecture/event-pattern.md` — Event dispatch (for comparison)
 - `docs/specs/event-system.md` — Event system specification

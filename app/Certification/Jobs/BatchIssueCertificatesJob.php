@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\Certification;
+namespace App\Certification\Jobs;
 
 use App\Certification\Certificate\Actions\IssueCertificateAction;
 use App\Certification\Certificate\Models\CertificateTemplate;

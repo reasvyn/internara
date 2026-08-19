@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Jobs\SysAdmin;
+namespace App\SysAdmin\Announcement\Jobs;
 
 use App\SysAdmin\Announcement\Actions\SendAnnouncementNotificationsAction;
 use App\SysAdmin\Announcement\Models\Announcement;
