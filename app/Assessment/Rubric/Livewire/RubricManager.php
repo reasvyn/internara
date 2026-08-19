@@ -127,6 +127,7 @@ class RubricManager extends Component
 
         if ($this->rubricForm['id']) {
             $rubric = Rubric::findOrFail($this->rubricForm['id']);
+            $this->authorize('update', $rubric);
             $updateAction->execute(
                 $rubric,
                 new UpdateRubricData(
@@ -137,6 +138,7 @@ class RubricManager extends Component
             );
             flash()->success(__('assessment.rubric_updated'));
         } else {
+            $this->authorize('create', Rubric::class);
             $createAction->execute(new CreateRubricData(
                 name: $this->rubricForm['name'],
                 description: $this->rubricForm['description'],
@@ -181,20 +183,28 @@ class RubricManager extends Component
         DeleteIndicatorAction $deleteIndicator,
     ): void {
         try {
-            match ($this->confirmActionType) {
-                'rubric' => $deleteRubric->execute(Rubric::findOrFail($this->confirmTargetId)),
-                'competency' => $deleteCompetency->execute(
-                    Rubric::findOrFail($this->confirmTargetId),
+            if ($this->confirmActionType === 'rubric') {
+                $rubric = Rubric::findOrFail($this->confirmTargetId);
+                $this->authorize('delete', $rubric);
+                $deleteRubric->execute($rubric);
+            } elseif ($this->confirmActionType === 'competency') {
+                $rubric = Rubric::findOrFail($this->confirmTargetId);
+                $this->authorize('delete', $rubric);
+                $deleteCompetency->execute(
+                    $rubric,
                     $this->confirmCompetencyId,
-                ),
-                'indicator' => $deleteIndicator->execute(
-                    Rubric::findOrFail($this->confirmTargetId),
+                );
+            } elseif ($this->confirmActionType === 'indicator') {
+                $rubric = Rubric::findOrFail($this->confirmTargetId);
+                $this->authorize('delete', $rubric);
+                $deleteIndicator->execute(
+                    $rubric,
                     new DeleteIndicatorData(
                         competencyId: $this->confirmCompetencyId,
                         indicatorId: $this->confirmIndicatorId,
                     ),
-                ),
-            };
+                );
+            }
 
             flash()->success(match ($this->confirmActionType) {
                 'rubric' => __('assessment.rubric_removed'),
@@ -267,6 +277,7 @@ class RubricManager extends Component
         $rubric = Rubric::findOrFail($this->selectedRubricId);
 
         if ($this->competencyForm['id']) {
+            $this->authorize('update', $rubric);
             $updateAction->execute(
                 $rubric,
                 new UpdateCompetencyData(
@@ -280,6 +291,7 @@ class RubricManager extends Component
             );
             flash()->success(__('assessment.competency_updated'));
         } else {
+            $this->authorize('update', $rubric);
             $createAction->execute(
                 $rubric,
                 new CreateCompetencyData(
@@ -349,6 +361,7 @@ class RubricManager extends Component
         $rubric = Rubric::findOrFail($this->selectedRubricId);
 
         if ($this->indicatorForm['id']) {
+            $this->authorize('update', $rubric);
             $updateAction->execute(
                 $rubric,
                 new UpdateIndicatorData(
@@ -363,6 +376,7 @@ class RubricManager extends Component
             );
             flash()->success(__('assessment.indicator_updated'));
         } else {
+            $this->authorize('update', $rubric);
             $createAction->execute(
                 $rubric,
                 new CreateIndicatorData(
