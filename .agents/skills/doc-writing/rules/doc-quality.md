@@ -1,6 +1,6 @@
 # Doc Quality — Completeness & Accuracy Gate
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten from checklist to comprehensive rule — preserves the full checklist content as prose with rationale
+> **Last updated:** 2026-08-19 **Changes:** clarify `**Changes:**` metadata records only the latest revision, history lives in git
 
 ## Intent
 
@@ -54,7 +54,8 @@ be both manual and index — which serves neither audience and rots in both dime
 ### 3. Metadata
 
 - `**Last updated:**` date is current (`YYYY-MM-DD` format, not `DD/MM/YYYY` or `MM-DD-YYYY`).
-- `**Changes:**` describes what changed in this revision.
+- `**Changes:**` describes what changed in this revision — the latest change only. Past changes are
+  recorded in git history, never accumulated in the metadata line (no "Prior:" trails).
 
 Why: stale metadata is a lie told to every future reader. The date is how anyone (including the
 `scan_doc_links.py` scanner) judges whether a doc can be trusted.
