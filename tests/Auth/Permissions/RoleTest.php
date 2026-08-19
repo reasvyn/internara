@@ -16,16 +16,19 @@ describe('QLHDO: role model — FR-G2', function () {
         }
     });
 
-    test('QLHDO-FR-G2: exposes the two runtime functional roles', function () {
-        expect(Role::functionalRoles())->toContain(Role::MENTOR, Role::MENTEE);
+    test('QLHDO-FR-G2: exposes the three runtime functional roles', function () {
+        expect(Role::functionalRoles())->toHaveCount(3)
+            ->toContain(Role::ADMIN, Role::MENTOR, Role::MENTEE);
     });
 
-    test('QLHDO-FR-G2: functional roles are never stored user roles', function () {
+    test('QLHDO-FR-G2: functional grouping roles are not stored user roles', function () {
         expect(Role::MENTOR->isUserRole())->toBeFalse()
-            ->and(Role::MENTEE->isUserRole())->toBeFalse();
+            ->and(Role::MENTEE->isUserRole())->toBeFalse()
+            ->and(Role::ADMIN->isUserRole())->toBeTrue();
     });
 
     test('QLHDO-FR-G2: resolvesTo maps functional roles to stored roles', function () {
+        expect(Role::ADMIN->resolvesTo())->toContain(Role::SUPER_ADMIN, Role::ADMIN);
         expect(Role::MENTOR->resolvesTo())->toContain(Role::TEACHER, Role::SUPERVISOR);
         expect(Role::MENTEE->resolvesTo())->toContain(Role::STUDENT);
     });
