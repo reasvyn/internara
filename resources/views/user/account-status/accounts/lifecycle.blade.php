@@ -70,12 +70,14 @@
                     <div class="flex gap-2">
                         @if ($user->locked_at)
                             <x-mary-button
+                                aria-label="{{ __('common.actions.unlock') }}"
                                 icon="o-lock-open"
                                 class="btn-ghost btn-sm text-success"
                                 wire:click="askUnlock('{{ $user->id }}')"
                             />
                         @else
                             <x-mary-button
+                                aria-label="{{ __('common.actions.lock') }}"
                                 icon="o-lock-closed"
                                 class="btn-ghost btn-sm text-warning"
                                 wire:click="askLock('{{ $user->id }}')"

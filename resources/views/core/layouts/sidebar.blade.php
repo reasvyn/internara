@@ -15,48 +15,55 @@
                 @foreach (config('menu.groups') as $group)
                     @if (auth()->user()->hasRole($group['roles']))
                         <div>
-                            <h3 class="text-base-content/30 mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider">
+                            <h3 class="text-base-content/60 mb-2 px-3 text-[10px] font-semibold tracking-wider uppercase">
                                 {{ __($group['title']) }}
                             </h3>
                             <ul class="space-y-0.5">
                                 @foreach ($group['items'] as $item)
-@php
-    $itemRoles = $item['roles'] ?? $group['roles'];
-    $disabled = $item['disabled'] ?? false;
-    $active = !$disabled && request()->routeIs($item['route']);
-    $url = '#';
-    if (!$disabled) {
-        try {
-            if (Route::has($item['route'])) {
-                $url = route($item['route']);
-            }
-        } catch (\Throwable) {
-            $url = '#';
-        }
-    }
-@endphp
-@if (auth()->user()->hasRole($itemRoles))
-    <li>
-        @if ($disabled)
-            <span @class([
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-not-allowed',
-                'text-base-content/30' => true,
-            ])>
-                <x-mary-icon class="size-4 shrink-0 opacity-40" :name="$item['icon']" />
-                <span class="opacity-40">{{ __($item['label']) }}</span>
-            </span>
-        @else
-            <a wire:navigate href="{{ $url }}" @class([
-                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
-                'bg-primary/10 text-primary font-medium' => $active,
-                'text-base-content/60 hover:bg-base-200 hover:text-base-content' => !$active,
-            ])>
-                <x-mary-icon class="size-4 shrink-0" :name="$item['icon']" />
-                <span>{{ __($item['label']) }}</span>
-            </a>
-        @endif
-    </li>
-@endif
+                                    @php
+                                        $itemRoles = $item['roles'] ?? $group['roles'];
+                                        $disabled = $item['disabled'] ?? false;
+                                        $active = ! $disabled && request()->routeIs($item['route']);
+                                        $url = '#';
+                                        if (! $disabled) {
+                                            try {
+                                                if (Route::has($item['route'])) {
+                                                    $url = route($item['route']);
+                                                }
+                                            } catch (\Throwable) {
+                                                $url = '#';
+                                            }
+                                        }
+                                    @endphp
+                                    @if (auth()->user()->hasRole($itemRoles))
+                                        <li>
+                                            @if ($disabled)
+                                                <span @class([
+                                                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-not-allowed',
+                                                    'text-base-content/60' => true,
+                                                ])>
+                                                    <x-mary-icon
+                                                        class="size-4 shrink-0 opacity-40"
+                                                        :name="$item['icon']"
+                                                    />
+                                                    <span class="opacity-40">{{ __($item['label']) }}</span>
+                                                </span>
+                                            @else
+                                                <a
+                                                    wire:navigate
+                                                    href="{{ $url }}"
+                                                    @class([
+                                                        'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                                                        'bg-primary/10 text-primary font-medium' => $active,
+                                                        'text-base-content/60 hover:bg-base-200 hover:text-base-content' => ! $active,
+                                                    ])
+                                                >
+                                                    <x-mary-icon class="size-4 shrink-0" :name="$item['icon']" />
+                                                    <span>{{ __($item['label']) }}</span>
+                                                </a>
+                                            @endif
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>

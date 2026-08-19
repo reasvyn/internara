@@ -29,7 +29,12 @@
 
             @scope('actions', $t)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $t->id }}')" />
+                    <x-mary-button
+                        aria-label="{{ __('common.actions.edit') }}"
+                        icon="o-pencil"
+                        class="btn-ghost btn-sm"
+                        wire:click="edit('{{ $t->id }}')"
+                    />
                 </div>
             @endscope
         </x-mary-table>

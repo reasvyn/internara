@@ -1,35 +1,29 @@
-@props (['title' => null, 'error' => null])
+@props(['title' => null, 'error' => null])
 
 <x-core::layouts.base :$title>
-    <div class="min-h-screen flex flex-col bg-base-100">
-        <header class="border-b border-base-content/10">
-            <div class="max-w-5xl mx-auto px-6 lg:px-12">
-                <div class="flex items-center justify-between h-16">
+    <div class="bg-base-100 flex min-h-screen flex-col">
+        <header class="border-base-content/10 border-b">
+            <div class="mx-auto max-w-5xl px-6 lg:px-12">
+                <div class="flex h-16 items-center justify-between">
                     <x-core::ui.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
                         <livewire:settings.theme-switcher class="px-2" />
-                        <div class="w-px h-5 bg-base-content/10"></div>
+                        <div class="bg-base-content/10 h-5 w-px"></div>
                         <livewire:settings.lang-switcher class="px-2" />
                     </div>
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 flex items-center justify-center py-12 px-6">
-            <div class="w-full max-w-md mx-auto">
-                <div class="text-center mb-8">
-                    <div
-                        class="inline-flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary mb-5"
-                    >
+        <main class="flex flex-1 items-center justify-center px-6 py-12">
+            <div class="mx-auto w-full max-w-md">
+                <div class="mb-8 text-center">
+                    <div class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-full">
                         <x-mary-icon name="o-key" class="size-7" />
                     </div>
-                    <h1 class="text-2xl font-bold tracking-tight">
-                        {{ __('setup.code_entry.title') }}
-                    </h1>
-                    <p class="text-sm text-base-content/60 mt-2">
-                        {{ __('setup.code_entry.description') }}
-                    </p>
+                    <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.code_entry.title') }}</h1>
+                    <p class="text-base-content/60 mt-2 text-sm">{{ __('setup.code_entry.description') }}</p>
                 </div>
 
                 <form method="POST" action="{{ route('setup') }}" class="space-y-5">
@@ -54,34 +48,26 @@
                     />
 
                     @if ($error)
-                        <div
-                            class="bg-error/5 border border-error/20 rounded-lg px-4 py-3 text-sm text-error"
-                        >
+                        <div class="bg-error/5 border-error/20 text-error rounded-lg border px-4 py-3 text-sm">
                             {{ $error }}
                         </div>
                     @elseif ($errors->any())
-                        <div
-                            class="bg-error/5 border border-error/20 rounded-lg px-4 py-3 text-sm text-error"
-                        >
+                        <div class="bg-error/5 border-error/20 text-error rounded-lg border px-4 py-3 text-sm">
                             {{ $errors->first() }}
                         </div>
                     @endif
                 </form>
 
                 <div class="mt-8 text-center">
-                    <p class="text-xs text-base-content/40 leading-relaxed">
-                        {{ __('setup.code_entry.help') }}
-                    </p>
-                    <p class="text-xs text-base-content/40 mt-1">
-                        {{ __('setup.code_entry.expiry_note') }}
-                    </p>
+                    <p class="text-base-content/40 text-xs leading-relaxed">{{ __('setup.code_entry.help') }}</p>
+                    <p class="text-base-content/40 mt-1 text-xs">{{ __('setup.code_entry.expiry_note') }}</p>
                 </div>
             </div>
         </main>
 
-        <footer class="border-t border-base-content/10 py-6 mt-auto">
-            <div class="max-w-5xl mx-auto px-6 lg:px-12 text-center">
-                <p class="text-xs text-base-content/40">
+        <footer class="border-base-content/10 mt-auto border-t py-6">
+            <div class="mx-auto max-w-5xl px-6 text-center lg:px-12">
+                <p class="text-base-content/40 text-xs">
                     &copy; {{ date('Y') }} {{ brand('author.name') }}. {{ __('All rights reserved.') }}
                 </p>
             </div>
@@ -92,7 +78,7 @@
         <button
             type="button"
             x-on:click="showGuide = true"
-            class="fixed bottom-6 right-6 z-50 flex items-center justify-center size-12 rounded-full shadow-xl bg-primary text-primary-content hover:bg-primary-focus transition-all duration-200 hover:scale-110 active:scale-95"
+            class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
             aria-label="{{ __('setup.guide.title') }}"
         >
             <x-mary-icon name="o-question-mark-circle" class="size-6" />
@@ -102,65 +88,61 @@
             <div
                 x-show="showGuide"
                 x-cloak
+                x-on:keydown.escape.window="showGuide = false"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="guide-title"
                 class="fixed inset-0 z-[60] flex items-center justify-center"
             >
-                <div
-                    x-on:click="showGuide = false"
-                    class="absolute inset-0 bg-black/40 backdrop-blur-sm"
-                ></div>
-                <div
-                    class="relative w-full max-w-lg bg-base-100 rounded-2xl shadow-2xl border border-base-content/10 max-h-[85vh] overflow-y-auto"
-                >
-                    <div
-                        class="sticky top-0 bg-base-100 border-b border-base-content/10 px-6 py-4 flex items-center justify-between rounded-t-2xl"
-                    >
-                        <h3 class="text-lg font-bold">{{ __('setup.guide.title') }}</h3>
+                <div x-on:click="showGuide = false" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+                <div class="bg-base-100 border-base-content/10 relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border shadow-2xl">
+                    <div class="bg-base-100 border-base-content/10 sticky top-0 flex items-center justify-between rounded-t-2xl border-b px-6 py-4">
+                        <h3 id="guide-title" class="text-lg font-bold">{{ __('setup.guide.title') }}</h3>
                         <button
                             type="button"
                             x-on:click="showGuide = false"
+                            aria-label="{{ __('common.actions.close') }}"
                             class="btn btn-ghost btn-sm btn-square"
                         >
                             <x-mary-icon name="o-x-mark" class="size-5" />
                         </button>
                     </div>
-                    <div class="p-6 space-y-5">
-                        <p class="text-sm text-base-content/60">{{ __('setup.guide.intro') }}</p>
+                    <div class="space-y-5 p-6">
+                        <p class="text-base-content/60 text-sm">{{ __('setup.guide.intro') }}</p>
 
                         @foreach (range(1, 7) as $step)
                             <div class="flex gap-4">
-                                <div
-                                    class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary font-bold text-sm shrink-0 mt-0.5"
-                                >
+                                <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold">
                                     {{ $step }}
                                 </div>
                                 <div>
-                                    <h4 class="font-semibold text-sm">
+                                    <h4 class="text-sm font-semibold">
                                         {{
                                             __(
-                                                'setup.guide.step' . $step . '_title',
+                                                'setup.guide.step'.$step.'_title',
                                             )
                                         }}
                                     </h4>
-                                    <p class="text-xs text-base-content/60 mt-1 leading-relaxed">{{
-                                        __(
-                                            'setup.guide.step' . $step . '_desc',
-                                        )
-                                    }}</p>
+                                    <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
+                                        {{
+                                            __(
+                                                'setup.guide.step'.$step.'_desc',
+                                            )
+                                        }}
+                                    </p>
                                 </div>
                             </div>
                         @endforeach
 
-                        <div class="flex gap-4 mt-6 pt-4 border-t border-base-content/10">
-                            <div
-                                class="flex items-center justify-center size-8 rounded-full bg-warning/10 text-warning shrink-0 mt-0.5"
-                            >
+                        <div class="border-base-content/10 mt-6 flex gap-4 border-t pt-4">
+                            <div class="bg-warning/10 text-warning mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
                                 <x-mary-icon name="o-light-bulb" class="size-4" />
                             </div>
                             <div>
-                                <h4 class="font-semibold text-sm">
-                                    {{ __('setup.guide.tip_title') }}
-                                </h4>
-                                <p class="text-xs text-base-content/60 mt-1 leading-relaxed">{{ __('setup.guide.tip_desc') }}</p>
+                                <h4 class="text-sm font-semibold">{{ __('setup.guide.tip_title') }}</h4>
+                                <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
+                                    {{ __('setup.guide.tip_desc') }}
+                                </p>
                             </div>
                         </div>
                     </div>

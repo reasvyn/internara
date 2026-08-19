@@ -68,6 +68,7 @@
             <div class="flex items-center gap-4 pr-2">
                 <div class="flex gap-2">
                     <x-mary-button
+                        aria-label="{{ __('common.actions.delete_selected') }}"
                         :title="__('common.actions.delete_selected')"
                         icon="o-trash"
                         class="btn-error shadow-error/20 h-10 rounded-xl px-6 text-[10px] font-black tracking-widest text-white uppercase shadow-lg transition-transform hover:scale-105"
@@ -145,12 +146,14 @@
                             />
                         @endif
                         <x-mary-button
+                            aria-label="{{ __('common.actions.edit') }}"
                             icon="o-pencil"
                             class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors"
                             wire:click="edit('{{ $assignment->id }}')"
                             tooltip="{{ __('assignment.edit_tooltip') }}"
                         />
                         <x-mary-button
+                            aria-label="{{ __('common.actions.delete') }}"
                             icon="o-trash"
                             class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors"
                             wire:click="askDelete('{{ $assignment->id }}')"

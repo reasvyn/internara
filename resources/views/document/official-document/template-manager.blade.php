@@ -34,6 +34,7 @@
 
             @scope('actions', $template)
                 <x-mary-button
+                    aria-label="{{ __('common.actions.edit') }}"
                     icon="o-pencil"
                     wire:click="editTemplate('{{ $template->id }}')"
                     class="btn-sm btn-ghost"

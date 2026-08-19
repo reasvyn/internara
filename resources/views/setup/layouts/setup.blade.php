@@ -1,9 +1,13 @@
 @props(['title' => null])
 
 <x-core::layouts.base :$title>
-    <div class="bg-base-100 flex min-h-screen flex-col" x-data x-init="window.addEventListener('beforeunload', () => {
+    <div
+        class="bg-base-100 flex min-h-screen flex-col"
+        x-data
+        x-init="window.addEventListener('beforeunload', () => {
         navigator.sendBeacon(@js(route('setup.cleanup')));
-    });">
+    });"
+    >
         {{-- Header --}}
         <header class="border-base-content/10 border-b">
             <div class="mx-auto max-w-5xl px-6 lg:px-12">
@@ -31,7 +35,7 @@
                     <p class="text-base-content/40 text-xs">
                         &copy; {{ date('Y') }} {{ brand('author.name') }}. {{ __('All rights reserved.') }}
                     </p>
-                    <p class="text-base-content/30 font-mono text-xs">v{{ app_info('version') }}</p>
+                    <p class="text-base-content/60 font-mono text-xs">v{{ app_info('version') }}</p>
                 </div>
             </div>
         </footer>

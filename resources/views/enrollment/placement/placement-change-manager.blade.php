@@ -32,11 +32,13 @@
                 <div class="flex justify-end gap-1">
                     @if ($r->status->value === 'pending')
                         <x-mary-button
+                            aria-label="{{ __('common.actions.approve') }}"
                             icon="o-check"
                             class="btn-ghost btn-sm text-success"
                             wire:click="approve('{{ $r->id }}')"
                         />
                         <x-mary-button
+                            aria-label="{{ __('common.actions.reject') }}"
                             icon="o-x-mark"
                             class="btn-ghost btn-sm text-error"
                             wire:click="rejectConfirm('{{ $r->id }}')"

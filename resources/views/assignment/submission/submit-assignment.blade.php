@@ -17,7 +17,7 @@
             <div class="flex flex-col items-center justify-center gap-4 py-20">
                 <x-mary-icon name="o-document-text" class="text-base-content/20 size-16" />
                 <h3 class="text-base-content/40 text-xl font-black tracking-tight">No assignments yet</h3>
-                <p class="text-base-content/30 text-sm">Assignments will appear here once published by your school.</p>
+                <p class="text-base-content/60 text-sm">Assignments will appear here once published by your school.</p>
             </div>
         </x-mary-card>
     @elseif (! $showDetail)

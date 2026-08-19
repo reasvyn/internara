@@ -11,26 +11,22 @@
 
         <x-core::layouts.sidebar />
 
-        <div class="drawer-content flex flex-col bg-base-200/30">
+        <div class="drawer-content bg-base-200/30 flex flex-col">
             <x-core::layouts.header :$header />
 
-            <main id="main-content" class="flex-1 flex flex-col">
-                <div class="flex-1 container mx-auto max-w-7xl px-4 py-5 md:px-6 lg:px-8 flex flex-col">
-                    @if($context)
-                        <nav aria-label="Breadcrumb" class="mb-5 flex items-center gap-2 text-xs text-base-content/40">
+            <main id="main-content" class="flex flex-1 flex-col">
+                <div class="container mx-auto flex max-w-7xl flex-1 flex-col px-4 py-5 md:px-6 lg:px-8">
+                    @if ($context)
+                        <nav aria-label="Breadcrumb" class="text-base-content/60 mb-5 flex items-center gap-2 text-xs">
                             <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">
                                 {{ brand('name') }}
                             </a>
-                            <span class="text-base-content/20">/</span>
-                            <span class="text-primary font-medium">
-                                {{ __($context) }}
-                            </span>
+                            <span class="text-base-content/60">/</span>
+                            <span class="text-primary font-medium"> {{ __($context) }} </span>
                         </nav>
                     @endif
 
-                    <div class="flex-1">
-                        {{ $slot }}
-                    </div>
+                    <div class="flex-1">{{ $slot }}</div>
                 </div>
             </main>
 

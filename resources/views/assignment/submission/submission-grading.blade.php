@@ -46,7 +46,7 @@
                 <div class="flex flex-col items-center justify-center gap-4 py-20">
                     <x-mary-icon name="o-check-circle" class="text-base-content/20 size-16" />
                     <h3 class="text-base-content/40 text-xl font-black tracking-tight">All caught up!</h3>
-                    <p class="text-base-content/30 text-sm">No submissions pending grading.</p>
+                    <p class="text-base-content/60 text-sm">No submissions pending grading.</p>
                 </div>
             @else
                 <div class="divide-base-content/5 divide-y">
