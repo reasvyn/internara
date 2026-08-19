@@ -28,7 +28,7 @@ class RecoverySlipManager extends Component
 
     public function generate(GenerateRecoverySlipAction $action): void
     {
-        if (!$this->selectedUser) {
+        if (! $this->selectedUser) {
             return;
         }
 

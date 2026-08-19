@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Tests\Support\WithSettingsSeed;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
+use Tests\Support\WithSettingsSeed;
 use Throwable;
 
 abstract class TestCase extends BaseTestCase
 {
     use WithSettingsSeed;
+
     /**
      * Setup the test environment.
      */

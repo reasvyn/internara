@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Assessment\Models\Assessment;
+use App\Assessment\Rubric\Models\Rubric;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -20,7 +21,7 @@ class AssessmentFactory extends Factory
     {
         return [
             'registration_id' => Registration::factory(),
-            'rubric_id' => \App\Assessment\Rubric\Models\Rubric::factory(),
+            'rubric_id' => Rubric::factory(),
             'evaluator_id' => User::factory(),
             'assessment_type' => $this->faker->randomElement([
                 'midterm',

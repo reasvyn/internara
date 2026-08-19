@@ -48,7 +48,7 @@ class CreateAdminCommand extends Command
             text(
                 label: __('superadmin.field_email'),
                 required: true,
-                validate: fn(string $value) => !filter_var($value, FILTER_VALIDATE_EMAIL)
+                validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL)
                     ? __('superadmin.create.invalid_email')
                     : null,
             );
@@ -58,7 +58,7 @@ class CreateAdminCommand extends Command
             password(
                 label: __('superadmin.field_password'),
                 required: true,
-                validate: fn(string $value) => strlen($value) < 8
+                validate: fn (string $value) => strlen($value) < 8
                     ? __('superadmin.create.password_min')
                     : null,
             );
@@ -113,12 +113,12 @@ class CreateAdminCommand extends Command
     private function displayHeader(): void
     {
         $this->newLine();
-        $this->line('  <fg=white;options=bold;bg=blue> ' . __('superadmin.title') . ' </>');
+        $this->line('  <fg=white;options=bold;bg=blue> '.__('superadmin.title').' </>');
         $this->line(
-            '  <fg=blue>' .
-                __('superadmin.create.subtitle') .
-                '</> <fg=gray>' .
-                __('superadmin.version', ['version' => AppInfo::version()]) .
+            '  <fg=blue>'.
+                __('superadmin.create.subtitle').
+                '</> <fg=gray>'.
+                __('superadmin.version', ['version' => AppInfo::version()]).
                 '</>',
         );
         $this->newLine();
@@ -126,7 +126,7 @@ class CreateAdminCommand extends Command
 
     private function displayGuide(): void
     {
-        $this->line('  <fg=gray>' . __('superadmin.create.guide') . '</>');
+        $this->line('  <fg=gray>'.__('superadmin.create.guide').'</>');
         $this->newLine();
     }
 
@@ -134,7 +134,7 @@ class CreateAdminCommand extends Command
     {
         $this->newLine();
         $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
-        $this->line('  <fg=red>' . $message . '</>');
+        $this->line('  <fg=red>'.$message.'</>');
     }
 
     private function hasSuperAdmin(): bool
@@ -152,28 +152,28 @@ class CreateAdminCommand extends Command
         $this->components->info(__('superadmin.create.success'));
         $this->newLine();
         $this->line(
-            '  <fg=yellow>' .
-                __('superadmin.field_email_result') .
-                '</>  <fg=cyan>' .
-                $user->email .
+            '  <fg=yellow>'.
+                __('superadmin.field_email_result').
+                '</>  <fg=cyan>'.
+                $user->email.
                 '</>',
         );
         $this->line(
-            '  <fg=yellow>' .
-                __('superadmin.field_username') .
-                '</> <fg=cyan>' .
-                $user->username .
+            '  <fg=yellow>'.
+                __('superadmin.field_username').
+                '</> <fg=cyan>'.
+                $user->username.
                 '</>',
         );
         $this->newLine();
         $this->line(
-            '  <fg=white;options=bold;bg=yellow> ' .
-                mb_strtoupper(__('superadmin.create.recovery_key_title')) .
+            '  <fg=white;options=bold;bg=yellow> '.
+                mb_strtoupper(__('superadmin.create.recovery_key_title')).
                 ' </>',
         );
-        $this->line('  <fg=yellow>' . __('superadmin.create.recovery_key_desc') . '</>');
+        $this->line('  <fg=yellow>'.__('superadmin.create.recovery_key_desc').'</>');
         $this->newLine();
-        $this->line('  <fg=black;bg=yellow> ' . $recoveryKey . ' </>');
+        $this->line('  <fg=black;bg=yellow> '.$recoveryKey.' </>');
         $this->newLine();
         $this->components->warn(__('superadmin.create.change_password'));
     }

@@ -5,31 +5,20 @@ declare(strict_types=1);
 namespace App\Reports\Report\Http\Controllers;
 
 use App\Core\Http\Controllers\BaseController;
-use App\Document\Models\Document;
-use Illuminate\Http\RedirectResponse;
+use App\Reports\Report\Actions\DownloadReportAction;
+use App\Reports\Report\Models\Report;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends BaseController
 {
-    public function download(Request $request, string $report): StreamedResponse|RedirectResponse
+    public function __construct(
+        private readonly DownloadReportAction $downloadReportAction,
+    ) {}
+
+    public function download(Request $request, Report $report): StreamedResponse|BinaryFileResponse
     {
-        $document = Document::findOrFail($report);
-
-        Gate::authorize('view', $document);
-
-        $mediaUrl = $document->getFirstMediaUrl('file');
-
-        if ($mediaUrl) {
-            return redirect()->away($mediaUrl);
-        }
-
-        if ($document->file_path && Storage::disk('local')->exists($document->file_path)) {
-            return Storage::disk('local')->download($document->file_path, $document->download_name);
-        }
-
-        return redirect()->back()->with('error', __('report.file_not_found'));
+        return $this->downloadReportAction->execute($report);
     }
 }

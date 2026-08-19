@@ -14,7 +14,7 @@ final class ConfirmPasswordAction extends BaseCommandAction
 {
     public function execute(User $user, string $password): ActionResponse
     {
-        if (!Hash::check($password, $user->password)) {
+        if (! Hash::check($password, $user->password)) {
             throw new RejectedException(
                 __('auth.password_confirmation_failed') ??
                     'The provided password does not match your current password.',

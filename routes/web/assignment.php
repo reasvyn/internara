@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Assignment\Livewire\AssignmentManager as AdminAssignmentManager;
+use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Livewire\SubmissionGrading;
 use App\Assignment\Submission\Livewire\SubmitAssignment;
 
@@ -25,7 +26,7 @@ Route::prefix('admin')
 
 Route::middleware(['auth'])
     ->group(function () {
-        Route::get('/assignments/{assignment}', function (App\Assignment\Models\Assignment $assignment) {
+        Route::get('/assignments/{assignment}', function (Assignment $assignment) {
             return redirect()->route('sysadmin.assignments');
         })->name('assignment.show');
     });

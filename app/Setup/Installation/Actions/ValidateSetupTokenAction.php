@@ -19,7 +19,7 @@ final class ValidateSetupTokenAction extends BaseCommandAction
         $this->transaction(function () use ($token) {
             $state = SetupEntity::get();
 
-            if (!$state->hasStoredToken()) {
+            if (! $state->hasStoredToken()) {
                 throw new RejectedException('Setup token is missing from the system.');
             }
 
@@ -33,7 +33,7 @@ final class ValidateSetupTokenAction extends BaseCommandAction
                 throw new RejectedException('Setup token is malformed or corrupted.');
             }
 
-            if (!hash_equals($decrypted, $token)) {
+            if (! hash_equals($decrypted, $token)) {
                 throw new RejectedException('The provided setup token does not match.');
             }
 
