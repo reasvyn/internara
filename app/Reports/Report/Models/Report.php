@@ -7,6 +7,7 @@ namespace App\Reports\Report\Models;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Enums\ReportStatus;
+use App\Reports\Report\Observers\ReportObserver;
 use App\User\Models\User;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -96,5 +97,10 @@ class Report extends BaseModel
     protected static function newFactory(): ReportFactory
     {
         return ReportFactory::new();
+    }
+
+    protected static function booted(): void
+    {
+        static::observe(ReportObserver::class);
     }
 }

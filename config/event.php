@@ -136,7 +136,7 @@ return [
         // GradeCalculated — synchronous calculation, logged in action
         // RecoverySlipGenerated — OTP flow, logged in action
         // InternshipStatusBatchUpdated — batch operation, logged in action
-        // ReportFinalized — not currently dispatched from any Action
+        // ReportFinalized — logged in FinalizeReportAction, snapshot captured via ReportObserver
         // CertificateIssued — logged in action, QR generation is synchronous
         // AttendanceClockIn — logged in action, geofence check is synchronous
         // AttendanceClockOut — logged in action, duration calculation is synchronous
