@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-19 **Changes:** extracted implementation matrix into `docs/specs/implementation-matrix.md` with status-usage legend; index keeps registry + build order + link
+> **Last updated:** 2026-08-19 **Changes:** extracted implementation matrix into `docs/specs/implementation-matrix.md` with status-usage legend; index keeps registry + build order + link; registered new Data Archiving & Retention spec (9YUUK) in Maintenance phase
 
 ## Description
 
@@ -186,6 +186,7 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | NUCY3, T4B26, YB22J, TXR2H, 8FVZA
 | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | YB22J, 95EVB
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI
+| 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW
 | 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | J68GZ, 8NZAU, 8FVZA, E1MSJ
 | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | T4B26, 4HWSB, XW6F5, XI3LB, NTHQA, 7C5WM, IT0OE, MBB5R, J9GBH, 1KSWL, 2EHSE, 3RU9S, ARDA6, AXKZW, T657Z, J0M04, R6BMW
 

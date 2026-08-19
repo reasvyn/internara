@@ -1,6 +1,6 @@
 # Spec Implementation Matrix — Priority-Ordered
 
-> **Last updated:** 2026-08-19 **Changes:** extracted from `docs/specs/index.md` into its own file — adds comprehensive status-usage legend; index keeps the registry + build order and links here
+> **Last updated:** 2026-08-19 **Changes:** extracted from `docs/specs/index.md` into its own file — adds comprehensive status-usage legend; index keeps the registry + build order and links here; added Data Archiving & Retention row (9YUUK, Not Started)
 
 ## Description
 
@@ -137,6 +137,7 @@ reward for work done — priority reflects importance, not progress.
 | 🔵 Low | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Automated, retention, restoration |
 | 🔵 Low | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Export, erasure, consent |
 | 🔵 Low | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 🟦 Verified | 🟩 Full | 2026-08-16 | Cleanup, archiving, health checks |
+| 🔵 Low | 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | ⬜ Not Started | ⬜ None | 2026-08-19 | New spec — full archival lifecycle (registry, retention policy, purge, restore); consolidates E1MSJ/R6BMW archive capabilities |
 | 🔵 Low | 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | 3-tier deploy, env detection |
 | 🔵 Low | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Production guard (NFR-S1), demo accounts |
 | 🔵 Low | CKKZC | [Dashboard](CKKZC-dashboard.md) | User | 🟦 Verified | 🟩 Full | 2026-08-16 | Role-based widgets, stats |
