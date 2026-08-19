@@ -73,6 +73,15 @@ return [
             'after_commit' => true,
         ],
 
+        'documents' => [
+            'driver' => 'redis',
+            'connection' => env('REDIS_QUEUE_CONNECTION', 'queue'),
+            'queue' => env('REDIS_QUEUE_DOCUMENTS', 'documents'),
+            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            'block_for' => null,
+            'after_commit' => true,
+        ],
+
         'deferred' => [
             'driver' => 'deferred',
         ],
