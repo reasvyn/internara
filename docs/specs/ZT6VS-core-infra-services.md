@@ -1,10 +1,7 @@
 # Core & Infrastructure Services — Cache, Session, Database, Queue, Mail, Storage
 
 > **Spec ID:** ZT6VS
-> **Last updated:** 2026-08-16 **Changes:** add — split from tech-stack (FB792): runtime service
-> behavior (database, cache, session, queue, mail, filesystem/storage) moves here so the tech-stack
-> spec focuses on the dependency manifest; adds filesystem/storage (FR-FS) and supporting services
-> (FR-SVC).
+> **Last updated:** 2026-08-19 **Changes:** spec audit completed — FR-Q6 batch doc queue dispatch missing (issue #404), missing tests for system:health, system:cache-warm, TestMailSettingsAction (issue #405); FR-SVC1 Redis connections implemented but session/queue default to database/sync
 
 ## Description
 
