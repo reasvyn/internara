@@ -1,9 +1,7 @@
 # Tech Stack — Language, Framework & Dependency Manifest
 
 > **Spec ID:** FB792
-> **Last updated:** 2026-08-18 **Changes:** sync JS toolchain table with `package.json` — removed `@prettier/plugin-php`, added `prettier-plugin-tailwindcss` ^0.8.1. Prior: refactor — runtime service behavior (database, cache,
-> session, queue, mail, storage) split into [core-infra-services.md](ZT6VS-core-infra-services.md);
-> this spec now owns the dependency manifest only (PHP/Laravel/packages, versions, lockfile).
+> **Last updated:** 2026-08-19 **Changes:** spec audit completed — all FR-TS1-5, FR-DEP1-6, FR-VER1-2 verified; composer audit/npm audit clean; lockfiles committed; dependency manifest matches composer.json/package.json; no new issues filed
 
 ## Description
 
