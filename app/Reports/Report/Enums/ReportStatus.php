@@ -15,8 +15,8 @@ enum ReportStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => __('Draft'),
-            self::FINALIZED => __('Finalized'),
+            self::DRAFT => __('report.status_draft'),
+            self::FINALIZED => __('report.status_finalized'),
         };
     }
 

@@ -58,9 +58,9 @@ final class CalculateFinalGradeAction extends BaseCommandAction
             };
 
             $report->update([
-                'supervisor_score' => $supervisorScore ?: null,
-                'teacher_score' => $teacherScore ?: null,
-                'exam_score' => $examScore ?: null,
+                'supervisor_score' => (float) $supervisorScore,
+                'teacher_score' => (float) $teacherScore,
+                'exam_score' => (float) $examScore,
                 'final_score' => $finalScore,
                 'grade_letter' => $gradeLetter,
             ]);

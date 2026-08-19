@@ -25,12 +25,6 @@ final class FinalizeReportAction extends BaseCommandAction
                 'finalized_at' => now(),
             ]);
 
-            $report->captureSnapshot();
-
-            if ($report->isDirty()) {
-                $report->saveQuietly();
-            }
-
             $this->log('report_finalized', $report, [
                 'final_score' => $report->final_score,
                 'grade_letter' => $report->grade_letter,
