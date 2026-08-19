@@ -1,7 +1,7 @@
 # Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-19 **Changes:** title updated from "Umbrella" to "Initial Specification"; spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
+> **Last updated:** 2026-08-19 **Changes:** spec audit completed — dead code findings (11 Actions/Jobs) filed as GitHub issues #390-#400 for wiring up to Livewire/Action layer
 
 ## Description
 

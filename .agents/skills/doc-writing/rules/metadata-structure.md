@@ -1,6 +1,6 @@
 # Metadata & Structure — The Documentation Contract
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-19 **Changes:** clarify `**Changes:**` holds only the latest change, no accumulated revision history
 
 ## Intent
 
@@ -35,7 +35,8 @@ Every markdown file MUST have a metadata blockquote **on line 3** (immediately a
 
 Rules:
 - `**Last updated:**` — date in `YYYY-MM-DD` format (never `DD/MM/YYYY` or `MM-DD-YYYY`).
-- `**Changes:**` — one-line description of the change.
+- `**Changes:**` — one-line description of the **latest change only**. Never accumulate a revision
+  history or a "Prior:" trail — past changes live in git history, not in the metadata line.
 - Both fields MUST be updated whenever content changes.
 - Prefix conventions: `sync — {description}` for auto-syncs, `feat — {description}` for new
   content, `fix — {description}` for corrections.
