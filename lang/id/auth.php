@@ -109,6 +109,8 @@ return [
         'back_to_dashboard' => 'Kembali ke Dasbor',
     ],
 
+    'recovery_throttle' => 'Terlalu banyak percobaan pemulihan. Coba lagi dalam 15 menit.',
+
     'notifications' => [
         'credential_changed_subject' => 'Pemberitahuan Keamanan: Kredensial Akun Diperbarui',
         'credential_changed_greeting' => 'Yth. :name,',

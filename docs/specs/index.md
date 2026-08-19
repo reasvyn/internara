@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-18 **Changes:** top-5 matrix audit (QLHDO, D2FT3, FB792, ZT6VS, SE5Q9) — FB792 JS toolchain synced to package.json (plugin-php→tailwindcss), SE5Q9 FR-M7 corrected, ZT6VS gaps filed (#387 Redis connections, #388 documents pipeline). Prior: register QLHDO umbrella spec as first entry (Spec-Zero, Build Order + Implementation Checklist Matrix); add Layout & UI System spec (8XMYS); add Implementation Checklist Matrix; add Architecture Design spec (D2FT3); add Core & Infrastructure Services spec (ZT6VS); tech-stack (FB792) refocused on dependency manifest; Dummy Data spec (3UOZP); Conditional Deployment spec (06IB6); Foundation specs (FB792–B114U) verified against rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers, shared-utilities); migrated all specs to alphanumeric 5-char IDs
+> **Last updated:** 2026-08-19 **Changes:** QLHDO spec title updated from "Umbrella" to "Initial Specification"; spec audit for QLHDO completed — dead code findings (11 Actions/Jobs unused) filed as GitHub issues #390-#400; top-5 matrix audit (QLHDO, D2FT3, FB792, ZT6VS, SE5Q9) — FB792 JS toolchain synced to package.json (plugin-php→tailwindcss), SE5Q9 FR-M7 corrected, ZT6VS gaps filed (#387 Redis connections, #388 documents pipeline). Prior: register QLHDO initial specification as first entry (Spec-Zero, Build Order + Implementation Checklist Matrix); add Layout & UI System spec (8XMYS); add Implementation Checklist Matrix; add Architecture Design spec (D2FT3); add Core & Infrastructure Services spec (ZT6VS); tech-stack (FB792) refocused on dependency manifest; Dummy Data spec (3UOZP); Conditional Deployment spec (06IB6); Foundation specs (FB792–B114U) verified against rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers, shared-utilities); migrated all specs to alphanumeric 5-char IDs
 
 ## Description
 
@@ -36,7 +36,7 @@ Reporting      → Maintenance
  snapshots)        archiving, cleanup)
 ```
 
-### Spec-Zero — Umbrella
+### Spec-Zero — Initial Specification
 
 The initial project specification. A blanket spec-zero over all phase specs: product scope,
 lifecycle, module landscape, role model, global (cross-cutting) requirements every feature spec
@@ -44,7 +44,7 @@ inherits, and the project-level roadmap. No dependency — everything depends on
 
 | ID | Spec | Module | Depends On |
 | -- | ---- | ------ | ---------- |
-| QLHDO | [Internara Project (Umbrella)](QLHDO-internara-project.md) | Core | — |
+| QLHDO | [Internara Project (Initial Specification)](QLHDO-internara-project.md) | Core | — |
 
 ### Phase 1 — Foundation
 
@@ -202,7 +202,7 @@ This matrix tracks implementation fulfillment, test coverage, and verification s
 
 | Priority | ID | Spec | Module | Impl Status | Test Coverage | Last Verified | Notes |
 |----------|----|------|--------|-------------|---------------|---------------|-------|
-| 🔴 Critical | QLHDO | [Internara Project (Umbrella)](QLHDO-internara-project.md) | Core | 🟩 Implemented | 🟧 Spec-Gap | 2026-08-18 | Spec-zero blanket: roles, localization, audit, UUID, health; lifecycle FR-L1–L12 map to phase specs |
+| 🔴 Critical | QLHDO | [Internara Project (Initial Specification)](QLHDO-internara-project.md) | Core | 🟩 Implemented | 🟧 Spec-Gap | 2026-08-19 | Spec-zero blanket: roles, localization, audit, UUID, health; lifecycle FR-L1–L12 map to phase specs; dead code findings filed as issues #390-#400 |
 | 🔴 Critical | D2FT3 | [Architecture Design](D2FT3-architecture.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Governing architecture contract; 280 Core tests |
 | 🔴 Critical | FB792 | [Tech Stack](FB792-tech-stack.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-18 | Dependency manifest; pinned versions; JS toolchain synced to package.json |
 | 🔴 Critical | ZT6VS | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-18 | SmartLogger, SettingsStore, SendsNotifications; gaps #387 Redis connections, #388 documents pipeline |

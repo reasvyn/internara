@@ -41,6 +41,7 @@ return [
     'complete_filtered' => 'Selesaikan Semua',
     'import_invalid' => 'Format CSV tidak valid. File harus memiliki kolom "name".',
     'import_summary' => ':created batch diimpor, :skipped dilewati (duplikat).',
+    'delete_group_blocked' => 'Tidak dapat menghapus grup dengan anggota aktif.',
     'template_example_name' => 'contoh: PKL Semester Ganjil 2026/2027',
     'template_example_description' => 'contoh: Program magang untuk semester ganjil',
     'requirements' => 'Persyaratan Dokumen',

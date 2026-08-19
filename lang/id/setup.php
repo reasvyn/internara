@@ -7,6 +7,12 @@ return [
     'rate_limited' => 'Terlalu banyak percobaan setup. Silakan coba lagi dalam :seconds detik.',
     'invalid_token' => 'Token setup tidak valid atau sudah kedaluwarsa.',
 
+    'audit_failed' => 'Audit sistem gagal.',
+    'token_missing' => 'Token setup tidak ditemukan di sistem.',
+    'token_expired' => 'Token setup sudah kedaluwarsa.',
+    'token_malformed' => 'Token setup rusak atau tidak valid.',
+    'token_mismatch' => 'Token setup yang diberikan tidak cocok.',
+
     'checks' => [
         'php_version' => 'Versi PHP >= :required',
         'php_version_pass' => 'PHP :current terinstal',

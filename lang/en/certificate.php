@@ -48,6 +48,7 @@ return [
     'filter_completed_registrations' => 'Completed Registrations',
     'layout_portrait' => 'Portrait',
     'layout_landscape' => 'Landscape',
+    'already_revoked' => 'This certificate has already been revoked.',
 
     'issued_title' => 'Issued Certificates',
     'issued_subtitle' => 'View and manage issued certificates',

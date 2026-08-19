@@ -109,6 +109,8 @@ return [
         'back_to_dashboard' => 'Back to Dashboard',
     ],
 
+    'recovery_throttle' => 'Too many recovery attempts. Try again in 15 minutes.',
+
     'notifications' => [
         'credential_changed_subject' => 'Security Notice: Account Credential Updated',
         'credential_changed_greeting' => 'Dear :name,',
