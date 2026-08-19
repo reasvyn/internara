@@ -20,6 +20,8 @@ class GenerateDocumentJob implements ShouldQueue
 
     public array $backoff = [2, 10, 30];
 
+    public string $queue = 'documents';
+
     public function __construct(
         protected readonly string $documentId,
     ) {}
