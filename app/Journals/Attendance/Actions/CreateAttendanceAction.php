@@ -14,7 +14,7 @@ final class CreateAttendanceAction extends BaseCommandAction
     {
         return $this->transaction(function () use ($user, $data) {
             $log = Attendance::create([
-                'user_id' => $user->id,
+                'user_id' => $data['user_id'],
                 'registration_id' => $data['registration_id'],
                 'date' => $data['date'],
                 'clock_in' => $data['clock_in'] ?? null,
@@ -22,7 +22,7 @@ final class CreateAttendanceAction extends BaseCommandAction
                 'status' => $data['status'] ?? 'present',
                 'notes' => $data['notes'] ?? null,
                 'is_verified' => $data['is_verified'] ?? false,
-                'verified_by' => $data['is_verified'] ?? false ? auth()->id() : null,
+                'verified_by' => $data['is_verified'] ?? false ? $user->id : null,
                 'verified_at' => $data['is_verified'] ?? false ? now() : null,
             ]);
 

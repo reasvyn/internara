@@ -1,7 +1,7 @@
 # Daily Activity — Logbook, Attendance & Absence Requests
 
 > **Spec ID:** 1KSWL
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-19 **Changes:** add FR-AT10 — AttendanceManager read scoping (issue #342 rebuild)
 > logbook with one-per-day enforcement, attendance clock-in/out with GPS, absence request workflow
 
 ## Description
@@ -150,6 +150,7 @@ absences need coordinator approval.
 | FR-AT7 | `AttendancePolicy` must allow: create (student), verify (admin/mentorProxy), update (admin), delete (admin) |
 | FR-AT8 | `VerifyAttendanceAction` must set `is_verified=true`, `verified_by`, `verified_at` |
 | FR-AT9 | `AttendanceManager` must display pending absence requests for teacher/admin approval |
+| FR-AT10 | `AttendanceManager` must scope attendance queries to the authenticated user's supervised registrations (mentors pivot) — no unscoped reads across all registrations for a date |
 
 ### AbsenceRequest
 

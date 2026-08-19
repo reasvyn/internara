@@ -116,13 +116,16 @@ class AttendanceManager extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
+        $students = $this->students();
+
         $existing = Attendance::query()
             ->whereDate('date', $this->date)
+            ->whereIn('registration_id', $students->pluck('id'))
             ->get()
             ->keyBy('registration_id');
 
         return view('journals.attendance.attendance-manager', [
-            'students' => $this->students(),
+            'students' => $students,
             'existing' => $existing,
             'statuses' => AttendanceStatus::cases(),
         ]);
