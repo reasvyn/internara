@@ -28,6 +28,6 @@ final class LogbookReportController
             }
         }
 
-        return $action->download($registration);
+        return $action->execute($registration);
     }
 }
