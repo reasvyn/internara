@@ -61,6 +61,45 @@ so there is no reason to wait.
 
 ---
 
+## Direct Spec Sync Rule (mandatory with recorded decision)
+
+> **Direct Spec Sync Rule (mandatory):** Whenever an audit finding reveals a **genuine inconsistency**
+> between spec and implementation — where the spec is **demonstrably wrong** (not just lagging) — the
+> agent **MUST sync the spec immediately** with a **recorded decision rationale** before continuing.
+> This is not optional; an unresolved inconsistency means subsequent work builds on wrong premises.
+
+**Applies to:**
+
+- Spec contains incorrect/outdated requirement IDs, signatures, paths, or values that code disproves
+- Spec promises behavior the code explicitly does differently with valid rationale
+- Spec contradicts itself or another authoritative spec (governed by Spec-First Doctrine)
+- Spec references non-existent files, classes, or contracts
+
+**Required Decision Rationale (must be recorded in the spec's `**Changes:**` line and/or ADR):**
+
+1. **What was inconsistent** — exact spec section and code location
+2. **Which side is correct** — code or spec (justify with evidence: git history, test results, design doc)
+3. **Why the discrepancy existed** — was it an unrecorded refactor? a missed spec update? a design change?
+4. **Impact of the sync** — what downstream specs/tests/docs are affected
+5. **Decision** — "Align spec to code" or "Align code to spec" (the latter is a behavior change → issue)
+
+**Workflow:**
+
+```
+Finding → Check git history for intent → Determine authoritative side → 
+Record decision rationale → Update spec (or file issue if code must change) → 
+Update metadata line → Continue audit
+```
+
+**Anti-patterns to avoid:**
+
+- ❌ "Fixing" spec without checking git history (may lose intentional design)
+- ❌ Syncing spec when behavior change is needed (file issue instead)
+- ❌ Silent spec updates without `**Changes:**` metadata bump
+- ❌ Filing an issue for a spec that is demonstrably wrong (wastes time, delays resolution)
+
+---
+
 ## Test-Gap Fill Rule (mandatory companion)
 
 (Full rule in `run-and-write-tests.md` — referenced here for completeness.)
