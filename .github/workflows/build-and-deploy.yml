@@ -34,20 +34,26 @@ jobs:
             - name: Determine version tag
               id: version
               run: |
-                  if [ -n "${{ inputs.version_tag }}" ]; then
+                  # If triggered by tag push (refs/tags/v*), use that tag directly
+                  if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+                    VERSION="${{ github.ref_name }}"
+                    echo "Using pushed tag: $VERSION"
+                  elif [ -n "${{ inputs.version_tag }}" ]; then
                     VERSION="${{ inputs.version_tag }}"
+                    echo "Using workflow_dispatch input: $VERSION"
                   else
                     RAW_VERSION=$(jq -r .version composer.json)
                     VERSION="v${RAW_VERSION}"
+                    echo "Using composer.json version: $VERSION"
                   fi
-                  # Validate tag exists or fallback to latest tag
+                  # Validate tag exists (for manual dispatch / branch builds)
                   if git rev-parse "$VERSION" >/dev/null 2>&1; then
-                    echo "Using version tag: $VERSION (exists)"
+                    echo "Version tag $VERSION exists in git"
                   else
                     echo "Version tag $VERSION not found in git, will use branch ref for build verification"
                   fi
                   echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
-                  echo "Version tag: $VERSION"
+                  echo "Final version tag: $VERSION"
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
