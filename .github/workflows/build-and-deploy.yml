@@ -3,7 +3,13 @@ name: Build and Deploy
 on:
     push:
         branches: [docker-deploy]
+        tags: ['v*.*.*']
     workflow_dispatch:
+        inputs:
+            version_tag:
+                description: 'Version tag to deploy (e.g. v0.14.0). Leave empty to use version from composer.json'
+                required: false
+                type: string
 
 permissions:
     contents: read
@@ -16,10 +22,32 @@ jobs:
     build:
         name: Verify Docker images
         runs-on: ubuntu-latest
+        outputs:
+            version_tag: ${{ steps.version.outputs.VERSION }}
 
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Determine version tag
+              id: version
+              run: |
+                  if [ -n "${{ inputs.version_tag }}" ]; then
+                    VERSION="${{ inputs.version_tag }}"
+                  else
+                    RAW_VERSION=$(jq -r .version composer.json)
+                    VERSION="v${RAW_VERSION}"
+                  fi
+                  # Validate tag exists or fallback to latest tag
+                  if git rev-parse "$VERSION" >/dev/null 2>&1; then
+                    echo "Using version tag: $VERSION (exists)"
+                  else
+                    echo "Version tag $VERSION not found in git, will use branch ref for build verification"
+                  fi
+                  echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "Version tag: $VERSION"
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
@@ -30,7 +58,9 @@ jobs:
                   context: .
                   file: Dockerfile
                   push: false
-                  tags: internara-app:verify
+                  tags: |
+                      internara-app:${{ steps.version.outputs.VERSION }}
+                      internara-app:verify
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 
@@ -40,7 +70,9 @@ jobs:
                   context: .
                   file: .docker/nginx.Dockerfile
                   push: false
-                  tags: internara-web:verify
+                  tags: |
+                      internara-web:${{ steps.version.outputs.VERSION }}
+                      internara-web:verify
                   cache-from: type=gha
                   cache-to: type=gha,mode=max
 
@@ -48,6 +80,8 @@ jobs:
         name: Recreate containers on VPS
         runs-on: ubuntu-latest
         needs: build
+        env:
+            VERSION_TAG: ${{ needs.build.outputs.version_tag }}
 
         steps:
             - name: Deploy via SSH
@@ -57,9 +91,19 @@ jobs:
                   username: ${{ secrets.VPS_USER }}
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
+                  envs: VERSION_TAG
                   script: |
                       set -euo pipefail
                       cd /home/andreas/apps/internara
-                      git fetch --quiet origin docker-deploy
-                      git reset --hard --quiet origin/docker-deploy
-                      bash .github/scripts/deploy.sh
+                      echo "Deploying version tag: $VERSION_TAG"
+                      git fetch --quiet origin --tags
+                      if git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+                        git checkout --quiet "$VERSION_TAG"
+                        git reset --hard --quiet "$VERSION_TAG"
+                        echo "Checked out version tag $VERSION_TAG"
+                      else
+                        echo "Version tag $VERSION_TAG not found, falling back to docker-deploy branch" >&2
+                        git fetch --quiet origin docker-deploy
+                        git reset --hard --quiet origin/docker-deploy
+                      fi
+                      VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
