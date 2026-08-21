@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 scan_doc_links.py — Documentation Link & Freshness Validation
-Validates all relative markdown links across docs/, .agents/contexts/, README.md, AGENTS.md:
+Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec
 filename convention and flags ALL markdown files whose `Last updated` metadata is missing or older than 7 days.
 """
@@ -113,7 +113,7 @@ def find_markdown_files(module: str | None = None) -> list[Path]:
             return sorted(module_path.rglob("*.md"))
         return []
     files = list(DOCS_DIR.rglob("*.md"))
-    contexts_dir = ROOT / ".agents" / "contexts"
+    contexts_dir = ROOT / ".agents" / "context"
     if contexts_dir.exists():
         files.extend(contexts_dir.rglob("*.md"))
     for name in ["README.md", "AGENTS.md"]:

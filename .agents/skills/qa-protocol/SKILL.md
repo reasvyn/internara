@@ -39,7 +39,7 @@ for the first time.
 This skill follows **6 phases**, each corresponding to a major quality domain. Execute phases in
 order. Each phase can produce blockers — if a phase encounters a blocker that prevents execution,
 fix it before continuing (minimal intervention only). Follow the `agent-workflow` skill for the
-canonical 9-step / 4-phase model, **Size Triage** and commit format — this skill adds the 6-phase QA
+canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage** and commit format — this skill adds the 6-phase QA
 protocol below — nothing else. See the Skill Rules section for the rule assets governing each phase
 and standard.
 

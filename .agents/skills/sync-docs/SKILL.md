@@ -1,6 +1,6 @@
 ---
 name: sync-docs
-description: "SDLC Phase: MAINTENANCE. Comprehensive documentation sync against actual code implementation and feature specs — covering `docs/`, module docs, AND agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`). Discovers patterns and rules from authoritative docs, then verifies them against code and specs."
+description: "SDLC Phase: MAINTENANCE. Comprehensive documentation sync against actual code implementation and feature specs — covering `docs/`, module docs, AND agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`). Discovers patterns and rules from authoritative docs, then verifies them against code and specs."
 upstream:
   - feature-building
   - code-refactoring
@@ -24,13 +24,13 @@ upstream:
 Use this skill after any implementation, refactoring, or audit to keep documentation in sync with
 the actual codebase and its feature specs. Documentation is the single source of truth (see
 conventions) — code, docs, and specs must agree. **This includes agent guides & skills:**
-`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, and `.agents/plans/` must stay
+`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, and `.agents/plans/` must stay
 consistent with the specs and code they document. A spec amendment (renamed default, new invariant,
 changed path) must be mirrored in any guide or skill that documents it.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (docs stay in sync with the **governing spec**), **Size Triage** (S/M/L session splitting —
 a multi-module sync is M/L, stage by module), verification strategy, and commit format. This skill
 adds the doc-sync workflow, audit scope, and verification rules found in the Skill Rules section
@@ -39,7 +39,7 @@ below — nothing else.
 ### Construct — Context & Scope
 
 - Locate the governing spec and the agent guides/skills that reference it — `AGENTS.md`,
-  `.agents/skills/*/SKILL.md`, `.agents/contexts/*.md`, `.agents/plans/` (a spec/code change must be
+  `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/plans/` (a spec/code change must be
   mirrored there too)
 - Review git commits from the last 7 days (`git log --since="7 days ago" --oneline`,
   `git log --since="7 days ago" --stat`) to focus on actual changes
@@ -91,4 +91,4 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 | Full doc catalog             | `docs/index.md`                              |
 | Module index                 | `docs/modules/index.md`                      |
 | Feature specs                | `docs/specs/index.md`                        |
-| Agent guides & skills        | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/` |
+| Agent guides & skills        | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` |

@@ -18,7 +18,7 @@ and how to ship one so the integration stays coherent.
 | **Downstream** | `arch-guard`, `context-awareness` (Automation Scripts reference) |
 
 **Phase Context:** this skill is a tooling standards reference, not a 4-phase implementation flow. It
-adds script-writing standards on top of the canonical `agent-workflow` (9-step/4-phase, Size Triage,
+adds script-writing standards on top of the canonical `agent-workflow` (5-step pipeline, Size Triage,
 commit format).
 
 ---

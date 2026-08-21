@@ -17,8 +17,8 @@ Standards for writing, maintaining, and integrating Python devtool scripts in `s
 
 ## Agent Workflow
 
-This is a TOOLING standards reference — not a 4-phase implementation flow. Follow the
-`agent-workflow` skill for the canonical 9-step / 4-phase model, **Size Triage** and commit format —
+This is a TOOLING standards reference — not an implementation flow. Follow the
+`agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage** and commit format —
 this skill adds script-writing standards below — nothing else. When creating or modifying a script,
 follow the same decision discipline as other skills:
 

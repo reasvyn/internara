@@ -19,7 +19,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 ## Product & Vision
 
 - **[Foundation Index](foundation/index.md)** — Browse all foundation documents
-- **[Product Definition](foundation/product-definition.md)** — Core product scope, design principles, user personas, system boundary
+- **[README — Product Definition & Project Status](../README.md)** — Product scope, 3S doctrine, personas, system boundary, deployment, localization, module landscape, tech debt (merged from `foundation/product-definition.md` + `foundation/project-overview.md`)
 - **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
@@ -36,7 +36,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Configuration](infrastructure/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
 - **[CI/CD Pipeline](infrastructure/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
 - **[System Health & Troubleshooting](foundation/system-health.md)** — Health checks, common problems, diagnostics
-- **[Project Contexts](../.agents/contexts/index.md)** — Intentional design constraints, deploy caveats, dependency pins, and codebase intentional states (agent-oriented)
+- **[Project Contexts](../.agents/context/index.md)** — Intentional design constraints, deploy caveats, dependency pins, and codebase intentional states (agent-oriented)
 
 ---
 
@@ -141,7 +141,7 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 
 ```mermaid
 flowchart LR
-    A[CONTRIBUTING.md] --> B[foundation/product-definition.md]
+    A[CONTRIBUTING.md] --> B[../README.md]
     B --> C[specs/index.md]
     C --> D[philosophy.md]
     D --> E[getting-started.md]

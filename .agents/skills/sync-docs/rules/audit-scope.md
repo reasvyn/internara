@@ -7,7 +7,7 @@
 When auditing documentation against code and specs, verify each claim a doc makes against its ground
 truth: file paths against the filesystem, class names and signatures against the code, schemas
 against migrations, and — critically — the **agent guides & skills** (`AGENTS.md`,
-`.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`) against the specs they document.
+`.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`) against the specs they document.
 
 ## Rationale
 
@@ -75,7 +75,7 @@ grep -c "C1\|C8\|D1\|D6" .agents/skills/*/SKILL.md       # must match docs/conve
 - **Auditing only links and metadata.** `scan_doc_links.py` validates links and freshness — it does
   NOT check that a listed Action exists, that a signature matches, or that a skill documents the
   right spec. A doc with zero broken links can still be completely stale.
-- **Skipping the agent layer.** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, and
+- **Skipping the agent layer.** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, and
   `.agents/plans/` are docs too and rot exactly like `docs/`. An invariant renamed in
   `docs/conventions.md` but not in the skills that cite it leaves agents enforcing a dead name.
 - **Auditing claims in a doc you're not touching.** If the audit is triggered by one module, still

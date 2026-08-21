@@ -20,9 +20,7 @@ Comprehensive enforcement of Internara's architecture, conventions, and patterns
 
 ## When to Use
 
-Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model — this skill is
-the **Verify-phase quality gate**, not an SDLC phase of its own. It delegates to the canonical
-**Size Triage** for scan scoping.
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) — this skill is the **Verify-phase quality gate**, not an SDLC phase of its own. It delegates to the canonical **Size Triage** for scan scoping.
 
 Use this skill when performing a systematic audit of the codebase. Audits focus on pattern
 violations, code smells, security holes, and convention drift — NOT feature enhancements. Activates

@@ -45,7 +45,7 @@ Use this skill when:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting — a spec split
 into multiple initiatives is multi-session work; propose a plan to the user), verification strategy,
 and commit format. This skill adds the 11-section template, requirement ID conventions, scoping

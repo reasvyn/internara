@@ -31,9 +31,10 @@ skills. Without it, you lack the architectural context to make sound decisions.
 ## Workflow
 
 This is the **orientation layer** — it does NOT write code or run tests; it builds the mental model
-all downstream skills depend on. Follow the `agent-workflow` skill for the canonical 9-step pipeline
-/ 4-phase model and **Size Triage** (S/M/L session splitting) for the overall instruction; this skill
-adds the orientation steps and the memory-keeping duties below — nothing else.
+all downstream skills depend on. Follow the `agent-workflow` skill for the canonical 5-step pipeline
+(Understand → Plan → Implement → Verify → Summarize) and **Size Triage** (S/M/L session splitting)
+for the overall instruction; this skill adds the orientation steps and the memory-keeping duties
+below — nothing else.
 
 ### Construct — Orientation
 
@@ -43,14 +44,14 @@ adds the orientation steps and the memory-keeping duties below — nothing else.
   FR/NFR/UC IDs; if no spec exists for the work, stop and raise it (write the spec first)
 - Identify which module(s) are affected
 - Read relevant docs: module docs, pattern docs, reference docs
-- **Check evolving project context** — read `.agents/contexts/index.md` and load any context file
+- **Check evolving project context** — read `.agents/context/index.md` and load any context file
   matching the task topic (intentional constraints, deploy caveats, dependency pins, known states)
 - Verify paths, class names, signatures against actual code — never trust docs blindly; on
   code/doc mismatch, check git history before deciding which side is correct
 
-### Agent Memory — Maintain `.agents/contexts/`
+### Agent Memory — Maintain `.agents/context/`
 
-`.agents/contexts/` is the **AI Agent memory**: a living record of evolving project knowledge that
+`.agents/context/` is the **AI Agent memory**: a living record of evolving project knowledge that
 agents write to so no context is lost between sessions. It is both **read** (orientation) and
 **written** (maintenance). Treat it like a shared, append-only project memory — never let a discovery
 die in a conversation.
@@ -61,8 +62,8 @@ die in a conversation.
   or leave it for a later pass.
 - **Create when critical:** if you learn something **highly important** for future agents that is not
   yet recorded — a non-obvious constraint, a working workaround, an environment quirk, a deliberate
-  decision — create a new context file `.agents/contexts/{context}-{issue-name}.md` (flat,
-  kebab-case) and register it in `.agents/contexts/index.md`. Rules of thumb:
+  decision — create a new context file `.agents/context/{context}-{issue-name}.md` (flat,
+  kebab-case) and register it in `.agents/context/index.md`. Rules of thumb:
   - Would a future agent make a costly wrong assumption without this knowledge? → **record it**
   - Does the fact change often or is it trivial/obvious? → **do not record it**
 - **Keep it self-contained and deduplicated:** each file stands alone (paths, commands, rationale
@@ -435,7 +436,7 @@ Start here for any topic:
 | Database schema                     | `docs/infrastructure/database.md`                                |
 | Full doc catalog                    | `docs/index.md`                                                  |
 | ADRs                                | `docs/adr/index.md`                                              |
-| Known issues / project contexts   | `.agents/contexts/index.md`                                |
+| Known issues / project contexts   | `.agents/context/index.md`                                |
 
 ## Automation Scripts
 
