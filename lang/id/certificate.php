@@ -7,6 +7,7 @@ return [
         'issued' => 'Diterbitkan',
         'revoked' => 'Dicabut',
     ],
+    'filter_status' => 'Filter berdasarkan status',
     'title' => 'Sertifikat',
     'subtitle' => 'Kelola template sertifikat dan terbitkan sertifikat kelulusan',
     'add_template' => 'Tambah Template',
@@ -38,15 +39,17 @@ return [
     'issued_at' => 'Diterbitkan Pada',
 
     'batch_issue' => 'Terbitkan Massal',
-    'batch_issued' => 'Penerbitan massal selesai: :success berhasil, :failed gagal.',
     'batch_issue_title' => 'Terbitkan Sertifikat Massal',
     'batch_issue_info' => 'Sertifikat akan diterbitkan untuk semua registrasi yang sesuai filter dan belum memiliki sertifikat.',
-    'batch_results' => 'Hasil: :success berhasil, :failed gagal.',
-    'filter_status' => 'Status Registrasi',
+    'batch_filter_status' => 'Status Registrasi',
     'filter_active_registrations' => 'Registrasi Aktif',
     'filter_completed_registrations' => 'Registrasi Selesai',
     'layout_portrait' => 'Potret',
     'layout_landscape' => 'Lanskap',
+    'already_revoked' => 'Sertifikat ini sudah dicabut.',
+
+    'batch_queued' => 'Penerbitan massal antrean. Sertifikat akan dibuat di latar belakang.',
+    'batch_empty' => 'Tidak ada registrasi yang memenuhi syarat untuk filter yang dipilih.',
 
     'issued_title' => 'Sertifikat Terbit',
     'issued_subtitle' => 'Lihat dan kelola sertifikat yang telah diterbitkan',

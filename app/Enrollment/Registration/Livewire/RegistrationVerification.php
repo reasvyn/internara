@@ -12,6 +12,7 @@ use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -35,7 +36,7 @@ class RegistrationVerification extends Component
     #[Computed]
     public function pendingRegistrations(): Collection
     {
-        return Registration::with(['student', 'internship', 'documents'])
+        return Registration::with(['student', 'internship', 'documents', 'mentee.user'])
             ->where('placement_id', null)
             ->currentStatus('pending')
             ->latest()
@@ -70,7 +71,8 @@ class RegistrationVerification extends Component
     #[Computed]
     public function mentors(): Collection
     {
-        return User::role(['teacher', 'supervisor'])->get();
+        return Cache::remember('registration.verification.mentors', 300, fn () => User::role(['teacher', 'supervisor'])->select('id', 'name', 'email')->get()
+        );
     }
 
     public function process(string $id): void

@@ -13,7 +13,7 @@ final class RevokeCertificateAction extends BaseCommandAction
     public function execute(Certificate $certificate): Certificate
     {
         if ($certificate->status->isTerminal()) {
-            throw new RejectedException('This certificate has already been revoked.');
+            throw new RejectedException(__('certificate.already_revoked'));
         }
 
         return $this->transaction(function () use ($certificate) {

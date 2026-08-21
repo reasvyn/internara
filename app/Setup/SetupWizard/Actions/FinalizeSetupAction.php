@@ -35,7 +35,7 @@ final class FinalizeSetupAction extends BaseCommandAction
         $state = SetupEntity::get();
 
         if ($state->isInstalled()) {
-            throw new RejectedException('System is already installed.');
+            throw new RejectedException(__('setup.already_installed'));
         }
 
         $result = $this->transaction(function () use ($data, $state) {

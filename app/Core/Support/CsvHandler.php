@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Support;
 
 use App\Core\Enums\CsvRowResult;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -23,6 +24,32 @@ final class CsvHandler
             foreach ($items as $item) {
                 fputcsv($handle, $rowMapper($item), escape: '');
             }
+
+            fclose($handle);
+        };
+
+        return new StreamedResponse($callback, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
+
+    public function exportChunked(
+        Builder $query,
+        array $headers,
+        callable $rowMapper,
+        string $filename = 'export.csv',
+        int $chunkSize = 500,
+    ): StreamedResponse {
+        $callback = function () use ($query, $headers, $rowMapper, $chunkSize) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $headers, escape: '');
+
+            $query->chunkById($chunkSize, function (Collection $models) use ($handle, $rowMapper) {
+                foreach ($models as $model) {
+                    fputcsv($handle, $rowMapper($model), escape: '');
+                }
+            });
 
             fclose($handle);
         };

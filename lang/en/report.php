@@ -74,4 +74,5 @@ return [
     'search_placeholder' => 'Search by student name...',
     'filter_status' => 'Filter by Status',
     'all_statuses' => 'All Statuses',
+    'already_finalized' => 'This report has already been finalized.',
 ];
