@@ -19,7 +19,7 @@ downstream:
 
 Use this skill to verify that feature specifications (`docs/specs/`) and code implementation
 (`app/`, `tests/`, `routes/`, `database/migrations/`) are in sync, and that **agent guides & skills**
-(`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/`, `.agents/plans/`) accurately reflect
+(`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`) accurately reflect
 the specs they reference. Detects three categories of drift:
 
 1. **Spec → Code:** Spec promises something the code doesn't deliver (missing implementation)
@@ -42,7 +42,7 @@ code → docs); `spec-audit` checks bidirectional sync and determines which side
 
 This skill runs a **custom pipeline** (`SCOPE → DISCOVER → AUDIT → TRIAGE → FIX/ISSUE → FINALIZE →
 REPORT`) — it is an ANALYSIS skill, not a standard implementation workflow. Follow the
-`agent-workflow` skill for the canonical 9-step / 4-phase model, **Size Triage**, and commit format;
+`agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage**, and commit format;
 this skill adds the audit pipeline defined in the rule assets — nothing else.
 
 - Choose the audit scope and run Size Triage → `rules/scope-configuration.md`
@@ -89,7 +89,7 @@ to a single module. See `scripts/README.md` for full documentation.
 |-------|-----|
 | Feature specs | `docs/specs/index.md` |
 | Spec template | `.agents/skills/spec-writing/SKILL.md` |
-| Agent guides & skills | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/contexts/` |
+| Agent guides & skills | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` |
 | Module structure | `docs/modules/index.md` |
 | Architecture & layer rules | `docs/architecture.md` |
 | Architecture patterns | `docs/architecture/{pattern}-pattern.md` |

@@ -61,7 +61,7 @@ git log --since="7 days ago" --format="%h %s"    # commit messages for context
 | Config               | `docs/infrastructure/configuration.md`                               |
 | Agent guides         | `AGENTS.md` (module map, invariants, rule pointers)                  |
 | Agent skills         | `.agents/skills/{skill}/SKILL.md` (skill scope, rules, references)   |
-| Agent contexts       | `.agents/contexts/*.md` (intentional states, deploy caveats, pins)   |
+| Agent contexts       | `.agents/context/*.md` (intentional states, deploy caveats, pins)   |
 | Agent plans          | `.agents/plans/` (session plans, decisions)                          |
 
 This mapping includes **agent guides & skills** — a spec amendment (renamed default, new invariant,
@@ -88,7 +88,7 @@ git log --since="7 days ago" --stat
 - **Widening the window blindly:** reviewing 90 days of history for a routine sync dilutes focus.
   The 7-day window is the default; widen it only when an explicit audit demands it.
 - **Updating only `docs/` and ignoring agent guides & skills** — `AGENTS.md`, `.agents/skills/*`,
-  `.agents/contexts/`, `.agents/plans/` document the same code and specs; a spec amendment not
+  `.agents/context/`, `.agents/plans/` document the same code and specs; a spec amendment not
   mirrored there leaves the agent layer stale even when `docs/` is clean.
 - **Touching docs that didn't change** — re-verifying and re-dating docs that match the code hides
   real future drift.

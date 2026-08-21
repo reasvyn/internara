@@ -29,7 +29,7 @@ implementation.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (read the **governing spec** from `docs/specs/`, map FR/NFR/UC IDs), **Size Triage**
 (S/M/L session splitting — L-size MUST inform the user and split into sessions), verification
 strategy, and commit format. This skill adds the feature build order, sub-skill delegation, and key

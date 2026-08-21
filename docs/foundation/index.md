@@ -1,11 +1,12 @@
 # Foundation Documents
 
-> **Last updated:** 2026-08-18 **Changes:** sync — catalog link for high-level requirements now points to the merged umbrella spec `docs/specs/QLHDO-internara-project.md` (former `project-requirements.md` deleted)
+> **Last updated:** 2026-08-21 **Changes:** merge — `product-definition.md` + `project-overview.md` merged into root `README.md` (SSOT for product scope, personas, boundary, deployment, project status)
 
-Product scope, security model, and design foundations.
+Product scope, security model, and design foundations. Product scope and project status now live in
+the root **[README.md](../../README.md)** (System Boundary, 3S Doctrine, Personas, Deployment,
+Module Landscape, Tech Debt).
 
-- **[Product Definition](product-definition.md)** — Core product scope, design principles, user
-  personas, system boundary, deployment model, localization, and licensing
+- **[README — Product & Project Status](../../README.md)** — Product scope, design principles, user personas, system boundary, deployment model, localization, licensing, and project status (merged from `product-definition.md` + `project-overview.md`)
 - **[Internara Project Spec](../specs/QLHDO-internara-project.md)** — Functional and non-functional requirements
   for Indonesian SMA/SMK PKL management, UI/UX standards, scalability targets, and compliance
 - **[RBAC & Authentication](rbac.md)** — Authentication flow, flat role hierarchy, functional roles,

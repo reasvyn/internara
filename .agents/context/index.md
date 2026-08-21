@@ -1,7 +1,6 @@
-# Contexts — AI Agent Memory (Evolving Project Context)
+# Context — AI Agent Memory (Evolving Project Context)
 
-> **Last updated:** 2026-08-16 **Changes:** repositioned as AI Agent memory — added memory-maintenance
-> rules (update on inconsistency, create on critical knowledge)
+> **Last updated:** 2026-08-21 **Changes:** add module-health, testing-strategy, workflow-5step contexts; optimize for 18-module stabilization (v0.14.0) and 5-step pipeline
 
 ## Description
 
@@ -20,6 +19,9 @@ or conflicting, write it back here** — this memory is how context survives bet
 
 | Context file | Read when working on... |
 | ------------ | ----------------------- |
+| [workflow-5step.md](workflow-5step.md) | **Every task** — new 5-step pipeline `Understand → Plan → Implement → Verify → Summarize` (replaces 9-step/4-phase); phase classification, size triage, instruction ordering |
+| [module-health.md](module-health.md) | **Any module touch** — 18-module health tiers (production-ready → skeleton), P0 tech debt priority, which modules to scaffold vs. fix first |
+| [testing-strategy.md](testing-strategy.md) | Tests, Pest, PHPStan — spec-driven minimalism, what to run when (batched once), layer patterns, module-specific guidance |
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
 | [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, `docker-deploy` branch, `build-and-deploy.yml`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |
@@ -38,7 +40,7 @@ or conflicting, write it back here** — this memory is how context survives bet
    Never leave a discovered inconsistency to a later pass.
 3. **Create when critical.** If you learn something highly important that is not yet recorded —
    non-obvious constraint, working workaround, environment quirk, deliberate decision — create a new
-   `.agents/contexts/{context}-{issue-name}.md` (flat, kebab-case) and register it here. If a future
+   `.agents/context/{context}-{issue-name}.md` (flat, kebab-case) and register it here. If a future
    agent would make a costly wrong assumption without it, record it.
 4. **Self-contained.** Each file is read in isolation — include the commands, paths, and rationale
    it needs. Do not assume the reader opened `index.md` first.

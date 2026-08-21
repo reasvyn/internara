@@ -32,7 +32,7 @@ Activation triggers include:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 9-step pipeline / 4-phase model: spec-first
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (cite the **governing spec** FR/NFR/UC IDs an issue refers to), **Size Triage** (S/M/L
 session splitting — an L-size issue notes the session-split plan in its body), verification
 strategy, and commit format. This skill adds the issue types, unified template, key rules, and

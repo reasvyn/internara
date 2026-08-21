@@ -12,18 +12,18 @@ Mental model, workflow, and navigation map for AI agents.
 tweak, or an audit. Steps are **adaptive**: their depth scales with the instruction's SDLC phase.
 
 **ALWAYS load the `agent-workflow` skill first** — on every instruction, before any other skill. It
-is the single source of truth for the workflow: the 9-step pipeline, the 4-phase mapping
-(Construct → Execute → Verify → Report & Commit), narration discipline, phase classification
+is the single source of truth for the workflow: the 5-step pipeline
+(Understand → Plan → Implement → Verify → Summarize), narration discipline, phase classification
 (adaptive depth), size triage (S/M/L session splitting), verification strategy, and the L-size
 protocol. Do NOT restate the workflow in other skills — reference `agent-workflow` instead.
 
 ```
-UNDERSTAND → DEFINE & SCOPE → EXPLORE → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
+UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE
 ```
 
 ### Narration & Context Discipline — Non-Negotiable
 
-The pipeline runs **silently**. The 9 steps are internal reasoning — do not narrate them, do not
+The pipeline runs **silently**. The 5 steps are internal reasoning — do not narrate them, do not
 restate the task, do not list the steps you took, do not explain reasoning already visible in your
 tool use. Surface to the user **only**:
 
@@ -84,11 +84,12 @@ questions alike.
 
 Before acting, classify the instruction by **phase** (adaptive depth: Full/Light/Note) and **size**
 (S/M/L). If **L**, inform the user and split into sessions. The classification tables, the L-size
-protocol, and the per-step detail (Steps 1-9) live in the `agent-workflow` skill — follow them there.
+protocol, and the per-step detail (Steps 1-5) live in the `agent-workflow` skill — follow them there.
 
-### 1. Understand
+### 1. Understand — Intent, Scope & Constraints
 
-Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints.
+Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints
+and locate the governing spec. This step absorbs the legacy `Define & Scope`.
 
 - **ALWAYS load `agent-workflow` first** — before any other action, on every instruction, whether or
   not the user asked for it. Then **ALWAYS load `context-awareness`** — the universal orientation
@@ -106,19 +107,44 @@ Internalize the user's **intent**, not just literal words. Clarify ambiguities. 
 - **Locate the governing spec** in `docs/specs/` (foundation, module, or feature) — it is the
   source of truth for intent, scope, and acceptance criteria (Spec-First Doctrine, above). No
   instruction may proceed without a governing spec or an explicit recorded decision.
+- **Define & scope** — list affected modules/layers/files and blockers (migrations, config,
+  registration); reorder batched instructions by impact-to-effort ratio (see `agent-workflow`).
 
+### 2. Plan — Context, Approach & Design
 
-### 2-9. Remaining Steps
+Gather context, decide approach, and design contracts before touching code. This step absorbs the
+legacy `Explore + Plan + Design`.
 
-Steps 2-9 (Define & Scope → Explore → Plan → Design → Develop → Test & Verify → Document →
-Commit & Report) are defined in full detail in the `agent-workflow` skill. Follow them there —
-do not re-derive or skip them. Key anchors kept here:
+- Read module docs, architecture docs, and the full current content of every file you may touch;
+  survey `scripts/` for existing tooling (Automation-First).
+- Consider 2+ approaches; decide Action triad, Entity/DTO/Model boundaries, DTO needs (C7), error
+  handling (C8), cache strategy (C4), test & doc plan.
+- Defined in full detail in the `agent-workflow` skill — follow it there.
 
-- **Edit Policy** (Step 6): never full-rewrite by default — edit surgically, preserve unrelated
-  code, verify with `git status` + `git diff` (see §Edit Policy below).
-- **Verification** (Step 7): see §Verification Strategy below.
-- **Commit format** (Step 9): `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`,
-  `chore`, `test`, `perf`, `security`; scope = module name.
+### 3. Implement — Surgical Execution + Documentation
+
+Execute the plan with minimal, clean edits and keep docs in sync. This step absorbs the legacy
+`Develop + Document`.
+
+- Edit surgically, preserve unrelated code, verify with `git status` + `git diff` (see §Edit Policy).
+- Follow all invariants C1-C8, D1-D6; delegate business rules to Entities; batch repetitive work via
+  scripts.
+- Update module docs, PHPDoc, and `> **Last updated:**` metadata as part of the same step
+  (documentation-first).
+
+### 4. Verify — Quality Gates (Batched Once)
+
+Batch all changes first, then verify once. See §Verification Strategy below. This is the legacy
+`Test & Verify` step.
+
+### 5. Summarize — Commit & Report
+
+Final git review, commit, and concise report. This is the legacy `Commit & Report` step.
+
+- Commit format: `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`, `chore`,
+  `test`, `perf`, `security`; scope = module name.
+- Report: what changed, what was verified, caveats, recommended next steps.
+- One checkpoint before commit (M-size) or per-session (L-size); stage only intended files.
 
 ---
 
@@ -166,13 +192,13 @@ repetitive work, not after.
 
 Guardrail against silent information loss.
 
-- **Read before edit** — read the full current content of every file you may touch (Step 3).
+- **Read before edit** — read the full current content of every file you may touch (Step 2 — Plan).
 - **Edit, don't rewrite** — change only what the instruction requires; preserve unrelated code,
   comments, formatting, and context. A full rewrite is justified only for small files where the
   rewrite IS the intent.
 - **Verify with git** — compare `git diff` before/after each change to prove nothing unintended
-  was altered or dropped (Step 7). This is the final check that an edit was lossless.
-- **Scope smallest** — keep the change surface minimal (Step 2). Fewer touched files = fewer
+  was altered or dropped (Step 4 — Verify). This is the final check that an edit was lossless.
+- **Scope smallest** — keep the change surface minimal (Step 1 — Understand). Fewer touched files = fewer
   places for errors to hide.
 
 ---
@@ -273,7 +299,7 @@ Foundation → Configuration → Identity & Auth → Institutional → Partnersh
 
 Multi-tenant SaaS, HR/payroll, real-time chat, government DB sync (CSV import/export only).
 
-Full definition: `docs/foundation/product-definition.md`
+Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment) — former `docs/foundation/product-definition.md` merged into root README
 
 ---
 
@@ -281,7 +307,7 @@ Full definition: `docs/foundation/product-definition.md`
 
 | Task | Skill | Notes |
 |------|-------|-------|
-| Every instruction, any task | `agent-workflow` | **ALWAYS load first** — canonical workflow SSOT (9-step, 4-phase, size triage, verification) |
+| Every instruction, any task | `agent-workflow` | **ALWAYS load first** — canonical workflow SSOT (5-step Understand → Plan → Implement → Verify → Summarize, size triage, verification) |
 | Every instruction, any task | `context-awareness` | **ALWAYS load second** — universal orientation layer, no exceptions |
 | Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
@@ -318,7 +344,7 @@ Full spec list with build order: `docs/specs/index.md`
 
 | I need to know about... | Look at |
 |-------------------------|---------|
-| Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/contexts/index.md` |
+| Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/context/index.md` |
 | 4-Layer model | `docs/architecture.md` §4-Layer Model |
 | Action Triad (Command/Read/Process) | `docs/architecture/action-pattern.md` |
 | Entity contracts (`final readonly`) | `docs/architecture/entity-pattern.md` |
@@ -451,7 +477,7 @@ python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
 python3 scripts/scan_security.py           # XSS, SQLi, CSRF, auth
 python3 scripts/scan_naming.py             # Naming conventions
 python3 scripts/scan_conventions.py        # strict_types, Fillable, debug
-python3 scripts/scan_doc_links.py          # Broken links in docs + .agents/contexts/ + outdated/missing metadata detection
+python3 scripts/scan_doc_links.py          # Broken links in docs + .agents/context/ + outdated/missing metadata detection
 ```
 
 ---

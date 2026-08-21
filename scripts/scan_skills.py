@@ -4,12 +4,12 @@ scan_skills.py — Agent Skill Consistency Scan
 
 Validates structural consistency of `.agents/skills/{name}/SKILL.md` files against
 the AGENTS.md meta-framework: frontmatter, reference to the canonical `agent-workflow`
-skill (single source of truth for the 9-step pipeline / 4-phase model), spec-first
-doctrine, size triage, git verification, cross-skill handoffs, and — critically —
-NO duplicated generic workflow boilerplate (skills must reference `agent-workflow`
-instead of restating the workflow). Skills with legitimately different structures
-(orientation hub, quality gate, blind audit, tooling standards, custom pipelines) are
-documented per-rule exemptions.
+skill (single source of truth for the 5-step pipeline Understand → Plan → Implement →
+Verify → Summarize), spec-first doctrine, size triage, git verification, cross-skill
+handoffs, and — critically — NO duplicated generic workflow boilerplate (skills must
+reference `agent-workflow` instead of restating the workflow). Skills with legitimately
+different structures (orientation hub, quality gate, blind audit, tooling standards,
+custom pipelines) are documented per-rule exemptions.
 """
 
 from __future__ import annotations
@@ -57,8 +57,9 @@ RULES: list[dict[str, Any]] = [
         "exempt": [],
         "name": "References agent-workflow skill",
         "description": "Skill must reference the canonical `agent-workflow` skill (the single "
-        "source of truth for the 9-step pipeline / 4-phase model) instead of restating the "
-        "workflow. Standard workflow skills must NOT duplicate the 4-phase skeleton.",
+        "source of truth for the 5-step pipeline Understand → Plan → Implement → Verify → "
+        "Summarize) instead of restating the workflow. Standard workflow skills must NOT "
+        "duplicate the pipeline skeleton.",
         "reference": REF_WORKFLOW_SKILL,
     },
     {
@@ -68,8 +69,9 @@ RULES: list[dict[str, Any]] = [
         "exempt": ["agent-workflow"],
         "name": "No duplicated workflow boilerplate",
         "description": "Skill must NOT restate the generic workflow steps that live in "
-        "`agent-workflow` (9-step → 4-phase mapping, generic Construct/Verify/Report steps). "
-        "Restating them re-injects the same workflow into context on every skill load.",
+        "`agent-workflow` (5-step pipeline mapping, generic Understand/Plan/Implement/Verify/"
+        "Summarize steps). Restating them re-injects the same workflow into context on every "
+        "skill load.",
         "reference": REF_WORKFLOW_SKILL,
     },
     {
@@ -129,7 +131,7 @@ RULES: list[dict[str, Any]] = [
 
 RE_WORKFLOW_REF = re.compile(r"agent-workflow|Agent Workflow|`agent-workflow`", re.IGNORECASE)
 RE_NO_DUP_WORKFLOW = re.compile(
-    r"Using this skill follows 4 phases|mapped to AGENTS\.md 9-step",
+    r"Using this skill follows 4 phases|Using this skill follows 5 steps|mapped to AGENTS\.md 9-step|mapped to AGENTS\.md 5-step",
     re.IGNORECASE,
 )
 RE_SPEC_FIRST = re.compile(
@@ -272,7 +274,8 @@ def scan_workflow_ref(path: Path, content: str, name: str) -> list[Finding]:
         line=1,
         message=f"Skill '{name}' does not reference the canonical `agent-workflow` skill",
         suggestion="Add a one-line reference to the workflow: 'Follow the `agent-workflow` "
-        "skill (9-step pipeline / 4-phase model) — this skill adds task-specific steps.'",
+        "skill (5-step pipeline Understand → Plan → Implement → Verify → Summarize) — this skill "
+        "adds task-specific steps.'",
         reference=RULES[1]["reference"],
     )]
 
@@ -289,8 +292,8 @@ def scan_no_dup_workflow(path: Path, content: str, name: str) -> list[Finding]:
         category="convention",
         file=relative_path(path),
         line=1,
-        message=f"Skill '{name}' duplicates the canonical workflow (4-phase skeleton / "
-        "Construct header / AGENTS.md 9-step mapping) instead of referencing `agent-workflow`",
+        message=f"Skill '{name}' duplicates the canonical workflow (5-step skeleton / "
+        "AGENTS.md 5-step mapping) instead of referencing `agent-workflow`",
         suggestion="Remove the duplicated workflow section and reference `agent-workflow`: "
         "keep only this skill's unique execution steps, rules, and references",
         reference=RULES[2]["reference"],
@@ -310,7 +313,7 @@ def scan_spec_first(path: Path, content: str, name: str) -> list[Finding]:
         file=relative_path(path),
         line=1,
         message=f"Skill '{name}' does not reference the governing spec / spec-first doctrine",
-        suggestion="Add to the Construct phase: locate the governing spec (`docs/specs/`) and "
+        suggestion="Add to the Understand/Plan phase: locate the governing spec (`docs/specs/`) and "
         "list the FR/NFR/UC IDs it defines before any work (Spec-First Doctrine)",
         reference=RULES[3]["reference"],
     )]
@@ -327,7 +330,7 @@ def scan_size_triage(path: Path, content: str, name: str) -> list[Finding]:
         file=relative_path(path),
         line=1,
         message=f"Skill '{name}' does not reference AGENTS.md Size Triage",
-        suggestion="Add to the Construct phase: classify the size (S/M/L) per AGENTS.md Size "
+        suggestion="Add to the Understand phase: classify the size (S/M/L) per AGENTS.md Size "
         "Triage; if L-size, inform the user and split into sessions",
         reference=RULES[4]["reference"],
     )]

@@ -75,7 +75,7 @@ Verify:
 ## Verification / Detection
 
 - `python3 scripts/scan_doc_links.py` — validates every relative link and in-page/file anchor across
-  `docs/`, `.agents/contexts/`, `README.md`, and `AGENTS.md`; reports `BROKEN_FILE_LINK` and
+  `docs/`, `.agents/context/`, `README.md`, and `AGENTS.md`; reports `BROKEN_FILE_LINK` and
   `BROKEN_ANCHOR` findings with file and line.
 - Grep for duplicated blocks across docs before committing: `grep -rn "S3" docs/infrastructure/`.
 - If you must duplicate a small fact despite the rule, add a cross-reference note pointing to the
