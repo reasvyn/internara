@@ -77,7 +77,7 @@ final class FinalizeSetupAction extends BaseCommandAction
                     ),
                     new SettingEntryData(
                         key: 'site_title',
-                        value: "{$schoolName} - PKL Management",
+                        value: "{$schoolName} — Vocational Fieldwork Management System",
                         group: 'general',
                         type: 'string',
                     ),
