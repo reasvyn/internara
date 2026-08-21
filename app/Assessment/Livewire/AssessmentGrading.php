@@ -54,7 +54,7 @@ class AssessmentGrading extends BaseFormView
     #[Computed]
     public function registration(): Registration
     {
-        return Registration::with(['student', 'internship'])->findOrFail($this->registrationId);
+        return Registration::with(['student', 'internship', 'mentee.user'])->findOrFail($this->registrationId);
     }
 
     #[Computed]

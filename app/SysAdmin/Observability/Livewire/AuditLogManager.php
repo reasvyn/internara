@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Observability\Livewire;
 
 use App\User\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -48,9 +49,14 @@ class AuditLogManager extends Component
 
         $logs = $query->latest()->paginate(20);
 
-        $modules = Activity::distinct()->pluck('log_name')->filter()->sort()->values();
-        $actions = Activity::distinct()->pluck('description')->filter()->sort()->values();
-        $users = User::orderBy('name')->get();
+        $modules = Cache::remember('audit_log.modules', 300, fn () => Activity::distinct()->pluck('log_name')->filter()->sort()->values()
+        );
+
+        $actions = Cache::remember('audit_log.actions', 300, fn () => Activity::distinct()->pluck('description')->filter()->sort()->values()
+        );
+
+        $users = Cache::remember('audit_log.users', 300, fn () => User::select('id', 'name')->orderBy('name')->get()
+        );
 
         return view('sysadmin.observability.audit-log-manager', [
             'logs' => $logs,

@@ -39,16 +39,17 @@ return [
     'issued_at' => 'Issued At',
 
     'batch_issue' => 'Batch Issue',
-    'batch_issued' => 'Batch issuance complete: :success issued, :failed failed.',
     'batch_issue_title' => 'Batch Issue Certificates',
     'batch_issue_info' => 'Certificates will be issued to all registrations matching the selected filter that do not already have a certificate.',
-    'batch_results' => 'Results: :success issued, :failed failed.',
-    'filter_status' => 'Registration Status',
+    'batch_filter_status' => 'Registration Status',
     'filter_active_registrations' => 'Active Registrations',
     'filter_completed_registrations' => 'Completed Registrations',
     'layout_portrait' => 'Portrait',
     'layout_landscape' => 'Landscape',
     'already_revoked' => 'This certificate has already been revoked.',
+
+    'batch_queued' => 'Batch issuance queued. Certificates will be generated in the background.',
+    'batch_empty' => 'No eligible registrations found for the selected filter.',
 
     'issued_title' => 'Issued Certificates',
     'issued_subtitle' => 'View and manage issued certificates',

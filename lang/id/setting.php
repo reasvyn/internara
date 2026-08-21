@@ -83,6 +83,7 @@ return [
         'remove_asset_confirm' => 'Apakah Anda yakin ingin menghapus aset ini?',
         'test_email_sent' => 'Email uji coba berhasil dikirim. Silakan periksa kotak masuk Anda.',
         'test_email_failed' => 'Gagal mengirim email uji coba.',
+        'invalid_file_upload' => 'File upload tidak valid.',
     ],
 
     'guide' => [

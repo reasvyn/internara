@@ -21,7 +21,7 @@ final class RecoverSuperAdminAction extends BaseCommandAction
         $attempts = (int) Cache::get($cacheKey, 0);
 
         if ($attempts >= 3) {
-            throw new RejectedException('Too many recovery attempts. Try again in 15 minutes.');
+            throw new RejectedException(__('auth.recovery_throttle'));
         }
 
         Cache::put($cacheKey, $attempts + 1, 900);

@@ -404,15 +404,14 @@ class UserManager extends BaseRecordManager
 
     public function export(CsvHandler $csv): StreamedResponse
     {
-        $users = User::query()
+        $query = User::query()
             ->whereDoesntHave('roles', fn ($q) => $q->where('name', RoleEnum::ADMIN->value))
             ->with('profile')
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->orderBy('name')
-            ->get();
+            ->orderBy('name');
 
-        return $csv->export(
-            $users,
+        return $csv->exportChunked(
+            $query,
             [
                 __('user.fields.full_name'),
                 __('user.fields.email'),
@@ -439,10 +438,10 @@ class UserManager extends BaseRecordManager
             return null;
         }
 
-        $users = User::with('profile')->whereIn('id', $this->selectedIds)->orderBy('name')->get();
+        $query = User::with('profile')->whereIn('id', $this->selectedIds)->orderBy('name');
 
-        return $csv->export(
-            $users,
+        return $csv->exportChunked(
+            $query,
             [
                 __('user.fields.full_name'),
                 __('user.fields.email'),

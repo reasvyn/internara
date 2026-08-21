@@ -83,6 +83,7 @@ return [
         'remove_asset_confirm' => 'Are you sure you want to remove this asset?',
         'test_email_sent' => 'Test email sent successfully. Please check your inbox.',
         'test_email_failed' => 'Failed to send test email.',
+        'invalid_file_upload' => 'Invalid file upload.',
     ],
 
     'guide' => [

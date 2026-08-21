@@ -33,7 +33,7 @@ final class InstallSystemAction extends BaseCommandAction
         }
 
         if (! $report->passed()) {
-            throw new RejectedException('System audit check failed.');
+            throw new RejectedException(__('setup.audit_failed'));
         }
 
         return $this->transaction(function () use ($force) {

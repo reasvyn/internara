@@ -74,4 +74,5 @@ return [
     'search_placeholder' => 'Cari nama siswa...',
     'filter_status' => 'Filter Status',
     'all_statuses' => 'Semua Status',
+    'already_finalized' => 'Laporan ini sudah difinalisasi.',
 ];

@@ -15,7 +15,7 @@ final class TerminatePartnershipAction extends BaseCommandAction
     public function execute(Partnership $partnership): Partnership
     {
         if (! $partnership->asPartnershipState()->isActive()) {
-            throw new RejectedException('Only active partnerships can be terminated.');
+            throw new RejectedException(__('partnership.terminate_blocked'));
         }
 
         return $this->transaction(function () use ($partnership) {

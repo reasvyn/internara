@@ -297,13 +297,12 @@ class CompanyManager extends BaseRecordManager
 
     public function export(CsvHandler $csv): StreamedResponse
     {
-        $companies = Company::query()
+        $query = Company::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
-            ->orderBy('name')
-            ->get();
+            ->orderBy('name');
 
-        return $csv->export(
-            $companies,
+        return $csv->exportChunked(
+            $query,
             [
                 __('common.name'),
                 __('common.address'),
@@ -334,10 +333,10 @@ class CompanyManager extends BaseRecordManager
             return null;
         }
 
-        $companies = Company::whereIn('id', $this->selectedIds)->orderBy('name')->get();
+        $query = Company::whereIn('id', $this->selectedIds)->orderBy('name');
 
-        return $csv->export(
-            $companies,
+        return $csv->exportChunked(
+            $query,
             [
                 __('common.name'),
                 __('common.address'),

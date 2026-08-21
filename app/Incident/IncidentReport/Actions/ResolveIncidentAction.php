@@ -14,7 +14,7 @@ final class ResolveIncidentAction extends BaseCommandAction
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {
         if ($incident->status->isTerminal()) {
-            throw new RejectedException('This incident is already closed.');
+            throw new RejectedException(__('incident.already_closed'));
         }
 
         $validated = Validator::validate($data, [

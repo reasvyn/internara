@@ -13,7 +13,7 @@ final class DeleteInternshipGroupAction extends BaseCommandAction
     public function execute(InternshipGroup $group): void
     {
         if (! $group->asInternshipGroupState()->canBeDeleted()) {
-            throw new RejectedException('Cannot delete a group with active members.');
+            throw new RejectedException(__('internship.delete_group_blocked'));
         }
 
         $this->transaction(function () use ($group) {

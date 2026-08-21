@@ -22,7 +22,8 @@ beforeEach(function () {
 
 test('8FVZA-FR-JOB1/JOB2/JOB3: BatchIssueCertificatesJob is a queued job with tries and backoff [2, 10, 30]', function () {
     $job = new BatchIssueCertificatesJob(
-        studentIds: ['student-a'],
+        registrationIds: ['reg-a'],
+        status: 'active',
         templateId: 'template-id',
         issuedBy: 'admin-id',
     );
@@ -33,24 +34,26 @@ test('8FVZA-FR-JOB1/JOB2/JOB3: BatchIssueCertificatesJob is a queued job with tr
 });
 
 test('8FVZA-FR-JOB5: job references models by ID, not serialized models', function () {
-    $student = User::factory()->create();
+    $registration = Registration::factory()->create(['status' => 'active']);
     $template = CertificateTemplate::factory()->create();
 
     $job = new BatchIssueCertificatesJob(
-        studentIds: [$student->id],
+        registrationIds: [$registration->id],
+        status: 'active',
         templateId: $template->id,
         issuedBy: 'admin-id',
     );
 
     $serialized = serialize($job);
 
-    expect($serialized)->toContain($student->id)
+    expect($serialized)->toContain($registration->id)
         ->and($serialized)->toContain($template->id)
         ->and($serialized)->toContain('admin-id')
-        ->and($serialized)->not->toContain('App\\User\\Models\\User');
+        ->and($serialized)->not->toContain('App\\User\\Models\\User')
+        ->and($serialized)->not->toContain('App\\Enrollment\\Registration\\Models\\Registration');
 });
 
-test('J0M04-FR-CI1/CI5/CI7: handle issues a certificate for each registered student', function () {
+test('J0M04-FR-CI1/CI5/CI7: handle issues a certificate for each eligible registration', function () {
     $admin = User::factory()->create();
     $this->actingAs($admin);
 
@@ -66,7 +69,8 @@ test('J0M04-FR-CI1/CI5/CI7: handle issues a certificate for each registered stud
     ]);
 
     $job = new BatchIssueCertificatesJob(
-        studentIds: [$registration1->student_id, $registration2->student_id],
+        registrationIds: [$registration1->id, $registration2->id],
+        status: 'active',
         templateId: $template->id,
         issuedBy: $admin->id,
     );
@@ -79,14 +83,62 @@ test('J0M04-FR-CI1/CI5/CI7: handle issues a certificate for each registered stud
         ->and($certs->firstWhere('registration_id', $registration1->id)->issued_at)->not->toBeNull();
 });
 
-test('8FVZA-UC-1: request for a student without a registration produces no certificate', function () {
+test('8FVZA-UC-1: request for a registration without matching status produces no certificate', function () {
     $admin = User::factory()->create();
     $this->actingAs($admin);
 
     $template = CertificateTemplate::factory()->create(['is_active' => true]);
 
     $job = new BatchIssueCertificatesJob(
-        studentIds: ['missing-student'],
+        registrationIds: ['missing-registration'],
+        status: 'active',
+        templateId: $template->id,
+        issuedBy: $admin->id,
+    );
+
+    $job->handle(app(IssueCertificateAction::class));
+
+    expect(Certificate::count())->toBe(0);
+});
+
+test('8FVZA-UC-1: registration with existing certificate is skipped (cert-free filter)', function () {
+    $admin = User::factory()->create();
+    $this->actingAs($admin);
+
+    $template = CertificateTemplate::factory()->create(['is_active' => true]);
+    $internship = Internship::factory()->create(['name' => 'PT Maju Bersama']);
+    $registration = Registration::factory()->create([
+        'internship_id' => $internship->id,
+        'status' => 'active',
+    ]);
+    Certificate::factory()->create(['registration_id' => $registration->id]);
+
+    $job = new BatchIssueCertificatesJob(
+        registrationIds: [$registration->id],
+        status: 'active',
+        templateId: $template->id,
+        issuedBy: $admin->id,
+    );
+
+    $job->handle(app(IssueCertificateAction::class));
+
+    expect(Certificate::count())->toBe(1);
+});
+
+test('8FVZA-UC-1: registration with different status is skipped (status filter)', function () {
+    $admin = User::factory()->create();
+    $this->actingAs($admin);
+
+    $template = CertificateTemplate::factory()->create(['is_active' => true]);
+    $internship = Internship::factory()->create(['name' => 'PT Maju Bersama']);
+    $registration = Registration::factory()->create([
+        'internship_id' => $internship->id,
+        'status' => 'completed',
+    ]);
+
+    $job = new BatchIssueCertificatesJob(
+        registrationIds: [$registration->id],
+        status: 'active',
         templateId: $template->id,
         issuedBy: $admin->id,
     );
@@ -100,7 +152,8 @@ test('8FVZA-FR-JOB2/JOB3: missing template throws during handle and failed() log
     $logs = captureLogs();
 
     $job = new BatchIssueCertificatesJob(
-        studentIds: ['student-a'],
+        registrationIds: ['reg-a'],
+        status: 'active',
         templateId: 'missing-template-id',
         issuedBy: 'admin-id',
     );
@@ -114,12 +167,14 @@ test('8FVZA-FR-JOB2/JOB3: missing template throws during handle and failed() log
     expect($log->level)->toBe('error')
         ->and($log->message)->toBe('Batch certificate issuance failed')
         ->and($log->context['template_id'])->toBe('missing-template-id')
-        ->and($log->context['student_ids'])->toBe(['student-a']);
+        ->and($log->context['status'])->toBe('active')
+        ->and($log->context['registration_ids'])->toBe(['reg-a']);
 });
 
 test('8FVZA-FR-JOB5: dispatch pushes the job to the queue with minimal payload', function () {
     BatchIssueCertificatesJob::dispatch(
-        studentIds: ['student-a'],
+        registrationIds: ['reg-a'],
+        status: 'active',
         templateId: 'template-id',
         issuedBy: 'admin-id',
     );

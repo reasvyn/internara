@@ -7,11 +7,13 @@ namespace App\Certification\Jobs;
 use App\Certification\Certificate\Actions\IssueCertificateAction;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Enrollment\Registration\Models\Registration;
+use App\User\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
 
 class BatchIssueCertificatesJob implements ShouldQueue
 {
@@ -22,9 +24,10 @@ class BatchIssueCertificatesJob implements ShouldQueue
     public array $backoff = [2, 10, 30];
 
     public function __construct(
-        protected readonly array $studentIds,
-        protected readonly string $templateId,
-        protected readonly string $issuedBy,
+        public readonly array $registrationIds,
+        public readonly string $status,
+        public readonly string $templateId,
+        public readonly string $issuedBy,
     ) {}
 
     public function handle(IssueCertificateAction $issueCertificate): void
@@ -32,18 +35,27 @@ class BatchIssueCertificatesJob implements ShouldQueue
         $template = CertificateTemplate::findOrFail($this->templateId);
 
         $registrations = Registration::query()
-            ->whereIn('student_id', $this->studentIds)
+            ->whereIn('id', $this->registrationIds)
+            ->where('status', $this->status)
+            ->whereDoesntHave('certificates')
             ->get();
 
-        foreach ($registrations as $registration) {
-            $issueCertificate->execute($registration, $template);
+        Auth::setUser(User::findOrFail($this->issuedBy));
+
+        try {
+            foreach ($registrations as $registration) {
+                $issueCertificate->execute($registration, $template);
+            }
+        } finally {
+            Auth::forgetUser();
         }
     }
 
     public function failed(\Throwable $e): void
     {
         logger()->error('Batch certificate issuance failed', [
-            'student_ids' => $this->studentIds,
+            'registration_ids' => $this->registrationIds,
+            'status' => $this->status,
             'template_id' => $this->templateId,
             'error' => $e->getMessage(),
         ]);

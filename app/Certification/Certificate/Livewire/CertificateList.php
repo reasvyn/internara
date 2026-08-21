@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Certification\Certificate\Livewire;
 
-use App\Certification\Certificate\Actions\BatchIssueCertificateAction;
+use App\Certification\Actions\DispatchBatchIssueCertificatesAction;
 use App\Certification\Certificate\Actions\IssueCertificateAction;
 use App\Certification\Certificate\Actions\RevokeCertificateAction;
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
+use App\Certification\Data\BatchIssueCertificatesData;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Enrollment\Registration\Models\Registration;
@@ -35,8 +36,6 @@ class CertificateList extends BaseRecordManager
     public string $batchIssueTemplateId = '';
 
     public string $batchIssueFilter = 'active';
-
-    public array $batchResults = [];
 
     public function headers(): array
     {
@@ -125,11 +124,10 @@ class CertificateList extends BaseRecordManager
         $this->resetErrorBag();
         $this->batchIssueTemplateId = '';
         $this->batchIssueFilter = 'active';
-        $this->batchResults = [];
         $this->showBatchIssueModal = true;
     }
 
-    public function saveBatchIssue(BatchIssueCertificateAction $batchAction): void
+    public function saveBatchIssue(DispatchBatchIssueCertificatesAction $dispatchAction): void
     {
         $this->authorize('create', Certificate::class);
 
@@ -139,19 +137,27 @@ class CertificateList extends BaseRecordManager
 
         $template = CertificateTemplate::findOrFail($this->batchIssueTemplateId);
 
-        $query = Registration::query()
+        $registrationIds = Registration::query()
             ->where('status', $this->batchIssueFilter)
-            ->whereDoesntHave('certificates');
+            ->whereDoesntHave('certificates')
+            ->pluck('id')
+            ->all();
 
-        $results = $batchAction->execute($query->pluck('id')->toArray(), $template);
+        if ($registrationIds === []) {
+            flash()->warning(__('certificate.batch_empty'));
+            $this->showBatchIssueModal = false;
 
-        $this->batchResults = $results;
-        flash()->success(
-            __('certificate.batch_issued', [
-                'success' => $results['success'],
-                'failed' => $results['failed'],
-            ]),
-        );
+            return;
+        }
+
+        $dispatchAction->execute(new BatchIssueCertificatesData(
+            registrationIds: $registrationIds,
+            status: $this->batchIssueFilter,
+            templateId: $template->id,
+        ));
+
+        $this->showBatchIssueModal = false;
+        flash()->success(__('certificate.batch_queued'));
     }
 
     public function askRevoke(string $id): void

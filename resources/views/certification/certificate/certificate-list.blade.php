@@ -111,20 +111,13 @@
                         option-value="id"
                     />
                     <x-mary-select
-                        :label="__('certificate.filter_status')"
+                        :label="__('certificate.batch_filter_status')"
                         wire:model="batchIssueFilter"
                         :options="['active' => __('certificate.filter_active_registrations'), 'completed' => __('certificate.filter_completed_registrations')]"
                     />
                     <div class="bg-base-200 rounded-lg p-3 text-sm">
                         <p class="text-base-content/70">{{ __('certificate.batch_issue_info') }}</p>
                     </div>
-                    @if ($batchResults)
-                        <div class="bg-success/10 rounded-lg p-3 text-sm">
-                            <p>
-                                {{ __('certificate.batch_results', ['success' => $batchResults['success'], 'failed' => $batchResults['failed']]) }}
-                            </p>
-                        </div>
-                    @endif
                 </div>
                 <x-slot:actions>
                     <x-mary-button

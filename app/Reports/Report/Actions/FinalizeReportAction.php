@@ -15,7 +15,7 @@ final class FinalizeReportAction extends BaseCommandAction
     public function execute(Report $report, string $finalizedBy): Report
     {
         if ($report->status->isTerminal()) {
-            throw new RejectedException('This report has already been finalized.');
+            throw new RejectedException(__('report.already_finalized'));
         }
 
         return $this->transaction(function () use ($report, $finalizedBy) {

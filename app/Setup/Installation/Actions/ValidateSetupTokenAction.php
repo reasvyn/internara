@@ -20,21 +20,21 @@ final class ValidateSetupTokenAction extends BaseCommandAction
             $state = SetupEntity::get();
 
             if (! $state->hasStoredToken()) {
-                throw new RejectedException('Setup token is missing from the system.');
+                throw new RejectedException(__('setup.token_missing'));
             }
 
             if ($state->isTokenExpired(now())) {
-                throw new RejectedException('Setup token has expired.');
+                throw new RejectedException(__('setup.token_expired'));
             }
 
             try {
                 $decrypted = Crypt::decryptString($state->setupToken());
             } catch (\Throwable) {
-                throw new RejectedException('Setup token is malformed or corrupted.');
+                throw new RejectedException(__('setup.token_malformed'));
             }
 
             if (! hash_equals($decrypted, $token)) {
-                throw new RejectedException('The provided setup token does not match.');
+                throw new RejectedException(__('setup.token_mismatch'));
             }
 
             $this->batchSetSetting->execute(

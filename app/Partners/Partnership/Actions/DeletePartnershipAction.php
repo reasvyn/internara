@@ -14,7 +14,7 @@ final class DeletePartnershipAction extends BaseCommandAction
     public function execute(Partnership $partnership): void
     {
         if (! $partnership->asPartnershipState()->canBeDeleted()) {
-            throw new RejectedException('Only expired or terminated partnerships can be deleted.');
+            throw new RejectedException(__('partnership.delete_blocked'));
         }
 
         $this->transaction(function () use ($partnership) {
