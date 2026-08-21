@@ -102,7 +102,7 @@ class AppSettingSeeder extends Seeder
             ],
             [
                 'key' => 'site_title',
-                'value' => $appName.' - Management System',
+                'value' => $appName.' — Vocational Fieldwork Management System',
                 'type' => 'string',
                 'description' => 'The title of the site (browser tab)',
                 'group' => 'general',

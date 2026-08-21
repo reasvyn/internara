@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify catalog matches current project structure (18 modules, 58 specs, 18 architecture patterns, 16 ADRs, 11 infrastructure docs, 9 foundation docs)
+> **Last updated:** 2026-08-21 **Changes:** add project-vision.md to Product & Vision catalog
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -22,6 +22,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[README — Product Definition & Project Status](../README.md)** — Product scope, 3S doctrine, personas, system boundary, deployment, localization, module landscape, tech debt (merged from `foundation/product-definition.md` + `foundation/project-overview.md`)
 - **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
+- **[Project Vision](project-vision.md)** — 3–5 year direction, strategic pillars, success metrics, boundaries, decision compass
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
