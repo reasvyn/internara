@@ -26,7 +26,7 @@ class StudentClockIn extends BaseFormView
     {
         $this->handleSave(function () use ($action) {
             $action->execute(new ClockOutData(
-                user: auth()->user(),
+                userId: auth()->id(),
                 data: [],
             ));
             flash()->success(__('journals.attendance.clocked_out'));

@@ -14,23 +14,25 @@ final class ReviewLogAction extends BaseCommandAction
 {
     public function execute(ReviewLogData $data): SupervisionLog
     {
-        if ($data->log->status !== SupervisionLogStatus::SUBMITTED) {
+        $log = SupervisionLog::findOrFail($data->logId);
+
+        if ($log->status !== SupervisionLogStatus::SUBMITTED) {
             throw new RejectedException(__('journals.log_not_submitted'));
         }
 
-        return $this->transaction(function () use ($data) {
-            $data->log->update([
+        return $this->transaction(function () use ($data, $log) {
+            $log->update([
                 'status' => SupervisionLogStatus::REVIEWED->value,
                 'supervisor_feedback' => $data->feedback,
-                'reviewed_by' => $data->supervisor->id,
+                'reviewed_by' => $data->supervisorId,
                 'reviewed_at' => now(),
             ]);
 
-            $this->log('supervision_log_reviewed', $data->log, [
-                'reviewed_by' => $data->supervisor->id,
+            $this->log('supervision_log_reviewed', $log, [
+                'reviewed_by' => $data->supervisorId,
             ]);
 
-            return $data->log->fresh();
+            return $log->fresh();
         });
     }
 }

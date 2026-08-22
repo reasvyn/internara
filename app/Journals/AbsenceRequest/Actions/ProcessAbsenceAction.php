@@ -14,24 +14,26 @@ final class ProcessAbsenceAction extends BaseCommandAction
 {
     public function execute(ProcessAbsenceData $data): Attendance
     {
-        $currentStatus = AbsenceRequestStatus::tryFrom($data->absence->absence_status);
+        $absence = Attendance::findOrFail($data->absenceId);
+
+        $currentStatus = AbsenceRequestStatus::tryFrom($absence->absence_status);
         if ($currentStatus && $currentStatus->isProcessed()) {
             throw new RejectedException(__('journals.absence.already_processed'));
         }
 
-        return $this->transaction(function () use ($data) {
-            $data->absence->update([
+        return $this->transaction(function () use ($data, $absence) {
+            $absence->update([
                 'absence_status' => $data->status,
-                'absence_processed_by' => $data->processor->id,
+                'absence_processed_by' => $data->processorId,
                 'absence_processed_at' => now(),
                 'absence_admin_notes' => $data->notes,
             ]);
 
-            $this->log('absence_request_'.$data->status->value, $data->absence, [
+            $this->log('absence_request_'.$data->status->value, $absence, [
                 'status' => $data->status->value,
             ]);
 
-            return $data->absence;
+            return $absence;
         });
     }
 }
