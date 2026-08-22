@@ -8,6 +8,7 @@ use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Journals\SupervisionLog\Actions\CreateLogAction;
 use App\Journals\SupervisionLog\Actions\DeleteLogAction;
+use App\Journals\SupervisionLog\Data\CreateLogData;
 use App\Journals\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -92,12 +93,16 @@ class StudentLogManager extends BaseRecordManager
             return;
         }
 
-        $action->execute($user, $registration->id, [
-            'supervisor_id' => $this->supervisorId,
-            'date' => $this->date,
-            'topic' => $this->topic,
-            'notes' => $this->notes,
-        ]);
+        $action->execute(new CreateLogData(
+            studentId: $user->id,
+            registrationId: $registration->id,
+            data: [
+                'supervisor_id' => $this->supervisorId,
+                'date' => $this->date,
+                'topic' => $this->topic,
+                'notes' => $this->notes,
+            ],
+        ));
 
         flash()->success(__('journals.log_created'));
         $this->showModal = false;

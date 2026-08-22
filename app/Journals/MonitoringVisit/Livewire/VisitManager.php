@@ -9,6 +9,7 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\MonitoringVisit\Actions\CreateVisitAction;
 use App\Journals\MonitoringVisit\Actions\VerifyVisitAction;
+use App\Journals\MonitoringVisit\Data\CreateVisitData;
 use App\Journals\MonitoringVisit\Enums\VisitMethod;
 use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use Illuminate\Contracts\View\View;
@@ -119,16 +120,20 @@ class VisitManager extends BaseRecordManager
             'notes' => 'nullable|string',
         ]);
 
-        $action->execute(auth()->user(), $this->registrationId, [
-            'visit_date' => $this->visitDate,
-            'method' => $this->method,
-            'location' => $this->location,
-            'duration_minutes' => $this->durationMinutes,
-            'notes' => $this->notes,
-            'student_condition' => $this->studentCondition ?: null,
-            'company_feedback' => $this->companyFeedback ?: null,
-            'follow_up_actions' => $this->followUpActions ?: null,
-        ]);
+        $action->execute(new CreateVisitData(
+            teacherId: auth()->id(),
+            registrationId: $this->registrationId,
+            data: [
+                'visit_date' => $this->visitDate,
+                'method' => $this->method,
+                'location' => $this->location,
+                'duration_minutes' => $this->durationMinutes,
+                'notes' => $this->notes,
+                'student_condition' => $this->studentCondition ?: null,
+                'company_feedback' => $this->companyFeedback ?: null,
+                'follow_up_actions' => $this->followUpActions ?: null,
+            ],
+        ));
 
         flash()->success(__('journals.visit_created'));
         $this->showModal = false;
