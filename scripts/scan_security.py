@@ -404,9 +404,9 @@ def scan_missing_csrf(files: list[Path], module: str | None) -> list[Finding]:
         lines = content.split("\n")
         for i, line in enumerate(lines, 1):
             if "<form" in line.lower():
-                if "wire:" in line:
-                    continue
                 form_block = "\n".join(lines[i - 1:i + 20])
+                if "wire:" in line or "wire:" in form_block:
+                    continue
                 if "@csrf" in form_block or "csrf_token" in form_block:
                     continue
                 if 'method="get"' in line.lower() or "method='get'" in line.lower():

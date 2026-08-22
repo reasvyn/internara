@@ -7,6 +7,7 @@ namespace App\Journals\SupervisionLog\Livewire;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\SupervisionLog\Actions\CreateSupervisionLogAction;
 use App\Journals\SupervisionLog\Actions\VerifySupervisionLogAction;
+use App\Journals\SupervisionLog\Data\CreateSupervisionLogData;
 use App\Journals\SupervisionLog\Models\SupervisionLog;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -64,11 +65,15 @@ class SupervisorLogManager extends Component
             'notes' => 'required|string',
         ]);
 
-        $createAction->execute(auth()->user(), $this->registrationId, [
-            'date' => $this->date,
-            'topic' => $this->topic,
-            'notes' => $this->notes,
-        ]);
+        $createAction->execute(new CreateSupervisionLogData(
+            userId: auth()->id(),
+            registrationId: $this->registrationId,
+            data: [
+                'date' => $this->date,
+                'topic' => $this->topic,
+                'notes' => $this->notes,
+            ],
+        ));
 
         $this->showModal = false;
         flash()->success(__('journals.log_recorded'));
