@@ -1,23 +1,12 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') === 'dark'])>
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    @class(['dark' => ($appearance ?? 'system') === 'dark'])
+    data-appearance="{{ $appearance ?? 'system' }}"
+>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    {{-- Inline script to detect system dark mode preference and apply it immediately --}}
-    <script>
-        (function () {
-            const appearance = '{{ $appearance ?? "system" }}';
-
-            if (appearance === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-                if (prefersDark) {
-                    document.documentElement.classList.add('dark');
-                }
-            }
-        })();
-    </script>
 
     <style>
         html {
@@ -41,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net" />
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/mcp/authorize.js'])
 </head>
 <body class="bg-background text-foreground font-sans antialiased">
     <div class="flex min-h-screen items-center justify-center p-4">
@@ -141,52 +130,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('authorizeForm');
-            const button = document.getElementById('authorizeButton');
-            const authorizeText = document.getElementById('authorizeText');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-
-            form.addEventListener('submit', function (e) {
-                // Show loading state...
-                button.disabled = true;
-                authorizeText.textContent = 'Authorizing...';
-                loadingSpinner.classList.remove('hidden');
-
-                // After form submission, watch for redirect and close window...
-                setTimeout(function () {
-                    const checkRedirect = setInterval(function () {
-                        // If URL changed or we have OAuth params, redirect happened...
-                        if (
-                            !window.location.href.includes('/oauth/authorize') ||
-                            window.location.search.includes('code=') ||
-                            window.location.search.includes('error=')
-                        ) {
-                            clearInterval(checkRedirect);
-                            window.close();
-                        }
-                    }, 100);
-
-                    // Fallback: Close after five seconds...
-                    setTimeout(function () {
-                        clearInterval(checkRedirect);
-                        window.close();
-                    }, 5000);
-                }, 200);
-            });
-
-            // Handle cancel button...
-            const cancelForm = document.querySelector('form[method="POST"]:has(input[name="_method"][value="DELETE"])');
-            if (cancelForm) {
-                cancelForm.addEventListener('submit', function (e) {
-                    setTimeout(function () {
-                        window.close();
-                    }, 200);
-                });
-            }
-        });
-    </script>
 </body>
 </html>

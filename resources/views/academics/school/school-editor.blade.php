@@ -1,31 +1,34 @@
 <div class="py-4">
     <div class="mb-6 flex items-center gap-4">
-        <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+        <div class="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
             <x-mary-icon name="o-building-library" class="size-6" />
         </div>
         <div>
             <h2 class="text-xl font-bold">{{ __('school.title') }}</h2>
-            <p class="text-sm text-base-content/50 mt-0.5">{{ __('school.subtitle') }}</p>
+            <p class="text-base-content/50 mt-0.5 text-sm">{{ __('school.subtitle') }}</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="lg:col-span-2">
-            <div class="bg-base-100 border border-base-content/10 rounded-xl">
+            <div class="bg-base-100 border-base-content/10 rounded-xl border">
                 <div class="p-6 sm:p-8">
-                    <form wire:submit="save" class="space-y-5"
+                    <form
+                        wire:submit="save"
+                        class="space-y-5"
                         x-data="{ isDirty: false }"
                         @input="isDirty = true"
                         x-init="
-                            $wire.on('saved', () => isDirty = false);
+                            $wire.on('saved', () => (isDirty = false));
                             window.addEventListener('beforeunload', (e) => {
                                 if (isDirty) {
                                     e.preventDefault();
                                     e.returnValue = '';
                                 }
                             });
-                        ">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        "
+                    >
+                        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
                             <div class="md:col-span-2">
                                 <x-mary-input
                                     label="{{ __('school.name') }}"
@@ -91,7 +94,7 @@
                             />
                         </div>
 
-                        <div class="flex items-center justify-between pt-6 border-t border-base-content/10">
+                        <div class="border-base-content/10 flex items-center justify-between border-t pt-6">
                             <x-mary-button
                                 :label="__('school.discard')"
                                 link="{{ url()->previous() }}"
@@ -113,35 +116,50 @@
         {{-- Sidebar --}}
         <div class="space-y-6">
             {{-- School Logo --}}
-            <div class="bg-base-100 border border-base-content/10 rounded-xl p-6">
+            <div class="bg-base-100 border-base-content/10 rounded-xl border p-6">
                 <div class="flex flex-col items-center">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('school.logo') }}</p>
-                        <div class="relative mb-2 group">
-                            <div class="cursor-pointer relative" onclick="document.getElementById('school-logo-upload').click()">
-                                <input id="school-logo-upload" type="file" wire:model="logo_file" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                                @if($this->logoPreviewUrl())
-                                    <img src="{{ $this->logoPreviewUrl() }}"
-                                         alt="{{ __('school.logo') }}"
-                                         class="size-24 rounded-xl object-contain border border-base-content/10" />
-                                @else
-                                    <div class="size-24 rounded-xl bg-base-200 flex items-center justify-center border border-dashed border-base-content/20">
-                                        <x-mary-icon name="o-building-office" class="size-8 text-base-content/30" />
-                                    </div>
-                                @endif
-                            <div class="absolute inset-0 flex items-center justify-center rounded-xl bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                <x-mary-icon name="o-camera" class="size-8 text-base-100" />
+                    <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
+                        {{ __('school.logo') }}
+                    </p>
+                    <div class="group relative mb-2">
+                        <div
+                            class="relative cursor-pointer"
+                            @click="document.getElementById('school-logo-upload').click()"
+                        >
+                            <input
+                                id="school-logo-upload"
+                                type="file"
+                                wire:model="logo_file"
+                                accept="image/png,image/jpeg,image/webp"
+                                class="hidden"
+                            />
+                            @if ($this->logoPreviewUrl())
+                                <img
+                                    src="{{ $this->logoPreviewUrl() }}"
+                                    alt="{{ __('school.logo') }}"
+                                    class="border-base-content/10 size-24 rounded-xl border object-contain"
+                                />
+                            @else
+                                <div class="bg-base-200 border-base-content/20 flex size-24 items-center justify-center rounded-xl border border-dashed">
+                                    <x-mary-icon name="o-building-office" class="text-base-content/30 size-8" />
+                                </div>
+                            @endif
+                            <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                <x-mary-icon name="o-camera" class="text-base-100 size-8" />
                             </div>
                         </div>
-                        @if($this->logoPreviewUrl())
-                            <button type="button"
+                        @if ($this->logoPreviewUrl())
+                            <button
+                                type="button"
                                 wire:click="$set('showConfirm', true)"
                                 aria-label="{{ __('common.actions.remove') }}"
-                                class="absolute -top-2 -right-2 size-6 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100">
+                                class="bg-error text-error-content absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full opacity-0 shadow-sm transition-transform group-hover:opacity-100 hover:scale-110"
+                            >
                                 <x-mary-icon name="o-x-mark" class="size-3" />
                             </button>
                         @endif
                     </div>
-                    <p class="text-[10px] text-base-content/40 text-center">{{ __('school.logo_hint') }}</p>
+                    <p class="text-base-content/40 text-center text-[10px]">{{ __('school.logo_hint') }}</p>
                 </div>
 
                 @include('core.ui.confirm', [
@@ -151,19 +169,19 @@
             </div>
 
             {{-- System Context --}}
-            <div class="bg-base-200/40 border border-base-content/10 rounded-xl p-5">
-                <p class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-4">{{ __('school.system_context') }}</p>
-                <p class="text-sm text-base-content/60 leading-relaxed mb-4">
-                    {{ __('school.system_context_desc') }}
+            <div class="bg-base-200/40 border-base-content/10 rounded-xl border p-5">
+                <p class="text-base-content/40 mb-4 text-xs font-semibold tracking-wider uppercase">
+                    {{ __('school.system_context') }}
                 </p>
+                <p class="text-base-content/60 mb-4 text-sm leading-relaxed">{{ __('school.system_context_desc') }}</p>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
-                        <x-mary-icon name="o-check-badge" class="size-4 text-success shrink-0" />
-                        <span class="text-xs text-base-content/50">{{ __('school.uuid_enabled') }}</span>
+                        <x-mary-icon name="o-check-badge" class="text-success size-4 shrink-0" />
+                        <span class="text-base-content/50 text-xs">{{ __('school.uuid_enabled') }}</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <x-mary-icon name="o-shield-check" class="size-4 text-info shrink-0" />
-                        <span class="text-xs text-base-content/50">{{ __('school.audit_logged') }}</span>
+                        <x-mary-icon name="o-shield-check" class="text-info size-4 shrink-0" />
+                        <span class="text-base-content/50 text-xs">{{ __('school.audit_logged') }}</span>
                     </div>
                 </div>
             </div>

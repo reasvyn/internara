@@ -11,7 +11,8 @@
         preview: '',
         renderPreview() {
             if (! window.marked) return;
-            this.preview = window.marked.parse(this.$wire.get('{{ $model }}') || '');
+            const raw = window.marked.parse(this.$wire.get('{{ $model }}') || '');
+            this.preview = window.DOMPurify ? window.DOMPurify.sanitize(raw) : raw;
         }
     }"
     x-init="
@@ -59,6 +60,7 @@
         x-show="tab === 'preview'"
         class="border-base-content/10 bg-base-100 prose prose-sm min-h-[200px] max-w-none rounded-xl border p-4 text-sm"
     >
+        {{-- Safe: preview sanitized via DOMPurify.sanitize() in renderPreview() --}}
         <div x-html="preview" class="prose prose-sm max-w-none"></div>
     </div>
 

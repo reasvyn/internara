@@ -10,7 +10,21 @@ window.flatpickr = flatpickr
  * Markdown Editor
  */
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 window.marked = marked
+window.DOMPurify = DOMPurify
+
+/**
+ * Theme Initialization (CSP-compliant — previously inline in base.blade.php)
+ */
+const initTheme = () => {
+    const theme = document.documentElement.getAttribute('data-theme')
+    if (theme === 'system') {
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        document.documentElement.setAttribute('data-theme', systemTheme)
+    }
+}
+initTheme()
 
 /**
  * Alpine Helper Functions
@@ -101,4 +115,39 @@ const bindChoicesEvents = () => {
  */
 document.addEventListener('alpine:init', () => {
     bindChoicesEvents()
+})
+
+/**
+ * Livewire & Theme Sync (CSP-compliant — previously inline in base.blade.php)
+ */
+document.addEventListener('livewire:init', () => {
+    const syncFlasherTheme = () => {
+        const theme = document.documentElement.getAttribute('data-theme')
+        if (theme === 'dark') {
+            document.documentElement.classList.add('fl-dark')
+        } else {
+            document.documentElement.classList.remove('fl-dark')
+        }
+    }
+
+    syncFlasherTheme()
+
+    new MutationObserver(syncFlasherTheme).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+    })
+
+    if (window.Livewire) {
+        window.Livewire.on('theme-changed', (event) => {
+            let newTheme = event.theme
+            if (newTheme === 'system') {
+                newTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+            }
+            document.documentElement.setAttribute('data-theme', newTheme)
+        })
+
+        window.Livewire.on('language-changed', () => {
+            window.location.reload()
+        })
+    }
 })
