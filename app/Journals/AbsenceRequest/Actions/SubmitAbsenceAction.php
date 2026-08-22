@@ -15,7 +15,7 @@ final class SubmitAbsenceAction extends BaseCommandAction
     {
         return $this->transaction(function () use ($data) {
             $attendance = Attendance::create([
-                'user_id' => $data->user->id,
+                'user_id' => $data->userId,
                 'registration_id' => $data->registrationId,
                 'date' => $data->data['start_date'] ?? now()->toDateString(),
                 'status' => 'absent',
@@ -26,7 +26,7 @@ final class SubmitAbsenceAction extends BaseCommandAction
             ]);
 
             $this->log('absence_submitted', $attendance, [
-                'user_id' => $data->user->id,
+                'user_id' => $data->userId,
                 'absence_type' => $data->data['reason_type'],
             ]);
 

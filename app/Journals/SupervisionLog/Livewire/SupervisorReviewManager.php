@@ -59,8 +59,8 @@ class SupervisorReviewManager extends BaseRecordManager
             $log = SupervisionLog::findOrFail($this->reviewTarget);
             $this->authorize('review', $log);
             $action->execute(new ReviewLogData(
-                log: $log,
-                supervisor: auth()->user(),
+                logId: $log->id,
+                supervisorId: auth()->id(),
                 feedback: $this->feedback,
             ));
             flash()->success(__('journals.log_reviewed'));

@@ -18,7 +18,7 @@ final class ClockOutAction extends BaseCommandAction
         return $this->transaction(function () use ($data) {
             $now = Carbon::now();
 
-            $log = Attendance::where('user_id', $data->user->id)
+            $log = Attendance::where('user_id', $data->userId)
                 ->whereDate('date', $now->toDateString())
                 ->first();
 

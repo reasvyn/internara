@@ -50,7 +50,7 @@ class AbsenceRequestForm extends BaseFormView
 
         $this->handleSave(function () use ($registration, $action) {
             $action->execute(new SubmitAbsenceData(
-                user: auth()->user(),
+                userId: auth()->id(),
                 registrationId: $registration->id,
                 data: [
                     'start_date' => $this->startDate,
