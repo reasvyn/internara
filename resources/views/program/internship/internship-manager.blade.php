@@ -12,7 +12,7 @@
         <x-mary-menu-item
             :title="__('common.actions.import')"
             icon="o-arrow-up-tray"
-            onclick="document.getElementById('import-csv').click()"
+            @click="document.getElementById('import-csv').click()"
         />
         <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
         <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />

@@ -5,9 +5,11 @@
     'showUser' => true,
 ])
 
-<div {{ $attributes->merge([
-    'class' => 'flex items-center gap-2 sm:gap-3 lg:gap-4',
-]) }}>
+<div {{
+    $attributes->merge([
+        'class' => 'flex items-center gap-2 sm:gap-3 lg:gap-4',
+    ])
+}}>
     {{-- Theme Switcher --}}
     @if ($showTheme)
         <div class="bg-base-200/50 border-base-content/5 hidden items-center gap-1 rounded-xl border p-1 md:flex">
@@ -46,15 +48,20 @@
                         <p class="text-base-content/50 truncate text-xs">{{ auth()->user()->email }}</p>
                     </div>
 
-                    <x-mary-menu-item class="rounded-lg py-2 !text-sm" :title="__('profile.title')" icon="o-user"
-                        link="{{ route('profile') }}" wire:navigate />
+                    <x-mary-menu-item
+                        class="rounded-lg py-2 !text-sm"
+                        :title="__('profile.title')"
+                        icon="o-user"
+                        link="{{ route('profile') }}"
+                        wire:navigate
+                    />
 
-                    <x-mary-menu-item class="text-error hover:bg-error/10 rounded-lg py-2 !text-sm" :title="__('auth.logout')"
+                    <x-mary-menu-item
+                        class="text-error hover:bg-error/10 rounded-lg py-2 !text-sm"
+                        :title="__('auth.logout')"
                         icon="o-power"
-                        onclick="
-                            event.preventDefault()
-                            document.getElementById('logout-form').submit()
-                        " />
+                        @click.prevent="document.getElementById('logout-form').submit()"
+                    />
 
                     <form class="hidden" id="logout-form" action="{{ route('logout') }}" method="POST">
                         @csrf

@@ -191,7 +191,7 @@
             <x-mary-card class="bg-base-100 border-base-content/10 border">
                 <div class="flex flex-col items-center py-6">
                     <div class="group relative mb-3">
-                        <div class="relative cursor-pointer" onclick="document.getElementById('avatar-upload').click()">
+                        <div class="relative cursor-pointer" @click="document.getElementById('avatar-upload').click()">
                             <input
                                 id="avatar-upload"
                                 type="file"
