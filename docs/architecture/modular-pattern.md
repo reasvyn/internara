@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current modular architecture (18 modules, colocation, Action Triad, module config discovery)
+> **Last updated:** 2026-08-23 **Changes:** added §1.6 Single Responsibility & Modularity Rules — canonical SRP/modularity rule set with per-unit boundary table
 
 ## Description
 
@@ -34,6 +34,33 @@ fire-and-forget, core contracts for broad abstractions. See:
 
 Three-phase migration: `execute(array $data)` → `execute(Data|array $data)` → `execute(Data $data)`.
 See: `docs/adr/adr-gradual-migration.md`.
+
+### 1.6 Single Responsibility & Modularity Rules
+
+Every unit has exactly one responsibility and one reason to change; every dependency crosses at
+most one boundary downward. This section is the canonical reference for SRP and modularity rules —
+other docs link here, never duplicate. Enforced by `scripts/scan_class_contracts.py` and
+`scripts/scan_violations.py`.
+
+| Unit                | One responsibility                  | Boundary rules                                                                                              |
+| ------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Module              | One business domain                 | Owns its full stack (Actions, Entities, Models, Livewire, Policies); other modules reach it only via its public surface — Actions, contracts, events (see 1.4) |
+| Command/Read Action | ONE business operation or query     | Single public `execute()`; DTO for 3+ params (C7); never a second copy of an existing operation             |
+| Process Action      | ONE multi-step workflow             | Orchestrates Command/Read Actions; no inline business rules                                                 |
+| Entity              | Business invariants of ONE concept  | `final readonly`, pure — no Action/Service/Livewire imports (C5)                                            |
+| DTO                 | Data of ONE operation               | Scalars only — no Model/Entity imports (C6)                                                                 |
+| Model               | Persistence of ONE table            | No business rules; bridges to its Entity via contract                                                       |
+| Livewire component  | ONE screen or widget                | Thin: validation + flash only; delegates mutations to Actions (C1)                                          |
+| Event / Listener    | ONE occurrence / ONE reaction       | Side effects live here, not in the dispatching Action beyond `dispatchEvent()`                              |
+
+Prose rules:
+
+- **Colocation over coupling** — code for a domain lives inside its module; code goes to Core only
+  when 2+ modules need it, never into cross-module "Utils" grab-bags.
+- **Downward-only dependencies** — Core imports nothing business; business modules never import
+  each other's internals (4-layer rule).
+- **Extraction bias** — when a unit grows past its single responsibility, extract smaller named
+  units instead of accumulating branches (DRY-first clean code).
 
 ---
 
