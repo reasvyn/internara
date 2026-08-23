@@ -1,6 +1,6 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Entities, Policies, Livewire Components, Forms, Events, Services, Notifications, Listeners, Console Commands, Pulse Recorders, HTTP Controllers, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-23 **Changes:** removed ReadBackupHistoryAction row — deleted as duplicate of BackupManager table pipeline
 
 ## Description
 
@@ -25,7 +25,6 @@ logging, Pulse observability, and GDPR compliance.
 | `Backups/Actions/CreateBackupAction.php`             | `CreateBackupAction`        | `BaseCommandAction` |
 | `Backups/Actions/DeleteBackupAction.php`             | `DeleteBackupAction`        | `BaseCommandAction` |
 | `Backups/Actions/CleanupBackupsAction.php`           | `CleanupBackupsAction`      | `BaseCommandAction` |
-| `Backups/Actions/ReadBackupHistoryAction.php`        | `ReadBackupHistoryAction`   | `BaseReadAction`    |
 | `Backups/Actions/ReadBackupStatsAction.php`          | `ReadBackupStatsAction`     | `BaseReadAction`    |
 
 ---

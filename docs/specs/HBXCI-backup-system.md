@@ -1,9 +1,7 @@
 # Backup System — Database & Storage Backup, Restore, and Retention
 
 > **Spec ID:** HBXCI
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> backup creation (database, storage, combined), backup runner with multi-driver support, retention
-> cleanup, CLI command, Livewire management UI, admin-only authorization, and failure notifications
+> **Last updated:** 2026-08-23 **Changes:** FR-R1–R4 retargeted to BackupManager pattern — ReadBackupHistoryAction deleted as duplicate dead code (decision recorded)
 
 ## Description
 
@@ -218,14 +216,20 @@ never do.
 | FR-D3 | `DeleteBackupAction::execute(Backup)` must delete the physical file via `BackupRunner::deleteFile()` if `file_path` is set, then delete the database record within a transaction |
 | FR-D4 | `DeleteBackupAction::execute(Backup)` must log `backup_deleted` with type and file_size |
 
-### Actions — ReadBackupHistoryAction
+### Backup History — BackupManager
+
+> **Decision (2026-08-23):** history is served by the `BackupManager` Livewire component through
+> the standard `BaseRecordManager` pipeline. A dedicated `ReadBackupHistoryAction` was deleted —
+> it duplicated the generic table query and could not integrate with `rows()` (Builder pipeline
+> with search/sorting/per-page), so wiring it would have broken base functionality. The original
+> FR-R1–R4 guarantees are preserved by the component pattern.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-R1 | `ReadBackupHistoryAction` must extend `BaseReadAction` and accept `Backup` model via constructor injection |
-| FR-R2 | `ReadBackupHistoryAction::execute(int $perPage = 20, ?string $type = null, ?string $status = null)` must return a `LengthAwarePaginator` |
-| FR-R3 | `ReadBackupHistoryAction` must eager-load the `creator` relationship |
-| FR-R4 | `ReadBackupHistoryAction` must apply `type` and `status` filters conditionally when provided |
+| FR-R1 | Backup history is served by `BackupManager` (`BaseRecordManager`): `query()` returns the `Backup` builder |
+| FR-R2 | History is paginated as a `LengthAwarePaginator` with per-page options via `BaseRecordManager::rows()` |
+| FR-R3 | `query()` must eager-load the `creator` relationship |
+| FR-R4 | `applyFilters()` must apply `type` and `status` filters conditionally when provided |
 
 ### Actions — ReadBackupStatsAction
 
@@ -326,7 +330,7 @@ never do.
 | ----- | ----------- |
 | NFR-P1 | `BackupRunner::runDatabaseDump()` must complete within 60 seconds for databases up to 500 MB |
 | NFR-P2 | `ReadBackupStatsAction::execute()` must complete within 100ms (3 indexed COUNT queries + 1 indexed latest query) |
-| NFR-P3 | `ReadBackupHistoryAction::execute()` paginated query must complete within 200ms for up to 1,000 backup records |
+| NFR-P3 | Backup history paginated query must complete within 200ms for up to 1,000 backup records |
 | NFR-S1 | All backup operations must be restricted to admin users via `BackupPolicy` (→ FR-P1 through FR-P5) |
 | NFR-S2 | `BackupRunner::deleteFile()` must validate that the file path resolves within the backup directory to prevent path traversal deletion |
 | NFR-S3 | Database credentials must never appear in log output — `BackupRunner` writes them to temporary files with `chmod 0600` and deletes them after use |
@@ -459,14 +463,23 @@ final class DeleteBackupAction extends BaseCommandAction
 }
 ```
 
-### 6.8 ReadBackupHistoryAction
+### 6.8 BackupManager History Query
 
 ```php
-// app/SysAdmin/Backups/Actions/ReadBackupHistoryAction.php (24 lines)
-final class ReadBackupHistoryAction extends BaseReadAction
+// app/SysAdmin/Backups/Livewire/BackupManager.php
+final class BackupManager extends BaseRecordManager
 {
-    public function __construct(protected readonly Backup $model) {}
-    public function execute(int $perPage = 20, ?string $type = null, ?string $status = null): LengthAwarePaginator;
+    protected function query(): Builder
+    {
+        return Backup::query()->with('creator');
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query
+            ->when($this->filterType, fn ($q, $t) => $q->where('type', $t))
+            ->when($this->filterStatus, fn ($q, $s) => $q->where('status', $s));
+    }
 }
 ```
 
