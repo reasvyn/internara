@@ -16,6 +16,7 @@ final readonly class SchoolEntity extends BaseEntity
         'email' => 'school.email',
         'address' => 'school.address',
         'phone' => 'school.phone',
+        'fax' => 'school.fax',
         'website' => 'school.website',
         'principal_name' => 'school.principal_name',
     ];
@@ -26,6 +27,7 @@ final readonly class SchoolEntity extends BaseEntity
         private string $email,
         private string $address = '',
         private string $phone = '',
+        private string $fax = '',
         private string $website = '',
         private string $principalName = '',
     ) {}
@@ -50,6 +52,7 @@ final readonly class SchoolEntity extends BaseEntity
             email: (string) ($values['school.email'] ?? ''),
             address: (string) ($values['school.address'] ?? ''),
             phone: (string) ($values['school.phone'] ?? ''),
+            fax: (string) ($values['school.fax'] ?? ''),
             website: (string) ($values['school.website'] ?? ''),
             principalName: (string) ($values['school.principal_name'] ?? ''),
         );
@@ -78,6 +81,11 @@ final readonly class SchoolEntity extends BaseEntity
     public function phone(): string
     {
         return $this->phone;
+    }
+
+    public function fax(): string
+    {
+        return $this->fax;
     }
 
     public function website(): string

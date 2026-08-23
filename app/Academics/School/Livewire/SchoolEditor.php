@@ -57,10 +57,12 @@ class SchoolEditor extends BaseFormView
         $this->authorize('update', Setting::class);
         $this->validate();
 
-        $action->execute(data: $this->form->toPayload());
-
-        $this->form->loadFromEntity();
-        flash()->success(__('school.save_success'));
+        $this->handleSave(function () use ($action): void {
+            $action->execute(data: $this->form->toPayload());
+            $this->form->loadFromEntity();
+            flash()->success(__('school.save_success'));
+            $this->dispatch('saved');
+        });
     }
 
     public function logoPreviewUrl(): ?string

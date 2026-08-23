@@ -18,6 +18,7 @@
                         class="space-y-5"
                         x-data="{ isDirty: false }"
                         @input="isDirty = true"
+                        x-on:submit="isDirty = false"
                         x-init="
                             $wire.on('saved', () => (isDirty = false));
                             window.addEventListener('beforeunload', (e) => {
