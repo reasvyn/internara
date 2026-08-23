@@ -206,6 +206,16 @@
                         wire:click="askChangeStatus('{{ $user->id }}')"
                         :aria-label="__('user.manager.change_status')"
                     />
+                    @if (in_array($user->status?->value, ['verified', 'suspended']))
+                        <x-mary-button
+                            icon="o-arrow-path"
+                            class="btn-ghost btn-sm"
+                            wire:click="toggleStatus('{{ $user->id }}')"
+                            :aria-label="__('user.manager.toggle_status')"
+                            :tooltip="__('user.manager.toggle_status')"
+                            spinner="toggleStatus"
+                        />
+                    @endif
                     <x-mary-button
                         icon="o-key"
                         class="btn-ghost btn-sm text-primary"
