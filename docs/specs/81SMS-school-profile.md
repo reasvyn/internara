@@ -1,8 +1,7 @@
 # School Profile — Settings-Based Entity Management
 
 > **Spec ID:** 81SMS
-> **Last updated:** 2026-08-18 **Changes:** review — cross-note email required-at-setup vs
-> nullable-in-editor (see setup-wizard.md DD-5)
+> **Last updated:** 2026-08-24 **Changes:** fix — `SchoolEditor` unsaved guard `beforeunload` (FR-SP20a, NFR-U5) + add `fax` to `SchoolEntity` (8 fields, sync with `SchoolForm`); `SchoolForm::loadFromEntity` fax handling
 
 ## Description
 
@@ -17,10 +16,10 @@ Departments and academic years are defined in [department-management.md](4HWSB-d
 
 ### PS-1 — School Profile Without a Dedicated Model
 
-The school profile (name, institutional code, email, address, phone, website, principal name)
+The school profile (name, institutional code, email, address, phone, fax, website, principal name)
 is conceptually a single entity, but has no dedicated database table. This is intentional: the
 Settings module already provides caching, validation, type casting, and observer-based cache
-invalidation. Creating a `schools` table for 7 string columns would duplicate this infrastructure
+invalidation. Creating a `schools` table for 8 string columns would duplicate this infrastructure
 and fragment the Settings resolution chain — every place that reads `school.name` via the
 `setting()` helper would break.
 
@@ -33,7 +32,7 @@ the Settings store and provides named accessors — otherwise every consumer wou
 
 ### PS-3 — Atomic Save Across Multiple Setting Keys
 
-A school profile update touches 7+ keys. Without atomic writes, a failure mid-save could leave
+A school profile update touches 8 keys. Without atomic writes, a failure mid-save could leave
 the profile partially updated — name changed but email stale. The system must ensure all keys
 are written or none are.
 
@@ -58,7 +57,7 @@ profile save flow.
 | ID  | Goal |
 | --- | ---- |
 | G1  | Provide school profile management via Settings infrastructure (no dedicated model) |
-| G2  | Deliver typed `SchoolEntity` value object with named accessors for all 7 properties |
+| G2  | Deliver typed `SchoolEntity` value object with named accessors for all 8 properties |
 | G3  | Atomic save of all school profile fields via `BatchSetSettingAction` transaction |
 | G4  | Synchronous cache invalidation of `school_entity` key after profile save |
 | G5  | Logo upload, storage, and removal via Spatie Media Library |
@@ -90,15 +89,15 @@ profile save flow.
 1. Admin navigates to Settings → School Profile (`/admin/school`)
 2. `SchoolEditor` Livewire component mounts, authorizes via `SettingPolicy`
 3. `SchoolForm::loadFromEntity()` reads `SchoolEntity::get()` and populates form fields
-4. Admin updates one or more fields: name, institutional code, email, address, phone, website, principal name
-5. Admin clicks Save
-6. `SchoolEditor::save()` validates form, calls `SaveSchoolProfileAction::execute(data: form.toPayload())`
-7. `SaveSchoolProfileAction` executes within a transaction:
-   - Maps each field to `SettingEntryData(key: "school.{key}", value: value)`
-   - Calls `BatchSetSettingAction` for atomic upsert
-   - Forgets `school_entity` cache key
-8. Form reloads from fresh `SchoolEntity::get()`
-9. Flash message confirms save
+ 4. Admin updates one or more fields: name, institutional code, email, address, phone, fax, website, principal name
+ 5. Admin clicks Save — `beforeunload` unsaved guard is cleared *before* submit (NFR-U5) so save itself does not trigger dialog
+ 6. `SchoolEditor::save()` validates form, calls `SaveSchoolProfileAction::execute(data: form.toPayload())` via `BaseFormView::handleSave()` and on success `dispatch('saved')` to reset Alpine `isDirty`
+ 7. `SaveSchoolProfileAction` executes within a transaction:
+    - Maps each field to `SettingEntryData(key: "school.{key}", value: value)`
+    - Calls `BatchSetSettingAction` for atomic upsert
+    - Forgets `school_entity` cache key
+ 8. Form reloads from fresh `SchoolEntity::get()` (including `fax`)
+ 9. Flash message confirms save; `isDirty` is `false` both in PHP (`handleSave`) and Alpine (`saved` event)
 **Postconditions:** All school profile fields updated atomically, cache invalidated, UI refreshed
 
 ### UC-2 — Admin Uploads School Logo
@@ -134,12 +133,12 @@ profile save flow.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-SP1 | `SchoolEntity` must be a `final readonly class` extending `BaseEntity` with 7 typed `string` properties |
-| FR-SP2 | `SchoolEntity` must define a `KEYS` constant mapping property names to `school.*` setting keys |
-| FR-SP3 | `SchoolEntity::get()` must read all 7 keys from Settings store via `Settings::get()` and return a populated instance |
+| FR-SP1 | `SchoolEntity` must be a `final readonly class` extending `BaseEntity` with 8 typed `string` properties (including `fax`) |
+| FR-SP2 | `SchoolEntity` must define a `KEYS` constant mapping property names to `school.*` setting keys (8 entries) |
+| FR-SP3 | `SchoolEntity::get()` must read all 8 keys from Settings store via `Settings::get()` and return a populated instance |
 | FR-SP4 | `SchoolEntity::keys()` must return the `KEYS` constant array for iteration by setup and other consumers |
 | FR-SP5 | `SchoolEntity::fromModel()` must delegate to `SchoolEntity::get()` (no Model dependency) |
-| FR-SP6 | `SchoolEntity` must provide named accessors: `name()`, `institutionalCode()`, `email()`, `address()`, `phone()`, `website()`, `principalName()` |
+| FR-SP6 | `SchoolEntity` must provide named accessors: `name()`, `institutionalCode()`, `email()`, `address()`, `phone()`, `fax()`, `website()`, `principalName()` |
 
 ### Save Action
 
@@ -159,8 +158,8 @@ profile save flow.
 | ---- | ----------- |
 | FR-SP14 | `SchoolForm` must extend Livewire `Form` with 8 properties: `name`, `institutional_code`, `email`, `phone`, `fax`, `address`, `website`, `principal_name` |
 | FR-SP15 | `rules()` must validate: `name` required/max:255, others nullable with type-specific rules (email, url, max) |
-| FR-SP16 | `loadFromEntity()` must read `SchoolEntity::get()` and populate all form properties |
-| FR-SP17 | `toPayload()` must return associative array mapping form fields to setting key suffixes |
+| FR-SP16 | `loadFromEntity()` must read `SchoolEntity::get()` and populate **all 8** form properties (including `fax` via `fax()` accessor) |
+| FR-SP17 | `toPayload()` must return associative array mapping form fields to setting key suffixes (8 keys) |
 
 ### Livewire Component
 
@@ -168,7 +167,8 @@ profile save flow.
 | ---- | ----------- |
 | FR-SP18 | `SchoolEditor` must extend `BaseFormView` with `WithFileUploads` trait |
 | FR-SP19 | `mount()` must authorize via `Setting::class` policy and load form from entity |
-| FR-SP20 | `save()` must authorize, validate, call `SaveSchoolProfileAction`, reload form, flash success |
+| FR-SP20 | `save()` must authorize, validate, call `SaveSchoolProfileAction` **via `BaseFormView::handleSave()`**, reload form from fresh entity, flash success, and `dispatch('saved')` to reset Alpine `isDirty` |
+| FR-SP20a | `SchoolEditor` must not trigger `beforeunload` unsaved dialog on save: Blade `form` must clear Alpine `isDirty` on submit (`x-on:submit="isDirty = false"`) before `wire:submit` dispatch, and `saved` event must reset it after success (FR-SP20) |
 | FR-SP21 | `updatedLogoFile()` must authorize, validate (`image|max:2048`), upload, persist URL, flash success |
 | FR-SP22 | `confirmAction()` must authorize, remove logo via `RemoveBrandAssetAction`, forget setting, flash |
 | FR-SP23 | `logoPreviewUrl()` must return temporary URL for pending upload or current logo URL |
@@ -201,10 +201,11 @@ profile save flow.
 | NFR-S4 | Logo removal must delete from Spatie Media Library and clear setting key atomically |
 | NFR-R1 | Profile save must be atomic — all 7 keys written or none (`BatchSetSettingAction` transaction) |
 | NFR-R2 | Cache invalidation must be synchronous (not queued) to prevent stale reads |
-| NFR-U1 | Form must display all 7 fields with appropriate input types (text, email, URL) |
+| NFR-U1 | Form must display all 8 fields with appropriate input types (text, email, URL, fax) |
 | NFR-U2 | Logo upload must show live preview without page reload |
 | NFR-U3 | Logo removal must require confirmation dialog before executing |
 | NFR-U4 | Flash messages must confirm save, logo upload, and logo removal actions |
+| NFR-U5 | Unsaved-changes guard (`beforeunload` via Alpine `isDirty`) must not block save: `isDirty` is set on `@input`, cleared on `x-on:submit` (before request) and on `$wire.on('saved')` (after success); dialog only on actual navigation away with dirty state |
 | NFR-A1 | All form inputs must have associated `<label>` elements (WCAG 2.1 Level AA) |
 | NFR-A2 | Logo upload field must include alt text for screen readers |
 | NFR-A3 | Flash messages must be announced via `aria-live` region |
@@ -228,6 +229,7 @@ final readonly class SchoolEntity extends BaseEntity
         'email'              => 'school.email',
         'address'            => 'school.address',
         'phone'              => 'school.phone',
+        'fax'                => 'school.fax',
         'website'            => 'school.website',
         'principal_name'     => 'school.principal_name',
     ];
@@ -238,6 +240,7 @@ final readonly class SchoolEntity extends BaseEntity
         private string $email,
         private string $address = '',
         private string $phone = '',
+        private string $fax = '',
         private string $website = '',
         private string $principalName = '',
     ) {}
@@ -250,6 +253,7 @@ final readonly class SchoolEntity extends BaseEntity
     public function email(): string;
     public function address(): string;
     public function phone(): string;
+    public function fax(): string;
     public function website(): string;
     public function principalName(): string;
 }
@@ -343,6 +347,7 @@ class SchoolEditor extends BaseFormView
 | `school.email` | string | `''` |
 | `school.address` | string | `''` |
 | `school.phone` | string | `''` |
+| `school.fax` | string | `''` |
 | `school.website` | string | `''` |
 | `school.principal_name` | string | `''` |
 
@@ -370,7 +375,7 @@ Middleware: auth, role:super_admin|admin
 not a dedicated `School` model/table.
 **Rationale:** The Settings module already provides caching, validation, type casting, and
 observer-based invalidation. A dedicated School model would duplicate this infrastructure for
-7 string columns. The `SchoolEntity` class provides typed access without Eloquent overhead.
+8 string columns. The `SchoolEntity` class provides typed access without Eloquent overhead.
 The `setting()` helper and `Settings::get()` resolution chain work seamlessly with `school.*`
 keys without any adapter layer.
 **Trade-off:** No Eloquent relationships (school → departments). Acceptable because school is a
@@ -418,7 +423,7 @@ Prevents ad-hoc key strings and enables bulk invalidation.
 | ------ | ------ |
 | School entity load (cache hit) | < 50ms |
 | School entity load (cache miss) | < 200ms |
-| Profile save (7 fields) | < 2s p95 |
+| Profile save (8 fields) | < 2s p95 |
 | Cache invalidation | < 10ms |
 | Atomic save | All fields saved or none |
 | Cache invalidation coverage | 100% of saves invalidate cache |
@@ -449,7 +454,7 @@ After implementing this spec, the system has the school's identity (name, NPSN, 
 
 ## Quick References
 
-- `app/Academics/School/Entities/SchoolEntity.php` — School profile value object (7 typed properties)
+- `app/Academics/School/Entities/SchoolEntity.php` — School profile value object (8 typed properties)
 - `app/Academics/School/Actions/SaveSchoolProfileAction.php` — Atomic save via BatchSetSettingAction
 - `app/Academics/School/Livewire/SchoolEditor.php` — Livewire component (form, logo upload, removal)
 - `app/Academics/School/Livewire/Forms/SchoolForm.php` — Form object with validation rules

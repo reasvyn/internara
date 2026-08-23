@@ -47,6 +47,7 @@ class SchoolForm extends Form
         $this->institutional_code = $entity->institutionalCode();
         $this->email = $entity->email();
         $this->phone = $entity->phone();
+        $this->fax = $entity->fax();
         $this->address = $entity->address();
         $this->website = $entity->website();
         $this->principal_name = $entity->principalName();
