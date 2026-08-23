@@ -55,16 +55,41 @@
                             </td>
                             <td>
                                 @if (isset($existing[$registration->id]))
-                                    @if (! $existing[$registration->id]->is_verified)
+                                    @php($attendance = $existing[$registration->id])
+                                    @if (! $attendance->is_verified)
                                         <x-mary-button
                                             aria-label="{{ __('journals.verify') }}"
-                                            wire:click="verifyAttendance('{{ $existing[$registration->id]->id }}')"
+                                            wire:click="verifyAttendance('{{ $attendance->id }}')"
                                             icon="o-check"
                                             class="btn-xs btn-success"
                                         />
                                     @else
                                         <x-mary-icon name="o-check-badge" class="text-success" />
                                     @endif
+                                    @can('update', $attendance)
+                                        <select
+                                            class="select select-bordered select-xs ml-1 w-28 align-middle"
+                                            wire:change="updateAttendance('{{ $attendance->id }}', $event.target.value)"
+                                        >
+                                            @foreach ($statuses as $s)
+                                                <option
+                                                    value="{{ $s->value }}"
+                                                    @selected($attendance->status?->value === $s->value)
+                                                >
+                                                    {{ $s->label() }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    @endcan
+                                    @can('delete', $attendance)
+                                        <x-mary-button
+                                            aria-label="{{ __('common.actions.delete') }}"
+                                            wire:click="deleteAttendance('{{ $attendance->id }}')"
+                                            wire:confirm="{{ __('journals.attendance.confirm_delete') }}"
+                                            icon="o-trash"
+                                            class="btn-xs text-error"
+                                        />
+                                    @endcan
                                 @endif
                             </td>
                         </tr>

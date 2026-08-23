@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\AbsenceRequest\Actions\ProcessAbsenceAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\Journals\Attendance\Actions\CreateAttendanceAction;
+use App\Journals\Attendance\Actions\DeleteAttendanceAction;
+use App\Journals\Attendance\Actions\UpdateAttendanceAction;
 use App\Journals\Attendance\Actions\VerifyAttendanceAction;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -61,7 +65,7 @@ class AttendanceManager extends Component
         $this->validate([
             'date' => 'required|date',
             'records' => 'required|array|min:1',
-            'records.*.status' => 'required|string|in:present,late,early_out,absent,permission,sick',
+            'records.*.status' => 'required|'.$this->statusRule(),
         ]);
 
         $registrationIds = array_keys($this->records);
@@ -97,6 +101,37 @@ class AttendanceManager extends Component
     {
         $action->execute($log);
         flash()->success(__('journals.attendance.verified'));
+    }
+
+    public function updateAttendance(string $id, string $status, UpdateAttendanceAction $action): void
+    {
+        $attendance = Attendance::findOrFail($id);
+
+        Validator::validate(['status' => $status], ['status' => $this->statusRule()]);
+
+        $this->authorize('update', $attendance);
+
+        try {
+            $action->execute($attendance, ['status' => $status]);
+            flash()->success(__('journals.attendance.updated'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+    }
+
+    public function deleteAttendance(string $id, DeleteAttendanceAction $action): void
+    {
+        $attendance = Attendance::findOrFail($id);
+
+        $this->authorize('delete', $attendance);
+
+        $action->execute($attendance);
+        flash()->success(__('journals.attendance.deleted'));
+    }
+
+    private function statusRule(): string
+    {
+        return 'in:'.implode(',', array_column(AttendanceStatus::cases(), 'value'));
     }
 
     public function approveAbsence(string $id, ProcessAbsenceAction $action): void
