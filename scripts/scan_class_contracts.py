@@ -96,7 +96,7 @@ RE_ACTION_CLASS = re.compile(
 )
 RE_EXECUTE_METHOD = re.compile(r"public\s+function\s+execute\s*\(")
 RE_HANDLE_METHOD = re.compile(r"public\s+function\s+handle\s*\(")
-RE_STATIC_DISPATCH = re.compile(r"(?:\w+::\s*dispatch\s*\(|\bEvent::\s*dispatch\s*\()")
+RE_STATIC_DISPATCH = re.compile(r"\b(\w+)::\s*dispatch\s*\(")
 
 
 def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding]:
@@ -145,15 +145,19 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
             ))
 
         # Check for static event dispatch — must use $this->dispatchEvent()
-        dispatch_match = RE_STATIC_DISPATCH.search(content)
-        if dispatch_match:
+        # Queued jobs use the same ::dispatch() syntax but are not events.
+        dispatch_matches = [
+            m for m in RE_STATIC_DISPATCH.finditer(content)
+            if not m.group(1).endswith("Job")
+        ]
+        if dispatch_matches:
             findings.append(Finding(
                 id=f"ACT-{len(findings)+1:03d}",
                 rule="ACTION_STATIC_DISPATCH",
                 severity="high",
                 category="architecture",
                 file=rel,
-                line=line_of(content, dispatch_match.start()),
+                line=line_of(content, dispatch_matches[0].start()),
                 message=f"Action {class_name} uses static event dispatch — use $this->dispatchEvent()",
                 suggestion="Replace {Event}::dispatch(...) with $this->dispatchEvent(new {Event}(...))",
                 reference="docs/architecture/event-pattern.md#4b-basedispatch-event-deferred-dispatch",
