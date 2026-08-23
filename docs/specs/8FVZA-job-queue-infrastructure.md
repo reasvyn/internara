@@ -1,7 +1,7 @@
 # Job & Queue Infrastructure — Async Processing
 
 > **Spec ID:** 8FVZA
-> **Last updated:** 2026-08-23 **Changes:** removed SendAnnouncementJob from inventory — deleted as orphaned dead code (superseded by queued notifications per 3S55V)
+> **Last updated:** 2026-08-23 **Changes:** inventory sync — removed SendAnnouncementJob (queued notifications per 3S55V) and CompileLogbookReportJob (synchronous Read Action per 1KSWL FR-LB8/NFR-P3)
 
 ## Description
 
@@ -164,13 +164,15 @@ class BatchIssueCertificatesJob implements ShouldQueue
 |-----|--------|---------|
 | `BatchIssueCertificatesJob` | Certification | Batch certificate issuance |
 | `GenerateDocumentJob` | Document | Async PDF generation (batch pipeline, 7H5D6 FR-GW1) |
-| `CompileLogbookReportJob` | Journals | Logbook report compilation |
 | `ArchiveStudentAccountsJob` | User | Batch account archival |
 
 > **Removed:** `SendAnnouncementJob` was deleted — announcement broadcasting uses per-recipient
 > queued notifications (`AnnouncementNotification implements ShouldQueue`, 3S55V FR-N1/NFR-P2) and
 > scheduled publishing deliberately uses the `announcements:publish` scheduler command instead of
 > delayed jobs (3S55V §Design).
+> **Removed:** `CompileLogbookReportJob` was deleted — logbook report compilation is a synchronous
+> Read Action with a <10s performance budget for 90 entries (1KSWL FR-LB8, NFR-P3); no queued
+> compilation is required by the spec.
 
 ---
 
@@ -247,7 +249,6 @@ After implementing this spec, the system has async job processing via Laravel qu
 - `app/{Module}/Jobs/` — Queued jobs colocated with their owning module:
   - `app/Document/Jobs/GenerateDocumentJob.php`
   - `app/User/Jobs/ArchiveStudentAccountsJob.php`
-  - `app/Journals/Jobs/CompileLogbookReportJob.php`
   - `app/Certification/Jobs/BatchIssueCertificatesJob.php`
 - `config/queue.php` — Queue driver configuration
 - `docs/architecture/event-pattern.md` — Event dispatch (for comparison)

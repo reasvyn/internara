@@ -52,6 +52,7 @@ test('1KSWL-FR-AT10: attendance manager scopes records to the user supervised re
     $this->actingAs($teacher);
 
     Livewire::test(AttendanceManager::class)
+        ->set('date', '2026-08-19')
         ->assertViewHas('existing', function (Collection $existing) use ($registrationA, $registrationB) {
             return $existing->has($registrationA->id) && ! $existing->has($registrationB->id);
         });
