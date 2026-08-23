@@ -1,7 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
-> `test("{SpecID}-{ReqID}: Test description...")` (§4 naming table, §12.2)
+> **Last updated:** 2026-08-23 **Changes:** §1 — added SRP & modularity rules row pointing to Modular Pattern §1.6
 
 ## Description
 
@@ -98,6 +97,7 @@ doc rather than duplicating conventions here:
 | Convention                          | Reference                                                                  |
 | ----------------------------------- | -------------------------------------------------------------------------- |
 | File structure, module organization | [Modular Pattern](architecture/modular-pattern.md)                         |
+| SRP & modularity rules              | [Modular Pattern §1.6](architecture/modular-pattern.md#16-single-responsibility--modularity-rules) |
 | Actions (Command / Read / Process)  | [Action Pattern](architecture/action-pattern.md)                           |
 | Models & relationships              | [Model Pattern](architecture/model-pattern.md)                             |
 | Entities (business rules)           | [Entity Pattern](architecture/entity-pattern.md)                           |

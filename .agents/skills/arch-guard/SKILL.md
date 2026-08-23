@@ -43,8 +43,9 @@ scripts blindly on a full-module set without batching.
 
 This skill is the **Verify-phase quality gate**. Load the rule asset only when the audit reaches
 that concern: invariants, class contracts, naming, security, performance, the four-layer procedure,
-or output/integration. Every check resolves against `docs/conventions.md` and
-`docs/architecture/{pattern}-pattern.md` as the ground truth.
+or output/integration. Every check resolves against `docs/conventions.md`,
+`docs/architecture/{pattern}-pattern.md`, and `docs/architecture/modular-pattern.md` §1.6 (SRP &
+modularity rules) as the ground truth.
 
 **Spec-first:** this skill is a quality gate, not a source of intent. It only verifies that code
 conforms to the governing spec's requirements (FR/NFR/UC IDs). If an audit surfaces a behavior

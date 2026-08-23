@@ -1,6 +1,6 @@
 # Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Action Triad (Command/Read/Process, BaseAction, ActionResponse, C1 no Model mutations in Livewire, C7 DTO for 3+ params)
+> **Last updated:** 2026-08-23 **Changes:** Intent — cross-reference to Modular Pattern §1.6 for class-level SRP & modularity boundaries
 
 ## Description
 
@@ -14,7 +14,8 @@ logging protocol, event dispatch, validation strategy, and naming conventions.
 Replace traditional Service classes (god objects with multiple public methods) with three distinct
 action types, each owning exactly one business operation. The triad mirrors CQRS at the class level
 — separate mutation paths from read paths — without the infrastructure cost of separate databases or
-event sourcing.
+event sourcing. Class-level SRP and modularity boundaries are defined canonically in
+[Modular Pattern §1.6](modular-pattern.md#16-single-responsibility--modularity-rules).
 
 ### The Three Types
 

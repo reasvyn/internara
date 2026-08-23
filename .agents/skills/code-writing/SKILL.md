@@ -62,6 +62,7 @@ arch-guard scanners (`scripts/scan_*.py`) on the touched code (see the `arch-gua
 | Full conventions | `docs/conventions.md` |
 | Architecture overview | `docs/architecture.md` |
 | Action Triad pattern | `docs/architecture/action-pattern.md` |
+| SRP & modularity rules | `docs/architecture/modular-pattern.md` §1.6 |
 | Entity pattern | `docs/architecture/entity-pattern.md` |
 | DTO/Data pattern | `docs/architecture/data-pattern.md` |
 | Model pattern | `docs/architecture/model-pattern.md` |

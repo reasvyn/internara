@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-18 **Changes:** markdown excluded from prettier checks — specs/docs use deliberate compact tables (issue #384) — docs gate updated to visual inspection only
+> **Last updated:** 2026-08-23 **Changes:** architecture table — added SRP & modularity rules row (Modular Pattern §1.6)
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -347,6 +347,7 @@ Full spec list with build order: `docs/specs/index.md`
 | Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/context/index.md` |
 | 4-Layer model | `docs/architecture.md` §4-Layer Model |
 | Action Triad (Command/Read/Process) | `docs/architecture/action-pattern.md` |
+| SRP & modularity rules | `docs/architecture/modular-pattern.md` §1.6 |
 | Entity contracts (`final readonly`) | `docs/architecture/entity-pattern.md` |
 | DTO/Data contracts (`BaseData`) | `docs/architecture/data-pattern.md` |
 | Model contracts (`#[Fillable]`, entity bridge) | `docs/architecture/model-pattern.md` |
