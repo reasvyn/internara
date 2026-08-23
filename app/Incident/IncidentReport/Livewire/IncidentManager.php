@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Incident\IncidentReport\Actions\ResolveIncidentAction;
+use App\Incident\IncidentReport\Actions\UpdateIncidentAction;
 use App\Incident\IncidentReport\Enums\IncidentSeverity;
 use App\Incident\IncidentReport\Enums\IncidentStatus;
 use App\Incident\IncidentReport\Enums\IncidentType;
@@ -23,6 +25,19 @@ class IncidentManager extends BaseRecordManager
     public array $resolveData = [
         'resolution_notes' => '',
         'status' => 'resolved',
+    ];
+
+    public bool $showEditModal = false;
+
+    public ?string $editingId = null;
+
+    public array $editData = [
+        'incident_date' => '',
+        'type' => '',
+        'severity' => '',
+        'description' => '',
+        'location' => '',
+        'action_taken' => '',
     ];
 
     public function headers(): array
@@ -96,6 +111,46 @@ class IncidentManager extends BaseRecordManager
         flash()->success(__('incident.resolve_success'));
         $this->showResolveModal = false;
         $this->resolvingId = null;
+    }
+
+    public function edit(IncidentReport $incident): void
+    {
+        $this->resetErrorBag();
+        $this->editingId = $incident->id;
+        $this->editData = [
+            'incident_date' => $incident->incident_date?->toDateTimeString() ?? '',
+            'type' => $incident->type->value,
+            'severity' => $incident->severity->value,
+            'description' => $incident->description ?? '',
+            'location' => $incident->location ?? '',
+            'action_taken' => $incident->action_taken ?? '',
+        ];
+        $this->showEditModal = true;
+    }
+
+    public function saveEdit(UpdateIncidentAction $action): void
+    {
+        $this->validate([
+            'editData.incident_date' => ['required', 'date'],
+            'editData.type' => ['required', 'in:accident,safety_violation,harassment,disciplinary,other'],
+            'editData.severity' => ['required', 'in:low,medium,high,critical'],
+            'editData.description' => ['required', 'string', 'max:5000'],
+            'editData.location' => ['nullable', 'string', 'max:255'],
+            'editData.action_taken' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $incident = IncidentReport::findOrFail($this->editingId);
+
+        $this->authorize('update', $incident);
+
+        try {
+            $action->execute($incident, $this->editData);
+            flash()->success(__('incident.update_success'));
+            $this->showEditModal = false;
+            $this->editingId = null;
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     #[Layout('core::layouts.app')]
