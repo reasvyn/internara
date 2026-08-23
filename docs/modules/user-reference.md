@@ -1,8 +1,6 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-08-18 **Changes:** add GenerateAccountSlipBatchAction,
-> RenderAccountSlipAction to Actions; add User Data DTOs (UpdateProfileData, CreateUserData,
-> UpdateUserData, SetUserStatusData); move NotificationData entry to Core; spec-driven tests section
+> **Last updated:** 2026-08-24 **Changes:** sync — add `DispatchArchiveStudentAccountsAction` + `ArchiveStudentAccountsJob` (E1MSJ #400, Ba7c30); verify Actions/Jobs vs code
 
 ## Description
 
@@ -33,6 +31,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `AccountStatus/Actions/LockUserAccountAction.php`             | `LockUserAccountAction`            | `BaseCommandAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php`           | `UnlockUserAccountAction`          | `BaseCommandAction` |
 | `UserManagement/Actions/ArchiveStudentAccountsAction.php`     | `ArchiveStudentAccountsAction`     | `BaseCommandAction` |
+| `UserManagement/Actions/DispatchArchiveStudentAccountsAction.php` | `DispatchArchiveStudentAccountsAction` | `BaseCommandAction` |
 | `UserManagement/Actions/BatchDeleteUserAction.php`            | `BatchDeleteUserAction`            | `BaseCommandAction` |
 | `UserManagement/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseCommandAction` |
 | `UserManagement/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseCommandAction` |
@@ -46,6 +45,14 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `UserManagement/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseCommandAction` |
 | `UserManagement/Actions/ToggleUserStatusAction.php`           | `ToggleUserStatusAction`           | `BaseCommandAction` |
 | `UserManagement/Actions/UpdateUserAction.php`                 | `UpdateUserAction`                 | `BaseCommandAction` |
+
+---
+
+## Jobs
+
+| File                                | Class                       | Queue     | Purpose                                           |
+| ----------------------------------- | --------------------------- | --------- | ------------------------------------------------- |
+| `Jobs/ArchiveStudentAccountsJob.php` | `ArchiveStudentAccountsJob` | `default` | Queued batch archival for large cohorts >500 (E1MSJ NFR-R2, dispatched via `DispatchArchiveStudentAccountsAction`) |
 
 ---
 

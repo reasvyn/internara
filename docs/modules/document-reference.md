@@ -1,6 +1,6 @@
 # Document — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Policies, HTTP Controllers, Form Requests, Livewire, Support Services, Handbook Submodule, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-24 **Changes:** sync — add `GenerateDocumentJob` (documents queue, 7H5D6/ZT6VS); verify Jobs vs code
 
 ## Description
 
@@ -97,6 +97,14 @@ and compliance acknowledgements.
 
 Handbooks are stored in the shared `documents` table (category `handbook`); no separate
 migration or factory.
+
+---
+
+## Jobs
+
+| File                          | Class                 | Queue       | Purpose                                    |
+| ----------------------------- | --------------------- | ----------- | ------------------------------------------ |
+| `Jobs/GenerateDocumentJob.php` | `GenerateDocumentJob` | `documents` | Async PDF generation via `GenerateDocumentAction` (7H5D6 FR-GW1, ZT6VS) |
 
 ---
 

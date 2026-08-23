@@ -1,6 +1,6 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** add Data DTOs — `ActivateAccountData`, `RedeemRecoverySlipData`, `ResetPasswordData`
+> **Last updated:** 2026-08-24 **Changes:** sync — remove phantom `ResetUserPasswordAction` (deleted 2a5314, QLHDO audit; actual class is `ResetPasswordAction`)
 
 ## Description
 
@@ -20,7 +20,6 @@ permissions.
 | `Login/Actions/LoginAction.php`                          | `LoginAction`                 | `BaseCommandAction` |
 | `Password/Actions/ConfirmPasswordAction.php`             | `ConfirmPasswordAction`       | `BaseCommandAction` |
 | `Password/Actions/ResetPasswordAction.php`               | `ResetPasswordAction`         | `BaseCommandAction` |
-| `Password/Actions/ResetUserPasswordAction.php`           | `ResetUserPasswordAction`     | `BaseCommandAction` |
 | `Password/Actions/SendPasswordResetLinkAction.php`       | `SendPasswordResetLinkAction` | `BaseCommandAction` |
 | `Password/Actions/UpdateUserPasswordAction.php`          | `UpdateUserPasswordAction`    | `BaseCommandAction` |
 | `Account/Actions/ActivateAccountAction.php`              | `ActivateAccountAction`       | `BaseCommandAction` |
