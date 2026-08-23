@@ -10,9 +10,9 @@ use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Core\Support\CsvHandler;
 use App\User\Models\User;
-use App\User\UserManagement\Actions\ArchiveStudentAccountsAction;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
+use App\User\UserManagement\Actions\DispatchArchiveStudentAccountsAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
 use App\User\UserManagement\Data\CreateUserData;
 use App\User\UserManagement\Data\UpdateUserData;
@@ -196,9 +196,9 @@ class StudentManager extends BaseRecordManager
         $this->confirmActionType = '';
     }
 
-    public function archiveAllFiltered(ArchiveStudentAccountsAction $action): void
+    public function archiveAllFiltered(DispatchArchiveStudentAccountsAction $action): void
     {
-        $this->performMassAction('Archive Filtered', function ($query) use ($action) {
+        $this->performMassAction(__('user.manager.archive_filtered'), function ($query) use ($action) {
             $action->execute($query);
         });
     }
