@@ -1,7 +1,8 @@
 # Deploy Topology & Caveats — Operations Context
 
-> **Last updated:** 2026-08-16 **Changes:** initial — moved from `docs/known-issues.md`; deploy flow now
-> fires `build-and-deploy.yml` **directly** from the public `internara` repo (dispatch pipeline removed)
+> **Last updated:** 2026-08-23 **Changes:** added release-versioning caveat — `composer.json`
+> `version` MUST be bumped + tagged per release, else branch-push deploys resolve a stale tag
+> (v0.14.3 incident: VPS checked out v0.14.0 which predates `deploy.sh` → exit 127)
 
 ## Description
 
@@ -27,6 +28,7 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
 
 | Caveat | Detail |
 | ------ | ------ |
+| **Branch-push deploys resolve the tag from `composer.json`** | On `docker-deploy` branch pushes, `VERSION_TAG = v{composer.json version}`. The VPS then `git checkout` that tag — NOT the pushed commit. If `composer.json` is stale, the VPS checks out an old tag that may lack current scripts (v0.14.3 incident: checked out v0.14.0 → `.github/scripts/deploy.sh: No such file or directory` → exit 127). **Rule: every release must bump `composer.json` `version` AND create the matching `v*.*.*` tag on main before pushing `docker-deploy`.** Tag pushes (`v*.*.*`) bypass this and use the ref name directly. |
 | **`git reset --hard origin/docker-deploy` runs on every deploy** | Any manual change inside `~/apps/internara` on the VPS is silently destroyed. Never hand-edit files there; change the repo and push. |
 | **Health check gates success** | The deploy is green only when `https://internara.web.id` returns 200 within 60s. |
 | **Build context is a Git URL** | `GIT_URL=https://github.com/reasvyn/internara.git#docker-deploy` (VPS `.env`). The Dockerfile clones/bundles the repo at build time; changes in the running container do not persist unless stored in `storage_data` / `app_data` / `mysql_data` volumes. |
