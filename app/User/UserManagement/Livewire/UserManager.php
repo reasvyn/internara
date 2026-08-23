@@ -17,6 +17,7 @@ use App\User\UserManagement\Actions\DeleteUserAction;
 use App\User\UserManagement\Actions\ReadUserManagerStatsAction;
 use App\User\UserManagement\Actions\RevokeUserActivationTokensAction;
 use App\User\UserManagement\Actions\SetUserStatusAction;
+use App\User\UserManagement\Actions\ToggleUserStatusAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
 use App\User\UserManagement\Data\CreateUserData;
 use App\User\UserManagement\Data\SetUserStatusData;
@@ -299,6 +300,18 @@ class UserManager extends BaseRecordManager
                 newStatus: AccountStatus::ACTIVATED,
             ));
         });
+    }
+
+    public function toggleStatus(string $id, ToggleUserStatusAction $toggleAction): void
+    {
+        $user = User::findOrFail($id);
+
+        try {
+            $toggleAction->execute($user);
+            flash()->success(__('user.manager.status_changed'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
     }
 
     public function askChangeStatus(string $id): void
