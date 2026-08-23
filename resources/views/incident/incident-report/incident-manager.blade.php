@@ -65,6 +65,14 @@
 
             @scope('actions', $i)
                 <div class="flex justify-end gap-1">
+                    @can('update', $i)
+                        <x-mary-button
+                            icon="o-pencil"
+                            class="btn-ghost btn-sm text-primary"
+                            wire:click="edit('{{ $i->id }}')"
+                            :aria-label="__('common.actions.edit')"
+                        />
+                    @endcan
                     @if (! $i->status->isTerminal())
                         <x-mary-button
                             icon="o-check-circle"
@@ -105,6 +113,55 @@
                         class="btn-primary btn-sm"
                         type="submit"
                         spinner="saveResolve"
+                    />
+                </x-slot:actions>
+            </x-mary-form>
+        </x-mary-modal>
+
+        <x-mary-modal wire:model="showEditModal" :title="__('incident.edit_title')" class="backdrop-blur-sm">
+            <x-mary-form wire:submit="saveEdit">
+                <div class="space-y-5">
+                    <x-mary-input
+                        :label="__('incident.date')"
+                        type="datetime-local"
+                        wire:model="editData.incident_date"
+                    />
+                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <x-mary-select
+                            :label="__('incident.type')"
+                            wire:model="editData.type"
+                            :options="collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray()"
+                        />
+                        <x-mary-select
+                            :label="__('incident.severity')"
+                            wire:model="editData.severity"
+                            :options="collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+                        />
+                    </div>
+                    <x-mary-textarea :label="__('incident.description')" wire:model="editData.description" rows="4" />
+                    <x-mary-input
+                        :label="__('incident.location')"
+                        wire:model="editData.location"
+                        :placeholder="__('incident.location_placeholder')"
+                    />
+                    <x-mary-textarea
+                        :label="__('incident.action_taken')"
+                        wire:model="editData.action_taken"
+                        :placeholder="__('incident.action_taken_placeholder')"
+                        rows="3"
+                    />
+                </div>
+                <x-slot:actions>
+                    <x-mary-button
+                        :label="__('common.actions.cancel')"
+                        wire:click="$set('showEditModal', false)"
+                        class="btn-ghost btn-sm"
+                    />
+                    <x-mary-button
+                        :label="__('common.actions.save')"
+                        class="btn-primary btn-sm"
+                        type="submit"
+                        spinner="saveEdit"
                     />
                 </x-slot:actions>
             </x-mary-form>

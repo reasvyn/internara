@@ -33,6 +33,8 @@ return [
     'resolution_notes' => 'Catatan Penyelesaian',
     'resolution_notes_placeholder' => 'Jelaskan bagaimana insiden ini diselesaikan',
     'already_closed' => 'Insiden ini sudah ditutup.',
+    'edit_title' => 'Edit Insiden',
+    'update_success' => 'Insiden berhasil diperbarui.',
 
     'types' => [
         'accident' => 'Kecelakaan',
