@@ -15,7 +15,7 @@ upstream:
 
 # Sync Docs
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline sync rules (§0-§6, Key Rules, Verification Checklist) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-24 **Changes:** git-history window changed to minimum 7 days — extend to 14/30 days when needed (sync-workflow rule)
 
 > **Prerequisite:** Load `context-awareness` for doc navigation map.
 
@@ -41,8 +41,8 @@ below — nothing else.
 - Locate the governing spec and the agent guides/skills that reference it — `AGENTS.md`,
   `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/plans/` (a spec/code change must be
   mirrored there too)
-- Review git commits from the last 7 days (`git log --since="7 days ago" --oneline`,
-  `git log --since="7 days ago" --stat`) to focus on actual changes
+- Review git commits from at least the last 7 days (`git log --since="7 days ago" --oneline`,
+  `git log --since="7 days ago" --stat` — minimum window; extend to `14 days ago`/`30 days ago` if drift may be older)
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 
 ### Execute — Documentation Sync
