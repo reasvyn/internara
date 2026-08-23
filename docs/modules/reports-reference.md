@@ -1,6 +1,6 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, DTOs, Models, Enums, Events, HTTP Controllers, Observers, Routes, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-24 **Changes:** sync — add missing Actions `CaptureReportSnapshotAction`, `DeleteReportAction`, `DownloadReportAction` (S7 #320, #329; previously unverified)
 
 ## Description
 
@@ -19,6 +19,9 @@ finalization.
 | ---------------------------------------------- | --------------------------- | ------------------- |
 | `Report/Actions/CreateReportAction.php`        | `CreateReportAction`        | `BaseCommandAction` |
 | `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseCommandAction` |
+| `Report/Actions/CaptureReportSnapshotAction.php` | `CaptureReportSnapshotAction` | `BaseProcessAction` |
+| `Report/Actions/DeleteReportAction.php`        | `DeleteReportAction`        | `BaseCommandAction` |
+| `Report/Actions/DownloadReportAction.php`      | `DownloadReportAction`      | `BaseProcessAction` |
 | `Report/Actions/FinalizeReportAction.php`      | `FinalizeReportAction`      | `BaseCommandAction` |
 
 ## Data / DTOs

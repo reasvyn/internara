@@ -1,6 +1,6 @@
 # Queue — Queue Configuration & Job Processing
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify queue driver, job classes (SysAdmin/SendAnnouncementJob, User/ArchiveStudentAccountsJob), failure handling against current queue.php config and jobs
+> **Last updated:** 2026-08-24 **Changes:** sync — remove stale `SendAnnouncementJob` (deleted c4ed461, superseded by queued notifications 3S55V); verify job classes `BatchIssueCertificatesJob`, `GenerateDocumentJob`, `ArchiveStudentAccountsJob` against queue.php and 8FVZA spec
 
 ## Description
 
@@ -182,6 +182,18 @@ php artisan queue:prune-failed        # Prune old failed jobs (scheduled weekly)
 ```
 
 Failed jobs older than 7 days are automatically pruned by the scheduler via `queue:prune-failed`.
+
+---
+
+## Job Inventory (Current)
+
+| Job | Module | Queue | Trigger |
+|-----|--------|-------|---------|
+| `BatchIssueCertificatesJob` | Certification | `default` | `DispatchBatchIssueCertificatesAction` — batch credential issuance (8FVZA FR-BP2) |
+| `GenerateDocumentJob` | Document | `documents` | Async PDF generation (7H5D6 FR-GW1, ZT6VS FR-Q6) |
+| `ArchiveStudentAccountsJob` | User | `default` | Large-cohort archival >500 via `DispatchArchiveStudentAccountsAction` (E1MSJ FR-AS5/NFR-R2) |
+
+> **Note:** `SendAnnouncementJob` was removed in `c4ed461` — announcement delivery is now via queued notifications (`3S55V` / `Announcement/Notifications`), not a dedicated Job.
 
 ---
 

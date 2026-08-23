@@ -1,6 +1,6 @@
 # Certification — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Events, Policies, HTTP Controllers, Livewire, Support Services, Routes, Views, Tests, Factories, Migrations)
+> **Last updated:** 2026-08-24 **Changes:** sync — add `DispatchBatchIssueCertificatesAction` + `BatchIssueCertificatesData` DTO + `BatchIssueCertificatesJob` (8FVZA, 07df610); verify Actions/Jobs vs code
 
 ## Description
 
@@ -21,6 +21,23 @@ internships.
 | `Certificate/Actions/IssueCertificateAction.php`          | `IssueCertificateAction`          | `BaseCommandAction` |
 | `Certificate/Actions/RevokeCertificateAction.php`         | `RevokeCertificateAction`         | `BaseCommandAction` |
 | `Certificate/Actions/BatchIssueCertificateAction.php`     | `BatchIssueCertificateAction`     | `BaseProcessAction` |
+| `Actions/DispatchBatchIssueCertificatesAction.php`        | `DispatchBatchIssueCertificatesAction` | `BaseCommandAction` |
+
+---
+
+## Data / DTOs
+
+| File                                        | Class                          | Extends    |
+| ------------------------------------------- | ------------------------------ | ---------- |
+| `Data/BatchIssueCertificatesData.php`       | `BatchIssueCertificatesData`   | `BaseData` |
+
+---
+
+## Jobs
+
+| File                                 | Class                        | Queue     | Purpose                      |
+| ------------------------------------ | ---------------------------- | --------- | ---------------------------- |
+| `Jobs/BatchIssueCertificatesJob.php` | `BatchIssueCertificatesJob`  | `default` | Batch certificate issuance (8FVZA FR-BP2, queued via `DispatchBatchIssueCertificatesAction`) |
 
 ---
 
