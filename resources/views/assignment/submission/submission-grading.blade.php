@@ -205,6 +205,16 @@
                     </div>
 
                     <div class="border-base-content/5 flex justify-end gap-4 border-t pt-6">
+                        @if ($selectedSubmission->status->value === 'submitted')
+                            <x-mary-button
+                                :label="__('submission.verify')"
+                                icon="o-shield-check"
+                                class="btn-success h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase"
+                                wire:click="verify('{{ $selectedSubmission->id }}')"
+                                wire:confirm="{{ __('submission.confirm_verify') }}"
+                                spinner="verify"
+                            />
+                        @endif
                         <x-mary-button
                             :label="__('common.actions.cancel')"
                             wire:click="back"

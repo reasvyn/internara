@@ -24,6 +24,9 @@ return [
     'submitted_success' => 'Assignment submitted successfully.',
     'revision_requested' => 'Revision requested successfully.',
     'graded_success' => 'Submission graded successfully.',
+    'verified_success' => 'Submission verified successfully.',
+    'verify' => 'Verify',
+    'confirm_verify' => 'Verify this submission?',
     'score_range' => 'Score must be between 0 and 100.',
     'only_submitted_can_revise' => 'Only submitted submissions can be revised.',
 ];

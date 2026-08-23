@@ -7,6 +7,7 @@ namespace App\Assignment\Submission\Livewire;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\GradeSubmissionAction;
 use App\Assignment\Submission\Actions\RequestSubmissionRevisionAction;
+use App\Assignment\Submission\Actions\VerifySubmissionAction;
 use App\Assignment\Submission\Data\GradeSubmissionData;
 use App\Assignment\Submission\Models\Submission;
 use Illuminate\Support\Facades\Auth;
@@ -84,6 +85,18 @@ class SubmissionGrading extends Component
             );
             flash()->success(__('submission.graded_success'));
         }
+
+        $this->back();
+    }
+
+    public function verify(string $submissionId, VerifySubmissionAction $action): void
+    {
+        $submission = Submission::findOrFail($submissionId);
+        $this->authorize('verify', $submission);
+
+        $action->execute($submission);
+
+        flash()->success(__('submission.verified_success'));
 
         $this->back();
     }
