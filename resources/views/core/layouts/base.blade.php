@@ -41,6 +41,7 @@
     <!-- Page Content --> {{ $slot }}
 
     @flasher_render
+    <x-ts-toast />
 
     <!-- Scripts -->
     @stack('scripts')

@@ -15,9 +15,11 @@ use App\Settings\Models\Setting;
 use App\Settings\Services\Settings;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class SchoolEditor extends BaseFormView
 {
+    use Interactions;
     use WithFileUploads;
 
     public SchoolForm $form;
@@ -49,7 +51,7 @@ class SchoolEditor extends BaseFormView
         ));
 
         $this->logo_file = null;
-        flash()->success(__('school.logo_saved'));
+        $this->toast()->success(__('school.logo_saved'))->send();
     }
 
     public function save(SaveSchoolProfileAction $action): void
@@ -60,7 +62,7 @@ class SchoolEditor extends BaseFormView
         $this->handleSave(function () use ($action): void {
             $action->execute(data: $this->form->toPayload());
             $this->form->loadFromEntity();
-            flash()->success(__('school.save_success'));
+            $this->toast()->success(__('school.save_success'))->send();
             $this->dispatch('saved');
         });
     }
@@ -87,7 +89,7 @@ class SchoolEditor extends BaseFormView
         Settings::forget('brand_logo');
 
         $this->showConfirm = false;
-        flash()->success(__('school.logo_removed'));
+        $this->toast()->success(__('school.logo_removed'))->send();
     }
 
     public function render(): View
