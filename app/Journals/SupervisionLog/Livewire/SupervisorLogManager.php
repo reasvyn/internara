@@ -14,9 +14,11 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class SupervisorLogManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public bool $showModal = false;
@@ -76,7 +78,7 @@ class SupervisorLogManager extends Component
         ));
 
         $this->showModal = false;
-        flash()->success(__('journals.log_recorded'));
+        $this->toast()->success(__('journals.log_recorded'))->send();
     }
 
     public function verify(SupervisionLog $log, VerifySupervisionLogAction $verifyAction): void
@@ -84,7 +86,7 @@ class SupervisorLogManager extends Component
         $this->authorize('update', $log);
 
         $verifyAction->execute($log, auth()->user());
-        flash()->success(__('journals.log_verified'));
+        $this->toast()->success(__('journals.log_verified'))->send();
     }
 
     #[Layout('core::layouts.app')]

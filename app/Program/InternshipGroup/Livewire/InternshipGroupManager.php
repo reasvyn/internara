@@ -20,10 +20,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class InternshipGroupManager extends BaseRecordManager
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public bool $showModal = false;
 
@@ -109,11 +111,11 @@ class InternshipGroupManager extends BaseRecordManager
             $group = InternshipGroup::findOrFail($this->editingId);
             $this->authorize('update', $group);
             $update->execute($group, $this->form->all());
-            flash()->success(__('internship.group_updated'));
+            $this->toast()->success(__('internship.group_updated'))->send();
         } else {
             $this->authorize('create', InternshipGroup::class);
             $create->execute($this->form->all());
-            flash()->success(__('internship.group_created'));
+            $this->toast()->success(__('internship.group_created'))->send();
         }
 
         $this->showModal = false;
@@ -142,9 +144,9 @@ class InternshipGroupManager extends BaseRecordManager
             $group = InternshipGroup::findOrFail($this->confirmTarget);
             $this->authorize('delete', $group);
             $deleteAction->execute($group);
-            flash()->success(__('internship.group_deleted'));
+            $this->toast()->success(__('internship.group_deleted'))->send();
         } catch (RejectedException|\RuntimeException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -219,7 +221,7 @@ class InternshipGroupManager extends BaseRecordManager
         $this->showMemberModal = false;
         $this->memberGroupId = null;
 
-        flash()->success(__('internship.members_added', ['count' => count($this->memberFormData)]));
+        $this->toast()->success(__('internship.members_added', ['count' => count($this->memberFormData)]))->send();
     }
 
     public function removeMember(string $memberId, RemoveMemberFromGroupAction $action): void
@@ -229,7 +231,7 @@ class InternshipGroupManager extends BaseRecordManager
         $this->authorize('update', $group);
         $action->execute($member);
 
-        flash()->success(__('internship.member_removed'));
+        $this->toast()->success(__('internship.member_removed'))->send();
     }
 
     // ---

@@ -18,9 +18,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class AssignmentManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $assignmentModal = false;
 
     public bool $showConfirm = false;
@@ -167,7 +170,7 @@ class AssignmentManager extends BaseRecordManager
                     dueDate: $this->formData['due_date'],
                 ),
             );
-            flash()->success(__('assignment.updated'));
+            $this->toast()->success(__('assignment.updated'))->send();
         } else {
             $this->authorize('create', Assignment::class);
             $createAction->execute(new CreateAssignmentData(
@@ -178,7 +181,7 @@ class AssignmentManager extends BaseRecordManager
                 isMandatory: $this->formData['is_mandatory'],
                 dueDate: $this->formData['due_date'],
             ));
-            flash()->success(__('assignment.created'));
+            $this->toast()->success(__('assignment.created'))->send();
         }
 
         $this->assignmentModal = false;
@@ -188,7 +191,7 @@ class AssignmentManager extends BaseRecordManager
     {
         $this->authorize('publish', $assignment);
         $action->execute($assignment);
-        flash()->success(__('assignment.published'));
+        $this->toast()->success(__('assignment.published'))->send();
     }
 
     public function askDelete(string $id): void
@@ -211,7 +214,7 @@ class AssignmentManager extends BaseRecordManager
                 $assignment = Assignment::findOrFail($this->confirmTarget);
                 $this->authorize('delete', $assignment);
                 $action->execute($assignment);
-                flash()->success(__('assignment.deleted'));
+                $this->toast()->success(__('assignment.deleted'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $this->performBulkAction(__('common.actions.delete'), function ($id) use ($action) {
                     $assignment = Assignment::find($id);
@@ -221,7 +224,7 @@ class AssignmentManager extends BaseRecordManager
                 });
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

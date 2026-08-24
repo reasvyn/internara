@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class RegistrationWizard extends Component
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public int $step = 1;
 
@@ -77,7 +79,7 @@ class RegistrationWizard extends Component
             'proposed_company_address' => $this->form->proposed_company_address ?: null,
         ]);
 
-        flash()->success(__('registration.wizard.success'));
+        $this->toast()->success(__('registration.wizard.success'))->send();
         $this->redirect('/dashboard');
     }
 

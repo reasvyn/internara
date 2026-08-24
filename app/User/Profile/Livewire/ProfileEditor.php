@@ -18,10 +18,12 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 #[Layout('core::layouts.app')]
 class ProfileEditor extends BaseFormView
 {
+    use Interactions;
     use WithFileUploads;
 
     public ?UploadedFile $avatar = null;
@@ -90,7 +92,7 @@ class ProfileEditor extends BaseFormView
             avatar: $this->avatar,
         ));
 
-        flash()->success(__('profile.avatar_saved'));
+        $this->toast()->success(__('profile.avatar_saved'))->send();
     }
 
     public function confirmRemoveAvatar(): void
@@ -100,7 +102,7 @@ class ProfileEditor extends BaseFormView
         $this->user->clearMediaCollection('avatar');
         $this->avatar = null;
 
-        flash()->success(__('profile.avatar_removed'));
+        $this->toast()->success(__('profile.avatar_removed'))->send();
     }
 
     public function save(UpdateProfileAction $updateProfile): void
@@ -157,7 +159,7 @@ class ProfileEditor extends BaseFormView
             username: $this->canChangeUsername ? $this->profileForm->username : null,
         ));
 
-        flash()->success(__('profile.saved'));
+        $this->toast()->success(__('profile.saved'))->send();
     }
 
     public function confirmAction(): void
@@ -189,7 +191,7 @@ class ProfileEditor extends BaseFormView
         RateLimiter::clear($throttleKey);
 
         $this->passwordForm->resetForm();
-        flash()->success(__('profile.password_updated'));
+        $this->toast()->success(__('profile.password_updated'))->send();
     }
 
     protected function passwordThrottleKey(): string

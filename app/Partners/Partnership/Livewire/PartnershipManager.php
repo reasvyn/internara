@@ -20,9 +20,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class PartnershipManager extends BaseRecordManager
 {
+    use Interactions;
     use WithFileUploads;
 
     public bool $showModal = false;
@@ -175,12 +177,12 @@ class PartnershipManager extends BaseRecordManager
             $this->authorize('update', $partnership);
             $update->execute($partnership, $data);
             $this->uploadMouDocument($partnership);
-            flash()->success(__('partnership.update_success'));
+            $this->toast()->success(__('partnership.update_success'))->send();
         } else {
             $this->authorize('create', Partnership::class);
             $partnership = $create->execute($data);
             $this->uploadMouDocument($partnership);
-            flash()->success(__('partnership.save_success'));
+            $this->toast()->success(__('partnership.save_success'))->send();
         }
 
         $this->showModal = false;
@@ -193,7 +195,7 @@ class PartnershipManager extends BaseRecordManager
         $partnership = Partnership::findOrFail($id);
         $this->authorize('update', $partnership);
         $terminateAction->execute($partnership);
-        flash()->success(__('partnership.terminate_success'));
+        $this->toast()->success(__('partnership.terminate_success'))->send();
     }
 
     // --- Confirm Dialog ---
@@ -244,7 +246,7 @@ class PartnershipManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException|\RuntimeException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -257,14 +259,14 @@ class PartnershipManager extends BaseRecordManager
         $partnership = Partnership::findOrFail($id);
         $this->authorize('delete', $partnership);
         $action->execute($partnership);
-        flash()->success(__('partnership.delete_success'));
+        $this->toast()->success(__('partnership.delete_success'))->send();
     }
 
     private function executeTerminate(string $id, TerminatePartnershipAction $action): void
     {
         $partnership = Partnership::findOrFail($id);
         $action->execute($partnership);
-        flash()->success(__('partnership.terminate_success'));
+        $this->toast()->success(__('partnership.terminate_success'))->send();
     }
 
     private function executeDeleteSelected(BatchDeletePartnershipAction $action): void
@@ -272,18 +274,18 @@ class PartnershipManager extends BaseRecordManager
         $result = $action->execute($this->selectedIds);
 
         if ($result['deleted'] > 0) {
-            flash()->success(
+            $this->toast()->success(
                 __('common.actions.bulk_action_done', [
                     'count' => $result['deleted'],
                     'action' => __('common.actions.delete'),
                 ]),
-            );
+            )->send();
         }
 
         if ($result['blocked'] > 0) {
-            flash()->warning(
+            $this->toast()->warning(
                 __('partnership.delete_blocked_bulk', ['count' => $result['blocked']]),
-            );
+            )->send();
         }
 
         $this->clearSelection();

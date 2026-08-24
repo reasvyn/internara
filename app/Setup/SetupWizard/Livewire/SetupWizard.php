@@ -18,10 +18,13 @@ use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Features\SupportRedirects\Redirector;
+use TallStackUi\Traits\Interactions;
 
 #[Layout('setup.layouts.setup')]
 class SetupWizard extends BaseWizard
 {
+    use Interactions;
+
     protected function steps(): array
     {
         return ['welcome', 'account', 'school', 'department', 'finalize', 'complete'];
@@ -196,7 +199,7 @@ class SetupWizard extends BaseWizard
     public function nextStep(): void
     {
         if ($this->currentStep === 1 && ! $this->auditPassed) {
-            flash()->error(__('setup.wizard.audit_must_pass'));
+            $this->toast()->error(__('setup.wizard.audit_must_pass'))->send();
 
             return;
         }
@@ -259,9 +262,9 @@ class SetupWizard extends BaseWizard
 
             $this->currentStep = 6;
             session()->put('setup.completed', true);
-            flash()->success(__('setup.wizard.setup_complete'));
+            $this->toast()->success(__('setup.wizard.setup_complete'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard crashed')
                 ->module('Setup')
@@ -270,7 +273,7 @@ class SetupWizard extends BaseWizard
                 ->withPiiMasking()
                 ->systemOnly()
                 ->save();
-            flash()->error(__('setup.wizard.install_failed_generic'));
+            $this->toast()->error(__('setup.wizard.install_failed_generic'))->send();
         }
     }
 

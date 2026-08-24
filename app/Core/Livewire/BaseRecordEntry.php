@@ -6,6 +6,7 @@ namespace App\Core\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 /**
  * Base class for user-facing CRUD components with form modals.
@@ -26,6 +27,8 @@ use Livewire\Component;
  */
 abstract class BaseRecordEntry extends Component
 {
+    use Interactions;
+
     /** @var bool Whether the form modal is visible */
     public bool $showModal = false;
 
@@ -75,9 +78,9 @@ abstract class BaseRecordEntry extends Component
         try {
             $callback();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         } catch (\Throwable $e) {
-            flash()->error(__('common.actions.error_occurred'));
+            $this->toast()->error(__('common.actions.error_occurred'))->send();
         }
     }
 }

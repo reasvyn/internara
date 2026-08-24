@@ -27,9 +27,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class RubricManager extends Component
 {
+    use Interactions;
+
     public bool $rubricModal = false;
 
     public bool $competencyModal = false;
@@ -136,7 +139,7 @@ class RubricManager extends Component
                     isActive: $this->rubricForm['is_active'],
                 ),
             );
-            flash()->success(__('assessment.rubric_updated'));
+            $this->toast()->success(__('assessment.rubric_updated'))->send();
         } else {
             $this->authorize('create', Rubric::class);
             $createAction->execute(new CreateRubricData(
@@ -144,7 +147,7 @@ class RubricManager extends Component
                 description: $this->rubricForm['description'],
                 isActive: $this->rubricForm['is_active'],
             ));
-            flash()->success(__('assessment.rubric_created'));
+            $this->toast()->success(__('assessment.rubric_created'))->send();
         }
 
         $this->rubricModal = false;
@@ -206,13 +209,13 @@ class RubricManager extends Component
                 );
             }
 
-            flash()->success(match ($this->confirmActionType) {
+            $this->toast()->success(match ($this->confirmActionType) {
                 'rubric' => __('assessment.rubric_removed'),
                 'competency' => __('assessment.competency_removed'),
                 'indicator' => __('assessment.indicator_removed'),
-            });
+            })->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -289,7 +292,7 @@ class RubricManager extends Component
                     order: (int) $this->competencyForm['order'],
                 ),
             );
-            flash()->success(__('assessment.competency_updated'));
+            $this->toast()->success(__('assessment.competency_updated'))->send();
         } else {
             $this->authorize('update', $rubric);
             $createAction->execute(
@@ -302,7 +305,7 @@ class RubricManager extends Component
                     order: (int) $this->competencyForm['order'],
                 ),
             );
-            flash()->success(__('assessment.competency_created'));
+            $this->toast()->success(__('assessment.competency_created'))->send();
         }
 
         $this->competencyModal = false;
@@ -374,7 +377,7 @@ class RubricManager extends Component
                     order: (int) $this->indicatorForm['order'],
                 ),
             );
-            flash()->success(__('assessment.indicator_updated'));
+            $this->toast()->success(__('assessment.indicator_updated'))->send();
         } else {
             $this->authorize('update', $rubric);
             $createAction->execute(
@@ -388,7 +391,7 @@ class RubricManager extends Component
                     order: (int) $this->indicatorForm['order'],
                 ),
             );
-            flash()->success(__('assessment.indicator_created'));
+            $this->toast()->success(__('assessment.indicator_created'))->send();
         }
 
         $this->indicatorModal = false;

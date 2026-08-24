@@ -12,9 +12,11 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class LogbookEntry extends BaseRecordEntry
 {
+    use Interactions;
     use WithFileUploads, WithPagination;
 
     public ?string $journalId = null;
@@ -74,7 +76,7 @@ class LogbookEntry extends BaseRecordEntry
             ]);
 
             $this->showModal = false;
-            flash()->success(__('logbook.success_saved'));
+            $this->toast()->success(__('logbook.success_saved'))->send();
         });
     }
 

@@ -15,9 +15,12 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Spatie\Activitylog\Models\Activity;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class StudentHandbookList extends Component
 {
+    use Interactions;
+
     public function acknowledge(string $id, AcknowledgeHandbookAction $action): void
     {
         $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($id);
@@ -28,9 +31,9 @@ class StudentHandbookList extends Component
 
         try {
             $action->execute($handbook, auth()->user());
-            flash()->success(__('handbook.acknowledged'));
+            $this->toast()->success(__('handbook.acknowledged'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 

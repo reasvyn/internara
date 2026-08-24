@@ -14,10 +14,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class StudentPlacementChangeRequest extends BaseFormView
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public ?string $registrationId = null;
 
@@ -62,7 +64,7 @@ class StudentPlacementChangeRequest extends BaseFormView
                 'requested_by' => auth()->id(),
             ]);
 
-            flash()->success(__('placement_change.request_success'));
+            $this->toast()->success(__('placement_change.request_success'))->send();
             $this->pendingRequest = PlacementChangeRequest::where('registration_id', $registration->id)
                 ->where('status', 'pending')
                 ->first();

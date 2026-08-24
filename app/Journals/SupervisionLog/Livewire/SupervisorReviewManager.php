@@ -12,9 +12,12 @@ use App\Journals\SupervisionLog\Models\SupervisionLog;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class SupervisorReviewManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showReviewModal = false;
 
     public ?string $reviewTarget = null;
@@ -63,9 +66,9 @@ class SupervisorReviewManager extends BaseRecordManager
                 supervisorId: auth()->id(),
                 feedback: $this->feedback,
             ));
-            flash()->success(__('journals.log_reviewed'));
+            $this->toast()->success(__('journals.log_reviewed'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showReviewModal = false;

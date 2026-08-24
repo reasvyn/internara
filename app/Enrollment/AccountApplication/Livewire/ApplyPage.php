@@ -13,9 +13,12 @@ use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class ApplyPage extends BaseFormView
 {
+    use Interactions;
+
     public AccountApplicationForm $form;
 
     public function updatedFormUsePlacement(): void
@@ -52,7 +55,7 @@ class ApplyPage extends BaseFormView
 
         $this->handleSave(function () use ($action) {
             $action->execute($this->form->toArray());
-            flash()->success(__('registration.account_application.success'));
+            $this->toast()->success(__('registration.account_application.success'))->send();
             $this->form->reset();
         });
     }

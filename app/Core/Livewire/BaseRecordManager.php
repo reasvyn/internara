@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 abstract class BaseRecordManager extends Component
 {
+    use Interactions;
     use WithPagination, WithRecordSelection, WithSorting;
 
     public string $search = '';
@@ -92,7 +94,7 @@ abstract class BaseRecordManager extends Component
         callable $callback,
     ): void {
         if (empty($this->selectedIds)) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return;
         }
@@ -101,12 +103,12 @@ abstract class BaseRecordManager extends Component
             $callback($id);
         }
 
-        flash()->success(
+        $this->toast()->success(
             __('common.actions.bulk_action_done', [
                 'count' => count($this->selectedIds),
                 'action' => $name,
             ]),
-        );
+        )->send();
         $this->clearSelection();
     }
 
@@ -127,16 +129,16 @@ abstract class BaseRecordManager extends Component
         $count = $query->count();
 
         if ($count === 0) {
-            flash()->warning(__('common.actions.no_records_matching'));
+            $this->toast()->warning(__('common.actions.no_records_matching'))->send();
 
             return;
         }
 
         $callback($query);
 
-        flash()->success(
+        $this->toast()->success(
             __('common.actions.mass_action_done', ['count' => $count, 'action' => $name]),
-        );
+        )->send();
         $this->clearSelection();
     }
 }

@@ -10,11 +10,11 @@ use Livewire\Livewire;
 uses(LazilyRefreshDatabase::class);
 
 describe('FB792: TallstackUI migration — SchoolEditor flash → toast', function (): void {
-    it('FB792-FR-TS6a: base layout contains x-ts-toast for coexistence', function (): void {
+    it('FB792-FR-TS6a: base layout renders x-ts-toast without flasher render block', function (): void {
         $base = file_get_contents(resource_path('views/core/layouts/base.blade.php'));
 
         expect($base)->toContain('<x-ts-toast />')
-            ->toContain('@flasher_render');
+            ->not->toContain('@flasher_render');
     });
 
     it('J68GZ-FR-D10a: save() dispatches TallstackUI toast success via Interactions', function (): void {
@@ -47,6 +47,18 @@ describe('FB792: TallstackUI migration — SchoolEditor flash → toast', functi
         expect($source)->toContain('Interactions')
             ->toContain('toast()->success')
             ->not->toContain('flash()->success');
+    });
+
+    it('J68GZ-FR-D10a: no php-flasher flash()-> calls remain in app layer', function (): void {
+        $remnants = [];
+
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(app_path())) as $file) {
+            if ($file->isFile() && str_contains((string) file_get_contents($file->getPathname()), 'flash()->')) {
+                $remnants[] = $file->getPathname();
+            }
+        }
+
+        expect($remnants)->toBe([]);
     });
 
     it('52O1I-FR-T2: ThemeSwitcher still coexists — SchoolEditor save does not break theme cookie', function (): void {

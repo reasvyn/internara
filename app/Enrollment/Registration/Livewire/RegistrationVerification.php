@@ -15,10 +15,12 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class RegistrationVerification extends Component
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public ?string $processId = null;
 
@@ -102,13 +104,13 @@ class RegistrationVerification extends Component
                 'mentor_ids' => $this->mentor_ids,
             ]);
 
-            flash()->success(__('registration.verification.success'));
+            $this->toast()->success(__('registration.verification.success'))->send();
             $this->showProcessModal = false;
             $this->processId = null;
             $this->placement_id = '';
             $this->mentor_ids = [];
         } catch (RejectedException|\RuntimeException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 

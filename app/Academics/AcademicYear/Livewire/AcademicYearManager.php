@@ -17,9 +17,12 @@ use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class AcademicYearManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showModal = false;
 
     public bool $showConfirm = false;
@@ -135,7 +138,7 @@ class AcademicYearManager extends BaseRecordManager
         $this->showModal = false;
         $this->editingYearId = null;
         $this->form->reset();
-        flash()->success(__('academic_year.created'));
+        $this->toast()->success(__('academic_year.created'))->send();
     }
 
     public function update(UpdateAcademicYearAction $action): void
@@ -150,7 +153,7 @@ class AcademicYearManager extends BaseRecordManager
         $this->editingYearId = null;
         $this->showModal = false;
         $this->form->reset();
-        flash()->success(__('academic_year.updated'));
+        $this->toast()->success(__('academic_year.updated'))->send();
     }
 
     // --- Confirm Dialogs ---
@@ -204,7 +207,7 @@ class AcademicYearManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -218,7 +221,7 @@ class AcademicYearManager extends BaseRecordManager
         $this->authorize('activate', $year);
 
         $action->execute($year);
-        flash()->success(__('academic_year.activated'));
+        $this->toast()->success(__('academic_year.activated'))->send();
     }
 
     private function executeDelete(string $id, DeleteAcademicYearAction $action): void
@@ -227,14 +230,14 @@ class AcademicYearManager extends BaseRecordManager
         $this->authorize('delete', $year);
 
         $action->execute($year);
-        flash()->success(__('academic_year.deleted'));
+        $this->toast()->success(__('academic_year.deleted'))->send();
     }
 
     private function executeDeleteSelected(BulkDeleteAcademicYearsAction $action): void
     {
         $count = $action->execute($this->selectedIds);
 
-        flash()->success(__('academic_year.deleted_selected', ['count' => $count]));
+        $this->toast()->success(__('academic_year.deleted_selected', ['count' => $count]))->send();
         $this->clearSelection();
     }
 

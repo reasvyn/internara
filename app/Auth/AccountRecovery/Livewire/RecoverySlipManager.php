@@ -9,9 +9,12 @@ use App\User\Models\User;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class RecoverySlipManager extends Component
 {
+    use Interactions;
+
     public string $search = '';
 
     public ?User $selectedUser = null;
@@ -37,7 +40,7 @@ class RecoverySlipManager extends Component
         $this->generatedCode = $result->data['plaintext'];
         $this->expiresAt = $result->data['expires_at'];
 
-        flash()->success(__('auth.recovery_slip_generated'));
+        $this->toast()->success(__('auth.recovery_slip_generated'))->send();
     }
 
     public function resetForm(): void

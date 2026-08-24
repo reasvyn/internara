@@ -12,9 +12,11 @@ use App\Core\Livewire\BaseFormView;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class SubmitAssignment extends BaseFormView
 {
+    use Interactions;
     use WithFileUploads;
 
     public ?string $assignmentId = null;
@@ -60,7 +62,7 @@ class SubmitAssignment extends BaseFormView
 
             $this->reset(['content', 'file', 'assignmentId']);
             $this->showDetail = false;
-            flash()->success(__('submission.submitted_success'));
+            $this->toast()->success(__('submission.submitted_success'))->send();
         });
     }
 

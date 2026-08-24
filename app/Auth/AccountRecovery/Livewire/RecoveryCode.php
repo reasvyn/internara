@@ -9,9 +9,12 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class RecoveryCode extends Component
 {
+    use Interactions;
+
     /** @var array<int, string> */
     public array $codes = [];
 
@@ -29,7 +32,7 @@ class RecoveryCode extends Component
         session()->put('recovery_codes', $this->codes);
         session()->put('recovery_codes_expires_at', $this->expiresAt);
 
-        flash()->success(__('profile.recovery.code_generated'));
+        $this->toast()->success(__('profile.recovery.code_generated'))->send();
     }
 
     public function resetCode(): void
@@ -44,7 +47,7 @@ class RecoveryCode extends Component
         $expiresAt = session('recovery_codes_expires_at', now()->addHours(24)->format('d M Y H:i'));
 
         if (empty($codes)) {
-            flash()->error(__('profile.recovery.no_codes'));
+            $this->toast()->error(__('profile.recovery.no_codes'))->send();
 
             return redirect()->route('profile');
         }

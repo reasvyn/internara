@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class SubmissionGrading extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public string $search = '';
@@ -74,7 +76,7 @@ class SubmissionGrading extends Component
 
         if ($this->gradeStatus === 'revision_required') {
             $revisionAction->execute($submission, $this->feedback);
-            flash()->success(__('submission.revision_requested'));
+            $this->toast()->success(__('submission.revision_requested'))->send();
         } else {
             $gradeAction->execute(
                 $submission,
@@ -83,7 +85,7 @@ class SubmissionGrading extends Component
                     feedback: $this->feedback,
                 ),
             );
-            flash()->success(__('submission.graded_success'));
+            $this->toast()->success(__('submission.graded_success'))->send();
         }
 
         $this->back();
@@ -96,7 +98,7 @@ class SubmissionGrading extends Component
 
         $action->execute($submission);
 
-        flash()->success(__('submission.verified_success'));
+        $this->toast()->success(__('submission.verified_success'))->send();
 
         $this->back();
     }

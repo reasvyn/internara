@@ -16,9 +16,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class LogbookManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showModal = false;
 
     public bool $showSupervisorNoteModal = false;
@@ -146,12 +149,12 @@ class LogbookManager extends BaseRecordManager
         if ($this->form->id) {
             $entry = Logbook::findOrFail($this->form->id);
             $update->execute($entry, $this->form->toArray());
-            flash()->success(__('logbook.success_updated'));
+            $this->toast()->success(__('logbook.success_updated'))->send();
         } else {
             $this->validate(['form.user_id' => 'required|exists:users,id']);
 
             $create->execute($this->form->user_id, $this->form->toArray());
-            flash()->success(__('logbook.success_created'));
+            $this->toast()->success(__('logbook.success_created'))->send();
         }
 
         $this->showModal = false;
@@ -175,7 +178,7 @@ class LogbookManager extends BaseRecordManager
         try {
             if ($this->confirmActionType === 'delete') {
                 $deleteAction->execute(Logbook::findOrFail($this->confirmTarget));
-                flash()->success(__('logbook.success_deleted'));
+                $this->toast()->success(__('logbook.success_deleted'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
                     $entry = Logbook::find($id);
@@ -185,7 +188,7 @@ class LogbookManager extends BaseRecordManager
                 });
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -200,7 +203,7 @@ class LogbookManager extends BaseRecordManager
         $update->execute($entry, [
             'is_verified' => ! $entry->is_verified,
         ]);
-        flash()->success(__('logbook.success_verified'));
+        $this->toast()->success(__('logbook.success_verified'))->send();
     }
 
     // --- Supervisor Note ---
@@ -233,7 +236,7 @@ class LogbookManager extends BaseRecordManager
         $this->supervisorNoteEntryId = null;
         $this->supervisorNote = '';
 
-        flash()->success(__('logbook.supervisor_note_saved'));
+        $this->toast()->success(__('logbook.supervisor_note_saved'))->send();
     }
 
     #[Layout('core::layouts.app')]

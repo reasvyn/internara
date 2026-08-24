@@ -19,9 +19,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class HandbookManager extends BaseRecordManager
 {
+    use Interactions;
     use WithFileUploads;
 
     public bool $showModal = false;
@@ -121,11 +123,11 @@ class HandbookManager extends BaseRecordManager
             $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($this->form->id);
             $this->authorize('update', $handbook);
             $update->execute($handbook, $data);
-            flash()->success(__('handbook.updated'));
+            $this->toast()->success(__('handbook.updated'))->send();
         } else {
             $this->authorize('create', Document::class);
             $create->execute($data);
-            flash()->success(__('handbook.created'));
+            $this->toast()->success(__('handbook.created'))->send();
         }
 
         $this->showModal = false;
@@ -149,9 +151,9 @@ class HandbookManager extends BaseRecordManager
             $handbook = Document::ofType(DocumentCategory::HANDBOOK->value)->findOrFail($this->confirmTarget);
             $this->authorize('delete', $handbook);
             $action->execute($handbook);
-            flash()->success(__('handbook.deleted'));
+            $this->toast()->success(__('handbook.deleted'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

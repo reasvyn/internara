@@ -13,9 +13,12 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class ActivateAccount extends Component
 {
+    use Interactions;
+
     public string $email = '';
 
     public string $code = '';
@@ -67,7 +70,7 @@ class ActivateAccount extends Component
 
         auth()->login($user);
 
-        flash()->success(__('auth.activate.success'));
+        $this->toast()->success(__('auth.activate.success'))->send();
 
         $this->redirectRoute('dashboard', navigate: true);
     }

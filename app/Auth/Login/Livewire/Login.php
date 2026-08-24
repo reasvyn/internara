@@ -14,9 +14,12 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use RuntimeException;
+use TallStackUi\Traits\Interactions;
 
 class Login extends Component
 {
+    use Interactions;
+
     public LoginForm $form;
 
     public function login(LoginAction $loginAction): void
@@ -41,7 +44,7 @@ class Login extends Component
 
             RateLimiter::clear($throttleKey);
 
-            flash()->success(__('auth.login.welcome_back', ['name' => $user->name]));
+            $this->toast()->success(__('auth.login.welcome_back', ['name' => $user->name]))->send();
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
         } catch (RuntimeException $e) {

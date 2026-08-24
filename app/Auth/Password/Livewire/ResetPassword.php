@@ -14,9 +14,12 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use RuntimeException;
+use TallStackUi\Traits\Interactions;
 
 class ResetPassword extends Component
 {
+    use Interactions;
+
     public ResetPasswordForm $form;
 
     public function mount(string $token): void
@@ -47,7 +50,7 @@ class ResetPassword extends Component
 
             RateLimiter::clear($throttleKey);
 
-            flash()->success(__('passwords.reset'));
+            $this->toast()->success(__('passwords.reset'))->send();
 
             $this->redirectRoute('login', navigate: true);
         } catch (RuntimeException $e) {

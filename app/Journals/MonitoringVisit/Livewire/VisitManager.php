@@ -16,9 +16,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class VisitManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showModal = false;
 
     public bool $showConfirm = false;
@@ -135,7 +138,7 @@ class VisitManager extends BaseRecordManager
             ],
         ));
 
-        flash()->success(__('journals.visit_created'));
+        $this->toast()->success(__('journals.visit_created'))->send();
         $this->showModal = false;
     }
 
@@ -158,7 +161,7 @@ class VisitManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -170,7 +173,7 @@ class VisitManager extends BaseRecordManager
         $visit = MonitoringVisit::findOrFail($id);
         $this->authorize('verify', MonitoringVisit::class);
         $action->execute($visit, auth()->user());
-        flash()->success(__('journals.visit_verified'));
+        $this->toast()->success(__('journals.visit_verified'))->send();
     }
 
     #[Layout('core::layouts.app')]

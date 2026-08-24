@@ -13,9 +13,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class AccountLifecycleManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public bool $showClones = false;
@@ -55,14 +57,14 @@ class AccountLifecycleManager extends Component
             if ($this->confirmActionType === 'lock') {
                 Gate::authorize('lockAccount', $user);
                 $lockAction->execute($user);
-                flash()->success(__('auth.account_locked'));
+                $this->toast()->success(__('auth.account_locked'))->send();
             } elseif ($this->confirmActionType === 'unlock') {
                 Gate::authorize('unlockAccount', $user);
                 $unlockAction->execute($user);
-                flash()->success(__('auth.account_unlocked'));
+                $this->toast()->success(__('auth.account_unlocked'))->send();
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
