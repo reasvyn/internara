@@ -68,8 +68,6 @@ yarn-error.log
 # AI Agent Files
 .blackboxcli/
 .gemini/
-.opencode/
-opencode.json
 /scripts/outputs/*.json
 /scripts/__pycache__/
 
