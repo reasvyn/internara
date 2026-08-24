@@ -1,12 +1,7 @@
 <div>
     <x-mary-header :title="__('assessment.rubrics')" :subtitle="__('assessment.rubrics_subtitle')" separator>
         <x-slot:actions>
-            <x-mary-button
-                :label="__('assessment.new_rubric')"
-                icon="o-plus"
-                wire:click="addRubric"
-                class="btn-primary"
-            />
+            <x-ts-button :text="__('assessment.new_rubric')" icon="plus" wire:click="addRubric" color="primary" />
         </x-slot:actions>
     </x-mary-header>
 
@@ -29,15 +24,15 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.edit') }}"
-                        icon="o-pencil"
+                        icon="pencil"
                         wire:click="editRubric('{{ $rubric->id }}')"
                         class="btn-sm btn-ghost"
                     />
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.delete') }}"
-                        icon="o-trash"
+                        icon="trash"
                         wire:click="askRemoveRubric('{{ $rubric->id }}')"
                         class="btn-sm btn-ghost text-error"
                     />
@@ -60,22 +55,22 @@
                             @endif
                         </div>
                         <div class="flex gap-1">
-                            <x-mary-button
+                            <x-ts-button
                                 aria-label="{{ __('assessment.add_indicator') }}"
-                                icon="o-plus"
+                                icon="plus"
                                 wire:click="addIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}')"
                                 class="btn-xs btn-ghost"
                                 :title="__('assessment.add_indicator')"
                             />
-                            <x-mary-button
+                            <x-ts-button
                                 aria-label="{{ __('common.actions.edit') }}"
-                                icon="o-pencil"
+                                icon="pencil"
                                 wire:click="editCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')"
                                 class="btn-xs btn-ghost"
                             />
-                            <x-mary-button
+                            <x-ts-button
                                 aria-label="{{ __('common.actions.delete') }}"
-                                icon="o-trash"
+                                icon="trash"
                                 wire:click="askRemoveCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')"
                                 class="btn-xs btn-ghost text-error"
                             />
@@ -91,15 +86,15 @@
                                         <span class="text-base-content/40 text-xs">(max {{ $indicator['max_score'] }}, {{ $indicator['weight'] }}%)</span>
                                     </div>
                                     <div class="flex gap-1">
-                                        <x-mary-button
+                                        <x-ts-button
                                             aria-label="{{ __('common.actions.edit') }}"
-                                            icon="o-pencil"
+                                            icon="pencil"
                                             wire:click="editIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')"
                                             class="btn-xs btn-ghost"
                                         />
-                                        <x-mary-button
+                                        <x-ts-button
                                             aria-label="{{ __('common.actions.delete') }}"
-                                            icon="o-trash"
+                                            icon="trash"
                                             wire:click="askRemoveIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')"
                                             class="btn-xs btn-ghost text-error"
                                         />
@@ -112,8 +107,8 @@
             @empty
                 <div class="text-base-content/40 py-4 text-center text-sm">
                     {{ __('assessment.no_competencies_yet') }}
-                    <x-mary-button
-                        :label="__('assessment.add_competency')"
+                    <x-ts-button
+                        :text="__('assessment.add_competency')"
                         wire:click="addCompetency('{{ $rubric->id }}')"
                         class="btn-xs btn-primary"
                     />
@@ -122,9 +117,9 @@
 
             @if (! empty($competencies))
                 <div class="mt-2">
-                    <x-mary-button
-                        :label="__('assessment.add_competency')"
-                        icon="o-plus"
+                    <x-ts-button
+                        :text="__('assessment.add_competency')"
+                        icon="plus"
                         wire:click="addCompetency('{{ $rubric->id }}')"
                         class="btn-sm btn-ghost"
                     />
@@ -134,41 +129,41 @@
     @empty
         <x-mary-card>
             <div class="text-base-content/40 py-12 text-center">
-                <x-mary-icon name="o-clipboard-document-list" class="mx-auto mb-4 size-16 opacity-30" />
+                <x-ts-icon name="o-clipboard-document-list" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_rubrics') }}</p>
                 <p class="text-sm">{{ __('assessment.rubrics_subtitle') }}</p>
             </div>
         </x-mary-card>
     @endforelse
 
-    <x-mary-modal
-        wire:model="rubricModal"
+    <x-ts-modal
+        wire="rubricModal"
         :title="$rubricForm['id'] ? __('assessment.edit_rubric') : __('assessment.new_rubric')"
         separator
-        class="backdrop-blur-sm"
+        blur
     >
-        <x-mary-form wire:submit="saveRubric">
-            <x-mary-input :label="__('common.name')" wire:model="rubricForm.name" required />
-            <x-mary-textarea :label="__('common.description')" wire:model="rubricForm.description" />
-            <x-mary-checkbox :label="__('assessment.active')" wire:model="rubricForm.is_active" />
+        <form wire:submit="saveRubric">
+            <x-ts-input :label="__('common.name')" wire:model="rubricForm.name" required />
+            <x-ts-textarea :label="__('common.description')" wire:model="rubricForm.description" />
+            <x-ts-checkbox :label="__('assessment.active')" wire:model="rubricForm.is_active" />
             <x-slot:actions>
-                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('rubricModal', false)" />
-                <x-mary-button :label="__('common.actions.save')" type="submit" icon="o-check" class="btn-primary" />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('rubricModal', false)" />
+                <x-ts-button :text="__('common.actions.save')" type="submit" icon="check" color="primary" />
             </x-slot:actions>
-        </x-mary-form>
-    </x-mary-modal>
+        </form>
+    </x-ts-modal>
 
-    <x-mary-modal
-        wire:model="competencyModal"
+    <x-ts-modal
+        wire="competencyModal"
         :title="$competencyForm['id'] ? __('assessment.edit_competency') : __('assessment.new_competency')"
         separator
-        class="backdrop-blur-sm"
+        blur
     >
-        <x-mary-form wire:submit="saveCompetency">
-            <x-mary-input :label="__('common.name')" wire:model="competencyForm.name" required />
-            <x-mary-textarea :label="__('common.description')" wire:model="competencyForm.description" />
+        <form wire:submit="saveCompetency">
+            <x-ts-input :label="__('common.name')" wire:model="competencyForm.name" required />
+            <x-ts-textarea :label="__('common.description')" wire:model="competencyForm.description" />
             <div class="grid grid-cols-2 gap-4">
-                <x-mary-input
+                <x-ts-input
                     :label="__('assessment.weight')"
                     wire:model="competencyForm.weight"
                     type="number"
@@ -176,7 +171,7 @@
                     max="100"
                     required
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('assessment.order')"
                     wire:model="competencyForm.order"
                     type="number"
@@ -184,7 +179,7 @@
                     required
                 />
             </div>
-            <x-mary-select
+            <x-ts-select
                 :label="__('assessment.evaluator_role')"
                 wire:model="competencyForm.evaluator_role"
                 :options="$this->evaluatorRoles"
@@ -192,30 +187,30 @@
                 required
             />
             <x-slot:actions>
-                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('competencyModal', false)" />
-                <x-mary-button :label="__('common.actions.save')" type="submit" icon="o-check" class="btn-primary" />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('competencyModal', false)" />
+                <x-ts-button :text="__('common.actions.save')" type="submit" icon="check" color="primary" />
             </x-slot:actions>
-        </x-mary-form>
-    </x-mary-modal>
+        </form>
+    </x-ts-modal>
 
-    <x-mary-modal
-        wire:model="indicatorModal"
+    <x-ts-modal
+        wire="indicatorModal"
         :title="$indicatorForm['id'] ? __('assessment.edit_indicator') : __('assessment.new_indicator')"
         separator
-        class="backdrop-blur-sm"
+        blur
     >
-        <x-mary-form wire:submit="saveIndicator">
-            <x-mary-input :label="__('common.name')" wire:model="indicatorForm.name" required />
-            <x-mary-textarea :label="__('common.description')" wire:model="indicatorForm.description" />
+        <form wire:submit="saveIndicator">
+            <x-ts-input :label="__('common.name')" wire:model="indicatorForm.name" required />
+            <x-ts-textarea :label="__('common.description')" wire:model="indicatorForm.description" />
             <div class="grid grid-cols-3 gap-4">
-                <x-mary-input
+                <x-ts-input
                     :label="__('assessment.max_score')"
                     wire:model="indicatorForm.max_score"
                     type="number"
                     min="1"
                     required
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('assessment.weight')"
                     wire:model="indicatorForm.weight"
                     type="number"
@@ -223,7 +218,7 @@
                     max="100"
                     required
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('assessment.order')"
                     wire:model="indicatorForm.order"
                     type="number"
@@ -232,11 +227,11 @@
                 />
             </div>
             <x-slot:actions>
-                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('indicatorModal', false)" />
-                <x-mary-button :label="__('common.actions.save')" type="submit" icon="o-check" class="btn-primary" />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('indicatorModal', false)" />
+                <x-ts-button :text="__('common.actions.save')" type="submit" icon="check" color="primary" />
             </x-slot:actions>
-        </x-mary-form>
-    </x-mary-modal>
+        </form>
+    </x-ts-modal>
 
     <x-core::ui.confirm :message="$confirmMessage" />
 
