@@ -11,12 +11,12 @@
                     <x-ts-input wire:model="endDate" type="date" :label="__('journals.absence.end_date')" />
                 </div>
 
-                <x-mary-select wire:model="reasonType" :label="__('journals.absence.reason_type')" class="mt-4">
+                <x-ts-select.native wire:model="reasonType" :label="__('journals.absence.reason_type')" class="mt-4">
                     <option value="">{{ __('journals.absence.select_reason') }}</option>
                     @foreach ($reasonTypes as $type)
                         <option value="{{ $type->value }}">{{ $type->label() }}</option>
                     @endforeach
-                </x-mary-select>
+                </x-ts-select.native>
 
                 <x-ts-textarea
                     wire:model="reasonDescription"

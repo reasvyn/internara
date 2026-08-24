@@ -22,16 +22,14 @@
                 />
             </div>
             <div class="flex w-full gap-4 lg:w-auto">
-                <x-mary-select
+                <x-ts-select.native
                     wire:model.live="statusFilter"
-                    placeholder="{{ __('submission.status') }}"
-                    :options="['submitted' => __('submission.statuses.submitted'), 'revision_required' => __('submission.statuses.revision_required')]"
+                    :options="[null => __('submission.status')] + (['submitted' => __('submission.statuses.submitted'), 'revision_required' => __('submission.statuses.revision_required')])"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
                 />
-                <x-mary-select
+                <x-ts-select.native
                     wire:model.live="assignmentFilter"
-                    placeholder="{{ __('submission.assignment') }}"
-                    :options="$assignments->pluck('title', 'id')"
+                    :options="[null => __('submission.assignment')] + ($assignments->pluck('title', 'id'))"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[200px] rounded-[1.5rem]"
                 />
             </div>
@@ -186,7 +184,7 @@
                             />
                         </div>
                         <div>
-                            <x-mary-select
+                            <x-ts-select.native
                                 :label="__('submission.status')"
                                 wire:model="gradeStatus"
                                 :options="['graded' => __('submission.grade_accept'), 'revision_required' => __('submission.request_revision')]"

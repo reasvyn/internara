@@ -58,7 +58,7 @@
 
     <x-mary-card>
         <div class="mb-4 flex gap-4">
-            <x-mary-select
+            <x-ts-select.native
                 label="{{ __('backups.filter_type') }}"
                 wire:model.live="filterType"
                 :options="[
@@ -67,7 +67,7 @@
                 ]"
                 class="w-48"
             />
-            <x-mary-select
+            <x-ts-select.native
                 label="{{ __('backups.filter_status') }}"
                 wire:model.live="filterStatus"
                 :options="[

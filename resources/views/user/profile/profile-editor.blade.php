@@ -91,11 +91,10 @@
                             <p class="text-base-content/50 mb-4 text-xs">{{ __('profile.staff_information_desc') }}</p>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                <x-mary-select
+                                <x-ts-select.native
                                     :label="__('profile.employment_status')"
                                     wire:model="profileForm.employment_status"
-                                    :placeholder="__('profile.select_option')"
-                                    :options="\App\User\Enums\EmploymentStatus::options()"
+                                    :options="[null => __('profile.select_option')] + (\App\User\Enums\EmploymentStatus::options())"
                                     icon="briefcase"
                                 />
                                 <x-ts-input

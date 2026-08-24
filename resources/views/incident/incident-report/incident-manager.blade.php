@@ -1,19 +1,16 @@
 <x-core::ui.record-manager :title="__('incident.title')" :subtitle="__('incident.subtitle')">
     <x-slot:filters>
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.type"
-            :placeholder="__('incident.type')"
-            :options="collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray()"
+            :options="[null => __('incident.type')] + (collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray())"
         />
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.severity"
-            :placeholder="__('incident.severity')"
-            :options="collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+            :options="[null => __('incident.severity')] + (collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
         />
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.status"
-            :placeholder="__('incident.status')"
-            :options="collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+            :options="[null => __('incident.status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
         />
     </x-slot:filters>
 
@@ -94,7 +91,7 @@
         <x-ts-modal wire="showResolveModal" :title="__('incident.resolve_title')" blur>
             <form wire:submit="saveResolve">
                 <div class="space-y-5">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('incident.status')"
                         wire:model="resolveData.status"
                         :options="['resolved' => __('incident.statuses.resolved'), 'closed' => __('incident.statuses.closed')]"
@@ -133,12 +130,12 @@
                         wire:model="editData.incident_date"
                     />
                     <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('incident.type')"
                             wire:model="editData.type"
                             :options="collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray()"
                         />
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('incident.severity')"
                             wire:model="editData.severity"
                             :options="collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"

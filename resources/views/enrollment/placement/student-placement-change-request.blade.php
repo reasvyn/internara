@@ -36,11 +36,10 @@
 
             <form wire:submit="submit">
                 <div class="space-y-5">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('placement_change.target_placement')"
                         wire:model="form.to_placement_id"
-                        :placeholder="__('placement_change.target_placeholder')"
-                        :options="$availablePlacements"
+                        :options="[null => __('placement_change.target_placeholder')] + ($availablePlacements)"
                         option-label="company.name"
                         option-value="id"
                     />

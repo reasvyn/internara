@@ -179,11 +179,10 @@
                     required
                 />
             </div>
-            <x-mary-select
+            <x-ts-select.native
                 :label="__('assessment.evaluator_role')"
                 wire:model="competencyForm.evaluator_role"
-                :options="$this->evaluatorRoles"
-                :placeholder="__('assessment.select_role')"
+                :options="[null => __('assessment.select_role')] + ($this->evaluatorRoles)"
                 required
             />
             <x-slot:actions>

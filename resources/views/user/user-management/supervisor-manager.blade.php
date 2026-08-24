@@ -107,11 +107,10 @@
                     </div>
                     <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-ts-input :label="__('user.supervisor.phone')" wire:model="form.phone" icon="phone" />
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('user.supervisor.company')"
                             wire:model="form.company_id"
-                            :placeholder="__('user.supervisor.company_placeholder')"
-                            :options="$this->companies"
+                            :options="[null => __('user.supervisor.company_placeholder')] + ($this->companies)"
                             icon="building-office"
                         />
                     </div>

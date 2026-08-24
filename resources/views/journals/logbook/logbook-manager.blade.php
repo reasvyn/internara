@@ -21,15 +21,13 @@
                     <x-ts-button icon="adjustments-horizontal" color="white" sm :text="__('common.actions.filters')" />
                 </x-slot:trigger>
                 <div class="w-72 space-y-4 p-4">
-                    <x-mary-select
+                    <x-ts-select.native
                         wire:model.live="filters.status"
-                        :placeholder="__('logbook.status')"
-                        :options="['draft' => __('logbook.statuses.draft'), 'submitted' => __('logbook.statuses.submitted'), 'verified' => __('logbook.statuses.verified')]"
+                        :options="[null => __('logbook.status')] + (['draft' => __('logbook.statuses.draft'), 'submitted' => __('logbook.statuses.submitted'), 'verified' => __('logbook.statuses.verified')])"
                     />
-                    <x-mary-select
+                    <x-ts-select.native
                         wire:model.live="filters.is_verified"
-                        :placeholder="__('logbook.verified')"
-                        :options="['yes' => __('logbook.verified'), 'no' => __('logbook.unverified')]"
+                        :options="[null => __('logbook.verified')] + (['yes' => __('logbook.verified'), 'no' => __('logbook.unverified')])"
                     />
                 </div>
             </x-ts-dropdown>
@@ -213,11 +211,10 @@
     <x-ts-modal wire="showModal" :title="$this->form->id ? __('logbook.edit') : __('logbook.new')" separator blur>
         <div class="space-y-6">
             @if (! $this->form->id)
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('logbook.student')"
                     wire:model="form.user_id"
-                    :options="$this->students"
-                    :placeholder="__('logbook.select_student')"
+                    :options="[null => __('logbook.select_student')] + ($this->students)"
                     class="border-base-300 rounded-xl"
                 />
             @endif

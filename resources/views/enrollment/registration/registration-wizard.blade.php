@@ -10,11 +10,10 @@
     <x-mary-card>
         @if ($step === 1)
             <div class="grid grid-cols-1 gap-4">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('registration.wizard.step_program')"
                     wire:model.live="form.internship_id"
-                    :options="$this->internships"
-                    :placeholder="__('registration.wizard.step_program')"
+                    :options="[null => __('registration.wizard.step_program')] + ($this->internships)"
                 />
 
                 <x-ts-input
@@ -25,11 +24,10 @@
             </div>
         @elseif ($step === 2)
             <div class="grid grid-cols-1 gap-4">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('registration.wizard.step_placement')"
                     wire:model="form.placement_id"
-                    :options="$this->placements"
-                    :placeholder="__('registration.wizard.step_placement')"
+                    :options="[null => __('registration.wizard.step_placement')] + ($this->placements)"
                     :hint="__('registration.wizard.propose_hint')"
                 />
 

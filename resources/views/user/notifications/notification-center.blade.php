@@ -6,13 +6,12 @@
 
     <x-mary-card class="bg-base-100 border-base-content/10 border">
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <x-mary-select
+            <x-ts-select.native
                 wire:model.live="filters.status"
-                :options="[
+                :options="[null => __('notifications.ui.all_status')] + ([
                     ['id' => 'unread', 'name' => __('notifications.ui.unread')],
                     ['id' => 'read', 'name' => __('notifications.ui.read')],
-                ]"
-                :placeholder="__('notifications.ui.all_status')"
+                ])"
                 clearable
                 class="sm:max-w-xs"
                 aria-label="{{ __('notifications.ui.all_status') }}"

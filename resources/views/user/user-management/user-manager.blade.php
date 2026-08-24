@@ -238,7 +238,7 @@
     <x-ts-modal wire="showStatusModal" :title="__('user.manager.change_status')" separator blur>
         <form wire:submit="changeStatus" class="space-y-5">
             <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('user.manager.new_status')"
                     wire:model="selectedStatus"
                     :options="$this->statusOptions"
@@ -300,7 +300,7 @@
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-ts-input :label="__('user.fields.phone')" wire:model="form.phone" icon="phone" />
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('user.fields.gender')"
                             wire:model="form.gender"
                             :options="[['id' => 'L', 'name' => __('common.male')], ['id' => 'P', 'name' => __('common.female')]]"

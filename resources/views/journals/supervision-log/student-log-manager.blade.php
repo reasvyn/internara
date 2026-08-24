@@ -40,7 +40,7 @@
     <x-slot:modal>
         <x-ts-modal wire="showModal" :title="__('journals.new_log')" separator blur>
             <form wire:submit="save" class="space-y-5">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('journals.supervisor')"
                     wire:model="supervisorId"
                     :options="$this->supervisors->map(fn ($s) => ['id' => $s->id, 'name' => $s->name])"

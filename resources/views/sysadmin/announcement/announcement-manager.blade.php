@@ -25,7 +25,7 @@
                         :hint="__('announcement.markdown_hint')"
                     />
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('announcement.fields.type')"
                             wire:model="form.type"
                             :options="[

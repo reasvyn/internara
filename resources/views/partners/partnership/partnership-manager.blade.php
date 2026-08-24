@@ -160,13 +160,12 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('partnership.identity') }}
                     </p>
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('partnership.company')"
                         wire:model="form.company_id"
-                        :options="$this->companies"
+                        :options="[null => __('partnership.company_placeholder')] + ($this->companies)"
                         option-label="name"
                         option-value="id"
-                        :placeholder="__('partnership.company_placeholder')"
                         icon="building-office"
                     />
                     <x-ts-input

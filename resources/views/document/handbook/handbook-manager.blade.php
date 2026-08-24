@@ -55,7 +55,7 @@
         <x-ts-modal wire="showModal" :title="$form->id ? __('handbook.edit') : __('handbook.create')" separator blur>
             <form wire:submit="save" class="space-y-5">
                 <x-ts-input :label="__('handbook.title_field')" wire:model="form.title" icon="document-text" />
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('handbook.target_audience')"
                     wire:model="form.audience"
                     :options="$this->audienceOptions"

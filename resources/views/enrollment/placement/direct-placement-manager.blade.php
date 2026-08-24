@@ -8,11 +8,10 @@
     <x-mary-card>
         <form wire:submit="submit">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('placement.direct_placement.student')"
                     wire:model="form.student_id"
-                    :options="$this->students"
-                    :placeholder="__('placement.direct_placement.select_student')"
+                    :options="[null => __('placement.direct_placement.select_student')] + ($this->students)"
                     icon="user"
                 />
 
@@ -22,20 +21,18 @@
                     placeholder="e.g. 2025/2026"
                 />
 
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('placement.direct_placement.placement')"
                     wire:model="form.placement_id"
-                    :options="$this->placements"
-                    :placeholder="__('placement.direct_placement.select_placement')"
+                    :options="[null => __('placement.direct_placement.select_placement')] + ($this->placements)"
                     class="md:col-span-2"
                     icon="briefcase"
                 />
 
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('placement.direct_placement.mentors')"
                     wire:model="form.mentor_ids"
-                    :options="$this->mentors"
-                    :placeholder="__('placement.direct_placement.select_mentors')"
+                    :options="[null => __('placement.direct_placement.select_mentors')] + ($this->mentors)"
                     multiple
                     class="md:col-span-2"
                     icon="user-group"

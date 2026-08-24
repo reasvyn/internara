@@ -52,7 +52,7 @@
         <form wire:submit="saveTemplate">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <x-ts-input :label="__('document.template_name')" wire:model="templateData.title" />
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('document.category')"
                     wire:model="templateData.type"
                     :options="$this->categories()"

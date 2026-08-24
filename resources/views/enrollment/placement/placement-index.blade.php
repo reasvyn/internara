@@ -34,16 +34,14 @@
     </x-slot:stats>
 
     <x-slot:filters>
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.company_id"
-            :options="$this->companies"
-            :placeholder="__('placement.filter_by_company')"
+            :options="[null => __('placement.filter_by_company')] + ($this->companies)"
             clearable
         />
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.internship_id"
-            :options="$this->internships"
-            :placeholder="__('placement.filter_by_batch')"
+            :options="[null => __('placement.filter_by_batch')] + ($this->internships)"
             clearable
         />
     </x-slot:filters>
@@ -130,17 +128,15 @@
                         :placeholder="__('placement.name_placeholder')"
                     />
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('placement.company')"
                             wire:model="form.company_id"
-                            :options="$this->companies"
-                            :placeholder="__('placement.company_placeholder')"
+                            :options="[null => __('placement.company_placeholder')] + ($this->companies)"
                         />
-                        <x-mary-select
+                        <x-ts-select.native
                             :label="__('placement.batch')"
                             wire:model="form.internship_id"
-                            :options="$this->internships"
-                            :placeholder="__('placement.internship_placeholder')"
+                            :options="[null => __('placement.internship_placeholder')] + ($this->internships)"
                         />
                         <x-ts-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
                     </div>

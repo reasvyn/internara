@@ -7,10 +7,9 @@
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.status"
-            :placeholder="__('assessment.presentation_status')"
-            :options="collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+            :options="[null => __('assessment.presentation_status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
         />
     </x-slot:filters>
 
@@ -67,11 +66,10 @@
         >
             <form wire:submit="saveSchedule">
                 <div class="space-y-5">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('assessment.presentation_registration')"
                         wire:model="scheduleData.registration_id"
-                        :placeholder="__('assessment.presentation_registration_placeholder')"
-                        :options="$this->activeRegistrations ?? []"
+                        :options="[null => __('assessment.presentation_registration_placeholder')] + ($this->activeRegistrations ?? [])"
                         option-label="name"
                         option-value="id"
                     />
@@ -81,7 +79,7 @@
                         type="datetime-local"
                     />
                     <x-ts-input :label="__('assessment.presentation_location')" wire:model="scheduleData.location" />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('assessment.presentation_examiners')"
                         wire:model="scheduleData.examiner_ids"
                         :options="$this->teachers"
