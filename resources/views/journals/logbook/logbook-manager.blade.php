@@ -1,10 +1,10 @@
 <div class="p-8">
     {{-- Header Section --}}
-    <x-mary-header :title="__('logbook.title')" :subtitle="__('logbook.subtitle')" separator progress-indicator>
+    <x-core::ui.page-header :title="__('logbook.title')" :description="__('logbook.subtitle')">
         <x-slot:actions>
             <x-ts-button :text="__('logbook.new')" icon="plus" color="primary" wire:click="create" />
         </x-slot:actions>
-    </x-mary-header>
+    </x-core::ui.page-header>
 
     {{-- Controls Section --}}
     <div class="mb-6 flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
@@ -17,9 +17,9 @@
                 class="border-base-300 focus:border-primary flex-1 rounded-2xl shadow-sm transition-all duration-300"
             />
             <x-ts-dropdown>
-                <x-slot:trigger>
+                <x-slot:action>
                     <x-ts-button icon="adjustments-horizontal" color="white" sm :text="__('common.actions.filters')" />
-                </x-slot:trigger>
+                </x-slot:action>
                 <div class="w-72 space-y-4 p-4">
                     <x-ts-select.native
                         wire:model.live="filters.status"

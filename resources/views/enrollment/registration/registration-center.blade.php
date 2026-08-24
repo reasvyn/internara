@@ -1,5 +1,8 @@
 <div>
-    <x-mary-header :title="__('registration.center.title')" :subtitle="__('registration.center.subtitle')" separator />
+    <x-core::ui.page-header
+        :title="__('registration.center.title')"
+        :description="__('registration.center.subtitle')"
+    />
 
     @if ($this->openInternships->isEmpty())
         <div class="flex flex-col items-center justify-center py-24 text-center">

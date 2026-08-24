@@ -1,14 +1,12 @@
 <div class="p-8">
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('journals.supervision.title')"
-        :subtitle="__('journals.supervision.subtitle')"
-        separator
-        progress-indicator
+        :description="__('journals.supervision.subtitle')"
     >
         <x-slot:actions>
             <x-ts-button :text="__('journals.supervision.log_new')" icon="plus" color="primary" wire:click="create" />
         </x-slot:actions>
-    </x-mary-header>
+    </x-core::ui.page-header>
 
     <x-ts-card class="bg-base-100 border-base-200 border">
         @php

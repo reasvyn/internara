@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('registration.account_application.title')"
-        :subtitle="__('registration.account_application.subtitle')"
-        separator
+        :description="__('registration.account_application.subtitle')"
     />
 
     <x-ts-card shadowless>

@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('sysadmin.clone_detection.title')"
-        :subtitle="__('sysadmin.clone_detection.subtitle')"
-        separator
+        :description="__('sysadmin.clone_detection.subtitle')"
     />
 
     <x-ts-card shadowless>

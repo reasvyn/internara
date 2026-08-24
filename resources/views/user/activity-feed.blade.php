@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('profile.activity_feed.title')"
-        :subtitle="__('profile.activity_feed.subtitle')"
-        separator
+        :description="__('profile.activity_feed.subtitle')"
     />
 
     <x-ts-card shadowless>

@@ -1,5 +1,8 @@
 <div>
-    <x-mary-header :title="__('registration.wizard.title')" :subtitle="__('registration.wizard.subtitle')" separator />
+    <x-core::ui.page-header
+        :title="__('registration.wizard.title')"
+        :description="__('registration.wizard.subtitle')"
+    />
 
     <ul class="steps steps-vertical lg:steps-horizontal mb-8 w-full">
         <li class="step {{ $step >= 1 ? 'step-primary' : '' }}">{{ __('registration.wizard.step_program') }}</li>

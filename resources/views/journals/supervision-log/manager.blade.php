@@ -1,9 +1,7 @@
 <div class="p-8">
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('journals.supervision.logs_title')"
-        :subtitle="__('journals.supervision.logs_subtitle')"
-        separator
-        progress-indicator
+        :description="__('journals.supervision.logs_subtitle')"
     />
 
     @if (! $registration)

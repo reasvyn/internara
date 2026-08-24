@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('placement.direct_placement.title')"
-        :subtitle="__('placement.direct_placement.subtitle')"
-        separator
+        :description="__('placement.direct_placement.subtitle')"
     />
 
     <x-ts-card shadowless>

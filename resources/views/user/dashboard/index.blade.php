@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('dashboard.title')"
-        :subtitle="__('dashboard.welcome_back', ['name' => auth()->user()->name])"
-        separator
+        :description="__('dashboard.welcome_back', ['name' => auth()->user()->name])"
     />
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
