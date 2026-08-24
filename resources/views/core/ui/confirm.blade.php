@@ -1,20 +1,24 @@
 @props([
     'title' => __('common.actions.confirm_action'),
     'message' => '',
-    'icon' => 'o-exclamation-triangle',
+    'icon' => 'exclamation-triangle',
     'confirmText' => __('common.actions.confirm'),
     'cancelText' => __('common.actions.cancel'),
     'confirmClass' => 'btn-error',
 ])
 
-<x-mary-modal wire:model="showConfirm" :title="$title" class="backdrop-blur-sm">
+@php $tsIcon = str_starts_with($icon, 'o-') ? substr($icon, 2) : $icon; @endphp
+
+<x-ts-modal wire="showConfirm" :title="$title" blur>
     <div class="flex items-start gap-4">
-        <x-mary-icon :name="$icon" class="size-6 text-warning shrink-0 mt-0.5" />
-        <p class="text-sm text-base-content/80">{{ $message }}</p>
+        <x-ts-icon :name="$tsIcon" class="text-warning mt-0.5 size-6 shrink-0" />
+        <p class="text-base-content/80 text-sm">{{ $message }}</p>
     </div>
 
-    <x-slot:actions>
-        <x-mary-button :label="$cancelText" wire:click="$set('showConfirm', false)" class="btn-ghost btn-sm" />
-        <x-mary-button :label="$confirmText" wire:click="confirmAction" :class="'btn-sm ' . $confirmClass" spinner="confirmAction" />
-    </x-slot:actions>
-</x-mary-modal>
+    <x-slot:footer>
+        <div class="flex justify-end gap-2">
+            <x-ts-button :text="$cancelText" color="white" sm wire:click="$set('showConfirm', false)" />
+            <x-ts-button :text="$confirmText" color="red" sm wire:click="confirmAction" wire:loading.attr="disabled" />
+        </div>
+    </x-slot:footer>
+</x-ts-modal>

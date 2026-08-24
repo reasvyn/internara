@@ -2,13 +2,16 @@
     'label',
     'icon',
     'link' => '#',
-    'color' => 'btn-primary',
+    'color' => 'primary',
 ])
 
-<x-mary-button
-    :label="$label"
-    :icon="$icon"
-    :link="$link"
-    :class="$color . ' h-20 rounded-xl font-medium shadow-none w-full'"
+@php $tsIcon = str_starts_with($icon, 'o-') ? substr($icon, 2) : (str_starts_with($icon, 's-') ? substr($icon, 2) : $icon); @endphp
+
+<x-ts-button
+    :text="$label"
+    :icon="$tsIcon"
+    :href="$link"
+    :color="$color"
+    class="h-20 w-full rounded-xl font-medium shadow-none"
     wire:navigate
 />
