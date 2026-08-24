@@ -28,8 +28,6 @@
         "laravel/pulse": "*",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
-        "php-flasher/flasher-laravel": "^2.4",
-        "robsontenorio/mary": "^2.4",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-status": "^1.18",
@@ -144,10 +142,7 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": [
-                "robsontenorio/mary",
-                "php-flasher/flasher-laravel"
-            ]
+            "dont-discover": []
         }
     },
     "config": {
