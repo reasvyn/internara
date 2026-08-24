@@ -65,7 +65,7 @@
                         {{ __('internship.identity') }}
                     </p>
                     <x-ts-input :label="__('internship.group_name')" wire:model="form.name" icon="user-group" />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('internship.title')"
                         wire:model="form.internship_id"
                         :options="$this->internships"
@@ -111,7 +111,7 @@
                             <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                                 {{ __('internship.member') }} #{{ $index + 1 }}
                             </p>
-                            <x-mary-select
+                            <x-ts-select.native
                                 :label="__('internship.member_role')"
                                 wire:model="memberFormData.{{ $index }}.role"
                                 :options="$this->roleOptions"

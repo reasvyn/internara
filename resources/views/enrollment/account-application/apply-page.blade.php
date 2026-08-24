@@ -60,11 +60,10 @@
                     <hr class="my-2" />
                 </div>
 
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('registration.wizard.step_program')"
                     wire:model.live="form.internship_id"
-                    :options="$this->internships"
-                    :placeholder="__('registration.account_application.select_program')"
+                    :options="[null => __('registration.account_application.select_program')] + ($this->internships)"
                     required
                     class="md:col-span-2"
                 />
@@ -90,11 +89,10 @@
                 </div>
 
                 @if ($form->use_placement)
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('registration.account_application.available_placement')"
                         wire:model="form.placement_id"
-                        :options="$this->placements"
-                        :placeholder="__('registration.account_application.select_placement')"
+                        :options="[null => __('registration.account_application.select_placement')] + ($this->placements)"
                         class="md:col-span-2"
                     />
                 @else

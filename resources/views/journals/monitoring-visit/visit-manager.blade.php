@@ -49,14 +49,17 @@
     <x-slot:modal>
         <x-ts-modal wire="showModal" :title="__('journals.record_visit')" separator blur>
             <form wire:submit="save" class="space-y-5">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('journals.student')"
                     wire:model="registrationId"
-                    :options="$this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name])"
-                    :placeholder="__('journals.select_student')"
+                    :options="[null => __('journals.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
                 />
                 <x-ts-input :label="__('journals.visit_date')" wire:model="visitDate" type="date" icon="calendar" />
-                <x-mary-select :label="__('journals.method')" wire:model="method" :options="$this->methodOptions" />
+                <x-ts-select.native
+                    :label="__('journals.method')"
+                    wire:model="method"
+                    :options="$this->methodOptions"
+                />
                 <x-ts-input :label="__('journals.location')" wire:model="location" icon="map-pin" />
                 <div class="grid grid-cols-2 gap-4">
                     <x-ts-input

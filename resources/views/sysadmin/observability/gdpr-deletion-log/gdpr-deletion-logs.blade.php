@@ -10,15 +10,11 @@
                 :placeholder="__('sysadmin.gdpr_logs.search_placeholder')"
                 class="w-72"
             />
-            <x-mary-select
-                wire:model.live="filterType"
-                :placeholder="__('sysadmin.gdpr_logs.type_placeholder')"
-                class="w-48"
-            >
+            <x-ts-select.native wire:model.live="filterType" class="w-48">
                 <option value="">All types</option>
                 <option value="anonymization">Anonymization</option>
                 <option value="permanent_deletion">Permanent Deletion</option>
-            </x-mary-select>
+            </x-ts-select.native>
         </div>
 
         <x-mary-table :headers="$headers" :rows="$logs" :sort-by="$sortBy" link="/admin/gdpr-logs/{id}" with-pagination>

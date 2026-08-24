@@ -11,10 +11,9 @@
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.status"
-            :placeholder="__('certificate.filter_status')"
-            :options="collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+            :options="[null => __('certificate.filter_status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
         />
     </x-slot:filters>
 
@@ -58,19 +57,17 @@
         <x-ts-modal wire="showIssueModal" :title="__('certificate.issue_title')" blur>
             <form wire:submit="saveIssue">
                 <div class="space-y-5">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('certificate.registration')"
                         wire:model="issueRegistrationId"
-                        :placeholder="__('certificate.registration_placeholder')"
-                        :options="$this->activeRegistrations"
+                        :options="[null => __('certificate.registration_placeholder')] + ($this->activeRegistrations)"
                         option-label="name"
                         option-value="id"
                     />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('certificate.template')"
                         wire:model="issueTemplateId"
-                        :placeholder="__('certificate.template_placeholder')"
-                        :options="$this->templates"
+                        :options="[null => __('certificate.template_placeholder')] + ($this->templates)"
                         option-label="name"
                         option-value="id"
                     />
@@ -90,15 +87,14 @@
         <x-ts-modal wire="showBatchIssueModal" :title="__('certificate.batch_issue_title')" blur>
             <form wire:submit="saveBatchIssue">
                 <div class="space-y-5">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('certificate.template')"
                         wire:model="batchIssueTemplateId"
-                        :placeholder="__('certificate.template_placeholder')"
-                        :options="$this->templates"
+                        :options="[null => __('certificate.template_placeholder')] + ($this->templates)"
                         option-label="name"
                         option-value="id"
                     />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('certificate.batch_filter_status')"
                         wire:model="batchIssueFilter"
                         :options="['active' => __('certificate.filter_active_registrations'), 'completed' => __('certificate.filter_completed_registrations')]"

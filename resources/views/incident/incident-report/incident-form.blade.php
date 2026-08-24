@@ -4,11 +4,10 @@
     <form wire:submit="save">
         <x-mary-card>
             <div class="space-y-5">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('incident.registration')"
                     wire:model="formData.registration_id"
-                    :placeholder="__('incident.registration_placeholder')"
-                    :options="$registrations"
+                    :options="[null => __('incident.registration_placeholder')] + ($registrations)"
                     option-label="internship.name"
                     option-value="id"
                 />
@@ -16,17 +15,15 @@
                 <x-ts-input :label="__('incident.date')" wire:model="formData.incident_date" type="datetime-local" />
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('incident.type')"
                         wire:model="formData.type"
-                        :placeholder="__('incident.type_placeholder')"
-                        :options="['accident' => __('incident.types.accident'), 'safety_violation' => __('incident.types.safety_violation'), 'harassment' => __('incident.types.harassment'), 'disciplinary' => __('incident.types.disciplinary'), 'other' => __('incident.types.other')]"
+                        :options="[null => __('incident.type_placeholder')] + (['accident' => __('incident.types.accident'), 'safety_violation' => __('incident.types.safety_violation'), 'harassment' => __('incident.types.harassment'), 'disciplinary' => __('incident.types.disciplinary'), 'other' => __('incident.types.other')])"
                     />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('incident.severity')"
                         wire:model="formData.severity"
-                        :placeholder="__('incident.severity_placeholder')"
-                        :options="['low' => __('incident.severities.low'), 'medium' => __('incident.severities.medium'), 'high' => __('incident.severities.high'), 'critical' => __('incident.severities.critical')]"
+                        :options="[null => __('incident.severity_placeholder')] + (['low' => __('incident.severities.low'), 'medium' => __('incident.severities.medium'), 'high' => __('incident.severities.high'), 'critical' => __('incident.severities.critical')])"
                     />
                 </div>
 

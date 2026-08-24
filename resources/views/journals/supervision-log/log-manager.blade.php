@@ -60,11 +60,10 @@
     {{-- Form Modal --}}
     <x-ts-modal wire="showModal" :title="__('journals.supervision.log_session')" separator>
         <div class="space-y-6">
-            <x-mary-select
+            <x-ts-select.native
                 :label="__('journals.student')"
                 wire:model="registrationId"
-                :options="$this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name])"
-                :placeholder="__('journals.supervision.select_student')"
+                :options="[null => __('journals.supervision.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
             />
 
             <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="calendar" />

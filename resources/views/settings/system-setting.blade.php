@@ -26,7 +26,7 @@
                             wire:model="generalForm.brand_name"
                             icon="building-library"
                         />
-                        <x-mary-select
+                        <x-ts-select.native
                             label="{{ __('setting.fields.default_locale') }}"
                             wire:model="generalForm.default_locale"
                             :options="[
@@ -40,7 +40,7 @@
                             class="md:col-span-2"
                             icon="globe-alt"
                         />
-                        <x-mary-select
+                        <x-ts-select.native
                             label="{{ __('setting.fields.active_academic_year') }}"
                             wire:model="generalForm.active_academic_year"
                             :options="$this->academicYearOptions"
@@ -175,7 +175,7 @@
                             wire:model="mailSettingsForm.mail_port"
                             icon="numbered-list"
                         />
-                        <x-mary-select
+                        <x-ts-select.native
                             label="{{ __('setting.fields.mail_encryption') }}"
                             wire:model="mailSettingsForm.mail_encryption"
                             :options="[['id' => 'tls', 'name' => __('setting.encryptions.tls')], ['id' => 'ssl', 'name' => __('setting.encryptions.ssl')], ['id' => 'none', 'name' => __('setting.encryptions.none')]]"

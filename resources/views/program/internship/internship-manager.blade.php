@@ -169,7 +169,7 @@
                         :placeholder="__('internship.name_placeholder')"
                         icon="academic-cap"
                     />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('internship.academic_year')"
                         wire:model="form.academic_year_id"
                         :options="$this->academicYears"
@@ -225,7 +225,7 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('internship.configuration') }}
                     </p>
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('internship.status')"
                         wire:model="form.status"
                         :options="$this->statusOptions"

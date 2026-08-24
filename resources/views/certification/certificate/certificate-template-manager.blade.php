@@ -41,7 +41,7 @@
             <form wire:submit="saveTemplate">
                 <div class="space-y-5">
                     <x-ts-input :label="__('certificate.template_name')" wire:model="formData.name" />
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('certificate.layout')"
                         wire:model="formData.layout"
                         :options="['portrait' => __('certificate.layout_portrait'), 'landscape' => __('certificate.layout_landscape')]"

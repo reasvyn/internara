@@ -29,22 +29,19 @@
             />
         </div>
         <div class="flex w-full gap-4 lg:w-auto">
-            <x-mary-select
+            <x-ts-select.native
                 wire:model.live="filters.status"
-                placeholder="{{ __('assignment.select_status') }}"
-                :options="['draft' => __('assignment.statuses.draft'), 'published' => __('assignment.statuses.published'), 'closed' => __('assignment.statuses.closed')]"
+                :options="[null => __('assignment.select_status')] + (['draft' => __('assignment.statuses.draft'), 'published' => __('assignment.statuses.published'), 'closed' => __('assignment.statuses.closed')])"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
-            <x-mary-select
+            <x-ts-select.native
                 wire:model.live="filters.is_mandatory"
-                placeholder="{{ __('assignment.select_mandatory') }}"
-                :options="['yes' => __('assignment.mandatory'), 'no' => __('assignment.optional')]"
+                :options="[null => __('assignment.select_mandatory')] + (['yes' => __('assignment.mandatory'), 'no' => __('assignment.optional')])"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
-            <x-mary-select
+            <x-ts-select.native
                 wire:model.live="filters.assignment_type"
-                placeholder="{{ __('assignment.select_type') }}"
-                :options="['project' => __('assignment.types.project'), 'report' => __('assignment.types.report'), 'essay' => __('assignment.types.essay')]"
+                :options="[null => __('assignment.select_type')] + (['project' => __('assignment.types.project'), 'report' => __('assignment.types.report'), 'essay' => __('assignment.types.essay')])"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
         </div>
@@ -189,19 +186,17 @@
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
             />
 
-            <x-mary-select
+            <x-ts-select.native
                 :label="__('assignment.type')"
                 wire:model="formData.assignment_type_id"
-                :options="$this->assignmentTypes->pluck('name', 'id')"
-                placeholder="{{ __('assignment.type_placeholder') }}"
+                :options="[null => __('assignment.type_placeholder')] + ($this->assignmentTypes->pluck('name', 'id'))"
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
             />
 
-            <x-mary-select
+            <x-ts-select.native
                 :label="__('assignment.internship')"
                 wire:model="formData.internship_id"
-                :options="$this->internships->pluck('name', 'id')"
-                placeholder="{{ __('assignment.internship_placeholder') }}"
+                :options="[null => __('assignment.internship_placeholder')] + ($this->internships->pluck('name', 'id'))"
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
             />
 

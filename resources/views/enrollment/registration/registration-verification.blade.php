@@ -78,19 +78,17 @@
             </div>
 
             <form wire:submit="confirmProcess">
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('registration.verification.placement')"
                     wire:model="placement_id"
-                    :options="$this->availablePlacements"
-                    :placeholder="__('registration.verification.select_placement')"
+                    :options="[null => __('registration.verification.select_placement')] + ($this->availablePlacements)"
                     icon="briefcase"
                 />
 
-                <x-mary-select
+                <x-ts-select.native
                     :label="__('registration.verification.assigned_mentors')"
                     wire:model="mentor_ids"
-                    :options="$this->mentors"
-                    :placeholder="__('registration.verification.select_mentors')"
+                    :options="[null => __('registration.verification.select_mentors')] + ($this->mentors)"
                     multiple
                     icon="user-group"
                 />

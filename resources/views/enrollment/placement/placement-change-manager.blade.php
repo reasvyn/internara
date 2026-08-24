@@ -1,9 +1,8 @@
 <x-core::ui.record-manager :title="__('placement_change.title')" :subtitle="__('placement_change.subtitle')">
     <x-slot:filters>
-        <x-mary-select
+        <x-ts-select.native
             wire:model.live="filters.status"
-            :placeholder="__('placement_change.status')"
-            :options="['pending' => __('placement_change.status_pending'), 'approved' => __('placement_change.status_approved'), 'rejected' => __('placement_change.status_rejected')]"
+            :options="[null => __('placement_change.status')] + (['pending' => __('placement_change.status_pending'), 'approved' => __('placement_change.status_approved'), 'rejected' => __('placement_change.status_rejected')])"
         />
     </x-slot:filters>
 

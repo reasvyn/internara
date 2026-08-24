@@ -140,7 +140,7 @@
                         />
                         <x-ts-input :label="__('user.student.nis')" wire:model="form.id_number" icon="document-text" />
                     </div>
-                    <x-mary-select
+                    <x-ts-select.native
                         :label="__('user.student.department')"
                         wire:model="form.department_id"
                         :options="$this->departments"
