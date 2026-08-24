@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('assessment.my_assessments')"
-        :subtitle="__('assessment.my_assessments_subtitle')"
-        separator
+        :description="__('assessment.my_assessments_subtitle')"
     />
 
     @forelse ($this->assessments as $assessment)

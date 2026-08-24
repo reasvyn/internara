@@ -4,11 +4,7 @@
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-ts-dropdown.items
-            :text="__('common.actions.import')"
-            icon="arrow-up-tray"
-            x-on:click="$refs.importCsvInput.click()"
-        />
+        <x-ts-dropdown.items :text="__('common.actions.import')" x-on:click="$refs.importCsvInput.click()" />
         <input x-ref="importCsvInput" type="file" accept=".csv" wire:model="importFile" class="hidden" />
         <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
         <x-ts-dropdown.items
@@ -68,7 +64,7 @@
 
     <x-core::ui.selection-bar>
         <x-ts-dropdown>
-            <x-slot:trigger>
+            <x-slot:action>
                 <x-ts-button
                     icon="chevron-down"
                     class="font-medium"
@@ -76,7 +72,7 @@
                     sm
                     :text="__('common.actions.bulk_actions')"
                 />
-            </x-slot:trigger>
+            </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items
                     :text="__('common.actions.export_selected')"

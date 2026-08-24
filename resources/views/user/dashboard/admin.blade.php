@@ -1,8 +1,7 @@
 <div>
-    <x-mary-header
+    <x-core::ui.page-header
         :title="__('dashboard.title')"
-        :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])"
-        separator
+        :description="__('dashboard.subtitle', ['name' => auth()->user()->name])"
     />
 
     {{-- People Overview --}}

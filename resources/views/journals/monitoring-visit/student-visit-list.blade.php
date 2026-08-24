@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header :title="__('journals.visit_title')" :subtitle="__('journals.visit_student_subtitle')" separator />
+    <x-core::ui.page-header :title="__('journals.visit_title')" :description="__('journals.visit_student_subtitle')" />
 
     <div class="space-y-4">
         @forelse ($this->visits as $visit)

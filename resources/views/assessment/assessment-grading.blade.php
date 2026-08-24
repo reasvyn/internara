@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header :title="__('assessment.grading')" :subtitle="__('assessment.grading_subtitle')" separator />
+    <x-core::ui.page-header :title="__('assessment.grading')" :description="__('assessment.grading_subtitle')" />
 
     @if ($this->assessment === null)
         <x-ts-card shadowless>

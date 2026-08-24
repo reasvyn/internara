@@ -1,10 +1,5 @@
 <div class="p-8">
-    <x-mary-header
-        :title="__('auth.recovery_slip.title')"
-        :subtitle="__('auth.recovery_slip.subtitle')"
-        separator
-        progress-indicator
-    />
+    <x-core::ui.page-header :title="__('auth.recovery_slip.title')" :description="__('auth.recovery_slip.subtitle')" />
 
     <div class="mx-auto max-w-2xl">
         <x-ts-card class="card-enterprise">

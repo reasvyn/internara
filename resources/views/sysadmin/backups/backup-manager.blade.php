@@ -4,12 +4,12 @@
 @endphp
 
 <div>
-    <x-mary-header :title="__('backups.title')" :subtitle="__('backups.subtitle')" separator>
+    <x-core::ui.page-header :title="__('backups.title')" :description="__('backups.subtitle')">
         <x-slot:actions>
-            <x-ts-dropdown label="{{ __('backups.create_button') }}" icon="arrow-path" class="btn-primary">
-                <x-slot:trigger>
+            <x-ts-dropdown>
+                <x-slot:action>
                     <x-ts-button text="{{ __('backups.create_button') }}" icon="arrow-path" color="primary" />
-                </x-slot:trigger>
+                </x-slot:action>
                 <x-ts-dropdown.items
                     text="{{ BackupType::DATABASE->label() }}"
                     wire:click="createBackup('{{ BackupType::DATABASE->value }}')"
@@ -27,7 +27,7 @@
                 />
             </x-ts-dropdown>
         </x-slot:actions>
-    </x-mary-header>
+    </x-core::ui.page-header>
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
         <x-mary-stat

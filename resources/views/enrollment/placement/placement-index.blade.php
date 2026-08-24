@@ -4,7 +4,7 @@
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-ts-dropdown.items :text="__('common.actions.import')" icon="arrow-up-tray" />
+        <x-ts-dropdown.items :text="__('common.actions.import')" />
         <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" />
         <x-ts-dropdown.items :text="__('common.actions.template')" icon="document-arrow-down" />
     </x-slot:extraMenu>
@@ -48,7 +48,7 @@
 
     <x-core::ui.selection-bar>
         <x-ts-dropdown>
-            <x-slot:trigger>
+            <x-slot:action>
                 <x-ts-button
                     icon="chevron-down"
                     class="font-medium"
@@ -56,7 +56,7 @@
                     sm
                     :text="__('common.actions.bulk_actions')"
                 />
-            </x-slot:trigger>
+            </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items
                     :text="__('common.actions.delete_selected')"

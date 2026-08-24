@@ -6,7 +6,6 @@
     <x-slot:extraMenu>
         <x-ts-dropdown.items
             :text="__('common.actions.import')"
-            icon="arrow-up-tray"
             @click="document.getElementById('import-csv').click()"
         />
         <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
@@ -63,7 +62,7 @@
 
     <x-core::ui.selection-bar>
         <x-ts-dropdown>
-            <x-slot:trigger>
+            <x-slot:action>
                 <x-ts-button
                     icon="chevron-down"
                     class="font-medium"
@@ -71,7 +70,7 @@
                     sm
                     :text="__('common.actions.bulk_actions')"
                 />
-            </x-slot:trigger>
+            </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items
                     :text="__('common.actions.export_selected')"
