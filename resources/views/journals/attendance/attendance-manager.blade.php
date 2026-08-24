@@ -6,7 +6,7 @@
         :description="__('journals.attendance.management_subtitle')"
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         <div class="mb-6 flex items-end gap-4">
             <div>
                 <x-ts-input wire:model.live="date" type="date" :label="__('journals.date')" class="w-48" />
@@ -108,5 +108,4 @@
                 />
             </div>
         @endif
-    </x-mary-card>
 </div>

@@ -3,7 +3,7 @@
 
     <x-core::ui.page-header :title="__('sysadmin.gdpr_logs.title')" />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         <div class="mb-4 flex gap-4">
             <x-ts-input
                 wire:model.live.debounce.300ms="search"
@@ -28,5 +28,4 @@
                 {{ $log->deleted_at?->format('Y-m-d H:i') }}
             @endscope
         </x-mary-table>
-    </x-mary-card>
 </div>

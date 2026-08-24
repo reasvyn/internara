@@ -5,7 +5,7 @@
     />
 
     @forelse ($certificates as $certificate)
-        <x-mary-card class="mb-4">
+        <x-ts-card shadowless class="mb-4">
             <div class="flex items-center justify-between">
                 <div>
                     <h3 class="font-semibold">{{ $certificate->certificate_number }}</h3>
@@ -20,13 +20,13 @@
                     </a>
                 </div>
             </div>
-        </x-mary-card>
+
     @empty
-        <x-mary-card>
+        <x-ts-card shadowless>
             <div class="p-6 text-center">
                 <x-ts-icon name="document" class="text-base-content/40 mx-auto mb-3 h-12 w-12" />
                 <p class="text-base-content/60">{{ __('certificate.no_certificates') }}</p>
             </div>
-        </x-mary-card>
+
     @endforelse
 </div>

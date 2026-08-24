@@ -1,9 +1,9 @@
 <div>
     @if ($registration)
-        <x-mary-card class="bg-base-100 border-base-content/10 border">
-            <x-slot:title>
+        <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+            <x-slot:header>
                 <span class="font-semibold">{{ __('registration.doc_upload_title') }}</span>
-            </x-slot:title>
+            </x-slot:header>
 
             <div class="space-y-4">
                 @foreach ($documents as $document)
@@ -40,7 +40,7 @@
                     </div>
                 @endif
             </div>
-        </x-mary-card>
+
     @else
         <div class="text-base-content/60 py-12 text-center">
             <x-ts-icon name="document" class="mb-3 size-12" />

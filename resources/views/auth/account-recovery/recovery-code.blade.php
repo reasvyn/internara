@@ -10,7 +10,7 @@
     </div>
 
     <div class="mx-auto max-w-lg">
-        <x-mary-card class="bg-base-100 border-base-content/10 border">
+        <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
             @if (! empty($codes))
                 <div class="space-y-5 text-center">
                     <div class="bg-success/10 text-success mx-auto flex size-14 items-center justify-center rounded-full">
@@ -97,17 +97,16 @@
                     />
                 </div>
             @endif
-        </x-mary-card>
 
-        <div class="mt-6 text-center">
-            <a
-                href="{{ route('profile') }}"
-                class="text-base-content/60 hover:text-primary inline-flex items-center gap-1.5 text-xs font-medium transition-colors"
-                wire:navigate
-            >
-                <x-ts-icon name="arrow-left" class="size-3" /> {{ __('profile.recovery.back') }}
-            </a>
-        </div>
+            <div class="mt-6 text-center">
+                <a
+                    href="{{ route('profile') }}"
+                    class="text-base-content/60 hover:text-primary inline-flex items-center gap-1.5 text-xs font-medium transition-colors"
+                    wire:navigate
+                >
+                    <x-ts-icon name="arrow-left" class="size-3" /> {{ __('profile.recovery.back') }}
+                </a>
+            </div>
     </div>
 
     @include('auth.account-recovery.components.recovery-guide')

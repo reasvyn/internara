@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         @if ($this->pendingRegistrations->isEmpty())
             <x-mary-alert
                 :title="__('registration.verification.empty')"
@@ -68,44 +68,43 @@
                 </table>
             </div>
         @endif
-    </x-mary-card>
 
-    <x-ts-modal wire="showProcessModal" :title="__('registration.verification.process_title')">
-        @if ($this->selectedRegistration)
-            <div class="bg-base-200 rounded-box mb-4 p-3">
-                <p class="font-medium">{{ $this->selectedRegistration->mentee?->user?->name }}</p>
-                <p class="text-sm text-gray-500">{{ $this->selectedRegistration->internship?->name }}</p>
-            </div>
-
-            <form wire:submit="confirmProcess">
-                <x-ts-select.native
-                    :label="__('registration.verification.placement')"
-                    wire:model="placement_id"
-                    :options="[null => __('registration.verification.select_placement')] + ($this->availablePlacements)"
-                    icon="briefcase"
-                />
-
-                <x-ts-select.native
-                    :label="__('registration.verification.assigned_mentors')"
-                    wire:model="mentor_ids"
-                    :options="[null => __('registration.verification.select_mentors')] + ($this->mentors)"
-                    multiple
-                    icon="user-group"
-                />
-
-                <div class="mt-6 flex justify-end gap-2">
-                    <x-ts-button
-                        :text="__('registration.verification.cancel')"
-                        wire:click="$set('showProcessModal', false)"
-                    />
-                    <x-ts-button
-                        :text="__('registration.verification.verify_place')"
-                        type="submit"
-                        icon="check"
-                        color="primary"
-                    />
+        <x-ts-modal wire="showProcessModal" :title="__('registration.verification.process_title')">
+            @if ($this->selectedRegistration)
+                <div class="bg-base-200 rounded-box mb-4 p-3">
+                    <p class="font-medium">{{ $this->selectedRegistration->mentee?->user?->name }}</p>
+                    <p class="text-sm text-gray-500">{{ $this->selectedRegistration->internship?->name }}</p>
                 </div>
-            </form>
-        @endif
-    </x-ts-modal>
+
+                <form wire:submit="confirmProcess">
+                    <x-ts-select.native
+                        :label="__('registration.verification.placement')"
+                        wire:model="placement_id"
+                        :options="[null => __('registration.verification.select_placement')] + ($this->availablePlacements)"
+                        icon="briefcase"
+                    />
+
+                    <x-ts-select.native
+                        :label="__('registration.verification.assigned_mentors')"
+                        wire:model="mentor_ids"
+                        :options="[null => __('registration.verification.select_mentors')] + ($this->mentors)"
+                        multiple
+                        icon="user-group"
+                    />
+
+                    <div class="mt-6 flex justify-end gap-2">
+                        <x-ts-button
+                            :text="__('registration.verification.cancel')"
+                            wire:click="$set('showProcessModal', false)"
+                        />
+                        <x-ts-button
+                            :text="__('registration.verification.verify_place')"
+                            type="submit"
+                            icon="check"
+                            color="primary"
+                        />
+                    </div>
+                </form>
+            @endif
+        </x-ts-modal>
 </div>

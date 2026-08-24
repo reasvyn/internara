@@ -10,7 +10,7 @@
             @if (isset($roleContent))
                 {{ $roleContent }}
             @else
-                <x-mary-card :title="__('dashboard.recent_activity')" separator>
+                <x-ts-card shadowless :header="__('dashboard.recent_activity')">
                     @forelse ($this->getRecentActivities() as $activity)
                         <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                             <div class="mt-1">
@@ -26,14 +26,14 @@
                     @empty
                         <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                     @endforelse
-                </x-mary-card>
+
             @endif
         </div>
 
         <div class="space-y-6">
             <x-core::widgets.profile-summary :showEdit="true" />
 
-            <x-mary-card :title="__('dashboard.recent_activity')" separator>
+            <x-ts-card shadowless :header="__('dashboard.recent_activity')">
                 @forelse ($this->getRecentActivities() as $activity)
                     <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                         <div class="mt-1">
@@ -51,34 +51,32 @@
                 @empty
                     <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
-            </x-mary-card>
 
-            <x-mary-card :title="__('dashboard.quick_links')" separator>
-                <div class="space-y-1">
-                    <x-core::widgets.quick-link
-                        :label="__('dashboard.edit_profile')"
-                        icon="user"
-                        link="{{ route('profile') }}"
-                    />
-                    <x-core::widgets.quick-link
-                        :label="__('profile.recovery.title')"
-                        icon="key"
-                        link="{{ route('profile.recovery') }}"
-                    />
-                    <x-core::widgets.quick-link
-                        :label="__('dashboard.notifications')"
-                        icon="bell"
-                        link="{{ route('notifications') }}"
-                    />
-                    @if (auth()->user()?->hasRole('super_admin'))
+                <x-ts-card shadowless :header="__('dashboard.quick_links')">
+                    <div class="space-y-1">
                         <x-core::widgets.quick-link
-                            :label="__('dashboard.system_settings')"
-                            icon="cog-6-tooth"
-                            link="{{ route('admin.settings') }}"
+                            :label="__('dashboard.edit_profile')"
+                            icon="user"
+                            link="{{ route('profile') }}"
                         />
-                    @endif
-                </div>
-            </x-mary-card>
+                        <x-core::widgets.quick-link
+                            :label="__('profile.recovery.title')"
+                            icon="key"
+                            link="{{ route('profile.recovery') }}"
+                        />
+                        <x-core::widgets.quick-link
+                            :label="__('dashboard.notifications')"
+                            icon="bell"
+                            link="{{ route('notifications') }}"
+                        />
+                        @if (auth()->user()?->hasRole('super_admin'))
+                            <x-core::widgets.quick-link
+                                :label="__('dashboard.system_settings')"
+                                icon="cog-6-tooth"
+                                link="{{ route('admin.settings') }}"
+                            />
+                        @endif
+                    </div>
         </div>
     </div>
 

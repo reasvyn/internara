@@ -14,7 +14,7 @@
     </div>
 
     @if ($showForm)
-        <x-mary-card class="bg-base-100 border-base-content/10 mb-6 border">
+        <x-ts-card shadowless class="bg-base-100 border-base-content/10 mb-6 border">
             <form wire:submit="save">
                 <div class="space-y-5">
                     <x-ts-input :label="__('announcement.fields.title')" wire:model="form.title" />
@@ -90,10 +90,10 @@
                     />
                 </div>
             </form>
-        </x-mary-card>
+
     @endif
 
-    <x-mary-card class="bg-base-100 border-base-content/10 border">
+    <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
         @if ($announcements->isEmpty())
             <div class="text-base-content/40 py-12 text-center text-sm">{{ __('announcement.empty') }}</div>
         @else
@@ -170,7 +170,6 @@
                 @endforeach
             </div>
         @endif
-    </x-mary-card>
 
-    @include('sysadmin.announcement.components.announcement-guide')
+        @include('sysadmin.announcement.components.announcement-guide')
 </div>

@@ -7,7 +7,7 @@
         <li class="step {{ $step >= 3 ? 'step-primary' : '' }}">{{ __('registration.wizard.step_finalize') }}</li>
     </ul>
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         @if ($step === 1)
             <div class="grid grid-cols-1 gap-4">
                 <x-ts-select.native
@@ -62,21 +62,22 @@
             </div>
         @endif
 
-        <x-slot:actions>
+        <div class="mt-6 flex justify-between gap-2">
             @if ($step > 1)
-                <x-ts-button :text="__('registration.wizard.previous')" wire:click="previousStep" />
+                <x-ts-button :text="__('registration.wizard.previous')" color="white" wire:click="previousStep" />
             @endif
 
-            @if ($step < 3)
-                <x-ts-button :text="__('registration.wizard.next')" wire:click="nextStep" color="primary" />
-            @else
-                <x-ts-button
-                    :text="__('registration.wizard.submit')"
-                    wire:click="submit"
-                    icon="check"
-                    color="primary"
-                />
-            @endif
-        </x-slot:actions>
-    </x-mary-card>
+            <div class="flex gap-2">
+                @if ($step < 3)
+                    <x-ts-button :text="__('registration.wizard.next')" wire:click="nextStep" color="primary" />
+                @else
+                    <x-ts-button
+                        :text="__('registration.wizard.submit')"
+                        wire:click="submit"
+                        icon="check"
+                        color="primary"
+                    />
+                @endif
+            </div>
+        </div>
 </div>

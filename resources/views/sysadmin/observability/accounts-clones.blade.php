@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         @forelse ($clones as $clone)
             <div class="border-base-200 border-b py-3 last:border-b-0">
                 <div class="flex items-start gap-3">
@@ -22,5 +22,4 @@
                 <p>{{ __('sysadmin.clone_detection.no_suspicious') }}</p>
             </div>
         @endforelse
-    </x-mary-card>
 </div>

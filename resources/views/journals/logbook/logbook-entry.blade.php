@@ -17,7 +17,7 @@
     </x-mary-header>
 
     <div class="grid grid-cols-1 gap-6">
-        <x-mary-card shadow class="card-enterprise">
+        <x-ts-card class="card-enterprise">
             @php
                 $headers = [
                     ['key' => 'date', 'label' => __('logbook.date')],
@@ -74,7 +74,6 @@
                     @endscope
                 </x-mary-table>
             </div>
-        </x-mary-card>
     </div>
 
     {{-- Form Modal --}}

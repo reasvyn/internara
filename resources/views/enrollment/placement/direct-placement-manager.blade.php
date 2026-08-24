@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         <form wire:submit="submit">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <x-ts-select.native
@@ -48,5 +48,4 @@
                 />
             </div>
         </form>
-    </x-mary-card>
 </div>

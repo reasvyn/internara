@@ -6,7 +6,7 @@
             @php $entity = $handbook->asHandbook(); @endphp
             @php $lastAck = $this->acknowledgments[$handbook->id] ?? null; @endphp
 
-            <x-mary-card :title="$entity->title()" separator class="shadow-sm">
+            <x-ts-card shadowless :header="$entity->title()" class="shadow-sm">
                 <div class="space-y-3">
                     @if ($entity->description())
                         <p class="text-base-content/70 text-sm">{{ $entity->description() }}</p>
@@ -39,7 +39,7 @@
                         />
                     </div>
                 </div>
-            </x-mary-card>
+
         @empty
             <div class="col-span-full">
                 <x-mary-alert :title="__('handbook.no_handbooks')" icon="information-circle" class="bg-base-200" />
