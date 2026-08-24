@@ -59,6 +59,64 @@
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+/**
+ * Self-hosted semantic palette (bridge off the DaisyUI plugin).
+ *
+ * Generates every color utility used in views (bg-base-100, text-primary,
+ * shadow-success, …) WITHOUT relying on the daisyui plugin's theme registry.
+ * Runtime values are overridden by:
+ *   1. Theme::cssVariables() inline <style> in core::layouts.base (branding,
+ *      base shades, primary/secondary/accent light+dark) — html[data-theme] scope
+ *   2. The coexisting daisyui theme blocks below (identical names/values)
+ * so removing the plugin later changes nothing visually.
+ */
+@theme {
+    --color-base-100: #ffffff;
+    --color-base-200: #f4f4f5;
+    --color-base-300: #e4e4e7;
+    --color-base-content: #1a1a1a;
+
+    --color-primary: #059669;
+    --color-primary-content: #ffffff;
+    --color-secondary: #6b7280;
+    --color-secondary-content: #ffffff;
+    --color-accent: #f97316;
+    --color-accent-content: #ffffff;
+
+    --color-neutral: oklch(50% 0 0);
+    --color-neutral-content: oklch(100% 0 0);
+    --color-info: oklch(60% 0.55 250); /* Bold Blue */
+    --color-info-content: oklch(100% 0 0);
+    --color-success: oklch(55% 0.58 150); /* Bold Green */
+    --color-success-content: oklch(100% 0 0);
+    --color-warning: oklch(70% 0.6 80); /* Bold Amber */
+    --color-warning-content: oklch(10% 0 0);
+    --color-error: oklch(55% 0.5 25); /* Muted Red */
+    --color-error-content: oklch(100% 0 0);
+}
+
+/* Static dark values for non-branding tokens; base-*/
+primary/secondary/accent
+    switch
+    dynamically
+    via
+    Theme::cssvariables()
+    under
+    html[data-theme='dark'].
+    */
+    [data-theme='dark'] {
+    --color-neutral: oklch(30% 0 0);
+    --color-neutral-content: oklch(95% 0 0);
+    --color-info: oklch(70% 0.38 250);
+    --color-info-content: oklch(10% 0 0);
+    --color-success: oklch(65% 0.42 150);
+    --color-success-content: oklch(10% 0 0);
+    --color-warning: oklch(75% 0.45 80);
+    --color-warning-content: oklch(10% 0 0);
+    --color-error: oklch(65% 0.38 25);
+    --color-error-content: oklch(10% 0 0);
+}
+
 @plugin "daisyui/theme" {
     name: 'light';
     default: true;
