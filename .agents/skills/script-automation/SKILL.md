@@ -9,9 +9,8 @@ description: >
 
 # Script Automation
 
-> **Last updated:** 2026-08-18 **Changes:** slimmed to index form — comprehensive rules (script
-> interface, output format, script structure, error handling, testing & performance, agent-skill
-> integration) now live in `rules/` and are mapped by the `## Skill Rules` table
+> **Last updated:** 2026-08-24 **Changes:** added one-off/few-off script rule — throwaway scripts
+> go to `/tmp`, never `scripts/` (Agent Workflow + Skill Handoffs)
 
 Standards for writing, maintaining, and integrating Python devtool scripts in `scripts/`.
 
@@ -25,6 +24,10 @@ follow the same decision discipline as other skills:
 - **Spec-first:** only add a scanner/script when a governing spec (or a documented automation need)
   justifies it. Never build a script to work around a one-off problem a reusable script already
   covers.
+- **One-off / few-off scripts NEVER go in `scripts/`:** a script used only a handful of times — a
+  single migration batch, temporary data fix, one-time conversion or bulk edit — must be written to
+  `/tmp` (e.g. `/tmp/migrate_x.py`), run, then discarded. `scripts/` is exclusively for durable,
+  reusable devtools with long-term value; committing throwaway scripts pollutes the toolchain.
 - **Reuse before create:** check `scripts/README.md` and the `## Automation Scripts` tables in other
   skills before writing a new script. If the pattern is covered, use the existing tool.
 - **Size-aware:** a multi-scanner initiative is **M/L** per the `agent-workflow` Size Triage — stage
@@ -47,6 +50,7 @@ follow the same decision discipline as other skills:
 | Condition                                 | Action                                                                                       |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Creating/modifying a script in `scripts/` | Follow this skill's template and interface                                                   |
+| One-off / few-off batch task (≤ a few runs) | Write to `/tmp`, run, discard — do **not** create it in `scripts/`                          |
 | A skill needs a new automation            | Check `scripts/README.md` + skill `## Automation Scripts` tables first (reuse-before-create) |
 | Script is a quality gate                  | Load `arch-guard` to integrate it into the Quality Gate Commands                             |
 | Multi-scanner initiative                  | Classify **M/L** per Size Triage; stage per script, inform user if **L**                     |
