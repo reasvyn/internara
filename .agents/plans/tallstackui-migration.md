@@ -1,5 +1,14 @@
 # TallstackUI Migration Plan — DaisyUI/MaryUI/PHPFlasher → TallstackUI v4
 
+> **STATUS: MIGRATION COMPLETE (2026-08-24).** `x-mary` usage across app + views = **0**
+> (`grep -rn x-mary resources app | grep -v vendor` → only intentional `not->toContain` test
+> guards). Flash/Toast, Theming, Localization, Layout, Accessibility, Custom Core, Forms
+> (incl. select/table/header/card/datepicker/stat/alert/file/collapse/choices/progress), Confirm
+> Dialog (`x-ts-dialog`) all migrated. Published vendor views tracked under
+> `resources/views/vendor/ts-ui` + `lang/vendor/ts-ui`. DaisyUI/mary/flasher packages retained in
+> manifests until explicit removal decision (FB792 DD-4 coexistence) — removal is the only open
+> follow-up, plus optional command-palette backend if spotlight replacement is wanted.
+>
 > **Last updated:** 2026-08-24 **Changes:** remap with custom core (25 files, 179 hits), 8 areas, detailed per-module counts (231 flash, 1222 mary, 449 daisy), updated impact-to-effort (Custom Core rank 5)
 > **Governing specs:** FB792 (FR-TS6, DD-4), J68GZ (FR-D10a), 8XMYS (DD-4), 52O1I (FR-T2/FR-L5, DD-6)
 > **Principle:** TallstackUI-first — always check `<x-ts-*>` before `maryUI`/`DaisyUI`/custom (FB792 FR-TS6a, NFR-DEP5)
