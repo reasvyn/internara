@@ -6,9 +6,9 @@
 
     <x-ts-card shadowless>
         @if ($this->pendingApplications->isEmpty())
-            <x-mary-alert
+            <x-ts-alert
                 :title="__('internship.applications.empty')"
-                :description="__('internship.applications.empty_desc')"
+                :text="__('internship.applications.empty_desc')"
                 icon="check-circle"
             />
         @else

@@ -63,7 +63,7 @@
                     :options="[null => __('journals.supervision.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
                 />
 
-                <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="calendar" />
+                <x-ts-date :label="__('journals.date')" wire:model="date" />
 
                 <x-ts-input
                     :label="__('journals.topic')"

@@ -74,12 +74,7 @@
     {{-- Form Modal --}}
     <x-ts-modal wire="showModal" :title="__('logbook.log_daily')" separator blur>
         <div class="space-y-6 py-4">
-            <x-mary-datepicker
-                :label="__('logbook.activity_date')"
-                wire:model="date"
-                icon="calendar"
-                class="rounded-2xl"
-            />
+            <x-ts-date :label="__('logbook.activity_date')" wire:model="date" class="rounded-2xl" />
 
             <x-ts-textarea
                 :label="__('logbook.activity_content')"

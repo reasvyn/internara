@@ -62,7 +62,7 @@
                 />
                 <x-ts-textarea :label="__('handbook.content_field')" wire:model="form.description" rows="3" />
                 <x-ts-toggle :label="__('handbook.active')" wire:model="form.isActive" />
-                <x-mary-file :label="__('handbook.file')" wire:model="uploadFile" accept="application/pdf" />
+                <x-ts-upload :label="__('handbook.file')" wire:model="uploadFile" />
 
                 <div class="mt-6 flex justify-end gap-2">
                     <x-ts-button

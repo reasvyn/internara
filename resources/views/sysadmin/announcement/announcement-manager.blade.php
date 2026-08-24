@@ -66,7 +66,7 @@
 
                         @if (! $form->sendToAll)
                             <div class="mt-4">
-                                <x-mary-choices
+                                <x-ts-checkbox.group
                                     :label="__('announcement.fields.target_roles')"
                                     wire:model="form.target_roles"
                                     :options="$roles"

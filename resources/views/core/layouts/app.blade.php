@@ -35,6 +35,4 @@
             <x-core::layouts.base.footer />
         </x-slot:footer>
     </x-ts-layout>
-
-    <x-mary-spotlight />
 </x-core::layouts.base>

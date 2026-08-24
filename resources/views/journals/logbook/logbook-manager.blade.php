@@ -218,12 +218,7 @@
                     />
                 @endif
 
-                <x-mary-datepicker
-                    :label="__('logbook.date')"
-                    wire:model="form.date"
-                    icon="calendar"
-                    class="border-base-300 rounded-xl"
-                />
+                <x-ts-date :label="__('logbook.date')" wire:model="form.date" class="border-base-300 rounded-xl" />
 
                 <x-ts-textarea
                     :label="__('logbook.content')"

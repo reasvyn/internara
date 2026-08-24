@@ -189,16 +189,8 @@
                         {{ __('internship.dates') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-datepicker
-                            :label="__('internship.start_date')"
-                            wire:model="form.start_date"
-                            icon="calendar"
-                        />
-                        <x-mary-datepicker
-                            :label="__('internship.end_date')"
-                            wire:model="form.end_date"
-                            icon="calendar"
-                        />
+                        <x-ts-date :label="__('internship.start_date')" wire:model="form.start_date" />
+                        <x-ts-date :label="__('internship.end_date')" wire:model="form.end_date" />
                     </div>
                 </div>
 
@@ -207,15 +199,13 @@
                         {{ __('internship.registration') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-datepicker
+                        <x-ts-date
                             :label="__('internship.registration_start_date')"
                             wire:model="form.registration_start_date"
-                            icon="clock"
                         />
-                        <x-mary-datepicker
+                        <x-ts-date
                             :label="__('internship.registration_end_date')"
                             wire:model="form.registration_end_date"
-                            icon="clock"
                         />
                     </div>
                 </div>

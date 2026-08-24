@@ -242,7 +242,7 @@
                         </div>
 
                         <div>
-                            <x-mary-file
+                            <x-ts-upload
                                 :label="__('submission.upload_file')"
                                 wire:model="file"
                                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"

@@ -30,27 +30,27 @@
     </x-core::ui.page-header>
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
-        <x-mary-stat
+        <x-ts-stats
             title="{{ __('backups.total') }}"
-            value="{{ $this->stats['total'] }}"
+            number="{{ $this->stats['total'] }}"
             icon="archive-box"
             class="bg-base-200"
         />
-        <x-mary-stat
+        <x-ts-stats
             title="{{ __('backups.completed') }}"
-            value="{{ $this->stats['completed'] }}"
+            number="{{ $this->stats['completed'] }}"
             icon="check-circle"
             class="text-success"
         />
-        <x-mary-stat
+        <x-ts-stats
             title="{{ __('backups.failed') }}"
-            value="{{ $this->stats['failed'] }}"
+            number="{{ $this->stats['failed'] }}"
             icon="exclamation-circle"
             class="text-error"
         />
-        <x-mary-stat
+        <x-ts-stats
             title="{{ __('backups.latest') }}"
-            value="{{ $this->stats['latest']?->asBackupState()->formattedSize() ?? '--' }}"
+            number="{{ $this->stats['latest']?->asBackupState()->formattedSize() ?? '--' }}"
             icon="clock"
             class="bg-base-200"
         />
