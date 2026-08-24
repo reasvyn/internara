@@ -115,7 +115,12 @@ class DepartmentManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('department.confirm_delete', ['name' => $department->name]);
-        $this->showConfirm = true;
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
@@ -127,7 +132,12 @@ class DepartmentManager extends BaseRecordManager
         $this->confirmTarget = null;
         $this->confirmType = 'delete_selected';
         $this->confirmMessage = __('department.confirm_delete_selected');
-        $this->showConfirm = true;
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteDepartmentAction $deleteAction): void
@@ -146,7 +156,6 @@ class DepartmentManager extends BaseRecordManager
             $this->toast()->error($e->getMessage())->send();
         }
 
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

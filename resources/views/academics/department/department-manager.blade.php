@@ -101,15 +101,6 @@
             </x-mary-table>
         </div>
 
-        {{-- Confirm Dialog --}}
-        <x-core::ui.confirm
-            wire:model="showConfirm"
-            :message="$confirmMessage"
-            confirmText="{{ __('common.actions.confirm') }}"
-            cancelText="{{ __('common.actions.cancel') }}"
-            confirmClass="btn-error"
-        />
-
         <x-slot:modal>
             <x-ts-modal wire="showModal" :title="$form->id ? __('department.edit') : __('department.new')" blur>
                 <form wire:submit="save">
