@@ -1,20 +1,20 @@
 <div>
     <x-core::ui.record-manager :title="__('department.title')" :subtitle="__('department.subtitle')">
         <x-slot:headerActions>
-            <x-mary-button :label="__('department.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+            <x-ts-button :text="__('department.add')" icon="plus" color="primary" sm wire:click="create" />
         </x-slot:headerActions>
 
         <x-slot:extraMenu>
-            <x-mary-menu-item
-                :title="__('common.actions.import')"
-                icon="o-arrow-up-tray"
+            <x-ts-dropdown.items
+                :text="__('common.actions.import')"
+                icon="arrow-up-tray"
                 @click="document.getElementById('import-csv').click()"
             />
             <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
-            <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
-            <x-mary-menu-item
-                :title="__('common.actions.template')"
-                icon="o-document-arrow-down"
+            <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
+            <x-ts-dropdown.items
+                :text="__('common.actions.template')"
+                icon="document-arrow-down"
                 wire:click="downloadTemplate"
             />
         </x-slot:extraMenu>
@@ -37,29 +37,22 @@
         </x-slot:stats>
 
         <x-core::ui.selection-bar>
-            <x-mary-dropdown>
-                <x-slot:trigger>
-                    <x-mary-button
-                        icon="o-chevron-down"
-                        class="btn-sm btn-primary font-medium"
-                        :label="__('common.actions.bulk_actions')"
-                    />
-                </x-slot:trigger>
-                <div class="w-48 p-1.5">
-                    <x-mary-menu-item
-                        :title="__('common.actions.export_selected')"
-                        icon="o-arrow-down-tray"
-                        wire:click="exportSelected"
-                    />
-                    <hr class="border-base-content/10" />
-                    <x-mary-menu-item
-                        :title="__('common.actions.delete_selected')"
-                        icon="o-trash"
-                        class="text-error"
-                        wire:click="askDeleteSelected"
-                    />
-                </div>
-            </x-mary-dropdown>
+            <x-ts-dropdown position="bottom-end">
+                <x-slot:action>
+                    <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" />
+                </x-slot:action>
+                <x-ts-dropdown.items
+                    :text="__('common.actions.export_selected')"
+                    icon="arrow-down-tray"
+                    wire:click="exportSelected"
+                />
+                <hr class="border-base-content/10 my-1" />
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
+                    wire:click="askDeleteSelected"
+                />
+            </x-ts-dropdown>
         </x-core::ui.selection-bar>
 
         <div class="overflow-x-auto">
@@ -89,15 +82,17 @@
 
                 @scope('actions', $department)
                     <div class="flex justify-end gap-1">
-                        <x-mary-button
-                            icon="o-pencil"
-                            class="btn-ghost btn-sm"
+                        <x-ts-button.circle
+                            icon="pencil"
+                            color="white"
+                            sm
                             wire:click="edit('{{ $department->id }}')"
                             :aria-label="__('common.actions.edit')"
                         />
-                        <x-mary-button
-                            icon="o-trash"
-                            class="btn-ghost btn-sm text-error"
+                        <x-ts-button.circle
+                            icon="trash"
+                            color="red"
+                            sm
                             wire:click="askDelete('{{ $department->id }}')"
                             :aria-label="__('common.actions.delete')"
                         />
@@ -116,41 +111,28 @@
         />
 
         <x-slot:modal>
-            <x-mary-modal
-                wire:model="showModal"
-                :title="$form->id ? __('department.edit') : __('department.new')"
-                class="backdrop-blur-sm"
-            >
-                <x-mary-form wire:submit="save">
+            <x-ts-modal wire="showModal" :title="$form->id ? __('department.edit') : __('department.new')" blur>
+                <form wire:submit="save">
                     <div class="space-y-5">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('department.name')"
                             wire:model="form.name"
                             :placeholder="__('department.name_placeholder')"
-                            icon="o-building-library"
+                            icon="building-library"
                         />
-                        <x-mary-textarea
-                            :label="__('department.description')"
-                            wire:model="form.description"
-                            rows="3"
-                            icon="o-document-text"
-                        />
+                        <x-ts-textarea :label="__('department.description')" wire:model="form.description" rows="3" />
                     </div>
-                    <x-slot:actions>
-                        <x-mary-button
-                            :label="__('common.actions.cancel')"
+                    <div class="mt-6 flex justify-end gap-2">
+                        <x-ts-button
+                            :text="__('common.actions.cancel')"
+                            color="white"
+                            sm
                             wire:click="$set('showModal', false)"
-                            class="btn-ghost btn-sm"
                         />
-                        <x-mary-button
-                            :label="__('department.save')"
-                            class="btn-primary btn-sm"
-                            type="submit"
-                            spinner="save"
-                        />
-                    </x-slot:actions>
-                </x-mary-form>
-            </x-mary-modal>
+                        <x-ts-button :text="__('department.save')" color="primary" sm type="submit" loading="save" />
+                    </div>
+                </form>
+            </x-ts-modal>
         </x-slot:modal>
     </x-core::ui.record-manager>
 
