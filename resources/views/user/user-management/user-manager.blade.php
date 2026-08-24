@@ -1,49 +1,44 @@
 <x-core::ui.record-manager :title="__('user.manager.title')" :subtitle="__('user.manager.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button
-            :label="__('user.manager.new')"
-            icon="o-plus"
-            class="btn-primary btn-sm"
-            wire:click="createUser"
-        />
+        <x-ts-button :text="__('user.manager.new')" icon="plus" color="primary" sm wire:click="createUser" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item
-            :title="__('common.actions.import')"
-            icon="o-arrow-up-tray"
+        <x-ts-dropdown.items
+            :text="__('common.actions.import')"
+            icon="arrow-up-tray"
             @click="document.getElementById('import-csv').click()"
         />
         <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
-        <x-mary-menu-item
-            :title="__('common.actions.template')"
-            icon="o-document-arrow-down"
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
+        <x-ts-dropdown.items
+            :text="__('common.actions.template')"
+            icon="document-arrow-down"
             wire:click="downloadTemplate"
         />
     </x-slot:extraMenu>
 
     <x-slot:stats>
         <x-core::widgets.stat-card
-            icon="o-users"
+            icon="users"
             :title="__('user.manager.stats_total')"
             :value="$this->stats['total']"
             color="text-primary"
         />
         <x-core::widgets.stat-card
-            icon="o-shield-check"
+            icon="shield-check"
             :title="__('user.manager.stats_admins')"
             :value="$this->stats['admins']"
             color="text-secondary"
         />
         <x-core::widgets.stat-card
-            icon="o-check-badge"
+            icon="check-badge"
             :title="__('user.manager.stats_active')"
             :value="$this->stats['active']"
             color="text-success"
         />
         <x-core::widgets.stat-card
-            icon="o-clock"
+            icon="clock"
             :title="__('user.manager.stats_pending')"
             :value="$this->stats['pending']"
             color="text-warning"
@@ -80,48 +75,44 @@
     </x-slot:filters>
 
     <x-slot:selectionBar>
-        <x-mary-dropdown>
+        <x-ts-dropdown>
             <x-slot:trigger>
-                <x-mary-button
-                    icon="o-chevron-down"
-                    class="btn-sm btn-primary"
-                    :label="__('common.actions.bulk_actions')"
-                />
+                <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
             <div class="w-52 p-1.5">
-                <x-mary-menu-item
-                    :title="__('user.manager.download_slips')"
-                    icon="o-document-arrow-down"
+                <x-ts-dropdown.items
+                    :text="__('user.manager.download_slips')"
+                    icon="document-arrow-down"
                     wire:click="downloadSelectedSlips"
                 />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item
-                    :title="__('user.manager.lock_selected')"
-                    icon="o-lock-closed"
+                <x-ts-dropdown.items
+                    :text="__('user.manager.lock_selected')"
+                    icon="lock-closed"
                     class="text-warning"
                     wire:click="lockSelected"
                 />
-                <x-mary-menu-item
-                    :title="__('user.manager.unlock_selected')"
-                    icon="o-lock-open"
+                <x-ts-dropdown.items
+                    :text="__('user.manager.unlock_selected')"
+                    icon="lock-open"
                     class="text-success"
                     wire:click="unlockSelected"
                 />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item
-                    :title="__('common.actions.export_selected')"
-                    icon="o-arrow-down-tray"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.export_selected')"
+                    icon="arrow-down-tray"
                     wire:click="exportSelected"
                 />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item
-                    :title="__('common.actions.delete_selected')"
-                    icon="o-trash"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
                     class="text-error"
                     wire:click="askDeleteSelected"
                 />
             </div>
-        </x-mary-dropdown>
+        </x-ts-dropdown>
     </x-slot:selectionBar>
 
     <x-mary-table
@@ -140,7 +131,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
                         @if ($user->hasRole('super_admin'))
-                            <x-mary-icon
+                            <x-ts-icon
                                 name="o-shield-check"
                                 class="text-primary size-4"
                                 :tooltip="__('user.manager.protected')"
@@ -194,38 +185,46 @@
                 </div>
             @else
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="editUser('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-mary-button
-                        icon="o-shield-check"
-                        class="btn-ghost btn-sm text-warning"
+                    <x-ts-button
+                        icon="shield-check"
+                        class="text-warning"
+                        color="white"
+                        sm
                         wire:click="askChangeStatus('{{ $user->id }}')"
                         :aria-label="__('user.manager.change_status')"
                     />
                     @if (in_array($user->status?->value, ['verified', 'suspended']))
-                        <x-mary-button
-                            icon="o-arrow-path"
-                            class="btn-ghost btn-sm"
+                        <x-ts-button
+                            icon="arrow-path"
+                            color="white"
+                            sm
                             wire:click="toggleStatus('{{ $user->id }}')"
                             :aria-label="__('user.manager.toggle_status')"
                             :tooltip="__('user.manager.toggle_status')"
                             spinner="toggleStatus"
                         />
                     @endif
-                    <x-mary-button
-                        icon="o-key"
-                        class="btn-ghost btn-sm text-primary"
+                    <x-ts-button
+                        icon="key"
+                        class="text-primary"
+                        color="white"
+                        sm
                         wire:click="showSlip('{{ $user->id }}')"
                         :aria-label="__('user.manager.account_slip')"
                     />
                     @if ($user->id !== auth()->id())
-                        <x-mary-button
-                            icon="o-trash"
-                            class="btn-ghost btn-sm text-error"
+                        <x-ts-button
+                            icon="trash"
+                            class="text-error"
+                            color="white"
+                            sm
                             wire:click="askDeleteUser('{{ $user->id }}')"
                             :aria-label="__('common.actions.delete')"
                         />
@@ -236,65 +235,62 @@
     </x-mary-table>
 
     {{-- Status Modal --}}
-    <x-mary-modal
-        wire:model="showStatusModal"
-        :title="__('user.manager.change_status')"
-        separator
-        class="backdrop-blur-sm"
-    >
-        <x-mary-form wire:submit="changeStatus" class="space-y-5">
+    <x-ts-modal wire="showStatusModal" :title="__('user.manager.change_status')" separator blur>
+        <form wire:submit="changeStatus" class="space-y-5">
             <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
-                <x-mary-select
+                <x-ts-select
                     :label="__('user.manager.new_status')"
                     wire:model="selectedStatus"
                     :options="$this->statusOptions"
-                    icon="o-flag"
+                    icon="flag"
                 />
-                <x-mary-textarea
+                <x-ts-textarea
                     :label="__('user.manager.status_reason')"
                     wire:model="statusReason"
                     :placeholder="__('user.manager.status_reason_placeholder')"
                     rows="2"
-                    icon="o-document-text"
+                    icon="document-text"
                     class="mt-4"
                 />
             </div>
 
             <x-slot:actions>
-                <x-mary-button
-                    :label="__('common.actions.cancel')"
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
                     wire:click="$set('showStatusModal', false)"
-                    class="btn-ghost btn-sm"
+                    color="white"
+                    sm
                 />
-                <x-mary-button
-                    :label="__('user.manager.change_status')"
-                    class="btn-primary btn-sm"
+                <x-ts-button
+                    :text="__('user.manager.change_status')"
+                    color="primary"
+                    sm
                     type="submit"
                     spinner="changeStatus"
                 />
             </x-slot:actions>
-        </x-mary-form>
-    </x-mary-modal>
+        </form>
+    </x-ts-modal>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="userModal"
+        <x-ts-modal
+            wire="userModal"
             :title="$form->id ? __('user.manager.edit') : __('user.manager.new')"
             separator
-            class="backdrop-blur-sm"
+            blur
         >
-            <x-mary-form wire:submit="saveUser" class="space-y-5">
+            <form wire:submit="saveUser" class="space-y-5">
                 <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('user.manager.account') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
-                        <x-mary-input
+                        <x-ts-input :label="__('user.fields.full_name')" wire:model="form.name" icon="user" />
+                        <x-ts-input
                             :label="__('user.fields.email')"
                             type="email"
                             wire:model="form.email"
-                            icon="o-envelope"
+                            icon="envelope"
                         />
                     </div>
                 </div>
@@ -304,31 +300,26 @@
                         {{ __('user.manager.profile') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input :label="__('user.fields.phone')" wire:model="form.phone" icon="o-phone" />
-                        <x-mary-select
+                        <x-ts-input :label="__('user.fields.phone')" wire:model="form.phone" icon="phone" />
+                        <x-ts-select
                             :label="__('user.fields.gender')"
                             wire:model="form.gender"
                             :options="[['id' => 'L', 'name' => __('common.male')], ['id' => 'P', 'name' => __('common.female')]]"
                         />
-                        <x-mary-input :label="__('user.fields.pob')" wire:model="form.pob" icon="o-map-pin" />
-                        <x-mary-input
-                            :label="__('user.fields.dob')"
-                            type="date"
-                            wire:model="form.dob"
-                            icon="o-calendar"
-                        />
-                        <x-mary-input
+                        <x-ts-input :label="__('user.fields.pob')" wire:model="form.pob" icon="map-pin" />
+                        <x-ts-input :label="__('user.fields.dob')" type="date" wire:model="form.dob" icon="calendar" />
+                        <x-ts-input
                             :label="__('user.fields.address')"
                             wire:model="form.address"
                             class="md:col-span-2"
-                            icon="o-map-pin"
+                            icon="map-pin"
                         />
-                        <x-mary-textarea
+                        <x-ts-textarea
                             :label="__('user.fields.bio')"
                             wire:model="form.bio"
                             rows="2"
                             class="md:col-span-2"
-                            icon="o-document-text"
+                            icon="document-text"
                         />
                     </div>
                 </div>
@@ -338,21 +329,21 @@
                         {{ __('user.fields.emergency') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('user.fields.emergency_contact_name')"
                             wire:model="form.emergency_contact_name"
-                            icon="o-user"
+                            icon="user"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('user.fields.emergency_contact_phone')"
                             wire:model="form.emergency_contact_phone"
-                            icon="o-phone"
+                            icon="phone"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('user.fields.emergency_contact_address')"
                             wire:model="form.emergency_contact_address"
                             class="md:col-span-2"
-                            icon="o-map-pin"
+                            icon="map-pin"
                         />
                     </div>
                 </div>
@@ -363,7 +354,7 @@
                     </p>
                     <div class="flex flex-wrap gap-3">
                         @foreach ($this->roles as $role)
-                            <x-mary-checkbox
+                            <x-ts-checkbox
                                 :label="__('permission.role.'.$role->name)"
                                 wire:model="form.roles"
                                 value="{{ $role->name }}"
@@ -373,20 +364,16 @@
                 </div>
 
                 <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('user.manager.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="saveUser"
-                    />
+                    <x-ts-button :text="__('user.manager.save')" color="primary" sm type="submit" spinner="saveUser" />
                 </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 
     @include('user.user-management.components.account-slip-modal')

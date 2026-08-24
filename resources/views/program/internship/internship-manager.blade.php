@@ -1,46 +1,37 @@
 <x-core::ui.record-manager :title="__('internship.title')" :subtitle="__('internship.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button
-            :label="__('internship.create_batch')"
-            icon="o-plus"
-            class="btn-primary btn-sm"
-            wire:click="create"
-        />
+        <x-ts-button :text="__('internship.create_batch')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item
-            :title="__('common.actions.import')"
-            icon="o-arrow-up-tray"
+        <x-ts-dropdown.items
+            :text="__('common.actions.import')"
+            icon="arrow-up-tray"
             @click="document.getElementById('import-csv').click()"
         />
         <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
-        <x-mary-menu-item
-            :title="__('common.actions.template')"
-            icon="o-document-arrow-down"
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
+        <x-ts-dropdown.items
+            :text="__('common.actions.template')"
+            icon="document-arrow-down"
             wire:click="downloadTemplate"
         />
     </x-slot:extraMenu>
 
     <x-slot:stats>
         <x-core::widgets.stat-card
-            icon="o-calendar"
+            icon="calendar"
             :title="__('internship.stats.total')"
             :value="$this->stats['total']"
         />
+        <x-core::widgets.stat-card icon="play" :title="__('internship.stats.active')" :value="$this->stats['active']" />
         <x-core::widgets.stat-card
-            icon="o-play"
-            :title="__('internship.stats.active')"
-            :value="$this->stats['active']"
-        />
-        <x-core::widgets.stat-card
-            icon="o-briefcase"
+            icon="briefcase"
             :title="__('internship.stats.total_placements')"
             :value="$this->stats['total_placements']"
         />
         <x-core::widgets.stat-card
-            icon="o-user-group"
+            icon="user-group"
             :title="__('internship.stats.total_registrations')"
             :value="$this->stats['total_registrations']"
         />
@@ -71,34 +62,36 @@
     </x-slot:filters>
 
     <x-core::ui.selection-bar>
-        <x-mary-dropdown>
+        <x-ts-dropdown>
             <x-slot:trigger>
-                <x-mary-button
-                    icon="o-chevron-down"
-                    class="btn-sm btn-primary font-medium"
-                    :label="__('common.actions.bulk_actions')"
+                <x-ts-button
+                    icon="chevron-down"
+                    class="font-medium"
+                    color="primary"
+                    sm
+                    :text="__('common.actions.bulk_actions')"
                 />
             </x-slot:trigger>
             <div class="w-48 p-1.5">
-                <x-mary-menu-item
-                    :title="__('common.actions.export_selected')"
-                    icon="o-arrow-down-tray"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.export_selected')"
+                    icon="arrow-down-tray"
                     wire:click="exportSelected"
                 />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item
-                    :title="__('common.actions.delete_selected')"
-                    icon="o-trash"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
                     class="text-error"
                     wire:click="askDeleteSelected"
                 />
-                <x-mary-menu-item
-                    :title="__('internship.complete_filtered')"
-                    icon="o-check-circle"
+                <x-ts-dropdown.items
+                    :text="__('internship.complete_filtered')"
+                    icon="check-circle"
                     wire:click="askCloseFiltered"
                 />
             </div>
-        </x-mary-dropdown>
+        </x-ts-dropdown>
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
@@ -137,16 +130,19 @@
 
             @scope('actions', $internship)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.edit') }}"
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $internship->id }}')"
                     />
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.delete') }}"
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $internship->id }}')"
                     />
                 </div>
@@ -164,36 +160,36 @@
     />
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showModal"
+        <x-ts-modal
+            wire="showModal"
             :title="$form->id ? __('internship.edit_batch') : __('internship.new_batch')"
             separator
-            class="backdrop-blur-sm"
+            blur
         >
             <div class="space-y-5">
                 <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('internship.identity') }}
                     </p>
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('internship.name')"
                         wire:model="form.name"
                         :placeholder="__('internship.name_placeholder')"
-                        icon="o-academic-cap"
+                        icon="academic-cap"
                     />
-                    <x-mary-select
+                    <x-ts-select
                         :label="__('internship.academic_year')"
                         wire:model="form.academic_year_id"
                         :options="$this->academicYears"
-                        icon="o-calendar-days"
+                        icon="calendar-days"
                         class="mt-4"
                     />
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('internship.description')"
                         wire:model="form.description"
                         :placeholder="__('internship.description_placeholder')"
                         rows="2"
-                        icon="o-document-text"
+                        icon="document-text"
                         class="mt-4"
                     />
                 </div>
@@ -206,12 +202,12 @@
                         <x-mary-datepicker
                             :label="__('internship.start_date')"
                             wire:model="form.start_date"
-                            icon="o-calendar"
+                            icon="calendar"
                         />
                         <x-mary-datepicker
                             :label="__('internship.end_date')"
                             wire:model="form.end_date"
-                            icon="o-calendar"
+                            icon="calendar"
                         />
                     </div>
                 </div>
@@ -224,12 +220,12 @@
                         <x-mary-datepicker
                             :label="__('internship.registration_start_date')"
                             wire:model="form.registration_start_date"
-                            icon="o-clock"
+                            icon="clock"
                         />
                         <x-mary-datepicker
                             :label="__('internship.registration_end_date')"
                             wire:model="form.registration_end_date"
-                            icon="o-clock"
+                            icon="clock"
                         />
                     </div>
                 </div>
@@ -238,28 +234,19 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('internship.configuration') }}
                     </p>
-                    <x-mary-select
+                    <x-ts-select
                         :label="__('internship.status')"
                         wire:model="form.status"
                         :options="$this->statusOptions"
-                        icon="o-flag"
+                        icon="flag"
                     />
                 </div>
             </div>
             <x-slot:actions>
-                <x-mary-button
-                    :label="__('internship.cancel')"
-                    @click="$wire.showModal = false"
-                    class="btn-ghost btn-sm"
-                />
-                <x-mary-button
-                    :label="__('internship.save')"
-                    class="btn-primary btn-sm"
-                    wire:click="save"
-                    spinner="save"
-                />
+                <x-ts-button :text="__('internship.cancel')" @click="$wire.showModal = false" color="white" sm />
+                <x-ts-button :text="__('internship.save')" color="primary" sm wire:click="save" spinner="save" />
             </x-slot:actions>
-        </x-mary-modal>
+        </x-ts-modal>
     </x-slot:modal>
     @include('program.internship.components.internship-guide')
 </x-core::ui.record-manager>
