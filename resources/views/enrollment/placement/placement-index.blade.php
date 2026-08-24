@@ -1,38 +1,33 @@
 <x-core::ui.record-manager :title="__('placement.title')" :subtitle="__('placement.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button
-            :label="__('placement.add_placement')"
-            icon="o-plus"
-            class="btn-primary btn-sm"
-            wire:click="create"
-        />
+        <x-ts-button :text="__('placement.add_placement')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" />
-        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" />
+        <x-ts-dropdown.items :text="__('common.actions.import')" icon="arrow-up-tray" />
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" />
+        <x-ts-dropdown.items :text="__('common.actions.template')" icon="document-arrow-down" />
     </x-slot:extraMenu>
 
     <x-slot:stats>
         <x-core::widgets.stat-card
-            icon="o-briefcase"
+            icon="briefcase"
             :title="__('placement.stats.total')"
             :value="$this->stats['total']"
         />
         <x-core::widgets.stat-card
-            icon="o-user-group"
+            icon="user-group"
             :title="__('placement.stats.total_quota')"
             :value="$this->stats['total_quota']"
         />
         <x-core::widgets.stat-card
-            icon="o-check-circle"
+            icon="check-circle"
             :title="__('placement.stats.filled')"
             :value="$this->stats['filled']"
             color="text-success"
         />
         <x-core::widgets.stat-card
-            icon="o-plus-circle"
+            icon="plus-circle"
             :title="__('placement.stats.available')"
             :value="$this->stats['available']"
         />
@@ -54,23 +49,25 @@
     </x-slot:filters>
 
     <x-core::ui.selection-bar>
-        <x-mary-dropdown>
+        <x-ts-dropdown>
             <x-slot:trigger>
-                <x-mary-button
-                    icon="o-chevron-down"
-                    class="btn-sm btn-primary font-medium"
-                    :label="__('common.actions.bulk_actions')"
+                <x-ts-button
+                    icon="chevron-down"
+                    class="font-medium"
+                    color="primary"
+                    sm
+                    :text="__('common.actions.bulk_actions')"
                 />
             </x-slot:trigger>
             <div class="w-48 p-1.5">
-                <x-mary-menu-item
-                    :title="__('common.actions.delete_selected')"
-                    icon="o-trash"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
                     class="text-error"
                     wire:click="askDeleteSelected"
                 />
             </div>
-        </x-mary-dropdown>
+        </x-ts-dropdown>
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
@@ -99,15 +96,18 @@
 
             @scope('actions', $placement)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $placement->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-mary-button
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                    <x-ts-button
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $placement->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -117,14 +117,14 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showModal"
+        <x-ts-modal
+            wire="showModal"
             :title="$form->id ? __('placement.edit_placement') : __('placement.new_placement')"
-            class="backdrop-blur-sm"
+            blur
         >
-            <x-mary-form wire:submit="save">
+            <form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('placement.name')"
                         wire:model="form.name"
                         :placeholder="__('placement.name_placeholder')"
@@ -142,31 +142,27 @@
                             :options="$this->internships"
                             :placeholder="__('placement.internship_placeholder')"
                         />
-                        <x-mary-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
+                        <x-ts-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
                     </div>
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('placement.worksite_address')"
                         wire:model="form.address"
                         rows="2"
                         :placeholder="__('placement.address_placeholder')"
                     />
-                    <x-mary-textarea :label="__('placement.job_description')" wire:model="form.description" rows="3" />
+                    <x-ts-textarea :label="__('placement.job_description')" wire:model="form.description" rows="3" />
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('placement.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('placement.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 
     @include('enrollment.placement.components.placement-guide')

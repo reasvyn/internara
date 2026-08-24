@@ -1,78 +1,75 @@
 <div class="p-6 sm:p-8">
     <div class="mb-8">
-        <h2 class="text-xl font-bold mb-1">{{ __('setup.wizard.school_info') }}</h2>
-        <p class="text-sm text-base-content/50">{{ __('setup.wizard.school_subtitle') }}</p>
+        <h2 class="mb-1 text-xl font-bold">{{ __('setup.wizard.school_info') }}</h2>
+        <p class="text-base-content/50 text-sm">{{ __('setup.wizard.school_subtitle') }}</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div class="md:col-span-2">
-            <x-mary-input
+            <x-ts-input
                 label="{{ __('setup.wizard.school_name') }}"
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
                 wire:model.live.debounce.500ms="schoolForm.name"
-                icon="o-academic-cap"
+                icon="academic-cap"
                 autofocus
             />
         </div>
 
-        <x-mary-input
+        <x-ts-input
             label="{{ __('setup.wizard.school_code') }}"
             placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.institutional_code"
-            icon="o-identification"
+            icon="identification"
         />
 
-        <x-mary-input
+        <x-ts-input
             label="{{ __('setup.wizard.school_email') }}"
             type="email"
             placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.email"
-            icon="o-envelope"
+            icon="envelope"
         />
 
-        <x-mary-input
+        <x-ts-input
             label="{{ __('setup.wizard.school_phone') }}"
             type="tel"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.phone"
-            icon="o-phone"
+            icon="phone"
         />
 
-        <x-mary-input
+        <x-ts-input
             label="{{ __('setup.wizard.school_website') }}"
             type="url"
             placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.website"
-            icon="o-globe-alt"
+            icon="globe-alt"
         />
 
-        <x-mary-textarea
+        <x-ts-textarea
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.address"
             rows="3"
         />
 
-        <x-mary-input
+        <x-ts-input
             label="{{ __('setup.wizard.principal_name') }}"
             placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.principal_name"
-            icon="o-user-circle"
+            icon="user-circle"
         />
     </div>
 
-    <div class="flex items-center justify-between pt-6 mt-8 border-t border-base-content/10">
-        <x-mary-button
-            label="{{ __('setup.wizard.back') }}"
-            wire:click="prevStep"
-            class="btn-ghost btn-sm"
-        />
-        <x-mary-button
-            label="{{ __('setup.wizard.next_step') }}"
+    <div class="border-base-content/10 mt-8 flex items-center justify-between border-t pt-6">
+        <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="white" sm />
+        <x-ts-button
+            text="{{ __('setup.wizard.next_step') }}"
             icon-right="o-arrow-right"
-            class="btn-primary btn-sm"
+            color="primary"
+            sm
             wire:click="nextStep"
-            spinner="nextStep"
+            loading="nextStep"
         />
     </div>
 </div>

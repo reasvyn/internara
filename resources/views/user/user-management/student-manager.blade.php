@@ -1,10 +1,10 @@
 <x-core::ui.record-manager :title="__('user.student.title')" :subtitle="__('user.student.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('user.student.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-ts-button :text="__('user.student.new')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
     </x-slot:extraMenu>
 
     <x-slot:filters>
@@ -28,29 +28,31 @@
     </x-slot:filters>
 
     <x-core::ui.selection-bar>
-        <x-mary-dropdown>
+        <x-ts-dropdown>
             <x-slot:trigger>
-                <x-mary-button
-                    icon="o-chevron-down"
-                    class="btn-sm btn-primary font-medium"
-                    :label="__('common.actions.bulk_actions')"
+                <x-ts-button
+                    icon="chevron-down"
+                    class="font-medium"
+                    color="primary"
+                    sm
+                    :text="__('common.actions.bulk_actions')"
                 />
             </x-slot:trigger>
             <div class="w-48 p-1.5">
-                <x-mary-menu-item
-                    :title="__('common.actions.delete_selected')"
-                    icon="o-trash"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
                     class="text-error"
                     wire:click="askDeleteSelected"
                 />
-                <x-mary-menu-item
-                    :title="__('user.student.archive_filtered')"
-                    icon="o-archive-box"
+                <x-ts-dropdown.items
+                    :text="__('user.student.archive_filtered')"
+                    icon="archive-box"
                     class="text-warning"
                     wire:click="archiveAllFiltered"
                 />
             </div>
-        </x-mary-dropdown>
+        </x-ts-dropdown>
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
@@ -75,21 +77,26 @@
 
             @scope('actions', $user)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-mary-button
-                        icon="o-key"
-                        class="btn-ghost btn-sm text-primary"
+                    <x-ts-button
+                        icon="key"
+                        class="text-primary"
+                        color="white"
+                        sm
                         wire:click="showSlip('{{ $user->id }}')"
                         :aria-label="__('user.manager.account_slip')"
                     />
-                    <x-mary-button
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                    <x-ts-button
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $user->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -99,24 +106,24 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="userModal"
+        <x-ts-modal
+            wire="userModal"
             :title="$form->id ? __('user.student.edit') : __('user.student.new')"
             separator
-            class="backdrop-blur-sm"
+            blur
         >
-            <x-mary-form wire:submit="save" class="space-y-5">
+            <form wire:submit="save" class="space-y-5">
                 <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('user.manager.account') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
-                        <x-mary-input
+                        <x-ts-input :label="__('user.fields.full_name')" wire:model="form.name" icon="user" />
+                        <x-ts-input
                             :label="__('user.fields.email')"
                             type="email"
                             wire:model="form.email"
-                            icon="o-envelope"
+                            icon="envelope"
                         />
                     </div>
                 </div>
@@ -126,41 +133,33 @@
                         {{ __('user.student.academic_info') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('user.student.nisn')"
                             wire:model="form.national_id_number"
-                            icon="o-identification"
+                            icon="identification"
                         />
-                        <x-mary-input
-                            :label="__('user.student.nis')"
-                            wire:model="form.id_number"
-                            icon="o-document-text"
-                        />
+                        <x-ts-input :label="__('user.student.nis')" wire:model="form.id_number" icon="document-text" />
                     </div>
                     <x-mary-select
                         :label="__('user.student.department')"
                         wire:model="form.department_id"
                         :options="$this->departments"
-                        icon="o-rectangle-group"
+                        icon="rectangle-group"
                         class="mt-4"
                     />
                 </div>
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('user.student.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('user.student.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
     @include('user.user-management.components.account-slip-modal')
 

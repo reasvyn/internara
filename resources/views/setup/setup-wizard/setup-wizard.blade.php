@@ -37,7 +37,7 @@
                         role="status"
                     >
                         @if ($isCompleted)
-                            <x-mary-icon name="o-check" class="size-4" />
+                            <x-ts-icon name="check" class="size-4" />
                         @else
                             {{ $stepNum }}
                         @endif

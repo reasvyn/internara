@@ -20,7 +20,7 @@
             <div class="mx-auto w-full max-w-md">
                 <div class="mb-8 text-center">
                     <div class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-full">
-                        <x-mary-icon name="o-key" class="size-7" />
+                        <x-ts-icon name="key" class="size-7" />
                     </div>
                     <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.code_entry.title') }}</h1>
                     <p class="text-base-content/60 mt-2 text-sm">{{ __('setup.code_entry.description') }}</p>
@@ -30,7 +30,7 @@
                     @csrf
 
                     <div>
-                        <x-mary-input
+                        <x-ts-input
                             label="{{ __('setup.code_entry.code_label') }}"
                             name="setup_token"
                             placeholder="{{ __('setup.code_entry.placeholder') }}"
@@ -40,11 +40,12 @@
                         />
                     </div>
 
-                    <x-mary-button
+                    <x-ts-button
                         type="submit"
-                        label="{{ __('setup.code_entry.submit') }}"
+                        text="{{ __('setup.code_entry.submit') }}"
                         icon-right="o-arrow-right"
-                        class="btn-primary w-full"
+                        class="w-full"
+                        color="primary"
                     />
 
                     @if ($error)
@@ -81,7 +82,7 @@
             class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
             aria-label="{{ __('setup.guide.title') }}"
         >
-            <x-mary-icon name="o-question-mark-circle" class="size-6" />
+            <x-ts-icon name="question-mark-circle" class="size-6" />
         </button>
 
         <template x-teleport="body">
@@ -104,7 +105,7 @@
                             aria-label="{{ __('common.actions.close') }}"
                             class="btn btn-ghost btn-sm btn-square"
                         >
-                            <x-mary-icon name="o-x-mark" class="size-5" />
+                            <x-ts-icon name="x-mark" class="size-5" />
                         </button>
                     </div>
                     <div class="space-y-5 p-6">
@@ -136,7 +137,7 @@
 
                         <div class="border-base-content/10 mt-6 flex gap-4 border-t pt-4">
                             <div class="bg-warning/10 text-warning mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                                <x-mary-icon name="o-light-bulb" class="size-4" />
+                                <x-ts-icon name="light-bulb" class="size-4" />
                             </div>
                             <div>
                                 <h4 class="text-sm font-semibold">{{ __('setup.guide.tip_title') }}</h4>

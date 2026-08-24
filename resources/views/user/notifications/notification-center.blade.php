@@ -18,15 +18,18 @@
                 aria-label="{{ __('notifications.ui.all_status') }}"
             />
             <div class="flex items-center gap-2">
-                <x-mary-button
-                    :label="__('notifications.ui.mark_all_read')"
-                    icon="o-check-badge"
-                    class="btn-ghost btn-sm"
+                <x-ts-button
+                    :text="__('notifications.ui.mark_all_read')"
+                    icon="check-badge"
+                    color="white"
+                    sm
                     wire:click="markAllAsRead"
                 />
-                <x-mary-button
-                    icon="o-arrow-path"
-                    class="btn-ghost btn-sm btn-square"
+                <x-ts-button
+                    icon="arrow-path"
+                    class="btn-square"
+                    color="white"
+                    sm
                     wire:click="$refresh"
                     :aria-label="__('notifications.ui.refresh')"
                 />
@@ -45,16 +48,19 @@
                 {{ trans_choice('notifications.ui.selected_count', $this->selected_count()) }}
             </p>
             <div class="flex items-center gap-2">
-                <x-mary-button
-                    :label="__('notifications.ui.mark_read_batch')"
-                    icon="o-check-badge"
-                    class="btn-sm btn-ghost"
+                <x-ts-button
+                    :text="__('notifications.ui.mark_read_batch')"
+                    icon="check-badge"
+                    color="white"
+                    sm
                     wire:click="markSelectedAsRead"
                 />
-                <x-mary-button
-                    :label="__('notifications.ui.delete_selected')"
-                    icon="o-trash"
-                    class="btn-sm btn-error text-white"
+                <x-ts-button
+                    :text="__('notifications.ui.delete_selected')"
+                    icon="trash"
+                    class="text-white"
+                    color="red"
+                    sm
                     wire:click="askDeleteSelected"
                 />
             </div>
@@ -88,8 +94,8 @@
                                     class="flex size-8 shrink-0 items-center justify-center rounded-lg max-sm:hidden"
                                     aria-hidden="true"
                                 >
-                                    <x-mary-icon x-show="! read" name="o-envelope" class="size-4" />
-                                    <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
+                                    <x-ts-icon x-show="! read" name="envelope" class="size-4" />
+                                    <x-ts-icon x-show="read" name="envelope-open" class="size-4" />
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-2">
@@ -116,7 +122,7 @@
                                     class="text-base-content/30 mt-1 shrink-0 self-start transition-transform group-open:rotate-180 max-sm:hidden"
                                     aria-hidden="true"
                                 >
-                                    <x-mary-icon name="o-chevron-down" class="size-4" />
+                                    <x-ts-icon name="chevron-down" class="size-4" />
                                 </div>
                             </summary>
                             <div class="text-base-content/70 prose prose-sm mt-2 max-w-none text-xs leading-relaxed">
@@ -139,8 +145,8 @@
                                 class="flex size-8 shrink-0 items-center justify-center rounded-lg max-sm:hidden"
                                 aria-hidden="true"
                             >
-                                <x-mary-icon x-show="! read" name="o-envelope" class="size-4" />
-                                <x-mary-icon x-show="read" name="o-envelope-open" class="size-4" />
+                                <x-ts-icon x-show="! read" name="envelope" class="size-4" />
+                                <x-ts-icon x-show="read" name="envelope-open" class="size-4" />
                             </div>
                             <div class="flex min-w-0 items-center gap-2">
                                 <span
@@ -172,24 +178,28 @@
             @scope('actions', $notification)
                 <div class="flex justify-end gap-1">
                     @if ($notification->link)
-                        <x-mary-button
-                            icon="o-arrow-top-right-on-square"
-                            class="btn-ghost btn-sm"
+                        <x-ts-button
+                            icon="arrow-top-right-on-square"
+                            color="white"
+                            sm
                             :link="$notification->link"
                             x-on:click.prevent="$wire.markAsRead('{{ $notification->id }}'); window.open('{{ $notification->link }}', '_blank')"
                             :aria-label="__('notifications.view_details')"
                         />
                     @endif
-                    <x-mary-button
-                        icon="o-eye"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="eye"
+                        color="white"
+                        sm
                         x-on:click="$wire.viewNotification('{{ $notification->id }}')"
                         :aria-label="__('notifications.ui.read')"
                     />
                     @if (! $notification->is_read)
-                        <x-mary-button
-                            icon="o-check"
-                            class="btn-ghost btn-sm text-success"
+                        <x-ts-button
+                            icon="check"
+                            class="text-success"
+                            color="white"
+                            sm
                             x-on:click="$wire.markAsRead('{{ $notification->id }}')"
                             :aria-label="__('notifications.ui.mark_all_read')"
                         />
@@ -200,12 +210,7 @@
     </div>
 
     {{-- Notification Viewer Modal --}}
-    <x-mary-modal
-        wire:model="showViewer"
-        title="{{ $this->viewedNotification?->title ?? '' }}"
-        class="backdrop-blur-sm"
-        size="lg"
-    >
+    <x-ts-modal wire="showViewer" title="{{ $this->viewedNotification?->title ?? '' }}" blur size="lg">
         @if ($this->viewedNotification)
             <div class="space-y-4">
                 <div class="prose prose-sm max-w-none">
@@ -217,18 +222,18 @@
             </div>
         @endif
 
-        <x-slot:actions>
-            <x-mary-button :label="__('common.actions.close')" wire:click="closeViewer" class="btn-ghost btn-sm" />
+        <x-slot:footer>
+            <x-ts-button :text="__('common.actions.close')" wire:click="closeViewer" color="white" sm />
             @if ($this->viewedNotification?->link)
-                <x-mary-button
-                    :label="__('notifications.view_details')"
-                    icon="o-arrow-top-right-on-square"
+                <x-ts-button
+                    :text="__('notifications.view_details')"
+                    icon="arrow-top-right-on-square"
                     :link="$this->viewedNotification->link"
                     class="btn-primary btn-sm"
                 />
             @endif
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 
     @include('user.notifications.components.notification-guide')
 </div>

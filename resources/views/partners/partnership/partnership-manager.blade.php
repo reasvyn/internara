@@ -1,41 +1,41 @@
 <x-core::ui.record-manager :title="__('partnership.title')" :subtitle="__('partnership.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('partnership.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-ts-button :text="__('partnership.add')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item
-            :title="__('common.actions.import')"
-            icon="o-arrow-up-tray"
+        <x-ts-dropdown.items
+            :text="__('common.actions.import')"
+            icon="arrow-up-tray"
             x-on:click="$refs.importCsvInput.click()"
         />
         <input x-ref="importCsvInput" type="file" accept=".csv" wire:model="importFile" class="hidden" />
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
-        <x-mary-menu-item
-            :title="__('common.actions.template')"
-            icon="o-document-arrow-down"
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
+        <x-ts-dropdown.items
+            :text="__('common.actions.template')"
+            icon="document-arrow-down"
             wire:click="downloadTemplate"
         />
     </x-slot:extraMenu>
 
     <x-slot:stats>
         <x-core::widgets.stat-card
-            icon="o-hand-raised"
+            icon="hand-raised"
             :title="__('partnership.stats_active')"
             :value="$this->stats['active']"
         />
         <x-core::widgets.stat-card
-            icon="o-clock"
+            icon="clock"
             :title="__('partnership.stats_expiring_soon', ['days' => 30])"
             :value="$this->stats['expiring_soon']"
         />
         <x-core::widgets.stat-card
-            icon="o-exclamation-circle"
+            icon="exclamation-circle"
             :title="__('partnership.stats_expired')"
             :value="$this->stats['expired']"
         />
         <x-core::widgets.stat-card
-            icon="o-document-text"
+            icon="document-text"
             :title="__('partnership.stats_total')"
             :value="$this->stats['total']"
         />
@@ -60,29 +60,31 @@
     </x-slot:filters>
 
     <x-core::ui.selection-bar>
-        <x-mary-dropdown>
+        <x-ts-dropdown>
             <x-slot:trigger>
-                <x-mary-button
-                    icon="o-chevron-down"
-                    class="btn-sm btn-primary font-medium"
-                    :label="__('common.actions.bulk_actions')"
+                <x-ts-button
+                    icon="chevron-down"
+                    class="font-medium"
+                    color="primary"
+                    sm
+                    :text="__('common.actions.bulk_actions')"
                 />
             </x-slot:trigger>
             <div class="w-48 p-1.5">
-                <x-mary-menu-item
-                    :title="__('common.actions.export_selected')"
-                    icon="o-arrow-down-tray"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.export_selected')"
+                    icon="arrow-down-tray"
                     wire:click="exportSelected"
                 />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item
-                    :title="__('common.actions.delete_selected')"
-                    icon="o-trash"
+                <x-ts-dropdown.items
+                    :text="__('common.actions.delete_selected')"
+                    icon="trash"
                     class="text-error"
                     wire:click="askDeleteSelected"
                 />
             </div>
-        </x-mary-dropdown>
+        </x-ts-dropdown>
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
@@ -100,8 +102,8 @@
             @endscope
 
             @scope('cell_status', $p)
-                <x-mary-badge
-                    :value="$p->status->label()"
+                <x-ts-badge
+                    :text="$p->status->label()"
                     :class="match($p->status->value) {
                     'active' => 'badge-success',
                     'expired' => 'badge-warning',
@@ -122,22 +124,27 @@
             @scope('actions', $p)
                 <div class="flex justify-end gap-1">
                     @if ($p->status->value === 'active')
-                        <x-mary-button
-                            icon="o-x-circle"
-                            class="btn-ghost btn-sm text-warning"
+                        <x-ts-button
+                            icon="x-circle"
+                            class="text-warning"
+                            color="white"
+                            sm
                             wire:click="askTerminate('{{ $p->id }}')"
                             :aria-label="__('partnership.terminate')"
                         />
                     @endif
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $p->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-mary-button
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                    <x-ts-button
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $p->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -147,13 +154,8 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showModal"
-            :title="$form->id ? __('partnership.edit') : __('partnership.new')"
-            separator
-            class="backdrop-blur-sm"
-        >
-            <x-mary-form wire:submit="save" class="space-y-5">
+        <x-ts-modal wire="showModal" :title="$form->id ? __('partnership.edit') : __('partnership.new')" separator blur>
+            <form wire:submit="save" class="space-y-5">
                 <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('partnership.identity') }}
@@ -165,19 +167,19 @@
                         option-label="name"
                         option-value="id"
                         :placeholder="__('partnership.company_placeholder')"
-                        icon="o-building-office"
+                        icon="building-office"
                     />
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('partnership.agreement_number')"
                         wire:model="form.agreement_number"
                         :placeholder="__('partnership.agreement_number_placeholder')"
-                        icon="o-document-text"
+                        icon="document-text"
                     />
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('partnership.title_field')"
                         wire:model="form.title"
                         :placeholder="__('partnership.title_placeholder')"
-                        icon="o-briefcase"
+                        icon="briefcase"
                     />
                 </div>
 
@@ -186,17 +188,17 @@
                         {{ __('partnership.period') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.start_date')"
                             wire:model="form.start_date"
                             type="date"
-                            icon="o-calendar"
+                            icon="calendar"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.end_date')"
                             wire:model="form.end_date"
                             type="date"
-                            icon="o-calendar"
+                            icon="calendar"
                         />
                     </div>
                 </div>
@@ -205,31 +207,30 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('partnership.contact') }}
                     </p>
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('partnership.scope')"
                         wire:model="form.scope"
                         :placeholder="__('partnership.scope_placeholder')"
                         rows="2"
-                        icon="o-rectangle-stack"
                     />
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.contact_person_name')"
                             wire:model="form.contact_person_name"
                             :placeholder="__('partnership.contact_person_name_placeholder')"
-                            icon="o-user"
+                            icon="user"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.contact_person_phone')"
                             wire:model="form.contact_person_phone"
                             :placeholder="__('partnership.contact_person_phone_placeholder')"
-                            icon="o-phone"
+                            icon="phone"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.contact_person_email')"
                             wire:model="form.contact_person_email"
                             :placeholder="__('partnership.contact_person_email_placeholder')"
-                            icon="o-envelope"
+                            icon="envelope"
                         />
                     </div>
                 </div>
@@ -239,23 +240,23 @@
                         {{ __('partnership.signing') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.signed_by_school')"
                             wire:model="form.signed_by_school"
                             :placeholder="__('partnership.signed_by_school_placeholder')"
-                            icon="o-academic-cap"
+                            icon="academic-cap"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.signed_by_company')"
                             wire:model="form.signed_by_company"
                             :placeholder="__('partnership.signed_by_company_placeholder')"
-                            icon="o-building-office"
+                            icon="building-office"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('partnership.signed_at')"
                             wire:model="form.signed_at"
                             type="date"
-                            icon="o-calendar-days"
+                            icon="calendar-days"
                         />
                     </div>
                 </div>
@@ -264,12 +265,11 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('partnership.documents') }}
                     </p>
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('partnership.notes')"
                         wire:model="form.notes"
                         :placeholder="__('partnership.notes_placeholder')"
                         rows="2"
-                        icon="o-document-text"
                     />
                     <x-mary-file
                         :label="__('partnership.mou_document')"
@@ -278,21 +278,17 @@
                     />
                 </div>
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('partnership.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('partnership.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
     @include('partners.partnership.components.partnership-guide')
 </x-core::ui.record-manager>

@@ -1,17 +1,18 @@
 <x-core::ui.record-manager :title="__('user.admin.title')" :subtitle="__('user.admin.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('user.admin.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-ts-button :text="__('user.admin.new')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
-        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
     </x-slot:extraMenu>
 
     <x-slot:selectionBar>
-        <x-mary-button
-            :label="__('common.actions.delete_selected')"
-            icon="o-trash"
-            class="btn-sm btn-error"
+        <x-ts-button
+            :text="__('common.actions.delete_selected')"
+            icon="trash"
+            color="red"
+            sm
             wire:click="askDeleteSelected"
         />
     </x-slot:selectionBar>
@@ -32,8 +33,8 @@
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
                         @if ($user->hasRole('super_admin'))
-                            <x-mary-icon
-                                name="o-shield-check"
+                            <x-ts-icon
+                                name="shield-check"
                                 class="text-primary size-4"
                                 :tooltip="__('user.manager.protected')"
                             />
@@ -51,16 +52,19 @@
                 </div>
             @else
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
                     @if ($user->id !== auth()->id())
-                        <x-mary-button
-                            icon="o-trash"
-                            class="btn-ghost btn-sm text-error"
+                        <x-ts-button
+                            icon="trash"
+                            class="text-error"
+                            color="white"
+                            sm
                             wire:click="askDelete('{{ $user->id }}')"
                             :aria-label="__('common.actions.delete')"
                         />
@@ -71,30 +75,25 @@
     </x-mary-table>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="userModal"
-            :title="$form->id ? __('user.admin.edit') : __('user.admin.new')"
-            separator
-            class="backdrop-blur-sm"
-        >
-            <x-mary-form wire:submit="save" class="space-y-5">
+        <x-ts-modal wire="userModal" :title="$form->id ? __('user.admin.edit') : __('user.admin.new')" separator blur>
+            <form wire:submit="save" class="space-y-5">
                 <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('user.admin.account') }}
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
-                        <x-mary-input
+                        <x-ts-input :label="__('user.fields.full_name')" wire:model="form.name" icon="user" />
+                        <x-ts-input
                             :label="__('user.fields.email')"
                             type="email"
                             wire:model="form.email"
-                            icon="o-envelope"
+                            icon="envelope"
                         />
                     </div>
 
                     @if (! $form->id)
                         <div class="bg-info/10 border-info/20 text-info-content mt-4 flex items-start gap-3 rounded-xl border p-4">
-                            <x-mary-icon name="o-information-circle" class="text-info mt-0.5 size-5 shrink-0" />
+                            <x-ts-icon name="information-circle" class="text-info mt-0.5 size-5 shrink-0" />
                             <div>
                                 <span class="text-info mb-0.5 block text-xs font-semibold">{{ __('common.notice') }}</span>
                                 <span class="text-xs leading-relaxed">{{ __('setup.wizard.username_notice') }}</span>
@@ -103,21 +102,17 @@
                     @endif
                 </div>
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('user.admin.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('user.admin.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 
     @include('user.user-management.components.admin-guide')

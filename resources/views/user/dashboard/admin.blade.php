@@ -10,38 +10,38 @@
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.total_students')"
             :value="$stats['totalStudents']"
-            icon="o-users"
+            icon="users"
             color="text-primary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.instructors')"
             :value="$stats['totalTeachers']"
-            icon="o-academic-cap"
+            icon="academic-cap"
             color="text-secondary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.supervisors')"
             :value="$stats['totalSupervisors']"
-            icon="o-briefcase"
+            icon="briefcase"
             color="text-accent"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.departments')"
             :value="$stats['totalDepartments']"
-            icon="o-building-library"
+            icon="building-library"
             color="text-primary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.companies')"
             :value="$stats['totalCompanies']"
-            icon="o-building-office"
+            icon="building-office"
             color="text-secondary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.internships')"
             :value="$stats['activeInternships']"
             :suffix="__('dashboard.stats.active')"
-            icon="o-flag"
+            icon="flag"
             color="text-info"
         />
     </div>
@@ -50,7 +50,7 @@
     <div class="bg-base-100 border-base-content/10 mb-6 rounded-xl border p-5">
         <div class="mb-5 flex items-start gap-3">
             <div class="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
-                <x-mary-icon class="size-4" name="o-funnel" />
+                <x-ts-icon class="size-4" name="funnel" />
             </div>
             <div class="flex-1">
                 <div class="flex items-center justify-between gap-4">
@@ -139,7 +139,7 @@
             <x-slot:title>
                 <div class="flex items-center gap-2">
                     <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
-                        <x-mary-icon class="size-3.5" name="o-user-plus" />
+                        <x-ts-icon class="size-3.5" name="user-plus" />
                     </div>
                     <span class="text-sm font-semibold">{{ __('dashboard.funnel.registration') }}</span>
                 </div>
@@ -162,7 +162,7 @@
             <x-slot:title>
                 <div class="flex items-center gap-2">
                     <div class="bg-secondary/10 text-secondary flex size-6 items-center justify-center rounded-md">
-                        <x-mary-icon class="size-3.5" name="o-clipboard-document-check" />
+                        <x-ts-icon class="size-3.5" name="clipboard-document-check" />
                     </div>
                     <span class="text-sm font-semibold">{{ __('dashboard.funnel.activity') }}</span>
                 </div>
@@ -201,7 +201,7 @@
             <x-slot:title>
                 <div class="flex items-center gap-2">
                     <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
-                        <x-mary-icon class="size-3.5" name="o-document-check" />
+                        <x-ts-icon class="size-3.5" name="document-check" />
                     </div>
                     <span class="text-sm font-semibold">{{ __('dashboard.funnel.completion') }}</span>
                 </div>
@@ -254,7 +254,7 @@
         <x-slot:title>
             <div class="flex items-center gap-2">
                 <div class="bg-success/10 text-success flex size-6 items-center justify-center rounded-md">
-                    <x-mary-icon class="size-3.5" name="o-check-circle" />
+                    <x-ts-icon class="size-3.5" name="check-circle" />
                 </div>
                 <span class="text-sm font-semibold">{{ __('dashboard.readiness.title') }}</span>
             </div>
@@ -265,7 +265,7 @@
         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
             @foreach ($readiness as $key => $status)
                 <div class="bg-base-200/30 border-base-content/10 flex items-center gap-2.5 rounded-lg border px-3 py-3">
-                    <x-mary-icon
+                    <x-ts-icon
                         class="size-4 shrink-0"
                         :name="$status['passed'] ? 'o-check-circle' : 'o-x-circle'"
                         :class="$status['passed'] ? 'text-success' : 'text-error'"
@@ -289,7 +289,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-warning/10 text-warning flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon class="size-3.5" name="o-document-text" />
+                            <x-ts-icon class="size-3.5" name="document-text" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.super_admin.audit_title') }}</span>
                     </div>
@@ -314,7 +314,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-info/10 text-info flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon class="size-3.5" name="o-server" />
+                            <x-ts-icon class="size-3.5" name="server" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.super_admin.system_title') }}</span>
                     </div>
@@ -339,7 +339,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-secondary/10 text-secondary flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon class="size-3.5" name="o-document" />
+                            <x-ts-icon class="size-3.5" name="document" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.super_admin.storage_title') }}</span>
                     </div>
@@ -368,7 +368,7 @@
             @forelse ($this->getRecentActivities() as $activity)
                 <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                     <div class="mt-1">
-                        <x-mary-icon class="text-base-content/30 size-4" name="o-bolt" />
+                        <x-ts-icon class="text-base-content/30 size-4" name="bolt" />
                     </div>
                     <div>
                         <div class="text-sm font-medium">
@@ -380,7 +380,7 @@
                     </div>
                 </div>
             @empty
-                <x-core::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
+                <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
             @endforelse
         </x-mary-card>
 
@@ -390,23 +390,23 @@
                 <div class="space-y-1">
                     <x-core::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
-                        icon="o-user"
+                        icon="user"
                         link="{{ route('profile') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('profile.recovery.title')"
-                        icon="o-key"
+                        icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('dashboard.notifications')"
-                        icon="o-bell"
+                        icon="bell"
                         link="{{ route('notifications') }}"
                     />
                     @if (auth()->user()?->hasRole('super_admin'))
                         <x-core::widgets.quick-link
                             :label="__('dashboard.system_settings')"
-                            icon="o-cog-6-tooth"
+                            icon="cog-6-tooth"
                             link="{{ route('admin.settings') }}"
                         />
                     @endif

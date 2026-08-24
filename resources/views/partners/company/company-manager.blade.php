@@ -167,7 +167,6 @@
                         wire:model="form.description"
                         :placeholder="__('company.description_placeholder')"
                         rows="2"
-                        icon="document-text"
                     />
                 </div>
 
@@ -207,7 +206,6 @@
                         wire:model="form.address"
                         :placeholder="__('company.address_placeholder')"
                         rows="2"
-                        icon="map-pin"
                     />
                 </div>
             </div>
@@ -218,7 +216,7 @@
                     color="white"
                     sm
                 />
-                <x-ts-button :text="__('company.save')" color="primary" sm wire:click="save" spinner="save" />
+                <x-ts-button :text="__('company.save')" color="primary" sm wire:click="save" loading="save" />
             </x-slot:actions>
         </x-ts-modal>
     </x-slot:modal>

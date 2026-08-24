@@ -1,24 +1,30 @@
 <div>
-    <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.welcome_back', ['name' => auth()->user()->name])" separator />
+    <x-mary-header
+        :title="__('dashboard.title')"
+        :subtitle="__('dashboard.welcome_back', ['name' => auth()->user()->name])"
+        separator
+    />
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-6">
-            @if(isset($roleContent))
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="space-y-6 lg:col-span-2">
+            @if (isset($roleContent))
                 {{ $roleContent }}
             @else
                 <x-mary-card :title="__('dashboard.recent_activity')" separator>
-                    @forelse($this->getRecentActivities() as $activity)
-                        <div class="flex items-start gap-4 py-3 border-b last:border-0 border-base-content/10">
+                    @forelse ($this->getRecentActivities() as $activity)
+                        <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                             <div class="mt-1">
-                                <x-mary-icon name="o-bolt" class="size-4 text-base-content/30" />
+                                <x-ts-icon name="bolt" class="text-base-content/30 size-4" />
                             </div>
                             <div>
                                 <div class="text-sm font-medium">{{ str($activity->description)->headline() }}</div>
-                                <div class="text-xs text-base-content/40">{{ $activity->created_at->diffForHumans() }}</div>
+                                <div class="text-base-content/40 text-xs">
+                                    {{ $activity->created_at->diffForHumans() }}
+                                </div>
                             </div>
                         </div>
                     @empty
-                        <x-core::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
+                        <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                     @endforelse
                 </x-mary-card>
             @endif
@@ -28,28 +34,48 @@
             <x-core::widgets.profile-summary :showEdit="true" />
 
             <x-mary-card :title="__('dashboard.recent_activity')" separator>
-                @forelse($this->getRecentActivities() as $activity)
-                    <div class="flex items-start gap-4 py-3 border-b last:border-0 border-base-content/10">
+                @forelse ($this->getRecentActivities() as $activity)
+                    <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                         <div class="mt-1">
-                            <x-mary-icon name="o-bolt" class="size-4 text-base-content/30" />
+                            <x-ts-icon name="bolt" class="text-base-content/30 size-4" />
                         </div>
                         <div>
-                            <div class="text-sm font-medium">{{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}</div>
-                            <div class="text-xs text-base-content/40">{{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}</div>
+                            <div class="text-sm font-medium">
+                                {{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}
+                            </div>
+                            <div class="text-base-content/40 text-xs">
+                                {{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}
+                            </div>
                         </div>
                     </div>
                 @empty
-                    <x-core::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
+                    <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
             </x-mary-card>
 
             <x-mary-card :title="__('dashboard.quick_links')" separator>
                 <div class="space-y-1">
-                    <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
-                    <x-core::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
-                    <x-core::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
-                    @if(auth()->user()?->hasRole('super_admin'))
-                        <x-core::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" />
+                    <x-core::widgets.quick-link
+                        :label="__('dashboard.edit_profile')"
+                        icon="user"
+                        link="{{ route('profile') }}"
+                    />
+                    <x-core::widgets.quick-link
+                        :label="__('profile.recovery.title')"
+                        icon="key"
+                        link="{{ route('profile.recovery') }}"
+                    />
+                    <x-core::widgets.quick-link
+                        :label="__('dashboard.notifications')"
+                        icon="bell"
+                        link="{{ route('notifications') }}"
+                    />
+                    @if (auth()->user()?->hasRole('super_admin'))
+                        <x-core::widgets.quick-link
+                            :label="__('dashboard.system_settings')"
+                            icon="cog-6-tooth"
+                            link="{{ route('admin.settings') }}"
+                        />
                     @endif
                 </div>
             </x-mary-card>

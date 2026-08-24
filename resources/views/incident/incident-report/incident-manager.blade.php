@@ -34,8 +34,8 @@
             @endscope
 
             @scope('cell_severity', $i)
-                <x-mary-badge
-                    :value="$i->severity->label()"
+                <x-ts-badge
+                    :text="$i->severity->label()"
                     :class="match($i->severity->value) {
                     'critical' => 'badge-error',
                     'high' => 'badge-warning',
@@ -47,8 +47,8 @@
             @endscope
 
             @scope('cell_status', $i)
-                <x-mary-badge
-                    :value="$i->status->label()"
+                <x-ts-badge
+                    :text="$i->status->label()"
                     :class="match($i->status->value) {
                     'reported' => 'badge-error',
                     'investigating' => 'badge-warning',
@@ -66,17 +66,21 @@
             @scope('actions', $i)
                 <div class="flex justify-end gap-1">
                     @can('update', $i)
-                        <x-mary-button
-                            icon="o-pencil"
-                            class="btn-ghost btn-sm text-primary"
+                        <x-ts-button
+                            icon="pencil"
+                            class="text-primary"
+                            color="white"
+                            sm
                             wire:click="edit('{{ $i->id }}')"
                             :aria-label="__('common.actions.edit')"
                         />
                     @endcan
                     @if (! $i->status->isTerminal())
-                        <x-mary-button
-                            icon="o-check-circle"
-                            class="btn-ghost btn-sm text-success"
+                        <x-ts-button
+                            icon="check-circle"
+                            class="text-success"
+                            color="white"
+                            sm
                             wire:click="resolve('{{ $i->id }}')"
                             :aria-label="__('incident.resolve')"
                         />
@@ -87,41 +91,43 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showResolveModal" :title="__('incident.resolve_title')" class="backdrop-blur-sm">
-            <x-mary-form wire:submit="saveResolve">
+        <x-ts-modal wire="showResolveModal" :title="__('incident.resolve_title')" blur>
+            <form wire:submit="saveResolve">
                 <div class="space-y-5">
                     <x-mary-select
                         :label="__('incident.status')"
                         wire:model="resolveData.status"
                         :options="['resolved' => __('incident.statuses.resolved'), 'closed' => __('incident.statuses.closed')]"
                     />
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('incident.resolution_notes')"
                         wire:model="resolveData.resolution_notes"
                         :placeholder="__('incident.resolution_notes_placeholder')"
                         rows="4"
                     />
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showResolveModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('incident.resolve')"
-                        class="btn-primary btn-sm"
+                    <x-ts-button
+                        :text="__('incident.resolve')"
+                        color="primary"
+                        sm
                         type="submit"
-                        spinner="saveResolve"
+                        loading="saveResolve"
                     />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                </div>
+            </form>
+        </x-ts-modal>
 
-        <x-mary-modal wire:model="showEditModal" :title="__('incident.edit_title')" class="backdrop-blur-sm">
-            <x-mary-form wire:submit="saveEdit">
+        <x-ts-modal wire="showEditModal" :title="__('incident.edit_title')" blur>
+            <form wire:submit="saveEdit">
                 <div class="space-y-5">
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('incident.date')"
                         type="datetime-local"
                         wire:model="editData.incident_date"
@@ -138,33 +144,35 @@
                             :options="collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
                         />
                     </div>
-                    <x-mary-textarea :label="__('incident.description')" wire:model="editData.description" rows="4" />
-                    <x-mary-input
+                    <x-ts-textarea :label="__('incident.description')" wire:model="editData.description" rows="4" />
+                    <x-ts-input
                         :label="__('incident.location')"
                         wire:model="editData.location"
                         :placeholder="__('incident.location_placeholder')"
                     />
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('incident.action_taken')"
                         wire:model="editData.action_taken"
                         :placeholder="__('incident.action_taken_placeholder')"
                         rows="3"
                     />
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showEditModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('common.actions.save')"
-                        class="btn-primary btn-sm"
+                    <x-ts-button
+                        :text="__('common.actions.save')"
+                        color="primary"
+                        sm
                         type="submit"
-                        spinner="saveEdit"
+                        loading="saveEdit"
                     />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 </x-core::ui.record-manager>

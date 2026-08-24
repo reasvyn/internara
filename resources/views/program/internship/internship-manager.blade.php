@@ -122,8 +122,8 @@
                         default => 'badge-ghost',
                     };
                 @endphp
-                <x-mary-badge
-                    :value="__('internship.statuses.'.$internship->status->value)"
+                <x-ts-badge
+                    :text="__('internship.statuses.'.$internship->status->value)"
                     class="{{ $statusClass }} font-bold text-[10px] uppercase tracking-tighter"
                 />
             @endscope
@@ -169,7 +169,7 @@
                         :placeholder="__('internship.name_placeholder')"
                         icon="academic-cap"
                     />
-                    <x-ts-select
+                    <x-mary-select
                         :label="__('internship.academic_year')"
                         wire:model="form.academic_year_id"
                         :options="$this->academicYears"
@@ -181,7 +181,6 @@
                         wire:model="form.description"
                         :placeholder="__('internship.description_placeholder')"
                         rows="2"
-                        icon="document-text"
                         class="mt-4"
                     />
                 </div>
@@ -226,7 +225,7 @@
                     <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
                         {{ __('internship.configuration') }}
                     </p>
-                    <x-ts-select
+                    <x-mary-select
                         :label="__('internship.status')"
                         wire:model="form.status"
                         :options="$this->statusOptions"
@@ -236,7 +235,7 @@
             </div>
             <x-slot:actions>
                 <x-ts-button :text="__('internship.cancel')" @click="$wire.showModal = false" color="white" sm />
-                <x-ts-button :text="__('internship.save')" color="primary" sm wire:click="save" spinner="save" />
+                <x-ts-button :text="__('internship.save')" color="primary" sm wire:click="save" loading="save" />
             </x-slot:actions>
         </x-ts-modal>
     </x-slot:modal>

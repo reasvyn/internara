@@ -15,7 +15,7 @@
             class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
         >
             <div class="flex flex-col items-center justify-center gap-4 py-20">
-                <x-mary-icon name="o-document-text" class="text-base-content/20 size-16" />
+                <x-ts-icon name="document-text" class="text-base-content/20 size-16" />
                 <h3 class="text-base-content/40 text-xl font-black tracking-tight">No assignments yet</h3>
                 <p class="text-base-content/60 text-sm">Assignments will appear here once published by your school.</p>
             </div>
@@ -74,11 +74,12 @@
             class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
         >
             <div class="mb-6">
-                <x-mary-button
-                    icon="o-arrow-left"
-                    :label="__('common.actions.back')"
+                <x-ts-button
+                    icon="arrow-left"
+                    :text="__('common.actions.back')"
                     wire:click="back"
-                    class="btn-ghost rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
+                    class="rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
+                    color="white"
                 />
             </div>
 
@@ -115,7 +116,7 @@
                 <div class="bg-primary/5 border-primary/20 shadow-primary/5 mb-8 flex items-center justify-between rounded-[2rem] border p-4 shadow-xl">
                     <div class="flex items-center gap-4">
                         <div class="bg-primary text-primary-content shadow-primary/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
-                            <x-mary-icon name="o-document" class="size-6" />
+                            <x-ts-icon name="document" class="size-6" />
                         </div>
                         <div>
                             <h4 class="text-primary text-sm font-black">{{ $selectedAssignment->document->name }}</h4>
@@ -129,7 +130,7 @@
                         target="_blank"
                         class="btn btn-primary btn-sm shadow-primary/20 rounded-[1.5rem] px-6 text-[10px] font-black tracking-wider uppercase shadow-lg"
                     >
-                        <x-mary-icon name="o-arrow-down-tray" class="size-4" />
+                        <x-ts-icon name="arrow-down-tray" class="size-4" />
                         Download
                     </a>
                 </div>
@@ -144,7 +145,7 @@
                 <div class="bg-warning/5 border-warning/20 shadow-warning/5 mb-6 rounded-[2rem] border p-6 shadow-xl">
                     <div class="mb-4 flex items-center gap-4">
                         <div class="bg-warning text-warning-content shadow-warning/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
-                            <x-mary-icon name="o-exclamation-triangle" class="size-6" />
+                            <x-ts-icon name="exclamation-triangle" class="size-6" />
                         </div>
                         <div>
                             <h4 class="text-warning text-sm font-black tracking-tight uppercase">Revision requested</h4>
@@ -168,7 +169,7 @@
                     </h4>
                     <div class="space-y-6">
                         <div>
-                            <x-mary-textarea
+                            <x-ts-textarea
                                 :label="__('submission.content')"
                                 wire:model="content"
                                 placeholder="Update your work based on the feedback..."
@@ -177,12 +178,13 @@
                             />
                         </div>
                         <div class="border-base-content/5 flex justify-end border-t pt-4">
-                            <x-mary-button
-                                label="{{ __('submission.resubmit') }}"
+                            <x-ts-button
+                                text="{{ __('submission.resubmit') }}"
                                 icon-right="o-paper-airplane"
-                                class="btn-warning shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                color="yellow"
                                 wire:click="submit"
-                                spinner="submit"
+                                loading="submit"
                             />
                         </div>
                     </div>
@@ -192,7 +194,7 @@
                 <div class="bg-success/5 border-success/20 shadow-success/5 rounded-[2rem] border p-6 shadow-xl">
                     <div class="mb-4 flex items-center gap-4">
                         <div class="bg-success text-success-content shadow-success/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
-                            <x-mary-icon name="o-check-circle" class="size-6" />
+                            <x-ts-icon name="check-circle" class="size-6" />
                         </div>
                         <div>
                             <h4 class="text-success text-sm font-black tracking-tight uppercase">Submitted</h4>
@@ -208,7 +210,7 @@
                     @endif
                     @if ($existingSubmission->status->value === 'verified')
                         <div class="bg-success/10 flex items-center gap-4 rounded-[1.5rem] p-4">
-                            <x-mary-icon name="o-shield-check" class="text-success size-5" />
+                            <x-ts-icon name="shield-check" class="text-success size-5" />
                             <span class="text-success text-sm font-black tracking-tight uppercase">Verified by mentor</span>
                         </div>
                         @if ($existingSubmission->feedback)
@@ -237,7 +239,7 @@
 
                     <div class="space-y-6">
                         <div>
-                            <x-mary-textarea
+                            <x-ts-textarea
                                 :label="__('submission.content')"
                                 wire:model="content"
                                 placeholder="Describe your work or paste your report content..."
@@ -255,10 +257,11 @@
                         </div>
 
                         <div class="border-base-content/5 flex justify-end border-t pt-4">
-                            <x-mary-button
-                                :label="__('submission.submit')"
+                            <x-ts-button
+                                :text="__('submission.submit')"
                                 icon-right="o-paper-airplane"
-                                class="btn-primary shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                                color="primary"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
                                 spinner="submit"
                             />

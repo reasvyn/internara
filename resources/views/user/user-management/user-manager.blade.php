@@ -132,7 +132,7 @@
                         <span class="text-sm font-medium">{{ $user->name }}</span>
                         @if ($user->hasRole('super_admin'))
                             <x-ts-icon
-                                name="o-shield-check"
+                                name="shield-check"
                                 class="text-primary size-4"
                                 :tooltip="__('user.manager.protected')"
                             />
@@ -238,7 +238,7 @@
     <x-ts-modal wire="showStatusModal" :title="__('user.manager.change_status')" separator blur>
         <form wire:submit="changeStatus" class="space-y-5">
             <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
-                <x-ts-select
+                <x-mary-select
                     :label="__('user.manager.new_status')"
                     wire:model="selectedStatus"
                     :options="$this->statusOptions"
@@ -249,7 +249,6 @@
                     wire:model="statusReason"
                     :placeholder="__('user.manager.status_reason_placeholder')"
                     rows="2"
-                    icon="document-text"
                     class="mt-4"
                 />
             </div>
@@ -266,7 +265,7 @@
                     color="primary"
                     sm
                     type="submit"
-                    spinner="changeStatus"
+                    loading="changeStatus"
                 />
             </x-slot:actions>
         </form>
@@ -301,7 +300,7 @@
                     </p>
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-ts-input :label="__('user.fields.phone')" wire:model="form.phone" icon="phone" />
-                        <x-ts-select
+                        <x-mary-select
                             :label="__('user.fields.gender')"
                             wire:model="form.gender"
                             :options="[['id' => 'L', 'name' => __('common.male')], ['id' => 'P', 'name' => __('common.female')]]"
@@ -319,7 +318,6 @@
                             wire:model="form.bio"
                             rows="2"
                             class="md:col-span-2"
-                            icon="document-text"
                         />
                     </div>
                 </div>
@@ -370,7 +368,7 @@
                         color="white"
                         sm
                     />
-                    <x-ts-button :text="__('user.manager.save')" color="primary" sm type="submit" spinner="saveUser" />
+                    <x-ts-button :text="__('user.manager.save')" color="primary" sm type="submit" loading="saveUser" />
                 </x-slot:actions>
             </form>
         </x-ts-modal>

@@ -40,10 +40,10 @@
         </div>
 
         <div class="mt-4 flex justify-end">
-            <x-mary-button
-                :label="__('sysadmin.activity_reset_filters')"
-                icon="o-x-mark"
-                class="btn-ghost"
+            <x-ts-button
+                :text="__('sysadmin.activity_reset_filters')"
+                icon="x-mark"
+                color="white"
                 wire:click="resetFilters"
             />
         </div>
@@ -52,7 +52,7 @@
     <x-mary-card shadow class="bg-base-100 border-base-200 border">
         @if ($logs->isEmpty())
             <div class="py-8 text-center opacity-60">
-                <x-mary-icon name="o-shield-check" class="mx-auto mb-3 h-12 w-12" />
+                <x-ts-icon name="shield-check" class="mx-auto mb-3 h-12 w-12" />
                 <p class="text-lg">{{ __('sysadmin.activity_no_entries') }}</p>
                 @if ($filterUser || $filterModule || $filterAction)
                     <p class="text-sm">{{ __('sysadmin.activity_adjust_filters') }}</p>
@@ -87,7 +87,7 @@
                 @endscope
 
                 @scope('cell_action', $log)
-                    <x-mary-badge :value="ucfirst($log->description)" class="badge-ghost" />
+                    <x-ts-badge :text="ucfirst($log->description)" class="badge-ghost" />
                 @endscope
 
                 @scope('cell_module', $log)

@@ -9,7 +9,7 @@
     <x-mary-card>
         <div class="mb-6 flex items-end gap-4">
             <div>
-                <x-mary-input wire:model.live="date" type="date" :label="__('journals.date')" class="w-48" />
+                <x-ts-input wire:model.live="date" type="date" :label="__('journals.date')" class="w-48" />
             </div>
         </div>
 
@@ -31,7 +31,7 @@
                             <td class="text-sm">{{ $registration->placement?->company?->name ?? 'N/A' }}</td>
                             <td>
                                 @if (isset($existing[$registration->id]))
-                                    <x-mary-badge :value="$existing[$registration->id]->status?->label() ?? 'N/A'" />
+                                    <x-ts-badge :text="$existing[$registration->id]->status?->label() ?? 'N/A'" />
                                 @else
                                     <select
                                         wire:model="records.{{ $registration->id }}.status"
@@ -46,7 +46,7 @@
                             </td>
                             <td>
                                 @if (! isset($existing[$registration->id]))
-                                    <x-mary-input
+                                    <x-ts-input
                                         wire:model="records.{{ $registration->id }}.notes"
                                         placeholder="Notes..."
                                         class="input-sm"
@@ -57,14 +57,14 @@
                                 @if (isset($existing[$registration->id]))
                                     @php($attendance = $existing[$registration->id])
                                     @if (! $attendance->is_verified)
-                                        <x-mary-button
+                                        <x-ts-button
                                             aria-label="{{ __('journals.verify') }}"
                                             wire:click="verifyAttendance('{{ $attendance->id }}')"
-                                            icon="o-check"
+                                            icon="check"
                                             class="btn-xs btn-success"
                                         />
                                     @else
-                                        <x-mary-icon name="o-check-badge" class="text-success" />
+                                        <x-ts-icon name="check-badge" class="text-success" />
                                     @endif
                                     @can('update', $attendance)
                                         <select
@@ -82,11 +82,11 @@
                                         </select>
                                     @endcan
                                     @can('delete', $attendance)
-                                        <x-mary-button
+                                        <x-ts-button
                                             aria-label="{{ __('common.actions.delete') }}"
                                             wire:click="deleteAttendance('{{ $attendance->id }}')"
                                             wire:confirm="{{ __('journals.attendance.confirm_delete') }}"
-                                            icon="o-trash"
+                                            icon="trash"
                                             class="btn-xs text-error"
                                         />
                                     @endcan
@@ -100,11 +100,11 @@
 
         @if (count($students) > 0)
             <div class="mt-4">
-                <x-mary-button
+                <x-ts-button
                     wire:click="markAttendance"
-                    :label="__('journals.attendance.save')"
-                    icon="o-check"
-                    class="btn-primary"
+                    :text="__('journals.attendance.save')"
+                    icon="check"
+                    color="primary"
                 />
             </div>
         @endif

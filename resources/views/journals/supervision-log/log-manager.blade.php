@@ -6,12 +6,7 @@
         progress-indicator
     >
         <x-slot:actions>
-            <x-mary-button
-                :label="__('journals.supervision.log_new')"
-                icon="o-plus"
-                class="btn-primary"
-                wire:click="create"
-            />
+            <x-ts-button :text="__('journals.supervision.log_new')" icon="plus" color="primary" wire:click="create" />
         </x-slot:actions>
     </x-mary-header>
 
@@ -33,26 +28,28 @@
             @endscope
 
             @scope('cell_type', $log)
-                <x-mary-badge
-                    :value="ucfirst($log->type)"
+                <x-ts-badge
+                    :text="ucfirst($log->type)"
                     :class="$log->type === 'guidance' ? 'badge-primary' : 'badge-secondary'"
                 />
             @endscope
 
             @scope('cell_status', $log)
                 @if ($log->is_verified)
-                    <x-mary-badge :value="__('journals.verified')" class="badge-success" />
+                    <x-ts-badge :text="__('journals.verified')" class="badge-success" />
                 @else
-                    <x-mary-badge :value="__('journals.pending')" class="badge-neutral" />
+                    <x-ts-badge :text="__('journals.pending')" class="badge-neutral" />
                 @endif
             @endscope
 
             @scope('actions', $log)
                 @if (! $log->is_verified)
-                    <x-mary-button
-                        :label="__('journals.verify')"
-                        icon="o-check"
-                        class="btn-ghost btn-sm text-success"
+                    <x-ts-button
+                        :text="__('journals.verify')"
+                        icon="check"
+                        class="text-success"
+                        color="white"
+                        sm
                         wire:click="verify('{{ $log->id }}')"
                     />
                 @endif
@@ -61,7 +58,7 @@
     </x-mary-card>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="showModal" :title="__('journals.supervision.log_session')" separator>
+    <x-ts-modal wire="showModal" :title="__('journals.supervision.log_session')" separator>
         <div class="space-y-6">
             <x-mary-select
                 :label="__('journals.student')"
@@ -70,15 +67,15 @@
                 :placeholder="__('journals.supervision.select_student')"
             />
 
-            <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="o-calendar" />
+            <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="calendar" />
 
-            <x-mary-input
+            <x-ts-input
                 :label="__('journals.topic')"
                 wire:model="topic"
                 :placeholder="__('journals.supervision.placeholder_topic')"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('journals.supervision.session_notes')"
                 wire:model="notes"
                 rows="4"
@@ -86,14 +83,14 @@
             />
         </div>
 
-        <x-slot:actions>
-            <x-mary-button :label="__('common.actions.cancel')" @click="$wire.showModal = false" />
-            <x-mary-button
-                :label="__('journals.supervision.record_session')"
-                class="btn-primary"
+        <x-slot:footer>
+            <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" />
+            <x-ts-button
+                :text="__('journals.supervision.record_session')"
+                color="primary"
                 wire:click="save"
-                spinner="save"
+                loading="save"
             />
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 </div>

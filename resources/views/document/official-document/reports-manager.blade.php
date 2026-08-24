@@ -10,11 +10,12 @@
                 <p class="text-base-content/60 mb-4 text-xs">
                     {{ __('document.generate_desc', ['type' => strtolower($label)]) }}
                 </p>
-                <x-mary-button
+                <x-ts-button
                     wire:click="generateReport('{{ $key }}')"
-                    :label="__('document.generate')"
-                    icon="o-document-plus"
-                    class="btn-primary btn-sm"
+                    :text="__('document.generate')"
+                    icon="document-plus"
+                    color="primary"
+                    sm
                 />
             </x-mary-card>
         @endforeach
@@ -30,13 +31,13 @@
             @scope('actions', $report)
                 <div class="flex gap-2">
                     <a href="{{ route('sysadmin.reports.download', $report->id) }}" class="btn btn-sm btn-primary">
-                        <x-mary-icon name="o-arrow-down-tray" class="size-4" />
+                        <x-ts-icon name="arrow-down-tray" class="size-4" />
                         {{ __('document.download') }}
                     </a>
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.delete') }}"
                         wire:click="deleteReport('{{ $report->id }}')"
-                        icon="o-trash"
+                        icon="trash"
                         class="btn-sm btn-ghost text-error"
                     />
                 </div>

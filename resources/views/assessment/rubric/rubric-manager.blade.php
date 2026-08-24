@@ -129,7 +129,7 @@
     @empty
         <x-mary-card>
             <div class="text-base-content/40 py-12 text-center">
-                <x-ts-icon name="o-clipboard-document-list" class="mx-auto mb-4 size-16 opacity-30" />
+                <x-ts-icon name="clipboard-document-list" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_rubrics') }}</p>
                 <p class="text-sm">{{ __('assessment.rubrics_subtitle') }}</p>
             </div>
@@ -179,7 +179,7 @@
                     required
                 />
             </div>
-            <x-ts-select
+            <x-mary-select
                 :label="__('assessment.evaluator_role')"
                 wire:model="competencyForm.evaluator_role"
                 :options="$this->evaluatorRoles"

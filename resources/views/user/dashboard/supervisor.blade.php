@@ -10,31 +10,31 @@
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.active_interns')"
             :value="$activeInterns"
-            icon="o-users"
+            icon="users"
             color="text-primary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.pending_evaluations')"
             :value="$pendingEvaluations"
-            icon="o-star"
+            icon="star"
             color="text-warning"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.verified_journals')"
             :value="$verifiedJournals"
-            icon="o-check-badge"
+            icon="check-badge"
             color="text-success"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.supervisor.pending_journals')"
             :value="$pendingJournals"
-            icon="o-book-open"
+            icon="book-open"
             color="text-error"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.supervisor.pending_attendance')"
             :value="$pendingAttendance"
-            icon="o-clock"
+            icon="clock"
             color="text-error"
         />
     </div>
@@ -46,13 +46,13 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-clipboard-document-check" class="size-3.5" />
+                            <x-ts-icon name="clipboard-document-check" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.supervisor.verification_queue') }}</span>
                     </div>
                 </x-slot:title>
                 <x-core::widgets.empty-state
-                    icon="o-clipboard-document-check"
+                    icon="clipboard-document-check"
                     :title="__('dashboard.supervisor.no_verifications')"
                 />
             </x-mary-card>
@@ -60,13 +60,13 @@
             <div class="grid grid-cols-2 gap-4">
                 <x-core::widgets.action-button
                     :label="__('dashboard.supervisor.verify_logbooks')"
-                    icon="o-pencil-square"
+                    icon="pencil-square"
                     link="{{ route('sysadmin.logbook') }}"
                     color="btn-primary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.supervisor.submit_evaluation')"
-                    icon="o-star"
+                    icon="star"
                     link="#"
                     color="btn-secondary"
                 />
@@ -79,17 +79,17 @@
                 <div class="space-y-1">
                     <x-core::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
-                        icon="o-user"
+                        icon="user"
                         link="{{ route('profile') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('profile.recovery.title')"
-                        icon="o-key"
+                        icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('dashboard.notifications')"
-                        icon="o-bell"
+                        icon="bell"
                         link="{{ route('notifications') }}"
                     />
                 </div>

@@ -10,37 +10,37 @@
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.supervised_students')"
             :value="$supervisedStudents"
-            icon="o-users"
+            icon="users"
             color="text-primary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.pending_journals')"
             :value="$pendingJournals"
-            icon="o-book-open"
+            icon="book-open"
             color="text-warning"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.stats.active_companies')"
             :value="$activeCompanies"
-            icon="o-building-office"
+            icon="building-office"
             color="text-secondary"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.teacher.ungraded_submissions')"
             :value="$ungradedSubmissions"
-            icon="o-document-check"
+            icon="document-check"
             color="text-error"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.teacher.supervision_logs')"
             :value="$supervisionLogsCount"
-            icon="o-check-badge"
+            icon="check-badge"
             color="text-success"
         />
         <x-core::widgets.stat-card
             :title="__('dashboard.teacher.unresolved_incidents')"
             :value="$unresolvedIncidents"
-            icon="o-shield-exclamation"
+            icon="shield-exclamation"
             color="text-error"
         />
     </div>
@@ -52,13 +52,13 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-clipboard-document-check" class="size-3.5" />
+                            <x-ts-icon name="clipboard-document-check" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.teacher.recent_journals') }}</span>
                     </div>
                 </x-slot:title>
                 <x-core::widgets.empty-state
-                    icon="o-clipboard-document-check"
+                    icon="clipboard-document-check"
                     :title="__('dashboard.teacher.no_journals')"
                 />
             </x-mary-card>
@@ -66,19 +66,19 @@
             <div class="grid grid-cols-2 gap-4">
                 <x-core::widgets.action-button
                     :label="__('dashboard.teacher.verify_logbooks')"
-                    icon="o-pencil-square"
+                    icon="pencil-square"
                     link="{{ route('sysadmin.logbook') }}"
                     color="btn-primary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.teacher.grade_assignments')"
-                    icon="o-document-check"
+                    icon="document-check"
                     link="{{ route('teacher.submissions.grading') }}"
                     color="btn-secondary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.teacher.supervision_logs')"
-                    icon="o-check-badge"
+                    icon="check-badge"
                     link="{{ route('supervision.logs') }}"
                     color="btn-accent"
                 />
@@ -91,23 +91,23 @@
                 <div class="space-y-1">
                     <x-core::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
-                        icon="o-user"
+                        icon="user"
                         link="{{ route('profile') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('profile.recovery.title')"
-                        icon="o-key"
+                        icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('dashboard.notifications')"
-                        icon="o-bell"
+                        icon="bell"
                         link="{{ route('notifications') }}"
                     />
                     @if (auth()->user()?->hasRole('super_admin'))
                         <x-core::widgets.quick-link
                             :label="__('dashboard.system_settings')"
-                            icon="o-cog-6-tooth"
+                            icon="cog-6-tooth"
                             link="{{ route('admin.settings') }}"
                         />
                     @endif

@@ -6,26 +6,22 @@
     />
 
     <x-mary-card>
-        <x-mary-form wire:submit="submit" no-separator>
+        <form wire:submit="submit" no-separator>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="mt-4 md:col-span-2">
                     <h2 class="text-lg font-semibold">{{ __('registration.account_application.personal_info') }}</h2>
                     <hr class="my-2" />
                 </div>
 
-                <x-mary-input
-                    :label="__('registration.account_application.full_name')"
-                    wire:model="form.name"
-                    required
-                />
-                <x-mary-input
+                <x-ts-input :label="__('registration.account_application.full_name')" wire:model="form.name" required />
+                <x-ts-input
                     :label="__('registration.account_application.email')"
                     wire:model="form.email"
                     type="email"
                     required
                 />
-                <x-mary-input :label="__('registration.account_application.phone')" wire:model="form.phone" />
-                <x-mary-textarea
+                <x-ts-input :label="__('registration.account_application.phone')" wire:model="form.phone" />
+                <x-ts-textarea
                     :label="__('registration.account_application.address')"
                     wire:model="form.address"
                     class="md:col-span-2"
@@ -36,22 +32,22 @@
                     <hr class="my-2" />
                 </div>
 
-                <x-mary-input
+                <x-ts-input
                     :label="__('registration.account_application.national_id')"
                     wire:model="form.national_id_number"
                     :placeholder="__('registration.account_application.national_id')"
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('registration.account_application.student_id')"
                     wire:model="form.student_id_number"
                     :placeholder="__('registration.account_application.student_id')"
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('registration.account_application.class')"
                     wire:model="form.class_name"
                     placeholder="e.g. XII-RPL-1"
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('registration.account_application.entry_year')"
                     wire:model="form.entry_year"
                     placeholder="e.g. 2024"
@@ -72,7 +68,7 @@
                     required
                     class="md:col-span-2"
                 />
-                <x-mary-input
+                <x-ts-input
                     :label="__('registration.wizard.label_academic_year')"
                     wire:model="form.academic_year"
                     placeholder="e.g. 2025/2026"
@@ -102,12 +98,12 @@
                         class="md:col-span-2"
                     />
                 @else
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('registration.account_application.proposed_company')"
                         wire:model="form.proposed_company_name"
                         class="md:col-span-2"
                     />
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('registration.account_application.proposed_address')"
                         wire:model="form.proposed_company_address"
                         class="md:col-span-2"
@@ -115,14 +111,14 @@
                 @endif
             </div>
 
-            <x-slot:actions>
-                <x-mary-button
-                    :label="__('registration.account_application.submit')"
+            <div class="mt-6 flex justify-end gap-2">
+                <x-ts-button
+                    :text="__('registration.account_application.submit')"
                     type="submit"
-                    icon="o-paper-airplane"
-                    class="btn-primary"
+                    icon="paper-airplane"
+                    color="primary"
                 />
-            </x-slot:actions>
-        </x-mary-form>
+            </div>
+        </form>
     </x-mary-card>
 </div>

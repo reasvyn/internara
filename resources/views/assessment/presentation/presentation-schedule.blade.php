@@ -3,12 +3,7 @@
     :subtitle="__('assessment.presentation_subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button
-            :label="__('assessment.presentation_add')"
-            icon="o-plus"
-            class="btn-primary btn-sm"
-            wire:click="create"
-        />
+        <x-ts-button :text="__('assessment.presentation_add')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:filters>
@@ -28,8 +23,8 @@
             class="table-sm"
         >
             @scope('cell_status', $p)
-                <x-mary-badge
-                    :value="$p->status->label()"
+                <x-ts-badge
+                    :text="$p->status->label()"
                     :class="match($p->status->value) {
                     'scheduled' => 'badge-info', 'completed' => 'badge-success', 'cancelled' => 'badge-error', default => 'badge-ghost',
                 }"
@@ -51,10 +46,11 @@
             @scope('actions', $p)
                 <div class="flex justify-end gap-1">
                     @if ($p->status->value === 'scheduled')
-                        <x-mary-button
+                        <x-ts-button
                             aria-label="{{ __('common.actions.edit') }}"
-                            icon="o-pencil"
-                            class="btn-ghost btn-sm"
+                            icon="pencil"
+                            color="white"
+                            sm
                             wire:click="setupScoring('{{ $p->id }}')"
                         />
                     @endif
@@ -64,12 +60,12 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showScheduleModal"
+        <x-ts-modal
+            wire="showScheduleModal"
             :title="__('assessment.presentation_schedule_title')"
-            class="max-w-lg backdrop-blur-sm"
+            class="max-w-lg blur"
         >
-            <x-mary-form wire:submit="saveSchedule">
+            <form wire:submit="saveSchedule">
                 <div class="space-y-5">
                     <x-mary-select
                         :label="__('assessment.presentation_registration')"
@@ -79,12 +75,12 @@
                         option-label="name"
                         option-value="id"
                     />
-                    <x-mary-input
+                    <x-ts-input
                         :label="__('assessment.presentation_scheduled_at')"
                         wire:model="scheduleData.scheduled_at"
                         type="datetime-local"
                     />
-                    <x-mary-input :label="__('assessment.presentation_location')" wire:model="scheduleData.location" />
+                    <x-ts-input :label="__('assessment.presentation_location')" wire:model="scheduleData.location" />
                     <x-mary-select
                         :label="__('assessment.presentation_examiners')"
                         wire:model="scheduleData.examiner_ids"
@@ -93,26 +89,28 @@
                         option-value="id"
                         multiple
                     />
-                    <x-mary-textarea
+                    <x-ts-textarea
                         :label="__('assessment.presentation_notes')"
                         wire:model="scheduleData.notes"
                         rows="2"
                     />
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showScheduleModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('assessment.presentation_schedule')"
-                        class="btn-primary btn-sm"
+                    <x-ts-button
+                        :text="__('assessment.presentation_schedule')"
+                        color="primary"
+                        sm
                         type="submit"
-                        spinner="saveSchedule"
+                        loading="saveSchedule"
                     />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 </x-core::ui.record-manager>
