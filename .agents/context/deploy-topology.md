@@ -1,8 +1,6 @@
 # Deploy Topology & Caveats — Operations Context
 
-> **Last updated:** 2026-08-23 **Changes:** added release-versioning caveat — `composer.json`
-> `version` MUST be bumped + tagged per release, else branch-push deploys resolve a stale tag
-> (v0.14.3 incident: VPS checked out v0.14.0 which predates `deploy.sh` → exit 127)
+> **Last updated:** 2026-08-24 **Changes:** clarify `internara.web.id` is product demo (not production), version-gate note
 
 ## Description
 
@@ -20,7 +18,7 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
      `.github/scripts/deploy.sh`.
 - **VPS layout:** app source at `~/apps/internara` on branch `docker-deploy`; stack is 3 containers
   (`app`, `db` = mysql:8, `web` = nginx) with `NGINX_PORT=8080`; reverse proxy is host-level
-  aaPanel/BT nginx for `https://internara.web.id`.
+  aaPanel/BT nginx for `https://internara.web.id` (product demo).
 - **Branch workflow:** code lives on `main`; production tracks `docker-deploy`. To ship, fast-forward
   `docker-deploy` to `main` and push — the pipeline handles the rest.
 
@@ -30,10 +28,10 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
 | ------ | ------ |
 | **Branch-push deploys resolve the tag from `composer.json`** | On `docker-deploy` branch pushes, `VERSION_TAG = v{composer.json version}`. The VPS then `git checkout` that tag — NOT the pushed commit. If `composer.json` is stale, the VPS checks out an old tag that may lack current scripts (v0.14.3 incident: checked out v0.14.0 → `.github/scripts/deploy.sh: No such file or directory` → exit 127). **Rule: every release must bump `composer.json` `version` AND create the matching `v*.*.*` tag on main before pushing `docker-deploy`.** Tag pushes (`v*.*.*`) bypass this and use the ref name directly. |
 | **`git reset --hard origin/docker-deploy` runs on every deploy** | Any manual change inside `~/apps/internara` on the VPS is silently destroyed. Never hand-edit files there; change the repo and push. |
-| **Health check gates success** | The deploy is green only when `https://internara.web.id` returns 200 within 60s. |
-| **Build context is a Git URL** | `GIT_URL=https://github.com/reasvyn/internara.git#docker-deploy` (VPS `.env`). The Dockerfile clones/bundles the repo at build time; changes in the running container do not persist unless stored in `storage_data` / `app_data` / `mysql_data` volumes. |
+| **Health check gates success** | The deploy is green only when `https://internara.web.id` (product demo) returns 200 within 60s. |
+| **Build context is a Git URL** | `GIT_URL=https://github.com/reasvyn/internara.git#docker-deploy` (VPS `.env`, product demo). The Dockerfile clones/bundles the repo at build time; changes in the running container do not persist unless stored in `storage_data` / `app_data` / `mysql_data` volumes. |
 | **Build cache bloat** | `deploy.sh` prunes images and builders, keeping the build cache under a `--keep-storage` limit (currently 2g) so the VPS disk stays healthy. |
-| **Site reachable check** | `https://internara.web.id` → 200; title `Home | Internara - Management System`. |
+| **Site reachable check** | `https://internara.web.id` (product demo) → 200; title `Home | Internara - Management System`. |
 
 ---
 
