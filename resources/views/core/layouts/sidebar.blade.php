@@ -1,81 +1,62 @@
 @props(['items' => []])
 
-<div class="drawer-side z-[60]">
-    <label class="drawer-overlay" for="main-drawer" aria-label="close sidebar"></label>
-
-    <aside class="bg-base-100 border-base-content/10 flex min-h-screen w-64 flex-col border-r">
-        <div class="border-base-content/10 flex h-16 shrink-0 items-center border-b px-6">
+<x-ts-side-bar navigate smart collapsible>
+    <x-slot:brand>
+        <div class="flex h-16 shrink-0 items-center px-6">
             <a class="flex items-center gap-3" wire:navigate href="{{ route('dashboard') }}">
                 <x-core::ui.brand size="md" :with-tagline="false" :invert="false" />
             </a>
         </div>
+    </x-slot:brand>
 
-        <nav class="flex-1 space-y-6 overflow-y-auto px-3 py-6">
-            @auth
-                @foreach (config('menu.groups') as $group)
-                    @if (auth()->user()->hasRole($group['roles']))
-                        <div>
-                            <h3 class="text-base-content/60 mb-2 px-3 text-[10px] font-semibold tracking-wider uppercase">
-                                {{ __($group['title']) }}
-                            </h3>
-                            <ul class="space-y-0.5">
-                                @foreach ($group['items'] as $item)
-                                    @php
-                                        $itemRoles = $item['roles'] ?? $group['roles'];
-                                        $disabled = $item['disabled'] ?? false;
-                                        $active = ! $disabled && request()->routeIs($item['route']);
-                                        $url = '#';
-                                        if (! $disabled) {
-                                            try {
-                                                if (Route::has($item['route'])) {
-                                                    $url = route($item['route']);
-                                                }
-                                            } catch (\Throwable) {
-                                                $url = '#';
-                                            }
-                                        }
-                                    @endphp
-                                    @if (auth()->user()->hasRole($itemRoles))
-                                        <li>
-                                            @if ($disabled)
-                                                <span @class([
-                                                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors cursor-not-allowed',
-                                                    'text-base-content/60' => true,
-                                                ])>
-                                                    <x-mary-icon
-                                                        class="size-4 shrink-0 opacity-40"
-                                                        :name="$item['icon']"
-                                                    />
-                                                    <span class="opacity-40">{{ __($item['label']) }}</span>
-                                                </span>
-                                            @else
-                                                <a
-                                                    wire:navigate
-                                                    href="{{ $url }}"
-                                                    @class([
-                                                        'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
-                                                        'bg-primary/10 text-primary font-medium' => $active,
-                                                        'text-base-content/60 hover:bg-base-200 hover:text-base-content' => ! $active,
-                                                    ])
-                                                >
-                                                    <x-mary-icon class="size-4 shrink-0" :name="$item['icon']" />
-                                                    <span>{{ __($item['label']) }}</span>
-                                                </a>
-                                            @endif
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
+    @auth
+        @foreach (config('menu.groups') as $group)
+            @if (auth()->user()->hasRole($group['roles']))
+                <x-ts-side-bar.separator :text="__($group['title'])" />
+                @foreach ($group['items'] as $item)
+                    @php
+                        $itemRoles = $item['roles'] ?? $group['roles'];
+                        $disabled = $item['disabled'] ?? false;
+                        $active = ! $disabled && request()->routeIs($item['route']);
+                        $url = '#';
+                        if (! $disabled) {
+                            try {
+                                if (Route::has($item['route'])) {
+                                    $url = route($item['route']);
+                                }
+                            } catch (\Throwable) {
+                                $url = '#';
+                            }
+                        }
+                        $rawIcon = $item['icon'] ?? null;
+                        $icon = $rawIcon ? (str_starts_with($rawIcon, 'o-') ? substr($rawIcon, 2) : (str_starts_with($rawIcon, 's-') ? substr($rawIcon, 2) : $rawIcon)) : null;
+                    @endphp
+                    @if (auth()->user()->hasRole($itemRoles))
+                        @if ($disabled)
+                            <div class="flex items-center gap-3 px-3 py-2 text-sm opacity-40">
+                                @if ($icon)
+                                    <x-ts-icon :name="$icon" class="size-4 shrink-0" />
+                                @endif
+                                <span>{{ __($item['label']) }}</span>
+                            </div>
+                        @else
+                            <x-ts-side-bar.item
+                                :text="__($item['label'])"
+                                :route="$url"
+                                :icon="$icon"
+                                :current="$active"
+                            />
+                        @endif
                     @endif
                 @endforeach
-            @endauth
-        </nav>
+            @endif
+        @endforeach
+    @endauth
 
-        {{-- Mobile Switchers --}}
-        <div class="border-base-content/10 flex items-center justify-between border-t p-3 md:hidden">
+    <x-slot:footer>
+        <div class="flex items-center justify-between p-3 md:hidden">
             <livewire:settings.theme-switcher />
             <livewire:settings.lang-switcher />
         </div>
-    </aside>
-</div>
+    </x-slot:footer>
+</x-ts-side-bar>
