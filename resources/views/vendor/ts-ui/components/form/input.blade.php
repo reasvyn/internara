@@ -1,0 +1,102 @@
+@php
+    $customization = $classes();
+@endphp
+
+<x-dynamic-component :component="TallStackUi::prefix('wrapper.input')" :$id :$property :$error :$label :$hint
+                     :$invalidate :floatable="$attributes->get('floatable', false)">
+    @if ($addon)
+        <div @class([
+            $customization['input.addon.wrapper'],
+            $customization['input.color.base'] => !$error,
+            $customization['input.color.background'] => !$attributes->get('disabled') && !$attributes->get('readonly'),
+            $customization['input.color.disabled'] => $attributes->get('disabled') || $attributes->get('readonly'),
+            $customization['input.addon.error'] => $error,
+        ])>
+            @if ($prefixed)
+                <div @class([$customization['input.addon.button.base']])>
+                    {{ $prefix }}
+                </div>
+            @endif
+    @endif
+    <div @class([
+            'relative flex-1' => $addon,
+            $customization['input.wrapper-fix'] => $addon,
+            $customization['input.wrapper'],
+            $customization['input.addon.round.left'] => $prefixed,
+            $customization['input.addon.round.right'] => $suffixed,
+            $customization['input.color.base'] => !$error,
+            $customization['input.color.background'] => !$addon && !$attributes->get('disabled') && !$attributes->get('readonly'),
+            $customization['input.color.disabled'] => !$addon && ($attributes->get('disabled') || $attributes->get('readonly')),
+            $customization['error'] => $error
+        ])>
+        @if ($icon)
+            <div @class([$customization['icon.wrapper'], $customization['icon.paddings.' . $position]])>
+                <x-dynamic-component :component="TallStackUi::prefix('icon')"
+                                     :$icon
+                                     :$error
+                                     internal
+                                     @class([
+                                         $customization['icon.size'],
+                                         $customization['error'] => $error,
+                                         $customization['icon.color'] => !$error && !$invalidate
+                                     ]) />
+            </div>
+        @endif
+        @if ($clearable && !$locked)
+            <div x-data="tallstackui_formInputClearable(@js($ref))"
+                 @class([$customization['clearable.wrapper'], $customization['clearable.padding'], $customization['input.paddings.icon-clearable-extra'] => $icon && $position === 'right']) x-show="clearable">
+                <button type="button" class="cursor-pointer" dusk="tallstackui_form_input_clearable">
+                    <x-dynamic-component :component="TallStackUi::prefix('icon')"
+                                         :icon="TallStackUi::icon('x-mark')"
+                                         x-on:click="clear()"
+                                         internal
+                                         @class([
+                                             $customization['clearable.size'],
+                                             $customization['clearable.color'] => !$error && !$invalidate,
+                                         ]) />
+                </button>
+            </div>
+        @endif
+        @if (!$prefixed)
+            @if ($prefix instanceof \Illuminate\View\ComponentSlot)
+                <div {{ $prefix->attributes->merge(['class' => $customization['input.slot']]) }}>
+                    {{ $prefix }}
+                </div>
+            @elseif (is_string($prefix))
+                <span @class([$customization['input.slot-prefix-spacing'], $customization['input.slot'], $customization['error'] => $error])>{{ $prefix }}</span>
+            @endif
+        @endif
+        <input @if ($id) id="{{ $id }}" @endif
+        type="{{ $type }}"
+               x-ref="{{ $attributes->get('x-ref', $ref) }}"
+               @if ($stripZeros) x-data="tallstackui_formInputStripZeros(@js($ref))" @endif
+               @if ($prefix || $suffix) autocomplete="{{ $attributes->get('autocomplete', 'off') }}" @endif
+                {{ $attributes->class([
+                     $customization['input.base'],
+                     $customization['input.addon.paddings.left'] => $prefixed,
+                     $customization['input.addon.paddings.right'] => $suffixed,
+                     $customization['input.paddings.prefix'] => $prefix && !$prefixed,
+                     $customization['input.paddings.suffix'] => $suffix && !$suffixed,
+                     $customization['input.paddings.left'] => $icon && ($position === null || $position === 'left'),
+                     $customization['input.paddings.right'] => $icon && $position === 'right' || $icon && $clearable && !$locked,
+                     $customization['input.paddings.clearable'] => $icon && $clearable && !$locked && $position === 'right',
+                 ]) }}>
+        @if (!$suffixed)
+            @if ($suffix instanceof \Illuminate\View\ComponentSlot)
+                <div {{ $suffix->attributes->merge(['class' => $customization['input.slot']]) }}>
+                    {{ $suffix }}
+                </div>
+            @elseif (is_string($suffix))
+                <span @class([$customization['input.slot-suffix-spacing'], $customization['input.slot'], $customization['error'] => $error])>{{ $suffix }}</span>
+            @endif
+        @endif
+    </div>
+    @if ($addon)
+            @if ($suffixed)
+                <div @class([$customization['input.addon.button.base']])>
+                    {{ $suffix }}
+                </div>
+            @endif
+        </div>
+    @endif
+</x-dynamic-component>
