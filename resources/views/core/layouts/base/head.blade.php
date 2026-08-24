@@ -26,6 +26,9 @@
 
 <link rel="manifest" href="{{ $manifest }}">
 
+<!-- TallstackUI — must be above Vite (https://tallstackui.com/docs/installation) -->
+<tallstackui:script />
+
 <!-- Vite Assets -->
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 

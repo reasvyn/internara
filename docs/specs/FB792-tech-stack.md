@@ -42,7 +42,7 @@ manifest (no undeclared direct dependencies).
 
 | ID  | Goal |
 | --- | ---- |
-| G1  | Pin PHP 8.4, Laravel 13, Livewire 4, Tailwind CSS v4, TallstackUI v4 as minimum versions (DaisyUI v5 deprecated, phased removal) |
+| G1  | Pin PHP 8.4, Laravel 13, Livewire 4, Tailwind CSS v4, TallstackUI v4 as minimum versions (DaisyUI v5 + MaryUI v2 + PHPFlasher deprecated, phased removal) |
 | G2  | Complete, registered dependency manifest (Composer runtime + dev, JS toolchain) |
 | G3  | Reproducible installs via the committed `composer.lock` (and `package-lock.json`) |
 | G4  | Security: dependency vulnerabilities are scanned and resolved before release |
@@ -141,8 +141,8 @@ manifest (no undeclared direct dependencies).
 | `php` | `^8.4` | Language |
 | `laravel/framework` | `^13.0` | Framework |
 | `livewire/livewire` | `^4.0` | Frontend |
-| `robsontenorio/mary` | `^2.4` | UI Component (coexistence; new UI prefers TallstackUI) |
-| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/PHPFlasher, FR-TS6) |
+| `robsontenorio/mary` | `^2.4` | UI Component — **DEPRECATED** (coexistence; replaced by TallstackUI, FR-TS6) |
+| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/MaryUI/PHPFlasher, FR-TS6) |
 | `barryvdh/laravel-dompdf` | `^3.1` | PDF Generation |
 | `laravel-lang/lang` | `^15.26` | Localization |
 | `laravel/pulse` | `*` | Monitoring |
@@ -217,16 +217,16 @@ gate makes it routine.
 **Trade-off:** Occasionally blocks a release on a transitive advisory — resolved via upgrade or a
 recorded acceptance.
 
-### DD-4 — Gradual DaisyUI/PHPFlasher → TallstackUI Migration (TallstackUI-first)
+### DD-4 — Gradual DaisyUI/MaryUI/PHPFlasher → TallstackUI Migration (TallstackUI-first)
 
-**Decision:** Migrate UI stack from DaisyUI v5 + `php-flasher` to TallstackUI v4 gradually, without breaking existing UI, with TallstackUI-first principle (FR-TS6a, NFR-DEP5).
+**Decision:** Migrate UI stack from DaisyUI v5 + MaryUI v2 + `php-flasher` to TallstackUI v4 gradually, without breaking existing UI, with TallstackUI-first principle (FR-TS6a, NFR-DEP5).
 **Phases:**
-1. **Spec & Docs (this spec):** Pin `tallstackui/tallstackui ^4.0`, mark `daisyui ^5.7.0` and `php-flasher/flasher-laravel ^2.4` as DEPRECATED (coexistence, no new usage), document TallstackUI-first rule.
-2. **Coexistence:** Install TallstackUI alongside DaisyUI/PHPFlasher; new components use `<x-ts-*>` / `TallstackUI::toast()`; existing DaisyUI/maryUI and `flash()->success()` remain functional. No bulk rewrite.
-3. **Incremental replacement:** Per-module, replace DaisyUI classes (`btn`, `card`, `drawer`, `data-theme`) and `php-flasher` flash calls with TallstackUI `toast`/`alert`/`modal`/`form` — one module per PR, verified with `scan_doc_links.py` + visual `npm run build`.
-4. **Removal:** After all modules migrated and `grep -R "daisyui\|php-flasher" --include="*.json" --include="*.blade.php"` is clean, remove `daisyui` and `php-flasher/flasher-laravel` from manifests and `app.css` imports.
-**Rationale:** Zero-downtime migration for 18 modules; DaisyUI/PHPFlasher remain as safety net while TallstackUI proves coverage (TALL-native, Livewire-first, no extra JS).
-**Trade-off:** Temporary dual UI stack (bundle size + theme duplication) — bounded by phase 4 removal; `maryUI` stays during coexistence (built on DaisyUI) but new code prefers TallstackUI over maryUI.
+1. **Spec & Docs (this spec):** Pin `tallstackui/tallstackui ^4.0`, mark `daisyui ^5.7.0`, `robsontenorio/mary ^2.4` and `php-flasher/flasher-laravel ^2.4` as DEPRECATED (coexistence, no new usage), document TallstackUI-first rule.
+2. **Coexistence:** Install TallstackUI alongside DaisyUI/MaryUI/PHPFlasher; new components use `<x-ts-*>` / `TallstackUI::toast()`; existing DaisyUI/maryUI and `flash()->success()` remain functional. No bulk rewrite.
+3. **Incremental replacement:** Per-module, replace DaisyUI classes (`btn`, `card`, `drawer`, `data-theme`), MaryUI components (`<x-mary-*>`) and `php-flasher` flash calls with TallstackUI `toast`/`alert`/`modal`/`form` — one module per PR, verified with `scan_doc_links.py` + visual `npm run build`.
+4. **Removal:** After all modules migrated and `grep -R "daisyui\|mary\|php-flasher" --include="*.json" --include="*.blade.php"` is clean, remove `daisyui`, `robsontenorio/mary` and `php-flasher/flasher-laravel` from manifests and `app.css` imports.
+**Rationale:** Zero-downtime migration for 18 modules; DaisyUI/MaryUI/PHPFlasher remain as safety net while TallstackUI proves coverage (TALL-native, Livewire-first, no extra JS).
+**Trade-off:** Temporary triple UI stack (bundle size + theme duplication) — bounded by phase 4 removal; all new code must use TallstackUI first before any legacy UI.
 
 ---
 
