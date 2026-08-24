@@ -41,6 +41,7 @@
     <!-- Page Content --> {{ $slot }}
 
     <x-ts-toast />
+    <x-ts-dialog />
 
     <!-- Scripts -->
     @stack('scripts')
