@@ -22,8 +22,6 @@ class AccountLifecycleManager extends Component
 
     public bool $showClones = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmActionType = '';
 
     public ?string $confirmTarget = null;
@@ -35,7 +33,11 @@ class AccountLifecycleManager extends Component
         $this->confirmActionType = 'lock';
         $this->confirmTarget = $id;
         $this->confirmMessage = __('Lock this account?');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askUnlock(string $id): void
@@ -43,7 +45,11 @@ class AccountLifecycleManager extends Component
         $this->confirmActionType = 'unlock';
         $this->confirmTarget = $id;
         $this->confirmMessage = __('Unlock this account?');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -66,8 +72,6 @@ class AccountLifecycleManager extends Component
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmActionType = '';
         $this->confirmMessage = '';

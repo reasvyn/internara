@@ -235,6 +235,4 @@
             </div>
         </x-slot:actions>
     </x-mary-modal>
-
-    <x-core::ui.confirm :message="__('common.actions.confirm_message')" />
 </div>

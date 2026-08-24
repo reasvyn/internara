@@ -231,6 +231,4 @@
     </x-mary-modal>
 
     @include('user.notifications.components.notification-guide')
-
-    <x-core::ui.confirm :message="__('notifications.ui.are_you_sure')" />
 </div>

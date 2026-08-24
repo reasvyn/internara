@@ -31,8 +31,6 @@ class InternshipGroupManager extends BaseRecordManager
 
     public bool $showMemberModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmMessage = '';
 
     public string $confirmType = '';
@@ -131,7 +129,11 @@ class InternshipGroupManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('internship.confirm_delete_group', ['name' => $group->name]);
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteInternshipGroupAction $deleteAction): void
@@ -148,8 +150,6 @@ class InternshipGroupManager extends BaseRecordManager
         } catch (RejectedException|\RuntimeException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

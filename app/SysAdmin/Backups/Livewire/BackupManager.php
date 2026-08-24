@@ -22,8 +22,6 @@ final class BackupManager extends BaseRecordManager
     use AuthorizesRequests;
     use Interactions;
 
-    public bool $showConfirmDelete = false;
-
     public ?string $deleteId = null;
 
     public string $filterType = '';
@@ -86,7 +84,11 @@ final class BackupManager extends BaseRecordManager
     public function confirmDelete(string $id): void
     {
         $this->deleteId = $id;
-        $this->showConfirmDelete = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmDelete')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function delete(DeleteBackupAction $action): void
@@ -96,8 +98,6 @@ final class BackupManager extends BaseRecordManager
         $this->authorize('delete', $backup);
 
         $action->execute($backup);
-
-        $this->showConfirmDelete = false;
         $this->deleteId = null;
 
         $this->toast()->success(__('backups.delete_success'))->send();
@@ -105,7 +105,6 @@ final class BackupManager extends BaseRecordManager
 
     public function cancelDelete(): void
     {
-        $this->showConfirmDelete = false;
         $this->deleteId = null;
     }
 

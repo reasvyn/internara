@@ -28,8 +28,6 @@ class HandbookManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmType = '';
 
     public ?string $confirmTarget = null;
@@ -138,7 +136,11 @@ class HandbookManager extends BaseRecordManager
     {
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteHandbookAction $action): void
@@ -155,8 +157,6 @@ class HandbookManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
     }
 

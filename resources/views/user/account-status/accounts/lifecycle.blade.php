@@ -89,6 +89,5 @@
         @endif
     </x-mary-card>
 
-    <x-core::ui.confirm :message="$confirmMessage" />
     @include('user.account-status.components.account-lifecycle-guide')
 </div>

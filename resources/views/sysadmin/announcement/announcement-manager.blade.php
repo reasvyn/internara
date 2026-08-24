@@ -170,11 +170,5 @@
         @endif
     </x-mary-card>
 
-    <x-core::ui.confirm
-        :title="$confirmActionType === 'delete' ? __('common.actions.confirm_action') : __('announcement.publish_now')"
-        :message="$confirmActionType === 'delete' ? __('announcement.confirm_delete') : __('announcement.confirm_publish')"
-        :confirmText="$confirmActionType === 'delete' ? __('common.actions.delete') : __('announcement.publish_now')"
-        :confirmClass="$confirmActionType === 'publish' ? 'btn-success' : 'btn-error'"
-    />
     @include('sysadmin.announcement.components.announcement-guide')
 </div>

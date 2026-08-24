@@ -31,8 +31,6 @@ class CompanyManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmMessage = '';
 
     public string $confirmType = '';
@@ -173,7 +171,11 @@ class CompanyManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('company.confirm_delete', ['name' => $company->name]);
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
@@ -186,7 +188,11 @@ class CompanyManager extends BaseRecordManager
         $this->confirmMessage = __('company.delete_selected_confirm', [
             'count' => count($this->selectedIds),
         ]);
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -206,8 +212,6 @@ class CompanyManager extends BaseRecordManager
         } catch (RejectedException) {
             $this->toast()->error(__('company.delete_blocked'))->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

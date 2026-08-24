@@ -23,8 +23,6 @@ class StudentLogManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmType = '';
 
     public ?string $confirmTarget = null;
@@ -115,7 +113,11 @@ class StudentLogManager extends BaseRecordManager
     {
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteLogAction $action): void
@@ -132,8 +134,6 @@ class StudentLogManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
     }
 

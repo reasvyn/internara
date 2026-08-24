@@ -44,8 +44,6 @@ class SystemSetting extends BaseFormView
 
     public string $app_version = '';
 
-    public bool $showConfirm = false;
-
     public ?string $confirmTarget = null;
 
     private ?ReadAcademicYearAction $readYearAction = null;

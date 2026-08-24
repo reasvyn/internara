@@ -26,8 +26,6 @@ class AnnouncementManager extends BaseRecordManager
 
     public bool $showForm = false;
 
-    public bool $showConfirm = false;
-
     public ?string $confirmId = null;
 
     public string $confirmActionType = '';
@@ -77,14 +75,22 @@ class AnnouncementManager extends BaseRecordManager
     {
         $this->confirmId = $id;
         $this->confirmActionType = 'delete';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmPublish(string $id): void
     {
         $this->confirmId = $id;
         $this->confirmActionType = 'publish';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -113,8 +119,6 @@ class AnnouncementManager extends BaseRecordManager
             $publish->execute($announcement);
             $this->toast()->success(__('announcement.published'))->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmId = null;
         $this->confirmActionType = '';
     }

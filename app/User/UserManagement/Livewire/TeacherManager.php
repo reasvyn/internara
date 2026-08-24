@@ -29,8 +29,6 @@ class TeacherManager extends BaseRecordManager
 
     public bool $userModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmActionType = '';
 
     public ?string $confirmTarget = null;
@@ -149,13 +147,21 @@ class TeacherManager extends BaseRecordManager
     {
         $this->confirmActionType = 'delete';
         $this->confirmTarget = $id;
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
     {
         $this->confirmActionType = 'deleteSelected';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteUserAction $deleteAction): void
@@ -175,8 +181,6 @@ class TeacherManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmActionType = '';
     }

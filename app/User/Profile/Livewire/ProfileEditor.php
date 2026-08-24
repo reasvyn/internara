@@ -78,8 +78,6 @@ class ProfileEditor extends BaseFormView
         return __('profile.id_number');
     }
 
-    public bool $showConfirm = false;
-
     public function updatedAvatar(UpdateProfileAction $updateProfile): void
     {
         $this->authorize('update', $this->user);

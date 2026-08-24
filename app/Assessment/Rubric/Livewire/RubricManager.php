@@ -68,8 +68,6 @@ class RubricManager extends Component
         'order' => 0,
     ];
 
-    public bool $showConfirm = false;
-
     public string $confirmActionType = '';
 
     public string $confirmMessage = '';
@@ -158,7 +156,11 @@ class RubricManager extends Component
         $this->confirmActionType = 'rubric';
         $this->confirmTargetId = $id;
         $this->confirmMessage = 'Remove this rubric?';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askRemoveCompetency(string $rubricId, string $competencyId): void
@@ -167,7 +169,11 @@ class RubricManager extends Component
         $this->confirmTargetId = $rubricId;
         $this->confirmCompetencyId = $competencyId;
         $this->confirmMessage = 'Remove this competency?';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askRemoveIndicator(string $rubricId, string $competencyId, string $indicatorId): void
@@ -177,7 +183,11 @@ class RubricManager extends Component
         $this->confirmCompetencyId = $competencyId;
         $this->confirmIndicatorId = $indicatorId;
         $this->confirmMessage = 'Remove this indicator?';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -217,8 +227,6 @@ class RubricManager extends Component
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTargetId = null;
         $this->confirmCompetencyId = null;
         $this->confirmIndicatorId = null;

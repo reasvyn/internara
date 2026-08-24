@@ -94,14 +94,6 @@
         </x-ts-dropdown>
     </x-core::ui.selection-bar>
 
-    <x-core::ui.confirm
-        wire:model="showConfirm"
-        :message="$confirmMessage"
-        confirmText="{{ __('common.actions.confirm') }}"
-        cancelText="{{ __('common.actions.cancel') }}"
-        confirmClass="btn-error"
-    />
-
     <div class="overflow-x-auto">
         <x-mary-table
             :headers="$this->headers()"

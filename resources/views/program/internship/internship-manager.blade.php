@@ -151,14 +151,6 @@
     </div>
 
     {{-- Confirm Dialog --}}
-    <x-core::ui.confirm
-        wire:model="showConfirm"
-        :message="$confirmMessage"
-        confirmText="{{ __('common.actions.confirm') }}"
-        cancelText="{{ __('common.actions.cancel') }}"
-        :confirmClass="$confirmType === 'close_filtered' ? 'btn-primary' : 'btn-error'"
-    />
-
     <x-slot:modal>
         <x-ts-modal
             wire="showModal"

@@ -26,8 +26,6 @@ class LogbookManager extends BaseRecordManager
 
     public bool $showSupervisorNoteModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmActionType = '';
 
     public ?string $confirmTarget = null;
@@ -164,13 +162,21 @@ class LogbookManager extends BaseRecordManager
     {
         $this->confirmActionType = 'delete';
         $this->confirmTarget = $id;
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
     {
         $this->confirmActionType = 'deleteSelected';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteLogbookAction $deleteAction): void
@@ -190,8 +196,6 @@ class LogbookManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmActionType = '';
     }

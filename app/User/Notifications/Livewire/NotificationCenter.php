@@ -22,8 +22,6 @@ class NotificationCenter extends BaseRecordManager
 
     public bool $showViewer = false;
 
-    public bool $showConfirm = false;
-
     public ?string $viewingNotificationId = null;
 
     public function viewNotification(string $id, MarkAsReadAction $action): void
@@ -128,7 +126,11 @@ class NotificationCenter extends BaseRecordManager
 
     public function askDeleteSelected(): void
     {
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteNotificationAction $action): void
@@ -145,8 +147,6 @@ class NotificationCenter extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
     }
 
     public function render(): View

@@ -233,7 +233,5 @@
         </form>
     </x-ts-modal>
 
-    <x-core::ui.confirm :message="$confirmMessage" />
-
     @include('assessment.rubric.components.rubric-guide')
 </div>
