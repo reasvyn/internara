@@ -29,8 +29,6 @@ class AssessmentGrading extends BaseFormView
 
     public bool $isFinalized = false;
 
-    public bool $showConfirm = false;
-
     public function mount(string $registrationId, InitializeAssessmentAction $action): void
     {
         $this->registrationId = $registrationId;
@@ -187,7 +185,11 @@ class AssessmentGrading extends BaseFormView
 
     public function askFinalize(): void
     {
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(FinalizeAssessmentAction $action): void
@@ -202,8 +204,6 @@ class AssessmentGrading extends BaseFormView
             $this->isFinalized = true;
             $this->toast()->success(__('assessment.finalized_success'))->send();
         });
-
-        $this->showConfirm = false;
     }
 
     public function render(): View

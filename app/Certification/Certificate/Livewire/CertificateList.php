@@ -26,8 +26,6 @@ class CertificateList extends BaseRecordManager
 
     public bool $showIssueModal = false;
 
-    public bool $showConfirm = false;
-
     public ?string $confirmTarget = null;
 
     public string $issueRegistrationId = '';
@@ -166,7 +164,11 @@ class CertificateList extends BaseRecordManager
     public function askRevoke(string $id): void
     {
         $this->confirmTarget = $id;
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(RevokeCertificateAction $revokeAction): void
@@ -179,8 +181,6 @@ class CertificateList extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
     }
 

@@ -29,8 +29,6 @@ class PartnershipManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmMessage = '';
 
     public string $confirmType = '';
@@ -206,7 +204,11 @@ class PartnershipManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('partnership.delete_confirm');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askTerminate(string $id): void
@@ -215,7 +217,11 @@ class PartnershipManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'terminate';
         $this->confirmMessage = __('partnership.terminate_confirm');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
@@ -226,7 +232,11 @@ class PartnershipManager extends BaseRecordManager
 
         $this->confirmType = 'delete_selected';
         $this->confirmMessage = __('partnership.delete_selected_confirm');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -248,8 +258,6 @@ class PartnershipManager extends BaseRecordManager
         } catch (RejectedException|\RuntimeException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

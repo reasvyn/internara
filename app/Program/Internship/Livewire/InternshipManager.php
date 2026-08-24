@@ -34,8 +34,6 @@ class InternshipManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmMessage = '';
 
     public string $confirmType = '';
@@ -206,7 +204,11 @@ class InternshipManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('internship.confirm_delete', ['name' => $internship->name]);
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
@@ -220,7 +222,11 @@ class InternshipManager extends BaseRecordManager
         $this->confirmMessage = __('internship.confirm_delete_selected', [
             'count' => count($this->selectedIds),
         ]);
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askCloseFiltered(): void
@@ -228,7 +234,11 @@ class InternshipManager extends BaseRecordManager
         $this->confirmTarget = null;
         $this->confirmType = 'close_filtered';
         $this->confirmMessage = __('internship.confirm_close_filtered');
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -253,8 +263,6 @@ class InternshipManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

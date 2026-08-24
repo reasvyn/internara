@@ -26,8 +26,6 @@ class SchoolEditor extends BaseFormView
 
     public $logo_file = null;
 
-    public bool $showConfirm = false;
-
     public function mount(): void
     {
         $this->authorize('update', Setting::class);
@@ -87,8 +85,6 @@ class SchoolEditor extends BaseFormView
         $action->execute('logo');
 
         Settings::forget('brand_logo');
-
-        $this->showConfirm = false;
         $this->toast()->success(__('school.logo_removed'))->send();
     }
 

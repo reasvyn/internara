@@ -25,8 +25,6 @@ class AcademicYearManager extends BaseRecordManager
 
     public bool $showModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmMessage = '';
 
     public string $confirmType = '';

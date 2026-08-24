@@ -1,9 +1,11 @@
-<x-core::ui.record-manager
-    :title="__('user.supervisor.title')"
-    :subtitle="__('user.supervisor.subtitle')"
->
+<x-core::ui.record-manager :title="__('user.supervisor.title')" :subtitle="__('user.supervisor.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('user.supervisor.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button
+            :label="__('user.supervisor.new')"
+            icon="o-plus"
+            class="btn-primary btn-sm"
+            wire:click="create"
+        />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
@@ -11,10 +13,14 @@
     </x-slot:extraMenu>
 
     <x-slot:filters>
-        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_from') }}</label>
-        <input wire:model.live="filters.created_from" type="date" class="input input-bordered input-sm w-full text-sm" />
+        <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.created_from') }}</label>
+        <input
+            wire:model.live="filters.created_from"
+            type="date"
+            class="input input-bordered input-sm w-full text-sm"
+        />
 
-        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_to') }}</label>
+        <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.created_to') }}</label>
         <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
@@ -41,8 +47,8 @@
                 <div class="flex items-center gap-3 py-1">
                     <x-core::ui.avatar :user="$user" size="size-9" />
                     <div class="flex flex-col">
-                        <span class="font-medium text-sm">{{ $user->name }}</span>
-                        <span class="text-xs text-base-content/50">{{ $user->username }}</span>
+                        <span class="text-sm font-medium">{{ $user->name }}</span>
+                        <span class="text-base-content/50 text-xs">{{ $user->username }}</span>
                     </div>
                 </div>
             @endscope
@@ -53,38 +59,79 @@
 
             @scope('actions', $user)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
-                    <x-mary-button icon="o-key" class="btn-ghost btn-sm text-primary" wire:click="showSlip('{{ $user->id }}')" :aria-label="__('user.manager.account_slip')" />
-                    <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="askDelete('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+                    <x-mary-button
+                        icon="o-pencil"
+                        class="btn-ghost btn-sm"
+                        wire:click="edit('{{ $user->id }}')"
+                        :aria-label="__('common.actions.edit')"
+                    />
+                    <x-mary-button
+                        icon="o-key"
+                        class="btn-ghost btn-sm text-primary"
+                        wire:click="showSlip('{{ $user->id }}')"
+                        :aria-label="__('user.manager.account_slip')"
+                    />
+                    <x-mary-button
+                        icon="o-trash"
+                        class="btn-ghost btn-sm text-error"
+                        wire:click="askDelete('{{ $user->id }}')"
+                        :aria-label="__('common.actions.delete')"
+                    />
                 </div>
             @endscope
         </x-mary-table>
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.supervisor.edit') : __('user.supervisor.new')" separator class="backdrop-blur-sm">
+        <x-mary-modal
+            wire:model="userModal"
+            :title="$form->id ? __('user.supervisor.edit') : __('user.supervisor.new')"
+            separator
+            class="backdrop-blur-sm"
+        >
             <x-mary-form wire:submit="save" class="space-y-5">
-                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-base-200/30 border-base-content/10 rounded-xl border p-5">
+                    <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
+                        {{ __('user.manager.account') }}
+                    </p>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
-                        <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                        <x-mary-input
+                            :label="__('user.fields.email')"
+                            type="email"
+                            wire:model="form.email"
+                            icon="o-envelope"
+                        />
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-mary-input :label="__('user.supervisor.phone')" wire:model="form.phone" icon="o-phone" />
-                        <x-mary-select :label="__('user.supervisor.company')" wire:model="form.company_id" :placeholder="__('user.supervisor.company_placeholder')" :options="$this->companies" icon="o-building-office" />
+                        <x-mary-select
+                            :label="__('user.supervisor.company')"
+                            wire:model="form.company_id"
+                            :placeholder="__('user.supervisor.company_placeholder')"
+                            :options="$this->companies"
+                            icon="o-building-office"
+                        />
                     </div>
                 </div>
 
                 <x-slot:actions>
-                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('userModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('user.supervisor.save')" class="btn-primary btn-sm" type="submit" spinner="save" />
+                    <x-mary-button
+                        :label="__('common.actions.cancel')"
+                        wire:click="$set('userModal', false)"
+                        class="btn-ghost btn-sm"
+                    />
+                    <x-mary-button
+                        :label="__('user.supervisor.save')"
+                        class="btn-primary btn-sm"
+                        type="submit"
+                        spinner="save"
+                    />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
     @include('user.user-management.components.account-slip-modal')
 
-    <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
     @include('user.user-management.components.supervisor-guide')
 </x-core::ui.record-manager>

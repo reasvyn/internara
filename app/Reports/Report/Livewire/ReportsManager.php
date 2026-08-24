@@ -40,8 +40,6 @@ class ReportsManager extends Component
 
     public ?string $finalizeReportId = null;
 
-    public bool $showConfirm = false;
-
     public string $confirmAction = '';
 
     public ?string $confirmReportId = null;
@@ -154,7 +152,11 @@ class ReportsManager extends Component
     {
         $this->confirmAction = 'delete';
         $this->confirmReportId = $reportId;
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmDelete(DeleteReportAction $action): void
@@ -170,8 +172,6 @@ class ReportsManager extends Component
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmReportId = null;
         $this->confirmAction = '';
     }

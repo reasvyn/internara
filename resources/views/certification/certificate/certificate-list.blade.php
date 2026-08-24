@@ -56,8 +56,6 @@
         </x-mary-table>
     </div>
 
-    <x-core::ui.confirm :message="__('certificate.revoke_confirm')" />
-
     <x-slot:modal>
         <x-mary-modal wire:model="showIssueModal" :title="__('certificate.issue_title')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="saveIssue">

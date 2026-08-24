@@ -26,8 +26,6 @@ class AssignmentManager extends BaseRecordManager
 
     public bool $assignmentModal = false;
 
-    public bool $showConfirm = false;
-
     public string $confirmActionType = '';
 
     public ?string $confirmTarget = null;
@@ -198,13 +196,21 @@ class AssignmentManager extends BaseRecordManager
     {
         $this->confirmActionType = 'delete';
         $this->confirmTarget = $id;
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
     {
         $this->confirmActionType = 'deleteSelected';
-        $this->showConfirm = true;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(DeleteAssignmentAction $action): void
@@ -226,8 +232,6 @@ class AssignmentManager extends BaseRecordManager
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmActionType = '';
     }

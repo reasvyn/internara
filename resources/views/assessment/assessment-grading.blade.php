@@ -168,6 +168,4 @@
             </div>
         @endunless
     @endif
-
-    <x-core::ui.confirm message="Finalize this assessment? This action cannot be undone." />
 </div>

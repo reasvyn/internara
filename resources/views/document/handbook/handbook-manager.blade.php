@@ -3,12 +3,6 @@
         <x-mary-button :label="__('handbook.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
-    <x-core::ui.confirm
-        wire:model="showConfirm"
-        confirmText="{{ __('common.actions.confirm') }}"
-        cancelText="{{ __('common.actions.cancel') }}"
-    />
-
     <div class="overflow-x-auto">
         <x-mary-table
             :headers="$this->headers()"
