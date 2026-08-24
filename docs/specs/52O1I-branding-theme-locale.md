@@ -1,8 +1,7 @@
 # Branding, Theme & Locale — Identity, Appearance & Language Switching
 
 > **Spec ID:** 52O1I
-> **Last updated:** 2026-08-18 **Changes:** review — add custom CSS (FR-B11–FR-B13, DD-4),
-> define locale resolution chain from stored `default_locale` setting (FR-L7, DD-5)
+> **Last updated:** 2026-08-24 **Changes:** TallstackUI migration — ThemeSwitcher/LangSwitcher prefer TallstackUI ThemeSwitch/dropdown (gradual, TallstackUI-first per FB792), FR-T2/FR-L5 updated, DD-6 added
 
 ## Description
 
@@ -122,8 +121,8 @@ apply on every request via middleware without database queries.
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
 | FR-T1  | Theme preference stored in `theme` cookie (values: `light`, `dark`, `system`), not DB |
-| FR-T2  | `ThemeSwitcher` Livewire component must dispatch `theme-changed` event               |
-| FR-T3  | Alpine.js must listen for `theme-changed` and update `data-theme` attribute          |
+| FR-T2  | `ThemeSwitcher` Livewire component must use TallstackUI `ThemeSwitch` (or `x-ts-theme-switch`) when available (TallstackUI-first, FB792 FR-TS6a), fallback to DaisyUI/Alpine `data-theme` during coexistence; must dispatch `theme-changed` event for backward compat |
+| FR-T3  | Alpine.js must listen for `theme-changed` and update `data-theme` attribute (or TallstackUI dark-theme helper `TallstackUI::darkTheme()`) |
 | FR-T4  | `Theme::cssVariables()` must generate CSS variables for light/dark palettes, cached 1h |
 | FR-T5  | CSS variables: `--color-primary`, `--color-secondary`, `--color-accent`, `--color-base-{100,200,300,content}`, `--brand-{primary,secondary,accent}` |
 | FR-T6  | Dark mode must apply `Color::lighten()` (40%) and `Color::computeDarkShades()` for base tones |
@@ -137,7 +136,7 @@ apply on every request via middleware without database queries.
 | FR-L2  | Locale preference stored in `locale` cookie (forever TTL), not DB                    |
 | FR-L3  | `SetLocaleMiddleware` must read `locale` cookie on every request and call `App::setLocale()` |
 | FR-L4  | `Locale::set()` must validate against `SUPPORTED_LOCALES`, queue cookie, set locale  |
-| FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown and dispatch `language-changed` event |
+| FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown using TallstackUI `dropdown`/`select` when available (TallstackUI-first, FB792 FR-TS6a), fallback to DaisyUI during coexistence; must dispatch `language-changed` event |
 | FR-L6  | `Locale::metadata()` must return `['name' => '...', 'native' => '...']` for display  |
 | FR-L7  | `Locale::current()` must resolve via chain: cookie → stored `default_locale` setting → config `app.locale` → `DEFAULT_LOCALE` constant; first valid (supported) value wins |
 
@@ -294,7 +293,11 @@ resort only.
 priority chain and a single `SUPPORTED_LOCALES` whitelist — invalid values at any layer fall
 through to the next.
 
----
+### DD-6 — Gradual TallstackUI Migration for Theme/Locale (TallstackUI-first)
+
+**Decision:** Migrate `ThemeSwitcher`/`LangSwitcher` to TallstackUI `ThemeSwitch`/`dropdown`/`select` gradually; DaisyUI `data-theme` + Alpine `theme-changed` remain during coexistence per FB792 DD-4.
+**Rationale:** TallstackUI provides TALL-native `ThemeSwitch` and `darkTheme()` helper with built-in WCAG focus/ARIA, reducing custom Alpine/JS while preserving no-break guarantee for 18 modules.
+**Trade-off:** Dual theming stack temporarily (DaisyUI `data-theme` + TallstackUI dark mode) — removed after all switchers migrated and `grep -R "data-theme.*light\|data-theme.*dark" resources/` is clean.
 
 ## 8. Success Metrics
 
