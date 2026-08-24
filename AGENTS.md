@@ -145,6 +145,8 @@ Final git review, commit, and concise report. This is the legacy `Commit & Repor
   `test`, `perf`, `security`; scope = module name.
 - Report: what changed, what was verified, caveats, recommended next steps.
 - One checkpoint before commit (M-size) or per-session (L-size); stage only intended files.
+- **Commit every session** — always end a session with a commit as its checkpoint; never leave
+  finished, verified work uncommitted across sessions.
 
 ---
 
