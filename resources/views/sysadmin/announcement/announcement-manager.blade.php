@@ -4,19 +4,20 @@
             <h2 class="text-xl font-bold">{{ __('announcement.title') }}</h2>
             <p class="text-base-content/50 mt-1 text-sm">{{ __('announcement.subtitle') }}</p>
         </div>
-        <x-mary-button
-            :label="__('announcement.create')"
-            icon="o-plus"
-            class="btn-primary btn-sm"
+        <x-ts-button
+            :text="__('announcement.create')"
+            icon="plus"
+            color="primary"
+            sm
             wire:click="$set('showForm', true)"
         />
     </div>
 
     @if ($showForm)
         <x-mary-card class="bg-base-100 border-base-content/10 mb-6 border">
-            <x-mary-form wire:submit="save">
+            <form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input :label="__('announcement.fields.title')" wire:model="form.title" />
+                    <x-ts-input :label="__('announcement.fields.title')" wire:model="form.title" />
                     <x-core::ui.markdown-editor
                         :label="__('announcement.fields.message')"
                         model="form.message"
@@ -34,7 +35,7 @@
                                 ['id' => 'error', 'name' => __('announcement.types.error')],
                             ]"
                         />
-                        <x-mary-input
+                        <x-ts-input
                             :label="__('announcement.fields.link')"
                             wire:model="form.link"
                             :placeholder="__('announcement.fields.link_placeholder')"
@@ -43,7 +44,7 @@
 
                     <div class="border-base-content/10 space-y-4 border-t pt-4">
                         <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
-                        <x-mary-radio
+                        <x-ts-radio
                             wire:model.live="form.status"
                             :options="[
                                 ['id' => 'draft', 'name' => __('announcement.status.draft')],
@@ -53,7 +54,7 @@
                         />
 
                         @if ($form->status === 'scheduled')
-                            <x-mary-input
+                            <x-ts-input
                                 :label="__('announcement.fields.scheduled_at')"
                                 type="datetime-local"
                                 wire:model="form.scheduled_at"
@@ -61,7 +62,7 @@
                             />
                         @endif
 
-                        <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="form.sendToAll" />
+                        <x-ts-toggle :label="__('announcement.send_to_all')" wire:model.live="form.sendToAll" />
 
                         @if (! $form->sendToAll)
                             <div class="mt-4">
@@ -77,21 +78,18 @@
                     </div>
                 </div>
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
-                        wire:click="resetForm"
-                        class="btn-ghost btn-sm"
-                    />
-                    <x-mary-button
-                        :label="__('announcement.send')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button :text="__('common.actions.cancel')" wire:click="resetForm" color="white" sm />
+                    <x-ts-button
+                        :text="__('announcement.send')"
                         type="submit"
-                        class="btn-primary btn-sm"
+                        color="primary"
+                        sm
                         icon-right="o-paper-airplane"
-                        spinner="save"
+                        loading="save"
                     />
-                </x-slot:actions>
-            </x-mary-form>
+                </div>
+            </form>
         </x-mary-card>
     @endif
 
@@ -110,7 +108,7 @@
                                 'bg-warning/10 text-warning' => $announcement->type === 'warning',
                                 'bg-error/10 text-error' => $announcement->type === 'error',
                             ])>
-                                <x-mary-icon
+                                <x-ts-icon
                                     :name="match($announcement->type) {
                                     'success' => 'o-check-circle',
                                     'warning' => 'o-exclamation-triangle',
@@ -123,8 +121,8 @@
                             <div>
                                 <div class="flex items-center gap-2">
                                     <h4 class="text-sm font-medium">{{ $announcement->title }}</h4>
-                                    <x-mary-badge
-                                        :value="__('announcement.status.'.$announcement->status->value)"
+                                    <x-ts-badge
+                                        :text="__('announcement.status.'.$announcement->status->value)"
                                         class="badge-sm
                                         @if($announcement->isDraft()) badge-ghost
                                         @elseif($announcement->isScheduled()) badge-warning
@@ -150,16 +148,20 @@
                         </div>
                         <div class="flex shrink-0 items-center gap-1">
                             @if ($announcement->isDraft() || $announcement->isScheduled())
-                                <x-mary-button
+                                <x-ts-button
                                     icon-right="o-paper-airplane"
-                                    class="btn-ghost btn-sm text-success"
+                                    class="text-success"
+                                    color="white"
+                                    sm
                                     wire:click="confirmPublish('{{ $announcement->id }}')"
                                     :aria-label="__('announcement.publish_now')"
                                 />
                             @endif
-                            <x-mary-button
-                                icon="o-trash"
-                                class="btn-ghost btn-sm text-error"
+                            <x-ts-button
+                                icon="trash"
+                                class="text-error"
+                                color="white"
+                                sm
                                 wire:click="confirmDelete('{{ $announcement->id }}')"
                                 :aria-label="__('common.actions.delete')"
                             />

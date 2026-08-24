@@ -19,22 +19,25 @@
                         {{ __('journals.attendance.clocked_out_at') }}
                         <strong>{{ $todayAttendance->clock_out ? \Carbon\Carbon::parse($todayAttendance->clock_out)->format('H:i') : '' }}</strong>
                     </p>
-                    <x-mary-badge :value="__('journals.attendance.completed')" class="badge-success mt-2" />
+                    <x-ts-badge :text="__('journals.attendance.completed')" class="badge-success mt-2" />
                 @else
-                    <x-mary-button
+                    <x-ts-button
                         wire:click="clockOut"
-                        :label="__('journals.attendance.clock_out')"
-                        icon="o-arrow-right-end-on-rectangle"
-                        class="btn-warning btn-sm mt-3"
+                        :text="__('journals.attendance.clock_out')"
+                        icon="arrow-right-end-on-rectangle"
+                        class="mt-3"
+                        color="yellow"
+                        sm
                     />
                 @endif
             @else
                 <p class="text-base-content/60 mb-3 text-sm">{{ __('journals.attendance.not_clocked_in') }}</p>
-                <x-mary-button
+                <x-ts-button
                     wire:click="clockIn"
-                    :label="__('journals.attendance.clock_in')"
-                    icon="o-arrow-left-start-on-rectangle"
-                    class="btn-primary btn-sm"
+                    :text="__('journals.attendance.clock_in')"
+                    icon="arrow-left-start-on-rectangle"
+                    color="primary"
+                    sm
                 />
             @endif
         </x-mary-card>

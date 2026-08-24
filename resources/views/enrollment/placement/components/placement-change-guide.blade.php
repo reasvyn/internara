@@ -5,7 +5,7 @@
         class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
         aria-label="{{ __('placement.guide.change_title') }}"
     >
-        <x-mary-icon name="o-question-mark-circle" class="size-6" />
+        <x-ts-icon name="question-mark-circle" class="size-6" />
     </button>
 
     <template x-teleport="body">
@@ -28,7 +28,7 @@
                         aria-label="{{ __('common.actions.close') }}"
                         class="btn btn-ghost btn-sm btn-square"
                     >
-                        <x-mary-icon name="o-x-mark" class="size-5" />
+                        <x-ts-icon name="x-mark" class="size-5" />
                     </button>
                 </div>
                 <div class="space-y-5 p-6">
@@ -36,7 +36,7 @@
 
                     <div class="flex gap-4">
                         <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-mary-icon name="o-arrow-path" class="size-4" />
+                            <x-ts-icon name="arrow-path" class="size-4" />
                         </div>
                         <div>
                             <h4 class="text-sm font-semibold">{{ __('placement.guide.change_request_title') }}</h4>
@@ -48,7 +48,7 @@
 
                     <div class="flex gap-4">
                         <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-mary-icon name="o-check-circle" class="size-4" />
+                            <x-ts-icon name="check-circle" class="size-4" />
                         </div>
                         <div>
                             <h4 class="text-sm font-semibold">{{ __('placement.guide.change_approve_title') }}</h4>

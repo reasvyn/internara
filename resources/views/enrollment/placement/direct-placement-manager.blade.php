@@ -1,20 +1,26 @@
 <div>
-    <x-mary-header :title="__('placement.direct_placement.title')" :subtitle="__('placement.direct_placement.subtitle')" separator />
+    <x-mary-header
+        :title="__('placement.direct_placement.title')"
+        :subtitle="__('placement.direct_placement.subtitle')"
+        separator
+    />
 
     <x-mary-card>
-        <x-mary-form wire:submit="submit">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form wire:submit="submit">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <x-mary-select
                     :label="__('placement.direct_placement.student')"
                     wire:model="form.student_id"
                     :options="$this->students"
                     :placeholder="__('placement.direct_placement.select_student')"
-                    icon="o-user" />
+                    icon="user"
+                />
 
-                <x-mary-input
+                <x-ts-input
                     :label="__('placement.direct_placement.academic_year')"
                     wire:model="form.academic_year"
-                    placeholder="e.g. 2025/2026" />
+                    placeholder="e.g. 2025/2026"
+                />
 
                 <x-mary-select
                     :label="__('placement.direct_placement.placement')"
@@ -22,7 +28,8 @@
                     :options="$this->placements"
                     :placeholder="__('placement.direct_placement.select_placement')"
                     class="md:col-span-2"
-                    icon="o-briefcase" />
+                    icon="briefcase"
+                />
 
                 <x-mary-select
                     :label="__('placement.direct_placement.mentors')"
@@ -31,12 +38,18 @@
                     :placeholder="__('placement.direct_placement.select_mentors')"
                     multiple
                     class="md:col-span-2"
-                    icon="o-user-group" />
+                    icon="user-group"
+                />
             </div>
 
-            <x-slot:actions>
-                <x-mary-button :label="__('placement.direct_placement.assign')" type="submit" icon="o-check" class="btn-primary" />
-            </x-slot:actions>
-        </x-mary-form>
+            <div class="mt-6 flex justify-end gap-2">
+                <x-ts-button
+                    :text="__('placement.direct_placement.assign')"
+                    type="submit"
+                    icon="check"
+                    color="primary"
+                />
+            </div>
+        </form>
     </x-mary-card>
 </div>

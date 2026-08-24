@@ -1,15 +1,11 @@
 <x-core::ui.record-manager :title="__('certificate.issued_title')" :subtitle="__('certificate.issued_subtitle')">
     <x-slot:headerActions>
-        <x-mary-button
-            :label="__('certificate.issue')"
-            icon="o-document-check"
-            class="btn-success btn-sm"
-            wire:click="issue"
-        />
-        <x-mary-button
-            :label="__('certificate.batch_issue')"
-            icon="o-rocket-launch"
-            class="btn-secondary btn-sm"
+        <x-ts-button :text="__('certificate.issue')" icon="document-check" color="green" sm wire:click="issue" />
+        <x-ts-button
+            :text="__('certificate.batch_issue')"
+            icon="rocket-launch"
+            color="secondary"
+            sm
             wire:click="batchIssue"
         />
     </x-slot:headerActions>
@@ -31,8 +27,8 @@
             class="table-sm"
         >
             @scope('cell_status', $c)
-                <x-mary-badge
-                    :value="$c->status->label()"
+                <x-ts-badge
+                    :text="$c->status->label()"
                     :class="$c->status->value === 'issued' ? 'badge-success' : 'badge-error'"
                 />
             @endscope
@@ -44,9 +40,11 @@
             @scope('actions', $c)
                 <div class="flex justify-end gap-1">
                     @if ($c->status->value === 'issued')
-                        <x-mary-button
-                            icon="o-x-circle"
-                            class="btn-ghost btn-sm text-error"
+                        <x-ts-button
+                            icon="x-circle"
+                            class="text-error"
+                            color="white"
+                            sm
                             wire:click="askRevoke('{{ $c->id }}')"
                             :aria-label="__('certificate.revoke')"
                         />
@@ -57,8 +55,8 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showIssueModal" :title="__('certificate.issue_title')" class="backdrop-blur-sm">
-            <x-mary-form wire:submit="saveIssue">
+        <x-ts-modal wire="showIssueModal" :title="__('certificate.issue_title')" blur>
+            <form wire:submit="saveIssue">
                 <div class="space-y-5">
                     <x-mary-select
                         :label="__('certificate.registration')"
@@ -77,28 +75,20 @@
                         option-value="id"
                     />
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showIssueModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('certificate.issue')"
-                        class="btn-success btn-sm"
-                        type="submit"
-                        spinner="saveIssue"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('certificate.issue')" color="green" sm type="submit" loading="saveIssue" />
+                </div>
+            </form>
+        </x-ts-modal>
 
-        <x-mary-modal
-            wire:model="showBatchIssueModal"
-            :title="__('certificate.batch_issue_title')"
-            class="backdrop-blur-sm"
-        >
-            <x-mary-form wire:submit="saveBatchIssue">
+        <x-ts-modal wire="showBatchIssueModal" :title="__('certificate.batch_issue_title')" blur>
+            <form wire:submit="saveBatchIssue">
                 <div class="space-y-5">
                     <x-mary-select
                         :label="__('certificate.template')"
@@ -117,21 +107,23 @@
                         <p class="text-base-content/70">{{ __('certificate.batch_issue_info') }}</p>
                     </div>
                 </div>
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showBatchIssueModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('certificate.batch_issue')"
-                        class="btn-secondary btn-sm"
+                    <x-ts-button
+                        :text="__('certificate.batch_issue')"
+                        color="secondary"
+                        sm
                         type="submit"
-                        spinner="saveBatchIssue"
+                        loading="saveBatchIssue"
                     />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
     @include('certification.certificate.components.certificate-guide')
 </x-core::ui.record-manager>

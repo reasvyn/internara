@@ -1,7 +1,7 @@
 <div class="py-4">
     <div class="mb-6 flex items-center gap-4">
         <div class="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
-            <x-ts-icon name="o-cog-6-tooth" class="size-6" />
+            <x-ts-icon name="cog-6-tooth" class="size-6" />
         </div>
         <div>
             <h2 class="text-xl font-bold">{{ __('setting.title') }}</h2>
@@ -16,7 +16,7 @@
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-slot:title>
                         <div class="flex items-center gap-2">
-                            <x-ts-icon name="o-cog" class="text-primary size-4" />
+                            <x-ts-icon name="cog" class="text-primary size-4" />
                             <span class="font-semibold">{{ __('setting.groups.general') }}</span>
                         </div>
                     </x-slot:title>
@@ -26,7 +26,7 @@
                             wire:model="generalForm.brand_name"
                             icon="building-library"
                         />
-                        <x-ts-select
+                        <x-mary-select
                             label="{{ __('setting.fields.default_locale') }}"
                             wire:model="generalForm.default_locale"
                             :options="[
@@ -40,7 +40,7 @@
                             class="md:col-span-2"
                             icon="globe-alt"
                         />
-                        <x-ts-select
+                        <x-mary-select
                             label="{{ __('setting.fields.active_academic_year') }}"
                             wire:model="generalForm.active_academic_year"
                             :options="$this->academicYearOptions"
@@ -59,7 +59,7 @@
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-slot:title>
                         <div class="flex items-center gap-2">
-                            <x-ts-icon name="o-swatch" class="text-primary size-4" />
+                            <x-ts-icon name="swatch" class="text-primary size-4" />
                             <span class="font-semibold">{{ __('setting.groups.color_scheme') }}</span>
                         </div>
                     </x-slot:title>
@@ -104,7 +104,7 @@
                                     <span class="text-xs font-medium whitespace-nowrap">{{ $preset['label'] }}</span>
                                     @if ($brandingForm->selected_preset === $key)
                                         <span class="bg-primary text-primary-content absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full">
-                                            <x-ts-icon name="o-check" class="size-2.5" />
+                                            <x-ts-icon name="check" class="size-2.5" />
                                         </span>
                                     @endif
                                 </button>
@@ -146,7 +146,7 @@
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-slot:title>
                         <div class="flex items-center gap-2">
-                            <x-ts-icon name="o-envelope" class="text-primary size-4" />
+                            <x-ts-icon name="envelope" class="text-primary size-4" />
                             <span class="font-semibold">{{ __('setting.groups.mail') }}</span>
                         </div>
                     </x-slot:title>
@@ -175,7 +175,7 @@
                             wire:model="mailSettingsForm.mail_port"
                             icon="numbered-list"
                         />
-                        <x-ts-select
+                        <x-mary-select
                             label="{{ __('setting.fields.mail_encryption') }}"
                             wire:model="mailSettingsForm.mail_encryption"
                             :options="[['id' => 'tls', 'name' => __('setting.encryptions.tls')], ['id' => 'ssl', 'name' => __('setting.encryptions.ssl')], ['id' => 'none', 'name' => __('setting.encryptions.none')]]"
@@ -201,7 +201,7 @@
                             color="white"
                             sm
                             wire:click="testEmail"
-                            spinner="testEmail"
+                            loading="testEmail"
                         />
                     </div>
                 </x-mary-card>
@@ -212,7 +212,7 @@
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-slot:title>
                         <div class="flex items-center gap-2">
-                            <x-ts-icon name="o-server" class="text-base-content/40 size-4" />
+                            <x-ts-icon name="server" class="text-base-content/40 size-4" />
                             <span class="text-sm font-semibold">{{ __('setting.groups.system') }}</span>
                         </div>
                     </x-slot:title>
@@ -223,7 +223,7 @@
                         </div>
                         <div class="flex items-center justify-between py-1.5">
                             <span class="text-base-content/50">{{ __('setting.fields.app_version') }}</span>
-                            <x-mary-badge :value="$app_version" class="badge-neutral badge-sm" />
+                            <x-ts-badge :text="$app_version" class="badge-neutral badge-sm" />
                         </div>
                     </div>
                 </x-mary-card>
@@ -231,7 +231,7 @@
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-slot:title>
                         <div class="flex items-center gap-2">
-                            <x-ts-icon name="o-document-text" class="text-base-content/40 size-4" />
+                            <x-ts-icon name="document-text" class="text-base-content/40 size-4" />
                             <span class="text-sm font-semibold">{{ __('setting.groups.identity') }}</span>
                         </div>
                     </x-slot:title>
@@ -258,11 +258,11 @@
                                         />
                                     @else
                                         <div class="bg-base-200 border-base-content/20 flex size-24 items-center justify-center rounded-xl border border-dashed">
-                                            <x-ts-icon name="o-building-office" class="text-base-content/30 size-8" />
+                                            <x-ts-icon name="building-office" class="text-base-content/30 size-8" />
                                         </div>
                                     @endif
                                     <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                        <x-ts-icon name="o-camera" class="text-base-100 size-8" />
+                                        <x-ts-icon name="camera" class="text-base-100 size-8" />
                                     </div>
                                 </div>
                                 @if ($brandingForm->current_logo_url)
@@ -271,7 +271,7 @@
                                         wire:click="$set('confirmTarget', 'removeBrandLogo'); $set('showConfirm', true)"
                                         class="bg-error text-error-content absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full opacity-0 shadow-sm transition-transform group-hover:opacity-100 hover:scale-110"
                                     >
-                                        <x-ts-icon name="o-x-mark" class="size-3" />
+                                        <x-ts-icon name="x-mark" class="size-3" />
                                     </button>
                                 @endif
                             </div>
@@ -299,11 +299,11 @@
                                         />
                                     @else
                                         <div class="bg-base-200 border-base-content/20 flex size-12 items-center justify-center rounded-lg border border-dashed">
-                                            <x-ts-icon name="o-globe-alt" class="text-base-content/30 size-5" />
+                                            <x-ts-icon name="globe-alt" class="text-base-content/30 size-5" />
                                         </div>
                                     @endif
                                     <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                        <x-ts-icon name="o-camera" class="text-base-100 size-5" />
+                                        <x-ts-icon name="camera" class="text-base-100 size-5" />
                                     </div>
                                 </div>
                                 @if ($brandingForm->current_favicon_url)
@@ -312,7 +312,7 @@
                                         wire:click="$set('confirmTarget', 'removeFavicon'); $set('showConfirm', true)"
                                         class="bg-error text-error-content absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full opacity-0 shadow-sm transition-transform group-hover:opacity-100 hover:scale-110"
                                     >
-                                        <x-ts-icon name="o-x-mark" class="size-3" />
+                                        <x-ts-icon name="x-mark" class="size-3" />
                                     </button>
                                 @endif
                             </div>
@@ -334,7 +334,7 @@
                 form="settings-form"
                 color="primary"
                 icon="check"
-                spinner="save"
+                loading="save"
             />
         </x-slot:actions>
     </form>

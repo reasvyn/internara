@@ -1,12 +1,12 @@
 <x-core::ui.record-manager :title="__('journals.student_log_title')" :subtitle="__('journals.student_log_subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('journals.new_log')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-ts-button :text="__('journals.new_log')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <x-mary-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
         @scope('cell_status', $l)
-            <x-mary-badge
-                :value="$l->status->label()"
+            <x-ts-badge
+                :text="$l->status->label()"
                 :class="match($l->status->value) {
                 'draft' => 'badge-ghost',
                 'submitted' => 'badge-info',
@@ -24,9 +24,11 @@
         @scope('actions', $l)
             <div class="flex justify-end gap-1">
                 @if ($l->status->value === 'draft')
-                    <x-mary-button
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                    <x-ts-button
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $l->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -36,31 +38,27 @@
     </x-mary-table>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="__('journals.new_log')" separator class="backdrop-blur-sm">
-            <x-mary-form wire:submit="save" class="space-y-5">
+        <x-ts-modal wire="showModal" :title="__('journals.new_log')" separator blur>
+            <form wire:submit="save" class="space-y-5">
                 <x-mary-select
                     :label="__('journals.supervisor')"
                     wire:model="supervisorId"
                     :options="$this->supervisors->map(fn ($s) => ['id' => $s->id, 'name' => $s->name])"
                 />
-                <x-mary-input :label="__('journals.date')" wire:model="date" type="date" icon="o-calendar" />
-                <x-mary-input :label="__('journals.topic')" wire:model="topic" />
-                <x-mary-textarea :label="__('journals.notes')" wire:model="notes" rows="4" />
+                <x-ts-input :label="__('journals.date')" wire:model="date" type="date" icon="calendar" />
+                <x-ts-input :label="__('journals.topic')" wire:model="topic" />
+                <x-ts-textarea :label="__('journals.notes')" wire:model="notes" rows="4" />
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('common.actions.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('common.actions.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
 </x-core::ui.record-manager>

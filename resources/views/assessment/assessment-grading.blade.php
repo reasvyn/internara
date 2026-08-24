@@ -4,7 +4,7 @@
     @if ($this->assessment === null)
         <x-mary-card>
             <div class="text-base-content/40 py-12 text-center">
-                <x-mary-icon name="o-exclamation-triangle" class="mx-auto mb-4 size-16 opacity-30" />
+                <x-ts-icon name="exclamation-triangle" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_rubric_available') }}</p>
                 <p class="text-sm">{{ __('assessment.no_rubric_desc') }}</p>
             </div>
@@ -28,11 +28,12 @@
 
         @unless ($this->isFinalized)
             <div class="mb-4 flex gap-2">
-                <x-mary-button
-                    :label="__('assessment.auto_import')"
-                    icon="o-arrow-down-tray"
+                <x-ts-button
+                    :text="__('assessment.auto_import')"
+                    icon="arrow-down-tray"
                     wire:click="autoImport"
-                    class="btn-sm btn-outline"
+                    class="btn-outline"
+                    sm
                 />
             </div>
         @endunless
@@ -90,7 +91,7 @@
                             </p>
                         </div>
                         <div class="w-24">
-                            <x-mary-input
+                            <x-ts-input
                                 type="number"
                                 step="0.1"
                                 min="0"
@@ -159,12 +160,7 @@
 
         @unless ($this->isFinalized)
             <div class="mt-4 flex justify-end">
-                <x-mary-button
-                    :label="__('assessment.finalize')"
-                    icon="o-lock"
-                    wire:click="askFinalize"
-                    class="btn-success"
-                />
+                <x-ts-button :text="__('assessment.finalize')" icon="lock" wire:click="askFinalize" color="green" />
             </div>
         @endunless
     @endif

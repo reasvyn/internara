@@ -22,17 +22,17 @@
 
                 <div class="text-base-content/60 mt-8 flex items-center justify-center gap-3 text-xs sm:text-sm">
                     <span class="flex items-center gap-1.5">
-                        <x-mary-icon name="o-shield-check" class="size-3.5" />
+                        <x-ts-icon name="shield-check" class="size-3.5" />
                         {{ __('user.home.hero_secure') }}
                     </span>
                     <span class="bg-base-content/20 size-1 rounded-full"></span>
                     <span class="flex items-center gap-1.5">
-                        <x-mary-icon name="o-academic-cap" class="size-3.5" />
+                        <x-ts-icon name="academic-cap" class="size-3.5" />
                         {{ __('user.home.hero_academic') }}
                     </span>
                     <span class="bg-base-content/20 size-1 rounded-full"></span>
                     <span class="flex items-center gap-1.5">
-                        <x-mary-icon name="o-globe-alt" class="size-3.5" />
+                        <x-ts-icon name="globe-alt" class="size-3.5" />
                         {{ __('user.home.hero_global') }}
                     </span>
                 </div>
@@ -55,7 +55,7 @@
                 <div class="group card bg-base-100 border-base-content/10 hover:border-primary/20 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div class="card-body items-center p-6 text-center sm:p-8 lg:p-10">
                         <div class="from-primary/10 to-primary/5 mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br transition-transform duration-500 group-hover:scale-110 sm:mb-6 sm:size-20">
-                            <x-mary-icon name="o-clipboard-document-list" class="text-primary size-8 sm:size-10" />
+                            <x-ts-icon name="clipboard-document-list" class="text-primary size-8 sm:size-10" />
                         </div>
 
                         <h2 class="card-title mb-2 text-xl font-bold sm:text-2xl lg:text-3xl">
@@ -68,7 +68,7 @@
 
                         @if ($registration['status'] === 'open')
                             <div class="badge badge-success badge-lg mb-4 gap-2 px-4 py-3">
-                                <x-mary-icon name="o-check-circle" class="size-4" />
+                                <x-ts-icon name="check-circle" class="size-4" />
                                 {{ __('user.home.registration_open') }}
                             </div>
                             <p class="text-base-content/50 mb-6 text-sm">
@@ -85,11 +85,11 @@
                                 class="btn btn-primary btn-lg w-full gap-2 sm:w-auto"
                             >
                                 {{ __('user.home.register_now') }}
-                                <x-mary-icon name="o-arrow-right" class="size-4" />
+                                <x-ts-icon name="arrow-right" class="size-4" />
                             </a>
                         @elseif ($registration['status'] === 'upcoming')
                             <div class="badge badge-info badge-lg mb-4 gap-2 px-4 py-3">
-                                <x-mary-icon name="o-clock" class="size-4" />
+                                <x-ts-icon name="clock" class="size-4" />
                                 {{ __('user.home.registration_upcoming') }}
                             </div>
                             <p class="text-base-content/50 mb-6 text-sm">
@@ -101,25 +101,25 @@
                                 }}
                             </p>
                             <div class="alert alert-info bg-info/5 border-info/20 w-full text-sm">
-                                <x-mary-icon name="o-information-circle" class="size-5 shrink-0" />
+                                <x-ts-icon name="information-circle" class="size-5 shrink-0" />
                                 <span>{{ __('user.home.registration_not_open_yet') }}</span>
                             </div>
                         @elseif ($registration['status'] === 'closed')
                             <div class="badge badge-warning badge-lg mb-4 gap-2 px-4 py-3">
-                                <x-mary-icon name="o-x-circle" class="size-4" />
+                                <x-ts-icon name="x-circle" class="size-4" />
                                 {{ __('user.home.registration_closed') }}
                             </div>
                             <div class="alert alert-warning bg-warning/5 border-warning/20 w-full text-sm">
-                                <x-mary-icon name="o-information-circle" class="size-5 shrink-0" />
+                                <x-ts-icon name="information-circle" class="size-5 shrink-0" />
                                 <span>{{ __('user.home.registration_closed_desc') }}</span>
                             </div>
                         @else
                             <div class="badge badge-ghost badge-lg mb-4 gap-2 px-4 py-3">
-                                <x-mary-icon name="o-question-mark-circle" class="size-4" />
+                                <x-ts-icon name="question-mark-circle" class="size-4" />
                                 {{ __('user.home.registration_unavailable') }}
                             </div>
                             <div class="alert bg-base-200 border-base-content/10 w-full text-sm">
-                                <x-mary-icon name="o-information-circle" class="size-5 shrink-0" />
+                                <x-ts-icon name="information-circle" class="size-5 shrink-0" />
                                 <span>{{ __('user.home.registration_unavailable_desc') }}</span>
                             </div>
                         @endif
@@ -130,7 +130,7 @@
                 <div class="group card bg-base-100 border-base-content/10 hover:border-secondary/20 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div class="card-body items-center p-6 text-center sm:p-8 lg:p-10">
                         <div class="from-secondary/10 to-secondary/5 mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br transition-transform duration-500 group-hover:scale-110 sm:mb-6 sm:size-20">
-                            <x-mary-icon name="o-user" class="text-secondary size-8 sm:size-10" />
+                            <x-ts-icon name="user" class="text-secondary size-8 sm:size-10" />
                         </div>
 
                         <h2 class="card-title mb-2 text-xl font-bold sm:text-2xl lg:text-3xl">
@@ -144,7 +144,7 @@
                         <div class="flex w-full flex-col gap-3 sm:w-auto">
                             <a wire:navigate href="{{ route('login') }}" class="btn btn-secondary btn-lg gap-2">
                                 {{ __('user.home.login_action') }}
-                                <x-mary-icon name="o-arrow-right" class="size-4" />
+                                <x-ts-icon name="arrow-right" class="size-4" />
                             </a>
                         </div>
 

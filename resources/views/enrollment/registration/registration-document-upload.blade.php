@@ -32,7 +32,7 @@
 
                 @if ($documents->isNotEmpty())
                     <div class="flex justify-end">
-                        <x-mary-button wire:click="upload" :label="__('common.submit')" class="btn-primary" />
+                        <x-ts-button wire:click="upload" :text="__('common.submit')" color="primary" />
                     </div>
                 @else
                     <div class="text-base-content/50 py-6 text-center text-sm">
@@ -43,7 +43,7 @@
         </x-mary-card>
     @else
         <div class="text-base-content/60 py-12 text-center">
-            <x-mary-icon name="o-document" class="mb-3 size-12" />
+            <x-ts-icon name="document" class="mb-3 size-12" />
             <p class="text-sm font-medium">{{ __('registration.doc_no_registration') }}</p>
         </div>
     @endif

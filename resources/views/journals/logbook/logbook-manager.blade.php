@@ -2,27 +2,23 @@
     {{-- Header Section --}}
     <x-mary-header :title="__('logbook.title')" :subtitle="__('logbook.subtitle')" separator progress-indicator>
         <x-slot:actions>
-            <x-mary-button :label="__('logbook.new')" icon="o-plus" class="btn-primary" wire:click="create" />
+            <x-ts-button :text="__('logbook.new')" icon="plus" color="primary" wire:click="create" />
         </x-slot:actions>
     </x-mary-header>
 
     {{-- Controls Section --}}
     <div class="mb-6 flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
         <div class="flex w-full items-center gap-3 lg:max-w-md">
-            <x-mary-input
+            <x-ts-input
                 wire:model.live.debounce.300ms="search"
                 placeholder="{{ __('common.actions.search') }}"
-                icon="o-magnifying-glass"
+                icon="magnifying-glass"
                 clearable
                 class="border-base-300 focus:border-primary flex-1 rounded-2xl shadow-sm transition-all duration-300"
             />
-            <x-mary-dropdown>
+            <x-ts-dropdown>
                 <x-slot:trigger>
-                    <x-mary-button
-                        icon="o-adjustments-horizontal"
-                        class="btn-ghost btn-sm"
-                        :label="__('common.actions.filters')"
-                    />
+                    <x-ts-button icon="adjustments-horizontal" color="white" sm :text="__('common.actions.filters')" />
                 </x-slot:trigger>
                 <div class="w-72 space-y-4 p-4">
                     <x-mary-select
@@ -36,7 +32,7 @@
                         :options="['yes' => __('logbook.verified'), 'no' => __('logbook.unverified')]"
                     />
                 </div>
-            </x-mary-dropdown>
+            </x-ts-dropdown>
         </div>
     </div>
 
@@ -58,18 +54,22 @@
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex gap-2">
-                    <x-mary-button
-                        :label="__('common.actions.delete_selected')"
-                        icon="o-trash"
-                        class="btn-sm btn-error rounded-lg font-bold text-white"
+                    <x-ts-button
+                        :text="__('common.actions.delete_selected')"
+                        icon="trash"
+                        class="rounded-lg font-bold text-white"
+                        color="red"
+                        sm
                         wire:click="askDeleteSelected"
                     />
                 </div>
                 <div class="divider divider-horizontal mx-1"></div>
-                <x-mary-button
-                    label="{{ __('common.actions.cancel') }}"
+                <x-ts-button
+                    text="{{ __('common.actions.cancel') }}"
                     wire:click="clearSelection"
-                    class="btn-sm btn-ghost rounded-xl text-[10px] font-black tracking-widest uppercase"
+                    class="rounded-xl text-[10px] font-black tracking-widest uppercase"
+                    color="white"
+                    sm
                 />
             </div>
         </div>
@@ -106,8 +106,8 @@
                 @endscope
 
                 @scope('cell_status', $entry)
-                    <x-mary-badge
-                        :value="__('logbook.statuses.'.$entry->status->value)"
+                    <x-ts-badge
+                        :text="__('logbook.statuses.'.$entry->status->value)"
                         class="font-bold text-[10px] uppercase tracking-tighter 
                         {{ $entry->status->value === 'verified' ? 'badge-success' : ($entry->status->value === 'submitted' ? 'badge-info' : ($entry->status->value === 'revision_required' ? 'badge-warning' : 'badge-ghost')) }}"
                     />
@@ -115,9 +115,9 @@
 
                 @scope('cell_is_verified', $entry)
                     @if ($entry->is_verified)
-                        <x-mary-icon name="o-check-circle" class="text-success size-5" />
+                        <x-ts-icon name="check-circle" class="text-success size-5" />
                     @else
-                        <x-mary-icon name="o-x-circle" class="text-base-content/30 size-5" />
+                        <x-ts-icon name="x-circle" class="text-base-content/30 size-5" />
                     @endif
                 @endscope
 
@@ -134,35 +134,45 @@
                 @scope('actions', $entry)
                     <div class="flex justify-end gap-1">
                         @if (auth()->user()?->hasRole('supervisor'))
-                            <x-mary-button
-                                icon="o-chat-bubble-bottom-center-text"
-                                class="btn-ghost btn-sm text-info"
+                            <x-ts-button
+                                icon="chat-bubble-bottom-center-text"
+                                class="text-info"
+                                color="white"
+                                sm
                                 wire:click="editSupervisorNote('{{ $entry->id }}')"
                                 tooltip="{{ __('logbook.edit_supervisor_note') }}"
                             />
                         @endif
-                        <x-mary-button
-                            icon="o-check"
-                            class="btn-ghost btn-sm text-success"
+                        <x-ts-button
+                            icon="check"
+                            class="text-success"
+                            color="white"
+                            sm
                             wire:click="verify('{{ $entry->id }}')"
                             tooltip="{{ __('logbook.toggle_verify') }}"
                         />
-                        <x-mary-button
-                            icon="o-pencil"
-                            class="btn-ghost btn-sm text-primary"
+                        <x-ts-button
+                            icon="pencil"
+                            class="text-primary"
+                            color="white"
+                            sm
                             wire:click="edit('{{ $entry->id }}')"
                             tooltip="{{ __('common.actions.edit') }}"
                         />
-                        <x-mary-button
-                            icon="o-document-arrow-down"
-                            class="btn-ghost btn-sm text-secondary"
+                        <x-ts-button
+                            icon="document-arrow-down"
+                            class="text-secondary"
+                            color="white"
+                            sm
                             :href="route('sysadmin.logbook.report', $entry->registration_id)"
                             external
                             tooltip="{{ __('logbook.download_report') }}"
                         />
-                        <x-mary-button
-                            icon="o-trash"
-                            class="btn-ghost btn-sm text-error"
+                        <x-ts-button
+                            icon="trash"
+                            class="text-error"
+                            color="white"
+                            sm
                             wire:click="askDelete('{{ $entry->id }}')"
                             tooltip="{{ __('common.actions.delete') }}"
                         />
@@ -173,14 +183,9 @@
     </x-mary-card>
 
     {{-- Supervisor Note Modal --}}
-    <x-mary-modal
-        wire:model="showSupervisorNoteModal"
-        :title="__('logbook.edit_supervisor_note')"
-        separator
-        class="backdrop-blur-sm"
-    >
+    <x-ts-modal wire="showSupervisorNoteModal" :title="__('logbook.edit_supervisor_note')" separator blur>
         <div class="space-y-6">
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.supervisor_note')"
                 wire:model="supervisorNote"
                 :placeholder="__('logbook.supervisor_note_placeholder')"
@@ -188,28 +193,24 @@
                 class="border-base-300 rounded-xl"
             />
         </div>
-        <x-slot:actions>
-            <x-mary-button
-                :label="__('common.actions.cancel')"
+        <x-slot:footer>
+            <x-ts-button
+                :text="__('common.actions.cancel')"
                 @click="$wire.showSupervisorNoteModal = false"
                 class="rounded-xl"
             />
-            <x-mary-button
-                :label="__('logbook.save')"
-                class="btn-primary rounded-xl font-bold tracking-widest uppercase"
+            <x-ts-button
+                :text="__('logbook.save')"
+                class="rounded-xl font-bold tracking-widest uppercase"
+                color="primary"
                 wire:click="saveSupervisorNote"
-                spinner="saveSupervisorNote"
+                loading="saveSupervisorNote"
             />
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 
     {{-- Form Modal --}}
-    <x-mary-modal
-        wire:model="showModal"
-        :title="$this->form->id ? __('logbook.edit') : __('logbook.new')"
-        separator
-        class="backdrop-blur-sm"
-    >
+    <x-ts-modal wire="showModal" :title="$this->form->id ? __('logbook.edit') : __('logbook.new')" separator blur>
         <div class="space-y-6">
             @if (! $this->form->id)
                 <x-mary-select
@@ -224,25 +225,25 @@
             <x-mary-datepicker
                 :label="__('logbook.date')"
                 wire:model="form.date"
-                icon="o-calendar"
+                icon="calendar"
                 class="border-base-300 rounded-xl"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.content')"
                 wire:model="form.content"
                 rows="4"
                 class="border-base-300 rounded-xl"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.learning_outcomes')"
                 wire:model="form.learning_outcomes"
                 rows="2"
                 class="border-base-300 rounded-xl"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.mentor_feedback')"
                 wire:model="form.mentor_feedback"
                 rows="2"
@@ -250,14 +251,15 @@
             />
         </div>
 
-        <x-slot:actions>
-            <x-mary-button :label="__('common.actions.cancel')" @click="$wire.showModal = false" class="rounded-xl" />
-            <x-mary-button
-                :label="__('logbook.save')"
-                class="btn-primary rounded-xl font-bold tracking-widest uppercase"
+        <x-slot:footer>
+            <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" class="rounded-xl" />
+            <x-ts-button
+                :text="__('logbook.save')"
+                class="rounded-xl font-bold tracking-widest uppercase"
+                color="primary"
                 wire:click="save"
-                spinner="save"
+                loading="save"
             />
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 </div>

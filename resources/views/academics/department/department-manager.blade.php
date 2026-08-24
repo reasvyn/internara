@@ -23,14 +23,14 @@
             <x-core::widgets.stat-card
                 :title="__('department.stats.total')"
                 :value="$stats['total']"
-                icon="o-building-library"
+                icon="building-library"
                 color="text-primary"
                 class="lg:col-span-2"
             />
             <x-core::widgets.stat-card
                 :title="__('department.stats.with_students')"
                 :value="$stats['with_internships']"
-                icon="o-users"
+                icon="users"
                 color="text-secondary"
                 class="lg:col-span-2"
             />

@@ -10,7 +10,7 @@
             <x-mary-alert
                 :title="__('registration.verification.empty')"
                 :description="__('registration.verification.empty_desc')"
-                icon="o-check-circle"
+                icon="check-circle"
             />
         @else
             <div class="overflow-x-auto">
@@ -55,10 +55,10 @@
                                 </td>
                                 <td>{{ $reg->created_at->diffForHumans() }}</td>
                                 <td>
-                                    <x-mary-button
-                                        :label="__('registration.verification.process')"
+                                    <x-ts-button
+                                        :text="__('registration.verification.process')"
                                         wire:click="process('{{ $reg->id }}')"
-                                        icon="o-chevron-right"
+                                        icon="chevron-right"
                                         class="btn-primary btn-sm"
                                     />
                                 </td>
@@ -70,20 +70,20 @@
         @endif
     </x-mary-card>
 
-    <x-mary-modal wire:model="showProcessModal" :title="__('registration.verification.process_title')">
+    <x-ts-modal wire="showProcessModal" :title="__('registration.verification.process_title')">
         @if ($this->selectedRegistration)
             <div class="bg-base-200 rounded-box mb-4 p-3">
                 <p class="font-medium">{{ $this->selectedRegistration->mentee?->user?->name }}</p>
                 <p class="text-sm text-gray-500">{{ $this->selectedRegistration->internship?->name }}</p>
             </div>
 
-            <x-mary-form wire:submit="confirmProcess">
+            <form wire:submit="confirmProcess">
                 <x-mary-select
                     :label="__('registration.verification.placement')"
                     wire:model="placement_id"
                     :options="$this->availablePlacements"
                     :placeholder="__('registration.verification.select_placement')"
-                    icon="o-briefcase"
+                    icon="briefcase"
                 />
 
                 <x-mary-select
@@ -92,22 +92,22 @@
                     :options="$this->mentors"
                     :placeholder="__('registration.verification.select_mentors')"
                     multiple
-                    icon="o-user-group"
+                    icon="user-group"
                 />
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('registration.verification.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('registration.verification.cancel')"
                         wire:click="$set('showProcessModal', false)"
                     />
-                    <x-mary-button
-                        :label="__('registration.verification.verify_place')"
+                    <x-ts-button
+                        :text="__('registration.verification.verify_place')"
                         type="submit"
-                        icon="o-check"
-                        class="btn-primary"
+                        icon="check"
+                        color="primary"
                     />
-                </x-slot:actions>
-            </x-mary-form>
+                </div>
+            </form>
         @endif
-    </x-mary-modal>
+    </x-ts-modal>
 </div>

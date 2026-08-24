@@ -16,8 +16,8 @@
             class="table-sm"
         >
             @scope('cell_status', $r)
-                <x-mary-badge
-                    :value="$r->status->label()"
+                <x-ts-badge
+                    :text="$r->status->label()"
                     :class="match($r->status->value) {
                     'pending' => 'badge-warning', 'approved' => 'badge-success', 'rejected' => 'badge-error', default => 'badge-ghost',
                 }"
@@ -31,16 +31,20 @@
             @scope('actions', $r)
                 <div class="flex justify-end gap-1">
                     @if ($r->status->value === 'pending')
-                        <x-mary-button
+                        <x-ts-button
                             aria-label="{{ __('common.actions.approve') }}"
-                            icon="o-check"
-                            class="btn-ghost btn-sm text-success"
+                            icon="check"
+                            class="text-success"
+                            color="white"
+                            sm
                             wire:click="approve('{{ $r->id }}')"
                         />
-                        <x-mary-button
+                        <x-ts-button
                             aria-label="{{ __('common.actions.reject') }}"
-                            icon="o-x-mark"
-                            class="btn-ghost btn-sm text-error"
+                            icon="x-mark"
+                            class="text-error"
+                            color="white"
+                            sm
                             wire:click="rejectConfirm('{{ $r->id }}')"
                         />
                     @endif
@@ -50,32 +54,20 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showRejectModal"
-            :title="__('placement_change.reject_title')"
-            class="backdrop-blur-sm"
-        >
-            <x-mary-form wire:submit="reject">
-                <x-mary-textarea
-                    :label="__('placement_change.rejection_reason')"
-                    wire:model="rejectionReason"
-                    rows="3"
-                />
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+        <x-ts-modal wire="showRejectModal" :title="__('placement_change.reject_title')" blur>
+            <form wire:submit="reject">
+                <x-ts-textarea :label="__('placement_change.rejection_reason')" wire:model="rejectionReason" rows="3" />
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showRejectModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('placement_change.reject')"
-                        class="btn-error btn-sm"
-                        type="submit"
-                        spinner="reject"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('placement_change.reject')" color="red" sm type="submit" loading="reject" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
     @include('enrollment.placement.components.placement-change-guide')
 </x-core::ui.record-manager>

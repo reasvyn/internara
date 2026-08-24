@@ -11,26 +11,26 @@
             <x-core::widgets.stat-card
                 :title="__('dashboard.student.company')"
                 :value="$registration->placement->company->name"
-                icon="o-building-office"
+                icon="building-office"
                 color="text-primary"
             />
             <x-core::widgets.stat-card
                 :title="__('dashboard.student.position')"
                 :value="$registration->placement->name"
-                icon="o-briefcase"
+                icon="briefcase"
                 color="text-secondary"
             />
             <x-core::widgets.stat-card
                 :title="__('dashboard.student.batch')"
                 :value="$registration->internship->name"
-                icon="o-academic-cap"
+                icon="academic-cap"
                 color="text-accent"
             />
         @else
             <div class="sm:col-span-3">
                 <x-mary-card class="bg-base-100 border-base-content/10 border">
                     <x-core::widgets.empty-state
-                        icon="o-shield-exclamation"
+                        icon="shield-exclamation"
                         :title="__('dashboard.student.no_registration')"
                         :description="__('dashboard.student.no_registration_hint')"
                     />
@@ -45,37 +45,37 @@
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.write_journal')"
-                    icon="o-pencil-square"
+                    icon="pencil-square"
                     link="{{ route('student.logbook') }}"
                     color="btn-primary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.clock_in_out')"
-                    icon="o-clock"
+                    icon="clock"
                     link="{{ route('student.attendance') }}"
                     color="btn-secondary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.my_assignments')"
-                    icon="o-document-check"
+                    icon="document-check"
                     link="{{ route('student.assignments') }}"
                     color="btn-accent"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.request_absence')"
-                    icon="o-document-plus"
+                    icon="document-plus"
                     link="{{ route('student.attendance.absence') }}"
                     color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.my_documents')"
-                    icon="o-document-arrow-up"
+                    icon="document-arrow-up"
                     link="{{ route('registration.documents') }}"
                     color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.handbooks')"
-                    icon="o-book-open"
+                    icon="book-open"
                     link="{{ route('student.handbooks') }}"
                     color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
                 />
@@ -87,7 +87,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-check-badge" class="size-3.5" />
+                            <x-ts-icon name="check-badge" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.student.journal_verification') }}</span>
                     </div>
@@ -107,7 +107,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-secondary/10 text-secondary flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-calendar" class="size-3.5" />
+                            <x-ts-icon name="calendar" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.student.attendance_percentage') }}</span>
                     </div>
@@ -127,7 +127,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-accent/10 text-accent flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-clipboard-document-list" class="size-3.5" />
+                            <x-ts-icon name="clipboard-document-list" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.student.assignments_completed') }}</span>
                     </div>
@@ -147,7 +147,7 @@
                 <x-slot:title>
                     <div class="flex items-center gap-2">
                         <div class="bg-info/10 text-info flex size-6 items-center justify-center rounded-md">
-                            <x-mary-icon name="o-book-open" class="size-3.5" />
+                            <x-ts-icon name="book-open" class="size-3.5" />
                         </div>
                         <span class="text-sm font-semibold">{{ __('dashboard.student.handbook_acknowledgements') }}</span>
                     </div>
@@ -177,22 +177,22 @@
                 <div class="space-y-1">
                     <x-core::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
-                        icon="o-user"
+                        icon="user"
                         link="{{ route('profile') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('profile.recovery.title')"
-                        icon="o-key"
+                        icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('dashboard.notifications')"
-                        icon="o-bell"
+                        icon="bell"
                         link="{{ route('notifications') }}"
                     />
                     <x-core::widgets.quick-link
                         :label="__('dashboard.student.view_evaluations')"
-                        icon="o-star"
+                        icon="star"
                         link="#"
                     />
                 </div>

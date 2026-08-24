@@ -6,10 +6,11 @@
         progress-indicator
     >
         <x-slot:actions>
-            <x-mary-button
-                :label="__('logbook.write_journal')"
-                icon="o-pencil-square"
-                class="btn-primary shadow-primary/20 rounded-2xl px-6 font-black tracking-widest uppercase shadow-lg"
+            <x-ts-button
+                :text="__('logbook.write_journal')"
+                icon="pencil-square"
+                class="shadow-primary/20 rounded-2xl px-6 font-black tracking-widest uppercase shadow-lg"
+                color="primary"
                 wire:click="create"
             />
         </x-slot:actions>
@@ -43,13 +44,13 @@
 
                     @scope('cell_status', $journal)
                         @if ($journal->is_verified)
-                            <x-mary-badge
-                                :value="__('logbook.verified')"
+                            <x-ts-badge
+                                :text="__('logbook.verified')"
                                 class="badge-success text-[10px] font-black uppercase"
                             />
                         @else
-                            <x-mary-badge
-                                :value="__('logbook.submitted')"
+                            <x-ts-badge
+                                :text="__('logbook.submitted')"
                                 class="badge-neutral text-[10px] font-black uppercase"
                             />
                         @endif
@@ -58,14 +59,16 @@
                     @scope('actions', $journal)
                         <div class="flex justify-end gap-2">
                             @if (! $journal->is_verified)
-                                <x-mary-button
+                                <x-ts-button
                                     aria-label="{{ __('common.actions.edit') }}"
-                                    icon="o-pencil-square"
-                                    class="btn-ghost btn-sm text-primary transition-transform hover:scale-110"
+                                    icon="pencil-square"
+                                    class="text-primary transition-transform hover:scale-110"
+                                    color="white"
+                                    sm
                                     wire:click="edit('{{ $journal->id }}')"
                                 />
                             @else
-                                <x-mary-icon name="o-check-badge" class="text-success/40 size-5" />
+                                <x-ts-icon name="check-badge" class="text-success/40 size-5" />
                             @endif
                         </div>
                     @endscope
@@ -75,16 +78,16 @@
     </div>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="showModal" :title="__('logbook.log_daily')" separator class="backdrop-blur-sm">
+    <x-ts-modal wire="showModal" :title="__('logbook.log_daily')" separator blur>
         <div class="space-y-6 py-4">
             <x-mary-datepicker
                 :label="__('logbook.activity_date')"
                 wire:model="date"
-                icon="o-calendar"
+                icon="calendar"
                 class="rounded-2xl"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.activity_content')"
                 wire:model="content"
                 :placeholder="__('logbook.placeholder_content')"
@@ -92,7 +95,7 @@
                 class="border-base-200 focus:border-primary rounded-2xl"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('logbook.learning_outcomes')"
                 wire:model="learning_outcomes"
                 :placeholder="__('logbook.placeholder_outcomes')"
@@ -168,18 +171,20 @@
             </div>
         </div>
 
-        <x-slot:actions>
-            <x-mary-button
-                :label="__('logbook.discard')"
+        <x-slot:footer>
+            <x-ts-button
+                :text="__('logbook.discard')"
                 @click="$wire.showModal = false"
-                class="btn-ghost text-[10px] font-bold tracking-widest uppercase"
+                class="text-[10px] font-bold tracking-widest uppercase"
+                color="white"
             />
-            <x-mary-button
-                :label="__('logbook.save_activity')"
-                class="btn-primary shadow-primary/20 rounded-2xl px-8 font-black tracking-widest uppercase shadow-lg"
+            <x-ts-button
+                :text="__('logbook.save_activity')"
+                class="shadow-primary/20 rounded-2xl px-8 font-black tracking-widest uppercase shadow-lg"
+                color="primary"
                 wire:click="save"
-                spinner="save"
+                loading="save"
             />
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 </div>

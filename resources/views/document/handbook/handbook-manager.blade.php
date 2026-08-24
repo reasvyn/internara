@@ -1,6 +1,6 @@
 <x-core::ui.record-manager :title="__('handbook.title')" :subtitle="__('handbook.subtitle')">
     <x-slot:headerActions>
-        <x-mary-button :label="__('handbook.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-ts-button :text="__('handbook.create')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
@@ -23,23 +23,26 @@
             @endscope
 
             @scope('cell_is_active', $h)
-                <x-mary-badge
-                    :value="$h->is_active ? __('handbook.active') : __('handbook.inactive')"
+                <x-ts-badge
+                    :text="$h->is_active ? __('handbook.active') : __('handbook.inactive')"
                     :class="$h->is_active ? 'badge-success' : 'badge-ghost'"
                 />
             @endscope
 
             @scope('actions', $h)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button
-                        icon="o-pencil"
-                        class="btn-ghost btn-sm"
+                    <x-ts-button
+                        icon="pencil"
+                        color="white"
+                        sm
                         wire:click="edit('{{ $h->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-mary-button
-                        icon="o-trash"
-                        class="btn-ghost btn-sm text-error"
+                    <x-ts-button
+                        icon="trash"
+                        class="text-error"
+                        color="white"
+                        sm
                         wire:click="askDelete('{{ $h->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -49,38 +52,29 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal
-            wire:model="showModal"
-            :title="$form->id ? __('handbook.edit') : __('handbook.create')"
-            separator
-            class="backdrop-blur-sm"
-        >
-            <x-mary-form wire:submit="save" class="space-y-5">
-                <x-mary-input :label="__('handbook.title_field')" wire:model="form.title" icon="o-document-text" />
+        <x-ts-modal wire="showModal" :title="$form->id ? __('handbook.edit') : __('handbook.create')" separator blur>
+            <form wire:submit="save" class="space-y-5">
+                <x-ts-input :label="__('handbook.title_field')" wire:model="form.title" icon="document-text" />
                 <x-mary-select
                     :label="__('handbook.target_audience')"
                     wire:model="form.audience"
                     :options="$this->audienceOptions"
                 />
-                <x-mary-textarea :label="__('handbook.content_field')" wire:model="form.description" rows="3" />
-                <x-mary-toggle :label="__('handbook.active')" wire:model="form.isActive" />
+                <x-ts-textarea :label="__('handbook.content_field')" wire:model="form.description" rows="3" />
+                <x-ts-toggle :label="__('handbook.active')" wire:model="form.isActive" />
                 <x-mary-file :label="__('handbook.file')" wire:model="uploadFile" accept="application/pdf" />
 
-                <x-slot:actions>
-                    <x-mary-button
-                        :label="__('common.actions.cancel')"
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        class="btn-ghost btn-sm"
+                        color="white"
+                        sm
                     />
-                    <x-mary-button
-                        :label="__('common.actions.save')"
-                        class="btn-primary btn-sm"
-                        type="submit"
-                        spinner="save"
-                    />
-                </x-slot:actions>
-            </x-mary-form>
-        </x-mary-modal>
+                    <x-ts-button :text="__('common.actions.save')" color="primary" sm type="submit" loading="save" />
+                </div>
+            </form>
+        </x-ts-modal>
     </x-slot:modal>
     @include('document.handbook.components.handbook-guide')
 </x-core::ui.record-manager>

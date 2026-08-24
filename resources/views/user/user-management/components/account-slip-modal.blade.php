@@ -1,38 +1,69 @@
-<x-mary-modal wire:model="showAccountSlip" :title="__('user.manager.account_slip')" separator class="backdrop-blur-sm" size="sm">
-    @if($slipUser)
+<x-ts-modal wire="showAccountSlip" :title="__('user.manager.account_slip')" separator blur size="sm">
+    @if ($slipUser)
         <div class="space-y-5">
-            <div class="bg-base-200/40 border border-base-content/10 rounded-xl p-5 space-y-3">
+            <div class="bg-base-200/40 border-base-content/10 space-y-3 rounded-xl border p-5">
                 <div>
-                    <p class="text-xs text-base-content/40 uppercase tracking-wider font-semibold">{{ __('sysadmin.account_slip.name') }}</p>
+                    <p class="text-base-content/40 text-xs font-semibold tracking-wider uppercase">
+                        {{ __('sysadmin.account_slip.name') }}
+                    </p>
                     <p class="font-semibold">{{ $slipUser->name }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-base-content/40 uppercase tracking-wider font-semibold">{{ __('sysadmin.account_slip.username') }}</p>
+                    <p class="text-base-content/40 text-xs font-semibold tracking-wider uppercase">
+                        {{ __('sysadmin.account_slip.username') }}
+                    </p>
                     <p class="font-mono text-sm">{{ $slipUser->username }}</p>
                 </div>
                 <div>
-                    <p class="text-xs text-base-content/40 uppercase tracking-wider font-semibold">{{ __('sysadmin.account_slip.email') }}</p>
+                    <p class="text-base-content/40 text-xs font-semibold tracking-wider uppercase">
+                        {{ __('sysadmin.account_slip.email') }}
+                    </p>
                     <p class="text-sm">{{ $slipUser->email }}</p>
                 </div>
             </div>
 
-            <div class="bg-primary/5 border border-primary/20 rounded-xl p-5 text-center">
-                <p class="text-xs text-base-content/40 uppercase tracking-wider font-semibold mb-2">{{ __('sysadmin.account_slip.activation_code') }}</p>
-                <p class="text-2xl font-bold tracking-[0.25em] text-primary font-mono select-all">{{ $slipCode }}</p>
-                <p class="text-[10px] text-base-content/40 mt-2">{{ __('sysadmin.account_slip.code_expiry', ['days' => 30]) }}</p>
+            <div class="bg-primary/5 border-primary/20 rounded-xl border p-5 text-center">
+                <p class="text-base-content/40 mb-2 text-xs font-semibold tracking-wider uppercase">
+                    {{ __('sysadmin.account_slip.activation_code') }}
+                </p>
+                <p class="text-primary font-mono text-2xl font-bold tracking-[0.25em] select-all">{{ $slipCode }}</p>
+                <p class="text-base-content/40 mt-2 text-[10px]">
+                    {{ __('sysadmin.account_slip.code_expiry', ['days' => 30]) }}
+                </p>
             </div>
 
             <div class="flex flex-col gap-2">
-                <x-mary-button :label="__('user.manager.download_slip')" icon="o-arrow-down-tray" class="btn-primary w-full" wire:click="downloadSlip" spinner="downloadSlip" />
+                <x-ts-button
+                    :text="__('user.manager.download_slip')"
+                    icon="arrow-down-tray"
+                    class="w-full"
+                    color="primary"
+                    wire:click="downloadSlip"
+                    loading="downloadSlip"
+                />
                 <div class="flex gap-2">
-                    <x-mary-button :label="__('user.manager.regenerate_code')" icon="o-arrow-path" class="btn-ghost flex-1" wire:click="regenerateCode" spinner="regenerateCode" />
-                    <x-mary-button :label="__('user.manager.send_code')" icon="o-envelope" class="btn-ghost flex-1" wire:click="sendCode" spinner="sendCode" />
+                    <x-ts-button
+                        :text="__('user.manager.regenerate_code')"
+                        icon="arrow-path"
+                        class="flex-1"
+                        color="white"
+                        wire:click="regenerateCode"
+                        loading="regenerateCode"
+                    />
+                    <x-ts-button
+                        :text="__('user.manager.send_code')"
+                        icon="envelope"
+                        class="flex-1"
+                        color="white"
+                        wire:click="sendCode"
+                        loading="sendCode"
+                    />
                 </div>
             </div>
         </div>
     @endif
 
-    <x-slot:actions>
-        <x-mary-button :label="__('common.actions.close')" wire:click="$set('showAccountSlip', false)" class="btn-ghost btn-sm" />
-    </x-slot:actions>
-</x-mary-modal>
+    <x-slot:footer>
+        <x-ts-button :text="__('common.actions.close')" wire:click="$set('showAccountSlip', false)" color="white" sm />
+    </x-slot:footer>
+</x-ts-modal>

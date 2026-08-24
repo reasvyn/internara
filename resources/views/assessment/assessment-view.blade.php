@@ -79,7 +79,7 @@
     @empty
         <x-mary-card>
             <div class="text-base-content/40 py-12 text-center">
-                <x-mary-icon name="o-document-text" class="mx-auto mb-4 size-16 opacity-30" />
+                <x-ts-icon name="document-text" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_assessments_yet') }}</p>
                 <p class="text-sm">{{ __('assessment.no_assessments_desc') }}</p>
             </div>

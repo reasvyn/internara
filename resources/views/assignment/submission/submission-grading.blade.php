@@ -13,10 +13,10 @@
         {{-- Filters --}}
         <div class="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
             <div class="group relative w-full lg:max-w-md">
-                <x-mary-input
+                <x-ts-input
                     wire:model.live.debounce.300ms="search"
                     placeholder="{{ __('submission.search_placeholder') }}"
-                    icon="o-magnifying-glass"
+                    icon="magnifying-glass"
                     clearable
                     class="border-base-content/5 focus:border-primary/30 bg-base-200/50 focus:bg-base-100 relative z-10 h-14 rounded-[1.5rem] transition-all duration-300"
                 />
@@ -44,7 +44,7 @@
         >
             @if ($submissions->isEmpty())
                 <div class="flex flex-col items-center justify-center gap-4 py-20">
-                    <x-mary-icon name="o-check-circle" class="text-base-content/20 size-16" />
+                    <x-ts-icon name="check-circle" class="text-base-content/20 size-16" />
                     <h3 class="text-base-content/40 text-xl font-black tracking-tight">All caught up!</h3>
                     <p class="text-base-content/60 text-sm">No submissions pending grading.</p>
                 </div>
@@ -93,11 +93,12 @@
             class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
         >
             <div class="mb-6">
-                <x-mary-button
-                    icon="o-arrow-left"
-                    :label="__('common.actions.back')"
+                <x-ts-button
+                    icon="arrow-left"
+                    :text="__('common.actions.back')"
                     wire:click="back"
-                    class="btn-ghost rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
+                    class="rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
+                    color="white"
                 />
             </div>
 
@@ -148,7 +149,7 @@
                 <div class="bg-primary/5 border-primary/20 shadow-primary/5 mb-8 flex items-center justify-between rounded-[2rem] border p-4 shadow-xl">
                     <div class="flex items-center gap-4">
                         <div class="bg-primary text-primary-content shadow-primary/30 flex size-12 items-center justify-center rounded-[1.5rem] shadow-lg">
-                            <x-mary-icon name="o-document" class="size-6" />
+                            <x-ts-icon name="document" class="size-6" />
                         </div>
                         <div>
                             <h4 class="text-primary text-sm font-black">{{ $media->file_name }}</h4>
@@ -162,7 +163,7 @@
                         target="_blank"
                         class="btn btn-primary btn-sm shadow-primary/20 rounded-[1.5rem] px-6 text-[10px] font-black tracking-wider uppercase shadow-lg"
                     >
-                        <x-mary-icon name="o-arrow-down-tray" class="size-4" />
+                        <x-ts-icon name="arrow-down-tray" class="size-4" />
                         Download
                     </a>
                 </div>
@@ -175,7 +176,7 @@
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                         <div>
-                            <x-mary-input
+                            <x-ts-input
                                 :label="__('submission.score')"
                                 type="number"
                                 wire:model="score"
@@ -195,7 +196,7 @@
                     </div>
 
                     <div>
-                        <x-mary-textarea
+                        <x-ts-textarea
                             :label="__('submission.feedback')"
                             wire:model="feedback"
                             placeholder="Provide detailed feedback for the student..."
@@ -206,26 +207,29 @@
 
                     <div class="border-base-content/5 flex justify-end gap-4 border-t pt-6">
                         @if ($selectedSubmission->status->value === 'submitted')
-                            <x-mary-button
-                                :label="__('submission.verify')"
-                                icon="o-shield-check"
-                                class="btn-success h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase"
+                            <x-ts-button
+                                :text="__('submission.verify')"
+                                icon="shield-check"
+                                class="h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase"
+                                color="green"
                                 wire:click="verify('{{ $selectedSubmission->id }}')"
                                 wire:confirm="{{ __('submission.confirm_verify') }}"
                                 spinner="verify"
                             />
                         @endif
-                        <x-mary-button
-                            :label="__('common.actions.cancel')"
+                        <x-ts-button
+                            :text="__('common.actions.cancel')"
                             wire:click="back"
-                            class="btn-ghost rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                            class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                            color="white"
                         />
-                        <x-mary-button
-                            :label="__('submission.submit_grade')"
-                            icon="o-check-circle"
-                            class="btn-primary shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                        <x-ts-button
+                            :text="__('submission.submit_grade')"
+                            icon="check-circle"
+                            class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+                            color="primary"
                             wire:click="grade"
-                            spinner="grade"
+                            loading="grade"
                         />
                     </div>
                 </div>

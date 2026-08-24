@@ -1,7 +1,7 @@
 <div class="mx-auto mt-6 max-w-2xl">
     <x-core::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
 
-    <x-mary-form wire:submit="save">
+    <form wire:submit="save">
         <x-mary-card>
             <div class="space-y-5">
                 <x-mary-select
@@ -13,7 +13,7 @@
                     option-value="id"
                 />
 
-                <x-mary-input :label="__('incident.date')" wire:model="formData.incident_date" type="datetime-local" />
+                <x-ts-input :label="__('incident.date')" wire:model="formData.incident_date" type="datetime-local" />
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <x-mary-select
@@ -30,18 +30,18 @@
                     />
                 </div>
 
-                <x-mary-input
+                <x-ts-input
                     :label="__('incident.location')"
                     wire:model="formData.location"
                     :placeholder="__('incident.location_placeholder')"
                 />
-                <x-mary-textarea
+                <x-ts-textarea
                     :label="__('incident.description')"
                     wire:model="formData.description"
                     :placeholder="__('incident.description_placeholder')"
                     rows="4"
                 />
-                <x-mary-textarea
+                <x-ts-textarea
                     :label="__('incident.action_taken')"
                     wire:model="formData.action_taken"
                     :placeholder="__('incident.action_taken_placeholder')"
@@ -49,9 +49,9 @@
                 />
             </div>
 
-            <x-slot:actions>
-                <x-mary-button :label="__('incident.submit')" class="btn-primary" type="submit" spinner="save" />
-            </x-slot:actions>
+            <div class="mt-6 flex justify-end gap-2">
+                <x-ts-button :text="__('incident.submit')" color="primary" type="submit" loading="save" />
+            </div>
         </x-mary-card>
-    </x-mary-form>
+    </form>
 </div>

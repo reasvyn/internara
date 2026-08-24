@@ -8,7 +8,7 @@
 
     @if (! $registration)
         <div class="alert alert-warning">
-            <x-mary-icon name="o-exclamation-triangle" class="h-5 w-5" />
+            <x-ts-icon name="exclamation-triangle" class="h-5 w-5" />
             {{ __('journals.supervision.no_active_registration') }}
         </div>
     @else
@@ -30,17 +30,17 @@
                         @endscope
 
                         @scope('cell_type', $log)
-                            <x-mary-badge
-                                :value="ucfirst($log->type)"
+                            <x-ts-badge
+                                :text="ucfirst($log->type)"
                                 :class="$log->type === 'guidance' ? 'badge-primary' : 'badge-secondary'"
                             />
                         @endscope
 
                         @scope('cell_is_verified', $log)
                             @if ($log->is_verified)
-                                <x-mary-badge :value="__('journals.verified')" class="badge-success" />
+                                <x-ts-badge :text="__('journals.verified')" class="badge-success" />
                             @else
-                                <x-mary-badge :value="__('journals.pending')" class="badge-neutral" />
+                                <x-ts-badge :text="__('journals.pending')" class="badge-neutral" />
                             @endif
                         @endscope
                     </x-mary-table>
@@ -52,7 +52,7 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <div class="bg-primary/10 rounded-lg p-2">
-                                <x-mary-icon name="o-user-group" class="text-primary h-5 w-5" />
+                                <x-ts-icon name="user-group" class="text-primary h-5 w-5" />
                             </div>
                             <div>
                                 <div class="text-xs font-bold uppercase opacity-50">
@@ -65,7 +65,7 @@
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="bg-secondary/10 rounded-lg p-2">
-                                <x-mary-icon name="o-briefcase" class="text-secondary h-5 w-5" />
+                                <x-ts-icon name="briefcase" class="text-secondary h-5 w-5" />
                             </div>
                             <div>
                                 <div class="text-xs font-bold uppercase opacity-50">

@@ -6,10 +6,10 @@
         progress-indicator
     >
         <x-slot:actions>
-            <x-mary-button
-                :label="__('auth.lifecycle.detect_clones')"
-                icon="o-user-group"
-                class="btn-secondary"
+            <x-ts-button
+                :text="__('auth.lifecycle.detect_clones')"
+                icon="user-group"
+                color="secondary"
                 href="{{ route('admin.accounts.clones') }}"
             />
         </x-slot:actions>
@@ -18,7 +18,7 @@
     <x-mary-card shadow class="bg-base-100 border-base-200 border">
         @if ($users->isEmpty())
             <div class="py-8 text-center opacity-60">
-                <x-mary-icon name="o-users" class="mx-auto mb-3 h-12 w-12" />
+                <x-ts-icon name="users" class="mx-auto mb-3 h-12 w-12" />
                 <p class="text-lg">{{ __('auth.recovery_slip.no_users_found') }}</p>
             </div>
         @else
@@ -51,14 +51,14 @@
                             default => 'badge-ghost',
                         };
                     @endphp
-                    <x-mary-badge :value="ucfirst($status)" :class="$color" />
+                    <x-ts-badge :text="ucfirst($status)" :class="$color" />
                 @endscope
 
                 @scope('cell_locked', $user)
                     @if ($user->locked_at)
-                        <x-mary-badge :value="__('auth.lifecycle.locked')" class="badge-error" />
+                        <x-ts-badge :text="__('auth.lifecycle.locked')" class="badge-error" />
                     @else
-                        <x-mary-badge :value="__('auth.lifecycle.unlocked')" class="badge-success" />
+                        <x-ts-badge :text="__('auth.lifecycle.unlocked')" class="badge-success" />
                     @endif
                 @endscope
 
@@ -69,17 +69,21 @@
                 @scope('cell_actions', $user)
                     <div class="flex gap-2">
                         @if ($user->locked_at)
-                            <x-mary-button
+                            <x-ts-button
                                 aria-label="{{ __('common.actions.unlock') }}"
-                                icon="o-lock-open"
-                                class="btn-ghost btn-sm text-success"
+                                icon="lock-open"
+                                class="text-success"
+                                color="white"
+                                sm
                                 wire:click="askUnlock('{{ $user->id }}')"
                             />
                         @else
-                            <x-mary-button
+                            <x-ts-button
                                 aria-label="{{ __('common.actions.lock') }}"
-                                icon="o-lock-closed"
-                                class="btn-ghost btn-sm text-warning"
+                                icon="lock-closed"
+                                class="text-warning"
+                                color="white"
+                                sm
                                 wire:click="askLock('{{ $user->id }}')"
                             />
                         @endif

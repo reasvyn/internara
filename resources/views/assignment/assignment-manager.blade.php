@@ -7,10 +7,11 @@
                 {{ __('assignment.subheading') }}
             </p>
         </div>
-        <x-mary-button
-            :label="__('assignment.create')"
-            icon="o-plus"
-            class="btn-primary shadow-primary/30 h-12 rounded-[2rem] px-8 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+        <x-ts-button
+            :text="__('assignment.create')"
+            icon="plus"
+            class="shadow-primary/30 h-12 rounded-[2rem] px-8 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
+            color="primary"
             wire:click="create"
         />
     </div>
@@ -19,10 +20,10 @@
     <div class="mb-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
         <div class="group relative w-full lg:max-w-md">
             <div class="bg-primary/5 absolute inset-0 rounded-[1.5rem] opacity-0 blur-md transition-opacity duration-300 group-focus-within:opacity-100"></div>
-            <x-mary-input
+            <x-ts-input
                 wire:model.live.debounce.300ms="search"
                 :placeholder="__('assignment.search_placeholder')"
-                icon="o-magnifying-glass"
+                icon="magnifying-glass"
                 clearable
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 focus:bg-base-100 relative z-10 h-14 rounded-[1.5rem] transition-all duration-300"
             />
@@ -67,19 +68,21 @@
             </div>
             <div class="flex items-center gap-4 pr-2">
                 <div class="flex gap-2">
-                    <x-mary-button
+                    <x-ts-button
                         aria-label="{{ __('common.actions.delete_selected') }}"
                         :title="__('common.actions.delete_selected')"
-                        icon="o-trash"
-                        class="btn-error shadow-error/20 h-10 rounded-xl px-6 text-[10px] font-black tracking-widest text-white uppercase shadow-lg transition-transform hover:scale-105"
+                        icon="trash"
+                        class="shadow-error/20 h-10 rounded-xl px-6 text-[10px] font-black tracking-widest text-white uppercase shadow-lg transition-transform hover:scale-105"
+                        color="red"
                         wire:click="askDeleteSelected"
                     />
                 </div>
                 <div class="bg-primary/20 mx-2 h-8 w-px"></div>
-                <x-mary-button
-                    :label="__('common.actions.cancel')"
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
                     wire:click="clearSelection"
-                    class="btn-ghost hover:bg-base-content/5 rounded-xl text-[10px] font-black tracking-widest uppercase"
+                    class="hover:bg-base-content/5 rounded-xl text-[10px] font-black tracking-widest uppercase"
+                    color="white"
                 />
             </div>
         </div>
@@ -138,24 +141,30 @@
                 @scope('actions', $assignment)
                     <div class="flex items-center justify-end gap-1 py-2">
                         @if ($assignment->status->value === 'draft')
-                            <x-mary-button
-                                icon="o-paper-airplane"
-                                class="btn-ghost btn-sm btn-circle text-success hover:bg-success/10 transition-colors"
+                            <x-ts-button
+                                icon="paper-airplane"
+                                class="btn-circle text-success hover:bg-success/10 transition-colors"
+                                color="white"
+                                sm
                                 wire:click="publish('{{ $assignment->id }}')"
                                 tooltip="{{ __('assignment.publish_tooltip') }}"
                             />
                         @endif
-                        <x-mary-button
+                        <x-ts-button
                             aria-label="{{ __('common.actions.edit') }}"
-                            icon="o-pencil"
-                            class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors"
+                            icon="pencil"
+                            class="btn-circle text-primary hover:bg-primary/10 transition-colors"
+                            color="white"
+                            sm
                             wire:click="edit('{{ $assignment->id }}')"
                             tooltip="{{ __('assignment.edit_tooltip') }}"
                         />
-                        <x-mary-button
+                        <x-ts-button
                             aria-label="{{ __('common.actions.delete') }}"
-                            icon="o-trash"
-                            class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors"
+                            icon="trash"
+                            class="btn-circle text-error hover:bg-error/10 transition-colors"
+                            color="white"
+                            sm
                             wire:click="askDelete('{{ $assignment->id }}')"
                             tooltip="{{ __('assignment.delete_tooltip') }}"
                         />
@@ -166,17 +175,17 @@
     </x-mary-card>
 
     {{-- Assignment Modal --}}
-    <x-mary-modal
-        wire:model="assignmentModal"
+    <x-ts-modal
+        wire="assignmentModal"
         :title="$formData['id'] ? __('assignment.edit') : __('assignment.create')"
-        class="backdrop-blur-sm"
+        blur
         box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl"
     >
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input
+            <x-ts-input
                 :label="__('assignment.title')"
                 wire:model="formData.title"
-                icon="o-document-text"
+                icon="document-text"
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
             />
 
@@ -196,43 +205,41 @@
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
             />
 
-            <x-mary-input
+            <x-ts-input
                 :label="__('assignment.due_date')"
                 type="date"
                 wire:model="formData.due_date"
-                icon="o-calendar"
+                icon="calendar"
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
             />
 
-            <x-mary-textarea
+            <x-ts-textarea
                 :label="__('assignment.description')"
                 wire:model="formData.description"
                 rows="3"
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
             />
 
-            <x-mary-toggle
-                :label="__('assignment.is_mandatory')"
-                wire:model="formData.is_mandatory"
-                class="rounded-xl"
-            />
+            <x-ts-toggle :label="__('assignment.is_mandatory')" wire:model="formData.is_mandatory" class="rounded-xl" />
         </div>
 
-        <x-slot:actions>
+        <x-slot:footer>
             <div class="border-base-content/5 flex w-full justify-end gap-4 border-t pt-6">
-                <x-mary-button
-                    :label="__('common.actions.cancel')"
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
                     wire:click="$set('assignmentModal', false)"
-                    class="btn-ghost rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                    class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                    color="white"
                 />
-                <x-mary-button
-                    :label="__('common.actions.save')"
+                <x-ts-button
+                    :text="__('common.actions.save')"
                     type="submit"
-                    class="btn-primary shadow-primary/20 rounded-[1.5rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl"
+                    class="shadow-primary/20 rounded-[1.5rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl"
+                    color="primary"
                     wire:click="save"
-                    spinner="save"
+                    loading="save"
                 />
             </div>
-        </x-slot:actions>
-    </x-mary-modal>
+        </x-slot:footer>
+    </x-ts-modal>
 </div>
