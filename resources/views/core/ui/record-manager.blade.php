@@ -3,62 +3,84 @@
     'subtitle' => null,
 ])
 
-<div class="py-4 space-y-6">
+<div class="space-y-6 py-4">
     {{-- Header --}}
-    <div class="flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">
+    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
             <h1 class="text-2xl font-bold tracking-tight">{{ $title }}</h1>
-            @if($subtitle)
-                <p class="text-sm text-base-content/50 mt-1">{{ $subtitle }}</p>
+            @if ($subtitle)
+                <p class="text-base-content/50 mt-1 text-sm">{{ $subtitle }}</p>
             @endif
         </div>
-        <div class="flex items-center gap-3 shrink-0">
+        <div class="flex shrink-0 items-center gap-3">
             {{ $headerActions ?? '' }}
-            @if(isset($extraMenu))
-                <x-mary-dropdown>
-                    <x-slot:trigger>
-                        <x-mary-button icon="o-ellipsis-vertical" class="btn-ghost btn-sm" :aria-label="__('common.actions.more')" />
-                    </x-slot:trigger>
-                    <div class="p-1.5 w-48">
-                        {{ $extraMenu }}
-                    </div>
-                </x-mary-dropdown>
+            @if (isset($extraMenu))
+                <x-ts-dropdown position="bottom-end">
+                    <x-slot:action>
+                        <x-ts-button.circle
+                            icon="ellipsis-vertical"
+                            color="white"
+                            sm
+                            :aria-label="__('common.actions.more')"
+                        />
+                    </x-slot:action>
+                    <div class="w-48 p-1.5">{{ $extraMenu }}</div>
+                </x-ts-dropdown>
             @endif
         </div>
     </div>
 
     {{-- Stats --}}
-    @if(isset($stats))
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {{ $stats }}
-        </div>
+    @if (isset($stats))
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">{{ $stats }}</div>
     @endif
 
     {{-- Search + Filters --}}
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-base-100 border border-base-content/10 rounded-xl p-4">
-        <x-mary-input
+    <div class="bg-base-100 border-base-content/10 flex flex-col items-start justify-between gap-4 rounded-xl border p-4 sm:flex-row sm:items-center">
+        <x-ts-input
             wire:model.live.debounce.300ms="search"
             :placeholder="__('common.actions.search')"
-            icon="o-magnifying-glass"
+            icon="magnifying-glass"
             clearable
             class="w-full sm:max-w-xs"
             aria-label="{{ __('common.actions.search') }}"
         />
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-            <label class="flex items-center gap-2 text-sm text-base-content/60 whitespace-nowrap">
+        <div class="flex w-full items-center gap-3 sm:w-auto">
+            <label class="text-base-content/60 flex items-center gap-2 text-sm whitespace-nowrap">
                 <span>{{ __('common.pagination.per_page') }}</span>
-                <select wire:model.live="perPage" class="select select-bordered select-sm text-sm w-20">
-                    @foreach($this->perPageOptions() as $option)
+                <select wire:model.live="perPage" class="select select-bordered select-sm w-20 text-sm">
+                    @foreach ($this->perPageOptions() as $option)
                         <option value="{{ $option }}">{{ $option }}</option>
                     @endforeach
                 </select>
             </label>
-            @if(isset($filters))
+            @if (isset($filters))
                 <div x-data="{ filtersOpen: false }" class="relative">
-                    <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" x-on:click="filtersOpen = !filtersOpen" x-bind:aria-expanded="filtersOpen" />
-                    <div x-show="filtersOpen" x-on:click.outside="filtersOpen = false" class="absolute right-0 mt-2 p-4 space-y-4 w-80 bg-base-100 border border-base-content/10 rounded-xl shadow-xl z-50" x-cloak x-trap="filtersOpen">
+                    <x-ts-button
+                        icon="adjustments-horizontal"
+                        color="white"
+                        sm
+                        :text="__('common.actions.filters')"
+                        x-on:click="filtersOpen = ! filtersOpen"
+                        x-bind:aria-expanded="filtersOpen"
+                    />
+                    <div
+                        x-show="filtersOpen"
+                        x-on:click.outside="filtersOpen = false"
+                        class="bg-base-100 border-base-content/10 absolute right-0 z-50 mt-2 w-80 space-y-4 rounded-xl border p-4 shadow-xl"
+                        x-cloak
+                        x-trap="filtersOpen"
+                    >
                         {{ $filters }}
-                        <x-mary-button :label="__('common.actions.reset_filters')" icon="o-x-mark" class="btn-ghost btn-sm w-full" wire:click="resetFilters" x-on:click="filtersOpen = false" />
+                        <x-ts-button
+                            :text="__('common.actions.reset_filters')"
+                            icon="x-mark"
+                            color="white"
+                            sm
+                            class="w-full"
+                            wire:click="resetFilters"
+                            x-on:click="filtersOpen = false"
+                        />
                     </div>
                 </div>
             @endif
@@ -66,27 +88,31 @@
     </div>
 
     {{-- Selection Bar --}}
-    @if(isset($selectionBar))
-        <div x-data="{ show: @entangle('selectedIds') }" x-show="show.length > 0" x-cloak class="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 flex items-center justify-between">
-            <span class="text-sm font-medium text-primary" x-text="`{{ __('common.pagination.selected_count') }}`.replace(':count', show.length)"></span>
-            <div class="flex items-center gap-2">
-                {{ $selectionBar }}
-            </div>
+    @if (isset($selectionBar))
+        <div
+            x-data="{ show: @entangle('selectedIds') }"
+            x-show="show.length > 0"
+            x-cloak
+            class="bg-primary/5 border-primary/20 flex items-center justify-between rounded-xl border px-4 py-3"
+        >
+            <span
+                class="text-primary text-sm font-medium"
+                x-text="`{{ __('common.pagination.selected_count') }}`.replace(':count', show.length)"
+            ></span>
+            <div class="flex items-center gap-2">{{ $selectionBar }}</div>
         </div>
     @endif
 
     {{-- Table --}}
-    <div class="overflow-x-auto rounded-xl border border-base-content/10">
-        {{ $slot }}
-    </div>
+    <div class="border-base-content/10 overflow-x-auto rounded-xl border">{{ $slot }}</div>
 
     {{-- Empty State --}}
-    @if(isset($emptyState))
+    @if (isset($emptyState))
         {{ $emptyState }}
     @endif
 
     {{-- Modals --}}
-    @if(isset($modal))
+    @if (isset($modal))
         {{ $modal }}
     @endif
 </div>

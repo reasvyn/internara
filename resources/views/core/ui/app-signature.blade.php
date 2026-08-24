@@ -14,10 +14,7 @@
 
         <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
 
-        <x-mary-badge
-            :value="$appVersion"
-            class="badge-neutral h-4 border-none px-2 py-0 text-[9px] font-black uppercase opacity-50"
-        />
+        <x-ts-badge :text="$appVersion" color="white" xs class="opacity-50" />
 
         @if (! empty($author))
             <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
