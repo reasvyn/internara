@@ -38,7 +38,7 @@ Counts via: `grep -r "flash()->" app | wc -l` 235, `grep -r "<x-mary" resources 
 2. **Phase 1 — Quick wins (Rank 1-3):** Toast → Theme → Locale (1 PR each, 1-2 days, no breaking).
 3. **Phase 2 — Chrome (Rank 4-5):** Layout → Accessibility (1-2 PRs, visual regression).
 4. **Phase 3 — Bulk (Rank 6-7):** Forms → Data Display (per-module PRs, 2-3 weeks, `FindComponent` to track).
-5. **Phase 4 — Removal:** `grep -R "daisyui\|mary\|php-flasher"` clean → remove from `composer.json`/`package.json`/`app.css` imports.
+5. **Phase 4 — Removal (ONLY on explicit request):** Do **not** remove `daisyui`/`mary`/`php-flasher` until explicitly ordered — even when `grep -R "daisyui\|mary\|php-flasher"` is clean, keep manifests/`app.css` imports. Removal requires separate approval.
 
 ## Verification per PR
 
