@@ -29,7 +29,7 @@ class RecentActivityList extends Component
             @forelse($this->activities as $activity)
                 <div class="flex items-start gap-4 py-3 border-b last:border-0 border-base-200">
                     <div class="mt-1">
-                        <x-mary-icon name="o-bolt" class="size-4 opacity-50" />
+                        <x-ts-icon name="bolt" class="size-4 opacity-50" />
                     </div>
                     <div>
                         <div class="text-sm font-medium">{{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}</div>
