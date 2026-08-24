@@ -32,11 +32,16 @@ Before writing a new script — check what already exists:
 2. Reuse before create: check `scripts/README.md` and the `## Automation Scripts` tables in other
    skills. If the pattern is covered, use the existing tool. Never duplicate a scanner that already
    owns a rule family (see `arch-guard/rules/output-and-integration.md`).
-3. Size-aware: a multi-scanner initiative is **M/L** per Size Triage — stage it per script, inform the
+3. One-off / few-off scripts NEVER go in `scripts/`: a script used only a handful of times — a single
+   migration batch, temporary data fix, one-time conversion or bulk edit — must be written to `/tmp`
+   (e.g. `/tmp/migrate_x.py`), run, then discarded. `scripts/` is exclusively for durable, reusable
+   devtools with long-term value; committing throwaway scripts pollutes the toolchain and buries the
+   scanners agents rely on.
+4. Size-aware: a multi-scanner initiative is **M/L** per Size Triage — stage it per script, inform the
    user before committing if it crosses into **L**.
-4. Verify: run `python3 scripts/{name}.py --module {Module} --strict` and confirm the JSON output schema
+5. Verify: run `python3 scripts/{name}.py --module {Module} --strict` and confirm the JSON output schema
    before integrating into any skill.
-5. Git verify: before committing a script change, run `git status` + `git diff` to confirm only intended
+6. Git verify: before committing a script change, run `git status` + `git diff` to confirm only intended
    files changed and no unrelated edits or lost content.
 
 **Why reuse matters (dedup doctrine):** a second script that greps for C1 overlaps

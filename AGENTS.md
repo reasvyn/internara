@@ -183,6 +183,10 @@ repetitive work, not after.
   `scan_doc_links.py` (see Verification Strategy).
 - **When writing a new script**, load the `script-automation` skill first and follow its standards
   (interface, output format, error handling). Keep scripts in `scripts/`.
+- **One-off / few-off scripts NEVER go in `scripts/`** — scripts used only a handful of times
+  (single migration batch, temporary data fix, one-time conversion) must be written to `/tmp`
+  (e.g. `/tmp/migrate_x.py`), run, then discarded. `scripts/` is exclusively for durable,
+  reusable devtools with long-term value; committing throwaway scripts pollutes the toolchain.
 - **Batch your own operations too** — group edits, tests, and verification into few passes instead
   of many small round-trips (full suite is ~2GB+, 10+ min; never run it per-edit).
 
