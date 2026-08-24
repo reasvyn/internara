@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Settings\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Settings\Data\SettingData;
 use App\Settings\Data\SettingEntryData;
 use App\Settings\Enums\SettingGroup;
 use Illuminate\Support\Collection;
@@ -20,11 +21,13 @@ final class BatchSetSettingAction extends BaseCommandAction
 
             foreach ($settings as $entry) {
                 $setting = $this->setSettingAction->execute(
-                    $entry->key,
-                    $entry->value,
-                    $entry->group ?? SettingGroup::default()->value,
-                    $entry->description,
-                    $entry->type,
+                    new SettingData(
+                        key: $entry->key,
+                        value: $entry->value,
+                        group: $entry->group ?? SettingGroup::default()->value,
+                        description: $entry->description,
+                        type: $entry->type,
+                    ),
                 );
                 $results->push($setting);
             }
