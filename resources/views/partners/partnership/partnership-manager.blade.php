@@ -39,20 +39,20 @@
 
     <x-slot:filters>
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('partnership.status') }}</label>
-        <select wire:model.live="filters.status" class="select select-bordered select-sm w-full text-sm">
+        <x-ts-select.native wire:model.live="filters.status" class="w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
             @foreach ($this->statusOptions as $opt)
                 <option value="{{ $opt['id'] }}">{{ $opt['name'] }}</option>
             @endforeach
-        </select>
+        </x-ts-select.native>
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('partnership.company') }}</label>
-        <select wire:model.live="filters.company_id" class="select select-bordered select-sm w-full text-sm">
+        <x-ts-select.native wire:model.live="filters.company_id" class="w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
             @foreach ($this->companies as $company)
                 <option value="{{ $company['id'] }}">{{ $company['name'] }}</option>
             @endforeach
-        </select>
+        </x-ts-select.native>
     </x-slot:filters>
 
     <x-core::ui.selection-bar>
@@ -64,7 +64,7 @@
                     color="primary"
                     sm
                     :text="__('common.actions.bulk_actions')"
-                />
+                / x-on:click="show = ! show">
             </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items

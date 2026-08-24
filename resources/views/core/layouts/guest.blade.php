@@ -1,29 +1,27 @@
-@props (['title' => null, 'header' => null, 'footer' => null])
+@props(['title' => null, 'header' => null, 'footer' => null])
 
 <x-core::layouts.base :$title>
-    <div class="min-h-screen flex flex-col bg-base-200">
-        <header
-            class="bg-base-100/80 backdrop-blur-sm border-b border-base-content/10 sticky top-0 z-50"
-        >
+    <div class="bg-base-200 flex min-h-screen flex-col">
+        <header class="bg-base-100/80 border-base-content/10 sticky top-0 z-50 border-b backdrop-blur-sm">
             <div class="container mx-auto px-6 lg:px-12">
-                <div class="flex items-center justify-between h-16">
+                <div class="flex h-16 items-center justify-between">
                     <a wire:navigate href="/" class="flex items-center gap-3">
                         <x-core::ui.brand size="sm" :invert="false" />
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <livewire:settings.theme-switcher />
+                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-core::ui.theme-switch /></div>
                         <livewire:settings.lang-switcher />
                     </div>
                 </div>
             </div>
         </header>
 
-        <main id="main-content" class="flex-1 flex flex-col">{{ $slot }}</main>
+        <main id="main-content" class="flex flex-1 flex-col">{{ $slot }}</main>
 
-        <footer class="border-t border-base-content/10 py-8 mt-auto">
+        <footer class="border-base-content/10 mt-auto border-t py-8">
             <div class="container mx-auto px-6 text-center">
-                @isset ($footer)
+                @isset($footer)
                     {{ $footer }}
                 @else
                     <x-core::ui.credits />

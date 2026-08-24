@@ -22,7 +22,7 @@
                             color="white"
                             sm
                             :aria-label="__('common.actions.more')"
-                        />
+                        / x-on:click="show = ! show">
                     </x-slot:action>
                     <div class="w-48 p-1.5">{{ $extraMenu }}</div>
                 </x-ts-dropdown>
@@ -48,11 +48,11 @@
         <div class="flex w-full items-center gap-3 sm:w-auto">
             <label class="text-base-content/60 flex items-center gap-2 text-sm whitespace-nowrap">
                 <span>{{ __('common.pagination.per_page') }}</span>
-                <select wire:model.live="perPage" class="select select-bordered select-sm w-20 text-sm">
+                <x-ts-select.native wire:model.live="perPage" class="w-20 text-sm">
                     @foreach ($this->perPageOptions() as $option)
                         <option value="{{ $option }}">{{ $option }}</option>
                     @endforeach
-                </select>
+                </x-ts-select.native>
             </label>
             @if (isset($filters))
                 <div x-data="{ filtersOpen: false }" class="relative">

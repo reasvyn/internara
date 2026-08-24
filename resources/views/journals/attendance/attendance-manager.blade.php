@@ -33,15 +33,12 @@
                                 @if (isset($existing[$registration->id]))
                                     <x-ts-badge :text="$existing[$registration->id]->status?->label() ?? 'N/A'" />
                                 @else
-                                    <select
-                                        wire:model="records.{{ $registration->id }}.status"
-                                        class="select select-bordered select-sm"
-                                    >
+                                    <x-ts-select.native wire:model="records.{{ $registration->id }}.status" sm>
                                         <option value="">{{ __('journals.attendance.select') }}</option>
                                         @foreach ($statuses as $s)
                                             <option value="{{ $s->value }}">{{ $s->label() }}</option>
                                         @endforeach
-                                    </select>
+                                    </x-ts-select.native>
                                 @endif
                             </td>
                             <td>
@@ -67,8 +64,8 @@
                                         <x-ts-icon name="check-badge" class="text-success" />
                                     @endif
                                     @can('update', $attendance)
-                                        <select
-                                            class="select select-bordered select-xs ml-1 w-28 align-middle"
+                                        <x-ts-select.native
+                                            class="ml-1 w-28 align-middle"
                                             wire:change="updateAttendance('{{ $attendance->id }}', $event.target.value)"
                                         >
                                             @foreach ($statuses as $s)
@@ -79,7 +76,7 @@
                                                     {{ $s->label() }}
                                                 </option>
                                             @endforeach
-                                        </select>
+                                        </x-ts-select.native>
                                     @endcan
                                     @can('delete', $attendance)
                                         <x-ts-button

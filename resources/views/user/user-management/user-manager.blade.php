@@ -46,21 +46,21 @@
 
     <x-slot:filters>
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.fields.roles') }}</label>
-        <select wire:model.live="filters.role" class="select select-bordered select-sm w-full text-sm">
+        <x-ts-select.native wire:model.live="filters.role" class="w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
             @foreach ($this->roles as $role)
                 <option value="{{ $role->name }}">{{ __('permission.role.'.$role->name) }}</option>
             @endforeach
-        </select>
+        </x-ts-select.native>
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.status') }}</label>
-        <select wire:model.live="filters.status" class="select select-bordered select-sm w-full text-sm">
+        <x-ts-select.native wire:model.live="filters.status" class="w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
             <option value="verified">{{ __('common.status.verified') }}</option>
             <option value="suspended">{{ __('user.manager.status_suspended') }}</option>
             <option value="provisioned">{{ __('user.manager.status_provisioned') }}</option>
             <option value="archived">{{ __('user.manager.status_archived') }}</option>
-        </select>
+        </x-ts-select.native>
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.created_from') }}</label>
         <input
@@ -76,7 +76,7 @@
     <x-slot:selectionBar>
         <x-ts-dropdown>
             <x-slot:action>
-                <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" />
+                <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" / x-on:click="show = ! show">
             </x-slot:action>
             <div class="w-52 p-1.5">
                 <x-ts-dropdown.items

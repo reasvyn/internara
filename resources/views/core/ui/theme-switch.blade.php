@@ -1,0 +1,1 @@
+<x-theme-switch sm />

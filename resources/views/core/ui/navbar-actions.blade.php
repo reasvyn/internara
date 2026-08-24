@@ -12,8 +12,8 @@
 }}>
     {{-- Theme Switcher --}}
     @if ($showTheme)
-        <div class="bg-base-200/50 border-base-content/5 hidden items-center gap-1 rounded-xl border p-1 md:flex">
-            <livewire:settings.theme-switcher />
+        <div class="hidden md:block" x-data="tallstackui_darkTheme()">
+            <x-core::ui.theme-switch />
         </div>
     @endif
 
@@ -36,7 +36,10 @@
             <div class="bg-base-content/10 h-6 w-px self-center"></div>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
-                    <button class="btn btn-ghost btn-sm flex items-center gap-2 rounded-lg px-2">
+                    <button
+                        class="btn btn-ghost btn-sm flex items-center gap-2 rounded-lg px-2"
+                        x-on:click="show = ! show"
+                    >
                         <span class="hidden text-sm font-medium sm:inline">{{ auth()->user()->name }}</span>
                         <x-core::ui.avatar :user="auth()->user()" size="size-8" />
                     </button>
