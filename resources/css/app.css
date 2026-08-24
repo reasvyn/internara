@@ -2,11 +2,6 @@
 @import 'tailwindcss';
 @import '../../vendor/tallstackui/tallstackui/css/v4.css';
 
-/** DaisyUI — DEPRECATED coexistence (FB792 DD-4), to be removed after TallstackUI/MaryUI migration */
-@plugin "daisyui" {
-    exclude: properties;
-}
-
 /* Manually defined to avoid Lightning CSS warning from nested @property */
 @property --radialprogress {
     syntax: '<percentage>';
@@ -17,9 +12,6 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../vendor/tallstackui/tallstackui/**/*.php';
-
-/* maryUI — DEPRECATED coexistence (FB792 DD-4), to be removed after TallstackUI migration */
-@source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
 
 /* Theme toggle */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -60,15 +52,13 @@
 }
 
 /**
- * Self-hosted semantic palette (bridge off the DaisyUI plugin).
+ * Self-hosted semantic palette (formerly from DaisyUI plugin).
  *
  * Generates every color utility used in views (bg-base-100, text-primary,
- * shadow-success, …) WITHOUT relying on the daisyui plugin's theme registry.
- * Runtime values are overridden by:
- *   1. Theme::cssVariables() inline <style> in core::layouts.base (branding,
- *      base shades, primary/secondary/accent light+dark) — html[data-theme] scope
- *   2. The coexisting daisyui theme blocks below (identical names/values)
- * so removing the plugin later changes nothing visually.
+ * shadow-success, …) without the daisyui plugin.
+ * Runtime values are overridden by Theme::cssVariables() inline <style>
+ * in core::layouts.base (branding, base shades, primary/secondary/accent
+ * light+dark) — html[data-theme] scope.
  */
 @theme {
     --color-base-100: #ffffff;
@@ -95,16 +85,8 @@
     --color-error-content: oklch(100% 0 0);
 }
 
-/* Static dark values for non-branding tokens; base-*/
-primary/secondary/accent
-    switch
-    dynamically
-    via
-    Theme::cssvariables()
-    under
-    html[data-theme='dark'].
-    */
-    [data-theme='dark'] {
+/* Static dark values for non-branding tokens; base-*/ /* primary/secondary/accent switch dynamically via Theme::cssVariables() under html[data-theme='dark']. */
+[data-theme='dark'] {
     --color-neutral: oklch(30% 0 0);
     --color-neutral-content: oklch(95% 0 0);
     --color-info: oklch(70% 0.38 250);
@@ -117,56 +99,69 @@ primary/secondary/accent
     --color-error-content: oklch(10% 0 0);
 }
 
-@plugin "daisyui/theme" {
-    name: 'light';
-    default: true;
-    prefersdark: false;
-    color-scheme: 'light';
-    --color-neutral: oklch(50% 0 0);
-    --color-neutral-content: oklch(100% 0 0);
-    --color-info: oklch(60% 0.55 250); /* Bold Blue */
-    --color-info-content: oklch(100% 0 0);
-    --color-success: oklch(55% 0.58 150); /* Bold Green */
-    --color-success-content: oklch(100% 0 0);
-    --color-warning: oklch(70% 0.6 80); /* Bold Amber */
-    --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(55% 0.5 25); /* Muted Red */
-    --color-error-content: oklch(100% 0 0);
-    --radius-selector: 0.25rem;
-    --radius-field: 0.25rem;
-    --radius-box: 0.5rem;
-    --size-selector: 0.25rem;
-    --size-field: 0.25rem;
-    --border: 0.75px;
-    --depth: 1;
-    --noise: 0;
-    --animation-btn: 0.3s;
-    --animation-input: 0.3s;
+/* DaisyUI component shims — bridge for remaining 169 tokens; keeps styling after plugin removal */
+@layer components {
+    .badge { display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; border-radius: 9999px; padding: 0.125rem 0.625rem; font-size: 0.75rem; font-weight: 600; line-height: 1.25; border: 1px solid transparent; background: var(--color-base-300); color: var(--color-base-content); }
+    .badge-sm { font-size: 0.625rem; padding: 0.125rem 0.5rem; }
+    .badge-lg { font-size: 0.875rem; padding: 0.25rem 0.75rem; }
+    .badge-success { background: var(--color-success); color: var(--color-success-content); border-color: transparent; }
+    .badge-warning { background: var(--color-warning); color: var(--color-warning-content); }
+    .badge-error { background: var(--color-error); color: var(--color-error-content); }
+    .badge-info { background: var(--color-info); color: var(--color-info-content); }
+    .badge-primary { background: var(--color-primary); color: var(--color-primary-content); }
+    .badge-secondary { background: var(--color-secondary); color: var(--color-secondary-content); }
+    .badge-accent { background: var(--color-accent); color: var(--color-accent-content); }
+    .badge-neutral { background: var(--color-neutral); color: var(--color-neutral-content); }
+    .badge-ghost { background: var(--color-base-200); color: var(--color-base-content); border-color: var(--color-base-300); }
+    .badge-outline.badge-success { background: transparent; color: var(--color-success); border-color: var(--color-success); }
+    .badge-outline { background: transparent; border-color: currentColor; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; border-radius: var(--radius-field); padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; line-height: 1.25; border: 1px solid transparent; cursor: pointer; transition: background 0.2s, color 0.2s; background: var(--color-base-200); color: var(--color-base-content); }
+    .btn-sm { padding: 0.25rem 0.75rem; font-size: 0.75rem; }
+    .btn-xs { padding: 0.125rem 0.5rem; font-size: 0.625rem; }
+    .btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
+    .btn-square { aspect-ratio: 1; padding: 0; }
+    .btn-circle { border-radius: 9999px; aspect-ratio: 1; padding: 0; }
+    .btn-ghost { background: transparent; color: var(--color-base-content); border-color: transparent; }
+    .btn-ghost:hover { background: var(--color-base-200); }
+    .btn-primary { background: var(--color-primary); color: var(--color-primary-content); border-color: var(--color-primary); }
+    .btn-secondary { background: var(--color-secondary); color: var(--color-secondary-content); }
+    .btn-accent { background: var(--color-accent); color: var(--color-accent-content); }
+    .btn-success { background: var(--color-success); color: var(--color-success-content); }
+    .btn-warning { background: var(--color-warning); color: var(--color-warning-content); }
+    .btn-error, .btn-danger { background: var(--color-error); color: var(--color-error-content); }
+    .btn-info { background: var(--color-info); color: var(--color-info-content); }
+    .btn-outline { background: transparent; border-color: currentColor; }
+    .table { width: 100%; border-collapse: collapse; }
+    .table :where(th, td) { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-base-300); }
+    .table-sm :where(th, td) { padding: 0.5rem 0.75rem; font-size: 0.875rem; }
+    .table-xs :where(th, td) { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
+    .table-zebra tbody tr:nth-child(even) { background: var(--color-base-200); }
+    .select, .file-input, .textarea, .input { border: 1px solid var(--color-base-300); border-radius: var(--radius-field); padding: 0.5rem 0.75rem; background: var(--color-base-100); color: var(--color-base-content); }
+    .select-bordered, .file-input-bordered, .textarea-bordered, .input-bordered { border-color: var(--color-base-300); }
+    .select-sm, .file-input-sm { padding: 0.25rem 0.5rem; font-size: 0.875rem; }
+    .select-xs { padding: 0.125rem 0.375rem; font-size: 0.75rem; }
+    .modal, .modal-box, .modal-backdrop, .modal-open { /* minimal shim relies on x-ts-modal for real modals; keep daisy selectors harmless */ }
+    .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); }
+    .modal-box { background: var(--color-base-100); border-radius: var(--radius-box); padding: 1.5rem; max-width: 32rem; width: 90%; }
+    .alert { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-field); border: 1px solid transparent; }
+    .alert-info { background: color-mix(in oklch, var(--color-info) 10%, white); border-color: var(--color-info); color: var(--color-info); }
+    .alert-success { background: color-mix(in oklch, var(--color-success) 10%, white); border-color: var(--color-success); }
+    .alert-warning { background: color-mix(in oklch, var(--color-warning) 10%, white); border-color: var(--color-warning); }
+    .alert-error { background: color-mix(in oklch, var(--color-error) 10%, white); border-color: var(--color-error); }
+    .steps { display: flex; }
+    .step { flex: 1; text-align: center; position: relative; }
+    .step-primary { color: var(--color-primary); }
+    .card { background: var(--color-base-100); border: 1px solid var(--color-base-300); border-radius: var(--radius-box); }
+    .divider { height: 1px; background: var(--color-base-300); margin: 1rem 0; }
+    .divider-horizontal { width: 1px; height: auto; align-self: stretch; }
+    .loading { display: inline-block; width: 1rem; height: 1rem; border: 2px solid currentColor; border-top-color: transparent; border-radius: 9999px; animation: spin 0.6s linear infinite; }
+    .checkbox, .toggle { accent-color: var(--color-primary); }
+    .collapse { border: 1px solid var(--color-base-300); border-radius: var(--radius-box); }
+    .progress { height: 0.5rem; background: var(--color-base-200); border-radius: 9999px; overflow: hidden; }
+    .progress-primary { --progress-color: var(--color-primary); }
+    .tooltip { position: relative; }
+    .menu :where(li > a) { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-radius: var(--radius-field); }
+    .menu :where(li > a:hover) { background: var(--color-base-200); }
 }
 
-@plugin "daisyui/theme" {
-    name: 'dark';
-    default: false;
-    prefersdark: true;
-    color-scheme: 'dark';
-    --color-neutral: oklch(30% 0 0); /* Dark Gray */
-    --color-neutral-content: oklch(95% 0 0);
-    --color-info: oklch(70% 0.38 250); /* Eye-catching Blue */
-    --color-info-content: oklch(10% 0 0);
-    --color-success: oklch(65% 0.42 150); /* Eye-catching Green */
-    --color-success-content: oklch(10% 0 0);
-    --color-warning: oklch(75% 0.45 80); /* Eye-catching Amber */
-    --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(65% 0.38 25); /* Muted Red */
-    --color-error-content: oklch(10% 0 0);
-    --radius-selector: 0.25rem;
-    --radius-field: 0.25rem;
-    --radius-box: 0.5rem;
-    --size-selector: 0.25rem;
-    --size-field: 0.25rem;
-    --border: 0.75px;
-    --depth: 1;
-    --noise: 0;
-    --animation-btn: 0.3s;
-    --animation-input: 0.3s;
-}
+
