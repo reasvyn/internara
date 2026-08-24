@@ -55,7 +55,7 @@
 
     <x-slot:footer>
         <div class="flex items-center justify-between p-3 md:hidden">
-            <livewire:settings.theme-switcher />
+            <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-core::ui.theme-switch /></div>
             <livewire:settings.lang-switcher />
         </div>
     </x-slot:footer>

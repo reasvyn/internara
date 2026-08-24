@@ -39,7 +39,7 @@
         <x-core::ui.selection-bar>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
-                    <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" />
+                    <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" / x-on:click="show = ! show">
                 </x-slot:action>
                 <x-ts-dropdown.items
                     :text="__('common.actions.export_selected')"

@@ -27,14 +27,14 @@
                     </label>
                 </div>
                 <div class="w-full sm:w-48">
-                    <select wire:model="statusFilter" class="select select-bordered w-full">
+                    <x-ts-select.native wire:model="statusFilter" class="w-full">
                         <option value="">{{ __('report.all_statuses') }}</option>
                         @foreach ($statuses as $status)
                             <option value="{{ $status->value }}">
                                 {{ __('report.status_' . $status->name . '_label') }}
                             </option>
                         @endforeach
-                    </select>
+                    </x-ts-select.native>
                 </div>
             </div>
         </div>
@@ -157,14 +157,14 @@
                         <label class="label">
                             <span class="label-text">{{ __('report.select_student_placeholder') }}</span>
                         </label>
-                        <select wire:model="selectedRegistrationId" class="select select-bordered w-full">
+                        <x-ts-select.native wire:model="selectedRegistrationId" class="w-full">
                             <option value="">{{ __('report.select_student_placeholder') }}</option>
                             @foreach ($registrations as $registration)
                                 <option value="{{ $registration->id }}">
                                     {{ $registration->student->name }} ({{ $registration->student->email }}) - {{ $registration->internship->name ?? '—' }}
                                 </option>
                             @endforeach
-                        </select>
+                        </x-ts-select.native>
                         @error('selectedRegistrationId')
                             <p class="text-error mt-1 text-sm">{{ $message }}</p>
                         @enderror

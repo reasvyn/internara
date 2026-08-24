@@ -15,24 +15,40 @@ window.marked = marked
 window.DOMPurify = DOMPurify
 
 /**
- * Theme Initialization (CSP-compliant — previously inline in base.blade.php)
+ * Theme Initialization — TallstackUI convention.
  *
- * Sets both `data-theme` (DaisyUI color vars during coexistence, FB792 DD-4)
- * and the `.dark` class (Tailwind/TallStackUI `dark:` variant).
+ * `<x-theme-switch>` persists mode to localStorage key `dark-theme`
+ * ('true'/'false' legacy booleans or 'light'/'dark'/'system') and dispatches
+ * a `theme` CustomEvent with {darkTheme, mode}. We apply BOTH `data-theme`
+ * (semantic palette vars) and the `.dark` class (Tailwind/TallstackUI
+ * `dark:` variant), plus mirror to the `theme` cookie for SSR accuracy.
  */
-const applyTheme = (theme) => {
-    let resolved = theme
-    if (resolved === 'system') {
-        resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+const resolveTheme = (mode) => {
+    if (mode === 'system') {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
-    document.documentElement.setAttribute('data-theme', resolved)
-    document.documentElement.classList.toggle('dark', resolved === 'dark')
+    return mode === 'dark' || mode === true ? 'dark' : mode === false ? 'light' : mode
 }
 
-const initTheme = () => {
-    applyTheme(document.documentElement.getAttribute('data-theme') ?? 'system')
+const applyTheme = (mode) => {
+    const resolved = resolveTheme(mode)
+    document.documentElement.setAttribute('data-theme', resolved)
+    document.documentElement.classList.toggle('dark', resolved === 'dark')
+    document.cookie = `theme=${resolved};path=/;max-age=31536000;samesite=lax`
 }
-initTheme()
+
+const storedTheme = () => {
+    const t = localStorage.getItem('dark-theme')
+    if (t === 'true') return 'dark'
+    if (t === 'false') return 'light'
+    return ['light', 'dark', 'system'].includes(t) ? t : 'system'
+}
+
+applyTheme(storedTheme())
+
+document.addEventListener('theme', (event) => {
+    applyTheme(event.detail?.mode ?? storedTheme())
+})
 
 /**
  * Alpine Helper Functions
@@ -130,10 +146,6 @@ document.addEventListener('alpine:init', () => {
  */
 document.addEventListener('livewire:init', () => {
     if (window.Livewire) {
-        window.Livewire.on('theme-changed', (event) => {
-            applyTheme(event.theme)
-        })
-
         window.Livewire.on('language-changed', () => {
             window.location.reload()
         })

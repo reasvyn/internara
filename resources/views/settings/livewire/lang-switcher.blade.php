@@ -2,11 +2,16 @@
 
 <x-ts-dropdown position="bottom-end">
     <x-slot:action>
-        <button class="btn btn-ghost btn-sm btn-circle" aria-label="{{ __('common.language.switch') }}">
-            <span class="text-xs font-bold tracking-wider uppercase" aria-hidden="true">{{ $locale }}</span>
+        <button
+            type="button"
+            x-on:click="show = ! show"
+            class="hover:bg-base-200 rounded-full p-2 text-xs font-bold tracking-wider uppercase transition"
+            aria-label="{{ __('common.language.switch') }}"
+        >
+            <span aria-hidden="true">{{ $locale }}</span>
         </button>
     </x-slot:action>
 
-    <x-ts-dropdown.items text="{{ __('common.language.indonesian') }}" wire:click="setLocale('id')" />
-    <x-ts-dropdown.items text="{{ __('common.language.english') }}" wire:click="setLocale('en')" />
+    <x-ts-dropdown.items text="{{ __('common.language.indonesian') }}" icon="globe-alt" wire:click="setLocale('id')" />
+    <x-ts-dropdown.items text="{{ __('common.language.english') }}" icon="globe-alt" wire:click="setLocale('en')" />
 </x-ts-dropdown>

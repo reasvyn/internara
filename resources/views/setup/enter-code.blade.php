@@ -8,7 +8,7 @@
                     <x-core::ui.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <livewire:settings.theme-switcher class="px-2" />
+                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-core::ui.theme-switch /></div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
                         <livewire:settings.lang-switcher class="px-2" />
                     </div>

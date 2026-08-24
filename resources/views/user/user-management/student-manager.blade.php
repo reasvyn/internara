@@ -9,12 +9,12 @@
 
     <x-slot:filters>
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.student.department') }}</label>
-        <select wire:model.live="filters.department_id" class="select select-bordered select-sm w-full text-sm">
+        <x-ts-select.native wire:model.live="filters.department_id" class="w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
             @foreach ($this->departments as $dept)
                 <option value="{{ $dept->id }}">{{ $dept->name }}</option>
             @endforeach
-        </select>
+        </x-ts-select.native>
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.created_from') }}</label>
         <input
@@ -36,7 +36,7 @@
                     color="primary"
                     sm
                     :text="__('common.actions.bulk_actions')"
-                />
+                / x-on:click="show = ! show">
             </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items
