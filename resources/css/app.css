@@ -1,7 +1,8 @@
 /* TailwindCSS */
 @import 'tailwindcss';
+@import '../../vendor/tallstackui/tallstackui/css/v4.css';
 
-/** DaisyUI */
+/** DaisyUI — DEPRECATED coexistence (FB792 DD-4), to be removed after TallstackUI/MaryUI migration */
 @plugin "daisyui" {
     exclude: properties;
 }
@@ -15,8 +16,9 @@
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/tallstackui/tallstackui/**/*.php';
 
-/* maryUI */
+/* maryUI — DEPRECATED coexistence (FB792 DD-4), to be removed after TallstackUI migration */
 @source "../../vendor/robsontenorio/mary/src/View/Components/**/*.php";
 
 /* Theme toggle */
