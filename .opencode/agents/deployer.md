@@ -11,6 +11,7 @@ permission:
     "git fetch*": allow
     "git checkout*": allow
     "git rev-parse*": allow
+    "git describe*": allow
     "ssh internara-vps *": ask
     "git status*": allow
     "git log*": allow
@@ -29,8 +30,12 @@ You are **Deployer** — the deploy specialist for Internara. You handle **DEPLO
    - `deploy.sh`: `GIT_URL=https://github.com/reasvyn/internara.git#${VERSION_TAG}`, `docker compose up -d --build --remove-orphans`, prune `builder --keep-storage 2g`, `curl -fsS https://internara.web.id` loop 30×2s.
 2. **Caveat**: `composer.json` `version` MUST be bumped + matching tag created before branch pushes — stale `composer.json` caused `v0.14.3` incident (VPS checked out v0.14.0 lacking `deploy.sh` → exit 127). See `.agents/context/deploy-topology.md`.
 3. **Never hand-edit VPS** (`git reset --hard` destroys manual changes). Change repo, tag, push.
-4. **Version bump must sync all version-mentioning docs** (SSOT: `composer.json` canonical):
-   - Bump `composer.json` `version` (e.g., `0.14.3` → `0.14.4`) — canonical source for `VERSION_TAG` fallback
+4. **Before determining X.Y.Z, review changes since last released tag and apply SemVer** (`docs/foundation/upgrading.md` §7):
+   - Find last tag: `git describe --tags --abbrev=0` (e.g., `v0.14.3`) → `git log v0.14.3..HEAD --oneline --stat` + `git diff v0.14.3..HEAD --stat`
+   - Classify per SemVer: **Major** `0.x → 1.0` (breaking, schema/env prereq, removed features) → `X+1.0.0`; **Minor** `0.14 → 0.15` (new feature, backward-compatible, e.g., area-based subagents, new Actions) → `0.15.0`; **Patch** `0.14.3 → 0.14.4` (bug/doc fix only, e.g., SchoolEditor beforeunload, `beforeunload` guard, typo) → `0.14.4`
+   - Do not default to patch — choose based on the heaviest change since last tag; document decision in commit body (`BREAKING:` / `feat:` / `fix:`) and tag annotation (`git tag -a vX.Y.Z -m "release vX.Y.Z — <semver reason>"`)
+5. **Version bump must sync all version-mentioning docs** (SSOT: `composer.json` canonical):
+   - Bump `composer.json` `version` to the SemVer-determined `X.Y.Z` (e.g., `0.14.3` → `0.14.4`) — canonical source for `VERSION_TAG` fallback
    - Bump `package.json` `version` to match (keep `composer.json` == `package.json`; `package-lock.json` auto via `npm install` or `npm version`)
    - Sync `README.md` — `**Phase: vX.Y.Z — Stabilization**` line
    - Sync `docs/project-vision.md` — table `2026 — Stabilization (vX.Y.Z)` + bullet `Now (vX.Y.Z Stabilization)`
