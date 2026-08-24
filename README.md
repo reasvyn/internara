@@ -163,7 +163,7 @@ Every mutation: **Livewire → Action → Entity → Model → DB**. Business ru
 
 ## Project Status — Where We Are
 
-**Phase: v0.14.0 — Stabilization** (in progress). 18 modules with full stack (models, actions,
+**Phase: v0.14.4 — Stabilization** (in progress). 18 modules with full stack (models, actions,
 livewire, events, policies, routes, translations). Architecture is sound — 4-layer model, Action
 Triad, Entity boundaries, DTO contracts. Focus: fix P0 runtime errors → improve coverage → UI/UX polish.
 
