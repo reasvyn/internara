@@ -7,9 +7,12 @@ namespace App\User\UserManagement\Livewire\Concerns;
 use App\Auth\AccessTokens\Models\AccessToken;
 use App\User\Models\User;
 use App\User\UserManagement\Notifications\ActivationCodeNotification;
+use TallStackUi\Traits\Interactions;
 
 trait DownloadsAccountSlips
 {
+    use Interactions;
+
     public bool $showAccountSlip = false;
 
     public ?User $slipUser = null;
@@ -30,7 +33,7 @@ trait DownloadsAccountSlips
         }
 
         $this->slipCode = AccessToken::generateFor($this->slipUser, 'activation', ['name' => 'Account Activation'])['plain_text'];
-        flash()->success(__('user.manager.code_regenerated'));
+        $this->toast()->success(__('user.manager.code_regenerated'))->send();
     }
 
     public function sendCode(): void
@@ -40,7 +43,7 @@ trait DownloadsAccountSlips
         }
 
         $this->slipUser->notify(new ActivationCodeNotification($this->slipUser, $this->slipCode));
-        flash()->success(__('user.manager.code_sent'));
+        $this->toast()->success(__('user.manager.code_sent'))->send();
     }
 
     public function downloadSlip(): void
@@ -55,7 +58,7 @@ trait DownloadsAccountSlips
     public function downloadSelectedSlips(): void
     {
         if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return;
         }

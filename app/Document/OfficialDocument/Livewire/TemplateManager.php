@@ -12,9 +12,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class TemplateManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public string $search = '';
@@ -98,7 +100,7 @@ class TemplateManager extends Component
 
         $action->execute($this->templateData);
 
-        flash()->success(__('document.template_saved'));
+        $this->toast()->success(__('document.template_saved'))->send();
         $this->templateModal = false;
     }
 

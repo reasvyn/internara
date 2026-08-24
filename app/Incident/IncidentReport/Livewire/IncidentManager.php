@@ -15,9 +15,12 @@ use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class IncidentManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showResolveModal = false;
 
     public ?string $resolvingId = null;
@@ -108,7 +111,7 @@ class IncidentManager extends BaseRecordManager
 
         $incident = IncidentReport::findOrFail($this->resolvingId);
         $resolveAction->execute($incident, $this->resolveData);
-        flash()->success(__('incident.resolve_success'));
+        $this->toast()->success(__('incident.resolve_success'))->send();
         $this->showResolveModal = false;
         $this->resolvingId = null;
     }
@@ -145,11 +148,11 @@ class IncidentManager extends BaseRecordManager
 
         try {
             $action->execute($incident, $this->editData);
-            flash()->success(__('incident.update_success'));
+            $this->toast()->success(__('incident.update_success'))->send();
             $this->showEditModal = false;
             $this->editingId = null;
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 

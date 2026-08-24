@@ -15,9 +15,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class StudentLogManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showModal = false;
 
     public bool $showConfirm = false;
@@ -88,7 +91,7 @@ class StudentLogManager extends BaseRecordManager
         $registration = $user->registrations()->where('status', 'active')->first();
 
         if (! $registration) {
-            flash()->error(__('journals.no_active_registration'));
+            $this->toast()->error(__('journals.no_active_registration'))->send();
 
             return;
         }
@@ -104,7 +107,7 @@ class StudentLogManager extends BaseRecordManager
             ],
         ));
 
-        flash()->success(__('journals.log_created'));
+        $this->toast()->success(__('journals.log_created'))->send();
         $this->showModal = false;
     }
 
@@ -125,9 +128,9 @@ class StudentLogManager extends BaseRecordManager
             $log = SupervisionLog::findOrFail($this->confirmTarget);
             $this->authorize('delete', $log);
             $action->execute($log);
-            flash()->success(__('journals.log_deleted'));
+            $this->toast()->success(__('journals.log_deleted'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

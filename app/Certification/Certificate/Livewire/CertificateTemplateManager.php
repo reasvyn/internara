@@ -10,9 +10,12 @@ use App\Core\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class CertificateTemplateManager extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showModal = false;
 
     public array $formData = [
@@ -66,7 +69,7 @@ class CertificateTemplateManager extends BaseRecordManager
             'created_by' => auth()->id(),
         ]);
 
-        flash()->success(__('certificate.template_saved'));
+        $this->toast()->success(__('certificate.template_saved'))->send();
         $this->showModal = false;
     }
 

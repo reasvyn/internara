@@ -20,10 +20,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class TeacherManager extends BaseRecordManager
 {
     use AuthorizesRequests, DownloadsAccountSlips;
+    use Interactions;
 
     public bool $userModal = false;
 
@@ -126,7 +128,7 @@ class TeacherManager extends BaseRecordManager
                 user: ['name' => $this->form->name, 'email' => $this->form->email],
                 profile: $profileData,
             ));
-            flash()->success(__('user.teacher.success_updated'));
+            $this->toast()->success(__('user.teacher.success_updated'))->send();
         } else {
             $user = $createAction->execute(new CreateUserData(
                 user: ['name' => $this->form->name, 'email' => $this->form->email],
@@ -161,7 +163,7 @@ class TeacherManager extends BaseRecordManager
         try {
             if ($this->confirmActionType === 'delete') {
                 $deleteAction->execute(User::findOrFail($this->confirmTarget));
-                flash()->success(__('user.teacher.success_deleted'));
+                $this->toast()->success(__('user.teacher.success_deleted'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
                     $user = User::find($id);
@@ -171,7 +173,7 @@ class TeacherManager extends BaseRecordManager
                 });
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

@@ -13,9 +13,12 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use RuntimeException;
+use TallStackUi\Traits\Interactions;
 
 class ConfirmPassword extends Component
 {
+    use Interactions;
+
     public ConfirmPasswordForm $form;
 
     public function confirm(ConfirmPasswordAction $action): void
@@ -46,7 +49,7 @@ class ConfirmPassword extends Component
 
             $this->form->reset('password');
 
-            flash()->success(__('auth.password_confirmed'));
+            $this->toast()->success(__('auth.password_confirmed'))->send();
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
         } catch (RuntimeException $e) {

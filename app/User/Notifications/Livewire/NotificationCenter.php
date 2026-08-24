@@ -14,9 +14,12 @@ use App\User\Notifications\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use TallStackUi\Traits\Interactions;
 
 class NotificationCenter extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showViewer = false;
 
     public bool $showConfirm = false;
@@ -105,7 +108,7 @@ class NotificationCenter extends BaseRecordManager
     {
         $action->execute(Auth::id());
 
-        flash()->success(__('notifications.ui.success_mark_all'));
+        $this->toast()->success(__('notifications.ui.success_mark_all'))->send();
         $this->dispatch('notifications-read');
     }
 
@@ -120,7 +123,7 @@ class NotificationCenter extends BaseRecordManager
         $this->dispatch('notifications-read');
         $this->clearSelection();
 
-        flash()->success(__('notifications.ui.success_mark_selected'));
+        $this->toast()->success(__('notifications.ui.success_mark_selected'))->send();
     }
 
     public function askDeleteSelected(): void
@@ -140,7 +143,7 @@ class NotificationCenter extends BaseRecordManager
                 }
             });
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

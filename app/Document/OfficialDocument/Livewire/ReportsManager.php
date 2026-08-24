@@ -11,9 +11,11 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class ReportsManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public array $reportTypes = [
@@ -30,13 +32,13 @@ class ReportsManager extends Component
             'type' => $type,
         ]);
 
-        flash()->success(__('document.report_generated', ['name' => $report->name]));
+        $this->toast()->success(__('document.report_generated', ['name' => $report->name]))->send();
     }
 
     public function deleteReport(Document $report, DeleteReportAction $action): void
     {
         $action->execute($report);
-        flash()->success(__('document.report_deleted'));
+        $this->toast()->success(__('document.report_deleted'))->send();
     }
 
     #[Layout('core::layouts.app')]

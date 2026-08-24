@@ -21,9 +21,11 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class AttendanceManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public string $date = '';
@@ -89,18 +91,18 @@ class AttendanceManager extends Component
                     'notes' => $data['notes'] ?? null,
                 ]);
             } catch (\Throwable $e) {
-                flash()->error(__('journals.attendance.record_failed', ['message' => $e->getMessage()]));
+                $this->toast()->error(__('journals.attendance.record_failed', ['message' => $e->getMessage()]))->send();
             }
         }
 
-        flash()->success(__('journals.attendance.recorded'));
+        $this->toast()->success(__('journals.attendance.recorded'))->send();
         $this->records = [];
     }
 
     public function verifyAttendance(Attendance $log, VerifyAttendanceAction $action): void
     {
         $action->execute($log);
-        flash()->success(__('journals.attendance.verified'));
+        $this->toast()->success(__('journals.attendance.verified'))->send();
     }
 
     public function updateAttendance(string $id, string $status, UpdateAttendanceAction $action): void
@@ -113,9 +115,9 @@ class AttendanceManager extends Component
 
         try {
             $action->execute($attendance, ['status' => $status]);
-            flash()->success(__('journals.attendance.updated'));
+            $this->toast()->success(__('journals.attendance.updated'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 
@@ -126,7 +128,7 @@ class AttendanceManager extends Component
         $this->authorize('delete', $attendance);
 
         $action->execute($attendance);
-        flash()->success(__('journals.attendance.deleted'));
+        $this->toast()->success(__('journals.attendance.deleted'))->send();
     }
 
     private function statusRule(): string
@@ -143,7 +145,7 @@ class AttendanceManager extends Component
             processorId: auth()->id(),
             status: AbsenceRequestStatus::APPROVED,
         ));
-        flash()->success(__('journals.absence.approved'));
+        $this->toast()->success(__('journals.absence.approved'))->send();
     }
 
     public function rejectAbsence(string $id, ProcessAbsenceAction $action): void
@@ -155,7 +157,7 @@ class AttendanceManager extends Component
             processorId: auth()->id(),
             status: AbsenceRequestStatus::REJECTED,
         ));
-        flash()->success(__('journals.absence.rejected'));
+        $this->toast()->success(__('journals.absence.rejected'))->send();
     }
 
     #[Layout('core::layouts.app')]

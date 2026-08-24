@@ -16,9 +16,12 @@ use App\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use TallStackUi\Traits\Interactions;
 
 class AnnouncementManager extends BaseRecordManager
 {
+    use Interactions;
+
     public AnnouncementForm $form;
 
     public bool $showForm = false;
@@ -65,7 +68,7 @@ class AnnouncementManager extends BaseRecordManager
 
         $action->execute($this->form->toPayload());
 
-        flash()->success(__('announcement.sent'));
+        $this->toast()->success(__('announcement.sent'))->send();
 
         $this->resetForm();
     }
@@ -97,18 +100,18 @@ class AnnouncementManager extends BaseRecordManager
         if ($this->confirmActionType === 'delete') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
             $delete->execute($announcement);
-            flash()->success(__('announcement.deleted'));
+            $this->toast()->success(__('announcement.deleted'))->send();
         } elseif ($this->confirmActionType === 'publish') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
 
             if (! $announcement->status->canTransitionTo(AnnouncementStatus::PUBLISHED)) {
-                flash()->error(__('announcement.cannot_publish'));
+                $this->toast()->error(__('announcement.cannot_publish'))->send();
 
                 return;
             }
 
             $publish->execute($announcement);
-            flash()->success(__('announcement.published'));
+            $this->toast()->success(__('announcement.published'))->send();
         }
 
         $this->showConfirm = false;

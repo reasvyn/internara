@@ -7,6 +7,7 @@ namespace App\Core\Actions;
 use App\Core\Data\ActionResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use TallStackUi\Interactions\Toast;
 
 abstract class BaseCommandAction extends BaseAction
 {
@@ -48,12 +49,15 @@ abstract class BaseCommandAction extends BaseAction
 
     protected function flash(string $message, string $type = 'success'): void
     {
+        $toast = new Toast;
+
         match ($type) {
-            'success' => flash()->success($message),
-            'error' => flash()->error($message),
-            'warning' => flash()->warning($message),
-            'info' => flash()->info($message),
-            default => flash()->success($message),
+            'error' => $toast->error($message),
+            'warning' => $toast->warning($message),
+            'info' => $toast->info($message),
+            default => $toast->success($message),
         };
+
+        $toast->send();
     }
 }

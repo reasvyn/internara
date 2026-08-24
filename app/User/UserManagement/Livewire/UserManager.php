@@ -31,10 +31,12 @@ use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class UserManager extends BaseRecordManager
 {
     use AuthorizesRequests, DownloadsAccountSlips, WithFileUploads;
+    use Interactions;
 
     public bool $userModal = false;
 
@@ -152,7 +154,7 @@ class UserManager extends BaseRecordManager
         $user = User::with('roles')->findOrFail($id);
 
         if ($user->hasRole('super_admin')) {
-            flash()->error(__('user.manager.cannot_edit_super_admin'));
+            $this->toast()->error(__('user.manager.cannot_edit_super_admin'))->send();
 
             return;
         }
@@ -199,7 +201,7 @@ class UserManager extends BaseRecordManager
                 ],
                 roles: $this->form->roles,
             ));
-            flash()->success(__('user.manager.success_updated'));
+            $this->toast()->success(__('user.manager.success_updated'))->send();
         } else {
             $user = $createAction->execute(new CreateUserData(
                 user: ['name' => $this->form->name, 'email' => $this->form->email],
@@ -220,7 +222,7 @@ class UserManager extends BaseRecordManager
         $user = User::findOrFail($id);
 
         $revokeAction->execute($user);
-        flash()->success(__('user.manager.password_reset'));
+        $this->toast()->success(__('user.manager.password_reset'))->send();
     }
 
     public function askDeleteUser(string $id): void
@@ -245,29 +247,29 @@ class UserManager extends BaseRecordManager
                 $user = User::findOrFail($this->confirmTarget);
 
                 if ($user->hasRole('super_admin')) {
-                    flash()->error(__('user.manager.cannot_delete_super_admin'));
+                    $this->toast()->error(__('user.manager.cannot_delete_super_admin'))->send();
 
                     return;
                 }
 
                 $deleteAction->execute($user);
-                flash()->success(__('user.manager.success_deleted'));
+                $this->toast()->success(__('user.manager.success_deleted'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $result = $batchDelete->execute($this->selectedIds);
 
                 if ($result['deleted'] > 0) {
-                    flash()->success(
+                    $this->toast()->success(
                         __('common.actions.bulk_action_done', [
                             'count' => $result['deleted'],
                             'action' => __('common.actions.delete'),
                         ]),
-                    );
+                    )->send();
                 }
 
                 $this->clearSelection();
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -308,9 +310,9 @@ class UserManager extends BaseRecordManager
 
         try {
             $toggleAction->execute($user);
-            flash()->success(__('user.manager.status_changed'));
+            $this->toast()->success(__('user.manager.status_changed'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 
@@ -333,7 +335,7 @@ class UserManager extends BaseRecordManager
         $status = AccountStatus::tryFrom($this->selectedStatus);
 
         if (! $status) {
-            flash()->error(__('user.manager.status_invalid'));
+            $this->toast()->error(__('user.manager.status_invalid'))->send();
 
             return;
         }
@@ -346,9 +348,9 @@ class UserManager extends BaseRecordManager
                 newStatus: $status,
                 reason: $this->statusReason ?: null,
             ));
-            flash()->success(__('user.manager.status_changed'));
+            $this->toast()->success(__('user.manager.status_changed'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showStatusModal = false;
@@ -402,17 +404,17 @@ class UserManager extends BaseRecordManager
         $this->importFile = null;
 
         if ($result['invalid']) {
-            flash()->error(__('common.actions.import_invalid'));
+            $this->toast()->error(__('common.actions.import_invalid'))->send();
 
             return;
         }
 
-        flash()->success(
+        $this->toast()->success(
             __('common.actions.import_summary', [
                 'created' => $result['created'],
                 'skipped' => $result['skipped'],
             ]),
-        );
+        )->send();
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -446,7 +448,7 @@ class UserManager extends BaseRecordManager
     public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return null;
         }

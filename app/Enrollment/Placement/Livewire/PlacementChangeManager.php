@@ -12,10 +12,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class PlacementChangeManager extends BaseRecordManager
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public bool $showRejectModal = false;
 
@@ -63,7 +65,7 @@ class PlacementChangeManager extends BaseRecordManager
         $request = PlacementChangeRequest::findOrFail($id);
         $this->authorize('update', $request);
         $action->execute($request);
-        flash()->success(__('placement_change.approve_success'));
+        $this->toast()->success(__('placement_change.approve_success'))->send();
     }
 
     public function rejectConfirm(string $id): void
@@ -79,7 +81,7 @@ class PlacementChangeManager extends BaseRecordManager
         $request = PlacementChangeRequest::findOrFail($this->rejectingId);
         $this->authorize('update', $request);
         $action->execute($request, $this->rejectionReason);
-        flash()->success(__('placement_change.reject_success'));
+        $this->toast()->success(__('placement_change.reject_success'))->send();
         $this->showRejectModal = false;
         $this->rejectingId = null;
     }

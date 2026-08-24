@@ -12,9 +12,12 @@ use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class AbsenceRequestForm extends BaseFormView
 {
+    use Interactions;
+
     public string $startDate = '';
 
     public string $reasonType = '';
@@ -43,7 +46,7 @@ class AbsenceRequestForm extends BaseFormView
             ->first(fn ($reg) => $reg->hasStatus('active'));
 
         if (! $registration) {
-            flash()->error(__('journals.no_active_registration'));
+            $this->toast()->error(__('journals.no_active_registration'))->send();
 
             return;
         }
@@ -60,7 +63,7 @@ class AbsenceRequestForm extends BaseFormView
             ));
 
             $this->reset(['startDate', 'reasonType', 'reasonDescription']);
-            flash()->success(__('journals.absence.submitted'));
+            $this->toast()->success(__('journals.absence.submitted'))->send();
         });
     }
 

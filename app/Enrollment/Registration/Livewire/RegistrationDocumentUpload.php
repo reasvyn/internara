@@ -13,10 +13,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class RegistrationDocumentUpload extends BaseFormView
 {
     use AuthorizesRequests, WithFileUploads;
+    use Interactions;
 
     public ?Registration $registration = null;
 
@@ -38,7 +40,7 @@ class RegistrationDocumentUpload extends BaseFormView
     public function upload(UploadRegistrationDocumentAction $action): void
     {
         if (! $this->registration) {
-            flash()->error(__('registration.document_upload.no_registration'));
+            $this->toast()->error(__('registration.document_upload.no_registration'))->send();
 
             return;
         }
@@ -58,7 +60,7 @@ class RegistrationDocumentUpload extends BaseFormView
         $this->handleSave(function () use ($action) {
             $action->execute($this->registration, $this->uploads);
             $this->uploads = [];
-            flash()->success(__('registration.document_upload.success'));
+            $this->toast()->success(__('registration.document_upload.success'))->send();
         });
     }
 

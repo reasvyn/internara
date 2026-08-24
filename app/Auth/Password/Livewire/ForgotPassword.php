@@ -11,9 +11,12 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class ForgotPassword extends Component
 {
+    use Interactions;
+
     public ForgotPasswordForm $form;
 
     public bool $linkSent = false;
@@ -38,7 +41,7 @@ class ForgotPassword extends Component
         $this->linkSent = true;
         $this->form->reset('email');
 
-        flash()->success(__('passwords.sent'));
+        $this->toast()->success(__('passwords.sent'))->send();
     }
 
     protected function throttleKey(): string

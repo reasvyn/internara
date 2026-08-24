@@ -25,10 +25,12 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class InternshipManager extends BaseRecordManager
 {
     use AuthorizesRequests, WithFileUploads;
+    use Interactions;
 
     public bool $showModal = false;
 
@@ -175,18 +177,18 @@ class InternshipManager extends BaseRecordManager
 
             try {
                 $update->execute($internship, $this->form->all());
-                flash()->success(__('internship.update_success'));
+                $this->toast()->success(__('internship.update_success'))->send();
             } catch (RejectedException $e) {
-                flash()->error($e->getMessage());
+                $this->toast()->error($e->getMessage())->send();
 
                 return;
             }
         } else {
             try {
                 $create->execute($this->form->all());
-                flash()->success(__('internship.save_success'));
+                $this->toast()->success(__('internship.save_success'))->send();
             } catch (RejectedException $e) {
-                flash()->error($e->getMessage());
+                $this->toast()->error($e->getMessage())->send();
 
                 return;
             }
@@ -249,7 +251,7 @@ class InternshipManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -262,13 +264,13 @@ class InternshipManager extends BaseRecordManager
         $internship = Internship::findOrFail($id);
 
         if (! $internship->asInternshipState()->canBeDeleted()) {
-            flash()->error(__('internship.delete_blocked'));
+            $this->toast()->error(__('internship.delete_blocked'))->send();
 
             return;
         }
 
         $action->execute($internship);
-        flash()->success(__('internship.delete_success'));
+        $this->toast()->success(__('internship.delete_success'))->send();
     }
 
     private function executeDeleteSelected(DeleteInternshipAction $action): void
@@ -334,17 +336,17 @@ class InternshipManager extends BaseRecordManager
         $this->importFile = null;
 
         if ($result['invalid']) {
-            flash()->error(__('internship.import_invalid'));
+            $this->toast()->error(__('internship.import_invalid'))->send();
 
             return;
         }
 
-        flash()->success(
+        $this->toast()->success(
             __('internship.import_summary', [
                 'created' => $result['created'],
                 'skipped' => $result['skipped'],
             ]),
-        );
+        )->send();
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -371,7 +373,7 @@ class InternshipManager extends BaseRecordManager
     public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return null;
         }

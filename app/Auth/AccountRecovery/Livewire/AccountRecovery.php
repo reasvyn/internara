@@ -14,9 +14,12 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use RuntimeException;
+use TallStackUi\Traits\Interactions;
 
 class AccountRecovery extends Component
 {
+    use Interactions;
+
     public AccountRecoveryForm $form;
 
     public function redeem(RedeemRecoverySlipAction $action): void
@@ -41,7 +44,7 @@ class AccountRecovery extends Component
 
             RateLimiter::clear($throttleKey);
 
-            flash()->success(__('passwords.reset'));
+            $this->toast()->success(__('passwords.reset'))->send();
 
             $this->redirectRoute('login', navigate: true);
         } catch (RuntimeException $e) {

@@ -12,9 +12,12 @@ use App\Journals\Attendance\Data\ClockOutData;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class StudentClockIn extends BaseFormView
 {
+    use Interactions;
+
     public function clockIn(ClockInAction $action): void
     {
         $this->handleSave(function () use ($action) {
@@ -23,7 +26,7 @@ class StudentClockIn extends BaseFormView
                 data: [],
                 requestIp: request()->ip(),
             ));
-            flash()->success(__('journals.attendance.clocked_in'));
+            $this->toast()->success(__('journals.attendance.clocked_in'))->send();
         });
     }
 
@@ -34,7 +37,7 @@ class StudentClockIn extends BaseFormView
                 userId: auth()->id(),
                 data: [],
             ));
-            flash()->success(__('journals.attendance.clocked_out'));
+            $this->toast()->success(__('journals.attendance.clocked_out'))->send();
         });
     }
 

@@ -15,10 +15,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 final class BackupManager extends BaseRecordManager
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public bool $showConfirmDelete = false;
 
@@ -75,9 +77,9 @@ final class BackupManager extends BaseRecordManager
 
         try {
             $action->execute($backupType, auth()->user());
-            flash()->success(__('backups.create_success'));
+            $this->toast()->success(__('backups.create_success'))->send();
         } catch (\Throwable $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 
@@ -98,7 +100,7 @@ final class BackupManager extends BaseRecordManager
         $this->showConfirmDelete = false;
         $this->deleteId = null;
 
-        flash()->success(__('backups.delete_success'));
+        $this->toast()->success(__('backups.delete_success'))->send();
     }
 
     public function cancelDelete(): void

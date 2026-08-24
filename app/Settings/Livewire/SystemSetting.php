@@ -27,9 +27,11 @@ use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use TallStackUi\Traits\Interactions;
 
 class SystemSetting extends BaseFormView
 {
+    use Interactions;
     use WithFileUploads;
 
     public GeneralSettingsForm $generalForm;
@@ -129,7 +131,7 @@ class SystemSetting extends BaseFormView
                 group: 'branding',
             ));
             $this->brandingForm->current_logo_url = $url;
-            flash()->success(__('setting.messages.logo_saved'));
+            $this->toast()->success(__('setting.messages.logo_saved'))->send();
         }
     }
 
@@ -148,7 +150,7 @@ class SystemSetting extends BaseFormView
                 group: 'branding',
             ));
             $this->brandingForm->current_favicon_url = $url;
-            flash()->success(__('setting.messages.favicon_saved'));
+            $this->toast()->success(__('setting.messages.favicon_saved'))->send();
         }
     }
 
@@ -161,7 +163,7 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->current_logo_url = null;
         $this->brandingForm->brand_logo = null;
 
-        flash()->success(__('setting.messages.logo_removed'));
+        $this->toast()->success(__('setting.messages.logo_removed'))->send();
     }
 
     public function confirmRemoveFavicon(RemoveBrandAssetAction $action): void
@@ -173,7 +175,7 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->current_favicon_url = null;
         $this->brandingForm->site_favicon = null;
 
-        flash()->success(__('setting.messages.favicon_removed'));
+        $this->toast()->success(__('setting.messages.favicon_removed'))->send();
     }
 
     public function confirmAction(): void
@@ -231,7 +233,7 @@ class SystemSetting extends BaseFormView
             }
         }
 
-        flash()->success(__('setting.messages.saved'));
+        $this->toast()->success(__('setting.messages.saved'))->send();
     }
 
     public function testEmail(TestMailSettingsAction $action): void
@@ -249,9 +251,9 @@ class SystemSetting extends BaseFormView
         $sent = $action->execute(auth()->user()->email, $this->mailSettingsForm->toMailConfig());
 
         if ($sent) {
-            flash()->success(__('setting.messages.test_email_sent'));
+            $this->toast()->success(__('setting.messages.test_email_sent'))->send();
         } else {
-            flash()->error(__('setting.messages.test_email_failed'));
+            $this->toast()->error(__('setting.messages.test_email_failed'))->send();
         }
     }
 

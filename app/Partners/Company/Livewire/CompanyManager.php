@@ -22,9 +22,11 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class CompanyManager extends BaseRecordManager
 {
+    use Interactions;
     use WithFileUploads;
 
     public bool $showModal = false;
@@ -153,11 +155,11 @@ class CompanyManager extends BaseRecordManager
             $company = Company::findOrFail($this->form->id);
             $this->authorize('update', $company);
             $update->execute($company, $dto);
-            flash()->success(__('company.update_success'));
+            $this->toast()->success(__('company.update_success'))->send();
         } else {
             $this->authorize('create', Company::class);
             $create->execute($dto);
-            flash()->success(__('company.save_success'));
+            $this->toast()->success(__('company.save_success'))->send();
         }
 
         $this->showModal = false;
@@ -202,7 +204,7 @@ class CompanyManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException) {
-            flash()->error(__('company.delete_blocked'));
+            $this->toast()->error(__('company.delete_blocked'))->send();
         }
 
         $this->showConfirm = false;
@@ -215,7 +217,7 @@ class CompanyManager extends BaseRecordManager
         $company = Company::findOrFail($id);
         $this->authorize('delete', $company);
         $action->execute($company);
-        flash()->success(__('company.delete_success'));
+        $this->toast()->success(__('company.delete_success'))->send();
     }
 
     private function executeDeleteSelected(BatchDeleteCompanyAction $action): void
@@ -223,16 +225,16 @@ class CompanyManager extends BaseRecordManager
         $result = $action->execute($this->selectedIds);
 
         if ($result['deleted'] > 0) {
-            flash()->success(
+            $this->toast()->success(
                 __('common.actions.bulk_action_done', [
                     'count' => $result['deleted'],
                     'action' => __('common.actions.delete'),
                 ]),
-            );
+            )->send();
         }
 
         if ($result['blocked'] > 0) {
-            flash()->warning(__('company.delete_blocked_bulk', ['count' => $result['blocked']]));
+            $this->toast()->warning(__('company.delete_blocked_bulk', ['count' => $result['blocked']]))->send();
         }
 
         $this->clearSelection();
@@ -282,17 +284,17 @@ class CompanyManager extends BaseRecordManager
         $this->importFile = null;
 
         if ($result['invalid']) {
-            flash()->error(__('common.actions.import_invalid'));
+            $this->toast()->error(__('common.actions.import_invalid'))->send();
 
             return;
         }
 
-        flash()->success(
+        $this->toast()->success(
             __('common.actions.import_summary', [
                 'created' => $result['created'],
                 'skipped' => $result['skipped'],
             ]),
-        );
+        )->send();
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -328,7 +330,7 @@ class CompanyManager extends BaseRecordManager
     public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return null;
         }

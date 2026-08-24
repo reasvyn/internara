@@ -18,10 +18,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class PlacementIndex extends BaseRecordManager
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public bool $showModal = false;
 
@@ -135,11 +137,11 @@ class PlacementIndex extends BaseRecordManager
             $placement = Placement::findOrFail($this->form->id);
             $this->authorize('update', $placement);
             $update->execute($placement, $this->form->all());
-            flash()->success(__('placement.update_success'));
+            $this->toast()->success(__('placement.update_success'))->send();
         } else {
             $this->authorize('create', Placement::class);
             $create->execute($this->form->all());
-            flash()->success(__('placement.save_success'));
+            $this->toast()->success(__('placement.save_success'))->send();
         }
 
         $this->showModal = false;
@@ -165,14 +167,14 @@ class PlacementIndex extends BaseRecordManager
                 $placement = Placement::findOrFail($this->confirmTarget);
 
                 if (! $placement->asPlacementState()->canBeDeleted()) {
-                    flash()->error(__('placement.delete_blocked'));
+                    $this->toast()->error(__('placement.delete_blocked'))->send();
 
                     return;
                 }
 
                 $this->authorize('delete', $placement);
                 $deleteAction->execute($placement);
-                flash()->success(__('placement.delete_success'));
+                $this->toast()->success(__('placement.delete_success'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
                     $placement = Placement::find($id);
@@ -182,7 +184,7 @@ class PlacementIndex extends BaseRecordManager
                 });
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

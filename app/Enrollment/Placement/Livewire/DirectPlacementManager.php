@@ -15,10 +15,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class DirectPlacementManager extends BaseFormView
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public DirectPlacementForm $form;
 
@@ -66,7 +68,7 @@ class DirectPlacementManager extends BaseFormView
                 'mentor_ids' => $this->form->mentor_ids,
             ]);
 
-            flash()->success(__('placement.direct_placement.success'));
+            $this->toast()->success(__('placement.direct_placement.success'))->send();
             $this->form->reset();
         });
     }

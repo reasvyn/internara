@@ -11,9 +11,12 @@ use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class IncidentForm extends BaseFormView
 {
+    use Interactions;
+
     public array $formData = [
         'registration_id' => '',
         'incident_date' => '',
@@ -53,7 +56,7 @@ class IncidentForm extends BaseFormView
 
         $this->handleSave(function () use ($action) {
             $action->execute([...$this->formData, 'reported_by' => auth()->id()]);
-            flash()->success(__('incident.report_success'));
+            $this->toast()->success(__('incident.report_success'))->send();
             $this->reset('formData');
             $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
         });

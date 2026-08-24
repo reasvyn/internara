@@ -17,9 +17,11 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
 
 class ReportsManager extends Component
 {
+    use Interactions;
     use WithPagination;
 
     public string $search = '';
@@ -86,9 +88,9 @@ class ReportsManager extends Component
                 registrationId: $this->selectedRegistrationId,
             ));
 
-            flash()->success(__('reports.created'));
+            $this->toast()->success(__('reports.created'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->createModal = false;
@@ -110,9 +112,9 @@ class ReportsManager extends Component
         try {
             $action->execute($report);
 
-            flash()->success(__('reports.grade_calculated'));
+            $this->toast()->success(__('reports.grade_calculated'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->calculateModal = false;
@@ -132,7 +134,7 @@ class ReportsManager extends Component
         $report = Report::findOrFail($this->finalizeReportId);
 
         if (! $report->final_score || ! $report->grade_letter) {
-            flash()->error(__('reports.grade_required_before_finalize'));
+            $this->toast()->error(__('reports.grade_required_before_finalize'))->send();
 
             return;
         }
@@ -140,9 +142,9 @@ class ReportsManager extends Component
         try {
             $action->execute($report, auth()->id());
 
-            flash()->success(__('reports.finalized'));
+            $this->toast()->success(__('reports.finalized'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->finalizeModal = false;
@@ -164,9 +166,9 @@ class ReportsManager extends Component
         try {
             $action->execute($report);
 
-            flash()->success(__('reports.deleted'));
+            $this->toast()->success(__('reports.deleted'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

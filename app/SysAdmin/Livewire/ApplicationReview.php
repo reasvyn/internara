@@ -14,9 +14,12 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 class ApplicationReview extends Component
 {
+    use Interactions;
+
     public ?string $rejectId = null;
 
     public string $rejectionReason = '';
@@ -38,9 +41,9 @@ class ApplicationReview extends Component
 
         try {
             $action->execute($id, auth()->user());
-            flash()->success(__('internship.applications.success_approved'));
+            $this->toast()->success(__('internship.applications.success_approved'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
     }
 
@@ -62,9 +65,9 @@ class ApplicationReview extends Component
                 applicationId: $this->rejectId,
                 reason: $this->rejectionReason,
             ));
-            flash()->success(__('internship.applications.success_rejected'));
+            $this->toast()->success(__('internship.applications.success_rejected'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showRejectModal = false;

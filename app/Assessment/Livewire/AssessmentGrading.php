@@ -15,9 +15,12 @@ use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
 
 class AssessmentGrading extends BaseFormView
 {
+    use Interactions;
+
     public string $registrationId = '';
 
     public ?string $assessmentId = null;
@@ -179,7 +182,7 @@ class AssessmentGrading extends BaseFormView
         }
 
         $action->execute($assessment);
-        flash()->success(__('assessment.auto_scores_imported'));
+        $this->toast()->success(__('assessment.auto_scores_imported'))->send();
     }
 
     public function askFinalize(): void
@@ -197,7 +200,7 @@ class AssessmentGrading extends BaseFormView
         $this->handleSave(function () use ($action, $assessment) {
             $action->execute($assessment, auth()->user());
             $this->isFinalized = true;
-            flash()->success(__('assessment.finalized_success'));
+            $this->toast()->success(__('assessment.finalized_success'))->send();
         });
 
         $this->showConfirm = false;

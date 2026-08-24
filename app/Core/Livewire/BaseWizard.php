@@ -6,6 +6,7 @@ namespace App\Core\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use Livewire\Component;
+use TallStackUi\Traits\Interactions;
 
 /**
  * Base class for multi-step wizard components.
@@ -21,6 +22,8 @@ use Livewire\Component;
  */
 abstract class BaseWizard extends Component
 {
+    use Interactions;
+
     /** @var int Current step number (1-indexed) */
     public int $currentStep = 1;
 
@@ -62,7 +65,7 @@ abstract class BaseWizard extends Component
     public function isStepAccessible(int $step): bool
     {
         for ($i = 1; $i < $step; $i++) {
-            if (!($this->completedSteps[$i] ?? false)) {
+            if (! ($this->completedSteps[$i] ?? false)) {
                 return false;
             }
         }
@@ -113,9 +116,9 @@ abstract class BaseWizard extends Component
         try {
             $callback();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         } catch (\Throwable $e) {
-            flash()->error(__('common.actions.error_occurred'));
+            $this->toast()->error(__('common.actions.error_occurred'))->send();
         }
     }
 }

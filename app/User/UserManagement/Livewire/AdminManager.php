@@ -19,10 +19,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class AdminManager extends BaseRecordManager
 {
     use AuthorizesRequests;
+    use Interactions;
 
     public bool $userModal = false;
 
@@ -100,7 +102,7 @@ class AdminManager extends BaseRecordManager
         $user = User::with('roles')->findOrFail($id);
 
         if ($user->hasRole('super_admin')) {
-            flash()->error(__('user.admin.cannot_edit'));
+            $this->toast()->error(__('user.admin.cannot_edit'))->send();
 
             return;
         }
@@ -129,7 +131,7 @@ class AdminManager extends BaseRecordManager
                     'email' => $this->form->email,
                 ],
             ));
-            flash()->success(__('user.admin.success_updated'));
+            $this->toast()->success(__('user.admin.success_updated'))->send();
         } else {
             $this->authorize('create', User::class);
             $createAction->execute(new CreateUserData(
@@ -137,7 +139,7 @@ class AdminManager extends BaseRecordManager
                 profile: [],
                 roles: $this->form->roles,
             ));
-            flash()->success(__('user.admin.success_created'));
+            $this->toast()->success(__('user.admin.success_created'))->send();
         }
 
         $this->userModal = false;
@@ -163,19 +165,19 @@ class AdminManager extends BaseRecordManager
                 $user = User::findOrFail($this->confirmTarget);
 
                 if ($user->hasRole('super_admin')) {
-                    flash()->error(__('user.admin.cannot_delete'));
+                    $this->toast()->error(__('user.admin.cannot_delete'))->send();
 
                     return;
                 }
 
                 if ($user->id === auth()->id()) {
-                    flash()->error(__('user.admin.cannot_delete_self'));
+                    $this->toast()->error(__('user.admin.cannot_delete_self'))->send();
 
                     return;
                 }
 
                 $deleteAction->execute($user);
-                flash()->success(__('user.admin.success_deleted'));
+                $this->toast()->success(__('user.admin.success_deleted'))->send();
             } elseif ($this->confirmActionType === 'deleteSelected') {
                 $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
                     if ($id === auth()->id()) {
@@ -188,7 +190,7 @@ class AdminManager extends BaseRecordManager
                 });
             }
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

@@ -18,9 +18,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
 
 class CertificateList extends BaseRecordManager
 {
+    use Interactions;
+
     public bool $showIssueModal = false;
 
     public bool $showConfirm = false;
@@ -115,7 +118,7 @@ class CertificateList extends BaseRecordManager
         $registration = Registration::findOrFail($this->issueRegistrationId);
         $template = CertificateTemplate::findOrFail($this->issueTemplateId);
         $issueAction->execute($registration, $template);
-        flash()->success(__('certificate.issued'));
+        $this->toast()->success(__('certificate.issued'))->send();
         $this->showIssueModal = false;
     }
 
@@ -144,7 +147,7 @@ class CertificateList extends BaseRecordManager
             ->all();
 
         if ($registrationIds === []) {
-            flash()->warning(__('certificate.batch_empty'));
+            $this->toast()->warning(__('certificate.batch_empty'))->send();
             $this->showBatchIssueModal = false;
 
             return;
@@ -157,7 +160,7 @@ class CertificateList extends BaseRecordManager
         ));
 
         $this->showBatchIssueModal = false;
-        flash()->success(__('certificate.batch_queued'));
+        $this->toast()->success(__('certificate.batch_queued'))->send();
     }
 
     public function askRevoke(string $id): void
@@ -172,9 +175,9 @@ class CertificateList extends BaseRecordManager
             $certificate = Certificate::findOrFail($this->confirmTarget);
             $this->authorize('revoke', $certificate);
             $revokeAction->execute($certificate);
-            flash()->success(__('certificate.revoked'));
+            $this->toast()->success(__('certificate.revoked'))->send();
         } catch (RejectedException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;

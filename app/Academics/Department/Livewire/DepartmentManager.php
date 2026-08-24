@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use TallStackUi\Traits\Interactions;
 
 class DepartmentManager extends BaseRecordManager
 {
+    use Interactions;
     use WithFileUploads;
 
     public bool $showModal = false;
@@ -94,11 +96,11 @@ class DepartmentManager extends BaseRecordManager
             $department = Department::findOrFail($this->form->id);
             $this->authorize('update', $department);
             $update->execute($department, $this->form->toArray());
-            flash()->success(__('department.save_success_updated'));
+            $this->toast()->success(__('department.save_success_updated'))->send();
         } else {
             $this->authorize('create', Department::class);
             $create->execute($this->form->toArray());
-            flash()->success(__('department.save_success_created'));
+            $this->toast()->success(__('department.save_success_created'))->send();
         }
 
         $this->showModal = false;
@@ -141,7 +143,7 @@ class DepartmentManager extends BaseRecordManager
                 default => null,
             };
         } catch (RejectedException|\RuntimeException $e) {
-            flash()->error($e->getMessage());
+            $this->toast()->error($e->getMessage())->send();
         }
 
         $this->showConfirm = false;
@@ -155,15 +157,15 @@ class DepartmentManager extends BaseRecordManager
         $this->authorize('delete', $department);
 
         if (! $department->asDepartmentState()->canBeDeleted()) {
-            flash()->error(
+            $this->toast()->error(
                 __('department.delete_blocked', ['count' => $department->profiles()->count()]),
-            );
+            )->send();
 
             return;
         }
 
         $action->execute($department);
-        flash()->success(__('department.delete_success'));
+        $this->toast()->success(__('department.delete_success'))->send();
     }
 
     private function executeDeleteSelected(DeleteDepartmentAction $action): void
@@ -190,14 +192,14 @@ class DepartmentManager extends BaseRecordManager
         }
 
         if ($deleted > 0) {
-            flash()->success(
+            $this->toast()->success(
                 trans_choice('department.delete_success_bulk', $deleted, ['count' => $deleted]),
-            );
+            )->send();
         }
         if ($blocked > 0) {
-            flash()->error(
+            $this->toast()->error(
                 trans_choice('department.delete_blocked_bulk', $blocked, ['count' => $blocked]),
-            );
+            )->send();
         }
 
         $this->clearSelection();
@@ -244,17 +246,17 @@ class DepartmentManager extends BaseRecordManager
         $this->importFile = null;
 
         if ($result['invalid']) {
-            flash()->error(__('department.import_invalid'));
+            $this->toast()->error(__('department.import_invalid'))->send();
 
             return;
         }
 
-        flash()->success(
+        $this->toast()->success(
             __('department.import_summary', [
                 'created' => $result['created'],
                 'skipped' => $result['skipped'],
             ]),
-        );
+        )->send();
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -277,7 +279,7 @@ class DepartmentManager extends BaseRecordManager
     public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
+            $this->toast()->warning(__('common.actions.no_records_selected'))->send();
 
             return null;
         }
