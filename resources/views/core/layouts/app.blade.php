@@ -15,7 +15,7 @@
             <x-core::layouts.header :$header />
         </x-slot:header>
 
-        <main id="main-content" class="flex flex-1 flex-col">
+        <div class="flex flex-1 flex-col">
             <div class="container mx-auto flex max-w-7xl flex-1 flex-col px-4 py-5 md:px-6 lg:px-8">
                 @if ($context)
                     <nav aria-label="Breadcrumb" class="text-base-content/60 mb-5 flex items-center gap-2 text-xs">
@@ -27,9 +27,9 @@
                     </nav>
                 @endif
 
-                <div class="flex-1">{{ $slot }}</div>
+                <div class="flex-1" aria-live="polite" aria-atomic="false">{{ $slot }}</div>
             </div>
-        </main>
+        </div>
 
         <x-slot:footer>
             <x-core::layouts.base.footer />

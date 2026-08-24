@@ -33,9 +33,9 @@
 <body class="{{ $bodyClass }}">
     <a
         href="#main-content"
-        class="focus:bg-base-100 focus:text-base-content sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4"
+        class="focus:ring-primary-500 dark:focus:bg-dark-800 sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-gray-900 focus:ring-2 focus:ring-offset-2 dark:focus:text-white"
     >
-        Skip to content
+        {{ __('common.skip_to_content') }}
     </a>
 
     <!-- Page Content --> {{ $slot }}
@@ -44,5 +44,16 @@
 
     <!-- Scripts -->
     @stack('scripts')
+    <script>
+        // FR-S2: reset focus to page heading after wire:navigate (WCAG)
+        document.addEventListener('livewire:navigated', () => {
+            const h1 = document.querySelector('h1[tabindex="-1"]') || document.querySelector('h1');
+            if (h1) {
+                h1.focus({ preventScroll: true });
+            } else {
+                document.getElementById('main-content')?.focus?.();
+            }
+        });
+    </script>
 </body>
 </html>
