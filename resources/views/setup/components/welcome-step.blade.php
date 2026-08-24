@@ -15,21 +15,21 @@
     @if (! empty($auditResults['categories']))
         <section aria-label="{{ __('setup.wizard.audit_results') }}" aria-live="polite" class="mb-8 space-y-3">
             @foreach ($auditResults['categories'] as $key => $category)
-                <x-mary-collapse :open="$category['has_issue']" :name="'audit-'.$key" class="rounded-lg">
-                    <x-slot:heading>
-                        <div class="flex items-center gap-2">
-                            @if ($category['icon'] === 'fail')
-                                <x-ts-icon name="x-circle" class="text-error size-4 shrink-0" />
-                            @elseif ($category['icon'] === 'warn')
-                                <x-ts-icon name="exclamation-triangle" class="text-warning size-4 shrink-0" />
-                            @else
-                                <x-ts-icon name="check-circle" class="text-success size-4 shrink-0" />
-                            @endif
-                            <span>{{ $category['label'] }}</span>
-                            <span class="text-base-content/40 text-xs">({{ count($category['checks']) }})</span>
-                        </div>
-                    </x-slot:heading>
-                    <x-slot:content>
+                <x-ts-accordion shadowless>
+                    <x-ts-accordion.items :open="$category['has_issue']" :id="'audit-'.$key">
+                        <x-slot:trigger>
+                            <div class="flex items-center gap-2">
+                                @if ($category['icon'] === 'fail')
+                                    <x-ts-icon name="x-circle" class="text-error size-4 shrink-0" />
+                                @elseif ($category['icon'] === 'warn')
+                                    <x-ts-icon name="exclamation-triangle" class="text-warning size-4 shrink-0" />
+                                @else
+                                    <x-ts-icon name="check-circle" class="text-success size-4 shrink-0" />
+                                @endif
+                                <span>{{ $category['label'] }}</span>
+                                <span class="text-base-content/40 text-xs">({{ count($category['checks']) }})</span>
+                            </div>
+                        </x-slot:trigger>
                         <div class="space-y-2" role="list">
                             @foreach ($category['checks'] as $check)
                                 <div
@@ -83,8 +83,9 @@
                                 </div>
                             @endforeach
                         </div>
-                    </x-slot:content>
-                </x-mary-collapse>
+                    </x-ts-accordion.items>
+                </x-ts-accordion>
+
             @endforeach
         </section>
     @endif

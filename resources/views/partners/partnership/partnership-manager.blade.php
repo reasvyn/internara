@@ -266,11 +266,7 @@
                         :placeholder="__('partnership.notes_placeholder')"
                         rows="2"
                     />
-                    <x-mary-file
-                        :label="__('partnership.mou_document')"
-                        wire:model="mouDocument"
-                        accept="pdf,jpg,jpeg,png"
-                    />
+                    <x-ts-upload :label="__('partnership.mou_document')" wire:model="mouDocument" />
                 </div>
 
                 <div class="mt-6 flex justify-end gap-2">

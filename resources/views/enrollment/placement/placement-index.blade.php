@@ -84,8 +84,8 @@
 
             @interact('column_filled_quota', $placement)
                 <div class="flex items-center gap-2">
-                    <x-mary-progress
-                        value="{{ ($placement->filled_quota / $placement->quota) * 100 }}"
+                    <x-ts-progress
+                        percent="{{ ($placement->filled_quota / $placement->quota) * 100 }}"
                         class="progress-primary h-2 w-16"
                     />
                     <span class="font-mono text-xs">{{ $placement->filled_quota }}</span>

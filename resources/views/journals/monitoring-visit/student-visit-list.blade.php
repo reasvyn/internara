@@ -19,7 +19,7 @@
                 </div>
 
         @empty
-            <x-mary-alert :title="__('journals.no_visits')" icon="information-circle" class="bg-base-200" />
+            <x-ts-alert :title="__('journals.no_visits')" icon="information-circle" class="bg-base-200" />
         @endforelse
     </div>
 </div>

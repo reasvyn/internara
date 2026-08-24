@@ -42,7 +42,7 @@
 
         @empty
             <div class="col-span-full">
-                <x-mary-alert :title="__('handbook.no_handbooks')" icon="information-circle" class="bg-base-200" />
+                <x-ts-alert :title="__('handbook.no_handbooks')" icon="information-circle" class="bg-base-200" />
             </div>
         @endforelse
     </div>

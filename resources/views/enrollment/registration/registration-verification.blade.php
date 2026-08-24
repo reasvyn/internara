@@ -6,9 +6,9 @@
 
     <x-ts-card shadowless>
         @if ($this->pendingRegistrations->isEmpty())
-            <x-mary-alert
+            <x-ts-alert
                 :title="__('registration.verification.empty')"
-                :description="__('registration.verification.empty_desc')"
+                :text="__('registration.verification.empty_desc')"
                 icon="check-circle"
             />
         @else
