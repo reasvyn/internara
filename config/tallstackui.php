@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use TallStackUi\Components;
 
 return [
@@ -14,8 +16,12 @@ return [
     |
     | For example, prefixing as 'ts-', the `alert` usage will be: '<x-ts-alert />'
     |
+    | Internara pins 'ts-' explicitly (not via env) so TallstackUI components
+    | are unambiguous vs maryUI (<x-mary-*>) and BladeUI icons during the
+    | gradual migration — see FB792 DD-4.
+    |
     */
-    'prefix' => env('TALLSTACKUI_PREFIX'),
+    'prefix' => env('TALLSTACKUI_PREFIX', 'ts-'),
 
     /*
     |--------------------------------------------------------------------------
