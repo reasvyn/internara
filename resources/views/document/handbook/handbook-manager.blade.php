@@ -4,32 +4,32 @@
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_title', $h)
+            @interact('column_title', $h)
                 <div class="flex flex-col">
                     <span class="text-sm font-medium">{{ $h->title }}</span>
                     <span class="text-base-content/50 text-xs">v{{ $h->version }}</span>
                 </div>
-            @endscope
+            @endinteract
 
-            @scope('cell_audience', $h)
+            @interact('column_audience', $h)
                 <span class="text-sm">{{ $h->metadata['target_audience'] ?? __('handbook.audience_all') }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_is_active', $h)
+            @interact('column_is_active', $h)
                 <x-ts-badge
                     :text="$h->is_active ? __('handbook.active') : __('handbook.inactive')"
                     :class="$h->is_active ? 'badge-success' : 'badge-ghost'"
                 />
-            @endscope
+            @endinteract
 
-            @scope('actions', $h)
+            @interact('column_action', $h)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         icon="pencil"
@@ -47,8 +47,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

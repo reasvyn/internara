@@ -28,21 +28,21 @@
             @endphp
 
             <div class="table-enterprise">
-                <x-mary-table :headers="$headers" :rows="$journals" with-pagination>
-                    @scope('cell_date', $journal)
+                <x-ts-table :headers="$headers" :rows="$journals" paginate>
+                    @interact('column_date', $journal)
                         <div class="flex flex-col">
                             <span class="text-base-content text-sm font-black tracking-tight">{{ $journal->date->format('d M Y') }}</span>
                             <span class="text-base-content/60 mt-0.5 text-[10px] leading-none font-black tracking-widest uppercase">{{ $journal->date->format('l') }}</span>
                         </div>
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_content', $journal)
+                    @interact('column_content', $journal)
                         <div class="text-base-content/70 max-w-md truncate text-sm font-medium">
                             {{ $journal->content }}
                         </div>
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_status', $journal)
+                    @interact('column_status', $journal)
                         @if ($journal->is_verified)
                             <x-ts-badge
                                 :text="__('logbook.verified')"
@@ -54,9 +54,9 @@
                                 class="badge-neutral text-[10px] font-black uppercase"
                             />
                         @endif
-                    @endscope
+                    @endinteract
 
-                    @scope('actions', $journal)
+                    @interact('column_action', $journal)
                         <div class="flex justify-end gap-2">
                             @if (! $journal->is_verified)
                                 <x-ts-button
@@ -71,8 +71,8 @@
                                 <x-ts-icon name="check-badge" class="text-success/40 size-5" />
                             @endif
                         </div>
-                    @endscope
-                </x-mary-table>
+                    @endinteract
+                </x-ts-table>
             </div>
     </div>
 

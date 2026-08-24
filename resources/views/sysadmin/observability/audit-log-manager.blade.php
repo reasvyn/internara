@@ -57,21 +57,21 @@
             @else
                 @php
                     $headers = [
-                        ['key' => 'timestamp', 'label' => __('sysadmin.activity_timestamp')],
-                        ['key' => 'user', 'label' => __('sysadmin.activity_user')],
-                        ['key' => 'action', 'label' => __('sysadmin.activity_action')],
-                        ['key' => 'module', 'label' => __('sysadmin.activity_module')],
-                        ['key' => 'subject', 'label' => __('sysadmin.activity_subject')],
-                        ['key' => 'ip', 'label' => __('sysadmin.activity_ip')],
+                        ['index' => 'timestamp', 'label' => __('sysadmin.activity_timestamp')],
+                        ['index' => 'user', 'label' => __('sysadmin.activity_user')],
+                        ['index' => 'action', 'label' => __('sysadmin.activity_action')],
+                        ['index' => 'module', 'label' => __('sysadmin.activity_module')],
+                        ['index' => 'subject', 'label' => __('sysadmin.activity_subject')],
+                        ['index' => 'ip', 'label' => __('sysadmin.activity_ip')],
                     ];
                 @endphp
 
-                <x-mary-table :headers="$headers" :rows="$logs" with-pagination>
-                    @scope('cell_timestamp', $log)
+                <x-ts-table :headers="$headers" :rows="$logs" paginate>
+                    @interact('column_timestamp', $log)
                         <div class="text-sm whitespace-nowrap">{{ $log->created_at->format('d M Y H:i:s') }}</div>
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_user', $log)
+                    @interact('column_user', $log)
                         @if ($log->causer)
                             <div>
                                 <div class="font-medium">{{ $log->causer->name }}</div>
@@ -80,17 +80,17 @@
                         @else
                             <span class="text-xs opacity-50">{{ __('sysadmin.activity_system') }}</span>
                         @endif
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_action', $log)
+                    @interact('column_action', $log)
                         <x-ts-badge :text="ucfirst($log->description)" class="badge-ghost" />
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_module', $log)
+                    @interact('column_module', $log)
                         {{ $log->log_name ? ucfirst($log->log_name) : '-' }}
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_subject', $log)
+                    @interact('column_subject', $log)
                         @if ($log->subject)
                             <div class="text-xs">
                                 <span class="opacity-50">{{ class_basename($log->subject_type) }}</span>
@@ -99,12 +99,12 @@
                         @else
                             -
                         @endif
-                    @endscope
+                    @endinteract
 
-                    @scope('cell_ip', $log)
+                    @interact('column_ip', $log)
                         <span class="font-mono text-xs">{{ $log->properties->get('ip_address', '-') ?? '-' }}</span>
-                    @endscope
-                </x-mary-table>
+                    @endinteract
+                </x-ts-table>
             @endif
 
             @include('sysadmin.observability.components.audit-log-guide')

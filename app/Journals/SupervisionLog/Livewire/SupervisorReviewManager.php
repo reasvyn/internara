@@ -27,11 +27,11 @@ class SupervisorReviewManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'registration.student.name', 'label' => __('journals.student'), 'sortable' => true],
-            ['key' => 'date', 'label' => __('journals.date'), 'sortable' => true],
-            ['key' => 'topic', 'label' => __('journals.topic')],
-            ['key' => 'status', 'label' => __('journals.status')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'registration.student.name', 'label' => __('journals.student'), 'sortable' => true],
+            ['index' => 'date', 'label' => __('journals.date'), 'sortable' => true],
+            ['index' => 'topic', 'label' => __('journals.topic')],
+            ['index' => 'status', 'label' => __('journals.status')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

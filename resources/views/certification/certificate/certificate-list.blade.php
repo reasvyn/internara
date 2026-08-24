@@ -18,25 +18,25 @@
     </x-slot:filters>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_status', $c)
+            @interact('column_status', $c)
                 <x-ts-badge
                     :text="$c->status->label()"
                     :class="$c->status->value === 'issued' ? 'badge-success' : 'badge-error'"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_issued_at', $c)
+            @interact('column_issued_at', $c)
                 <span class="text-sm">{{ $c->issued_at?->format('d M Y') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $c)
+            @interact('column_action', $c)
                 <div class="flex justify-end gap-1">
                     @if ($c->status->value === 'issued')
                         <x-ts-button
@@ -49,8 +49,8 @@
                         />
                     @endif
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

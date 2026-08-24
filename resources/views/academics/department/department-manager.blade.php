@@ -56,7 +56,7 @@
         </x-core::ui.selection-bar>
 
         <div class="overflow-x-auto">
-            <x-mary-table
+            <x-ts-table
                 :headers="$this->headers()"
                 :rows="$this->rows()"
                 :sort-by="$sortBy"
@@ -65,22 +65,22 @@
                 wire:model="selectedIds"
                 class="table-sm"
             >
-                @scope('cell_description', $department)
+                @interact('column_description', $department)
                     <span class="text-base-content/60 text-sm">
                         {{ Str::limit($department->description ?? '—', 50) }}
                     </span>
-                @endscope
+                @endinteract
 
-                @scope('cell_created_at', $department)
+                @interact('column_created_at', $department)
                     <time
                         datetime="{{ $department->created_at->toIso8601String() }}"
                         class="text-base-content/50 text-sm"
                     >
                         {{ $department->created_at->format('M d, Y') }}
                     </time>
-                @endscope
+                @endinteract
 
-                @scope('actions', $department)
+                @interact('column_action', $department)
                     <div class="flex justify-end gap-1">
                         <x-ts-button.circle
                             icon="pencil"
@@ -97,8 +97,8 @@
                             :aria-label="__('common.actions.delete')"
                         />
                     </div>
-                @endscope
-            </x-mary-table>
+                @endinteract
+            </x-ts-table>
         </div>
 
         <x-slot:modal>

@@ -41,12 +41,12 @@ class PlacementIndex extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('placement.name'), 'sortable' => true],
-            ['key' => 'company.name', 'label' => __('placement.company')],
-            ['key' => 'internship.name', 'label' => __('placement.batch')],
-            ['key' => 'quota', 'label' => __('placement.quota'), 'class' => 'text-center'],
-            ['key' => 'filled_quota', 'label' => __('placement.stats.filled'), 'class' => 'text-center'],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('placement.name'), 'sortable' => true],
+            ['index' => 'company.name', 'label' => __('placement.company')],
+            ['index' => 'internship.name', 'label' => __('placement.batch')],
+            ['index' => 'quota', 'label' => __('placement.quota'), 'class' => 'text-center'],
+            ['index' => 'filled_quota', 'label' => __('placement.stats.filled'), 'class' => 'text-center'],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

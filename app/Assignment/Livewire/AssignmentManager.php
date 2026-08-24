@@ -43,13 +43,13 @@ class AssignmentManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => __('assignment.title'), 'sortable' => true],
-            ['key' => 'assignment_type', 'label' => __('assignment.type')],
-            ['key' => 'internship.name', 'label' => __('assignment.internship')],
-            ['key' => 'is_mandatory', 'label' => __('assignment.mandatory')],
-            ['key' => 'status', 'label' => __('assignment.status')],
-            ['key' => 'due_date', 'label' => __('assignment.due_date'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'title', 'label' => __('assignment.title'), 'sortable' => true],
+            ['index' => 'assignment_type', 'label' => __('assignment.type')],
+            ['index' => 'internship.name', 'label' => __('assignment.internship')],
+            ['index' => 'is_mandatory', 'label' => __('assignment.mandatory')],
+            ['index' => 'status', 'label' => __('assignment.status')],
+            ['index' => 'due_date', 'label' => __('assignment.due_date'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

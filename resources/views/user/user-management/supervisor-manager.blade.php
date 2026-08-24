@@ -31,7 +31,7 @@
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -40,7 +40,7 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_name', $user)
+            @interact('column_name', $user)
                 <div class="flex items-center gap-3 py-1">
                     <x-core::ui.avatar :user="$user" size="size-9" />
                     <div class="flex flex-col">
@@ -48,13 +48,13 @@
                         <span class="text-base-content/50 text-xs">{{ $user->username }}</span>
                     </div>
                 </div>
-            @endscope
+            @endinteract
 
-            @scope('cell_profile_company_id', $user)
+            @interact('column_profile_company_id', $user)
                 <span class="text-sm">{{ $user->profile?->company?->name ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $user)
+            @interact('column_action', $user)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         icon="pencil"
@@ -80,8 +80,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

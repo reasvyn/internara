@@ -54,10 +54,10 @@ class InternshipGroupManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('internship.group_name'), 'sortable' => true],
-            ['key' => 'internship', 'label' => __('internship.title'), 'sortable' => false],
-            ['key' => 'member_count', 'label' => __('internship.members'), 'sortable' => false],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('internship.group_name'), 'sortable' => true],
+            ['index' => 'internship', 'label' => __('internship.title'), 'sortable' => false],
+            ['index' => 'member_count', 'label' => __('internship.members'), 'sortable' => false],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

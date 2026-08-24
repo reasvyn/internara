@@ -44,12 +44,12 @@ class HandbookManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => __('handbook.title_field'), 'sortable' => true],
-            ['key' => 'audience', 'label' => __('handbook.target_audience')],
-            ['key' => 'version', 'label' => __('handbook.version_field'), 'sortable' => true],
-            ['key' => 'is_active', 'label' => __('handbook.status')],
-            ['key' => 'created_at', 'label' => __('common.created_at'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'title', 'label' => __('handbook.title_field'), 'sortable' => true],
+            ['index' => 'audience', 'label' => __('handbook.target_audience')],
+            ['index' => 'version', 'label' => __('handbook.version_field'), 'sortable' => true],
+            ['index' => 'is_active', 'label' => __('handbook.status')],
+            ['index' => 'created_at', 'label' => __('common.created_at'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

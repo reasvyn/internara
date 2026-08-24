@@ -76,7 +76,7 @@
     {{-- Table Section --}}
     <x-ts-card class="card-enterprise">
         <div class="table-enterprise">
-            <x-mary-table
+            <x-ts-table
                 :headers="$this->headers()"
                 :rows="$this->rows()"
                 :sort-by="$sortBy"
@@ -85,7 +85,7 @@
                 wire:model="selectedIds"
                 class="table-sm"
             >
-                @scope('cell_user.name', $entry)
+                @interact('column_user_name', $entry)
                     <div class="flex items-center gap-3 py-1">
                         <x-core::ui.avatar :user="$entry->user" size="size-9" />
                         <div class="flex flex-col">
@@ -93,33 +93,33 @@
                             <span class="font-mono text-[10px] opacity-50">{{ $entry->user->email }}</span>
                         </div>
                     </div>
-                @endscope
+                @endinteract
 
-                @scope('cell_date', $entry)
+                @interact('column_date', $entry)
                     <span class="text-sm font-medium">{{ $entry->date->format('d M Y') }}</span>
-                @endscope
+                @endinteract
 
-                @scope('cell_content', $entry)
+                @interact('column_content', $entry)
                     <div class="text-base-content/70 max-w-xs truncate text-sm">{{ $entry->content }}</div>
-                @endscope
+                @endinteract
 
-                @scope('cell_status', $entry)
+                @interact('column_status', $entry)
                     <x-ts-badge
                         :text="__('logbook.statuses.'.$entry->status->value)"
                         class="font-bold text-[10px] uppercase tracking-tighter 
                         {{ $entry->status->value === 'verified' ? 'badge-success' : ($entry->status->value === 'submitted' ? 'badge-info' : ($entry->status->value === 'revision_required' ? 'badge-warning' : 'badge-ghost')) }}"
                     />
-                @endscope
+                @endinteract
 
-                @scope('cell_is_verified', $entry)
+                @interact('column_is_verified', $entry)
                     @if ($entry->is_verified)
                         <x-ts-icon name="check-circle" class="text-success size-5" />
                     @else
                         <x-ts-icon name="x-circle" class="text-base-content/30 size-5" />
                     @endif
-                @endscope
+                @endinteract
 
-                @scope('cell_supervisor_note', $entry)
+                @interact('column_supervisor_note', $entry)
                     @if ($entry->supervisor_note)
                         <div class="text-base-content/70 max-w-xs truncate text-sm">
                             {{ \Illuminate\Support\Str::limit($entry->supervisor_note, 60) }}
@@ -127,9 +127,9 @@
                     @else
                         <span class="text-base-content/60 text-xs italic">{{ __('logbook.no_supervisor_note') }}</span>
                     @endif
-                @endscope
+                @endinteract
 
-                @scope('actions', $entry)
+                @interact('column_action', $entry)
                     <div class="flex justify-end gap-1">
                         @if (auth()->user()?->hasRole('supervisor'))
                             <x-ts-button
@@ -175,8 +175,8 @@
                             tooltip="{{ __('common.actions.delete') }}"
                         />
                     </div>
-                @endscope
-            </x-mary-table>
+                @endinteract
+            </x-ts-table>
         </div>
 
         {{-- Supervisor Note Modal --}}

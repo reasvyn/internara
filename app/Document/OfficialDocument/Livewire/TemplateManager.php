@@ -35,10 +35,10 @@ class TemplateManager extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'type', 'label' => 'Category'],
-            ['key' => 'is_active', 'label' => 'Active'],
-            ['key' => 'created_at', 'label' => 'Created', 'sortable' => true],
+            ['index' => 'title', 'label' => 'Name', 'sortable' => true],
+            ['index' => 'type', 'label' => 'Category'],
+            ['index' => 'is_active', 'label' => 'Active'],
+            ['index' => 'created_at', 'label' => 'Created', 'sortable' => true],
         ];
     }
 

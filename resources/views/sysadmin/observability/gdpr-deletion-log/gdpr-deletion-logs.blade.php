@@ -17,15 +17,15 @@
             </x-ts-select.native>
         </div>
 
-        <x-mary-table :headers="$headers" :rows="$logs" :sort-by="$sortBy" link="/admin/gdpr-logs/{id}" with-pagination>
-            @scope('cell_deletion_type', $log)
+        <x-ts-table :headers="$headers" :rows="$logs" :sort="$sortBy" link="/admin/gdpr-logs/{id}" paginate>
+            @interact('column_deletion_type', $log)
                 <x-ts-badge
                     :text="ucfirst(str_replace('_', ' ', $log->deletion_type))"
                     class="badge-{{ $log->deletion_type === 'permanent_deletion' ? 'error' : 'warning' }}"
                 />
-            @endscope
-            @scope('cell_deleted_at', $log)
+            @endinteract
+            @interact('column_deleted_at', $log)
                 {{ $log->deleted_at?->format('Y-m-d H:i') }}
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
 </div>

@@ -46,12 +46,12 @@ class IncidentManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'incident_date', 'label' => __('incident.date'), 'sortable' => true],
-            ['key' => 'student_name', 'label' => __('incident.student'), 'sortable' => true],
-            ['key' => 'type', 'label' => __('incident.type'), 'sortable' => true],
-            ['key' => 'severity', 'label' => __('incident.severity'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('incident.status'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'incident_date', 'label' => __('incident.date'), 'sortable' => true],
+            ['index' => 'student_name', 'label' => __('incident.student'), 'sortable' => true],
+            ['index' => 'type', 'label' => __('incident.type'), 'sortable' => true],
+            ['index' => 'severity', 'label' => __('incident.severity'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('incident.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

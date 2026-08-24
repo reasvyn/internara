@@ -20,27 +20,27 @@
     </div>
 
     <x-ts-card shadowless>
-        <x-mary-table :headers="$headers" :rows="$templates" with-pagination>
-            @scope('cell_is_active', $template)
+        <x-ts-table :headers="$headers" :rows="$templates" paginate>
+            @interact('column_is_active', $template)
                 <x-ts-badge
                     :label="$template->is_active ? __('document.active') : __('document.inactive')"
                     :class="$template->is_active ? 'badge-success' : 'badge-neutral'"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_type', $template)
+            @interact('column_type', $template)
                 {{ \App\Document\Enums\DocumentCategory::tryFrom($template->type)?->label() ?? $template->type }}
-            @endscope
+            @endinteract
 
-            @scope('actions', $template)
+            @interact('column_action', $template)
                 <x-ts-button
                     aria-label="{{ __('common.actions.edit') }}"
                     icon="pencil"
                     wire:click="editTemplate('{{ $template->id }}')"
                     class="btn-sm btn-ghost"
                 />
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
 
         <x-ts-modal
             wire="templateModal"

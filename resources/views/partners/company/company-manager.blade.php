@@ -95,7 +95,7 @@
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -104,24 +104,24 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_name', $company)
+            @interact('column_name', $company)
                 <div class="flex flex-col">
                     <span class="text-sm font-medium">{{ $company->name }}</span>
                     @if ($company->email)
                         <span class="text-base-content/50 text-xs">{{ $company->email }}</span>
                     @endif
                 </div>
-            @endscope
+            @endinteract
 
-            @scope('cell_industry_sector', $company)
+            @interact('column_industry_sector', $company)
                 <span class="text-base-content/60 text-sm">{{ $company->industry_sector ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_address', $company)
+            @interact('column_address', $company)
                 <span class="text-base-content/50 line-clamp-1 text-xs">{{ $company->address }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $company)
+            @interact('column_action', $company)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         icon="pencil"
@@ -139,8 +139,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

@@ -3,8 +3,8 @@
         <x-ts-button :text="__('journals.new_log')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
 
-    <x-mary-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
-        @scope('cell_status', $l)
+    <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
+        @interact('column_status', $l)
             <x-ts-badge
                 :text="$l->status->label()"
                 :class="match($l->status->value) {
@@ -15,13 +15,13 @@
                 default => 'badge-ghost',
             }"
             />
-        @endscope
+        @endinteract
 
-        @scope('cell_supervisor_feedback', $l)
+        @interact('column_supervisor_feedback', $l)
             <span class="text-sm">{{ $l->supervisor_feedback ?? '—' }}</span>
-        @endscope
+        @endinteract
 
-        @scope('actions', $l)
+        @interact('column_action', $l)
             <div class="flex justify-end gap-1">
                 @if ($l->status->value === 'draft')
                     <x-ts-button
@@ -34,8 +34,8 @@
                     />
                 @endif
             </div>
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 
     <x-slot:modal>
         <x-ts-modal wire="showModal" :title="__('journals.new_log')" separator blur>

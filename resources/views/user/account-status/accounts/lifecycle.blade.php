@@ -32,15 +32,15 @@
                 ];
             @endphp
 
-            <x-mary-table :headers="$headers" :rows="$users" with-pagination>
-                @scope('cell_name', $user)
+            <x-ts-table :headers="$headers" :rows="$users" paginate>
+                @interact('column_name', $user)
                     <div>
                         <div class="font-medium">{{ $user->name }}</div>
                         <div class="text-xs opacity-50">{{ $user->email }}</div>
                     </div>
-                @endscope
+                @endinteract
 
-                @scope('cell_status', $user)
+                @interact('column_status', $user)
                     @php
                         $status = $user->status?->value ?? 'unknown';
                         $color = match ($status) {
@@ -52,21 +52,21 @@
                         };
                     @endphp
                     <x-ts-badge :text="ucfirst($status)" :class="$color" />
-                @endscope
+                @endinteract
 
-                @scope('cell_locked', $user)
+                @interact('column_locked', $user)
                     @if ($user->locked_at)
                         <x-ts-badge :text="__('auth.lifecycle.locked')" class="badge-error" />
                     @else
                         <x-ts-badge :text="__('auth.lifecycle.unlocked')" class="badge-success" />
                     @endif
-                @endscope
+                @endinteract
 
-                @scope('cell_created_at', $user)
+                @interact('column_created_at', $user)
                     {{ $user->created_at->format('d M Y') }}
-                @endscope
+                @endinteract
 
-                @scope('cell_actions', $user)
+                @interact('column_action', $user)
                     <div class="flex gap-2">
                         @if ($user->locked_at)
                             <x-ts-button
@@ -88,8 +88,8 @@
                             />
                         @endif
                     </div>
-                @endscope
-            </x-mary-table>
+                @endinteract
+            </x-ts-table>
         @endif
 
         @include('user.account-status.components.account-lifecycle-guide')

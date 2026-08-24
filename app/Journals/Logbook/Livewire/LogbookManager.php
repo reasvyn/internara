@@ -44,18 +44,18 @@ class LogbookManager extends BaseRecordManager
     public function headers(): array
     {
         $headers = [
-            ['key' => 'user.name', 'label' => __('logbook.student'), 'sortable' => true],
-            ['key' => 'date', 'label' => __('logbook.date'), 'sortable' => true],
-            ['key' => 'content', 'label' => __('logbook.content')],
-            ['key' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
-            ['key' => 'is_verified', 'label' => __('logbook.verified')],
+            ['index' => 'user.name', 'label' => __('logbook.student'), 'sortable' => true],
+            ['index' => 'date', 'label' => __('logbook.date'), 'sortable' => true],
+            ['index' => 'content', 'label' => __('logbook.content')],
+            ['index' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
+            ['index' => 'is_verified', 'label' => __('logbook.verified')],
         ];
 
         if (auth()->user()?->hasRole('supervisor')) {
-            $headers[] = ['key' => 'supervisor_note', 'label' => __('logbook.supervisor_note')];
+            $headers[] = ['index' => 'supervisor_note', 'label' => __('logbook.supervisor_note')];
         }
 
-        $headers[] = ['key' => 'actions', 'label' => '', 'sortable' => false];
+        $headers[] = ['index' => 'actions', 'label' => '', 'sortable' => false];
 
         return $headers;
     }

@@ -7,27 +7,27 @@
     </x-slot:filters>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_status', $r)
+            @interact('column_status', $r)
                 <x-ts-badge
                     :text="$r->status->label()"
                     :class="match($r->status->value) {
                     'pending' => 'badge-warning', 'approved' => 'badge-success', 'rejected' => 'badge-error', default => 'badge-ghost',
                 }"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_created_at', $r)
+            @interact('column_created_at', $r)
                 <span class="text-sm">{{ $r->created_at?->format('d M Y H:i') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $r)
+            @interact('column_action', $r)
                 <div class="flex justify-end gap-1">
                     @if ($r->status->value === 'pending')
                         <x-ts-button
@@ -48,8 +48,8 @@
                         />
                     @endif
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

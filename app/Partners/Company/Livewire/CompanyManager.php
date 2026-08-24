@@ -49,12 +49,12 @@ class CompanyManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('company.name'), 'sortable' => true],
-            ['key' => 'industry_sector', 'label' => __('company.industry'), 'sortable' => true],
-            ['key' => 'address', 'label' => __('company.address')],
-            ['key' => 'placements_count', 'label' => __('company.placements_count')],
-            ['key' => 'partnerships_count', 'label' => __('company.partnerships_count')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('company.name'), 'sortable' => true],
+            ['index' => 'industry_sector', 'label' => __('company.industry'), 'sortable' => true],
+            ['index' => 'address', 'label' => __('company.address')],
+            ['index' => 'placements_count', 'label' => __('company.placements_count')],
+            ['index' => 'partnerships_count', 'label' => __('company.partnerships_count')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

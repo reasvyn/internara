@@ -45,11 +45,11 @@ class StudentLogManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'date', 'label' => __('journals.date'), 'sortable' => true],
-            ['key' => 'topic', 'label' => __('journals.topic')],
-            ['key' => 'status', 'label' => __('journals.status')],
-            ['key' => 'supervisor_feedback', 'label' => __('journals.feedback')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'date', 'label' => __('journals.date'), 'sortable' => true],
+            ['index' => 'topic', 'label' => __('journals.topic')],
+            ['index' => 'status', 'label' => __('journals.status')],
+            ['index' => 'supervisor_feedback', 'label' => __('journals.feedback')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

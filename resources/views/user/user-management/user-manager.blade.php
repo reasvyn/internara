@@ -115,7 +115,7 @@
         </x-ts-dropdown>
     </x-slot:selectionBar>
 
-    <x-mary-table
+    <x-ts-table
         :headers="$this->headers()"
         :rows="$this->rows()"
         :sort-by="$sortBy"
@@ -124,7 +124,7 @@
         wire:model="selectedIds"
         class="table-sm"
     >
-        @scope('cell_name', $user)
+        @interact('column_name', $user)
             <div class="flex items-center gap-3 py-1">
                 <x-core::ui.avatar :user="$user" size="size-9" />
                 <div class="flex flex-col">
@@ -141,17 +141,17 @@
                     <span class="text-base-content/50 text-xs">{{ $user->username }}</span>
                 </div>
             </div>
-        @endscope
+        @endinteract
 
-        @scope('cell_email', $user)
+        @interact('column_email', $user)
             <span class="text-sm">{{ $user->email }}</span>
-        @endscope
+        @endinteract
 
-        @scope('cell_profile.phone', $user)
+        @interact('column_profile_phone', $user)
             <span class="text-base-content/60 text-sm">{{ $user->profile?->phone ?? '—' }}</span>
-        @endscope
+        @endinteract
 
-        @scope('cell_roles_list', $user)
+        @interact('column_roles_list', $user)
             <div class="flex flex-wrap gap-1">
                 @foreach ($user->roles as $role)
                     <span class="badge badge-sm badge-soft badge-primary text-[10px] font-medium">
@@ -159,9 +159,9 @@
                     </span>
                 @endforeach
             </div>
-        @endscope
+        @endinteract
 
-        @scope('cell_status', $user)
+        @interact('column_status', $user)
             @php
                 $status = $user->status?->value ?? 'unknown';
                 $badgeClass = match ($status) {
@@ -176,9 +176,9 @@
             <span class="badge badge-sm {{ $badgeClass }} font-medium text-[10px]">
                 {{ __("user.manager.status_{$status}") }}
             </span>
-        @endscope
+        @endinteract
 
-        @scope('actions', $user)
+        @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
                 <div class="flex justify-end">
                     <span class="text-base-content/40 text-xs italic">{{ __('user.manager.protected') }}</span>
@@ -231,8 +231,8 @@
                     @endif
                 </div>
             @endif
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 
     {{-- Status Modal --}}
     <x-ts-modal wire="showStatusModal" :title="__('user.manager.change_status')" separator blur>

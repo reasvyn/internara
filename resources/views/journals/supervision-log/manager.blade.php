@@ -24,26 +24,26 @@
                         ];
                     @endphp
 
-                    <x-mary-table :headers="$headers" :rows="$logs" with-pagination>
-                        @scope('cell_date', $log)
+                    <x-ts-table :headers="$headers" :rows="$logs" paginate>
+                        @interact('column_date', $log)
                             {{ $log->date->format('d M Y') }}
-                        @endscope
+                        @endinteract
 
-                        @scope('cell_type', $log)
+                        @interact('column_type', $log)
                             <x-ts-badge
                                 :text="ucfirst($log->type)"
                                 :class="$log->type === 'guidance' ? 'badge-primary' : 'badge-secondary'"
                             />
-                        @endscope
+                        @endinteract
 
-                        @scope('cell_is_verified', $log)
+                        @interact('column_is_verified', $log)
                             @if ($log->is_verified)
                                 <x-ts-badge :text="__('journals.verified')" class="badge-success" />
                             @else
                                 <x-ts-badge :text="__('journals.pending')" class="badge-neutral" />
                             @endif
-                        @endscope
-                    </x-mary-table>
+                        @endinteract
+                    </x-ts-table>
             </div>
 
             <div class="space-y-6">
