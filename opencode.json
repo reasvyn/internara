@@ -165,15 +165,19 @@
             }
         },
         "deployer": {
-            "description": "Deploy specialist — fast-forwards docker-deploy branch and monitors VPS health",
+            "description": "Deploy specialist — version-tag driven deploys (v*.*.* via build-and-deploy.yml + deploy.sh, fallback to docker-deploy branch) and VPS health monitoring",
             "permission": {
                 "bash": {
                     "*": "ask",
                     "git push *": "ask",
+                    "git tag*": "ask",
                     "ssh internara-vps *": "ask",
                     "git status*": "allow",
                     "git log*": "allow",
-                    "git diff*": "allow"
+                    "git diff*": "allow",
+                    "git fetch*": "allow",
+                    "git checkout*": "allow",
+                    "git rev-parse*": "allow"
                 }
             }
         }
