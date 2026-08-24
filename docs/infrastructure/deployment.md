@@ -334,10 +334,10 @@ Key environment variables:
 - DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
 - SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `true`**
-  because the default `APP_URL` is `https://internara.web.id` (HTTPS). Set it to `false` only for
+  because the default `APP_URL` is `https://internara.web.id` (product demo, HTTPS). Set it to `false` only for
   plain-HTTP deployments (`http://host:port`) — with HTTPS enabled, browsers drop non-secure cookies
   and every request starts a fresh session.
-- APP_URL — the public origin of the app. **Defaults to `https://internara.web.id`**; override with
+- APP_URL — the public origin of the app. **Defaults to `https://internara.web.id` (product demo)**; override with
   `${APP_URL:-...}` semantics for other domains.
 - RUN_SCHEDULER — set to `true` to start the scheduler daemon inside the `app` container. **Defaults
   to `false`** so the stack idles at a very low memory footprint (fits a 1 GB RAM VPS). For a demo
@@ -386,18 +386,18 @@ DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
 
 The compose stack's `web` service is an nginx container, but in production you typically front it
 with a host-level reverse proxy (aaPanel/BT Panel, Caddy, Nginx on the host) that terminates TLS.
-The steps below use the Internara production setup (aaPanel vhost `internara.web.id` proxying to
+The steps below use the Internara product demo setup (aaPanel vhost `internara.web.id` — product demo — proxying to
 `http://127.0.0.1:8080`) as the reference.
 
-**1. Environment on the VPS:**
+**1. Environment on the VPS (product demo):**
 
 ```env
-APP_URL=https://internara.web.id
+APP_URL=https://internara.web.id  # product demo; override for your domain
 SESSION_SECURE_COOKIE=true
 NGINX_PORT=8080
 ```
 
-`APP_URL` defaults to `https://internara.web.id` in `docker-compose.yml`, so it only needs to be
+`APP_URL` defaults to `https://internara.web.id` (product demo) in `docker-compose.yml`, so it only needs to be
 overridden when the domain differs. `SESSION_SECURE_COOKIE=true` is the default; never use
 `false` when serving over HTTPS.
 
@@ -448,10 +448,10 @@ Verify the SAN before reloading: `openssl x509 -in .../fullchain.pem -noout -tex
 **4. DNS:** both the apex and `www` must have `A` records pointing at the VPS public IP
 (`www.internara.web.id` is a CNAME to the apex).
 
-**5. Verify from outside the VPS:**
+**5. Verify from outside the VPS (product demo):**
 
 ```bash
-curl -skI https://internara.web.id -o /dev/null -w "%{http_code}\n"    # 200
+curl -skI https://internara.web.id -o /dev/null -w "%{http_code}\n"    # 200 — product demo
 curl -skI https://www.internara.web.id -o /dev/null -w "%{http_code}\n" # 200
 curl -s https://internara.web.id | grep -c localhost                     # 0 (app, not default page)
 curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
