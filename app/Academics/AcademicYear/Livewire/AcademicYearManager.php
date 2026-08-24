@@ -165,7 +165,12 @@ class AcademicYearManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'activate';
         $this->confirmMessage = __('academic_year.confirm_activate', ['name' => $year->name]);
-        $this->showConfirm = true;
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDestroy(string $id): void
@@ -175,7 +180,12 @@ class AcademicYearManager extends BaseRecordManager
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
         $this->confirmMessage = __('academic_year.confirm_delete', ['name' => $year->name]);
-        $this->showConfirm = true;
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function askDeleteSelected(): void
@@ -187,7 +197,12 @@ class AcademicYearManager extends BaseRecordManager
         $this->confirmTarget = null;
         $this->confirmType = 'delete_selected';
         $this->confirmMessage = __('academic_year.confirm_delete_selected');
-        $this->showConfirm = true;
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
     }
 
     public function confirmAction(
@@ -210,7 +225,6 @@ class AcademicYearManager extends BaseRecordManager
             $this->toast()->error($e->getMessage())->send();
         }
 
-        $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmType = '';
     }

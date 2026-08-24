@@ -142,15 +142,6 @@
         @endif
     </div>
 
-    {{-- Confirm Dialog --}}
-    <x-core::ui.confirm
-        wire:model="showConfirm"
-        :message="$confirmMessage"
-        confirmText="{{ __('common.actions.confirm') }}"
-        cancelText="{{ __('common.actions.cancel') }}"
-        :confirmClass="$confirmType === 'activate' ? 'btn-primary' : 'btn-error'"
-    />
-
     {{-- Create / Edit Modal --}}
     <x-ts-modal wire="showModal" :title="$editingYearId ? __('academic_year.edit') : __('academic_year.new')" blur>
         <div class="space-y-4">
