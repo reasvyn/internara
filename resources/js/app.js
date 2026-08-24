@@ -16,13 +16,21 @@ window.DOMPurify = DOMPurify
 
 /**
  * Theme Initialization (CSP-compliant — previously inline in base.blade.php)
+ *
+ * Sets both `data-theme` (DaisyUI color vars during coexistence, FB792 DD-4)
+ * and the `.dark` class (Tailwind/TallStackUI `dark:` variant).
  */
-const initTheme = () => {
-    const theme = document.documentElement.getAttribute('data-theme')
-    if (theme === 'system') {
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-        document.documentElement.setAttribute('data-theme', systemTheme)
+const applyTheme = (theme) => {
+    let resolved = theme
+    if (resolved === 'system') {
+        resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
     }
+    document.documentElement.setAttribute('data-theme', resolved)
+    document.documentElement.classList.toggle('dark', resolved === 'dark')
+}
+
+const initTheme = () => {
+    applyTheme(document.documentElement.getAttribute('data-theme') ?? 'system')
 }
 initTheme()
 
@@ -121,29 +129,9 @@ document.addEventListener('alpine:init', () => {
  * Livewire & Theme Sync (CSP-compliant — previously inline in base.blade.php)
  */
 document.addEventListener('livewire:init', () => {
-    const syncFlasherTheme = () => {
-        const theme = document.documentElement.getAttribute('data-theme')
-        if (theme === 'dark') {
-            document.documentElement.classList.add('fl-dark')
-        } else {
-            document.documentElement.classList.remove('fl-dark')
-        }
-    }
-
-    syncFlasherTheme()
-
-    new MutationObserver(syncFlasherTheme).observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['data-theme'],
-    })
-
     if (window.Livewire) {
         window.Livewire.on('theme-changed', (event) => {
-            let newTheme = event.theme
-            if (newTheme === 'system') {
-                newTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-            }
-            document.documentElement.setAttribute('data-theme', newTheme)
+            applyTheme(event.theme)
         })
 
         window.Livewire.on('language-changed', () => {

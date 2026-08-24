@@ -24,19 +24,6 @@
 /* Theme toggle */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/**
-* Paginator - Traditional style
-* Because Laravel defaults does not match well the design of daisyUI.
-*/
-
-.mary-table-pagination span[aria-current='page'] > span {
-    @apply bg-primary text-base-100;
-}
-
-.mary-table-pagination button {
-    @apply cursor-pointer;
-}
-
 /* AlpineJS Cloak */
 [x-cloak] {
     display: none !important;

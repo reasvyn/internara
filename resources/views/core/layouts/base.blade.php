@@ -4,7 +4,11 @@
 ])
 
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ request()->cookie('theme', 'system') }}">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    data-theme="{{ request()->cookie('theme', 'system') }}"
+    @if (request()->cookie('theme') === 'dark') class="dark" @endif
+>
 <head>
     <x-core::layouts.base.head :$title />
 
