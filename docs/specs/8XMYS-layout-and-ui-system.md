@@ -1,9 +1,7 @@
 # Layout & UI System — Cross-Cutting Presentation Shell & Component Library
 
 > **Spec ID:** 8XMYS
-> **Last updated:** 2026-08-17 **Changes:** initial spec — cross-cutting layouts (`core::layouts.*`),
-> config-driven role-filtered navigation (`config/menu.php`), reusable `core::ui.*` components,
-> SPA navigation, responsive drawer, and WCAG 2.1 AA shell chrome
+> **Last updated:** 2026-08-24 **Changes:** TallstackUI-first — new UI must use TallstackUI before DaisyUI/maryUI/custom; DD-4 drawer deprecated (coexistence, TallstackUI preferred)
 
 ## Description
 
@@ -297,14 +295,12 @@ otherwise introduce.
 **Trade-off:** JS required for navigation; without it, links degrade to full reloads (progressive
 enhancement), which is acceptable.
 
-### DD-4 — DaisyUI Drawer for Responsive Sidebar
+### DD-4 — DaisyUI Drawer for Responsive Sidebar (DEPRECATED — TallstackUI-first)
 
-**Decision:** The sidebar uses DaisyUI's `drawer` pattern (`drawer-toggle` + `drawer-side` +
-`lg:drawer-open`).
+**Decision:** The sidebar currently uses DaisyUI's `drawer` pattern (`drawer-toggle` + `drawer-side` +
+`lg:drawer-open`), but new UI must use TallstackUI components first per FB792 FR-TS6a/NFR-DEP5. DaisyUI drawer remains during coexistence, then replaced by TallstackUI drawer/sidebar per FB792 DD-4.
 **Rationale:** DaisyUI's drawer ships keyboard/ARIA support (Escape to close, focusable overlay) out
-of the box, satisfying FR-A3 with no custom JS.
-**Trade-off:** Fixed `w-64` sidebar width; customization limited to DaisyUI's contract — acceptable
-for a consistent chrome.
+of the box, satisfying FR-A3 with no custom JS. TallstackUI provides equivalent TALL-native components with Livewire integration; gradual migration avoids breaking 18 modules.
 
 ### DD-5 — Accessibility Baked Into the Shell, Not Per Page
 
