@@ -25,6 +25,7 @@ or conflicting, write it back here** — this memory is how context survives bet
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
 | [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, `docker-deploy` branch, `build-and-deploy.yml`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |
+| [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI-first state, mary/flasher `dont-discover` (packages installed but disabled), DaisyUI CSS still powering legacy tokens, `.dark` theme mechanism |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
 
 ---
