@@ -66,7 +66,7 @@
         @endif
 
         <div class="overflow-x-auto">
-            <x-mary-table
+            <x-ts-table
                 :headers="$this->headers()"
                 :rows="$this->rows()"
                 :sort-by="$sortBy"
@@ -75,7 +75,7 @@
                 wire:model="selectedIds"
                 class="table-sm max-sm:table-xs"
             >
-                @scope('cell_title', $notification)
+                @interact('column_title', $notification)
                     @php $isRead = $notification->is_read; @endphp
                     <div x-data="{ read: {{ $isRead ? 'true' : 'false' }} }">
                         @if ($notification->message)
@@ -164,18 +164,18 @@
                             </div>
                         @endif
                     </div>
-                @endscope
+                @endinteract
 
-                @scope('cell_created_at', $notification)
+                @interact('column_created_at', $notification)
                     <time
                         datetime="{{ $notification->created_at->toIso8601String() }}"
                         class="text-base-content/60 text-xs whitespace-nowrap max-sm:hidden"
                     >
                         {{ $notification->created_at->diffForHumans() }}
                     </time>
-                @endscope
+                @endinteract
 
-                @scope('actions', $notification)
+                @interact('column_action', $notification)
                     <div class="flex justify-end gap-1">
                         @if ($notification->link)
                             <x-ts-button
@@ -205,8 +205,8 @@
                             />
                         @endif
                     </div>
-                @endscope
-            </x-mary-table>
+                @endinteract
+            </x-ts-table>
         </div>
 
         {{-- Notification Viewer Modal --}}

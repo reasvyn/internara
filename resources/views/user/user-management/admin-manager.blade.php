@@ -17,7 +17,7 @@
         />
     </x-slot:selectionBar>
 
-    <x-mary-table
+    <x-ts-table
         :headers="$this->headers()"
         :rows="$this->rows()"
         :sort-by="$sortBy"
@@ -26,7 +26,7 @@
         wire:model="selectedIds"
         class="table-sm"
     >
-        @scope('cell_name', $user)
+        @interact('column_name', $user)
             <div class="flex items-center gap-3 py-1">
                 <x-core::ui.avatar :user="$user" size="size-9" />
                 <div class="flex flex-col">
@@ -43,9 +43,9 @@
                     <span class="text-base-content/50 text-xs">{{ $user->email }}</span>
                 </div>
             </div>
-        @endscope
+        @endinteract
 
-        @scope('actions', $user)
+        @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
                 <div class="flex justify-end">
                     <span class="text-base-content/40 text-xs italic">{{ __('user.admin.protected') }}</span>
@@ -71,8 +71,8 @@
                     @endif
                 </div>
             @endif
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 
     <x-slot:modal>
         <x-ts-modal wire="userModal" :title="$form->id ? __('user.admin.edit') : __('user.admin.new')" separator blur>

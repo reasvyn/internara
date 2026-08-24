@@ -88,7 +88,7 @@
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -97,11 +97,11 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_company_name', $p)
+            @interact('column_company_name', $p)
                 <span class="text-sm font-medium">{{ $p->company_name }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_status', $p)
+            @interact('column_status', $p)
                 <x-ts-badge
                     :text="$p->status->label()"
                     :class="match($p->status->value) {
@@ -111,17 +111,17 @@
                     default => 'badge-ghost',
                 }"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_start_date', $p)
+            @interact('column_start_date', $p)
                 <span class="text-sm">{{ $p->start_date?->format('d M Y') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_end_date', $p)
+            @interact('column_end_date', $p)
                 <span class="text-sm">{{ $p->end_date?->format('d M Y') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $p)
+            @interact('column_action', $p)
                 <div class="flex justify-end gap-1">
                     @if ($p->status->value === 'active')
                         <x-ts-button
@@ -149,8 +149,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

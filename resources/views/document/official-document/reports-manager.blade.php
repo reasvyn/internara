@@ -24,11 +24,11 @@
     <x-ts-card shadowless>
         <h3 class="mb-4 text-sm font-bold">{{ __('document.generated_reports') }}</h3>
 
-        <x-mary-table
-            :headers="[['key' => 'name', 'label' => __('document.name')], ['key' => 'created_at', 'label' => __('document.generated')]]"
+        <x-ts-table
+            :headers="[['index' => 'name', 'label' => __('document.name')], ['index' => 'created_at', 'label' => __('document.generated')]]"
             :rows="$reports"
         >
-            @scope('actions', $report)
+            @interact('column_action', $report)
                 <div class="flex gap-2">
                     <a href="{{ route('sysadmin.reports.download', $report->id) }}" class="btn btn-sm btn-primary">
                         <x-ts-icon name="arrow-down-tray" class="size-4" />
@@ -41,6 +41,6 @@
                         class="btn-sm btn-ghost text-error"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
 </div>

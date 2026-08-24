@@ -88,7 +88,7 @@
     {{-- Table Section --}}
     <x-ts-card class="card-enterprise !bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
         <div class="table-enterprise overflow-x-auto">
-            <x-mary-table
+            <x-ts-table
                 :headers="$this->headers()"
                 :rows="$this->rows()"
                 :sort-by="$sortBy"
@@ -97,24 +97,24 @@
                 wire:model="selectedIds"
                 class="table-md w-full whitespace-nowrap"
             >
-                @scope('cell_title', $assignment)
+                @interact('column_title', $assignment)
                     <div class="flex flex-col py-2">
                         <span class="text-base-content text-sm font-black tracking-tight">{{ $assignment->title }}</span>
                         @if ($assignment->description)
                             <span class="mt-0.5 line-clamp-1 max-w-xs text-[10px] opacity-50">{{ $assignment->description }}</span>
                         @endif
                     </div>
-                @endscope
+                @endinteract
 
-                @scope('cell_is_mandatory', $assignment)
+                @interact('column_is_mandatory', $assignment)
                     @if ($assignment->is_mandatory)
                         <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">{{ __('assignment.required') }}</span>
                     @else
                         <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">{{ __('assignment.optional') }}</span>
                     @endif
-                @endscope
+                @endinteract
 
-                @scope('cell_status', $assignment)
+                @interact('column_status', $assignment)
                     @php
                         $badgeClass = match ($assignment->status->value) {
                             'draft' => 'badge-ghost',
@@ -126,13 +126,13 @@
                     <span class="badge badge-sm {{ $badgeClass }} font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
                         {{ $assignment->status->label() }}
                     </span>
-                @endscope
+                @endinteract
 
-                @scope('cell_due_date', $assignment)
+                @interact('column_due_date', $assignment)
                     <span class="text-sm font-medium"> {{ $assignment->due_date?->format('d M Y') ?? '—' }} </span>
-                @endscope
+                @endinteract
 
-                @scope('actions', $assignment)
+                @interact('column_action', $assignment)
                     <div class="flex items-center justify-end gap-1 py-2">
                         @if ($assignment->status->value === 'draft')
                             <x-ts-button
@@ -163,8 +163,8 @@
                             tooltip="{{ __('assignment.delete_tooltip') }}"
                         />
                     </div>
-                @endscope
-            </x-mary-table>
+                @endinteract
+            </x-ts-table>
         </div>
 
         {{-- Assignment Modal --}}

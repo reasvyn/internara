@@ -43,11 +43,11 @@ class AcademicYearManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('academic_year.name'), 'sortable' => true],
-            ['key' => 'start_date', 'label' => __('academic_year.start_date'), 'sortable' => true],
-            ['key' => 'end_date', 'label' => __('academic_year.end_date'), 'sortable' => true],
-            ['key' => 'is_active', 'label' => __('academic_year.status'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('academic_year.name'), 'sortable' => true],
+            ['index' => 'start_date', 'label' => __('academic_year.start_date'), 'sortable' => true],
+            ['index' => 'end_date', 'label' => __('academic_year.end_date'), 'sortable' => true],
+            ['index' => 'is_active', 'label' => __('academic_year.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

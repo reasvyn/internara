@@ -42,14 +42,14 @@ class CertificateList extends BaseRecordManager
     {
         return [
             [
-                'key' => 'certificate_number',
+                'index' => 'certificate_number',
                 'label' => __('certificate.number'),
                 'sortable' => true,
             ],
-            ['key' => 'student_name', 'label' => __('certificate.student'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('certificate.filter_status'), 'sortable' => true],
-            ['key' => 'issued_at', 'label' => __('certificate.issued_at'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'student_name', 'label' => __('certificate.student'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('certificate.filter_status'), 'sortable' => true],
+            ['index' => 'issued_at', 'label' => __('certificate.issued_at'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

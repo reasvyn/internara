@@ -45,10 +45,10 @@ class DepartmentManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('department.name'), 'sortable' => true],
-            ['key' => 'description', 'label' => __('department.description'), 'sortable' => true],
-            ['key' => 'created_at', 'label' => __('department.created_at'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('department.name'), 'sortable' => true],
+            ['index' => 'description', 'label' => __('department.description'), 'sortable' => true],
+            ['index' => 'created_at', 'label' => __('department.created_at'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

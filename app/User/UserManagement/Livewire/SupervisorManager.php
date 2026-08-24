@@ -45,16 +45,16 @@ class SupervisorManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('user.supervisor.name'), 'sortable' => true],
+            ['index' => 'name', 'label' => __('user.supervisor.name'), 'sortable' => true],
             [
-                'key' => 'username',
+                'index' => 'username',
                 'label' => __('user.fields.username'),
                 'class' => 'font-mono text-xs',
             ],
-            ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'profile.company_id', 'label' => __('user.supervisor.company')],
-            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
+            ['index' => 'profile.company_id', 'label' => __('user.supervisor.company')],
+            ['index' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

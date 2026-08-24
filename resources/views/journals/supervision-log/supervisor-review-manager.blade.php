@@ -1,6 +1,6 @@
 <x-core::ui.record-manager :title="__('journals.review_title')" :subtitle="__('journals.review_subtitle')">
-    <x-mary-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
-        @scope('cell_status', $l)
+    <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
+        @interact('column_status', $l)
             <x-ts-badge
                 :text="$l->status->label()"
                 :class="match($l->status->value) {
@@ -9,9 +9,9 @@
                 default => 'badge-ghost',
             }"
             />
-        @endscope
+        @endinteract
 
-        @scope('actions', $l)
+        @interact('column_action', $l)
             <div class="flex justify-end gap-1">
                 @if ($l->status->value === 'submitted')
                     <x-ts-button
@@ -24,8 +24,8 @@
                     />
                 @endif
             </div>
-        @endscope
-    </x-mary-table>
+        @endinteract
+    </x-ts-table>
 
     <x-slot:modal>
         <x-ts-modal wire="showReviewModal" :title="__('journals.review_log')" separator blur>

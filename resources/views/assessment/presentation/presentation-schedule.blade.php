@@ -14,35 +14,35 @@
     </x-slot:filters>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_status', $p)
+            @interact('column_status', $p)
                 <x-ts-badge
                     :text="$p->status->label()"
                     :class="match($p->status->value) {
                     'scheduled' => 'badge-info', 'completed' => 'badge-success', 'cancelled' => 'badge-error', default => 'badge-ghost',
                 }"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_scheduled_at', $p)
+            @interact('column_scheduled_at', $p)
                 <span class="text-sm">{{ $p->scheduled_at?->format('d M Y H:i') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_presentation_score', $p)
+            @interact('column_presentation_score', $p)
                 <span class="text-sm">{{ $p->presentation_score ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_final_score', $p)
+            @interact('column_final_score', $p)
                 <span class="text-sm font-medium">{{ $p->final_score ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $p)
+            @interact('column_action', $p)
                 <div class="flex justify-end gap-1">
                     @if ($p->status->value === 'scheduled')
                         <x-ts-button
@@ -54,8 +54,8 @@
                         />
                     @endif
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

@@ -15,22 +15,22 @@
     </x-slot:filters>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_student_name', $i)
+            @interact('column_student_name', $i)
                 <span class="text-sm font-medium">{{ $i->student_name }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_type', $i)
+            @interact('column_type', $i)
                 <span class="text-sm">{{ $i->type->label() }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_severity', $i)
+            @interact('column_severity', $i)
                 <x-ts-badge
                     :text="$i->severity->label()"
                     :class="match($i->severity->value) {
@@ -41,9 +41,9 @@
                     default => 'badge-ghost',
                 }"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_status', $i)
+            @interact('column_status', $i)
                 <x-ts-badge
                     :text="$i->status->label()"
                     :class="match($i->status->value) {
@@ -54,13 +54,13 @@
                     default => 'badge-ghost',
                 }"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_incident_date', $i)
+            @interact('column_incident_date', $i)
                 <span class="text-sm">{{ $i->incident_date?->format('d M Y H:i') ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $i)
+            @interact('column_action', $i)
                 <div class="flex justify-end gap-1">
                     @can('update', $i)
                         <x-ts-button
@@ -83,8 +83,8 @@
                         />
                     @endif
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

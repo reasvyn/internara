@@ -78,12 +78,12 @@
             />
         </div>
 
-        <x-mary-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination>
-            @scope('cell_type', $backup)
+        <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination>
+            @interact('column_type', $backup)
                 <x-ts-badge :text="$backup->type" />
-            @endscope
+            @endinteract
 
-            @scope('cell_status', $backup)
+            @interact('column_status', $backup)
                 @php
                     $statusClass = match ($backup->status) {
                         'completed' => 'success',
@@ -93,13 +93,13 @@
                     };
                 @endphp
                 <x-ts-badge :text="$backup->status" class="badge-{{ $statusClass }}" />
-            @endscope
+            @endinteract
 
-            @scope('cell_file_size', $backup)
+            @interact('column_file_size', $backup)
                 {{ $backup->asBackupState()->formattedSize() }}
-            @endscope
+            @endinteract
 
-            @scope('cell_actions', $backup)
+            @interact('column_action', $backup)
                 <div class="flex gap-1">
                     @if ($backup->asBackupState()->isDeletable())
                         <x-ts-button
@@ -113,8 +113,8 @@
                         />
                     @endif
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
 
         <x-ts-modal wire="showConfirmDelete" title="{{ __('backups.confirm_delete_title') }}" class="backdrop-blur">
             <p>{{ __('backups.confirm_delete_message') }}</p>

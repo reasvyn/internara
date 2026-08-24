@@ -68,12 +68,12 @@ class UserManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('user.manager.name'), 'sortable' => true],
-            ['key' => 'email', 'label' => __('user.manager.email')],
-            ['key' => 'profile.phone', 'label' => __('user.fields.phone')],
-            ['key' => 'roles_list', 'label' => __('user.manager.roles')],
-            ['key' => 'status', 'label' => __('user.manager.status')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('user.manager.name'), 'sortable' => true],
+            ['index' => 'email', 'label' => __('user.manager.email')],
+            ['index' => 'profile.phone', 'label' => __('user.fields.phone')],
+            ['index' => 'roles_list', 'label' => __('user.manager.roles')],
+            ['index' => 'status', 'label' => __('user.manager.status')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

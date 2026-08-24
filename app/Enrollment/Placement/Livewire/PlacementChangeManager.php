@@ -34,19 +34,19 @@ class PlacementChangeManager extends BaseRecordManager
     {
         return [
             [
-                'key' => 'created_at',
+                'index' => 'created_at',
                 'label' => __('placement_change.requested_at'),
                 'sortable' => true,
             ],
             [
-                'key' => 'requester.name',
+                'index' => 'requester.name',
                 'label' => __('placement_change.student'),
                 'sortable' => true,
             ],
-            ['key' => 'fromPlacement.company.name', 'label' => __('placement_change.from_company')],
-            ['key' => 'toPlacement.company.name', 'label' => __('placement_change.to_company')],
-            ['key' => 'status', 'label' => __('placement_change.status'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'fromPlacement.company.name', 'label' => __('placement_change.from_company')],
+            ['index' => 'toPlacement.company.name', 'label' => __('placement_change.to_company')],
+            ['index' => 'status', 'label' => __('placement_change.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

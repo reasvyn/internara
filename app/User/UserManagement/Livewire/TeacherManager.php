@@ -43,19 +43,19 @@ class TeacherManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('user.teacher.name'), 'sortable' => true],
+            ['index' => 'name', 'label' => __('user.teacher.name'), 'sortable' => true],
             [
-                'key' => 'username',
+                'index' => 'username',
                 'label' => __('user.fields.username'),
                 'class' => 'font-mono text-xs',
             ],
-            ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
+            ['index' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             [
-                'key' => 'profile.id_number',
+                'index' => 'profile.id_number',
                 'label' => __('user.teacher.id_number'),
             ],
-            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

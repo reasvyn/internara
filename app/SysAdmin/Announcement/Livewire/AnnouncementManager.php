@@ -38,11 +38,11 @@ class AnnouncementManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => __('announcement.fields.title'), 'sortable' => true],
-            ['key' => 'type', 'label' => __('announcement.fields.type')],
-            ['key' => 'status', 'label' => __('announcement.fields.status')],
-            ['key' => 'created_at', 'label' => __('common.created_at'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'title', 'label' => __('announcement.fields.title'), 'sortable' => true],
+            ['index' => 'type', 'label' => __('announcement.fields.type')],
+            ['index' => 'status', 'label' => __('announcement.fields.status')],
+            ['index' => 'created_at', 'label' => __('common.created_at'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

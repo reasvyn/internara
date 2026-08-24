@@ -47,17 +47,17 @@ class StudentManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('user.student.name'), 'sortable' => true],
+            ['index' => 'name', 'label' => __('user.student.name'), 'sortable' => true],
             [
-                'key' => 'username',
+                'index' => 'username',
                 'label' => __('user.student.username'),
                 'class' => 'font-mono text-xs',
             ],
-            ['key' => 'profile.national_id_number', 'label' => __('user.student.nisn')],
-            ['key' => 'profile.id_number', 'label' => __('user.student.nis')],
-            ['key' => 'profile.department.name', 'label' => __('user.student.department')],
-            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'profile.national_id_number', 'label' => __('user.student.nisn')],
+            ['index' => 'profile.id_number', 'label' => __('user.student.nis')],
+            ['index' => 'profile.department.name', 'label' => __('user.student.department')],
+            ['index' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

@@ -4,25 +4,25 @@
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_is_active', $t)
+            @interact('column_is_active', $t)
                 <x-ts-badge
                     :text="$t->is_active ? __('certificate.active') : __('certificate.inactive')"
                     :class="$t->is_active ? 'badge-success' : 'badge-ghost'"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_layout', $t)
+            @interact('column_layout', $t)
                 <span class="text-sm">{{ $t->layout }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $t)
+            @interact('column_action', $t)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         aria-label="{{ __('common.actions.edit') }}"
@@ -32,8 +32,8 @@
                         wire:click="edit('{{ $t->id }}')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

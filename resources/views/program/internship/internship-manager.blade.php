@@ -95,7 +95,7 @@
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -104,15 +104,15 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_start_date', $internship)
+            @interact('column_start_date', $internship)
                 <span class="text-sm font-medium">{{ $internship->start_date->format('d M Y') }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_end_date', $internship)
+            @interact('column_end_date', $internship)
                 <span class="text-sm font-medium">{{ $internship->end_date->format('d M Y') }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_status', $internship)
+            @interact('column_status', $internship)
                 @php
                     $statusClass = match ($internship->status->value) {
                         'active' => 'badge-success',
@@ -126,9 +126,9 @@
                     :text="__('internship.statuses.'.$internship->status->value)"
                     class="{{ $statusClass }} font-bold text-[10px] uppercase tracking-tighter"
                 />
-            @endscope
+            @endinteract
 
-            @scope('actions', $internship)
+            @interact('column_action', $internship)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         aria-label="{{ __('common.actions.edit') }}"
@@ -146,8 +146,8 @@
                         wire:click="askDelete('{{ $internship->id }}')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     {{-- Confirm Dialog --}}

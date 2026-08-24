@@ -4,7 +4,7 @@
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -13,15 +13,15 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_internship', $group)
+            @interact('column_internship', $group)
                 <span class="text-sm">{{ $group->internship?->name ?? '—' }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_member_count', $group)
+            @interact('column_member_count', $group)
                 <span class="text-sm">{{ $group->members_count }}</span>
-            @endscope
+            @endinteract
 
-            @scope('actions', $group)
+            @interact('column_action', $group)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         icon="users"
@@ -46,8 +46,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     {{-- Confirm Dialog --}}

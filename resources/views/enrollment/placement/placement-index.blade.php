@@ -69,7 +69,7 @@
     </x-core::ui.selection-bar>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
@@ -78,11 +78,11 @@
             wire:model="selectedIds"
             class="table-sm"
         >
-            @scope('cell_quota', $placement)
+            @interact('column_quota', $placement)
                 <span class="font-medium">{{ $placement->quota }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_filled_quota', $placement)
+            @interact('column_filled_quota', $placement)
                 <div class="flex items-center gap-2">
                     <x-mary-progress
                         value="{{ ($placement->filled_quota / $placement->quota) * 100 }}"
@@ -90,9 +90,9 @@
                     />
                     <span class="font-mono text-xs">{{ $placement->filled_quota }}</span>
                 </div>
-            @endscope
+            @endinteract
 
-            @scope('actions', $placement)
+            @interact('column_action', $placement)
                 <div class="flex justify-end gap-1">
                     <x-ts-button
                         icon="pencil"
@@ -110,8 +110,8 @@
                         :aria-label="__('common.actions.delete')"
                     />
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>

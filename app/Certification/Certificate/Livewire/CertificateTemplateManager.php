@@ -29,10 +29,10 @@ class CertificateTemplateManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => __('certificate.template_name'), 'sortable' => true],
-            ['key' => 'layout', 'label' => __('certificate.layout')],
-            ['key' => 'is_active', 'label' => __('certificate.is_active')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'name', 'label' => __('certificate.template_name'), 'sortable' => true],
+            ['index' => 'layout', 'label' => __('certificate.layout')],
+            ['index' => 'is_active', 'label' => __('certificate.is_active')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

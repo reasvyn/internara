@@ -57,14 +57,14 @@ class NotificationCenter extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'title', 'label' => __('notifications.ui.message_col')],
+            ['index' => 'title', 'label' => __('notifications.ui.message_col')],
             [
-                'key' => 'created_at',
+                'index' => 'created_at',
                 'label' => __('notifications.ui.received_col'),
                 'sortable' => true,
                 'class' => 'max-sm:hidden',
             ],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

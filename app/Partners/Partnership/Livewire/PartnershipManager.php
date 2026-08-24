@@ -50,16 +50,16 @@ class PartnershipManager extends BaseRecordManager
     {
         return [
             [
-                'key' => 'agreement_number',
+                'index' => 'agreement_number',
                 'label' => __('partnership.agreement_number'),
                 'sortable' => true,
             ],
-            ['key' => 'company_name', 'label' => __('partnership.company'), 'sortable' => true],
-            ['key' => 'title', 'label' => __('partnership.title_field'), 'sortable' => true],
-            ['key' => 'start_date', 'label' => __('partnership.start_date'), 'sortable' => true],
-            ['key' => 'end_date', 'label' => __('partnership.end_date'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('partnership.status'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'company_name', 'label' => __('partnership.company'), 'sortable' => true],
+            ['index' => 'title', 'label' => __('partnership.title_field'), 'sortable' => true],
+            ['index' => 'start_date', 'label' => __('partnership.start_date'), 'sortable' => true],
+            ['index' => 'end_date', 'label' => __('partnership.end_date'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('partnership.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

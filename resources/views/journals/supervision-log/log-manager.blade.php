@@ -22,27 +22,27 @@
             ];
         @endphp
 
-        <x-mary-table :headers="$headers" :rows="$logs" with-pagination>
-            @scope('cell_date', $log)
+        <x-ts-table :headers="$headers" :rows="$logs" paginate>
+            @interact('column_date', $log)
                 {{ $log->date->format('d M Y') }}
-            @endscope
+            @endinteract
 
-            @scope('cell_type', $log)
+            @interact('column_type', $log)
                 <x-ts-badge
                     :text="ucfirst($log->type)"
                     :class="$log->type === 'guidance' ? 'badge-primary' : 'badge-secondary'"
                 />
-            @endscope
+            @endinteract
 
-            @scope('cell_status', $log)
+            @interact('column_status', $log)
                 @if ($log->is_verified)
                     <x-ts-badge :text="__('journals.verified')" class="badge-success" />
                 @else
                     <x-ts-badge :text="__('journals.pending')" class="badge-neutral" />
                 @endif
-            @endscope
+            @endinteract
 
-            @scope('actions', $log)
+            @interact('column_action', $log)
                 @if (! $log->is_verified)
                     <x-ts-button
                         :text="__('journals.verify')"
@@ -53,8 +53,8 @@
                         wire:click="verify('{{ $log->id }}')"
                     />
                 @endif
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
 
         {{-- Form Modal --}}
         <x-ts-modal wire="showModal" :title="__('journals.supervision.log_session')" separator>

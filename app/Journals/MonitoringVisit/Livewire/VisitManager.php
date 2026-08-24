@@ -54,12 +54,12 @@ class VisitManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'visit_date', 'label' => __('journals.visit_date'), 'sortable' => true],
-            ['key' => 'teacher.name', 'label' => __('journals.teacher')],
-            ['key' => 'method', 'label' => __('journals.method')],
-            ['key' => 'location', 'label' => __('journals.location')],
-            ['key' => 'is_verified', 'label' => __('journals.status')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'visit_date', 'label' => __('journals.visit_date'), 'sortable' => true],
+            ['index' => 'teacher.name', 'label' => __('journals.teacher')],
+            ['index' => 'method', 'label' => __('journals.method')],
+            ['index' => 'location', 'label' => __('journals.location')],
+            ['index' => 'is_verified', 'label' => __('journals.status')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

@@ -23,10 +23,10 @@ class GdprDeletionLogs extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'user_email', 'label' => 'Email', 'sortable' => true],
-            ['key' => 'deletion_type', 'label' => 'Type'],
-            ['key' => 'reason', 'label' => 'Reason'],
-            ['key' => 'deleted_at', 'label' => 'Deleted At', 'sortable' => true],
+            ['index' => 'user_email', 'label' => 'Email', 'sortable' => true],
+            ['index' => 'deletion_type', 'label' => 'Type'],
+            ['index' => 'reason', 'label' => 'Reason'],
+            ['index' => 'deleted_at', 'label' => 'Deleted At', 'sortable' => true],
         ];
     }
 

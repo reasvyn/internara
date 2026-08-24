@@ -40,12 +40,12 @@ final class BackupManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'type', 'label' => __('backups.type_label'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('backups.status_label'), 'sortable' => true],
-            ['key' => 'file_size', 'label' => __('backups.size_label'), 'sortable' => true],
-            ['key' => 'creator.name', 'label' => __('backups.created_by_label')],
-            ['key' => 'created_at', 'label' => __('backups.date_label'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'type', 'label' => __('backups.type_label'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('backups.status_label'), 'sortable' => true],
+            ['index' => 'file_size', 'label' => __('backups.size_label'), 'sortable' => true],
+            ['index' => 'creator.name', 'label' => __('backups.created_by_label')],
+            ['index' => 'created_at', 'label' => __('backups.date_label'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

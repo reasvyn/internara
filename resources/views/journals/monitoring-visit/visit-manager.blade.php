@@ -4,30 +4,30 @@
     </x-slot:headerActions>
 
     <div class="overflow-x-auto">
-        <x-mary-table
+        <x-ts-table
             :headers="$this->headers()"
             :rows="$this->rows()"
             :sort-by="$sortBy"
             with-pagination
             class="table-sm"
         >
-            @scope('cell_visit_date', $v)
+            @interact('column_visit_date', $v)
                 <span class="text-sm">{{ $v->visit_date?->format('d M Y') }}</span>
-            @endscope
+            @endinteract
 
-            @scope('cell_method', $v)
+            @interact('column_method', $v)
                 <x-ts-badge :text="$v->method->label()" class="badge-ghost badge-sm" />
-            @endscope
+            @endinteract
 
-            @scope('cell_is_verified', $v)
+            @interact('column_is_verified', $v)
                 @if ($v->is_verified)
                     <x-ts-badge :text="__('journals.verified')" class="badge-success badge-sm" />
                 @else
                     <x-ts-badge :text="__('journals.pending')" class="badge-warning badge-sm" />
                 @endif
-            @endscope
+            @endinteract
 
-            @scope('actions', $v)
+            @interact('column_action', $v)
                 <div class="flex justify-end gap-1">
                     @can('verify', App\Journals\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
@@ -42,8 +42,8 @@
                         @endif
                     @endcan
                 </div>
-            @endscope
-        </x-mary-table>
+            @endinteract
+        </x-ts-table>
     </div>
 
     <x-slot:modal>
