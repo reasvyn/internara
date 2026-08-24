@@ -1,13 +1,16 @@
 <p align="center">
+    <img src="https://img.shields.io/badge/version-0.14.5-blue?style=flat-square" alt="Version 0.14.5">
     <img src="https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php" alt="PHP 8.4">
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
     <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
+    <img src="https://github.com/reasvyn/internara/actions/workflows/ci.yml/badge.svg" alt="CI">
+    <img src="https://github.com/reasvyn/internara/actions/workflows/build-and-deploy.yml/badge.svg" alt="Deploy">
 </p>
 
 # Internara — Vocational Fieldwork Management System
 
-> **Last updated:** 2026-08-21 **Changes:** merge `docs/foundation/product-definition.md` + `docs/foundation/project-overview.md` into README (SSOT for product scope, personas, boundary, deployment, and project status); rename `.agents/contexts` → `.agents/context`; rewrite Contributing from contributor POV (human, not AI agent)
+> **Last updated:** 2026-08-24 **Changes:** add version + CI/Deploy badges, bump to v0.14.5 (sync with composer.json/package.json + project-vision + upgrading)
 
 Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs (PKL —
 _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institutions. MIT-licensed,
@@ -163,7 +166,7 @@ Every mutation: **Livewire → Action → Entity → Model → DB**. Business ru
 
 ## Project Status — Where We Are
 
-**Phase: v0.14.4 — Stabilization** (in progress). 18 modules with full stack (models, actions,
+**Phase: v0.14.5 — Stabilization** (in progress). 18 modules with full stack (models, actions,
 livewire, events, policies, routes, translations). Architecture is sound — 4-layer model, Action
 Triad, Entity boundaries, DTO contracts. Focus: fix P0 runtime errors → improve coverage → UI/UX polish.
 

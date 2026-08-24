@@ -32,7 +32,7 @@ Internara is not a school management system. It is a *single-purpose, deep* syst
 
 | Horizon | Outcome for schools | Technical enabler |
 |---------|---------------------|-------------------|
-| **2026 — Stabilization (v0.14.4)** | 18 modules full-stack, P0 runtime crashes fixed, test suite ~98% pass, Docker deploy on `internara.web.id` stable | 4-layer Action MVC, `fe4096b9c` production hardening, version-tagged deploys (`v*.*.*`) |
+| **2026 — Stabilization (v0.14.5)** | 18 modules full-stack, P0 runtime crashes fixed, test suite ~98% pass, Docker deploy on `internara.web.id` stable | 4-layer Action MVC, `fe4096b9c` production hardening, version-tagged deploys (`v*.*.*`) |
 | **2027 — Scale & Trust** | 50+ schools in production, Dapodik CSV export adopted for accreditation, certificate QR verification used by companies for hiring | `docs` ⇄ `specs` ⇄ `code` sync (`sync-docs` skill), `module-health.md` green tiers, `scan_violations.py` 0 high |
 | **2028 — Ecosystem** | Regional Dinas PKL forks with custom certificate templates and Dapodik extensions; contributions flow upstream | MIT license, `CONTRIBUTING.md` contributor POV, `project-vision.md` as decision gate for forks |
 | **2030 — Reference Implementation** | PKL is cited as example of “infrastructure sovereignty for public education” — schools self-host, data stays on-prem, program fully auditable end-to-end | No multi-tenant SaaS, no telemetry, no upsell — intentional non-goals below |
@@ -86,7 +86,7 @@ For ambiguous cases, open a Discussion, link this file, and record the decision 
 
 ## Roadmap — Now vs Next (link, not duplicate)
 
-- **Now (`v0.14.4 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + `.agents/context/module-health.md` tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
+- **Now (`v0.14.5 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + `.agents/context/module-health.md` tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
 - **Next:** Reports purification (grade-card only, thesis stays in `Assignment`), partnership slot-quota hardening, journal supervision-log deduplication — each with spec IDs in `docs/specs/index.md`.
 - **Later:** Dapodik export hardening, Dinas PKL regional forks, evaluation module scaffold (`Evaluation` is `Skeleton` today).
 
