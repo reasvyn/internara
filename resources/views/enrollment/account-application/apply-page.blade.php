@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         <form wire:submit="submit" no-separator>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="mt-4 md:col-span-2">
@@ -118,5 +118,4 @@
                 />
             </div>
         </form>
-    </x-mary-card>
 </div>

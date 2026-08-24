@@ -2,7 +2,7 @@
     <x-core::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
 
     <form wire:submit="save">
-        <x-mary-card>
+        <x-ts-card shadowless>
             <div class="space-y-5">
                 <x-ts-select.native
                     :label="__('incident.registration')"
@@ -49,6 +49,5 @@
             <div class="mt-6 flex justify-end gap-2">
                 <x-ts-button :text="__('incident.submit')" color="primary" type="submit" loading="save" />
             </div>
-        </x-mary-card>
     </form>
 </div>

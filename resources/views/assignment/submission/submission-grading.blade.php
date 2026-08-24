@@ -36,10 +36,7 @@
         </div>
 
         {{-- Submissions List --}}
-        <x-mary-card
-            shadow
-            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
-        >
+        <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             @if ($submissions->isEmpty())
                 <div class="flex flex-col items-center justify-center gap-4 py-20">
                     <x-ts-icon name="check-circle" class="text-base-content/20 size-16" />
@@ -83,13 +80,10 @@
                 </div>
                 <div class="border-base-content/5 border-t p-5">{{ $submissions->links() }}</div>
             @endif
-        </x-mary-card>
+
     @else
         {{-- Submission Detail / Grading Form --}}
-        <x-mary-card
-            shadow
-            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
-        >
+        <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="mb-6">
                 <x-ts-button
                     icon="arrow-left"
@@ -232,6 +226,6 @@
                     </div>
                 </div>
             </div>
-        </x-mary-card>
+
     @endif
 </div>

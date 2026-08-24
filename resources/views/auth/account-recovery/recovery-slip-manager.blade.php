@@ -7,7 +7,7 @@
     />
 
     <div class="mx-auto max-w-2xl">
-        <x-mary-card shadow class="card-enterprise">
+        <x-ts-card class="card-enterprise">
             @if ($generatedCode)
                 <div class="space-y-6 text-center">
                     <div class="bg-success/10 text-success mx-auto flex size-20 items-center justify-center rounded-3xl">
@@ -94,15 +94,14 @@
                     @endif
                 </div>
             @endif
-        </x-mary-card>
 
-        <div class="mt-6 text-center">
-            <a
-                href="{{ route('sysadmin.dashboard') }}"
-                class="text-base-content/40 hover:text-primary text-xs font-bold tracking-widest uppercase"
-                wire:navigate
-            >{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
-        </div>
+            <div class="mt-6 text-center">
+                <a
+                    href="{{ route('sysadmin.dashboard') }}"
+                    class="text-base-content/40 hover:text-primary text-xs font-bold tracking-widest uppercase"
+                    wire:navigate
+                >{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
+            </div>
     </div>
 
     @include('auth.account-recovery.components.recovery-slip-manager-guide')

@@ -86,10 +86,7 @@
     @endif
 
     {{-- Table Section --}}
-    <x-mary-card
-        shadow
-        class="card-enterprise !bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
-    >
+    <x-ts-card class="card-enterprise !bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
         <div class="table-enterprise overflow-x-auto">
             <x-mary-table
                 :headers="$this->headers()"
@@ -169,72 +166,75 @@
                 @endscope
             </x-mary-table>
         </div>
-    </x-mary-card>
 
-    {{-- Assignment Modal --}}
-    <x-ts-modal
-        wire="assignmentModal"
-        :title="$formData['id'] ? __('assignment.edit') : __('assignment.create')"
-        blur
-        box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl"
-    >
-        <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-ts-input
-                :label="__('assignment.title')"
-                wire:model="formData.title"
-                icon="document-text"
-                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
-            />
-
-            <x-ts-select.native
-                :label="__('assignment.type')"
-                wire:model="formData.assignment_type_id"
-                :options="[null => __('assignment.type_placeholder')] + ($this->assignmentTypes->pluck('name', 'id'))"
-                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
-            />
-
-            <x-ts-select.native
-                :label="__('assignment.internship')"
-                wire:model="formData.internship_id"
-                :options="[null => __('assignment.internship_placeholder')] + ($this->internships->pluck('name', 'id'))"
-                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
-            />
-
-            <x-ts-input
-                :label="__('assignment.due_date')"
-                type="date"
-                wire:model="formData.due_date"
-                icon="calendar"
-                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
-            />
-
-            <x-ts-textarea
-                :label="__('assignment.description')"
-                wire:model="formData.description"
-                rows="3"
-                class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
-            />
-
-            <x-ts-toggle :label="__('assignment.is_mandatory')" wire:model="formData.is_mandatory" class="rounded-xl" />
-        </div>
-
-        <x-slot:footer>
-            <div class="border-base-content/5 flex w-full justify-end gap-4 border-t pt-6">
-                <x-ts-button
-                    :text="__('common.actions.cancel')"
-                    wire:click="$set('assignmentModal', false)"
-                    class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
-                    color="white"
+        {{-- Assignment Modal --}}
+        <x-ts-modal
+            wire="assignmentModal"
+            :title="$formData['id'] ? __('assignment.edit') : __('assignment.create')"
+            blur
+            box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl"
+        >
+            <div class="grid grid-cols-1 gap-6 pt-4">
+                <x-ts-input
+                    :label="__('assignment.title')"
+                    wire:model="formData.title"
+                    icon="document-text"
+                    class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
                 />
-                <x-ts-button
-                    :text="__('common.actions.save')"
-                    type="submit"
-                    class="shadow-primary/20 rounded-[1.5rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl"
-                    color="primary"
-                    wire:click="save"
-                    loading="save"
+
+                <x-ts-select.native
+                    :label="__('assignment.type')"
+                    wire:model="formData.assignment_type_id"
+                    :options="[null => __('assignment.type_placeholder')] + ($this->assignmentTypes->pluck('name', 'id'))"
+                    class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
+                />
+
+                <x-ts-select.native
+                    :label="__('assignment.internship')"
+                    wire:model="formData.internship_id"
+                    :options="[null => __('assignment.internship_placeholder')] + ($this->internships->pluck('name', 'id'))"
+                    class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
+                />
+
+                <x-ts-input
+                    :label="__('assignment.due_date')"
+                    type="date"
+                    wire:model="formData.due_date"
+                    icon="calendar"
+                    class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem] py-3"
+                />
+
+                <x-ts-textarea
+                    :label="__('assignment.description')"
+                    wire:model="formData.description"
+                    rows="3"
+                    class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
+                />
+
+                <x-ts-toggle
+                    :label="__('assignment.is_mandatory')"
+                    wire:model="formData.is_mandatory"
+                    class="rounded-xl"
                 />
             </div>
-        </x-slot:footer>
-    </x-ts-modal>
+
+            <x-slot:footer>
+                <div class="border-base-content/5 flex w-full justify-end gap-4 border-t pt-6">
+                    <x-ts-button
+                        :text="__('common.actions.cancel')"
+                        wire:click="$set('assignmentModal', false)"
+                        class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
+                        color="white"
+                    />
+                    <x-ts-button
+                        :text="__('common.actions.save')"
+                        type="submit"
+                        class="shadow-primary/20 rounded-[1.5rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-xl"
+                        color="primary"
+                        wire:click="save"
+                        loading="save"
+                    />
+                </div>
+            </x-slot:footer>
+        </x-ts-modal>
 </div>

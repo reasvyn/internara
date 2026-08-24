@@ -5,7 +5,7 @@
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         @foreach ($types as $key => $label)
-            <x-mary-card class="transition-shadow hover:shadow-lg">
+            <x-ts-card class="transition-shadow hover:shadow-lg">
                 <h3 class="mb-2 text-sm font-bold">{{ $label }}</h3>
                 <p class="text-base-content/60 mb-4 text-xs">
                     {{ __('document.generate_desc', ['type' => strtolower($label)]) }}
@@ -17,11 +17,11 @@
                     color="primary"
                     sm
                 />
-            </x-mary-card>
+
         @endforeach
     </div>
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         <h3 class="mb-4 text-sm font-bold">{{ __('document.generated_reports') }}</h3>
 
         <x-mary-table
@@ -43,5 +43,4 @@
                 </div>
             @endscope
         </x-mary-table>
-    </x-mary-card>
 </div>

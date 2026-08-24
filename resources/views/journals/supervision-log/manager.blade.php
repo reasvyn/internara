@@ -14,7 +14,7 @@
     @else
         <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div class="space-y-6 md:col-span-2">
-                <x-mary-card shadow class="bg-base-100 border-base-200 border">
+                <x-ts-card class="bg-base-100 border-base-200 border">
                     @php
                         $headers = [
                             ['key' => 'date', 'label' => __('journals.date')],
@@ -44,11 +44,10 @@
                             @endif
                         @endscope
                     </x-mary-table>
-                </x-mary-card>
             </div>
 
             <div class="space-y-6">
-                <x-mary-card :title="__('journals.supervision.assigned_supervisors')" shadow class="bg-base-200/50">
+                <x-ts-card :header="__('journals.supervision.assigned_supervisors')" class="bg-base-200/50">
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <div class="bg-primary/10 rounded-lg p-2">
@@ -77,7 +76,6 @@
                             </div>
                         </div>
                     </div>
-                </x-mary-card>
             </div>
         </div>
     @endif

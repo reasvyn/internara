@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         @forelse ($activities as $activity)
             <div class="border-base-200 border-b py-3 last:border-b-0">
                 <div class="flex items-start gap-3">
@@ -24,5 +24,4 @@
         @endforelse
 
         <div class="mt-4">{{ $activities->links() }}</div>
-    </x-mary-card>
 </div>

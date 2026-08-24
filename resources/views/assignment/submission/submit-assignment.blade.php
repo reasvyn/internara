@@ -10,22 +10,18 @@
     </div>
 
     @if ($assignments->isEmpty())
-        <x-mary-card
-            shadow
-            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
-        >
+        <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="flex flex-col items-center justify-center gap-4 py-20">
                 <x-ts-icon name="document-text" class="text-base-content/20 size-16" />
                 <h3 class="text-base-content/40 text-xl font-black tracking-tight">No assignments yet</h3>
                 <p class="text-base-content/60 text-sm">Assignments will appear here once published by your school.</p>
             </div>
-        </x-mary-card>
+
     @elseif (! $showDetail)
         {{-- Assignment List --}}
         <div class="grid grid-cols-1 gap-6">
             @foreach ($assignments as $assignment)
-                <x-mary-card
-                    shadow
+                <x-ts-card
                     class="!bg-base-100 shadow-base-content/5 border-base-content/5 hover:border-primary/20 cursor-pointer overflow-hidden border shadow-2xl transition-all duration-300"
                     wire:click="viewDetail('{{ $assignment->id }}')"
                 >
@@ -64,15 +60,12 @@
                             @endif
                         </div>
                     </div>
-                </x-mary-card>
+
             @endforeach
         </div>
     @else
         {{-- Assignment Detail --}}
-        <x-mary-card
-            shadow
-            class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl"
-        >
+        <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="mb-6">
                 <x-ts-button
                     icon="arrow-left"
@@ -269,6 +262,6 @@
                     </div>
                 </div>
             @endif
-        </x-mary-card>
+
     @endif
 </div>

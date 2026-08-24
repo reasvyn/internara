@@ -5,7 +5,7 @@
         separator
     />
 
-    <x-mary-card>
+    <x-ts-card shadowless>
         @if ($this->pendingApplications->isEmpty())
             <x-mary-alert
                 :title="__('internship.applications.empty')"
@@ -55,21 +55,23 @@
                 </table>
             </div>
         @endif
-    </x-mary-card>
 
-    <x-ts-modal wire="showRejectModal" :title="__('internship.applications.reject_title')">
-        <form wire:submit="reject">
-            <x-ts-textarea
-                :label="__('internship.applications.rejection_reason')"
-                wire:model="rejectionReason"
-                required
-            />
-            <div class="mt-6 flex justify-end gap-2">
-                <x-ts-button :text="__('internship.applications.cancel')" wire:click="$set('showRejectModal', false)" />
-                <x-ts-button :text="__('internship.applications.reject')" type="submit" icon="x-mark" color="red" />
-            </div>
-        </form>
-    </x-ts-modal>
+        <x-ts-modal wire="showRejectModal" :title="__('internship.applications.reject_title')">
+            <form wire:submit="reject">
+                <x-ts-textarea
+                    :label="__('internship.applications.rejection_reason')"
+                    wire:model="rejectionReason"
+                    required
+                />
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('internship.applications.cancel')"
+                        wire:click="$set('showRejectModal', false)"
+                    />
+                    <x-ts-button :text="__('internship.applications.reject')" type="submit" icon="x-mark" color="red" />
+                </div>
+            </form>
+        </x-ts-modal>
 
-    @include('sysadmin.components.application-review-guide')
+        @include('sysadmin.components.application-review-guide')
 </div>

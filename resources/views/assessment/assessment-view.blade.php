@@ -6,7 +6,7 @@
     />
 
     @forelse ($this->assessments as $assessment)
-        <x-mary-card class="mb-4">
+        <x-ts-card shadowless class="mb-4">
             <div class="mb-3 flex items-center justify-between">
                 <div>
                     <p class="font-medium">
@@ -75,14 +75,14 @@
                     <p class="text-sm">{{ $assessment->feedback }}</p>
                 </div>
             @endif
-        </x-mary-card>
+
     @empty
-        <x-mary-card>
+        <x-ts-card shadowless>
             <div class="text-base-content/40 py-12 text-center">
                 <x-ts-icon name="document-text" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_assessments_yet') }}</p>
                 <p class="text-sm">{{ __('assessment.no_assessments_desc') }}</p>
             </div>
-        </x-mary-card>
+
     @endforelse
 </div>

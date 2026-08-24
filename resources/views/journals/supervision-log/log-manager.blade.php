@@ -10,7 +10,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <x-mary-card shadow class="bg-base-100 border-base-200 border">
+    <x-ts-card class="bg-base-100 border-base-200 border">
         @php
             $headers = [
                 ['key' => 'date', 'label' => __('journals.date')],
@@ -55,41 +55,40 @@
                 @endif
             @endscope
         </x-mary-table>
-    </x-mary-card>
 
-    {{-- Form Modal --}}
-    <x-ts-modal wire="showModal" :title="__('journals.supervision.log_session')" separator>
-        <div class="space-y-6">
-            <x-ts-select.native
-                :label="__('journals.student')"
-                wire:model="registrationId"
-                :options="[null => __('journals.supervision.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
-            />
+        {{-- Form Modal --}}
+        <x-ts-modal wire="showModal" :title="__('journals.supervision.log_session')" separator>
+            <div class="space-y-6">
+                <x-ts-select.native
+                    :label="__('journals.student')"
+                    wire:model="registrationId"
+                    :options="[null => __('journals.supervision.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
+                />
 
-            <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="calendar" />
+                <x-mary-datepicker :label="__('journals.date')" wire:model="date" icon="calendar" />
 
-            <x-ts-input
-                :label="__('journals.topic')"
-                wire:model="topic"
-                :placeholder="__('journals.supervision.placeholder_topic')"
-            />
+                <x-ts-input
+                    :label="__('journals.topic')"
+                    wire:model="topic"
+                    :placeholder="__('journals.supervision.placeholder_topic')"
+                />
 
-            <x-ts-textarea
-                :label="__('journals.supervision.session_notes')"
-                wire:model="notes"
-                rows="4"
-                :placeholder="__('journals.supervision.placeholder_notes')"
-            />
-        </div>
+                <x-ts-textarea
+                    :label="__('journals.supervision.session_notes')"
+                    wire:model="notes"
+                    rows="4"
+                    :placeholder="__('journals.supervision.placeholder_notes')"
+                />
+            </div>
 
-        <x-slot:footer>
-            <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" />
-            <x-ts-button
-                :text="__('journals.supervision.record_session')"
-                color="primary"
-                wire:click="save"
-                loading="save"
-            />
-        </x-slot:footer>
-    </x-ts-modal>
+            <x-slot:footer>
+                <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" />
+                <x-ts-button
+                    :text="__('journals.supervision.record_session')"
+                    color="primary"
+                    wire:click="save"
+                    loading="save"
+                />
+            </x-slot:footer>
+        </x-ts-modal>
 </div>

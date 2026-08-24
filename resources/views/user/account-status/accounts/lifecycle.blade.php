@@ -15,7 +15,7 @@
         </x-slot:actions>
     </x-mary-header>
 
-    <x-mary-card shadow class="bg-base-100 border-base-200 border">
+    <x-ts-card class="bg-base-100 border-base-200 border">
         @if ($users->isEmpty())
             <div class="py-8 text-center opacity-60">
                 <x-ts-icon name="users" class="mx-auto mb-3 h-12 w-12" />
@@ -91,7 +91,6 @@
                 @endscope
             </x-mary-table>
         @endif
-    </x-mary-card>
 
-    @include('user.account-status.components.account-lifecycle-guide')
+        @include('user.account-status.components.account-lifecycle-guide')
 </div>

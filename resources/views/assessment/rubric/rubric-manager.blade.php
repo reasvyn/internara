@@ -8,7 +8,7 @@
     @forelse ($this->rubrics as $rubric)
         @php $competencies = $rubric->structure['competencies'] ?? []; @endphp
 
-        <x-mary-card class="mb-4">
+        <x-ts-card shadowless class="mb-4">
             <div class="mb-4 flex items-start justify-between">
                 <div>
                     <h3 class="text-lg font-semibold">{{ $rubric->name }}</h3>
@@ -125,15 +125,15 @@
                     />
                 </div>
             @endif
-        </x-mary-card>
+
     @empty
-        <x-mary-card>
+        <x-ts-card shadowless>
             <div class="text-base-content/40 py-12 text-center">
                 <x-ts-icon name="clipboard-document-list" class="mx-auto mb-4 size-16 opacity-30" />
                 <p class="text-lg font-medium">{{ __('assessment.no_rubrics') }}</p>
                 <p class="text-sm">{{ __('assessment.rubrics_subtitle') }}</p>
             </div>
-        </x-mary-card>
+
     @endforelse
 
     <x-ts-modal

@@ -11,16 +11,16 @@
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="space-y-6 lg:col-span-2">
-            <x-mary-card class="bg-base-100 border-base-content/10 border">
-                <x-slot:title>
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                <x-slot:header>
                     <div class="flex items-center gap-2">
                         <x-ts-icon name="pencil-square" class="text-primary size-5" />
                         <span class="font-semibold">{{ __('profile.information') }}</span>
                     </div>
-                </x-slot:title>
-                <x-slot:subtitle>
+                </x-slot:header>
+                <div class="text-base-content/60 -mt-2 mb-3 text-sm">
                     <span class="text-base-content/50 text-xs">{{ __('profile.information_desc') }}</span>
-                </x-slot:subtitle>
+                </div>
 
                 <form wire:submit="save">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -130,62 +130,60 @@
                         />
                     </div>
                 </form>
-            </x-mary-card>
 
-            {{-- Password --}}
-            <x-mary-card class="bg-base-100 border-base-content/10 border">
-                <x-slot:title>
-                    <div class="flex items-center gap-2">
-                        <x-ts-icon name="lock-closed" class="text-primary size-5" />
-                        <span class="font-semibold">{{ __('profile.password') }}</span>
-                    </div>
-                </x-slot:title>
-                <x-slot:subtitle>
-                    <span class="text-base-content/50 text-xs">{{ __('profile.password_desc') }}</span>
-                </x-slot:subtitle>
-
-                <form wire:submit="updatePassword">
-                    <div class="space-y-5">
-                        <x-ts-password
-                            :label="__('profile.current_password')"
-                            wire:model="passwordForm.current_password"
-                            :placeholder="__('profile.current_password_placeholder')"
-                            icon="lock-closed"
-                            right
-                        />
-                        <x-ts-password
-                            :label="__('profile.new_password')"
-                            wire:model="passwordForm.password"
-                            :placeholder="__('profile.new_password_placeholder')"
-                            icon="key"
-                            right
-                        />
-                        <x-ts-password
-                            :label="__('profile.confirm_password')"
-                            wire:model="passwordForm.password_confirmation"
-                            :placeholder="__('profile.confirm_password_placeholder')"
-                            icon="key"
-                            right
-                        />
+                {{-- Password --}}
+                <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                    <x-slot:header>
+                        <div class="flex items-center gap-2">
+                            <x-ts-icon name="lock-closed" class="text-primary size-5" />
+                            <span class="font-semibold">{{ __('profile.password') }}</span>
+                        </div>
+                    </x-slot:header>
+                    <div class="text-base-content/60 -mt-2 mb-3 text-sm">
+                        <span class="text-base-content/50 text-xs">{{ __('profile.password_desc') }}</span>
                     </div>
 
-                    <div class="mt-6 flex justify-end gap-2">
-                        <x-ts-button
-                            aria-label="{{ __('common.actions.remove') }}"
-                            :text="__('profile.update_password')"
-                            type="submit"
-                            color="primary"
-                            icon="key"
-                            loading="updatePassword"
-                        />
-                    </div>
-                </form>
-            </x-mary-card>
+                    <form wire:submit="updatePassword">
+                        <div class="space-y-5">
+                            <x-ts-password
+                                :label="__('profile.current_password')"
+                                wire:model="passwordForm.current_password"
+                                :placeholder="__('profile.current_password_placeholder')"
+                                icon="lock-closed"
+                                right
+                            />
+                            <x-ts-password
+                                :label="__('profile.new_password')"
+                                wire:model="passwordForm.password"
+                                :placeholder="__('profile.new_password_placeholder')"
+                                icon="key"
+                                right
+                            />
+                            <x-ts-password
+                                :label="__('profile.confirm_password')"
+                                wire:model="passwordForm.password_confirmation"
+                                :placeholder="__('profile.confirm_password_placeholder')"
+                                icon="key"
+                                right
+                            />
+                        </div>
+
+                        <div class="mt-6 flex justify-end gap-2">
+                            <x-ts-button
+                                aria-label="{{ __('common.actions.remove') }}"
+                                :text="__('profile.update_password')"
+                                type="submit"
+                                color="primary"
+                                icon="key"
+                                loading="updatePassword"
+                            />
+                        </div>
+                    </form>
         </div>
 
         {{-- Sidebar --}}
         <div class="space-y-6">
-            <x-mary-card class="bg-base-100 border-base-content/10 border">
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
                 <div class="flex flex-col items-center py-6">
                     <div class="group relative mb-3">
                         <div class="relative cursor-pointer" @click="document.getElementById('avatar-upload').click()">
@@ -250,22 +248,25 @@
                         <span>{{ __('profile.sidebar.joined', ['date' => $user->created_at->format('M Y')]) }}</span>
                     </div>
                 </div>
-            </x-mary-card>
 
-            <a href="{{ route('profile.recovery') }}" wire:navigate>
-                <x-mary-card class="bg-base-100 border-base-content/10 hover:bg-base-200/50 cursor-pointer border transition-colors">
-                    <div class="flex items-center gap-3 px-1">
-                        <div class="bg-warning/10 text-warning flex size-10 shrink-0 items-center justify-center rounded-lg">
-                            <x-ts-icon name="key" class="size-5" />
+                <a href="{{ route('profile.recovery') }}" wire:navigate>
+                    <x-ts-card
+                        shadowless
+                        class="bg-base-100 border-base-content/10 hover:bg-base-200/50 cursor-pointer border transition-colors"
+                    >
+                        <div class="flex items-center gap-3 px-1">
+                            <div class="bg-warning/10 text-warning flex size-10 shrink-0 items-center justify-center rounded-lg">
+                                <x-ts-icon name="key" class="size-5" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-medium">{{ __('profile.recovery.title') }}</p>
+                                <p class="text-base-content/50 truncate text-xs">
+                                    {{ __('profile.recovery.subtitle') }}
+                                </p>
+                            </div>
+                            <x-ts-icon name="chevron-right" class="text-base-content/20 size-4 shrink-0" />
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-medium">{{ __('profile.recovery.title') }}</p>
-                            <p class="text-base-content/50 truncate text-xs">{{ __('profile.recovery.subtitle') }}</p>
-                        </div>
-                        <x-ts-icon name="chevron-right" class="text-base-content/20 size-4 shrink-0" />
-                    </div>
-                </x-mary-card>
-            </a>
+                </a>
         </div>
     </div>
 

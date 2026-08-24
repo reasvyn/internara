@@ -3,7 +3,7 @@
 
     <div class="space-y-4">
         @forelse ($this->visits as $visit)
-            <x-mary-card shadow class="bg-base-100 border-base-200 border">
+            <x-ts-card class="bg-base-100 border-base-200 border">
                 <div class="flex items-start justify-between">
                     <div>
                         <p class="font-medium">{{ $visit->visit_date?->format('d M Y') }}</p>
@@ -17,7 +17,7 @@
                         :class="$visit->is_verified ? 'badge-success' : 'badge-warning'"
                     />
                 </div>
-            </x-mary-card>
+
         @empty
             <x-mary-alert :title="__('journals.no_visits')" icon="information-circle" class="bg-base-200" />
         @endforelse

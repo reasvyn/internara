@@ -10,7 +10,7 @@
     @else
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             @foreach ($this->openInternships as $internship)
-                <x-mary-card class="border-base-200 border transition-shadow hover:shadow-lg">
+                <x-ts-card class="border-base-200 border transition-shadow hover:shadow-lg">
                     <x-ts-badge
                         text="{{ __('internship.statuses.' . $internship->status->value) }}"
                         class="badge-info mb-3"
@@ -61,7 +61,7 @@
                             wire:navigate
                         />
                     @endauth
-                </x-mary-card>
+
             @endforeach
         </div>
     @endif
