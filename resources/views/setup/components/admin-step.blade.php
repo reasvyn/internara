@@ -41,10 +41,7 @@
             />
         </div>
 
-        <div class="alert bg-info/5 border-info/20 mt-3 text-sm">
-            <x-ts-icon name="information-circle" class="size-5 shrink-0" />
-            <span>{{ __('setup.wizard.password_hint') }}</span>
-        </div>
+        <x-ts-alert color="info" :text="__('setup.wizard.password_hint')" icon="information-circle" class="mt-3 text-sm" />
     </div>
 
     <div class="border-base-content/10 mt-8 flex items-center justify-between border-t pt-6">

@@ -5,10 +5,11 @@
     />
 
     @if (! $registration)
-        <div class="alert alert-warning">
-            <x-ts-icon name="exclamation-triangle" class="h-5 w-5" />
-            {{ __('journals.supervision.no_active_registration') }}
-        </div>
+        <x-ts-alert
+            color="warning"
+            :text="__('journals.supervision.no_active_registration')"
+            icon="exclamation-triangle"
+        />
     @else
         <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div class="space-y-6 md:col-span-2">
