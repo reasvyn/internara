@@ -1,6 +1,6 @@
 # Context — AI Agent Memory (Evolving Project Context)
 
-> **Last updated:** 2026-08-25 **Changes:** sync — ui-framework-coexistence: packages removed (not just disabled), palette bridge
+> **Last updated:** 2026-08-25 **Changes:** added dep-model-status-deprecated — spatie/laravel-model-status marked deprecated pending removal (#419)
 
 ## Description
 
@@ -25,6 +25,7 @@ or conflicting, write it back here** — this memory is how context survives bet
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
 | [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, `docker-deploy` branch, `build-and-deploy.yml`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |
+| [dep-model-status-deprecated.md](dep-model-status-deprecated.md) | **Any status/state persistence** — spatie/laravel-model-status deprecated, removal planned (#419); status columns are app-owned |
 | [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
 

@@ -255,7 +255,7 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Laravel Pulse | Monitoring | v1.8 |
 | spatie/laravel-activitylog | Audit Log | v5.0 |
 | spatie/laravel-medialibrary | Media Upload | v11.23 |
-| spatie/laravel-model-status | Model Status | v1.18 |
+| spatie/laravel-model-status | Model Status | v1.18 — **deprecated, removal planned (#419); do not use in new code** |
 | spatie/laravel-permission | RBAC | v8.0 |
 | Pest | Testing | v4.2 |
 | PHPStan | Static Analysis | v2.1 |
