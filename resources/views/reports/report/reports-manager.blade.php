@@ -74,9 +74,11 @@
                                 @php
                                     $isFinalized = $report->status->value === 'finalized';
                                 @endphp
-                                <span class="badge {{ $isFinalized ? 'badge-success' : 'badge-warning' }}">
-                                    {{ __('report.status_' . $report->status->name . '_label') }}
-                                </span>
+                                <x-ts-badge
+                                    :text="__('report.status_'.$report->status->name.'_label')"
+                                    :color="$isFinalized ? 'green' : 'yellow'"
+                                    xs
+                                />
                             </td>
                             <td class="px-4 py-3 font-mono">
                                 {{ $report->final_score ? number_format($report->final_score, 1) : '—' }}
