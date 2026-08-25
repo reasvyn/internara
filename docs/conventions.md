@@ -1,6 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-23 **Changes:** §1 — added SRP & modularity rules row pointing to Modular Pattern §1.6
+> **Last updated:** 2026-08-25 **Changes:** sync — §13 icons via Heroicons/TallstackUI x-ts-icon (was maryUI), retain CSS-variable theming
 
 ## Description
 
@@ -769,8 +769,7 @@ Every form field MUST include an icon for visual clarity:
 | Search        | `o-magnifying-glass`                  |
 | Select/Dropdown | `o-chevron-down`                    |
 
-Icons use the Heroicons system via maryUI. Pair icons with labels — never use icons as the sole
-indicator for accessibility.
+Icons use Heroicons via TallstackUI `x-ts-icon` (or inline SVG with `heroicon-*`). Pair icons with labels — never use icons as the sole indicator for accessibility.
 
 ---
 

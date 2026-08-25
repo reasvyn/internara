@@ -1,21 +1,21 @@
 # UI/UX Design — Principles & Guidelines
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify UI/UX principles match current (DaisyUI, maryUI, Tailwind CSS v4, accessibility, routing, localization)
+> **Last updated:** 2026-08-25 **Changes:** sync — replace DaisyUI/maryUI/PHPFlasher with TallstackUI v4 (self-hosted palette, x-ts-* components, toast, theme-switch)
 
 ## Description
 
-UI/UX design principles, component library usage (DaisyUI, maryUI), layout patterns, and
-accessibility guidelines.
+UI/UX design principles, component library usage (TallstackUI v4 + Tailwind CSS v4), layout patterns,
+and accessibility guidelines.
 
 ## 1. Design System Philosophy
 
-Internara's interface is built on three CSS layers:
+Internara's interface is built on three layers:
 
-| Layer               | Purpose                    | Provides                                        |
-| ------------------- | -------------------------- | ----------------------------------------------- |
-| **Tailwind CSS v4** | Utility foundation         | Spacing, typography, responsive grid, colors    |
-| **DaisyUI**         | Themed primitives          | Buttons, cards, badges, modals, drawer sidebar  |
-| **maryUI**          | High-level form components | Inputs, tables, selects, dropdowns, file upload |
+| Layer                  | Purpose                    | Provides                                                                 |
+| ---------------------- | -------------------------- | ------------------------------------------------------------------------ |
+| **Tailwind CSS v4**    | Utility foundation         | Spacing, typography, responsive grid, colors (`dark:` via `.dark` class) |
+| **TallstackUI v4**     | Component library          | Buttons, cards, tables, forms, selects, modals, dialogs, badges, alerts, layout, dropdowns, toast |
+| **Self-hosted palette**| Semantic color bridge      | `--color-base-100/200/300`, `--color-primary/secondary/accent`, `info/success/warning/error` — mirrors legacy DaisyUI tokens via `@theme` + `@layer components` shims in `resources/css/app.css` (no DaisyUI plugin) |
 
 Livewire manages server-side state; Alpine.js handles client-side behavior. The visual language is
 clean and professional: neutral monochrome base, single accent brand color, low-saturation
@@ -57,12 +57,14 @@ Located at `resources/views/{module}/layouts/`:
 
 ## 3. Dark Mode
 
-Class-based dark mode via `data-theme` attribute on `<html>`. Three-state switcher: light, dark,
-system preference. Preference stored in cookie, applied on subsequent visits.
+Dual-signal dark mode via `data-theme` attribute + `.dark` class on `<html>`. Three-state switcher:
+light, dark, system preference. Implementation:
 
-Both themes defined as DaisyUI theme plugins in CSS. Brand colors are not hardcoded — injected at
-runtime via inline `<style>` block. Admin can change brand colors and see them reflected in both
-themes immediately, without CSS recompilation.
+- **Component:** `core::ui.theme-switch` wraps TallstackUI's built-in `<x-theme-switch>` (`x-data="tallstackui_darkTheme"`); persists to `localStorage` key `dark-theme` (`light`/`dark`/`system` plus legacy `true`/`false`) and dispatches a `theme` CustomEvent.
+- **JS:** `resources/js/app.js` `applyTheme()` sets **both** `data-theme` (semantic palette vars) and `.dark` (Tailwind/TallstackUI `dark:` variant) and mirrors to `theme` cookie for SSR accuracy (`base.blade.php` applies `class="dark"` server-side to avoid FOUC).
+- **CSS:** `resources/css/app.css` defines palette via `@theme` (`--color-base-*`, `--color-primary` etc.) with `[data-theme='dark']` overrides; legacy DaisyUI component classes (`.btn`, `.badge`, `.table` etc.) are shimmed via `@layer components` until fully migrated to `x-ts-*`.
+
+Brand colors are not hardcoded — injected at runtime via `Theme::cssVariables()` inline `<style>` block (see `foundation/branding.md`). Admin can change brand colors and see them reflected in both themes immediately, without CSS recompilation.
 
 Dark mode lightens brand colors by 40% for visibility on dark backgrounds.
 
@@ -104,8 +106,7 @@ requirements. See `docs/architecture/modular-pattern.md` §22 for architectural 
 
 - **Minimum contrast ratios:** 4.5:1 for normal text, 3:1 for large text (≥18pt or ≥14pt bold),
   3:1 for UI components and graphical objects.
-- **DaisyUI theme colors** are pre-validated for contrast. Never override with arbitrary Tailwind
-  color utilities that fail contrast checks.
+- **Semantic palette colors** (`--color-success`, `--color-warning`, etc. in `resources/css/app.css`) are pre-validated for contrast. Never override with arbitrary Tailwind color utilities that fail contrast checks.
 - **Color is never the sole indicator:** Status badges (success/warning/error), capacity gauges,
   and validation states must include text labels, icons, or patterns alongside color. Example:
   `badge-success` + "Verified" text, not just a green badge.
@@ -114,7 +115,7 @@ requirements. See `docs/architecture/modular-pattern.md` §22 for architectural 
 
 - **Tab order:** Must follow logical reading order (top-to-bottom, left-to-right for LTR). No
   positive `tabindex` values.
-- **Focus indicators:** Every focusable element must have a visible focus ring. DaisyUI provides
+- **Focus indicators:** Every focusable element must have a visible focus ring. TallstackUI provides
   `focus:ring` by default — do not suppress with `outline-none` without a visible replacement.
 - **Skip links:** Every page with navigation must provide a "Skip to main content" link as the
   first focusable element in the DOM.
@@ -123,10 +124,9 @@ requirements. See `docs/architecture/modular-pattern.md` §22 for architectural 
 
 ### 6.3 Modal & Dialog Focus
 
-- **Focus trap:** Modals (`x-mary-modal`) must trap focus within the modal when open. DaisyUI
-  modals handle this by default.
+- **Focus trap:** Modals (`x-ts-modal`, `x-ts-dialog`) must trap focus within the modal when open.
 - **Focus return:** On modal close, focus must return to the trigger element.
-- **Escape key:** All modals and dropdowns must close on Escape key press (DaisyUI default).
+- **Escape key:** All modals and dropdowns must close on Escape key press (TallstackUI default).
 
 ### 6.4 Screen Reader Support
 
@@ -141,12 +141,12 @@ requirements. See `docs/architecture/modular-pattern.md` §22 for architectural 
 
 ### 6.5 Form Accessibility
 
-- **Labels:** Every form input must have an associated `<label>` (via `for`/`id` or wrapping maryUI
-  `label` prop). Placeholder text is not a label substitute.
-- **Required indicators:** Use the `required` HTML attribute (maryUI `required` prop), not just
+- **Labels:** Every form input must have an associated `<label>` (via `for`/`id` or wrapping
+  TallstackUI `label` prop). Placeholder text is not a label substitute.
+- **Required indicators:** Use the `required` HTML attribute (TallstackUI `required` prop), not just
   visual asterisks.
 - **Error messaging:** Validation errors must be associated with their field via `aria-describedby`
-  and announced to screen readers via `aria-live` regions. maryUI handles this automatically.
+  and announced to screen readers via `aria-live` regions. TallstackUI handles this automatically.
 - **Error focus:** After failed validation, focus must move to the first invalid field or an error
   summary.
 
@@ -237,8 +237,12 @@ full rules.
 ### Language Switcher
 
 The `LangSwitcher` Livewire component (`app/Settings/Livewire/LangSwitcher.php`) toggles between
-EN and ID. Locale preference is stored in a cookie (`locale`) and applied via `SetLocale` middleware
+EN and ID (plain Tailwind trigger with globe icons; no TallstackUI built-in). Locale preference is stored in a cookie (`locale`) and applied via `SetLocale` middleware
 on every request.
+
+### Theme Switcher
+
+The theme switcher is **not** a Livewire component. It is the Blade partial `core::ui.theme-switch` wrapping TallstackUI's `<x-theme-switch>` (`tallstackui_darkTheme` Alpine scope). See §3 for persistence and JS wiring. Legacy `ThemeSwitcher.php` Livewire component and its test were removed in `0.15.0`.
 
 ### Date & Number Formatting
 
@@ -264,22 +268,18 @@ key to one locale without the other is a bug.
 
 ## 10. Component Library Patterns
 
-### maryUI Components
+### TallstackUI Components (`x-ts-*`)
 
-Used for data-heavy interfaces:
+All UI is built with TallstackUI v4 (`prefix ts-`, see `config/tallstackui.php`):
 
-- `x-table` with sorting, pagination, row selection
-- `x-input`, `x-select`, `x-textarea` with validation error styling
-- `x-form`, `x-form-section` for form layout
-- `x-button`, `x-dropdown` for actions
+- **Layout:** `x-ts-layout`, `x-ts-side-bar`, `x-ts-dropdown`, `x-ts-tooltip`
+- **Data:** `x-ts-table` (sorting, pagination, row selection; headers via `index` key), `x-ts-card`
+- **Forms:** `x-ts-input`, `x-ts-select.native`, `x-ts-textarea`, `x-ts-radio`, `x-ts-checkbox`, `x-ts-toggle`, `x-ts-file` with validation styling
+- **Actions:** `x-ts-button`, `x-ts-badge`, `x-ts-alert`, `x-ts-icon`
+- **Overlays:** `x-ts-modal`, `x-ts-dialog` (confirm), `x-ts-slide`
+- **Feedback:** TallstackUI toast via `toast()->success()` Interactions (replaces PHPFlasher `flash()->`)
 
-### DaisyUI Components
-
-Used for structural elements:
-
-- `btn`, `card`, `badge`, `avatar`, `modal`
-- `drawer` for sidebar navigation
-- `theme-controller` for dark mode toggle
+Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.) remain as class names but are shimmed locally in `resources/css/app.css` `@layer components` — no DaisyUI npm package.
 
 ---
 
@@ -295,7 +295,7 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 
 - **File:** `resources/views/{module}/components/{page-name}-guide.blade.php`
 - **Trigger:** Fixed floating button, bottom-right, `z-50`, primary color
-- **Modal:** `x-mary-modal` with numbered steps and a tip section
+- **Modal:** `x-ts-modal` / `x-ts-dialog` with numbered steps and a tip section
 - **Localization:** All strings in `__('{module}.guide.*')`
 - **Integration:** Parent component includes `@include('{module}.components.{page-name}-guide')` and
   exposes `$showGuide` boolean
@@ -307,10 +307,10 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | Asset             | Path                                      |
 | ----------------- | ----------------------------------------- |
 | Layout templates  | `resources/views/core/layouts/`           |
-| UI components     | `resources/views/core/ui/`                |
-| CSS entry point   | `resources/css/app.css`                   |
-| JS entry point    | `resources/js/app.js`                     |
-| maryUI config     | `config/mary.php`                         |
+| UI components     | `resources/views/core/ui/` (incl. `theme-switch.blade.php`) |
+| CSS entry point   | `resources/css/app.css` (`@import tallstackui/css/v4.css` + self-hosted palette + shims) |
+| JS entry point    | `resources/js/app.js` (theme + flatpickr + marked + choices bridge) |
+| TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
-| Theme switcher    | `app/Settings/Livewire/ThemeSwitcher.php` |
+| Theme switcher    | `resources/views/core/ui/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |
 | Language switcher | `app/Settings/Livewire/LangSwitcher.php`  |

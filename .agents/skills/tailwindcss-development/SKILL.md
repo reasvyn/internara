@@ -1,6 +1,6 @@
 ---
 name: tailwindcss-development
-description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized UI/styling development — Blade templates, responsive layouts, dark mode, daisyUI, maryUI, Tailwind CSS v4."
+description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized UI/styling development — Blade templates, responsive layouts, dark mode, TallstackUI v4 + Tailwind CSS v4."
 upstream:
   - feature-building
   - livewire-development
@@ -10,7 +10,7 @@ downstream:
 
 # Tailwind CSS Development
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§UI Stack, §Key Patterns, §Styling Principles, §Accessibility, §Localization, §Routing) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-25 **Changes:** sync — replace daisyUI/maryUI with TallstackUI v4 (x-ts-* components, self-hosted palette, dark via .dark)
 
 > **Prerequisite:** Load `context-awareness` for project orientation. Loading `livewire-development`
 > provides component context.
@@ -18,61 +18,60 @@ downstream:
 ## When to Activate
 
 Use this skill when building or styling UI — Blade templates, responsive layouts, dark mode,
-component styling with daisyUI and maryUI, and Tailwind CSS v4 utilities.
+component styling with TallstackUI v4 and Tailwind CSS v4 utilities.
 
 ## Workflow
 
 Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
-strategy, and commit format. This skill adds UI/styling guidance — the UI stack, maryUI/DaisyUI
+strategy, and commit format. This skill adds UI/styling guidance — the UI stack, TallstackUI
 patterns, dark mode, and accessibility — nothing else.
 
 ### Execute — UI/Styling Development
 
-- Use maryUI components for consistency (table, modal, form)
-- Use DaisyUI theme colors (primary, secondary, accent)
+- Use TallstackUI `x-ts-*` components for consistency (table, modal, form, card, badge, alerts)
+- Use semantic palette vars (`--color-primary`, `--color-success` etc. in `resources/css/app.css`)
 - Ensure responsive on mobile, tablet, desktop
-- Ensure dark mode works without visual breakage
-- Avoid custom CSS if DaisyUI/maryUI suffice
+- Ensure dark mode works (`.dark` + `data-theme`, via `core::ui.theme-switch`)
+- Avoid custom CSS if TallstackUI suffices (legacy `.btn`/`.badge` shimmed in `@layer components`)
 
 ## UI Stack
 
-| Layer               | Purpose                                                        |
-| ------------------- | -------------------------------------------------------------- |
-| **Tailwind CSS v4** | Utility-first CSS framework                                    |
-| **DaisyUI 5**       | Tailwind component library (themed, accessible)                |
-| **maryUI 2**        | Laravel-specific Livewire component library (built on DaisyUI) |
-| **Alpine.js**       | Lightweight JavaScript interactivity (dropdowns, modals)       |
+| Layer                    | Purpose                                                        |
+| ------------------------ | -------------------------------------------------------------- |
+| **Tailwind CSS v4**      | Utility-first CSS framework (`dark:` via `.dark` class)        |
+| **TallstackUI v4**       | Component library (`x-ts-*`, prefix `ts-`, toast via Interactions) |
+| **Self-hosted palette**  | Semantic colors via `@theme` + shims (`resources/css/app.css`) |
+| **Alpine.js**            | Lightweight JavaScript interactivity (dropdowns, modals)       |
 
 ## Key Patterns
 
 ### Layout
 
-- Use DaisyUI's `drawer` for sidebar navigation
-- Use DaisyUI's `navbar` for top navigation
+- Use TallstackUI `x-ts-layout` + `x-ts-side-bar` for sidebar navigation
+- Use core header (`resources/views/core/ui/navbar-actions.blade.php`) for top navigation
 - Responsive: mobile-first with `sm:`, `md:`, `lg:` breakpoints
 - Container: `max-w-7xl mx-auto` for content width
 
 ### Dark Mode
 
-- DaisyUI supports dark mode via `data-theme="dark"` attribute
-- Implement theme toggle via Alpine.js + Livewire
-- Use CSS variables for brand colors (defined in Settings module)
+- Dual signal: `data-theme` (palette) + `.dark` class (Tailwind/TallstackUI)
+- Theme switch is `core::ui.theme-switch` wrapping `<x-theme-switch>` (TallstackUI); persists to `localStorage` `dark-theme`, dispatches `theme` CustomEvent, JS `applyTheme()` mirrors to `theme` cookie for SSR
+- Brand colors injected via `Theme::cssVariables()` inline `<style>`
 
 ### Component Usage
 
-| Need          | maryUI Component                                   |
-| ------------- | -------------------------------------------------- |
-| Tables        | `x-mary-table` (sorting, pagination, selection)    |
-| Forms         | `x-mary-input`, `x-mary-select`, `x-mary-textarea` |
-| Modals        | `x-mary-modal`                                     |
-| Notifications | `x-mary-toast` (via flasher)                       |
-| Buttons       | `x-mary-button`                                    |
-| Cards         | `x-mary-card`                                      |
-| Stats         | `x-mary-stat`                                      |
-| Alerts        | `x-mary-alert`                                     |
-| Tabs          | `x-mary-tabs`                                      |
-| Choices       | `x-mary-choices` (multi-select)                    |
+| Need          | TallstackUI Component (`x-ts-*`)                               |
+| ------------- | -------------------------------------------------------------- |
+| Tables        | `x-ts-table` (sorting, pagination, selection; headers via `index` key) |
+| Forms         | `x-ts-input`, `x-ts-select.native`, `x-ts-textarea`, `x-ts-radio`, `x-ts-checkbox` |
+| Modals        | `x-ts-modal`, `x-ts-dialog` (confirm)                          |
+| Notifications | Toast via `toast()->success()` (TallstackUI Interactions)      |
+| Buttons       | `x-ts-button`                                                  |
+| Cards         | `x-ts-card`                                                    |
+| Badges        | `x-ts-badge`                                                   |
+| Alerts        | `x-ts-alert`                                                   |
+| Icons         | `x-ts-icon` (Heroicons)                                        |
 
 ### View Structure
 
@@ -94,11 +93,11 @@ resources/views/{module}/{submodule}/{action}.blade.php
 
 ## Styling Principles
 
-1. Prefer maryUI components over custom HTML for consistency
-2. Use DaisyUI theme colors (`primary`, `secondary`, `accent`, etc.) over arbitrary colors
+1. Prefer TallstackUI `x-ts-*` components over custom HTML for consistency
+2. Use semantic palette vars (`--color-primary`, `--color-success` etc.) over arbitrary colors
 3. Responsive design is mandatory — test at mobile, tablet, desktop
-4. Dark mode must work without visual breakage
-5. Do NOT write custom CSS unless DaisyUI/maryUI cannot achieve the design
+4. Dark mode must work without visual breakage (`.dark` + `data-theme`)
+5. Do NOT write custom CSS unless TallstackUI cannot achieve the design (shims exist for legacy classes)
 6. Follow existing component patterns in the same module
 7. **Accessibility is mandatory** — WCAG 2.1 AA compliance (see below)
 
@@ -109,25 +108,25 @@ Every styled component MUST meet accessibility requirements. See `docs/architect
 
 ### Color & Contrast
 
-- Use DaisyUI theme colors — they are pre-validated for contrast ratios.
+- Use semantic palette vars (`--color-success`, `--color-warning` etc.) — pre-validated for contrast.
 - Minimum 4.5:1 for normal text, 3:1 for large text (≥18pt or ≥14pt bold).
 - Never use arbitrary Tailwind color utilities (`text-red-500`, `bg-blue-200`) that may fail
-  contrast checks — prefer DaisyUI semantic colors (`text-error`, `bg-info/10`).
-- Status indicators must include text labels alongside color (e.g., `badge-success` + "Active",
-  not just a green badge).
+  contrast checks — prefer semantic `text-error`, `bg-info/10`.
+- Status indicators must include text labels alongside color (e.g., `x-ts-badge color="success"` + "Active",
+  not just color).
 
 ### Focus Indicators
 
 - Never suppress focus rings with `outline-none` without providing a visible replacement.
-- DaisyUI `focus:ring` is the default — preserve it on all interactive elements.
+- TallstackUI `focus:ring` is the default — preserve it on all interactive elements.
 - Custom interactive elements (Alpine.js dropdowns, custom buttons) must include
   `focus:ring focus:ring-primary`.
 
 ### Keyboard Navigation
 
 - All interactive elements must be reachable via Tab key.
-- Dropdowns must open on Enter/Space and close on Escape.
-- Modals must trap focus (DaisyUI default — verify it's not overridden).
+- Dropdowns (`x-ts-dropdown`) must open on Enter/Space and close on Escape.
+- Modals (`x-ts-modal`/`x-ts-dialog`) must trap focus — verify not overridden.
 - No positive `tabindex` values — follow natural DOM order.
 
 ### Responsive & Reflow
@@ -140,9 +139,9 @@ Every styled component MUST meet accessibility requirements. See `docs/architect
 
 - Icon-only buttons must include `aria-label`:
   ```blade
-  <x-mary-button icon="o-trash" aria-label="{{ __('common.delete') }}" />
+  <x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />
   ```
-- Icons paired with text should NOT duplicate the text in `alt` attributes.
+- Icons via `x-ts-icon` (Heroicons) paired with text should NOT duplicate the text in `alt` attributes.
 
 ## Localization
 
@@ -195,11 +194,11 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 
 ## Verification Checklist
 
-- [ ] Uses maryUI / DaisyUI components where available
+- [ ] Uses TallstackUI `x-ts-*` components where available
 - [ ] Responsive at mobile, tablet, desktop viewports
-- [ ] Dark mode renders correctly
+- [ ] Dark mode renders correctly (`.dark` + `data-theme`)
 - [ ] Follows existing view patterns in the module
-- [ ] No custom CSS when framework components suffice
+- [ ] No custom CSS when TallstackUI suffices (shims are transitional)
 - [ ] No inline styles — use Tailwind utilities
 - [ ] All visible text uses `__()` for localization
 - [ ] Focus indicators visible on all interactive elements
@@ -212,8 +211,8 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| UI stack & component usage (maryUI primacy, DaisyUI theme colors, no custom CSS) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
-| Layout, responsiveness & dark mode (drawer/navbar, breakpoints, theming, Tailwind v4) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
+| UI stack & component usage (TallstackUI primacy, semantic palette, no custom CSS) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
+| Layout, responsiveness & dark mode (layout/sidebar, breakpoints, theming, Tailwind v4) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
 | View structure & routing (Blade placement, route files, Livewire routes) | `rules/view-structure-and-routing.md` | Creating views or routes |
 | Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `rules/accessibility-wcag.md` | Every styled component before release |
 | Localization in views (bilingual `__()`, keys, dates, lang attribute) | `rules/localization-in-views.md` | Any user-facing string or date in a view |
@@ -225,6 +224,5 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 | UI/UX design system         | `docs/foundation/ui-ux.md`              |
 | Branding & themes           | `docs/foundation/branding.md`           |
 | Livewire component patterns | `docs/architecture/livewire-pattern.md` |
-| maryUI documentation        | `search-docs` with `robsontenorio/mary` |
-| DaisyUI documentation       | `search-docs` with `daisyui`            |
+| TallstackUI documentation   | `search-docs` with `tallstackui/tallstackui` |
 | Tailwind CSS v4             | `search-docs` with tailwindcss          |

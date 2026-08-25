@@ -12,7 +12,7 @@ downstream:
 
 # Livewire Development
 
-> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in `rules/` (thin component, component structure & routing, tables & uploads, accessibility, localization, component verification)
+> **Last updated:** 2026-08-25 **Changes:** sync — tables now TallstackUI x-ts-table (was maryUI), component refs updated
 
 > **Prerequisite:** Load `context-awareness` for project orientation. Loading `feature-building`
 > provides the broader implementation flow.
@@ -37,7 +37,7 @@ structure / tables-uploads / accessibility / localization / verification).
 |------|-------|--------------|
 | Thin component (delegation, boundaries, method injection, read-only entities) | `rules/thin-component.md` | Building or reviewing any Livewire component |
 | Component structure & routing (placement, build order, Form Objects, routes) | `rules/component-structure.md` | Creating a component, form, or route |
-| Tables & file uploads (maryUI tables, BaseRecordManager, WithFileUploads + MediaLibrary) | `rules/tables-and-uploads.md` | Any listing/CRUD table or file upload |
+| Tables & file uploads (TallstackUI tables, BaseRecordManager, WithFileUploads + MediaLibrary) | `rules/tables-and-uploads.md` | Any listing/CRUD table or file upload |
 | Accessibility (WCAG 2.1 AA: focus, dynamic content, forms, tables, icons) | `rules/accessibility.md` | Every component before release |
 | Localization (every user-facing string, keying patterns, confirm dialogs) | `rules/localization.md` | Any user-facing string in a component or view |
 | Component verification (thin/safe/complete gate) | `rules/component-verification.md` | Before commit of any component change |
@@ -51,5 +51,5 @@ structure / tables-uploads / accessibility / localization / verification).
 | Form Objects       | `docs/architecture/livewire-pattern.md` (§Forms) |
 | File uploads       | `docs/infrastructure/media-library.md`           |
 | Testing components | `docs/architecture/testing-pattern.md`           |
-| maryUI components  | maryUI docs (via `search-docs`)                  |
+| TallstackUI components | TallstackUI docs (via `search-docs` `tallstackui/tallstackui`) |
 | Authorization      | `docs/architecture/policy-pattern.md`            |

@@ -1,7 +1,6 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-08-16 **Changes:** link — reference the governing architecture spec
-> (D2FT3-architecture.md) as the authoritative contract for this document
+> **Last updated:** 2026-08-25 **Changes:** sync — Layer 4 stack: TallstackUI v4 (was maryUI+DaisyUI), self-hosted palette bridge, toast via Interactions
 
 ## Description
 
@@ -46,7 +45,7 @@ only on layers below it — never the reverse.
 │                                                                             │
 │  Livewire components  Blade templates  Controllers  Console commands        │
 │  Policies (RBAC / authorization gates)  Routes (17 route files)             │
-│  maryUI + DaisyUI + Alpine.js + Tailwind CSS v4                             │
+│  TallstackUI v4 + Alpine.js + Tailwind CSS v4 (+ self-hosted palette shims)│
 │                                                                             │
 │  app/{Module}/**/Livewire/  app/{Module}/**/Policies/  app/{Module}/Http/  │
 │  resources/views/{module}/  routes/web/{module}.php (+ {submodule}.php)    │

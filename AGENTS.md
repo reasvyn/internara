@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-23 **Changes:** architecture table — added SRP & modularity rules row (Modular Pattern §1.6)
+> **Last updated:** 2026-08-25 **Changes:** sync — Project Identity: replace DaisyUI/maryUI/php-flasher with TallstackUI v4 (complete migration, 0.15.0)
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -241,8 +241,7 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Livewire | Frontend | v4.3 |
 | Alpine.js | Frontend JS | — |
 | Tailwind CSS | CSS | v4.3 |
-| DaisyUI | UI Component | v5.7 |
-| maryUI | UI Component | v2.9 |
+| TallstackUI | UI Component | v4.3 |
 | Flatpickr | Date Picker | v4.6 |
 | Marked | Markdown Parser | v18.0 |
 | Vite | Build Tool | v8.1 |
@@ -254,7 +253,6 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | barryvdh/laravel-dompdf | PDF Generation | v3.1 |
 | laravel-lang/lang | Localization | v15.34 |
 | Laravel Pulse | Monitoring | v1.8 |
-| php-flasher/flasher-laravel | Flash Messages | v2.4 |
 | spatie/laravel-activitylog | Audit Log | v5.0 |
 | spatie/laravel-medialibrary | Media Upload | v11.23 |
 | spatie/laravel-model-status | Model Status | v1.18 |
@@ -331,7 +329,7 @@ Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
 | Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
 | Writing scripts | `script-automation` | Standards for `scripts/` devtools |
-| CSS/styling | `tailwindcss-development` | Tailwind, DaisyUI, maryUI |
+| CSS/styling | `tailwindcss-development` | Tailwind, TallstackUI |
 | File uploads/media | `medialibrary-development` | Spatie MediaLibrary |
 | Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards |
 

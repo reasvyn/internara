@@ -1,32 +1,30 @@
-# UI Framework Coexistence — TallstackUI First, DaisyUI/maryUI/PHPFlasher Disabled
+# UI Framework Coexistence — TallstackUI Complete (DaisyUI/maryUI/PHPFlasher Removed)
 
-> **Last updated:** 2026-08-24 **Changes:** created — records dont-discover decoupling, theme
-> `.dark` fix, and what still depends on DaisyUI CSS during coexistence
+> **Last updated:** 2026-08-25 **Changes:** sync — packages deleted (not just disabled): daisyui npm + mary + flasher removed, self-hosted palette + shims bridge the gap
 
 ## Description
 
-Migration to TallstackUI is **complete** (`x-mary` = 0 in app+views, see
-`.agents/plans/tallstackui-migration.md`). Packages are **still installed** (FB792 DD-4) but their
-runtime wiring is disabled:
+Migration to TallstackUI is **complete** (`x-mary` = 0, `flash()->` = 0, see
+`.agents/plans/tallstackui-migration.md` — marked COMPLETE 2026-08-24). Packages are **deleted**, not just disabled:
 
-| Package | Runtime state | How |
+| Package | State | Replacement |
 |---|---|---|
-| `robsontenorio/mary` | **not discovered** — no SP, no `/mary/*` routes; `config/mary.php` + `app/Core/Support/Spotlight.php` deleted | `composer.json` `extra.laravel.dont-discover` |
-| `php-flasher/flasher-laravel` | **not discovered** — SP off; zero code calls; `config/flasher.php` + `lang/vendor/flasher` left inert on disk | same |
-| `daisyui` (npm) | **plugin ACTIVE** in `resources/css/app.css` — still powers ~1.708 color utilities (`bg-base-100`, `text-primary`, …) + 169 component-class tokens (`btn`, `badge`, `table-sm`…) in 79 views | kept until token migration |
+| `robsontenorio/mary` | **removed** from `composer.json`/`composer.lock`; `config/mary.php` + `app/Core/Support/Spotlight.php` deleted; `extra.laravel.dont-discover` now `[]` | TallstackUI `x-ts-*` |
+| `php-flasher/flasher-laravel` | **removed**; `config/flasher.php` + `lang/vendor/flasher/{en,id}/messages.php` deleted | TallstackUI toast `toast()->success()` via Interactions |
+| `daisyui` (npm) | **removed** (`npm uninstall daisyui`); `@plugin daisyui` + `@source mary` deleted from `resources/css/app.css` | Self-hosted `@theme` palette (`--color-base-100`, `--color-primary` etc.) + `@layer components` shims for 169 legacy tokens (`btn`, `badge`, `table-sm`…) — styling survives without plugin until `x-ts-*` fully replaces class usage |
 
-## Theme Mechanism (fixed 2026-08-24)
+## Theme Mechanism (fixed 2026-08-24, 0.15.0)
 
-* SSR: `<html data-theme="cookie" [class="dark"]>` in `base.blade.php`
-* JS: `applyTheme()` in `resources/js/app.js` sets **both** `data-theme` (DaisyUI vars) and `.dark`
-  class (Tailwind/TallstackUI `dark:` variant); Livewire `theme-changed` uses the same fn.
-* The old `fl-dark` class + MutationObserver existed only for PHPFlasher and were removed.
+* SSR: `<html data-theme="cookie" [class="dark"]>` in `base.blade.php` (cookie mirrored client-side)
+* JS: `applyTheme()` in `resources/js/app.js` sets **both** `data-theme` (semantic palette vars) and `.dark`
+  class (Tailwind/TallstackUI `dark:` variant); `storedTheme()` reads `localStorage` `dark-theme` (`true`/`false` legacy or `light`/`dark`/`system`); document listens for TallstackUI `theme` CustomEvent.
+* The old Livewire `ThemeSwitcher` (`app/Settings/Livewire/ThemeSwitcher.php`) + its view + `fl-dark` class + MutationObserver (all PHPFlasher-era) were removed; replaced by `core::ui.theme-switch` wrapping `<x-theme-switch>`.
 
 ## AI Agent Guides
 
 | Situation | Do |
 |---|---|
-| New component/UI work | Use `<x-ts-*>` only (FB792 FR-TS6a). Never reintroduce `x-mary-*` or `flash()->`. |
-| Need dark-mode style | Use Tailwind `dark:` variant — it works now via `.dark`. Do not use `data-theme` selectors in new code. |
-| Before removing daisyui plugin | Bridge palette into `@theme` (--color-base-100 etc.) and migrate 169 component tokens (audit 2026-08-24: reports-manager worst at 32). |
-| Re-enabling mary/flasher | Remove entry from `dont-discover`, run `php artisan package:discover`. Not recommended. |
+| New component/UI work | Use `<x-ts-*>` only (FB792 FR-TS6a). Never reintroduce `x-mary-*` or `flash()->`/`@flasher_render`. |
+| Need dark-mode style | Use Tailwind `dark:` variant — it works via `.dark`. Do not use `data-theme` selectors in new code. |
+| Migrating remaining Daisy tokens | 169 tokens remain as class names, shimmed locally; migrate incrementally to `x-ts-*` (audit 2026-08-24: reports-manager worst at 32). |
+| Re-enabling mary/flasher | Not possible — packages removed; reinstall from scratch if truly needed (not recommended). |
