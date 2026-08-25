@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** feat — added Documentation Template (doc-template.md) to Product & Vision section; community files rewritten (LICENSE normalized, CONTRIBUTING restructured, SECURITY polished, CODE_OF_CONDUCT added as Contributor Covenant v2.1)
+> **Last updated:** 2026-08-25 **Changes:** refactor — doc skeletons split into per-directory templates (specs/spec-template.md, modules/module-template.md, modules/module-reference-template.md, architecture/pattern-template.md, foundation/guide-template.md); index entry realigned
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -27,7 +27,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
-- **[Documentation Template](doc-template.md)** — How to write docs: Diátaxis four-quadrant model mapped to this repo, per-type skeletons, metadata contract, evolution workflow
+- **[Documentation Standards](doc-template.md)** — Diátaxis four-quadrant model mapped to this repo, writing principles, metadata contract; copy-paste skeletons live per directory (`specs/spec-template.md`, `modules/*-template.md`, `architecture/pattern-template.md`, `foundation/guide-template.md`)
 
 ---
 
