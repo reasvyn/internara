@@ -1,58 +1,74 @@
 # ADR Template — Architecture Decision Record Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — created as the adr-directory skeleton, mirroring the anatomy of existing records (ADR-001…014)
+> **Last updated:** 2026-08-25 **Changes:** rewritten to MADR-lite skeleton — sequential numbering dropped per owner decision, ADRs identified by slug only
 
 ## Description
 
 The structure for every `docs/adr/adr-{slug}.md`. ADRs record a single architectural decision with
 its context and consequences so future contributors understand *why* the system looks the way it
-does. Numbering is sequential (`ADR-{NNN}`); the slug is kebab-case of the title.
+does. ADRs are **not numbered** — numbers imply a fixed ordering, fight reordering flexibility,
+and drift in practice; identity is the slug, chronology lives in the `Date` field and git history.
 
 ## The Skeleton
 
 ```markdown
-# ADR-{NNN}: {Title}
+# {Title}
 
 > **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | {name} |
+| Date | {original decision date, else YYYY-MM-DD} |
+| Technical Story | {spec or issue reference} |
 
-{2–3 sentences: what was decided and the essence of why.}
+## Context and Problem Statement
 
-## Context
+{Problem and forces at play — constraints, requirements, prior state.
+Ends with an explicit Decision Drivers list.}
 
-{The problem and forces at play — constraints, requirements, prior state.
-Cite specs/modules that create the pressure.}
+## Considered Options
 
-## Decision
+- **{Option A}**
+- **{Option B}**
+- …
 
-{The choice made, stated concretely — what is now true of the system.
-Include the mechanism/pattern adopted.}
+## Decision Outcome
 
-## Consequences
+**Chosen option: {X}** — {justification paragraph}
 
-{What becomes easier, what becomes harder, what neutral trade-offs are accepted.}
+### Positive Consequences
 
-## References
+{What becomes easier.}
+
+### Negative Consequences
+
+{What becomes harder; accepted trade-offs.}
+
+## Links
 
 - `related-spec-or-module.md` — relevance (markdown link in the real record)
 ```
 
 Optional sections used by existing records when warranted: `Replaces`, `Comparison: X vs Y`,
-domain-specific coverage maps. Keep them after Consequences.
+domain-specific coverage maps. Keep them after Links.
 
 ## Writing Discipline
 
 - One decision per record — if two choices were made together, either one ADR covering both
   explicitly or two ADRs cross-referencing.
 - Context must be written as if the outcome were unknown — no justifying backwards.
-- Superseded ADRs are never deleted; mark them in the body and link the successor, then update
-  [index.md](index.md).
+- Every Considered Options entry earns its place from real deliberation recorded in prose or git
+  history — never invented alternatives.
+- Superseded ADRs are never deleted; flip `Status` to `Superseded by …` and link the successor,
+  then update [index.md](index.md).
 - Register every new record in [index.md](index.md) and mention it in the relevant module/spec
   docs.
 
 ## Quick References
 
 - [index.md](index.md) — ADR registry
+- [`../plans/adr-rewrite-map.md`](../plans/adr-rewrite-map.md) — migration plan for existing records
 - [pattern-template.md](../guides/arch/pattern-template.md) — sibling skeleton for pattern docs
 - [`../doc-template.md`](../doc-template.md) — shared documentation standards
