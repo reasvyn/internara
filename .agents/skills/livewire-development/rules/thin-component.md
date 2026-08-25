@@ -143,11 +143,44 @@ through a Command Action.
 
 ---
 
+## Blade View Contains No Business or UI Logic
+
+**What it enforces:** Blade files are pure presentation. No business logic or UI computation of any
+size may live in `.blade.php`. All derived state — percentages, ratios, stage/funnel assembly, `max()`,
+conditional branching that depends on business rules — must be computed in the Livewire component
+and exposed as ready-to-render public properties or `#[Computed]` getters. Lightweight client-side
+interactivity belongs in Alpine.js (`x-data`), not in Blade `@php` blocks. `@if` / `@elseif` / `@else`
+with inline PHP expressions should be avoided — Blade should only gate on a precomputed boolean
+(`@if ($isSuperAdmin)`) when needed, and UI-only toggles should prefer Alpine `x-show` / `x-if` over server `@if`. `@if` is not strictly forbidden, but should be avoided where possible.
+
+**Why it matters:** Blade `@php` blocks with calculations bypass testability, duplicate logic, and
+hide business rules in an untestable template. Moving computation to Livewire makes it typed,
+testable, and traceable to the spec; Blade becomes a trivial binding layer that can be reviewed for
+accessibility and localization only.
+
+**How to apply:**
+
+- In the Livewire component (`mount()` or `#[Computed]`): compute `$completionRate = $total > 0 ? round(($completed/$total)*100) : 0`, assemble `$pipelineStages`, calculate `$maxV`, `$absorption`, etc., and expose as `public int` / `public array`.
+- In Blade: bind directly — `{{ $completionRate }}%`, `@foreach ($pipelineStages as $stage)`.
+- Alpine.js owns toggles, dropdowns, and local filtering (`x-data="{ open: false }"`); it never re-implements server business rules.
+- Review gate: any Blade file containing `@php` with business-affecting arithmetic or array assembly is a blocking issue. See `docs/conventions.md` §14 and `docs/architecture/livewire-pattern.md` §1.1.
+
+**Pitfalls to avoid:**
+
+- A "tiny" `@php $rate = round(($a/$b)*100)` in Blade — no size threshold, move it to Livewire.
+- Assembling `$stages` or `$filters` arrays in Blade instead of the component.
+- Using Blade `@if` to compute a value rather than to read an already-computed boolean.
+
+**Verification:** No `@php` blocks with calculations in `resources/views/**/*.blade.php`; every derived value rendered in Blade is a public property or computed getter of its Livewire component.
+
+---
+
 ## References
 
 | Topic                       | Asset                                        |
 | --------------------------- | -------------------------------------------- |
 | Thin Component Rule summary | `livewire-development/SKILL.md` §Thin Component Rule |
+| Blade presentation rule     | `docs/conventions.md` §14, `docs/architecture/livewire-pattern.md` §1.1 |
 | Action delegation           | `docs/architecture/action-pattern.md`        |
 | Entity contracts            | `docs/architecture/entity-pattern.md`        |
 | Critical invariants (C1, C2, C7) | `AGENTS.md` §Critical Invariants         |

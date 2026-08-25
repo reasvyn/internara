@@ -44,6 +44,28 @@ Thin components are easy to audit (auth in `boot()`), easy to test (logic is in 
 and easy to understand (public properties describe the complete UI state). The component becomes a
 thin coordination layer between the browser and the module.
 
+### 1.1 Blade View Contains No Business or UI Logic
+
+Blade files are pure presentation and must not contain business logic or UI computations of any
+size. Every derived value — percentages, ratios, stage/funnel assembly, max calculations, formatted
+dates with business meaning, permission-derived visibility — must be computed in the Livewire
+component and exposed as ready-to-render public properties or `#[Computed]` getters.
+
+| Layer | Responsibility |
+|-------|----------------|
+| **Livewire Component** | Computes and exposes `public array $pipelineStages`, `public int $completionRate`, `public string $throughputLabel`, etc. in `mount()` or `#[Computed]` methods. |
+| **Alpine.js (`x-data`)** | Handles lightweight client-side interactivity (toggles, dropdowns, local search). No server business rules. |
+| **Blade** | Binds and displays: `{{ $value }}`, `@foreach ($items as $item)`, `@if ($isVisible)`. No `@php` blocks with calculations. |
+
+**Rules:**
+
+- `@php` blocks with business-affecting calculations are forbidden in Blade. If you need `@php` to compute `round(($a/$b)*100)` or `max(...)` or to assemble an array — move it to the Livewire class.
+- `@if` / `@elseif` / `@else` with inline PHP expressions **should be avoided**. Do not write `@if ($user->role === 'admin' && $stats['x'] > 0)`. Expose a precomputed boolean (`public bool $isSuperAdmin`) and use `@if ($isSuperAdmin)` as a trivial gate when needed — and for UI-only toggles prefer Alpine `x-show` / `x-if` over server `@if`.
+- As a guideline, `@if` in Blade **should be avoided where possible** — it is not strictly forbidden, but Livewire boolean properties (server-driven) and Alpine state (client-driven) are preferred.
+- Use `@foreach` for iteration and `{{ }}` for interpolation only. Formatting that carries business meaning belongs in the component.
+
+See `docs/conventions.md` §14 for the full Frontend & Blade Presentation rule.
+
 ---
 
 ## 2. Component Directory Structure
