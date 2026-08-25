@@ -1,6 +1,6 @@
 # Issue Template — Section-by-Section Guidance
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sinkronkan Scope & Impact dengan label wajib P0-P3 & severity critical/high/medium/low
 
 Every issue follows the unified template. This asset explains what each section is FOR — why it
 exists, what a weak version looks like, and how to fill it so the issue is actionable. The template
@@ -87,8 +87,12 @@ first edit and the maintainer cannot rank the issue. Severity (how bad is the ou
 | **Submodule**      | {Submodule}                             |
 | **Files affected** | `{file}`, `{file}`                      |
 | **Dependencies**   | {module or task that is a prerequisite} |
-| **Severity**       | critical / high / medium / low          |
-| **Priority**       | urgent / high / medium / low            |
+| **Severity**       | `critical` / `high` / `medium` / `low` (label wajib) |
+| **Priority**       | `P0` / `P1` / `P2` / `P3` (label wajib) |
+
+> **Label wajib:** `Severity` dan `Priority` di tabel HARUS sama persis dengan label GitHub yang
+> dipasang pada issue (`critical`/`high`/`medium`/`low` + `P0`/`P1`/`P2`/`P3`). Lihat
+> `rules/issue-types-and-labels.md` § Label Wajib & § Severity vs Priority.
 
 Add a narrative impact line: "This affects all 500+ students during registration week. Every
 over-quota placement requires manual cleanup by admin."
