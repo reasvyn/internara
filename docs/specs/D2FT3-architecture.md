@@ -1,7 +1,7 @@
 # Architecture Design — Module-First 4-Layer Architecture
 
 > **Spec ID:** D2FT3
-> **Last updated:** 2026-08-19 **Changes:** spec audit completed — 6 C6 DTO violations (Journals), 4 C7 Action violations (Journals), 11 security findings (XSS + CSP) filed as GitHub issues #401-#403
+> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-ARC34-42 (communication hierarchy, performance tiers, gradual migration) + NFR-A7 single-tenant matrix per ADR audit
 
 ## Description
 
@@ -181,6 +181,30 @@ surface.
 | FR-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Core/`) or a Core contract — never left as a cross-module shortcut |
 | FR-ARC33 | Cross-module visibility is decided at design time; bypassing an Action to reach another module's internals requires a recorded design decision |
 
+### Communication Discipline
+
+| ID | Requirement |
+|----|-------------|
+| FR-ARC34 | Cross-module communication MUST follow the ranked hierarchy: 1) Core Contracts (Layer 3 shared interfaces), 2) Module Events (fire-and-forget), 3) Action Delegation (explicit `execute()` call), 4) Direct Import (simplest) — use the lowest coupling that satisfies the need |
+| FR-ARC35 | Core Contracts in `App\Core\Contracts\` are the preferred decoupling for broadly-used abstractions (`LabelEnum`, `StatusEnum`, `SendsNotifications`) |
+
+### Performance & Growth Tiers
+
+| ID | Requirement |
+|----|-------------|
+| FR-ARC36 | Tier 0 no-regret optimizations MUST be enforced at any scale: composite indexes on FKs and `activity_log`, cache-key registry (`config/cache-keys.php`), eager-loading (no N+1), and Read Actions to avoid transaction overhead |
+| FR-ARC37 | Tier 1 (Shared, ≤500 users) MUST run on MySQL/MariaDB + file cache + sync queue + database session with zero external services |
+| FR-ARC38 | Tier 2 (VPS, 500–2000 users) and Tier 3 (HA, 2000+ users) transitions MUST be `.env` swaps with zero code changes (e.g., `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, read replica) |
+| FR-ARC39 | The following are explicitly deferred until measured need: Laravel Octane, horizontal auto-scaling, CDN for static assets, database sharding, queue job batching — `docs/architecture.md` and Pulse must show a bottleneck before adoption |
+
+### Gradual Migration
+
+| ID | Requirement |
+|----|-------------|
+| FR-ARC40 | DTO adoption MUST follow Start `array` → Stabilize `Data\|array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration |
+| FR-ARC41 | Cache invalidation MUST follow Start `Cache::forget()` inline → Stabilize event+listener → Final `config/cache-keys.php` registry with listener-driven invalidation |
+| FR-ARC42 | Validation rules MUST follow Start Form-Object-only → Stabilize `Entity::rules()` shared → Final centralized in Entities for full DRY |
+
 ---
 
 ## 5. Non-Functional Requirements
@@ -193,6 +217,7 @@ surface.
 | NFR-A4 | Actions eager-load relations; N+1 queries are an architecture defect (S3 — Scalable) |
 | NFR-A5 | Authorization is enforced at every layer: Policies guard Presentation, Actions and Entities enforce business authorization with `RejectedException` (C8) |
 | NFR-A6 | Clean-Code/DRY: duplicated logic must be extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustain) |
+| NFR-A7 | Single-tenant deployment matrix MUST be SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk with zero external services by default; Redis/S3/Reverb are optional `.env` overrides — no centralized auth, billing, or tenant isolation |
 
 ---
 

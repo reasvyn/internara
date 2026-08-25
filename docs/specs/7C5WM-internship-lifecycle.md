@@ -1,7 +1,7 @@
 # Internship Lifecycle — Program CRUD, Status Machine, Registration Windows & Pre-Close Readiness
 
 > **Spec ID:** 7C5WM
-> **Last updated:** 2026-08-18 **Changes:** review — add department_id + type fields to Program
+> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-CL1-6 (Program Closure 7-step, ARCHIVED terminal, snapshot, alumni read-only, retention) per ADR audit
 > Manager (FR-IC13/14), add Requirement Manager with typed requirements DOCUMENT/SKILL/TEXT
 > (FR-RM1–RM5, DD-6), reconcile Phase Manager NG2 with internara-project §6.3
 
@@ -179,6 +179,17 @@ registrations would orphan these records and break foreign key relationships.
 | FR-PC6 | Certificates check: all must be ISSUED status, and at least one must exist          |
 | FR-PC7 | Each domain returns: `passed` (bool), `total` (int), `pending` (int), `message` (string) |
 | FR-PC8 | `InternshipManager` must display readiness check results with pass/fail indicators   |
+
+### Program Closure & Archival
+
+| ID | Requirement |
+|----|-------------|
+| FR-CL1 | `InternshipStatus` MUST include `ARCHIVED` case; valid transition `COMPLETED → ARCHIVED` only, with exceptional `ARCHIVED → COMPLETED` for `super_admin` via audit-trailed un-archive |
+| FR-CL2 | `ARCHIVED` MUST be terminal — no transitions out except exceptional un-archive; archived programs are read-only at model, policy, and UI layers |
+| FR-CL3 | `CloseProgramProcess` (Process Action) MUST coordinate 7 steps: 1) `CheckCloseReadinessAction`, 2) trigger Program Quality Evaluation, 3) `FinalizeAssessmentsAction`, 4) `IssueCertificatesAction`, 5) `ArchiveProgramAction`, 6) `ArchiveStudentAccountsAction`, 7) `GenerateArchiveReportAction` |
+| FR-CL4 | `CloseProgramProcess` MUST create a versioned JSON snapshot in an `archives` table capturing at closure: roster, grade composites, attendance summary, logbook stats, assignment/rubric scores, evaluation results, certificate serials |
+| FR-CL5 | Archived student accounts MUST transition to `AccountStatus::ARCHIVED` with read-only dashboard (view certificates/grades) — no registration, logbook, or attendance writes |
+| FR-CL6 | Archived data MUST be retained indefinitely with no automatic deletion; post-regulatory expiry deletion is manual, database-level, documented but not automated |
 
 ### CSV Import/Export
 
