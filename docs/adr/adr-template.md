@@ -69,6 +69,5 @@ domain-specific coverage maps. Keep them after Links.
 ## Quick References
 
 - [index.md](index.md) — ADR registry
-- [`../plans/adr-rewrite-map.md`](../plans/adr-rewrite-map.md) — migration plan for existing records
 - [pattern-template.md](../guides/arch/pattern-template.md) — sibling skeleton for pattern docs
 - [`../doc-template.md`](../doc-template.md) — shared documentation standards
