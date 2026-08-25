@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.3 — pass APP_LOCALE/FAKER/TIMEZONE through compose (VPS env localization id + Asia/Jakarta)
+> **Last updated:** 2026-08-25 **Changes:** README rewritten to industry-standard structure — product definition pointer now targets project-vision.md/philosophy.md instead of root README
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -303,7 +303,7 @@ Foundation → Configuration → Identity & Auth → Institutional → Partnersh
 
 Multi-tenant SaaS, HR/payroll, real-time chat, government DB sync (CSV import/export only).
 
-Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment) — former `docs/foundation/product-definition.md` merged into root README
+Full definition: `docs/project-vision.md` (personas, system boundary, horizon) and `docs/philosophy.md` (3S Doctrine); condensed overview in `README.md`
 
 ---
 

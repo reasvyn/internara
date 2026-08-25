@@ -1,10 +1,10 @@
 # Project Vision — Where Internara Is Going
 
-> **Last updated:** 2026-08-21 **Changes:** initial — project vision extracted from product scope (README), philosophy (3S Doctrine) and spec QLHDO, standalone forward-looking document
+> **Last updated:** 2026-08-25 **Changes:** product-definition pointer realigned — README condensed to industry-standard structure, this document is now the deep-dive target for problem analysis and personas
 
 ## Description
 
-Long-term direction for Internara — why it exists, where it is going in 3–5 years, and how every decision is evaluated. This document is the north star for contributors, maintainers, and schools adopting the platform. Product scope, personas, and system boundary live in `README.md`; day-to-day principles live in `philosophy.md`; this file answers *what the future looks like* and *how we will know we got there*.
+Long-term direction for Internara — why it exists, where it is going in 3–5 years, and how every decision is evaluated. This document is the north star for contributors, maintainers, and schools adopting the platform. A condensed product overview lives in `README.md`; day-to-day principles live in `philosophy.md`; this file answers *what the future looks like* and *how we will know we got there*.
 
 ## Vision Statement
 

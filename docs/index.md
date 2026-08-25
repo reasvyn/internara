@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.3 — pass APP_LOCALE/FAKER/TIMEZONE through compose (VPS env localization id + Asia/Jakarta)
+> **Last updated:** 2026-08-25 **Changes:** README rewritten to industry-standard structure — index entry realigned to condensed overview, deep product definition now points to project-vision.md
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -19,7 +19,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 ## Product & Vision
 
 - **[Foundation Index](foundation/index.md)** — Browse all foundation documents
-- **[README — Product Definition & Project Status](../README.md)** — Product scope, 3S doctrine, personas, system boundary, deployment, localization, module landscape, tech debt (merged from `foundation/product-definition.md` + `foundation/project-overview.md`)
+- **[README](../README.md)** — Project overview: pitch, features, requirements, installation, deployment, status (deep product definition in `project-vision.md`)
 - **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Project Vision](project-vision.md)** — 3–5 year direction, strategic pillars, success metrics, boundaries, decision compass
