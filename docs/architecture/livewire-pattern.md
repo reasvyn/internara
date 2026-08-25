@@ -1,6 +1,6 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Livewire (thin components, Action injection, BaseRecordManager, Form Objects, C1 no Model mutations)
+> **Last updated:** 2026-08-25 **Changes:** sync — TallstackUI v4: toast() via $this->toast(), x-ts-* components (modal/table/input), headers index key
 
 ## Description
 
@@ -21,7 +21,7 @@ side effects belong in lower layers.
 - **Read-only queries:** searchable, paginated, filtered queries in `render()` — these are
   presentation logic
 - **Authorization:** role or Gate checks in `boot()`
-- **Flash messages:** `flash()->success()` / `flash()->error()` via PHPFlasher
+- **Toast messages:** `$this->toast()->success()` / `$this->toast()->error()->send()` via TallstackUI Interactions
 
 ### NOT Allowed
 
@@ -32,7 +32,7 @@ side effects belong in lower layers.
 - Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`)
 - Static helper methods (`public static function formatSomething()`)
 - Bare `wire:confirm` for destructive actions (use the two-step pattern)
-- maryUI Toast methods (`$this->success()`, `$this->error()`)
+- TallstackUI Toast via `$this->toast()` is the only toast API (legacy `flash()->` / maryUI `$this->success()` removed)
 
 **Allowed (read-only UI decisions):** `$model->asEntity()->canX()` to conditionally show/hide UI
 elements (e.g., disable a delete button when `! $entity->canBeDeleted()`). For WRITE decisions
@@ -235,7 +235,7 @@ protected function resetForm(): void;              // Reset custom properties
 - MUST provide file uploads via `WithFileUploads` (included in base)
 - MUST use Actions for persistence (no inline `Model::create/update/delete`)
 - SHOULD use `$this->handleError()` to catch `RejectedException` from Actions
-- Modal should be rendered via `<x-mary-modal wire:model="showModal">`
+- Modal should be rendered via `<x-ts-modal wire="showModal">` (TallstackUI)
 
 ---
 
@@ -297,10 +297,10 @@ public function save(Create{Entity}Action $createAction, Update{Entity}Action $u
     if ($this->form->id) {
         $entity = {Entity}::findOrFail($this->form->id);
         $result = $updateAction->execute($entity, $dto);
-        flash()->success($result->message);
+        $this->toast()->success($result->message)->send();
     } else {
         $result = $createAction->execute($dto);
-        flash()->success($result->message);
+        $this->toast()->success($result->message)->send();
     }
 
     $this->modal = false;
@@ -316,9 +316,9 @@ public function delete{Entity}(string $id, Delete{Entity}Action $deleteAction): 
 
     try {
         $deleteAction->execute($entity);
-        flash()->success(__('{module}.{entity}.success_deleted'));
+        $this->toast()->success(__('{module}.{entity}.success_deleted'))->send();
     } catch (RejectedException $e) {
-        flash()->error($e->getMessage());
+        $this->toast()->error($e->getMessage())->send();
     }
 }
 ```
@@ -339,7 +339,7 @@ public function {action}Selected(Set{Entity}StatusAction $action): void
 
 - Never use `app()->make()` or `new Action()` inside the component
 - Catch `RejectedException` (not `RuntimeException`) from Action calls
-- Use `try`/`catch` for operations that can fail, with user-facing flash messages
+- Use `try`/`catch` for operations that can fail, with user-facing toast messages
 - The Action is the single entry point — no inline `Model::create()` in the component
 
 ---
@@ -413,7 +413,7 @@ namespaced as `<x-core::ui.confirm />`. It accepts these props:
 | -------------- | -------- | ------------------------------------- | ------------------------------------- |
 | `title`        | `string` | `__('common.actions.confirm_action')` | Modal heading                         |
 | `message`      | `string` | `''`                                  | Body text explaining what will happen |
-| `icon`         | `string` | `o-exclamation-triangle`              | maryUI icon name                      |
+| `icon`         | `string` | `exclamation-triangle`                | Heroicons name (via `x-ts-icon`)      |
 | `confirmText`  | `string` | `__('common.actions.confirm')`        | Confirm button label                  |
 | `cancelText`   | `string` | `__('common.actions.cancel')`         | Cancel button label                   |
 | `confirmClass` | `string` | `btn-error`                           | Tailwind class for the confirm button |
@@ -440,9 +440,9 @@ public function confirmDelete(Delete{Entity}Action $deleteAction): void
 {
     try {
         $deleteAction->execute($this->actionTarget);
-        flash()->success(__('{module}.{entity}.deleted'));
+        $this->toast()->success(__('{module}.{entity}.deleted'))->send();
     } catch (RejectedException $e) {
-        flash()->error($e->getMessage());
+        $this->toast()->error($e->getMessage())->send();
     }
 
     $this->showConfirm = false;
@@ -453,10 +453,11 @@ public function confirmDelete(Delete{Entity}Action $deleteAction): void
 ### Blade
 
 ```blade
-<x-mary-button
-    label="{{ __('common.delete') }}"
+<x-ts-button
+    :text="__('common.delete')"
     wire:click="askDelete('{{ $row->id }}')"
-    class="btn-error btn-sm"
+    color="red"
+    sm
 />
 
 <x-core::ui.confirm
@@ -469,52 +470,51 @@ public function confirmDelete(Delete{Entity}Action $deleteAction): void
 ### Rules
 
 - Always use `ask{Action}()` → `confirm{Action}()` for destructive operations
-- Always catch `RejectedException` and display the error via flash
+- Always catch `RejectedException` and display the error via toast
 - Always reset both `$showConfirm` and `$actionTarget` in the confirm method
 - Use the shared `<x-core::ui.confirm />` component instead of defining per-component modals
 
 ---
 
-## 8. Flash Message Pattern
+## 8. Toast Message Pattern
 
-All user-facing feedback uses PHPFlasher via the `flash()` helper. maryUI Toast methods
-(`$this->success()`, `$this->error()`) must NOT be used.
+All user-facing feedback uses TallstackUI toast via `$this->toast()` (Livewire `InteractsWithToast`). Legacy `flash()->` (PHPFlasher) and maryUI `$this->success()` are removed.
 
 ### Success
 
 ```php
-flash()->success(__('{module}.{entity}.{action}_success'));
+$this->toast()->success(__('{module}.{entity}.{action}_success'))->send();
 ```
 
 ### Error
 
 ```php
-flash()->error($e->getMessage());
+$this->toast()->error($e->getMessage())->send();
 ```
 
 ### Warning
 
 ```php
-flash()->warning(__('{module}.{context}.{warning_reason}'));
+$this->toast()->warning(__('{module}.{context}.{warning_reason}'))->send();
 ```
 
 ### Bulk Action Success
 
 ```php
-flash()->success(
+$this->toast()->success(
     __('common.actions.bulk_action_done', [
         'count' => count($this->selectedIds),
         'action' => $name,
     ]),
-);
+)->send();
 ```
 
 ### Rules
 
 - All user-facing strings use `__()` — never hardcode display text
 - Catch `RejectedException` from Actions and display the error message
-- Use `flash()->warning()` for edge cases (no records selected, no matching records)
-- Never use `$this->success()` or `$this->error()` (maryUI Toast)
+- Use `$this->toast()->warning()->send()` for edge cases (no records selected, no matching records)
+- Never use `flash()->` or `$this->success()` / `$this->error()` (removed with maryUI/PHPFlasher)
 
 ---
 
@@ -557,7 +557,7 @@ tests/{Module}/{SubModule}/Livewire/{Name}Test.php
 - Use `LazilyRefreshDatabase` (not `RefreshDatabase`)
 - Use `assertModelExists()` over `assertDatabaseHas()`
 - Test the UI state transitions (modal open/close, confirming state)
-- Test the flash message dispatch on success/failure
+- Test the toast dispatch (`$this->toast()`) on success/failure
 - Test the Action is called with correct parameters (mock if needed)
 - Do NOT test business logic in component tests — that belongs in Action tests
 
@@ -576,7 +576,7 @@ contextual help for the user. The pattern follows the setup wizard's guide compo
 
 1. **Placement:** `resources/views/{module}/components/{page-name}-guide.blade.php`
 2. **Trigger:** A fixed floating button (bottom-right, `z-50`) with a question mark icon
-3. **Modal:** Uses `<x-mary-modal>` with step-by-step instructions for the current page
+3. **Modal:** Uses `<x-ts-modal>` (TallstackUI) with step-by-step instructions for the current page
 4. **Content:** Each guide must include:
     - An introductory sentence explaining the page's purpose
     - Numbered steps (1 through N) with a title and description per step
@@ -611,7 +611,7 @@ public bool $showGuide = false;
 
 ### Pattern Reference
 
-See `resources/views/setup/components/setup-guide.blade.php` for the canonical implementation.
+See `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-modal>`) for the canonical implementation.
 
 ---
 
@@ -619,7 +619,7 @@ See `resources/views/setup/components/setup-guide.blade.php` for the canonical i
 
 - **Inline DB calls** — extract to an Action and inject it
 - **Bare `wire:confirm`** — use two-step `askAction()` / `confirmAction()` pattern instead
-- **maryUI Toast** — use `flash()->success()` / `flash()->error()` instead
+- **Legacy toast** — use `$this->toast()->success()->send()` / `$this->toast()->error()->send()` (TallstackUI) instead of removed `flash()->` / maryUI toast
 - **Forgetting `wire:key` in loops** — always add `wire:key` on the outermost element inside
   `@foreach`
 - **Forgetting `updatedSearch` page reset** — `BaseRecordManager` already handles this
@@ -638,7 +638,7 @@ All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/architecture/modu
 ### 13.1 Focus Management
 
 - **Modal open:** Focus must move to the first focusable element inside the modal on open.
-  `x-mary-modal` handles this automatically.
+  `x-ts-modal` handles this automatically.
 - **Modal close:** Focus must return to the element that triggered the modal. Implement via
   `x-on:close.window="$focus(target)"` or Alpine `$refs`.
 - **Livewire navigation:** After `wire:navigate` page transitions, focus must reset to the page
@@ -651,32 +651,32 @@ Livewire partial DOM updates are invisible to screen readers. Wrap dynamically u
 `aria-live` containers:
 
 ```blade
-{{-- Flash messages (handled by PHPFlasher — verify aria-live is present) --}}
+{{-- Toast container (TallstackUI <x-ts-dialog /> in base layout — verify aria-live is present) --}}
 <div wire:ignore aria-live="polite">
-    @flash()
+    <x-ts-dialog />
 </div>
 
 {{-- Partial table updates --}}
 <div wire:poll.5s aria-live="polite" aria-busy="{{ $isLoading }}">
-    <x-mary-table ... />
+    <x-ts-table ... />
 </div>
 ```
 
 ### 13.3 Form Accessibility
 
-- Every `<x-mary-input>` must have a `label` prop — this renders the `<label>` element with
+- Every `<x-ts-input>` must have a `label` prop — this renders the `<label>` element with
   proper `for` association. Never use placeholder as a label substitute.
-- Validation errors from `$this->validate()` are announced by maryUI's built-in `aria-live`
+- Validation errors from `$this->validate()` are announced by TallstackUI's built-in `aria-live`
   regions. Do not suppress this with custom error rendering unless the replacement also includes
   `aria-live`.
-- Required fields: use the `required` attribute (maryUI `required` prop) — not just visual
+- Required fields: use the `required` attribute (TallstackUI `required` prop) — not just visual
   indicators.
 - Error summary: after failed validation, focus must move to the first error or an error summary.
   Use `$this->dispatch('focus-error')` and Alpine to focus the element.
 
 ### 13.4 Table Accessibility
 
-- `x-mary-table` headers are associated via `scope` attributes by default. Verify this is not
+- `x-ts-table` headers are associated via `scope` attributes by default. Verify this is not
   overridden.
 - Sortable column headers must include `aria-sort` (`ascending`, `descending`, or `none`).
 - Bulk selection checkboxes must have an `aria-label` on the header checkbox
@@ -686,14 +686,14 @@ Livewire partial DOM updates are invisible to screen readers. Wrap dynamically u
 
 - The shared `<x-core::ui.confirm />` modal must trap focus. Confirm button must be the default
   focus target on open.
-- Cancel must be operable via Escape key (DaisyUI modal default).
+- Cancel must be operable via Escape key (TallstackUI modal default).
 
 ### 13.6 Icon-Only Interactive Elements
 
 Any button or link that uses only an icon (no visible text) MUST include an `aria-label`:
 
 ```blade
-<x-mary-button icon="o-trash" wire:click="delete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
+<x-ts-button icon="trash" wire:click="delete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
 ```
 
 ---
@@ -708,14 +708,14 @@ localization rules.
 Every user-facing string in a Livewire component or its Blade view MUST use `__()`:
 
 ```php
-// ✅ Correct — translated flash message
-flash()->success(__('{module}.{entity}.created'));
+// ✅ Correct — translated toast message
+$this->toast()->success(__('{module}.{entity}.created'))->send();
 
 // ❌ Wrong — hardcoded string
-flash()->success('Record created successfully');
+$this->toast()->success('Record created successfully')->send();
 ```
 
-### 14.2 Flash Messages
+### 14.2 Toast Messages
 
 | Context    | Pattern                                  | Example                                        |
 | ---------- | ---------------------------------------- | ---------------------------------------------- |

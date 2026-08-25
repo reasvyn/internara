@@ -1,6 +1,6 @@
 # ADR-014: Cross-Role Proxy
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current cross-role proxy (teacher as supervisor proxy, inactivity windows, compliance stamping)
+> **Last updated:** 2026-08-25 **Changes:** sync — x-mary-button → x-ts-button (TallstackUI)
 
 ## Description
 
@@ -274,7 +274,7 @@ Livewire components show proxy-accessible actions conditionally:
 
 ```blade
 @can ('verify', $logbook)
-    <x-mary-button label="Verify" wire:click="verify('{{ $logbook->id }}')" />
+    <x-ts-button text="Verify" wire:click="verify('{{ $logbook->id }}')" />
 @endcan
 ```
 

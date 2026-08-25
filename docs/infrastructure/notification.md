@@ -1,6 +1,6 @@
 # Notification — Multi-Channel Notification System
 
-> **Last updated:** 2026-08-16 **Changes:** update SendsNotifications contract to `NotificationData` DTO; add `NotificationData` path
+> **Last updated:** 2026-08-25 **Changes:** sync — flash channel via TallstackUI toast (was PHPFlasher), remove config/flasher.php
 
 ## Description
 
@@ -27,7 +27,7 @@ Notification sent
 | ----------------- | --------------- | -------------------- | -------------------- |
 | In-app (database) | ✅              | ✅                   | ✅                   |
 | Mail              | ✅ (sync)       | ✅ (async via queue) | ✅ (async via queue) |
-| Flash messages    | ✅              | ✅                   | ✅                   |
+| Toast (flash)     | ✅ (TallstackUI) | ✅ (TallstackUI)     | ✅ (TallstackUI)     |
 
 ---
 
@@ -212,18 +212,18 @@ Most providers impose sending limits:
 
 ---
 
-## Flash Messages
+## Toast Messages
 
-Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings
-saved." They are displayed as toast notifications and disappear after a few seconds.
+Toast messages provide **instant action feedback** — "Profile updated successfully" or "Settings
+saved." They are displayed as TallstackUI toast notifications and disappear after a few seconds.
 
 ```php
-flash()->success(__('profile.updated'));
-flash()->error(__('settings.save_failed'));
-flash()->warning(__('disk_space_low'));
+$this->toast()->success(__('profile.updated'))->send();
+$this->toast()->error(__('settings.save_failed'))->send();
+$this->toast()->warning(__('disk_space_low'))->send();
 ```
 
-| Feature     | Flash               | In-App Notification |
+| Feature     | Toast (TallstackUI) | In-App Notification |
 | ----------- | ------------------- | ------------------- |
 | Persistence | Single request      | Until read/pruned   |
 | Display     | Toast, auto-dismiss | Notification center |
@@ -307,6 +307,6 @@ Created (via Action/Event)
 - `app/Core/Channels/Data/NotificationData.php` — notification payload DTO
 - `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
-- `config/flasher.php` — flash message styling and timeout
+- `config/tallstackui.php` — toast styling and timeout (replaces removed `config/flasher.php`)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 - [Queue](queue.md) — queue infrastructure and worker management

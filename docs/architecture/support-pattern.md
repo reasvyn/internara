@@ -1,6 +1,6 @@
 # Support Pattern — Static Utilities, Purity Rules & Boundaries
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Support layer (purely static utilities, no constructor injection, minimal framework deps)
+> **Last updated:** 2026-08-25 **Changes:** sync — Spotlight remains deleted (was maryUI BaseSpotlight), TallstackUI replaces maryUI
 
 ## Description
 
@@ -78,7 +78,7 @@ Support classes at their owning scope:
 | `SystemProvisioner`       | `Setup/Installation/Support/`        | ❌ Instance methods                   | ✅ `Artisan`, `File`                 | ❌ **Should be Service**                                         |
 | `AppInfo`                 | `Core/Support/`                      | ✅ Static methods                     | ✅ `Cache`, `Config`, `File` facades | ⚠️ Borderline: static but framework-aware. Could stay with note. |
 | `LangChecker`             | `Core/Support/`                      | ❌ Instance + `extends Translator`    | ✅ Framework class                   | ❌ **Should be Service**                                         |
-| `Spotlight`               | `Core/Support/`                      | ❌ Instance + `extends BaseSpotlight` | ✅ maryUI component                  | ❌ **Should be Service**                                         |
+| `Spotlight` *(deleted 0.15.0)* | `Core/Support/` *(removed)*         | ❌ Instance + `extends BaseSpotlight` | ✅ legacy maryUI component (removed) | ❌ **Deleted — was maryUI, now no replacement (command-palette needs backend if reintroduced)** |
 
 ---
 
