@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-19 **Changes:** extracted implementation matrix into `docs/specs/implementation-matrix.md` with status-usage legend; index keeps registry + build order + link; registered new Data Archiving & Retention spec (9YUUK) in Maintenance phase
+> **Last updated:** 2026-08-19 **Changes:** docs→.agents skill path references replaced with named-skill mentions per documentation-split rule
 
 ## Description
 
@@ -216,7 +216,8 @@ spec-writing → docs/specs/{feature}.md → feature-building → code-writing �
 
 ## Spec Template
 
-Every spec follows the 11-section format defined in `.agents/skills/spec-writing/SKILL.md`:
+Every spec follows the 11-section format defined by the `spec-writing` skill
+(see [`spec-template.md`](spec-template.md) for the human-facing skeleton):
 
 1. Problem Statements
 2. Goals & Non-Goals
@@ -233,8 +234,8 @@ Every spec follows the 11-section format defined in `.agents/skills/spec-writing
 
 ## Quick References
 
-- `.agents/skills/spec-writing/SKILL.md` — Spec writing conventions and template
-- `.agents/skills/feature-building/SKILL.md` — How specs feed into implementation
+- `spec-writing` skill — Spec writing conventions and template
+- `feature-building` skill — How specs feed into implementation
 - `docs/specs/implementation-matrix.md` — Implementation status matrix (priority-ordered) with status-usage legend
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/refs/modules/index.md` — Module dependency graph

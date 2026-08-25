@@ -1,6 +1,6 @@
 # Spec Implementation Matrix — Priority-Ordered
 
-> **Last updated:** 2026-08-19 **Changes:** extracted from `docs/specs/index.md` into its own file — adds comprehensive status-usage legend; index keeps the registry + build order and links here; added Data Archiving & Retention row (9YUUK, Not Started)
+> **Last updated:** 2026-08-19 **Changes:** docs→.agents skill path reference replaced with named-skill mention per documentation-split rule
 
 ## Description
 
@@ -175,4 +175,4 @@ spec audit / test run → evaluate per row → update Impl Status / Test Coverag
 
 - `docs/specs/index.md` — Spec registry, build order, and lifecycle phases (matrix moved here)
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
-- `.agents/skills/spec-writing/SKILL.md` — Spec writing conventions and template
+- `spec-writing` skill — Spec writing conventions and template

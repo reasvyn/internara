@@ -1,6 +1,6 @@
 # TallStackUI — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for tallstackui/tallstackui v4.1.0
+> **Last updated:** 2026-08-25 **Changes:** skill path reference reduced to named-skill mention per documentation-split rule
 
 ## Description
 
@@ -37,7 +37,7 @@ all Internara views.
 - Theming aligned with the self-hosted design system ([`foundation/ui-ux.md`](../../foundation/ui-ux.md),
   [`foundation/branding.md`](../../foundation/branding.md))
 - Component conventions and interaction rules documented in the `tallstackui-development`
-  skill (`.agents/skills/tallstackui-development/SKILL.md`)
+  skill
 
 ## Quick References
 
