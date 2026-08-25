@@ -41,7 +41,12 @@
             />
         </div>
 
-        <x-ts-alert color="info" :text="__('setup.wizard.password_hint')" icon="information-circle" class="mt-3 text-sm" />
+        <x-ts-alert
+            color="info"
+            :text="__('setup.wizard.password_hint')"
+            icon="information-circle"
+            class="mt-3 text-sm"
+        />
     </div>
 
     <div class="border-base-content/10 mt-8 flex items-center justify-between border-t pt-6">
