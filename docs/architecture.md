@@ -1,6 +1,6 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-08-25 **Changes:** sync — Layer 4 stack: TallstackUI v4 (was maryUI+DaisyUI), self-hosted palette bridge, toast via Interactions
+> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -280,7 +280,7 @@ directly. Four patterns are available:
 | **Module event**  | Fire-and-forget side effects (notifications, cache invalidation)            |
 | **Core contract** | Abstraction used broadly across modules (`LabelEnum`, `SendsNotifications`) |
 
-See [ADR-010](adr/adr-cross-module-communication.md).
+See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.md).
 
 ---
 
