@@ -39,17 +39,9 @@
 
                     @interact('column_status', $journal)
                         @if ($journal->is_verified)
-                            <x-ts-badge
-                                :text="__('logbook.verified')"
-                                color="green"
-                                xs
-                            />
+                            <x-ts-badge :text="__('logbook.verified')" color="green" xs />
                         @else
-                            <x-ts-badge
-                                :text="__('logbook.submitted')"
-                                color="white"
-                                xs
-                            />
+                            <x-ts-badge :text="__('logbook.submitted')" color="white" xs />
                         @endif
                     @endinteract
 
