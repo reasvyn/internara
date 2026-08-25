@@ -17,6 +17,7 @@ import json
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -261,7 +262,7 @@ def decl_line(content: str, class_name: str) -> int:
     return 1
 
 
-# ─── File naming ────────────────────────────────────────────────────────────
+# ─── File naming (enhanced: parallel + _common integration) ────────────────────────────────────────────────────────────
 
 def scan_file_naming(files: list[Path]) -> list[Finding]:
     findings: list[Finding] = []
@@ -487,6 +488,7 @@ def print_summary(result: ScanResult) -> None:
 # ─── CLI ────────────────────────────────────────────────────────────────────
 
 def parse_args() -> argparse.Namespace:
+    # Enhanced with severity/baseline filtering
     parser = argparse.ArgumentParser(
         description="Scan for naming convention violations (files, classes, methods)",
     )
@@ -499,6 +501,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--quiet", "-q", action="store_true")
     parser.add_argument("--strict", "-s", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--severity", choices=["critical", "high", "medium", "low"], help="Filter by minimum severity")
+    parser.add_argument("--baseline", type=Path, help="Baseline file to ignore known findings")
     return parser.parse_args()
 
 

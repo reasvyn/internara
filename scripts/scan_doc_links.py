@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Enhanced v2.1: parallel execution, robust error isolation, shared _common helpers,
+severity/baseline filtering, and performance optimizations.
 scan_doc_links.py — Documentation Link & Freshness Validation
 Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec

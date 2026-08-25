@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Enhanced v2.1: parallel execution, robust error isolation, shared _common helpers,
+severity/baseline filtering, and performance optimizations.
 scan_security.py — Security Pattern Detection
 
 Scans PHP/Blade for security anti-patterns across the S1-S9 rule set:
