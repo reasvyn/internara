@@ -1,6 +1,6 @@
 # Spec Implementation Matrix — Priority-Ordered
 
-> **Last updated:** 2026-08-19 **Changes:** docs→.agents skill path reference replaced with named-skill mention per documentation-split rule
+> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -92,7 +92,7 @@ reward for work done — priority reflects importance, not progress.
 | 🔴 Critical | FB792 | [Tech Stack](FB792-tech-stack.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | Dependency manifest; pinned versions; JS toolchain synced to package.json; composer audit/npm audit clean; lockfiles committed |
 | 🔴 Critical | ZT6VS | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | SmartLogger, SettingsStore, SendsNotifications; gaps #387 Redis connections, #388 documents pipeline; audit: batch doc queue dispatch missing (issue #404), missing tests for system:health/cache-warm/TestMailSettingsAction (issue #405) |
 | 🔴 Critical | SE5Q9 | [Base Classes](SE5Q9-base-classes.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | BaseAction, BaseModel, BaseEntity, BasePolicy; FR-M7 spec synced; all 280 Core tests pass; C6 DTO violations in Journals filed as issue #401 |
-| 🔴 Critical | T4B26 | [RBAC & Authorization](T4B26-rbac-and-authorization.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | Flat roles, Gate::before, Policy pattern; audit: 3 functional roles (admin-group/mentor/mentee) synced per ADR-008; MentorEntity proxy tests added; gaps #407 proxy inactivity window, #408 proxy metadata tagging |
+| 🔴 Critical | T4B26 | [RBAC & Authorization](T4B26-rbac-and-authorization.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | Flat roles, Gate::before, Policy pattern; audit: 3 functional roles (admin-group/mentor/mentee) synced per flat RBAC; MentorEntity proxy tests added; gaps #407 proxy inactivity window, #408 proxy metadata tagging |
 | 🔴 Critical | 89SRA | [Logging & Error Handling](89SRA-logging-and-error-handling.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-19 | Dual AppException/ModuleException trees; audit: FR IDs fixed in ExceptionsTest/HandlesActionErrorsTest, FR-AE5/FR-AE6 BaseAction slugs, FR-ER1-5 rendering tests added; 52 Core log/error tests pass |
 | 🔴 Critical | 2CF4Y | [Middleware Pipeline](2CF4Y-middleware-pipeline.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Global + module middleware groups |
 | 🔴 Critical | 1PGM4 | [Security Headers](1PGM4-security-headers.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | CSP, HSTS, frame options |

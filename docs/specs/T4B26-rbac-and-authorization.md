@@ -1,7 +1,7 @@
 # RBAC & Authorization — Role-Based Access Control
 
 > **Spec ID:** T4B26
-> **Last updated:** 2026-08-19 **Changes:** sync — functional roles are three (admin-group, mentor, mentee) per ADR-008/Role enum, not two; FR-AUTH11 resolution mechanism corrected to Role::resolvesTo()/functionalRolesFor(); broken cross-ref fixed to YB7RG-authentication.md
+> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -123,7 +123,7 @@ role model with explicit capabilities per role prevents this.
 ### 4.2 Cross-Role Proxy (Canonical Contract)
 
 > **Canonical source** for internara-project §7.1 (Cross-Role Proxy). Implements the proxy
-> matrix defined in [ADR-014](../adr/adr-cross-role-proxy.md). Applies to: logbook verification
+> matrix defined in [4](../adr/adr-cross-role-proxy.md). Applies to: logbook verification
 > (`daily-activity.md`), assessment grading (`assessment.md`), and supervision log verification
 > (`supervision.md`).
 

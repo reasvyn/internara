@@ -1,6 +1,6 @@
 # Assessment — Rubrics, Evaluation & Grading
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (JSON Rubric Structure, Assessment Finalization, Cross-Role Proxy, Submodules: Rubric & Assessment Record)
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -62,7 +62,7 @@ which preserves the original as a historical record.
 
 Industry supervisor evaluations are optional to prevent blocking student workflows. Teachers can act
 as proxy for supervisors via the Cross-Role Proxy mechanism (see
-[ADR-014](../../adr/adr-cross-role-proxy.md)):
+[4](../../adr/adr-cross-role-proxy.md)):
 
 - **Supervisor Proxy**: The school teacher inputs scores on behalf of the supervisor — covering
   scoring, feedback, and all supervisor-scoped actions. The action is logged with the teacher's

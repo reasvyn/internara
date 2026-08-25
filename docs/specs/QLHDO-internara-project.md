@@ -1,7 +1,7 @@
 # Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-25 **Changes:** sync — §9.1/9.5/9.6 maryUI → TallstackUI v4 (x-ts-modal, x-ts-icon/Heroicons, x-ts-* components)
+> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -497,7 +497,7 @@ These features span multiple modules and are not owned by a single module.
 Teachers can act as proxy for inactive industry supervisors after a configurable window (default
 48h); admin can proxy for either role. Applies to: logbook verification, assessment grading,
 supervision log verification. Proxy-graded items are tagged with metadata for audit trail. See
-[ADR-014: Cross-Role Proxy](../adr/adr-cross-role-proxy.md). The canonical contract is specified in
+[Cross-Role Proxy](../adr/adr-cross-role-proxy.md). The canonical contract is specified in
 [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2.
 
 ### 7.2 Compliance Monitoring

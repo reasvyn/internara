@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-08-25 **Changes:** sync — §22-23 DaisyUI/maryUI → TallstackUI v4, toast via $this->toast(), x-ts-* a11y
+> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -248,7 +248,7 @@ pass, Pint clean. See: `docs/conventions.md` §11.
 ## 20. Cross-Role Proxy Protocol
 
 Teachers can proxy as supervisor; admins can proxy both teacher and supervisor. Implemented at the
-application layer — no multi-role assignment. See [ADR-014](../../adr/adr-cross-role-proxy.md) and
+application layer — no multi-role assignment. See [4](../../adr/adr-cross-role-proxy.md) and
 `docs/conventions.md` §8.
 
 ---

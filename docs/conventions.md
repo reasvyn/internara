@@ -1,6 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-25 **Changes:** sync — §13 icons via Heroicons/TallstackUI x-ts-icon (was maryUI), retain CSS-variable theming
+> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -470,7 +470,7 @@ class InternshipFactory extends Factory
 
 ### Cross-Role Proxy Protocol
 
-Internara implements a **Cross-Role Proxy** mechanism (see [ADR-014](adr/adr-cross-role-proxy.md))
+Internara implements a **Cross-Role Proxy** mechanism (see [4](adr/adr-cross-role-proxy.md))
 that allows teachers to act as proxy for supervisors, and admins to proxy for both teachers and
 supervisors — all at the application layer without multi-role assignment.
 
