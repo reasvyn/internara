@@ -1,6 +1,6 @@
 # Project Vision — Where Internara Is Going
 
-> **Last updated:** 2026-08-25 **Changes:** product-definition pointer realigned — README condensed to industry-standard structure, this document is now the deep-dive target for problem analysis and personas
+> **Last updated:** 2026-08-25 **Changes:** .agents/context module-health path references reduced to named mentions per documentation-split rule
 
 ## Description
 
@@ -86,7 +86,7 @@ For ambiguous cases, open a Discussion, link this file, and record the decision 
 
 ## Roadmap — Now vs Next (link, not duplicate)
 
-- **Now (`v0.14.5 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + `.agents/context/module-health.md` tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
+- **Now (`v0.14.5 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + module-health tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
 - **Next:** Reports purification (grade-card only, thesis stays in `Assignment`), partnership slot-quota hardening, journal supervision-log deduplication — each with spec IDs in `docs/specs/index.md`.
 - **Later:** Dapodik export hardening, Dinas PKL regional forks, evaluation module scaffold (`Evaluation` is `Skeleton` today).
 
@@ -101,7 +101,7 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 | Requirements (FR/NFR/UC) that vision traces to | `docs/specs/index.md` → `docs/specs/QLHDO-internara-project.md` |
 | Architecture that makes vision buildable | `architecture.md` (4-layer, Action Triad) |
 | How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/build-and-deploy.yml` (version-tagged deploys), `infrastructure/deployment.md` |
-| Current health & where to contribute | `.agents/context/module-health.md`, `CONTRIBUTING.md` |
+| Current health & where to contribute | Module-health tiers (agent memory) + `CONTRIBUTING.md` |
 
 ## Where to Find It
 

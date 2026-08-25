@@ -1,7 +1,7 @@
 # Tech Stack — Language, Framework & Dependency Manifest
 
 > **Spec ID:** FB792
-> **Last updated:** 2026-08-25 **Changes:** remove DaisyUI/maryUI/PHPFlasher — FR-TS5 + mary + flasher + daisyui deleted (0.15.0), DD-4 removal complete
+> **Last updated:** 2026-08-25 **Changes:** .agents/plans pointer removed per documentation-split rule (migration status kept inline)
 
 ## Description
 
@@ -216,7 +216,7 @@ recorded acceptance.
 
 ### DD-4 — DaisyUI/MaryUI/PHPFlasher → TallstackUI Migration (COMPLETE 0.15.0)
 
-**Decision:** UI stack migrated from DaisyUI v5 + MaryUI v2 + `php-flasher` to TallstackUI v4 (TallstackUI-only since 0.15.0). See `.agents/plans/tallstackui-migration.md` (COMPLETE).
+**Decision:** UI stack migrated from DaisyUI v5 + MaryUI v2 + `php-flasher` to TallstackUI v4 (TallstackUI-only since 0.15.0; migration complete).
 **History:**
 1. **Spec & Docs:** Pinned `tallstackui/tallstackui ^4.0`, marked `daisyui`/`mary`/`flasher` as DEPRECATED (coexistence).
 2. **Coexistence:** TallstackUI alongside DaisyUI/MaryUI/PHPFlasher; new components used `<x-ts-*>`.

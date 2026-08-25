@@ -1,12 +1,12 @@
 # Spec Template — Feature Specification Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — extracted from doc-template.md as the specs-directory home of the 11-section template
+> **Last updated:** 2026-08-25 **Changes:** docs→.agents skill path reference replaced with named-skill mention per documentation-split rule
 
 ## Description
 
 The fixed 11-section structure every spec in `docs/specs/` follows. Specs are the requirements
 SSOT — implementation and tests trace back to the requirement IDs defined here. Section-by-section
-content rules live in the `spec-writing` skill (`.agents/skills/spec-writing/rules/`).
+content rules live in the `spec-writing` skill.
 
 ## The Skeleton
 
@@ -81,5 +81,5 @@ Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID
 ## Quick References
 
 - [`doc-template.md`](../doc-template.md) — shared documentation standards (Diátaxis, principles)
-- `.agents/skills/spec-writing/rules/spec-template.md` — section-by-section intent rules
+- `spec-writing` skill rules — section-by-section intent for each template section (agent-facing)
 - [`index.md`](index.md) — spec registry and build order
