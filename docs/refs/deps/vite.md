@@ -36,10 +36,10 @@ Conceptual reference for the frontend build pipeline: **Vite 8** (`vite ^8.1`) w
 - `composer run dev` runs Vite concurrently with the app server, queue worker, and Pail log tail;
   production assets built with `npm run build`
 - Tailwind integrates via `@tailwindcss/vite` ([`tailwindcss.md`](tailwindcss.md))
-- Build pipeline details: [`infrastructure/ci-cd.md`](../../infrastructure/ci-cd.md)
+- Build pipeline details: [`infrastructure/ci-cd.md`](../../guides/infra/ci-cd.md)
 
 ## Quick References
 
 - [Vite 8 announcement](https://vite.dev/blog/announcing-vite8) — Rolldown migration rationale
 - [Laravel Vite docs](https://laravel.com/docs/vite) — plugin behavior and Blade integration
-- [`docs/infrastructure/ci-cd.md`](../../infrastructure/ci-cd.md) — build in CI
+- [`docs/guides/infra/ci-cd.md`](../../guides/infra/ci-cd.md) — build in CI

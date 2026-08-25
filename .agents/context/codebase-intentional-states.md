@@ -51,4 +51,4 @@ fix them in dedicated cleanup sessions, not as drive-by edits:
 - `docs/specs/SE5Q9-*.md`, `docs/specs/89SRA-*.md` — duplicate exception contracts
 - `docs/specs/index.md` — spec registry (spec-ID convention)
 - `scripts/scan_violations.py`, `scripts/scan_security.py`, `scripts/scan_conventions.py` — arch-guard scanners
-- [Exception Pattern](../../docs/architecture/exception-pattern.md) — C8, RejectedException contract
+- [Exception Pattern](../../docs/guides/arch/exception-pattern.md) — C8, RejectedException contract

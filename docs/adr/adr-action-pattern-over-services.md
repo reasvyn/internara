@@ -42,7 +42,7 @@ success, and dispatches events for significant state changes. Named `{Verb}{Enti
 ### 2. Read Actions (Queries)
 
 _[2026-06-18: Pattern evolved — Read Actions now extend `BaseReadAction` and follow
-`Read{Entity}Action` naming. See `docs/architecture/action-pattern.md` for the current contract.]_
+`Read{Entity}Action` naming. See `docs/guides/arch/action-pattern.md` for the current contract.]_
 
 Extend `BaseReadAction` which provides `remember()`, `rememberForever()`, `forget()`, caching
 utilities, and `withErrorHandling()`. They must NOT mutate state, call `transaction()`, or call

@@ -42,4 +42,4 @@ wrapper around the **DOMPDF v3.1.6** HTML-to-PDF renderer.
 ## Quick References
 
 - [Wrapper docs](https://github.com/barryvdh/laravel-dompdf) — Laravel integration README
-- [`docs/architecture/index.md`](../../architecture/index.md) — related rendering patterns
+- [`docs/guides/arch/index.md`](../../guides/arch/index.md) — related rendering patterns

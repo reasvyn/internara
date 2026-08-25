@@ -104,7 +104,7 @@ reference: [`docs/architecture.md`](docs/architecture.md).
 
 SQLite is the zero-config default; switching to MySQL/MariaDB/PostgreSQL is a `.env` change, no
 code required. Production checklist and per-path guides:
-[`docs/infrastructure/deployment.md`](docs/infrastructure/deployment.md).
+[`docs/guides/infra/deployment.md`](docs/guides/infra/deployment.md).
 
 ## Localization
 
@@ -123,8 +123,8 @@ All documentation lives in [`docs/`](docs/index.md):
 | Architecture | [`docs/architecture.md`](docs/architecture.md) |
 | Module overviews | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) |
 | Coding conventions | [`docs/conventions.md`](docs/conventions.md) |
-| Deployment | [`docs/infrastructure/deployment.md`](docs/infrastructure/deployment.md) |
-| Testing guide | [`docs/infrastructure/testing.md`](docs/infrastructure/testing.md) |
+| Deployment | [`docs/guides/infra/deployment.md`](docs/guides/infra/deployment.md) |
+| Testing guide | [`docs/guides/infra/testing.md`](docs/guides/infra/testing.md) |
 | Full doc index | [`docs/index.md`](docs/index.md) |
 
 ## Testing & Quality
@@ -137,7 +137,7 @@ vendor/bin/pint --dirty --format agent  # Code style fixer
 ```
 
 Pest 4 with feature + unit coverage per Action, PHPStan level 8, Laravel Pint. Architecture
-scanner toolkit (`scripts/scan_*.py`): [`docs/infrastructure/tools.md`](docs/infrastructure/tools.md).
+scanner toolkit (`scripts/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
 
 ## Project Status
 

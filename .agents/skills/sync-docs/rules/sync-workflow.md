@@ -57,13 +57,13 @@ git log --since="14 days ago" --stat  # already minimum; for older drift use ful
 | Module structure     | `docs/refs/modules/{module}-reference.md` (file listing, actions, models) |
 | Business rules       | `docs/refs/modules/{module}.md` (business context)                        |
 | Feature requirements | `docs/specs/{ID}-{feature}.md` (FR, NFR, user stories, data contracts)       |
-| Architecture pattern | `docs/architecture.md` or `docs/architecture/{pattern}-pattern.md`   |
+| Architecture pattern | `docs/architecture.md` or `docs/guides/arch/{pattern}-pattern.md`   |
 | Conventions          | `docs/conventions.md`                                                |
 | Module dependencies  | `docs/refs/modules/index.md`                                              |
-| Database schema      | `docs/infrastructure/database.md`, `docs/specs/J68GZ-system-requirements.md` (§4.4, §7.3) |
+| Database schema      | `docs/guides/infra/database.md`, `docs/specs/J68GZ-system-requirements.md` (§4.4, §7.3) |
 | ADR                  | `docs/adr/` (if decision is notable)                                 |
 | Feature specs        | `docs/specs/index.md`                                                |
-| Config               | `docs/infrastructure/configuration.md`                               |
+| Config               | `docs/guides/infra/configuration.md`                               |
 | Agent guides         | `AGENTS.md` (module map, invariants, rule pointers)                  |
 | Agent skills         | `.agents/skills/{skill}/SKILL.md` (skill scope, rules, references)   |
 | Agent contexts       | `.agents/context/*.md` (intentional states, deploy caveats, pins)   |

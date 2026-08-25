@@ -125,7 +125,7 @@ composer run dev
 
 **Production on shared hosting** uses sync queue (no worker needed) and webhook-based cron.
 **Production on VPS** requires Supervisor (or systemd) for queue workers, system cron, and
-optionally Reverb for WebSocket support. See [Deployment](infrastructure/deployment.md).
+optionally Reverb for WebSocket support. See [Deployment](guides/infra/deployment.md).
 
 ### Step 6: Complete the Setup Wizard
 
@@ -141,7 +141,7 @@ authorizes access. The 6-step wizard guides you through:
 | 5    | Final review and confirm                    |
 | 6    | Setup complete with recovery key            |
 
-Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkthrough.
+Follow the [Setup Wizard](guides/setup-wizard.md) guide for a detailed walkthrough.
 
 ---
 
@@ -163,8 +163,8 @@ Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkt
 
 | Document                                           | What It Covers                                              |
 | -------------------------------------------------- | ----------------------------------------------------------- |
-| [Installation](foundation/installation.md)           | Detailed deployment options, server config, troubleshooting |
-| [Setup Wizard](foundation/setup-wizard.md)           | Complete walkthrough of all 6 wizard steps                  |
-| [Post-Setup](foundation/post-setup.md)               | First actions after the wizard completes                    |
+| [Installation](guides/installation.md)           | Detailed deployment options, server config, troubleshooting |
+| [Setup Wizard](guides/setup-wizard.md)           | Complete walkthrough of all 6 wizard steps                  |
+| [Post-Setup](guides/post-setup.md)               | First actions after the wizard completes                    |
 | [Architecture](architecture.md)                    | System design, modules, layers                              |
-| [Infrastructure](infrastructure/infrastructure.md) | Deployment options, background processes, storage           |
+| [Infrastructure](guides/infra/infrastructure.md) | Deployment options, background processes, storage           |

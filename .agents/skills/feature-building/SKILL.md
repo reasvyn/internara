@@ -84,7 +84,7 @@ rules below — nothing else.
 - If the spec is missing, stop and write it first (`spec-writing`) — no behavior without a requirement
 - Read the relevant module docs: `docs/refs/modules/{module}.md` (business rules) and
   `docs/refs/modules/{module}-reference.md` (file structure)
-- Read the relevant pattern doc: `docs/architecture/{pattern}-pattern.md`
+- Read the relevant pattern doc: `docs/guides/arch/{pattern}-pattern.md`
 - Identify which modules, submodules, and layers are affected
 
 ### 2. Design the Solution
@@ -165,13 +165,13 @@ slices across sessions per Size Triage.
 | Feature specs        | `docs/specs/index.md`                      |
 | Spec template        | `.agents/skills/spec-writing/SKILL.md`     |
 | Module structure     | `docs/refs/modules/index.md`                    |
-| Action patterns      | `docs/architecture/action-pattern.md`      |
-| Entity patterns      | `docs/architecture/entity-pattern.md`      |
-| Model conventions    | `docs/architecture/model-pattern.md`       |
-| Data / DTOs          | `docs/architecture/data-pattern.md`        |
-| Livewire conventions | `docs/architecture/livewire-pattern.md`    |
-| Policy conventions   | `docs/architecture/policy-pattern.md`      |
-| Event conventions    | `docs/architecture/event-pattern.md`       |
-| Exception hierarchy  | `docs/architecture/exception-pattern.md`   |
-| Enum conventions     | `docs/architecture/enum-pattern.md`        |
-| Testing patterns     | `docs/architecture/testing-pattern.md`     |
+| Action patterns      | `docs/guides/arch/action-pattern.md`      |
+| Entity patterns      | `docs/guides/arch/entity-pattern.md`      |
+| Model conventions    | `docs/guides/arch/model-pattern.md`       |
+| Data / DTOs          | `docs/guides/arch/data-pattern.md`        |
+| Livewire conventions | `docs/guides/arch/livewire-pattern.md`    |
+| Policy conventions   | `docs/guides/arch/policy-pattern.md`      |
+| Event conventions    | `docs/guides/arch/event-pattern.md`       |
+| Exception hierarchy  | `docs/guides/arch/exception-pattern.md`   |
+| Enum conventions     | `docs/guides/arch/enum-pattern.md`        |
+| Testing patterns     | `docs/guides/arch/testing-pattern.md`     |

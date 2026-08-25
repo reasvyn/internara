@@ -16,7 +16,7 @@ observability contract calls for.
 
 ## Rationale — What Fails Without It
 
-- **Recorders disabled/changed ad hoc** break the observability contract (`docs/foundation/
+- **Recorders disabled/changed ad hoc** break the observability contract (`docs/guides/
   system-observability.md`) — a recorded metric vanishes and a performance regression goes dark.
 - **`file` ingest in production** is single-process; concurrent worker/queue processes overwrite or
   lose samples, so counts/histograms silently under-report.
@@ -50,7 +50,7 @@ Enable in `config/pulse.php` under `recorders`:
 ],
 ```
 
-- Match `PULSE_INGEST_DRIVER` to deployment (`docs/infrastructure/deployment.md`): Redis in
+- Match `PULSE_INGEST_DRIVER` to deployment (`docs/guides/infra/deployment.md`): Redis in
   production, file in dev.
 
 ## Anti-Patterns & Pitfalls
@@ -66,7 +66,7 @@ Enable in `config/pulse.php` under `recorders`:
 
 ## Verification
 
-- `config/pulse.php` recorder list matches `docs/foundation/system-observability.md`.
+- `config/pulse.php` recorder list matches `docs/guides/system-observability.md`.
 - Ingest driver equals the deployment tier's documented choice.
 - Dashboard shows populated samples after load (requests appear); a load test against a dummy request
   confirms `SlowRequests`/`UserSessions` stream in.

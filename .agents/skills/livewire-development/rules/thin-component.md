@@ -163,7 +163,7 @@ accessibility and localization only.
 - In the Livewire component (`mount()` or `#[Computed]`): compute `$completionRate = $total > 0 ? round(($completed/$total)*100) : 0`, assemble `$pipelineStages`, calculate `$maxV`, `$absorption`, etc., and expose as `public int` / `public array`.
 - In Blade: bind directly — `{{ $completionRate }}%`, `@foreach ($pipelineStages as $stage)`.
 - Alpine.js owns toggles, dropdowns, and local filtering (`x-data="{ open: false }"`); it never re-implements server business rules.
-- Review gate: any Blade file containing `@php` with business-affecting arithmetic or array assembly is a blocking issue. See `docs/conventions.md` §14 and `docs/architecture/livewire-pattern.md` §1.1.
+- Review gate: any Blade file containing `@php` with business-affecting arithmetic or array assembly is a blocking issue. See `docs/conventions.md` §14 and `docs/guides/arch/livewire-pattern.md` §1.1.
 
 **Pitfalls to avoid:**
 
@@ -180,7 +180,7 @@ accessibility and localization only.
 | Topic                       | Asset                                        |
 | --------------------------- | -------------------------------------------- |
 | Thin Component Rule summary | `livewire-development/SKILL.md` §Thin Component Rule |
-| Blade presentation rule     | `docs/conventions.md` §14, `docs/architecture/livewire-pattern.md` §1.1 |
-| Action delegation           | `docs/architecture/action-pattern.md`        |
-| Entity contracts            | `docs/architecture/entity-pattern.md`        |
+| Blade presentation rule     | `docs/conventions.md` §14, `docs/guides/arch/livewire-pattern.md` §1.1 |
+| Action delegation           | `docs/guides/arch/action-pattern.md`        |
+| Entity contracts            | `docs/guides/arch/entity-pattern.md`        |
 | Critical invariants (C1, C2, C7) | `AGENTS.md` §Critical Invariants         |

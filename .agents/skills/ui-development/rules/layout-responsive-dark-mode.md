@@ -105,5 +105,5 @@ toggle via TallstackUI `<x-theme-switch>` (mirrors `data-theme` cookie + `.dark`
 - Drawer/navbar used for chrome; container `max-w-7xl mx-auto`.
 - Layout renders at mobile (320px), tablet, desktop without overlap or horizontal scroll.
 - Dark theme renders with no unreadable contrast (spot-check on key pages).
-- `npx prettier --check` + `npm run build` clean; `docs/foundation/ui-ux.md` / `branding.md` match
+- `npx prettier --check` + `npm run build` clean; `docs/guides/ui-ux.md` / `branding.md` match
   the implemented theme tokens.

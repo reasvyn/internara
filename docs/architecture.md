@@ -49,8 +49,8 @@ only on layers below it — never the reverse.
 │                                                                             │
 │  app/{Module}/**/Livewire/  app/{Module}/**/Policies/  app/{Module}/Http/  │
 │  resources/views/{module}/  routes/web/{module}.php (+ {submodule}.php)    │
-│  See: docs/architecture/livewire-pattern.md                                 │
-│  See: docs/architecture/policy-pattern.md                                   │
+│  See: docs/guides/arch/livewire-pattern.md                                 │
+│  See: docs/guides/arch/policy-pattern.md                                   │
 └──────────────────────────────────────────────────────────────────────────▲──┘
                                                                            │
 ┌──────────────────────────────────────────────────────────────────────────┴──┐
@@ -64,8 +64,8 @@ only on layers below it — never the reverse.
 │                                                                             │
 │  app/{Module}/**/Actions/  →  1 class = 1 use case                         │
 │  app/{Module}/**/Events/  app/{Module}/**/Listeners/                        │
-│  See: docs/architecture/action-pattern.md                                   │
-│  See: docs/architecture/event-pattern.md                                    │
+│  See: docs/guides/arch/action-pattern.md                                   │
+│  See: docs/guides/arch/event-pattern.md                                    │
 └──────────────────────────────────────────────────────────────────────────▲──┘
                                                                            │
 ┌──────────────────────────────────────────────────────────────────────────┴──┐
@@ -83,11 +83,11 @@ only on layers below it — never the reverse.
 │  app/{Module}/**/Enums/  app/{Module}/**/Data/                             │
 │  app/Core/Data/  app/Core/Exceptions/                                       │
 │  database/migrations/  config/  storage/                                    │
-│  See: docs/architecture/model-pattern.md                                    │
-│  See: docs/architecture/entity-pattern.md                                   │
-│  See: docs/architecture/enum-pattern.md                                     │
-│  See: docs/architecture/data-pattern.md                                     │
-│  See: docs/infrastructure/database.md                                       │
+│  See: docs/guides/arch/model-pattern.md                                    │
+│  See: docs/guides/arch/entity-pattern.md                                   │
+│  See: docs/guides/arch/enum-pattern.md                                     │
+│  See: docs/guides/arch/data-pattern.md                                     │
+│  See: docs/guides/infra/database.md                                       │
 └──────────────────────────────────────────────────────────────────────────▲──┘
                                                                            │
 ┌──────────────────────────────────────────────────────────────────────────┴──┐
@@ -105,10 +105,10 @@ only on layers below it — never the reverse.
 │  app/Core/{Actions,Models,Policies,Livewire,Data,Events,Exceptions,...}    │
 │  app/Core/Services/  app/Core/Support/                                     │
 │  app/{Module}/Services/  app/{Module}/Support/                             │
-│  See: docs/architecture/action-pattern.md                                   │
-│  See: docs/architecture/service-pattern.md                                  │
-│  See: docs/architecture/support-pattern.md                                  │
-│  See: docs/architecture/exception-pattern.md                                │
+│  See: docs/guides/arch/action-pattern.md                                   │
+│  See: docs/guides/arch/service-pattern.md                                  │
+│  See: docs/guides/arch/support-pattern.md                                  │
+│  See: docs/guides/arch/exception-pattern.md                                │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -125,7 +125,7 @@ Cross-submodule files (shared Actions, Http, Console) live at the module root di
 `app/{Module}/`.
 
 For the complete directory tree and path conventions, see
-[Modular Pattern](architecture/modular-pattern.md).
+[Modular Pattern](guides/arch/modular-pattern.md).
 
 ### Layer Dependency Rules
 
@@ -207,12 +207,12 @@ Does the class contain a business rule about internships, students, grades, etc.
 
 For comprehensive guidance on each type, see:
 
-- [Action Pattern](architecture/action-pattern.md) — domain business logic
-- [Service Pattern](architecture/service-pattern.md) — infrastructure logic
-- [Support Pattern](architecture/support-pattern.md) — static utilities
+- [Action Pattern](guides/arch/action-pattern.md) — domain business logic
+- [Service Pattern](guides/arch/service-pattern.md) — infrastructure logic
+- [Support Pattern](guides/arch/support-pattern.md) — static utilities
 
 For the complete data flow reference (mutation flow, read flow, event flow, DTO lifecycle, boundary
-crossing tables), see [Data Pattern](architecture/data-pattern.md).
+crossing tables), see [Data Pattern](guides/arch/data-pattern.md).
 
 ---
 
@@ -238,7 +238,7 @@ into three distinct categories, each with a specific contract. All three live un
 - Actions MUST delegate business rules to Entities — throw `RejectedException` on violation
 
 For the complete reference (contracts, naming, code examples, ActionResponse, migration paths), see
-[Action Pattern](architecture/action-pattern.md).
+[Action Pattern](guides/arch/action-pattern.md).
 
 ---
 
@@ -264,7 +264,7 @@ The architecture prevents circular dependencies through four structural mechanis
 | R7  | **Entities (Layer 2) must not perform I/O.** No DB queries, HTTP, cache, events, facades.                              | Entity calling `Cache::get()`                             |
 
 For detailed circular dependency scenarios, detection, and fixes, see
-[Modular Pattern](architecture/modular-pattern.md).
+[Modular Pattern](guides/arch/modular-pattern.md).
 
 ---
 
@@ -289,22 +289,22 @@ See [ADR-010](adr/adr-cross-module-communication.md).
 | Topic                                                                              | Document                                                                                               |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Base class mandate**                                                             | [Coding Conventions](conventions.md) §1                                                                |
-| **Complete pattern catalog**                                                       | [Modular Pattern Reference](architecture/modular-pattern.md)                                           |
-| **Action contracts & examples**                                                    | [Action Pattern](architecture/action-pattern.md)                                                       |
-| **Entity-model separation**                                                        | [Entity Pattern](architecture/entity-pattern.md)                                                       |
-| **Model conventions**                                                              | [Model Pattern](architecture/model-pattern.md)                                                         |
-| **DTOs & ActionResponse**                                                          | [Data Pattern](architecture/data-pattern.md)                                                           |
-| **Enum & state machine**                                                           | [Enum Pattern](architecture/enum-pattern.md)                                                           |
-| **Event dispatch & listeners**                                                     | [Event Pattern](architecture/event-pattern.md)                                                         |
-| **Livewire component rules**                                                       | [Livewire Pattern](architecture/livewire-pattern.md)                                                   |
-| **Policies & RBAC**                                                                | [Policy Pattern](architecture/policy-pattern.md)                                                       |
-| **Exception hierarchy**                                                            | [Exception Pattern](architecture/exception-pattern.md)                                                 |
-| **Logging & PII masking**                                                          | [Logging Pattern](architecture/logging-pattern.md)                                                     |
-| **Caching strategy**                                                               | [Cache Pattern](architecture/cache-pattern.md)                                                         |
-| **Service vs Support vs Action** (domain logic vs infra logic vs static utilities) | [Service Pattern](architecture/service-pattern.md), [Support Pattern](architecture/support-pattern.md) |
-| **Why no Repository**                                                              | [Repository Pattern](architecture/repository-pattern.md)                                               |
-| **Testing patterns**                                                               | [Testing Pattern](architecture/testing-pattern.md)                                                     |
-| **Validation strategy**                                                            | [Modular Pattern](architecture/modular-pattern.md) §4                                                  |
-| **Module structure & naming**                                                      | [Modular Pattern](architecture/modular-pattern.md)                                                     |
+| **Complete pattern catalog**                                                       | [Modular Pattern Reference](guides/arch/modular-pattern.md)                                           |
+| **Action contracts & examples**                                                    | [Action Pattern](guides/arch/action-pattern.md)                                                       |
+| **Entity-model separation**                                                        | [Entity Pattern](guides/arch/entity-pattern.md)                                                       |
+| **Model conventions**                                                              | [Model Pattern](guides/arch/model-pattern.md)                                                         |
+| **DTOs & ActionResponse**                                                          | [Data Pattern](guides/arch/data-pattern.md)                                                           |
+| **Enum & state machine**                                                           | [Enum Pattern](guides/arch/enum-pattern.md)                                                           |
+| **Event dispatch & listeners**                                                     | [Event Pattern](guides/arch/event-pattern.md)                                                         |
+| **Livewire component rules**                                                       | [Livewire Pattern](guides/arch/livewire-pattern.md)                                                   |
+| **Policies & RBAC**                                                                | [Policy Pattern](guides/arch/policy-pattern.md)                                                       |
+| **Exception hierarchy**                                                            | [Exception Pattern](guides/arch/exception-pattern.md)                                                 |
+| **Logging & PII masking**                                                          | [Logging Pattern](guides/arch/logging-pattern.md)                                                     |
+| **Caching strategy**                                                               | [Cache Pattern](guides/arch/cache-pattern.md)                                                         |
+| **Service vs Support vs Action** (domain logic vs infra logic vs static utilities) | [Service Pattern](guides/arch/service-pattern.md), [Support Pattern](guides/arch/support-pattern.md) |
+| **Why no Repository**                                                              | [Repository Pattern](guides/arch/repository-pattern.md)                                               |
+| **Testing patterns**                                                               | [Testing Pattern](guides/arch/testing-pattern.md)                                                     |
+| **Validation strategy**                                                            | [Modular Pattern](guides/arch/modular-pattern.md) §4                                                  |
+| **Module structure & naming**                                                      | [Modular Pattern](guides/arch/modular-pattern.md)                                                     |
 | **18 modules overview**                                                            | [Module Index](refs/modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |

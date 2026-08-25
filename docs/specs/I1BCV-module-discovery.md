@@ -444,5 +444,5 @@ After implementing this spec, the system automatically discovers Livewire compon
 - `docs/specs/module-manager.md` — Module manager spec (B114U)
 - `docs/refs/modules/core.md` — Core module conceptual overview
 - `docs/refs/modules/core-reference.md` — Core module technical reference
-- `docs/architecture/service-pattern.md` — Service pattern documentation
-- `docs/architecture/modular-pattern.md` — Modular architecture documentation
+- `docs/guides/arch/service-pattern.md` — Service pattern documentation
+- `docs/guides/arch/modular-pattern.md` — Modular architecture documentation

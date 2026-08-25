@@ -54,5 +54,5 @@ or conflicting, write it back here** — this memory is how context survives bet
 ## Quick References
 
 - [Architecture Rules](../skills/context-awareness/rules/architecture-rules.md) — layer/contract checks
-- [Deployment](../../docs/infrastructure/deployment.md) — full VPS/CI/CD topology
+- [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD topology
 - [Documentation Map](../skills/context-awareness/SKILL.md#documentation-map) — where to find every doc

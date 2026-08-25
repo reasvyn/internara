@@ -33,10 +33,10 @@ monitoring dashboard tracking application health (requests, slow queries, jobs, 
 
 - Recorder set and domain gating configured in `config/pulse.php`
 - Part of the observability stack alongside SmartLogger — operations guidance in
-  [`foundation/system-observability.md`](../../foundation/system-observability.md)
+  [`foundation/system-observability.md`](../../guides/system-observability.md)
 - Dashboard customization conventions: `pulse-development` skill
 
 ## Quick References
 
 - [Official docs](https://laravel.com/docs/pulse) — installation, recorders, custom cards
-- [`docs/foundation/system-observability.md`](../../foundation/system-observability.md) — observability runbook
+- [`docs/guides/system-observability.md`](../../guides/system-observability.md) — observability runbook

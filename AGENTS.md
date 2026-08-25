@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** refactored into a navigation hub — rule bodies moved to .agents/rules/{rule}.md, loaded on demand
+> **Last updated:** 2026-08-25 **Changes:** docs tree reorganized — foundation/architecture/infrastructure relocated under docs/guides/{,arch,infra}; all pointers updated
 
 Mental model and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -175,21 +175,21 @@ Full spec list with build order: `docs/specs/index.md`
 | Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/context/index.md` |
 | Global agent rules (doctrines, policies, checklists) | `.agents/rules/` — see Rules Index above |
 | 4-Layer model | `docs/architecture.md` §4-Layer Model |
-| Action Triad (Command/Read/Process) | `docs/architecture/action-pattern.md` |
-| SRP & modularity rules | `docs/architecture/modular-pattern.md` §1.6 |
-| Entity contracts (`final readonly`) | `docs/architecture/entity-pattern.md` |
-| DTO/Data contracts (`BaseData`) | `docs/architecture/data-pattern.md` |
-| Model contracts (`#[Fillable]`, entity bridge) | `docs/architecture/model-pattern.md` |
-| Enum contracts (LabelEnum, StatusEnum) | `docs/architecture/enum-pattern.md` |
-| Event dispatch & listeners | `docs/architecture/event-pattern.md` |
-| Exception hierarchy | `docs/architecture/exception-pattern.md` |
-| Cache patterns | `docs/architecture/cache-pattern.md` |
-| Logging patterns | `docs/architecture/logging-pattern.md` |
-| Policy authorization | `docs/architecture/policy-pattern.md` |
-| Livewire patterns | `docs/architecture/livewire-pattern.md` |
-| Service registration | `docs/architecture/service-pattern.md` |
-| Testing patterns | `docs/architecture/testing-pattern.md` |
-| Modular architecture | `docs/architecture/modular-pattern.md` |
+| Action Triad (Command/Read/Process) | `docs/guides/arch/action-pattern.md` |
+| SRP & modularity rules | `docs/guides/arch/modular-pattern.md` §1.6 |
+| Entity contracts (`final readonly`) | `docs/guides/arch/entity-pattern.md` |
+| DTO/Data contracts (`BaseData`) | `docs/guides/arch/data-pattern.md` |
+| Model contracts (`#[Fillable]`, entity bridge) | `docs/guides/arch/model-pattern.md` |
+| Enum contracts (LabelEnum, StatusEnum) | `docs/guides/arch/enum-pattern.md` |
+| Event dispatch & listeners | `docs/guides/arch/event-pattern.md` |
+| Exception hierarchy | `docs/guides/arch/exception-pattern.md` |
+| Cache patterns | `docs/guides/arch/cache-pattern.md` |
+| Logging patterns | `docs/guides/arch/logging-pattern.md` |
+| Policy authorization | `docs/guides/arch/policy-pattern.md` |
+| Livewire patterns | `docs/guides/arch/livewire-pattern.md` |
+| Service registration | `docs/guides/arch/service-pattern.md` |
+| Testing patterns | `docs/guides/arch/testing-pattern.md` |
+| Modular architecture | `docs/guides/arch/modular-pattern.md` |
 
 ### Feature Specs
 
@@ -216,18 +216,18 @@ Full spec list with build order: `docs/specs/index.md`
 
 | Invariant | Where to find the full rule |
 |-----------|----------------------------|
-| C1 — No Model mutations in Livewire | `docs/architecture/action-pattern.md` §Non-Negotiable |
+| C1 — No Model mutations in Livewire | `docs/guides/arch/action-pattern.md` §Non-Negotiable |
 | C2 — No service locator (`app()->make`) | `docs/conventions.md` §Dependency Injection |
 | C3 — No raw SQL without bindings | `docs/conventions.md` §SQL Injection Prevention |
-| C4 — No inline cache keys | `docs/architecture/cache-pattern.md` §Registration |
-| C5 — Entity forbidden imports | `docs/architecture/entity-pattern.md` §Non-Negotiable |
-| C6 — DTO forbidden imports | `docs/architecture/data-pattern.md` §Non-Negotiable |
-| C7 — DTO for 3+ params | `docs/architecture/action-pattern.md` §Command Action |
-| C8 — RejectedException not RuntimeException | `docs/architecture/exception-pattern.md` §Usage |
+| C4 — No inline cache keys | `docs/guides/arch/cache-pattern.md` §Registration |
+| C5 — Entity forbidden imports | `docs/guides/arch/entity-pattern.md` §Non-Negotiable |
+| C6 — DTO forbidden imports | `docs/guides/arch/data-pattern.md` §Non-Negotiable |
+| C7 — DTO for 3+ params | `docs/guides/arch/action-pattern.md` §Command Action |
+| C8 — RejectedException not RuntimeException | `docs/guides/arch/exception-pattern.md` §Usage |
 | D1 — `declare(strict_types=1)` | `docs/conventions.md` §Strict Types |
 | D2 — No debug calls | `docs/conventions.md` §Debug Calls |
 | D3 — `__()` for user strings | `docs/conventions.md` §Localization |
-| D4 — `#[Fillable]` attribute | `docs/architecture/model-pattern.md` §Non-Negotiable |
+| D4 — `#[Fillable]` attribute | `docs/guides/arch/model-pattern.md` §Non-Negotiable |
 | D5 — No raw request to create/update | `docs/conventions.md` §Input Sanitization |
 | D6 — FK with onDelete/onUpdate | `docs/conventions.md` §Database Conventions |
 

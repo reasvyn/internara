@@ -1,6 +1,6 @@
 # Testing Strategy — Spec-Driven Minimalism
 
-> **Last updated:** 2026-08-21 **Changes:** initial — extracted from docs/architecture/testing-pattern.md + pest-testing skill; agent-facing strategy for 98% suite, uneven coverage, and spec-traceable tests
+> **Last updated:** 2026-08-21 **Changes:** initial — extracted from docs/guides/arch/testing-pattern.md + pest-testing skill; agent-facing strategy for 98% suite, uneven coverage, and spec-traceable tests
 
 ## Description
 
@@ -73,7 +73,7 @@ Use `LazilyRefreshDatabase` (not `RefreshDatabase`), `assertModelExists` (not `a
 
 ## Quick References
 
-- `docs/architecture/testing-pattern.md` — full testing patterns
+- `docs/guides/arch/testing-pattern.md` — full testing patterns
 - `.agents/skills/pest-testing/SKILL.md` + `rules/*` — spec-driven minimalism, layer patterns, mocking boundaries
 - `.agents/skills/agent-workflow/SKILL.md` Step 4 — Verify — verification strategy
 - `tests/Pest.php`, `tests/TestCase.php` — base test setup

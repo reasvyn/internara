@@ -63,4 +63,4 @@ public function mount(ReadAdminDashboardAction $action): void {
 - `grep -R "@php" resources/views/**/*.blade.php` returns no hits with business logic (only trivial presentational assignments if unavoidable, and even those should be justified).
 - `grep -R "@if.*\(.*->.*\|@if.*\(.*\[.*\]\|@if.*\(.*===` in Blade returns no hits — `@if` contains only a single boolean variable, never an expression.
 - Every derived value and visibility flag rendered in Blade is a public property or `#[Computed]` getter of its Livewire component (or an Alpine `x-data` boolean).
-- `docs/conventions.md` §14 and `docs/architecture/livewire-pattern.md` §1.1 are the SSOT.
+- `docs/conventions.md` §14 and `docs/guides/arch/livewire-pattern.md` §1.1 are the SSOT.

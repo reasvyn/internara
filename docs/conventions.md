@@ -8,7 +8,7 @@ This document describes conventions for writing code in the Internara codebase. 
 produce consistent, predictable code that any team member can read without context-switching.
 
 **Architecture patterns** (Actions, Entities, Events, Livewire, caching, testing, etc.) live in
-`docs/architecture/*-pattern.md`. This file covers only the conventions that are not
+`docs/guides/arch/*-pattern.md`. This file covers only the conventions that are not
 pattern-specific: code style, naming, file structure, and project rules.
 
 ---
@@ -92,30 +92,30 @@ merged.
 
 ## 1. Architecture Patterns
 
-All architecture patterns are documented in `docs/architecture/`. Refer to the appropriate pattern
+All architecture patterns are documented in `docs/guides/arch/`. Refer to the appropriate pattern
 doc rather than duplicating conventions here:
 
 | Convention                          | Reference                                                                  |
 | ----------------------------------- | -------------------------------------------------------------------------- |
-| File structure, module organization | [Modular Pattern](architecture/modular-pattern.md)                         |
-| SRP & modularity rules              | [Modular Pattern §1.6](architecture/modular-pattern.md#16-single-responsibility--modularity-rules) |
-| Actions (Command / Read / Process)  | [Action Pattern](architecture/action-pattern.md)                           |
-| Models & relationships              | [Model Pattern](architecture/model-pattern.md)                             |
-| Entities (business rules)           | [Entity Pattern](architecture/entity-pattern.md)                           |
-| Enums (LabelEnum, StatusEnum)       | [Enum Pattern](architecture/enum-pattern.md)                               |
-| Policies & authorization            | [Policy Pattern](architecture/policy-pattern.md)                           |
-| Livewire components                 | [Livewire Pattern](architecture/livewire-pattern.md)                       |
-| Data / DTOs                         | [Data Pattern](architecture/data-pattern.md)                               |
-| Events & listeners                  | [Event Pattern](architecture/event-pattern.md)                             |
-| Notifications                       | [Event Pattern](architecture/event-pattern.md) (see Notifications section) |
-| Controllers, routes, middleware     | [Modular Pattern](architecture/modular-pattern.md)                         |
-| Blade views & anonymous components  | [Livewire Pattern](architecture/livewire-pattern.md)                       |
-| Cache keys & invalidation           | [Cache Pattern](architecture/cache-pattern.md)                             |
-| Cross-module communication          | [Modular Pattern](architecture/modular-pattern.md)                         |
-| Exception hierarchy & handling      | [Exception Pattern](architecture/exception-pattern.md)                     |
-| Testing                             | [Testing Pattern](architecture/testing-pattern.md)                         |
-| Logging & SmartLogger               | [Logging Pattern](architecture/logging-pattern.md)                         |
-| Services vs Support                 | [Service Pattern](architecture/service-pattern.md)                         |
+| File structure, module organization | [Modular Pattern](guides/arch/modular-pattern.md)                         |
+| SRP & modularity rules              | [Modular Pattern §1.6](guides/arch/modular-pattern.md#16-single-responsibility--modularity-rules) |
+| Actions (Command / Read / Process)  | [Action Pattern](guides/arch/action-pattern.md)                           |
+| Models & relationships              | [Model Pattern](guides/arch/model-pattern.md)                             |
+| Entities (business rules)           | [Entity Pattern](guides/arch/entity-pattern.md)                           |
+| Enums (LabelEnum, StatusEnum)       | [Enum Pattern](guides/arch/enum-pattern.md)                               |
+| Policies & authorization            | [Policy Pattern](guides/arch/policy-pattern.md)                           |
+| Livewire components                 | [Livewire Pattern](guides/arch/livewire-pattern.md)                       |
+| Data / DTOs                         | [Data Pattern](guides/arch/data-pattern.md)                               |
+| Events & listeners                  | [Event Pattern](guides/arch/event-pattern.md)                             |
+| Notifications                       | [Event Pattern](guides/arch/event-pattern.md) (see Notifications section) |
+| Controllers, routes, middleware     | [Modular Pattern](guides/arch/modular-pattern.md)                         |
+| Blade views & anonymous components  | [Livewire Pattern](guides/arch/livewire-pattern.md)                       |
+| Cache keys & invalidation           | [Cache Pattern](guides/arch/cache-pattern.md)                             |
+| Cross-module communication          | [Modular Pattern](guides/arch/modular-pattern.md)                         |
+| Exception hierarchy & handling      | [Exception Pattern](guides/arch/exception-pattern.md)                     |
+| Testing                             | [Testing Pattern](guides/arch/testing-pattern.md)                         |
+| Logging & SmartLogger               | [Logging Pattern](guides/arch/logging-pattern.md)                         |
+| Services vs Support                 | [Service Pattern](guides/arch/service-pattern.md)                         |
 
 ---
 
@@ -816,7 +816,7 @@ branching that depends on business rules must be prepared before rendering.
 @foreach ($pipelineStages as $stage) ... @endforeach
 ```
 
-Enforced by: `docs/architecture/livewire-pattern.md` §1 (Thin Component) and agent skills `livewire-development` + `tailwindcss-development`.
+Enforced by: `docs/guides/arch/livewire-pattern.md` §1 (Thin Component) and agent skills `livewire-development` + `tailwindcss-development`.
 
 ## 15. Localization
 
@@ -836,7 +836,7 @@ subdirectories. Modules may optionally split submodule keys into separate files 
 
 Submodule files are colocated in the same `lang/{locale}/` directory — no subdirectories. Both
 `en` and `id` copies must exist for every submodule file. See
-`docs/infrastructure/localization.md` §Submodule Translation Files for details.
+`docs/guides/infra/localization.md` §Submodule Translation Files for details.
 
 ### `__()` Usage Rules
 

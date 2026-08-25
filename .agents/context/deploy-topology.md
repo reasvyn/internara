@@ -51,5 +51,5 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
 
 - `.github/workflows/build-and-deploy.yml` — the pipeline (build + deploy jobs)
 - `.github/scripts/deploy.sh` — VPS-side deploy script (compose up, prune, health check)
-- [Deployment](../../docs/infrastructure/deployment.md) — full VPS/CI/CD operational details
+- [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD operational details
 - [Dockerfile](../../Dockerfile) + `docker-compose.yml` — multi-stage build, volumes, `NGINX_PORT`

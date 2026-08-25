@@ -460,7 +460,7 @@ This spec can only be implemented after the following specs are **fully complete
 Implement `Tests\Support\DummyData` (orchestrating the existing factories in dependency order,
 wrapped in a single transaction, with the factory states in §6.4), add the thin
 `Database\Seeders\DummySeeder` entry point with the production guard and bilingual summary, then
-document usage in `docs/infrastructure/database.md` (Seeders section) and register the new factory
+document usage in `docs/guides/infra/database.md` (Seeders section) and register the new factory
 states in their module reference docs.
 
 ### Next Steps
@@ -480,5 +480,5 @@ states in their module reference docs.
 - `tests/Support/DummyData.php` — factory-driven generator (new, dev-only)
 - `tests/Support/WithSettingsSeed.php` — existing test-support convention being extended
 - `database/factories/*` — existing factories reused (38 factories)
-- `docs/infrastructure/database.md` — Seeders section (to be updated)
+- `docs/guides/infra/database.md` — Seeders section (to be updated)
 - **Related specs:** [registration.md](MBB5R-registration.md) (MBB5R), [placement.md](J9GBH-placement.md) (J9GBH), [reports.md](R6BMW-reports.md) (R6BMW), [certification.md](J0M04-certification.md) (J0M04)

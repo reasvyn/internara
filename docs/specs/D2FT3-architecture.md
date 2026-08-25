@@ -73,7 +73,7 @@ surface.
 | NG2  | CQRS with physically separate read/write databases |
 | NG3  | Event sourcing |
 | NG4  | Microservices / message-bus orchestration (single deployable Laravel app) |
-| NG5  | Repository pattern (Entity + Model directly bridge; see [entity-pattern.md](../architecture/entity-pattern.md)) |
+| NG5  | Repository pattern (Entity + Model directly bridge; see [entity-pattern.md](../guides/arch/entity-pattern.md)) |
 
 ---
 
@@ -367,7 +367,7 @@ before the tech stack, infra services, and base-class specs.
 
 This spec is satisfied continuously: every module, Action, Entity, DTO, and Model built by the
 lower-level specs must comply with FR-ARC1–FR-ARC33. `docs/architecture.md` and the
-`docs/architecture/` pattern docs are the living reference for implementation; this spec is the
+`docs/guides/arch/` pattern docs are the living reference for implementation; this spec is the
 authoritative contract.
 
 ### Next Steps
@@ -384,14 +384,14 @@ authoritative contract.
 ## Quick References
 
 - `docs/architecture.md` — 4-layer model, data flow, dependency rules (living reference)
-- `docs/architecture/modular-pattern.md` — module boundaries and colocation
-- `docs/architecture/action-pattern.md` — Action Triad contracts (C1, C7)
-- `docs/architecture/entity-pattern.md` — Entity contract (C5)
-- `docs/architecture/data-pattern.md` — DTO/BaseData contract (C6)
-- `docs/architecture/model-pattern.md` — Model contract (D4)
-- `docs/architecture/enum-pattern.md` — Enum contracts
-- `docs/architecture/event-pattern.md` — Event dispatch & listeners
-- `docs/architecture/exception-pattern.md` — RejectedException (C8)
+- `docs/guides/arch/modular-pattern.md` — module boundaries and colocation
+- `docs/guides/arch/action-pattern.md` — Action Triad contracts (C1, C7)
+- `docs/guides/arch/entity-pattern.md` — Entity contract (C5)
+- `docs/guides/arch/data-pattern.md` — DTO/BaseData contract (C6)
+- `docs/guides/arch/model-pattern.md` — Model contract (D4)
+- `docs/guides/arch/enum-pattern.md` — Enum contracts
+- `docs/guides/arch/event-pattern.md` — Event dispatch & listeners
+- `docs/guides/arch/exception-pattern.md` — RejectedException (C8)
 - `docs/conventions.md` — Invariants C1–C8, D1–D6
 - `config/module.php` — module dependency order
 - `scripts/scan_violations.py`, `scripts/scan_class_contracts.py` — enforcement scans

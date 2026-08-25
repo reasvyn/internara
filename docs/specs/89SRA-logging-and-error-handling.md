@@ -577,6 +577,6 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 - `app/Core/Actions/Concerns/HandlesActionErrors.php` — Action error wrapping trait
 - `app/Core/Http/Middleware/LogContextMiddleware.php` — request context injection middleware
 - `bootstrap/app.php` — exception rendering configuration
-- `docs/architecture/exception-pattern.md` — dual hierarchy rationale and patterns
-- `docs/architecture/logging-pattern.md` — SmartLogger architecture, PII masking, translation
+- `docs/guides/arch/exception-pattern.md` — dual hierarchy rationale and patterns
+- `docs/guides/arch/logging-pattern.md` — SmartLogger architecture, PII masking, translation
 - `docs/specs/base-classes.md` (SE5Q9) — foundation spec (§6.3, §DD-1)

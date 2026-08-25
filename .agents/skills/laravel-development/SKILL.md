@@ -38,5 +38,5 @@ General code conventions (Action triad, Entity/DTO) are in `code-writing`; modul
 | Topic | Doc |
 |-------|-----|
 | Laravel docs | `search-docs` with `laravel/framework` |
-| Module architecture | `docs/architecture/modular-pattern.md` |
-| Action pattern | `docs/architecture/action-pattern.md` |
+| Module architecture | `docs/guides/arch/modular-pattern.md` |
+| Action pattern | `docs/guides/arch/action-pattern.md` |

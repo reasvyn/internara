@@ -89,6 +89,6 @@ grep -c "C1\|C8\|D1\|D6" .agents/skills/*/SKILL.md       # must match docs/conve
 - `python3 scripts/scan_doc_links.py` — catches broken links and stale metadata, the cheapest
   signal of rot (necessary but not sufficient).
 - Manual/grep checks per claim class: `find` against `app/` for file listings, `grep` of class
-  signatures, migration files vs `docs/infrastructure/database.md`.
+  signatures, migration files vs `docs/guides/infra/database.md`.
 - `scan_skills.py` — cross-check skill metadata consistency, complementary to the manual agent-layer
   audit.

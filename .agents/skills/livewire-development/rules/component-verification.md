@@ -191,5 +191,5 @@ passes; the full checklist above is green before commit.
 | Component structure & Form Objects  | `rules/component-structure.md` (this skill)   |
 | Accessibility                       | `rules/accessibility.md` (this skill)         |
 | Localization                        | `rules/localization.md` (this skill)          |
-| Testing components                  | `docs/architecture/testing-pattern.md`        |
+| Testing components                  | `docs/guides/arch/testing-pattern.md`        |
 | Arch-guard quality gate             | `.agents/skills/arch-guard/SKILL.md`          |

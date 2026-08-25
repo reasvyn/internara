@@ -69,12 +69,12 @@ File: `routes/web/incident.php` Named routes: `student.incidents.report`, `sysad
 
 ## Views
 
-Views are located in `resources/views/incident/`. See [UI/UX](../../foundation/ui-ux.md) for the design
+Views are located in `resources/views/incident/`. See [UI/UX](../../guides/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Incident/`. See [Testing](../../infrastructure/testing.md)
+Tests are located in `tests/Incident/`. See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories

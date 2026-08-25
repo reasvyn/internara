@@ -15,7 +15,7 @@ Rules are checked in this fixed priority order — when a finding is ambiguous o
 multiple problems, the higher-priority rule wins and is reported first:
 
 1. **AGENTS.md Critical Invariants** (C1-C8, D1-D6) — non-negotiable
-2. **Architecture patterns** (`docs/architecture/*.md`) — structural contracts
+2. **Architecture patterns** (`docs/guides/arch/*.md`) — structural contracts
 3. **Coding conventions** (`docs/conventions.md`) — style and naming
 4. **Security rules** — OWASP, Laravel security best practices
 5. **Performance rules** — N+1, query optimization, eager loading

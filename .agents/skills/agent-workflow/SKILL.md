@@ -80,8 +80,8 @@ Internalize intent, not literal words. Do all scoping before reading files.
 
 Gather context, decide approach, design contracts — before touching code.
 
-- **Explore (context gathering)** — read module docs, architecture docs (`docs/architecture/*.md`), conventions (`docs/conventions.md`), and the **full current content of every file you may touch**; survey `scripts/` for existing devtools before manual work (Automation-First — reuse `scan_*.py` scanners instead of manual greps; if 3+ items would be touched repetitively, script it).
-- **Plan (approach selection)** — consider **2+ approaches** and pick one; decide Action type (Command / Read / Process per `docs/architecture/action-pattern.md`), Entity boundaries (`final readonly` + `fromModel()`), DTO needs (C7: DTO for 3+ params), test strategy (spec-traceable, see Verification Strategy), doc changes, localization, and security implications.
+- **Explore (context gathering)** — read module docs, architecture docs (`docs/guides/arch/*.md`), conventions (`docs/conventions.md`), and the **full current content of every file you may touch**; survey `scripts/` for existing devtools before manual work (Automation-First — reuse `scan_*.py` scanners instead of manual greps; if 3+ items would be touched repetitively, script it).
+- **Plan (approach selection)** — consider **2+ approaches** and pick one; decide Action type (Command / Read / Process per `docs/guides/arch/action-pattern.md`), Entity boundaries (`final readonly` + `fromModel()`), DTO needs (C7: DTO for 3+ params), test strategy (spec-traceable, see Verification Strategy), doc changes, localization, and security implications.
 - **Design (contracts)** — define class contracts up front:
   - Action signature and triad base class; `declare(strict_types=1)` (D1)
   - Entity `final readonly`, forbidden imports (C5), business rules delegated to Entity

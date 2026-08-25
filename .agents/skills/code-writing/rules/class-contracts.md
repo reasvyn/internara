@@ -3,7 +3,7 @@
 > **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-contract structural rules, rationale, and detection
 
 Each component type has a strict structural contract. The contracts below are enforced by
-`scan_class_contracts.py` and mirror `docs/architecture/{pattern}-pattern.md`. Follow them exactly; a
+`scan_class_contracts.py` and mirror `docs/guides/arch/{pattern}-pattern.md`. Follow them exactly; a
 component that "sort of" matches the contract fails the scan and confuses the layer it belongs to.
 
 ---

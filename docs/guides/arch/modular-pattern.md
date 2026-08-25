@@ -77,7 +77,7 @@ contracts `LabelEnum`/`StatusEnum`. See: `docs/conventions.md` §1.
 **LabelEnum** — every enum provides a human-readable label. **StatusEnum** — state machine enums
 with `isTerminal()`, `canTransitionTo()`, `validTransitions()`. **ColorableEnum** — UI color/badge
 variants. **SendsNotifications / SettingsStore** — infrastructure contracts bound via container.
-See: `docs/architecture/enum-pattern.md`.
+See: `docs/guides/arch/enum-pattern.md`.
 
 ---
 
@@ -88,7 +88,7 @@ See: `docs/architecture/enum-pattern.md`.
 `deleted()`, `error()`, `withRedirect()`. **DTO Input** — Command/Process Actions accept `BaseData`
 DTO as primary parameter, never raw `array`. **Transaction Safety** — `BaseAction::transaction()`
 auto-detects nesting, queues events until commit, retries on deadlock. **Single execute()** — every
-Action has exactly one public method. See: `docs/architecture/action-pattern.md`.
+Action has exactly one public method. See: `docs/guides/arch/action-pattern.md`.
 
 ---
 
@@ -104,7 +104,7 @@ persistence to business rules. **Entity Purity** — `final readonly`, zero I/O,
 ## 6. Enum Patterns
 
 String-backed, UPPER_SNAKE case. Business logic methods (e.g., `isActive()`) live directly on the
-enum. Model defaults use `EnumCase::value`. See: `docs/architecture/enum-pattern.md`.
+enum. Model defaults use `EnumCase::value`. See: `docs/guides/arch/enum-pattern.md`.
 
 ---
 
@@ -114,7 +114,7 @@ enum. Model defaults use `EnumCase::value`. See: `docs/architecture/enum-pattern
 Authorization** — route middleware, Livewire `authorize()`, Policy gates. **Super Admin
 Gate::before** — single bypass callback. **AuthorizesRoles Trait** — role-checking methods.
 **AuthorizesOwnership Trait** — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()`. See:
-`docs/architecture/policy-pattern.md`, `docs/foundation/rbac.md`.
+`docs/guides/arch/policy-pattern.md`, `docs/guides/rbac.md`.
 
 ---
 
@@ -125,7 +125,7 @@ queries, or business logic. **Action Injection** — Actions are method paramete
 Dialog** — `actionTarget`/`confirmingAction` state with `askAction()`/`confirmAction()`. **Form
 Object** — complex forms extracted into `Livewire\Form` subclasses. **Component Alias** — submodule:
 `{mod}.{sub}.{name}`, cross-module: `{mod}.{name}`, shared: `{component-name}`. See:
-`docs/architecture/livewire-pattern.md`.
+`docs/guides/arch/livewire-pattern.md`.
 
 ---
 
@@ -134,7 +134,7 @@ Object** — complex forms extracted into `Livewire\Form` subclasses. **Componen
 UUID primary keys via `HasUuids`. `#[Fillable]` PHP 8.4 attribute. Named entity bridge accessors.
 Singular `BelongsTo`/`HasOne` and plural `HasMany`/`BelongsToMany` relationships. Common scopes:
 `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`,
-`scopeOrdered()`. See: `docs/architecture/model-pattern.md`.
+`scopeOrdered()`. See: `docs/guides/arch/model-pattern.md`.
 
 ---
 
@@ -143,8 +143,8 @@ Singular `BelongsTo`/`HasOne` and plural `HasMany`/`BelongsToMany` relationships
 **SmartLogger** — fluent dual-channel (system + activity) logging with PII masking. **Dual Exception
 Hierarchy** — `AppException` and `ModuleException` sibling trees. **HandlesActionErrors** — catches
 unexpected `Throwable`, logs, rethrows. **HasExceptionContext** — `withHint()`, `withContext()`,
-`toCliOutput()`, `getSanitizedContext()`. See: `docs/architecture/logging-pattern.md`,
-`docs/architecture/exception-pattern.md`.
+`toCliOutput()`, `getSanitizedContext()`. See: `docs/guides/arch/logging-pattern.md`,
+`docs/guides/arch/exception-pattern.md`.
 
 ---
 
@@ -155,7 +155,7 @@ one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/p
 Actions/Livewire: feature (with DB). **Action Testing** — test DTO construction, ActionResponse
 handling, Entity rule enforcement, event dispatch. **Performance** — `LazilyRefreshDatabase`,
 `assertModelExists()`. **TDD Order** — Enum → Entity → DTO → Command → Read → Process → Livewire →
-Policy → Console. See: `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md`.
+Policy → Console. See: `docs/guides/arch/testing-pattern.md`, `docs/guides/infra/testing.md`.
 
 ---
 
@@ -163,7 +163,7 @@ Policy → Console. See: `docs/architecture/testing-pattern.md`, `docs/infrastru
 
 **Centralized Key Registry** — all keys in `config/cache-keys.php`. **Event-Driven Invalidation** —
 Command → event → listener → `Cache::forget()`. **TTL Categorization** — Short (<5m), Medium
-(5m-1h), Long (1h-24h), Forever. See: `docs/infrastructure/cache.md`.
+(5m-1h), Long (1h-24h), Forever. See: `docs/guides/infra/cache.md`.
 
 ---
 
@@ -172,7 +172,7 @@ Command → event → listener → `Cache::forget()`. **TTL Categorization** —
 Module-split route files under `routes/web/`. Module-level: `{module}.php`. Submodule-level: `{submodule}.php`
 (no module prefix). Route names: flexible, describe the URL path. Middleware
 groups: `auth`, `guest`, `role:{roles}`, `auth.throttle`. Controller suffix required, delegate to
-Actions. See: `docs/infrastructure/routes.md`.
+Actions. See: `docs/guides/infra/routes.md`.
 
 ---
 
@@ -180,7 +180,7 @@ Actions. See: `docs/infrastructure/routes.md`.
 
 Multi-channel via `mail`, `broadcast`, `CustomDatabaseChannel`. Naming:
 `{Entity}{Type}Notification`. All user-facing strings via `__()`. See:
-`docs/architecture/event-pattern.md`.
+`docs/guides/arch/event-pattern.md`.
 
 ---
 
@@ -248,7 +248,7 @@ pass, Pint clean. See: `docs/conventions.md` §11.
 ## 20. Cross-Role Proxy Protocol
 
 Teachers can proxy as supervisor; admins can proxy both teacher and supervisor. Implemented at the
-application layer — no multi-role assignment. See [ADR-014](../adr/adr-cross-role-proxy.md) and
+application layer — no multi-role assignment. See [ADR-014](../../adr/adr-cross-role-proxy.md) and
 `docs/conventions.md` §8.
 
 ---
@@ -329,14 +329,14 @@ afterthought — it is a design constraint enforced at every layer.
 - Guide modals (`*-guide.blade.php`) must be keyboard-accessible and announce their content via
   ARIA.
 
-See: `docs/foundation/ui-ux.md` §6 (Accessibility), `docs/conventions.md` §13.
+See: `docs/guides/ui-ux.md` §6 (Accessibility), `docs/conventions.md` §13.
 
 ---
 
 ## 23. Localization Patterns
 
 All user-facing strings MUST use the `__()` helper for translation. See `docs/conventions.md` §14
-and `docs/infrastructure/localization.md` for file structure and key conventions.
+and `docs/guides/infra/localization.md` for file structure and key conventions.
 
 ### 23.1 Key Conventions by Layer
 

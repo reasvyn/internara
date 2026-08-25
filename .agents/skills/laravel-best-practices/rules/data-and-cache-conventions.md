@@ -126,5 +126,5 @@ public function handle(InternUpdated $event): void
   and `python3 scripts/scan_violations.py` for C4/D4/D5 checks.
 - Grep for raw `request()->all(` / `$request->all(` in create/update paths.
 - Review list/dashboard queries for `->with()`; `config/cache-keys.php` contains every key used.
-- `docs/architecture/model-pattern.md` §Mass Assignment and `docs/architecture/cache-pattern.md`
+- `docs/guides/arch/model-pattern.md` §Mass Assignment and `docs/guides/arch/cache-pattern.md`
   §Registration are the authoritative sources.

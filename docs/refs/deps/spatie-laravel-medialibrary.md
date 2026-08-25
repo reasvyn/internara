@@ -33,11 +33,11 @@ the file-attachment layer associating uploaded files with Eloquent models.
 
 - Attachments on student submissions (`Assignment/.../Submission`), logbooks
   (`Journals/.../Logbook`), and system settings/branding assets (`Settings/Setting`)
-- Upload governance rules: [`infrastructure/media-library.md`](../../infrastructure/media-library.md)
+- Upload governance rules: [`infrastructure/media-library.md`](../../guides/infra/media-library.md)
 - Package conventions in the `medialibrary-development` skill
 
 ## Quick References
 
 - [Official docs](https://spatie.be/docs/laravel-medialibrary) — full package documentation
-- [`docs/infrastructure/media-library.md`](../../infrastructure/media-library.md) — collections and governance
-- [`docs/infrastructure/filesystem.md`](../../infrastructure/filesystem.md) — storage layout
+- [`docs/guides/infra/media-library.md`](../../guides/infra/media-library.md) — collections and governance
+- [`docs/guides/infra/filesystem.md`](../../guides/infra/filesystem.md) — storage layout

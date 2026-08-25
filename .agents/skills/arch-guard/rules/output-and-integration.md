@@ -34,7 +34,7 @@ Every scanner emits a JSON report with this schema:
       "line": 42,
       "message": "Model::create() found in Livewire component",
       "suggestion": "Use StoreStudentAction instead",
-      "reference": "docs/architecture/action-pattern.md"
+      "reference": "docs/guides/arch/action-pattern.md"
     }
   ]
 }

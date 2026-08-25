@@ -9,7 +9,7 @@ PII and sensitive fields are identified at design time, encrypted or masked at r
 ## What it enforces
 
 - **PII inventory:** Each module lists PII fields in its spec/ADR (e.g., `users.email`, `users.phone`). No new PII column without a spec ID and masking plan.
-- **Masking:** Logs use SmartLogger with PII masking (`docs/architecture/logging-pattern.md`); `scan_security.py` flags plaintext PII in `Log::info()` payloads. Exports mask by default unless explicitly authorized.
+- **Masking:** Logs use SmartLogger with PII masking (`docs/guides/arch/logging-pattern.md`); `scan_security.py` flags plaintext PII in `Log::info()` payloads. Exports mask by default unless explicitly authorized.
 - **Encryption at rest:** Sensitive-at-rest fields use Laravel encrypted casts (`Encrypted` cast or `encrypted:array`) — declare in Model and verify in spec.
 - **Field-level RBAC:** Blade reads `Entity::canViewField($actor, $field)` or Policy gates before rendering a sensitive column; never gate in Blade — gate in Entity/Policy and pass a boolean/DTO to the view (see `ui-development` Blade rule).
 - **Audit trail:** Writes that touch PII or status transitions emit activity log via `Spatie\Activitylog` + SmartLogger dual-channel (DB + file), with causer tracking.
@@ -39,7 +39,7 @@ PII and sensitive fields are identified at design time, encrypted or masked at r
 
 | Topic | Asset |
 |-------|-------|
-| Logging & masking | `docs/architecture/logging-pattern.md` |
-| RBAC / field visibility | `docs/architecture/policy-pattern.md` |
+| Logging & masking | `docs/guides/arch/logging-pattern.md` |
+| RBAC / field visibility | `docs/guides/arch/policy-pattern.md` |
 | Mass assignment (D4/D5) | `docs/conventions.md` §3.3 |
 | PII handling | `docs/conventions.md` §3.1–3.7 |

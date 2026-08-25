@@ -285,8 +285,8 @@ After implementing this spec, the system has role-based access control with 5 ro
 - `app/Core/Policies/Concerns/AuthorizesRoles.php` — Role-checking trait
 - `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership-checking trait
 - `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level role check
-- `docs/architecture/policy-pattern.md` — Architecture pattern documentation
-- `docs/foundation/rbac.md` — Role definitions and capabilities
+- `docs/guides/arch/policy-pattern.md` — Architecture pattern documentation
+- `docs/guides/rbac.md` — Role definitions and capabilities
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — ADR for flat role model
 - `docs/adr/adr-cross-role-proxy.md` — Cross-role proxy protocol
 - `docs/specs/YB7RG-authentication.md` — Login and session lifecycle

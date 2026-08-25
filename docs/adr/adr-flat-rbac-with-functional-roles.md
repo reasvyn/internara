@@ -109,5 +109,5 @@ check methods) traits.
 - `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership check methods
 - `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level gating
 - `docs/adr/adr-cross-role-proxy.md` — Cross-role proxy (separate from functional roles)
-- `docs/foundation/rbac.md` — Detailed RBAC documentation
+- `docs/guides/rbac.md` — Detailed RBAC documentation
 - `docs/architecture.md` — Authorization section

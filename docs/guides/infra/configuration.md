@@ -200,7 +200,7 @@ brand('colors'); // Array of primary, secondary, accent, base
 ```
 
 Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults.
-See [Branding](../foundation/branding.md) for details.
+See [Branding](../branding.md) for details.
 
 ---
 

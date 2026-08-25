@@ -76,5 +76,5 @@ private disk breaks URL serving without a signed-route strategy.
 - For each image collection: a `thumb` conversion exists and matches what Blade views request.
 - `getFirstMediaUrl($collection, 'thumb')` produces a URL whose served bytes match the declared
   dimensions.
-- `docs/infrastructure/media-library.md` §Conversions matches the declared set; MediaLibrary's
+- `docs/guides/infra/media-library.md` §Conversions matches the declared set; MediaLibrary's
   `sync:media-library` regeneration passes.

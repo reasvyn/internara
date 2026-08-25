@@ -6,7 +6,7 @@
 
 Conceptual reference for **Livewire 4** (`livewire/livewire v4.3.5`) — the reactive component
 layer that renders Internara's entire UI without a JavaScript SPA framework. Component mechanics
-and thin-component rules live in [`architecture/livewire-pattern.md`](../../architecture/livewire-pattern.md);
+and thin-component rules live in [`architecture/livewire-pattern.md`](../../guides/arch/livewire-pattern.md);
 this file documents the library itself.
 
 ---
@@ -46,5 +46,5 @@ this file documents the library itself.
 ## Quick References
 
 - [Official docs](https://livewire.laravel.com/docs) — full Livewire documentation
-- [`docs/architecture/livewire-pattern.md`](../../architecture/livewire-pattern.md) — thin-component rules
+- [`docs/guides/arch/livewire-pattern.md`](../../guides/arch/livewire-pattern.md) — thin-component rules
 - [`alpinejs.md`](alpinejs.md) — the bundled interactivity layer used inside components

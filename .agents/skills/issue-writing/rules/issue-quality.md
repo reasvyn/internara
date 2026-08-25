@@ -97,7 +97,7 @@ trade-offs document that a decision was made deliberately, so review doesn't deb
 other way?" after the work is done.
 
 **How to apply:** For each approach, describe the files changed, the pattern used
-(`docs/architecture/{pattern}-pattern.md`), and how the data flow changes. List pros and cons
+(`docs/guides/arch/{pattern}-pattern.md`), and how the data flow changes. List pros and cons
 concretely. Mark the recommended one and justify it in Design Decisions.
 
 **Pitfalls to avoid:**

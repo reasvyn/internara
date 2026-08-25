@@ -282,8 +282,8 @@ Only trust a claim after confirming it against the codebase **and** git history.
 | "What business rules govern enrollment?" | Conceptual | `docs/refs/modules/enrollment.md` |
 | "Which files implement the Action?" | Reference | `docs/refs/modules/enrollment-reference.md` |
 | "What's the table schema?" | Reference | `docs/refs/modules/enrollment-reference.md` |
-| "Why did we choose Actions over Services?" | Conceptual (architecture) | `docs/architecture/action-pattern.md` |
-| "What's the Action contract?" | Reference (architecture) | `docs/architecture/action-pattern.md` |
+| "Why did we choose Actions over Services?" | Conceptual (architecture) | `docs/guides/arch/action-pattern.md` |
+| "What's the Action contract?" | Reference (architecture) | `docs/guides/arch/action-pattern.md` |
 
 **Rule of thumb:** If it explains *why*, it's conceptual. If it explains *what* or *how*, it's
 reference.
@@ -299,7 +299,7 @@ reference.
 | New module created | `docs/refs/modules/index.md` + conceptual + reference |
 | Config key added | Module reference doc (config section) |
 | Route added/changed | Module reference doc (Routes table) |
-| Base class method changed | `docs/architecture/{pattern}-pattern.md` |
+| Base class method changed | `docs/guides/arch/{pattern}-pattern.md` |
 | Invariant added/changed | `AGENTS.md` + `context-awareness` SKILL.md |
 
 ### Metadata Discipline
@@ -427,14 +427,14 @@ Start here for any topic:
 | 4-layer, Action Triad, Base Classes | `docs/architecture.md` (§Action Triad, §Base Class Mandate)      |
 | Coding conventions                  | `docs/conventions.md`                                            |
 | Module overviews                    | `docs/refs/modules/index.md`                                          |
-| Pattern deep-dives                  | `docs/architecture/{pattern}-pattern.md`                         |
-| RBAC & Policies                     | `docs/foundation/rbac.md`, `docs/architecture/policy-pattern.md` |
-| Exception hierarchy                 | `docs/architecture/exception-pattern.md`                         |
-| Caching                             | `docs/architecture/cache-pattern.md`                             |
-| Logging                             | `docs/architecture/logging-pattern.md`                           |
-| Testing                             | `docs/architecture/testing-pattern.md`                           |
-| Deployment                          | `docs/infrastructure/deployment.md`                              |
-| Database schema                     | `docs/infrastructure/database.md`                                |
+| Pattern deep-dives                  | `docs/guides/arch/{pattern}-pattern.md`                         |
+| RBAC & Policies                     | `docs/guides/rbac.md`, `docs/guides/arch/policy-pattern.md` |
+| Exception hierarchy                 | `docs/guides/arch/exception-pattern.md`                         |
+| Caching                             | `docs/guides/arch/cache-pattern.md`                             |
+| Logging                             | `docs/guides/arch/logging-pattern.md`                           |
+| Testing                             | `docs/guides/arch/testing-pattern.md`                           |
+| Deployment                          | `docs/guides/infra/deployment.md`                              |
+| Database schema                     | `docs/guides/infra/database.md`                                |
 | Full doc catalog                    | `docs/index.md`                                                  |
 | ADRs                                | `docs/adr/index.md`                                              |
 | Known issues / project contexts   | `.agents/context/index.md`                                |

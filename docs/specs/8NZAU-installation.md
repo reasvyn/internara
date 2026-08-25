@@ -647,9 +647,9 @@ After implementing this spec, the system can provision itself from zero: environ
 - `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
-- `docs/foundation/product-definition.md` — Scope, personas, system boundary
-- `docs/foundation/installation.md` — Detailed server prep guide
-- `docs/foundation/account-recovery.md` — Recovery key lifecycle
+- `docs/guides/product-definition.md` — Scope, personas, system boundary
+- `docs/guides/installation.md` — Detailed server prep guide
+- `docs/guides/account-recovery.md` — Recovery key lifecycle
 - **Related specs:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) — Super admin emergency access, CLI commands, OTP
 - `config/setup.php` — Setup configuration values
 - `config/module.php` — Module registry (SSOT)

@@ -89,4 +89,4 @@ final class InternPlacementCard extends Card
 - Card extends `Card`, is registered in `config/pulse.php::dashboard.cards`, and passes
   `authorize()` for the admin/superadmin roles.
 - Dashboard renders the card with sampled data; non-admin users do not see it.
-- `docs/foundation/system-observability.md` documents the new metric the card surfaces.
+- `docs/guides/system-observability.md` documents the new metric the card surfaces.

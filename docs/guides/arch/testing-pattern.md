@@ -261,5 +261,5 @@ for logger assertions.
 ---
 
 _This document is auto-synchronized with the codebase. When testing practices evolve, update the
-relevant sections in `docs/infrastructure/testing.md`, `docs/conventions.md` §12, or the skill
+relevant sections in `docs/guides/infra/testing.md`, `docs/conventions.md` §12, or the skill
 files, then reflect changes here. See `docs/index.md` for the complete documentation catalog._

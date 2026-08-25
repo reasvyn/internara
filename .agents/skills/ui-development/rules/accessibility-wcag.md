@@ -4,7 +4,7 @@
 
 Accessibility is non-negotiable: every styled component must meet WCAG 2.1 Level AA. This covers
 color & contrast, focus indicators, keyboard navigation, responsive reflow, and icon labeling.
-See `docs/architecture/modular-pattern.md` §22 and `docs/foundation/ui-ux.md` §6 for the full
+See `docs/guides/arch/modular-pattern.md` §22 and `docs/guides/ui-ux.md` §6 for the full
 spec.
 
 ---
@@ -20,7 +20,7 @@ horizontal scrolling at 320px, and `aria-label` on every icon-only control.
 
 - **Contrast below 4.5:1** makes normal text unreadable for low-vision users; the school +
   supervisor audience includes everyday users, and WCAG AA is the project's committed bar
-  (documented in `docs/foundation/ui-ux.md`). Arbitrary utilities like `text-red-500` routinely fail.
+  (documented in `docs/guides/ui-ux.md`). Arbitrary utilities like `text-red-500` routinely fail.
 - **Suppressed focus rings** (`outline-none` with no replacement) make keyboard users lose the cursor
   — Tab-navigation becomes guesswork.
 - **Mice-only interactive elements** (a dropdown that opens on hover only) are unreachable for
@@ -96,4 +96,4 @@ horizontal scrolling at 320px, and `aria-label` on every icon-only control.
   stays focusable.
 - Contrast spot-check on key pages (normal ≥4.5:1, large ≥3:1).
 - 320px viewport check: no horizontal scroll; tables reflow or scroll with visible indicators.
-- `npm run build` clean; the module view follows `docs/architecture/modular-pattern.md` §22.
+- `npm run build` clean; the module view follows `docs/guides/arch/modular-pattern.md` §22.

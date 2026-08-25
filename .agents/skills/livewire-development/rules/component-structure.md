@@ -177,7 +177,7 @@ appropriate middleware; the URL matches the persona table; route names describe 
 
 | Topic                     | Asset                                         |
 | ------------------------- | --------------------------------------------- |
-| Livewire pattern          | `docs/architecture/livewire-pattern.md`       |
-| Form Objects              | `docs/architecture/livewire-pattern.md` §Forms |
-| Routing & URL structure   | `docs/infrastructure/routes.md`               |
-| Modular routing           | `docs/architecture/modular-pattern.md` §Routes |
+| Livewire pattern          | `docs/guides/arch/livewire-pattern.md`       |
+| Form Objects              | `docs/guides/arch/livewire-pattern.md` §Forms |
+| Routing & URL structure   | `docs/guides/infra/routes.md`               |
+| Modular routing           | `docs/guides/arch/modular-pattern.md` §Routes |

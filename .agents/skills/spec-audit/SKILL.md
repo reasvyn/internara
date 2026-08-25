@@ -92,17 +92,17 @@ to a single module. See `scripts/README.md` for full documentation.
 | Agent guides & skills | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` |
 | Module structure | `docs/refs/modules/index.md` |
 | Architecture & layer rules | `docs/architecture.md` |
-| Architecture patterns | `docs/architecture/{pattern}-pattern.md` |
-| Action Triad patterns | `docs/architecture/action-pattern.md` |
-| Entity-Model separation | `docs/architecture/entity-pattern.md` |
-| Model conventions | `docs/architecture/model-pattern.md` |
-| Livewire component rules | `docs/architecture/livewire-pattern.md` |
-| Exception hierarchy | `docs/architecture/exception-pattern.md` |
-| Caching conventions | `docs/architecture/cache-pattern.md` |
-| Testing patterns | `docs/architecture/testing-pattern.md` |
+| Architecture patterns | `docs/guides/arch/{pattern}-pattern.md` |
+| Action Triad patterns | `docs/guides/arch/action-pattern.md` |
+| Entity-Model separation | `docs/guides/arch/entity-pattern.md` |
+| Model conventions | `docs/guides/arch/model-pattern.md` |
+| Livewire component rules | `docs/guides/arch/livewire-pattern.md` |
+| Exception hierarchy | `docs/guides/arch/exception-pattern.md` |
+| Caching conventions | `docs/guides/arch/cache-pattern.md` |
+| Testing patterns | `docs/guides/arch/testing-pattern.md` |
 | Coding conventions | `docs/conventions.md` |
 | Security conventions | `docs/conventions.md` (§3) |
-| RBAC & authorization | `docs/foundation/rbac.md` |
+| RBAC & authorization | `docs/guides/rbac.md` |
 | Critical invariants | `AGENTS.md` (§Critical Invariants) |
 | Development status | GitHub Issues |
 | Issue writing | `.agents/skills/issue-writing/SKILL.md` |

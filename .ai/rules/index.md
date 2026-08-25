@@ -4,4 +4,4 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
-| *(no project-specific AI overrides — see `docs/conventions.md` §14 and `docs/architecture/livewire-pattern.md` §1.1 for Blade presentation rules)* | — |
+| *(no project-specific AI overrides — see `docs/conventions.md` §14 and `docs/guides/arch/livewire-pattern.md` §1.1 for Blade presentation rules)* | — |

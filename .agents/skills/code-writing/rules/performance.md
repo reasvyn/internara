@@ -76,7 +76,7 @@ conditions into `->where()`/`->when()` clauses instead of `filter()` in PHP.
 drifts and never flushes; an unregisterred key defies the audit surface. Event-driven invalidation
 keeps caches consistent with the command flow (a mutation Action's event flushes dependent keys).
 
-**How to apply:** Register in `config/cache-keys.php` (`docs/architecture/cache-pattern.md`
+**How to apply:** Register in `config/cache-keys.php` (`docs/guides/arch/cache-pattern.md`
 §Registration), read via `Cache::remember(config('cache-keys.{name}'), $ttl, fn () => ...)`; on
 mutation, dispatch an event whose listener forgets the registered key.
 

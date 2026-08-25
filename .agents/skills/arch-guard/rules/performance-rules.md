@@ -125,5 +125,5 @@ python3 scripts/scan_violations.py --module {Name}
 ```
 
 **Interpretation guidance:** the scanner detects *potential* N+1/`->get()` sites; confirm the loop
-context and data size before filing. Pair with `docs/architecture/cache-pattern.md` and
-`docs/infrastructure/database.md` for the cache-key registration and query-tuning references.
+context and data size before filing. Pair with `docs/guides/arch/cache-pattern.md` and
+`docs/guides/infra/database.md` for the cache-key registration and query-tuning references.

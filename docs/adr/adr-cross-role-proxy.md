@@ -365,7 +365,7 @@ Mentor Fallback" is updated to "Cross-Role Proxy" — see docs sync.
 - `app/Core/Channels/CustomDatabaseChannel.php` — Notification channel (proxy notifications)
 - `app/User/Mentor/Entities/MentorEntity.php` — Entity encapsulating cross-role proxy business rules
 - `app/Enrollment/Registration/Models/Registration.php` — Bridge `asMentorEntity()` method
-- `docs/architecture/policy-pattern.md` — Policy pattern reference
+- `docs/guides/arch/policy-pattern.md` — Policy pattern reference
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — Existing RBAC decision
 - `docs/adr/adr-entity-model-separation.md` — Entity-Model Separation pattern
 - `docs/adr/adr-cross-role-proxy.md` — This document

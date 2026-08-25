@@ -68,7 +68,7 @@ never do.
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Backup restoration via UI or CLI — restoration is a manual procedure documented in `docs/foundation/backup-recovery.md` |
+| NG1  | Backup restoration via UI or CLI — restoration is a manual procedure documented in `docs/guides/backup-recovery.md` |
 | NG2  | Remote backup destinations (S3, SFTP, cloud storage) — backups are local-only |
 | NG3  | Encrypted backups or backup encryption keys |
 | NG4  | Incremental or differential backups — every backup is a full snapshot |
@@ -792,4 +792,4 @@ After implementing this spec, the backup system is fully operational: admins can
 - **Related spec:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes (`BaseCommandAction`, `BaseEntity`, `BaseEvent`)
 - **Related spec:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) — `isAdmin()` policy helper, role middleware
 - **Related spec:** [notification-infrastructure.md](TXR2H-notification-infrastructure.md) — Database notification channel for failure alerts
-- **Related doc:** [backup-recovery.md](../foundation/backup-recovery.md) — Restoration procedures, manual backup commands, monitoring
+- **Related doc:** [backup-recovery.md](../guides/backup-recovery.md) — Restoration procedures, manual backup commands, monitoring

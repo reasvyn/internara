@@ -591,7 +591,7 @@ Every page with a non-trivial workflow MUST include a `*-guide.blade.php` compon
 contextual help for the user. The pattern follows the setup wizard's guide component at
 `resources/views/setup/components/setup-guide.blade.php`.
 
-> **See also:** [Internara Project §9.1](../specs/QLHDO-internara-project.md#91-user-guide-components)
+> **See also:** [Internara Project §9.1](../../specs/QLHDO-internara-project.md#91-user-guide-components)
 > for the authoritative requirement specification.
 
 ### Requirements
@@ -654,7 +654,7 @@ See `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-modal>`
 
 ## 13. Accessibility (WCAG 2.1 AA)
 
-All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/architecture/modular-pattern.md`
+All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/guides/arch/modular-pattern.md`
 §22 for project-wide accessibility rules.
 
 ### 13.1 Focus Management
@@ -722,7 +722,7 @@ Any button or link that uses only an icon (no visible text) MUST include an `ari
 
 ## 14. Localization in Livewire Components
 
-See `docs/architecture/modular-pattern.md` §23 and `docs/conventions.md` §14 for project-wide
+See `docs/guides/arch/modular-pattern.md` §23 and `docs/conventions.md` §14 for project-wide
 localization rules.
 
 ### 14.1 Translation Key Usage

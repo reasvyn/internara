@@ -10,7 +10,7 @@ business logic), with scope and placement rules.
 ## 1. Why Actions, Not Services
 
 The decision to prefer Actions over Services is codified in
-[ADR-003](../adr/adr-action-pattern-over-services.md).
+[ADR-003](../../adr/adr-action-pattern-over-services.md).
 
 Service classes are the conventional Laravel pattern — a single class with multiple public methods
 representing related operations. Over time they become:

@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** feat — dependency references completed: 15 per-package docs in docs/refs/deps/ (prettier family grouped into one prettier.md)
+> **Last updated:** 2026-08-25 **Changes:** docs tree reorganized into docs/guides (guides/, guides/arch/, guides/infra/) — catalog links updated
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -19,7 +19,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Product & Vision
 
-- **[Foundation Index](foundation/index.md)** — Browse all foundation documents
+- **[Foundation Index](guides/index.md)** — Browse all foundation documents
 - **[README](../README.md)** — Project overview: pitch, features, requirements, installation, deployment, status (deep product definition in `project-vision.md`)
 - **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
@@ -34,80 +34,80 @@ Complete catalog of all documentation files, organized by topic and audience.
 ## Setup & Operation
 
 - **[Getting Started](getting-started.md)** — End-to-end walkthrough from cloning to completing the setup wizard
-- **[Infrastructure Overview](infrastructure/infrastructure.md)** — Deployment options, 3-tier architecture, background processes
-- **[Deployment](infrastructure/deployment.md)** — Three deployment paths (shared hosting, VPS, Docker), production checklist
-- **[Configuration](infrastructure/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
-- **[CI/CD Pipeline](infrastructure/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
-- **[System Health & Troubleshooting](foundation/system-health.md)** — Health checks, common problems, diagnostics
+- **[Infrastructure Overview](guides/infra/infrastructure.md)** — Deployment options, 3-tier architecture, background processes
+- **[Deployment](guides/infra/deployment.md)** — Three deployment paths (shared hosting, VPS, Docker), production checklist
+- **[Configuration](guides/infra/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
+- **[CI/CD Pipeline](guides/infra/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
+- **[System Health & Troubleshooting](guides/system-health.md)** — Health checks, common problems, diagnostics
 - **[Project Contexts](../.agents/context/index.md)** — Intentional design constraints, deploy caveats, dependency pins, and codebase intentional states (agent-oriented)
 
 ---
 
 ## Operational Guides
 
-- [Installation](foundation/installation.md) — Server prep, dependencies, first run
-- [Setup Wizard](foundation/setup-wizard.md) — Browser-based initial configuration
-- [Post-Setup](foundation/post-setup.md) — First actions after installation
-- [System Health & Troubleshooting](foundation/system-health.md) — Health checks, common problems, maintenance
-- [Upgrading](foundation/upgrading.md) — Upgrade procedure, rollback, versioning
-- [Backup & Recovery](foundation/backup-recovery.md) — Account recovery, system backup, restoration
-- [System Observability](foundation/system-observability.md) — Pulse, audit logs, cleanup, backups
+- [Installation](guides/installation.md) — Server prep, dependencies, first run
+- [Setup Wizard](guides/setup-wizard.md) — Browser-based initial configuration
+- [Post-Setup](guides/post-setup.md) — First actions after installation
+- [System Health & Troubleshooting](guides/system-health.md) — Health checks, common problems, maintenance
+- [Upgrading](guides/upgrading.md) — Upgrade procedure, rollback, versioning
+- [Backup & Recovery](guides/backup-recovery.md) — Account recovery, system backup, restoration
+- [System Observability](guides/system-observability.md) — Pulse, audit logs, cleanup, backups
 
 ---
 
 ## Security & Access
 
 - **[SECURITY.md](../SECURITY.md)** — Vulnerability reporting policy (repo root)
-- **[RBAC](foundation/rbac.md)** — Authentication flow, flat role hierarchy, functional roles, permissions model
-- **[System Observability](foundation/system-observability.md)** — SmartLogger, Pulse, audit logs, compliance
-- **[Security](infrastructure/security.md)** — Network hardening, security headers, rate limiting, PII, GDPR, scanning
-- **[Account Recovery](foundation/account-recovery.md)** — Recovery slip flow, recovery codes, CLI super admin recovery
+- **[RBAC](guides/rbac.md)** — Authentication flow, flat role hierarchy, functional roles, permissions model
+- **[System Observability](guides/system-observability.md)** — SmartLogger, Pulse, audit logs, compliance
+- **[Security](guides/infra/security.md)** — Network hardening, security headers, rate limiting, PII, GDPR, scanning
+- **[Account Recovery](guides/account-recovery.md)** — Recovery slip flow, recovery codes, CLI super admin recovery
 
 ---
 
 ## Frontend & UI
 
-- **[UI/UX Design](foundation/ui-ux.md)** — Design system (Tailwind CSS v4 + TallstackUI v4 + self-hosted palette), layouts, dark mode
-- **[Branding](foundation/branding.md)** — Dynamic theming, color system, presets, logo management
+- **[UI/UX Design](guides/ui-ux.md)** — Design system (Tailwind CSS v4 + TallstackUI v4 + self-hosted palette), layouts, dark mode
+- **[Branding](guides/branding.md)** — Dynamic theming, color system, presets, logo management
 
 ---
 
 ## Pattern References
 
-- **[Pattern Index](architecture/index.md)** — Browse all 16 architecture design patterns
-- **[Action Triad](architecture/action-pattern.md)** — Command/Read/Process action patterns
-- **[Entity-Model Separation](architecture/entity-pattern.md)** — Entity bridge pattern, immutability
-- **[Model (Active Record)](architecture/model-pattern.md)** — Eloquent model patterns, UUID PKs
-- **[Data Transfer Objects](architecture/data-pattern.md)** — BaseData DTO patterns, ActionResponse
-- **[Events & Notifications](architecture/event-pattern.md)** — BaseEvent, dispatch patterns, listeners
-- **[Enum & State Machine](architecture/enum-pattern.md)** — LabelEnum, StatusEnum, state machines
-- **[Livewire Components](architecture/livewire-pattern.md)** — Thin component rule, Form Objects, BaseRecordManager
-- **[Exception Hierarchy](architecture/exception-pattern.md)** — Dual AppException/ModuleException trees
-- **[Authorization](architecture/policy-pattern.md)** — Flat RBAC, three-layer auth, Gate::before
-- **[Logging & PII](architecture/logging-pattern.md)** — SmartLogger, PII masking, translation
-- **[Caching](architecture/cache-pattern.md)** — Centralized key registry, TTL categories
-- **[Service vs Support vs Action](architecture/service-pattern.md)** — Domain vs infra vs static logic
-- **[Repository Pattern](architecture/repository-pattern.md)** — Why no Repository layer
-- **[Testing Patterns](architecture/testing-pattern.md)** — Scope isolation, layer strategies
+- **[Pattern Index](guides/arch/index.md)** — Browse all 16 architecture design patterns
+- **[Action Triad](guides/arch/action-pattern.md)** — Command/Read/Process action patterns
+- **[Entity-Model Separation](guides/arch/entity-pattern.md)** — Entity bridge pattern, immutability
+- **[Model (Active Record)](guides/arch/model-pattern.md)** — Eloquent model patterns, UUID PKs
+- **[Data Transfer Objects](guides/arch/data-pattern.md)** — BaseData DTO patterns, ActionResponse
+- **[Events & Notifications](guides/arch/event-pattern.md)** — BaseEvent, dispatch patterns, listeners
+- **[Enum & State Machine](guides/arch/enum-pattern.md)** — LabelEnum, StatusEnum, state machines
+- **[Livewire Components](guides/arch/livewire-pattern.md)** — Thin component rule, Form Objects, BaseRecordManager
+- **[Exception Hierarchy](guides/arch/exception-pattern.md)** — Dual AppException/ModuleException trees
+- **[Authorization](guides/arch/policy-pattern.md)** — Flat RBAC, three-layer auth, Gate::before
+- **[Logging & PII](guides/arch/logging-pattern.md)** — SmartLogger, PII masking, translation
+- **[Caching](guides/arch/cache-pattern.md)** — Centralized key registry, TTL categories
+- **[Service vs Support vs Action](guides/arch/service-pattern.md)** — Domain vs infra vs static logic
+- **[Repository Pattern](guides/arch/repository-pattern.md)** — Why no Repository layer
+- **[Testing Patterns](guides/arch/testing-pattern.md)** — Scope isolation, layer strategies
 
 ---
 
 ## Technical Reference
 
 - **[Dependencies](refs/deps/laravel.md)** — one conceptual reference per runtime dependency (`docs/refs/deps/`): `laravel` · `livewire` · `tallstackui` · `alpinejs` · `tailwindcss` · `vite` · `spatie-laravel-permission` · `spatie-laravel-medialibrary` · `spatie-laravel-activitylog` · `spatie-laravel-model-status` · `laravel-dompdf` · `laravel-pulse` · `laravel-lang` · `flatpickr` · `marked` · `prettier`
-- **[Infrastructure Index](infrastructure/index.md)** — Browse all infrastructure and operations docs
-- **[Database](infrastructure/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
-- **[Cache](infrastructure/cache.md)** — Caching strategy, key registry, invalidation, Redis
-- **[Filesystem](infrastructure/filesystem.md)** — Storage architecture, Media Library, image conversions
-- **[Media Library](infrastructure/media-library.md)** — Collections, conversions, S3-compatible storage
-- **[Routes](infrastructure/routes.md)** — Route structure, 17 module-split files, middleware groups
-- **[Session](infrastructure/session.md)** — Configuration, drivers, security
-- **[Notifications](infrastructure/notification.md)** — Multi-channel system, mail deliverability
-- **[Queue](infrastructure/queue.md)** — Drivers, workers, Supervisor, job lifecycle
-- **[Testing Infrastructure](infrastructure/testing.md)** — Testing philosophy, scope isolation
-- **[Scaling Guide](infrastructure/scaling.md)** — MVP to 2000+ users, tier transitions
-- **[Localization](infrastructure/localization.md)** — Translations, locale resolution, contributing
-- **[Developer Tools](infrastructure/tools.md)** — Python scan scripts, CLI flags, output schema
+- **[Infrastructure Index](guides/infra/index.md)** — Browse all infrastructure and operations docs
+- **[Database](guides/infra/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
+- **[Cache](guides/infra/cache.md)** — Caching strategy, key registry, invalidation, Redis
+- **[Filesystem](guides/infra/filesystem.md)** — Storage architecture, Media Library, image conversions
+- **[Media Library](guides/infra/media-library.md)** — Collections, conversions, S3-compatible storage
+- **[Routes](guides/infra/routes.md)** — Route structure, 17 module-split files, middleware groups
+- **[Session](guides/infra/session.md)** — Configuration, drivers, security
+- **[Notifications](guides/infra/notification.md)** — Multi-channel system, mail deliverability
+- **[Queue](guides/infra/queue.md)** — Drivers, workers, Supervisor, job lifecycle
+- **[Testing Infrastructure](guides/infra/testing.md)** — Testing philosophy, scope isolation
+- **[Scaling Guide](guides/infra/scaling.md)** — MVP to 2000+ users, tier transitions
+- **[Localization](guides/infra/localization.md)** — Translations, locale resolution, contributing
+- **[Developer Tools](guides/infra/tools.md)** — Python scan scripts, CLI flags, output schema
 
 ---
 

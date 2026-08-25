@@ -4,8 +4,8 @@
 > `test("{SpecID}-{ReqID}: Test description...")`; spec-driven doctrine — tests trace to spec requirements,
 > coverage measured in requirements not lines; minimalism rationale
 
-This is NOT a replacement for `docs/architecture/testing-pattern.md` or
-`docs/infrastructure/testing.md`. Use this as a quick checklist when writing or reviewing tests.
+This is NOT a replacement for `docs/guides/arch/testing-pattern.md` or
+`docs/guides/infra/testing.md`. Use this as a quick checklist when writing or reviewing tests.
 
 ## Core Rule
 
