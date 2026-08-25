@@ -28,13 +28,11 @@
                     <div class="flex items-start justify-between gap-6">
                         <div class="min-w-0 flex-1">
                             <div class="mb-3 flex items-center gap-3">
-                                <span class="badge badge-sm badge-soft badge-primary rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">
-                                    {{ $assignment->assignment_type }}
-                                </span>
+                                <x-ts-badge :text="$assignment->assignment_type" color="primary" xs />
                                 @if ($assignment->is_mandatory)
-                                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Required</span>
+                                    <x-ts-badge :text="__('assignment.required')" color="red" xs />
                                 @else
-                                    <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Optional</span>
+                                    <x-ts-badge :text="__('assignment.optional')" color="white" xs />
                                 @endif
                             </div>
                             <h3 class="text-base-content mb-2 text-xl font-black tracking-tight">
@@ -52,41 +50,33 @@
                                 $submission = $assignment->submissions->first();
                             @endphp
                             @if ($submission)
-                                <span class="badge badge-sm badge-soft badge-success mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Submitted</span>
+                                <x-ts-badge :text="__('submission.submitted')" color="green" xs class="mt-2" />
                             @elseif ($assignment->asAssignmentRules()->isOverdue(now()))
-                                <span class="badge badge-sm badge-soft badge-error mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Overdue</span>
+                                <x-ts-badge :text="__('submission.overdue')" color="red" xs class="mt-2" />
                             @else
-                                <span class="badge badge-sm badge-soft badge-warning mt-2 rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Pending</span>
+                                <x-ts-badge :text="__('submission.pending')" color="yellow" xs class="mt-2" />
                             @endif
                         </div>
                     </div>
-
+                </x-ts-card>
             @endforeach
         </div>
     @else
         {{-- Assignment Detail --}}
         <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
-            <div class="mb-6">
-                <x-ts-button
-                    icon="arrow-left"
-                    :text="__('common.actions.back')"
-                    wire:click="back"
-                    class="rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
-                    color="white"
-                />
+            <div class="mb-6 flex items-center justify-between">
+                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="white" sm />
             </div>
 
             <div class="mb-4 flex items-center gap-3">
-                <span class="badge badge-sm badge-soft badge-primary rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">
-                    {{ $selectedAssignment->assignment_type }}
-                </span>
+                <x-ts-badge :text="$selectedAssignment->assignment_type" color="primary" xs />
                 @if ($selectedAssignment->is_mandatory)
-                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Required</span>
+                    <x-ts-badge :text="__('assignment.required')" color="red" xs />
                 @else
-                    <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Optional</span>
+                    <x-ts-badge :text="__('assignment.optional')" color="white" xs />
                 @endif
                 @if ($selectedAssignment->asAssignmentRules()->isOverdue(now()))
-                    <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">Overdue</span>
+                    <x-ts-badge :text="__('submission.overdue')" color="red" xs />
                 @endif
             </div>
 
