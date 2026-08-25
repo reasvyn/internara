@@ -1,83 +1,76 @@
-# ADR-010: Self-Hosted Single-Tenant Architecture
+# Self-Hosted Single-Tenant Architecture
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current single-tenant architecture (no multi-tenant overhead, self-hosted, data sovereignty)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Deployment Guide](../guides/infra/deployment.md) and [Installation Guide](../guides/installation.md) |
 
-Each school runs their own instance on their own infrastructure. No multi-tenant isolation, no
-centralized auth, no billing tiers — everything works out of the box.
+## Context and Problem Statement
 
-## Context
+Internara targets vocational schools that operate their own IT infrastructure — installed once per
+school on the school's own server or shared hosting, not as a SaaS serving thousands of tenants.
+This shapes every trade-off: no tenant isolation needed (one "school" per instance), no centralized
+auth or billing tiers, offline tolerance on a local network, and wizard-driven setup for minimal IT
+staff.
 
-Internara targets vocational upper-secondary schools that operate their own IT infrastructure.
-Unlike SaaS products serving thousands of tenants, Internara is installed once per school on the
-school's own server or shared hosting.
+**Decision Drivers:**
 
-This deployment model shapes every architectural decision:
+* Data sovereignty — student and partnership records never leave the school's server
+* Zero-config defaults runnable on $3–15/month shared hosting with only MySQL/MariaDB
+* No vendor lock-in or telemetry; backup as a simple file copy
+* Upgrade path that does not rewrite tiers as configuration-only switches
 
-- **No tenant isolation needed** — never more than one "school" per instance
-- **No centralized auth** — each school manages its own users, roles, and accounts
-- **No billing or quotas** — everything is available from day one
-- **Offline tolerance** — schools may have unreliable internet; the system must work on a local
-  network
-- **Minimal IT staff** — installation must be wizard-driven, maintenance minimal, backup simple
+## Considered Options
 
-Two approaches were evaluated:
+* **Multi-tenant SaaS** — single hosted instance for many schools.
+  *Pros:* centralized ops, one deployment. *Cons:* tenant middleware, scoped queries,
+  per-tenant config, vendor lock-in, offline fragility.*
+* **Self-hosted single-tenant (chosen)** — each school runs its own instance, owns data and
+  backups, updates via git pull + artisan. *Pros:* Absolute sovereignty, performance isolation,
+  simplest defaults. *Cons:* no cross-school super-admin view; manual per-instance updates.*
 
-1. **Multi-tenant SaaS** — single hosted instance serving many schools. Adds significant
-   infrastructure complexity and creates vendor lock-in.
-2. **Self-hosted single-tenant** — each school runs their own instance. No tenant infrastructure.
-   The school owns their data. Updates are manual (git pull + artisan commands). Backup is a file
-   copy.
+## Decision Outcome
 
-## Decision
+**Chosen option: Self-hosted single-tenant** — every architectural concern follows:
 
-Internara is a **self-hosted, single-tenant** application. Every architectural decision follows from
-this:
+| Concern | Decision | Rationale |
+|---------|----------|-----------|
+| Database | SQLite dev/test, MySQL/MariaDB prod | Available on all shared hosting; SQLite for standalone dev |
+| Queue | sync default, Redis optional | No daemon required |
+| Cache | file/database default, Redis optional | Zero-config file cache |
+| Session | database default, Redis optional | Auto-created by migration |
+| Broadcasting | Log driver (disabled) | Reverb optional |
+| File storage | Local default, S3 optional | Local suffices for single-server |
+| Auth | Local DB, bcrypt | No external provider |
+| Installation | CLI + web wizard | Single command provisions system |
+| Backup | File copy of SQLite + storage | No dump scripts |
 
-| Concern      | Decision                                     | Rationale                                                                               |
-| ------------ | -------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Database     | SQLite dev/testing, MySQL/MariaDB production | MySQL/MariaDB available on all shared hosting plans. SQLite for standalone development. |
-| Queue        | sync driver default, Redis optional          | No background daemon required.                                                          |
-| Cache        | file/database default, Redis optional        | No external service. Zero-config file cache.                                            |
-| Session      | database default, Redis optional             | Auto-created by migration.                                                              |
-| Broadcasting | Log driver default (disabled)                | WebSocket (Reverb) optional.                                                            |
-| File storage | Local disk default, S3 optional              | Single-server: local works.                                                             |
-| Auth         | Local database, bcrypt passwords             | No external auth provider.                                                              |
-| Installation | CLI wizard + web wizard                      | Single command provisions the system.                                                   |
-| Backup       | File copy of SQLite + storage                | No dump scripts needed.                                                                 |
+**Feature Availability** — every feature works in the default configuration; some run
+synchronously (emails, media conversions block response) and real-time updates require refresh
+without Reverb. No feature is disabled in any tier.
 
-### Feature Availability
+**Data Sovereignty** — student records, assessments, partnerships, and configuration never leave
+the school's server; no telemetry, usage reporting, or external API calls for core features.
 
-Every feature works in the default configuration. Some are synchronous instead of asynchronous —
-email notifications and media conversions block the response but function correctly. Real-time
-updates require page refresh without Reverb. No feature is disabled in any tier.
+### Positive Consequences
 
-### Data Sovereignty
+* No multi-tenant infrastructure (middleware, scoped queries, per-tenant config)
+* Zero external services beyond MySQL/MariaDB at default — file cache + sync queue
+* Absolute data sovereignty and performance isolation
 
-Student records, assessment data, company partnerships, and configuration never leave the school's
-server. No telemetry, no usage reporting, no external API calls for core functionality. Backup is
-under the school's control.
+### Negative Consequences
 
-## Consequences
+* No cross-school management view; each admin operates independently
+* Manual per-instance updates (pull, migrate, rebuild assets)
+* SQLite unsuitable for production concurrency — shared hosting requires MySQL/MariaDB
 
-- **Positive**: No multi-tenant infrastructure to build or maintain. No tenant middleware, scoped
-  queries, or per-tenant configuration.
-- **Positive**: Default configuration requires zero external services beyond MySQL/MariaDB — file
-  cache + sync queue. Runs on a $3-15/month shared hosting plan.
-- **Positive**: Data sovereignty is absolute. The school owns their data, backups, and
-  infrastructure.
-- **Positive**: Performance isolation — one school's load never affects another.
-- **Negative**: No centralized management or "super admin" view across all schools. Each admin
-  manages independently.
-- **Negative**: Updates require manual intervention on each instance — pull, migrate, rebuild
-  assets.
-- **Negative**: SQLite is unsuitable for production concurrency; shared hosting production requires
-  MySQL/MariaDB.
+## Links
 
-## References
-
-- `config/database.php` — SQLite as default connection
-- `.env.example` — Defaults optimized for single-server deployment
-- `docs/guides/infra/deployment.md` — Three deployment paths
-- `docs/guides/installation.md` — CLI installer prerequisites
+* [Deployment Guide](../guides/infra/deployment.md) — three deployment paths
+* [Installation Guide](../guides/installation.md) — prerequisites and setup wizard
+* [Infrastructure Overview](../guides/infra/infrastructure.md) — tier definitions
+* [Performance Strategy](adr-performance-optimization.md) — how single-tenant scales without rewrite
