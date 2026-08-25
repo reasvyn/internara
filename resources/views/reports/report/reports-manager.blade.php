@@ -210,7 +210,12 @@
                 <h3 class="mb-4 text-lg font-bold">{{ __('report.finalize_grade_card') }}</h3>
                 <p class="text-base-content/70 mb-6">{{ __('report.finalize_confirm') }}</p>
 
-                <x-ts-alert color="warning" :text="__('report.finalize_confirm')" icon="exclamation-triangle" class="mb-4" />
+                <x-ts-alert
+                    color="warning"
+                    :text="__('report.finalize_confirm')"
+                    icon="exclamation-triangle"
+                    class="mb-4"
+                />
 
                 <div class="modal-action">
                     <button wire:click="$set('finalizeModal', false)" class="btn btn-ghost">
