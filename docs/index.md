@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** module docs relocated to docs/refs/modules/ — catalog links and Modules section pointer updated
+> **Last updated:** 2026-08-25 **Changes:** feat — added dependency reference docs (refs/deps/laravel.md); module docs relocated to docs/refs/modules/ — catalog links and Modules section pointer updated
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -94,6 +94,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Technical Reference
 
+- **[Dependencies](refs/deps/laravel.md)** — Laravel framework v13 conceptual reference (version, lifecycle, core concepts, project mapping)
 - **[Infrastructure Index](infrastructure/index.md)** — Browse all infrastructure and operations docs
 - **[Database](infrastructure/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
 - **[Cache](infrastructure/cache.md)** — Caching strategy, key registry, invalidation, Redis
