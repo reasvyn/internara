@@ -7,7 +7,6 @@ namespace App\User\Notifications\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Models\Notification;
-use Illuminate\Support\Facades\Event;
 
 /**
  * Stateless Action to mark notification as read.
@@ -20,7 +19,7 @@ final class MarkAsReadAction extends BaseCommandAction
     public function execute(Notification $notification): Notification
     {
         return $this->transaction(function () use ($notification) {
-            if (!$notification->is_read) {
+            if (! $notification->is_read) {
                 $notification->update([
                     'is_read' => true,
                     'read_at' => now(),
