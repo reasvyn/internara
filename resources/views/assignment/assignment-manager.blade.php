@@ -108,24 +108,22 @@
 
                 @interact('column_is_mandatory', $assignment)
                     @if ($assignment->is_mandatory)
-                        <span class="badge badge-sm badge-soft badge-error rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">{{ __('assignment.required') }}</span>
+                        <x-ts-badge :text="__('assignment.required')" color="red" xs />
                     @else
-                        <span class="badge badge-sm badge-soft badge-ghost rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">{{ __('assignment.optional') }}</span>
+                        <x-ts-badge :text="__('assignment.optional')" color="white" xs />
                     @endif
                 @endinteract
 
                 @interact('column_status', $assignment)
                     @php
-                        $badgeClass = match ($assignment->status->value) {
-                            'draft' => 'badge-ghost',
-                            'published' => 'badge-success',
-                            'closed' => 'badge-error',
-                            default => 'badge-ghost',
+                        $badgeColor = match ($assignment->status->value) {
+                            'draft' => 'white',
+                            'published' => 'green',
+                            'closed' => 'red',
+                            default => 'white',
                         };
                     @endphp
-                    <span class="badge badge-sm {{ $badgeClass }} font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                        {{ $assignment->status->label() }}
-                    </span>
+                    <x-ts-badge :text="$assignment->status->label()" :color="$badgeColor" xs />
                 @endinteract
 
                 @interact('column_due_date', $assignment)

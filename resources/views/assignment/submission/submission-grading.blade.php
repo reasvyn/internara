@@ -64,11 +64,9 @@
                             </div>
                             <div class="ml-4 shrink-0 text-right">
                                 @php
-                                    $badgeClass = $submission->status->value === 'submitted' ? 'badge-warning' : 'badge-info';
+                                    $badgeColor = $submission->status->value === 'submitted' ? 'yellow' : 'blue';
                                 @endphp
-                                <span class="badge badge-sm {{ $badgeClass }} font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                                    {{ $submission->status->label() }}
-                                </span>
+                                <x-ts-badge :text="$submission->status->label()" :color="$badgeColor" xs />
                                 @if ($submission->score)
                                     <div class="text-base-content/60 mt-2 text-sm font-black">
                                         {{ $submission->score }}/100
@@ -89,8 +87,8 @@
                     icon="arrow-left"
                     :text="__('common.actions.back')"
                     wire:click="back"
-                    class="rounded-[1.5rem] text-[10px] font-black tracking-widest uppercase"
                     color="white"
+                    sm
                 />
             </div>
 
@@ -103,15 +101,11 @@
                         </h3>
                         <p class="text-base-content/60 text-sm">{{ $selectedSubmission->assignment->title }}</p>
                         <div class="mt-3 flex items-center gap-3">
-                            <span class="badge badge-sm badge-soft badge-primary rounded-xl px-3 py-2 text-[9px] font-black tracking-wider uppercase">
-                                {{ $selectedSubmission->assignment->assignment_type ?? '—' }}
-                            </span>
+                            <x-ts-badge :text="$selectedSubmission->assignment->assignment_type ?? '—'" color="primary" xs />
                             @php
-                                $badgeClass = $selectedSubmission->status->value === 'submitted' ? 'badge-warning' : 'badge-info';
+                                $badgeColor = $selectedSubmission->status->value === 'submitted' ? 'yellow' : 'blue';
                             @endphp
-                            <span class="badge badge-sm {{ $badgeClass }} font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                                {{ $selectedSubmission->status->label() }}
-                            </span>
+                            <x-ts-badge :text="$selectedSubmission->status->label()" :color="$badgeColor" xs />
                         </div>
                         <p class="text-base-content/40 mt-3 text-[10px]">
                             Submitted {{ $selectedSubmission->submitted_at?->format('d M Y H:i') ?? '—' }}
