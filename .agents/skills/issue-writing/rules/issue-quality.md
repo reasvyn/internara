@@ -1,6 +1,6 @@
 # Issue Quality — Completeness & Actionability
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** perketat aturan label — wajib 3 label (Type+Severity P0-P3); sinkron dengan registry baru
 
 A GitHub Issue is only worth filing if a developer or an AI agent can start working from it without
 asking a single follow-up question. Every rule below exists because an issue that fails it stalls the
@@ -168,26 +168,30 @@ strings, and absolute paths before submitting (see Issue Quality Gates below).
 
 ---
 
-## Label According to Type, Using Repo-Defined Labels
+## Label According to Type, Using Repo-Defined Labels (+ Label Wajib)
 
-**What it enforces:** Every issue carries the label matching its type (see
-`rules/issue-types-and-labels.md`), chosen from the labels already defined in the repository — never
-an ad-hoc label.
+**What it enforces:** Every issue carries **minimal 3 label wajib**: label Type yang sesuai tipenya
+**plus** satu Severity (`critical`/`high`/`medium`/`low`) **plus** satu Priority (`P0`/`P1`/`P2`/`P3`)
+— lihat `rules/issue-types-and-labels.md` § Label Wajib & § Label Dasar. Semua label dipilih dari
+registry repo — tidak ada label ad-hoc.
 
 **Why it matters:** Labels are the tracker's filter dimension. Ad-hoc labels fragment the label space
 and silently fall off filters and reports (`scan_issues.py` groups by them). A `bug` issue with no
-`bug` label hides from bug dashboards; a mislabeled `security` issue can blow past urgency.
+`bug` label hides from bug dashboards; a mislabeled `security` issue can blow past urgency. Tanpa
+label Severity/Priority, issue tidak terurut di board triage meski tipenya benar.
 
-**How to apply:** Select the type first (bug/feature/security/refactor/perf/test/docs/chore), then
-apply the matching label from the Labels Reference table in the SKILL.md.
+**How to apply:** Select the type first (bug/feature/security/refactor/performance/test/docs/chore),
+then apply the matching Type label. Lalu tambahkan **satu** Severity dan **satu** Priority yang
+mencerminkan Scope & Impact. Total minimal 3 label; tambah Area/Auxiliary hanya jika relevan.
 
 **Pitfalls to avoid:**
 
-- Inventing a label name mid-issue because "it fits better".
-- Applying the label after the fact from memory without checking the repo's label list.
+- Inventing a label name mid-issue because "it fits better" (mis. `urgent` alih-alih `P0`).
+- Applying the label after the fact from memory without checking `gh label list`.
+- Hanya memberi label Type tanpa Severity/Priority — triage akan menolak issue sebagai belum lengkap.
 
-**Verification:** The issue's labels exactly match its type; the label exists in the repo's defined
-label set.
+**Verification:** Issue memiliki tepat 1 Type + 1 Severity + 1 Priority dari registry; label ada di
+`gh label list`; nilai Severity/Priority di body sama dengan label yang dipasang.
 
 ---
 
@@ -285,7 +289,7 @@ unnecessary. Gate checks are seconds long at write time and hours long if deferr
 - Title uses the format `{type}: {module}/{submodule} — {description}`
 - Description explains the problem, not the solution
 - Scope & Impact defines the specific module and files
-- Severity and priority are filled
+- Severity (`critical`/`high`/`medium`/`low`) and priority (`P0`/`P1`/`P2`/`P3`) are filled **and match the GitHub labels**
 - Recommended Approach has pros/cons
 - Design Decisions are documented
 - No sensitive information

@@ -9,7 +9,7 @@ downstream:
 
 # Issue Writing
 
-> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — issue quality, template usage and types/labels prose live in `rules/`; unified template kept inline (per `rules/issue-template.md`)
+> **Last updated:** 2026-08-25 **Changes:** sinkronkan template Scope & Impact dengan label wajib severity (critical/high/medium/low) & priority (P0-P3); tambah aturan label wajib & label dasar di rules/issue-types-and-labels.md
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -89,8 +89,8 @@ happened vs what should have happened. For features: user story or problem state
 | **Submodule**      | {Submodule}                             |
 | **Files affected** | `{file}`, `{file}`                      |
 | **Dependencies**   | {module or task that is a prerequisite} |
-| **Severity**       | critical / high / medium / low          |
-| **Priority**       | urgent / high / medium / low            |
+| **Severity**       | `critical` / `high` / `medium` / `low` (label wajib) |
+| **Priority**       | `P0` / `P1` / `P2` / `P3` (label wajib) |
 
 **Impact description:** {Narratively describe the impact of this issue on the system, users, or
 development. Example: "This affects all 500+ students during registration week. Every over-quota
@@ -215,7 +215,7 @@ Output: `scripts/outputs/{timestamp}-issues.json`.
 |------|-------|--------------|
 | Issue quality (completeness, actionability, quality gates, destructive patterns) | `rules/issue-quality.md` | Every issue before submission |
 | Issue template (section-by-section guidance for the unified template) | `rules/issue-template.md` | Filling in each section of the unified template |
-| Issue types & labels (classification, severity/priority, label set) | `rules/issue-types-and-labels.md` | Selecting type and labels for an issue |
+| Issue types & labels — incl. label wajib & label dasar (classification, severity `critical/high/medium/low`, priority `P0-P3`, registry) | `rules/issue-types-and-labels.md` | Selecting type and labels for an issue — every issue needs 1 Type + 1 Severity + 1 Priority |
 
 ## References
 
