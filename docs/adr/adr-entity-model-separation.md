@@ -1,51 +1,62 @@
-# ADR-004: Entity-Model Separation
+# Entity-Model Separation
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current Entity-Model separation (final readonly Entity classes, fromModel bridge, business rules in Entity)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Entity Pattern](../guides/arch/entity-pattern.md) and [Architecture Overview](../architecture.md) § Data Layer |
 
-Business rules are extracted from Eloquent models into separate final readonly Entity classes,
-keeping persistence concerns separate from domain logic.
+## Context and Problem Statement
 
-## Context
+Eloquent models mix persistence (queries, relationships, scopes) with business logic (validation,
+status checks, permission gating). This coupling causes two pains: business logic cannot be tested
+without a database (factories, migrations, setup — slow and brittle), and schema changes ripple
+through inline rules scattered across Models, Actions, and Controllers. Strict isolation (banning
+all framework usage from business logic) would trade one cost for another — velocity loss
+disproportionate to team size and scope.
 
-Eloquent models in Laravel mix persistence (database queries, relationships, scopes) with business
-logic (validation rules, status checks, permission gating). This coupling has two negative effects:
+**Decision Drivers:**
 
-1. **Business logic cannot be tested without a database** — every test requires factories,
-   migrations, and database setup, making tests slow and brittle.
-2. **Schema changes ripple through business logic** — renaming a column breaks inline rules
-   scattered across Models, Actions, and Controllers.
+* Testability of business rules without database setup
+* Containment of schema-change blast radius to a single bridge point
+* Pragmatic velocity — isolation that helps without enforcing purity that hinders
+* Clear ownership: persistence vs domain logic in distinct, discoverable types
 
-However, strict framework isolation (banning all Eloquent usage from business logic) imposes a
-development velocity cost that outweighs the benefits for this project's team size and scope. A
-pragmatic balance is needed.
+## Considered Options
 
-## Decision
+* **Rules inline in Eloquent models** — business logic lives directly in Model methods.
+  *Pros:* fewest files. *Cons:* tests require DB, schema renames scatter, no snapshot semantics.*
+* **Strict domain isolation** — ban all framework dependencies from business logic, map through
+  anti-corruption layers. *Pros:* pure domain, framework-agnostic. *Cons:* mapping ceremony,
+  velocity cost unjustified for 18-module single-tenant system.*
+* **Dedicated `final readonly` Entity with pragmatic framework use (chosen)** — extract rules into
+  immutable Entity classes bridged via `fromModel(Model): static`, allow framework deps where
+  practical. *Pros:* millisecond tests, single bridge point for schema change, no artificial purity.*
 
-Business rules live in dedicated **Entity** classes that are `final readonly` (immutable after
-construction — they represent a snapshot of state at a point in time) and **allow framework
-dependencies** (Eloquent models, Carbon, and other framework classes where practical). The priority
-is testability, not purity.
+## Decision Outcome
 
-Entities are bridged from persistence via `fromModel(Model): static`, which extracts data from an
-Eloquent model and constructs the entity. Models expose entities via named accessors like
-`asRegistrationState()`, `asInternshipPeriod()`.
+**Chosen option: Dedicated `final readonly` Entity with pragmatic framework use** — business rules
+live in Entity classes that are `final readonly` (snapshot of state at a point in time) and **allow
+framework dependencies** (Eloquent, Carbon) where practical. Testability is prioritized over purity.
 
-### Relationship to DTOs
+Bridging via `fromModel(Model): static` extracts data from a model and constructs the entity;
+models expose entities through named accessors (`asRegistrationState()`, `asInternshipPeriod()`).
 
-| Aspect         | Entity (BaseEntity)           | DTO (BaseData)                           |
-| -------------- | ----------------------------- | ---------------------------------------- |
-| Purpose        | Business rules, state queries | Data transfer, input/output contracts    |
-| Mutation       | Never                         | Never                                    |
-| Framework deps | Pragmatic — allowed           | Pragmatic — allowed                      |
-| fromModel      | Yes — persistence bridge      | Optional                                 |
-| Used by        | Actions, Policies, Livewire   | Actions (input), Livewire (form mapping) |
+**Relationship to DTOs:**
 
-### Shared Validation Rules
+| Aspect | Entity (BaseEntity) | DTO (BaseData) |
+|--------|---------------------|----------------|
+| Purpose | Business rules, state queries | Data transfer, input/output contracts |
+| Mutation | Never | Never |
+| Framework deps | Pragmatic — allowed | Pragmatic — allowed |
+| fromModel | Yes — persistence bridge | Optional |
+| Used by | Actions, Policies, Livewire | Actions (input), Livewire (form mapping) |
 
-Entities may expose static `rules()` methods returning validation rules shared between Form Objects
-and Form Requests, eliminating duplicate validation logic across UI layers:
+**Shared Validation Rules** — Entities may expose `static rules()` returning validation arrays
+shared between Form Objects and Form Requests, eliminating duplication across UI layers:
 
 ```php
 final readonly class InternshipPeriod extends BaseEntity
@@ -54,21 +65,20 @@ final readonly class InternshipPeriod extends BaseEntity
 }
 ```
 
-## Consequences
+### Positive Consequences
 
-- **Positive**: Entity tests need minimal setup — construct and assert. They run in milliseconds
-  without a database.
-- **Positive**: Business rules are isolated from raw database access patterns. Renaming a column
-  only affects the `fromModel()` bridge.
-- **Positive**: Framework dependencies are allowed when practical — no artificially enforced purity
-  that slows development.
-- **Negative**: Bridge code (`fromModel()`) must be maintained alongside model changes, adding a
-  maintenance surface.
+* Entity tests need minimal setup — construct and assert in milliseconds, no database
+* Schema renames affect only the `fromModel()` bridge
+* Framework deps allowed where practical — no purity tax on iteration speed
 
-## References
+### Negative Consequences
 
-- `app/Core/Entities/BaseEntity.php` — Base entity class
-- `app/Core/Data/BaseData.php` — DTO base class (complementary)
-- `app/Core/Contracts/StatusEnum.php` — State transition contract
-- `docs/architecture.md` — Validation Strategy section
-- `docs/conventions.md` — Entities section
+* Bridge code must be maintained alongside model changes — adds a surface that can drift if
+  neglected; mitigated by co-locating Entity and Model within the same module
+
+## Links
+
+* [Entity Pattern](../guides/arch/entity-pattern.md) — `final readonly` contract and bridge conventions
+* [Data Pattern](../guides/arch/data-pattern.md) — DTO vs Entity responsibilities
+* [Architecture Overview](../architecture.md) — layer responsibilities and validation strategy
+* [Conventions — Entities](../conventions.md) — team-wide entity authoring rules
