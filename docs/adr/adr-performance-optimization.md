@@ -1,110 +1,85 @@
-# ADR-009: Performance & Optimization Strategy
+# Performance & Optimization Strategy
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current performance strategy (query optimization, caching, queue offloading, pagination)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Infrastructure Overview](../guides/infra/infrastructure.md) and [Deployment Guide](../guides/infra/deployment.md) |
 
-Performance strategy combines database query optimization, multi-level caching with event-driven
-invalidation, queue offloading for heavy operations, and pagination for all list views.
+## Context and Problem Statement
 
-## Context
+Internara serves schools from 100 to 2000+ users across widely varying infrastructure. In the
+MVP phase every infrastructure choice (Redis, workers, S3) competes with feature time, yet the
+architecture must not require a rewrite when a school grows from 500 to 2000 users. Three
+deployment tiers are already defined:
 
-Internara serves vocational schools from 100 to 2000+ registered users across widely varying
-infrastructure. Current development is in the MVP phase -- every infrastructure decision (Redis,
-queue workers, S3) consumes time that could be spent on features. However, the architecture must not
-require a rewrite when a school grows from 500 to 2000 users.
+| Tier | Users | Database | Queue | Cache | Session | Storage |
+|------|-------|----------|-------|-------|---------|---------|
+| 1 Shared | ≤ 500 | MySQL/MariaDB | sync | file | database | local |
+| 2 VPS | 500–2000 | MySQL | Redis | Redis | Redis | local + S3 |
+| 3 HA | 2000+ | MySQL + replica | Redis | Redis cluster | Redis cluster | S3 |
 
-Three deployment tiers are already defined:
+**Decision Drivers:**
 
-| Tier       | Registered Users | Database        | Queue | Cache         | Session       | Storage    |
-| ---------- | ---------------- | --------------- | ----- | ------------- | ------------- | ---------- |
-| 1 (Shared) | <= 500           | MySQL / MariaDB | sync  | file          | database      | local      |
-| 2 (VPS)    | 500-2000         | MySQL           | Redis | Redis         | Redis         | local + S3 |
-| 3 (HA)     | 2000+            | MySQL + replica | Redis | Redis cluster | Redis cluster | S3         |
+* MVP velocity over premature infrastructure ceremony
+* Tier transitions as configuration changes, not code changes
+* No-regret moves that pay at any scale without ongoing cost
+* Explicit deferral list to prevent speculative optimization
 
-## Decision
+## Considered Options
 
-### Tier 0 -- Always Enforced (No-Regret Moves)
+* **Optimize late, rewrite when needed** — ship MVP without performance foundations.
+  *Pros:* fastest start. *Cons:* tier transitions require rewrites; no-regret moves missed.*
+* **Invest in HA from day one** — Octane, sharding, CDN, clustering upfront.
+  *Pros:* headroom. *Cons:* ceremony during feature development, unused complexity.*
+* **Tiered no-regret + config-only growth (chosen)** — enforce cheap universal wins; Tier 1
+  defaults run on MySQL alone; Tier 2/3 are `.env` swaps.
+  *Pros:* velocity now, growth without code change. *Cons:* defaults not production-optimal.*
 
-These optimizations cost nothing during development but prevent regressions at any scale:
+## Decision Outcome
 
-- **UUID v7 primary keys** -- no auto-increment hotspot, merge-safe
-- **Composite indexes on foreign keys** -- prevents full table scans on JOIN-heavy queries
-- **Eager loading convention** -- N+1 queries are the single biggest Livewire performance risk
-- **Activity log composite indexes** -- prevents full scans at 1M+ rows
-- **Cache key registry** (`config/cache-keys.php`) -- prevents key collisions, makes invalidation
-  discoverable
-- **Action triad separation** -- Read Actions avoid transaction overhead
+**Chosen option: Tiered no-regret + config-only growth.**
 
-### Tier 1 -- Shared Hosting Defaults (Entry)
+**Tier 0 — Always Enforced (no-regret):**
 
-Zero external services required beyond MySQL/MariaDB. All features available, some synchronous
-instead of asynchronous:
+* UUID v7 PKs, composite indexes on FKs and `activity_log` (1M+ rows), eager-loading
+  convention (N+1 is the primary Livewire risk), cache-key registry
+  (`config/cache-keys.php`), Read Actions avoid transaction overhead.
 
-- Queue: sync (jobs run inline)
-- Cache: file (atomic on ext4/XFS)
-- Session: database (UUID PK with index)
-- Database: MySQL / MariaDB (SQLite for dev/testing only)
-- Media storage: local public disk
-- Pulse ingest: storage (sync, request-bound)
-- Log retention: daily rotation + scheduler
+**Tier 1 — Shared Hosting Defaults:** queue sync, cache file, session database,
+MySQL/MariaDB, local public disk, Pulse ingest sync. Zero external services.
 
-### Tier 2 -- VPS Growth (Configuration Change, No Code)
+**Tier 2 — VPS Growth** — trigger: sustained > 500 users or P95 > 1s. All `.env` swaps,
+zero code: `QUEUE_CONNECTION=redis` + worker, `CACHE_STORE=redis`,
+`SESSION_DRIVER=redis`, `PULSE_INGEST_DRIVER=redis`, `FILESYSTEM_DISK=s3` optional.
 
-Trigger: sustained > 500 registered users OR page load > 1s at P95.
+**Tier 3 — High Scale** — trigger: sustained > 2000 users or DB write > 50ms. Read
+replica, S3+CDN, PHP-FPM tuning, Redis cluster, ProxySQL/PgBouncer, user-aware rate
+limiting, PHPStan lazy-loading rule.
 
-Every change is an `.env` swap -- zero code changes:
+**Explicitly Deferred** until evidence demands: Octane, horizontal auto-scaling, CDN for
+static assets, sharding, job batching.
 
-- `QUEUE_CONNECTION=redis` + start worker
-- `CACHE_STORE=redis`
-- `SESSION_DRIVER=redis`
-- `PULSE_INGEST_DRIVER=redis`
-- `FILESYSTEM_DISK=s3` (optional)
+**When Not to Optimize:** before measurement (Pulse), before understanding the bottleneck,
+before the feature stabilizes.
 
-### Tier 3 -- High Scale (Configuration + Minor Infra)
+### Positive Consequences
 
-Trigger: sustained > 2000 registered users OR DB write latency > 50ms.
+* MVP velocity preserved; same binary runs at 500 and 2000 users
+* No-regret moves are foundational — no developer decision required
+* Deferred list removes ambiguity about premature needs
 
-- DB read replica in database config
-- S3 primary storage with CDN
-- PHP-FPM tuning (pm.max_children)
-- Redis cluster (split cache/queue/session)
-- Connection pooling (ProxySQL/PgBouncer)
-- User-aware rate limiting (key by user_id)
-- PHPStan lazy loading prevention rule
+### Negative Consequences
 
-### Explicitly Deferred
+* Default `.env.example` is not production-optimal; deployers must override
+* Tier 3 assumes Redis — schools without it need documentation support
 
-These are deferred until evidence proves need: Laravel Octane, horizontal auto-scaling, CDN for
-static assets, database sharding, queue job batching.
+## Links
 
-### When Not to Optimize
-
-1. Before measurement -- if Pulse doesn't show a problem, don't optimize
-2. Before understanding the bottleneck -- adding Redis for an N+1 query wastes time
-3. Before the feature stabilizes -- optimize after it settles
-
-## Consequences
-
-- **Positive**: MVP velocity preserved -- no wasted infrastructure ceremony during feature
-  development.
-- **Positive**: Every tier transition is a configuration change, not a code change. The same binary
-  runs at 500 and 2000 users.
-- **Positive**: No-regret moves are built into the foundation -- developers don't need to think
-  about them.
-- **Positive**: Deferred optimizations are explicitly listed -- no ambiguity about whether Octane is
-  needed.
-- **Negative**: Default configuration is not production-optimal -- deployers must override
-  `.env.example` values.
-- **Negative**: Tier 3 assumes Redis availability -- schools without Redis experience need
-  documentation support.
-
-## References
-
-- `docs/guides/infra/infrastructure.md` -- Three deployment tiers
-- `docs/guides/infra/deployment.md` -- Deployment steps and checklist
-- `docs/guides/infra/cache.md` -- Cache driver configuration
-- `docs/guides/infra/queue.md` -- Queue worker management
-- `.env.example` -- Default shared hosting configuration
-- `docs/adr/adr-self-hosted-single-tenant.md` -- Foundation decision
-- `docs/adr/adr-gradual-migration.md` -- Governing principle
+* [Infrastructure Overview](../guides/infra/infrastructure.md) — tier definitions
+* [Deployment Guide](../guides/infra/deployment.md) — steps and checklist per tier
+* [Cache Guide](../guides/infra/cache.md) — driver configuration and invalidation
+* [Self-Hosted Single-Tenant](adr-self-hosted-single-tenant.md) — tenancy foundation this strategy builds on
