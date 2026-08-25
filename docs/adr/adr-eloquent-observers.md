@@ -1,85 +1,81 @@
-# ADR-015: Eloquent Observers for Model-Level Side Effects
+# Eloquent Observers for Model-Level Side Effects
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current observer usage (cache invalidation, snapshots, deletion guards, synchronous transaction)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Event Pattern](../guides/arch/event-pattern.md) and [Event System Spec](../specs/NUCY3-event-system.md) |
 
-Eloquent Observers handle model-level side effects that are tightly coupled to a single model's
-lifecycle — cache invalidation, snapshot capture, and deletion guards. They run synchronously
-within the same transaction as the model operation.
+## Context and Problem Statement
 
-## Context
+Internara has two mechanisms for reacting to model changes: decoupled Events + Listeners
+(cross-module, fire-and-forget, queueable) and Eloquent Observers (single-model, synchronous).
+Most side effects use events (49 events, 20 listeners across 13 modules), but three use cases
+require tighter coupling: cache invalidation must complete before the response (events are
+deferred until after commit), snapshots must capture state at the exact status-change moment
+(event payload may be stale), and deletion guards must prevent the delete before it proceeds
+(impossible with deferred events).
 
-Internara has two mechanisms for reacting to model changes:
+**Decision Drivers:**
 
-1. **Events + Listeners** — decoupled, cross-module, fire-and-forget, can be queued
-2. **Eloquent Observers** — coupled to a single model, same-module, synchronous
+* Synchronous completion before HTTP response for correctness
+* Same-transaction semantics — rollback must undo the side effect for mutations
+* Single-model scope — no cross-module fan-out
 
-Most side effects in the system use events (49 events, 20 listeners across 13 modules). However,
-three use cases require tighter coupling than events provide:
+## Considered Options
 
-- **Cache invalidation** must happen synchronously before the response returns, not after
-  transaction commit (events are deferred).
-- **Data snapshots** must capture the model state at the exact moment of a status change, not
-  after the transaction commits (event payload may be stale).
-- **Deletion guards** must prevent the model from being deleted before the operation proceeds,
-  which is impossible with deferred events.
+* **Events + Listeners for everything** — *Pros:* uniform, decoupled. *Cons:* cannot guarantee
+  synchronous cache invalidation, snapshot timing, or deletion prevention.*
+* **Observers for qualifying single-model side effects, Events otherwise (chosen)** —
+  *Pros:* synchronous guarantees where needed; decoupled elsewhere. *Cons:* tighter coupling
+  where Observers are used.*
 
-## Decision
+## Decision Outcome
 
-Use Eloquent Observers for model-level side effects that meet ALL of the following criteria:
+**Chosen option: Observers for qualifying single-model side effects** — use Eloquent Observers
+when ALL three criteria hold; otherwise use Events + Listeners.
 
-1. **Same-module only** — the observer and its model live in the same module
-2. **Synchronous required** — the side effect must complete before the HTTP response
-3. **Single-model scope** — the side effect reacts only to this model's lifecycle, not
-   cross-module data
+**Criteria:**
 
-For all other side effects (cross-module, async, fire-and-forget), use the Event + Listener
-pattern.
+1. **Same-module only** — observer and model in the same module
+2. **Synchronous required** — must complete before the response
+3. **Single-model scope** — reacts only to this model's lifecycle
 
-### Decision Framework
+**Decision Framework:**
 
 | Criterion | Observer | Event + Listener |
-|-----------|----------|-----------------|
+|-----------|----------|------------------|
 | Coupling | Same model | Cross-module OK |
 | Timing | Synchronous | Deferred (after commit) |
 | Queuing | No | Yes (`ShouldQueue`) |
-| Rollback behavior | Rolls back with model | Discarded on rollback |
+| Rollback | Rolls back with model | Discarded on rollback |
 | Use case | Cache invalidation, guards, snapshots | Notifications, cross-cache, logging |
 
-## Consequences
-
-### Positive
-
-- **Synchronous guarantees:** Cache invalidation completes before the response, preventing stale
-  reads on next request.
-- **Simplicity:** No config/event.php registration, no listener class, no event class — just
-  an observer with hook methods.
-- **Transaction safety:** Observer runs inside the same DB transaction. If the model operation
-  rolls back, the observer side effect also rolls back (for mutations).
-
-### Negative
-
-- **Tight coupling:** Observer is bound to one model. If the side effect later needs to react
-  to other models' changes, the observer must be refactored to an event listener.
-- **Test isolation:** Observers auto-register via model `booted()` method. Tests that don't
-  want observer side effects must explicitly disable them.
-- **No async option:** Long-running observer logic (e.g., external API calls) would block the
-  request. Observers must be fast.
-
-## Current Observers
+**Current Observers:**
 
 | Observer | Model | Hook | Purpose |
 |----------|-------|------|---------|
-| `ReportObserver` | `Report` | `saved()` | Captures snapshot when status = FINALIZED |
-| `SettingObserver` | `Setting` | `created/updated/deleted` | Invalidates per-key, per-group, and global cache |
-| `UserObserver` | `User` | `deleting()` | Prevents superadmin deletion via `RejectedException` |
+| `ReportObserver` | `Report` | `saved()` | Snapshot when status = FINALIZED |
+| `SettingObserver` | `Setting` | `created/updated/deleted` | Invalidates per-key/group/global cache |
+| `UserObserver` | `User` | `deleting()` | Prevents superadmin deletion via RejectedException |
 
-## References
+### Positive Consequences
 
-- `app/Reports/Report/Observers/ReportObserver.php` — Snapshot observer
-- `app/Settings/Observers/SettingObserver.php` — Cache invalidation observer
-- `app/User/Observers/UserObserver.php` — Deletion guard observer
-- `docs/guides/arch/event-pattern.md` — Event + Listener pattern (alternative)
-- `docs/specs/NUCY3-event-system.md` — Event system specification
-- `docs/specs/core-foundation.md` — Base classes and contracts
+* Synchronous guarantees — cache invalidation completes before next request can see stale data
+* Simplicity — no event/listener registration plumbing
+* Transaction safety — observer rolls back with the model operation for mutations
+
+### Negative Consequences
+
+* Tight coupling to one model — later multi-model needs require refactor to event listener
+* Auto-registered via `booted()` — tests must explicitly disable when side effects unwanted
+* No async — long-running logic would block the request; observers must stay fast
+
+## Links
+
+* [Event Pattern](../guides/arch/event-pattern.md) — alternative mechanism and conventions
+* [Event System Spec](../specs/NUCY3-event-system.md) — full event catalog
+* [Actions Guide](../guides/arch/action-pattern.md) — where events are dispatched from
