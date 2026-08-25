@@ -50,7 +50,22 @@
 3. **Gradual Migration FR** (1effort/2impact) — add to `SE5Q9` or `D2FT3` appendix; low urgency but removes dev friction ambiguity.
 4. Partial fills for Self-Hosted, Observers, Program Closure — batch as docs-only FR additions, no code change.
 
+## Resolution — 2026-08-25
+
+All gaps closed in commit `898ab01` (`docs(spec): close ADR ↔ Spec gaps`):
+
+| Gap | Fix | Spec | New FR |
+|-----|-----|------|--------|
+| Performance Tier 0-3 | Added Tier 0 no-regret + Tier 1/2/3 triggers + deferral list | `D2FT3` | FR-ARC36-39 |
+| Cross-Module Communication hierarchy | Added ranked 4-pattern hierarchy | `D2FT3` | FR-ARC34-35 |
+| Gradual Migration 3-phase | Added Start→Stabilize→Final for DTO/cache/validation | `D2FT3` | FR-ARC40-42 |
+| Self-Hosted Single-Tenant | Added single-tenant deployment matrix NFR | `D2FT3` | NFR-A7 |
+| Eloquent Observers framework | Added same-module/synchronous/single-model criteria | `NUCY3` | FR-EV12-14 |
+| Program Closure 7-step & ARCHIVED terminal | Added `CloseProgramProcess` 7 steps, ARCHIVED terminal, snapshot, alumni, retention | `7C5WM` | FR-CL1-6 |
+
+Post-fix verification: `scan_doc_links.py` — 207 files, 0 broken links.
+
 ## Verification
 
-- `scan_doc_links.py` not run (spec-only audit, no link changes)
+- `scan_doc_links.py` not run (spec-only audit, no link changes) — post-fix run: 0 broken (207 files)
 - `rg` coverage checks per ADR core phrase — see audit log in shell history
