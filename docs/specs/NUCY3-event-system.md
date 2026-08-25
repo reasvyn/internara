@@ -1,7 +1,7 @@
 # Event System — Decoupled Communication Infrastructure
 
 > **Spec ID:** NUCY3
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-EV12-14 (Eloquent Observers framework: same-module, synchronous, single-model scope) per ADR audit
 
 ## Description
 
@@ -110,6 +110,9 @@ primary mutation.
 | FR-EV9 | SmartLogger integration: `->event($baseEvent)->save()` auto-dispatches + logs |
 | FR-EV10 | I/O-bound listeners MUST implement `ShouldQueue` |
 | FR-EV11 | Payload extraction MUST preserve scalar values, convert objects via `toArray()`, skip nulls |
+| FR-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
+| FR-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
+| FR-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
 
 ---
 
