@@ -17,24 +17,26 @@
                     @endif
                     <div class="mt-1 flex gap-2">
                         @if ($rubric->is_active)
-                            <span class="badge badge-success badge-sm">{{ __('assessment.active') }}</span>
+                            <x-ts-badge :text="__('assessment.active')" color="green" xs />
                         @else
-                            <span class="badge badge-ghost badge-sm">{{ __('assessment.inactive') }}</span>
+                            <x-ts-badge :text="__('assessment.inactive')" color="white" xs />
                         @endif
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <x-ts-button
+                    <x-ts-button.circle
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
+                        color="white"
+                        sm
                         wire:click="editRubric('{{ $rubric->id }}')"
-                        class="btn-sm btn-ghost"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         aria-label="{{ __('common.actions.delete') }}"
                         icon="trash"
+                        color="red"
+                        sm
                         wire:click="askRemoveRubric('{{ $rubric->id }}')"
-                        class="btn-sm btn-ghost text-error"
                     />
                 </div>
             </div>
@@ -47,8 +49,12 @@
                         <div class="flex-1">
                             <div class="flex items-center gap-2">
                                 <p class="font-medium">{{ $competency['name'] }}</p>
-                                <span class="badge badge-primary badge-sm">{{ $competency['weight'] }}%</span>
-                                <span class="badge badge-ghost badge-sm">{{ \App\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role'] }}</span>
+                                <x-ts-badge :text="$competency['weight'].'%'" color="primary" xs />
+                                <x-ts-badge
+                                    :text="\App\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role']"
+                                    color="white"
+                                    xs
+                                />
                             </div>
                             @if ($competency['description'] ?? null)
                                 <p class="text-base-content/50 mt-1 text-xs">{{ $competency['description'] }}</p>

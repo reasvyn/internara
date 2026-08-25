@@ -60,13 +60,13 @@
                         :label="__('dashboard.supervisor.verify_logbooks')"
                         icon="pencil-square"
                         link="{{ route('sysadmin.logbook') }}"
-                        color="btn-primary"
+                        color="primary"
                     />
                     <x-core::widgets.action-button
                         :label="__('dashboard.supervisor.submit_evaluation')"
                         icon="star"
                         link="#"
-                        color="btn-secondary"
+                        color="secondary"
                     />
                 </div>
         </div>

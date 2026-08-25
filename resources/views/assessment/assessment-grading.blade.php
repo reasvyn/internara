@@ -18,9 +18,9 @@
                 </div>
                 <div class="flex items-center gap-2">
                     @if ($this->assessment->finalized_at)
-                        <span class="badge badge-success">{{ __('assessment.finalized') }}</span>
+                        <x-ts-badge :text="__('assessment.finalized')" color="green" />
                     @else
-                        <span class="badge badge-warning">{{ __('assessment.draft') }}</span>
+                        <x-ts-badge :text="__('assessment.draft')" color="yellow" />
                     @endif
                 </div>
             </div>
@@ -31,7 +31,7 @@
                         :text="__('assessment.auto_import')"
                         icon="arrow-down-tray"
                         wire:click="autoImport"
-                        class="btn-outline"
+                        color="white"
                         sm
                     />
                 </div>
@@ -58,14 +58,14 @@
                             <p class="text-xl font-bold">{{ $autoScores['logbook_completeness'] ?? '-' }}%</p>
                         </div>
                     </div>
-
+                </x-ts-card>
             @endif
 
             @foreach ($this->evaluableCompetencies as $competency)
                 <x-ts-card shadowless class="mb-3">
                     <div class="mb-3 flex items-center gap-2">
                         <h4 class="font-semibold">{{ $competency->name }}</h4>
-                        <span class="badge badge-primary badge-sm">{{ $competency->weight }}%</span>
+                        <x-ts-badge :text="$competency->weight.'%'" color="primary" xs />
                     </div>
 
                     @php
@@ -75,52 +75,53 @@
 
                     @foreach ($competency->indicators as $indicator)
                         @php
-                            $key = "{$competency->id}.{$indicator->id}";
-                            $currentScore = (float) ($this->scores[$key] ?? 0);
-                            $normalized = $indicator->max_score > 0 ? ($currentScore / $indicator->max_score) * 100 : 0;
-                            $compScore += $normalized * ($indicator->weight / 100);
-                            $compIndicatorWeight += $indicator->weight;
+                            $indWeight = $indicator->weight;
+                            $compIndicatorWeight += $indWeight;
+                            $currentScore = $this->scores[$indicator->id] ?? 0;
+                            $compScore += ($currentScore * $indWeight) / 100;
                         @endphp
-
-                        <div class="mb-2 flex items-center gap-4">
+                        <div class="mb-3 flex items-center gap-4">
                             <div class="flex-1">
-                                <p class="text-sm">{{ $indicator->name }}</p>
-                                <p class="text-base-content/40 text-xs">
-                                    max {{ $indicator->max_score }}, weight {{ $indicator->weight }}%
-                                </p>
+                                <p class="text-sm font-medium">{{ $indicator->name }}</p>
+                                @if ($indicator->description)
+                                    <p class="text-base-content/40 text-xs">{{ $indicator->description }}</p>
+                                @endif
                             </div>
-                            <div class="w-24">
+                            <div class="w-16 text-right text-xs">
+                                <span class="text-base-content/40">{{ $indWeight }}%</span>
+                            </div>
+                            <div class="w-32">
                                 <x-ts-input
                                     type="number"
-                                    step="0.1"
                                     min="0"
-                                    :max="$indicator->max_score"
-                                    placeholder="0-{{ $indicator->max_score }}"
-                                    wire:model.live="scores.{{ $key }}"
-                                    :disabled="$isFinalized"
+                                    max="100"
+                                    step="0.1"
+                                    wire:model.live="scores.{{ $indicator->id }}"
+                                    :disabled="$this->isFinalized"
+                                    sm
                                 />
                             </div>
                         </div>
                     @endforeach
 
-                    @if ($compIndicatorWeight > 0)
-                        @php
-                            $competencyContribution = $compScore * ($competency->weight / 100);
-                            $totalWeightedScore += $competencyContribution;
-                            $totalWeight += $competency->weight;
-                        @endphp
-                        <div class="text-base-content/60 mt-2 text-right text-sm">
-                            {{ __('assessment.subtotal') }}: {{ number_format($compScore, 1) }} / 100 ({{ __('assessment.contributes', ['pct' => number_format($competencyContribution, 1)]) }})
-                        </div>
-                    @endif
+                    @php
+                        $compFinalScore = $compIndicatorWeight > 0 ? ($compScore / $compIndicatorWeight) * 100 : 0;
+                        $totalWeightedScore += ($compFinalScore * $competency->weight) / 100;
+                        $totalWeight += $competency->weight;
+                    @endphp
 
+                    <div class="border-base-200 mt-2 flex justify-between border-t pt-2 text-sm">
+                        <span class="text-base-content/60">{{ __('assessment.competency_score') }}</span>
+                        <span class="font-bold">{{ number_format($compFinalScore, 1) }}</span>
+                    </div>
+                </x-ts-card>
             @endforeach
 
             @foreach ($this->readOnlyCompetencies as $competency)
                 <x-ts-card shadowless class="mb-3 opacity-70">
                     <div class="mb-3 flex items-center gap-2">
                         <h4 class="font-semibold">{{ $competency->name }}</h4>
-                        <span class="badge badge-ghost badge-sm">{{ $competency->weight }}%</span>
+                        <x-ts-badge :text="$competency->weight.'%'" color="white" xs />
                         <span class="text-base-content/40 text-xs">({{ $competency->evaluator_role->label() }} only)</span>
                     </div>
 

@@ -45,37 +45,37 @@
                     :label="__('dashboard.student.write_journal')"
                     icon="pencil-square"
                     link="{{ route('student.logbook') }}"
-                    color="btn-primary"
+                    color="primary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.clock_in_out')"
                     icon="clock"
                     link="{{ route('student.attendance') }}"
-                    color="btn-secondary"
+                    color="secondary"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.my_assignments')"
                     icon="document-check"
                     link="{{ route('student.assignments') }}"
-                    color="btn-accent"
+                    color="accent"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.request_absence')"
                     icon="document-plus"
                     link="{{ route('student.attendance.absence') }}"
-                    color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
+                    color="white"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.my_documents')"
                     icon="document-arrow-up"
                     link="{{ route('registration.documents') }}"
-                    color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
+                    color="white"
                 />
                 <x-core::widgets.action-button
                     :label="__('dashboard.student.handbooks')"
                     icon="book-open"
                     link="{{ route('student.handbooks') }}"
-                    color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content"
+                    color="white"
                 />
             </div>
         </div>

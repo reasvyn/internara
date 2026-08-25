@@ -66,19 +66,19 @@
                         :label="__('dashboard.teacher.verify_logbooks')"
                         icon="pencil-square"
                         link="{{ route('sysadmin.logbook') }}"
-                        color="btn-primary"
+                        color="primary"
                     />
                     <x-core::widgets.action-button
                         :label="__('dashboard.teacher.grade_assignments')"
                         icon="document-check"
                         link="{{ route('teacher.submissions.grading') }}"
-                        color="btn-secondary"
+                        color="secondary"
                     />
                     <x-core::widgets.action-button
                         :label="__('dashboard.teacher.supervision_logs')"
                         icon="check-badge"
                         link="{{ route('supervision.logs') }}"
-                        color="btn-accent"
+                        color="accent"
                     />
                 </div>
         </div>
