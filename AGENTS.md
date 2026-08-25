@@ -1,261 +1,46 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** Documentation split rule added — human-engineering docs in docs/, AI-engineering in .agents/; docs→.agents references removed except agent-facing content (7 violations realigned)
+> **Last updated:** 2026-08-25 **Changes:** refactored into a navigation hub — rule bodies moved to .agents/rules/{rule}.md, loaded on demand
 
-Mental model, workflow, and navigation map for AI agents.
+Mental model and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
+**Rule bodies live in `.agents/rules/{rule}.md`** — this file indexes them; load a rule file when
+a task reaches its concern.
 
-## Agent Workflow — Mandatory Steps
+## Mandatory Loading Order — Every Instruction, No Exceptions
 
-**Every instruction MUST run the full cycle. No step may be skipped.** This applies to
-**any instruction, in any form** — a one-line question, a bug report, a feature request, a docs
-tweak, or an audit. Steps are **adaptive**: their depth scales with the instruction's SDLC phase.
+**Every instruction MUST run the full cycle** (`UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE`)
+— any instruction, in any form: a one-line question, a bug report, a feature request, a docs tweak,
+or an audit.
 
-**ALWAYS load the `agent-workflow` skill first** — on every instruction, before any other skill. It
-is the single source of truth for the workflow: the 5-step pipeline
-(Understand → Plan → Implement → Verify → Summarize), narration discipline, phase classification
-(adaptive depth), size triage (S/M/L session splitting), verification strategy, and the L-size
-protocol. Do NOT restate the workflow in other skills — reference `agent-workflow` instead.
+1. **Load the `agent-workflow` skill first** — canonical SSOT for the 5-step pipeline, narration
+   discipline, phase classification (adaptive depth), size triage (S/M/L), and the L-size protocol.
+2. **Load `context-awareness` second** — universal orientation layer; all other skills assume it.
+3. **Load only the skills the task actually uses** from the Skill Map below — every skill load
+   consumes context; an unneeded skill is cheap to skip, a bloated context is not.
 
-```
-UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE
-```
+**Narration discipline:** the pipeline runs silently — surface only ambiguities needing input,
+scope/structure/behavior decisions, L-size session plans, pre-commit checkpoints, and the final
+report.
 
-### Narration & Context Discipline — Non-Negotiable
-
-The pipeline runs **silently**. The 5 steps are internal reasoning — do not narrate them, do not
-restate the task, do not list the steps you took, do not explain reasoning already visible in your
-tool use. Surface to the user **only**:
-
-1. Ambiguity that needs their input.
-2. A decision that changes scope, structure, or behavior.
-3. An L-size session plan (one short paragraph).
-4. One checkpoint before commit (M-size) or per-session (L-size).
-5. The final report (what changed, what was verified, caveats).
-
-Every sentence sent to the user must carry new information or a decision; if it does neither,
-drop it. This keeps responses short and context usage low.
-
-### Spec-First Doctrine — Non-Negotiable
-
-**Every action, on every instruction, in any form, must be driven by the governing spec.**
-`docs/specs/*.md` is the single authoritative source of truth — it defines intent, requirements
-(FR/NFR/UC IDs), scope, and acceptance criteria. The spec outranks the user's literal words,
-ad-hoc reasoning, and existing code. This applies to every task type: bug fixes, features,
-refactors, tests, docs updates, audits, scripts, config tweaks, maintenance, and one-line
-questions alike.
-
-- **Consult the spec before any work:** locate the governing spec (foundation, module, or
-  feature) in Step 1 and treat it as the source of truth for what "done" means.
-- **No behavior without a requirement:** never change behavior, add features, or fix bugs
-  without a corresponding requirement ID (FR/NFR/UC). If none exists, write it into the spec
-  first — spec-first, never fix-first.
-- **Code and spec disagree?** The spec is authoritative. Align code to the spec
-  ("fix code, assert spec"). If the spec is demonstrably wrong, amend the spec with a recorded
-  decision first, then align the code and tests.
-- **Tests assert the spec:** every test traces to a requirement ID (spec-driven testing); no
-  orphan tests, no spec gaps (see Verification Strategy).
-- **Docs reflect the spec:** `docs/` and module docs stay in sync with specs and code.
-- Failing to consult or follow the governing spec — for any instruction — is a workflow violation.
-
-### Clean Code & Dedup-Align Doctrine — Non-Negotiable
-
-**Every instruction must leave the touched content and code deduplicated, aligned, and clean.**
-
-- **Deduplicate & align by default:** wherever the agent detects duplication or inconsistency —
-  repeated code, copy-pasted docs, divergent patterns, stale references, duplicated requirements —
-  deduplicate and align it as part of the work, even when the instruction did not ask for it
-  explicitly. Never introduce a second copy of something that already exists; reuse or extract.
-- **CLEAN CODE, DRY first:** apply clean-code principles with the **DRY** principle as the default
-  bias — extract repeated logic into shared, named, modular units (helper, trait, Action, DTO,
-  entity, doc cross-reference). Prefer **more, smaller, well-named modules** over one dense blob;
-  modularization is not over-engineering, it is the prescribed direction.
-- **Align spec ↔ code ↔ docs ↔ tests:** when one side drifts from the others, align the outlier to
-  the spec (Spec-First Doctrine) instead of tolerating the drift. No documented behavior without
-  code, no code without a requirement, no duplicated requirement across specs.
-- **Surface structural decisions only:** decisions beyond the literal ask — extraction, dedup,
-  refactor, doc merge, re-scoping — are stated to the user briefly when they change scope, structure,
-  or behavior, and confirmed when they do. Routine dedup and alignment run silently (Narration
-  Discipline); never narrate every decision, only the ones that affect the user.
-- **Record decisions:** if a dedup/alignment decision affects a spec or an invariant, record it
-  (ADR or spec amendment) rather than leaving it implicit.
-
-### Phase Classification & Size Triage
-
-Before acting, classify the instruction by **phase** (adaptive depth: Full/Light/Note) and **size**
-(S/M/L). If **L**, inform the user and split into sessions. The classification tables, the L-size
-protocol, and the per-step detail (Steps 1-5) live in the `agent-workflow` skill — follow them there.
-
-### 1. Understand — Intent, Scope & Constraints
-
-Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints
-and locate the governing spec. This step absorbs the legacy `Define & Scope`.
-
-- **ALWAYS load `agent-workflow` first** — before any other action, on every instruction, whether or
-  not the user asked for it. Then **ALWAYS load `context-awareness`** — the universal orientation
-  layer; all other skills assume it. There is no exception, not even for trivial questions.
-- **Load only the skills the task actually uses** from the Skill Map (bug fix → `code-writing`,
-  tests → `pest-testing`, scripts → `script-automation`, etc.). Every skill load consumes context,
-  so skip any skill the task will not exercise; an unneeded skill is cheap to skip, a bloated
-  context is not. Skills are **rules-first**: each skill's rules live in
-  `skills/{name}/rules/{rule}.md` (comprehensive prose — intent, rationale, how-to-apply, pitfalls,
-  verification — never bare checklists) and are mapped by its `## Skill Rules` table in SKILL.md.
-  Load a rule file only when the task reaches that rule; the mapping table is the index.
-- **Classify phase + size** per `agent-workflow` (Phase Classification + Size Triage) — if **L**,
-  inform the user and propose a session plan before proceeding.
-- **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
-- **Locate the governing spec** in `docs/specs/` (foundation, module, or feature) — it is the
-  source of truth for intent, scope, and acceptance criteria (Spec-First Doctrine, above). No
-  instruction may proceed without a governing spec or an explicit recorded decision.
-- **Define & scope** — list affected modules/layers/files and blockers (migrations, config,
-  registration); reorder batched instructions by impact-to-effort ratio (see `agent-workflow`).
-
-### 2. Plan — Context, Approach & Design
-
-Gather context, decide approach, and design contracts before touching code. This step absorbs the
-legacy `Explore + Plan + Design`.
-
-- Read module docs, architecture docs, and the full current content of every file you may touch;
-  survey `scripts/` for existing tooling (Automation-First).
-- Consider 2+ approaches; decide Action triad, Entity/DTO/Model boundaries, DTO needs (C7), error
-  handling (C8), cache strategy (C4), test & doc plan.
-- Defined in full detail in the `agent-workflow` skill — follow it there.
-
-### 3. Implement — Surgical Execution + Documentation
-
-Execute the plan with minimal, clean edits and keep docs in sync. This step absorbs the legacy
-`Develop + Document`.
-
-- Edit surgically, preserve unrelated code, verify with `git status` + `git diff` (see §Edit Policy).
-- Follow all invariants C1-C8, D1-D6; delegate business rules to Entities; batch repetitive work via
-  scripts.
-- Update module docs, PHPDoc, and `> **Last updated:**` metadata as part of the same step
-  (documentation-first).
-
-### 4. Verify — Quality Gates (Batched Once)
-
-Batch all changes first, then verify once. See §Verification Strategy below. This is the legacy
-`Test & Verify` step.
-
-### 5. Summarize — Commit & Report
-
-Final git review, commit, and concise report. This is the legacy `Commit & Report` step.
-
-- Commit format: `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`, `chore`,
-  `test`, `perf`, `security`; scope = module name.
-- Report: what changed, what was verified, caveats, recommended next steps.
-- One checkpoint before commit (M-size) or per-session (L-size); stage only intended files.
-- **Commit every session** — always end a session with a commit as its checkpoint; never leave
-  finished, verified work uncommitted across sessions.
+**Commit every session** — always end a session with a commit as its checkpoint; commit format
+`type(scope): description`.
 
 ---
 
-## Computational Thinking — Agent Decision Framework
+## Rules Index — Load on Demand
 
-Apply these four pillars to every instruction to stay autonomous, anticipate the next step, and
-avoid blind execution. They are referenced throughout the workflow above.
-
-| Pillar | How the agent applies it |
-|--------|--------------------------|
-| **Decomposition** | Break the instruction into smaller sub-problems (files, layers, concerns). Solve each independently, then integrate. Never try to hold the whole problem at once. |
-| **Pattern recognition** | Classify the instruction (bug? feature? refactor? docs? audit?) and reuse known patterns: skills from the Skill Map, existing code, docs, past conventions. A known pattern is a solved problem. |
-| **Abstraction** | Filter out irrelevant detail (versions, formatting, noise) and focus on the essential structure — entities, flows, contracts, invariants. See the forest before the trees. |
-| **Algorithm design** | Plan ordered steps with clear inputs/outputs. Before acting, ask: what is the expected outcome, what could go wrong, what does the next step depend on? |
-
-**Decision loop** — before each action, run: *predict outcome → act → verify → adjust*. After
-every step, anticipate the next: what must follow, what can break, what to verify. When the
-instruction is ambiguous, resolve it yourself when the cost is low (look up the answer in code or
-docs); escalate to the user only when the decision changes scope or architecture.
-
----
-
-## Documentation Split — Human vs AI Engineering
-
-Documentation is split by audience, and the split is directional:
-
-| Tier | Location | Audience | Content |
-|------|----------|----------|---------|
-| **Human engineering** | `docs/` + root community files (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`) | Developers, operators, contributors | Architecture, specs, guides, dependency references |
-| **AI engineering** | `.agents/` | AI agents | Skills, agent memory (`context/`), plans |
-
-**Reference direction (non-symmetric):**
-
-| From | To | Allowed? |
-|------|----|----------|
-| `docs/` | `.agents/` | **No** — single exception: content written *for agents* (e.g., `## AI Agent Guides` sections, entries explicitly marked agent-oriented) |
-| `.agents/` | `docs/` | **Yes** — skills and contexts cite `docs/` as SSOT instead of restating it |
-
-Rules:
-
-- Human docs stay **self-contained**: content serving both audiences is authored in `docs/`;
-  `.agents/` references it rather than duplicating it.
-- The exception is **content-based, not path-based**: a reference into `.agents/` is permitted only
-  when the surrounding content itself serves AI agents. Human-facing sections never link
-  `.agents/skills/**`, `.agents/plans/**`, or any other agent asset.
-- When writing in `docs/`, agent assets may be *named* (e.g., "see the `spec-writing` skill") but
-  never linked or path-referenced.
-- `scan_doc_links.py` does not enforce this policy — check manually on every doc change.
-
----
-
-## Automation-First — Scripts & Batch Patterns
-
-Speed up work by turning mechanical effort into scripts. Apply this **before** doing manual
-repetitive work, not after.
-
-- **Check `scripts/` before repeating anything** — scanning, bulk renames, mass edits, seed data,
-  report generation. If a devtool already covers the task, use it (they are faster, deterministic,
-  and arch-verified). Never redo by hand what a script does.
-- **Detect the pattern** — if the same operation would run on 3+ items (files, lines, records,
-  translations) or is scan/verify/batch-shaped, script it or reuse an existing tool
-  (Computational Thinking: algorithm design).
-- **Run the existing scanners** for quality gates instead of manual greps: `scan_violations.py`,
-  `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`,
-  `scan_doc_links.py` (see Verification Strategy).
-- **When writing a new script**, load the `script-automation` skill first and follow its standards
-  (interface, output format, error handling). Keep scripts in `scripts/`.
-- **One-off / few-off scripts NEVER go in `scripts/`** — scripts used only a handful of times
-  (single migration batch, temporary data fix, one-time conversion) must be written to `/tmp`
-  (e.g. `/tmp/migrate_x.py`), run, then discarded. `scripts/` is exclusively for durable,
-  reusable devtools with long-term value; committing throwaway scripts pollutes the toolchain.
-- **Batch your own operations too** — group edits, tests, and verification into few passes instead
-  of many small round-trips (full suite is ~2GB+, 10+ min; never run it per-edit).
-
----
-
-## Edit Policy — Surgical Edits Only
-
-Guardrail against silent information loss.
-
-- **Read before edit** — read the full current content of every file you may touch (Step 2 — Plan).
-- **Edit, don't rewrite** — change only what the instruction requires; preserve unrelated code,
-  comments, formatting, and context. A full rewrite is justified only for small files where the
-  rewrite IS the intent.
-- **Verify with git** — compare `git diff` before/after each change to prove nothing unintended
-  was altered or dropped (Step 4 — Verify). This is the final check that an edit was lossless.
-- **Scope smallest** — keep the change surface minimal (Step 1 — Understand). Fewer touched files = fewer
-  places for errors to hide.
-
----
-
-## Pre-existing Defects — Fix or File
-
-**The agent must not leave pre-existing warnings and errors untouched.**
-
-- **Fix by default, after the main work:** once the instruction's primary work is complete and
-  verified, fix pre-existing warnings and errors the agent noticed along the way (lint, PHPStan,
-  tests, arch-guard scans, deprecations, broken doc links). Do this before the final commit so the
-  repository is left cleaner than found.
-- **Fix only what is safe and in-scope-adjacent:** small, low-risk fixes (missing strict types,
-  unused imports, dead doc references, obvious typos) are applied directly without asking. Anything
-  that changes behavior, requires a design decision, or touches a spec needs the user informed
-  first (Clean Code & Dedup-Align Doctrine).
-- **Cannot fix? File an issue immediately:** if fixing requires design decisions, significant
-  effort, or is out of the current change surface, **create a GitHub issue first** (using the
-  `issue-writing` skill) before ending the session — never let a noticed defect go unrecorded.
-- **A defect noticed is a defect tracked:** no silent tolerance. Every pre-existing warn/error
-  either gets fixed, gets a GitHub issue, or is explicitly reported to the user as deferred with
-  the reason.
+| Rule file | Governs | Load when |
+|-----------|---------|-----------|
+| [`spec-first-doctrine`](.agents/rules/spec-first-doctrine.md) | Governing spec is SSOT; no behavior without a requirement ID | Every task — consult before planning |
+| [`clean-code-dedup-align`](.agents/rules/clean-code-dedup-align.md) | DRY default, spec↔code↔docs↔tests alignment, surfacing structural decisions | Every task — during implement & review |
+| [`computational-thinking`](.agents/rules/computational-thinking.md) | Four decision pillars + predict→act→verify→adjust loop | Ambiguous or multi-step instructions |
+| [`documentation-split`](.agents/rules/documentation-split.md) | Human docs in `docs/`, AI assets in `.agents/`; directional referencing | Any documentation change |
+| [`automation-first`](.agents/rules/automation-first.md) | Script batch work; reuse scanners; `/tmp` for throwaway scripts | Repetitive/batch operations; writing scripts |
+| [`edit-policy`](.agents/rules/edit-policy.md) | Read-before-edit, surgical diffs, git lossless proof | Every code/doc edit |
+| [`pre-existing-defects`](.agents/rules/pre-existing-defects.md) | Fix or file noticed warnings/errors; never silent tolerance | Warnings/errors encountered mid-task |
+| [`verification-strategy`](.agents/rules/verification-strategy.md) | Batched verification, change-type matrix, scanner commands | Before running tests or quality gates |
+| [`pre-commit-checklist`](.agents/rules/pre-commit-checklist.md) | Final gate before every commit | Immediately before each commit |
 
 ---
 
@@ -386,6 +171,7 @@ Full spec list with build order: `docs/specs/index.md`
 | I need to know about... | Look at |
 |-------------------------|---------|
 | Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/context/index.md` |
+| Global agent rules (doctrines, policies, checklists) | `.agents/rules/` — see Rules Index above |
 | 4-Layer model | `docs/architecture.md` §4-Layer Model |
 | Action Triad (Command/Read/Process) | `docs/architecture/action-pattern.md` |
 | SRP & modularity rules | `docs/architecture/modular-pattern.md` §1.6 |
@@ -458,90 +244,6 @@ Full spec list with build order: `docs/specs/index.md`
 |------|--------------|
 | Grade card only — no thesis content | `docs/refs/modules/reports.md` §Boundary |
 | Thesis belongs in Assignment module | `docs/refs/modules/assignment.md` |
-
----
-
-## Verification Strategy
-
-**Batch ALL changes first, then verify ONCE.** Full suite is ~2GB+ memory, 10+ minutes.
-
-**Tests verify the spec — nothing more.** Every test traces to a requirement ID (`FR-*` / `NFR-*` /
-`UC-*`) in `docs/specs/{ID}-{feature}.md`. Test descriptions use the `{SpecID}-{ReqID}: Test
-description...` format, grouped under `describe("{SpecID}: Test description...")`. Coverage is
-measured in spec requirements covered, not lines
-of code. A requirement with no test is a spec gap (fill it); a test with no requirement is orphan
-noise (remove it).
-
-**Spec-driven minimalism — write only the tests the spec requires, then stop.** This is deliberate:
-it speeds up development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the
-full suite), reduces resource usage (~2GB+ RAM for the full suite), and reduces cognitive overwhelm
-— a suite mapping 1:1 to requirement IDs is self-explaining. When tempted to add a test "for
-safety", ask which requirement it verifies; no requirement means don't write it.
-
-**Full suite + PHPStan are on-demand only.** Do NOT run `php artisan test --compact` (full suite) or
-`vendor/bin/phpstan analyse` as part of routine work — they are slow (~2GB+ RAM, 10+ minutes) and are
-only run when the user explicitly asks for them. Default verification is the targeted per-change
-checks in the table below (module suite, `--filter`, pint, prettier, arch-guard scanners). The full
-suite / PHPStan stay reserved for merge-day or user-requested full verification.
-
-| Change Type | Verification |
-|-------------|-------------|
-| Translation keys (`lang/*.php`) | `vendor/bin/pint --dirty --test --format agent` + `php artisan tinker --execute="echo __('key');"` |
-| Blade templates | `vendor/bin/pint --dirty --test --format agent` (Blade via `Pint/laravel_blade` rule) + `npm run build` |
-| Config/docs/markdown | Visual inspection (`*.md` is prettier-ignored — specs/docs use deliberate compact tables; see issue #384) |
-| CSS/JS/JSON/non-PHP | `npx prettier --check` + `npm run build` |
-| Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
-| New feature / business logic | Full suite ONCE after all changes batched |
-| Dependency updates | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) |
-| Test pruning / spec-gap filling | Manual per-module audit — map tests ↔ spec requirements, batch edits, then run targeted module tests once |
-
-```bash
-# Version-control verification (before/after every change — Edit Policy)
-git status
-git diff                  # review every change before/after editing
-git diff --stat           # confirm only intended files were touched
-
-# Targeted tests
-vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
-php artisan test --compact --filter={ClassName}
-vendor/bin/pint --dirty --test --format agent   # PHP + Blade syntax & style (Pint/laravel_blade rule)
-npx prettier --check <file>                     # Non-PHP only (CSS/JS/JSON — *.php, *.blade.php, *.md ignored)
-php artisan system:health
-
-# Full verification (after refactoring or before merge) — ONLY when the user explicitly asks
-php artisan test --compact   # Run full test suite (all modules)
-vendor/bin/pint --dirty --format agent
-vendor/bin/phpstan analyse --no-progress
-
-# Architecture enforcement
-python3 scripts/scan_violations.py         # C1-C8, D1-D6
-python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
-python3 scripts/scan_security.py           # XSS, SQLi, CSRF, auth
-python3 scripts/scan_naming.py             # Naming conventions
-python3 scripts/scan_conventions.py        # strict_types, Fillable, debug
-python3 scripts/scan_doc_links.py          # Broken links in docs + .agents/context/ + outdated/missing metadata detection
-```
-
----
-
-## Pre-commit Checklist
-
-- [ ] `declare(strict_types=1)` present
-- [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`)
-- [ ] All user-facing strings use `__()`
-- [ ] Action uses correct triad base class
-- [ ] Command/Process: DTO for 3+ params, returns ActionResponse
-- [ ] Business rules delegated to Entity (not inline in Action)
-- [ ] Cache keys registered in `config/cache-keys.php`
-- [ ] No N+1 queries — eager loading verified
-- [ ] No unescaped `{!! !!}` for user content
-- [ ] `php artisan test --compact` passes (only when the user requests full verification)
-- [ ] Every test traces to a spec requirement — no orphan tests, no padding (spec-driven testing)
-- [ ] `vendor/bin/pint --dirty --format agent` clean
-- [ ] `vendor/bin/phpstan analyse --no-progress` passes (only when the user requests full verification)
-- [ ] Arch-guard scripts clean — `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
-- [ ] `git status` + `git diff` reviewed — only intended files changed, nothing dropped
-- [ ] Relevant docs updated (documentation-first approach)
 
 ---
 
