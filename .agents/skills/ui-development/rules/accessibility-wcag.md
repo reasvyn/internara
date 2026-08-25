@@ -1,6 +1,6 @@
 # Accessibility — WCAG 2.1 AA for Every Styled Component
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — DaisyUI/maryUI → TallstackUI v4 + self-hosted palette (FB792 0.15.0), x-ts-* examples
 
 Accessibility is non-negotiable: every styled component must meet WCAG 2.1 Level AA. This covers
 color & contrast, focus indicators, keyboard navigation, responsive reflow, and icon labeling.
@@ -11,7 +11,8 @@ spec.
 
 ## Intent
 
-Every UI component ships WCAG 2.1 AA compliant: DaisyUI theme colors that are prevalidated for
+Every UI component ships WCAG 2.1 AA compliant: semantic palette colors (self-hosted `@theme`
+tokens) that are prevalidated for
 contrast, visible focus indicators on every interactive element, full keyboard navigation, no
 horizontal scrolling at 320px, and `aria-label` on every icon-only control.
 
@@ -33,33 +34,33 @@ horizontal scrolling at 320px, and `aria-label` on every icon-only control.
 
 ### Color & Contrast
 
-- Use DaisyUI theme colors — prevalidated for contrast ratios.
+- Use self-hosted semantic palette colors (`--color-primary`, `--color-error` etc. via `@theme`) — prevalidated for contrast ratios.
 - Minimum contrast: **4.5:1** for normal text, **3:1** for large text (≥18pt or ≥14pt bold).
 - Never use arbitrary Tailwind color utilities (`text-red-500`, `bg-blue-200`) that may fail
-  contrast checks — prefer DaisyUI semantic colors (`text-error`, `bg-info/10`).
-- Status indicators must include text labels alongside color (e.g. `badge-success` + "Active", not
+  contrast checks — prefer semantic palette tokens (`text-error`, `bg-info/10`).
+- Status indicators must include text labels alongside color (e.g. success-colored badge + "Active", not
   just a green badge) — color is never the sole indicator (WCAG 1.4.1).
 
 ```blade
-<span class="badge badge-success">Active</span>  {{-- icon + text --}}
+<x-ts-badge :value="__('common.active')" color="success" />  {{-- icon + text --}}
 ```
 
 ### Focus Indicators
 
 - Never suppress focus rings with `outline-none` without a visible replacement.
-- DaisyUI `focus:ring` is the default — preserve it on all interactive elements.
+- TallstackUI `focus:ring` is the default — preserve it on all interactive elements.
 - Custom interactive elements (Alpine.js dropdowns, custom buttons) must include
   `focus:ring focus:ring-primary`.
 
 ```blade
-<button class="btn btn-ghost focus:ring focus:ring-primary">…</button>
+<x-ts-button color="secondary" class="focus:ring focus:ring-primary">…</x-ts-button>
 ```
 
 ### Keyboard Navigation
 
 - All interactive elements reachable via Tab.
 - Dropdowns open on Enter/Space, close on Escape.
-- Modals trap focus (DaisyUI default — verify it's not overridden).
+- Modals trap focus (TallstackUI `x-ts-modal` default — verify it's not overridden).
 - No positive `tabindex` values — follow natural DOM order.
 
 ### Responsive & Reflow
@@ -73,7 +74,7 @@ horizontal scrolling at 320px, and `aria-label` on every icon-only control.
 - Icon-only buttons must include `aria-label`:
 
 ```blade
-<x-mary-button icon="o-trash" aria-label="{{ __('common.delete') }}" />
+<x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />
 ```
 
 - Icons paired with text should NOT duplicate the text in `alt` attributes.
@@ -81,7 +82,7 @@ horizontal scrolling at 320px, and `aria-label` on every icon-only control.
 ## Anti-Patterns & Pitfalls
 
 - `class="text-red-500"` for an error state — fails contrast + non-theme color; use
-  `text-error` + a label.
+  `text-error` (semantic palette) + a label.
 - `outline-none` on an input/button with no `focus:ring` replacement.
 - Relying on color alone for success/error/status — a coded hint or text label is required.
 - A custom dropdown wired only to `mouseenter` — keyboard-unreachable.

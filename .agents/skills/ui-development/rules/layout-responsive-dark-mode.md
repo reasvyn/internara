@@ -1,19 +1,22 @@
 # Layout, Responsiveness & Dark Mode — Structure and Theming
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — DaisyUI drawer/data-theme → TallstackUI v4 + `.dark` class + self-hosted palette (FB792 0.15.0)
 
-Layout, responsiveness, and theming are the visible skeleton of every blade view: DaisyUI's drawer
-and navbar for structure, mobile-first breakpoints for responsiveness, and `data-theme` + CSS
-variables for brand/dark theming. Each piece falls apart in a characteristic way when skipped.
+Layout, responsiveness, and theming are the visible skeleton of every blade view: the shared
+`core::layouts.*` shells (drawer sidebar + navbar header) for structure, mobile-first breakpoints for
+responsiveness, and the `data-theme` attribute + `.dark` class + CSS variables (`@theme` palette) for
+brand/dark theming. Each piece falls apart in a characteristic way when skipped.
 
 ---
 
 ## Intent
 
-Use DaisyUI's `drawer` for sidebar navigation and `navbar` for top navigation. Responsive design is
+Use TallstackUI components inside the shared `core::layouts.sidebar` / `core::layouts.header` shells
+for navigation chrome — never hand-rolled per-page chrome. Responsive design is
 mandatory — mobile-first with `sm:`/`md:`/`lg:` breakpoints, tested at mobile, tablet, desktop. Dark
-mode must work without visual breakage; brand colors come from CSS variables defined in the Settings
-module, with a theme toggle implemented via Alpine.js + Livewire.
+mode must work without visual breakage; brand colors come from the self-hosted semantic palette
+(`@theme` variables in `resources/css/app.css`, overridable by the Settings module), with the theme
+toggle via TallstackUI `<x-theme-switch>` (mirrors `data-theme` cookie + `.dark` class).
 
 ## Rationale — What Fails Without It
 
@@ -33,8 +36,8 @@ module, with a theme toggle implemented via Alpine.js + Livewire.
 
 ### Layout
 
-- Sidebar navigation → DaisyUI `drawer`.
-- Top navigation → DaisyUI `navbar`.
+- Sidebar navigation → shared `core::layouts.sidebar` shell (drawer pattern, `lg:drawer-open`).
+- Top navigation → `core::layouts.header` (sticky navbar with `core::ui.navbar-actions`).
 - Content width → `max-w-7xl mx-auto` container pattern.
 
 ```blade
@@ -45,7 +48,7 @@ module, with a theme toggle implemented via Alpine.js + Livewire.
         <main class="max-w-7xl mx-auto p-4">…</main>
     </div>
     <div class="drawer-side">
-        <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        <label for="app-drawer" aria-label="{{ __('common.close_sidebar') }}" class="drawer-overlay"></label>
         <aside>…sidebar…</aside>
     </div>
 </div>
@@ -59,16 +62,17 @@ module, with a theme toggle implemented via Alpine.js + Livewire.
 
 ### Dark mode
 
-- DaisyUI supports dark mode via the `data-theme="dark"` attribute.
-- Implement the theme toggle via Alpine.js + Livewire (state + persistence).
-- Brand colors are CSS variables defined in the Settings module — consume them, never re-hardcode:
+- Dark mode works via the `.dark` class (Tailwind/TallstackUI `dark:` variant) plus the
+  `data-theme` attribute (semantic palette variables); `applyTheme()` in `resources/js/app.js`
+  keeps both in sync with the persisted preference.
+- Implement the theme toggle via TallstackUI `<x-theme-switch>` (wrapped by `core::ui.theme-switch`) —
+  do not hand-roll a new toggle or use `data-theme` selectors in new code.
+- Brand colors are CSS variables (`@theme` palette, Settings-overridable) — consume them, never re-hardcode:
 
 ```blade
-<div :data-theme="theme" class="min-h-screen">
-    <button @click="theme = theme === 'dark' ? '' : 'dark'">
-        {{ theme === 'dark' ? __('ui.dark') : __('ui.light') }}
-    </button>
-</div>
+<html data-theme="{{ $theme }}" class="{{ $isDark ? 'dark' : '' }}">
+    {{-- body uses dark: variants + semantic tokens --}}
+</html>
 ```
 
 ### Tailwind v4 specifics
@@ -81,9 +85,9 @@ module, with a theme toggle implemented via Alpine.js + Livewire.
 ```css
 /* resources/css/app.css */
 @import "tailwindcss";
-@import "daisyui";
 @theme {
-    --color-brand: var(--brand-color);
+    --color-primary: var(--brand-primary, #4f46e5);
+    --color-base-100: var(--brand-base-100, #ffffff);
 }
 ```
 
@@ -93,7 +97,7 @@ module, with a theme toggle implemented via Alpine.js + Livewire.
 - Desktop-only layout (`hidden md:block` for everything meaningful) — mobile users get an empty page.
 - Writing brand color hex in Blade/CSS instead of the Settings module's variables.
 - A "dark toggle" that changes the attribute but reloads the page losing state — persistence via
-  Livewire/Alpine storage is part of the feature.
+  `applyTheme()` (localStorage) is part of the feature.
 - Mixing `@layer` (Tailwind v3 syntax) into `app.css` — v4 uses `@import`/`@theme`.
 
 ## Verification

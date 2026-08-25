@@ -1,6 +1,6 @@
 # Validation, Authorization & Exceptions — Entry-Point Enforcement
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — flash() → TallstackUI $this->toast()->send() (FB792 0.15.0)
 
 Every interactive entry point (Livewire component, Action, route) must validate input, authorize the
 caller, and fail with the correct exception. These rules define where validation lives, how
@@ -29,7 +29,7 @@ rejections throw `RejectedException` (C8) and specific exceptions exist for spec
   for `superadmin` makes bypass automatic and consistent.
 - **Business rejections as `RuntimeException`** surface as generic 500 errors, hiding the reason from
   the user (C8). `RejectedException` is the expected-outcome signal the UI catches and renders as a
-  flash message. Using one catch-all `RuntimeException` for everything also removes the ability to
+  toast message. Using one catch-all `RuntimeException` for everything also removes the ability to
   handle specific scenarios (quota exceeded, already exists, not found) differently.
 
 ## How to Apply
@@ -82,9 +82,9 @@ if (! $entity->canBePlaced()) {
 try {
     $action->execute($data);
 } catch (RejectedException $e) {
-    flash()->error($e->getMessage());
+    $this->toast()->error()->send($e->getMessage());
 } catch (\Throwable $e) {
-    flash()->error(__('common.error'));
+    $this->toast()->error()->send(__('common.error'));
 }
 ```
 
@@ -95,7 +95,7 @@ try {
 - Authorizing with role checks scattered in the component instead of `$this->authorize()`.
 - A `Gate::before` that returns `false` for non-admins — that disables every other policy; it must
   return `true` for super-admin and `null` otherwise.
-- `throw new RuntimeException('not allowed')` in a business path — 500 instead of a flash (C8).
+- `throw new RuntimeException('not allowed')` in a business path — 500 instead of a toast (C8).
 - Catching `RejectedException` inside the Action "to normalize" it — the Action must let it
   propagate (see `context-awareness/rules/architecture-rules.md` §Business Layer).
 

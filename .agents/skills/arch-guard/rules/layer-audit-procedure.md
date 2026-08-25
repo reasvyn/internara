@@ -1,6 +1,6 @@
 # Layer Audit Procedure — Four-Layer Checks & Severity
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — toast rule maryUI/flasher → TallstackUI x-ts-toast (FB792 0.15.0)
 
 Beyond the invariant/enum/security tables, the arch-guard audit walks the codebase **layer by layer**,
 bottom-up (Layer 4 presentation → Layer 1 infrastructure). Each layer has its own check items that
@@ -40,19 +40,18 @@ Surface: `app/*/Livewire/`, `resources/views/`, `app/*/Policies/`, `routes/`.
 - **No `app()->make()`, `resolve()`, or `new Action()` — method injection only (C2)** — container
   resolution hides dependencies and breaks testability.
 - **`RejectedException` caught from Action calls (before generic `Throwable`)** — a rejection is an
-  expected outcome, not an error; catch it first or the UI 500s instead of flashing the message.
+  expected outcome, not an error; catch it first or the UI 500s instead of showing a toast.
 - **No unescaped `{!! !!}` for user content without inline justification (S1)** — escaped output or a
   documented trusted invariant, never silent raw output.
 - **Policy methods return boolean — no inline authorization in Livewire** — authz belongs in Policies
   (S6); inline `if (auth()->user()->id === ...)` duplicates domain decisions in the UI.
 - **Routes in correct `routes/web/{module}.php` (or `{submodule}.php`)** — misrouted entries confuse
   module colocation and handoff auditing.
-- **No maryUI Toast methods (`$this->success()`, `$this->error()`)** — use the flasher package; Toasts
-  bypass the standard notification path and are an unsupported divergence.
+- **Toast via TallstackUI Interactions only (`$this->toast()->success()->send()`, `$this->toast()->error()->send()`)** — legacy `flash()->` / PHPFlasher and maryUI `$this->success()` / `$this->error()` are removed (FB792 FR-TS5); `x-ts-toast` in `core::layouts.base` is the sole container.
 - **No N+1 queries in Blade loops (P1)** — eager load relationships read inside `@foreach`.
 
 **Failure mode if skipped:** a component that mutates directly (C1), draws its own authorization, and
-shows toasts outside the standard flash path — three independent drift sources in one screen.
+shows toasts outside the standard Interactions path — three independent drift sources in one screen.
 
 ---
 

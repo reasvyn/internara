@@ -1,6 +1,6 @@
 # Sub-Skill Delegation — Orchestrator Coordination
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — maryUI/DaisyUI → TallstackUI v4 (FB792 0.15.0)
 
 feature-building is an **orchestrator**, not a do-everything skill. It owns the build order, the
 spec anchors, and the quality gates; the specialized work is delegated to sub-skills that each own
@@ -16,7 +16,7 @@ the Skill Map — never implement that concern from general knowledge. The rule 
 group, not once per feature.
 
 **Why it matters:** Each sub-skill encodes project-specific contracts the orchestrator cannot hold in
-full (maryUI table wiring, Spatie MediaLibrary collections, Pulse recorder setup). Writing a concern
+full (TallstackUI table wiring, Spatie MediaLibrary collections, Pulse recorder setup). Writing a concern
 without its skill produces code that looks right but violates the module's conventions, which the
 arch-guard scanners and code review then reject — a full rework cycle that delegation avoids.
 
@@ -38,7 +38,7 @@ stored media loads `medialibrary-development` (collection + conversions), and th
 **Pitfalls to avoid:**
 
 - Writing the Blade/UI of a feature without `tailwindcss-development` because "it's just markup" —
-  maryUI/DaisyUI conventions are project-specific.
+  TallstackUI/palette conventions are project-specific.
 - Handling media uploads inline in the Action without `medialibrary-development` — collection
   registration and conversion configs will be wrong.
 - Loading every sub-skill unconditionally "for safety" — load only the skills the feature actually

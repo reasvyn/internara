@@ -1,7 +1,7 @@
 # User CRUD & Account Status — Multi-Role Management & State Machine
 
 > **Spec ID:** 95EVB
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-25 **Changes:** sync — NFR-U1 flash()->success/error → TallstackUI toast()->success/error (FB792 0.15.0)
 > CRUD operations, AccountStatus state machine with 8 states, profile editing, role-specific
 > Livewire managers, super admin protection, batch operations, password reset, account lifecycle
 > auto-inactivation, and recovery key management
@@ -292,7 +292,7 @@ preserving the ability to recover access via recovery keys.
 | NFR-S6 | `SetUserStatusAction` must support `skipAuthCheck` parameter for system-initiated transitions (e.g., auto-inactivate) |
 | NFR-R1 | `BatchDeleteUserAction` must return `['deleted' => int, 'skipped' => int]` — partial success is acceptable |
 | NFR-R2 | `CreateUserAction` notification failures must be caught and logged, not propagated to caller |
-| NFR-U1 | Flash messages must confirm success/failure for every CRUD operation via `flash()->success()` / `flash()->error()` |
+| NFR-U1 | Toast feedback must confirm success/failure for every CRUD operation via TallstackUI `$this->toast()->success()->send()` / `$this->toast()->error()->send()` (replaces removed `flash()->` / PHPFlasher) |
 | NFR-U2 | `UserManager` status badges must include translated text labels alongside color indicators via `LabelEnum::label()` |
 | NFR-U3 | Confirmation modals for delete/lock/unlock must be presented before destructive actions |
 | NFR-M1 | User CRUD must use Action classes, not inline Livewire logic — `UserManager` delegates to `CreateUserAction`, `UpdateUserAction`, `DeleteUserAction` |
