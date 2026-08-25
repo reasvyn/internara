@@ -41,12 +41,14 @@
                         @if ($journal->is_verified)
                             <x-ts-badge
                                 :text="__('logbook.verified')"
-                                class="badge-success text-[10px] font-black uppercase"
+                                color="green"
+                                xs
                             />
                         @else
                             <x-ts-badge
                                 :text="__('logbook.submitted')"
-                                class="badge-neutral text-[10px] font-black uppercase"
+                                color="white"
+                                xs
                             />
                         @endif
                     @endinteract

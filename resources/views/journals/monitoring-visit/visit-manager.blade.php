@@ -16,14 +16,14 @@
             @endinteract
 
             @interact('column_method', $v)
-                <x-ts-badge :text="$v->method->label()" class="badge-ghost badge-sm" />
+                <x-ts-badge :text="$v->method->label()" color="white" xs />
             @endinteract
 
             @interact('column_is_verified', $v)
                 @if ($v->is_verified)
-                    <x-ts-badge :text="__('journals.verified')" class="badge-success badge-sm" />
+                    <x-ts-badge :text="__('journals.verified')" color="green" xs />
                 @else
-                    <x-ts-badge :text="__('journals.pending')" class="badge-warning badge-sm" />
+                    <x-ts-badge :text="__('journals.pending')" color="yellow" xs />
                 @endif
             @endinteract
 
@@ -31,13 +31,12 @@
                 <div class="flex justify-end gap-1">
                     @can('verify', App\Journals\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
-                            <x-ts-button
+                            <x-ts-button.circle
                                 icon="check"
-                                class="text-success"
-                                color="white"
+                                color="green"
                                 sm
-                                wire:click="askVerify('{{ $v->id }}')"
-                                :aria-label="__('journals.verify')"
+                                wire:click="verify('{{ $v->id }}')"
+                                aria-label="{{ __('journals.verify') }}"
                             />
                         @endif
                     @endcan

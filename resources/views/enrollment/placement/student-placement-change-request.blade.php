@@ -21,7 +21,7 @@
                     <p><strong>{{ __('placement_change.reason') }}:</strong> {{ $pendingRequest->reason }}</p>
                     <p class="mt-1">
                         <strong>{{ __('placement_change.status') }}:</strong>
-                        <x-ts-badge :text="__('placement_change.status_pending')" class="badge-warning" />
+                        <x-ts-badge :text="__('placement_change.status_pending')" color="yellow" xs />
                     </p>
                 </div>
             </div>

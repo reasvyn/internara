@@ -42,10 +42,22 @@
                                 <td>
                                     @if ($total > 0)
                                         <div class="flex gap-2 text-xs">
-                                            <span class="badge badge-success badge-sm">{{ $verified }} {{ __('registration.verification.verified') }}</span>
-                                            <span class="badge badge-warning badge-sm">{{ $pending }} {{ __('registration.verification.pending') }}</span>
+                                            <x-ts-badge
+                                                :text="$verified.' '.__('registration.verification.verified')"
+                                                color="green"
+                                                xs
+                                            />
+                                            <x-ts-badge
+                                                :text="$pending.' '.__('registration.verification.pending')"
+                                                color="yellow"
+                                                xs
+                                            />
                                             @if ($rejected > 0)
-                                                <span class="badge badge-error badge-sm">{{ $rejected }} {{ __('registration.verification.rejected') }}</span>
+                                                <x-ts-badge
+                                                    :text="$rejected.' '.__('registration.verification.rejected')"
+                                                    color="red"
+                                                    xs
+                                                />
                                             @endif
                                         </div>
                                     @else
