@@ -143,106 +143,74 @@
     </div>
 
     {{-- Create Modal --}}
-    @if ($createModal)
-        <div wire:ignore.self class="modal modal-open" role="dialog">
-            <div class="modal-box">
-                <h3 class="mb-4 text-lg font-bold">{{ __('report.create_grade_card') }}</h3>
-                <p class="text-base-content/70 mb-6">{{ __('report.select_student') }}</p>
+    <x-ts-modal wire="createModal" :title="__('report.create_grade_card')" blur>
+        <p class="text-base-content/70 mb-6 text-sm">{{ __('report.select_student') }}</p>
 
-                @if ($registrations->isEmpty())
-                    <x-ts-alert color="info" :text="__('report.no_available_students')" icon="information-circle" />
-                @else
-                    <div class="form-control w-full max-w-md">
-                        <label class="label">
-                            <span class="label-text">{{ __('report.select_student_placeholder') }}</span>
-                        </label>
-                        <x-ts-select.native wire:model="selectedRegistrationId" class="w-full">
-                            <option value="">{{ __('report.select_student_placeholder') }}</option>
-                            @foreach ($registrations as $registration)
-                                <option value="{{ $registration->id }}">
-                                    {{ $registration->student->name }} ({{ $registration->student->email }}) - {{ $registration->internship->name ?? '—' }}
-                                </option>
-                            @endforeach
-                        </x-ts-select.native>
-                        @error('selectedRegistrationId')
-                            <p class="text-error mt-1 text-sm">{{ $message }}</p>
-                        @enderror
-                    </div>
-                @endif
-
-                <div class="modal-action mt-6">
-                    <button wire:click="$set('createModal', false)" class="btn btn-ghost">
-                        {{ __('common.cancel') }}
-                    </button>
-                    @if (! $registrations->isEmpty())
-                        <button wire:click="createReport" class="btn btn-primary">
-                            {{ __('report.create_grade_card') }}
-                        </button>
-                    @endif
-                </div>
+        @if ($registrations->isEmpty())
+            <x-ts-alert color="info" :text="__('report.no_available_students')" icon="information-circle" />
+        @else
+            <div class="space-y-4">
+                <x-ts-select.native
+                    :label="__('report.select_student_placeholder')"
+                    wire:model="selectedRegistrationId"
+                    class="w-full"
+                >
+                    <option value="">{{ __('report.select_student_placeholder') }}</option>
+                    @foreach ($registrations as $registration)
+                        <option value="{{ $registration->id }}">
+                            {{ $registration->student->name }} ({{ $registration->student->email }}) - {{ $registration->internship->name ?? '—' }}
+                        </option>
+                    @endforeach
+                </x-ts-select.native>
+                @error('selectedRegistrationId')
+                    <p class="text-error mt-1 text-sm">{{ $message }}</p>
+                @enderror
             </div>
-        </div>
-    @endif
+        @endif
+
+        <x-slot:footer>
+            <div class="flex justify-end gap-2">
+                <x-ts-button :text="__('common.cancel')" wire:click="$set('createModal', false)" color="white" sm />
+                @if (! $registrations->isEmpty())
+                    <x-ts-button :text="__('report.create_grade_card')" wire:click="createReport" color="primary" sm />
+                @endif
+            </div>
+        </x-slot:footer>
+    </x-ts-modal>
 
     {{-- Calculate Modal --}}
-    @if ($calculateModal)
-        <div wire:ignore.self class="modal modal-open" role="dialog">
-            <div class="modal-box">
-                <h3 class="mb-4 text-lg font-bold">{{ __('report.calculate_grades') }}</h3>
-                <p class="text-base-content/70 mb-6">{{ __('report.calculate_grades_confirm') }}</p>
+    <x-ts-modal wire="calculateModal" :title="__('report.calculate_grades')" blur>
+        <p class="text-base-content/70 mb-4 text-sm">{{ __('report.calculate_grades_confirm') }}</p>
 
-                <div class="modal-action">
-                    <button wire:click="$set('calculateModal', false)" class="btn btn-ghost">
-                        {{ __('common.cancel') }}
-                    </button>
-                    <button wire:click="calculateGrades" class="btn btn-primary">
-                        {{ __('report.calculate_grades') }}
-                    </button>
-                </div>
+        <x-slot:footer>
+            <div class="flex justify-end gap-2">
+                <x-ts-button :text="__('common.cancel')" wire:click="$set('calculateModal', false)" color="white" sm />
+                <x-ts-button :text="__('report.calculate_grades')" wire:click="calculateGrades" color="primary" sm />
             </div>
-        </div>
-    @endif
+        </x-slot:footer>
+    </x-ts-modal>
 
     {{-- Finalize Modal --}}
-    @if ($finalizeModal)
-        <div wire:ignore.self class="modal modal-open" role="dialog">
-            <div class="modal-box">
-                <h3 class="mb-4 text-lg font-bold">{{ __('report.finalize_grade_card') }}</h3>
-                <p class="text-base-content/70 mb-6">{{ __('report.finalize_confirm') }}</p>
+    <x-ts-modal wire="finalizeModal" :title="__('report.finalize_grade_card')" blur>
+        <x-ts-alert color="warning" :text="__('report.finalize_confirm')" icon="exclamation-triangle" class="mb-4" />
 
-                <x-ts-alert
-                    color="warning"
-                    :text="__('report.finalize_confirm')"
-                    icon="exclamation-triangle"
-                    class="mb-4"
-                />
-
-                <div class="modal-action">
-                    <button wire:click="$set('finalizeModal', false)" class="btn btn-ghost">
-                        {{ __('common.cancel') }}
-                    </button>
-                    <button wire:click="finalizeReport" class="btn btn-success">
-                        {{ __('report.finalize_grade_card') }}
-                    </button>
-                </div>
+        <x-slot:footer>
+            <div class="flex justify-end gap-2">
+                <x-ts-button :text="__('common.cancel')" wire:click="$set('finalizeModal', false)" color="white" sm />
+                <x-ts-button :text="__('report.finalize_grade_card')" wire:click="finalizeReport" color="green" sm />
             </div>
-        </div>
-    @endif
+        </x-slot:footer>
+    </x-ts-modal>
 
     {{-- Delete Confirm Modal --}}
-    @if ($showConfirm && $confirmAction === 'delete')
-        <div wire:ignore.self class="modal modal-open" role="dialog">
-            <div class="modal-box">
-                <h3 class="mb-4 text-lg font-bold">{{ __('common.delete') }}</h3>
-                <p class="text-base-content/70 mb-6">{{ __('common.delete_confirm') }}</p>
+    <x-ts-modal wire="showConfirm" :title="__('common.delete')" blur>
+        <p class="text-base-content/70 mb-4 text-sm">{{ __('common.delete_confirm') }}</p>
 
-                <div class="modal-action">
-                    <button wire:click="$set('showConfirm', false)" class="btn btn-ghost">
-                        {{ __('common.cancel') }}
-                    </button>
-                    <button wire:click="confirmDelete" class="btn btn-error">{{ __('common.delete') }}</button>
-                </div>
+        <x-slot:footer>
+            <div class="flex justify-end gap-2">
+                <x-ts-button :text="__('common.cancel')" wire:click="$set('showConfirm', false)" color="white" sm />
+                <x-ts-button :text="__('common.delete')" wire:click="confirmDelete" color="red" sm />
             </div>
-        </div>
-    @endif
+        </x-slot:footer>
+    </x-ts-modal>
 </div>

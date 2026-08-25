@@ -53,40 +53,45 @@
                             <td>
                                 @if (isset($existing[$registration->id]))
                                     @php($attendance = $existing[$registration->id])
-                                    @if (! $attendance->is_verified)
-                                        <x-ts-button
-                                            aria-label="{{ __('journals.verify') }}"
-                                            wire:click="verifyAttendance('{{ $attendance->id }}')"
-                                            icon="check"
-                                            class="btn-xs btn-success"
-                                        />
-                                    @else
-                                        <x-ts-icon name="check-badge" class="text-success" />
-                                    @endif
-                                    @can('update', $attendance)
-                                        <x-ts-select.native
-                                            class="ml-1 w-28 align-middle"
-                                            wire:change="updateAttendance('{{ $attendance->id }}', $event.target.value)"
-                                        >
-                                            @foreach ($statuses as $s)
-                                                <option
-                                                    value="{{ $s->value }}"
-                                                    @selected($attendance->status?->value === $s->value)
-                                                >
-                                                    {{ $s->label() }}
-                                                </option>
-                                            @endforeach
-                                        </x-ts-select.native>
-                                    @endcan
-                                    @can('delete', $attendance)
-                                        <x-ts-button
-                                            aria-label="{{ __('common.actions.delete') }}"
-                                            wire:click="deleteAttendance('{{ $attendance->id }}')"
-                                            wire:confirm="{{ __('journals.attendance.confirm_delete') }}"
-                                            icon="trash"
-                                            class="btn-xs text-error"
-                                        />
-                                    @endcan
+                                    <div class="flex items-center gap-1">
+                                        @if (! $attendance->is_verified)
+                                            <x-ts-button.circle
+                                                aria-label="{{ __('journals.verify') }}"
+                                                wire:click="verifyAttendance('{{ $attendance->id }}')"
+                                                icon="check"
+                                                color="green"
+                                                sm
+                                            />
+                                        @else
+                                            <x-ts-icon name="check-badge" class="text-success size-5" />
+                                        @endif
+                                        @can('update', $attendance)
+                                            <x-ts-select.native
+                                                class="w-28 text-xs"
+                                                wire:change="updateAttendance('{{ $attendance->id }}', $event.target.value)"
+                                                sm
+                                            >
+                                                @foreach ($statuses as $s)
+                                                    <option
+                                                        value="{{ $s->value }}"
+                                                        @selected($attendance->status?->value === $s->value)
+                                                    >
+                                                        {{ $s->label() }}
+                                                    </option>
+                                                @endforeach
+                                            </x-ts-select.native>
+                                        @endcan
+                                        @can('delete', $attendance)
+                                            <x-ts-button.circle
+                                                aria-label="{{ __('common.actions.delete') }}"
+                                                wire:click="deleteAttendance('{{ $attendance->id }}')"
+                                                wire:confirm="{{ __('journals.attendance.confirm_delete') }}"
+                                                icon="trash"
+                                                color="red"
+                                                sm
+                                            />
+                                        @endcan
+                                    </div>
                                 @endif
                             </td>
                         </tr>
