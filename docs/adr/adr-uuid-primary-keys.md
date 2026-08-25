@@ -1,71 +1,66 @@
-# ADR-001: UUID Primary Keys
+# UUID Primary Keys
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current UUID v7 PKs (no enumeration attacks, distributed ID, consistent key types)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Architecture Overview](../architecture.md) § Persistence Layer and [Conventions — Models](../conventions.md) |
 
-All models use UUID v7 primary keys instead of auto-incrementing integers to prevent enumeration
-attacks, enable distributed ID generation, and maintain consistent key types across all tables.
+## Context and Problem Statement
 
-## Context
+Every table requires a primary key. Laravel defaults to auto-incrementing unsigned big integers,
+which create four problems at the scale and sensitivity of this system: enumeration attacks
+(`/users/1`, `/users/2` leak scale and enable scraping — student confidentiality is paramount),
+distributed collision risk (offline/multi-region deployments need no central sequence), foreign-key
+inconsistency across 50+ inter-referencing tables, and inevitable ID collisions when merging
+staging and production data.
 
-Every database table requires a primary key. Laravel defaults to auto-incrementing unsigned big
-integers, which introduce several problems for this application:
+**Decision Drivers:**
 
-- **Enumeration attacks**: Sequential IDs (`/users/1`, `/users/2`) leak system scale and enable
-  automated scraping. Student record confidentiality is paramount in an educational system.
-- **Distributed collision risk**: Schools may need offline-capable deployments or multi-region
-  setups. Auto-increment IDs require a central sequence generator, creating a single point of
-  failure.
-- **Foreign key inconsistency**: With 50+ tables referencing each other, mixed key types across
-  modules would create join-type mismatches and coordination overhead.
-- **Merge conflicts**: Staging and production data merges would cause inevitable ID collisions with
-  integers.
+* Prevent enumeration of student and school records
+* Support offline/multi-region generation without a central sequence
+* Consistent key type across all tables to avoid join mismatches
+* Preserve B-tree insertion efficiency under UUIDs
 
-Three alternatives were evaluated:
+## Considered Options
 
-1. **Auto-increment bigint** — Simple and fast, but vulnerable to enumeration and unscalable across
-   distributed environments.
-2. **ULID** — Sortable and URL-safe, but requires custom implementation with weaker ecosystem
-   support.
-3. **UUID v7 (time-ordered)** — Time-sortable UUIDs that maintain B-tree insertion efficiency.
-   Natively supported by Laravel's `HasUuids` trait since Laravel 10.
+* **Auto-increment bigint** — simple and fast. *Pros:* smallest index. *Cons:* enumeration-vulnerable,
+  requires central sequence, merge collisions.*
+* **ULID** — sortable, URL-safe. *Pros:* time-ordered, compact. *Cons:* custom implementation,
+  weaker ecosystem support.*
+* **UUID v7 (time-ordered, chosen)** — time-sortable UUIDs with B-tree locality. *Pros:*
+  enumeration-safe, distributed, natively supported by Laravel's `HasUuids` since Laravel 10;
+  ordered generation preserves insertion efficiency. *Cons:* larger than integers (see consequences).*
 
-## Decision
+## Decision Outcome
 
-All models use **UUID v7** as primary keys. `BaseModel` applies `HasUuids` (which generates ordered
-UUID v7 for sequential B-tree insertion), sets `$incrementing = false`, and configures
-`$keyType = 'string'`.
+**Chosen option: UUID v7** — all models use UUID v7 primary keys. `BaseModel` applies `HasUuids`
+(ordered UUID v7), sets `$incrementing = false` and `$keyType = 'string'`.
 
-The `User` model is the sole exception — it extends `Authenticatable` directly (required for
-Laravel's authentication system) but manually applies the `HasUuids` trait and overrides
-`getIncrementing()` and `getKeyType()` to maintain UUID consistency.
+The `User` model is the sole exception — it extends `Authenticatable` (required for auth) but
+manually applies `HasUuids` and overrides `getIncrementing()` / `getKeyType()` to preserve UUID
+consistency. Foreign keys use `foreignUuid()->constrained()` in every migration with composite
+indexes; mixed key types are forbidden and enforced via review and PHPStan.
 
-Foreign key columns use `foreignUuid()->constrained()` in every migration. Composite indexes are
-added on every foreign key column. No mixed key types are permitted — enforced through code review
-and PHPStan.
+### Positive Consequences
 
-## Consequences
+* Globally unique, enumeration-safe, merge-friendly IDs with consistent type across all tables
+* No central sequence — any replica generates independently
+* URLs reveal no scale (`/users/{uuid}`)
+* Ordered UUIDs preserve B-tree insertion locality
 
-- **Positive**: Globally unique IDs are enumeration-safe, merge-friendly, and consistent across all
-  tables.
-- **Positive**: No central sequence needed — any replica generates IDs independently. UUID v7
-  ordering preserves B-tree insertion locality.
-- **Positive**: URLs contain no sequential information — `/users/{uuid}` reveals nothing about user
-  count or growth rate.
-- **Positive**: Consistent key type eliminates join-type mismatches across the entire database
-  schema.
-- **Negative**: UUIDs are bulkier (36 characters as string) than integers (8 bytes), increasing
-  index size. At school-scale data volumes (thousands to low millions of records), this is
-  negligible.
-- **Negative**: Debugging is slightly less convenient — copying a UUID from logs is harder than a
-  small integer. Mitigated by SmartLogger shortcuts.
-- **Negative**: JOIN comparisons are marginally slower due to string comparison. Mitigated by
-  composite indexes and ordered UUIDs.
+### Negative Consequences
 
-## References
+* Larger index footprint (36-char string vs 8-byte integer) — negligible at school-scale
+  (thousands to low millions of rows)
+* Debugging slightly less convenient (copying UUIDs); mitigated by SmartLogger shortcuts
+* Marginally slower string-based JOIN comparisons; mitigated by composite indexes and ordering
 
-- `app/Core/Models/BaseModel.php` — Base class with HasUuids trait
-- `app/User/Models/User.php` — Exception pattern (Authenticatable + manual UUID)
-- `docs/architecture.md` — Persistence Layer section
-- `docs/conventions.md` — Models section
+## Links
+
+* [Architecture Overview](../architecture.md) — persistence and layer responsibilities
+* [Model Pattern](../guides/arch/model-pattern.md) — BaseModel and UUID contract
+* [Conventions — Database](../conventions.md) — migration and FK conventions
