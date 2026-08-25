@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** refactor — doc skeletons split into per-directory templates (specs/spec-template.md, modules/module-template.md, modules/module-reference-template.md, architecture/pattern-template.md, foundation/guide-template.md); index entry realigned
+> **Last updated:** 2026-08-25 **Changes:** module docs relocated to docs/refs/modules/ — catalog links and Modules section pointer updated
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -112,10 +112,10 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Modules
 
-Refer to the [Module Documentation Index](modules/index.md) for the complete listing of all 18 modules. Each module has two documents:
+Refer to the [Module Documentation Index](refs/modules/index.md) for the complete listing of all 18 modules. Each module has two documents:
 
-- **Overview** (`docs/modules/{module}.md`) — purpose, boundary, features, design principles
-- **Reference** (`docs/modules/{module}-reference.md`) — complete API reference (Models, Actions, Routes, Policies, Livewire, events)
+- **Overview** (`docs/refs/modules/{module}.md`) — purpose, boundary, features, design principles
+- **Reference** (`docs/refs/modules/{module}-reference.md`) — complete API reference (Models, Actions, Routes, Policies, Livewire, events)
 
 ---
 

@@ -529,7 +529,7 @@ the `ArchiveManager` UI — each layer tested against its FR IDs.
 - `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Delegated account archival (E1MSJ)
 - `app/User/Jobs/ArchiveStudentAccountsJob.php` — Queued account archival (E1MSJ)
 - `app/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php` — Purge delegate (7HNCF)
-- `docs/modules/sysadmin.md` — SysAdmin module overview
+- `docs/refs/modules/sysadmin.md` — SysAdmin module overview
 - **Related specs:** [system-maintenance.md](E1MSJ-system-maintenance.md) — account archival, cleanup, scheduler
 - **Related specs:** [gdpr-compliance.md](7HNCF-gdpr-compliance.md) — deletion pipeline, `GdprDeletionLog`
 - **Related specs:** [backup-system.md](HBXCI-backup-system.md) — backup before purge

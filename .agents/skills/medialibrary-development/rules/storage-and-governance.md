@@ -66,5 +66,5 @@ and security are all confirmed.
 - `python3 scripts/scan_conventions.py` + `python3 scripts/scan_security.py` clean for the feature's
   upload path.
 - Targeted MediaLibrary test suite (`vendor/bin/pest --testsuite=...`) passes for upload/retrieval.
-- `config/media-library.php` matches the deployment tier's stated disk/queue; `docs/modules/`
+- `config/media-library.php` matches the deployment tier's stated disk/queue; `docs/refs/modules/`
   reference for the feature documents the collections added.

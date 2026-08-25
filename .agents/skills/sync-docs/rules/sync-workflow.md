@@ -54,12 +54,12 @@ git log --since="14 days ago" --stat  # already minimum; for older drift use ful
 
 | If you changed...    | Update these docs                                                    |
 | -------------------- | -------------------------------------------------------------------- |
-| Module structure     | `docs/modules/{module}-reference.md` (file listing, actions, models) |
-| Business rules       | `docs/modules/{module}.md` (business context)                        |
+| Module structure     | `docs/refs/modules/{module}-reference.md` (file listing, actions, models) |
+| Business rules       | `docs/refs/modules/{module}.md` (business context)                        |
 | Feature requirements | `docs/specs/{ID}-{feature}.md` (FR, NFR, user stories, data contracts)       |
 | Architecture pattern | `docs/architecture.md` or `docs/architecture/{pattern}-pattern.md`   |
 | Conventions          | `docs/conventions.md`                                                |
-| Module dependencies  | `docs/modules/index.md`                                              |
+| Module dependencies  | `docs/refs/modules/index.md`                                              |
 | Database schema      | `docs/infrastructure/database.md`, `docs/specs/J68GZ-system-requirements.md` (§4.4, §7.3) |
 | ADR                  | `docs/adr/` (if decision is notable)                                 |
 | Feature specs        | `docs/specs/index.md`                                                |
@@ -80,8 +80,8 @@ git log --since="14 days ago" --stat
 #   app/Enrollment/Placement/Actions/WithdrawPlacementAction.php  (new)
 
 # Doc action required:
-#   docs/modules/enrollment-reference.md  → add the Action row + execute() signature
-#   docs/modules/enrollment.md            → add the business rule ("placement may be withdrawn
+#   docs/refs/modules/enrollment-reference.md  → add the Action row + execute() signature
+#   docs/refs/modules/enrollment.md            → add the business rule ("placement may be withdrawn
 #                                            only before the internship starts") if new
 #   docs/specs/{ID}-enrollment.md         → add/verify the FR that motivates the Action
 ```

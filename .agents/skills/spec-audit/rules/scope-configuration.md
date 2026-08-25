@@ -56,7 +56,7 @@ channel maps to specific audit areas:
 |---------|----------------|-------------|
 | **Implementation** | The spec's FR/NFR/contracts are actually delivered in code (`app/`, `routes/`, `database/`, `config/`) — no missing, stubbed, or drifted behavior | `paths`, `contracts`, `requirements`, `coverage` |
 | **Testing** | Every spec'd component has a test file and every FR/NFR is exercised by a spec-traceable test — no orphan tests, no spec gaps. The spec's test suite is **run**; any spec'd component or FR/NFR without a test is **written now** as part of the audit | `tests` (+ cross-check each test name against FR/NFR IDs, run the suite) |
-| **Documentation** | Docs reflect the spec and code: Quick Reference paths exist, cross-refs are valid, `docs/architecture/*` and `docs/modules/*` match the spec's contracts, and **agent guides & skills** stay consistent with the spec | `cross-refs`, `paths`, `guides`, §6 completeness + doc-to-code sync |
+| **Documentation** | Docs reflect the spec and code: Quick Reference paths exist, cross-refs are valid, `docs/architecture/*` and `docs/refs/modules/*` match the spec's contracts, and **agent guides & skills** stay consistent with the spec | `cross-refs`, `paths`, `guides`, §6 completeness + doc-to-code sync |
 
 **Why the three channels exist:** a spec can be fully implemented but untested, or tested but
 mis-documented. Reporting a flat finding list hides *which channel* is broken. The work scope delivers

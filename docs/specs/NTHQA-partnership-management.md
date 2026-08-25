@@ -557,5 +557,5 @@ After implementing this spec, the system has partnership CRUD linking companies 
 - `app/Partners/Partnership/Listeners/NotifyOnPartnershipTerminated.php` — Queued termination notification
 - `database/migrations/2026_01_03_000007_create_partnerships_table.php` — Partnerships schema
 - `routes/web/partners.php` — Route definitions
-- `docs/modules/partners.md` — Module conceptual documentation
-- `docs/modules/partners-reference.md` — Module technical reference
+- `docs/refs/modules/partners.md` — Module conceptual documentation
+- `docs/refs/modules/partners-reference.md` — Module technical reference

@@ -82,8 +82,8 @@ rules below — nothing else.
 - If a feature spec exists in `docs/specs/`, read it — it contains requirements (FR/NFR IDs),
   data contracts, design decisions, and success metrics that MUST guide implementation
 - If the spec is missing, stop and write it first (`spec-writing`) — no behavior without a requirement
-- Read the relevant module docs: `docs/modules/{module}.md` (business rules) and
-  `docs/modules/{module}-reference.md` (file structure)
+- Read the relevant module docs: `docs/refs/modules/{module}.md` (business rules) and
+  `docs/refs/modules/{module}-reference.md` (file structure)
 - Read the relevant pattern doc: `docs/architecture/{pattern}-pattern.md`
 - Identify which modules, submodules, and layers are affected
 
@@ -164,7 +164,7 @@ slices across sessions per Size Triage.
 | -------------------- | ------------------------------------------ |
 | Feature specs        | `docs/specs/index.md`                      |
 | Spec template        | `.agents/skills/spec-writing/SKILL.md`     |
-| Module structure     | `docs/modules/index.md`                    |
+| Module structure     | `docs/refs/modules/index.md`                    |
 | Action patterns      | `docs/architecture/action-pattern.md`      |
 | Entity patterns      | `docs/architecture/entity-pattern.md`      |
 | Model conventions    | `docs/architecture/model-pattern.md`       |

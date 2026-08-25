@@ -329,5 +329,5 @@ After implementing this spec, the system has student and supervisor handbooks wi
 - `app/Document/Handbook/Livewire/HandbookForm.php` — Handbook form object
 - `database/migrations/` — `documents` and `registration_documents` table migrations
 - `routes/web/document.php` — Route definitions
-- `docs/modules/document.md` — Module conceptual documentation
+- `docs/refs/modules/document.md` — Module conceptual documentation
 - **Related spec:** [document-templates.md](PKYX6-document-templates.md) — template management, PDF rendering, report generation

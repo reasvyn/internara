@@ -30,7 +30,7 @@ For reads: `ReadAction` returns DTO/Entity; Livewire renders from DTO — no raw
 - `Model::create($request->all())` in Livewire or controller (C1 + D5) — bypasses DTO/validation.
 - `Cache::put('inline_key', ...)` without registration (C4).
 - Inline `Mail::send()` inside Command without an event — breaks lineage and testability.
-- ERD that lives only in a chat message — move it to `docs/modules/{module}.md` or an ADR.
+- ERD that lives only in a chat message — move it to `docs/refs/modules/{module}.md` or an ADR.
 
 ## Verification
 

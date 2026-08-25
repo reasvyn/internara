@@ -19,7 +19,7 @@ the full pipeline, the report structure, and the key-rules discipline that keeps
 
 ### Phase 1 — Scope & Discovery
 
-- **Load context:** `docs/specs/index.md`, `docs/modules/index.md`, GitHub Issues.
+- **Load context:** `docs/specs/index.md`, `docs/refs/modules/index.md`, GitHub Issues.
 - **Size Triage** the scope (see `scope-configuration.md`) — never run a full `--all` audit in one
   pass; split by phase.
 - **Resolve scope** arguments (spec name, `--module`, `--phase`, `--area`, `--work`, `--guides`) to a

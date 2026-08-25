@@ -193,7 +193,7 @@ preventing repeated questions during code review.}
 {Implementation guidance that helps AI agents or new developers.}
 
 - Pattern to follow: {link to docs/architecture/{pattern}-pattern.md}
-- Module context: {link to docs/modules/{module}.md}
+- Module context: {link to docs/refs/modules/{module}.md}
 - Reference file: `{path/to/existing/implementation}`
 - Note invariants: {relevant AGENTS.md critical rules}
 ```
@@ -227,7 +227,7 @@ Output: `scripts/outputs/{timestamp}-issues.json`.
 | Issue types & labels  | `rules/issue-types-and-labels.md` (this skill) |
 | Pre-existing defects  | `AGENTS.md` (§ Pre-existing Defects)     |
 | Dedup & alignment     | `AGENTS.md` (§ Clean Code & Dedup-Align Doctrine) |
-| Module structure      | `docs/modules/index.md`                  |
+| Module structure      | `docs/refs/modules/index.md`                  |
 | Architecture patterns | `docs/architecture/{pattern}-pattern.md` |
 | Critical invariants   | `AGENTS.md` (§ Critical Invariants)      |
 | Coding conventions    | `docs/conventions.md`                    |

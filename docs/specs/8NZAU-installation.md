@@ -643,8 +643,8 @@ After implementing this spec, the system can provision itself from zero: environ
 
 ## Quick References
 
-- `docs/modules/setup.md` — Module conceptual overview
-- `docs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
+- `docs/refs/modules/setup.md` — Module conceptual overview
+- `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/foundation/product-definition.md` — Scope, personas, system boundary

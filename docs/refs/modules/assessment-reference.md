@@ -110,12 +110,12 @@ File: `routes/web/assessment.php` Named routes: `assessments`, `sysadmin.assessm
 
 ## Views
 
-Views are located in `resources/views/assessment/`. See [UI/UX](../foundation/ui-ux.md) for the
+Views are located in `resources/views/assessment/`. See [UI/UX](../../foundation/ui-ux.md) for the
 design system.
 
 ## Tests
 
-Tests are located in `tests/Assessment/`. See [Testing](../infrastructure/testing.md) for the
+Tests are located in `tests/Assessment/`. See [Testing](../../infrastructure/testing.md) for the
 testing conventions.
 
 ## Factories

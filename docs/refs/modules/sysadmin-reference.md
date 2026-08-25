@@ -152,12 +152,12 @@ File: `routes/web/sysadmin.php` Named routes: `admin.users.index`, `admin.users.
 
 ## Views
 
-Views are located in `resources/views/sysadmin/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/sysadmin/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/SysAdmin/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/SysAdmin/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories

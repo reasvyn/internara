@@ -76,8 +76,8 @@ Each module has two documents serving different audiences:
 
 | Document                             | Audience                             | Content                                                                                         |
 | ------------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `docs/modules/{module}.md`           | Architects, developers, stakeholders | Purpose, design principles, module boundary — pure conceptual design, no implementation details |
-| `docs/modules/{module}-reference.md` | Developers, reviewers                | Full API reference — file paths, class names, table schemas, dependency graphs                  |
+| `docs/refs/modules/{module}.md`           | Architects, developers, stakeholders | Purpose, design principles, module boundary — pure conceptual design, no implementation details |
+| `docs/refs/modules/{module}-reference.md` | Developers, reviewers                | Full API reference — file paths, class names, table schemas, dependency graphs                  |
 
 When describing a module's behavior, write the conceptual doc. When listing files or classes, write
 the reference doc. Never mix implementation details into conceptual docs.

@@ -4,7 +4,7 @@
 
 ## Description
 
-The structure for `docs/modules/{module}.md` — the **conceptual** tier of module documentation.
+The structure for `docs/refs/modules/{module}.md` — the **conceptual** tier of module documentation.
 Pure design intent: purpose, boundary, business concepts. No file paths, no class names, no
 schemas — those belong in `{module}-reference.md`.
 
@@ -38,7 +38,7 @@ schemas — those belong in `{module}-reference.md`.
 ## Quick References
 
 - `{module}-reference.md` — full API reference (markdown link in the real doc)
-- `../specs/{ID}-{feature}.md` — governing spec (markdown link in the real doc)
+- `../../specs/{ID}-{feature}.md` — governing spec (markdown link in the real doc)
 ```
 
 ## What Belongs Here vs. the Reference Doc
@@ -52,5 +52,5 @@ schemas — those belong in `{module}-reference.md`.
 
 ## Quick References
 
-- [`doc-template.md`](../doc-template.md) — shared documentation standards
+- [`doc-template.md`](../../doc-template.md) — shared documentation standards
 - [`module-reference-template.md`](module-reference-template.md) — companion reference-tier template

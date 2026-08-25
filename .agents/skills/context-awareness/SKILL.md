@@ -73,9 +73,9 @@ die in a conversation.
 
 ### Execute — Build Mental Model
 
-- Read `docs/architecture.md`, `docs/conventions.md`, `docs/modules/index.md`
+- Read `docs/architecture.md`, `docs/conventions.md`, `docs/refs/modules/index.md`
 - Understand 4-layer architecture, Action Triad, DTO boundaries
-- Read module docs: `docs/modules/{module}.md` and `docs/modules/{module}-reference.md`
+- Read module docs: `docs/refs/modules/{module}.md` and `docs/refs/modules/{module}-reference.md`
 - Map the data flow: Livewire → Action → Entity → Model → DB
 - Identify which layer the task touches and what constraints apply
 - Output: project mental model — architecture, module boundaries, critical rules
@@ -278,10 +278,10 @@ Only trust a claim after confirming it against the codebase **and** git history.
 
 | Content type | Tier | Example |
 |-------------|------|---------|
-| "Why does this module exist?" | Conceptual | `docs/modules/{module}.md` |
-| "What business rules govern enrollment?" | Conceptual | `docs/modules/enrollment.md` |
-| "Which files implement the Action?" | Reference | `docs/modules/enrollment-reference.md` |
-| "What's the table schema?" | Reference | `docs/modules/enrollment-reference.md` |
+| "Why does this module exist?" | Conceptual | `docs/refs/modules/{module}.md` |
+| "What business rules govern enrollment?" | Conceptual | `docs/refs/modules/enrollment.md` |
+| "Which files implement the Action?" | Reference | `docs/refs/modules/enrollment-reference.md` |
+| "What's the table schema?" | Reference | `docs/refs/modules/enrollment-reference.md` |
 | "Why did we choose Actions over Services?" | Conceptual (architecture) | `docs/architecture/action-pattern.md` |
 | "What's the Action contract?" | Reference (architecture) | `docs/architecture/action-pattern.md` |
 
@@ -296,7 +296,7 @@ reference.
 | Entity method changed | Module conceptual doc (business rules) |
 | Enum case added/removed | Module reference doc (enum table) |
 | New migration | Module reference doc (schema section) |
-| New module created | `docs/modules/index.md` + conceptual + reference |
+| New module created | `docs/refs/modules/index.md` + conceptual + reference |
 | Config key added | Module reference doc (config section) |
 | Route added/changed | Module reference doc (Routes table) |
 | Base class method changed | `docs/architecture/{pattern}-pattern.md` |
@@ -426,7 +426,7 @@ Start here for any topic:
 | Architecture                        | `docs/architecture.md`                                           |
 | 4-layer, Action Triad, Base Classes | `docs/architecture.md` (§Action Triad, §Base Class Mandate)      |
 | Coding conventions                  | `docs/conventions.md`                                            |
-| Module overviews                    | `docs/modules/index.md`                                          |
+| Module overviews                    | `docs/refs/modules/index.md`                                          |
 | Pattern deep-dives                  | `docs/architecture/{pattern}-pattern.md`                         |
 | RBAC & Policies                     | `docs/foundation/rbac.md`, `docs/architecture/policy-pattern.md` |
 | Exception hierarchy                 | `docs/architecture/exception-pattern.md`                         |

@@ -415,6 +415,6 @@ After implementing this spec, students can register for internship programs and 
 - `app/Enrollment/Registration/Livewire/RegistrationDocumentUpload.php` — Student document upload
 - `app/Enrollment/Registration/Livewire/Forms/RegistrationWizardForm.php` — Wizard form validation
 - `routes/web/enrollment.php` — All enrollment route definitions
-- `docs/modules/enrollment.md` — Enrollment module overview
+- `docs/refs/modules/enrollment.md` — Enrollment module overview
 - **Related specs:** [placement.md](J9GBH-placement.md) — Placement CRUD & capacity management
 - **Related specs:** [account-application.md](920SO-account-application.md) — Guest-to-student account pipeline

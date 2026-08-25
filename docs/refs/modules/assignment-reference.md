@@ -118,12 +118,12 @@ File: `routes/web/assignment.php` Named routes: `student.assignments`, `sysadmin
 
 ## Views
 
-Views are located in `resources/views/assignment/`. See [UI/UX](../foundation/ui-ux.md) for the
+Views are located in `resources/views/assignment/`. See [UI/UX](../../foundation/ui-ux.md) for the
 design system.
 
 ## Tests
 
-Tests are located in `tests/Assignment/`. See [Testing](../infrastructure/testing.md) for the
+Tests are located in `tests/Assignment/`. See [Testing](../../infrastructure/testing.md) for the
 testing conventions.
 
 ## Factories

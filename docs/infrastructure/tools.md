@@ -293,4 +293,4 @@ python3 scripts/scan_issues.py
 |-------|----------|
 | Architecture patterns | `docs/architecture/*.md` |
 | Coding conventions | `docs/conventions.md` |
-| Module index | `docs/modules/index.md` |
+| Module index | `docs/refs/modules/index.md` |

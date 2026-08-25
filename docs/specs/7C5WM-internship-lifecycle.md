@@ -489,5 +489,5 @@ After implementing this spec, the system has internship program CRUD with phases
 - `app/Program/Internship/Policies/InternshipPolicy.php` — authorization
 - `app/Program/Internship/Livewire/InternshipManager.php` — CRUD, CSV, batch, readiness UI
 - `routes/web/program.php` — Route definitions
-- `docs/modules/program.md` — Program module overview
+- `docs/refs/modules/program.md` — Program module overview
 - **Related specs:** [internship-groups.md](IT0OE-internship-groups.md) — Group & member management

@@ -449,8 +449,8 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 
 - `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules
 - `docs/conventions.md` — Invariants C1-C8, D1-D6, naming, security, testing
-- `docs/modules/core.md` — Core module overview
-- `docs/modules/core-reference.md` — Core module technical reference
+- `docs/refs/modules/core.md` — Core module overview
+- `docs/refs/modules/core-reference.md` — Core module technical reference
 - `docs/architecture/action-pattern.md` — Action Triad contracts and patterns
 - `docs/architecture/entity-pattern.md` — Entity contracts and bridge pattern
 - `docs/architecture/model-pattern.md` — Model conventions

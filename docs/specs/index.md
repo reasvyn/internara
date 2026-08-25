@@ -237,4 +237,4 @@ Every spec follows the 11-section format defined in `.agents/skills/spec-writing
 - `.agents/skills/feature-building/SKILL.md` — How specs feed into implementation
 - `docs/specs/implementation-matrix.md` — Implementation status matrix (priority-ordered) with status-usage legend
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
-- `docs/modules/index.md` — Module dependency graph
+- `docs/refs/modules/index.md` — Module dependency graph

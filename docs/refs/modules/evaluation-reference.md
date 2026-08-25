@@ -87,7 +87,7 @@ None — all components are directly under `app/Evaluation/`.
 ## Enums
 
 None. The `EvaluatorRole` enum previously located here has been moved to `app/Assessment/Enums/`
-(see [Assessment reference](../modules/assessment-reference.md)).
+(see [Assessment reference](assessment-reference.md)).
 
 ---
 

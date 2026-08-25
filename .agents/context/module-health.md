@@ -50,7 +50,7 @@ If the task is **new feature in a healthy module**, use that module as template;
 | ----------------- | ------- |
 | Add a feature to `Evaluation` (skeleton) | Scaffold full 4-layer stack per `spec-writing` + `code-writing` skills: Models → Entities → DTOs → Actions (Command/Read/Process) → Livewire → Policies → Routes → `lang/` → tests |
 | Touch `Assessment`/`Certification`/`Document` | Read this file first; run `scan_violations --module {Name}`; fix schema/Blade P0s; don't assume `ActionResponse` contract holds |
-| Extend `Reports` (being purified) | Check `docs/modules/reports.md` §Boundary — grade card only, no thesis content (thesis belongs to `Assignment`) |
+| Extend `Reports` (being purified) | Check `docs/refs/modules/reports.md` §Boundary — grade card only, no thesis content (thesis belongs to `Assignment`) |
 | Diagnose unknown failure | Check `README.md#Project Status` for tier, then `python3 scripts/scan_dead_code.py` + `git blame` for that module |
 
 ---
@@ -58,7 +58,7 @@ If the task is **new feature in a healthy module**, use that module as template;
 ## Quick References
 
 - `README.md#Project Status` — human SSOT for this file
-- `docs/modules/index.md` — module docs (overview + reference per module)
+- `docs/refs/modules/index.md` — module docs (overview + reference per module)
 - `docs/specs/index.md` — spec registry (18 modules × specs)
 - `scripts/scan_violations.py`, `scan_class_contracts.py`, `scan_dead_code.py` — health scanners
 - `CONTRIBUTING.md` — branch/commit conventions for fixes

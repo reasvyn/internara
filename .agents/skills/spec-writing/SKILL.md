@@ -36,8 +36,8 @@ Use this skill when:
 
 **Do NOT use for:**
 
-- Module conceptual docs (`docs/modules/{module}.md`) — use `doc-writing`
-- Module reference docs (`docs/modules/{module}-reference.md`) — use `doc-writing`
+- Module conceptual docs (`docs/refs/modules/{module}.md`) — use `doc-writing`
+- Module reference docs (`docs/refs/modules/{module}-reference.md`) — use `doc-writing`
 - Architecture decision records — use `doc-writing`
 - Bug reports or issue writing — use `issue-writing`
 
@@ -100,6 +100,6 @@ rules, indexing, and spec lifecycle — nothing else.
 | Feature specs             | `docs/specs/index.md`                     |
 | High-level specs          | `docs/specs/QLHDO-internara-project.md` |
 | Product definition        | `docs/foundation/product-definition.md`   |
-| Module index              | `docs/modules/index.md`                   |
+| Module index              | `docs/refs/modules/index.md`                   |
 | Existing specs            | `docs/specs/`                             |
 | Architecture overview     | `docs/architecture.md`                    |

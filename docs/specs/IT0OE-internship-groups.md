@@ -468,5 +468,5 @@ After implementing this spec, the system has group CRUD with student and mentor 
 - `app/Program/InternshipGroup/Livewire/InternshipGroupManager.php` — CRUD + member modal
 - `app/Program/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` — Form validation
 - `routes/web/program.php` — Route definitions
-- `docs/modules/program.md` — Program module overview
+- `docs/refs/modules/program.md` — Program module overview
 - **Related specs:** [internship-lifecycle.md](7C5WM-internship-lifecycle.md) — Program lifecycle & readiness

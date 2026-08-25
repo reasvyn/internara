@@ -63,7 +63,7 @@ the student's account, the company, or the program is later deleted.
 ### Cross-Role Proxy
 
 If the Assessment module's cross-role proxy is active (teacher acting as supervisor proxy, see
-[ADR-014](../adr/adr-cross-role-proxy.md)), the grade aggregation adjusts: the supervisor weight may
+[ADR-014](../../adr/adr-cross-role-proxy.md)), the grade aggregation adjusts: the supervisor weight may
 be redistributed to teacher and exam components. The grade card records the proxy status for audit
 transparency.
 

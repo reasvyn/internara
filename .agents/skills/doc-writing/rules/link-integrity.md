@@ -57,7 +57,7 @@ Verify:
 **Examples:**
 - S3 configuration → authoritative in `filesystem.md`, `media-library.md` references it.
 - Testing conventions → authoritative in `docs/architecture/testing-pattern.md`, skills reference it.
-- Module overview → authoritative in `docs/modules/{module}.md`, reference doc links to it.
+- Module overview → authoritative in `docs/refs/modules/{module}.md`, reference doc links to it.
 
 ## Anti-Patterns & Pitfalls
 

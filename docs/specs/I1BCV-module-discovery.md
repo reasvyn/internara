@@ -442,7 +442,7 @@ After implementing this spec, the system automatically discovers Livewire compon
 - `routes/web.php` — Route auto-inclusion
 - `tests/Pest.php` — Test directory registration
 - `docs/specs/module-manager.md` — Module manager spec (B114U)
-- `docs/modules/core.md` — Core module conceptual overview
-- `docs/modules/core-reference.md` — Core module technical reference
+- `docs/refs/modules/core.md` — Core module conceptual overview
+- `docs/refs/modules/core-reference.md` — Core module technical reference
 - `docs/architecture/service-pattern.md` — Service pattern documentation
 - `docs/architecture/modular-pattern.md` — Modular architecture documentation

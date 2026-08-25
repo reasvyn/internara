@@ -31,4 +31,4 @@ Follow `agent-workflow` pipeline. This skill adds DOMPDF guidance.
 | Topic | Doc |
 |-------|-----|
 | DOMPDF docs | `search-docs` with `barryvdh/laravel-dompdf` |
-| Reports module | `docs/modules/reports.md` |
+| Reports module | `docs/refs/modules/reports.md` |

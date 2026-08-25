@@ -72,7 +72,7 @@ arch-guard scanners (`scripts/scan_*.py`) on the touched code (see the `arch-gua
 | Policy pattern | `docs/architecture/policy-pattern.md` |
 | Event pattern | `docs/architecture/event-pattern.md` |
 | Cache pattern | `docs/architecture/cache-pattern.md` |
-| Module index | `docs/modules/index.md` |
+| Module index | `docs/refs/modules/index.md` |
 | Laravel best practices | `.agents/skills/laravel-best-practices/SKILL.md` |
 | Coding rules (quick) | `.agents/skills/context-awareness/rules/coding-rules.md` |
 | Architecture rules (quick) | `.agents/skills/context-awareness/rules/architecture-rules.md` |

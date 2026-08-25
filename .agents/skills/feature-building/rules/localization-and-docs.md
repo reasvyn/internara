@@ -52,8 +52,8 @@ files; `__('{key}')` echoes a non-raw value in both locales.
 ## New Feature — Must Update Relevant Docs (Documentation-First)
 
 **What it enforces:** Feature work updates module documentation alongside the build — conceptual
-`docs/modules/{module}.md` (business rules, flows) and/or reference
-`docs/modules/{module}-reference.md` (file structure, schema, routes, Actions table) — not as an
+`docs/refs/modules/{module}.md` (business rules, flows) and/or reference
+`docs/refs/modules/{module}-reference.md` (file structure, schema, routes, Actions table) — not as an
 afterthought at the end.
 
 **Why it matters:** Documentation-first is what keeps the docs and code from drifting. If docs are

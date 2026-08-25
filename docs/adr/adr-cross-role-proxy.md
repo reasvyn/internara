@@ -369,8 +369,8 @@ Mentor Fallback" is updated to "Cross-Role Proxy" — see docs sync.
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — Existing RBAC decision
 - `docs/adr/adr-entity-model-separation.md` — Entity-Model Separation pattern
 - `docs/adr/adr-cross-role-proxy.md` — This document
-- `docs/modules/assessment.md` — Assessment module (first proxy adopter)
-- `docs/modules/journals.md` — Logbook verification (proxy use case)
+- `docs/refs/modules/assessment.md` — Assessment module (first proxy adopter)
+- `docs/refs/modules/journals.md` — Logbook verification (proxy use case)
 - `docs/specs/ARDA6-assessment.md` — Assessment spec (proxy use case)
 - `app/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php` — Existing notification
   pattern

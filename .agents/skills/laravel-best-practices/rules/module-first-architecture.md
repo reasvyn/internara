@@ -20,7 +20,7 @@ and testable.
 
 - **Layer-first placement fragments modules.** If models accumulate in `app/Models/` as projects
   grow, cross-module coupling silently increases and a module's full stack can no longer be read in
-  one directory. The module map (`docs/modules/index.md`) and module reference docs enumerate files
+  one directory. The module map (`docs/refs/modules/index.md`) and module reference docs enumerate files
   per module; any file sitting outside its module becomes invisible to those docs and to
   module-scoped scans.
 - **Business logic in Services** bypasses the Action Triad's transactional and audit guarantees

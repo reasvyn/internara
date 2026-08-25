@@ -144,12 +144,12 @@ File: `routes/web/journals.php` Named routes: `student.logbook`, `student.attend
 
 ## Views
 
-Views are located in `resources/views/journals/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/journals/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Journals/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Journals/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories

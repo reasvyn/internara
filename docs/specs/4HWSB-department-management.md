@@ -767,6 +767,6 @@ After implementing this spec, the system has academic department CRUD with name,
 - `config/event.php` — Event-to-listener registration
 - `database/migrations/2026_01_03_000002_create_departments_table.php` — Departments table schema
 - `routes/web/academics.php` — Department route registration
-- `docs/modules/academics.md` — Academics module overview
-- `docs/modules/academics-reference.md` — Academics module technical reference
+- `docs/refs/modules/academics.md` — Academics module overview
+- `docs/refs/modules/academics-reference.md` — Academics module technical reference
 - **Related specs:** [school-profile.md](81SMS-school-profile.md) — School entity; [academic-year-management.md](XW6F5-academic-year-management.md) — Academic year lifecycle

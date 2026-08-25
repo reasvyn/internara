@@ -130,12 +130,12 @@ File: `routes/web/enrollment.php` Named routes: `apply`, `registration.center`,
 
 ## Views
 
-Views are located in `resources/views/enrollment/`. See [UI/UX](../foundation/ui-ux.md) for the
+Views are located in `resources/views/enrollment/`. See [UI/UX](../../foundation/ui-ux.md) for the
 design system.
 
 ## Tests
 
-Tests are located in `tests/Enrollment/`. See [Testing](../infrastructure/testing.md) for the
+Tests are located in `tests/Enrollment/`. See [Testing](../../infrastructure/testing.md) for the
 testing conventions.
 
 ## Factories
