@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** docs tree reorganized into docs/guides (guides/, guides/arch/, guides/infra/) — catalog links updated
+> **Last updated:** 2026-08-25 **Changes:** feat — refs/deps and adr gained index/template docs; every docs subdir now has its own index.md
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -94,7 +94,8 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Technical Reference
 
-- **[Dependencies](refs/deps/laravel.md)** — one conceptual reference per runtime dependency (`docs/refs/deps/`): `laravel` · `livewire` · `tallstackui` · `alpinejs` · `tailwindcss` · `vite` · `spatie-laravel-permission` · `spatie-laravel-medialibrary` · `spatie-laravel-activitylog` · `spatie-laravel-model-status` · `laravel-dompdf` · `laravel-pulse` · `laravel-lang` · `flatpickr` · `marked` · `prettier`
+- **[Reference Docs](refs/index.md)** — reference tier catalog: module references (`refs/modules/`) and per-dependency references (`refs/deps/`)
+- **[Dependencies](refs/deps/index.md)** — one conceptual reference per runtime dependency (`docs/refs/deps/`): `laravel` · `livewire` · `tallstackui` · `alpinejs` · `tailwindcss` · `vite` · `spatie-laravel-permission` · `spatie-laravel-medialibrary` · `spatie-laravel-activitylog` · `spatie-laravel-model-status` · `laravel-dompdf` · `laravel-pulse` · `laravel-lang` · `flatpickr` · `marked` · `prettier`
 - **[Infrastructure Index](guides/infra/index.md)** — Browse all infrastructure and operations docs
 - **[Database](guides/infra/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
 - **[Cache](guides/infra/cache.md)** — Caching strategy, key registry, invalidation, Redis
