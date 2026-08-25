@@ -29,10 +29,14 @@ test('FB792-FR-TS4: requires Tailwind CSS >= 4.3', function () {
     expect($package['devDependencies']['tailwindcss'])->toBe('^4.3.3');
 });
 
-test('FB792-FR-TS5: requires DaisyUI >= 5.6', function () {
+test('FB792-FR-TS5: DaisyUI removed (0.15.0) — TallstackUI-only', function () {
     $package = json_decode((string) File::get(base_path('package.json')), true);
+    $composer = json_decode((string) File::get(base_path('composer.json')), true);
 
-    expect($package['devDependencies']['daisyui'])->toBe('^5.7.0');
+    expect($package['devDependencies'] ?? [])->not->toHaveKey('daisyui')
+        ->and($composer['require'])->not->toHaveKey('robsontenorio/mary')
+        ->and($composer['require'])->not->toHaveKey('php-flasher/flasher-laravel')
+        ->and($composer['require'])->toHaveKey('tallstackui/tallstackui');
 });
 
 test('ZT6VS-FR-DB1: defaults to SQLite for development', function () {

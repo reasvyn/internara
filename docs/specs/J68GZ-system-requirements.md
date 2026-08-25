@@ -1,7 +1,7 @@
 # System Requirements — Dependencies, Platform & Database
 
 > **Spec ID:** J68GZ
-> **Last updated:** 2026-08-24 **Changes:** add TallstackUI v4 (FR-D10a), deprecate PHPFlasher (FR-D10), TallstackUI-first
+> **Last updated:** 2026-08-25 **Changes:** remove PHPFlasher/maryUI (FR-D10/FR-D11 deleted, FR-D10a TallstackUI-only), update manifest
 
 ## Description
 
@@ -120,10 +120,8 @@ module-specific SQL, using only portable Eloquent queries and migrations.
 | FR-D7 | `laravel-lang/lang` ^15.26 — bilingual translations (en/id) |
 | FR-D8 | `barryvdh/laravel-dompdf` ^3.1 — PDF generation |
 | FR-D9 | `laravel/pulse` * — performance monitoring dashboard |
-| FR-D10 | `php-flasher/flasher-laravel` ^2.4 — flash message UI — **DEPRECATED** (replaced by TallstackUI toast/alert, FB792 FR-TS6) |
-| FR-D10a | `tallstackui/tallstackui` ^4.0 — UI kit (TALL stack, replaces DaisyUI/PHPFlasher, TallstackUI-first per FB792 FR-TS6a/NFR-DEP5) |
-| FR-D11 | `robsontenorio/mary` ^2.4 — UI component library (maryUI) — coexistence, new UI prefers TallstackUI |
-| FR-D12 | `laravel/tinker` ^3.0 — REPL for debugging |
+| FR-D10 | `tallstackui/tallstackui` ^4.0 — UI kit (TallstackUI-only, replaces DaisyUI/MaryUI/PHPFlasher, FB792 FR-TS6) |
+| FR-D11 | `laravel/tinker` ^3.0 — REPL for debugging |
 
 ### 4.3 Database
 
@@ -222,9 +220,7 @@ They are not part of the domain schema but coexist in the same database.
   "laravel-lang/lang": "^15.26",
   "barryvdh/laravel-dompdf": "^3.1",
   "laravel/pulse": "*",
-  "php-flasher/flasher-laravel": "^2.4",
   "tallstackui/tallstackui": "^4.0",
-  "robsontenorio/mary": "^2.4",
   "laravel/tinker": "^3.0"
 }
 ```

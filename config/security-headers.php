@@ -26,7 +26,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The CSP policy string. This default is permissive enough for Livewire
-    | and maryUI. Override in your .env or config for stricter protection.
+    | and TallstackUI. Override in your .env or config for stricter protection.
     |
     */
     'csp' => env(

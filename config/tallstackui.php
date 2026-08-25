@@ -17,8 +17,7 @@ return [
     | For example, prefixing as 'ts-', the `alert` usage will be: '<x-ts-alert />'
     |
     | Internara pins 'ts-' explicitly (not via env) so TallstackUI components
-    | are unambiguous vs maryUI (<x-mary-*>) and BladeUI icons during the
-    | gradual migration — see FB792 DD-4.
+    | are unambiguous (maryUI removed in 0.15.0 — TallstackUI-only, see FB792 DD-4).
     |
     */
     'prefix' => env('TALLSTACKUI_PREFIX', 'ts-'),
