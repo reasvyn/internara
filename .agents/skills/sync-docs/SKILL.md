@@ -15,7 +15,7 @@ upstream:
 
 # Sync Docs
 
-> **Last updated:** 2026-08-24 **Changes:** git-history window changed to minimum 7 days — extend to 14/30 days when needed (sync-workflow rule)
+> **Last updated:** 2026-08-25 **Changes:** scanner freshness + git-history window changed to minimum 14 days (was 7)
 
 > **Prerequisite:** Load `context-awareness` for doc navigation map.
 
@@ -41,8 +41,8 @@ below — nothing else.
 - Locate the governing spec and the agent guides/skills that reference it — `AGENTS.md`,
   `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/plans/` (a spec/code change must be
   mirrored there too)
-- Review git commits from at least the last 7 days (`git log --since="7 days ago" --oneline`,
-  `git log --since="7 days ago" --stat` — minimum window; extend to `14 days ago`/`30 days ago` if drift may be older)
+- Review git commits from at least the last 14 days (`git log --since="14 days ago" --oneline`,
+  `git log --since="14 days ago" --stat` — minimum window; extend to full log if drift may be older)
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 
 ### Execute — Documentation Sync
@@ -76,7 +76,7 @@ below — nothing else.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_doc_links.py` | Validate all relative links in markdown files and flag ALL markdown files whose `Last updated` metadata is missing or older than 7 days, with suggestion to verify and synchronize against codebase | `python3 scripts/scan_doc_links.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files and flag ALL markdown files whose `Last updated` metadata is missing or older than 14 days, with suggestion to verify and synchronize against codebase | `python3 scripts/scan_doc_links.py` |
 
 Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
 

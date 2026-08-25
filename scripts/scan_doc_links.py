@@ -3,7 +3,7 @@
 scan_doc_links.py — Documentation Link & Freshness Validation
 Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec
-filename convention and flags ALL markdown files whose `Last updated` metadata is missing or older than 7 days.
+filename convention and flags ALL markdown files whose `Last updated` metadata is missing or older than 14 days.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"
-STALE_DAYS = 7
+STALE_DAYS = 14
 
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 ANCHOR_TARGET = re.compile(r"^#(.+)$")

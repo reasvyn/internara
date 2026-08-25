@@ -1,14 +1,14 @@
 # Sync Workflow — Discover Drift Before Editing
 
-> **Last updated:** 2026-08-24 **Changes:** git-history window changed from fixed 7 days to minimum 7 days — extend longer when needed
+> **Last updated:** 2026-08-25 **Changes:** git-history window + scanner freshness changed to minimum 14 days (was 7)
 
 ## Intent
 
 Before making any doc change, systematically discover what actually changed in the codebase and
-specs in **at least the last 7 days** (minimal 7 hari terakhir), identify which files were added,
+specs in **at least the last 14 days** (minimal 14 hari terakhir), identify which files were added,
 deleted, or modified, and map those changes to the docs that must be updated. Drift is found by
 inspection, not by memory or guesswork. If the change surface is suspected to span longer (large
-refactor, dormant module, cross-module rename), widen the window (14/30 days or full log) as needed.
+refactor, dormant module, cross-module rename), widen the window (full log) as needed.
 
 ## Rationale
 
@@ -23,22 +23,21 @@ docs are now wrong. Two failure modes this prevents:
    time, churns the git history, and — because each touch bumps `Last updated` — actively
    *hides* future drift (a doc looks fresh when nothing real changed).
 
-The 7-day window is the **minimum**, not a fixed cap: recent changes are the ones that matter most,
+The 14-day window is the **minimum**, not a fixed cap: recent changes are the ones that matter most,
 and commits that already updated their docs (visible in `--stat`) are skipped, focusing effort on
-commits that introduced code without doc updates. Treat `7 days ago` as the floor — extend to `14 days ago`,
-`30 days ago`, or longer whenever drift may predate the window (e.g., infrequent module, large audit).
+commits that introduced code without doc updates. Treat `14 days ago` as the floor — extend to
+full log whenever drift may predate the window (e.g., infrequent module, large audit).
 
 ## How to Apply
 
-### Step 0 — Review Recent Git History (minimum 7 days, extend if needed)
+### Step 0 — Review Recent Git History (minimum 14 days, extend if needed)
 
 ```bash
-git log --since="7 days ago" --stat              # summary per commit (minimum window)
-git log --since="7 days ago" --name-status       # consolidated file changes
-git log --since="7 days ago" --format="%h %s"    # commit messages for context
+git log --since="14 days ago" --stat              # summary per commit (minimum window)
+git log --since="14 days ago" --name-status       # consolidated file changes
+git log --since="14 days ago" --format="%h %s"    # commit messages for context
 # Jika curiga drift lebih lama:
-git log --since="14 days ago" --stat
-git log --since="30 days ago" --stat
+git log --since="14 days ago" --stat  # already minimum; for older drift use full log: git log --stat
 ```
 
 - Note which modules, layers, and files were affected.
@@ -77,7 +76,7 @@ changed path) must be mirrored in any guide or skill that documents it, not just
 
 ```bash
 # A commit added a new Command Action:
-git log --since="7 days ago" --stat
+git log --since="14 days ago" --stat
 #   app/Enrollment/Placement/Actions/WithdrawPlacementAction.php  (new)
 
 # Doc action required:
@@ -91,11 +90,11 @@ git log --since="7 days ago" --stat
 
 - **Skipping git history** and "auditing" by re-reading every doc — expensive, noisy, and misses the
   point (drift is introduced by changes; find the changes).
-- **Capping the window at 7 days when drift is older:** treating 7 days as a hard limit hides stale
-  docs that drifted 2–3 weeks ago. Minimal 7 days means floor, not ceiling — widen when audit signal
+- **Capping the window at 14 days when drift is older:** treating 14 days as a hard limit hides stale
+  docs that drifted 3–4 weeks ago. Minimal 14 days means floor, not ceiling — widen when audit signal
   (stale `Last updated`, missing file refs, spec gap) suggests older changes.
 - **Widening the window blindly:** reviewing 90 days of history for every routine sync dilutes focus.
-  Extend only when needed — routine sync starts at 7 days, audit expands to 14/30 days.
+  Extend only when needed — routine sync starts at 14 days, audit expands to full log.
 - **Updating only `docs/` and ignoring agent guides & skills** — `AGENTS.md`, `.agents/skills/*`,
   `.agents/context/`, `.agents/plans/` document the same code and specs; a spec amendment not
   mirrored there leaves the agent layer stale even when `docs/` is clean.
@@ -106,7 +105,7 @@ git log --since="7 days ago" --stat
 
 ## Verification / Detection
 
-- `git log --since="7 days ago" --stat` (minimum; extend to 14/30 days if drift suspected) — confirm the audit surface matches actual commits.
+- `git log --since="14 days ago" --stat` (minimum; extend to full log if drift suspected) — confirm the audit surface matches actual commits.
 - `git diff` — the set of changed files must match the docs queued for update (no orphan doc
   updates, no missed ones).
 - `python3 scripts/scan_doc_links.py` — catches file-listing drift (renamed/deleted files still
