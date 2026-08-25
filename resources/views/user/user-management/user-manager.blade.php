@@ -153,9 +153,7 @@
         @interact('column_roles_list', $user)
             <div class="flex flex-wrap gap-1">
                 @foreach ($user->roles as $role)
-                    <span class="badge badge-sm badge-soft badge-primary text-[10px] font-medium">
-                        {{ $role->name }}
-                    </span>
+                    <x-ts-badge :text="$role->name" color="primary" xs />
                 @endforeach
             </div>
         @endinteract
