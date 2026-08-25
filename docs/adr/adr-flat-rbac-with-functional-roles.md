@@ -1,113 +1,100 @@
-# ADR-008: Flat RBAC with Functional Roles
+# Flat RBAC with Functional Roles
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current flat RBAC (5 static roles, functional roles via group membership, Gate::before super_admin bypass)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [RBAC Guide](../guides/rbac.md) and [Permissions Spec](../specs/T4B26-rbac-and-authorization.md) |
 
-A flat role-based access control system with five static roles (super_admin, admin, teacher,
-supervisor, student) plus three runtime functional roles (admin-group, mentor, mentee).
-
-## Context
+## Context and Problem Statement
 
 The system has five user types (super_admin, admin, teacher, student, supervisor) and three
-behavioral concepts (admin-group, mentor, mentee) that describe what a user does, not who they are.
-A teacher and a supervisor both act as mentors; a student is a mentee; super_admin and admin share
-the "admin" functional grouping for permission checks.
+behavioral concepts (admin-group, mentor, mentee) describing what a user *does*, not who they
+are. A teacher and a supervisor both act as mentors; super_admin and admin share an "admin"
+grouping for permission checks. Conflating identity with function leaks into policies as
+duplicated `||` branches and makes mentoring logic brittle to user-type changes.
 
-Two RBAC approaches were considered:
+**Decision Drivers:**
 
-1. **Hierarchical roles** — ADMIN > TEACHER > STUDENT with inheritance. Intuitive, but creates
-   permission leakage. Adding a permission to TEACHER that ADMIN shouldn't have requires
-   workarounds.
+* No permission leakage through implicit hierarchy
+* Role-agnostic mentoring checks — adding a mentor-like role updates one mapping, not every policy
+* Defense in depth across route, Livewire, and policy layers
 
-2. **Flat roles with explicit permissions** — each role has exactly its own permissions, no
-   inheritance. More verbose, but no accidental leakage. Adding a permission to one role never
-   affects another.
+## Considered Options
 
-The functional role concept adds another dimension: a user's functional role is derived from their
-user role, not stored independently. This decouples the mentoring system from specific user types.
+* **Hierarchical roles (ADMIN > TEACHER > STUDENT)** — intuitive inheritance.
+  *Pros:* concise. *Cons:* permission added to TEACHER that ADMIN must not have requires
+  workarounds; leakage is silent.*
+* **Flat roles with explicit permissions plus derived functional roles (chosen)** — each role
+  owns exactly its permissions; functional roles are runtime groupings derived from the concrete
+  role. *Pros:* explicit, testable, decoupled mentoring; no leakage.*
 
-## Decision
+## Decision Outcome
 
-### Flat User Roles
+**Chosen option: Flat roles with derived functional roles.**
 
-Each user has exactly one user role. Roles are flat — no inheritance:
+**Flat User Roles** — one role per user, no inheritance:
 
-| Role        | Scope   | Description                                                          |
-| ----------- | ------- | -------------------------------------------------------------------- |
-| super_admin | Global  | Bypasses all gates. Manages system settings, all accounts, all data. |
-| admin       | School  | Manages users, programs, companies, departments.                     |
-| teacher     | School  | Academic supervision: grades, assesses, verifies journals.           |
-| student     | Self    | Participates in programs: attendance, journals, assignments.         |
-| supervisor  | Company | Industry supervision: verifies journals, evaluates students.         |
+| Role | Scope | Description |
+|------|-------|-------------|
+| super_admin | Global | Bypasses all gates; manages settings, accounts, data |
+| admin | School | Manages users, programs, companies, departments |
+| teacher | School | Academic supervision — grades, journals |
+| student | Self | Attendance, journals, assignments |
+| supervisor | Company | Industry supervision — journals, evaluations |
 
-### Functional Roles (Derived, Not Stored)
+**Functional Roles (derived, not stored)** — resolved via `Role::resolvesTo()`:
 
-Functional roles are runtime groupings that allow role-agnostic permission checks. They are resolved
-via `Role::resolvesTo()`:
-
-| Functional Role | Resolves From       | Purpose                                       |
-| --------------- | ------------------- | --------------------------------------------- |
-| admin-group     | super_admin, admin  | Administrative grouping for permission checks |
-| mentor          | teacher, supervisor | Anyone who supervises students                |
-| mentee          | student             | Anyone being supervised                       |
-
-The `functionalRoles()` method returns all possible functional roles for enum-wide checks. The
-`functionalRolesFor()` method maps a concrete user role to its functional role at runtime:
+| Functional Role | Resolves From | Purpose |
+|---------------|---------------|---------|
+| admin-group | super_admin, admin | Administrative grouping |
+| mentor | teacher, supervisor | Anyone supervising students |
+| mentee | student | Anyone being supervised |
 
 ```php
-SUPER_ADMIN → [ADMIN]     // super_admin maps to admin functional group
-ADMIN       → [ADMIN]     // admin maps to admin functional group
-TEACHER     → [MENTOR]    // teacher maps to mentor
-SUPERVISOR  → [MENTOR]    // supervisor also maps to mentor
-STUDENT     → [MENTEE]    // student maps to mentee
+SUPER_ADMIN → [ADMIN]
+ADMIN       → [ADMIN]
+TEACHER     → [MENTOR]
+SUPERVISOR  → [MENTOR]
+STUDENT     → [MENTEE]
 ```
 
-This enables code like `$user->role->is(Role::ADMIN)` to match both super_admin and admin without
-explicit `||` checks. Route middleware still uses concrete roles only; functional roles are
-evaluated at the policy level.
+`$user->role->is(Role::ADMIN)` matches both super_admin and admin without `||`.
+Route middleware uses concrete roles; functional roles are evaluated at the policy layer.
+`functionalRoles()` enumerates all functional roles; `functionalRolesFor()` maps a concrete
+role at runtime.
 
-### Super Admin Bypass
+**Super Admin Bypass** — `Gate::before()` returns `true` for super_admin immediately; no
+permission lookup runs — distinct from granting "all permissions" in the database.
 
-`super_admin` bypasses all authorization gates via `Gate::before()` returning `true` immediately. No
-permission check runs against super admins — distinct from giving them "all permissions" in the
-database.
+**Three Authorization Layers:**
 
-### Authorization Layers (Three-Level)
+| Layer | Mechanism | Example |
+|-------|-----------|---------|
+| Routes | CheckRoleMiddleware | `role:super_admin\|admin` |
+| Livewire | `authorize()` in component | `$this->authorize('create', Model::class)` |
+| Policies | BasePolicy traits | `isAdmin()`, `isOwner()` |
 
-| Layer    | Mechanism                        | Example                                    |
-| -------- | -------------------------------- | ------------------------------------------ |
-| Routes   | CheckRoleMiddleware              | `role:super_admin\|admin`                  |
-| Livewire | authorize() in component methods | `$this->authorize('create', Model::class)` |
-| Policies | BasePolicy traits                | `isAdmin()`, `isOwner()`                   |
+`BasePolicy` composes `AuthorizesRoles` and `AuthorizesOwnership`.
 
-`BasePolicy` provides `AuthorizesRoles` (role check methods) and `AuthorizesOwnership` (ownership
-check methods) traits.
+### Positive Consequences
 
-## Consequences
+* Explicit, testable — no accidental leakage through hierarchy
+* Mentoring decoupled from user types — new mentor-like role updates one mapping
+* ADMIN group eliminates duplicate `||` conditions
+* Gate bypass is fast and defense in depth spans three layers
 
-- **Positive**: Role inheritance is explicit and testable — no accidental permission leakage through
-  hierarchy.
-- **Positive**: Functional roles decouple the mentoring system from specific user types. Adding a
-  new mentor-like role requires only updating `Role::resolvesTo()`.
-- **Positive**: ADMIN functional role groups super_admin and admin under one check, eliminating
-  duplicate `||` conditions in policies.
-- **Positive**: `super_admin` bypass is fast — one `Gate::before()` check instead of enumerating
-  database permissions.
-- **Positive**: Three-layer enforcement provides defense in depth.
-- **Negative**: Flat roles require explicit permission lists per role in every policy — more verbose
-  than hierarchy.
-- **Negative**: Functional role derivation can be confusing — "why is this supervisor allowed to
-  access mentor features?"
+### Negative Consequences
 
-## References
+* Flat roles require explicit permission lists per policy — more verbose
+* Functional derivation (`supervisor` → `mentor`) can surprise newcomers — requires onboarding
 
-- `app/Auth/Permissions/Enums/Role.php` — Role definitions with resolvesTo(), functionalRoles(),
-  functionalRolesFor()
-- `app/Core/Policies/BasePolicy.php` — Base authorization class
-- `app/Core/Policies/Concerns/AuthorizesRoles.php` — Role check methods
-- `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership check methods
-- `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level gating
-- `docs/adr/adr-cross-role-proxy.md` — Cross-role proxy (separate from functional roles)
-- `docs/guides/rbac.md` — Detailed RBAC documentation
-- `docs/architecture.md` — Authorization section
+## Links
+
+* [RBAC Guide](../guides/rbac.md) — detailed role and permission documentation
+* [Policy Pattern](../guides/arch/policy-pattern.md) — BasePolicy and authorization layers
+* [Cross-Role Proxy](adr-cross-role-proxy.md) — separate cross-role delegation mechanism
+* [Architecture Overview](../architecture.md) — where authorization sits across layers
