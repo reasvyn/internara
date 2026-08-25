@@ -1,7 +1,7 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
 > **Spec ID:** C8F0D
-> **Last updated:** 2026-08-18 **Changes:** add — cross-reference `setting()`/`brand()` helpers (internara-project §7.4) to settings-infrastructure.md
+> **Last updated:** 2026-08-25 **Changes:** sync — G4 DaisyUI shade → self-hosted palette shade (TallstackUI-only)
 
 ## Description
 
@@ -37,7 +37,7 @@ in production while allowing development flexibility.
 | G1  | Provide `AppInfo` — centralized composer.json metadata with 24h cache |
 | G2  | Provide `Environment` — environment detection helpers (isProduction, isTesting, etc.) |
 | G3  | Provide `PasswordRules` — default password validation rules |
-| G4  | Provide `Color` — hex/RGB conversion, contrast calculation, DaisyUI shade generation |
+| G4  | Provide `Color` — hex/RGB conversion, contrast calculation, self-hosted palette shade generation |
 | G5  | Provide `AppIntegrity` — composer attribution verification |
 | G6  | Provide `LangChecker` — missing translation key detection |
 
