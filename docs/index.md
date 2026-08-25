@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** sync — UI/UX entry: TallstackUI v4 (was DaisyUI+maryUI); reflect 0.15.0 migration
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.1 — Tandai migrasi TallstackUI selesai
 
 Complete catalog of all documentation files, organized by topic and audience.
 

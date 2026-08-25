@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** sync — Project Identity: replace DaisyUI/maryUI/php-flasher with TallstackUI v4 (complete migration, 0.15.0)
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.1 — docs sync + dep removal final (FB792/J68GZ REMOVED)
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
