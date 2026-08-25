@@ -16,11 +16,6 @@ _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institut
 designed to run on school-owned infrastructure with zero recurring costs, full data sovereignty,
 and offline robustness.
 
-> **SSOT note:** This README is the single source of truth for **product definition** (scope,
-> personas, principles, system boundary) and **project status** (module landscape, tech debt,
-> roadmap). The former `docs/foundation/product-definition.md` and `docs/foundation/project-overview.md`
-> have been merged here and removed. Detailed requirements live in `docs/specs/QLHDO-internara-project.md`.
-
 ---
 
 ## Why Internara Must Exist
