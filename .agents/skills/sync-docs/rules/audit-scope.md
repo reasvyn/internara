@@ -1,6 +1,6 @@
 # Audit Scope — Verify Every Doc Claim Against Code and Specs
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** expand sync coverage to all 408 markdown files, 7-phase impact-to-effort ordering (root → core → guides → specs → ADR → refs → agent layer)
 
 ## Intent
 
@@ -25,9 +25,25 @@ Two classes of claim rot are especially dangerous because they are silent:
 
 ## How to Apply
 
+### Expanded Sync Areas — Full 408-File Coverage (impact-to-effort ordered)
+
+All `*.md` files are in scope (beyond `scan_doc_links.py`'s 207-file subset). Sync in this order:
+
+| Phase | Area | Files | Impact/Effort | Rationale |
+|-------|------|-------|---------------|-----------|
+| 1 | **Root Community** — `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `LICENSE` | 5 | 5/1 Quick win | Entry point for every contributor; smallest, most visible |
+| 2 | **Core Docs** — `docs/index.md`, `docs/architecture.md`, `docs/conventions.md`, `docs/doc-template.md`, `docs/getting-started.md`, `docs/philosophy.md`, `docs/project-vision.md`, `AGENTS.md` | 9 | 5/2 | Navigation hub; all other docs depend on these |
+| 3 | **Guides** — `docs/guides/*`, `docs/guides/arch/*`, `docs/guides/infra/*` | ~48 | 4/3 | Operational & pattern docs; medium reach |
+| 4 | **Specs** — `docs/specs/*` (64) | 64 | 5/5 Strategic | Authoritative source; high impact high effort |
+| 5 | **ADR** — `docs/adr/*` | 17 | 3/2 | Decision history; stable after rewrite |
+| 6 | **Refs** — `docs/refs/modules/*`, `docs/refs/deps/*`, `docs/refs/index.md` | ~56 | 2/2 Fill-in | Reference tier; lowest human urgency |
+| 7 | **Agent Layer** — `.agents/rules/*`, `.agents/context/*`, `.agents/audit/*`, `.agents/skills/*`, `.opencode/agents/*`, `scripts/README.md` | ~210 | 2/4 Deferred | Internal; human docs are SSOT, agents reference them |
+
+Phases 1-3 are quick wins → execute first. Phase 4 is strategic → split if needed. Phases 6-7 are last per explicit owner direction (`docs/refs/` and `.agents/` synchronized last).
+
 ### Documentation Audit Scope
 
-Verify these items against actual code and specs:
+Verify these items against actual code and specs (applies to every phase above):
 
 - File paths in docs point to existing files.
 - Class names and method signatures match actual code.

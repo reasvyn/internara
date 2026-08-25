@@ -1,6 +1,6 @@
 # Sync Workflow — Discover Drift Before Editing
 
-> **Last updated:** 2026-08-25 **Changes:** git-history window + scanner freshness changed to minimum 14 days (was 7)
+> **Last updated:** 2026-08-25 **Changes:** add 7-phase ordered sync execution (root → agent layer last) per impact-to-effort; expand area mapping
 
 ## Intent
 
@@ -71,6 +71,12 @@ git log --since="14 days ago" --stat  # already minimum; for older drift use ful
 
 This mapping includes **agent guides & skills** — a spec amendment (renamed default, new invariant,
 changed path) must be mirrored in any guide or skill that documents it, not just `docs/`.
+
+### Ordered Sync Execution (impact-to-effort)
+
+Execute sync in phase order per `.agents/rules/impact-to-effort.md` and `audit-scope.md` expanded areas:
+**Phase 1 Root → Phase 2 Core → Phase 3 Guides → Phase 4 Specs → Phase 5 ADR → Phase 6 Refs → Phase 7 Agent Layer**.
+Dependency chains first (specs before refs that cite them), then business urgency (root/core before reference tier), then ratio (quick wins before strategic). Commit per phase as a checkpoint (`commit-as-checkpoint.md`).
 
 ## Examples
 
