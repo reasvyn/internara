@@ -1,13 +1,13 @@
 # Documentation Template & Standards — How We Write Docs
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial template based on the Diátaxis framework, mapped onto Internara's doc tree with per-type skeletons
+> **Last updated:** 2026-08-25 **Changes:** refactor — skeletons extracted to per-directory templates ({type}-template.md next to the docs they produce); this file keeps the framework, principles, and evolution workflow
 
 ## Description
 
 The working standard for every document in `docs/`: which of the four documentation types a piece
-of content belongs to, where it lives, how it is structured, and how it stays alive as the project
-evolves. Full rule prose lives in [`conventions.md`](conventions.md) §0 and the
-`doc-writing` skill — this file is the practical map and the copy-paste skeletons.
+of content belongs to, where it lives, how it is written, and how it stays alive as the project
+evolves. Copy-paste skeletons live as `{type}-template.md` files in their target directories.
+Full rule prose lives in [`conventions.md`](conventions.md) §0 and the `doc-writing` skill.
 
 ---
 
@@ -38,15 +38,16 @@ quadrants but are not themselves user documentation.
 
 ### Where Does My Content Belong?
 
-| I need to write… | It belongs in | Type |
-|------------------|---------------|------|
-| A new contributor's first successful run | `getting-started.md` | Tutorial |
-| Steps to perform an operation (deploy, restore, recover) | `foundation/{operation}.md` | How-to |
-| Complete list of Actions/Routes/Models/Policies of a module | `modules/{module}-reference.md` | Reference |
-| What a module does, its boundary, design principles | `modules/{module}.md` | Explanation |
-| Why a pattern exists and when to apply it | `architecture/{pattern}-pattern.md` | Explanation |
-| A recorded architectural decision with context | `adr/{NNN}-{title}.md` | Explanation |
-| Environment variables, config options | `infrastructure/configuration.md` | Reference |
+| I need to write… | It belongs in | Type | Skeleton |
+|------------------|---------------|------|----------|
+| A new contributor's first successful run | `getting-started.md` | Tutorial | — |
+| Steps to perform an operation (deploy, restore, recover) | `foundation/{operation}.md` | How-to | [`foundation/guide-template.md`](foundation/guide-template.md) |
+| Complete list of Actions/Routes/Models/Policies of a module | `modules/{module}-reference.md` | Reference | [`modules/module-reference-template.md`](modules/module-reference-template.md) |
+| What a module does, its boundary, design principles | `modules/{module}.md` | Explanation | [`modules/module-template.md`](modules/module-template.md) |
+| Why a pattern exists and when to apply it | `architecture/{pattern}-pattern.md` | Explanation | [`architecture/pattern-template.md`](architecture/pattern-template.md) |
+| Feature requirements with traceable IDs | `specs/{ID}-{feature}.md` | Spec (SSOT) | [`specs/spec-template.md`](specs/spec-template.md) |
+| Environment variables, config options | `infrastructure/configuration.md` | Reference | — |
+| A recorded architectural decision with context | `adr/{NNN}-{title}.md` | Explanation | follow existing ADR format |
 
 ---
 
@@ -90,155 +91,20 @@ enforce it (`scan_doc_links.py` flags missing dates and anything untouched for 1
 
 ---
 
-## Structural Skeletons
-
-All skeletons below already satisfy the metadata contract — copy, fill, delete what does not apply.
-
-### Conceptual Doc — `docs/modules/{module}.md`
-
-Pure design intent. No file paths, no class names, no schemas.
-
-```markdown
-# {Module} — {One-line Purpose}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {change}
-
-## Description
-
-{1–3 sentences: what this module owns and why it exists.}
-
-## Boundary
-
-{What this module handles / explicitly does not handle.}
-
-## Key Concepts
-
-{Domain terms and business rules a newcomer must know.}
-
-## Design Principles
-
-{Decisions shaping the module, each with a one-line rationale.}
-
-## How It Works
-
-{Conceptual flow — Livewire → Action → Entity → Model narrative, no class names.}
-
-## Quick References
-
-- `modules/{module}-reference.md` — full API reference (markdown link in the real doc)
-- `../specs/{ID}-{feature}.md` — governing spec
-```
-
-### Reference Doc — `docs/modules/{module}-reference.md`
-
-Complete, dry, factual. No design rationale here.
-
-```markdown
-# {Module} Reference — API & Structure
-
-> **Last updated:** YYYY-MM-DD **Changes:** {change}
-
-## Description
-
-Complete API reference for the {Module} module: Models, Actions, Routes, Policies, Livewire,
-Events. Design rationale lives in `{module}.md`.
-
-## Models
-
-| Model | Table | Purpose |
-|-------|-------|---------|
-
-## Actions
-
-| Action | Type | Signature | Notes |
-|--------|------|-----------|-------|
-
-## Routes
-
-| Method | URI | Name | Middleware |
-|--------|-----|------|------------|
-
-## Policies & Permissions
-
-| Permission | Role(s) | Gate |
-|------------|---------|------|
-
-## Events
-
-| Event | Fired by | Listeners |
-|-------|----------|-----------|
-
-## Quick References
-
-- `modules/{module}.md` — conceptual overview (markdown link in the real doc)
-```
-
-### Architecture Pattern Doc — `docs/architecture/{pattern}-pattern.md`
-
-Explanation-first: why the pattern exists, then how to apply it correctly.
-
-```markdown
-# {Pattern} Pattern
-
-> **Last updated:** YYYY-MM-DD **Changes:** {change}
-
-## Description
-
-{What problem this pattern solves and when it applies.}
-
-## Non-Negotiable
-
-{Hard rules. Violations are architecture violations.}
-
-## How to Apply
-
-{Concrete application with a minimal example.}
-
-## Anti-Patterns
-
-| You see… | It should be… | Violation |
-|----------|---------------|-----------|
-
-## Quick References
-
-- `../conventions.md` — related invariants (markdown link in the real doc)
-```
-
-### Operational Guide — `docs/foundation/{operation}.md` (How-to)
-
-Goal-oriented steps for operators. Assumed knowledge goes in prerequisites, not in the body.
-
-```markdown
-# {Operation}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {change}
-
-## Description
-
-{What this achieves and when an operator needs it.}
-
-## Prerequisites
-
-{Access, versions, prior steps.}
-
-## Steps
-
-1. {Action with exact command}
-2. …
-
-## Verification
-
-{How to confirm success — expected output, health check.}
-
-## Troubleshooting
-
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-
-## Quick References
-
-- `other-operation.md` — related operation (markdown link in the real doc)
-```
+## Per-Directory Templates
+
+Copy-paste skeletons live next to the docs they produce:
+
+| Template | Produces |
+|----------|----------|
+| [`specs/spec-template.md`](specs/spec-template.md) | Feature spec — fixed 11-section structure with requirement IDs |
+| [`modules/module-template.md`](modules/module-template.md) | Conceptual module overview (`{module}.md`) |
+| [`modules/module-reference-template.md`](modules/module-reference-template.md) | Module API reference (`{module}-reference.md`) |
+| [`architecture/pattern-template.md`](architecture/pattern-template.md) | Architecture pattern doc (`{pattern}-pattern.md`) |
+| [`foundation/guide-template.md`](foundation/guide-template.md) | Operational how-to guide |
+
+Every template already satisfies the metadata contract above — copy, fill, delete what does not
+apply.
 
 ---
 
@@ -266,7 +132,7 @@ python3 scripts/scan_doc_links.py   # Links resolve, metadata present & fresh
 
 | When the agent… | It must… |
 |-----------------|----------|
-| Creates any markdown file in `docs/` | Copy the matching skeleton above; metadata on line 3; `Description` first H2; `Quick References` last |
+| Creates any markdown file in `docs/` | Copy the matching per-directory template; metadata on line 3; `Description` first H2; `Quick References` last |
 | Cannot classify content into one quadrant | Split it — mixed-type docs are rejected |
 | Restates a fact documented elsewhere | Link to the SSOT instead |
 | Edits doc content | Bump `Last updated` + rewrite `Changes` (latest change only) |
