@@ -7,14 +7,15 @@ namespace App\Auth\Login\Livewire;
 use App\Auth\Login\Actions\LoginAction;
 use App\Auth\Login\Data\LoginData;
 use App\Auth\Login\Livewire\Forms\LoginForm;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use RuntimeException;
 use TallStackUi\Traits\Interactions;
+use Throwable;
 
 class Login extends Component
 {
@@ -47,11 +48,15 @@ class Login extends Component
             $this->toast()->success(__('auth.login.welcome_back', ['name' => $user->name]))->send();
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
-        } catch (RuntimeException $e) {
+        } catch (RejectedException $e) {
             RateLimiter::hit($throttleKey, 60);
             $this->addError('form.identifier', $e->getMessage());
+        } catch (Throwable $e) {
+            report($e);
 
-            SmartLogger::error('Login failed for identifier')
+            $this->addError('form.identifier', __('auth.failed'));
+
+            SmartLogger::error('Unexpected error during login')
                 ->module('Auth')
                 ->event('login.error')
                 ->withPayload(['error' => $e->getMessage()])
