@@ -1,76 +1,80 @@
-# ADR-006: Base Class Mandate
+# Base Class Mandate
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current base class mandate (BaseModel, BaseCommandAction, BasePolicy, etc.)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Architecture Overview](../architecture.md) § Base Class Mandate and [Core Module](../guides/arch/modular-pattern.md) |
 
-Every architectural role in the system has a dedicated base class (BaseModel, BaseCommandAction,
-BasePolicy, etc.) that enforces contracts and provides consistent behavior.
+## Context and Problem Statement
 
-## Context
+Across 18 modules, 12 architectural layers, 155+ Actions and 38 models, consistency cannot rely
+on discipline alone. Without enforcement, drift accumulates silently: a model without UUID keys
+breaks foreign-key assumptions, a policy without role checks allows unauthorized access, and an
+Action without transaction wrapping leaves partial writes on failure. Architecture tests that
+once caught these violations were removed due to a `pest-plugin-arch` compatibility bug.
 
-In a 19-module codebase with 12 architectural layers and 155+ Actions across 38 models, consistency
-is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks
-foreign key assumptions, a policy without role checks allows unauthorized access, and an action
-without transaction wrapping leaves partial database writes on failure.
+**Decision Drivers:**
 
-Architecture tests previously caught these violations but were removed due to a `pest-plugin-arch`
-compatibility bug. Until restored, enforcement relies on PHPStan custom rules and code review.
+* Uniform behavior per layer (UUID keys, transactions, authorization, status handling)
+* Predictability across 465+ files for onboarding and review
+* Cross-cutting change leverage — one base-class change reaches 150+ consumers
+* Enforcement that survives the temporary absence of architecture tests
 
-## Decision
+## Considered Options
 
-Every architectural layer has exactly one base class from Core. There is no alternative. The
-following table defines the mapping:
+* **Mandate one base class per layer (chosen)** — every architectural role extends or implements a
+  single Core base. *Pros:* uniform contracts, automatic propagation of fixes; *Cons:* broad
+  blast radius when a base changes.
+* **Opt-in base classes** — provide bases as helpers, adoption voluntary.
+  *Pros:* low friction. *Cons:* inconsistent coverage, drift returns, review burden grows.*
+* **Interfaces only, no inheritance** — enforce contracts via interfaces/traits alone.
+  *Pros:* more flexible. *Cons:* duplicated wiring across layers, no shared implementation reuse.*
 
-| Layer                    | Base Class                        | Provides                                              | Enforced By           |
-| ------------------------ | --------------------------------- | ----------------------------------------------------- | --------------------- |
-| Model                    | BaseModel                         | UUID v7 (HasUuids), non-incrementing, string key type | extends check         |
-| Action (Command/Process) | BaseAction                        | transaction(), log(), HandlesActionErrors             | extends check         |
-| Action (Read)            | None required                     | —                                                     | —                     |
-| Entity                   | BaseEntity                        | final readonly, fromModel bridge                      | extends + final check |
-| Policy                   | BasePolicy                        | AuthorizesRoles + AuthorizesOwnership traits          | extends check         |
-| Livewire CRUD            | BaseRecordManager                 | Search, filter, sort, pagination, bulk actions        | extends check         |
-| Controller               | BaseController                    | Cross-cutting HTTP concerns                           | extends check         |
-| Form Request             | BaseFormRequest (Core's)          | Consistent ValidationFailedException                  | extends check         |
-| Enum                     | Implements LabelEnum              | label(): string method                                | implements check      |
-| Status Enum              | Implements StatusEnum + LabelEnum | canTransitionTo(), isTerminal()                       | implements check      |
-| Exception                | AppException or ModuleException   | HasExceptionContext trait                             | extends check         |
-| Cache key                | `config/cache-keys.php`           | Centralized key registry                              | config array          |
+## Decision Outcome
 
-### Exception
+**Chosen option: Mandate one base class per layer** — every architectural layer has exactly one
+Core base; there is no alternative.
 
-The `User` model cannot extend `BaseModel` — it must extend `Authenticatable` for authentication
-features. It manually applies `HasUuids` and overrides `getIncrementing()` and `getKeyType()` to
-maintain UUID consistency. This is the sole exception.
+| Layer | Base Class | Provides | Enforced By |
+|-------|------------|----------|-------------|
+| Model | BaseModel | UUID v7 (HasUuids), non-incrementing string PK | extends check |
+| Action (Command/Process) | BaseAction | `transaction()`, `log()`, HandlesActionErrors | extends check |
+| Action (Read) | — (none required) | — | — |
+| Entity | BaseEntity | `final readonly`, `fromModel` bridge | extends + final |
+| Policy | BasePolicy | AuthorizesRoles + AuthorizesOwnership | extends check |
+| Livewire CRUD | BaseRecordManager | Search, filter, sort, pagination, bulk actions | extends check |
+| Controller | BaseController | Cross-cutting HTTP concerns | extends check |
+| Form Request | BaseFormRequest | Consistent ValidationFailedException | extends check |
+| Enum | Implements LabelEnum | `label(): string` | implements |
+| Status Enum | Implements StatusEnum + LabelEnum | `canTransitionTo()`, `isTerminal()` | implements |
+| Exception | AppException or ModuleException | HasExceptionContext | extends check |
+| Cache key | `config/cache-keys.php` | Centralized registry | config array |
 
-### Enforcement Gap
+**Exception:** `User` must extend `Authenticatable`, not `BaseModel`. It manually applies
+`HasUuids` and overrides `getIncrementing()` / `getKeyType()` to preserve UUID consistency —
+the sole documented exception, kept in sync with BaseModel explicitly.
 
-Until architecture tests are restored (planned when `pest-plugin-arch` stabilizes), PHPStan custom
-rules and code review serve as enforcement. Violations are considered blocking in code review.
+**Enforcement gap (temporary):** until `pest-plugin-arch` stabilizes, PHPStan custom rules and
+blocking code review enforce the mandate.
 
-## Consequences
+### Positive Consequences
 
-- **Positive**: Every class in a given layer behaves identically — UUID keys, transactional actions,
-  authorized policies. Predictable across 465+ files.
-- **Positive**: Cross-cutting changes (e.g., adding a new feature to `BaseAction`) apply to all 150+
-  actions automatically.
-- **Positive**: New developers can look at any module file and know the structure — every model,
-  action, and policy follows the same pattern.
-- **Negative**: The User model exception is documented but adds a maintenance burden — it must be
-  kept in sync with BaseModel features.
-- **Negative**: Changing a base class affects all consuming classes — requires careful testing and
-  impact analysis.
+* Every class in a layer behaves identically — predictable across the codebase
+* Cross-cutting changes (e.g., new capability in `BaseAction`) reach 150+ actions automatically
+* New contributors recognize structure immediately
 
-## References
+### Negative Consequences
 
-- `app/Core/Models/BaseModel.php` — Base model with UUID
-- `app/Core/Actions/BaseAction.php` — Base action with transaction + log
-- `app/Core/Entities/BaseEntity.php` — Base entity (final readonly)
-- `app/Core/Policies/BasePolicy.php` — Base policy with role/ownership traits
-- `app/Core/Livewire/BaseRecordManager.php` — Base CRUD Livewire component
-- `app/Core/Http/Controllers/BaseController.php` — Base controller
-- `app/Core/Http/Requests/BaseFormRequest.php` — Base form request
-- `app/Core/Contracts/LabelEnum.php` — Enum contract
-- `app/Core/Contracts/StatusEnum.php` — Status enum contract
-- `config/cache-keys.php` — Cache key registry
-- `docs/architecture.md` — Base Class Mandate section
+* User-model exception adds maintenance burden — must track BaseModel evolution
+* Changing a base class affects all consumers; requires impact analysis and broad test runs
+
+## Links
+
+* [Architecture Overview](../architecture.md) — 4-layer model and mandate rationale
+* [Modular Pattern](../guides/arch/modular-pattern.md) — module colocation and base-class usage
+* [Actions Guide](../guides/arch/action-pattern.md) — Command/Read/Process triad built on BaseAction
+* [Entity Pattern](../guides/arch/entity-pattern.md) — BaseEntity contract for business rules
