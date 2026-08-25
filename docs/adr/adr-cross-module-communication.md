@@ -1,43 +1,59 @@
-# ADR-011: Cross-Module Communication Discipline
+# Cross-Module Communication Discipline
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current cross-module communication (direct imports, Action delegation, module events, core contracts)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Modular Architecture](../architecture.md) and [Modular Pattern](../guides/arch/modular-pattern.md) |
 
-Modules communicate through direct imports (allowed freely), Action calls, module events
-(fire-and-forget), and core contracts — with no enforced module boundaries.
+## Context and Problem Statement
 
-## Context
+Internara organizes code into 18 modules, each owning a complete vertical slice (Models,
+Actions, Livewire, Policies). Business processes naturally span modules — student registration
+touches Enrollment, Program, and User; closing a program touches Assessment, Certification,
+and Reports.
 
-The Action-based MVC architecture organizes code into 18 modules, each owning a complete vertical
-slice. Business processes naturally span multiple modules — student registration involves
-Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and
-Reports modules.
+Without guidance, cross-module calls can create tight coupling, circular dependencies, and
+hidden side effects. Four communication patterns are available, each with different coupling
+costs: direct import, Action delegation, module events, and shared core contracts.
 
-Four communication patterns exist with different coupling trade-offs:
+**Decision Drivers:**
 
-1. **Direct import** — straightforward, pragmatic, tight coupling
-2. **Events** — loose coupling, fire-and-forget
-3. **Shared contracts** — moderate coupling, interface-based
-4. **Action delegation** — explicit dependency, moderate coupling
+* Developer velocity in a single-tenant PKL system outweighs architectural purity
+* Avoid circular dependencies and god modules while keeping the call graph understandable
+* Side effects (notifications, cache invalidation) should not pollute core business transactions
+* Contract-based decoupling should be an explicit choice, not a default tax
 
-## Decision
+## Considered Options
 
-Cross-module imports are **allowed**. The goal is developer velocity, not architectural purity. Use
-the simplest pattern that works. The following hierarchy serves as guidance, not enforcement.
+* **Strict module boundaries** — forbid direct cross-module imports; all communication through
+  events or contracts. *Pros:* strongest decoupling. *Cons:* ceremony for trivial reads, slower
+  iteration, extra indirection for simple cases.
+* **Events-only decoupling** — every cross-module interaction is an event. *Pros:* fully
+  decoupled, testable in isolation. *Cons:* fire-and-forget hides intent, harder to trace
+  mandatory workflows, overkill for synchronous reads.
+* **Pragmatic hierarchy with direct imports allowed (chosen)** — allow direct imports as the
+  default, provide a ranked guidance hierarchy (core contracts → events → Action delegation →
+  direct import) for when looser coupling is warranted. *Pros:* lowest friction for common
+  cases, decoupling available when accumulation justifies it. *Cons:* permits tighter coupling
+  by default; relies on review and tests to catch breakage.
 
-### 1. Core Contracts (Layer 3)
+## Decision Outcome
 
-Shared interfaces in `App\Core\Contracts\`. Any module implements them, any module consumes them
-through the container. Currently defined: `LabelEnum`, `StatusEnum`, `ColorableEnum`,
-`SendsNotifications`.
+**Chosen option: Pragmatic hierarchy with direct imports allowed** — cross-module imports are
+permitted. The following hierarchy serves as guidance, not enforcement; use the simplest pattern
+that satisfies the coupling need.
 
-### 2. Module Events (Layer 9)
+**1. Core Contracts (Layer 3)** — shared interfaces in `App\Core\Contracts\`
+(`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`). Any module implements them;
+any module consumes them through the container.
 
-Events decouple side effects from core business logic. A Command Action dispatches an event;
-listeners in any module react. Event classes are concrete, lightweight DTOs with public readonly
-properties. Events belong to the emitting module. Listeners should implement `ShouldQueue` for
-non-critical side effects.
+**2. Module Events (Layer 9)** — decouple side effects from core transactions. A Command Action
+dispatches a concrete, lightweight event DTO (public readonly properties); listeners in any
+module react and should implement `ShouldQueue` for non-critical work.
 
 ```
 Internship\Actions\CreateInternshipAction
@@ -46,21 +62,17 @@ Internship\Actions\CreateInternshipAction
     → SysAdmin\Listeners\InvalidateCache (different module)
 ```
 
-### 3. Action Delegation
-
-A module calls another module's Action through its public `execute()` method. Any Action type may
-delegate to other modules' Actions. Prefer events over delegation when side effects are
-fire-and-forget.
+**3. Action Delegation** — a module calls another module's public `execute()` method. Any Action
+type may delegate to other modules' Actions. Prefer events over delegation when the side effect
+is fire-and-forget.
 
 ```php
 class CloseInternshipAction extends BaseAction
 {
     public function __construct(
-        protected readonly FinalizeAssessmentsAction $finalizeAssessments, // Assessment module
-        protected readonly IssueCertificatesAction $issueCertificates,
-    ) {
-        // Certification module
-    }
+        protected readonly FinalizeAssessmentsAction $finalizeAssessments, // Assessment
+        protected readonly IssueCertificatesAction $issueCertificates,      // Certification
+    ) {}
 
     public function execute(Internship $program): void
     {
@@ -70,23 +82,23 @@ class CloseInternshipAction extends BaseAction
 }
 ```
 
-### 4. Direct Import
+**4. Direct Import** — straightforward cross-module access when no decoupling is needed; the
+default choice. Reach for events or contracts only when loose coupling pays for itself.
 
-Straightforward cross-module access when no decoupling is needed. This is the default choice — only
-reach for events or contracts when you need loose coupling.
+### Positive Consequences
 
-## Consequences
+* Direct imports remove the biggest friction point in daily development
+* Events remain available for decoupling once side effects accumulate
+* No architecture-test maintenance burden for cross-module rules
+* Call chains stay traceable when delegation is used for mandatory workflows
 
-- **Positive**: Direct imports are allowed, removing the biggest friction point in daily
-  development.
-- **Positive**: Events remain available for decoupling when side effects accumulate.
-- **Positive**: No architecture test maintenance burden for cross-module rules.
-- **Negative**: Direct imports create tighter coupling — a change in one module's model can break
-  another module. Mitigated by test coverage and code review.
+### Negative Consequences
 
-## References
+* Direct imports create tighter coupling — a change in one module's model can break another;
+  mitigated by test coverage and code review
 
-- `app/Core/Contracts/` — Shared contracts
-- `app/Program/Internship/Events/InternshipCreated.php` — Event example
-- `app/Providers/AppServiceProvider.php` — Contract bindings, listener registration
-- `docs/architecture.md` — Cross-Module Communication section
+## Links
+
+* [Modular Pattern](../guides/arch/modular-pattern.md) — module colocation and SRP rules
+* [Event Pattern](../guides/arch/event-pattern.md) — event DTOs and listener conventions
+* [Architecture Overview](../architecture.md) — 4-layer model and layer responsibilities
