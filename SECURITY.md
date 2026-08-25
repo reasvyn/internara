@@ -16,6 +16,8 @@ Send details to **[reasvyn@gmail.com](mailto:reasvyn@gmail.com)** with the subje
 You should receive a response within **48 hours**. If you don't, follow up to ensure the message was
 received.
 
+Preferred language: **English** (Indonesian accepted).
+
 ## Disclosure
 
 We follow a **90-day disclosure window** — we aim to release a fix within 90 days of receiving a
@@ -42,7 +44,7 @@ The following are **out of scope**:
 
 | Version | Supported                                              |
 | ------- | ------------------------------------------------------ |
-| 0.x     | ✅ (latest only; security fixes backported on request) |
+| 0.x     | Yes (latest only; security fixes backported on request) |
 
 ## Security Practices
 
