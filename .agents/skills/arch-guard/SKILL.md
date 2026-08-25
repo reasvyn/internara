@@ -1,12 +1,12 @@
 ---
 name: arch-guard
 description: >
-    SDLC Phase: QUALITY GATE. Comprehensive architecture, convention, and pattern enforcement. Scans
-    PHP/Blade code for violations of C1-C8, D1-D6, class contracts, naming conventions, security
-    anti-patterns, and performance issues. Produces structured JSON reports for issue creation. Use
-    after any code change, before commit, or as a periodic audit. All other code skills
-    (code-writing, code-refactoring, livewire-development, pest-testing) delegate quality checks to
-    this skill.
+    SDLC Phase: QUALITY GATE. Comprehensive architecture, convention, pattern, and ADR enforcement.
+    Scans PHP/Blade code for violations of C1-C8, D1-D6, class contracts, naming conventions, security
+    anti-patterns, and performance issues, plus audits ADR documents (docs/adr/*.md) for staleness,
+    linkage, and decision coverage. Produces structured JSON reports for issue creation. Use after any
+    code change, before commit, or as a periodic audit. All other code skills (code-writing,
+    code-refactoring, livewire-development, pest-testing) delegate quality checks to this skill.
 ---
 
 # Architecture Guard
@@ -15,8 +15,8 @@ description: >
 > `rules/` (invariant enforcement, class contracts, naming, security, performance, layer audit,
 > output & integration)
 
-Comprehensive enforcement of Internara's architecture, conventions, and patterns. This is the
-**single source of truth** for all quality rules — every other skill defers here.
+Comprehensive enforcement of Internara's architecture, conventions, patterns, and Architecture Decision Records. This is the
+**single source of truth** for all quality rules — every other skill defers here. ADR documents (`docs/adr/*.md`) are treated as first-class architectural artifacts: their linkage to code, metadata freshness, and decision coverage are quality gates.
 
 ## When to Use
 
@@ -43,9 +43,9 @@ scripts blindly on a full-module set without batching.
 
 This skill is the **Verify-phase quality gate**. Load the rule asset only when the audit reaches
 that concern: invariants, class contracts, naming, security, performance, the four-layer procedure,
-or output/integration. Every check resolves against `docs/conventions.md`,
-`docs/architecture/{pattern}-pattern.md`, and `docs/architecture/modular-pattern.md` §1.6 (SRP &
-modularity rules) as the ground truth.
+ADR audit, or output/integration. Every check resolves against `docs/conventions.md`,
+`docs/architecture/{pattern}-pattern.md`, `docs/adr/*.md`, and
+`docs/architecture/modular-pattern.md` §1.6 (SRP & modularity rules) as the ground truth.
 
 **Spec-first:** this skill is a quality gate, not a source of intent. It only verifies that code
 conforms to the governing spec's requirements (FR/NFR/UC IDs). If an audit surfaces a behavior
@@ -93,8 +93,11 @@ python3 scripts/scan_conventions.py
 # Dead code detection (unregistered observers, unused DTOs, orphan events)
 python3 scripts/scan_dead_code.py
 
-# Doc link integrity
+# Doc link integrity (includes ADR index ↔ ADR files)
 python3 scripts/scan_doc_links.py
+
+# ADR audit — staleness, metadata, code linkage, orphan decisions
+python3 scripts/scan_adr.py
 
 # Test suite runner (per-module results)
 python3 scripts/scan_tests.py
@@ -116,4 +119,5 @@ scope to a single module. See `scripts/README.md` for full documentation.
 | Security rules S1-S10 (XSS/SQLi/mass-assignment/CSRF/auth/rate-limit/secrets/uploads/headers) | `rules/security-rules.md`         | Scanning for security anti-patterns                                   |
 | Performance rules P1-P5 (N+1, select, chunk, cache, exists)                                   | `rules/performance-rules.md`      | Auditing query & data-shape performance                               |
 | Four-layer audit procedure & severity classification                                          | `rules/layer-audit-procedure.md`  | Auditing code by layer or classifying finding severity                |
+| ADR audit — metadata freshness, code linkage, orphan & stale decisions                        | `rules/adr-audit.md`              | Auditing any ADR document or its code linkage                         |
 | JSON report structure, automation mapping & skill delegation                                  | `rules/output-and-integration.md` | Consuming/filing findings or integrating arch-guard with other skills |
