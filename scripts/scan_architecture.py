@@ -298,8 +298,7 @@ def main() -> None:
 
     # Output handling
     if args.json or args.format == "json":
-        if not args.quiet:
-            print(json.dumps(result.__dict__ if hasattr(result, '__dict__') else asdict(result), indent=2, ensure_ascii=False))
+        print(json.dumps(result.__dict__ if hasattr(result, '__dict__') else asdict(result), indent=2, ensure_ascii=False))
     elif args.format == "summary":
         if not args.quiet:
             print_summary(result, verbose=args.verbose)
