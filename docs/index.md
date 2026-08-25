@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.3 — pass APP_LOCALE/FAKER/TIMEZONE through compose (VPS env localization id + Asia/Jakarta)
 
 Complete catalog of all documentation files, organized by topic and audience.
 

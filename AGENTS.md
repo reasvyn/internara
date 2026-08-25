@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.3 — pass APP_LOCALE/FAKER/TIMEZONE through compose (VPS env localization id + Asia/Jakarta)
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.

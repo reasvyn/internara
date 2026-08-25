@@ -1,6 +1,6 @@
 # Deploy Topology & Caveats — Operations Context
 
-> **Last updated:** 2026-08-24 **Changes:** clarify `internara.web.id` is product demo (not production), version-gate note
+> **Last updated:** 2026-08-25 **Changes:** v0.15.3 — compose now passes APP_LOCALE/FAKER/TIMEZONE (env-wiring caveat added)
 
 ## Description
 
@@ -26,6 +26,7 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
 
 | Caveat | Detail |
 | ------ | ------ |
+| **Host `.env` feeds only vars referenced in `docker-compose.yml`** | Compose interpolates `${VAR}` strictly per the `environment:` mapping — an entry in host `.env` that is not mapped there never reaches the container (v0.15.2 incident: `APP_LOCALE=id`/`APP_TIMEZONE=Asia/Jakarta` sat inert in `.env` while the app ran `en`/UTC). New env vars must be added to the compose `environment:` block, then shipped through a release. |
 | **Branch-push deploys resolve the tag from `composer.json`** | On `docker-deploy` branch pushes, `VERSION_TAG = v{composer.json version}`. The VPS then `git checkout` that tag — NOT the pushed commit. If `composer.json` is stale, the VPS checks out an old tag that may lack current scripts (v0.14.3 incident: checked out v0.14.0 → `.github/scripts/deploy.sh: No such file or directory` → exit 127). **Rule: every release must bump `composer.json` `version` AND create the matching `v*.*.*` tag on main before pushing `docker-deploy`.** Tag pushes (`v*.*.*`) bypass this and use the ref name directly. |
 | **`git reset --hard origin/docker-deploy` runs on every deploy** | Any manual change inside `~/apps/internara` on the VPS is silently destroyed. Never hand-edit files there; change the repo and push. |
 | **Health check gates success** | The deploy is green only when `https://internara.web.id` (product demo) returns 200 within 60s. |
