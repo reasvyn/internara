@@ -23,7 +23,8 @@ or an audit.
 scope/structure/behavior decisions, L-size session plans, pre-commit checkpoints, and the final
 report.
 
-**Commit every session** — always end a session with a commit as its checkpoint; commit format
+**Commit as checkpoint** ([rule](.agents/rules/commit-as-checkpoint.md)) — always end a session
+with a commit as its checkpoint; commit format
 `type(scope): description`.
 
 ---
@@ -39,6 +40,7 @@ report.
 | [`automation-first`](.agents/rules/automation-first.md) | Script batch work; reuse scanners; `/tmp` for throwaway scripts | Repetitive/batch operations; writing scripts |
 | [`edit-policy`](.agents/rules/edit-policy.md) | Read-before-edit, surgical diffs, git lossless proof | Every code/doc edit |
 | [`pre-existing-defects`](.agents/rules/pre-existing-defects.md) | Fix or file noticed warnings/errors; never silent tolerance | Warnings/errors encountered mid-task |
+| [`commit-as-checkpoint`](.agents/rules/commit-as-checkpoint.md) | Every session ends with a commit as its checkpoint; never leave verified work uncommitted | End of every session |
 | [`verification-strategy`](.agents/rules/verification-strategy.md) | Batched verification, change-type matrix, scanner commands | Before running tests or quality gates |
 | [`pre-commit-checklist`](.agents/rules/pre-commit-checklist.md) | Final gate before every commit | Immediately before each commit |
 
