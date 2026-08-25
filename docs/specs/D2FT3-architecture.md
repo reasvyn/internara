@@ -126,7 +126,7 @@ surface.
 | FR-ARC2 | A module owns its full vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`, `Notifications/`, `Policies/`, `Livewire/`, `Http/`, routes, and `lang/` |
 | FR-ARC3 | A module's public surface is its `Actions/`, `Services/`, `Contracts/`, `Events/`, `Entities/`, and `Enums/`; everything else is internal to the module |
 | FR-ARC4 | The Core module (`app/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
-| FR-ARC5 | Each module is registered in `config/module.php` with its dependency order; `docs/modules/index.md` documents the graph |
+| FR-ARC5 | Each module is registered in `config/module.php` with its dependency order; `docs/refs/modules/index.md` documents the graph |
 
 ### 4-Layer Model
 

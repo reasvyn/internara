@@ -478,8 +478,8 @@ After implementing this spec, the system has emergency super admin recovery via 
 
 ## Quick References
 
-- `docs/modules/setup.md` — Setup module conceptual overview
-- `docs/modules/setup-reference.md` — Setup module technical reference
+- `docs/refs/modules/setup.md` — Setup module conceptual overview
+- `docs/refs/modules/setup-reference.md` — Setup module technical reference
 - `docs/specs/installation.md` — CLI installation and provisioning initiative
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
 - `docs/specs/authentication.md` — Login, password reset, session management

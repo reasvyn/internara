@@ -231,12 +231,12 @@ File: `routes/web/user.php` Named routes: `home`, `dashboard`, `user.dashboard`,
 
 ## Views
 
-Views are located in `resources/views/user/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/user/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/User/`. See [Testing](../infrastructure/testing.md) for the testing
+Tests are located in `tests/User/`. See [Testing](../../infrastructure/testing.md) for the testing
 conventions. Tests are spec-driven: each test traces to a spec requirement ID (`FR-*` / `NFR-*` /
 `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention (grouped under
 `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.

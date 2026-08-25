@@ -687,8 +687,8 @@ After implementing this spec, the system has login, account activation (token ve
 - `app/User/Enums/AccountStatus.php` — 8-state status machine with transition guards
 - `config/auth.php` — throttle configuration
 - `routes/web/auth.php` — login/logout routes
-- `docs/modules/auth.md` — Auth module overview
-- `docs/modules/auth-reference.md` — Auth module technical reference
+- `docs/refs/modules/auth.md` — Auth module overview
+- `docs/refs/modules/auth-reference.md` — Auth module technical reference
 - `app/Auth/AccessTokens/Models/AccessToken.php` — token lifecycle (generate, verify, revoke)
 - `app/Auth/AccessTokens/Entities/AccessTokenState.php` — token validity state
 - `app/Auth/AccessTokens/Entities/ActivationToken.php` — activation token value object

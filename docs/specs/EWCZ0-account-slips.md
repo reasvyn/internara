@@ -558,4 +558,4 @@ After implementing this spec, the system can generate account slips — credenti
 - `app/User/UserManagement/Actions/CreateUserAction.php` — User creation with activation code notification
 - `docs/specs/user-crud-and-status.md` — User CRUD and AccountStatus state machine
 - `docs/specs/csv-import-export.md` — CSV import/export
-- `docs/modules/user.md` — User module conceptual documentation
+- `docs/refs/modules/user.md` — User module conceptual documentation

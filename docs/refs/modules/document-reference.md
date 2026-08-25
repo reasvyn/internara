@@ -116,12 +116,12 @@ File: `routes/web/document.php` Named routes: `sysadmin.reports.index`,
 
 ## Views
 
-Views are located in `resources/views/document/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/document/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Document/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Document/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories

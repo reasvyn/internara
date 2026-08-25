@@ -489,8 +489,8 @@ After implementing this spec, the system generates grade cards and archived snap
 - `app/Observers/ReportObserver.php` — Snapshot observer
 - `app/Http/Controllers/ReportController.php` — Download controller
 - `database/migrations/*_create_reports_table.php` — Reports schema
-- `docs/modules/reports.md` — Reports module conceptual documentation
-- `docs/modules/reports-reference.md` — Reports module reference documentation
+- `docs/refs/modules/reports.md` — Reports module conceptual documentation
+- `docs/refs/modules/reports-reference.md` — Reports module reference documentation
 - `docs/architecture/action-pattern.md` — Action Triad pattern
 - `docs/architecture/entity-pattern.md` — Entity contracts
 - `docs/architecture/data-pattern.md` — DTO/Data contracts

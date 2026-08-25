@@ -414,4 +414,4 @@ After implementing this spec, students and supervisors can report workplace inci
 - `app/Incident/IncidentReport/Livewire/IncidentForm.php` — Student-only incident report form
 - `app/Incident/IncidentReport/Livewire/IncidentManager.php` — Admin table with filters and resolve modal
 - `app/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — Admin notification on report
-- `docs/modules/incident.md` — Module conceptual documentation
+- `docs/refs/modules/incident.md` — Module conceptual documentation

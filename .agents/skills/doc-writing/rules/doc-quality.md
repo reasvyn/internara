@@ -115,7 +115,7 @@ not check tier separation, section names, or PHPDoc. A clean scanner is necessar
 
 - `python3 scripts/scan_doc_links.py` — catches broken links, missing/stale metadata, wrong
   section-name footers are NOT caught — review those manually.
-- Grep for tier violations: `grep -n "app/\|::class\|.php" docs/modules/*.md` (conceptual docs
+- Grep for tier violations: `grep -n "app/\|::class\|.php" docs/refs/modules/*.md` (conceptual docs
   should have no hits).
 - Grep for PHPDoc violations: `grep -rn "@author\|@version\|@param \|@return " app/`.
 - `git diff` on the touched doc — confirm only the intended sections changed (Edit Policy).

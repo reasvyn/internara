@@ -61,7 +61,7 @@ For each doc, check:
 ```bash
 # Claim: "Actions table lists every Action in the module"
 find app/Enrollment/Actions -name '*Action.php'          # ground truth: the files
-grep -c '^\|' docs/modules/enrollment-reference.md       # claimed count — must match
+grep -c '^\|' docs/refs/modules/enrollment-reference.md       # claimed count — must match
 
 # Claim: "spec ID SE5Q9 exists"
 grep -r "SE5Q9" docs/specs/index.md                      # ground truth: the spec index

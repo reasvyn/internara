@@ -412,4 +412,4 @@ module registration through the consolidated gateway.
 - `routes/web.php` — Route auto-inclusion
 - `docs/specs/module-discovery.md` (I1BCV) — Registry, discovery conventions, config contract
 - `docs/architecture/service-pattern.md` — Service vs Support boundaries
-- `docs/modules/core.md` — Core module conceptual overview
+- `docs/refs/modules/core.md` — Core module conceptual overview

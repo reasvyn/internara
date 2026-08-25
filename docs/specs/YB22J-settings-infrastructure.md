@@ -439,5 +439,5 @@ After implementing this spec, the system has a key-value settings store with cac
 - `app/Settings/Livewire/Forms/GeneralSettingsForm.php` — General settings form
 - `app/Settings/Livewire/Forms/MailSettingsForm.php` — Mail settings form
 - `routes/web/settings.php` — `/admin/settings` route definition
-- `docs/modules/settings.md` — Module conceptual documentation
+- `docs/refs/modules/settings.md` — Module conceptual documentation
 - **Related specs:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — Branding, theme & locale UI

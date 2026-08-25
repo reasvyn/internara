@@ -90,7 +90,7 @@ to a single module. See `scripts/README.md` for full documentation.
 | Feature specs | `docs/specs/index.md` |
 | Spec template | `.agents/skills/spec-writing/SKILL.md` |
 | Agent guides & skills | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` |
-| Module structure | `docs/modules/index.md` |
+| Module structure | `docs/refs/modules/index.md` |
 | Architecture & layer rules | `docs/architecture.md` |
 | Architecture patterns | `docs/architecture/{pattern}-pattern.md` |
 | Action Triad patterns | `docs/architecture/action-pattern.md` |

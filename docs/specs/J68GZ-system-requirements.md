@@ -332,8 +332,8 @@ After implementing this spec, the system has a verified dependency manifest, dat
 
 - `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules
 - `docs/conventions.md` — Invariants C1-C8, D1-D6, naming, security, testing
-- `docs/modules/core.md` — Core module overview
-- `docs/modules/core-reference.md` — Core module technical reference
+- `docs/refs/modules/core.md` — Core module overview
+- `docs/refs/modules/core-reference.md` — Core module technical reference
 - `docs/infrastructure/database.md` — Schema design, engine comparison
 - `docs/infrastructure/deployment.md` — Three deployment paths
 - `app/Core/` — All base classes, contracts, exceptions, services

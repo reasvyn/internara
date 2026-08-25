@@ -10,8 +10,8 @@ makes docs useless to their two different audiences.
 
 | Tier | File | Content | Must NOT contain |
 |------|------|---------|-----------------|
-| **Conceptual** | `docs/modules/{module}.md` | Purpose, design principles, business rules, module boundary | File paths, class names, schemas, Actions tables, Routes tables |
-| **Reference** | `docs/modules/{module}-reference.md` | File paths, class names, table schemas, Actions/Routes tables, dependency graphs | Design rationale, "why" explanations |
+| **Conceptual** | `docs/refs/modules/{module}.md` | Purpose, design principles, business rules, module boundary | File paths, class names, schemas, Actions tables, Routes tables |
+| **Reference** | `docs/refs/modules/{module}-reference.md` | File paths, class names, table schemas, Actions/Routes tables, dependency graphs | Design rationale, "why" explanations |
 
 ## Rationale
 
@@ -30,8 +30,8 @@ The hard split keeps each doc single-purpose, so each stays accurate and cheap t
 
 When creating or editing a module doc, ask: **"Is this design intent or implementation detail?"**
 
-- Design intent → conceptual (`docs/modules/{module}.md`)
-- Implementation detail → reference (`docs/modules/{module}-reference.md`)
+- Design intent → conceptual (`docs/refs/modules/{module}.md`)
+- Implementation detail → reference (`docs/refs/modules/{module}-reference.md`)
 
 **Non-module docs** (architecture patterns, infrastructure, foundation) follow the same principle:
 conceptual docs explain *why*, reference docs explain *what*.
@@ -45,14 +45,14 @@ conceptual docs explain *why*, reference docs explain *what*.
 ## Examples
 
 ```markdown
-# docs/modules/enrollment.md  (conceptual)
+# docs/refs/modules/enrollment.md  (conceptual)
 ## Description
 Enrollment converts approved student applications into active internship placements.
 ## Business Rules
 - A student may hold only one active placement per academic year.
 - Placement requires an approved account application and a valid internship.
 
-# docs/modules/enrollment-reference.md  (reference)
+# docs/refs/modules/enrollment-reference.md  (reference)
 ## Description
 Locator for the Enrollment module's implementation.
 ## Actions
@@ -69,7 +69,7 @@ Locator for the Enrollment module's implementation.
 - **Rationale in reference:** a reference doc explaining *why* Actions exist. The Action Triad's
   rationale lives in `docs/architecture/action-pattern.md`; the reference doc lists *which* Actions
   exist.
-- **A third doc creeping in:** a `docs/modules/{module}-notes.md`. If a fact doesn't fit the two
+- **A third doc creeping in:** a `docs/refs/modules/{module}-notes.md`. If a fact doesn't fit the two
   existing docs, it is either misplaced (move it) or not worth documenting (drop it).
 - **Duplicated overviews:** the same module summary pasted into both tiers. Authoritative in one
   place, link from the other.

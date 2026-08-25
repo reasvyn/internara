@@ -130,12 +130,12 @@ File: `routes/web/program.php` Naming pattern: `sysadmin.internships` (admin pre
 
 ## Views
 
-Views are located in `resources/views/program/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/program/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Program/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Program/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories

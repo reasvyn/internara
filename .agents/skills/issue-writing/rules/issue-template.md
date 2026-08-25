@@ -253,7 +253,7 @@ re-reading invariants they must not break. Pre-wiring these turns "read the whol
 **How to apply:**
 
 - Pattern to follow: link to `docs/architecture/{pattern}-pattern.md`
-- Module context: link to `docs/modules/{module}.md`
+- Module context: link to `docs/refs/modules/{module}.md`
 - Reference file: `{path/to/existing/implementation}` already following the pattern
 - Note invariants: the relevant `AGENTS.md` / `docs/conventions.md` rules (C1-C8, D1-D6)
 

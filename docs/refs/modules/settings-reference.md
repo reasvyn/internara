@@ -137,12 +137,12 @@ File: `routes/web/settings.php` Named route: `admin.settings`
 
 ## Views
 
-Views are located in `resources/views/settings/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/settings/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Settings/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Settings/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
 (`FR-*` / `NFR-*` / `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention
 (grouped under `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.

@@ -47,4 +47,4 @@ Run `php artisan migrate --pretend` before committing; verify FK behavior with `
 - `python3 scripts/scan_conventions.py` — D6 (FK) clean.
 - `grep -R "foreignUuid\|foreignId" database/migrations --include="*.php"` shows explicit `onDelete`.
 - `php artisan migrate:fresh --seed` succeeds; FKs behave as declared.
-- `docs/modules/{module}-reference.md` lists the schema change.
+- `docs/refs/modules/{module}-reference.md` lists the schema change.

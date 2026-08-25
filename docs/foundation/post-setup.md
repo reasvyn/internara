@@ -14,10 +14,10 @@ configuration. Organized as a developer checklist with code paths and module cro
 
 | Step | Action | Module | Key Code Path |
 | ---- | ------ | ------ | ------------- |
-| 1 | Configure system settings (branding, locale, timezone) | [Settings](../modules/settings.md) | `Setting::update()` |
-| 2 | Configure backup schedule | [Settings](../modules/settings.md) | `BackupSetting` |
-| 3 | Create academic years | [Academics](../modules/academics.md) | `AcademicYear` |
-| 4 | Add remaining departments | [Academics](../modules/academics.md) | `Department` |
+| 1 | Configure system settings (branding, locale, timezone) | [Settings](../refs/modules/settings.md) | `Setting::update()` |
+| 2 | Configure backup schedule | [Settings](../refs/modules/settings.md) | `BackupSetting` |
+| 3 | Create academic years | [Academics](../refs/modules/academics.md) | `AcademicYear` |
+| 4 | Add remaining departments | [Academics](../refs/modules/academics.md) | `Department` |
 
 ---
 
@@ -25,10 +25,10 @@ configuration. Organized as a developer checklist with code paths and module cro
 
 | Step | Action | Module | Key Code Path |
 | ---- | ------ | ------ | ------------- |
-| 5 | Register partner companies | [Partners](../modules/partners.md) | `Company` |
-| 6 | Create partnership agreements (MoU) | [Partners](../modules/partners.md) | `Partnership` |
-| 7 | Create teacher/supervisor/student accounts | [User](../modules/user.md) | `CreateUserAction` |
-| 8 | Assign mentor flags to teachers/supervisors | [User](../modules/user.md) | `User.mentor_type` |
+| 5 | Register partner companies | [Partners](../refs/modules/partners.md) | `Company` |
+| 6 | Create partnership agreements (MoU) | [Partners](../refs/modules/partners.md) | `Partnership` |
+| 7 | Create teacher/supervisor/student accounts | [User](../refs/modules/user.md) | `CreateUserAction` |
+| 8 | Assign mentor flags to teachers/supervisors | [User](../refs/modules/user.md) | `User.mentor_type` |
 
 ---
 
@@ -36,9 +36,9 @@ configuration. Organized as a developer checklist with code paths and module cro
 
 | Step | Action | Module | Key Code Path |
 | ---- | ------ | ------ | ------------- |
-| 9 | Create internship period | [Program](../modules/program.md) | `InternshipProgram` |
-| 10 | Configure document requirements | [Enrollment](../modules/enrollment.md) | `RegistrationRequirement` |
-| 11 | Open student registration | [Enrollment](../modules/enrollment.md) | `Registration` |
+| 9 | Create internship period | [Program](../refs/modules/program.md) | `InternshipProgram` |
+| 10 | Configure document requirements | [Enrollment](../refs/modules/enrollment.md) | `RegistrationRequirement` |
+| 11 | Open student registration | [Enrollment](../refs/modules/enrollment.md) | `Registration` |
 
 ---
 
@@ -46,12 +46,12 @@ configuration. Organized as a developer checklist with code paths and module cro
 
 | Step | Action | Module | Verification |
 | ---- | ------ | ------ | ------------ |
-| 12 | Approve student registrations | [Enrollment](../modules/enrollment.md) | Registration status transitions |
-| 13 | Place students at companies | [Enrollment](../modules/enrollment.md) | `Placement` |
-| 14 | Verify attendance workflow | [Journals](../modules/journals.md) | Clock in/out flow |
-| 15 | Verify logbook workflow | [Journals](../modules/journals.md) | Journal entry → mentor review |
-| 16 | Verify assignment workflow | [Assignment](../modules/assignment.md) | Create → submit → grade |
-| 17 | Configure email notifications | [Settings](../modules/settings.md) | SMTP settings |
+| 12 | Approve student registrations | [Enrollment](../refs/modules/enrollment.md) | Registration status transitions |
+| 13 | Place students at companies | [Enrollment](../refs/modules/enrollment.md) | `Placement` |
+| 14 | Verify attendance workflow | [Journals](../refs/modules/journals.md) | Clock in/out flow |
+| 15 | Verify logbook workflow | [Journals](../refs/modules/journals.md) | Journal entry → mentor review |
+| 16 | Verify assignment workflow | [Assignment](../refs/modules/assignment.md) | Create → submit → grade |
+| 17 | Configure email notifications | [Settings](../refs/modules/settings.md) | SMTP settings |
 
 ---
 

@@ -62,7 +62,7 @@ which preserves the original as a historical record.
 
 Industry supervisor evaluations are optional to prevent blocking student workflows. Teachers can act
 as proxy for supervisors via the Cross-Role Proxy mechanism (see
-[ADR-014](../adr/adr-cross-role-proxy.md)):
+[ADR-014](../../adr/adr-cross-role-proxy.md)):
 
 - **Supervisor Proxy**: The school teacher inputs scores on behalf of the supervisor — covering
   scoring, feedback, and all supervisor-scoped actions. The action is logged with the teacher's

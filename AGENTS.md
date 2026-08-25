@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** README rewritten to industry-standard structure — product definition pointer now targets project-vision.md/philosophy.md instead of root README
+> **Last updated:** 2026-08-25 **Changes:** modules docs relocated to docs/refs/modules/ — all module-doc pointers updated
 
 Mental model, workflow, and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -345,7 +345,7 @@ Full definition: `docs/project-vision.md` (personas, system boundary, horizon) a
 
 ## Module & Spec Reference
 
-Full module list with docs: `docs/modules/index.md`
+Full module list with docs: `docs/refs/modules/index.md`
 Full spec list with build order: `docs/specs/index.md`
 
 ---
@@ -418,17 +418,17 @@ Full spec list with build order: `docs/specs/index.md`
 
 | Rule | Where to find |
 |------|--------------|
-| Name always `Super Admin` | `docs/modules/setup.md` §Super Admin |
-| Username always `superadmin` | `docs/modules/setup.md` §Super Admin |
-| SetupSuperAdminAction signature | `docs/modules/setup.md` §Super Admin |
-| InitializeSuperAdminAction uses config | `docs/modules/setup.md` §Super Admin |
+| Name always `Super Admin` | `docs/refs/modules/setup.md` §Super Admin |
+| Username always `superadmin` | `docs/refs/modules/setup.md` §Super Admin |
+| SetupSuperAdminAction signature | `docs/refs/modules/setup.md` §Super Admin |
+| InitializeSuperAdminAction uses config | `docs/refs/modules/setup.md` §Super Admin |
 
 ### Reports Module Rules
 
 | Rule | Where to find |
 |------|--------------|
-| Grade card only — no thesis content | `docs/modules/reports.md` §Boundary |
-| Thesis belongs in Assignment module | `docs/modules/assignment.md` |
+| Grade card only — no thesis content | `docs/refs/modules/reports.md` §Boundary |
+| Thesis belongs in Assignment module | `docs/refs/modules/assignment.md` |
 
 ---
 

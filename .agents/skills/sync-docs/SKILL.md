@@ -89,6 +89,6 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 | Documentation-first approach | `docs/conventions.md` (§0)                   |
 | Documentation structure      | `docs/conventions.md` (§Documentation Rules) |
 | Full doc catalog             | `docs/index.md`                              |
-| Module index                 | `docs/modules/index.md`                      |
+| Module index                 | `docs/refs/modules/index.md`                      |
 | Feature specs                | `docs/specs/index.md`                        |
 | Agent guides & skills        | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` |

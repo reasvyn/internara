@@ -231,12 +231,12 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
     if not SPECS_DIR.exists():
         return added
 
-    # Non-spec docs living in specs/ (registry index, implementation matrix) are not
-    # governed by the spec-ID filename convention.
+    # Non-spec docs living in specs/ (registry index, implementation matrix, copy-paste
+    # templates) are not governed by the spec-ID filename convention.
     non_spec_files = {"index.md", "implementation-matrix.md"}
 
     for p in sorted(SPECS_DIR.glob("*.md")):
-        if p.name in non_spec_files:
+        if p.name in non_spec_files or p.name.endswith("-template.md"):
             continue
         rel = relative_path(p)
         m = SPEC_FILE_PATTERN.match(p.name)

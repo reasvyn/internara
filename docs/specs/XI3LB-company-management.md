@@ -490,6 +490,6 @@ After implementing this spec, the system has company CRUD with industry type, co
 - `app/Partners/Company/Listeners/ClearDashboardOnCompanyChange.php` — Cache invalidation
 - `database/migrations/2026_01_03_000003_create_companies_table.php` — Companies schema
 - `routes/web/partners.php` — Route definitions
-- `docs/modules/partners.md` — Module conceptual documentation
-- `docs/modules/partners-reference.md` — Module technical reference
+- `docs/refs/modules/partners.md` — Module conceptual documentation
+- `docs/refs/modules/partners-reference.md` — Module technical reference
 - `docs/specs/partnership-management.md` — Partnership lifecycle spec (sibling split)

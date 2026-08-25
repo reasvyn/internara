@@ -529,4 +529,4 @@ After implementing this spec, teachers can create assignments with deadlines, st
 - `database/migrations/2026_01_04_000009_create_assignments_table.php` — Assignments schema
 - `database/migrations/2026_01_04_000010_create_submissions_table.php` — Submissions schema
 - `routes/web/assignment.php` — Route definitions
-- `docs/modules/assignment.md` — Module conceptual documentation
+- `docs/refs/modules/assignment.md` — Module conceptual documentation

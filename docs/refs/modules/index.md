@@ -326,7 +326,7 @@ acknowledgements.
 ## Architecture Overview
 
 All 18 modules are vertical slices cross-cutting the 4-layer architecture defined in
-[`docs/architecture.md`](../architecture.md):
+[`docs/architecture.md`](../../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, TallstackUI v4, Tailwind CSS v4, Controllers, Policies, Routes,
   Console

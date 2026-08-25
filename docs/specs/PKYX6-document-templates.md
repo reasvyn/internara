@@ -333,5 +333,5 @@ After implementing this spec, the system has PDF template infrastructure for cer
 - `app/Document/OfficialDocument/Livewire/ReportsManager.php` — Report type selection + generation
 - `database/migrations/` — `documents` and `registration_documents` table migrations
 - `routes/web/document.php` — Route definitions
-- `docs/modules/document.md` — Module conceptual documentation
+- `docs/refs/modules/document.md` — Module conceptual documentation
 - **Related spec:** [handbooks.md](ZUFG8-handbooks.md) — handbook lifecycle, acknowledgment tracking, registration docs

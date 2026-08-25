@@ -7,7 +7,7 @@
 
 # Internara — Vocational Fieldwork Management System
 
-> **Last updated:** 2026-08-25 **Changes:** rewritten to industry-standard README structure — pitch-first ordering, copy-paste quick start, deep product content delegated to docs/ links
+> **Last updated:** 2026-08-25 **Changes:** module documentation links realigned to docs/refs/modules/
 
 Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs
 (PKL — _Praktik Kerja Lapangan_) at Indonesian vocational schools (SMK). MIT-licensed, designed
@@ -121,7 +121,7 @@ All documentation lives in [`docs/`](docs/index.md):
 |-------|----------|
 | Getting started | [`docs/getting-started.md`](docs/getting-started.md) |
 | Architecture | [`docs/architecture.md`](docs/architecture.md) |
-| Module overviews | [`docs/modules/index.md`](docs/modules/index.md) |
+| Module overviews | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) |
 | Coding conventions | [`docs/conventions.md`](docs/conventions.md) |
 | Deployment | [`docs/infrastructure/deployment.md`](docs/infrastructure/deployment.md) |
 | Testing guide | [`docs/infrastructure/testing.md`](docs/infrastructure/testing.md) |

@@ -106,12 +106,12 @@ File: `routes/web/academics.php` Named routes: `sysadmin.school`, `sysadmin.depa
 
 ## Views
 
-Views are located in `resources/views/academics/`. See [UI/UX](../foundation/ui-ux.md) for the
+Views are located in `resources/views/academics/`. See [UI/UX](../../foundation/ui-ux.md) for the
 design system.
 
 ## Tests
 
-Tests are located in `tests/Academics/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Academics/`. See [Testing](../../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories

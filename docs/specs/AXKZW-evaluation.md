@@ -452,4 +452,4 @@ After implementing this spec, the system has weighted feedback forms with sectio
 - `database/migrations/2026_01_06_000003_create_evaluation_questions_table.php` — Questions schema
 - `database/migrations/2026_01_06_000004_create_evaluation_responses_table.php` — Responses schema
 - `database/migrations/2026_01_06_000005_create_evaluation_answers_table.php` — Answers schema
-- `docs/modules/evaluation.md` — Module conceptual documentation
+- `docs/refs/modules/evaluation.md` — Module conceptual documentation

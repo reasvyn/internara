@@ -463,4 +463,4 @@ After implementing this spec, the system has academic year CRUD with start/end d
 - `config/event.php` — Event-to-listener registration
 - `lang/en/academic_year.php` / `lang/id/academic_year.php` — Translations
 - **Related specs:** [school-profile.md](81SMS-school-profile.md) — School entity; [department-management.md](4HWSB-department-management.md) — Department CRUD
-- **Related modules:** [docs/modules/academics.md](../modules/academics.md) — Academics module overview
+- **Related modules:** [docs/refs/modules/academics.md](../refs/modules/academics.md) — Academics module overview

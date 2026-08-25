@@ -503,4 +503,4 @@ After implementing this spec, the system has rubric-based assessment with scorin
 - `database/migrations/2026_01_03_000006_create_rubrics_table.php` — Rubrics schema
 - `database/migrations/2026_01_04_000011_create_assessments_table.php` — Assessments schema
 - `routes/web/assessment.php` — Route definitions
-- `docs/modules/assessment.md` — Module conceptual documentation
+- `docs/refs/modules/assessment.md` — Module conceptual documentation

@@ -74,7 +74,7 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 |-------|----------|
 | Full conventions | `docs/conventions.md` |
 | Architecture overview | `docs/architecture.md` |
-| Module index | `docs/modules/index.md` |
+| Module index | `docs/refs/modules/index.md` |
 | Pattern deep-dives | `docs/architecture/{pattern}-pattern.md` |
 | Sync-docs workflow | `.agents/skills/sync-docs/SKILL.md` |
 | Sync verification rules | `.agents/skills/sync-docs/rules/sync-verification.md` |

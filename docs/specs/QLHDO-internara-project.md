@@ -90,7 +90,7 @@ participant can query, and no consistent reporting base.
    years
 3. Admin registers partner companies and formal partnerships with slot quotas
 4. System becomes operational **Postconditions:** School can enroll students; `superadmin` account
-   exists per [setup rules](../modules/setup.md)
+   exists per [setup rules](../refs/modules/setup.md)
 
 ### UC-2 — Student Completes the PKL Lifecycle
 
@@ -762,7 +762,7 @@ Full contracts in [C8F0D-shared-utilities](C8F0D-shared-utilities.md) (FR-SUP11)
 vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`,
 `Notifications/`, `Policies/`, `Livewire/`, `Services/`, `Support/`, routes, and `lang/`. The full
 module dependency graph and registration order live in `config/module.php` and
-`docs/modules/index.md`.
+`docs/refs/modules/index.md`.
 
 ### Architecture Contracts (authoritative references)
 
@@ -861,7 +861,7 @@ cross-cutting requirements (roles, localization, security, audit).
 - `docs/foundation/product-definition.md` — scope, personas, 3S doctrine, system boundary
 - `docs/specs/index.md` — full spec index and build order
 - `docs/specs/implementation-matrix.md` — implementation status matrix (priority-ordered)
-- `docs/modules/index.md` — module dependency graph and registration
+- `docs/refs/modules/index.md` — module dependency graph and registration
 - `config/module.php` — module bootstrap order
 - `docs/architecture.md` — 4-layer model, Action Triad
 - **Related specs:** every spec in this directory — each derives scope from this spec-zero and/or is

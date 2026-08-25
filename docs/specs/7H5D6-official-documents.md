@@ -484,7 +484,7 @@ Registration model. Seed the document type registry.
 - `docs/specs/certification.md` — Certificate generation (separate from official documents)
 - `docs/specs/reports.md` — `ReportFinalized` event that triggers Completion Letter
 - `docs/specs/partnership-management.md` — MoU document storage (separate initiative)
-- `docs/modules/document.md` — Document module overview
-- `docs/modules/document-reference.md` — Document module technical reference
+- `docs/refs/modules/document.md` — Document module overview
+- `docs/refs/modules/document-reference.md` — Document module technical reference
 - `docs/specs/QLHDO-internara-project.md` — High-level feature list
 - `docs/conventions.md` — Naming conventions, `LabelEnum` contract

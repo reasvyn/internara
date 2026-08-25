@@ -357,6 +357,6 @@ After implementing this spec, the system can match enrolled students to company 
 - `app/Enrollment/Placement/Livewire/StudentPlacementChangeRequest.php` — Student change request form
 - `app/Enrollment/Placement/Livewire/Forms/PlacementChangeForm.php` — Change form validation
 - `routes/web/enrollment.php` — All enrollment route definitions
-- `docs/modules/enrollment.md` — Enrollment module overview
+- `docs/refs/modules/enrollment.md` — Enrollment module overview
 - **Related specs:** [registration.md](MBB5R-registration.md) — Registration workflow & documents
 - **Related specs:** [account-application.md](920SO-account-application.md) — Guest-to-student account pipeline

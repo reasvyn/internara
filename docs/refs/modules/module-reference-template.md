@@ -4,7 +4,7 @@
 
 ## Description
 
-The structure for `docs/modules/{module}-reference.md` — the **reference** tier of module
+The structure for `docs/refs/modules/{module}-reference.md` — the **reference** tier of module
 documentation: complete, dry, factual inventory of the module's public surface. No design
 rationale — that lives in `{module}.md`.
 
@@ -59,5 +59,5 @@ Events. Design rationale lives in `{module}.md`.
 
 ## Quick References
 
-- [`doc-template.md`](../doc-template.md) — shared documentation standards
+- [`doc-template.md`](../../doc-template.md) — shared documentation standards
 - [`module-template.md`](module-template.md) — companion conceptual-tier template

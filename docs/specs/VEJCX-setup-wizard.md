@@ -460,8 +460,8 @@ After implementing this spec, the system has a 6-step browser wizard that create
 
 ## Quick References
 
-- `docs/modules/setup.md` — Module conceptual overview
-- `docs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
+- `docs/refs/modules/setup.md` — Module conceptual overview
+- `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/installation.md` — CLI provisioning initiative
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/foundation/setup-wizard.md` — Wizard walkthrough

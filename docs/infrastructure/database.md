@@ -211,5 +211,5 @@ php artisan migrate
 - Seeders: `database/seeders/`
 - Base model: `app/Core/Models/BaseModel.php`
 - Database configuration: `config/database.php` (overridable via `.env`)
-- Module reference: [Module Index](../modules/index.md)
+- Module reference: [Module Index](../refs/modules/index.md)
 - Infrastructure design: [Infrastructure](infrastructure.md#4-database-strategy)

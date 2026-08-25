@@ -285,5 +285,5 @@ After implementing this spec, supervisors can log monitoring visits, review stud
 - `database/migrations/2026_01_04_000007_create_supervision_logs_table.php` — SupervisionLog schema
 - `database/migrations/2026_01_04_000008_create_monitoring_visits_table.php` — MonitoringVisit schema
 - `routes/web/journals.php` — Route definitions
-- `docs/modules/journals.md` — Module conceptual documentation
+- `docs/refs/modules/journals.md` — Module conceptual documentation
 - **Related spec:** [daily-activity.md](1KSWL-daily-activity.md) — logbook, attendance, absence requests

@@ -380,5 +380,5 @@ After implementing this spec, students can log daily activities (logbook entries
 - `database/migrations/2026_01_04_000005_create_attendances_table.php` — Attendance schema
 - `database/migrations/2026_01_04_000006_create_logbooks_table.php` — Logbook schema
 - `routes/web/journals.php` — Route definitions
-- `docs/modules/journals.md` — Module conceptual documentation
+- `docs/refs/modules/journals.md` — Module conceptual documentation
 - **Related spec:** [supervision.md](2EHSE-supervision.md) — supervision logs, monitoring visits, cross-role proxy, compliance

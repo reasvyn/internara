@@ -113,12 +113,12 @@ File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token
 
 ## Views
 
-Views are located in `resources/views/setup/`. See [UI/UX](../foundation/ui-ux.md) for the design
+Views are located in `resources/views/setup/`. See [UI/UX](../../foundation/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Setup/`. See [Testing](../infrastructure/testing.md) for the testing
+Tests are located in `tests/Setup/`. See [Testing](../../infrastructure/testing.md) for the testing
 conventions.
 
 ## Factories

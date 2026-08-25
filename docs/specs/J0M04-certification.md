@@ -436,4 +436,4 @@ After implementing this spec, the system generates PDF certificates for students
 - `database/migrations/2026_01_04_000012_create_certificates_table.php` — Certificates schema
 - `database/migrations/2026_01_04_000013_create_certificate_templates_table.php` — Templates schema
 - `routes/web/certification.php` — Route definitions
-- `docs/modules/certification.md` — Module conceptual documentation
+- `docs/refs/modules/certification.md` — Module conceptual documentation

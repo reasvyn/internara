@@ -419,6 +419,6 @@ After implementing this spec, new students can self-register through a public fo
 - `app/Program/Internship/Rules/OpenForRegistration.php` — internship must be published/active
 - `routes/web/enrollment.php` — All enrollment route definitions
 - `database/migrations/2026_01_04_000004_create_account_applications_table.php` — Applications migration
-- `docs/modules/enrollment.md` — Enrollment module overview
+- `docs/refs/modules/enrollment.md` — Enrollment module overview
 - **Related specs:** [registration.md](MBB5R-registration.md) — Registration workflow & documents
 - **Related specs:** [placement.md](J9GBH-placement.md) — Placement CRUD & capacity management
