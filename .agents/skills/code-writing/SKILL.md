@@ -61,17 +61,17 @@ arch-guard scanners (`scripts/scan_*.py`) on the touched code (see the `arch-gua
 |-------|----------|
 | Full conventions | `docs/conventions.md` |
 | Architecture overview | `docs/architecture.md` |
-| Action Triad pattern | `docs/architecture/action-pattern.md` |
-| SRP & modularity rules | `docs/architecture/modular-pattern.md` §1.6 |
-| Entity pattern | `docs/architecture/entity-pattern.md` |
-| DTO/Data pattern | `docs/architecture/data-pattern.md` |
-| Model pattern | `docs/architecture/model-pattern.md` |
-| Enum pattern | `docs/architecture/enum-pattern.md` |
-| Exception pattern | `docs/architecture/exception-pattern.md` |
-| Livewire pattern | `docs/architecture/livewire-pattern.md` |
-| Policy pattern | `docs/architecture/policy-pattern.md` |
-| Event pattern | `docs/architecture/event-pattern.md` |
-| Cache pattern | `docs/architecture/cache-pattern.md` |
+| Action Triad pattern | `docs/guides/arch/action-pattern.md` |
+| SRP & modularity rules | `docs/guides/arch/modular-pattern.md` §1.6 |
+| Entity pattern | `docs/guides/arch/entity-pattern.md` |
+| DTO/Data pattern | `docs/guides/arch/data-pattern.md` |
+| Model pattern | `docs/guides/arch/model-pattern.md` |
+| Enum pattern | `docs/guides/arch/enum-pattern.md` |
+| Exception pattern | `docs/guides/arch/exception-pattern.md` |
+| Livewire pattern | `docs/guides/arch/livewire-pattern.md` |
+| Policy pattern | `docs/guides/arch/policy-pattern.md` |
+| Event pattern | `docs/guides/arch/event-pattern.md` |
+| Cache pattern | `docs/guides/arch/cache-pattern.md` |
 | Module index | `docs/refs/modules/index.md` |
 | Laravel best practices | `.agents/skills/laravel-best-practices/SKILL.md` |
 | Coding rules (quick) | `.agents/skills/context-awareness/rules/coding-rules.md` |

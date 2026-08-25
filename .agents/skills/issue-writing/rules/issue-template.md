@@ -177,7 +177,7 @@ void where it should be.
 **How to apply:**
 
 - Approach A (Recommended): technical description — files changed, pattern used
-  (`docs/architecture/{pattern}-pattern.md`), how the data flow changes — plus Pros and Cons bullets.
+  (`docs/guides/arch/{pattern}-pattern.md`), how the data flow changes — plus Pros and Cons bullets.
 - Approach B: the alternative, same depth, its own Pros/Cons.
 - The comparison belongs in Design Decisions; the approaches section is the what, not the why.
 
@@ -252,7 +252,7 @@ re-reading invariants they must not break. Pre-wiring these turns "read the whol
 
 **How to apply:**
 
-- Pattern to follow: link to `docs/architecture/{pattern}-pattern.md`
+- Pattern to follow: link to `docs/guides/arch/{pattern}-pattern.md`
 - Module context: link to `docs/refs/modules/{module}.md`
 - Reference file: `{path/to/existing/implementation}` already following the pattern
 - Note invariants: the relevant `AGENTS.md` / `docs/conventions.md` rules (C1-C8, D1-D6)

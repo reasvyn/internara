@@ -1,10 +1,9 @@
-# Foundation Documents
+# Guides — Operational & Design Documents
 
-> **Last updated:** 2026-08-25 **Changes:** sync — UI/UX entry DaisyUI/maryUI → TallstackUI v4
+> **Last updated:** 2026-08-25 **Changes:** relocated from docs/foundation → docs/guides (architecture → guides/arch, infrastructure → guides/infra); retitled from "Foundation Documents"
 
-Product scope, security model, and design foundations. Product scope and project status now live in
-the root **[README.md](../../README.md)** (System Boundary, 3S Doctrine, Personas, Deployment,
-Module Landscape, Tech Debt).
+Operational guides and design documents. Product scope and project status live in the root
+**[README.md](../../README.md)**.
 
 - **[README — Product & Project Status](../../README.md)** — Product scope, design principles, user personas, system boundary, deployment model, localization, licensing, and project status (merged from `product-definition.md` + `project-overview.md`)
 - **[Internara Project Spec](../specs/QLHDO-internara-project.md)** — Functional and non-functional requirements

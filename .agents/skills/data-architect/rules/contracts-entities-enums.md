@@ -11,7 +11,7 @@ Data shapes have a single, typed owner. Interfaces define behavior, structs/type
 - **Interfaces:** Depend on abstractions where cross-module (`App\Contracts\*` or module `Contracts\`). No direct cross-module concrete imports for volatile boundaries — inject the interface.
 - **Structs/Types:** Prefer `final readonly` value objects for compound values (`Money`, `DateRange`, `Address`) over associative arrays. Type every field; no `mixed` without justification.
 - **Entities:** `final readonly` (C5 — no Livewire/Model/Action imports), constructed via `fromModel(Model $m): self`, business rules live here (e.g., `canTransitionTo()`, `maskedEmail()`). No persistence, no framework.
-- **Enums:** `LabelEnum` / `StatusEnum` contracts (`docs/architecture/enum-pattern.md`): string-backed, `label()`, `tryFrom()`, exhaustively handled via `match()`.
+- **Enums:** `LabelEnum` / `StatusEnum` contracts (`docs/guides/arch/enum-pattern.md`): string-backed, `label()`, `tryFrom()`, exhaustively handled via `match()`.
 - **Single ownership:** One canonical type per concept. No duplicated shape (`UserData` in two modules) — extract to `Core\Types` or module `Types\`.
 
 ## How to apply

@@ -28,7 +28,7 @@ configuration can serve both — a config tuned for one breaks silently on the o
 
 ### PS-2 — Manual Per-Environment Tuning Is Error-Prone
 
-The existing deployment documentation (`docs/infrastructure/deployment.md`) describes three static
+The existing deployment documentation (`docs/guides/infra/deployment.md`) describes three static
 paths that require operators to hand-edit `.env` keys (`QUEUE_CONNECTION`, `CACHE_STORE`,
 `SESSION_DRIVER`). Every key is a decision point; a wrong choice produces jobs that never run, email
 that blocks requests, or sessions that don't persist — discovered only after users report failures.
@@ -63,7 +63,7 @@ config drift independently.
 | ---- | -------- |
 | NG1  | Kubernetes / multi-node orchestration (single-node Docker Compose only) |
 | NG2  | Automatic server provisioning (Apache/Nginx config is documented, not generated) |
-| NG3  | Full CI/CD pipeline automation (see `docs/infrastructure/ci-cd.md`) |
+| NG3  | Full CI/CD pipeline automation (see `docs/guides/infra/ci-cd.md`) |
 | NG4  | Migration tooling between hosting conditions (use backup/restore) |
 | NG5  | HA / zero-downtime release strategies |
 | NG6  | Multi-tenant or platform provisioning (single-tenant self-hosted) |
@@ -214,7 +214,7 @@ preset.
 | ID    | Requirement |
 | ----- | ----------- |
 | FR-V1 | `php artisan system:health` must be the final acceptance gate for both deployment conditions |
-| FR-V2 | `docs/infrastructure/deployment.md` must present the two profiles and their presets as the canonical deployment guide |
+| FR-V2 | `docs/guides/infra/deployment.md` must present the two profiles and their presets as the canonical deployment guide |
 | FR-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = minimal 3-service Docker topology running shared-hosting drivers (FR-VD1–FR-VD12), `docker/shared-hosting/` = shared-hosting simulation |
 | FR-V4 | `.env.example` must remain the shared-hosting-optimized default and document `DEPLOY_PROFILE` |
 | FR-V5 | Adding a new profile must not require changes to application business code |
@@ -363,7 +363,7 @@ Route::get('/cron/{secret}', CronController::class)
 **Decision:** All driver mappings live in `config/deployment.php`; `.env.example`, docs, and Docker
 configs reference the profiles rather than re-declaring driver values.
 
-**Rationale:** `docs/infrastructure/deployment.md` and `.env.example` already encode these values, but
+**Rationale:** `docs/guides/infra/deployment.md` and `.env.example` already encode these values, but
 in prose. Centralizing them removes the risk of docs↔config drift (Clean Code / dedup doctrine) and
 makes `deploy:configure` data-driven.
 
@@ -467,7 +467,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 Implement the conditional deployment mechanism: add `config/deployment.php` with the two profile
 presets, `deploy:detect` (probes per 6.4, `--json` output), and `deploy:configure` (driver-only
-`.env` writer, idempotent). Then align `docs/infrastructure/deployment.md` and `docker/README.md` to
+`.env` writer, idempotent). Then align `docs/guides/infra/deployment.md` and `docker/README.md` to
 the two-profile model and verify both paths end-to-end with `setup:install` + `system:health`.
 
 ### Next Steps
@@ -485,8 +485,8 @@ the two-profile model and verify both paths end-to-end with `setup:install` + `s
 - `docker/shared-hosting/docker-compose.yml` — shared-hosting simulation (existing)
 - `Dockerfile` — PHP-FPM app image (existing)
 - `.env.example` — shared-hosting-optimized defaults (existing)
-- `docs/infrastructure/deployment.md` — canonical deployment guide (to be aligned)
-- `docs/infrastructure/ci-cd.md` — CI/CD pipeline and artifact requirements
+- `docs/guides/infra/deployment.md` — canonical deployment guide (to be aligned)
+- `docs/guides/infra/ci-cd.md` — CI/CD pipeline and artifact requirements
 - `routes/web/sysadmin.php` — `/cron/{secret}` webhook scheduler route
 - `app/SysAdmin/Http/Controllers/CronController.php` — webhook cron validation (existing)
 - **Related specs:** [system-requirements.md](J68GZ-system-requirements.md) (J68GZ), [installation.md](8NZAU-installation.md) (8NZAU), [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) (8FVZA), [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ)

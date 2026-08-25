@@ -123,6 +123,6 @@ $model->deleteMedia($mediaId); // specific
 
 | Topic                | Doc                                              |
 | -------------------- | ------------------------------------------------ |
-| Media library setup  | `docs/infrastructure/media-library.md`           |
+| Media library setup  | `docs/guides/infra/media-library.md`           |
 | File upload security | `docs/conventions.md` (§3.6)                     |
 | Spatie docs          | `search-docs` with `spatie/laravel-medialibrary` |

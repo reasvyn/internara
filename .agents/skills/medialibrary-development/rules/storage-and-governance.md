@@ -35,7 +35,7 @@ and security are all confirmed.
 | Disk      | `public`  | Files must be directly URL-servable         |
 | Queue     | `default` | Generating conversions in the background    |
 
-- Match disk/queue to the deployment tier: `docs/infrastructure/deployment.md` documents how each
+- Match disk/queue to the deployment tier: `docs/guides/infra/deployment.md` documents how each
   tier configures storage (local vs S3-compatible) and queue (sync vs Redis). Align the config file
   with that tier's expectations.
 

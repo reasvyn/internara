@@ -260,5 +260,5 @@ After implementing this spec, the system has a complete middleware stack: securi
 - `app/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` — Setup protection
 - `app/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` — Setup token
 - `app/Providers/AppServiceProvider.php` — Rate limiter registration
-- `docs/architecture/livewire-pattern.md` — Livewire authorization patterns
+- `docs/guides/arch/livewire-pattern.md` — Livewire authorization patterns
 - `docs/specs/security-headers.md` — CSP and header details

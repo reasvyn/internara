@@ -587,5 +587,5 @@ After implementing this spec, every user deletion (admin or batch) automatically
 - **Related spec:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes (`BaseCommandAction`, `BaseEntity`, `BaseEvent`)
 - **Related spec:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) (T4B26) — `isAdmin()` policy helper, role middleware
 - **Related spec:** [user-crud-and-status.md](95EVB-user-crud-and-status.md) (95EVB) — `DeleteUserAction`, user lifecycle
-- **Related doc:** [security.md](../infrastructure/security.md) — GDPR compliance section (§5)
-- **Related doc:** [system-observability.md](../foundation/system-observability.md) — GDPR deletion logs overview
+- **Related doc:** [security.md](../guides/infra/security.md) — GDPR compliance section (§5)
+- **Related doc:** [system-observability.md](../guides/system-observability.md) — GDPR deletion logs overview

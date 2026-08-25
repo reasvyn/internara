@@ -99,7 +99,7 @@ rules, indexing, and spec lifecycle — nothing else.
 | Doc-writing skill         | `.agents/skills/doc-writing/SKILL.md`     |
 | Feature specs             | `docs/specs/index.md`                     |
 | High-level specs          | `docs/specs/QLHDO-internara-project.md` |
-| Product definition        | `docs/foundation/product-definition.md`   |
+| Product definition        | `docs/guides/product-definition.md`   |
 | Module index              | `docs/refs/modules/index.md`                   |
 | Existing specs            | `docs/specs/`                             |
 | Architecture overview     | `docs/architecture.md`                    |

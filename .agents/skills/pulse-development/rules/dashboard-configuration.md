@@ -14,7 +14,7 @@ deployment tier* is the actual task.
 Pulse configuration lives in `config/pulse.php`. Key settings are `domain` (restrict dashboard by
 subdomain), `middleware` (auth + authorization middleware group), `recorders` (which recorders are
 enabled), and `ingest` (`redis` in production, `file` in development). Before configuring, read
-`docs/infrastructure/deployment.md` to know which tier you are targeting.
+`docs/guides/infra/deployment.md` to know which tier you are targeting.
 
 ## Rationale — What Fails Without It
 
@@ -40,7 +40,7 @@ Cluster the settings in `config/pulse.php`:
 | `recorders`  | Which recorders are enabled                    | Enable the set the spec/observability doc names |
 | `ingest`     | `redis` (production) or `file` (development)   | Must match the deployment tier                  |
 
-- Read `docs/foundation/system-observability.md` first — it declares which metrics Pulse must expose.
+- Read `docs/guides/system-observability.md` first — it declares which metrics Pulse must expose.
   Configure exactly that recorder set; don't enable recorders no one consumes.
 - After edits, run the Verification Checklist below so config changes don't ship in a half-broken
   state.
@@ -65,6 +65,6 @@ Cluster the settings in `config/pulse.php`:
 
 ## Verification
 
-- `config/pulse.php` values match `docs/infrastructure/deployment.md` for the target tier.
+- `config/pulse.php` values match `docs/guides/infra/deployment.md` for the target tier.
 - `python3 scripts/scan_doc_links.py` clean (config changes rereference docs correctly).
 - Manual: dashboard loads for an `admin`, 403/abort for others (see Authorization rule).

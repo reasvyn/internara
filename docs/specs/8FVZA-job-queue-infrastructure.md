@@ -251,5 +251,5 @@ After implementing this spec, the system has async job processing via Laravel qu
   - `app/User/Jobs/ArchiveStudentAccountsJob.php`
   - `app/Certification/Jobs/BatchIssueCertificatesJob.php`
 - `config/queue.php` — Queue driver configuration
-- `docs/architecture/event-pattern.md` — Event dispatch (for comparison)
+- `docs/guides/arch/event-pattern.md` — Event dispatch (for comparison)
 - `docs/specs/event-system.md` — Event system specification

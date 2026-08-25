@@ -123,4 +123,4 @@ slice begins; L-size features have a documented session plan agreed with the use
 | Size Triage (S/M/L)         | `.agents/skills/agent-workflow/SKILL.md`     |
 | Verification strategy       | `AGENTS.md` §Verification Strategy           |
 | 4-layer model & Action triad | `docs/architecture.md`                      |
-| Action triad contracts      | `docs/architecture/action-pattern.md`        |
+| Action triad contracts      | `docs/guides/arch/action-pattern.md`        |

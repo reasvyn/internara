@@ -28,7 +28,7 @@ All internal links use relative paths from the current file's location:
 
 ```markdown
 [Media Library](media-library.md)           # same directory
-[Action Pattern](../architecture/action-pattern.md)  # up one, then down
+[Action Pattern](../guides/arch/action-pattern.md)  # up one, then down
 [User Module](modules/user.md)              # from docs/index.md
 ```
 
@@ -56,14 +56,14 @@ Verify:
 
 **Examples:**
 - S3 configuration → authoritative in `filesystem.md`, `media-library.md` references it.
-- Testing conventions → authoritative in `docs/architecture/testing-pattern.md`, skills reference it.
+- Testing conventions → authoritative in `docs/guides/arch/testing-pattern.md`, skills reference it.
 - Module overview → authoritative in `docs/refs/modules/{module}.md`, reference doc links to it.
 
 ## Anti-Patterns & Pitfalls
 
 - **Copy-paste instead of link:** pasting an S3 config block into a second doc because "it's
   convenient". The copies diverge on the next S3 change.
-- **Absolute paths:** linking `/docs/architecture/action-pattern.md` from a nested doc. The link
+- **Absolute paths:** linking `/docs/guides/arch/action-pattern.md` from a nested doc. The link
   resolves only from the repo root and breaks when docs move.
 - **Stale anchors:** linking `setup.md#token-security` after the heading was renamed to
   `## Token Handling`. Update the anchor or the heading.
@@ -77,6 +77,6 @@ Verify:
 - `python3 scripts/scan_doc_links.py` — validates every relative link and in-page/file anchor across
   `docs/`, `.agents/context/`, `README.md`, and `AGENTS.md`; reports `BROKEN_FILE_LINK` and
   `BROKEN_ANCHOR` findings with file and line.
-- Grep for duplicated blocks across docs before committing: `grep -rn "S3" docs/infrastructure/`.
+- Grep for duplicated blocks across docs before committing: `grep -rn "S3" docs/guides/infra/`.
 - If you must duplicate a small fact despite the rule, add a cross-reference note pointing to the
   authoritative source — but prefer the link-only approach.

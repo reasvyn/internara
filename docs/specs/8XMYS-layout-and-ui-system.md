@@ -199,7 +199,7 @@ link behaves identically and accessibly.
 
 | ID      | Requirement                                                                                          |
 | ------- | ---------------------------------------------------------------------------------------------------- |
-| NFR-A1  | All shell chrome must meet WCAG 2.1 Level AA (see [ui-ux.md](../foundation/ui-ux.md) §6, [modular-pattern.md](../architecture/modular-pattern.md) §22) |
+| NFR-A1  | All shell chrome must meet WCAG 2.1 Level AA (see [ui-ux.md](../guides/ui-ux.md) §6, [modular-pattern.md](../guides/arch/modular-pattern.md) §22) |
 | NFR-P1  | The layout shell must render in < 100 ms server-side; sidebar menu resolution must add no more than 2 queries (no N+1 over menu items) |
 | NFR-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
 | NFR-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
@@ -368,9 +368,9 @@ Livewire component), then the dashboard, which renders inside `core::layouts.app
 - `resources/views/core/ui/` — Shared `x-core::ui.*` component library
 - `config/menu.php` — Role-filtered navigation source
 - `resources/js/app.js` — Alpine helpers, flatpickr, markdown bootstrap
-- `docs/foundation/ui-ux.md` — Design principles, responsive strategy, accessibility guidance
+- `docs/guides/ui-ux.md` — Design principles, responsive strategy, accessibility guidance
 - `docs/conventions.md` §13 — Theming & visual consistency (CSS variables, form icons)
-- `docs/architecture/modular-pattern.md` §22 — Project-wide accessibility rules
+- `docs/guides/arch/modular-pattern.md` §22 — Project-wide accessibility rules
 - **Related specs:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — theming/locale;
   [settings-infrastructure.md](YB22J-settings-infrastructure.md) — settings store;
   [dashboard.md](CKKZC-dashboard.md) — first consumer of the app shell

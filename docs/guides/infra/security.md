@@ -9,9 +9,9 @@ posture, security headers, rate limiting, PII handling, GDPR compliance, depende
 production security checklist.
 
 This document covers **infrastructure and operational** security. For coding conventions (XSS, SQLi,
-CSRF, file uploads), see [Coding Conventions §3](../conventions.md#3-security-conventions). For
-authentication flow and RBAC, see [RBAC](../foundation/rbac.md). For authorization gates and
-policies, see [Policy Pattern](../architecture/policy-pattern.md).
+CSRF, file uploads), see [Coding Conventions §3](../../conventions.md#3-security-conventions). For
+authentication flow and RBAC, see [RBAC](../rbac.md). For authorization gates and
+policies, see [Policy Pattern](../arch/policy-pattern.md).
 
 ---
 
@@ -52,13 +52,13 @@ All responses include security headers via `SecurityHeadersMiddleware` (applied 
 
 | Feature | Configuration | Reference |
 | ------- | ------------- | --------- |
-| Login throttling | 5 attempts / 60s per IP | [RBAC §1](../foundation/rbac.md#1-authentication-flow) |
-| Forgot password throttle | 3 attempts / 3600s | [System Health §5.6](../foundation/system-health.md#56-authentication) |
-| Password reset throttle | 5 attempts / 300s | [System Health §5.6](../foundation/system-health.md#56-authentication) |
-| Account recovery throttle | 3 attempts / 300s | [System Health §5.6](../foundation/system-health.md#56-authentication) |
-| Global rate limit | 30 requests / min / IP | [conventions §3.7](../conventions.md#37-rate-limiting) |
-| Account locking | Auto-lock after 10 failed attempts | [RBAC §1](../foundation/rbac.md#1-authentication-flow) |
-| Setup wizard throttle | Configurable via `config/setup.php` | [conventions §3.7](../conventions.md#37-rate-limiting) |
+| Login throttling | 5 attempts / 60s per IP | [RBAC §1](../rbac.md#1-authentication-flow) |
+| Forgot password throttle | 3 attempts / 3600s | [System Health §5.6](../system-health.md#56-authentication) |
+| Password reset throttle | 5 attempts / 300s | [System Health §5.6](../system-health.md#56-authentication) |
+| Account recovery throttle | 3 attempts / 300s | [System Health §5.6](../system-health.md#56-authentication) |
+| Global rate limit | 30 requests / min / IP | [conventions §3.7](../../conventions.md#37-rate-limiting) |
+| Account locking | Auto-lock after 10 failed attempts | [RBAC §1](../rbac.md#1-authentication-flow) |
+| Setup wizard throttle | Configurable via `config/setup.php` | [conventions §3.7](../../conventions.md#37-rate-limiting) |
 
 ### Session Security
 
@@ -122,7 +122,7 @@ SmartLogger::activity()->info('User profile updated', ['user_id' => $user->id]);
 // email, phone, address are auto-masked in the log entry
 ```
 
-PII masking reference: [System Observability §PII Masking](../foundation/system-observability.md#pii-masking).
+PII masking reference: [System Observability §PII Masking](../system-observability.md#pii-masking).
 
 ---
 
@@ -144,7 +144,7 @@ PII masking reference: [System Observability §PII Masking](../foundation/system
 | Requested by | Who initiated the deletion (self or admin) |
 | Reason | Optional reason for deletion |
 
-GDPR reference: [System Observability §GDPR Deletion Logs](../foundation/system-observability.md#gdpr-deletion-logs).
+GDPR reference: [System Observability §GDPR Deletion Logs](../system-observability.md#gdpr-deletion-logs).
 
 ---
 
@@ -180,7 +180,7 @@ vendor/bin/phpstan analyse --no-progress   # PHPStan level 8
 External security reports are accepted via email (not public issues). Response SLA: 48 hours.
 Disclosure window: 90 days.
 
-Full policy: [SECURITY.md](../../SECURITY.md).
+Full policy: [SECURITY.md](../../../SECURITY.md).
 
 ---
 
@@ -209,15 +209,15 @@ Full policy: [SECURITY.md](../../SECURITY.md).
 
 | Concern | Document |
 | ------- | -------- |
-| Authentication flow & RBAC | [Foundation — RBAC](../foundation/rbac.md) |
-| Authorization gates & policies | [Architecture — Policy Pattern](../architecture/policy-pattern.md) |
-| Coding security conventions (XSS, SQLi, CSRF, CSP) | [Conventions §3](../conventions.md#3-security-conventions) |
+| Authentication flow & RBAC | [Foundation — RBAC](../rbac.md) |
+| Authorization gates & policies | [Architecture — Policy Pattern](../arch/policy-pattern.md) |
+| Coding security conventions (XSS, SQLi, CSRF, CSP) | [Conventions §3](../../conventions.md#3-security-conventions) |
 | Session configuration & security | [Infrastructure — Session](session.md) |
-| Security headers middleware | [Conventions §3.5](../conventions.md#35-content-security-policy) |
-| Rate limiting configuration | [Conventions §3.7](../conventions.md#37-rate-limiting) |
-| SmartLogger & PII masking | [Foundation — System Observability](../foundation/system-observability.md) |
-| Account recovery flow | [Foundation — Account Recovery](../foundation/account-recovery.md) |
-| Backup & restoration | [Foundation — Backup & Recovery](../foundation/backup-recovery.md) |
-| Vulnerability reporting | [SECURITY.md](../../SECURITY.md) |
+| Security headers middleware | [Conventions §3.5](../../conventions.md#35-content-security-policy) |
+| Rate limiting configuration | [Conventions §3.7](../../conventions.md#37-rate-limiting) |
+| SmartLogger & PII masking | [Foundation — System Observability](../system-observability.md) |
+| Account recovery flow | [Foundation — Account Recovery](../account-recovery.md) |
+| Backup & restoration | [Foundation — Backup & Recovery](../backup-recovery.md) |
+| Vulnerability reporting | [SECURITY.md](../../../SECURITY.md) |
 | Infrastructure security posture | [Infrastructure Overview §9](infrastructure.md#9-security-posture) |
-| Troubleshooting auth issues | [Foundation — System Health §5.6](../foundation/system-health.md#56-authentication) |
+| Troubleshooting auth issues | [Foundation — System Health §5.6](../system-health.md#56-authentication) |

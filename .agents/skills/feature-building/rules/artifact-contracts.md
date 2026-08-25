@@ -176,9 +176,9 @@ every component `render()` contains only simple queries or Read Action calls.
 
 | Topic                      | Asset                                        |
 | -------------------------- | -------------------------------------------- |
-| Entity contracts           | `docs/architecture/entity-pattern.md`        |
-| Model contracts            | `docs/architecture/model-pattern.md`         |
-| Action Triad               | `docs/architecture/action-pattern.md`        |
-| DTO / data contracts       | `docs/architecture/data-pattern.md`          |
-| Enum contracts             | `docs/architecture/enum-pattern.md`          |
+| Entity contracts           | `docs/guides/arch/entity-pattern.md`        |
+| Model contracts            | `docs/guides/arch/model-pattern.md`         |
+| Action Triad               | `docs/guides/arch/action-pattern.md`        |
+| DTO / data contracts       | `docs/guides/arch/data-pattern.md`          |
+| Enum contracts             | `docs/guides/arch/enum-pattern.md`          |
 | Critical invariants C1-C8  | `AGENTS.md` §Critical Invariants             |

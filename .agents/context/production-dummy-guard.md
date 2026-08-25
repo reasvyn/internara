@@ -82,4 +82,4 @@ repository because the repo's spec forbids production seeding.
 - `tests/Support/DummyData.php` — the demo dataset generator (dev-only autoload)
 - `config/dummy.php` — demo account configuration
 - [Dummy Data Spec](../../docs/specs/3UOZP-dummy-data.md) — NFR-S1, FR-E2/E4/E5, UC-2
-- [Installation](../../docs/foundation/installation.md) — setup wizard + provisioning flow
+- [Installation](../../docs/guides/installation.md) — setup wizard + provisioning flow

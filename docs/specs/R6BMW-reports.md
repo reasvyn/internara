@@ -491,7 +491,7 @@ After implementing this spec, the system generates grade cards and archived snap
 - `database/migrations/*_create_reports_table.php` — Reports schema
 - `docs/refs/modules/reports.md` — Reports module conceptual documentation
 - `docs/refs/modules/reports-reference.md` — Reports module reference documentation
-- `docs/architecture/action-pattern.md` — Action Triad pattern
-- `docs/architecture/entity-pattern.md` — Entity contracts
-- `docs/architecture/data-pattern.md` — DTO/Data contracts
+- `docs/guides/arch/action-pattern.md` — Action Triad pattern
+- `docs/guides/arch/entity-pattern.md` — Entity contracts
+- `docs/guides/arch/data-pattern.md` — DTO/Data contracts
 - `docs/conventions.md` — Coding conventions and invariants

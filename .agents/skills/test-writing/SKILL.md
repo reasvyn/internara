@@ -52,7 +52,7 @@ test-diagnosis rules found in the Skill Rules section below — nothing else.
 | Topic | Location |
 |-------|----------|
 | Feature specs (source of truth for tests) | `docs/specs/index.md`, `docs/specs/{ID}-{feature}.md` |
-| Testing patterns | `docs/architecture/testing-pattern.md` |
+| Testing patterns | `docs/guides/arch/testing-pattern.md` |
 | Pest testing skill | `.agents/skills/pest-testing/SKILL.md` |
 | arch-guard skill | `.agents/skills/arch-guard/SKILL.md` |
 | Pre-commit checklist | `AGENTS.md` (end of file) |

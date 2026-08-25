@@ -220,7 +220,7 @@ findings.append(Finding(
     column=0,
     message=f"Description of what was found",
     suggestion=f"How to fix it",
-    reference="docs/architecture/action-pattern.md",
+    reference="docs/guides/arch/action-pattern.md",
 ))
 ```
 

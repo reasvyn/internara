@@ -12,7 +12,7 @@ User counts in this document refer to **total registered users per PKL period**,
 users. For Internara's usage patterns, peak concurrency is typically 10-15% of registered users.
 
 The philosophy is **start simple, scale by measured need** -- codified in
-[ADR: Gradual Migration](../adr/adr-gradual-migration.md).
+[ADR: Gradual Migration](../../adr/adr-gradual-migration.md).
 
 ---
 
@@ -455,12 +455,12 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 | Document                                                                  | Contents                                              |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |
 | [Infrastructure](infrastructure.md)                                       | Deployment tiers, target architecture, service layout |
-| [Installation](../foundation/installation.md)                               | Prerequisites, command reference, troubleshooting     |
+| [Installation](../installation.md)                               | Prerequisites, command reference, troubleshooting     |
 | [Deployment](deployment.md)                                               | Server config, Supervisor, Docker, shared hosting     |
 | [Configuration](configuration.md)                                         | .env reference, all config options                    |
-| [Observability](../foundation/system-observability.md)                 | Pulse, logging, health checks                         |
+| [Observability](../system-observability.md)                 | Pulse, logging, health checks                         |
 | [Queue](queue.md)                                                         | Queue drivers, Supervisor, job lifecycle              |
 | [Cache](cache.md)                                                         | Cache strategy, Redis, OpCache                        |
-| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why shared-hosting-first                              |
-| [ADR: Gradual Migration](../adr/adr-gradual-migration.md)                 | Governing principle for scaling                       |
-| [ADR: Performance Optimization](../adr/adr-performance-optimization.md)   | Performance tiers, deferred optimizations             |
+| [ADR: Self-Hosted Single-Tenant](../../adr/adr-self-hosted-single-tenant.md) | Why shared-hosting-first                              |
+| [ADR: Gradual Migration](../../adr/adr-gradual-migration.md)                 | Governing principle for scaling                       |
+| [ADR: Performance Optimization](../../adr/adr-performance-optimization.md)   | Performance tiers, deferred optimizations             |

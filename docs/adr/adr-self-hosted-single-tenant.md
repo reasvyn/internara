@@ -79,5 +79,5 @@ under the school's control.
 
 - `config/database.php` — SQLite as default connection
 - `.env.example` — Defaults optimized for single-server deployment
-- `docs/infrastructure/deployment.md` — Three deployment paths
-- `docs/foundation/installation.md` — CLI installer prerequisites
+- `docs/guides/infra/deployment.md` — Three deployment paths
+- `docs/guides/installation.md` — CLI installer prerequisites

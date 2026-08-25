@@ -41,7 +41,7 @@ downstream consumer.
       "column": 5,
       "message": "Human-readable description",
       "suggestion": "How to fix",
-      "reference": "docs/architecture/action-pattern.md",
+      "reference": "docs/guides/arch/action-pattern.md",
       "context": {}
     }
   ],

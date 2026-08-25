@@ -67,7 +67,7 @@ Locator for the Enrollment module's implementation.
   schema belongs in the reference doc; the *rule* about when registration opens belongs in
   conceptual.
 - **Rationale in reference:** a reference doc explaining *why* Actions exist. The Action Triad's
-  rationale lives in `docs/architecture/action-pattern.md`; the reference doc lists *which* Actions
+  rationale lives in `docs/guides/arch/action-pattern.md`; the reference doc lists *which* Actions
   exist.
 - **A third doc creeping in:** a `docs/refs/modules/{module}-notes.md`. If a fact doesn't fit the two
   existing docs, it is either misplaced (move it) or not worth documenting (drop it).

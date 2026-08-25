@@ -34,12 +34,12 @@ all Internara views.
 ## How Internara Uses It
 
 - Standard component vocabulary for every module view — forms, tables, modals, notifications
-- Theming aligned with the self-hosted design system ([`foundation/ui-ux.md`](../../foundation/ui-ux.md),
-  [`foundation/branding.md`](../../foundation/branding.md))
+- Theming aligned with the self-hosted design system ([`foundation/ui-ux.md`](../../guides/ui-ux.md),
+  [`foundation/branding.md`](../../guides/branding.md))
 - Component conventions and interaction rules documented in the `tallstackui-development`
   skill
 
 ## Quick References
 
 - [Official docs](https://tallstackui.com/docs) — component reference and personalization guide
-- [`docs/foundation/ui-ux.md`](../../foundation/ui-ux.md) — design system context
+- [`docs/guides/ui-ux.md`](../../guides/ui-ux.md) — design system context

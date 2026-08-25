@@ -104,5 +104,5 @@ try {
 - `python3 scripts/scan_violations.py` (C8: `RejectedException` not `RuntimeException`) clean.
 - Every Livewire mutation path validates before calling an Action; every destructively-scoped method
   calls `$this->authorize()` or a Policy.
-- `docs/architecture/policy-pattern.md` §Base Policy and `docs/architecture/exception-pattern.md`
+- `docs/guides/arch/policy-pattern.md` §Base Policy and `docs/guides/arch/exception-pattern.md`
   §Usage are the authoritative sources.

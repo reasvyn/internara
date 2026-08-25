@@ -39,10 +39,10 @@ General UI rules (Blade presentation, view structure, layout, a11y, i18n) are no
 
 | Topic              | Doc                                              |
 | ------------------ | ------------------------------------------------ |
-| Livewire pattern   | `docs/architecture/livewire-pattern.md`          |
-| Action delegation  | `docs/architecture/action-pattern.md`            |
-| Form Objects       | `docs/architecture/livewire-pattern.md` (§Forms) |
-| File uploads       | `docs/infrastructure/media-library.md`           |
-| Testing components | `docs/architecture/testing-pattern.md`           |
+| Livewire pattern   | `docs/guides/arch/livewire-pattern.md`          |
+| Action delegation  | `docs/guides/arch/action-pattern.md`            |
+| Form Objects       | `docs/guides/arch/livewire-pattern.md` (§Forms) |
+| File uploads       | `docs/guides/infra/media-library.md`           |
+| Testing components | `docs/guides/arch/testing-pattern.md`           |
 | TallstackUI components | TallstackUI docs (via `search-docs` `tallstackui/tallstackui`) |
-| Authorization      | `docs/architecture/policy-pattern.md`            |
+| Authorization      | `docs/guides/arch/policy-pattern.md`            |

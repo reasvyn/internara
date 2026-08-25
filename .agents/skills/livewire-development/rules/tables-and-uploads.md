@@ -98,7 +98,7 @@ uses the MediaLibrary; `medialibrary-development` was loaded before writing the 
 
 | Topic                     | Asset                                        |
 | ------------------------- | -------------------------------------------- |
-| File uploads              | `docs/infrastructure/media-library.md`       |
+| File uploads              | `docs/guides/infra/media-library.md`       |
 | MediaLibrary skill        | `.agents/skills/medialibrary-development/SKILL.md` |
-| Table accessibility       | `docs/architecture/livewire-pattern.md` §Accessibility |
-| Testing components        | `docs/architecture/testing-pattern.md`       |
+| Table accessibility       | `docs/guides/arch/livewire-pattern.md` §Accessibility |
+| Testing components        | `docs/guides/arch/testing-pattern.md`       |

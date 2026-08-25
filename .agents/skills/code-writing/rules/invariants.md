@@ -72,7 +72,7 @@ registered keys instead of inline string literals.
 break invalidation (a key written as `'user.' . $id` can never be flushed consistently). Centralized
 registration gives a single audit surface for key naming and TTL.
 
-**How to apply:** Add the key to `config/cache-keys.php` (see `docs/architecture/cache-pattern.md`
+**How to apply:** Add the key to `config/cache-keys.php` (see `docs/guides/arch/cache-pattern.md`
 §Registration), then use `config('cache-keys.{name}')` (or the documented helper) at the call site.
 
 **Pitfall to avoid:** Reusing a registered name with a different TTL than declared, or building keys

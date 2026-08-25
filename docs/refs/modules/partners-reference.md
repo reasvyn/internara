@@ -114,12 +114,12 @@ File: `routes/web/partners.php` Naming pattern: `partners.companies`, `partners.
 
 ## Views
 
-Views are located in `resources/views/partners/`. See [UI/UX](../../foundation/ui-ux.md) for the design
+Views are located in `resources/views/partners/`. See [UI/UX](../../guides/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Partners/`. See [Testing](../../infrastructure/testing.md)
+Tests are located in `tests/Partners/`. See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories

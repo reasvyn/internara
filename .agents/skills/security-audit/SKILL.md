@@ -147,10 +147,10 @@ Each finding should include:
 | Topic                 | Doc                                            |
 | --------------------- | ---------------------------------------------- |
 | Security conventions  | `docs/conventions.md` (§3)                     |
-| RBAC & authentication | `docs/foundation/rbac.md`                      |
-| Account recovery      | `docs/foundation/account-recovery.md`          |
-| Exception hierarchy   | `docs/architecture/exception-pattern.md`       |
+| RBAC & authentication | `docs/guides/rbac.md`                      |
+| Account recovery      | `docs/guides/account-recovery.md`          |
+| Exception hierarchy   | `docs/guides/arch/exception-pattern.md`       |
 | CSP & middleware      | `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` |
-| File upload security  | `docs/infrastructure/media-library.md`         |
-| Session configuration | `docs/infrastructure/session.md`               |
+| File upload security  | `docs/guides/infra/media-library.md`         |
+| Session configuration | `docs/guides/infra/session.md`               |
 | Rate limiting         | `bootstrap/app.php`                            |

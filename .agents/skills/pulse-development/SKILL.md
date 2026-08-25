@@ -95,6 +95,6 @@ as standalone Livewire components.
 | Topic                  | Doc                                    |
 | ---------------------- | -------------------------------------- |
 | Pulse configuration    | `config/pulse.php`                     |
-| Observability overview | `docs/foundation/system-observability.md` |
-| Deployment tiers       | `docs/infrastructure/deployment.md`    |
+| Observability overview | `docs/guides/system-observability.md` |
+| Deployment tiers       | `docs/guides/infra/deployment.md`    |
 | Laravel Pulse docs     | `search-docs` with `laravel/pulse`     |

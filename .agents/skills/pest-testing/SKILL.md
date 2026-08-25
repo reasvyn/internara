@@ -28,7 +28,7 @@ to at least one requirement ID (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract)
 be traced to a spec requirement is **noise** and must not be written. Coverage is measured in
 **spec requirements covered**, never in lines of code.
 
-**Write only the tests the spec requires, then stop** (see `docs/architecture/testing-pattern.md`
+**Write only the tests the spec requires, then stop** (see `docs/guides/arch/testing-pattern.md`
 §1.0 for the rationale). Minimalism is deliberate:
 
 - **Speed** — spec-scoped tests run in seconds vs. 10+ minutes for the full suite; faster feedback,
@@ -200,6 +200,6 @@ test("{SpecID}-{ReqID}: Test description...", function () {
 
 | Topic                   | Doc                                    |
 | ----------------------- | -------------------------------------- |
-| Testing patterns (full) | `docs/architecture/testing-pattern.md` |
-| Testing infrastructure  | `docs/infrastructure/testing.md`       |
+| Testing patterns (full) | `docs/guides/arch/testing-pattern.md` |
+| Testing infrastructure  | `docs/guides/infra/testing.md`       |
 | Pest documentation      | `search-docs` with `pestphp/pest`      |

@@ -101,10 +101,10 @@ static assets, database sharding, queue job batching.
 
 ## References
 
-- `docs/infrastructure/infrastructure.md` -- Three deployment tiers
-- `docs/infrastructure/deployment.md` -- Deployment steps and checklist
-- `docs/infrastructure/cache.md` -- Cache driver configuration
-- `docs/infrastructure/queue.md` -- Queue worker management
+- `docs/guides/infra/infrastructure.md` -- Three deployment tiers
+- `docs/guides/infra/deployment.md` -- Deployment steps and checklist
+- `docs/guides/infra/cache.md` -- Cache driver configuration
+- `docs/guides/infra/queue.md` -- Queue worker management
 - `.env.example` -- Default shared hosting configuration
 - `docs/adr/adr-self-hosted-single-tenant.md` -- Foundation decision
 - `docs/adr/adr-gradual-migration.md` -- Governing principle

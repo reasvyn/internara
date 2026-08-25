@@ -1,6 +1,6 @@
 # Documentation Template & Standards — How We Write Docs
 
-> **Last updated:** 2026-08-25 **Changes:** module-doc paths realigned to docs/refs/modules/ after relocation
+> **Last updated:** 2026-08-25 **Changes:** mapping tables and skeletons realigned to docs/guides layout after tree reorganization
 
 ## Description
 
@@ -29,9 +29,9 @@ user needs. Mixing types in one document is the root cause of most documentation
 | Quadrant | Location in this repo |
 |----------|----------------------|
 | Tutorial | [`getting-started.md`](getting-started.md), contributor onboarding in `CONTRIBUTING.md` |
-| How-to guides | [`foundation/`](foundation/index.md) (install, setup wizard, upgrade, backup), ops guides in [`infrastructure/`](infrastructure/index.md) |
-| Reference | [`modules/{module}-reference.md`](refs/modules/index.md) (API reference), [`infrastructure/`](infrastructure/index.md) technical topics (queue, cache, routes) |
-| Explanation | [`architecture.md`](architecture.md) + [`architecture/*-pattern.md`](architecture/index.md), [`philosophy.md`](philosophy.md), [`project-vision.md`](project-vision.md), [`adr/`](adr/index.md), conceptual [`modules/{module}.md`](refs/modules/index.md) |
+| How-to guides | [`guides/`](guides/index.md) (install, setup wizard, upgrade, backup), ops guides in [`guides/infra/`](guides/infra/index.md) |
+| Reference | [`refs/modules/{module}-reference.md`](refs/modules/index.md) (API reference), [`guides/infra/`](guides/infra/index.md) technical topics (queue, cache, routes) |
+| Explanation | [`architecture.md`](architecture.md) + [`guides/arch/*-pattern.md`](guides/arch/index.md), [`philosophy.md`](philosophy.md), [`project-vision.md`](project-vision.md), [`adr/`](adr/index.md), conceptual [`refs/modules/{module}.md`](refs/modules/index.md) |
 
 Feature specs ([`specs/`](specs/index.md)) are the requirements SSOT — they feed all four
 quadrants but are not themselves user documentation.
@@ -41,12 +41,12 @@ quadrants but are not themselves user documentation.
 | I need to write… | It belongs in | Type | Skeleton |
 |------------------|---------------|------|----------|
 | A new contributor's first successful run | `getting-started.md` | Tutorial | — |
-| Steps to perform an operation (deploy, restore, recover) | `foundation/{operation}.md` | How-to | [`foundation/guide-template.md`](foundation/guide-template.md) |
+| Steps to perform an operation (deploy, restore, recover) | `guides/{operation}.md` | How-to | [`guides/guide-template.md`](guides/guide-template.md) |
 | Complete list of Actions/Routes/Models/Policies of a module | `modules/{module}-reference.md` | Reference | [`modules/module-reference-template.md`](refs/modules/module-reference-template.md) |
 | What a module does, its boundary, design principles | `modules/{module}.md` | Explanation | [`modules/module-template.md`](refs/modules/module-template.md) |
-| Why a pattern exists and when to apply it | `architecture/{pattern}-pattern.md` | Explanation | [`architecture/pattern-template.md`](architecture/pattern-template.md) |
+| Why a pattern exists and when to apply it | `guides/arch/{pattern}-pattern.md` | Explanation | [`guides/arch/pattern-template.md`](guides/arch/pattern-template.md) |
 | Feature requirements with traceable IDs | `specs/{ID}-{feature}.md` | Spec (SSOT) | [`specs/spec-template.md`](specs/spec-template.md) |
-| Environment variables, config options | `infrastructure/configuration.md` | Reference | — |
+| Environment variables, config options | `guides/infra/configuration.md` | Reference | — |
 | A recorded architectural decision with context | `adr/{NNN}-{title}.md` | Explanation | follow existing ADR format |
 
 ---
@@ -100,8 +100,8 @@ Copy-paste skeletons live next to the docs they produce:
 | [`specs/spec-template.md`](specs/spec-template.md) | Feature spec — fixed 11-section structure with requirement IDs |
 | [`modules/module-template.md`](refs/modules/module-template.md) | Conceptual module overview (`{module}.md`) |
 | [`modules/module-reference-template.md`](refs/modules/module-reference-template.md) | Module API reference (`{module}-reference.md`) |
-| [`architecture/pattern-template.md`](architecture/pattern-template.md) | Architecture pattern doc (`{pattern}-pattern.md`) |
-| [`foundation/guide-template.md`](foundation/guide-template.md) | Operational how-to guide |
+| [`guides/arch/pattern-template.md`](guides/arch/pattern-template.md) | Architecture pattern doc (`{pattern}-pattern.md`) |
+| [`guides/guide-template.md`](guides/guide-template.md) | Operational how-to guide |
 
 Every template already satisfies the metadata contract above — copy, fill, delete what does not
 apply.

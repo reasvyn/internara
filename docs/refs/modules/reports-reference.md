@@ -67,7 +67,7 @@ File: `routes/web/reports.php` Only admin download route: `sysadmin.reports.down
 
 ## Tests
 
-Tests are located in `tests/Reports/`. See [Testing](../../infrastructure/testing.md)
+Tests are located in `tests/Reports/`. See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories

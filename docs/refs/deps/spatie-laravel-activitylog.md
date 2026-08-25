@@ -37,9 +37,9 @@ audit-trail foundation recording who did what, when, from where.
   backed by a custom `ActivityLog` core model
 - Command Actions log through `$this->log()` as part of the transaction pattern
 - Package conventions and SmartLogger rules: `activitylog-development` skill,
-  [`architecture/logging-pattern.md`](../../architecture/logging-pattern.md)
+  [`architecture/logging-pattern.md`](../../guides/arch/logging-pattern.md)
 
 ## Quick References
 
 - [Official docs](https://spatie.be/docs/laravel-activitylog) — full package documentation
-- [`docs/architecture/logging-pattern.md`](../../architecture/logging-pattern.md) — SmartLogger design
+- [`docs/guides/arch/logging-pattern.md`](../../guides/arch/logging-pattern.md) — SmartLogger design

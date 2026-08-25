@@ -31,5 +31,5 @@ Follow `agent-workflow` pipeline. This skill adds Spatie Permission guidance.
 | Topic | Doc |
 |-------|-----|
 | Spatie Permission docs | `search-docs` with `spatie/laravel-permission` |
-| Policy pattern | `docs/architecture/policy-pattern.md` |
+| Policy pattern | `docs/guides/arch/policy-pattern.md` |
 | RBAC ADR | `docs/adr/adr-flat-rbac-with-functional-roles.md` |

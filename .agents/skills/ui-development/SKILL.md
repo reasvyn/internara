@@ -47,10 +47,10 @@ Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill 
 
 | Topic | Doc |
 |-------|-----|
-| UI/UX design system | `docs/foundation/ui-ux.md` |
-| Branding & themes | `docs/foundation/branding.md` |
+| UI/UX design system | `docs/guides/ui-ux.md` |
+| Branding & themes | `docs/guides/branding.md` |
 | Blade presentation rule | `docs/conventions.md` §14 |
-| Livewire component patterns | `docs/architecture/livewire-pattern.md` |
+| Livewire component patterns | `docs/guides/arch/livewire-pattern.md` |
 | Tailwind CSS specifics | `tailwindcss-development` skill + `resources/css/app.css` |
 | Livewire specifics | `livewire-development` skill |
 

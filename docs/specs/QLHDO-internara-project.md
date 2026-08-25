@@ -154,7 +154,7 @@ requirement binding and [T4B26](T4B26-rbac-and-authorization.md) for the RBAC sp
 ### Cross-Cutting Functional Requirements
 
 These are **global defaults every feature spec inherits**; a feature spec may tighten them but never
-violate them. Where this section references `docs/foundation/*` or a phase spec, the referenced
+violate them. Where this section references `docs/guides/*` or a phase spec, the referenced
 document is authoritative for that concern.
 
 | ID    | Requirement                                                                                                                                                                                                        |
@@ -858,7 +858,7 @@ cross-cutting requirements (roles, localization, security, audit).
 
 ## Quick References
 
-- `docs/foundation/product-definition.md` — scope, personas, 3S doctrine, system boundary
+- `docs/guides/product-definition.md` — scope, personas, 3S doctrine, system boundary
 - `docs/specs/index.md` — full spec index and build order
 - `docs/specs/implementation-matrix.md` — implementation status matrix (priority-ordered)
 - `docs/refs/modules/index.md` — module dependency graph and registration

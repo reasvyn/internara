@@ -54,4 +54,4 @@ Status handling does **not** flow through this package:
 ## Quick References
 
 - [Official docs](https://spatie.be/docs/laravel-model-status) — full package documentation
-- [`docs/architecture/enum-pattern.md`](../../architecture/enum-pattern.md) — StatusEnum state machines
+- [`docs/guides/arch/enum-pattern.md`](../../guides/arch/enum-pattern.md) — StatusEnum state machines

@@ -77,12 +77,12 @@ Follow `agent-workflow` canonical pipeline. This skill adds data-specific design
 
 | Topic | Doc |
 |-------|-----|
-| Entity pattern (`final readonly`, fromModel) | `docs/architecture/entity-pattern.md` |
-| Data/DTO pattern (BaseData, C6) | `docs/architecture/data-pattern.md` |
-| Model pattern (#[Fillable], D4, D6) | `docs/architecture/model-pattern.md` |
-| Enum pattern (LabelEnum/StatusEnum) | `docs/architecture/enum-pattern.md` |
-| Action pattern (triad, DTO for 3+ params C7) | `docs/architecture/action-pattern.md` |
-| Cache keys (no inline C4) | `docs/architecture/cache-pattern.md` · `config/cache-keys.php` |
-| Logging & PII masking | `docs/architecture/logging-pattern.md` |
+| Entity pattern (`final readonly`, fromModel) | `docs/guides/arch/entity-pattern.md` |
+| Data/DTO pattern (BaseData, C6) | `docs/guides/arch/data-pattern.md` |
+| Model pattern (#[Fillable], D4, D6) | `docs/guides/arch/model-pattern.md` |
+| Enum pattern (LabelEnum/StatusEnum) | `docs/guides/arch/enum-pattern.md` |
+| Action pattern (triad, DTO for 3+ params C7) | `docs/guides/arch/action-pattern.md` |
+| Cache keys (no inline C4) | `docs/guides/arch/cache-pattern.md` · `config/cache-keys.php` |
+| Logging & PII masking | `docs/guides/arch/logging-pattern.md` |
 | Conventions (D4/D5/D6, security §3, performance §6) | `docs/conventions.md` |
 | ADRs for data decisions | `docs/adr/*.md` |

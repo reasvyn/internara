@@ -99,8 +99,8 @@ Excluded directories: `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`,
 ## 6. Accessibility (WCAG 2.1 AA)
 
 All user-facing interfaces MUST meet WCAG 2.1 Level AA. This section defines UI-layer
-requirements. See `docs/architecture/modular-pattern.md` §22 for architectural rules and
-`docs/architecture/livewire-pattern.md` §13 for component-specific patterns.
+requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural rules and
+`docs/guides/arch/livewire-pattern.md` §13 for component-specific patterns.
 
 ### 6.1 Color & Contrast
 
@@ -205,7 +205,7 @@ Route::get('/dashboard', ...)->name('dashboard');
 ### Route Files
 
 Module-level routes: `routes/web/{module}.php`. Submodule-level routes:
-`routes/web/{submodule}.php` (no module prefix). See `docs/infrastructure/routes.md`.
+`routes/web/{submodule}.php` (no module prefix). See `docs/guides/infra/routes.md`.
 
 ### Livewire Routes
 
@@ -216,7 +216,7 @@ Route::livewire('/register', RegistrationWizard::class)->name('registration.wiza
 ```
 
 Route middleware applies at the route level — `auth`, `guest`, `role:{roles}`, `auth.throttle`.
-See `docs/architecture/modular-pattern.md` §13 for full route patterns.
+See `docs/guides/arch/modular-pattern.md` §13 for full route patterns.
 
 ---
 
@@ -287,7 +287,7 @@ Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.)
 
 Every page with a non-trivial workflow MUST include a floating guide button (bottom-right, question
 mark icon) that opens a modal with step-by-step instructions. See
-`docs/architecture/livewire-pattern.md` (§11) for the full implementation pattern.
+`docs/guides/arch/livewire-pattern.md` (§11) for the full implementation pattern.
 
 Implementation reference: `resources/views/setup/components/setup-guide.blade.php`
 

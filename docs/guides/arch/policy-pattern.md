@@ -10,8 +10,8 @@ policy inventory across all modules.
 
 See also:
 
-- [RBAC Foundation](../foundation/rbac.md) — authentication flow & role definitions
-- [ADR-008: Flat RBAC with Functional Roles](../adr/adr-flat-rbac-with-functional-roles.md)
+- [RBAC Foundation](../rbac.md) — authentication flow & role definitions
+- [ADR-008: Flat RBAC with Functional Roles](../../adr/adr-flat-rbac-with-functional-roles.md)
 - [Modular Pattern Reference](modular-pattern.md) (§7 Policy & Authorization Patterns)
 
 ---

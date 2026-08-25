@@ -102,13 +102,13 @@ File: `routes/web/certification.php` Named routes: `certificates.download`,
 
 ## Views
 
-Views are located in `resources/views/certification/`. See [UI/UX](../../foundation/ui-ux.md) for the
+Views are located in `resources/views/certification/`. See [UI/UX](../../guides/ui-ux.md) for the
 design system.
 
 ## Tests
 
 Tests are located in `tests/Certification/`. See
-[Testing](../../infrastructure/testing.md) for the testing conventions.
+[Testing](../../guides/infra/testing.md) for the testing conventions.
 
 ## Factories
 

@@ -138,11 +138,11 @@ Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-{descriptio
 
 | Topic                        | Doc                                                          |
 | ---------------------------- | ------------------------------------------------------------ |
-| Action Triad                 | `docs/architecture/action-pattern.md`                        |
-| Entity-Model separation      | `docs/architecture/entity-pattern.md`                        |
-| Livewire component rules     | `docs/architecture/livewire-pattern.md`                      |
-| Exception hierarchy          | `docs/architecture/exception-pattern.md`                     |
-| Model conventions            | `docs/architecture/model-pattern.md`                         |
-| Data / DTOs                  | `docs/architecture/data-pattern.md`                          |
-| Service vs Action vs Support | `docs/architecture/service-pattern.md`, `support-pattern.md` |
+| Action Triad                 | `docs/guides/arch/action-pattern.md`                        |
+| Entity-Model separation      | `docs/guides/arch/entity-pattern.md`                        |
+| Livewire component rules     | `docs/guides/arch/livewire-pattern.md`                      |
+| Exception hierarchy          | `docs/guides/arch/exception-pattern.md`                     |
+| Model conventions            | `docs/guides/arch/model-pattern.md`                         |
+| Data / DTOs                  | `docs/guides/arch/data-pattern.md`                          |
+| Service vs Action vs Support | `docs/guides/arch/service-pattern.md`, `support-pattern.md` |
 | Coding conventions           | `docs/conventions.md`                                        |

@@ -4,8 +4,8 @@
 
 ## Description
 
-The structure for how-to guides under `docs/foundation/` (and ops guides in
-`docs/infrastructure/`): goal-oriented steps for operators performing a specific task. Assumed
+The structure for how-to guides under `docs/guides/` (and ops guides in
+`docs/guides/infra/`): goal-oriented steps for operators performing a specific task. Assumed
 knowledge goes in Prerequisites, not in the body.
 
 ## The Skeleton
@@ -52,4 +52,4 @@ knowledge goes in Prerequisites, not in the body.
 ## Quick References
 
 - [`doc-template.md`](../doc-template.md) — shared documentation standards
-- [`infrastructure/tools.md`](../infrastructure/tools.md) — scanner toolkit referenced by guides
+- [`infrastructure/tools.md`](infra/tools.md) — scanner toolkit referenced by guides

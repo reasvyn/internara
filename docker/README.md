@@ -56,7 +56,7 @@ the build toolchain.
   (deleting it in the runtime stage would still leave its bytes in an earlier layer).
 - Prune stale layers periodically: `docker builder prune -af` (or `docker buildx prune`).
 
-See `docker-compose.yml` for service definitions. See `docs/foundation/installation.md` for production setup
+See `docker-compose.yml` for service definitions. See `docs/guides/installation.md` for production setup
 guide.
 
 ## 3. Shared Hosting Simulation

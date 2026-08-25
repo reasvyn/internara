@@ -208,16 +208,16 @@ The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpe
 ## Routes
 
 No dedicated route file. Health check endpoint `/up` is defined in `bootstrap/app.php`. See
-[Routes](../../infrastructure/routes.md) for the routing architecture.
+[Routes](../../guides/infra/routes.md) for the routing architecture.
 
 ## Views
 
-Views are located in `resources/views/core/`. See [UI/UX](../../foundation/ui-ux.md) for the design
+Views are located in `resources/views/core/`. See [UI/UX](../../guides/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Core/`. See [Testing](../../infrastructure/testing.md) for
+Tests are located in `tests/Core/`. See [Testing](../../guides/infra/testing.md) for
 the testing conventions.
 
 ## Factories

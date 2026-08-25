@@ -95,10 +95,10 @@ conventions diverge from stock Laravel. Apply the conventions below during imple
 | ---------------------------- | ------------------------------------------------------------ |
 | Coding conventions (full)    | `docs/conventions.md`                                        |
 | Architecture                 | `docs/architecture.md`                                       |
-| Model conventions            | `docs/architecture/model-pattern.md`                         |
-| Action Triad                 | `docs/architecture/action-pattern.md`                        |
-| Entity separation            | `docs/architecture/entity-pattern.md`                        |
-| DTO / Data                   | `docs/architecture/data-pattern.md`                          |
-| Exception patterns           | `docs/architecture/exception-pattern.md`                     |
-| Cache patterns               | `docs/architecture/cache-pattern.md`                         |
-| Service vs Action vs Support | `docs/architecture/service-pattern.md`, `support-pattern.md` |
+| Model conventions            | `docs/guides/arch/model-pattern.md`                         |
+| Action Triad                 | `docs/guides/arch/action-pattern.md`                        |
+| Entity separation            | `docs/guides/arch/entity-pattern.md`                        |
+| DTO / Data                   | `docs/guides/arch/data-pattern.md`                          |
+| Exception patterns           | `docs/guides/arch/exception-pattern.md`                     |
+| Cache patterns               | `docs/guides/arch/cache-pattern.md`                         |
+| Service vs Action vs Support | `docs/guides/arch/service-pattern.md`, `support-pattern.md` |

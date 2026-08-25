@@ -31,7 +31,7 @@ translation pack providing framework-level language files for Laravel and its fi
 ## How Internara Uses It
 
 - Supplies the Indonesian (`lang/id/`) baseline that government-facing UI requires; Indonesian is
-  the preferred UI locale, toggled via Settings ([`infrastructure/localization.md`](../../infrastructure/localization.md))
+  the preferred UI locale, toggled via Settings ([`infrastructure/localization.md`](../../guides/infra/localization.md))
 - App-owned overrides live in `lang/en/` and `lang/id/` — every user-facing string flows through
   `__()` (D3)
 - Localization rules: `docs/conventions.md` §Localization
@@ -39,4 +39,4 @@ translation pack providing framework-level language files for Laravel and its fi
 ## Quick References
 
 - [Project page](https://laravel-lang.com) — locale coverage and publishing commands
-- [`docs/infrastructure/localization.md`](../../infrastructure/localization.md) — locale resolution
+- [`docs/guides/infra/localization.md`](../../guides/infra/localization.md) — locale resolution

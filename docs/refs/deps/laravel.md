@@ -7,7 +7,7 @@
 Conceptual reference for **Laravel 13** (`laravel/framework v13.24.0`, pinned in `composer.lock`)
 as the application backbone of Internara: what the release delivers, the core concepts every
 contributor must know, and how this repository builds on them. Component-specific behavior
-(queues, cache, sessions) lives in [`infrastructure/`](../../infrastructure/index.md).
+(queues, cache, sessions) lives in [`infrastructure/`](../../guides/infra/index.md).
 
 ---
 
@@ -94,4 +94,4 @@ model-status), barryvdh/laravel-dompdf, laravel-lang/lang, Laravel Pulse, Larave
 - [Release notes](https://laravel.com/docs/13.x/releases) — official 13.x release documentation
 - [Upgrade guide](https://laravel.com/docs/13.x/upgrade) — full 12.x → 13.x change list
 - [`docs/architecture.md`](../../architecture.md) — how the framework is layered under the Action MVC model
-- [`docs/infrastructure/index.md`](../../infrastructure/index.md) — component-level operations (queue, cache, session)
+- [`docs/guides/infra/index.md`](../../guides/infra/index.md) — component-level operations (queue, cache, session)

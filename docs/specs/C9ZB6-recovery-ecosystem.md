@@ -9,7 +9,7 @@ Specification for Internara's super admin recovery ecosystem. Covers the full li
 recovery key generation during setup through emergency access via CLI, including key storage,
 retrieval, OTP verification, password reset, and key regeneration. Other recovery mechanisms
 (password reset, recovery slips) are separate initiatives — see
-[authentication.md](YB7RG-authentication.md) and `docs/foundation/account-recovery.md`.
+[authentication.md](YB7RG-authentication.md) and `docs/guides/account-recovery.md`.
 
 ---
 
@@ -483,7 +483,7 @@ After implementing this spec, the system has emergency super admin recovery via 
 - `docs/specs/installation.md` — CLI installation and provisioning initiative
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
 - `docs/specs/authentication.md` — Login, password reset, session management
-- `docs/foundation/account-recovery.md` — All three recovery mechanisms
+- `docs/guides/account-recovery.md` — All three recovery mechanisms
 - `app/SysAdmin/Console/Commands/RecoverAdminCommand.php` — Main recovery command
 - `app/SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` — Key display command
 - `app/SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` — Path display command

@@ -31,5 +31,5 @@ Follow `agent-workflow` pipeline. This skill adds Spatie Activity Log guidance.
 | Topic | Doc |
 |-------|-----|
 | Spatie Activity Log docs | `search-docs` with `spatie/laravel-activitylog` |
-| Logging pattern | `docs/architecture/logging-pattern.md` |
+| Logging pattern | `docs/guides/arch/logging-pattern.md` |
 | SmartLogger ADR | `docs/adr/adr-smartlogger-dual-channel.md` |

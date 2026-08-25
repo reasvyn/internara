@@ -411,5 +411,5 @@ module registration through the consolidated gateway.
 - `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
 - `routes/web.php` — Route auto-inclusion
 - `docs/specs/module-discovery.md` (I1BCV) — Registry, discovery conventions, config contract
-- `docs/architecture/service-pattern.md` — Service vs Support boundaries
+- `docs/guides/arch/service-pattern.md` — Service vs Support boundaries
 - `docs/refs/modules/core.md` — Core module conceptual overview

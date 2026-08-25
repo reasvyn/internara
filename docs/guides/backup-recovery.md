@@ -238,4 +238,4 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 - [Setup Wizard](setup-wizard.md) — Initial admin creation
 - [System Health](system-health.md) — Health check and diagnostics
 - [System Observability](system-observability.md) — Monitoring, audit logs
-- `docs/infrastructure/deployment.md` — Deployment paths
+- `docs/guides/infra/deployment.md` — Deployment paths

@@ -4,7 +4,7 @@
 
 ## Description
 
-The structure for `docs/architecture/{pattern}-pattern.md` — explanation-first documentation of an
+The structure for `docs/guides/arch/{pattern}-pattern.md` — explanation-first documentation of an
 architecture pattern: why it exists, then how to apply it correctly, then how violations look.
 
 ## The Skeleton
@@ -47,5 +47,5 @@ architecture pattern: why it exists, then how to apply it correctly, then how vi
 
 ## Quick References
 
-- [`doc-template.md`](../doc-template.md) — shared documentation standards
-- [`../conventions.md`](../conventions.md) — architecture invariants C1–C8, D1–D6
+- [`doc-template.md`](../../doc-template.md) — shared documentation standards
+- [`../conventions.md`](../../conventions.md) — architecture invariants C1–C8, D1–D6

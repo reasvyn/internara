@@ -451,11 +451,11 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 - `docs/conventions.md` — Invariants C1-C8, D1-D6, naming, security, testing
 - `docs/refs/modules/core.md` — Core module overview
 - `docs/refs/modules/core-reference.md` — Core module technical reference
-- `docs/architecture/action-pattern.md` — Action Triad contracts and patterns
-- `docs/architecture/entity-pattern.md` — Entity contracts and bridge pattern
-- `docs/architecture/model-pattern.md` — Model conventions
-- `docs/architecture/data-pattern.md` — DTO and ActionResponse contracts
-- `docs/architecture/exception-pattern.md` — Dual exception hierarchy
+- `docs/guides/arch/action-pattern.md` — Action Triad contracts and patterns
+- `docs/guides/arch/entity-pattern.md` — Entity contracts and bridge pattern
+- `docs/guides/arch/model-pattern.md` — Model conventions
+- `docs/guides/arch/data-pattern.md` — DTO and ActionResponse contracts
+- `docs/guides/arch/exception-pattern.md` — Dual exception hierarchy
 - `app/Core/Actions/` — BaseAction, BaseCommandAction, BaseReadAction, BaseProcessAction
 - `app/Core/Models/` — BaseModel, BaseAuthenticatable, ActivityLog
 - `app/Core/Entities/` — BaseEntity and all module entities

@@ -148,12 +148,12 @@ File: `routes/web/auth.php` Named routes: `login`, `activate` (password/recovery
 
 ## Views
 
-Views are located in `resources/views/auth/`. See [UI/UX](../../foundation/ui-ux.md) for the design
+Views are located in `resources/views/auth/`. See [UI/UX](../../guides/ui-ux.md) for the design
 system.
 
 ## Tests
 
-Tests are located in `tests/Auth/`. See [Testing](../../infrastructure/testing.md) for
+Tests are located in `tests/Auth/`. See [Testing](../../guides/infra/testing.md) for
 the testing conventions.
 
 ## Factories

@@ -470,5 +470,5 @@ Per-service requirements are satisfied by those configs plus the consuming modul
 - `config/database.php` — database connections
 - `config/filesystems.php` — filesystem disks
 - `.env.example` — template environment variables
-- `docs/architecture/cache-pattern.md` — cache strategy and key registry
+- `docs/guides/arch/cache-pattern.md` — cache strategy and key registry
 - **Related specs:** [tech-stack.md](FB792-tech-stack.md) — dependency manifest; [architecture-design](D2FT3-architecture.md) — layer placement; [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) — queue lifecycle; [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — logging; [file-uploads-media.md](WQGTP-file-uploads-media.md) — media; [system-maintenance.md](E1MSJ-system-maintenance.md) — health; [system-requirements.md](J68GZ-system-requirements.md) — platform requirements
