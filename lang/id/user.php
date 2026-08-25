@@ -287,6 +287,14 @@ return [
         'login_desc' => 'Masuk untuk mengakses dasbor, melacak kemajuan, dan mengelola kegiatan PKL Anda.',
         'login_action' => 'Masuk',
         'no_account' => 'Belum punya akun? Hubungi administrator sekolah Anda.',
+        'features_title' => 'Semua yang Anda butuhkan untuk PKL',
+        'features_subtitle' => 'Dari logbook harian hingga sertifikasi akhir — satu platform terintegrasi untuk setiap tahap perjalanan magang Anda.',
+        'feature_logbook_title' => 'Logbook Digital',
+        'feature_logbook_desc' => 'Catat aktivitas harian, check-in supervisor, dan catatan kemajuan — semuanya dalam satu logbook terorganisir.',
+        'feature_guidance_title' => 'Bimbingan Terstruktur',
+        'feature_guidance_desc' => 'Tetap terhubung dengan mentor sekolah dan supervisor industri sepanjang program berlangsung.',
+        'feature_certificate_title' => 'Sertifikat Digital',
+        'feature_certificate_desc' => 'Terima sertifikat penyelesaian PKL resmi Anda secara digital setelah berhasil menyelesaikan program.',
     ],
 
     'user_management' => [

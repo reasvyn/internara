@@ -285,6 +285,14 @@ return [
         'login_desc' => 'Sign in to access your dashboard, track progress, and manage your internship activities.',
         'login_action' => 'Sign In',
         'no_account' => 'Don\'t have an account? Contact your school administrator.',
+        'features_title' => 'Everything you need for PKL',
+        'features_subtitle' => 'From daily logbooks to final certification — one integrated platform for every step of your internship journey.',
+        'feature_logbook_title' => 'Digital Logbook',
+        'feature_logbook_desc' => 'Record daily activities, supervisor check-ins, and progress notes — all in one organized logbook.',
+        'feature_guidance_title' => 'Guided Supervision',
+        'feature_guidance_desc' => 'Stay connected with school mentors and industry supervisors throughout the entire program.',
+        'feature_certificate_title' => 'Digital Certificates',
+        'feature_certificate_desc' => 'Receive your official PKL completion certificate digitally upon successful program completion.',
     ],
 
     'user_management' => [
