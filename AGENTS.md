@@ -328,11 +328,17 @@ Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment
 | Security review | `security-audit` | OWASP, PII, auth patterns |
 | Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
-| Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
+| Enforcing architecture rules + ADR | `arch-guard` | C1-C8, D1-D6, contracts, naming, ADR staleness/linkage (docs/adr/*.md) |
 | Writing scripts | `script-automation` | Standards for `scripts/` devtools |
 | Tailwind CSS utilities & palette | `tailwindcss-development` | Tailwind CSS v4 only — utilities, @theme, semantic palette, no general UI |
-| File uploads/media | `medialibrary-development` | Spatie MediaLibrary |
-| Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards |
+| TallStackUI components | `tallstackui-development` | TallStackUI v4 — x-ts-* components, interactions (1:1 tallstackui/tallstackui) |
+| Laravel framework | `laravel-development` | Laravel core — routing, container, Eloquent, validation (1:1 laravel/framework) |
+| File uploads/media | `medialibrary-development` | Spatie MediaLibrary (1:1 spatie/laravel-medialibrary) |
+| RBAC / Permission | `permission-development` | Spatie Permission — roles, @hasrole, policies (1:1 spatie/laravel-permission) |
+| Audit trail | `activitylog-development` | Spatie Activity Log — audit, SmartLogger (1:1 spatie/laravel-activitylog) |
+| PDF generation | `dompdf-development` | DOMPDF — Blade-to-PDF, assets (1:1 barryvdh/laravel-dompdf) |
+| Build pipeline | `vite-development` | Vite — entry, plugins, HMR, build (1:1 vite) |
+| Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards (1:1 laravel/pulse) |
 
 ---
 
