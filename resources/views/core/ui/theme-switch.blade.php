@@ -1,1 +1,1 @@
-<x-theme-switch sm />
+<x-ts-theme-switch sm />

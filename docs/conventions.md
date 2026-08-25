@@ -41,7 +41,8 @@ pattern-specific: code style, naming, file structure, and project rules.
 - [11. Code Quality Enforcement](#11-code-quality-enforcement)
 - [12. Testing Conventions](#12-testing-conventions)
 - [13. Theming & Visual Consistency](#13-theming--visual-consistency)
-- [14. Localization](#14-localization)
+- [14. Frontend & Blade Presentation](#14-frontend--blade-presentation)
+- [15. Localization](#15-localization)
 
 ---
 
@@ -773,7 +774,51 @@ Icons use Heroicons via TallstackUI `x-ts-icon` (or inline SVG with `heroicon-*`
 
 ---
 
-## 14. Localization
+## 14. Frontend & Blade Presentation
+
+### 14.1 Blade Contains No Business or UI Logic
+
+Blade files are **pure presentation**. No business logic, no UI computation, no matter how small,
+may live in a `.blade.php` file. All derived state, calculations, formatting, and conditional
+branching that depends on business rules must be prepared before rendering.
+
+| Location | Responsibility |
+|----------|----------------|
+| **Livewire Component** | Computed properties, derived metrics, status maps, formatted values. Expose ready-to-render data (`public array $pipelineStages`, `public string $throughputLabel`, methods like `getProgressPercent()`). |
+| **Alpine.js (`x-data`)** | Lightweight client-side interactivity (toggles, dropdowns, local filtering). No server business rules. |
+| **Blade** | Bind and display: `{{ $value }}`, `@foreach ($items as $item)`, `@if ($isVisible)`. No `@php` blocks with calculations, no inline arithmetic beyond trivial display. |
+
+**Rules:**
+
+- `@php` blocks in Blade are **forbidden** except for trivial, non-business assignments that are purely presentational and cannot be moved (and even then, prefer a Livewire computed property). If you need `@php` to compute a percentage, ratio, or status — move it to the Livewire class.
+- Calculations such as `round(($a / $b) * 100)`, `max(...)`, array assembly for stages/funnels, date formatting with business meaning, and permission-derived visibility must be computed in the Livewire component and passed as plain values.
+- `@if` / `@elseif` / `@else` with inline PHP expressions **should be avoided**. Do not write `@if ($user->role === 'admin' && $stats['x'] > 0)` or `@if (auth()->user()->hasRole('super_admin'))`. Instead, expose a precomputed boolean from Livewire (`public bool $isSuperAdmin`, `public bool $showFunnel`) and let Blade only check the flag, or use Spatie's Blade directives (`@hasrole`, `@role`, `@hasanyrole`) for role-based visibility — e.g., `@hasrole('super_admin')`. For client-side-only toggles (modals, dropdowns, filters), prefer Alpine.js (`x-data`, `x-show`, `x-if`) over server `@if` to avoid round-trips.
+- As a guideline, **`@if` in Blade should be avoided where possible** — it is not forbidden, but prefer Livewire boolean properties (or Spatie `@hasrole` for RBAC) for server-driven visibility and Alpine state for UI-only visibility. If `@if` remains, it should be a trivial gate on an already-computed boolean (`@if ($isSuperAdmin)`), never an expression with business logic.
+- When reviewing a PR, any Blade file containing business-affecting logic or conditional expressions inside `@if` is a blocking issue.
+
+**Examples:**
+
+```blade
+{{-- ❌ Wrong — business logic in Blade --}}
+@php $rate = $total > 0 ? round(($completed / $total) * 100) : 0; @endphp
+<span>{{ $rate }}%</span>
+
+{{-- ✅ Correct — Livewire prepares the value --}}
+// AdminDashboard.php: public int $completionRate; computed in mount()
+<span>{{ $completionRate }}%</span>
+```
+
+```blade
+{{-- ❌ Wrong — stage assembly in Blade --}}
+@php $stages = [['label'=>..., 'v'=>$totalSt], ...]; $maxV = max(array_column($stages,'v')); @endphp
+
+{{-- ✅ Correct — Livewire exposes $pipelineStages and $pipelineMaxV --}}
+@foreach ($pipelineStages as $stage) ... @endforeach
+```
+
+Enforced by: `docs/architecture/livewire-pattern.md` §1 (Thin Component) and agent skills `livewire-development` + `tailwindcss-development`.
+
+## 15. Localization
 
 ### File Structure
 

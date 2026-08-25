@@ -82,7 +82,7 @@ resources/views/{module}/{submodule}/{action}.blade.php
 - Extends layout: `<x-layouts.app>` or module-specific layout
 - Use Livewire components for interactive sections
 - Use Blade components for reusable UI fragments
-- Keep logic in Livewire, not in Blade directives
+- Keep ALL business and UI logic in Livewire (computed properties/methods) or Alpine.js (`x-data`) — Blade is presentation only, no `@php` calculations (see `docs/conventions.md` §14)
 
 ### Tailwind v4 Specifics
 
@@ -214,6 +214,7 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 | UI stack & component usage (TallstackUI primacy, semantic palette, no custom CSS) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
 | Layout, responsiveness & dark mode (layout/sidebar, breakpoints, theming, Tailwind v4) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
 | View structure & routing (Blade placement, route files, Livewire routes) | `rules/view-structure-and-routing.md` | Creating views or routes |
+| Blade presentation — no business/UI logic (Livewire computed props or Alpine.js only) | `rules/blade-presentation.md` | Every Blade file — any derived value, percentage, or array assembly |
 | Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `rules/accessibility-wcag.md` | Every styled component before release |
 | Localization in views (bilingual `__()`, keys, dates, lang attribute) | `rules/localization-in-views.md` | Any user-facing string or date in a view |
 
