@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** feat — added dependency reference docs (refs/deps/laravel.md); module docs relocated to docs/refs/modules/ — catalog links and Modules section pointer updated
+> **Last updated:** 2026-08-25 **Changes:** feat — dependency references completed: 15 per-package docs in docs/refs/deps/ (prettier family grouped into one prettier.md)
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -94,7 +94,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Technical Reference
 
-- **[Dependencies](refs/deps/laravel.md)** — Laravel framework v13 conceptual reference (version, lifecycle, core concepts, project mapping)
+- **[Dependencies](refs/deps/laravel.md)** — one conceptual reference per runtime dependency (`docs/refs/deps/`): `laravel` · `livewire` · `tallstackui` · `alpinejs` · `tailwindcss` · `vite` · `spatie-laravel-permission` · `spatie-laravel-medialibrary` · `spatie-laravel-activitylog` · `spatie-laravel-model-status` · `laravel-dompdf` · `laravel-pulse` · `laravel-lang` · `flatpickr` · `marked` · `prettier`
 - **[Infrastructure Index](infrastructure/index.md)** — Browse all infrastructure and operations docs
 - **[Database](infrastructure/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
 - **[Cache](infrastructure/cache.md)** — Caching strategy, key registry, invalidation, Redis
