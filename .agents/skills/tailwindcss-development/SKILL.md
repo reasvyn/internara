@@ -1,229 +1,95 @@
 ---
 name: tailwindcss-development
-description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized UI/styling development — Blade templates, responsive layouts, dark mode, TallstackUI v4 + Tailwind CSS v4."
+description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Tailwind CSS development — utilities, @theme, semantic palette, CSS-first config, and build pipeline. General UI concerns (Blade, layout, components, a11y, i18n) are handled by ui-development."
 upstream:
-  - feature-building
-  - livewire-development
+  - ui-development
 downstream:
   - sync-docs
 ---
 
-# Tailwind CSS Development
+# Tailwind CSS Development — Utilities & Theme Only
 
-> **Last updated:** 2026-08-25 **Changes:** sync — replace daisyUI/maryUI with TallstackUI v4 (x-ts-* components, self-hosted palette, dark via .dark)
+> **Last updated:** 2026-08-25 **Changes:** narrowed to Tailwind-only — general UI rules (Blade presentation, view structure, layout/responsive/dark mode, component usage, accessibility, localization) moved to ui-development
 
-> **Prerequisite:** Load `context-awareness` for project orientation. Loading `livewire-development`
-> provides component context.
+> **Prerequisite:** Load `context-awareness` for project orientation. For general UI (Blade, layout, TallstackUI components, a11y, i18n) load `ui-development`; for Livewire mechanics load `livewire-development`.
 
 ## When to Activate
 
-Use this skill when building or styling UI — Blade templates, responsive layouts, dark mode,
-component styling with TallstackUI v4 and Tailwind CSS v4 utilities.
+Use this skill when working with **Tailwind CSS specifics** — utility classes, `@theme` tokens, semantic palette, CSS-first configuration, and the Vite build pipeline. Do not use it for general UI tasks (Blade structure, layout, component selection, accessibility, localization) — those belong to `ui-development`.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
-doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
-strategy, and commit format. This skill adds UI/styling guidance — the UI stack, TallstackUI
-patterns, dark mode, and accessibility — nothing else.
+Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **Tailwind-only guidance** — the utility layer and theming — and delegates everything else to `ui-development`.
 
-### Execute — UI/Styling Development
+## Tailwind Stack
 
-- Use TallstackUI `x-ts-*` components for consistency (table, modal, form, card, badge, alerts)
-- Use semantic palette vars (`--color-primary`, `--color-success` etc. in `resources/css/app.css`)
-- Ensure responsive on mobile, tablet, desktop
-- Ensure dark mode works (`.dark` + `data-theme`, via `core::ui.theme-switch`)
-- Avoid custom CSS if TallstackUI suffices (legacy `.btn`/`.badge` shimmed in `@layer components`)
+| Layer | Purpose |
+|-------|---------|
+| **Tailwind CSS v4** | Utility-first framework — spacing, typography, responsive grid, `dark:` via `.dark` class |
+| **Self-hosted palette** | Semantic colors via `@theme` in `resources/css/app.css` (`--color-base-*`, `--color-primary`, etc.) with `[data-theme='dark']` overrides |
+| **Vite + laravel-vite-plugin** | Build pipeline (`npm run build`, `resources/css/app.css` entry) |
 
-## UI Stack
+General UI stack (TallstackUI `x-ts-*`, Alpine.js, Livewire) is documented in `ui-development`.
 
-| Layer                    | Purpose                                                        |
-| ------------------------ | -------------------------------------------------------------- |
-| **Tailwind CSS v4**      | Utility-first CSS framework (`dark:` via `.dark` class)        |
-| **TallstackUI v4**       | Component library (`x-ts-*`, prefix `ts-`, toast via Interactions) |
-| **Self-hosted palette**  | Semantic colors via `@theme` + shims (`resources/css/app.css`) |
-| **Alpine.js**            | Lightweight JavaScript interactivity (dropdowns, modals)       |
+## Key Patterns — Tailwind Only
 
-## Key Patterns
+### Semantic Palette
 
-### Layout
+- Use `bg-primary`, `text-success`, `border-warning`, `bg-info/10` — tokens from `@theme` in `resources/css/app.css`.
+- Never use arbitrary `bg-blue-500`, `text-red-500`, `bg-[#123456]` — they bypass the self-hosted palette and break brand theming/dark mode.
 
-- Use TallstackUI `x-ts-layout` + `x-ts-side-bar` for sidebar navigation
-- Use core header (`resources/views/core/ui/navbar-actions.blade.php`) for top navigation
-- Responsive: mobile-first with `sm:`, `md:`, `lg:` breakpoints
-- Container: `max-w-7xl mx-auto` for content width
+### CSS-First Configuration
 
-### Dark Mode
+- **No `tailwind.config.js`.** Theme tokens, breakpoints, and custom values live in `resources/css/app.css` via `@theme` and `@import`/`@layer`.
+- Check `resources/css/app.css` before adding any new token.
 
-- Dual signal: `data-theme` (palette) + `.dark` class (Tailwind/TallstackUI)
-- Theme switch is `core::ui.theme-switch` wrapping `<x-theme-switch>` (TallstackUI); persists to `localStorage` `dark-theme`, dispatches `theme` CustomEvent, JS `applyTheme()` mirrors to `theme` cookie for SSR
-- Brand colors injected via `Theme::cssVariables()` inline `<style>`
+### Utilities Over Custom CSS
 
-### Component Usage
+- Prefer Tailwind utilities (`mt-4`, `flex`, `gap-2`, `rounded-lg`) over custom CSS or `style=""`.
+- Legacy DaisyUI shims (`.btn`, `.badge`, `.card` etc.) are in `@layer components` as transitional shims — do not extend them for new designs; use utilities or TallstackUI.
 
-| Need          | TallstackUI Component (`x-ts-*`)                               |
-| ------------- | -------------------------------------------------------------- |
-| Tables        | `x-ts-table` (sorting, pagination, selection; headers via `index` key) |
-| Forms         | `x-ts-input`, `x-ts-select.native`, `x-ts-textarea`, `x-ts-radio`, `x-ts-checkbox` |
-| Modals        | `x-ts-modal`, `x-ts-dialog` (confirm)                          |
-| Notifications | Toast via `toast()->success()` (TallstackUI Interactions)      |
-| Buttons       | `x-ts-button`                                                  |
-| Cards         | `x-ts-card`                                                    |
-| Badges        | `x-ts-badge`                                                   |
-| Alerts        | `x-ts-alert`                                                   |
-| Icons         | `x-ts-icon` (Heroicons)                                        |
+### Dark Mode Variant
 
-### View Structure
+- Use `dark:` variant (driven by `.dark` class) for theme-aware utilities: `bg-base-100 dark:bg-base-200`, `text-base-content`.
+- Do not hardcode `bg-white` without a `dark:` counterpart. The dual signal is `data-theme` + `.dark` (wiring is in `ui-development`).
 
-```
-resources/views/{module}/{submodule}/{action}.blade.php
-```
+## Tailwind v4 Specifics
 
-- Extends layout: `<x-layouts.app>` or module-specific layout
-- Use Livewire components for interactive sections
-- Use Blade components for reusable UI fragments
-- Keep ALL business and UI logic in Livewire (computed properties/methods) or Alpine.js (`x-data`) — Blade is presentation only, no `@php` calculations (see `docs/conventions.md` §14)
+- CSS-first config (`@theme`, `@import`) — not `tailwind.config.js`.
+- `@theme` for custom values, `@import` for layers, `@layer` for shims.
+- See `resources/css/app.css` for project-specific palette and shim definitions.
 
-### Tailwind v4 Specifics
+## Styling Principles — Tailwind Scope
 
-- CSS-first configuration (not `tailwind.config.js` — check `resources/css/`)
-- Uses `@theme` directive for custom values
-- `@import` for layers instead of `@layer`
-- Check `resources/css/app.css` for project-specific theme setup
+1. Use semantic palette vars (`--color-primary`, etc.) over arbitrary colors.
+2. Do NOT write custom CSS unless Tailwind utilities + TallstackUI cannot achieve the design.
+3. No inline `style=""` — use utilities.
 
-## Styling Principles
+General UI principles (component primacy, responsive mandatory, accessibility) live in `ui-development`.
 
-1. Prefer TallstackUI `x-ts-*` components over custom HTML for consistency
-2. Use semantic palette vars (`--color-primary`, `--color-success` etc.) over arbitrary colors
-3. Responsive design is mandatory — test at mobile, tablet, desktop
-4. Dark mode must work without visual breakage (`.dark` + `data-theme`)
-5. Do NOT write custom CSS unless TallstackUI cannot achieve the design (shims exist for legacy classes)
-6. Follow existing component patterns in the same module
-7. **Accessibility is mandatory** — WCAG 2.1 AA compliance (see below)
+## Verification Checklist — Tailwind Only
 
-## Accessibility (WCAG 2.1 AA)
+- [ ] No arbitrary color utilities (`bg-blue-500`, `text-red-500`, `bg-[#...]`) — only semantic palette.
+- [ ] No inline `style=""` — only utilities.
+- [ ] No custom CSS when utilities/TallstackUI suffice (shims are transitional).
+- [ ] `npm run build` clean; `npx prettier --check` clean (non-PHP).
 
-Every styled component MUST meet accessibility requirements. See `docs/architecture/modular-pattern.md`
-§22 and `docs/foundation/ui-ux.md` §6 for full rules.
-
-### Color & Contrast
-
-- Use semantic palette vars (`--color-success`, `--color-warning` etc.) — pre-validated for contrast.
-- Minimum 4.5:1 for normal text, 3:1 for large text (≥18pt or ≥14pt bold).
-- Never use arbitrary Tailwind color utilities (`text-red-500`, `bg-blue-200`) that may fail
-  contrast checks — prefer semantic `text-error`, `bg-info/10`.
-- Status indicators must include text labels alongside color (e.g., `x-ts-badge color="success"` + "Active",
-  not just color).
-
-### Focus Indicators
-
-- Never suppress focus rings with `outline-none` without providing a visible replacement.
-- TallstackUI `focus:ring` is the default — preserve it on all interactive elements.
-- Custom interactive elements (Alpine.js dropdowns, custom buttons) must include
-  `focus:ring focus:ring-primary`.
-
-### Keyboard Navigation
-
-- All interactive elements must be reachable via Tab key.
-- Dropdowns (`x-ts-dropdown`) must open on Enter/Space and close on Escape.
-- Modals (`x-ts-modal`/`x-ts-dialog`) must trap focus — verify not overridden.
-- No positive `tabindex` values — follow natural DOM order.
-
-### Responsive & Reflow
-
-- No horizontal scrolling at 320px viewport width (WCAG 1.4.10).
-- Tables must reflow to card layout or provide horizontal scroll with visible indicators on mobile.
-- Content must not be clipped or overlap at any breakpoint.
-
-### Icon Accessibility
-
-- Icon-only buttons must include `aria-label`:
-  ```blade
-  <x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />
-  ```
-- Icons via `x-ts-icon` (Heroicons) paired with text should NOT duplicate the text in `alt` attributes.
-
-## Localization
-
-All user-facing strings MUST use `__()` for EN/ID bilingual support. See `docs/conventions.md` §14.
-
-### Rules
-
-- All visible text in Blade views uses `{{ __('key') }}` — no hardcoded English.
-- Button labels, modal titles, table headers: all via `__()`.
-- Date formatting: `Carbon::locale(app()->getLocale())->isoFormat(...)`.
-- HTML `lang` attribute set in `base.blade.php`.
-- Every key must exist in both `lang/en/` and `lang/id/`.
-
-### Key Patterns
-
-| Scope            | Pattern                | Example                            |
-| ---------------- | ---------------------- | ---------------------------------- |
-| Module-level     | `{module}.key`         | `__('enrollment.register')`        |
-| Submodule-level  | `{submodule}.key`      | `__('internship.create_success')`  |
-| Shared           | `common.key`           | `__('common.actions.save')`        |
-
-## Routing
-
-See `docs/infrastructure/routes.md` and `docs/architecture/modular-pattern.md` §13.
-
-### Route File Convention
-
-- Module-level: `routes/web/{module}.php`
-- Submodule-level: `routes/web/{submodule}.php` (no module prefix)
-
-### Route Naming
-
-Flexible — describe the URL path. No rigid `{prefix}.{resource}.{action}` convention.
-
-### Livewire Route Registration
-
-```php
-Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
-```
-
-Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.throttle`.
-
-### URL Structure
-
-| Scope       | Pattern                         | Example                                  |
-| ----------- | ------------------------------- | ---------------------------------------- |
-| Guest       | `/{resource}`                   | `/apply`, `/login`                       |
-| Student     | `/student/{module}/{resource}`  | `/student/internships/placement-change`  |
-| Admin       | `/admin/{module}/{resource}`    | `/admin/internships/placements`          |
-
-## Verification Checklist
-
-- [ ] Uses TallstackUI `x-ts-*` components where available
-- [ ] Responsive at mobile, tablet, desktop viewports
-- [ ] Dark mode renders correctly (`.dark` + `data-theme`)
-- [ ] Follows existing view patterns in the module
-- [ ] No custom CSS when TallstackUI suffices (shims are transitional)
-- [ ] No inline styles — use Tailwind utilities
-- [ ] All visible text uses `__()` for localization
-- [ ] Focus indicators visible on all interactive elements
-- [ ] Icon-only buttons include `aria-label`
-- [ ] Color is not the sole indicator for status/errors
-- [ ] Color contrast meets WCAG 2.1 AA (4.5:1 normal, 3:1 large)
-- [ ] No horizontal scrolling at 320px viewport width
+For Blade/layout/component/a11y/i18n checks, see `ui-development` skill.
 
 ## Skill Rules
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| UI stack & component usage (TallstackUI primacy, semantic palette, no custom CSS) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
-| Layout, responsiveness & dark mode (layout/sidebar, breakpoints, theming, Tailwind v4) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
-| View structure & routing (Blade placement, route files, Livewire routes) | `rules/view-structure-and-routing.md` | Creating views or routes |
-| Blade presentation — no business/UI logic (Livewire computed props or Alpine.js only) | `rules/blade-presentation.md` | Every Blade file — any derived value, percentage, or array assembly |
-| Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `rules/accessibility-wcag.md` | Every styled component before release |
-| Localization in views (bilingual `__()`, keys, dates, lang attribute) | `rules/localization-in-views.md` | Any user-facing string or date in a view |
+| Tailwind utilities & palette (semantic colors, @theme, utilities over custom CSS, no inline style) | `rules/tailwind-utilities-and-palette.md` | Any Tailwind utility, color, or CSS change |
+
+General UI rules (Blade, view structure, layout, accessibility, localization) are now in `ui-development`.
 
 ## References
 
-| Topic                       | Doc                                     |
-| --------------------------- | --------------------------------------- |
-| UI/UX design system         | `docs/foundation/ui-ux.md`              |
-| Branding & themes           | `docs/foundation/branding.md`           |
-| Livewire component patterns | `docs/architecture/livewire-pattern.md` |
-| TallstackUI documentation   | `search-docs` with `tallstackui/tallstackui` |
-| Tailwind CSS v4             | `search-docs` with tailwindcss          |
+| Topic | Doc |
+|-------|-----|
+| UI/UX design system (general) | `docs/foundation/ui-ux.md` |
+| General UI skill | `ui-development` skill |
+| App CSS entry | `resources/css/app.css` |
+| Tailwind CSS v4 | `search-docs` with `tailwindcss` |
+| Livewire patterns | `docs/architecture/livewire-pattern.md` |

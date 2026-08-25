@@ -318,7 +318,8 @@ Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
 | Laravel/architecture best practices | `laravel-best-practices` | Cross-cutting overrides for the Module-first Action architecture |
-| Livewire component | `livewire-development` | Component structure, reactivity |
+| Livewire component | `livewire-development` | Livewire mechanics only — thin component, delegation, tables |
+| General UI (Blade, layout, a11y, i18n, TallstackUI) | `ui-development` | General UI — Blade presentation, view structure, layout/responsive/dark mode, component library, accessibility, localization (delegates Tailwind details to tailwindcss-development) |
 | Writing spec-driven tests | `pest-testing` | Each test traces to a spec FR/NFR; no orphan tests |
 | Deciding verification strategy | `test-writing` | What to run, when, how much; spec-gap & orphan detection |
 | Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
@@ -329,7 +330,7 @@ Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
 | Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
 | Writing scripts | `script-automation` | Standards for `scripts/` devtools |
-| CSS/styling | `tailwindcss-development` | Tailwind, TallstackUI |
+| Tailwind CSS utilities & palette | `tailwindcss-development` | Tailwind CSS v4 only — utilities, @theme, semantic palette, no general UI |
 | File uploads/media | `medialibrary-development` | Spatie MediaLibrary |
 | Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards |
 
