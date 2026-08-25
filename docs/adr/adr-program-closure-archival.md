@@ -1,81 +1,64 @@
-# ADR-013: Program Closure & Archival
+# Program Closure & Archival
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current program closure/archival (read-only snapshots, data retention, no deletion)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Internship Lifecycle Spec](../specs/7C5WM-internship-lifecycle.md) and [Action Pattern](../guides/arch/action-pattern.md) § Process Actions |
 
-Completed internship programs are archived rather than deleted, preserving all associated data
-(registrations, placements, logbooks, assessments) in read-only state.
+## Context and Problem Statement
 
-## Context
+The program lifecycle runs registration through certification. Post-certification two
+requirements exist: formally **close** the program once all students have completed, been
+assessed, and received certificates, and **archive** it for 5+ year regulatory retention as an
+immutable, read-only record. Closure must verify completeness (assessments, submissions,
+attendance, supervision logs, certificates), compute and lock final grades, trigger Program
+Quality Evaluation, and transition to `ARCHIVED`. Regulation then demands no deletion,
+immutable preservation, and continued read-only access — including certificate retrieval for
+alumni. Existing pieces include `CheckCloseReadinessAction`, `ArchiveStudentAccountsAction`,
+`AccountStatus::ARCHIVED`, and `InternshipStatus::COMPLETED`; missing are a coordinating
+Process, snapshot mechanism, archive UI, `InternshipStatus::ARCHIVED`, and cohort alumni
+marking.
 
-The program lifecycle covers registration through certification. Once certificates are issued,
-schools have two post-certification requirements:
+**Decision Drivers:**
 
-### Program Closure
+* Regulatory 5+ year retention with immutable, auditable proof at closure time
+* Integrity — archived records must be unwritable at model, policy, and UI layers
+* Alumni continuity — graduates retain read-only certificate/grade access
+* Reversibility for exceptional cases (super_admin) with full audit trail
 
-When all students have completed placements, been assessed, and received certificates, the program
-must be formally closed. Closure involves verifying completeness (assessments finalized, submissions
-graded, attendance verified, supervision logs signed, certificates issued), computing and locking
-final grades, triggering a Program Quality Evaluation, and marking the program as `ARCHIVED`.
+## Considered Options
 
-### School Archives
+* **Soft close** — mark `COMPLETED`, leave records mutable, rely on policies alone.
+  *Pros:* simplest. *Cons:* no integrity guarantee; mutable history undermines audit.*
+* **Hard archive with immutable snapshot (chosen)** — at closure create a versioned snapshot,
+  lock source records behind `ARCHIVED` status gates, and mark students as alumni.
+  *Pros:* regulatory compliance, locked integrity, alumni access, reversible with audit.*
 
-Indonesian regulations require schools to retain student records, grade reports, and program
-documentation for 5+ years after completion. Data cannot be deleted, must be preserved in immutable
-state, and must remain accessible for read-only viewing. Graduated alumni may need certificate
-access.
+## Decision Outcome
 
-### Existing Infrastructure
-
-`CheckCloseReadinessAction` (exists), `ArchiveStudentAccountsAction` (exists),
-`AccountStatus::ARCHIVED` (exists), `InternshipStatus::COMPLETED` (exists). Missing: a coordinating
-Process Action, data snapshot mechanism, read-only archive UI, `InternshipStatus::ARCHIVED`, and
-cohort-based alumni marking.
-
-Two approaches were considered:
-
-1. **Soft close** — mark as COMPLETED, leave records mutable, rely on policies. Simpler but no
-   integrity guarantees.
-2. **Hard archive** — immutable snapshot at closure time. Source records locked behind `ARCHIVED`
-   status gate.
-
-## Decision
-
-**Hard archive with immutable snapshot** selected. Program closure is coordinated by a
-`CloseProgramProcess` with 7 steps:
+**Chosen option: Hard archive with immutable snapshot** — closure is coordinated by
+`CloseProgramProcess` in 7 steps:
 
 ```
 CloseProgramProcess
-  ├─ 1. CheckCloseReadinessAction
-  │      Verify all assessments, submissions, attendance, certificates
-  │
-  ├─ 2. Trigger Program Quality Evaluation (Evaluation module)
-  │      Admin/teacher evaluation required before closure proceeds
-  │
-  ├─ 3. FinalizeAssessmentsAction
-  │      Compute final weighted grade, freeze scores
-  │
-  ├─ 4. IssueCertificatesAction (if not already issued)
-  │      Batch-issue remaining certificates
-  │
-  ├─ 5. ArchiveProgramAction
-  │      Create immutable snapshot, lock all records, transition to ARCHIVED
-  │
-  ├─ 6. ArchiveStudentAccountsAction
-  │      Mark active students as alumni (read-only dashboard)
-  │
-  └─ 7. GenerateArchiveReportAction
-         Generate summary document for school records
+  ├─ 1. CheckCloseReadinessAction — verify assessments, submissions, attendance, certificates
+  ├─ 2. Trigger Program Quality Evaluation (Evaluation module) — required before proceeding
+  ├─ 3. FinalizeAssessmentsAction — compute weighted grades, freeze scores
+  ├─ 4. IssueCertificatesAction — batch-issue any remaining certificates
+  ├─ 5. ArchiveProgramAction — snapshot + lock records, transition to ARCHIVED
+  ├─ 6. ArchiveStudentAccountsAction — mark active students as alumni (read-only)
+  └─ 7. GenerateArchiveReportAction — summary document for school records
 ```
 
-### Data Snapshot
+**Data Snapshot** — at closure captures: roster, grade composites, attendance summary, logbook
+stats, assignment and rubric scores, evaluation results, certificate serials. Stored as a
+versioned JSON document in an `archives` table.
 
-Captures at closure time: student roster, final grade composites, attendance summary, logbook
-statistics, assignment scores, rubric scores, evaluation results, certificate serial numbers. Stored
-as a versioned JSON document in an `archives` table.
-
-### Archived Program Lifecycle
+**Lifecycle:**
 
 ```
 DRAFT → PUBLISHED → ACTIVE → COMPLETED → ARCHIVED
@@ -83,39 +66,30 @@ DRAFT → PUBLISHED → ACTIVE → COMPLETED → ARCHIVED
                                       COMPLETED
 ```
 
-`ARCHIVED` is terminal — no further transitions. Un-archive is exceptional (super_admin only,
-requires audit trail). Archived programs are read-only everywhere.
+`ARCHIVED` is terminal; un-archive is exceptional, super_admin-only, with audit trail.
 
-### Alumni Accounts
+**Alumni Accounts** — `AccountStatus::ARCHIVED` students retain login to a read-only dashboard
+(certificates, grades) but cannot register, submit logbooks, or clock attendance. Re-enrollment
+requires a different status.
 
-Students in archived programs get `AccountStatus::ARCHIVED`. They can log in with a read-only
-dashboard (view certificates, past grades) but cannot register for new programs, submit logbooks, or
-clock attendance.
+**Retention** — archived data retained indefinitely; no automatic deletion. Post-regulatory
+expiry deletion is manual, database-level, documented but not automated.
 
-### Retention
+### Positive Consequences
 
-Archived data is retained indefinitely. No automatic deletion. Schools that need deletion after
-regulatory expiry must use database-level operations (documented but not automated).
+* Regulatory compliance via immutable archive at closure time
+* Integrity enforced at model, policy, and UI layers
+* Alumni retain certificate and grade access
+* Exceptional un-archive remains possible with audit trail
 
-## Consequences
+### Negative Consequences
 
-- **Positive**: Regulatory compliance — immutable archive preserves student records at the moment of
-  closure.
-- **Positive**: Data integrity — `ARCHIVED` status prevents writes at model, policy, and UI levels.
-- **Positive**: Alumni accounts remain accessible for certificate and grade viewing.
-- **Positive**: Un-archive is possible in exceptional circumstances with full audit trail.
-- **Negative**: Data snapshot duplicates existing operational data. At school scale, this storage
-  cost is negligible.
-- **Negative**: Un-archive is complex — reversing the snapshot requires careful handling. Only
-  super_admin.
-- **Negative**: `ARCHIVED` on student accounts prevents re-registration. Schools allowing
-  re-enrollment must use a different status.
+* Snapshot duplicates operational data (negligible at school scale)
+* Un-archive is complex — requires careful reversal, super_admin only
+* `ARCHIVED` prevents re-registration; re-enrollment needs a separate status
 
-## References
+## Links
 
-- `app/Program/Internship/Actions/ReadCloseReadinessAction.php` — Readiness verification
-- `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Student archive
-- `app/User/Enums/AccountStatus.php` — ARCHIVED status
-- `app/Program/Internship/Enums/InternshipStatus.php` — Program lifecycle enum
-- `docs/architecture.md` — Action Triad (Process Actions) section
-- `docs/specs/7C5WM-internship-lifecycle.md` — Program lifecycle specification
+* [Internship Lifecycle Spec](../specs/7C5WM-internship-lifecycle.md) — lifecycle requirements
+* [Action Pattern](../guides/arch/action-pattern.md) — Process Action coordination
+* [Architecture Overview](../architecture.md) — where archival sits in the 4-layer model
