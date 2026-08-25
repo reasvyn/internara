@@ -1,6 +1,6 @@
 # Documentation Template & Standards — How We Write Docs
 
-> **Last updated:** 2026-08-25 **Changes:** mapping tables and skeletons realigned to docs/guides layout after tree reorganization
+> **Last updated:** 2026-08-25 **Changes:** feat — template roster completed (dep-template, adr-template); noted per-directory index coverage
 
 ## Description
 
@@ -93,15 +93,18 @@ enforce it (`scan_doc_links.py` flags missing dates and anything untouched for 1
 
 ## Per-Directory Templates
 
-Copy-paste skeletons live next to the docs they produce:
+Copy-paste skeletons live next to the docs they produce. Every directory in `docs/` has its own
+`index.md` catalog, and each recurring document type has a template:
 
 | Template | Produces |
 |----------|----------|
 | [`specs/spec-template.md`](specs/spec-template.md) | Feature spec — fixed 11-section structure with requirement IDs |
-| [`modules/module-template.md`](refs/modules/module-template.md) | Conceptual module overview (`{module}.md`) |
-| [`modules/module-reference-template.md`](refs/modules/module-reference-template.md) | Module API reference (`{module}-reference.md`) |
+| [`refs/modules/module-template.md`](refs/modules/module-template.md) | Conceptual module overview (`{module}.md`) |
+| [`refs/modules/module-reference-template.md`](refs/modules/module-reference-template.md) | Module API reference (`{module}-reference.md`) |
+| [`refs/deps/dep-template.md`](refs/deps/dep-template.md) | Dependency reference (`deps/{package}.md`) |
 | [`guides/arch/pattern-template.md`](guides/arch/pattern-template.md) | Architecture pattern doc (`{pattern}-pattern.md`) |
 | [`guides/guide-template.md`](guides/guide-template.md) | Operational how-to guide |
+| [`adr/adr-template.md`](adr/adr-template.md) | Architecture decision record (`adr-{slug}.md`) |
 
 Every template already satisfies the metadata contract above — copy, fill, delete what does not
 apply.
