@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/version-0.15.1-blue?style=flat-square" alt="Version 0.15.1">
-    <img src="https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php" alt="PHP 8.4">
+    <img src="https://img.shields.io/badge/version-0.15.2-blue?style=flat-square" alt="Version 0.15.2">
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
     <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
@@ -166,7 +166,7 @@ Every mutation: **Livewire → Action → Entity → Model → DB**. Business ru
 
 ## Project Status — Where We Are
 
-**Phase: v0.15.1 — TallstackUI Complete** (in progress). 18 modules with full stack (models, actions,
+**Phase: v0.15.2 — TallstackUI Complete** (in progress). 18 modules with full stack (models, actions,
 livewire, events, policies, routes, translations). Architecture is sound — 4-layer model, Action
 Triad, Entity boundaries, DTO contracts. Focus: fix P0 runtime errors → improve coverage → UI/UX polish.
 

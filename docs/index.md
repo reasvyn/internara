@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.1 — Tandai migrasi TallstackUI selesai
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
 
 Complete catalog of all documentation files, organized by topic and audience.
 
