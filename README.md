@@ -1,6 +1,5 @@
 <p align="center">
     <img src="https://img.shields.io/badge/version-0.15.2-blue?style=flat-square" alt="Version 0.15.2">
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
     <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
@@ -10,7 +9,7 @@
 
 # Internara — Vocational Fieldwork Management System
 
-> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.1 — docs sync + dep removal final (FB792/J68GZ REMOVED, TallstackUI-only)
+> **Last updated:** 2026-08-25 **Changes:** bump to v0.15.2 — VPS 7d log fixes (login error classification, ship theme-switch/admin-dashboard/BatchSetSetting fixes)
 
 Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs (PKL —
 _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institutions. MIT-licensed,
