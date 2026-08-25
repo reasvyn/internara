@@ -152,7 +152,8 @@ errors, improving domain-module coverage, UI polish. Roadmap horizons through 20
 Contributions welcome — typo fixes, tests, new modules. Read
 [CONTRIBUTING.md](CONTRIBUTING.md) for branching, commit format (`type(scope): description`),
 and quality gates; skim [`docs/architecture.md`](docs/architecture.md) and
-[`docs/conventions.md`](docs/conventions.md) before your first PR. Good first issues are labeled
+[`docs/conventions.md`](docs/conventions.md) before your first PR. All participants must follow
+the [Code of Conduct](CODE_OF_CONDUCT.md). Good first issues are labeled
 on [GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 Language: English for code, comments, commits, and docs; Indonesian only in `lang/id/`.

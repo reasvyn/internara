@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** README rewritten to industry-standard structure — index entry realigned to condensed overview, deep product definition now points to project-vision.md
+> **Last updated:** 2026-08-25 **Changes:** README rewritten to industry-standard structure + community files rewritten (LICENSE normalized, CONTRIBUTING restructured, SECURITY polished, CODE_OF_CONDUCT added as Contributor Covenant v2.1)
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -11,6 +11,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 | Resource | Audience |
 | -------- | -------- |
 | **[CONTRIBUTING.md](../CONTRIBUTING.md)** | Developers (root-level contribution guide) |
+| **[CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)** | All community participants (Contributor Covenant v2.1) |
 | **[SECURITY.md](../SECURITY.md)** | Security researchers (vulnerability reporting) |
 | **[README.md](../README.md)** | All (project overview) |
 

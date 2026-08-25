@@ -1,18 +1,29 @@
 # Contributing to Internara
 
-Thank you for your interest in contributing. This document covers the practical workflow — from
-setting up your environment to getting your changes merged.
+Thanks for your interest in contributing! This guide covers everything needed to get your first
+pull request merged — from environment setup to review expectations.
 
 ---
 
-## Before You Start
+## Code of Conduct
 
-1. **Read the docs.** Start with [`docs/architecture.md`](docs/architecture.md) and
-   [`docs/conventions.md`](docs/conventions.md) to understand the project's patterns.
-2. **Check existing issues.** Look for open or closed issues related to your change at
-   [github.com/reasvyn/internara/issues](https://github.com/reasvyn/internara/issues).
-3. **Open an issue first** for significant changes (new features, refactors, architecture changes)
-   to discuss the approach before writing code.
+By participating in this project you agree to abide by
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report unacceptable behavior to
+[reasvyn@gmail.com](mailto:reasvyn@gmail.com).
+
+---
+
+## Ways to Contribute
+
+- **Report bugs** — open an issue with reproduction steps, expected vs. actual behavior, and the
+  affected version
+- **Suggest features** — open an issue describing the problem first, then the proposed solution
+- **Improve documentation** — typo fixes, clarifications, and new guides are always welcome
+- **Contribute code** — pick an open issue or propose one; see
+  [GitHub Issues](https://github.com/reasvyn/internara/issues) for good first issues
+
+Open an issue **before** starting significant work (new features, refactors, architecture changes)
+so the approach can be discussed first.
 
 ---
 
@@ -26,26 +37,42 @@ npm install && npm run build
 cp .env.example .env
 php artisan key:generate
 php artisan setup:install
+composer run dev
 ```
 
-The `setup:install` command audits your environment, runs migrations, seeds defaults, and outputs a
-signed setup URL. Open it in your browser to complete the 6-step wizard.
+`setup:install` audits your environment, runs migrations, seeds defaults, and outputs a signed
+setup URL — open it in your browser to complete the 6-step wizard. Verify with
+`php artisan system:health`.
+
+Prerequisites: PHP 8.4+, Composer 2.x, Node.js 20+, npm 10+ (full list in
+[`docs/getting-started.md`](docs/getting-started.md)).
+
+---
+
+## What to Read First
+
+| Topic | Document |
+|-------|----------|
+| Architecture — 4-layer model, Action Triad | [`docs/architecture.md`](docs/architecture.md) |
+| Coding conventions & invariants (C1–C8, D1–D6) | [`docs/conventions.md`](docs/conventions.md) |
+| Module map | [`docs/modules/index.md`](docs/modules/index.md) |
+| Feature specs (requirements source of truth) | [`docs/specs/index.md`](docs/specs/index.md) |
 
 ---
 
 ## Coding Standards
 
 - `declare(strict_types=1)` in every PHP file except migrations and config
-- Follow the **Action Triad** — Command (transaction+log), Read (query only), Process
-  (orchestration). Every Action has exactly one `execute()` method
+- Follow the **Action Triad** — Command (transaction + log), Read (query only), Process
+  (orchestration); every Action has exactly one `execute()` method
 - Business rules go in **Entities** (`final readonly`), not in Models
-- Use `#[Fillable]` attribute on Models, not `$fillable`/`$guarded`
+- Use `#[Fillable]` attribute on Models, never `$fillable`/`$guarded`
 - All user-facing strings use `__()` — add keys to both `lang/en/` and `lang/id/`
-- No `dd()`, `dump()`, `ray()`, `var_dump()`, `die()` in committed code
-- Cache keys must be registered in `config/cache-keys.php` — never inline strings
-- DTOs for 3+ params, `ActionResponse` for structured returns
+- No debug calls (`dd()`, `dump()`, `ray()`, `var_dump()`, `die()`) in committed code
+- Cache keys must be registered in `config/cache-keys.php`, never inline strings
+- DTOs for 3+ parameters; Actions return `ActionResponse`
 
-Run the linter before committing:
+Run the style fixer before committing:
 
 ```bash
 vendor/bin/pint --dirty --format agent
@@ -53,7 +80,9 @@ vendor/bin/pint --dirty --format agent
 
 ---
 
-## Branch Naming
+## Git Workflow
+
+### Branch Naming
 
 ```
 feat/{kebab-description}       New feature
@@ -64,9 +93,7 @@ docs/{what}                    Documentation
 chore/{task}                   Maintenance, deps, tooling
 ```
 
----
-
-## Commit Messages
+### Commit Messages
 
 ```
 type(scope): Short description
@@ -79,91 +106,65 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 
 ---
 
-## Pre-commit Checklist
+## Testing
 
-- [ ] `declare(strict_types=1)` present
-- [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`)
-- [ ] Action uses the correct triad base class
-- [ ] Business rules delegated to Entity (not inline)
-- [ ] DTO used for 3+ params; `ActionResponse` for structured returns
-- [ ] Cache keys registered in `config/cache-keys.php`
-- [ ] No N+1 queries — eager loading verified
-- [ ] All user-facing strings use `__()` helper
-- [ ] New/changed behavior has corresponding tests
-- [ ] `vendor/bin/pint --dirty --format agent` — clean
-- [ ] `vendor/bin/phpstan analyse --no-progress` — passes
-- [ ] `php artisan test --compact` — all tests pass
-- [ ] Relevant docs updated (see documentation-first approach in `docs/conventions.md`)
+Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*` / `UC-*`) in
+`docs/specs/{ID}-{feature}.md`. No spec requirement means no test (no orphan tests, no padding).
+
+```bash
+composer run test                                # Full test suite
+vendor/bin/pest --testsuite={ModuleName}         # Single module suite
+php artisan test --compact --filter={ClassName}  # Single test class
+composer run analyse                             # PHPStan static analysis
+```
+
+Test conventions:
+
+- Location: `tests/{Module}/{SubModule}/{Name}Test.php`
+- Use `LazilyRefreshDatabase` over `RefreshDatabase`; factories over model mocks
+- Mock external boundaries only (HTTP, mail, queue, filesystem)
 
 ---
 
-## Testing
+## Pre-commit Checklist
+
+Run the quality gate before pushing:
 
 ```bash
-composer run test              # Full test suite
-vendor/bin/pest --testsuite={ModuleName}   # Single module suite (replace {ModuleName})
-php artisan test --compact --filter={ClassName}   # Single test class
-composer run analyse           # PHPStan static analysis
+composer run quality   # Lint + PHPStan + tests
+npm run build          # For frontend changes
 ```
 
-Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*` / `UC-*`) in
-`docs/specs/{ID}-{feature}.md` (spec filenames use a 5-char alphanumeric ID, e.g.
-`3UOZP-dummy-data.md`). Follow the existing modular test structure:
-
-```
-tests/{Module}/{SubModule}/{Name}Test.php
-```
-
-- Use `LazilyRefreshDatabase` over `RefreshDatabase`
-- Use `assertModelExists()` over `assertDatabaseHas()`
-- Never mock Eloquent models — use factories + real database
-- Mock external boundaries only (HTTP, mail, queue, filesystem)
-- Never write a test that no spec requirement demands — no orphan tests, no padding
+Manual checks not covered by tooling: no N+1 queries (eager loading verified), relevant docs
+updated (documentation-first approach in `docs/conventions.md`).
 
 ---
 
 ## Pull Request Process
 
-1. Ensure the pre-commit checklist is complete
+1. Ensure the quality gate passes and the checklist above is clean
 2. Keep PRs focused on a single concern — no mixed refactors with features
 3. Reference the related issue in the PR description
 4. A maintainer will review within a few days
-5. Address review feedback with additional commits (they'll be squashed on merge)
+5. Address review feedback with additional commits (squashed on merge)
 
 ---
 
 ## AI Agent Development
 
-Internara uses AI agents extensively. The project includes:
-
-- **Skills (.agents/skills/)** — Reusable workflows for tasks like code refactoring, testing, and auditing
-- **Agent rules (AGENTS.md)** — Project invariants and behavioral guidelines
-- **MCP server integration** — Laravel Boost MCP server for database schema, error logs, and doc search
-
-When creating new agents or updating agent configuration:
-
-1. Add new skills to `.agents/skills/{name}/SKILL.md`
-2. Follow the existing skill structure (description, workflow, rules, references)
-3. Avoid duplicating rules that already exist in `docs/` — reference them instead
-4. Update `AGENTS.md` if project-wide invariants change
-
-### MCP Server Resources
-
-The Laravel Boost MCP server exposes:
-
-| Resource | Purpose |
-| -------- | ------- |
-| Application info | PHP/Laravel versions, installed packages |
-| Database schema | Table structures, columns, indexes, FKs |
-| Error logs | Read last N entries from application log |
-| Browser logs | Read last N entries from browser console |
-| Documentation search | Version-specific Laravel ecosystem docs |
-
-For new MCP capabilities, update `boost.json` and document them in `docs/infrastructure/`.
+Internara is developed with heavy AI-agent assistance. Agent-facing assets live in `.agents/`:
+reusable skills (`.agents/skills/{name}/SKILL.md`), project memory (`.agents/context/`), and
+project-wide invariants (`AGENTS.md`). When extending them: follow the existing skill structure,
+reference rules in `docs/` instead of duplicating them, and update `AGENTS.md` if project-wide
+invariants change.
 
 ---
 
-## Questions?
+## Getting Help & License
 
-Open a [discussion](https://github.com/reasvyn/internara/discussions) or email
-[reasvyn@gmail.com](mailto:reasvyn@gmail.com).
+Questions? Open a [discussion](https://github.com/reasvyn/internara/discussions) or email
+[reasvyn@gmail.com](mailto:reasvyn@gmail.com). Security issues follow
+[SECURITY.md](SECURITY.md) — never public issues.
+
+By contributing, you agree that your contributions will be licensed under the
+[MIT License](LICENSE).
