@@ -1,6 +1,6 @@
 # Documentation-First (SSOT) — Docs Win Over Code
 
-> **Last updated:** 2026-08-24 **Changes:** git-history window clarified as minimum 7 days — extend longer when drift suspected
+> **Last updated:** 2026-08-25 **Changes:** git-history window clarified as minimum 14 days — extend longer when drift suspected
 
 ## Intent
 
@@ -81,5 +81,5 @@ Before/after every doc edit, run `git diff` on that file to prove only the inten
 - `git diff` on touched doc files — only intended lines changed, nothing dropped.
 - `python3 scripts/scan_doc_links.py` — flags files whose `Last updated` metadata is missing or
   stale, a first-order signal of docs not updated alongside code.
-- `git log --since="7 days ago" --stat` (minimum window; extend to 14/30 days if needed) — cross-check code commits against doc commits; a code
+- `git log --since="14 days ago" --stat` (minimum window; extend to full log if needed) — cross-check code commits against doc commits; a code
   commit with no doc commit is a candidate SSOT violation.
