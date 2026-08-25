@@ -1,6 +1,6 @@
 # Configuration — Three-Tier Config System
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify three-tier config system (.env, config files, runtime DB settings) against current config/ directory and Settings service
+> **Last updated:** 2026-08-25 **Changes:** sync — remove config/mary.php + config/flasher.php (deleted in 0.15.0), add config/tallstackui.php (prefix ts-)
 
 ## Description
 
@@ -182,10 +182,9 @@ See [Localization](localization.md) for adding new languages.
 | `config/permission.php`       | Spatie permission caching                           | —                          |
 | `config/activitylog.php`      | Activity log retention, model                       | —                          |
 | `config/media-library.php`    | Media library paths, queue, conversions             | —                          |
-| `config/flasher.php`          | Flash message style, timeout, position              | —                          |
+| `config/tallstackui.php`      | TallstackUI prefix (`ts-`) + component settings     | —                          |
 | `config/localization.php`     | Supported locales, fallback rules                   | —                          |
 | `config/pulse.php`            | Pulse recorders, ingestion, pruning                 | `PULSE_*`                  |
-| `config/mary.php`             | maryUI component configuration                      | —                          |
 
 ---
 

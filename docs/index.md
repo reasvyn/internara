@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-21 **Changes:** add project-vision.md to Product & Vision catalog
+> **Last updated:** 2026-08-25 **Changes:** sync — UI/UX entry: TallstackUI v4 (was DaisyUI+maryUI); reflect 0.15.0 migration
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -65,7 +65,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Frontend & UI
 
-- **[UI/UX Design](foundation/ui-ux.md)** — Design system (Tailwind CSS v4 + DaisyUI + maryUI), layouts, dark mode
+- **[UI/UX Design](foundation/ui-ux.md)** — Design system (Tailwind CSS v4 + TallstackUI v4 + self-hosted palette), layouts, dark mode
 - **[Branding](foundation/branding.md)** — Dynamic theming, color system, presets, logo management
 
 ---
