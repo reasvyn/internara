@@ -1,7 +1,7 @@
 # Branding, Theme & Locale — Identity, Appearance & Language Switching
 
 > **Spec ID:** 52O1I
-> **Last updated:** 2026-08-24 **Changes:** TallstackUI migration — ThemeSwitcher/LangSwitcher prefer TallstackUI ThemeSwitch/dropdown (gradual, TallstackUI-first per FB792), FR-T2/FR-L5 updated, DD-6 added
+> **Last updated:** 2026-08-25 **Changes:** sync — FR-T2/FR-L5 TallstackUI-only (coexistence fallbacks removed, FB792 0.15.0); ThemeSwitcher Livewire component deleted, replaced by `<x-ts-theme-switch>`
 
 ## Description
 
@@ -71,17 +71,16 @@ apply on every request via middleware without database queries.
 6. Component updates preview
 **Postconditions:** Asset is live immediately; logo URL persisted
 
-### UC-2 — Admin Switches Theme
+### UC-2 — User Switches Theme
 
 **Actor:** Any authenticated user
-**Preconditions:** User is on any page with the `ThemeSwitcher` component
+**Preconditions:** User is on any page rendering `core::ui.theme-switch` (`<x-ts-theme-switch>`)
 **Flow:**
-1. User clicks light/dark/system toggle
-2. `setTheme('dark')` queues a forever cookie: `theme=dark`
-3. Dispatches `theme-changed` Livewire event
-4. Alpine.js updates `data-theme` attribute on `<html>`
-5. CSS variables from `Theme::cssVariables()` provide palettes
-**Postconditions:** Theme applied immediately; cookie persists; no DB write
+1. User clicks the TallstackUI theme toggle (light/dark/system)
+2. `<x-ts-theme-switch>` persists the mode to localStorage key `dark-theme`
+3. TallstackUI fires its `theme` CustomEvent; `applyTheme()` in `resources/js/app.js` applies BOTH `data-theme` (semantic palette variables) and the `.dark` class on `<html>`
+4. CSS variables from `Theme::cssVariables()` provide brand palettes
+**Postconditions:** Theme applied immediately without reload; preference persists across sessions; no DB write
 
 ### UC-3 — Admin Changes Locale
 
@@ -120,9 +119,9 @@ apply on every request via middleware without database queries.
 
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
-| FR-T1  | Theme preference stored in `theme` cookie (values: `light`, `dark`, `system`), not DB |
-| FR-T2  | `ThemeSwitcher` Livewire component must use TallstackUI `ThemeSwitch` (or `x-ts-theme-switch`) when available (TallstackUI-first, FB792 FR-TS6a), fallback to DaisyUI/Alpine `data-theme` during coexistence; must dispatch `theme-changed` event for backward compat |
-| FR-T3  | Alpine.js must listen for `theme-changed` and update `data-theme` attribute (or TallstackUI dark-theme helper `TallstackUI::darkTheme()`) |
+| FR-T1  | Theme preference mirrored in the `theme` cookie (values: `light`, `dark`, `system`) for SSR (`base.blade.php` reads it to set `data-theme` + `.dark` pre-hydration); the authoritative client store is localStorage `dark-theme` via `<x-ts-theme-switch>`, not DB |
+| FR-T2  | Theme switching must render via TallstackUI `<x-ts-theme-switch>` (wrapped by `core::ui.theme-switch`); persists mode to localStorage `dark-theme` and listens for the TallstackUI `theme` CustomEvent — no custom Livewire ThemeSwitcher, no DaisyUI/Alpine fallback (coexistence removed in 0.15.0) |
+| FR-T3  | `applyTheme()` in `resources/js/app.js` must listen for the TallstackUI `theme` CustomEvent and apply BOTH the `data-theme` attribute and the `.dark` class on `<html>` (Tailwind/TallstackUI `dark:` variant) |
 | FR-T4  | `Theme::cssVariables()` must generate CSS variables for light/dark palettes, cached 1h |
 | FR-T5  | CSS variables: `--color-primary`, `--color-secondary`, `--color-accent`, `--color-base-{100,200,300,content}`, `--brand-{primary,secondary,accent}` |
 | FR-T6  | Dark mode must apply `Color::lighten()` (40%) and `Color::computeDarkShades()` for base tones |
@@ -136,7 +135,7 @@ apply on every request via middleware without database queries.
 | FR-L2  | Locale preference stored in `locale` cookie (forever TTL), not DB                    |
 | FR-L3  | `SetLocaleMiddleware` must read `locale` cookie on every request and call `App::setLocale()` |
 | FR-L4  | `Locale::set()` must validate against `SUPPORTED_LOCALES`, queue cookie, set locale  |
-| FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown using TallstackUI `dropdown`/`select` when available (TallstackUI-first, FB792 FR-TS6a), fallback to DaisyUI during coexistence; must dispatch `language-changed` event |
+| FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown using TallstackUI `x-ts-dropdown`/`select.styled` (DaisyUI fallback removed with coexistence in 0.15.0); must dispatch `language-changed` event |
 | FR-L6  | `Locale::metadata()` must return `['name' => '...', 'native' => '...']` for display  |
 | FR-L7  | `Locale::current()` must resolve via chain: cookie → stored `default_locale` setting → config `app.locale` → `DEFAULT_LOCALE` constant; first valid (supported) value wins |
 
@@ -293,11 +292,11 @@ resort only.
 priority chain and a single `SUPPORTED_LOCALES` whitelist — invalid values at any layer fall
 through to the next.
 
-### DD-6 — Gradual TallstackUI Migration for Theme/Locale (TallstackUI-first)
+### DD-6 — TallstackUI Theme/Locale Switchers (migration complete)
 
-**Decision:** Migrate `ThemeSwitcher`/`LangSwitcher` to TallstackUI `ThemeSwitch`/`dropdown`/`select` gradually; DaisyUI `data-theme` + Alpine `theme-changed` remain during coexistence per FB792 DD-4.
-**Rationale:** TallstackUI provides TALL-native `ThemeSwitch` and `darkTheme()` helper with built-in WCAG focus/ARIA, reducing custom Alpine/JS while preserving no-break guarantee for 18 modules.
-**Trade-off:** Dual theming stack temporarily (DaisyUI `data-theme` + TallstackUI dark mode) — removed after all switchers migrated and `grep -R "data-theme.*light\|data-theme.*dark" resources/` is clean.
+**Decision:** `ThemeSwitcher` Livewire component deleted — theme switching renders via `<x-ts-theme-switch>` (wrapped by `core::ui.theme-switch`), persisting to localStorage and syncing `data-theme` + `.dark` via `applyTheme()` in `resources/js/app.js`. LangSwitcher uses TallstackUI dropdown. The DaisyUI/Alpine dual stack was removed with the 0.15.0 package removal.
+**Rationale:** TallstackUI provides TALL-native `ThemeSwitch` with built-in WCAG focus/ARIA, removing custom Alpine/JS while preserving no-break behavior for 18 modules.
+**Trade-off:** Resolved — coexistence ended; a single theming stack (`data-theme` + `.dark`, self-hosted palette) remains.
 
 ## 8. Success Metrics
 
@@ -348,7 +347,7 @@ After implementing this spec, the system has customizable branding (school name,
 - `app/Settings/Theme/Support/Theme.php` — Color resolution, CSS variables, presets
 - `app/Settings/Locale/Support/Locale.php` — EN/ID locale management
 - `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Per-request locale from cookie
-- `app/Settings/Livewire/ThemeSwitcher.php` — Light/dark/system toggle (cookie-based)
+- `resources/views/core/ui/theme-switch.blade.php` — `<x-ts-theme-switch>` wrapper (light/dark/system, localStorage-based)
 - `app/Settings/Livewire/LangSwitcher.php` — EN/ID dropdown (cookie-based)
 - `docs/modules/settings.md` — Module conceptual documentation
 - **Related specs:** [settings-infrastructure.md](YB22J-settings-infrastructure.md) — Settings store, type system & cache

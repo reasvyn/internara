@@ -61,7 +61,7 @@ describe('FB792: TallstackUI migration — SchoolEditor flash → toast', functi
         expect($remnants)->toBe([]);
     });
 
-    it('52O1I-FR-T2: ThemeSwitcher still coexists — SchoolEditor save does not break theme cookie', function (): void {
+    it('52O1I-FR-T2: theme switching coexists — SchoolEditor save does not break theme state', function (): void {
         actingAsAdmin();
 
         Livewire::test(SchoolEditor::class)

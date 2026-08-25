@@ -1,6 +1,6 @@
 # Thin Component — Delegation and Boundaries
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — flash()-> → TallstackUI $this->toast()->send() (FB792 0.15.0)
 
 Livewire components are the presentation layer: they own UI state, UX validation, and the rendering
 of an Action's result — and nothing else. "Thin" is not a style preference; it is the architectural
@@ -71,12 +71,12 @@ public function save(CreateUserAction $action): void
     $result = $action->execute($this->form->toArray());
 
     if ($result->failed()) {
-        flash()->error($result->message);
+        $this->toast()->error()->send($result->message);
         return;
     }
 
     $this->resetForm();
-    flash()->success($result->message);
+    $this->toast()->success()->send($result->message);
     $this->redirect('/users');
 }
 ```
@@ -87,9 +87,9 @@ And the exception order that never changes:
 try {
     $action->execute($data);
 } catch (RejectedException $e) {
-    flash()->error($e->getMessage());
+    $this->toast()->error()->send($e->getMessage());
 } catch (\Throwable $e) {
-    flash()->error(__('common.error'));
+    $this->toast()->error()->send(__('common.error'));
 }
 ```
 

@@ -347,7 +347,8 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 Self-hosted, single-tenant PKL management for Indonesian SMA/SMK. MIT license. Repository:
 `reasvyn/internara`.
 
-**Tech:** PHP 8.4, Laravel 13, Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4.
+**Tech:** PHP 8.4, Laravel 13, Livewire 4, Alpine.js, TallstackUI v4, Tailwind CSS v4 (self-hosted
+semantic palette; DaisyUI/maryUI/PHPFlasher removed in 0.15.0).
 Database: SQLite (default), MySQL 8+, MariaDB 10.6+, PostgreSQL 15+. Testing: Pest 4, PHPStan,
 Laravel Pint.
 

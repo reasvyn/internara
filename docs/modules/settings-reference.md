@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** add `SettingCaster` support class; spec-driven tests section (drop stale test table)
+> **Last updated:** 2026-08-25 **Changes:** sync — ThemeSwitcher Livewire component deleted (replaced by `<x-ts-theme-switch>`, 52O1I DD-6)
 
 ## Description
 
@@ -77,7 +77,8 @@ feature toggles.
 | ---------------------------- | --------------- | ----------- |
 | `Livewire/SystemSetting.php` | `SystemSetting` | `BaseFormView` |
 | `Livewire/LangSwitcher.php`  | `LangSwitcher`  | `Component` |
-| `Livewire/ThemeSwitcher.php` | `ThemeSwitcher` | `Component` |
+
+Theme switching is handled by the TallstackUI `<x-ts-theme-switch>` component (wrapped in `core::ui.theme-switch`) — no server-side Livewire component (see 52O1I DD-6).
 
 ## Livewire Forms
 

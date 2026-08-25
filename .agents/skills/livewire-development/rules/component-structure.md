@@ -1,6 +1,6 @@
 # Component Structure & Routing — Placement and Shape
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — maryUI components → TallstackUI x-ts-* (FB792 0.15.0)
 
 A Livewire component's placement, build order, Form Object extraction, and route registration follow
 fixed conventions. Each convention exists because a specific integration failure follows when it is
@@ -46,7 +46,7 @@ blade mirrors it; the module reference doc's file table matches the actual direc
 
 **What it enforces:** New components are built in a fixed order: form properties + validation rules →
 `render()` with eager-loaded query → action methods that inject Actions → authorization via
-`$this->authorize()` → Blade view with maryUI components.
+`$this->authorize()` → Blade view with TallstackUI `x-ts-*` components.
 
 **Why it matters:** The order builds the component bottom-up through its dependencies. Properties and
 validation define the data contract before `render()` uses it; `render()` needs its query before
@@ -60,7 +60,7 @@ bindings that reference properties or methods that have not been designed.
 2. Implement `render()` with an eager-loaded query to avoid N+1.
 3. Implement action methods that inject Actions (see `rules/thin-component.md`).
 4. Add authorization via `$this->authorize()` or Policy calls on each mutating method.
-5. Write the Blade view with maryUI components matching the declared properties.
+5. Write the Blade view with TallstackUI `x-ts-*` components matching the declared properties.
 
 **Pitfalls to avoid:**
 

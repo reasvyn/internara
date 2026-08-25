@@ -1,6 +1,6 @@
 # Component Verification — Ensuring Thin, Safe, Complete Components
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
+> **Last updated:** 2026-08-25 **Changes:** sync — flash() → TallstackUI toast, maryUI toast methods → removed (FB792 0.15.0)
 
 Verification is the gate that catches every violation the earlier rules define. It runs per component
 as the final step of the build (and again before commit), because each check below corresponds to a
@@ -20,7 +20,7 @@ locators, or inline business rules:
 - No `app()->make()` / `resolve()` / `new Action()` — method parameter injection (C2)
 - No inline business rules (`if ($status === 'x')`) — the Entity owns rules
 - No side effects: `event()`, `Notification::send()`, `Log::info()` — the Action dispatches events
-- No maryUI Toast methods (`$this->success()`, `$this->error()`) — use `flash()`/ActionResponse
+- No legacy toast APIs (`flash()->`, maryUI `$this->success()` / `$this->error()`) — use TallstackUI `$this->toast()->send()` (Interactions) + `ActionResponse`
 
 **Why it matters:** Each forbidden item moves a responsibility out of its architectural owner. A
 component that creates a model bypasses the Action's transaction and audit log; one that fires events
@@ -31,14 +31,14 @@ of untraceable mutations in the codebase.
 
 **How to apply:** During review (own or peer), scan the component for the six patterns by name. For
 each occurrence, route the work to its owner: mutation → Command Action, complex query → Read Action,
-rule evaluation → Entity, async side effect → Action event dispatch, UX feedback → `flash()` +
-`ActionResponse`.
+rule evaluation → Entity, async side effect → Action event dispatch, UX feedback → TallstackUI
+`$this->toast()->send()` + `ActionResponse`.
 
 **Pitfalls to avoid:**
 
 - Accepting a `Model::update()` in a component "because the change is trivial" — C1 is absolute.
 - `Log::info()` in a component for debugging that never gets removed (D2).
-- Treating `$this->success()` as a flash equivalent — it is a maryUI toast, out of place here.
+- Treating `$this->success()` as a toast equivalent — it is a removed maryUI method; use `$this->toast()->error()->send()` (TallstackUI Interactions).
 
 **Verification:** `scan_violations.py` reports no C1/C2 findings in the component; a grep of the
 component finds no `Model::create/update/delete/save`, no `DB::transaction`, no `new XxxAction`,
@@ -65,9 +65,9 @@ named contract (C7) and make the Action's input unverifiable.
 try {
     $action->execute($dto);
 } catch (RejectedException $e) {
-    flash()->error($e->getMessage());
+    $this->toast()->error()->send($e->getMessage());
 } catch (\Throwable $e) {
-    flash()->error(__('common.error'));
+    $this->toast()->error()->send(__('common.error'));
 }
 ```
 
@@ -167,7 +167,7 @@ unverifiable component; an unlocalized string breaks the bilingual contract.
 - Focus management correct (modal open/close, wire:navigate)
 - Dynamic content wrapped in `aria-live` containers
 - Icon-only buttons include `aria-label`
-- Form inputs have associated labels (maryUI `label` prop)
+- Form inputs have associated labels (TallstackUI `label` prop)
 - Status labels use `LabelEnum::label()` (not hardcoded text)
 
 **Pitfalls to avoid:**

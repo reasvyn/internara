@@ -1,7 +1,7 @@
 # Layout & UI System — Cross-Cutting Presentation Shell & Component Library
 
 > **Spec ID:** 8XMYS
-> **Last updated:** 2026-08-24 **Changes:** TallstackUI-first — new UI must use TallstackUI before DaisyUI/maryUI/custom; DD-4 drawer deprecated (coexistence, TallstackUI preferred)
+> **Last updated:** 2026-08-25 **Changes:** sync — FR-S3/A5 @flasher_render/flash → TallstackUI toast + x-ts-toast aria-live (FB792 0.15.0), FR-N6 maryUI Heroicons → TallstackUI x-ts-icon
 
 ## Description
 
@@ -94,7 +94,7 @@ link behaves identically and accessibly.
 **Preconditions:** Sidebar is hidden behind the drawer toggle
 **Flow:**
 1. User taps the hamburger button in the header
-2. DaisyUI drawer opens the sidebar as an overlay
+2. The drawer pattern opens the sidebar as an overlay
 3. Overlay label ("close sidebar") is focusable; Escape closes the drawer
 **Postconditions:** Navigation accessible on mobile in one tap
 
@@ -115,7 +115,7 @@ link behaves identically and accessibly.
 **Flow:**
 1. Developer uses `x-core::ui.record-manager` with `title`, `subtitle`, header action slots
 2. Adds `$stats`, `$filters`, `$selectionBar`, `$emptyState`, `$modal` slots
-3. Puts the maryUI table in the default slot
+3. Puts the TallstackUI `x-ts-table` in the default slot
 **Postconditions:** Consistent search (300ms debounce), per-page selector, selection bar, and empty state across all modules
 
 ### UC-5 — User Navigates With Keyboard and Screen Reader
@@ -136,7 +136,7 @@ link behaves identically and accessibly.
 
 | ID    | Requirement                                                                                              |
 | ----- | -------------------------------------------------------------------------------------------------------- |
-| FR-L1 | `core::layouts.base` must be the root HTML shell: `<html lang>` from `app()->getLocale()`, `data-theme` from the `theme` cookie, head (meta, favicon, manifest, Vite assets), skip-to-content link, flash render, and scripts stack |
+| FR-L1 | `core::layouts.base` must be the root HTML shell: `<html lang>` from `app()->getLocale()`, `data-theme` from the `theme` cookie, head (meta, favicon, manifest, Vite assets), skip-to-content link, TallstackUI toast container (`<x-ts-toast />` via Interactions), and scripts stack |
 | FR-L2 | `core::layouts.app` must compose: drawer sidebar (`core::layouts.sidebar`), sticky header (`core::layouts.header`), breadcrumb (when `$context` given), `max-w-7xl` content container, and footer (`core::layouts.base.footer`) |
 | FR-L3 | `core::layouts.guest` must render a centered public shell: header with brand + theme/lang switchers, content slot, footer with credits |
 | FR-L4 | Layouts shared by multiple modules must live in `resources/views/core/layouts/`; layouts specific to one module must live in `resources/views/{module}/layouts/` (e.g., `auth::layouts.auth`, `setup::layouts.setup`) |
@@ -151,7 +151,7 @@ link behaves identically and accessibly.
 | FR-N3 | The active item must be detected via `request()->routeIs($item['route'])` and highlighted with `bg-primary/10 text-primary font-medium` |
 | FR-N4 | Disabled items must render as non-interactive muted `<span>`s (not links) with reduced opacity |
 | FR-N5 | Missing routes must degrade gracefully: if `Route::has()` fails, the item links to `#` without throwing |
-| FR-N6 | All labels and icons must use `__()` keys and Heroicons (`o-*`) via maryUI; no raw text or inline SVG in menu definitions |
+| FR-N6 | All labels and icons must use `__()` keys and TallstackUI `x-ts-icon` (Heroicons) via `icon` keys; no raw text or inline SVG in menu definitions |
 
 ### UI Component Library
 
@@ -181,7 +181,7 @@ link behaves identically and accessibly.
 | ----- | -------------------------------------------------------------------------------------------------------------- |
 | FR-S1 | All internal navigation links must use `wire:navigate` so content swaps without a full page reload             |
 | FR-S2 | After a `wire:navigate` transition, focus must reset to the page heading (`<h1>`) or the first interactive element |
-| FR-S3 | Flash messages must render via `@flasher_render` and be announced to screen readers (`aria-live`)              |
+| FR-S3 | Toast feedback must render via TallstackUI `<x-ts-toast />` (Interactions `toast()->success()->send()`) and be announced to screen readers (`aria-live`) |
 
 ### Accessibility
 
@@ -191,7 +191,7 @@ link behaves identically and accessibly.
 | FR-A2 | The shell must use semantic landmarks: `<nav>` (sidebar), `<main id="main-content">` (content), `<header>` (top bar), `<footer>` |
 | FR-A3 | The drawer overlay must expose an accessible name ("close sidebar") and close on Escape                         |
 | FR-A4 | Icon-only buttons must carry `aria-label`; active-nav state must be conveyed beyond color (font weight + background) |
-| FR-A5 | Dynamic content (flash, Livewire updates, validation) must be wrapped in `aria-live` containers                 |
+| FR-A5 | Dynamic content (TallstackUI toast, Livewire updates, validation) must be wrapped in `aria-live` containers                 |
 
 ---
 
@@ -280,7 +280,7 @@ low-frequency and developer-maintained, not school-editable.
 **Decision:** Pure-presentation chrome (`page-header`, `record-manager`, `display-field`, `confirm`,
 `navbar-actions`, `brand`, `logo`, `avatar`, `credit`) are anonymous Blade components under
 `resources/views/core/ui/`, not Livewire components.
-**Rationale:** These components carry no server state — they compose slots and maryUI/DaisyUI. Blade
+**Rationale:** These components carry no server state — they compose slots and TallstackUI `x-ts-*` components. Blade
 components are cheaper, testable at the view layer, and avoid Livewire overhead on every render.
 **Trade-off:** They cannot react to server events; any reactivity must be delegated to a parent
 Livewire component (e.g., `confirm`'s `showConfirm` binding) — the established pattern.
@@ -295,12 +295,12 @@ otherwise introduce.
 **Trade-off:** JS required for navigation; without it, links degrade to full reloads (progressive
 enhancement), which is acceptable.
 
-### DD-4 — DaisyUI Drawer for Responsive Sidebar (DEPRECATED — TallstackUI-first)
+### DD-4 — Drawer Pattern for Responsive Sidebar
 
-**Decision:** The sidebar currently uses DaisyUI's `drawer` pattern (`drawer-toggle` + `drawer-side` +
-`lg:drawer-open`), but new UI must use TallstackUI components first per FB792 FR-TS6a/NFR-DEP5. DaisyUI drawer remains during coexistence, then replaced by TallstackUI drawer/sidebar per FB792 DD-4.
-**Rationale:** DaisyUI's drawer ships keyboard/ARIA support (Escape to close, focusable overlay) out
-of the box, satisfying FR-A3 with no custom JS. TallstackUI provides equivalent TALL-native components with Livewire integration; gradual migration avoids breaking 18 modules.
+**Decision:** The sidebar uses the drawer pattern (`drawer-toggle` + `drawer-side` +
+`lg:drawer-open`, styled via the self-hosted palette shims), with TallstackUI components everywhere else per FB792 FR-TS6a.
+**Rationale:** The drawer ships keyboard/ARIA support (Escape to close, focusable overlay) out
+of the box, satisfying FR-A3 with no custom JS; the shimmed classes keep it theme-aware without DaisyUI.
 
 ### DD-5 — Accessibility Baked Into the Shell, Not Per Page
 

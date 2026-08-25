@@ -1,17 +1,20 @@
 # TallstackUI Migration Plan — DaisyUI/MaryUI/PHPFlasher → TallstackUI v4
 
-> **STATUS: MIGRATION COMPLETE (2026-08-24).** `x-mary` usage across app + views = **0**
+> **STATUS: MIGRATION COMPLETE (2026-08-24); PACKAGES REMOVED (0.15.0).** `x-mary` usage across app + views = **0**
 > (`grep -rn x-mary resources app | grep -v vendor` → only intentional `not->toContain` test
 > guards). Flash/Toast, Theming, Localization, Layout, Accessibility, Custom Core, Forms
 > (incl. select/table/header/card/datepicker/stat/alert/file/collapse/choices/progress), Confirm
 > Dialog (`x-ts-dialog`) all migrated. Published vendor views tracked under
-> `resources/views/vendor/ts-ui` + `lang/vendor/ts-ui`. DaisyUI/mary/flasher packages retained in
-> manifests until explicit removal decision (FB792 DD-4 coexistence) — removal is the only open
-> follow-up, plus optional command-palette backend if spotlight replacement is wanted.
+> `resources/views/vendor/ts-ui` + `lang/vendor/ts-ui`. DaisyUI/mary/flasher packages **deleted**
+> from manifests + `app.css` in 0.15.0 (commit 53413f295) — self-hosted palette + shims bridge the
+> 169 remaining legacy class tokens until `x-ts-*` fully replaces them; optional command-palette
+> backend if spotlight replacement is wanted is the only open follow-up.
 >
-> **Last updated:** 2026-08-24 **Changes:** remap with custom core (25 files, 179 hits), 8 areas, detailed per-module counts (231 flash, 1222 mary, 449 daisy), updated impact-to-effort (Custom Core rank 5)
+> The tables below are the historical migration record — counts describe the pre-migration state.
+>
+> **Last updated:** 2026-08-25 **Changes:** sync — mark Phase 4 removal DONE (packages deleted 0.15.0); historical counts kept as record
 > **Governing specs:** FB792 (FR-TS6, DD-4), J68GZ (FR-D10a), 8XMYS (DD-4), 52O1I (FR-T2/FR-L5, DD-6)
-> **Principle:** TallstackUI-first — always check `<x-ts-*>` before `maryUI`/`DaisyUI`/custom (FB792 FR-TS6a, NFR-DEP5)
+> **Principle:** TallstackUI-first — always use `<x-ts-*>` (FB792 FR-TS6a); legacy stacks are removed, not fallbacks
 
 ## Mapping — Areas to Migrate
 
@@ -49,7 +52,7 @@ Counts via: `grep -r "flash()->" app | wc -l` **231** (64 files, 165 success/52 
 2. **Phase 1 — Quick wins (Rank 1-3):** Toast (pilot `SchoolEditor` done, 231→230 remaining) → Theme → Locale (1 PR each, 1-2 days, no breaking).
 3. **Phase 2 — Chrome (Rank 4-6):** Layout → **Custom Core** (`record-manager` 92 lines, 14+ managers) → Accessibility (2-3 PRs, visual regression, wrapper refactor first).
 4. **Phase 3 — Bulk (Rank 7-8):** Forms (322 hits, 138 input) → Data Display (~400 hits, 67 table) — per-module PRs, 2-3 weeks, `FindComponent` to track.
-5. **Phase 4 — Removal (ONLY on explicit request):** Do **not** remove `daisyui`/`mary`/`php-flasher` until explicitly ordered — even when `grep -R "daisyui\|mary\|php-flasher"` is clean, keep manifests/`app.css` imports. Removal requires separate approval.
+5. **Phase 4 — Removal (DONE 0.15.0):** ~~Do **not** remove `daisyui`/`mary`/`php-flasher` until explicitly ordered~~ — removal was explicitly approved and completed in 0.15.0 (commit 53413f295): packages deleted from manifests, `config/mary.php`/`config/flasher.php` removed, `@plugin daisyui`/`@source mary` stripped from `app.css`.
 
 ## Verification per PR
 

@@ -1,7 +1,7 @@
 # Backup System — Database & Storage Backup, Restore, and Retention
 
 > **Spec ID:** HBXCI
-> **Last updated:** 2026-08-23 **Changes:** FR-R1–R4 retargeted to BackupManager pattern — ReadBackupHistoryAction deleted as duplicate dead code (decision recorded)
+> **Last updated:** 2026-08-25 **Changes:** sync — backup-manager view maryUI → TallstackUI x-ts-* (FB792 0.15.0)
 
 ## Description
 
@@ -784,7 +784,7 @@ After implementing this spec, the backup system is fully operational: admins can
 - `app/SysAdmin/Backups/Events/BackupFailed.php` — Event dispatched on failed backup (18 lines)
 - `app/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — Notifies super admins on failure (21 lines)
 - `app/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — Database channel notification with error details (34 lines)
-- `resources/views/sysadmin/backups/backup-manager.blade.php` — Backup manager Livewire view with maryUI (115 lines)
+- `resources/views/sysadmin/backups/backup-manager.blade.php` — Backup manager Livewire view with TallstackUI `x-ts-*` (115 lines)
 - `resources/views/sysadmin/backups/components/backup-guide.blade.php` — Help guide modal with create/download/restore info (57 lines)
 - `database/migrations/2026_01_01_000006_create_backups_table.php` — Backups table schema (35 lines)
 - `routes/web/sysadmin.php:41` — Backup manager route (`admin.backups`) with auth + role middleware
