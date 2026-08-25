@@ -1,6 +1,6 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-08-19 **Changes:** dedupe metadata blockquote to single latest-change line (per metadata convention)
+> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -42,7 +42,7 @@ from parent roles. Each role has explicit, enumerated capabilities.
 
 Hierarchical permission inheritance leads to unexpected behavior: adding a permission to a parent
 role implicitly grants it to all children. Flat role definitions eliminate ambiguity — each role's
-capabilities are explicitly enumerated and reviewed. Source: ADR-009 (Flat RBAC with Functional
+capabilities are explicitly enumerated and reviewed. Source: Flat RBAC with Functional
 Roles).
 
 ---
@@ -139,7 +139,7 @@ on behalf of another for specific operations.
 Proxy is checked at the policy layer via `MentorEntity` (bridged from Registration model as
 `asMentorEntity()`). The activity log records `proxy_role` metadata for audit trail.
 
-See [ADR-014: Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
+See [Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
 
 ---
 

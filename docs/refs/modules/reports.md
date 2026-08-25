@@ -1,6 +1,6 @@
 # Reports — Grade Cards & Score Aggregation
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Grade Aggregation Formula, Status Flow, Finalization Immutability, Standalone Archiving, Cross-Role Proxy, Submodule: Report)
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -63,7 +63,7 @@ the student's account, the company, or the program is later deleted.
 ### Cross-Role Proxy
 
 If the Assessment module's cross-role proxy is active (teacher acting as supervisor proxy, see
-[ADR-014](../../adr/adr-cross-role-proxy.md)), the grade aggregation adjusts: the supervisor weight may
+[4](../../adr/adr-cross-role-proxy.md)), the grade aggregation adjusts: the supervisor weight may
 be redistributed to teacher and exam components. The grade card records the proxy status for audit
 transparency.
 

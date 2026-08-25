@@ -1,6 +1,6 @@
 # Policy Pattern — Authorization Gates, RBAC & Functional Roles
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Policy contracts (BasePolicy, flat RBAC, 5 roles, functional roles, Gate::before, three-layer auth)
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -11,7 +11,7 @@ policy inventory across all modules.
 See also:
 
 - [RBAC Foundation](../rbac.md) — authentication flow & role definitions
-- [ADR-008: Flat RBAC with Functional Roles](../../adr/adr-flat-rbac-with-functional-roles.md)
+- [Flat RBAC with Functional Roles](../../adr/adr-flat-rbac-with-functional-roles.md)
 - [Modular Pattern Reference](modular-pattern.md) (§7 Policy & Authorization Patterns)
 
 ---

@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR index matches 16 architectural decisions
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 Index of all Architecture Decision Records (ADRs) documenting key architectural decisions behind
 Internara.
@@ -66,4 +66,4 @@ Broad architectural strategies that span the entire system.
 
 - `docs/architecture.md` — high-level architecture overview and 4-layer model
 - `docs/conventions.md` — coding conventions derived from these ADRs
-- [ADR-014: Cross-Role Proxy](adr-cross-role-proxy.md) — Application-layer role delegation
+- [Cross-Role Proxy](adr-cross-role-proxy.md) — Application-layer role delegation

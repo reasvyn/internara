@@ -1,6 +1,6 @@
 # Service Pattern — Infrastructure Logic, Scope & Constructor Injection
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Service/Support/Action boundaries (infrastructure logic vs domain logic, constructor injection, static utilities)
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -10,7 +10,7 @@ business logic), with scope and placement rules.
 ## 1. Why Actions, Not Services
 
 The decision to prefer Actions over Services is codified in
-[ADR-003](../../adr/adr-action-pattern-over-services.md).
+[3](../../adr/adr-action-pattern-over-services.md).
 
 Service classes are the conventional Laravel pattern — a single class with multiple public methods
 representing related operations. Over time they become:

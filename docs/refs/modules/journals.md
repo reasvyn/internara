@@ -1,6 +1,6 @@
 # Journals — Logbooks, Attendance, Absence & Monitoring Visits
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Cross-Role Proxy Verification, Compliance Monitoring, One-Entry-Per-Day Enforcement, Submodules: Logbook, Attendance, AbsenceRequest, SupervisionLog, MonitoringVisit)
+> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 
@@ -60,7 +60,7 @@ assignment.
 ### Cross-Role Proxy Verification
 
 To prevent blocking student workflows when industry supervisors are inactive, school teachers can
-activate Cross-Role Proxy (see [ADR-014](../../adr/adr-cross-role-proxy.md)) to verify entries via the
+activate Cross-Role Proxy (see [4](../../adr/adr-cross-role-proxy.md)) to verify entries via the
 mentor proxy bridge. Entries verified via proxy are tagged with `proxy_role = 'supervisor'` in the
 activity log. This ensures logbook progression is never blocked by supervisor unavailability.
 
