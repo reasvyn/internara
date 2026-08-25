@@ -1,6 +1,6 @@
 # Foundation Documents
 
-> **Last updated:** 2026-08-21 **Changes:** merge — `product-definition.md` + `project-overview.md` merged into root `README.md` (SSOT for product scope, personas, boundary, deployment, project status)
+> **Last updated:** 2026-08-25 **Changes:** sync — UI/UX entry DaisyUI/maryUI → TallstackUI v4
 
 Product scope, security model, and design foundations. Product scope and project status now live in
 the root **[README.md](../../README.md)** (System Boundary, 3S Doctrine, Personas, Deployment,
@@ -11,7 +11,7 @@ Module Landscape, Tech Debt).
   for Indonesian SMA/SMK PKL management, UI/UX standards, scalability targets, and compliance
 - **[RBAC & Authentication](rbac.md)** — Authentication flow, flat role hierarchy, functional roles,
   permissions model, Gate::before bypass
-- **[UI/UX Design](ui-ux.md)** — Design system (Tailwind CSS v4 + DaisyUI + maryUI), layouts, dark
+- **[UI/UX Design](ui-ux.md)** — Design system (Tailwind CSS v4 + TallstackUI v4), layouts, dark
   mode, responsive
 - **[Branding](branding.md)** — Dynamic theming, color system, presets, logo management, font
   strategy

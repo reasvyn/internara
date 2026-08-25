@@ -1,6 +1,6 @@
 # Context — AI Agent Memory (Evolving Project Context)
 
-> **Last updated:** 2026-08-21 **Changes:** add module-health, testing-strategy, workflow-5step contexts; optimize for 18-module stabilization (v0.14.0) and 5-step pipeline
+> **Last updated:** 2026-08-25 **Changes:** sync — ui-framework-coexistence: packages removed (not just disabled), palette bridge
 
 ## Description
 
@@ -25,7 +25,7 @@ or conflicting, write it back here** — this memory is how context survives bet
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
 | [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, `docker-deploy` branch, `build-and-deploy.yml`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |
-| [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI-first state, mary/flasher `dont-discover` (packages installed but disabled), DaisyUI CSS still powering legacy tokens, `.dark` theme mechanism |
+| [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
 
 ---

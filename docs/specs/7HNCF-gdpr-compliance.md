@@ -1,7 +1,7 @@
 # GDPR Compliance — Data Deletion, Anonymization, and Audit Logging
 
 > **Spec ID:** 7HNCF
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-25 **Changes:** sync — blade view maryUI table → TallstackUI x-ts-table
 > user-initiated and admin-initiated data deletion, PII anonymization, GDPR deletion audit logging,
 > schema migration to add missing columns, and admin-facing deletion log viewer
 
@@ -575,7 +575,7 @@ After implementing this spec, every user deletion (admin or batch) automatically
 - `app/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` — Admin UI: search, filter, paginated table (56 lines)
 - `app/User/UserManagement/Actions/DeleteUserAction.php` — Existing user deletion action to be updated with GDPR logging (36 lines)
 - `app/User/UserManagement/Actions/BatchDeleteUserAction.php` — Existing batch deletion to propagate reason (54 lines)
-- `resources/views/sysadmin/observability/gdpr-deletion-log/gdpr-deletion-logs.blade.php` — Blade view with maryUI table, type badge, date formatting (25 lines)
+- `resources/views/sysadmin/observability/gdpr-deletion-log/gdpr-deletion-logs.blade.php` — Blade view with TallstackUI x-ts-table, x-ts-badge, date formatting (25 lines)
 - `database/migrations/2026_01_02_000005_create_gdpr_deletion_logs_table.php` — Original migration (25 lines)
 - `database/factories/GdprDeletionLogFactory.php` — Test factory with metadata snapshot (26 lines)
 - `routes/web/sysadmin.php:37` — GDPR logs route (`admin.gdpr-logs`) with auth + role middleware

@@ -1,6 +1,6 @@
 # Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify module index matches 18 business modules with reference + conceptual docs
+> **Last updated:** 2026-08-25 **Changes:** sync — Layer 4 maryUI/DaisyUI → TallstackUI v4 + Tailwind CSS v4
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -328,7 +328,7 @@ acknowledgements.
 All 18 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../architecture.md):
 
-- **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes,
+- **Layer 4 — Presentation/UI** — Livewire, Blade, TallstackUI v4, Tailwind CSS v4, Controllers, Policies, Routes,
   Console
 - **Layer 3 — Business/Domain Ops** — Command/Read/Process Actions, Events, Listeners, Notifications
 - **Layer 2 — Data/Persistent** — Eloquent models, Entities (final readonly), DTOs, Enums, Database,

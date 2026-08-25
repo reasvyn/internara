@@ -1,7 +1,7 @@
 # Account Slips — PDF Credential Distribution
 
 > **Spec ID:** EWCZ0
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
+> **Last updated:** 2026-08-25 **Changes:** sync — FR-M1 x-mary-modal → x-ts-modal (TallstackUI)
 > account slip generation, single/batch delivery, email distribution, and the
 > `DownloadsAccountSlips` trait as an independent initiative
 
@@ -202,7 +202,7 @@ any situation where digital delivery is preferred over printed distribution.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-M1 | Modal must use `x-mary-modal` with `wire:model="showAccountSlip"` |
+| FR-M1 | Modal must use `x-ts-modal` with `wire="showAccountSlip"` (TallstackUI) |
 | FR-M2 | Modal must display: name, username (monospace), email, activation code (large, selectable) |
 | FR-M3 | Modal must show activation code expiry note: 30 days |
 | FR-M4 | Modal must provide "Download Slip" button wired to `downloadSlip` |

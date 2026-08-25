@@ -1,7 +1,7 @@
 # Internara Project — Initial Specification
 
 > **Spec ID:** QLHDO
-> **Last updated:** 2026-08-19 **Changes:** sync FR-G2 — three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) per ADR-008/Role enum
+> **Last updated:** 2026-08-25 **Changes:** sync — §9.1/9.5/9.6 maryUI → TallstackUI v4 (x-ts-modal, x-ts-icon/Heroicons, x-ts-* components)
 
 ## Description
 
@@ -559,7 +559,7 @@ contextual help. The pattern follows the setup wizard's guide at
 
 - **Placement:** `resources/views/{module}/components/{page-name}-guide.blade.php`
 - **Trigger:** Fixed floating button (bottom-right, `z-50`) with question mark icon
-- **Modal:** `<x-mary-modal>` with step-by-step instructions
+- **Modal:** `<x-ts-modal>` (TallstackUI) with step-by-step instructions
 - **Content:** Introductory sentence, numbered steps (1 through N), tip section for best practices
 - **Integration:** `$showGuide` boolean state + `@include` in parent Blade view
 
@@ -601,7 +601,7 @@ Every form field MUST include an icon for visual clarity:
 
 - **Input fields:** Icon on the left side (e.g., `user`, `envelope`, `calendar`)
 - **Buttons:** Optional icon (recommended for primary actions)
-- **Icons:** Use Heroicons via maryUI icon system
+- **Icons:** Use Heroicons via TallstackUI `x-ts-icon`
 - **Consistency:** Same icon for same field type across all modules
 - **Accessibility:** Icons must not be the sole indicator — pair with labels
 
@@ -611,7 +611,7 @@ The interface MUST maintain a clean, modern, minimalist aesthetic with strong ac
 
 - **Layout:** Consistent spacing, clear hierarchy, white space utilization
 - **Typography:** Readable fonts, appropriate sizes, clear contrast
-- **Components:** Use maryUI component library for consistency
+- **Components:** Use TallstackUI v4 component library (`x-ts-*`) for consistency
 - **Accessibility:** ARIA labels, keyboard navigation, screen reader support
 - **Responsive:** Mobile-first design, works on all device sizes
 - **Feedback:** Clear loading states, success/error messages, progress indicators

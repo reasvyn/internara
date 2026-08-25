@@ -1,6 +1,6 @@
 # ADR-007: Exception Hierarchy
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current dual exception hierarchy (AppException/ModuleException trees, HasExceptionContext, RejectedException not RuntimeException)
+> **Last updated:** 2026-08-25 **Changes:** sync — catch example flash()->error → $this->toast()->error()->send() (TallstackUI)
 
 ## Description
 
@@ -49,7 +49,7 @@ blocks:
 
 ```php
 catch (ModuleException $e) {           // Business rules only
-    flash()->error($e->getMessage());
+    $this->toast()->error($e->getMessage())->send();
 }
 catch (InfrastructureException $e) {   // Infrastructure failures only
     Log::error('External service failed', ['exception' => $e]);

@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-08-23 **Changes:** added §1.6 Single Responsibility & Modularity Rules — canonical SRP/modularity rule set with per-unit boundary table
+> **Last updated:** 2026-08-25 **Changes:** sync — §22-23 DaisyUI/maryUI → TallstackUI v4, toast via $this->toast(), x-ts-* a11y
 
 ## Description
 
@@ -50,7 +50,7 @@ other docs link here, never duplicate. Enforced by `scripts/scan_class_contracts
 | Entity              | Business invariants of ONE concept  | `final readonly`, pure — no Action/Service/Livewire imports (C5)                                            |
 | DTO                 | Data of ONE operation               | Scalars only — no Model/Entity imports (C6)                                                                 |
 | Model               | Persistence of ONE table            | No business rules; bridges to its Entity via contract                                                       |
-| Livewire component  | ONE screen or widget                | Thin: validation + flash only; delegates mutations to Actions (C1)                                          |
+| Livewire component  | ONE screen or widget                | Thin: validation + toast only; delegates mutations to Actions (C1)                                          |
 | Event / Listener    | ONE occurrence / ONE reaction       | Side effects live here, not in the dispatching Action beyond `dispatchEvent()`                              |
 
 Prose rules:
@@ -275,7 +275,7 @@ afterthought — it is a design constraint enforced at every layer.
 ### 22.1 Perceivable
 
 - **Color contrast:** 4.5:1 minimum for normal text, 3:1 for large text (≥18pt or ≥14pt bold).
-  DaisyUI theme colors are pre-validated; never override with arbitrary Tailwind colors that fail
+  Self-hosted palette (`--color-primary` etc. in `resources/css/app.css`) is pre-validated; never override with arbitrary Tailwind colors that fail
   contrast.
 - **Color is not the sole indicator:** Status badges, error states, and capacity indicators must
   include text labels or icons alongside color. Use `badge-success` + "Verified" text, never color
@@ -289,11 +289,11 @@ afterthought — it is a design constraint enforced at every layer.
 
 - **Keyboard navigation:** All interactive elements (buttons, links, form fields, modals, dropdowns)
   must be reachable and operable via keyboard alone. Tab order must follow logical reading order.
-- **Focus indicators:** Every focusable element must have a visible focus ring. DaisyUI provides
+- **Focus indicators:** Every focusable element must have a visible focus ring. Tailwind/TallstackUI provides
   `focus:ring` by default — do not suppress it with `outline-none` without a replacement.
 - **Skip links:** Pages with navigation must provide a "Skip to main content" link as the first
   focusable element.
-- **Modal focus trap:** Modals (`x-mary-modal`) must trap focus within the modal when open. Focus
+- **Modal focus trap:** Modals (`x-ts-modal`) must trap focus within the modal when open. Focus
   must return to the trigger element on close.
 - **No keyboard traps:** Users must be able to navigate away from any component using standard
   keyboard shortcuts.
@@ -304,7 +304,7 @@ afterthought — it is a design constraint enforced at every layer.
 - **Form labels:** Every form input must have an associated `<label>` (via `for`/`id` or wrapping).
   Placeholder text is not a label substitute.
 - **Error identification:** Validation errors must be announced to screen readers via `aria-live`
-  regions. maryUI form components handle this automatically — do not bypass it.
+  regions. TallstackUI form components handle this automatically — do not bypass it.
 - **Consistent navigation:** Navigation menus must appear in the same relative order across all
   pages.
 
@@ -312,7 +312,7 @@ afterthought — it is a design constraint enforced at every layer.
 
 - **ARIA landmarks:** Layout must use semantic HTML5 landmarks (`<nav>`, `<main>`, `<header>`,
   `<footer>`) or ARIA equivalents. The app layout provides `<nav>` (sidebar) and `<main>` (content).
-- **aria-live for dynamic content:** Flash messages, real-time validation feedback, and Livewire
+- **aria-live for dynamic content:** Toast messages, real-time validation feedback, and Livewire
   partial updates must use `aria-live="polite"` or `aria-live="assertive"` to announce changes to
   screen readers.
 - **Icon buttons:** Icon-only buttons must include `aria-label` (e.g.,
@@ -320,9 +320,9 @@ afterthought — it is a design constraint enforced at every layer.
 
 ### 22.5 Implementation Rules
 
-- maryUI components (`x-mary-modal`, `x-mary-table`, `x-mary-input`) provide built-in ARIA
+- TallstackUI components (`x-ts-modal`, `x-ts-table`, `x-ts-input`, `x-ts-select.native` etc.) provide built-in ARIA
   attributes and keyboard support. Prefer these over custom HTML.
-- DaisyUI `drawer`, `modal`, `collapse`, `dropdown` components include keyboard and ARIA support.
+- TallstackUI `layout`, `modal`, `dropdown`, `tabs` components include keyboard and ARIA support.
   Use them rather than building custom equivalents.
 - Livewire `wire:model` updates are not announced by default — wrap dynamic output regions in
   `aria-live` containers.
@@ -348,9 +348,9 @@ and `docs/infrastructure/localization.md` for file structure and key conventions
 | Validation      | Laravel built-in `validation.*` keys            | `__('validation.required')`                   |
 | Guide components | `{module}.guide.step{N}_desc`                | `__('setup.guide.step1_desc')`                |
 
-### 3.2 Livewire Component Rules
+### 23.2 Livewire Component Rules
 
-- Flash messages: always `__('{module}.{entity}.{action}_success')` — never hardcoded strings.
+- Toast messages: always `__('{module}.{entity}.{action}_success')` — never hardcoded strings (via `$this->toast()->success()->send()`).
 - Status labels: use `LabelEnum::label()` which internally calls `__()` — never translate status
   in the view layer.
 - Modal titles, button labels, table headers: all via `__()`.

@@ -1,6 +1,6 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify locale system, translation file conventions, RTL support against current lang/ directory and localization.php config
+> **Last updated:** 2026-08-25 **Changes:** sync — TallstackUI respects lang attribute (was maryUI/DaisyUI)
 
 ## Description
 
@@ -170,7 +170,7 @@ State machine enums additionally implement `StatusEnum` for transition validatio
 
 - All user-facing strings use the `__()` helper
 - Date formatting uses `Carbon::setLocale()` with the active locale
-- maryUI and daisyUI components respect the `lang` attribute on `<html>`
+- TallstackUI components respect the `lang` attribute on `<html>`
 - The language switcher is available in the application header
 
 ---
