@@ -1,35 +1,47 @@
-# ADR-005: SmartLogger Dual-Channel Logging
+# SmartLogger Dual-Channel Logging
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify ADR still reflects current SmartLogger (dual-channel, PII masking, deduplication, translation resolution)
+> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
 
-## Description
+| Field | Value |
+|-------|-------|
+| Status | Accepted |
+| Deciders | Reas Vyn |
+| Date | 2026-08-16 |
+| Technical Story | [Logging Pattern](../guides/arch/logging-pattern.md) and `laravel-activitylog` integration |
 
-A custom SmartLogger writes to both the system log file and the activity log database table
-simultaneously, with configurable PII masking and deduplication.
+## Context and Problem Statement
 
-## Context
+The application needs two distinct logging concerns: technical system logs for debugging and
+operations (`storage/logs/laravel.log`, daily rotation, 14-day retention) and business activity
+audit logs for administrators and GDPR compliance (`activity_log` table via
+`spatie/laravel-activitylog`, 365-day retention, queryable by user/action/module/date).
+Using `Log::` directly for both mixes debug noise with audit events, leaks PII into plaintext
+files, and leaves audit trails unqueryable. Spatie alone solves queryability but introduces a
+single point of failure — database-channel errors would be invisible without a fallback.
 
-The application needs two distinct kinds of logging:
+**Decision Drivers:**
 
-1. **System logs** — technical debugging information for developers and operations. Stored in
-   `storage/logs/laravel.log` with daily rotation and 14-day retention.
-2. **Activity audit logs** — business-level records for administrators, auditors, and GDPR
-   compliance. Stored in the `activity_log` database table via Spatie's `laravel-activitylog`
-   package with 365-day retention, queryable by user, action type, module, and date range.
+* Audit completeness by default — every significant business event must be traceable
+* PII protection before data reaches any sink, even on developer error
+* Queryability of audit trails without log-file grepping
+* Resilience — activity-channel failure must not hide itself
 
-Using Laravel's `Log::` facade directly for both purposes creates problems: no distinction between
-debug noise and audit events, no structured context, PII leakage into plain-text log files, and
-unqueryable audit trails.
+## Considered Options
 
-Spatie's `activitylog` solves queryability but adds a single point of failure — errors in the
-database channel would be invisible without system log fallback.
+* **Single channel (`Log::` only)** — *Pros:* simplest. *Cons:* no queryable audit trail, no
+  structured separation, PII in plaintext.*
+* **Activity log only (Spatie)** — *Pros:* queryable. *Cons:* database failure hides audit loss;
+  no system-level debug stream.*
+* **Dual-channel SmartLogger with PII masking (chosen)** — fluent logger routing to either or
+  both channels with automatic masking and shared structured context. *Pros:* audit + debug,
+  masked by default, graceful degradation. *Cons:* two stores to prune.*
 
-## Decision
+## Decision Outcome
 
-All logging goes through `SmartLogger` — a fluent, dual-channel logger that routes every call to
-either or both channels with automatic PII masking and consistent structured context.
+**Chosen option: Dual-channel SmartLogger with PII masking** — all logging flows through
+`SmartLogger`, a fluent, dual-channel logger routing every call to either or both sinks.
 
-### Architecture
+**Architecture:**
 
 ```
 BaseAction::log()                    HandlesActionErrors
@@ -45,72 +57,50 @@ BaseAction::log()                    HandlesActionErrors
         ┌─────┴──────┐
         ▼             ▼
    System Log    Activity Log
-   (laravel.log) (activity_log table)
+   (laravel.log) (activity_log)
 ```
 
-### Fluent API
+**Fluent API:**
 
 ```php
 SmartLogger::success('User registered')->for($user)->save();
 SmartLogger::info('Profile updated')->for($user)->about($profile)->save();
 SmartLogger::warning('Disk space low')->systemOnly()->save();
-SmartLogger::error('Payment failed', ['txn' => 'abc'])
-    ->activityOnly()
-    ->save();
+SmartLogger::error('Payment failed', ['txn' => 'abc'])->activityOnly()->save();
 ```
 
-### Channel Routing (Three Modes)
+**Channel Routing:**
 
-| Mode             | System Log | Activity Log | Use Case                     |
-| ---------------- | ---------- | ------------ | ---------------------------- |
-| `both()`         | Written    | Written      | Default for Command Actions  |
-| `systemOnly()`   | Written    | Skipped      | Technical operations, errors |
-| `activityOnly()` | Skipped    | Written      | Audit-only events            |
+| Mode | System | Activity | Use Case |
+|------|--------|----------|----------|
+| `both()` | ✓ | ✓ | Default for Command Actions |
+| `systemOnly()` | ✓ | — | Technical ops, errors via HandlesActionErrors |
+| `activityOnly()` | — | ✓ | Audit-only events |
 
-`BaseAction::log()` uses `both()` by default. `HandlesActionErrors` uses `systemOnly()` to avoid
-filling the audit trail with error noise.
+**PII Masking** — `withPiiMasking()` pipes payloads through `PiiMasker::maskArray()`:
+`password`/`token`/`secret`/`api_key` fully masked (`***`), emails/phones/names partially,
+IPs preserve first 2 octets. Key-name-based, not content-aware.
 
-### PII Masking
+**Graceful Degradation** — activity channel wrapped in try-catch; on DB failure it logs to
+system log and continues. System channel is not wrapped — unwritable files surface immediately.
 
-When `withPiiMasking()` is enabled, payloads pass through `PiiMasker::maskArray()` before reaching
-either channel. Masking is key-name-based: `password`, `token`, `secret`, `api_key` and similar keys
-are fully masked (`***`). Emails, phones, and names are partially masked. IP addresses preserve the
-first 2 octets.
+**BaseEvent Integration** — events extending `BaseEvent` integrate via `event()`: dispatch
+inside `save()`, `eventName()` supplies the translation key, `toPayload()` merges public
+properties.
 
-### Graceful Degradation
+### Positive Consequences
 
-The activity log channel is wrapped in try-catch. If the database is unavailable, SmartLogger logs
-the failure to the system log and continues without throwing. The system log channel is not wrapped
-— unwritable log files should surface immediately.
+* Every significant business event audited with full context — compliance-ready by default
+* PII masked before reaching any sink, even on accidental full-payload logging
+* Activity logs queryable via Eloquent scopes; enriched system logs via LogContextMiddleware
 
-### BaseEvent Integration
+### Negative Consequences
 
-Events extending `BaseEvent` integrate automatically with SmartLogger via `event()`:
+* Two stores to operate (files + table); pruning via scheduled commands essential
+* Key-name masking misses non-standard keys — requires discipline in payload key naming
 
-1. Event dispatch happens automatically inside `save()`
-2. `eventName()` provides the log translation key
-3. `toPayload()` merges public properties as log payload
+## Links
 
-## Consequences
-
-- **Positive**: Every significant business event is automatically audited with full context —
-  compliance-ready by default.
-- **Positive**: PII is masked before reaching log files, even if developers accidentally pass full
-  request payloads.
-- **Positive**: Activity logs are queryable via Eloquent scopes — no raw log file grepping for audit
-  questions.
-- **Positive**: System logs are enriched with request context (user ID, role, duration) by
-  `LogContextMiddleware`.
-- **Negative**: Two storage systems to manage (log files + database table). Database pruning via
-  scheduled commands is essential.
-- **Negative**: PII masking is key-name-based, not content-aware. Non-standard keys bypass masking.
-
-## References
-
-- `app/Core/Support/SmartLogger.php` — Fluent dual-channel logger
-- `app/Core/Support/PiiMasker.php` — PII masking engine
-- `app/Core/Actions/BaseAction.php` — `log()` convenience wrapper
-- `app/Core/Http/Middleware/LogContextMiddleware.php` — System log enrichment
-- `app/Core/Models/ActivityLog.php` — Queryable activity log model
-- `app/Core/Events/BaseEvent.php` — Abstract base event with SmartLogger integration
-- `config/activitylog.php` — 365-day retention configuration
+* [Logging Pattern](../guides/arch/logging-pattern.md) — SmartLogger and PiiMasker contracts
+* [Architecture Overview](../architecture.md) — where logging sits across layers
+* [Activity Log Model](../guides/arch/logging-pattern.md) — queryable audit trail
