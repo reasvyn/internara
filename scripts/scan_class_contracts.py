@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Enhanced v2.1: parallel execution, robust error isolation, shared _common helpers,
+severity/baseline filtering, and performance optimizations.
 scan_class_contracts.py — Class Contract Compliance
 Checks Action, Entity, DTO, Model, Enum, Event, Policy, and Service contracts.
 """

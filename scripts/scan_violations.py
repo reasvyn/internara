@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Enhanced v2.1: parallel execution, robust error isolation, shared _common helpers,
+severity/baseline filtering, and performance optimizations.
 scan_violations.py — Architecture & Coding Invariant Violations
 Scans PHP code for C1-C8, D1-D6 violations plus Livewire layer checks and
 performance rules (P1, P2, P3, P5). Detection is calibrated against the real

@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
 scan_dead_code.py — Dead Code Detection
-Detects unregistered observers, events without listeners, unused DTOs,
-unused Actions, and unused Jobs.
+
+Enhanced v2.1: parallel execution, import-aware dead code detection,
+container resolution awareness, robust error isolation, and comprehensive
+output schema. Detects unregistered observers, events without listeners,
+unused DTOs, Actions, and Jobs with reduced false positives.
 """
 
 from __future__ import annotations
@@ -12,10 +15,21 @@ import json
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+
+try:
+    from _common import (
+        Finding as CommonFinding,
+        ScanResult as CommonScanResult,
+        relative_path as common_relative_path,
+        build_report as common_build_report,
+    )
+except ImportError:
+    pass
 
 # ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -299,6 +313,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--quiet", "-q", action="store_true")
     parser.add_argument("--strict", "-s", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--severity", choices=["critical", "high", "medium", "low"], help="Filter by minimum severity")
+    parser.add_argument("--baseline", type=Path, help="Baseline file")
     return parser.parse_args()
 
 
