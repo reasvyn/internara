@@ -1,6 +1,6 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-25 **Changes:** docs tree reorganized — foundation/architecture/infrastructure relocated under docs/guides/{,arch,infra}; all pointers updated
+> **Last updated:** 2026-08-25 **Changes:** feat — added impact-to-effort rule (dependency chains, business urgency, ratio) to Rules Index
 
 Mental model and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
@@ -38,6 +38,7 @@ with a commit as its checkpoint; commit format
 | [`computational-thinking`](.agents/rules/computational-thinking.md) | Four decision pillars + predict→act→verify→adjust loop | Ambiguous or multi-step instructions |
 | [`documentation-split`](.agents/rules/documentation-split.md) | Human docs in `docs/`, AI assets in `.agents/`; directional referencing | Any documentation change |
 | [`automation-first`](.agents/rules/automation-first.md) | Script batch work; reuse scanners; `/tmp` for throwaway scripts | Repetitive/batch operations; writing scripts |
+| [`impact-to-effort`](.agents/rules/impact-to-effort.md) | Order all work: dependency chains → business importance/urgency bands → impact-to-effort ratio | Multiple instructions, backlog triage, multi-stage planning |
 | [`edit-policy`](.agents/rules/edit-policy.md) | Read-before-edit, surgical diffs, git lossless proof | Every code/doc edit |
 | [`pre-existing-defects`](.agents/rules/pre-existing-defects.md) | Fix or file noticed warnings/errors; never silent tolerance | Warnings/errors encountered mid-task |
 | [`commit-as-checkpoint`](.agents/rules/commit-as-checkpoint.md) | Commit at every session end AND every verified milestone; never leave verified work uncommitted | End of every session; each stage of multi-stage work |

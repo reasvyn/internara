@@ -1,5 +1,9 @@
 # Instruction Ordering — Impact-to-Effort Rule
 
+> This rule operationalizes the global [impact-to-effort](../../../rules/impact-to-effort.md)
+> doctrine (dependency chains → business priority bands → ratio) for the specific case of batched
+> instructions. The scoring scale below remains its canonical definition.
+
 Users sometimes send instructions in random, unintended order. Never execute a batch verbatim.
 Before any work, reorder the batch by impact-to-effort ratio: **quick wins first, heavy lifts
 scheduled, low-value work batched or challenged.** Run the scoring silently and surface only the
