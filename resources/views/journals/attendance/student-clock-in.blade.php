@@ -19,7 +19,7 @@
                         {{ __('journals.attendance.clocked_out_at') }}
                         <strong>{{ $todayAttendance->clock_out ? \Carbon\Carbon::parse($todayAttendance->clock_out)->format('H:i') : '' }}</strong>
                     </p>
-                    <x-ts-badge :text="__('journals.attendance.completed')" class="badge-success mt-2" />
+                    <x-ts-badge :text="__('journals.attendance.completed')" color="green" class="mt-2" />
                 @else
                     <x-ts-button
                         wire:click="clockOut"
@@ -40,5 +40,6 @@
                     sm
                 />
             @endif
+        </x-ts-card>
     </div>
 </div>

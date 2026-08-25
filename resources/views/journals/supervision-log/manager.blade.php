@@ -30,15 +30,16 @@
                         @interact('column_type', $log)
                             <x-ts-badge
                                 :text="ucfirst($log->type)"
-                                :class="$log->type === 'guidance' ? 'badge-primary' : 'badge-secondary'"
+                                :color="$log->type === 'guidance' ? 'primary' : 'secondary'"
+                                xs
                             />
                         @endinteract
 
                         @interact('column_is_verified', $log)
                             @if ($log->is_verified)
-                                <x-ts-badge :text="__('journals.verified')" class="badge-success" />
+                                <x-ts-badge :text="__('journals.verified')" color="green" xs />
                             @else
-                                <x-ts-badge :text="__('journals.pending')" class="badge-neutral" />
+                                <x-ts-badge :text="__('journals.pending')" color="white" xs />
                             @endif
                         @endinteract
                     </x-ts-table>
