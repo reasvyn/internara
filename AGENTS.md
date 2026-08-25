@@ -318,6 +318,7 @@ Full definition: `README.md` (System Boundary, Personas, 3S Doctrine, Deployment
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
 | Laravel/architecture best practices | `laravel-best-practices` | Cross-cutting overrides for the Module-first Action architecture |
+| Data architecture (schema, flow, security, contracts, DTO, mapping, formatting) | `data-architect` | Single source for any data-related task — schema, flow, security, interface/struct/type/enum/DTO, mapping, formatting |
 | Livewire component | `livewire-development` | Livewire mechanics only — thin component, delegation, tables |
 | General UI (Blade, layout, a11y, i18n, TallstackUI) | `ui-development` | General UI — Blade presentation, view structure, layout/responsive/dark mode, component library, accessibility, localization (delegates Tailwind details to tailwindcss-development) |
 | Writing spec-driven tests | `pest-testing` | Each test traces to a spec FR/NFR; no orphan tests |
