@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Core\Livewire;
 
-use App\Core\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
@@ -50,7 +49,7 @@ abstract class BaseRecordList extends Component
 
     public function rows(): LengthAwarePaginator
     {
-        if (!in_array($this->perPage, $this->perPageOptions(), true)) {
+        if (! in_array($this->perPage, $this->perPageOptions(), true)) {
             $this->perPage = 10;
         }
 

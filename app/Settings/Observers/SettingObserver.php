@@ -28,11 +28,11 @@ final class SettingObserver
     {
         $key = $setting->key;
 
-        Cache::forget(config('cache-keys.settings_key') . $key);
+        Cache::forget(config('cache-keys.settings_key').$key);
         Cache::forget(config('cache-keys.settings_all'));
 
         if ($setting->group) {
-            Cache::forget(config('cache-keys.settings_group') . $setting->group);
+            Cache::forget(config('cache-keys.settings_group').$setting->group);
         }
 
         if (in_array($key, config('settings.theme_cache_keys', []), true)) {

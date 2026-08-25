@@ -16,7 +16,7 @@ final class SendProfileChangedMail implements ShouldQueue
         $profile = $event->profile;
         $user = User::find($profile->user_id);
 
-        if ($user === null || !$user->email) {
+        if ($user === null || ! $user->email) {
             return;
         }
 

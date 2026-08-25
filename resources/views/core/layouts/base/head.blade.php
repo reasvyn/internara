@@ -8,8 +8,8 @@
 @endphp
 
 <!-- Performance Hints -->
-<link rel="preconnect" href="{{ config('app.url') }}" crossorigin>
-<link rel="dns-prefetch" href="{{ config('app.url') }}">
+<link rel="preconnect" href="{{ config('app.url') }}" crossorigin />
+<link rel="dns-prefetch" href="{{ config('app.url') }}" />
 
 <!-- Meta Tags -->
 <meta charset="utf-8" />
@@ -24,7 +24,7 @@
 <link rel="icon" href="{{ $favicon }}" sizes="any" />
 <link rel="apple-touch-icon" href="{{ $favicon }}" />
 
-<link rel="manifest" href="{{ $manifest }}">
+<link rel="manifest" href="{{ $manifest }}" />
 
 <!-- TallstackUI — must be above Vite (https://tallstackui.com/docs/installation) -->
 <tallstackui:script />

@@ -13,6 +13,7 @@ use App\User\Policies\Concerns\HasMentorProxy;
 class LogbookPolicy extends BasePolicy
 {
     use HasMentorProxy;
+
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [
