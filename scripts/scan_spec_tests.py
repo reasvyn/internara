@@ -149,9 +149,9 @@ def main() -> None:
     spec_req_counts: dict[Path, int] = {}
     spec_ids_in_specs: set[str] = set()
 
-    # Track non-testable reqs separately
+    # Track non-testable reqs per spec (spec_file, req_id) as unique
+    non_testable_entries: list[tuple[Path, str, int]] = []  # (spec_file, req_id, line)
     non_testable_reqs: set[str] = set()
-    non_testable_map: dict[str, list[tuple[Path, int]]] = {}
 
     for sf in spec_files:
         spec_id, reqs = extract_requirements_from_spec(sf)
@@ -162,7 +162,7 @@ def main() -> None:
         for req_id, line in reqs:
             if is_non_testable(req_id):
                 non_testable_reqs.add(req_id)
-                non_testable_map.setdefault(req_id, []).append((sf, line))
+                non_testable_entries.append((sf, req_id, line))
             else:
                 req_to_specs.setdefault(req_id, []).append((sf, line))
 
@@ -194,8 +194,7 @@ def main() -> None:
 
     # ─── Rule: SPEC_TEST_NON_TESTABLE (info) ────────────────────────
     # Requirements marked with short non-testable markers (* ~ ! -X -NT -X- prefix) are excluded from uncovered
-    for req_id, occurrences in non_testable_map.items():
-        spec_file, line = occurrences[0]
+    for spec_file, req_id, line in non_testable_entries:
         rel = relative_path(spec_file)
         findings.append(Finding(
             id="SPEC-0000",
@@ -207,7 +206,7 @@ def main() -> None:
             message=f"Requirement {req_id} marked non-testable (short marker *~/!/-X/-NT) — no test required",
             suggestion="No test needed; marker indicates manual verification, UI/UX, or infra requirement. Keep marker for auditability.",
             reference="docs/guides/arch/testing-pattern.md §Non-Testable Requirements, .agents/rules/conflic-resolution.md",
-            context={"requirement": req_id, "spec": spec_file.name, "occurrences": len(occurrences)},
+            context={"requirement": req_id, "spec": spec_file.name},
         ))
 
     # ─── Rule: SPEC_TEST_UNCOVERED ──────────────────────────────────
