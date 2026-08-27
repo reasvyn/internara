@@ -1,14 +1,14 @@
 @props(['title' => null, 'error' => null])
 
-<x-core::layouts.base :$title>
+<x-ui::layouts.base :$title>
     <div class="bg-base-100 flex min-h-screen flex-col">
         <header class="border-base-content/10 border-b">
             <div class="mx-auto max-w-5xl px-6 lg:px-12">
                 <div class="flex h-16 items-center justify-between">
-                    <x-core::ui.brand size="sm" :invert="false" />
+                    <x-ui::ui.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-core::ui.theme-switch /></div>
+                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-ui::ui.theme-switch /></div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
                         <livewire:settings.lang-switcher class="px-2" />
                     </div>
@@ -151,4 +151,4 @@
             </div>
         </template>
     </div>
-</x-core::layouts.base>
+</x-ui::layouts.base>

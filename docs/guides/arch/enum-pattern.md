@@ -220,4 +220,4 @@ protected $casts = [
 - [GeeksforGeeks — State Design Pattern](https://www.geeksforgeeks.org/system-design/state-design-pattern/) — FSM implementation
 - [Rust FAQ — Typestate Pattern](https://www.rustfaq.org/en/how-to-use-the-typestate-pattern-for-compile-time-state-machines/) — compile-time state machines
 - [Wikipedia — Finite State Machine](https://en.wikipedia.org/wiki/Finite-state_machine) — mathematical model
-- [PHP Enums RFC](https://wiki.php.net/rfc/enums) — PHP 8.1 string-backed enums
+- [PHP Enums — Manual](https://www.php.net/manual/en/language.enumerations.php) — PHP 8.1 string-backed enums

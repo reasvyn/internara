@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-core::ui.page-header :title="__('logbook.daily_journals')" :description="__('logbook.daily_journals_subtitle')">
+    <x-ui::ui.page-header :title="__('logbook.daily_journals')" :description="__('logbook.daily_journals_subtitle')">
         <x-slot:actions>
             <x-ts-button
                 :text="__('logbook.write_journal')"
@@ -9,7 +9,7 @@
                 wire:click="create"
             />
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     <div class="grid grid-cols-1 gap-6">
         <x-ts-card class="card-enterprise">

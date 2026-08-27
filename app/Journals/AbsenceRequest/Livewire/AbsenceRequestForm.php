@@ -67,7 +67,7 @@ class AbsenceRequestForm extends BaseFormView
         });
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.absence-request.absence-request-form', [

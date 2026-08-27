@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('partnership.title')" :subtitle="__('partnership.subtitle')">
+<x-ui::ui.record-manager :title="__('partnership.title')" :subtitle="__('partnership.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('partnership.add')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -15,22 +15,22 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="hand-raised"
             :title="__('partnership.stats_active')"
             :value="$this->stats['active']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="clock"
             :title="__('partnership.stats_expiring_soon', ['days' => 30])"
             :value="$this->stats['expiring_soon']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="exclamation-circle"
             :title="__('partnership.stats_expired')"
             :value="$this->stats['expired']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="document-text"
             :title="__('partnership.stats_total')"
             :value="$this->stats['total']"
@@ -55,7 +55,7 @@
         </x-ts-select.native>
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -81,7 +81,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -282,4 +282,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('partners.partnership.components.partnership-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

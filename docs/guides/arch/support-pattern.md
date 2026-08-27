@@ -78,7 +78,7 @@ Ideally, Support methods are pure functions: same input → same output, no side
 - `docs/guides/arch/action-pattern.md` — Action Triad reference
 - `app/Core/Support/Color.php` — example of correct Support (pure PHP)
 - `app/Core/Support/PiiMasker.php` — example of correct Support (pure PHP)
-- [Utility Pattern](https://en.wikipedia.org/wiki/Utility_class) — static helper classes
+- [Helper Class Pattern](https://en.wikipedia.org/wiki/Helper_class) — static helper classes
 - [Pure Functions](https://en.wikipedia.org/wiki/Pure_function) — no side effects
 - [Static Methods](https://www.php.net/manual/en/language.oop5.static.php) — PHP static
 - [Immutability](https://en.wikipedia.org/wiki/Immutable_object) — unchangeable state

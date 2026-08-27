@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('sysadmin.clone_detection.title')"
         :description="__('sysadmin.clone_detection.subtitle')"
     />

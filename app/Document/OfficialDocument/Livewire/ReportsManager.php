@@ -41,7 +41,7 @@ class ReportsManager extends Component
         $this->toast()->success(__('document.report_deleted'))->send();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $reports = Document::query()->where('type', 'report')->latest()->paginate(10);

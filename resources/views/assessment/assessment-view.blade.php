@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('assessment.my_assessments')"
         :description="__('assessment.my_assessments_subtitle')"
     />

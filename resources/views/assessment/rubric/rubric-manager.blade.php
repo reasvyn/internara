@@ -1,9 +1,9 @@
 <div>
-    <x-core::ui.page-header :title="__('assessment.rubrics')" :description="__('assessment.rubrics_subtitle')">
+    <x-ui::ui.page-header :title="__('assessment.rubrics')" :description="__('assessment.rubrics_subtitle')">
         <x-slot:actions>
             <x-ts-button :text="__('assessment.new_rubric')" icon="plus" wire:click="addRubric" color="primary" />
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     @forelse ($this->rubrics as $rubric)
         @php $competencies = $rubric->structure['competencies'] ?? []; @endphp

@@ -14,19 +14,19 @@
 
     {{-- Stats --}}
     <div class="mb-6 grid grid-cols-3 gap-4">
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('academic_year.stats_total')"
             :value="$stats['total']"
             icon="o-calendar-days"
             color="text-primary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('academic_year.stats_total_internships')"
             :value="$stats['totalInternships']"
             icon="o-briefcase"
             color="text-info"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('academic_year.stats_with_internships')"
             :value="$stats['withInternships']"
             icon="o-building-library"
@@ -47,7 +47,7 @@
     </div>
 
     {{-- Selection Bar --}}
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-button
             :text="__('academic_year.delete_selected')"
             icon="trash"
@@ -55,7 +55,7 @@
             sm
             wire:click="askDeleteSelected"
         />
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     {{-- List --}}
     <div class="bg-base-100 border-base-content/10 overflow-hidden rounded-xl border">

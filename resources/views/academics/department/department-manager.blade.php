@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.record-manager :title="__('department.title')" :subtitle="__('department.subtitle')">
+    <x-ui::ui.record-manager :title="__('department.title')" :subtitle="__('department.subtitle')">
         <x-slot:headerActions>
             <x-ts-button :text="__('department.add')" icon="plus" color="primary" sm wire:click="create" />
         </x-slot:headerActions>
@@ -20,14 +20,14 @@
         </x-slot:extraMenu>
 
         <x-slot:stats>
-            <x-core::widgets.stat-card
+            <x-ui::widgets.stat-card
                 :title="__('department.stats.total')"
                 :value="$stats['total']"
                 icon="building-library"
                 color="text-primary"
                 class="lg:col-span-2"
             />
-            <x-core::widgets.stat-card
+            <x-ui::widgets.stat-card
                 :title="__('department.stats.with_students')"
                 :value="$stats['with_internships']"
                 icon="users"
@@ -36,7 +36,7 @@
             />
         </x-slot:stats>
 
-        <x-core::ui.selection-bar>
+        <x-ui::ui.selection-bar>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
                     <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" / x-on:click="show = ! show">
@@ -53,7 +53,7 @@
                     wire:click="askDeleteSelected"
                 />
             </x-ts-dropdown>
-        </x-core::ui.selection-bar>
+        </x-ui::ui.selection-bar>
 
         <div class="overflow-x-auto">
             <x-ts-table
@@ -125,7 +125,7 @@
                 </form>
             </x-ts-modal>
         </x-slot:modal>
-    </x-core::ui.record-manager>
+    </x-ui::ui.record-manager>
 
     @include('setup.components.department-guide')
 </div>

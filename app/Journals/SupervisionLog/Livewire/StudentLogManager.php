@@ -137,7 +137,7 @@ class StudentLogManager extends BaseRecordManager
         $this->confirmTarget = null;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.supervision-log.student-log-manager');

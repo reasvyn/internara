@@ -176,7 +176,7 @@ class VisitManager extends BaseRecordManager
         $this->toast()->success(__('journals.visit_verified'))->send();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.monitoring-visit.visit-manager');

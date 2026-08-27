@@ -88,7 +88,7 @@ class StudentHandbookList extends Component
         return $acknowledgments;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('document.handbook.student-handbook-list');

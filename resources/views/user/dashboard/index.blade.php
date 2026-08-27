@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('dashboard.title')"
         :description="__('dashboard.welcome_back', ['name' => auth()->user()->name])"
     />
@@ -23,14 +23,14 @@
                             </div>
                         </div>
                     @empty
-                        <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
+                        <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                     @endforelse
 
             @endif
         </div>
 
         <div class="space-y-6">
-            <x-core::widgets.profile-summary :showEdit="true" />
+            <x-ui::widgets.profile-summary :showEdit="true" />
 
             <x-ts-card shadowless :header="__('dashboard.recent_activity')">
                 @forelse ($this->getRecentActivities() as $activity)
@@ -48,28 +48,28 @@
                         </div>
                     </div>
                 @empty
-                    <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
+                    <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
 
                 <x-ts-card shadowless :header="__('dashboard.quick_links')">
                     <div class="space-y-1">
-                        <x-core::widgets.quick-link
+                        <x-ui::widgets.quick-link
                             :label="__('dashboard.edit_profile')"
                             icon="user"
                             link="{{ route('profile') }}"
                         />
-                        <x-core::widgets.quick-link
+                        <x-ui::widgets.quick-link
                             :label="__('profile.recovery.title')"
                             icon="key"
                             link="{{ route('profile.recovery') }}"
                         />
-                        <x-core::widgets.quick-link
+                        <x-ui::widgets.quick-link
                             :label="__('dashboard.notifications')"
                             icon="bell"
                             link="{{ route('notifications') }}"
                         />
                         @if (auth()->user()?->hasRole('super_admin'))
-                            <x-core::widgets.quick-link
+                            <x-ui::widgets.quick-link
                                 :label="__('dashboard.system_settings')"
                                 icon="cog-6-tooth"
                                 link="{{ route('admin.settings') }}"

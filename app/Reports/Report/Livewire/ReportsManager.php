@@ -176,7 +176,7 @@ class ReportsManager extends Component
         $this->confirmAction = '';
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('reports.report.reports-manager', [

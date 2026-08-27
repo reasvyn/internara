@@ -25,6 +25,10 @@ $modules = [
     'Core' => [
         'Channels', 'Console', 'Contracts', 'Exceptions',
     ],
+    'UI' => [
+        // Pure presentation module — Blade components (layouts, ui/*, widgets)
+        // No business logic; depends on Core only for contracts & Tailwind tokens
+    ],
     'Setup' => [
         'Installation', 'SetupWizard',
     ],

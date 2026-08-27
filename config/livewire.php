@@ -33,7 +33,7 @@ return [
         'pages' => resource_path('views/pages'),
     ],
 
-    'component_layout' => 'core::layouts.app',
+    'component_layout' => 'ui::layouts.app',
 
     /*
     |---------------------------------------------------------------------------

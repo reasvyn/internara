@@ -260,7 +260,7 @@ class SystemSetting extends BaseFormView
         return __('setting.title');
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('settings.system-setting', [

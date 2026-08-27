@@ -1,4 +1,4 @@
-<x-core::ui.record-manager
+<x-ui::ui.record-manager
     :title="__('assessment.presentation_title')"
     :subtitle="__('assessment.presentation_subtitle')"
 >
@@ -111,4 +111,4 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

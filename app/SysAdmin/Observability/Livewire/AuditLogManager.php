@@ -30,7 +30,7 @@ class AuditLogManager extends Component
         $this->resetPage();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $query = Activity::query()->with('causer');

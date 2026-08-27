@@ -73,7 +73,7 @@ class CertificateTemplateManager extends BaseRecordManager
         $this->showModal = false;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('certification.certificate.certificate-template-manager');

@@ -445,6 +445,6 @@ Tests are organized by module scope (`tests/{Module}/{SubModule}/{Name}Test.php`
 - [Microsoft — CQRS Pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs) — when to use, combining with Event Sourcing
 - [Martin Fowler — PoEAA](https://martinfowler.com/eaaCatalog/) — Unit of Work, Transaction Script, Active Record, Service Layer
 - [Gang of Four — Command Pattern](https://en.wikipedia.org/wiki/Command_pattern) — encapsulation of requests as objects
-- [Robert C. Martin — SOLID Principles](https://blog.cleancoder.com/2014/10/the-packaging-dependency.html) — SRP, OCP, LSP, ISP, DIP
+- [Robert C. Martin — SOLID Principles](https://en.wikipedia.org/wiki/SOLID) — SRP, OCP, LSP, ISP, DIP
 - [Laravel Daily — Action/Command Pattern](https://laraveldaily.com/lesson/design-patterns/action-command-pattern) — Laravel implementation of Command Pattern
 - [Eric Evans — DDD](https://www.domainlanguage.com/ddd/) — Domain Events, Value Objects, Aggregate boundaries

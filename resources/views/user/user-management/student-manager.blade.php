@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('user.student.title')" :subtitle="__('user.student.subtitle')">
+<x-ui::ui.record-manager :title="__('user.student.title')" :subtitle="__('user.student.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('user.student.new')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -27,7 +27,7 @@
         <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -53,7 +53,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -67,7 +67,7 @@
         >
             @interact('column_name', $user)
                 <div class="flex items-center gap-3 py-1">
-                    <x-core::ui.avatar :user="$user" size="size-9" />
+                    <x-ui::ui.avatar :user="$user" size="size-9" />
                     <div class="flex flex-col">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
                         <span class="text-base-content/50 text-xs">{{ $user->email }}</span>
@@ -164,4 +164,4 @@
     @include('user.user-management.components.account-slip-modal')
 
     @include('user.user-management.components.student-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

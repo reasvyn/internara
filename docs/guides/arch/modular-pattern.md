@@ -27,9 +27,9 @@ standards so the codebase reads like a textbook implementation of well-known pat
 | **DRY** | Reuse/extract instead of copy-paste | §21 Workflow Patterns; shared `app/Core/Support/`, `Base*` classes |
 
 **References**
-- [Modular Monolith](https://laravel.com/docs/modular) — Laravel modularity
-- [Clean Architecture](https://blog.cleancoder.com/clean-code-review/2016/10/03/Clean-Architecture.html) — Uncle Bob
-- [Hexagonal Architecture](https://en.wikipedia.org/wiki/Hexagonal_software_architecture) — Ports & Adapters
+- [Modular Monolith](https://microservices.io/patterns/monolithic.html) — pattern overview; also see `docs/architecture.md` §1.1
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) — Uncle Bob
+- [Hexagonal Architecture](https://en.wikipedia.org/wiki/Hexagonal_architecture_%28software%29) — Ports & Adapters
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID) — object-oriented design
 - [DRY Principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) — code reuse
 

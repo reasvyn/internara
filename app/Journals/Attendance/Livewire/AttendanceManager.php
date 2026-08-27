@@ -160,7 +160,7 @@ class AttendanceManager extends Component
         $this->toast()->success(__('journals.absence.rejected'))->send();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $students = $this->students();

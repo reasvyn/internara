@@ -62,7 +62,7 @@ class IncidentForm extends BaseFormView
         });
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('incident.incident-report.incident-form', [

@@ -33,6 +33,6 @@ final class HomePage extends Component
     public function render(): View
     {
         return view('livewire.user.home-page')
-            ->layout('core::layouts.guest', ['title' => __('user.home.page_title')]);
+            ->layout('ui::layouts.guest', ['title' => __('user.home.page_title')]);
     }
 }

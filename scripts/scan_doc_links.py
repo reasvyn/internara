@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-Enhanced v2.1: parallel execution, robust error isolation, shared _common helpers,
+Enhanced v2.2: external HTTP link validation (HTTP 200 required), parallel external checks,
+plus v2.1 parallel execution, robust error isolation, shared _common helpers,
 severity/baseline filtering, and performance optimizations.
 scan_doc_links.py — Documentation Link & Freshness Validation
 Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
-file targets must exist, and in-page anchors must resolve to a heading. Also enforces the spec
-filename convention and flags ALL markdown files whose `Last updated` metadata is missing or older than 14 days.
+file targets must exist, and in-page anchors must resolve to a heading. Also validates every
+external http(s) link with a live HTTP request — response must be 2xx/3xx (use --no-external to skip).
+Enforces the spec filename convention and flags markdown files whose `Last updated` metadata is
+missing or older than 14 days.
 """
 
 from __future__ import annotations
@@ -13,8 +16,12 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import ssl
 import sys
 import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -28,6 +35,12 @@ OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"
 STALE_DAYS = 14
 
+# External link validation (opt-in via default-on; disable with --no-external)
+EXTERNAL_TIMEOUT = 12  # seconds per request
+EXTERNAL_WORKERS = 6  # parallel connections (lower to be gentler on remote hosts)
+USER_AGENT = "Mozilla/5.0 (compatible; InternaraDocLinkChecker/1.0)"
+EXTERNAL_RETRIES = 1  # retry once on timeout / transient error
+
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 ANCHOR_TARGET = re.compile(r"^#(.+)$")
 HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$")
@@ -39,6 +52,8 @@ LAST_UPDATED_LINE = re.compile(r"\*\*Last updated:\*\*\s+(\d{4}-\d{2}-\d{2})")
 RULE_TYPES = [
     "BROKEN_FILE_LINK",
     "BROKEN_ANCHOR",
+    "BROKEN_EXTERNAL_LINK",
+    "UNVERIFIED_EXTERNAL_LINK",
     "SPEC_ID",
     "SPEC_ID_METADATA",
     "OUTDATED_DOC",
@@ -217,6 +232,102 @@ def validate_target(
     return True
 
 
+# ─── External link validation ───────────────────────────────────────────────
+
+def check_external_url(url: str) -> tuple[bool, str]:
+    """Return (is_valid, detail). Valid only when the final HTTP response is 2xx/3xx.
+
+    Network/SSL errors and non-2xx responses are reported as invalid. Some hosts
+    return 401/403/429 to automated agents even for valid pages — those are flagged
+    as "likely invalid or bot-blocked" so a human can verify manually.
+    Retries once on transient timeout / connection errors.
+    """
+    last_detail = ""
+    for attempt in range(EXTERNAL_RETRIES + 1):
+        try:
+            req = urllib.request.Request(
+                url, method="GET", headers={"User-Agent": USER_AGENT}
+            )
+            with urllib.request.urlopen(req, timeout=EXTERNAL_TIMEOUT) as resp:
+                status = getattr(resp, "status", resp.getcode())
+            if 200 <= status < 400:
+                return True, f"HTTP {status}"
+            if status in (401, 403, 429):
+                return False, f"HTTP {status} (may be bot-blocked; verify manually)"
+            return False, f"HTTP {status}"
+        except urllib.error.HTTPError as e:
+            code = getattr(e, "code", "?")
+            if code in (401, 403, 429):
+                return False, f"HTTP {code} (may be bot-blocked; verify manually)"
+            return False, f"HTTP {code}"
+        except (urllib.error.URLError, ssl.SSLError, TimeoutError, OSError) as e:
+            reason = getattr(e, "reason", str(e))
+            last_detail = f"connection error: {reason}"
+            if attempt < EXTERNAL_RETRIES:
+                time.sleep(0.6)
+                continue
+            return False, last_detail
+    return False, last_detail or "unknown error"
+
+
+def validate_external_links(
+    external_links: list[tuple[str, str, int]],
+    findings: list[Finding],
+    workers: int = EXTERNAL_WORKERS,
+) -> None:
+    """Validate external (http/https) links in parallel; flag non-200 responses.
+
+    `external_links` is a list of (file_rel, url, line). Each unique URL is checked
+    once; results are cached and shared across all references to that URL.
+    """
+    if not external_links:
+        return
+
+    url_to_refs: dict[str, list[tuple[str, int]]] = {}
+    for file_rel, url, line in external_links:
+        url_to_refs.setdefault(url, []).append((file_rel, line))
+
+    cache: dict[str, tuple[bool, str]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        future_to_url = {
+            pool.submit(check_external_url, url): url for url in sorted(url_to_refs)
+        }
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                ok, detail = future.result()
+            except Exception as e:  # noqa: BLE001 — surface unexpected failures as broken
+                ok, detail = False, f"check failed: {e}"
+            cache[url] = (ok, detail)
+
+    for url, refs in url_to_refs.items():
+        ok, detail = cache.get(url, (False, "unknown"))
+        if ok:
+            continue
+        is_unverified = detail.startswith("connection error") or "bot-blocked" in detail
+        for file_rel, line in refs:
+            findings.append(Finding(
+                id=f"EXT-{len(findings) + 1:03d}",
+                rule="UNVERIFIED_EXTERNAL_LINK" if is_unverified else "BROKEN_EXTERNAL_LINK",
+                severity="low" if is_unverified else "medium",
+                category="documentation",
+                file=file_rel,
+                line=line,
+                message=(
+                    f"External link could not be verified (network/timeout): {url} ({detail})"
+                    if is_unverified else
+                    f"External link not reachable (expected HTTP 2xx): {url} ({detail})"
+                ),
+                suggestion=(
+                    "Verify manually; if unreachable, replace with a valid URL or remove"
+                    if is_unverified else
+                    "Replace with a valid, reachable URL or remove the link"
+                ),
+                reference="docs/conventions.md §Documentation Conventions",
+                context={"target": url, "detail": detail},
+            ))
+
+
 # ─── Report ─────────────────────────────────────────────────────────────────
 
 # ─── Spec convention validation ──────────────────────────────────────────────
@@ -361,12 +472,16 @@ def build_report(
             "valid_links": total_links - len(findings),
             "outdated_docs": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
             "missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
+            "broken_external": sum(1 for f in findings if f.rule == "BROKEN_EXTERNAL_LINK"),
+            "unverified_external": sum(1 for f in findings if f.rule == "UNVERIFIED_EXTERNAL_LINK"),
         },
         findings=[vars(f) for f in findings],
         metadata={
             "files_scanned": len(files),
             "link_rule_broken_file": sum(1 for f in findings if f.rule == "BROKEN_FILE_LINK"),
             "link_rule_broken_anchor": sum(1 for f in findings if f.rule == "BROKEN_ANCHOR"),
+            "link_rule_broken_external": sum(1 for f in findings if f.rule == "BROKEN_EXTERNAL_LINK"),
+            "link_rule_unverified_external": sum(1 for f in findings if f.rule == "UNVERIFIED_EXTERNAL_LINK"),
             "doc_rule_outdated": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
             "doc_rule_missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
         },
@@ -396,6 +511,8 @@ def print_summary(result: ScanResult) -> None:
     print(f"  Valid links:        {s['valid_links']}")
     print(f"  Outdated docs:      {s['outdated_docs']}")
     print(f"  Missing metadata:   {s['missing_metadata']}")
+    print(f"  Broken external:    {s.get('broken_external', 0)}")
+    print(f"  Unverified ext:     {s.get('unverified_external', 0)} (timeout/bot-blocked)")
     print(f"  Categories passed:  {s['passed']}")
     print(f"  Findings:           {s['failed']}")
     print(f"    Critical: {bs.get('critical', 0)}")
@@ -410,7 +527,7 @@ def print_summary(result: ScanResult) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Validate relative links and anchors in markdown docs",
+        description="Validate relative/anchor links and external (HTTP 200) links in markdown docs",
     )
     parser.add_argument("--module", "-m", help="Target specific docs subdirectory")
     parser.add_argument("--output", "-o", type=Path, help="Output file path")
@@ -421,6 +538,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--quiet", "-q", action="store_true")
     parser.add_argument("--strict", "-s", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--no-external",
+        action="store_true",
+        help="Skip external HTTP link validation (offline/fast mode)",
+    )
+    parser.add_argument(
+        "--external-timeout",
+        type=int,
+        default=EXTERNAL_TIMEOUT,
+        help=f"Timeout in seconds for external link checks (default {EXTERNAL_TIMEOUT})",
+    )
+    parser.add_argument(
+        "--external-workers",
+        type=int,
+        default=EXTERNAL_WORKERS,
+        help=f"Parallel workers for external checks (default {EXTERNAL_WORKERS})",
+    )
     return parser.parse_args()
 
 
@@ -439,12 +573,24 @@ def main() -> None:
         total_links += validate_spec_conventions(findings)
         scan_doc_freshness(files, findings)
 
+    external_links: list[tuple[str, str, int]] = []
     for filepath in files:
         rel = relative_path(filepath)
         heading_slugs = collect_headings(filepath)
         for line_num, text, target in extract_links(filepath):
             total_links += 1
+            if target.startswith(("http://", "https://")):
+                external_links.append((rel, target, line_num))
             validate_target(target, filepath, heading_slugs, findings, rel, line_num)
+
+    if not args.no_external and external_links:
+        # Allow CLI to override timeout/workers
+        global EXTERNAL_TIMEOUT, EXTERNAL_WORKERS  # noqa: PLW0603
+        EXTERNAL_TIMEOUT = args.external_timeout
+        EXTERNAL_WORKERS = args.external_workers
+        if not args.quiet:
+            print(f"Validating {len(external_links)} external link(s) ({len(set(u for _, u, _ in external_links))} unique) — HTTP 200 required...")
+        validate_external_links(external_links, findings, workers=EXTERNAL_WORKERS)
 
     result = build_report(findings, files, start_time, total_links)
 

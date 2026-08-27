@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('placement.title')" :subtitle="__('placement.subtitle')">
+<x-ui::ui.record-manager :title="__('placement.title')" :subtitle="__('placement.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('placement.add_placement')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -10,23 +10,23 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="briefcase"
             :title="__('placement.stats.total')"
             :value="$this->stats['total']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="user-group"
             :title="__('placement.stats.total_quota')"
             :value="$this->stats['total_quota']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="check-circle"
             :title="__('placement.stats.filled')"
             :value="$this->stats['filled']"
             color="text-success"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="plus-circle"
             :title="__('placement.stats.available')"
             :value="$this->stats['available']"
@@ -46,7 +46,7 @@
         />
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -66,7 +66,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -162,4 +162,4 @@
     </x-slot:modal>
 
     @include('enrollment.placement.components.placement-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>
