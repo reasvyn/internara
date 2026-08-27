@@ -1,656 +1,167 @@
-# Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
+# Events, Listeners & Notifications — Domain Events, EDA & Observer Pattern
 
-> **Last updated:** 2026-08-16 **Changes:** SendsNotifications contract now takes a single
-> `NotificationData` argument; clarify cross-module notification dispatch
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Domain Events DDD, Observer GoF, EDA, Event Sourcing distinction) with anti-pattern table, Quick References
 
 ## Description
 
-Event dispatch patterns, listener registration, notification channels, ShouldQueue conventions, and
-cross-module event communication.
+This pattern governs how Internara dispatches **domain events**, registers **listeners**, sends **notifications**, and integrates with **SmartLogger**. It synthesizes global industry standards — **Domain Events** (Eric Evans, DDD), **Observer Pattern** (Gang of Four), **Event-Driven Architecture** (Martin Fowler), **Event-Carried State Transfer** — into enforceable rules tied to Internara's stack: `BaseEvent`, `EventServiceProvider` (config-driven), `ShouldQueue`, `CustomDatabaseChannel`, and SmartLogger dual-channel logging.
 
-## Design Principle: Events Are for Async Communication
-
-Events exist to decouple **producers** (Actions) from **consumers** (listeners) across module
-boundaries. They are **not** a required part of every Command Action.
-
-**Rules:**
-
-- Only create an event class when at least one listener needs to react to it (cache invalidation,
-  cross-module notification, logging beyond `$this->log()`).
-- Do NOT create events "just in case" a listener might exist in the future. Add the event when the
-  listener is implemented.
-- Simple CRUD operations that are logged via `$this->log()` do NOT need events.
-- Status transitions that only affect the current model (no cross-module side effects) do NOT need
-  events.
-- Events are registered in `config/event.php`. An event without a listener registration is dead code
-  — either register a listener or remove the event class.
-
-**Before adding an event, ask:** "Is there a listener that will react to this?" If no → skip the
-event. The Action's `$this->log()` provides the audit trail.
-
-## Table of Contents
-
-1. [Event Architecture (BaseEvent Contract)](#1-event-architecture-baseevent-contract)
-2. [Event Naming Conventions](#2-event-naming-conventions)
-3. [Event Payload (toPayload)](#3-event-payload-topayload)
-4. [Event Dispatch Patterns](#4-event-dispatch-patterns)
-5. [Listener Naming and Registration](#5-listener-naming-and-registration)
-6. [ShouldQueue for Async Listeners](#6-shouldqueue-for-async-listeners)
-7. [Notification Architecture](#7-notification-architecture)
-8. [Notification Naming](#8-notification-naming)
-9. [CustomDatabaseChannel](#9-customdatabasechannel)
-10. [SendsNotifications Contract](#10-sendsnotifications-contract)
-11. [SmartLogger Integration](#11-smartlogger-integration)
-12. [Testing Events and Listeners](#12-testing-events-and-listeners)
+Without it, side effects scatter across Actions, cross-module coupling increases, and the audit trail becomes incomplete. With it, events are domain-first, listeners are isolated, and every significant state change is traceable.
 
 ---
 
-## 1. Event Architecture (BaseEvent Contract)
+## Non-Negotiable
 
-All events **must** extend `BaseEvent`. The base class provides the foundational contract and a set
-of built-in capabilities:
+Hard rules. Violations are architecture violations.
 
-| Trait / Method            | Purpose                                                                                       |
-| ------------------------- | --------------------------------------------------------------------------------------------- |
-| `Dispatchable`            | Static `dispatch()` and instance `dispatch()` via `Illuminate\Foundation\Events\Dispatchable` |
-| `InteractsWithSockets`    | Broadcasting scaffold (defaults to no broadcast)                                              |
-| `SerializesModels`        | Safe queue serialization for Eloquent models                                                  |
-| `eventName(): string`     | **Abstract** — returns a dot-notation key used by SmartLogger for log translation             |
-| `toPayload(): array`      | Extracts public properties for logging, converting Models to `{name}_id`                      |
-| `broadcastOn(): array`    | Returns `[]` (override to enable broadcasting)                                                |
-| `shouldBroadcast(): bool` | Returns `false` (override to enable)                                                          |
-| `shouldQueue(): bool`     | Returns `false` (override to queue the event itself)                                          |
-| `queue(): string`         | Returns `'default'`                                                                           |
+1. **Events exist only when a listener exists.** Do NOT create events preemptively. Add an event only when a listener needs to react (cache invalidation, cross-module notification, logging beyond `$this->log()`). An event without a listener registration in `config/event.php` is dead code. Before adding an event, ask: "Is there a listener that will react to this?" If no → skip the event.
 
-### BaseEvent Source
+2. **Events are past-tense domain facts.** Event names MUST be past-tense: `{Entity}Created`, `{Login}Failed`, `{Student}Registered`. They represent something that **already happened** and cannot be undone. This is the **Domain Event** concept (Eric Evans): "something that happened in the domain that domain experts care about."
 
-```php
-abstract class BaseEvent
-{
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+3. **Events are `final` classes.** No inheritance on events. Properties are `public` with typed constructor promotion. Only scalar types, Model instances, and objects with `toArray()` are allowed as properties.
 
-    abstract public function eventName(): string;
+4. **Deferred dispatch inside transactions.** Inside Command/Process Actions, use `$this->dispatchEvent()` to defer dispatch until the transaction commits. This prevents listeners from seeing uncommitted data — the **Read Committed** isolation level principle. Use `event()` only after `transaction()` returns.
 
-    public function toPayload(): array
-    {
-        /* ... */
-    }
-    public function broadcastOn(): array
-    {
-        return [];
-    }
-    public function broadcastAs(): string
-    {
-        return $this->eventName();
-    }
-    public function shouldBroadcast(): bool
-    {
-        return false;
-    }
-    public function shouldQueue(): bool
-    {
-        return false;
-    }
-    public function queue(): string
-    {
-        return 'default';
-    }
-}
-```
+5. **Listeners performing I/O MUST implement `ShouldQueue`.** Email, cache clear, API calls, database writes — all push to the queue worker. Synchronous listeners only for microsecond operations (cache forget, in-memory state). This keeps Action responses fast.
 
-### Rules
+6. **Events registered in `config/event.php`.** Centralized event-listener mapping in one file. `EventServiceProvider` reads this config in `boot()`. An event without a listener registration is dead code.
 
-- Events are **`final`** classes.
-- Properties are `public` with typed constructor promotion.
-- Only scalar types, Model instances, and objects with `toArray()` are allowed as properties.
-- Events belong to the **module that emits them** (`app/{Module}/{SubModule}/Events/`).
+7. **Domain Events vs Model Events — know the difference.** Model events (`creating`, `created`, `updating`) fire on every save/delete regardless of cause. Domain Events fire only when the business action explicitly dispatches them. If a listener should behave differently depending on *why* the row changed, you want Domain Events.
 
 ---
 
-## 2. Event Naming Conventions
+## How to Apply
+
+### 1. Domain Events — Eric Evans DDD
+
+Domain Events are first-class domain objects representing "something meaningful that happened in the business domain." Named in the ubiquitous language. Past tense. Immutable. Multiple consumers. Fire-and-forget.
+
+**Event vs Command (Evans/Vernon):**
+
+| | Event | Command |
+|---|-------|---------|
+| Tense | Past ("OrderPlaced") | Imperative ("PlaceOrder") |
+| Can be rejected? | No — it already happened | Yes — handler may refuse |
+| Consumers | Multiple subscribers | Single addressed handler |
+| Origin | Domain service / aggregate root | User action / API endpoint |
+| Coupling | Loose choreography | Tight orchestration |
+
+**Rule of thumb:** Use events for communication *between* domain services. Use commands for communication with *technical/infrastructure* services.
+
+### 2. Observer Pattern — GoF Behavioral
+
+The Observer Pattern defines a one-to-many dependency: when the subject (Event) changes state, all dependents (Listeners) are notified automatically. In Laravel: events are dispatched, listeners handle side effects.
+
+**Key distinction:** Model events fire on every save/delete. Domain Events fire only when explicitly dispatched. If a listener should behave differently depending on *why* the row changed, use Domain Events.
+
+### 3. Event Architecture — BaseEvent Contract
+
+All events extend `BaseEvent`:
+
+| Trait / Method | Purpose |
+|---------------|---------|
+| `Dispatchable` | Static `dispatch()` via Laravel |
+| `SerializesModels` | Safe queue serialization |
+| `eventName(): string` | Abstract — dot-notation key for SmartLogger |
+| `toPayload(): array` | Extracts public properties for logging |
+| `broadcastOn(): array` | Returns `[]` (override to enable) |
+| `shouldQueue(): bool` | Returns `false` (override to queue the event itself) |
+
+### 4. Event Naming Conventions
 
 **Pattern:** `{Entity}{PastTenseAction}`
 
-The class name reads as a completed fact: `{Entity}Created`, `{Login}Failed`, `{Student}Registered`.
-
-| Convention         | Example             |
-| ------------------ | ------------------- |
-| Entity + Created   | `{Entity}Created`   |
+| Convention | Example |
+|-----------|---------|
+| Entity + Created | `{Entity}Created` |
 | Entity + Activated | `{Entity}Activated` |
-| Entity + Deleted   | `{Entity}Deleted`   |
-| Entity + Updated   | `{Entity}Updated`   |
-| Entity + Succeeded | `{Entity}Succeeded` |
-| Entity + Failed    | `{Entity}Failed`    |
+| Entity + Deleted | `{Entity}Deleted` |
+| Entity + Failed | `{Entity}Failed` |
 | Entity + Finalized | `{Entity}Finalized` |
-| Entity + Read      | `{Entity}Read`      |
-| Entity + Sent      | `{Entity}Sent`      |
 
-The `eventName()` method returns a **dot-notation key** (`{entity}.{action}`) that doubles as the
-log translation key for SmartLogger.
+The `eventName()` method returns a dot-notation key (`{entity}.{action}`) that doubles as the log translation key.
 
-### Generic Example
+### 5. Event Dispatch Patterns
 
-```php
-final class {Entity}{Action} extends BaseEvent
-{
-    public function __construct(
-        public Model $subject,
-        public ?Model $actor = null,
-    ) {}
+| Method | Behaviour | When |
+|--------|-----------|------|
+| `$this->dispatchEvent(BaseEvent)` | Deferred — dispatched after transaction commits | Inside `transaction()` callback |
+| `event($event)` / `Event::dispatch()` | Immediate dispatch | After `transaction()` returns |
+| `SmartLogger::event($baseEvent)->save()` | Auto-dispatch + log payload merge | Combined logging + event |
 
-    public function eventName(): string
-    {
-        return '{entity}.{action}';
-    }
-}
-```
+### 6. Listener Naming and Registration
 
----
-
-## 3. Event Payload (toPayload)
-
-`toPayload()` extracts public properties into a flat array for SmartLogger payload merging. It
-applies three rules:
-
-| Property Type           | Output                                            |
-| ----------------------- | ------------------------------------------------- |
-| `Model` instance        | Converted to `{name}_id` using `$value->getKey()` |
-| Object with `toArray()` | Converted via `$value->toArray()`                 |
-| Scalar / array          | Passed as-is                                      |
-
-Hidden properties: `socket` and any key starting with `__` are skipped.
-
-### Payload Conversion
+Listeners named by what they **do**: `{Action}{Entity}`. Registered in `config/event.php`:
 
 ```php
-$event = new {Entity}{Action}(
-    subject: $model,       // Model → 'subject_id' => 'uuid-...'
-    actor: $user,          // Model → 'actor_id' => 'uuid-...'
-);
-
-$event->toPayload();
-// [
-//   'subject_id' => '0195abc...',
-//   'actor_id' => '0195def...',
-// ]
-```
-
-For events with only scalar properties, the payload is a direct 1:1 map. Objects that do not
-implement `toArray()` (e.g. `DateTimeImmutable`) are silently skipped. Override `toPayload()` if
-needed.
-
----
-
-## 4. Event Dispatch Patterns
-
-There are three ways to dispatch events:
-
-### 4a. Static `Event::dispatch()` / `::dispatch()`
-
-Use when dispatching from a non-Action context or when you need the event immediately:
-
-```php
-use Illuminate\Support\Facades\Event;
-
-Event::dispatch(new {Entity}{Action}($subject));
-{Entity}{Action}::dispatch($subject);
-```
-
-### 4b. `BaseAction::dispatchEvent()` (Deferred Dispatch)
-
-Inside Command or Process Actions, use `$this->dispatchEvent()` to **defer** dispatch until the
-transaction commits. This prevents listeners from seeing uncommitted data:
-
-```php
-class {Entity}Action extends BaseCommandAction
-{
-    public function execute(Model $entry, array $data): Model
-    {
-        return $this->transaction(function () use ($entry, $data) {
-            $entry->update($data);
-
-            $this->log('{entity}_{action}', $entry);
-            $this->dispatchEvent(new {Entity}{Action}($entry));
-
-            return $entry;
-        });
-    }
-}
-```
-
-`BaseAction` collects deferred events in `$this->pendingEvents[]` and dispatches them via the global
-`event()` helper after the `transaction()` callback completes (or after the inner closure if already
-inside a transaction).
-
-### 4c. SmartLogger `->event($baseEvent)->save()` (Auto-Dispatch + Log)
-
-When `SmartLogger::event()` receives a `BaseEvent` instance instead of a string, `save()` will:
-
-1. Call `event($baseEvent)` to dispatch it to listeners.
-2. Merge `$event->toPayload()` into the log payload.
-
-```php
-SmartLogger::success('{Entity} {Action}')
-    ->event(new {Entity}{Action}($subject))
-    ->for($user)
-    ->save();
-```
-
-This is equivalent to:
-
-```php
-event(new {Entity}{Action}($subject));
-
-SmartLogger::success('{Entity} {Action}')
-    ->event('{entity}_{action}')
-    ->withPayload((new {Entity}{Action}($subject))->toPayload())
-    ->for($user)
-    ->save();
-```
-
----
-
-## 5. Listener Naming and Registration
-
-### Naming
-
-Listeners are named by what they **do**, not what event they handle:
-
-| Name               | Event              | Action                                                |
-| ------------------ | ------------------ | ----------------------------------------------------- |
-| `{Action}{Entity}` | `{Entity}{Action}` | Sends notification, clears cache, logs activity, etc. |
-| `{Action}{Entity}` | `{Entity}{Action}` | Clears cached settings                                |
-| `{Action}{Entity}` | `{Entity}{Action}` | Invalidates per-user cache                            |
-
-### Registration
-
-Listeners are registered in `config/event.php` under the `listen` key:
-
-```php
-// config/event.php
-return [
-    'listen' => [
-        {Entity}{Action}::class => [
-            {Listener}::class,
-        ],
+'listen' => [
+    {Entity}{Action}::class => [
+        {Listener}::class,
     ],
-];
+],
 ```
 
-The `EventServiceProvider` reads this config in `boot()`:
-
-```php
-class EventServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        $listeners = config('event.listen', []);
-
-        foreach ($listeners as $event => $listenersArray) {
-            foreach ($listenersArray as $listener) {
-                Event::listen($event, $listener);
-            }
-        }
-    }
-
-    public static function registerListener(string $event, string $listener): void
-    {
-        Event::listen($event, $listener);
-    }
-}
-```
-
-This centralised config makes the entire event-listener mapping discoverable in one place.
-
----
-
-## 6. ShouldQueue for Async Listeners
-
-Listeners performing I/O (email, cache clear, API calls) **must** implement `ShouldQueue`. This
-pushes the listener onto the queue worker, keeping the Action response fast.
+### 7. ShouldQueue for Async Listeners
 
 ```php
 class {Listener} implements ShouldQueue
 {
     public function handle({Entity}{Action} $event): void
     {
-        // I/O-bound work (email, API calls, cache warmup)
+        // I/O-bound work
     }
 }
 ```
 
-Listeners should use union types in `handle()` when they respond to multiple event types:
+**Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be queued.
 
-```php
-public function handle({Entity}{Action}|{OtherEntity}{Action} $event): void
-{
-    // Shared side effect
-}
-```
+### 8. Notification Architecture
 
-**Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be
-queued. Synchronous listeners are acceptable only for microsecond operations (cache forget,
-in-memory state).
+Notifications extend `Illuminate\Notifications\Notification` directly. Channel strategy: `mail` + `broadcast` + `CustomDatabaseChannel`. Every notification implements `ShouldQueue` + `use Queueable`.
 
----
+### 9. SmartLogger Integration
 
-## 7. Notification Architecture
+Events integrate with SmartLogger in two ways:
+- `BaseAction::log()` — event name as log key (does NOT dispatch a BaseEvent)
+- `SmartLogger::event($baseEvent)->save()` — dispatches event + merges payload
 
-Notifications extend `Illuminate\Notifications\Notification` directly (no Core base class). They
-implement the standard Laravel notification contract with a custom channel extension.
+### 10. Testing Events and Listeners
 
-### Channel Strategy
-
-Every notification defines its channels via `via($notifiable)`:
-
-```php
-public function via($notifiable): array
-{
-    return ['mail', 'broadcast', CustomDatabaseChannel::class];
-}
-```
-
-| Channel                        | Delivery                     | When                                     |
-| ------------------------------ | ---------------------------- | ---------------------------------------- |
-| `mail`                         | Email via `MailMessage`      | Always for important notifications       |
-| `broadcast`                    | Realtime via Laravel Echo    | When the user is online                  |
-| `CustomDatabaseChannel::class` | In-app database notification | Always (stored in `notifications` table) |
-
-### Notification Structure
-
-```php
-class {Entity}{Type}Notification extends Notification implements ShouldQueue
-{
-    use Queueable;
-
-    public function __construct(
-        public string $subjectName,
-        public ?string $actorName = null,
-    ) {}
-
-    public function via($notifiable): array
-    {
-        return ['mail', 'broadcast', CustomDatabaseChannel::class];
-    }
-
-    public function toMail($notifiable): MailMessage { /* ... */ }
-
-    public function toBroadcast($notifiable): array
-    {
-        return [
-            'title' => __('notifications.{entity}_{type}.title'),
-            'message' => __('notifications.{entity}_{type}.broadcast', [
-                'name' => $this->subjectName,
-            ]),
-            'link' => '/{route}',
-        ];
-    }
-
-    public function toCustomDatabase($notifiable): array
-    {
-        return [
-            'type' => '{entity}_{type}',
-            'title' => __('notifications.{entity}_{type}.title'),
-            'message' => __('notifications.{entity}_{type}.database', [
-                'name' => $this->subjectName,
-            ]),
-            'link' => '/{route}',
-            'data' => [
-                'subject_name' => $this->subjectName,
-                'actor' => $this->actorName,
-            ],
-        ];
-    }
-}
-```
-
-### Sending Notifications
-
-Notifications are sent via `Notification::send()` or `$notifiable->notify()`:
-
-```php
-Notification::send(
-    $recipients,
-    new {Entity}{Type}Notification(
-        subjectName: $event->subject->name,
-        actorName: $event->actor?->name,
-    ),
-);
-```
-
-### ShouldQueue for Notifications
-
-Every notification must implement `ShouldQueue` + `use Queueable` to deliver channels through the
-queue worker, except trivial synchronous notifications.
+| What | How | Tool |
+|------|-----|------|
+| Event was dispatched | `Event::fake([...])` + `assertDispatched()` | Laravel |
+| Payload correctness | Closure in `assertDispatched()` | Laravel |
+| Listener side effect | Dispatch event + assert state change | Manual |
+| SmartLogger event integration | `Event::fake()` + assert both event and log | SmartLogger |
+| BaseEvent contract | Module unit tests on `toPayload()`, `dispatch()` | Pest |
 
 ---
 
-## 8. Notification Naming
+## Anti-Patterns
 
-**Pattern:** `{Entity}{NotificationType}Notification`
-
-The class name combines the subject entity with the notification type, suffixed with `Notification`:
-
-| Pattern                       | Entity | Type    |
-| ----------------------------- | ------ | ------- |
-| `{Entity}CreatedNotification` | Entity | Created |
-| `{Entity}{Type}Notification`  | Entity | Type    |
-| `WelcomeNotification`         | (none) | Welcome |
-| `{Entity}{Type}Notification`  | Entity | Type    |
-
----
-
-## 9. CustomDatabaseChannel
-
-The `CustomDatabaseChannel` is the internal notification delivery mechanism. It writes to the
-`notifications` table via `SendsNotifications`.
-
-### toCustomDatabase Contract
-
-Each notification must implement `toCustomDatabase($notifiable): array` returning:
-
-| Key       | Required | Description                                               |
-| --------- | -------- | --------------------------------------------------------- |
-| `type`    | ✅ Yes   | Machine-readable type string (e.g. `'{entity}_{action}'`) |
-| `title`   | ✅ Yes   | Human-readable title (use `__()`)                         |
-| `message` | ❌ No    | Human-readable body text                                  |
-| `link`    | ❌ No    | URL to navigate to                                        |
-| `data`    | ❌ No    | Arbitrary metadata array                                  |
-
-### Missing Key Warnings
-
-If `toCustomDatabase()` omits `type` or `title`, `CustomDatabaseChannel` writes a warning via
-SmartLogger (system-only) to aid debugging:
-
-```php
-if (!isset($data['type'])) {
-    SmartLogger::warning('Notification missing type key')
-        ->withPayload(['notification_class' => get_class($notification)])
-        ->systemOnly()
-        ->save();
-}
-```
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| Event class with no listener registered | Add event only when listener exists | YAGNI — dead code |
+| `event(new EntityCreated())` preemptively | Add event only when listener is implemented | Premature dispatch |
+| `$this->dispatchEvent()` outside `$this->transaction()` | Inside transaction callback | Events may fire before commit |
+| `event($e)` inside `transaction()` without `dispatchEvent()` | Use `$this->dispatchEvent()` for deferred dispatch | Immediate dispatch may see uncommitted data |
+| Listener with `handle()` doing email + cache + API | Split into separate listeners, each one responsibility | SRP violation in listener |
+| Listener doing synchronous I/O without `ShouldQueue` | `implements ShouldQueue` + `use Queueable` | Slow Action response |
+| Event registered in `config/event.php` but class doesn't exist | Remove or create the listener | Dead registration |
+| `EntityCreated` (present tense) | `EntityCreated` (past tense) | Domain Event naming convention |
+| Business logic in listener (state mutation) | Listener does side effects only; business logic in Action | Listener is not a domain rule executor |
+| Model event (`creating`, `created`) for business logic | Domain Event dispatched from Action | Model events fire on every save, not just business actions |
 
 ---
 
-## 10. SendsNotifications Contract
+## Quick References
 
-```php
-interface SendsNotifications
-{
-    public function execute(NotificationData $data): mixed;
-}
-```
-
-An action implementing this interface validates the input, creates the `Notification` model record,
-and dispatches `{Entity}Sent`. The single `NotificationData` argument
-(`app/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional
-`message`, `data`, `link`.
-
----
-
-## 11. SmartLogger Integration
-
-Events extending `BaseEvent` integrate with SmartLogger in two ways.
-
-### 11a. BaseAction::log() — Event Name as Log Key
-
-The `BaseAction::log()` method accepts a string action key that doubles as a log event name:
-
-```php
-protected function log(string $action, ?Model $subject = null, array $payload = []): void
-{
-    SmartLogger::info($action)
-        ->event($action)
-        ->module($this->moduleName())
-        ->about($subject)
-        ->withPayload($payload)
-        ->withPiiMasking()
-        ->both()
-        ->save();
-}
-```
-
-This writes a system log and activity log entry with the action key as the event name. It does
-**not** dispatch a `BaseEvent` — use `dispatchEvent()` for that.
-
-### 11b. SmartLogger::event() with BaseEvent Instance
-
-When `SmartLogger::event()` receives a `BaseEvent` instance:
-
-1. **Dispatches** the event to all registered listeners via `event($baseEvent)`.
-2. **Merges** `$event->toPayload()` into the log payload (explicit `withPayload()` overrides).
-3. **Resolves** the event name from `$event->eventName()` for log translation.
-
-```php
-SmartLogger::success('{Entity} {Action}')
-    ->event(new {Entity}{Action}('uuid-123', 'example@test.com'))
-    ->module('{Module}')
-    ->activityOnly()
-    ->save();
-```
-
----
-
-## 12. Testing Events and Listeners
-
-### 12a. Event Dispatch Tests
-
-Use `Event::fake()` to capture dispatched events without running listeners:
-
-```php
-use Illuminate\Support\Facades\Event;
-
-test('{entity} {action} event is dispatched via action', function () {
-    Event::fake([{Entity}{Action}::class]);
-
-    // Execute the action that should dispatch the event
-
-    Event::assertDispatched({Entity}{Action}::class);
-});
-```
-
-### 12b. Payload Assertions
-
-Assert the event was dispatched with specific properties:
-
-```php
-test('{entity} {action} event contains correct data', function () {
-    Event::fake([{Entity}{Action}::class]);
-
-    // Execute the action
-
-    Event::assertDispatched({Entity}{Action}::class, function ({Entity}{Action} $event) {
-        return $event->property === 'expected_value';
-    });
-});
-```
-
-### 12c. Direct Event Dispatch Test
-
-```php
-test('{entity} {action} event properties', function () {
-    Event::fake();
-
-    Event::dispatch(
-        new {Entity}{Action}(property: 'value', other: 'value2'),
-    );
-
-    Event::assertDispatched({Entity}{Action}::class, function ({Entity}{Action} $event) {
-        return $event->property === 'value'
-            && $event->other === 'value2';
-    });
-});
-```
-
-### 12d. SmartLogger + BaseEvent Integration Test
-
-Test that SmartLogger dispatches the `BaseEvent` and merges its payload:
-
-```php
-test('smart logger dispatches base event and writes activity log', function () {
-    Event::fake();
-
-    $event = new {Entity}{Action}('uuid-123', 'test@example.com');
-
-    SmartLogger::info('{Entity} {Action}')
-        ->event($event)
-        ->module('{Module}')
-        ->activityOnly()
-        ->save();
-
-    Event::assertDispatched({Entity}{Action}::class);
-
-    $log = ActivityLog::latest()->first();
-    expect($log)->not->toBeNull();
-    expect($log->event)->toBe('{entity}_{action}');
-    expect($log->description)->toBe('{Entity} {Action}');
-});
-```
-
-### 12e. BaseEvent Unit Tests
-
-The `BaseEvent` itself is tested for contract compliance:
-
-```php
-test('base event to payload extracts model as id', function () {
-    $model = createTestModel('uuid-123');
-    $event = new {Event}('update', $model);
-
-    $payload = $event->toPayload();
-
-    expect($payload)->toHaveKey('action');
-    expect($payload)->toHaveKey('subject_id');
-    expect($payload['action'])->toBe('update');
-    expect($payload['subject_id'])->toBe('uuid-123');
-    expect($payload)->not->toHaveKey('subject');
-});
-
-test('base event is dispatchable', function () {
-    expect(method_exists({Event}::class, 'dispatch'))->toBeTrue();
-});
-```
-
-### 12f. Listener Behaviour Test
-
-To test listener behaviour end-to-end, allow the event to dispatch and assert the side effect:
-
-```php
-test('{side effect} occurs on {event}', function () {
-    // Set up preconditions
-
-    Event::dispatch(new {Entity}{Action}($subject));
-
-    // Assert side effect (cache cleared, notification sent, etc.)
-});
-```
-
-### Testing Summary
-
-| What                          | How                                             | Tool        |
-| ----------------------------- | ----------------------------------------------- | ----------- |
-| Event was dispatched          | `Event::fake([...])` + `assertDispatched()`     | Laravel     |
-| Payload correctness           | Closure in `assertDispatched()`                 | Laravel     |
-| Listener side effect          | Dispatch event + assert state change            | Manual      |
-| SmartLogger event integration | `Event::fake()` + assert both event and log     | SmartLogger |
-| BaseEvent contract            | Module unit tests on `toPayload()`, `dispatch()`, etc. | Pest        |
+- `action-pattern.md` §8 Event Dispatch — `dispatchEvent()` vs `event()` inside transactions
+- `logging-pattern.md` — SmartLogger dual-channel, PII masking
+- `modular-pattern.md` §14 Notification Patterns — multi-channel, naming
+- [Eric Evans — Domain Events](https://www.domainlanguage.com/ddd/) — "something that happened in the domain"
+- [Microsoft — Domain Events: Design and Implementation](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-events-design-implementation) — when to use, event vs command
+- [Martin Fowler — Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html) — four EDA patterns
+- [GoF — Observer Pattern](https://en.wikipedia.org/wiki/Observer_pattern) — one-to-many dependency notification
+- [ttulka — Events vs Commands in DDD](https://blog.ttulka.com/events-vs-commands-in-ddd/) — event = past tense, command = imperative
+- [Laravel — Events](https://laravel.com/docs/events) — event dispatch, listeners, queuing

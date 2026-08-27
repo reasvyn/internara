@@ -1,230 +1,83 @@
 # Service Pattern — Infrastructure Logic, Scope & Constructor Injection
 
-> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Service Layer PoEAA, SRP SOLID, God Object, Factory Pattern) with anti-pattern table, Quick References
 
 ## Description
 
 Boundaries between Services (infrastructure logic), Support (static utilities), and Actions (domain
-business logic), with scope and placement rules.
-
-## 1. Why Actions, Not Services
-
-The decision to prefer Actions over Services is codified in
-[3](../../adr/adr-action-pattern-over-services.md).
-
-Service classes are the conventional Laravel pattern — a single class with multiple public methods
-representing related operations. Over time they become:
-
-- **God classes**: a 3-method service becomes 20 methods with mixed responsibilities.
-- **Hard to test**: one test file covers all methods; testing a single method requires understanding
-  the entire service.
-- **Hard to decorate**: cross-cutting concerns (transactions, logging, error handling) apply to the
-  whole class, making per-method variation awkward.
-- **Mutable state encouraged**: instance properties shared across method calls create hidden
-  dependencies.
-
-The Action Triad (Command, Read, Process) solves this by splitting business operations into types,
-each with a single `execute()` method, a tailored contract, and 1:1 test-to-class mapping.
+business logic), with scope and placement rules. Grounded in **Service Layer Pattern** (PoEAA),
+**Single Responsibility Principle** (SOLID), **God Object** anti-pattern, and **Factory Pattern** — all
+mapped to Internara's Action-first architecture.
 
 ---
 
-## 2. When Services Are Appropriate
+## Non-Negotiable
 
-Services are the **exception**, not the rule. They live at the same scope as their owning module —
-**not** limited to `app/Core/Services/`.
+Hard rules. Violations are architecture violations.
 
-| Scope                                | Path                                 | Example                                      |
-| ------------------------------------ | ------------------------------------ | -------------------------------------------- |
-| Global (cross-module infrastructure) | `app/Core/Services/`                 | `ModuleService`                              |
-| Module-level                         | `app/{Module}/Services/`             | `User/Services/DashboardService`             |
-| Submodule-level                      | `app/{Module}/{SubModule}/Services/` | `SysAdmin/Observability/Services/PulseGuard` |
+1. **Services are infrastructure, never domain.** A Service contains **infrastructure logic** (framework, environment, routing, system state) — never **domain business logic** (rules about internships, students, grades, enrollments). Domain logic belongs in Actions + Entities. This is SRP (SOLID).
 
-**Existing services:**
+2. **Services must never mutate state.** No `DB::transaction()`, no `Model::create/update/delete`, no activity log writes, no event dispatch. If it writes to the database, it must be a Command Action.
 
-| File                                                     | Class                   | Scope     | Method style                         | Purpose                                                            |
-| -------------------------------------------------------- | ----------------------- | --------- | ------------------------------------ | ----------------------------------------------------------------- |
-| `Core/Services/ModuleService.php`                         | `ModuleService`         | Global    | Instance + constructor injection     | Orchestrates module discovery; all module config reads go through `Support/ModuleManager` |
-| `User/Services/DashboardService.php`                     | `DashboardService`      | Module    | Instance (`auth()` facade)           | Resolves dashboard route name by user role                         |
-| `SysAdmin/Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor`    | Submodule | Instance (`config()`, `base_path()`) | Audits PHP, extensions, permissions, DB, terminal, assets          |
-| `SysAdmin/Observability/Services/PulseGuard.php`         | `PulseGuard`            | Submodule | Static (framework hook)              | Pulse dashboard access guard                                       |
+3. **Services must never call Actions.** If a class composes multiple Actions, it IS a Process Action. The Service layer adds nothing here.
 
-A class belongs in `Services/` only when all of the following are true:
+4. **Constructor injection required.** All Services use constructor property promotion for framework dependencies. Static methods are permitted only for framework hooks that require static callables (e.g., `PulseGuard::viewPulse()`).
 
-1. **It is infrastructure code**, not **domain** business logic. The class may contain
-   **infrastructure logic** (decisions about framework, environment, routing, or system state) but
-   must **never** contain **domain business logic** (rules about internships, students, grades,
-   enrollments, or other business concepts).
-2. **It uses instance methods with constructor injection.** Static methods are acceptable only for
-   framework hooks that require static callables (e.g., `PulseGuard::viewPulse()`).
-3. **It does not fit a single Action.** Multiple loosely related capabilities where extracting each
-   into its own Action would create more surface area than value.
-4. **It is NOT a mutation.** If it writes to the database, it must be a Command Action.
-5. **It is NOT a complex query.** If it reads from multiple models with business aggregation, it
-   must be a Read Action.
-
-**Pure config reads** (no logic, no I/O) belong in `Support/`, not `Services/`. The module
-configuration gateway is `Core/Support/ModuleManager` — all `config('module.*')` reads across the
-application must go through it, and filesystem scanning is confined to `Core/Services/ModuleService`.
+5. **Services are the exception, not the rule.** Prefer Actions for all business operations. A class belongs in `Services/` only when all five criteria are met: infrastructure logic, instance methods, does not fit a single Action, not a mutation, not a complex query.
 
 ---
 
-## 3. The Two Kinds of "Logic"
+## How to Apply
 
-This distinction is critical to understanding when a Service is appropriate:
+### 1. Service Layer Pattern (PoEAA)
 
-| Type of logic             | Definition                                                                                             | Example                                                          | Belongs in      |
-| ------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------- | --------------- |
-| **Domain business logic** | Rules about the business domain: students, internships, grades, enrollments, assessments, certificates | "A student must have an active registration to submit a logbook" | Action + Entity |
-| **Infrastructure logic**  | Rules about the framework, environment, UI routing, system state                                       | "Scan PHP files and register them as Livewire components"        | Service         |
+Martin Fowler's Service Layer pattern defines a service as an operation that coordinates multiple domain objects. In Internara, the Action Triad (Command/Read/Process) replaces the traditional Service Layer — each Action is a single operation with its own contract, transaction, and logging. Services exist only for infrastructure concerns that cross module boundaries.
 
-**What this means in practice:**
+**Reference:** [PoEAA — Service Layer](https://martinfowler.com/eaaCatalog/serviceLayer.html)
 
-- `DashboardService.getDashboardForUser()` maps roles to dashboard names — this is **infrastructure
-  logic** (UI routing concern), NOT domain business logic. ✅ Correct in Service.
-- `EnvironmentAuditor.audit()` checks PHP extensions and permissions — pure infrastructure. ✅
-- `PulseGuard.viewPulse()` checks admin role — infrastructure access guard. ✅
-- A class that decides "can this registration be approved" contains **domain business logic** and
-  must be an Action + Entity instead. ❌ Not Service.
+### 2. SRP (SOLID) — Single Responsibility
 
-### Key Boundary
+Each Service has exactly one reason to change. If a Service accumulates domain business logic, extract it into an Entity + Action. The God Object anti-pattern emerges when a Service grows beyond its single responsibility.
 
-Services must **never**:
+### 3. God Object Anti-Pattern
 
-- Call `DB::transaction()` or wrap operations in database transactions.
-- Write to the database (create, update, delete).
-- Log to the activity log.
-- Throw module exceptions (`RejectedException`, etc.).
-- Dispatch events.
-- Call Actions.
-- Contain **domain** business logic.
+A God Object is a class that knows too much or does too much. Warning signs:
+- More than 10 public methods
+- Mixed domain and infrastructure logic
+- Constructor with 5+ dependencies
+- Methods that call other methods in the same class in complex chains
 
-If you need any of the above, you need an Action.
+Solution: Extract into focused Actions (one per business operation) and Services (one per infrastructure concern).
+
+### 4. Factory Pattern
+
+Services may act as Factories when they create infrastructure objects (e.g., `ModuleService` discovers and registers modules). This is distinct from Command Actions that create domain entities.
 
 ---
 
-## 4. Services vs Support Convention
+## Anti-Patterns
 
-The `Services/` and `Support/` directories serve fundamentally different purposes:
-
-| Concern                   | Service                                              | Support                                                                  |
-| ------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Method style**          | Instance methods only (constructor injection)        | **`public static` methods only**                                         |
-| **Constructor injection** | Required                                             | **Never permitted**                                                      |
-| **Framework dependency**  | Required (config, container, facades)                | Minimal to none. Static `config()` calls OK; instance deps are not.      |
-| **Scope**                 | Core, Module, or SubModule                           | Module or submodule                                                      |
-| **Multiple methods**      | Allowed but should be minimal                        | Allowed (all static)                                                     |
-| **Domain business logic** | Never                                                | Never                                                                    |
-| **Database writes**       | Never                                                | Never                                                                    |
-| **Typical purpose**       | Framework operations, environment checks, UI routing | Pure transformations, string manipulation, color math, simple generators |
-
-**Rule of thumb:**
-
-- If the class needs **constructor injection** → it is a **Service**.
-- If the class can be written with **only `public static` methods** and no constructor injection →
-  it is **Support**.
-- If you're tempted to add constructor injection to a Support class → it should probably be a
-  Service instead.
-
-See the [Support Pattern](support-pattern.md) for the complete Support reference.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `DashboardService` with 15+ methods | Split into focused Read Actions | God Object — too many responsibilities |
+| Service calling `CreateUserAction` | Extract orchestration into Process Action | Service calls Actions |
+| Service with `DB::transaction()` | Move to Command Action | Service mutates state |
+| Service with domain rule (`canStudentGraduate()`) | Extract to Entity + Action | Domain logic in Service |
+| Support class with constructor injection | Rename and move to Service | Support/Service boundary violation |
+| Service with static methods (non-framework) | Convert to Support or Action | Wrong method style |
+| `AppService` handling auth + cache + config | Split into `AuthService`, `CacheService` | God Object — mixed concerns |
+| Service that dispatches events | Move to Command Action | Service has side effects |
 
 ---
 
-## 5. Service Patterns
+## Quick References
 
-### Constructor Injection
-
-Services use constructor property promotion for framework dependencies:
-
-```php
-final readonly class ModuleService
-{
-    public function __construct(private Repository $cache) {}
-}
-```
-
-### Instance Methods
-
-All public methods are instance methods. Static methods are the exception, permitted only when a
-framework hook requires a static callable (e.g., a Gate callback or middleware resolve).
-
-### Single Method vs Multiple Methods
-
-Unlike Actions (which enforce exactly one `execute()` method), Services may expose multiple public
-methods. This is permissible only when:
-
-1. The methods are loosely related (not steps of the same workflow).
-2. The methods do not share mutable state.
-3. Each method is independently testable.
-
----
-
-## 6. Existing Service Audit
-
-These are the current Service classes and their verification against the rules:
-
-| Class                   | Instance methods? | Constructor injection?                          | Domain business logic?  | Verdict                                          |
-| ----------------------- | ----------------- | ----------------------------------------------- | ----------------------- | ------------------------------------------------ |
-| `ModuleService`      | ✅ Yes            | ✅ Yes (`Repository`)                           | ❌ No — pure infra      | ✅ Correct                                       |
-| `EnvironmentAuditor`    | ✅ Yes            | ❌ No (uses `config()`, `base_path()` directly) | ❌ No — pure infra      | ✅ Correct (borderline: could add injection)     |
-| `PulseGuard`            | ❌ Static         | ❌ No                                           | ❌ No — infra guard     | ✅ Correct (static required by framework hook)   |
-| `DashboardService`      | ✅ Yes            | ❌ No (uses `auth()` facade)                    | ❌ No — UI routing only | ✅ Correct (could add injection for testability) |
-
-**Coming from Support (should migrate to Service):**
-
-| File                  | Current location                     | Why                                                                           |
-| --------------------- | ------------------------------------ | ----------------------------------------------------------------------------- |
-| `SmartLogger`         | `Core/Support/`                      | Instance methods, constructor injection, framework facades, DB writes, events |
-| `CsvHandler`          | `Core/Support/`                      | Instance methods, framework deps (`StreamedResponse`, `Collection`)           |
-| `Settings`            | `Settings/Support/`                  | Instance methods, framework deps (`Cache`, `Config`)                          |
-| `Brand`               | `Settings/Support/`                  | Instance methods, framework deps (`Cache`)                                    |
-| `Theme`               | `Settings/Theme/Support/`            | Instance methods, framework deps (`Cache`, `SettingsStore`)                   |
-| `Locale`              | `Settings/Locale/Support/`           | Instance methods, framework deps (`App`, `Cookie`)                            |
-| `DocumentRenderer`    | `Document/Support/`                  | Instance via constructor injection (`Pdf`, `Blade`, `Storage`)                |
-| `CertificateRenderer` | `Certification/Certificate/Support/` | Instance via constructor injection (`Pdf`, `Blade`, `Storage`)                |
-| `AppInfo`             | `Core/Support/`                      | Static but uses `Cache`, `Config`, `File` facades — framework-aware infra     |
-| `SmartLogger`         | `Core/Support/`                      | Heavy framework deps, DB writes, events — already flagged                     |
-
----
-
-## 7. How Services Differ from Actions
-
-| Concern                   | Service                | Action                         |
-| ------------------------- | ---------------------- | ------------------------------ |
-| **Base class**            | None                   | `BaseAction` (Command/Process) |
-| **Transaction**           | Not available          | Required (Command/Process)     |
-| **Logging**               | Not available          | Required (Command/Process)     |
-| **Public methods**        | One or more (instance) | Exactly one (`execute()`)      |
-| **State mutation**        | Never                  | Always (Command)               |
-| **Domain business logic** | Never                  | Primary owner                  |
-
----
-
-## 8. Anti-Patterns to Avoid
-
-- **Adding a New Service Without Review** — every new Service file must be reviewed against the five
-  criteria above.
-
-- **Convenience Service** — a single Service with create, update, delete, list, and export methods.
-  Each method should be its own Command/Read Action.
-
-- **Service That Calls Actions** — if a class composes multiple Actions, it IS a Process Action. The
-  Service layer adds nothing here.
-
-- **Service With Transaction Logic** — transaction management belongs in Command/Process Actions.
-
-- **Static Helper Service** — pure static utilities belong in `Support/`, not `Services/`. Services
-  use instance methods; Support uses static methods.
-
-- **Service Injecting HTTP Dependencies** — Services must never depend on Livewire components,
-  request instances, or session state.
-
-- **Service as Action Wrapper** — never create a Service that calls Actions to "simplify the
-  interface". Callers should inject Actions directly.
-
-- **Domain Logic in Service** — if a Service method evaluates a business rule (e.g., "can this
-  student graduate?"), extract it into an Entity + Action.
-
----
-
-> If a Service accumulates domain business logic, extract it into the appropriate Action type
-> (Command, Read, or Process).
+- `docs/conventions.md` §Service Boundaries — when Services are appropriate
+- `docs/adr/adr-action-pattern-over-services.md` — ADR for Action preference
+- `docs/guides/arch/action-pattern.md` — Action Triad reference
+- `docs/guides/arch/support-pattern.md` — Support vs Service boundaries
+- [PoEAA — Service Layer](https://martinfowler.com/eaaCatalog/serviceLayer.html) — Service Layer pattern
+- [SOLID — Single Responsibility](https://en.wikipedia.org/wiki/Single_responsibility_principle) — SRP principle
+- [God Object](https://en.wikipedia.org/wiki/God_object) — anti-pattern
+- [Factory Pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) — creational pattern
+- [Laravel — Service Container](https://laravel.com/docs/container) — DI and service binding

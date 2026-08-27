@@ -1,126 +1,91 @@
 # Repository Pattern — Why Internara Doesn't Use It
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify rationale for no Repository layer (direct Eloquent via Models, Read Actions, query tiers)
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Repository PoEAA, Data Mapper, Active Record, Query Object) with anti-pattern table, Quick References
 
 ## Description
 
 Explanation of why Internara does not use the Repository pattern — direct Eloquent usage through
-Models and Read Actions instead.
-
-## 1. Why No Repository Layer
-
-Internara does **not** implement a Repository abstraction layer. This is an explicit architectural
-decision, not an omission.
-
-The Repository pattern became popular in PHP for three reasons that no longer apply:
-
-1. **ORM abstraction** — Repositories hid the underlying storage so you could swap databases. Modern
-   Laravel uses one ORM (Eloquent) with a single query builder. If you need raw SQL, Eloquent gives
-   you `DB::raw()` and `toSql()`. There is no second persistence mechanism to abstract _from_.
-2. **Testability** — Repositories allowed mocking database access in unit tests. Laravel provides
-   `DatabaseMigrations`, `DatabaseTransactions`, model factories, and `Http::fake()` — test doubles
-   for the entire persistence layer without writing custom repository stubs.
-3. **Query reuse** — Repositories collected named queries in one place. Eloquent already does this
-   with model scopes, local scopes, and relationship methods.
-
-Adding a Repository layer between Livewire/Controllers and Eloquent would introduce accidental
-complexity — every query needs a corresponding repository method, every repository needs an
-interface, every interface needs a binding, and the payoff (swappable storage) is a non-goal for
-this project.
+Models and Read Actions instead. Grounded in **Repository Pattern** (PoEAA), **Data Mapper** vs
+**Active Record**, and **Query Object** — all mapped to Internara's Eloquent-first architecture.
 
 ---
 
-## 2. Eloquent as the Repository
+## Non-Negotiable
 
-Eloquent _is_ the Repository. The `Model` class provides:
+Hard rules. Violations are architecture violations.
 
-| Capability                          | Role                   |
-| ----------------------------------- | ---------------------- |
-| `find()`, `findOrFail()`            | Single-record lookup   |
-| `where()`, `orWhere()`, `whereIn()` | Filtering              |
-| `first()`, `firstOrFail()`          | Conditional retrieval  |
-| `get()`, `paginate()`, `cursor()`   | Collection retrieval   |
-| `with()`, `load()`                  | Eager loading          |
-| `create()`, `update()`, `delete()`  | Persistence operations |
-| `exists()`, `doesntExist()`         | Existence checks       |
+1. **No Repository layer.** This is an explicit architectural decision. Eloquent IS the Repository. Adding a Repository abstraction between Livewire/Controllers and Eloquent introduces accidental complexity without payoff.
 
----
+2. **Simple queries inline in Livewire.** Single-table lookups, straightforward `where` clauses, relationship eager loading — written directly in the Livewire component's `render()` method. Keep it simple.
 
-## 3. Simple Query Pattern (inline in Livewire)
+3. **Complex queries in Read Actions.** Aggregations, cross-module data assembly, multi-step filtering with business rules — extracted into Read Actions. Read Actions extend `BaseReadAction` and MUST NOT mutate state.
 
-**Simple queries** — single-table lookups, straightforward `where` clauses, relationship eager
-loading — are written **directly in the Livewire component**.
+4. **Reusable scopes on Models.** Reusable query fragments belong as local scopes on the Model. This is equivalent to repository methods but lives on the model itself.
 
-**Rule of thumb:** If the query fits in a single fluent chain with no business logic interleaved,
-keep it inline.
-
-### Authorization
-
-Even simple queries must pass through authorization (Layer 4 — Presentation/UI) via
-`Gate::authorize()` or `$this->authorize()` in Livewire.
+5. **No repository interfaces or bindings.** If you find yourself creating a repository interface, an Eloquent implementation, and a container binding — stop. You are adding abstraction for a single implementation with no planned alternative.
 
 ---
 
-## 4. Complex Query Pattern (Read Actions)
+## How to Apply
 
-**Complex queries** — aggregations, cross-module data assembly, multi-step filtering with business
-rules — are extracted into **Read Actions** (Layer 3 — Business/Domain Ops).
+### 1. Repository Pattern (PoEAA)
 
-Read Actions extend **BaseReadAction**. They MUST NOT mutate state, call `transaction()`, or call
-`log()`.
+Martin Fowler's Repository pattern mediates between domain and data mapping, acting like an in-memory collection of domain objects. In traditional DDD, repositories hide persistence details behind interfaces. In Internara, Eloquent already provides this abstraction — `Model::find()`, `Model::where()`, `Model::with()` are the repository methods.
 
-**Naming:** `Read{Entity}Action`.
+**Reference:** [PoEAA — Repository](https://martinfowler.com/eaaCatalog/repository.html)
 
----
+### 2. Active Record vs Data Mapper
 
-## 5. Query Scopes on Models
+| Pattern | Implementation | Pros | Cons |
+|---------|---------------|------|------|
+| **Active Record** | Eloquent Model | Simple, Laravel-native,Convention over Configuration | Tightly couples domain to persistence |
+| **Data Mapper** | Separate mapper class | Clean domain, persistence-agnostic | Extra layer, more complex |
 
-Reusable query fragments belong as **local scopes** on the Model. Usage is identical to a repository
-method but lives on the model itself.
+Internara uses Active Record (Eloquent) because:
+- Single ORM (Eloquent) with one query builder
+- No second persistence mechanism to abstract from
+- Laravel's testing tools (`DatabaseMigrations`, `DatabaseTransactions`, factories) replace repository mocking
+- Model scopes already provide query reuse
 
-Scopes should be **named descriptively** and avoid business-logic conditionals. When a scope would
-need parameters that encode domain rules, it is time for a Read Action.
+### 3. Query Object Pattern
 
-**Relationship methods** serve a similar role — they provide discoverability and type safety for
-child-record lookups, equivalent to what a dedicated `findByX()` repository method would offer.
-Frequently chained filters should be expressed as local scopes on the related model rather than as
-repository methods on the parent.
+For complex queries that exceed simple scopes, use Read Actions instead of Query Objects. Read Actions encapsulate multi-step queries with business logic, caching, and cross-module assembly. This is simpler than Query Objects and integrates with the Action Triad.
 
----
+### 4. When to Extract a Read Action
 
-## 6. When to Extract a Read Action
-
-Extract a Read Action when the query crosses any of these thresholds:
-
-| Threshold                     | Description                                                               |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| **Repeated in 2+ locations**  | Same filter + aggregation used in multiple places                         |
-| **Business logic in queries** | Multi-condition rules that encode domain policy                           |
-| **Cross-module queries**      | Joining data from disparate modules                                       |
-| **Complex aggregation**       | Multi-step calculations with conditional sums, rate computation           |
-| **Caching requirement**       | Query results that should be cached with a specific invalidation strategy |
-
-### Decision Table
-
-| Query Type                    | Where It Lives       |
-| ----------------------------- | -------------------- |
-| `Model::find($id)`            | Inline in Livewire   |
-| `Model::where()->get()`       | Inline in Livewire   |
-| Relationship chain            | Inline in Livewire   |
-| Repeated filter               | Local scope on Model |
-| Non-trivial aggregation       | Read Action          |
-| Cross-module data assembly    | Read Action          |
-| Dashboard data (many metrics) | Read Action          |
+| Threshold | Description |
+|-----------|-------------|
+| Repeated in 2+ locations | Same filter + aggregation used in multiple places |
+| Business logic in queries | Multi-condition rules that encode domain policy |
+| Cross-module queries | Joining data from disparate modules |
+| Complex aggregation | Multi-step calculations with conditional sums |
+| Caching requirement | Query results that should be cached with invalidation |
 
 ---
 
-## 7. Migration Note
+## Anti-Patterns
 
-If the codebase ever develops a genuine need for a Repository layer — a second read store or a
-caching proxy that cannot be handled at the Query Builder level — the migration path is well
-understood: introduce a Repository contract, implement it with Eloquent, and bind via the container.
-Existing Read Actions can be promoted to Repository implementations without rewriting their callers.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| Creating `UserRepositoryInterface` + `EloquentUserRepository` | Use `User` Model directly or Read Action | Unnecessary abstraction |
+| Repository with single `find()` method | Use `Model::find()` directly | Wrapper for no value |
+| Repository with business logic | Extract to Entity + Action | Business logic in persistence layer |
+| Repository called from Livewire for simple queries | Write query inline in component | Over-engineering simple lookups |
+| Repository interface + container binding for one implementation | Use concrete class directly | Abstract for single implementation |
+| Repository that wraps `DB::table()` | Use Eloquent directly | Bypassing ORM for no reason |
+| Repository test mocking Eloquent | Use model factories + `DatabaseTransactions` | Fighting the framework |
+| Repository accumulating methods over time | Split into Read Actions (one per query) | God Object — too many methods |
 
-This is not done today because Eloquent already satisfies all query use cases, the Action Triad
-already separates read concerns from writes, and the architecture prefers concrete dependencies over
-abstracted ones when there is exactly one implementation and no planned alternative.
+---
+
+## Quick References
+
+- `docs/conventions.md` §Query Patterns — inline vs Read Action
+- `docs/guides/arch/action-pattern.md` — Read Actions for complex queries
+- `docs/guides/arch/model-pattern.md` — Model scopes and relationships
+- [PoEAA — Repository](https://martinfowler.com/eaaCatalog/repository.html) — Repository pattern
+- [PoEAA — Active Record](https://martinfowler.com/eaaCatalog/activeRecord.html) — Active Record pattern
+- [PoEAA — Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html) — Data Mapper pattern
+- [Laravel — Eloquent](https://laravel.com/docs/eloquent) — Eloquent ORM
+- [Query Object Pattern](https://martinfowler.com/eaaCatalog/queryObject.html) — complex query encapsulation
+- [DDD — Repository](https://martinfowler.com/bliki/Repository.html) — DDD Repository concept

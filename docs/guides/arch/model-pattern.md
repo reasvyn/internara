@@ -1,189 +1,143 @@
-# Model Pattern Reference — Persistence, Relationships & Entity Bridges
+# Model Pattern — Active Record, Persistence & Entity Bridges
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Model contracts (BaseModel, UUID v7 PK, #[Fillable], scopes, relationships, Entity bridge, D4)
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Active Record PoEAA, UUID v7 RFC 9562, Eloquent conventions) with anti-pattern table, Quick References
 
 ## Description
 
-Model conventions: BaseModel, UUID primary keys, #[Fillable] attribute, scopes, relationships,
-factories, and Entity bridge pattern.
+This pattern governs how Internara defines **Eloquent Models** — the persistence layer. It synthesizes global industry standards — **Active Record Pattern** (Martin Fowler, *Patterns of Enterprise Application Architecture*), **UUID v7** (RFC 9562, time-ordered identifiers), **Laravel Eloquent conventions** (relationships, scopes, casts, mass assignment) — into enforceable rules tied to Internara's stack: `BaseModel`/`BaseAuthenticatable`, `HasUuids`, `#[Fillable]` PHP 8 attribute, Spatie MediaLibrary, and the `as{Entity}()` Bridge Pattern.
 
-## 1. Active Record Philosophy
-
-Models extend Eloquent's Active Record implementation and are responsible for:
-
-- **Persistence** — reading/writing database rows
-- **Relationships** — defining and querying associations between tables
-- **Attribute casting** — transforming raw column values into PHP types
-- **Query scopes** — reusable query fragments
-- **Media management** — file uploads and image conversions
-- **Entity bridging** — exposing `as{Entity}()` accessors that delegate to pure domain objects
-
-Business rules, invariant enforcement, and state-machine logic **do not** belong in models. They are
-extracted into Entity classes (see [entity-pattern.md](entity-pattern.md)).
+Without it, Models accumulate business logic (Anemic Domain Model), key conventions drift, and the persistence layer becomes coupled to business requirements. With it, Models are thin data access objects — relationships, scopes, casts, media — while business rules live on Entities.
 
 ---
 
-## 2. BaseModel Contract
+## Non-Negotiable
 
-All models (except User) extend `BaseModel`, which configures:
+Hard rules. Violations are architecture violations.
 
-| Concern          | Implementation                                                                                                       |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------- |
-| UUID primary key | `use HasUuids;` (Laravel's trait, generates UUID v7)                                                                 |
-| Non-incrementing | Inherits `$incrementing = false` from `HasUuids`                                                                     |
-| String key type  | Inherits `$keyType = 'string'` from `HasUuids`                                                                       |
-| Common scopes    | `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()` |
+1. **Models are data access objects only.** Models define relationships, scopes, casts, attributes, media collections, factory config, and the entity bridge accessor. They MUST NOT contain `canLogin()`, `isActive()`, `canBeDeleted()`, `hasAvailableSlots()`, `isExpired()`, `canTransitionTo()`, or any business decision method. Business rules live on Entities (see `entity-pattern.md`). This is the **SRP** (Robert C. Martin): a Model changes because the data model changes; an Entity changes because the business requirement changes.
 
----
+2. **UUID v7 (RFC 9562) as primary keys.** All tables use time-ordered UUID v7 via `HasUuids`. UUID v7 places a 48-bit Unix millisecond timestamp in leading bits, preserving B-tree insertion locality — new rows land at the end of the index, avoiding random page splits (v4's problem). This is enforced by `BaseModel` and `BaseAuthenticatable`.
 
-## 3. BaseAuthenticatable
+3. **`#[Fillable]` attribute, not `$fillable` property.** Mass assignment protection uses PHP 8 `#[Fillable]` attribute, not the traditional `$fillable` property. Multi-line syntax required for multiple values. The traditional property is not used anywhere in the codebase.
 
-The `User` model cannot extend `BaseModel` because Laravel's authentication system requires it to
-extend `Illuminate\Foundation\Auth\User` (or `Authenticatable`). `BaseAuthenticatable` bridges this
-gap by applying the same UUID and scope conventions to the authenticatable base.
+4. **Entity bridge via named accessors.** Models expose entities through `as{EntityName}(): EntityType` methods — never generic `entity()`. A Model may expose **multiple entities** for different business roles. The accessor name describes the business role, not the class.
 
-The `User` model extends `BaseAuthenticatable` and re-applies `HasUuids` explicitly — this is
-harmless (PHP traits are idempotent) and makes the UUID dependency visible without digging into the
-parent class.
+5. **Singular/plural relationship naming.** `BelongsTo`/`HasOne` = singular (`user()`, `academicYear()`). `HasMany`/`BelongsToMany` = plural (`users()`, `registrations()`). `MorphTo` = singular. `MorphMany` = Plural. Always define the inverse.
+
+6. **Foreign keys with explicit `onDelete`/`onUpdate`.** All foreign key columns use `foreignUuid()->constrained()` with explicit `onDelete()`/`onUpdate()` behavior. No mixed key types. This is **D6** (invariant from `docs/conventions.md` §7).
+
+7. **Enum casting for status columns.** Status columns are cast to their enum class via `$casts` property. The column stores the enum's `value` (lowercase string), and Eloquent hydrates it back into the enum instance. Never compare with hardcoded strings.
 
 ---
 
-## 4. Model Directory Structure
+## How to Apply
 
-Models live inside their owning module, following the two-tier path convention:
+### 1. Active Record Pattern — What It Is
 
+Models extend Eloquent's **Active Record** implementation (Fowler, PoEAA): "an object that wraps a single database row, encapsulates data access, and adds domain logic on that data." Eloquent is the canonical PHP implementation — `User::find($id)` returns a `User` instance that can `$user->save()`, `$user->delete()`, and define relationships.
+
+**Internara's adaptation:** Eloquent is a fine ORM and a poor domain model. Keep Eloquent for what it is good at — query building, relationships, migrations, mass assignment, soft deletes — but push business logic to Entities. The Model is the persistence adapter; the Entity is the domain.
+
+### 2. BaseModel Contract
+
+| Concern | Implementation |
+|---------|---------------|
+| UUID primary key | `use HasUuids;` (Laravel's trait, generates UUID v7 per RFC 9562) |
+| Non-incrementing | Inherits `$incrementing = false` from `HasUuids` |
+| String key type | Inherits `$keyType = 'string'` from `HasUuids` |
+| Common scopes | `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()` |
+
+### 3. BaseAuthenticatable
+
+The `User` model cannot extend `BaseModel` because Laravel's authentication requires `Illuminate\Foundation\Auth\User`. `BaseAuthenticatable` bridges this gap — same UUID and scope conventions applied to the authenticatable base. `User` re-applies `HasUuids` explicitly (harmless — PHP traits are idempotent).
+
+### 4. UUID v7 — Time-Ordered Primary Keys
+
+UUID v7 (RFC 9562) places a 48-bit Unix millisecond timestamp in leading bits, followed by version/variant markers and random/counter bits. Values sort roughly in creation order.
+
+**Why v7 over v4:**
+- v4 has 122 random bits — zero ordering, causes **B-tree index fragmentation** on large tables
+- v7 is time-ordered — new rows land at the end of the B-tree, yielding sequential writes and better index performance
+- RFC 9562 explicitly recommends v7 over v1/v6 for new systems
+
+**Pitfalls:** Timestamp exposure (anyone holding the ID can decode creation time to millisecond precision). Same-millisecond ordering is random — use a separate sequence column if needed.
+
+### 5. Relationship Naming Convention
+
+| Type | Method Name | Example |
+|------|------------|---------|
+| `BelongsTo` / `HasOne` | Singular | `user()`, `academicYear()` |
+| `HasMany` / `BelongsToMany` | Plural | `users()`, `registrations()` |
+| `MorphTo` | Singular | `verifiable()` |
+| `MorphMany` | Plural | `comments()` |
+
+### 6. Entity Accessor Pattern — Bridge to Domain
+
+Models expose entities via named accessors using `as{EntityName}()`. This is the **Bridge Pattern** — connecting persistence (Eloquent) with domain (Entity):
+
+```php
+// ✅ Correct — specific name communicates the role
+public function asSomeRole(): SomeEntity
+{
+    return SomeEntity::fromModel($this);
+}
+
+// ❌ Wrong — generic name reveals nothing
+public function entity(): SomeEntity
 ```
-app/{Module}/{Submodule}/Models/{Model}.php
-```
 
-One model per file. No model files in shared `app/Models/` — models always belong to a module.
+A model may expose multiple entity accessors for different domain concepts.
 
----
+### 7. Scope Pattern — Reusable Query Fragments
 
-## 5. UUID Primary Key Convention
+Scopes encapsulate common WHERE conditions. Base scopes inherited from `BaseModel`: `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()`.
 
-All tables use **UUID v7** (time-ordered) as primary keys. This is enforced by `BaseModel` and
-`BaseAuthenticatable` via Laravel's `HasUuids` trait, which generates ordered UUIDs that preserve
-B-tree insertion locality.
+Rules: Scope method returns `Builder`. Parameters are explicit and typed. Scopes are the **only** query logic on models. Complex query assembly belongs in Read Actions.
 
-For the rare model that cannot extend `BaseModel`, apply `HasUuids` manually with
-`$incrementing = false` and `$keyType = 'string'`.
+### 8. Casts Convention
 
-### Foreign Keys in Migrations
+Use `$casts` property for static configurations. Enum casts use the enum class FQCN. Custom casts for complex transformations. Method-based `casts()` only when dynamic.
 
-All foreign key columns use `foreignUuid()` with explicit `onDelete()` behavior. No mixed key types
-are permitted. Enforced through code review.
+### 9. Media Library Integration
 
----
+File uploads use [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary). Models implement `HasMedia` and use `InteractsWithMedia`. Avatar/media collections use `singleFile()`.
 
-## 6. `#[Fillable]` Attribute Convention
+### 10. Factory Convention
 
-Mass assignment protection uses PHP 8 **attributes**, not the traditional `$fillable` property. This
-keeps the fillable declaration adjacent to the class signature for visibility.
+Every model has a factory in `database/factories/`. Factory states use fluent methods. States never duplicate the full definition.
 
-Multi-line attribute syntax is required when the array spans multiple values. For a single value,
-inline is acceptable.
+### 11. Testing Models
 
-The traditional `$fillable` property is **not used** anywhere in the codebase. All models use
-`#[Fillable]`.
+Do NOT test Eloquent relationships directly — the framework is trusted. Do NOT test query scopes in isolation — test through Actions or Livewire. DO test custom accessors, mutators, computed properties, and custom casts.
 
 ---
 
-## 7. Relationship Naming Convention
+## Anti-Patterns
 
-Relationships follow a strict singular/plural convention based on cardinality:
-
-| Type                        | Method Name | Example                      |
-| --------------------------- | ----------- | ---------------------------- |
-| `BelongsTo` / `HasOne`      | Singular    | `user()`, `academicYear()`   |
-| `HasMany` / `BelongsToMany` | Plural      | `users()`, `registrations()` |
-| `MorphTo`                   | Singular    | `verifiable()`               |
-| `MorphMany`                 | Plural      | `comments()`                 |
-
-Always define the inverse relationship. The optional `$foreignKey` parameter is used when the column
-name deviates from convention.
-
----
-
-## 8. Entity Accessor Pattern
-
-Models expose entities through **named accessors** using the `as{EntityName}()` pattern. This is the
-bridge between the persistence layer (Model) and the domain layer (Entity). Never use a generic
-`entity()` method.
-
-A model may expose multiple entity accessors when it contains data for multiple domain concepts.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `$model->canLogin()` / `$model->isActive()` on Model | `$model->asRole()->allowsLogin()` / `$entity->asState()->isActive()` | Anemic Domain Model — business logic on data access object |
+| `protected $fillable = [...]` property | `#[Fillable([...])]` PHP 8 attribute | D4 — legacy mass assignment syntax |
+| `$model->entity()` generic accessor | `$model->asSomeRole()` named accessor | Role-specific naming missing |
+| UUID v4 (random) primary keys | UUID v7 (time-ordered) via `HasUuids` | Index fragmentation, poor B-tree locality |
+| `foreignUuid('user_id')` without `onDelete` | `foreignUuid('user_id')->constrained()->onDelete('cascade')` | D6 — missing referential action |
+| `'status' => 'draft'` hardcoded in `$attributes` | `'status' => ExampleStatus::DRAFT->value` | String drift from enum definition |
+| Complex query in Livewire `mount()` | Read Action or Model scope | Business logic leaked to UI layer |
+| `$model->doSomething()` business method on Model | Entity method called from Action | Business rules on persistence layer |
+| No `scopeOrdered()` — inline `orderBy('created_at', 'desc')` | Reusable scope | Query duplication, no consistency |
+| Mixed UUID v4 and UUID v7 in same database | All tables use UUID v7 | Inconsistent key strategy |
 
 ---
 
-## 9. Scope Pattern
+## Quick References
 
-Query scopes encapsulate common WHERE conditions. Scopes are defined at the model level and chain
-naturally through Eloquent queries.
-
-### Base Scopes (inherited from BaseModel / BaseAuthenticatable)
-
-- `active()` — WHERE `is_active = true`
-- `inactive()` — WHERE `is_active = false`
-- `recent(20)` — ORDER BY `created_at` DESC LIMIT 20
-- `createdAfter($date)` — WHERE `created_at >= $date`
-- `createdBefore($date)` — WHERE `created_at <= $date`
-- `ordered('name')` — ORDER BY `name` DESC
-
-### Convention
-
-- Scope method returns `Builder`.
-- Scope parameters are explicit and typed — avoid `...$args` patterns.
-- Scopes are the **only** query logic on models. Complex query assembly belongs in Read Actions.
-
----
-
-## 10. Casts Convention
-
-Attribute casting uses `protected $casts` (property), not the `casts()` method, unless dynamic
-casting is needed.
-
-- **Standard casts** — use the `$casts` property for static configurations (e.g., `date`,
-  `datetime`, `boolean`, `json`, `hashed`).
-- **Enum casts** — use the enum class FQCN as the cast target. The column stores the enum's `value`
-  (lowercase string), and Eloquent hydrates it back into the enum instance.
-- **Custom casts** — for complex transformation logic, create a dedicated cast class.
-- **Method-based casts** — use the `casts()` method only when cast configuration is dynamic (runtime
-  conditions affect the return value).
-
-Prefer the `$casts` property for static configurations.
-
----
-
-## 11. Media Library Integration
-
-File uploads use [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary). Models
-implement `HasMedia` and use the `InteractsWithMedia` trait.
-
-### Convention
-
-- Avatar/media collections use `singleFile()` to restrict to one file per collection.
-- For models with multiple named collections, use an enum to keep collection names consistent.
-
----
-
-## 12. Factory Convention
-
-Every model has a corresponding factory in `database/factories/`. Factories use Laravel's native
-`HasFactory` trait.
-
-Factory states use fluent methods. States never duplicate the full definition — they only override
-the relevant attributes.
-
----
-
-## 13. Testing Models
-
-### What to Test / What Not to Test
-
-- **Do not** test Eloquent relationships directly — the framework is trusted.
-- **Do not** test query scopes in isolation — test them through Actions or Livewire components.
-- **Do** test model-specific business methods (e.g., custom accessors, mutators, computed
-  properties).
-- **Do** test custom casts.
-
-These are covered implicitly by Action and Livewire feature tests.
+- `entity-pattern.md` — Entity contract, Bridge Pattern, purity rules
+- `action-pattern.md` — Actions call Entity methods, never Model business methods
+- `modular-pattern.md` §8 Model Patterns, §15 Migration & Database — architecture contracts
+- `docs/conventions.md` §7 Database Conventions — D6, migrations, seeders
+- [Martin Fowler — Active Record (PoEAA)](https://martinfowler.com/eaaCatalog/activeRecord.html) — object that wraps a row, encapsulates data access
+- [RFC 9562 — UUID v7](https://www.rfc-editor.org/rfc/rfc9562.html) — time-ordered UUIDs, B-tree locality
+- [Laravel — Eloquent ORM](https://laravel.com/docs/eloquent) — relationships, scopes, casts, mutators
+- [Laravel — HasUuids](https://laravel.com/docs/eloquent#uuids-and-ulids) — UUID v7 generation
+- [Spatie — Laravel Medialibrary](https://spatie.be/docs/laravel-medialibrary) — file uploads, conversions
+- [Wendell Adriel — Eloquent Active Record](https://wendelladriel.com/blog/understanding-laravel-eloquents-active-record-pattern) — deep dive on Eloquent's pattern

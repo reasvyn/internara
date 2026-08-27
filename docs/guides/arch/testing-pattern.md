@@ -1,7 +1,6 @@
 # Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
-> `test("{SpecID}-{ReqID}: Test description...")` replaces `it()` / `describe('{SPECID}')`
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (TDD, Testing Pyramid, AAA, FIRST, Four Phase Test) with anti-pattern table, Quick References
 
 ## Description
 
@@ -9,257 +8,97 @@
 
 ---
 
-## 1. Testing Philosophy
+## Non-Negotiable
 
-### 1.0 Why Minimalism Matters
+Hard rules. Violations are architecture violations.
 
-**Spec-driven testing writes only the tests the spec requires — nothing more.** This is deliberate,
-not lazy:
+1. **Every spec requirement must have tests.** Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code.
 
-- **Speed:** fewer tests → faster suite runs, faster feedback, faster development cycles. The full
-  suite costs ~2GB+ RAM and 10+ minutes; a spec-scoped test runs in seconds.
-- **Resource use:** every padded test consumes RAM, disk, and CI time for zero verification value.
-  Minimal suites keep CI cheap and local runs snappy.
-- **Cognitive load:** a test file that maps 1:1 to requirement IDs is self-explaining. Every test
-  answers "which requirement does this verify?"; there is no "why does this test exist?" archaeology.
-  Less to write, less to read, less to maintain.
+2. **Requirement-first (Spec → Test → Implementation).** Write the spec requirement, then the test for it, then the minimum implementation that makes it pass. The test stays green throughout refactoring.
 
-The doctrine is **write the minimum tests that prove the spec**, then stop.
+3. **Traceability — prefix requirement IDs.** Every test description prefixes its requirement ID: `test("{SpecID}-{ReqID}: Test description...")`. Group tests under `describe("{SpecID}: Test description...")`.
 
-### 1.1 Every Spec Requirement Must Have Tests
+4. **Scope isolation — one file, one scope.** Do not combine multiple distinct testing scopes into a single test file. Group the tests of one requirement area in one file. Never split a single requirement's tests across files unless it spans distinct layers.
 
-Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6
-data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement
-is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code. Do not
-write padding tests for behavior no requirement mentions.
+5. **Layer-by-layer entry points.** Test exactly the layer(s) the requirement touches, nothing more. Enum/Entity/DTO/Policy → unit test. Action/Livewire/Console → feature test.
 
-### 1.2 Requirement-First (Spec → Test → Implementation)
+6. **LazilyRefreshDatabase preferred.** Use `LazilyRefreshDatabase` (not `RefreshDatabase`) for all feature tests. Entity tests NEVER touch the database.
 
-Write the spec requirement, then the test for it, then the minimum implementation that makes it
-pass. The test stays green throughout refactoring. When a requirement changes, its test changes;
-when a requirement is removed, its test is removed.
-
-### 1.3 Traceability
-
-Every test description prefixes its requirement ID:
-
-```php
-test("{SpecID}-{ReqID}: Test description...", function () { ... });
-```
-
-Group tests under `describe("{SpecID}: Test description...")` (spec ID + short description); each
-`test()` inside prefixes the full `{SpecID}-{ReqID}:`. For flat files without grouping, prefix the
-full `{SpecID}-{ReqID}:` on each `test()`.
-
-### 1.4 Layer-by-Layer Entry Points
-
-The layer you test is whatever layer implements the requirement. Layer order below is a guide, not a
-mandate: **test exactly the layer(s) the requirement touches, nothing more.**
-
-| Layer               | Test Type      | Test Only If the Requirement...                                        |
-| ------------------- | -------------- | ---------------------------------------------------------------------- |
-| **Enum**            | Unit test      | Names labels, transitions, or terminal states                           |
-| **Entity**          | Unit test      | Names a business rule the Entity owns                                   |
-| **DTO (BaseData)**  | Unit test      | Defines a data contract shape in §6                                     |
-| **Command Action**  | Feature test   | Mandates a mutation and its result                                      |
-| **Read Action**     | Feature test   | Mandates a query and its returned shape                                 |
-| **Process Action**  | Feature test   | Mandates multi-step orchestration or rollback semantics                 |
-| **Livewire**        | Feature test   | Mandates a UI behavior (render/submit/authz)                            |
-| **Policy**          | Unit test      | Mandates an authorization gate per role                                 |
-| **Console Command** | Feature test   | Mandates a CLI behavior and its exit/output                             |
+7. **No padding tests.** Do not write tests for behavior no requirement mentions. The minimum tests that prove the spec, then stop.
 
 ---
 
-## 2. Test Structure & File Organization
+## How to Apply
 
-### 2.1 Module-First Structure
+### 1. TDD (Test-Driven Development)
 
-Tests mirror the source structure exactly. Every file in `app/` has a corresponding test file in
-`tests/`:
+Red → Green → Refactor. Write the failing test first, make it pass with minimal code, then refactor while keeping tests green. In practice: write the spec requirement, write the test, write the minimum implementation.
 
-```
-tests/
-├── {Module}/{SubModule}/{Name}Test.php   → Integration tests (Actions, Livewire)
-├── {Module}/{SubModule}/{Name}Test.php   → Isolated tests (Entities, Enums)
-└── {Module}/{Component}/{Name}Test.php   → Shared component tests
-```
+**Reference:** [TDD by Kent Beck](https://www.amazon.com/Test-Driven-Development-Kent-Beck/dp/0321146530)
 
-Both unit and feature tests live flat under `tests/{Module}/` (no `Feature/`/`Unit/` split).
+### 2. Testing Pyramid
 
-### 2.2 Three Test Tiers
+| Layer | Count | Speed | Examples |
+|-------|-------|-------|---------|
+| Unit tests | Many | Fast (ms) | Entity, Enum, DTO, Policy |
+| Feature tests | Some | Medium (s) | Action, Livewire, Console |
+| Integration tests | Few | Slow | API endpoints, third-party |
 
-| Tier        | Directory                 | Database | Speed      | Tests What                                              |
-| ----------- | ------------------------- | -------- | ---------- | ------------------------------------------------------- |
-| **Unit**    | `tests/{Module}/`    | Never    | Fast (ms)  | Entities, Enums, DTOs, Policies, Support, Contracts     |
-| **Feature** | `tests/{Module}/` | Always   | Medium (s) | Actions, Livewire, Console Commands, Middleware, Events |
-| **Arch**    | `tests/Arch/`             | Never    | Fast (ms)  | Structural rules via `arch()` expectations              |
+Internara's testing strategy follows the pyramid: many unit tests for pure logic, some feature tests for Actions and Livewire, few integration tests for cross-module workflows.
 
-### 2.3 Value Object Tests
+### 3. AAA (Arrange-Act-Assert)
 
-Value objects, flat enums, and small validation rules that belong to a module but are too small for
-their own submodule go under `tests/{Module}/Types/`.
+Every test follows the three-phase structure:
+1. **Arrange** — set up data (factories, mocks, test doubles)
+2. **Act** — call the code under test
+3. **Assert** — verify the expected outcome
 
----
+### 4. FIRST Principles
 
-## 3. Scope Isolation
+Tests should be:
+- **Fast** — run in milliseconds (unit) or seconds (feature)
+- **Independent** — no test depends on another
+- **Repeatable** — same result every time
+- **Self-validating** — automated pass/fail, no manual inspection
+- **Timely** — written at the right time (requirement-first)
 
-### 3.1 One File, One Scope — CRITICAL
+### 5. Four Phase Test (XUnit Patterns)
 
-Do **not** combine multiple distinct testing scopes into a single test file. Scope follows the spec:
-group the tests of one requirement (or one requirement area) in one file. Cover exactly the
-scenarios the spec names — happy path plus each rejection/alternative the requirement lists.
-
-### 3.2 File Organization by Spec Scope
-
-- A spec's requirements map to test files by subject (e.g., one Action implementing an FR gets its
-  own file)
-- A spec with many requirements may group related ones under `describe("{SpecID}: Test description...")`
-- Never split a single requirement's tests across files unless it spans distinct layers
+| Phase | Purpose | Example |
+|-------|---------|---------|
+| **Setup** | Create test fixtures | `User::factory()->create()` |
+| **Exercise** | Invoke the code under test | `$action->execute($dto)` |
+| **Verify** | Assert expected outcomes | `expect($result->success)->toBeTrue()` |
+| **Teardown** | Clean up (automatic in Pest) | `LazilyRefreshDatabase` handles this |
 
 ---
 
-## 4. Test Naming Conventions
+## Anti-Patterns
 
-### 4.1 File Naming
-
-Files use PascalCase with `Test.php` suffix.
-
-### 4.2 Test Descriptions
-
-Use `test()` with the spec + requirement ID prefix: `test("{SpecID}-{ReqID}: Test description...")`.
-The description reads as a complete statement of the behavior.
-
-### 4.3 Grouping with `describe()`
-
-Use `describe("{SpecID}: Test description...")` to carry the spec ID once (plus a short description),
-then prefix each `test()` inside with the full `{SpecID}-{ReqID}:`.
-
-### 4.4 Flat Structure
-
-For simple files without grouping, prefix the full `{SpecID}-{ReqID}:` on each `test()`.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| Test with no requirement ID in description | Prefix with `{SpecID}-{ReqID}:` | No traceability |
+| Test testing two unrelated requirements | Split into separate files | Scope isolation violated |
+| `RefreshDatabase` when `LazilyRefreshDatabase` works | Use `LazilyRefreshDatabase` | Slower tests unnecessarily |
+| Entity test hitting the database | Test as pure function calls | Unit test has side effects |
+| Test without Arrange/Act/Assert structure | Follow AAA pattern | Unclear test intent |
+| Test with 20+ assertions | Split into focused tests | Too many responsibilities |
+| Test for behavior no spec mentions | Remove — spec gap or orphan test | Padding test |
+| Feature test for simple getter/setter | Remove — trivial passthrough | Testing what doesn't need testing |
+| Test depending on test execution order | Make tests independent | First principle violated |
+| Test with `dd()`, `dump()`, or `ray()` | Remove debug calls | Debug in tests |
 
 ---
 
-## 5. Database Handling
+## Quick References
 
-### 5.1 `LazilyRefreshDatabase` (Preferred)
-
-Defers database migration until the first query hits the database. Tests that do not touch the
-database skip migration entirely. Use for all feature tests.
-
-### 5.2 `RefreshDatabase` (When Needed)
-
-Use only when `LazilyRefreshDatabase` causes issues with specific test scenarios.
-
-### 5.3 In-Memory SQLite
-
-The test suite runs against an in-memory SQLite database.
-
-### 5.4 Entity Tests — NO Database
-
-Entities are `final readonly` classes with zero framework dependencies. They never touch the
-database. Testing them is pure function calls.
-
----
-
-## 6. Layer-Specific Testing Strategies
-
-### 6.1 Entity Tests (Unit)
-
-Direct instantiation without DB. Assert business rule methods (e.g., canBeDeleted, isLocked). Test
-factory methods (fromModel), equality (equals), and immutability (with). Enforce `final readonly`
-structure.
-
-### 6.2 Enum Tests (Unit)
-
-Assert label strings for every case. Test transition rules (canTransitionTo), terminal state
-detection (isTerminal), and valid transitions. Group by behavior (transitions, terminal states).
-
-### 6.3 Data / DTO Tests (Unit)
-
-Constructor and property assertions. Test fromArray hydration, toArray serialization, key conversion
-(snake_case to camelCase). Test only/except filtering, merge immutability, and polymorphic from()
-sources.
-
-### 6.4 Command Action Tests (Feature)
-
-Resolve from container, construct a DTO, execute the Action with it. Assert the returned
-`ActionResponse` is successful and wraps the expected data. Assert database changes via
-`assertModelExists()`. Assert validation exceptions and domain rule exceptions
-(`RejectedException`). Verify `ActionResponse::failed()` returns `true` on error responses.
-
-### 6.5 Read Action Tests (Feature)
-
-Set up data, call the reader, assert return structure and types. No database mutation expected.
-
-### 6.6 Process Action Tests (Feature)
-
-Mock child Actions to verify orchestration. Test full workflow and partial failure / rollback
-scenarios.
-
-### 6.7 Livewire Tests (Feature)
-
-Use `Livewire::test()` entry point. Assert properties with `assertSet()`, views with
-`assertViewIs()`, dispatched events with `assertDispatched()`. Test invalid input graceful fallback.
-
-### 6.8 Policy Tests (Unit)
-
-Direct gate method assertions. Use anonymous classes as simple mocks. No database needed — pure
-boolean gate logic.
-
-### 6.9 Console Command Tests (Feature)
-
-Use `$this->artisan()` with `assertExitCode()`, `expectsOutputToContain()`, and
-`expectsConfirmation()`. Use `partialMock()` for services.
-
-### 6.10 Middleware Tests (Feature)
-
-Register test routes in `beforeEach()`, then `$this->get()` and assert headers.
-
-### 6.11 Event / Listener Tests (Feature)
-
-Fake specific events after factory setup. Direct listener instantiation when testing handlers in
-isolation. Assert cache or side-effect changes.
-
-### 6.12 Support / Utility Tests (Unit)
-
-Group by method name with `describe()`. Use anonymous classes with trait usage. Fake `MessageLogged`
-for logger assertions.
-
----
-
-## 7. Assertion Preferences
-
-- `assertModelExists($model)` over `assertDatabaseHas()` — clearer intent
-- `expect()->toBe*()` over `$this->assert*()` — Pest's fluent API
-- `fn () => ... ->toThrow()` over `$this->expectException()` — cleaner inline assertions
-- `->toBeTrue()` / `->toBeFalse()` — Pest fluent style
-- `->toBeInstanceOf()` — verify return types
-- `->toHaveCount()` — collection count
-- `->toHaveKeys()` — array key presence
-- `->toContain()` — string containment
-- `->not->toBe()` / `->not->toContain()` — negative assertions
-- `->toMatchArray()` — partial array matching
-
----
-
-## 8. What NOT to Test
-
-- **Anything with no spec requirement** — the definitive test of noise: a test that cannot be traced
-  to an `FR-*` / `NFR-*` / `UC-*` ID or §6 contract must not exist
-- **Eloquent relationships directly** — test through the requirement's Action
-- **Simple getters/setters** — trivial passthrough code, unless a requirement names them
-- **Configuration loading** — framework behavior
-- **Framework-provided functionality** — UUID generation, pagination
-- **Simple model scopes in isolation** — test through the Action that uses them
-- **Trivial views** — only needed when the requirement's underlying Action is untested
-- **Exhaustive edge-case matrices** — boundary/null matrices beyond what the requirement names
-- **Mock-orchestration of child Actions** — only when the spec mandates rollback semantics
-- **Line-coverage padding** — tests written only to push percentages; use coverage as a diagnostic
-  for gaps, never as a target for padding
-
----
-
-_This document is auto-synchronized with the codebase. When testing practices evolve, update the
-relevant sections in `docs/guides/infra/testing.md`, `docs/conventions.md` §12, or the skill
-files, then reflect changes here. See `docs/index.md` for the complete documentation catalog._
+- `docs/conventions.md` §Testing Conventions — test structure, naming, strategies
+- `docs/guides/infra/testing.md` — complete testing infrastructure
+- `docs/specs/index.md` — spec index with requirement IDs
+- [TDD by Kent Beck](https://www.amazon.com/Test-Driven-Development-Kent-Beck/dp/0321146530) — TDD methodology
+- [Testing Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) — test distribution
+- [AAA Pattern](https://martinfowler.com/bliki/GivenWhenThen.html) — Arrange-Act-Assert
+- [FIRST Principles](https://pragprog.com/the-pragmatic-programmer/20th-edition/tips/) — good test properties
+- [XUnit Test Patterns](https://xunitpatterns.com/) — test patterns catalog
+- [Laravel Testing](https://laravel.com/docs/testing) — Pest/PHPUnit integration
+- [Pest PHP](https://pestphp.com/docs) — Pest testing framework
