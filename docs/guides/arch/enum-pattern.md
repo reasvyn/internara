@@ -1,17 +1,38 @@
-# Enum Pattern Reference — LabelEnum, StatusEnum & State Machine Patterns
+# Enum Pattern — LabelEnum, StatusEnum, State Machines & Type Safety
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Enum contracts (LabelEnum, StatusEnum, ColorableEnum, state machines)
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (State Machine, Type State, GoF State Pattern, FSM) with anti-pattern table, Quick References
 
 ## Description
 
-Enum contracts (LabelEnum, StatusEnum), state machine patterns, case naming conventions, business
-logic methods, and testing strategies.
+This pattern governs how Internara defines **PHP 8 string-backed enums** for labels, state machines, and UI badges. It synthesizes global industry standards — **Finite State Machine** (FSM), **Type State Pattern** (compile-time state machines), **GoF State Pattern** (behavioral delegation), **State Transition Guards** (pre-conditions on transitions) — into enforceable rules tied to Internara's stack: `LabelEnum`, `StatusEnum`, `ColorableEnum` contracts, `UPPER_SNAKE` case names, lowercase string values, and `match()` exhaustive transitions.
 
-## 1. Enum Architecture Overview
+Without it, status logic scatters across Models, Actions, and Views — impossible to know valid transitions, terminal states, or display colors without reading every caller. With it, every state machine is self-documenting, type-safe, testable, and discoverable by contract.
 
-All enums in Internara are PHP 8 `string`-backed enums. Every enum **must** implement `LabelEnum`.
-State machine enums additionally implement `StatusEnum`. UI badge enums optionally implement
-`ColorableEnum`.
+---
+
+## Non-Negotiable
+
+Hard rules. Violations are architecture violations.
+
+1. **Every enum implements `LabelEnum`.** Every enum MUST have `label(): string` that returns a translated human-readable label via `__()`. This ensures all enum values are displayable to users without ad-hoc translation in views.
+
+2. **`UPPER_SNAKE` case names, lowercase string values.** Case names: `DRAFT`, `PUBLISHED`, `REVISION_REQUIRED`. Backing values: `'draft'`, `'published'`, `'revision_required'`. Multi-word values use `snake_case`. Never `CamelCase` values.
+
+3. **State machine enums implement `StatusEnum`.** Enums that represent lifecycle states MUST implement `StatusEnum` (extends `LabelEnum`), which mandates `isTerminal(): bool`, `canTransitionTo(StatusEnum $target): bool`, and `validTransitions(): array`. This is the **Finite State Machine** contract — every state knows its valid transitions.
+
+4. **Terminal states return `[]` from `validTransitions()`.** A terminal state has no further transitions. The `match()` must be exhaustive — every case must appear. Return type is `list<static>`.
+
+5. **Transition guards in Actions, not in Views.** Command Actions enforce `canTransitionTo()` before persisting. Views and Livewire components should NOT check transition validity — they delegate to the Action. This is **Defence in Depth** — the Action is the last gate before persistence.
+
+6. **`->value` for Model defaults, never hardcoded strings.** Model `$attributes` and factory definitions MUST use `ExampleStatus::DRAFT->value`, never `'draft'`. This prevents string drift from enum definitions.
+
+7. **Enum casting for status columns.** Status columns are cast to their enum class via `$casts`. This allows direct enum comparison: `$model->status === ExampleStatus::SUBMITTED`.
+
+---
+
+## How to Apply
+
+### 1. Enum Architecture — Three-Tier Contracts
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -29,27 +50,13 @@ State machine enums additionally implement `StatusEnum`. UI badge enums optional
 └─────────────────────────────────────────────────┘
 ```
 
-### Three-Tier Contract Hierarchy
+| Contract | Mandate | Purpose |
+|----------|---------|---------|
+| `LabelEnum` | All enums | Human-readable label via `__()` translation |
+| `StatusEnum` | Lifecycle enums | State machine transitions, terminal detection |
+| `ColorableEnum` | UI badge enums | Tailwind/UI color per status |
 
-| Contract        | Mandate         | Purpose                                       |
-| --------------- | --------------- | --------------------------------------------- |
-| `LabelEnum`     | All enums       | Human-readable label via `__()` translation   |
-| `StatusEnum`    | Lifecycle enums | State machine transitions, terminal detection |
-| `ColorableEnum` | UI badge enums  | Tailwind/UI color per status                  |
-
-### File Location Rules
-
-- **Module-specific enum** → `app/{Module}/{SubModule}/Enums/{Name}.php`
-- **Cross-submodule enum** → `app/{Module}/Enums/{Name}.php` (inside a module's root `Enums/`)
-- **Shared enum** → `app/Core/Enums/{Name}.php` (used by 2+ modules)
-- **Test** → `tests/{Module}/{SubModule}/Enums/{Name}Test.php`
-
-
----
-
-## 2. LabelEnum Contract
-
-Every enum in the codebase implements `LabelEnum` (`app/Core/Contracts/LabelEnum.php`):
+### 2. LabelEnum Contract
 
 ```php
 interface LabelEnum
@@ -58,49 +65,9 @@ interface LabelEnum
 }
 ```
 
-All `label()` implementations delegate to `__()` for i18n. Two translation styles are used:
+All `label()` implementations delegate to `__()` for i18n. Three styles: per-case `match()` (most common), dynamic key from value, plain value (no translation needed).
 
-### Per-case `match()` (most common)
-
-```php
-public function label(): string
-{
-    return match ($this) {
-        self::STATE_A => __('State A'),
-        self::STATE_B => __('State B'),
-        self::STATE_C => __('State C'),
-    };
-}
-```
-
-### Dynamic key from value
-
-```php
-public function label(): string
-{
-    return __("module.enum.{$this->value}");
-}
-```
-
-Used when the enum has many cases or when translations are maintained in structured lang files.
-
-### Plain value (no translation needed)
-
-For enums whose label is the raw value (e.g. blood type):
-
-```php
-public function label(): string
-{
-    return $this->value;
-}
-```
-
----
-
-## 3. StatusEnum Contract
-
-State machine enums implement `StatusEnum` (`app/Core/Contracts/StatusEnum.php`), which extends
-`LabelEnum`:
+### 3. StatusEnum — Finite State Machine Contract
 
 ```php
 interface StatusEnum extends LabelEnum
@@ -111,171 +78,35 @@ interface StatusEnum extends LabelEnum
 }
 ```
 
-### Common `canTransitionTo` Implementation
-
-Almost all status enums share the same guard implementation:
+**Common `canTransitionTo` implementation:**
 
 ```php
 public function canTransitionTo(StatusEnum $target): bool
 {
     if (! ($target instanceof self)) {
-        return false;
+        return false; // Type safety — reject cross-enum transitions
     }
 
     return in_array($target, $this->validTransitions(), true);
 }
 ```
 
-This pattern:
+### 4. State Machine Patterns
 
-1. Rejects cross-enum transitions (type safety)
-2. Delegates valid targets to `validTransitions()`
-3. Uses strict `in_array()` — no implicit enum-to-string coercion
+Every status enum fits one of these patterns:
 
-### Optional: Extra Terminal Guard
+| Pattern | Description | Example |
+|---------|-------------|---------|
+| **Revision Loop** | Draft → Submitted → Revision Required → (back to Draft) | Logbook, assignment submissions |
+| **Approval Pipeline** | Pending → Approved / Rejected | Registration, certificate approval |
+| **Linear Progression** | Stage 1 → Stage 2 → Stage 3 → Complete (+ Cancel escape) | Internship enrollment |
+| **Incident Lifecycle** | Reported → Investigating → Resolved → Closed | Bug reports, complaints |
+| **Two-State (Binary)** | Initial → Terminal | Simple approve/reject |
+| **All Terminal** | Every state is terminal — no transitions | Classification records |
+| **Complex Lifecycle** | Multiple forward stages with cancellation at several points | Multi-step approval |
+| **User Account** | Parallel paths through activation, verification, restriction, suspension | User lifecycle |
 
-Some enums add an explicit terminal check before delegating to valid transitions:
-
-```php
-public function canTransitionTo(StatusEnum $target): bool
-{
-    if (! ($target instanceof self)) {
-        return false;
-    }
-    if ($this->isTerminal()) {
-        return false;
-    }
-
-    return in_array($target, $this->validTransitions(), true);
-}
-```
-
-This is a belt-and-suspenders approach — `validTransitions()` already returns `[]` for terminal
-states, but the explicit guard makes the intent clearer.
-
----
-
-## 4. ColorableEnum Contract
-
-Optional contract for enums displayed as UI badges:
-
-```php
-interface ColorableEnum
-{
-    public function color(): string;
-}
-```
-
-Returns a Tailwind color keyword used by UI components for badge rendering. Supported colors:
-`primary`, `success`, `warning`, `error`, `info`.
-
----
-
-## 5. Case Convention
-
-### `UPPER_SNAKE` case names, lowercase string values
-
-```php
-enum ExampleStatus: string implements StatusEnum
-{
-    case DRAFT = 'draft';
-    case PUBLISHED = 'published';
-    case ACTIVE = 'active';
-    case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
-}
-```
-
-### Value Convention Table
-
-| Convention       | Rule          | Example               |
-| ---------------- | ------------- | --------------------- |
-| Case name        | `UPPER_SNAKE` | `REVISION_REQUIRED`   |
-| Backing value    | lowercase     | `'revision_required'` |
-| Multi-word value | `snake_case`  | `'multi_word_value'`  |
-
-### Edge Cases
-
-```php
-// Short values (single character)
-case A = 'a';
-case B = 'b';
-
-// Values that differ from case name
-case SUPER_ADMIN = 'superadmin';     // condensed, not 'super_admin'
-```
-
----
-
-## 6. Business Logic on Enums
-
-Business logic methods live **directly on the enum class**. This is a deliberate choice — enums are
-the natural home for behavior that depends solely on the enum's value.
-
-### Domain Query Methods
-
-Boolean methods that answer questions about the current state. Prefixed with `is`, `has`, `can`,
-`requires`, or `allows`:
-
-| Prefix     | Semantics                  | Example                      |
-| ---------- | -------------------------- | ---------------------------- |
-| `is`       | Boolean state query        | `isTerminal()`, `isActive()` |
-| `has`      | Feature/attribute presence | `hasProperty()`              |
-| `can`      | Permission or ability      | `canTransitionTo()`          |
-| `requires` | Prerequisite needed        | `requiresAttachment()`       |
-| `allows`   | Permission granted         | `allowsLogin()`              |
-
----
-
-## 7. State Machine Patterns
-
-State machines fall into several generic pattern categories. Every status enum fits one of these.
-
-### Revision Loop (Iterative Review)
-
-A draft state feeds into a review cycle where submissions can be returned for revision. Used by
-workflow entities with an iterative review cycle. Typical states: a draft state, a submitted state,
-a revision-required state (returning to draft), and one or more terminal states.
-
-### Approval Pipeline
-
-A single pending state branches into two terminal outcomes: approval and rejection. Used for any
-request that must be reviewed and either accepted or denied. All enums using this pattern share
-identical transition logic — only the labels differ.
-
-### Linear Progression with Cancellation
-
-States move forward through defined stages, with a cancellation escape at each step. Each forward
-state can transition to the next stage or to a terminal cancelled state.
-
-### Incident Lifecycle
-
-A reported state moves through investigation to resolution and finally closure, with the option to
-skip directly from reporting to resolution.
-
-### Two-State (Binary)
-
-A single forward transition from an initial state to a single terminal state, with no other
-branches.
-
-### All Terminal (No Transitions)
-
-Every state is terminal — records are recorded directly with their final classification and never
-transition.
-
-### Complex Lifecycle
-
-Multiple forward stages with a cancellation escape at several points. A non-terminal verified or
-review state may exist between submission and final completion.
-
-### User Account Lifecycle (Most Complex)
-
-Multiple parallel paths through activation, verification, restriction, suspension, and archival,
-with cycles (e.g. suspension → reactivation) and multiple terminal states.
-
-### Transition Canonical Form
-
-Every `StatusEnum` follows this exact structure:
+### 5. Transition Canonical Form
 
 ```php
 public function validTransitions(): array
@@ -283,22 +114,15 @@ public function validTransitions(): array
     return match ($this) {
         self::STATE_A => [self::STATE_B, self::STATE_C],
         self::STATE_B => [self::STATE_D],
-        self::STATE_C => [],
-        self::STATE_D => [],
+        self::STATE_C => [], // Terminal
+        self::STATE_D => [], // Terminal
     };
 }
 ```
 
-Rules:
+Rules: Terminal states return `[]`. All valid destinations listed explicitly — no wildcards. `match()` is exhaustive. Return type `list<static>`.
 
-- Terminal states return `[]` (empty array, no further transitions).
-- All valid destinations are listed explicitly — no wildcards.
-- `match()` is exhaustive: every case must appear.
-- Return type `list<static>` — the list of valid target enum cases.
-
-### Guarding Transitions in Actions
-
-Command Actions enforce `canTransitionTo()` before persisting:
+### 6. Guarding Transitions in Actions
 
 ```php
 class SubmitAction extends BaseCommandAction
@@ -323,14 +147,35 @@ class SubmitAction extends BaseCommandAction
 }
 ```
 
----
+### 7. Business Logic on Enums
 
-## 8. Model Defaults
+Boolean methods that answer questions about the current state. Prefixed with `is`, `has`, `can`, `requires`, or `allows`:
 
-Model `$attributes` must use `->value`, never hardcoded strings:
+| Prefix | Semantics | Example |
+|--------|-----------|---------|
+| `is` | Boolean state query | `isTerminal()`, `isActive()` |
+| `has` | Feature/attribute presence | `hasProperty()` |
+| `can` | Permission or ability | `canTransitionTo()` |
+| `requires` | Prerequisite needed | `requiresAttachment()` |
+| `allows` | Permission granted | `allowsLogin()` |
+
+### 8. ColorableEnum — UI Badge Colors
+
+Optional contract for enums displayed as UI badges:
 
 ```php
-// ✅ Correct
+interface ColorableEnum
+{
+    public function color(): string;
+}
+```
+
+Returns a Tailwind color keyword: `primary`, `success`, `warning`, `error`, `info`.
+
+### 9. Model Defaults & Casting
+
+```php
+// ✅ Correct — uses enum value
 protected $attributes = [
     'status' => ExampleStatus::DRAFT->value,
 ];
@@ -339,40 +184,40 @@ protected $attributes = [
 protected $attributes = [
     'status' => 'draft',
 ];
-```
 
-Factory definitions follow the same rule:
-
-```php
-public function definition(): array
-{
-    return [
-        'status' => ExampleStatus::DRAFT->value,
-    ];
-}
-
-public function published(): static
-{
-    return $this->state(
-        fn (array $attrs) => ['status' => ExampleStatus::PUBLISHED->value],
-    );
-}
-```
-
-### Enum Casting on Models
-
-Models cast status columns to enum via `$casts`:
-
-```php
+// Enum casting
 protected $casts = [
     'status' => ExampleStatus::class,
 ];
 ```
 
-This allows direct enum comparison on the model:
+---
 
-```php
-$entry->status === ExampleStatus::SUBMITTED
-$entry->status->canTransitionTo(ExampleStatus::VERIFIED)
-$entry->status->label()
-```
+## Anti-Patterns
+
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `'status' => 'draft'` hardcoded in `$attributes` | `'status' => ExampleStatus::DRAFT->value` | String drift from enum definition |
+| `$model->status === 'active'` string comparison | `$model->status === ExampleStatus::ACTIVE` enum comparison | No type safety, no IDE support |
+| `if ($model->status == 'active')` loose comparison | `if ($model->status === StatusEnum::ACTIVE)` strict | Loose comparison bypasses enum type |
+| Status enum without `StatusEnum` contract | `implements StatusEnum` | No `canTransitionTo()`, no terminal detection |
+| Transition check in Livewire `if ($model->status->canTransitionTo(...))` | Delegate to Action — Action checks and throws | Business logic in UI layer |
+| `validTransitions()` with wildcard/default case | Exhaustive `match()` — every case listed | Missing transitions, incomplete FSM |
+| `case DRAFT = 'Draft'` (CamelCase value) | `case DRAFT = 'draft'` (lowercase value) | Value convention violation |
+| `case draft = 'draft'` (lowercase case name) | `case DRAFT = 'draft'` (UPPER_SNAKE name) | PHP enum naming convention |
+| `return ['active', 'pending']` string array | `return [self::ACTIVE, self::PENDING]` enum array | No type safety, string drift |
+| Business logic in Model `$this->isActive()` | Entity method `$entity->asState()->isActive()` | Anemic Domain Model |
+
+---
+
+## Quick References
+
+- `entity-pattern.md` — Entity delegates to StatusEnum for state machine logic
+- `action-pattern.md` — Actions enforce `canTransitionTo()` before persisting
+- `data-pattern.md` — DTOs carry enum values as typed properties
+- `modular-pattern.md` §6 Enum Patterns — architecture contracts
+- [Wikipedia — State Pattern](https://en.wikipedia.org/wiki/State_pattern) — GoF behavioral delegation
+- [GeeksforGeeks — State Design Pattern](https://www.geeksforgeeks.org/system-design/state-design-pattern/) — FSM implementation
+- [Rust FAQ — Typestate Pattern](https://www.rustfaq.org/en/how-to-use-the-typestate-pattern-for-compile-time-state-machines/) — compile-time state machines
+- [Wikipedia — Finite State Machine](https://en.wikipedia.org/wiki/Finite-state_machine) — mathematical model
+- [PHP Enums RFC](https://wiki.php.net/rfc/enums) — PHP 8.1 string-backed enums

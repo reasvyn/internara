@@ -1,16 +1,43 @@
-# Exception Pattern — Dual Exception Hierarchy & Error Handling
+# Exception Pattern — Dual Hierarchy, Error Handling & RejectedException
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current dual exception hierarchy (AppException/ModuleException, HasExceptionContext, RejectedException not RuntimeException, C8)
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Exception Hierarchy, SOLID Error Handling, Result Type, Fail-Fast) with anti-pattern table, Quick References
 
 ## Description
 
-Dual exception hierarchy with AppException (infrastructure) and ModuleException (business rules),
-error handling patterns, and Livewire catch blocks.
+This pattern governs how Internara structures **exception hierarchies** and **error handling**. It synthesizes global industry standards — **Exception Hierarchy Design** (Robert C. Martin, SOLID), **Fail-Fast Principle** (Programming by Contract, Bertrand Meyer), **Result Type** concept (functional error handling), **Defence in Depth** (NIST) — into enforceable rules tied to Internara's stack: `AppException` (infrastructure), `ModuleException` (business rules), `RejectedException`, `HasExceptionContext`, and `HandlesActionErrors`.
 
-## Dual Hierarchy Overview
+Without it, `RuntimeException` is used for everything (business rules, validation, infrastructure), catch blocks cannot distinguish failure types, and error messages leak stack traces. With it, every exception carries precise semantics, catch blocks are targeted, and users see friendly messages while developers get full context.
 
-Internara uses two parallel exception hierarchies, both rooted in PHP's `RuntimeException`. They are
-independent siblings — the business-rule tree does **not** extend the application-flow tree.
+---
+
+## Non-Negotiable
+
+Hard rules. Violations are architecture violations.
+
+1. **`RejectedException` for business rules, never `RuntimeException`.** Business rule violations (state machine, entity invariants, domain constraints) MUST throw `RejectedException`. `RuntimeException` is reserved for infrastructure failures. This is **C8** (invariant from `docs/conventions.md` §9). The exception message describes what was rejected and why — no default messages.
+
+2. **Two trees, not one.** `AppException` (infrastructure/HTTP) and `ModuleException` (business rules) are **independent siblings** — both extend `RuntimeException` but are NOT parent-child. This enables precise catch targeting:
+
+```php
+catch (ModuleException $e)         // Business rule violations only
+catch (InfrastructureException $e) // Infrastructure failures only
+```
+
+If `ModuleException` extended `AppException`, a `catch (AppException $e)` would silently swallow business rule violations.
+
+3. **`HasExceptionContext` for both trees.** All exceptions use the shared trait providing: `withHint()` (user-facing resolution), `withContext()` (debug metadata), `toCliOutput()` (terminal display), `getSanitizedContext()` (PII-masked), `isUserFacing()`, `shouldReport()`.
+
+4. **HandlesActionErrors as safety net.** Known exception types (`RejectedException`, `ValidationException`, `AuthorizationException`) pass through unmodified. Unknown `Throwable` is logged with full context and rethrown as generic `RuntimeException` — preventing stack traces from leaking to users.
+
+5. **Every throw site provides context.** No default messages. Every `throw new RejectedException(...)` must include what was rejected and why. Every `throw new InfrastructureException(...)` must include what failed and the relevant identifiers.
+
+6. **`isUserFacing()` distinguishes display from logging.** User-facing exceptions (input corrections, business rejections, permission denials) are shown to users. System-facing exceptions (infrastructure failures) result in a generic error page while full details are logged internally.
+
+---
+
+## How to Apply
+
+### 1. Dual Hierarchy — Why Two Trees
 
 ```
 RuntimeException
@@ -25,100 +52,85 @@ RuntimeException
     └── RejectedException
 ```
 
-Every abstract base and concrete class is a single-file, single-responsibility class. The shared
-context trait is used by both trees.
+### 2. AppException Tree
 
-### AppException Tree
+| Branch | Purpose | User-Facing? | Examples |
+|--------|---------|--------------|---------|
+| `ActionException` | Request-action failures | Yes | Validation error, conflict state |
+| `InfrastructureException` | System-level failures | No | I/O error, rate limit, DB unreachable |
+| `PresentationException` | HTTP-level failures | Yes | Not found, unauthorized, forbidden |
 
-`AppException` is the abstract root for application flow, HTTP semantics, and infrastructure
-exceptions. It extends `RuntimeException` and uses the shared context trait. Every concrete
-exception in this tree must implement `statusCode()` — the HTTP status code it maps to.
+Every concrete exception implements `statusCode()` — the HTTP status code it maps to.
 
-- **ActionException branch** — request-action failures (validation errors, conflict states). These
-  are user-facing.
-- **InfrastructureException branch** — system-level failures (I/O errors, rate limits). These are
-  **not** user-facing by default.
-- **PresentationException branch** — HTTP-level presentation failures (resource not found,
-  unauthorized access). These are user-facing.
+### 3. ModuleException Tree
 
-### ModuleException Tree
+`RejectedException` is the sole concrete child. Thrown when a domain invariant or business rule is violated. The exception message describes what was rejected and why.
 
-`ModuleException` is the abstract root for business rule violations. It extends `RuntimeException`
-directly — **not** `AppException`. Its sole concrete child is `RejectedException`, thrown when a
-domain invariant or business rule is violated. The exception message describes what was rejected and
-why. Every throw site provides the relevant details — there is no default message or hint.
+### 4. HasExceptionContext — Shared Capabilities
 
----
+| Capability | Purpose |
+|-----------|---------|
+| `withHint()` | User-facing resolution hint |
+| `withContext()` | Debug metadata (key-value) |
+| `toCliOutput()` | Terminal display (message + hint + sanitized context) |
+| `getSanitizedContext()` | PII-masked context |
+| `isUserFacing()` | `true` by default; `false` for infrastructure |
+| `shouldReport()` | `true` by default; `false` for expected/graceful |
 
-## Why Two Trees
+### 5. Error Handling in Actions — Defence in Depth
 
-`ModuleException` is deliberately **not** a subclass of `AppException`. This design enables precise
-catch-block targeting without class-inspection logic:
+`HandlesActionErrors` trait provides a safety net:
 
+```php
+// Known types — rethrown as-is (they carry correct semantics)
+catch (RejectedException $e) { throw $e; }
+catch (ValidationException $e) { throw $e; }
+catch (AuthorizationException $e) { throw $e; }
+
+// Unknown — logged with full context, wrapped in RuntimeException
+catch (Throwable $e) {
+    SmartLogger::critical('Unexpected error')->withContext([...])->save();
+    throw new RuntimeException('An unexpected error occurred', 0, $e);
+}
 ```
-catch (ModuleException $e)           ← Business rule violations only
-catch (InfrastructureException $e)   ← Infrastructure failures only
-```
 
-If `ModuleException` extended `AppException`, a `catch (AppException $e)` block would silently
-swallow business rule violations, making it impossible to separate "the user sent bad data" from
-"the database is unreachable" at the catch level.
+This is **Defence in Depth** (NIST) — never rely on a single error handling layer.
 
----
+### 6. Three Failure Modes
 
-## HasExceptionContext Trait
-
-The shared trait used by **both** `AppException` and `ModuleException`. It provides five
-capabilities:
-
-### Hint
-
-A user-facing resolution hint attached to the exception. Concrete exceptions set a sensible default
-hint; callers override it when they have more specific guidance.
-
-### Context
-
-Arbitrary key-value metadata for debugging and logging. Context is **not** shown to end users by
-default. It appears in logs and CLI output (after PII sanitization).
-
-### CLI Output
-
-Formats the exception for terminal display, concatenating message, hint, and sanitized context.
-Sensitive values (emails, passwords, tokens) are masked before emission.
-
-### PII Sanitization
-
-Returns context with PII fields masked. Used internally by CLI output and available for custom
-renderers.
-
-### Default Boolean Methods
-
-- `isUserFacing(): bool` — defaults to `true`. Overridden to `false` by infrastructure exceptions.
-- `shouldReport(): bool` — defaults to `true`. All exceptions are logged by default.
+| Failure Mode | Exception | Handled By | User Experience |
+|-------------|-----------|-----------|----------------|
+| Format/invalid input | `ValidationException` | Livewire error bag | Inline field errors |
+| Business rule violation | `RejectedException` | Component try/catch | Flash error message |
+| Infrastructure failure | `RuntimeException` (rethrown) | Component try/catch | Generic error message |
 
 ---
 
-## Error Handling in Actions
+## Anti-Patterns
 
-A dedicated trait provides a safety net for wrapping Action execution. It distinguishes between
-known exception types (which are re-thrown as-is since they already carry correct semantics) and
-unknown exceptions (which are logged with full context and wrapped in a generic exception to prevent
-stack traces from leaking to users or HTTP responses).
-
-The trait is applied to the base Action class and is available for opt-in use in any class that
-needs structured error handling.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `throw new RuntimeException('business rule')` | `throw new RejectedException('business rule')` | C8 — wrong exception type |
+| `catch (Exception $e)` catching everything | `catch (RejectedException $e)` / `catch (InfrastructureException $e)` | Imprecise catch — swallows all types |
+| `throw new RejectedException()` with no message | `throw new RejectedException(__('internship.cannot_approve'))` | No context, no user-facing message |
+| `throw new \RuntimeException()` for business logic | `throw new RejectedException()` | Business rule in wrong tree |
+| `dd($e)` / `dump($e)` in catch blocks | `SmartLogger::critical(...)` + rethrow | Debug call in production |
+| Catch block that silently ignores exception | At minimum: `SmartLogger::warning(...)` + rethrow or user toast | Silent failure |
+| `try { $action->execute(); } catch (\Throwable $e) { // no log }` | `HandlesActionErrors` or explicit logging | Lost error context |
+| `throw new \Exception()` (base PHP Exception) | Use project-specific exception hierarchy | No semantic distinction |
+| Business logic in catch block (retry, state change) | Business logic in Action; catch only for error display | Catch is not a business rule executor |
+| No `statusCode()` on AppException subclass | Every concrete AppException implements `statusCode()` | Missing HTTP mapping |
 
 ---
 
-## User-Facing vs System-Facing Exceptions
+## Quick References
 
-The `isUserFacing(): bool` method on the shared context trait distinguishes exceptions that should
-be displayed to end users from those that should be logged internally only.
-
-- **User-facing** — exceptions the user needs to understand and act on (input corrections, business
-  rule rejections, permission denials).
-- **System-facing** — exceptions that should result in a generic error page while full details are
-  logged internally (infrastructure failures, rate limits).
-
-The `shouldReport(): bool` method controls whether the exception is logged. All exceptions report by
-default. Override `shouldReport()` when an exception is expected and handled gracefully.
+- `action-pattern.md` §9 Error Handling — three failure modes, `HandlesActionErrors`
+- `livewire-pattern.md` — Livewire catch blocks, `RejectedException` → toast
+- `logging-pattern.md` — SmartLogger exception context, PII masking
+- `modular-pattern.md` §10 Logging & Error Handling — architecture contracts
+- [Robert C. Martin — SOLID Principles](https://blog.cleancoder.com/2014/10/the-packaging-dependency.html) — SRP, error handling discipline
+- [Bertrand Meyer — Programming by Contract](https://en.wikipedia.org/wiki/Design_by_contract) — Fail-Fast, preconditions
+- [Wikipedia — Exception Handling](https://en.wikipedia.org/wiki/Exception_handling) — exception hierarchy design
+- [PHP — SPL Exceptions](https://www.php.net/manual/en/spl.exceptions.php) — standard exception hierarchy
+- [Result Type Concept](https://doc.rust-lang.org/std/result/) — functional error handling (Rust `Result<T, E>`)

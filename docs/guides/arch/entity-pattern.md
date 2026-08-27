@@ -1,71 +1,52 @@
-# Entity Pattern — Entity-Model Separation & Purity Rules
+# Entity Pattern — Domain Entities, Rich Domain Model & Purity Rules
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify pattern matches current Entity contracts (final readonly, fromModel bridge, business rules in Entity, C5 forbidden imports)
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (DDD Entity, Rich Domain Model, Aggregates, Value Object, Persistence Ignorance) with anti-pattern table, Quick References
 
 ## Description
 
-Rules for Entity-Model separation: Entity purity, bridge pattern, business rule extraction, and
-testing without database.
+This pattern governs how Internara separates **domain business rules** (Entity) from **persistence concerns** (Model). It synthesizes global industry standards — **Domain-Driven Design Entity** (Eric Evans), **Rich Domain Model vs Anemic Domain Model** (Martin Fowler), **Aggregates & Consistency Boundaries** (Vaughn Vernon), **Value Object** (Fowler/Evans), **Persistence Ignorance** (Vladimir Khorikov) — into enforceable rules tied to Internara's stack: `final readonly` Entities extending `BaseEntity`, Eloquent Models extending `BaseModel`, and the `fromModel()`/`as{Entity}()` Bridge Pattern.
 
-## Table of Contents
-
-1. [Philosophy & Rationale](#1-philosophy--rationale)
-2. [Entity Contract (BaseEntity)](#2-entity-contract-baseentity)
-3. [Model Responsibilities](#3-model-responsibilities)
-4. [Bridge Pattern (fromModel + as{Entity})](#4-bridge-pattern-frommodel--asentity)
-5. [Entity Purity Rules](#5-entity-purity-rules)
-6. [Pragmatic Framework Dependencies](#6-pragmatic-framework-dependencies)
-7. [Immutability & with()](#7-immutability--with)
-8. [equals() Value Semantics](#8-equals-value-semantics)
-9. [Serialization (toArray, jsonSerialize)](#9-serialization-toarray-jsonserialize)
-10. [Static Factory Methods](#10-static-factory-methods)
-11. [Common Entity Patterns](#11-common-entity-patterns)
+Without it, business logic scatters across Models, Livewire components, and Actions — the **Anemic Domain Model** anti-pattern (Fowler): objects with state but no behavior, where all logic lives in procedural Services. With it, Entities are pure, testable without a database, and changing a business rule never touches persistence code.
 
 ---
 
-## 1. Philosophy & Rationale
+## Non-Negotiable
 
-Eloquent models in Laravel mix persistence (database queries, relationships, scopes) with business
-logic (capability checks, status queries, permission gating). This coupling has two negative
-effects:
+Hard rules. Violations are architecture violations.
 
-1. **Business logic cannot be tested without a database** — every test requires factories,
-   migrations, and database setup, making tests slow and brittle.
-2. **Schema changes ripple through business logic** — renaming a column breaks inline rules
-   scattered across Models, Actions, and Controllers.
+1. **Entity purity — zero I/O, zero framework dependencies.** Entities MUST NOT execute database queries, make HTTP requests, write to files/caches, dispatch events, access the service container, or use facades. The single allowed framework import is `Illuminate\Database\Eloquent\Model` — and only in the `fromModel()` parameter type hint. This enforces **Persistence Ignorance** (Khorikov) and **Domain Model Purity** — the domain layer has no out-of-process dependencies.
 
-The Entity-Model Separation pattern addresses this by splitting concerns into two class types:
+2. **`final readonly` — no inheritance, immutable state.** Every entity MUST be `final readonly class {Name} extends BaseEntity`. `final` prevents inheritance (composition over inheritance). `readonly` enforces immutability at the language level — state is set once in the constructor and never changes. This mirrors the **Value Object** concept (Evans/Fowler): "defined solely by the state of its attributes, with no conceptual identity."
 
-| Concern        | Class  | Responsibilities                                                        |
-| -------------- | ------ | ----------------------------------------------------------------------- |
-| Data access    | Model  | Relationships, scopes, casts, attributes, factory config, entity bridge |
-| Business rules | Entity | Capability checks, state queries, date logic, policy decisions          |
+3. **Private typed properties, exposed via methods.** All entity state is `private` constructor-promoted properties. Expose via getter methods, never public properties. Business rules live as methods on the Entity (`canLogin()`, `isActive()`, `canBeDeleted()`). This makes the Entity a **Rich Domain Model** (Fowler) — objects containing both state and behavior, not an Anemic Domain Model.
 
-Entities are `final readonly` snapshots of state extracted from a Model at a point in time. They
-answer business questions — _can this user log in?_, _is this registration window open?_, _can this
-record be deleted?_ — without touching the database.
+4. **`fromModel()` is the only Eloquent access point.** The `fromModel(Model $model): static` factory method is the **only place** where Eloquent field access happens. It extracts values (primitives, enums, Carbon) — never the Model itself. This is the **Bridge Pattern** — connecting the persistence world (Eloquent) with the pure business-rule world (Entity).
 
-This separation follows the Single Responsibility Principle: a Model changes because the data model
-changes; an Entity changes because the business requirement changes. These are different forces that
-should not drive changes in the same class.
+5. **Business rules live on Entities, not Models, not Actions, not Livewire.** Capability checks (`canLogin()`, `canBeDeleted()`), state queries (`isActive()`, `isExpired()`), date logic (`isWithinPeriod()`), and policy decisions (`allowsLogin()`) MUST live on Entity methods. Models are data access objects. Actions orchestrate. Livewire renders. Only Entities decide.
 
-### Relationship to DTOs
+6. **No business rules on Models.** Models define relationships, scopes, casts, attributes, media collections, factory config, and the entity bridge accessor. They MUST NOT contain `canLogin()`, `isActive()`, `canBeDeleted()`, `hasAvailableSlots()`, `isExpired()`, `canTransitionTo()`, or any business decision method. This is the **SRP** (Robert C. Martin): a Model changes because the data model changes; an Entity changes because the business requirement changes.
 
-| Aspect              | Entity (BaseEntity)            | DTO (BaseData)                           |
-| ------------------- | ------------------------------ | ---------------------------------------- |
-| Purpose             | Business rules, state queries  | Data transfer, input/output contracts    |
-| Mutation            | Never                          | Never                                    |
-| Framework deps      | Pragmatic — allowed            | Pragmatic — allowed                      |
-| `fromModel()`       | Yes — persistence bridge       | Optional                                 |
-| Property visibility | `private` (expose via methods) | `public`                                 |
-| Used by             | Actions, Policies, Livewire    | Actions (input), Livewire (form mapping) |
+7. **Multiple entities per model are normal.** A single Model may expose multiple entities for different business roles — e.g., `asRegistrationState()`, `asCapacityState()`, `asPeriodState()`. Each entity answers a specific set of business questions. Do not force one Entity to carry all business rules.
 
 ---
 
-## 2. Entity Contract (BaseEntity)
+## How to Apply
 
-Every entity extends `BaseEntity`, an `abstract readonly class` implementing `JsonSerializable`. It
-provides five built-in capabilities:
+### 1. Entity-Model Separation — Rich Domain Model (Fowler)
+
+The Anemic Domain Model anti-pattern (Fowler, 2003): "domain objects contain state but no behavior — they are bags of getters and setters. All business logic is extracted into procedural Service classes. This is the exact opposite of OOP."
+
+| Concern | Entity (Rich Domain Model) | Model (Active Record / Data Access) |
+|---------|--------------------------|-------------------------------------|
+| **Purpose** | Business rules, state queries, capability checks | Persistence, relationships, scopes, casts |
+| **Change trigger** | Business requirement changes | Data model / schema changes |
+| **Testability** | Pure unit tests — no database, no migrations | Feature tests — requires DB, factories |
+| **Framework deps** | `final readonly` — no Eloquent queries, no facades | Eloquent: queries, relationships, scopes |
+| **Relationships** | Receives pre-loaded data via `fromModel()` | Defines `hasMany()`, `belongsTo()`, etc. |
+
+### 2. The Entity Contract (BaseEntity)
+
+Every entity extends `BaseEntity`, an `abstract readonly class` implementing `JsonSerializable`:
 
 ```php
 abstract readonly class BaseEntity implements JsonSerializable
@@ -82,7 +63,7 @@ abstract readonly class BaseEntity implements JsonSerializable
     // JsonSerializable — delegates to toArray()
     public function jsonSerialize(): array;
 
-    // Value equality comparison
+    // Value equality comparison (Evans/Fowler: structural comparison)
     public function equals(self $other): bool;
 
     // Immutable "setter" — returns new instance with one property changed
@@ -90,66 +71,11 @@ abstract readonly class BaseEntity implements JsonSerializable
 }
 ```
 
-The contract mandates only `fromModel()`. The remaining methods are inherited and provide consistent
-serialization, comparison, and mutation semantics across all entities.
+### 3. Bridge Pattern — fromModel + as{Entity}
 
----
+The Bridge connects the framework-persistent world (Models) with the pure business-rule world (Entities). Two halves:
 
-## 3. Model Responsibilities
-
-Models are strictly **data access objects**. They define:
-
-- **Relationships** — `hasMany()`, `belongsTo()`, `morphMany()`, etc.
-- **Scopes** — `scopeActive()`, `scopeRecent()`, query-building helpers
-- **Casts and attributes** — `#[Cast]`, `#[Appends]`, `#[Fillable]`, `$casts`
-- **Media collections** — Spatie MediaLibrary `registerMediaCollections()`
-- **Factory configuration** — `newFactory()`, `HasFactory`
-- **Entity bridge** — `as{EntityName}()` accessor methods
-
-### What Models Must NOT Contain
-
-Business rules of any kind are forbidden on Models:
-
-| ❌ Don't              | ✅ Do instead                                |
-| --------------------- | -------------------------------------------- |
-| `canLogin()`          | `$user->asRole()->allowsLogin()`             |
-| `isActive()`          | `$entity->asState()->isActive()`             |
-| `canBeDeleted()`      | `$entity->asState()->canBeDeleted()`         |
-| `hasAvailableSlots()` | `$entity->asCapacity()->hasAvailableSlots()` |
-| `isExpired()`         | `$entity->asPeriod()->isAfterWindow()`       |
-| `canTransitionTo()`   | Delegate to the status enum directly         |
-
-### Permitted Convenience Methods
-
-Pure formatting helpers that only transform existing data without business logic are acceptable:
-
-```php
-public function initials(): string
-{
-    $words = explode(' ', trim($this->name));
-
-    if (count($words) >= 2) {
-        return strtoupper(substr($words[0], 0, 1).substr(end($words), 0, 1));
-    }
-
-    return strtoupper(substr($this->name, 0, 2));
-}
-```
-
-The litmus test: _"Would this method still make sense if I swapped the database for an API?"_ If yes
-(relationships, scopes, casts), keep it on the Model. If no (business decisions), move it to the
-Entity.
-
----
-
-## 4. Bridge Pattern (fromModel + as{Entity})
-
-The bridge connects the framework-persistent world (Models) with the pure business-rule world
-(Entities). It has two halves:
-
-### 4.1 Static Factory: `fromModel(Model $model): static`
-
-Every entity implements this to extract its needed state from a Model:
+**Static Factory: `fromModel(Model $model): static`**
 
 ```php
 final readonly class SomeEntity extends BaseEntity
@@ -169,305 +95,123 @@ final readonly class SomeEntity extends BaseEntity
 }
 ```
 
-The `fromModel()` method is the **only place** where Eloquent field access happens. It extracts
-values, not the Model itself — the entity receives primitives, enums, and Carbon instances.
-
-### 4.2 Named Accessor: `as{EntityName}(): EntityType`
-
-Models expose entities via specific named methods that describe the **business role**:
+**Named Accessor: `as{EntityName}(): EntityType`**
 
 ```php
+// ✅ Correct — specific name communicates the role
 public function asSomeRole(): SomeEntity
 {
     return SomeEntity::fromModel($this);
 }
-```
 
-#### Naming Convention
-
-The accessor name describes the role, not the class. A model may expose **multiple entities** for
-different business roles — for example, one entity for registration window logic and another for
-deletion safety.
-
-#### Anti-Pattern: Generic Accessor
-
-```php
 // ❌ Wrong — generic name reveals nothing
 public function entity(): SomeEntity
-
-// ✅ Correct — specific name communicates the role
-public function asSomeRole(): SomeEntity
 ```
 
-### 4.3 Usage in Callers
+The accessor name describes the **business role**, not the class. A Model may expose **multiple entities** for different business roles.
 
-Actions, Policies, and Livewire components access entities through the model:
+### 4. What Models MUST NOT Contain
 
-```php
-// Before (inline business logic in an Action)
-if ($entity->status === 'active'
-    && $entity->start_date <= now()
-    && $entity->end_date >= now()
-) { ... }
+| Don't | Do Instead |
+|-------|-----------|
+| `canLogin()` | `$user->asRole()->allowsLogin()` |
+| `isActive()` | `$entity->asState()->isActive()` |
+| `canBeDeleted()` | `$entity->asState()->canBeDeleted()` |
+| `hasAvailableSlots()` | `$entity->asCapacity()->hasAvailableSlots()` |
+| `isExpired()` | `$entity->asPeriod()->isAfterWindow()` |
+| `canTransitionTo()` | Delegate to the status enum directly |
 
-// After (centralized business rule)
-if ($entity->asSomeRole()->isActive()) { ... }
-```
+**Litmus test:** _"Would this method still make sense if I swapped the database for an API?"_ If yes (relationships, scopes, casts), keep it on the Model. If no (business decisions), move it to the Entity.
 
----
+### 5. Immutability & Value Semantics — Value Object (Evans/Fowler)
 
-## 5. Entity Purity Rules
+Entities are **immutable** — once constructed, their state never changes. This eliminates entire classes of bugs (accidental mutation) and makes business rules predictable: given the same state, an entity method always returns the same answer.
 
-Entities follow strict purity rules to remain testable and predictable:
-
-### 5.1 `final readonly` Class
+**`with()` — Immutable Copy:** When you need a modified copy, use `with()` which returns a **new instance**:
 
 ```php
-final readonly class SomeEntity extends BaseEntity
-```
-
-- **`final`** — no inheritance. Every entity is a leaf class. Composition over inheritance.
-- **`readonly`** — all properties are implicitly readonly. State is set once in the constructor and
-  never changes. PHP 8.4 enforces this at the language level.
-
-### 5.2 Private Typed Properties
-
-All state is passed through the constructor as `private` typed properties. Expose via getter
-methods, never public properties:
-
-```php
-final readonly class SomeEntity extends BaseEntity
-{
-    public function __construct(
-        private ?string $status,
-        private ?Carbon $startDate,
-        private ?Carbon $endDate,
-        private bool $hasRelated,
-    ) {}
-
-    public function isActive(): bool { ... }
-    public function canBeApproved(): bool { ... }
-}
-```
-
-Simple getters for entity-owned state are acceptable:
-
-```php
-public function status(): SomeStatus
-{
-    return $this->status;
-}
-```
-
-### 5.3 Zero I/O, Zero Persistence
-
-Entities must never:
-
-- Execute database queries
-- Make HTTP requests
-- Write to files or caches
-- Dispatch events or notifications
-- Access the service container
-- Use facades (`\DB`, `\Cache`, `\Event`, etc.)
-
-The single allowed framework import is `Illuminate\Database\Eloquent\Model` — and only in the
-`fromModel()` parameter type hint.
-
-### 5.4 Entity Method Contracts
-
-Entity methods return **business answers**, not raw data:
-
-| Return Type | Examples                                                                                |
-| ----------- | --------------------------------------------------------------------------------------- |
-| `bool`      | `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()` |
-| `int`       | `daysRemaining()`, `totalDuration()`, `availableSlots()`                                |
-| `string`    | `scoreBand()` — computed business categorization                                        |
-| Enum        | `status()` — entity-owned typed state                                                   |
-
-Methods like `toArray()` and `jsonSerialize()` are exempt — they are serialization concerns provided
-by the base class.
-
----
-
-## 6. Pragmatic Framework Dependencies
-
-The project explicitly chooses **pragmatism over purity**. Framework dependencies are allowed in
-entities when they serve business logic without introducing testability costs. `Carbon\Carbon` is
-permitted for date math, `Illuminate\Database\Eloquent\Model` for `fromModel()` parameter hints, and
-enum types for status machine logic. All other framework access (Eloquent queries, facades, service
-container, HTTP, file system) remains off-limits.
-
----
-
-## 7. Immutability & with()
-
-Entities are **immutable** — once constructed, their state never changes. This eliminates entire
-classes of bugs (accidental mutation) and makes business rules predictable: given the same state, an
-entity method always returns the same answer.
-
-### The `with()` Method
-
-When you need a modified copy of an entity, use the `with()` method inherited from `BaseEntity`:
-
-```php
-public function with(string $property, mixed $value): static
-{
-    $data = $this->toArray();
-    $data[$property] = $value;
-
-    return static::fromArray($data);
-}
-```
-
-This returns a **new instance** with the specified property changed:
-
-```php
-$current = new SomeEntity(
-    status: 'pending',
-    startDate: $startDate,
-    endDate: $endDate,
-    hasRelated: false,
-);
-
+$current = new SomeEntity(status: 'pending', startDate: $startDate, endDate: $endDate, hasRelated: false);
 $updated = $current->with('hasRelated', true);
 
 $current->hasRelated; // false — unchanged
 $updated->hasRelated; // true — new instance
 ```
 
-### When to Use `with()`
+**`equals()` — Value Equality:** Two entities are equal if they are the same instance OR their serialized arrays are identical (structural comparison, per Fowler's Value Object).
 
-Use `with()` in tests when you need an entity with slightly different state for edge-case testing.
-Avoid using it in production code — entities are snapshots, and modifying them mid-workflow may
-indicate that the `fromModel()` bridge should extract more state or that a new entity type is
-needed.
+### 6. Entity Method Contracts
 
----
+Entity methods return **business answers**, not raw data:
 
-## 8. equals() Value Semantics
+| Return Type | Examples |
+|------------|---------|
+| `bool` | `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()` |
+| `int` | `daysRemaining()`, `totalDuration()`, `availableSlots()` |
+| `string` | `scoreBand()` — computed business categorization |
+| Enum | `status()` — entity-owned typed state |
 
-`BaseEntity` provides value equality via `equals()`:
+### 7. Pragmatic Framework Dependencies
 
-```php
-public function equals(self $other): bool
-{
-    return $this === $other || $this->toArray() === $other->toArray();
-}
-```
+The project explicitly chooses **pragmatism over purity** (Khorikov's DDD Trilemma — you cannot have all three of encapsulation, purity, and performance). `Carbon\Carbon` is permitted for date math, `Illuminate\Database\Eloquent\Model` for `fromModel()` parameter hints, and enum types for status machine logic. All other framework access (Eloquent queries, facades, service container, HTTP, file system) remains off-limits.
 
-Two entities are equal if:
+### 8. Common Entity Patterns
 
-1. They are the same object instance (`===`), **or**
-2. Their serialized arrays are identical
+| Pattern | Purpose | Example |
+|---------|---------|---------|
+| **State Entity** | Status + boolean capability checks | `canBeDeleted()`, `canBeApproved()` |
+| **Period Entity** | Date ranges, temporal queries | `isAcceptingRegistrations()`, `isWithinPeriod()` |
+| **Capacity Entity** | Numeric constraints, availability | `isFull()`, `availableSlots()` |
+| **Business Role** | User role with role-specific rules | `allowsLogin()`, `isSuspended()` |
+| **Settings-Backed** | Entity from settings store, not a model | `get()` reads from Settings facade |
+| **Token Entity** | Generated token with validation | `isTokenExpired()`, `hasExceededMaxAttempts()` |
+| **Delegation Entity** | Thin wrapper delegating to enum | Constructor holds status enum, methods delegate |
 
-This enables comparison without worrying about object identity:
+### 9. Testing Entities — Pure Unit Tests
 
-```php
-$a = new SomeEntity(status: Status::ACTIVE, isLocked: false, setupRequired: false);
-
-$b = new SomeEntity(status: Status::ACTIVE, isLocked: false, setupRequired: false);
-
-$a->equals($b); // true — same values
-$a === $b; // false — different instances
-```
-
----
-
-## 9. Serialization (toArray, jsonSerialize)
-
-### toArray()
-
-The base class provides recursive array serialization. It handles nested entities,
-`JsonSerializable` sub-objects (like Carbon), and arrays recursively. All private constructor
-properties are included in the output using reflection.
-
-### jsonSerialize()
-
-Delegates to `toArray()`, enabling direct use with `json_encode()`:
+Entities are testable without database, migrations, or factories:
 
 ```php
-return response()->json($someEntity); // Works because of JsonSerializable
+test('active entity can be approved', function () {
+    $entity = new SomeEntity(
+        status: Status::ACTIVE,
+        startDate: now()->subDays(10),
+        endDate: now()->addDays(20),
+    );
+
+    expect($entity->canBeApproved())->toBeTrue();
+});
 ```
 
 ---
 
-## 10. Static Factory Methods
+## Anti-Patterns
 
-Beyond `fromModel()`, entities may expose additional static factories for specialized construction
-patterns.
-
-### Settings-Backed Entities
-
-Some entities are not backed by a single model row but by the application's settings store. These
-entities provide a `get()` static factory that reads from settings rather than a model:
-
-```php
-final readonly class SettingsBackedEntity extends BaseEntity
-{
-    public static function fromModel(Model $model): static
-    {
-        return self::get(); // Ignores the model parameter
-    }
-
-    public static function get(): static
-    {
-        // Reads from application settings store
-    }
-}
-```
-
-### Generation Factories
-
-Entities that represent tokens or generated values may have creation factories. These static
-factories perform persistence as a deliberate exception — the entity acts as both a factory and a
-value object.
-
-### User-Specific Factories
-
-Some entities expose factories scoped to a specific domain object:
-
-```php
-public static function forUser(User $user): self
-{
-    return self::fromModel($user);
-}
-```
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `$model->canLogin()` / `$model->isActive()` on Eloquent Model | `$model->asRole()->allowsLogin()` / `$entity->asState()->isActive()` | Anemic Domain Model (Fowler) — business logic on data access object |
+| Entity with `DB::query()` / `Cache::get()` / `Http::get()` | Pure entity — zero I/O, zero framework deps | Domain Model Purity violation (Khorikov) |
+| `public readonly class` (no `final`) | `final readonly class` | Allows inheritance, breaks Value Object semantics |
+| Entity with public properties `public string $status` | Private properties + getter methods | Breaks encapsulation, no control over access |
+| Generic accessor `$model->entity()` | Named accessor `$model->asSomeRole()` | Role-specific naming missing |
+| Business logic in Livewire `mount()` without Entity | Entity method called from Livewire/Action | Business logic leaked to UI layer |
+| `if ($model->status === 'active' && $model->start_date <= now())` inline | `$model->asState()->isActive()` | Inline business rule, no Entity extraction |
+| Entity with `new \Carbon\Carbon()` (framework dep beyond allowed) | Accept `Carbon` as parameter, use in methods | Pragmatic deps boundary exceeded |
+| Single Entity carrying all business rules for a Model | Multiple entities per business role (`asState()`, `asCapacity()`, `asPeriod()`) | SRP violation — one Entity, many responsibilities |
+| `$this->save()` or `$this->delete()` inside Entity method | Entity returns domain event, Action persists | Entity does persistence (C5 violation) |
 
 ---
 
-## 11. Common Entity Patterns
+## Quick References
 
-### 11.1 State Entity Pattern
-
-The most common pattern. Entity holds status + related boolean flags and provides capability checks
-such as `canBeDeleted()`, `canBeApproved()`, `canBeEdited()`.
-
-### 11.2 Period Entity Pattern
-
-Entity holds date ranges and answers temporal queries such as `isAcceptingRegistrations()`,
-`isBeforeWindow()`, `isWithinPeriod()`.
-
-### 11.3 Capacity Entity Pattern
-
-Entity holds numeric constraints and answers availability queries such as `isFull()`,
-`availableSlots()`, `hasAvailableSlots()`.
-
-### 11.4 Business Role Pattern
-
-Entity represents a user's business role with role-specific rules such as `allowsLogin()`,
-`isSuspended()`, `requiresSetup()`, `canTransitionTo()`.
-
-### 11.5 Settings-Backed Entity Pattern
-
-Entity is not backed by a single model row but by the application settings store. `fromModel()`
-delegates to `get()` which reads from a settings facade.
-
-### 11.6 Token Entity Pattern
-
-Entity represents a generated token with validation logic such as `isTokenExpired()`,
-`hasExceededMaxAttempts()`, and generation factories.
-
-### 11.7 Delegation Entity Pattern
-
-Entity is a thin wrapper that delegates to an enum's methods. Constructor holds a single status
-enum; methods delegate to the enum for answers like `isVerified()`, `canBeEdited()`.
+- `action-pattern.md` — Actions call Entity methods, throw `RejectedException` on violation
+- `modular-pattern.md` §1.6 SRP & Modularity Rules, §5 Entity-Model Separation — architecture contracts
+- `enum-pattern.md` — Entity delegates to StatusEnum for state machine logic
+- `model-pattern.md` — Eloquent Model contract, `#[Fillable]`, relationships, scopes
+- `policy-pattern.md` — Policies call Entity methods for authorization decisions
+- [Eric Evans — Domain-Driven Design](https://www.domainlanguage.com/ddd/) — Entity identity, lifecycle, Value Object
+- [Martin Fowler — Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) — Rich vs Anemic
+- [Martin Fowler — Domain Model (PoEAA)](https://martinfowler.com/eaaCatalog/domainModel.html) — model that puts business logic in objects
+- [Vaughn Vernon — Aggregates](https://www.dddcommunity.org/library/vernon_2011/) — consistency boundaries, small aggregates
+- [Martin Fowler — Value Object](https://martinfowler.com/bliki/ValueObject.html) — identity-less, immutable, structural equality
+- [Vladimir Khorikov — Domain Model Purity](https://khorikov.org/posts/2021-08-02-purity-specification-pattern/) — Persistence Ignorance, DDD Trilemma
+- [Microsoft — DDD-Oriented Microservice](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice) — POCO/POPO domain entities

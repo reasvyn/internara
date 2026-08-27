@@ -1,208 +1,84 @@
 # Support Pattern — Static Utilities, Purity Rules & Boundaries
 
-> **Last updated:** 2026-08-25 **Changes:** sync — Spotlight remains deleted (was maryUI BaseSpotlight), TallstackUI replaces maryUI
+> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Utility Pattern, Pure Functions, Static Methods, Immutability) with anti-pattern table, Quick References
 
 ## Description
 
 Defines the Support utility layer — purely static helper classes with minimal or no framework
-dependencies.
+dependencies. Grounded in **Utility Pattern**, **Pure Functions**, **Static Methods**, and
+**Immutability** — all mapped to Internara's Support vs Service vs Action boundaries.
 
 ---
 
-## 1. What Support Is
+## Non-Negotiable
 
-Support utilities are **`public static` methods only**. They serve one purpose: stateless
-transformations and helpers with zero side effects.
+Hard rules. Violations are architecture violations.
 
-**Rules:**
+1. **Public static methods only — no instance methods.** Support classes MUST use only `public static` methods. No `public function` instance methods. No constructor injection. This is the defining boundary between Support and Service.
 
-- MUST use only `public static` methods — no `public function` instance methods
-- MUST NOT have constructor injection — no `__construct()` parameters
-- MAY use static framework calls (`config()`, `__()`, `trans()`) but SHOULD prefer pure PHP where
-  possible
-- MUST NOT write to the database
-- MUST NOT dispatch events
-- MUST NOT call Actions
-- MUST NOT manage transactions
+2. **No constructor injection.** Support classes MUST NOT have `__construct()` parameters. If you need constructor injection, it is a Service — move it.
 
-### What Support Is NOT
+3. **No side effects.** Support classes MUST NOT write to the database, dispatch events, call Actions, manage transactions, or log to the activity log. They are pure transformations and helpers.
 
-| If your class needs...                                                      | It belongs in                                           |
-| --------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Constructor injection                                                       | **Service** (see [Service Pattern](service-pattern.md)) |
-| Instance methods (`public function` without `static`)                       | **Service**                                             |
-| Framework facades in a constructor                                          | **Service**                                             |
-| To extend a framework class (`extends Translator`, `extends BaseSpotlight`) | **Service**                                             |
+4. **Minimal framework dependencies.** MAY use static framework calls (`config()`, `__()`, `trans()`) but SHOULD prefer pure PHP where possible. MUST NOT depend on the Laravel container or instance facades.
+
+5. **No domain business logic.** Support classes MUST NOT contain rules about internships, students, grades, enrollments, or other business concepts. Domain logic belongs in Actions + Entities.
+
+6. **No database writes.** Persistence goes through Command Actions. Read-only Model queries from static methods are acceptable for simple lookups in module-level Support.
 
 ---
 
-## 2. Where Support Lives
+## How to Apply
 
-Support classes at their owning scope:
+### 1. Utility Pattern
 
-| Scope           | Path                                | Example                                        |
-| --------------- | ----------------------------------- | ---------------------------------------------- |
-| Cross-module    | `app/Core/Support/`                 | `app/Core/Support/PiiMasker.php`               |
-| Module-level    | `app/{Module}/Support/`             | `app/User/Support/UserIdentifierGenerator.php` |
-| Submodule-level | `app/{Module}/{SubModule}/Support/` | None currently                                 |
+Support classes implement the Utility pattern — a collection of related static methods that perform a single concern (color math, string masking, array manipulation). Each method is independently testable with no shared state.
 
-**Placement rules:**
+### 2. Pure Functions
 
-- Pure utility without framework calls → `app/Core/Support/`
-- Module-specific utility → `app/{Module}/Support/`
-- If it needs constructor injection → `app/{Module}/{SubModule}/Services/` instead
+Ideally, Support methods are pure functions: same input → same output, no side effects. This makes them trivially testable and safe to call from anywhere without worrying about state contamination.
 
----
+### 3. Static Methods Trade-offs
 
-## 3. Existing Support Classes — Correct vs Incorrect
+| Advantage | Disadvantage |
+|-----------|-------------|
+| No instantiation needed | Cannot be overridden (no polymorphism) |
+| No shared state | Harder to mock in tests (but Laravel `App::mock()` works) |
+| Trivially testable | No constructor injection (by design) |
+| Clear intent (utility) | Tight coupling to class (but that's OK for utilities) |
 
-| Class                     | Location                             | Static only?                          | Framework deps?                      | Verdict                                                          |
-| ------------------------- | ------------------------------------ | ------------------------------------- | ------------------------------------ | ---------------------------------------------------------------- |
-| `Color`                   | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP                          | ✅ Correct                                                       |
-| `PiiMasker`               | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP                          | ✅ Correct                                                       |
-| `PasswordRules`           | `Core/Support/`                      | ✅ Static only                        | ✅ Minimal (`Password` rule object)  | ✅ Correct                                                       |
-| `helpers.php`             | `Core/Support/`                      | ✅ Static functions                   | ✅ `app_info()` via `Cache`/`Config` | ✅ Correct (file, not class)                                     |
-| `Environment`             | `Core/Support/`                      | ✅ Static only                        | ✅ `config()`, `app()`               | ✅ Correct (static, no injection)                                |
-| `UserIdentifierGenerator` | `User/Support/`                      | ✅ Static only                        | ✅ DB collision check                | ✅ Correct (static read-only)                                    |
-| `AppIntegrity`            | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP (`RuntimeException`)     | ✅ Correct                                                       |
-| `helpers.php` (Settings)  | `Settings/Support/`                  | ✅ Static functions                   | ✅ `setting()`, `brand()` via Cache  | ✅ Correct                                                       |
-| `SmartLogger`             | `Core/Support/`                      | ❌ Instance methods                   | ✅ Facades, DB, events               | ❌ **Should be Service**                                         |
-| `CsvHandler`              | `Core/Support/`                      | ❌ Instance methods                   | ✅ `StreamedResponse`, `Collection`  | ❌ **Should be Service**                                         |
-| `Settings`                | `Settings/Support/`                  | ❌ Instance methods                   | ✅ `Cache`, `Config`                 | ❌ **Should be Service**                                         |
-| `Brand`                   | `Settings/Support/`                  | ❌ Instance methods                   | ✅ `Cache`, `Config`                 | ❌ **Should be Service**                                         |
-| `Theme`                   | `Settings/Theme/Support/`            | ❌ Instance methods                   | ✅ `Cache`, `SettingsStore`          | ❌ **Should be Service**                                         |
-| `Locale`                  | `Settings/Locale/Support/`           | ❌ Instance methods                   | ✅ `App`, `Cookie`                   | ❌ **Should be Service**                                         |
-| `DocumentRenderer`        | `Document/Support/`                  | ❌ Constructor injection              | ✅ `Pdf`, `Blade`, `Storage`         | ❌ **Should be Service**                                         |
-| `CertificateRenderer`     | `Certification/Certificate/Support/` | ❌ Constructor injection              | ✅ `Pdf`, `Blade`, `Storage`         | ❌ **Should be Service**                                         |
-| `BackupRunner`            | `SysAdmin/Backups/Support/`          | ❌ Instance methods                   | ✅ `storage_path()`, shell exec      | ❌ **Should be Service**                                         |
-| `SystemProvisioner`       | `Setup/Installation/Support/`        | ❌ Instance methods                   | ✅ `Artisan`, `File`                 | ❌ **Should be Service**                                         |
-| `AppInfo`                 | `Core/Support/`                      | ✅ Static methods                     | ✅ `Cache`, `Config`, `File` facades | ⚠️ Borderline: static but framework-aware. Could stay with note. |
-| `LangChecker`             | `Core/Support/`                      | ❌ Instance + `extends Translator`    | ✅ Framework class                   | ❌ **Should be Service**                                         |
-| `Spotlight` *(deleted 0.15.0)* | `Core/Support/` *(removed)*         | ❌ Instance + `extends BaseSpotlight` | ✅ legacy maryUI component (removed) | ❌ **Deleted — was maryUI, now no replacement (command-palette needs backend if reintroduced)** |
+### 4. When to Choose Support Over Action
+
+- The operation is a pure transformation (color math, string masking, array manipulation)
+- The operation has no side effects (no DB, no events, no transactions)
+- The operation is used by multiple callers across modules
+- The operation does not need authorization or logging
 
 ---
 
-## 4. Support vs Actions
+## Anti-Patterns
 
-| Concern            | Support              | Action                      |
-| ------------------ | -------------------- | --------------------------- |
-| **Method style**   | `public static` only | `public function execute()` |
-| **Base class**     | None                 | `BaseAction`                |
-| **Transaction**    | Never                | Required (Command/Process)  |
-| **Logging**        | Never                | Required (Command/Process)  |
-| **Event dispatch** | Never                | Recommended (Command)       |
-| **Database write** | Never                | Always (Command)            |
-| **Business rules** | Never                | Primary owner               |
-
-### When to Choose Action Over Support
-
-- The class performs a single business operation (create, update, delete, complex read).
-- The class needs transaction safety or logging.
-- The class dispatches events.
-
-If any of these are true, use an Action. A Support class is never a downgrade path for an Action.
+| You see... | It should be... | Violation |
+|-----------|----------------|-----------|
+| `SmartLogger` with instance methods in Support | Move to Service | Support/Service boundary |
+| Support class with `__construct(private Cache $cache)` | Rename and move to Service | Constructor injection in Support |
+| Support calling `CreateUserAction` | Remove — Support has no side effects | Support calls Actions |
+| Support with `DB::table('users')->insert(...)` | Move to Command Action | Support writes to database |
+| Support with `public function formatSomething()` | Convert to `public static function` | Instance method in Support |
+| Support extending `Translator` or framework class | Move to Service | Framework class dependency |
+| Support with domain rule (`isStudentEligible()`) | Extract to Entity + Action | Domain logic in Support |
+| `Support/` mixing pure utilities with framework-heavy classes | Split: pure → Support, framework → Service | Mixed boundaries |
 
 ---
 
-## 5. Support vs Services
+## Quick References
 
-| Concern                             | Support                        | Service                                     |
-| ----------------------------------- | ------------------------------ | ------------------------------------------- |
-| **Method style**                    | `public static` only           | Instance methods with constructor injection |
-| **Constructor injection**           | Never                          | Required                                    |
-| **Framework dependency**            | Minimal (static `config()` OK) | Required (config, container, facades)       |
-| **Override/extend framework class** | Never                          | May extend framework classes                |
-| **Scope**                           | Module or submodule            | Core, Module, or SubModule                  |
-| **Domain business logic**           | Never                          | Never (infrastructure logic only)           |
-| **Test style**                      | Unit (no Laravel boot needed)  | Integration (needs Laravel container)       |
-
-**Quick decision:**
-
-```
-Does the class need constructor injection?
-├─ Yes → Service
-└─ No → Can it be written as `public static` methods only?
-    ├─ Yes → Support
-    └─ No → Service (instance methods + minimal/no injection is still Service)
-```
-
----
-
-## 6. When to Create a Support Utility
-
-1. **Pure transformation** — color math, string masking, array manipulation, CSV generation logic
-   (without StreamedResponse).
-2. **Static validation rules** — password rules, validation arrays.
-3. **Stateless generator** — username generation based on simple rules.
-4. **Standalone helper function** — a global `app_info()` or `setting()` convenience wrapper.
-
-### Do NOT Create a Support Utility For
-
-- **Operations needing constructor injection** → Service instead.
-- **Business operations** → Action instead.
-- **Eloquent-related code** → Model scopes or traits instead.
-- **Single-use inline logic** → keep it local until a second caller appears.
-
----
-
-## 7. Anti-Patterns
-
-- **Support with constructor injection** — if you need injected dependencies, it is a Service.
-  Rename and move.
-- **Support calling Actions** — a Support class must never call an Action.
-- **Support with database writes** — persistence goes through Command Actions. Read-only Model
-  queries from static methods are acceptable for simple lookups in module-level Support.
-- **Support with instance methods** — `public function` (non-static) in Support is prohibited.
-  Convert to static or move to Service.
-- **Support extending framework classes** — `extends Translator`, `extends BaseSpotlight` — these
-  are Service concerns because they depend on the framework's class hierarchy.
-- **Support as dumping ground** — a `Support/` directory mixing pure static utilities with
-  framework-heavy instance classes indicates missing Service boundaries.
-
----
-
-## 8. Relationship Summary
-
-```
-┌───────────────────────────────────────────────────────────────────────┐
-│                   BUSINESS OPERATIONS LAYER                           │
-│                                                                       │
-│  ┌─────────────────────────┐  ┌──────────────────────────────────┐   │
-│  │        ACTION            │  │          SUPPORT                 │   │
-│  │  (single operation)      │  │  (static utilities)              │   │
-│  │                          │  │                                  │   │
-│  │  • public function       │  │  • public static methods only    │   │
-│  │    execute()             │  │  • no constructor injection      │   │
-│  │  • transaction + log     │  │  • no framework deps (minimal)   │   │
-│  │  • events                │  │  • pure transformations          │   │
-│  │  • domain business rules │  │  • no business decisions         │   │
-│  └─────────────────────────┘  └──────────────────────────────────┘   │
-│              ▲                              ▲                        │
-│              │                              │                        │
-│              └──────── uses ────────────────┘                        │
-│                                                                       │
-│  ┌──────────────────────────────────────────────────────────────┐    │
-│  │                  SERVICE (infrastructure)                    │    │
-│  │  • public function instance methods                          │    │
-│  │  • constructor injection for framework deps                  │    │
-│  │  • infrastructure logic (not domain business logic)          │    │
-│  │  • never calls Actions, never writes DB                      │    │
-│  │  • lives at Core / Module / SubModule level                  │    │
-│  └──────────────────────────────────────────────────────────────┘    │
-└───────────────────────────────────────────────────────────────────────┘
-```
-
-Key boundaries:
-
-- **Action** — owns domain business operations. Transactions, logging, events. Single `execute()`.
-- **Support** — owns static utilities. Pure transformations, zero side effects, no constructor.
-- **Service** — owns infrastructure logic at any scope. Instance methods with constructor injection.
-
-An Action may use a Support or Service. A Support utility may use a Service. A Service must never
-call an Action.
-
----
-
-> For infrastructure classes that need constructor injection, see the
-> [Service Pattern](service-pattern.md). For the complete catalog of all patterns, see
-> [Modular Pattern Reference](modular-pattern.md).
+- `docs/conventions.md` §Support Boundaries — when Support is appropriate
+- `docs/guides/arch/service-pattern.md` — Service vs Support decision tree
+- `docs/guides/arch/action-pattern.md` — Action Triad reference
+- `app/Core/Support/Color.php` — example of correct Support (pure PHP)
+- `app/Core/Support/PiiMasker.php` — example of correct Support (pure PHP)
+- [Utility Pattern](https://en.wikipedia.org/wiki/Utility_class) — static helper classes
+- [Pure Functions](https://en.wikipedia.org/wiki/Pure_function) — no side effects
+- [Static Methods](https://www.php.net/manual/en/language.oop5.static.php) — PHP static
+- [Immutability](https://en.wikipedia.org/wiki/Immutable_object) — unchangeable state
