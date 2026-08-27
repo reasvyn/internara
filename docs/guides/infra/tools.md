@@ -80,7 +80,7 @@ python3 scripts/scan_violations.py --json | jq '.summary'
 | C2 | No `app()->make()` / `resolve()` (service locator) |
 | C3 | No `DB::raw()` / `whereRaw()` without bindings |
 | C4 | No inline cache keys (should use `config/cache-keys.php`) |
-| C5 | Entity forbidden imports (Actions, Services, Livewire, Controllers) — the settings store facade (`App\Settings\Services\Settings`) is exempt for settings-backed entities per [entity-pattern §10/§11.5](../arch/entity-pattern.md#10-static-factory-methods) |
+| C5 | Entity forbidden imports (Actions, Services, Livewire, Controllers) — the settings store facade (`App\Settings\Services\Settings`) is exempt for settings-backed entities per [entity-pattern](../arch/entity-pattern.md) (Static Factory: `fromModel()` bridge) |
 | C6 | DTO forbidden imports (Models, Entities, Actions, Repositories) |
 | C7 | Command/Process Actions with 3+ params not using DTO |
 | C8 | `RuntimeException` instead of `RejectedException` in Actions/Entities |

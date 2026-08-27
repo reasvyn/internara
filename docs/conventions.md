@@ -1,6 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
+> **Last updated:** 2026-08-27 **Changes:** sync — §1 reference table now lists UI/UX arch patterns; added "See also" links from every pattern-overlapping section to the authoritative `docs/guides/arch/*-pattern.md` docs (deduplication)
 
 ## Description
 
@@ -116,6 +116,8 @@ doc rather than duplicating conventions here:
 | Testing                             | [Testing Pattern](guides/arch/testing-pattern.md)                         |
 | Logging & SmartLogger               | [Logging Pattern](guides/arch/logging-pattern.md)                         |
 | Services vs Support                 | [Service Pattern](guides/arch/service-pattern.md)                         |
+| UI & visual consistency             | [UI Pattern](guides/arch/ui-pattern.md)                                   |
+| User experience & accessibility     | [UX Pattern](guides/arch/ux-pattern.md)                                   |
 
 ---
 
@@ -140,6 +142,8 @@ doc rather than duplicating conventions here:
 ---
 
 ## 3. Security Conventions
+
+> 📖 Pattern reference: [Policy Pattern](guides/arch/policy-pattern.md) (authorization & RBAC); broader security posture in [infra/security.md](guides/infra/security.md).
 
 ### 3.1 XSS Prevention
 
@@ -239,6 +243,8 @@ doc rather than duplicating conventions here:
 ---
 
 ## 4. Naming Conventions
+
+> 📖 Pattern reference: [Modular Pattern §16 — Naming Conventions](guides/arch/modular-pattern.md#16-naming-conventions).
 
 | Element                    | Convention                                                    | Example                                                               |
 | -------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
@@ -391,6 +397,8 @@ class HealthCommand extends Command
 
 ### 6.5 Caching Conventions
 
+> 📖 Pattern reference: [Cache Pattern](guides/arch/cache-pattern.md) — full key-registry, TTL, and invalidation strategy.
+
 - Every cache key is declared in `config/cache-keys.php` — never inline strings.
 - Cache invalidation follows event-driven pattern: Command Action → event → listener →
   `Cache::forget()`.
@@ -401,6 +409,8 @@ class HealthCommand extends Command
 ---
 
 ## 7. Migrations, Factories & Seeders
+
+> 📖 Pattern reference: [Model Pattern](guides/arch/model-pattern.md) (Migrations & Database Conventions, `#[Fillable]`, relationships); [Testing Pattern](guides/arch/testing-pattern.md) (factory strategy).
 
 ### Migrations
 
@@ -468,6 +478,8 @@ class InternshipFactory extends Factory
 
 ## 8. Cross-Cutting Protocols
 
+> 📖 Pattern reference: [Policy Pattern §20 — Cross-Role Proxy Protocol](guides/arch/policy-pattern.md) (authorization proxy); [Modular Pattern](guides/arch/modular-pattern.md) (module boundaries).
+
 ### Cross-Role Proxy Protocol
 
 Internara implements a **Cross-Role Proxy** mechanism (see [4](adr/adr-cross-role-proxy.md))
@@ -488,6 +500,8 @@ supervisors — all at the application layer without multi-role assignment.
 ---
 
 ## 9. HTTP & API Conventions
+
+> 📖 Pattern reference: [Modular Pattern §13 — Route & Controller Patterns](guides/arch/modular-pattern.md#13-route--controller-patterns); [Livewire Pattern](guides/arch/livewire-pattern.md) (component HTTP/request handling).
 
 ### 7.1 HTTP Status Code Mapping
 
@@ -530,6 +544,8 @@ All JSON error responses follow a consistent envelope:
 
 ## 10. Dependency Injection Conventions
 
+> 📖 Pattern reference: [Service Pattern](guides/arch/service-pattern.md) (constructor injection); [Action Pattern](guides/arch/action-pattern.md) (C2 — no `app()->make`).
+
 ### 8.1 Constructor Injection (Preferred)
 
 Mandatory, long-lived dependencies are injected via constructor property promotion:
@@ -570,6 +586,8 @@ methods where the container is not available (e.g., `database/factories/`).
 ---
 
 ## 11. Code Quality Enforcement
+
+> 📖 Pattern reference: [Modular Pattern §18 — Quality Enforcement](guides/arch/modular-pattern.md#18-quality-enforcement).
 
 | Tool             | What It Enforces                                              | How                                         |
 | ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
@@ -615,6 +633,8 @@ methods where the container is not available (e.g., `database/factories/`).
 ---
 
 ## 12. Testing Conventions
+
+> 📖 Pattern reference: [Testing Pattern](guides/arch/testing-pattern.md) — full spec-driven strategy, scope isolation, and layer-by-layer entry points.
 
 ### 12.1 Mocking Strategy
 
@@ -740,6 +760,8 @@ Use these annotations in code comments for tracking technical debt:
 
 ## 13. Theming & Visual Consistency
 
+> 📖 Pattern reference: [UI Pattern](guides/arch/ui-pattern.md) (visual hierarchy, theming, component design).
+
 ### CSS Variable Usage
 
 All components MUST use CSS variables from the Settings/Theme module for brand colors:
@@ -775,6 +797,8 @@ Icons use Heroicons via TallstackUI `x-ts-icon` (or inline SVG with `heroicon-*`
 ---
 
 ## 14. Frontend & Blade Presentation
+
+> 📖 Pattern reference: [Livewire Pattern](guides/arch/livewire-pattern.md) (Thin Component Rule — no business logic in components or Blade); [UI Pattern](guides/arch/ui-pattern.md) (presentation & component design).
 
 ### 14.1 Blade Contains No Business or UI Logic
 
@@ -819,6 +843,8 @@ branching that depends on business rules must be prepared before rendering.
 Enforced by: `docs/guides/arch/livewire-pattern.md` §1 (Thin Component) and agent skills `livewire-development` + `tailwindcss-development`.
 
 ## 15. Localization
+
+> 📖 Pattern reference: [UX Pattern](guides/arch/ux-pattern.md) (localization & i18n); [Modular Pattern §23 — Localization Patterns](guides/arch/modular-pattern.md#23-localization-patterns).
 
 ### File Structure
 

@@ -1,6 +1,6 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-08-16 **Changes:** sync — update middleware class names (SecurityHeadersMiddleware, LogContextMiddleware) per arch-guard fixes; verify route structure against current route files
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/modular-pattern.md
 
 ## Description
 
@@ -9,11 +9,7 @@ URL design.
 
 ## Philosophy
 
-Routes are owned by modules, not by a single file. Each module registers its own routes in its own
-file under `routes/web/{module}.php`. The master `routes/web.php` simply stitches them together.
-
-This approach avoids merge conflicts on a monolithic file and makes it obvious which module owns
-which route. A registration route lives in `registration.php`, not in a thousand-line file.
+> 📖 Authoritative reference: [Modular Pattern](../arch/modular-pattern.md) — module-colocated vertical slicing & Route & Controller Patterns (§13). Per-module route ownership is a direct manifestation of the Modular Monolith principle (each module owns its full stack; cross-module internals are never imported).
 
 ### Submodule Route Files
 

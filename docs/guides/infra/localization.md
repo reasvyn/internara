@@ -1,6 +1,6 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-08-25 **Changes:** sync — TallstackUI respects lang attribute (was maryUI/DaisyUI)
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/ux-pattern.md and arch/modular-pattern.md
 
 ## Description
 
@@ -145,6 +145,8 @@ __('Save');
 
 ## Enum Labels
 
+> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) — enum localization via `LabelEnum::label()`/`StatusEnum::label()` (Non-Negotiable #4); [Modular Pattern](../arch/modular-pattern.md) — dual-locale `__()` contract (Non-Negotiable #8).
+
 All enums implement the `LabelEnum` contract with a `label()` method. Labels use the `__()` helper
 for translation:
 
@@ -168,10 +170,7 @@ State machine enums additionally implement `StatusEnum` for transition validatio
 
 ## UI Localization
 
-- All user-facing strings use the `__()` helper
-- Date formatting uses `Carbon::setLocale()` with the active locale
-- TallstackUI components respect the `lang` attribute on `<html>`
-- The language switcher is available in the application header
+> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) — localization & i18n strategy (§3 Localization: `__()` usage, `Carbon::setLocale()`, `lang` attribute, language switcher); [Modular Pattern](../arch/modular-pattern.md) — dual-locale `__()` contract (Non-Negotiable #8).
 
 ---
 

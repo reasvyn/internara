@@ -1,6 +1,6 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-08-25 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
+> **Last updated:** 2026-08-27 **Changes:** sync — added UI Pattern & UX Pattern to Reference Map and Layer-4 diagram (deduplication: all pattern detail lives in `docs/guides/arch/*-pattern.md`)
 
 ## Description
 
@@ -51,6 +51,8 @@ only on layers below it — never the reverse.
 │  resources/views/{module}/  routes/web/{module}.php (+ {submodule}.php)    │
 │  See: docs/guides/arch/livewire-pattern.md                                 │
 │  See: docs/guides/arch/policy-pattern.md                                   │
+│  See: docs/guides/arch/ui-pattern.md                                       │
+│  See: docs/guides/arch/ux-pattern.md                                       │
 └──────────────────────────────────────────────────────────────────────────▲──┘
                                                                            │
 ┌──────────────────────────────────────────────────────────────────────────┴──┐
@@ -296,7 +298,9 @@ See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.m
 | **DTOs & ActionResponse**                                                          | [Data Pattern](guides/arch/data-pattern.md)                                                           |
 | **Enum & state machine**                                                           | [Enum Pattern](guides/arch/enum-pattern.md)                                                           |
 | **Event dispatch & listeners**                                                     | [Event Pattern](guides/arch/event-pattern.md)                                                         |
-| **Livewire component rules**                                                       | [Livewire Pattern](guides/arch/livewire-pattern.md)                                                   |
+| **Livewire component rules**                                                   | [Livewire Pattern](guides/arch/livewire-pattern.md)                                                   |
+| **UI & visual consistency**                                                   | [UI Pattern](guides/arch/ui-pattern.md)                                                               |
+| **UX & accessibility**                                                        | [UX Pattern](guides/arch/ux-pattern.md)                                                               |
 | **Policies & RBAC**                                                                | [Policy Pattern](guides/arch/policy-pattern.md)                                                       |
 | **Exception hierarchy**                                                            | [Exception Pattern](guides/arch/exception-pattern.md)                                                 |
 | **Logging & PII masking**                                                          | [Logging Pattern](guides/arch/logging-pattern.md)                                                     |

@@ -1,6 +1,6 @@
 # Notification — Multi-Channel Notification System
 
-> **Last updated:** 2026-08-25 **Changes:** sync — flash channel via TallstackUI toast (was PHPFlasher), remove config/flasher.php
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/event-pattern.md
 
 ## Description
 
@@ -175,6 +175,8 @@ MX        MX      (your email provider's MX record)
 
 ### Queue Integration
 
+> 📖 Authoritative reference: [Events, Listeners & Notifications](../arch/event-pattern.md) — notification `ShouldQueue` + `Queueable` contract (§8 Notification Architecture).
+
 All mail notifications implement `ShouldQueue` for asynchronous delivery:
 
 ```php
@@ -234,8 +236,7 @@ $this->toast()->warning(__('disk_space_low'))->send();
 
 ## Sending Notifications from Actions
 
-Notifications are sent from Command Actions or listener classes, never directly from Livewire
-components.
+> 📖 Authoritative reference: [Events, Listeners & Notifications](../arch/event-pattern.md) — notification architecture & contract (§8 Notification Architecture): notifications extend `Notification`, implement `ShouldQueue`, and are dispatched from Actions/listeners, never Livewire (C1).
 
 ```php
 class NotifyAdminsInternshipCreated implements ShouldQueue

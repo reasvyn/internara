@@ -1,7 +1,6 @@
 # Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
-> `test("{SpecID}-{ReqID}: Test description...")` replaces `it()` / `describe('{SPECID}')`
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/testing-pattern.md
 
 ## Description
 
@@ -10,10 +9,7 @@ boundaries.
 
 ## Testing Philosophy
 
-Tests verify the spec — nothing more. A test exists because a requirement in
-`docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. Every test
-description prefixes its requirement ID. Coverage is measured in **spec requirements covered**, not
-lines of code.
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable rules on spec-driven tests (every requirement has a test, no padding), requirement-first order, and traceability prefixes.
 
 **Write only the tests the spec requires.** The minimalism is the point, not a side effect:
 spec-scoped tests run fast (seconds vs. 10+ minutes), consume far fewer resources (~2GB+ RAM for the
@@ -23,6 +19,8 @@ archaeology is needed to understand why it exists. Less to write, less to read, 
 ---
 
 ## Scope Isolation
+
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable #4 (one file, one scope) and spec-aligned file organization.
 
 To maintain strict modularity, high code quality, and predictable testing boundaries, this project
 enforces **Scope Isolation** in all test files:
@@ -39,6 +37,8 @@ enforces **Scope Isolation** in all test files:
 ---
 
 ## TDD Approach
+
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — TDD (Red-Green-Refactor) and requirement-first development methodology.
 
 This project follows **Requirement-First Development**: write the spec requirement, then the test
 for it, then the implementation that satisfies it.
@@ -71,6 +71,8 @@ php artisan test --compact --filter=CreateInternshipAction
 ```
 
 ### Layer-by-Layer Entry Points
+
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable #5 (layer-by-layer entry points: Enum/Entity/DTO/Policy → unit, Action/Livewire/Console → feature). The app-specific mapping follows.
 
 | Layer               | Test Type      | Test Only If the Requirement Names It                              |
 | ------------------- | -------------- | ------------------------------------------------------------------ |
@@ -150,6 +152,8 @@ user, submitting an assignment, approving a placement.
 
 ## LazilyRefreshDatabase
 
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable #6 (prefer `LazilyRefreshDatabase` over `RefreshDatabase`; Entity tests never touch the database).
+
 `LazilyRefreshDatabase` is a testing trait that defers database migration until the first query hits
 the database, rather than migrating before every test. This speeds up the test suite dramatically
 because tests that do not touch the database — pure logic tests, validation tests, early-return
@@ -162,6 +166,8 @@ less overhead.
 ---
 
 ## Entity Testing Without a Database
+
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable #6 (Entity tests NEVER touch the database; test as pure function calls).
 
 Entities are `final readonly` classes with zero framework dependencies. They do not extend Eloquent,
 do not use facades, and do not access the database. Testing them is a matter of constructing an
