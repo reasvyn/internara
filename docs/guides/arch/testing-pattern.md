@@ -12,7 +12,7 @@
 
 Hard rules. Violations are architecture violations.
 
-1. **Every spec requirement must have tests.** Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code.
+1. **Every testable spec requirement must have tests.** Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code.
 
 2. **Requirement-first (Spec → Test → Implementation).** Write the spec requirement, then the test for it, then the minimum implementation that makes it pass. The test stays green throughout refactoring.
 
@@ -25,6 +25,8 @@ Hard rules. Violations are architecture violations.
 6. **LazilyRefreshDatabase preferred.** Use `LazilyRefreshDatabase` (not `RefreshDatabase`) for all feature tests. Entity tests NEVER touch the database.
 
 7. **No padding tests.** Do not write tests for behavior no requirement mentions. The minimum tests that prove the spec, then stop.
+
+8. **Non-testable requirements — short marker.** Not every ReqID is code-testable (manual verification, UI/UX, infra, performance without harness). Mark it explicitly so `scan_spec_tests` does not flag it as a gap. Use a **short suffix/prefix**: `*` (canonical, 1 char), `~`, `!`, `-X`, `-NT`, or `-X-` prefix (e.g., `FR-X-001`, `NFR-P1*`, `UC-1~`, `FR-SP1-X`). Any ID matching `*|~|!|-X|-NT|-X-` is `SPEC_TEST_NON_TESTABLE` (low, informational) and **does not require a test**. Keep it for auditability; do not use it to hide testable logic.
 
 ---
 

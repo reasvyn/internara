@@ -77,6 +77,7 @@ Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID
   full", not "handles capacity well").
 - §6 contracts are non-negotiable precision: table names, column types, method signatures.
 - One initiative = one spec; split oversized specs rather than growing them unbounded.
+- **Non-testable marker (short):** If a requirement cannot be code-tested (manual verification, UX, infra), mark it with a short non-testable suffix/prefix so `scan_spec_tests` does not flag it as a gap: `*` (canonical, 1 char), `~`, `!`, `-X`, `-NT`, or `X-` prefix (e.g., `FR-{AREA}-01*`, `NFR-P1~`, `FR-X-001`). Example: `NFR-U1*` for a visual UX requirement verified manually. The marker is auditability, not a license to hide testable logic.
 
 ## Quick References
 
