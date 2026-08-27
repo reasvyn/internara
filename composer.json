@@ -100,9 +100,22 @@
         "analyse:strict": [
             "vendor/bin/phpstan analyse --level=max --no-progress"
         ],
+        "arch": [
+            "python3 scripts/scan_doc_links.py --no-external --format summary",
+            "python3 scripts/scan_arch_patterns.py --format summary",
+            "python3 scripts/scan_module_boundaries.py --format summary",
+            "python3 scripts/scan_ui_consistency.py --format summary"
+        ],
+        "arch:strict": [
+            "python3 scripts/scan_doc_links.py --no-external --strict --format summary",
+            "python3 scripts/scan_arch_patterns.py --strict --format summary",
+            "python3 scripts/scan_module_boundaries.py --strict --format summary",
+            "python3 scripts/scan_ui_consistency.py --strict --format summary"
+        ],
         "quality": [
             "@lint",
             "@analyse",
+            "@arch",
             "@test"
         ],
         "quality:full": [
