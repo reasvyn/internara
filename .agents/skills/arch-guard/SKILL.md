@@ -102,6 +102,9 @@ python3 scripts/scan_adr.py
 # Test suite runner (per-module results)
 python3 scripts/scan_tests.py
 
+# Spec↔tests coverage (FR/NFR/UC traceability, non-testable marker *)
+python3 scripts/scan_spec_tests.py
+
 # Spec↔code gap analysis
 python3 scripts/scan_issues.py
 ```

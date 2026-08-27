@@ -65,6 +65,7 @@ this skill adds the audit pipeline defined in the rule assets — nothing else.
 | `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 scripts/scan_conventions.py` |
 | `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 scripts/scan_dead_code.py` |
 | `scan_doc_links.py` | Validate all relative links in markdown files | `python3 scripts/scan_doc_links.py` |
+| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 scripts/scan_spec_tests.py` |
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 scripts/scan_issues.py` |
 
 All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
