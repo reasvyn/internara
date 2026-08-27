@@ -45,7 +45,7 @@
             @if ($brand)
                 <div class="flex h-16 shrink-0 items-center gap-3 px-6 border-b border-base-content/10">
                     <a class="flex items-center gap-3 min-w-0" wire:navigate href="{{ route('dashboard') }}">
-                        <x-ui::ui.brand size="md" :with-tagline="false" :invert="false" />
+                        <x-ui::components.brand size="md" :with-tagline="false" :invert="false" />
                     </a>
                     <button type="button" @click="open = false" class="btn btn-ghost btn-xs lg:hidden ml-auto" aria-label="{{ __('common.close') }}">
                         <x-ts-icon name="x-mark" class="size-4" />
@@ -114,7 +114,7 @@
             <div class="border-t border-base-content/10 p-3 space-y-3">
                 {{-- Mobile-only: theme + lang --}}
                 <div class="flex items-center justify-between gap-2 md:hidden">
-                    <x-ui::ui.theme-switch size="sm" />
+                    <x-ui::components.theme-switch size="sm" />
                     <livewire:settings.lang-switcher />
                 </div>
 

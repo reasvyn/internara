@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('incident.title')" :subtitle="__('incident.subtitle')">
+<x-ui::components.record-manager :title="__('incident.title')" :subtitle="__('incident.subtitle')">
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.type"
@@ -172,4 +172,4 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

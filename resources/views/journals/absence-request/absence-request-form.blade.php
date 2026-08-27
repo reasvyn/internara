@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>{{ __('journals.absence.title') }}</x-slot:title>
 
-    <x-ui::ui.page-header :title="__('journals.absence.title')" :description="__('journals.absence.subtitle')" />
+    <x-ui::components.page-header :title="__('journals.absence.title')" :description="__('journals.absence.subtitle')" />
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
         <x-ts-card shadowless>

@@ -21,7 +21,7 @@
     <div class="flex items-center gap-6 min-w-0">
         @if ($brand)
             <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-3 shrink-0" aria-label="{{ brand('name') }}">
-                <x-ui::ui.logo size="6" />
+                <x-ui::components.logo size="6" />
                 <span class="hidden font-bold tracking-tight sm:inline">{{ brand('name') }}</span>
             </a>
         @endif
@@ -43,7 +43,7 @@
         {{-- Default actions if no slot provided --}}
         @if (! isset($actions))
             <div class="hidden md:flex items-center gap-2">
-                <x-ui::ui.theme-switch size="sm" />
+                <x-ui::components.theme-switch size="sm" />
                 <livewire:settings.lang-switcher />
             </div>
         @endif
@@ -82,7 +82,7 @@
             {{ $slot }}
             <div class="border-base-content/10 mt-2 flex items-center justify-between border-t pt-3">
                 <div class="flex items-center gap-2">
-                    <x-ui::ui.theme-switch size="sm" />
+                    <x-ui::components.theme-switch size="sm" />
                     <livewire:settings.lang-switcher />
                 </div>
                 @isset($mobileExtra)

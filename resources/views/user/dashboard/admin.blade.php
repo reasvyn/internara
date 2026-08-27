@@ -1,5 +1,5 @@
 <div>
-    <x-ui::ui.page-header
+    <x-ui::components.page-header
         :title="__('dashboard.title')"
         :description="__('dashboard.subtitle', ['name' => auth()->user()->name])"
     />

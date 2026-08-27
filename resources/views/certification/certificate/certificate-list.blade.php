@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('certificate.issued_title')" :subtitle="__('certificate.issued_subtitle')">
+<x-ui::components.record-manager :title="__('certificate.issued_title')" :subtitle="__('certificate.issued_subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('certificate.issue')" icon="document-check" color="green" sm wire:click="issue" />
         <x-ts-button
@@ -122,4 +122,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('certification.certificate.components.certificate-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

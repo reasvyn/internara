@@ -47,7 +47,7 @@
     </div>
 
     {{-- Selection Bar --}}
-    <x-ui::ui.selection-bar>
+    <x-ui::components.selection-bar>
         <x-ts-button
             :text="__('academic_year.delete_selected')"
             icon="trash"
@@ -55,7 +55,7 @@
             sm
             wire:click="askDeleteSelected"
         />
-    </x-ui::ui.selection-bar>
+    </x-ui::components.selection-bar>
 
     {{-- List --}}
     <div class="bg-base-100 border-base-content/10 overflow-hidden rounded-xl border">

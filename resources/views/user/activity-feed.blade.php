@@ -1,5 +1,5 @@
 <div>
-    <x-ui::ui.page-header
+    <x-ui::components.page-header
         :title="__('profile.activity_feed.title')"
         :description="__('profile.activity_feed.subtitle')"
     />

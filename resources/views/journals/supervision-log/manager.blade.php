@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-ui::ui.page-header
+    <x-ui::components.page-header
         :title="__('journals.supervision.logs_title')"
         :description="__('journals.supervision.logs_subtitle')"
     />

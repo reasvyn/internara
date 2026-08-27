@@ -18,7 +18,7 @@
             <form wire:submit="save">
                 <div class="space-y-5">
                     <x-ts-input :label="__('announcement.fields.title')" wire:model="form.title" />
-                    <x-ui::ui.markdown-editor
+                    <x-ui::components.markdown-editor
                         :label="__('announcement.fields.message')"
                         model="form.message"
                         rows="6"

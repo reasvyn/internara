@@ -20,7 +20,7 @@
             {{-- Left: brand + links --}}
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
-                    <x-ui::ui.logo size="4" />
+                    <x-ui::components.logo size="4" />
                     <span>{{ brand('name') }}</span>
                 </a>
 
@@ -40,7 +40,7 @@
             {{-- Right: credit --}}
             @if ($showCredit)
                 <div class="flex items-center gap-3 text-xs text-base-content/50">
-                    <x-ui::ui.credit :show-version="app()->environment('local')" class="justify-center sm:justify-end" />
+                    <x-ui::components.credit :show-version="app()->environment('local')" class="justify-center sm:justify-end" />
                 </div>
             @endif
         </div>

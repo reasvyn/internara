@@ -1,5 +1,5 @@
 <div class="mx-auto mt-6 max-w-2xl">
-    <x-ui::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
+    <x-ui::components.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
 
     <form wire:submit="save">
         <x-ts-card shadowless>

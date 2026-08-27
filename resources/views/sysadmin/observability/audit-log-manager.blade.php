@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-ui::ui.page-header :title="__('sysadmin.activity_title')" :description="__('sysadmin.activity_subtitle')" />
+    <x-ui::components.page-header :title="__('sysadmin.activity_title')" :description="__('sysadmin.activity_subtitle')" />
 
     <x-ts-card class="bg-base-100 border-base-200 mb-6 border">
         <div class="grid grid-cols-1 gap-4 md:grid-cols-3">

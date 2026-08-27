@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('placement.title')" :subtitle="__('placement.subtitle')">
+<x-ui::components.record-manager :title="__('placement.title')" :subtitle="__('placement.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('placement.add_placement')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -46,7 +46,7 @@
         />
     </x-slot:filters>
 
-    <x-ui::ui.selection-bar>
+    <x-ui::components.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -66,7 +66,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-ui::ui.selection-bar>
+    </x-ui::components.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -162,4 +162,4 @@
     </x-slot:modal>
 
     @include('enrollment.placement.components.placement-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

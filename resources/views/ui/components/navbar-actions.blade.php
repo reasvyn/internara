@@ -13,7 +13,7 @@
     {{-- Theme Switcher --}}
     @if ($showTheme)
         <div class="hidden md:block" x-data="tallstackui_darkTheme()">
-            <x-ui::ui.theme-switch />
+            <x-ui::components.theme-switch />
         </div>
     @endif
 
@@ -41,7 +41,7 @@
                         x-on:click="show = ! show"
                     >
                         <span class="hidden text-sm font-medium sm:inline">{{ auth()->user()->name }}</span>
-                        <x-ui::ui.avatar :user="auth()->user()" size="size-8" />
+                        <x-ui::components.avatar :user="auth()->user()" size="size-8" />
                     </button>
                 </x-slot:action>
 
