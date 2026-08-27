@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('journals.review_title')" :subtitle="__('journals.review_subtitle')">
+<x-ui::ui.record-manager :title="__('journals.review_title')" :subtitle="__('journals.review_subtitle')">
     <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
         @interact('column_status', $l)
             <x-ts-badge
@@ -50,4 +50,4 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

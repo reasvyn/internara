@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('internship.title')" :subtitle="__('internship.subtitle')">
+<x-ui::ui.record-manager :title="__('internship.title')" :subtitle="__('internship.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('internship.create_batch')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -18,18 +18,18 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="calendar"
             :title="__('internship.stats.total')"
             :value="$this->stats['total']"
         />
-        <x-core::widgets.stat-card icon="play" :title="__('internship.stats.active')" :value="$this->stats['active']" />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card icon="play" :title="__('internship.stats.active')" :value="$this->stats['active']" />
+        <x-ui::widgets.stat-card
             icon="briefcase"
             :title="__('internship.stats.total_placements')"
             :value="$this->stats['total_placements']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="user-group"
             :title="__('internship.stats.total_registrations')"
             :value="$this->stats['total_registrations']"
@@ -60,7 +60,7 @@
         <input wire:model.live="filters.date_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -91,7 +91,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -229,4 +229,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('program.internship.components.internship-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

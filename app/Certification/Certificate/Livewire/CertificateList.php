@@ -184,7 +184,7 @@ class CertificateList extends BaseRecordManager
         $this->confirmTarget = null;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('certification.certificate.certificate-list', [

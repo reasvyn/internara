@@ -243,7 +243,7 @@ class LogbookManager extends BaseRecordManager
         $this->toast()->success(__('logbook.supervisor_note_saved'))->send();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.logbook.logbook-manager');

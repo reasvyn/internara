@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('company.title')" :subtitle="__('company.subtitle')">
+<x-ui::ui.record-manager :title="__('company.title')" :subtitle="__('company.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('company.add')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -15,22 +15,22 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="building-office"
             :title="__('company.stats.total')"
             :value="$this->stats['total']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="link"
             :title="__('company.stats.with_placements')"
             :value="$this->stats['with_placements']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="hand-raised"
             :title="__('company.stats.active_partnerships')"
             :value="$this->stats['active_partnerships']"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="briefcase"
             :title="__('company.stats.available_slots')"
             :value="$this->stats['available_slots']"
@@ -62,7 +62,7 @@
         </x-ts-select.native>
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-ui::ui.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -88,7 +88,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-core::ui.selection-bar>
+    </x-ui::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -217,4 +217,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('partners.company.components.company-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

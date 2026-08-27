@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-core::ui.page-header :title="__('auth.lifecycle.title')" :description="__('auth.lifecycle.subtitle')">
+    <x-ui::ui.page-header :title="__('auth.lifecycle.title')" :description="__('auth.lifecycle.subtitle')">
         <x-slot:actions>
             <x-ts-button
                 :text="__('auth.lifecycle.detect_clones')"
@@ -8,7 +8,7 @@
                 href="{{ route('admin.accounts.clones') }}"
             />
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     <x-ts-card class="bg-base-100 border-base-200 border">
         @if ($users->isEmpty())

@@ -11,7 +11,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('core::layouts.app')]
+#[Layout('ui::layouts.app')]
 class UserDashboard extends Component
 {
     public function getUser(): ?User

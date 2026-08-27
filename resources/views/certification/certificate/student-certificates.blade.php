@@ -1,5 +1,5 @@
 <div class="mx-auto mt-6 max-w-3xl">
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('certificate.my_certificates')"
         :subtitle="__('certificate.my_certificates_subtitle')"
     />

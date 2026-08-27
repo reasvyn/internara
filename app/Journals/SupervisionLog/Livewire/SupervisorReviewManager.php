@@ -75,7 +75,7 @@ class SupervisorReviewManager extends BaseRecordManager
         $this->reviewTarget = null;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.supervision-log.supervisor-review-manager');

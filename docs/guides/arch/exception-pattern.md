@@ -129,7 +129,7 @@ This is **Defence in Depth** (NIST) — never rely on a single error handling la
 - `livewire-pattern.md` — Livewire catch blocks, `RejectedException` → toast
 - `logging-pattern.md` — SmartLogger exception context, PII masking
 - `modular-pattern.md` §10 Logging & Error Handling — architecture contracts
-- [Robert C. Martin — SOLID Principles](https://blog.cleancoder.com/2014/10/the-packaging-dependency.html) — SRP, error handling discipline
+- [Robert C. Martin — SOLID Principles](https://en.wikipedia.org/wiki/SOLID) — SRP, error handling discipline
 - [Bertrand Meyer — Programming by Contract](https://en.wikipedia.org/wiki/Design_by_contract) — Fail-Fast, preconditions
 - [Wikipedia — Exception Handling](https://en.wikipedia.org/wiki/Exception_handling) — exception hierarchy design
 - [PHP — SPL Exceptions](https://www.php.net/manual/en/spl.exceptions.php) — standard exception hierarchy

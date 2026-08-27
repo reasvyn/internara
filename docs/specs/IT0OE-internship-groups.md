@@ -1,7 +1,7 @@
 # Internship Groups — Group & Member Management
 
 > **Spec ID:** IT0OE
-> **Last updated:** 2026-08-12 **Changes:** feat — batch member add via repeater (add-more)
+> **Last updated:** 2026-08-27 **Changes:** chore — doc freshness verified (no spec change)
 > pattern with all-or-nothing semantics; new FR-MM9/MM10/MM11, DD-6, updated UC-2/NFR-U1
 
 ## Description

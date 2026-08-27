@@ -4,7 +4,7 @@
 @endphp
 
 <div>
-    <x-core::ui.page-header :title="__('backups.title')" :description="__('backups.subtitle')">
+    <x-ui::ui.page-header :title="__('backups.title')" :description="__('backups.subtitle')">
         <x-slot:actions>
             <x-ts-dropdown>
                 <x-slot:action>
@@ -27,7 +27,7 @@
                 />
             </x-ts-dropdown>
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
         <x-ts-stats

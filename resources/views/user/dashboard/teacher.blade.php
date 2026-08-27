@@ -1,42 +1,42 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('dashboard.title')"
         :description="__('dashboard.subtitle', ['name' => auth()->user()->name])"
     />
 
     {{-- Stats --}}
     <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.supervised_students')"
             :value="$supervisedStudents"
             icon="users"
             color="text-primary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.pending_journals')"
             :value="$pendingJournals"
             icon="book-open"
             color="text-warning"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.active_companies')"
             :value="$activeCompanies"
             icon="building-office"
             color="text-secondary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.teacher.ungraded_submissions')"
             :value="$ungradedSubmissions"
             icon="document-check"
             color="text-error"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.teacher.supervision_logs')"
             :value="$supervisionLogsCount"
             icon="check-badge"
             color="text-success"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.teacher.unresolved_incidents')"
             :value="$unresolvedIncidents"
             icon="shield-exclamation"
@@ -56,25 +56,25 @@
                         <span class="text-sm font-semibold">{{ __('dashboard.teacher.recent_journals') }}</span>
                     </div>
                 </x-slot:header>
-                <x-core::widgets.empty-state
+                <x-ui::widgets.empty-state
                     icon="clipboard-document-check"
                     :title="__('dashboard.teacher.no_journals')"
                 />
 
                 <div class="grid grid-cols-2 gap-4">
-                    <x-core::widgets.action-button
+                    <x-ui::widgets.action-button
                         :label="__('dashboard.teacher.verify_logbooks')"
                         icon="pencil-square"
                         link="{{ route('sysadmin.logbook') }}"
                         color="primary"
                     />
-                    <x-core::widgets.action-button
+                    <x-ui::widgets.action-button
                         :label="__('dashboard.teacher.grade_assignments')"
                         icon="document-check"
                         link="{{ route('teacher.submissions.grading') }}"
                         color="secondary"
                     />
-                    <x-core::widgets.action-button
+                    <x-ui::widgets.action-button
                         :label="__('dashboard.teacher.supervision_logs')"
                         icon="check-badge"
                         link="{{ route('supervision.logs') }}"
@@ -84,26 +84,26 @@
         </div>
 
         <div class="space-y-4">
-            <x-core::widgets.profile-summary :showEdit="true" />
+            <x-ui::widgets.profile-summary :showEdit="true" />
             <x-ts-card shadowless :header="__('dashboard.quick_links')">
                 <div class="space-y-1">
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
                         icon="user"
                         link="{{ route('profile') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('profile.recovery.title')"
                         icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.notifications')"
                         icon="bell"
                         link="{{ route('notifications') }}"
                     />
                     @if (auth()->user()?->hasRole('super_admin'))
-                        <x-core::widgets.quick-link
+                        <x-ui::widgets.quick-link
                             :label="__('dashboard.system_settings')"
                             icon="cog-6-tooth"
                             link="{{ route('admin.settings') }}"

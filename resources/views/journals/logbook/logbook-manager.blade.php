@@ -1,10 +1,10 @@
 <div class="p-8">
     {{-- Header Section --}}
-    <x-core::ui.page-header :title="__('logbook.title')" :description="__('logbook.subtitle')">
+    <x-ui::ui.page-header :title="__('logbook.title')" :description="__('logbook.subtitle')">
         <x-slot:actions>
             <x-ts-button :text="__('logbook.new')" icon="plus" color="primary" wire:click="create" />
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     {{-- Controls Section --}}
     <div class="mb-6 flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-center">
@@ -87,7 +87,7 @@
             >
                 @interact('column_user_name', $entry)
                     <div class="flex items-center gap-3 py-1">
-                        <x-core::ui.avatar :user="$entry->user" size="size-9" />
+                        <x-ui::ui.avatar :user="$entry->user" size="size-9" />
                         <div class="flex flex-col">
                             <span class="text-sm font-bold">{{ $entry->user->name }}</span>
                             <span class="font-mono text-[10px] opacity-50">{{ $entry->user->email }}</span>

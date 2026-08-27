@@ -196,7 +196,7 @@ class PlacementIndex extends BaseRecordManager
         $this->confirmActionType = '';
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('enrollment.placement.placement-index');

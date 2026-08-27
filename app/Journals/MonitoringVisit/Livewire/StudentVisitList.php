@@ -29,7 +29,7 @@ class StudentVisitList extends Component
             ->get();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('journals.monitoring-visit.student-visit-list');

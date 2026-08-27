@@ -10,7 +10,7 @@
     @if (request()->cookie('theme') === 'dark') class="dark" @endif
 >
 <head>
-    <x-core::layouts.base.head :$title />
+    <x-ui::layouts.base.head :$title />
 
     {{-- Dynamic Branding Colors --}}
     @php

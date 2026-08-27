@@ -1,5 +1,5 @@
 <div class="mx-auto mt-6 max-w-2xl">
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('placement_change.request_title')"
         :subtitle="__('placement_change.request_subtitle')"
     />

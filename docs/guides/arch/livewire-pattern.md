@@ -40,7 +40,7 @@ The MVC pattern requires controllers to be thin — delegating business logic to
 
 The Presentation Model pattern separates UI behavior from UI rendering. The Livewire component IS the Presentation Model — it computes derived values (`$completionRate`, `$isSuperAdmin`, `$pipelineStages`) and exposes them as public properties. Blade consumes these pre-computed values without any logic.
 
-**Reference:** [PoEAA — Presentation Model](https://martinfowler.com/eaaCatalog/presentationModel.html)
+**Reference:** [PoEAA — Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html)
 
 ### 3. MVVM Alignment
 
@@ -86,6 +86,6 @@ Each layer has a single concern:
 - `resources/views/core/ui/confirm.blade.php` — shared confirmation component
 - [Livewire — Documentation](https://livewire.laravel.com/docs) — Livewire 4.x
 - [TallStackUI — Components](https://tallstackui.com/docs) — x-ts-* components
-- [PoEAA — Presentation Model](https://martinfowler.com/eaaCatalog/presentationModel.html) — UI logic separation
+- [PoEAA — Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) — UI logic separation
 - [MVC Pattern](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) — separation of concerns
 - [Thin Controller](https://www.martinfowler.com/eaaCatalog/tableModule.html) — MVC best practice

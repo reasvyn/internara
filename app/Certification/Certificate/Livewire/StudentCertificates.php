@@ -17,7 +17,7 @@ class StudentCertificates extends Component
         abort_unless(auth()->user()->hasRole('student'), 403);
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $certificates = Certificate::query()

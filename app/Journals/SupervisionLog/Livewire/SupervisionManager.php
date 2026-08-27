@@ -22,7 +22,7 @@ class SupervisionManager extends Component
         $this->registration = auth()->user()->registrations()->where('status', 'active')->first();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $logs = SupervisionLog::query()

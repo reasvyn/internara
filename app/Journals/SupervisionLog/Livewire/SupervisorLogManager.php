@@ -89,7 +89,7 @@ class SupervisorLogManager extends Component
         $this->toast()->success(__('journals.log_verified'))->send();
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $logs = SupervisionLog::query()

@@ -72,7 +72,7 @@ class StudentPlacementChangeRequest extends BaseFormView
         });
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $registration = $this->registrationId

@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('dashboard.title')"
         :description="__('dashboard.student.welcome', ['name' => auth()->user()->name])"
     />
@@ -7,19 +7,19 @@
     {{-- Stats / Empty Row --}}
     <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         @if ($registration)
-            <x-core::widgets.stat-card
+            <x-ui::widgets.stat-card
                 :title="__('dashboard.student.company')"
                 :value="$registration->placement->company->name"
                 icon="building-office"
                 color="text-primary"
             />
-            <x-core::widgets.stat-card
+            <x-ui::widgets.stat-card
                 :title="__('dashboard.student.position')"
                 :value="$registration->placement->name"
                 icon="briefcase"
                 color="text-secondary"
             />
-            <x-core::widgets.stat-card
+            <x-ui::widgets.stat-card
                 :title="__('dashboard.student.batch')"
                 :value="$registration->internship->name"
                 icon="academic-cap"
@@ -28,7 +28,7 @@
         @else
             <div class="sm:col-span-3">
                 <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-                    <x-core::widgets.empty-state
+                    <x-ui::widgets.empty-state
                         icon="shield-exclamation"
                         :title="__('dashboard.student.no_registration')"
                         :description="__('dashboard.student.no_registration_hint')"
@@ -41,37 +41,37 @@
     <div class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.write_journal')"
                     icon="pencil-square"
                     link="{{ route('student.logbook') }}"
                     color="primary"
                 />
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.clock_in_out')"
                     icon="clock"
                     link="{{ route('student.attendance') }}"
                     color="secondary"
                 />
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.my_assignments')"
                     icon="document-check"
                     link="{{ route('student.assignments') }}"
                     color="accent"
                 />
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.request_absence')"
                     icon="document-plus"
                     link="{{ route('student.attendance.absence') }}"
                     color="white"
                 />
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.my_documents')"
                     icon="document-arrow-up"
                     link="{{ route('registration.documents') }}"
                     color="white"
                 />
-                <x-core::widgets.action-button
+                <x-ui::widgets.action-button
                     :label="__('dashboard.student.handbooks')"
                     icon="book-open"
                     link="{{ route('student.handbooks') }}"
@@ -162,29 +162,29 @@
     {{-- Bottom Row --}}
     <div class="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div class="lg:col-span-2">
-            <x-core::widgets.profile-summary :showEdit="true" />
+            <x-ui::widgets.profile-summary :showEdit="true" />
         </div>
 
         <div class="space-y-4">
-            <x-core::widgets.profile-summary :showEdit="true" />
+            <x-ui::widgets.profile-summary :showEdit="true" />
             <x-ts-card shadowless :header="__('dashboard.quick_links')">
                 <div class="space-y-1">
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
                         icon="user"
                         link="{{ route('profile') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('profile.recovery.title')"
                         icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.notifications')"
                         icon="bell"
                         link="{{ route('notifications') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.student.view_evaluations')"
                         icon="star"
                         link="#"

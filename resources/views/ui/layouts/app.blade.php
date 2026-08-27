@@ -5,14 +5,14 @@
     'context' => null,
 ])
 
-<x-core::layouts.base :$title>
+<x-ui::layouts.base :$title>
     <x-ts-layout>
         <x-slot:menu>
-            <x-core::layouts.sidebar />
+            <x-ui::layouts.sidebar />
         </x-slot:menu>
 
         <x-slot:header>
-            <x-core::layouts.header :$header />
+            <x-ui::layouts.header :$header />
         </x-slot:header>
 
         <div class="flex flex-1 flex-col">
@@ -32,7 +32,7 @@
         </div>
 
         <x-slot:footer>
-            <x-core::layouts.base.footer />
+            <x-ui::layouts.base.footer />
         </x-slot:footer>
     </x-ts-layout>
-</x-core::layouts.base>
+</x-ui::layouts.base>

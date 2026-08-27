@@ -108,7 +108,7 @@ final class BackupManager extends BaseRecordManager
         $this->deleteId = null;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('sysadmin.backups.backup-manager');

@@ -86,7 +86,7 @@ class PlacementChangeManager extends BaseRecordManager
         $this->rejectingId = null;
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('enrollment.placement.placement-change-manager');

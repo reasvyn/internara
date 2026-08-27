@@ -45,7 +45,7 @@ class GdprDeletionLogs extends Component
             ->paginate(20);
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('sysadmin.observability.gdpr-deletion-log.gdpr-deletion-logs', [

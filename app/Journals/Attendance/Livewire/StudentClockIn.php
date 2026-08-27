@@ -41,7 +41,7 @@ class StudentClockIn extends BaseFormView
         });
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $today = Attendance::where('user_id', auth()->id())

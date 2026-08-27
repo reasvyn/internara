@@ -1,42 +1,42 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('dashboard.title')"
         :description="__('dashboard.subtitle', ['name' => auth()->user()->name])"
     />
 
     {{-- People Overview --}}
     <div class="mb-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.total_students')"
             :value="$stats['totalStudents']"
             icon="users"
             color="text-primary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.instructors')"
             :value="$stats['totalTeachers']"
             icon="academic-cap"
             color="text-secondary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.supervisors')"
             :value="$stats['totalSupervisors']"
             icon="briefcase"
             color="text-accent"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.departments')"
             :value="$stats['totalDepartments']"
             icon="building-library"
             color="text-primary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.companies')"
             :value="$stats['totalCompanies']"
             icon="building-office"
             color="text-secondary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             :title="__('dashboard.stats.internships')"
             :value="$stats['activeInternships']"
             :suffix="__('dashboard.stats.active')"
@@ -344,31 +344,31 @@
                     </div>
                 </div>
             @empty
-                <x-core::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
+                <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
             @endforelse
         </x-ts-card>
 
         <div class="space-y-4">
-            <x-core::widgets.profile-summary :showEdit="true" />
+            <x-ui::widgets.profile-summary :showEdit="true" />
             <x-ts-card shadowless :header="__('dashboard.quick_links')">
                 <div class="space-y-1">
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.edit_profile')"
                         icon="user"
                         link="{{ route('profile') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('profile.recovery.title')"
                         icon="key"
                         link="{{ route('profile.recovery') }}"
                     />
-                    <x-core::widgets.quick-link
+                    <x-ui::widgets.quick-link
                         :label="__('dashboard.notifications')"
                         icon="bell"
                         link="{{ route('notifications') }}"
                     />
                     @hasrole('super_admin')
-                        <x-core::widgets.quick-link
+                        <x-ui::widgets.quick-link
                             :label="__('dashboard.system_settings')"
                             icon="cog-6-tooth"
                             link="{{ route('admin.settings') }}"

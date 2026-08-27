@@ -8,7 +8,7 @@
     </div>
 
     <div class="flex flex-col items-center gap-2">
-        <x-core::ui.app-signature />
+        <x-ui::ui.app-signature />
         @if ($full)
             <p class="text-[9px] font-black tracking-[0.4em] uppercase opacity-60">
                 {{ brand('tagline') ?: __('common.professional_internship_management') }}

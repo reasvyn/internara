@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('internship.applications.title')"
         :description="__('internship.applications.subtitle')"
     />

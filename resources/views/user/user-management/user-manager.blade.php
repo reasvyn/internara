@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('user.manager.title')" :subtitle="__('user.manager.subtitle')">
+<x-ui::ui.record-manager :title="__('user.manager.title')" :subtitle="__('user.manager.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('user.manager.new')" icon="plus" color="primary" sm wire:click="createUser" />
     </x-slot:headerActions>
@@ -18,25 +18,25 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="users"
             :title="__('user.manager.stats_total')"
             :value="$this->stats['total']"
             color="text-primary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="shield-check"
             :title="__('user.manager.stats_admins')"
             :value="$this->stats['admins']"
             color="text-secondary"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="check-badge"
             :title="__('user.manager.stats_active')"
             :value="$this->stats['active']"
             color="text-success"
         />
-        <x-core::widgets.stat-card
+        <x-ui::widgets.stat-card
             icon="clock"
             :title="__('user.manager.stats_pending')"
             :value="$this->stats['pending']"
@@ -125,7 +125,7 @@
     >
         @interact('column_name', $user)
             <div class="flex items-center gap-3 py-1">
-                <x-core::ui.avatar :user="$user" size="size-9" />
+                <x-ui::ui.avatar :user="$user" size="size-9" />
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
@@ -373,4 +373,4 @@
 
     @include('user.user-management.components.account-slip-modal')
     @include('user.user-management.components.user-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

@@ -85,7 +85,7 @@ class LogbookEntry extends BaseRecordEntry
         unset($this->photos[$index]);
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         $journals = Logbook::where('user_id', auth()->id())->latest('date')->paginate(10);

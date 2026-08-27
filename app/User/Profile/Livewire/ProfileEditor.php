@@ -20,7 +20,7 @@ use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 use TallStackUi\Traits\Interactions;
 
-#[Layout('core::layouts.app')]
+#[Layout('ui::layouts.app')]
 class ProfileEditor extends BaseFormView
 {
     use Interactions;

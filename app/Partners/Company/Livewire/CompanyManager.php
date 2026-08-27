@@ -390,7 +390,7 @@ class CompanyManager extends BaseRecordManager
         );
     }
 
-    #[Layout('core::layouts.app')]
+    #[Layout('ui::layouts.app')]
     public function render(): View
     {
         return view('partners.company.company-manager');

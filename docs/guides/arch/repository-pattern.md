@@ -88,4 +88,4 @@ For complex queries that exceed simple scopes, use Read Actions instead of Query
 - [PoEAA — Data Mapper](https://martinfowler.com/eaaCatalog/dataMapper.html) — Data Mapper pattern
 - [Laravel — Eloquent](https://laravel.com/docs/eloquent) — Eloquent ORM
 - [Query Object Pattern](https://martinfowler.com/eaaCatalog/queryObject.html) — complex query encapsulation
-- [DDD — Repository](https://martinfowler.com/bliki/Repository.html) — DDD Repository concept
+- [DDD — Repository](https://martinfowler.com/eaaCatalog/repository.html) — DDD Repository concept

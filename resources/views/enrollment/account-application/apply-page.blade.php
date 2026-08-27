@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header
+    <x-ui::ui.page-header
         :title="__('registration.account_application.title')"
         :description="__('registration.account_application.subtitle')"
     />

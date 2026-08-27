@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>{{ __('document.reports') }}</x-slot:title>
 
-    <x-core::ui.page-header :title="__('document.reports')" />
+    <x-ui::ui.page-header :title="__('document.reports')" />
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
         @foreach ($types as $key => $label)

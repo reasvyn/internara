@@ -1,16 +1,16 @@
 @props(['title' => null, 'header' => null, 'footer' => null])
 
-<x-core::layouts.base :$title>
+<x-ui::layouts.base :$title>
     <div class="bg-base-200 flex min-h-screen flex-col">
         <header class="bg-base-100/80 border-base-content/10 sticky top-0 z-50 border-b backdrop-blur-sm">
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="flex h-16 items-center justify-between">
                     <a wire:navigate href="/" class="flex items-center gap-3">
-                        <x-core::ui.brand size="sm" :invert="false" />
+                        <x-ui::ui.brand size="sm" :invert="false" />
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-core::ui.theme-switch /></div>
+                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-ui::ui.theme-switch /></div>
                         <livewire:settings.lang-switcher />
                     </div>
                 </div>
@@ -24,9 +24,9 @@
                 @isset($footer)
                     {{ $footer }}
                 @else
-                    <x-core::ui.credits />
+                    <x-ui::ui.credits />
                 @endisset
             </div>
         </footer>
     </div>
-</x-core::layouts.base>
+</x-ui::layouts.base>

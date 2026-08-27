@@ -100,6 +100,6 @@ When a frequently-accessed key expires and concurrent requests all trigger recom
 - `action-pattern.md` — Read Actions encapsulate cache logic
 - [PSR-16 SimpleCache](https://www.php-fig.org/psr/psr-16/) — PHP cache interface standard
 - [Laravel — Cache](https://laravel.com/docs/cache) — `Cache::remember()`, `Cache::forget()`, `Cache::lock()`
-- [Cache-Aside Pattern](https://learn.microsoft.com/en-us/azure/architecture/cache-patterns/cache-aside) — most common caching strategy
+- [Cache-Aside Pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside) — most common caching strategy
 - [Cache Stampede / Thundering Herd](https://en.wikipedia.org/wiki/Thundering_herd_problem) — concurrent recomputation
-- [Martin Fowler — Everything You Ever Wanted to Know About Cache](https://martinfowler.com/bliki/CacheOtherwise.html) — caching strategies
+- [Wikipedia — Cache (computing)](https://en.wikipedia.org/wiki/Cache_%28computing%29) — caching strategies

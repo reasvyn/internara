@@ -1,4 +1,4 @@
-<x-core::ui.record-manager :title="__('certificate.title')" :subtitle="__('certificate.subtitle')">
+<x-ui::ui.record-manager :title="__('certificate.title')" :subtitle="__('certificate.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('certificate.add_template')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -72,4 +72,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('certification.certificate.components.certificate-template-guide')
-</x-core::ui.record-manager>
+</x-ui::ui.record-manager>

@@ -1,5 +1,5 @@
 <div>
-    <x-core::ui.page-header :title="__('document.templates')" :description="__('document.templates_subtitle')">
+    <x-ui::ui.page-header :title="__('document.templates')" :description="__('document.templates_subtitle')">
         <x-slot:actions>
             <x-ts-button
                 :text="__('document.create_template')"
@@ -8,7 +8,7 @@
                 color="primary"
             />
         </x-slot:actions>
-    </x-core::ui.page-header>
+    </x-ui::ui.page-header>
 
     <div class="mb-4">
         <x-ts-input
