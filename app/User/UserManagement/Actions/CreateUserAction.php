@@ -11,6 +11,7 @@ use App\User\Notifications\WelcomeNotification;
 use App\User\Rules\ReservedAuthoritativeName;
 use App\User\Rules\SystemUsername;
 use App\User\Services\UserIdentifierGenerator;
+use App\User\UserManagement\Data\CreateUserData;
 use App\User\UserManagement\Events\UserCreated;
 use App\User\UserManagement\Notifications\ActivationCodeNotification;
 use Illuminate\Support\Facades\Hash;
