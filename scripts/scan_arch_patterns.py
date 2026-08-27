@@ -155,7 +155,9 @@ def check_file(path: Path) -> list[Finding]:
 
     # Entity checks
     if "/Entities/" in rel:
-        if not RE_FINAL_READONLY_ENTITY.search(content):
+        # Skip abstract base entities (e.g., BaseEntity) — they are abstract readonly by design
+        is_abstract = "abstract" in content and "class BaseEntity" in content
+        if not is_abstract and not RE_FINAL_READONLY_ENTITY.search(content):
             findings.append(Finding(
                 id=f"ARCH-{len(findings)+1:04d}",
                 rule="ARCH_ENT_FINAL_READONLY",
