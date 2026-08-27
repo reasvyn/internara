@@ -14,18 +14,14 @@ uses(LazilyRefreshDatabase::class);
 |--------------------------------------------------------------------------
 | 81SMS — GetSchoolEntityAction (spec-driven, arch pattern > spec)
 |--------------------------------------------------------------------------
-| FR-SP3a: Read Action reads 8 keys via Settings::get batch
-| FR-SP16a: extends BaseReadAction, execute(): SchoolEntity is only Settings caller
-| FR-SP16b: single batch query + fromSettingsArray hydration
-| FR-SP16: SchoolForm integration (tested via Entity)
 */
 
-describe('81SMS-FR-SP16a: GetSchoolEntityAction contract', function (): void {
-    it('extends BaseReadAction', function (): void {
+describe('81SMS: GetSchoolEntityAction', function (): void {
+    test('81SMS-FR-SP16a: extends BaseReadAction', function (): void {
         expect(new GetSchoolEntityAction)->toBeInstanceOf(BaseReadAction::class);
     });
 
-    it('execute(): SchoolEntity is the only place calling Settings::get for school keys', function (): void {
+    test('81SMS-FR-SP16a: execute() is the only place calling Settings::get for school keys', function (): void {
         $source = file_get_contents((new ReflectionClass(GetSchoolEntityAction::class))->getFileName());
 
         expect($source)->toContain('Settings::get')
@@ -33,15 +29,13 @@ describe('81SMS-FR-SP16a: GetSchoolEntityAction contract', function (): void {
             ->and($source)->toContain('SchoolEntity::fromSettingsArray');
     });
 
-    it('uses single batch query array_values(SchoolEntity::keys())', function (): void {
+    test('81SMS-FR-SP16b: uses single batch query array_values(SchoolEntity::keys())', function (): void {
         $source = file_get_contents((new ReflectionClass(GetSchoolEntityAction::class))->getFileName());
 
         expect($source)->toContain('array_values(SchoolEntity::keys())');
     });
-});
 
-describe('81SMS-FR-SP3a/FR-SP16b: GetSchoolEntityAction execution', function (): void {
-    it('returns SchoolEntity hydrated from Settings store', function (): void {
+    test('81SMS-FR-SP3a: returns SchoolEntity hydrated from Settings store', function (): void {
         Setting::factory()->create(['key' => 'school.name', 'value' => 'SMA 1']);
         Setting::factory()->create(['key' => 'school.email', 'value' => 'sma@test.test']);
         Setting::factory()->create(['key' => 'school.fax', 'value' => '021-999']);
@@ -55,14 +49,14 @@ describe('81SMS-FR-SP3a/FR-SP16b: GetSchoolEntityAction execution', function ():
             ->and($entity->fax())->toBe('021-999');
     });
 
-    it('returns empty strings when no settings exist', function (): void {
+    test('81SMS-FR-SP3a: returns empty strings when no settings exist', function (): void {
         $entity = app(GetSchoolEntityAction::class)->execute();
 
         expect($entity->name())->toBe('')
             ->and($entity->email())->toBe('');
     });
 
-    it('returns all 8 fields correctly when all settings present', function (): void {
+    test('81SMS-FR-SP3a: returns all 8 fields correctly when all settings present', function (): void {
         $data = [
             'school.name' => 'N',
             'school.institutional_code' => 'IC',
@@ -89,21 +83,18 @@ describe('81SMS-FR-SP3a/FR-SP16b: GetSchoolEntityAction execution', function ():
             ->and($entity->principalName())->toBe('Head');
     });
 
-    it('is idempotent and does not create settings', function (): void {
+    test('81SMS-FR-SP16b: is idempotent and does not create settings', function (): void {
         $countBefore = Setting::count();
 
         app(GetSchoolEntityAction::class)->execute();
 
         expect(Setting::count())->toBe($countBefore);
     });
-});
 
-describe('81SMS-FR-SP16: SchoolForm integration via Action', function (): void {
-    it('SchoolForm::loadFromEntity accepts SchoolEntity from GetSchoolEntityAction', function (): void {
+    test('81SMS-FR-SP16: SchoolForm::loadFromEntity accepts SchoolEntity from GetSchoolEntityAction', function (): void {
         $formRef = new ReflectionClass(\App\Academics\School\Livewire\Forms\SchoolForm::class);
         $method = $formRef->getMethod('loadFromEntity');
 
-        // Must accept ?SchoolEntity $entity = null
         $param = $method->getParameters()[0];
         expect($param->getType()?->getName())->toBe(SchoolEntity::class)
             ->and($param->allowsNull())->toBeTrue();

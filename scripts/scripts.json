@@ -41,6 +41,10 @@
       "script": "scan_skills.py",
       "description": "Agent SKILL.md meta-framework consistency"
     },
+    "spec-tests": {
+      "script": "scan_spec_tests.py",
+      "description": "Spec↔tests coverage (FR/NFR/UC traceability, non-testable marker)"
+    },
     "tests": {
       "script": "scan_tests.py",
       "description": "Test suite pass/fail results"
