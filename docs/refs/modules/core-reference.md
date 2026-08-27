@@ -212,7 +212,7 @@ No dedicated route file. Health check endpoint `/up` is defined in `bootstrap/ap
 
 ## Views
 
-Views are located in `resources/views/core/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/ui/`. See [UI/UX](../../guides/ui-ux.md) for the design
 system.
 
 ## Tests
@@ -240,7 +240,7 @@ None - Core provides base classes only.
 
 - **Business Logic**: `app/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
-- **Views**: `resources/views/core/`
+- **Views**: `resources/views/ui/`
 - **Testing**: `tests/Core/`
 - **Cache Config**: `config/cache-keys.php`
 

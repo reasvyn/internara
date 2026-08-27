@@ -139,7 +139,7 @@ link behaves identically and accessibly.
 | FR-L1 | `core::layouts.base` must be the root HTML shell: `<html lang>` from `app()->getLocale()`, `data-theme` from the `theme` cookie, head (meta, favicon, manifest, Vite assets), skip-to-content link, TallstackUI toast container (`<x-ts-toast />` via Interactions), and scripts stack |
 | FR-L2 | `core::layouts.app` must compose: drawer sidebar (`core::layouts.sidebar`), sticky header (`core::layouts.header`), breadcrumb (when `$context` given), `max-w-7xl` content container, and footer (`core::layouts.base.footer`) |
 | FR-L3 | `core::layouts.guest` must render a centered public shell: header with brand + theme/lang switchers, content slot, footer with credits |
-| FR-L4 | Layouts shared by multiple modules must live in `resources/views/core/layouts/`; layouts specific to one module must live in `resources/views/{module}/layouts/` (e.g., `auth::layouts.auth`, `setup::layouts.setup`) |
+| FR-L4 | Layouts shared by multiple modules must live in `resources/views/ui/layouts/`; layouts specific to one module must live in `resources/views/{module}/layouts/` (e.g., `auth::layouts.auth`, `setup::layouts.setup`) |
 | FR-L5 | Livewire pages must select the shell via the `#[Layout('core::layouts.app')]` attribute (or `guest`), never by embedding chrome markup inline |
 
 ### Navigation
@@ -203,7 +203,7 @@ link behaves identically and accessibly.
 | NFR-P1  | The layout shell must render in < 100 ms server-side; sidebar menu resolution must add no more than 2 queries (no N+1 over menu items) |
 | NFR-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
 | NFR-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
-| NFR-M1  | Layout and UI components must be colocated in Core (`resources/views/core/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |
+| NFR-M1  | Layout and UI components must be colocated in Core (`resources/views/ui/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |
 
 ---
 
@@ -279,7 +279,7 @@ low-frequency and developer-maintained, not school-editable.
 
 **Decision:** Pure-presentation chrome (`page-header`, `record-manager`, `display-field`, `confirm`,
 `navbar-actions`, `brand`, `logo`, `avatar`, `credit`) are anonymous Blade components under
-`resources/views/core/ui/`, not Livewire components.
+`resources/views/ui/components/`, not Livewire components.
 **Rationale:** These components carry no server state — they compose slots and TallstackUI `x-ts-*` components. Blade
 components are cheaper, testable at the view layer, and avoid Livewire overhead on every render.
 **Trade-off:** They cannot react to server events; any reactivity must be delegated to a parent
@@ -364,8 +364,8 @@ Livewire component), then the dashboard, which renders inside `core::layouts.app
 
 ## Quick References
 
-- `resources/views/core/layouts/` — Base, app, guest, sidebar, header, head, footer shells
-- `resources/views/core/ui/` — Shared `x-core::ui.*` component library
+- `resources/views/ui/layouts/` — Base, app, guest, sidebar, header, head, footer shells
+- `resources/views/ui/components/` — Shared `x-core::ui.*` component library
 - `config/menu.php` — Role-filtered navigation source
 - `resources/js/app.js` — Alpine helpers, flatpickr, markdown bootstrap
 - `docs/guides/ui-ux.md` — Design principles, responsive strategy, accessibility guidance

@@ -278,8 +278,8 @@ Canonical: `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-
 - `../conventions.md` §13 Theming (CSS vars, form icons), §14 Frontend & Blade Presentation (Blade no-logic, `@hasrole`), §15 Localization (flat `lang/{locale}/*.php`, dual locale)
 - `modular-pattern.md` §22 Accessibility (WCAG 2.1 AA Perceivable/Operable/Understandable/Robust) & §23 Localization — project-wide contracts
 - `resources/css/app.css` — `@theme` semantic palette, `@custom-variant dark`, `@layer components` shims, `[data-theme='dark']` overrides
-- `resources/views/core/layouts/base.blade.php` / `app.blade.php` / `sidebar.blade.php` / `header.blade.php` — shell, `Theme::cssVariables()`, skip-link, `aria-live`, `wire:navigate` focus reset
-- `resources/views/core/ui/record-manager.blade.php` / `page-header.blade.php` / `confirm.blade.php` / `theme-switch.blade.php` / `widgets/empty-state.blade.php` — canonical organisms/molecules
+- `resources/views/ui/layouts/base.blade.php` / `app.blade.php` / `sidebar.blade.php` / `header.blade.php` — shell, `Theme::cssVariables()`, skip-link, `aria-live`, `wire:navigate` focus reset
+- `resources/views/ui/components/record-manager.blade.php` / `page-header.blade.php` / `confirm.blade.php` / `theme-switch.blade.php` / `widgets/empty-state.blade.php` — canonical organisms/molecules
 - `resources/js/app.js` — `resolveTheme()`/`applyTheme()` dual-signal + cookie/LS sync, `livewire:init` `language-changed`
 - `app/Settings/Theme/Support/Theme.php` + `app/Core/Support/Color.php` — `cssVariables()`, `contrastColor()`, `computeDarkShades()`, `isValid()`
 - `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` + `config/app.php` + `config/localization.php` — locale plumbing

@@ -83,7 +83,7 @@ Each layer has a single concern:
 - `docs/guides/arch/action-pattern.md` — Action Triad and injection
 - `docs/guides/arch/data-pattern.md` — DTO contract
 - `docs/guides/arch/entity-pattern.md` — Entity boundary
-- `resources/views/core/ui/confirm.blade.php` — shared confirmation component
+- `resources/views/ui/components/confirm.blade.php` — shared confirmation component
 - [Livewire — Documentation](https://livewire.laravel.com/docs) — Livewire 4.x
 - [TallStackUI — Components](https://tallstackui.com/docs) — x-ts-* components
 - [PoEAA — Presentation Model](https://martinfowler.com/eaaDev/PresentationModel.html) — UI logic separation
