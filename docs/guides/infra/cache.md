@@ -1,6 +1,6 @@
 # Cache — Caching Strategy & Configuration
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify cache strategy, key registry (config/cache-keys.php), TTL categories, event-driven invalidation, and driver strategy against current implementation
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/cache-pattern.md
 
 ## Description
 
@@ -10,9 +10,9 @@ patterns.
 ## Purpose
 
 The cache layer reduces database load and response latency by storing computed or frequently
-accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence
-mechanism. Data cached today may not be cached tomorrow, and the application must function correctly
-on cache miss.
+accessed data in a fast retrieval store.
+
+> 📖 Authoritative reference: [Cache Pattern](../arch/cache-pattern.md) — Non-Negotiable rules on cache-as-optimization-not-persistence and graceful degradation on every cache miss.
 
 ---
 
@@ -90,6 +90,8 @@ opcache.revalidate_freq=0               ; Check every request
 
 ### Rules
 
+> 📖 Authoritative reference: [Cache Pattern](../arch/cache-pattern.md) — Non-Negotiable rules for targeted invalidation (never blanket flush) and event-driven invalidation. The operational guidance and app-specific examples follow.
+
 1. **If you update a value, invalidate its cache entry.** This is the fundamental rule.
 2. Prefer **targeted invalidation** — clear only the keys that changed, not everything.
 3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an
@@ -130,8 +132,7 @@ Cache::forget(config('cache-keys.theme_css_variables'));
 
 ### Centralized Registry
 
-Every cache key MUST be declared in `config/cache-keys.php`. This prevents collisions, makes
-dependencies discoverable, and enables systematic flushing.
+> 📖 Authoritative reference: [Cache Pattern](../arch/cache-pattern.md) — Non-Negotiable #1 (no inline keys, C4) and the rationale for a centralized registry. The app's actual registry follows.
 
 ```php
 // config/cache-keys.php
@@ -146,6 +147,8 @@ return [
 
 ### Naming Convention
 
+> 📖 Authoritative reference: [Cache Pattern](../arch/cache-pattern.md) — the `{module}.{purpose}[.{qualifier}]` naming contract and dynamic-qualifier rules. App-specific examples follow.
+
 ```
 {module}.{purpose}[.{qualifier}]
 
@@ -157,6 +160,8 @@ Examples:
 ```
 
 ### TTL Legend
+
+> 📖 Authoritative reference: [Cache Pattern](../arch/cache-pattern.md) — TTL categories (short/medium/long/forever) with rationale and what-to-cache guidance. The summary table is reproduced below for operational convenience.
 
 | TTL         | Meaning                     | Examples                             |
 | ----------- | --------------------------- | ------------------------------------ |

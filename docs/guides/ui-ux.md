@@ -1,6 +1,6 @@
 # UI/UX Design — Principles & Guidelines
 
-> **Last updated:** 2026-08-25 **Changes:** sync — replace DaisyUI/maryUI/PHPFlasher with TallstackUI v4 (self-hosted palette, x-ts-* components, toast, theme-switch)
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference links to arch/ui-pattern.md and arch/ux-pattern.md
 
 ## Description
 
@@ -8,6 +8,8 @@ UI/UX design principles, component library usage (TallstackUI v4 + Tailwind CSS 
 and accessibility guidelines.
 
 ## 1. Design System Philosophy
+
+> 📖 Authoritative references: [UI Pattern](arch/ui-pattern.md) — visual hierarchy, Tailwind v4 tokens, component design, performance; [UX Pattern](arch/ux-pattern.md) — theming, accessibility, localization, user flow.
 
 Internara's interface is built on three layers:
 
@@ -57,6 +59,8 @@ Located at `resources/views/{module}/layouts/`:
 
 ## 3. Dark Mode
 
+> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §1 — dual-signal theming, token architecture, dark-mode dual-signal contract.
+
 Dual-signal dark mode via `data-theme` attribute + `.dark` class on `<html>`. Three-state switcher:
 light, dark, system preference. Implementation:
 
@@ -98,6 +102,8 @@ Excluded directories: `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`,
 
 ## 6. Accessibility (WCAG 2.1 AA)
 
+> 📖 Authoritative references: [UX Pattern](arch/ux-pattern.md) §2 — WCAG 2.2 AA (Perceivable/Operable/Understandable/Robust), focus, ARIA, `aria-live`; [UI Pattern](arch/ui-pattern.md) §7 — forms/tables/modals/navigation a11y. This section is the UI-layer checklist.
+
 All user-facing interfaces MUST meet WCAG 2.1 Level AA. This section defines UI-layer
 requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural rules and
 `docs/guides/arch/livewire-pattern.md` §13 for component-specific patterns.
@@ -108,8 +114,7 @@ requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural r
   3:1 for UI components and graphical objects.
 - **Semantic palette colors** (`--color-success`, `--color-warning`, etc. in `resources/css/app.css`) are pre-validated for contrast. Never override with arbitrary Tailwind color utilities that fail contrast checks.
 - **Color is never the sole indicator:** Status badges (success/warning/error), capacity gauges,
-  and validation states must include text labels, icons, or patterns alongside color. Example:
-  `badge-success` + "Verified" text, not just a green badge.
+  and validation states must include text labels, icons, or patterns alongside color (see UX Pattern §2.1).
 
 ### 6.2 Keyboard Navigation
 
@@ -159,6 +164,8 @@ requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural r
 ---
 
 ## 7. SPA Navigation
+
+> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §4.1 — `wire:navigate` SPA, focus reset, information architecture.
 
 Internal links use `wire:navigate` for AJAX page transitions. Content area swaps without full page
 reload. Browser history and URL update normally — bookmarking and back button work as expected. No
@@ -222,6 +229,8 @@ See `docs/guides/arch/modular-pattern.md` §13 for full route patterns.
 
 ## 9. Localization
 
+> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §3 — localization (ICU/CLDR, key conventions, authoring rules, dual locale).
+
 ### Translation Key Convention
 
 All user-facing strings use `__()` for EN/ID bilingual support. See `docs/conventions.md` §14 for
@@ -284,6 +293,8 @@ Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.)
 ---
 
 ## 11. Guide Component Pattern
+
+> 📖 Authoritative references: [UX Pattern](arch/ux-pattern.md) §4.3 — Guide Pattern (NN/g Heuristic #10, placement, FAB, modal, a11y); [Livewire Pattern](arch/livewire-pattern.md) §11 — implementation.
 
 Every page with a non-trivial workflow MUST include a floating guide button (bottom-right, question
 mark icon) that opens a modal with step-by-step instructions. See

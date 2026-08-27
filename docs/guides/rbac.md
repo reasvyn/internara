@@ -1,6 +1,6 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
+> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/policy-pattern.md
 
 ## Description
 
@@ -27,8 +27,9 @@ Request → Authenticate middleware → Session created → RBAC gate
 
 ## 2. Flat Role Hierarchy
 
-The application defines five user roles in a flat hierarchy. Roles do **not** inherit permissions
-from parent roles. Each role has explicit, enumerated capabilities.
+> 📖 Authoritative reference: [Policy Pattern](arch/policy-pattern.md) — Flat RBAC (no role inheritance), five roles + functional roles, Principle of Least Privilege.
+
+The application defines five user roles in a flat hierarchy. Each role has explicit, enumerated capabilities.
 
 | Role            | Code          | Description                                                                                               |
 | --------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
@@ -40,17 +41,18 @@ from parent roles. Each role has explicit, enumerated capabilities.
 
 ### Rationale for Flat Hierarchy
 
-Hierarchical permission inheritance leads to unexpected behavior: adding a permission to a parent
-role implicitly grants it to all children. Flat role definitions eliminate ambiguity — each role's
-capabilities are explicitly enumerated and reviewed. Source: Flat RBAC with Functional
-Roles).
+> 📖 See [Policy Pattern — Flat RBAC](arch/policy-pattern.md) for the authoritative contract (NIST RBAC, no hierarchical roles, no inheritance leakage).
+
+Flat role definitions eliminate ambiguity — each role's capabilities are explicitly enumerated and reviewed.
 
 ---
 
 ## 3. Functional Roles
 
+> 📖 Authoritative reference: [Policy Pattern](arch/policy-pattern.md) — functional roles are derived at runtime, never stored, never used in route middleware.
+
 A second family of **functional roles** exists for business logic only. These are logical groupings
-resolved at runtime — never stored in the database, never used in route middleware.
+resolved at runtime.
 
 | Functional Role | Resolves From           | Purpose                                              |
 | --------------- | ----------------------- | ---------------------------------------------------- |
@@ -78,25 +80,15 @@ See `Role::resolvesTo()` and `Role::functionalRolesFor()` in `app/Auth/Permissio
 
 ## 4. Permission Model
 
-Permissions are checked at three levels:
+> 📖 Authoritative reference: [Policy Pattern](arch/policy-pattern.md) — three-layer authorization (route middleware + Livewire `authorize()` + Policy gates), `Gate::before` Super Admin bypass, and `BasePolicy` role/ownership traits.
+
+Permissions are checked at three independent layers (Defence in Depth). See the reference above for the full contract, anti-patterns, and the `Gate::before` bypass rationale.
 
 | Level    | Mechanism                               | Syntax                                    |
 | -------- | --------------------------------------- | ----------------------------------------- |
 | Routes   | `CheckRoleMiddleware`                   | `role:{role1\|role2}` pipe-delimited      |
 | Livewire | Component authorization methods         | Inline `$this->authorize()` calls         |
 | Policies | `BasePolicy` with role/ownership traits | `AuthorizesRoles` + `AuthorizesOwnership` |
-
-### Gate::before Bypass for Super Admin
-
-`spatie/laravel-permission` auto-registers a `Gate::before` callback via
-`register_permission_check_method` config (`config/permission.php`). For super_admin users, this
-callback returns `true` (grant access to everything). For all other users, it returns `null` ("let
-the policy decide").
-
-This means super_admin is not a role with "all permissions" in the database — it skips the
-permission system entirely. More efficient, zero chance of accidentally missing a permission.
-
-In tests, `Gate::before` is additionally registered in `tests/TestCase.php`.
 
 ### CheckRoleMiddleware
 

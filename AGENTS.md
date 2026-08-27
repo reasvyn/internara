@@ -191,6 +191,10 @@ Full spec list with build order: `docs/specs/index.md`
 | Service registration | `docs/guides/arch/service-pattern.md` |
 | Testing patterns | `docs/guides/arch/testing-pattern.md` |
 | Modular architecture | `docs/guides/arch/modular-pattern.md` |
+| Repository (why none) | `docs/guides/arch/repository-pattern.md` |
+| Support utilities | `docs/guides/arch/support-pattern.md` |
+| UI pattern (visual design) | `docs/guides/arch/ui-pattern.md` |
+| UX pattern (a11y, i18n, flow) | `docs/guides/arch/ux-pattern.md` |
 
 ### Feature Specs
 

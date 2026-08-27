@@ -1,6 +1,6 @@
 # Security — Infrastructure, Privacy & Compliance
 
-> **Last updated:** 2026-08-16 **Changes:** sync — update middleware class names (SecurityHeadersMiddleware); verify security headers, rate limiting, and PII handling against current implementation
+> **Last updated:** 2026-08-27 **Changes:** sync — add reference link to arch/policy-pattern.md where authorization posture overlaps
 
 ## Description
 
@@ -47,6 +47,8 @@ All responses include security headers via `SecurityHeadersMiddleware` (applied 
 ---
 
 ## 2. Application Security Posture
+
+> 📖 Authorization (RBAC, three-layer gates, policies) is covered by [Policy Pattern](../arch/policy-pattern.md); authentication flow by [RBAC](../rbac.md). This section focuses on the operational security posture.
 
 ### Authentication Infrastructure
 
