@@ -44,12 +44,33 @@ SCAN_NAME = "spec-tests"
 
 # ─── Regex — dynamic, no hardcoding ─────────────────────────────────
 
-# FR-SP1, FR-SP3a, NFR-U5, UC-1 — require at least one digit to avoid false positives like FR-EV
-RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-[A-Z]*[0-9]+[a-z]?\b")
+# FR-SP1, FR-TST-01, NFR-U5, UC-1 — require at least one digit; allow hyphens; optional non-testable markers: * ~ ! -X -NT -X- prefix
+# Examples: FR-SP1, FR-TST-01*, FR-SP1~, FR-SP1-X, FR-SP1-NT, FR-X-001 (non-testable via X- prefix), NFR-P1*, UC-1~
+# Note: suffix *~! are non-word, so we use lookahead instead of \b after them
+RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;)\]])")
+# For spec-prefixed refs like 81SMS-FR-SP1* — same but with spec prefix
+RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;)\]])")
 # Spec ID from header: > **Spec ID:** 81SMS  (markdown bold)
 RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
-# Tests often write "81SMS-FR-SP1" — capture spec prefix + FR/NFR/UC
-RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-[A-Z]*[0-9]+[a-z]?\b")
+# Tests often write "81SMS-FR-SP1" — capture spec prefix + FR/NFR/UC (with optional X- and suffix, hyphenated)
+RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?\b")
+# Non-testable marker check — short characters: * ~ ! -X -NT -X- prefix
+RE_NON_TESTABLE = re.compile(r"(?:\*|~|!|-X\b|-NT\b|(?:^|\b)(?:FR|NFR|UC)-X-)")
+
+
+def is_non_testable(req_id: str) -> bool:
+    """Return True if requirement is marked non-testable via short marker."""
+    # Suffix markers: * ~ ! -X -NT
+    if req_id.endswith(("*", "~", "!")):
+        return True
+    if req_id.endswith(("-X", "-NT")):
+        return True
+    if "-X-" in req_id:
+        return True
+    # Also handle FR-X-001 where X- is after FR-
+    if re.search(r"\b(?:FR|NFR|UC)-X-", req_id):
+        return True
+    return False
 
 
 def extract_requirements_from_spec(path: Path) -> tuple[str | None, list[tuple[str, int]]]:
@@ -119,6 +140,10 @@ def main() -> None:
     spec_req_counts: dict[Path, int] = {}
     spec_ids_in_specs: set[str] = set()
 
+    # Track non-testable reqs separately
+    non_testable_reqs: set[str] = set()
+    non_testable_map: dict[str, list[tuple[Path, int]]] = {}
+
     for sf in spec_files:
         spec_id, reqs = extract_requirements_from_spec(sf)
         if spec_id:
@@ -126,19 +151,27 @@ def main() -> None:
             spec_ids_in_specs.add(spec_id)
         spec_req_counts[sf] = len(reqs)
         for req_id, line in reqs:
-            req_to_specs.setdefault(req_id, []).append((sf, line))
+            if is_non_testable(req_id):
+                non_testable_reqs.add(req_id)
+                non_testable_map.setdefault(req_id, []).append((sf, line))
+            else:
+                req_to_specs.setdefault(req_id, []).append((sf, line))
 
-    # All requirement IDs defined in specs (unique)
+    # All requirement IDs defined in specs (unique) — excluding non-testable
     all_spec_reqs: set[str] = set(req_to_specs.keys())
 
-    # req_id -> [(test_file, line)] and set of all test reqs
+    # req_id -> [(test_file, line)] and set of all test reqs (excluding non-testable for orphan check)
     req_to_tests: dict[str, list[tuple[Path, int]]] = {}
     test_req_set: set[str] = set()
+    test_non_testable: set[str] = set()
     spec_ref_in_tests: set[str] = set()  # spec IDs mentioned in tests (e.g., "81SMS")
 
     for tf in test_files:
         reqs = extract_requirements_from_test(tf)
         for req_id, line in reqs:
+            if is_non_testable(req_id):
+                test_non_testable.add(req_id)
+                continue
             req_to_tests.setdefault(req_id, []).append((tf, line))
             test_req_set.add(req_id)
         # Also detect spec ID references in tests (e.g., "81SMS-FR-SP1" contains "81SMS")
@@ -149,6 +182,24 @@ def main() -> None:
         for sid in spec_ids_in_specs:
             if re.search(rf"\b{re.escape(sid)}\b", content):
                 spec_ref_in_tests.add(sid)
+
+    # ─── Rule: SPEC_TEST_NON_TESTABLE (info) ────────────────────────
+    # Requirements marked with short non-testable markers (* ~ ! -X -NT -X- prefix) are excluded from uncovered
+    for req_id, occurrences in non_testable_map.items():
+        spec_file, line = occurrences[0]
+        rel = relative_path(spec_file)
+        findings.append(Finding(
+            id="SPEC-0000",
+            rule="SPEC_TEST_NON_TESTABLE",
+            severity="low",
+            category="convention",
+            file=rel,
+            line=line,
+            message=f"Requirement {req_id} marked non-testable (short marker *~/!/-X/-NT) — no test required",
+            suggestion="No test needed; marker indicates manual verification, UI/UX, or infra requirement. Keep marker for auditability.",
+            reference="docs/guides/arch/testing-pattern.md §Non-Testable Requirements, .agents/rules/conflic-resolution.md",
+            context={"requirement": req_id, "spec": spec_file.name, "occurrences": len(occurrences)},
+        ))
 
     # ─── Rule: SPEC_TEST_UNCOVERED ──────────────────────────────────
     # Requirement in spec but not found in any test — low for informational (gradual)
