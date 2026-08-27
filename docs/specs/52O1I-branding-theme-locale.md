@@ -347,7 +347,7 @@ After implementing this spec, the system has customizable branding (school name,
 - `app/Settings/Theme/Support/Theme.php` — Color resolution, CSS variables, presets
 - `app/Settings/Locale/Support/Locale.php` — EN/ID locale management
 - `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Per-request locale from cookie
-- `resources/views/core/ui/theme-switch.blade.php` — `<x-ts-theme-switch>` wrapper (light/dark/system, localStorage-based)
+- `resources/views/ui/components/theme-switch.blade.php` — `<x-ts-theme-switch>` wrapper (light/dark/system, localStorage-based)
 - `app/Settings/Livewire/LangSwitcher.php` — EN/ID dropdown (cookie-based)
 - `docs/refs/modules/settings.md` — Module conceptual documentation
 - **Related specs:** [settings-infrastructure.md](YB22J-settings-infrastructure.md) — Settings store, type system & cache

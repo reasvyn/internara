@@ -123,7 +123,7 @@ Follow **Atomic Design** (Brad Frost) + **W3C Design Tokens** + Material 3 Compo
 
 - Every form field MUST have `label` + Heroicon (`o-user`, `o-envelope`, `o-calendar`, `o-clock`, `o-magnifying-glass`, `o-chevron-down`) — never icon as sole indicator (WCAG 1.4.1). Icons via `x-ts-icon` or `x-ts-*` `icon` prop.
 - Cards: `rounded-xl border border-base-content/10 bg-base-100 p-5`; floating: `rounded-xl border shadow-xl mt-2 w-80 p-4`.
-- Do not duplicate a molecule — extract to `resources/views/core/ui/` or `resources/views/{module}/components/` and reuse. Three similar blocks → extract.
+- Do not duplicate a molecule — extract to `resources/views/ui/components/` or `resources/views/{module}/components/` and reuse. Three similar blocks → extract.
 
 ### 4. Tailwind CSS v4 — CSS-First & Design Tokens
 
@@ -230,8 +230,8 @@ Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shi
 - `../conventions.md` §13 Theming & Visual Consistency — CSS variables, form icons; §14 Frontend & Blade Presentation — Blade no-logic, `@hasrole`
 - `modular-pattern.md` §22 Accessibility (WCAG 2.1 AA) & §23 Localization — project-wide a11y/i18n contracts
 - `resources/css/app.css` — `@theme` palette, `@custom-variant dark`, `@layer components` shims, `data-theme` overrides
-- `resources/views/core/layouts/base.blade.php` + `app.blade.php` + `sidebar.blade.php` + `header.blade.php` — app shell, `Theme::cssVariables()`, skip-link, focus reset
-- `resources/views/core/ui/record-manager.blade.php` — canonical CRUD scaffold (reference for every manager)
+- `resources/views/ui/layouts/base.blade.php` + `app.blade.php` + `sidebar.blade.php` + `header.blade.php` — app shell, `Theme::cssVariables()`, skip-link, focus reset
+- `resources/views/ui/components/record-manager.blade.php` — canonical CRUD scaffold (reference for every manager)
 - `resources/js/app.js` — `resolveTheme()`/`applyTheme()` dual-signal dark mode, `livewire:init` locale reload
 - `app/Settings/Theme/Support/Theme.php` + `app/Core/Support/Color.php` — runtime branding, contrast (`contrastColor()`), `computeDarkShades()`, `isValid()`
 - `vite.config.js` + `package.json` — Vite 8.1, `@tailwindcss/vite` 4.3, `laravel-vite-plugin`

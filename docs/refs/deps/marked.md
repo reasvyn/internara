@@ -32,7 +32,7 @@ it touches the DOM. The pair is treated as one unit because they are only ever u
 ## How Internara Uses It
 
 - Wired together in `resources/js/app.js` and the markdown editor component
-  (`resources/views/core/ui/markdown-editor.blade.php`) — reflective logbook entries and other
+  (`resources/views/ui/components/markdown-editor.blade.php`) — reflective logbook entries and other
   rich-text fields render through this pipeline
 - Security rule of thumb repo-wide: never render user-supplied HTML without this pair (see
   `docs/conventions.md` §Security Conventions, XSS prevention)

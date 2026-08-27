@@ -339,7 +339,7 @@ migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
 - `app/User/Profile/Policies/ProfilePolicy.php` — Authorization policy
 - `resources/views/user/profile/profile-editor.blade.php` — Profile page view
 - `resources/views/user/profile/components/profile-guide.blade.php` — Help modal
-- `resources/views/core/widgets/profile-summary.blade.php` — Dashboard widget
+- `resources/views/ui/widgets/profile-summary.blade.php` — Dashboard widget
 - `database/migrations/2026_01_02_000006_create_profiles_table.php` — Profiles migration
 - `lang/en/profile.php` — English translations (117 lines)
 - **Related spec:** [authentication.md](YB7RG-authentication.md) (YB7RG) — Login, activation, credential changes

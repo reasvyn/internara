@@ -29,7 +29,7 @@ backgrounds, subtle borders, bold typography, minimal shadows.
 
 ### Cross-Cutting Layouts
 
-Located at `resources/views/core/layouts/`:
+Located at `resources/views/ui/layouts/`:
 
 | Layout  | File                    | Purpose                                                  |
 | ------- | ----------------------- | -------------------------------------------------------- |
@@ -52,7 +52,7 @@ Located at `resources/views/{module}/layouts/`:
 
 ### Convention
 
-- Layout shared by multiple modules → `resources/views/core/layouts/`
+- Layout shared by multiple modules → `resources/views/ui/layouts/`
 - Layout specific to one module → `resources/views/{module}/layouts/`
 
 ---
@@ -265,7 +265,7 @@ Number::locale(app()->getLocale())->format(1234567.89);
 
 ### HTML Language Attribute
 
-`<html lang="{{ app()->getLocale() }}">` is set in `resources/views/core/layouts/base.blade.php`.
+`<html lang="{{ app()->getLocale() }}">` is set in `resources/views/ui/layouts/base.blade.php`.
 Screen readers use this to select the correct pronunciation engine.
 
 ### Dual Locale Requirement
@@ -317,11 +317,11 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 
 | Asset             | Path                                      |
 | ----------------- | ----------------------------------------- |
-| Layout templates  | `resources/views/core/layouts/`           |
-| UI components     | `resources/views/core/ui/` (incl. `theme-switch.blade.php`) |
+| Layout templates  | `resources/views/ui/layouts/`           |
+| UI components     | `resources/views/ui/components/` (incl. `theme-switch.blade.php`) |
 | CSS entry point   | `resources/css/app.css` (`@import tallstackui/css/v4.css` + self-hosted palette + shims) |
 | JS entry point    | `resources/js/app.js` (theme + flatpickr + marked + choices bridge) |
 | TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
-| Theme switcher    | `resources/views/core/ui/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |
+| Theme switcher    | `resources/views/ui/components/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |
 | Language switcher | `app/Settings/Livewire/LangSwitcher.php`  |
