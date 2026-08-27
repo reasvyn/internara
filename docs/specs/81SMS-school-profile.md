@@ -1,7 +1,7 @@
 # School Profile — Settings-Based Entity Management
 
 > **Spec ID:** 81SMS
-> **Last updated:** 2026-08-24 **Changes:** fix — `SchoolEditor` unsaved guard `beforeunload` (FR-SP20a, NFR-U5) + add `fax` to `SchoolEntity` (8 fields, sync with `SchoolForm`); `SchoolForm::loadFromEntity` fax handling
+> **Last updated:** 2026-08-27 **Changes:** refactor — `SchoolEntity` pure (no Settings import) per C5/MOD, new `GetSchoolEntityAction` Read Action owns Settings fetch (arch pattern > spec); `SchoolForm::loadFromEntity` now accepts `SchoolEntity` via Action injection; FR-SP3 split into FR-SP3/FR-SP3a
 
 ## Description
 
@@ -135,7 +135,9 @@ profile save flow.
 | ---- | ----------- |
 | FR-SP1 | `SchoolEntity` must be a `final readonly class` extending `BaseEntity` with 8 typed `string` properties (including `fax`) |
 | FR-SP2 | `SchoolEntity` must define a `KEYS` constant mapping property names to `school.*` setting keys (8 entries) |
-| FR-SP3 | `SchoolEntity::get()` must read all 8 keys from Settings store via `Settings::get()` and return a populated instance |
+| FR-SP3 | `SchoolEntity` must be pure — **no** `use App\Settings\*;` import (C5, MOD_XMOD_INTERNAL). Must provide `fromSettingsArray(array $values): self` that hydrates from a `Settings::get()` result array; must not call Settings directly |
+| FR-SP3a | `GetSchoolEntityAction` (Read Action) must read all 8 keys via `Settings::get(array_values(SchoolEntity::keys()))` and return `SchoolEntity::fromSettingsArray()` (single batch query) |
+| FR-SP3b | `SchoolEntity::get()` is legacy compat — must delegate to `GetSchoolEntityAction` via FQCN without `use` import (no `use` → C5/MOD pass) and is deprecated for new code |
 | FR-SP4 | `SchoolEntity::keys()` must return the `KEYS` constant array for iteration by setup and other consumers |
 | FR-SP5 | `SchoolEntity::fromModel()` must delegate to `SchoolEntity::get()` (no Model dependency) |
 | FR-SP6 | `SchoolEntity` must provide named accessors: `name()`, `institutionalCode()`, `email()`, `address()`, `phone()`, `fax()`, `website()`, `principalName()` |
@@ -158,16 +160,23 @@ profile save flow.
 | ---- | ----------- |
 | FR-SP14 | `SchoolForm` must extend Livewire `Form` with 8 properties: `name`, `institutional_code`, `email`, `phone`, `fax`, `address`, `website`, `principal_name` |
 | FR-SP15 | `rules()` must validate: `name` required/max:255, others nullable with type-specific rules (email, url, max) |
-| FR-SP16 | `loadFromEntity()` must read `SchoolEntity::get()` and populate **all 8** form properties (including `fax` via `fax()` accessor) |
+| FR-SP16 | `loadFromEntity(?SchoolEntity $entity = null)` must populate **all 8** form properties (including `fax`). When no entity is passed, must resolve via `GetSchoolEntityAction::execute()` (keeps Entity pure); callers `SchoolEditor::mount()` and `save()` must inject `GetSchoolEntityAction` and pass the entity |
 | FR-SP17 | `toPayload()` must return associative array mapping form fields to setting key suffixes (8 keys) |
+
+### Read Action (NEW — arch pattern compliance)
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-SP16a | `GetSchoolEntityAction` must extend `BaseReadAction` and `execute(): SchoolEntity` must be the **only** place that calls `Settings::get()` for school keys |
+| FR-SP16b | Must use single batch query `Settings::get(array_values(SchoolEntity::keys()))` and hydrate via `SchoolEntity::fromSettingsArray()` |
 
 ### Livewire Component
 
 | ID   | Requirement |
 | ---- | ----------- |
 | FR-SP18 | `SchoolEditor` must extend `BaseFormView` with `WithFileUploads` trait |
-| FR-SP19 | `mount()` must authorize via `Setting::class` policy and load form from entity |
-| FR-SP20 | `save()` must authorize, validate, call `SaveSchoolProfileAction` **via `BaseFormView::handleSave()`**, reload form from fresh entity, flash success, and `dispatch('saved')` to reset Alpine `isDirty` |
+| FR-SP19 | `mount(GetSchoolEntityAction $getEntity)` must authorize via `Setting::class` policy and load form via `$form->loadFromEntity($getEntity->execute())` (no direct `SchoolEntity::get()` in Livewire) |
+| FR-SP20 | `save(SaveSchoolProfileAction $action, GetSchoolEntityAction $getEntity)` must authorize, validate, call `SaveSchoolProfileAction` **via `BaseFormView::handleSave()`**, reload form via `$form->loadFromEntity($getEntity->execute())`, flash success, and `dispatch('saved')` to reset Alpine `isDirty` |
 | FR-SP20a | `SchoolEditor` must not trigger `beforeunload` unsaved dialog on save: Blade `form` must clear Alpine `isDirty` on submit (`x-on:submit="isDirty = false"`) before `wire:submit` dispatch, and `saved` event must reset it after success (FR-SP20) |
 | FR-SP21 | `updatedLogoFile()` must authorize, validate (`image|max:2048`), upload, persist URL, flash success |
 | FR-SP22 | `confirmAction()` must authorize, remove logo via `RemoveBrandAssetAction`, forget setting, flash |

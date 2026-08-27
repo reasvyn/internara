@@ -163,7 +163,7 @@
                     <p class="text-base-content/40 text-center text-[10px]">{{ __('school.logo_hint') }}</p>
                 </div>
 
-                @include('core.ui.confirm', [
+                @include('ui.components.confirm', [
                     'message' => __('school.logo_remove_confirm'),
                     'confirmText' => __('common.actions.remove'),
                 ])

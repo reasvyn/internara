@@ -220,7 +220,7 @@
                         @endif
                     </div>
 
-                    @include('core.ui.confirm', [
+                    @include('ui.components.confirm', [
                         'message' => __('profile.avatar_remove_confirm'),
                         'confirmText' => __('common.actions.remove'),
                     ])

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\School\Livewire;
 
+use App\Academics\School\Actions\GetSchoolEntityAction;
 use App\Academics\School\Actions\SaveSchoolProfileAction;
 use App\Academics\School\Livewire\Forms\SchoolForm;
 use App\Core\Livewire\BaseFormView;
@@ -26,11 +27,11 @@ class SchoolEditor extends BaseFormView
 
     public $logo_file = null;
 
-    public function mount(): void
+    public function mount(GetSchoolEntityAction $getEntity): void
     {
         $this->authorize('update', Setting::class);
 
-        $this->form->loadFromEntity();
+        $this->form->loadFromEntity($getEntity->execute());
     }
 
     public function updatedLogoFile(
@@ -52,14 +53,14 @@ class SchoolEditor extends BaseFormView
         $this->toast()->success(__('school.logo_saved'))->send();
     }
 
-    public function save(SaveSchoolProfileAction $action): void
+    public function save(SaveSchoolProfileAction $action, GetSchoolEntityAction $getEntity): void
     {
         $this->authorize('update', Setting::class);
         $this->validate();
 
-        $this->handleSave(function () use ($action): void {
+        $this->handleSave(function () use ($action, $getEntity): void {
             $action->execute(data: $this->form->toPayload());
-            $this->form->loadFromEntity();
+            $this->form->loadFromEntity($getEntity->execute());
             $this->toast()->success(__('school.save_success'))->send();
             $this->dispatch('saved');
         });
