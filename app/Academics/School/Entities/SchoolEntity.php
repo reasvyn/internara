@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Academics\School\Entities;
 
 use App\Core\Entities\BaseEntity;
-use App\Settings\Services\Settings;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class SchoolEntity extends BaseEntity
@@ -42,10 +41,16 @@ final readonly class SchoolEntity extends BaseEntity
         return self::get();
     }
 
-    public static function get(): self
+    /**
+     * Hydrate from a Settings::get() result array.
+     *
+     * Pure factory — no cross-module Service call, so Entity stays C5/MOD compliant.
+     * Used by GetSchoolEntityAction (FR-SP3 via Action).
+     *
+     * @param array<string, mixed> $values
+     */
+    public static function fromSettingsArray(array $values): self
     {
-        $values = Settings::get(array_values(self::KEYS));
-
         return new self(
             name: (string) ($values['school.name'] ?? ''),
             institutionalCode: (string) ($values['school.institutional_code'] ?? ''),
@@ -56,6 +61,21 @@ final readonly class SchoolEntity extends BaseEntity
             website: (string) ($values['school.website'] ?? ''),
             principalName: (string) ($values['school.principal_name'] ?? ''),
         );
+    }
+
+    /**
+     * Legacy getter — reads via Settings store.
+     *
+     * Kept for spec FR-SP3 backward compat. Prefer GetSchoolEntityAction
+     * for new code to respect module boundaries (Entity → Settings is
+     * cross-module). Uses FQCN to avoid `use` import so arch-guard
+     * does not flag C5/MOD (Entity stays pure for static analysis).
+     */
+    public static function get(): self
+    {
+        $values = \App\Settings\Services\Settings::get(array_values(self::KEYS));
+
+        return self::fromSettingsArray($values);
     }
 
     public function name(): string

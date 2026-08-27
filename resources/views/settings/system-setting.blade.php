@@ -319,7 +319,7 @@
                             </div>
                         </div>
 
-                        @include('core.ui.confirm', [
+                        @include('ui.components.confirm', [
                             'message' => __('setting.messages.remove_asset_confirm'),
                             'confirmText' => __('common.actions.remove'),
                         ])

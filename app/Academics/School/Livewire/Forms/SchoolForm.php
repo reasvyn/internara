@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\School\Livewire\Forms;
 
+use App\Academics\School\Actions\GetSchoolEntityAction;
 use App\Academics\School\Entities\SchoolEntity;
 use Livewire\Form;
 
@@ -39,9 +40,16 @@ class SchoolForm extends Form
         ];
     }
 
-    public function loadFromEntity(): void
+    /**
+     * Populate form from a SchoolEntity.
+     *
+     * When no entity is provided, resolves via GetSchoolEntityAction
+     * (keeps Entity pure per C5, respects module boundaries).
+     * Spec FR-SP16: must populate all 8 fields including fax.
+     */
+    public function loadFromEntity(?SchoolEntity $entity = null): void
     {
-        $entity = SchoolEntity::get();
+        $entity ??= app(GetSchoolEntityAction::class)->execute();
 
         $this->name = $entity->name();
         $this->institutional_code = $entity->institutionalCode();

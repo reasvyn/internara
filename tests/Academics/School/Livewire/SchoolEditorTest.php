@@ -11,7 +11,7 @@ uses(LazilyRefreshDatabase::class);
 
 describe('FB792: TallstackUI migration — SchoolEditor flash → toast', function (): void {
     it('FB792-FR-TS6a: base layout renders x-ts-toast without flasher render block', function (): void {
-        $base = file_get_contents(resource_path('views/core/layouts/base.blade.php'));
+        $base = file_get_contents(resource_path('views/ui/layouts/base.blade.php'));
 
         expect($base)->toContain('<x-ts-toast />')
             ->not->toContain('@flasher_render');
