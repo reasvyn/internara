@@ -202,23 +202,23 @@ profile save flow.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | `SchoolEntity` resolution from cache must complete in < 50ms (cache hit) |
-| NFR-P2 | `SaveSchoolProfileAction` with 7 fields must complete in < 2s including DB write |
+| NFR-P1* | `SchoolEntity` resolution from cache must complete in < 50ms (cache hit) — manual perf, not unit-testable |
+| NFR-P2* | `SaveSchoolProfileAction` with 7 fields must complete in < 2s including DB write — manual perf, not unit-testable |
 | NFR-S1 | Setting keys must match `^[a-z][a-z0-9_.]*$` pattern to prevent injection |
 | NFR-S2 | Logo upload must validate MIME type and file size server-side (`image|max:2048`) |
 | NFR-S3 | `SchoolEditor` must authorize all mutations via `Setting::class` policy |
 | NFR-S4 | Logo removal must delete from Spatie Media Library and clear setting key atomically |
 | NFR-R1 | Profile save must be atomic — all 7 keys written or none (`BatchSetSettingAction` transaction) |
 | NFR-R2 | Cache invalidation must be synchronous (not queued) to prevent stale reads |
-| NFR-U1 | Form must display all 8 fields with appropriate input types (text, email, URL, fax) |
+| NFR-U1* | Form must display all 8 fields with appropriate input types (text, email, URL, fax) — visual, verified manually |
 | NFR-U2 | Logo upload must show live preview without page reload |
 | NFR-U3 | Logo removal must require confirmation dialog before executing |
 | NFR-U4 | Flash messages must confirm save, logo upload, and logo removal actions |
-| NFR-U5 | Unsaved-changes guard (`beforeunload` via Alpine `isDirty`) must not block save: `isDirty` is set on `@input`, cleared on `x-on:submit` (before request) and on `$wire.on('saved')` (after success); dialog only on actual navigation away with dirty state |
-| NFR-A1 | All form inputs must have associated `<label>` elements (WCAG 2.1 Level AA) |
-| NFR-A2 | Logo upload field must include alt text for screen readers |
-| NFR-A3 | Flash messages must be announced via `aria-live` region |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-U5* | Unsaved-changes guard (`beforeunload` via Alpine `isDirty`) must not block save: `isDirty` is set on `@input`, cleared on `x-on:submit` (before request) and on `$wire.on('saved')` (after success); dialog only on actual navigation away with dirty state — manual UX, not unit-testable |
+| NFR-A1* | All form inputs must have associated `<label>` elements (WCAG 2.1 Level AA) — a11y, verified manually |
+| NFR-A2* | Logo upload field must include alt text for screen readers — a11y, verified manually |
+| NFR-A3* | Flash messages must be announced via `aria-live` region — a11y, verified manually |
+| NFR-L1* | All user-facing strings must use `__()` translation helper — i18n, verified via scan_ui_consistency |
 | NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 | NFR-M1 | `SchoolEntity` must be accessed via `::get()`, not direct `setting()` calls in consumers |
 

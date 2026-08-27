@@ -46,10 +46,10 @@ SCAN_NAME = "spec-tests"
 
 # FR-SP1, FR-TST-01, NFR-U5, UC-1 — require at least one digit; allow hyphens; optional non-testable markers: * ~ ! -X -NT -X- prefix
 # Examples: FR-SP1, FR-TST-01*, FR-SP1~, FR-SP1-X, FR-SP1-NT, FR-X-001 (non-testable via X- prefix), NFR-P1*, UC-1~
-# Note: suffix *~! are non-word, so we use lookahead instead of \b after them
-RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;)\]])")
+# Note: suffix *~! are non-word, so we use lookahead instead of \b after them; include : for test descriptions like "FR-SP1:"
+RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
 # For spec-prefixed refs like 81SMS-FR-SP1* — same but with spec prefix
-RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;)\]])")
+RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
 # Spec ID from header: > **Spec ID:** 81SMS  (markdown bold)
 RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
 # Tests often write "81SMS-FR-SP1" — capture spec prefix + FR/NFR/UC (with optional X- and suffix, hyphenated)
@@ -86,9 +86,18 @@ def extract_requirements_from_spec(path: Path) -> tuple[str | None, list[tuple[s
 
     reqs: list[tuple[str, int]] = []
     for idx, line in enumerate(lines, start=1):
+        # Only extract from requirement table rows (| FR-... |) or explicit requirement lines
+        # Avoid capturing references in flow descriptions like "(NFR-U5)" which are not definitions
+        is_requirement_row = line.strip().startswith("|") and ("FR-" in line or "NFR-" in line or "UC-" in line)
+        # Also capture from lines that are clearly requirement definitions (contain | ID |)
+        if not is_requirement_row:
+            # Allow for lines like "| NFR-P1* |" but not for flow references
+            # If line does not look like a table row, skip to avoid false positives from flow/UC references
+            # However, some specs define requirements outside tables (rare) — we still capture if line has | and requirement
+            if "|" not in line:
+                continue
         for match in RE_REQUIREMENT.finditer(line):
             req_id = match.group(0)
-            # Filter out false positives like "FR-" alone — require at least FR-X1
             if len(req_id) >= 4:
                 reqs.append((req_id, idx))
     return spec_id, reqs
