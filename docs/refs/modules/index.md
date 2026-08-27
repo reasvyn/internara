@@ -1,6 +1,6 @@
 # Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-08-25 **Changes:** sync — Layer 4 maryUI/DaisyUI → TallstackUI v4 + Tailwind CSS v4
+> **Last updated:** 2026-08-27 **Changes:** feat — extract UI module from Core (x-ui::, ui::layouts.app)
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -17,6 +17,21 @@ Each module has two files:
 ---
 
 ## Core Modules
+
+### UI — Presentation & Design System
+
+Reusable app shell and design primitives (layouts, navbar, sidebar, header, footer, theme/lang switches, widgets). Pure presentation, depends only on Core.
+
+- Overview: [ui.md](ui.md)
+- Reference: *(colocated with overview — components are Blade anonymous)*
+
+**Key Concepts:** App Shell, Navbar, Sidebar, Header, Footer, ThemeSwitch, LangSwitch, Props-Driven
+
+**Dependencies:** Core
+
+**Used By:** All modules (via `ui::layouts.app` & `x-ui::`)
+
+---
 
 ### Core — Foundation & Infrastructure
 
@@ -325,7 +340,7 @@ acknowledgements.
 
 ## Architecture Overview
 
-All 18 modules are vertical slices cross-cutting the 4-layer architecture defined in
+All 19 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, TallstackUI v4, Tailwind CSS v4, Controllers, Policies, Routes,
