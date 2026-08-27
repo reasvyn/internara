@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('internship.title')" :subtitle="__('internship.subtitle')">
+<x-ui::components.record-manager :title="__('internship.title')" :subtitle="__('internship.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('internship.create_batch')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -60,7 +60,7 @@
         <input wire:model.live="filters.date_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
-    <x-ui::ui.selection-bar>
+    <x-ui::components.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -91,7 +91,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-ui::ui.selection-bar>
+    </x-ui::components.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -229,4 +229,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('program.internship.components.internship-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

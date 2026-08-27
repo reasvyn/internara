@@ -25,7 +25,7 @@
                 <form wire:submit="save">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         @if (! $canChangeName)
-                            <x-ui::ui.display-field
+                            <x-ui::components.display-field
                                 :label="__('setup.wizard.full_name')"
                                 :value="$user->name"
                                 icon="shield-check"
@@ -40,7 +40,7 @@
                         @endif
 
                         @if (! $canChangeUsername)
-                            <x-ui::ui.display-field
+                            <x-ui::components.display-field
                                 :label="__('profile.sidebar.username')"
                                 :value="$user->username"
                                 icon="at-symbol"

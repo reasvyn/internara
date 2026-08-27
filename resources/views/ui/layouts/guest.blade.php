@@ -6,11 +6,11 @@
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="flex h-16 items-center justify-between">
                     <a wire:navigate href="/" class="flex items-center gap-3">
-                        <x-ui::ui.brand size="sm" :invert="false" />
+                        <x-ui::components.brand size="sm" :invert="false" />
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-ui::ui.theme-switch /></div>
+                        <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-ui::components.theme-switch /></div>
                         <livewire:settings.lang-switcher />
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 @isset($footer)
                     {{ $footer }}
                 @else
-                    <x-ui::ui.credits />
+                    <x-ui::components.credits />
                 @endisset
             </div>
         </footer>

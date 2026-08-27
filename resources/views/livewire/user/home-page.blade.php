@@ -15,7 +15,7 @@
             <div class="mx-auto max-w-3xl text-center">
                 {{-- Brand --}}
                 <div class="mb-8 flex justify-center">
-                    <x-ui::ui.brand size="xl" :with-tagline="false" />
+                    <x-ui::components.brand size="xl" :with-tagline="false" />
                 </div>
 
                 {{-- Feature pills --}}

@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('partnership.title')" :subtitle="__('partnership.subtitle')">
+<x-ui::components.record-manager :title="__('partnership.title')" :subtitle="__('partnership.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('partnership.add')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -55,7 +55,7 @@
         </x-ts-select.native>
     </x-slot:filters>
 
-    <x-ui::ui.selection-bar>
+    <x-ui::components.selection-bar>
         <x-ts-dropdown>
             <x-slot:action>
                 <x-ts-button
@@ -81,7 +81,7 @@
                 />
             </div>
         </x-ts-dropdown>
-    </x-ui::ui.selection-bar>
+    </x-ui::components.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -282,4 +282,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('partners.partnership.components.partnership-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

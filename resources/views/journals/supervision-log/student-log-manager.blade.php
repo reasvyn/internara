@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('journals.student_log_title')" :subtitle="__('journals.student_log_subtitle')">
+<x-ui::components.record-manager :title="__('journals.student_log_title')" :subtitle="__('journals.student_log_subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('journals.new_log')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -61,4 +61,4 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('user.manager.title')" :subtitle="__('user.manager.subtitle')">
+<x-ui::components.record-manager :title="__('user.manager.title')" :subtitle="__('user.manager.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('user.manager.new')" icon="plus" color="primary" sm wire:click="createUser" />
     </x-slot:headerActions>
@@ -125,7 +125,7 @@
     >
         @interact('column_name', $user)
             <div class="flex items-center gap-3 py-1">
-                <x-ui::ui.avatar :user="$user" size="size-9" />
+                <x-ui::components.avatar :user="$user" size="size-9" />
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
@@ -373,4 +373,4 @@
 
     @include('user.user-management.components.account-slip-modal')
     @include('user.user-management.components.user-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

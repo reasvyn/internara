@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>{{ __('journals.attendance.title') }}</x-slot:title>
 
-    <x-ui::ui.page-header
+    <x-ui::components.page-header
         :title="__('journals.attendance.title')"
         :description="__('journals.attendance.clock_in_out_subtitle')"
     />

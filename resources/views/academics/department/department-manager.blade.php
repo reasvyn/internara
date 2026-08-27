@@ -1,5 +1,5 @@
 <div>
-    <x-ui::ui.record-manager :title="__('department.title')" :subtitle="__('department.subtitle')">
+    <x-ui::components.record-manager :title="__('department.title')" :subtitle="__('department.subtitle')">
         <x-slot:headerActions>
             <x-ts-button :text="__('department.add')" icon="plus" color="primary" sm wire:click="create" />
         </x-slot:headerActions>
@@ -36,7 +36,7 @@
             />
         </x-slot:stats>
 
-        <x-ui::ui.selection-bar>
+        <x-ui::components.selection-bar>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
                     <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" / x-on:click="show = ! show">
@@ -53,7 +53,7 @@
                     wire:click="askDeleteSelected"
                 />
             </x-ts-dropdown>
-        </x-ui::ui.selection-bar>
+        </x-ui::components.selection-bar>
 
         <div class="overflow-x-auto">
             <x-ts-table
@@ -125,7 +125,7 @@
                 </form>
             </x-ts-modal>
         </x-slot:modal>
-    </x-ui::ui.record-manager>
+    </x-ui::components.record-manager>
 
     @include('setup.components.department-guide')
 </div>

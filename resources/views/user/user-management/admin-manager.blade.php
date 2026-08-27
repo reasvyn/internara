@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('user.admin.title')" :subtitle="__('user.admin.subtitle')">
+<x-ui::components.record-manager :title="__('user.admin.title')" :subtitle="__('user.admin.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('user.admin.new')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -28,7 +28,7 @@
     >
         @interact('column_name', $user)
             <div class="flex items-center gap-3 py-1">
-                <x-ui::ui.avatar :user="$user" size="size-9" />
+                <x-ui::components.avatar :user="$user" size="size-9" />
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
@@ -116,4 +116,4 @@
     </x-slot:modal>
 
     @include('user.user-management.components.admin-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

@@ -51,7 +51,7 @@
             @else
                 <div class="lg:hidden flex items-center gap-2">
                     <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
-                        <x-ui::ui.logo size="5" />
+                        <x-ui::components.logo size="5" />
                     </a>
                     <span class="font-bold text-sm">{{ brand('name') }}</span>
                 </div>
@@ -67,7 +67,7 @@
             </div>
         @endisset
 
-        <x-ui::ui.navbar-actions
+        <x-ui::components.navbar-actions
             :show-theme="true"
             :show-language="true"
             :show-notifications="true"

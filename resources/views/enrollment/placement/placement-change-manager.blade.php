@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('placement_change.title')" :subtitle="__('placement_change.subtitle')">
+<x-ui::components.record-manager :title="__('placement_change.title')" :subtitle="__('placement_change.subtitle')">
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.status"
@@ -69,4 +69,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('enrollment.placement.components.placement-change-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

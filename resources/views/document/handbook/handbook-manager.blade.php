@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('handbook.title')" :subtitle="__('handbook.subtitle')">
+<x-ui::components.record-manager :title="__('handbook.title')" :subtitle="__('handbook.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('handbook.create')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -77,4 +77,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('document.handbook.components.handbook-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

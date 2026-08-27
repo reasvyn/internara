@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('internship.groups')" :subtitle="__('internship.groups_subtitle')">
+<x-ui::components.record-manager :title="__('internship.groups')" :subtitle="__('internship.groups_subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('internship.create_group')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -163,4 +163,4 @@
         </x-ts-modal>
     </x-slot:modal>
     @include('program.internship-group.components.internship-group-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

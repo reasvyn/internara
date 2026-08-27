@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-ui::ui.page-header :title="__('auth.recovery_slip.title')" :description="__('auth.recovery_slip.subtitle')" />
+    <x-ui::components.page-header :title="__('auth.recovery_slip.title')" :description="__('auth.recovery_slip.subtitle')" />
 
     <div class="mx-auto max-w-2xl">
         <x-ts-card class="card-enterprise">
@@ -52,7 +52,7 @@
                                     wire:click="selectUser({{ Js::from($user->id) }})"
                                     class="flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer {{ $selectedUser?->id === $user->id ? 'border-primary bg-primary/5' : 'border-base-content/5 hover:bg-base-200' }}"
                                 >
-                                    <x-ui::ui.avatar :user="$user" size="size-10" />
+                                    <x-ui::components.avatar :user="$user" size="size-10" />
                                     <div>
                                         <p class="text-sm font-bold">{{ $user->name }}</p>
                                         <p class="text-base-content/50 text-xs">

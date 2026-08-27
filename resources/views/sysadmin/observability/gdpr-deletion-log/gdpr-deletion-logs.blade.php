@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>GDPR Deletion Logs</x-slot:title>
 
-    <x-ui::ui.page-header :title="__('sysadmin.gdpr_logs.title')" />
+    <x-ui::components.page-header :title="__('sysadmin.gdpr_logs.title')" />
 
     <x-ts-card shadowless>
         <div class="mb-4 flex gap-4">

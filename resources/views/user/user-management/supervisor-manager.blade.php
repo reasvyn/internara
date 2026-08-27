@@ -1,4 +1,4 @@
-<x-ui::ui.record-manager :title="__('user.supervisor.title')" :subtitle="__('user.supervisor.subtitle')">
+<x-ui::components.record-manager :title="__('user.supervisor.title')" :subtitle="__('user.supervisor.subtitle')">
     <x-slot:headerActions>
         <x-ts-button :text="__('user.supervisor.new')" icon="plus" color="primary" sm wire:click="create" />
     </x-slot:headerActions>
@@ -19,7 +19,7 @@
         <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
-    <x-ui::ui.selection-bar>
+    <x-ui::components.selection-bar>
         <x-ts-button
             :text="__('common.actions.delete_selected')"
             icon="trash"
@@ -28,7 +28,7 @@
             sm
             wire:click="askDeleteSelected"
         />
-    </x-ui::ui.selection-bar>
+    </x-ui::components.selection-bar>
 
     <div class="overflow-x-auto">
         <x-ts-table
@@ -42,7 +42,7 @@
         >
             @interact('column_name', $user)
                 <div class="flex items-center gap-3 py-1">
-                    <x-ui::ui.avatar :user="$user" size="size-9" />
+                    <x-ui::components.avatar :user="$user" size="size-9" />
                     <div class="flex flex-col">
                         <span class="text-sm font-medium">{{ $user->name }}</span>
                         <span class="text-base-content/50 text-xs">{{ $user->username }}</span>
@@ -131,4 +131,4 @@
     @include('user.user-management.components.account-slip-modal')
 
     @include('user.user-management.components.supervisor-guide')
-</x-ui::ui.record-manager>
+</x-ui::components.record-manager>

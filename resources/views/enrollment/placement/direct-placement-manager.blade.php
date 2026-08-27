@@ -1,5 +1,5 @@
 <div>
-    <x-ui::ui.page-header
+    <x-ui::components.page-header
         :title="__('placement.direct_placement.title')"
         :description="__('placement.direct_placement.subtitle')"
     />
