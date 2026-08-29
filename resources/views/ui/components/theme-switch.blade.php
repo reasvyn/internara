@@ -5,12 +5,11 @@
 ])
 
 @php
-    $labelText = $label ?? __('common.theme.switch');
     $sizeClasses = match ($size) {
-        'xs' => 'btn-xs',
-        'sm' => 'btn-sm',
-        'md' => 'btn-md',
-        default => 'btn-sm',
+        'xs' => 'btn-xs text-xs',
+        'sm' => 'btn-sm text-xs',
+        'md' => 'btn-md text-sm',
+        default => 'btn-sm text-xs',
     };
 @endphp
 
@@ -19,20 +18,42 @@
     x-data="tallstackui_darkTheme()"
     x-init="init()"
 >
-    <button
-        type="button"
-        @click="toggle()"
-        class="btn btn-ghost {{ $sizeClasses }} gap-2 rounded-full"
-        :aria-label="'{{ $labelText }} (' + (dark ? '{{ __('common.theme.dark') }}' : '{{ __('common.theme.light') }}') + ')'"
-        :title="dark ? '{{ __('common.theme.switch_to_light') }}' : '{{ __('common.theme.switch_to_dark') }}'"
-    >
-        {{-- Sun (light) --}}
-        <x-ts-icon name="sun" class="size-4" x-show="!dark" x-cloak />
-        {{-- Moon (dark) --}}
-        <x-ts-icon name="moon" class="size-4" x-show="dark" x-cloak />
-        @if ($showLabel)
-            <span class="hidden text-xs font-medium sm:inline" x-text="dark ? '{{ __('common.theme.dark') }}' : '{{ __('common.theme.light') }}'"></span>
-        @endif
-    </button>
-</div>
+    <x-ts-dropdown position="bottom-end">
+        <x-slot:action>
+            <button
+                type="button"
+                x-on:click="show = ! show"
+                class="btn btn-ghost {{ $sizeClasses }} rounded-full font-bold tracking-wider uppercase"
+                aria-label="{{ __('common.theme.switch') }}"
+            >
+                <x-ts-icon name="sun" class="size-4 opacity-60" x-show="! dark" x-cloak />
+                <x-ts-icon name="moon" class="size-4 opacity-60" x-show="dark" x-cloak />
+                <span x-show="! dark" x-cloak>{{ __('common.theme.light') }}</span>
+                <span x-show="dark" x-cloak>{{ __('common.theme.dark') }}</span>
+            </button>
+        </x-slot:action>
 
+        <div class="min-w-40">
+            <x-ts-dropdown.items
+                :text="__('common.theme.light')"
+                icon="sun"
+                x-on:click="
+                    localStorage.setItem('dark-theme', 'light');
+                    $dispatch('theme', { mode: 'light' });
+                    show = false;
+                "
+                ::active="! dark"
+            />
+            <x-ts-dropdown.items
+                :text="__('common.theme.dark')"
+                icon="moon"
+                x-on:click="
+                    localStorage.setItem('dark-theme', 'dark');
+                    $dispatch('theme', { mode: 'dark' });
+                    show = false;
+                "
+                ::active="dark"
+            />
+        </div>
+    </x-ts-dropdown>
+</div>

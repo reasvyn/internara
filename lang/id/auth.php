@@ -16,7 +16,7 @@ return [
         'password' => 'Kata Sandi',
         'remember' => 'Ingat saya',
         'forgot_password' => 'Atur Ulang Kata Sandi',
-        'submit' => 'Masuk ke Dasbor',
+        'submit' => 'Masuk',
         'welcome_back' => 'Selamat datang kembali, :name!',
         'back_to_login' => 'Kembali ke halaman masuk',
         'no_account' => 'Punya kode aktivasi?',
