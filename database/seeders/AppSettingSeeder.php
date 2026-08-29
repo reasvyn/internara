@@ -7,8 +7,8 @@ namespace Database\Seeders;
 use App\Modules\Academics\Domain\AcademicYear\Support\AcademicYearPeriod;
 use App\Modules\Core\Services\AppInfo;
 use App\Modules\Settings\Casts\SettingValueCast;
-use App\Modules\Settings\Models\Setting;
 use App\Modules\Settings\Domain\Theme\Support\Theme;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Database\Seeder;
 
 /**

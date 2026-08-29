@@ -47,7 +47,7 @@ describe('4HWSB: DepartmentData', function (): void {
         $array = [
             'name' => 'Test Name',
             'description' => 'Test Description',
-            'id' => '123'
+            'id' => '123',
         ];
 
         $data = DepartmentData::fromArray($array);
@@ -59,7 +59,7 @@ describe('4HWSB: DepartmentData', function (): void {
 
     test('4HWSB-FR-DM31: fromArray handles missing description and id', function (): void {
         $array = [
-            'name' => 'Test Name'
+            'name' => 'Test Name',
         ];
 
         $data = DepartmentData::fromArray($array);

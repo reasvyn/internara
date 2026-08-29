@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\UserManagement\Actions\CreateUserAction;
 use App\Modules\User\Domain\UserManagement\Data\CreateUserData;
 use App\Modules\User\Domain\UserManagement\Events\UserCreated;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
@@ -39,7 +40,7 @@ describe('95EVB: CreateUserAction', function (): void {
         ]);
 
         expect(fn () => app(CreateUserAction::class)->execute($data))
-            ->toThrow(Illuminate\Validation\ValidationException::class);
+            ->toThrow(ValidationException::class);
     });
 
     test('95EVB-FR-UC4: creates User + Profile + syncs roles in transaction', function (): void {

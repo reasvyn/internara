@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Academics\Domain\Department\Models\Department;
 use App\Modules\Academics\Domain\Department\Policies\DepartmentPolicy;
+use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -17,7 +18,7 @@ uses(LazilyRefreshDatabase::class);
 
 describe('4HWSB: DepartmentPolicy', function (): void {
     beforeEach(function (): void {
-        $this->policy = new DepartmentPolicy();
+        $this->policy = new DepartmentPolicy;
     });
 
     test('4HWSB-FR-DM24: viewAny() returns true for all authenticated users', function (): void {
@@ -61,7 +62,7 @@ describe('4HWSB: DepartmentPolicy', function (): void {
         $deptWithoutProfiles = Department::factory()->create();
 
         // Create a profile for deptWithProfiles
-        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $deptWithProfiles->id]);
+        Profile::factory()->create(['department_id' => $deptWithProfiles->id]);
 
         // Admin can delete dept without profiles
         expect($this->policy->delete($admin, $deptWithoutProfiles))->toBeTrue();

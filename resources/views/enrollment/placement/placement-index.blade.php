@@ -10,11 +10,7 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-ui::widgets.stat-card
-            icon="briefcase"
-            :title="__('placement.stats.total')"
-            :value="$this->stats['total']"
-        />
+        <x-ui::widgets.stat-card icon="briefcase" :title="__('placement.stats.total')" :value="$this->stats['total']" />
         <x-ui::widgets.stat-card
             icon="user-group"
             :title="__('placement.stats.total_quota')"

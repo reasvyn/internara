@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
 use App\Modules\Core\Entities\BaseEntity;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -120,7 +121,7 @@ describe('81SMS: SchoolEntity', function (): void {
         expect($source)->toContain('function fromModel')
             ->and($source)->toContain('return self::get()');
 
-        $model = Mockery::mock(\Illuminate\Database\Eloquent\Model::class);
+        $model = Mockery::mock(Model::class);
         $entity = SchoolEntity::fromModel($model);
 
         expect($entity)->toBeInstanceOf(SchoolEntity::class);

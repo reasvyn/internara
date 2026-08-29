@@ -11,7 +11,7 @@
 {{-- Modern responsive Sidebar — props-driven, config fallback, no hardcoded items. --}}
 <div
     x-data="{ open: false }"
-    @toggle-sidebar.window="open = !open"
+    @toggle-sidebar.window="open = ! open"
     @keydown.escape.window="open = false"
     class="contents"
 >
@@ -36,25 +36,30 @@
         smart
         :collapsible="$collapsible"
         x-bind:class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="fixed inset-y-0 left-0 z-40 w-64 shrink-0 border-r bg-base-100 border-base-content/10 transition-transform duration-200 lg:static lg:translate-x-0"
+        class="bg-base-100 border-base-content/10 fixed inset-y-0 left-0 z-40 w-64 shrink-0 border-r transition-transform duration-200 lg:static lg:translate-x-0"
         id="app-sidebar"
         role="navigation"
         aria-label="{{ __('common.navigation') }}"
     >
         <x-slot:brand>
             @if ($brand)
-                <div class="flex h-16 shrink-0 items-center gap-3 px-6 border-b border-base-content/10">
-                    <a class="flex items-center gap-3 min-w-0" wire:navigate href="{{ route('dashboard') }}">
+                <div class="border-base-content/10 flex h-16 shrink-0 items-center gap-3 border-b px-6">
+                    <a class="flex min-w-0 items-center gap-3" wire:navigate href="{{ route('dashboard') }}">
                         <x-ui::components.brand size="md" :with-tagline="false" :invert="false" />
                     </a>
-                    <button type="button" @click="open = false" class="btn btn-ghost btn-xs lg:hidden ml-auto" aria-label="{{ __('common.close') }}">
+                    <button
+                        type="button"
+                        @click="open = false"
+                        class="btn btn-ghost btn-xs ml-auto lg:hidden"
+                        aria-label="{{ __('common.close') }}"
+                    >
                         <x-ts-icon name="x-mark" class="size-4" />
                     </button>
                 </div>
             @endif
         </x-slot:brand>
 
-        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6" aria-label="{{ __('common.main_navigation') }}">
+        <nav class="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="{{ __('common.main_navigation') }}">
             @auth
                 @foreach ($groups as $group)
                     @if (auth()->user()->hasRole($group['roles'] ?? []))
@@ -84,7 +89,10 @@
                                     @if (empty($itemRoles) || auth()->user()->hasRole($itemRoles))
                                         <li>
                                             @if ($disabled)
-                                                <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm opacity-40 cursor-not-allowed" aria-disabled="true">
+                                                <div
+                                                    class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm opacity-40"
+                                                    aria-disabled="true"
+                                                >
                                                     @if ($icon)
                                                         <x-ts-icon :name="$icon" class="size-4 shrink-0" />
                                                     @endif
@@ -111,7 +119,7 @@
         </nav>
 
         <x-slot:footer>
-            <div class="border-t border-base-content/10 p-3 space-y-3">
+            <div class="border-base-content/10 space-y-3 border-t p-3">
                 {{-- Mobile-only: theme + lang --}}
                 <div class="flex items-center justify-between gap-2 md:hidden">
                     <x-ui::components.theme-switch size="sm" />
@@ -120,7 +128,7 @@
 
                 {{-- Desktop: collapse hint --}}
                 @if ($collapsible)
-                    <div class="hidden lg:flex items-center justify-between text-xs text-base-content/50">
+                    <div class="text-base-content/50 hidden items-center justify-between text-xs lg:flex">
                         <span>{{ __('common.collapse') }}</span>
                         <x-ts-icon name="chevron-double-left" class="size-3.5" />
                     </div>

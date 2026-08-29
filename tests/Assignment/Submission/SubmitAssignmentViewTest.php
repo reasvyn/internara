@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Domain\Submission\Livewire\SubmitAssignment;
+use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;

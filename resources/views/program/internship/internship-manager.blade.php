@@ -18,11 +18,7 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-ui::widgets.stat-card
-            icon="calendar"
-            :title="__('internship.stats.total')"
-            :value="$this->stats['total']"
-        />
+        <x-ui::widgets.stat-card icon="calendar" :title="__('internship.stats.total')" :value="$this->stats['total']" />
         <x-ui::widgets.stat-card icon="play" :title="__('internship.stats.active')" :value="$this->stats['active']" />
         <x-ui::widgets.stat-card
             icon="briefcase"

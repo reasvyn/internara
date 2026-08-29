@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Enums\BloodType;
 use App\Modules\User\Enums\Gender;
 use App\Modules\User\Models\User;
-use App\Modules\User\Domain\Profile\Models\Profile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

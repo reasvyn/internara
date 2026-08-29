@@ -29,7 +29,7 @@ foreach (scandir(__DIR__) as $entry) {
     if ($entry === '.' || $entry === '..') {
         continue;
     }
-    $path = __DIR__ . '/' . $entry;
+    $path = __DIR__.'/'.$entry;
     if (! is_dir($path)) {
         continue;
     }
@@ -37,7 +37,7 @@ foreach (scandir(__DIR__) as $entry) {
         continue;
     }
     // Only consider directories that contain at least one PHP file (a test suite)
-    if (glob($path . '/*.php') || glob($path . '/*/*.php') || glob($path . '/**/*.php')) {
+    if (glob($path.'/*.php') || glob($path.'/*/*.php') || glob($path.'/**/*.php')) {
         $modules[] = $entry;
     } elseif (is_dir($path)) {
         // Empty module directories are also registered (suites get tests as they are rewritten)

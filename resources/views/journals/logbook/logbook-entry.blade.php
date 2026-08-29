@@ -1,5 +1,8 @@
 <div class="p-8">
-    <x-ui::components.page-header :title="__('logbook.daily_journals')" :description="__('logbook.daily_journals_subtitle')">
+    <x-ui::components.page-header
+        :title="__('logbook.daily_journals')"
+        :description="__('logbook.daily_journals_subtitle')"
+    >
         <x-slot:actions>
             <x-ts-button
                 :text="__('logbook.write_journal')"

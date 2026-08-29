@@ -8,6 +8,7 @@ use App\Modules\Academics\Domain\Department\Models\Department;
 use App\Modules\Core\Actions\BaseCommandAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\ValidationException;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -26,20 +27,20 @@ describe('4HWSB: CreateDepartmentAction', function (): void {
         Department::factory()->create(['name' => 'Existing Dept']);
 
         expect(fn () => app(CreateDepartmentAction::class)->execute(['name' => 'Existing Dept']))
-            ->toThrow(Illuminate\Validation\ValidationException::class);
+            ->toThrow(ValidationException::class);
 
         expect(fn () => app(CreateDepartmentAction::class)->execute(['description' => 'No name']))
-            ->toThrow(Illuminate\Validation\ValidationException::class);
+            ->toThrow(ValidationException::class);
     });
 
     test('4HWSB-FR-DM11: validates name max 100 and description max 500', function (): void {
         expect(fn () => app(CreateDepartmentAction::class)->execute(['name' => str_repeat('a', 101)]))
-            ->toThrow(Illuminate\Validation\ValidationException::class);
+            ->toThrow(ValidationException::class);
 
         expect(fn () => app(CreateDepartmentAction::class)->execute([
             'name' => 'Valid Name',
             'description' => str_repeat('a', 501),
-        ]))->toThrow(Illuminate\Validation\ValidationException::class);
+        ]))->toThrow(ValidationException::class);
     });
 
     test('4HWSB-FR-DM12: wraps creation in transaction and creates department', function (): void {

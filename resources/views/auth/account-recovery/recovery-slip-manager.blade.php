@@ -1,5 +1,8 @@
 <div class="p-8">
-    <x-ui::components.page-header :title="__('auth.recovery_slip.title')" :description="__('auth.recovery_slip.subtitle')" />
+    <x-ui::components.page-header
+        :title="__('auth.recovery_slip.title')"
+        :description="__('auth.recovery_slip.subtitle')"
+    />
 
     <div class="mx-auto max-w-2xl">
         <x-ts-card class="card-enterprise">

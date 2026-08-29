@@ -1,5 +1,8 @@
 <div>
-    <x-ui::components.page-header :title="__('journals.visit_title')" :description="__('journals.visit_student_subtitle')" />
+    <x-ui::components.page-header
+        :title="__('journals.visit_title')"
+        :description="__('journals.visit_student_subtitle')"
+    />
 
     <div class="space-y-4">
         @forelse ($this->visits as $visit)
