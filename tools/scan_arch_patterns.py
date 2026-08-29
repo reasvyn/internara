@@ -49,6 +49,12 @@ from _common import (  # noqa: E402
     relative_path,
     write_report,
 )
+try:
+    from _output import handle_output
+except ImportError:
+    import sys as _sys2
+    _sys2.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 
 SCAN_NAME = "arch-patterns"
 
@@ -362,18 +368,10 @@ def main() -> None:
     }
     result: ScanResult = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=len(pattern_files) + len(php_files))
 
-    if args.json or args.format == "json":
-        import dataclasses
-        print(json.dumps(dataclasses.asdict(result), indent=2, ensure_ascii=False))
-    elif not args.quiet:
-        print_summary(result, verbose=args.verbose)
-
-    out = write_report(result, Path(args.output) if args.output else None)
-    if not args.quiet:
-        print(f"Report saved: {relative_path(out)}")
-
-    if args.strict and result.summary["failed"] > 0:
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

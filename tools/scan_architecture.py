@@ -32,6 +32,11 @@ try:
         print_summary,
         find_php_files,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 except ImportError:
     # Fallback for direct execution
     import sys
@@ -50,6 +55,11 @@ except ImportError:
         print_summary,
         find_php_files,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 
 ROUTES_DIR = ROOT / "routes"
 CONFIG_DIR = ROOT / "config"
@@ -307,28 +317,10 @@ def main() -> None:
     # Add modules data to metadata for backward compatibility
     result.metadata["modules"] = modules
 
-    # Output handling
-    if args.json or args.format == "json":
-        print(json.dumps(result.__dict__ if hasattr(result, '__dict__') else asdict(result), indent=2, ensure_ascii=False))
-    elif args.format == "summary":
-        if not args.quiet:
-            print_summary(result, verbose=args.verbose)
-    elif args.format == "text":
-        if not args.quiet:
-            for f in result.findings:
-                print(f"{f['file']}:{f['line']} [{f['severity']}] {f['message']}")
-
-    # Write report
-    output_path = Path(args.output) if args.output else None
-    written_path = write_report(result, output_path)
-    
-    if not args.quiet and not args.json:
-        print(f"Report saved: {relative_path(written_path)}")
-        print(f"  Modules scanned: {len(modules)}")
-        print(f"  Total files: {metadata['total_files']}")
-
-    if args.strict and result.summary["failed"] > 0:
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

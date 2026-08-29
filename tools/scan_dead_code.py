@@ -28,6 +28,11 @@ try:
         relative_path as common_relative_path,
         build_report as common_build_report,
     )
+    from _output import handle_output
+except ImportError:
+    import sys as _sys
+    _sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 except ImportError:
     pass
 
@@ -340,17 +345,10 @@ def main() -> None:
         {"total_php_files": len(files)},
     )
 
-    if args.json or args.format == "json":
-        print(json.dumps(vars(result), indent=2, ensure_ascii=False))
-    elif not args.quiet:
-        print_summary(result)
-
-    output_path = write_report(result, args.output)
-    if not args.quiet:
-        print(f"Report saved: {relative_path(output_path)}")
-
-    if args.strict and result.summary["failed"] > 0:
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":
