@@ -38,6 +38,11 @@ try:
         filter_by_baseline,
         load_baseline,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from _common import (
@@ -56,6 +61,11 @@ except ImportError:
         filter_by_baseline,
         load_baseline,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 
 SCAN_NAME = "conventions"
 
@@ -397,20 +407,10 @@ def main() -> None:
     result.summary["total_checks"] = total_checks
     result.summary["passed"] = passed
 
-    # Output handling per spec
-    if args.json or args.format == "json":
-        print(json.dumps(result.__dict__, indent=2, ensure_ascii=False))
-    elif not args.quiet:
-        from _common import print_summary as _ps
-        _ps(result, verbose=args.verbose)
-
-    output_path = args.output
-    written_path = write_report(result, output_path)
-    if not args.quiet and not args.json:
-        print(f"Report saved: {relative_path(written_path)}")
-
-    if args.strict and result.summary["failed"] > 0:
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

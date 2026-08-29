@@ -16,6 +16,12 @@ import json
 import re
 import ssl
 import sys
+try:
+    from _output import handle_output
+except ImportError:
+    import sys as _sys2
+    _sys2.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 import time
 import urllib.error
 import urllib.request
@@ -600,17 +606,10 @@ def main() -> None:
 
     result = build_report(findings, files, start_time, total_links)
 
-    if args.json or args.format == "json":
-        print(json.dumps(vars(result), indent=2, ensure_ascii=False))
-    elif not args.quiet:
-        print_summary(result)
-
-    output_path = write_report(result, args.output)
-    if not args.quiet:
-        print(f"Report saved: {relative_path(output_path)}")
-
-    if args.strict and result.summary["failed"] > 0:
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

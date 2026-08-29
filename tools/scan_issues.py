@@ -28,6 +28,11 @@ try:
         write_report,
         print_summary,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 except ImportError:
     sys.path.insert(0, str(Path(__file__).parent))
     from _common import (
@@ -40,6 +45,11 @@ except ImportError:
         write_report,
         print_summary,
     )
+    from _output import handle_output
+except ImportError:
+    import sys
+    sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
+    from _output import handle_output
 
 SCAN_NAME = "issues"
 
@@ -360,24 +370,10 @@ def main() -> None:
     result.metadata["detailed_by_module"] = by_module
 
     # Output handling
-    if args.json or args.format == "json":
-        print(json.dumps(result.__dict__, indent=2, ensure_ascii=False))
-    elif args.format == "summary":
-        if not args.quiet:
-            print_summary(result, verbose=args.verbose)
-    elif args.format == "text":
-        if not args.quiet:
-            for f in result.findings:
-                print(f"{f['file']}:{f['line']} [{f['severity']}] {f['message']}")
-
-    output_path = Path(args.output) if args.output else None
-    written_path = write_report(result, output_path)
-    
-    if not args.quiet and not args.json:
-        print(f"\nReport saved: {relative_path(written_path)}")
-
-    if args.strict and any(f.severity in ["high", "critical"] for f in all_findings):
-        sys.exit(1)
+    # Uniform output via _output.py
+    exit_code = handle_output(result, args)
+    if exit_code:
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":
