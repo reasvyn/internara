@@ -207,7 +207,7 @@ abstract class BasePolicy
 | `mentee` | Student assigned to internship group | Supervised by specific teacher |
 
 Functional roles are resolved at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()` in
-`app/Auth/Permissions/Enums/Role.php` — never stored in the database, never used in route middleware.
+`app/Modules/Auth/Permissions/Enums/Role.php` — never stored in the database, never used in route middleware.
 The MentorEntity bridge (`Registration::asMentorEntity()`) resolves mentor/mentee relationships from
 internship-group membership.
 
@@ -280,10 +280,10 @@ After implementing this spec, the system has role-based access control with 5 ro
 
 ## Quick References
 
-- `app/Core/Policies/BasePolicy.php` — Base policy with super admin bypass
-- `app/Core/Policies/Concerns/AuthorizesRoles.php` — Role-checking trait
-- `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership-checking trait
-- `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level role check
+- `app/Modules/Core/Policies/BasePolicy.php` — Base policy with super admin bypass
+- `app/Modules/Core/Policies/Concerns/AuthorizesRoles.php` — Role-checking trait
+- `app/Modules/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership-checking trait
+- `app/Modules/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level role check
 - `docs/guides/arch/policy-pattern.md` — Architecture pattern documentation
 - `docs/guides/rbac.md` — Role definitions and capabilities
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — ADR for flat role model

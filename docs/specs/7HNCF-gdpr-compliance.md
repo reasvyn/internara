@@ -19,7 +19,7 @@ deletion records.
 ### PS-1 — No GDPR-Compliant Data Erasure Workflow
 
 When a user requests account deletion (right to be forgotten) or an admin deletes an account, the
-current `DeleteUserAction` (`app/User/UserManagement/Actions/DeleteUserAction.php:15`) performs a
+current `DeleteUserAction` (`app/Modules/User/UserManagement/Actions/DeleteUserAction.php:15`) performs a
 hard delete via `$user->delete()` without preserving a compliance audit trail. Indonesian data
 protection law (UU PDP — Undang-Undang Pelindungan Data Pribadi) and general GDPR alignment require
 that organizations log when personal data is destroyed, who authorized it, and why.
@@ -28,7 +28,7 @@ that organizations log when personal data is destroyed, who authorized it, and w
 
 The `gdpr_deletion_logs` table (`database/migrations/2026_01_02_000005_create_gdpr_deletion_logs_table.php`)
 only defines `user_id`, `metadata_snapshot`, and `created_at`. The existing `GdprDeletionLogs`
-Livewire component (`app/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php:26-29`)
+Livewire component (`app/Modules/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php:26-29`)
 references columns that do not exist: `user_email`, `deletion_type`, `reason`, `deleted_at`. This
 makes the admin-facing log viewer non-functional — search by email filters a column that is absent,
 the deletion type badge renders from a column that is null, and the "deleted at" sort uses a missing
@@ -51,7 +51,7 @@ populates this field.
 
 ### PS-5 — Deletion Log Not Linked to the DeleteUserAction
 
-The `DeleteUserAction` (`app/User/UserManagement/Actions/DeleteUserAction.php:25-34`) logs a
+The `DeleteUserAction` (`app/Modules/User/UserManagement/Actions/DeleteUserAction.php:25-34`) logs a
 `user_deleted` activity event via SmartLogger but never creates a `GdprDeletionLog` record. The two
 systems — activity logging and GDPR compliance logging — are disconnected. An auditor reviewing
 GDPR logs would see an empty table despite deletions occurring.
@@ -227,7 +227,7 @@ GDPR logs would see an empty table despite deletions occurring.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-P1 | `GdprDeletionLogPolicy` must extend `BasePolicy` (→ existing policy at `app/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php`) |
+| FR-P1 | `GdprDeletionLogPolicy` must extend `BasePolicy` (→ existing policy at `app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php`) |
 | FR-P2 | `GdprDeletionLogPolicy::viewAny()` must return `$this->isAdmin($user)` |
 | FR-P3 | `GdprDeletionLogPolicy::view()` must return `$this->isAdmin($user)` |
 | FR-P4 | `GdprDeletionLogPolicy::create()` must return `$this->isAdmin($user)` — only admins can create deletion logs (via `DeleteUserGdprAction`) |
@@ -263,7 +263,7 @@ GDPR logs would see an empty table despite deletions occurring.
 ### 6.1 GdprDeletionType Enum
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Enums/GdprDeletionType.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Enums/GdprDeletionType.php
 enum GdprDeletionType: string implements LabelEnum
 {
     case ANONYMIZATION       = 'anonymization';
@@ -277,7 +277,7 @@ enum GdprDeletionType: string implements LabelEnum
 ### 6.2 GdprDeletionLogState Entity
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Entities/GdprDeletionLogState.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Entities/GdprDeletionLogState.php
 final readonly class GdprDeletionLogState extends BaseEntity
 {
     public function __construct(
@@ -305,7 +305,7 @@ final readonly class GdprDeletionLogState extends BaseEntity
 ### 6.3 GdprDeletionLog Model
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php
 #[Fillable(['user_id', 'user_email', 'deletion_type', 'reason', 'metadata_snapshot', 'deleted_at', 'deleter_id'])]
 class GdprDeletionLog extends BaseModel
 {
@@ -347,7 +347,7 @@ Schema::table('gdpr_deletion_logs', function (Blueprint $table) {
 ### 6.5 DeleteUserGdprAction
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php
 final class DeleteUserGdprAction extends BaseCommandAction
 {
     public function execute(
@@ -365,7 +365,7 @@ final class DeleteUserGdprAction extends BaseCommandAction
 ### 6.6 Updated DeleteUserAction
 
 ```php
-// app/User/UserManagement/Actions/DeleteUserAction.php
+// app/Modules/User/UserManagement/Actions/DeleteUserAction.php
 final class DeleteUserAction extends BaseCommandAction
 {
     public function __construct(
@@ -380,7 +380,7 @@ final class DeleteUserAction extends BaseCommandAction
 ### 6.7 Updated BatchDeleteUserAction
 
 ```php
-// app/User/UserManagement/Actions/BatchDeleteUserAction.php
+// app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php
 final class BatchDeleteUserAction extends BaseCommandAction
 {
     public function __construct(
@@ -395,7 +395,7 @@ final class BatchDeleteUserAction extends BaseCommandAction
 ### 6.8 UserGdprDeleted Event
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Events/UserGdprDeleted.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Events/UserGdprDeleted.php
 final class UserGdprDeleted extends BaseEvent
 {
     public function __construct(public readonly GdprDeletionLog $log) {}
@@ -406,7 +406,7 @@ final class UserGdprDeleted extends BaseEvent
 ### 6.9 GdprDeletionLogPolicy
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php
 class GdprDeletionLogPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool;   // isAdmin
@@ -418,7 +418,7 @@ class GdprDeletionLogPolicy extends BasePolicy
 ### 6.10 GdprDeletionLogs Livewire Component
 
 ```php
-// app/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php
+// app/Modules/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php
 class GdprDeletionLogs extends Component
 {
     use WithPagination, WithSorting;
@@ -567,11 +567,11 @@ After implementing this spec, every user deletion (admin or batch) automatically
 
 ## Quick References
 
-- `app/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php` — Eloquent model with `#[Fillable]`, `UPDATED_AT = null`, `asGdprDeletionLogState()` bridge (27 lines)
-- `app/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` — Admin-only authorization for view/viewAny/create (27 lines)
-- `app/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` — Admin UI: search, filter, paginated table (56 lines)
-- `app/User/UserManagement/Actions/DeleteUserAction.php` — Existing user deletion action to be updated with GDPR logging (36 lines)
-- `app/User/UserManagement/Actions/BatchDeleteUserAction.php` — Existing batch deletion to propagate reason (54 lines)
+- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php` — Eloquent model with `#[Fillable]`, `UPDATED_AT = null`, `asGdprDeletionLogState()` bridge (27 lines)
+- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` — Admin-only authorization for view/viewAny/create (27 lines)
+- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` — Admin UI: search, filter, paginated table (56 lines)
+- `app/Modules/User/UserManagement/Actions/DeleteUserAction.php` — Existing user deletion action to be updated with GDPR logging (36 lines)
+- `app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php` — Existing batch deletion to propagate reason (54 lines)
 - `resources/views/sysadmin/observability/gdpr-deletion-log/gdpr-deletion-logs.blade.php` — Blade view with TallstackUI x-ts-table, x-ts-badge, date formatting (25 lines)
 - `database/migrations/2026_01_02_000005_create_gdpr_deletion_logs_table.php` — Original migration (25 lines)
 - `database/factories/GdprDeletionLogFactory.php` — Test factory with metadata snapshot (26 lines)

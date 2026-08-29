@@ -85,7 +85,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Report`
-- **Business Logic**: `app/Reports/`
+- **Business Logic**: `app/Modules/Reports/`
 - **Routing**: `routes/web/reports.php`
 - **Testing**: `tests/Reports/`
 - **Dependencies**: User, Program, Assessment, Assignment, Enrollment, Core

@@ -86,8 +86,8 @@ Three independent layers ensure logging integrity:
 
 - `docs/conventions.md` §Logging Conventions — SmartLogger usage, PII masking
 - `docs/guides/infra/logging.md` — complete logging strategy
-- `app/Core/Support/SmartLogger.php` — SmartLogger implementation
-- `app/Core/Support/PiiMasker.php` — PII masking utility
+- `app/Modules/Core/Support/SmartLogger.php` — SmartLogger implementation
+- `app/Modules/Core/Support/PiiMasker.php` — PII masking utility
 - [PSR-3 Logger Interface](https://www.php-fig.org/psr/psr-3/) — PHP logging standard
 - [Laravel — Logging](https://laravel.com/docs/logging) — Log channels, daily rotation
 - [GDPR Article 5](https://gdpr-info.eu/art-5-gdpr/) — Principles relating to processing of personal data

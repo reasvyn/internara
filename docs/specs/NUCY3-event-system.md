@@ -255,9 +255,9 @@ After implementing this spec, the system has event dispatch infrastructure with 
 
 ## Quick References
 
-- `app/Core/Events/BaseEvent.php` — Base event class
+- `app/Modules/Core/Events/BaseEvent.php` — Base event class
 - `config/event.php` — Event-to-listener registry (49 events, 20 listeners)
-- `app/Core/Services/SmartLogger.php` — SmartLogger with event integration
+- `app/Modules/Core/Services/SmartLogger.php` — SmartLogger with event integration
 - `docs/guides/arch/event-pattern.md` — Architecture pattern documentation
 - `docs/guides/arch/logging-pattern.md` — SmartLogger architecture
 - `docs/specs/base-classes.md` (SE5Q9) — Base classes and contracts

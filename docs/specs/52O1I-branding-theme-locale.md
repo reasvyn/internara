@@ -163,7 +163,7 @@ apply on every request via middleware without database queries.
 ### BrandData
 
 ```php
-// app/Settings/Branding/Data/BrandData.php
+// app/Modules/Settings/Branding/Data/BrandData.php
 final readonly class BrandData extends BaseData
 {
     public function __construct(
@@ -185,7 +185,7 @@ final readonly class BrandData extends BaseData
 ### Brand Class
 
 ```php
-// app/Settings/Support/Brand.php
+// app/Modules/Settings/Support/Brand.php
 final class Brand
 {
     public static function name(): string;
@@ -202,7 +202,7 @@ final class Brand
 ### Theme Class
 
 ```php
-// app/Settings/Theme/Support/Theme.php
+// app/Modules/Settings/Theme/Support/Theme.php
 final class Theme
 {
     public static function defaults(): array;
@@ -217,7 +217,7 @@ final class Theme
 ### Locale Class
 
 ```php
-// app/Settings/Locale/Support/Locale.php
+// app/Modules/Settings/Locale/Support/Locale.php
 final class Locale
 {
     public const DEFAULT_LOCALE = 'en';
@@ -338,15 +338,15 @@ After implementing this spec, the system has customizable branding (school name,
 
 ## Quick References
 
-- `app/Settings/Support/Brand.php` — Dual-path brand resolution (DB + AppInfo)
-- `app/Settings/Branding/Data/BrandData.php` — Brand identity DTO
-- `app/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
-- `app/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
-- `app/Settings/Branding/Livewire/Forms/BrandingForm.php` — Color/logo/favicon form
-- `app/Settings/Theme/Support/Theme.php` — Color resolution, CSS variables, presets
-- `app/Settings/Locale/Support/Locale.php` — EN/ID locale management
-- `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Per-request locale from cookie
+- `app/Modules/Settings/Support/Brand.php` — Dual-path brand resolution (DB + AppInfo)
+- `app/Modules/Settings/Branding/Data/BrandData.php` — Brand identity DTO
+- `app/Modules/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
+- `app/Modules/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
+- `app/Modules/Settings/Branding/Livewire/Forms/BrandingForm.php` — Color/logo/favicon form
+- `app/Modules/Settings/Theme/Support/Theme.php` — Color resolution, CSS variables, presets
+- `app/Modules/Settings/Locale/Support/Locale.php` — EN/ID locale management
+- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Per-request locale from cookie
 - `resources/views/ui/components/theme-switch.blade.php` — `<x-ts-theme-switch>` wrapper (light/dark/system, localStorage-based)
-- `app/Settings/Livewire/LangSwitcher.php` — EN/ID dropdown (cookie-based)
+- `app/Modules/Settings/Livewire/LangSwitcher.php` — EN/ID dropdown (cookie-based)
 - `docs/refs/modules/settings.md` — Module conceptual documentation
 - **Related specs:** [settings-infrastructure.md](YB22J-settings-infrastructure.md) — Settings store, type system & cache

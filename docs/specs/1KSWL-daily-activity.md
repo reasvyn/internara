@@ -372,9 +372,9 @@ After implementing this spec, students can log daily activities (logbook entries
 
 ## Quick References
 
-- `app/Journals/Logbook/` — Logbook submodule (Actions, Entities, Enums, Livewire, Models, Policies)
-- `app/Journals/Attendance/` — Attendance submodule (Actions, Entities, Enums, Events, Livewire, Models, Policies)
-- `app/Journals/AbsenceRequest/` — AbsenceRequest submodule (Actions, Entities, Enums, Livewire, Models)
+- `app/Modules/Journals/Logbook/` — Logbook submodule (Actions, Entities, Enums, Livewire, Models, Policies)
+- `app/Modules/Journals/Attendance/` — Attendance submodule (Actions, Entities, Enums, Events, Livewire, Models, Policies)
+- `app/Modules/Journals/AbsenceRequest/` — AbsenceRequest submodule (Actions, Entities, Enums, Livewire, Models)
 - `database/migrations/2026_01_04_000005_create_attendances_table.php` — Attendance schema
 - `database/migrations/2026_01_04_000006_create_logbooks_table.php` — Logbook schema
 - `routes/web/journals.php` — Route definitions

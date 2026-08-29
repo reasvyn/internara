@@ -69,9 +69,9 @@ PHP type hints on DTO properties catch mismatches at compile time. `fromArray()`
 - `docs/conventions.md` §6 DTO Contracts — C6, C7, BaseData, ActionResponse
 - `docs/guides/arch/action-pattern.md` — Action Triad and ActionResponse
 - `docs/guides/arch/entity-pattern.md` — Entity vs DTO boundary
-- `app/Core/Actions/BaseAction.php` — BaseAction with transaction/logging
-- `app/Core/Data/BaseData.php` — BaseData contract
-- `app/Core/Data/ActionResponse.php` — ActionResponse specialized DTO
+- `app/Modules/Core/Actions/BaseAction.php` — BaseAction with transaction/logging
+- `app/Modules/Core/Data/BaseData.php` — BaseData contract
+- `app/Modules/Core/Data/ActionResponse.php` — ActionResponse specialized DTO
 - [PoEAA — Data Transfer Object](https://martinfowler.com/eaaCatalog/dataTransferObject.html) — DTO pattern
 - [DDD — Value Object](https://martinfowler.com/bliki/ValueObject.html) — Value Object concept
 - [Laravel — Form Requests](https://laravel.com/docs/validation#form-request-validation) — input validation

@@ -176,7 +176,7 @@ to the admin, not a stack trace.
 ### 6.1 AccountApplication Model
 
 ```php
-// app/Enrollment/AccountApplication/Models/AccountApplication.php
+// app/Modules/Enrollment/AccountApplication/Models/AccountApplication.php
 // Table: account_applications
 // Fillable: name, email, student_id_number, department_id, form_data (json),
 //           status, processed_by, processed_at, rejection_reason
@@ -187,7 +187,7 @@ to the admin, not a stack trace.
 ### 6.2 AccountApplicationStatus Enum
 
 ```php
-// app/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php
+// app/Modules/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php
 enum AccountApplicationStatus: string implements LabelEnum, StatusEnum
 {
     case PENDING = 'pending';
@@ -204,7 +204,7 @@ enum AccountApplicationStatus: string implements LabelEnum, StatusEnum
 ### 6.3 Action Signatures
 
 ```php
-// app/Enrollment/AccountApplication/Actions/ApplyAccountAction.php
+// app/Modules/Enrollment/AccountApplication/Actions/ApplyAccountAction.php
 final class ApplyAccountAction extends BaseCommandAction
 {
     public function execute(array $data): AccountApplication;
@@ -213,7 +213,7 @@ final class ApplyAccountAction extends BaseCommandAction
     // Returns new or re-activated application
 }
 
-// app/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php
+// app/Modules/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php
 final class ApproveAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin): Registration;
@@ -228,7 +228,7 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
     // Returns: Registration
 }
 
-// app/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php
+// app/Modules/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php
 final class RejectAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin, string $reason): void;
@@ -241,7 +241,7 @@ final class RejectAccountApplicationAction extends BaseCommandAction
 ### 6.4 Policy
 
 ```php
-// app/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php
+// app/Modules/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php
 class AccountApplicationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool;   // admin only
@@ -255,7 +255,7 @@ class AccountApplicationPolicy extends BasePolicy
 ### 6.5 Form Object
 
 ```php
-// app/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php
+// app/Modules/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php
 class AccountApplicationForm extends Form
 {
     // Fields: id, name, email, phone, address, national_id_number, student_id_number,
@@ -276,11 +276,11 @@ class AccountApplicationForm extends Form
 ### 6.6 Events
 
 ```php
-// app/Enrollment/AccountApplication/Events/AccountApplicationApproved.php
+// app/Modules/Enrollment/AccountApplication/Events/AccountApplicationApproved.php
 // Dispatched by: ApproveAccountApplicationAction
 // Payload: AccountApplication model
 
-// app/Enrollment/AccountApplication/Events/AccountApplicationRejected.php
+// app/Modules/Enrollment/AccountApplication/Events/AccountApplicationRejected.php
 // Dispatched by: RejectAccountApplicationAction
 // Payload: AccountApplication model
 ```
@@ -404,17 +404,17 @@ After implementing this spec, new students can self-register through a public fo
 
 ## Quick References
 
-- `app/Enrollment/AccountApplication/Models/AccountApplication.php` — Application model
-- `app/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php` — Application status enum
-- `app/Enrollment/AccountApplication/Actions/ApplyAccountAction.php` — Guest application with re-activation
-- `app/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php` — Atomic user provisioning
-- `app/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php` — Application rejection
-- `app/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php` — Application authorization
-- `app/Enrollment/AccountApplication/Events/AccountApplicationApproved.php` — Approval event
-- `app/Enrollment/AccountApplication/Events/AccountApplicationRejected.php` — Rejection event
-- `app/Enrollment/AccountApplication/Livewire/ApplyPage.php` — Guest application form
-- `app/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php` — Application form validation
-- `app/Program/Internship/Rules/OpenForRegistration.php` — internship must be published/active
+- `app/Modules/Enrollment/AccountApplication/Models/AccountApplication.php` — Application model
+- `app/Modules/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php` — Application status enum
+- `app/Modules/Enrollment/AccountApplication/Actions/ApplyAccountAction.php` — Guest application with re-activation
+- `app/Modules/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php` — Atomic user provisioning
+- `app/Modules/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php` — Application rejection
+- `app/Modules/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php` — Application authorization
+- `app/Modules/Enrollment/AccountApplication/Events/AccountApplicationApproved.php` — Approval event
+- `app/Modules/Enrollment/AccountApplication/Events/AccountApplicationRejected.php` — Rejection event
+- `app/Modules/Enrollment/AccountApplication/Livewire/ApplyPage.php` — Guest application form
+- `app/Modules/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php` — Application form validation
+- `app/Modules/Program/Internship/Rules/OpenForRegistration.php` — internship must be published/active
 - `routes/web/enrollment.php` — All enrollment route definitions
 - `database/migrations/2026_01_04_000004_create_account_applications_table.php` — Applications migration
 - `docs/refs/modules/enrollment.md` — Enrollment module overview

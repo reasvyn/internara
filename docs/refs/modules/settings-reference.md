@@ -162,7 +162,7 @@ for the testing conventions. Tests are spec-driven: each test traces to a spec r
 ## Architectural Integration
 
 - **Submodules**: `Branding`, `Locale`, `Theme`
-- **Business Logic**: `app/Settings/`
+- **Business Logic**: `app/Modules/Settings/`
 - **Routing**: `routes/web/settings.php`
 - **Views**: `resources/views/settings/`
 - **Testing**: `tests/Settings/`

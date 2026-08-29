@@ -10,7 +10,7 @@ Every ADR must satisfy:
 
 - **Structure present:** `## Description` first, `## Quick References` last, plus `## Description`, `## Context`, `## Decision`, `## Consequences`.
 - **Indexed:** Listed in `docs/adr/index.md` under the correct section (Foundation / Observability / Quality / Strategy / Proxy). No orphan ADR file, no index entry without a file.
-- **Linked to code:** Decision section references the actual code locations it governs (`docs/guides/arch/*.md`, `docs/conventions.md`, `app/Core/*`, module paths). A grep for the ADR's key terms (e.g., `Action-based MVC`, `Entity-Model Separation`) must find code/doc anchors — otherwise the ADR is stale or the code drifted.
+- **Linked to code:** Decision section references the actual code locations it governs (`docs/guides/arch/*.md`, `docs/conventions.md`, `app/Modules/Core/*`, module paths). A grep for the ADR's key terms (e.g., `Action-based MVC`, `Entity-Model Separation`) must find code/doc anchors — otherwise the ADR is stale or the code drifted.
 - **Freshness:** `git log --follow -- <adr-file>` is within 6 months if the governed code changed (`git log -- docs/adr/<file> -- app/...` correlation). A decision whose code moved without ADR update is flagged stale.
 - **No duplicate decisions:** One decision per ADR. Overlapping rationale across ADRs must be deduplicated via cross-reference, not copy-pasted.
 - **Decision coverage:** Any non-trivial architectural invariant (C1-C8, D1-D6, module boundaries, tenant mode) must have a corresponding ADR; arch-guard scans `docs/guides/arch/*.md` for invocations of invariants and verifies an ADR exists.

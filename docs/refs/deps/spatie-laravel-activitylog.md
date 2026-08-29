@@ -29,9 +29,9 @@ audit-trail foundation recording who did what, when, from where.
 
 ## How Internara Uses It
 
-- Wrapped by the dual-channel **SmartLogger** (`app/Core/Services/SmartLogger.php`) adding PII
+- Wrapped by the dual-channel **SmartLogger** (`app/Modules/Core/Services/SmartLogger.php`) adding PII
   masking and file+DB routing on top of raw activity writes
-- Audit UI in SysAdmin observability (`app/SysAdmin/Observability/Livewire/AuditLogManager.php`)
+- Audit UI in SysAdmin observability (`app/Modules/SysAdmin/Observability/Livewire/AuditLogManager.php`)
   backed by a custom `ActivityLog` core model
 - Command Actions log through `$this->log()` as part of the transaction pattern
 - Package conventions and SmartLogger rules: `activitylog-development` skill,

@@ -127,8 +127,8 @@ guarantees of what exists.
 class, broken references elsewhere). Both waste an entire feedback cycle.
 
 **How to apply:** Before writing `App\Enrollment\Actions\RegisterInternAction`, confirm the namespace
-and directory exist by reading `app/Enrollment/`, and confirm whether the Action base class is
-`BaseCommandAction` in this codebase by reading `app/Core/Actions/`. When a doc and the code
+and directory exist by reading `app/Modules/Enrollment/`, and confirm whether the Action base class is
+`BaseCommandAction` in this codebase by reading `app/Modules/Core/Actions/`. When a doc and the code
 disagree, check `git log -p -- {file}` to see which changed last, then align the outlier (Doc Drift
 Resolution in `context-awareness`).
 

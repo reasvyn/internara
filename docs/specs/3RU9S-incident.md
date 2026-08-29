@@ -401,15 +401,15 @@ After implementing this spec, students and supervisors can report workplace inci
 
 ## Quick References
 
-- `app/Incident/IncidentReport/Models/IncidentReport.php` — Incident model with 12 fillable fields and 3 enum casts
-- `app/Incident/IncidentReport/Enums/IncidentType.php` — 5-value type enum (LabelEnum)
-- `app/Incident/IncidentReport/Enums/IncidentSeverity.php` — 4-value severity enum (LabelEnum)
-- `app/Incident/IncidentReport/Enums/IncidentStatus.php` — 4-value status enum (StatusEnum) with transition map
-- `app/Incident/IncidentReport/Actions/ReportIncidentAction.php` — Creates incident, dispatches notification
-- `app/Incident/IncidentReport/Actions/UpdateIncidentAction.php` — Partial update of incident fields
-- `app/Incident/IncidentReport/Actions/ResolveIncidentAction.php` — Transitions to RESOLVED with resolution metadata
-- `app/Incident/IncidentReport/Policies/IncidentReportPolicy.php` — Role-based authorization for all operations
-- `app/Incident/IncidentReport/Livewire/IncidentForm.php` — Student-only incident report form
-- `app/Incident/IncidentReport/Livewire/IncidentManager.php` — Admin table with filters and resolve modal
-- `app/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — Admin notification on report
+- `app/Modules/Incident/IncidentReport/Models/IncidentReport.php` — Incident model with 12 fillable fields and 3 enum casts
+- `app/Modules/Incident/IncidentReport/Enums/IncidentType.php` — 5-value type enum (LabelEnum)
+- `app/Modules/Incident/IncidentReport/Enums/IncidentSeverity.php` — 4-value severity enum (LabelEnum)
+- `app/Modules/Incident/IncidentReport/Enums/IncidentStatus.php` — 4-value status enum (StatusEnum) with transition map
+- `app/Modules/Incident/IncidentReport/Actions/ReportIncidentAction.php` — Creates incident, dispatches notification
+- `app/Modules/Incident/IncidentReport/Actions/UpdateIncidentAction.php` — Partial update of incident fields
+- `app/Modules/Incident/IncidentReport/Actions/ResolveIncidentAction.php` — Transitions to RESOLVED with resolution metadata
+- `app/Modules/Incident/IncidentReport/Policies/IncidentReportPolicy.php` — Role-based authorization for all operations
+- `app/Modules/Incident/IncidentReport/Livewire/IncidentForm.php` — Student-only incident report form
+- `app/Modules/Incident/IncidentReport/Livewire/IncidentManager.php` — Admin table with filters and resolve modal
+- `app/Modules/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — Admin notification on report
 - `docs/refs/modules/incident.md` — Module conceptual documentation

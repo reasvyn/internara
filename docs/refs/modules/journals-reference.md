@@ -174,7 +174,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`, `MonitoringVisit`, `SupervisionLog`
-- **Business Logic**: `app/Journals/`
+- **Business Logic**: `app/Modules/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`
 - **Testing**: `tests/Journals/`

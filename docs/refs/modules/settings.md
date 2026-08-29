@@ -84,7 +84,7 @@ Every module (via `setting()` and `brand()` helpers).
 
 ## Global Helpers in this Module
 
-The file `app/Settings/Support/helpers.php` defines two global functions:
+The file `app/Modules/Settings/Support/helpers.php` defines two global functions:
 
 - `setting($key, $default, $skipCache)` — Runtime configuration access
 - `brand($key, $default)` — Dynamic branding values (name, title, logo, favicon, colors)

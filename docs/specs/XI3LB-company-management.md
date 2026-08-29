@@ -471,20 +471,20 @@ After implementing this spec, the system has company CRUD with industry type, co
 
 ## Quick References
 
-- `app/Partners/Company/Models/Company.php` — Company model with `#[Fillable]` attribute and relationships
-- `app/Partners/Company/Entities/CompanyState.php` — Entity with `canBeDeleted()` dual guard
-- `app/Partners/Company/Data/CompanyData.php` — Company DTO (extends `BaseData`)
-- `app/Partners/Company/Actions/CreateCompanyAction.php` — Create command action
-- `app/Partners/Company/Actions/UpdateCompanyAction.php` — Update command action
-- `app/Partners/Company/Actions/DeleteCompanyAction.php` — Delete with dual guard check
-- `app/Partners/Company/Actions/BatchDeleteCompanyAction.php` — Batch delete with per-record guard
-- `app/Partners/Company/Policies/CompanyPolicy.php` — Authorization (admin-only writes)
-- `app/Partners/Company/Livewire/CompanyManager.php` — UI with CSV import/export
-- `app/Partners/Company/Livewire/Forms/CompanyForm.php` — Form validation
-- `app/Partners/Company/Events/CompanyCreated.php` — Created event
-- `app/Partners/Company/Events/CompanyUpdated.php` — Updated event
-- `app/Partners/Company/Events/CompanyDeleted.php` — Deleted event
-- `app/Partners/Company/Listeners/ClearDashboardOnCompanyChange.php` — Cache invalidation
+- `app/Modules/Partners/Company/Models/Company.php` — Company model with `#[Fillable]` attribute and relationships
+- `app/Modules/Partners/Company/Entities/CompanyState.php` — Entity with `canBeDeleted()` dual guard
+- `app/Modules/Partners/Company/Data/CompanyData.php` — Company DTO (extends `BaseData`)
+- `app/Modules/Partners/Company/Actions/CreateCompanyAction.php` — Create command action
+- `app/Modules/Partners/Company/Actions/UpdateCompanyAction.php` — Update command action
+- `app/Modules/Partners/Company/Actions/DeleteCompanyAction.php` — Delete with dual guard check
+- `app/Modules/Partners/Company/Actions/BatchDeleteCompanyAction.php` — Batch delete with per-record guard
+- `app/Modules/Partners/Company/Policies/CompanyPolicy.php` — Authorization (admin-only writes)
+- `app/Modules/Partners/Company/Livewire/CompanyManager.php` — UI with CSV import/export
+- `app/Modules/Partners/Company/Livewire/Forms/CompanyForm.php` — Form validation
+- `app/Modules/Partners/Company/Events/CompanyCreated.php` — Created event
+- `app/Modules/Partners/Company/Events/CompanyUpdated.php` — Updated event
+- `app/Modules/Partners/Company/Events/CompanyDeleted.php` — Deleted event
+- `app/Modules/Partners/Company/Listeners/ClearDashboardOnCompanyChange.php` — Cache invalidation
 - `database/migrations/2026_01_03_000003_create_companies_table.php` — Companies schema
 - `routes/web/partners.php` — Route definitions
 - `docs/refs/modules/partners.md` — Module conceptual documentation

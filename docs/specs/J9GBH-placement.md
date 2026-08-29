@@ -157,7 +157,7 @@ workflow with atomic quota transfer is required.
 ### 6.1 Placement Model
 
 ```php
-// app/Enrollment/Placement/Models/Placement.php
+// app/Modules/Enrollment/Placement/Models/Placement.php
 // Table: placements
 // PK: id (uuid, cascade)
 // FK: company_id → companies (cascade delete)
@@ -169,7 +169,7 @@ workflow with atomic quota transfer is required.
 ### 6.2 Placement Entities
 
 ```php
-// app/Enrollment/Placement/Entities/PlacementCapacity.php
+// app/Modules/Enrollment/Placement/Entities/PlacementCapacity.php
 final readonly class PlacementCapacity extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -178,7 +178,7 @@ final readonly class PlacementCapacity extends BaseEntity
     public function hasAvailableSlots(): bool; // availableSlots() > 0
 }
 
-// app/Enrollment/Placement/Entities/PlacementState.php
+// app/Modules/Enrollment/Placement/Entities/PlacementState.php
 final readonly class PlacementState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -189,12 +189,12 @@ final readonly class PlacementState extends BaseEntity
 ### 6.3 Placement Actions
 
 ```php
-// app/Enrollment/Placement/Actions/CreatePlacementAction.php
-// app/Enrollment/Placement/Actions/UpdatePlacementAction.php
-// app/Enrollment/Placement/Actions/DeletePlacementAction.php
+// app/Modules/Enrollment/Placement/Actions/CreatePlacementAction.php
+// app/Modules/Enrollment/Placement/Actions/UpdatePlacementAction.php
+// app/Modules/Enrollment/Placement/Actions/DeletePlacementAction.php
 //   Guards: canBeDeleted() — blocks if registrations exist
 
-// app/Enrollment/Placement/Actions/DirectPlacementAction.php
+// app/Modules/Enrollment/Placement/Actions/DirectPlacementAction.php
 final class DirectPlacementAction extends BaseCommandAction
 {
     public function execute(User $student, Placement $placement, array $mentors = []): Registration;
@@ -206,7 +206,7 @@ final class DirectPlacementAction extends BaseCommandAction
 ### 6.4 PlacementChangeRequest Model
 
 ```php
-// app/Enrollment/Placement/Models/PlacementChangeRequest.php
+// app/Modules/Enrollment/Placement/Models/PlacementChangeRequest.php
 // Table: placement_change_requests
 // Fillable: registration_id, from_placement_id, to_placement_id, reason, requested_by, status, processed_by, processed_at, rejection_reason
 ```
@@ -214,7 +214,7 @@ final class DirectPlacementAction extends BaseCommandAction
 ### 6.5 PlacementChangeStatus Enum
 
 ```php
-// app/Enrollment/Placement/Enums/PlacementChangeStatus.php
+// app/Modules/Enrollment/Placement/Enums/PlacementChangeStatus.php
 enum PlacementChangeStatus: string implements LabelEnum, StatusEnum
 {
     case PENDING = 'pending';
@@ -229,14 +229,14 @@ enum PlacementChangeStatus: string implements LabelEnum, StatusEnum
 ### 6.6 Placement Change Actions
 
 ```php
-// app/Enrollment/Placement/Actions/RequestPlacementChangeAction.php
+// app/Modules/Enrollment/Placement/Actions/RequestPlacementChangeAction.php
 // Guards: no existing PENDING request for this registration
 
-// app/Enrollment/Placement/Actions/ApprovePlacementChangeAction.php
+// app/Modules/Enrollment/Placement/Actions/ApprovePlacementChangeAction.php
 // Guards: not terminal, target has available slots
 // Atomic: decrement old filled_quota, increment new filled_quota, update registration placement_id
 
-// app/Enrollment/Placement/Actions/RejectPlacementChangeAction.php
+// app/Modules/Enrollment/Placement/Actions/RejectPlacementChangeAction.php
 // Records rejection_reason
 ```
 
@@ -333,27 +333,27 @@ After implementing this spec, the system can match enrolled students to company 
 
 ## Quick References
 
-- `app/Enrollment/Placement/Models/Placement.php` — Placement model (UUID PK, quota/filled_quota)
-- `app/Enrollment/Placement/Entities/PlacementCapacity.php` — Capacity entity (isFull, availableSlots)
-- `app/Enrollment/Placement/Entities/PlacementState.php` — Placement state (canBeDeleted)
-- `app/Enrollment/Placement/Actions/CreatePlacementAction.php` — Placement CRUD
-- `app/Enrollment/Placement/Actions/UpdatePlacementAction.php` — Placement update
-- `app/Enrollment/Placement/Actions/DeletePlacementAction.php` — Placement deletion with guard
-- `app/Enrollment/Placement/Actions/DirectPlacementAction.php` — Atomic registration+placement creation
-- `app/Enrollment/Placement/Policies/PlacementPolicy.php` — Placement authorization
-- `app/Enrollment/Placement/Livewire/PlacementIndex.php` — Placement CRUD with stats
-- `app/Enrollment/Placement/Livewire/DirectPlacementManager.php` — Admin direct placement form
-- `app/Enrollment/Placement/Livewire/Forms/PlacementForm.php` — Placement form validation
-- `app/Enrollment/Placement/Livewire/Forms/DirectPlacementForm.php` — Direct placement form validation
-- `app/Enrollment/Placement/Models/PlacementChangeRequest.php` — Change request model
-- `app/Enrollment/Placement/Enums/PlacementChangeStatus.php` — Change status enum (PENDING/APPROVED/REJECTED)
-- `app/Enrollment/Placement/Actions/RequestPlacementChangeAction.php` — Student change request
-- `app/Enrollment/Placement/Actions/ApprovePlacementChangeAction.php` — Atomic quota swap on approval
-- `app/Enrollment/Placement/Actions/RejectPlacementChangeAction.php` — Change rejection
-- `app/Enrollment/Placement/Policies/PlacementChangeRequestPolicy.php` — Change request authorization
-- `app/Enrollment/Placement/Livewire/PlacementChangeManager.php` — Admin change review
-- `app/Enrollment/Placement/Livewire/StudentPlacementChangeRequest.php` — Student change request form
-- `app/Enrollment/Placement/Livewire/Forms/PlacementChangeForm.php` — Change form validation
+- `app/Modules/Enrollment/Placement/Models/Placement.php` — Placement model (UUID PK, quota/filled_quota)
+- `app/Modules/Enrollment/Placement/Entities/PlacementCapacity.php` — Capacity entity (isFull, availableSlots)
+- `app/Modules/Enrollment/Placement/Entities/PlacementState.php` — Placement state (canBeDeleted)
+- `app/Modules/Enrollment/Placement/Actions/CreatePlacementAction.php` — Placement CRUD
+- `app/Modules/Enrollment/Placement/Actions/UpdatePlacementAction.php` — Placement update
+- `app/Modules/Enrollment/Placement/Actions/DeletePlacementAction.php` — Placement deletion with guard
+- `app/Modules/Enrollment/Placement/Actions/DirectPlacementAction.php` — Atomic registration+placement creation
+- `app/Modules/Enrollment/Placement/Policies/PlacementPolicy.php` — Placement authorization
+- `app/Modules/Enrollment/Placement/Livewire/PlacementIndex.php` — Placement CRUD with stats
+- `app/Modules/Enrollment/Placement/Livewire/DirectPlacementManager.php` — Admin direct placement form
+- `app/Modules/Enrollment/Placement/Livewire/Forms/PlacementForm.php` — Placement form validation
+- `app/Modules/Enrollment/Placement/Livewire/Forms/DirectPlacementForm.php` — Direct placement form validation
+- `app/Modules/Enrollment/Placement/Models/PlacementChangeRequest.php` — Change request model
+- `app/Modules/Enrollment/Placement/Enums/PlacementChangeStatus.php` — Change status enum (PENDING/APPROVED/REJECTED)
+- `app/Modules/Enrollment/Placement/Actions/RequestPlacementChangeAction.php` — Student change request
+- `app/Modules/Enrollment/Placement/Actions/ApprovePlacementChangeAction.php` — Atomic quota swap on approval
+- `app/Modules/Enrollment/Placement/Actions/RejectPlacementChangeAction.php` — Change rejection
+- `app/Modules/Enrollment/Placement/Policies/PlacementChangeRequestPolicy.php` — Change request authorization
+- `app/Modules/Enrollment/Placement/Livewire/PlacementChangeManager.php` — Admin change review
+- `app/Modules/Enrollment/Placement/Livewire/StudentPlacementChangeRequest.php` — Student change request form
+- `app/Modules/Enrollment/Placement/Livewire/Forms/PlacementChangeForm.php` — Change form validation
 - `routes/web/enrollment.php` — All enrollment route definitions
 - `docs/refs/modules/enrollment.md` — Enrollment module overview
 - **Related specs:** [registration.md](MBB5R-registration.md) — Registration workflow & documents

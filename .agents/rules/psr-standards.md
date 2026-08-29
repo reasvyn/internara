@@ -71,8 +71,8 @@ public function getUserData() { }
 
 ```
 App\ → app/
-App\Core\ → app/Core/
-App\Auth\Login\ → app/Auth/Login/
+App\Core\ → app/Modules/Core/
+App\Auth\Login\ → app/Modules/Auth/Login/
 ```
 
 ### Detection

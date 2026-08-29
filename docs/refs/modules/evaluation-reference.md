@@ -13,7 +13,7 @@ Generic feedback collection system with a Google Forms-like architecture. Replac
 
 ### Submodules
 
-None — all components are directly under `app/Evaluation/`.
+None — all components are directly under `app/Modules/Evaluation/`.
 
 ---
 
@@ -84,7 +84,7 @@ None — all components are directly under `app/Evaluation/`.
 
 ## Enums
 
-None. The `EvaluatorRole` enum previously located here has been moved to `app/Assessment/Enums/`
+None. The `EvaluatorRole` enum previously located here has been moved to `app/Modules/Assessment/Enums/`
 (see [Assessment reference](assessment-reference.md)).
 
 ---
@@ -140,7 +140,7 @@ builder and response collection features.
 ## Architectural Integration
 
 - **Submodules**: None
-- **Business Logic**: `app/Evaluation/`
+- **Business Logic**: `app/Modules/Evaluation/`
 - **Routing**: Not yet implemented
 - **Views**: Not yet implemented
 - **Testing**: Not yet implemented

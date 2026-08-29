@@ -267,7 +267,7 @@ Settings override keys (YB22J): `retention.cohort`, `retention.registration`, `r
 ### Service
 
 ```php
-// app/SysAdmin/Archive/Services/ArchiveRetentionPolicy.php
+// app/Modules/SysAdmin/Archive/Services/ArchiveRetentionPolicy.php
 final class ArchiveRetentionPolicy
 {
     public function yearsFor(string $category): int;
@@ -278,7 +278,7 @@ final class ArchiveRetentionPolicy
 ### Model
 
 ```php
-// app/SysAdmin/Archive/Models/ArchiveRecord.php
+// app/Modules/SysAdmin/Archive/Models/ArchiveRecord.php
 #[Fillable(['category', 'reference_type', 'reference_id', 'status', 'retention_until',
     'archived_at', 'archived_by', 'restored_at', 'restored_by', 'purged_at', 'reason'])]
 class ArchiveRecord extends BaseModel
@@ -299,7 +299,7 @@ class ArchiveRecord extends BaseModel
 ### Enum
 
 ```php
-// app/SysAdmin/Archive/Enums/ArchiveStatus.php
+// app/Modules/SysAdmin/Archive/Enums/ArchiveStatus.php
 enum ArchiveStatus: string implements LabelEnum, StatusEnum
 {
     case ARCHIVED = 'archived';
@@ -314,13 +314,13 @@ enum ArchiveStatus: string implements LabelEnum, StatusEnum
 ### Actions
 
 ```php
-// app/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php
+// app/Modules/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php
 final class ArchiveCohortProcessAction extends BaseProcessAction
 {
     public function execute(ArchiveCohortData $data): ActionResponse;
 }
 
-// app/SysAdmin/Archive/Actions/RestoreArchiveAction.php
+// app/Modules/SysAdmin/Archive/Actions/RestoreArchiveAction.php
 final class RestoreArchiveAction extends BaseCommandAction
 {
     public function execute(ArchiveRecord $record, ?string $reason = null): ActionResponse;
@@ -330,7 +330,7 @@ final class RestoreArchiveAction extends BaseCommandAction
 ### DTO
 
 ```php
-// app/SysAdmin/Archive/Data/ArchiveCohortData.php
+// app/Modules/SysAdmin/Archive/Data/ArchiveCohortData.php
 final class ArchiveCohortData extends BaseData
 {
     public function __construct(
@@ -343,7 +343,7 @@ final class ArchiveCohortData extends BaseData
 ### Job
 
 ```php
-// app/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php
+// app/Modules/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php
 class PurgeExpiredArchivesJob implements ShouldQueue
 {
     public int $tries = 3;
@@ -358,7 +358,7 @@ class PurgeExpiredArchivesJob implements ShouldQueue
 ### Command
 
 ```php
-// app/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php
+// app/Modules/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php
 class ArchivePurgeCommand extends Command
 {
     protected $signature = 'archives:purge-expired {--dry-run : Report eligible records without purging}';
@@ -368,9 +368,9 @@ class ArchivePurgeCommand extends Command
 ### Events
 
 ```php
-// app/SysAdmin/Archive/Events/CohortArchived.php   — eventName() = 'data_archive.cohort_archived'
-// app/SysAdmin/Archive/Events/ArchiveRestored.php  — eventName() = 'data_archive.cohort_restored'
-// app/SysAdmin/Archive/Events/ArchivePurged.php    — eventName() = 'data_archive.record_purged'
+// app/Modules/SysAdmin/Archive/Events/CohortArchived.php   — eventName() = 'data_archive.cohort_archived'
+// app/Modules/SysAdmin/Archive/Events/ArchiveRestored.php  — eventName() = 'data_archive.cohort_restored'
+// app/Modules/SysAdmin/Archive/Events/ArchivePurged.php    — eventName() = 'data_archive.record_purged'
 // Each extends BaseEvent and carries public readonly ArchiveRecord $record
 ```
 
@@ -513,17 +513,17 @@ the `ArchiveManager` UI — each layer tested against its FR IDs.
 
 ## Quick References
 
-- `app/SysAdmin/Archive/Models/ArchiveRecord.php` — Archive registry model (new)
-- `app/SysAdmin/Archive/Enums/ArchiveStatus.php` — `ARCHIVED`/`RESTORED`/`PURGED` enum (new)
-- `app/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php` — Cohort archival orchestrator (new)
-- `app/SysAdmin/Archive/Actions/RestoreArchiveAction.php` — Pre-expiry restore (new)
-- `app/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php` — Queued expired purge (new)
-- `app/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php` — `archives:purge-expired` (new)
-- `app/SysAdmin/Archive/Livewire/ArchiveManager.php` — Archive registry UI (new)
+- `app/Modules/SysAdmin/Archive/Models/ArchiveRecord.php` — Archive registry model (new)
+- `app/Modules/SysAdmin/Archive/Enums/ArchiveStatus.php` — `ARCHIVED`/`RESTORED`/`PURGED` enum (new)
+- `app/Modules/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php` — Cohort archival orchestrator (new)
+- `app/Modules/SysAdmin/Archive/Actions/RestoreArchiveAction.php` — Pre-expiry restore (new)
+- `app/Modules/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php` — Queued expired purge (new)
+- `app/Modules/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php` — `archives:purge-expired` (new)
+- `app/Modules/SysAdmin/Archive/Livewire/ArchiveManager.php` — Archive registry UI (new)
 - `config/retention.php` — Central retention policy (new)
-- `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Delegated account archival (E1MSJ)
-- `app/User/Jobs/ArchiveStudentAccountsJob.php` — Queued account archival (E1MSJ)
-- `app/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php` — Purge delegate (7HNCF)
+- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Delegated account archival (E1MSJ)
+- `app/Modules/User/Jobs/ArchiveStudentAccountsJob.php` — Queued account archival (E1MSJ)
+- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php` — Purge delegate (7HNCF)
 - `docs/refs/modules/sysadmin.md` — SysAdmin module overview
 - **Related specs:** [system-maintenance.md](E1MSJ-system-maintenance.md) — account archival, cleanup, scheduler
 - **Related specs:** [gdpr-compliance.md](7HNCF-gdpr-compliance.md) — deletion pipeline, `GdprDeletionLog`

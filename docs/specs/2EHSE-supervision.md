@@ -278,8 +278,8 @@ After implementing this spec, supervisors can log monitoring visits, review stud
 
 ## Quick References
 
-- `app/Journals/SupervisionLog/` — SupervisionLog submodule (Actions, Entities, Enums, Livewire, Models, Policies)
-- `app/Journals/MonitoringVisit/` — MonitoringVisit submodule (Actions, Entities, Enums, Livewire, Models, Policies)
+- `app/Modules/Journals/SupervisionLog/` — SupervisionLog submodule (Actions, Entities, Enums, Livewire, Models, Policies)
+- `app/Modules/Journals/MonitoringVisit/` — MonitoringVisit submodule (Actions, Entities, Enums, Livewire, Models, Policies)
 - `database/migrations/2026_01_04_000007_create_supervision_logs_table.php` — SupervisionLog schema
 - `database/migrations/2026_01_04_000008_create_monitoring_visits_table.php` — MonitoringVisit schema
 - `routes/web/journals.php` — Route definitions

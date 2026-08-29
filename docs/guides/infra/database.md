@@ -207,7 +207,7 @@ php artisan migrate
 - All migrations: `database/migrations/`
 - Factories: `database/factories/`
 - Seeders: `database/seeders/`
-- Base model: `app/Core/Models/BaseModel.php`
+- Base model: `app/Modules/Core/Models/BaseModel.php`
 - Database configuration: `config/database.php` (overridable via `.env`)
 - Module reference: [Module Index](../../refs/modules/index.md)
 - Infrastructure design: [Infrastructure](infrastructure.md#4-database-strategy)

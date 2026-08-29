@@ -228,7 +228,7 @@ profile save flow.
 ### 6.1 SchoolEntity
 
 ```php
-// app/Academics/School/Entities/SchoolEntity.php
+// app/Modules/Academics/School/Entities/SchoolEntity.php
 final readonly class SchoolEntity extends BaseEntity
 {
     private const array KEYS = [
@@ -275,7 +275,7 @@ final readonly class SchoolEntity extends BaseEntity
 ### 6.2 SaveSchoolProfileAction
 
 ```php
-// app/Academics/School/Actions/SaveSchoolProfileAction.php
+// app/Modules/Academics/School/Actions/SaveSchoolProfileAction.php
 final class SaveSchoolProfileAction extends BaseCommandAction
 {
     public function __construct(
@@ -293,7 +293,7 @@ provided, calls `BatchSetSettingAction`, forgets `school_entity` cache, logs upd
 ### 6.3 SchoolForm
 
 ```php
-// app/Academics/School/Livewire/Forms/SchoolForm.php
+// app/Modules/Academics/School/Livewire/Forms/SchoolForm.php
 class SchoolForm extends Form
 {
     public string $name = '';
@@ -329,7 +329,7 @@ class SchoolForm extends Form
 ### 6.4 SchoolEditor
 
 ```php
-// app/Academics/School/Livewire/SchoolEditor.php
+// app/Modules/Academics/School/Livewire/SchoolEditor.php
 class SchoolEditor extends BaseFormView
 {
     use WithFileUploads;
@@ -462,17 +462,17 @@ After implementing this spec, the system has the school's identity (name, NPSN, 
 
 ## Quick References
 
-- `app/Academics/School/Entities/SchoolEntity.php` — School profile value object (8 typed properties)
-- `app/Academics/School/Actions/SaveSchoolProfileAction.php` — Atomic save via BatchSetSettingAction
-- `app/Academics/School/Livewire/SchoolEditor.php` — Livewire component (form, logo upload, removal)
-- `app/Academics/School/Livewire/Forms/SchoolForm.php` — Form object with validation rules
-- `app/Settings/Actions/BatchSetSettingAction.php` — Transaction-wrapped batch upsert
-- `app/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection
-- `app/Settings/Data/SettingEntryData.php` — Single setting entry DTO
-- `app/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
-- `app/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
-- `app/Settings/Services/Settings.php` — Settings service (get, forget, resolution)
-- `app/Core/Actions/BaseCommandAction.php` — Transaction-wrapped action base class
+- `app/Modules/Academics/School/Entities/SchoolEntity.php` — School profile value object (8 typed properties)
+- `app/Modules/Academics/School/Actions/SaveSchoolProfileAction.php` — Atomic save via BatchSetSettingAction
+- `app/Modules/Academics/School/Livewire/SchoolEditor.php` — Livewire component (form, logo upload, removal)
+- `app/Modules/Academics/School/Livewire/Forms/SchoolForm.php` — Form object with validation rules
+- `app/Modules/Settings/Actions/BatchSetSettingAction.php` — Transaction-wrapped batch upsert
+- `app/Modules/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection
+- `app/Modules/Settings/Data/SettingEntryData.php` — Single setting entry DTO
+- `app/Modules/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
+- `app/Modules/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
+- `app/Modules/Settings/Services/Settings.php` — Settings service (get, forget, resolution)
+- `app/Modules/Core/Actions/BaseCommandAction.php` — Transaction-wrapped action base class
 - `config/cache-keys.php:29` — `school_entity` cache key registration
 - `routes/web/academics.php:13` — Route definition (`/admin/school`)
 - `tests/Academics/School/SchoolEntityTest.php` — SchoolEntity unit tests

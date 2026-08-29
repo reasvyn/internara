@@ -56,7 +56,7 @@ Locator for the Enrollment module's implementation.
 ## Actions
 | Action | File | execute() |
 |--------|------|-----------|
-| CreatePlacementAction | `app/Enrollment/Placement/Actions/CreatePlacementAction.php` | `CreatePlacementData` |
+| CreatePlacementAction | `app/Modules/Enrollment/Placement/Actions/CreatePlacementAction.php` | `CreatePlacementData` |
 ```
 
 ## Anti-Patterns & Pitfalls

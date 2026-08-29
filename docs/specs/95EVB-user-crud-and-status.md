@@ -308,7 +308,7 @@ preserving the ability to recover access via recovery keys.
 ### 6.1 AccountStatus Enum
 
 ```php
-// app/User/Enums/AccountStatus.php
+// app/Modules/User/Enums/AccountStatus.php
 enum AccountStatus: string implements ColorableEnum, StatusEnum
 {
     case PROVISIONED = 'provisioned';   // color: warning, allowsLogin: false
@@ -342,7 +342,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
 ### 6.2 CreateUserAction
 
 ```php
-// app/User/UserManagement/Actions/CreateUserAction.php
+// app/Modules/User/UserManagement/Actions/CreateUserAction.php
 final class CreateUserAction extends BaseCommandAction
 {
     public function execute(
@@ -360,7 +360,7 @@ final class CreateUserAction extends BaseCommandAction
 ### 6.3 UpdateUserAction
 
 ```php
-// app/User/UserManagement/Actions/UpdateUserAction.php
+// app/Modules/User/UserManagement/Actions/UpdateUserAction.php
 final class UpdateUserAction extends BaseCommandAction
 {
     public function execute(
@@ -378,7 +378,7 @@ final class UpdateUserAction extends BaseCommandAction
 ### 6.4 DeleteUserAction
 
 ```php
-// app/User/UserManagement/Actions/DeleteUserAction.php
+// app/Modules/User/UserManagement/Actions/DeleteUserAction.php
 final class DeleteUserAction extends BaseCommandAction
 {
     public function execute(User $user): void;
@@ -390,7 +390,7 @@ final class DeleteUserAction extends BaseCommandAction
 ### 6.5 BatchDeleteUserAction
 
 ```php
-// app/User/UserManagement/Actions/BatchDeleteUserAction.php
+// app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php
 final class BatchDeleteUserAction extends BaseCommandAction
 {
     public function __construct(protected readonly DeleteUserAction $deleteAction) {}
@@ -405,7 +405,7 @@ final class BatchDeleteUserAction extends BaseCommandAction
 ### 6.6 SetUserStatusAction
 
 ```php
-// app/User/UserManagement/Actions/SetUserStatusAction.php
+// app/Modules/User/UserManagement/Actions/SetUserStatusAction.php
 final class SetUserStatusAction extends BaseCommandAction
 {
     public function execute(
@@ -422,7 +422,7 @@ final class SetUserStatusAction extends BaseCommandAction
 ### 6.7 ToggleUserStatusAction
 
 ```php
-// app/User/UserManagement/Actions/ToggleUserStatusAction.php
+// app/Modules/User/UserManagement/Actions/ToggleUserStatusAction.php
 final class ToggleUserStatusAction extends BaseCommandAction
 {
     public function execute(User $user, ?string $reason = null): User;
@@ -434,7 +434,7 @@ final class ToggleUserStatusAction extends BaseCommandAction
 ### 6.8 UserManager Livewire
 
 ```php
-// app/User/UserManagement/Livewire/UserManager.php
+// app/Modules/User/UserManagement/Livewire/UserManager.php
 class UserManager extends BaseRecordManager
 {
     use AuthorizesRequests, DownloadsAccountSlips, WithFileUploads;
@@ -462,7 +462,7 @@ class UserManager extends BaseRecordManager
 ### 6.9 StudentManager Livewire
 
 ```php
-// app/User/UserManagement/Livewire/StudentManager.php
+// app/Modules/User/UserManagement/Livewire/StudentManager.php
 // Extends UserManager pattern with department-specific columns and filters
 // Adds department filter, student-specific form fields
 ```
@@ -470,7 +470,7 @@ class UserManager extends BaseRecordManager
 ### 6.10 TeacherManager Livewire
 
 ```php
-// app/User/UserManagement/Livewire/TeacherManager.php
+// app/Modules/User/UserManagement/Livewire/TeacherManager.php
 // Extends UserManager pattern with teacher-specific columns
 // Includes id_number column (NIP)
 ```
@@ -478,7 +478,7 @@ class UserManager extends BaseRecordManager
 ### 6.11 SupervisorManager Livewire
 
 ```php
-// app/User/UserManagement/Livewire/SupervisorManager.php
+// app/Modules/User/UserManagement/Livewire/SupervisorManager.php
 // Extends UserManager pattern with company-specific columns
 // Includes company column and company filter
 ```
@@ -486,7 +486,7 @@ class UserManager extends BaseRecordManager
 ### 6.12 AdminManager Livewire
 
 ```php
-// app/User/UserManagement/Livewire/AdminManager.php
+// app/Modules/User/UserManagement/Livewire/AdminManager.php
 // Restricted to admin-only access
 // Shows admin-specific columns
 ```
@@ -494,7 +494,7 @@ class UserManager extends BaseRecordManager
 ### 6.13 User Model
 
 ```php
-// app/User/Models/User.php
+// app/Modules/User/Models/User.php
 class User extends BaseAuthenticatable implements HasMedia
 {
     use HasFactory, HasUuids, InteractsWithMedia, Notifiable;
@@ -521,7 +521,7 @@ class User extends BaseAuthenticatable implements HasMedia
 ### 6.14 Profile Model
 
 ```php
-// app/User/Profile/Models/Profile.php
+// app/Modules/User/Profile/Models/Profile.php
 class Profile extends BaseModel
 {
     // #[Fillable]: user_id, phone, address, bio, gender, blood_type, pob, dob,
@@ -537,28 +537,28 @@ class Profile extends BaseModel
 ### 6.15 Lifecycle Actions
 
 ```php
-// app/User/UserManagement/Actions/RevokeUserActivationTokensAction.php
+// app/Modules/User/UserManagement/Actions/RevokeUserActivationTokensAction.php
 final class RevokeUserActivationTokensAction extends BaseCommandAction
 {
     public function execute(User $user): void;
     // Revokes all activation tokens via AccessToken::revokeFor($user, 'activation')
 }
 
-// app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php
+// app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php
 final class ArchiveStudentAccountsAction extends BaseCommandAction
 {
     public function execute(Builder $query): int;
     // Chunks users (100), skips super_admin, sets ARCHIVED status, returns count
 }
 
-// app/User/UserManagement/Actions/SaveRecoveryKeyAction.php
+// app/Modules/User/UserManagement/Actions/SaveRecoveryKeyAction.php
 final class SaveRecoveryKeyAction extends BaseCommandAction
 {
     public function execute(string $plaintext): string;
     // Writes to storage/app/private/.recovery-key with 0600 permissions, returns path
 }
 
-// app/User/UserManagement/Actions/ReadRecoveryKeyAction.php
+// app/Modules/User/UserManagement/Actions/ReadRecoveryKeyAction.php
 final class ReadRecoveryKeyAction extends BaseReadAction
 {
     public function execute(): ?string;
@@ -569,7 +569,7 @@ final class ReadRecoveryKeyAction extends BaseReadAction
 ### 6.16 AutoInactivateAccounts Command
 
 ```php
-// app/User/UserManagement/Console/Commands/AutoInactivateAccounts.php
+// app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php
 class AutoInactivateAccounts extends Command
 {
     protected $signature = 'accounts:auto-inactivate
@@ -586,7 +586,7 @@ class AutoInactivateAccounts extends Command
 ### 6.17 UserObserver
 
 ```php
-// app/User/Observers/UserObserver.php
+// app/Modules/User/Observers/UserObserver.php
 class UserObserver
 {
     public function deleting(User $user): void
@@ -776,39 +776,39 @@ After implementing this spec, the system has user CRUD with status management (a
 
 ## Quick References
 
-- `app/User/Enums/AccountStatus.php` — 8-state status machine enum
-- `app/User/Models/User.php` — user model with roles, media, entity bridges, delete guard
-- `app/User/Profile/Models/Profile.php` — profile model with fillable fields, casts, relations
-- `app/User/Observers/UserObserver.php` — super admin deletion guard at model level
-- `app/User/UserManagement/Actions/CreateUserAction.php` — user creation with notifications
-- `app/User/UserManagement/Actions/UpdateUserAction.php` — atomic user update with super admin guard
-- `app/User/UserManagement/Actions/DeleteUserAction.php` — single user deletion with guards
-- `app/User/UserManagement/Actions/BatchDeleteUserAction.php` — batch deletion with skip logic
-- `app/User/UserManagement/Actions/SetUserStatusAction.php` — status change with transition guard
-- `app/User/UserManagement/Actions/ToggleUserStatusAction.php` — VERIFIED ↔ SUSPENDED toggle
-- `app/User/UserManagement/Actions/RevokeUserActivationTokensAction.php` — token revocation
-- `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — mass student archival
-- `app/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — recovery key storage (0600)
-- `app/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — recovery key retrieval
-- `app/User/UserManagement/Actions/ReadUserManagerStatsAction.php` — manager statistics
-- `app/User/UserManagement/Livewire/UserManager.php` — main user management component
-- `app/User/UserManagement/Livewire/StudentManager.php` — student-specific manager
-- `app/User/UserManagement/Livewire/TeacherManager.php` — teacher-specific manager
-- `app/User/UserManagement/Livewire/SupervisorManager.php` — supervisor-specific manager
-- `app/User/UserManagement/Livewire/AdminManager.php` — admin-only manager
-- `app/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` — PDF download/send trait
-- `app/User/UserManagement/Livewire/Forms/UserForm.php` — form object for user CRUD
-- `app/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — 90-day inactivity command
-- `app/User/UserManagement/Events/UserCreated.php` — user creation event
-- `app/User/UserManagement/Events/UserUpdated.php` — user update event
-- `app/User/UserManagement/Events/UserDeleted.php` — user deletion event
-- `app/User/UserManagement/Events/UserStatusChanged.php` — status change event
-- `app/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation email
-- `app/User/AccountStatus/Notifications/AccountStatusNotification.php` — status change notification
-- `app/User/Profile/Actions/UpdateProfileAction.php` — profile editing
-- `app/User/Profile/Actions/ReadProfileFormAction.php` — profile form data
-- `app/User/Profile/Livewire/ProfileEditor.php` — profile editing component
-- `app/User/Services/UserIdentifierGenerator.php` — username generation
+- `app/Modules/User/Enums/AccountStatus.php` — 8-state status machine enum
+- `app/Modules/User/Models/User.php` — user model with roles, media, entity bridges, delete guard
+- `app/Modules/User/Profile/Models/Profile.php` — profile model with fillable fields, casts, relations
+- `app/Modules/User/Observers/UserObserver.php` — super admin deletion guard at model level
+- `app/Modules/User/UserManagement/Actions/CreateUserAction.php` — user creation with notifications
+- `app/Modules/User/UserManagement/Actions/UpdateUserAction.php` — atomic user update with super admin guard
+- `app/Modules/User/UserManagement/Actions/DeleteUserAction.php` — single user deletion with guards
+- `app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php` — batch deletion with skip logic
+- `app/Modules/User/UserManagement/Actions/SetUserStatusAction.php` — status change with transition guard
+- `app/Modules/User/UserManagement/Actions/ToggleUserStatusAction.php` — VERIFIED ↔ SUSPENDED toggle
+- `app/Modules/User/UserManagement/Actions/RevokeUserActivationTokensAction.php` — token revocation
+- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — mass student archival
+- `app/Modules/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — recovery key storage (0600)
+- `app/Modules/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — recovery key retrieval
+- `app/Modules/User/UserManagement/Actions/ReadUserManagerStatsAction.php` — manager statistics
+- `app/Modules/User/UserManagement/Livewire/UserManager.php` — main user management component
+- `app/Modules/User/UserManagement/Livewire/StudentManager.php` — student-specific manager
+- `app/Modules/User/UserManagement/Livewire/TeacherManager.php` — teacher-specific manager
+- `app/Modules/User/UserManagement/Livewire/SupervisorManager.php` — supervisor-specific manager
+- `app/Modules/User/UserManagement/Livewire/AdminManager.php` — admin-only manager
+- `app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` — PDF download/send trait
+- `app/Modules/User/UserManagement/Livewire/Forms/UserForm.php` — form object for user CRUD
+- `app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — 90-day inactivity command
+- `app/Modules/User/UserManagement/Events/UserCreated.php` — user creation event
+- `app/Modules/User/UserManagement/Events/UserUpdated.php` — user update event
+- `app/Modules/User/UserManagement/Events/UserDeleted.php` — user deletion event
+- `app/Modules/User/UserManagement/Events/UserStatusChanged.php` — status change event
+- `app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation email
+- `app/Modules/User/AccountStatus/Notifications/AccountStatusNotification.php` — status change notification
+- `app/Modules/User/Profile/Actions/UpdateProfileAction.php` — profile editing
+- `app/Modules/User/Profile/Actions/ReadProfileFormAction.php` — profile form data
+- `app/Modules/User/Profile/Livewire/ProfileEditor.php` — profile editing component
+- `app/Modules/User/Services/UserIdentifierGenerator.php` — username generation
 - `database/migrations/2026_01_01_000000_create_users_table.php` — users table schema
 - `database/migrations/2026_01_02_000006_create_profiles_table.php` — profiles table schema
 - `docs/refs/modules/user.md` — User module overview

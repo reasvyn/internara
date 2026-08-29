@@ -29,7 +29,7 @@ modes:
   mechanism (password hash, email login, session) lives apart from the profile (full name, NISN,
   address, phone). Act on the check: confirm the separation exists, not just that two tables happen
   to exist.
-- **Check `app/Core/Support/PiiMasker.php`** — the canonical masker. It exists and defines the
+- **Check `app/Modules/Core/Support/PiiMasker.php`** — the canonical masker. It exists and defines the
   fields to mask (email, phone, NISN, tokens, etc.).
 - **Activity log does not store raw PII.** Scan `spatie/laravel-activitylog` usage — properties
   causing PII to be captured verbatim are findings.

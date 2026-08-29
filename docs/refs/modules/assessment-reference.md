@@ -134,7 +134,7 @@ testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Rubric`
-- **Business Logic**: `app/Assessment/`
+- **Business Logic**: `app/Modules/Assessment/`
 - **Routing**: `routes/web/assessment.php`
 - **Views**: `resources/views/assessment/`
 - **Testing**: `tests/Assessment/`

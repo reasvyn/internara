@@ -177,7 +177,7 @@ explicit.
 ### SettingEntity
 
 ```php
-// app/Settings/Entities/SettingEntity.php
+// app/Modules/Settings/Entities/SettingEntity.php
 final readonly class SettingEntity extends BaseEntity
 {
     public function key(): string;
@@ -199,7 +199,7 @@ final readonly class SettingEntity extends BaseEntity
 ### SystemSettingsData
 
 ```php
-// app/Settings/Data/SystemSettingsData.php
+// app/Modules/Settings/Data/SystemSettingsData.php
 final readonly class SystemSettingsData extends BaseData
 {
     public function __construct(
@@ -293,7 +293,7 @@ Route::livewire('/admin/settings', SystemSetting::class)
 ### Feature Flag Helper
 
 ```php
-// app/Settings/Support/helpers.php
+// app/Modules/Settings/Support/helpers.php
 function feature(string $key, bool $default = false): bool;
 ```
 
@@ -415,25 +415,25 @@ After implementing this spec, the system has a key-value settings store with cac
 
 ## Quick References
 
-- `app/Settings/Models/Setting.php` — Eloquent model with string PK, media collections
-- `app/Settings/Entities/SettingEntity.php` — Typed value accessors, group/type checks
-- `app/Settings/Enums/SettingGroup.php` — 7 group cases
-- `app/Settings/Enums/SettingType.php` — 7 type cases with auto-detection
-- `app/Settings/Casts/SettingValueCast.php` — Transparent type casting
-- `app/Settings/Support/SettingCaster.php` — Type casting logic
-- `app/Settings/Support/helpers.php` — `setting()`, `brand()`, and `feature()` global helpers
-- `app/Settings/Observers/SettingObserver.php` — Synchronous cache invalidation
-- `app/Settings/Policies/SettingPolicy.php` — RBAC: view/update for admin, create/delete for super_admin
-- `app/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection
-- `app/Settings/Actions/BatchSetSettingAction.php` — Transaction-wrapped batch upsert
-- `app/Settings/Actions/DeleteSettingAction.php` — Key deletion with observer trigger
-- `app/Settings/Actions/SaveSystemSettingsAction.php` — Orchestrator for SystemSettingsData
-- `app/Settings/Actions/TestMailSettingsAction.php` — Temp config swap for mail testing
-- `app/Settings/Data/SystemSettingsData.php` — 18-property DTO
-- `app/Settings/Data/SettingEntryData.php` — Single setting entry DTO
-- `app/Settings/Livewire/SystemSetting.php` — Main settings page component
-- `app/Settings/Livewire/Forms/GeneralSettingsForm.php` — General settings form
-- `app/Settings/Livewire/Forms/MailSettingsForm.php` — Mail settings form
+- `app/Modules/Settings/Models/Setting.php` — Eloquent model with string PK, media collections
+- `app/Modules/Settings/Entities/SettingEntity.php` — Typed value accessors, group/type checks
+- `app/Modules/Settings/Enums/SettingGroup.php` — 7 group cases
+- `app/Modules/Settings/Enums/SettingType.php` — 7 type cases with auto-detection
+- `app/Modules/Settings/Casts/SettingValueCast.php` — Transparent type casting
+- `app/Modules/Settings/Support/SettingCaster.php` — Type casting logic
+- `app/Modules/Settings/Support/helpers.php` — `setting()`, `brand()`, and `feature()` global helpers
+- `app/Modules/Settings/Observers/SettingObserver.php` — Synchronous cache invalidation
+- `app/Modules/Settings/Policies/SettingPolicy.php` — RBAC: view/update for admin, create/delete for super_admin
+- `app/Modules/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection
+- `app/Modules/Settings/Actions/BatchSetSettingAction.php` — Transaction-wrapped batch upsert
+- `app/Modules/Settings/Actions/DeleteSettingAction.php` — Key deletion with observer trigger
+- `app/Modules/Settings/Actions/SaveSystemSettingsAction.php` — Orchestrator for SystemSettingsData
+- `app/Modules/Settings/Actions/TestMailSettingsAction.php` — Temp config swap for mail testing
+- `app/Modules/Settings/Data/SystemSettingsData.php` — 18-property DTO
+- `app/Modules/Settings/Data/SettingEntryData.php` — Single setting entry DTO
+- `app/Modules/Settings/Livewire/SystemSetting.php` — Main settings page component
+- `app/Modules/Settings/Livewire/Forms/GeneralSettingsForm.php` — General settings form
+- `app/Modules/Settings/Livewire/Forms/MailSettingsForm.php` — Mail settings form
 - `routes/web/settings.php` — `/admin/settings` route definition
 - `docs/refs/modules/settings.md` — Module conceptual documentation
 - **Related specs:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — Branding, theme & locale UI

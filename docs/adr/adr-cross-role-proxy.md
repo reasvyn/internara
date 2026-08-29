@@ -110,7 +110,7 @@ public function verify(User $user, Logbook $entry): bool
 }
 ```
 
-**4. MentorEntity (Entity-Model Separation)** — business rules in `app/User/Mentor/Entities/MentorEntity.php`,
+**4. MentorEntity (Entity-Model Separation)** — business rules in `app/Modules/User/Mentor/Entities/MentorEntity.php`,
 bridged via `Registration::asMentorEntity(): MentorEntity` using `MentorEntity::fromModel()`.
 Categories: role queries (`isTeacher`, `isSupervisor`, `isMentor`), proxy gates
 (`canProxyAsSupervisor`, `canProxyAsTeacher`), and domain capabilities

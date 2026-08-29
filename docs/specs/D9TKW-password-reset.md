@@ -122,7 +122,7 @@ request and the reset action is required to prevent abuse.
 ### Actions
 
 ```php
-// app/Auth/Password/Actions/SendPasswordResetLinkAction.php
+// app/Modules/Auth/Password/Actions/SendPasswordResetLinkAction.php
 final class SendPasswordResetLinkAction extends BaseCommandAction
 {
     public function execute(string $email): ActionResponse;
@@ -130,7 +130,7 @@ final class SendPasswordResetLinkAction extends BaseCommandAction
     // Returns: ActionResponse::ok(Password::RESET_LINK_SENT)
 }
 
-// app/Auth/Password/Actions/ResetPasswordAction.php
+// app/Modules/Auth/Password/Actions/ResetPasswordAction.php
 final class ResetPasswordAction extends BaseCommandAction
 {
     public function execute(ResetPasswordData $data): ActionResponse;
@@ -142,7 +142,7 @@ final class ResetPasswordAction extends BaseCommandAction
 ### Livewire Components
 
 ```php
-// app/Auth/Password/Livewire/ForgotPassword.php
+// app/Modules/Auth/Password/Livewire/ForgotPassword.php
 class ForgotPassword extends BaseFormView
 {
     public string $email = '';
@@ -150,7 +150,7 @@ class ForgotPassword extends BaseFormView
     public function sendLink(SendPasswordResetLinkAction $action): void;
 }
 
-// app/Auth/Password/Livewire/ResetPassword.php
+// app/Modules/Auth/Password/Livewire/ResetPassword.php
 class ResetPassword extends BaseFormView
 {
     public string $token;
@@ -215,11 +215,11 @@ then wire Livewire components. Routes are `guest`-only middleware.
 
 ## Quick References
 
-- `app/Auth/Password/Actions/SendPasswordResetLinkAction.php` — Reset link dispatch (41 lines)
-- `app/Auth/Password/Actions/ResetPasswordAction.php` — Token-based reset (83 lines)
-- `app/Auth/Password/Livewire/ForgotPassword.php` — Forgot password page
-- `app/Auth/Password/Livewire/ResetPassword.php` — Reset password page
-- `app/Auth/Password/Livewire/Forms/ForgotPasswordForm.php` — Email validation
-- `app/Auth/Password/Livewire/Forms/ResetPasswordForm.php` — Token+password validation
+- `app/Modules/Auth/Password/Actions/SendPasswordResetLinkAction.php` — Reset link dispatch (41 lines)
+- `app/Modules/Auth/Password/Actions/ResetPasswordAction.php` — Token-based reset (83 lines)
+- `app/Modules/Auth/Password/Livewire/ForgotPassword.php` — Forgot password page
+- `app/Modules/Auth/Password/Livewire/ResetPassword.php` — Reset password page
+- `app/Modules/Auth/Password/Livewire/Forms/ForgotPasswordForm.php` — Email validation
+- `app/Modules/Auth/Password/Livewire/Forms/ResetPasswordForm.php` — Token+password validation
 - **Related spec:** [authentication.md](YB7RG-authentication.md) (YB7RG) — Login, activation, credential changes
 - **Related spec:** [password-confirmation.md](CQVSK-password-confirmation.md) (CQVSK) — Re-authentication gate

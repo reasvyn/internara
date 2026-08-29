@@ -255,7 +255,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 | NFR-M1 | Dashboard data aggregation must be delegated to Read Actions, never inline in Livewire |
 | NFR-M2 | Read Actions must extend `BaseReadAction` and follow the Action Triad pattern |
 | NFR-M3 | Cache keys must be declared in `config/cache-keys.php` — no ad-hoc key strings |
-| NFR-M4 | Each dashboard component must be a single-responsibility class under `app/User/Dashboard/Livewire/` |
+| NFR-M4 | Each dashboard component must be a single-responsibility class under `app/Modules/User/Dashboard/Livewire/` |
 
 ---
 
@@ -264,7 +264,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 ### 6.1 DashboardService
 
 ```php
-// app/User/Services/DashboardService.php (47 lines)
+// app/Modules/User/Services/DashboardService.php (47 lines)
 class DashboardService
 {
     public function getDashboardForUser(User $user): string;
@@ -276,7 +276,7 @@ class DashboardService
 ### 6.2 DashboardController
 
 ```php
-// app/User/Http/Controllers/DashboardController.php
+// app/Modules/User/Http/Controllers/DashboardController.php
 class DashboardController extends BaseController
 {
     public function __invoke(Request $request, DashboardService $dashboardService): RedirectResponse;
@@ -286,7 +286,7 @@ class DashboardController extends BaseController
 ### 6.3 UserDashboard (Base Component)
 
 ```php
-// app/User/Dashboard/Livewire/UserDashboard.php (31 lines)
+// app/Modules/User/Dashboard/Livewire/UserDashboard.php (31 lines)
 #[Layout('core::layouts.app')]
 class UserDashboard extends Component
 {
@@ -352,7 +352,7 @@ class SupervisorDashboard extends UserDashboard
 ### 6.5 Read Actions
 
 ```php
-// app/SysAdmin/Actions/ReadAdminDashboardAction.php (91 lines)
+// app/Modules/SysAdmin/Actions/ReadAdminDashboardAction.php (91 lines)
 final class ReadAdminDashboardAction extends BaseReadAction
 {
     public function execute(): array;
@@ -363,7 +363,7 @@ final class ReadAdminDashboardAction extends BaseReadAction
     //   Companies (1), Throughput (1), Audit (3)
 }
 
-// app/User/Dashboard/Actions/ReadStudentDashboardAction.php (102 lines)
+// app/Modules/User/Dashboard/Actions/ReadStudentDashboardAction.php (102 lines)
 final class ReadStudentDashboardAction extends BaseReadAction
 {
     public function execute(string $userId): array;
@@ -372,7 +372,7 @@ final class ReadStudentDashboardAction extends BaseReadAction
     // @throws RejectedException if user not found
 }
 
-// app/User/Dashboard/Actions/ReadTeacherDashboardAction.php (86 lines)
+// app/Modules/User/Dashboard/Actions/ReadTeacherDashboardAction.php (86 lines)
 final class ReadTeacherDashboardAction extends BaseReadAction
 {
     public function execute(): array;
@@ -381,7 +381,7 @@ final class ReadTeacherDashboardAction extends BaseReadAction
     // All scoped to user's supervised registrations via mentors relationship
 }
 
-// app/User/Dashboard/Actions/ReadSupervisorDashboardAction.php (73 lines)
+// app/Modules/User/Dashboard/Actions/ReadSupervisorDashboardAction.php (73 lines)
 final class ReadSupervisorDashboardAction extends BaseReadAction
 {
     public function execute(): array;
@@ -394,14 +394,14 @@ final class ReadSupervisorDashboardAction extends BaseReadAction
 ### 6.6 Cache Invalidation Listeners
 
 ```php
-// app/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php (18 lines)
+// app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php (18 lines)
 final class ClearDashboardCacheOnDepartmentChange
 {
     public function handle(DepartmentCreated|DepartmentDeleted|DepartmentUpdated $event): void;
     // Cache::forget(config('cache-keys.admin_dashboard_stats'))
 }
 
-// app/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php (19 lines)
+// app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php (19 lines)
 final class ClearDashboardCacheOnYearChange
 {
     public function handle(AcademicYearCreated|AcademicYearActivated|AcademicYearUpdated|AcademicYearDeleted $event): void;
@@ -570,19 +570,19 @@ After implementing this spec, role-based dashboards display relevant stats, quic
 
 ## Quick References
 
-- `app/User/Services/DashboardService.php` — role-based dashboard resolution (47 lines)
-- `app/User/Http/Controllers/DashboardController.php` — dashboard routing controller
-- `app/User/Dashboard/Livewire/UserDashboard.php` — base dashboard component (31 lines)
-- `app/User/Dashboard/Livewire/AdminDashboard.php` — admin dashboard with readiness checks
-- `app/User/Dashboard/Livewire/StudentDashboard.php` — student dashboard
-- `app/User/Dashboard/Livewire/TeacherDashboard.php` — teacher dashboard
-- `app/User/Dashboard/Livewire/SupervisorDashboard.php` — supervisor dashboard
-- `app/SysAdmin/Actions/ReadAdminDashboardAction.php` — admin data aggregation (91 lines)
-- `app/User/Dashboard/Actions/ReadStudentDashboardAction.php` — student aggregation (102 lines)
-- `app/User/Dashboard/Actions/ReadTeacherDashboardAction.php` — teacher aggregation (86 lines)
-- `app/User/Dashboard/Actions/ReadSupervisorDashboardAction.php` — supervisor aggregation (73 lines)
-- `app/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — dept invalidation
-- `app/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` — year invalidation
+- `app/Modules/User/Services/DashboardService.php` — role-based dashboard resolution (47 lines)
+- `app/Modules/User/Http/Controllers/DashboardController.php` — dashboard routing controller
+- `app/Modules/User/Dashboard/Livewire/UserDashboard.php` — base dashboard component (31 lines)
+- `app/Modules/User/Dashboard/Livewire/AdminDashboard.php` — admin dashboard with readiness checks
+- `app/Modules/User/Dashboard/Livewire/StudentDashboard.php` — student dashboard
+- `app/Modules/User/Dashboard/Livewire/TeacherDashboard.php` — teacher dashboard
+- `app/Modules/User/Dashboard/Livewire/SupervisorDashboard.php` — supervisor dashboard
+- `app/Modules/SysAdmin/Actions/ReadAdminDashboardAction.php` — admin data aggregation (91 lines)
+- `app/Modules/User/Dashboard/Actions/ReadStudentDashboardAction.php` — student aggregation (102 lines)
+- `app/Modules/User/Dashboard/Actions/ReadTeacherDashboardAction.php` — teacher aggregation (86 lines)
+- `app/Modules/User/Dashboard/Actions/ReadSupervisorDashboardAction.php` — supervisor aggregation (73 lines)
+- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — dept invalidation
+- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` — year invalidation
 - `config/cache-keys.php` — centralized cache key declarations
 - `routes/web/user.php` — all dashboard route definitions
 - **Related spec:** [authentication.md](YB7RG-authentication.md) — Login, logout, throttling

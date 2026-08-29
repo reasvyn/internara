@@ -227,10 +227,10 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 
 ## Quick References
 
-- `app/SysAdmin/Backup/` — Backup management Livewire components
-- `app/SysAdmin/Console/Commands/SystemBackupCommand.php` — Backup CLI command
-- `app/Auth/Console/Commands/AdminRecoverCommand.php` — Recovery CLI command
-- `app/Auth/Console/Commands/AdminCreateCommand.php` — Admin creation CLI
+- `app/Modules/SysAdmin/Backup/` — Backup management Livewire components
+- `app/Modules/SysAdmin/Console/Commands/SystemBackupCommand.php` — Backup CLI command
+- `app/Modules/Auth/Console/Commands/AdminRecoverCommand.php` — Recovery CLI command
+- `app/Modules/Auth/Console/Commands/AdminCreateCommand.php` — Admin creation CLI
 - `storage/app/private/.recovery-key` — Recovery key file
 - `storage/app/backup/` — Backup files
 - [Setup Wizard](setup-wizard.md) — Initial admin creation

@@ -352,7 +352,7 @@ never do.
 ### 6.1 Backup Model
 
 ```php
-// app/SysAdmin/Backups/Models/Backup.php (56 lines)
+// app/Modules/SysAdmin/Backups/Models/Backup.php (56 lines)
 #[Fillable(['type', 'file_path', 'file_size', 'status', 'metadata', 'error_output', 'created_by', 'started_at', 'completed_at'])]
 class Backup extends BaseModel
 {
@@ -385,7 +385,7 @@ Schema::create('backups', function (Blueprint $table) {
 ### 6.3 BackupStatus Enum
 
 ```php
-// app/SysAdmin/Backups/Enums/BackupStatus.php (49 lines)
+// app/Modules/SysAdmin/Backups/Enums/BackupStatus.php (49 lines)
 enum BackupStatus: string implements StatusEnum
 {
     case PENDING   = 'pending';
@@ -404,7 +404,7 @@ enum BackupStatus: string implements StatusEnum
 ### 6.4 BackupType Enum
 
 ```php
-// app/SysAdmin/Backups/Enums/BackupType.php (19 lines)
+// app/Modules/SysAdmin/Backups/Enums/BackupType.php (19 lines)
 enum BackupType: string implements LabelEnum
 {
     case DATABASE = 'database';
@@ -418,7 +418,7 @@ enum BackupType: string implements LabelEnum
 ### 6.5 BackupState Entity
 
 ```php
-// app/SysAdmin/Backups/Entities/BackupState.php (62 lines)
+// app/Modules/SysAdmin/Backups/Entities/BackupState.php (62 lines)
 final readonly class BackupState extends BaseEntity
 {
     public function __construct(
@@ -440,7 +440,7 @@ final readonly class BackupState extends BaseEntity
 ### 6.6 CreateBackupAction
 
 ```php
-// app/SysAdmin/Backups/Actions/CreateBackupAction.php (71 lines)
+// app/Modules/SysAdmin/Backups/Actions/CreateBackupAction.php (71 lines)
 final class CreateBackupAction extends BaseCommandAction
 {
     public function __construct(protected readonly BackupRunner $runner) {}
@@ -453,7 +453,7 @@ final class CreateBackupAction extends BaseCommandAction
 ### 6.7 DeleteBackupAction
 
 ```php
-// app/SysAdmin/Backups/Actions/DeleteBackupAction.php (35 lines)
+// app/Modules/SysAdmin/Backups/Actions/DeleteBackupAction.php (35 lines)
 final class DeleteBackupAction extends BaseCommandAction
 {
     public function __construct(protected readonly BackupRunner $runner) {}
@@ -465,7 +465,7 @@ final class DeleteBackupAction extends BaseCommandAction
 ### 6.8 BackupManager History Query
 
 ```php
-// app/SysAdmin/Backups/Livewire/BackupManager.php
+// app/Modules/SysAdmin/Backups/Livewire/BackupManager.php
 final class BackupManager extends BaseRecordManager
 {
     protected function query(): Builder
@@ -485,7 +485,7 @@ final class BackupManager extends BaseRecordManager
 ### 6.9 ReadBackupStatsAction
 
 ```php
-// app/SysAdmin/Backups/Actions/ReadBackupStatsAction.php (22 lines)
+// app/Modules/SysAdmin/Backups/Actions/ReadBackupStatsAction.php (22 lines)
 final class ReadBackupStatsAction extends BaseReadAction
 {
     public function execute(): array;
@@ -496,7 +496,7 @@ final class ReadBackupStatsAction extends BaseReadAction
 ### 6.10 CleanupBackupsAction
 
 ```php
-// app/SysAdmin/Backups/Actions/CleanupBackupsAction.php (44 lines)
+// app/Modules/SysAdmin/Backups/Actions/CleanupBackupsAction.php (44 lines)
 final class CleanupBackupsAction extends BaseCommandAction
 {
     public function __construct(protected readonly BackupRunner $runner) {}
@@ -508,7 +508,7 @@ final class CleanupBackupsAction extends BaseCommandAction
 ### 6.11 BackupRunner Service
 
 ```php
-// app/SysAdmin/Backups/Services/BackupRunner.php (200 lines)
+// app/Modules/SysAdmin/Backups/Services/BackupRunner.php (200 lines)
 class BackupRunner
 {
     public function runDatabaseDump(): string;   // Returns file path
@@ -523,7 +523,7 @@ class BackupRunner
 ### 6.12 SystemBackupCommand
 
 ```php
-// app/SysAdmin/Backups/Console/Commands/SystemBackupCommand.php (63 lines)
+// app/Modules/SysAdmin/Backups/Console/Commands/SystemBackupCommand.php (63 lines)
 final class SystemBackupCommand extends Command
 {
     protected $signature = 'system:backup
@@ -537,7 +537,7 @@ final class SystemBackupCommand extends Command
 ### 6.13 BackupManager Livewire Component
 
 ```php
-// app/SysAdmin/Backups/Livewire/BackupManager.php (111 lines)
+// app/Modules/SysAdmin/Backups/Livewire/BackupManager.php (111 lines)
 final class BackupManager extends BaseRecordManager
 {
     public bool $showConfirmDelete = false;
@@ -561,7 +561,7 @@ final class BackupManager extends BaseRecordManager
 ### 6.14 BackupPolicy
 
 ```php
-// app/SysAdmin/Backups/Policies/BackupPolicy.php (32 lines)
+// app/Modules/SysAdmin/Backups/Policies/BackupPolicy.php (32 lines)
 class BackupPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool;   // isAdmin
@@ -574,14 +574,14 @@ class BackupPolicy extends BasePolicy
 ### 6.15 Events
 
 ```php
-// app/SysAdmin/Backups/Events/BackupCompleted.php (18 lines)
+// app/Modules/SysAdmin/Backups/Events/BackupCompleted.php (18 lines)
 final class BackupCompleted extends BaseEvent
 {
     public function __construct(public readonly Backup $backup) {}
     public function eventName(): string { return 'backup.completed'; }
 }
 
-// app/SysAdmin/Backups/Events/BackupFailed.php (18 lines)
+// app/Modules/SysAdmin/Backups/Events/BackupFailed.php (18 lines)
 final class BackupFailed extends BaseEvent
 {
     public function __construct(public readonly Backup $backup) {}
@@ -592,7 +592,7 @@ final class BackupFailed extends BaseEvent
 ### 6.16 SendBackupFailedNotification Listener
 
 ```php
-// app/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php (21 lines)
+// app/Modules/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php (21 lines)
 final class SendBackupFailedNotification
 {
     public function handle(BackupFailed $event): void;
@@ -603,7 +603,7 @@ final class SendBackupFailedNotification
 ### 6.17 BackupFailedNotification
 
 ```php
-// app/SysAdmin/Backups/Notifications/BackupFailedNotification.php (34 lines)
+// app/Modules/SysAdmin/Backups/Notifications/BackupFailedNotification.php (34 lines)
 final class BackupFailedNotification extends Notification
 {
     use Queueable;
@@ -766,23 +766,23 @@ After implementing this spec, the backup system is fully operational: admins can
 
 ## Quick References
 
-- `app/SysAdmin/Backups/Models/Backup.php` — Eloquent model with `#[Fillable]` and `asBackupState()` bridge (56 lines)
-- `app/SysAdmin/Backups/Entities/BackupState.php` — Immutable entity for state logic: deletable, formatted size, type (62 lines)
-- `app/SysAdmin/Backups/Enums/BackupStatus.php` — Status enum: PENDING, RUNNING, COMPLETED, FAILED with transitions (49 lines)
-- `app/SysAdmin/Backups/Enums/BackupType.php` — Type enum: DATABASE, STORAGE, BOTH (19 lines)
-- `app/SysAdmin/Backups/Actions/CreateBackupAction.php` — Backup lifecycle orchestration with transaction and events (71 lines)
-- `app/SysAdmin/Backups/Actions/DeleteBackupAction.php` — Deletability check, file removal, record deletion (35 lines)
-- `app/SysAdmin/Backups/Actions/ReadBackupHistoryAction.php` — Paginated backup history with type/status filters (24 lines)
-- `app/SysAdmin/Backups/Actions/ReadBackupStatsAction.php` — Aggregate stats: total, completed, failed, latest (22 lines)
-- `app/SysAdmin/Backups/Actions/CleanupBackupsAction.php` — Retention-based cleanup preserving failed backups (44 lines)
-- `app/SysAdmin/Backups/Services/BackupRunner.php` — Multi-driver dump execution with secure credential handling (200 lines)
-- `app/SysAdmin/Backups/Console/Commands/SystemBackupCommand.php` — CLI `system:backup` with --type, --force, --cleanup (63 lines)
-- `app/SysAdmin/Backups/Livewire/BackupManager.php` — Admin UI: stats, history table, create/delete actions (111 lines)
-- `app/SysAdmin/Backups/Policies/BackupPolicy.php` — Admin-only authorization for all backup operations (32 lines)
-- `app/SysAdmin/Backups/Events/BackupCompleted.php` — Event dispatched on successful backup (18 lines)
-- `app/SysAdmin/Backups/Events/BackupFailed.php` — Event dispatched on failed backup (18 lines)
-- `app/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — Notifies super admins on failure (21 lines)
-- `app/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — Database channel notification with error details (34 lines)
+- `app/Modules/SysAdmin/Backups/Models/Backup.php` — Eloquent model with `#[Fillable]` and `asBackupState()` bridge (56 lines)
+- `app/Modules/SysAdmin/Backups/Entities/BackupState.php` — Immutable entity for state logic: deletable, formatted size, type (62 lines)
+- `app/Modules/SysAdmin/Backups/Enums/BackupStatus.php` — Status enum: PENDING, RUNNING, COMPLETED, FAILED with transitions (49 lines)
+- `app/Modules/SysAdmin/Backups/Enums/BackupType.php` — Type enum: DATABASE, STORAGE, BOTH (19 lines)
+- `app/Modules/SysAdmin/Backups/Actions/CreateBackupAction.php` — Backup lifecycle orchestration with transaction and events (71 lines)
+- `app/Modules/SysAdmin/Backups/Actions/DeleteBackupAction.php` — Deletability check, file removal, record deletion (35 lines)
+- `app/Modules/SysAdmin/Backups/Actions/ReadBackupHistoryAction.php` — Paginated backup history with type/status filters (24 lines)
+- `app/Modules/SysAdmin/Backups/Actions/ReadBackupStatsAction.php` — Aggregate stats: total, completed, failed, latest (22 lines)
+- `app/Modules/SysAdmin/Backups/Actions/CleanupBackupsAction.php` — Retention-based cleanup preserving failed backups (44 lines)
+- `app/Modules/SysAdmin/Backups/Services/BackupRunner.php` — Multi-driver dump execution with secure credential handling (200 lines)
+- `app/Modules/SysAdmin/Backups/Console/Commands/SystemBackupCommand.php` — CLI `system:backup` with --type, --force, --cleanup (63 lines)
+- `app/Modules/SysAdmin/Backups/Livewire/BackupManager.php` — Admin UI: stats, history table, create/delete actions (111 lines)
+- `app/Modules/SysAdmin/Backups/Policies/BackupPolicy.php` — Admin-only authorization for all backup operations (32 lines)
+- `app/Modules/SysAdmin/Backups/Events/BackupCompleted.php` — Event dispatched on successful backup (18 lines)
+- `app/Modules/SysAdmin/Backups/Events/BackupFailed.php` — Event dispatched on failed backup (18 lines)
+- `app/Modules/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — Notifies super admins on failure (21 lines)
+- `app/Modules/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — Database channel notification with error details (34 lines)
 - `resources/views/sysadmin/backups/backup-manager.blade.php` — Backup manager Livewire view with TallstackUI `x-ts-*` (115 lines)
 - `resources/views/sysadmin/backups/components/backup-guide.blade.php` — Help guide modal with create/download/restore info (57 lines)
 - `database/migrations/2026_01_01_000006_create_backups_table.php` — Backups table schema (35 lines)

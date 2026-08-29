@@ -158,7 +158,7 @@ setting a new one.
 ### Actions
 
 ```php
-// app/User/Profile/Actions/UpdateProfileAction.php
+// app/Modules/User/Profile/Actions/UpdateProfileAction.php
 final class UpdateProfileAction extends BaseCommandAction
 {
     public function execute(
@@ -172,7 +172,7 @@ final class UpdateProfileAction extends BaseCommandAction
     // Dispatches ProfileUpdated event
 }
 
-// app/User/Profile/Actions/ReadProfileFormAction.php
+// app/Modules/User/Profile/Actions/ReadProfileFormAction.php
 final class ReadProfileFormAction extends BaseReadAction
 {
     public function execute(User $user): array;
@@ -183,7 +183,7 @@ final class ReadProfileFormAction extends BaseReadAction
 ### Livewire Component
 
 ```php
-// app/User/Profile/Livewire/ProfileEditor.php
+// app/Modules/User/Profile/Livewire/ProfileEditor.php
 class ProfileEditor extends BaseFormView
 {
     public ProfileForm $profileForm;
@@ -204,7 +204,7 @@ class ProfileEditor extends BaseFormView
 ### Models
 
 ```php
-// app/User/Profile/Models/Profile.php
+// app/Modules/User/Profile/Models/Profile.php
 class Profile extends BaseModel
 {
     // UUID primary key, belongsTo(User), belongsTo(Department), belongsTo(Company)
@@ -222,7 +222,7 @@ class Profile extends BaseModel
 ### Events & Listeners
 
 ```php
-// app/User/Profile/Events/ProfileUpdated.php
+// app/Modules/User/Profile/Events/ProfileUpdated.php
 class ProfileUpdated extends BaseEvent
 {
     public function __construct(
@@ -233,7 +233,7 @@ class ProfileUpdated extends BaseEvent
     public function eventName(): string; // 'profile.updated'
 }
 
-// app/User/Profile/Listeners/SendProfileChangedMail.php
+// app/Modules/User/Profile/Listeners/SendProfileChangedMail.php
 class SendProfileChangedMail implements ShouldQueue
 {
     // Sends CredentialChangedNotification when email or username changes
@@ -243,7 +243,7 @@ class SendProfileChangedMail implements ShouldQueue
 ### Policy
 
 ```php
-// app/User/Profile/Policies/ProfilePolicy.php
+// app/Modules/User/Profile/Policies/ProfilePolicy.php
 class ProfilePolicy extends BasePolicy
 {
     // viewAny: admins only
@@ -326,15 +326,15 @@ migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
 
 ## Quick References
 
-- `app/User/Profile/Actions/UpdateProfileAction.php` — Profile mutation (119 lines)
-- `app/User/Profile/Actions/ReadProfileFormAction.php` — Form field determination (44 lines)
-- `app/User/Profile/Livewire/ProfileEditor.php` — Profile page component
-- `app/User/Profile/Livewire/Forms/ProfileForm.php` — Profile form binding
-- `app/User/Profile/Livewire/Forms/PasswordForm.php` — Password form binding
-- `app/User/Profile/Models/Profile.php` — Profile model (UUID PK)
-- `app/User/Profile/Events/ProfileUpdated.php` — Profile change event
-- `app/User/Profile/Listeners/SendProfileChangedMail.php` — Credential change notification
-- `app/User/Profile/Policies/ProfilePolicy.php` — Authorization policy
+- `app/Modules/User/Profile/Actions/UpdateProfileAction.php` — Profile mutation (119 lines)
+- `app/Modules/User/Profile/Actions/ReadProfileFormAction.php` — Form field determination (44 lines)
+- `app/Modules/User/Profile/Livewire/ProfileEditor.php` — Profile page component
+- `app/Modules/User/Profile/Livewire/Forms/ProfileForm.php` — Profile form binding
+- `app/Modules/User/Profile/Livewire/Forms/PasswordForm.php` — Password form binding
+- `app/Modules/User/Profile/Models/Profile.php` — Profile model (UUID PK)
+- `app/Modules/User/Profile/Events/ProfileUpdated.php` — Profile change event
+- `app/Modules/User/Profile/Listeners/SendProfileChangedMail.php` — Credential change notification
+- `app/Modules/User/Profile/Policies/ProfilePolicy.php` — Authorization policy
 - `resources/views/user/profile/profile-editor.blade.php` — Profile page view
 - `resources/views/user/profile/components/profile-guide.blade.php` — Help modal
 - `resources/views/ui/widgets/profile-summary.blade.php` — Dashboard widget

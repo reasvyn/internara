@@ -483,11 +483,11 @@ After implementing this spec, the system has emergency super admin recovery via 
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
 - `docs/specs/authentication.md` — Login, password reset, session management
 - `docs/guides/account-recovery.md` — All three recovery mechanisms
-- `app/SysAdmin/Console/Commands/RecoverAdminCommand.php` — Main recovery command
-- `app/SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` — Key display command
-- `app/SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` — Path display command
-- `app/Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` — Password reset action
-- `app/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP mail notification
-- `app/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — Key file reader
-- `app/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — Key file writer
-- `app/Setup/Entities/SetupEntity.php` — Setup state entity (recovery key hash)
+- `app/Modules/SysAdmin/Console/Commands/RecoverAdminCommand.php` — Main recovery command
+- `app/Modules/SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` — Key display command
+- `app/Modules/SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` — Path display command
+- `app/Modules/Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` — Password reset action
+- `app/Modules/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP mail notification
+- `app/Modules/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — Key file reader
+- `app/Modules/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — Key file writer
+- `app/Modules/Setup/Entities/SetupEntity.php` — Setup state entity (recovery key hash)

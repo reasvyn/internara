@@ -200,7 +200,7 @@ Failed jobs older than 7 days are automatically pruned by the scheduler via `que
 - `config/queue.php` — queue connection configuration
 - `config/database.php` — Redis connection settings
 - `database/migrations/` — jobs and failed_jobs table migrations
-- `app/Core/Contracts/SendsNotifications.php` — notification contract
+- `app/Modules/Core/Contracts/SendsNotifications.php` — notification contract
 - [Deployment](deployment.md) — Supervisor configuration (dual pipelines)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 - [Notification](notification.md) — notification channels and delivery

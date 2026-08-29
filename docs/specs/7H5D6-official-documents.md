@@ -263,7 +263,7 @@ accreditation visits or incident investigations.
 ### OfficialDocumentType Enum
 
 ```php
-// app/Document/Enums/OfficialDocumentType.php
+// app/Modules/Document/Enums/OfficialDocumentType.php
 enum OfficialDocumentType: string implements LabelEnum
 {
     // Pre-PKL
@@ -301,7 +301,7 @@ enum OfficialDocumentType: string implements LabelEnum
 ### DocumentIssuance Model
 
 ```php
-// app/Document/Models/DocumentIssuance.php
+// app/Modules/Document/Models/DocumentIssuance.php
 #[Fillable([
     'official_document_type',
     'registration_id',

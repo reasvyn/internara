@@ -29,9 +29,9 @@ wrapper around the **DOMPDF v3.1.6** HTML-to-PDF renderer.
 
 ## How Internara Uses It
 
-- Certificate rendering: `app/Certification/Certificate/Services/CertificateRenderer.php`,
+- Certificate rendering: `app/Modules/Certification/Certificate/Services/CertificateRenderer.php`,
   download endpoint in the Certification module controller
-- Official document rendering: `app/Document/Services/DocumentRenderer.php` +
+- Official document rendering: `app/Modules/Document/Services/DocumentRenderer.php` +
   `RenderDocumentAction`
 - Global options in `config/dompdf.php`; template conventions in the `dompdf-development` skill
 - Boundary rule: Reports module produces grade cards only — thesis content belongs to Assignment

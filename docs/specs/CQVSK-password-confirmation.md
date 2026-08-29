@@ -96,7 +96,7 @@ timestamp must be refreshed each time the user confirms.
 ### Actions
 
 ```php
-// app/Auth/Password/Actions/ConfirmPasswordAction.php
+// app/Modules/Auth/Password/Actions/ConfirmPasswordAction.php
 final class ConfirmPasswordAction extends BaseCommandAction
 {
     public function execute(User $user, string $password): ActionResponse;
@@ -109,7 +109,7 @@ final class ConfirmPasswordAction extends BaseCommandAction
 ### Livewire Component
 
 ```php
-// app/Auth/Password/Livewire/ConfirmPassword.php
+// app/Modules/Auth/Password/Livewire/ConfirmPassword.php
 class ConfirmPassword extends BaseFormView
 {
     public string $password = '';
@@ -173,8 +173,8 @@ Single action + single Livewire component. Wire `password.confirm` middleware in
 
 ## Quick References
 
-- `app/Auth/Password/Actions/ConfirmPasswordAction.php` — Password verification (30 lines)
-- `app/Auth/Password/Livewire/ConfirmPassword.php` — Confirmation page
-- `app/Auth/Password/Livewire/Forms/ConfirmPasswordForm.php` — Validation
+- `app/Modules/Auth/Password/Actions/ConfirmPasswordAction.php` — Password verification (30 lines)
+- `app/Modules/Auth/Password/Livewire/ConfirmPassword.php` — Confirmation page
+- `app/Modules/Auth/Password/Livewire/Forms/ConfirmPasswordForm.php` — Validation
 - **Related spec:** [authentication.md](YB7RG-authentication.md) (YB7RG) — Login, activation
 - **Related spec:** [password-reset.md](D9TKW-password-reset.md) (D9TKW) — Forgot/reset flow

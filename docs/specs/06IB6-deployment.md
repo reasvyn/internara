@@ -300,7 +300,7 @@ DEPLOY_PROFILE=auto|shared-hosting|vps-docker   # default: auto
 ### 6.3 CLI Contracts
 
 ```php
-// app/Core/.../Console/Commands/DeployDetectCommand.php
+// app/Modules/Core/.../Console/Commands/DeployDetectCommand.php
 class DeployDetectCommand extends Command
 {
     protected $signature = 'deploy:detect
@@ -310,7 +310,7 @@ class DeployDetectCommand extends Command
     // Output: recommended profile + per-probe status (pass/fail)
 }
 
-// app/Core/.../Console/Commands/DeployConfigureCommand.php
+// app/Modules/Core/.../Console/Commands/DeployConfigureCommand.php
 class DeployConfigureCommand extends Command
 {
     protected $signature = 'deploy:configure
@@ -484,5 +484,5 @@ the two-profile model and verify both paths end-to-end with `setup:install` + `s
 - `docs/guides/infra/deployment.md` — canonical deployment guide (to be aligned)
 - `docs/guides/infra/ci-cd.md` — CI/CD pipeline and artifact requirements
 - `routes/web/sysadmin.php` — `/cron/{secret}` webhook scheduler route
-- `app/SysAdmin/Http/Controllers/CronController.php` — webhook cron validation (existing)
+- `app/Modules/SysAdmin/Http/Controllers/CronController.php` — webhook cron validation (existing)
 - **Related specs:** [system-requirements.md](J68GZ-system-requirements.md) (J68GZ), [installation.md](8NZAU-installation.md) (8NZAU), [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) (8FVZA), [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ)

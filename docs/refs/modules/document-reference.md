@@ -139,7 +139,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `OfficialDocument`, `Handbook`
-- **Business Logic**: `app/Document/`
+- **Business Logic**: `app/Modules/Document/`
 - **Routing**: `routes/web/document.php`
 - **Views**: `resources/views/document/`
 - **Testing**: `tests/Document/`

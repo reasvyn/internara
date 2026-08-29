@@ -30,7 +30,7 @@ UI has no submodules. Code is organized by presentation layer:
 **Widgets** (`resources/views/ui/widgets` → `x-ui::widgets.*`):
 `stat-card.blade.php`, `action-button.blade.php`, `empty-state.blade.php`, `profile-summary.blade.php`, `quick-link.blade.php`.
 
-**PHP support** (`app/UI`): `Support/UiHelper.php` (semantic color list, `isUiView()`), `View/Components` (future typed components). No business code.
+**PHP support** (`app/Modules/UI`): `Support/UiHelper.php` (semantic color list, `isUiView()`), `View/Components` (future typed components). No business code.
 
 ## Key Concepts
 
@@ -58,7 +58,7 @@ Components accept `items`, `links`, `breadcrumbs`, `title`, `actions` via `@prop
 
 - **View namespace:** `resources/views/ui` registered via `ModuleService::registerBladeNamespaces()` as `x-ui::` / `ui::` (from `config/module.php` `UI` entry)
 - **Livewire layout:** `config/livewire.php` `component_layout = 'ui::layouts.app'`; 34 Livewire components use `#[Layout('ui::layouts.app')]`
-- **Discovery:** `app/UI` is a presentation module (no `Actions`/`Models`); `ModuleManager::viewsPath()` = `resource_path('views')`, `viewsExcludeDirectories` excludes `layouts` top-level but not `ui/*` subdirs, so `ui` is registered correctly
+- **Discovery:** `app/Modules/UI` is a presentation module (no `Actions`/`Models`); `ModuleManager::viewsPath()` = `resource_path('views')`, `viewsExcludeDirectories` excludes `layouts` top-level but not `ui/*` subdirs, so `ui` is registered correctly
 - **Styling:** Tailwind v4 `@theme` tokens injected in `layouts/base.blade.php` via `Theme::cssVariables()` (from `Settings/Theme`); dark mode via `data-theme` cookie + `tallstackui_darkTheme()`
 
 ## Related Docs

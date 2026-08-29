@@ -180,7 +180,7 @@ is unavailable or compromised.
 **Preconditions:** Student account exists with `PROVISIONED` status; activation token issued
 **Flow:**
 1. Student receives activation code (email or manual distribution)
-2. Student navigates to activation form (Livewire component in `app/Auth/Account/Livewire/`)
+2. Student navigates to activation form (Livewire component in `app/Modules/Auth/Account/Livewire/`)
 3. Student enters activation code and desired password
 4. `ActivateAccountAction` receives user, code, and password
 5. `AccessToken::verify($user, 'activation', $code)` validates the token (not revoked, not expired, hash matches)
@@ -363,7 +363,7 @@ is unavailable or compromised.
 ### 6.1 LoginData DTO
 
 ```php
-// app/Auth/Login/Data/LoginData.php
+// app/Modules/Auth/Login/Data/LoginData.php
 final readonly class LoginData extends BaseData
 {
     public function __construct(
@@ -377,7 +377,7 @@ final readonly class LoginData extends BaseData
 ### 6.2 LoginAction
 
 ```php
-// app/Auth/Login/Actions/LoginAction.php
+// app/Modules/Auth/Login/Actions/LoginAction.php
 final class LoginAction extends BaseCommandAction
 {
     public function execute(LoginData $data): Authenticatable;
@@ -396,7 +396,7 @@ final class LoginAction extends BaseCommandAction
 ### 6.3 AuthThrottleMiddleware
 
 ```php
-// app/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php
+// app/Modules/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php
 // HTTP layer: 5 login attempts per 60 seconds per IP
 // General auth: 30 attempts per 60 seconds
 // Config keys: config('auth.throttle.login_max_attempts'), config('auth.throttle.login_decay_seconds')
@@ -491,7 +491,7 @@ return [
 ### 6.11 AccessToken Model
 
 ```php
-// app/Auth/AccessTokens/Models/AccessToken.php
+// app/Modules/Auth/AccessTokens/Models/AccessToken.php
 class AccessToken extends BaseModel {
     // Types: activation (30d), recovery (7d), default (1d)
     public static function generateFor(User $user, string $type, array $options = []): array;
@@ -506,7 +506,7 @@ class AccessToken extends BaseModel {
 ### 6.12 ActivateAccountAction
 
 ```php
-// app/Auth/Account/Actions/ActivateAccountAction.php
+// app/Modules/Auth/Account/Actions/ActivateAccountAction.php
 final class ActivateAccountAction extends BaseCommandAction {
     public function execute(ActivateAccountData $data): User;
     // Pipeline: resolve user by ID → verify token → revoke → set password → log
@@ -671,28 +671,28 @@ After implementing this spec, the system has login, account activation (token ve
 
 ## Quick References
 
-- `app/Auth/Login/Actions/LoginAction.php` — login pipeline with dual throttling
-- `app/Auth/Login/Data/LoginData.php` — login DTO
-- `app/Auth/Login/Events/LoginFailed.php` — failed login event
-- `app/Auth/Login/Events/LoginSucceeded.php` — successful login event
-- `app/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — HTTP rate limiting
-- `app/Auth/Login/Listeners/LogLoginFailed.php` — SmartLogger integration
-- `app/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome
-- `app/Auth/Login/Livewire/Login.php` — login Livewire component
-- `app/Auth/Login/Livewire/Forms/LoginForm.php` — login form validation
-- `app/User/Http/Controllers/AuthController.php` — logout handler
-- `app/User/Enums/AccountStatus.php` — 8-state status machine with transition guards
+- `app/Modules/Auth/Login/Actions/LoginAction.php` — login pipeline with dual throttling
+- `app/Modules/Auth/Login/Data/LoginData.php` — login DTO
+- `app/Modules/Auth/Login/Events/LoginFailed.php` — failed login event
+- `app/Modules/Auth/Login/Events/LoginSucceeded.php` — successful login event
+- `app/Modules/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — HTTP rate limiting
+- `app/Modules/Auth/Login/Listeners/LogLoginFailed.php` — SmartLogger integration
+- `app/Modules/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome
+- `app/Modules/Auth/Login/Livewire/Login.php` — login Livewire component
+- `app/Modules/Auth/Login/Livewire/Forms/LoginForm.php` — login form validation
+- `app/Modules/User/Http/Controllers/AuthController.php` — logout handler
+- `app/Modules/User/Enums/AccountStatus.php` — 8-state status machine with transition guards
 - `config/auth.php` — throttle configuration
 - `routes/web/auth.php` — login/logout routes
 - `docs/refs/modules/auth.md` — Auth module overview
 - `docs/refs/modules/auth-reference.md` — Auth module technical reference
-- `app/Auth/AccessTokens/Models/AccessToken.php` — token lifecycle (generate, verify, revoke)
-- `app/Auth/AccessTokens/Entities/AccessTokenState.php` — token validity state
-- `app/Auth/AccessTokens/Entities/ActivationToken.php` — activation token value object
-- `app/Auth/Account/Actions/ActivateAccountAction.php` — account activation pipeline
-- `app/Auth/Account/Entities/AccountActivation.php` — activation state entity
-- `app/Auth/Password/Events/PasswordUpdated.php` — credential change event
-- `app/Auth/Password/Listeners/SendPasswordChangedMail.php` — email notification on password change
-- `app/Auth/Password/Listeners/InvalidateSessionOnPasswordChange.php` — in-app notification on password change
-- `app/Auth/Notifications/CredentialChangedNotification.php` — credential change mail notification
+- `app/Modules/Auth/AccessTokens/Models/AccessToken.php` — token lifecycle (generate, verify, revoke)
+- `app/Modules/Auth/AccessTokens/Entities/AccessTokenState.php` — token validity state
+- `app/Modules/Auth/AccessTokens/Entities/ActivationToken.php` — activation token value object
+- `app/Modules/Auth/Account/Actions/ActivateAccountAction.php` — account activation pipeline
+- `app/Modules/Auth/Account/Entities/AccountActivation.php` — activation state entity
+- `app/Modules/Auth/Password/Events/PasswordUpdated.php` — credential change event
+- `app/Modules/Auth/Password/Listeners/SendPasswordChangedMail.php` — email notification on password change
+- `app/Modules/Auth/Password/Listeners/InvalidateSessionOnPasswordChange.php` — in-app notification on password change
+- `app/Modules/Auth/Notifications/CredentialChangedNotification.php` — credential change mail notification
 - **Related specs:** [registration.md](MBB5R-registration.md) — account provisioning and registration

@@ -262,8 +262,8 @@ After implementing this spec, the system can generate PDFs via DomPDF for certif
 ## Quick References
 
 - `config/dompdf.php` — Dompdf configuration
-- `app/Certification/Certificate/Services/CertificateRenderer.php` — Certificate PDF renderer
-- `app/Document/Services/DocumentRenderer.php` — General document renderer
+- `app/Modules/Certification/Certificate/Services/CertificateRenderer.php` — Certificate PDF renderer
+- `app/Modules/Document/Services/DocumentRenderer.php` — General document renderer
 - `resources/views/pdf/` — PDF Blade templates
 - `docs/specs/certification.md` — Certificate issuance workflow
 - `docs/specs/document-templates.md` — Document template management

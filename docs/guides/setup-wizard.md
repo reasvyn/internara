@@ -119,10 +119,10 @@ See [Backup & Recovery](backup-recovery.md) for admin account CLI commands.
 
 ## Quick References
 
-- `app/Setup/Livewire/SetupWizard.php` — Wizard Livewire component
-- `app/Setup/Actions/CompleteWizardAction.php` — Finalization action
-- `app/Setup/Services/SignedUrlGenerator.php` — Signed URL generation
-- `app/Setup/Enums/SetupState.php` — Wizard state enum
+- `app/Modules/Setup/Livewire/SetupWizard.php` — Wizard Livewire component
+- `app/Modules/Setup/Actions/CompleteWizardAction.php` — Finalization action
+- `app/Modules/Setup/Services/SignedUrlGenerator.php` — Signed URL generation
+- `app/Modules/Setup/Enums/SetupState.php` — Wizard state enum
 - [Installation](installation.md) — Prerequisites and CLI provisioning
 - [Post-Setup](post-setup.md) — Configuration after wizard
 - [Backup & Recovery](backup-recovery.md) — Recovery key lifecycle

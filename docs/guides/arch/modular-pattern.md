@@ -22,7 +22,7 @@ standards so the codebase reads like a textbook implementation of well-known pat
 | **Clean Architecture** | Source dependencies point inward; Core depends on nothing business (Dependency Rule) | §1.2 4-Layer Architecture; §1.6 SRP & Modularity Rules |
 | **Hexagonal Architecture** | Core logic isolated from external concerns via ports & adapters | Entities (pure) + Actions (application services) + Livewire/Controllers (adapters) |
 | **SOLID** | Single Responsibility, Open/Closed, Liskov, Interface Segregation, Dependency Inversion | §1.6 (SRP); Actions/Entities/Models/DTOs (one reason to change) |
-| **DRY** | Reuse/extract instead of copy-paste | §21 Workflow Patterns; shared `app/Core/Support/`, `Base*` classes |
+| **DRY** | Reuse/extract instead of copy-paste | §21 Workflow Patterns; shared `app/Modules/Core/Support/`, `Base*` classes |
 
 **References**
 - [Modular Monolith](https://microservices.io/patterns/monolithic.html) — pattern overview; also see `docs/architecture.md` §1.1
