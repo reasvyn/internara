@@ -52,6 +52,7 @@ RULE_TYPES = [
     "UNVERIFIED_EXTERNAL_LINK",
     "SPEC_ID",
     "SPEC_ID_METADATA",
+    "OUTDATED_DOC",
 ]
 
 
@@ -85,6 +86,31 @@ class ScanResult:
 
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
+
+def git_last_modified(path: Path) -> datetime | None:
+    """Return the last commit date for a file using git log, or None if not tracked."""
+    try:
+        import subprocess
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%ct", "--follow", "--", str(path)],
+            capture_output=True, text=True, cwd=ROOT, timeout=5
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            timestamp = int(result.stdout.strip())
+            return datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    except Exception:
+        pass
+    return None
+
+
+def is_outdated(path: Path, days: int = 14) -> bool:
+    """Check if a file hasn't been modified in more than `days` days."""
+    last_modified = git_last_modified(path)
+    if last_modified is None:
+        return False  # Not tracked by git, skip freshness check
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    return last_modified < cutoff
+
 
 def relative_path(path: Path) -> str:
     try:
@@ -506,6 +532,17 @@ def parse_args() -> argparse.Namespace:
         default=EXTERNAL_WORKERS,
         help=f"Parallel workers for external checks (default {EXTERNAL_WORKERS})",
     )
+    parser.add_argument(
+        "--stale-days",
+        type=int,
+        default=14,
+        help="Warn if document not modified in N days (default 14, 0 to disable)",
+    )
+    parser.add_argument(
+        "--no-freshness",
+        action="store_true",
+        help="Skip git-based freshness check",
+    )
     return parser.parse_args()
 
 
@@ -519,6 +556,25 @@ def main() -> None:
     files = find_markdown_files(args.module)
     findings: list[Finding] = []
     total_links = 0
+
+    # Git-based freshness check
+    if not args.no_freshness and args.stale_days > 0:
+        for filepath in files:
+            rel = relative_path(filepath)
+            if is_outdated(filepath, args.stale_days):
+                last_modified = git_last_modified(filepath)
+                findings.append(Finding(
+                    id=f"FRESH-{len(findings)+1:03d}",
+                    rule="OUTDATED_DOC",
+                    severity="low",
+                    category="documentation",
+                    file=rel,
+                    line=1,
+                    message=f"Document not modified in {args.stale_days}+ days (last: {last_modified.strftime('%Y-%m-%d') if last_modified else 'unknown'})",
+                    suggestion="Review and update if content is stale, or accept if intentionally stable",
+                    reference="docs/conventions.md §Documentation Conventions",
+                    context={"stale_days": args.stale_days, "last_modified": last_modified.isoformat() if last_modified else None},
+                ))
 
     if not args.module:
         total_links += validate_spec_conventions(findings)
