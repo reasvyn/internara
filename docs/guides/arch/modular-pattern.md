@@ -68,8 +68,8 @@ other docs link here, never duplicate. Enforced by `tools/scan_class_contracts.p
 
 | Unit                | One responsibility                  | Boundary rules                                                                                              |
 | ------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Module              | One business area (owns 1+ Domains) | Owns its Domains (`app/Modules/{Module}/Domain/{Domain}/`); each Domain owns its full stack (Actions, Entities, Models, Livewire, Policies); other modules reach it only via its public surface — Actions, contracts, events (see 1.4) |
-| Domain              | One business domain                 | Exactly one Domain per domain (`app/Modules/{Module}/Domain/{Domain}/`); owns its full stack; never split a domain across Domains nor collapse a Domain-scale domain into a parent catch-all (see `.agents/rules/domain-boundary.md`) |
+| Module              | One business area (owns 1+ Domains) | Owns its primary domain flat (`app/Modules/{Module}/` — `Actions/`, `Models/` ...) untuk hindari `Module/Domain/Module` yang mubazir, plus Domains berbeda di `Domain/{Domain}/`; tiap Domain owns full stack; modul lain hanya via public surface — Actions, contracts, events (see 1.4) |
+| Domain              | One *distinct* business domain      | Tepat satu Domain untuk domain yang berbeda dari Module (`app/Modules/{Module}/Domain/{Domain}/`); owns full stack; tidak boleh split satu domain ke beberapa Domain, maupun collapsed domain matang ke flat Module (see `.agents/rules/domain-boundary.md`) |
 | Command/Read Action | ONE business operation or query     | Single public `execute()`; DTO for 3+ params (C7); never a second copy of an existing operation             |
 | Process Action      | ONE multi-step workflow             | Orchestrates Command/Read Actions; no inline business rules                                                 |
 | Entity              | Business invariants of ONE concept  | `final readonly`, pure — no Action/Service/Livewire imports (C5)                                            |
@@ -86,11 +86,11 @@ Prose rules:
   each other's internals (4-layer rule).
 - **Extraction bias** — when a unit grows past its single responsibility, extract smaller named
   units instead of accumulating branches (DRY-first clean code).
-- **Domain decomposition** — a distinct business domain becomes its own Domain
-  (`app/Modules/{Module}/Domain/{Domain}/`) when it owns 3+ of the 4 standard CRUD operations or serves a
-  role-scoped business operation. A domain must not be split across Domains nor collapsed into a
-  parent's catch-all once it reaches Domain-scale cohesion. See `.agents/rules/domain-boundary.md`
-  for the full rule and additional cohesion signals.
+- **Domain decomposition** — domain bisnis yang **berbeda** dari Module menjadi Domain sendiri
+  (`app/Modules/{Module}/Domain/{Domain}/`) ketika owns 3+ dari 4 operasi CRUD standar atau melayani
+  operasi role-scoped yang distinct. Domain utama Module boleh tetap flat di `app/Modules/{Module}/`
+  agar tidak terlalu dalam. Domain berbeda tidak boleh di-split maupun di-collapse ke flat setelah matang.
+  See `.agents/rules/domain-boundary.md`.
 
 ---
 
