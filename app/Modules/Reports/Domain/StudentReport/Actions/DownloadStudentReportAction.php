@@ -6,7 +6,6 @@ namespace App\Modules\Reports\Domain\StudentReport\Actions;
 
 use App\Modules\Core\Actions\BaseProcessAction;
 use App\Modules\Document\Models\Document;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use Illuminate\Http\StreamedResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;

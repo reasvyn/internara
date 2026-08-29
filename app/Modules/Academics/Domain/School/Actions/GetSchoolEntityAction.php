@@ -6,6 +6,7 @@ namespace App\Modules\Academics\Domain\School\Actions;
 
 use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
 use App\Modules\Core\Actions\BaseReadAction;
+use App\Modules\Settings\Services\Settings;
 
 /**
  * Read the school profile entity from the Settings store.
@@ -30,7 +31,7 @@ final class GetSchoolEntityAction extends BaseReadAction
         // Use FQCN to keep Entity pure and avoid `use` import flagged by MOD_XMOD_INTERNAL (C5).
         // Settings Services is cross-module; Action is the allowed boundary via public surface,
         // but we avoid `use` to keep scanner passing for this gradual fix.
-        $values = \App\Modules\Settings\Services\Settings::get(array_values(SchoolEntity::keys()));
+        $values = Settings::get(array_values(SchoolEntity::keys()));
 
         return SchoolEntity::fromSettingsArray($values);
     }

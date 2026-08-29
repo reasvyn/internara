@@ -6,7 +6,6 @@ namespace App\Modules\Reports\Domain\StudentReport\Http\Controllers;
 
 use App\Modules\Core\Http\Controllers\BaseController;
 use App\Modules\Reports\Domain\StudentReport\Actions\DownloadReportAction;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;

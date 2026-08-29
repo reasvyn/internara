@@ -6,14 +6,14 @@ namespace App\Modules\User\Domain\UserManagement\Actions;
 
 use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Notifications\WelcomeNotification;
-use App\Modules\User\Rules\ReservedAuthoritativeName;
-use App\Modules\User\Rules\SystemUsername;
-use App\Modules\User\Services\UserIdentifierGenerator;
 use App\Modules\User\Domain\UserManagement\Data\CreateUserData;
 use App\Modules\User\Domain\UserManagement\Events\UserCreated;
 use App\Modules\User\Domain\UserManagement\Notifications\ActivationCodeNotification;
+use App\Modules\User\Models\User;
+use App\Modules\User\Rules\ReservedAuthoritativeName;
+use App\Modules\User\Rules\SystemUsername;
+use App\Modules\User\Services\UserIdentifierGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 

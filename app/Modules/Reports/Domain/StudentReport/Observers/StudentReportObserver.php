@@ -6,7 +6,6 @@ namespace App\Modules\Reports\Domain\StudentReport\Observers;
 
 use App\Modules\Reports\Domain\StudentReport\Actions\CaptureReportSnapshotAction;
 use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 class StudentReportObserver
 {

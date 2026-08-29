@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\Profile\Policies;
 
 use App\Modules\Core\Policies\BasePolicy;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Profile\Models\Profile;
+use App\Modules\User\Models\User;
 
 class ProfilePolicy extends BasePolicy
 {

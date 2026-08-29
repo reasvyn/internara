@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Assessment\Models;
 
-use App\Modules\Assessment\Entities\AssessmentResult;
 use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
+use App\Modules\Assessment\Entities\AssessmentResult;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;

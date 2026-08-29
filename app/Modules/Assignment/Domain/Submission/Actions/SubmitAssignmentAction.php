@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\Assignment\Domain\Submission\Actions;
 
-use App\Modules\Assignment\Enums\AssignmentStatus;
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Domain\Submission\Data\SubmitAssignmentData;
 use App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Assignment\Enums\AssignmentStatus;
+use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;

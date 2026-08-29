@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Jobs;
 
-use App\Modules\User\Enums\AccountStatus;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use App\Modules\User\Domain\UserManagement\Data\SetUserStatusData;
+use App\Modules\User\Enums\AccountStatus;
+use App\Modules\User\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

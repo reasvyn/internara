@@ -7,9 +7,9 @@ namespace App\Modules\User\Domain\Notifications\Actions;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Channels\Data\NotificationData;
 use App\Modules\Core\Contracts\SendsNotifications;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Notifications\Events\NotificationSent;
 use App\Modules\User\Domain\Notifications\Models\Notification;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 /**

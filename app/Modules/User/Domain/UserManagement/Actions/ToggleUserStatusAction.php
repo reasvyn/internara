@@ -7,9 +7,9 @@ namespace App\Modules\User\Domain\UserManagement\Actions;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\User\Domain\AccountStatus\Notifications\AccountStatusNotification;
+use App\Modules\User\Domain\UserManagement\Events\UserStatusChanged;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
-use App\Modules\User\Domain\UserManagement\Events\UserStatusChanged;
 
 final class ToggleUserStatusAction extends BaseCommandAction
 {

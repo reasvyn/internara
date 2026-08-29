@@ -6,11 +6,11 @@ namespace App\Modules\User\Domain\UserManagement\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\User\Domain\UserManagement\Data\UpdateUserData;
+use App\Modules\User\Domain\UserManagement\Events\UserUpdated;
 use App\Modules\User\Models\User;
 use App\Modules\User\Rules\ReservedAuthoritativeName;
 use App\Modules\User\Rules\SystemUsername;
-use App\Modules\User\Domain\UserManagement\Data\UpdateUserData;
-use App\Modules\User\Domain\UserManagement\Events\UserUpdated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;

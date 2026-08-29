@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Modules\Certification\Domain\Certificate\Livewire;
 
 use App\Modules\Certification\Actions\DispatchBatchIssueCertificatesAction;
+use App\Modules\Certification\Data\BatchIssueCertificatesData;
 use App\Modules\Certification\Domain\Certificate\Actions\IssueCertificateAction;
 use App\Modules\Certification\Domain\Certificate\Actions\RevokeCertificateAction;
 use App\Modules\Certification\Domain\Certificate\Enums\CertificateStatus;
 use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
-use App\Modules\Certification\Data\BatchIssueCertificatesData;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;

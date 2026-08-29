@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Document\Domain\Handbook\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
+use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;

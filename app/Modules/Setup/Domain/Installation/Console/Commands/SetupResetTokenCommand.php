@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Setup\Domain\Installation\Console\Commands;
 
 use App\Modules\Core\Services\SmartLogger;
-use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\Setup\Domain\Installation\Actions\GenerateSetupTokenAction;
 use App\Modules\Setup\Domain\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
+use App\Modules\Setup\Entities\SetupEntity;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 

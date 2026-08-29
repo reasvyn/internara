@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Assignment\Domain\Submission\Livewire;
 
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Domain\Submission\Actions\SubmitAssignmentAction;
 use App\Modules\Assignment\Domain\Submission\Data\SubmitAssignmentData;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Livewire\BaseFormView;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;

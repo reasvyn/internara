@@ -8,7 +8,6 @@ use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Reports\Domain\StudentReport\Events\ReportFinalized;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class FinalizeStudentReportAction extends BaseCommandAction
 {

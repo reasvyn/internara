@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Document\Domain\OfficialDocument\Http\Controllers;
 
 use App\Modules\Core\Http\Controllers\BaseController;
-use App\Modules\Document\Models\Document;
 use App\Modules\Document\Domain\OfficialDocument\Actions\RenderDocumentAction;
+use App\Modules\Document\Models\Document;
 use App\Modules\Document\Services\DocumentRenderer;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;

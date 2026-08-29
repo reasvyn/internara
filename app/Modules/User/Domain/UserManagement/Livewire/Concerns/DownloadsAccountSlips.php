@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\UserManagement\Livewire\Concerns;
 
 use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\UserManagement\Notifications\ActivationCodeNotification;
+use App\Modules\User\Models\User;
 use TallStackUi\Traits\Interactions;
 
 trait DownloadsAccountSlips

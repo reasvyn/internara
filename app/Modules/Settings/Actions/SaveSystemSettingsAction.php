@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Settings\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\Settings\Domain\Branding\Actions\UploadBrandAssetAction;
 use App\Modules\Settings\Data\SettingEntryData;
 use App\Modules\Settings\Data\SystemSettingsData;
+use App\Modules\Settings\Domain\Branding\Actions\UploadBrandAssetAction;
 use App\Modules\Settings\Domain\Locale\Support\Locale;
 use Illuminate\Http\UploadedFile;
 

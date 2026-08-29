@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Domain\Observability\Recorders;
 
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Notifications\Models\Notification;
+use App\Modules\User\Models\User;
 use Laravel\Pulse\Facades\Pulse;
 
 /**

@@ -6,7 +6,6 @@ namespace App\Modules\Reports\Domain\StudentReport\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Reports\Domain\StudentReport\Data\CreateReportData;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class CreateStudentReportAction extends BaseCommandAction
 {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Modules\Academics\Domain\School\Livewire\Forms;
 
-use App\Modules\Academics\Domain\School\Actions\GetSchoolEntityAction;
 use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
 use Livewire\Form;
 

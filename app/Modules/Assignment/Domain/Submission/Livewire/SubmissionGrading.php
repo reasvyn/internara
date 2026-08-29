@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Assignment\Domain\Submission\Livewire;
 
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Domain\Submission\Actions\GradeSubmissionAction;
 use App\Modules\Assignment\Domain\Submission\Actions\RequestSubmissionRevisionAction;
 use App\Modules\Assignment\Domain\Submission\Actions\VerifySubmissionAction;
 use App\Modules\Assignment\Domain\Submission\Data\GradeSubmissionData;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Assignment\Models\Assignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;

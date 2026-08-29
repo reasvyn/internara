@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Assignment\Models;
 
+use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Assignment\Entities\AssignmentRules;
 use App\Modules\Assignment\Enums\AssignmentStatus;
-use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Document\Models\Document;
 use App\Modules\Program\Domain\Internship\Models\Internship;
