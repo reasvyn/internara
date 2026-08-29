@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Modules\Reports\Domain\Report\Http\Controllers\ReportController;
-use App\Modules\Reports\Domain\Report\Livewire\ReportsManager;
+use App\Modules\Reports\Domain\StudentReport\Http\Controllers\ReportController;
+use App\Modules\Reports\Domain\StudentReport\Livewire\ReportsManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')

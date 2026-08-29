@@ -10,8 +10,8 @@ use App\Modules\Core\Contracts\SettingsStore;
 use App\Modules\Core\Services\LangChecker;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Support\ModuleManager;
-use App\Modules\Reports\Domain\Report\Models\Report;
-use App\Modules\Reports\Domain\Report\Observers\ReportObserver;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
+use App\Modules\Reports\Domain\StudentReport\Observers\StudentReportObserver;
 use App\Modules\Settings\Services\Settings;
 use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Notifications\Actions\SendNotificationAction;
@@ -70,7 +70,7 @@ class AppServiceProvider extends ServiceProvider
             $this->service()->registerBladeNamespaces();
         }
 
-        Report::observe(ReportObserver::class);
+        StudentReport::observe(StudentReportObserver::class);
     }
 
     protected function service(): ModuleService
