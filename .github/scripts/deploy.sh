@@ -25,7 +25,9 @@ else
   fi
 fi
 
-docker compose up -d --build --remove-orphans
+# Use --no-cache to ensure the git tag change is picked up (Docker cache doesn't invalidate on tag change)
+docker compose build --no-cache
+docker compose up -d --remove-orphans
 
 docker image prune -f >/dev/null 2>&1 || true
 docker builder prune -f --keep-storage "$BUILD_CACHE_LIMIT" >/dev/null 2>&1 || true
