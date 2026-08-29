@@ -8,11 +8,11 @@ Mental model and navigation map for AI agents.
 a task reaches its concern.
 
 > **Terminology (homespace vs workspace):** when the user says **agent homespace** they mean the
-> global template at **`~/.agents/`** (user-level, project-agnostic: `agents/`, `skills/`, `rules/`,
-> `guides/`, `context/`, `AGENTS.md`, `opencode.json` synced to `~/.config/opencode/`); when they say
+> local configuration at **`~/.agents/`** (user-level — contents vary per user); when they say
 > **agent workspace** they mean the project-level overlay at **`./.agents/`** (this repo:
-> `internara/.agents/`). Homespace is the portable skeleton; workspace is the project-specific
-> instantiation. Paths below are workspace-relative (`.agents/...`) unless prefixed with `~/`.
+> `internara/.agents/`). Homespace is whatever the user keeps at `~/.agents/`; workspace is the
+> project-specific instantiation. Paths below are workspace-relative (`.agents/...`) unless prefixed
+> with `~/`.
 
 ## Agent Workflow — Canonical
 
