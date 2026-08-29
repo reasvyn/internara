@@ -285,7 +285,7 @@ return [
         'registration_unavailable_desc' => 'Periode pendaftaran belum dikonfigurasi. Silakan periksa kembali nanti.',
         'login_title' => 'Sudah punya akun?',
         'login_desc' => 'Masuk untuk mengakses dasbor, melacak kemajuan, dan mengelola kegiatan PKL Anda.',
-        'login_action' => 'Masuk',
+        'login_action' => 'Masuk Sekarang',
         'no_account' => 'Belum punya akun? Hubungi administrator sekolah Anda.',
         'features_title' => 'Semua yang Anda butuhkan untuk PKL',
         'features_subtitle' => 'Dari logbook harian hingga sertifikasi akhir — satu platform terintegrasi untuk setiap tahap perjalanan magang Anda.',
