@@ -38,10 +38,10 @@ use App\Modules\Partners\Domain\Partnership\Listeners\ClearDashboardOnPartnershi
 use App\Modules\Partners\Domain\Partnership\Listeners\NotifyOnPartnershipTerminated;
 use App\Modules\Program\Domain\Internship\Events\InternshipCreated;
 use App\Modules\Program\Domain\Internship\Listeners\NotifyAdminsInternshipCreated;
-use App\Modules\Reports\Domain\Report\Events\GradeCalculated;
-use App\Modules\Reports\Domain\Report\Events\ReportFinalized;
-use App\Modules\Reports\Domain\Report\Listeners\LogGradeCalculated;
-use App\Modules\Reports\Domain\Report\Listeners\LogReportFinalized;
+use App\Modules\Reports\Domain\StudentReport\Events\GradeCalculated;
+use App\Modules\Reports\Domain\StudentReport\Events\ReportFinalized;
+use App\Modules\Reports\Domain\StudentReport\Listeners\LogGradeCalculated;
+use App\Modules\Reports\Domain\StudentReport\Listeners\LogReportFinalized;
 use App\Modules\Setup\Domain\SetupWizard\Events\SetupFinalized;
 use App\Modules\Setup\Domain\SetupWizard\Listeners\LogSetupFinalized;
 use App\Modules\SysAdmin\Domain\Backups\Events\BackupCompleted;

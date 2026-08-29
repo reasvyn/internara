@@ -14,7 +14,7 @@ use App\Modules\Journals\Domain\Logbook\Models\Logbook;
 use App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
-use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\Settings\Models\Setting;
 use App\Modules\User\Domain\Mentor\Entities\MentorEntity;
 use App\Modules\User\Models\User;
@@ -129,7 +129,7 @@ class Registration extends BaseModel
 
     public function report(): HasOne
     {
-        return $this->hasOne(Report::class, 'registration_id');
+        return $this->hasOne(StudentReport::class, 'registration_id');
     }
 
     public function mentee(): HasOne

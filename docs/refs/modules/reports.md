@@ -16,9 +16,9 @@ finalization to ensure the grade card persists even if source records are later 
 Out of scope: individual assessment grading (Assessment), assignment grading (Assignment),
 evaluation feedback (Evaluation), certificate generation (Certification).
 
-## Submodules
+## Domains
 
-### Report (Grade Card)
+### StudentReport (Grade Card)
 
 Core entity with 1:1 relationship to Registration. Stores: industry supervisor score, school teacher
 score, exam score, computed composite score, qualitative feedback from host company, letter grade,

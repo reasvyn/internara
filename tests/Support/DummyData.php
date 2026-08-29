@@ -49,8 +49,8 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Enums\InternshipGroupRole;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
-use App\Modules\Reports\Domain\Report\Enums\ReportStatus;
-use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
 use App\Modules\User\Enums\EmploymentStatus;
@@ -1012,7 +1012,7 @@ final class DummyData
     {
         $values = [
             'registration_id' => $registration->id,
-            'status' => $finalized ? ReportStatus::FINALIZED->value : ReportStatus::DRAFT->value,
+            'status' => $finalized ? StudentReportStatus::FINALIZED->value : StudentReportStatus::DRAFT->value,
         ];
 
         if ($finalized) {
@@ -1021,7 +1021,7 @@ final class DummyData
         }
 
         $this->firstOrCreate(
-            Report::factory(),
+            StudentReport::factory(),
             ['registration_id' => $registration->id],
             $values,
             'reports',
@@ -1195,7 +1195,7 @@ final class DummyData
             $date = $registration->start_date->copy()->addDays($incident['offset']);
 
             $this->firstOrCreate(
-                IncidentReport::factory(),
+                IncidentStudentReport::factory(),
                 ['registration_id' => $registration->id, 'incident_date' => $date->toDateTimeString(), 'type' => $incident['type']],
                 [
                     'registration_id' => $registration->id,

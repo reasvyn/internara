@@ -10,7 +10,7 @@ use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Journals\Domain\Attendance\Models\Attendance;
 use App\Modules\Journals\Domain\MonitoringVisit\Models\MonitoringVisit;
 use App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog;
-use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use Illuminate\Support\Facades\DB;
 
 final class AutoCalculateAssessmentAction extends BaseCommandAction
@@ -62,7 +62,7 @@ final class AutoCalculateAssessmentAction extends BaseCommandAction
             ? round(($verifiedVisits / $totalMonitoringVisits) * 100, 1)
             : 0;
 
-        $report = Report::where('registration_id', $registrationId)
+        $report = StudentReport::where('registration_id', $registrationId)
             ->where('status', 'approved')
             ->first();
 
