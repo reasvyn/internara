@@ -782,4 +782,4 @@ npm run build              # Vite build (check frontend)
 `feat/{kebab}`, `fix/{desc}`, `refactor/{module}-{scope}`, `docs/{what}`, `chore/{task}`, `hotfix/{desc}`
 
 ### Language
-**English only** — code, comments, commits, docs. Indonesian only in `lang/id/`.
+**English only** — code, comments, commits, docs. Indonesian only in `lang/id/`. **AI Agent:** English-only for all artifacts and internal work, but direct communication with the user must follow the user's language.

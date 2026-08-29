@@ -28,6 +28,18 @@ full log whenever drift may predate the window (e.g., infrequent module, large a
 
 ## How to Apply
 
+### Step -1 — Check Uncommitted Changes and Commit First
+
+```bash
+git status --short
+git diff --stat
+git diff --cached --stat
+```
+
+- If `git status` shows modified (`M`), added (`A`), deleted (`D`), renamed (`R`), or untracked (`??`) files, **commit them first** before starting the sync.
+- Uncommitted code is invisible to `git log` — syncing docs against `HEAD` while the working tree has uncommitted business logic leaves the new docs stale on arrival.
+- Stage and commit the pending work (`git add -A && git commit -m "type(scope): ..."`), or explicitly stash/ignore it with a recorded decision, then proceed to Step 0. Never run a doc sync on a dirty working tree without a checkpoint.
+
 ### Step 0 — Review Recent Git History (minimum 14 days, extend if needed)
 
 ```bash
