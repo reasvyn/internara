@@ -335,6 +335,6 @@ After implementing this spec, the system has a verified dependency manifest, dat
 - `docs/refs/modules/core-reference.md` — Core module technical reference
 - `docs/guides/infra/database.md` — Schema design, engine comparison
 - `docs/guides/infra/deployment.md` — Three deployment paths
-- `app/Core/` — All base classes, contracts, exceptions, services
+- `app/Modules/Core/` — All base classes, contracts, exceptions, services
 - `.env.example` — Default configuration values
 - **Related specs:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes, contracts, middleware, cache, session

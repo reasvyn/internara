@@ -131,7 +131,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `AcademicYear`, `Department`, `School`
-- **Business Logic**: `app/Academics/`
+- **Business Logic**: `app/Modules/Academics/`
 - **Routing**: `routes/web/academics.php`
 - **Views**: `resources/views/academics/`
 - **Testing**: `tests/Academics/`

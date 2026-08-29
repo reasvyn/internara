@@ -43,7 +43,7 @@ Entities.
 
 Status handling does **not** flow through this package:
 
-- `User::setStatus()` (`app/User/Models/User.php:200`) and `Registration::setStatus()`
+- `User::setStatus()` (`app/Modules/User/Models/User.php:200`) and `Registration::setStatus()`
   force-fill a plain `status` column backed by enum values
 - Transitions are governed by the `StatusEnum` contract at the domain layer — persistence is a
   simple column, not a package-managed history table

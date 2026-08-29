@@ -92,7 +92,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `IncidentReport`
-- **Business Logic**: `app/Incident/`
+- **Business Logic**: `app/Modules/Incident/`
 - **Routing**: `routes/web/incident.php`
 - **Views**: `resources/views/incident/`
 - **Testing**: `tests/Incident/`

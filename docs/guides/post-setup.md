@@ -75,8 +75,8 @@ Key settings populated during/after setup:
 
 ## Quick References
 
-- `app/Settings/` — Settings CRUD and observer
-- `app/SysAdmin/Console/Commands/` — CLI commands for provisioning
+- `app/Modules/Settings/` — Settings CRUD and observer
+- `app/Modules/SysAdmin/Console/Commands/` — CLI commands for provisioning
 - [Installation](installation.md) — CLI provisioning
 - [Setup Wizard](setup-wizard.md) — Browser-based initial config
 - [System Health](system-health.md) — Post-setup verification

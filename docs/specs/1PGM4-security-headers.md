@@ -251,7 +251,7 @@ After implementing this spec, every HTTP response has CSP, HSTS, X-Frame-Options
 
 ## Quick References
 
-- `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security headers middleware
+- `app/Modules/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security headers middleware
 - `config/security-headers.php` — Header configuration
 - `docs/specs/middleware-pipeline.md` — Middleware execution order
 - `docs/conventions.md` — Security conventions

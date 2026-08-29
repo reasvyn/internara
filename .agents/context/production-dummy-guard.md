@@ -12,8 +12,8 @@ guards, do not "simplify" them, and do not try to seed dummy data by relaxing th
 | Guard | Location | Behavior |
 | ----- | -------- | -------- |
 | `DummySeeder` | `database/seeders/DummySeeder.php` | throws `RuntimeException` when `APP_ENV=production` (dummy-data spec **NFR-S1**) |
-| `SeedDummyDataAction` | `app/Setup/Installation/Actions/SeedDummyDataAction.php` | skips + logs when `APP_ENV=production` (installation spec **NFR-S13**, defense-in-depth **DD-10**) |
-| `setup:install --with-dummy` | `app/Setup/Installation/Console/Commands/SetupInstallCommand.php` | never reaches the seeder on production installs |
+| `SeedDummyDataAction` | `app/Modules/Setup/Installation/Actions/SeedDummyDataAction.php` | skips + logs when `APP_ENV=production` (installation spec **NFR-S13**, defense-in-depth **DD-10**) |
+| `setup:install --with-dummy` | `app/Modules/Setup/Installation/Console/Commands/SetupInstallCommand.php` | never reaches the seeder on production installs |
 
 These three layers are the product's defense-in-depth against accidentally seeding fake data into a
 live school's database. Any change to them requires a spec amendment first.
@@ -76,7 +76,7 @@ repository because the repo's spec forbids production seeding.
 ## Quick References
 
 - `database/seeders/DummySeeder.php` — production guard + entry point
-- `app/Setup/Installation/Actions/SeedDummyDataAction.php` — `setup:install --with-dummy` path
+- `app/Modules/Setup/Installation/Actions/SeedDummyDataAction.php` — `setup:install --with-dummy` path
 - `tests/Support/DummyData.php` — the demo dataset generator (dev-only autoload)
 - `config/dummy.php` — demo account configuration
 - [Dummy Data Spec](../../docs/specs/3UOZP-dummy-data.md) — NFR-S1, FR-E2/E4/E5, UC-2

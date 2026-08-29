@@ -177,7 +177,7 @@ None.
 
 - **Submodules**: `Login`, `Password`, `Account`, `AccessTokens`, `AccountRecovery`, `Permissions`,
   `SuperAdmin`
-- **Business Logic**: `app/Auth/`
+- **Business Logic**: `app/Modules/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
 - **Testing**: `tests/Auth/`

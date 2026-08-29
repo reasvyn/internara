@@ -234,7 +234,7 @@ administrators would see outdated statistics.
 ### 6.1 AcademicYear Model
 
 ```php
-// app/Academics/AcademicYear/Models/AcademicYear.php
+// app/Modules/Academics/AcademicYear/Models/AcademicYear.php
 class AcademicYear extends BaseModel
 {
     #[Fillable(['name', 'start_date', 'end_date', 'is_active'])]
@@ -252,7 +252,7 @@ class AcademicYear extends BaseModel
 ### 6.2 AcademicYearState Entity
 
 ```php
-// app/Academics/AcademicYear/Entities/AcademicYearState.php
+// app/Modules/Academics/AcademicYear/Entities/AcademicYearState.php
 final readonly class AcademicYearState extends BaseEntity
 {
     public function __construct(
@@ -270,7 +270,7 @@ final readonly class AcademicYearState extends BaseEntity
 ### 6.3 AcademicYearData DTO
 
 ```php
-// app/Academics/AcademicYear/Data/AcademicYearData.php
+// app/Modules/Academics/AcademicYear/Data/AcademicYearData.php
 final readonly class AcademicYearData extends BaseData
 {
     public function __construct(
@@ -394,7 +394,7 @@ creation source (UI, seeder, API).
 **Decision:** The active academic year is the school year containing the current date. The
 Indonesian school year runs **July–June**: January–June belongs to `Y-1/Y`, July–December to
 `Y/Y+1`. This computation lives in one place — `AcademicYearPeriod` support class
-(`app/Academics/AcademicYear/Support/AcademicYearPeriod.php`) — shared by `AcademicYearSeeder`,
+(`app/Modules/Academics/AcademicYear/Support/AcademicYearPeriod.php`) — shared by `AcademicYearSeeder`,
 `AppSettingSeeder` (`active_academic_year`), and the settings UI default (FR-AY40).
 
 **Rationale:** Three independent computations existed and drifted: `AcademicYearSeeder` was
@@ -452,8 +452,8 @@ After implementing this spec, the system has academic year CRUD with start/end d
 
 ## Quick References
 
-- `app/Academics/AcademicYear/` — All AcademicYear module code (Models, Entities, Actions, Events, Data, Livewire, Policies)
-- `app/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` — Dashboard cache invalidation listener
+- `app/Modules/Academics/AcademicYear/` — All AcademicYear module code (Models, Entities, Actions, Events, Data, Livewire, Policies)
+- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` — Dashboard cache invalidation listener
 - `routes/web/academics.php` — Route definitions (admin prefix, auth + role middleware)
 - `database/migrations/2026_01_03_000001_create_academic_years_table.php` — Schema migration
 - `config/event.php` — Event-to-listener registration

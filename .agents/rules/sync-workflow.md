@@ -93,7 +93,7 @@ Dependency chains first (specs before refs that cite them), then business urgenc
 ```bash
 # A commit added a new Command Action:
 git log --since="14 days ago" --stat
-#   app/Enrollment/Placement/Actions/WithdrawPlacementAction.php  (new)
+#   app/Modules/Enrollment/Placement/Actions/WithdrawPlacementAction.php  (new)
 
 # Doc action required:
 #   docs/refs/modules/enrollment-reference.md  → add the Action row + execute() signature

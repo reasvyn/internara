@@ -50,7 +50,7 @@ depends on.
 
 ## Services
 
-Located in `app/Core/Services/`:
+Located in `app/Modules/Core/Services/`:
 
 | Service                 | Purpose                                                                                                | Public Methods                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
@@ -64,7 +64,7 @@ Located in `app/Core/Services/`:
 
 ## Contracts
 
-Located in `app/Core/Contracts/`:
+Located in `app/Modules/Core/Contracts/`:
 
 | Contract             | Purpose                                                                  | Implemented By                                              |
 | -------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- |
@@ -78,7 +78,7 @@ Located in `app/Core/Contracts/`:
 
 ## Base Classes
 
-Located in `app/Core/`:
+Located in `app/Modules/Core/`:
 
 | Class               | Path                                  | Purpose                                                                      | Mandatory For                                                    |
 | ------------------- | ------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
@@ -103,7 +103,7 @@ Located in `app/Core/`:
 
 ## Data & DTOs
 
-Located in `app/Core/Data/`:
+Located in `app/Modules/Core/Data/`:
 
 | Class            | Extends    | Purpose                                                                                                                    |
 | ---------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -116,7 +116,7 @@ Located in `app/Core/Data/`:
 
 ## Enums
 
-Located in `app/Core/Enums/`. All implement `LabelEnum`:
+Located in `app/Modules/Core/Enums/`. All implement `LabelEnum`:
 
 | Enum            | Purpose                                                                   |
 | --------------- | ------------------------------------------------------------------------- |
@@ -128,7 +128,7 @@ Located in `app/Core/Enums/`. All implement `LabelEnum`:
 
 ## Channels
 
-Located in `app/Core/Channels/`:
+Located in `app/Modules/Core/Channels/`:
 
 | File                            | Class                  | Purpose                                                    |
 | ------------------------------- | ---------------------- | ---------------------------------------------------------- |
@@ -139,7 +139,7 @@ Located in `app/Core/Channels/`:
 
 ## Exception Hierarchy
 
-Full hierarchy in `app/Core/Exceptions/`. All use `HasExceptionContext` trait (hint, context, CLI
+Full hierarchy in `app/Modules/Core/Exceptions/`. All use `HasExceptionContext` trait (hint, context, CLI
 format):
 
 ```
@@ -198,7 +198,7 @@ ModuleException (abstract, extends RuntimeException)
 | `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
 | `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                       |
 
-The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpers.php`.
+The helpers `setting()` and `brand()` are defined in `app/Modules/Settings/Support/helpers.php`.
 
 ---
 
@@ -235,7 +235,7 @@ None - Core provides base classes only.
 
 ## Architectural Integration
 
-- **Business Logic**: `app/Core/`
+- **Business Logic**: `app/Modules/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
 - **Views**: `resources/views/ui/`
 - **Testing**: `tests/Core/`

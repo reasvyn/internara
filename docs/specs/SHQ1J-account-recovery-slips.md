@@ -159,7 +159,7 @@ capability without exposing password reset to admins.
 ### Actions
 
 ```php
-// app/Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php
+// app/Modules/Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php
 final class GenerateRecoverySlipAction extends BaseCommandAction
 {
     public function execute(User $user): ActionResponse;
@@ -168,7 +168,7 @@ final class GenerateRecoverySlipAction extends BaseCommandAction
     // Returns ActionResponse::ok(['codes' => [...], 'recoveryCode' => RecoveryCodeData])
 }
 
-// app/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php
+// app/Modules/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php
 final class RedeemRecoverySlipAction extends BaseCommandAction
 {
     public function execute(RedeemRecoverySlipData $data): ActionResponse;
@@ -181,7 +181,7 @@ final class RedeemRecoverySlipAction extends BaseCommandAction
 ### Entities & DTOs
 
 ```php
-// app/Auth/AccountRecovery/Entities/RecoveryCodeState.php
+// app/Modules/Auth/AccountRecovery/Entities/RecoveryCodeState.php
 final readonly class RecoveryCodeState extends BaseEntity
 {
     public function __construct(
@@ -191,7 +191,7 @@ final readonly class RecoveryCodeState extends BaseEntity
     public function isValid(): bool;
 }
 
-// app/Auth/AccountRecovery/Data/RecoveryCodeData.php
+// app/Modules/Auth/AccountRecovery/Data/RecoveryCodeData.php
 final readonly class RecoveryCodeData extends BaseData
 {
     public function __construct(
@@ -205,7 +205,7 @@ final readonly class RecoveryCodeData extends BaseData
 ### Livewire Components
 
 ```php
-// app/Auth/AccountRecovery/Livewire/AccountRecovery.php (guest)
+// app/Modules/Auth/AccountRecovery/Livewire/AccountRecovery.php (guest)
 class AccountRecovery extends BaseFormView
 {
     public string $username = '';
@@ -216,7 +216,7 @@ class AccountRecovery extends BaseFormView
     // Throttle: 3 per 300s
 }
 
-// app/Auth/AccountRecovery/Livewire/RecoveryCode.php (auth)
+// app/Modules/Auth/AccountRecovery/Livewire/RecoveryCode.php (auth)
 class RecoveryCode extends BaseFormView
 {
     public function generate(GenerateRecoverySlipAction $action): void;
@@ -224,7 +224,7 @@ class RecoveryCode extends BaseFormView
     public function resetCode(): void;
 }
 
-// app/Auth/AccountRecovery/Livewire/RecoverySlipManager.php (admin)
+// app/Modules/Auth/AccountRecovery/Livewire/RecoverySlipManager.php (admin)
 class RecoverySlipManager extends BaseFormView
 {
     public ?User $selectedUser = null;
@@ -237,7 +237,7 @@ class RecoverySlipManager extends BaseFormView
 ### Model (Shared)
 
 ```php
-// app/Auth/AccessTokens/Models/AccessToken.php
+// app/Modules/Auth/AccessTokens/Models/AccessToken.php
 class AccessToken extends BaseModel
 {
     // token_type = 'account_recovery' for recovery codes
@@ -331,16 +331,16 @@ exist from Phase 3 authentication — recovery codes reuse this infrastructure w
 
 ## Quick References
 
-- `app/Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` — Code generation (58 lines)
-- `app/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php` — Code redemption (64 lines)
-- `app/Auth/AccountRecovery/Entities/RecoveryCodeState.php` — Code validity entity
-- `app/Auth/AccountRecovery/Data/RecoveryCodeData.php` — Code DTO
-- `app/Auth/AccountRecovery/Events/RecoverySlipGenerated.php` — Generation event
-- `app/Auth/AccountRecovery/Livewire/AccountRecovery.php` — Guest redemption page
-- `app/Auth/AccountRecovery/Livewire/RecoveryCode.php` — Auth user code page
-- `app/Auth/AccountRecovery/Livewire/RecoverySlipManager.php` — Admin slip manager
-- `app/Auth/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` — Redemption form validation
-- `app/Auth/AccessTokens/Models/AccessToken.php` — Shared token model (reused for recovery)
+- `app/Modules/Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` — Code generation (58 lines)
+- `app/Modules/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php` — Code redemption (64 lines)
+- `app/Modules/Auth/AccountRecovery/Entities/RecoveryCodeState.php` — Code validity entity
+- `app/Modules/Auth/AccountRecovery/Data/RecoveryCodeData.php` — Code DTO
+- `app/Modules/Auth/AccountRecovery/Events/RecoverySlipGenerated.php` — Generation event
+- `app/Modules/Auth/AccountRecovery/Livewire/AccountRecovery.php` — Guest redemption page
+- `app/Modules/Auth/AccountRecovery/Livewire/RecoveryCode.php` — Auth user code page
+- `app/Modules/Auth/AccountRecovery/Livewire/RecoverySlipManager.php` — Admin slip manager
+- `app/Modules/Auth/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` — Redemption form validation
+- `app/Modules/Auth/AccessTokens/Models/AccessToken.php` — Shared token model (reused for recovery)
 - `resources/views/auth/account-recovery/` — Blade views (recovery page, codes page, admin manager, PDF template, guides)
 - **Related spec:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) (C9ZB6) — Super admin CLI recovery
 - **Related spec:** [password-reset.md](D9TKW-password-reset.md) (D9TKW) — Email-based password reset

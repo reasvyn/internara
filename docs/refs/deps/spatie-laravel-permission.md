@@ -32,7 +32,7 @@ the RBAC engine behind Internara's five flat roles and permission checks.
 - Five flat roles (Super Admin excluded via `Gate::before`) — hierarchy documented in
   [`foundation/rbac.md`](../../guides/rbac.md)
 - Policies per module under `app/{Module}/{Submodule}/Policies/`; role checks centralized in
-  `app/Core/Policies/Concerns/AuthorizesRoles.php`
+  `app/Modules/Core/Policies/Concerns/AuthorizesRoles.php`
 - Used throughout Livewire components and controllers (`hasRole`, `givePermissionTo`)
 - Package conventions live in the `permission-development` skill
 

@@ -481,22 +481,22 @@ After implementing this spec, the system has rubric-based assessment with scorin
 
 ## Quick References
 
-- `app/Assessment/Models/Assessment.php` — Assessment model with fillable, casts, bridge
-- `app/Assessment/Rubric/Models/Rubric.php` — Rubric model with JSON structure
-- `app/Assessment/Entities/AssessmentResult.php` — Entity with finalization check and score calculation
-- `app/Assessment/Enums/EvaluatorRole.php` — Evaluator role enum (4 cases)
-- `app/Assessment/Actions/InitializeAssessmentAction.php` — Assessment bootstrapping
-- `app/Assessment/Actions/AutoCalculateAssessmentAction.php` — Cross-module score aggregation
-- `app/Assessment/Actions/ScoreIndicatorAction.php` — Authorized indicator scoring
-- `app/Assessment/Actions/UpdateAssessmentScoresAction.php` — Lightweight score update for Livewire
-- `app/Assessment/Actions/FinalizeAssessmentAction.php` — Weighted finalization with redistribution
-- `app/Assessment/Rubric/Actions/` — 9 rubric CRUD actions
-- `app/Assessment/Livewire/AssessmentGrading.php` — Grading UI with live-save
-- `app/Assessment/Livewire/AssessmentView.php` — Student read-only view
-- `app/Assessment/Rubric/Livewire/RubricManager.php` — Rubric template management
-- `app/Assessment/Events/AssessmentFinalized.php` — Finalization event
-- `app/Assessment/Listeners/LogAssessmentFinalized.php` — Audit logging listener
-- `app/Assessment/Policies/AssessmentPolicy.php` — Role-based authorization
+- `app/Modules/Assessment/Models/Assessment.php` — Assessment model with fillable, casts, bridge
+- `app/Modules/Assessment/Rubric/Models/Rubric.php` — Rubric model with JSON structure
+- `app/Modules/Assessment/Entities/AssessmentResult.php` — Entity with finalization check and score calculation
+- `app/Modules/Assessment/Enums/EvaluatorRole.php` — Evaluator role enum (4 cases)
+- `app/Modules/Assessment/Actions/InitializeAssessmentAction.php` — Assessment bootstrapping
+- `app/Modules/Assessment/Actions/AutoCalculateAssessmentAction.php` — Cross-module score aggregation
+- `app/Modules/Assessment/Actions/ScoreIndicatorAction.php` — Authorized indicator scoring
+- `app/Modules/Assessment/Actions/UpdateAssessmentScoresAction.php` — Lightweight score update for Livewire
+- `app/Modules/Assessment/Actions/FinalizeAssessmentAction.php` — Weighted finalization with redistribution
+- `app/Modules/Assessment/Rubric/Actions/` — 9 rubric CRUD actions
+- `app/Modules/Assessment/Livewire/AssessmentGrading.php` — Grading UI with live-save
+- `app/Modules/Assessment/Livewire/AssessmentView.php` — Student read-only view
+- `app/Modules/Assessment/Rubric/Livewire/RubricManager.php` — Rubric template management
+- `app/Modules/Assessment/Events/AssessmentFinalized.php` — Finalization event
+- `app/Modules/Assessment/Listeners/LogAssessmentFinalized.php` — Audit logging listener
+- `app/Modules/Assessment/Policies/AssessmentPolicy.php` — Role-based authorization
 - `database/migrations/2026_01_03_000006_create_rubrics_table.php` — Rubrics schema
 - `database/migrations/2026_01_04_000011_create_assessments_table.php` — Assessments schema
 - `routes/web/assessment.php` — Route definitions

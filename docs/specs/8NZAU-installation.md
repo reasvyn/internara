@@ -649,6 +649,6 @@ After implementing this spec, the system can provision itself from zero: environ
 - **Related specs:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) — Super admin emergency access, CLI commands, OTP
 - `config/setup.php` — Setup configuration values
 - `config/module.php` — Module registry (SSOT)
-- `app/Setup/Installation/` — CLI installation module (commands, services, middleware, token actions)
-- `app/SysAdmin/Observability/Services/EnvironmentAuditor.php` — cross-module dependency: environment audit lives in the SysAdmin/Observability module, not under `app/Setup/`
-- `app/Core/Services/ModuleService.php` — Module discovery implementation
+- `app/Modules/Setup/Installation/` — CLI installation module (commands, services, middleware, token actions)
+- `app/Modules/SysAdmin/Observability/Services/EnvironmentAuditor.php` — cross-module dependency: environment audit lives in the SysAdmin/Observability module, not under `app/Modules/Setup/`
+- `app/Modules/Core/Services/ModuleService.php` — Module discovery implementation

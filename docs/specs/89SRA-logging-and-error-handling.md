@@ -272,7 +272,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 ### 6.1 SmartLogger
 
 ```php
-// app/Core/Services/SmartLogger.php
+// app/Modules/Core/Services/SmartLogger.php
 final class SmartLogger
 {
     // Static factories
@@ -307,7 +307,7 @@ final class SmartLogger
 ### 6.2 PiiMasker
 
 ```php
-// app/Core/Support/PiiMasker.php
+// app/Modules/Core/Support/PiiMasker.php
 final class PiiMasker
 {
     // Full mask — keys containing substrings in MASKED_KEYS → '***'
@@ -338,7 +338,7 @@ RuntimeException
 ### 6.4 HasExceptionContext Trait
 
 ```php
-// app/Core/Exceptions/Concerns/HasExceptionContext.php
+// app/Modules/Core/Exceptions/Concerns/HasExceptionContext.php
 trait HasExceptionContext
 {
     protected ?string $hint = null;
@@ -358,7 +358,7 @@ trait HasExceptionContext
 ### 6.5 HandlesActionErrors Trait
 
 ```php
-// app/Core/Actions/Concerns/HandlesActionErrors.php
+// app/Modules/Core/Actions/Concerns/HandlesActionErrors.php
 trait HandlesActionErrors
 {
     protected function withErrorHandling(callable $callback, string $context): mixed;
@@ -371,7 +371,7 @@ trait HandlesActionErrors
 ### 6.6 BaseAction Log Shorthand
 
 ```php
-// app/Core/Actions/BaseAction.php
+// app/Modules/Core/Actions/BaseAction.php
 abstract class BaseAction
 {
     protected function log(string $action, ?Model $subject = null, array $payload = []): void;
@@ -422,7 +422,7 @@ $exceptions->render(function (ModuleException $e, Request $request) {
 ### 6.8 LogContext Middleware
 
 ```php
-// app/Core/Http/Middleware/LogContextMiddleware.php
+// app/Modules/Core/Http/Middleware/LogContextMiddleware.php
 class LogContextMiddleware
 {
     public function handle(Request $request, Closure $next): Response;
@@ -564,17 +564,17 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 
 ## Quick References
 
-- `app/Core/Services/SmartLogger.php` — single entry point for all logging (340 lines)
-- `app/Core/Support/PiiMasker.php` — PII masking rules and methods (187 lines)
-- `app/Core/Exceptions/AppException.php` — abstract root for application exceptions
-- `app/Core/Exceptions/ModuleException.php` — abstract root for business exceptions
-- `app/Core/Exceptions/RejectedException.php` — business rule violation (most common)
-- `app/Core/Exceptions/ValidationFailedException.php` — validation failure (422)
-- `app/Core/Exceptions/UnauthorizedException.php` — permission denied (403)
-- `app/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait (hint, context, CLI)
-- `app/Core/Actions/BaseAction.php` — `log()`, `fail()`, `dispatchEvent()` methods
-- `app/Core/Actions/Concerns/HandlesActionErrors.php` — Action error wrapping trait
-- `app/Core/Http/Middleware/LogContextMiddleware.php` — request context injection middleware
+- `app/Modules/Core/Services/SmartLogger.php` — single entry point for all logging (340 lines)
+- `app/Modules/Core/Support/PiiMasker.php` — PII masking rules and methods (187 lines)
+- `app/Modules/Core/Exceptions/AppException.php` — abstract root for application exceptions
+- `app/Modules/Core/Exceptions/ModuleException.php` — abstract root for business exceptions
+- `app/Modules/Core/Exceptions/RejectedException.php` — business rule violation (most common)
+- `app/Modules/Core/Exceptions/ValidationFailedException.php` — validation failure (422)
+- `app/Modules/Core/Exceptions/UnauthorizedException.php` — permission denied (403)
+- `app/Modules/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait (hint, context, CLI)
+- `app/Modules/Core/Actions/BaseAction.php` — `log()`, `fail()`, `dispatchEvent()` methods
+- `app/Modules/Core/Actions/Concerns/HandlesActionErrors.php` — Action error wrapping trait
+- `app/Modules/Core/Http/Middleware/LogContextMiddleware.php` — request context injection middleware
 - `bootstrap/app.php` — exception rendering configuration
 - `docs/guides/arch/exception-pattern.md` — dual hierarchy rationale and patterns
 - `docs/guides/arch/logging-pattern.md` — SmartLogger architecture, PII masking, translation

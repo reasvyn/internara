@@ -316,19 +316,19 @@ After implementing this spec, the system has PDF template infrastructure for cer
 
 ## Quick References
 
-- `app/Document/Models/Document.php` — Document model with fillable, casts, media, scopes, bridge
-- `app/Document/Policies/DocumentPolicy.php` — Role-based authorization
-- `app/Document/Services/DocumentRenderer.php` — PDF/HTML rendering service
-- `app/Document/Enums/DocumentCategory.php` — Document type enum (7 cases)
-- `app/Document/OfficialDocument/Actions/SaveDocumentTemplateAction.php` — Template CRUD
-- `app/Document/OfficialDocument/Actions/GenerateDocumentAction.php` — Document generation
-- `app/Document/OfficialDocument/Actions/GenerateReportAction.php` — Report generation
-- `app/Document/OfficialDocument/Actions/RenderDocumentAction.php` — On-the-fly render + store + download
-- `app/Document/OfficialDocument/Actions/DeleteReportAction.php` — Report deletion
-- `app/Document/OfficialDocument/Http/Controllers/DocumentRenderController.php` — Render controller
-- `app/Document/OfficialDocument/Http/Requests/GenerateReportRequest.php` — Report validation
-- `app/Document/OfficialDocument/Livewire/TemplateManager.php` — Template CRUD UI
-- `app/Document/OfficialDocument/Livewire/ReportsManager.php` — Report type selection + generation
+- `app/Modules/Document/Models/Document.php` — Document model with fillable, casts, media, scopes, bridge
+- `app/Modules/Document/Policies/DocumentPolicy.php` — Role-based authorization
+- `app/Modules/Document/Services/DocumentRenderer.php` — PDF/HTML rendering service
+- `app/Modules/Document/Enums/DocumentCategory.php` — Document type enum (7 cases)
+- `app/Modules/Document/OfficialDocument/Actions/SaveDocumentTemplateAction.php` — Template CRUD
+- `app/Modules/Document/OfficialDocument/Actions/GenerateDocumentAction.php` — Document generation
+- `app/Modules/Document/OfficialDocument/Actions/GenerateReportAction.php` — Report generation
+- `app/Modules/Document/OfficialDocument/Actions/RenderDocumentAction.php` — On-the-fly render + store + download
+- `app/Modules/Document/OfficialDocument/Actions/DeleteReportAction.php` — Report deletion
+- `app/Modules/Document/OfficialDocument/Http/Controllers/DocumentRenderController.php` — Render controller
+- `app/Modules/Document/OfficialDocument/Http/Requests/GenerateReportRequest.php` — Report validation
+- `app/Modules/Document/OfficialDocument/Livewire/TemplateManager.php` — Template CRUD UI
+- `app/Modules/Document/OfficialDocument/Livewire/ReportsManager.php` — Report type selection + generation
 - `database/migrations/` — `documents` and `registration_documents` table migrations
 - `routes/web/document.php` — Route definitions
 - `docs/refs/modules/document.md` — Module conceptual documentation

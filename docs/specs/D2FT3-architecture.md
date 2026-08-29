@@ -124,7 +124,7 @@ surface.
 | FR-ARC1 | All application code MUST live inside a business module under `app/{Module}` — never in a flat top-level layer |
 | FR-ARC2 | A module owns its full vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`, `Notifications/`, `Policies/`, `Livewire/`, `Http/`, routes, and `lang/` |
 | FR-ARC3 | A module's public surface is its `Actions/`, `Services/`, `Contracts/`, `Events/`, `Entities/`, and `Enums/`; everything else is internal to the module |
-| FR-ARC4 | The Core module (`app/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
+| FR-ARC4 | The Core module (`app/Modules/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
 | FR-ARC5 | Each module is registered in `config/module.php` with its dependency order; `docs/refs/modules/index.md` documents the graph |
 
 ### 4-Layer Model
@@ -132,7 +132,7 @@ surface.
 | ID      | Requirement |
 | ------- | ----------- |
 | FR-ARC6 | The architecture defines exactly four layers: 1 — Framework/Infrastructure/Utilities, 2 — Data/Persistent, 3 — Business/Domain Operations, 4 — Presentation/UI |
-| FR-ARC7 | Layer directories map as follows: 4 → `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/`, `routes/`; 3 → `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/`; 2 → `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database; 1 → `app/Core/`, `{Module}/Services/`, `{Module}/Support/` |
+| FR-ARC7 | Layer directories map as follows: 4 → `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/`, `routes/`; 3 → `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/`; 2 → `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database; 1 → `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/` |
 | FR-ARC8 | Dependencies flow downward only: 4 → 3 → 2 → 1. No upward, sideways-skipping, or layer-1-into-module-B business imports |
 | FR-ARC9 | Core (Layer 1) MUST depend on nothing except the framework and approved packages — never on business modules |
 | FR-ARC10 | A module at Layer 4 MAY import another module directly; prefer calling the other module's Read/Command Actions over its internals (FR-ARC14) |
@@ -177,7 +177,7 @@ surface.
 | FR-ARC29 | Cross-module reads MUST call the source module's public `ReadAction` — never query another module's Models directly |
 | FR-ARC30 | Cross-module mutations MUST call the source module's public `CommandAction`; the caller never touches another module's Models |
 | FR-ARC31 | Module dependencies MUST follow the order in `config/module.php`; a cycle is an architecture violation |
-| FR-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Core/`) or a Core contract — never left as a cross-module shortcut |
+| FR-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Modules/Core/`) or a Core contract — never left as a cross-module shortcut |
 | FR-ARC33 | Cross-module visibility is decided at design time; bypassing an Action to reach another module's internals requires a recorded design decision |
 
 ### Communication Discipline
@@ -248,12 +248,12 @@ app/{Module}/
 | 4 — Presentation/UI | `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/{module}/`, `routes/web/{module}.php` |
 | 3 — Business/Domain Ops | `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/` |
 | 2 — Data/Persistent | `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database |
-| 1 — Framework/Infra | `app/Core/`, `{Module}/Services/`, `{Module}/Support/`, PHP, Laravel, packages |
+| 1 — Framework/Infra | `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/`, PHP, Laravel, packages |
 
 ### Base Class Contracts
 
 ```php
-// Layer 3 — Actions (app/Core/Actions/)
+// Layer 3 — Actions (app/Modules/Core/Actions/)
 abstract class BaseAction          { }  // marker + shared concerns: transaction(), log(), dispatchEvent()
 abstract class BaseCommandAction extends BaseAction { }  // respond()/validate()/authorize()/fail()
 abstract class BaseProcessAction extends BaseAction { }  // step()/trackProgress()/notify()/fail()
@@ -263,7 +263,7 @@ abstract class BaseReadAction      { }  // standalone (does NOT extend BaseActio
 // (convention + scan-enforced, FR-ARC12). Command/Process return ActionResponse;
 // Read returns value data.
 
-// Layer 2 — Entities (app/Core/Entities/BaseEntity.php)
+// Layer 2 — Entities (app/Modules/Core/Entities/BaseEntity.php)
 abstract readonly class BaseEntity implements JsonSerializable {
     abstract public static function fromModel(Model $model): static;
     public function toArray(): array;        // value snapshot
@@ -271,7 +271,7 @@ abstract readonly class BaseEntity implements JsonSerializable {
     public function with(string $property, mixed $value): static; // immutable copy
 }
 
-// Layer 2 — DTOs (app/Core/Data/BaseData.php)
+// Layer 2 — DTOs (app/Modules/Core/Data/BaseData.php)
 abstract readonly class BaseData implements JsonSerializable {
     public function toArray(): array;        // all properties
     public function only(string ...$keys): array;
@@ -279,7 +279,7 @@ abstract readonly class BaseData implements JsonSerializable {
     public function merge(array $overrides): static;
 }
 
-// Layer 3 — Action result (app/Core/Data/ActionResponse.php)
+// Layer 3 — Action result (app/Modules/Core/Data/ActionResponse.php)
 final readonly class ActionResponse implements JsonSerializable {
     public static function ok(mixed $data = null, ?string $message = null): self; // success
     public static function created(mixed $data = null, ?string $message = null): self;

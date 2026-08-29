@@ -189,7 +189,7 @@ many registrations at once.
 ### 6.1 InternshipGroupRole Enum
 
 ```php
-// app/Program/InternshipGroup/Enums/InternshipGroupRole.php
+// app/Modules/Program/InternshipGroup/Enums/InternshipGroupRole.php
 enum InternshipGroupRole: string implements LabelEnum
 {
     case STUDENT = 'student';
@@ -206,7 +206,7 @@ enum InternshipGroupRole: string implements LabelEnum
 ### 6.2 InternshipGroup Model
 
 ```php
-// app/Program/InternshipGroup/Models/InternshipGroup.php
+// app/Modules/Program/InternshipGroup/Models/InternshipGroup.php
 #[Fillable(['name', 'internship_id', 'placement_id', 'description', 'is_active'])]
 class InternshipGroup extends BaseModel
 {
@@ -221,7 +221,7 @@ class InternshipGroup extends BaseModel
 ### 6.3 InternshipGroupMember Model
 
 ```php
-// app/Program/InternshipGroup/Models/InternshipGroupMember.php
+// app/Modules/Program/InternshipGroup/Models/InternshipGroupMember.php
 #[Fillable(['internship_group_id', 'registration_id', 'user_id', 'role', 'joined_at'])]
 class InternshipGroupMember extends BaseModel
 {
@@ -236,7 +236,7 @@ class InternshipGroupMember extends BaseModel
 ### 6.4 InternshipGroupState Entity
 
 ```php
-// app/Program/InternshipGroup/Entities/InternshipGroupState.php
+// app/Modules/Program/InternshipGroup/Entities/InternshipGroupState.php
 final readonly class InternshipGroupState extends BaseEntity
 {
     public function __construct(private int $memberCount, private bool $isActive) {}
@@ -253,7 +253,7 @@ final readonly class InternshipGroupState extends BaseEntity
 ### 6.5 InternshipGroupData DTO
 
 ```php
-// app/Program/InternshipGroup/Data/InternshipGroupData.php
+// app/Modules/Program/InternshipGroup/Data/InternshipGroupData.php
 final readonly class InternshipGroupData extends BaseData
 {
     public function __construct(
@@ -268,21 +268,21 @@ final readonly class InternshipGroupData extends BaseData
 ### 6.6 Action Signatures
 
 ```php
-// app/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php
 final class CreateInternshipGroupAction extends BaseCommandAction
 {
     public function execute(array $data): InternshipGroup;
     // Creates group within transaction, logs creation
 }
 
-// app/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php
 final class UpdateInternshipGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group, array $data): InternshipGroup;
     // Updates group within transaction, logs update
 }
 
-// app/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php
 final class DeleteInternshipGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group): void;
@@ -290,7 +290,7 @@ final class DeleteInternshipGroupAction extends BaseCommandAction
     // Deletes within transaction, logs deletion
 }
 
-// app/Program/InternshipGroup/Actions/AddMemberToGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/AddMemberToGroupAction.php
 final class AddMemberToGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group, array $data): InternshipGroupMember;
@@ -298,7 +298,7 @@ final class AddMemberToGroupAction extends BaseCommandAction
     // Executes within transaction, logs addition
 }
 
-// app/Program/InternshipGroup/Actions/AddMembersToGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/AddMembersToGroupAction.php
 final class AddMembersToGroupAction extends BaseProcessAction
 {
     public function execute(InternshipGroup $group, array $rows): int;
@@ -307,7 +307,7 @@ final class AddMembersToGroupAction extends BaseProcessAction
     // returns count of members created
 }
 
-// app/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php
+// app/Modules/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php
 final class RemoveMemberFromGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroupMember $member): void;
@@ -318,7 +318,7 @@ final class RemoveMemberFromGroupAction extends BaseCommandAction
 ### 6.7 Policy
 
 ```php
-// app/Program/InternshipGroup/Policies/InternshipGroupPolicy.php
+// app/Modules/Program/InternshipGroup/Policies/InternshipGroupPolicy.php
 class InternshipGroupPolicy extends BasePolicy
 {
     public function viewAny(?User $user): bool;  // all users
@@ -451,20 +451,20 @@ After implementing this spec, the system has group CRUD with student and mentor 
 
 ## Quick References
 
-- `app/Program/InternshipGroup/Models/InternshipGroup.php` — Group model with placement FK
-- `app/Program/InternshipGroup/Models/InternshipGroupMember.php` — Member model with role, mentor_id
-- `app/Program/InternshipGroup/Enums/InternshipGroupRole.php` — 3-role enum
-- `app/Program/InternshipGroup/Entities/InternshipGroupState.php` — Deletion guard entity
-- `app/Program/InternshipGroup/Data/InternshipGroupData.php` — DTO
-- `app/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php` — Group creation
-- `app/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php` — Group update
-- `app/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php` — Deletion with guard
-- `app/Program/InternshipGroup/Actions/AddMemberToGroupAction.php` — Role-based member add
-- `app/Program/InternshipGroup/Actions/AddMembersToGroupAction.php` — Batch (repeater) member add, all-or-nothing
-- `app/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` — Member removal
-- `app/Program/InternshipGroup/Policies/InternshipGroupPolicy.php` — Authorization
-- `app/Program/InternshipGroup/Livewire/InternshipGroupManager.php` — CRUD + member modal
-- `app/Program/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` — Form validation
+- `app/Modules/Program/InternshipGroup/Models/InternshipGroup.php` — Group model with placement FK
+- `app/Modules/Program/InternshipGroup/Models/InternshipGroupMember.php` — Member model with role, mentor_id
+- `app/Modules/Program/InternshipGroup/Enums/InternshipGroupRole.php` — 3-role enum
+- `app/Modules/Program/InternshipGroup/Entities/InternshipGroupState.php` — Deletion guard entity
+- `app/Modules/Program/InternshipGroup/Data/InternshipGroupData.php` — DTO
+- `app/Modules/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php` — Group creation
+- `app/Modules/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php` — Group update
+- `app/Modules/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php` — Deletion with guard
+- `app/Modules/Program/InternshipGroup/Actions/AddMemberToGroupAction.php` — Role-based member add
+- `app/Modules/Program/InternshipGroup/Actions/AddMembersToGroupAction.php` — Batch (repeater) member add, all-or-nothing
+- `app/Modules/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` — Member removal
+- `app/Modules/Program/InternshipGroup/Policies/InternshipGroupPolicy.php` — Authorization
+- `app/Modules/Program/InternshipGroup/Livewire/InternshipGroupManager.php` — CRUD + member modal
+- `app/Modules/Program/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` — Form validation
 - `routes/web/program.php` — Route definitions
 - `docs/refs/modules/program.md` — Program module overview
 - **Related specs:** [internship-lifecycle.md](7C5WM-internship-lifecycle.md) — Program lifecycle & readiness

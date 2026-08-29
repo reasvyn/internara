@@ -219,7 +219,7 @@ only when users report errors.
 ### SystemCleanupCommand
 
 ```php
-// app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php
+// app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php
 class SystemCleanupCommand extends Command
 {
     protected $signature = 'system:cleanup
@@ -231,7 +231,7 @@ class SystemCleanupCommand extends Command
 ### PruneNotificationsCommand
 
 ```php
-// app/SysAdmin/Console/Commands/PruneNotificationsCommand.php
+// app/Modules/SysAdmin/Console/Commands/PruneNotificationsCommand.php
 class PruneNotificationsCommand extends Command
 {
     protected $signature = 'notifications:prune
@@ -242,7 +242,7 @@ class PruneNotificationsCommand extends Command
 ### AutoInactivateAccounts
 
 ```php
-// app/User/UserManagement/Console/Commands/AutoInactivateAccounts.php
+// app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php
 class AutoInactivateAccounts extends Command
 {
     protected $signature = 'accounts:auto-inactivate
@@ -253,7 +253,7 @@ class AutoInactivateAccounts extends Command
 ### ArchiveStudentAccountsAction
 
 ```php
-// app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php
+// app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php
 final class ArchiveStudentAccountsAction extends BaseCommandAction
 {
     public function execute(Builder $query): int;
@@ -278,7 +278,7 @@ class ArchiveStudentAccountsJob implements ShouldQueue
 ### SystemCacheWarmCommand
 
 ```php
-// app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php
+// app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php
 class SystemCacheWarmCommand extends Command
 {
     protected $signature = 'system:cache-warm';
@@ -288,7 +288,7 @@ class SystemCacheWarmCommand extends Command
 ### SystemHealthCommand
 
 ```php
-// app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php
+// app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php
 class SystemHealthCommand extends Command
 {
     protected $signature = 'system:health
@@ -299,7 +299,7 @@ class SystemHealthCommand extends Command
 ### PulseRecordSnapshotsCommand
 
 ```php
-// app/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php
+// app/Modules/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php
 class PulseRecordSnapshotsCommand extends Command
 {
     protected $signature = 'pulse:record-snapshots';
@@ -394,18 +394,18 @@ manual cleanup. Mass student archival is available from the Student Manager UI.
 
 ## Quick References
 
-- `app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Orchestrated cleanup (108 lines)
-- `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — Notification pruning (39 lines)
-- `app/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — Dormant account lifecycle
-- `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Mass student archival (33 lines)
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Orchestrated cleanup (108 lines)
+- `app/Modules/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — Notification pruning (39 lines)
+- `app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — Dormant account lifecycle
+- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Mass student archival (33 lines)
 - `app/Jobs/User/ArchiveStudentAccountsJob.php` — Queued batch archival (51 lines)
-- `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming (98 lines)
-- `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health diagnostics (388 lines)
-- `app/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php` — Pulse metrics (28 lines)
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming (98 lines)
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health diagnostics (388 lines)
+- `app/Modules/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php` — Pulse metrics (28 lines)
 - `routes/console.php` — Scheduler registration for all maintenance commands
-- `app/SysAdmin/Observability/Recorders/RegistrationRecorder.php` — Pulse registration snapshots
-- `app/SysAdmin/Observability/Recorders/SystemRecorder.php` — Pulse system snapshots
-- `app/User/Enums/AccountStatus.php` — ARCHIVED status enum value
+- `app/Modules/SysAdmin/Observability/Recorders/RegistrationRecorder.php` — Pulse registration snapshots
+- `app/Modules/SysAdmin/Observability/Recorders/SystemRecorder.php` — Pulse system snapshots
+- `app/Modules/User/Enums/AccountStatus.php` — ARCHIVED status enum value
 - **Related specs:** [backup-system.md](HBXCI-backup-system.md) — Backup creation and retention
 - **Related specs:** [gdpr-compliance.md](7HNCF-gdpr-compliance.md) — GDPR deletion logging
 - **Related specs:** [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) — Queue for archival jobs

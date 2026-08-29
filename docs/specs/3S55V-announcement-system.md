@@ -261,7 +261,7 @@ or correction before the audience sees it.
 ### 6.1 Announcement Model
 
 ```php
-// app/SysAdmin/Announcement/Models/Announcement.php (93 lines)
+// app/Modules/SysAdmin/Announcement/Models/Announcement.php (93 lines)
 #[Fillable(['title', 'message', 'type', 'status', 'scheduled_at', 'link', 'target_roles', 'created_by'])]
 class Announcement extends BaseModel
 {
@@ -281,7 +281,7 @@ class Announcement extends BaseModel
 ### 6.2 AnnouncementStatus Enum
 
 ```php
-// app/SysAdmin/Announcement/Enums/AnnouncementStatus.php (58 lines)
+// app/Modules/SysAdmin/Announcement/Enums/AnnouncementStatus.php (58 lines)
 enum AnnouncementStatus: string implements StatusEnum
 {
     case DRAFT = 'draft';
@@ -299,7 +299,7 @@ enum AnnouncementStatus: string implements StatusEnum
 ### 6.3 AnnouncementState Entity
 
 ```php
-// app/SysAdmin/Announcement/Entities/AnnouncementState.php (52 lines)
+// app/Modules/SysAdmin/Announcement/Entities/AnnouncementState.php (52 lines)
 final readonly class AnnouncementState extends BaseEntity
 {
     public function __construct(
@@ -318,7 +318,7 @@ final readonly class AnnouncementState extends BaseEntity
 ### 6.4 SendAnnouncementAction
 
 ```php
-// app/SysAdmin/Announcement/Actions/SendAnnouncementAction.php (81 lines)
+// app/Modules/SysAdmin/Announcement/Actions/SendAnnouncementAction.php (81 lines)
 final class SendAnnouncementAction extends BaseCommandAction
 {
     public function execute(array $data): Announcement;
@@ -333,7 +333,7 @@ final class SendAnnouncementAction extends BaseCommandAction
 ### 6.5 PublishAnnouncementAction
 
 ```php
-// app/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php (46 lines)
+// app/Modules/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php (46 lines)
 final class PublishAnnouncementAction extends BaseCommandAction
 {
     public function execute(Announcement $announcement): void;
@@ -344,7 +344,7 @@ final class PublishAnnouncementAction extends BaseCommandAction
 ### 6.6 DeleteAnnouncementAction
 
 ```php
-// app/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php (22 lines)
+// app/Modules/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php (22 lines)
 final class DeleteAnnouncementAction extends BaseCommandAction
 {
     public function execute(Announcement $announcement): void;
@@ -355,7 +355,7 @@ final class DeleteAnnouncementAction extends BaseCommandAction
 ### 6.7 AnnouncementForm
 
 ```php
-// app/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php (59 lines)
+// app/Modules/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php (59 lines)
 class AnnouncementForm extends Form
 {
     public string $title = '';
@@ -376,7 +376,7 @@ class AnnouncementForm extends Form
 ### 6.8 AnnouncementManager
 
 ```php
-// app/SysAdmin/Announcement/Livewire/AnnouncementManager.php (135 lines)
+// app/Modules/SysAdmin/Announcement/Livewire/AnnouncementManager.php (135 lines)
 class AnnouncementManager extends BaseRecordManager
 {
     public AnnouncementForm $form;
@@ -401,7 +401,7 @@ class AnnouncementManager extends BaseRecordManager
 ### 6.9 AnnouncementNotification
 
 ```php
-// app/SysAdmin/Announcement/Notifications/AnnouncementNotification.php (59 lines)
+// app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php (59 lines)
 class AnnouncementNotification extends Notification implements ShouldQueue
 {
     public function __construct(
@@ -420,7 +420,7 @@ class AnnouncementNotification extends Notification implements ShouldQueue
 ### 6.10 PublishScheduledAnnouncementsCommand
 
 ```php
-// app/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php (45 lines)
+// app/Modules/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php (45 lines)
 class PublishScheduledAnnouncementsCommand extends Command
 {
     protected $signature = 'announcements:publish';
@@ -612,16 +612,16 @@ After implementing this spec, the announcement system provides admins with a com
 
 ## Quick References
 
-- `app/SysAdmin/Announcement/Models/Announcement.php` — Eloquent model with `#[Fillable]`, scopes, and entity bridge (93 lines)
-- `app/SysAdmin/Announcement/Enums/AnnouncementStatus.php` — Three-state lifecycle enum implementing `StatusEnum` (58 lines)
-- `app/SysAdmin/Announcement/Entities/AnnouncementState.php` — `final readonly` entity with `fromModel()` and `isPendingPublish()` (52 lines)
-- `app/SysAdmin/Announcement/Actions/SendAnnouncementAction.php` — Create + conditional notification dispatch (81 lines)
-- `app/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php` — Status transition + notification dispatch (46 lines)
-- `app/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php` — Transactional deletion with audit log (22 lines)
-- `app/SysAdmin/Announcement/Livewire/AnnouncementManager.php` — Admin management UI with confirm actions (135 lines)
-- `app/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php` — Form object with validation rules (59 lines)
-- `app/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — Multi-channel notification class (59 lines)
-- `app/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php` — Cron command for scheduled publishing (45 lines)
+- `app/Modules/SysAdmin/Announcement/Models/Announcement.php` — Eloquent model with `#[Fillable]`, scopes, and entity bridge (93 lines)
+- `app/Modules/SysAdmin/Announcement/Enums/AnnouncementStatus.php` — Three-state lifecycle enum implementing `StatusEnum` (58 lines)
+- `app/Modules/SysAdmin/Announcement/Entities/AnnouncementState.php` — `final readonly` entity with `fromModel()` and `isPendingPublish()` (52 lines)
+- `app/Modules/SysAdmin/Announcement/Actions/SendAnnouncementAction.php` — Create + conditional notification dispatch (81 lines)
+- `app/Modules/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php` — Status transition + notification dispatch (46 lines)
+- `app/Modules/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php` — Transactional deletion with audit log (22 lines)
+- `app/Modules/SysAdmin/Announcement/Livewire/AnnouncementManager.php` — Admin management UI with confirm actions (135 lines)
+- `app/Modules/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php` — Form object with validation rules (59 lines)
+- `app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — Multi-channel notification class (59 lines)
+- `app/Modules/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php` — Cron command for scheduled publishing (45 lines)
 - `database/migrations/2026_01_01_000007_create_announcements_table.php` — Table schema with indexes (39 lines)
 - `database/factories/AnnouncementFactory.php` — Test factory (28 lines)
 - `resources/views/sysadmin/announcement/announcement-manager.blade.php` — Management UI Blade template (136 lines)

@@ -129,7 +129,7 @@ None.
 ## Architectural Integration
 
 - **Submodules**: `Installation`, `SetupWizard`
-- **Business Logic**: `app/Setup/`
+- **Business Logic**: `app/Modules/Setup/`
 - **Routing**: `routes/web/setup.php`
 - **Views**: `resources/views/setup/`
 - **Testing**: `tests/Setup/`

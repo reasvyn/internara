@@ -12,7 +12,7 @@ Answer these five questions before creating anything — most "new" code already
 
 1. **Does this class already exist?** — `find app/ -name '*{Concept}*'`. Duplicating an existing
    Action/Entity/Model violates DRY and creates two sources of truth. Reuse or extract instead.
-2. **What base class should it extend?** — Read the *actual* base class declaration in `app/Core/`
+2. **What base class should it extend?** — Read the *actual* base class declaration in `app/Modules/Core/`
    (e.g. `BaseCommandAction` vs `BaseReadAction`) rather than guessing from its name; the base class
    defines the guarantee (transaction/log for Command, none for Read).
 3. **Where does it live?** — `app/{Module}/{SubModule}/`. Check for an existing submodule first;

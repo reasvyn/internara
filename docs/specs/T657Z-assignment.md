@@ -499,31 +499,31 @@ After implementing this spec, teachers can create assignments with deadlines, st
 
 ## Quick References
 
-- `app/Assignment/Models/Assignment.php` — Assignment model with status and relationships
-- `app/Assignment/Submission/Models/Submission.php` — Submission model with MediaLibrary
-- `app/Assignment/Entities/AssignmentRules.php` — Entity with mandatory/overdue checks
-- `app/Assignment/Submission/Entities/SubmissionState.php` — Entity with edit/verify checks
-- `app/Assignment/Enums/AssignmentStatus.php` — DRAFT/PUBLISHED/CLOSED enum
-- `app/Assignment/Submission/Enums/SubmissionStatus.php` — 5-case submission status enum
-- `app/Assignment/Submission/Data/SubmitAssignmentData.php` — Submission DTO
-- `app/Assignment/Actions/CreateAssignmentAction.php` — Create command
-- `app/Assignment/Actions/UpdateAssignmentAction.php` — Update command
-- `app/Assignment/Actions/DeleteAssignmentAction.php` — Delete command
-- `app/Assignment/Actions/PublishAssignmentAction.php` — Publish with notifications
-- `app/Assignment/Submission/Actions/SubmitAssignmentAction.php` — Submit with guards
-- `app/Assignment/Submission/Actions/GradeSubmissionAction.php` — Grade with score validation
-- `app/Assignment/Submission/Actions/VerifySubmissionAction.php` — Verify receipt
-- `app/Assignment/Submission/Actions/RequestSubmissionRevisionAction.php` — Return for revision
-- `app/Assignment/Livewire/AssignmentManager.php` — Admin CRUD UI
-- `app/Assignment/Submission/Livewire/SubmitAssignment.php` — Student submission UI
-- `app/Assignment/Submission/Livewire/SubmissionGrading.php` — Grading UI
-- `app/Assignment/Policies/AssignmentPolicy.php` — Authorization
-- `app/Assignment/Submission/Policies/SubmissionPolicy.php` — Submission authorization
-- `app/Assignment/Events/AssignmentPublished.php` — Publish event
-- `app/Assignment/Submission/Events/SubmissionRevisionRequested.php` — Revision event
-- `app/Assignment/Listeners/NotifyOnAssignmentPublished.php` — Creator notification
-- `app/Assignment/Notifications/AssignmentNotification.php` — Student publish notification
-- `app/Assignment/Submission/Notifications/SubmissionFeedbackNotification.php` — Grading/revision notification
+- `app/Modules/Assignment/Models/Assignment.php` — Assignment model with status and relationships
+- `app/Modules/Assignment/Submission/Models/Submission.php` — Submission model with MediaLibrary
+- `app/Modules/Assignment/Entities/AssignmentRules.php` — Entity with mandatory/overdue checks
+- `app/Modules/Assignment/Submission/Entities/SubmissionState.php` — Entity with edit/verify checks
+- `app/Modules/Assignment/Enums/AssignmentStatus.php` — DRAFT/PUBLISHED/CLOSED enum
+- `app/Modules/Assignment/Submission/Enums/SubmissionStatus.php` — 5-case submission status enum
+- `app/Modules/Assignment/Submission/Data/SubmitAssignmentData.php` — Submission DTO
+- `app/Modules/Assignment/Actions/CreateAssignmentAction.php` — Create command
+- `app/Modules/Assignment/Actions/UpdateAssignmentAction.php` — Update command
+- `app/Modules/Assignment/Actions/DeleteAssignmentAction.php` — Delete command
+- `app/Modules/Assignment/Actions/PublishAssignmentAction.php` — Publish with notifications
+- `app/Modules/Assignment/Submission/Actions/SubmitAssignmentAction.php` — Submit with guards
+- `app/Modules/Assignment/Submission/Actions/GradeSubmissionAction.php` — Grade with score validation
+- `app/Modules/Assignment/Submission/Actions/VerifySubmissionAction.php` — Verify receipt
+- `app/Modules/Assignment/Submission/Actions/RequestSubmissionRevisionAction.php` — Return for revision
+- `app/Modules/Assignment/Livewire/AssignmentManager.php` — Admin CRUD UI
+- `app/Modules/Assignment/Submission/Livewire/SubmitAssignment.php` — Student submission UI
+- `app/Modules/Assignment/Submission/Livewire/SubmissionGrading.php` — Grading UI
+- `app/Modules/Assignment/Policies/AssignmentPolicy.php` — Authorization
+- `app/Modules/Assignment/Submission/Policies/SubmissionPolicy.php` — Submission authorization
+- `app/Modules/Assignment/Events/AssignmentPublished.php` — Publish event
+- `app/Modules/Assignment/Submission/Events/SubmissionRevisionRequested.php` — Revision event
+- `app/Modules/Assignment/Listeners/NotifyOnAssignmentPublished.php` — Creator notification
+- `app/Modules/Assignment/Notifications/AssignmentNotification.php` — Student publish notification
+- `app/Modules/Assignment/Submission/Notifications/SubmissionFeedbackNotification.php` — Grading/revision notification
 - `database/migrations/2026_01_04_000009_create_assignments_table.php` — Assignments schema
 - `database/migrations/2026_01_04_000010_create_submissions_table.php` — Submissions schema
 - `routes/web/assignment.php` — Route definitions

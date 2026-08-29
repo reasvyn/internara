@@ -249,7 +249,7 @@ management UI, so admins can narrow results before downloading.
 ### 6.1 CsvHandler Service
 
 ```php
-// app/Core/Support/CsvHandler.php
+// app/Modules/Core/Support/CsvHandler.php
 final class CsvHandler
 {
     /**
@@ -286,7 +286,7 @@ final class CsvHandler
 ### 6.2 CsvRowResult Enum
 
 ```php
-// app/Core/Enums/CsvRowResult.php
+// app/Modules/Core/Enums/CsvRowResult.php
 enum CsvRowResult: string implements LabelEnum
 {
     case CREATED = 'created';
@@ -305,7 +305,7 @@ enum CsvRowResult: string implements LabelEnum
 ### 6.3 UserManager Import/Export Methods
 
 ```php
-// app/User/UserManagement/Livewire/UserManager.php
+// app/Modules/User/UserManagement/Livewire/UserManager.php
 class UserManager extends BaseRecordManager
 {
     public Property $importFile;
@@ -340,7 +340,7 @@ class UserManager extends BaseRecordManager
 ### 6.4 DepartmentManager Import/Export Methods
 
 ```php
-// app/Academics/Department/Livewire/DepartmentManager.php
+// app/Modules/Academics/Department/Livewire/DepartmentManager.php
 class DepartmentManager extends BaseRecordManager
 {
     public Property $importFile;
@@ -368,7 +368,7 @@ class DepartmentManager extends BaseRecordManager
 ### 6.5 CompanyManager Import/Export Methods
 
 ```php
-// app/Partners/Company/Livewire/CompanyManager.php
+// app/Modules/Partners/Company/Livewire/CompanyManager.php
 class CompanyManager extends BaseRecordManager
 {
     public Property $importFile;
@@ -540,11 +540,11 @@ After implementing this spec, the system has reusable CSV import/export with tem
 
 ## Quick References
 
-- `app/Core/Support/CsvHandler.php` — shared CSV import/export/template service
-- `app/Core/Enums/CsvRowResult.php` — row result enum (CREATED, SKIPPED)
-- `app/User/UserManagement/Livewire/UserManager.php` — user import/export/template methods
-- `app/Academics/Department/Livewire/DepartmentManager.php` — department import/export/template methods
-- `app/Partners/Company/Livewire/CompanyManager.php` — company import/export/template methods
+- `app/Modules/Core/Support/CsvHandler.php` — shared CSV import/export/template service
+- `app/Modules/Core/Enums/CsvRowResult.php` — row result enum (CREATED, SKIPPED)
+- `app/Modules/User/UserManagement/Livewire/UserManager.php` — user import/export/template methods
+- `app/Modules/Academics/Department/Livewire/DepartmentManager.php` — department import/export/template methods
+- `app/Modules/Partners/Company/Livewire/CompanyManager.php` — company import/export/template methods
 - `docs/specs/user-crud-and-status.md` — User CRUD and AccountStatus
 - `docs/specs/company-management.md` — Company CRUD
 - `docs/specs/partnership-management.md` — Partnership lifecycle

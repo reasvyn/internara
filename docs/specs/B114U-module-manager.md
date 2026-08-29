@@ -402,9 +402,9 @@ module registration through the consolidated gateway.
 
 - `config/module.php` — Module registry (single source of truth)
 - `config/cache-keys.php` — Cache key definitions
-- `app/Core/Support/ModuleManager.php` — Static module config gateway
-- `app/Core/Services/ModuleService.php` — Discovery orchestrator
-- `app/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
+- `app/Modules/Core/Support/ModuleManager.php` — Static module config gateway
+- `app/Modules/Core/Services/ModuleService.php` — Discovery orchestrator
+- `app/Modules/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
 - `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
 - `routes/web.php` — Route auto-inclusion
 - `docs/specs/module-discovery.md` (I1BCV) — Registry, discovery conventions, config contract

@@ -190,7 +190,7 @@ technical debt.
 ### 6.1 Registration Model
 
 ```php
-// app/Enrollment/Registration/Models/Registration.php
+// app/Modules/Enrollment/Registration/Models/Registration.php
 // Table: registrations
 // PK: id (uuid, cascade)
 // FK: student_id → users (cascade delete)
@@ -204,7 +204,7 @@ technical debt.
 ### 6.2 RegistrationState Entity
 
 ```php
-// app/Enrollment/Registration/Entities/RegistrationState.php
+// app/Modules/Enrollment/Registration/Entities/RegistrationState.php
 final readonly class RegistrationState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -226,7 +226,7 @@ final readonly class RegistrationState extends BaseEntity
 ### 6.3 RegistrationData DTO
 
 ```php
-// app/Enrollment/Registration/Data/RegistrationData.php
+// app/Modules/Enrollment/Registration/Data/RegistrationData.php
 final readonly class RegistrationData extends BaseData
 {
     public function __construct(
@@ -244,14 +244,14 @@ final readonly class RegistrationData extends BaseData
 ### 6.4 Registration Actions
 
 ```php
-// app/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php
+// app/Modules/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php
 final class ReadRegistrationAvailabilityAction extends BaseReadAction
 {
     public function execute(): array;
     // Returns: ['status' => 'not_configured'|'open'|'upcoming'|'closed']
 }
 
-// app/Enrollment/Registration/Actions/RegisterInternshipAction.php
+// app/Modules/Enrollment/Registration/Actions/RegisterInternshipAction.php
 final class RegisterInternshipAction extends BaseCommandAction
 {
     public function execute(RegistrationData $data, User $student): Registration;
@@ -260,7 +260,7 @@ final class RegisterInternshipAction extends BaseCommandAction
     // Dispatches: StudentRegistered event
 }
 
-// app/Enrollment/Registration/Actions/VerifyRegistrationAction.php
+// app/Modules/Enrollment/Registration/Actions/VerifyRegistrationAction.php
 final class VerifyRegistrationAction extends BaseCommandAction
 {
     public function execute(Registration $registration, Placement $placement, array $mentors = []): Registration;
@@ -268,7 +268,7 @@ final class VerifyRegistrationAction extends BaseCommandAction
     // Atomic: assign placement_id, set dates, set status 'active', increment filled_quota
 }
 
-// app/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php
+// app/Modules/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php
 final class UploadRegistrationDocumentAction extends BaseCommandAction
 {
     public function execute(Registration $registration, string $requiredDocumentId, UploadedFile $file): RegistrationDocument;
@@ -278,7 +278,7 @@ final class UploadRegistrationDocumentAction extends BaseCommandAction
 ### 6.5 RegistrationDocumentStatus Enum
 
 ```php
-// app/Enrollment/Registration/Enums/RegistrationDocumentStatus.php
+// app/Modules/Enrollment/Registration/Enums/RegistrationDocumentStatus.php
 enum RegistrationDocumentStatus: string implements LabelEnum, StatusEnum
 {
     case PENDING = 'pending';
@@ -293,7 +293,7 @@ enum RegistrationDocumentStatus: string implements LabelEnum, StatusEnum
 ### 6.6 Events
 
 ```php
-// app/Enrollment/Registration/Events/StudentRegistered.php
+// app/Modules/Enrollment/Registration/Events/StudentRegistered.php
 // Dispatched by: RegisterInternshipAction
 // Listener: ClearDashboardOnRegistration (clears dashboard cache)
 ```
@@ -394,24 +394,24 @@ After implementing this spec, students can register for internship programs and 
 
 ## Quick References
 
-- `app/Enrollment/Registration/Models/Registration.php` — Registration model (UUID PK, status strings)
-- `app/Enrollment/Registration/Entities/RegistrationState.php` — Registration state entity with lifecycle methods
-- `app/Enrollment/Registration/Data/RegistrationData.php` — Registration DTO
-- `app/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php` — Registration window status
-- `app/Enrollment/Registration/Actions/RegisterInternshipAction.php` — Registration creation with duplicate guard
-- `app/Enrollment/Registration/Actions/VerifyRegistrationAction.php` — Admin verification with atomic placement assignment
-- `app/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php` — Document upload handler
-- `app/Enrollment/Registration/Enums/RegistrationDocumentStatus.php` — Document status enum (PENDING/VERIFIED/REJECTED)
-- `app/Enrollment/Registration/Models/RegistrationDocument.php` — Document submission model
-- `app/Enrollment/Registration/Policies/RegistrationPolicy.php` — Registration authorization
-- `app/Enrollment/Registration/Policies/RegistrationDocumentPolicy.php` — Document authorization
-- `app/Enrollment/Registration/Events/StudentRegistered.php` — Registration creation event
-- `app/Enrollment/Registration/Listeners/ClearDashboardOnRegistration.php` — Dashboard cache invalidation
-- `app/Enrollment/Registration/Livewire/RegistrationCenter.php` — Open internships display
-- `app/Enrollment/Registration/Livewire/RegistrationWizard.php` — 2-step registration wizard
-- `app/Enrollment/Registration/Livewire/RegistrationVerification.php` — Admin pending registration review
-- `app/Enrollment/Registration/Livewire/RegistrationDocumentUpload.php` — Student document upload
-- `app/Enrollment/Registration/Livewire/Forms/RegistrationWizardForm.php` — Wizard form validation
+- `app/Modules/Enrollment/Registration/Models/Registration.php` — Registration model (UUID PK, status strings)
+- `app/Modules/Enrollment/Registration/Entities/RegistrationState.php` — Registration state entity with lifecycle methods
+- `app/Modules/Enrollment/Registration/Data/RegistrationData.php` — Registration DTO
+- `app/Modules/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php` — Registration window status
+- `app/Modules/Enrollment/Registration/Actions/RegisterInternshipAction.php` — Registration creation with duplicate guard
+- `app/Modules/Enrollment/Registration/Actions/VerifyRegistrationAction.php` — Admin verification with atomic placement assignment
+- `app/Modules/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php` — Document upload handler
+- `app/Modules/Enrollment/Registration/Enums/RegistrationDocumentStatus.php` — Document status enum (PENDING/VERIFIED/REJECTED)
+- `app/Modules/Enrollment/Registration/Models/RegistrationDocument.php` — Document submission model
+- `app/Modules/Enrollment/Registration/Policies/RegistrationPolicy.php` — Registration authorization
+- `app/Modules/Enrollment/Registration/Policies/RegistrationDocumentPolicy.php` — Document authorization
+- `app/Modules/Enrollment/Registration/Events/StudentRegistered.php` — Registration creation event
+- `app/Modules/Enrollment/Registration/Listeners/ClearDashboardOnRegistration.php` — Dashboard cache invalidation
+- `app/Modules/Enrollment/Registration/Livewire/RegistrationCenter.php` — Open internships display
+- `app/Modules/Enrollment/Registration/Livewire/RegistrationWizard.php` — 2-step registration wizard
+- `app/Modules/Enrollment/Registration/Livewire/RegistrationVerification.php` — Admin pending registration review
+- `app/Modules/Enrollment/Registration/Livewire/RegistrationDocumentUpload.php` — Student document upload
+- `app/Modules/Enrollment/Registration/Livewire/Forms/RegistrationWizardForm.php` — Wizard form validation
 - `routes/web/enrollment.php` — All enrollment route definitions
 - `docs/refs/modules/enrollment.md` — Enrollment module overview
 - **Related specs:** [placement.md](J9GBH-placement.md) — Placement CRUD & capacity management

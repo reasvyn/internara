@@ -48,15 +48,15 @@ audit logging with PII masking), `Services/AppInfo` (static metadata), `Services
 **Shared models**: `Models/ActivityLog` (SmartLogger persistence), `Models/BaseAuthenticatable`
 (User model base with manual HasUuids).
 
-**Helper functions**: `app/Core/Support/helpers.php` provides `app_info()`. The `setting()` and
-`brand()` helpers live in `app/Settings/Support/helpers.php`.
+**Helper functions**: `app/Modules/Core/Support/helpers.php` provides `app_info()`. The `setting()` and
+`brand()` helpers live in `app/Modules/Settings/Support/helpers.php`.
 
 ## Key Concepts
 
 ### Separation of Abstract and Concrete
 
 Core provides abstract contracts and base classes alongside concrete implementations under the same
-`app/Core/` namespace. The distinction prevents framework-level abstractions from being polluted
+`app/Modules/Core/` namespace. The distinction prevents framework-level abstractions from being polluted
 with application-specific defaults. `Data/`, `Enums/`, `Exceptions/`, `Livewire/`,
 `Policies/Concerns/`, and `Support/` contain concrete classes, while `Contracts/`,
 `Actions/BaseAction.php`, `Models/BaseModel.php`, `Entities/BaseEntity.php`, etc. contain abstract
@@ -89,9 +89,9 @@ key collisions and enables centralized cache management.
 
 The three helper functions are split across two files:
 
-- `app_info()` in `app/Core/Support/helpers.php` — static metadata from config/composer.json
-- `setting()` in `app/Settings/Support/helpers.php` — runtime key-value settings
-- `brand()` in `app/Settings/Support/helpers.php` — dynamic branding values from database with
+- `app_info()` in `app/Modules/Core/Support/helpers.php` — static metadata from config/composer.json
+- `setting()` in `app/Modules/Settings/Support/helpers.php` — runtime key-value settings
+- `brand()` in `app/Modules/Settings/Support/helpers.php` — dynamic branding values from database with
   config fallback
 
 ### Cross-Module Communication

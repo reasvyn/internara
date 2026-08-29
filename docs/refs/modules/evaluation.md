@@ -18,7 +18,7 @@ logbook reflections (Journals).
 
 ## Submodules
 
-None — all components are directly under `app/Evaluation/`.
+None — all components are directly under `app/Modules/Evaluation/`.
 
 ## Key Concepts
 

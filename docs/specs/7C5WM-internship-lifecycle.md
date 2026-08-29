@@ -231,7 +231,7 @@ registrations would orphan these records and break foreign key relationships.
 ### 6.1 InternshipStatus Enum
 
 ```php
-// app/Program/Internship/Enums/InternshipStatus.php
+// app/Modules/Program/Internship/Enums/InternshipStatus.php
 enum InternshipStatus: string implements LabelEnum, StatusEnum
 {
     case DRAFT = 'draft';
@@ -251,7 +251,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
 ### 6.2 Internship Model
 
 ```php
-// app/Program/Internship/Models/Internship.php
+// app/Modules/Program/Internship/Models/Internship.php
 class Internship extends BaseModel
 {
     // #[Fillable]: academic_year_id, name, start_date, end_date, description,
@@ -266,7 +266,7 @@ class Internship extends BaseModel
 ### 6.3 InternshipState Entity
 
 ```php
-// app/Program/Internship/Entities/InternshipState.php
+// app/Modules/Program/Internship/Entities/InternshipState.php
 final readonly class InternshipState extends BaseEntity
 {
     public int $placementCount;
@@ -280,7 +280,7 @@ final readonly class InternshipState extends BaseEntity
 ### 6.4 InternshipPeriod Entity
 
 ```php
-// app/Program/Internship/Entities/InternshipPeriod.php
+// app/Modules/Program/Internship/Entities/InternshipPeriod.php
 final readonly class InternshipPeriod extends BaseEntity
 {
     public ?InternshipStatus $status;
@@ -303,7 +303,7 @@ final readonly class InternshipPeriod extends BaseEntity
 ### 6.5 InternshipData DTO
 
 ```php
-// app/Program/Internship/Data/InternshipData.php
+// app/Modules/Program/Internship/Data/InternshipData.php
 final readonly class InternshipData extends BaseData
 {
     public function __construct(
@@ -322,35 +322,35 @@ final readonly class InternshipData extends BaseData
 ### 6.6 Actions
 
 ```php
-// app/Program/Internship/Actions/CreateInternshipAction.php
+// app/Modules/Program/Internship/Actions/CreateInternshipAction.php
 final class CreateInternshipAction extends BaseCommandAction
 {
     public function execute(InternshipData $data): Internship;
     // Auto-fills active academic year; creates with DRAFT status
 }
 
-// app/Program/Internship/Actions/UpdateInternshipAction.php
+// app/Modules/Program/Internship/Actions/UpdateInternshipAction.php
 final class UpdateInternshipAction extends BaseCommandAction
 {
     public function execute(Internship $internship, InternshipData $data): Internship;
     // Enforces status state machine
 }
 
-// app/Program/Internship/Actions/DeleteInternshipAction.php
+// app/Modules/Program/Internship/Actions/DeleteInternshipAction.php
 final class DeleteInternshipAction extends BaseCommandAction
 {
     public function execute(Internship $internship): void;
     // Blocks if placements/registrations exist
 }
 
-// app/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php
+// app/Modules/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php
 final class BatchUpdateInternshipStatusAction extends BaseCommandAction
 {
     public function execute(Builder $query, InternshipStatus $status): int;
     // Applies status to all matching records; no per-record transition validation
 }
 
-// app/Program/Internship/Actions/ReadCloseReadinessAction.php
+// app/Modules/Program/Internship/Actions/ReadCloseReadinessAction.php
 final class ReadCloseReadinessAction extends BaseReadAction
 {
     public function execute(Internship $internship): array;
@@ -361,7 +361,7 @@ final class ReadCloseReadinessAction extends BaseReadAction
 ### 6.7 Validation Rule
 
 ```php
-// app/Program/Internship/Rules/OpenForRegistration.php
+// app/Modules/Program/Internship/Rules/OpenForRegistration.php
 final class OpenForRegistration implements ValidationRule
 {
     // Uses InternshipPeriod entity to validate registration eligibility
@@ -371,9 +371,9 @@ final class OpenForRegistration implements ValidationRule
 ### 6.8 Events & Listeners
 
 ```php
-// app/Program/Internship/Events/InternshipCreated.php
-// app/Program/Internship/Events/InternshipStatusBatchUpdated.php
-// app/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php
+// app/Modules/Program/Internship/Events/InternshipCreated.php
+// app/Modules/Program/Internship/Events/InternshipStatusBatchUpdated.php
+// app/Modules/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php
 ```
 
 ### 6.9 Routes
@@ -391,10 +391,10 @@ Route::prefix('admin')
 ### 6.10 Livewire Components
 
 ```php
-// app/Program/Internship/Livewire/InternshipManager.php
+// app/Modules/Program/Internship/Livewire/InternshipManager.php
 // Features: CRUD, search, filter, CSV import/export, batch close, pre-close readiness check UI
 
-// app/Program/Internship/Livewire/Forms/InternshipForm.php
+// app/Modules/Program/Internship/Livewire/Forms/InternshipForm.php
 ```
 
 ---
@@ -483,19 +483,19 @@ After implementing this spec, the system has internship program CRUD with phases
 
 ## Quick References
 
-- `app/Program/Internship/Models/Internship.php` — Internship model with JSON columns and entity bridges
-- `app/Program/Internship/Enums/InternshipStatus.php` — 5-state enum with state machine
-- `app/Program/Internship/Entities/InternshipState.php` — deletion guard
-- `app/Program/Internship/Entities/InternshipPeriod.php` — registration window + academic year checks
-- `app/Program/Internship/Data/InternshipData.php` — DTO for create/update
-- `app/Program/Internship/Actions/CreateInternshipAction.php` — creation with auto-fill
-- `app/Program/Internship/Actions/UpdateInternshipAction.php` — update with state machine
-- `app/Program/Internship/Actions/DeleteInternshipAction.php` — deletion with guard
-- `app/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php` — batch status update
-- `app/Program/Internship/Actions/ReadCloseReadinessAction.php` — 5-domain readiness check
-- `app/Program/Internship/Rules/OpenForRegistration.php` — validation rule
-- `app/Program/Internship/Policies/InternshipPolicy.php` — authorization
-- `app/Program/Internship/Livewire/InternshipManager.php` — CRUD, CSV, batch, readiness UI
+- `app/Modules/Program/Internship/Models/Internship.php` — Internship model with JSON columns and entity bridges
+- `app/Modules/Program/Internship/Enums/InternshipStatus.php` — 5-state enum with state machine
+- `app/Modules/Program/Internship/Entities/InternshipState.php` — deletion guard
+- `app/Modules/Program/Internship/Entities/InternshipPeriod.php` — registration window + academic year checks
+- `app/Modules/Program/Internship/Data/InternshipData.php` — DTO for create/update
+- `app/Modules/Program/Internship/Actions/CreateInternshipAction.php` — creation with auto-fill
+- `app/Modules/Program/Internship/Actions/UpdateInternshipAction.php` — update with state machine
+- `app/Modules/Program/Internship/Actions/DeleteInternshipAction.php` — deletion with guard
+- `app/Modules/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php` — batch status update
+- `app/Modules/Program/Internship/Actions/ReadCloseReadinessAction.php` — 5-domain readiness check
+- `app/Modules/Program/Internship/Rules/OpenForRegistration.php` — validation rule
+- `app/Modules/Program/Internship/Policies/InternshipPolicy.php` — authorization
+- `app/Modules/Program/Internship/Livewire/InternshipManager.php` — CRUD, CSV, batch, readiness UI
 - `routes/web/program.php` — Route definitions
 - `docs/refs/modules/program.md` — Program module overview
 - **Related specs:** [internship-groups.md](IT0OE-internship-groups.md) — Group & member management

@@ -157,7 +157,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Internship`, `InternshipGroup`
-- **Business Logic**: `app/Program/`
+- **Business Logic**: `app/Modules/Program/`
 - **Routing**: `routes/web/program.php`
 - **Views**: `resources/views/program/`
 - **Testing**: `tests/Program/`

@@ -243,7 +243,7 @@ full rules.
 
 ### Language Switcher
 
-The `LangSwitcher` Livewire component (`app/Settings/Livewire/LangSwitcher.php`) toggles between
+The `LangSwitcher` Livewire component (`app/Modules/Settings/Livewire/LangSwitcher.php`) toggles between
 EN and ID (plain Tailwind trigger with globe icons; no TallstackUI built-in). Locale preference is stored in a cookie (`locale`) and applied via `SetLocale` middleware
 on every request.
 
@@ -322,4 +322,4 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
 | Theme switcher    | `resources/views/ui/components/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |
-| Language switcher | `app/Settings/Livewire/LangSwitcher.php`  |
+| Language switcher | `app/Modules/Settings/Livewire/LangSwitcher.php`  |

@@ -159,7 +159,7 @@ testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Registration`, `Placement`, `AccountApplication`
-- **Business Logic**: `app/Enrollment/`
+- **Business Logic**: `app/Modules/Enrollment/`
 - **Routing**: `routes/web/enrollment.php`
 - **Views**: `resources/views/enrollment/`
 - **Testing**: `tests/Enrollment/`

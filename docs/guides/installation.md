@@ -164,9 +164,9 @@ php artisan setup:install --check-only  # Audit without provisioning
 
 ## Quick References
 
-- `app/Setup/Console/Commands/SetupInstallCommand.php` — Installer command
-- `app/Setup/Console/Commands/SetupResetTokenCommand.php` — Token regeneration
-- `app/Setup/Services/EnvironmentAuditor.php` — Environment audit logic
+- `app/Modules/Setup/Console/Commands/SetupInstallCommand.php` — Installer command
+- `app/Modules/Setup/Console/Commands/SetupResetTokenCommand.php` — Token regeneration
+- `app/Modules/Setup/Services/EnvironmentAuditor.php` — Environment audit logic
 - `.env.example` — Default configuration template
 - [Setup Wizard](setup-wizard.md) — Next step after installation
 - [Post-Setup](post-setup.md) — Configuration after wizard completion

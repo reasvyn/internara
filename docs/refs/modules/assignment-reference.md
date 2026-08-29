@@ -142,7 +142,7 @@ testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Submission`
-- **Business Logic**: `app/Assignment/`
+- **Business Logic**: `app/Modules/Assignment/`
 - **Routing**: `routes/web/assignment.php`
 - **Views**: `resources/views/assignment/`
 - **Testing**: `tests/Assignment/`

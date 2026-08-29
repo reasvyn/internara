@@ -139,7 +139,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Company`, `Partnership`
-- **Business Logic**: `app/Partners/`
+- **Business Logic**: `app/Modules/Partners/`
 - **Routing**: `routes/web/partners.php`
 - **Views**: `resources/views/partners/`
 - **Testing**: `tests/Partners/`

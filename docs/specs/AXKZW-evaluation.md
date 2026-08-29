@@ -439,11 +439,11 @@ After implementing this spec, the system has weighted feedback forms with sectio
 
 ## Quick References
 
-- `app/Evaluation/Models/EvaluationForm.php` — Form model with target_type and is_active
-- `app/Evaluation/Models/EvaluationSection.php` — Ordered section within a form
-- `app/Evaluation/Models/EvaluationQuestion.php` — Typed, weighted question with options
-- `app/Evaluation/Models/EvaluationResponse.php` — Submitted evaluation with polymorphic target
-- `app/Evaluation/Models/EvaluationAnswer.php` — Per-question answer with derived score
+- `app/Modules/Evaluation/Models/EvaluationForm.php` — Form model with target_type and is_active
+- `app/Modules/Evaluation/Models/EvaluationSection.php` — Ordered section within a form
+- `app/Modules/Evaluation/Models/EvaluationQuestion.php` — Typed, weighted question with options
+- `app/Modules/Evaluation/Models/EvaluationResponse.php` — Submitted evaluation with polymorphic target
+- `app/Modules/Evaluation/Models/EvaluationAnswer.php` — Per-question answer with derived score
 - `database/migrations/2026_01_06_000001_create_evaluation_forms_table.php` — Forms schema
 - `database/migrations/2026_01_06_000002_create_evaluation_sections_table.php` — Sections schema
 - `database/migrations/2026_01_06_000003_create_evaluation_questions_table.php` — Questions schema

@@ -179,7 +179,7 @@ for the testing conventions.
 ## Architectural Integration
 
 - **Submodules**: `Announcement`, `Backups`, `Observability`
-- **Business Logic**: `app/SysAdmin/`
+- **Business Logic**: `app/Modules/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`
 - **Testing**: `tests/SysAdmin/`

@@ -175,7 +175,7 @@ center. A custom channel is required to persist notifications with the right sha
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-S1 | `SendsNotifications` interface must define `execute(NotificationData $data): mixed`, where `NotificationData` (`app/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional `message`, `data`, `link` |
+| FR-S1 | `SendsNotifications` interface must define `execute(NotificationData $data): mixed`, where `NotificationData` (`app/Modules/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional `message`, `data`, `link` |
 | FR-S2 | `SendNotificationAction` must implement `SendsNotifications` and extend `BaseCommandAction` |
 | FR-S3 | `SendNotificationAction::execute()` must validate `userId`, `type` (max 50), and `title` (max 255) via `Validator` |
 | FR-S4 | `SendNotificationAction::execute()` must find the `User` by ID or throw `ModelNotFoundException` |
@@ -293,7 +293,7 @@ center. A custom channel is required to persist notifications with the right sha
 ### 6.1 SendsNotifications Interface
 
 ```php
-// app/Core/Contracts/SendsNotifications.php
+// app/Modules/Core/Contracts/SendsNotifications.php
 use App\Core\Channels\Data\NotificationData;
 
 interface SendsNotifications
@@ -305,7 +305,7 @@ interface SendsNotifications
 ### 6.2 CustomDatabaseChannel
 
 ```php
-// app/Core/Channels/CustomDatabaseChannel.php (55 lines)
+// app/Modules/Core/Channels/CustomDatabaseChannel.php (55 lines)
 class CustomDatabaseChannel
 {
     public function __construct(protected readonly SendsNotifications $sendNotification) {}
@@ -319,7 +319,7 @@ class CustomDatabaseChannel
 ### 6.3 SendNotificationAction
 
 ```php
-// app/User/Notifications/Actions/SendNotificationAction.php
+// app/Modules/User/Notifications/Actions/SendNotificationAction.php
 final class SendNotificationAction extends BaseCommandAction implements SendsNotifications
 {
     public function execute(NotificationData $data): Notification;
@@ -332,7 +332,7 @@ final class SendNotificationAction extends BaseCommandAction implements SendsNot
 ### 6.4 NotificationData DTO
 
 ```php
-// app/Core/Channels/Data/NotificationData.php (19 lines)
+// app/Modules/Core/Channels/Data/NotificationData.php (19 lines)
 final readonly class NotificationData extends BaseData
 {
     public function __construct(
@@ -349,7 +349,7 @@ final readonly class NotificationData extends BaseData
 ### 6.5 Notification Model
 
 ```php
-// app/User/Notifications/Models/Notification.php (33 lines)
+// app/Modules/User/Notifications/Models/Notification.php (33 lines)
 #[Fillable(['user_id', 'type', 'title', 'message', 'data', 'link', 'is_read', 'read_at'])]
 class Notification extends BaseModel
 {
@@ -380,28 +380,28 @@ Schema::create('notifications', function (Blueprint $table) {
 ### 6.7 Mark Actions
 
 ```php
-// app/User/Notifications/Actions/MarkAsReadAction.php (40 lines)
+// app/Modules/User/Notifications/Actions/MarkAsReadAction.php (40 lines)
 final class MarkAsReadAction extends BaseCommandAction
 {
     public function execute(Notification $notification): Notification;
     // Sets is_read=true, read_at=now() if unread; emits NotificationRead; returns fresh model
 }
 
-// app/User/Notifications/Actions/MarkAllAsReadAction.php (37 lines)
+// app/Modules/User/Notifications/Actions/MarkAllAsReadAction.php (37 lines)
 final class MarkAllAsReadAction extends BaseCommandAction
 {
     public function execute(string $userId): int;
     // Batch-updates all unread for user; clears unread cache; returns updated count
 }
 
-// app/User/Notifications/Actions/MarkBatchAsReadAction.php (32 lines)
+// app/Modules/User/Notifications/Actions/MarkBatchAsReadAction.php (32 lines)
 final class MarkBatchAsReadAction extends BaseCommandAction
 {
     public function execute(string $userId, array $ids): int;
     // Updates unread notifications matching ids+userId; clears unread cache; returns count
 }
 
-// app/User/Notifications/Actions/DeleteNotificationAction.php (33 lines)
+// app/Modules/User/Notifications/Actions/DeleteNotificationAction.php (33 lines)
 final class DeleteNotificationAction extends BaseCommandAction
 {
     public function execute(Notification $notification): void;
@@ -412,14 +412,14 @@ final class DeleteNotificationAction extends BaseCommandAction
 ### 6.8 Events
 
 ```php
-// app/User/Notifications/Events/NotificationSent.php
+// app/Modules/User/Notifications/Events/NotificationSent.php
 final class NotificationSent extends BaseEvent
 {
     public function __construct(public Notification $notification) {}
     public function eventName(): string { return 'notification.sent'; }
 }
 
-// app/User/Notifications/Events/NotificationRead.php
+// app/Modules/User/Notifications/Events/NotificationRead.php
 final class NotificationRead extends BaseEvent
 {
     public function __construct(public Notification $notification) {}
@@ -430,7 +430,7 @@ final class NotificationRead extends BaseEvent
 ### 6.9 ClearUnreadNotificationCache Listener
 
 ```php
-// app/User/Notifications/Listeners/ClearUnreadNotificationCache.php (25 lines)
+// app/Modules/User/Notifications/Listeners/ClearUnreadNotificationCache.php (25 lines)
 final class ClearUnreadNotificationCache
 {
     public function handle(NotificationSent|NotificationRead|ProfileUpdated $event): void;
@@ -441,7 +441,7 @@ final class ClearUnreadNotificationCache
 ### 6.10 NotificationPolicy
 
 ```php
-// app/User/Notifications/Policies/NotificationPolicy.php (37 lines)
+// app/Modules/User/Notifications/Policies/NotificationPolicy.php (37 lines)
 class NotificationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool;          // true
@@ -638,38 +638,38 @@ dispatch notifications through this infrastructure.
 
 ## Quick References
 
-- `app/Core/Contracts/SendsNotifications.php` — notification dispatch contract (17 lines)
-- `app/Core/Channels/CustomDatabaseChannel.php` — custom channel bridging `toCustomDatabase()` to `SendsNotifications` (55 lines)
-- `app/User/Notifications/Actions/SendNotificationAction.php` — core persistence action implementing `SendsNotifications` (77 lines)
-- `app/User/Notifications/Actions/MarkAsReadAction.php` — single notification mark-as-read (40 lines)
-- `app/User/Notifications/Actions/MarkAllAsReadAction.php` — bulk mark-all-as-read (37 lines)
-- `app/User/Notifications/Actions/MarkBatchAsReadAction.php` — batch mark-selected-as-read (32 lines)
-- `app/User/Notifications/Actions/DeleteNotificationAction.php` — single notification delete (33 lines)
-- `app/User/Notifications/Models/Notification.php` — Eloquent model with `#[Fillable]` (33 lines)
-- `app/Core/Channels/Data/NotificationData.php` — DTO for notification payload (19 lines)
-- `app/User/Notifications/Events/NotificationSent.php` — event emitted on notification create (18 lines)
-- `app/User/Notifications/Events/NotificationRead.php` — event emitted on notification read (18 lines)
-- `app/User/Notifications/Listeners/ClearUnreadNotificationCache.php` — cache invalidation listener (25 lines)
-- `app/User/Notifications/Livewire/NotificationCenter.php` — full notification center UI (153 lines)
-- `app/User/Notifications/Livewire/NotificationBell.php` — header bell badge with cached count (53 lines)
-- `app/User/Notifications/Policies/NotificationPolicy.php` — ownership-based authorization (37 lines)
-- `app/User/Notifications/WelcomeNotification.php` — new user welcome (mail + broadcast + database) (73 lines)
-- `app/User/Notifications/GeneralNotification.php` — configurable multi-purpose notification (61 lines)
-- `app/User/Notifications/TestMailNotification.php` — settings test email (mail only) (26 lines)
-- `app/Auth/Notifications/CredentialChangedNotification.php` — credential change security alert (mail only) (46 lines)
-- `app/Auth/SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` — admin recovery alert (67 lines)
-- `app/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP delivery (mail only) (33 lines)
-- `app/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome dispatch (48 lines)
-- `app/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation code delivery (42 lines)
-- `app/User/AccountStatus/Notifications/AccountStatusNotification.php` — account status change alert (71 lines)
-- `app/Assignment/Notifications/AssignmentNotification.php` — assignment publication alert (79 lines)
-- `app/Assignment/Submission/Notifications/SubmissionFeedbackNotification.php` — grading feedback alert (87 lines)
-- `app/Program/Notifications/RegistrationNotification.php` — registration status update (69 lines)
-- `app/Program/Internship/Notifications/InternshipCreatedNotification.php` — new internship alert (66 lines)
-- `app/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — incident report alert (75 lines)
-- `app/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — announcement delivery (59 lines)
-- `app/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — backup failure alert (uses native `database` channel) (34 lines)
-- `app/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — backup failure dispatch (21 lines)
+- `app/Modules/Core/Contracts/SendsNotifications.php` — notification dispatch contract (17 lines)
+- `app/Modules/Core/Channels/CustomDatabaseChannel.php` — custom channel bridging `toCustomDatabase()` to `SendsNotifications` (55 lines)
+- `app/Modules/User/Notifications/Actions/SendNotificationAction.php` — core persistence action implementing `SendsNotifications` (77 lines)
+- `app/Modules/User/Notifications/Actions/MarkAsReadAction.php` — single notification mark-as-read (40 lines)
+- `app/Modules/User/Notifications/Actions/MarkAllAsReadAction.php` — bulk mark-all-as-read (37 lines)
+- `app/Modules/User/Notifications/Actions/MarkBatchAsReadAction.php` — batch mark-selected-as-read (32 lines)
+- `app/Modules/User/Notifications/Actions/DeleteNotificationAction.php` — single notification delete (33 lines)
+- `app/Modules/User/Notifications/Models/Notification.php` — Eloquent model with `#[Fillable]` (33 lines)
+- `app/Modules/Core/Channels/Data/NotificationData.php` — DTO for notification payload (19 lines)
+- `app/Modules/User/Notifications/Events/NotificationSent.php` — event emitted on notification create (18 lines)
+- `app/Modules/User/Notifications/Events/NotificationRead.php` — event emitted on notification read (18 lines)
+- `app/Modules/User/Notifications/Listeners/ClearUnreadNotificationCache.php` — cache invalidation listener (25 lines)
+- `app/Modules/User/Notifications/Livewire/NotificationCenter.php` — full notification center UI (153 lines)
+- `app/Modules/User/Notifications/Livewire/NotificationBell.php` — header bell badge with cached count (53 lines)
+- `app/Modules/User/Notifications/Policies/NotificationPolicy.php` — ownership-based authorization (37 lines)
+- `app/Modules/User/Notifications/WelcomeNotification.php` — new user welcome (mail + broadcast + database) (73 lines)
+- `app/Modules/User/Notifications/GeneralNotification.php` — configurable multi-purpose notification (61 lines)
+- `app/Modules/User/Notifications/TestMailNotification.php` — settings test email (mail only) (26 lines)
+- `app/Modules/Auth/Notifications/CredentialChangedNotification.php` — credential change security alert (mail only) (46 lines)
+- `app/Modules/Auth/SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` — admin recovery alert (67 lines)
+- `app/Modules/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP delivery (mail only) (33 lines)
+- `app/Modules/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome dispatch (48 lines)
+- `app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation code delivery (42 lines)
+- `app/Modules/User/AccountStatus/Notifications/AccountStatusNotification.php` — account status change alert (71 lines)
+- `app/Modules/Assignment/Notifications/AssignmentNotification.php` — assignment publication alert (79 lines)
+- `app/Modules/Assignment/Submission/Notifications/SubmissionFeedbackNotification.php` — grading feedback alert (87 lines)
+- `app/Modules/Program/Notifications/RegistrationNotification.php` — registration status update (69 lines)
+- `app/Modules/Program/Internship/Notifications/InternshipCreatedNotification.php` — new internship alert (66 lines)
+- `app/Modules/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — incident report alert (75 lines)
+- `app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — announcement delivery (59 lines)
+- `app/Modules/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — backup failure alert (uses native `database` channel) (34 lines)
+- `app/Modules/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — backup failure dispatch (21 lines)
 - `config/cache-keys.php` — `notification_unread` key registration
 - `database/migrations/2026_01_01_000004_create_notifications_table.php` — notifications table schema
 - **Related spec:** [authentication.md](YB7RG-authentication.md) — User model with `Notifiable` trait, login events

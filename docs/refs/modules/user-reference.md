@@ -159,7 +159,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `UserManagement/Data/SetUserStatusData.php` | `SetUserStatusData` | `BaseData` |
 
 The notification payload DTO `NotificationData` lives in
-`app/Core/Channels/Data/NotificationData.php` (see [Core reference](core-reference.md)).
+`app/Modules/Core/Channels/Data/NotificationData.php` (see [Core reference](core-reference.md)).
 
 ## Events
 
@@ -260,7 +260,7 @@ conventions. Tests are spec-driven: each test traces to a spec requirement ID (`
 ## Architectural Integration
 
 - **Submodules**: `Profile`, `Notifications`, `Dashboard`, `AccountStatus`, `UserManagement`
-- **Business Logic**: `app/User/`
+- **Business Logic**: `app/Modules/User/`
 - **Routing**: `routes/web/user.php`
 - **Views**: `resources/views/user/`
 - **Testing**: `tests/User/`

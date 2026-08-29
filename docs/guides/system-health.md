@@ -286,9 +286,9 @@ php artisan config:clear               # Clear config cache
 
 ## Quick References
 
-- `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health check implementation
-- `app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Cleanup implementation
-- `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health check implementation
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Cleanup implementation
+- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming
 - `config/logging.php` — Log channel configuration
 - `storage/logs/laravel.log` — Application log file
 - [System Observability](system-observability.md) — Pulse, audit logs, backups

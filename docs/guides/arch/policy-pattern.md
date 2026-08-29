@@ -84,9 +84,9 @@ Laravel's Gate pattern provides a centralized authorization mechanism. `Gate::be
 - `docs/conventions.md` §Authorization Conventions — RBAC, functional roles
 - `docs/guides/rbac.md` — complete RBAC reference
 - `docs/adr/adr-flat-rbac-with-functional-roles.md` — ADR for flat RBAC
-- `app/Core/Policies/BasePolicy.php` — BasePolicy contract
-- `app/Core/Policies/Concerns/AuthorizesRoles.php` — role-checking trait
-- `app/Core/Policies/Concerns/AuthorizesOwnership.php` — ownership-checking trait
+- `app/Modules/Core/Policies/BasePolicy.php` — BasePolicy contract
+- `app/Modules/Core/Policies/Concerns/AuthorizesRoles.php` — role-checking trait
+- `app/Modules/Core/Policies/Concerns/AuthorizesOwnership.php` — ownership-checking trait
 - [NIST RBAC](https://csrc.nist.gov/publications/detail/sp/800-162/final) — RBAC standard
 - [Principle of Least Privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) — security principle
 - [Laravel — Policies](https://laravel.com/docs/authorization#creating-policies) — policy registration

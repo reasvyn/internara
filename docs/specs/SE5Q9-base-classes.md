@@ -455,18 +455,18 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 - `docs/guides/arch/model-pattern.md` — Model conventions
 - `docs/guides/arch/data-pattern.md` — DTO and ActionResponse contracts
 - `docs/guides/arch/exception-pattern.md` — Dual exception hierarchy
-- `app/Core/Actions/` — BaseAction, BaseCommandAction, BaseReadAction, BaseProcessAction
-- `app/Core/Models/` — BaseModel, BaseAuthenticatable, ActivityLog
-- `app/Core/Entities/` — BaseEntity and all module entities
-- `app/Core/Data/` — BaseData, ActionResponse, AuditCheck, AuditReport
-- `app/Core/Enums/` — AuditCategory, AuditStatus, CsvRowResult
-- `app/Core/Livewire/` — BaseRecordManager, BaseRecordEntry, BaseRecordList, BaseFormView, BaseWizard
-- `app/Core/Livewire/Concerns/` — WithSorting, WithRecordSelection
-- `app/Core/Policies/` — BasePolicy, AuthorizesRoles, AuthorizesOwnership
-- `app/Core/Contracts/` — LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore
-- `app/Core/Channels/CustomDatabaseChannel.php` — Queued database notification channel
-- `app/Core/Channels/Data/NotificationData.php` — In-app notification payload DTO (`SendsNotifications::execute()` argument)
-- `app/Core/Exceptions/` — AppException, ModuleException, RejectedException, and hierarchy
+- `app/Modules/Core/Actions/` — BaseAction, BaseCommandAction, BaseReadAction, BaseProcessAction
+- `app/Modules/Core/Models/` — BaseModel, BaseAuthenticatable, ActivityLog
+- `app/Modules/Core/Entities/` — BaseEntity and all module entities
+- `app/Modules/Core/Data/` — BaseData, ActionResponse, AuditCheck, AuditReport
+- `app/Modules/Core/Enums/` — AuditCategory, AuditStatus, CsvRowResult
+- `app/Modules/Core/Livewire/` — BaseRecordManager, BaseRecordEntry, BaseRecordList, BaseFormView, BaseWizard
+- `app/Modules/Core/Livewire/Concerns/` — WithSorting, WithRecordSelection
+- `app/Modules/Core/Policies/` — BasePolicy, AuthorizesRoles, AuthorizesOwnership
+- `app/Modules/Core/Contracts/` — LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore
+- `app/Modules/Core/Channels/CustomDatabaseChannel.php` — Queued database notification channel
+- `app/Modules/Core/Channels/Data/NotificationData.php` — In-app notification payload DTO (`SendsNotifications::execute()` argument)
+- `app/Modules/Core/Exceptions/` — AppException, ModuleException, RejectedException, and hierarchy
 - `bootstrap/app.php` — Middleware registration
 - **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel versions, dependency manifest
 - **Related specs:** [core-infra-services.md](ZT6VS-core-infra-services.md) — cache, session, queue, mail runtime behavior

@@ -466,4 +466,4 @@ After implementing this spec, the system has a 6-step browser wizard that create
 - `docs/guides/setup-wizard.md` — Wizard walkthrough
 - `docs/guides/post-setup.md` — Post-wizard configuration guide
 - `config/setup.php` — Setup configuration values
-- `app/Setup/` — Full module source code
+- `app/Modules/Setup/` — Full module source code

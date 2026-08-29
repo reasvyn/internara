@@ -299,12 +299,12 @@ Created (via Action/Event)
 
 ## Where to Find It
 
-- `app/Core/Channels/CustomDatabaseChannel.php` — custom database channel
+- `app/Modules/Core/Channels/CustomDatabaseChannel.php` — custom database channel
 - `app/*/Notifications/` — notification classes organized by module
-- `app/User/Notifications/Actions/SendNotificationAction.php` — notification dispatch action
-- `app/Core/Contracts/SendsNotifications.php` — notification contract (`execute(NotificationData $data): mixed`)
-- `app/Core/Channels/Data/NotificationData.php` — notification payload DTO
-- `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
+- `app/Modules/User/Notifications/Actions/SendNotificationAction.php` — notification dispatch action
+- `app/Modules/Core/Contracts/SendsNotifications.php` — notification contract (`execute(NotificationData $data): mixed`)
+- `app/Modules/Core/Channels/Data/NotificationData.php` — notification payload DTO
+- `app/Modules/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/tallstackui.php` — toast styling and timeout (replaces removed `config/flasher.php`)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

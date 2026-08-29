@@ -433,9 +433,9 @@ After implementing this spec, the system automatically discovers Livewire compon
 
 - `config/module.php` — Module registry (single source of truth)
 - `config/cache-keys.php` — Cache key definitions
-- `app/Core/Support/ModuleManager.php` — Module config gateway (static)
-- `app/Core/Services/ModuleService.php` — Discovery orchestration
-- `app/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
+- `app/Modules/Core/Support/ModuleManager.php` — Module config gateway (static)
+- `app/Modules/Core/Services/ModuleService.php` — Discovery orchestration
+- `app/Modules/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
 - `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
 - `routes/web.php` — Route auto-inclusion
 - `tests/Pest.php` — Test directory registration

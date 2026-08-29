@@ -59,7 +59,7 @@ limiter to apply to which route group.
 **Actor:** Developer
 **Preconditions:** New global request processing needed (e.g., maintenance mode)
 **Flow:**
-1. Create class in `app/Core/Http/Middleware/`
+1. Create class in `app/Modules/Core/Http/Middleware/`
 2. Register in `bootstrap/app.php` or `app/Http/Kernel.php`
 3. Position in pipeline relative to existing middleware
 4. Test that existing middleware still executes in correct order
@@ -250,13 +250,13 @@ After implementing this spec, the system has a complete middleware stack: securi
 
 ## Quick References
 
-- `app/Core/Http/Middleware/LogContextMiddleware.php` — Request context enrichment
-- `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security header injection
-- `app/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — Login rate limiting
-- `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Role-based access
-- `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Locale switching
-- `app/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` — Setup protection
-- `app/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` — Setup token
+- `app/Modules/Core/Http/Middleware/LogContextMiddleware.php` — Request context enrichment
+- `app/Modules/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security header injection
+- `app/Modules/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — Login rate limiting
+- `app/Modules/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Role-based access
+- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Locale switching
+- `app/Modules/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` — Setup protection
+- `app/Modules/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` — Setup token
 - `app/Providers/AppServiceProvider.php` — Rate limiter registration
 - `docs/guides/arch/livewire-pattern.md` — Livewire authorization patterns
 - `docs/specs/security-headers.md` — CSP and header details

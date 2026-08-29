@@ -84,7 +84,7 @@ the audit categories, issue format, and key rules defined in the Skill Rules sec
 ### PII & Data Protection
 
 - User profiles stored in separate table from credentials
-- Check `app/Core/Support/PiiMasker.php` — PII masking in logs
+- Check `app/Modules/Core/Support/PiiMasker.php` — PII masking in logs
 - Activity log does not store raw PII
 - GDPR deletion path exists (`gdpr_deletion_logs` table)
 - PII masked in logs via `SmartLogger::withPiiMasking()`
@@ -147,7 +147,7 @@ Each finding should include:
 | RBAC & authentication | `docs/guides/rbac.md`                      |
 | Account recovery      | `docs/guides/account-recovery.md`          |
 | Exception hierarchy   | `docs/guides/arch/exception-pattern.md`       |
-| CSP & middleware      | `app/Core/Http/Middleware/SecurityHeadersMiddleware.php` |
+| CSP & middleware      | `app/Modules/Core/Http/Middleware/SecurityHeadersMiddleware.php` |
 | File upload security  | `docs/guides/infra/media-library.md`         |
 | Session configuration | `docs/guides/infra/session.md`               |
 | Rate limiting         | `bootstrap/app.php`                            |

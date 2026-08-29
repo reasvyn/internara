@@ -15,7 +15,7 @@ vertical slice from persistence to UI. Traditional flat layering (`app/Models/`,
 making module boundaries unclear, encapsulation impossible to enforce, and refactoring
 expensive.
 
-Colocating by module ensures everything related to "Enrollment" lives under `app/Enrollment/`,
+Colocating by module ensures everything related to "Enrollment" lives under `app/Modules/Enrollment/`,
 but requires a shared layering model so each module remains internally coherent while the
 system as a whole stays navigable.
 

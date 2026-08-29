@@ -313,18 +313,18 @@ After implementing this spec, the system has student and supervisor handbooks wi
 
 ## Quick References
 
-- `app/Document/Handbook/Actions/CreateHandbookAction.php` — Handbook creation
-- `app/Document/Handbook/Actions/UpdateHandbookAction.php` — Handbook update
-- `app/Document/Handbook/Actions/DeleteHandbookAction.php` — Handbook deletion
-- `app/Document/Handbook/Actions/AcknowledgeHandbookAction.php` — Student acknowledgment
-- `app/Document/Handbook/Entities/HandbookEntity.php` — Business rules entity
-- `app/Document/Handbook/Data/HandbookData.php` — Handbook DTO
-- `app/Document/Handbook/Enums/HandbookAudience.php` — Audience enum (4 cases)
-- `app/Document/Handbook/Events/` — HandbookCreated, HandbookUpdated, HandbookDeleted
-- `app/Document/Handbook/Listeners/ClearHandbookCache.php` — Cache invalidation listener
-- `app/Document/Handbook/Livewire/HandbookManager.php` — Admin handbook CRUD
-- `app/Document/Handbook/Livewire/StudentHandbookList.php` — Student handbook view
-- `app/Document/Handbook/Livewire/HandbookForm.php` — Handbook form object
+- `app/Modules/Document/Handbook/Actions/CreateHandbookAction.php` — Handbook creation
+- `app/Modules/Document/Handbook/Actions/UpdateHandbookAction.php` — Handbook update
+- `app/Modules/Document/Handbook/Actions/DeleteHandbookAction.php` — Handbook deletion
+- `app/Modules/Document/Handbook/Actions/AcknowledgeHandbookAction.php` — Student acknowledgment
+- `app/Modules/Document/Handbook/Entities/HandbookEntity.php` — Business rules entity
+- `app/Modules/Document/Handbook/Data/HandbookData.php` — Handbook DTO
+- `app/Modules/Document/Handbook/Enums/HandbookAudience.php` — Audience enum (4 cases)
+- `app/Modules/Document/Handbook/Events/` — HandbookCreated, HandbookUpdated, HandbookDeleted
+- `app/Modules/Document/Handbook/Listeners/ClearHandbookCache.php` — Cache invalidation listener
+- `app/Modules/Document/Handbook/Livewire/HandbookManager.php` — Admin handbook CRUD
+- `app/Modules/Document/Handbook/Livewire/StudentHandbookList.php` — Student handbook view
+- `app/Modules/Document/Handbook/Livewire/HandbookForm.php` — Handbook form object
 - `database/migrations/` — `documents` and `registration_documents` table migrations
 - `routes/web/document.php` — Route definitions
 - `docs/refs/modules/document.md` — Module conceptual documentation

@@ -151,7 +151,7 @@ rotation is required. Absolute paths in issues break on any other machine and le
 environment details.
 
 **How to apply:** Redact or replace with placeholders (e.g., `<API_KEY>`). Use project-relative
-paths (`app/Enrollment/Actions/RegisterInternAction.php`). If the reproduction requires secrets,
+paths (`app/Modules/Enrollment/Actions/RegisterInternAction.php`). If the reproduction requires secrets,
 describe the shape needed, not the secret itself. Screenshot/log excerpts are scrubbed before
 attaching.
 

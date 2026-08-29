@@ -119,7 +119,7 @@ in production while allowing development flexibility.
 ### AppInfo
 
 ```php
-// app/Core/Services/AppInfo.php
+// app/Modules/Core/Services/AppInfo.php
 final class AppInfo
 {
     public static function name(): string;        // composer.json name
@@ -136,7 +136,7 @@ final class AppInfo
 ### app_info() Global Helper
 
 ```php
-// app/Core/Support/helpers.php
+// app/Modules/Core/Support/helpers.php
 if (! function_exists('app_info')) {
     function app_info(?string $key = null, mixed $default = null): mixed;
     // app_info()          → AppInfo::all() — full metadata array
@@ -147,7 +147,7 @@ if (! function_exists('app_info')) {
 ### Environment
 
 ```php
-// app/Core/Services/Environment.php
+// app/Modules/Core/Services/Environment.php
 final class Environment
 {
     public static function isProduction(): bool;
@@ -160,7 +160,7 @@ final class Environment
 ### PasswordRules
 
 ```php
-// app/Core/Support/PasswordRules.php
+// app/Modules/Core/Support/PasswordRules.php
 final class PasswordRules
 {
     public static function default(): array;   // ['min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/']
@@ -171,7 +171,7 @@ final class PasswordRules
 ### Color
 
 ```php
-// app/Core/Support/Color.php
+// app/Modules/Core/Support/Color.php
 final class Color
 {
     public static function hexToRgb(string $hex): array;
@@ -188,7 +188,7 @@ final class Color
 ### AppIntegrity
 
 ```php
-// app/Core/Services/AppIntegrity.php
+// app/Modules/Core/Services/AppIntegrity.php
 final class AppIntegrity
 {
     public static function verify(): void;
@@ -201,7 +201,7 @@ final class AppIntegrity
 ### LangChecker
 
 ```php
-// app/Core/Services/LangChecker.php
+// app/Modules/Core/Services/LangChecker.php
 final class LangChecker extends Translator
 {
     // Extends Laravel Translator
@@ -267,13 +267,13 @@ solely on this — these utilities are used broadly.
 
 ## Quick References
 
-- `app/Core/Services/AppInfo.php` — Composer metadata with 24h cache
-- `app/Core/Support/helpers.php` — Global `app_info()` helper wrapping AppInfo
-- `app/Core/Services/Environment.php` — Environment detection helpers
-- `app/Core/Support/PasswordRules.php` — Password validation rules
-- `app/Core/Support/Color.php` — Color manipulation utilities
-- `app/Core/Services/AppIntegrity.php` — Attribution verification
-- `app/Core/Services/LangChecker.php` — Missing translation detection
+- `app/Modules/Core/Services/AppInfo.php` — Composer metadata with 24h cache
+- `app/Modules/Core/Support/helpers.php` — Global `app_info()` helper wrapping AppInfo
+- `app/Modules/Core/Services/Environment.php` — Environment detection helpers
+- `app/Modules/Core/Support/PasswordRules.php` — Password validation rules
+- `app/Modules/Core/Support/Color.php` — Color manipulation utilities
+- `app/Modules/Core/Services/AppIntegrity.php` — Attribution verification
+- `app/Modules/Core/Services/LangChecker.php` — Missing translation detection
 - `composer.json` — Source of truth for app metadata
 - **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel dependency manifest
 - **Related specs:** [base-classes.md](SE5Q9-base-classes.md) — Architectural base classes

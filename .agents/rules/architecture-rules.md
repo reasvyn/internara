@@ -1,7 +1,7 @@
 # Architecture Rules — Layer Boundaries & Action Triad
 
 Do NOT use this as an authoritative spec. Read `docs/architecture.md` for the full architecture and
-`app/Core/Actions/` files for actual contracts. This file explains *why* each boundary check matters,
+`app/Modules/Core/Actions/` files for actual contracts. This file explains *why* each boundary check matters,
 so verification is grounded, not mechanical, and the arch-guard scans stay comprehensible.
 
 ---

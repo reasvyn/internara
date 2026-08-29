@@ -266,7 +266,7 @@ any situation where digital delivery is preferred over printed distribution.
 ### GenerateAccountSlipAction
 
 ```php
-// app/User/UserManagement/Actions/GenerateAccountSlipAction.php
+// app/Modules/User/UserManagement/Actions/GenerateAccountSlipAction.php
 final class GenerateAccountSlipAction extends BaseCommandAction
 {
     private const int CARD_W = 241; // mm
@@ -291,7 +291,7 @@ final class GenerateAccountSlipAction extends BaseCommandAction
 ### DownloadsAccountSlips Trait
 
 ```php
-// app/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php
+// app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php
 trait DownloadsAccountSlips
 {
     public bool $showAccountSlip = false;
@@ -318,7 +318,7 @@ trait DownloadsAccountSlips
 ### AccountSlipController
 
 ```php
-// app/SysAdmin/Http/Controllers/AccountSlipController.php
+// app/Modules/SysAdmin/Http/Controllers/AccountSlipController.php
 final class AccountSlipController
 {
     public function download(User $user, GenerateAccountSlipAction $action): mixed;
@@ -332,7 +332,7 @@ final class AccountSlipController
 ### ActivationCodeNotification
 
 ```php
-// app/User/UserManagement/Notifications/ActivationCodeNotification.php
+// app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php
 class ActivationCodeNotification extends Notification
 {
     public function __construct(public readonly User $user, public readonly string $code);
@@ -543,16 +543,16 @@ After implementing this spec, the system can generate account slips — credenti
 
 ## Quick References
 
-- `app/User/UserManagement/Actions/GenerateAccountSlipAction.php` — PDF slip generation (single + batch)
-- `app/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` — Livewire trait for slip operations
-- `app/SysAdmin/Http/Controllers/AccountSlipController.php` — HTTP controller for PDF download routes
-- `app/User/UserManagement/Notifications/ActivationCodeNotification.php` — Email notification with activation code
-- `app/Auth/AccessTokens/Models/AccessToken.php` — Activation token generation and lifecycle
+- `app/Modules/User/UserManagement/Actions/GenerateAccountSlipAction.php` — PDF slip generation (single + batch)
+- `app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` — Livewire trait for slip operations
+- `app/Modules/SysAdmin/Http/Controllers/AccountSlipController.php` — HTTP controller for PDF download routes
+- `app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php` — Email notification with activation code
+- `app/Modules/Auth/AccessTokens/Models/AccessToken.php` — Activation token generation and lifecycle
 - `resources/views/user/user-management/components/account-slip-modal.blade.php` — Slip modal UI
 - `resources/views/user/user-management/account-slip-pdf.blade.php` — PDF Blade template (DomPDF)
 - `config/dompdf.php` — DomPDF configuration (paper size, fonts, rendering backend)
 - `routes/web/sysadmin.php:32-34` — Account slip route definitions
-- `app/User/UserManagement/Actions/CreateUserAction.php` — User creation with activation code notification
+- `app/Modules/User/UserManagement/Actions/CreateUserAction.php` — User creation with activation code notification
 - `docs/specs/user-crud-and-status.md` — User CRUD and AccountStatus state machine
 - `docs/specs/csv-import-export.md` — CSV import/export
 - `docs/refs/modules/user.md` — User module conceptual documentation

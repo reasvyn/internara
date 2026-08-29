@@ -129,7 +129,7 @@ Commitment: **WCAG 2.2 Level AA** per `modular-pattern.md` §22 + `livewire-patt
 
 ### 3. Localization — W3C i18n, ICU/CLDR, Lingoport 9 Best Practices, Better i18n 2026
 
-Stack: flat `lang/{en,id}/*.php` + `lang/{en,id}.json` (short labels) + vendor `lang/vendor/ts-ui/*/messages.php`; `config/app.php` `locale`/`fallback_locale` from `APP_LOCALE`; `config/localization.php`; `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php`; client `livewire:init` `language-changed` → reload; server `Carbon::locale(app()->getLocale())`, `Number::locale(...)`.
+Stack: flat `lang/{en,id}/*.php` + `lang/{en,id}.json` (short labels) + vendor `lang/vendor/ts-ui/*/messages.php`; `config/app.php` `locale`/`fallback_locale` from `APP_LOCALE`; `config/localization.php`; `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php`; client `livewire:init` `language-changed` → reload; server `Carbon::locale(app()->getLocale())`, `Number::locale(...)`.
 
 #### 3.1 Key Conventions (enforce by `LangChecker`)
 
@@ -279,8 +279,8 @@ Canonical: `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-
 - `resources/views/ui/layouts/base.blade.php` / `app.blade.php` / `sidebar.blade.php` / `header.blade.php` — shell, `Theme::cssVariables()`, skip-link, `aria-live`, `wire:navigate` focus reset
 - `resources/views/ui/components/record-manager.blade.php` / `page-header.blade.php` / `confirm.blade.php` / `theme-switch.blade.php` / `widgets/empty-state.blade.php` — canonical organisms/molecules
 - `resources/js/app.js` — `resolveTheme()`/`applyTheme()` dual-signal + cookie/LS sync, `livewire:init` `language-changed`
-- `app/Settings/Theme/Support/Theme.php` + `app/Core/Support/Color.php` — `cssVariables()`, `contrastColor()`, `computeDarkShades()`, `isValid()`
-- `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` + `config/app.php` + `config/localization.php` — locale plumbing
+- `app/Modules/Settings/Theme/Support/Theme.php` + `app/Modules/Core/Support/Color.php` — `cssVariables()`, `contrastColor()`, `computeDarkShades()`, `isValid()`
+- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` + `config/app.php` + `config/localization.php` — locale plumbing
 - `lang/{en,id}/*.php` + `lang/{en,id}.json` + `lang/vendor/ts-ui/*/messages.php` — translation SSOT
 - [WCAG 2.2 QuickRef](https://www.w3.org/WAI/WCAG22/quickref/) — Perceivable/Operable/Understandable/Robust, 1.4.3 Contrast, 2.5.8 Target Size, 4.1.3 Status Messages
 - [WAI-ARIA Authoring Practices 1.2 (APG)](https://www.w3.org/WAI/ARIA/apg/) — modal, dropdown, tabs, focus trap patterns

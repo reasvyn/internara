@@ -20,7 +20,7 @@ rules, UI components, authorization, and HTTP interface.
 Flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across
 multiple directories, making it hard to reason about boundaries, impossible to enforce
 encapsulation, and expensive to refactor. Module colocation solves this by ensuring everything
-related to "Enrollment" lives under `app/Enrollment/`.
+related to "Enrollment" lives under `app/Modules/Enrollment/`.
 
 The architecture draws inspiration from Domain-Driven Design (strategic design, bounded contexts)
 and CQRS (command/query separation) without the operational overhead of separate databases or event
@@ -81,7 +81,7 @@ only on layers below it — never the reverse.
 │                                                                             │
 │  app/{Module}/**/Models/  app/{Module}/**/Entities/                         │
 │  app/{Module}/**/Enums/  app/{Module}/**/Data/                             │
-│  app/Core/Data/  app/Core/Exceptions/                                       │
+│  app/Modules/Core/Data/  app/Modules/Core/Exceptions/                                       │
 │  database/migrations/  config/  storage/                                    │
 │  See: docs/guides/arch/model-pattern.md                                    │
 │  See: docs/guides/arch/entity-pattern.md                                   │
@@ -102,8 +102,8 @@ only on layers below it — never the reverse.
 │  Support (static utilities — no side effects, no DI)                       │
 │  PHP 8.4 + Laravel + Composer/Spatie packages                              │
 │                                                                             │
-│  app/Core/{Actions,Models,Policies,Livewire,Data,Events,Exceptions,...}    │
-│  app/Core/Services/  app/Core/Support/                                     │
+│  app/Modules/Core/{Actions,Models,Policies,Livewire,Data,Events,Exceptions,...}    │
+│  app/Modules/Core/Services/  app/Modules/Core/Support/                                     │
 │  app/{Module}/Services/  app/{Module}/Support/                             │
 │  See: docs/guides/arch/action-pattern.md                                   │
 │  See: docs/guides/arch/service-pattern.md                                  │
@@ -119,7 +119,7 @@ only on layers below it — never the reverse.
 | **4 — Presentation/UI**     | `{SubModule}/Livewire/`, `resources/views/{module}/`, `routes/web/{module}.php` (+ `{submodule}.php`), `{SubModule}/Policies/`, `{SubModule}/Http/` |
 | **3 — Business/Domain Ops** | `{SubModule}/Actions/`, `{SubModule}/Events/`, `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`             |
 | **2 — Data/Persistent**     | `{SubModule}/Models/`, `{SubModule}/Entities/`, `{SubModule}/Enums/`, `{SubModule}/Data/`, `Types/`, database, config         |
-| **1 — Framework/Infra**     | `app/Core/`, `{SubModule}/Services/`, `{SubModule}/Support/`, PHP, Laravel, packages                                          |
+| **1 — Framework/Infra**     | `app/Modules/Core/`, `{SubModule}/Services/`, `{SubModule}/Support/`, PHP, Laravel, packages                                          |
 
 Cross-submodule files (shared Actions, Http, Console) live at the module root directly under
 `app/{Module}/`.

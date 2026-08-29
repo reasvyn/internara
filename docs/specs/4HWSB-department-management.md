@@ -360,7 +360,7 @@ based on current data.
 ### 6.1 Department Model
 
 ```php
-// app/Academics/Department/Models/Department.php
+// app/Modules/Academics/Department/Models/Department.php
 class Department extends BaseModel
 {
     use HasFactory;
@@ -376,7 +376,7 @@ class Department extends BaseModel
 ### 6.2 DepartmentState Entity
 
 ```php
-// app/Academics/Department/Entities/DepartmentState.php
+// app/Modules/Academics/Department/Entities/DepartmentState.php
 final readonly class DepartmentState extends BaseEntity
 {
     public function __construct(
@@ -396,7 +396,7 @@ final readonly class DepartmentState extends BaseEntity
 ### 6.3 DepartmentData DTO
 
 ```php
-// app/Academics/Department/Data/DepartmentData.php
+// app/Modules/Academics/Department/Data/DepartmentData.php
 final readonly class DepartmentData extends BaseData
 {
     public function __construct(
@@ -410,7 +410,7 @@ final readonly class DepartmentData extends BaseData
 ### 6.4 CreateDepartmentAction
 
 ```php
-// app/Academics/Department/Actions/CreateDepartmentAction.php
+// app/Modules/Academics/Department/Actions/CreateDepartmentAction.php
 final class CreateDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department;
@@ -427,7 +427,7 @@ final class CreateDepartmentAction extends BaseCommandAction
 ### 6.5 UpdateDepartmentAction
 
 ```php
-// app/Academics/Department/Actions/UpdateDepartmentAction.php
+// app/Modules/Academics/Department/Actions/UpdateDepartmentAction.php
 final class UpdateDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department, array $data): Department;
@@ -440,7 +440,7 @@ final class UpdateDepartmentAction extends BaseCommandAction
 ### 6.6 DeleteDepartmentAction
 
 ```php
-// app/Academics/Department/Actions/DeleteDepartmentAction.php
+// app/Modules/Academics/Department/Actions/DeleteDepartmentAction.php
 final class DeleteDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department): void;
@@ -452,7 +452,7 @@ final class DeleteDepartmentAction extends BaseCommandAction
 ### 6.7 DepartmentPolicy
 
 ```php
-// app/Academics/Department/Policies/DepartmentPolicy.php
+// app/Modules/Academics/Department/Policies/DepartmentPolicy.php
 class DepartmentPolicy extends BasePolicy
 {
     public function viewAny(?User $user): bool;    // true (all users)
@@ -468,7 +468,7 @@ class DepartmentPolicy extends BasePolicy
 ### 6.8 DepartmentForm (Livewire)
 
 ```php
-// app/Academics/Department/Livewire/Forms/DepartmentForm.php
+// app/Modules/Academics/Department/Livewire/Forms/DepartmentForm.php
 class DepartmentForm extends Form
 {
     public ?string $id = null;
@@ -487,21 +487,21 @@ class DepartmentForm extends Form
 ### 6.9 Events
 
 ```php
-// app/Academics/Department/Events/DepartmentCreated.php
+// app/Modules/Academics/Department/Events/DepartmentCreated.php
 final class DepartmentCreated extends BaseEvent
 {
     public function __construct(public Department $department) {}
     public function eventName(): string { return 'department.created'; }
 }
 
-// app/Academics/Department/Events/DepartmentUpdated.php
+// app/Modules/Academics/Department/Events/DepartmentUpdated.php
 final class DepartmentUpdated extends BaseEvent
 {
     public function __construct(public Department $department) {}
     public function eventName(): string { return 'department.updated'; }
 }
 
-// app/Academics/Department/Events/DepartmentDeleted.php
+// app/Modules/Academics/Department/Events/DepartmentDeleted.php
 final class DepartmentDeleted extends BaseEvent
 {
     public function __construct(public Department $department) {}
@@ -512,7 +512,7 @@ final class DepartmentDeleted extends BaseEvent
 ### 6.10 Listener
 
 ```php
-// app/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php
+// app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php
 final class ClearDashboardCacheOnDepartmentChange
 {
     public function handle(DepartmentCreated|DepartmentDeleted|DepartmentUpdated $event): void;
@@ -559,7 +559,7 @@ Migration: database/migrations/2026_01_03_000002_create_departments_table.php
 ### 6.14 CsvHandler Contract
 
 ```php
-// app/Core/Support/CsvHandler.php
+// app/Modules/Core/Support/CsvHandler.php
 final class CsvHandler
 {
     // Import: parses CSV, calls rowProcessor for each row
@@ -748,20 +748,20 @@ After implementing this spec, the system has academic department CRUD with name,
 
 ## Quick References
 
-- `app/Academics/Department/Models/Department.php` — Department model with `#[Fillable]` and `hasMany` Profile
-- `app/Academics/Department/Entities/DepartmentState.php` — Deletion guard entity (`canBeDeleted()`)
-- `app/Academics/Department/Data/DepartmentData.php` — Department DTO extending `BaseData`
-- `app/Academics/Department/Actions/CreateDepartmentAction.php` — Department creation with validation
-- `app/Academics/Department/Actions/UpdateDepartmentAction.php` — Department update with name uniqueness
-- `app/Academics/Department/Actions/DeleteDepartmentAction.php` — Department deletion with profile guard
-- `app/Academics/Department/Livewire/DepartmentManager.php` — Department CRUD UI + CSV import/export
-- `app/Academics/Department/Livewire/Forms/DepartmentForm.php` — Livewire form validation
-- `app/Academics/Department/Policies/DepartmentPolicy.php` — Authorization with deletion guard
-- `app/Academics/Department/Events/DepartmentCreated.php` — Create event extending `BaseEvent`
-- `app/Academics/Department/Events/DepartmentUpdated.php` — Update event extending `BaseEvent`
-- `app/Academics/Department/Events/DepartmentDeleted.php` — Delete event extending `BaseEvent`
-- `app/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — Dashboard cache invalidation
-- `app/Core/Support/CsvHandler.php` — Shared CSV import/export service
+- `app/Modules/Academics/Department/Models/Department.php` — Department model with `#[Fillable]` and `hasMany` Profile
+- `app/Modules/Academics/Department/Entities/DepartmentState.php` — Deletion guard entity (`canBeDeleted()`)
+- `app/Modules/Academics/Department/Data/DepartmentData.php` — Department DTO extending `BaseData`
+- `app/Modules/Academics/Department/Actions/CreateDepartmentAction.php` — Department creation with validation
+- `app/Modules/Academics/Department/Actions/UpdateDepartmentAction.php` — Department update with name uniqueness
+- `app/Modules/Academics/Department/Actions/DeleteDepartmentAction.php` — Department deletion with profile guard
+- `app/Modules/Academics/Department/Livewire/DepartmentManager.php` — Department CRUD UI + CSV import/export
+- `app/Modules/Academics/Department/Livewire/Forms/DepartmentForm.php` — Livewire form validation
+- `app/Modules/Academics/Department/Policies/DepartmentPolicy.php` — Authorization with deletion guard
+- `app/Modules/Academics/Department/Events/DepartmentCreated.php` — Create event extending `BaseEvent`
+- `app/Modules/Academics/Department/Events/DepartmentUpdated.php` — Update event extending `BaseEvent`
+- `app/Modules/Academics/Department/Events/DepartmentDeleted.php` — Delete event extending `BaseEvent`
+- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — Dashboard cache invalidation
+- `app/Modules/Core/Support/CsvHandler.php` — Shared CSV import/export service
 - `config/event.php` — Event-to-listener registration
 - `database/migrations/2026_01_03_000002_create_departments_table.php` — Departments table schema
 - `routes/web/academics.php` — Department route registration

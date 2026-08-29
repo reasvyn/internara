@@ -528,30 +528,30 @@ After implementing this spec, the system has partnership CRUD linking companies 
 
 ## Quick References
 
-- `app/Partners/Partnership/Models/Partnership.php` — Partnership model with MediaLibrary, Fillable, relationships
-- `app/Partners/Partnership/Entities/PartnershipState.php` — Entity with lifecycle queries and deletion guard
-- `app/Partners/Partnership/Data/PartnershipData.php` — Partnership DTO (BaseData)
-- `app/Partners/Partnership/Enums/PartnershipStatus.php` — Status enum with transitions and labels
-- `app/Partners/Partnership/Actions/CreatePartnershipAction.php` — Create command action
-- `app/Partners/Partnership/Actions/UpdatePartnershipAction.php` — Update command action
-- `app/Partners/Partnership/Actions/DeletePartnershipAction.php` — Delete with terminal-state guard
-- `app/Partners/Partnership/Actions/BatchDeletePartnershipAction.php` — Batch delete with per-record guard
-- `app/Partners/Partnership/Actions/TerminatePartnershipAction.php` — Active → Terminated transition
-- `app/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-ST11–ST12)
-- `app/Partners/Partnership/Actions/RenewPartnershipAction.php` — Renewal creating new record with MoU transfer
-- `app/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-EX1–FR-EX4)
-- `app/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-EX2–EX3)
-- `app/Partners/Partnership/Events/PartnershipExpired.php` — Expired transition event
-- `app/Partners/Partnership/Policies/PartnershipPolicy.php` — Authorization (admin writes, teacher read)
-- `app/Partners/Partnership/Livewire/PartnershipManager.php` — UI with company JOIN query
-- `app/Partners/Partnership/Livewire/Forms/PartnershipForm.php` — Form validation
-- `app/Partners/Partnership/Events/PartnershipCreated.php` — Created event
-- `app/Partners/Partnership/Events/PartnershipUpdated.php` — Updated event
-- `app/Partners/Partnership/Events/PartnershipDeleted.php` — Deleted event
-- `app/Partners/Partnership/Events/PartnershipTerminated.php` — Terminated event
-- `app/Partners/Partnership/Events/PartnershipRenewed.php` — Renewed event
-- `app/Partners/Partnership/Listeners/ClearDashboardOnPartnershipChange.php` — Cache invalidation listener
-- `app/Partners/Partnership/Listeners/NotifyOnPartnershipTerminated.php` — Queued termination notification
+- `app/Modules/Partners/Partnership/Models/Partnership.php` — Partnership model with MediaLibrary, Fillable, relationships
+- `app/Modules/Partners/Partnership/Entities/PartnershipState.php` — Entity with lifecycle queries and deletion guard
+- `app/Modules/Partners/Partnership/Data/PartnershipData.php` — Partnership DTO (BaseData)
+- `app/Modules/Partners/Partnership/Enums/PartnershipStatus.php` — Status enum with transitions and labels
+- `app/Modules/Partners/Partnership/Actions/CreatePartnershipAction.php` — Create command action
+- `app/Modules/Partners/Partnership/Actions/UpdatePartnershipAction.php` — Update command action
+- `app/Modules/Partners/Partnership/Actions/DeletePartnershipAction.php` — Delete with terminal-state guard
+- `app/Modules/Partners/Partnership/Actions/BatchDeletePartnershipAction.php` — Batch delete with per-record guard
+- `app/Modules/Partners/Partnership/Actions/TerminatePartnershipAction.php` — Active → Terminated transition
+- `app/Modules/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-ST11–ST12)
+- `app/Modules/Partners/Partnership/Actions/RenewPartnershipAction.php` — Renewal creating new record with MoU transfer
+- `app/Modules/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-EX1–FR-EX4)
+- `app/Modules/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-EX2–EX3)
+- `app/Modules/Partners/Partnership/Events/PartnershipExpired.php` — Expired transition event
+- `app/Modules/Partners/Partnership/Policies/PartnershipPolicy.php` — Authorization (admin writes, teacher read)
+- `app/Modules/Partners/Partnership/Livewire/PartnershipManager.php` — UI with company JOIN query
+- `app/Modules/Partners/Partnership/Livewire/Forms/PartnershipForm.php` — Form validation
+- `app/Modules/Partners/Partnership/Events/PartnershipCreated.php` — Created event
+- `app/Modules/Partners/Partnership/Events/PartnershipUpdated.php` — Updated event
+- `app/Modules/Partners/Partnership/Events/PartnershipDeleted.php` — Deleted event
+- `app/Modules/Partners/Partnership/Events/PartnershipTerminated.php` — Terminated event
+- `app/Modules/Partners/Partnership/Events/PartnershipRenewed.php` — Renewed event
+- `app/Modules/Partners/Partnership/Listeners/ClearDashboardOnPartnershipChange.php` — Cache invalidation listener
+- `app/Modules/Partners/Partnership/Listeners/NotifyOnPartnershipTerminated.php` — Queued termination notification
 - `database/migrations/2026_01_03_000007_create_partnerships_table.php` — Partnerships schema
 - `routes/web/partners.php` — Route definitions
 - `docs/refs/modules/partners.md` — Module conceptual documentation

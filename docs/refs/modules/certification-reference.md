@@ -127,7 +127,7 @@ Tests are located in `tests/Certification/`. See
 ## Architectural Integration
 
 - **Submodules**: `Certificate`
-- **Business Logic**: `app/Certification/`
+- **Business Logic**: `app/Modules/Certification/`
 - **Routing**: `routes/web/certification.php`
 - **Views**: `resources/views/certification/`
 - **Testing**: `tests/Certification/`

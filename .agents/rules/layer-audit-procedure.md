@@ -105,7 +105,7 @@ the DTO exists to prevent.
 
 ## Layer 1 — Framework / Infrastructure
 
-Surface: `app/Core/`, `app/*/Services/`, `app/*/Support/`, `config/`.
+Surface: `app/Modules/Core/`, `app/*/Services/`, `app/*/Support/`, `config/`.
 
 **Checks and why they exist:**
 
