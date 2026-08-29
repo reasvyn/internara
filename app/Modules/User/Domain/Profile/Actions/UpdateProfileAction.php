@@ -6,10 +6,10 @@ namespace App\Modules\User\Domain\Profile\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Profile\Data\UpdateProfileData;
 use App\Modules\User\Domain\Profile\Events\ProfileUpdated;
 use App\Modules\User\Domain\Profile\Models\Profile;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 final class UpdateProfileAction extends BaseCommandAction

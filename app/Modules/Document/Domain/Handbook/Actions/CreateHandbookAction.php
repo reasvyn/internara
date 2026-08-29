@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Document\Domain\Handbook\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Domain\Handbook\Data\HandbookData;
 use App\Modules\Document\Domain\Handbook\Events\HandbookCreated;
+use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use Illuminate\Support\Str;
 

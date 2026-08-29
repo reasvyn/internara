@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Document\Domain\OfficialDocument\Livewire;
 
-use App\Modules\Document\Models\Document;
 use App\Modules\Document\Domain\OfficialDocument\Actions\DeleteReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
+use App\Modules\Document\Models\Document;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

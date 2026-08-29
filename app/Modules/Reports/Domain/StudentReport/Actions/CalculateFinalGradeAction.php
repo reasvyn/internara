@@ -8,7 +8,6 @@ use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Reports\Domain\StudentReport\Events\GradeCalculated;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class CalculateFinalGradeAction extends BaseCommandAction
 {

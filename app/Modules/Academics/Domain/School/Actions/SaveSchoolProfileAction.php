@@ -6,8 +6,8 @@ namespace App\Modules\Academics\Domain\School\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Settings\Actions\BatchSetSettingAction;
-use App\Modules\Settings\Domain\Branding\Actions\UploadBrandAssetAction;
 use App\Modules\Settings\Data\SettingEntryData;
+use App\Modules\Settings\Domain\Branding\Actions\UploadBrandAssetAction;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Reports\Domain\StudentReport\Actions;
 
 use App\Modules\Core\Actions\BaseProcessAction;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class CaptureStudentReportSnapshotAction extends BaseProcessAction
 {

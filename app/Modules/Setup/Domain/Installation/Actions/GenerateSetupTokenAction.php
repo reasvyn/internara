@@ -6,8 +6,8 @@ namespace App\Modules\Setup\Domain\Installation\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Settings\Actions\BatchSetSettingAction;
-use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\Setup\Domain\Installation\Data\SetupTokenData;
+use App\Modules\Setup\Entities\SetupEntity;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;

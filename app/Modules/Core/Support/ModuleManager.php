@@ -55,6 +55,7 @@ final class ModuleManager
 
     /**
      * @deprecated Use domains() instead — submodule is now Domain
+     *
      * @return list<string>
      */
     public static function submodules(string $module): array

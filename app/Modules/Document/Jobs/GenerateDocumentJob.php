@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Document\Jobs;
 
-use App\Modules\Document\Models\Document;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
+use App\Modules\Document\Models\Document;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

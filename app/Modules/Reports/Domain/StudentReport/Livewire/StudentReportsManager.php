@@ -11,7 +11,6 @@ use App\Modules\Reports\Domain\StudentReport\Actions\CreateReportAction;
 use App\Modules\Reports\Domain\StudentReport\Actions\FinalizeReportAction;
 use App\Modules\Reports\Domain\StudentReport\Data\CreateReportData;
 use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;

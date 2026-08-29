@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Assessment\Actions;
 
 use App\Modules\Assessment\Data\ScoreIndicatorData;
-use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
+use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Data\ActionResponse;
 use App\Modules\Core\Exceptions\RejectedException;

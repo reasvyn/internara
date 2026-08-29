@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\Dashboard\Actions;
 
-use App\Modules\Assignment\Enums\AssignmentStatus;
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Assignment\Enums\AssignmentStatus;
+use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Models\Document;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\Profile\Listeners;
 
 use App\Modules\Auth\Notifications\CredentialChangedNotification;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Profile\Events\ProfileUpdated;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 final class SendProfileChangedMail implements ShouldQueue

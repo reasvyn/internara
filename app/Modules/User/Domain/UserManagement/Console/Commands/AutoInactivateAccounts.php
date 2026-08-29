@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\UserManagement\Console\Commands;
 
 use App\Modules\Auth\Domain\Permissions\Enums\Role;
-use App\Modules\User\Enums\AccountStatus;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use App\Modules\User\Domain\UserManagement\Data\SetUserStatusData;
+use App\Modules\User\Enums\AccountStatus;
+use App\Modules\User\Models\User;
 use Illuminate\Console\Command;
 
 class AutoInactivateAccounts extends Command

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Reports\Domain\StudentReport\Policies;
 
 use App\Modules\Core\Policies\BasePolicy;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\User\Models\User;
 
 class StudentReportPolicy extends BasePolicy

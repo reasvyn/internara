@@ -10,8 +10,8 @@ use App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationSta
 use App\Modules\Enrollment\Domain\AccountApplication\Events\AccountApplicationApproved;
 use App\Modules\Enrollment\Domain\AccountApplication\Models\AccountApplication;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Profile\Models\Profile;
+use App\Modules\User\Models\User;
 
 final class ApproveAccountApplicationAction extends BaseCommandAction
 {

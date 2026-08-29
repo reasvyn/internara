@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Academics\Domain\School\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\Settings\Services\Settings;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class SchoolEntity extends BaseEntity
@@ -73,7 +74,7 @@ final readonly class SchoolEntity extends BaseEntity
      */
     public static function get(): self
     {
-        $values = \App\Modules\Settings\Services\Settings::get(array_values(self::KEYS));
+        $values = Settings::get(array_values(self::KEYS));
 
         return self::fromSettingsArray($values);
     }

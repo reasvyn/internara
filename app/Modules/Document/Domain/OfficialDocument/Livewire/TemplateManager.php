@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Document\Domain\OfficialDocument\Livewire;
 
+use App\Modules\Document\Domain\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
-use App\Modules\Document\Domain\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;

@@ -6,8 +6,8 @@ namespace App\Modules\User\Domain\UserManagement\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\UserManagement\Events\UserDeleted;
+use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 final class DeleteUserAction extends BaseCommandAction

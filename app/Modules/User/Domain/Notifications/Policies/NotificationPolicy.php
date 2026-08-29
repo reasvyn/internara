@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\Notifications\Policies;
 
 use App\Modules\Core\Policies\BasePolicy;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Notifications\Models\Notification;
+use App\Modules\User\Models\User;
 
 class NotificationPolicy extends BasePolicy
 {

@@ -6,12 +6,12 @@ namespace App\Modules\User\Domain\Profile\Livewire;
 
 use App\Modules\Auth\Domain\Password\Actions\UpdateUserPasswordAction;
 use App\Modules\Core\Livewire\BaseFormView;
-use App\Modules\User\Models\User;
 use App\Modules\User\Domain\Profile\Actions\ReadProfileFormAction;
 use App\Modules\User\Domain\Profile\Actions\UpdateProfileAction;
 use App\Modules\User\Domain\Profile\Data\UpdateProfileData;
 use App\Modules\User\Domain\Profile\Livewire\Forms\PasswordForm;
 use App\Modules\User\Domain\Profile\Livewire\Forms\ProfileForm;
+use App\Modules\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;

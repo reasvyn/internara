@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Setup\Domain\Installation\Http\Middleware;
 
 use App\Modules\Core\Services\SmartLogger;
-use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\Setup\Domain\Installation\Actions\ValidateSetupTokenAction;
+use App\Modules\Setup\Entities\SetupEntity;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
