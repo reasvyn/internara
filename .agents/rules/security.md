@@ -1,7 +1,5 @@
 # Security Patterns — XSS, SQL Injection, Mass Assignment, CSRF
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-attack-vector intent, application, and detection
-
 These patterns close the web-app top four (OWASP A01/A02/A03) at the code level. Enforced by
 `scan_security.py`; see `security-audit` for the full audit workflow and `docs/conventions.md` §3
 for the written standard.

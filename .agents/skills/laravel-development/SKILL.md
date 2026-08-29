@@ -11,8 +11,6 @@ downstream:
 
 # Laravel Development — Framework Core
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for laravel/framework (replaces laravel-best-practices as canonical Laravel skill)
-
 > **Prerequisite:** Load `context-awareness` for project orientation. For module-specific overrides, also load `laravel-best-practices` (now legacy alias).
 
 ## When to Activate

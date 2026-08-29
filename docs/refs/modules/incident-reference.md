@@ -1,7 +1,5 @@
 # Incident — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Actions, Models, Enums, Policies, Notifications, Livewire, Routes, Views, Tests, Factories, Migrations)
-
 ## Description
 
 Detailed structural and implementation reference for the **Incident** module.

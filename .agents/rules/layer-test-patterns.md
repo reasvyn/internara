@@ -1,7 +1,5 @@
 # Layer Test Patterns — Action, Livewire, Entity, DTO, Enum, Policy
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Each layer of the architecture is tested at the depth its contract demands. Command and Read Actions

@@ -1,7 +1,5 @@
 # Policy Pattern — Authorization Gates, RBAC & Functional Roles
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (RBAC NIST, Principle of Least Privilege, Defence in Depth, Gate Pattern) with anti-pattern table, Quick References
-
 ## Description
 
 Authorization reference for the Internara codebase. Describes the Flat RBAC model, the three-layer

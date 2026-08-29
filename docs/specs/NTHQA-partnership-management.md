@@ -1,9 +1,6 @@
 # Partnership Management — Lifecycle, MoU Documents & Renewal
 
 > **Spec ID:** NTHQA
-> **Last updated:** 2026-08-18 **Changes:** review — add `ExpirePartnershipAction` for ACTIVE→EXPIRED
-> (FR-ST11–ST13), expiry-warning delivery mechanism via scheduled command + queued notification
-> (FR-EX1–EX5); align with internara-project §6.2 "Expiry Detection Warns 30 days"
 
 ## Description
 

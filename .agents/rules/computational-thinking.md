@@ -1,7 +1,5 @@
 # Computational Thinking — Agent Decision Framework
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Four pillars applied to every instruction to stay autonomous, anticipate the next step, and avoid

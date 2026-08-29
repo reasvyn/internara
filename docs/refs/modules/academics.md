@@ -1,7 +1,5 @@
 # Academics — School Profile, Departments & Academic Years
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Single-Tenant School Context, Active Year Singleton, Submodules: School, Department, AcademicYear)
-
 ## Description
 
 Institutional structure: school profile, academic departments (majors), and academic calendar

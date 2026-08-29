@@ -16,8 +16,6 @@ downstream:
 
 # Code Refactoring
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify refactoring patterns match current Action Triad, Entity extraction, Livewire thinning workflows
-
 > **Prerequisite:** Load `context-awareness` for project orientation and architecture rules.
 
 ## When to Activate

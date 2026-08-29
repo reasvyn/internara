@@ -11,10 +11,6 @@ description: >
 
 # Architecture Guard
 
-> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in
-> `rules/` (invariant enforcement, class contracts, naming, security, performance, layer audit,
-> output & integration)
-
 Comprehensive enforcement of Internara's architecture, conventions, patterns, and Architecture Decision Records. This is the
 **single source of truth** for all quality rules — every other skill defers here. ADR documents (`docs/adr/*.md`) are treated as first-class architectural artifacts: their linkage to code, metadata freshness, and decision coverage are quality gates.
 

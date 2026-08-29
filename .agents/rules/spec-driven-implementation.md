@@ -1,7 +1,5 @@
 # Spec-Driven Implementation — Requirement-Bound Execution
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 The governing spec is the source of truth for everything feature-building produces. The feature
 build is not "implement what the user asked" — it is "implement exactly what the spec defines, and
 nothing else." This rule makes that concrete: how to find the spec, what to extract from it, what to
@@ -76,7 +74,7 @@ sync-docs, issue-writing) reads.
 **How to apply:** In the Construct phase, attempt to locate the spec. If it does not exist, load
 `spec-writing`, draft the spec using its 11-section template with requirement IDs, and surface it to
 the user for approval before any implementation work. If the spec exists but is incomplete for this
-feature, amend it (recording the change in its metadata `**Changes:**` line) before implementing.
+feature, amend it (recording the change in the commit message) before implementing.
 
 **Pitfalls to avoid:**
 

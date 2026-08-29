@@ -1,7 +1,6 @@
 # Logging & Error Handling — SmartLogger, PII Masking & Exception Hierarchy
 
 > **Spec ID:** 89SRA
-> **Last updated:** 2026-08-19 **Changes:** audit — sync SmartLogger line count; verified contracts, cross-refs, docs, agent guides; FR IDs corrected in exception/action-error tests; FR-ER1-5 rendering tests added
 
 ## Description
 

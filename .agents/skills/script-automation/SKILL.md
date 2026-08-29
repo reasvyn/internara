@@ -9,9 +9,6 @@ description: >
 
 # Script Automation
 
-> **Last updated:** 2026-08-24 **Changes:** added one-off/few-off script rule — throwaway scripts
-> go to `/tmp`, never `tools/` (Agent Workflow + Skill Handoffs)
-
 Standards for writing, maintaining, and integrating Python devtool scripts in `tools/`.
 
 ## Agent Workflow

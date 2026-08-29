@@ -1,7 +1,5 @@
 # Technical Debt Annotations
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive annotation rule
-
 Debt annotations carry both intent and an owner/date — an annotation without them is noise that
 cannot be actioned.
 

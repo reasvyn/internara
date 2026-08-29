@@ -1,9 +1,5 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-08-18 **Changes:** add RejectAccountApplicationData to Data/DTOs; sync —
-> RegistrationDocumentUpload view renders `$documents` (Document models) passed by the component,
-> not a non-existent `$requirements`
-
 ## Description
 
 Detailed structural and implementation reference for the **Enrollment** module.

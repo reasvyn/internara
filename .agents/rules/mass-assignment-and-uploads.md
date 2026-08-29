@@ -1,7 +1,5 @@
 # Mass Assignment & File Upload Security — Input Integrity
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Mass assignment and file upload are the two places attacker-controlled input meets the persistence

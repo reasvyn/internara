@@ -1,8 +1,6 @@
 # Registration — Internship Registration, Verification & Document Verification
 
 > **Spec ID:** MBB5R
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> verification, documents
 
 ## Description
 

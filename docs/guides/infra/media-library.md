@@ -1,7 +1,5 @@
 # Media Library — File Uploads & Media Management
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify Spatie MediaLibrary collections, conversions, responsive images against current medialibrary.php config and module usage
-
 ## Description
 
 Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to

@@ -1,10 +1,6 @@
 # Installation & Provisioning — Feature Specification
 
 > **Spec ID:** 8NZAU
-> **Last updated:** 2026-08-16 **Changes:** amend — super admin default name is `Super Admin`; align to implementation: fix extension count
-> (12), recovery key setting name (`setup.install_recovery_key`), replace module-discovery FRs with
-> cross-reference to I1BCV, add HTTP middleware/routes/controller contracts (FR-H1–H9), complete
-> `config/setup.php` contract, record ADR for dead `InstallSystemAction`
 
 ## Description
 

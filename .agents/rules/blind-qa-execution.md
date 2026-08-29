@@ -1,7 +1,5 @@
 # Blind QA Execution — Independence Doctrine
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 The QA protocol is **blind**: it evaluates the codebase as if it were an unknown project being

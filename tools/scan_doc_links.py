@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """
-Enhanced v2.2: external HTTP link validation (HTTP 200 required), parallel external checks,
-plus v2.1 parallel execution, robust error isolation, shared _common helpers,
-severity/baseline filtering, and performance optimizations.
-scan_doc_links.py — Documentation Link & Freshness Validation
+Enhanced v2.3: removed per-file freshness enforcement (git history is source of truth),
+retains strict link validation (file, anchor, external HTTP 200).
+scan_doc_links.py — Documentation Link Validation
 Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also validates every
 external http(s) link with a live HTTP request — response must be 2xx/3xx (use --no-external to skip).
-Enforces the spec filename convention and flags markdown files whose `Last updated` metadata is
-missing or older than 14 days.
+Enforces the spec filename convention. Freshness is tracked via git history, not inline metadata.
 """
 
 from __future__ import annotations
@@ -33,7 +31,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"
-STALE_DAYS = 14
 
 # External link validation (opt-in via default-on; disable with --no-external)
 EXTERNAL_TIMEOUT = 12  # seconds per request
@@ -47,7 +44,6 @@ HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$")
 SPECS_DIR = ROOT / "docs" / "specs"
 SPEC_FILE_PATTERN = re.compile(r"^([A-Z0-9]{5})-[a-z0-9-]+\.md$")
 SPEC_ID_LINE = re.compile(r"^>\s*\*\*Spec ID:\*\*\s+([A-Z0-9]{5})\s*$", re.MULTILINE)
-LAST_UPDATED_LINE = re.compile(r"\*\*Last updated:\*\*\s+(\d{4}-\d{2}-\d{2})")
 
 RULE_TYPES = [
     "BROKEN_FILE_LINK",
@@ -56,8 +52,6 @@ RULE_TYPES = [
     "UNVERIFIED_EXTERNAL_LINK",
     "SPEC_ID",
     "SPEC_ID_METADATA",
-    "OUTDATED_DOC",
-    "MISSING_METADATA",
 ]
 
 
@@ -146,8 +140,17 @@ def extract_links(filepath: Path) -> list[tuple[int, str, str]]:
         lines = filepath.read_text(encoding="utf-8", errors="replace").splitlines()
     except OSError:
         return links
+    in_fenced_block = False
     for i, line in enumerate(lines, 1):
-        for match in LINK_PATTERN.finditer(line):
+        stripped = line.strip()
+        if stripped.startswith("```"):
+            in_fenced_block = not in_fenced_block
+            continue
+        if in_fenced_block:
+            continue
+        # Remove inline code spans (`...`) to avoid false positives from examples like `Verify every [text](path)`
+        sanitized = re.sub(r"`[^`]*`", lambda m: " " * len(m.group(0)), line)
+        for match in LINK_PATTERN.finditer(sanitized):
             text, target = match.group(1), match.group(2)
             if target.lstrip().startswith(("<")):
                 continue
@@ -391,56 +394,10 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
     return added
 
 
-# ─── Doc freshness validation ────────────────────────────────────────────────
-
-def scan_doc_freshness(files: list[Path], findings: list[Finding]) -> int:
-    """Flag markdown files whose `Last updated` metadata is older than STALE_DAYS.
-
-    Rules:
-      F-1  `> **Last updated:** YYYY-MM-DD` date is older than STALE_DAYS → OUTDATED_DOC
-      F-2  `> **Last updated:**` metadata line missing → MISSING_METADATA
-    Returns the number of freshness-related findings added.
-    """
-    added = 0
-    cutoff = datetime.now(timezone(timedelta(hours=7))).date() - timedelta(days=STALE_DAYS)
-
-    for filepath in files:
-        rel = relative_path(filepath)
-        try:
-            content = filepath.read_text(encoding="utf-8", errors="replace")
-        except OSError:
-            continue
-        match = LAST_UPDATED_LINE.search(content)
-        if not match:
-            findings.append(Finding(
-                id=f"STALE-{len(findings)+1:03d}",
-                rule="MISSING_METADATA",
-                severity="low",
-                category="documentation",
-                file=rel,
-                line=1,
-                message="Missing `> **Last updated:** YYYY-MM-DD` metadata line",
-                suggestion="Add the metadata blockquote per doc conventions (line 3 after H1)",
-                reference="docs/conventions.md §Documentation Conventions",
-            ))
-            added += 1
-            continue
-        last_updated = datetime.strptime(match.group(1), "%Y-%m-%d").date()
-        if last_updated < cutoff:
-            findings.append(Finding(
-                id=f"STALE-{len(findings)+1:03d}",
-                rule="OUTDATED_DOC",
-                severity="medium",
-                category="documentation",
-                file=rel,
-                line=1,
-message=f"`Last updated` {match.group(1)} is older than {STALE_DAYS} days (cutoff {cutoff})",
-            suggestion="Verify and synchronize this document's content against the actual codebase and governing specs to ensure consistency, then update `Last updated`",
-            reference=".agents/skills/sync-docs/SKILL.md §Review Recent Git History",
-            ))
-            added += 1
-
-    return added
+# ─── Doc freshness (removed) ──────────────────────────────────────────────
+# Freshness is now tracked via git history (git log --follow -- <file>, git diff),
+# not via inline `> **Last updated:**` metadata. See docs/conventions.md §0 and
+# .agents/rules/metadata-structure.md for the new contract.
 
 
 # ─── Report ──────────────────────────────────────────────────────────────────
@@ -470,8 +427,6 @@ def build_report(
             "by_severity": by_severity,
             "total_links": total_links,
             "valid_links": total_links - len(findings),
-            "outdated_docs": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
-            "missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
             "broken_external": sum(1 for f in findings if f.rule == "BROKEN_EXTERNAL_LINK"),
             "unverified_external": sum(1 for f in findings if f.rule == "UNVERIFIED_EXTERNAL_LINK"),
         },
@@ -482,8 +437,6 @@ def build_report(
             "link_rule_broken_anchor": sum(1 for f in findings if f.rule == "BROKEN_ANCHOR"),
             "link_rule_broken_external": sum(1 for f in findings if f.rule == "BROKEN_EXTERNAL_LINK"),
             "link_rule_unverified_external": sum(1 for f in findings if f.rule == "UNVERIFIED_EXTERNAL_LINK"),
-            "doc_rule_outdated": sum(1 for f in findings if f.rule == "OUTDATED_DOC"),
-            "doc_rule_missing_metadata": sum(1 for f in findings if f.rule == "MISSING_METADATA"),
         },
     )
 
@@ -504,13 +457,11 @@ def print_summary(result: ScanResult) -> None:
     s = result.summary
     bs = s["by_severity"]
     print(f"\n{'='*60}")
-    print(f"  DOC LINK & FRESHNESS SCAN RESULTS")
+    print(f"  DOC LINK SCAN RESULTS")
     print(f"{'='*60}")
     print(f"  Files scanned:      {result.metadata['files_scanned']}")
     print(f"  Total links:        {s['total_links']}")
     print(f"  Valid links:        {s['valid_links']}")
-    print(f"  Outdated docs:      {s['outdated_docs']}")
-    print(f"  Missing metadata:   {s['missing_metadata']}")
     print(f"  Broken external:    {s.get('broken_external', 0)}")
     print(f"  Unverified ext:     {s.get('unverified_external', 0)} (timeout/bot-blocked)")
     print(f"  Categories passed:  {s['passed']}")
@@ -571,7 +522,6 @@ def main() -> None:
 
     if not args.module:
         total_links += validate_spec_conventions(findings)
-        scan_doc_freshness(files, findings)
 
     external_links: list[tuple[str, str, int]] = []
     for filepath in files:

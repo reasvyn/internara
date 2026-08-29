@@ -1,7 +1,5 @@
 # Section Content Rules — PS, Goals, UCs, FRs, NFRs, DDs & Metrics
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Each spec section has content rules that turn slack prose into verifiable requirements. These rules
 are what make a spec implementable ("the behavior is unambiguous") and testable ("the requirement is
 assertable"). A section that breaks these rules produces requirements nobody can test and goals

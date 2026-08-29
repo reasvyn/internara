@@ -1,7 +1,5 @@
 # Flatpickr — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for flatpickr ^4.6.13
-
 ## Description
 
 Conceptual reference for **Flatpickr 4** (`flatpickr ^4.6.13`) — the lightweight vanilla-JS date

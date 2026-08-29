@@ -1,7 +1,5 @@
 # Logging & Error Handling Pattern — SmartLogger, PII Masking & Error Handling
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (PSR-3, Structured Logging, PII/GDPR, Defence in Depth) with anti-pattern table, Quick References
-
 ## Description
 
 SmartLogger dual-channel system, PII masking, translation resolution, error context, and

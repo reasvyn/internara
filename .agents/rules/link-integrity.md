@@ -1,7 +1,5 @@
 # Link Integrity — Resolvable References, No Duplicated Content
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Every cross-reference in a doc must resolve to a real target, and no content may be duplicated

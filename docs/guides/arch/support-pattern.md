@@ -1,7 +1,5 @@
 # Support Pattern — Static Utilities, Purity Rules & Boundaries
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Utility Pattern, Pure Functions, Static Methods, Immutability) with anti-pattern table, Quick References
-
 ## Description
 
 Defines the Support utility layer — purely static helper classes with minimal or no framework

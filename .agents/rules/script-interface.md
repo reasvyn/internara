@@ -1,7 +1,5 @@
 # Script Interface — CLI Flags, Directory Layout & Output Path Convention
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every script in `tools/` exposes the same command-line interface so agents and CI can drive any
 scanner without learning per-script quirks. A script that invents its own flags, ignores `--module`,
 or writes reports somewhere unexpected breaks both the automation table in the skills and the

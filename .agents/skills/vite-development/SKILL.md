@@ -9,8 +9,6 @@ downstream:
 
 # Vite Development — Build Pipeline
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for vite / laravel-vite-plugin
-
 ## When to Activate
 
 Use this skill when configuring Vite entry points, adding plugins (@tailwindcss/vite, laravel-vite-plugin), handling HMR, or debugging production builds.

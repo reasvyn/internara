@@ -1,7 +1,6 @@
 # Backup System — Database & Storage Backup, Restore, and Retention
 
 > **Spec ID:** HBXCI
-> **Last updated:** 2026-08-25 **Changes:** sync — backup-manager view maryUI → TallstackUI x-ts-* (FB792 0.15.0)
 
 ## Description
 

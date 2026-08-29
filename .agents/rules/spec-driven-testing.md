@@ -1,7 +1,5 @@
 # Spec-Driven Testing — Every Test Traces to a Requirement
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 A test exists only because a requirement in the governing spec `docs/specs/{ID}-{feature}.md`

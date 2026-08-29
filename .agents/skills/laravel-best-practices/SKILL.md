@@ -15,8 +15,6 @@ downstream:
 
 # Laravel Best Practices (Internara Edition)
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Differences, §Key Conventions, §Common Pitfalls) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
-
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

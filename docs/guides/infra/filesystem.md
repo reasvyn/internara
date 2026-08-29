@@ -1,7 +1,5 @@
 # Filesystem — File Storage & Directory Layout
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify filesystem config, disk setup, and directory layout against current config/filesystems.php and MediaLibrary integration
-
 ## Description
 
 File storage architecture, directory structure, disk configuration, and media file handling

@@ -1,7 +1,6 @@
 # Job & Queue Infrastructure — Async Processing
 
 > **Spec ID:** 8FVZA
-> **Last updated:** 2026-08-23 **Changes:** inventory sync — removed SendAnnouncementJob (queued notifications per 3S55V) and CompileLogbookReportJob (synchronous Read Action per 1KSWL FR-LB8/NFR-P3)
 
 ## Description
 

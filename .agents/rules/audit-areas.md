@@ -1,7 +1,5 @@
 # Audit Areas — The 8 Checks in Order
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Phase 2 of the audit executes eight distinct areas against each spec's audit map, in order. Each area
 has a goal, a method, and typed findings. Running areas in order keeps findings non-overlapping and
 the audit exhaustive — skipping an area silently under-reports. This rule documents Areas 1-8 with
@@ -203,7 +201,7 @@ findings.
 8. §8 Metrics — success metrics present with targets
 9. §9 Roadmap — Prerequisites, Build Guide, Next Steps all present
 10. Quick References — file paths and related specs listed
-11. Metadata — `Last updated` and `Changes` present
+11. Structure — `## Description` first, `## Quick References` last; history via git
 
 **Findings:** `S-1` Missing section · `S-2` Incomplete ({detail}) ·
 `S-3` Stale metadata (metadata older than latest commit to referenced files).

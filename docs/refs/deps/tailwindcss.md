@@ -1,7 +1,5 @@
 # Tailwind CSS — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for tailwindcss v4.3.3 (@tailwindcss/vite, @tailwindcss/forms)
-
 ## Description
 
 Conceptual reference for **Tailwind CSS 4** (`tailwindcss ^4.3.3` plus the `@tailwindcss/*`

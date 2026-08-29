@@ -1,7 +1,5 @@
 # Pulse Recorders & Ingest — What Is Captured and Where
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Recorders define what Pulse captures; the ingest driver defines where captured samples go. The two
 must be chosen together against the deployment tier: the recorder set names the observable metrics,
 and the ingest driver determines whether those metrics survive production traffic.

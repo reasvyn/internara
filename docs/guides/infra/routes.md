@@ -1,7 +1,5 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/modular-pattern.md
-
 ## Description
 
 Route structure, middleware stack, named route conventions, module split across 17 route files, and

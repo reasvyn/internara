@@ -1,7 +1,5 @@
 # Backup & Recovery — Account and System Recovery
 
-> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
-
 ## Description
 
 Reference for account recovery (super admin, user passwords) and system-level backup/restore

@@ -1,10 +1,6 @@
 # Academic Year Management — Singleton Activation & Lifecycle
 
 > **Spec ID:** XW6F5
-> **Last updated:** 2026-08-15 **Changes:** feat — active-year convention July–June via shared
-> `AcademicYearPeriod` (FR-AY40, DD-6), aligning `AcademicYearSeeder` with `AppSettingSeeder` and
-> the settings UI default; amend — expanded AcademicYear CRUD, singleton activation, deletion
-> guard, bulk delete, events, and dashboard cache invalidation into a dedicated spec
 
 ## Description
 

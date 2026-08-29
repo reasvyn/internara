@@ -1,7 +1,5 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-> **Last updated:** 2026-08-29 **Changes:** clarify homespace (~/.agents/) vs workspace (./.agents/) terminology; move internal devtools scripts/ → tools/; sync Automation Scripts table + output path
-
 Mental model and navigation map for AI agents.
 **Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
 **Rule bodies live in `.agents/rules/{rule}.md`** — this file indexes them; load a rule file when
@@ -15,8 +13,6 @@ a task reaches its concern.
 > with `~/`.
 
 ## Agent Workflow — Canonical
-
-> **Last updated:** 2026-08-27 **Changes:** Integrated from `agent-workflow` skill.
 
 **Every instruction MUST run the full cycle** (`UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE`)
 — any instruction, in any form: a one-line question, a bug report, a feature request, a docs tweak,
@@ -41,7 +37,7 @@ UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE
 |------|---------|-------------------------|-------------|
 | **1. Understand** | Intent, scope, and constraints before any exploration | *What is asked? What is the governing spec? What is affected? How big is it?* | Governing spec + FR/NFR/UC IDs, phase & size (S/M/L), affected modules/layers/files, blockers, reordered instruction list |
 | **2. Plan** | Context gathering, approach selection, and design | *What exists today? Which approach? What contracts?* | Read file/docs inventory, 2+ considered approaches, chosen design (Action triad, Entity/DTO/Model contracts, error & cache strategy), test & doc plan |
-| **3. Implement** | Surgical execution + documentation | *What changes, minimally and cleanly?* | Code edits (preserving unrelated code), doc/PHPDoc updates, metadata `Last updated`, automation/scripts |
+| **3. Implement** | Surgical execution + documentation | *What changes, minimally and cleanly?* | Code edits (preserving unrelated code), doc/PHPDoc updates, automation/scripts |
 | **4. Verify** | Quality gates, batched once | *Is anything broken or lost?* | `git status`/`diff` review, style checks, targeted & arch-guard scans, full suite only on-demand |
 | **5. Summarize** | Commit and report | *What was delivered and what remains?* | Staged commit `type(scope): desc`, final report (changes, verification, caveats, next steps) |
 
@@ -90,7 +86,7 @@ Execute surgically and keep code, specs, docs, and tests aligned.
   - Cache keys via registry (C4), correct exception hierarchy (C8), `#[Fillable]` (D4), FK handling (D6)
   - No unescaped `{!! !!}` for user content; eager loading to avoid N+1; DRY extraction — prefer more, smaller, well-named modules over one dense blob
 - **Automation-First in execution** — for repetitive / batch / pattern work (bulk renames, 3+ similar edits, seed data, mass scans), script it or reuse a devtool in `tools/`; batch your own edits into few passes instead of many round-trips.
-- **Documentation-first** — update module docs, architecture docs, conventions, and PHPDoc on public methods **before/after** code as part of the same step; update metadata lines (`> **Last updated:**` + `**Changes:**`) in every touched doc; keep `docs/specs/*.md` as SSOT and align docs ↔ code ↔ tests (Clean Code & Dedup-Align Doctrine — deduplicate on sight, reuse or extract instead of copy-pasting).
+- **Documentation-first** — update module docs, architecture docs, conventions, and PHPDoc on public methods **before/after** code as part of the same step; keep `docs/specs/*.md` as SSOT and align docs ↔ code ↔ tests (Clean Code & Dedup-Align Doctrine — deduplicate on sight, reuse or extract instead of copy-pasting). History is tracked via `git log --follow -- <file>` and `git diff`, not inline metadata.
 - **Business rules in Entities** — Actions orchestrate; Entities own invariants; DTOs carry data; Models are persistence only.
 
 **Exit criteria:** all planned changes applied, docs/PHPDoc in sync, no unrelated drift, `git status` shows only intended files.
@@ -128,7 +124,7 @@ Close the loop: version-control checkpoint, commit, and a concise final report.
 - **Report (surface to user):** what changed (files/modules/specs), what was verified (which gates ran and their result), caveats / known limitations, and **recommended next steps** (pending work, follow-ups, or L-size session plans). Keep it short — narration discipline applies.
 - **Session handling** — for M-size: one checkpoint before commit; for L-size: per-session report + `git status`/`diff` review at the end of each session, never attempting L-size in one pass.
 - **Pre-commit checklist** (AGENTS.md) must pass: strict types, no debug calls, `__()` coverage, Action triad + DTO rule, Entity delegation, cache registry, N+1 check, escaped output, tests traceable to spec, pint/phpstan/arch-guard as appropriate.
-- **Capture learnings (Self-Improvement Loop)** — record decisions, corrections, failures, patterns, constraints, gaps into `context/` (update in place, bump `**Changes:**`, add a row to `context/index.md`) and append a one-liner to `context/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Run `/self-improvement --deep` at session end to mine `git diff`.
+- **Capture learnings (Self-Improvement Loop)** — record decisions, corrections, failures, patterns, constraints, gaps into `context/` (update in place, write a descriptive commit message, add a row to `context/index.md`) and append a one-liner to `context/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Run `/self-improvement --deep` at session end to mine `git diff`.
 
 **Exit criteria:** clean commit(s), report delivered, **learning captured** (memory updated, repeats promoted), repo left cleaner than found.
 
@@ -221,7 +217,7 @@ CAPTURE  ──▶  CONSOLIDATE  ──▶  APPLY
   TallstackUI-only) so the same mistake is never repeated.
 
 This is the agent's deep-learning mechanism: experience is extracted into patterns and pushed into its
-own instructions (rules/skills), not just logged. Update `context/` files in place (bump `**Changes:**`);
+own instructions (rules/skills), not just logged. Update `context/` files in place (write a descriptive commit message);
 never duplicate a topic.
 
 ## Skill Rules
@@ -379,12 +375,12 @@ This is the **orientation layer** — it does NOT write code or run tests; it bu
 
 `.agents/context/` is the **AI Agent memory**: a living record of evolving project knowledge that agents write to so no context is lost between sessions. It is both **read** (orientation) and **written** (maintenance). Treat it like a shared, append-only project memory — never let a discovery die in a conversation.
 
-- **Update on inconsistency:** whenever you detect that a context file no longer matches reality (code, spec, docs, config, or environment changed), update that context file **directly in the same run** — fix the stale fact, bump its `**Changes:**` metadata. Do not just note it to the user or leave it for a later pass.
+- **Update on inconsistency:** whenever you detect that a context file no longer matches reality (code, spec, docs, config, or environment changed), update that context file **directly in the same run** — fix the stale fact, write a descriptive commit message and update the file directly. Do not just note it to the user or leave it for a later pass.
 - **Create when critical:** if you learn something **highly important** for future agents that is not yet recorded — a non-obvious constraint, a working workaround, an environment quirk, a deliberate decision — create a new context file `.agents/context/{context}-{issue-name}.md` (flat, kebab-case) and register it in `.agents/context/index.md`. Rules of thumb:
   - Would a future agent make a costly wrong assumption without this knowledge? → **record it**
   - Does the fact change often or is it trivial/obvious? → **do not record it**
 - **Keep it self-contained and deduplicated:** each file stands alone (paths, commands, rationale included); never duplicate a fact already recorded elsewhere — update the existing file instead.
-- **House style:** metadata line (`> **Last updated:**` + `**Changes:**`), `## Description`, plain language, an `## AI Agent Guides` decision table where helpful.
+- **House style:** `## Description`, plain language, an `## AI Agent Guides` decision table where helpful. No inline `Last updated` metadata — history lives in `git log`.
 
 #### Verify — Orientation Completeness
 
@@ -575,15 +571,17 @@ Only trust a claim after confirming it against the codebase **and** git history.
 | Base class method changed | `docs/guides/arch/{pattern}-pattern.md` |
 | Invariant added/changed | `AGENTS.md` |
 
-#### Metadata Discipline
+#### History Discipline (Git as Source of Truth)
 
-Every markdown file MUST have on line 3:
+No inline `Last updated` metadata in markdown files. Document freshness and change history are tracked via git:
 
-```markdown
-> **Last updated:** YYYY-MM-DD **Changes:** brief description
+```bash
+git log --follow -- <file>      # history of a doc
+git diff -- <file>              # what changed in this branch
+git log --since="14 days ago" --oneline -- docs/
 ```
 
-When you change content, update the date. When you sync without content changes, use `sync —` prefix. This is not optional — it's how we track documentation freshness.
+Write a descriptive commit message (`type(scope): desc`); do not duplicate it inside the file.
 
 #### Link Integrity
 

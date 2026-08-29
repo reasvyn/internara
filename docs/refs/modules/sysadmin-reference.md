@@ -1,7 +1,5 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-08-23 **Changes:** removed ReadBackupHistoryAction row — deleted as duplicate of BackupManager table pipeline
-
 ## Description
 
 Detailed structural and implementation reference for the **SysAdmin** module.

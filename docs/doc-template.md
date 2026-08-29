@@ -1,7 +1,5 @@
 # Documentation Template & Standards — How We Write Docs
 
-> **Last updated:** 2026-08-25 **Changes:** feat — template roster completed (dep-template, adr-template); noted per-directory index coverage
-
 ## Description
 
 The working standard for every document in `docs/`: which of the four documentation types a piece
@@ -71,23 +69,18 @@ quadrants but are not themselves user documentation.
 
 ---
 
-## Metadata Contract
+## Document Structure Contract
 
-Every markdown file carries a self-describing header so freshness is visible and scanners can
-enforce it (`scan_doc_links.py` flags missing dates and anything untouched for 14+ days):
+No inline `Last updated` metadata in markdown files. History lives in git:
 
-```markdown
-# Title — Subtitle
-
-> **Last updated:** YYYY-MM-DD **Changes:** one-line description of the latest change
+```bash
+git log --follow -- <file>      # history of a doc
+git diff -- <file>              # what changed in this branch
 ```
 
-- Line 3, immediately after the H1 — nowhere else.
-- `Changes:` holds **only the latest change** — history belongs in git, not in the file.
-- Update both fields whenever content changes; prefix with `sync —` / `feat —` / `fix —` where apt.
-- Structure below the header is fixed: `## Description` is always the first H2,
-  `## Quick References` is always the last. Footer is named `Quick References` — never
-  "References", "See Also", or "Where to Find It".
+Structure below the title is fixed: `## Description` is always the first H2,
+`## Quick References` is always the last. Footer is named `Quick References` — never
+"References", "See Also", or "Where to Find It".
 
 ---
 
@@ -106,7 +99,7 @@ Copy-paste skeletons live next to the docs they produce. Every directory in `doc
 | [`guides/guide-template.md`](guides/guide-template.md) | Operational how-to guide |
 | [`adr/adr-template.md`](adr/adr-template.md) | Architecture decision record (`adr-{slug}.md`) |
 
-Every template already satisfies the metadata contract above — copy, fill, delete what does not
+Every template already satisfies the structure contract above — copy, fill, delete what does not
 apply.
 
 ---
@@ -118,15 +111,14 @@ Documentation rots silently unless decay is made visible and repair is routine:
 - **Document first.** Behavior changes start in docs/specs, then code follows — never the reverse
   ([conventions.md §0](conventions.md)).
 - **Docs ship with code.** A PR that changes behavior without updating affected docs is incomplete
-  and must not merge. Update the metadata line in the same commit.
-- **Freshness is enforced, not hoped for.** `scan_doc_links.py` fails on broken links, missing
-  metadata, and documents untouched beyond 14 days.
+  and must not merge.
+- **Freshness via git.** `scan_doc_links.py` validates links (file, anchor, external); age is checked via `git log`, not inline dates.
 - **Delete rather than let lie.** Outdated content is removed or rewritten — never annotated with
   "may be outdated". Git history preserves everything.
 - **Audit periodically.** Run the `sync-docs` skill or verify manually after batch changes:
 
 ```bash
-python3 tools/scan_doc_links.py   # Links resolve, metadata present & fresh
+python3 tools/scan_doc_links.py   # Links resolve (freshness via git log)
 ```
 
 ---
@@ -135,10 +127,10 @@ python3 tools/scan_doc_links.py   # Links resolve, metadata present & fresh
 
 | When the agent… | It must… |
 |-----------------|----------|
-| Creates any markdown file in `docs/` | Copy the matching per-directory template; metadata on line 3; `Description` first H2; `Quick References` last |
+| Creates any markdown file in `docs/` | Copy the matching per-directory template; `Description` first H2; `Quick References` last |
 | Cannot classify content into one quadrant | Split it — mixed-type docs are rejected |
 | Restates a fact documented elsewhere | Link to the SSOT instead |
-| Edits doc content | Bump `Last updated` + rewrite `Changes` (latest change only) |
+| Edits doc content | Write a descriptive commit message; history via `git log --follow -- <file>` |
 | Finishes doc work | Run `python3 tools/scan_doc_links.py` — zero findings required |
 
 ---

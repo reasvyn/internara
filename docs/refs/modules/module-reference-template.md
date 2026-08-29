@@ -1,7 +1,5 @@
 # Module Reference Template — API Reference Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — extracted from doc-template.md as the modules-directory home of the reference-doc template
-
 ## Description
 
 The structure for `docs/refs/modules/{module}-reference.md` — the **reference** tier of module
@@ -12,8 +10,6 @@ rationale — that lives in `{module}.md`.
 
 ```markdown
 # {Module} Reference — API & Structure
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 ## Description
 

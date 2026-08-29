@@ -1,7 +1,5 @@
 # Localization in Views — Bilingual Display Text
 
-> **Last updated:** 2026-08-25 **Changes:** sync — x-mary-button → x-ts-button (TallstackUI v4)
-
 All user-facing strings in Blade views MUST use `__()` for EN/ID bilingual support
 (`docs/conventions.md` §14). A hardcoded string splits the app into English-only islands and breaks
 the Indonesian locale the school audience depends on.

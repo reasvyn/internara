@@ -1,7 +1,5 @@
 # Installation — Server Preparation & CLI Provisioning
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify installation procedure matches current implementation (prerequisite checks, dependency install, env config, DB provisioning, setup token generation)
-
 ## Description
 
 CLI-driven installation procedure for Internara. Covers prerequisite verification, dependency

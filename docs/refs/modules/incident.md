@@ -1,7 +1,5 @@
 # Incident — Issue Reporting & Resolution
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Severity Classification, Investigation Workflow, Resolution Outcomes, Integration Patterns, Submodule: IncidentReport)
-
 ## Description
 
 Structured incident reporting, severity classification, investigation workflow, resolution tracking,
@@ -80,5 +78,4 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 
 - SysAdmin (escalation handling, pulse monitoring)
 - Evaluation (incident data may influence program quality evaluation)
-
 

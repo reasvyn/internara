@@ -1,7 +1,5 @@
 # Project Vision — Where Internara Is Going
 
-> **Last updated:** 2026-08-25 **Changes:** .agents/context module-health path references reduced to named mentions per documentation-split rule
-
 ## Description
 
 Long-term direction for Internara — why it exists, where it is going in 3–5 years, and how every decision is evaluated. This document is the north star for contributors, maintainers, and schools adopting the platform. A condensed product overview lives in `README.md`; day-to-day principles live in `philosophy.md`; this file answers *what the future looks like* and *how we will know we got there*.

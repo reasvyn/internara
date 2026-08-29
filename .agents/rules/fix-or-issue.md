@@ -1,7 +1,5 @@
 # Fix-Now vs Issue — Auto-Fix Criteria, Spec-Lagging Fix, and GitHub Issue Standards
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Phase 4 decides which findings are fixed directly in the audit run (minor auto-fix, spec-lagging
 catch-up, test-gap fill) and which become GitHub Issues. The split is a scope-discipline device: the
 audit **does not implement features** and **does not rewrite the spec casually** — but it IS mandated
@@ -23,7 +21,7 @@ Fix directly when **ALL** of these are true:
 | Finding | Fix |
 |---------|-----|
 | Broken cross-reference ID | Update the `(ID)` reference in spec |
-| Stale `Last updated` metadata | Update date and changes line |
+| Stale content | Update date and changes line |
 | Typo in class name reference | Fix the typo in spec |
 | Missing Quick Reference entry | Add the entry |
 | Wrong file path in Quick Reference | Update the path |
@@ -75,7 +73,7 @@ so there is no reason to wait.
 - Spec contradicts itself or another authoritative spec (governed by Spec-First Doctrine)
 - Spec references non-existent files, classes, or contracts
 
-**Required Decision Rationale (must be recorded in the spec's `**Changes:**` line and/or ADR):**
+**Required Decision Rationale (must be recorded in the commit message and/or ADR):**
 
 1. **What was inconsistent** — exact spec section and code location
 2. **Which side is correct** — code or spec (justify with evidence: git history, test results, design doc)
@@ -95,7 +93,7 @@ Update metadata line → Continue audit
 
 - ❌ "Fixing" spec without checking git history (may lose intentional design)
 - ❌ Syncing spec when behavior change is needed (file issue instead)
-- ❌ Silent spec updates without `**Changes:**` metadata bump
+- ❌ Silent spec updates without a descriptive commit message / ADR
 - ❌ Filing an issue for a spec that is demonstrably wrong (wastes time, delays resolution)
 
 ---

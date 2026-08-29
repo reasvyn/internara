@@ -1,7 +1,5 @@
 # UI Framework Coexistence — TallstackUI Complete (DaisyUI/maryUI/PHPFlasher Removed)
 
-> **Last updated:** 2026-08-25 **Changes:** sync — packages deleted (not just disabled): daisyui npm + mary + flasher removed, self-hosted palette + shims bridge the gap
-
 ## Description
 
 Migration to TallstackUI is **complete** (`x-mary` = 0, `flash()->` = 0, see

@@ -17,8 +17,6 @@ downstream:
 
 # Feature Building
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules into `.agents/rules/` rule assets (spec-driven implementation, build order, sub-skill delegation, artifact contracts, localization & docs, deliverable quality) with a `## Skill Rules` mapping section
-
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

@@ -1,7 +1,5 @@
 # Data Flow & Lineage
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — flow & lineage for data-architect
-
 ## Intent
 
 Data movement is explicit: from request → DTO → Action → Entity → Model → DB on write, and DB → Model → Entity → DTO → Livewire → Blade on read. Cache and events are part of the flow, not afterthoughts. Every hop has a single owner and a clear lineage.

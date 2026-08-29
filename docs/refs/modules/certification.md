@@ -1,7 +1,5 @@
 # Certification — Certificates, Templates & QR
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (QR Cryptographic Verification, Final Grade Prerequisite, Revocation Terminal, Embedded Layout Snapshots, Verification API planned, Batch Issuance, Submodule: Certificate)
-
 ## Description
 
 Certificate generation, serial numbering, digital QR signature, public verification, and credential
@@ -92,5 +90,4 @@ GET /verify/{hash}   (not yet implemented)
 ## Used By
 
 - Student certificate list and admin issuance UI
-
 

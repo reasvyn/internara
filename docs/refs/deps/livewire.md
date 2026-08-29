@@ -1,7 +1,5 @@
 # Livewire — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for livewire/livewire v4.3.5
-
 ## Description
 
 Conceptual reference for **Livewire 4** (`livewire/livewire v4.3.5`) — the reactive component

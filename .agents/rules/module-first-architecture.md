@@ -1,7 +1,5 @@
 # Module-First Architecture — Directory Placement & Action Boundaries
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Internara does **not** follow the stock Laravel layer-first layout. The module is the top-level
 organizing unit; every layer lives *inside* the module it serves. Treating the project as a
 layer-first Laravel app (one `app/Models/`, one `app/Http/Livewire/`, Services-in-the-default-hiccup)

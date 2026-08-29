@@ -1,7 +1,5 @@
 # Repository Pattern — Why Internara Doesn't Use It
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Repository PoEAA, Data Mapper, Active Record, Query Object) with anti-pattern table, Quick References
-
 ## Description
 
 Explanation of why Internara does not use the Repository pattern — direct Eloquent usage through

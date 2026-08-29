@@ -1,7 +1,5 @@
 # ADR Template — Architecture Decision Record Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** rewritten to MADR-lite skeleton — sequential numbering dropped per owner decision, ADRs identified by slug only
-
 ## Description
 
 The structure for every `docs/adr/adr-{slug}.md`. ADRs record a single architectural decision with
@@ -13,8 +11,6 @@ and drift in practice; identity is the slug, chronology lives in the `Date` fiel
 
 ```markdown
 # {Title}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 | Field | Value |
 |-------|-------|

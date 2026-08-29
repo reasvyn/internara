@@ -1,7 +1,5 @@
 # Session — Session Configuration & Security
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify session driver, secure cookie settings, lifetime against current session.php config and HTTPS deployment
-
 ## Description
 
 Session driver configuration, security settings, cookie parameters, and session lifecycle

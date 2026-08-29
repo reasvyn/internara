@@ -1,16 +1,6 @@
 # Dummy Data — Factory-Generated Demo Dataset via DummySeeder
 
 > **Spec ID:** 3UOZP
-> **Last updated:** 2026-08-16 **Changes:** amend — super admin default name is `Super Admin`; amend — student names generated without
-> academic titles (FR-C19, DD-11); amend — `setup:install --with-dummy` seeds demo data
-> after provisioning without registering `DummySeeder` (installation FR-C10, DD-3 trade-off,
-> §9 Next Steps); amend — reuse base-seeded data (roles, settings, active
-> academic year) and supplement only (FR-E4, FR-C1, FR-H14, G8, DD-9); amend — one placement per
-> company per internship (FR-C6, DD-10); amend — no superadmin in demo data (DD-8, FR-C7);
-> amend — Indonesian-locale demo content (DD-7); amend — wrap entire generation in a single DB
-> transaction (FR-H13, NFR-R2, DD-6); feat — new spec (Maintenance) defining the
-> `DummySeeder` entry point and a `tests/Support/` factory-driven dummy data helper;
-> replaces the static-JSON design (`database/dummy-data.json`)
 
 ## Description
 

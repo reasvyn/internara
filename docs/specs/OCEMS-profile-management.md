@@ -1,8 +1,6 @@
 # Profile Management — User Profile & Settings
 
 > **Spec ID:** OCEMS
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> profile editing, avatar, password change, role-aware fields
 
 ## Description
 

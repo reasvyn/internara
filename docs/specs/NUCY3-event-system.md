@@ -1,7 +1,6 @@
 # Event System — Decoupled Communication Infrastructure
 
 > **Spec ID:** NUCY3
-> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-EV12-14 (Eloquent Observers framework: same-module, synchronous, single-model scope) per ADR audit
 
 ## Description
 

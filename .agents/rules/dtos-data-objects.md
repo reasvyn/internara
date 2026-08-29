@@ -1,7 +1,5 @@
 # DTOs & Data Objects
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — DTOs / Data for data-architect
-
 ## Intent
 
 Data crosses boundaries only as typed, validated DTOs. DTOs are the single transformation point between untrusted input and trusted domain.

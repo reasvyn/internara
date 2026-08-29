@@ -1,8 +1,5 @@
 # Assessment — Technical Reference
 
-> **Last updated:** 2026-08-18 **Changes:** add Data/DTOs section (ScoreIndicator,
-> UpdateAssessmentScores, Rubric Data classes)
-
 ## Description
 
 Detailed structural and implementation reference for the **Assessment** module.

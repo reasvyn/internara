@@ -1,7 +1,6 @@
 # Architecture Design — Module-First 4-Layer Architecture
 
 > **Spec ID:** D2FT3
-> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-ARC34-42 (communication hierarchy, performance tiers, gradual migration) + NFR-A7 single-tenant matrix per ADR audit
 
 ## Description
 

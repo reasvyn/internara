@@ -1,7 +1,5 @@
 # Triage & Decision Matrix — Classifying Findings and Choosing the Fix Side
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every finding from Phase 2 must be classified (drift direction, root cause, authoritative side,
 severity) and then resolved through the decision matrix. The matrix is what turns "spec and code
 disagree" into a concrete, defensible action. Skipping triage means fixing the wrong side — which

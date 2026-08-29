@@ -13,7 +13,7 @@ Mines the session for learning signals and writes them to project memory.
 
 1. **Gather** signals from the transcript (and git history with `--deep`). Classify:
    decision / correction / failure / pattern / constraint / gap.
-2. **Write** to `context/` (new file from `context/TEMPLATE.md` or update in place, bump `**Changes:**`),
+2. **Write** to `context/` (new file from `context/TEMPLATE.md` or update in place, write a descriptive commit message),
    then add/refresh the row in `context/index.md`.
 3. **Promote repeats**: signal seen ≥2 times in this codebase → add to `rules/architecture-rules.md`,
    `coding-rules.md`, `testing-rules.md`, or a new `rules/` file; for durable decisions write an ADR

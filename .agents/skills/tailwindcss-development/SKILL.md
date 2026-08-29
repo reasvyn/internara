@@ -9,8 +9,6 @@ downstream:
 
 # Tailwind CSS Development — Utilities & Theme Only
 
-> **Last updated:** 2026-08-25 **Changes:** narrowed to Tailwind-only — general UI rules (Blade presentation, view structure, layout/responsive/dark mode, component usage, accessibility, localization) moved to ui-development
-
 > **Prerequisite:** Load `context-awareness` for project orientation. For general UI (Blade, layout, TallstackUI components, a11y, i18n) load `ui-development`; for Livewire mechanics load `livewire-development`.
 
 ## When to Activate

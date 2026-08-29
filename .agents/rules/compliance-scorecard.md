@@ -1,7 +1,5 @@
 # Compliance Scorecard — Measuring Against Global Standards
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 The compliance scorecard is the audit's quantitative output: one table, per global standard, of the

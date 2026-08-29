@@ -1,7 +1,5 @@
 # Test Writing — Follow Existing Patterns, Cover the Spec's Scenarios
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Write tests by **copying the project's established test patterns**, never inventing new ones, and

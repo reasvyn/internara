@@ -1,7 +1,5 @@
 # Certification — Technical Reference
 
-> **Last updated:** 2026-08-24 **Changes:** sync — add `DispatchBatchIssueCertificatesAction` + `BatchIssueCertificatesData` DTO + `BatchIssueCertificatesJob` (8FVZA, 07df610); verify Actions/Jobs vs code
-
 ## Description
 
 Detailed structural and implementation reference for the **Certification** module.

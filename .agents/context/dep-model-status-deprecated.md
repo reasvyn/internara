@@ -1,7 +1,5 @@
 # Deprecation — spatie/laravel-model-status
 
-> **Last updated:** 2026-08-25 **Changes:** initial — dependency marked deprecated pending removal
-
 ## Description
 
 `spatie/laravel-model-status` (composer `^1.18`) is **deprecated and scheduled for removal** via

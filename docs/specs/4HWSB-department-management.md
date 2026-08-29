@@ -1,8 +1,6 @@
 # Department Management — CRUD, Deletion Guards & CSV Import
 
 > **Spec ID:** 4HWSB
-> **Last updated:** 2026-08-18 **Changes:** review — resolve max-length contradiction (name 255 /
-> description 1000 canonical, DD-8); align UC-1, §6.4, §6.5 with FR-DM33/34 and DB schema
 
 ## Description
 

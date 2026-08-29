@@ -1,7 +1,5 @@
 # UI/UX Design — Principles & Guidelines
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference links to arch/ui-pattern.md and arch/ux-pattern.md
-
 ## Description
 
 UI/UX design principles, component library usage (TallstackUI v4 + Tailwind CSS v4), layout patterns,

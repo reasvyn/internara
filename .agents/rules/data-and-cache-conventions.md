@@ -1,7 +1,5 @@
 # Data & Cache Conventions — Models, Queries, and Caching
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 The persistence layer follows strict conventions so mutations are safe, queries are reusable, and
 cache is consistent. These rules govern mass assignment, query scopes, relationships, and caching —
 the places where default Laravel habits quietly produce security and consistency defects.

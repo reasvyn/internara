@@ -1,8 +1,6 @@
 # Supervision — Supervision Logs, Monitoring Visits, Cross-Role Proxy & Compliance
 
 > **Spec ID:** 2EHSE
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> supervision log with multi-role review, monitoring visit scheduling, Cross-Role Proxy, compliance monitoring
 
 ## Description
 

@@ -1,12 +1,10 @@
 # Dependencies — Per-Package Reference Index
 
-> **Last updated:** 2026-08-25 **Changes:** feat — created as the entry-point catalog for docs/refs/deps/
-
 ## Description
 
 One conceptual reference per runtime dependency: installed version, what the package delivers,
 core concepts, and how Internara builds on it. Versions are reconciled against `composer.lock`
-and `package.json` at each doc's `Last updated` date.
+and `package.json` (check versions via `git log --follow -- <file>`).
 
 ---
 

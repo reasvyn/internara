@@ -1,8 +1,6 @@
 # Account Application — Guest-to-Student Pipeline
 
 > **Spec ID:** 920SO
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> signatures, policy authorization, form validation rules, and provisioning edge cases
 
 ## Description
 

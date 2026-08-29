@@ -1,7 +1,5 @@
 # Accessibility — WCAG 2.1 AA for Every Styled Component
 
-> **Last updated:** 2026-08-25 **Changes:** sync — DaisyUI/maryUI → TallstackUI v4 + self-hosted palette (FB792 0.15.0), x-ts-* examples
-
 Accessibility is non-negotiable: every styled component must meet WCAG 2.1 Level AA. This covers
 color & contrast, focus indicators, keyboard navigation, responsive reflow, and icon labeling.
 See `docs/guides/arch/modular-pattern.md` §22 and `docs/guides/ui-ux.md` §6 for the full

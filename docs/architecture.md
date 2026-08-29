@@ -1,7 +1,5 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-08-27 **Changes:** sync — added UI Pattern & UX Pattern to Reference Map and Layer-4 diagram (deduplication: all pattern detail lives in `docs/guides/arch/*-pattern.md`)
-
 ## Description
 
 > **Authoritative spec:** The governing architecture contract is

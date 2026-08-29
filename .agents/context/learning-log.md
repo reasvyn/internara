@@ -1,7 +1,5 @@
 # Learning Log — Captured Experience (Internara Agent Memory)
 
-> **Last updated:** 2026-08-29 **Changes:** seeded as the chronological capture store for the project Learning Loop
-
 ## Description
 
 Chronological log of experience signals captured by agents across sessions, per the project
@@ -33,4 +31,4 @@ Link to the detailed `context/{topic}.md` or `rules/{name}.md`. Fact-check paths
 
 - This file grows unbounded — archive quarterly into `learning-log-YYYY-Qn.md` if it exceeds ~200 lines.
 - Never duplicate a `context/` file's content here; link only.
-- Update `**Changes:**` on every edit.
+- Update `commit history` on every edit.

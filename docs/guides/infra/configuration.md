@@ -1,7 +1,5 @@
 # Configuration — Three-Tier Config System
 
-> **Last updated:** 2026-08-25 **Changes:** sync — remove config/mary.php + config/flasher.php (deleted in 0.15.0), add config/tallstackui.php (prefix ts-)
-
 ## Description
 
 Three-tier configuration system: .env, config files, and runtime database settings with cache-first

@@ -1,7 +1,5 @@
 # Clean Code & Dedup-Align Doctrine — Non-Negotiable
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Every instruction must leave the touched content and code deduplicated, aligned, and clean. This

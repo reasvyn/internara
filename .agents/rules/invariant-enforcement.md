@@ -1,7 +1,5 @@
 # Invariant Enforcement — C1-C8 & D1-D6 Critical Rules
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 The C1-C8 and D1-D6 invariants are the non-negotiable contract of the Internara architecture. They
 are the highest-priority checks in the rule reference hierarchy — everything else (architecture
 patterns, conventions, security, performance) is subordinate. This rule explains each invariant, why

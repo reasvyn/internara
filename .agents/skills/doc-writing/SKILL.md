@@ -13,8 +13,6 @@ downstream:
 
 # Doc Writing
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§1-§8) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
-
 > **Prerequisite:** Load `context-awareness` for project orientation and documentation map.
 
 ## When to Activate

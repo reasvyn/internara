@@ -1,7 +1,5 @@
 # Branding — Visual Identity & Brand Assets
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify brand assets, colors, logo usage match current implementation (Spatie Media Library, dynamic CSS variables, 6-digit hex validation)
-
 ## Description
 
 Brand assets, color palette, typography, logo usage, and visual identity guidelines for Internara.

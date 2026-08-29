@@ -1,7 +1,6 @@
 # Base Classes — Action Triad, Data Layer, UI Layer, Policies & Contracts
 
 > **Spec ID:** SE5Q9
-> **Last updated:** 2026-08-19 **Changes:** spec audit completed — all FR-A1-7, FR-M1-7, FR-L1-7, FR-C1-5, FR-CH1, FR-E1-7, FR-P1-3, FR-D1-5, FR-TR1-2 verified via 280 Core tests; C6 DTO violations in Journals filed as issue #401
 
 ## Description
 

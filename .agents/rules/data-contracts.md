@@ -1,7 +1,5 @@
 # Data Contract Writing — §6 API/Data Contracts
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 §6 API/Data Contracts is the interface layer of the spec — the exact shapes that `spec-audit` Area 2
 compares against real code. A contract written in prose ("the system stores student data") gives the
 implementer freedom to guess and the auditor nothing to check. Contracts must be written so a class

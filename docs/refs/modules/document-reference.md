@@ -1,7 +1,5 @@
 # Document — Technical Reference
 
-> **Last updated:** 2026-08-24 **Changes:** sync — add `GenerateDocumentJob` (documents queue, 7H5D6/ZT6VS); verify Jobs vs code
-
 ## Description
 
 Detailed structural and implementation reference for the **Document** module.

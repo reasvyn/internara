@@ -1,7 +1,5 @@
 # Script Testing & Performance — Guarantee Correctness and Speed
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 A scanner that silently scans the wrong files is worse than no scanner — it produces clean reports
 that certify false confidence. Scripts must be tested (at minimum manually against real modules) and
 must stay fast enough to be run frequently. Slow or wrong scripts die from disuse.

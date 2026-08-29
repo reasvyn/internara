@@ -1,7 +1,5 @@
 # spatie/laravel-medialibrary — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for spatie/laravel-medialibrary 11.23.4
-
 ## Description
 
 Conceptual reference for **Spatie Media Library 11** (`spatie/laravel-medialibrary 11.23.4`) —

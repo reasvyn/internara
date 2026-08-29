@@ -1,7 +1,5 @@
 # Test Diagnosis — Read the Failure Before Re-Running
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten from checklist/quick-reference to comprehensive rule — preserves the full diagnosis content as prose with rationale
-
 ## Intent
 
 When a test fails, **read the failure before re-running**: parse the output, locate the exact line,

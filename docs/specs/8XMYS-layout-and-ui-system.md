@@ -1,7 +1,6 @@
 # Layout & UI System — Cross-Cutting Presentation Shell & Component Library
 
 > **Spec ID:** 8XMYS
-> **Last updated:** 2026-08-25 **Changes:** sync — FR-S3/A5 @flasher_render/flash → TallstackUI toast + x-ts-toast aria-live (FB792 0.15.0), FR-N6 maryUI Heroicons → TallstackUI x-ts-icon
 
 ## Description
 

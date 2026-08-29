@@ -1,7 +1,5 @@
 # Coding Rules — Practical Application Guide
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-rule rationale and anti-patterns
-
 This is NOT a replacement for `docs/conventions.md`. It's a practical guide: *why* the mostly-DR
 conventions exist and *what to check* before writing a class. Read `docs/conventions.md` for the
 full written spec.

@@ -1,7 +1,5 @@
 # Developer Tools — Internal Devtools (`tools/`)
 
-> **Last updated:** 2026-08-29 **Changes:** rename scripts/ → tools/ (internal devtools); internal `tools/tools.json` registry; `scripts/` now only holds `install.sh` one-line installer
-
 ## Description
 
 Python devtool scripts in `tools/` for codebase scanning, validation, and metrics.

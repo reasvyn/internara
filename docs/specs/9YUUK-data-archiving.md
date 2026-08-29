@@ -1,11 +1,6 @@
 # Data Archiving & Retention — Full Archival Lifecycle
 
 > **Spec ID:** 9YUUK
-> **Last updated:** 2026-08-19 **Changes:** created — full archival lifecycle spec consolidating student-account archival (E1MSJ), GDPR purge (7HNCF), report snapshots (R6BMW), and retention config under one retention-governed lifecycle
->
-> The umbrella spec for how completed PKL data is archived, restored, and purged. Consolidates and
-> extends the archive capabilities currently scattered across E1MSJ (student-account archival),
-> R6BMW (report snapshot), and per-module retention config.
 
 ## Description
 

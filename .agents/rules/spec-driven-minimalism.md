@@ -1,7 +1,5 @@
 # Spec-Driven Minimalism — Write Only What the Spec Requires
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Tests exist **only** because a requirement in `docs/specs/{ID}-{feature}.md` demands it. Every test

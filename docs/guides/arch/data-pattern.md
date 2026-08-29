@@ -1,7 +1,5 @@
 # Data / DTO Pattern Reference — DTO Lifecycle, Immutability & Boundary Rules
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Data Transfer Object PoEAA, Value Object DDD, Immutability, Type Safety) with anti-pattern table, Quick References
-
 ## Description
 
 This document is a comprehensive reference on the Data Transfer Object (DTO) pattern as implemented

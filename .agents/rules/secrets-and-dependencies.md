@@ -1,7 +1,5 @@
 # Secrets, Configuration & Dependencies — Supply-Chain Hygiene
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 This rule covers the two quiet leak channels: the **config** surface (secrets that end up in code,

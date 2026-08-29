@@ -1,9 +1,6 @@
 # Internship Lifecycle — Program CRUD, Status Machine, Registration Windows & Pre-Close Readiness
 
 > **Spec ID:** 7C5WM
-> **Last updated:** 2026-08-25 **Changes:** audit gap closure — add FR-CL1-6 (Program Closure 7-step, ARCHIVED terminal, snapshot, alumni read-only, retention) per ADR audit
-> Manager (FR-IC13/14), add Requirement Manager with typed requirements DOCUMENT/SKILL/TEXT
-> (FR-RM1–RM5, DD-6), reconcile Phase Manager NG2 with internara-project §6.3
 
 ## Description
 

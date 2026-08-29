@@ -1,7 +1,5 @@
 # Data Mapping — Entity ↔ Model ↔ DTO ↔ Action
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — mapping for data-architect
-
 ## Intent
 
 Every boundary has an explicit, typed mapper. No implicit array pass-through, no “it happens to have the same keys.” Mapping is the only place where field renames, type coercions, and legacy shapes are allowed.

@@ -1,7 +1,5 @@
 # Laravel Framework — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial conceptual reference for laravel/framework v13.24.0 (version reconciled against composer.lock)
-
 ## Description
 
 Conceptual reference for **Laravel 13** (`laravel/framework v13.24.0`, pinned in `composer.lock`)

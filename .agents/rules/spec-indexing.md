@@ -1,7 +1,5 @@
 # Spec Indexing & Lifecycle — IDs, Phases, Dependencies, Splits & Updates
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 `docs/specs/index.md` is the canonical registry of every spec. It orders specs by **lifecycle phase**
 and **dependency depth**, assigns each a unique 5-character ID, tracks dependencies, and records
 splits. This rule covers indexing mechanics (IDs, phases, dependencies, add/split) and the spec

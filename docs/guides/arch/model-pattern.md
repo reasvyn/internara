@@ -1,7 +1,5 @@
 # Model Pattern — Active Record, Persistence & Entity Bridges
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Active Record PoEAA, UUID v7 RFC 9562, Eloquent conventions) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara defines **Eloquent Models** — the persistence layer. It synthesizes global industry standards — **Active Record Pattern** (Martin Fowler, *Patterns of Enterprise Application Architecture*), **UUID v7** (RFC 9562, time-ordered identifiers), **Laravel Eloquent conventions** (relationships, scopes, casts, mass assignment) — into enforceable rules tied to Internara's stack: `BaseModel`/`BaseAuthenticatable`, `HasUuids`, `#[Fillable]` PHP 8 attribute, Spatie MediaLibrary, and the `as{Entity}()` Bridge Pattern.

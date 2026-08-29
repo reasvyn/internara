@@ -1,7 +1,5 @@
 # Scaling — Performance & Scaling Strategies
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify scaling tiers, Redis/DB separation, worker counts against current architecture and deployment configs
-
 ## Description
 
 This document is the operational companion to [Infrastructure](infrastructure.md). It describes

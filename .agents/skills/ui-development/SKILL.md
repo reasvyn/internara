@@ -11,8 +11,6 @@ downstream:
 
 # UI Development — General Presentation & Component Library
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — extracted general UI rules from tailwindcss-development (Blade presentation, view structure, layout/responsive/dark mode, component usage, accessibility, localization) so tailwindcss-development can stay Tailwind-only and livewire-development Livewire-only
-
 > **Prerequisite:** Load `context-awareness` for project orientation. `livewire-development` provides component state context; `tailwindcss-development` provides Tailwind utility details.
 
 ## When to Activate

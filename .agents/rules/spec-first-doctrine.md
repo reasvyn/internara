@@ -1,7 +1,5 @@
 # Spec-First Doctrine — Non-Negotiable
 
-> **Last updated:** 2026-08-27 **Changes:** feat — add conflict resolution hierarchy: arch patterns > spec (arch pattern is higher authority per user directive)
-
 ## Description
 
 Every action, on every instruction, in any form, must be driven by the governing spec. This rule

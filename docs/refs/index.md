@@ -1,7 +1,5 @@
 # Refs — Reference Documentation Index
 
-> **Last updated:** 2026-08-25 **Changes:** feat — created as the catalog for reference documentation under docs/refs/
-
 ## Description
 
 Reference-tier documentation: per-module API references and per-dependency conceptual references.

@@ -1,7 +1,5 @@
 # Verification Strategy — Batched Quality Gates
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Batch all changes first, then verify once. Tests verify the spec — nothing more. Full suite and

@@ -1,7 +1,5 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-08-24 **Changes:** sync — remove phantom `ResetUserPasswordAction` (deleted 2a5314, QLHDO audit; actual class is `ResetPasswordAction`)
-
 ## Description
 
 Detailed structural and implementation reference for the **Auth** module.

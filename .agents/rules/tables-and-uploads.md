@@ -1,7 +1,5 @@
 # Tables & File Uploads — CRUD Rendering and Media Handling
 
-> **Last updated:** 2026-08-25 **Changes:** sync — x-mary-table → TallstackUI x-ts-table (FB792 0.15.0)
-
 List/CRUD tables and file uploads are the two most mechanically complex Livewire concerns. Each has
 a mandated mechanism — TallstackUI's `x-ts-table` (with `BaseRecordManager` for CRUD) and
 `WithFileUploads` + Spatie MediaLibrary — and each fails in characteristic ways when the mechanism is

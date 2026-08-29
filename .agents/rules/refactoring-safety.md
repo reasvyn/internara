@@ -1,7 +1,5 @@
 # Refactoring Safety — Prevent Destructive Changes
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-phase rule rationale, application, and verification
-
 Refactoring changes structure without changing behavior. The rules below exist to guarantee that
 structural edits never silently alter observable behavior. A refactor that changes behavior is not a
 refactor — it is a bug shipping under a refactor label.

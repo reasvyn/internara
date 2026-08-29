@@ -1,7 +1,5 @@
 # Academics — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** add `AcademicYearPeriod` support class
-
 ## Description
 
 Detailed structural and implementation reference for the **Academics** module.

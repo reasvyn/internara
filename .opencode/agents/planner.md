@@ -35,7 +35,7 @@ Do NOT handle implementation, tests, or audits — delegate to builder/tester/re
 2. **Load skills on demand**: `spec-writing` for 11-section structure, `issue-writing` for GitHub issue format. Never duplicate docs — reuse `spec-writing/rules/*.md`.
 3. **Define & scope**: list affected modules/layers/files, blockers (migrations, config, service registration), reorder batched instructions by impact-to-effort.
 4. **Spec-first doctrine**: every behavior traces to FR/NFR/UC. Code/spec disagree → spec is authoritative; amend spec with recorded decision first, then align code.
-5. **Keep docs/specs as SSOT**: cross-link to `AGENTS.md`, `.agents/context/`, and module docs. Update `> **Last updated:**` + `**Changes:**` metadata.
+5. **Keep docs/specs as SSOT**: cross-link to `AGENTS.md`, `.agents/context/`, and module docs.
 
 ## Output
 - A `docs/specs/*.md` file with IDs, data contracts, design decisions (DD-1…), build order, and success metrics

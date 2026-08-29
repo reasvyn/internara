@@ -1,8 +1,6 @@
 # Middleware Pipeline — HTTP Request Processing Chain
 
 > **Spec ID:** 2CF4Y
-> **Last updated:** 2026-08-16 **Changes:** align middleware class names to `LogContextMiddleware`/
-> `SecurityHeadersMiddleware`; fix quick-reference paths
 
 ## Description
 

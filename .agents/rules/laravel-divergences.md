@@ -1,7 +1,5 @@
 # Laravel Divergences — Internara Conventions over Stock Laravel
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive divergences rule
-
 Internara deliberately differs from stock Laravel in these ways:
 
 | Stock Laravel | Internara |

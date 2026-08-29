@@ -1,7 +1,5 @@
 # Alpine.js — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for Alpine.js (bundled via Livewire)
-
 ## Description
 
 Reference for **Alpine.js** — the lightweight reactive-directive layer inside Blade templates.

@@ -1,7 +1,5 @@
 # Architecture Patterns
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — all 16 arch patterns integrated with global industry standards (CQRS, DDD, SOLID, PoEAA, PSR-3/16, WCAG 2.2, OWASP, NIST) with anti-pattern tables, Quick References with URLs
-
 Design patterns and conventions that govern the Internara codebase. See
 [`docs/architecture.md`](../../architecture.md) for the high-level architecture overview.
 

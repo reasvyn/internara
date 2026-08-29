@@ -1,8 +1,6 @@
 # Notification Infrastructure — Cross-Module In-App & Multi-Channel Notifications
 
 > **Spec ID:** TXR2H
-> **Last updated:** 2026-08-16 **Changes:** align SendsNotifications contract to single
-> `NotificationData` argument (FR-C6, FR-S1, §6.1, §6.3)
 
 ## Description
 

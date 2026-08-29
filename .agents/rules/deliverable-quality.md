@@ -1,7 +1,5 @@
 # Deliverable Quality — Measurable Completion Criteria
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 A deliverable is "done" only when it meets the measurable criteria below — file completeness, Action
 quality, Model quality, feature completeness, and the final quality gate. These are completion
 criteria, not aspirations: a slice that fails any item is not ready for review or merge, and shipping

@@ -1,7 +1,5 @@
 # Efficient Test Execution — Batch, Scope, and Memory
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Run tests in the smallest scope that gives confidence, batch executions instead of running after

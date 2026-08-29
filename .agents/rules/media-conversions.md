@@ -1,7 +1,5 @@
 # Media Conversions & Responsive Images — Processing Config
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Image processing is configured declaratively on the collection. Conversions and responsive images
 turn one uploaded original into the set of always-optimized variants the UI serves — and if they are
 not declared, every view renders the full-resolution original, which is the difference between a

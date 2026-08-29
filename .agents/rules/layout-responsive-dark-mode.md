@@ -1,7 +1,5 @@
 # Layout, Responsiveness & Dark Mode — Structure and Theming
 
-> **Last updated:** 2026-08-25 **Changes:** sync — DaisyUI drawer/data-theme → TallstackUI v4 + `.dark` class + self-hosted palette (FB792 0.15.0)
-
 Layout, responsiveness, and theming are the visible skeleton of every blade view: the shared
 `core::layouts.*` shells (drawer sidebar + navbar header) for structure, mobile-first breakpoints for
 responsiveness, and the `data-theme` attribute + `.dark` class + CSS variables (`@theme` palette) for

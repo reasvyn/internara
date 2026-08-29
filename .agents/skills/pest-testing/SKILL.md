@@ -15,10 +15,6 @@ downstream:
 
 # Pest Testing
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (Test Structure, Spec
-> Traceability, Key Conventions, Mocking) into `.agents/rules/` rule assets with a `## Skill Rules` mapping
-> section
-
 > **Prerequisite:** Load `context-awareness` for testing conventions.
 
 ## Core Doctrine — Tests Verify the Spec

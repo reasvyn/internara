@@ -1,7 +1,5 @@
 # Service Pattern — Infrastructure Logic, Scope & Constructor Injection
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Service Layer PoEAA, SRP SOLID, God Object, Factory Pattern) with anti-pattern table, Quick References
-
 ## Description
 
 Boundaries between Services (infrastructure logic), Support (static utilities), and Actions (domain

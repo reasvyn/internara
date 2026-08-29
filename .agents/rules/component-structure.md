@@ -1,7 +1,5 @@
 # Component Structure & Routing — Placement and Shape
 
-> **Last updated:** 2026-08-25 **Changes:** sync — maryUI components → TallstackUI x-ts-* (FB792 0.15.0)
-
 A Livewire component's placement, build order, Form Object extraction, and route registration follow
 fixed conventions. Each convention exists because a specific integration failure follows when it is
 skipped: a component in the wrong directory breaks discovery and the docs' file tables; a 5+-field

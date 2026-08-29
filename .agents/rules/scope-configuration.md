@@ -1,7 +1,5 @@
 # Scope Configuration — Flexible Audit Scope & Work Channels
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 `spec-audit` is deliberately scope-flexible: it audits by single spec, by work scope, by module, by
 phase, by audit area, by agent-guides surface, or everything at once. The scope choice changes what is
 checked, how the report is structured, and how the work is staged. Getting the scope wrong wastes a

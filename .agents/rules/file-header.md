@@ -1,7 +1,5 @@
 # File Header Order
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive file-header rule
-
 Every PHP class file MUST follow this exact ordering:
 
 ```php

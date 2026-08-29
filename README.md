@@ -7,8 +7,6 @@
 
 # Internara — Vocational Fieldwork Management System
 
-> **Last updated:** 2026-08-25 **Changes:** module documentation links realigned to docs/refs/modules/
-
 Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs
 (PKL — _Praktik Kerja Lapangan_) at Indonesian vocational schools (SMK). MIT-licensed, designed
 to run entirely on school-owned infrastructure — from a $5/month shared host with SQLite up to a

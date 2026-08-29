@@ -1,7 +1,5 @@
 # Output Format — JSON Schema & Output Quality Rules
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every script MUST produce JSON conforming to one canonical schema. This is what makes scan findings
 machine-consumable: `arch-guard` aggregates, `issue-writing` quotes, `spec-audit` classifies, and CI
 parses — all against the same shape. A script that emits a custom JSON shape silently breaks every

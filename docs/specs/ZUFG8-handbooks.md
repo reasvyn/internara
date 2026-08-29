@@ -1,8 +1,6 @@
 # Handbooks — Handbook Lifecycle, Acknowledgment Tracking & Registration Documents
 
 > **Spec ID:** ZUFG8
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> audience targeting, student acknowledgment tracking via activity log, registration-document verification
 
 ## Description
 

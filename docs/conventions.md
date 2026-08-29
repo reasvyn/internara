@@ -1,7 +1,5 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-08-27 **Changes:** sync — §1 reference table now lists UI/UX arch patterns; added "See also" links from every pattern-overlapping section to the authoritative `docs/guides/arch/*-pattern.md` docs (deduplication)
-
 ## Description
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
@@ -607,7 +605,6 @@ methods where the container is not available (e.g., `database/factories/`).
 - [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content
-- [ ] Doc metadata updated: Last updated date + one-line Changes description
 - [ ] Tests pass: `php artisan test --compact` (every test traces to a spec requirement — no
       orphan tests, no padding)
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`

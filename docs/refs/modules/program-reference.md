@@ -1,7 +1,5 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-08-17 **Changes:** add `add_registration_dates_to_internships_table` migration to Migrations table
-
 ## Description
 
 Detailed structural and implementation reference for the **Program** module.

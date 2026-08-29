@@ -1,7 +1,5 @@
 # Production Dummy-Data Guard — Intentional Constraint
 
-> **Last updated:** 2026-08-16 **Changes:** initial — moved from `docs/known-issues.md`, agent-adapted
-
 ## Description
 
 Demo data is **deliberately blocked in production** at three independent layers. Do not weaken these

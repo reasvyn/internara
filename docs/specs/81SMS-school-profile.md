@@ -1,7 +1,6 @@
 # School Profile — Settings-Based Entity Management
 
 > **Spec ID:** 81SMS
-> **Last updated:** 2026-08-27 **Changes:** refactor — `SchoolEntity` pure (no Settings import) per C5/MOD, new `GetSchoolEntityAction` Read Action owns Settings fetch (arch pattern > spec); `SchoolForm::loadFromEntity` now accepts `SchoolEntity` via Action injection; FR-SP3 split into FR-SP3/FR-SP3a
 
 ## Description
 

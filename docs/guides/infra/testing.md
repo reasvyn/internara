@@ -1,7 +1,5 @@
 # Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/testing-pattern.md
-
 ## Description
 
 Testing strategy, spec traceability, scope isolation, Pest conventions, factory usage, and mocking

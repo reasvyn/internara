@@ -1,10 +1,6 @@
 # Settings Infrastructure — Type-Aware Store, Resolution & Cache Invalidation
 
 > **Spec ID:** YB22J
-> **Last updated:** 2026-08-15 **Changes:** amend — `active_academic_year` default resolved via
-> `AcademicYearPeriod` (month-aware, July–June convention, FR-AY40); review — add feature flags
-> contract (FR-FF1–FR-FF6), color/image type handling decision (FR-S13/S14, DD-5),
-> `brand.custom_css` key, `feature()` helper
 
 ## Description
 

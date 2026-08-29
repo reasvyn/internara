@@ -1,7 +1,5 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/policy-pattern.md
-
 ## Description
 
 Flat RBAC model with five static roles, three functional roles, Cross-Role Proxy for delegation,

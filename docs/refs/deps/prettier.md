@@ -1,7 +1,5 @@
 # Prettier — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for prettier ^3.9.6 family (blade + tailwind plugins)
-
 ## Description
 
 Conceptual reference for the **Prettier formatting family** — one formatter core plus two

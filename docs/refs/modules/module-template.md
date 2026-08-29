@@ -1,7 +1,5 @@
 # Module Template — Conceptual Overview Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — extracted from doc-template.md as the modules-directory home of the conceptual-doc template
-
 ## Description
 
 The structure for `docs/refs/modules/{module}.md` — the **conceptual** tier of module documentation.
@@ -12,8 +10,6 @@ schemas — those belong in `{module}-reference.md`.
 
 ```markdown
 # {Module} — {One-line Purpose}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 ## Description
 

@@ -1,7 +1,5 @@
 # Guides — Operational & Design Documents
 
-> **Last updated:** 2026-08-25 **Changes:** relocated from docs/foundation → docs/guides (architecture → guides/arch, infrastructure → guides/infra); retitled from "Foundation Documents"
-
 Operational guides and design documents. Product scope and project status live in the root
 **[README.md](../../README.md)**.
 

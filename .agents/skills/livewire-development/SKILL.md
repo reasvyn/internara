@@ -12,8 +12,6 @@ downstream:
 
 # Livewire Development — Livewire Mechanics Only
 
-> **Last updated:** 2026-08-25 **Changes:** narrowed to Livewire-only — general UI rules (Blade presentation, view structure, a11y, i18n) moved to ui-development; skill now focuses on thin components, delegation, structure, and tables
-
 > **Prerequisite:** Load `context-awareness` for project orientation. For general UI (Blade, layout, TallstackUI, a11y, i18n) load `ui-development`; for Tailwind utilities load `tailwindcss-development`.
 
 ## When to Activate

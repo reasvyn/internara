@@ -1,7 +1,5 @@
 # Settings — Config, Branding & Feature Flags
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Resolution Chain, Brand Resolution, Cache Strategy, Superadmin-Only Mutations, Submodules: SettingStore, Branding, Locale, Theme)
-
 ## Description
 
 System-wide configuration management: key-value store with type enforcement, brand identity (colors,

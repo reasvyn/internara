@@ -1,7 +1,5 @@
 # Infrastructure Documentation
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify infrastructure catalog matches 11 docs
-
 Deployment, configuration, CI/CD, database, and operations.
 
 - **[Infrastructure Overview](infrastructure.md)** — Deployment options, background process architecture, database and storage

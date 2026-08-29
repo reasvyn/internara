@@ -1,9 +1,5 @@
 # Testing Rules — What to Verify
 
-> **Last updated:** 2026-08-17 **Changes:** test naming convention — `describe("{SpecID}: Test description...")` +
-> `test("{SpecID}-{ReqID}: Test description...")`; spec-driven doctrine — tests trace to spec requirements,
-> coverage measured in requirements not lines; minimalism rationale
-
 This is NOT a replacement for `docs/guides/arch/testing-pattern.md` or
 `docs/guides/infra/testing.md`. Use this as a quick checklist when writing or reviewing tests.
 

@@ -1,7 +1,5 @@
 # Mocking Boundaries — Fake at the Edge, Never in the Core
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Faking is reserved for the boundaries where a test must not touch the real world: HTTP, the file

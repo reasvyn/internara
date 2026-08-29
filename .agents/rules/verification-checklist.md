@@ -1,7 +1,5 @@
 # Refactoring — Verification Checklist
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-check rationale to prevent misinterpretation
-
 This checklist is the final gate before declaring a refactor complete. Each check exists because a
 refactor can look structurally clean while still breaking behavior, violating an invariant, or
 leaving dead code. Run every check; a single unchecked box means the refactor is not done.

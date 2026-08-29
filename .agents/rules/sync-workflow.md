@@ -1,7 +1,5 @@
 # Sync Workflow — Discover Drift Before Editing
 
-> **Last updated:** 2026-08-25 **Changes:** add 7-phase ordered sync execution (root → agent layer last) per impact-to-effort; expand area mapping
-
 ## Intent
 
 Before making any doc change, systematically discover what actually changed in the codebase and
@@ -20,7 +18,7 @@ docs are now wrong. Two failure modes this prevents:
    in place. A module doc updated "just in case" while the reference doc for a renamed Action stays
    stale is the classic outcome.
 2. **Re-verifying unchanged docs.** Re-reading and "sync"-touching docs that have not drifted burns
-   time, churns the git history, and — because each touch bumps `Last updated` — actively
+   time, churns the git history, and churns the git history and
    *hides* future drift (a doc looks fresh when nothing real changed).
 
 The 14-day window is the **minimum**, not a fixed cap: recent changes are the ones that matter most,
@@ -98,7 +96,7 @@ git log --since="14 days ago" --stat
   point (drift is introduced by changes; find the changes).
 - **Capping the window at 14 days when drift is older:** treating 14 days as a hard limit hides stale
   docs that drifted 3–4 weeks ago. Minimal 14 days means floor, not ceiling — widen when audit signal
-  (stale `Last updated`, missing file refs, spec gap) suggests older changes.
+  (missing file refs, spec gap) suggests older changes.
 - **Widening the window blindly:** reviewing 90 days of history for every routine sync dilutes focus.
   Extend only when needed — routine sync starts at 14 days, audit expands to full log.
 - **Updating only `docs/` and ignoring agent guides & skills** — `AGENTS.md`, `.agents/skills/*`,

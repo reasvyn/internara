@@ -1,7 +1,5 @@
 # Agent Skill Integration — Reuse-Before-Create, Handoffs & the Skill→Script→Skill Flow
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Scripts exist to serve the agent-skill layer. `arch-guard`, `context-awareness`, and the other skills
 document scripts in their `## Automation Scripts` tables, run them as quality gates, and consume their
 JSON findings. This rule defines how a script relates to the skills, when a new script is justified,

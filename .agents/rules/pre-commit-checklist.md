@@ -1,7 +1,5 @@
 # Pre-commit Checklist
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 The final gate before every commit. Items marked "when requested" follow the on-demand policy in

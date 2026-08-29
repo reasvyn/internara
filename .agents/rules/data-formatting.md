@@ -1,7 +1,5 @@
 # Data Formatting — Storage vs Presentation
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — formatting for data-architect
-
 ## Intent
 
 Data is stored in canonical form and formatted only at the presentation boundary. No presentation formatting leaks into storage, Entities, or DTOs.

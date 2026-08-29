@@ -1,7 +1,5 @@
 # PHPDoc Conventions — Supplement Native Types, Never Duplicate Them
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 The project uses **PHP 8.4 native type hints as the primary documentation mechanism**. PHPDoc

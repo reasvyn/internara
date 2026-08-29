@@ -15,8 +15,6 @@ upstream:
 
 # Sync Docs
 
-> **Last updated:** 2026-08-25 **Changes:** scanner freshness + git-history window changed to minimum 14 days (was 7)
-
 > **Prerequisite:** Load `context-awareness` for doc navigation map.
 
 ## When to Activate
@@ -51,7 +49,7 @@ below — nothing else.
 - Update reference docs (file listings, class names, schemas), conceptual docs (business rules),
   and agent guides & skills (rule tables, skill scopes, context states) per the governing spec
 - Verify all relative links are still valid
-- Update metadata: `Last updated` date + `Changes` description
+- History is tracked via `git log --follow -- <file>` and commit messages, not inline metadata
 
 ### Verify — Quality Gates
 
@@ -76,7 +74,7 @@ below — nothing else.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_doc_links.py` | Validate all relative links in markdown files and flag ALL markdown files whose `Last updated` metadata is missing or older than 14 days, with suggestion to verify and synchronize against codebase | `python3 tools/scan_doc_links.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files (freshness via `git log --follow -- <file>`, not inline metadata) | `python3 tools/scan_doc_links.py` |
 
 Output: `tools/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
 

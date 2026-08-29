@@ -1,7 +1,5 @@
 # Script Structure — Template, Scanner Functions & Finding Construction
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Scripts follow one canonical template so they share helper functions, report wiring, and CLI behavior.
 Deviation from the template means reinventing `read_file`, `build_report`, or `parse_args` per script —
 duplicated logic that drifts. This rule documents the template, the scanner-function contract, and how
@@ -52,12 +50,10 @@ def find_php_files(module: str | None = None) -> list[Path]:
         return sorted(module_dir.rglob("*.php"))
     return sorted(APP_DIR.rglob("*.php"))
 
-
 def find_livewire_files(module: str | None = None) -> list[Path]:
     """Find Livewire component files."""
     files = find_php_files(module)
     return [f for f in files if "/Livewire/" in str(f)]
-
 
 def find_blade_files(module: str | None = None) -> list[Path]:
     """Find Blade template files."""
@@ -71,7 +67,6 @@ def find_blade_files(module: str | None = None) -> list[Path]:
         return sorted(module_dir.rglob("*.blade.php"))
     return sorted(views_dir.rglob("*.blade.php"))
 
-
 def read_file(path: Path) -> str:
     """Read file contents, return empty string on error."""
     try:
@@ -79,14 +74,12 @@ def read_file(path: Path) -> str:
     except Exception:
         return ""
 
-
 def relative_path(path: Path) -> str:
     """Convert absolute path to project-relative path."""
     try:
         return str(path.relative_to(ROOT))
     except ValueError:
         return str(path)
-
 
 # ─── Scanner Functions ──────────────────────────────────────────────────────
 
@@ -100,7 +93,6 @@ def relative_path(path: Path) -> str:
 
 def build_report(findings, scan_type, module, start_time) -> ScanResult:
     """Build standardized scan report (schema in output-format.md)."""
-
 
 def write_report(result: ScanResult, output_path: Path | None = None) -> Path:
     """Write report to file and return path."""
@@ -137,7 +129,6 @@ def main() -> None:
 
     if args.strict and result.summary["failed"] > 0:
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

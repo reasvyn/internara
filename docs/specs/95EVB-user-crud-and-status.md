@@ -1,10 +1,6 @@
 # User CRUD & Account Status — Multi-Role Management & State Machine
 
 > **Spec ID:** 95EVB
-> **Last updated:** 2026-08-25 **Changes:** sync — NFR-U1 flash()->success/error → TallstackUI toast()->success/error (FB792 0.15.0)
-> CRUD operations, AccountStatus state machine with 8 states, profile editing, role-specific
-> Livewire managers, super admin protection, batch operations, password reset, account lifecycle
-> auto-inactivation, and recovery key management
 
 ## Description
 

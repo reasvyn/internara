@@ -1,7 +1,5 @@
 # spatie/laravel-model-status — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** fix — corrected usage section (package is effectively unused); marked deprecated pending removal (#419)
-
 > **⚠ DEPRECATED — DO NOT USE IN NEW CODE.** This package is scheduled for removal
 > ([#419](https://github.com/reasvyn/internara/issues/419)). No model may adopt the
 > `HasStatus` trait or reference `Spatie\ModelStatus\*`. Status persistence is app-owned.

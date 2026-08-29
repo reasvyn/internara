@@ -1,7 +1,5 @@
 # Output & Integration — JSON Report Structure, Automation & Skill Delegation
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Arch-guard is a **quality gate, not a source of intent** — it verifies that code conforms to the
 governing spec's requirements and emits structured findings. This rule defines (1) the JSON report
 contract every scan produces, (2) which scanner owns which rule family, and (3) how arch-guard
