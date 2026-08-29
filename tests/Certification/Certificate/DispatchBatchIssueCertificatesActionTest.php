@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Certification\Actions\DispatchBatchIssueCertificatesAction;
-use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Certification\Data\BatchIssueCertificatesData;
-use App\Certification\Jobs\BatchIssueCertificatesJob;
-use App\Enrollment\Registration\Models\Registration;
-use App\Program\Internship\Models\Internship;
-use App\User\Models\User;
+use App\Modules\Certification\Actions\DispatchBatchIssueCertificatesAction;
+use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
+use App\Modules\Certification\Data\BatchIssueCertificatesData;
+use App\Modules\Certification\Jobs\BatchIssueCertificatesJob;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Spatie\Activitylog\Models\Activity;

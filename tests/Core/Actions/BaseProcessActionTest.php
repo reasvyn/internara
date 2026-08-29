@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseProcessAction;
-use App\User\Models\User;
+use App\Modules\Core\Actions\BaseProcessAction;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;

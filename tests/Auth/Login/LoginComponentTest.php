@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Auth\Login\Livewire\Login;
-use App\User\Models\User;
+use App\Modules\Auth\Domain\Login\Livewire\Login;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Livewire\Livewire;

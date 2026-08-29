@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Academics\Department\Actions\DeleteDepartmentAction;
-use App\Academics\Department\Events\DepartmentDeleted;
-use App\Academics\Department\Models\Department;
-use App\Core\Actions\BaseCommandAction;
-use App\Core\Exceptions\RejectedException;
+use App\Modules\Academics\Domain\Department\Actions\DeleteDepartmentAction;
+use App\Modules\Academics\Domain\Department\Events\DepartmentDeleted;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 
@@ -31,7 +31,7 @@ describe('4HWSB: DeleteDepartmentAction', function (): void {
 
     test('4HWSB-FR-DM20: throws RejectedException when profiles are assigned', function (): void {
         $dept = Department::factory()->create();
-        \App\User\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
+        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
 
         expect(fn () => app(DeleteDepartmentAction::class)->execute($dept))
             ->toThrow(RejectedException::class);

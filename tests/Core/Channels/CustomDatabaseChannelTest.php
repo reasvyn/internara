@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Core\Channels\CustomDatabaseChannel;
-use App\Core\Channels\Data\NotificationData;
-use App\Core\Contracts\SendsNotifications;
-use App\User\Models\User;
+use App\Modules\Core\Channels\CustomDatabaseChannel;
+use App\Modules\Core\Channels\Data\NotificationData;
+use App\Modules\Core\Contracts\SendsNotifications;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Notifications\Notification;
 

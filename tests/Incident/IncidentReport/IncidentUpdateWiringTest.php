@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Incident\IncidentReport\Livewire\IncidentManager;
-use App\Incident\IncidentReport\Models\IncidentReport;
-use App\User\Models\User;
+use App\Modules\Incident\Domain\IncidentReport\Livewire\IncidentManager;
+use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

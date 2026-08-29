@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Program\InternshipGroup\Actions\AddMembersToGroupAction;
-use App\Program\InternshipGroup\Models\InternshipGroup;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\InternshipGroup\Actions\AddMembersToGroupAction;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
+use App\Modules\User\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 

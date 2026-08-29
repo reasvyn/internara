@@ -1,0 +1,251 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Journals\Domain\Logbook\Livewire;
+
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\Journals\Domain\Logbook\Actions\CreateLogbookAction;
+use App\Modules\Journals\Domain\Logbook\Actions\DeleteLogbookAction;
+use App\Modules\Journals\Domain\Logbook\Actions\UpdateLogbookAction;
+use App\Modules\Journals\Domain\Logbook\Livewire\Forms\LogbookForm;
+use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use App\Modules\User\Models\User;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
+
+class LogbookManager extends BaseRecordManager
+{
+    use Interactions;
+
+    public bool $showModal = false;
+
+    public bool $showSupervisorNoteModal = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
+
+    public LogbookForm $form;
+
+    public ?string $supervisorNoteEntryId = null;
+
+    public string $supervisorNote = '';
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Logbook::class);
+    }
+
+    public function headers(): array
+    {
+        $headers = [
+            ['index' => 'user.name', 'label' => __('logbook.student'), 'sortable' => true],
+            ['index' => 'date', 'label' => __('logbook.date'), 'sortable' => true],
+            ['index' => 'content', 'label' => __('logbook.content')],
+            ['index' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
+            ['index' => 'is_verified', 'label' => __('logbook.verified')],
+        ];
+
+        if (auth()->user()?->hasRole('supervisor')) {
+            $headers[] = ['index' => 'supervisor_note', 'label' => __('logbook.supervisor_note')];
+        }
+
+        $headers[] = ['index' => 'actions', 'label' => '', 'sortable' => false];
+
+        return $headers;
+    }
+
+    protected function query(): Builder
+    {
+        $user = auth()->user();
+
+        $query = Logbook::query()->with(['user', 'registration', 'verifier', 'supervisor']);
+
+        if ($user->hasRole('teacher') || $user->hasRole('supervisor')) {
+            $query->whereRelation(
+                'registration',
+                fn ($q) => $q->whereHasMentor($user),
+            );
+        }
+
+        return $query;
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function ($q) {
+            $q->where('content', 'like', "%{$this->search}%")->orWhereHas(
+                'user',
+                fn ($uq) => $uq->where('name', 'like', "%{$this->search}%"),
+            );
+        });
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query
+            ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->when(
+                $this->filters['is_verified'] ?? null,
+                fn ($q, $v) => $q->where('is_verified', $v === 'yes'),
+            );
+    }
+
+    #[Computed]
+    public function students(): array
+    {
+        $query = User::role('student');
+
+        $user = auth()->user();
+        if ($user->hasRole('teacher') || $user->hasRole('supervisor')) {
+            $query->whereHas('registrations', fn ($q) => $q->whereHasMentor($user));
+        }
+
+        return $query
+            ->orderBy('name')
+            ->get(['id', 'name', 'email'])
+            ->map(fn ($s) => ['id' => $s->id, 'name' => "{$s->name} ({$s->email})"])
+            ->toArray();
+    }
+
+    // --- Record Actions ---
+
+    public function create(): void
+    {
+        $this->resetErrorBag();
+        $this->form->reset();
+        $this->form->date = now()->toDateString();
+        $this->showModal = true;
+    }
+
+    public function edit(Logbook $entry): void
+    {
+        $this->resetErrorBag();
+        $this->form->id = $entry->id;
+        $this->form->user_id = $entry->user_id;
+        $this->form->date = $entry->date->format('Y-m-d');
+        $this->form->content = $entry->content;
+        $this->form->learning_outcomes = $entry->learning_outcomes ?? '';
+        $this->form->status = $entry->status->value;
+        $this->form->mentor_feedback = $entry->mentor_feedback ?? '';
+        $this->showModal = true;
+    }
+
+    public function save(CreateLogbookAction $create, UpdateLogbookAction $update): void
+    {
+        $this->validate([
+            'form.date' => 'required|date',
+            'form.content' => 'required|string|min:10',
+            'form.status' => 'required|string',
+        ]);
+
+        if ($this->form->id) {
+            $entry = Logbook::findOrFail($this->form->id);
+            $update->execute($entry, $this->form->toArray());
+            $this->toast()->success(__('logbook.success_updated'))->send();
+        } else {
+            $this->validate(['form.user_id' => 'required|exists:users,id']);
+
+            $create->execute($this->form->user_id, $this->form->toArray());
+            $this->toast()->success(__('logbook.success_created'))->send();
+        }
+
+        $this->showModal = false;
+    }
+
+    public function askDelete(string $id): void
+    {
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function askDeleteSelected(): void
+    {
+        $this->confirmActionType = 'deleteSelected';
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmAction(DeleteLogbookAction $deleteAction): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $deleteAction->execute(Logbook::findOrFail($this->confirmTarget));
+                $this->toast()->success(__('logbook.success_deleted'))->send();
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+                    $entry = Logbook::find($id);
+                    if ($entry) {
+                        $deleteAction->execute($entry);
+                    }
+                });
+            }
+        } catch (RejectedException $e) {
+            $this->toast()->error($e->getMessage())->send();
+        }
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
+    }
+
+    // --- Verification ---
+
+    public function verify(Logbook $entry, UpdateLogbookAction $update): void
+    {
+        $update->execute($entry, [
+            'is_verified' => ! $entry->is_verified,
+        ]);
+        $this->toast()->success(__('logbook.success_verified'))->send();
+    }
+
+    // --- Supervisor Note ---
+
+    public function editSupervisorNote(Logbook $entry): void
+    {
+        $this->resetErrorBag();
+        $this->supervisorNoteEntryId = $entry->id;
+        $this->supervisorNote = $entry->supervisor_note ?? '';
+        $this->showSupervisorNoteModal = true;
+    }
+
+    public function saveSupervisorNote(UpdateLogbookAction $update): void
+    {
+        $this->validate([
+            'supervisorNote' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        $entry = Logbook::findOrFail($this->supervisorNoteEntryId);
+
+        $this->authorize('addSupervisorNote', $entry);
+
+        $update->execute($entry, [
+            'supervisor_note' => $this->supervisorNote,
+            'supervisor_id' => auth()->id(),
+            'supervisor_reviewed_at' => now()->toDateTimeString(),
+        ]);
+
+        $this->showSupervisorNoteModal = false;
+        $this->supervisorNoteEntryId = null;
+        $this->supervisorNote = '';
+
+        $this->toast()->success(__('logbook.supervisor_note_saved'))->send();
+    }
+
+    #[Layout('ui::layouts.app')]
+    public function render(): View
+    {
+        return view('journals.logbook.logbook-manager');
+    }
+}

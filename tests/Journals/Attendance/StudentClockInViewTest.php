@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Attendance\Livewire\StudentClockIn;
-use App\Journals\Attendance\Models\Attendance;
-use App\Program\Internship\Models\Internship;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journals\Domain\Attendance\Livewire\StudentClockIn;
+use App\Modules\Journals\Domain\Attendance\Models\Attendance;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;

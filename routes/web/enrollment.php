@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\AccountApplication\Livewire\ApplyPage;
-use App\Enrollment\Placement\Livewire\DirectPlacementManager;
-use App\Enrollment\Placement\Livewire\PlacementChangeManager;
-use App\Enrollment\Placement\Livewire\PlacementIndex;
-use App\Enrollment\Placement\Livewire\StudentPlacementChangeRequest;
-use App\Enrollment\Registration\Livewire\RegistrationCenter;
-use App\Enrollment\Registration\Livewire\RegistrationDocumentUpload;
-use App\Enrollment\Registration\Livewire\RegistrationVerification;
-use App\Enrollment\Registration\Livewire\RegistrationWizard;
+use App\Modules\Enrollment\Domain\AccountApplication\Livewire\ApplyPage;
+use App\Modules\Enrollment\Domain\Placement\Livewire\DirectPlacementManager;
+use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementChangeManager;
+use App\Modules\Enrollment\Domain\Placement\Livewire\PlacementIndex;
+use App\Modules\Enrollment\Domain\Placement\Livewire\StudentPlacementChangeRequest;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationCenter;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationDocumentUpload;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationVerification;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationWizard;
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/apply', ApplyPage::class)->name('apply');

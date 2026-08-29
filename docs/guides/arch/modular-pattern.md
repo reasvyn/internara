@@ -68,7 +68,8 @@ other docs link here, never duplicate. Enforced by `tools/scan_class_contracts.p
 
 | Unit                | One responsibility                  | Boundary rules                                                                                              |
 | ------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Module              | One business domain                 | Owns its full stack (Actions, Entities, Models, Livewire, Policies); other modules reach it only via its public surface — Actions, contracts, events (see 1.4) |
+| Module              | One business area (owns 1+ Domains) | Owns its Domains (`app/Modules/{Module}/Domain/{Domain}/`); each Domain owns its full stack (Actions, Entities, Models, Livewire, Policies); other modules reach it only via its public surface — Actions, contracts, events (see 1.4) |
+| Domain              | One business domain                 | Exactly one Domain per domain (`app/Modules/{Module}/Domain/{Domain}/`); owns its full stack; never split a domain across Domains nor collapse a Domain-scale domain into a parent catch-all (see `.agents/rules/domain-boundary.md`) |
 | Command/Read Action | ONE business operation or query     | Single public `execute()`; DTO for 3+ params (C7); never a second copy of an existing operation             |
 | Process Action      | ONE multi-step workflow             | Orchestrates Command/Read Actions; no inline business rules                                                 |
 | Entity              | Business invariants of ONE concept  | `final readonly`, pure — no Action/Service/Livewire imports (C5)                                            |
@@ -85,6 +86,11 @@ Prose rules:
   each other's internals (4-layer rule).
 - **Extraction bias** — when a unit grows past its single responsibility, extract smaller named
   units instead of accumulating branches (DRY-first clean code).
+- **Domain decomposition** — a distinct business domain becomes its own Domain
+  (`app/Modules/{Module}/Domain/{Domain}/`) when it owns 3+ of the 4 standard CRUD operations or serves a
+  role-scoped business operation. A domain must not be split across Domains nor collapsed into a
+  parent's catch-all once it reaches Domain-scale cohesion. See `.agents/rules/domain-boundary.md`
+  for the full rule and additional cohesion signals.
 
 ---
 
@@ -147,8 +153,8 @@ Gate::before** — single bypass callback. **AuthorizesRoles Trait** — role-ch
 **Thin Component Rule** — UI state and validation only; no `Model::create/update/delete`, `DB::`
 queries, or business logic. **Action Injection** — Actions are method parameters. **Confirmation
 Dialog** — `actionTarget`/`confirmingAction` state with `askAction()`/`confirmAction()`. **Form
-Object** — complex forms extracted into `Livewire\Form` subclasses. **Component Alias** — submodule:
-`{mod}.{sub}.{name}`, cross-module: `{mod}.{name}`, shared: `{component-name}`. See:
+Object** — complex forms extracted into `Livewire\Form` subclasses. **Component Alias** — domain:
+`{mod}.{domain}.{name}`, cross-module: `{mod}.{name}`, shared: `{component-name}`. See:
 `docs/guides/arch/livewire-pattern.md`.
 
 ---
@@ -193,7 +199,7 @@ Command → event → listener → `Cache::forget()`. **TTL Categorization** —
 
 ## 13. Route & Controller Patterns
 
-Module-split route files under `routes/web/`. Module-level: `{module}.php`. Submodule-level: `{submodule}.php`
+Module-split route files under `routes/web/`. Module-level: `{module}.php`. Domain-level: `{domain}.php`
 (no module prefix). Route names: flexible, describe the URL path. Middleware
 groups: `auth`, `guest`, `role:{roles}`, `auth.throttle`. Controller suffix required, delegate to
 Actions. See: `docs/guides/infra/routes.md`.
@@ -367,7 +373,7 @@ and `docs/guides/infra/localization.md` for file structure and key conventions.
 | Layer           | Pattern                                        | Example                                       |
 | --------------- | ---------------------------------------------- | --------------------------------------------- |
 | Module-level    | `{module}.key`                                 | `__('enrollment.register')`                   |
-| Submodule-level | `{submodule}.key` (no module prefix)           | `__('internship.create_success')`             |
+| Domain-level | `{domain}.key` (no module prefix)           | `__('internship.create_success')`             |
 | Shared          | `common.key`                                   | `__('common.actions.save')`                   |
 | Validation      | Laravel built-in `validation.*` keys            | `__('validation.required')`                   |
 | Guide components | `{module}.guide.step{N}_desc`                | `__('setup.guide.step1_desc')`                |

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Reports\Report\Enums\ReportStatus;
-use App\Reports\Report\Models\Report;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Reports\Domain\Report\Enums\ReportStatus;
+use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReportFactory extends Factory

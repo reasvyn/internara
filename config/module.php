@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 /*
 |--------------------------------------------------------------------------
-| Module Registry
+| Module Registry — Auto-discovered from filesystem
 |--------------------------------------------------------------------------
 |
-| Single source of truth for all modules and their submodules. Keys are
-| module names in dependency order (foundation → identity → institution
-| → business lifecycle → administration). Each value lists the module's
-| submodules — directories that contain domain-specific code beyond the
-| standard Action/Model/Entity/Enum/Livewire/Policy layers.
+| Single source of truth for all Modules and their Domains. Discovered
+| directly from the real directory structure:
+|   app/Modules/{Module}/Domain/{Domain}/
+| so no manual list is needed. Adding a new Module/Domain is just
+| creating the directory.
 |
 | Used by:
 |   - ModuleManager (module config gateway)
@@ -21,66 +21,36 @@ declare(strict_types=1);
 |
 */
 
-$modules = [
-    'Core' => [
-        'Channels', 'Console', 'Contracts', 'Exceptions',
-    ],
-    'UI' => [
-        // Pure presentation module — Blade components (layouts, ui/*, widgets)
-        // No business logic; depends on Core only for contracts & Tailwind tokens
-    ],
-    'Setup' => [
-        'Installation', 'SetupWizard',
-    ],
-    'Settings' => [
-        'Branding', 'Casts', 'Locale', 'Rules', 'Theme',
-    ],
-    'Auth' => [
-        'AccessTokens', 'Account', 'AccountRecovery', 'Login',
-        'Notifications', 'Password', 'Permissions', 'SuperAdmin',
-    ],
-    'User' => [
-        'AccountStatus', 'Dashboard', 'Mentor', 'Notifications',
-        'Profile', 'Rules', 'UserManagement',
-    ],
-    'SysAdmin' => [
-        'Announcement', 'Backups', 'Console', 'Observability',
-    ],
-    'Academics' => [
-        'AcademicYear', 'Department', 'School',
-    ],
-    'Partners' => [
-        'Company', 'Partnership',
-    ],
-    'Program' => [
-        'Internship', 'InternshipGroup', 'Notifications',
-    ],
-    'Enrollment' => [
-        'AccountApplication', 'Placement', 'Registration',
-    ],
-    'Journals' => [
-        'AbsenceRequest', 'Attendance', 'Logbook', 'MonitoringVisit', 'SupervisionLog',
-    ],
-    'Assignment' => [
-        'Notifications', 'Submission',
-    ],
-    'Reports' => [
-        'Report',
-    ],
-    'Assessment' => [
-        'Rubric',
-    ],
-    'Evaluation' => [],
-    'Certification' => [
-        'Certificate',
-    ],
-    'Incident' => [
-        'IncidentReport',
-    ],
-    'Document' => [
-        'Handbook', 'OfficialDocument',
-    ],
-];
+$modulesBase = app_path('Modules');
+
+$modules = [];
+if (is_dir($modulesBase)) {
+    foreach (scandir($modulesBase) as $entry) {
+        if ($entry === '.' || $entry === '..') {
+            continue;
+        }
+        $modulePath = $modulesBase . DIRECTORY_SEPARATOR . $entry;
+        if (! is_dir($modulePath)) {
+            continue;
+        }
+        // Only consider directories that look like modules (PascalCase, contains PHP or Domain)
+        $domainPath = $modulePath . DIRECTORY_SEPARATOR . 'Domain';
+        $domains = [];
+        if (is_dir($domainPath)) {
+            foreach (scandir($domainPath) as $d) {
+                if ($d === '.' || $d === '..') {
+                    continue;
+                }
+                if (is_dir($domainPath . DIRECTORY_SEPARATOR . $d)) {
+                    $domains[] = $d;
+                }
+            }
+            sort($domains);
+        }
+        $modules[$entry] = $domains;
+    }
+    ksort($modules);
+}
 
 return [
 
@@ -125,12 +95,12 @@ return [
     |--------------------------------------------------------------------------
     |
     | Base paths for module code. Override if your directory structure differs
-    | from the standard app/{Module}/ layout.
+    | from the standard app/Modules/{Module}/Domain/{Domain}/ layout.
     |
     */
 
     'paths' => [
-        'base' => app_path(),
+        'base' => app_path('Modules'),
         'views' => resource_path('views'),
         'routes' => base_path('routes/web'),
     ],
@@ -173,7 +143,7 @@ return [
 
         'exclude_paths' => ['Concerns', 'Traits'],
 
-        'model_namespace' => 'App\\{domain}\\Models\\{model}',
+        'model_namespace' => 'App\\Modules\\{module}\\Domain\\{domain}\\Models\\{model}',
     ],
 
     /*

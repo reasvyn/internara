@@ -1,0 +1,263 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Academics\Domain\AcademicYear\Livewire;
+
+use App\Modules\Academics\Domain\AcademicYear\Actions\ActivateAcademicYearAction;
+use App\Modules\Academics\Domain\AcademicYear\Actions\BulkDeleteAcademicYearsAction;
+use App\Modules\Academics\Domain\AcademicYear\Actions\CreateAcademicYearAction;
+use App\Modules\Academics\Domain\AcademicYear\Actions\DeleteAcademicYearAction;
+use App\Modules\Academics\Domain\AcademicYear\Actions\UpdateAcademicYearAction;
+use App\Modules\Academics\Domain\AcademicYear\Livewire\Forms\AcademicYearForm;
+use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
+use TallStackUi\Traits\Interactions;
+
+class AcademicYearManager extends BaseRecordManager
+{
+    use Interactions;
+
+    public bool $showModal = false;
+
+    public string $confirmMessage = '';
+
+    public string $confirmType = '';
+
+    public ?string $confirmTarget = null;
+
+    public ?string $editingYearId = null;
+
+    public AcademicYearForm $form;
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', AcademicYear::class);
+    }
+
+    public function headers(): array
+    {
+        return [
+            ['index' => 'name', 'label' => __('academic_year.name'), 'sortable' => true],
+            ['index' => 'start_date', 'label' => __('academic_year.start_date'), 'sortable' => true],
+            ['index' => 'end_date', 'label' => __('academic_year.end_date'), 'sortable' => true],
+            ['index' => 'is_active', 'label' => __('academic_year.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return AcademicYear::query();
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', '%'.$this->search.'%');
+    }
+
+    protected function applySorting(Builder $query): Builder
+    {
+        $column = $this->sortBy['column'] ?? 'name';
+        $direction = $this->sortBy['direction'] ?? 'asc';
+
+        if ($column === 'is_active') {
+            return $query->orderBy('is_active', 'desc')->orderBy('name', $direction);
+        }
+
+        return $query->orderBy($column, $direction);
+    }
+
+    protected function perPage(): int
+    {
+        return 10;
+    }
+
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => AcademicYear::count(),
+            'totalInternships' => Internship::count(),
+            'withInternships' => AcademicYear::whereHas('internships')->count(),
+        ];
+    }
+
+    // --- CRUD ---
+
+    public function toggleSelectAll(): void
+    {
+        $ids = $this->rows()->pluck('id')->toArray();
+
+        if (count($this->selectedIds) === count($ids)) {
+            $this->clearSelection();
+        } else {
+            $this->selectAll($ids);
+        }
+    }
+
+    public function create(): void
+    {
+        $this->authorize('create', AcademicYear::class);
+
+        $this->resetErrorBag();
+        $this->form->reset();
+        $this->editingYearId = null;
+        $this->showModal = true;
+    }
+
+    public function edit(string $id): void
+    {
+        $year = AcademicYear::findOrFail($id);
+        $this->authorize('update', $year);
+
+        $this->resetErrorBag();
+        $this->editingYearId = $year->id;
+        $this->form->id = $year->id;
+        $this->form->name = $year->name;
+        $this->form->start_date = $year->start_date->format('Y-m-d');
+        $this->form->end_date = $year->end_date->format('Y-m-d');
+        $this->showModal = true;
+    }
+
+    public function store(CreateAcademicYearAction $action): void
+    {
+        $this->authorize('create', AcademicYear::class);
+
+        $this->form->validate($this->form->rules());
+
+        $action->execute($this->form->toArray());
+
+        $this->showModal = false;
+        $this->editingYearId = null;
+        $this->form->reset();
+        $this->toast()->success(__('academic_year.created'))->send();
+    }
+
+    public function update(UpdateAcademicYearAction $action): void
+    {
+        $year = AcademicYear::findOrFail($this->editingYearId);
+        $this->authorize('update', $year);
+
+        $this->form->validate($this->form->rules($this->editingYearId));
+
+        $action->execute($year, $this->form->toArray());
+
+        $this->editingYearId = null;
+        $this->showModal = false;
+        $this->form->reset();
+        $this->toast()->success(__('academic_year.updated'))->send();
+    }
+
+    // --- Confirm Dialogs ---
+
+    public function askActivate(string $id): void
+    {
+        $year = AcademicYear::findOrFail($id);
+
+        $this->confirmTarget = $id;
+        $this->confirmType = 'activate';
+        $this->confirmMessage = __('academic_year.confirm_activate', ['name' => $year->name]);
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function askDestroy(string $id): void
+    {
+        $year = AcademicYear::findOrFail($id);
+
+        $this->confirmTarget = $id;
+        $this->confirmType = 'delete';
+        $this->confirmMessage = __('academic_year.confirm_delete', ['name' => $year->name]);
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function askDeleteSelected(): void
+    {
+        if ($this->selectedIds === []) {
+            return;
+        }
+
+        $this->confirmTarget = null;
+        $this->confirmType = 'delete_selected';
+        $this->confirmMessage = __('academic_year.confirm_delete_selected');
+
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), $this->confirmMessage)
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmAction(
+        ActivateAcademicYearAction $activateAction,
+        DeleteAcademicYearAction $deleteAction,
+        BulkDeleteAcademicYearsAction $bulkDeleteAction,
+    ): void {
+        if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
+            return;
+        }
+
+        try {
+            match ($this->confirmType) {
+                'activate' => $this->executeActivate($this->confirmTarget, $activateAction),
+                'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
+                'delete_selected' => $this->executeDeleteSelected($bulkDeleteAction),
+                default => null,
+            };
+        } catch (RejectedException $e) {
+            $this->toast()->error($e->getMessage())->send();
+        }
+
+        $this->confirmTarget = null;
+        $this->confirmType = '';
+    }
+
+    private function executeActivate(string $id, ActivateAcademicYearAction $action): void
+    {
+        $year = AcademicYear::findOrFail($id);
+        $this->authorize('activate', $year);
+
+        $action->execute($year);
+        $this->toast()->success(__('academic_year.activated'))->send();
+    }
+
+    private function executeDelete(string $id, DeleteAcademicYearAction $action): void
+    {
+        $year = AcademicYear::findOrFail($id);
+        $this->authorize('delete', $year);
+
+        $action->execute($year);
+        $this->toast()->success(__('academic_year.deleted'))->send();
+    }
+
+    private function executeDeleteSelected(BulkDeleteAcademicYearsAction $action): void
+    {
+        $count = $action->execute($this->selectedIds);
+
+        $this->toast()->success(__('academic_year.deleted_selected', ['count' => $count]))->send();
+        $this->clearSelection();
+    }
+
+    public function render(): View
+    {
+        return view('academics.academic-year.academic-year-manager', [
+            'years' => $this->rows(),
+            'stats' => $this->stats,
+        ]);
+    }
+}

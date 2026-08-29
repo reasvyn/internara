@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Academics\Department\Models\Department;
-use App\Academics\Department\Policies\DepartmentPolicy;
-use App\User\Models\User;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Academics\Domain\Department\Policies\DepartmentPolicy;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -61,7 +61,7 @@ describe('4HWSB: DepartmentPolicy', function (): void {
         $deptWithoutProfiles = Department::factory()->create();
 
         // Create a profile for deptWithProfiles
-        \App\User\Profile\Models\Profile::factory()->create(['department_id' => $deptWithProfiles->id]);
+        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $deptWithProfiles->id]);
 
         // Admin can delete dept without profiles
         expect($this->policy->delete($admin, $deptWithoutProfiles))->toBeTrue();

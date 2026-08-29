@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Services\ModuleService;
+use App\Modules\Core\Services\ModuleService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
@@ -11,31 +11,31 @@ use Illuminate\Support\Str;
 
 function moduleServiceWriteFixtures(): void
 {
-    $livewireDir = app_path('FixtureModule/Livewire');
+    $livewireDir = app_path('Modules/FixtureModule/Livewire');
     File::ensureDirectoryExists($livewireDir.'/Concerns');
-    File::ensureDirectoryExists(app_path('FixtureModule/Models'));
-    File::ensureDirectoryExists(app_path('FixtureModule/Policies'));
+    File::ensureDirectoryExists(app_path('Modules/FixtureModule/Models'));
+    File::ensureDirectoryExists(app_path('Modules/FixtureModule/Policies'));
     File::ensureDirectoryExists(resource_path('views/FixtureModule'));
 
     File::put(
         $livewireDir.'/FixtureWidget.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\FixtureModule\\Livewire;\n\nuse Livewire\\Component;\n\nfinal class FixtureWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>fixture</div>';\n    }\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire;\n\nuse Livewire\\Component;\n\nfinal class FixtureWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>fixture</div>';\n    }\n}\n",
     );
     File::put(
         $livewireDir.'/Concerns/SkippedWidget.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\FixtureModule\\Livewire\\Concerns;\n\nuse Livewire\\Component;\n\nfinal class SkippedWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>skipped</div>';\n    }\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire\\Concerns;\n\nuse Livewire\\Component;\n\nfinal class SkippedWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>skipped</div>';\n    }\n}\n",
     );
     File::put(
         $livewireDir.'/NotAComponent.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\FixtureModule\\Livewire;\n\nfinal class NotAComponent\n{\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire;\n\nfinal class NotAComponent\n{\n}\n",
     );
     File::put(
-        app_path('FixtureModule/Models/FixtureModel.php'),
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\FixtureModule\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nfinal class FixtureModel extends Model\n{\n    protected \$table = 'fixture_models';\n}\n",
+        app_path('Modules/FixtureModule/Models/FixtureModel.php'),
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nfinal class FixtureModel extends Model\n{\n    protected \$table = 'fixture_models';\n}\n",
     );
     File::put(
-        app_path('FixtureModule/Policies/FixtureModelPolicy.php'),
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\FixtureModule\\Policies;\n\nuse App\\Core\\Policies\\BasePolicy;\n\nfinal class FixtureModelPolicy extends BasePolicy\n{\n}\n",
+        app_path('Modules/FixtureModule/Policies/FixtureModelPolicy.php'),
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Policies;\n\nuse App\\Modules\\Core\\Policies\\BasePolicy;\n\nfinal class FixtureModelPolicy extends BasePolicy\n{\n}\n",
     );
     File::put(resource_path('views/FixtureModule/dashboard.blade.php'), '<div>fixture</div>');
 }
@@ -50,7 +50,7 @@ afterEach(function () {
     Cache::forget('module.discovered_livewire');
     Cache::forget('module.discovered_policies');
     Cache::forget('module.discovered_views');
-    File::deleteDirectory(app_path('FixtureModule'));
+    File::deleteDirectory(app_path('Modules/FixtureModule'));
     File::deleteDirectory(resource_path('views/FixtureModule'));
 });
 
@@ -69,7 +69,7 @@ test('I1BCV-FR-LW3/FR-LW5: Livewire discovery registers Component classes with k
     $discovered = Cache::get('module.discovered_livewire');
 
     expect($discovered)->toHaveKey('fixture-module.fixture-widget');
-    expect($discovered['fixture-module.fixture-widget'])->toBe('App\FixtureModule\Livewire\FixtureWidget');
+    expect($discovered['fixture-module.fixture-widget'])->toBe('App\Modules\FixtureModule\Livewire\FixtureWidget');
     expect($discovered)->not->toHaveKey('fixture-module.not-a-component');
 });
 
@@ -105,12 +105,12 @@ test('I1BCV-FR-LW1/FR-LW7: discovery only scans registered modules', function ()
     }
 });
 
-test('I1BCV-FR-MR1-FR-MR8: policy discovery maps policies to their models', function () {
+test('I1BCV-FR-MR8: policy discovery maps policies to their models', function () {
     moduleServiceConfigure()->discoverPolicies();
 
     $discovered = Cache::get('module.discovered_policies');
-    $modelClass = 'App\FixtureModule\Models\FixtureModel';
-    $policyClass = 'App\FixtureModule\Policies\FixtureModelPolicy';
+    $modelClass = 'App\Modules\FixtureModule\Models\FixtureModel';
+    $policyClass = 'App\Modules\FixtureModule\Policies\FixtureModelPolicy';
 
     expect($discovered)->toHaveKey($modelClass);
     expect($discovered[$modelClass])->toBe($policyClass);

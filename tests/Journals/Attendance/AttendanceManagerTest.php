@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Attendance\Livewire\AttendanceManager;
-use App\Journals\Attendance\Models\Attendance;
-use App\Program\Internship\Models\Internship;
-use App\Program\InternshipGroup\Models\InternshipGroupMember;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journals\Domain\Attendance\Livewire\AttendanceManager;
+use App\Modules\Journals\Domain\Attendance\Models\Attendance;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Collection;
 use Livewire\Livewire;

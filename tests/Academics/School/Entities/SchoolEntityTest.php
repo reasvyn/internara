@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Academics\School\Entities\SchoolEntity;
-use App\Core\Entities\BaseEntity;
+use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
+use App\Modules\Core\Entities\BaseEntity;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

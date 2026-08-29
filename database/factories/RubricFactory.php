@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Assessment\Rubric\Models\Rubric;
-use App\Program\Internship\Models\Internship;
-use App\User\Models\User;
+use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RubricFactory extends Factory

@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\User\Livewire;
+
+use App\Modules\User\Actions\ReadActivityLogAction;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\View\View;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class ActivityFeedManager extends Component
+{
+    use WithPagination;
+
+    public function render(ReadActivityLogAction $action): View
+    {
+        $userId = auth()->id();
+
+        if ($userId === null) {
+            return view('user.activity-feed', [
+                'activities' => new LengthAwarePaginator(
+                    collect(),
+                    0,
+                    15,
+                ),
+            ]);
+        }
+
+        $activities = $action->execute(userId: (string) $userId);
+
+        return view('user.activity-feed', [
+            'activities' => $activities,
+        ]);
+    }
+}

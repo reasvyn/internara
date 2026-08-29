@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Assignment\Submission\Enums\SubmissionStatus;
-use App\Assignment\Submission\Livewire\SubmissionGrading;
-use App\Assignment\Submission\Models\Submission;
-use App\User\Models\User;
+use App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus;
+use App\Modules\Assignment\Domain\Submission\Livewire\SubmissionGrading;
+use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

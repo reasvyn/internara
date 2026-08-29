@@ -37,6 +37,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from _common import (  # noqa: E402
     APP_DIR,
+        MODULES_DIR,
     ROOT,
     Finding,
     ScanResult,

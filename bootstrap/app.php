@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Auth\Login\Http\Middleware\AuthThrottleMiddleware;
-use App\Auth\Permissions\Http\Middleware\CheckRoleMiddleware;
-use App\Core\Exceptions\AppException;
-use App\Core\Exceptions\ModuleException;
-use App\Core\Exceptions\UnauthorizedException;
-use App\Core\Exceptions\ValidationFailedException;
-use App\Core\Http\Middleware\LogContextMiddleware;
-use App\Core\Http\Middleware\SecurityHeadersMiddleware;
+use App\Modules\Auth\Domain\Login\Http\Middleware\AuthThrottleMiddleware;
+use App\Modules\Auth\Domain\Permissions\Http\Middleware\CheckRoleMiddleware;
+use App\Modules\Core\Exceptions\AppException;
+use App\Modules\Core\Exceptions\ModuleException;
+use App\Modules\Core\Exceptions\UnauthorizedException;
+use App\Modules\Core\Exceptions\ValidationFailedException;
+use App\Modules\Core\Http\Middleware\LogContextMiddleware;
+use App\Modules\Core\Http\Middleware\SecurityHeadersMiddleware;
 use App\Providers\EventServiceProvider;
-use App\Settings\Locale\Http\Middleware\SetLocaleMiddleware;
-use App\Setup\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
+use App\Modules\Settings\Domain\Locale\Http\Middleware\SetLocaleMiddleware;
+use App\Modules\Setup\Domain\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Modules\Setup\Domain\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,15 +30,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withCommands([
-        __DIR__.'/../app/Auth/SuperAdmin/Console/Commands',
-        __DIR__.'/../app/Core/Console/Commands',
-        __DIR__.'/../app/Setup/Installation/Console/Commands',
-        __DIR__.'/../app/SysAdmin/Console/Commands',
-        __DIR__.'/../app/SysAdmin/Announcement/Console/Commands',
-        __DIR__.'/../app/SysAdmin/Observability/Console/Commands',
-        __DIR__.'/../app/SysAdmin/Backups/Console/Commands',
-        __DIR__.'/../app/User/Console/Commands',
-        __DIR__.'/../app/User/UserManagement/Console/Commands',
+        __DIR__.'/../app/Modules/Auth/Domain/SuperAdmin/Console/Commands',
+        __DIR__.'/../app/Modules/Core/Console/Commands',
+        __DIR__.'/../app/Modules/Setup/Domain/Installation/Console/Commands',
+        __DIR__.'/../app/Modules/SysAdmin/Console/Commands',
+        __DIR__.'/../app/Modules/SysAdmin/Domain/Announcement/Console/Commands',
+        __DIR__.'/../app/Modules/SysAdmin/Domain/Observability/Console/Commands',
+        __DIR__.'/../app/Modules/SysAdmin/Domain/Backups/Console/Commands',
+        __DIR__.'/../app/Modules/User/Console/Commands',
+        __DIR__.'/../app/Modules/User/Domain/UserManagement/Console/Commands',
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([

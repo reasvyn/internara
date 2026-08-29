@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Reports\Report\Actions\CalculateFinalGradeAction;
-use App\Reports\Report\Actions\FinalizeReportAction;
-use App\Reports\Report\Enums\ReportStatus;
-use App\Reports\Report\Models\Report;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Reports\Domain\Report\Actions\CalculateFinalGradeAction;
+use App\Modules\Reports\Domain\Report\Actions\FinalizeReportAction;
+use App\Modules\Reports\Domain\Report\Enums\ReportStatus;
+use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

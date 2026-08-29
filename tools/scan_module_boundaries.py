@@ -23,6 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from _common import (  # noqa: E402
     APP_DIR,
+        MODULES_DIR,
     ROOT,
     Finding,
     ScanResult,
@@ -192,7 +193,7 @@ def detect_circular() -> list[Finding]:
                     rule="MOD_CIRCULAR",
                     severity="medium",
                     category="architecture",
-                    file=f"app/{a}",
+                    file=f"app/Modules/{a}",
                     line=1,
                     message=f"Circular dependency: {a} ↔ {b} (mutual imports)",
                     suggestion="Break the cycle: extract shared code to Core, or use events for fire-and-forget",

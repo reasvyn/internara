@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Document\Handbook\Actions\AcknowledgeHandbookAction;
-use App\Document\Handbook\Enums\HandbookAudience;
-use App\Document\Models\Document;
-use App\User\Dashboard\Actions\ReadStudentDashboardAction;
-use App\User\Models\User;
+use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
+use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
+use App\Modules\Document\Models\Document;
+use App\Modules\User\Domain\Dashboard\Actions\ReadStudentDashboardAction;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

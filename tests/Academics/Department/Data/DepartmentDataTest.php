@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Academics\Department\Data\DepartmentData;
-use App\Core\Data\BaseData;
+use App\Modules\Academics\Domain\Department\Data\DepartmentData;
+use App\Modules\Core\Data\BaseData;
 
 /*
 |--------------------------------------------------------------------------

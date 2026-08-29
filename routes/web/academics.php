@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Academics\AcademicYear\Livewire\AcademicYearManager;
-use App\Academics\Department\Livewire\DepartmentManager;
-use App\Academics\School\Livewire\SchoolEditor;
+use App\Modules\Academics\Domain\AcademicYear\Livewire\AcademicYearManager;
+use App\Modules\Academics\Domain\Department\Livewire\DepartmentManager;
+use App\Modules\Academics\Domain\School\Livewire\SchoolEditor;
 
 Route::prefix('admin')
     ->name('sysadmin.')

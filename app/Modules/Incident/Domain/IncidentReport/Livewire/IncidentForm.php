@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Incident\Domain\IncidentReport\Livewire;
+
+use App\Modules\Core\Livewire\BaseFormView;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Incident\Domain\IncidentReport\Actions\ReportIncidentAction;
+use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
+use TallStackUi\Traits\Interactions;
+
+class IncidentForm extends BaseFormView
+{
+    use Interactions;
+
+    public array $formData = [
+        'registration_id' => '',
+        'incident_date' => '',
+        'type' => '',
+        'severity' => '',
+        'description' => '',
+        'location' => '',
+        'action_taken' => '',
+    ];
+
+    public function boot(): void
+    {
+        abort_unless(auth()->user()->hasRole('student'), 403);
+    }
+
+    public function mount(): void
+    {
+        $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
+    }
+
+    public function save(ReportIncidentAction $action): void
+    {
+        $this->authorize('create', IncidentReport::class);
+
+        $this->validate([
+            'formData.registration_id' => ['required', 'exists:registrations,id'],
+            'formData.incident_date' => ['required', 'date'],
+            'formData.type' => [
+                'required',
+                'in:accident,safety_violation,harassment,disciplinary,other',
+            ],
+            'formData.severity' => ['required', 'in:low,medium,high,critical'],
+            'formData.description' => ['required', 'string', 'min:20', 'max:5000'],
+            'formData.location' => ['nullable', 'string', 'max:255'],
+            'formData.action_taken' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $this->handleSave(function () use ($action) {
+            $action->execute([...$this->formData, 'reported_by' => auth()->id()]);
+            $this->toast()->success(__('incident.report_success'))->send();
+            $this->reset('formData');
+            $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
+        });
+    }
+
+    #[Layout('ui::layouts.app')]
+    public function render(): View
+    {
+        return view('incident.incident-report.incident-form', [
+            'registrations' => Registration::query()
+                ->whereHas('mentee', fn (Builder $q) => $q->where('user_id', auth()->id()))
+                ->where('status', 'active')
+                ->with('internship', 'placement.company')
+                ->get(),
+        ]);
+    }
+}

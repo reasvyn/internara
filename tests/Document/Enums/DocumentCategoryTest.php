@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Contracts\LabelEnum;
-use App\Document\Enums\DocumentCategory;
+use App\Modules\Core\Contracts\LabelEnum;
+use App\Modules\Document\Enums\DocumentCategory;
 
 /*
 |--------------------------------------------------------------------------

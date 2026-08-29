@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\PiiMasker;
+use App\Modules\Core\Support\PiiMasker;
 
 test('89SRA-FR-PM2: maskArray() fully masks sensitive keys regardless of case', function () {
     $result = PiiMasker::maskArray(['PASSWORD' => 'secret', 'access_token' => 'tok']);

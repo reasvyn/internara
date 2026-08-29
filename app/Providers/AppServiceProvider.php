@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Auth\Permissions\Policies\UserPolicy;
-use App\Core\Contracts\SendsNotifications;
-use App\Core\Contracts\SettingsStore;
-use App\Core\Services\LangChecker;
-use App\Core\Services\ModuleService;
-use App\Core\Support\ModuleManager;
-use App\Reports\Report\Models\Report;
-use App\Reports\Report\Observers\ReportObserver;
-use App\Settings\Services\Settings;
-use App\User\Models\User;
-use App\User\Notifications\Actions\SendNotificationAction;
+use App\Modules\Auth\Domain\Permissions\Policies\UserPolicy;
+use App\Modules\Core\Contracts\SendsNotifications;
+use App\Modules\Core\Contracts\SettingsStore;
+use App\Modules\Core\Services\LangChecker;
+use App\Modules\Core\Services\ModuleService;
+use App\Modules\Core\Support\ModuleManager;
+use App\Modules\Reports\Domain\Report\Models\Report;
+use App\Modules\Reports\Domain\Report\Observers\ReportObserver;
+use App\Modules\Settings\Services\Settings;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\Notifications\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;

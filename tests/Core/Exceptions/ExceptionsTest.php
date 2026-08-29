@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\ActionException;
-use App\Core\Exceptions\AppException;
-use App\Core\Exceptions\InfrastructureException;
-use App\Core\Exceptions\ModuleException;
-use App\Core\Exceptions\PresentationException;
-use App\Core\Exceptions\RejectedException;
-use App\Core\Exceptions\UnauthorizedException;
-use App\Core\Exceptions\ValidationFailedException;
+use App\Modules\Core\Exceptions\ActionException;
+use App\Modules\Core\Exceptions\AppException;
+use App\Modules\Core\Exceptions\InfrastructureException;
+use App\Modules\Core\Exceptions\ModuleException;
+use App\Modules\Core\Exceptions\PresentationException;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Exceptions\UnauthorizedException;
+use App\Modules\Core\Exceptions\ValidationFailedException;
 
 test('89SRA-FR-EH1/FR-EH5: AppException is the abstract application root with a statusCode contract', function () {
     expect((new ReflectionClass(AppException::class))->isAbstract())->toBeTrue();

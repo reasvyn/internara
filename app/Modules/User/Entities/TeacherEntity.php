@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\User\Entities;
+
+use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\User\Enums\AccountStatus;
+use Illuminate\Database\Eloquent\Model;
+
+final readonly class TeacherEntity extends BaseEntity
+{
+    public function __construct(
+        private AccountStatus $status,
+        private bool $isLocked,
+        private bool $setupRequired,
+        private int $mentorshipCount = 0,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        $statusValue = $model->getAttribute('status');
+
+        return new self(
+            status: $statusValue instanceof AccountStatus ? $statusValue : AccountStatus::tryFrom((string) $statusValue) ?? AccountStatus::PROVISIONED,
+            isLocked: $model->getAttribute('locked_at') !== null,
+            setupRequired: (bool) $model->getAttribute('setup_required'),
+        );
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === AccountStatus::SUSPENDED;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === AccountStatus::ARCHIVED;
+    }
+
+    public function isInactive(): bool
+    {
+        return $this->status === AccountStatus::INACTIVE;
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->isLocked;
+    }
+
+    public function requiresSetup(): bool
+    {
+        return $this->setupRequired;
+    }
+
+    public function canTransitionTo(AccountStatus $target): bool
+    {
+        return $this->status->canTransitionTo($target);
+    }
+
+    public function status(): AccountStatus
+    {
+        return $this->status;
+    }
+}

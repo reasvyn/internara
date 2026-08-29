@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\Color;
+use App\Modules\Core\Support\Color;
 
 test('C8F0D-FR-SUP7: hexToRgb() converts a hex color to RGB channels', function () {
     expect(Color::hexToRgb('#ffffff'))->toBe([255, 255, 255]);

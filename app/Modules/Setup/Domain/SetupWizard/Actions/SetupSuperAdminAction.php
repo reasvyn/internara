@@ -1,0 +1,64 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Setup\Domain\SetupWizard\Actions;
+
+use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Support\PasswordRules;
+use App\Modules\User\Enums\AccountStatus;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
+final class SetupSuperAdminAction extends BaseCommandAction
+{
+    public function execute(string $email, string $password): User
+    {
+        Validator::make(
+            ['email' => $email, 'password' => $password],
+            [
+                'email' => ['required', 'email'],
+                'password' => PasswordRules::default(),
+            ],
+        )->validate();
+
+        return $this->transaction(function () use ($email, $password) {
+            $username = config('setup.defaults.admin_username', 'superadmin');
+            $adminName = config('setup.defaults.admin_name', 'Super Admin');
+
+            $existing = User::where('username', $username)->first();
+
+            if ($existing !== null) {
+                $integrity = $existing->asSuperAdminIntegrityRules();
+
+                if ($integrity->isImmutable()) {
+                    throw new RejectedException(
+                        'Super admin already exists and cannot be re-initialized.',
+                    );
+                }
+            }
+
+            $user = User::updateOrCreate(
+                ['username' => $username],
+                [
+                    'name' => $adminName,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'setup_required' => false,
+                ],
+            );
+
+            $user->markEmailAsVerified();
+
+            $user->assignRole(RoleEnum::SUPER_ADMIN->value);
+            $user->setStatus(AccountStatus::PROTECTED);
+
+            $this->log('super_admin_created', $user, ['username' => $username]);
+
+            return $user;
+        });
+    }
+}

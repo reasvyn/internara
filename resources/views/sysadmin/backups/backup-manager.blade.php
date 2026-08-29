@@ -1,6 +1,6 @@
 @php
-    use App\SysAdmin\Backups\Enums\BackupStatus;
-    use App\SysAdmin\Backups\Enums\BackupType;
+    use App\Modules\SysAdmin\Domain\Backups\Enums\BackupStatus;
+    use App\Modules\SysAdmin\Domain\Backups\Enums\BackupType;
 @endphp
 
 <div>

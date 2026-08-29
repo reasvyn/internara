@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Events\BaseEvent;
+use App\Modules\Core\Events\BaseEvent;
 
 function eventSystemEventsOnDisk(): array
 {

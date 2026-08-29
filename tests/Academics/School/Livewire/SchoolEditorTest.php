@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Academics\School\Livewire\SchoolEditor;
-use App\Settings\Models\Setting;
+use App\Modules\Academics\Domain\School\Livewire\SchoolEditor;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

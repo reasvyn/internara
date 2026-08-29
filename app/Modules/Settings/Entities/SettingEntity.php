@@ -1,0 +1,124 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Settings\Entities;
+
+use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\Settings\Enums\SettingType;
+use Illuminate\Database\Eloquent\Model;
+
+final readonly class SettingEntity extends BaseEntity
+{
+    public function __construct(
+        private string $key,
+        private mixed $value,
+        private ?string $type,
+        private ?string $group,
+    ) {}
+
+    public function key(): string
+    {
+        return $this->key;
+    }
+
+    public function value(): mixed
+    {
+        return $this->value;
+    }
+
+    public function type(): ?string
+    {
+        return $this->type;
+    }
+
+    public function group(): ?string
+    {
+        return $this->group;
+    }
+
+    public static function fromModel(Model $model): static
+    {
+        return new self(
+            key: $model->key,
+            value: $model->value,
+            type: $model->type ?? null,
+            group: $model->group ?? null,
+        );
+    }
+
+    public function settingType(): ?SettingType
+    {
+        return $this->type !== null ? SettingType::tryFrom($this->type) : null;
+    }
+
+    public function isType(SettingType $type): bool
+    {
+        return $this->type === $type->value;
+    }
+
+    public function isBoolean(): bool
+    {
+        return $this->isType(SettingType::BOOLEAN);
+    }
+
+    public function booleanValue(): bool
+    {
+        return (bool) $this->value;
+    }
+
+    public function isJson(): bool
+    {
+        return $this->isType(SettingType::JSON);
+    }
+
+    public function jsonValue(): array
+    {
+        return is_array($this->value) ? $this->value : [];
+    }
+
+    public function isEncrypted(): bool
+    {
+        return $this->isType(SettingType::ENCRYPTED);
+    }
+
+    public function isString(): bool
+    {
+        return $this->isType(SettingType::STRING);
+    }
+
+    public function isInteger(): bool
+    {
+        return $this->isType(SettingType::INTEGER);
+    }
+
+    public function intValue(): int
+    {
+        return (int) $this->value;
+    }
+
+    public function isFloat(): bool
+    {
+        return $this->isType(SettingType::FLOAT);
+    }
+
+    public function floatValue(): float
+    {
+        return (float) $this->value;
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->value === null || $this->value === '';
+    }
+
+    public function isThemeColor(array $themeCacheKeys = []): bool
+    {
+        return in_array($this->key, $themeCacheKeys, true);
+    }
+
+    public function belongsToGroup(string $group): bool
+    {
+        return $this->group === $group;
+    }
+}

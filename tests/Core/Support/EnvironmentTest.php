@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\Environment;
+use App\Modules\Core\Support\Environment;
 
 test('C8F0D-FR-SUP5: isProduction() reflects the current environment', function () {
     expect(Environment::isProduction())->toBe(app()->environment('production'));

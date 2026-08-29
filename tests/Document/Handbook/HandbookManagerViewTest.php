@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Document\Handbook\Livewire\HandbookManager;
-use App\User\Models\User;
+use App\Modules\Document\Domain\Handbook\Livewire\HandbookManager;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

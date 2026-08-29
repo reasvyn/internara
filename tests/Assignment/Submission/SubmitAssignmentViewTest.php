@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Assignment\Models\Assignment;
-use App\Assignment\Submission\Livewire\SubmitAssignment;
-use App\Enrollment\Registration\Models\Registration;
-use App\Program\Internship\Models\Internship;
-use App\User\Models\User;
+use App\Modules\Assignment\Models\Assignment;
+use App\Modules\Assignment\Domain\Submission\Livewire\SubmitAssignment;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

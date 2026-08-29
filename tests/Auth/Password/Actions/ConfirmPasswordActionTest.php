@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Auth\Password\Actions\ConfirmPasswordAction;
-use App\Core\Actions\BaseCommandAction;
-use App\Core\Data\ActionResponse;
-use App\Core\Exceptions\RejectedException;
-use App\User\Models\User;
+use App\Modules\Auth\Domain\Password\Actions\ConfirmPasswordAction;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Data\ActionResponse;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 

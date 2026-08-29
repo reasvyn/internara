@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\RejectedException;
-use App\Core\Livewire\BaseFormView;
-use App\Core\Livewire\BaseRecordEntry;
-use App\Core\Livewire\BaseRecordList;
-use App\Core\Livewire\BaseRecordManager;
-use App\Core\Livewire\BaseWizard;
-use App\User\Models\User;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Livewire\BaseFormView;
+use App\Modules\Core\Livewire\BaseRecordEntry;
+use App\Modules\Core\Livewire\BaseRecordList;
+use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\Core\Livewire\BaseWizard;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;

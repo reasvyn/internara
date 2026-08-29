@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Journals\Attendance\Enums\AttendanceStatus;
-use App\Journals\Attendance\Livewire\AttendanceManager;
-use App\Journals\Attendance\Models\Attendance;
+use App\Modules\Journals\Domain\Attendance\Enums\AttendanceStatus;
+use App\Modules\Journals\Domain\Attendance\Livewire\AttendanceManager;
+use App\Modules\Journals\Domain\Attendance\Models\Attendance;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

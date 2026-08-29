@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Assessment\Models\Assessment;
-use App\Assessment\Rubric\Models\Rubric;
-use App\Enrollment\Registration\Models\Registration;
-use App\User\Models\User;
+use App\Modules\Assessment\Models\Assessment;
+use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

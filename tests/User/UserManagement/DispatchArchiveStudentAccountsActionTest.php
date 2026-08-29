@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\User\Enums\AccountStatus;
-use App\User\Jobs\ArchiveStudentAccountsJob;
-use App\User\Models\User;
-use App\User\UserManagement\Actions\DispatchArchiveStudentAccountsAction;
-use App\User\UserManagement\Livewire\StudentManager;
+use App\Modules\User\Enums\AccountStatus;
+use App\Modules\User\Jobs\ArchiveStudentAccountsJob;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\UserManagement\Actions\DispatchArchiveStudentAccountsAction;
+use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;

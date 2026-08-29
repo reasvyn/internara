@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Core\Channels\Data\NotificationData;
-use App\Core\Contracts\ColorableEnum;
-use App\Core\Contracts\LabelEnum;
-use App\Core\Contracts\SendsNotifications;
-use App\Core\Contracts\SettingsStore;
-use App\Core\Contracts\StatusEnum;
-use App\Core\Enums\AuditCategory;
-use App\Core\Enums\AuditStatus;
-use App\Core\Enums\CsvRowResult;
+use App\Modules\Core\Channels\Data\NotificationData;
+use App\Modules\Core\Contracts\ColorableEnum;
+use App\Modules\Core\Contracts\LabelEnum;
+use App\Modules\Core\Contracts\SendsNotifications;
+use App\Modules\Core\Contracts\SettingsStore;
+use App\Modules\Core\Contracts\StatusEnum;
+use App\Modules\Core\Enums\AuditCategory;
+use App\Modules\Core\Enums\AuditStatus;
+use App\Modules\Core\Enums\CsvRowResult;
 
 enum TestStatusEnum: string implements StatusEnum
 {

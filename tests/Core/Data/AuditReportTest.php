@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Core\Data\AuditCheck;
-use App\Core\Data\AuditReport;
-use App\Core\Enums\AuditCategory;
-use App\Core\Enums\AuditStatus;
+use App\Modules\Core\Data\AuditCheck;
+use App\Modules\Core\Data\AuditReport;
+use App\Modules\Core\Enums\AuditCategory;
+use App\Modules\Core\Enums\AuditStatus;
 
 function auditCheck(AuditCategory $category, AuditStatus $status): AuditCheck
 {

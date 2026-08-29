@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Data\AuditCheck;
-use App\Core\Enums\AuditCategory;
-use App\Core\Enums\AuditStatus;
+use App\Modules\Core\Data\AuditCheck;
+use App\Modules\Core\Enums\AuditCategory;
+use App\Modules\Core\Enums\AuditStatus;
 
 test('SE5Q9-FR-D1: exposes the defined DTO shape', function () {
     $check = new AuditCheck(

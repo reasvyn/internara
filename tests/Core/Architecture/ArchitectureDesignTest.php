@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseAction;
-use App\Core\Actions\BaseCommandAction;
-use App\Core\Actions\BaseProcessAction;
-use App\Core\Actions\BaseReadAction;
+use App\Modules\Core\Actions\BaseAction;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Actions\BaseProcessAction;
+use App\Modules\Core\Actions\BaseReadAction;
 use Illuminate\Support\Facades\File;
 
 const D2FT3_EXPECTED_MODULE_ORDER = [

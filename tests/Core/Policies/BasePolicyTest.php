@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Policies\BasePolicy;
-use App\User\Models\User;
-use App\User\Profile\Models\Profile;
+use App\Modules\Core\Policies\BasePolicy;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\Profile\Models\Profile;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

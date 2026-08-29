@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\User\Domain\Notifications\Actions;
+
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\User\Domain\Notifications\Models\Notification;
+use Illuminate\Support\Facades\Cache;
+
+final class MarkBatchAsReadAction extends BaseCommandAction
+{
+    public function execute(string $userId, array $ids): int
+    {
+        $updated = Notification::whereIn('id', $ids)
+            ->where('user_id', $userId)
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+
+        Cache::forget(config('cache-keys.notification_unread').$userId);
+
+        $this->log('notifications_marked_batch_read', null, [
+            'user_id' => $userId,
+            'count' => $updated,
+        ]);
+
+        return $updated;
+    }
+}

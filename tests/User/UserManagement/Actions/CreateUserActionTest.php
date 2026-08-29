@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseCommandAction;
-use App\User\Models\User;
-use App\User\UserManagement\Actions\CreateUserAction;
-use App\User\UserManagement\Data\CreateUserData;
-use App\User\UserManagement\Events\UserCreated;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\UserManagement\Actions\CreateUserAction;
+use App\Modules\User\Domain\UserManagement\Data\CreateUserData;
+use App\Modules\User\Domain\UserManagement\Events\UserCreated;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;

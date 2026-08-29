@@ -1,0 +1,88 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Auth\Domain\Account\Livewire;
+
+use App\Modules\Auth\Domain\Account\Actions\ActivateAccountAction;
+use App\Modules\Auth\Domain\Account\Data\ActivateAccountData;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\User\Models\User;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
+use TallStackUi\Traits\Interactions;
+
+class ActivateAccount extends Component
+{
+    use Interactions;
+
+    public string $email = '';
+
+    public string $code = '';
+
+    public string $password = '';
+
+    public string $password_confirmation = '';
+
+    public function activate(ActivateAccountAction $action): void
+    {
+        $this->validate([
+            'email' => 'required|email|exists:users,email',
+            'code' => 'required|string|min:16|max:19',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $throttleKey = $this->throttleKey();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('code', __('auth.throttle', ['seconds' => $seconds]));
+
+            return;
+        }
+
+        $user = User::where('email', $this->email)->first();
+
+        if (! $user) {
+            RateLimiter::hit($throttleKey, 300);
+            $this->addError('email', __('auth.activate.invalid_email'));
+
+            return;
+        }
+
+        try {
+            $action->execute(new ActivateAccountData(
+                userId: $user->id,
+                code: $this->code,
+                password: $this->password,
+            ));
+        } catch (RejectedException $e) {
+            RateLimiter::hit($throttleKey, 300);
+            $this->addError('code', $e->getMessage());
+
+            return;
+        }
+
+        RateLimiter::clear($throttleKey);
+
+        auth()->login($user);
+
+        $this->toast()->success(__('auth.activate.success'))->send();
+
+        $this->redirectRoute('dashboard', navigate: true);
+    }
+
+    protected function throttleKey(): string
+    {
+        return Str::transliterate('activate|'.$this->email.'|'.request()->ip());
+    }
+
+    #[Layout('auth::layouts.auth', ['title' => 'Activate Account'])]
+    public function render(): View
+    {
+        return view('auth.activation-token.activate-account');
+    }
+}

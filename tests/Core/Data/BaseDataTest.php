@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Data\BaseData;
+use App\Modules\Core\Data\BaseData;
 
 final readonly class TestData extends BaseData
 {

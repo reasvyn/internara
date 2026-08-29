@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Academics\Department\Actions\CreateDepartmentAction;
-use App\Academics\Department\Events\DepartmentCreated;
-use App\Academics\Department\Models\Department;
-use App\Core\Actions\BaseCommandAction;
+use App\Modules\Academics\Domain\Department\Actions\CreateDepartmentAction;
+use App\Modules\Academics\Domain\Department\Events\DepartmentCreated;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Core\Actions\BaseCommandAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 

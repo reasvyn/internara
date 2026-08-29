@@ -16,13 +16,14 @@
     "permission": {
         "read": {
             "*": "allow",
+            "*.env.example": "allow",
+            "**/.env.example": "allow",
             "*.env": "deny",
             "*.env.*": "deny",
             "**/.env": "deny",
             "**/.env.*": "deny",
             ".secrets": "deny",
             "**/.secrets/**": "deny",
-            "*.env.example": "allow",
             "**/.ssh/**": "ask",
             "**/.aws/**": "ask",
             "**/.gcp/**": "ask",
@@ -60,6 +61,8 @@
         },
         "edit": {
             "*": "allow",
+            "*.env.example": "allow",
+            "**/.env.example": "allow",
             ".env": "deny",
             ".env.*": "deny",
             "*.env": "deny",
@@ -101,6 +104,7 @@
         },
         "glob": {
             "*": "allow",
+            "**/.env.example": "allow",
             "**/.env*": "ask",
             "**/.ssh/**": "ask",
             "**/.aws/**": "ask",
@@ -113,6 +117,7 @@
         },
         "grep": {
             "*": "allow",
+            "**/.env.example": "allow",
             "**/.env*": "ask",
             "**/.ssh/**": "ask",
             "**/.aws/**": "ask",
@@ -144,8 +149,10 @@
             "* awk -i *": "ask",
             "tee *.env*": "ask",
             "tee *secret*": "ask",
-            "cat *.env*": "deny",
-            "cat *\\.env*": "deny",
+            "cat *.env.example": "allow",
+            "cat **/.env.example": "allow",
+            "cat *.env*": "ask",
+            "cat *\\.env*": "ask",
             "cat *secret*": "ask",
             "cat *secrets*": "ask",
             "cat **/.ssh/**": "ask",

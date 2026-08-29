@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Services\AppInfo;
+use App\Modules\Core\Services\AppInfo;
 use Illuminate\Support\Facades\Cache;
 
 test('C8F0D-FR-SUP4: all() extracts composer.json metadata with the expected shape', function () {
@@ -10,7 +10,7 @@ test('C8F0D-FR-SUP4: all() extracts composer.json metadata with the expected sha
 
     expect($meta)->toHaveKeys(['name', 'version', 'description', 'license', 'author', 'support', 'gitUrl']);
     expect($meta['name'])->toBe('Internara');
-    expect($meta['version'])->toBe('0.14.0');
+    expect($meta['version'])->toBe('0.15.3');
     expect($meta['author']['name'])->toBe('Reas Vyn');
 });
 

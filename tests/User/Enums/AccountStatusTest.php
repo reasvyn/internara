@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Contracts\ColorableEnum;
-use App\Core\Contracts\StatusEnum;
-use App\User\Enums\AccountStatus;
+use App\Modules\Core\Contracts\ColorableEnum;
+use App\Modules\Core\Contracts\StatusEnum;
+use App\Modules\User\Enums\AccountStatus;
 
 /*
 |--------------------------------------------------------------------------

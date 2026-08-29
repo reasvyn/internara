@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\InfrastructureException;
-use App\Core\Exceptions\RejectedException;
-use App\Core\Exceptions\UnauthorizedException;
+use App\Modules\Core\Exceptions\InfrastructureException;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Exceptions\UnauthorizedException;
 use Illuminate\Support\Facades\Route;
 
 function renderRoute(string $path, Throwable $exception): void

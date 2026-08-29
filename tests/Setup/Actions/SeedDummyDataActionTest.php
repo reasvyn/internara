@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Setup\Installation\Actions\SeedDummyDataAction;
-use App\Setup\Installation\Console\Commands\SetupInstallCommand;
-use App\User\Models\User;
+use App\Modules\Setup\Domain\Installation\Actions\SeedDummyDataAction;
+use App\Modules\Setup\Domain\Installation\Console\Commands\SetupInstallCommand;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

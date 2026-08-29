@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Enums\CsvRowResult;
-use App\Core\Support\CsvHandler;
+use App\Modules\Core\Enums\CsvRowResult;
+use App\Modules\Core\Support\CsvHandler;
 
 test('C8F0D-FR-SUP3: export streams a CSV with headers and mapped rows', function () {
     $handler = new CsvHandler;

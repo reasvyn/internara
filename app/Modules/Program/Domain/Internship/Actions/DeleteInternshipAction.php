@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Program\Domain\Internship\Actions;
+
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+
+final class DeleteInternshipAction extends BaseCommandAction
+{
+    public function execute(Internship $internship): void
+    {
+        if (! $internship->asInternshipState()->canBeDeleted()) {
+            throw new RejectedException(
+                'Cannot delete internship with active placements or registrations.',
+            );
+        }
+
+        $this->transaction(function () use ($internship) {
+            $this->log('internship_deleted', $internship, ['name' => $internship->name]);
+
+            $internship->delete();
+        });
+    }
+}

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Logbook\Models\Logbook;
-use App\Program\Internship\Models\Internship;
-use App\Program\InternshipGroup\Models\InternshipGroupMember;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

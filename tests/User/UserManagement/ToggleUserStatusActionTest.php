@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\RejectedException;
-use App\User\Enums\AccountStatus;
-use App\User\Models\User;
-use App\User\UserManagement\Actions\ToggleUserStatusAction;
-use App\User\UserManagement\Livewire\UserManager;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\User\Enums\AccountStatus;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\UserManagement\Actions\ToggleUserStatusAction;
+use App\Modules\User\Domain\UserManagement\Livewire\UserManager;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
