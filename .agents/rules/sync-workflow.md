@@ -28,7 +28,7 @@ full log whenever drift may predate the window (e.g., infrequent module, large a
 
 ## How to Apply
 
-### Step -1 — Check Uncommitted Changes and Commit First
+### Step 0 — Check Uncommitted Changes and Commit Atomically First
 
 ```bash
 git status --short
@@ -38,9 +38,9 @@ git diff --cached --stat
 
 - If `git status` shows modified (`M`), added (`A`), deleted (`D`), renamed (`R`), or untracked (`??`) files, **commit them first** before starting the sync.
 - Uncommitted code is invisible to `git log` — syncing docs against `HEAD` while the working tree has uncommitted business logic leaves the new docs stale on arrival.
-- Stage and commit the pending work (`git add -A && git commit -m "type(scope): ..."`), or explicitly stash/ignore it with a recorded decision, then proceed to Step 0. Never run a doc sync on a dirty working tree without a checkpoint.
+- Stage and commit **atomically** — e.g. `git add <file1> <file2> && git commit -m "type(scope): ..."` per concern (one commit per logical change, see `commit-as-checkpoint.md`). **Do not use `git add -A` nor `stash`** — broad staging hides unrelated changes and stashing defers the checkpoint; every pending change must be committed atomically with a proper message, or explicitly ignored with a recorded decision, then proceed to Step 1. Never run a doc sync on a dirty working tree without a checkpoint.
 
-### Step 0 — Review Recent Git History (minimum 14 days, extend if needed)
+### Step 1 — Review Recent Git History (minimum 14 days, extend if needed)
 
 ```bash
 git log --since="14 days ago" --stat              # summary per commit (minimum window)
@@ -54,13 +54,13 @@ git log --since="14 days ago" --stat  # already minimum; for older drift use ful
 - Identify commits that already updated docs (skip those).
 - Identify commits that introduced new code without doc updates (focus here).
 
-### Step 1 — Identify What Changed
+### Step 2 — Identify What Changed
 
 - Check `git diff` for new files, deleted files, and modified files.
 - Identify which modules, submodules, and layers were affected.
 - Note new Models, Actions, Entities, Enums, DTOs, Events, Policies, Livewire components.
 
-### Step 2 — Determine Which Docs Need Updates
+### Step 3 — Determine Which Docs Need Updates
 
 | If you changed...    | Update these docs                                                    |
 | -------------------- | -------------------------------------------------------------------- |
