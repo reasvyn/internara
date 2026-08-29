@@ -1,7 +1,5 @@
 # Pulse Custom Cards — Building Dashboard Extensions
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Custom Pulse cards extend `Pulse\Livewire\Card` and add Internara-specific metrics to the dashboard.
 They must be registered in `config/pulse.php`, live in the provider/component location the project
 uses, and enforce their own authorization.

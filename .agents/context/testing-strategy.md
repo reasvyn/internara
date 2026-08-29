@@ -1,7 +1,5 @@
 # Testing Strategy — Spec-Driven Minimalism
 
-> **Last updated:** 2026-08-21 **Changes:** initial — extracted from docs/guides/arch/testing-pattern.md + pest-testing skill; agent-facing strategy for 98% suite, uneven coverage, and spec-traceable tests
-
 ## Description
 
 Internara's test suite passes at **~98%** but coverage is uneven: `Core`/`User`/`Settings`/`Setup`/`Academics` are solid; domain modules (`Assessment`, `Evaluation`, `Certification`, `Document`) are thin. Full suite costs **~2GB+ RAM, 10+ min** — too slow for per-edit loops. This file is the agent's fast path for **what to test, how, and when** without wasting cycles.

@@ -1,7 +1,5 @@
 # Cache — Caching Strategy & Configuration
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/cache-pattern.md
-
 ## Description
 
 Cache driver configuration, key naming conventions, event-driven invalidation strategy, and warming

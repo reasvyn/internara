@@ -37,7 +37,7 @@ Do NOT write tests or audits — delegate to `tester` / `reviewer`. Do NOT write
    - `livewire-development` / `tailwindcss-development` / `medialibrary-development` / `pulse-development` for UI/media
    - `feature-building` when orchestrating the full triad
 4. **Surgical edits**: read full file, edit minimal, `git diff` sanity check, preserve unrelated code. Delegate business rules to Entities; DRY extract helpers/traits.
-5. **Docs in sync**: update module docs + PHPDoc + `> **Last updated:**` as part of same step.
+5. **Docs in sync**: update module docs + PHPDoc as part of same step.
 
 ## Output
 - Clean PHP/Blade files honoring 4-layer model: Livewire → Action → Entity → Model → DB

@@ -1,9 +1,6 @@
 # Certification — Certificate Templates, Issuance, Batch Processing & QR Verification
 
 > **Spec ID:** J0M04
-> **Last updated:** 2026-08-19 **Changes:** sync — add revoked_by/revoked_at to Certificate contract (issue #297)
-> single/batch issuance, PDF rendering with 17 placeholders, QR hash generation, revocation,
-> and student certificate view
 
 ## Description
 

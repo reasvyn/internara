@@ -1,7 +1,5 @@
 # Thin Component — Delegation and Boundaries
 
-> **Last updated:** 2026-08-25 **Changes:** sync — flash()-> → TallstackUI $this->toast()->send() (FB792 0.15.0)
-
 Livewire components are the presentation layer: they own UI state, UX validation, and the rendering
 of an Action's result — and nothing else. "Thin" is not a style preference; it is the architectural
 rule that keeps mutations inside Command Actions (C1), transactions owned, and business rules in the

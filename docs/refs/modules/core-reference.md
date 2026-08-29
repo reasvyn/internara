@@ -1,8 +1,5 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** middleware renamed to `SecurityHeadersMiddleware`/`LogContextMiddleware`;
-> add Channels section (`CustomDatabaseChannel` + `NotificationData`); SendsNotifications contract
-
 ## Description
 
 Detailed structural and implementation reference for the **Core** module, including both abstract

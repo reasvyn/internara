@@ -1,7 +1,5 @@
 # Non-Negotiable Invariants — C1-C8, D1-D6
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-invariant intent, enforcement, and detection
-
 These invariants MUST be followed. No exceptions, no "temporary deviations." They are enforced by
 `scan_violations.py` (C1-C8, D1-D6) and `scan_conventions.py`. A violation is a workflow violation
 even if the feature works.

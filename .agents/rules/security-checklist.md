@@ -1,7 +1,5 @@
 # Security Audit Coverage — Full-Sweep Vulnerability Review
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 A dedicated security and privacy audit sweeps the codebase across the categories below — OWASP

@@ -1,7 +1,5 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/ux-pattern.md and arch/modular-pattern.md
-
 ## Description
 
 Internara is designed for a global audience with Indonesian vocational education as its primary

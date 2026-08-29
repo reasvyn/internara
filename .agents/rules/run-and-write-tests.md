@@ -1,7 +1,5 @@
 # Run-the-Spec's-Tests & Test-Gap Fill — Mandatory Audit Duties
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 `spec-audit` does NOT stop at "test files exist". Recent updates made two behaviors **mandatory** in
 every audit that touches tests:
 

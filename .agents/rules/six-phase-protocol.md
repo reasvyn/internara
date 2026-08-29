@@ -1,7 +1,5 @@
 # Six-Phase Protocol — Audit Execution Order and Blockers
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 A QA audit runs **6 phases in order**, each a major quality domain. The phases are the container:

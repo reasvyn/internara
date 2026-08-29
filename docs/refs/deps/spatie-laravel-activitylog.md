@@ -1,7 +1,5 @@
 # spatie/laravel-activitylog — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for spatie/laravel-activitylog 5.0.0
-
 ## Description
 
 Conceptual reference for **Spatie Activity Log 5** (`spatie/laravel-activitylog 5.0.0`) — the

@@ -11,8 +11,6 @@ downstream:
 
 # Spec Audit — Specification ↔ Implementation Synchronization
 
-> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in `.agents/rules/` (bidirectional audit, scope configuration, audit areas, run-and-write-tests, decision matrix, fix-or-issue, audit workflow)
-
 > **Prerequisite:** Load `context-awareness` for project orientation, module map, and conventions.
 
 ## When to Activate

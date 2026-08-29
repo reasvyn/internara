@@ -1,7 +1,5 @@
 # Getting Started — From Clone to Running Application
 
-> **Last updated:** 2026-08-29 **Changes:** add one-line installer (scripts/install.sh via curl) for git clone → composer → npm → setup:install; devtools moved scripts/ → tools/; fix repo URL; keep manual steps as alternative
-
 ## Description
 
 End-to-end walkthrough from cloning the repository to completing the setup wizard and first login.

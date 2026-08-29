@@ -1,7 +1,5 @@
 # Notification — Multi-Channel Notification System
 
-> **Last updated:** 2026-08-27 **Changes:** sync — deduplicated pattern prose into reference link to arch/event-pattern.md
-
 ## Description
 
 Multi-channel notification system covering mail, database, and broadcast channels with ShouldQueue

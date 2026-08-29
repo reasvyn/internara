@@ -1,7 +1,5 @@
 # Bidirectional Audit — Spec→Code and Code→Spec Drift
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 `spec-audit` is a **bidirectional** synchronization check between feature specifications and their
 implementation. It detects three categories of drift, and — crucially — it determines *which side*
 (spec or code) is authoritative in each case. This is what distinguishes it from `arch-guard`

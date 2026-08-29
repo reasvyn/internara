@@ -1,7 +1,5 @@
 # Post-Setup — Initial Data Population & Configuration
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify post-setup steps match current implementation (settings init, academic structure, partnerships, user provisioning, program config)
-
 ## Description
 
 Reference for the configuration steps required after the setup wizard completes. Covers settings

@@ -1,7 +1,5 @@
 # Requirement ID Conventions — FR/NFR/UC and Area Codes
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Requirement IDs are the traceability spine of the whole project: tests carry them, `spec-audit`
 verifies implementation against them, and issue-writing files findings against them. A requirement
 without a stable ID is untraceable; an ID colliding with another requirement creates false

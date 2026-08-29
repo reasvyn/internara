@@ -1,7 +1,5 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Thin Controller, Presentation Model, MVVM, MVC Separation of Concerns) with anti-pattern table, Quick References
-
 ## Description
 
 Thin component rule, auto-discovery, CRUD tables via BaseRecordManager, Action injection, Form

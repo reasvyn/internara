@@ -1,7 +1,5 @@
 # Context — AI Agent Memory (Evolving Project Context)
 
-> **Last updated:** 2026-08-29 **Changes:** added learning-log — chronological capture store for the project Learning Loop (self-improvement)
-
 ## Description
 
 This directory is the **AI Agent memory**: a living record of evolving project knowledge —
@@ -39,7 +37,7 @@ or conflicting, write it back here** — this memory is how context survives bet
    overrides it.
 2. **Context evolves — update on inconsistency.** When the underlying fact changes (dependency
    unpinned, deploy topology changed, a guard removed) or a context file no longer matches reality,
-   update it **directly in the same run**: fix the stale fact and bump its `**Changes:**` metadata.
+   update it **directly in the same run**: fix the stale fact and write a descriptive commit message and update the file directly.
    Never leave a discovered inconsistency to a later pass.
 3. **Create when critical.** If you learn something highly important that is not yet recorded —
    non-obvious constraint, working workaround, environment quirk, deliberate decision — create a new
@@ -54,6 +52,6 @@ or conflicting, write it back here** — this memory is how context survives bet
 
 ## Quick References
 
-- [Architecture Rules](.agents/rules/architecture-rules.md) — layer/contract checks
+- [Architecture Rules](../rules/architecture-rules.md) — layer/contract checks
 - [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD topology
-- [Documentation Map](AGENTS.md §Context Awareness#documentation-map) — where to find every doc
+- [Documentation Map](../../docs/index.md) — where to find every doc

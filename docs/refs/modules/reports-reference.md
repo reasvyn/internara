@@ -1,7 +1,5 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-08-24 **Changes:** sync — add missing Actions `CaptureReportSnapshotAction`, `DeleteReportAction`, `DownloadReportAction` (S7 #320, #329; previously unverified)
-
 ## Description
 
 Detailed structural and implementation reference for the **Reports** module.

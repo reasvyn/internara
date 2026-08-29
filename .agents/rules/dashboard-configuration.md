@@ -1,7 +1,5 @@
 # Pulse Dashboard & Configuration — Setup Contract
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Laravel Pulse is configured centrally in `config/pulse.php`. The dashboard's domain, middleware
 stack, enabled recorders, and ingest driver are all set there — and every one of those settings has a
 deployment-tier consequence. Configuring Pulse is easy; configuring it *consistently with the

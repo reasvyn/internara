@@ -1,7 +1,5 @@
 # Document — Templates, Handbooks & Rendering
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Unified Document Table, PDF Rendering Pipeline, Policy Acknowledgement Tracking, Integration Patterns, Submodules: OfficialDocument & Handbook)
-
 ## Description
 
 Official correspondence template management, PDF letter rendering, policy handbook storage, and
@@ -87,5 +85,4 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 - Program (required document template references)
 - Enrollment (document upload verification references)
 - SysAdmin (compliance reporting)
-
 

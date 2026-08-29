@@ -1,8 +1,5 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-08-17 **Changes:** fix — PHP-FPM pool `max_children` 2 → 6 (finding #9);
-> entrypoint creates framework dirs + chowns storage at boot (finding #8)
-
 ## Description
 
 Internara is designed to be installed on the school's own infrastructure. This guide covers the

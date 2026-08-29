@@ -1,7 +1,5 @@
 # Security — Infrastructure, Privacy & Compliance
 
-> **Last updated:** 2026-08-27 **Changes:** sync — add reference link to arch/policy-pattern.md where authorization posture overlaps
-
 ## Description
 
 Operational reference for the security infrastructure: network hardening, application security

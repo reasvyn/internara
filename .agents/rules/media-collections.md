@@ -1,7 +1,5 @@
 # Media Collections — Definition & Validation
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every media collection is declared on the Model that owns it and carries its own validation rules.
 A collection that is not registered, or has no size/MIME guard, accepts anything — then what should
 be an "avatar" quietly stores executables or multi-GB files.

@@ -1,7 +1,6 @@
 # Security Headers — HTTP Response Protection
 
 > **Spec ID:** 1PGM4
-> **Last updated:** 2026-08-16 **Changes:** align middleware class name to `SecurityHeadersMiddleware`
 
 ## Description
 

@@ -1,7 +1,6 @@
 # Tech Stack — Language, Framework & Dependency Manifest
 
 > **Spec ID:** FB792
-> **Last updated:** 2026-08-25 **Changes:** .agents/plans pointer removed per documentation-split rule (migration status kept inline)
 
 ## Description
 

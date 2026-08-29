@@ -1,7 +1,6 @@
 # Branding, Theme & Locale — Identity, Appearance & Language Switching
 
 > **Spec ID:** 52O1I
-> **Last updated:** 2026-08-25 **Changes:** sync — FR-T2/FR-L5 TallstackUI-only (coexistence fallbacks removed, FB792 0.15.0); ThemeSwitcher Livewire component deleted, replaced by `<x-ts-theme-switch>`
 
 ## Description
 

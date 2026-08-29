@@ -1,7 +1,5 @@
 # Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-08-27 **Changes:** feat — extract UI module from Core (x-ui::, ui::layouts.app)
-
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
 components.

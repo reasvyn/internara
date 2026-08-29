@@ -9,8 +9,6 @@ downstream:
 
 # DomPDF Development — PDF Generation
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for barryvdh/laravel-dompdf
-
 ## When to Activate
 
 Use this skill when generating PDFs from Blade views, embedding assets, or configuring DOMPDF options.

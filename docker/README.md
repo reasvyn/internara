@@ -1,11 +1,7 @@
 # Docker — Container Configuration & Setup Environments
 
-> **Last updated:** 2026-08-16
-> **Changes:** amend — document low-memory production defaults (scheduler off, MySQL caps, PHP-FPM cap, multi-stage image); add Docker build cache optimization (.dockerignore, lockfile-first layers, BuildKit cache mounts, builder-stage node_modules removal)
-
 ## Description
 Internara provides three Docker environments for different use cases.
-
 
 ## 1. Development (Laravel Sail)
 

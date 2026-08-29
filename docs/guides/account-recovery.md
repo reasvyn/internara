@@ -1,7 +1,5 @@
 # Account Recovery — Recovery Flow & Security
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify recovery mechanisms still match current implementation (recovery codes, activation tokens, password reset, rate limits)
-
 ## Description
 
 Internara provides three account recovery mechanisms, each designed for a different loss scenario:

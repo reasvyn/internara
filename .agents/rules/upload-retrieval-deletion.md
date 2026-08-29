@@ -1,7 +1,5 @@
 # Media Upload & Retrieval — Action Ownership and Access Patterns
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Uploads and retrieval are the two ends of the media lifecycle. Uploads must happen inside Command
 Actions (never in Livewire); retrieval must go through MediaLibrary's accessors. Getting either end
 wrong breaks the mutation boundary or leaks storage internals into views.

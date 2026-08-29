@@ -1,7 +1,5 @@
 # spatie/laravel-permission — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for spatie/laravel-permission 8.3.0
-
 ## Description
 
 Conceptual reference for **spatie/laravel-permission 8** (`spatie/laravel-permission 8.3.0`) —

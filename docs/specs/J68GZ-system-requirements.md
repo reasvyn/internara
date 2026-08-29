@@ -1,7 +1,6 @@
 # System Requirements — Dependencies, Platform & Database
 
 > **Spec ID:** J68GZ
-> **Last updated:** 2026-08-25 **Changes:** remove PHPFlasher/maryUI (FR-D10/FR-D11 deleted, FR-D10a TallstackUI-only), update manifest
 
 ## Description
 

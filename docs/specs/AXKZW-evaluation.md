@@ -1,9 +1,6 @@
 # Evaluation — Google Forms-Like Feedback System With Weighted Scoring
 
 > **Spec ID:** AXKZW
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> section/question management, response submission, weighted score calculation, score bands,
-> and polymorphic target system
 
 ## Description
 

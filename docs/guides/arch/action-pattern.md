@@ -1,7 +1,5 @@
 # Action Triad Pattern — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (CQRS, Command Pattern, SOLID, PoEAA, Unit of Work) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara organizes business operations into three distinct Action types — **Command**, **Read**, and **Process** — replacing traditional Service classes (god objects with multiple public methods). It synthesizes global industry standards — **CQRS** (Martin Fowler / Greg Young), **Command Pattern** (Gang of Four), **Single Responsibility Principle** (Robert C. Martin, SOLID), **Unit of Work** and **Transaction Script** (Martin Fowler, *Patterns of Enterprise Application Architecture*) — into enforceable rules tied to Internara's stack: `BaseCommandAction`/`BaseReadAction`/`BaseProcessAction`, `BaseData` DTOs, `SmartLogger`, `BaseEvent`, and `ActionResponse`.

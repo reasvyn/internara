@@ -1,7 +1,5 @@
 # Component Verification — Ensuring Thin, Safe, Complete Components
 
-> **Last updated:** 2026-08-25 **Changes:** sync — flash() → TallstackUI toast, maryUI toast methods → removed (FB792 0.15.0)
-
 Verification is the gate that catches every violation the earlier rules define. It runs per component
 as the final step of the build (and again before commit), because each check below corresponds to a
 specific defect that otherwise ships silently — a mutation leaking into the component, a swallowed

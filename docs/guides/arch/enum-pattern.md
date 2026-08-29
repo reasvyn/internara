@@ -1,7 +1,5 @@
 # Enum Pattern — LabelEnum, StatusEnum, State Machines & Type Safety
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (State Machine, Type State, GoF State Pattern, FSM) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara defines **PHP 8 string-backed enums** for labels, state machines, and UI badges. It synthesizes global industry standards — **Finite State Machine** (FSM), **Type State Pattern** (compile-time state machines), **GoF State Pattern** (behavioral delegation), **State Transition Guards** (pre-conditions on transitions) — into enforceable rules tied to Internara's stack: `LabelEnum`, `StatusEnum`, `ColorableEnum` contracts, `UPPER_SNAKE` case names, lowercase string values, and `match()` exhaustive transitions.

@@ -1,7 +1,5 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — restored §1–§23 catalog (SSOT index) and integrated global industry standards (Modular Monolith, Clean Architecture, Hexagonal, SOLID, DRY) via new "Global Standards Foundations" section + Quick References with URLs; each §N links to its dedicated deep-dive arch pattern
-
 ## Description
 
 Complete catalog of design patterns, conventions, and architectural rules used across all 19

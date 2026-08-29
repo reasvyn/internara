@@ -1,7 +1,5 @@
 # Pulse Authorization — Who May See the Dashboard
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Pulse exposes application internals: request times, query latencies, cache ratios, sessions. Access
 is controlled by a single Gate, `viewPulse`, and only users with the `admin` or `superadmin` role may
 see it. Authorization is enforced once in a provider and must never be duplicated or bypassed in

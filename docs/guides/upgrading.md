@@ -1,7 +1,5 @@
 # Upgrading Internara
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify upgrade procedure matches current implementation (standard upgrade, rollback strategy, version numbering, major version considerations)
-
 ## Description
 
 Reference for upgrading an Internara installation between versions. Covers the standard upgrade

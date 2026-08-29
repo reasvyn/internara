@@ -1,7 +1,5 @@
 # Sub-Skill Delegation — Orchestrator Coordination
 
-> **Last updated:** 2026-08-25 **Changes:** sync — maryUI/DaisyUI → TallstackUI v4 (FB792 0.15.0)
-
 feature-building is an **orchestrator**, not a do-everything skill. It owns the build order, the
 spec anchors, and the quality gates; the specialized work is delegated to sub-skills that each own
 one concern. This rule defines when to delegate, what to load before touching each concern, and how

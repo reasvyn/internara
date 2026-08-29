@@ -1,9 +1,6 @@
 # Authentication — Login, Throttling & Session Lifecycle
 
 > **Spec ID:** YB7RG
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> authentication, throttling, session lifecycle, logout, events, lockout recovery,
-> account activation, access token lifecycle, credential change notifications
 
 ## Description
 

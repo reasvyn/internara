@@ -1,9 +1,6 @@
 # GDPR Compliance — Data Deletion, Anonymization, and Audit Logging
 
 > **Spec ID:** 7HNCF
-> **Last updated:** 2026-08-25 **Changes:** sync — blade view maryUI table → TallstackUI x-ts-table
-> user-initiated and admin-initiated data deletion, PII anonymization, GDPR deletion audit logging,
-> schema migration to add missing columns, and admin-facing deletion log viewer
 
 ## Description
 

@@ -1,7 +1,5 @@
 # Queue — Queue Configuration & Job Processing
 
-> **Last updated:** 2026-08-24 **Changes:** sync — remove stale `SendAnnouncementJob` (deleted c4ed461, superseded by queued notifications 3S55V); verify job classes `BatchIssueCertificatesJob`, `GenerateDocumentJob`, `ArchiveStudentAccountsJob` against queue.php and 8FVZA spec
-
 ## Description
 
 Queue driver configuration, job classes, failure handling, and worker management across different

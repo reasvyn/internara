@@ -1,7 +1,5 @@
 # Two-Tier Model — Conceptual vs Reference Docs
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Every module has **exactly two** documents with a strict separation of concerns: a **conceptual**

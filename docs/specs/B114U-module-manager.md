@@ -1,9 +1,6 @@
 # Module Manager & Service — Single Gateway for Module Infrastructure
 
 > **Spec ID:** B114U
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> (ModuleManager + ModuleService) that supersedes the ModuleDiscoverService API documented in
-> `module-discovery.md` (I1BCV)
 
 ## Description
 

@@ -1,9 +1,6 @@
 # Account Slips — PDF Credential Distribution
 
 > **Spec ID:** EWCZ0
-> **Last updated:** 2026-08-25 **Changes:** sync — FR-M1 x-mary-modal → x-ts-modal (TallstackUI)
-> account slip generation, single/batch delivery, email distribution, and the
-> `DownloadsAccountSlips` trait as an independent initiative
 
 ## Description
 

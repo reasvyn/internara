@@ -1,7 +1,5 @@
 # Enrollment — Registration, Placement & Change Requests
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Capacity Atomicity, Guest-to-Student Pipeline, Status-Driven Access, Submodules: Registration, AccountApplication, RegistrationDocument, Placement, PlacementChangeRequest)
-
 ## Description
 
 Student registration into internship programs, placement slot assignment, document upload

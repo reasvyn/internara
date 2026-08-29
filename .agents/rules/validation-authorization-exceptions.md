@@ -1,7 +1,5 @@
 # Validation, Authorization & Exceptions — Entry-Point Enforcement
 
-> **Last updated:** 2026-08-25 **Changes:** sync — flash() → TallstackUI $this->toast()->send() (FB792 0.15.0)
-
 Every interactive entry point (Livewire component, Action, route) must validate input, authorize the
 caller, and fail with the correct exception. These rules define where validation lives, how
 authorization is declared, and which exception type means what — so the UI consistently renders a

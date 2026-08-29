@@ -1,7 +1,5 @@
 # Partners — Companies, Partnerships & MoU
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Partnership Lifecycle, Company→Partnership→Placement Chain, MoU Document Management, Submodules: Company & Partnership)
-
 ## Description
 
 External relationship management: company profiles, partnership agreements (MoU), placement slot

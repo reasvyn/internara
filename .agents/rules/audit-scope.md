@@ -1,7 +1,5 @@
 # Audit Scope — Verify Every Doc Claim Against Code and Specs
 
-> **Last updated:** 2026-08-25 **Changes:** expand sync coverage to all 408 markdown files, 7-phase impact-to-effort ordering (root → core → guides → specs → ADR → refs → agent layer)
-
 ## Intent
 
 When auditing documentation against code and specs, verify each claim a doc makes against its ground
@@ -50,7 +48,7 @@ Verify these items against actual code and specs (applies to every phase above):
 - Action listings include all `execute()` methods.
 - Enum values include all cases.
 - No broken relative links.
-- Metadata (`Last updated`, `Changes`) present on every `.md` file.
+- History is tracked via git history, not inline metadata.
 - Module structure docs match actual `app/` directory layout.
 - **Agent guides & skills match specs and code:**
   - Spec IDs referenced in `AGENTS.md` and `.agents/skills/*/SKILL.md` exist in

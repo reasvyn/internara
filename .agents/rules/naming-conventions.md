@@ -1,7 +1,5 @@
 # Naming Convention Checks — Files, Classes, Methods, Variables
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Names are contracts: they encode module, role, and layer so code, docs, and scanners agree without
 reading bodies. `scan_naming.py` enforces these conventions; a name that breaks the pattern hides the
 component's role and breaks greppability across the repo. This is the enforcement-side of the naming

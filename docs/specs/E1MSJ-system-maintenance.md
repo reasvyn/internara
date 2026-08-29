@@ -1,8 +1,6 @@
 # System Maintenance — Cleanup, Archiving & Health Monitoring
 
 > **Spec ID:** E1MSJ
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> covers log pruning, notification cleanup, account archival, cache warming, health checks
 
 ## Description
 

@@ -1,7 +1,5 @@
 # Reports — Grade Cards & Score Aggregation
 
-> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
-
 ## Description
 
 Final student grade card (Nilai Raport PKL): grade aggregation from multiple assessment sources,

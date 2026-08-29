@@ -1,7 +1,5 @@
 # Marked & DOMPurify — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for marked ^18.0.7 + dompurify ^3.4.14
-
 ## Description
 
 Conceptual reference for the markdown rendering pipeline: **Marked 18** (`marked ^18.0.7`)

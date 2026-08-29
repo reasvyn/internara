@@ -12,10 +12,6 @@ downstream:
 
 # QA Protocol — Independent / Blind Quality Assurance
 
-> **Last updated:** 2026-08-18 **Changes:** slimmed to index form — comprehensive protocol rules
-> (6-phase execution, blind execution doctrine, compliance scorecard, GitHub issues output,
-> per-standard checklists) now live in `.agents/rules/` and are mapped by the `## Skill Rules` table
-
 > **Prerequisite:** None. This skill is INDEPENDENT of project documentation. Do NOT load project
 > conventions, architecture docs, or module references before executing. This is a blind test
 > against industry standards, not project-specific rules.

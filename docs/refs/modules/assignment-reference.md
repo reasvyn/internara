@@ -1,8 +1,5 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-08-18 **Changes:** add CreateAssignmentData, UpdateAssignmentData,
-> GradeSubmissionData to Data/DTOs
-
 ## Description
 
 Detailed structural and implementation reference for the **Assignment** module.

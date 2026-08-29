@@ -1,7 +1,5 @@
 # Dep Template — Dependency Reference Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — created as the deps-directory skeleton, mirroring the established laravel.md anatomy
-
 ## Description
 
 The structure for every `docs/refs/deps/{package}.md`: one conceptual reference per runtime
@@ -13,8 +11,6 @@ prettier plugin family; `marked.md` pairs marked with dompurify).
 
 ```markdown
 # {Package} — Dependency Reference
-
-> **Last updated:** YYYY-MM-DD **Changes:** feat — initial dependency reference for {package} {version}
 
 ## Description
 

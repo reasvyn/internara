@@ -1,7 +1,5 @@
 # Commit as Checkpoint
 
-> **Last updated:** 2026-08-25 **Changes:** hardened after a missed checkpoint — multi-stage/migration work requires a commit at each verified milestone, not only at session end
-
 ## Description
 
 Every agent session ends with a git commit that serves as its **checkpoint**: a durable, reviewable

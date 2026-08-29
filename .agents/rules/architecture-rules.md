@@ -1,7 +1,5 @@
 # Architecture Rules — Layer Boundaries & Action Triad
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-check rationale, enforcement, and anti-patterns
-
 Do NOT use this as an authoritative spec. Read `docs/architecture.md` for the full architecture and
 `app/Core/Actions/` files for actual contracts. This file explains *why* each boundary check matters,
 so verification is grounded, not mechanical, and the arch-guard scans stay comprehensible.

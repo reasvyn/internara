@@ -1,7 +1,5 @@
 # Database — Schema Design & Migration Strategy
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify schema docs against migrations; add single-column indexes (users.email, attendances.registration_id, attendances.is_verified); document demo seeder and setup:install --with-dummy flag
-
 ## Description
 
 Schema design principles, migration conventions, supported database engines, UUID primary keys, and

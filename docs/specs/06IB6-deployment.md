@@ -1,10 +1,6 @@
 # Conditional Deployment — Shared Hosting & Docker VPS
 
 > **Spec ID:** 06IB6
-> **Last updated:** 2026-08-13 **Changes:** amend — Docker VPS path supports deployment without a
-> working-copy repo (Git build context, public repo); registry (GHCR) as an alternative; amend —
-> minimal 3-service Docker topology (app/web/db) with entrypoint-managed scheduler/queue and
-> non-Redis drivers (DD-6); initial — conditional deployment spec for shared hosting and Docker VPS
 
 ## Description
 

@@ -1,7 +1,5 @@
 # Assignment — Tasks, Submissions & Grading
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Draft→Submit→Grade workflow, Version History, Late Submission Handling, Submodules: Assignment Task & Submission)
-
 ## Description
 
 Task management and submission tracking: assignments with deadlines, student submissions with draft

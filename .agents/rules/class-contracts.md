@@ -1,7 +1,5 @@
 # Class Contract Checks — Actions, Entities, DTOs, Models, Enums & Support Classes
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every component type in Internara has a strict structural contract that `scan_class_contracts.py`
 enforces. A class that "sort of" matches its contract fails the scan and — worse — silently changes
 the guarantees its consumers rely on (transactions, logging, purity, immutability). This rule

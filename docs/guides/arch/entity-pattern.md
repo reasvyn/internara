@@ -1,7 +1,5 @@
 # Entity Pattern — Domain Entities, Rich Domain Model & Purity Rules
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (DDD Entity, Rich Domain Model, Aggregates, Value Object, Persistence Ignorance) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara separates **domain business rules** (Entity) from **persistence concerns** (Model). It synthesizes global industry standards — **Domain-Driven Design Entity** (Eric Evans), **Rich Domain Model vs Anemic Domain Model** (Martin Fowler), **Aggregates & Consistency Boundaries** (Vaughn Vernon), **Value Object** (Fowler/Evans), **Persistence Ignorance** (Vladimir Khorikov) — into enforceable rules tied to Internara's stack: `final readonly` Entities extending `BaseEntity`, Eloquent Models extending `BaseModel`, and the `fromModel()`/`as{Entity}()` Bridge Pattern.

@@ -1,7 +1,5 @@
 # Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Evaluation Forms, Question Types, Score Calculation, Immutable Submissions, Integration Patterns; no submodules, no Actions/Livewire yet)
-
 ## Description
 
 Generic feedback collection system with a Google Forms-like architecture: admins build reusable
@@ -88,5 +86,4 @@ Once submitted, an evaluation response cannot be modified. The audit trail prese
 
 - Reports (program quality data)
 - Certification (eligibility checks)
-
 

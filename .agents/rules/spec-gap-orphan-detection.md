@@ -1,7 +1,5 @@
 # Spec-Gap & Orphan Detection — Coverage as Spec Compliance
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Coverage is measured in **spec requirements covered**, never in lines of code. This rule defines how

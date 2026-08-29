@@ -1,7 +1,5 @@
 # Exception Pattern — Dual Hierarchy, Error Handling & RejectedException
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Exception Hierarchy, SOLID Error Handling, Result Type, Fail-Fast) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara structures **exception hierarchies** and **error handling**. It synthesizes global industry standards — **Exception Hierarchy Design** (Robert C. Martin, SOLID), **Fail-Fast Principle** (Programming by Contract, Bertrand Meyer), **Result Type** concept (functional error handling), **Defence in Depth** (NIST) — into enforceable rules tied to Internara's stack: `AppException` (infrastructure), `ModuleException` (business rules), `RejectedException`, `HasExceptionContext`, and `HandlesActionErrors`.

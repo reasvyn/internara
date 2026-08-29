@@ -1,7 +1,5 @@
 # Localization & Documentation — Both Languages, Both Doc Tiers
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Two non-functional deliverables are part of every feature: user-facing strings in both `lang/en/`
 and `lang/id/`, and module documentation updated alongside the code. These are not post-build
 cleanup — they are acceptance criteria of the feature itself.
@@ -63,13 +61,13 @@ starts with Docs) makes the doc an artifact of the change instead of a reconstru
 
 **How to apply:** At build order step 1, draft the doc changes the feature implies (new Actions in
 the reference Actions table, new schema in the reference, new business rules in the conceptual doc).
-Finish them before commit and keep the metadata `> **Last updated:**` + `**Changes:**` line fresh.
+Finish them before commit with a descriptive commit message.
 After the build, hand off to `sync-docs` to confirm alignment.
 
 **Pitfalls to avoid:**
 
 - Shipping code and deferring docs "to a follow-up issue" — follow-ups on docs are how drift starts.
-- Updating docs without touching their `**Last updated:**` metadata — the doc-link scanner flags
+- Updating docs without a descriptive commit — history becomes unclear
   stale docs.
 - Duplicating content across `{module}.md` and `{module}-reference.md` instead of cross-referencing
   (Dedup-Align Doctrine).

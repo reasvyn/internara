@@ -1,7 +1,5 @@
 # Cross-Cutting Conventions — Uploads, Localization & Pitfalls
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Three conventions span every feature and every layer: file uploads go through Spatie MediaLibrary
 only, user-facing strings are bilingual via `__()`, and certain stock-Laravel habits are forbidden.
 They are cheap to follow and expensive to retrofit — enforce them at code-review time.

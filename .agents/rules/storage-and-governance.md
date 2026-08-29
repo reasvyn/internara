@@ -1,7 +1,5 @@
 # Media Storage & Governance — Disks, Queues, and Verification Gate
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 MediaLibrary runs on infrastructure choices that only bite at scale: which disk stores files, which
 queue processes conversions, and what the verification gate checks before a media feature ships.
 These choices are codified in `config/media-library.php` and re-checked per deployment tier.

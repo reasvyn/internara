@@ -9,8 +9,6 @@ downstream:
 
 # TallStackUI Development — Component Library
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for tallstackui/tallstackui (extracted from ui-development/tailwindcss-development)
-
 > **Prerequisite:** Load `context-awareness` and `ui-development` for general UI context.
 
 ## When to Activate

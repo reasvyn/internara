@@ -1,9 +1,6 @@
 # Assessment — Rubric Management, Competency Grading & Auto-Calculation
 
 > **Spec ID:** ARDA6
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> scoring, multi-evaluator grading, auto-calculation from cross-module data, weighted finalization,
-> and student assessment view
 
 ## Description
 

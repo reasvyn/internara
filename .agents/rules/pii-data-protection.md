@@ -1,7 +1,5 @@
 # PII & Data Protection — Privacy and GDPR Deletion
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Personally identifiable information (PII) — names, identifiers, contact data, academic records — is

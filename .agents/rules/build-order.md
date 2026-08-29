@@ -1,7 +1,5 @@
 # Build Order — Canonical Implementation Sequence
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Feature-building implements in a fixed, dependency-respecting order: **Docs → Migration → Model →
 Enum → Entity → DTO → Action → Event/Listener → Policy → Livewire → Blade → Route → Tests →
 Translations.** This ordering is the single source of truth for the implementation sequence, used by

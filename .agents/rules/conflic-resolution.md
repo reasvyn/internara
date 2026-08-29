@@ -1,7 +1,5 @@
 # Conflic Resolution — Precedence Hierarchy
 
-> **Last updated:** 2026-08-27 **Changes:** feat — establish absolute precedence: arch patterns > spec > code (per user directive 2026-08-27)
-
 ## Description
 
 Defines the absolute precedence when governing sources disagree. This rule is the tie-breaker for spec-first vs arch-pattern conflicts.
@@ -27,7 +25,7 @@ Defines the absolute precedence when governing sources disagree. This rule is th
 ## Operational Rules
 
 - **Load arch pattern before spec change** that touches an arch concern (Entity purity C5, Livewire C1, Action triad, DTO C7, cache C4, etc.): read `docs/guides/arch/*-pattern.md` §Non-Negotiable first.
-- **Spec violates arch?** Amend spec *immediately* with a recorded decision (in `> **Last updated:**` + `**Changes:**`), cite the arch pattern as higher authority, then align code/tests. Do not implement violating code.
+- **Spec violates arch?** Amend spec *immediately* with a recorded decision (commit with `type(scope): desc` citing the arch pattern as higher authority), then align code/tests. Do not implement violating code.
 - **Code violates arch/spec?** Fix code. Never amend arch pattern to accommodate code.
 - **Tests:** Must trace to spec FR/NFR, but spec itself must already be arch-compliant. No orphan tests that would require arch violation.
 

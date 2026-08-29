@@ -1,8 +1,6 @@
 # Daily Activity — Logbook, Attendance & Absence Requests
 
 > **Spec ID:** 1KSWL
-> **Last updated:** 2026-08-19 **Changes:** add FR-AT10 — AttendanceManager read scoping (issue #342 rebuild)
-> logbook with one-per-day enforcement, attendance clock-in/out with GPS, absence request workflow
 
 ## Description
 

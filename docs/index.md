@@ -1,7 +1,5 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-08-25 **Changes:** feat — refs/deps and adr gained index/template docs; every docs subdir now has its own index.md
-
 Complete catalog of all documentation files, organized by topic and audience.
 
 ---

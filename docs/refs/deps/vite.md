@@ -1,7 +1,5 @@
 # Vite — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for vite ^8.1 + laravel-vite-plugin ^3.1
-
 ## Description
 
 Conceptual reference for the frontend build pipeline: **Vite 8** (`vite ^8.1`) with the

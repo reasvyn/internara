@@ -1,7 +1,5 @@
 # Deploy Topology & Caveats — Operations Context
 
-> **Last updated:** 2026-08-25 **Changes:** v0.15.3 — compose now passes APP_LOCALE/FAKER/TIMEZONE (env-wiring caveat added)
-
 ## Description
 
 How the app gets from a Git push to a live site, and the operational traps to avoid when working on

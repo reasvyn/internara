@@ -1,8 +1,6 @@
 # Announcement System — Targeted Multi-Role Communication
 
 > **Spec ID:** 3S55V
-> **Last updated:** 2026-08-18 **Changes:** review — resolve ownership-scope vs broadcast-tension
-> (DD-6); cross-reference internara-project §6.1 SysAdmin (role-targeted delivery)
 
 ## Description
 

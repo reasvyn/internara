@@ -1,7 +1,5 @@
 # Documentation Split — Human vs AI Engineering
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Documentation is split by audience and the split is directional: human-engineering docs live in

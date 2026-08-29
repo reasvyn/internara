@@ -1,7 +1,5 @@
 # GitHub Issues Output — Findings to Tracked Issues
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Phase 6 turns the audit into tracked work. Every finding becomes a structured GitHub Issue

@@ -1,7 +1,5 @@
 # Edit Policy — Surgical Edits Only
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Guardrail against silent information loss: read before editing, edit minimally, and prove

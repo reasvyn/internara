@@ -14,8 +14,6 @@ downstream:
 
 # Data Architect — Schema, Flow, Security & Contracts
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — unified data architecture skill for schema / flow / security / contract / interface / struct / type / DTO / mapping / formatting
-
 > **Prerequisite:** Load `agent-workflow` (mandatory first) and `context-awareness` (orientation). This skill assumes spec-first doctrine and module-first Action architecture.
 
 ## When to Activate
@@ -59,7 +57,7 @@ Follow `agent-workflow` canonical pipeline. This skill adds data-specific design
 
 ### 5. Summarize — Record Decisions
 
-- Update `> **Last updated:**` in touched docs, add ADR entry if schema/flow/security tradeoff is cross-module, and note mapping/formatting decisions in module reference docs.
+- Add ADR entry if schema/flow/security tradeoff is cross-module, and note mapping/formatting decisions in module reference docs; history via `git log --follow -- <file>` and commit messages.
 
 ## Skill Rules
 

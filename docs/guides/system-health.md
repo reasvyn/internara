@@ -1,7 +1,5 @@
 # System Health, Troubleshooting & Diagnostics
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify system health commands match current implementation (system:health, cache warming, cleanup, pulse snapshots)
-
 ## Description
 
 Developer reference for system health verification, routine maintenance, diagnostic commands, and

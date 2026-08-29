@@ -7,9 +7,6 @@ downstream:
 
 # Security Audit
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline audit categories & rules into
-> `rules/` rule assets with a `## Skill Rules` mapping section
-
 > **Prerequisite:** Load `context-awareness` for project orientation. Running `arch-guard` first
 > provides the baseline code quality audit.
 

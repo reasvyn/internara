@@ -1,7 +1,5 @@
 # Documentation-First (SSOT) — Docs Win Over Code
 
-> **Last updated:** 2026-08-25 **Changes:** git-history window clarified as minimum 14 days — extend longer when drift suspected
-
 ## Intent
 
 Documentation is the **single source of truth (SSOT)** for intent and behavior. When a doc and the
@@ -31,7 +29,7 @@ undocumented intent.
 - **When docs and code disagree:** if the code reflects an intentional behavior change, update the
   doc to match and record the decision. If the change was unintentional, fix the code to match the
   doc. Never silently pick the code as "truth" because it runs.
-- **Update metadata** on every touched doc: `> **Last updated:** YYYY-MM-DD **Changes:** ...`
+- **History via git:** write a descriptive commit message (`type(scope): desc`); history lives in `git log --follow -- <file>`
   (see `rules/metadata-structure.md`).
 
 ## Edit, Don't Rewrite — The Companion Discipline
@@ -58,7 +56,6 @@ lost, then proceed. But ask yourself — can this be done with 2-3 targeted edit
 # (risk: silently losing an edge-case note or a cross-reference)
 
 # GOOD — targeted edit of just the changed section
-> **Last updated:** 2026-08-17 **Changes:** fix — corrected enrollment deadline rule
 ```
 
 Before/after every doc edit, run `git diff` on that file to prove only the intended lines changed
@@ -79,7 +76,7 @@ Before/after every doc edit, run `git diff` on that file to prove only the inten
 ## Verification / Detection
 
 - `git diff` on touched doc files — only intended lines changed, nothing dropped.
-- `python3 tools/scan_doc_links.py` — flags files whose `Last updated` metadata is missing or
+- `python3 tools/scan_doc_links.py` — validates links; history via git
   stale, a first-order signal of docs not updated alongside code.
 - `git log --since="14 days ago" --stat` (minimum window; extend to full log if needed) — cross-check code commits against doc commits; a code
   commit with no doc commit is a candidate SSOT violation.

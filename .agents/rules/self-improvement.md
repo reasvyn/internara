@@ -1,7 +1,5 @@
 # Self-Improvement (Continuous Learning) — Project Rules
 
-> **Last updated:** 2026-08-29 **Changes:** project-specific Learning Loop for Internara — capture targets, promotion gates, and integration with existing context/ memory
-
 Inherits the global Learning Loop (`~/.agents/rules/self-improvement.md`): **CAPTURE → CONSOLIDATE →
 APPLY**. This file adds Internara-specific capture targets and promotion gates. Severity: `mandatory`,
 enforcement: `self-check`.
@@ -25,7 +23,7 @@ enforcement: `self-check`.
   `coding-rules.md`, `testing-rules.md`) or add a step to the matching skill.
 - **Durable cross-cutting decision** → write an ADR in `docs/adr/` and link from `context/index.md`.
 - **One-off / rare** → keep in `context/` (never over-promote to a mandatory rule).
-- **Stale fact** → update the `context/` file in place and bump `**Changes:**` (do not create a second file).
+- **Stale fact** → update the `context/` file in place and write a descriptive commit message (do not create a second file).
 
 ## Apply (session start)
 

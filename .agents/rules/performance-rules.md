@@ -1,7 +1,5 @@
 # Performance Rule Checks — P1-P5 Query & Data Anti-Patterns
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Performance rules (P1-P5) catch the query and data-shape anti-patterns that make a self-hosted PKL
 platform crawl under real workloads. They are the lowest priority in the rule reference hierarchy but
 the most frequently cited by reviewers inspecting Blade loops and Read Actions.

@@ -1,7 +1,5 @@
 # Eloquent Observers for Model-Level Side Effects
 
-> **Last updated:** 2026-08-25 **Changes:** rewrite to MADR-lite industry-standard format
-
 | Field | Value |
 |-------|-------|
 | Status | Accepted |

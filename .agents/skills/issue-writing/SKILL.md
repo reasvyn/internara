@@ -9,8 +9,6 @@ downstream:
 
 # Issue Writing
 
-> **Last updated:** 2026-08-25 **Changes:** sinkronkan template Scope & Impact dengan label wajib severity (critical/high/medium/low) & priority (P0-P3); tambah aturan label wajib & label dasar di .agents/rules/issue-types-and-labels.md
-
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

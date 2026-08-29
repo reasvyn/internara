@@ -1,7 +1,5 @@
 # Data Security & Privacy
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — security & privacy for data-architect
-
 ## Intent
 
 PII and sensitive fields are identified at design time, encrypted or masked at rest/in-transit, and never leak via logs, exports, or Blade. Security is a schema concern as much as an auth concern.

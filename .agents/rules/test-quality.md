@@ -1,7 +1,5 @@
 # Test Quality — Structure, Database & Noise Control
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 This rule governs the *shape* of a healthy test suite: where tests live, how they touch the

@@ -1,7 +1,5 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-19 **Changes:** docs→.agents skill path references replaced with named-skill mentions per documentation-split rule
-
 ## Description
 
 Comprehensive feature specifications for the Internara system. Each spec defines problem

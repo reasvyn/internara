@@ -1,7 +1,5 @@
 # Infrastructure — System Architecture Overview
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify tiered deployment architecture (Tier 1-4), Docker compose, VPS topology against current docker-compose.yml and deployment docs
-
 ## Description
 
 This document describes the infrastructure design for Internara — what the system looks like at each

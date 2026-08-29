@@ -1,10 +1,5 @@
 # Setup — Technical Reference
 
-> **Last updated:** 2026-08-18 **Changes:** add SeedDummyDataAction to Actions; sync — verify
-> reference doc against current code structure (Actions, Entities, DTOs, Events, Listeners, Livewire
-> Components, Forms, Middleware, HTTP Controllers, Support Services, Console Commands, Routes,
-> Views, Tests, Factories, Migrations)
-
 ## Description
 
 Detailed structural and implementation reference for the **Setup** module.

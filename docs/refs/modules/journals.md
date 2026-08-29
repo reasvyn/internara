@@ -1,7 +1,5 @@
 # Journals — Logbooks, Attendance, Absence & Monitoring Visits
 
-> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
-
 ## Description
 
 Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, and

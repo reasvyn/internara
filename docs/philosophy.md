@@ -1,7 +1,5 @@
 # Project Philosophy — Guiding Principles, Values & Vision
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify guiding principles (3S Doctrine, module-first, spec-first) align with current AGENTS.md and architecture
-
 ## Description
 
 Guiding principles, values, and vision that shape Internara — beyond architecture, beyond code.

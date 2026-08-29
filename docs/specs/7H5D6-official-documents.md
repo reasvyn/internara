@@ -1,8 +1,6 @@
 # Official Documents — School-Parent-Student-Industry Correspondence
 
 > **Spec ID:** 7H5D6
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> Indonesian SMK PKL bureaucratic document types, variable contracts, generation workflows
 
 ## Description
 

@@ -1,7 +1,5 @@
 # Program — Internship Lifecycle, Groups & Phases
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (JSON-Inlined Configuration, Grading Weights, Program State Machine, Closure Readiness, Integration Patterns, Submodules: Internship & InternshipGroup)
-
 ## Description
 
 Internship program definition, timeline phases, grading weight configuration, cohort group
@@ -102,5 +100,4 @@ The readiness check returns a detailed report of blocking items with actionable 
 - Assessment (grading context)
 - Reports (grade compilation)
 - Journals (monitoring visits scope)
-
 

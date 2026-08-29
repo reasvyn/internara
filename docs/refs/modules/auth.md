@@ -1,7 +1,5 @@
 # Auth — Authentication, RBAC & Account Recovery
 
-> **Last updated:** 2026-08-16 **Changes:** sync — super admin default name is `Super Admin`
-
 ## Description
 
 Authentication, authorization (RBAC), account lifecycle, login throttling, password management,

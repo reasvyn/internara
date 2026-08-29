@@ -9,8 +9,6 @@ downstream:
 
 # Pulse Development
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Configuration, §Authorization, §Recorders, §Adding Custom Cards, §Verification Checklist) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
-
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate

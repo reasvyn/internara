@@ -1,7 +1,5 @@
 # Automation-First — Scripts & Batch Patterns
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 Turn mechanical effort into scripts before doing manual repetitive work — check existing devtools

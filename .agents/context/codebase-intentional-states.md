@@ -1,7 +1,5 @@
 # Codebase Intentional States — Architecture Context
 
-> **Last updated:** 2026-08-16 **Changes:** initial — moved from `docs/known-issues.md`
-
 ## Description
 
 Deliberate or deferred states in the codebase that look like defects but are **intentional or

@@ -1,7 +1,5 @@
 # Schema & Migrations
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — schema / migrations for data-architect
-
 ## Intent
 
 Every persistent data shape is declared as a versioned, reversible migration with explicit foreign-key behavior and indexes. Schema is the contract between code and storage; it must be precise, auditable, and free of implicit defaults.

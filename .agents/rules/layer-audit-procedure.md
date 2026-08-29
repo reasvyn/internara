@@ -1,7 +1,5 @@
 # Layer Audit Procedure — Four-Layer Checks & Severity
 
-> **Last updated:** 2026-08-25 **Changes:** sync — toast rule maryUI/flasher → TallstackUI x-ts-toast (FB792 0.15.0)
-
 Beyond the invariant/enum/security tables, the arch-guard audit walks the codebase **layer by layer**,
 bottom-up (Layer 4 presentation → Layer 1 infrastructure). Each layer has its own check items that
 matter beyond the class-contract and naming tables. This rule defines the audit procedure, the

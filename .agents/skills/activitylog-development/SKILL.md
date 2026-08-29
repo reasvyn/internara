@@ -9,8 +9,6 @@ downstream:
 
 # ActivityLog Development — Audit Trail
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for spatie/laravel-activitylog
-
 ## When to Activate
 
 Use this skill when logging activity, configuring SmartLogger dual-channel, tracking causer, or querying audit logs.

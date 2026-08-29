@@ -1,8 +1,6 @@
 # Password Reset — Forgot/Reset Flow
 
 > **Spec ID:** D9TKW
-> **Last updated:** 2026-08-16 **Changes:** sync — verify spec requirements (FR, NFR, UC) against current implementation and codebase
-> forgot password link, reset via token, throttling
 
 ## Description
 

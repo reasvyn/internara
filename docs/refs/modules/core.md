@@ -1,7 +1,5 @@
 # Core — Base Classes, Contracts & Exceptions
 
-> **Last updated:** 2026-08-16 **Changes:** middleware renamed to `SecurityHeadersMiddleware`/`LogContextMiddleware`
-
 ## Description
 
 Foundational infrastructure, abstract base classes, contracts, cross-module utilities, concrete

@@ -1,7 +1,5 @@
 # UI Pattern — Elegant, Modern & Responsive Interfaces
 
-> **Last updated:** 2026-08-27 **Changes:** feat — initial UI pattern synthesizing global industry standards (Material 3, Apple HIG, WCAG 2.2, Tailwind v4, W3C Design Tokens) with Internara stack (Tailwind v4.3, TallStackUI v4.3, Vite 8.1, Livewire 4.3)
-
 ## Description
 
 This pattern governs how Internara builds **elegant, modern, and responsive** user interfaces. It distills global industry standards — Google Material Design 3, Apple Human Interface Guidelines (HIG), W3C Design Tokens Community Group (DTCG), WCAG 2.2, MDN Responsive Design, and Tailwind CSS v4 doctrine — into actionable rules tied to the project's actual stack: Tailwind CSS v4.3 (CSS-first, no `tailwind.config.js`), TallStackUI v4.3 (`x-ts-*`, prefix `ts-`), Vite 8.1 + `laravel-vite-plugin`, Livewire 4.3, Alpine.js, and self-hosted Instrument Sans.

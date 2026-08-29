@@ -1,7 +1,5 @@
 # ActionResponse Factory Methods
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive ActionResponse usage rule
-
 Structured action results are created with the `ActionResponse` factory methods, never with
 ad-hoc `new ActionResponse(...)`.
 

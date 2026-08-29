@@ -1,7 +1,5 @@
 # Tailwind Utilities & Palette — Tailwind CSS v4 + Self-Hosted Theme
 
-> **Last updated:** 2026-08-25 **Changes:** narrowed to Tailwind-only — extracted general UI rules (Blade, view structure, layout, a11y, i18n) to ui-development
-
 Tailwind CSS v4 is the utility foundation. General UI concerns (Blade presentation, view structure, layout, component library, accessibility, localization) now live in `ui-development`.
 
 ---

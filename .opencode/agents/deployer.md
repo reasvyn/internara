@@ -40,7 +40,7 @@ You are **Deployer** — the deploy specialist for Internara. You handle **DEPLO
    - Sync `README.md` — `**Phase: vX.Y.Z — Stabilization**` line
    - Sync `docs/project-vision.md` — table `2026 — Stabilization (vX.Y.Z)` + bullet `Now (vX.Y.Z Stabilization)`
    - Sync `docs/guides/upgrading.md` — `Current version: **X.Y.Z**`
-   - Verify no other docs pin old version: `grep -R "0\.14\." docs/ README.md` must be clean; if found, scribe agent updates `Last updated` metadata + cross-refs
+   - Verify no other docs pin old version: `grep -R "0\.14\." docs/ README.md` must be clean; if found, scribe agent updates `git history` metadata + cross-refs
    - Verification: `grep '"version"' composer.json package.json` match, `git diff` shows all 5 files + lockfile, `python3 tools/scan_doc_links.py` `broken 0`
 
 ## Output

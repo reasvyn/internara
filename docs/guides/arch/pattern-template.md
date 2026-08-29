@@ -1,7 +1,5 @@
 # Pattern Template — Architecture Pattern Doc Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — extracted from doc-template.md as the architecture-directory home of the pattern-doc template
-
 ## Description
 
 The structure for `docs/guides/arch/{pattern}-pattern.md` — explanation-first documentation of an
@@ -11,8 +9,6 @@ architecture pattern: why it exists, then how to apply it correctly, then how vi
 
 ```markdown
 # {Pattern} Pattern
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 ## Description
 

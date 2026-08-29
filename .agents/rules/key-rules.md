@@ -1,7 +1,5 @@
 # Agent Workflow — Key Rules
 
-> **Last updated:** 2026-08-17 **Changes:** rewritten comprehensively — per-rule intent, rationale, application, and verification
-
 These rules govern every instruction, in every form, before any task-specific skill loads. They are
 non-negotiable. A violation of any rule below is a workflow violation regardless of the outer task's
 success.
@@ -77,7 +75,7 @@ demonstrably wrong, amend the spec with a recorded decision first.
 **Pitfalls to avoid:**
 - Proceeding on a bug/feature with no requirement ID "because the fix is obvious".
 - Treating existing code as authority when the spec says otherwise.
-- Editing the spec without recording the decision (ADR or metadata `**Changes:**` line).
+- Editing the spec without recording the decision (ADR or commit message).
 
 **Verification:** The goal/task trace to at least one `FR-*`/`NFR-*`/`UC-*` ID; every touched test
 asserts a spec requirement (no orphan tests, no spec gaps).

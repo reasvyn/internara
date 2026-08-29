@@ -1,7 +1,5 @@
 # Dependency Pins & Tooling Quirks — Environment Context
 
-> **Last updated:** 2026-08-16 **Changes:** initial — moved from `docs/known-issues.md`
-
 ## Description
 
 Known environmental constraints affecting dependency resolution and tooling on the developer's

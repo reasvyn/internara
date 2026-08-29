@@ -1,7 +1,5 @@
 # Issue Types & Labels — Classification and Triage
 
-> **Last updated:** 2026-08-25 **Changes:** tambah aturan pelabelan lengkap — label wajib & label dasar; sinkronkan severity (critical/high/medium/low) dan priority (P0/P1/P2/P3) dengan label GitHub; perbarui tabel label repo (47 labels)
-
 Every issue is classified by type before it is written. The type drives the template sections it
 will include (bugs get Reproduction; features get Acceptance Criteria), the label it carries, and
 its severity/priority framing. Misclassification is not cosmetic — it misroutes the issue into the

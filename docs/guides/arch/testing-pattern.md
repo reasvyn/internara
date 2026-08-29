@@ -1,7 +1,5 @@
 # Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (TDD, Testing Pyramid, AAA, FIRST, Four Phase Test) with anti-pattern table, Quick References
-
 ## Description
 
 > **how to approach** each layer — not exact implementation.

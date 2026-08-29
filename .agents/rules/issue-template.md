@@ -1,7 +1,5 @@
 # Issue Template — Section-by-Section Guidance
 
-> **Last updated:** 2026-08-25 **Changes:** sinkronkan Scope & Impact dengan label wajib P0-P3 & severity critical/high/medium/low
-
 Every issue follows the unified template. This asset explains what each section is FOR — why it
 exists, what a weak version looks like, and how to fill it so the issue is actionable. The template
 structure itself lives in the SKILL.md; this file is the usage manual for that structure.

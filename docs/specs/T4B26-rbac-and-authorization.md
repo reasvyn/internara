@@ -1,7 +1,6 @@
 # RBAC & Authorization — Role-Based Access Control
 
 > **Spec ID:** T4B26
-> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
 
 ## Description
 

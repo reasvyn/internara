@@ -1,7 +1,6 @@
 # Setup Wizard — Feature Specification
 
 > **Spec ID:** VEJCX
-> **Last updated:** 2026-08-16 **Changes:** align — super admin default name is `Super Admin`; recovery key setting name corrected to `setup.install_recovery_key` (see [installation.md](8NZAU-installation.md) §6.1)
 
 ## Description
 

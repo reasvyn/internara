@@ -9,8 +9,6 @@ downstream:
 
 # Permission Development — Spatie RBAC
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — 1:1 mapping for spatie/laravel-permission
-
 ## When to Activate
 
 Use this skill when defining roles/permissions, seeding RBAC, checking roles in code/Blade, or integrating with policies. Covers `spatie/laravel-permission` only — use `activitylog-development` for audit trails.

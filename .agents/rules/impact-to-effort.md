@@ -1,7 +1,5 @@
 # Impact-to-Effort — Universal Work Ordering
 
-> **Last updated:** 2026-08-25 **Changes:** initial — promoted from inline guidance into a global rule covering all prioritization, not only batched instructions
-
 ## Description
 
 All work — batched instructions, backlog picks, multi-stage plans, issue triage — is **ordered

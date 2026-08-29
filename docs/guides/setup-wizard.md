@@ -1,7 +1,5 @@
 # Setup Wizard — Browser-Based Initial Configuration
 
-> **Last updated:** 2026-08-16 **Changes:** sync — superadmin default name `Super Admin` (was `Administrator`)
-
 ## Description
 
 One-time browser-based wizard that provisions the super admin account, school profile, initial

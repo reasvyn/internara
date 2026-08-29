@@ -1,7 +1,5 @@
 # Pre-existing Defects — Fix or File
 
-> **Last updated:** 2026-08-25 **Changes:** extracted from AGENTS.md into .agents/rules/ (AGENTS.md becomes navigation hub)
-
 ## Description
 
 The agent must not leave pre-existing warnings and errors untouched: fix them, file them as a

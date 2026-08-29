@@ -1,7 +1,5 @@
 # UI — Presentation & Design System
 
-> **Last updated:** 2026-08-27 **Changes:** feat — extract Core UI to standalone UI module (Navbar, Sidebar, Header, Footer, LangSwitch, ThemeSwitch)
-
 ## Description
 
 Presentation-only module that owns the visual shell and reusable design-system components. Extracted from Core to enforce the 4-layer rule (Core has zero business dependencies, UI depends only on Core contracts and Tailwind tokens). All Blade layouts and UI primitives live here and are consumed via `x-ui::` anonymous component namespace.

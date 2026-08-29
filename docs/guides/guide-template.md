@@ -1,7 +1,5 @@
 # Guide Template — Operational How-To Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** feat — extracted from doc-template.md as the foundation-directory home of the operational-guide template
-
 ## Description
 
 The structure for how-to guides under `docs/guides/` (and ops guides in
@@ -12,8 +10,6 @@ knowledge goes in Prerequisites, not in the body.
 
 ```markdown
 # {Operation}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 ## Description
 

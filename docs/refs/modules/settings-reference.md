@@ -1,7 +1,5 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-08-25 **Changes:** sync — ThemeSwitcher Livewire component deleted (replaced by `<x-ts-theme-switch>`, 52O1I DD-6)
-
 ## Description
 
 Detailed structural and implementation reference for the **Settings** module.

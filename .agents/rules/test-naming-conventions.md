@@ -1,7 +1,5 @@
 # Test Naming Conventions — Spec-Traceable Descriptions
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Test descriptions are the visible contract between the suite and the spec. Every `test()` is named

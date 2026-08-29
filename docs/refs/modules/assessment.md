@@ -1,7 +1,5 @@
 # Assessment — Rubrics, Evaluation & Grading
 
-> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
-
 ## Description
 
 Rubric-based competency evaluation: rubric templates with structured criteria stored as JSON, and

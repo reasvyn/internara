@@ -1,7 +1,5 @@
 # Architecture Decision Records
 
-> **Last updated:** 2026-08-16 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
-
 Index of all Architecture Decision Records (ADRs) documenting key architectural decisions behind
 Internara.
 

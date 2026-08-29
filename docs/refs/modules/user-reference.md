@@ -1,7 +1,5 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-08-24 **Changes:** sync — add `DispatchArchiveStudentAccountsAction` + `ArchiveStudentAccountsJob` (E1MSJ #400, Ba7c30); verify Actions/Jobs vs code
-
 ## Description
 
 Detailed structural and implementation reference for the **User** module.

@@ -1,7 +1,5 @@
 # View Structure & Routing — Blade Placement and Route Conventions
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Views and routes follow a deterministic layout so any agent can find "the blade for that screen" and
 "the route that serves it" without archaeology. Blade views mirror the module structure; routes
 follow a per-module file split with flexible naming.

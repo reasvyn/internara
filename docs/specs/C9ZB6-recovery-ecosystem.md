@@ -1,7 +1,6 @@
 # Recovery Ecosystem — Super Admin Emergency Access
 
 > **Spec ID:** C9ZB6
-> **Last updated:** 2026-08-16 **Changes:** align — recovery key setting name corrected from `setup.recovery_key` to `setup.install_recovery_key` (matches implementation; see [installation.md](8NZAU-installation.md) §6.1)
 
 ## Description
 

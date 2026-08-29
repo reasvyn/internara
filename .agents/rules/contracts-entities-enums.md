@@ -1,7 +1,5 @@
 # Contracts — Interfaces, Structs, Types & Enums
 
-> **Last updated:** 2026-08-25 **Changes:** new skill — contracts / entities / enums for data-architect
-
 ## Intent
 
 Data shapes have a single, typed owner. Interfaces define behavior, structs/types define shape, enums define vocabulary, and Entities own invariants. Contracts are written before code and survive refactors.

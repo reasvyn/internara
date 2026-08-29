@@ -1,7 +1,5 @@
 # laravel-lang/lang — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for laravel-lang/lang 15.34.0
-
 ## Description
 
 Conceptual reference for **laravel-lang/lang 15** (`laravel-lang/lang ^15.26`) — the community

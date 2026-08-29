@@ -1,7 +1,6 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
 > **Spec ID:** C8F0D
-> **Last updated:** 2026-08-25 **Changes:** sync — G4 DaisyUI shade → self-hosted palette shade (TallstackUI-only)
 
 ## Description
 

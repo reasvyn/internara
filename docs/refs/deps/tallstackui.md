@@ -1,7 +1,5 @@
 # TallStackUI — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** skill path reference reduced to named-skill mention per documentation-split rule
-
 ## Description
 
 Conceptual reference for **TallStackUI 4** (`tallstackui/tallstackui v4.1.0`) — the component

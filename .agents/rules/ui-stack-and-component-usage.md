@@ -1,7 +1,5 @@
 # UI Stack & Component Usage — Layer Roles and TallstackUI Primacy
 
-> **Last updated:** 2026-08-25 **Changes:** sync — DaisyUI/maryUI/PHPFlasher → TallstackUI v4 + self-hosted palette (FB792 0.15.0), x-ts-* as sole component API
-
 The frontend is built from a three-layer stack (Tailwind CSS v4 + TallstackUI v4 + self-hosted
 semantic palette + Alpine.js), and components come from TallstackUI by default. Choosing the right
 layer for a job — and reusing the framework's components instead of hand-rolling HTML/CSS — is what

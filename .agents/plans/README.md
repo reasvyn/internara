@@ -1,7 +1,5 @@
 # Plans — L-Size Session Splitting
 
-> **Last updated:** 2026-08-21 **Changes:** initial — template for L-size (multi-session) execution per agent-workflow Size Triage
-
 ## Description
 
 `L` = >10 files, multi-module, or cross-cutting. **MUST split into multiple sessions** per `AGENTS.md#Size Triage` + `workflow-5step.md`. This directory holds the per-session plan files that survive between sessions so no context is lost.

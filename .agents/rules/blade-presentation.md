@@ -1,7 +1,5 @@
 # Blade Presentation — No Business or UI Logic in Blade
 
-> **Last updated:** 2026-08-25 **Changes:** add Blade presentation rule — no business/UI logic in .blade.php
-
 Blade files are pure presentation. No business logic or UI computation of any size may live in `.blade.php`. All derived state must be computed in the Livewire component (public properties or `#[Computed]`) or in Alpine.js (`x-data`) for lightweight client-side interactivity.
 
 ---

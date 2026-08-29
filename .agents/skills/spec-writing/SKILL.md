@@ -17,8 +17,6 @@ downstream:
 
 # Spec Writing
 
-> **Last updated:** 2026-08-18 **Changes:** slimmed to index form — comprehensive rules (11-section
-> template, requirement IDs, scoping, section content, data contracts, indexing & lifecycle) now
 > live in `.agents/rules/` and are mapped by the `## Skill Rules` table
 
 > **Prerequisite:** Load `context-awareness` for project orientation and `doc-writing` for

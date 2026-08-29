@@ -1,7 +1,5 @@
 # Spec Template — The 11-Section Structure
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every spec document in `docs/specs/` follows the same 11-section template. The template is the
 contract that makes specs comparable, machine-scannable (`spec-audit` checks sections by number), and
 implementation-ready. A spec missing a section — or with a section in the wrong order — fails the
@@ -25,8 +23,6 @@ spec-audit completeness gate and leaves implementers guessing.
 
 ```markdown
 # Feature Name — Subtitle/Scope
-
-> **Last updated:** YYYY-MM-DD **Changes:** description
 
 ## Description
 
@@ -170,7 +166,7 @@ keys that connect to the next spec.}
 
 A spec is complete when:
 
-- All 11 sections are present and populated (metadata `Last updated`/`Changes` + 1-9 + Quick References)
+- All sections are present and populated (1-9 + Quick References)
 - Every FR/NFR/DD has a unique ID; §9 has Prerequisites (with specific artifacts), Build Guide
   (1-2 sentences), and Next Steps
 - All cross-references resolve to existing files

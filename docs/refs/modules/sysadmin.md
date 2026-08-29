@@ -1,7 +1,5 @@
 # SysAdmin — User Management, Announcements & Audit
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify conceptual doc matches current business rules (Super Admin Integrity, GDPR Compliance, Audit Trail, Submodules: Account, Announcement, Observability)
-
 ## Description
 
 User account administration, system-wide announcements, observability and health monitoring, audit

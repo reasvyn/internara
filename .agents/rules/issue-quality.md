@@ -1,7 +1,5 @@
 # Issue Quality — Completeness & Actionability
 
-> **Last updated:** 2026-08-25 **Changes:** perketat aturan label — wajib 3 label (Type+Severity P0-P3); sinkron dengan registry baru
-
 A GitHub Issue is only worth filing if a developer or an AI agent can start working from it without
 asking a single follow-up question. Every rule below exists because an issue that fails it stalls the
 worker — a follow-up question round-trip is the most expensive thing an issue can cause. Quality is

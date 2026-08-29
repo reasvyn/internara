@@ -1,7 +1,5 @@
 # barryvdh/laravel-dompdf — Dependency Reference
 
-> **Last updated:** 2026-08-25 **Changes:** feat — initial dependency reference for barryvdh/laravel-dompdf v3.1.2 (dompdf/dompdf v3.1.6)
-
 ## Description
 
 Conceptual reference for the PDF generation stack: **barryvdh/laravel-dompdf v3.1.2**, the Laravel

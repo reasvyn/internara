@@ -1,7 +1,5 @@
 # Events, Listeners & Notifications — Domain Events, EDA & Observer Pattern
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Domain Events DDD, Observer GoF, EDA, Event Sourcing distinction) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara dispatches **domain events**, registers **listeners**, sends **notifications**, and integrates with **SmartLogger**. It synthesizes global industry standards — **Domain Events** (Eric Evans, DDD), **Observer Pattern** (Gang of Four), **Event-Driven Architecture** (Martin Fowler), **Event-Carried State Transfer** — into enforceable rules tied to Internara's stack: `BaseEvent`, `EventServiceProvider` (config-driven), `ShouldQueue`, `CustomDatabaseChannel`, and SmartLogger dual-channel logging.

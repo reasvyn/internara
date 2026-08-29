@@ -1,7 +1,5 @@
 # Spec Template — Feature Specification Skeleton
 
-> **Last updated:** 2026-08-25 **Changes:** docs→.agents skill path reference replaced with named-skill mention per documentation-split rule
-
 ## Description
 
 The fixed 11-section structure every spec in `docs/specs/` follows. Specs are the requirements
@@ -15,8 +13,6 @@ Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID
 
 ```markdown
 # {ID} — {Feature Name}
-
-> **Last updated:** YYYY-MM-DD **Changes:** {latest change}
 
 ## Description
 

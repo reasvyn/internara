@@ -1,7 +1,5 @@
 # UX Pattern — Theme, Accessibility, Localization, User Flow & Experience
 
-> **Last updated:** 2026-08-27 **Changes:** feat — initial UX pattern synthesizing global industry standards (WCAG 2.2, WAI-ARIA 1.2, Nielsen 10 Heuristics, ISO 9241-110/210, Material 3, Apple HIG, ICU/CLDR, W3C i18n) with Internara implementation (CSS-variable theming, TallStackUI a11y, dual-locale, guide pattern)
-
 ## Description
 
 This pattern governs how Internara delivers **theming, accessibility, localization, user flow, and overall user experience**. It synthesizes global industry standards — W3C WAI WCAG 2.2 Level AA + WAI-ARIA Authoring Practices (APG) 1.2, Nielsen Norman Group 10 Usability Heuristics, ISO 9241-110/210 (Human-centred design & dialogue principles), Material Design 3, Apple HIG, ICU/CLDR & W3C Internationalization (i18n) — into enforceable rules mapped to the project's stack: CSS-variable runtime theming (`Theme::cssVariables()`), TallStackUI a11y primitives, `SetLocaleMiddleware`, flat `lang/{en,id}/*.php` with `__()`, `wire:navigate` SPA, and the `*-guide.blade.php` help pattern.

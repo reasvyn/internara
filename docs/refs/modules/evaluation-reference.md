@@ -1,7 +1,5 @@
 # Evaluation — Technical Reference
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify reference doc against current code structure (Models, Enums, Routes, Views, Tests, Factories, Migrations; no Actions/Entities/Policies/Livewire yet)
-
 ## Description
 
 Detailed structural and implementation reference for the **Evaluation** module.

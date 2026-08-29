@@ -1,7 +1,5 @@
 # Cache Pattern — Key Management, TTL, Invalidation & Anti-Patterns
 
-> **Last updated:** 2026-08-27 **Changes:** rewrite — integrate global standards (Cache-Aside, PSR-16, Cache Stampede, Thundering Herd) with anti-pattern table, Quick References
-
 ## Description
 
 This pattern governs how Internara uses **caching** for performance optimization. It synthesizes global industry standards — **Cache-Aside Pattern** (most common web caching strategy), **PSR-16 SimpleCache** (PHP-FIG), **Cache Stampede / Thundering Herd** (concurrent recomputation), **Write-Through / Write-Behind** — into enforceable rules tied to Internara's stack: centralized key registry (`config/cache-keys.php`), event-driven invalidation, TTL categories, and `Cache::remember()` / `Cache::forget()`.

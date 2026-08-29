@@ -1,7 +1,5 @@
 # Doc Quality — Completeness & Accuracy Gate
 
-> **Last updated:** 2026-08-19 **Changes:** clarify `**Changes:**` metadata records only the latest revision, history lives in git
-
 ## Intent
 
 Before any doc change is committed, it must pass a single quality gate that verifies accuracy,
@@ -32,7 +30,7 @@ any area blocks the commit until fixed — there are no "acceptable" docs that s
 ### 1. Structural Completeness
 
 - H1 title uses `# Subject — Subtitle` format.
-- Metadata block present on line 3: `> **Last updated:** YYYY-MM-DD **Changes:** ...`.
+- No inline metadata block — history via `git log --follow -- <file>` and `git diff`.
 - `## Description` section present (1-3 sentence summary), first H2.
 - `## Quick References` footer section present (the standard footer).
 - `---` horizontal rules between major sections.
@@ -53,8 +51,8 @@ be both manual and index — which serves neither audience and rots in both dime
 
 ### 3. Metadata
 
-- `**Last updated:**` date is current (`YYYY-MM-DD` format, not `DD/MM/YYYY` or `MM-DD-YYYY`).
-- `**Changes:**` describes what changed in this revision — the latest change only. Past changes are
+- Git history (`git log --follow -- <file>`) is current; descriptive commit messages required.
+- Commit messages describe what changed — history lives in
   recorded in git history, never accumulated in the metadata line (no "Prior:" trails).
 
 Why: stale metadata is a lie told to every future reader. The date is how anyone (including the

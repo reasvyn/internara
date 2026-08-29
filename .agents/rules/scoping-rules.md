@@ -1,7 +1,5 @@
 # Scoping Rules — One Initiative, One Spec
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 A spec file must cover exactly **one initiative** — a cohesive, independently deliverable unit of work
 with a clear boundary. When a spec tries to cover two capabilities, its requirements, tests, and
 deployment decisions tangle: you can't ship half, you can't test one without the other, and the file

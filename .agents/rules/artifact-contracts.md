@@ -1,7 +1,5 @@
 # Artifact Contracts — Non-Negotiable Component Shapes
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 Every component type the build produces has a mandatory shape: Entity, Model, Enum, DTO, and Action
 each follow a fixed contract. These contracts are what make the codebase uniform, auditable, and
 architecture-conformant. A component that breaks its contract breaks the entire module's ability to

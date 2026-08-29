@@ -1,7 +1,5 @@
 # Spec Implementation Matrix — Priority-Ordered
 
-> **Last updated:** 2026-08-19 **Changes:** fix — ADR numeric reference corrected per de-numbering decision
-
 ## Description
 
 This matrix tracks implementation fulfillment, test coverage, and verification status, ordered by
@@ -74,7 +72,7 @@ reward for work done — priority reflects importance, not progress.
 
 | Value | Meaning | Rule |
 |-------|---------|------|
-| `YYYY-MM-DD` | Date of the last spec↔code audit or test run that informs this row | Update on **every** audit/test run that changes or confirms the row. If the date is older than the spec's `Last updated`, the row may be stale — re-verify. |
+| `YYYY-MM-DD` | Date of the last spec↔code audit or test run that informs this row | Update on **every** audit/test run that changes or confirms the row. If the date is older than the spec's git history (`git log --follow -- <file>`), the row may be stale — re-verify. |
 
 ---
 
@@ -150,7 +148,7 @@ reward for work done — priority reflects importance, not progress.
 | 🔵 Low | B114U | [Module Manager & Service](B114U-module-manager.md) | Core | 🟦 Verified | 🟩 Full | 2026-08-16 | Module registry, service resolution |
 
 > **How to update:** When implementation or test status changes, edit the table. Bump the
-> `> **Last updated:**` date at the top of this file. Keep status honest — `🟧 Spec-Gap` means a
+> `git log --follow -- <file>` tracks changes. Keep status honest — `🟧 Spec-Gap` means a
 > requirement has no test; `🟨 Partial` means some requirements covered; `🟪 Need Review` means an
 > unverified state that must resolve to a stable status.
 
@@ -159,7 +157,7 @@ reward for work done — priority reflects importance, not progress.
 ## Workflow
 
 ```
-spec audit / test run → evaluate per row → update Impl Status / Test Coverage / Last Verified / Notes → bump Last updated
+spec audit / test run → evaluate per row → update Impl Status / Test Coverage / Last Verified / Notes
 ```
 
 1. Verify the claim before changing a status — run the spec's suite, run the audit, or cite the

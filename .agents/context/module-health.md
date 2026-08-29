@@ -1,7 +1,5 @@
 # Module Health — Stabilization Phase v0.14.0
 
-> **Last updated:** 2026-08-21 **Changes:** initial — extracted from merged README (project-overview) + README Module Landscape; SSOT for 18-module health, tech debt priority, and fix order for AI agents
-
 ## Description
 
 Internara has **18 modules** in `app/` at **v0.14.0 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.

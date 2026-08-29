@@ -1,7 +1,5 @@
 # Setup — One-Time Install Wizard
 
-> **Last updated:** 2026-08-16 **Changes:** sync — add §Super Admin section (AGENTS.md reference), super admin name is `Super Admin`
-
 ## Description
 
 One-time system installation wizard, environment auditing, initial database provisioning (roles,

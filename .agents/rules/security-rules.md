@@ -1,7 +1,5 @@
 # Security Rule Checks — S1-S10 Anti-Patterns
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 `scan_security.py` checks Internara against ten security rules (S1-S10) based on OWASP and
 Laravel security best practices. These are the security dimension of the quality gate; auth and PII
 handling beyond surface anti-patterns are covered by the `security-audit` skill. This rule documents

@@ -1,7 +1,5 @@
 # XSS & Injection — Output Encoding and Query Safety
 
-> **Last updated:** 2026-08-17 **Changes:** extracted from SKILL.md — comprehensive rewrite
-
 ## Intent
 
 Cross-site scripting (XSS) and SQL injection are the two highest-frequency injection defects in PHP
