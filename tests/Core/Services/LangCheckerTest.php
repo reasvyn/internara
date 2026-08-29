@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Services\LangChecker;
+use App\Modules\Core\Services\LangChecker;
 
 function makeLangChecker(string $locale): LangChecker
 {

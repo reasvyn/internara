@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Enrollment\Domain\Placement\Actions;
+
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+
+final class CreatePlacementAction extends BaseCommandAction
+{
+    public function execute(array $data): Placement
+    {
+        return $this->transaction(function () use ($data) {
+            $data['quota'] ??= 10;
+            $data['filled_quota'] = 0;
+            $placement = Placement::create($data);
+
+            $this->log('placement_created', $placement, [
+                'name' => $placement->name,
+                'quota' => $placement->quota,
+            ]);
+
+            return $placement;
+        });
+    }
+}

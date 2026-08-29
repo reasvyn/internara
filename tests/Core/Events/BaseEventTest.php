@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Events\BaseEvent;
+use App\Modules\Core\Events\BaseEvent;
 use Illuminate\Database\Eloquent\Model;
 
 final class TestEventSubject extends Model

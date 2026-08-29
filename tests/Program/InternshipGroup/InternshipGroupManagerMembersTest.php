@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Program\InternshipGroup\Livewire\InternshipGroupManager;
-use App\Program\InternshipGroup\Models\InternshipGroup;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\InternshipGroup\Livewire\InternshipGroupManager;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 

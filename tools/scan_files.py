@@ -178,7 +178,7 @@ def count_routes_safe() -> tuple[int, list[Finding]]:
 def scan_module_files(module_name: str) -> tuple[str, dict, list[Finding]]:
     """Scan single module files with comprehensive metrics."""
     findings: list[Finding] = []
-    mod_dir = APP_DIR / module_name
+    mod_dir = MODULES_DIR / module_name if (MODULES_DIR / module_name).exists() else APP_DIR / module_name
     test_dir = TESTS_DIR / module_name
     views = VIEWS_DIR / module_name.lower()
     views_alt = VIEWS_DIR / module_name
@@ -269,7 +269,7 @@ def main() -> None:
     # Discover modules
     if args.module:
         module_names = [args.module]
-        if not (APP_DIR / args.module).exists():
+        if not (MODULES_DIR / args.module if (MODULES_DIR / args.module).exists() else APP_DIR / args.module).exists():
             print(f"Error: Module '{args.module}' not found", file=sys.stderr)
             sys.exit(2)
     else:
@@ -293,7 +293,7 @@ def main() -> None:
                     rule="SCAN_ERROR",
                     severity="low",
                     category="system",
-                    file=f"app/{mod}",
+                    file=f"app/Modules/{mod}",
                     line=0,
                     message=f"Failed to scan module {mod}: {e}",
                     suggestion="Check file permissions",

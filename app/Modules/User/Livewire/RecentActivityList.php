@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\User\Livewire;
+
+use App\Modules\Core\Models\ActivityLog;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
+
+class RecentActivityList extends Component
+{
+    #[Computed]
+    public function activities()
+    {
+        $user = auth()->user();
+
+        if ($user === null) {
+            return collect();
+        }
+
+        return ActivityLog::causedBy($user)->latest()->take(10)->get();
+    }
+
+    public function render(): string
+    {
+        return <<<'HTML'
+        <div>
+            @forelse($this->activities as $activity)
+                <div class="flex items-start gap-4 py-3 border-b last:border-0 border-base-200">
+                    <div class="mt-1">
+                        <x-ts-icon name="bolt" class="size-4 opacity-50" />
+                    </div>
+                    <div>
+                        <div class="text-sm font-medium">{{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}</div>
+                        <div class="text-xs opacity-50">{{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }} &bull; {{ $activity->properties->get('ip_address', '-') }}</div>
+                    </div>
+                </div>
+            @empty
+                <div class="py-4 text-center opacity-50">No recent activity found.</div>
+            @endforelse
+        </div>
+        HTML;
+    }
+}

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Assessment\Livewire\AssessmentGrading;
-use App\Assessment\Livewire\AssessmentView;
-use App\Assessment\Rubric\Livewire\RubricManager;
+use App\Modules\Assessment\Livewire\AssessmentGrading;
+use App\Modules\Assessment\Livewire\AssessmentView;
+use App\Modules\Assessment\Domain\Rubric\Livewire\RubricManager;
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/assessments', AssessmentView::class)->name('assessments');

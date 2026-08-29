@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Entities\BaseEntity;
+use App\Modules\Core\Entities\BaseEntity;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class TestEntity extends BaseEntity

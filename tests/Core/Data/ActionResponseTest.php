@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Data\ActionResponse;
-use App\User\Models\User;
+use App\Modules\Core\Data\ActionResponse;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

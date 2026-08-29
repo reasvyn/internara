@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
-use App\SysAdmin\Backups\Livewire\BackupManager;
-use App\SysAdmin\Http\Controllers\AccountSlipController;
-use App\SysAdmin\Http\Controllers\CronController;
-use App\SysAdmin\Livewire\ApplicationReview;
-use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
-use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
-use App\SysAdmin\Observability\Livewire\AuditLogManager;
-use App\User\UserManagement\Livewire\AdminManager;
-use App\User\UserManagement\Livewire\StudentManager;
-use App\User\UserManagement\Livewire\SupervisorManager;
-use App\User\UserManagement\Livewire\TeacherManager;
-use App\User\UserManagement\Livewire\UserManager;
+use App\Modules\SysAdmin\Domain\Announcement\Livewire\AnnouncementManager;
+use App\Modules\SysAdmin\Domain\Backups\Livewire\BackupManager;
+use App\Modules\SysAdmin\Http\Controllers\AccountSlipController;
+use App\Modules\SysAdmin\Http\Controllers\CronController;
+use App\Modules\SysAdmin\Livewire\ApplicationReview;
+use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
+use App\Modules\SysAdmin\Domain\Observability\Livewire\AccountCloneDetector;
+use App\Modules\SysAdmin\Domain\Observability\Livewire\AuditLogManager;
+use App\Modules\User\Domain\UserManagement\Livewire\AdminManager;
+use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;
+use App\Modules\User\Domain\UserManagement\Livewire\SupervisorManager;
+use App\Modules\User\Domain\UserManagement\Livewire\TeacherManager;
+use App\Modules\User\Domain\UserManagement\Livewire\UserManager;
 
 Route::prefix('admin')
     ->name('admin.')

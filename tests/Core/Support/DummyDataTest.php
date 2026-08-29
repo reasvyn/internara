@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Academics\Department\Models\Department;
-use App\Enrollment\Placement\Models\Placement;
-use App\Enrollment\Registration\Models\Registration;
-use App\Partners\Company\Models\Company;
-use App\Settings\Models\Setting;
-use App\User\Models\User;
+use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Partners\Domain\Company\Models\Company;
+use App\Modules\Settings\Models\Setting;
+use App\Modules\User\Models\User;
 use Database\Seeders\DummySeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;

@@ -1,0 +1,80 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Assignment\Domain\Submission\Actions;
+
+use App\Modules\Assignment\Enums\AssignmentStatus;
+use App\Modules\Assignment\Models\Assignment;
+use App\Modules\Assignment\Domain\Submission\Data\SubmitAssignmentData;
+use App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus;
+use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\User\Models\User;
+
+final class SubmitAssignmentAction extends BaseCommandAction
+{
+    public function execute(User $student, Assignment $assignment, SubmitAssignmentData $data): Submission
+    {
+        if ($assignment->status !== AssignmentStatus::PUBLISHED) {
+            throw new RejectedException(__('assignment.cannot_submit_unpublished'));
+        }
+
+        if ($assignment->asAssignmentRules()->isOverdue(now())) {
+            throw new RejectedException(__('assignment.overdue'));
+        }
+
+        return $this->transaction(function () use ($student, $assignment, $data) {
+            $registration = Registration::where('student_id', $student->id)
+                ->where('internship_id', $assignment->internship_id)
+                ->whereIn('status', ['active', 'placed'])
+                ->first();
+
+            if (! $registration) {
+                throw new RejectedException(__('assignment.no_active_registration'));
+            }
+
+            $existing = Submission::where('student_id', $student->id)
+                ->where('assignment_id', $assignment->id)
+                ->first();
+
+            if ($existing && $existing->status === SubmissionStatus::REVISION_REQUIRED) {
+                $existing->update([
+                    'content' => $data->content,
+                    'status' => SubmissionStatus::SUBMITTED->value,
+                    'submitted_at' => now(),
+                    'feedback' => null,
+                ]);
+
+                $this->log('assignment_submitted', $existing, [
+                    'assignment_title' => $assignment->title,
+                    'user_id' => $student->id,
+                ]);
+
+                return $existing->fresh();
+            }
+
+            if ($existing) {
+                throw new RejectedException(__('assignment.already_submitted'));
+            }
+
+            $submission = Submission::create([
+                'student_id' => $student->id,
+                'registration_id' => $registration->id,
+                'assignment_id' => $assignment->id,
+                'content' => $data->content,
+                'status' => SubmissionStatus::SUBMITTED->value,
+                'submitted_at' => now(),
+            ]);
+
+            $this->log('assignment_submitted', $submission, [
+                'assignment_title' => $assignment->title,
+                'user_id' => $student->id,
+            ]);
+
+            return $submission;
+        });
+    }
+}

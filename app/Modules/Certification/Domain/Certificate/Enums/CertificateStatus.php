@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Certification\Domain\Certificate\Enums;
+
+use App\Modules\Core\Contracts\StatusEnum;
+
+enum CertificateStatus: string implements StatusEnum
+{
+    case ISSUED = 'issued';
+    case REVOKED = 'revoked';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::ISSUED => __('certificate.status.issued'),
+            self::REVOKED => __('certificate.status.revoked'),
+        };
+    }
+
+    public function isTerminal(): bool
+    {
+        return $this === self::REVOKED;
+    }
+
+    public function validTransitions(): array
+    {
+        return match ($this) {
+            self::ISSUED => [self::REVOKED],
+            self::REVOKED => [],
+        };
+    }
+
+    public function canTransitionTo(StatusEnum $target): bool
+    {
+        if (! ($target instanceof self)) {
+            return false;
+        }
+
+        return in_array($target, $this->validTransitions(), true);
+    }
+}

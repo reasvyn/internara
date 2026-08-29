@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseReadAction;
-use App\User\Models\User;
+use App\Modules\Core\Actions\BaseReadAction;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;

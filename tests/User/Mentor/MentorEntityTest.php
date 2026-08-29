@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Assessment\Policies\AssessmentPolicy;
-use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Attendance\Policies\AttendancePolicy;
-use App\Journals\Logbook\Policies\LogbookPolicy;
-use App\Journals\SupervisionLog\Policies\SupervisionLogPolicy;
-use App\User\Models\User;
-use App\User\Policies\Concerns\HasMentorProxy;
+use App\Modules\Assessment\Policies\AssessmentPolicy;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journals\Domain\Attendance\Policies\AttendancePolicy;
+use App\Modules\Journals\Domain\Logbook\Policies\LogbookPolicy;
+use App\Modules\Journals\Domain\SupervisionLog\Policies\SupervisionLogPolicy;
+use App\Modules\User\Models\User;
+use App\Modules\User\Policies\Concerns\HasMentorProxy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 

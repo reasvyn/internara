@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Contracts\LabelEnum;
-use App\Core\Enums\AuditCategory;
+use App\Modules\Core\Contracts\LabelEnum;
+use App\Modules\Core\Enums\AuditCategory;
 
 test('SE5Q9-FR-D3: every case has a non-empty translated label', function () {
     foreach (AuditCategory::cases() as $case) {

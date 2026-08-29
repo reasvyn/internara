@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Academics\Department\Entities\DepartmentState;
-use App\Academics\Department\Models\Department;
-use App\Core\Entities\BaseEntity;
+use App\Modules\Academics\Domain\Department\Entities\DepartmentState;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Core\Entities\BaseEntity;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -32,7 +32,7 @@ describe('4HWSB: DepartmentState', function (): void {
         expect($state)->toBeInstanceOf(DepartmentState::class);
 
         // Create a profile for this department
-        \App\User\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
+        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
         $dept->refresh();
         // Use withCount to simulate eager count
         $deptWithCount = Department::withCount('profiles')->find($dept->id);
@@ -52,7 +52,7 @@ describe('4HWSB: DepartmentState', function (): void {
         $prop->setAccessible(true);
         expect($prop->getValue($state))->toBeFalse();
 
-        \App\User\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
+        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
         $dept2 = Department::with('profiles')->find($dept->id);
         $state2 = DepartmentState::fromModel($dept2);
         $prop2 = (new ReflectionClass($state2))->getProperty('hasProfiles');
@@ -62,7 +62,7 @@ describe('4HWSB: DepartmentState', function (): void {
 
     test('4HWSB-FR-DM9: canBeDeleted() returns false when hasProfiles is true', function (): void {
         $dept = Department::factory()->create();
-        \App\User\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
+        \App\Modules\User\Domain\Profile\Models\Profile::factory()->create(['department_id' => $dept->id]);
         $deptWithProfiles = Department::with('profiles')->find($dept->id);
         $state = DepartmentState::fromModel($deptWithProfiles);
 

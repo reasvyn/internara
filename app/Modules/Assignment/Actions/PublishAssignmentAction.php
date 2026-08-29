@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Assignment\Actions;
+
+use App\Modules\Assignment\Enums\AssignmentStatus;
+use App\Modules\Assignment\Events\AssignmentPublished;
+use App\Modules\Assignment\Models\Assignment;
+use App\Modules\Assignment\Notifications\AssignmentNotification;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use Illuminate\Support\Facades\Notification;
+
+final class PublishAssignmentAction extends BaseCommandAction
+{
+    public function execute(Assignment $assignment): Assignment
+    {
+        if ($assignment->status !== AssignmentStatus::DRAFT) {
+            throw new RejectedException(__('assignment.cannot_publish_non_draft'));
+        }
+
+        return $this->transaction(function () use ($assignment) {
+            $assignment->update(['status' => AssignmentStatus::PUBLISHED->value]);
+
+            $this->log('assignment_published', $assignment, ['title' => $assignment->title]);
+
+            event(new AssignmentPublished($assignment));
+
+            $students = Registration::where('internship_id', $assignment->internship_id)
+                ->with('student')
+                ->get()
+                ->pluck('student');
+
+            Notification::send($students, new AssignmentNotification(
+                internshipName: $assignment->internship?->name ?? 'Unknown',
+                assignmentTitle: $assignment->title,
+                dueDate: $assignment->due_date?->toDateString(),
+            ));
+
+            return $assignment;
+        });
+    }
+}

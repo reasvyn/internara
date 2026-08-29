@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Document\Jobs\GenerateDocumentJob;
-use App\Document\Models\Document;
-use App\Document\OfficialDocument\Actions\GenerateDocumentAction;
-use App\Document\Services\DocumentRenderer;
+use App\Modules\Document\Jobs\GenerateDocumentJob;
+use App\Modules\Document\Models\Document;
+use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
+use App\Modules\Document\Services\DocumentRenderer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Partners\Company\Livewire\CompanyManager;
-use App\Partners\Partnership\Livewire\PartnershipManager;
+use App\Modules\Partners\Domain\Company\Livewire\CompanyManager;
+use App\Modules\Partners\Domain\Partnership\Livewire\PartnershipManager;
 
 Route::prefix('admin')
     ->name('partners.')

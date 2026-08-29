@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Certification\Certificate\Actions\IssueCertificateAction;
-use App\Certification\Certificate\Models\Certificate;
-use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Certification\Jobs\BatchIssueCertificatesJob;
-use App\Enrollment\Registration\Models\Registration;
-use App\Program\Internship\Models\Internship;
-use App\User\Models\User;
+use App\Modules\Certification\Domain\Certificate\Actions\IssueCertificateAction;
+use App\Modules\Certification\Domain\Certificate\Models\Certificate;
+use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
+use App\Modules\Certification\Jobs\BatchIssueCertificatesJob;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;

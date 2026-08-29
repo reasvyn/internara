@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Core\Exceptions;
+
+abstract class PresentationException extends AppException
+{
+    public function statusCode(): int
+    {
+        return 400;
+    }
+
+    public function isUserFacing(): bool
+    {
+        return true;
+    }
+}

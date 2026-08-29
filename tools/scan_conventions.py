@@ -27,6 +27,7 @@ try:
         ScanResult,
         ROOT,
         APP_DIR,
+        MODULES_DIR,
         SCAN_VERSION,
         relative_path,
         read_file,
@@ -44,6 +45,7 @@ except ImportError:
         ScanResult,
         ROOT,
         APP_DIR,
+        MODULES_DIR,
         SCAN_VERSION,
         relative_path,
         read_file,
@@ -90,7 +92,7 @@ STRICT_ALLOWLIST = {
 
 def find_php_files(module: str | None = None) -> list[Path]:
     if module:
-        module_dir = APP_DIR / module
+        module_dir = MODULES_DIR / module if (MODULES_DIR / module).exists() else APP_DIR / module
         if not module_dir.exists():
             return []
         return sorted(module_dir.rglob("*.php"))

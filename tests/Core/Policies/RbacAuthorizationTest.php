@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Auth\Permissions\Http\Middleware\CheckRoleMiddleware;
-use App\Auth\Permissions\Policies\UserPolicy;
-use App\Core\Policies\BasePolicy;
-use App\User\Models\User;
+use App\Modules\Auth\Domain\Permissions\Http\Middleware\CheckRoleMiddleware;
+use App\Modules\Auth\Domain\Permissions\Policies\UserPolicy;
+use App\Modules\Core\Policies\BasePolicy;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

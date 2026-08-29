@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseCommandAction;
-use App\Core\Data\ActionResponse;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Data\ActionResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Validation\ValidationException;
 

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Program\Internship\Livewire\InternshipManager;
-use App\Program\InternshipGroup\Livewire\InternshipGroupManager;
+use App\Modules\Program\Domain\Internship\Livewire\InternshipManager;
+use App\Modules\Program\Domain\InternshipGroup\Livewire\InternshipGroupManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')

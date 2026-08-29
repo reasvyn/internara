@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Models\ActivityLog;
-use App\User\Models\User;
-use App\User\Profile\Models\Profile;
+use App\Modules\Core\Models\ActivityLog;
+use App\Modules\User\Models\User;
+use App\Modules\User\Domain\Profile\Models\Profile;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Academics\AcademicYear\Support\AcademicYearPeriod;
+use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academics\Domain\AcademicYear\Support\AcademicYearPeriod;
 use Illuminate\Database\Seeder;
 
 class AcademicYearSeeder extends Seeder

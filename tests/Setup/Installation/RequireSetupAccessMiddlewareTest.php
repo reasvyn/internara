@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Settings\Services\Settings;
-use App\User\Models\User;
+use App\Modules\Settings\Services\Settings;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;

@@ -29,7 +29,7 @@
             @endinteract
 
             @interact('column_type', $template)
-                {{ \App\Document\Enums\DocumentCategory::tryFrom($template->type)?->label() ?? $template->type }}
+                {{ \App\Modules\Document\Enums\DocumentCategory::tryFrom($template->type)?->label() ?? $template->type }}
             @endinteract
 
             @interact('column_action', $template)

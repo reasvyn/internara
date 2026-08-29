@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\SysAdmin\Backups\Enums\BackupStatus;
-use App\SysAdmin\Backups\Enums\BackupType;
-use App\SysAdmin\Backups\Models\Backup;
-use App\User\Models\User;
+use App\Modules\SysAdmin\Domain\Backups\Enums\BackupStatus;
+use App\Modules\SysAdmin\Domain\Backups\Enums\BackupType;
+use App\Modules\SysAdmin\Domain\Backups\Models\Backup;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 final class BackupFactory extends Factory

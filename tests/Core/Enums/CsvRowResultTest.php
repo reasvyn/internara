@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Contracts\LabelEnum;
-use App\Core\Enums\CsvRowResult;
+use App\Modules\Core\Contracts\LabelEnum;
+use App\Modules\Core\Enums\CsvRowResult;
 
 test('SE5Q9-FR-D5: every case has a non-empty translated label', function () {
     foreach (CsvRowResult::cases() as $case) {

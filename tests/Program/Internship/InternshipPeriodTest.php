@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Program\Internship\Enums\InternshipStatus;
-use App\Program\Internship\Models\Internship;
+use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
+use App\Modules\Program\Domain\Internship\Models\Internship;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 

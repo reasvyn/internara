@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\ValidationFailedException;
-use App\Core\Http\Requests\BaseFormRequest;
+use App\Modules\Core\Exceptions\ValidationFailedException;
+use App\Modules\Core\Http\Requests\BaseFormRequest;
 
 final class BaseFormRequestTestStub extends BaseFormRequest
 {

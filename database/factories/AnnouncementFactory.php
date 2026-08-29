@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
-use App\SysAdmin\Announcement\Models\Announcement;
-use App\User\Models\User;
+use App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus;
+use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AnnouncementFactory extends Factory

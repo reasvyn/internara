@@ -28,6 +28,7 @@ from typing import Any, Callable, Iterable
 
 ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
+MODULES_DIR = ROOT / "app" / "Modules"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_VERSION = "2.1.0"
 
@@ -108,7 +109,11 @@ def read_file_lines(path: Path) -> list[str]:
 def find_php_files(module: str | None = None, include_tests: bool = False) -> list[Path]:
     """Find PHP files with caching and filtering. Respects module filter."""
     if module:
-        module_dir = APP_DIR / module
+        # Try new layout first: app/Modules/{Module}
+        module_dir = MODULES_DIR / module
+        if not module_dir.exists():
+            # Fallback to legacy app/{Module}
+            module_dir = MODULES_DIR / module if (MODULES_DIR / module).exists() else APP_DIR / module
         if not module_dir.exists():
             return []
         pattern = "**/*.php"

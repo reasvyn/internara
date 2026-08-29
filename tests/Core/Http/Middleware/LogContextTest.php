@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Http\Middleware\LogContextMiddleware;
-use App\User\Models\User;
+use App\Modules\Core\Http\Middleware\LogContextMiddleware;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;

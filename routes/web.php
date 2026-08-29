@@ -13,7 +13,7 @@ declare(strict_types=1);
 |
 */
 
-use App\Core\Support\ModuleManager;
+use App\Modules\Core\Support\ModuleManager;
 
 foreach (ModuleManager::names() as $module) {
     $file = ModuleManager::routeFilePath($module);

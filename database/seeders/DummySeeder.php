@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Settings\Models\Setting;
+use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Database\Seeder;
 use RuntimeException;
 use Spatie\Permission\Models\Role;

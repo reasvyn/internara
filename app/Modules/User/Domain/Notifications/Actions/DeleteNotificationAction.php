@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\User\Domain\Notifications\Actions;
+
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\User\Domain\Notifications\Models\Notification;
+use Illuminate\Support\Facades\Cache;
+
+/**
+ * Stateless Action to delete a notification.
+ *
+ * Ownership verification is the caller's responsibility.
+ * S2 - Sustain: Clean removal.
+ */
+final class DeleteNotificationAction extends BaseCommandAction
+{
+    public function execute(Notification $notification): void
+    {
+        $this->transaction(function () use ($notification) {
+            $userId = $notification->user_id;
+            $notification->delete();
+
+            Cache::forget(config('cache-keys.notification_unread').$userId);
+
+            $this->log('notification_deleted', $notification, [
+                'notification_id' => $notification->id,
+                'user_id' => $userId,
+            ]);
+        });
+    }
+}

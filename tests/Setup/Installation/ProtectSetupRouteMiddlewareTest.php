@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Settings\Services\Settings;
+use App\Modules\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Session;
 

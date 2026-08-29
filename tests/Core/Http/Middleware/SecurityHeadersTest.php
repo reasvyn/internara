@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Http\Middleware\SecurityHeadersMiddleware;
+use App\Modules\Core\Http\Middleware\SecurityHeadersMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\HttpFoundation\Response;

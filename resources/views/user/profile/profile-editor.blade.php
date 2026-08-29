@@ -94,7 +94,7 @@
                                 <x-ts-select.native
                                     :label="__('profile.employment_status')"
                                     wire:model="profileForm.employment_status"
-                                    :options="[null => __('profile.select_option')] + (\App\User\Enums\EmploymentStatus::options())"
+                                    :options="[null => __('profile.select_option')] + (\App\Modules\User\Enums\EmploymentStatus::options())"
                                     icon="briefcase"
                                 />
                                 <x-ts-input

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Placement\Models\Placement;
-use App\Enrollment\Placement\Models\PlacementChangeRequest;
-use App\Enrollment\Registration\Models\Registration;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlacementChangeRequestFactory extends Factory

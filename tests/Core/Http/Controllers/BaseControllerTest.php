@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Core\Http\Controllers\BaseController;
-use App\User\Models\User;
+use App\Modules\Core\Http\Controllers\BaseController;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;

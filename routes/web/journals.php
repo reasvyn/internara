@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Journals\AbsenceRequest\Livewire\AbsenceRequestForm;
-use App\Journals\Attendance\Livewire\AttendanceManager;
-use App\Journals\Attendance\Livewire\StudentClockIn;
-use App\Journals\Http\Controllers\LogbookReportController;
-use App\Journals\Logbook\Livewire\LogbookEntry;
-use App\Journals\Logbook\Livewire\LogbookManager;
-use App\Journals\MonitoringVisit\Livewire\StudentVisitList;
-use App\Journals\MonitoringVisit\Livewire\VisitManager;
-use App\Journals\SupervisionLog\Livewire\StudentLogManager;
-use App\Journals\SupervisionLog\Livewire\SupervisorReviewManager;
+use App\Modules\Journals\Domain\AbsenceRequest\Livewire\AbsenceRequestForm;
+use App\Modules\Journals\Domain\Attendance\Livewire\AttendanceManager;
+use App\Modules\Journals\Domain\Attendance\Livewire\StudentClockIn;
+use App\Modules\Journals\Http\Controllers\LogbookReportController;
+use App\Modules\Journals\Domain\Logbook\Livewire\LogbookEntry;
+use App\Modules\Journals\Domain\Logbook\Livewire\LogbookManager;
+use App\Modules\Journals\Domain\MonitoringVisit\Livewire\StudentVisitList;
+use App\Modules\Journals\Domain\MonitoringVisit\Livewire\VisitManager;
+use App\Modules\Journals\Domain\SupervisionLog\Livewire\StudentLogManager;
+use App\Modules\Journals\Domain\SupervisionLog\Livewire\SupervisorReviewManager;
 
 Route::prefix('student')
     ->name('student.')

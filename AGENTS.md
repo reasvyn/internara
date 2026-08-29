@@ -262,6 +262,7 @@ never duplicate a topic.
 | [`key-rules`](.agents/rules/key-rules.md) | Non-negotiable workflow rules (load order, no restate, spec-first, narration, batch verify, impact-to-effort) | Every instruction — governs workflow |
 | [`instruction-ordering`](.agents/rules/instruction-ordering.md) | Impact-to-effort scoring for batched instructions | Multi-instruction messages |
 | [`architecture-rules`](.agents/rules/architecture-rules.md) | Layer boundaries & Action Triad checks | Classifying/reviewing code against 4-layer model |
+| [`domain-boundary`](.agents/rules/domain-boundary.md) | One business domain = one Domain; when a domain earns its own Domain | Decomposing/relocating a domain into its own Domain |
 | [`coding-rules`](.agents/rules/coding-rules.md) | Practical coding application guide (before writing any class) | Creating/reviewing Actions, Entities, DTOs, Models, Enums |
 | [`testing-rules`](.agents/rules/testing-rules.md) | What to verify when testing (spec-driven minimalism) | Writing/reviewing tests |
 | [`invariants`](.agents/rules/invariants.md) | Non-negotiable invariants C1-C8, D1-D6 | Every class written or touched |
@@ -406,20 +407,20 @@ Before handing off to any downstream skill, confirm:
 
 | Need to find... | Look here |
 |-----------------|-----------|
-| Business logic | `app/{Module}/{Submodule}/Actions/` |
-| Business rules | `app/{Module}/{Submodule}/Entities/` |
-| Data structure | `app/{Module}/{Submodule}/Models/` |
-| Data transfer | `app/{Module}/{Submodule}/Entities/` (DTOs) |
-| State machines | `app/{Module}/{Submodule}/Enums/` |
-| UI components | `app/{Module}/{Submodule}/Livewire/` |
-| Authorization | `app/{Module}/{Submodule}/Policies/` |
-| Side effects | `app/{Module}/{Submodule}/Events/` and `Listeners/` |
-| Infrastructure | `app/{Module}/{Submodule}/Services/` or `Support/` |
-| Base contracts | `app/Core/Actions/`, `app/Core/Entities/`, `app/Core/Enums/` |
-| Tests | `tests/{Module}/{Submodule}/` |
+| Business logic | `app/Modules/{Module}/Domain/{Domain}/Actions/` |
+| Business rules | `app/Modules/{Module}/Domain/{Domain}/Entities/` |
+| Data structure | `app/Modules/{Module}/Domain/{Domain}/Models/` |
+| Data transfer | `app/Modules/{Module}/Domain/{Domain}/Entities/` (DTOs) |
+| State machines | `app/Modules/{Module}/Domain/{Domain}/Enums/` |
+| UI components | `app/Modules/{Module}/Domain/{Domain}/Livewire/` |
+| Authorization | `app/Modules/{Module}/Domain/{Domain}/Policies/` |
+| Side effects | `app/Modules/{Module}/Domain/{Domain}/Events/` and `Listeners/` |
+| Infrastructure | `app/Modules/{Module}/Domain/{Domain}/Services/` or `Support/` |
+| Base contracts | `app/Modules/Core/Actions/`, `app/Modules/Core/Entities/`, `app/Modules/Core/Enums/` |
+| Tests | `tests/{Module}/{Domain}/` |
 | Config | `config/{module}.php` |
-| Routes | `routes/web/{module}.php` (submodules: `{submodule}.php` in same dir) |
-| Translations | `lang/en/{module}.php`, `lang/id/{module}.php` (submodules: `{submodule}.php` in same dir) |
+| Routes | `routes/web/{module}.php` (domains: `{domain}.php` in same dir) |
+| Translations | `lang/en/{module}.php`, `lang/id/{module}.php` (domains: `{domain}.php` in same dir) |
 
 ### Pattern Recognition
 
@@ -457,9 +458,10 @@ When debugging or reviewing code, trace this path. If any step is missing or out
 ### Module Boundary Awareness
 
 - Each module owns its full stack: Models, Actions, Livewire, Events, Policies, Services
+- Each Domain lives under `app/Modules/{Module}/Domain/{Domain}/` and owns its domain's full stack
 - Cross-module imports are **allowed** but prefer events for side effects
 - If Module A needs to react to Module B's mutation, use an Event — don't import B's Actions
-- Shared code (base classes, contracts, exceptions) lives in `app/Core/`
+- Shared code (base classes, contracts, exceptions) lives in `app/Modules/Core/`
 
 ### Testing Senses
 
@@ -524,8 +526,8 @@ Doc drift happens when code changes but docs don't. Detect it by asking:
 
 | Question | How to check |
 |----------|-------------|
-| Does the doc's file listing match the actual directory? | `ls app/{Module}/{Submodule}/` vs doc |
-| Does the Actions table list all current Actions? | `find app/{Module}/Actions -name '*Action.php'` |
+| Does the doc's file listing match the actual directory? | `ls app/Modules/{Module}/Domain/{Domain}/` vs doc |
+| Does the Actions table list all current Actions? | `find app/Modules/{Module}/Domain/{Domain}/Actions -name '*Action.php'` |
 | Does the Entity description match the actual methods? | Read the Entity class |
 | Do the enum cases in the doc match the code? | Read the Enum class |
 | Do the migration descriptions match the actual migrations? | Check `database/migrations/` |

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Academics\Department\Models\Department;
-use App\Enrollment\AccountApplication\Models\AccountApplication;
+use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Enrollment\Domain\AccountApplication\Models\AccountApplication;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AccountApplicationFactory extends Factory

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Academics\School\Actions\SaveSchoolProfileAction;
-use App\Core\Actions\BaseCommandAction;
-use App\Settings\Models\Setting;
+use App\Modules\Academics\Domain\School\Actions\SaveSchoolProfileAction;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
@@ -72,7 +72,7 @@ describe('81SMS: SaveSchoolProfileAction', function (): void {
             expect(Setting::where('key', "school.{$key}")->first()?->value)->toBe($value);
         }
 
-        $entity = app(\App\Academics\School\Actions\GetSchoolEntityAction::class)->execute();
+        $entity = app(\App\Modules\Academics\Domain\School\Actions\GetSchoolEntityAction::class)->execute();
         expect($entity->name())->toBe('SMA 1 Test')
             ->and($entity->fax())->toBe('021-123');
     });

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Core\Models\BaseAuthenticatable;
-use App\Core\Models\BaseModel;
-use App\Core\Models\Concerns\HasCommonScopes;
-use App\User\Models\User;
+use App\Modules\Core\Models\BaseAuthenticatable;
+use App\Modules\Core\Models\BaseModel;
+use App\Modules\Core\Models\Concerns\HasCommonScopes;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;

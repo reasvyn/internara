@@ -208,7 +208,7 @@ class ScanResult:
 
 def find_php_files(module: str | None = None) -> list[Path]:
     if module:
-        module_dir = APP_DIR / module
+        module_dir = MODULES_DIR / module if (MODULES_DIR / module).exists() else APP_DIR / module
         if not module_dir.exists():
             return []
         return sorted(module_dir.rglob("*.php"))
@@ -391,7 +391,7 @@ def scan_anti_patterns(files: list[Path]) -> list[Finding]:
 def scan_directory_naming(module: str | None) -> list[Finding]:
     findings: list[Finding] = []
     if module:
-        roots = [APP_DIR / module]
+        roots = [MODULES_DIR / module if (MODULES_DIR / module).exists() else APP_DIR / module]
     else:
         roots = [
             d for d in APP_DIR.iterdir()

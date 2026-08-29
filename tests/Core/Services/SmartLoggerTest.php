@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Events\BaseEvent;
-use App\Core\Services\SmartLogger;
-use App\User\Models\User;
+use App\Modules\Core\Events\BaseEvent;
+use App\Modules\Core\Services\SmartLogger;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\App;

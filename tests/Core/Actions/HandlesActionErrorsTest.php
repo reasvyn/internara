@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\Concerns\HandlesActionErrors;
-use App\Core\Exceptions\RejectedException;
-use App\User\Models\User;
+use App\Modules\Core\Actions\Concerns\HandlesActionErrors;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\User\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;

@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-use App\Auth\AccountRecovery\Livewire\AccountRecovery;
-use App\Auth\AccountRecovery\Livewire\RecoveryCode;
-use App\Auth\AccountRecovery\Livewire\RecoverySlipManager;
-use App\Auth\Password\Livewire\ConfirmPassword;
-use App\Auth\Password\Livewire\ForgotPassword;
-use App\Auth\Password\Livewire\ResetPassword;
-use App\User\AccountStatus\Livewire\AccountLifecycleManager;
-use App\User\Dashboard\Livewire\AdminDashboard;
-use App\User\Dashboard\Livewire\StudentDashboard;
-use App\User\Dashboard\Livewire\SupervisorDashboard;
-use App\User\Dashboard\Livewire\TeacherDashboard;
-use App\User\Dashboard\Livewire\UserDashboard;
-use App\User\Http\Controllers\AuthController;
-use App\User\Http\Controllers\DashboardController;
-use App\User\Livewire\HomePage;
-use App\User\Notifications\Livewire\NotificationCenter;
-use App\User\Profile\Livewire\ProfileEditor;
+use App\Modules\Auth\Domain\AccountRecovery\Livewire\AccountRecovery;
+use App\Modules\Auth\Domain\AccountRecovery\Livewire\RecoveryCode;
+use App\Modules\Auth\Domain\AccountRecovery\Livewire\RecoverySlipManager;
+use App\Modules\Auth\Domain\Password\Livewire\ConfirmPassword;
+use App\Modules\Auth\Domain\Password\Livewire\ForgotPassword;
+use App\Modules\Auth\Domain\Password\Livewire\ResetPassword;
+use App\Modules\User\Domain\AccountStatus\Livewire\AccountLifecycleManager;
+use App\Modules\User\Domain\Dashboard\Livewire\AdminDashboard;
+use App\Modules\User\Domain\Dashboard\Livewire\StudentDashboard;
+use App\Modules\User\Domain\Dashboard\Livewire\SupervisorDashboard;
+use App\Modules\User\Domain\Dashboard\Livewire\TeacherDashboard;
+use App\Modules\User\Domain\Dashboard\Livewire\UserDashboard;
+use App\Modules\User\Http\Controllers\AuthController;
+use App\Modules\User\Http\Controllers\DashboardController;
+use App\Modules\User\Livewire\HomePage;
+use App\Modules\User\Domain\Notifications\Livewire\NotificationCenter;
+use App\Modules\User\Domain\Profile\Livewire\ProfileEditor;
 
 Route::livewire('/', HomePage::class)->name('home');
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\PasswordRules;
+use App\Modules\Core\Support\PasswordRules;
 use Illuminate\Validation\Rules\Password;
 
 test('C8F0D-FR-SUP3: default() enforces required, string, and a strong password rule', function () {

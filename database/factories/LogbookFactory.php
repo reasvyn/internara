@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Logbook\Enums\LogbookStatus;
-use App\Journals\Logbook\Models\Logbook;
-use App\User\Models\User;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journals\Domain\Logbook\Enums\LogbookStatus;
+use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

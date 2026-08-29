@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\ModuleManager;
+use App\Modules\Core\Support\ModuleManager;
 
 test('B114U-FR-MG1: names() returns the registered module list', function () {
     config()->set('module.list', ['Core', 'Setup']);

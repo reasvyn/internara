@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permissions\Enums\Role;
 
 describe('QLHDO: role model — FR-G2', function () {
     test('QLHDO-FR-G2: exposes exactly five stored user roles', function () {

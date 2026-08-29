@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Core\Actions\BaseCommandAction;
-use App\Core\Data\ActionResponse;
-use App\Core\Events\BaseEvent;
-use App\Core\Exceptions\RejectedException;
-use App\Journals\Logbook\Actions\CreateLogbookAction;
-use App\User\Models\User;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Data\ActionResponse;
+use App\Modules\Core\Events\BaseEvent;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Journals\Domain\Logbook\Actions\CreateLogbookAction;
+use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;

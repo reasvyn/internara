@@ -29,7 +29,7 @@
 
             @interact('column_action', $v)
                 <div class="flex justify-end gap-1">
-                    @can('verify', App\Journals\MonitoringVisit\Models\MonitoringVisit::class)
+                    @can('verify', App\Modules\Journals\Domain\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
                             <x-ts-button.circle
                                 icon="check"

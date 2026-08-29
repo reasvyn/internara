@@ -1,0 +1,97 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Journals\Domain\Logbook\Livewire;
+
+use App\Modules\Core\Livewire\BaseRecordEntry;
+use App\Modules\Journals\Domain\Logbook\Actions\SubmitLogbookAction;
+use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use Livewire\Attributes\Layout;
+use Livewire\WithFileUploads;
+use Livewire\WithPagination;
+use TallStackUi\Traits\Interactions;
+
+class LogbookEntry extends BaseRecordEntry
+{
+    use Interactions;
+    use WithFileUploads, WithPagination;
+
+    public ?string $journalId = null;
+
+    public string $date = '';
+
+    public string $content = '';
+
+    public string $learning_outcomes = '';
+
+    public array $photos = [];
+
+    public function boot(): void
+    {
+        $this->authorize('create', Logbook::class);
+    }
+
+    public function mount(): void
+    {
+        $this->date = Carbon::today()->toDateString();
+    }
+
+    public function create(): void
+    {
+        parent::create();
+        $this->reset(['journalId', 'content', 'learning_outcomes', 'photos']);
+        $this->date = Carbon::today()->toDateString();
+    }
+
+    public function edit(string $id): void
+    {
+        $journal = Logbook::findOrFail($id);
+        $this->journalId = $journal->id;
+        $this->date = $journal->date->toDateString();
+        $this->content = $journal->content;
+        $this->learning_outcomes = $journal->learning_outcomes ?? '';
+        $this->showModal = true;
+    }
+
+    public function save(SubmitLogbookAction $submitJournal): void
+    {
+        $this->authorize('create', Logbook::class);
+
+        $this->validate([
+            'date' => 'required|date',
+            'content' => 'required|min:10',
+            'learning_outcomes' => 'nullable|string',
+            'photos.*' => 'nullable|image|max:10240',
+        ]);
+
+        $this->handleError(function () use ($submitJournal) {
+            $submitJournal->execute(auth()->user(), [
+                'date' => $this->date,
+                'content' => $this->content,
+                'learning_outcomes' => $this->learning_outcomes,
+                'photos' => $this->photos,
+            ]);
+
+            $this->showModal = false;
+            $this->toast()->success(__('logbook.success_saved'))->send();
+        });
+    }
+
+    public function removePhoto(int $index): void
+    {
+        unset($this->photos[$index]);
+    }
+
+    #[Layout('ui::layouts.app')]
+    public function render(): View
+    {
+        $journals = Logbook::where('user_id', auth()->id())->latest('date')->paginate(10);
+
+        return view('journals.logbook.logbook-entry', [
+            'journals' => $journals,
+        ]);
+    }
+}

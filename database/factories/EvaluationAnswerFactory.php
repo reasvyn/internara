@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Evaluation\Models\EvaluationAnswer;
-use App\Evaluation\Models\EvaluationQuestion;
-use App\Evaluation\Models\EvaluationResponse;
+use App\Modules\Evaluation\Models\EvaluationAnswer;
+use App\Modules\Evaluation\Models\EvaluationQuestion;
+use App\Modules\Evaluation\Models\EvaluationResponse;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EvaluationAnswerFactory extends Factory

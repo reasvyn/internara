@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Certification\Certificate\Actions\IssueCertificateAction;
-use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Enrollment\Registration\Models\Registration;
-use App\User\Models\User;
+use App\Modules\Certification\Domain\Certificate\Actions\IssueCertificateAction;
+use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

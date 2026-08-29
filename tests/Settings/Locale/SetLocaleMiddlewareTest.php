@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Settings\Locale\Http\Middleware\SetLocaleMiddleware;
-use App\Settings\Locale\Support\Locale;
+use App\Modules\Settings\Domain\Locale\Http\Middleware\SetLocaleMiddleware;
+use App\Modules\Settings\Domain\Locale\Support\Locale;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\Login\Http\Middleware\AuthThrottleMiddleware;
+use App\Modules\Auth\Domain\Login\Http\Middleware\AuthThrottleMiddleware;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;

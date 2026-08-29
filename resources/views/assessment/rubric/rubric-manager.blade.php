@@ -51,7 +51,7 @@
                                 <p class="font-medium">{{ $competency['name'] }}</p>
                                 <x-ts-badge :text="$competency['weight'].'%'" color="primary" xs />
                                 <x-ts-badge
-                                    :text="\App\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role']"
+                                    :text="\App\Modules\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role']"
                                     color="white"
                                     xs
                                 />

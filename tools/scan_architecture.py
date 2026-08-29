@@ -23,6 +23,7 @@ try:
         ScanResult,
         ROOT,
         APP_DIR,
+        MODULES_DIR,
         SCAN_VERSION,
         relative_path,
         read_file,
@@ -40,6 +41,7 @@ except ImportError:
         ScanResult,
         ROOT,
         APP_DIR,
+        MODULES_DIR,
         SCAN_VERSION,
         relative_path,
         read_file,
@@ -79,12 +81,14 @@ ARCH_DIRS = {
 
 
 def discover_modules() -> list[str]:
-    """Dynamically discover modules from app/ directory with validation."""
-    if not APP_DIR.exists():
+    """Dynamically discover modules from app/Modules/ directory with validation."""
+    # Prefer new layout app/Modules, fallback to legacy app/
+    base = MODULES_DIR if MODULES_DIR.exists() else APP_DIR
+    if not base.exists():
         return []
     
     modules = []
-    for entry in APP_DIR.iterdir():
+    for entry in base.iterdir():
         if not entry.is_dir():
             continue
         if entry.name.startswith((".", "_")):
@@ -95,7 +99,7 @@ def discover_modules() -> list[str]:
             has_structure = any(
                 (entry / sub).exists() 
                 for sub in ["Actions", "Models", "Livewire", "Entities"]
-            )
+            ) or (entry / "Domain").exists()
             if has_php or has_structure:
                 modules.append(entry.name)
         except (OSError, PermissionError):
@@ -115,8 +119,14 @@ def count_php_files_safe(d: Path) -> int:
 
 
 def find_submodules_safe(module_dir: Path) -> list[str]:
-    """Find submodules with error handling."""
+    """Find domains (ex-submodules) with error handling. Prefers Domain/ subdir."""
     try:
+        domain_dir = module_dir / "Domain"
+        if domain_dir.exists() and domain_dir.is_dir():
+            return sorted(
+                e.name for e in domain_dir.iterdir()
+                if e.is_dir() and not e.name.startswith(("_", "."))
+            )
         return sorted(
             e.name for e in module_dir.iterdir()
             if e.is_dir() and not e.name.startswith(("_", "."))
@@ -128,7 +138,8 @@ def find_submodules_safe(module_dir: Path) -> list[str]:
 def scan_module_architecture(module_name: str) -> tuple[dict, list[Finding]]:
     """Scan single module architecture with findings generation."""
     findings: list[Finding] = []
-    module_dir = APP_DIR / module_name
+    # Prefer new layout app/Modules/{Module}
+    module_dir = MODULES_DIR / module_name if (MODULES_DIR / module_name).exists() else MODULES_DIR / module_name if (MODULES_DIR / module_name).exists() else APP_DIR / module_name
     
     if not module_dir.exists():
         findings.append(Finding(
@@ -139,7 +150,7 @@ def scan_module_architecture(module_name: str) -> tuple[dict, list[Finding]]:
             file=relative_path(module_dir),
             line=0,
             message=f"Module directory missing: {module_name}",
-            suggestion=f"Create app/{module_name}/ or remove from module registry",
+            suggestion=f"Create app/Modules/{module_name}/ or remove from module registry",
             reference="docs/architecture.md",
         ))
         return {}, findings
@@ -232,7 +243,7 @@ def main() -> None:
     if args.module:
         if args.module not in module_names:
             # Check if it's a valid module even if not in discovered list
-            if not (APP_DIR / args.module).exists():
+            if not (MODULES_DIR / args.module if (MODULES_DIR / args.module).exists() else APP_DIR / args.module).exists():
                 print(f"Error: Module '{args.module}' not found in {APP_DIR}", file=sys.stderr)
                 print(f"Available: {', '.join(module_names)}", file=sys.stderr)
                 sys.exit(2)
@@ -261,7 +272,7 @@ def main() -> None:
                     rule="ARCH_SCAN_ERROR",
                     severity="low",
                     category="system",
-                    file=f"app/{module_name}",
+                    file=f"app/Modules/{module_name}",
                     line=0,
                     message=f"Failed to scan module {module_name}: {e}",
                     suggestion="Check file permissions and module structure",
