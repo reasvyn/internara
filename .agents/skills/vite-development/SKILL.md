@@ -23,8 +23,8 @@ Follow `agent-workflow` pipeline. This skill adds Vite-specific guidance.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Entry & plugins (vite.config.js, laravel-vite-plugin, @tailwindcss/vite) | `rules/entry-plugins.md` | Any Vite config change |
-| Build & HMR (dev, build, manifest, asset versioning) | `rules/build-hmr.md` | Debugging builds or HMR |
+| Entry & plugins (vite.config.js, laravel-vite-plugin, @tailwindcss/vite) | `.agents/rules/entry-plugins.md` | Any Vite config change |
+| Build & HMR (dev, build, manifest, asset versioning) | `.agents/rules/build-hmr.md` | Debugging builds or HMR |
 
 ## References
 

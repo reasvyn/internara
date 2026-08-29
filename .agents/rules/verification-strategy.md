@@ -60,12 +60,12 @@ vendor/bin/pint --dirty --format agent
 vendor/bin/phpstan analyse --no-progress
 
 # Architecture enforcement
-python3 scripts/scan_violations.py         # C1-C8, D1-D6
-python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
-python3 scripts/scan_security.py           # XSS, SQLi, CSRF, auth
-python3 scripts/scan_naming.py             # Naming conventions
-python3 scripts/scan_conventions.py        # strict_types, Fillable, debug
-python3 scripts/scan_doc_links.py          # Broken links in docs + .agents/context/ + outdated/missing metadata detection
+python3 tools/scan_violations.py         # C1-C8, D1-D6
+python3 tools/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
+python3 tools/scan_security.py           # XSS, SQLi, CSRF, auth
+python3 tools/scan_naming.py             # Naming conventions
+python3 tools/scan_conventions.py        # strict_types, Fillable, debug
+python3 tools/scan_doc_links.py          # Broken links in docs + .agents/context/ + outdated/missing metadata detection
 ```
 
 ## Quick References

@@ -211,8 +211,8 @@ surface.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-A1 | Architecture invariants C1–C8 and D1–D6 are enforced by automated scans (`scripts/scan_violations.py`) |
-| NFR-A2 | Class contracts (Action/Entity/DTO/Model/Enum) are enforced by `scripts/scan_class_contracts.py` |
+| NFR-A1 | Architecture invariants C1–C8 and D1–D6 are enforced by automated scans (`tools/scan_violations.py`) |
+| NFR-A2 | Class contracts (Action/Entity/DTO/Model/Enum) are enforced by `tools/scan_class_contracts.py` |
 | NFR-A3 | New code must not introduce top-level directories under `app/` without a spec or recorded decision |
 | NFR-A4 | Actions eager-load relations; N+1 queries are an architecture defect (S3 — Scalable) |
 | NFR-A5 | Authorization is enforced at every layer: Policies guard Presentation, Actions and Entities enforce business authorization with `RejectedException` (C8) |
@@ -359,7 +359,7 @@ a repository layer.
 
 ### DD-7 — Automated Architecture Enforcement
 
-**Decision:** Architecture rules are enforced by `scripts/` scans (C1–C8, D1–D6, contracts,
+**Decision:** Architecture rules are enforced by `tools/` scans (C1–C8, D1–D6, contracts,
 naming, security) that run before commit.
 **Rationale:** Convention alone rots; deterministic scans are faster and more reliable than manual
 review (Automation-First doctrine).
@@ -372,8 +372,8 @@ review (Automation-First doctrine).
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
 | Module colocation | 100% of `app/` code inside modules/Core | `scan_naming.py` + directory audit |
-| Architecture violations | 0 | `python3 scripts/scan_violations.py` |
-| Class-contract violations | 0 | `python3 scripts/scan_class_contracts.py` |
+| Architecture violations | 0 | `python3 tools/scan_violations.py` |
+| Class-contract violations | 0 | `python3 tools/scan_class_contracts.py` |
 | Circular dependencies | 0 | module graph in `config/module.php` + scan |
 | Mutations through Actions | 100% (no Livewire model mutation) | C1 scan |
 | Boundary purity (C5/C6) | 0 forbidden imports | `scan_violations.py` |
@@ -419,5 +419,5 @@ authoritative contract.
 - `docs/guides/arch/exception-pattern.md` — RejectedException (C8)
 - `docs/conventions.md` — Invariants C1–C8, D1–D6
 - `config/module.php` — module dependency order
-- `scripts/scan_violations.py`, `scripts/scan_class_contracts.py` — enforcement scans
+- `tools/scan_violations.py`, `tools/scan_class_contracts.py` — enforcement scans
 - **Related specs:** [tech-stack.md](FB792-tech-stack.md) — dependency versions; [core-infra-services.md](ZT6VS-core-infra-services.md) — runtime services; [base-classes.md](SE5Q9-base-classes.md) — base class contracts; [event-system.md](NUCY3-event-system.md) — events

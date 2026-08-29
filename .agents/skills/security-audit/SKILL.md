@@ -29,7 +29,7 @@ the audit categories, issue format, and key rules defined in the Skill Rules sec
 
 ### Execute — Security Audit Execution
 
-- Run `python3 scripts/scan_security.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
+- Run `python3 tools/scan_security.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
 - Audit authentication: password hashing, rate limiting, recovery flows
 - Audit authorization: Policy methods, super admin bypass, permissions config
 - Audit XSS: Blade escaping, `{!! !!}` occurrences, CSP headers
@@ -135,12 +135,12 @@ Each finding should include:
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Audit coverage & execution (categories, cross-cutting, issue format) | `rules/security-checklist.md` | Setting up or running any security audit |
-| Authentication & authorization | `rules/authentication-authorization.md` | Auditing login, recovery, policies, permissions |
-| XSS & injection (output encoding, SQL safety) | `rules/xss-and-injection.md` | Auditing Blade output, CSP, raw SQL |
-| Mass assignment & file uploads | `rules/mass-assignment-and-uploads.md` | Auditing model writes and media uploads |
-| PII & data protection (privacy, GDPR) | `rules/pii-data-protection.md` | Auditing log masking, profile separation, deletion |
-| Secrets, configuration & dependencies | `rules/secrets-and-dependencies.md` | Auditing keys, `.env`, `composer`/`npm` |
+| Audit coverage & execution (categories, cross-cutting, issue format) | `.agents/rules/security-checklist.md` | Setting up or running any security audit |
+| Authentication & authorization | `.agents/rules/authentication-authorization.md` | Auditing login, recovery, policies, permissions |
+| XSS & injection (output encoding, SQL safety) | `.agents/rules/xss-and-injection.md` | Auditing Blade output, CSP, raw SQL |
+| Mass assignment & file uploads | `.agents/rules/mass-assignment-and-uploads.md` | Auditing model writes and media uploads |
+| PII & data protection (privacy, GDPR) | `.agents/rules/pii-data-protection.md` | Auditing log masking, profile separation, deletion |
+| Secrets, configuration & dependencies | `.agents/rules/secrets-and-dependencies.md` | Auditing keys, `.env`, `composer`/`npm` |
 
 ## References
 

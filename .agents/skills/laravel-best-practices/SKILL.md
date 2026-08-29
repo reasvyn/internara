@@ -15,7 +15,7 @@ downstream:
 
 # Laravel Best Practices (Internara Edition)
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Differences, §Key Conventions, §Common Pitfalls) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Differences, §Key Conventions, §Common Pitfalls) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -84,10 +84,10 @@ conventions diverge from stock Laravel. Apply the conventions below during imple
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Module-first architecture (placement, Actions vs Services, no FormRequest, DTO over array) | `rules/module-first-architecture.md` | Creating files or classes, or reviewing where logic lives |
-| Data & cache conventions (mass assignment, scopes, relationships, caching) | `rules/data-and-cache-conventions.md` | Touching Models, queries, or cache |
-| Validation, authorization & exceptions (form objects, policies, super-admin bypass, RejectedException) | `rules/validation-authorization-exceptions.md` | Adding validation, authorization, or exception handling |
-| Cross-cutting conventions (uploads, localization, structural guards) | `rules/cross-cutting-conventions.md` | Any feature using uploads, `__()` strings, or stock-Laravel habits |
+| Module-first architecture (placement, Actions vs Services, no FormRequest, DTO over array) | `.agents/rules/module-first-architecture.md` | Creating files or classes, or reviewing where logic lives |
+| Data & cache conventions (mass assignment, scopes, relationships, caching) | `.agents/rules/data-and-cache-conventions.md` | Touching Models, queries, or cache |
+| Validation, authorization & exceptions (form objects, policies, super-admin bypass, RejectedException) | `.agents/rules/validation-authorization-exceptions.md` | Adding validation, authorization, or exception handling |
+| Cross-cutting conventions (uploads, localization, structural guards) | `.agents/rules/cross-cutting-conventions.md` | Any feature using uploads, `__()` strings, or stock-Laravel habits |
 
 ## References
 

@@ -25,8 +25,8 @@ Follow `agent-workflow` pipeline. This skill adds TallStackUI-specific guidance.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Component selection & usage (x-ts-* primacy, semantic palette, interactions) | `rules/component-usage.md` | Any TallStackUI component |
-| Customization & theming (personalization, Tailwind integration) | `rules/customization.md` | Customizing TallStackUI components |
+| Component selection & usage (x-ts-* primacy, semantic palette, interactions) | `.agents/rules/component-usage.md` | Any TallStackUI component |
+| Customization & theming (personalization, Tailwind integration) | `.agents/rules/customization.md` | Customizing TallStackUI components |
 
 ## References
 

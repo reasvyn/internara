@@ -122,17 +122,17 @@ lines.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Refactoring safety gates | `rules/refactoring-safety.md` | Before, during, and after any refactor |
-| Verification checklist | `rules/verification-checklist.md` | Before declaring a refactor complete |
+| Refactoring safety gates | `.agents/rules/refactoring-safety.md` | Before, during, and after any refactor |
+| Verification checklist | `.agents/rules/verification-checklist.md` | Before declaring a refactor complete |
 
 ## Automation Scripts
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 scripts/scan_dead_code.py` |
-| `scan_architecture.py` | Component counts per module, submodule structure | `python3 scripts/scan_architecture.py` |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
 
-Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-{description}.json`.
+Use `--module {Name}` to scope. Output: `tools/outputs/{timestamp}-{description}.json`.
 
 ## References
 

@@ -55,9 +55,9 @@ below — nothing else.
 
 ### Verify — Quality Gates
 
-- **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (doc changes don't need
+- **Markdown-only changes:** run `python3 tools/scan_doc_links.py` (doc changes don't need
   pint/phpstan/tests)
-- Cross-check against `rules/sync-verification.md` (the automated sync-verification rule asset)
+- Cross-check against `.agents/rules/sync-verification.md` (the automated sync-verification rule asset)
 - PHPStan/Pint only if PHP files were touched
 
 ---
@@ -66,9 +66,9 @@ below — nothing else.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Sync workflow (git-history discovery + docs-to-update mapping) | `rules/sync-workflow.md` | Starting any doc sync or audit |
-| Audit scope (verify every doc claim against code & specs, incl. agent guides & skills) | `rules/audit-scope.md` | Auditing docs against code and specs |
-| Sync verification gate (metadata, links, key rules, checklist) | `rules/sync-verification.md` | Finalizing a sync before commit |
+| Sync workflow (git-history discovery + docs-to-update mapping) | `.agents/rules/sync-workflow.md` | Starting any doc sync or audit |
+| Audit scope (verify every doc claim against code & specs, incl. agent guides & skills) | `.agents/rules/audit-scope.md` | Auditing docs against code and specs |
+| Sync verification gate (metadata, links, key rules, checklist) | `.agents/rules/sync-verification.md` | Finalizing a sync before commit |
 
 ---
 
@@ -76,9 +76,9 @@ below — nothing else.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_doc_links.py` | Validate all relative links in markdown files and flag ALL markdown files whose `Last updated` metadata is missing or older than 14 days, with suggestion to verify and synchronize against codebase | `python3 scripts/scan_doc_links.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files and flag ALL markdown files whose `Last updated` metadata is missing or older than 14 days, with suggestion to verify and synchronize against codebase | `python3 tools/scan_doc_links.py` |
 
-Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
+Output: `tools/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
 
 ---
 

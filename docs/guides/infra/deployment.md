@@ -465,7 +465,7 @@ Pushes to `docker-deploy` are auto-deployed to the production server by
 1. **build** — verifies both Docker images (`app` + `web`) compile from the current source.
 2. **deploy** — SSHs to the VPS (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`), syncs the local
    clone (`git fetch origin docker-deploy && git reset --hard origin/docker-deploy`), then runs
-   `.github/scripts/deploy.sh`: `docker compose up -d --build --remove-orphans`, followed by image
+   `.github/tools/deploy.sh`: `docker compose up -d --build --remove-orphans`, followed by image
    pruning and a 60s health check against `HEALTH_URL`.
 
 Build cache is pruned on every deploy (`docker builder prune --keep-storage <limit>`, default `2g`)

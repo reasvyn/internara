@@ -126,7 +126,7 @@ Documentation rots silently unless decay is made visible and repair is routine:
 - **Audit periodically.** Run the `sync-docs` skill or verify manually after batch changes:
 
 ```bash
-python3 scripts/scan_doc_links.py   # Links resolve, metadata present & fresh
+python3 tools/scan_doc_links.py   # Links resolve, metadata present & fresh
 ```
 
 ---
@@ -139,7 +139,7 @@ python3 scripts/scan_doc_links.py   # Links resolve, metadata present & fresh
 | Cannot classify content into one quadrant | Split it — mixed-type docs are rejected |
 | Restates a fact documented elsewhere | Link to the SSOT instead |
 | Edits doc content | Bump `Last updated` + rewrite `Changes` (latest change only) |
-| Finishes doc work | Run `python3 scripts/scan_doc_links.py` — zero findings required |
+| Finishes doc work | Run `python3 tools/scan_doc_links.py` — zero findings required |
 
 ---
 

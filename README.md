@@ -57,6 +57,25 @@ Deep-dive: [problem analysis & personas](docs/project-vision.md) · [design phil
 
 ## Installation
 
+**One-line (recommended):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash
+# → git clone → composer install → npm install && npm run build → php artisan setup:install
+cd internara
+composer run dev
+```
+
+Custom dir / branch / pass-through to `setup:install`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash -s -- --dir my-pkl --branch main -- --force
+# local alternative inside an existing checkout:
+bash scripts/install.sh --help
+```
+
+**Manual:**
+
 ```bash
 git clone https://github.com/reasvyn/internara.git
 cd internara
@@ -137,7 +156,7 @@ vendor/bin/pint --dirty --format agent  # Code style fixer
 ```
 
 Pest 4 with feature + unit coverage per Action, PHPStan level 8, Laravel Pint. Architecture
-scanner toolkit (`scripts/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
+scanner toolkit (`tools/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
 
 ## Project Status
 

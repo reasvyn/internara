@@ -186,7 +186,7 @@
             "vendor/bin/phpstan *": "allow",
             "npm *": "allow",
             "npx prettier*": "allow",
-            "python3 scripts/*": "allow",
+            "python3 tools/*": "allow",
             "python3 /tmp/*": "allow",
             "ls *": "allow"
         },

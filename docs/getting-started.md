@@ -1,6 +1,6 @@
 # Getting Started — From Clone to Running Application
 
-> **Last updated:** 2026-08-16 **Changes:** sync — verify installation steps, Docker setup, setup wizard, demo data seeding against current setup:install and docker-compose
+> **Last updated:** 2026-08-29 **Changes:** add one-line installer (scripts/install.sh via curl) for git clone → composer → npm → setup:install; devtools moved scripts/ → tools/; fix repo URL; keep manual steps as alternative
 
 ## Description
 
@@ -27,27 +27,43 @@ End-to-end walkthrough from cloning the repository to completing the setup wizar
 
 ## Quick Start (Development)
 
+### Option A — One-line installer (recommended)
+
 ```bash
-# 1. Clone and enter the repository
-git clone https://github.com/your-org/internara.git
+# Fetches scripts/install.sh from GitHub, then: git clone → composer install → npm install && npm run build → php artisan setup:install
+curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash
+
+# With options (custom dir / branch / pass-through to setup:install):
+curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash -s -- --dir my-pkl --branch main -- --force
+```
+
+The installer clones into `./internara/`, installs dependencies, builds assets, and runs
+`setup:install`. Copy the signed URL it prints, then start the dev servers:
+
+```bash
 cd internara
+composer run dev   # serve + queue + logs + vite
+```
 
-# 2. Install PHP dependencies
+Open the signed URL in your browser to complete the 6-step setup wizard.
+`scripts/install.sh` also works locally inside an existing checkout: `bash scripts/install.sh --help`.
+
+### Option B — Manual
+
+```bash
+git clone https://github.com/reasvyn/internara.git
+cd internara
 composer install
-
-# 3. Install and build frontend assets
 npm install && npm run build
-
-# 4. Run the installer
 php artisan setup:install
 
-# 5. Copy the signed URL from the output, then start the server
+# Copy the signed URL from the output, then start the server
 php artisan serve
 # In another terminal:
 php artisan queue:work
 ```
 
-Open the signed URL from step 4 in your browser to complete the 6-step setup wizard.
+Both options produce the same result; the one-liner just automates the manual steps.
 
 ---
 
@@ -55,8 +71,17 @@ Open the signed URL from step 4 in your browser to complete the 6-step setup wiz
 
 ### Step 1: Clone the Repository
 
+One-liner (does clone + all steps below via `scripts/install.sh`):
+
 ```bash
-git clone https://github.com/your-org/internara.git
+curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash
+# or: bash scripts/install.sh   (when already inside a checkout)
+```
+
+Manual alternative:
+
+```bash
+git clone https://github.com/reasvyn/internara.git
 cd internara
 ```
 

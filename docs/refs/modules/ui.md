@@ -54,7 +54,7 @@ Components accept `items`, `links`, `breadcrumbs`, `title`, `actions` via `@prop
 
 ### Dependency Direction
 
-`UI → Core` only. Core never imports UI. Business modules (`Program`, `Journals`, etc.) import UI layouts via Blade (`ui::layouts.app`) but UI never imports business Models/Actions. Enforced by `scripts/scan_module_boundaries.py` (`MOD_CORE_IMPORT`, `MOD_XMOD_INTERNAL`).
+`UI → Core` only. Core never imports UI. Business modules (`Program`, `Journals`, etc.) import UI layouts via Blade (`ui::layouts.app`) but UI never imports business Models/Actions. Enforced by `tools/scan_module_boundaries.py` (`MOD_CORE_IMPORT`, `MOD_XMOD_INTERNAL`).
 
 ## Technical Notes
 

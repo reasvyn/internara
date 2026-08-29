@@ -80,7 +80,7 @@ For Blade/layout/component/a11y/i18n checks, see `ui-development` skill.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Tailwind utilities & palette (semantic colors, @theme, utilities over custom CSS, no inline style) | `rules/tailwind-utilities-and-palette.md` | Any Tailwind utility, color, or CSS change |
+| Tailwind utilities & palette (semantic colors, @theme, utilities over custom CSS, no inline style) | `.agents/rules/tailwind-utilities-and-palette.md` | Any Tailwind utility, color, or CSS change |
 
 General UI rules (Blade, view structure, layout, accessibility, localization) are now in `ui-development`.
 

@@ -16,7 +16,7 @@ downstream:
 # Pest Testing
 
 > **Last updated:** 2026-08-17 **Changes:** extracted inline rules (Test Structure, Spec
-> Traceability, Key Conventions, Mocking) into `rules/` rule assets with a `## Skill Rules` mapping
+> Traceability, Key Conventions, Mocking) into `.agents/rules/` rule assets with a `## Skill Rules` mapping
 > section
 
 > **Prerequisite:** Load `context-awareness` for testing conventions.
@@ -122,10 +122,10 @@ noise — delete it.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_tests.py` | Run test suite, parse per-module results | `python3 scripts/scan_tests.py` |
+| `scan_tests.py` | Run test suite, parse per-module results | `python3 tools/scan_tests.py` |
 
 Use `--module {Name}` to run tests for a single module. Output:
-`scripts/outputs/{timestamp}-tests.json`.
+`tools/outputs/{timestamp}-tests.json`.
 
 ## Quality Gate — arch-guard
 
@@ -189,12 +189,12 @@ test("{SpecID}-{ReqID}: Test description...", function () {
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Spec-driven minimalism (write only spec-required tests) | `rules/spec-driven-minimalism.md` | Deciding what to test for any requirement |
-| Test naming / `describe()` grouping conventions | `rules/test-naming-conventions.md` | Writing any `test()` / `describe()` block |
-| Layer test patterns (Action/Livewire/Entity/DTO/Enum/Policy) | `rules/layer-test-patterns.md` | Structuring tests for each class type |
-| Mocking boundaries (fake at the edge, never the core) | `rules/mocking-boundaries.md` | Any test that touches HTTP/FS/queue/events/cache |
-| Spec-gap & orphan detection (coverage as spec compliance) | `rules/spec-gap-orphan-detection.md` | Auditing coverage, filling gaps, pruning orphans |
-| Test quality gates (structure, database, noise control) | `rules/test-quality.md` | Every test file before commit |
+| Spec-driven minimalism (write only spec-required tests) | `.agents/rules/spec-driven-minimalism.md` | Deciding what to test for any requirement |
+| Test naming / `describe()` grouping conventions | `.agents/rules/test-naming-conventions.md` | Writing any `test()` / `describe()` block |
+| Layer test patterns (Action/Livewire/Entity/DTO/Enum/Policy) | `.agents/rules/layer-test-patterns.md` | Structuring tests for each class type |
+| Mocking boundaries (fake at the edge, never the core) | `.agents/rules/mocking-boundaries.md` | Any test that touches HTTP/FS/queue/events/cache |
+| Spec-gap & orphan detection (coverage as spec compliance) | `.agents/rules/spec-gap-orphan-detection.md` | Auditing coverage, filling gaps, pruning orphans |
+| Test quality gates (structure, database, noise control) | `.agents/rules/test-quality.md` | Every test file before commit |
 
 ## References
 

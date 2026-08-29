@@ -17,7 +17,7 @@ downstream:
 
 # Feature Building
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules into `rules/` rule assets (spec-driven implementation, build order, sub-skill delegation, artifact contracts, localization & docs, deliverable quality) with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules into `.agents/rules/` rule assets (spec-driven implementation, build order, sub-skill delegation, artifact contracts, localization & docs, deliverable quality) with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -151,12 +151,12 @@ slices across sessions per Size Triage.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Spec-driven implementation (spec-first, requirement IDs, missing-spec handling, approach comparison, path verification) | `rules/spec-driven-implementation.md` | Any feature build starts; spec is read or written |
-| Build order (14-step sequence, design alignment, staged verification for M/L) | `rules/build-order.md` | Planning the file structure and implementing slices |
-| Sub-skill delegation (orchestrator handoffs, per-concern skill loading) | `rules/sub-skill-delegation.md` | Any specialized concern (Livewire, media, UI, Pulse, refactor) is written |
-| Artifact contracts (Entity/Model/Action/Query non-negotiable shapes) | `rules/artifact-contracts.md` | Creating or modifying an Entity, Model, or Action |
-| Localization & docs (both languages, documentation-first) | `rules/localization-and-docs.md` | Any user-facing string or any new feature |
-| Deliverable quality (completion criteria and quality gates) | `rules/deliverable-quality.md` | Before review/merge of any deliverable |
+| Spec-driven implementation (spec-first, requirement IDs, missing-spec handling, approach comparison, path verification) | `.agents/rules/spec-driven-implementation.md` | Any feature build starts; spec is read or written |
+| Build order (14-step sequence, design alignment, staged verification for M/L) | `.agents/rules/build-order.md` | Planning the file structure and implementing slices |
+| Sub-skill delegation (orchestrator handoffs, per-concern skill loading) | `.agents/rules/sub-skill-delegation.md` | Any specialized concern (Livewire, media, UI, Pulse, refactor) is written |
+| Artifact contracts (Entity/Model/Action/Query non-negotiable shapes) | `.agents/rules/artifact-contracts.md` | Creating or modifying an Entity, Model, or Action |
+| Localization & docs (both languages, documentation-first) | `.agents/rules/localization-and-docs.md` | Any user-facing string or any new feature |
+| Deliverable quality (completion criteria and quality gates) | `.agents/rules/deliverable-quality.md` | Before review/merge of any deliverable |
 
 ## References
 

@@ -28,10 +28,10 @@ Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill 
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Thin component (delegation, boundaries, method injection, read-only entities, Blade no-logic) | `rules/thin-component.md` | Building or reviewing any Livewire component |
-| Component structure & routing (placement, build order, Form Objects) | `rules/component-structure.md` | Creating a component, form, or route |
-| Tables & file uploads (TallstackUI tables, BaseRecordManager, WithFileUploads + MediaLibrary) | `rules/tables-and-uploads.md` | Any listing/CRUD table or file upload |
-| Component verification (thin/safe/complete gate) | `rules/component-verification.md` | Before commit of any component change |
+| Thin component (delegation, boundaries, method injection, read-only entities, Blade no-logic) | `.agents/rules/thin-component.md` | Building or reviewing any Livewire component |
+| Component structure & routing (placement, build order, Form Objects) | `.agents/rules/component-structure.md` | Creating a component, form, or route |
+| Tables & file uploads (TallstackUI tables, BaseRecordManager, WithFileUploads + MediaLibrary) | `.agents/rules/tables-and-uploads.md` | Any listing/CRUD table or file upload |
+| Component verification (thin/safe/complete gate) | `.agents/rules/component-verification.md` | Before commit of any component change |
 
 General UI rules (Blade presentation, view structure, layout, a11y, i18n) are now in `ui-development`.
 

@@ -2,17 +2,17 @@
 name: script-automation
 description: >
     SDLC Phase: TOOLING. Standards and conventions for writing, maintaining, and integrating Python
-    devtool scripts in `scripts/`. Defines script interface, output format, error handling, testing,
+    devtool scripts in `tools/`. Defines script interface, output format, error handling, testing,
     and how scripts integrate with agent skills. Reference this skill BEFORE creating or modifying
-    any script in `scripts/`.
+    any script in `tools/`.
 ---
 
 # Script Automation
 
 > **Last updated:** 2026-08-24 **Changes:** added one-off/few-off script rule — throwaway scripts
-> go to `/tmp`, never `scripts/` (Agent Workflow + Skill Handoffs)
+> go to `/tmp`, never `tools/` (Agent Workflow + Skill Handoffs)
 
-Standards for writing, maintaining, and integrating Python devtool scripts in `scripts/`.
+Standards for writing, maintaining, and integrating Python devtool scripts in `tools/`.
 
 ## Agent Workflow
 
@@ -24,15 +24,15 @@ follow the same decision discipline as other skills:
 - **Spec-first:** only add a scanner/script when a governing spec (or a documented automation need)
   justifies it. Never build a script to work around a one-off problem a reusable script already
   covers.
-- **One-off / few-off scripts NEVER go in `scripts/`:** a script used only a handful of times — a
+- **One-off / few-off scripts NEVER go in `tools/`:** a script used only a handful of times — a
   single migration batch, temporary data fix, one-time conversion or bulk edit — must be written to
-  `/tmp` (e.g. `/tmp/migrate_x.py`), run, then discarded. `scripts/` is exclusively for durable,
+  `/tmp` (e.g. `/tmp/migrate_x.py`), run, then discarded. `tools/` is exclusively for durable,
   reusable devtools with long-term value; committing throwaway scripts pollutes the toolchain.
-- **Reuse before create:** check `scripts/README.md` and the `## Automation Scripts` tables in other
+- **Reuse before create:** check `tools/README.md` and the `## Automation Scripts` tables in other
   skills before writing a new script. If the pattern is covered, use the existing tool.
 - **Size-aware:** a multi-scanner initiative is **M/L** per the `agent-workflow` Size Triage — stage
   it per script, and inform the user before committing if it crosses into **L**.
-- **Verify:** run `python3 scripts/{name}.py --module {Module} --strict` and confirm the JSON output
+- **Verify:** run `python3 tools/{name}.py --module {Module} --strict` and confirm the JSON output
   schema before integrating into any skill.
 - **Git verify:** before committing a script change, run `git status` + `git diff` to confirm only
   intended files changed and no unrelated edits or lost content (version-control verification).
@@ -49,16 +49,16 @@ follow the same decision discipline as other skills:
 
 | Condition                                 | Action                                                                                       |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Creating/modifying a script in `scripts/` | Follow this skill's template and interface                                                   |
-| One-off / few-off batch task (≤ a few runs) | Write to `/tmp`, run, discard — do **not** create it in `scripts/`                          |
-| A skill needs a new automation            | Check `scripts/README.md` + skill `## Automation Scripts` tables first (reuse-before-create) |
+| Creating/modifying a script in `tools/` | Follow this skill's template and interface                                                   |
+| One-off / few-off batch task (≤ a few runs) | Write to `/tmp`, run, discard — do **not** create it in `tools/`                          |
+| A skill needs a new automation            | Check `tools/README.md` + skill `## Automation Scripts` tables first (reuse-before-create) |
 | Script is a quality gate                  | Load `arch-guard` to integrate it into the Quality Gate Commands                             |
 | Multi-scanner initiative                  | Classify **M/L** per Size Triage; stage per script, inform user if **L**                     |
 
 ## Script Directory Structure
 
 ```
-scripts/
+tools/
 ├── scan_architecture.py      # Component counts, module stats
 ├── scan_class_contracts.py   # Action/Entity/DTO/Model/Enum contracts
 ├── scan_conventions.py       # strict_types, Fillable, debug, hardcoded strings
@@ -79,14 +79,14 @@ scripts/
 
 ## Script Interface
 
-Every script MUST follow this interface. Run as `python3 scripts/{script_name}.py [OPTIONS]`.
+Every script MUST follow this interface. Run as `python3 tools/{script_name}.py [OPTIONS]`.
 
 **Required flags:**
 
 | Flag              | Description                                           | Default                                        |
 | ----------------- | ----------------------------------------------------- | ---------------------------------------------- |
 | `--module`, `-m`  | Target specific module (e.g., `Student`, `Academics`) | `null` (all)                                   |
-| `--output`, `-o`  | Output file path                                      | `scripts/outputs/{timestamp}-{scan_name}.json` |
+| `--output`, `-o`  | Output file path                                      | `tools/outputs/{timestamp}-{scan_name}.json` |
 | `--format`, `-f`  | Output format: `json`, `text`, `summary`              | `json`                                         |
 | `--verbose`, `-v` | Include detailed context in findings                  | `false`                                        |
 | `--quiet`, `-q`   | Only output summary, no findings                      | `false`                                        |
@@ -97,8 +97,8 @@ Every script MUST produce JSON with keys `scan_version`, `scan_name`, `scan_type
 `timestamp`, `execution_time_ms`, `summary` (`total_checks`/`passed`/`failed`/`by_severity`),
 `findings[]` (each with id/rule/severity/category/file/line/message/suggestion/reference/context),
 and `metadata`. Full schema, the script template, and finding-construction examples are in
-`rules/output-format.md` and `rules/script-structure.md`. When writing a new scanner, copy the
-standard template from `rules/script-structure.md` (or scaffold from an existing sibling scanner)
+`.agents/rules/output-format.md` and `.agents/rules/script-structure.md`. When writing a new scanner, copy the
+standard template from `.agents/rules/script-structure.md` (or scaffold from an existing sibling scanner)
 and keep the constants, dataclasses, `build_report`, `write_report`, `parse_args`, `print_summary`,
 and `main` shape consistent.
 
@@ -106,17 +106,17 @@ and `main` shape consistent.
 
 | Rule                                                        | Asset                              | Applies when                                                        |
 | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
-| CLI flags, directory layout & output path convention        | `rules/script-interface.md`        | Creating or modifying any script in `scripts/`                      |
-| JSON output schema & output quality rules                   | `rules/output-format.md`           | Building the report or validating a script's output                 |
-| Script template, scanner functions & finding construction   | `rules/script-structure.md`        | Writing a new scanner or extending an existing script               |
-| Error handling — resilience & exit code discipline          | `rules/error-handling.md`          | Any script that iterates over files                                 |
-| Script testing & performance guidelines                     | `rules/testing-and-performance.md` | Before integrating a script into a skill, or when a scan slows down |
-| Reuse-before-create, handoffs & the Skill→Script→Skill flow | `rules/agent-skill-integration.md` | Deciding to add a scanner, or wiring a script into skills/README    |
+| CLI flags, directory layout & output path convention        | `.agents/rules/script-interface.md`        | Creating or modifying any script in `tools/`                      |
+| JSON output schema & output quality rules                   | `.agents/rules/output-format.md`           | Building the report or validating a script's output                 |
+| Script template, scanner functions & finding construction   | `.agents/rules/script-structure.md`        | Writing a new scanner or extending an existing script               |
+| Error handling — resilience & exit code discipline          | `.agents/rules/error-handling.md`          | Any script that iterates over files                                 |
+| Script testing & performance guidelines                     | `.agents/rules/testing-and-performance.md` | Before integrating a script into a skill, or when a scan slows down |
+| Reuse-before-create, handoffs & the Skill→Script→Skill flow | `.agents/rules/agent-skill-integration.md` | Deciding to add a scanner, or wiring a script into skills/README    |
 
 ## Quick References
 
 | Topic                 | Location                                      |
 | --------------------- | --------------------------------------------- |
-| Full script guide     | `scripts/README.md`                           |
+| Full script guide     | `tools/README.md`                           |
 | Quality gate commands | `arch-guard` SKILL `## Quality Gate Commands` |
-| Scan output reports   | `scripts/outputs/` (`.gitignore`d)            |
+| Scan output reports   | `tools/outputs/` (`.gitignore`d)            |

@@ -9,7 +9,7 @@ downstream:
 
 # Issue Writing
 
-> **Last updated:** 2026-08-25 **Changes:** sinkronkan template Scope & Impact dengan label wajib severity (critical/high/medium/low) & priority (P0-P3); tambah aturan label wajib & label dasar di rules/issue-types-and-labels.md
+> **Last updated:** 2026-08-25 **Changes:** sinkronkan template Scope & Impact dengan label wajib severity (critical/high/medium/low) & priority (P0-P3); tambah aturan label wajib & label dasar di .agents/rules/issue-types-and-labels.md
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -38,12 +38,12 @@ session splitting — an L-size issue notes the session-split plan in its body),
 strategy, and commit format. This skill adds the issue types, unified template, key rules, and
 labels reference below — nothing else.
 
-- **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 scripts/scan_issues.py`
+- **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 tools/scan_issues.py`
   and search existing open issues for the same concern/module; link to the existing one instead.
 - Write the issue using the **Unified Issue Template** below (every issue follows it; irrelevant
   sections may be removed).
-- Apply the key rules for issue quality (`rules/issue-quality.md`), use the template usage guidance
-  (`rules/issue-template.md`), and classify type/labels correctly (`rules/issue-types-and-labels.md`).
+- Apply the key rules for issue quality (`.agents/rules/issue-quality.md`), use the template usage guidance
+  (`.agents/rules/issue-template.md`), and classify type/labels correctly (`.agents/rules/issue-types-and-labels.md`).
 
 ## Unified Issue Template
 
@@ -199,32 +199,32 @@ preventing repeated questions during code review.}
 ```
 
 For section-by-section filling guidance, the key rules, and the label set, load
-`rules/issue-quality.md`, `rules/issue-template.md`, and `rules/issue-types-and-labels.md`.
+`.agents/rules/issue-quality.md`, `.agents/rules/issue-template.md`, and `.agents/rules/issue-types-and-labels.md`.
 
 ## Automation Scripts
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 scripts/scan_issues.py` |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues.py` |
 
-Output: `scripts/outputs/{timestamp}-issues.json`.
+Output: `tools/outputs/{timestamp}-issues.json`.
 
 ## Skill Rules
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Issue quality (completeness, actionability, quality gates, destructive patterns) | `rules/issue-quality.md` | Every issue before submission |
-| Issue template (section-by-section guidance for the unified template) | `rules/issue-template.md` | Filling in each section of the unified template |
-| Issue types & labels — incl. label wajib & label dasar (classification, severity `critical/high/medium/low`, priority `P0-P3`, registry) | `rules/issue-types-and-labels.md` | Selecting type and labels for an issue — every issue needs 1 Type + 1 Severity + 1 Priority |
+| Issue quality (completeness, actionability, quality gates, destructive patterns) | `.agents/rules/issue-quality.md` | Every issue before submission |
+| Issue template (section-by-section guidance for the unified template) | `.agents/rules/issue-template.md` | Filling in each section of the unified template |
+| Issue types & labels — incl. label wajib & label dasar (classification, severity `critical/high/medium/low`, priority `P0-P3`, registry) | `.agents/rules/issue-types-and-labels.md` | Selecting type and labels for an issue — every issue needs 1 Type + 1 Severity + 1 Priority |
 
 ## References
 
 | Topic                 | Doc                                      |
 | --------------------- | ---------------------------------------- |
 | GitHub Issues         | {url repo}/issues                        |
-| Issue workflow/rules  | `rules/issue-quality.md` (this skill)    |
-| Issue template rules  | `rules/issue-template.md` (this skill)   |
-| Issue types & labels  | `rules/issue-types-and-labels.md` (this skill) |
+| Issue workflow/rules  | `.agents/rules/issue-quality.md` (this skill)    |
+| Issue template rules  | `.agents/rules/issue-template.md` (this skill)   |
+| Issue types & labels  | `.agents/rules/issue-types-and-labels.md` (this skill) |
 | Pre-existing defects  | `AGENTS.md` (§ Pre-existing Defects)     |
 | Dedup & alignment     | `AGENTS.md` (§ Clean Code & Dedup-Align Doctrine) |
 | Module structure      | `docs/refs/modules/index.md`                  |

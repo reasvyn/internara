@@ -23,8 +23,8 @@ Follow `agent-workflow` pipeline. This skill adds Spatie Permission guidance.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Roles & permissions (definition, seeding, guards) | `rules/roles-permissions.md` | Defining or seeding RBAC |
-| Blade & code usage (@role, @hasrole, hasRole(), policies) | `rules/blade-usage.md` | Any role check in Blade or PHP |
+| Roles & permissions (definition, seeding, guards) | `.agents/rules/roles-permissions.md` | Defining or seeding RBAC |
+| Blade & code usage (@role, @hasrole, hasRole(), policies) | `.agents/rules/blade-usage.md` | Any role check in Blade or PHP |
 
 ## References
 

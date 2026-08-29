@@ -9,7 +9,7 @@ downstream:
 
 # Pulse Development
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Configuration, §Authorization, §Recorders, §Adding Custom Cards, §Verification Checklist) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Key Configuration, §Authorization, §Recorders, §Adding Custom Cards, §Verification Checklist) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -85,10 +85,10 @@ as standalone Livewire components.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Dashboard & configuration (domain, middleware, recorders, ingest, retention) | `rules/dashboard-configuration.md` | Setting up or changing Pulse config |
-| Authorization (viewPulse Gate, admin/superadmin-only) | `rules/authorization.md` | Granting or testing dashboard access |
-| Recorders & ingest (recorder set, production Redis ingest) | `rules/recorders-and-ingest.md` | Choosing what Pulse captures and how |
-| Custom cards (Card extension, registration, authorize) | `rules/custom-cards.md` | Building a custom dashboard card |
+| Dashboard & configuration (domain, middleware, recorders, ingest, retention) | `.agents/rules/dashboard-configuration.md` | Setting up or changing Pulse config |
+| Authorization (viewPulse Gate, admin/superadmin-only) | `.agents/rules/authorization.md` | Granting or testing dashboard access |
+| Recorders & ingest (recorder set, production Redis ingest) | `.agents/rules/recorders-and-ingest.md` | Choosing what Pulse captures and how |
+| Custom cards (Card extension, registration, authorize) | `.agents/rules/custom-cards.md` | Building a custom dashboard card |
 
 ## References
 

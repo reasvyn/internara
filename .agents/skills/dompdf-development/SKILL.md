@@ -23,8 +23,8 @@ Follow `agent-workflow` pipeline. This skill adds DOMPDF guidance.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Blade-to-PDF rendering (view, data, paper, options) | `rules/blade-to-pdf.md` | Any PDF generation |
-| Asset embedding & fonts (images, CSS, unicode) | `rules/assets-fonts.md` | Embedding assets or custom fonts |
+| Blade-to-PDF rendering (view, data, paper, options) | `.agents/rules/blade-to-pdf.md` | Any PDF generation |
+| Asset embedding & fonts (images, CSS, unicode) | `.agents/rules/assets-fonts.md` | Embedding assets or custom fonts |
 
 ## References
 

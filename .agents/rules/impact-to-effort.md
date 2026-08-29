@@ -37,7 +37,7 @@ Tie-break inside a band: higher importance beats higher urgency.
 Within the same band, sort by ratio — quick wins first, heavy lifts scheduled, low-value work
 batched or challenged. The numeric 1–5 scoring scale and the four quadrants (quick win /
 strategic / fill-in / questionable) are defined in
-[`../skills/agent-workflow/rules/instruction-ordering.md`](../skills/agent-workflow/rules/instruction-ordering.md)
+[`.agents/rules/instruction-ordering.md`](.agents/rules/instruction-ordering.md)
 — apply them as-is; do not re-invent scales locally.
 
 ## Where It Applies
@@ -56,6 +56,6 @@ when a dependency forces resequencing, or when a Questionable item is being defe
 
 ## Quick References
 
-- [`../skills/agent-workflow/rules/instruction-ordering.md`](../skills/agent-workflow/rules/instruction-ordering.md) — scoring scale, quadrants, worked examples
+- [`.agents/rules/instruction-ordering.md`](.agents/rules/instruction-ordering.md) — scoring scale, quadrants, worked examples
 - [commit-as-checkpoint.md](commit-as-checkpoint.md) — one checkpoint per ordered stage
 - [pre-existing-defects.md](pre-existing-defects.md) — now-vs-file decisions for discovered work

@@ -11,7 +11,7 @@ downstream:
 
 # Spec Audit — Specification ↔ Implementation Synchronization
 
-> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in `rules/` (bidirectional audit, scope configuration, audit areas, run-and-write-tests, decision matrix, fix-or-issue, audit workflow)
+> **Last updated:** 2026-08-18 **Changes:** slim SKILL.md to index form — rule prose lives in `.agents/rules/` (bidirectional audit, scope configuration, audit areas, run-and-write-tests, decision matrix, fix-or-issue, audit workflow)
 
 > **Prerequisite:** Load `context-awareness` for project orientation, module map, and conventions.
 
@@ -45,43 +45,43 @@ REPORT`) — it is an ANALYSIS skill, not a standard implementation workflow. Fo
 `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage**, and commit format;
 this skill adds the audit pipeline defined in the rule assets — nothing else.
 
-- Choose the audit scope and run Size Triage → `rules/scope-configuration.md`
-- Understand drift categories and which side is authoritative → `rules/bidirectional-audit.md`
-- Execute the 6/8 audit areas → `rules/audit-areas.md`
-- Run the spec's tests and fill spec-traceable test gaps in-run → `rules/run-and-write-tests.md`
-- Classify findings via the decision matrix → `rules/decision-matrix.md`
-- Resolve each finding: fix-now (spec-lagging / test-gap / minor) vs GitHub Issue → `rules/fix-or-issue.md`
-- Run the full pipeline, structure the report, honor scope discipline → `rules/audit-workflow.md`
+- Choose the audit scope and run Size Triage → `.agents/rules/scope-configuration.md`
+- Understand drift categories and which side is authoritative → `.agents/rules/bidirectional-audit.md`
+- Execute the 6/8 audit areas → `.agents/rules/audit-areas.md`
+- Run the spec's tests and fill spec-traceable test gaps in-run → `.agents/rules/run-and-write-tests.md`
+- Classify findings via the decision matrix → `.agents/rules/decision-matrix.md`
+- Resolve each finding: fix-now (spec-lagging / test-gap / minor) vs GitHub Issue → `.agents/rules/fix-or-issue.md`
+- Run the full pipeline, structure the report, honor scope discipline → `.agents/rules/audit-workflow.md`
 
 ## Automation Scripts
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `python3 scripts/scan_violations.py` |
-| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `python3 scripts/scan_class_contracts.py` |
-| `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `python3 scripts/scan_security.py` |
-| `scan_naming.py` | File, class, method, variable naming conventions | `python3 scripts/scan_naming.py` |
-| `scan_architecture.py` | Component counts per module, submodule structure | `python3 scripts/scan_architecture.py` |
-| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 scripts/scan_conventions.py` |
-| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 scripts/scan_dead_code.py` |
-| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 scripts/scan_doc_links.py` |
-| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 scripts/scan_spec_tests.py` |
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 scripts/scan_issues.py` |
+| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `python3 tools/scan_violations.py` |
+| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `python3 tools/scan_class_contracts.py` |
+| `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `python3 tools/scan_security.py` |
+| `scan_naming.py` | File, class, method, variable naming conventions | `python3 tools/scan_naming.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
+| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 tools/scan_conventions.py` |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 tools/scan_doc_links.py` |
+| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 tools/scan_spec_tests.py` |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues.py` |
 
-All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
-to a single module. See `scripts/README.md` for full documentation.
+All scripts output to `tools/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
+to a single module. See `tools/README.md` for full documentation.
 
 ## Skill Rules
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Bidirectional audit — drift categories & which side is authoritative | `rules/bidirectional-audit.md` | Any audit finding; deciding Spec→Code vs Code→Spec vs both |
-| Scope configuration — flexible scope & work channels | `rules/scope-configuration.md` | Choosing what to audit (spec/module/phase/area/guides/full) |
-| Audit areas 1-8 — paths, contracts, requirements, tests, coverage, cross-refs, deps, guides | `rules/audit-areas.md` | Executing any audit area |
-| Run-the-spec's-tests & Test-Gap Fill — mandatory audit duties | `rules/run-and-write-tests.md` | Reviewing test coverage; any spec'd component without a test |
-| Triage & decision matrix — classifying findings, choosing the fix side | `rules/decision-matrix.md` | Classifying any finding or deciding resolution |
-| Fix-now vs Issue — auto-fix criteria, spec-lagging fix, issue standards | `rules/fix-or-issue.md` | Resolving each finding after triage |
-| Audit workflow — pipeline, report structure & scope discipline | `rules/audit-workflow.md` | Running the full audit from scope to report |
+| Bidirectional audit — drift categories & which side is authoritative | `.agents/rules/bidirectional-audit.md` | Any audit finding; deciding Spec→Code vs Code→Spec vs both |
+| Scope configuration — flexible scope & work channels | `.agents/rules/scope-configuration.md` | Choosing what to audit (spec/module/phase/area/guides/full) |
+| Audit areas 1-8 — paths, contracts, requirements, tests, coverage, cross-refs, deps, guides | `.agents/rules/audit-areas.md` | Executing any audit area |
+| Run-the-spec's-tests & Test-Gap Fill — mandatory audit duties | `.agents/rules/run-and-write-tests.md` | Reviewing test coverage; any spec'd component without a test |
+| Triage & decision matrix — classifying findings, choosing the fix side | `.agents/rules/decision-matrix.md` | Classifying any finding or deciding resolution |
+| Fix-now vs Issue — auto-fix criteria, spec-lagging fix, issue standards | `.agents/rules/fix-or-issue.md` | Resolving each finding after triage |
+| Audit workflow — pipeline, report structure & scope discipline | `.agents/rules/audit-workflow.md` | Running the full audit from scope to report |
 
 ---
 ## References

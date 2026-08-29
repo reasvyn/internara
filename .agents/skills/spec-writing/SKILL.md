@@ -19,7 +19,7 @@ downstream:
 
 > **Last updated:** 2026-08-18 **Changes:** slimmed to index form — comprehensive rules (11-section
 > template, requirement IDs, scoping, section content, data contracts, indexing & lifecycle) now
-> live in `rules/` and are mapped by the `## Skill Rules` table
+> live in `.agents/rules/` and are mapped by the `## Skill Rules` table
 
 > **Prerequisite:** Load `context-awareness` for project orientation and `doc-writing` for
 > documentation conventions.
@@ -53,7 +53,7 @@ rules, indexing, and spec lifecycle — nothing else.
 
 ### Execute — Write Specification
 
-- Follow the 11-section spec template (`rules/spec-template.md`)
+- Follow the 11-section spec template (`.agents/rules/spec-template.md`)
 - Use `edit` tool for existing files, `write` tool only for new files
 - Every statement must be verifiable or actionable
 - Reference source code with file paths where implementation exists
@@ -84,12 +84,12 @@ rules, indexing, and spec lifecycle — nothing else.
 
 | Rule                                                                           | Asset                      | Applies when                                                  |
 | ------------------------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------- |
-| 11-section spec template (structure, section intent, writing discipline)       | `rules/spec-template.md`   | Writing or reviewing any spec document                        |
-| Requirement ID conventions (FR/NFR/UC/PS/DD prefixes + area codes)             | `rules/requirement-ids.md` | Assigning any requirement ID in a spec                        |
-| Scoping rules (one initiative = one spec; when/how to split)                   | `rules/scoping-rules.md`   | Deciding the boundary of a spec or splitting an oversized one |
-| Section content rules (PS, Goals, UCs, FRs, NFRs, DDs, metrics, roadmap)       | `rules/section-content.md` | Filling any spec section with verifiable content              |
-| §6 Data contract writing (verifiable signatures/shapes/routes/config)          | `rules/data-contracts.md`  | Writing or verifying API/data contracts                       |
-| Spec indexing & lifecycle (5-char IDs, phases, dependencies, add/split/update) | `rules/spec-indexing.md`   | Registering, adding, splitting, renaming, or updating a spec  |
+| 11-section spec template (structure, section intent, writing discipline)       | `.agents/rules/spec-template.md`   | Writing or reviewing any spec document                        |
+| Requirement ID conventions (FR/NFR/UC/PS/DD prefixes + area codes)             | `.agents/rules/requirement-ids.md` | Assigning any requirement ID in a spec                        |
+| Scoping rules (one initiative = one spec; when/how to split)                   | `.agents/rules/scoping-rules.md`   | Deciding the boundary of a spec or splitting an oversized one |
+| Section content rules (PS, Goals, UCs, FRs, NFRs, DDs, metrics, roadmap)       | `.agents/rules/section-content.md` | Filling any spec section with verifiable content              |
+| §6 Data contract writing (verifiable signatures/shapes/routes/config)          | `.agents/rules/data-contracts.md`  | Writing or verifying API/data contracts                       |
+| Spec indexing & lifecycle (5-char IDs, phases, dependencies, add/split/update) | `.agents/rules/spec-indexing.md`   | Registering, adding, splitting, renaming, or updating a spec  |
 
 ## Quick References
 

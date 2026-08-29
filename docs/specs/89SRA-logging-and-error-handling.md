@@ -530,7 +530,7 @@ correlation of timestamps, user IDs, and IP addresses.
 | Masked fields | 25+ sensitive field names in MASKED_KEYS | `PiiMasker::MASKED_KEYS` count |
 | Email masking | `jo***@example.com` format | `PiiMasker::maskEmail()` unit test |
 | IP masking | First 2 octets preserved | `PiiMasker::maskIp()` unit test |
-| No raw PII in logs | Zero unmasked passwords/tokens in log output | `python3 scripts/scan_security.py` |
+| No raw PII in logs | Zero unmasked passwords/tokens in log output | `python3 tools/scan_security.py` |
 
 ### 8.3 Error Safety
 

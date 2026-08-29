@@ -65,13 +65,13 @@ Follow `agent-workflow` canonical pipeline. This skill adds data-specific design
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Schema & migrations (UUID v7, FK with onDelete/onUpdate, indexes, composite indexes) | `rules/schema-migrations.md` | Any table, migration, index, or FK change |
-| Data flow & lineage (ERD, CQRS/Action triad, cache invalidation flow, event lineage) | `rules/data-flow-lineage.md` | Any flow, ERD, or cross-module data movement |
-| Data security & privacy (PII, encryption/masking, audit, RBAC field visibility) | `rules/data-security-privacy.md` | Any PII, sensitive field, or audit requirement |
-| Contracts — interfaces, structs, types, enums, Entities | `rules/contracts-entities-enums.md` | Any interface, struct, type, or enum |
-| DTOs & Data objects (BaseData, fromArray, validation, readonly) | `rules/dtos-data-objects.md` | Any DTO or Data transfer |
-| Data mapping (Entity↔Model↔DTO↔Action, request↔DTO, CSV↔model) | `rules/data-mapping.md` | Any mapping or transformation layer |
-| Data formatting (storage vs presentation, i18n dates/numbers, JSON/decimal/UTC) | `rules/data-formatting.md` | Any formatting, export, or display of data |
+| Schema & migrations (UUID v7, FK with onDelete/onUpdate, indexes, composite indexes) | `.agents/rules/schema-migrations.md` | Any table, migration, index, or FK change |
+| Data flow & lineage (ERD, CQRS/Action triad, cache invalidation flow, event lineage) | `.agents/rules/data-flow-lineage.md` | Any flow, ERD, or cross-module data movement |
+| Data security & privacy (PII, encryption/masking, audit, RBAC field visibility) | `.agents/rules/data-security-privacy.md` | Any PII, sensitive field, or audit requirement |
+| Contracts — interfaces, structs, types, enums, Entities | `.agents/rules/contracts-entities-enums.md` | Any interface, struct, type, or enum |
+| DTOs & Data objects (BaseData, fromArray, validation, readonly) | `.agents/rules/dtos-data-objects.md` | Any DTO or Data transfer |
+| Data mapping (Entity↔Model↔DTO↔Action, request↔DTO, CSV↔model) | `.agents/rules/data-mapping.md` | Any mapping or transformation layer |
+| Data formatting (storage vs presentation, i18n dates/numbers, JSON/decimal/UTC) | `.agents/rules/data-formatting.md` | Any formatting, export, or display of data |
 
 ## References
 

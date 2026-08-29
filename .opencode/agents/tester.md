@@ -13,7 +13,7 @@ permission:
     "vendor/bin/pest *": allow
     "vendor/bin/pint *": allow
     "vendor/bin/phpstan *": allow
-    "python3 scripts/scan_*": allow
+    "python3 tools/scan_*": allow
     "npm *": allow
     "ls *": allow
 ---
