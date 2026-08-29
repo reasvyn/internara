@@ -9,7 +9,8 @@ parameters:
 		- node_modules/*
 		- storage/*
 		- bootstrap/cache/*
-		- app/Core/Support/helpers.php
+		- app/Modules/Core/Support/helpers.php
+		- app/Modules/Settings/Support/helpers.php
 	reportUnmatchedIgnoredErrors: false
 
 	ignoreErrors:
