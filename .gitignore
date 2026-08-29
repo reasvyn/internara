@@ -7,7 +7,7 @@
 /storage/*.key
 /storage/logs
 /storage/pail
-/scripts/outputs
+/tools/outputs
 /temp
 /.phpunit.cache
 /.temp
@@ -45,7 +45,7 @@ yarn-error.log
 .phpunit.result.cache
 
 # Volatile Files
-/scripts/outputs
+/tools/outputs
 
 # Docker Sail — only keep 8.4
 /docker/8.0/
@@ -68,8 +68,8 @@ yarn-error.log
 # AI Agent Files
 .blackboxcli/
 .gemini/
-/scripts/outputs/*.json
-/scripts/__pycache__/
+/tools/outputs/*.json
+/tools/__pycache__/
 
 # Backup Files
 /**/*.backup

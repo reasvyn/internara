@@ -27,7 +27,7 @@ Internara has **18 modules** in `app/` at **v0.14.0 — Stabilization** (in prog
 3. **Hardcoded strings** — User-facing text without `__()` → blocks localization. Add keys to both `lang/en/` + `lang/id/`.
 4. **Missing Entity layer** — `Document` has no `Entities/`; business rules in Actions/Models. Extract to `final readonly` Entity with `fromModel()` + `bool` rule methods.
 5. **Event dispatch violations** — `event(new X)` inside DB transaction → race condition. Use `$this->dispatchEvent(new X())` (queued, fires after commit).
-6. **Dead code** — Unused DTOs, unregistered observers, events without listeners. Verify with `python3 scripts/scan_dead_code.py --module {Module}`.
+6. **Dead code** — Unused DTOs, unregistered observers, events without listeners. Verify with `python3 tools/scan_dead_code.py --module {Module}`.
 
 ---
 
@@ -36,7 +36,7 @@ Internara has **18 modules** in `app/` at **v0.14.0 — Stabilization** (in prog
 If the task touches a **Needs Work** module, do this first (L-size protocol may apply):
 
 1. `git log --oneline -p` for that module's recent fixes — see what P0s are already filed
-2. `python3 scripts/scan_violations.py --module {Module}` + `scan_class_contracts.py --module {Module}` — baseline the debt
+2. `python3 tools/scan_violations.py --module {Module}` + `scan_class_contracts.py --module {Module}` — baseline the debt
 3. Fix P0 runtime errors (schema, Blade crash, missing relation) before adding new logic
 4. Add spec-traceable tests (`FR-*`/`NFR-*` from `docs/specs/{ID}-{feature}.md`) — no orphan tests
 
@@ -51,7 +51,7 @@ If the task is **new feature in a healthy module**, use that module as template;
 | Add a feature to `Evaluation` (skeleton) | Scaffold full 4-layer stack per `spec-writing` + `code-writing` skills: Models → Entities → DTOs → Actions (Command/Read/Process) → Livewire → Policies → Routes → `lang/` → tests |
 | Touch `Assessment`/`Certification`/`Document` | Read this file first; run `scan_violations --module {Name}`; fix schema/Blade P0s; don't assume `ActionResponse` contract holds |
 | Extend `Reports` (being purified) | Check `docs/refs/modules/reports.md` §Boundary — grade card only, no thesis content (thesis belongs to `Assignment`) |
-| Diagnose unknown failure | Check `README.md#Project Status` for tier, then `python3 scripts/scan_dead_code.py` + `git blame` for that module |
+| Diagnose unknown failure | Check `README.md#Project Status` for tier, then `python3 tools/scan_dead_code.py` + `git blame` for that module |
 
 ---
 
@@ -60,5 +60,5 @@ If the task is **new feature in a healthy module**, use that module as template;
 - `README.md#Project Status` — human SSOT for this file
 - `docs/refs/modules/index.md` — module docs (overview + reference per module)
 - `docs/specs/index.md` — spec registry (18 modules × specs)
-- `scripts/scan_violations.py`, `scan_class_contracts.py`, `scan_dead_code.py` — health scanners
+- `tools/scan_violations.py`, `scan_class_contracts.py`, `scan_dead_code.py` — health scanners
 - `CONTRIBUTING.md` — branch/commit conventions for fixes

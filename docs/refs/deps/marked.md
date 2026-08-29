@@ -15,7 +15,7 @@ it touches the DOM. The pair is treated as one unit because they are only ever u
 | Package | Version | Role |
 |---------|---------|------|
 | `marked` | `^18.0.7` | Markdown → HTML parser (CommonMark-flavored, fast, extensible) |
-| `dompurify` | `^3.4.14` | XSS sanitizer allowing a whitelist of HTML while stripping scripts/event handlers |
+| `dompurify` | `^3.4.14` | XSS sanitizer allowing a whitelist of HTML while stripping tools/event handlers |
 
 ---
 

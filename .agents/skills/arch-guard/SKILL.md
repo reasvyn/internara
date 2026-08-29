@@ -73,54 +73,54 @@ rather than changing code.
 
 ```bash
 # Full violation scan (C1-C8, D1-D6, security, performance)
-python3 scripts/scan_violations.py
+python3 tools/scan_violations.py
 
 # Class contract compliance
-python3 scripts/scan_class_contracts.py
+python3 tools/scan_class_contracts.py
 
 # Security patterns
-python3 scripts/scan_security.py
+python3 tools/scan_security.py
 
 # Naming conventions
-python3 scripts/scan_naming.py
+python3 tools/scan_naming.py
 
 # Combined architecture audit (component counts, submodule structure)
-python3 scripts/scan_architecture.py
+python3 tools/scan_architecture.py
 
 # Conventions check (strict_types, Fillable, debug calls, hardcoded strings)
-python3 scripts/scan_conventions.py
+python3 tools/scan_conventions.py
 
 # Dead code detection (unregistered observers, unused DTOs, orphan events)
-python3 scripts/scan_dead_code.py
+python3 tools/scan_dead_code.py
 
 # Doc link integrity (includes ADR index ↔ ADR files)
-python3 scripts/scan_doc_links.py
+python3 tools/scan_doc_links.py
 
 # ADR audit — staleness, metadata, code linkage, orphan decisions
-python3 scripts/scan_adr.py
+python3 tools/scan_adr.py
 
 # Test suite runner (per-module results)
-python3 scripts/scan_tests.py
+python3 tools/scan_tests.py
 
 # Spec↔tests coverage (FR/NFR/UC traceability, non-testable marker *)
-python3 scripts/scan_spec_tests.py
+python3 tools/scan_spec_tests.py
 
 # Spec↔code gap analysis
-python3 scripts/scan_issues.py
+python3 tools/scan_issues.py
 ```
 
-All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to
-scope to a single module. See `scripts/README.md` for full documentation.
+All scripts output to `tools/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to
+scope to a single module. See `tools/README.md` for full documentation.
 
 ## Skill Rules
 
 | Rule                                                                                          | Asset                             | Applies when                                                          |
 | --------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------- |
-| Critical invariants C1-C8 / D1-D6 enforcement & rule priority hierarchy                       | `rules/invariant-enforcement.md`  | Checking any code against the non-negotiable invariants               |
-| Class contract checks (Action/Entity/DTO/Model/Enum/Event/Policy/Livewire/Service)            | `rules/class-contracts.md`        | Verifying any component's structural contract                         |
-| Naming convention checks (file/class/method/variable)                                         | `rules/naming-conventions.md`     | Validating naming or reviewing any named element                      |
-| Security rules S1-S10 (XSS/SQLi/mass-assignment/CSRF/auth/rate-limit/secrets/uploads/headers) | `rules/security-rules.md`         | Scanning for security anti-patterns                                   |
-| Performance rules P1-P5 (N+1, select, chunk, cache, exists)                                   | `rules/performance-rules.md`      | Auditing query & data-shape performance                               |
-| Four-layer audit procedure & severity classification                                          | `rules/layer-audit-procedure.md`  | Auditing code by layer or classifying finding severity                |
-| ADR audit — metadata freshness, code linkage, orphan & stale decisions                        | `rules/adr-audit.md`              | Auditing any ADR document or its code linkage                         |
-| JSON report structure, automation mapping & skill delegation                                  | `rules/output-and-integration.md` | Consuming/filing findings or integrating arch-guard with other skills |
+| Critical invariants C1-C8 / D1-D6 enforcement & rule priority hierarchy                       | `.agents/rules/invariant-enforcement.md`  | Checking any code against the non-negotiable invariants               |
+| Class contract checks (Action/Entity/DTO/Model/Enum/Event/Policy/Livewire/Service)            | `.agents/rules/class-contracts.md`        | Verifying any component's structural contract                         |
+| Naming convention checks (file/class/method/variable)                                         | `.agents/rules/naming-conventions.md`     | Validating naming or reviewing any named element                      |
+| Security rules S1-S10 (XSS/SQLi/mass-assignment/CSRF/auth/rate-limit/secrets/uploads/headers) | `.agents/rules/security-rules.md`         | Scanning for security anti-patterns                                   |
+| Performance rules P1-P5 (N+1, select, chunk, cache, exists)                                   | `.agents/rules/performance-rules.md`      | Auditing query & data-shape performance                               |
+| Four-layer audit procedure & severity classification                                          | `.agents/rules/layer-audit-procedure.md`  | Auditing code by layer or classifying finding severity                |
+| ADR audit — metadata freshness, code linkage, orphan & stale decisions                        | `.agents/rules/adr-audit.md`              | Auditing any ADR document or its code linkage                         |
+| JSON report structure, automation mapping & skill delegation                                  | `.agents/rules/output-and-integration.md` | Consuming/filing findings or integrating arch-guard with other skills |

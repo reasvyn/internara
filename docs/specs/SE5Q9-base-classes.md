@@ -410,11 +410,11 @@ picks up new modules.
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Strict types | 100% of PHP files (except migrations/config) | `python3 scripts/scan_conventions.py` |
-| No debug calls | Zero in committed code | `python3 scripts/scan_conventions.py` |
-| Base class usage | 100% of Actions extend BaseAction variants | `python3 scripts/scan_class_contracts.py` |
-| Entity contracts | 100% of Entities are `final readonly` with `fromModel()` | `python3 scripts/scan_class_contracts.py` |
-| DTO contracts | 100% of DTOs extend `BaseData` | `python3 scripts/scan_class_contracts.py` |
+| Strict types | 100% of PHP files (except migrations/config) | `python3 tools/scan_conventions.py` |
+| No debug calls | Zero in committed code | `python3 tools/scan_conventions.py` |
+| Base class usage | 100% of Actions extend BaseAction variants | `python3 tools/scan_class_contracts.py` |
+| Entity contracts | 100% of Entities are `final readonly` with `fromModel()` | `python3 tools/scan_class_contracts.py` |
+| DTO contracts | 100% of DTOs extend `BaseData` | `python3 tools/scan_class_contracts.py` |
 
 ---
 

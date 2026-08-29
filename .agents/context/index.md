@@ -1,6 +1,6 @@
 # Context — AI Agent Memory (Evolving Project Context)
 
-> **Last updated:** 2026-08-25 **Changes:** added dep-model-status-deprecated — spatie/laravel-model-status marked deprecated pending removal (#419)
+> **Last updated:** 2026-08-29 **Changes:** added learning-log — chronological capture store for the project Learning Loop (self-improvement)
 
 ## Description
 
@@ -28,6 +28,7 @@ or conflicting, write it back here** — this memory is how context survives bet
 | [dep-model-status-deprecated.md](dep-model-status-deprecated.md) | **Any status/state persistence** — spatie/laravel-model-status deprecated, removal planned (#419); status columns are app-owned |
 | [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
+| [learning-log.md](learning-log.md) | **Every session end** — chronological capture of decisions, corrections, failures, patterns, constraints, gaps (the Learning Loop store) |
 
 ---
 
@@ -53,6 +54,6 @@ or conflicting, write it back here** — this memory is how context survives bet
 
 ## Quick References
 
-- [Architecture Rules](../skills/context-awareness/rules/architecture-rules.md) — layer/contract checks
+- [Architecture Rules](.agents/rules/architecture-rules.md) — layer/contract checks
 - [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD topology
-- [Documentation Map](../skills/context-awareness/SKILL.md#documentation-map) — where to find every doc
+- [Documentation Map](AGENTS.md §Context Awareness#documentation-map) — where to find every doc

@@ -13,7 +13,7 @@ downstream:
 
 # Doc Writing
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§1-§8) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§1-§8) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation and documentation map.
 
@@ -45,13 +45,13 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 
 ### Verify — Quality Gates
 
-- **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (doc changes don't need
+- **Markdown-only changes:** run `python3 tools/scan_doc_links.py` (doc changes don't need
   pint/phpstan/tests)
 - All relative links resolve to existing files; anchor links match actual headings
 - Metadata block present with current date; `## Description` section present
 - No implementation details in conceptual docs; no design rationale in reference docs
 - PHPStan/Pint only if PHP/PHPDoc files were touched
-- Run the doc-quality gate in `rules/doc-quality.md` before committing
+- Run the doc-quality gate in `.agents/rules/doc-quality.md` before committing
 
 ---
 
@@ -59,12 +59,12 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Documentation-First (SSOT) & edit discipline | `rules/documentation-first.md` | Any doc change; docs-vs-code disagreement |
-| Two-tier model (conceptual vs reference) | `rules/two-tier-model.md` | Creating or editing module/architecture docs |
-| Metadata & document structure | `rules/metadata-structure.md` | Every markdown file |
-| PHPDoc conventions | `rules/phpdoc.md` | Writing or editing PHPDoc on PHP classes |
-| Link integrity & content duplication | `rules/link-integrity.md` | Any cross-reference in a doc |
-| Doc quality gate | `rules/doc-quality.md` | Pre-commit review of any doc change |
+| Documentation-First (SSOT) & edit discipline | `.agents/rules/documentation-first.md` | Any doc change; docs-vs-code disagreement |
+| Two-tier model (conceptual vs reference) | `.agents/rules/two-tier-model.md` | Creating or editing module/architecture docs |
+| Metadata & document structure | `.agents/rules/metadata-structure.md` | Every markdown file |
+| PHPDoc conventions | `.agents/rules/phpdoc.md` | Writing or editing PHPDoc on PHP classes |
+| Link integrity & content duplication | `.agents/rules/link-integrity.md` | Any cross-reference in a doc |
+| Doc quality gate | `.agents/rules/doc-quality.md` | Pre-commit review of any doc change |
 
 ---
 
@@ -77,5 +77,5 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 | Module index | `docs/refs/modules/index.md` |
 | Pattern deep-dives | `docs/guides/arch/{pattern}-pattern.md` |
 | Sync-docs workflow | `.agents/skills/sync-docs/SKILL.md` |
-| Sync verification rules | `.agents/skills/sync-docs/rules/sync-verification.md` |
+| Sync verification rules | `.agents/rules/sync-verification.md` |
 | Documentation map | `docs/index.md` |

@@ -52,7 +52,7 @@ Events. Design rationale lives in `{module}.md`.
 
 ## Writing Discipline
 
-- Every table row must match real code — run `python3 scripts/scan_architecture.py` to reconcile
+- Every table row must match real code — run `python3 tools/scan_architecture.py` to reconcile
   component counts before publishing.
 - Reference docs go stale fastest; update them in the same PR as any Action/Route/Model change.
 - Dry tone: state facts, no "why" paragraphs, no usage tutorials.

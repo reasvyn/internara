@@ -27,9 +27,9 @@ Follow `agent-workflow` canonical pipeline. This skill adds Laravel-specific gui
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Service container & providers (bindings, discovery, auto-registration) | `rules/service-container.md` | Registering services, providers, or Blade namespaces |
-| Routing & middleware (route files, Livewire routes, role middleware) | `rules/routing-middleware.md` | Creating or modifying routes/middleware |
-| Eloquent & validation (eager loading, query patterns, FormRequest/DTO) | `rules/eloquent-validation.md` | Any model query or validation logic |
+| Service container & providers (bindings, discovery, auto-registration) | `.agents/rules/service-container.md` | Registering services, providers, or Blade namespaces |
+| Routing & middleware (route files, Livewire routes, role middleware) | `.agents/rules/routing-middleware.md` | Creating or modifying routes/middleware |
+| Eloquent & validation (eager loading, query patterns, FormRequest/DTO) | `.agents/rules/eloquent-validation.md` | Any model query or validation logic |
 
 General code conventions (Action triad, Entity/DTO) are in `code-writing`; module architecture is in `laravel-best-practices` (legacy, now delegates here).
 

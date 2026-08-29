@@ -156,11 +156,11 @@ GDPR reference: [System Observability §GDPR Deletion Logs](../system-observabil
 
 | Script | Purpose | Command |
 | ------ | ------- | ------- |
-| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 scripts/scan_security.py` |
-| `scan_violations.py` | Architecture invariant violations (C1-C8, D1-D6) | `python3 scripts/scan_violations.py` |
-| `scan_conventions.py` | `declare(strict_types)`, `#[Fillable]`, debug calls | `python3 scripts/scan_conventions.py` |
-| `scan_class_contracts.py` | Action/Entity/DTO/Model contract compliance | `python3 scripts/scan_class_contracts.py` |
-| `scan_naming.py` | Naming convention violations | `python3 scripts/scan_naming.py` |
+| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security.py` |
+| `scan_violations.py` | Architecture invariant violations (C1-C8, D1-D6) | `python3 tools/scan_violations.py` |
+| `scan_conventions.py` | `declare(strict_types)`, `#[Fillable]`, debug calls | `python3 tools/scan_conventions.py` |
+| `scan_class_contracts.py` | Action/Entity/DTO/Model contract compliance | `python3 tools/scan_class_contracts.py` |
+| `scan_naming.py` | Naming convention violations | `python3 tools/scan_naming.py` |
 
 ### Dependency Auditing
 

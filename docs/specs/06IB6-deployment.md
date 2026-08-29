@@ -236,9 +236,9 @@ preset.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | `deploy:detect` must complete in under 5 seconds |
-| NFR-P2 | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) |
-| NFR-P3 | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them |
+| NFR-P1* | `deploy:detect` must complete in under 5 seconds — manual perf, not unit-testable |
+| NFR-P2* | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) — manual perf, not unit-testable |
+| NFR-P3* | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them — infra, verified manually |
 
 ### 5.3 Reliability
 

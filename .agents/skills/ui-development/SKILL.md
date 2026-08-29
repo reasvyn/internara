@@ -36,12 +36,12 @@ Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill 
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Blade presentation — no business/UI logic (Livewire computed props or Alpine.js only; `@if` with inline expressions should be avoided) | `rules/blade-presentation.md` | Every Blade file — any derived value, percentage, or array assembly |
-| UI stack & component usage (TallstackUI `x-ts-*` primacy, semantic palette, no custom HTML) | `rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
-| Layout, responsiveness & dark mode (drawer/navbar, breakpoints, theming, TallstackUI `x-ts-layout`) | `rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
-| View structure & routing (Blade placement, route files, Livewire routes) | `rules/view-structure-and-routing.md` | Creating views or routes |
-| Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `rules/accessibility-wcag.md` | Every styled component before release |
-| Localization in views (bilingual `__()`, keys, dates, lang attribute) | `rules/localization-in-views.md` | Any user-facing string or date in a view |
+| Blade presentation — no business/UI logic (Livewire computed props or Alpine.js only; `@if` with inline expressions should be avoided) | `.agents/rules/blade-presentation.md` | Every Blade file — any derived value, percentage, or array assembly |
+| UI stack & component usage (TallstackUI `x-ts-*` primacy, semantic palette, no custom HTML) | `.agents/rules/ui-stack-and-component-usage.md` | Building any UI component or styling views |
+| Layout, responsiveness & dark mode (drawer/navbar, breakpoints, theming, TallstackUI `x-ts-layout`) | `.agents/rules/layout-responsive-dark-mode.md` | Structuring layouts or theming the app |
+| View structure & routing (Blade placement, route files, Livewire routes) | `.agents/rules/view-structure-and-routing.md` | Creating views or routes |
+| Accessibility (WCAG 2.1 AA: contrast, focus, keyboard, reflow, icons) | `.agents/rules/accessibility-wcag.md` | Every styled component before release |
+| Localization in views (bilingual `__()`, keys, dates, lang attribute) | `.agents/rules/localization-in-views.md` | Any user-facing string or date in a view |
 
 ## References
 

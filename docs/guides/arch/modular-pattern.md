@@ -65,8 +65,8 @@ See: `docs/adr/adr-gradual-migration.md`.
 
 Every unit has exactly one responsibility and one reason to change; every dependency crosses at
 most one boundary downward. This section is the canonical reference for SRP and modularity rules —
-other docs link here, never duplicate. Enforced by `scripts/scan_class_contracts.py` and
-`scripts/scan_violations.py`.
+other docs link here, never duplicate. Enforced by `tools/scan_class_contracts.py` and
+`tools/scan_violations.py`.
 
 | Unit                | One responsibility                  | Boundary rules                                                                                              |
 | ------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |

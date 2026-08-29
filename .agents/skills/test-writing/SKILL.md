@@ -13,7 +13,7 @@ downstream:
 
 # Verify & Testing
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (Core Principles, §1-§5) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (Core Principles, §1-§5) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project conventions and critical invariants.
 
@@ -39,11 +39,11 @@ test-diagnosis rules found in the Skill Rules section below — nothing else.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Verification strategy (change-type matrix, lightweight toolkit, full-suite fire drill) | `rules/verification-strategy.md` | Deciding what to run for a given change |
-| Spec-driven testing (requirement-traceable tests, audit scope, minimalism) | `rules/spec-driven-testing.md` | Writing tests or auditing tests against their specs |
-| Efficient execution (targeted commands, batching, memory budget) | `rules/efficient-execution.md` | Running tests without wasting time or resources |
-| Test writing (follow existing patterns, scenario checklist, helpers) | `rules/test-writing.md` | Writing new tests |
-| Test diagnosis (read failures, efficient fix workflow, pre-existing handling) | `rules/test-diagnosis.md` | Fixing failing tests |
+| Verification strategy (change-type matrix, lightweight toolkit, full-suite fire drill) | `.agents/rules/verification-strategy.md` | Deciding what to run for a given change |
+| Spec-driven testing (requirement-traceable tests, audit scope, minimalism) | `.agents/rules/spec-driven-testing.md` | Writing tests or auditing tests against their specs |
+| Efficient execution (targeted commands, batching, memory budget) | `.agents/rules/efficient-execution.md` | Running tests without wasting time or resources |
+| Test writing (follow existing patterns, scenario checklist, helpers) | `.agents/rules/test-writing.md` | Writing new tests |
+| Test diagnosis (read failures, efficient fix workflow, pre-existing handling) | `.agents/rules/test-diagnosis.md` | Fixing failing tests |
 
 ---
 

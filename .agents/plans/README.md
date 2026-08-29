@@ -33,7 +33,7 @@ One paragraph — what the batched instruction achieves and why.
 ## Sessions
 ### Session 1 — {Title} (files: X, concern: Y)
 - [ ] Implement: {files/modules}
-- [ ] Verify: `vendor/bin/pest --testsuite={Module}`, `python3 scripts/scan_violations.py --module {Module}`
+- [ ] Verify: `vendor/bin/pest --testsuite={Module}`, `python3 tools/scan_violations.py --module {Module}`
 - [ ] Summarize: commit `type(scope): ...` + short report
 
 ### Session 2 — ...
@@ -56,4 +56,4 @@ Batch per AGENTS.md#Verification Strategy — e.g. `pint --dirty`, `npm run buil
 
 - `AGENTS.md#Size Triage` — S/M/L criteria
 - `.agents/context/workflow-5step.md#Size Triage` — L-size protocol
-- `.agents/skills/agent-workflow/SKILL.md` — canonical 5-step pipeline
+- `AGENTS.md §Agent Workflow` — canonical 5-step pipeline

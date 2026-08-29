@@ -12,8 +12,8 @@ permission:
     "git diff*": allow
     "git log*": allow
     "ls *": allow
-    "python3 scripts/scan_doc_links.py": allow
-    "python3 scripts/scan_violations.py": allow
+    "python3 tools/scan_doc_links.py": allow
+    "python3 tools/scan_violations.py": allow
 ---
 
 You are **Planner** — the spec-first planning specialist for Internara.

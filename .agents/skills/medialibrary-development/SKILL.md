@@ -10,7 +10,7 @@ downstream:
 
 # MediaLibrary Development
 
-> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Core Rules, §Collection Definition, §Usage Patterns, §Key Configurations, §Verification Checklist) into `rules/` rule assets with a `## Skill Rules` mapping section
+> **Last updated:** 2026-08-17 **Changes:** extracted inline rules (§Core Rules, §Collection Definition, §Usage Patterns, §Key Configurations, §Verification Checklist) into `.agents/rules/` rule assets with a `## Skill Rules` mapping section
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -114,10 +114,10 @@ $model->deleteMedia($mediaId); // specific
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Media collections (definition, per-collection validation, MIME, filenames) | `rules/media-collections.md` | Declaring collections or guarding uploads |
-| Media conversions & responsive images (conversion config, disk, queue) | `rules/media-conversions.md` | Image processing or performance of media views |
-| Upload & retrieval (Action ownership, accessors, deletion) | `rules/upload-retrieval-deletion.md` | Writing upload, retrieval, or delete code |
-| Storage & governance (disks, queues, verification gate) | `rules/storage-and-governance.md` | Deploying media features or reviewing config |
+| Media collections (definition, per-collection validation, MIME, filenames) | `.agents/rules/media-collections.md` | Declaring collections or guarding uploads |
+| Media conversions & responsive images (conversion config, disk, queue) | `.agents/rules/media-conversions.md` | Image processing or performance of media views |
+| Upload & retrieval (Action ownership, accessors, deletion) | `.agents/rules/upload-retrieval-deletion.md` | Writing upload, retrieval, or delete code |
+| Storage & governance (disks, queues, verification gate) | `.agents/rules/storage-and-governance.md` | Deploying media features or reviewing config |
 
 ## References
 

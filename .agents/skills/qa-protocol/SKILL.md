@@ -14,7 +14,7 @@ downstream:
 
 > **Last updated:** 2026-08-18 **Changes:** slimmed to index form — comprehensive protocol rules
 > (6-phase execution, blind execution doctrine, compliance scorecard, GitHub issues output,
-> per-standard checklists) now live in `rules/` and are mapped by the `## Skill Rules` table
+> per-standard checklists) now live in `.agents/rules/` and are mapped by the `## Skill Rules` table
 
 > **Prerequisite:** None. This skill is INDEPENDENT of project documentation. Do NOT load project
 > conventions, architecture docs, or module references before executing. This is a blind test
@@ -76,7 +76,7 @@ The terminal phase consolidates findings, files issues, and reports:
 
 1. **Consolidate** — deduplicate across phases (keep highest severity, note other phases);
    cross-reference `arch-guard` overlaps (file independently — QA perspective differs); assign final
-   severity via CVSS mapping (`rules/owasp-top10.md` §Scoring).
+   severity via CVSS mapping (`.agents/rules/owasp-top10.md` §Scoring).
 2. **Create GitHub Issues** — one per finding using the `issue-writing` template: title
    `[QA] {severity_emoji} {title}`, labels `qa-audit`/`security`/severity, body with summary,
    affected standard (OWASP A01, CWE-79, PSR-12, WCAG 2.1.1), evidence (file:line), recommended fix
@@ -84,7 +84,7 @@ The terminal phase consolidates findings, files issues, and reports:
 3. **Commit skill changes** — verify with `git status` + `git diff`, commit only intended files
    (`docs(qa-protocol): ...`).
 4. **User report** — deliver the compliance scorecard + top findings summary (template:
-   `rules/github-issues-output.md`).
+   `.agents/rules/github-issues-output.md`).
 
 **Phase 6 blockers:** `gh` CLI not authenticated → report findings directly (skip issue creation);
 no findings at all → still report and commit (a clean audit is valuable).
@@ -130,34 +130,34 @@ no findings at all → still report and commit (a clean audit is valuable).
 
 | Rule                                 | Asset                           | Applies when                                       |
 | ------------------------------------ | ------------------------------- | -------------------------------------------------- |
-| 6-phase execution order & blockers   | `rules/six-phase-protocol.md`   | Running any QA audit (Phase 1-6)                   |
-| Blind QA execution doctrine          | `rules/blind-qa-execution.md`   | Every QA audit — before and during execution       |
-| Compliance scorecard & CVSS severity | `rules/compliance-scorecard.md` | Scoring results and assigning severities (Phase 6) |
-| GitHub issues output & report        | `rules/github-issues-output.md` | Filing findings, committing, reporting (Phase 6)   |
+| 6-phase execution order & blockers   | `.agents/rules/six-phase-protocol.md`   | Running any QA audit (Phase 1-6)                   |
+| Blind QA execution doctrine          | `.agents/rules/blind-qa-execution.md`   | Every QA audit — before and during execution       |
+| Compliance scorecard & CVSS severity | `.agents/rules/compliance-scorecard.md` | Scoring results and assigning severities (Phase 6) |
+| GitHub issues output & report        | `.agents/rules/github-issues-output.md` | Filing findings, committing, reporting (Phase 6)   |
 
 ### Standard Coverage
 
 | Rule                                   | Asset                                   | Applies when                           |
 | -------------------------------------- | --------------------------------------- | -------------------------------------- |
-| OWASP Top 10 (2021)                    | `rules/owasp-top10.md`                  | Phase 2 security audit                 |
-| SANS Top 25 rankings                   | `rules/sans-top25.md`                   | Phase 2 CWE prioritization             |
-| CWE/SANS taxonomy & severity           | `rules/cwe-sans.md`                     | Phase 2 CWE cross-reference            |
-| ISO 25010 quality model                | `rules/iso25010.md`                     | Scoring characteristics (Phase 3-5)    |
-| Authentication & authorization         | `rules/authentication-authorization.md` | Phase 3 auth checks                    |
-| API security (rate limit, CSRF, CORS)  | `rules/api-security.md`                 | Any HTTP/API endpoint audit            |
-| Cryptography                           | `rules/cryptography.md`                 | Phase 4 crypto checks                  |
-| Session management                     | `rules/session-management.md`           | Phase 4 session checks                 |
-| Error handling                         | `rules/error-handling.md`               | Phase 3 error checks                   |
-| Logging & log hygiene                  | `rules/logging.md`                      | Phase 3 logging checks                 |
-| Input validation                       | `rules/input-validation.md`             | Phase 3 validation checks              |
-| Dependency audit                       | `rules/dependency-audit.md`             | Phase 1 `composer audit` / `npm audit` |
-| Static analysis (PHPStan/Larastan)     | `rules/static-analysis.md`              | Phase 1 PHPStan run                    |
-| PSR standards                          | `rules/psr-standards.md`                | Phase 1 & 4 PSR checks                 |
-| Laravel best practices                 | `rules/laravel-best-practices.md`       | Phase 4 framework audit                |
-| WCAG accessibility                     | `rules/wcag.md`                         | Phase 4 accessibility audit            |
-| Performance & efficiency               | `rules/performance.md`                  | Phase 5 performance audit              |
-| Code quality (complexity, duplication) | `rules/code-quality.md`                 | Phase 3 code-quality checks            |
-| Test coverage quality                  | `rules/test-coverage.md`                | Phase 3 test audit                     |
+| OWASP Top 10 (2021)                    | `.agents/rules/owasp-top10.md`                  | Phase 2 security audit                 |
+| SANS Top 25 rankings                   | `.agents/rules/sans-top25.md`                   | Phase 2 CWE prioritization             |
+| CWE/SANS taxonomy & severity           | `.agents/rules/cwe-sans.md`                     | Phase 2 CWE cross-reference            |
+| ISO 25010 quality model                | `.agents/rules/iso25010.md`                     | Scoring characteristics (Phase 3-5)    |
+| Authentication & authorization         | `.agents/rules/authentication-authorization.md` | Phase 3 auth checks                    |
+| API security (rate limit, CSRF, CORS)  | `.agents/rules/api-security.md`                 | Any HTTP/API endpoint audit            |
+| Cryptography                           | `.agents/rules/cryptography.md`                 | Phase 4 crypto checks                  |
+| Session management                     | `.agents/rules/session-management.md`           | Phase 4 session checks                 |
+| Error handling                         | `.agents/rules/error-handling.md`               | Phase 3 error checks                   |
+| Logging & log hygiene                  | `.agents/rules/logging.md`                      | Phase 3 logging checks                 |
+| Input validation                       | `.agents/rules/input-validation.md`             | Phase 3 validation checks              |
+| Dependency audit                       | `.agents/rules/dependency-audit.md`             | Phase 1 `composer audit` / `npm audit` |
+| Static analysis (PHPStan/Larastan)     | `.agents/rules/static-analysis.md`              | Phase 1 PHPStan run                    |
+| PSR standards                          | `.agents/rules/psr-standards.md`                | Phase 1 & 4 PSR checks                 |
+| Laravel best practices                 | `.agents/rules/laravel-best-practices.md`       | Phase 4 framework audit                |
+| WCAG accessibility                     | `.agents/rules/wcag.md`                         | Phase 4 accessibility audit            |
+| Performance & efficiency               | `.agents/rules/performance.md`                  | Phase 5 performance audit              |
+| Code quality (complexity, duplication) | `.agents/rules/code-quality.md`                 | Phase 3 code-quality checks            |
+| Test coverage quality                  | `.agents/rules/test-coverage.md`                | Phase 3 test audit                     |
 
 ## References
 

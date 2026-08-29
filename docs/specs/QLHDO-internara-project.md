@@ -539,7 +539,7 @@ templates. Available on all Record Manager components. Mechanics specified in
 | NFR-P1 | Performance: pages respond within target budgets; Actions eager-load relations (no N+1); expensive queries cached with registered cache keys                                                             |
 | NFR-R1 | Reliability: 4-hour RPO / under 1-hour RTO backup target; graceful degradation; job queues for heavy work (mail, PDF, reports)                                                                           |
 | NFR-U1 | Usability: every page with a non-trivial workflow has a `*-guide.blade.php` (see §9.1); WCAG AA contrast; keyboard navigable; mobile-first responsive                                                    |
-| NFR-M1 | Maintainability: 4-layer module-first architecture enforced by `scripts/` scans (C1–C8, D1–D6, contracts, naming, security); DRY — shared logic in Core                                                  |
+| NFR-M1 | Maintainability: 4-layer module-first architecture enforced by `tools/` scans (C1–C8, D1–D6, contracts, naming, security); DRY — shared logic in Core                                                  |
 | NFR-L1 | Localization: English + Indonesian, locale stored in session, togglable at runtime (see §9.3)                                                                                                            |
 | NFR-C1 | Compatibility: renders consistently across modern browsers; printed/exported artifacts (PDF/Excel/CSV) are precise and stable                                                                            |
 | NFR-D1 | Database: SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)                                                                                                                 |
@@ -819,7 +819,7 @@ run those systems externally.
 | -------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
 | Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/implementation-matrix.md` (green/verified rows) |
 | Module colocation                      | 100% of `app/` under modules + Core        | `scan_naming.py`, directory audit                  |
-| Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `scripts/scan_violations.py`                       |
+| Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `tools/scan_violations.py`                       |
 | Spec↔code alignment                    | 0 spec gaps, 0 orphan tests                | per-module spec audits, `scan_issues.py`           |
 | Localization coverage                  | 0 hardcoded user strings in Blade/UI       | `scan_conventions.py` (D3)                         |
 | Full suite                             | green                                      | `php artisan test --compact`                       |

@@ -12,7 +12,7 @@ permission:
     "vendor/bin/*": allow
     "npm *": allow
     "npx prettier*": allow
-    "python3 scripts/*": allow
+    "python3 tools/*": allow
     "ls *": allow
 ---
 

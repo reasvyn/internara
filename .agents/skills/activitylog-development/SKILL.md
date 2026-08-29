@@ -23,8 +23,8 @@ Follow `agent-workflow` pipeline. This skill adds Spatie Activity Log guidance.
 
 | Rule | Asset | Applies when |
 |------|-------|--------------|
-| Logging & causer (activity(), log(), causer) | `rules/logging-causer.md` | Any audit log write or read |
-| SmartLogger dual-channel (DB + file, event correlation) | `rules/smartlogger.md` | Configuring or using SmartLogger |
+| Logging & causer (activity(), log(), causer) | `.agents/rules/logging-causer.md` | Any audit log write or read |
+| SmartLogger dual-channel (DB + file, event correlation) | `.agents/rules/smartlogger.md` | Configuring or using SmartLogger |
 
 ## References
 
