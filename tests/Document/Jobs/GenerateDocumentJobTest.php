@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
 use App\Modules\Document\Jobs\GenerateDocumentJob;
 use App\Modules\Document\Models\Document;
-use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
 use App\Modules\Document\Services\DocumentRenderer;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

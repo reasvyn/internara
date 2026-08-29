@@ -6,9 +6,11 @@
 
 {{-- Modern responsive Footer — props-driven, minimal. --}}
 <footer
-    {{ $attributes->merge([
-        'class' => 'mt-auto border-t bg-base-100 border-base-content/10',
-    ]) }}
+    {{
+        $attributes->merge([
+            'class' => 'mt-auto border-t bg-base-100 border-base-content/10',
+        ])
+    }}
     role="contentinfo"
 >
     <div @class([
@@ -19,15 +21,25 @@
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {{-- Left: brand + links --}}
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-                <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors">
+                <a
+                    href="{{ route('dashboard') }}"
+                    wire:navigate
+                    class="hover:text-primary flex items-center gap-2 text-sm font-medium transition-colors"
+                >
                     <x-ui::components.logo size="4" />
                     <span>{{ brand('name') }}</span>
                 </a>
 
                 @if ($links)
-                    <nav aria-label="{{ __('common.footer_navigation') }}" class="flex flex-wrap items-center gap-4 text-xs text-base-content/60">
+                    <nav
+                        aria-label="{{ __('common.footer_navigation') }}"
+                        class="text-base-content/60 flex flex-wrap items-center gap-4 text-xs"
+                    >
                         @foreach ($links as $link)
-                            <a href="{{ $link['url'] }}" class="hover:text-primary transition-colors hover:underline underline-offset-4">
+                            <a
+                                href="{{ $link['url'] }}"
+                                class="hover:text-primary underline-offset-4 transition-colors hover:underline"
+                            >
                                 {{ $link['label'] }}
                             </a>
                         @endforeach
@@ -39,13 +51,16 @@
 
             {{-- Right: credit --}}
             @if ($showCredit)
-                <div class="flex items-center gap-3 text-xs text-base-content/50">
-                    <x-ui::components.credit :show-version="app()->environment('local')" class="justify-center sm:justify-end" />
+                <div class="text-base-content/50 flex items-center gap-3 text-xs">
+                    <x-ui::components.credit
+                        :show-version="app()->environment('local')"
+                        class="justify-center sm:justify-end"
+                    />
                 </div>
             @endif
         </div>
 
-        <div class="mt-4 border-t border-base-content/5 pt-4 text-center text-xs text-base-content/40 sm:text-left">
+        <div class="border-base-content/5 text-base-content/40 mt-4 border-t pt-4 text-center text-xs sm:text-left">
             <p>&copy; {{ date('Y') }} {{ brand('name') }} — {{ __('common.all_rights_reserved') }}</p>
         </div>
     </div>

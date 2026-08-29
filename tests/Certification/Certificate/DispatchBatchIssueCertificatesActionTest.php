@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Modules\Certification\Actions\DispatchBatchIssueCertificatesAction;
-use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
 use App\Modules\Certification\Data\BatchIssueCertificatesData;
+use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
 use App\Modules\Certification\Jobs\BatchIssueCertificatesJob;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;

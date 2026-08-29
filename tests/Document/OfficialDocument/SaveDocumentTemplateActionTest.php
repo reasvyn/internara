@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Modules\Document\Models\Document;
 use App\Modules\Document\Domain\OfficialDocument\Actions\SaveDocumentTemplateAction;
+use App\Modules\Document\Models\Document;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;

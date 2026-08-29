@@ -18,7 +18,11 @@
 @endphp
 
 @if ($variant === 'inline')
-    <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 rounded-full bg-base-200 p-1']) }} role="group" aria-label="{{ __('common.language.switch') }}">
+    <div
+        {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 rounded-full bg-base-200 p-1']) }}
+        role="group"
+        aria-label="{{ __('common.language.switch') }}"
+    >
         @foreach ($locales as $code => $meta)
             <button
                 type="button"

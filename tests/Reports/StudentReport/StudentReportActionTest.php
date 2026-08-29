@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Reports\Domain\StudentReport\Actions\CalculateFinalGradeAction;
 use App\Modules\Reports\Domain\StudentReport\Actions\FinalizeStudentReportAction;
-use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;

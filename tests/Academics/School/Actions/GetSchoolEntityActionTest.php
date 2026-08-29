@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Academics\Domain\School\Actions\GetSchoolEntityAction;
 use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
+use App\Modules\Academics\Domain\School\Livewire\Forms\SchoolForm;
 use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -92,7 +93,7 @@ describe('81SMS: GetSchoolEntityAction', function (): void {
     });
 
     test('81SMS-FR-SP16: SchoolForm::loadFromEntity accepts SchoolEntity from GetSchoolEntityAction', function (): void {
-        $formRef = new ReflectionClass(\App\Modules\Academics\Domain\School\Livewire\Forms\SchoolForm::class);
+        $formRef = new ReflectionClass(SchoolForm::class);
         $method = $formRef->getMethod('loadFromEntity');
 
         $param = $method->getParameters()[0];

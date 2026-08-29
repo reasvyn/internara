@@ -29,19 +29,19 @@ if (is_dir($modulesBase)) {
         if ($entry === '.' || $entry === '..') {
             continue;
         }
-        $modulePath = $modulesBase . DIRECTORY_SEPARATOR . $entry;
+        $modulePath = $modulesBase.DIRECTORY_SEPARATOR.$entry;
         if (! is_dir($modulePath)) {
             continue;
         }
         // Only consider directories that look like modules (PascalCase, contains PHP or Domain)
-        $domainPath = $modulePath . DIRECTORY_SEPARATOR . 'Domain';
+        $domainPath = $modulePath.DIRECTORY_SEPARATOR.'Domain';
         $domains = [];
         if (is_dir($domainPath)) {
             foreach (scandir($domainPath) as $d) {
                 if ($d === '.' || $d === '..') {
                     continue;
                 }
-                if (is_dir($domainPath . DIRECTORY_SEPARATOR . $d)) {
+                if (is_dir($domainPath.DIRECTORY_SEPARATOR.$d)) {
                     $domains[] = $d;
                 }
             }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Academics\Domain\School\Actions\GetSchoolEntityAction;
 use App\Modules\Academics\Domain\School\Actions\SaveSchoolProfileAction;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Settings\Models\Setting;
@@ -72,7 +73,7 @@ describe('81SMS: SaveSchoolProfileAction', function (): void {
             expect(Setting::where('key', "school.{$key}")->first()?->value)->toBe($value);
         }
 
-        $entity = app(\App\Modules\Academics\Domain\School\Actions\GetSchoolEntityAction::class)->execute();
+        $entity = app(GetSchoolEntityAction::class)->execute();
         expect($entity->name())->toBe('SMA 1 Test')
             ->and($entity->fax())->toBe('021-123');
     });
@@ -88,7 +89,7 @@ describe('81SMS: SaveSchoolProfileAction', function (): void {
     test('81SMS-FR-SP12: source contains Cache::forget for school_entity', function (): void {
         $source = file_get_contents((new ReflectionClass(SaveSchoolProfileAction::class))->getFileName());
 
-        expect($source)->toContain("Cache::forget")
+        expect($source)->toContain('Cache::forget')
             ->and($source)->toContain('school_entity');
     });
 

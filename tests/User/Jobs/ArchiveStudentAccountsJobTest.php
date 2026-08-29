@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Jobs\ArchiveStudentAccountsJob;
 use App\Modules\User\Models\User;
-use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Queue;

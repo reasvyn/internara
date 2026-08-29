@@ -8,6 +8,7 @@ use App\Modules\Academics\Domain\Department\Models\Department;
 use App\Modules\Core\Actions\BaseCommandAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Validation\ValidationException;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -32,7 +33,7 @@ describe('4HWSB: UpdateDepartmentAction', function (): void {
 
         // Should reject duplicate name from another record
         expect(fn () => app(UpdateDepartmentAction::class)->execute($dept2, ['name' => 'Existing']))
-            ->toThrow(Illuminate\Validation\ValidationException::class);
+            ->toThrow(ValidationException::class);
     });
 
     test('4HWSB-FR-DM16: wraps update in transaction', function (): void {
