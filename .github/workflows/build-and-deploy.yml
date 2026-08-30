@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
     push:
-        branches: [docker-deploy]
+        tags: ['v*.*.*']
     workflow_dispatch:
         inputs:
             version_tag:
