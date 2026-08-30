@@ -582,6 +582,23 @@ AI agent and tooling versions drift — pin and verify before debugging.
 | Are opencode permissions correct? | `cat opencode.json` `permissions` + `~/.config/opencode/opencode.jsonc` `permissions` (especially `*.env` vs `*.env.example`) |
 | Is Composer/PHP compatible? | `composer --version` (expect 2.10.x for PHP 8.4, not 2.7.x), `php --version`, `php /usr/local/bin/composer --version` |
 
+**Version Bump Guide (sync before `version` bump — not a hard ref):**
+
+All places that mention `version` must be checked and kept in sync before bumping `composer.json:version` — use this as a pre-bump checklist, not a hard-coded list (grep to verify):
+
+```bash
+grep -r '"version"' --include="composer.json" --include="*.php" --include="*.md" | grep -E "0\.15|version"
+# Check: composer.json, package.json, package-lock.json, config/app.php, AppInfo, docs/specs/index.md, docs/refs, README, .github/workflows
+```
+
+Checklist before `composer.json` bump:
+1. `composer.json:version` + `package.json:version` (+ lock) — primary
+2. `config/app.php:version` (if set) + `AppInfo::version()` fallback — verify `config('app.version')` vs `composer.json`
+3. `docs/specs/index.md` Build Order + `docs/refs/modules/**` (if versioned) — no hard `0.14.0` left
+4. `README.md` badges / `docs/project-vision.md` — if versioned
+5. `AGENTS.md` & `.agents/rules/*` (this guide) — keep GitHub Version Senses table in sync, but *do not* hard-code the version number here — use `grep` above to find stragglers, then bump
+6. After bump: `git tag vX.Y.Z` + `git push origin vX.Y.Z` (per `deploy-topology.md`), verify `git describe --tags` + `ssh internara-vps "git describe"`
+
 #### When to Update Docs
 
 | Code change | Doc to update |
