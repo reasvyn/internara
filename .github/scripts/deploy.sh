@@ -26,8 +26,10 @@ else
 fi
 
 # Use --no-cache to ensure the git tag change is picked up (Docker cache doesn't invalidate on tag change)
-docker compose build --no-cache
-docker compose up -d --remove-orphans
+# Also remove app_data volume that overlays /app/public (can hold stale public/index.php from previous version)
+docker volume rm -f "${COMPOSE_PROJECT_NAME:-internara}_app_data" >/dev/null 2>&1 || docker volume rm -f internara_app_data >/dev/null 2>&1 || true
+docker compose build --no-cache --pull
+docker compose up -d --remove-orphans --force-recreate
 
 docker image prune -f >/dev/null 2>&1 || true
 docker builder prune -f --keep-storage "$BUILD_CACHE_LIMIT" >/dev/null 2>&1 || true
