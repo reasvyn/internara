@@ -17,7 +17,13 @@ final class AppIntegrity
         } catch (RuntimeException $e) {
             $env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? getenv('APP_ENV') ?: 'production';
             if (in_array($env, ['local', 'testing'], true)) {
-                SmartLogger::warning($e->getMessage())->withPiiMasking()->systemOnly()->save();
+                // At public/index.php:24 the app facade may not be booted yet (php artisan serve uses server.php).
+                // Use direct error_log fallback if SmartLogger requires facade.
+                try {
+                    SmartLogger::warning($e->getMessage())->withPiiMasking()->systemOnly()->save();
+                } catch (\Throwable) {
+                    error_log('[AppIntegrity] '.$e->getMessage());
+                }
 
                 return;
             }
