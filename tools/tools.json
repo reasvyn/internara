@@ -1,9 +1,23 @@
 {
   "purpose": "Registry of tools/ scanners and the output category each writes to tools/outputs/{YYYYMMDDHHMMSS}-{category}.json. Consumed by clean_outputs.py --prune to keep only the latest timestamped output per category.",
+  "version": "2.0.0",
+  "features": {
+    "caching": "Mtime-based file cache in tools/outputs/cache/",
+    "progress": "ProgressReporter for scan operations",
+    "parallel": "ThreadPoolExecutor with configurable workers",
+    "dedup": "Finding deduplication by file/rule/line",
+    "html": "HTML report generation",
+    "markdown": "Markdown report generation",
+    "diff": "Compare two JSON reports"
+  },
   "outputs": {
     "architecture": {
       "script": "scan_architecture.py",
       "description": "Component counts per module, submodule structure"
+    },
+    "arch-patterns": {
+      "script": "scan_arch_patterns.py",
+      "description": "Architecture pattern detection"
     },
     "class-contracts": {
       "script": "scan_class_contracts.py",
@@ -29,6 +43,10 @@
       "script": "scan_issues.py",
       "description": "GitHub issue metrics"
     },
+    "module-boundaries": {
+      "script": "scan_module_boundaries.py",
+      "description": "Module boundary and dependency checks"
+    },
     "naming": {
       "script": "scan_naming.py",
       "description": "File and class naming conventions"
@@ -48,6 +66,10 @@
     "tests": {
       "script": "scan_tests.py",
       "description": "Test suite pass/fail results"
+    },
+    "ui-consistency": {
+      "script": "scan_ui_consistency.py",
+      "description": "UI consistency checks"
     },
     "violations": {
       "script": "scan_violations.py",
