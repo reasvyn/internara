@@ -12,93 +12,76 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 ## Actions
 
-| File                                        | Class                           | Extends             |
-| ------------------------------------------- | ------------------------------- | ------------------- |
-| `Actions/InitializeAssessmentAction.php`    | `InitializeAssessmentAction`    | `BaseCommandAction` |
-| `Actions/ScoreIndicatorAction.php`          | `ScoreIndicatorAction`          | `BaseCommandAction` |
-| `Actions/UpdateAssessmentScoresAction.php`  | `UpdateAssessmentScoresAction`  | `BaseCommandAction` |
-| `Actions/FinalizeAssessmentAction.php`      | `FinalizeAssessmentAction`      | `BaseCommandAction` |
+| File | Class | Extends |
+|---|---|---|
 | `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseCommandAction` |
-| `Rubric/Actions/CreateRubricAction.php`     | `CreateRubricAction`            | `BaseCommandAction` |
-| `Rubric/Actions/UpdateRubricAction.php`     | `UpdateRubricAction`            | `BaseCommandAction` |
-| `Rubric/Actions/DeleteRubricAction.php`     | `DeleteRubricAction`            | `BaseCommandAction` |
-| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction`        | `BaseCommandAction` |
-| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction`        | `BaseCommandAction` |
-| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction`        | `BaseCommandAction` |
-| `Rubric/Actions/CreateIndicatorAction.php`  | `CreateIndicatorAction`         | `BaseCommandAction` |
-| `Rubric/Actions/UpdateIndicatorAction.php`  | `UpdateIndicatorAction`         | `BaseCommandAction` |
-| `Rubric/Actions/DeleteIndicatorAction.php`  | `DeleteIndicatorAction`         | `BaseCommandAction` |
-
----
+| `Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseCommandAction` |
+| `Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseCommandAction` |
+| `Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseCommandAction` |
+| `Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseCommandAction` |
+| `Domain/Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                       | Class        | Extends     |
-| -------------------------- | ------------ | ----------- |
-| `Models/Assessment.php`    | `Assessment` | `BaseModel` |
-| `Rubric/Models/Rubric.php` | `Rubric`     | `BaseModel` |
-
----
-
-## Entities
-
-| File                            | Class              | Extends      |
-| ------------------------------- | ------------------ | ------------ |
-| `Entities/AssessmentResult.php` | `AssessmentResult` | `BaseEntity` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Rubric/Models/Rubric.php` | `Rubric` | `BaseModel` |
+| `Models/Assessment.php` | `Assessment` | `BaseModel` |
 
 ## Policies
 
-| File                            | Policy             | Extends      |
-| ------------------------------- | ------------------ | ------------ |
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/Rubric/Policies/RubricPolicy.php` | `RubricPolicy` | `BasePolicy` |
 | `Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` |
 
 ## Enums
 
-| File                      | Enum            | Implements  | Values                             |
-| ------------------------- | --------------- | ----------- | ---------------------------------- |
-| `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | admin, teacher, supervisor, system |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | — |
 
 ## Data / DTOs
 
-| File                                   | Class                        | Extends    |
-| -------------------------------------- | ---------------------------- | ---------- |
-| `Data/ScoreIndicatorData.php`          | `ScoreIndicatorData`         | `BaseData` |
-| `Data/UpdateAssessmentScoresData.php`  | `UpdateAssessmentScoresData` | `BaseData` |
-| `Rubric/Data/CreateRubricData.php`     | `CreateRubricData`           | `BaseData` |
-| `Rubric/Data/UpdateRubricData.php`     | `UpdateRubricData`           | `BaseData` |
-| `Rubric/Data/CreateCompetencyData.php` | `CreateCompetencyData`       | `BaseData` |
-| `Rubric/Data/UpdateCompetencyData.php` | `UpdateCompetencyData`       | `BaseData` |
-| `Rubric/Data/CreateIndicatorData.php`  | `CreateIndicatorData`        | `BaseData` |
-| `Rubric/Data/UpdateIndicatorData.php`  | `UpdateIndicatorData`        | `BaseData` |
-| `Rubric/Data/DeleteIndicatorData.php`  | `DeleteIndicatorData`        | `BaseData` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Data/ScoreIndicatorData.php` | `ScoreIndicatorData` | `BaseData` |
+| `Data/UpdateAssessmentScoresData.php` | `UpdateAssessmentScoresData` | `BaseData` |
+| `Domain/Rubric/Data/CreateCompetencyData.php` | `CreateCompetencyData` | `BaseData` |
+| `Domain/Rubric/Data/CreateIndicatorData.php` | `CreateIndicatorData` | `BaseData` |
+| `Domain/Rubric/Data/CreateRubricData.php` | `CreateRubricData` | `BaseData` |
+| `Domain/Rubric/Data/DeleteIndicatorData.php` | `DeleteIndicatorData` | `BaseData` |
+| `Domain/Rubric/Data/UpdateCompetencyData.php` | `UpdateCompetencyData` | `BaseData` |
+| `Domain/Rubric/Data/UpdateIndicatorData.php` | `UpdateIndicatorData` | `BaseData` |
+| `Domain/Rubric/Data/UpdateRubricData.php` | `UpdateRubricData` | `BaseData` |
 
 ## Livewire Components
 
-| File                                | Component           | Extends        |
-| ----------------------------------- | ------------------- | -------------- |
-| `Livewire/AssessmentGrading.php`    | `AssessmentGrading` | `BaseFormView` |
-| `Livewire/AssessmentView.php`       | `AssessmentView`    | `Component`    |
-| `Rubric/Livewire/RubricManager.php` | `RubricManager`     | `Component`    |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Rubric/Livewire/RubricManager.php` | `RubricManager` | `BaseRecordManager` |
+| `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` |
+| `Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
 
 ## Events
 
-| File                             | Event                 | Dispatched By              |
-| -------------------------------- | --------------------- | -------------------------- |
-| `Events/AssessmentFinalized.php` | `AssessmentFinalized` | `FinalizeAssessmentAction` |
+| File | Event | Extends |
+|---|---|---|
+| `Events/AssessmentFinalized.php` | `AssessmentFinalized` | `BaseEvent` |
 
 ## Listeners
 
-| File                                   | Listener                 | Listens To            |
-| -------------------------------------- | ------------------------ | --------------------- |
-| `Listeners/LogAssessmentFinalized.php` | `LogAssessmentFinalized` | `AssessmentFinalized` |
-
----
+| File | Listener | Listens To |
+|---|---|---|
+| `Listeners/LogAssessmentFinalized.php` | `LogAssessmentFinalized` | — |
 
 ## Routes
 

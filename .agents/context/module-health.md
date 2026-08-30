@@ -1,8 +1,8 @@
-# Module Health — Stabilization Phase v0.14.0
+# Module Health — Stabilization Phase v0.15.8
 
 ## Description
 
-Internara has **18 modules** in `app/` at **v0.14.0 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.
+Internara has **19 modules** in `app/Modules/` (18 business + UI + Core) at **v0.15.8 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.
 
 ---
 
@@ -14,7 +14,7 @@ Internara has **18 modules** in `app/` at **v0.14.0 — Stabilization** (in prog
 | **Stable — Needs Attention** | `Program`, `Partners`, `Enrollment`, `Journals`, `Incident`, `Assignment`, `Reports` | Works but known issues: dead DTOs, `event()` inside transactions (should be `$this->dispatchEvent()`), broken Blade, wrong `user_id` in attendance, ActionResponse gaps (`Model`/`void` instead of `ActionResponse`), empty `Livewire/` dirs. Tracked in GitHub Issues. Fix opportunistically; don't assume clean. |
 | **Needs Work (P0)** | `Assessment`, `Certification`, `Document` | Structurally complete but **runtime crashes**: Blade array / multiple-root errors, broken relationships, schema mismatches (migration columns missing/non-existent columns referenced), no Entity layer in `Document`. **Fix P0 Issues first before adding features.** |
 | **Skeleton** | `Evaluation` | Models only — zero Actions/Entities/Livewire/Routes/Events. Needs full scaffold per `docs/specs/AXKZW-evaluation.md`. |
-| **Infrastructure** | `Jobs`, `Providers` | No business logic — queued jobs & service providers. Only touch for queue/infra changes. |
+| **Infrastructure** | `Jobs`, `Providers` (`app/Jobs/`, `app/Providers/` — top-level, not `app/Modules/`) | No business logic — queued jobs & service providers. Only touch for queue/infra changes. |
 
 ---
 
@@ -57,6 +57,6 @@ If the task is **new feature in a healthy module**, use that module as template;
 
 - `README.md#Project Status` — human SSOT for this file
 - `docs/refs/modules/index.md` — module docs (overview + reference per module)
-- `docs/specs/index.md` — spec registry (18 modules × specs)
+- `docs/specs/index.md` — spec registry (19 modules × 61 feature specs, 64 files incl. meta)
 - `tools/scan_violations.py`, `scan_class_contracts.py`, `scan_dead_code.py` — health scanners
 - `CONTRIBUTING.md` — branch/commit conventions for fixes

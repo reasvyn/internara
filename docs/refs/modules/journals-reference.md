@@ -13,125 +13,111 @@ field monitoring visit scheduling/verification.
 
 ## Actions
 
-| File                                              | Class                        | Extends             |
-| ------------------------------------------------- | ---------------------------- | ------------------- |
-| `Logbook/Actions/CreateLogbookAction.php`         | `CreateLogbookAction`        | `BaseCommandAction` |
-| `Logbook/Actions/UpdateLogbookAction.php`         | `UpdateLogbookAction`        | `BaseCommandAction` |
-| `Logbook/Actions/DeleteLogbookAction.php`         | `DeleteLogbookAction`        | `BaseCommandAction` |
-| `Logbook/Actions/SubmitLogbookAction.php`         | `SubmitLogbookAction`        | `BaseCommandAction` |
-| `Logbook/Actions/CompileLogbookReportAction.php`  | `CompileLogbookReportAction` | `BaseReadAction`  |
-| `Attendance/Actions/CreateAttendanceAction.php`   | `CreateAttendanceAction`     | `BaseCommandAction` |
-| `Attendance/Actions/UpdateAttendanceAction.php`   | `UpdateAttendanceAction`     | `BaseCommandAction` |
-| `Attendance/Actions/DeleteAttendanceAction.php`   | `DeleteAttendanceAction`     | `BaseCommandAction` |
-| `Attendance/Actions/ClockInAction.php`            | `ClockInAction`              | `BaseCommandAction` |
-| `Attendance/Actions/ClockOutAction.php`           | `ClockOutAction`             | `BaseCommandAction` |
-| `Attendance/Actions/VerifyAttendanceAction.php`   | `VerifyAttendanceAction`     | `BaseCommandAction` |
-| `AbsenceRequest/Actions/SubmitAbsenceAction.php`  | `SubmitAbsenceAction`        | `BaseCommandAction` |
-| `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction`       | `BaseCommandAction` |
-| `MonitoringVisit/Actions/CreateVisitAction.php`   | `CreateVisitAction`          | `BaseCommandAction` |
-| `MonitoringVisit/Actions/VerifyVisitAction.php`   | `VerifyVisitAction`          | `BaseCommandAction` |
-| `SupervisionLog/Actions/CreateLogAction.php`      | `CreateLogAction`            | `BaseCommandAction` |
-| `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseCommandAction` |
-| `SupervisionLog/Actions/DeleteLogAction.php`      | `DeleteLogAction`            | `BaseCommandAction` |
-| `SupervisionLog/Actions/ReviewLogAction.php`      | `ReviewLogAction`            | `BaseCommandAction` |
-| `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseProcessAction` |
+| `Domain/AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/UpdateLogbookAction.php` | `UpdateLogbookAction` | `BaseCommandAction` |
+| `Domain/MonitoringVisit/Actions/CreateVisitAction.php` | `CreateVisitAction` | `BaseCommandAction` |
+| `Domain/MonitoringVisit/Actions/VerifyVisitAction.php` | `VerifyVisitAction` | `BaseCommandAction` |
+| `Domain/SupervisionLog/Actions/CreateLogAction.php` | `CreateLogAction` | `BaseCommandAction` |
+| `Domain/SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseCommandAction` |
+| `Domain/SupervisionLog/Actions/DeleteLogAction.php` | `DeleteLogAction` | `BaseCommandAction` |
+| `Domain/SupervisionLog/Actions/ReviewLogAction.php` | `ReviewLogAction` | `BaseCommandAction` |
+| `Domain/SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                                       | Class            | Extends                                |
-| ------------------------------------------ | ---------------- | -------------------------------------- |
-| `Logbook/Models/Logbook.php`               | `Logbook`        | `BaseModel`                            |
-| `Attendance/Models/Attendance.php`         | `Attendance`     | `BaseModel`                            |
-| `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` (uses `attendances` table) |
-| `MonitoringVisit/Models/MonitoringVisit.php` | `MonitoringVisit` | `BaseModel`                          |
-| `SupervisionLog/Models/SupervisionLog.php`   | `SupervisionLog`  | `BaseModel`                          |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Attendance/Models/Attendance.php` | `Attendance` | `BaseModel` |
+| `Domain/Logbook/Models/Logbook.php` | `Logbook` | `BaseModel` |
+| `Domain/MonitoringVisit/Models/MonitoringVisit.php` | `MonitoringVisit` | `BaseModel` |
+| `Domain/SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` | `BaseModel` |
 
 ## Enums
 
-| File                                            | Enum                   | Implements                | Values                                             |
-| ----------------------------------------------- | ---------------------- | ------------------------- | -------------------------------------------------- |
-| `Logbook/Enums/LogbookStatus.php`               | `LogbookStatus`        | `LabelEnum`, `StatusEnum` | draft, submitted, verified, revision_required      |
-| `Attendance/Enums/AttendanceStatus.php`         | `AttendanceStatus`     | `LabelEnum`, `StatusEnum` | present, late, early_out, absent, permission, sick |
-| `AbsenceRequest/Enums/AbsenceReasonType.php`    | `AbsenceReasonType`    | `LabelEnum`               | sick, permission, emergency, other                 |
-| `AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected                        |
-| `MonitoringVisit/Enums/VisitMethod.php`         | `VisitMethod`           | `LabelEnum`               | site_visit, virtual_meeting, phone_call            |
-| `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, reviewed, acknowledged, verified, completed |
-| `SupervisionLog/Enums/SupervisionType.php`      | `SupervisionType`      | `LabelEnum`               | guidance, mentoring, monitoring                    |
-
----
-
-## Entities
-
-| File                                              | Class                 | Extends      |
-| ------------------------------------------------- | --------------------- | ------------ |
-| `Logbook/Entities/LogbookState.php`               | `LogbookState`        | `BaseEntity` |
-| `Attendance/Entities/AttendanceState.php`         | `AttendanceState`     | `BaseEntity` |
-| `AbsenceRequest/Entities/AbsenceRequestState.php` | `AbsenceRequestState` | `BaseEntity` |
-| `MonitoringVisit/Entities/VisitState.php`          | `VisitState`           | `BaseEntity` |
-| `SupervisionLog/Entities/SupervisionLogState.php`  | `SupervisionLogState`  | `BaseEntity` |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/AbsenceRequest/Enums/AbsenceReasonType.php` | `AbsenceReasonType` | `LabelEnum` | — |
+| `Domain/AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum` | — |
+| `Domain/Attendance/Enums/AttendanceStatus.php` | `AttendanceStatus` | `LabelEnum` | — |
+| `Domain/Logbook/Enums/LogbookStatus.php` | `LogbookStatus` | `LabelEnum` | — |
+| `Domain/MonitoringVisit/Enums/VisitMethod.php` | `VisitMethod` | `LabelEnum` | — |
+| `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum` | — |
+| `Domain/SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | — |
 
 ## Policies
 
-| File                                       | Policy             | Extends      |
-| ------------------------------------------ | ------------------ | ------------ |
-| `Logbook/Policies/LogbookPolicy.php`       | `LogbookPolicy`    | `BasePolicy` |
-| `Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` |
-| `MonitoringVisit/Policies/MonitoringVisitPolicy.php` | `MonitoringVisitPolicy` | `BasePolicy` |
-| `SupervisionLog/Policies/SupervisionLogPolicy.php`   | `SupervisionLogPolicy`  | `BasePolicy` |
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/AbsenceRequest/Policies/AbsenceRequestPolicy.php` | `AbsenceRequestPolicy` | `BasePolicy` |
+| `Domain/Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` |
+| `Domain/Logbook/Policies/LogbookPolicy.php` | `LogbookPolicy` | `BasePolicy` |
+| `Domain/MonitoringVisit/Policies/MonitoringVisitPolicy.php` | `MonitoringVisitPolicy` | `BasePolicy` |
+| `Domain/SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` | `BasePolicy` |
 
 ## Events
 
-| File                                             | Event                 | Dispatched By      |
-| ------------------------------------------------ | --------------------- | ------------------ |
-| `Attendance/Events/AttendanceClockIn.php`        | `AttendanceClockIn`   | `ClockInAction`    |
-| `Attendance/Events/AttendanceClockOut.php`       | `AttendanceClockOut`  | `ClockOutAction`   |
-
----
+| File | Event | Extends |
+|---|---|---|
+| `Domain/Attendance/Events/AttendanceClockIn.php` | `AttendanceClockIn` | `BaseEvent` |
+| `Domain/Attendance/Events/AttendanceClockOut.php` | `AttendanceClockOut` | `BaseEvent` |
 
 ## Livewire Components
 
-| File                                             | Component            | Extends             |
-| ------------------------------------------------ | -------------------- | ------------------- |
-| `Logbook/Livewire/LogbookManager.php`            | `LogbookManager`     | `BaseRecordManager` |
-| `Logbook/Livewire/LogbookEntry.php`              | `LogbookEntry`       | `BaseRecordEntry`   |
-| `Attendance/Livewire/AttendanceManager.php`      | `AttendanceManager`  | `Component`         |
-| `Attendance/Livewire/StudentClockIn.php`         | `StudentClockIn`     | `BaseFormView`      |
-| `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `BaseFormView`      |
-| `MonitoringVisit/Livewire/VisitManager.php`       | `VisitManager`       | `BaseRecordManager` |
-| `MonitoringVisit/Livewire/StudentVisitList.php`   | `StudentVisitList`   | `Component`         |
-| `SupervisionLog/Livewire/StudentLogManager.php`    | `StudentLogManager`    | `BaseRecordManager` |
-| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `Component` + `WithPagination` |
-| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` + `WithPagination` |
-| `SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `BaseRecordManager` |
-
-## Livewire Forms
-
-| File                                     | Form          |
-| ---------------------------------------- | ------------- |
-| `Logbook/Livewire/Forms/LogbookForm.php` | `LogbookForm` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `BaseFormView` |
+| `Domain/Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `BaseRecordManager` |
+| `Domain/Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
+| `Domain/Logbook/Livewire/Forms/LogbookForm.php` | `LogbookForm` | `BaseFormView` |
+| `Domain/Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `BaseRecordEntry` |
+| `Domain/Logbook/Livewire/LogbookManager.php` | `LogbookManager` | `BaseRecordManager` |
+| `Domain/MonitoringVisit/Livewire/StudentVisitList.php` | `StudentVisitList` | `BaseRecordManager` |
+| `Domain/MonitoringVisit/Livewire/VisitManager.php` | `VisitManager` | `BaseRecordManager` |
+| `Domain/SupervisionLog/Livewire/StudentLogManager.php` | `StudentLogManager` | `BaseRecordManager` |
+| `Domain/SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `BaseRecordManager` |
+| `Domain/SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
+| `Domain/SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `BaseRecordManager` |
 
 ## Form Requests
 
-| File                                                    | Request                     | Purpose                    |
-| ------------------------------------------------------- | --------------------------- | -------------------------- |
-| `Logbook/Http/Requests/CreateLogbookEntryRequest.php`   | `CreateLogbookEntryRequest` | Logbook entry validation   |
-| `Attendance/Http/Requests/ClockInRequest.php`           | `ClockInRequest`            | Clock in validation        |
-| `Attendance/Http/Requests/ClockOutRequest.php`          | `ClockOutRequest`           | Clock out validation       |
-| `AbsenceRequest/Http/Requests/SubmitAbsenceRequest.php` | `SubmitAbsenceRequest`      | Absence request validation |
+| File | Request | Purpose |
+|---|---|---|
+| `Domain/AbsenceRequest/Http/Requests/SubmitAbsenceRequest.php` | `SubmitAbsenceRequest` | — |
+| `Domain/Attendance/Http/Requests/ClockInRequest.php` | `ClockInRequest` | — |
+| `Domain/Attendance/Http/Requests/ClockOutRequest.php` | `ClockOutRequest` | — |
+| `Domain/Logbook/Http/Requests/CreateLogbookEntryRequest.php` | `CreateLogbookEntryRequest` | — |
 
 ## HTTP Controllers
 
-| File                                           | Controller                | Extends          |
-| ---------------------------------------------- | ------------------------- | ---------------- |
+| File | Controller | Extends |
+|---|---|---|
 | `Http/Controllers/LogbookReportController.php` | `LogbookReportController` | `BaseController` |
 
----
+## Data / DTOs
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AbsenceRequest/Data/ProcessAbsenceData.php` | `ProcessAbsenceData` | `BaseData` |
+| `Domain/AbsenceRequest/Data/SubmitAbsenceData.php` | `SubmitAbsenceData` | `BaseData` |
+| `Domain/Attendance/Data/ClockInData.php` | `ClockInData` | `BaseData` |
+| `Domain/Attendance/Data/ClockOutData.php` | `ClockOutData` | `BaseData` |
+| `Domain/MonitoringVisit/Data/CreateVisitData.php` | `CreateVisitData` | `BaseData` |
+| `Domain/SupervisionLog/Data/CreateLogData.php` | `CreateLogData` | `BaseData` |
+| `Domain/SupervisionLog/Data/CreateSupervisionLogData.php` | `CreateSupervisionLogData` | `BaseData` |
+| `Domain/SupervisionLog/Data/ReviewLogData.php` | `ReviewLogData` | `BaseData` |
 
 ## Routes
 

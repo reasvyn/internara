@@ -19,75 +19,12 @@ None — all components are directly under `app/Modules/Evaluation/`.
 
 ## Models
 
-| File                            | Class                | Extends     | Table                  |
-| ------------------------------- | -------------------- | ----------- | ---------------------- |
-| `Models/EvaluationForm.php`     | `EvaluationForm`     | `BaseModel` | `evaluation_forms`     |
-| `Models/EvaluationSection.php`  | `EvaluationSection`  | `BaseModel` | `evaluation_sections`  |
-| `Models/EvaluationQuestion.php` | `EvaluationQuestion` | `BaseModel` | `evaluation_questions` |
-| `Models/EvaluationResponse.php` | `EvaluationResponse` | `BaseModel` | `evaluation_responses` |
-| `Models/EvaluationAnswer.php`   | `EvaluationAnswer`   | `BaseModel` | `evaluation_answers`   |
-
-### EvaluationForm
-
-| Column        | Type            | Description                               |
-| ------------- | --------------- | ----------------------------------------- |
-| `name`        | string          | Form display name                         |
-| `description` | text (nullable) | Optional form description                 |
-| `target_type` | string          | `mentor`, `program`, `company`, `overall` |
-| `is_active`   | boolean         | Whether form is accepting responses       |
-
-### EvaluationSection
-
-| Column        | Type                  | Description                  |
-| ------------- | --------------------- | ---------------------------- |
-| `form_id`     | FK → evaluation_forms | Parent form                  |
-| `title`       | string                | Section heading              |
-| `description` | text (nullable)       | Optional section description |
-| `order`       | unsigned integer      | Display ordering             |
-
-### EvaluationQuestion
-
-| Column          | Type                  | Description                                                                   |
-| --------------- | --------------------- | ----------------------------------------------------------------------------- |
-| `form_id`       | FK → evaluation_forms | Parent form                                                                   |
-| `section_id`    | uuid (nullable)       | Optional parent section                                                       |
-| `question_text` | text                  | The question prompt                                                           |
-| `question_type` | string                | `rating_1_5`, `rating_1_10`, `yes_no`, `multiple_choice`, `text`, `agreement` |
-| `options`       | JSON (nullable)       | Choices for `multiple_choice`                                                 |
-| `weight`        | unsigned integer      | Scoring weight (default: 1)                                                   |
-| `order`         | unsigned integer      | Display ordering                                                              |
-| `is_required`   | boolean               | Whether answer is mandatory                                                   |
-
-### EvaluationResponse
-
-| Column            | Type                  | Description                    |
-| ----------------- | --------------------- | ------------------------------ |
-| `form_id`         | FK → evaluation_forms | The form submitted             |
-| `evaluator_id`    | FK → users            | Who submitted                  |
-| `target_type`     | string                | Polymorphic target type        |
-| `target_id`       | uuid                  | Polymorphic target ID          |
-| `registration_id` | FK (nullable)         | Registration context           |
-| `overall_score`   | float (nullable)      | Auto-calculated weighted score |
-| `notes`           | text (nullable)       | Free-text notes                |
-| `submitted_at`    | timestamp             | When submitted                 |
-
-### EvaluationAnswer
-
-| Column        | Type                      | Description                      |
-| ------------- | ------------------------- | -------------------------------- |
-| `response_id` | FK → evaluation_responses | Parent response                  |
-| `question_id` | FK → evaluation_questions | Which question                   |
-| `value`       | text (nullable)           | Raw answer                       |
-| `score`       | float (nullable)          | Numeric score derived from value |
-
----
-
-## Enums
-
-None. The `EvaluatorRole` enum previously located here has been moved to `app/Modules/Assessment/Enums/`
-(see [Assessment reference](assessment-reference.md)).
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Models/EvaluationAnswer.php` | `EvaluationAnswer` | `BaseModel` |
+| `Models/EvaluationQuestion.php` | `EvaluationQuestion` | `BaseModel` |
+| `Models/EvaluationResponse.php` | `EvaluationResponse` | `BaseModel` |
+| `Models/EvaluationSection.php` | `EvaluationSection` | `BaseModel` |
 
 ## Routes
 

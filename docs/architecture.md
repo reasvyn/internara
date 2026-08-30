@@ -42,7 +42,7 @@ only on layers below it — never the reverse.
 │  Layer 4: PRESENTATION / UI                                                  │
 │                                                                             │
 │  Livewire components  Blade templates  Controllers  Console commands        │
-│  Policies (RBAC / authorization gates)  Routes (17 route files)             │
+│  Policies (RBAC / authorization gates)  Routes (17 web route files incl. web.php) │
 │  TallstackUI v4 + Alpine.js + Tailwind CSS v4 (+ self-hosted palette shims)│
 │                                                                             │
 │  app/{Module}/**/Livewire/  app/{Module}/**/Policies/  app/{Module}/Http/  │
@@ -308,5 +308,5 @@ See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.m
 | **Testing patterns**                                                               | [Testing Pattern](guides/arch/testing-pattern.md)                                                     |
 | **Validation strategy**                                                            | [Modular Pattern](guides/arch/modular-pattern.md) §4                                                  |
 | **Module structure & naming**                                                      | [Modular Pattern](guides/arch/modular-pattern.md)                                                     |
-| **18 modules overview**                                                            | [Module Index](refs/modules/index.md)                                                                       |
+| **19 modules overview (18 business + UI + Core)**                                  | [Module Index](refs/modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |

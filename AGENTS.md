@@ -12,6 +12,7 @@ a task reaches its concern.
 > project-specific instantiation. Paths below are workspace-relative (`.agents/...`) unless prefixed
 > with `~/`.
 
+
 ## Agent Workflow — Canonical
 
 **Every instruction MUST run the full cycle** (`UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE`)
@@ -128,229 +129,6 @@ Close the loop: version-control checkpoint, commit, and a concise final report.
 
 **Exit criteria:** clean commit(s), report delivered, **learning captured** (memory updated, repeats promoted), repo left cleaner than found.
 
-## Phase Classification — Adaptive Depth
-
-Classify the instruction into an SDLC phase. Full = mandatory complete depth · Light = executed but minimal · Note = skip silently. Anything not listed defaults to Note. Depth is now expressed in the 5-step vocabulary.
-
-| SDLC Phase | Full (mandatory) | Light | Note (skip silently) |
-|------------|------------------|-------|----------------------|
-| **Support** | Understand, Summarize | Plan (brief context check) | Implement, Verify (findings only) |
-| **Analysis** | Understand, Plan, Summarize | Verify (sanity check) | Implement |
-| **Planning** | Understand, Plan, Summarize | Verify (feasibility check) | Implement |
-| **Design** | Understand, Plan, Summarize | Verify (design review) | Implement |
-| **Implementation** | **All 5 steps** | — | — |
-| **Testing** | Understand, Implement, Verify, Summarize | Plan (scope the test plan) | — |
-| **Documentation** | Understand, Plan, Implement, Summarize | Verify (link & metadata check) | — |
-| **Tooling** | Understand, Plan, Implement, Verify, Summarize | — | — |
-| **Maintenance** | Understand, Verify, Summarize | Plan, Implement | — |
-
-> **How to read:** e.g., a `Support` question runs Understand deeply (intent + spec lookup), skims Plan just enough to locate relevant docs, skips Implement/Verify except to validate the answer, and delivers a full Summarize. An `Implementation` task runs all 5 steps at full depth.
-
-## Size Triage — Session Splitting
-
-| Size | Criteria | Execution | User check-in |
-|------|----------|-----------|---------------|
-| **S** | ≤3 files, single concern, no cross-module | Single pass, full 5 steps at phase depth | None |
-| **M** | 4-10 files, 2-3 concerns, or cross-layer | Single session, staged internally, batch verification (Verify once, then Summarize) | One checkpoint before commit (Step 5) |
-| **L** | >10 files, multi-module, cross-cutting | **MUST split into multiple sessions** | **MUST inform the user first** |
-
-**L-size protocol:** after **Plan** (Step 2), tell the user in one short paragraph: *"This instruction is too broad for a single pass — I will split it into N sessions"* + the session list. Execute sessions in order; each session runs Implement → Verify → Summarize with its own `git status` + `git diff` review, targeted verification, and short report. Never attempt L-size in one pass.
-
-## Instruction Ordering — High-Impact, Low-Effort First
-
-The user sometimes batches instructions in random order. Before executing any of them (during **Understand**), reorder the batch by **impact-to-effort ratio** — quick wins first, heavy lifts scheduled. Apply this to every multi-instruction message; run the scoring silently and surface only the resulting order.
-
-The full rule (the impact-to-effort rule, scoring scale, worked examples, and commit grouping) lives in `.agents/rules/instruction-ordering.md` — apply that rule, not the summary below.
-
-| Quadrant | Impact | Effort | Handling |
-|----------|--------|--------|----------|
-| **Quick win** | High | Low | Execute first — highest impact-to-effort ratio |
-| **Strategic** | High | High | Split into sessions (Size Triage L); schedule after quick wins |
-| **Fill-in** | Low | Low | Batch opportunistically alongside larger work; do not skip |
-| **Questionable** | Low | High | Challenge or defer; confirm with the user before investing |
-
-**Ordering algorithm (summary — see the rule file for scoring):**
-1. **Decompose** the batch into discrete, independently-executable instructions
-2. **Score** each by impact (reach × importance) and effort (files × complexity × verification)
-3. **Sort** by impact-to-effort ratio, quick wins first
-4. **Honor dependencies** — if instruction B depends on A, execute A first even if B scores higher
-5. **Group** same-area instructions into one pass (batch file touches, batch verification in Verify)
-6. **Surface** the resulting order in one short paragraph when it differs from the user's sequence
-
-## Computational Thinking — Decision Loop
-
-Before each action: *predict outcome → act → verify → adjust*. Anticipate the next step. Resolve ambiguity yourself when the cost is low; escalate to the user only when the decision changes scope or architecture.
-
-| Pillar | Application |
-|--------|-------------|
-| **Decomposition** | Break into sub-problems (files, layers, concerns); solve each, then integrate |
-| **Pattern recognition** | Classify the instruction; reuse known patterns (skills, docs, conventions) |
-| **Abstraction** | Filter irrelevant detail; focus on entities, flows, contracts, invariants |
-| **Algorithm design** | Plan ordered steps with clear inputs/outputs |
-
-## Pre-existing Defects — Fix or File
-
-- **Fix by default, after the main work**: pre-existing warnings/errors noticed along the way (lint, PHPStan, arch-guard, broken doc links) get fixed before Summarize — leave the repo cleaner than found. Fix only what is safe and in-scope-adjacent; anything behavior-changing or spec-touching needs user sign-off first. This happens inside **Implement** (fix) and is confirmed in **Verify**.
-- **Cannot fix? File a GitHub issue immediately** (`issue-writing` skill) — a defect noticed is a defect tracked.
-
-## Self-Improvement Loop — Continuous Learning
-
-The agent compounds in capability across sessions via a closed loop (inherits the global Learning Loop in
-`~/.agents/rules/self-improvement.md`; project overlay: `.agents/rules/self-improvement.md`, procedure
-`~/.agents/skills/self-improvement/SKILL.md`). Run `/self-improvement` (or `--deep`) for an explicit
-retrospective.
-
-```
-CAPTURE  ──▶  CONSOLIDATE  ──▶  APPLY
-   ▲                                 │
-   └─────────────────────────────────┘
-```
-
-- **CAPTURE** (in **Summarize**, step 5): record decisions, corrections, failures, patterns, constraints,
-  gaps into `context/` (mandatory facts, register in `context/index.md`) or `memory/` (learnings, register in `memory/index.md`). Append a one-liner
-  to `memory/learning-log.md`.
-  → Split: mandatory facts → `.agents/context/`; evolving learnings → `.agents/memory/` (with `memory/index.md` + `memory/learning-log.md`). Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. One-offs stay in memory — no rule-bloat.
-- **CONSOLIDATE** (periodic): a signal seen ≥2 times in this codebase is promoted to `rules/`
-  (prefer `architecture-rules`, `coding-rules`, `testing-rules`) or a skill step; durable decisions get
-  an ADR in `docs/adr/`. One-offs stay in `memory/` — no rule-bloat.
-- **APPLY** (in **Understand**, step 1): load `context/index.md` + `memory/index.md`, open the rows matching the task, and
-  honor recorded corrections + intentional states (deprecated `laravel-model-status`, dummy-guard,
-  TallstackUI-only) so the same mistake is never repeated.
-
-This is the agent's deep-learning mechanism: experience is extracted into patterns and pushed into its
-own instructions (rules/skills), not just logged. Update `context/` and `memory/` files in place (write a descriptive commit message);
-never duplicate a topic.
-
-## Skill Rules
-
-| Rule | Asset | Applies when |
-|------|-------|--------------|
-| Key rules (non-negotiable) | `.agents/rules/key-rules.md` | Every instruction |
-| Instruction ordering (impact-to-effort) | `.agents/rules/instruction-ordering.md` | Batched/multi-instruction messages |
-
-## References
-
-| Topic | Doc |
-|-------|-----|
-| Full workflow & module map | `AGENTS.md` |
-| Verification matrix | `AGENTS.md` §Verification Strategy |
-| Pre-commit checklist | `AGENTS.md` §Pre-commit Checklist |
-| Skill map | `AGENTS.md` §Skill Map |
-| Conventions & invariants | `docs/conventions.md` |
-| Instruction ordering rule | `.agents/rules/instruction-ordering.md` (this skill) |
-
----
-
-## Rules Index — Load on Demand
-
-> All rule bodies live in `.agents/rules/` (150+ rules consolidated from skill `rules/` directories).
-> The table below indexes the most-referenced rules; load any other rule file by name when a task
-> reaches its concern.
-
-| Rule file | Governs | Load when |
-|-----------|---------|-----------|
-| [`spec-first-doctrine`](.agents/rules/spec-first-doctrine.md) | Governing spec is SSOT; no behavior without a requirement ID | Every task — consult before planning |
-| [`clean-code-dedup-align`](.agents/rules/clean-code-dedup-align.md) | DRY default, spec↔code↔docs↔tests alignment, surfacing structural decisions | Every task — during implement & review |
-| [`computational-thinking`](.agents/rules/computational-thinking.md) | Four decision pillars + predict→act→verify→adjust loop | Ambiguous or multi-step instructions |
-| [`documentation-split`](.agents/rules/documentation-split.md) | Human docs in `docs/`, AI assets in `.agents/`; directional referencing | Any documentation change |
-| [`automation-first`](.agents/rules/automation-first.md) | Script batch work; reuse scanners; `/tmp` for throwaway scripts | Repetitive/batch operations; writing scripts |
-| [`impact-to-effort`](.agents/rules/impact-to-effort.md) | Order all work: dependency chains → business importance/urgency bands → impact-to-effort ratio | Multiple instructions, backlog triage, multi-stage planning |
-| [`edit-policy`](.agents/rules/edit-policy.md) | Read-before-edit, surgical diffs, git lossless proof | Every code/doc edit |
-| [`pre-existing-defects`](.agents/rules/pre-existing-defects.md) | Fix or file noticed warnings/errors; never silent tolerance | Warnings/errors encountered mid-task |
-| [`commit-as-checkpoint`](.agents/rules/commit-as-checkpoint.md) | Commit at every session end AND every verified milestone; never leave verified work uncommitted | End of every session; each stage of multi-stage work |
-| [`verification-strategy`](.agents/rules/verification-strategy.md) | Batched verification, change-type matrix, scanner commands | Before running tests or quality gates |
-| [`pre-commit-checklist`](.agents/rules/pre-commit-checklist.md) | Final gate before every commit | Immediately before each commit |
-| [`key-rules`](.agents/rules/key-rules.md) | Non-negotiable workflow rules (load order, no restate, spec-first, narration, batch verify, impact-to-effort) | Every instruction — governs workflow |
-| [`instruction-ordering`](.agents/rules/instruction-ordering.md) | Impact-to-effort scoring for batched instructions | Multi-instruction messages |
-| [`architecture-rules`](.agents/rules/architecture-rules.md) | Layer boundaries & Action Triad checks | Classifying/reviewing code against 4-layer model |
-| [`domain-boundary`](.agents/rules/domain-boundary.md) | One business domain = one Domain; when a domain earns its own Domain | Decomposing/relocating a domain into its own Domain |
-| [`coding-rules`](.agents/rules/coding-rules.md) | Practical coding application guide (before writing any class) | Creating/reviewing Actions, Entities, DTOs, Models, Enums |
-| [`testing-rules`](.agents/rules/testing-rules.md) | What to verify when testing (spec-driven minimalism) | Writing/reviewing tests |
-| [`invariants`](.agents/rules/invariants.md) | Non-negotiable invariants C1-C8, D1-D6 | Every class written or touched |
-| [`class-contracts`](.agents/rules/class-contracts.md) | Action/Entity/DTO/Model/Enum/Livewire/Service contracts | Creating/modifying a component type |
-| [`naming-conventions`](.agents/rules/naming-conventions.md) | File/class/method/variable naming | Naming files, classes, routes, tests |
-| [`performance`](.agents/rules/performance.md) | N+1, queries, caching | Query-heavy or list/dashboard code |
-| [`security`](.agents/rules/security.md) | XSS, SQLi, mass assignment, CSRF | Any user input, output, or form |
-
----
-
-## Project Identity
-
-Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
-
-| Technology | Layer | Version |
-|------------|-------|---------|
-| PHP | Language | v8.4 |
-| Laravel | Framework | v13.24 |
-| Livewire | Frontend | v4.3 |
-| Alpine.js | Frontend JS | — |
-| Tailwind CSS | CSS | v4.3 |
-| TallstackUI | UI Component | v4.3 |
-| Flatpickr | Date Picker | v4.6 |
-| Marked | Markdown Parser | v18.0 |
-| Vite | Build Tool | v8.1 |
-| laravel-vite-plugin | Build Plugin | v3.1 |
-| SQLite | Database | — |
-| MySQL | Database | v8.0 |
-| MariaDB | Database | v10.6 |
-| PostgreSQL | Database | v15.0 |
-| barryvdh/laravel-dompdf | PDF Generation | v3.1 |
-| laravel-lang/lang | Localization | v15.34 |
-| Laravel Pulse | Monitoring | v1.8 |
-| spatie/laravel-activitylog | Audit Log | v5.0 |
-| spatie/laravel-medialibrary | Media Upload | v11.23 |
-| spatie/laravel-model-status | Model Status | v1.18 — **deprecated, removal planned (#419); do not use in new code** |
-| spatie/laravel-permission | RBAC | v8.0 |
-| Pest | Testing | v4.2 |
-| PHPStan | Static Analysis | v2.1 |
-| Larastan | Laravel PHPStan | v3.10 |
-| Laravel Pint | Code Style | v1.24 |
-| Mockery | Mocking | v1.6 |
-| Faker | Test Data | v1.23 |
-| Collision | Error Handler | v8.6 |
-| Laravel Tinker | REPL | v3.0 |
-| Laravel Pail | Log Viewer | v1.2 |
-| Laravel Sail | Docker Dev | v1.65 |
-| Prettier | Formatter (non-PHP only) | v3.9 |
-| prettier-plugin-blade | Blade Formatter (via Pint) | v3.2 |
-| prettier-plugin-tailwindcss | Tailwind Class Sorter (via Pint) | v0.8 |
-| concurrently | Task Runner | v10.0 |
-
----
-
-## Project Definition
-
-**Internara** is a self-hosted, single-tenant web application for managing compulsory industrial
-fieldwork programs (PKL — _Praktik Kerja Lapangan_) at Indonesian vocational schools (SMA/SMK).
-
-### Target Users
-
-| Persona | Role |
-|---------|------|
-| **Students (Interns)** | Register, daily logbook, attendance, assignments, certificates |
-| **Schools (Admin/Teacher)** | System config, enrollment, grading, supervision, reporting |
-| **Companies (Supervisors)** | Attendance verification, logbook review, competency evaluation |
-
-### Design Principles (3S Doctrine)
-
-| Principle | Definition |
-|-----------|------------|
-| **S1 — Secure** | Enforce authorization at every layer, protect data integrity and PII |
-| **S2 — Sustain** | Module colocation, Action single-responsibility, clear boundaries |
-| **S3 — Scalable** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad |
-
-### Lifecycle Scope
-
-Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance
-
-### Out-of-Scope
-
-Multi-tenant SaaS, HR/payroll, real-time chat, government DB sync (CSV import/export only).
-
-Full definition: `docs/project-vision.md` (personas, system boundary, horizon) and `docs/philosophy.md` (3S Doctrine); condensed overview in `README.md`
-
----
-
 ## Project Snapshot — Comprehensive Map (AI Orientation)
 
 > Compressed navigation map so an AI agent can grasp the project without opening 20+ docs. SSOT remains in `docs/` — this section is a pointer, not a duplicate.
@@ -365,14 +143,14 @@ Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) an
 
 | Fact | Value |
 |------|-------|
-| **Scope** | 19 modules = 18 business + UI + Core (691 PHP files, 45 migrations, 64 specs, 17 route files) |
+| **Scope** | 19 modules = 18 business + UI + Core (693 PHP files in `app/` — 691 in `app/Modules/` — 45 migrations, 61 spec files incl. 3 meta / 58 feature specs, 17 web route files incl. `web.php`) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
 | **Status** | **v0.15.8** (`composer.json`) / **v0.15.3** (`package.json`) — Stabilization; suite ~98% pass, uneven coverage (core solid, domain needs work); P0 in `Assessment/Certification/Document` |
 | **License** | MIT — schools may fork/customize (Dapodik/regional certificate templates) |
 
-Full stack: `## Project Identity` above; philosophy: `docs/philosophy.md` §1–7.
+Full stack: see `.agents/context/project-identity.md`; philosophy: `docs/philosophy.md` §1–7.
 
 ### Architecture — 4-Layer + Action Triad (SSOT: `docs/architecture.md` + Spec `D2FT3`)
 
@@ -418,7 +196,7 @@ User → Livewire (validates, catches RejectedException) → Command Action::exe
 
 **Health tiers (agent SSOT: `.agents/context/module-health.md`):** `Production-Ready: Core,Auth,User,Settings,Setup,SysAdmin,Academics` · `Stable-Needs Attention: Program,Partners,Enrollment,Journals,Incident,Assignment,Reports` (dead DTOs, `event()` inside transactions, broken Blade, wrong `user_id` in attendance, ActionResponse gaps) · `Needs Work P0: Assessment,Certification,Document` (Blade crashes, relation/migration mismatches, missing Entity) · `Skeleton: Evaluation` · `Infra: Jobs,Providers`. Fix order: schema mismatch → ActionResponse → `__()` → Entity → `dispatchEvent()` → dead code.
 
-### Spec Build Order — 12 Phases, 65 Specs (SSOT: `docs/specs/index.md` + `implementation-matrix.md`)
+### Spec Build Order — 12 Phases, 61 Spec Files / 58 Feature Specs (SSOT: `docs/specs/index.md` + `implementation-matrix.md`)
 
 ```
 P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional → P5 Partnerships → P6 Programs
@@ -452,7 +230,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 | Values, philosophy, trade-offs | `docs/philosophy.md` |
 | Living architecture + triad + data flow | `docs/architecture.md` |
 | Code rules, security, performance, naming | `docs/conventions.md` |
-| 18 modules (conceptual vs reference per module) | `docs/refs/modules/{module}.md` + `{module}-reference.md`, index `docs/refs/modules/index.md` |
+| 19 modules (conceptual vs reference per module) | `docs/refs/modules/{module}.md` + `{module}-reference.md`, index `docs/refs/modules/index.md` |
 | Feature specs + build order | `docs/specs/index.md` → `docs/specs/{ID}-{feature}.md` |
 | Implementation status + coverage per spec | `docs/specs/implementation-matrix.md` |
 | Deep pattern guides (16 patterns) | `docs/guides/arch/{action,entity,model,data,enum,event,livewire,policy,exception,logging,cache,service,support,modular,testing,ui,ux}-pattern.md` |
@@ -463,8 +241,6 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 | Agent rules (150+ consolidated) | `.agents/rules/{rule}.md` — load on demand via Rules Index |
 
 **Suggested reading (new to the project):** `CONTRIBUTING.md` → `README.md` → `docs/specs/index.md` → `docs/philosophy.md` → `docs/getting-started.md` → `docs/architecture.md` → `docs/conventions.md` → `docs/refs/modules/index.md` → `.agents/context/module-health.md` → `AGENTS.md` (5-step workflow).
-
----
 
 ## Context Awareness — Project Orientation
 
@@ -698,18 +474,19 @@ Track the version that will be deployed — local, tag, and VPS often drift.
 | Is the Docker image stale? | `GIT_URL` in `docker-compose.yml` (`#main` vs `#vX.Y.Z`), `docker images internara-app` `CREATED`, `docker exec ... cat /app/public/index.php \| head` |
 | Why is VPS on 0.14.0? | `composer.json` 0.15.x but `docker-deploy` behind `main` → `git checkout docker-deploy && git merge --ff-only main && git push` + bump `version` + `git tag vX.Y.Z` |
 
-#### Agent Version Senses
+#### Project Version Senses
 
-AI agent and tooling versions drift — pin and verify before debugging.
+Track the project version that will be deployed — local, tag, and VPS often drift. Read alongside `.agents/context/project-snapshot.md` at session start and before releasing new version.
 
 | Question | How to check |
 |----------|-------------|
-| Which AI model is running? | Model ID in session header (`muse-spark-1.2-contributor-free`) vs `~/.config/opencode/opencode.jsonc` |
-| Is the agent skill stale? | `ls -la .agents/skills/*/SKILL.md` vs `git log --oneline -- .agents/skills/` |
-| Are opencode permissions correct? | `cat opencode.json` `permissions` + `~/.config/opencode/opencode.jsonc` `permissions` (especially `*.env` vs `*.env.example`) |
-| Is Composer/PHP compatible? | `composer --version` (expect 2.10.x for PHP 8.4, not 2.7.x), `php --version`, `php /usr/local/bin/composer --version` |
+| What version is the code at? | `cat composer.json \| grep version` + `git describe --tags` + `git tag --sort=-v:refname \| head` |
+| What version is on VPS? | `ssh internara-vps "cat ~/apps/internara/composer.json \| grep version; git -C ~/apps/internara describe --tags; git log --oneline -1"` |
+| Did docker-deploy get the new tag? | `git log --oneline main..docker-deploy` (empty = in sync), `git tag --list | grep v0.` |
+| Is the Docker image stale? | `GIT_URL` in `docker-compose.yml` (`#main` vs `#vX.Y.Z`), `docker images internara-app` `CREATED`, `docker exec ... cat /app/public/index.php \| head` |
+| Why is VPS on older version? | `composer.json` version differs from `docker-deploy` → fast-forward `docker-deploy` to `main` and push — `build-and-deploy.yml` handles the rest |
 
-**Version Bump Guide (sync before `version` bump — not a hard ref):**
+**Version Bump Guide (sync before `composer.json` version bump — not a hard ref):**
 
 All places that mention `version` must be checked and kept in sync before bumping `composer.json:version` — use this as a pre-bump checklist, not a hard-coded list (grep to verify):
 
@@ -796,157 +573,9 @@ Output: `tools/outputs/{timestamp}-{description}.json`.
 
 ---
 
-## Skill Map — Which Skill to Load
-
-| Task | Skill | Notes |
-|------|-------|-------|
-
-| Every instruction, any task | `agent-workflow` (see §Agent Workflow above) | **ALWAYS apply first** — universal workflow, no exceptions |
-| Every instruction, any task | `context-awareness` (see §Context Awareness above) | **ALWAYS apply second** — universal orientation layer, no exceptions |
-| Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
-| Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
-| Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
-| Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
-| Laravel/architecture best practices | `laravel-best-practices` | Cross-cutting overrides for the Module-first Action architecture |
-| Data architecture (schema, flow, security, contracts, DTO, mapping, formatting) | `data-architect` | Single source for any data-related task — schema, flow, security, interface/struct/type/enum/DTO, mapping, formatting |
-| Livewire component | `livewire-development` | Livewire mechanics only — thin component, delegation, tables |
-| General UI (Blade, layout, a11y, i18n, TallstackUI) | `ui-development` | General UI — Blade presentation, view structure, layout/responsive/dark mode, component library, accessibility, localization (delegates Tailwind details to tailwindcss-development) |
-| Writing spec-driven tests | `pest-testing` | Each test traces to a spec FR/NFR; no orphan tests |
-| Deciding verification strategy | `test-writing` | What to run, when, how much; spec-gap & orphan detection |
-| Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
-| Syncing docs with code | `sync-docs` | Automated verification |
-| Writing GitHub issues | `issue-writing` | Structured issue format |
-| Security review | `security-audit` | OWASP, PII, auth patterns |
-| Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
-| Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
-| Enforcing architecture rules + ADR | `arch-guard` | C1-C8, D1-D6, contracts, naming, ADR staleness/linkage (docs/adr/*.md) |
-| Writing scripts | `script-automation` | Standards for `tools/` devtools |
-| Tailwind CSS utilities & palette | `tailwindcss-development` | Tailwind CSS v4 only — utilities, @theme, semantic palette, no general UI |
-| TallStackUI components | `tallstackui-development` | TallStackUI v4 — x-ts-* components, interactions (1:1 tallstackui/tallstackui) |
-| Laravel framework | `laravel-development` | Laravel core — routing, container, Eloquent, validation (1:1 laravel/framework) |
-| File uploads/media | `medialibrary-development` | Spatie MediaLibrary (1:1 spatie/laravel-medialibrary) |
-| RBAC / Permission | `permission-development` | Spatie Permission — roles, @hasrole, policies (1:1 spatie/laravel-permission) |
-| Audit trail | `activitylog-development` | Spatie Activity Log — audit, SmartLogger (1:1 spatie/laravel-activitylog) |
-| PDF generation | `dompdf-development` | DOMPDF — Blade-to-PDF, assets (1:1 barryvdh/laravel-dompdf) |
-| Build pipeline | `vite-development` | Vite — entry, plugins, HMR, build (1:1 vite) |
-| Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards (1:1 laravel/pulse) |
-
 ---
 
-## Module & Spec Reference
-
-Full module list with docs: `docs/refs/modules/index.md`
-Full spec list with build order: `docs/specs/index.md`
-
----
-
-## Where to Find What
-
-### Architecture & Patterns
-
-| I need to know about... | Look at |
-|-------------------------|---------|
-| Project contexts (intentional states, deploy caveats, dependency pins, known issues) | `.agents/context/index.md` |
-| Global agent rules (doctrines, policies, checklists) | `.agents/rules/` — see Rules Index above |
-| 4-Layer model | `docs/architecture.md` §4-Layer Model |
-| Action Triad (Command/Read/Process) | `docs/guides/arch/action-pattern.md` |
-| SRP & modularity rules | `docs/guides/arch/modular-pattern.md` §1.6 |
-| Entity contracts (`final readonly`) | `docs/guides/arch/entity-pattern.md` |
-| DTO/Data contracts (`BaseData`) | `docs/guides/arch/data-pattern.md` |
-| Model contracts (`#[Fillable]`, entity bridge) | `docs/guides/arch/model-pattern.md` |
-| Enum contracts (LabelEnum, StatusEnum) | `docs/guides/arch/enum-pattern.md` |
-| Event dispatch & listeners | `docs/guides/arch/event-pattern.md` |
-| Exception hierarchy | `docs/guides/arch/exception-pattern.md` |
-| Cache patterns | `docs/guides/arch/cache-pattern.md` |
-| Logging patterns | `docs/guides/arch/logging-pattern.md` |
-| Policy authorization | `docs/guides/arch/policy-pattern.md` |
-| Livewire patterns | `docs/guides/arch/livewire-pattern.md` |
-| Service registration | `docs/guides/arch/service-pattern.md` |
-| Testing patterns | `docs/guides/arch/testing-pattern.md` |
-| Modular architecture | `docs/guides/arch/modular-pattern.md` |
-| Repository (why none) | `docs/guides/arch/repository-pattern.md` |
-| Support utilities | `docs/guides/arch/support-pattern.md` |
-| UI pattern (visual design) | `docs/guides/arch/ui-pattern.md` |
-| UX pattern (a11y, i18n, flow) | `docs/guides/arch/ux-pattern.md` |
-
-### Feature Specs
-
-| I need to know about... | Look at |
-|-------------------------|---------|
-| Feature spec index | `docs/specs/index.md` |
-| Spec template & conventions | `.agents/skills/spec-writing/SKILL.md` |
-| Writing a new spec | Load `spec-writing` skill |
-
-### Coding Conventions
-
-| I need to know about... | Look at |
-|-------------------------|---------|
-| Critical invariants (C1-C8, D1-D6) | `docs/conventions.md` §Architecture Invariants |
-| Naming conventions (files, classes, methods) | `docs/conventions.md` §Naming Conventions |
-| Security (XSS, SQLi, CSRF, auth) | `docs/conventions.md` §Security Conventions |
-| Database conventions (migrations, FKs) | `docs/conventions.md` §Database Conventions |
-| Localization (`__()` usage) | `docs/conventions.md` §Localization |
-| Testing conventions | `docs/conventions.md` §Testing Conventions |
-| Doc conventions (metadata, PHPDoc) | `docs/conventions.md` §Documentation Conventions |
-| Theming / form field icons | `docs/conventions.md` §Frontend Conventions |
-
-### Specific Invariants
-
-| Invariant | Where to find the full rule |
-|-----------|----------------------------|
-| C1 — No Model mutations in Livewire | `docs/guides/arch/action-pattern.md` §Non-Negotiable |
-| C2 — No service locator (`app()->make`) | `docs/conventions.md` §Dependency Injection |
-| C3 — No raw SQL without bindings | `docs/conventions.md` §SQL Injection Prevention |
-| C4 — No inline cache keys | `docs/guides/arch/cache-pattern.md` §Registration |
-| C5 — Entity forbidden imports | `docs/guides/arch/entity-pattern.md` §Non-Negotiable |
-| C6 — DTO forbidden imports | `docs/guides/arch/data-pattern.md` §Non-Negotiable |
-| C7 — DTO for 3+ params | `docs/guides/arch/action-pattern.md` §Command Action |
-| C8 — RejectedException not RuntimeException | `docs/guides/arch/exception-pattern.md` §Usage |
-| D1 — `declare(strict_types=1)` | `docs/conventions.md` §Strict Types |
-| D2 — No debug calls | `docs/conventions.md` §Debug Calls |
-| D3 — `__()` for user strings | `docs/conventions.md` §Localization |
-| D4 — `#[Fillable]` attribute | `docs/guides/arch/model-pattern.md` §Non-Negotiable |
-| D5 — No raw request to create/update | `docs/conventions.md` §Input Sanitization |
-| D6 — FK with onDelete/onUpdate | `docs/conventions.md` §Database Conventions |
-
-### Super Admin Rules
-
-| Rule | Where to find |
-|------|--------------|
-| Name always `Super Admin` | `docs/refs/modules/setup.md` §Super Admin |
-| Username always `superadmin` | `docs/refs/modules/setup.md` §Super Admin |
-| SetupSuperAdminAction signature | `docs/refs/modules/setup.md` §Super Admin |
-| InitializeSuperAdminAction uses config | `docs/refs/modules/setup.md` §Super Admin |
-
-### Reports Module Rules
-
-| Rule | Where to find |
-|------|--------------|
-| Grade card only — no thesis content | `docs/refs/modules/reports.md` §Boundary |
-| Thesis belongs in Assignment module | `docs/refs/modules/assignment.md` |
-
----
-
-## Quick Reference
-
-### Dev Commands
-```bash
-composer run dev           # Serve + queue + logs + vite (concurrently)
-composer run test          # Full suite (optimize:clear + test)
-vendor/bin/pest --testsuite={ModuleName}  # Module-specific tests
-composer run analyse       # PHPStan level 8
-composer run quality       # Lint + analyse + module tests
-php artisan system:health  # Health check
-php artisan admin:recover  # Super admin CLI recovery
-php artisan setup:install  # Audits env, runs migrations, seeds defaults
-npm run build              # Vite build (check frontend)
-```
-
-### Commit Format
-`type(scope): description` — `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
-
-### Branch Naming
-`feat/{kebab}`, `fix/{desc}`, `refactor/{module}-{scope}`, `docs/{what}`, `chore/{task}`, `hotfix/{desc}`
-
-### Language
-**English only** — code, comments, commits, docs. Indonesian only in `lang/id/`. **AI Agent:** English-only for all artifacts and internal work, but direct communication with the user must follow the user's language.
+> **AGENTS.md is now lean** — containing only the 5-step workflow, project snapshot, and context awareness.
+> All supporting maps moved to `.agents/context/`: project-identity, phase-classification, instruction-ordering,
+> pre-existing-defects, skill-rules, documentation-senses, metacognitive-loop, skill-map, quick-reference.
+> See `.agents/context/index.md` for the full context index.

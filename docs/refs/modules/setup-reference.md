@@ -13,60 +13,50 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 ## Actions
 
-| File                                                | Class                      | Extends             |
-| --------------------------------------------------- | -------------------------- | ------------------- |
-| `Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseCommandAction` |
-| `Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseCommandAction` |
-| `Installation/Actions/InstallSystemAction.php`      | `InstallSystemAction`      | `BaseProcessAction` |
-| `Installation/Actions/SeedDummyDataAction.php`      | `SeedDummyDataAction`      | `BaseProcessAction` |
-| `SetupWizard/Actions/SetupSuperAdminAction.php`     | `SetupSuperAdminAction`    | `BaseCommandAction` |
-| `SetupWizard/Actions/SetupSchoolAction.php`         | `SetupSchoolAction`        | `BaseCommandAction` |
-| `SetupWizard/Actions/SetupDepartmentAction.php`     | `SetupDepartmentAction`    | `BaseCommandAction` |
-| `SetupWizard/Actions/FinalizeSetupAction.php`       | `FinalizeSetupAction`      | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseCommandAction` |
+| `Domain/Installation/Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseCommandAction` |
+| `Domain/Installation/Actions/SeedDummyDataAction.php` | `SeedDummyDataAction` | `BaseCommandAction` |
+| `Domain/Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseCommandAction` |
+| `Domain/SetupWizard/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseCommandAction` |
+| `Domain/SetupWizard/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseCommandAction` |
+| `Domain/SetupWizard/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseCommandAction` |
+| `Domain/SetupWizard/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseCommandAction` |
 
 ## Entities
 
-| File                       | Class         | Extends      |
-| -------------------------- | ------------- | ------------ |
+| File | Class | Extends |
+|---|---|---|
 | `Entities/SetupEntity.php` | `SetupEntity` | `BaseEntity` |
 
 ## Data / DTOs
 
-| File                                   | Class            | Extends    |
-| -------------------------------------- | ---------------- | ---------- |
-| `Installation/Data/SetupTokenData.php` | `SetupTokenData` | `BaseData` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Installation/Data/SetupTokenData.php` | `SetupTokenData` | `BaseData` |
+| `Domain/SetupWizard/Data/FinalizeSetupData.php` | `FinalizeSetupData` | `BaseData` |
 
 ## Events
 
-| File                                    | Event            | Extends     |
-| --------------------------------------- | ---------------- | ----------- |
-| `SetupWizard/Events/SetupFinalized.php` | `SetupFinalized` | `BaseEvent` |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/SetupWizard/Events/SetupFinalized.php` | `SetupFinalized` | `BaseEvent` |
 
 ## Listeners
 
-| File                                          | Listener            |
-| --------------------------------------------- | ------------------- |
-| `SetupWizard/Listeners/LogSetupFinalized.php` | `LogSetupFinalized` |
-
----
+| File | Listener | Listens To |
+|---|---|---|
+| `Domain/SetupWizard/Listeners/LogSetupFinalized.php` | `LogSetupFinalized` | — |
 
 ## Livewire Components
 
-| File                                   | Component     | Extends      |
-| -------------------------------------- | ------------- | ------------ |
-| `SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `BaseWizard` |
-
-## Livewire Forms
-
-| File                                            | Form             |
-| ----------------------------------------------- | ---------------- |
-| `SetupWizard/Livewire/Forms/SuperAdminForm.php` | `SuperAdminForm` |
-| `SetupWizard/Livewire/Forms/SchoolForm.php`     | `SchoolForm`     |
-| `SetupWizard/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/SetupWizard/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `BaseFormView` |
+| `Domain/SetupWizard/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `BaseFormView` |
+| `Domain/SetupWizard/Livewire/Forms/SuperAdminForm.php` | `SuperAdminForm` | `BaseFormView` |
+| `Domain/SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
 
 ## Middleware
 
@@ -77,8 +67,8 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 ## HTTP Controllers
 
-| File                                   | Controller        | Extends          |
-| -------------------------------------- | ----------------- | ---------------- |
+| File | Controller | Extends |
+|---|---|---|
 | `Http/Controllers/SetupController.php` | `SetupController` | `BaseController` |
 
 ## Support

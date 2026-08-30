@@ -112,7 +112,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Modules
 
-Refer to the [Module Documentation Index](refs/modules/index.md) for the complete listing of all 18 modules. Each module has two documents:
+Refer to the [Module Documentation Index](refs/modules/index.md) for the complete listing of all 19 modules (18 business + UI + Core). Each business module has two documents:
 
 - **Overview** (`docs/refs/modules/{module}.md`) — purpose, boundary, features, design principles
 - **Reference** (`docs/refs/modules/{module}-reference.md`) — complete API reference (Models, Actions, Routes, Policies, Livewire, events)

@@ -76,7 +76,8 @@ git log --since="14 days ago" --stat  # already minimum; for older drift use ful
 | Config               | `docs/guides/infra/configuration.md`                               |
 | Agent guides         | `AGENTS.md` (module map, invariants, rule pointers)                  |
 | Agent skills         | `.agents/skills/{skill}/SKILL.md` (skill scope, rules, references)   |
-| Agent contexts       | `.agents/context/*.md` (intentional states, deploy caveats, pins)   |
+| Agent contexts (mandatory) | `.agents/context/*.md` (intentional states, deploy caveats, pins) |
+| Agent memory (autonomous) | `.agents/memory/*.md` (learnings, session captures) |
 | Agent plans          | `.agents/plans/` (session plans, decisions)                          |
 
 This mapping includes **agent guides & skills** — a spec amendment (renamed default, new invariant,
@@ -112,7 +113,7 @@ git log --since="14 days ago" --stat
 - **Widening the window blindly:** reviewing 90 days of history for every routine sync dilutes focus.
   Extend only when needed — routine sync starts at 14 days, audit expands to full log.
 - **Updating only `docs/` and ignoring agent guides & skills** — `AGENTS.md`, `.agents/skills/*`,
-  `.agents/context/`, `.agents/plans/` document the same code and specs; a spec amendment not
+  `.agents/context/`, `.agents/memory/`, `.agents/plans/` document the same code and specs; a spec amendment not
   mirrored there leaves the agent layer stale even when `docs/` is clean.
 - **Touching docs that didn't change** — re-verifying and re-dating docs that match the code hides
   real future drift.

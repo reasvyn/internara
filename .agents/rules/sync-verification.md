@@ -36,7 +36,7 @@ The gate exists to catch these before commit — a synced doc set is only as goo
 - [ ] Module index (`index.md`) updated with new dependencies
 - [ ] Feature specs in `docs/specs/` match implementation (FR, NFR, data contracts)
 - [ ] Spec index (`docs/specs/index.md`) lists all specs
-- [ ] Agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`) match specs and code
+- [ ] Agent guides, skills, context & memory (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/memory/`, `.agents/plans/`) match specs and code
 - [ ] File paths in docs verified against actual codebase
 - [ ] Class names and method signatures verified
 - [ ] Migration schemas match actual database
@@ -46,12 +46,12 @@ The gate exists to catch these before commit — a synced doc set is only as goo
 ## Anti-Patterns & Pitfalls
 
 - **Deleting/renaming a file mid-sync** without fixing the docs that reference it. The scanner catches the broken link, but only after you created it.
-- **Ignoring the agent layer checklist items.** The three checklist items about `AGENTS.md`, `.agents/skills/*`, `.agents/context/`, `.agents/plans/` are checked boxes in most syncs — they are exactly the ones that rot silently.
+- **Ignoring the agent layer checklist items.** The items about `AGENTS.md`, `.agents/skills/*`, `.agents/context/`, `.agents/memory/`, `.agents/plans/` are checked boxes in most syncs — they are exactly the ones that rot silently.
 - **Whole-file rewrite "while we're here".** Key rule 6 exists because a `write` over an existing doc can silently drop unrelated content. Use targeted edits; review with `git diff`.
 - **Committing before the gate.** Running the checklist mentally after commit — the whole point is to catch problems while fixing them is cheap.
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links.py` — broken links (`BROKEN_FILE_LINK`, `BROKEN_ANCHOR`) across `docs/`, `.agents/context/`, `README.md`, `AGENTS.md`. Freshness via `git log --follow -- <file>`.
+- `python3 tools/scan_doc_links.py` — broken links (`BROKEN_FILE_LINK`, `BROKEN_ANCHOR`) across `docs/`, `.agents/context/`, `.agents/memory/`, `README.md`, `AGENTS.md`. Freshness via `git log --follow -- <file>`.
 - `git status` + `git diff` — confirm exactly the intended docs changed and nothing unrelated was dropped (Edit Policy).
 - Grep for tier violations: conceptual docs with `app/`, `.php`, `::class`; reference docs with "because"/"why"/"purpose".

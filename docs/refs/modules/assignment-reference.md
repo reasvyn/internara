@@ -12,76 +12,59 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Actions
 
-| File                                                     | Class                             | Extends             |
-| -------------------------------------------------------- | --------------------------------- | ------------------- |
-| `Actions/CreateAssignmentAction.php`                     | `CreateAssignmentAction`          | `BaseCommandAction` |
-| `Actions/UpdateAssignmentAction.php`                     | `UpdateAssignmentAction`          | `BaseCommandAction` |
-| `Actions/DeleteAssignmentAction.php`                     | `DeleteAssignmentAction`          | `BaseCommandAction` |
-| `Actions/PublishAssignmentAction.php`                    | `PublishAssignmentAction`         | `BaseCommandAction` |
-| `Submission/Actions/SubmitAssignmentAction.php`          | `SubmitAssignmentAction`          | `BaseCommandAction` |
-| `Submission/Actions/GradeSubmissionAction.php`           | `GradeSubmissionAction`           | `BaseCommandAction` |
-| `Submission/Actions/VerifySubmissionAction.php`          | `VerifySubmissionAction`          | `BaseCommandAction` |
-| `Submission/Actions/RequestSubmissionRevisionAction.php` | `RequestSubmissionRevisionAction` | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseCommandAction` |
+| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseCommandAction` |
+| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseCommandAction` |
+| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseCommandAction` |
+| `Domain/Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseCommandAction` |
+| `Domain/Submission/Actions/RequestSubmissionRevisionAction.php` | `RequestSubmissionRevisionAction` | `BaseCommandAction` |
+| `Domain/Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseCommandAction` |
+| `Domain/Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                               | Class        | Extends     |
-| ---------------------------------- | ------------ | ----------- |
-| `Models/Assignment.php`            | `Assignment` | `BaseModel` |
-| `Submission/Models/Submission.php` | `Submission` | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Submission/Models/Submission.php` | `Submission` | `BaseModel` |
+| `Models/Assignment.php` | `Assignment` | `BaseModel` |
 
 ## Enums
 
-| File                                    | Enum               | Implements                | Values                                                |
-| --------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------------- |
-| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed                              |
-| `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, graded, revision_required |
-
----
-
-## Entities
-
-| File                                      | Class             | Extends      |
-| ----------------------------------------- | ----------------- | ------------ |
-| `Entities/AssignmentRules.php`            | `AssignmentRules` | `BaseEntity` |
-| `Submission/Entities/SubmissionState.php` | `SubmissionState` | `BaseEntity` |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum` | — |
+| `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum` | — |
 
 ## Policies
 
-| File                                       | Policy             | Extends      |
-| ------------------------------------------ | ------------------ | ------------ |
-| `Policies/AssignmentPolicy.php`            | `AssignmentPolicy` | `BasePolicy` |
-| `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` |
+| `Policies/AssignmentPolicy.php` | `AssignmentPolicy` | `BasePolicy` |
 
 ## Data / DTOs
 
-| File                                       | Class                  | Extends    |
-| ------------------------------------------ | ---------------------- | ---------- |
-| `Data/CreateAssignmentData.php`            | `CreateAssignmentData` | `BaseData` |
-| `Data/UpdateAssignmentData.php`            | `UpdateAssignmentData` | `BaseData` |
-| `Submission/Data/GradeSubmissionData.php`  | `GradeSubmissionData`  | `BaseData` |
-| `Submission/Data/SubmitAssignmentData.php` | `SubmitAssignmentData` | `BaseData` |
+| File | Class | Extends |
+|---|---|---|
+| `Data/CreateAssignmentData.php` | `CreateAssignmentData` | `BaseData` |
+| `Data/UpdateAssignmentData.php` | `UpdateAssignmentData` | `BaseData` |
+| `Domain/Submission/Data/GradeSubmissionData.php` | `GradeSubmissionData` | `BaseData` |
+| `Domain/Submission/Data/SubmitAssignmentData.php` | `SubmitAssignmentData` | `BaseData` |
 
 ## Events
 
-| File                                                | Event                         | Dispatched By                     |
-| --------------------------------------------------- | ----------------------------- | --------------------------------- |
-| `Events/AssignmentPublished.php`                    | `AssignmentPublished`         | `PublishAssignmentAction`         |
-| `Submission/Events/SubmissionRevisionRequested.php` | `SubmissionRevisionRequested` | `RequestSubmissionRevisionAction` |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/Submission/Events/SubmissionRevisionRequested.php` | `SubmissionRevisionRequested` | `BaseEvent` |
+| `Events/AssignmentPublished.php` | `AssignmentPublished` | `BaseEvent` |
 
 ## Listeners
 
-| File                                        | Listener                      | Listens To            |
-| ------------------------------------------- | ----------------------------- | --------------------- |
-| `Listeners/NotifyOnAssignmentPublished.php` | `NotifyOnAssignmentPublished` | `AssignmentPublished` |
+| File | Listener | Listens To |
+|---|---|---|
+| `Listeners/NotifyOnAssignmentPublished.php` | `NotifyOnAssignmentPublished` | — |
 
 ## Notifications
 
@@ -92,20 +75,18 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Livewire Components
 
-| File                                        | Component           | Extends             |
-| ------------------------------------------- | ------------------- | ------------------- |
-| `Livewire/AssignmentManager.php`            | `AssignmentManager` | `BaseRecordManager` |
-| `Submission/Livewire/SubmitAssignment.php`  | `SubmitAssignment`  | `BaseFormView`      |
-| `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component`         |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component` |
+| `Domain/Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `Component` |
+| `Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
 
 ## Form Requests
 
-| File                                                   | Request                   | Purpose                        |
-| ------------------------------------------------------ | ------------------------- | ------------------------------ |
-| `Http/Requests/CreateAssignmentRequest.php`            | `CreateAssignmentRequest` | Assignment creation validation |
-| `Submission/Http/Requests/SubmitAssignmentRequest.php` | `SubmitAssignmentRequest` | Submission validation          |
-
----
+| File | Request | Purpose |
+|---|---|---|
+| `Domain/Submission/Http/Requests/SubmitAssignmentRequest.php` | `SubmitAssignmentRequest` | — |
+| `Http/Requests/CreateAssignmentRequest.php` | `CreateAssignmentRequest` | — |
 
 ## Routes
 

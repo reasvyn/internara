@@ -13,99 +13,84 @@ permissions.
 
 ## Actions
 
-| File                                                     | Class                         | Extends             |
-| -------------------------------------------------------- | ----------------------------- | ------------------- |
-| `Login/Actions/LoginAction.php`                          | `LoginAction`                 | `BaseCommandAction` |
-| `Password/Actions/ConfirmPasswordAction.php`             | `ConfirmPasswordAction`       | `BaseCommandAction` |
-| `Password/Actions/ResetPasswordAction.php`               | `ResetPasswordAction`         | `BaseCommandAction` |
-| `Password/Actions/SendPasswordResetLinkAction.php`       | `SendPasswordResetLinkAction` | `BaseCommandAction` |
-| `Password/Actions/UpdateUserPasswordAction.php`          | `UpdateUserPasswordAction`    | `BaseCommandAction` |
-| `Account/Actions/ActivateAccountAction.php`              | `ActivateAccountAction`       | `BaseCommandAction` |
-| `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction`  | `BaseCommandAction` |
-| `AccountRecovery/Actions/RedeemRecoverySlipAction.php`   | `RedeemRecoverySlipAction`    | `BaseCommandAction` |
-| `SuperAdmin/Actions/InitializeSuperAdminAction.php`      | `InitializeSuperAdminAction`  | `BaseCommandAction` |
-| `SuperAdmin/Actions/RecoverSuperAdminAction.php`         | `RecoverSuperAdminAction`     | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Account/Actions/ActivateAccountAction.php` | `ActivateAccountAction` | `BaseCommandAction` |
+| `Domain/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseCommandAction` |
+| `Domain/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseCommandAction` |
+| `Domain/Login/Actions/LoginAction.php` | `LoginAction` | `BaseCommandAction` |
+| `Domain/Password/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseCommandAction` |
+| `Domain/Password/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseCommandAction` |
+| `Domain/Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseCommandAction` |
+| `Domain/Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseCommandAction` |
+| `Domain/SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseCommandAction` |
+| `Domain/SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                                  | Class         | Extends     |
-| ------------------------------------- | ------------- | ----------- |
-| `AccessTokens/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AccessTokens/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
 
 ## Enums
 
-| File                         | Enum   | Implements  | Values                                                                     |
-| ---------------------------- | ------ | ----------- | -------------------------------------------------------------------------- |
-| `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | superadmin, admin, teacher, supervisor, student, func_mentor, func_mentee |
-
----
-
-## Entities
-
-| File                                               | Class                      | Extends      |
-| -------------------------------------------------- | -------------------------- | ------------ |
-| `Account/Entities/AccountActivation.php`           | `AccountActivation`        | `BaseEntity` |
-| `AccountRecovery/Entities/RecoveryCodeState.php`   | `RecoveryCodeState`        | `BaseEntity` |
-| `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
-| `AccessTokens/Entities/ActivationToken.php`        | `ActivationToken`          | `BaseEntity` |
-| `AccessTokens/Entities/AccessTokenState.php`       | `AccessTokenState`         | `BaseEntity` |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/Permissions/Enums/Role.php` | `Role` | `LabelEnum` | — |
 
 ## Policies
 
-| File                                  | Policy       | Extends      |
-| ------------------------------------- | ------------ | ------------ |
-| `Permissions/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/Permissions/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` |
 
 ## Data / DTOs
 
-| File                                        | Class              | Extends    |
-| ------------------------------------------- | ------------------ | ---------- |
-| `Login/Data/LoginData.php`                  | `LoginData`        | `BaseData` |
-| `AccountRecovery/Data/RecoveryCodeData.php` | `RecoveryCodeData` | `BaseData` |
-| `Account/Data/ActivateAccountData.php`      | `ActivateAccountData` | `BaseData` |
-| `AccountRecovery/Data/RedeemRecoverySlipData.php` | `RedeemRecoverySlipData` | `BaseData` |
-| `Password/Data/ResetPasswordData.php`       | `ResetPasswordData` | `BaseData` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Account/Data/ActivateAccountData.php` | `ActivateAccountData` | `BaseData` |
+| `Domain/AccountRecovery/Data/RecoveryCodeData.php` | `RecoveryCodeData` | `BaseData` |
+| `Domain/AccountRecovery/Data/RedeemRecoverySlipData.php` | `RedeemRecoverySlipData` | `BaseData` |
+| `Domain/Login/Data/LoginData.php` | `LoginData` | `BaseData` |
+| `Domain/Password/Data/ResetPasswordData.php` | `ResetPasswordData` | `BaseData` |
 
 ## Events
 
-| File                                               | Class                   | Dispatched By                |
-| -------------------------------------------------- | ----------------------- | ---------------------------- |
-| `Login/Events/LoginSucceeded.php`                  | `LoginSucceeded`        | `LoginAction`                |
-| `Login/Events/LoginFailed.php`                     | `LoginFailed`           | `LoginAction`                |
-| `AccountRecovery/Events/RecoverySlipGenerated.php` | `RecoverySlipGenerated` | `GenerateRecoverySlipAction` |
-| `SuperAdmin/Events/SuperAdminRecovered.php`        | `SuperAdminRecovered`   | `RecoverSuperAdminAction`    |
-| `Password/Events/PasswordUpdated.php`              | `PasswordUpdated`       | `UpdateUserPasswordAction`   |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/AccountRecovery/Events/RecoverySlipGenerated.php` | `RecoverySlipGenerated` | `BaseEvent` |
+| `Domain/Login/Events/LoginFailed.php` | `LoginFailed` | `BaseEvent` |
+| `Domain/Login/Events/LoginSucceeded.php` | `LoginSucceeded` | `BaseEvent` |
+| `Domain/Password/Events/PasswordUpdated.php` | `PasswordUpdated` | `BaseEvent` |
+| `Domain/SuperAdmin/Events/SuperAdminRecovered.php` | `SuperAdminRecovered` | `BaseEvent` |
 
 ## Listeners
 
-| File                                                       | Class                               | Listens To            |
-| ---------------------------------------------------------- | ----------------------------------- | --------------------- |
-| `Login/Listeners/SendRoleWelcomeNotification.php`          | `SendRoleWelcomeNotification`       | `LoginSucceeded`      |
-| `Login/Listeners/LogLoginFailed.php`                       | `LogLoginFailed`                    | `LoginFailed`         |
-| `Password/Listeners/InvalidateSessionOnPasswordChange.php` | `InvalidateSessionOnPasswordChange` | `PasswordUpdated`     |
-| `Password/Listeners/SendPasswordChangedMail.php`           | `SendPasswordChangedMail`           | `PasswordUpdated`     |
-| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php`     | `NotifySuperAdminsOfRecovery`       | `SuperAdminRecovered` |
+| File | Listener | Listens To |
+|---|---|---|
+| `Domain/Login/Listeners/LogLoginFailed.php` | `LogLoginFailed` | — |
+| `Domain/Login/Listeners/SendRoleWelcomeNotification.php` | `SendRoleWelcomeNotification` | — |
+| `Domain/Password/Listeners/InvalidateSessionOnPasswordChange.php` | `InvalidateSessionOnPasswordChange` | — |
+| `Domain/Password/Listeners/SendPasswordChangedMail.php` | `SendPasswordChangedMail` | — |
+| `Domain/SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php` | `NotifySuperAdminsOfRecovery` | — |
 
 ## Livewire Components
 
-| File                                               | Component             | Extends     |
-| -------------------------------------------------- | --------------------- | ----------- |
-| `Login/Livewire/Login.php`                         | `Login`               | `Component` |
-| `Password/Livewire/ForgotPassword.php`             | `ForgotPassword`      | `Component` |
-| `Password/Livewire/ResetPassword.php`              | `ResetPassword`       | `Component` |
-| `Password/Livewire/ConfirmPassword.php`            | `ConfirmPassword`     | `Component` |
-| `Account/Livewire/ActivateAccount.php`             | `ActivateAccount`     | `Component` |
-| `AccountRecovery/Livewire/AccountRecovery.php`     | `AccountRecovery`     | `Component` |
-| `AccountRecovery/Livewire/RecoveryCode.php`        | `RecoveryCode`        | `Component` |
-| `AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Account/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` |
+| `Domain/AccountRecovery/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` |
+| `Domain/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` | `BaseFormView` |
+| `Domain/AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
+| `Domain/AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `BaseRecordManager` |
+| `Domain/Login/Livewire/Forms/LoginForm.php` | `LoginForm` | `BaseFormView` |
+| `Domain/Login/Livewire/Login.php` | `Login` | `Component` |
+| `Domain/Password/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` |
+| `Domain/Password/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` |
+| `Domain/Password/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` | `BaseFormView` |
+| `Domain/Password/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` | `BaseFormView` |
+| `Domain/Password/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` | `BaseFormView` |
+| `Domain/Password/Livewire/ResetPassword.php` | `ResetPassword` | `Component` |
 
 ## Notifications
 
@@ -114,16 +99,6 @@ permissions.
 | `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery             |
 | `SuperAdmin/Notifications/RecoveryOtpNotification.php`         | `RecoveryOtpNotification`         | Notifies on recovery OTP                |
 | `Notifications/CredentialChangedNotification.php`              | `CredentialChangedNotification`   | Email on password/email/username change |
-
-## Livewire Forms
-
-| File                                                     | Form                  |
-| -------------------------------------------------------- | --------------------- |
-| `Login/Livewire/Forms/LoginForm.php`                     | `LoginForm`           |
-| `Password/Livewire/Forms/ConfirmPasswordForm.php`        | `ConfirmPasswordForm` |
-| `Password/Livewire/Forms/ForgotPasswordForm.php`         | `ForgotPasswordForm`  |
-| `Password/Livewire/Forms/ResetPasswordForm.php`          | `ResetPasswordForm`   |
-| `AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` |
 
 ## Middleware
 
@@ -134,11 +109,9 @@ permissions.
 
 ## Form Requests
 
-| File                                        | Request       | Purpose                    |
-| ------------------------------------------- | ------------- | -------------------------- |
-| `Permissions/Http/Requests/RoleRequest.php` | `RoleRequest` | Role assignment validation |
-
----
+| File | Request | Purpose |
+|---|---|---|
+| `Domain/Permissions/Http/Requests/RoleRequest.php` | `RoleRequest` | — |
 
 ## Routes
 

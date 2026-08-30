@@ -13,23 +13,19 @@ internships.
 
 ## Actions
 
-| File                                                      | Class                             | Extends             |
-| --------------------------------------------------------- | --------------------------------- | ------------------- |
-| `Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseCommandAction` |
-| `Certificate/Actions/IssueCertificateAction.php`          | `IssueCertificateAction`          | `BaseCommandAction` |
-| `Certificate/Actions/RevokeCertificateAction.php`         | `RevokeCertificateAction`         | `BaseCommandAction` |
-| `Certificate/Actions/BatchIssueCertificateAction.php`     | `BatchIssueCertificateAction`     | `BaseProcessAction` |
-| `Actions/DispatchBatchIssueCertificatesAction.php`        | `DispatchBatchIssueCertificatesAction` | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Actions/DispatchBatchIssueCertificatesAction.php` | `DispatchBatchIssueCertificatesAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/RevokeCertificateAction.php` | `RevokeCertificateAction` | `BaseCommandAction` |
 
 ## Data / DTOs
 
-| File                                        | Class                          | Extends    |
-| ------------------------------------------- | ------------------------------ | ---------- |
-| `Data/BatchIssueCertificatesData.php`       | `BatchIssueCertificatesData`   | `BaseData` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Data/BatchIssueCertificatesData.php` | `BatchIssueCertificatesData` | `BaseData` |
 
 ## Jobs
 
@@ -41,49 +37,43 @@ internships.
 
 ## Models
 
-| File                                         | Class                 | Extends     |
-| -------------------------------------------- | --------------------- | ----------- |
-| `Certificate/Models/Certificate.php`         | `Certificate`         | `BaseModel` |
-| `Certificate/Models/CertificateTemplate.php` | `CertificateTemplate` | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Certificate/Models/Certificate.php` | `Certificate` | `BaseModel` |
+| `Domain/Certificate/Models/CertificateTemplate.php` | `CertificateTemplate` | `BaseModel` |
 
 ## Enums
 
-| File                                      | Enum                | Implements                | Values          |
-| ----------------------------------------- | ------------------- | ------------------------- | --------------- |
-| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `StatusEnum` | issued, revoked |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum` | — |
 
 ## Events
 
-| File                                                  | Event                | Dispatched By          |
-| ----------------------------------------------------- | -------------------- | ---------------------- |
-| `Certificate/Events/CertificateIssued.php`            | `CertificateIssued`  | `IssueCertificateAction` |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/Certificate/Events/CertificateIssued.php` | `CertificateIssued` | `BaseEvent` |
 
 ## Policies
 
-| File                                                 | Policy                      | Extends      |
-| ---------------------------------------------------- | --------------------------- | ------------ |
-| `Certificate/Policies/CertificatePolicy.php`         | `CertificatePolicy`         | `BasePolicy` |
-| `Certificate/Policies/CertificateTemplatePolicy.php` | `CertificateTemplatePolicy` | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` | `BasePolicy` |
+| `Domain/Certificate/Policies/CertificateTemplatePolicy.php` | `CertificateTemplatePolicy` | `BasePolicy` |
 
 ## HTTP Controllers
 
-| File                                                             | Controller                      | Extends          |
-| ---------------------------------------------------------------- | ------------------------------- | ---------------- |
-| `Certificate/Http/Controllers/CertificateDownloadController.php` | `CertificateDownloadController` | `BaseController` |
+| File | Controller | Extends |
+|---|---|---|
+| `Domain/Certificate/Http/Controllers/CertificateDownloadController.php` | `CertificateDownloadController` | `BaseController` |
 
 ## Livewire Components
 
-| File                                                  | Component                    | Extends             |
-| ----------------------------------------------------- | ---------------------------- | ------------------- |
-| `Certificate/Livewire/CertificateList.php`            | `CertificateList`            | `BaseRecordManager` |
-| `Certificate/Livewire/StudentCertificates.php`        | `StudentCertificates`        | `Component`         |
-| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `BaseRecordManager` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Certificate/Livewire/CertificateList.php` | `CertificateList` | `BaseRecordManager` |
+| `Domain/Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `BaseRecordManager` |
+| `Domain/Certificate/Livewire/StudentCertificates.php` | `StudentCertificates` | `Component` |
 
 ## Support
 
