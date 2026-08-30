@@ -28,10 +28,24 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+# Import shared helpers
+from _common import (
+    parse_args_with_common,
+    ProgressReporter,
+    get_file_cache,
+    clear_file_cache,
+    deduplicate_findings,
+    find_files_parallel,
+    load_baseline,
+    filter_by_baseline,
+    filter_by_severity,
+)
+
 # ─── Constants ──────────────────────────────────────────────────────────────
 
 ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
+MODULES_DIR = ROOT / "app" / "Modules"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "violations"
 
@@ -960,17 +974,9 @@ def print_summary(result: ScanResult) -> None:
 # ─── CLI ────────────────────────────────────────────────────────────────────
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Scan for C1-C8, D1-D6, Livewire-layer and performance violations",
+    return parse_args_with_common(
+        "Scan for C1-C8, D1-D6, Livewire-layer and performance violations"
     )
-    parser.add_argument("--module", "-m", help="Target specific module")
-    parser.add_argument("--output", "-o", type=Path, help="Output file path")
-    parser.add_argument("--format", "-f", choices=["json", "text", "summary"], default="json")
-    parser.add_argument("--verbose", "-v", action="store_true")
-    parser.add_argument("--quiet", "-q", action="store_true")
-    parser.add_argument("--strict", "-s", action="store_true")
-    parser.add_argument("--json", action="store_true")
-    return parser.parse_args()
 
 
 # ─── Main ───────────────────────────────────────────────────────────────────
@@ -984,30 +990,82 @@ def main() -> None:
     total_php = len(find_php_files(None))
     models = collect_model_classes(find_php_files(None))
 
+    # Initialize progress reporter
+    progress = ProgressReporter(
+        total=len(files),
+        quiet=args.quiet,
+        show_progress=getattr(args, "progress", False),
+    )
+
+    # Initialize cache
+    use_cache = not getattr(args, "no_cache", False)
+    if use_cache:
+        cache = get_file_cache()
+    else:
+        cache = None
+
     findings: list[Finding] = []
-    findings.extend(scan_c1_livewire_mutations(files, args.module, models))
-    findings.extend(scan_c2_service_locator(files, args.module))
-    findings.extend(scan_c3_raw_sql(files, args.module))
-    findings.extend(scan_c4_inline_cache(files, args.module))
-    findings.extend(scan_c5_entity_imports(files, args.module))
-    findings.extend(scan_c6_dto_imports(files, args.module))
-    findings.extend(scan_c7_action_params(files, args.module))
-    findings.extend(scan_c8_runtime_exception(files, args.module))
-    findings.extend(scan_d1_strict_types(files, args.module))
-    findings.extend(scan_d2_debug_calls(files, args.module))
-    findings.extend(scan_d3_hardcoded_strings(files, args.module))
-    findings.extend(scan_d4_fillable(files, args.module))
-    findings.extend(scan_d5_raw_request(files, args.module))
-    findings.extend(scan_d6_foreign_keys(files, args.module))
-    findings.extend(scan_livewire_layer(files, args.module))
-    findings.extend(scan_performance(files, args.module, models))
+
+    # Define scanner functions to run
+    scanner_funcs = [
+        scan_c1_livewire_mutations,
+        scan_c2_service_locator,
+        scan_c3_raw_sql,
+        scan_c4_inline_cache,
+        scan_c5_entity_imports,
+        scan_c6_dto_imports,
+        scan_c7_action_params,
+        scan_c8_runtime_exception,
+        scan_d1_strict_types,
+        scan_d2_debug_calls,
+        scan_d3_hardcoded_strings,
+        scan_d4_fillable,
+        scan_d5_raw_request,
+        scan_d6_foreign_keys,
+        scan_livewire_layer,
+        scan_performance,
+    ]
+
+    # Run scanners with progress and caching
+    workers = getattr(args, "workers", 8)
+    for scanner_func in scanner_funcs:
+        if "models" in scanner_func.__code__.co_varnames:
+            result = find_files_parallel(
+                files, lambda f: scanner_func([f], args.module, models),
+                max_workers=workers,
+                progress=progress,
+                use_cache=use_cache,
+            )
+        else:
+            result = find_files_parallel(
+                files, lambda f: scanner_func([f], args.module),
+                max_workers=workers,
+                progress=progress,
+                use_cache=use_cache,
+            )
+        findings.extend(result)
+
+    progress.complete("Scan complete")
+
+    # Deduplicate findings
+    findings = deduplicate_findings(findings)
+
+    # Apply baseline filter
+    baseline_path = getattr(args, "baseline", None)
+    if baseline_path:
+        baseline = load_baseline(Path(baseline_path))
+        findings = filter_by_baseline(findings, baseline)
+
+    # Apply severity filter
+    min_severity = getattr(args, "severity", None)
+    if min_severity:
+        findings = filter_by_severity(findings, min_severity)
 
     result = build_report(
         findings, scan_type, args.module, start_time,
         {"total_php_files": total_php, "model_classes": len(models)},
     )
 
-    # Uniform output via _output.py
     exit_code = handle_output(result, args)
     if exit_code:
         sys.exit(exit_code)
