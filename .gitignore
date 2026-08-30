@@ -78,3 +78,6 @@ yarn-error.log
 
 # Legacy Files
 /legacy
+
+# OpenCode legacy
+/.opencode

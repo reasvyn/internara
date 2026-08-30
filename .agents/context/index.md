@@ -1,10 +1,10 @@
 # Context — Mandatory Known Context (Must-Read Before Tasks)
 
-## Description
-
 This directory is the **curated, mandatory known context**: the small set of facts every agent must know before touching the affected area — intentional design decisions, operational constraints, tooling quirks, and environmental truths. It replaces `docs/known-issues.md`. It is **not** the autonomous learning store (that is `.agents/memory/`). Each file is self-contained so an agent can read a single context without loading the rest.
 
 **How to use:** before planning or editing, find the row whose topic matches your task and read that context file. If no row matches, you do not need this directory. **When a context file conflicts with reality, update it directly in the same run** — this context is how mandatory knowledge survives between sessions. For evolving session learnings, write to `.agents/memory/` instead.
+
+**Required reading:** Every session start — `workflow-5step.md`, `project-snapshot.md`, `context-awareness` section in `AGENTS.md`. Before releasing new version — also read `project-snapshot.md`, `project-identity.md`, and `quick-reference.md`.
 
 ---
 
@@ -22,6 +22,16 @@ This directory is the **curated, mandatory known context**: the small set of fac
 | [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
 | [../memory/learning-log.md](../memory/learning-log.md) | **Every session end** — chronological capture of decisions, corrections, failures, patterns, constraints, gaps (the Learning Loop store — lives in `memory/`) |
+| [project-snapshot.md](project-snapshot.md) | **Every session start + before release** — comprehensive project map: 19 modules, 12-phase spec build order, 4-layer architecture, health tiers, deploy topology, status |
+| [project-identity.md](project-identity.md) | **Every session start + before release** — tech stack, project definition, target users, design principles, lifecycle scope |
+| [phase-classification.md](phase-classification.md) | Session depth & size triage — SDLC phase classification, session splitting rules |
+| [instruction-ordering.md](instruction-ordering.md) | **Batched/multi-instruction messages** — impact-to-effort scoring, computational thinking decision loop |
+| [pre-existing-defects.md](pre-existing-defects.md) | **Warnings/errors encountered** — fix or file, self-improvement loop |
+| [skill-rules.md](skill-rules.md) | Skill map index, references, and rules index (150+ rules) — load on demand |
+| [documentation-senses.md](documentation-senses.md) | **Writing/updating docs** — doc drift detection, mismatch resolution, tier selection, history discipline, link integrity |
+| [metacognitive-loop.md](metacognitive-loop.md) | **Every session** — construct→evaluate→verify→decide loop, automation scripts reference |
+| [skill-map.md](skill-map.md) | **Every session** — which skill to load for each task type, module/spec reference |
+| [quick-reference.md](quick-reference.md) | **Every session** — dev commands, commit format, branch naming, navigation map |
 
 ---
 
@@ -42,3 +52,4 @@ This directory is the **curated, mandatory known context**: the small set of fac
 - [Architecture Rules](../rules/architecture-rules.md) — layer/contract checks
 - [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD topology
 - [Documentation Map](../../docs/index.md) — where to find every doc
+- [AGENTS.md](../../AGENTS.md) — navigation hub: workflow, project snapshot, context awareness

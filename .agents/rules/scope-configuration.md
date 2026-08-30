@@ -16,7 +16,7 @@ full-corpus audit on a one-spec question — or silently narrows a full audit un
 | **Module** | All specs for a module | `spec-audit --module Auth` |
 | **Phase** | All specs in a lifecycle phase | `spec-audit --phase 3` |
 | **Audit area** | Specific dimension across all/some specs | `spec-audit --area contracts` |
-| **Agent guides & skills** | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/` against the specs they reference | `spec-audit --guides` |
+| **Agent guides, context & memory** | `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/memory/`, `.agents/plans/` against the specs they reference | `spec-audit --guides` |
 | **Full audit** | All specs, all areas + agent guides & skills | `spec-audit --all` |
 
 **Why scope flexibility exists:** audits cost time and context. A single-spec audit (S-size) runs in

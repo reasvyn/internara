@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/reasvyn/internara/actions/workflows/ci.yml/badge.svg" alt="CI">
+    <img src="https://github.com/reasvyn/internara/actions/workflows/quality-assurance.yml/badge.svg" alt="CI">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
     <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">
@@ -158,7 +158,7 @@ scanner toolkit (`tools/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/
 
 ## Project Status
 
-**v0.15.3** — all 18 modules have a full stack; test suite passes at ~98%, though coverage is
+**v0.15.8** (`composer.json`) / **v0.15.3** (`package.json`) — all 19 modules (18 business + UI + Core) have a full stack; test suite passes at ~98%, though coverage is
 uneven (core modules solid, domain modules need work; known issues tracked in
 [GitHub Issues](https://github.com/reasvyn/internara/issues)). Current focus: fixing P0 runtime
 errors, improving domain-module coverage, UI polish. Roadmap horizons through 2030:

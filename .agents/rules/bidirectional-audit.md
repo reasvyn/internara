@@ -108,6 +108,6 @@ A bidirectional audit is complete when, for each spec in scope:
 - Every spec-referenced artifact was checked for existence (Spec→Code) AND every implementation in the
   module directory was checked for a spec reference (Code→Spec).
 - Every finding carries a drift direction and evidence.
-- The audit surface included agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`,
-  `.agents/context/`, `.agents/plans/`) for guide-lagging drift.
+- The audit surface included agent guides, skills, context & memory (`AGENTS.md`, `.agents/skills/*/SKILL.md`,
+  `.agents/context/`, `.agents/memory/`, `.agents/plans/`) for guide-lagging drift.
 - The report distinguishes auto-fixed, issue-filed, and deferred findings with their directions.

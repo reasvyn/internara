@@ -13,60 +13,58 @@ and compliance acknowledgements.
 
 ## Actions
 
-| File                                                      | Class                        | Extends             |
-| --------------------------------------------------------- | ---------------------------- | ------------------- |
-| `OfficialDocument/Actions/GenerateDocumentAction.php`     | `GenerateDocumentAction`     | `BaseCommandAction` |
-| `OfficialDocument/Actions/GenerateReportAction.php`       | `GenerateReportAction`       | `BaseCommandAction` |
-| `OfficialDocument/Actions/RenderDocumentAction.php`       | `RenderDocumentAction`       | `BaseCommandAction` |
-| `OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseCommandAction` |
-| `OfficialDocument/Actions/DeleteReportAction.php`         | `DeleteReportAction`         | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Handbook/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseCommandAction` |
+| `Domain/Handbook/Actions/CreateHandbookAction.php` | `CreateHandbookAction` | `BaseCommandAction` |
+| `Domain/Handbook/Actions/DeleteHandbookAction.php` | `DeleteHandbookAction` | `BaseCommandAction` |
+| `Domain/Handbook/Actions/UpdateHandbookAction.php` | `UpdateHandbookAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/DeleteReportAction.php` | `DeleteReportAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/GenerateDocumentAction.php` | `GenerateDocumentAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                  | Class      | Extends     |
-| --------------------- | ---------- | ----------- |
+| File | Class | Extends |
+|---|---|---|
 | `Models/Document.php` | `Document` | `BaseModel` |
-
----
 
 ## Enums
 
-| File                         | Enum               | Implements  | Values                                                             |
-| ---------------------------- | ------------------ | ----------- | ------------------------------------------------------------------ |
-| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | application, permit, certificate, report, letter, policy, handbook |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/Handbook/Enums/HandbookAudience.php` | `HandbookAudience` | `LabelEnum` | — |
+| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | — |
 
 ## Policies
 
-| File                          | Policy           | Extends      |
-| ----------------------------- | ---------------- | ------------ |
+| File | Policy | Extends |
+|---|---|---|
 | `Policies/DocumentPolicy.php` | `DocumentPolicy` | `BasePolicy` |
-
----
 
 ## HTTP Controllers
 
-| File                                                             | Controller                 | Extends          |
-| ---------------------------------------------------------------- | -------------------------- | ---------------- |
-| `OfficialDocument/Http/Controllers/DocumentRenderController.php` | `DocumentRenderController` | `BaseController` |
+| File | Controller | Extends |
+|---|---|---|
+| `Domain/OfficialDocument/Http/Controllers/DocumentRenderController.php` | `DocumentRenderController` | `BaseController` |
 
 ## Form Requests
 
-| File                                                       | Request                 | Purpose                      |
-| ---------------------------------------------------------- | ----------------------- | ---------------------------- |
-| `OfficialDocument/Http/Requests/GenerateReportRequest.php` | `GenerateReportRequest` | Report generation validation |
+| File | Request | Purpose |
+|---|---|---|
+| `Domain/OfficialDocument/Http/Requests/GenerateReportRequest.php` | `GenerateReportRequest` | — |
 
 ## Livewire Components
 
-| File                                            | Component         | Extends     |
-| ----------------------------------------------- | ----------------- | ----------- |
-| `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
-| `OfficialDocument/Livewire/ReportsManager.php`  | `ReportsManager`  | `Component` |
-| `Handbook/Livewire/HandbookManager.php`         | `HandbookManager` | `BaseRecordManager` |
-| `Handbook/Livewire/StudentHandbookList.php`     | `StudentHandbookList` | `Component` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Handbook/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `BaseFormView` |
+| `Domain/Handbook/Livewire/HandbookManager.php` | `HandbookManager` | `BaseRecordManager` |
+| `Domain/Handbook/Livewire/StudentHandbookList.php` | `StudentHandbookList` | `BaseRecordManager` |
+| `Domain/OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `BaseRecordManager` |
+| `Domain/OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `BaseRecordManager` |
 
 ## Support
 
@@ -105,6 +103,36 @@ migration or factory.
 | `Jobs/GenerateDocumentJob.php` | `GenerateDocumentJob` | `documents` | Async PDF generation via `GenerateDocumentAction` (7H5D6 FR-GW1, ZT6VS) |
 
 ---
+
+
+## Data / DTOs
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Handbook/Data/HandbookData.php` | `HandbookData` | `BaseData` |
+
+
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Handbook/Entities/HandbookEntity.php` | `HandbookEntity` | `BaseEntity` |
+
+
+## Events
+
+| File | Event | Extends |
+|---|---|---|
+| `Domain/Handbook/Events/HandbookCreated.php` | `HandbookCreated` | `BaseEvent` |
+| `Domain/Handbook/Events/HandbookDeleted.php` | `HandbookDeleted` | `BaseEvent` |
+| `Domain/Handbook/Events/HandbookUpdated.php` | `HandbookUpdated` | `BaseEvent` |
+
+
+## Listeners
+
+| File | Listener | Listens To |
+|---|---|---|
+| `Domain/Handbook/Listeners/ClearHandbookCache.php` | `ClearHandbookCache` | — |
 
 ## Routes
 

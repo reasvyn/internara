@@ -241,7 +241,7 @@ the same schedule as code drift so security debt is tracked like any other findi
 **Goal:** verify agent guides & skills stay consistent with the specs they reference, so every
 document (specs, code docs, and agent guides) agrees.
 
-**Audit surface:** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/plans/`.
+**Audit surface:** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/memory/*.md`, `.agents/plans/`.
 
 For each guide/skill that references a spec, module, invariant, or config value:
 

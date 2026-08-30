@@ -12,39 +12,31 @@ Manages workplace incident reports, severity classification, and resolution trac
 
 ## Actions
 
-| File                                               | Class                   | Extends             |
-| -------------------------------------------------- | ----------------------- | ------------------- |
-| `IncidentReport/Actions/ReportIncidentAction.php`  | `ReportIncidentAction`  | `BaseCommandAction` |
-| `IncidentReport/Actions/UpdateIncidentAction.php`  | `UpdateIncidentAction`  | `BaseCommandAction` |
-| `IncidentReport/Actions/ResolveIncidentAction.php` | `ResolveIncidentAction` | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/IncidentReport/Actions/ReportIncidentAction.php` | `ReportIncidentAction` | `BaseCommandAction` |
+| `Domain/IncidentReport/Actions/ResolveIncidentAction.php` | `ResolveIncidentAction` | `BaseCommandAction` |
+| `Domain/IncidentReport/Actions/UpdateIncidentAction.php` | `UpdateIncidentAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                                       | Class            | Extends     |
-| ------------------------------------------ | ---------------- | ----------- |
-| `IncidentReport/Models/IncidentReport.php` | `IncidentReport` | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/IncidentReport/Models/IncidentReport.php` | `IncidentReport` | `BaseModel` |
 
 ## Enums
 
-| File                                        | Enum               | Implements                | Values                                          |
-| ------------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------- |
-| `IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum`               | low, medium, high, critical                     |
-| `IncidentReport/Enums/IncidentStatus.php`   | `IncidentStatus`   | `StatusEnum`, `ColorableEnum` | reported, investigating, resolved, closed     |
-| `IncidentReport/Enums/IncidentType.php`     | `IncidentType`     | `LabelEnum`               | accident, safety_violation, harassment, disciplinary, other |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum` | — |
+| `Domain/IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `LabelEnum` | — |
+| `Domain/IncidentReport/Enums/IncidentType.php` | `IncidentType` | `LabelEnum` | — |
 
 ## Policies
 
-| File                                               | Policy                 | Extends      |
-| -------------------------------------------------- | ---------------------- | ------------ |
-| `IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` |
 
 ## Notifications
 
@@ -54,12 +46,10 @@ Manages workplace incident reports, severity classification, and resolution trac
 
 ## Livewire Components
 
-| File                                          | Component         | Extends             |
-| --------------------------------------------- | ----------------- | ------------------- |
-| `IncidentReport/Livewire/IncidentManager.php` | `IncidentManager` | `BaseRecordManager` |
-| `IncidentReport/Livewire/IncidentForm.php`    | `IncidentForm`    | `BaseFormView`     |
-
----
+| File | Component | Extends |
+|---|---|---|
+| `Domain/IncidentReport/Livewire/IncidentForm.php` | `IncidentForm` | `BaseFormView` |
+| `Domain/IncidentReport/Livewire/IncidentManager.php` | `IncidentManager` | `BaseRecordManager` |
 
 ## Routes
 

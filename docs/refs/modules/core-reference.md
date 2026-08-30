@@ -116,15 +116,11 @@ Located in `app/Modules/Core/Data/`:
 
 ## Enums
 
-Located in `app/Modules/Core/Enums/`. All implement `LabelEnum`:
-
-| Enum            | Purpose                                                                   |
-| --------------- | ------------------------------------------------------------------------- |
-| `CsvRowResult`  | Row import status: CREATED, SKIPPED                                            |
-| `AuditCategory` | System health categories: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
-| `AuditStatus`   | Audit check results: PASS, FAIL, WARN                                     |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Enums/AuditCategory.php` | `AuditCategory` | `LabelEnum` | — |
+| `Enums/AuditStatus.php` | `AuditStatus` | `LabelEnum` | — |
+| `Enums/CsvRowResult.php` | `CsvRowResult` | `LabelEnum` | — |
 
 ## Channels
 
@@ -165,24 +161,25 @@ ModuleException (abstract, extends RuntimeException)
 
 ---
 
-## Livewire Components & Concerns
+## Livewire Components
 
-| Component / Trait     | Path                                        | Purpose                                                       |
-| --------------------- | ------------------------------------------- | ------------------------------------------------------------- |
-| `BaseRecordManager`   | `Livewire/BaseRecordManager.php`            | Abstract CRUD table with search, sort, paginate, bulk actions |
-| `WithSorting`         | `Livewire/Concerns/WithSorting.php`         | Column sorting state management                               |
-| `WithRecordSelection` | `Livewire/Concerns/WithRecordSelection.php` | Checkbox row selection for bulk actions                       |
-
----
+| File | Component | Extends |
+|---|---|---|
+| `Livewire/BaseFormView.php` | `BaseFormView` | `BaseFormView` |
+| `Livewire/BaseRecordEntry.php` | `BaseRecordEntry` | `BaseRecordEntry` |
+| `Livewire/BaseRecordList.php` | `BaseRecordList` | `BaseRecordManager` |
+| `Livewire/BaseRecordManager.php` | `BaseRecordManager` | `BaseRecordManager` |
+| `Livewire/BaseWizard.php` | `BaseWizard` | `Component` |
+| `Livewire/Concerns/WithRecordSelection.php` | `WithRecordSelection` | `Component` |
+| `Livewire/Concerns/WithSorting.php` | `WithSorting` | `Component` |
 
 ## Policies
 
-| Trait                 | Path                                        | Purpose                                        |
-| --------------------- | ------------------------------------------- | ---------------------------------------------- |
-| `AuthorizesRoles`     | `Policies/Concerns/AuthorizesRoles.php`     | Quick role-based authorization by role string  |
-| `AuthorizesOwnership` | `Policies/Concerns/AuthorizesOwnership.php` | Ownership check comparing primary/foreign keys |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Policies/BasePolicy.php` | `BasePolicy` | `BasePolicy` |
+| `Policies/Concerns/AuthorizesOwnership.php` | `AuthorizesOwnership` | `BasePolicy` |
+| `Policies/Concerns/AuthorizesRoles.php` | `AuthorizesRoles` | `BasePolicy` |
 
 ## Support Classes
 
@@ -201,6 +198,65 @@ ModuleException (abstract, extends RuntimeException)
 The helpers `setting()` and `brand()` are defined in `app/Modules/Settings/Support/helpers.php`.
 
 ---
+
+
+## Actions
+
+| File | Class | Extends |
+|---|---|---|
+| `Actions/BaseAction.php` | `BaseAction` | `BaseCommandAction` |
+| `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseCommandAction` |
+| `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseCommandAction` |
+| `Actions/BaseReadAction.php` | `BaseReadAction` | `BaseCommandAction` |
+
+
+## Models
+
+| File | Class | Extends |
+|---|---|---|
+| `Models/ActivityLog.php` | `ActivityLog` | `BaseModel` |
+| `Models/BaseAuthenticatable.php` | `BaseAuthenticatable` | `BaseModel` |
+| `Models/BaseModel.php` | `BaseModel` | `BaseModel` |
+| `Models/Concerns/HasCommonScopes.php` | `HasCommonScopes` | `BaseModel` |
+
+
+## Data / DTOs
+
+| File | Class | Extends |
+|---|---|---|
+| `Channels/Data/NotificationData.php` | `NotificationData` | `BaseData` |
+| `Data/ActionResponse.php` | `ActionResponse` | `BaseData` |
+| `Data/AuditCheck.php` | `AuditCheck` | `BaseData` |
+| `Data/AuditReport.php` | `AuditReport` | `BaseData` |
+| `Data/BaseData.php` | `BaseData` | `BaseData` |
+
+
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Entities/BaseEntity.php` | `BaseEntity` | `BaseEntity` |
+
+
+## Events
+
+| File | Event | Extends |
+|---|---|---|
+| `Events/BaseEvent.php` | `BaseEvent` | `BaseEvent` |
+
+
+## Form Requests
+
+| File | Request | Purpose |
+|---|---|---|
+| `Http/Requests/BaseFormRequest.php` | `BaseFormRequest` | — |
+
+
+## HTTP Controllers
+
+| File | Controller | Extends |
+|---|---|---|
+| `Http/Controllers/BaseController.php` | `BaseController` | `BaseController` |
 
 ## Routes
 

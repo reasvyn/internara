@@ -1,8 +1,14 @@
 {
-    "mcpServers": {
+    "mcp": {
         "laravel-boost": {
-            "command": "php",
-            "args": ["artisan", "boost:mcp"]
+            "type": "local",
+            "enabled": true,
+            "command": ["php", "artisan", "boost:mcp"]
+        },
+        "github": {
+            "type": "local",
+            "command": ["bash", ".agents/mcp-github-wrapper.sh"],
+            "enabled": false
         }
     }
 }

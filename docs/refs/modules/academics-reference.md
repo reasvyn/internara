@@ -12,35 +12,32 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 ## Actions
 
-| File                                                     | Class                           | Extends             |
-| -------------------------------------------------------- | ------------------------------- | ------------------- |
-| `AcademicYear/Actions/CreateAcademicYearAction.php`      | `CreateAcademicYearAction`      | `BaseCommandAction` |
-| `AcademicYear/Actions/UpdateAcademicYearAction.php`      | `UpdateAcademicYearAction`      | `BaseCommandAction` |
-| `AcademicYear/Actions/DeleteAcademicYearAction.php`      | `DeleteAcademicYearAction`      | `BaseCommandAction` |
-| `AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseCommandAction` |
-| `AcademicYear/Actions/ActivateAcademicYearAction.php`    | `ActivateAcademicYearAction`    | `BaseCommandAction` |
-| `Department/Actions/CreateDepartmentAction.php`          | `CreateDepartmentAction`        | `BaseCommandAction` |
-| `Department/Actions/UpdateDepartmentAction.php`          | `UpdateDepartmentAction`        | `BaseCommandAction` |
-| `Department/Actions/DeleteDepartmentAction.php`          | `DeleteDepartmentAction`        | `BaseCommandAction` |
-| `School/Actions/SaveSchoolProfileAction.php`             | `SaveSchoolProfileAction`       | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Actions/ActivateAcademicYearAction.php` | `ActivateAcademicYearAction` | `BaseCommandAction` |
+| `Domain/AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseCommandAction` |
+| `Domain/AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseCommandAction` |
+| `Domain/AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseCommandAction` |
+| `Domain/AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseCommandAction` |
+| `Domain/Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseCommandAction` |
+| `Domain/Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseCommandAction` |
+| `Domain/Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseCommandAction` |
+| `Domain/School/Actions/GetSchoolEntityAction.php` | `GetSchoolEntityAction` | `BaseCommandAction` |
+| `Domain/School/Actions/SaveSchoolProfileAction.php` | `SaveSchoolProfileAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                                   | Class          | Extends     |
-| -------------------------------------- | -------------- | ----------- |
-| `AcademicYear/Models/AcademicYear.php` | `AcademicYear` | `BaseModel` |
-| `Department/Models/Department.php`     | `Department`   | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Models/AcademicYear.php` | `AcademicYear` | `BaseModel` |
+| `Domain/Department/Models/Department.php` | `Department` | `BaseModel` |
 
 ## Data / DTOs
 
-| File                                     | Class              | Extends    |
-| ---------------------------------------- | ------------------ | ---------- |
-| `AcademicYear/Data/AcademicYearData.php` | `AcademicYearData` | `BaseData` |
-| `Department/Data/DepartmentData.php`     | `DepartmentData`   | `BaseData` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Data/AcademicYearData.php` | `AcademicYearData` | `BaseData` |
+| `Domain/Department/Data/DepartmentData.php` | `DepartmentData` | `BaseData` |
 
 ## Support
 
@@ -50,52 +47,39 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 ## Entities
 
-| File                                          | Class               | Extends      |
-| --------------------------------------------- | ------------------- | ------------ |
-| `AcademicYear/Entities/AcademicYearState.php` | `AcademicYearState` | `BaseEntity` |
-| `Department/Entities/DepartmentState.php`     | `DepartmentState`   | `BaseEntity` |
-| `School/Entities/SchoolEntity.php`            | `SchoolEntity`      | `BaseEntity` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/School/Entities/SchoolEntity.php` | `SchoolEntity` | `BaseEntity` |
 
 ## Events
 
-| File                                            | Class                   | Dispatched By                                               |
-| ----------------------------------------------- | ----------------------- | ----------------------------------------------------------- |
-| `AcademicYear/Events/AcademicYearCreated.php`   | `AcademicYearCreated`   | `CreateAcademicYearAction`                                  |
-| `AcademicYear/Events/AcademicYearActivated.php` | `AcademicYearActivated` | `ActivateAcademicYearAction`                                |
-| `AcademicYear/Events/AcademicYearUpdated.php`   | `AcademicYearUpdated`   | `UpdateAcademicYearAction`                                  |
-| `AcademicYear/Events/AcademicYearDeleted.php`   | `AcademicYearDeleted`   | `DeleteAcademicYearAction`, `BulkDeleteAcademicYearsAction` |
-| `Department/Events/DepartmentCreated.php`       | `DepartmentCreated`     | `CreateDepartmentAction`                                    |
-| `Department/Events/DepartmentDeleted.php`       | `DepartmentDeleted`     | `DeleteDepartmentAction`                                    |
-| `Department/Events/DepartmentUpdated.php`       | `DepartmentUpdated`     | `UpdateDepartmentAction`                                    |
-
----
+| File | Event | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Events/AcademicYearActivated.php` | `AcademicYearActivated` | `BaseEvent` |
+| `Domain/AcademicYear/Events/AcademicYearCreated.php` | `AcademicYearCreated` | `BaseEvent` |
+| `Domain/AcademicYear/Events/AcademicYearDeleted.php` | `AcademicYearDeleted` | `BaseEvent` |
+| `Domain/AcademicYear/Events/AcademicYearUpdated.php` | `AcademicYearUpdated` | `BaseEvent` |
+| `Domain/Department/Events/DepartmentCreated.php` | `DepartmentCreated` | `BaseEvent` |
+| `Domain/Department/Events/DepartmentDeleted.php` | `DepartmentDeleted` | `BaseEvent` |
+| `Domain/Department/Events/DepartmentUpdated.php` | `DepartmentUpdated` | `BaseEvent` |
 
 ## Policies
 
-| File                                           | Policy               | Extends      |
-| ---------------------------------------------- | -------------------- | ------------ |
-| `AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` |
-| `Department/Policies/DepartmentPolicy.php`     | `DepartmentPolicy`   | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` |
+| `Domain/Department/Policies/DepartmentPolicy.php` | `DepartmentPolicy` | `BasePolicy` |
 
 ## Livewire Components
 
-| File                                            | Component             | Extends             |
-| ----------------------------------------------- | --------------------- | ------------------- |
-| `AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
-| `Department/Livewire/DepartmentManager.php`     | `DepartmentManager`   | `BaseRecordManager` |
-| `School/Livewire/SchoolEditor.php`              | `SchoolEditor`        | `BaseFormView`     |
-
-## Livewire Forms
-
-| File                                               | Form               |
-| -------------------------------------------------- | ------------------ |
-| `AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` |
-| `Department/Livewire/Forms/DepartmentForm.php`     | `DepartmentForm`   |
-| `School/Livewire/Forms/SchoolForm.php`             | `SchoolForm`       |
-
----
+| File | Component | Extends |
+|---|---|---|
+| `Domain/AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
+| `Domain/AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `BaseFormView` |
+| `Domain/Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` |
+| `Domain/Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `BaseFormView` |
+| `Domain/School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `BaseFormView` |
+| `Domain/School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` |
 
 ## Routes
 

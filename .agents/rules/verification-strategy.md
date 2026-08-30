@@ -63,7 +63,7 @@ python3 tools/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum
 python3 tools/scan_security.py           # XSS, SQLi, CSRF, auth
 python3 tools/scan_naming.py             # Naming conventions
 python3 tools/scan_conventions.py        # strict_types, Fillable, debug
-python3 tools/scan_doc_links.py          # Broken links in docs + .agents/context/ + outdated/missing metadata detection
+python3 tools/scan_doc_links.py          # Broken links in docs + .agents/context/ + .agents/memory/ + outdated/missing metadata detection
 ```
 
 ## Quick References

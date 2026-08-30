@@ -13,83 +13,61 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Actions
 
-| File                                                 | Class                       | Extends             |
-| ---------------------------------------------------- | --------------------------- | ------------------- |
-| `Actions/ReadAdminDashboardAction.php`               | `ReadAdminDashboardAction`  | `BaseReadAction`    |
-| `Announcement/Actions/DeleteAnnouncementAction.php`  | `DeleteAnnouncementAction`  | `BaseCommandAction` |
-| `Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
-| `Announcement/Actions/SendAnnouncementAction.php`    | `SendAnnouncementAction`    | `BaseCommandAction` |
-| `Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseProcessAction` |
-| `Backups/Actions/CreateBackupAction.php`             | `CreateBackupAction`        | `BaseCommandAction` |
-| `Backups/Actions/DeleteBackupAction.php`             | `DeleteBackupAction`        | `BaseCommandAction` |
-| `Backups/Actions/CleanupBackupsAction.php`           | `CleanupBackupsAction`      | `BaseCommandAction` |
-| `Backups/Actions/ReadBackupStatsAction.php`          | `ReadBackupStatsAction`     | `BaseReadAction`    |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Actions/ReadAdminDashboardAction.php` | `ReadAdminDashboardAction` | `BaseReadAction` |
+| `Domain/Announcement/Actions/DeleteAnnouncementAction.php` | `DeleteAnnouncementAction` | `BaseCommandAction` |
+| `Domain/Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
+| `Domain/Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseCommandAction` |
+| `Domain/Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseCommandAction` |
+| `Domain/Backups/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
+| `Domain/Backups/Actions/CreateBackupAction.php` | `CreateBackupAction` | `BaseCommandAction` |
+| `Domain/Backups/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
+| `Domain/Backups/Actions/ReadBackupStatsAction.php` | `ReadBackupStatsAction` | `BaseReadAction` |
 
 ## Models
 
-| File                                                       | Class             | Extends     |
-| ---------------------------------------------------------- | ----------------- | ----------- |
-| `Announcement/Models/Announcement.php`                     | `Announcement`    | `BaseModel` |
-| `Backups/Models/Backup.php`                                | `Backup`          | `BaseModel` |
-| `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Announcement/Models/Announcement.php` | `Announcement` | `BaseModel` |
+| `Domain/Backups/Models/Backup.php` | `Backup` | `BaseModel` |
+| `Domain/Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` |
 
 ## Enums
 
-| File                                        | Enum                 | Implements                | Values                              |
-| ------------------------------------------- | -------------------- | ------------------------- | ----------------------------------- |
-| `Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum`, `StatusEnum` | draft, scheduled, published         |
-| `Backups/Enums/BackupStatus.php`            | `BackupStatus`       | `LabelEnum`               | pending, running, completed, failed |
-| `Backups/Enums/BackupType.php`              | `BackupType`         | `LabelEnum`               | database, storage, both             |
-
----
-
-## Entities
-
-| File                                          | Class               | Extends      |
-| --------------------------------------------- | ------------------- | ------------ |
-| `Announcement/Entities/AnnouncementState.php` | `AnnouncementState` | `BaseEntity` |
-| `Backups/Entities/BackupState.php`            | `BackupState`       | `BaseEntity` |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum` | — |
+| `Domain/Backups/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
+| `Domain/Backups/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
 
 ## Policies
 
-| File                                                               | Policy                  | Extends      |
-| ------------------------------------------------------------------ | ----------------------- | ------------ |
-| `Backups/Policies/BackupPolicy.php`                                | `BackupPolicy`          | `BasePolicy` |
-| `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` |
-
----
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/Backups/Policies/BackupPolicy.php` | `BackupPolicy` | `BasePolicy` |
+| `Domain/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` |
 
 ## Livewire Components
 
-| File                                                          | Component              | Extends     |
-| ------------------------------------------------------------- | ---------------------- | ----------- |
-| `Announcement/Livewire/AnnouncementManager.php`               | `AnnouncementManager`  | `BaseRecordManager` |
-| `Backups/Livewire/BackupManager.php`                          | `BackupManager`        | `BaseRecordManager` |
-| `Livewire/ApplicationReview.php`                              | `ApplicationReview`    | `Component` |
-| `Observability/Livewire/AuditLogManager.php`                  | `AuditLogManager`      | `Component` |
-| `Observability/Livewire/AccountCloneDetector.php`             | `AccountCloneDetector` | `Component` |
-| `Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs`     | `Component` |
-| `Observability/Livewire/Pulse/SystemCard.php`                 | `SystemCard`           | `Component` |
-| `Observability/Livewire/Pulse/RegistrationsCard.php`          | `RegistrationsCard`    | `Component` |
-
-## Livewire Forms
-
-| File                                               | Form               |
-| -------------------------------------------------- | ------------------ |
-| `Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `BaseRecordManager` |
+| `Domain/Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `BaseFormView` |
+| `Domain/Backups/Livewire/BackupManager.php` | `BackupManager` | `BaseRecordManager` |
+| `Domain/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
+| `Domain/Observability/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
+| `Domain/Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `BaseRecordManager` |
+| `Domain/Observability/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Component` |
+| `Domain/Observability/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Component` |
+| `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 
 ## Events
 
-| File                                 | Event             | Dispatched By        |
-| ------------------------------------ | ----------------- | -------------------- |
-| `Backups/Events/BackupCompleted.php` | `BackupCompleted` | `CreateBackupAction` |
-| `Backups/Events/BackupFailed.php`    | `BackupFailed`    | `CreateBackupAction` |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/Backups/Events/BackupCompleted.php` | `BackupCompleted` | `BaseEvent` |
+| `Domain/Backups/Events/BackupFailed.php` | `BackupFailed` | `BaseEvent` |
 
 ## Services
 
@@ -108,9 +86,9 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Listeners
 
-| File                                                 | Listener                       | Listens To     |
-| ---------------------------------------------------- | ------------------------------ | -------------- |
-| `Backups/Listeners/SendBackupFailedNotification.php` | `SendBackupFailedNotification` | `BackupFailed` |
+| File | Listener | Listens To |
+|---|---|---|
+| `Domain/Backups/Listeners/SendBackupFailedNotification.php` | `SendBackupFailedNotification` | — |
 
 ## Console Commands
 
@@ -136,10 +114,10 @@ logging, Pulse observability, and GDPR compliance.
 
 ## HTTP Controllers
 
-| File                                         | Controller              | Extends          | Purpose                    |
-| -------------------------------------------- | ----------------------- | ---------------- | -------------------------- |
-| `Http/Controllers/AccountSlipController.php` | `AccountSlipController` | `BaseController` | Account slip downloads     |
-| `Http/Controllers/CronController.php`        | `CronController`        | `BaseController` | Health check cron endpoint |
+| File | Controller | Extends |
+|---|---|---|
+| `Http/Controllers/AccountSlipController.php` | `AccountSlipController` | `BaseController` |
+| `Http/Controllers/CronController.php` | `CronController` | `BaseController` |
 
 ## Routes
 

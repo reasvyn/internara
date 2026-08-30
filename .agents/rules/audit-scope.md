@@ -5,7 +5,7 @@
 When auditing documentation against code and specs, verify each claim a doc makes against its ground
 truth: file paths against the filesystem, class names and signatures against the code, schemas
 against migrations, and — critically — the **agent guides & skills** (`AGENTS.md`,
-`.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`) against the specs they document.
+`.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/memory/`, `.agents/plans/`) against the specs they document.
 
 ## Rationale
 
@@ -35,7 +35,7 @@ All `*.md` files are in scope (beyond `scan_doc_links.py`'s 207-file subset). Sy
 | 4 | **Specs** — `docs/specs/*` (64) | 64 | 5/5 Strategic | Authoritative source; high impact high effort |
 | 5 | **ADR** — `docs/adr/*` | 17 | 3/2 | Decision history; stable after rewrite |
 | 6 | **Refs** — `docs/refs/modules/*`, `docs/refs/deps/*`, `docs/refs/index.md` | ~56 | 2/2 Fill-in | Reference tier; lowest human urgency |
-| 7 | **Agent Layer** — `.agents/rules/*`, `.agents/context/*`, `.agents/audit/*`, `.agents/skills/*`, `.opencode/agents/*`, `tools/README.md` | ~210 | 2/4 Deferred | Internal; human docs are SSOT, agents reference them |
+| 7 | **Agent Layer** — `.agents/rules/*`, `.agents/context/*`, `.agents/memory/*`, `.agents/audit/*`, `.agents/skills/*`, `.opencode/agents/*`, `tools/README.md` | ~212 | 2/4 Deferred | Internal; human docs are SSOT, agents reference them |
 
 Phases 1-3 are quick wins → execute first. Phase 4 is strategic → split if needed. Phases 6-7 are last per explicit owner direction (`docs/refs/` and `.agents/` synchronized last).
 
@@ -50,12 +50,13 @@ Verify these items against actual code and specs (applies to every phase above):
 - No broken relative links.
 - History is tracked via git history, not inline metadata.
 - Module structure docs match actual `app/` directory layout.
-- **Agent guides & skills match specs and code:**
+- **Agent guides, skills, context & memory match specs and code:**
   - Spec IDs referenced in `AGENTS.md` and `.agents/skills/*/SKILL.md` exist in
     `docs/specs/index.md`.
   - Invariant values (names, config defaults, convention IDs C1-C8 / D1-D6) match the governing spec.
   - "where to find" tables point to sections that actually exist.
   - Skill scope covers what the governing spec promises.
+  - Mandatory facts live in `.agents/context/`; evolving learnings in `.agents/memory/` — no cross-pollution.
 
 ### Verify Documentation Accuracy
 
@@ -89,9 +90,9 @@ grep -c "C1\|C8\|D1\|D6" .agents/skills/*/SKILL.md       # must match docs/conve
 - **Auditing only links and metadata.** `scan_doc_links.py` validates links and freshness — it does
   NOT check that a listed Action exists, that a signature matches, or that a skill documents the
   right spec. A doc with zero broken links can still be completely stale.
-- **Skipping the agent layer.** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, and
-  `.agents/plans/` are docs too and rot exactly like `docs/`. An invariant renamed in
-  `docs/conventions.md` but not in the skills that cite it leaves agents enforcing a dead name.
+- **Skipping the agent layer.** `AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/memory/`, and
+`.agents/plans/` are docs too and rot exactly like `docs/`. An invariant renamed in
+`docs/conventions.md` but not in the skills that cite it leaves agents enforcing a dead name.
 - **Auditing claims in a doc you're not touching.** If the audit is triggered by one module, still
   spot-check the cross-references that module's docs point to — a renamed target breaks them
   silently.

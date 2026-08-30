@@ -13,51 +13,73 @@ finalization.
 
 ## Actions
 
-| File                                           | Class                       | Extends             |
-| ---------------------------------------------- | --------------------------- | ------------------- |
-| `Report/Actions/CreateReportAction.php`        | `CreateReportAction`        | `BaseCommandAction` |
-| `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseCommandAction` |
-| `Report/Actions/CaptureReportSnapshotAction.php` | `CaptureReportSnapshotAction` | `BaseProcessAction` |
-| `Report/Actions/DeleteReportAction.php`        | `DeleteReportAction`        | `BaseCommandAction` |
-| `Report/Actions/DownloadReportAction.php`      | `DownloadReportAction`      | `BaseProcessAction` |
-| `Report/Actions/FinalizeReportAction.php`      | `FinalizeReportAction`      | `BaseCommandAction` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/StudentReport/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/CaptureStudentReportSnapshotAction.php` | `CaptureStudentReportSnapshotAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/CreateStudentReportAction.php` | `CreateStudentReportAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/DeleteStudentReportAction.php` | `DeleteStudentReportAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/DownloadStudentReportAction.php` | `DownloadStudentReportAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/FinalizeStudentReportAction.php` | `FinalizeStudentReportAction` | `BaseCommandAction` |
 
 ## Data / DTOs
 
-| File                               | Class              | Extends    |
-| ---------------------------------- | ------------------ | ---------- |
-| `Report/Data/CreateReportData.php` | `CreateReportData` | `BaseData` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/StudentReport/Data/CreateStudentReportData.php` | `CreateStudentReportData` | `BaseData` |
 
 ## Models
 
-| File                       | Class    | Extends     |
-| -------------------------- | -------- | ----------- |
-| `Report/Models/Report.php` | `Report` | `BaseModel` |
+| File | Class | Extends |
+|---|---|---|
+| `Domain/StudentReport/Models/StudentReport.php` | `StudentReport` | `BaseModel` |
 
 ## Enums
 
-| File                            | Enum           | Implements                | Values           |
-| ------------------------------- | -------------- | ------------------------- | ---------------- |
-| `Report/Enums/ReportStatus.php` | `ReportStatus` | `LabelEnum`, `StatusEnum` | draft, finalized |
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Domain/StudentReport/Enums/StudentReportStatus.php` | `StudentReportStatus` | `LabelEnum` | — |
 
 ## Events
 
-| File                                | Event             | Dispatched By               |
-| ----------------------------------- | ----------------- | --------------------------- |
-| `Report/Events/GradeCalculated.php` | `GradeCalculated` | `CalculateFinalGradeAction` |
-| `Report/Events/ReportFinalized.php` | `ReportFinalized` | `FinalizeReportAction`      |
+| File | Event | Extends |
+|---|---|---|
+| `Domain/StudentReport/Events/GradeCalculated.php` | `GradeCalculated` | `BaseEvent` |
+| `Domain/StudentReport/Events/StudentReportFinalized.php` | `StudentReportFinalized` | `BaseEvent` |
 
 ## HTTP Controllers
 
-| File                                           | Controller         | Extends          |
-| ---------------------------------------------- | ------------------ | ---------------- |
-| `Report/Http/Controllers/ReportController.php` | `ReportController` | `BaseController` |
+| File | Controller | Extends |
+|---|---|---|
+| `Domain/StudentReport/Http/Controllers/StudentReportController.php` | `StudentReportController` | `BaseController` |
 
 ## Observers
 
 | File                                  | Observer         | Observes |
 | ------------------------------------- | ---------------- | -------- |
 | `Report/Observers/ReportObserver.php` | `ReportObserver` | `Report` |
+
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Domain/StudentReport/Livewire/StudentReportsManager.php` | `StudentReportsManager` | `BaseRecordManager` |
+
+
+## Listeners
+
+| File | Listener | Listens To |
+|---|---|---|
+| `Domain/StudentReport/Listeners/LogGradeCalculated.php` | `LogGradeCalculated` | — |
+| `Domain/StudentReport/Listeners/LogStudentReportFinalized.php` | `LogStudentReportFinalized` | — |
+
+
+## Policies
+
+| File | Policy | Extends |
+|---|---|---|
+| `Domain/StudentReport/Policies/StudentReportPolicy.php` | `StudentReportPolicy` | `BasePolicy` |
 
 ## Routes
 

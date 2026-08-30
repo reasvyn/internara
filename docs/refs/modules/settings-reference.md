@@ -14,77 +14,62 @@ feature toggles.
 
 ## Actions
 
-| File                                          | Class                      | Extends             |
-| --------------------------------------------- | -------------------------- | ------------------- |
-| `Actions/SetSettingAction.php`                | `SetSettingAction`         | `BaseCommandAction` |
-| `Actions/BatchSetSettingAction.php`           | `BatchSetSettingAction`    | `BaseCommandAction` |
-| `Actions/DeleteSettingAction.php`             | `DeleteSettingAction`      | `BaseCommandAction` |
-| `Actions/SaveSystemSettingsAction.php`        | `SaveSystemSettingsAction` | `BaseCommandAction` |
-| `Actions/ReadAcademicYearAction.php`          | `ReadAcademicYearAction`   | `BaseReadAction`    |
-| `Actions/TestMailSettingsAction.php`          | `TestMailSettingsAction`   | `BaseCommandAction` |
-| `Branding/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction`   | `BaseCommandAction` |
-| `Branding/Actions/RemoveBrandAssetAction.php` | `RemoveBrandAssetAction`   | `BaseCommandAction` |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseCommandAction` |
+| `Actions/DeleteSettingAction.php` | `DeleteSettingAction` | `BaseCommandAction` |
+| `Actions/ReadAcademicYearAction.php` | `ReadAcademicYearAction` | `BaseReadAction` |
+| `Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseCommandAction` |
+| `Actions/SetSettingAction.php` | `SetSettingAction` | `BaseCommandAction` |
+| `Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseCommandAction` |
+| `Domain/Branding/Actions/RemoveBrandAssetAction.php` | `RemoveBrandAssetAction` | `BaseCommandAction` |
+| `Domain/Branding/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseCommandAction` |
 
 ## Models
 
-| File                 | Class     | Extends                             |
-| -------------------- | --------- | ----------------------------------- |
-| `Models/Setting.php` | `Setting` | `BaseModel` (implements `HasMedia`) |
-
----
+| File | Class | Extends |
+|---|---|---|
+| `Models/Setting.php` | `Setting` | `BaseModel` |
 
 ## Enums
 
-| File                        | Enum              | Implements  | Values                                                                 |
-| --------------------------- | ----------------- | ----------- | ---------------------------------------------------------------------- |
-| `Enums/SettingGroup.php`    | `SettingGroup`    | `LabelEnum` | general, mail, system, branding, features, localization, notifications |
-| `Enums/SettingType.php`     | `SettingType`     | `LabelEnum` | string, integer, float, boolean, json, encrypted, null                 |
-| `Enums/MediaCollection.php` | `MediaCollection` | `LabelEnum` | brand_logo, brand_favicon                                              |
-
----
+| File | Enum | Implements | Values |
+|---|---|---|---|
+| `Enums/MediaCollection.php` | `MediaCollection` | `LabelEnum` | — |
+| `Enums/SettingGroup.php` | `SettingGroup` | `LabelEnum` | — |
+| `Enums/SettingType.php` | `SettingType` | `LabelEnum` | — |
 
 ## Data / DTOs
 
-| File                          | Class                | Extends    |
-| ----------------------------- | -------------------- | ---------- |
-| `Data/SettingData.php`        | `SettingData`        | `BaseData` |
-| `Data/SettingEntryData.php`   | `SettingEntryData`   | `BaseData` |
-| `Data/SettingGroupData.php`   | `SettingGroupData`   | `BaseData` |
+| File | Class | Extends |
+|---|---|---|
+| `Data/SettingData.php` | `SettingData` | `BaseData` |
+| `Data/SettingEntryData.php` | `SettingEntryData` | `BaseData` |
+| `Data/SettingGroupData.php` | `SettingGroupData` | `BaseData` |
 | `Data/SystemSettingsData.php` | `SystemSettingsData` | `BaseData` |
-| `Branding/Data/BrandData.php` | `BrandData`          | `BaseData` |
+| `Domain/Branding/Data/BrandData.php` | `BrandData` | `BaseData` |
 
 ## Entities
 
-| File                         | Class           | Extends      |
-| ---------------------------- | --------------- | ------------ |
+| File | Class | Extends |
+|---|---|---|
 | `Entities/SettingEntity.php` | `SettingEntity` | `BaseEntity` |
 
 ## Policies
 
-| File                         | Policy          | Extends      |
-| ---------------------------- | --------------- | ------------ |
+| File | Policy | Extends |
+|---|---|---|
 | `Policies/SettingPolicy.php` | `SettingPolicy` | `BasePolicy` |
-
----
 
 ## Livewire Components
 
-| File                         | Component       | Extends     |
-| ---------------------------- | --------------- | ----------- |
-| `Livewire/SystemSetting.php` | `SystemSetting` | `BaseFormView` |
-| `Livewire/LangSwitcher.php`  | `LangSwitcher`  | `Component` |
-
-Theme switching is handled by the TallstackUI `<x-ts-theme-switch>` component (wrapped in `core::ui.theme-switch`) — no server-side Livewire component (see 52O1I DD-6).
-
-## Livewire Forms
-
-| File                                       | Form                  |
-| ------------------------------------------ | --------------------- |
-| `Livewire/Forms/GeneralSettingsForm.php`   | `GeneralSettingsForm` |
-| `Livewire/Forms/MailSettingsForm.php`      | `MailSettingsForm`    |
-| `Branding/Livewire/Forms/BrandingForm.php` | `BrandingForm`        |
+| File | Component | Extends |
+|---|---|---|
+| `Domain/Branding/Livewire/Forms/BrandingForm.php` | `BrandingForm` | `BaseFormView` |
+| `Livewire/Forms/GeneralSettingsForm.php` | `GeneralSettingsForm` | `BaseFormView` |
+| `Livewire/Forms/MailSettingsForm.php` | `MailSettingsForm` | `BaseFormView` |
+| `Livewire/LangSwitcher.php` | `LangSwitcher` | `Component` |
+| `Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
 
 ## Casts
 
@@ -94,9 +79,9 @@ Theme switching is handled by the TallstackUI `<x-ts-theme-switch>` component (w
 
 ## Events
 
-| File                        | Event            | Dispatched By                                                            | Notes                                              |
-| --------------------------- | ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
-| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `DeleteSettingAction` | Audit/logging only — no listener for cache invalidation |
+| File | Event | Extends |
+|---|---|---|
+| `Events/SettingUpdated.php` | `SettingUpdated` | `BaseEvent` |
 
 ## Middleware
 
@@ -123,11 +108,9 @@ Theme switching is handled by the TallstackUI `<x-ts-theme-switch>` component (w
 
 ## Rules
 
-| File                        | Rule              | Purpose                      |
-| --------------------------- | ----------------- | ---------------------------- |
-| `Rules/ValidSettingKey.php` | `ValidSettingKey` | Validates setting key format |
-
----
+| File | Rule | Purpose |
+|---|---|---|
+| `Rules/ValidSettingKey.php` | `ValidSettingKey` | — |
 
 ## Routes
 
