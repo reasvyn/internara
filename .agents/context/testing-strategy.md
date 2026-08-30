@@ -65,7 +65,7 @@ Use `LazilyRefreshDatabase` (not `RefreshDatabase`), `assertModelExists` (not `a
 | Write a test for a new requirement | Find `FR-*` in `docs/specs/{ID}-{feature}.md` → `tests/{Module}/{SubModule}/{Action}Test.php` per `testing-pattern.md` |
 | Fix a failing test in a sick module | Check `module-health.md` tier first — may be schema mismatch, not logic |
 | Run verification in Step 4 — Verify | Follow `agent-workflow` Step 4: `git status`+`git diff`, `pint --dirty`, targeted `pest --testsuite`, `scan_violations` batch |
-| Check coverage | `python3 tools/scan_tests.py --module {Module}`; map `FR-*` ↔ tests, not `phpunit --coverage` |
+| Check coverage | `python3 tools/scan_tests/cli.py --module {Module}`; map `FR-*` ↔ tests, not `phpunit --coverage` |
 
 ---
 

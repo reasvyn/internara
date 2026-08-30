@@ -52,16 +52,16 @@ All scripts follow the same output schema:
 
 ```bash
 # Full scan, auto-named output
-python3 tools/scan_violations.py
+python3 tools/scan_violations/cli.py
 
 # Module-specific, strict mode
-python3 tools/scan_violations.py --module Student --strict
+python3 tools/scan_violations/cli.py --module Student --strict
 
 # Quiet summary only
-python3 tools/scan_violations.py --quiet
+python3 tools/scan_violations/cli.py --quiet
 
 # Pipe to jq
-python3 tools/scan_violations.py --json | jq '.summary'
+python3 tools/scan_violations/cli.py --json | jq '.summary'
 ```
 
 ---
@@ -87,8 +87,8 @@ python3 tools/scan_violations.py --json | jq '.summary'
 | D4 | Missing `#[Fillable]` attribute on Models |
 
 ```bash
-python3 tools/scan_violations.py
-python3 tools/scan_violations.py --module Auth --strict
+python3 tools/scan_violations/cli.py
+python3 tools/scan_violations/cli.py --module Auth --strict
 ```
 
 ---
@@ -106,8 +106,8 @@ python3 tools/scan_violations.py --module Auth --strict
 | Enums | Backing type, `label()`, `validTransitions()` for StatusEnums |
 
 ```bash
-python3 tools/scan_class_contracts.py
-python3 tools/scan_class_contracts.py --module Assessment
+python3 tools/scan_class_contracts/cli.py
+python3 tools/scan_class_contracts/cli.py --module Assessment
 ```
 
 ---
@@ -126,8 +126,8 @@ python3 tools/scan_class_contracts.py --module Assessment
 | S9 | File uploads without validation |
 
 ```bash
-python3 tools/scan_security.py
-python3 tools/scan_security.py --module Auth
+python3 tools/scan_security/cli.py
+python3 tools/scan_security/cli.py --module Auth
 ```
 
 ---
@@ -145,8 +145,8 @@ python3 tools/scan_security.py --module Auth
 | Method naming | Action return types, Entity question methods return `bool` |
 
 ```bash
-python3 tools/scan_naming.py
-python3 tools/scan_naming.py --module Journals
+python3 tools/scan_naming/cli.py
+python3 tools/scan_naming/cli.py --module Journals
 ```
 
 ---
@@ -165,7 +165,7 @@ python3 tools/scan_naming.py --module Journals
 | Hardcoded user-facing strings (missing `__()`) |
 
 ```bash
-python3 tools/scan_conventions.py
+python3 tools/scan_conventions/cli.py
 ```
 
 ---
@@ -182,7 +182,7 @@ python3 tools/scan_conventions.py
 | Listeners without events |
 
 ```bash
-python3 tools/scan_dead_code.py
+python3 tools/scan_dead_code/cli.py
 ```
 
 ---
@@ -198,7 +198,7 @@ python3 tools/scan_dead_code.py
 | No broken cross-references |
 
 ```bash
-python3 tools/scan_doc_links.py
+python3 tools/scan_doc_links/cli.py
 ```
 
 ---
@@ -217,8 +217,8 @@ python3 tools/scan_doc_links.py
 | Total codebase statistics |
 
 ```bash
-python3 tools/scan_architecture.py
-python3 tools/scan_architecture.py --module Program
+python3 tools/scan_architecture/cli.py
+python3 tools/scan_architecture/cli.py --module Program
 ```
 
 ---
@@ -234,7 +234,7 @@ python3 tools/scan_architecture.py --module Program
 | Total codebase size |
 
 ```bash
-python3 tools/scan_files.py
+python3 tools/scan_files/cli.py
 ```
 
 ---
@@ -250,8 +250,8 @@ python3 tools/scan_files.py
 | Failed test details |
 
 ```bash
-python3 tools/scan_tests.py
-python3 tools/scan_tests.py --module User
+python3 tools/scan_tests/cli.py
+python3 tools/scan_tests/cli.py --module User
 ```
 
 ---
@@ -267,7 +267,7 @@ python3 tools/scan_tests.py --module User
 | Stale issues |
 
 ```bash
-python3 tools/scan_issues.py
+python3 tools/scan_issues/cli.py
 ```
 
 ---

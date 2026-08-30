@@ -108,7 +108,7 @@ will consult during coding tasks.
 
 **Format principles:**
 - Prefer tables over prose — agents parse tables faster.
-- Prefer concrete over abstract — `python3 tools/scan_violations.py` not "run the scan".
+- Prefer concrete over abstract — `python3 tools/scan_violations/cli.py` not "run the scan".
 - Prefer flat over nested — avoid deep heading trees inside this section.
 - Every entry should be actionable without reading surrounding context.
 
@@ -120,7 +120,7 @@ will consult during coding tasks.
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links.py` — validates relative links (file, anchor, external); freshness via git, not inline dates.
+- `python3 tools/scan_doc_links/cli.py` — validates relative links (file, anchor, external); freshness via git, not inline dates.
 - Visual check: H1 present and first; `## Description` first H2; `## Quick References` last.
 - Grep for wrong footer names: `grep -rn "## References\|## See Also\|## Where to Find It" docs/`.
 - History check: `git log --follow -- <file>` for last touch; `git diff` for branch changes.

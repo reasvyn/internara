@@ -818,7 +818,7 @@ run those systems externally.
 | -------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
 | Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/implementation-matrix.md` (green/verified rows) |
 | Module colocation                      | 100% of `app/` under modules + Core        | `scan_naming.py`, directory audit                  |
-| Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `tools/scan_violations.py`                       |
+| Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `tools/scan_violations/cli.py`                       |
 | Spec↔code alignment                    | 0 spec gaps, 0 orphan tests                | per-module spec audits, `scan_issues.py`           |
 | Localization coverage                  | 0 hardcoded user strings in Blade/UI       | `scan_conventions.py` (D3)                         |
 | Full suite                             | green                                      | `php artisan test --compact`                       |

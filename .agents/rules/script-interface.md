@@ -39,16 +39,16 @@ python3 tools/{script_name}.py [OPTIONS]
 
 ```bash
 # Full scan, auto-named output
-python3 tools/scan_violations.py
+python3 tools/scan_violations/cli.py
 
 # Module-specific, strict mode
-python3 tools/scan_violations.py --module Student --strict
+python3 tools/scan_violations/cli.py --module Student --strict
 
 # Quiet summary only
-python3 tools/scan_violations.py --quiet
+python3 tools/scan_violations/cli.py --quiet
 
 # Pipe to jq
-python3 tools/scan_violations.py --json | jq '.summary'
+python3 tools/scan_violations/cli.py --json | jq '.summary'
 ```
 
 **Anti-patterns to avoid:** a script that silently ignores `--module`; a `--format` value not in the

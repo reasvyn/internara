@@ -101,16 +101,16 @@
             "vendor/bin/phpstan analyse --level=max --no-progress"
         ],
         "arch": [
-            "python3 tools/scan_doc_links.py --no-external --format summary",
-            "python3 tools/scan_arch_patterns.py --format summary",
-            "python3 tools/scan_module_boundaries.py --format summary",
-            "python3 tools/scan_ui_consistency.py --format summary"
+            "python3 tools/scan_doc_links/cli.py --no-external --format summary",
+            "python3 tools/scan_arch_patterns/cli.py --format summary",
+            "python3 tools/scan_module_boundaries/cli.py --format summary",
+            "python3 tools/scan_ui_consistency/cli.py --format summary"
         ],
         "arch:strict": [
-            "python3 tools/scan_doc_links.py --no-external --strict --format summary",
-            "python3 tools/scan_arch_patterns.py --strict --format summary",
-            "python3 tools/scan_module_boundaries.py --strict --format summary",
-            "python3 tools/scan_ui_consistency.py --strict --format summary"
+            "python3 tools/scan_doc_links/cli.py --no-external --strict --format summary",
+            "python3 tools/scan_arch_patterns/cli.py --strict --format summary",
+            "python3 tools/scan_module_boundaries/cli.py --strict --format summary",
+            "python3 tools/scan_ui_consistency/cli.py --strict --format summary"
         ],
         "quality": [
             "@lint",

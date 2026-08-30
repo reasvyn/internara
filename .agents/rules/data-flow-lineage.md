@@ -32,7 +32,7 @@ For reads: `ReadAction` returns DTO/Entity; Livewire renders from DTO — no raw
 
 ## Verification
 
-- `python3 tools/scan_violations.py` — C1, C4 clean.
-- `python3 tools/scan_class_contracts.py` — Action/Entity/DTO contracts pass.
-- `python3 tools/scan_doc_links.py` — ERD/doc links resolve.
+- `python3 tools/scan_violations/cli.py` — C1, C4 clean.
+- `python3 tools/scan_class_contracts/cli.py` — Action/Entity/DTO contracts pass.
+- `python3 tools/scan_doc_links/cli.py` — ERD/doc links resolve.
 - Cache keys used in code exist in `config/cache-keys.php`.

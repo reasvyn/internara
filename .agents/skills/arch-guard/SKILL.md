@@ -69,40 +69,40 @@ rather than changing code.
 
 ```bash
 # Full violation scan (C1-C8, D1-D6, security, performance)
-python3 tools/scan_violations.py
+python3 tools/scan_violations/cli.py
 
 # Class contract compliance
-python3 tools/scan_class_contracts.py
+python3 tools/scan_class_contracts/cli.py
 
 # Security patterns
-python3 tools/scan_security.py
+python3 tools/scan_security/cli.py
 
 # Naming conventions
-python3 tools/scan_naming.py
+python3 tools/scan_naming/cli.py
 
 # Combined architecture audit (component counts, submodule structure)
-python3 tools/scan_architecture.py
+python3 tools/scan_architecture/cli.py
 
 # Conventions check (strict_types, Fillable, debug calls, hardcoded strings)
-python3 tools/scan_conventions.py
+python3 tools/scan_conventions/cli.py
 
 # Dead code detection (unregistered observers, unused DTOs, orphan events)
-python3 tools/scan_dead_code.py
+python3 tools/scan_dead_code/cli.py
 
 # Doc link integrity (includes ADR index ↔ ADR files)
-python3 tools/scan_doc_links.py
+python3 tools/scan_doc_links/cli.py
 
 # ADR audit — staleness, metadata, code linkage, orphan decisions
 python3 tools/scan_adr.py
 
 # Test suite runner (per-module results)
-python3 tools/scan_tests.py
+python3 tools/scan_tests/cli.py
 
 # Spec↔tests coverage (FR/NFR/UC traceability, non-testable marker *)
-python3 tools/scan_spec_tests.py
+python3 tools/scan_spec_tests/cli.py
 
 # Spec↔code gap analysis
-python3 tools/scan_issues.py
+python3 tools/scan_issues/cli.py
 ```
 
 All scripts output to `tools/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to

@@ -369,5 +369,5 @@ issue body.
 | ---------------------------- | ------------------------------------------- |
 | Label mapping to quality     | `rules/issue-quality.md` (this skill)       |
 | Unified template             | `rules/issue-template.md` (this skill)      |
-| Issue scanner & labels       | `tools/scan_issues.py`                    |
+| Issue scanner & labels       | `tools/scan_issues/cli.py`                    |
 | Label registry (live)        | `gh label list --limit 100`                 |

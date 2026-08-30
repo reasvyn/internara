@@ -242,9 +242,9 @@ destroying student placement history.
 ## Verification
 
 ```bash
-python3 tools/scan_violations.py            # C1-C8, D1-D6 (plus security & performance)
-python3 tools/scan_conventions.py           # strict_types (D1), Fillable (D4), debug calls (D2), hardcoded strings (D3)
-python3 tools/scan_violations.py --module {Name}   # scope to a single module
+python3 tools/scan_violations/cli.py            # C1-C8, D1-D6 (plus security & performance)
+python3 tools/scan_conventions/cli.py           # strict_types (D1), Fillable (D4), debug calls (D2), hardcoded strings (D3)
+python3 tools/scan_violations/cli.py --module {Name}   # scope to a single module
 ```
 
 **Interpretation guidance:** a C-invariant finding is always **HIGH** or **CRITICAL** severity —

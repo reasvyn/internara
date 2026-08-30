@@ -76,7 +76,7 @@ A Phase 1 run on this project:
 composer audit 2>&1                                     # dependency vulnerabilities
 vendor/bin/phpstan analyse --no-progress --memory-limit=1G 2>&1   # static analysis
 vendor/bin/pint --test 2>&1                             # code style
-python3 tools/scan_dead_code.py                       # dead code (project scanner first)
+python3 tools/scan_dead_code/cli.py                       # dead code (project scanner first)
 npm run build 2>&1                                      # build verification
 ```
 
