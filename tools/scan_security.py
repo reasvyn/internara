@@ -33,6 +33,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
+MODULES_DIR = ROOT / "app" / "Modules"
 VIEWS_DIR = ROOT / "resources" / "views"
 ROUTES_DIR = ROOT / "routes"
 OUTPUT_DIR = Path(__file__).parent / "outputs"

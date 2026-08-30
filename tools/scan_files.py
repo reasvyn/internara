@@ -54,6 +54,7 @@ except ImportError:
     from _output import handle_output
 
 APP_DIR = ROOT / "app"
+MODULES_DIR = ROOT / "app" / "Modules"
 TESTS_DIR = ROOT / "tests"
 VIEWS_DIR = ROOT / "resources" / "views"
 LANG_DIR = ROOT / "lang"
