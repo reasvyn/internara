@@ -39,9 +39,9 @@ use App\Modules\Partners\Domain\Partnership\Listeners\NotifyOnPartnershipTermina
 use App\Modules\Program\Domain\Internship\Events\InternshipCreated;
 use App\Modules\Program\Domain\Internship\Listeners\NotifyAdminsInternshipCreated;
 use App\Modules\Reports\Domain\StudentReport\Events\GradeCalculated;
-use App\Modules\Reports\Domain\StudentReport\Events\ReportFinalized;
+use App\Modules\Reports\Domain\StudentReport\Events\StudentReportFinalized;
 use App\Modules\Reports\Domain\StudentReport\Listeners\LogGradeCalculated;
-use App\Modules\Reports\Domain\StudentReport\Listeners\LogReportFinalized;
+use App\Modules\Reports\Domain\StudentReport\Listeners\LogStudentReportFinalized;
 use App\Modules\Setup\Domain\SetupWizard\Events\SetupFinalized;
 use App\Modules\Setup\Domain\SetupWizard\Listeners\LogSetupFinalized;
 use App\Modules\SysAdmin\Domain\Backups\Events\BackupCompleted;
@@ -128,7 +128,7 @@ return [
 
         GradeCalculated::class => [LogGradeCalculated::class],
 
-        ReportFinalized::class => [LogReportFinalized::class],
+        StudentReportFinalized::class => [LogStudentReportFinalized::class],
 
         // Fire-and-forget events (intentionally no listeners):
         // AssessmentFinalized — logged in FinalizeAssessmentAction, no side effects
@@ -144,7 +144,7 @@ return [
         // GradeCalculated — synchronous calculation, logged in action
         // RecoverySlipGenerated — OTP flow, logged in action
         // InternshipStatusBatchUpdated — batch operation, logged in action
-        // ReportFinalized — logged in FinalizeReportAction, snapshot captured via ReportObserver
+        // StudentReportFinalized — logged in FinalizeStudentReportAction, snapshot captured via StudentReportObserver
         // CertificateIssued — logged in action, QR generation is synchronous
         // AttendanceClockIn — logged in action, geofence check is synchronous
         // AttendanceClockOut — logged in action, duration calculation is synchronous
