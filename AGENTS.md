@@ -559,6 +559,29 @@ Only trust a claim after confirming it against the codebase **and** git history.
 
 **Rule of thumb:** If it explains *why*, it's conceptual. If it explains *what* or *how*, it's reference.
 
+#### GitHub Version Senses
+
+Track the version that will be deployed — local, tag, and VPS often drift.
+
+| Question | How to check |
+|----------|-------------|
+| What version is the code at? | `cat composer.json \| grep version` + `git describe --tags` + `git tag --sort=-v:refname \| head` |
+| What version is on VPS? | `ssh internara-vps "cat ~/apps/internara/composer.json \| grep version; git -C ~/apps/internara describe --tags; git log --oneline -1"` |
+| Did docker-deploy get the new tag? | `git log --oneline main..docker-deploy` (empty = in sync), `git tag --list | grep v0.` |
+| Is the Docker image stale? | `GIT_URL` in `docker-compose.yml` (`#main` vs `#vX.Y.Z`), `docker images internara-app` `CREATED`, `docker exec ... cat /app/public/index.php \| head` |
+| Why is VPS on 0.14.0? | `composer.json` 0.15.x but `docker-deploy` behind `main` → `git checkout docker-deploy && git merge --ff-only main && git push` + bump `version` + `git tag vX.Y.Z` |
+
+#### Agent Version Senses
+
+AI agent and tooling versions drift — pin and verify before debugging.
+
+| Question | How to check |
+|----------|-------------|
+| Which AI model is running? | Model ID in session header (`muse-spark-1.2-contributor-free`) vs `~/.config/opencode/opencode.jsonc` |
+| Is the agent skill stale? | `ls -la .agents/skills/*/SKILL.md` vs `git log --oneline -- .agents/skills/` |
+| Are opencode permissions correct? | `cat opencode.json` `permissions` + `~/.config/opencode/opencode.jsonc` `permissions` (especially `*.env` vs `*.env.example`) |
+| Is Composer/PHP compatible? | `composer --version` (expect 2.10.x for PHP 8.4, not 2.7.x), `php --version`, `php /usr/local/bin/composer --version` |
+
 #### When to Update Docs
 
 | Code change | Doc to update |
