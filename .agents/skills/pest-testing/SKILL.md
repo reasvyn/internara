@@ -118,7 +118,7 @@ noise — delete it.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_tests.py` | Run test suite, parse per-module results | `python3 tools/scan_tests.py` |
+| `scan_tests.py` | Run test suite, parse per-module results | `python3 tools/scan_tests/cli.py` |
 
 Use `--module {Name}` to run tests for a single module. Output:
 `tools/outputs/{timestamp}-tests.json`.

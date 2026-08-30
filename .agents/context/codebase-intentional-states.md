@@ -21,9 +21,9 @@ fix them in dedicated cleanup sessions, not as drive-by edits:
 
 | Scanner | Baseline findings |
 | ------- | ----------------- |
-| `tools/scan_violations.py` | 32 |
-| `tools/scan_security.py` | 11 (Blade templates) |
-| `tools/scan_conventions.py` | 232 (Blade templates) |
+| `tools/scan_violations/cli.py` | 32 |
+| `tools/scan_security/cli.py` | 11 (Blade templates) |
+| `tools/scan_conventions/cli.py` | 232 (Blade templates) |
 
 ## Spec-ID convention (enforced)
 
@@ -48,5 +48,5 @@ fix them in dedicated cleanup sessions, not as drive-by edits:
 
 - `docs/specs/SE5Q9-*.md`, `docs/specs/89SRA-*.md` — duplicate exception contracts
 - `docs/specs/index.md` — spec registry (spec-ID convention)
-- `tools/scan_violations.py`, `tools/scan_security.py`, `tools/scan_conventions.py` — arch-guard scanners
+- `tools/scan_violations/cli.py`, `tools/scan_security/cli.py`, `tools/scan_conventions/cli.py` — arch-guard scanners
 - [Exception Pattern](../../docs/guides/arch/exception-pattern.md) — C8, RejectedException contract

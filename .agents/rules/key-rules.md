@@ -51,7 +51,7 @@ skill adds {X} — nothing else."
 - Copying the 4-phase Construct/Execute/Verify/Report skeleton into a new skill "for self-containment".
 - Adding a redundant "Workflow" table in a skill when `agent-workflow` already owns it.
 
-**Verification:** `python3 tools/scan_skills.py` reports no `SKILL_NO_DUP_WORKFLOW` findings.
+**Verification:** `python3 tools/scan_skills/cli.py` reports no `SKILL_NO_DUP_WORKFLOW` findings.
 
 ---
 

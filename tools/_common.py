@@ -9,11 +9,15 @@ Provides:
 - Report building with severity aggregation and timing
 - CLI parsing helpers and output writing with atomic writes
 - Performance helpers (pre-compiled regex, parallel execution)
+- FileCache with mtime-based invalidation
+- ProgressReporter for scan progress
+- Finding deduplication
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -30,7 +34,7 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 MODULES_DIR = ROOT / "app" / "Modules"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
-SCAN_VERSION = "2.1.0"
+SCAN_VERSION = "2.2.0"
 
 # Exclude patterns for file discovery
 EXCLUDE_DIRS = {"vendor", "node_modules", ".git", "storage", "bootstrap/cache"}
@@ -76,6 +80,151 @@ class ScanResult:
     metadata: dict[str, Any]
 
 
+# ─── File Cache ─────────────────────────────────────────────────────────────
+
+class FileCache:
+    """Mtime-based file cache for scanner results."""
+    
+    def __init__(self, cache_dir: Path | None = None):
+        self.cache_dir = cache_dir or (OUTPUT_DIR / "cache")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+    
+    def _get_cache_path(self, key: str) -> Path:
+        safe_key = hashlib.sha256(key.encode()).hexdigest()[:16]
+        return self.cache_dir / f"{safe_key}.json"
+    
+    def get(self, key: str) -> list[Finding] | None:
+        """Get cached findings if file mtime hasn't changed."""
+        cache_path = self._get_cache_path(key)
+        if not cache_path.exists():
+            return None
+        
+        try:
+            data = json.loads(cache_path.read_text(encoding="utf-8"))
+            cached_mtime = data.get("mtime")
+            if cached_mtime is None:
+                return None
+            
+            # Verify file still exists and mtime matches
+            file_path = Path(key)
+            if not file_path.exists():
+                return None
+            current_mtime = file_path.stat().st_mtime
+            if abs(current_mtime - cached_mtime) > 0.001:
+                return None
+            
+            return [Finding(**f) for f in data.get("findings", [])]
+        except Exception:
+            return None
+    
+    def set(self, key: str, findings: list[Finding]) -> None:
+        """Cache findings with file mtime."""
+        cache_path = self._get_cache_path(key)
+        try:
+            file_path = Path(key)
+            mtime = file_path.stat().st_mtime if file_path.exists() else 0
+            data = {
+                "mtime": mtime,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "findings": [asdict(f) for f in findings],
+            }
+            cache_path.write_text(
+                json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+    
+    def clear(self) -> None:
+        """Clear all cached entries."""
+        for f in self.cache_dir.glob("*.json"):
+            try:
+                f.unlink()
+            except Exception:
+                pass
+
+
+# Global cache instance
+_file_cache: FileCache | None = None
+
+def get_file_cache() -> FileCache:
+    """Get or create the global file cache instance."""
+    global _file_cache
+    if _file_cache is None:
+        _file_cache = FileCache()
+    return _file_cache
+
+
+def clear_file_cache() -> None:
+    """Clear the global file cache."""
+    global _file_cache
+    if _file_cache is not None:
+        _file_cache.clear()
+        _file_cache = None
+
+
+# ─── Progress Reporter ──────────────────────────────────────────────────────
+
+class ProgressReporter:
+    """Simple progress reporter for scan operations."""
+    
+    def __init__(self, total: int = 0, quiet: bool = False, show_progress: bool = True):
+        self.total = total
+        self.quiet = quiet
+        self.show_progress = show_progress and not quiet and sys.stdout.isatty()
+        self.current = 0
+        self.start_time = time.time()
+    
+    def update(self, n: int = 1) -> None:
+        """Update progress by n steps."""
+        self.current += n
+        if self.show_progress and self.total > 0:
+            elapsed = time.time() - self.start_time
+            rate = self.current / elapsed if elapsed > 0 else 0
+            remaining = (self.total - self.current) / rate if rate > 0 else 0
+            pct = min(100, int(100 * self.current / self.total))
+            bar_len = 30
+            filled = int(bar_len * self.current / self.total)
+            bar = "█" * filled + "░" * (bar_len - filled)
+            sys.stderr.write(
+                f"\r  [{bar}] {pct}% {self.current}/{self.total} "
+                f"({remaining:.0f}s remaining)"
+            )
+            sys.stderr.flush()
+    
+    def complete(self, message: str = "Complete") -> None:
+        """Mark progress as complete."""
+        if self.show_progress and self.total > 0:
+            elapsed = time.time() - self.start_time
+            sys.stderr.write(
+                f"\r  ✓ {message} in {elapsed:.1f}s ({self.total} files)\n"
+            )
+            sys.stderr.flush()
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, *args):
+        if self.show_progress and self.total > 0 and self.current > 0:
+            self.complete()
+
+
+# ─── Finding Deduplication ──────────────────────────────────────────────────
+
+def deduplicate_findings(findings: list[Finding]) -> list[Finding]:
+    """Remove duplicate findings (same file, rule, line)."""
+    seen: set[tuple[str, str, int]] = set()
+    unique: list[Finding] = []
+    
+    for f in findings:
+        key = (f.file, f.rule, f.line)
+        if key not in seen:
+            seen.add(key)
+            unique.append(f)
+    
+    return unique
+
+
 # ─── File Helpers ───────────────────────────────────────────────────────────
 
 
@@ -94,7 +243,6 @@ def read_file(path: Path) -> str:
     try:
         return path.read_text(encoding="utf-8", errors="replace")
     except (OSError, UnicodeError, PermissionError) as e:
-        # Log to stderr in verbose mode, but don't crash the scan
         return ""
     except Exception:
         return ""
@@ -172,13 +320,37 @@ def find_files_parallel(
     files: list[Path],
     processor: Callable[[Path], list[Finding]],
     max_workers: int = 8,
+    progress: ProgressReporter | None = None,
+    use_cache: bool = True,
 ) -> list[Finding]:
-    """Process files in parallel with per-file error isolation."""
+    """Process files in parallel with per-file error isolation and caching."""
     findings: list[Finding] = []
     errors: list[tuple[Path, Exception]] = []
+    cache = get_file_cache() if use_cache else None
+    
+    def process_file(path: Path) -> list[Finding]:
+        # Check cache first
+        if cache is not None:
+            cached = cache.get(str(path))
+            if cached is not None:
+                if progress:
+                    progress.update()
+                return cached
+        
+        # Process file
+        result = processor(path)
+        
+        # Cache result
+        if cache is not None and result:
+            cache.set(str(path), result)
+        
+        if progress:
+            progress.update()
+        
+        return result
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_path = {executor.submit(processor, f): f for f in files}
+        future_to_path = {executor.submit(process_file, f): f for f in files}
         for future in as_completed(future_to_path):
             path = future_to_path[future]
             try:
@@ -187,12 +359,12 @@ def find_files_parallel(
                     findings.extend(result)
             except Exception as e:
                 errors.append((path, e))
-                # Don't crash, just record error as finding if verbose
+                if progress:
+                    progress.update()
                 continue
     
-    # Optionally log errors to stderr
     if errors and any("--verbose" in arg for arg in sys.argv):
-        for path, err in errors[:5]:  # Only show first 5
+        for path, err in errors[:5]:
             print(f"Warning: Error processing {relative_path(path)}: {err}", file=sys.stderr)
     
     return findings
@@ -218,16 +390,14 @@ def build_report(
     by_severity: dict[str, int] = {"critical": 0, "high": 0, "medium": 0, "low": 0}
     
     for f in findings:
-        # Validate severity
         if f.severity not in VALID_SEVERITIES:
-            f.severity = "medium"  # Fallback
+            f.severity = "medium"
         by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
         finding_dicts.append(asdict(f))
     
-    # Calculate summary
     failed = len(finding_dicts)
     if total_checks is None:
-        total_checks = failed  # If not specified, assume checks == findings for simple scans
+        total_checks = failed
         passed = 0
     else:
         passed = max(0, total_checks - failed)
@@ -238,10 +408,6 @@ def build_report(
         "failed": failed,
         "by_severity": by_severity,
     }
-    
-    # Validate summary consistency
-    assert summary["failed"] == len(finding_dicts), "Summary failed count mismatch"
-    assert sum(by_severity.values()) == failed, "Severity buckets don't sum to failed count"
     
     return ScanResult(
         scan_version=SCAN_VERSION,
@@ -265,13 +431,10 @@ def write_report(result: ScanResult, output_path: Path | None = None) -> Path:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
-    # Atomic write via temp file
     tmp_path = output_path.with_suffix(".tmp")
     try:
         data = asdict(result) if hasattr(result, '__dataclass_fields__') else result
-        # Handle nested dataclass conversion
         if hasattr(result, 'findings') and result.findings and isinstance(result.findings[0], dict):
-            # Already dicts
             json_data = asdict(result) if hasattr(result, '__dataclass_fields__') else result
         else:
             json_data = asdict(result)
@@ -279,7 +442,6 @@ def write_report(result: ScanResult, output_path: Path | None = None) -> Path:
         tmp_path.write_text(json.dumps(json_data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         tmp_path.replace(output_path)
     except Exception as e:
-        # Fallback to direct write if atomic fails
         try:
             output_path.write_text(json.dumps(asdict(result), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         except Exception:
@@ -296,7 +458,6 @@ def write_report(result: ScanResult, output_path: Path | None = None) -> Path:
 
 def print_summary(result: ScanResult, verbose: bool = False) -> None:
     """Print human-readable summary with sophistication."""
-    # Color support detection
     use_color = sys.stdout.isatty()
     
     def colorize(text: str, color: str) -> str:
@@ -325,7 +486,7 @@ def print_summary(result: ScanResult, verbose: bool = False) -> None:
     
     if verbose and result.findings:
         print(f"\n{colorize('Findings:', 'yellow')}")
-        for f in result.findings[:10]:  # Show first 10 in verbose
+        for f in result.findings[:10]:
             print(f"  {colorize(f['id'], 'red')} [{f['severity']}] {f['file']}:{f['line']} - {f['message']}")
         if len(result.findings) > 10:
             print(f"  ... and {len(result.findings) - 10} more (see JSON report)")
@@ -351,6 +512,9 @@ def parse_args_with_common(description: str) -> argparse.Namespace:
     parser.add_argument("--json", action="store_true", help="Force JSON output to stdout (for piping)")
     parser.add_argument("--severity", choices=["critical", "high", "medium", "low"], help="Filter by minimum severity")
     parser.add_argument("--baseline", help="Baseline file to ignore known findings")
+    parser.add_argument("--no-cache", action="store_true", help="Disable file caching")
+    parser.add_argument("--progress", action="store_true", help="Show progress bar")
+    parser.add_argument("--workers", type=int, default=8, help="Number of parallel workers (default: 8)")
     
     return parser.parse_args()
 

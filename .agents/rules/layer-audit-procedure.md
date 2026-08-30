@@ -148,16 +148,16 @@ through review.
 ## Verification
 
 ```bash
-python3 tools/scan_violations.py            # C1-C8, D1-D6, security, performance
-python3 tools/scan_class_contracts.py       # class contracts
-python3 tools/scan_security.py              # S1-S10
-python3 tools/scan_naming.py                # naming
-python3 tools/scan_architecture.py          # component counts, submodule structure
-python3 tools/scan_conventions.py           # strict_types, Fillable, debug, hardcoded strings
-python3 tools/scan_dead_code.py             # unregistered observers, unused DTOs, orphan events
-python3 tools/scan_doc_links.py             # doc link integrity
-python3 tools/scan_tests.py                 # per-module test results
-python3 tools/scan_issues.py                # spec↔code gap analysis
+python3 tools/scan_violations/cli.py            # C1-C8, D1-D6, security, performance
+python3 tools/scan_class_contracts/cli.py       # class contracts
+python3 tools/scan_security/cli.py              # S1-S10
+python3 tools/scan_naming/cli.py                # naming
+python3 tools/scan_architecture/cli.py          # component counts, submodule structure
+python3 tools/scan_conventions/cli.py           # strict_types, Fillable, debug, hardcoded strings
+python3 tools/scan_dead_code/cli.py             # unregistered observers, unused DTOs, orphan events
+python3 tools/scan_doc_links/cli.py             # doc link integrity
+python3 tools/scan_tests/cli.py                 # per-module test results
+python3 tools/scan_issues/cli.py                # spec↔code gap analysis
 ```
 
 Each script writes `tools/outputs/{timestamp}-{description}.json`; use `--module {Name}` to scope,

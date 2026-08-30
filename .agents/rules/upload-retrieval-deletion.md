@@ -91,5 +91,5 @@ $model->deleteMedia($mediaId);          // a specific Media item
 
 - Grep feature/upload code: `addMedia(` appears only inside Actions.
 - Views use `getFirstMediaUrl()`/`getMedia()` — no `Storage` facade in Blade.
-- `python3 tools/scan_violations.py` clean (no mutation from Livewire); a test covers upload +
+- `python3 tools/scan_violations/cli.py` clean (no mutation from Livewire); a test covers upload +
   retrieval (see `pest-testing` — trace to the governing spec's FR).

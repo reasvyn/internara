@@ -69,8 +69,8 @@ Skills reference scripts in their `## Automation Scripts` section:
 
 | Script | Purpose | Skill Integration |
 |--------|---------|-------------------|
-| `tools/scan_violations.py` | C1-C8, D1-D6 checks | arch-guard |
-| `tools/scan_class_contracts.py` | Class contract compliance | arch-guard |
+| `tools/scan_violations/cli.py` | C1-C8, D1-D6 checks | arch-guard |
+| `tools/scan_class_contracts/cli.py` | Class contract compliance | arch-guard |
 ```
 
 **Why it matters:** the table is the discoverability layer — an agent hunting for a scanner reads the

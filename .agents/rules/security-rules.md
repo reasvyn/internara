@@ -153,8 +153,8 @@ When in doubt, err high: a security finding under-rated becomes a "known gap" no
 ## Verification
 
 ```bash
-python3 tools/scan_security.py              # XSS, SQLi, mass assignment, auth patterns
-python3 tools/scan_security.py --module {Name}   # module scope
+python3 tools/scan_security/cli.py              # XSS, SQLi, mass assignment, auth patterns
+python3 tools/scan_security/cli.py --module {Name}   # module scope
 ```
 
 **Interpretation guidance:** a detected anti-pattern is a *baseline* — confirm the live exploit path

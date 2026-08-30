@@ -36,5 +36,5 @@ Action orchestrates: validate → map to DTO → `Entity::fromModel()` for invar
 ## Verification
 
 - `grep -R "->all()" app --include="*.php"` shows no raw request passthrough to persistence.
-- `python3 tools/scan_violations.py` — D5 clean.
-- `python3 tools/scan_class_contracts.py` — Entity `fromModel` exists where Models are read for domain logic.
+- `python3 tools/scan_violations/cli.py` — D5 clean.
+- `python3 tools/scan_class_contracts/cli.py` — Entity `fromModel` exists where Models are read for domain logic.

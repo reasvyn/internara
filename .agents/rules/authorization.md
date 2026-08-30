@@ -59,4 +59,4 @@ Gate::define('viewPulse', function ($user) {
 
 - `Gate::define('viewPulse', ...)` exists in `AppServiceProvider` with both `admin` and `superadmin`.
 - Dashboard accessible for `admin` / `superadmin`; denied for other roles in the feature test.
-- `python3 tools/scan_security.py` reports no unguarded auth pattern on the pulse route.
+- `python3 tools/scan_security/cli.py` reports no unguarded auth pattern on the pulse route.

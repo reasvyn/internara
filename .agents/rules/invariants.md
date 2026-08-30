@@ -24,7 +24,7 @@ Methodical: form submits → `Action::execute($data)`.
 **Pitfall to avoid:** "Just this one `update()` call" — the scanner flags it, and the missing
 transaction/log guarantees are precisely what later production bugs trace to.
 
-**Detection:** `python3 tools/scan_violations.py` · `python3 tools/scan_conventions.py`.
+**Detection:** `python3 tools/scan_violations/cli.py` · `python3 tools/scan_conventions/cli.py`.
 
 ### C2 — No `app()->make()` / `resolve()` — use constructor injection
 
@@ -42,7 +42,7 @@ Livewire components use **method injection** (type-hinted method parameters) ins
 **Pitfall to avoid:** Using `app(SomeAction::class)->execute()` inside a Process Action "for
 laziness" — inject the Action instead so the Process Action's orchestration is testable.
 
-**Detection:** `python3 tools/scan_violations.py` (regex for `app()->make|app\(|resolve\()`).
+**Detection:** `python3 tools/scan_violations/cli.py` (regex for `app()->make|app\(|resolve\()`).
 
 ### C3 — No raw SQL without parameterized binding
 
@@ -59,7 +59,7 @@ is unavoidable, pass values as bindings (`DB::raw('... :param', ['param' => $val
 **Pitfall to avoid:** Interpolating a sanitized variable directly into a raw string — sanitization
 is not binding; the fraction of developer intent still allows injection if the variable is tainted.
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_security.py` (SQLi).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_security.py` (SQLi).
 
 ### C4 — No inline cache keys — register in `config/cache-keys.php`
 
@@ -76,7 +76,7 @@ registration gives a single audit surface for key naming and TTL.
 **Pitfall to avoid:** Reusing a registered name with a different TTL than declared, or building keys
 inline inside `Cache::remember()`.
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_conventions.py` (inline cache key regex).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_conventions.py` (inline cache key regex).
 
 ### C5 — Entities must NOT import Actions, Services, Livewire, Controllers
 
@@ -93,7 +93,7 @@ of Actions/Controllers/Livewire; no method performs DB/HTTP/file I/O.
 
 **Pitfall to avoid:** Adding a `static` helper that queries the DB inside an Entity "for convenience".
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_class_contracts.py` (Entity contract).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_class_contracts.py` (Entity contract).
 
 ### C6 — DTOs must NOT import Models, Entities, Actions
 
@@ -109,7 +109,7 @@ scalar/enum/Carbon/nested-DTO properties only. Construct via `{Name}Data::from([
 
 **Pitfall to avoid:** Passing a `Model` or `Entity` as a DTO property to "avoid boilerplate".
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_class_contracts.py` (Data contract).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_class_contracts.py` (Data contract).
 
 ### C7 — Command/Process Actions: accept DTO for 3+ params, return ActionResponse
 
@@ -126,7 +126,7 @@ params. Returns are `ActionResponse::ok()/created()/updated()/deleted()/error()`
 **Pitfall to avoid:** Passing a raw associative `array` for 3+ inputs "because it's short" — an
 untyped array defeats the contract DTOs exist to provide.
 
-**Detection:** `python3 tools/scan_violations.py` (parametric signature check).
+**Detection:** `python3 tools/scan_violations/cli.py` (parametric signature check).
 
 ### C8 — Business rules → `RejectedException`, not `RuntimeException`
 
@@ -144,7 +144,7 @@ RejectedException('...')` (with a translated message); infrastructure/DB/HTTP fa
 
 **Pitfall to avoid:** Using `RuntimeException` for "duplicate record" or "terminal state" checks.
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_conventions.py`.
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_conventions.py`.
 
 ---
 
@@ -163,7 +163,7 @@ factories, and seeders. Migrations and `config/` files are exempt by convention.
 
 **Pitfall to avoid:** Copy-pasting config snippets into an app class and losing the declare line.
 
-**Detection:** `python3 tools/scan_conventions.py` (strict_types check).
+**Detection:** `python3 tools/scan_conventions/cli.py` (strict_types check).
 
 ### D2 — No `dd/dump/ray/var_dump/print_r/die` in committed code
 
@@ -177,7 +177,7 @@ during development, use tests or the `log` facade — never leave a `dd()`.
 
 **Pitfall to avoid:** Leaving a `dump()` "temporarily" behind an `if (config('app.debug'))` guard.
 
-**Detection:** `python3 tools/scan_conventions.py` (debug call regex) · `rg "dd\\(|dump\\(|ray\\("`.
+**Detection:** `python3 tools/scan_conventions/cli.py` (debug call regex) · `rg "dd\\(|dump\\(|ray\\("`.
 
 ### D3 — All user-facing strings use `__()` — both `lang/en/` and `lang/id/`
 
@@ -192,7 +192,7 @@ both `lang/en/` and `lang/id/`.
 
 **Pitfall to avoid:** Hardcoding a flash message in a Livewire component "because it's small".
 
-**Detection:** `python3 tools/scan_conventions.py` · `scan_naming.py` (hardcoded strings).
+**Detection:** `python3 tools/scan_conventions/cli.py` · `scan_naming.py` (hardcoded strings).
 
 ### D4 — Models use `#[Fillable]` attribute, NOT `$fillable` / `$guarded`
 
@@ -208,7 +208,7 @@ user models).
 
 **Pitfall to avoid:** Copying a stock Laravel model with `protected $fillable = [...]`.
 
-**Detection:** `python3 tools/scan_conventions.py` (Fillable attribute check).
+**Detection:** `python3 tools/scan_conventions/cli.py` (Fillable attribute check).
 
 ### D5 — Never pass raw request input to `create()`/`update()` — use `->only()` or `->toArray()`
 
@@ -224,7 +224,7 @@ field list — never `Model::create($request->all())`.
 
 **Pitfall to avoid:** Trusting front-end rendering to limit fields ("the form doesn't send it").
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_security.py` (mass assignment).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_security.py` (mass assignment).
 
 ### D6 — Foreign keys use `foreignUuid()->constrained()` with explicit `onDelete()`/`onUpdate()`
 
@@ -243,4 +243,4 @@ behavior are stated explicitly.
 **Pitfall to avoid:** `$table->foreignUuid('user_id');` with no `constrained()`/`onDelete` — the
 scanner flags the missing referential actions.
 
-**Detection:** `python3 tools/scan_violations.py` · `scan_security.py` (DB conventions).
+**Detection:** `python3 tools/scan_violations/cli.py` · `scan_security.py` (DB conventions).
