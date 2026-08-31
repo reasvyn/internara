@@ -55,9 +55,9 @@ finalization.
 
 ## Observers
 
-| File                                  | Observer         | Observes |
-| ------------------------------------- | ---------------- | -------- |
-| `Report/Observers/ReportObserver.php` | `ReportObserver` | `Report` |
+| File                                       | Observer               | Observes |
+| ------------------------------------------ | ---------------------- | -------- |
+| `Domain/StudentReport/Observers/StudentReportObserver.php` | `StudentReportObserver` | `StudentReport` |
 
 
 ## Livewire Components
@@ -94,7 +94,7 @@ for the testing conventions.
 
 | Factory         | Model    |
 | --------------- | -------- |
-| `ReportFactory` | `Report` |
+| `StudentReportFactory` | `StudentReport` |
 
 ## Migrations
 
@@ -106,10 +106,10 @@ for the testing conventions.
 
 ## Architectural Integration
 
-- **Submodules**: `Report`
+- **Submodules**: `StudentReport`
 - **Business Logic**: `app/Modules/Reports/`
 - **Routing**: `routes/web/reports.php`
 - **Testing**: `tests/Reports/`
-- **Dependencies**: User, Program, Assessment, Assignment, Enrollment, Core
+- **Dependencies**: User, Program, Assessment, Enrollment, Core
 
 _For overview and business context, see [reports.md](reports.md)._

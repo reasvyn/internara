@@ -79,7 +79,7 @@ internships.
 
 | File                                           | Class                 | Purpose                  |
 | ---------------------------------------------- | --------------------- | ------------------------ |
-| `Certificate/Services/CertificateRenderer.php` | `CertificateRenderer` | Renders certificate PDFs |
+| `Domain/Certificate/Services/CertificateRenderer.php` | `CertificateRenderer` | Renders certificate PDFs |
 
 ---
 

@@ -15,7 +15,7 @@ Use this skill when generating PDFs from Blade views, embedding assets, or confi
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds DOMPDF guidance.
+Follow `agent-workflow` pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds DOMPDF guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting).
 
 ## Skill Rules
 

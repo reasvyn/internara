@@ -71,18 +71,18 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Services
 
-| File                                            | Service              | Purpose                       |
-| ----------------------------------------------- | -------------------- | ----------------------------- |
-| `Backups/Services/BackupRunner.php`             | `BackupRunner`       | Backup execution orchestration |
-| `Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
-| `Observability/Services/PulseGuard.php`         | `PulseGuard`         | Pulse monitoring guard        |
+| File                                              | Service              | Purpose                       |
+| ------------------------------------------------- | -------------------- | ----------------------------- |
+| `Domain/Backups/Services/BackupRunner.php`        | `BackupRunner`       | Backup execution orchestration |
+| `Domain/Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
+| `Domain/Observability/Services/PulseGuard.php`    | `PulseGuard`         | Pulse monitoring guard        |
 
 ## Notifications
 
-| File                                                      | Notification               |
-| --------------------------------------------------------- | -------------------------- |
-| `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
-| `Backups/Notifications/BackupFailedNotification.php`      | `BackupFailedNotification` |
+| File                                                    | Notification               |
+| ------------------------------------------------------- | -------------------------- |
+| `Domain/Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
+| `Domain/Backups/Notifications/BackupFailedNotification.php`      | `BackupFailedNotification` |
 
 ## Listeners
 
@@ -107,10 +107,10 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Pulse Recorders
 
-| File                                               | Recorder               | Purpose                              |
-| -------------------------------------------------- | ---------------------- | ------------------------------------ |
-| `Observability/Recorders/SystemRecorder.php`       | `SystemRecorder`       | System health Pulse recording        |
-| `Observability/Recorders/RegistrationRecorder.php` | `RegistrationRecorder` | Registration metrics Pulse recording |
+| File                                                | Recorder               | Purpose                              |
+| --------------------------------------------------- | ---------------------- | ------------------------------------ |
+| `Domain/Observability/Recorders/SystemRecorder.php` | `SystemRecorder`       | System health Pulse recording        |
+| `Domain/Observability/Recorders/RegistrationRecorder.php` | `RegistrationRecorder` | Registration metrics Pulse recording |
 
 ## HTTP Controllers
 

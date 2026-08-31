@@ -15,7 +15,7 @@ Use this skill when logging activity, configuring SmartLogger dual-channel, trac
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Spatie Activity Log guidance.
+Follow `agent-workflow` pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds Spatie Activity Log guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting).
 
 ## Skill Rules
 

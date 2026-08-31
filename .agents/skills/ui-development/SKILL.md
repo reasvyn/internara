@@ -19,7 +19,7 @@ Use this skill when building or modifying **any UI** — Blade templates, view s
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **general UI guidance** — pure presentation rules, view placement, layout, component library, and UI quality gates — and delegates scope-specific details:
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds **general UI guidance** — pure presentation rules, view placement, layout, component library, and UI quality gates — spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting), and delegates scope-specific details:
 
 - **Blade & presentation** → this skill (`blade-presentation`)
 - **Layout / responsive / dark mode** → this skill (`layout-responsive-dark-mode`)

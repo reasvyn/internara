@@ -94,18 +94,18 @@ permissions.
 
 ## Notifications
 
-| File                                                           | Class                             | Purpose                                 |
-| -------------------------------------------------------------- | --------------------------------- | --------------------------------------- |
-| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery             |
-| `SuperAdmin/Notifications/RecoveryOtpNotification.php`         | `RecoveryOtpNotification`         | Notifies on recovery OTP                |
-| `Notifications/CredentialChangedNotification.php`              | `CredentialChangedNotification`   | Email on password/email/username change |
+| File                                                                | Class                             | Purpose                                 |
+| --------------------------------------------------------------------- | --------------------------------- | --------------------------------------- |
+| `Domain/SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery             |
+| `Domain/SuperAdmin/Notifications/RecoveryOtpNotification.php`       | `RecoveryOtpNotification`         | Notifies on recovery OTP                |
+| `Notifications/CredentialChangedNotification.php`                   | `CredentialChangedNotification`   | Email on password/email/username change |
 
 ## Middleware
 
-| File                                                  | Middleware               | Purpose                    |
-| ----------------------------------------------------- | ------------------------ | -------------------------- |
-| `Login/Http/Middleware/AuthThrottleMiddleware.php`    | `AuthThrottleMiddleware` | Rate-limits login attempts |
-| `Permissions/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware`    | Route-level role gate      |
+| File                                                          | Middleware               | Purpose                    |
+| ------------------------------------------------------------- | ------------------------ | -------------------------- |
+| `Domain/Login/Http/Middleware/AuthThrottleMiddleware.php`    | `AuthThrottleMiddleware` | Rate-limits login attempts |
+| `Domain/Permissions/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware`    | Route-level role gate      |
 
 ## Form Requests
 

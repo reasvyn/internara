@@ -14,7 +14,7 @@ downstream:
 
 # Data Architect — Schema, Flow, Security & Contracts
 
-> **Prerequisite:** Load `agent-workflow` (mandatory first) and `context-awareness` (orientation). This skill assumes spec-first doctrine and module-first Action architecture.
+> **Prerequisite:** Load `agent-workflow` (mandatory first) and `context-awareness` (orientation). This skill assumes spec-first doctrine and module-first Action architecture. **Size Triage** — classify as S/M/L and split if L.
 
 ## When to Activate
 

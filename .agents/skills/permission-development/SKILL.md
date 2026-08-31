@@ -15,7 +15,7 @@ Use this skill when defining roles/permissions, seeding RBAC, checking roles in 
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Spatie Permission guidance.
+Follow `agent-workflow` pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds Spatie Permission guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting).
 
 ## Skill Rules
 

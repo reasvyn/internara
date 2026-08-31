@@ -49,6 +49,12 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 |---|---|---|---|
 | `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | — |
 
+## Entities
+
+| File | Entity | Extends |
+|---|---|---|
+| `Entities/AssessmentResult.php` | `AssessmentResult` | `BaseEntity` |
+
 ## Data / DTOs
 
 | File | Class | Extends |

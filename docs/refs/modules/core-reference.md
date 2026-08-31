@@ -28,7 +28,7 @@ depends on.
   `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeadersMiddleware`, `LogContextMiddleware`)
 - **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
-  `PiiMasker`, `Spotlight`, `helpers.php`)
+   `PiiMasker`, `helpers.php`)
 - **Action Traits**: 1 (`HandlesActionErrors`)
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
@@ -83,7 +83,7 @@ Located in `app/Modules/Core/`:
 | Class               | Path                                  | Purpose                                                                      | Mandatory For                                                    |
 | ------------------- | ------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `BaseModel`         | `Models/BaseModel.php`                | UUID PKs, HasFactory, soft-delete, global scopes                             | All models (User extends `Authenticatable` with manual HasUuids) |
-| `BaseAction`        | `Actions/BaseAction.php`              | Transaction management, activity logging, error handling                     | All Command & Process Actions                                    |
+| `BaseAction`         | `Actions/BaseAction.php`              | Transaction management, activity logging, error handling                     | All Command & Process Actions                                    |
 | `BaseCommandAction` | `Actions/BaseCommandAction.php`       | Command action contract: wraps mutations in transaction + logging            | Command Actions                                                  |
 | `BaseReadAction`    | `Actions/BaseReadAction.php`          | Read action contract: query-only, no transaction or logging                  | Read Actions                                                     |
 | `BaseProcessAction` | `Actions/BaseProcessAction.php`       | Process action contract: multi-step orchestration with transaction + logging | Process Actions                                                  |
@@ -163,15 +163,15 @@ ModuleException (abstract, extends RuntimeException)
 
 ## Livewire Components
 
-| File | Component | Extends |
+| File | Class | Extends |
 |---|---|---|
-| `Livewire/BaseFormView.php` | `BaseFormView` | `BaseFormView` |
-| `Livewire/BaseRecordEntry.php` | `BaseRecordEntry` | `BaseRecordEntry` |
-| `Livewire/BaseRecordList.php` | `BaseRecordList` | `BaseRecordManager` |
-| `Livewire/BaseRecordManager.php` | `BaseRecordManager` | `BaseRecordManager` |
+| `Livewire/BaseFormView.php` | `BaseFormView` | `Component` |
+| `Livewire/BaseRecordEntry.php` | `BaseRecordEntry` | `Component` |
+| `Livewire/BaseRecordList.php` | `BaseRecordList` | `Component` |
+| `Livewire/BaseRecordManager.php` | `BaseRecordManager` | `Component` |
 | `Livewire/BaseWizard.php` | `BaseWizard` | `Component` |
-| `Livewire/Concerns/WithRecordSelection.php` | `WithRecordSelection` | `Component` |
-| `Livewire/Concerns/WithSorting.php` | `WithSorting` | `Component` |
+| `Livewire/Concerns/WithRecordSelection.php` | `WithRecordSelection` | Trait |
+| `Livewire/Concerns/WithSorting.php` | `WithSorting` | Trait |
 
 ## Policies
 
@@ -186,13 +186,12 @@ ModuleException (abstract, extends RuntimeException)
 | Class                 | Path                                       | Purpose                                            |
 | --------------------- | ------------------------------------------ | -------------------------------------------------- |
 | `Color`               | `Support/Color.php`                        | Hex-to-RGB, HSL conversion, color manipulation     |
-| `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation |
+| `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation   |
 | `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)   |
 | `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions          |
 | `ModuleManager`       | `Support/ModuleManager.php`                | Static gateway for module config reads (`config('module.*')`) |
 | `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
 | `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |
-| `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
 | `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                       |
 
 The helpers `setting()` and `brand()` are defined in `app/Modules/Settings/Support/helpers.php`.
@@ -204,10 +203,10 @@ The helpers `setting()` and `brand()` are defined in `app/Modules/Settings/Suppo
 
 | File | Class | Extends |
 |---|---|---|
-| `Actions/BaseAction.php` | `BaseAction` | `BaseCommandAction` |
-| `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseCommandAction` |
-| `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseCommandAction` |
-| `Actions/BaseReadAction.php` | `BaseReadAction` | `BaseCommandAction` |
+| `Actions/BaseAction.php` | `BaseAction` | — |
+| `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseAction` |
+| `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseAction` |
+| `Actions/BaseReadAction.php` | `BaseReadAction` | — |
 
 
 ## Models
@@ -293,7 +292,7 @@ None - Core provides base classes only.
 
 - **Business Logic**: `app/Modules/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
-- **Views**: `resources/views/ui/`
+- **Views**: None (presentational views live in the UI module's `resources/views/ui/`)
 - **Testing**: `tests/Core/`
 - **Cache Config**: `config/cache-keys.php`
 

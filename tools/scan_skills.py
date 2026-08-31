@@ -382,24 +382,47 @@ def scan_handoffs(path: Path, content: str, name: str) -> list[Finding]:
     )]
 
 
+def _local_rules_dir(path: Path) -> Path | None:
+    """Return the per-skill local rules/ directory if it exists."""
+    rules_dir = path.parent / "rules"
+    return rules_dir if rules_dir.is_dir() else None
+
+
+def _consolidated_rules_dir() -> Path:
+    """Return the consolidated .agents/rules/ directory."""
+    return ROOT / ".agents" / "rules"
+
+
 def scan_rules_dir(path: Path, content: str, name: str) -> list[Finding]:
     if name in RULES[7]["exempt"]:
         return []
-    rules_dir = path.parent / "rules"
-    if not rules_dir.is_dir():
-        return [Finding(
-            id=f"SKILL-RD-{name}",
-            rule="SKILL_RULES_DIR",
-            severity="medium",
-            category="convention",
-            file=relative_path(path),
-            line=1,
-            message=f"Skill '{name}' has no `rules/` directory",
-            suggestion="Extract the skill's rules into `skills/{name}/rules/*.md` "
-            "(comprehensive prose, never bare checklists) and map them in a `## Skill Rules` "
-            "table in SKILL.md",
-            reference=RULES[7]["reference"],
-        )]
+
+    # Support both per-skill rules/ directories and the consolidated .agents/rules/ layout.
+    local_rules_dir = _local_rules_dir(path)
+    consolidated_rules_dir = _consolidated_rules_dir()
+
+    has_local_rules = local_rules_dir is not None
+    has_consolidated_ref = bool(re.search(r"\.agents/rules/", content))
+    has_local_ref = bool(re.search(r"rules/", content))
+
+    if not has_local_rules and not has_consolidated_ref:
+        findings: list[Finding] = []
+        if not RE_SKILL_RULES.search(content):
+            findings.append(Finding(
+                id=f"SKILL-RD-{name}",
+                rule="SKILL_RULES_DIR",
+                severity="medium",
+                category="convention",
+                file=relative_path(path),
+                line=1,
+                message=f"Skill '{name}' has no `## Skill Rules` table and does not reference "
+                "rules in `.agents/rules/`",
+                suggestion="Add a `## Skill Rules` table mapping each rule to its asset "
+                "(`rules/{file}.md` or `.agents/rules/{file}.md`)",
+                reference=RULES[7]["reference"],
+            ))
+        return findings
+
     findings: list[Finding] = []
     if not RE_SKILL_RULES.search(content):
         findings.append(Finding(
@@ -409,15 +432,25 @@ def scan_rules_dir(path: Path, content: str, name: str) -> list[Finding]:
             category="convention",
             file=relative_path(path),
             line=1,
-            message=f"Skill '{name}' has a `rules/` dir but SKILL.md has no `## Skill Rules` "
+            message=f"Skill '{name}' references rules but SKILL.md has no `## Skill Rules` "
             "mapping table",
             suggestion="Add a `## Skill Rules` table ('| Rule | Asset | Applies when |') "
             "mapping each rule file, one row per asset",
             reference=RULES[7]["reference"],
         ))
-    rule_files = sorted(rules_dir.glob("*.md"))
-    if rule_files and not any(f.stem in content for f in rule_files):
-        if not re.search(r"rules/", content):
+
+    # Collect rule files from whichever source(s) exist
+    rule_files: list[Path] = []
+    if has_local_rules:
+        rule_files.extend(sorted(local_rules_dir.glob("*.md")))
+    if has_consolidated_ref and consolidated_rules_dir.is_dir():
+        rule_files.extend(sorted(consolidated_rules_dir.glob("*.md")))
+
+    # Verify that referenced rule files appear in SKILL.md content
+    if rule_files:
+        referenced_stems = {f.stem for f in rule_files if f.stem in content}
+        has_any_ref = bool(re.search(r"rules/", content))
+        if not referenced_stems and not has_any_ref:
             findings.append(Finding(
                 id=f"SKILL-RD-{name}",
                 rule="SKILL_RULES_DIR",
@@ -425,10 +458,10 @@ def scan_rules_dir(path: Path, content: str, name: str) -> list[Finding]:
                 category="convention",
                 file=relative_path(path),
                 line=1,
-                message=f"Skill '{name}' has {len(rule_files)} rule file(s) in `rules/` but "
-                "SKILL.md does not reference any of them",
+                message=f"Skill '{name}' references rules but does not cite any rule files "
+                "in its `## Skill Rules` table",
                 suggestion="Ensure every rule file is referenced in the `## Skill Rules` table "
-                "(asset links like `rules/{file}.md`)",
+                "(asset links like `rules/{file}.md` or `.agents/rules/{file}.md`)",
                 reference=RULES[7]["reference"],
             ))
     return findings

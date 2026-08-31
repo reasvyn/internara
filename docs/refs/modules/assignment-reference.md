@@ -37,6 +37,12 @@ Manages course assignments and submission tracking with grading and revision wor
 | `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum` | — |
 | `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum` | — |
 
+## Entities
+
+| File | Entity | Extends |
+|---|---|---|
+| `Entities/AssignmentRules.php` | `AssignmentRules` | `BaseEntity` |
+
 ## Policies
 
 | File | Policy | Extends |
@@ -68,10 +74,10 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Notifications
 
-| File                                                          | Notification                     |
-| ------------------------------------------------------------- | -------------------------------- |
-| `Notifications/AssignmentNotification.php`                    | `AssignmentNotification`         |
-| `Submission/Notifications/SubmissionFeedbackNotification.php` | `SubmissionFeedbackNotification` |
+| File                                                              | Notification                     |
+| ----------------------------------------------------------------- | -------------------------------- |
+| `Notifications/AssignmentNotification.php`                        | `AssignmentNotification`         |
+| `Domain/Submission/Notifications/SubmissionFeedbackNotification.php` | `SubmissionFeedbackNotification` |
 
 ## Livewire Components
 

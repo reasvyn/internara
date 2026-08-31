@@ -105,10 +105,10 @@ Batch all changes first, then verify **once**. Full suite is ~2GB+, 10+ min — 
   - `vendor/bin/pest --testsuite={ModuleName}` or `php artisan test --compact --filter={ClassName}`
   - Every test traces to a spec FR/NFR/UC ID (`{SpecID}-{ReqID}: description`); no orphan tests, no spec gaps; coverage = requirements covered
 - **Arch-guard scanners (run as a batch):**
-  - `python3 tools/scan_violations/cli.py` (C1-C8, D1-D6)
-  - `python3 tools/scan_class_contracts/cli.py` (Action/Entity/DTO/Model/Enum)
-  - `python3 tools/scan_security/cli.py` (XSS, SQLi, CSRF, auth)
-  - `python3 tools/scan_naming/cli.py` · `tools/scan_conventions/cli.py` · `tools/scan_doc_links/cli.py`
+  - `python3 tools/scan_violations.py` (C1-C8, D1-D6)
+  - `python3 tools/scan_class_contracts.py` (Action/Entity/DTO/Model/Enum)
+  - `python3 tools/scan_security.py` (XSS, SQLi, CSRF, auth)
+  - `python3 tools/scan_naming.py` · `tools/scan_conventions.py` · `tools/scan_doc_links.py`
 - **Full verification on-demand only** (merge-day or user explicitly asks):
   - `php artisan test --compact` (full suite, all modules)
   - `vendor/bin/phpstan analyse --no-progress` (level 8 / Larastan)
@@ -176,7 +176,7 @@ User → Livewire (validates, catches RejectedException) → Command Action::exe
 |--------|--------------------------------------|------|-------------------|
 | **Core** | — (base classes, enums, DTO, exceptions, middleware) | Foundation | — → all |
 | **UI** | — (app shell, navbar/sidebar/theme) | Presentation | Core → all (`ui::layouts.app`, `x-ui::`) |
-| **Auth** | `Account,Login,Password,Permissions,SuperAdmin,AccountRecovery` | Login/RBAC/recovery | Core+User → all |
+| **Auth** | `Account,Login,Password,Permissions,SuperAdmin,AccountRecovery,AccessTokens` | Login/RBAC/recovery | Core+User → all |
 | **User** | `Profile,Notifications,AccountStatus,Dashboard,Mentor,UserManagement` | Identity & 8-state lifecycle | Core+SysAdmin → all |
 | **SysAdmin** | `Announcement,Backups,Observability` | Admin, GDPR, Pulse, backup | User+Academics+Core → User |
 | **Setup** | `Installation,SetupWizard` | `setup:install`, 6-step signed wizard | Core+Academics → — (one-time) |
@@ -554,18 +554,18 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `tools/scan_files/cli.py` | File counts and lines of code per module | `python3 tools/scan_files/cli.py` |
-| `tools/scan_architecture/cli.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture/cli.py` |
-| `tools/scan_violations/cli.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations/cli.py` |
-| `tools/scan_class_contracts/cli.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts/cli.py` |
-| `tools/scan_security/cli.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security/cli.py` |
-| `tools/scan_naming/cli.py` | Naming conventions | `python3 tools/scan_naming/cli.py` |
-| `tools/scan_conventions/cli.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions/cli.py` |
-| `tools/scan_doc_links/cli.py` | Broken links in docs | `python3 tools/scan_doc_links/cli.py` |
-| `tools/scan_tests/cli.py` | Per-module test results | `python3 tools/scan_tests/cli.py` |
-| `tools/scan_skills/cli.py` | SKILL.md meta-framework consistency | `python3 tools/scan_skills/cli.py` |
-| `tools/scan_issues/cli.py` | GitHub issues by module/severity | `python3 tools/scan_issues/cli.py` |
-| `tools/scan_dead_code/cli.py` | Dead code detection | `python3 tools/scan_dead_code/cli.py` |
+| `tools/scan_files.py` | File counts and lines of code per module | `python3 tools/scan_files.py` |
+| `tools/scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
+| `tools/scan_violations.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations.py` |
+| `tools/scan_class_contracts.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts.py` |
+| `tools/scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security.py` |
+| `tools/scan_naming.py` | Naming conventions | `python3 tools/scan_naming.py` |
+| `tools/scan_conventions.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions.py` |
+| `tools/scan_doc_links.py` | Broken links in docs | `python3 tools/scan_doc_links.py` |
+| `tools/scan_tests.py` | Per-module test results | `python3 tools/scan_tests.py` |
+| `tools/scan_skills.py` | SKILL.md meta-framework consistency | `python3 tools/scan_skills.py` |
+| `tools/scan_issues.py` | GitHub issues by module/severity | `python3 tools/scan_issues.py` |
+| `tools/scan_dead_code.py` | Dead code detection | `python3 tools/scan_dead_code.py` |
 
 Output: `tools/outputs/{timestamp}-{description}.json`.
 

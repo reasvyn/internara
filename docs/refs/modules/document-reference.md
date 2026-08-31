@@ -76,20 +76,22 @@ and compliance acknowledgements.
 
 ## Handbook Submodule
 
-| Kind      | File                                           | Class                     | Extends / Implements    |
-| --------- | ---------------------------------------------- | ------------------------- | ----------------------- |
-| Action    | `Handbook/Actions/CreateHandbookAction.php`    | `CreateHandbookAction`    | `BaseCommandAction`     |
-| Action    | `Handbook/Actions/UpdateHandbookAction.php`    | `UpdateHandbookAction`    | `BaseCommandAction`     |
-| Action    | `Handbook/Actions/DeleteHandbookAction.php`    | `DeleteHandbookAction`    | `BaseCommandAction`     |
-| Action    | `Handbook/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseCommandAction`   |
-| Data      | `Handbook/Data/HandbookData.php`               | `HandbookData`            | `BaseData`              |
-| Entity    | `Handbook/Entities/HandbookEntity.php`         | `HandbookEntity`          | `BaseEntity`            |
-| Enum      | `Handbook/Enums/HandbookAudience.php`          | `HandbookAudience`        | `LabelEnum` (all, student, teacher, supervisor) |
-| Event     | `Handbook/Events/HandbookCreated.php`          | `HandbookCreated`         | `BaseEvent`             |
-| Event     | `Handbook/Events/HandbookUpdated.php`          | `HandbookUpdated`         | `BaseEvent`             |
-| Event     | `Handbook/Events/HandbookDeleted.php`          | `HandbookDeleted`         | `BaseEvent`             |
-| Listener  | `Handbook/Listeners/ClearHandbookCache.php`    | `ClearHandbookCache`      | —                       |
-| Form      | `Handbook/Livewire/Forms/HandbookForm.php`     | `HandbookForm`            | —                       |
+> See the detailed tables above — this summary consolidates the Handbook domain's components for quick reference.
+
+| Kind      | File                                             | Class                     | Extends / Implements    |
+| --------- | ------------------------------------------------ | ------------------------- | ----------------------- |
+| Action    | `Domain/Handbook/Actions/CreateHandbookAction.php`    | `CreateHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Domain/Handbook/Actions/UpdateHandbookAction.php`    | `UpdateHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Domain/Handbook/Actions/DeleteHandbookAction.php`    | `DeleteHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Domain/Handbook/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseCommandAction`   |
+| Data      | `Domain/Handbook/Data/HandbookData.php`               | `HandbookData`            | `BaseData`              |
+| Entity    | `Domain/Handbook/Entities/HandbookEntity.php`         | `HandbookEntity`          | `BaseEntity`            |
+| Enum      | `Domain/Handbook/Enums/HandbookAudience.php`          | `HandbookAudience`        | `LabelEnum` (all, student, teacher, supervisor) |
+| Event     | `Domain/Handbook/Events/HandbookCreated.php`          | `HandbookCreated`         | `BaseEvent`             |
+| Event     | `Domain/Handbook/Events/HandbookUpdated.php`          | `HandbookUpdated`         | `BaseEvent`             |
+| Event     | `Domain/Handbook/Events/HandbookDeleted.php`          | `HandbookDeleted`         | `BaseEvent`             |
+| Listener  | `Domain/Handbook/Listeners/ClearHandbookCache.php`    | `ClearHandbookCache`      | —                       |
+| Form      | `Domain/Handbook/Livewire/Forms/HandbookForm.php`     | `HandbookForm`            | `BaseFormView`          |
 
 Handbooks are stored in the shared `documents` table (category `handbook`); no separate
 migration or factory.

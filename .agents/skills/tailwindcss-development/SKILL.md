@@ -17,7 +17,7 @@ Use this skill when working with **Tailwind CSS specifics** — utility classes,
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **Tailwind-only guidance** — the utility layer and theming — and delegates everything else to `ui-development`.
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds **Tailwind-only guidance** — the utility layer and theming — spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting), and delegates everything else to `ui-development`.
 
 ## Tailwind Stack
 

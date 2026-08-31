@@ -17,7 +17,7 @@ Use this skill when implementing TallStackUI components — `x-ts-table`, `x-ts-
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds TallStackUI-specific guidance.
+Follow `agent-workflow` pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds TallStackUI-specific guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting).
 
 ## Skill Rules
 

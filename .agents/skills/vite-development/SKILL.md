@@ -15,7 +15,7 @@ Use this skill when configuring Vite entry points, adding plugins (@tailwindcss/
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Vite-specific guidance.
+Follow `agent-workflow` pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds Vite-specific guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting).
 
 ## Skill Rules
 

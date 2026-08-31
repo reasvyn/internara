@@ -46,7 +46,7 @@ User → Livewire (validates, catches RejectedException) → Command Action::exe
 |--------|--------------------------------------|------|-------------------|
 | **Core** | — (base classes, enums, DTO, exceptions, middleware) | Foundation | — → all |
 | **UI** | — (app shell, navbar/sidebar/theme) | Presentation | Core → all (`ui::layouts.app`, `x-ui::`) |
-| **Auth** | `Account,Login,Password,Permissions,SuperAdmin,AccountRecovery` | Login/RBAC/recovery | Core+User → all |
+| **Auth** | `Account,Login,Password,Permissions,SuperAdmin,AccountRecovery,AccessTokens` | Login/RBAC/recovery | Core+User → all |
 | **User** | `Profile,Notifications,AccountStatus,Dashboard,Mentor,UserManagement` | Identity & 8-state lifecycle | Core+SysAdmin → all |
 | **SysAdmin** | `Announcement,Backups,Observability` | Admin, GDPR, Pulse, backup | User+Academics+Core → User |
 | **Setup** | `Installation,SetupWizard` | `setup:install`, 6-step signed wizard | Core+Academics → — (one-time) |

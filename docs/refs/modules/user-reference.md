@@ -76,6 +76,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/Mentor/Entities/MentorEntity.php` | `MentorEntity` | `BaseEntity` |
 | `Entities/AdminEntity.php` | `AdminEntity` | `BaseEntity` |
+| `Entities/Apprentice.php` | `Apprentice` | `BaseEntity` |
 | `Entities/StudentEntity.php` | `StudentEntity` | `BaseEntity` |
 | `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
 | `Entities/TeacherEntity.php` | `TeacherEntity` | `BaseEntity` |
@@ -153,19 +154,19 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Notifications (Mail)
 
-| File                                                          | Notification                 |
-| ------------------------------------------------------------- | ---------------------------- |
-| `Notifications/GeneralNotification.php`                       | `GeneralNotification`        |
-| `Notifications/WelcomeNotification.php`                       | `WelcomeNotification`        |
-| `Notifications/TestMailNotification.php`                      | `TestMailNotification`       |
-| `AccountStatus/Notifications/AccountStatusNotification.php`   | `AccountStatusNotification`  |
-| `UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
+| File                                                              | Notification                 |
+| ----------------------------------------------------------------- | ---------------------------- |
+| `Domain/Notifications/GeneralNotification.php`                    | `GeneralNotification`        |
+| `Domain/Notifications/WelcomeNotification.php`                    | `WelcomeNotification`        |
+| `Domain/Notifications/TestMailNotification.php`                 | `TestMailNotification`       |
+| `Domain/AccountStatus/Notifications/AccountStatusNotification.php` | `AccountStatusNotification`  |
+| `Domain/UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
 
 ## Commands
 
-| File                                                         | Command                  | Signature                  |
-| ------------------------------------------------------------ | ------------------------ | -------------------------- |
-| `UserManagement/Console/Commands/AutoInactivateAccounts.php` | `AutoInactivateAccounts` | `accounts:auto-inactivate` |
+| File                                                                          | Command                  | Signature                  |
+| --------------------------------------------------------------------------- | ------------------------ | -------------------------- |
+| `Domain/UserManagement/Console/Commands/AutoInactivateAccounts.php` | `AutoInactivateAccounts` | `accounts:auto-inactivate` |
 
 ## Support
 

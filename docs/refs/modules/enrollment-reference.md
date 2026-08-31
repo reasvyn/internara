@@ -36,8 +36,17 @@ applications, and registration document uploads.
 |---|---|---|
 | `Domain/AccountApplication/Models/AccountApplication.php` | `AccountApplication` | `BaseModel` |
 | `Domain/Placement/Models/Placement.php` | `Placement` | `BaseModel` |
+| `Domain/Placement/Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` |
 | `Domain/Registration/Models/Registration.php` | `Registration` | `BaseModel` |
 | `Domain/Registration/Models/RegistrationDocument.php` | `RegistrationDocument` | `BaseModel` |
+
+## Entities
+
+| File | Entity | Extends |
+|---|---|---|
+| `Domain/Placement/Entities/PlacementState.php` | `PlacementState` | `BaseEntity` |
+| `Domain/Placement/Entities/PlacementCapacity.php` | `PlacementCapacity` | `BaseEntity` |
+| `Domain/Registration/Entities/RegistrationState.php` | `RegistrationState` | `BaseEntity` |
 
 ## Data / DTOs
 

@@ -20,7 +20,7 @@ Use this skill when building or modifying **Livewire components** — thin-compo
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **Livewire-only guidance** — thin components, Form Objects, Action delegation, and tables — and delegates general UI to `ui-development`.
+Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds **Livewire-only guidance** — thin components, Form Objects, Action delegation, and tables — spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting), and delegates general UI to `ui-development`.
 
 ## Skill Rules
 

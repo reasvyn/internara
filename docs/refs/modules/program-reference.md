@@ -72,7 +72,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 | File                                                         | Notification                    |
 | ------------------------------------------------------------ | ------------------------------- |
-| `Internship/Notifications/InternshipCreatedNotification.php` | `InternshipCreatedNotification` |
+| `Domain/Internship/Notifications/InternshipCreatedNotification.php` | `InternshipCreatedNotification` |
 | `Notifications/RegistrationNotification.php`                 | `RegistrationNotification`      |
 
 ## Livewire Components

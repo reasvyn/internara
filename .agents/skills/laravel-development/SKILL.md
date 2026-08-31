@@ -19,7 +19,7 @@ Use this skill for any Laravel framework concern — routes, middleware, service
 
 ## Workflow
 
-Follow `agent-workflow` canonical pipeline. This skill adds Laravel-specific guidance and delegates to downstream skills for implementation details.
+Follow `agent-workflow` canonical pipeline (Understand → Plan → Implement → Verify → Summarize). This skill adds Laravel-specific guidance, spec-first doctrine (**governing spec** FR/NFR/UC IDs), and **Size Triage** (S/M/L session splitting), and delegates to downstream skills for implementation details.
 
 ## Skill Rules
 
