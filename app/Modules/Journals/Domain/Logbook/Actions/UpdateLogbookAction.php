@@ -34,8 +34,8 @@ final class UpdateLogbookAction extends BaseCommandAction
 
             $this->log('logbook_entry_updated', $entry, [
                 'user_id' => $entry->user_id,
-                'date' => $entry->date?->toDateString(),
-                'status' => $entry->status?->value,
+                'date' => $entry->date->toDateString(),
+                'status' => $entry->status->value,
             ]);
 
             return $entry;

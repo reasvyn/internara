@@ -32,8 +32,8 @@ final class UpdateAttendanceAction extends BaseCommandAction
 
             $this->log('attendance_updated', $log, [
                 'user_id' => $log->user_id,
-                'date' => $log->date?->toDateString(),
-                'status' => $log->status?->value,
+                'date' => $log->date->toDateString(),
+                'status' => $log->status->value,
             ]);
 
             return $log;

@@ -16,6 +16,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $date
+ * @property bool $is_verified
+ * @property \Carbon\Carbon $verified_at
+ * @property \Carbon\Carbon $supervisor_reviewed_at
+ * @property \App\Modules\Journals\Domain\Logbook\Enums\LogbookStatus $status
+ * @property string $user_id
+ * @property string $registration_id
+ * @property string $content
+ * @property string $learning_outcomes
+ * @property string $verified_by
+ * @property string $mentor_feedback
+ * @property string $supervisor_note
+ * @property string $supervisor_id
+ * @property-read \App\Modules\User\Models\User|null $user
+ * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
+ * @property-read \App\Modules\User\Models\User|null $verifier
+ * @property-read \App\Modules\User\Models\User|null $supervisor
+ */
+
 #[
     Fillable([
         'user_id',

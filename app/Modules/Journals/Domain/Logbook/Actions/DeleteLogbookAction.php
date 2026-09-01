@@ -14,7 +14,7 @@ final class DeleteLogbookAction extends BaseCommandAction
         $this->transaction(function () use ($entry) {
             $this->log('logbook_entry_deleted', $entry, [
                 'user_id' => $entry->user_id,
-                'date' => $entry->date?->toDateString(),
+                'date' => $entry->date->toDateString(),
             ]);
 
             $entry->delete();

@@ -20,8 +20,8 @@ final class VerifyAttendanceAction extends BaseCommandAction
 
             $this->log('attendance_verified', $log, [
                 'user_id' => $log->user_id,
-                'date' => $log->date?->toDateString(),
-                'status' => $log->status?->value,
+                'date' => $log->date->toDateString(),
+                'status' => $log->status->value,
             ]);
 
             return $log;

@@ -14,7 +14,7 @@ final class DeleteAttendanceAction extends BaseCommandAction
         $this->transaction(function () use ($log) {
             $this->log('attendance_deleted', $log, [
                 'user_id' => $log->user_id,
-                'date' => $log->date?->toDateString(),
+                'date' => $log->date->toDateString(),
             ]);
 
             $log->delete();
