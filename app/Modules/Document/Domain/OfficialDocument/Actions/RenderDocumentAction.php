@@ -37,7 +37,7 @@ final class RenderDocumentAction extends BaseCommandAction
             $this->log('document_rendered', $doc, [
                 'template' => $document->title,
                 'registration' => $registration->id,
-                'student' => $target->mentee?->user?->name ?? 'Unknown',
+                'student' => $target->mentee->user->name ?? 'Unknown',
             ]);
 
             return $doc;
