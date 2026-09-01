@@ -119,9 +119,9 @@ class StudentManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'national_id_number' => $user->profile?->national_id_number ?? '',
-            'id_number' => $user->profile?->id_number ?? '',
-            'department_id' => $user->profile?->department_id ?? '',
+            'national_id_number' => $user->profile->national_id_number ?? '',
+            'id_number' => $user->profile->id_number ?? '',
+            'department_id' => $user->profile->department_id ?? '',
         ]);
         $this->userModal = true;
     }
@@ -229,8 +229,8 @@ class StudentManager extends BaseRecordManager
             fn ($u) => [
                 $u->name,
                 $u->email,
-                $u->profile?->national_id_number ?? '',
-                $u->profile?->id_number ?? '',
+                $u->profile->national_id_number ?? '',
+                $u->profile->id_number ?? '',
             ],
             'students.csv',
         );

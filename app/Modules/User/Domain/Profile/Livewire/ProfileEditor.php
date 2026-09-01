@@ -125,7 +125,7 @@ class ProfileEditor extends BaseFormView
         }
 
         if ($this->isStaff) {
-            $profileId = $this->user->profile?->id ?? 'NULL';
+            $profileId = $this->user->profile->id ?? 'NULL';
             $rules = array_merge($rules, [
                 'profileForm.id_number' => "nullable|string|max:30|unique:profiles,id_number,{$profileId}",
                 'profileForm.competence_field' => 'nullable|string|max:255',

@@ -45,6 +45,24 @@ use Spatie\Permission\Traits\HasRoles;
         'is_active',
     ]),
 ]
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $email_verified_at
+ * @property \Carbon\Carbon $locked_at
+ * @property \Carbon\Carbon $first_login_at
+ * @property string $password
+ * @property bool $setup_required
+ * @property bool $is_active
+ * @property \App\Modules\User\Enums\AccountStatus $status
+ * @property string $name
+ * @property string $email
+ * @property string $username
+ * @property string $locked_reason
+ * @property-read \App\Modules\User\Domain\Profile\Models\Profile|null $profile
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ */
+
 #[Hidden(['password', 'remember_token'])]
 class User extends BaseAuthenticatable implements HasMedia
 {

@@ -26,7 +26,7 @@ final class ToggleUserStatusAction extends BaseCommandAction
         }
 
         return $this->transaction(function () use ($user, $reason) {
-            $currentStatus = $user->status?->value;
+            $currentStatus = $user->status->value;
             $newStatus =
                 $currentStatus === AccountStatus::VERIFIED->value
                     ? AccountStatus::SUSPENDED->value

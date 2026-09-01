@@ -15,6 +15,31 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $dob
+ * @property array $emergency_contact
+ * @property \App\Modules\User\Enums\Gender $gender
+ * @property \App\Modules\User\Enums\BloodType $blood_type
+ * @property string $user_id
+ * @property string $phone
+ * @property string $address
+ * @property string $bio
+ * @property string $pob
+ * @property string $id_number
+ * @property string $national_id_number
+ * @property string $competence_field
+ * @property string $employment_status
+ * @property string $job_title
+ * @property string $internal_notes
+ * @property string $department_id
+ * @property string $company_id
+ * @property-read \App\Modules\User\Models\User|null $user
+ * @property-read \App\Modules\Academics\Domain\Department\Models\Department|null $department
+ * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
+ */
+
 #[
     Fillable([
         'user_id',

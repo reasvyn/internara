@@ -114,8 +114,8 @@ class SupervisorManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'phone' => $user->profile?->phone ?? '',
-            'company_id' => $user->profile?->company_id ?? null,
+            'phone' => $user->profile->phone ?? '',
+            'company_id' => $user->profile->company_id ?? null,
         ]);
         $this->userModal = true;
     }
@@ -214,7 +214,7 @@ class SupervisorManager extends BaseRecordManager
             fn ($u) => [
                 $u->name,
                 $u->email,
-                $u->profile?->company?->name ?? '',
+                $u->profile->company->name ?? '',
             ],
             'supervisors.csv',
         );

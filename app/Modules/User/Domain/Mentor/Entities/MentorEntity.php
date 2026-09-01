@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\Mentor\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 final readonly class MentorEntity extends BaseEntity
 {
@@ -16,7 +16,7 @@ final readonly class MentorEntity extends BaseEntity
         private Collection $mentors,
     ) {}
 
-    public static function fromModel(Model $model): static
+    public static function fromModel(Registration $model): static
     {
         $mentors = $model->relationLoaded('mentors')
             ? $model->mentors

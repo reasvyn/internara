@@ -29,7 +29,7 @@ final class SetUserStatusAction extends BaseCommandAction
             throw new RejectedException(__('user.manager.cannot_change_super_admin_status'));
         }
 
-        $currentStatusName = $user->status?->value;
+        $currentStatusName = $user->status->value;
 
         if ($currentStatusName !== null) {
             $currentStatus = AccountStatus::tryFrom($currentStatusName);

@@ -106,7 +106,7 @@ class TeacherManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'id_number' => $user->profile?->id_number ?? '',
+            'id_number' => $user->profile->id_number ?? '',
         ]);
         $this->userModal = true;
     }
@@ -209,7 +209,7 @@ class TeacherManager extends BaseRecordManager
             fn ($u) => [
                 $u->name,
                 $u->email,
-                $u->profile?->id_number ?? '',
+                $u->profile->id_number ?? '',
             ],
             'teachers.csv',
         );
