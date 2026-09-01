@@ -7,9 +7,13 @@ namespace App\Modules\Core\Data;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JsonSerializable;
+use ReflectionClass;
+use ReflectionParameter;
 
 abstract readonly class BaseData implements JsonSerializable
 {
+    private const REQUIRED_SENTINEL = '__REQUIRED__';
+
     public function toArray(): array
     {
         $result = [];
@@ -80,7 +84,7 @@ abstract readonly class BaseData implements JsonSerializable
                 $constructorParams[$name] = $data[$name];
             } elseif (array_key_exists($snakeKey, $data)) {
                 $constructorParams[$name] = $data[$snakeKey];
-            } elseif ($defaultValue !== '__REQUIRED__') {
+            } elseif ($defaultValue !== self::REQUIRED_SENTINEL) {
                 $constructorParams[$name] = $defaultValue;
             } else {
                 throw new InvalidArgumentException(
@@ -109,20 +113,19 @@ abstract readonly class BaseData implements JsonSerializable
         throw new InvalidArgumentException('Unsupported source type: '.get_debug_type($source));
     }
 
+    private static array $paramCache = [];
+
     private static function resolveConstructorParams(string $class): array
     {
-        static $cache = [];
-        static $generation = 0;
-
-        if (isset($cache[$class])) {
-            return $cache[$class];
+        if (isset(self::$paramCache[$class])) {
+            return self::$paramCache[$class];
         }
 
-        $ref = new \ReflectionClass($class);
+        $ref = new ReflectionClass($class);
         $constructor = $ref->getConstructor();
 
         if ($constructor === null) {
-            $cache[$class] = [];
+            self::$paramCache[$class] = [];
 
             return [];
         }
@@ -135,18 +138,17 @@ abstract readonly class BaseData implements JsonSerializable
             if ($param->isDefaultValueAvailable()) {
                 $params[$name] = $param->getDefaultValue();
             } else {
-                $params[$name] = '__REQUIRED__';
+                $params[$name] = self::REQUIRED_SENTINEL;
             }
         }
 
-        $cache[$class] = $params;
+        self::$paramCache[$class] = $params;
 
         return $params;
     }
 
     public static function clearParamCache(): void
     {
-        self::$cache = [];
-        self::$generation++;
+        self::$paramCache = [];
     }
 }

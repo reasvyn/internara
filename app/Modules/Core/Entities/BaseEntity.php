@@ -48,7 +48,6 @@ abstract readonly class BaseEntity implements JsonSerializable
         $ref = new ReflectionClass($this);
 
         foreach ($ref->getProperties() as $prop) {
-            $prop->setAccessible(true);
             $key = $prop->getName();
             $value = $prop->getValue($this);
 
