@@ -113,21 +113,19 @@ abstract readonly class BaseData implements JsonSerializable
         throw new InvalidArgumentException('Unsupported source type: '.get_debug_type($source));
     }
 
-    private static array $paramCache = [];
-
     private static function resolveConstructorParams(string $class): array
     {
-        if (isset(self::$paramCache[$class])) {
-            return self::$paramCache[$class];
+        static $cache = [];
+
+        if (isset($cache[$class])) {
+            return $cache[$class];
         }
 
         $ref = new ReflectionClass($class);
         $constructor = $ref->getConstructor();
 
         if ($constructor === null) {
-            self::$paramCache[$class] = [];
-
-            return [];
+            return $cache[$class] = [];
         }
 
         $params = [];
@@ -142,13 +140,8 @@ abstract readonly class BaseData implements JsonSerializable
             }
         }
 
-        self::$paramCache[$class] = $params;
+        $cache[$class] = $params;
 
         return $params;
-    }
-
-    public static function clearParamCache(): void
-    {
-        self::$paramCache = [];
     }
 }
