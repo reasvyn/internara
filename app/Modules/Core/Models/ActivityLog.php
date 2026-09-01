@@ -13,6 +13,11 @@ use Spatie\Activitylog\Models\Activity;
  * Provides operational activity tracking for model changes, user actions,
  * and system events across all modules.
  */
+/**
+ * @property string $id
+ */
+
+
 class ActivityLog extends Activity
 {
     public function scopeForUser(Builder $query, string|int $userId): Builder

@@ -8,7 +8,12 @@ use App\Modules\Core\Models\Concerns\HasCommonScopes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-abstract class BaseAuthenticatable extends Authenticatable
+abstract 
+/**
+ * @property string $id
+ */
+
+class BaseAuthenticatable extends Authenticatable
 {
     use HasCommonScopes;
     use HasUuids;
