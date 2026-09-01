@@ -19,6 +19,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Represents a specific location/quota within a company for an internship.
  */
+
+/**
+ * @property string $id
+ * @property string $company_id
+ * @property string $internship_id
+ * @property string $name
+ * @property string $address
+ * @property string $quota
+ * @property string $filled_quota
+ * @property string $description
+ * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
+ * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ */
+
 #[
     Fillable([
         'company_id',

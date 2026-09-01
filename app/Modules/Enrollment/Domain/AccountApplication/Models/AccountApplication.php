@@ -13,6 +13,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property array $form_data
+ * @property \Carbon\Carbon $processed_at
+ * @property \App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationStatus $status
+ * @property string $name
+ * @property string $email
+ * @property string $student_id_number
+ * @property string $department_id
+ * @property string $processed_by
+ * @property string $rejection_reason
+ * @property-read \App\Modules\Academics\Domain\Department\Models\Department|null $department
+ * @property-read \App\Modules\User\Models\User|null $processor
+ */
+
 #[
     Fillable([
         'name',

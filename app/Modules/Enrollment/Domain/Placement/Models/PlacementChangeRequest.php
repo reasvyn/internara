@@ -13,6 +13,25 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $processed_at
+ * @property \App\Modules\Enrollment\Domain\Placement\Enums\PlacementChangeStatus $status
+ * @property string $registration_id
+ * @property string $from_placement_id
+ * @property string $to_placement_id
+ * @property string $reason
+ * @property string $requested_by
+ * @property string $processed_by
+ * @property string $rejection_reason
+ * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
+ * @property-read \App\Modules\Enrollment\Domain\Placement\Models\Placement|null $fromPlacement
+ * @property-read \App\Modules\Enrollment\Domain\Placement\Models\Placement|null $toPlacement
+ * @property-read \App\Modules\User\Models\User|null $requester
+ * @property-read \App\Modules\User\Models\User|null $processor
+ */
+
 #[
     Fillable([
         'registration_id',
