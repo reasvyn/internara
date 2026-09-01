@@ -88,9 +88,9 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 
 ## Deploy & Ops (SSOT: `.agents/context/deploy-topology.md` + `docs/guides/infra/deployment.md`)
 
-- **Topology:** repo `internara`, push `docker-deploy` → `.github/workflows/build-and-deploy.yml` (build verifies images + gha cache → deploy SSHs to VPS `VPS_HOST/USER/KEY` and runs `.github/tools/deploy.sh`); VPS at `~/apps/internara` branch `docker-deploy`, 3 containers `app/db(mysql:8)/web(nginx:8080)`, host-level aaPanel reverse proxy → `https://internara.web.id`.
-- **Caveats:** `environment:` in `docker-compose.yml` determines which env vars reach the container (unmapped host `.env` keys are inert); branch pushes derive tag from `composer.json version` (must bump `composer.json` + create matching `v*.*.*` tag on `main` first — tag pushes use the ref directly); `git reset --hard origin/docker-deploy` on every deploy destroys manual edits; health gate waits for 200 within 60s.
-- **Branch workflow:** work on `main` → fast-forward `docker-deploy` to `main` → push → pipeline handles the rest.
+- **Topology:** tag-pushed SemVer tags drive `.github/workflows/release.yml` (a 4-stage QA pipeline run on GitHub Actions: `-dev` → lint+build, `-beta` → lint+test+build, `-rc` → lint+test+guards+build+smoke, final `vX.Y.Z` → all of the above then deploy via SSH to VPS `VPS_HOST/USER/KEY` → `.github/scripts/deploy.sh`); VPS at `$HOME/apps/internara` (`$HOME=/home/andreas`) as 3 containers `app/db(mysql:8)/web(nginx:8080)`, host-level aaPanel reverse proxy → `https://internara.web.id`. Each QA stage calls a reusable helper: `lint.sh`, `test.sh`, `guards.sh`, `smoke.sh`.
+- **Caveats:** `environment:` in `docker-compose.yml` determines which env vars reach the container (unmapped host `.env` keys are inert); a release must bump `composer.json` `version` AND create the matching `v*.*.*` tag — `deploy.sh` sets `GIT_URL` to `...git#${VERSION_TAG}` and `git reset --hard $VERSION_TAG` on every deploy destroys manual VPS edits; health gate waits for 200 within 60s (`HEALTH_URL`).
+- **Release flow:** `development (-dev) → testing (-beta) → staging (-rc) → production (final vX.Y.Z)`; a final tag never deploys to the VPS unless every QA stage passes.
 
 ## Docs & Memory Map
 

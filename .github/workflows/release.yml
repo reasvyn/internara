@@ -1,0 +1,296 @@
+name: Release Pipeline
+# Single tiered CI/CD orchestrator driven by SemVer tags. All QA stages run on
+# GitHub Actions (free, no VPS load), and each stage calls a dedicated reusable
+# script under .github/scripts/. Only the PRODUCTION stage deploys to the VPS.
+#
+#   Triggering tag        -> Stage          -> Scripts run
+#   ----------------------------------------------------------------
+#   v<X>.<Y>.<Z>-dev.<N>  -> development    lint + frontend build
+#   v<X>.<Y>.<Z>-beta.<N> -> testing/QA     lint + test + frontend build
+#   v<X>.<Y>.<Z>-rc.<N>   -> staging/RC     lint + test + guards + build + smoke + security
+#   v<X>.<Y>.<Z>          -> production     all of the above, then deploy VPS
+#
+# Releases are promoted upward: development -> testing -> staging -> production.
+# A final tag never deploys to the VPS unless every QA stage passes.
+# Standard industry flow: development (dev) -> QA/testing (beta) ->
+# pre-production (rc) -> production (final release).
+
+on:
+    push:
+        tags:
+            - 'v*.*.*'
+
+permissions:
+    contents: read
+    checks: write
+
+# Avoid two parallel QA runs for the same tag (e.g. a re-pushed tag).
+concurrency:
+    group: release-${{ github.ref_name }}
+    cancel-in-progress: false
+
+env:
+    PHP_VERSION: '8.4'
+    DB_CONNECTION: sqlite
+    DB_DATABASE: ':memory:'
+
+jobs:
+    # ------------------------------------------------------------------ #
+    # Stage detection — derive the stage from the pushed tag.
+    # ------------------------------------------------------------------ #
+    stage:
+        name: Detect release stage
+        runs-on: ubuntu-latest
+        outputs:
+            stage: ${{ steps.detect.outputs.stage }}
+            version: ${{ steps.detect.outputs.version }}
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Detect stage from tag
+              id: detect
+              run: |
+                  set -euo pipefail
+                  TAG="${{ github.ref_name }}"
+                  echo "Pushed tag: $TAG"
+                  if echo "$TAG" | grep -qE '-[a-zA-Z0-9]+\.[0-9]+$'; then
+                    # Pre-release tag: <version>-<word>.<num>
+                    SUFFIX="${TAG##*-}"
+                    WORD="${SUFFIX%%.*}"
+                    VERSION="${TAG%-*}"
+                    case "$WORD" in
+                      dev)    STAGE="dev" ;;
+                      beta)   STAGE="testing" ;;
+                      rc)     STAGE="staging" ;;
+                      *)      STAGE="dev" ;; # alpha, pre, etc -> fallback to dev
+                    esac
+                  else
+                    # Final tag: <version> without suffix
+                    STAGE="production"
+                    VERSION="$TAG"
+                  fi
+                  echo "stage=$STAGE"
+                  echo "version=$VERSION"
+                  echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+            - name: Show stage & version
+              run: |
+                  echo "Detected stage: ${{ steps.detect.outputs.stage }}"
+                  echo "Version: ${{ steps.detect.outputs.version }}"
+
+    # ------------------------------------------------------------------ #
+    # DEVELOPMENT stage — light QA (lint + frontend build) for -dev.* tags.
+    # ------------------------------------------------------------------ #
+    dev:
+        name: DEV - lint & build
+        runs-on: ubuntu-latest
+        needs: stage
+        if: needs.stage.outputs.stage == 'dev'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: none
+                  tools: composer:v2
+
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Lint (Pint + PHPStan)
+              run: bash .github/scripts/lint.sh
+
+            - name: Build frontend assets
+              run: |
+                  npm ci --legacy-peer-deps
+                  npm run build
+              env:
+                  NODE_ENV: production
+
+    # ------------------------------------------------------------------ #
+    # TESTING / QA stage — full QA for -beta.* tags.
+    # ------------------------------------------------------------------ #
+    testing:
+        name: TESTING/QA - full suite
+        runs-on: ubuntu-latest
+        needs: stage
+        if: needs.stage.outputs.stage == 'testing'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: xdebug
+                  tools: composer:v2
+
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Setup Environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Lint (Pint + PHPStan)
+              run: bash .github/scripts/lint.sh
+
+            - name: Test suite (coverage gate)
+              run: bash .github/scripts/test.sh
+
+            - name: Build frontend assets
+              run: |
+                  npm ci --legacy-peer-deps
+                  npm run build
+              env:
+                  NODE_ENV: production
+
+            - name: Composer security audit
+              run: composer audit --format=json
+              continue-on-error: true
+
+    # ------------------------------------------------------------------ #
+    # STAGING / RC stage — full QA + guards + smoke for -rc.* tags.
+    # ------------------------------------------------------------------ #
+    staging:
+        name: STAGING/RC - full QA + guard
+        runs-on: ubuntu-latest
+        needs: stage
+        if: needs.stage.outputs.stage == 'staging'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: xdebug
+                  tools: composer:v2
+
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Setup Environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Lint (Pint + PHPStan)
+              run: bash .github/scripts/lint.sh
+
+            - name: Test suite (coverage gate)
+              run: bash .github/scripts/test.sh
+
+            - name: Architecture guards
+              run: bash .github/scripts/guards.sh
+
+            - name: Build frontend assets
+              run: |
+                  npm ci --legacy-peer-deps
+                  npm run build
+              env:
+                  NODE_ENV: production
+
+            - name: Smoke test (production build)
+              run: bash .github/scripts/smoke.sh
+              env:
+                  DB_CONNECTION: sqlite
+                  DB_DATABASE: database/database.sqlite
+
+            - name: Composer security audit
+              run: composer audit --format=json
+              continue-on-error: true
+
+    # ------------------------------------------------------------------ #
+    # PRODUCTION stage — full QA for FINAL tags, then the VPS deploy job.
+    # ------------------------------------------------------------------ #
+    production:
+        name: PRODUCTION - full QA
+        runs-on: ubuntu-latest
+        needs: stage
+        if: needs.stage.outputs.stage == 'production'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: xdebug
+                  tools: composer:v2
+
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Setup Environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Lint (Pint + PHPStan)
+              run: bash .github/scripts/lint.sh
+
+            - name: Test suite (coverage gate)
+              run: bash .github/scripts/test.sh
+
+            - name: Architecture guards
+              run: bash .github/scripts/guards.sh
+
+            - name: Build frontend assets
+              run: |
+                  npm ci --legacy-peer-deps
+                  npm run build
+              env:
+                  NODE_ENV: production
+
+            - name: Smoke test (production build)
+              run: bash .github/scripts/smoke.sh
+              env:
+                  DB_CONNECTION: sqlite
+                  DB_DATABASE: database/database.sqlite
+
+            - name: Composer security audit
+              run: composer audit --format=json
+              continue-on-error: true
+
+    # ------------------------------------------------------------------ #
+    # DEPLOY — production only, after the production QA stage passes.
+    # ------------------------------------------------------------------ #
+    deploy:
+        name: Deploy to production VPS
+        runs-on: ubuntu-latest
+        needs: [stage, production]
+        if: needs.stage.outputs.stage == 'production' && needs.production.result == 'success'
+        env:
+            VERSION_TAG: ${{ needs.stage.outputs.version }}
+        steps:
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: 22
+                  envs: VERSION_TAG
+                  script: |
+                      set -euo pipefail
+                      cd "$HOME/apps/internara"
+                      echo "Deploying version tag: $VERSION_TAG"
+                      git fetch --quiet origin --tags
+                      git checkout --quiet "$VERSION_TAG"
+                      git reset --hard --quiet "$VERSION_TAG"
+                      echo "Checked out version tag $VERSION_TAG"
+                      VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh

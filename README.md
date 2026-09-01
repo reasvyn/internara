@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/reasvyn/internara/actions/workflows/quality-assurance.yml/badge.svg" alt="CI">
+    <img src="https://github.com/reasvyn/internara/actions/workflows/release.yml/badge.svg" alt="CI">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
     <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">

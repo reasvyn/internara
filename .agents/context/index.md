@@ -16,7 +16,7 @@ This directory is the **curated, mandatory known context**: the small set of fac
 | [module-health.md](module-health.md) | **Any module touch** — 18-module health tiers (production-ready → skeleton), P0 tech debt priority, which modules to scaffold vs. fix first |
 | [testing-strategy.md](testing-strategy.md) | Tests, Pest, PHPStan — spec-driven minimalism, what to run when (batched once), layer patterns, module-specific guidance |
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
-| [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, `docker-deploy` branch, `build-and-deploy.yml`, GIT_URL |
+| [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, tag-driven `release.yml` 4-stage pipeline, `deploy.sh`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |
 | [dep-model-status-deprecated.md](dep-model-status-deprecated.md) | **Any status/state persistence** — spatie/laravel-model-status deprecated, removal planned (#419); status columns are app-owned |
 | [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |

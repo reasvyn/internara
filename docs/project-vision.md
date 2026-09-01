@@ -98,7 +98,7 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 | Guiding principles, values, “what we do not do” in depth | `philosophy.md` |
 | Requirements (FR/NFR/UC) that vision traces to | `docs/specs/index.md` → `docs/specs/QLHDO-internara-project.md` |
 | Architecture that makes vision buildable | `architecture.md` (4-layer, Action Triad) |
-| How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/build-and-deploy.yml` (version-tagged deploys), `infrastructure/deployment.md` |
+| How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/release.yml` (tag-driven 4-stage release pipeline), `infrastructure/deployment.md` |
 | Current health & where to contribute | Module-health tiers (agent memory) + `CONTRIBUTING.md` |
 
 ## Where to Find It

@@ -1,224 +1,127 @@
-# CI/CD — Pipeline, Automation & Quality Gates
+# CI/CD — Release Pipeline, Automation & Quality Gates
 
 ## Description
 
-Continuous Integration and Deployment pipeline configuration, quality gates, and automation
-workflows for Internara.
+Continuous Integration and Deployment configuration for Internara, built around a single
+tag-driven release pipeline (`.github/workflows/release.yml`) with four promotion stages and
+reusable gate scripts under `.github/scripts/`.
 
 ---
 
 ## Pipeline Overview
 
+The whole pipeline is triggered by pushing a SemVer tag (`v*.*.*`) to GitHub. The stage is derived
+from the tag suffix, and only the final production stage deploys to the VPS.
+
 ```mermaid
 flowchart LR
-    A[Push / PR] --> B[Lint & Format]
-    B --> C[Static Analysis]
-    C --> D[Unit Tests]
-    D --> E[Feature Tests]
-    E --> F{Quality Gate}
-    F -->|Pass| G[Build Assets]
-    G --> H[Deploy]
-    F -->|Fail| I[Block Merge]
+    T[push tag v*.*.*] --> D{Detect stage}
+    D -->|vX.Y.Z-dev.N| DEV[lint + build]
+    D -->|vX.Y.Z-beta.N| TEST[lint + tests + build]
+    D -->|vX.Y.Z-rc.N| RC[lint + tests + guards + build + smoke]
+    D -->|vX.Y.Z| PROD[lint + tests + guards + build + smoke]
+    PROD -->|pass| DEP[Deploy VPS]
 ```
+
+### Stage mapping
+
+| Pushed tag               | Stage        | Jobs run on GitHub Actions                                    |
+| ------------------------ | ------------ | ------------------------------------------------------------ |
+| `vX.Y.Z-dev.<N>`         | Development  | `lint.sh` (Pint + PHPStan) + frontend build                   |
+| `vX.Y.Z-beta.<N>`        | Testing/QA   | + `test.sh` (Pest, coverage gate)                            |
+| `vX.Y.Z-rc.<N>`          | Staging/RC   | + `guards.sh` (arch + security + conventions) + `smoke.sh`   |
+| `vX.Y.Z` (final)         | Production   | all of the above, then the VPS deploy job                     |
+
+Releases are promoted upward: `development → testing → staging → production`. Every QA stage runs in
+GitHub Actions (free, no VPS load). A final tag never reaches the VPS unless every QA tier passes.
 
 ---
 
-## Quality Gates
+## Reusable gate scripts (`.github/scripts/`)
 
-Every commit and pull request must pass the following gates before merge:
-
-| Gate | Tool | Threshold | Command |
-| ---- | ---- | --------- | ------- |
-| Code Style | Laravel Pint | No diffs | `vendor/bin/pint --test` |
-| Formatting | Prettier | No diffs | `npm run format:check` |
-| Static Analysis | PHPStan (level 8) | No errors | `vendor/bin/phpstan analyse --no-progress` |
-| Module Unit Tests | Pest | 100% pass | `vendor/bin/pest --testsuite={ModuleName}` |
-| Module Integration Tests | Pest | 100% pass | `vendor/bin/pest --testsuite={ModuleName}` |
-| Frontend Build | Vite | No errors | `npm run build` |
-| Coverage | Pest (pcov) | ≥ 85% | `composer run coverage` |
-
-### Fast-Fail Order
-
-Pipelines should execute gates in fast-fail order:
-
-1. **Lint & Format** (cheapest, fastest) — fail immediately on style issues
-2. **Static Analysis** — catch type errors and boundary violations
-3. **Unit Tests** — fast, no database required
-4. **Feature Tests** — slower, database-backed
-5. **Coverage** — most expensive, run last
+| Script      | What it runs                                            | Fail-fast order |
+| ----------- | ------------------------------------------------------- | --------------- |
+| `lint.sh`   | `vendor/bin/pint --test` + `vendor/bin/phpstan analyse --no-progress` | 1 (cheapest) |
+| `test.sh`   | `vendor/bin/pest --coverage --min=<MIN_COVERAGE>` (default 80) | 2 |
+| `guards.sh` | `scan_violations` / `scan_security` / `scan_conventions` (all `--strict`) | 3 |
+| `smoke.sh`  | migrate + `route:list` on a clean SQLite DB (boot sanity) | 4 |
+| `deploy.sh` | VPS-side: compose up + prune + health check (production only) | — |
 
 ---
 
-## GitHub Actions Workflow
+## GitHub Actions workflow (`.github/workflows/release.yml`)
 
-```yaml
-name: CI
+Single workflow, five jobs:
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+1. **`stage`** — derives stage & version from the pushed tag (regex on the suffix: `dev`/`beta`/`rc`
+   → pre-release; no suffix → production).
+2. **`dev`** — runs only when stage == `dev`: `lint.sh` + `npm run build`.
+3. **`testing`** — stage == `testing`: `lint.sh` + `test.sh` + build + `composer audit`.
+4. **`staging`** — stage == `staging`: `lint.sh` + `test.sh` + `guards.sh` + build + `smoke.sh` +
+   `composer audit`.
+5. **`production`** — stage == `production`: all QA gates (same as staging).
+6. **`deploy`** — `needs: [stage, production]`, runs only when production QA succeeded: SSHs to the
+   VPS (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`), `git checkout $VERSION_TAG` +
+   `git reset --hard $VERSION_TAG`, then `VERSION_TAG=$VERSION_TAG bash .github/scripts/deploy.sh`.
 
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: internara_test
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: bcmath, ctype, dom, fileinfo, json, mbstring, openssl, pdo, pdo_mysql, tokenbin, xml, pcov
-          coverage: pcov
-          tools: composer:v2
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install Node dependencies
-        run: npm ci
-
-      - name: Lint PHP
-        run: vendor/bin/pint --test
-
-      - name: Lint Blade/JS/CSS
-        run: npm run lint
-
-      - name: Static Analysis
-        run: vendor/bin/phpstan analyse --no-progress
-
-      - name: Build frontend
-        run: npm run build
-
-      - name: Run tests
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: internara_test
-          DB_USERNAME: root
-          DB_PASSWORD: ""
-        run: php artisan test --compact --coverage --min=85
-```
+Environment: PHP 8.4, SQLite in-memory for tests, `concurrency` grouped by tag to avoid parallel
+runs for a re-pushed tag.
 
 ---
 
 ## Local Quality Commands
 
+Same gates as CI, run locally:
+
 ```bash
-# Quick check (lint + analyse + module tests)
-composer run quality
-
-# Full check (format + strict analyse + coverage)
-composer run quality:full
-
-# Individual gates
-composer run lint              # PHP + JS lint
-composer run analyse           # PHPStan level 8
-# Run tests for a specific module:
-vendor/bin/pest --testsuite={ModuleName}   # replace {ModuleName} with the module, e.g., 'User'
-# Run full test suite (all modules)
-composer run test              # Full test suite (all modules)
-composer run coverage          # With coverage report
-npm run build                  # Vite production build
+vendor/bin/pint --test                      # PHP code style
+vendor/bin/phpstan analyse --no-progress    # PHPStan level 8 (static analysis)
+vendor/bin/pest --coverage --min=80         # full test suite + coverage gate
+python3 tools/scan_violations.py --strict   # C1-C8 / D1-D6 invariants
+python3 tools/scan_security.py --strict     # security anti-patterns
+python3 tools/scan_conventions.py --strict  # conventions
+npm run build                               # Vite production build
 ```
 
 ---
 
-## Branch Protection Rules
+## Release workflow
 
-| Branch | Required Checks | Review Required | Notes |
-| ------ | --------------- | --------------- | ----- |
-| `main` | All quality gates | 1 approving review | Protected — no direct pushes |
-| `develop` | All quality gates | None | Integration branch |
+See [Deployment](deployment.md) for the full VPS/CI/CD operational details and
+`.agents/context/deploy-topology.md` for operational caveats (agent context).
 
----
+### How to release (staged)
 
-## Deployment Pipeline
+1. Bump `composer.json` `version` to `X.Y.Z` (and sync `package.json`, `README.md`,
+   `docs/project-vision.md`, `docs/guides/upgrading.md`).
+2. Push the final tag (or pre-release tags to run QA tiers first):
+   ```bash
+   git tag vX.Y.Z && git push origin vX.Y.Z
+   # optional staged rollout:
+   git tag vX.Y.Z-rc.1 && git push origin vX.Y.Z-rc.1
+   ```
+3. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS (`$HOME/apps/internara`).
 
-See [Deployment](deployment.md) for infrastructure setup. The CI pipeline produces a deployable
-artifact:
+### Secrets
 
-```bash
-# Build artifact (runs in CI)
-composer install --optimize-autoloader --no-dev --no-interaction
-npm ci && npm run build
-rm -rf node_modules/ node_modules/.package-lock.json
-
-# Deploy artifact to target environment
-# Options: rsync, Docker image push, deployer, etc.
-```
-
-### Environment-Specific Steps
-
-| Environment | CI Triggers | Post-Deploy Steps |
-| ----------- | ----------- | ----------------- |
-| Development | Push to `develop` | `php artisan migrate` |
-| Staging | PR to `main` | `php artisan migrate --force` + `php artisan system:health` |
-| Production | Merge to `main` | `php artisan migrate --force` + cache warm + health check |
-
----
-
-## Artifact Requirements
-
-The deployable artifact must include:
-
-- `vendor/` (production dependencies only)
-- `public/build/` (compiled Vite assets)
-- `public/.htaccess` or Nginx config
-- `storage/` directory structure
-
-The following must be excluded:
-
-- `node_modules/`
-- `.git/`
-- `tests/`
-- `docs/`
-- Development-only config files
-
----
-
-## Secrets Management
-
-| Secret | Usage | Environment |
-| ------ | ----- | ----------- |
-| `APP_KEY` | Laravel encryption key | All environments |
-| `DB_*` | Database credentials | Per environment |
-| `MAIL_*` | SMTP credentials | Production |
-| `CRON_SECRET` | Scheduler webhook auth | Production |
-| `APPLE_ID_*` / `GOOGLE_*` | OAuth (future) | Production |
-
-Secrets are stored in GitHub Actions secrets (for CI) and `.env` files (for deployments).
+Deploy secrets (`VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) live in GitHub Actions secrets, never in the
+repo. `deploy.sh` requires no credentials — the SSH key authenticates on the runner.
 
 ---
 
 ## Monitoring CI Health
 
-- **Pulse**: Track queue throughput, slow jobs, and failed jobs
-- **Health Check**: `php artisan system:health` runs in CI post-deploy
-- **Notifications**: CI failures sent to project maintainer email
-- **Coverage Report**: Generated as CI artifact, published to PR comment
+- **Health Gate**: `deploy.sh` waits for `HEALTH_URL` (`https://internara.web.id`, product demo) to
+  return 200 within 60s, else dumps `docker compose ps`.
+- **Coverage**: measured per run via `--coverage --min`; no external coverage service required.
+- **Diagnostics**: failed deploys surface in the runner logs (`deploy ok:` / health-check failures).
+
+---
+
+## References
+
+- `.github/workflows/release.yml` — the pipeline definition
+- `.github/scripts/*.sh` — reusable gates & deploy script
+- [Deployment](deployment.md) — environment setup, Docker stack, reverse proxy
+- [Infrastructure](infrastructure.md) — tier-based infra design
+- [Testing](testing.md) — test strategy & quality gates

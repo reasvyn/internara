@@ -454,22 +454,24 @@ curl -s https://internara.web.id | grep -c localhost                     # 0 (ap
 curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
 ```
 
-### Continuous deployment (direct build-and-deploy)
+### Continuous deployment (tag-driven release pipeline)
 
-Pushes to `docker-deploy` are auto-deployed to the production server by
-`.github/workflows/build-and-deploy.yml` in this repo. The workflow has two jobs:
+Pushing a SemVer tag (`v*.*.*`) triggers `.github/workflows/release.yml` — a single tiered CI/CD
+orchestrator. The stage is derived from the tag suffix, and only the PRODUCTION stage deploys to the
+VPS (via SSH, secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) by running `.github/scripts/deploy.sh`:
 
-1. **build** — verifies both Docker images (`app` + `web`) compile from the current source.
-2. **deploy** — SSHs to the VPS (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`), syncs the local
-   clone (`git fetch origin docker-deploy && git reset --hard origin/docker-deploy`), then runs
-   `.github/tools/deploy.sh`: `docker compose up -d --build --remove-orphans`, followed by image
-   pruning and a 60s health check against `HEALTH_URL`.
+- `vX.Y.Z-dev.<N>` → **development**: Pint + PHPStan + frontend build
+- `vX.Y.Z-beta.<N>` → **testing/QA**: adds full Pest suite with coverage gate
+- `vX.Y.Z-rc.<N>` → **staging/RC**: adds architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test
+- `vX.Y.Z` (final) → **production**: all of the above, then deploy
 
-Build cache is pruned on every deploy (`docker builder prune --keep-storage <limit>`, default `2g`)
-so the Docker build cache stays bounded on the low-disk VPS instead of growing into the multi-GB
-range — dangling images are pruned too. Only the deploy workflow file and the credentials-free
-deploy script are committed here; production secrets live in GitHub Actions secrets, never in the
-repo.
+`deploy.sh` sets `GIT_URL=https://github.com/reasvyn/internara.git#${VERSION_TAG}`, runs
+`docker compose up -d --remove-orphans --force-recreate` (with `--no-cache` so a tag change is
+picked up), prunes the build cache under a `--keep-storage` limit (default `2g`), and gates success
+on a 60s health check against `HEALTH_URL` (product demo `https://internara.web.id`).
+
+Only the workflow file and the credentials-free deploy script are committed here; production secrets
+live in GitHub Actions secrets, never in the repo.
 
 ### Low-memory profile (1 GB RAM VPS)
 

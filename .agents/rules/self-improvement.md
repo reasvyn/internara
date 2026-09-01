@@ -13,7 +13,7 @@ enforcement: `self-check`.
 | Invariant violation found | A C1-C8 / D1-D6 breach caught in review or `scan_violations.py` | `context/codebase-intentional-states.md` or new `context/` file if mandatory |
 | Spec gap | A requirement with no test, or test with no requirement | `memory/learning-log.md` + raise via `issue-writing` skill |
 | Recurring bug pattern | Same class of bug fixed ≥2 times (e.g., N+1, missing `#[Fillable]`) | promote to `rules/` (e.g. `rules/architecture-rules.md`) |
-| Tooling/deploy quirk (mandatory) | `prettier-plugin-blade` via Pint, `docker-deploy` branch, dependency pins | `context/dependency-pins-tooling-quirks.md` / `context/deploy-topology.md` |
+| Tooling/deploy quirk (mandatory) | `prettier-plugin-blade` via Pint, tag-driven `release.yml` pipeline (`deploy.sh` + `$HOME`), dependency pins | `context/dependency-pins-tooling-quirks.md` / `context/deploy-topology.md` |
 | UI framework constraint | TallstackUI v4 only, self-hosted palette, no mary/daisyui/flasher | `context/ui-framework-coexistence.md` |
 | Module health change | A module moved tier (production-ready ↔ skeleton) | `context/module-health.md` |
 | User correction | Any redirected instruction ("don't do X", "batch verify") | `memory/learning-log.md` + promote if repeated |

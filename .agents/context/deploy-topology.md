@@ -2,35 +2,42 @@
 
 ## Description
 
-How the app gets from a Git push to a live site, and the operational traps to avoid when working on
-CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles, or `docker-deploy`.
+How the app gets from a Git tag push to a live site, and the operational traps to avoid when working on
+CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles, or a release.
 
 ---
 
 ## Topology
 
-- **Public repo (`internara`), push to `docker-deploy`** fires `.github/workflows/build-and-deploy.yml`
-  directly — no intermediate dispatch repo. The workflow has two jobs:
-  1. `build` — verifies both Docker images compile (`docker/build-push-action` + gha cache).
-  2. `deploy` — SSHs to the VPS (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) and runs
-     `.github/tools/deploy.sh`.
-- **VPS layout:** app source at `~/apps/internara` on branch `docker-deploy`; stack is 3 containers
-  (`app`, `db` = mysql:8, `web` = nginx) with `NGINX_PORT=8080`; reverse proxy is host-level
-  aaPanel/BT nginx for `https://internara.web.id` (product demo).
-- **Branch workflow:** code lives on `main`; production tracks `docker-deploy`. To ship, fast-forward
-  `docker-deploy` to `main` and push — the pipeline handles the rest.
+- **Public repo (`internara`), push a SemVer tag** fires `.github/workflows/release.yml` — a single
+  tiered CI/CD orchestrator. The stage is derived from the tag, and all QA stages run on GitHub
+  Actions (no VPS load):
+  - `vX.Y.Z-dev.<N>` → **development** — lint + frontend build
+  - `vX.Y.Z-beta.<N>` → **testing/QA** — lint + full test suite + build
+  - `vX.Y.Z-rc.<N>` → **staging/RC** — lint + tests + arch guards + build + smoke + security
+  - `vX.Y.Z` (final) → **production** — all of the above, then the deploy job SSHs to the VPS
+    (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) and runs `.github/scripts/deploy.sh`.
+- **Only the PRODUCTION stage deploys.** A final tag never reaches the VPS unless every QA stage
+  passes. Releases are promoted upward: `development → testing → staging → production`.
+- Each QA stage delegates to a reusable helper under `.github/scripts/`: `lint.sh` (Pint + PHPStan),
+  `test.sh` (Pest with coverage gate), `guards.sh` (C1-C8 / D1-D6 + security + conventions scanners),
+  `smoke.sh` (migrate + route:list on a clean SQLite DB).
+- **VPS layout:** app source at `$HOME/apps/internara` (`$HOME = /home/andreas`, derived from the
+  SSH user `VPS_USER`, not hardcoded); stack is 3 containers (`app`, `db` = mysql:8, `web` = nginx)
+  with `NGINX_PORT=8080`; reverse proxy is host-level aaPanel/BT nginx for
+  `https://internara.web.id` (product demo). The VPS checks out the pushed tag directly
+  (`git checkout $VERSION_TAG && git reset --hard $VERSION_TAG`).
 
 ## Caveats
 
 | Caveat | Detail |
 | ------ | ------ |
 | **Host `.env` feeds only vars referenced in `docker-compose.yml`** | Compose interpolates `${VAR}` strictly per the `environment:` mapping — an entry in host `.env` that is not mapped there never reaches the container (v0.15.2 incident: `APP_LOCALE=id`/`APP_TIMEZONE=Asia/Jakarta` sat inert in `.env` while the app ran `en`/UTC). New env vars must be added to the compose `environment:` block, then shipped through a release. |
-| **Branch-push deploys resolve the tag from `composer.json`** | On `docker-deploy` branch pushes, `VERSION_TAG = v{composer.json version}`. The VPS then `git checkout` that tag — NOT the pushed commit. If `composer.json` is stale, the VPS checks out an old tag that may lack current scripts (v0.14.3 incident: checked out v0.14.0 → `.github/tools/deploy.sh: No such file or directory` → exit 127). **Rule: every release must bump `composer.json` `version` AND create the matching `v*.*.*` tag on main before pushing `docker-deploy`.** Tag pushes (`v*.*.*`) bypass this and use the ref name directly. |
-| **`git reset --hard origin/docker-deploy` runs on every deploy** | Any manual change inside `~/apps/internara` on the VPS is silently destroyed. Never hand-edit files there; change the repo and push. |
-| **Health check gates success** | The deploy is green only when `https://internara.web.id` (product demo) returns 200 within 60s. |
-| **Build context is a Git URL** | `GIT_URL=https://github.com/reasvyn/internara.git#docker-deploy` (VPS `.env`, product demo). The Dockerfile clones/bundles the repo at build time; changes in the running container do not persist unless stored in `storage_data` / `app_data` / `mysql_data` volumes. |
-| **Build cache bloat** | `deploy.sh` prunes images and builders, keeping the build cache under a `--keep-storage` limit (currently 2g) so the VPS disk stays healthy. |
-| **Site reachable check** | `https://internara.web.id` (product demo) → 200; title `Home | Internara - Management System`. |
+| **Every release must bump `composer.json` AND create the matching `v*.*.*` tag** | `deploy.sh` builds `GIT_URL=https://github.com/reasvyn/internara.git#${VERSION_TAG}` and the VPS `git checkout $VERSION_TAG`. If the tag is missing or stale, the image rebuilds from the wrong/branch ref. Version bump guide: see AGENTS.md §Version Bump Guide. |
+| **`git reset --hard $VERSION_TAG` runs on every deploy** | Any manual change inside `$HOME/apps/internara` on the VPS is silently destroyed. Never hand-edit files there; change the repo, bump version, tag, and push. |
+| **Health check gates success** | `deploy.sh` is green only when `HEALTH_URL` (`https://internara.web.id`, product demo) returns 200 within 60s; else `docker compose ps` is dumped for diagnosis. |
+| **Build context is a Git URL** | `GIT_URL=...git#${VERSION_TAG}`. The Dockerfile clones/bundles the repo at build time; changes in the running container do not persist unless stored in `storage_data` / `app_data` / `mysql_data` volumes. `--no-cache` + volume-prune ensure the tag change is picked up. |
+| **Build cache bloat** | `deploy.sh` prunes images and builders, keeping the cache under a `--keep-storage` limit (default 2g) so the VPS disk stays healthy. |
 
 ---
 
@@ -38,16 +45,16 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
 
 | If you need to... | Do this |
 | ----------------- | ------- |
-| Deploy the latest `main` to the VPS | Fast-forward `docker-deploy` to `main` and push — `build-and-deploy.yml` handles the rest |
-| Inspect the live stack | SSH to the VPS, `cd ~/apps/internara`, `docker compose ps` |
-| Add/change deploy logic | Edit `.github/workflows/build-and-deploy.yml` + `.github/tools/deploy.sh`; keep `deploy.sh` idempotent and cache-aware |
-| Diagnose a failed deploy | Check the `deploy` job logs for `deploy ok:` / health-check failures; confirm `GIT_URL` matches `docker-deploy` |
+| Release `main` to production | Bump `composer.json` `version`, create `git tag vX.Y.Z`, `git push origin vX.Y.Z` — `release.yml` runs full QA then deploys |
+| Ship a QA candidate first | Use pre-release tags: `vX.Y.Z-dev.N` (dev only), `vX.Y.Z-beta.N` (+ tests), `vX.Y.Z-rc.N` (+ guards/smoke) — promote upward to final `vX.Y.Z` |
+| Add/change deploy logic | Edit `.github/workflows/release.yml` + `.github/scripts/deploy.sh`; keep `deploy.sh` idempotent and cache-aware |
+| Diagnose a failed deploy | Check the `deploy` job logs for `deploy ok:` / health-check failures; confirm `VERSION_TAG` matches an existing pushed `v*.*.*` tag |
 
 ---
 
 ## Quick References
 
-- `.github/workflows/build-and-deploy.yml` — the pipeline (build + deploy jobs)
-- `.github/tools/deploy.sh` — VPS-side deploy script (compose up, prune, health check)
+- `.github/workflows/release.yml` — the pipeline (stage detection, 4 QA jobs, deploy)
+- `.github/scripts/*.sh` — reusable gates (`lint.sh`, `test.sh`, `guards.sh`, `smoke.sh`) + `deploy.sh` (VPS-side)
 - [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD operational details
 - [Dockerfile](../../Dockerfile) + `docker-compose.yml` — multi-stage build, volumes, `NGINX_PORT`
