@@ -121,7 +121,7 @@ class IncidentManager extends BaseRecordManager
         $this->resetErrorBag();
         $this->editingId = $incident->id;
         $this->editData = [
-            'incident_date' => $incident->incident_date?->toDateTimeString() ?? '',
+            'incident_date' => $incident->incident_date->toDateTimeString() ?? '',
             'type' => $incident->type->value,
             'severity' => $incident->severity->value,
             'description' => $incident->description ?? '',
