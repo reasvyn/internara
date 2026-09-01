@@ -184,11 +184,7 @@
                         icon="bell"
                         link="{{ route('notifications') }}"
                     />
-                    <x-ui::widgets.quick-link
-                        :label="__('dashboard.student.view_evaluations')"
-                        icon="star"
-                        link="#"
-                    />
+                    <x-ui::widgets.quick-link :label="__('dashboard.student.view_evaluations')" icon="star" link="#" />
                 </div>
         </div>
     </div>

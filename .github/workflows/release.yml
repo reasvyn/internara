@@ -54,7 +54,7 @@ jobs:
                   set -euo pipefail
                   TAG="${{ github.ref_name }}"
                   echo "Pushed tag: $TAG"
-                  if echo "$TAG" | grep -qE '-[a-zA-Z0-9]+\.[0-9]+$'; then
+                  if echo "$TAG" | grep -qEe '-[a-zA-Z0-9]+\.[0-9]+$'; then
                     # Pre-release tag: <version>-<word>.<num>
                     SUFFIX="${TAG##*-}"
                     WORD="${SUFFIX%%.*}"
@@ -103,13 +103,16 @@ jobs:
             - name: Install Composer dependencies
               run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
+              env:
+                  NODE_ENV: production
+
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
 
             - name: Build frontend assets
-              run: |
-                  npm ci --legacy-peer-deps
-                  npm run build
+              run: npm run build
               env:
                   NODE_ENV: production
 
@@ -141,6 +144,11 @@ jobs:
                   cp .env.example .env
                   php artisan key:generate
 
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
+              env:
+                  NODE_ENV: production
+
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
 
@@ -148,9 +156,7 @@ jobs:
               run: bash .github/scripts/test.sh
 
             - name: Build frontend assets
-              run: |
-                  npm ci --legacy-peer-deps
-                  npm run build
+              run: npm run build
               env:
                   NODE_ENV: production
 
@@ -186,6 +192,11 @@ jobs:
                   cp .env.example .env
                   php artisan key:generate
 
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
+              env:
+                  NODE_ENV: production
+
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
 
@@ -196,9 +207,7 @@ jobs:
               run: bash .github/scripts/guards.sh
 
             - name: Build frontend assets
-              run: |
-                  npm ci --legacy-peer-deps
-                  npm run build
+              run: npm run build
               env:
                   NODE_ENV: production
 
@@ -240,6 +249,11 @@ jobs:
                   cp .env.example .env
                   php artisan key:generate
 
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
+              env:
+                  NODE_ENV: production
+
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
 
@@ -250,9 +264,7 @@ jobs:
               run: bash .github/scripts/guards.sh
 
             - name: Build frontend assets
-              run: |
-                  npm ci --legacy-peer-deps
-                  npm run build
+              run: npm run build
               env:
                   NODE_ENV: production
 
