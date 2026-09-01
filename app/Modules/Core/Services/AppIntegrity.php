@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Services;
 
-use RuntimeException;
+use App\Modules\Core\Exceptions\InfrastructureException;
 
 final class AppIntegrity
 {
@@ -14,11 +14,8 @@ final class AppIntegrity
     {
         try {
             self::verifyComposerMetadata();
-        } catch (RuntimeException $e) {
-            $env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? getenv('APP_ENV') ?: 'production';
-            if (in_array($env, ['local', 'testing'], true)) {
-                // At public/index.php:24 the app facade may not be booted yet (php artisan serve uses server.php).
-                // Use direct error_log fallback if SmartLogger requires facade.
+        } catch (InfrastructureException $e) {
+            if (app()->environment('local', 'testing')) {
                 try {
                     SmartLogger::warning($e->getMessage())->withPiiMasking()->systemOnly()->save();
                 } catch (\Throwable) {
@@ -34,23 +31,30 @@ final class AppIntegrity
 
     private static function verifyComposerMetadata(): void
     {
-        $path = dirname(__DIR__, 3).'/composer.json';
+        $path = base_path('composer.json');
 
         if (! file_exists($path)) {
-            throw new RuntimeException('Core system metadata (composer.json) is missing.');
+            throw new InfrastructureException(
+                'Core system metadata (composer.json) is missing.',
+                hint: 'Verify the application installation is complete.',
+            );
         }
 
         $content = file_get_contents($path);
 
         if ($content === false) {
-            throw new RuntimeException('Failed to read core system metadata file.');
+            throw new InfrastructureException(
+                'Failed to read core system metadata file.',
+                hint: 'Check file permissions for composer.json.',
+            );
         }
 
         $info = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new RuntimeException(
+            throw new InfrastructureException(
                 'Core system metadata file contains invalid JSON: '.json_last_error_msg(),
+                hint: 'Validate composer.json syntax.',
             );
         }
 
@@ -58,9 +62,10 @@ final class AppIntegrity
         $authorName = $info['authors'][0]['name'] ?? '';
 
         if (! hash_equals(self::AUTHOR_NAME, $authorName)) {
-            throw new RuntimeException(
+            throw new InfrastructureException(
                 'Attribution Error: Unauthorized author modification detected. '.
                     'This system requires attribution to the original author.',
+                hint: 'Restore the original author name in composer.json.',
             );
         }
     }

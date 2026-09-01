@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Core\Actions;
 
 use App\Modules\Core\Actions\Concerns\HandlesActionErrors;
+use App\Modules\Core\Actions\Concerns\ResolvesModuleName;
 use App\Modules\Core\Events\BaseEvent;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Services\SmartLogger;
@@ -14,11 +15,14 @@ use Illuminate\Support\Facades\DB;
 abstract class BaseAction
 {
     use HandlesActionErrors;
+    use ResolvesModuleName;
+
+    private const DEFAULT_TX_ATTEMPTS = 3;
 
     /** @var list<BaseEvent> */
     private array $pendingEvents = [];
 
-    protected function transaction(callable $callback, int $attempts = 3): mixed
+    protected function transaction(callable $callback, int $attempts = self::DEFAULT_TX_ATTEMPTS): mixed
     {
         $this->beforeExecute();
 
@@ -95,20 +99,5 @@ abstract class BaseAction
             ->withPiiMasking()
             ->both()
             ->save();
-    }
-
-    protected function moduleName(): string
-    {
-        $parts = explode('\\', static::class);
-
-        if (count($parts) >= 3 && $parts[0] === 'App' && $parts[1] === 'Modules') {
-            return $parts[2];
-        }
-
-        if (count($parts) >= 2 && $parts[0] === 'App') {
-            return $parts[1];
-        }
-
-        return 'Unknown';
     }
 }

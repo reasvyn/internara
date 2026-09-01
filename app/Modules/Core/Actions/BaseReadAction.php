@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Core\Actions;
 
 use App\Modules\Core\Actions\Concerns\HandlesActionErrors;
+use App\Modules\Core\Actions\Concerns\ResolvesModuleName;
 use App\Modules\Core\Support\PiiMasker;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,8 +14,12 @@ use Illuminate\Support\Facades\Cache;
 abstract class BaseReadAction
 {
     use HandlesActionErrors;
+    use ResolvesModuleName;
 
-    protected function remember(string $key, callable $callback, int $ttl = 300): mixed
+    private const DEFAULT_CACHE_TTL = 300;
+    private const DEFAULT_PER_PAGE = 15;
+
+    protected function remember(string $key, callable $callback, int $ttl = self::DEFAULT_CACHE_TTL): mixed
     {
         return Cache::remember($key, $ttl, $callback);
     }
@@ -66,7 +71,7 @@ abstract class BaseReadAction
     /**
      * @param list<string> $columns
      */
-    protected function paginate(Builder $query, int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
+    protected function paginate(Builder $query, int $perPage = self::DEFAULT_PER_PAGE, array $columns = ['*']): LengthAwarePaginator
     {
         return $query->paginate($perPage, $columns);
     }
@@ -74,7 +79,7 @@ abstract class BaseReadAction
     /**
      * @return array{data: mixed, meta: array{total: int|null, per_page: int}}
      */
-    protected function format(mixed $data, ?int $total = null, int $perPage = 15): array
+    protected function format(mixed $data, ?int $total = null, int $perPage = self::DEFAULT_PER_PAGE): array
     {
         return [
             'data' => $data,
@@ -83,20 +88,5 @@ abstract class BaseReadAction
                 'per_page' => $perPage,
             ],
         ];
-    }
-
-    private function moduleName(): string
-    {
-        $parts = explode('\\', static::class);
-
-        if (count($parts) >= 3 && $parts[0] === 'App' && $parts[1] === 'Modules') {
-            return $parts[2];
-        }
-
-        if (count($parts) >= 2 && $parts[0] === 'App') {
-            return $parts[1];
-        }
-
-        return 'Unknown';
     }
 }

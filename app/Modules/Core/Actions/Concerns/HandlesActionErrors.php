@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Modules\Core\Actions\Concerns;
 
 use App\Modules\Core\Exceptions\AppException;
+use App\Modules\Core\Exceptions\InfrastructureException;
 use App\Modules\Core\Exceptions\ModuleException;
 use App\Modules\Core\Services\SmartLogger;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
-use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait HandlesActionErrors
@@ -19,7 +19,7 @@ trait HandlesActionErrors
     {
         try {
             return $callback();
-        } catch (AppException|ModuleException|RuntimeException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
+        } catch (AppException|ModuleException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)
@@ -32,7 +32,12 @@ trait HandlesActionErrors
                 ->systemOnly()
                 ->save();
 
-            throw new RuntimeException(rtrim($context, '.').'.', 0, $e);
+            throw new InfrastructureException(
+                $context,
+                hint: __('core.errors.action_failed_hint'),
+                context: ['original_error' => $e->getMessage()],
+                previous: $e,
+            );
         }
     }
 }
