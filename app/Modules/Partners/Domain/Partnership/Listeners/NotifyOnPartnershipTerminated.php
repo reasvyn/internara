@@ -29,7 +29,7 @@ final class NotifyOnPartnershipTerminated implements ShouldQueue
             type: 'partnership_terminated',
             title: __('notifications.partnership_terminated.title'),
             message: __('notifications.partnership_terminated.message', [
-                'company' => $partnership->company?->name,
+                'company' => $partnership->company->name,
             ]),
         ));
     }

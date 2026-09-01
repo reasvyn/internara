@@ -16,6 +16,26 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $start_date
+ * @property \Carbon\Carbon $end_date
+ * @property \Carbon\Carbon $signed_at
+ * @property \App\Modules\Partners\Domain\Partnership\Enums\PartnershipStatus $status
+ * @property string $company_id
+ * @property string $agreement_number
+ * @property string $title
+ * @property string $scope
+ * @property string $contact_person_name
+ * @property string $contact_person_phone
+ * @property string $contact_person_email
+ * @property string $signed_by_school
+ * @property string $signed_by_company
+ * @property string $notes
+ * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
+ */
+
 #[
     Fillable([
         'company_id',

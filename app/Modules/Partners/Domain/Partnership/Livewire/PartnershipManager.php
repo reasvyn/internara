@@ -151,15 +151,15 @@ class PartnershipManager extends BaseRecordManager
         $this->form->company_id = $partnership->company_id;
         $this->form->agreement_number = $partnership->agreement_number;
         $this->form->title = $partnership->title;
-        $this->form->start_date = $partnership->start_date?->format('Y-m-d') ?? '';
-        $this->form->end_date = $partnership->end_date?->format('Y-m-d') ?? '';
+        $this->form->start_date = $partnership->start_date->format('Y-m-d') ?? '';
+        $this->form->end_date = $partnership->end_date->format('Y-m-d') ?? '';
         $this->form->scope = $partnership->scope ?? '';
         $this->form->contact_person_name = $partnership->contact_person_name ?? '';
         $this->form->contact_person_phone = $partnership->contact_person_phone ?? '';
         $this->form->contact_person_email = $partnership->contact_person_email ?? '';
         $this->form->signed_by_school = $partnership->signed_by_school ?? '';
         $this->form->signed_by_company = $partnership->signed_by_company ?? '';
-        $this->form->signed_at = $partnership->signed_at?->format('Y-m-d') ?? '';
+        $this->form->signed_at = $partnership->signed_at->format('Y-m-d') ?? '';
         $this->form->notes = $partnership->notes ?? '';
         $this->showModal = true;
     }

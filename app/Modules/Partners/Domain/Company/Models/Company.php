@@ -16,6 +16,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Represents a company/industry partner.
  */
+
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $address
+ * @property string $phone
+ * @property string $email
+ * @property string $website
+ * @property string $description
+ * @property string $industry_sector
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Placement\Models\Placement> $placements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Partners\Domain\Partnership\Models\Partnership> $partnerships
+ */
+
 #[Fillable(['name', 'address', 'phone', 'email', 'website', 'description', 'industry_sector'])]
 class Company extends BaseModel
 {
