@@ -15,6 +15,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Hash;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $expires_at
+ * @property \Carbon\Carbon $last_attempt_at
+ * @property \Carbon\Carbon $last_used_at
+ * @property \Carbon\Carbon $revoked_at
+ * @property int $attempts
+ * @property object $scopes
+ * @property string $user_id
+ * @property string $token
+ * @property string $token_type
+ * @property string $name
+ * @property-read \App\Modules\User\Models\User|null $user
+ */
+
 #[
     Fillable([
         'user_id',
