@@ -11,6 +11,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property string $form_id
+ * @property string $title
+ * @property string $description
+ * @property string $order
+ * @property-read \App\Modules\Evaluation\Models\EvaluationForm|null $form
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationQuestion> $questions
+ */
+
 #[
     Fillable([
         'form_id',

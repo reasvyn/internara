@@ -12,6 +12,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property bool $is_active
+ * @property string $name
+ * @property string $description
+ * @property string $target_type
+ * @property string $created_by
+ * @property-read \App\Modules\User\Models\User|null $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationSection> $sections
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationQuestion> $questions
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationResponse> $responses
+ */
+
 #[
     Fillable([
         'name',

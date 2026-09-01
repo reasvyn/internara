@@ -13,6 +13,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property float $overall_score
+ * @property \Carbon\Carbon $submitted_at
+ * @property string $form_id
+ * @property string $evaluator_id
+ * @property string $target_type
+ * @property string $target_id
+ * @property string $registration_id
+ * @property string $notes
+ * @property-read \App\Modules\Evaluation\Models\EvaluationForm|null $form
+ * @property-read \App\Modules\User\Models\User|null $evaluator
+ * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationAnswer> $answers
+ */
+
 #[
     Fillable([
         'form_id',

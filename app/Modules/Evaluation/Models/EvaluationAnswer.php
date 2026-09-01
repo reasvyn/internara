@@ -10,6 +10,17 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property float $score
+ * @property string $response_id
+ * @property string $question_id
+ * @property string $value
+ * @property-read \App\Modules\Evaluation\Models\EvaluationResponse|null $response
+ * @property-read \App\Modules\Evaluation\Models\EvaluationQuestion|null $question
+ */
+
 #[
     Fillable([
         'response_id',
