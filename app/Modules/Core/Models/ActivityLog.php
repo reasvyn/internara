@@ -12,14 +12,15 @@ use Spatie\Activitylog\Models\Activity;
  *
  * Provides operational activity tracking for model changes, user actions,
  * and system events across all modules.
- */
-/**
+ *
  * @property string $id
  */
-
-
 class ActivityLog extends Activity
 {
+    private const DEFAULT_RECENT_LIMIT = 50;
+    private const DEFAULT_DAYS_RANGE = 30;
+    private const MODULE_NAMESPACE_PREFIX = 'App\\';
+
     public function scopeForUser(Builder $query, string|int $userId): Builder
     {
         return $query->where('causer_id', $userId);
@@ -49,7 +50,7 @@ class ActivityLog extends Activity
         return $query->whereIn('log_name', $logNames);
     }
 
-    public function scopeRecent(Builder $query, int $limit = 50): Builder
+    public function scopeRecent(Builder $query, int $limit = self::DEFAULT_RECENT_LIMIT): Builder
     {
         return $query->latest()->limit($limit);
     }
@@ -64,13 +65,13 @@ class ActivityLog extends Activity
         $safe = addcslashes($module, '%_');
 
         return $query->where(function (Builder $q) use ($safe) {
-            $q->where('subject_type', 'like', "App\\{$safe}\\%")
+            $q->where('subject_type', 'like', self::MODULE_NAMESPACE_PREFIX."{$safe}\\%")
                 ->orWhere('log_name', strtolower($safe))
                 ->orWhere('log_name', $safe);
         });
     }
 
-    public function scopeGroupedByDay(Builder $query, int $days = 30): Builder
+    public function scopeGroupedByDay(Builder $query, int $days = self::DEFAULT_DAYS_RANGE): Builder
     {
         return $query
             ->where('created_at', '>=', now()->subDays($days))

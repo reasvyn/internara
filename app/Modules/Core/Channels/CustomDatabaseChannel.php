@@ -12,6 +12,9 @@ use Illuminate\Notifications\Notification;
 
 class CustomDatabaseChannel
 {
+    private const DEFAULT_TYPE = 'general';
+    private const DEFAULT_TITLE = 'Notification';
+
     public function __construct(protected readonly SendsNotifications $sendNotification) {}
 
     public function send(mixed $notifiable, Notification $notification): void
@@ -46,8 +49,8 @@ class CustomDatabaseChannel
 
         $this->sendNotification->execute(new NotificationData(
             userId: (string) $userId,
-            type: $data['type'] ?? 'general',
-            title: $data['title'] ?? 'Notification',
+            type: $data['type'] ?? self::DEFAULT_TYPE,
+            title: $data['title'] ?? self::DEFAULT_TITLE,
             message: $data['message'] ?? null,
             data: $data['data'] ?? null,
             link: $data['link'] ?? null,
