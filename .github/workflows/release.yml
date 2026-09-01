@@ -105,8 +105,6 @@ jobs:
 
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
-              env:
-                  NODE_ENV: production
 
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
@@ -146,8 +144,6 @@ jobs:
 
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
-              env:
-                  NODE_ENV: production
 
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
@@ -194,8 +190,6 @@ jobs:
 
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
-              env:
-                  NODE_ENV: production
 
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
@@ -251,8 +245,6 @@ jobs:
 
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
-              env:
-                  NODE_ENV: production
 
             - name: Lint (Pint + PHPStan)
               run: bash .github/scripts/lint.sh
