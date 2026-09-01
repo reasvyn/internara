@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v1.0)
+scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v2.0)
 
 Validates that every FR/NFR/UC requirement in docs/specs/*.md has a
 corresponding Pest test that traces to it (spec-driven testing), and
 that no test traces to a non-existent requirement (orphan).
+
+Features:
+  - Dynamic module discovery from docs/specs/index.md
+  - Module-scoped scanning (--module)
+  - Coverage score calculation
+  - --list-modules to show available modules
 
 Rules:
   SPEC_TEST_UNCOVERED  Requirement ID in spec but not found in any test (medium)
@@ -26,6 +32,7 @@ import re
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent))
 from _common import (  # noqa: E402
@@ -37,7 +44,6 @@ from _common import (  # noqa: E402
     print_summary,
     read_file,
     relative_path,
-    write_report,
 )
 try:
     from _output import handle_output
@@ -50,33 +56,96 @@ SCAN_NAME = "spec-tests"
 
 # ─── Regex — dynamic, no hardcoding ─────────────────────────────────
 
-# FR-SP1, FR-TST-01, NFR-U5, UC-1 — require at least one digit; allow hyphens; optional non-testable markers: * ~ ! -X -NT -X- prefix
-# Examples: FR-SP1, FR-TST-01*, FR-SP1~, FR-SP1-X, FR-SP1-NT, FR-X-001 (non-testable via X- prefix), NFR-P1*, UC-1~
-# Note: suffix *~! are non-word, so we use lookahead instead of \b after them; include : for test descriptions like "FR-SP1:"
+# FR-SP1, FR-TST-01, NFR-U5, UC-1 — require at least one digit; allow hyphens; optional non-testable markers
 RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
-# For spec-prefixed refs like 81SMS-FR-SP1* — same but with spec prefix
-RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
-# Spec ID from header: > **Spec ID:** 81SMS  (markdown bold)
-RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
-# Tests often write "81SMS-FR-SP1" — capture spec prefix + FR/NFR/UC (with optional X- and suffix, hyphenated)
+# For spec-prefixed refs like 81SMS-FR-SP1*
 RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?\b")
-# Non-testable marker check — short characters: * ~ ! -X -NT -X- prefix
+# Spec ID from header: > **Spec ID:** 81SMS
+RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
+# Non-testable marker check
 RE_NON_TESTABLE = re.compile(r"(?:\*|~|!|-X\b|-NT\b|(?:^|\b)(?:FR|NFR|UC)-X-)")
+
+# Module mapping from spec index: | ID | [Name](file) | Module | ... |
+RE_SPEC_INDEX_ROW = re.compile(r"^\|\s*([A-Z0-9]{3,})\s*\|.*\|\s*(\w+)\s*\|")
 
 
 def is_non_testable(req_id: str) -> bool:
     """Return True if requirement is marked non-testable via short marker."""
-    # Suffix markers: * ~ ! -X -NT
     if req_id.endswith(("*", "~", "!")):
         return True
     if req_id.endswith(("-X", "-NT")):
         return True
     if "-X-" in req_id:
         return True
-    # Also handle FR-X-001 where X- is after FR-
     if re.search(r"\b(?:FR|NFR|UC)-X-", req_id):
         return True
     return False
+
+
+def load_module_spec_mapping() -> dict[str, list[str]]:
+    """
+    Parse docs/specs/index.md to build module -> [spec_ids] mapping.
+    Returns dict like {'Core': ['QLHDO', 'D2FT3', ...], 'Auth': [...], ...}
+    """
+    index_path = ROOT / "docs" / "specs" / "index.md"
+    content = read_file(index_path)
+    if not content:
+        return {}
+
+    mapping: dict[str, list[str]] = {}
+    for line in content.splitlines():
+        m = RE_SPEC_INDEX_ROW.match(line)
+        if m:
+            spec_id = m.group(1)
+            module = m.group(2)
+            # Skip non-module rows (like header separators)
+            if module in {"Depends", "On"}:
+                continue
+            mapping.setdefault(module, []).append(spec_id)
+
+    return mapping
+
+
+def get_all_modules() -> list[str]:
+    """Return sorted list of all modules from spec index."""
+    mapping = load_module_spec_mapping()
+    return sorted(mapping.keys())
+
+
+def filter_specs_by_module(
+    spec_files: list[Path],
+    module: str,
+) -> list[Path]:
+    """
+    Filter spec files to only those belonging to the given module.
+    Uses the spec index mapping.
+    """
+    mapping = load_module_spec_mapping()
+    module_lower = module.lower()
+
+    # Find matching module names (case-insensitive)
+    matching_modules = [m for m in mapping if m.lower() == module_lower]
+    if not matching_modules:
+        # Try partial match
+        matching_modules = [m for m in mapping if module_lower in m.lower()]
+
+    if not matching_modules:
+        return []
+
+    # Collect all spec IDs for matching modules
+    spec_ids: set[str] = set()
+    for m in matching_modules:
+        spec_ids.update(mapping[m])
+
+    # Filter spec files by ID (filename starts with ID)
+    filtered: list[Path] = []
+    for sf in spec_files:
+        stem = sf.stem  # e.g., "81SMS-school-profile"
+        spec_id = stem.split("-")[0] if "-" in stem else stem
+        if spec_id in spec_ids:
+            filtered.append(sf)
+
+    return filtered
 
 
 def extract_requirements_from_spec(path: Path) -> tuple[str | None, list[tuple[str, int]]]:
@@ -92,14 +161,8 @@ def extract_requirements_from_spec(path: Path) -> tuple[str | None, list[tuple[s
 
     reqs: list[tuple[str, int]] = []
     for idx, line in enumerate(lines, start=1):
-        # Only extract from requirement table rows (| FR-... |) or explicit requirement lines
-        # Avoid capturing references in flow descriptions like "(NFR-U5)" which are not definitions
         is_requirement_row = line.strip().startswith("|") and ("FR-" in line or "NFR-" in line or "UC-" in line)
-        # Also capture from lines that are clearly requirement definitions (contain | ID |)
         if not is_requirement_row:
-            # Allow for lines like "| NFR-P1* |" but not for flow references
-            # If line does not look like a table row, skip to avoid false positives from flow/UC references
-            # However, some specs define requirements outside tables (rare) — we still capture if line has | and requirement
             if "|" not in line:
                 continue
         for match in RE_REQUIREMENT.finditer(line):
@@ -120,17 +183,86 @@ def extract_requirements_from_test(path: Path) -> list[tuple[str, int]]:
             req_id = match.group(0)
             if len(req_id) >= 4:
                 reqs.append((req_id, idx))
-        # Also capture spec-prefixed refs like "81SMS-FR-SP1" — extract the FR part
-        for m in RE_SPEC_REF.finditer(line):
-            req_id = f"{m.group(2)}-{m.group(0).split('-', 1)[1].split('-', 1)[-1] if '-' in m.group(0) else m.group(0)}"
-            # Simpler: the full match after spec prefix is the FR/NFR/UC we want, already captured above
-            # The RE_REQUIREMENT already captures FR-SP1 inside "81SMS-FR-SP1", so this is just for completeness
-            pass
     return reqs
 
 
+def calculate_coverage_score(
+    total_reqs: int,
+    covered_reqs: int,
+    non_testable_reqs: int = 0,
+) -> dict[str, Any]:
+    """
+    Calculate coverage score.
+    Returns dict with score, percentage, grade, and breakdown.
+    """
+    if total_reqs == 0:
+        return {
+            "score": 0,
+            "percentage": 0.0,
+            "grade": "N/A",
+            "total_requirements": 0,
+            "testable_requirements": 0,
+            "covered_requirements": 0,
+            "non_testable_requirements": non_testable_reqs,
+        }
+
+    testable = total_reqs - non_testable_reqs
+    if testable <= 0:
+        return {
+            "score": 0,
+            "percentage": 100.0,
+            "grade": "A+",
+            "total_requirements": total_reqs,
+            "testable_requirements": 0,
+            "covered_requirements": 0,
+            "non_testable_requirements": non_testable_reqs,
+        }
+
+    percentage = (covered_reqs / testable) * 100
+
+    # Grade scale
+    if percentage >= 95:
+        grade = "A+"
+    elif percentage >= 90:
+        grade = "A"
+    elif percentage >= 80:
+        grade = "B"
+    elif percentage >= 70:
+        grade = "C"
+    elif percentage >= 60:
+        grade = "D"
+    else:
+        grade = "F"
+
+    return {
+        "score": covered_reqs,
+        "percentage": round(percentage, 1),
+        "grade": grade,
+        "total_requirements": total_reqs,
+        "testable_requirements": testable,
+        "covered_requirements": covered_reqs,
+        "non_testable_requirements": non_testable_reqs,
+    }
+
+
 def main() -> None:
-    args = parse_args_with_common("Spec ↔ Tests Coverage Guard — FR/NFR/UC traceability")
+    # Check for --list-modules first (before standard parsing)
+    if "--list-modules" in sys.argv:
+        modules = get_all_modules()
+        print("\nAvailable modules from docs/specs/index.md:")
+        print("=" * 50)
+        mapping = load_module_spec_mapping()
+        for mod in modules:
+            specs = mapping[mod]
+            spec_preview = ", ".join(specs[:3])
+            if len(specs) > 3:
+                spec_preview += "..."
+            print(f"  {mod:<20} ({len(specs)} specs: {spec_preview})")
+        print(f"\nTotal: {len(modules)} modules")
+        return
+
+    args = parse_args_with_common("Spec ↔ Tests Coverage Guard — FR/NFR/UC traceability with module support")
+
     start = time.time()
     findings: list[Finding] = []
 
@@ -138,25 +270,29 @@ def main() -> None:
     specs_dir = ROOT / "docs" / "specs"
     spec_files = sorted(specs_dir.glob("*.md")) if specs_dir.exists() else []
     # Filter out template and index
-    spec_files = [p for p in spec_files if p.name not in {"spec-template.md", "index.md"} and not p.name.startswith("_")]
+    spec_files = [p for p in spec_files if p.name not in {"spec-template.md", "index.md", "implementation-matrix.md"} and not p.name.startswith("_")]
+
+    # ─── Apply module filter ──────────────────────────────────────────
+    if args.module:
+        spec_files = filter_specs_by_module(spec_files, args.module)
+        if not spec_files:
+            print(f"No specs found for module '{args.module}'. Use --list-modules to see available modules.")
+            sys.exit(1)
 
     # ─── Discover test files dynamically ──────────────────────────────
     tests_dir = ROOT / "tests"
     test_files: list[Path] = []
     if tests_dir.exists():
         test_files = sorted(tests_dir.rglob("*.php"))
-        # Exclude vendor, support files without tests
         test_files = [p for p in test_files if p.is_file()]
 
     # ─── Build maps ───────────────────────────────────────────────────
-    # spec_id -> path, req_id -> [(spec_file, line)]
     spec_id_to_file: dict[str, Path] = {}
     req_to_specs: dict[str, list[tuple[Path, int]]] = {}
     spec_req_counts: dict[Path, int] = {}
     spec_ids_in_specs: set[str] = set()
 
-    # Track non-testable reqs per spec (spec_file, req_id) as unique
-    non_testable_entries: list[tuple[Path, str, int]] = []  # (spec_file, req_id, line)
+    non_testable_entries: list[tuple[Path, str, int]] = []
     non_testable_reqs: set[str] = set()
 
     for sf in spec_files:
@@ -172,14 +308,12 @@ def main() -> None:
             else:
                 req_to_specs.setdefault(req_id, []).append((sf, line))
 
-    # All requirement IDs defined in specs (unique) — excluding non-testable
     all_spec_reqs: set[str] = set(req_to_specs.keys())
 
-    # req_id -> [(test_file, line)] and set of all test reqs (excluding non-testable for orphan check)
     req_to_tests: dict[str, list[tuple[Path, int]]] = {}
     test_req_set: set[str] = set()
     test_non_testable: set[str] = set()
-    spec_ref_in_tests: set[str] = set()  # spec IDs mentioned in tests (e.g., "81SMS")
+    spec_ref_in_tests: set[str] = set()
 
     for tf in test_files:
         reqs = extract_requirements_from_test(tf)
@@ -189,17 +323,14 @@ def main() -> None:
                 continue
             req_to_tests.setdefault(req_id, []).append((tf, line))
             test_req_set.add(req_id)
-        # Also detect spec ID references in tests (e.g., "81SMS-FR-SP1" contains "81SMS")
         content = read_file(tf)
         for m in RE_SPEC_REF.finditer(content):
             spec_ref_in_tests.add(m.group(1))
-        # Also simple Spec ID mention like "81SMS" alone — check if spec_id appears as word
         for sid in spec_ids_in_specs:
             if re.search(rf"\b{re.escape(sid)}\b", content):
                 spec_ref_in_tests.add(sid)
 
     # ─── Rule: SPEC_TEST_NON_TESTABLE (info) ────────────────────────
-    # Requirements marked with short non-testable markers (* ~ ! -X -NT -X- prefix) are excluded from uncovered
     for spec_file, req_id, line in non_testable_entries:
         rel = relative_path(spec_file)
         findings.append(Finding(
@@ -209,34 +340,31 @@ def main() -> None:
             category="convention",
             file=rel,
             line=line,
-            message=f"Requirement {req_id} marked non-testable (short marker *~/!/-X/-NT) — no test required",
-            suggestion="No test needed; marker indicates manual verification, UI/UX, or infra requirement. Keep marker for auditability.",
-            reference="docs/guides/arch/testing-pattern.md §Non-Testable Requirements, .agents/rules/conflic-resolution.md",
+            message=f"Requirement {req_id} marked non-testable (marker *~/!/-X/-NT) — no test required",
+            suggestion="No test needed; marker indicates manual verification, UI/UX, or infra requirement.",
+            reference="docs/guides/arch/testing-pattern.md",
             context={"requirement": req_id, "spec": spec_file.name},
         ))
 
     # ─── Rule: SPEC_TEST_UNCOVERED ──────────────────────────────────
-    # Requirement in spec but not found in any test — low for informational (gradual)
     uncovered = sorted(all_spec_reqs - test_req_set)
     for req_id in uncovered:
-        # Report at first occurrence in spec
         spec_file, line = req_to_specs[req_id][0]
         rel = relative_path(spec_file)
         findings.append(Finding(
             id="SPEC-0000",
             rule="SPEC_TEST_UNCOVERED",
-            severity="low",
+            severity="medium",
             category="convention",
             file=rel,
             line=line,
-            message=f"Requirement {req_id} in {spec_file.name} has no test coverage (no test traces to it)",
-            suggestion=f"Add Pest test that traces to {req_id} (e.g., describe/it with '{req_id}' in tests/...) per docs/guides/arch/testing-pattern.md",
-            reference="docs/guides/arch/testing-pattern.md §Spec-Traceable Tests, .agents/rules/spec-first-doctrine.md",
-            context={"requirement": req_id, "spec": spec_file.name, "spec_id": relative_path(spec_file)},
+            message=f"Requirement {req_id} in {spec_file.name} has no test coverage",
+            suggestion=f"Add Pest test that traces to {req_id}",
+            reference="docs/guides/arch/testing-pattern.md",
+            context={"requirement": req_id, "spec": spec_file.name},
         ))
 
     # ─── Rule: SPEC_TEST_ORPHAN ─────────────────────────────────────
-    # Requirement in test but not found in any spec (possible typo or spec lag)
     orphans = sorted(test_req_set - all_spec_reqs)
     for req_id in orphans:
         test_file, line = req_to_tests[req_id][0]
@@ -249,19 +377,18 @@ def main() -> None:
             file=rel,
             line=line,
             message=f"Test traces to {req_id} but no spec defines it (orphan test)",
-            suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec docs/specs/*.md before keeping the test",
-            reference=".agents/rules/spec-first-doctrine.md §No behavior without a requirement",
+            suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec",
+            reference=".agents/rules/spec-first-doctrine.md",
             context={"requirement": req_id, "test": rel},
         ))
 
     # ─── Rule: SPEC_TEST_MISSING_FILE ───────────────────────────────
-    # Spec file has FR/NFR/UC but no test file mentions its Spec ID at all
     for sf in spec_files:
         spec_id, reqs = extract_requirements_from_spec(sf)
         if not spec_id:
             continue
         if not reqs:
-            continue  # No requirements, no test needed
+            continue
         if spec_id not in spec_ref_in_tests:
             skip_specs = {"implementation-matrix", "spec-template", "index", "D2FT3", "architecture"}
             if any(skip in sf.name for skip in skip_specs):
@@ -274,9 +401,9 @@ def main() -> None:
                 category="convention",
                 file=rel,
                 line=1,
-                message=f"Spec {spec_id} ({sf.name}) has {len(reqs)} requirements but no test file references it (no test traces to {spec_id})",
-                suggestion=f"Create tests that trace to {spec_id} (e.g., tests/... with describe/it containing '{spec_id}-FR-...')",
-                reference="docs/guides/arch/testing-pattern.md, .agents/rules/verification-strategy.md",
+                message=f"Spec {spec_id} ({sf.name}) has {len(reqs)} requirements but no test file references it",
+                suggestion=f"Create tests that trace to {spec_id}",
+                reference="docs/guides/arch/testing-pattern.md",
                 context={"spec_id": spec_id, "requirements": len(reqs), "spec": sf.name},
             ))
 
@@ -284,6 +411,14 @@ def main() -> None:
     findings.sort(key=lambda f: (f.file, f.rule, f.line))
     for i, f in enumerate(findings):
         f.id = f"SPEC-{i+1:04d}"
+
+    # ─── Calculate coverage score ───────────────────────────────────
+    covered_reqs = len(all_spec_reqs & test_req_set)
+    coverage = calculate_coverage_score(
+        total_reqs=len(all_spec_reqs),
+        covered_reqs=covered_reqs,
+        non_testable_reqs=len(non_testable_reqs),
+    )
 
     # ─── Build report ───────────────────────────────────────────────
     metadata = {
@@ -295,10 +430,21 @@ def main() -> None:
         "uncovered": len(uncovered),
         "orphans": len(orphans),
         "specs_without_tests": sum(1 for f in findings if f.rule == "SPEC_TEST_MISSING_FILE"),
+        "coverage": coverage,
     }
-    # total_checks = number of unique requirements + number of specs with requirements
     total_checks = len(all_spec_reqs) + len([sf for sf in spec_files if spec_req_counts.get(sf, 0) > 0])
     result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=total_checks or len(findings) or 1)
+
+    # ─── Print coverage summary ─────────────────────────────────────
+    if not args.quiet:
+        print(f"\n{'='*60}")
+        print(f"  Coverage Score: {coverage['percentage']}% (Grade: {coverage['grade']})")
+        print(f"  Total Requirements: {coverage['total_requirements']}")
+        print(f"  Testable: {coverage['testable_requirements']}")
+        print(f"  Covered: {coverage['covered_requirements']}")
+        print(f"  Non-Testable: {coverage['non_testable_requirements']}")
+        print(f"  Uncovered: {len(uncovered)}")
+        print(f"{'='*60}")
 
     # ─── Prune old outputs before writing new one ───────────────────
     if not args.quiet:
@@ -313,7 +459,6 @@ def main() -> None:
         )
 
     # ─── Output ─────────────────────────────────────────────────────
-    # Uniform output via _output.py
     exit_code = handle_output(result, args)
     if exit_code:
         sys.exit(exit_code)

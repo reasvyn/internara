@@ -515,6 +515,7 @@ def parse_args_with_common(description: str) -> argparse.Namespace:
     parser.add_argument("--no-cache", action="store_true", help="Disable file caching")
     parser.add_argument("--progress", action="store_true", help="Show progress bar")
     parser.add_argument("--workers", type=int, default=8, help="Number of parallel workers (default: 8)")
+    parser.add_argument("--list-modules", action="store_true", help="List all modules from spec index and exit")
     
     return parser.parse_args()
 
