@@ -26,9 +26,17 @@ enforcement: `self-check`.
 - **One-off / rare** → keep in `context/` (never over-promote to a mandatory rule).
 - **Stale fact** → update the `context/` file in place and write a descriptive commit message (do not create a second file).
 
+## Capture Trigger (judgment, not per-summarize)
+
+Memory capture is **on-need, by judgment** — not an automatic step in every session's Summarize. Record to
+`memory/` only when the information is worth saving for a future agent: a durable decision, a non-obvious
+trap/correction, a recurring pattern, or a constraint that a future session would otherwise re-learn. If a
+session produced nothing novel, skip memory write entirely. Reserve `/self-improvement --deep` (`git diff`
+mining) for sessions with substantive changes, not routine commits.
+
 ## Apply (session start)
 
-In **Understand**, load `context/index.md` (mandatory) + `memory/index.md` (learnings); open the rows matching the task. Honor recorded corrections and intentional states (e.g. deprecated `laravel-model-status`, dummy-guard) — do not "fix" intentional states. Run `/self-improvement --deep` at session end to mine `git diff`.
+In **Understand**, load `context/index.md` (mandatory) + `memory/index.md` (learnings); open the rows matching the task. Honor recorded corrections and intentional states (e.g. deprecated `laravel-model-status`, dummy-guard) — do not "fix" intentional states.
 
 ## Integration with Existing Memory
 
@@ -38,7 +46,8 @@ In **Understand**, load `context/index.md` (mandatory) + `memory/index.md` (lear
 
 ## Validation
 
-- [ ] `memory/learning-log.md` has a new entry for the session's learning.
+- [ ] Memory captured **only when the learning is worth saving** (judgment), not auto-per-summarize.
+- [ ] If captured: `memory/learning-log.md` got an entry pointing to a `memory/`/`context/`/`rules/` detail.
 - [ ] Repeated signal promoted to `rules/` or `docs/adr/` (not stranded in chat).
 - [ ] `context/index.md` or `memory/index.md` row added/updated; no duplicate topic file.
 - [ ] Next session would skip a known mistake without re-learning it.
