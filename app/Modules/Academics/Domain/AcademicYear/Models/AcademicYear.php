@@ -18,6 +18,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * S2 - Sustain: Single source of truth for academic year context.
  */
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $start_date
+ * @property \Carbon\Carbon $end_date
+ * @property bool $is_active
+ * @property string $name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Program\Domain\Internship\Models\Internship> $internships
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assessment\Models\Assessment> $assessments
+ */
+
 #[Fillable(['name', 'start_date', 'end_date', 'is_active'])]
 class AcademicYear extends BaseModel
 {
