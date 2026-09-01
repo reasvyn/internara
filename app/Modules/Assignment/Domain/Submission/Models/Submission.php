@@ -24,6 +24,28 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * S1 - Secure: File upload validation via Spatie Media Library.
  * S2 - Sustain: Status tracking with rich model methods.
  */
+
+/**
+ * @property string $id
+ * @property array $metadata
+ * @property \Carbon\Carbon $submitted_at
+ * @property \Carbon\Carbon $graded_at
+ * @property \App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus $status
+ * @property string $assignment_id
+ * @property string $registration_id
+ * @property string $student_id
+ * @property string $content
+ * @property string $score
+ * @property string $feedback
+ * @property string $graded_by
+ * @property string $verified_by
+ * @property string $verified_at
+ * @property-read \App\Modules\Assignment\Models\Assignment|null $assignment
+ * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
+ * @property-read \App\Modules\User\Models\User|null $student
+ * @property-read \App\Modules\User\Models\User|null $grader
+ */
+
 #[
     Fillable([
         'assignment_id',

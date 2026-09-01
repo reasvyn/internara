@@ -24,6 +24,24 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * S1 - Secure: Validates submission requirements.
  * S2 - Sustain: Rich model with business rules.
  */
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $due_date
+ * @property bool $is_mandatory
+ * @property \App\Modules\Assignment\Enums\AssignmentStatus $status
+ * @property string $internship_id
+ * @property string $document_id
+ * @property string $assignment_type
+ * @property string $title
+ * @property string $description
+ * @property string $created_by
+ * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assignment\Domain\Submission\Models\Submission> $submissions
+ * @property-read \App\Modules\User\Models\User|null $creator
+ * @property-read \App\Modules\Document\Models\Document|null $document
+ */
+
 #[
     Fillable([
         'internship_id',
