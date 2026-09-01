@@ -21,11 +21,13 @@ use Livewire\Livewire;
  */
 final readonly class ModuleService
 {
+    private const CACHE_TTL_SECONDS = 86400;
+
     public function __construct(private Repository $cache) {}
 
     public function discoverLivewireComponents(): void
     {
-        $components = $this->cache->remember(config('cache-keys.module_livewire'), 86400, function () {
+        $components = $this->cache->remember(config('cache-keys.module_livewire'), self::CACHE_TTL_SECONDS, function () {
             $result = [];
             $moduleDir = ModuleManager::basePath();
 
@@ -59,7 +61,7 @@ final readonly class ModuleService
                 $className = basename($filePath, '.php');
                 $fqcn = $nsMatch[1].'\\'.$className;
 
-                if (! is_subclass_of($fqcn, 'Livewire\Component')) {
+                if (! is_subclass_of($fqcn, \Livewire\Component::class)) {
                     continue;
                 }
 
@@ -95,7 +97,7 @@ final readonly class ModuleService
 
     public function discoverPolicies(): void
     {
-        $policies = $this->cache->remember(config('cache-keys.module_policies'), 86400, function () {
+        $policies = $this->cache->remember(config('cache-keys.module_policies'), self::CACHE_TTL_SECONDS, function () {
             $result = [];
             $moduleDir = ModuleManager::basePath();
 
@@ -179,7 +181,7 @@ final readonly class ModuleService
 
     public function registerBladeNamespaces(): void
     {
-        $namespaces = $this->cache->remember(config('cache-keys.module_views'), 86400, function () {
+        $namespaces = $this->cache->remember(config('cache-keys.module_views'), self::CACHE_TTL_SECONDS, function () {
             $result = [];
             $viewsDir = realpath(ModuleManager::viewsPath());
             if ($viewsDir === false) {
