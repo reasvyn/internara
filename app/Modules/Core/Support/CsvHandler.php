@@ -8,9 +8,13 @@ use App\Modules\Core\Enums\CsvRowResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class CsvHandler
 {
+    private const CONTENT_TYPE_CSV = 'text/csv';
+    private const DEFAULT_CHUNK_SIZE = 500;
+
     public function export(
         Collection $items,
         array $headers,
@@ -28,10 +32,7 @@ final class CsvHandler
             fclose($handle);
         };
 
-        return new StreamedResponse($callback, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ]);
+        return new StreamedResponse($callback, Response::HTTP_OK, $this->csvHeaders($filename));
     }
 
     public function exportChunked(
@@ -39,7 +40,7 @@ final class CsvHandler
         array $headers,
         callable $rowMapper,
         string $filename = 'export.csv',
-        int $chunkSize = 500,
+        int $chunkSize = self::DEFAULT_CHUNK_SIZE,
     ): StreamedResponse {
         $callback = function () use ($query, $headers, $rowMapper, $chunkSize) {
             $handle = fopen('php://output', 'w');
@@ -54,10 +55,7 @@ final class CsvHandler
             fclose($handle);
         };
 
-        return new StreamedResponse($callback, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ]);
+        return new StreamedResponse($callback, Response::HTTP_OK, $this->csvHeaders($filename));
     }
 
     public function downloadTemplate(
@@ -72,10 +70,7 @@ final class CsvHandler
             fclose($handle);
         };
 
-        return new StreamedResponse($callback, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ]);
+        return new StreamedResponse($callback, Response::HTTP_OK, $this->csvHeaders($filename));
     }
 
     public function import(
@@ -120,5 +115,13 @@ final class CsvHandler
         } finally {
             fclose($handle);
         }
+    }
+
+    private function csvHeaders(string $filename): array
+    {
+        return [
+            'Content-Type' => self::CONTENT_TYPE_CSV,
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
     }
 }

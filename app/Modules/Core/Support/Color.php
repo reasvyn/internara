@@ -6,6 +6,20 @@ namespace App\Modules\Core\Support;
 
 final class Color
 {
+    private const LUMINANCE_RED = 0.299;
+    private const LUMINANCE_GREEN = 0.587;
+    private const LUMINANCE_BLUE = 0.114;
+    private const CONTENT_DARK = '#1a1a1a';
+    private const CONTENT_LIGHT = '#f0f0f0';
+    private const CONTENT_DARK_MODE = '#e5e5e5';
+    private const DARK_BASE_PERCENT = 80;
+    private const DARK_SHADE_200_PERCENT = 6;
+    private const DARK_SHADE_300_PERCENT = 10;
+    private const LIGHT_SHADE_200_PERCENT = 10;
+    private const LIGHT_SHADE_300_PERCENT = 20;
+    private const SHADE_200_PERCENT = 3;
+    private const SHADE_300_PERCENT = 6;
+
     public static function hexToRgb(string $hex): array
     {
         $hex = ltrim($hex, '#');
@@ -22,12 +36,12 @@ final class Color
     {
         $rgb = self::hexToRgb($hex);
 
-        return (0.299 * $rgb[0] + 0.587 * $rgb[1] + 0.114 * $rgb[2]) / 255;
+        return (self::LUMINANCE_RED * $rgb[0] + self::LUMINANCE_GREEN * $rgb[1] + self::LUMINANCE_BLUE * $rgb[2]) / 255;
     }
 
     public static function contrastColor(string $hex): string
     {
-        return self::relativeLuminance($hex) > 0.5 ? '#1a1a1a' : '#f0f0f0';
+        return self::relativeLuminance($hex) > 0.5 ? self::CONTENT_DARK : self::CONTENT_LIGHT;
     }
 
     public static function lighten(string $hex, int $percent): string
@@ -64,17 +78,17 @@ final class Color
         if ($luminance > 0.5) {
             return [
                 'base100' => $hex,
-                'base200' => self::darken($hex, 3),
-                'base300' => self::darken($hex, 6),
-                'content' => '#1a1a1a',
+                'base200' => self::darken($hex, self::SHADE_200_PERCENT),
+                'base300' => self::darken($hex, self::SHADE_300_PERCENT),
+                'content' => self::CONTENT_DARK,
             ];
         }
 
         return [
             'base100' => $hex,
-            'base200' => self::lighten($hex, 10),
-            'base300' => self::lighten($hex, 20),
-            'content' => '#f0f0f0',
+            'base200' => self::lighten($hex, self::LIGHT_SHADE_200_PERCENT),
+            'base300' => self::lighten($hex, self::LIGHT_SHADE_300_PERCENT),
+            'content' => self::CONTENT_LIGHT,
         ];
     }
 
@@ -82,13 +96,13 @@ final class Color
     {
         $luminance = self::relativeLuminance($lightHex);
 
-        $darkBase = $luminance > 0.5 ? self::darken($lightHex, 80) : $lightHex;
+        $darkBase = $luminance > 0.5 ? self::darken($lightHex, self::DARK_BASE_PERCENT) : $lightHex;
 
         return [
             'base100' => $darkBase,
-            'base200' => self::darken($darkBase, 6),
-            'base300' => self::darken($darkBase, 10),
-            'content' => '#e5e5e5',
+            'base200' => self::darken($darkBase, self::DARK_SHADE_200_PERCENT),
+            'base300' => self::darken($darkBase, self::DARK_SHADE_300_PERCENT),
+            'content' => self::CONTENT_DARK_MODE,
         ];
     }
 }

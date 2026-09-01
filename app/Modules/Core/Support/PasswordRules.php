@@ -8,8 +8,10 @@ use Illuminate\Validation\Rules\Password;
 
 final readonly class PasswordRules
 {
-    public static function default(): array
+    private const DEFAULT_MIN_LENGTH = 8;
+
+    public static function default(int $minLength = self::DEFAULT_MIN_LENGTH): array
     {
-        return ['required', 'string', Password::min(8)->mixedCase()->numbers()];
+        return ['required', 'string', Password::min($minLength)->mixedCase()->numbers()];
     }
 }
