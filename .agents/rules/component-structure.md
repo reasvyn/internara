@@ -15,7 +15,7 @@ views at `resources/views/{module}/{submodule}/{name}.blade.php`. Names match th
 
 **Why it matters:** Module colocation is the architecture's organizing principle (S2 — Sustain). A
 component outside its module's `Livewire/` directory breaks directory scanning, module reference
-docs, and the `scan_skills.py`/`scan_doc_links.py` consistency checks that enumerate module file
+docs, and the `scan_doc_links.py` consistency checks that enumerate module file
 trees. Mismatched names between the component and its blade make the next reader guess which view a
 component renders.
 

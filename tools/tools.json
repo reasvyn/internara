@@ -55,10 +55,6 @@
       "script": "scan_security.py",
       "description": "XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting"
     },
-    "skills": {
-      "script": "scan_skills.py",
-      "description": "Agent SKILL.md meta-framework consistency"
-    },
     "spec-tests": {
       "script": "scan_spec_tests.py",
       "description": "Spec↔tests coverage (FR/NFR/UC traceability, non-testable marker)"

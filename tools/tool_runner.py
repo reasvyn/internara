@@ -40,7 +40,6 @@ SCANNERS = {
     "module-boundaries": "tools/scan_module_boundaries.py",
     "naming": "tools/scan_naming.py",
     "security": "tools/scan_security.py",
-    "skills": "tools/scan_skills.py",
     "spec-tests": "tools/scan_spec_tests.py",
     "tests": "tools/scan_tests.py",
     "ui-consistency": "tools/scan_ui_consistency.py",

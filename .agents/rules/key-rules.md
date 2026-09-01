@@ -37,8 +37,7 @@ then load only the skills the task actually uses (see Skill Map in `AGENTS.md`).
 Implement → Verify → Summarize) or generic workflow steps that belong to `AGENTS.md` §Agent Workflow.
 
 **Why it matters:** A duplicated workflow re-injects the same text into context on every skill load,
-bloating context and silently drifting from the canonical version. The meta-framework scanner
-(`scan_skills.py`) flags restatements as `SKILL_NO_DUP_WORKFLOW` violations.
+bloating context and silently drifting from the canonical version.
 
 **How to apply:** When writing or editing a skill, keep only that skill's unique execution steps,
 rules, and references. Refer to §Agent Workflow with a one-liner: "Follow `AGENTS.md` §Agent Workflow
@@ -49,7 +48,9 @@ skill adds {X} — nothing else."
 - Copying the 4-phase Construct/Execute/Verify/Report skeleton into a new skill "for self-containment".
 - Adding a redundant "Workflow" table in a skill when §Agent Workflow already owns it.
 
-**Verification:** `python3 tools/scan_skills.py` reports no `SKILL_NO_DUP_WORKFLOW` findings.
+**Verification:** No skill file re-transcribes the generic 5-step pipeline or generic workflow steps
+beyond the canonical one-liner reference (manual/spot-check; the automated `scan_skills.py` scanner
+was retired).
 
 ---
 

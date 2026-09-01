@@ -564,7 +564,6 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 | `tools/scan_conventions/cli.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions/cli.py` |
 | `tools/scan_doc_links/cli.py` | Broken links in docs | `python3 tools/scan_doc_links/cli.py` |
 | `tools/scan_tests/cli.py` | Per-module test results | `python3 tools/scan_tests/cli.py` |
-| `tools/scan_skills.py` | SKILL.md meta-framework consistency | `python3 tools/scan_skills.py` |
 | `tools/scan_issues/cli.py` | GitHub issues by module/severity | `python3 tools/scan_issues/cli.py` |
 | `tools/scan_dead_code/cli.py` | Dead code detection | `python3 tools/scan_dead_code/cli.py` |
 

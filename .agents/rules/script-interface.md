@@ -68,7 +68,6 @@ tools/
 ├── scan_issues.py            # GitHub issue metrics
 ├── scan_naming.py            # Naming convention compliance
 ├── scan_security.py          # XSS, SQLi, mass assignment patterns
-├── scan_skills.py            # Agent SKILL.md meta-framework consistency
 ├── scan_tests.py             # Test pass/fail results
 ├── scan_violations.py        # C1-C8, D1-D6 violations
 ├── scan_files.py             # File inventory, LOC counts
