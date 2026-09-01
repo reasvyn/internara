@@ -30,13 +30,13 @@ final readonly class CertificateRenderer
             '{department_name}' => $profile?->department?->name ?? '—',
             '{company_name}' => $company?->name ?? '—',
             '{internship_name}' => $registration->internship?->name ?? '—',
-            '{start_date}' => $registration->start_date?->format('d F Y') ?? '—',
-            '{end_date}' => $registration->end_date?->format('d F Y') ?? '—',
+            '{start_date}' => $registration->start_date->format('d F Y') ?? '—',
+            '{end_date}' => $registration->end_date->format('d F Y') ?? '—',
             '{duration}' => $registration->start_date && $registration->end_date
                     ? (int) ceil($registration->start_date->diffInMonths($registration->end_date)).
                         ' months'
                     : '—',
-            '{score}' => $assessment?->score ?? '—',
+            '{score}' => $assessment->score ?? '—',
             '{score_letter}' => $assessment?->score
                 ? match (true) {
                     $assessment->score >= 90 => 'A',
@@ -47,9 +47,9 @@ final readonly class CertificateRenderer
                 }
                 : '—',
             '{certificate_number}' => $certificate->certificate_number,
-            '{issued_date}' => $certificate->issued_at?->format('d F Y') ?? now()->format('d F Y'),
+            '{issued_date}' => $certificate->issued_at->format('d F Y') ?? now()->format('d F Y'),
             '{principal_name}' => '',
-            '{supervisor_name}' => $registration->mentors()->wherePivot('role', 'supervisor')->first()?->name ??
+            '{supervisor_name}' => $registration->mentors()->wherePivot('role', 'supervisor')->first()->name ??
                 '—',
         ];
     }
@@ -72,7 +72,7 @@ final readonly class CertificateRenderer
     {
         $html = $this->renderHtml($registration, $certificate);
 
-        $layout = $certificate->template?->layout ?? 'portrait';
+        $layout = $certificate->template->layout ?? 'portrait';
 
         return Pdf::loadHTML($html)->setPaper('A4', $layout)->output();
     }
