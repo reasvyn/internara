@@ -12,7 +12,7 @@ class UnauthorizedException extends PresentationException
         array $context = [],
     ) {
         parent::__construct($message);
-        $this->withHint($hint ?? 'You do not have permission to perform this action.');
+        $this->withHint($hint ?? __('core.exceptions.unauthorized_hint'));
         $this->withContext($context);
     }
 

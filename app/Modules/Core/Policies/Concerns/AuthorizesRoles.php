@@ -19,6 +19,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait AuthorizesRoles
 {
+    protected const ROLE_SUPER_ADMIN = 'super_admin';
+    protected const ROLE_ADMIN = 'admin';
+    protected const ROLE_TEACHER = 'teacher';
+    protected const ROLE_STUDENT = 'student';
+    protected const ROLE_SUPERVISOR = 'supervisor';
+
     /**
      * Check if user has admin or super_admin role.
      *
@@ -27,31 +33,31 @@ trait AuthorizesRoles
      */
     protected function isAdmin(Model $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin']);
+        return $user->hasAnyRole([self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN]);
     }
 
     /** @deprecated Use mentorProxyFor()->canGradeSubmission() or canVerifyAttendance() */
     protected function isTeacher(Model $user): bool
     {
-        return $user->hasRole('teacher');
+        return $user->hasRole(self::ROLE_TEACHER);
     }
 
     /** @deprecated Use MentorEntity::isMentor() */
     protected function isStudent(Model $user): bool
     {
-        return $user->hasRole('student');
+        return $user->hasRole(self::ROLE_STUDENT);
     }
 
     /** @deprecated Use mentorProxyFor()->canVerifyLogbook() or canReviewSupervisionLog() */
     protected function isSupervisor(Model $user): bool
     {
-        return $user->hasRole('supervisor');
+        return $user->hasRole(self::ROLE_SUPERVISOR);
     }
 
     /** @deprecated Use MentorEntity proxy checks for teacher role */
     protected function isAdminOrTeacher(Model $user): bool
     {
-        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+        return $user->hasAnyRole([self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN, self::ROLE_TEACHER]);
     }
 
     /**

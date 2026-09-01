@@ -14,9 +14,11 @@ abstract class BasePolicy
     use AuthorizesOwnership;
     use AuthorizesRoles;
 
+    public const SUPER_ADMIN = 'super_admin';
+
     public function before(Model $user): ?Response
     {
-        if ($user->hasRole('super_admin')) {
+        if ($user->hasRole(self::SUPER_ADMIN)) {
             return Response::allow();
         }
 

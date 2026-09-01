@@ -12,7 +12,7 @@ class ValidationFailedException extends ActionException
         array $context = [],
     ) {
         parent::__construct($message);
-        $this->withHint($hint ?? 'Please check your input and try again.');
+        $this->withHint($hint ?? __('core.exceptions.validation_failed_hint'));
         $this->withContext($context);
     }
 
