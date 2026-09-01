@@ -11,6 +11,8 @@ use TallStackUi\Interactions\Toast;
 
 abstract class BaseCommandAction extends BaseAction
 {
+    private const FLASH_TYPES = ['success', 'error', 'warning', 'info'];
+
     protected function respond(mixed $data, ?string $message = null, bool $created = false): ActionResponse
     {
         return $created
@@ -51,7 +53,7 @@ abstract class BaseCommandAction extends BaseAction
     {
         $toast = new Toast;
 
-        match ($type) {
+        match (in_array($type, self::FLASH_TYPES, true) ? $type : 'success') {
             'error' => $toast->error($message),
             'warning' => $toast->warning($message),
             'info' => $toast->info($message),

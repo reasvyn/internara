@@ -6,6 +6,7 @@ namespace App\Modules\Core\Support;
 
 final class PiiMasker
 {
+    private const MASK_STRING = '***';
     private const MASKED_KEYS = [
         'password',
         'password_confirmation',
@@ -51,7 +52,7 @@ final class PiiMasker
             $normalized = strtolower((string) $key);
 
             if (self::isFullyMasked($normalized)) {
-                $result[$key] = '***';
+                $result[$key] = self::MASK_STRING;
 
                 continue;
             }
@@ -81,7 +82,7 @@ final class PiiMasker
         $normalized = strtolower($key);
 
         if (self::isFullyMasked($normalized)) {
-            return '***';
+            return self::MASK_STRING;
         }
 
         if (self::isPartiallyMasked($normalized)) {
@@ -112,16 +113,16 @@ final class PiiMasker
     private static function maskEmail(string $value): string
     {
         if (! str_contains($value, '@')) {
-            return '***';
+            return self::MASK_STRING;
         }
 
         [$local, $domain] = explode('@', $value, 2);
 
         if (strlen($local) <= 2) {
-            return substr($local, 0, 1).'***@'.$domain;
+            return substr($local, 0, 1).self::MASK_STRING.'@'.$domain;
         }
 
-        return substr($local, 0, 2).'***@'.$domain;
+        return substr($local, 0, 2).self::MASK_STRING.'@'.$domain;
     }
 
     private static function maskPhone(string $value): string
@@ -129,7 +130,7 @@ final class PiiMasker
         $length = strlen($value);
 
         if ($length <= 4) {
-            return '***';
+            return self::MASK_STRING;
         }
 
         return str_repeat('*', $length - 4).substr($value, -4);
@@ -140,7 +141,7 @@ final class PiiMasker
         $value = trim($value);
 
         if ($value === '') {
-            return '***';
+            return self::MASK_STRING;
         }
 
         $parts = explode(' ', $value);
