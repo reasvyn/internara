@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Actions\Concerns;
 
+use App\Modules\Core\Exceptions\ActionFailedException;
 use App\Modules\Core\Exceptions\AppException;
-use App\Modules\Core\Exceptions\InfrastructureException;
 use App\Modules\Core\Exceptions\ModuleException;
 use App\Modules\Core\Services\SmartLogger;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -32,12 +32,11 @@ trait HandlesActionErrors
                 ->systemOnly()
                 ->save();
 
-            throw new InfrastructureException(
-                $context,
-                hint: __('core.errors.action_failed_hint'),
-                context: ['original_error' => $e->getMessage()],
-                previous: $e,
-            );
+            $exception = new ActionFailedException(rtrim($context, '.').'.', 0, $e);
+            $exception->withHint(__('core.errors.action_failed_hint'));
+            $exception->withContext(['original_error' => $e->getMessage()]);
+
+            throw $exception;
         }
     }
 }
