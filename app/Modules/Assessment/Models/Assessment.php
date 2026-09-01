@@ -14,6 +14,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property array $scores_data
+ * @property float $score
+ * @property \Carbon\Carbon $finalized_at
+ * @property string $registration_id
+ * @property string $rubric_id
+ * @property string $evaluator_id
+ * @property string $assessment_type
+ * @property string $feedback
+ * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
+ * @property-read \App\Modules\Assessment\Domain\Rubric\Models\Rubric|null $rubric
+ * @property-read \App\Modules\User\Models\User|null $evaluator
+ */
+
 #[
     Fillable([
         'registration_id',

@@ -14,6 +14,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property array $structure
+ * @property bool $is_active
+ * @property string $internship_id
+ * @property string $name
+ * @property string $created_by
+ * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
+ * @property-read \App\Modules\User\Models\User|null $createdBy
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assessment\Models\Assessment> $assessments
+ */
+
 #[Fillable(['internship_id', 'name', 'structure', 'is_active', 'created_by'])]
 class Rubric extends BaseModel
 {
