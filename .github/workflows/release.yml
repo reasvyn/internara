@@ -103,6 +103,11 @@ jobs:
             - name: Install Composer dependencies
               run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+            - name: Setup Environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
 
