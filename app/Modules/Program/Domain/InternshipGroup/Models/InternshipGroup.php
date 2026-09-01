@@ -14,6 +14,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property bool $is_active
+ * @property string $name
+ * @property string $internship_id
+ * @property string $placement_id
+ * @property string $description
+ * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
+ * @property-read \App\Modules\Enrollment\Domain\Placement\Models\Placement|null $placement
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember> $members
+ */
+
 #[Fillable(['name', 'internship_id', 'placement_id', 'description', 'is_active'])]
 class InternshipGroup extends BaseModel
 {

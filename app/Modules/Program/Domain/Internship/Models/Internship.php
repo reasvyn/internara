@@ -17,6 +17,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+/**
+ * @property string $id
+ * @property \Carbon\Carbon $start_date
+ * @property \Carbon\Carbon $end_date
+ * @property \Carbon\Carbon $registration_start_date
+ * @property \Carbon\Carbon $registration_end_date
+ * @property array $phases
+ * @property array $required_document_ids
+ * @property array $grading_weights
+ * @property \App\Modules\Program\Domain\Internship\Enums\InternshipStatus $status
+ * @property string $academic_year_id
+ * @property string $name
+ * @property string $description
+ * @property-read \App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear|null $academicYear
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Placement\Models\Placement> $placements
+ * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ */
+
 #[
     Fillable([
         'academic_year_id',

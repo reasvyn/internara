@@ -140,7 +140,7 @@ class InternshipManager extends BaseRecordManager
         $this->resetErrorBag();
         $activeYear = AcademicYear::where('is_active', true)->first();
         $this->form->reset();
-        $this->form->academic_year_id = $activeYear?->id ?? '';
+        $this->form->academic_year_id = $activeYear->id ?? '';
         $this->showModal = true;
     }
 
@@ -155,8 +155,8 @@ class InternshipManager extends BaseRecordManager
             'academic_year_id' => $internship->academic_year_id ?? '',
             'start_date' => $internship->start_date->format('Y-m-d'),
             'end_date' => $internship->end_date->format('Y-m-d'),
-            'registration_start_date' => $internship->registration_start_date?->format('Y-m-d') ?? '',
-            'registration_end_date' => $internship->registration_end_date?->format('Y-m-d') ?? '',
+            'registration_start_date' => $internship->registration_start_date->format('Y-m-d') ?? '',
+            'registration_end_date' => $internship->registration_end_date->format('Y-m-d') ?? '',
             'description' => $internship->description ?? '',
             'status' => $internship->status->value,
         ]);
@@ -333,8 +333,8 @@ class InternshipManager extends BaseRecordManager
                 'name' => $name,
                 'description' => trim($row[1] ?? '') ?: null,
                 'academic_year_id' => $activeYear?->id,
-                'start_date' => $activeYear?->start_date ?? now(),
-                'end_date' => $activeYear?->end_date ?? now()->addYear(),
+                'start_date' => $activeYear->start_date ?? now(),
+                'end_date' => $activeYear->end_date ?? now()->addYear(),
                 'status' => InternshipStatus::DRAFT->value,
             ]);
 
