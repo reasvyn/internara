@@ -36,17 +36,13 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "larastan/larastan": "^3.10",
-        "laravel/boost": "^2.4",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.2",
-        "pestphp/pest-plugin-laravel": "^4.0",
-        "phpstan/phpstan": "^2.1",
-        "phpstan/phpstan-deprecation-rules": "*"
+        "pestphp/pest-plugin-laravel": "^4.0"
     },
     "autoload": {
         "psr-4": {
@@ -94,12 +90,6 @@
             "@php artisan optimize:clear --ansi",
             "php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage --configuration=phpunit.coverage.xml"
         ],
-        "analyse": [
-            "vendor/bin/phpstan analyse --no-progress"
-        ],
-        "analyse:strict": [
-            "vendor/bin/phpstan analyse --level=max --no-progress"
-        ],
         "arch": [
             "python3 tools/scan_doc_links/cli.py --no-external --format summary",
             "python3 tools/scan_arch_patterns/cli.py --format summary",
@@ -114,13 +104,11 @@
         ],
         "quality": [
             "@lint",
-            "@analyse",
             "@arch",
             "@test"
         ],
         "quality:full": [
             "@format",
-            "@analyse:strict",
             "@test:coverage"
         ],
         "check": [

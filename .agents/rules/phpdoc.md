@@ -84,7 +84,6 @@ Rules:
 ## Verification / Detection
 
 - `vendor/bin/pint` — enforces docblock style (no blank line before tags, spacing).
-- `vendor/bin/phpstan analyse` — catches `@throws`/`@param` that contradict native types.
 - `python3 tools/scan_class_contracts/cli.py` — verifies Action/Entity/DTO class contract annotations.
 - Grep for forbidden tags: `grep -rn "@author\|@version\|@created\|@package" app/`.
 - Grep for redundant tags: `grep -rn "@param \|@return " app/` and review each — any tag that merely

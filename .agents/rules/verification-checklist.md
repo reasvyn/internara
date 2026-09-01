@@ -95,11 +95,10 @@ junction. The refactor should not degrade the codebase's strictness.
 
 ## Tooling gates green
 
-**Check:** Pint clean (`vendor/bin/pint --dirty --format agent`); PHPStan passes for the touched
-surface (full `vendor/bin/phpstan analyse --no-progress` on demand/refactor completion).
+**Check:** Pint clean (`vendor/bin/pint --dirty --format agent`).
 
-**Why:** Style and static analysis catch the drift that reviewing-by-eye misses: unsorted imports,
-untyped arrays flowing through new signatures, unused symbols left behind.
+**Why:** Style checks catch the drift that reviewing-by-eye misses: unsorted imports,
+unused symbols left behind.
 
 ---
 

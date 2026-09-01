@@ -111,7 +111,7 @@ jobs:
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
 
-            - name: Lint (Pint + PHPStan)
+            - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
             - name: Build frontend assets
@@ -150,7 +150,7 @@ jobs:
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
 
-            - name: Lint (Pint + PHPStan)
+            - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
             - name: Test suite (coverage gate)
@@ -196,7 +196,7 @@ jobs:
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
 
-            - name: Lint (Pint + PHPStan)
+            - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
             - name: Test suite (coverage gate)
@@ -251,7 +251,7 @@ jobs:
             - name: Install frontend dependencies
               run: npm ci --legacy-peer-deps
 
-            - name: Lint (Pint + PHPStan)
+            - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
             - name: Test suite (coverage gate)

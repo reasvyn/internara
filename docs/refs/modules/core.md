@@ -8,8 +8,8 @@ implementations, and architectural mechanisms that every other module depends on
 ## Purpose & Boundary
 
 Core provides the non-negotiable foundation for the entire application. It defines the architectural
-patterns (Action Triad, Entity separation, exception hierarchy) and enforces them through PHPStan
-rules and code review. Core has **zero dependencies** on any business module — it depends only on
+patterns (Action Triad, Entity separation, exception hierarchy) and enforces them through
+code review. Core has **zero dependencies** on any business module — it depends only on
 Laravel, Spatie packages, and PHP 8.4.
 
 The module is split into two conceptual layers:

@@ -39,4 +39,3 @@ Use in Action: `public function execute(CreateInternshipData $data): ActionRespo
 
 - `python3 tools/scan_violations/cli.py` — C6/C7 clean.
 - `python3 tools/scan_class_contracts/cli.py` — DTO extends BaseData, `fromArray`/`fromRequest` present.
-- PHPStan level 8 clean on DTO constructors.

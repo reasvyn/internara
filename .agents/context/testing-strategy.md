@@ -26,9 +26,8 @@ See `pest-testing` skill `rules/spec-driven-minimalism.md` for the full rule.
 | Single method refactor | `php artisan test --compact --filter={ClassName}` | Targeted, seconds |
 | Cross-module refactor | `vendor/bin/pest --testsuite={Module}` | Per-module, seconds-minutes |
 | New business logic | `php artisan test --compact` **once after all batches** | On-demand only (user asks or merge) |
-| PHPStan | `vendor/bin/phpstan analyse --no-progress` | On-demand only |
 
-Full suite + PHPStan are **on-demand only** — never per-edit. This is §Agent Workflow Step 4 — Verify.
+Full suite is **on-demand only** — never per-edit. This is §Agent Workflow Step 4 — Verify.
 
 ---
 

@@ -460,7 +460,7 @@ Pushing a SemVer tag (`v*.*.*`) triggers `.github/workflows/release.yml` — a s
 orchestrator. The stage is derived from the tag suffix, and only the PRODUCTION stage deploys to the
 VPS (via SSH, secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) by running `.github/scripts/deploy.sh`:
 
-- `vX.Y.Z-dev.<N>` → **development**: Pint + PHPStan + frontend build
+- `vX.Y.Z-dev.<N>` → **development**: Pint + frontend build
 - `vX.Y.Z-beta.<N>` → **testing/QA**: adds full Pest suite with coverage gate
 - `vX.Y.Z-rc.<N>` → **staging/RC**: adds architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test
 - `vX.Y.Z` (final) → **production**: all of the above, then deploy

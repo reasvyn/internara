@@ -34,7 +34,7 @@ that halt a phase until resolved — keeps a phase that cannot run from silently
 
 | Phase | Goal | Key checks (covered in depth by) |
 |-------|------|----------------------------------|
-| **1 — Automated Scanning** | Run all static analysis, dependency audit, and code-style tooling | `rules/dependency-audit.md`, `rules/static-analysis.md`, `rules/psr-standards.md`, dead-code + build |
+| **1 — Automated Scanning** | Run all dependency audit, code-style tooling, and project scanners | `rules/dependency-audit.md`, `rules/psr-standards.md`, dead-code + build |
 | **2 — Security Audit** | Evaluate against OWASP Top 10 (2021) and CWE/SANS Top 25 | `rules/owasp-top10.md`, `rules/sans-top25.md`, `rules/cwe-sans.md` |
 | **3 — Quality & Reliability** | Error handling, logging, input validation, auth/authz, test coverage, duplication | `rules/error-handling.md`, `rules/logging.md`, `rules/input-validation.md`, `rules/authentication-authorization.md`, `rules/test-coverage.md` |
 | **4 — Standards Compliance** | PSR, Laravel best practices, WCAG, session, cryptography | `rules/psr-standards.md`, `rules/laravel-best-practices.md`, `rules/wcag.md`, `rules/session-management.md`, `rules/cryptography.md` |
@@ -49,7 +49,6 @@ A blocker is a condition that prevents a phase from executing reliably. Fix it b
 | Phase | Blocker | Action |
 |-------|---------|--------|
 | 1 | `composer audit` finds a critical CVE | Record as finding; do **NOT** auto-update (out of scope) |
-| 1 | PHPStan crashes (OOM) | Reduce memory or level; record inability to complete |
 | 1 | Build fails | Record as finding; attempt minimal fix if simple |
 | 2 | Critical stored XSS | Record; do NOT fix (audit scope) |
 | 2 | Critical SQL injection | Record; **this IS a blocker** — flag for immediate fix |
@@ -74,14 +73,12 @@ A Phase 1 run on this project:
 
 ```bash
 composer audit 2>&1                                     # dependency vulnerabilities
-vendor/bin/phpstan analyse --no-progress --memory-limit=1G 2>&1   # static analysis
 vendor/bin/pint --test 2>&1                             # code style
 python3 tools/scan_dead_code/cli.py                       # dead code (project scanner first)
 npm run build 2>&1                                      # build verification
 ```
 
-Record, per artifact: advisory IDs (CVEs) and severities for dependencies; error counts by severity
-and hottest files for PHPStan; violation counts/types for Pint; dead-code inventory; build status and
+Record, per artifact: advisory IDs (CVEs) and severities for dependencies; violation counts/types for Pint; dead-code inventory; build status and
 warnings.
 
 ## Anti-Patterns & Pitfalls

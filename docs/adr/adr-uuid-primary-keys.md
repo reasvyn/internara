@@ -41,7 +41,7 @@ staging and production data.
 The `User` model is the sole exception — it extends `Authenticatable` (required for auth) but
 manually applies `HasUuids` and overrides `getIncrementing()` / `getKeyType()` to preserve UUID
 consistency. Foreign keys use `foreignUuid()->constrained()` in every migration with composite
-indexes; mixed key types are forbidden and enforced via review and PHPStan.
+indexes; mixed key types are forbidden and enforced via review.
 
 ### Positive Consequences
 

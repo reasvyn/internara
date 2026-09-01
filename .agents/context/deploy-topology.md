@@ -19,7 +19,7 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
     (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) and runs `.github/scripts/deploy.sh`.
 - **Only the PRODUCTION stage deploys.** A final tag never reaches the VPS unless every QA stage
   passes. Releases are promoted upward: `development → testing → staging → production`.
-- Each QA stage delegates to a reusable helper under `.github/scripts/`: `lint.sh` (Pint + PHPStan),
+- Each QA stage delegates to a reusable helper under `.github/scripts/`: `lint.sh` (Pint),
   `test.sh` (Pest with coverage gate), `guards.sh` (C1-C8 / D1-D6 + security + conventions scanners),
   `smoke.sh` (migrate + route:list on a clean SQLite DB).
 - **VPS layout:** app source at `$HOME/apps/internara` (`$HOME = /home/andreas`, derived from the

@@ -115,7 +115,6 @@ Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*
 composer run test                                # Full test suite
 vendor/bin/pest --testsuite={ModuleName}         # Single module suite
 php artisan test --compact --filter={ClassName}  # Single test class
-composer run analyse                             # PHPStan static analysis
 ```
 
 Test conventions:
@@ -131,7 +130,7 @@ Test conventions:
 Run the quality gate before pushing:
 
 ```bash
-composer run quality   # Lint + PHPStan + tests
+composer run quality   # Lint + tests
 npm run build          # For frontend changes
 ```
 

@@ -12,7 +12,6 @@ permission:
     "php artisan system:health": allow
     "vendor/bin/pest *": allow
     "vendor/bin/pint *": allow
-    "vendor/bin/phpstan *": allow
     "python3 tools/scan_*": allow
     "npm *": allow
     "ls *": allow
@@ -34,7 +33,7 @@ Do NOT write implementation or docs — `builder`/`scribe` own those. Do NOT run
    - `pest-testing` for spec-traceable format `describe("{SpecID}: ...")` + `it("{ReqID}: ...")`, factories, `ActionResponse`, `RejectedException` assertions
    - `test-writing` for verification matrix, when to run `vendor/bin/pest --testsuite={Module}` vs `php artisan test --filter={Class}`
 3. **Minimal suite**: write only the tests the spec requires, then stop. No line-coverage padding. Map `spec requirement → test` 1:1.
-4. **Batch first, verify once**: `vendor/bin/pint --dirty --test` + targeted `pest --testsuite` + arch-guard scans via reviewer if needed. Full suite/ PHPStan only when user explicitly asks or on merge-day.
+4. **Batch first, verify once**: `vendor/bin/pint --dirty --test` + targeted `pest --testsuite` + arch-guard scans via reviewer if needed. Full suite only when user explicitly asks or on merge-day.
 5. **Report gaps**: spec gap (requirement with no test) → fill it; orphan test (no requirement) → remove it.
 
 ## Output

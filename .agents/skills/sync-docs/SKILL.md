@@ -54,9 +54,9 @@ below — nothing else.
 ### Verify — Quality Gates
 
 - **Markdown-only changes:** run `python3 tools/scan_doc_links/cli.py` (doc changes don't need
-  pint/phpstan/tests)
+  pint/tests)
 - Cross-check against `.agents/rules/sync-verification.md` (the automated sync-verification rule asset)
-- PHPStan/Pint only if PHP files were touched
+- Pint only if PHP files were touched
 
 ---
 

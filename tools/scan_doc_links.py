@@ -203,7 +203,7 @@ def validate_target(
     # External / protocol links are always valid
     if target.startswith(("http://", "https://", "mailto:", "tel:", "//")):
         return True
-    if target.startswith(("phpstan:", "vscode://")):
+    if target.startswith(("vscode://")):
         return True
 
     anchor = ANCHOR_TARGET.match(target)

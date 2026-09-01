@@ -10,8 +10,8 @@ GitHub issue, or explicitly report them as deferred — never silently tolerate.
 **The agent must not leave pre-existing warnings and errors untouched.**
 
 - **Fix by default, after the main work:** once the instruction's primary work is complete and
-  verified, fix pre-existing warnings and errors the agent noticed along the way (lint, PHPStan,
-  tests, arch-guard scans, deprecations, broken doc links). Do this before the final commit so the
+  verified, fix pre-existing warnings and errors the agent noticed along the way (lint, tests,
+  arch-guard scans, deprecations, broken doc links). Do this before the final commit so the
   repository is left cleaner than found.
 - **Fix only what is safe and in-scope-adjacent:** small, low-risk fixes (missing strict types,
   unused imports, dead doc references, obvious typos) are applied directly without asking. Anything

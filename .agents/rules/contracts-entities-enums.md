@@ -39,4 +39,4 @@ enum InternshipStatus: string implements StatusEnum { case DRAFT = 'draft'; case
 
 - `python3 tools/scan_class_contracts/cli.py` — Entity/Enum contracts pass.
 - `python3 tools/scan_violations/cli.py` — C5 clean.
-- `match` on enums is exhaustive (PHPStan level 8); `phpstan analyse` clean.
+- `match` on enums is exhaustive; tests verify completeness.

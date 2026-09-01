@@ -260,7 +260,7 @@ code. See: `docs/conventions.md` §2.
 
 ## 18. Quality Enforcement
 
-Pint (PSR-12), PHPStan (type safety), Prettier (formatting), Code Review (architecture). Pre-commit:
+Pint (PSR-12), Prettier (formatting), Code Review (architecture). Pre-commit:
 strict_types, no debug calls, `__()` for strings, correct Action triad, cache keys in config, tests
 pass, Pint clean. See: `docs/conventions.md` §11.
 

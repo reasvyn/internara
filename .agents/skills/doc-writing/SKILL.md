@@ -43,11 +43,11 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 ### Verify — Quality Gates
 
 - **Markdown-only changes:** run `python3 tools/scan_doc_links/cli.py` (doc changes don't need
-  pint/phpstan/tests)
+  pint/tests)
 - All relative links resolve to existing files; anchor links match actual headings
 - Metadata block present with current date; `## Description` section present
 - No implementation details in conceptual docs; no design rationale in reference docs
-- PHPStan/Pint only if PHP/PHPDoc files were touched
+- Pint only if PHP/PHPDoc files were touched
 - Run the doc-quality gate in `.agents/rules/doc-quality.md` before committing
 
 ---

@@ -126,7 +126,7 @@ relevan dengan issue; jangan mencampur kategori secara berlebihan.
 | **Status** | Keadaan issue | `duplicate`, `wontfix`, `invalid`, `question` | Tidak — hanya saat kondisi terpenuhi | Oleh triage: duplikat, tidak akan dikerjakan, tidak valid, butuh info |
 | **Auxiliary** | Sinyal kontribusi | `good first issue`, `help wanted` | Tidak — selektif | Tugas kecil terdokumentasi baik / butuh bantuan eksternal |
 | **Area / Module** | Lokasi kode | `core`, `backend`, `database`, `auth`, `settings`, `reports`, `production`, `php`, `javascript` | Tidak — 0..2 label | Saat issue terikat modul/bahasa spesifik; jangan spam semua modul |
-| **Audit** | Temuan audit | `qa-audit`, `quality`, `performance`, `accessibility`, `phpstan` | Tidak — oleh audit | Diterapkan oleh `qa-protocol`, `arch-guard`, `scan_*.py` |
+| **Audit** | Temuan audit | `qa-audit`, `quality`, `performance`, `accessibility` | Tidak — oleh audit | Diterapkan oleh `qa-protocol`, `arch-guard`, `scan_*.py` |
 | **Series** | Fase roadmap | `Series: ARC01-INIT` … `Series: ARC01-GAP` (10 labels) | Tidak — oleh planning | Diterapkan saat issue dipetakan ke fase `docs/specs/index.md` |
 
 ### Aturan Kombinasi Label Dasar
@@ -289,11 +289,10 @@ that already exists in the registry. The full registry (sinkron dengan `gh label
 | `database` | `#D93F0B` | Database schema and migration changes |
 | `auth` | `#5319e7` | Auth module |
 | `settings` | `#fbca04` | Settings module |
-| `reports` | `#0e8a16` | Reports module |
-| `production` | `#0e8a16` | Production deployment and VPS logs |
-| `php` | `#45229e` | Pull requests that update php code |
-| `javascript` | `#168700` | Pull requests that update javascript code |
-| `phpstan` | `#5319e7` | PHPStan type error |
+ | `reports` | `#0e8a16` | Reports module |
+ | `production` | `#0e8a16` | Production deployment and VPS logs |
+ | `php` | `#45229e` | Pull requests that update php code |
+ | `javascript` | `#168700` | Pull requests that update javascript code |
 
 ### Audit
 

@@ -36,7 +36,7 @@ to drift from module conventions.
 - **Has exactly one public method: `execute()`** — a single entry point keeps mutations governed;
   extra public methods bypass the flow.
 - **Returns typed value (ActionResponse, Model, Collection, void, etc.)** — explicit return types
-  let PHPStan contract-check the call graph; a missing return type lets `mixed` leak through.
+  let type analysis contract-check the call graph; a missing return type lets `mixed` leak through.
 - **3+ params in `execute()` → uses a BaseData DTO (C7)** — positional-array parameters are
   unnameable and reorder-dangerous.
 - **Calls `$this->transaction()` for DB writes** — atomic multi-write commits; a bare
@@ -90,7 +90,7 @@ C5 at once.
 
 - **Implements `LabelEnum` (all enums)** — `label()` via `__()` translation keys.
 - **Implements `StatusEnum` (state machine enums)** — `validTransitions()` + `isTerminal()`.
-- **`validTransitions()` uses exhaustive `match()` on all cases** — PHPStan verifies completeness;
+- **`validTransitions()` uses exhaustive `match()` on all cases** — tests verify completeness;
   an incomplete `switch` silently omits a legal transition.
 - **Terminal states return empty array from `validTransitions()`** — `isTerminal()` derives from it.
 

@@ -148,12 +148,11 @@ All documentation lives in [`docs/`](docs/index.md):
 
 ```bash
 composer run test      # Full Pest test suite
-composer run analyse   # PHPStan static analysis (level 8)
-composer run quality   # Lint + analyse + tests
+composer run quality   # Lint + tests
 vendor/bin/pint --dirty --format agent  # Code style fixer
 ```
 
-Pest 4 with feature + unit coverage per Action, PHPStan level 8, Laravel Pint. Architecture
+Pest 4 with feature + unit coverage per Action, Laravel Pint. Architecture
 scanner toolkit (`tools/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
 
 ## Project Status

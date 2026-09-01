@@ -152,14 +152,6 @@ large move is otherwise easy to miss. Pint also auto-fixes trailing commas and i
 **How to apply:** Run on the dirty files (or `--format agent` to see machine-readable output); fix
 any findings before commit.
 
-### `vendor/bin/phpstan analyse --no-progress` — static analysis passes
-
-**Intent:** Catch type-safety and contract regressions the compiler misses.
-
-**Why it matters:** Refactoring often re-types moved parameters or reshapes DTOs; PHPStan (level 8 +
-Larastan) detects these at the call sites. Only run the full analysis when the user requests it or on
-refactor completion (it is slow); for quick checks use the targeted `--filter` test instead.
-
 ### No new `TODO`/`FIXME` without date
 
 **Intent:** Prevent unanchored debt annotations from entering the codebase during a refactor.

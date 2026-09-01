@@ -71,7 +71,7 @@ Gather context, decide approach, design contracts — before touching code.
   - Error handling: `RejectedException` not `RuntimeException` (C8)
   - Cache strategy: registered keys in `config/cache-keys.php`, no inline keys (C4)
   - Policy/authorization, validation (no raw request to create/update — D5), `__()` for user strings (D3)
-- **Risk & verification plan** — how verification will run (change-type matrix in AGENTS.md §Verification Strategy), which arch-guard scanners apply, and whether full suite / PHPStan is justified (on-demand only).
+- **Risk & verification plan** — how verification will run (change-type matrix in AGENTS.md §Verification Strategy), which arch-guard scanners apply, and whether full suite is justified (on-demand only).
 
 **Exit criteria:** context inventoried, chosen approach documented (even if just internally), contracts sketched, test & doc plan clear. No code has been written yet.
 
@@ -111,7 +111,6 @@ Batch all changes first, then verify **once**. Full suite is ~2GB+, 10+ min — 
   - `python3 tools/scan_naming/cli.py` · `tools/scan_conventions/cli.py` · `tools/scan_doc_links/cli.py`
 - **Full verification on-demand only** (merge-day or user explicitly asks):
   - `php artisan test --compact` (full suite, all modules)
-  - `vendor/bin/phpstan analyse --no-progress` (level 8 / Larastan)
   - Change-type matrix in `AGENTS.md` §Verification Strategy decides what is required for the current change type; default is targeted checks, not full suite.
 
 **Exit criteria:** change-type-appropriate gates pass; arch-guard clean or deviations explicitly justified/recorded; no silent tolerance of pre-existing warnings — fix safe adjacent issues or file a GitHub issue (`issue-writing` skill) before ending the session.
@@ -124,7 +123,7 @@ Close the loop: version-control checkpoint, commit, and a concise final report.
 - **Commit** — format `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`; scope = module name; one concern per commit (group quick wins / interdependent changes; split strategically-separate concerns).
 - **Report (surface to user):** what changed (files/modules/specs), what was verified (which gates ran and their result), caveats / known limitations, and **recommended next steps** (pending work, follow-ups, or L-size session plans). Keep it short — narration discipline applies.
 - **Session handling** — for M-size: one checkpoint before commit; for L-size: per-session report + `git status`/`diff` review at the end of each session, never attempting L-size in one pass.
-- **Pre-commit checklist** (AGENTS.md) must pass: strict types, no debug calls, `__()` coverage, Action triad + DTO rule, Entity delegation, cache registry, N+1 check, escaped output, tests traceable to spec, pint/phpstan/arch-guard as appropriate.
+- **Pre-commit checklist** (AGENTS.md) must pass: strict types, no debug calls, `__()` coverage, Action triad + DTO rule, Entity delegation, cache registry, N+1 check, escaped output, tests traceable to spec, pint/arch-guard as appropriate.
 - **Capture learnings (Self-Improvement Loop, judgment-based)** — write to `memory/` (evolving learnings) or `context/` (mandatory facts) **only when the information is worth saving for a future agent**: a durable decision, non-obvious trap/correction, recurring pattern, or constraint a future session would re-learn. Not an automatic per-summarize step — skip when nothing novel emerged. When captured: update the topic file in place, write a descriptive commit message, add/update a row in `context/index.md` or `memory/index.md`, and append a one-liner to `memory/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Reserve `/internara-learn --deep` (`git diff` mining) for sessions with substantive changes.
 
 **Exit criteria:** clean commit(s), report delivered, **learning captured** (memory updated, repeats promoted), repo left cleaner than found.

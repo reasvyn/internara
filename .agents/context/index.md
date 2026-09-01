@@ -14,7 +14,7 @@ This directory is the **curated, mandatory known context**: the small set of fac
 | ------------ | ----------------------- |
 | [workflow-5step.md](workflow-5step.md) | **Every task** — new 5-step pipeline `Understand → Plan → Implement → Verify → Summarize` (replaces 9-step/4-phase); phase classification, size triage, instruction ordering |
 | [module-health.md](module-health.md) | **Any module touch** — 18-module health tiers (production-ready → skeleton), P0 tech debt priority, which modules to scaffold vs. fix first |
-| [testing-strategy.md](testing-strategy.md) | Tests, Pest, PHPStan — spec-driven minimalism, what to run when (batched once), layer patterns, module-specific guidance |
+| [testing-strategy.md](testing-strategy.md) | Tests, Pest — spec-driven minimalism, what to run when (batched once), layer patterns, module-specific guidance |
 | [production-dummy-guard.md](production-dummy-guard.md) | Demo data, seeding, `DummySeeder`, `config/dummy.php`, `setup:install --with-dummy` |
 | [deploy-topology.md](deploy-topology.md) | CI/CD, VPS, Docker deploy, tag-driven `release.yml` 4-stage pipeline, `deploy.sh`, GIT_URL |
 | [dependency-pins-tooling-quirks.md](dependency-pins-tooling-quirks.md) | Composer/npm dependency changes, `symfony/console`, `prettier-plugin-blade`, tooling workarounds |

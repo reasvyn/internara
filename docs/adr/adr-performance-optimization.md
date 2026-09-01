@@ -56,7 +56,7 @@ zero code: `QUEUE_CONNECTION=redis` + worker, `CACHE_STORE=redis`,
 
 **Tier 3 — High Scale** — trigger: sustained > 2000 users or DB write > 50ms. Read
 replica, S3+CDN, PHP-FPM tuning, Redis cluster, ProxySQL/PgBouncer, user-aware rate
-limiting, PHPStan lazy-loading rule.
+limiting.
 
 **Explicitly Deferred** until evidence demands: Octane, horizontal auto-scaling, CDN for
 static assets, sharding, job batching.

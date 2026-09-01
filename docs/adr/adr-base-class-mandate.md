@@ -56,8 +56,7 @@ Core base; there is no alternative.
 `HasUuids` and overrides `getIncrementing()` / `getKeyType()` to preserve UUID consistency —
 the sole documented exception, kept in sync with BaseModel explicitly.
 
-**Enforcement gap (temporary):** until `pest-plugin-arch` stabilizes, PHPStan custom rules and
-blocking code review enforce the mandate.
+**Enforcement gap (temporary):** until `pest-plugin-arch` stabilizes, blocking code review enforces the mandate.
 
 ### Positive Consequences
 

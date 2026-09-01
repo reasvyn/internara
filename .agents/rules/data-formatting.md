@@ -40,4 +40,4 @@ PDF/CSV exports reuse the same presentation helpers — no duplicated `format()`
 
 - `grep -R "number_format\|date(" resources/views --include="*.blade.php"` should be minimal — locale helpers are preferred.
 - `npx prettier --check` / `vendor/bin/pint --dirty --test` clean.
-- No `float` money fields in migrations/DTOs/Entities (PHPStan strict).
+- No `float` money fields in migrations/DTOs/Entities (strict type safety).

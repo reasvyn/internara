@@ -4,7 +4,7 @@
 
 ## Pre-existing Defects — Fix or File
 
-- **Fix by default, after the main work**: pre-existing warnings/errors noticed along the way (lint, PHPStan, arch-guard, broken doc links) get fixed before Summarize — leave the repo cleaner than found. Fix only what is safe and in-scope-adjacent; anything behavior-changing or spec-touching needs user sign-off first. This happens inside **Implement** (fix) and is confirmed in **Verify**.
+- **Fix by default, after the main work**: pre-existing warnings/errors noticed along the way (lint, arch-guard, broken doc links) get fixed before Summarize — leave the repo cleaner than found. Fix only what is safe and in-scope-adjacent; anything behavior-changing or spec-touching needs user sign-off first. This happens inside **Implement** (fix) and is confirmed in **Verify**.
 - **Cannot fix? File a GitHub issue immediately** (`issue-writing` skill) — a defect noticed is a defect tracked.
 
 ## Self-Improvement Loop — Continuous Learning

@@ -81,8 +81,7 @@ policies and event listeners are registered manually.
 in ranked guidance: direct import (simplest), Core contracts, module events, Action delegation.
 
 **Enforcement** — architecture tests that once enforced boundaries were removed due to a
-`pest-plugin-arch` compatibility bug. Until restored, boundary enforcement relies on PHPStan
-custom rules and code review.
+`pest-plugin-arch` compatibility bug. Until restored, boundary enforcement relies on code review.
 
 ### Positive Consequences
 

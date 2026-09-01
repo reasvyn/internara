@@ -2,8 +2,7 @@
 
 ## Description
 
-Batch all changes first, then verify once. Tests verify the spec — nothing more. Full suite and
-PHPStan are on-demand only; default verification is targeted per-change checks.
+Batch all changes first, then verify once. Tests verify the spec — nothing more. Full suite is on-demand only; default verification is targeted per-change checks.
 
 ---
 
@@ -22,11 +21,7 @@ full suite), reduces resource usage (~2GB+ RAM for the full suite), and reduces 
 — a suite mapping 1:1 to requirement IDs is self-explaining. When tempted to add a test "for
 safety", ask which requirement it verifies; no requirement means don't write it.
 
-**Full suite + PHPStan are on-demand only.** Do NOT run `php artisan test --compact` (full suite) or
-`vendor/bin/phpstan analyse` as part of routine work — they are slow (~2GB+ RAM, 10+ minutes) and are
-only run when the user explicitly asks for them. Default verification is the targeted per-change
-checks in the table below (module suite, `--filter`, pint, prettier, arch-guard scanners). The full
-suite / PHPStan stay reserved for merge-day or user-requested full verification.
+**Full suite is on-demand only.** Do NOT run `php artisan test --compact` (full suite) as part of routine work — it is slow (~2GB+ RAM, 10+ minutes) and is only run when the user explicitly asks for it. Default verification is the targeted per-change checks in the table below (module suite, `--filter`, pint, prettier, arch-guard scanners). The full suite stays reserved for merge-day or user-requested full verification.
 
 | Change Type | Verification |
 |-------------|-------------|
@@ -55,7 +50,6 @@ php artisan system:health
 # Full verification (after refactoring or before merge) — ONLY when the user explicitly asks
 php artisan test --compact   # Run full test suite (all modules)
 vendor/bin/pint --dirty --format agent
-vendor/bin/phpstan analyse --no-progress
 
 # Architecture enforcement
 python3 tools/scan_violations/cli.py         # C1-C8, D1-D6

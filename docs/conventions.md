@@ -590,7 +590,6 @@ methods where the container is not available (e.g., `database/factories/`).
 | Tool             | What It Enforces                                              | How                                         |
 | ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
 | **Laravel Pint** | PHP code style (PSR-12 + Laravel conventions)                 | `vendor/bin/pint --dirty` before finalizing |
-| **PHPStan**      | Static analysis (type safety, dead code, boundary violations) | `vendor/bin/phpstan analyse --no-progress`  |
 | **Prettier**     | Markdown, JSON, YAML, Blade formatting                        | `npm run format`                            |
 | **Code Review**  | Architecture conventions, pattern compliance, security        | Manual review of every PR                   |
 
@@ -608,7 +607,6 @@ methods where the container is not available (e.g., `database/factories/`).
 - [ ] Tests pass: `php artisan test --compact` (every test traces to a spec requirement — no
       orphan tests, no padding)
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
-- [ ] PHPStan passes: `vendor/bin/phpstan analyse --no-progress`
 - [ ] Relevant docs updated (see §0 Documentation-First)
 
 ### Code Review Checklist (Reviewer)

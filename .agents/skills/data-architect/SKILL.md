@@ -50,7 +50,7 @@ Follow `AGENTS.md §Agent Workflow` canonical pipeline. This skill adds data-spe
 
 ### 4. Verify — Data Quality Gates
 
-- `php artisan migrate --pretend` or `migrate:fresh --seed` (isolated), `vendor/bin/phpstan analyse`, and arch-guard scans (`scan_violations.py` for C3/C4/D4/D6, `scan_class_contracts.py`, `scan_security.py`, `scan_conventions.py`).
+- `php artisan migrate --pretend` or `migrate:fresh --seed` (isolated), and arch-guard scans (`scan_violations.py` for C3/C4/D4/D6, `scan_class_contracts.py`, `scan_security.py`, `scan_conventions.py`).
 - Verify PII coverage (no plaintext PII in logs via `scan_security.py`), FK/index existence (`scan_conventions.py`), and DTO contract compliance.
 
 ### 5. Summarize — Record Decisions

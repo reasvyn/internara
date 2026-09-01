@@ -27,7 +27,7 @@ flowchart LR
 
 | Pushed tag               | Stage        | Jobs run on GitHub Actions                                    |
 | ------------------------ | ------------ | ------------------------------------------------------------ |
-| `vX.Y.Z-dev.<N>`         | Development  | `lint.sh` (Pint + PHPStan) + frontend build                   |
+| `vX.Y.Z-dev.<N>`         | Development  | `lint.sh` (Pint) + frontend build                             |
 | `vX.Y.Z-beta.<N>`        | Testing/QA   | + `test.sh` (Pest, coverage gate)                            |
 | `vX.Y.Z-rc.<N>`          | Staging/RC   | + `guards.sh` (arch + security + conventions) + `smoke.sh`   |
 | `vX.Y.Z` (final)         | Production   | all of the above, then the VPS deploy job                     |
@@ -41,7 +41,7 @@ GitHub Actions (free, no VPS load). A final tag never reaches the VPS unless eve
 
 | Script      | What it runs                                            | Fail-fast order |
 | ----------- | ------------------------------------------------------- | --------------- |
-| `lint.sh`   | `vendor/bin/pint --test` + `vendor/bin/phpstan analyse --no-progress` | 1 (cheapest) |
+| `lint.sh`   | `vendor/bin/pint --test`                                | 1 (cheapest) |
 | `test.sh`   | `vendor/bin/pest --coverage --min=<MIN_COVERAGE>` (default 80) | 2 |
 | `guards.sh` | `scan_violations` / `scan_security` / `scan_conventions` (all `--strict`) | 3 |
 | `smoke.sh`  | migrate + `route:list` on a clean SQLite DB (boot sanity) | 4 |
@@ -75,7 +75,6 @@ Same gates as CI, run locally:
 
 ```bash
 vendor/bin/pint --test                      # PHP code style
-vendor/bin/phpstan analyse --no-progress    # PHPStan level 8 (static analysis)
 vendor/bin/pest --coverage --min=80         # full test suite + coverage gate
 python3 tools/scan_violations.py --strict   # C1-C8 / D1-D6 invariants
 python3 tools/scan_security.py --strict     # security anti-patterns

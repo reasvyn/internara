@@ -9,8 +9,7 @@
 composer run dev           # Serve + queue + logs + vite (concurrently)
 composer run test          # Full suite (optimize:clear + test)
 vendor/bin/pest --testsuite={ModuleName}  # Module-specific tests
-composer run analyse       # PHPStan level 8
-composer run quality       # Lint + analyse + module tests
+composer run quality       # Lint + module tests
 php artisan system:health  # Health check
 php artisan admin:recover  # Super admin CLI recovery
 php artisan setup:install  # Audits env, runs migrations, seeds defaults

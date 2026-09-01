@@ -167,12 +167,6 @@ composer audit          # Check for known vulnerabilities in PHP dependencies
 npm audit               # Check for known vulnerabilities in JS dependencies
 ```
 
-### Static Analysis
-
-```bash
-vendor/bin/phpstan analyse --no-progress   # PHPStan level 8
-```
-
 ---
 
 ## 7. Vulnerability Reporting

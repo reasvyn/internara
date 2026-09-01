@@ -147,7 +147,6 @@ no findings at all → still report and commit (a clean audit is valuable).
 | Logging & log hygiene                  | `.agents/rules/logging.md`                      | Phase 3 logging checks                 |
 | Input validation                       | `.agents/rules/input-validation.md`             | Phase 3 validation checks              |
 | Dependency audit                       | `.agents/rules/dependency-audit.md`             | Phase 1 `composer audit` / `npm audit` |
-| Static analysis (PHPStan/Larastan)     | `.agents/rules/static-analysis.md`              | Phase 1 PHPStan run                    |
 | PSR standards                          | `.agents/rules/psr-standards.md`                | Phase 1 & 4 PSR checks                 |
 | Laravel best practices                 | `.agents/rules/laravel-best-practices.md`       | Phase 4 framework audit                |
 | WCAG accessibility                     | `.agents/rules/wcag.md`                         | Phase 4 accessibility audit            |

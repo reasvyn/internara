@@ -39,8 +39,6 @@
 | spatie/laravel-model-status | Model Status | v1.20.0 — **deprecated, removal planned (#419); do not use in new code** |
 | spatie/laravel-permission | RBAC | v8.3.0 |
 | Pest | Testing | v4.2 |
-| PHPStan | Static Analysis | v2.1 |
-| Larastan | Laravel PHPStan | v3.10 |
 | Laravel Pint | Code Style | v1.24 |
 | Mockery | Mocking | v1.6 |
 | Faker | Test Data | v1.23 |

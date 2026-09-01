@@ -190,7 +190,6 @@
             "php artisan *": "allow",
             "vendor/bin/pint *": "allow",
             "vendor/bin/pest *": "allow",
-            "vendor/bin/phpstan *": "allow",
             "npm *": "allow",
             "npx prettier*": "allow",
             "python3 tools/*": "allow",

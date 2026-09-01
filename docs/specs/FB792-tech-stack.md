@@ -115,7 +115,6 @@ manifest (no undeclared direct dependencies).
 | ID     | Requirement |
 | ------ | ----------- |
 | FR-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
-| FR-VER2 | PHPStan analysis targets the pinned PHP 8.4 baseline (level 8, see [system-requirements.md](J68GZ-system-requirements.md)) |
 
 ---
 
@@ -155,15 +154,12 @@ manifest (no undeclared direct dependencies).
 | Package | Constraint | Purpose |
 | ------- | ---------- | ------- |
 | `pestphp/pest` + `pest-plugin-laravel` | `^4.2` / `^4.0` | Testing |
-| `larastan/larastan` | `^3.10` | Static Analysis |
-| `phpstan/phpstan` (+ deprecation-rules) | `^2.1` | Static Analysis |
 | `laravel/pint` | `^1.24` | Code Style |
 | `mockery/mockery` | `^1.6` | Mocking |
 | `fakerphp/faker` | `^1.23` | Test Data |
 | `nunomaduro/collision` | `^8.6` | Error Handler |
 | `laravel/pail` | `^1.2.2` | Log Viewer |
 | `laravel/sail` | `^1.41` | Docker Dev |
-| `laravel/boost` | `^2.4` | Dev Tools |
 
 ### JS Toolchain (`package.json`)
 

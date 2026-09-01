@@ -140,7 +140,7 @@ getters; `$fillable`/`$guarded` properties; `update()`/`delete()` self-calls in 
 adds a state machine (`validTransitions()`).
 
 **Why it matters:** The `label()` implementation must use `__()` (D3) so translations work; the
-state machine must be exhaustive (`match()` on all cases) so PHPStan catches a missed transition. A
+state machine must be exhaustive (`match()` on all cases) so tests catch a missed transition. A
 mutable enum or one with I/O breaks the pure-value contract.
 
 **How to apply:** Backed `string`/`int` enums with `UPPER_SNAKE` case names and `snake_case` backing

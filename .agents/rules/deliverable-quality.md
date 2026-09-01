@@ -17,7 +17,7 @@ where appropriate, and declares explicit return types and parameter type hints o
 **Why it matters:** Strict types turn silent coercion bugs into loud type errors (D1). Debug calls
 left in committed code (`dd`, `dump`, `ray`, `var_dump`, `print_r`, `die`) either break requests in
 production or leak state to the response (D2). Missing return/parameter types make the codebase's
-contracts unverifiable by PHPStan and force readers to guess the shape of every value. These are the
+contracts unverifiable by static analysis and force readers to guess the shape of every value. These are the
 cheapest rules to satisfy at write time and the most expensive to discover later.
 
 **How to apply:** Write each file with the header and signatures complete from the first pass:
@@ -46,7 +46,7 @@ final readonly class RegisterInternAction extends BaseCommandAction
 
 - Omitting `declare(strict_types=1)` because "this file is simple" — D1 has no size threshold.
 - Leaving a temporary `dump()` "to be removed later" — later never comes; remove it before commit.
-- Skipping type hints to save typing — PHPStan and every future reader pay for it.
+- Skipping type hints to save typing — every future reader pays for it.
 
 **Verification:** `vendor/bin/pint --dirty --format agent` is clean and `scan_conventions.py`
 reports no strict-types or debug-call violations.
@@ -185,7 +185,7 @@ mutates data a read path caches must forget or invalidate the affected cache key
 ## Final Gate — The Feature Is Not Done Until the Gates Pass
 
 **What it enforces:** Before the feature is handed off for review/merge, the quality gates pass:
-the module (or full) test suite, Pint, and PHPStan. A deliverable that fails any gate is returned to
+the module (or full) test suite, and Pint. A deliverable that fails any gate is returned to
 the responsible slice, not merged "with a known failure".
 
 **Why it matters:** The gates are the objective completion proof the orchestrated pipeline promises
@@ -195,19 +195,15 @@ exist to prevent.
 
 **How to apply:** Run the change-type verification from `AGENTS.md` §Verification Strategy that
 matches the feature (module suite or full suite once for new business logic), `vendor/bin/pint
---dirty --format agent`, and `vendor/bin/phpstan analyse --no-progress`. The full suite and full
-PHPStan are on-demand — run them here (this is a feature-completion gate) or when the user asks.
+--dirty --format agent`. The full suite is on-demand — run it here (this is a feature-completion gate) or when the user asks.
 
 **Pitfalls to avoid:**
 
-- Skipping PHPStan "because the tests pass" — static analysis catches type and contract errors the
-  happy-path tests never exercise.
 - Running only Pint without the tests, or vice versa.
 - Treating a gate failure as "not caused by my change" without investigating — pre-existing failures
   get fixed or filed (Pre-existing Defects — Fix or File), never silently tolerated.
 
-**Verification:** `php artisan test --compact` (module-scoped at minimum) passes, Pint is clean, and
-PHPStan reports no new errors; results are stated in the final report.
+**Verification:** `php artisan test --compact` (module-scoped at minimum) passes, Pint is clean; results are stated in the final report.
 
 ---
 

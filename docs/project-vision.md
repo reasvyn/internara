@@ -64,7 +64,7 @@ Any proposal that violates these boundaries is closed with a reference to this s
 
 - **Operational:** Grade-card compilation median <5 minutes (from 2–3 weeks); MoU expiry alerts 30/14/7 days before; attendance anomalies flagged <24h
 - **Adoption:** 50 production schools by end-2027 without multi-tenant; 0 critical `scan_security.py` findings on every release
-- **Quality:** `vendor/bin/pest` ~98% pass *and* `specs/*` FR coverage = 100% (no spec gaps, no orphan tests); `phpstan analyse` level 8 clean on demand
+- **Quality:** `vendor/bin/pest` ~98% pass *and* `specs/*` FR coverage = 100% (no spec gaps, no orphan tests)
 - **Trust:** 100% of certificates QR-verifiable; every mutation has `activity_log` entry (SmartLogger, PII-masked, `systemOnly`); PII retention 5 years then GDPR delete
 - **Sustainability:** New contributor ships `feat(enrollment):` in <1 week after reading `architecture.md` + `conventions.md` + `modules/index.md`; bus factor ≥2 per healthy module
 

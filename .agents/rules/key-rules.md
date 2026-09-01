@@ -110,8 +110,7 @@ messages are decision/ambiguity/report-only.
 
 **What it enforces:** Batch all changes first, then verify once. Default verification is the targeted
 per-change checks (module suite, `--filter`, pint, prettier, arch-guard scanners). The full suite
-(`php artisan test --compact`) and PHPStan full analysis are on-demand only — never run as part of
-routine work.
+(`php artisan test --compact`) is on-demand only — never run as part of routine work.
 
 **Why it matters:** The full suite consumes ~2GB+ RAM and 10+ minutes. Running it per-edit wastes
 resources and slows feedback. Coverage is measured in spec requirements covered, not lines, so
