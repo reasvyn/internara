@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Modules\Reports\Domain\StudentReport\Actions;
 
 use App\Modules\Core\Actions\BaseProcessAction;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class CaptureStudentReportSnapshotAction extends BaseProcessAction
 {
-    public function execute(Report $report): void
+    public function execute(StudentReport $report): void
     {
         if (! $report->registration_id || ! $report->registration) {
             return;
@@ -32,9 +33,9 @@ final class CaptureStudentReportSnapshotAction extends BaseProcessAction
                 'student_number' => $profile?->id_number,
                 'student_phone' => $profile?->phone,
                 'internship_name' => $internship?->name,
-                'company_name' => $company?->name
+                'company_name' => $company->name
                     ?? ($registration->proposed_company_details['company_name'] ?? null),
-                'company_address' => $company?->address
+                'company_address' => $company->address
                     ?? ($registration->proposed_company_details['address'] ?? null),
                 'department_name' => $department?->name,
                 'supervisor_name' => $mentors->first(fn ($m) => $m->hasRole('supervisor'))?->name,

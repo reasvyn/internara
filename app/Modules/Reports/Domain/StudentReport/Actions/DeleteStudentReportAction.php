@@ -6,10 +6,11 @@ namespace App\Modules\Reports\Domain\StudentReport\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class DeleteStudentReportAction extends BaseCommandAction
 {
-    public function execute(Report $report): void
+    public function execute(StudentReport $report): void
     {
         if ($report->status->isTerminal()) {
             throw new RejectedException(__('reports.cannot_delete_finalized'));

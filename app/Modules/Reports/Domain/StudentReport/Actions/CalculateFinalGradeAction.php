@@ -8,6 +8,7 @@ use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Reports\Domain\StudentReport\Events\GradeCalculated;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class CalculateFinalGradeAction extends BaseCommandAction
 {
@@ -18,12 +19,12 @@ final class CalculateFinalGradeAction extends BaseCommandAction
         'exam' => 20,
     ];
 
-    public function execute(Report $report): Report
+    public function execute(StudentReport $report): StudentReport
     {
         return $this->transaction(function () use ($report) {
             $registration = $report->registration;
 
-            $weights = $registration?->internship?->grading_weights ?? self::DEFAULT_WEIGHTS;
+            $weights = $registration?->internship->grading_weights ?? self::DEFAULT_WEIGHTS;
 
             $supervisorWeight = (int) ($weights['supervisor'] ?? 40);
             $teacherWeight = (int) ($weights['teacher'] ?? 20);

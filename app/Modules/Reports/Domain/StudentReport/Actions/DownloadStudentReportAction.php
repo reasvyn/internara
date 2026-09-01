@@ -10,10 +10,11 @@ use Illuminate\Http\StreamedResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 
 final class DownloadStudentReportAction extends BaseProcessAction
 {
-    public function execute(Report $report): StreamedResponse|BinaryFileResponse
+    public function execute(StudentReport $report): StreamedResponse|BinaryFileResponse
     {
         return $this->step('download_report', function () use ($report) {
             $document = $this->resolveDocument($report);
@@ -34,7 +35,7 @@ final class DownloadStudentReportAction extends BaseProcessAction
         });
     }
 
-    private function resolveDocument(Report $report): Document
+    private function resolveDocument(StudentReport $report): Document
     {
         return Document::findOrFail($report->id);
     }
