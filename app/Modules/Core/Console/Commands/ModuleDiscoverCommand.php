@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Console\Commands;
 
+use App\Modules\Core\Exceptions\InfrastructureException;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Services\SmartLogger;
 use Illuminate\Console\Command;
-use RuntimeException;
 
 class ModuleDiscoverCommand extends Command
 {
@@ -25,9 +25,13 @@ class ModuleDiscoverCommand extends Command
     {
         try {
             $providers = $this->getLaravel()->getLoadedProviders();
+            $appServiceProvider = \App\Providers\AppServiceProvider::class;
 
-            if (! isset($providers['App\Providers\AppServiceProvider']) || ! $providers['App\Providers\AppServiceProvider']) {
-                throw new RuntimeException('AppServiceProvider is not registered.');
+            if (! isset($providers[$appServiceProvider]) || ! $providers[$appServiceProvider]) {
+                throw new InfrastructureException(
+                    __('core.discover.service_provider_not_registered'),
+                    hint: __('core.discover.service_provider_not_registered_hint'),
+                );
             }
 
             $this->components->task(
