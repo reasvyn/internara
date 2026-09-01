@@ -11,7 +11,7 @@ downstream:
 
 # Laravel Development — Framework Core
 
-> **Prerequisite:** Load `context-awareness` for project orientation. For module-specific overrides, also load `laravel-best-practices` (now legacy alias).
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation. For module-specific overrides, also load `laravel-best-practices` (now legacy alias).
 
 ## When to Activate
 
@@ -19,7 +19,7 @@ Use this skill for any Laravel framework concern — routes, middleware, service
 
 ## Workflow
 
-Follow `agent-workflow` canonical pipeline. This skill adds Laravel-specific guidance and delegates to downstream skills for implementation details.
+Follow `AGENTS.md §Agent Workflow` canonical pipeline. This skill adds Laravel-specific guidance and delegates to downstream skills for implementation details.
 
 ## Skill Rules
 

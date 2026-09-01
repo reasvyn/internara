@@ -95,7 +95,7 @@ try {
   return `true` for super-admin and `null` otherwise.
 - `throw new RuntimeException('not allowed')` in a business path — 500 instead of a toast (C8).
 - Catching `RejectedException` inside the Action "to normalize" it — the Action must let it
-  propagate (see `context-awareness/rules/architecture-rules.md` §Business Layer).
+  propagate (see `rules/architecture-rules.md` §Business Layer).
 
 ## Verification
 

@@ -15,7 +15,7 @@ Use this skill when logging activity, configuring SmartLogger dual-channel, trac
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Spatie Activity Log guidance.
+Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds Spatie Activity Log guidance.
 
 ## Skill Rules
 

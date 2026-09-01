@@ -15,7 +15,7 @@ downstream:
 
 # Laravel Best Practices (Internara Edition)
 
-> **Prerequisite:** Load `context-awareness` for project orientation.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation.
 
 ## When to Activate
 
@@ -25,7 +25,7 @@ or commonly misunderstood.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
 strategy, and commit format. This skill is a cross-cutting reference — it documents where Internara's
 conventions diverge from stock Laravel. Apply the conventions below during implementation.

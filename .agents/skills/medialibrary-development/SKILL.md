@@ -10,7 +10,7 @@ downstream:
 
 # MediaLibrary Development
 
-> **Prerequisite:** Load `context-awareness` for project orientation.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation.
 
 ## When to Activate
 
@@ -19,7 +19,7 @@ media-related feature. All file storage must go through Spatie MediaLibrary.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
 strategy, and commit format. This skill adds Spatie MediaLibrary guidance — collections,
 conversions, uploads in Command Actions, retrieval — nothing else.

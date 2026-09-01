@@ -17,7 +17,7 @@ downstream:
 
 # Feature Building
 
-> **Prerequisite:** Load `context-awareness` for project orientation.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation.
 
 ## When to Activate
 
@@ -27,7 +27,7 @@ implementation.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (read the **governing spec** from `docs/specs/`, map FR/NFR/UC IDs), **Size Triage**
 (S/M/L session splitting — L-size MUST inform the user and split into sessions), verification
 strategy, and commit format. This skill adds the feature build order, sub-skill delegation, and key
@@ -128,9 +128,9 @@ slices across sessions per Size Triage.
 
 ### 5. Verify
 
-- Use the change-type verification matrix in `agent-workflow` (translation keys, config/docs,
+- Use the change-type verification matrix in `AGENTS.md §Agent Workflow` (translation keys, config/docs,
   Blade/CSS/JS, PHP refactor, new feature), then run the arch-guard scanners on touched code
-- Check pre-commit checklist from `agent-workflow`
+- Check pre-commit checklist from `AGENTS.md §Agent Workflow`
 - If refactoring was involved, load `code-refactoring` for verification
 
 ## Key Rules

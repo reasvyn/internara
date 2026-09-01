@@ -9,7 +9,7 @@ downstream:
 
 # TallStackUI Development — Component Library
 
-> **Prerequisite:** Load `context-awareness` and `ui-development` for general UI context.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` and `ui-development` for general UI context.
 
 ## When to Activate
 
@@ -17,7 +17,7 @@ Use this skill when implementing TallStackUI components — `x-ts-table`, `x-ts-
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds TallStackUI-specific guidance.
+Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds TallStackUI-specific guidance.
 
 ## Skill Rules
 

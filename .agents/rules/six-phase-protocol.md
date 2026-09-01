@@ -64,7 +64,7 @@ A blocker is a condition that prevents a phase from executing reliably. Fix it b
 
 ### Size-awareness
 
-Classify the audit per `agent-workflow` Size Triage. A full-project QA is **L** — inform the user,
+Classify the audit per `AGENTS.md` §Agent Workflow Size Triage. A full-project QA is **L** — inform the user,
 propose a session plan (e.g. by module), and run each phase per session. Never attempt all 6 phases
 on the entire codebase in a single pass.
 

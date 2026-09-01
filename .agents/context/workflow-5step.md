@@ -58,9 +58,9 @@ L-size protocol: after **Plan**, inform user, then run each session `Implement �
 
 | If you need to... | Do this |
 | ----------------- | ------- |
-| Run any instruction | `agent-workflow` is SSOT — load it first, then `context-awareness`, then task skill |
+| Run any instruction | `AGENTS.md` §Agent Workflow is SSOT — read it first, then §Context Awareness, then load the task skill |
 | Batch of instructions | Reorder by impact-to-effort ratio (quick wins first) per `rules/instruction-ordering.md` |
-| Verify what to run | `AGENTS.md#Verification Strategy` change-type matrix + `agent-workflow` Step 4 |
+| Verify what to run | `AGENTS.md#Verification Strategy` change-type matrix + §Agent Workflow Step 4 |
 | Commit | `type(scope): description`, scope = module name, one concern per commit |
 
 ---

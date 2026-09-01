@@ -9,7 +9,7 @@ downstream:
 
 # Tailwind CSS Development — Utilities & Theme Only
 
-> **Prerequisite:** Load `context-awareness` for project orientation. For general UI (Blade, layout, TallstackUI components, a11y, i18n) load `ui-development`; for Livewire mechanics load `livewire-development`.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation. For general UI (Blade, layout, TallstackUI components, a11y, i18n) load `ui-development`; for Livewire mechanics load `livewire-development`.
 
 ## When to Activate
 
@@ -17,7 +17,7 @@ Use this skill when working with **Tailwind CSS specifics** — utility classes,
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **Tailwind-only guidance** — the utility layer and theming — and delegates everything else to `ui-development`.
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline. This skill adds **Tailwind-only guidance** — the utility layer and theming — and delegates everything else to `ui-development`.
 
 ## Tailwind Stack
 

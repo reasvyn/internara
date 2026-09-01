@@ -6,52 +6,50 @@ success.
 
 ---
 
-## Rule 1 — Load `agent-workflow` first, then the task-specific skill
+## Rule 1 — Follow AGENTS.md §Agent Workflow first, then the task-specific skill
 
-**What it enforces:** On every instruction, the `agent-workflow` skill must be the first skill
-loaded, before any other skill. The task-matching skill from the Skill Map loads second.
+**What it enforces:** The canonical workflow lives inline in `AGENTS.md` §Agent Workflow (there is no
+`agent-workflow` skill — it was removed). On every instruction, internalize the §Agent Workflow
+pipeline first, then load the task-matching skill from the Skill Map.
 
-**Why it matters:** `agent-workflow` is the single source of truth for the 5-step pipeline
-(Understand → Plan → Implement → Verify → Summarize), size triage, narration discipline, and
-verification strategy. Loading it first guarantees the agent operates on current workflow facts even
-when other skills or files restate them in stale form. Skipping it means task-specific skills (which
-assume it) are interpreted without their governing context.
+**Why it matters:** §Agent Workflow in `AGENTS.md` is the single source of truth for the 5-step
+pipeline (Understand → Plan → Implement → Verify → Summarize), size triage, narration discipline,
+and verification strategy. Following it first guarantees the agent operates on current workflow facts
+even when other skills or files restate them in stale form. Skipping it means task-specific skills
+(which assume the workflow) are interpreted without their governing context.
 
-**How to apply:** At the start of the session, load `agent-workflow` (skill tool), then load only
-the skills the task actually uses (see Skill Map in `AGENTS.md`). Load nothing before it — not even
-`context-awareness`.
+**How to apply:** At the start of the session, read `AGENTS.md` §Agent Workflow and §Context Awareness,
+then load only the skills the task actually uses (see Skill Map in `AGENTS.md`). Load nothing before it.
 
 **Pitfalls to avoid:**
-- Loading `context-awareness` or a task skill before `agent-workflow`.
 - Treating a task as "too trivial to need the workflow" — the rule applies even to one-line
   questions (depth scales with the phase, per Phase Classification).
-- Restating the workflow inside a task skill to compensate — skills reference `agent-workflow`, they
+- Restating the workflow inside a task skill to compensate — skills reference §Agent Workflow, they
   never duplicate it.
 
-**Verification:** The first skill-load tool call in the session targets `agent-workflow`.
+**Verification:** The session's first actions follow the §Agent Workflow pipeline as described in `AGENTS.md`.
 
 ---
 
 ## Rule 2 — Never restate the workflow inside another skill
 
-**What it enforces:** No skill (other than `agent-workflow` itself) may re-transcribe the canonical
-5-step pipeline (Understand → Plan → Implement → Verify → Summarize) or generic workflow steps that
-belong to `agent-workflow`.
+**What it enforces:** No skill may re-transcribe the canonical 5-step pipeline (Understand → Plan →
+Implement → Verify → Summarize) or generic workflow steps that belong to `AGENTS.md` §Agent Workflow.
 
 **Why it matters:** A duplicated workflow re-injects the same text into context on every skill load,
 bloating context and silently drifting from the canonical version. The meta-framework scanner
 (`scan_skills.py`) flags restatements as `SKILL_NO_DUP_WORKFLOW` violations.
 
 **How to apply:** When writing or editing a skill, keep only that skill's unique execution steps,
-rules, and references. Refer to `agent-workflow` with a one-liner: "Follow the `agent-workflow`
-skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) — this
+rules, and references. Refer to §Agent Workflow with a one-liner: "Follow `AGENTS.md` §Agent Workflow
+for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) — this
 skill adds {X} — nothing else."
 
 **Pitfalls to avoid:**
 - Copying the 4-phase Construct/Execute/Verify/Report skeleton into a new skill "for self-containment".
-- Adding a redundant "Workflow" table in a skill when `agent-workflow` already owns it.
+- Adding a redundant "Workflow" table in a skill when §Agent Workflow already owns it.
 
-**Verification:** `python3 tools/scan_skills/cli.py` reports no `SKILL_NO_DUP_WORKFLOW` findings.
+**Verification:** `python3 tools/scan_skills.py` reports no `SKILL_NO_DUP_WORKFLOW` findings.
 
 ---
 

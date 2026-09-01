@@ -15,7 +15,7 @@ Use this skill when defining roles/permissions, seeding RBAC, checking roles in 
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Spatie Permission guidance.
+Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds Spatie Permission guidance.
 
 ## Skill Rules
 

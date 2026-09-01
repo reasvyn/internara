@@ -15,7 +15,7 @@ downstream:
 
 # Pest Testing
 
-> **Prerequisite:** Load `context-awareness` for testing conventions.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for testing conventions.
 
 ## Core Doctrine — Tests Verify the Spec
 
@@ -47,7 +47,7 @@ Use this skill when:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (read the spec's FR/NFR/UC IDs first), **Size Triage** (S/M/L session splitting),
 verification strategy, and commit format. This skill adds Pest-specific guidance — spec
 traceability, test structure, mocking boundaries, and quality gates, all defined in the Skill Rules

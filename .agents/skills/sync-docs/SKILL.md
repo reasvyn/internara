@@ -15,7 +15,7 @@ upstream:
 
 # Sync Docs
 
-> **Prerequisite:** Load `context-awareness` for doc navigation map.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for doc navigation map.
 
 ## When to Activate
 
@@ -28,7 +28,7 @@ changed path) must be mirrored in any guide or skill that documents it.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (docs stay in sync with the **governing spec**), **Size Triage** (S/M/L session splitting —
 a multi-module sync is M/L, stage by module), verification strategy, and commit format. This skill
 adds the doc-sync workflow, audit scope, and verification rules found in the Skill Rules section

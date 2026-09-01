@@ -7,7 +7,7 @@ downstream:
 
 # Security Audit
 
-> **Prerequisite:** Load `context-awareness` for project orientation. Running `arch-guard` first
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation. Running `arch-guard` first
 > provides the baseline code quality audit.
 
 ## When to Activate
@@ -18,7 +18,7 @@ vulnerabilities.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (verify each audited behavior maps to a **governing spec** FR/NFR/UC ID — a finding with
 no requirement is a spec gap), **Size Triage** (S/M/L session splitting — a full-project security
 audit is L, split by module or category), verification strategy, and commit format. This skill adds

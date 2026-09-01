@@ -2,7 +2,6 @@
 name: doc-writing
 description: "SDLC Phase: DOCUMENTATION. Writing and maintaining project documentation — PHPDoc blocks, markdown docs, module conceptual/reference docs, metadata format, cross-references, and the documentation-first (SSOT) principle."
 upstream:
-  - context-awareness
   - feature-building
   - code-refactoring
   - pest-testing
@@ -13,7 +12,7 @@ downstream:
 
 # Doc Writing
 
-> **Prerequisite:** Load `context-awareness` for project orientation and documentation map.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation and documentation map.
 
 ## When to Activate
 
@@ -26,7 +25,7 @@ Use this skill when:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (docs reflect the **governing spec**; a behavior change with no requirement is raised via
 `spec-writing` first), **Size Triage** (S/M/L session splitting — a multi-module doc update is M/L,
 stage by module), verification strategy, and commit format. This skill adds the documentation

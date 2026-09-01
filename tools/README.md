@@ -121,18 +121,18 @@ contract source.
 
 | Script | Focus | Findings rules | Used by |
 |--------|-------|----------------|---------|
-| `scan_architecture.py` | Component counts per module, submodule structure | — (metadata only) | arch-guard, context-awareness |
+| `scan_architecture.py` | Component counts per module, submodule structure | — (metadata only) | arch-guard |
 | `scan_arch_patterns.py` | Architecture pattern detection | `ARCH_*` | arch-guard |
 | `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `ACTION_*`, `ENTITY_*`, `DTO_*`, `MODEL_*`, `ENUM_*`, `EVENT_*`, `POLICY_*`, `SERVICE_*`, `LISTENER_*` | arch-guard |
 | `scan_conventions.py` | D1 strict_types, D4 Fillable, D2 debug calls, hardcoded strings | `D1_*`, `D2_*`, `D4_*`, `HARDCODED_STRING` | arch-guard, code-writing |
 | `scan_dead_code.py` | Unregistered observers, orphan events, unused DTOs/Actions/Jobs | `UNREGISTERED_OBSERVER`, `EVENT_NO_LISTENER`, `UNUSED_DTO`, `UNUSED_ACTION`, `UNUSED_JOB` | arch-guard, code-refactoring |
 | `scan_doc_links.py` | Validate relative links + in-page/other-file anchors in markdown | `BROKEN_FILE_LINK`, `BROKEN_ANCHOR` | sync-docs, doc-writing |
-| `scan_files.py` | File counts and lines of code per module | — (metadata only) | context-awareness |
+| `scan_files.py` | File counts and lines of code per module | — (metadata only) | — |
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | issue-writing, arch-guard |
 | `scan_module_boundaries.py` | Module boundary and dependency checks | `MODULE_*` | arch-guard |
 | `scan_naming.py` | File and class naming conventions | `FILE_NAMING`, `CLASS_NAMING` | arch-guard |
 | `scan_security.py` | XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting | `S1`–`S9` | arch-guard, security-audit |
-| `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, `agent-workflow` reference, no duplicated workflow boilerplate, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_WORKFLOW_REF`, `SKILL_NO_DUP_WORKFLOW`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |
+| `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, §Agent Workflow reference, no duplicated workflow boilerplate, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_WORKFLOW_REF`, `SKILL_NO_DUP_WORKFLOW`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |
 | `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*`/`~`/`!`/`-X`/`-NT` marker) | `SPEC_TEST_UNCOVERED`, `SPEC_TEST_ORPHAN`, `SPEC_TEST_MISSING_FILE`, `SPEC_TEST_NON_TESTABLE` | arch-guard, spec-audit, pest-testing |
 | `scan_tests.py` | Run test suite, parse per-module results | — (data fetch) | pest-testing, test-writing |
 | `scan_ui_consistency.py` | UI consistency checks | `UI_*` | arch-guard |

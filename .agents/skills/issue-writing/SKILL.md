@@ -9,7 +9,7 @@ downstream:
 
 # Issue Writing
 
-> **Prerequisite:** Load `context-awareness` for project orientation.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation.
 
 ## When to Activate
 
@@ -30,7 +30,7 @@ Activation triggers include:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (cite the **governing spec** FR/NFR/UC IDs an issue refers to), **Size Triage** (S/M/L
 session splitting — an L-size issue notes the session-split plan in its body), verification
 strategy, and commit format. This skill adds the issue types, unified template, key rules, and

@@ -84,7 +84,7 @@ signal exists, the user must choose — never guess.
 
 ## Size Triage
 
-Classify the audit scope per `agent-workflow` Size Triage **before** auditing:
+Classify the audit scope per `AGENTS.md` §Agent Workflow Size Triage **before** auditing:
 
 | Scope | Size | Execution |
 |-------|------|-----------|

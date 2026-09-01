@@ -13,7 +13,7 @@ downstream:
 
 # Verify & Testing
 
-> **Prerequisite:** Load `context-awareness` for project conventions and critical invariants.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project conventions and critical invariants.
 
 ## When to Activate
 
@@ -26,7 +26,7 @@ Use this skill when:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
 strategy, and commit format. This skill adds the verification-strategy, test-execution, and
 test-diagnosis rules found in the Skill Rules section below — nothing else.

@@ -11,7 +11,7 @@ downstream:
 
 # Spec Audit — Specification ↔ Implementation Synchronization
 
-> **Prerequisite:** Load `context-awareness` for project orientation, module map, and conventions.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation, module map, and conventions.
 
 ## When to Activate
 
@@ -40,7 +40,7 @@ code → docs); `spec-audit` checks bidirectional sync and determines which side
 
 This skill runs a **custom pipeline** (`SCOPE → DISCOVER → AUDIT → TRIAGE → FIX/ISSUE → FINALIZE →
 REPORT`) — it is an ANALYSIS skill, not a standard implementation workflow. Follow the
-`agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage**, and commit format;
+`AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage**, and commit format;
 this skill adds the audit pipeline defined in the rule assets — nothing else.
 
 - Choose the audit scope and run Size Triage → `.agents/rules/scope-configuration.md`

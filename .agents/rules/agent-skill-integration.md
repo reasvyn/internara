@@ -1,6 +1,6 @@
 # Agent Skill Integration — Reuse-Before-Create, Handoffs & the Skill→Script→Skill Flow
 
-Scripts exist to serve the agent-skill layer. `arch-guard`, `context-awareness`, and the other skills
+Scripts exist to serve the agent-skill layer. `arch-guard` and the other skills
 document scripts in their `## Automation Scripts` tables, run them as quality gates, and consume their
 JSON findings. This rule defines how a script relates to the skills, when a new script is justified,
 and how to ship one so the integration stays coherent.
@@ -13,10 +13,10 @@ and how to ship one so the integration stays coherent.
 |------|-------|
 | **Upstream** | `arch-guard` (verify gates), all skills with `## Automation Scripts` tables |
 | **This skill** | **TOOLING** — script standards and conventions |
-| **Downstream** | `arch-guard`, `context-awareness` (Automation Scripts reference) |
+| **Downstream** | `arch-guard` (Automation Scripts reference) |
 
 **Phase Context:** this skill is a tooling standards reference, not a 4-phase implementation flow. It
-adds script-writing standards on top of the canonical `agent-workflow` (5-step pipeline, Size Triage,
+adds script-writing standards on top of the canonical `AGENTS.md` §Agent Workflow (5-step pipeline, Size Triage,
 commit format).
 
 ---

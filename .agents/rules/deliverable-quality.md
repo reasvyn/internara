@@ -190,7 +190,7 @@ the responsible slice, not merged "with a known failure".
 
 **Why it matters:** The gates are the objective completion proof the orchestrated pipeline promises
 its consumers (pest-testing, sync-docs, reviewers). Merging past a failing gate imports a known defect
-into the branch — the exact thing the Pre-commit Checklist and the agent-workflow verification strategy
+into the branch — the exact thing the Pre-commit Checklist and the §Agent Workflow verification strategy
 exist to prevent.
 
 **How to apply:** Run the change-type verification from `AGENTS.md` §Verification Strategy that

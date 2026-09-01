@@ -4,7 +4,7 @@ This directory is the **curated, mandatory known context**: the small set of fac
 
 **How to use:** before planning or editing, find the row whose topic matches your task and read that context file. If no row matches, you do not need this directory. **When a context file conflicts with reality, update it directly in the same run** — this context is how mandatory knowledge survives between sessions. For evolving session learnings, write to `.agents/memory/` instead.
 
-**Required reading:** Every session start — `workflow-5step.md`, `project-snapshot.md`, `context-awareness` section in `AGENTS.md`. Before releasing new version — also read `project-snapshot.md`, `project-identity.md`, and `quick-reference.md`.
+**Required reading:** Every session start — `workflow-5step.md`, `project-snapshot.md`, `AGENTS.md` §Context Awareness. Before releasing new version — also read `project-snapshot.md`, `project-identity.md`, and `quick-reference.md`.
 
 ---
 
@@ -21,7 +21,6 @@ This directory is the **curated, mandatory known context**: the small set of fac
 | [dep-model-status-deprecated.md](dep-model-status-deprecated.md) | **Any status/state persistence** — spatie/laravel-model-status deprecated, removal planned (#419); status columns are app-owned |
 | [ui-framework-coexistence.md](ui-framework-coexistence.md) | **Any UI/component work** — TallstackUI v4 complete (mary/flasher/daisyui removed), self-hosted palette + shims, `x-ts-*` only |
 | [codebase-intentional-states.md](codebase-intentional-states.md) | Exception behavior, arch-guard scan baselines, adding a new spec, `ExceptionsTest` |
-| [../memory/learning-log.md](../memory/learning-log.md) | **Every session end** — chronological capture of decisions, corrections, failures, patterns, constraints, gaps (the Learning Loop store — lives in `memory/`) |
 | [project-snapshot.md](project-snapshot.md) | **Every session start + before release** — comprehensive project map: 19 modules, 12-phase spec build order, 4-layer architecture, health tiers, deploy topology, status |
 | [project-identity.md](project-identity.md) | **Every session start + before release** — tech stack, project definition, target users, design principles, lifecycle scope |
 | [phase-classification.md](phase-classification.md) | Session depth & size triage — SDLC phase classification, session splitting rules |
@@ -40,15 +39,15 @@ This directory is the **curated, mandatory known context**: the small set of fac
 1. **These states are intentional — do not "fix" them.** A context file records a deliberate decision or a known caveat. Treat it as the source of truth unless a spec or a recorded decision overrides it.
 2. **Context is curated and mandatory.** When the underlying fact changes (dependency unpinned, deploy topology changed, a guard removed) or a context file no longer matches reality, update it **directly in the same run**: fix the stale fact and commit with a descriptive message. Never leave a discovered inconsistency to a later pass.
 3. **Create when critical.** If you learn a **mandatory** fact not yet recorded — non-obvious constraint, environment quirk, deliberate decision that every future agent must know — create `.agents/context/{context}-{issue-name}.md` (flat, kebab-case) and register it here. If a future agent would make a costly wrong assumption without it, record it here.
-4. **Evolving learnings → memory/**. Session decisions, corrections, failures, and patterns that are not yet proven mandatory belong in `.agents/memory/` (see `../memory/index.md`). Promote to `.agents/rules/` or `.agents/context/` only after ≥2 occurrences or maintainer approval.
+4. **Evolving learnings → memory/**. Session decisions, corrections, failures, and patterns that are not yet proven mandatory belong in `.agents/memory/` (local-only; see the `memory/` store itself, not referenced from here). Promote to `.agents/rules/` or `.agents/context/` only after ≥2 occurrences or maintainer approval.
 5. **Self-contained.** Each file is read in isolation — include the commands, paths, and rationale it needs. Do not assume the reader opened `index.md` first.
-6. **No duplicate knowledge.** If a topic grows too large for one context file, split it into a new `{context}-{issue-name}.md` and add a row to this index. Never duplicate a memory file's content here — link instead.
+6. **No duplicate knowledge.** If a topic grows too large for one context file, split it into a new `{context}-{issue-name}.md` and add a row to this index. Do not duplicate a memory file's content here; and do not cross-reference `memory/` contents from this directory (memory is local-only).
 
 ---
 
 ## Quick References
 
-- [Autonomous Memory](../memory/index.md) — evolving learnings (agent-owned, read during orientation)
+- `.agents/memory/` — autonomous learning store (agent-owned, **local-only**; read during orientation if available)
 - [Architecture Rules](../rules/architecture-rules.md) — layer/contract checks
 - [Deployment](../../docs/guides/infra/deployment.md) — full VPS/CI/CD topology
 - [Documentation Map](../../docs/index.md) — where to find every doc

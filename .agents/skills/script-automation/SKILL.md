@@ -14,7 +14,7 @@ Standards for writing, maintaining, and integrating Python devtool scripts in `t
 ## Agent Workflow
 
 This is a TOOLING standards reference — not an implementation flow. Follow the
-`agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage** and commit format —
+`AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize), **Size Triage** and commit format —
 this skill adds script-writing standards below — nothing else. When creating or modifying a script,
 follow the same decision discipline as other skills:
 
@@ -27,7 +27,7 @@ follow the same decision discipline as other skills:
   reusable devtools with long-term value; committing throwaway scripts pollutes the toolchain.
 - **Reuse before create:** check `tools/README.md` and the `## Automation Scripts` tables in other
   skills before writing a new script. If the pattern is covered, use the existing tool.
-- **Size-aware:** a multi-scanner initiative is **M/L** per the `agent-workflow` Size Triage — stage
+- **Size-aware:** a multi-scanner initiative is **M/L** per the `AGENTS.md §Agent Workflow` Size Triage — stage
   it per script, and inform the user before committing if it crosses into **L**.
 - **Verify:** run `python3 tools/{name}.py --module {Module} --strict` and confirm the JSON output
   schema before integrating into any skill.
@@ -40,7 +40,7 @@ follow the same decision discipline as other skills:
 | -------------- | --------------------------------------------------------------------------- |
 | **Upstream**   | `arch-guard` (verify gates), all skills with `## Automation Scripts` tables |
 | **This skill** | **TOOLING** — script standards and conventions                              |
-| **Downstream** | `arch-guard`, `context-awareness` (Automation Scripts reference)            |
+| **Downstream** | `arch-guard` (Automation Scripts reference)            |
 
 ## Skill Handoffs (Actionable)
 

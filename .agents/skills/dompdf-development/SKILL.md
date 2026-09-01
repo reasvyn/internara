@@ -15,7 +15,7 @@ Use this skill when generating PDFs from Blade views, embedding assets, or confi
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds DOMPDF guidance.
+Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds DOMPDF guidance.
 
 ## Skill Rules
 

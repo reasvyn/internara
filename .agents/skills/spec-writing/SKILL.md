@@ -6,7 +6,6 @@ description:
     API/data contracts, design decisions, and success metrics. Produces self-contained specs that
     serve as the authoritative source for feature implementation.'
 upstream:
-    - context-awareness
     - doc-writing
 downstream:
     - feature-building
@@ -19,7 +18,7 @@ downstream:
 
 > live in `.agents/rules/` and are mapped by the `## Skill Rules` table
 
-> **Prerequisite:** Load `context-awareness` for project orientation and `doc-writing` for
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation and `doc-writing` for
 > documentation conventions.
 
 ## When to Activate
@@ -43,7 +42,7 @@ Use this skill when:
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting — a spec split
 into multiple initiatives is multi-session work; propose a plan to the user), verification strategy,
 and commit format. This skill adds the 11-section template, requirement ID conventions, scoping

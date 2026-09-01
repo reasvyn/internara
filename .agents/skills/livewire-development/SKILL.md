@@ -12,7 +12,7 @@ downstream:
 
 # Livewire Development — Livewire Mechanics Only
 
-> **Prerequisite:** Load `context-awareness` for project orientation. For general UI (Blade, layout, TallstackUI, a11y, i18n) load `ui-development`; for Tailwind utilities load `tailwindcss-development`.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation. For general UI (Blade, layout, TallstackUI, a11y, i18n) load `ui-development`; for Tailwind utilities load `tailwindcss-development`.
 
 ## When to Activate
 
@@ -20,7 +20,7 @@ Use this skill when building or modifying **Livewire components** — thin-compo
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline. This skill adds **Livewire-only guidance** — thin components, Form Objects, Action delegation, and tables — and delegates general UI to `ui-development`.
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline. This skill adds **Livewire-only guidance** — thin components, Form Objects, Action delegation, and tables — and delegates general UI to `ui-development`.
 
 ## Skill Rules
 

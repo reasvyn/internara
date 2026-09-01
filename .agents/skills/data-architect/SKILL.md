@@ -2,8 +2,6 @@
 name: data-architect
 description: "SDLC Phase: DESIGN & IMPLEMENTATION. Data architecture — schema (migrations, indexes, FK, UUID), flow (ERD, CQRS, Action triad, lineage), security (PII, encryption, masking, audit), contracts (interfaces, structs, types, enums, DTOs), mapping, and formatting. Single source for any data-related task."
 upstream:
-  - agent-workflow
-  - context-awareness
   - spec-writing
 downstream:
   - code-writing
@@ -14,7 +12,7 @@ downstream:
 
 # Data Architect — Schema, Flow, Security & Contracts
 
-> **Prerequisite:** Load `agent-workflow` (mandatory first) and `context-awareness` (orientation). This skill assumes spec-first doctrine and module-first Action architecture.
+> **Prerequisite:** Read `AGENTS.md §Agent Workflow` (mandatory first) and `AGENTS.md §Context Awareness` (orientation). This skill assumes spec-first doctrine and module-first Action architecture.
 
 ## When to Activate
 
@@ -31,7 +29,7 @@ If the task mentions `schema`, `flow`, `security`, `contract`, `interface`, `str
 
 ## Workflow
 
-Follow `agent-workflow` canonical pipeline. This skill adds data-specific design gates on top of it; it does not replace the pipeline.
+Follow `AGENTS.md §Agent Workflow` canonical pipeline. This skill adds data-specific design gates on top of it; it does not replace the pipeline.
 
 ### 1. Understand — Governing Spec & Data Impact
 

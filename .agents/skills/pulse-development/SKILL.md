@@ -9,7 +9,7 @@ downstream:
 
 # Pulse Development
 
-> **Prerequisite:** Load `context-awareness` for project orientation.
+> **Prerequisite:** Read `AGENTS.md §Context Awareness` for project orientation.
 
 ## When to Activate
 
@@ -18,7 +18,7 @@ recorders, creating custom cards, or configuring Redis ingest.
 
 ## Workflow
 
-Follow the `agent-workflow` skill for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
+Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline (Understand → Plan → Implement → Verify → Summarize): spec-first
 doctrine (**governing spec** FR/NFR/UC IDs), **Size Triage** (S/M/L session splitting), verification
 strategy, and commit format. This skill adds Laravel Pulse guidance — dashboard, authorization,
 recorders, custom cards, and ingest — nothing else.

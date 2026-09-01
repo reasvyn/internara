@@ -99,7 +99,7 @@ its stage, keeps the diff reviewable, and matches the batched-verification strat
 stage, not per file, and not all-at-the-end).
 
 **How to apply:** After completing each build slice, run the change-type verification that matches it
-(see `agent-workflow` verification matrix) and review `git status` + `git diff`. Classify the feature
+(see `AGENTS.md` §Verification Strategy change-type matrix) and review `git status` + `git diff`. Classify the feature
 S/M/L up front: **L** (>10 files or multi-module) MUST be split into sessions — tell the user in one
 short paragraph and list the sessions; never attempt L in a single pass.
 

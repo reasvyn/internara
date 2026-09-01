@@ -1,6 +1,6 @@
 # Self-Improvement (Continuous Learning) — Project Rules
 
-Inherits the global Learning Loop (`~/.agents/rules/self-improvement.md`): **CAPTURE → CONSOLIDATE →
+Inherits the global Learning Loop (the user's homespace config under `~/`, contents vary per user — config that lives outside this repo): **CAPTURE → CONSOLIDATE →
 APPLY**. This file adds Internara-specific capture targets and promotion gates. Severity: `mandatory`,
 enforcement: `self-check`.
 
@@ -31,8 +31,14 @@ enforcement: `self-check`.
 Memory capture is **on-need, by judgment** — not an automatic step in every session's Summarize. Record to
 `memory/` only when the information is worth saving for a future agent: a durable decision, a non-obvious
 trap/correction, a recurring pattern, or a constraint that a future session would otherwise re-learn. If a
-session produced nothing novel, skip memory write entirely. Reserve `/self-improvement --deep` (`git diff`
+session produced nothing novel, skip memory write entirely. Reserve `/internara-learn --deep` (`git diff`
 mining) for sessions with substantive changes, not routine commits.
+
+> **Memory is local-only.** `.agents/memory/` is **gitignored** (never committed/shared). Committed files
+> outside it (AGENTS.md, `.agents/context/`, `.agents/rules/`, docs, agents, commands) may *mention* the
+> `memory/` path conceptually, but must **never cross-reference its contents** (no link/pointer to a specific
+> `memory/` file as the destination of real detail) — readers of committed files do not have your local copy,
+> so such pointers are broken for them. Cross-references between files are allowed **only inside** `memory/`.
 
 ## Apply (session start)
 
@@ -41,8 +47,8 @@ In **Understand**, load `context/index.md` (mandatory) + `memory/index.md` (lear
 ## Integration with Existing Memory
 
 - `context/index.md` is the registry for mandatory known context; `memory/index.md` for autonomous learnings — every new file gets a row in its own index.
-- `memory/learning-log.md` is the chronological capture store (what was learned, when, pointer to detail); `context/` holds no learning-log (legacy `context/learning-log.md` is a pointer → `memory/learning-log.md`).
-- The global `skills/self-improvement/SKILL.md` is the procedure; this file is the project overlay.
+- `memory/learning-log.md` is the chronological capture store (what was learned, when, pointer to detail). It is **local only** (gitignored) — do not cross-reference its contents from committed files outside `memory/`.
+- The global Learning Loop procedure lives in the user's homespace config under `~/` (contents vary per user, not referenced by path from committed files); this file is the project overlay.
 
 ## Validation
 

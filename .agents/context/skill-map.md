@@ -6,8 +6,8 @@
 
 | Task | Skill | Notes |
 |------|-------|-------|
-| Every instruction, any task | `agent-workflow` (see §Agent Workflow above) | **ALWAYS apply first** — universal workflow, no exceptions |
-| Every instruction, any task | `context-awareness` (see §Context Awareness above) | **ALWAYS apply second** — universal orientation layer, no exceptions |
+| Every instruction, any task | `AGENTS.md §Agent Workflow` | **Apply first** — universal workflow, no exceptions (inline in AGENTS.md, not a skill) |
+| Every instruction, any task | `AGENTS.md §Context Awareness` | **Apply second** — universal orientation layer, no exceptions (inline in AGENTS.md, not a skill) |
 | Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |

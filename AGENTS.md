@@ -125,7 +125,7 @@ Close the loop: version-control checkpoint, commit, and a concise final report.
 - **Report (surface to user):** what changed (files/modules/specs), what was verified (which gates ran and their result), caveats / known limitations, and **recommended next steps** (pending work, follow-ups, or L-size session plans). Keep it short — narration discipline applies.
 - **Session handling** — for M-size: one checkpoint before commit; for L-size: per-session report + `git status`/`diff` review at the end of each session, never attempting L-size in one pass.
 - **Pre-commit checklist** (AGENTS.md) must pass: strict types, no debug calls, `__()` coverage, Action triad + DTO rule, Entity delegation, cache registry, N+1 check, escaped output, tests traceable to spec, pint/phpstan/arch-guard as appropriate.
-- **Capture learnings (Self-Improvement Loop, judgment-based)** — write to `memory/` (evolving learnings) or `context/` (mandatory facts) **only when the information is worth saving for a future agent**: a durable decision, non-obvious trap/correction, recurring pattern, or constraint a future session would re-learn. Not an automatic per-summarize step — skip when nothing novel emerged. When captured: update the topic file in place, write a descriptive commit message, add/update a row in `context/index.md` or `memory/index.md`, and append a one-liner to `memory/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Reserve `/self-improvement --deep` (`git diff` mining) for sessions with substantive changes.
+- **Capture learnings (Self-Improvement Loop, judgment-based)** — write to `memory/` (evolving learnings) or `context/` (mandatory facts) **only when the information is worth saving for a future agent**: a durable decision, non-obvious trap/correction, recurring pattern, or constraint a future session would re-learn. Not an automatic per-summarize step — skip when nothing novel emerged. When captured: update the topic file in place, write a descriptive commit message, add/update a row in `context/index.md` or `memory/index.md`, and append a one-liner to `memory/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Reserve `/internara-learn --deep` (`git diff` mining) for sessions with substantive changes.
 
 **Exit criteria:** clean commit(s), report delivered, **learning captured** (memory updated, repeats promoted), repo left cleaner than found.
 
@@ -244,7 +244,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 
 ## Context Awareness — Project Orientation
 
-> **Prerequisite:** None — this is the orientation layer loaded after `agent-workflow`.
+> **Prerequisite:** None — this is the orientation layer loaded after §Agent Workflow.
 
 ### When to Activate
 
@@ -252,7 +252,7 @@ Load this section at the start of every session. It provides the mental model al
 
 ### Orientation Workflow
 
-This is the **orientation layer** — it does NOT write code or run tests; it builds the mental model all downstream skills depend on. Follow the `agent-workflow` 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) and **Size Triage** (S/M/L session splitting) for the overall instruction; this adds the orientation steps and memory-keeping duties below.
+This is the **orientation layer** — it does NOT write code or run tests; it builds the mental model all downstream skills depend on. Follow the §Agent Workflow 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) and **Size Triage** (S/M/L session splitting) for the overall instruction; this adds the orientation steps and memory-keeping duties below.
 
 #### Construct — Orientation
 
@@ -280,7 +280,8 @@ Two distinct stores with different lifecycles — do not conflate them:
 - Keep each file self-contained (paths, commands, rationale); never duplicate a fact elsewhere — update the existing file instead.
 
 **Maintain Autonomous Memory (`.agents/memory/`):**
-- At Summarize, capture decisions/corrections/failures/patterns/constraints/gaps into `.agents/memory/` (self-contained topic files; register in `.agents/memory/index.md`) and append a one-liner to `.agents/memory/learning-log.md`.
+- **Capture is judgment-based** — write into `.agents/memory/` (self-contained topic files, registered in `.agents/memory/index.md`, one-liner appended to `.agents/memory/learning-log.md`) only when the learning is worth saving for a future agent; skip when nothing novel emerged. Not automatic per-summarize.
+- **Memory is local-only (gitignored).** Committed files outside it may *mention* the `memory/` path conceptually but must **never cross-reference its contents** — readers of committed docs don't have your local copy, so pointers to a specific `memory/` file break for them. Cross-refs between files are allowed only inside `memory/`.
 - Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. One-offs stay in memory — no rule-bloat.
 - Memory is append-evolving; context is curated-stable. Update `memory/` in place with a descriptive commit message; never duplicate a topic.
 
@@ -563,7 +564,7 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 | `tools/scan_conventions/cli.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions/cli.py` |
 | `tools/scan_doc_links/cli.py` | Broken links in docs | `python3 tools/scan_doc_links/cli.py` |
 | `tools/scan_tests/cli.py` | Per-module test results | `python3 tools/scan_tests/cli.py` |
-| `tools/scan_skills/cli.py` | SKILL.md meta-framework consistency | `python3 tools/scan_skills/cli.py` |
+| `tools/scan_skills.py` | SKILL.md meta-framework consistency | `python3 tools/scan_skills.py` |
 | `tools/scan_issues/cli.py` | GitHub issues by module/severity | `python3 tools/scan_issues/cli.py` |
 | `tools/scan_dead_code/cli.py` | Dead code detection | `python3 tools/scan_dead_code/cli.py` |
 

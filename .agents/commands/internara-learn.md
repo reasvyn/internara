@@ -1,13 +1,13 @@
-# /self-improvement Command (Internara)
+# /internara-learn Command (Internara)
 
 Project-specific retrospective trigger for the Learning Loop (`.agents/rules/self-improvement.md`).
-Mines the session for learning signals and writes them to project memory.
+Mines the session for learning signals and writes them to project memory (judgment-based, on-need).
 
 ## When to Invoke
 
-- End of any session (auto in Summarize, manual here for complex work).
+- End of any session (optional — capture only when a learning is worth saving; manual here for complex work).
 - After a user correction or a failed verification gate.
-- `/self-improvement --deep` to also scan `git diff HEAD~1` + `git log -5 --oneline`.
+- `/internara-learn --deep` to also scan `git diff HEAD~1` + `git log -5 --oneline`.
 
 ## Procedure
 

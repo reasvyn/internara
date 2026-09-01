@@ -15,7 +15,7 @@ Use this skill when configuring Vite entry points, adding plugins (@tailwindcss/
 
 ## Workflow
 
-Follow `agent-workflow` pipeline. This skill adds Vite-specific guidance.
+Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds Vite-specific guidance.
 
 ## Skill Rules
 

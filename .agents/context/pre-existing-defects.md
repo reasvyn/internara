@@ -9,7 +9,7 @@
 
 ## Self-Improvement Loop — Continuous Learning
 
-The agent compounds in capability across sessions via a closed loop (inherits the global Learning Loop in `~/.agents/rules/self-improvement.md`; project overlay: `.agents/rules/self-improvement.md`, procedure `~/.agents/skills/self-improvement/SKILL.md`). Run `/self-improvement` (or `--deep`) for an explicit retrospective.
+The agent compounds in capability across sessions via a closed loop (inherits the global Learning Loop from the user's homespace config under `~/`, contents vary per user; project overlay: `.agents/rules/self-improvement.md`). Use `/internara-learn` (agent: `internara-learner`) for an explicit retrospective.
 
 ```
 CAPTURE  ──▶  CONSOLIDATE  ──▶  APPLY
@@ -17,7 +17,7 @@ CAPTURE  ──▶  CONSOLIDATE  ──▶  APPLY
    └─────────────────────────────────┘
 ```
 
-- **CAPTURE** (in **Summarize**, step 5): record decisions, corrections, failures, patterns, constraints, gaps into `context/` (mandatory facts, register in `context/index.md`) or `memory/` (learnings, register in `memory/index.md`). Append a one-liner
+- **CAPTURE** (on-need, by judgment — not automatic per-summarize): record a decision, correction, failure, pattern, constraint, or gap into `context/` (mandatory facts, register in `context/index.md`) or `memory/` (learnings, register in `memory/index.md`) **only when the learning is worth saving for a future agent**; skip when nothing novel emerged. Append a one-liner
   to `memory/learning-log.md`.
   → Split: mandatory facts → `.agents/context/`; evolving learnings → `.agents/memory/` (with `memory/index.md` + `memory/learning-log.md`). Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. One-offs stay in memory — no rule-bloat.
 - **CONSOLIDATE** (periodic): a signal seen ≥2 times in this codebase is promoted to `rules/`
