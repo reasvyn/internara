@@ -7,7 +7,7 @@ namespace App\Modules\SysAdmin\Domain\Backups\Entities;
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\SysAdmin\Domain\Backups\Enums\BackupStatus;
 use App\Modules\SysAdmin\Domain\Backups\Enums\BackupType;
-use Illuminate\Database\Eloquent\Model;
+use App\Modules\SysAdmin\Domain\Backups\Models\Backup;
 
 final readonly class BackupState extends BaseEntity
 {
@@ -18,7 +18,7 @@ final readonly class BackupState extends BaseEntity
         private ?string $errorOutput,
     ) {}
 
-    public static function fromModel(Model $model): static
+    public static function fromModel(Backup $model): static
     {
         return new self(
             status: $model->status,

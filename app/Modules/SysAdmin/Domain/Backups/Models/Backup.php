@@ -12,6 +12,21 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
+/**
+ * @property string $id
+ * @property int $file_size
+ * @property array $metadata
+ * @property \Carbon\Carbon $started_at
+ * @property \Carbon\Carbon $completed_at
+ * @property string $type
+ * @property string $file_path
+ * @property string $status
+ * @property string $error_output
+ * @property string $created_by
+ * @property-read \App\Modules\User\Models\User|null $creator
+ */
+
 #[Fillable([
     'type',
     'file_path',
