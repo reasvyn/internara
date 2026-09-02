@@ -11,7 +11,7 @@ run_guard() {
     local name="$1"
     shift
     echo "==> $name"
-    if ! python3 "tools/$name.py" --no-cache --strict --format summary "$@"; then
+    if ! python3 "tools/$name.py" --strict --format summary "$@"; then
         echo "::error::$name reported violations"
         fail=1
     fi
