@@ -65,7 +65,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Frontend & UI
 
-- **[UI/UX Design](guides/ui-ux.md)** — Design system (Tailwind CSS v4 + TallstackUI v4 + self-hosted palette), layouts, dark mode
+- **[UI/UX Design](guides/ui-ux/index.md)** — Design system (Tailwind CSS v4 + TallstackUI v4 + self-hosted palette), layouts, dark mode, [Design System & Guidelines](guides/ui-ux/design-system.md)
 - **[Branding](guides/branding.md)** — Dynamic theming, color system, presets, logo management
 
 ---

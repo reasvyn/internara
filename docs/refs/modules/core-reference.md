@@ -265,7 +265,7 @@ No dedicated route file. Health check endpoint `/up` is defined in `bootstrap/ap
 
 ## Views
 
-Views are located in `resources/views/ui/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/ui/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

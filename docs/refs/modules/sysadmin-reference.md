@@ -128,7 +128,7 @@ File: `routes/web/sysadmin.php` Named routes: `admin.users.index`, `admin.users.
 
 ## Views
 
-Views are located in `resources/views/sysadmin/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/sysadmin/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

@@ -88,7 +88,7 @@ File: `routes/web/academics.php` Named routes: `sysadmin.school`, `sysadmin.depa
 
 ## Views
 
-Views are located in `resources/views/academics/`. See [UI/UX](../../guides/ui-ux.md) for the
+Views are located in `resources/views/academics/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the
 design system.
 
 ## Tests

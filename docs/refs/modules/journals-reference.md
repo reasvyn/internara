@@ -128,7 +128,7 @@ File: `routes/web/journals.php` Named routes: `student.logbook`, `student.attend
 
 ## Views
 
-Views are located in `resources/views/journals/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/journals/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

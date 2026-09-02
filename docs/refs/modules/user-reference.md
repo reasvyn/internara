@@ -205,7 +205,7 @@ File: `routes/web/user.php` Named routes: `home`, `dashboard`, `user.dashboard`,
 
 ## Views
 
-Views are located in `resources/views/user/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/user/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

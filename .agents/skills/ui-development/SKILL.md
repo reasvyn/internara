@@ -45,7 +45,7 @@ Follow `AGENTS.md §Agent Workflow` for the canonical 5-step pipeline. This skil
 
 | Topic | Doc |
 |-------|-----|
-| UI/UX design system | `docs/guides/ui-ux.md` |
+| UI/UX design system | `docs/guides/ui-ux/design-system.md` |
 | Branding & themes | `docs/guides/branding.md` |
 | Blade presentation rule | `docs/conventions.md` §14 |
 | Livewire component patterns | `docs/guides/arch/livewire-pattern.md` |

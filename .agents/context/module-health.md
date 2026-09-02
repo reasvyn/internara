@@ -1,8 +1,8 @@
-# Module Health — Stabilization Phase v0.15.8
+# Module Health — Stabilization Phase v0.15.9
 
 ## Description
 
-Internara has **19 modules** in `app/Modules/` (18 business + UI + Core) at **v0.15.8 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.
+Internara has **19 modules** in `app/Modules/` (18 business + UI + Core) at **v0.15.9 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.
 
 ---
 

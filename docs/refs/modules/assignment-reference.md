@@ -96,7 +96,7 @@ File: `routes/web/assignment.php` Named routes: `student.assignments`, `sysadmin
 
 ## Views
 
-Views are located in `resources/views/assignment/`. See [UI/UX](../../guides/ui-ux.md) for the
+Views are located in `resources/views/assignment/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the
 design system.
 
 ## Tests

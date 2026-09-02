@@ -20,7 +20,7 @@ each S-rule, why it exists, and the baseline detection.
 | **S7** | Rate limiting: `RateLimiter::` or `throttle` middleware | No rate limiting on auth endpoints |
 | **S8** | Secrets: no hardcoded passwords/tokens/keys | Hardcoded credentials |
 | **S9** | File upload: validate type, size, scan content | Unrestricted uploads |
-| **S10** | Headers: security headers set | Missing CSP, X-Frame-Options, etc. |
+| **S10** | Dependency auditing: no known composer/npm vulnerabilities | `composer audit` / `npm audit` advisory findings |
 
 ## Intent
 
@@ -128,15 +128,13 @@ webroot (Spatie MediaLibrary with validated collections).
 **Failure mode if ignored:** An upload accepts a `.php` disguised as `.jpg` and executes server-side,
 compromising the host.
 
-### S10 — Security headers
+### S10 — Dependency auditing
 
-**Why it exists:** CSP, X-Frame-Options / frame-ancestors, `X-Content-Type-Options`, and HSTS
-mitigate clickjacking, MIME confusion, and injection amplification at the response layer.
+**Why it exists:** Known vulnerabilities in PHP/JS dependencies (CVE/GHSA) are a direct remote
+execution / data-exfiltration channel; a self-hosted PII platform must not ship known-bad deps.
 
-**How to apply:** Configure the header middleware/CSP in a single config location applied globally.
-
-**Failure mode if ignored:** An iframe-wrapped admin panel performs clickjacked "click on the
-approve" actions; MIME-sniffing executes script disguised as text.
+**How to apply:** Run `composer audit` and `npm audit` (embedded in `scan_security.py`); upgrade
+affected packages to patched versions.
 
 ---
 

@@ -359,7 +359,7 @@ afterthought — it is a design constraint enforced at every layer.
 - Guide modals (`*-guide.blade.php`) must be keyboard-accessible and announce their content via
   ARIA.
 
-See: `docs/guides/ui-ux.md` §6 (Accessibility), `docs/conventions.md` §13.
+See: `docs/guides/ui-ux/design-system.md` §6 (Accessibility), `docs/conventions.md` §13.
 
 ---
 

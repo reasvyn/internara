@@ -119,7 +119,7 @@ File: `routes/web/auth.php` Named routes: `login`, `activate` (password/recovery
 
 ## Views
 
-Views are located in `resources/views/auth/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/auth/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

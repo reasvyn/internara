@@ -98,7 +98,7 @@ File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token
 
 ## Views
 
-Views are located in `resources/views/setup/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/setup/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

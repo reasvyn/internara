@@ -2,7 +2,7 @@
 
 > **Curated mandatory known context** — tech stack, project definition, target users, design principles, and lifecycle scope. Read at start of every session and when releasing new version.
 
-## Project Identity — Scale & Stack (v0.15.8)
+## Project Identity — Scale & Stack (v0.15.9)
 
 | Fact | Value |
 |------|-------|
@@ -10,7 +10,7 @@
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
-| **Status** | **v0.15.8** (`composer.json`) / **v0.15.3** (`package.json`) — Stabilization; suite ~98% pass, uneven coverage (core solid, domain needs work); P0 in `Assessment/Certification/Document` |
+| **Status** | **v0.15.9** (`composer.json`) / **v0.15.9** (`package.json`) — Stabilization; suite ~98% pass, uneven coverage (core solid, domain needs work); P0 in `Assessment/Certification/Document` |
 | **License** | MIT — schools may fork/customize (Dapodik/regional certificate templates) |
 
 ### Technology Stack

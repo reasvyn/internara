@@ -121,11 +121,11 @@ surface.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC1 | All application code MUST live inside a business module under `app/{Module}` — never in a flat top-level layer |
+| FR-ARC1 | All application code MUST live inside a business module under `app/Modules/{Module}` — never in a flat top-level layer |
 | FR-ARC2 | A module owns its full vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`, `Notifications/`, `Policies/`, `Livewire/`, `Http/`, routes, and `lang/` |
 | FR-ARC3 | A module's public surface is its `Actions/`, `Services/`, `Contracts/`, `Events/`, `Entities/`, and `Enums/`; everything else is internal to the module |
 | FR-ARC4 | The Core module (`app/Modules/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
-| FR-ARC5 | Each module is registered in `config/module.php` with its dependency order; `docs/refs/modules/index.md` documents the graph |
+| FR-ARC5 | Each module is registered in `config/module.php`, auto-discovered from the directory listing of `app/Modules/` (deterministic alphabetical order, no manual registry); `docs/refs/modules/index.md` documents the dependency graph |
 
 ### 4-Layer Model
 
@@ -176,7 +176,7 @@ surface.
 | ------- | ----------- |
 | FR-ARC29 | Cross-module reads MUST call the source module's public `ReadAction` — never query another module's Models directly |
 | FR-ARC30 | Cross-module mutations MUST call the source module's public `CommandAction`; the caller never touches another module's Models |
-| FR-ARC31 | Module dependencies MUST follow the order in `config/module.php`; a cycle is an architecture violation |
+| FR-ARC31 | The module registry MUST be derived deterministically from `config/module.php` (auto-discovery of `app/Modules/`); a dependency cycle is an architecture violation |
 | FR-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Modules/Core/`) or a Core contract — never left as a cross-module shortcut |
 | FR-ARC33 | Cross-module visibility is decided at design time; bypassing an Action to reach another module's internals requires a recorded design decision |
 

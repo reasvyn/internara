@@ -7,7 +7,7 @@ and accessibility guidelines.
 
 ## 1. Design System Philosophy
 
-> 📖 Authoritative references: [UI Pattern](arch/ui-pattern.md) — visual hierarchy, Tailwind v4 tokens, component design, performance; [UX Pattern](arch/ux-pattern.md) — theming, accessibility, localization, user flow.
+> 📖 Authoritative references: [UI Pattern](../arch/ui-pattern.md) — visual hierarchy, Tailwind v4 tokens, component design, performance; [UX Pattern](../arch/ux-pattern.md) — theming, accessibility, localization, user flow.
 
 Internara's interface is built on three layers:
 
@@ -57,7 +57,7 @@ Located at `resources/views/{module}/layouts/`:
 
 ## 3. Dark Mode
 
-> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §1 — dual-signal theming, token architecture, dark-mode dual-signal contract.
+> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §1 — dual-signal theming, token architecture, dark-mode dual-signal contract.
 
 Dual-signal dark mode via `data-theme` attribute + `.dark` class on `<html>`. Three-state switcher:
 light, dark, system preference. Implementation:
@@ -66,7 +66,7 @@ light, dark, system preference. Implementation:
 - **JS:** `resources/js/app.js` `applyTheme()` sets **both** `data-theme` (semantic palette vars) and `.dark` (Tailwind/TallstackUI `dark:` variant) and mirrors to `theme` cookie for SSR accuracy (`base.blade.php` applies `class="dark"` server-side to avoid FOUC).
 - **CSS:** `resources/css/app.css` defines palette via `@theme` (`--color-base-*`, `--color-primary` etc.) with `[data-theme='dark']` overrides; legacy DaisyUI component classes (`.btn`, `.badge`, `.table` etc.) are shimmed via `@layer components` until fully migrated to `x-ts-*`.
 
-Brand colors are not hardcoded — injected at runtime via `Theme::cssVariables()` inline `<style>` block (see `foundation/branding.md`). Admin can change brand colors and see them reflected in both themes immediately, without CSS recompilation.
+Brand colors are not hardcoded — injected at runtime via `Theme::cssVariables()` inline `<style>` block (see [Branding](../branding.md)). Admin can change brand colors and see them reflected in both themes immediately, without CSS recompilation.
 
 Dark mode lightens brand colors by 40% for visibility on dark backgrounds.
 
@@ -100,7 +100,7 @@ Excluded directories: `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`,
 
 ## 6. Accessibility (WCAG 2.1 AA)
 
-> 📖 Authoritative references: [UX Pattern](arch/ux-pattern.md) §2 — WCAG 2.2 AA (Perceivable/Operable/Understandable/Robust), focus, ARIA, `aria-live`; [UI Pattern](arch/ui-pattern.md) §7 — forms/tables/modals/navigation a11y. This section is the UI-layer checklist.
+> 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §2 — WCAG 2.2 AA (Perceivable/Operable/Understandable/Robust), focus, ARIA, `aria-live`; [UI Pattern](../arch/ui-pattern.md) §7 — forms/tables/modals/navigation a11y. This section is the UI-layer checklist.
 
 All user-facing interfaces MUST meet WCAG 2.1 Level AA. This section defines UI-layer
 requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural rules and
@@ -163,7 +163,7 @@ requirements. See `docs/guides/arch/modular-pattern.md` §22 for architectural r
 
 ## 7. SPA Navigation
 
-> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §4.1 — `wire:navigate` SPA, focus reset, information architecture.
+> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §4.1 — `wire:navigate` SPA, focus reset, information architecture.
 
 Internal links use `wire:navigate` for AJAX page transitions. Content area swaps without full page
 reload. Browser history and URL update normally — bookmarking and back button work as expected. No
@@ -227,7 +227,7 @@ See `docs/guides/arch/modular-pattern.md` §13 for full route patterns.
 
 ## 9. Localization
 
-> 📖 Authoritative reference: [UX Pattern](arch/ux-pattern.md) §3 — localization (ICU/CLDR, key conventions, authoring rules, dual locale).
+> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §3 — localization (ICU/CLDR, key conventions, authoring rules, dual locale).
 
 ### Translation Key Convention
 
@@ -292,7 +292,7 @@ Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.)
 
 ## 11. Guide Component Pattern
 
-> 📖 Authoritative references: [UX Pattern](arch/ux-pattern.md) §4.3 — Guide Pattern (NN/g Heuristic #10, placement, FAB, modal, a11y); [Livewire Pattern](arch/livewire-pattern.md) §11 — implementation.
+> 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §4.3 — Guide Pattern (NN/g Heuristic #10, placement, FAB, modal, a11y); [Livewire Pattern](../arch/livewire-pattern.md) §11 — implementation.
 
 Every page with a non-trivial workflow MUST include a floating guide button (bottom-right, question
 mark icon) that opens a modal with step-by-step instructions. See

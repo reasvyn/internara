@@ -90,7 +90,7 @@ File: `routes/web/certification.php` Named routes: `certificates.download`,
 
 ## Views
 
-Views are located in `resources/views/certification/`. See [UI/UX](../../guides/ui-ux.md) for the
+Views are located in `resources/views/certification/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the
 design system.
 
 ## Tests

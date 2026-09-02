@@ -106,7 +106,7 @@ File: `routes/web/enrollment.php` Named routes: `apply`, `registration.center`,
 
 ## Views
 
-Views are located in `resources/views/enrollment/`. See [UI/UX](../../guides/ui-ux.md) for the
+Views are located in `resources/views/enrollment/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the
 design system.
 
 ## Tests

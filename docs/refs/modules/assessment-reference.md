@@ -90,7 +90,7 @@ File: `routes/web/assessment.php` Named routes: `assessments`, `sysadmin.assessm
 
 ## Views
 
-Views are located in `resources/views/assessment/`. See [UI/UX](../../guides/ui-ux.md) for the
+Views are located in `resources/views/assessment/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the
 design system.
 
 ## Tests

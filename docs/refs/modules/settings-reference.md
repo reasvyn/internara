@@ -118,7 +118,7 @@ File: `routes/web/settings.php` Named route: `admin.settings`
 
 ## Views
 
-Views are located in `resources/views/settings/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/settings/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

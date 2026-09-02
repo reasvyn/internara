@@ -154,7 +154,7 @@ GDPR reference: [System Observability §GDPR Deletion Logs](../system-observabil
 
 | Script | Purpose | Command |
 | ------ | ------- | ------- |
-| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security/cli.py` |
+| `scan_security.py` | XSS, SQLi, CSRF, auth patterns, dependency auditing (composer/npm audit) | `python3 tools/scan_security.py` |
 | `scan_violations.py` | Architecture invariant violations (C1-C8, D1-D6) | `python3 tools/scan_violations/cli.py` |
 | `scan_conventions.py` | `declare(strict_types)`, `#[Fillable]`, debug calls | `python3 tools/scan_conventions/cli.py` |
 | `scan_class_contracts.py` | Action/Entity/DTO/Model contract compliance | `python3 tools/scan_class_contracts/cli.py` |
@@ -166,6 +166,9 @@ GDPR reference: [System Observability §GDPR Deletion Logs](../system-observabil
 composer audit          # Check for known vulnerabilities in PHP dependencies
 npm audit               # Check for known vulnerabilities in JS dependencies
 ```
+
+Both audits are bundled into `scan_security.py` (rule S10) and enforced `--strict` by the
+`guards.sh` pipeline gate.
 
 ---
 

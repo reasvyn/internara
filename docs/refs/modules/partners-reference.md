@@ -88,7 +88,7 @@ File: `routes/web/partners.php` Naming pattern: `partners.companies`, `partners.
 
 ## Views
 
-Views are located in `resources/views/partners/`. See [UI/UX](../../guides/ui-ux.md) for the design
+Views are located in `resources/views/partners/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
 system.
 
 ## Tests

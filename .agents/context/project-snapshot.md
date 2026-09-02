@@ -8,7 +8,7 @@ Indonesian vocational schools (SMK) must run a compulsory 3–6 month industrial
 
 Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) and `docs/philosophy.md` (3S Doctrine + 6 values).
 
-## Identity — Scale & Stack (v0.15.8)
+## Identity — Scale & Stack (v0.15.9)
 
 | Fact | Value |
 |------|-------|
@@ -16,7 +16,7 @@ Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) an
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
-| **Status** | **v0.15.8** (`composer.json`) / **v0.15.3** (`package.json`) — Stabilization; suite ~98% pass, uneven coverage (core solid, domain needs work); P0 in `Assessment/Certification/Document` |
+| **Status** | **v0.15.9** (`composer.json`) / **v0.15.9** (`package.json`) — Stabilization; suite ~98% pass, uneven coverage (core solid, domain needs work); P0 in `Assessment/Certification/Document` |
 | **License** | MIT — schools may fork/customize (Dapodik/regional certificate templates) |
 
 Full stack: `AGENTS.md` §Project Identity; philosophy: `docs/philosophy.md` §1–7.

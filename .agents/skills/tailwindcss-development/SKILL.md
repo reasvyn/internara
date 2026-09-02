@@ -86,7 +86,7 @@ General UI rules (Blade, view structure, layout, accessibility, localization) ar
 
 | Topic | Doc |
 |-------|-----|
-| UI/UX design system (general) | `docs/guides/ui-ux.md` |
+| UI/UX design system (general) | `docs/guides/ui-ux/design-system.md` |
 | General UI skill | `ui-development` skill |
 | App CSS entry | `resources/css/app.css` |
 | Tailwind CSS v4 | `search-docs` with `tailwindcss` |

@@ -31,5 +31,5 @@ Follow `AGENTS.md §Agent Workflow` pipeline. This skill adds TallStackUI-specif
 | Topic | Doc |
 |-------|-----|
 | TallStackUI docs | `search-docs` with `tallstackui/tallstackui` |
-| UI/UX system | `docs/guides/ui-ux.md` §10 |
+| UI/UX system | `docs/guides/ui-ux/design-system.md` §10 |
 | Tailwind specifics | `tailwindcss-development` |
