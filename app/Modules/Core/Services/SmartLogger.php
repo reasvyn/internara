@@ -185,7 +185,7 @@ final class SmartLogger
             return false;
         }
 
-        return $causer !== null || ($this->toActivity && ! $this->toSystem);
+        return $causer !== null || ! $this->toSystem;
     }
 
     private function processEventPayload(): void
@@ -213,22 +213,18 @@ final class SmartLogger
         }
 
         $locale = App::getLocale();
-
-        if (in_array($locale, self::SUPPORTED_LOCALES, true)) {
-            $description = __('log.'.$eventName, [], $locale);
-
-            if ($description !== 'log.'.$eventName) {
-                $this->context['event_description'] = $description;
-            }
-        }
-
         $altLocale = $locale === 'id' ? 'en' : 'id';
 
-        if (in_array($altLocale, self::SUPPORTED_LOCALES, true)) {
-            $altDescription = __('log.'.$eventName, [], $altLocale);
+        foreach ([$locale, $altLocale] as $targetLocale) {
+            if (! in_array($targetLocale, self::SUPPORTED_LOCALES, true)) {
+                continue;
+            }
 
-            if ($altDescription !== 'log.'.$eventName) {
-                $this->context['event_description_'.$altLocale] = $altDescription;
+            $description = __('log.'.$eventName, [], $targetLocale);
+
+            if ($description !== 'log.'.$eventName) {
+                $key = $targetLocale === $locale ? 'event_description' : 'event_description_'.$targetLocale;
+                $this->context[$key] = $description;
             }
         }
     }

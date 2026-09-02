@@ -18,39 +18,39 @@ use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\Settings\Models\Setting;
 use App\Modules\User\Domain\Mentor\Entities\MentorEntity;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $start_date
- * @property \Carbon\Carbon $end_date
+ * @property Carbon $start_date
+ * @property Carbon $end_date
  * @property array $proposed_company_details
  * @property string $student_id
  * @property string $internship_id
  * @property string $placement_id
  * @property string $status
- * @property-read \App\Modules\User\Models\User|null $student
- * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
- * @property-read \App\Modules\Enrollment\Domain\Placement\Models\Placement|null $placement
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Journals\Domain\Logbook\Models\Logbook> $logbooks
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Journals\Domain\Attendance\Models\Attendance> $attendances
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Certification\Domain\Certificate\Models\Certificate> $certificates
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog> $supervisionLogs
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument> $documents
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assessment\Models\Assessment> $assessments
- * @property-read \App\Modules\Reports\Domain\StudentReport\Models\StudentReport|null $report
- * @property-read \App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember|null $mentee
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\User\Models\User> $mentors
+ * @property-read User|null $student
+ * @property-read Internship|null $internship
+ * @property-read Placement|null $placement
+ * @property-read Collection<int,Logbook> $logbooks
+ * @property-read Collection<int,Attendance> $attendances
+ * @property-read Collection<int,Certificate> $certificates
+ * @property-read Collection<int,SupervisionLog> $supervisionLogs
+ * @property-read Collection<int,RegistrationDocument> $documents
+ * @property-read Collection<int,Assessment> $assessments
+ * @property-read StudentReport|null $report
+ * @property-read InternshipGroupMember|null $mentee
+ * @property-read Collection<int,User> $mentors
  */
-
 #[
     Fillable([
         'student_id',

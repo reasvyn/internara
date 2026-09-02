@@ -10,10 +10,10 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Entities\InternshipGroupState;
 use Database\Factories\InternshipGroupFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 /**
  * @property string $id
@@ -22,11 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $internship_id
  * @property string $placement_id
  * @property string $description
- * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
- * @property-read \App\Modules\Enrollment\Domain\Placement\Models\Placement|null $placement
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember> $members
+ * @property-read Internship|null $internship
+ * @property-read Placement|null $placement
+ * @property-read Collection<int,InternshipGroupMember> $members
  */
-
 #[Fillable(['name', 'internship_id', 'placement_id', 'description', 'is_active'])]
 class InternshipGroup extends BaseModel
 {

@@ -7,17 +7,29 @@ namespace App\Modules\Core\Support;
 final class Color
 {
     private const LUMINANCE_RED = 0.299;
+
     private const LUMINANCE_GREEN = 0.587;
+
     private const LUMINANCE_BLUE = 0.114;
+
     private const CONTENT_DARK = '#1a1a1a';
+
     private const CONTENT_LIGHT = '#f0f0f0';
+
     private const CONTENT_DARK_MODE = '#e5e5e5';
+
     private const DARK_BASE_PERCENT = 80;
+
     private const DARK_SHADE_200_PERCENT = 6;
+
     private const DARK_SHADE_300_PERCENT = 10;
+
     private const LIGHT_SHADE_200_PERCENT = 10;
+
     private const LIGHT_SHADE_300_PERCENT = 20;
+
     private const SHADE_200_PERCENT = 3;
+
     private const SHADE_300_PERCENT = 6;
 
     public static function hexToRgb(string $hex): array
@@ -46,24 +58,12 @@ final class Color
 
     public static function lighten(string $hex, int $percent): string
     {
-        $rgb = self::hexToRgb($hex);
-
-        foreach ($rgb as &$channel) {
-            $channel = min(255, $channel + (int) round(((255 - $channel) * $percent) / 100));
-        }
-
-        return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]);
+        return self::adjustBrightness($hex, $percent, true);
     }
 
     public static function darken(string $hex, int $percent): string
     {
-        $rgb = self::hexToRgb($hex);
-
-        foreach ($rgb as &$channel) {
-            $channel = max(0, $channel - (int) round(($channel * $percent) / 100));
-        }
-
-        return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]);
+        return self::adjustBrightness($hex, $percent, false);
     }
 
     public static function isValid(string $hex): bool
@@ -104,5 +104,20 @@ final class Color
             'base300' => self::darken($darkBase, self::DARK_SHADE_300_PERCENT),
             'content' => self::CONTENT_DARK_MODE,
         ];
+    }
+
+    private static function adjustBrightness(string $hex, int $percent, bool $lighten): string
+    {
+        $rgb = self::hexToRgb($hex);
+
+        foreach ($rgb as &$channel) {
+            if ($lighten) {
+                $channel = min(255, $channel + (int) round(((255 - $channel) * $percent) / 100));
+            } else {
+                $channel = max(0, $channel - (int) round(($channel * $percent) / 100));
+            }
+        }
+
+        return self::rgbToHex($rgb[0], $rgb[1], $rgb[2]);
     }
 }

@@ -9,28 +9,27 @@ use App\Modules\Auth\Domain\AccessTokens\Entities\ActivationToken;
 use App\Modules\Auth\Domain\AccountRecovery\Entities\RecoveryCodeState;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\AccessTokenFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Hash;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $expires_at
- * @property \Carbon\Carbon $last_attempt_at
- * @property \Carbon\Carbon $last_used_at
- * @property \Carbon\Carbon $revoked_at
+ * @property Carbon $expires_at
+ * @property Carbon $last_attempt_at
+ * @property Carbon $last_used_at
+ * @property Carbon $revoked_at
  * @property int $attempts
  * @property object $scopes
  * @property string $user_id
  * @property string $token
  * @property string $token_type
  * @property string $name
- * @property-read \App\Modules\User\Models\User|null $user
+ * @property-read User|null $user
  */
-
 #[
     Fillable([
         'user_id',

@@ -10,6 +10,7 @@ use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\SubmissionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,9 +29,9 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 /**
  * @property string $id
  * @property array $metadata
- * @property \Carbon\Carbon $submitted_at
- * @property \Carbon\Carbon $graded_at
- * @property \App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus $status
+ * @property Carbon $submitted_at
+ * @property Carbon $graded_at
+ * @property SubmissionStatus $status
  * @property string $assignment_id
  * @property string $registration_id
  * @property string $student_id
@@ -40,12 +41,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string $graded_by
  * @property string $verified_by
  * @property string $verified_at
- * @property-read \App\Modules\Assignment\Models\Assignment|null $assignment
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $student
- * @property-read \App\Modules\User\Models\User|null $grader
+ * @property-read Assignment|null $assignment
+ * @property-read Registration|null $registration
+ * @property-read User|null $student
+ * @property-read User|null $grader
  */
-
 #[
     Fillable([
         'assignment_id',

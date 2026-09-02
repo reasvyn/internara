@@ -9,13 +9,11 @@ use Database\Factories\GdprDeletionLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
 /**
  * @property string $id
  * @property array $metadata_snapshot
  * @property string $user_id
  */
-
 #[Fillable(['user_id', 'metadata_snapshot'])]
 class GdprDeletionLog extends BaseModel
 {

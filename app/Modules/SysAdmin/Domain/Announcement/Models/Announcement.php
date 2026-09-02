@@ -8,26 +8,25 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\SysAdmin\Domain\Announcement\Entities\AnnouncementState;
 use App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\AnnouncementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
  * @property array $target_roles
- * @property \Carbon\Carbon $scheduled_at
- * @property \App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus $status
+ * @property Carbon $scheduled_at
+ * @property AnnouncementStatus $status
  * @property string $title
  * @property string $message
  * @property string $type
  * @property string $link
  * @property string $created_by
- * @property-read \App\Modules\User\Models\User|null $creator
+ * @property-read User|null $creator
  */
-
 #[
     Fillable([
         'title',

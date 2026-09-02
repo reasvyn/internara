@@ -11,31 +11,31 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Entities\InternshipPeriod;
 use App\Modules\Program\Domain\Internship\Entities\InternshipState;
 use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
+use Carbon\Carbon;
 use Database\Factories\InternshipFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $start_date
- * @property \Carbon\Carbon $end_date
- * @property \Carbon\Carbon $registration_start_date
- * @property \Carbon\Carbon $registration_end_date
+ * @property Carbon $start_date
+ * @property Carbon $end_date
+ * @property Carbon $registration_start_date
+ * @property Carbon $registration_end_date
  * @property array $phases
  * @property array $required_document_ids
  * @property array $grading_weights
- * @property \App\Modules\Program\Domain\Internship\Enums\InternshipStatus $status
+ * @property InternshipStatus $status
  * @property string $academic_year_id
  * @property string $name
  * @property string $description
- * @property-read \App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear|null $academicYear
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Placement\Models\Placement> $placements
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ * @property-read AcademicYear|null $academicYear
+ * @property-read Collection<int,Placement> $placements
+ * @property-read Collection<int,Registration> $registrations
  */
-
 #[
     Fillable([
         'academic_year_id',

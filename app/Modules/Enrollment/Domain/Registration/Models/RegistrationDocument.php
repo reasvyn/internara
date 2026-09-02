@@ -8,6 +8,7 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\RegistrationDocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,20 +16,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $verified_at
- * @property \App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus $status
+ * @property Carbon $verified_at
+ * @property RegistrationDocumentStatus $status
  * @property string $registration_id
  * @property string $document_id
  * @property string $admin_notes
  * @property string $verified_by
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\Document\Models\Document|null $document
- * @property-read \App\Modules\User\Models\User|null $verifiedBy
+ * @property-read Registration|null $registration
+ * @property-read Document|null $document
+ * @property-read User|null $verifiedBy
  */
-
 #[
     Fillable([
         'registration_id',

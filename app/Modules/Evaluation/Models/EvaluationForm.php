@@ -8,10 +8,10 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\User\Models\User;
 use Database\Factories\EvaluationFormFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 /**
  * @property string $id
@@ -20,12 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $description
  * @property string $target_type
  * @property string $created_by
- * @property-read \App\Modules\User\Models\User|null $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationSection> $sections
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationQuestion> $questions
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationResponse> $responses
+ * @property-read User|null $createdBy
+ * @property-read Collection<int,EvaluationSection> $sections
+ * @property-read Collection<int,EvaluationQuestion> $questions
+ * @property-read Collection<int,EvaluationResponse> $responses
  */
-
 #[
     Fillable([
         'name',

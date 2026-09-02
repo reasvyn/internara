@@ -9,21 +9,21 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Journals\Domain\Attendance\Entities\AttendanceState as AttendanceStateEntity;
 use App\Modules\Journals\Domain\Attendance\Enums\AttendanceStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\AttendanceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $date
+ * @property Carbon $date
  * @property string $clock_in
  * @property string $clock_out
- * @property \Carbon\Carbon $absence_processed_at
+ * @property Carbon $absence_processed_at
  * @property bool $is_verified
- * @property \Carbon\Carbon $verified_at
- * @property \App\Modules\Journals\Domain\Attendance\Enums\AttendanceStatus $status
+ * @property Carbon $verified_at
+ * @property AttendanceStatus $status
  * @property string $user_id
  * @property string $registration_id
  * @property string $clock_in_ip
@@ -40,11 +40,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $absence_admin_notes
  * @property string $verified_by
  * @property string $notes
- * @property-read \App\Modules\User\Models\User|null $user
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $verifier
+ * @property-read User|null $user
+ * @property-read Registration|null $registration
+ * @property-read User|null $verifier
  */
-
 #[
     Fillable([
         'user_id',

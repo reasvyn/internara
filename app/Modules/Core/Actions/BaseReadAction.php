@@ -17,6 +17,7 @@ abstract class BaseReadAction
     use ResolvesModuleName;
 
     private const DEFAULT_CACHE_TTL = 300;
+
     private const DEFAULT_PER_PAGE = 15;
 
     protected function remember(string $key, callable $callback, int $ttl = self::DEFAULT_CACHE_TTL): mixed

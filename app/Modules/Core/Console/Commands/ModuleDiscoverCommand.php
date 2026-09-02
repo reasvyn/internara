@@ -7,6 +7,7 @@ namespace App\Modules\Core\Console\Commands;
 use App\Modules\Core\Exceptions\InfrastructureException;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Services\SmartLogger;
+use App\Providers\AppServiceProvider;
 use Illuminate\Console\Command;
 
 class ModuleDiscoverCommand extends Command
@@ -25,7 +26,7 @@ class ModuleDiscoverCommand extends Command
     {
         try {
             $providers = $this->getLaravel()->getLoadedProviders();
-            $appServiceProvider = \App\Providers\AppServiceProvider::class;
+            $appServiceProvider = AppServiceProvider::class;
 
             if (! isset($providers[$appServiceProvider]) || ! $providers[$appServiceProvider]) {
                 throw new InfrastructureException(

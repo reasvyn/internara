@@ -7,24 +7,23 @@ namespace App\Modules\Program\Domain\InternshipGroup\Models;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\InternshipGroupMemberFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $joined_at
+ * @property Carbon $joined_at
  * @property string $internship_group_id
  * @property string $registration_id
  * @property string $user_id
  * @property string $role
- * @property-read \App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup|null $group
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $user
+ * @property-read InternshipGroup|null $group
+ * @property-read Registration|null $registration
+ * @property-read User|null $user
  */
-
 #[Fillable(['internship_group_id', 'registration_id', 'user_id', 'role', 'joined_at'])]
 class InternshipGroupMember extends BaseModel
 {

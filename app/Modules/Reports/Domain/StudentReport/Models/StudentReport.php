@@ -8,11 +8,11 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\StudentReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 
 /**
  * @property string $id
@@ -20,17 +20,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $teacher_score
  * @property float $exam_score
  * @property float $final_score
- * @property \Carbon\Carbon $finalized_at
+ * @property Carbon $finalized_at
  * @property array $archived_data
- * @property \App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus $status
+ * @property StudentReportStatus $status
  * @property string $registration_id
  * @property string $grade_letter
  * @property string $industry_feedback
  * @property string $finalized_by
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $finalizedBy
+ * @property-read Registration|null $registration
+ * @property-read User|null $finalizedBy
  */
-
 #[
     Fillable([
         'registration_id',

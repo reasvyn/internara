@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-
 /**
  * @property string $id
  * @property bool $is_active
@@ -27,9 +26,8 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string $content
  * @property string $file_path
  * @property string $created_by
- * @property-read \App\Modules\User\Models\User|null $createdBy
+ * @property-read User|null $createdBy
  */
-
 #[
     Fillable([
         'type',

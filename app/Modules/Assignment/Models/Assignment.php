@@ -11,8 +11,10 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\Document\Models\Document;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\AssignmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,21 +29,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
- * @property \Carbon\Carbon $due_date
+ * @property Carbon $due_date
  * @property bool $is_mandatory
- * @property \App\Modules\Assignment\Enums\AssignmentStatus $status
+ * @property AssignmentStatus $status
  * @property string $internship_id
  * @property string $document_id
  * @property string $assignment_type
  * @property string $title
  * @property string $description
  * @property string $created_by
- * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assignment\Domain\Submission\Models\Submission> $submissions
- * @property-read \App\Modules\User\Models\User|null $creator
- * @property-read \App\Modules\Document\Models\Document|null $document
+ * @property-read Internship|null $internship
+ * @property-read Collection<int,Submission> $submissions
+ * @property-read User|null $creator
+ * @property-read Document|null $document
  */
-
 #[
     Fillable([
         'internship_id',

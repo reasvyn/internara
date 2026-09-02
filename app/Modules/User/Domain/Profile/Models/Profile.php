@@ -10,18 +10,18 @@ use App\Modules\Partners\Domain\Company\Models\Company;
 use App\Modules\User\Enums\BloodType;
 use App\Modules\User\Enums\Gender;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\ProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $dob
+ * @property Carbon $dob
  * @property array $emergency_contact
- * @property \App\Modules\User\Enums\Gender $gender
- * @property \App\Modules\User\Enums\BloodType $blood_type
+ * @property Gender $gender
+ * @property BloodType $blood_type
  * @property string $user_id
  * @property string $phone
  * @property string $address
@@ -35,11 +35,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $internal_notes
  * @property string $department_id
  * @property string $company_id
- * @property-read \App\Modules\User\Models\User|null $user
- * @property-read \App\Modules\Academics\Domain\Department\Models\Department|null $department
- * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
+ * @property-read User|null $user
+ * @property-read Department|null $department
+ * @property-read Company|null $company
  */
-
 #[
     Fillable([
         'user_id',

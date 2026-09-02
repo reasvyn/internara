@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notification;
 class CustomDatabaseChannel
 {
     private const DEFAULT_TYPE = 'general';
+
     private const DEFAULT_TITLE = 'Notification';
 
     public function __construct(protected readonly SendsNotifications $sendNotification) {}

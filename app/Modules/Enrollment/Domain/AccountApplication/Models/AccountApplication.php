@@ -8,27 +8,26 @@ use App\Modules\Academics\Domain\Department\Models\Department;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\AccountApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
  * @property array $form_data
- * @property \Carbon\Carbon $processed_at
- * @property \App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationStatus $status
+ * @property Carbon $processed_at
+ * @property AccountApplicationStatus $status
  * @property string $name
  * @property string $email
  * @property string $student_id_number
  * @property string $department_id
  * @property string $processed_by
  * @property string $rejection_reason
- * @property-read \App\Modules\Academics\Domain\Department\Models\Department|null $department
- * @property-read \App\Modules\User\Models\User|null $processor
+ * @property-read Department|null $department
+ * @property-read User|null $processor
  */
-
 #[
     Fillable([
         'name',

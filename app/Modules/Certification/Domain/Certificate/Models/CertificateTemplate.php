@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
  * @property bool $is_active
@@ -19,9 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $layout
  * @property string $content_template
  * @property string $created_by
- * @property-read \App\Modules\User\Models\User|null $createdBy
+ * @property-read User|null $createdBy
  */
-
 #[
     Fillable([
         'name',

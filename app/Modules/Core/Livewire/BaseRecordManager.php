@@ -57,6 +57,11 @@ abstract class BaseRecordManager extends Component
             $this->perPage = 10;
         }
 
+        return $this->buildQuery()->paginate($this->perPage);
+    }
+
+    protected function buildQuery(): Builder
+    {
         $query = $this->query();
 
         if ($this->with !== []) {
@@ -67,11 +72,7 @@ abstract class BaseRecordManager extends Component
             $query = $this->applySearch($query);
         }
 
-        $query = $this->applyFilters($query);
-
-        $query = $this->applySorting($query);
-
-        return $query->paginate($this->perPage);
+        return $this->applySorting($this->applyFilters($query));
     }
 
     protected function perPageOptions(): array
@@ -114,18 +115,7 @@ abstract class BaseRecordManager extends Component
 
     protected function performMassAction(string $name, callable $callback): void
     {
-        $query = $this->query();
-
-        if ($this->with !== []) {
-            $query = $query->with($this->with);
-        }
-
-        if ($this->search) {
-            $query = $this->applySearch($query);
-        }
-
-        $query = $this->applyFilters($query);
-
+        $query = $this->buildQuery();
         $count = $query->count();
 
         if ($count === 0) {

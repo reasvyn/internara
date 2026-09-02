@@ -8,6 +8,7 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\Partners\Domain\Company\Models\Company;
 use App\Modules\Partners\Domain\Partnership\Entities\PartnershipState;
 use App\Modules\Partners\Domain\Partnership\Enums\PartnershipStatus;
+use Carbon\Carbon;
 use Database\Factories\PartnershipFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,13 +17,12 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $start_date
- * @property \Carbon\Carbon $end_date
- * @property \Carbon\Carbon $signed_at
- * @property \App\Modules\Partners\Domain\Partnership\Enums\PartnershipStatus $status
+ * @property Carbon $start_date
+ * @property Carbon $end_date
+ * @property Carbon $signed_at
+ * @property PartnershipStatus $status
  * @property string $company_id
  * @property string $agreement_number
  * @property string $title
@@ -33,9 +33,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $signed_by_school
  * @property string $signed_by_company
  * @property string $notes
- * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
+ * @property-read Company|null $company
  */
-
 #[
     Fillable([
         'company_id',

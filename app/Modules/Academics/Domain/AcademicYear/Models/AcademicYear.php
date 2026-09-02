@@ -8,8 +8,10 @@ use App\Modules\Academics\Domain\AcademicYear\Entities\AcademicYearState;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Program\Domain\Internship\Models\Internship;
+use Carbon\Carbon;
 use Database\Factories\AcademicYearFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -21,14 +23,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $id
- * @property \Carbon\Carbon $start_date
- * @property \Carbon\Carbon $end_date
+ * @property Carbon $start_date
+ * @property Carbon $end_date
  * @property bool $is_active
  * @property string $name
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Program\Domain\Internship\Models\Internship> $internships
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assessment\Models\Assessment> $assessments
+ * @property-read Collection<int,Internship> $internships
+ * @property-read Collection<int,Assessment> $assessments
  */
-
 #[Fillable(['name', 'start_date', 'end_date', 'is_active'])]
 class AcademicYear extends BaseModel
 {

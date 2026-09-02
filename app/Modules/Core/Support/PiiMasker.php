@@ -7,6 +7,7 @@ namespace App\Modules\Core\Support;
 final class PiiMasker
 {
     private const MASK_STRING = '***';
+
     private const MASKED_KEYS = [
         'password',
         'password_confirmation',

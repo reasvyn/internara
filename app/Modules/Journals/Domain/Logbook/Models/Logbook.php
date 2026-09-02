@@ -9,6 +9,7 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Journals\Domain\Logbook\Entities\LogbookState;
 use App\Modules\Journals\Domain\Logbook\Enums\LogbookStatus;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\LogbookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,14 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $date
+ * @property Carbon $date
  * @property bool $is_verified
- * @property \Carbon\Carbon $verified_at
- * @property \Carbon\Carbon $supervisor_reviewed_at
- * @property \App\Modules\Journals\Domain\Logbook\Enums\LogbookStatus $status
+ * @property Carbon $verified_at
+ * @property Carbon $supervisor_reviewed_at
+ * @property LogbookStatus $status
  * @property string $user_id
  * @property string $registration_id
  * @property string $content
@@ -32,12 +32,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property string $mentor_feedback
  * @property string $supervisor_note
  * @property string $supervisor_id
- * @property-read \App\Modules\User\Models\User|null $user
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $verifier
- * @property-read \App\Modules\User\Models\User|null $supervisor
+ * @property-read User|null $user
+ * @property-read Registration|null $registration
+ * @property-read User|null $verifier
+ * @property-read User|null $supervisor
  */
-
 #[
     Fillable([
         'user_id',

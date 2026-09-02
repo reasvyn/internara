@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Livewire\Component;
 use Livewire\Livewire;
 
 /**
@@ -61,7 +62,7 @@ final readonly class ModuleService
                 $className = basename($filePath, '.php');
                 $fqcn = $nsMatch[1].'\\'.$className;
 
-                if (! is_subclass_of($fqcn, \Livewire\Component::class)) {
+                if (! is_subclass_of($fqcn, Component::class)) {
                     continue;
                 }
 

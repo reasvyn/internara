@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\File;
 
 final class AppInfo
 {
+    private const DEFAULTS = [
+        'name' => 'Laravel',
+        'version' => '1.0.0',
+        'description' => '',
+        'license' => '',
+        'author' => ['name' => 'Reas Vyn'],
+        'support' => [],
+        'gitUrl' => 'https://github.com/reasvyn/internara',
+    ];
+
     private static ?array $metadata = null;
 
     public static function all(): array
@@ -28,27 +38,27 @@ final class AppInfo
 
     public static function name(): string
     {
-        return Config::get('app.name', self::get('name', 'Laravel'));
+        return self::getString('name');
     }
 
     public static function version(): string
     {
-        return (string) Config::get('app.version', self::get('version', '1.0.0'));
+        return self::getString('version');
     }
 
     public static function description(): string
     {
-        return Config::get('app.description', self::get('description', ''));
+        return self::getString('description');
     }
 
     public static function license(): string
     {
-        return Config::get('app.license', self::get('license', 'MIT'));
+        return self::getString('license');
     }
 
     public static function author(): array
     {
-        return Config::get('app.author', self::get('author', ['name' => 'Reas Vyn']));
+        return Config::get('app.author', self::get('author', self::DEFAULTS['author']));
     }
 
     public static function authorName(): string
@@ -72,13 +82,20 @@ final class AppInfo
 
     public static function gitUrl(): string
     {
-        return Config::get('app.git', self::get('gitUrl', 'https://github.com/reasvyn/internara'));
+        return Config::get('app.git', self::get('gitUrl', self::DEFAULTS['gitUrl']));
     }
 
     public static function clearCache(): void
     {
         self::$metadata = null;
         Cache::forget(self::cacheKey());
+    }
+
+    private static function getString(string $key): string
+    {
+        $default = self::DEFAULTS[$key] ?? '';
+
+        return (string) Config::get('app.'.$key, self::get($key, $default));
     }
 
     private static function cacheKey(): string
@@ -98,7 +115,7 @@ final class AppInfo
         $path = base_path('composer.json');
 
         if (! File::exists($path)) {
-            return self::defaults();
+            return self::DEFAULTS;
         }
 
         try {
@@ -108,14 +125,14 @@ final class AppInfo
             if (json_last_error() !== JSON_ERROR_NONE) {
                 self::logJsonError($path);
 
-                return self::defaults();
+                return self::DEFAULTS;
             }
 
             return self::extractMetadata(is_array($data) ? $data : []);
         } catch (\Throwable $e) {
             self::logReadError($path, $e);
 
-            return self::defaults();
+            return self::DEFAULTS;
         }
     }
 
@@ -138,19 +155,6 @@ final class AppInfo
             'author' => $author,
             'support' => $data['support'] ?? [],
             'gitUrl' => $authorGithub,
-        ];
-    }
-
-    private static function defaults(): array
-    {
-        return [
-            'name' => 'Laravel',
-            'version' => '1.0.0',
-            'description' => '',
-            'license' => '',
-            'author' => ['name' => 'Reas Vyn'],
-            'support' => [],
-            'gitUrl' => 'https://github.com/reasvyn/internara',
         ];
     }
 

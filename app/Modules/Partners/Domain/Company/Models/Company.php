@@ -10,6 +10,7 @@ use App\Modules\Partners\Domain\Company\Entities\CompanyState;
 use App\Modules\Partners\Domain\Partnership\Models\Partnership;
 use Database\Factories\CompanyFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -26,10 +27,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $website
  * @property string $description
  * @property string $industry_sector
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Placement\Models\Placement> $placements
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Partners\Domain\Partnership\Models\Partnership> $partnerships
+ * @property-read Collection<int,Placement> $placements
+ * @property-read Collection<int,Partnership> $partnerships
  */
-
 #[Fillable(['name', 'address', 'phone', 'email', 'website', 'description', 'industry_sector'])]
 class Company extends BaseModel
 {

@@ -10,19 +10,19 @@ use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentSeverity;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentType;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Database\Factories\IncidentReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
 /**
  * @property string $id
- * @property \Carbon\Carbon $incident_date
- * @property \Carbon\Carbon $resolved_at
- * @property \App\Modules\Incident\Domain\IncidentReport\Enums\IncidentType $type
- * @property \App\Modules\Incident\Domain\IncidentReport\Enums\IncidentSeverity $severity
- * @property \App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus $status
+ * @property Carbon $incident_date
+ * @property Carbon $resolved_at
+ * @property IncidentType $type
+ * @property IncidentSeverity $severity
+ * @property IncidentStatus $status
  * @property string $registration_id
  * @property string $reported_by
  * @property string $description
@@ -30,11 +30,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $action_taken
  * @property string $resolved_by
  * @property string $resolution_notes
- * @property-read \App\Modules\Enrollment\Domain\Registration\Models\Registration|null $registration
- * @property-read \App\Modules\User\Models\User|null $reporter
- * @property-read \App\Modules\User\Models\User|null $resolver
+ * @property-read Registration|null $registration
+ * @property-read User|null $reporter
+ * @property-read User|null $resolver
  */
-
 #[
     Fillable([
         'registration_id',

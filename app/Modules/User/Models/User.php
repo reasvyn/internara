@@ -17,10 +17,12 @@ use App\Modules\User\Entities\SupervisorEntity;
 use App\Modules\User\Entities\TeacherEntity;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Observers\UserObserver;
+use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -48,21 +50,20 @@ use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property string $id
- * @property \Carbon\Carbon $email_verified_at
- * @property \Carbon\Carbon $locked_at
- * @property \Carbon\Carbon $first_login_at
+ * @property Carbon $email_verified_at
+ * @property Carbon $locked_at
+ * @property Carbon $first_login_at
  * @property string $password
  * @property bool $setup_required
  * @property bool $is_active
- * @property \App\Modules\User\Enums\AccountStatus $status
+ * @property AccountStatus $status
  * @property string $name
  * @property string $email
  * @property string $username
  * @property string $locked_reason
- * @property-read \App\Modules\User\Domain\Profile\Models\Profile|null $profile
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ * @property-read Profile|null $profile
+ * @property-read Collection<int,Registration> $registrations
  */
-
 #[Hidden(['password', 'remember_token'])]
 class User extends BaseAuthenticatable implements HasMedia
 {

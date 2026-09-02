@@ -7,10 +7,10 @@ namespace App\Modules\Evaluation\Models;
 use App\Modules\Core\Models\BaseModel;
 use Database\Factories\EvaluationQuestionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 /**
  * @property string $id
@@ -22,11 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $section_id
  * @property string $question_text
  * @property string $question_type
- * @property-read \App\Modules\Evaluation\Models\EvaluationForm|null $form
- * @property-read \App\Modules\Evaluation\Models\EvaluationSection|null $section
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Evaluation\Models\EvaluationAnswer> $answers
+ * @property-read EvaluationForm|null $form
+ * @property-read EvaluationSection|null $section
+ * @property-read Collection<int,EvaluationAnswer> $answers
  */
-
 #[
     Fillable([
         'form_id',

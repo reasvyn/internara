@@ -18,16 +18,14 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-
 /**
  * @property string $id
- * @property \App\Modules\Settings\Casts\SettingValueCast $value
+ * @property SettingValueCast $value
  * @property string $key
  * @property string $type
  * @property string $description
  * @property string $group
  */
-
 #[Fillable(['key', 'value', 'type', 'description', 'group'])]
 class Setting extends BaseModel implements HasMedia
 {

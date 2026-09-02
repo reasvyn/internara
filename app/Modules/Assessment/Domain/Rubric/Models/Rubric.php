@@ -10,10 +10,10 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Database\Factories\RubricFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 
 /**
  * @property string $id
@@ -22,11 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $internship_id
  * @property string $name
  * @property string $created_by
- * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
- * @property-read \App\Modules\User\Models\User|null $createdBy
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Assessment\Models\Assessment> $assessments
+ * @property-read Internship|null $internship
+ * @property-read User|null $createdBy
+ * @property-read Collection<int,Assessment> $assessments
  */
-
 #[Fillable(['internship_id', 'name', 'structure', 'is_active', 'created_by'])]
 class Rubric extends BaseModel
 {

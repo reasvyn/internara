@@ -7,12 +7,13 @@ namespace App\Modules\Core\Support;
 use App\Modules\Core\Enums\CsvRowResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class CsvHandler
 {
     private const CONTENT_TYPE_CSV = 'text/csv';
+
     private const DEFAULT_CHUNK_SIZE = 500;
 
     public function export(

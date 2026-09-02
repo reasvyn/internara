@@ -20,9 +20,13 @@ use Illuminate\Database\Eloquent\Model;
 trait AuthorizesRoles
 {
     protected const ROLE_SUPER_ADMIN = 'super_admin';
+
     protected const ROLE_ADMIN = 'admin';
+
     protected const ROLE_TEACHER = 'teacher';
+
     protected const ROLE_STUDENT = 'student';
+
     protected const ROLE_SUPERVISOR = 'supervisor';
 
     /**

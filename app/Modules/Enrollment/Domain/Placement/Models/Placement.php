@@ -12,6 +12,7 @@ use App\Modules\Partners\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use Database\Factories\PlacementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -29,11 +30,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $quota
  * @property string $filled_quota
  * @property string $description
- * @property-read \App\Modules\Partners\Domain\Company\Models\Company|null $company
- * @property-read \App\Modules\Program\Domain\Internship\Models\Internship|null $internship
- * @property-read \Illuminate\Database\Eloquent\Collection<int,\App\Modules\Enrollment\Domain\Registration\Models\Registration> $registrations
+ * @property-read Company|null $company
+ * @property-read Internship|null $internship
+ * @property-read Collection<int,Registration> $registrations
  */
-
 #[
     Fillable([
         'company_id',

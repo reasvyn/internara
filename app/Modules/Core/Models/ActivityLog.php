@@ -18,8 +18,10 @@ use Spatie\Activitylog\Models\Activity;
 class ActivityLog extends Activity
 {
     private const DEFAULT_RECENT_LIMIT = 50;
+
     private const DEFAULT_DAYS_RANGE = 30;
-    private const MODULE_NAMESPACE_PREFIX = 'App\\';
+
+    private const MODULE_NAMESPACE_PREFIX = 'App\\Modules\\';
 
     public function scopeForUser(Builder $query, string|int $userId): Builder
     {
