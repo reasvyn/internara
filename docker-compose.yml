@@ -36,7 +36,7 @@ services:
       retries: 10
       start_period: 10s
     restart: unless-stopped
-    mem_limit: 256m
+    mem_limit: 384m
     cpus: 1.0
 
   db:
@@ -83,7 +83,7 @@ services:
       app:
         condition: service_healthy
     restart: unless-stopped
-    mem_limit: 64m
+    mem_limit: 96m
     cpus: 0.5
 
 volumes:
