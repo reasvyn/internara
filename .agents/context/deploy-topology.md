@@ -19,11 +19,10 @@ CI/CD, the VPS, or Docker. Read this before touching `.github/`, the Dockerfiles
     (secrets `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) and runs `.github/scripts/deploy.sh`.
 - **Only the PRODUCTION stage deploys.** A final tag never reaches the VPS unless every QA stage
   passes. Releases are promoted upward: `development → testing → staging → production`.
-- **Manual/hotfix deploys use the `production` branch** (the legacy `docker-deploy` branch is gone).
-  From the VPS repo: ensure `git fetch` (refspec now `+refs/heads/*:refs/remotes/origin/*`), then
-  `git checkout production && git reset --hard production`, then
-  `VERSION_TAG=production bash .github/scripts/deploy.sh` (builds from `GIT_URL=...#production`,
-  applies compose limits from the local `production` checkout, drops the app_data volume, awaits health).
+- **Manual/hotfix deploys use the `hotfix` branch** (the legacy `docker-deploy` and `production` branches are gone — `production` was renamed to `hotfix`). From the VPS repo: ensure `git fetch` (refspec now `+refs/heads/*:refs/remotes/origin/*`), then
+  `git checkout hotfix && git reset --hard origin/hotfix` (reset against `origin/hotfix`, not the local branch name — the local branch can be stale after a fetch), then
+  `VERSION_TAG=hotfix bash .github/scripts/deploy.sh` (builds from `GIT_URL=...#hotfix`,
+  applies compose limits from the local `hotfix` checkout, drops the app_data volume, awaits health).
   The VPS was historically detached at `v0.15.8` with a `docker-deploy`-only refspec — a manual deploy
   then silently reused the OLD compose limits; always verify `docker stats` limits after deploying.
 - Each QA stage delegates to a reusable helper under `.github/scripts/`: `lint.sh` (Pint),
