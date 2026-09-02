@@ -25,6 +25,7 @@
                     @empty
                         <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                     @endforelse
+                </x-ts-card>
 
             @endif
         </div>
@@ -50,32 +51,34 @@
                 @empty
                     <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
+            </x-ts-card>
 
-                <x-ts-card shadowless :header="__('dashboard.quick_links')">
-                    <div class="space-y-1">
+            <x-ts-card shadowless :header="__('dashboard.quick_links')">
+                <div class="space-y-1">
+                    <x-ui::widgets.quick-link
+                        :label="__('dashboard.edit_profile')"
+                        icon="user"
+                        link="{{ route('profile') }}"
+                    />
+                    <x-ui::widgets.quick-link
+                        :label="__('profile.recovery.title')"
+                        icon="key"
+                        link="{{ route('profile.recovery') }}"
+                    />
+                    <x-ui::widgets.quick-link
+                        :label="__('dashboard.notifications')"
+                        icon="bell"
+                        link="{{ route('notifications') }}"
+                    />
+                    @if (auth()->user()?->hasRole('super_admin'))
                         <x-ui::widgets.quick-link
-                            :label="__('dashboard.edit_profile')"
-                            icon="user"
-                            link="{{ route('profile') }}"
+                            :label="__('dashboard.system_settings')"
+                            icon="cog-6-tooth"
+                            link="{{ route('admin.settings') }}"
                         />
-                        <x-ui::widgets.quick-link
-                            :label="__('profile.recovery.title')"
-                            icon="key"
-                            link="{{ route('profile.recovery') }}"
-                        />
-                        <x-ui::widgets.quick-link
-                            :label="__('dashboard.notifications')"
-                            icon="bell"
-                            link="{{ route('notifications') }}"
-                        />
-                        @if (auth()->user()?->hasRole('super_admin'))
-                            <x-ui::widgets.quick-link
-                                :label="__('dashboard.system_settings')"
-                                icon="cog-6-tooth"
-                                link="{{ route('admin.settings') }}"
-                            />
-                        @endif
-                    </div>
+                    @endif
+                </div>
+            </x-ts-card>
         </div>
     </div>
 
