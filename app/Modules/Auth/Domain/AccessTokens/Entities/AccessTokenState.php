@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Domain\AccessTokens\Entities;
 
-use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
 use App\Modules\Core\Entities\BaseEntity;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class AccessTokenState extends BaseEntity
 {
@@ -16,7 +16,7 @@ final readonly class AccessTokenState extends BaseEntity
         private int $attempts,
     ) {}
 
-    public static function fromModel(AccessToken $model): static
+    public static function fromModel(Model $model): static
     {
         return new self(
             expiresAt: $model->expires_at,

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Assessment\Entities;
 
-use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Core\Entities\BaseEntity;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class AssessmentResult extends BaseEntity
 {
@@ -16,7 +16,7 @@ final readonly class AssessmentResult extends BaseEntity
         private float $score,
     ) {}
 
-    public static function fromModel(Assessment $model): static
+    public static function fromModel(Model $model): static
     {
         return new self(
             finalizedAt: $model->finalized_at,

@@ -6,8 +6,8 @@ namespace App\Modules\Journals\Domain\SupervisionLog\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\Journals\Domain\SupervisionLog\Enums\SupervisionLogStatus;
-use App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class SupervisionLogState extends BaseEntity
 {
@@ -17,7 +17,7 @@ final readonly class SupervisionLogState extends BaseEntity
         private ?Carbon $reviewedAt,
     ) {}
 
-    public static function fromModel(SupervisionLog $model): static
+    public static function fromModel(Model $model): static
     {
         $created = $model->created_at;
 

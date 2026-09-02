@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Academics\Domain\AcademicYear\Entities;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Entities\BaseEntity;
+use Illuminate\Database\Eloquent\Model;
 use Throwable;
 
 final readonly class AcademicYearState extends BaseEntity
 {
     public function __construct(private bool $isActive, private bool $hasRelatedRecords = false) {}
 
-    public static function fromModel(AcademicYear $model): static
+    public static function fromModel(Model $model): static
     {
         try {
             $hasInternships = $model->relationLoaded('internships')

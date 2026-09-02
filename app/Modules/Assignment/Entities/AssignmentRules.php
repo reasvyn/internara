@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Modules\Assignment\Entities;
 
-use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Entities\BaseEntity;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class AssignmentRules extends BaseEntity
 {
     public function __construct(private bool $isMandatory, private ?Carbon $dueDate) {}
 
-    public static function fromModel(Assignment $model): static
+    public static function fromModel(Model $model): static
     {
         return new self(isMandatory: $model->is_mandatory === true, dueDate: $model->due_date);
     }

@@ -6,8 +6,8 @@ namespace App\Modules\Program\Domain\Internship\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
-use App\Modules\Program\Domain\Internship\Models\Internship;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class InternshipPeriod extends BaseEntity
 {
@@ -19,7 +19,7 @@ final readonly class InternshipPeriod extends BaseEntity
         private ?Carbon $academicYearEnd = null,
     ) {}
 
-    public static function fromModel(Internship $model): static
+    public static function fromModel(Model $model): static
     {
         $academicYear = $model->relationLoaded('academicYear') ? $model->academicYear : null;
 

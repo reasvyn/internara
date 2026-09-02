@@ -6,8 +6,8 @@ namespace App\Modules\Document\Domain\Handbook\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
-use App\Modules\Document\Models\Document;
 use App\Modules\User\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Activity;
 
 final readonly class HandbookEntity extends BaseEntity
@@ -23,7 +23,7 @@ final readonly class HandbookEntity extends BaseEntity
         private ?string $createdAt,
     ) {}
 
-    public static function fromModel(Document $model): static
+    public static function fromModel(Model $model): static
     {
         $metadata = $model->metadata ?? [];
         $audience = HandbookAudience::tryFrom($metadata['target_audience'] ?? 'all')

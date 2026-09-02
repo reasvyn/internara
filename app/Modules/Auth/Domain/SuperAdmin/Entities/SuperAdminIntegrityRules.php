@@ -7,7 +7,7 @@ namespace App\Modules\Auth\Domain\SuperAdmin\Entities;
 use App\Modules\Auth\Domain\Permissions\Enums\Role;
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\User\Enums\AccountStatus;
-use App\Modules\User\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 final readonly class SuperAdminIntegrityRules extends BaseEntity
 {
@@ -19,7 +19,7 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
         private int $superAdminCount,
     ) {}
 
-    public static function fromModel(User $model): static
+    public static function fromModel(Model $model): static
     {
         return new self(
             name: $model->name,
