@@ -10,7 +10,7 @@ test('C8F0D-FR-SUP4: all() extracts composer.json metadata with the expected sha
 
     expect($meta)->toHaveKeys(['name', 'version', 'description', 'license', 'author', 'support', 'gitUrl']);
     expect($meta['name'])->toBe('Internara');
-    expect($meta['version'])->toBe('0.15.3');
+    expect($meta['version'])->toBe(json_decode((string) file_get_contents(base_path('composer.json')), true)['version']);
     expect($meta['author']['name'])->toBe('Reas Vyn');
 });
 

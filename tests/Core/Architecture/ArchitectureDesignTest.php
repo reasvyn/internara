@@ -8,53 +8,31 @@ use App\Modules\Core\Actions\BaseProcessAction;
 use App\Modules\Core\Actions\BaseReadAction;
 use Illuminate\Support\Facades\File;
 
-const D2FT3_EXPECTED_MODULE_ORDER = [
-    'Core',
-    'Setup',
-    'Settings',
-    'Auth',
-    'User',
-    'SysAdmin',
-    'Academics',
-    'Partners',
-    'Program',
-    'Enrollment',
-    'Journals',
-    'Assignment',
-    'Reports',
-    'Assessment',
-    'Evaluation',
-    'Certification',
-    'Incident',
-    'Document',
-];
-
-const D2FT3_NON_MODULE_APP_DIRS = ['Jobs', 'Providers'];
-
-test('D2FT3-FR-ARC1: every business directory in app/ is a registered module', function () {
+test('D2FT3-FR-ARC1: every directory in app/Modules is a registered module', function () {
     $registered = config('module.list');
 
-    $topLevel = array_values(array_filter(
-        array_map('basename', File::directories(app_path())),
-        fn (string $dir) => ! in_array($dir, D2FT3_NON_MODULE_APP_DIRS, true),
-    ));
+    $moduleDirs = array_map('basename', File::directories(config('module.paths.base')));
 
-    foreach ($topLevel as $dir) {
+    foreach ($moduleDirs as $dir) {
         expect($registered)->toContain($dir);
     }
 });
 
-test('D2FT3-FR-ARC2: every registered module owns a colocated app/{Module} directory', function () {
+test('D2FT3-FR-ARC2: every registered module owns a colocated app/Modules/{Module} directory', function () {
     foreach (config('module.list') as $module) {
-        expect(File::isDirectory(app_path($module)))->toBeTrue();
+        expect(File::isDirectory(config('module.paths.base').DIRECTORY_SEPARATOR.$module))->toBeTrue();
     }
 });
 
-test('D2FT3-FR-ARC5/FR-ARC31: module registry follows the canonical dependency order with Core first', function () {
+test('D2FT3-FR-ARC5/FR-ARC31: module registry auto-discovers app/Modules directories in deterministic order', function () {
     $list = config('module.list');
 
-    expect($list)->toBe(D2FT3_EXPECTED_MODULE_ORDER)
-        ->and($list[0])->toBe('Core');
+    $discovered = array_map('basename', File::directories(config('module.paths.base')));
+    sort($discovered);
+
+    expect($list)->toBe($discovered)
+        ->and($list)->not->toBeEmpty()
+        ->and(in_array('Core', $list, true))->toBeTrue();
 });
 
 test('D2FT3-FR-ARC11: Command and Process actions extend BaseAction; Read action is standalone', function () {

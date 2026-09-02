@@ -72,3 +72,37 @@ test('89SRA-FR-EH4: HasExceptionContext provides hint, context, CLI output and r
     expect($exception->toCliOutput())->toContain('Hint: Provide a valid value.');
     expect($exception->toCliOutput())->not->toContain('secret-value');
 });
+
+test('SE5Q9-FR-E6: InfrastructureException extends AppException with HTTP 500 and is not user-facing', function () {
+    $exception = new class extends InfrastructureException {};
+
+    expect($exception)->toBeInstanceOf(AppException::class);
+    expect($exception->statusCode())->toBe(500);
+    expect($exception->isUserFacing())->toBeFalse();
+});
+
+test('SE5Q9-FR-E7: HasExceptionContext trait provides hint, context, CLI output, isUserFacing and shouldReport', function () {
+    $exception = new RejectedException('Test error')
+        ->withHint('Try again later.')
+        ->withContext(['user_id' => 123, 'token' => 'secret']);
+
+    expect($exception->getHint())->toBe('Try again later.');
+    expect($exception->getContext())->toHaveKey('user_id');
+    expect($exception->getContext()['user_id'])->toBe(123);
+    expect($exception->isUserFacing())->toBeTrue();
+    expect($exception->shouldReport())->toBeTrue();
+    expect($exception->toCliOutput())->toContain('Test error');
+    expect($exception->toCliOutput())->toContain('Hint: Try again later.');
+    expect($exception->toCliOutput())->toContain('user_id: 123');
+    expect($exception->getSanitizedContext()['token'])->toBe('***');
+});
+
+test('SE5Q9-NFR-M5: Module discovery at runtime - no manual registration required', function () {
+    $livewireNamespace = 'App\\Modules\\Core\\Livewire';
+    $policyNamespace = 'App\\Modules\\Core\\Policies';
+
+    expect(class_exists($livewireNamespace.'\\BaseRecordManager'))->toBeTrue();
+    expect(class_exists($policyNamespace.'\\BasePolicy'))->toBeTrue();
+    expect(config('module.list'))->toBeArray();
+    expect(config('module.list'))->not->toBeEmpty();
+});

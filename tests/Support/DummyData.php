@@ -29,6 +29,7 @@ use App\Modules\Evaluation\Models\EvaluationSection;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentSeverity;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentType;
+use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
 use App\Modules\Journals\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journals\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Modules\Journals\Domain\AbsenceRequest\Models\AbsenceRequest;
@@ -1194,7 +1195,7 @@ final class DummyData
             $date = $registration->start_date->copy()->addDays($incident['offset']);
 
             $this->firstOrCreate(
-                IncidentStudentReport::factory(),
+                IncidentReport::factory(),
                 ['registration_id' => $registration->id, 'incident_date' => $date->toDateTimeString(), 'type' => $incident['type']],
                 [
                     'registration_id' => $registration->id,
