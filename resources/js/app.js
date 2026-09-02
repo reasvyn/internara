@@ -3,6 +3,7 @@
  */
 
 import Alpine from 'alpinejs'
+import anchor from '@alpinejs/anchor'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.min.css'
 window.flatpickr = flatpickr
@@ -175,4 +176,5 @@ document.addEventListener('livewire:init', () => {
  * Alpine.data() calls land before the DOM walk.
  */
 window.Alpine = Alpine
+Alpine.plugin(anchor)
 Alpine.start()

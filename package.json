@@ -11,6 +11,7 @@
         "lint": "vendor/bin/pint --test && prettier --check ."
     },
     "dependencies": {
+        "@alpinejs/anchor": "^3.17.1",
         "alpinejs": "^3.17.1",
         "concurrently": "^10.0",
         "dompurify": "^3.4.14",

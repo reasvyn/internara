@@ -15,6 +15,7 @@ all Internara views.
 | Installed | `v4.1.0` (`composer.json`: `^4.0`) |
 | Role | Blade component library on top of Livewire + Tailwind + Alpine |
 | Usage footprint | ~141 Blade view files render `x-ts-*` components |
+| Needed Alpine plugin | `@alpinejs/anchor` (`npm`) — must be registered via `Alpine.plugin(anchor)` in `resources/js/app.js`, else all floating panels (`x-ts-dropdown`, styled selects, dials) teleport to `<body>` unpositioned instead of anchoring to their trigger |
 
 ---
 
@@ -32,7 +33,7 @@ all Internara views.
 ## How Internara Uses It
 
 - Standard component vocabulary for every module view — forms, tables, modals, notifications
-- Theming aligned with the self-hosted design system ([`foundation/ui-ux.md`](../../guides/ui-ux.md),
+- Theming aligned with the self-hosted design system ([`ui-ux/design-system.md`](../../guides/ui-ux/design-system.md),
   [`foundation/branding.md`](../../guides/branding.md))
 - Component conventions and interaction rules documented in the `tallstackui-development`
   skill
@@ -40,4 +41,4 @@ all Internara views.
 ## Quick References
 
 - [Official docs](https://tallstackui.com/docs) — component reference and personalization guide
-- [`docs/guides/ui-ux.md`](../../guides/ui-ux.md) — design system context
+- [`docs/guides/ui-ux/design-system.md`](../../guides/ui-ux/design-system.md) — design system context
