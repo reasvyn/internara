@@ -29,7 +29,7 @@
                 @if (isset($__livewire))
                     wire:click="setLocale('{{ $code }}')"
                 @else
-                    onclick="document.cookie='locale={{ $code }};path=/'; location.reload()"
+                    x-on:click="document.cookie='locale={{ $code }};path=/'; location.reload()"
                 @endif
                 class="px-3 py-1 text-xs font-bold rounded-full transition {{ $current === $code ? 'bg-primary text-primary-content shadow-sm' : 'text-base-content/60 hover:text-base-content' }}"
                 :aria-current="$current === $code ? 'true' : 'false'"

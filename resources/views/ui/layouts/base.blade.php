@@ -49,16 +49,5 @@
 
     <!-- Scripts -->
     @stack('scripts')
-    <script>
-        // FR-S2: reset focus to page heading after wire:navigate (WCAG)
-        document.addEventListener('livewire:navigated', () => {
-            const h1 = document.querySelector('h1[tabindex="-1"]') || document.querySelector('h1');
-            if (h1) {
-                h1.focus({ preventScroll: true });
-            } else {
-                document.getElementById('main-content')?.focus?.();
-            }
-        });
-    </script>
 </body>
 </html>
