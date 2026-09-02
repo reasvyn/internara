@@ -20,7 +20,7 @@ final class UploadBrandAssetAction extends BaseCommandAction
             $setting = Setting::firstOrCreate(['key' => $collection->value.'_ref']);
 
             if (! $file->isValid()) {
-                throw new RejectedException(__('setting.invalid_file_upload'));
+                throw new RejectedException(__('setting.messages.invalid_file_upload'));
             }
 
             $setting

@@ -95,6 +95,14 @@ return [
         'success' => 'Dokumen berhasil diunggah.',
     ],
 
+    'already_registered' => 'Anda sudah memiliki pendaftaran aktif atau tertunda.',
+    'application_exists' => 'Anda sudah memiliki pengajuan untuk magang ini.',
+    'application_not_pending' => 'Pengajuan tidak lagi berstatus menunggu.',
+    'not_pending' => 'Pendaftaran tidak lagi berstatus menunggu.',
+    'validation' => [
+        'missing_internship' => 'Program magang harus dipilih.',
+    ],
+
     'doc_upload_title' => 'Unggah Dokumen yang Diperlukan',
     'doc_uploaded' => 'Terunggah',
     'doc_no_requirements' => 'Tidak ada persyaratan dokumen untuk magang ini.',

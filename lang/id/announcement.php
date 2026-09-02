@@ -35,6 +35,7 @@ return [
         'scheduled_at' => 'Jadwal Tanggal dan Waktu',
         'link_placeholder' => 'https://...',
         'target_roles' => 'Peran Target',
+        'status' => 'Status',
     ],
     'types' => [
         'info' => 'Info',

@@ -204,7 +204,7 @@ class StudentManager extends BaseRecordManager
 
     public function archiveAllFiltered(DispatchArchiveStudentAccountsAction $action): void
     {
-        $this->performMassAction(__('user.manager.archive_filtered'), function ($query) use ($action) {
+        $this->performMassAction(__('user.student.archive_filtered'), function ($query) use ($action) {
             $action->execute($query);
         });
     }

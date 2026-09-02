@@ -39,6 +39,22 @@ return [
         'mail_title' => 'Judul: :title',
         'mail_due_date' => 'Tenggat Waktu: :due_date',
     ],
+    'assignment_published' => [
+        'title' => 'Tugas Baru Diterbitkan',
+        'message' => "Tugas baru ':name' telah diterbitkan.",
+    ],
+    'incident_reported' => [
+        'title' => 'Insiden Dilaporkan',
+        'subject' => 'Laporan Insiden: :severity',
+        'greeting' => 'Halo :name,',
+        'description' => 'Sebuah insiden telah dilaporkan: :description',
+        'severity' => 'Tingkat Keparahan: :severity',
+        'action' => 'Lihat Insiden',
+    ],
+    'partnership_terminated' => [
+        'title' => 'Kemitraan Diakhiri',
+        'message' => "Kemitraan dengan ':company' telah diakhiri.",
+    ],
     'submission_feedback' => [
         'title' => 'Umpan Balik Tugas Diterima',
         'broadcast' => "Pengajuan Anda untuk ':title' telah ditandai sebagai :status",

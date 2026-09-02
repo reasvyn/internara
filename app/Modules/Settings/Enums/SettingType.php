@@ -20,13 +20,13 @@ enum SettingType: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::STRING => __('settings.types.string'),
-            self::INTEGER => __('settings.types.integer'),
-            self::FLOAT => __('settings.types.float'),
-            self::BOOLEAN => __('settings.types.boolean'),
-            self::JSON => __('settings.types.json'),
-            self::ENCRYPTED => __('settings.types.encrypted'),
-            self::NULL => __('settings.types.null'),
+            self::STRING => __('setting.types.string'),
+            self::INTEGER => __('setting.types.integer'),
+            self::FLOAT => __('setting.types.float'),
+            self::BOOLEAN => __('setting.types.boolean'),
+            self::JSON => __('setting.types.json'),
+            self::ENCRYPTED => __('setting.types.encrypted'),
+            self::NULL => __('setting.types.null'),
         };
     }
 

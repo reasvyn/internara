@@ -27,7 +27,7 @@
 
                 {{-- Tagline --}}
                 <h1
-                    class="from-base-content to-base-content/60 mb-5 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl"
+                    class="from-base-content to-base-content/60 mb-5 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl lg:text-5xl"
                     tabindex="-1"
                 >
                     {{ brand('tagline') ?: __('common.app_tagline') }}

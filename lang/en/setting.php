@@ -86,6 +86,16 @@ return [
         'invalid_file_upload' => 'Invalid file upload.',
     ],
 
+    'types' => [
+        'string' => 'String',
+        'integer' => 'Integer',
+        'float' => 'Float',
+        'boolean' => 'Boolean',
+        'json' => 'JSON',
+        'encrypted' => 'Encrypted',
+        'null' => 'Null',
+    ],
+
     'guide' => [
         'title' => 'Settings Guide',
         'intro' => 'Configure the system to match your institution\'s needs:',

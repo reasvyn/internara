@@ -35,6 +35,7 @@ return [
         'scheduled_at' => 'Schedule Date and Time',
         'link_placeholder' => 'https://...',
         'target_roles' => 'Target Roles',
+        'status' => 'Status',
     ],
     'types' => [
         'info' => 'Info',

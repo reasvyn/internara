@@ -11,6 +11,7 @@ return [
     'name' => 'Year Name',
     'start_date' => 'Start Date',
     'end_date' => 'End Date',
+    'status' => 'Status',
     'active' => 'Active',
     'empty' => 'No academic years defined yet.',
     'empty_search' => 'No academic years match your search.',

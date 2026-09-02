@@ -13,7 +13,7 @@ final class DeleteStudentReportAction extends BaseCommandAction
     public function execute(StudentReport $report): void
     {
         if ($report->status->isTerminal()) {
-            throw new RejectedException(__('reports.cannot_delete_finalized'));
+            throw new RejectedException(__('report.cannot_delete_finalized'));
         }
 
         $this->authorize('delete', $report);

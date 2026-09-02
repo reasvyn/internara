@@ -39,6 +39,22 @@ return [
         'mail_title' => 'Title: :title',
         'mail_due_date' => 'Due Date: :due_date',
     ],
+    'assignment_published' => [
+        'title' => 'New Assignment Published',
+        'message' => "New assignment ':name' has been published.",
+    ],
+    'incident_reported' => [
+        'title' => 'Incident Reported',
+        'subject' => 'Incident Report: :severity',
+        'greeting' => 'Hello :name,',
+        'description' => 'An incident has been reported: :description',
+        'severity' => 'Severity: :severity',
+        'action' => 'View Incidents',
+    ],
+    'partnership_terminated' => [
+        'title' => 'Partnership Terminated',
+        'message' => "The partnership with ':company' has been terminated.",
+    ],
     'submission_feedback' => [
         'title' => 'Assignment Feedback Received',
         'broadcast' => "Your submission for ':title' has been marked as :status",

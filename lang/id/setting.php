@@ -86,6 +86,16 @@ return [
         'invalid_file_upload' => 'File upload tidak valid.',
     ],
 
+    'types' => [
+        'string' => 'Teks',
+        'integer' => 'Bilangan Bulat',
+        'float' => 'Desimal',
+        'boolean' => 'Boolean',
+        'json' => 'JSON',
+        'encrypted' => 'Terenkripsi',
+        'null' => 'Null',
+    ],
+
     'guide' => [
         'title' => 'Panduan Pengaturan',
         'intro' => 'Konfigurasi sistem agar sesuai dengan kebutuhan institusi Anda:',

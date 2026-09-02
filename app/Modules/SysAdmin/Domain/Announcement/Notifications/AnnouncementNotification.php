@@ -33,7 +33,7 @@ class AnnouncementNotification extends Notification implements ShouldQueue
             ->line($this->message)
             ->when(
                 $this->link,
-                fn ($m) => $m->action(__('notifications.ui.view_details'), url($this->link)),
+                fn ($m) => $m->action(__('notifications.view_details'), url($this->link)),
             );
     }
 

@@ -11,6 +11,7 @@ return [
     'name' => 'Nama Tahun',
     'start_date' => 'Tanggal Mulai',
     'end_date' => 'Tanggal Selesai',
+    'status' => 'Status',
     'active' => 'Aktif',
     'empty' => 'Belum ada tahun akademik.',
     'empty_search' => 'Tidak ada tahun akademik yang cocok dengan pencarian.',

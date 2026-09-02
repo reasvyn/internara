@@ -1,6 +1,6 @@
 @props([
     'title' => null,
-    'bodyClass' => 'max-w-screen size-full min-h-screen overflow-x-hidden antialiased',
+    'bodyClass' => 'text-base-content max-w-screen size-full min-h-screen overflow-x-hidden antialiased',
 ])
 
 <!DOCTYPE html>

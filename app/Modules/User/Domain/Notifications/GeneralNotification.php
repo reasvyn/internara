@@ -42,7 +42,7 @@ class GeneralNotification extends Notification implements ShouldQueue
             ->when(
                 $this->link,
                 fn ($m) => $m->action(
-                    __('notifications.ui.view_details', [], 'id'),
+                    __('notifications.view_details', [], 'id'),
                     url($this->link),
                 ),
             );

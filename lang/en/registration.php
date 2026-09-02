@@ -94,6 +94,16 @@ return [
         'title' => 'Upload Documents',
         'uploaded' => 'Uploaded',
         'required' => 'Document requirements not met.',
+        'no_registration' => 'No active or pending registration found.',
+        'success' => 'Documents uploaded successfully.',
+    ],
+
+    'already_registered' => 'You already have an active or pending registration.',
+    'application_exists' => 'You already have an application for this internship.',
+    'application_not_pending' => 'The application is no longer pending.',
+    'not_pending' => 'The registration is no longer in a pending state.',
+    'validation' => [
+        'missing_internship' => 'An internship program must be selected.',
     ],
 
     'doc_upload_title' => 'Upload Required Documents',

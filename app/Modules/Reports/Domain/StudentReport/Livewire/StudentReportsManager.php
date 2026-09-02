@@ -87,7 +87,7 @@ class StudentReportsManager extends Component
                 registrationId: $this->selectedRegistrationId,
             ));
 
-            $this->toast()->success(__('reports.created'))->send();
+            $this->toast()->success(__('report.created'))->send();
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
@@ -111,7 +111,7 @@ class StudentReportsManager extends Component
         try {
             $action->execute($report);
 
-            $this->toast()->success(__('reports.grade_calculated'))->send();
+            $this->toast()->success(__('report.grade_calculated'))->send();
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
@@ -133,7 +133,7 @@ class StudentReportsManager extends Component
         $report = StudentReport::findOrFail($this->finalizeReportId);
 
         if (! $report->final_score || ! $report->grade_letter) {
-            $this->toast()->error(__('reports.grade_required_before_finalize'))->send();
+            $this->toast()->error(__('report.grade_required_before_finalize'))->send();
 
             return;
         }
@@ -141,7 +141,7 @@ class StudentReportsManager extends Component
         try {
             $action->execute($report, auth()->id());
 
-            $this->toast()->success(__('reports.finalized'))->send();
+            $this->toast()->success(__('report.finalized'))->send();
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
@@ -169,7 +169,7 @@ class StudentReportsManager extends Component
         try {
             $action->execute($report);
 
-            $this->toast()->success(__('reports.deleted'))->send();
+            $this->toast()->success(__('report.deleted'))->send();
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }

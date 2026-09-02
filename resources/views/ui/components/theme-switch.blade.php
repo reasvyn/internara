@@ -38,23 +38,33 @@
                 :text="__('common.theme.light')"
                 icon="sun"
                 x-on:click="
-                    darkTheme = false;
-                    localStorage.setItem('dark-theme', 'light');
+                    mode = 'light';
                     $dispatch('theme', { mode: 'light' });
                     show = false;
                 "
-                ::active="! dark"
+                ::active="mode === 'light'"
             />
             <x-ts-dropdown.items
                 :text="__('common.theme.dark')"
                 icon="moon"
                 x-on:click="
-                    darkTheme = true;
-                    localStorage.setItem('dark-theme', 'dark');
+                    mode = 'dark';
                     $dispatch('theme', { mode: 'dark' });
                     show = false;
                 "
-                ::active="dark"
+                ::active="mode === 'dark'"
+            />
+            <x-ts-dropdown.items
+                :text="__('common.theme.system')"
+                icon="adjustments-horizontal"
+                x-on:click="
+                    mode = 'system';
+                    $dispatch('theme', {
+                        mode: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+                    });
+                    show = false;
+                "
+                ::active="mode === 'system'"
             />
         </div>
     </x-ts-dropdown>
