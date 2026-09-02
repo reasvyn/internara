@@ -2,7 +2,7 @@
     "$schema": "https://www.schemastore.org/package.json",
     "name": "@reasvyn/internara",
     "private": false,
-    "version": "0.15.3",
+    "version": "0.15.9",
     "type": "module",
     "scripts": {
         "dev": "vite",
@@ -11,6 +11,7 @@
         "lint": "vendor/bin/pint --test && prettier --check ."
     },
     "dependencies": {
+        "alpinejs": "^3.17.1",
         "concurrently": "^10.0",
         "dompurify": "^3.4.14",
         "flatpickr": "^4.6.13",

@@ -21,7 +21,7 @@
         {{ $slot }}
 
         <div class="mt-8 flex items-center justify-center gap-3 text-center">
-            <div x-data="tallstackui_darkTheme()" class="inline-flex"><x-ui::components.theme-switch /></div>
+            <div class="inline-flex"><x-ui::components.theme-switch /></div>
             <livewire:settings.lang-switcher />
         </div>
     </div>

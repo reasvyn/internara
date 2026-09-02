@@ -26,10 +26,10 @@
                 class="btn btn-ghost {{ $sizeClasses }} rounded-full font-bold tracking-wider uppercase"
                 aria-label="{{ __('common.theme.switch') }}"
             >
-                <x-ts-icon name="sun" class="size-4 opacity-60" x-show="! dark" x-cloak />
-                <x-ts-icon name="moon" class="size-4 opacity-60" x-show="dark" x-cloak />
-                <span x-show="! dark" x-cloak>{{ __('common.theme.light') }}</span>
-                <span x-show="dark" x-cloak>{{ __('common.theme.dark') }}</span>
+                <x-ts-icon name="sun" class="size-4 opacity-60" x-show="! darkTheme" x-cloak />
+                <x-ts-icon name="moon" class="size-4 opacity-60" x-show="darkTheme" x-cloak />
+                <span x-show="! darkTheme" x-cloak>{{ __('common.theme.light') }}</span>
+                <span x-show="darkTheme" x-cloak>{{ __('common.theme.dark') }}</span>
             </button>
         </x-slot:action>
 
@@ -38,6 +38,7 @@
                 :text="__('common.theme.light')"
                 icon="sun"
                 x-on:click="
+                    darkTheme = false;
                     localStorage.setItem('dark-theme', 'light');
                     $dispatch('theme', { mode: 'light' });
                     show = false;
@@ -48,6 +49,7 @@
                 :text="__('common.theme.dark')"
                 icon="moon"
                 x-on:click="
+                    darkTheme = true;
                     localStorage.setItem('dark-theme', 'dark');
                     $dispatch('theme', { mode: 'dark' });
                     show = false;

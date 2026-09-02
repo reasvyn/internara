@@ -2,6 +2,7 @@
  * UI Module Main Entry Point
  */
 
+import Alpine from 'alpinejs'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.min.css'
 window.flatpickr = flatpickr
@@ -144,6 +145,18 @@ document.addEventListener('alpine:init', () => {
 /**
  * Livewire & Theme Sync (CSP-compliant — previously inline in base.blade.php)
  */
+document.addEventListener('livewire:navigated', () => {
+    /**
+     * FR-S2: reset focus to page heading after wire:navigate (WCAG).
+     */
+    const h1 = document.querySelector('h1[tabindex="-1"]') || document.querySelector('h1')
+    if (h1) {
+        h1.focus({ preventScroll: true })
+    } else {
+        document.getElementById('main-content')?.focus?.()
+    }
+})
+
 document.addEventListener('livewire:init', () => {
     if (window.Livewire) {
         window.Livewire.on('language-changed', () => {
@@ -151,3 +164,15 @@ document.addEventListener('livewire:init', () => {
         })
     }
 })
+
+/**
+ * Alpine — TALL stack bootstrap.
+ *
+ * Previous absence (0.15.x) left every x-data/x-cloak/x-show inert,
+ * permanently hiding x-cloak'd UI (theme switch, dropdowns, flyouts) via
+ * `[x-cloak]{display:none!important}`. Must be started AFTER the
+ * `alpine:init` listeners (ours + tallstackui's) are registered so their
+ * Alpine.data() calls land before the DOM walk.
+ */
+window.Alpine = Alpine
+Alpine.start()

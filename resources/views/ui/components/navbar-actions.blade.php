@@ -12,7 +12,7 @@
 }}>
     {{-- Theme Switcher --}}
     @if ($showTheme)
-        <div class="hidden md:block" x-data="tallstackui_darkTheme()">
+        <div class="hidden md:block">
             <x-ui::components.theme-switch />
         </div>
     @endif
