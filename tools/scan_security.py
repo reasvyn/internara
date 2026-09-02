@@ -4,9 +4,10 @@ Enhanced v2.1: parallel execution, robust error isolation, shared _common helper
 severity/baseline filtering, and performance optimizations.
 scan_security.py — Security Pattern Detection
 
-Scans PHP/Blade for security anti-patterns across the S1-S9 rule set:
+Scans PHP/Blade for security anti-patterns across the S1-S10 rule set:
 S1 XSS, S2 SQL injection, S3 mass assignment, S4 CSRF, S5 CSP / inline script,
-S6 missing authorization, S7 rate limiting, S8 hardcoded secrets, S9 file uploads.
+S6 missing authorization, S7 rate limiting, S8 hardcoded secrets, S9 file uploads,
+S10 dependency auditing (composer audit + npm audit).
 
 Calibrated against the codebase conventions in docs/conventions.md §3.
 """
@@ -16,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 try:
     from _output import handle_output
@@ -47,6 +49,18 @@ REF_CSP = "docs/conventions.md#35-content-security-policy"
 REF_UPLOAD = "docs/conventions.md#36-file-upload-security"
 REF_RATE = "docs/conventions.md#37-rate-limiting"
 REF_AUTH = "docs/foundation/rbac.md"
+REF_DEP = "docs/guides/infra/security.md#dependency-auditing"
+
+AUDIT_TIMEOUT = 180
+
+SEVERITY_MAP = {
+    "critical": "critical",
+    "high": "high",
+    "moderate": "medium",
+    "medium": "medium",
+    "low": "low",
+    "info": "low",
+}
 
 HARDCODED_SECRETS = re.compile(
     r"""(?:password|secret|token|api_key|apikey|api[-_]?secret)\s*=\s*['"][^'"]{8,}['"]""",
@@ -527,6 +541,115 @@ def scan_auth_rate_limiting(route_files: list[Path]) -> list[Finding]:
     return findings
 
 
+# ─── S10: Dependency auditing (composer audit + npm audit) ────────────────
+
+def _run_audit(cmd: list[str]) -> tuple[dict[str, str], dict | None]:
+    """Run an audit command, returning (note, parsed_json). Note is empty on success."""
+    try:
+        proc = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=AUDIT_TIMEOUT, cwd=ROOT
+        )
+    except FileNotFoundError:
+        return {f"{cmd[0]}_audit": f"skipped — {cmd[0]} not found"}, None
+    except subprocess.TimeoutExpired:
+        return {f"{cmd[0]}_audit": f"skipped — timed out after {AUDIT_TIMEOUT}s"}, None
+
+    try:
+        data = json.loads(proc.stdout or "{}")
+    except json.JSONDecodeError:
+        return {f"{cmd[0]}_audit": f"skipped — unparseable output (exit={proc.returncode})"}, None
+
+    return {f"{cmd[0]}_audit": f"ran (exit={proc.returncode})"}, data
+
+
+def _composer_advisories(data: dict) -> list[dict]:
+    """Normalize composer audit JSON (dict keyed by package, or flat list)."""
+    advisories = data.get("advisories") or []
+    rows: list[dict] = []
+
+    if isinstance(advisories, dict):
+        for pkg, advs in advisories.items():
+            for adv in advs or []:
+                if isinstance(adv, dict):
+                    rows.append({**adv, "name": adv.get("name") or pkg})
+    elif isinstance(advisories, list):
+        rows.extend(advisories)
+
+    # Composer ≥2.8 may report via 'affected' instead of 'advisories'.
+    for item in data.get("affected") or []:
+        rows.append(item if isinstance(item, dict) else {"name": str(item)})
+
+    return rows
+
+
+def _npm_vulnerabilities(data: dict) -> list[dict]:
+    vulns = data.get("vulnerabilities") or {}
+    if not isinstance(vulns, dict):
+        return []
+
+    rows: list[dict] = []
+    for pkg, info in vulns.items():
+        if not isinstance(info, dict):
+            continue
+        rows.append({"name": pkg, **info})
+    return rows
+
+
+def scan_dependency_audit(module: str | None = None) -> tuple[list[Finding], dict[str, str]]:
+    """Run composer audit and npm audit; return (findings, audit-status notes)."""
+    findings: list[Finding] = []
+    notes: dict[str, str] = {}
+
+    composer_note, composer_data = _run_audit(["composer", "audit", "--format=json", "--no-interaction"])
+    npm_note, npm_data = _run_audit(["npm", "audit", "--json"])
+    notes.update(composer_note)
+    notes.update(npm_note)
+
+    audits: list[tuple[str, str, list[dict]]] = [
+        ("composer", "composer.json", _composer_advisories(composer_data) if composer_data else []),
+        ("npm", "package.json", _npm_vulnerabilities(npm_data) if npm_data else []),
+    ]
+
+    for ecosystem, manifest, rows in audits:
+        for row in rows:
+            name = row.get("name") or row.get("package") or "unknown"
+            severity = str(row.get("severity") or "").lower()
+
+            if ecosystem == "npm":
+                title = "Known vulnerability"
+                cve = row.get("url") or ""
+                range_ = row.get("range") or ""
+                fixed = ""
+            else:
+                source = row.get("source") or {}
+                cve = source.get("remoteId") or row.get("cve") or ""
+                title = row.get("title") or "Known vulnerability"
+                range_ = row.get("affectedVersions") or ""
+                fixed = row.get("fixedVersions") or ""
+
+            finding = Finding(
+                id=f"DEP-{len(findings)+1:03d}",
+                rule="S10",
+                severity=SEVERITY_MAP.get(severity, "low"),
+                category="security",
+                file=manifest,
+                line=1,
+                message=f"{title} ({cve}) — {name}",
+                suggestion=f"Upgrade {name} to a patched version",
+                reference=REF_DEP,
+                context={
+                    "ecosystem": ecosystem,
+                    "package": name,
+                    "severity": severity,
+                    "range": range_,
+                    "fixed": fixed,
+                },
+            )
+            findings.append(finding)
+
+    return findings, notes
+
+
 # ─── Report ─────────────────────────────────────────────────────────────────
 
 def build_report(
@@ -549,8 +672,8 @@ def build_report(
         timestamp=datetime.now(timezone(timedelta(hours=7))).isoformat(),
         execution_time_ms=elapsed_ms,
         summary={
-            "total_checks": 9,
-            "passed": 9 - len(rules),
+            "total_checks": 10,
+            "passed": 10 - len(rules),
             "failed": len(findings),
             "by_severity": by_severity,
         },
@@ -592,7 +715,7 @@ def print_summary(result: ScanResult) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Scan for security vulnerabilities (XSS, SQLi, mass assignment, auth)",
+        description="Scan for security vulnerabilities (XSS, SQLi, mass assignment, auth, dependency audits)",
     )
     parser.add_argument("--module", "-m", help="Target specific module")
     parser.add_argument("--output", "-o", type=Path, help="Output file path")
@@ -628,6 +751,8 @@ def main() -> None:
     findings.extend(scan_missing_csrf(blade_files, args.module))
     findings.extend(scan_file_upload(php_files, args.module))
     findings.extend(scan_auth_rate_limiting(route_files))
+    dep_findings, dep_notes = scan_dependency_audit(args.module)
+    findings.extend(dep_findings)
 
     result = build_report(
         findings, scan_type, args.module, start_time,
@@ -635,6 +760,7 @@ def main() -> None:
             "php_files": len(php_files),
             "blade_files": len(blade_files),
             "route_files": len(route_files),
+            **dep_notes,
         },
     )
 
