@@ -33,6 +33,7 @@
                         :title="__('dashboard.student.no_registration')"
                         :description="__('dashboard.student.no_registration_hint')"
                     />
+                </x-ts-card>
             </div>
         @endif
     </div>
@@ -190,6 +191,7 @@
                     />
                     <x-ui::widgets.quick-link :label="__('dashboard.student.view_evaluations')" icon="star" link="#" />
                 </div>
+            </x-ts-card>
         </div>
     </div>
 

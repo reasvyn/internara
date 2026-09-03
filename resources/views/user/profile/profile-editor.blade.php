@@ -270,6 +270,7 @@
                         </div>
                     </x-ts-card>
                 </a>
+            </x-ts-card>
         </div>
     </div>
 
