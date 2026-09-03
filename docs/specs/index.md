@@ -214,19 +214,21 @@ spec-writing → docs/specs/{feature}.md → feature-building → code-writing �
 
 ## Spec Template
 
-Every spec follows the 11-section format defined by the `spec-writing` skill
+Every spec follows the 12-section format defined by the `spec-writing` skill
 (see [`spec-template.md`](spec-template.md) for the human-facing skeleton):
 
-1. Problem Statements
-2. Goals & Non-Goals
-3. User Stories / Use Cases
-4. Functional Requirements (FR-IDs)
-5. Non-Functional Requirements (NFR-IDs)
-6. API / Data Contracts
-7. Design Decisions (DD-IDs)
-8. Success Metrics
-9. Roadmap (prerequisites, build guide, next steps)
-10. (Quick References)
+1. Description
+2. Problem Statements
+3. Goals & Non-Goals
+4. User Stories / Use Cases
+5. Functional Requirements (FR-IDs)
+6. Non-Functional Requirements (NFR-IDs)
+7. API / Data Contracts
+8. Design Decisions (DD-IDs)
+9. Success Metrics
+10. Risks & Assumptions (R-/A-/OQ-IDs; links to GitHub Issues)
+11. Roadmap (prerequisites, build guide, next steps)
+12. Quick References
 
 ---
 

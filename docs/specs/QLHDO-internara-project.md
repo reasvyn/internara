@@ -341,6 +341,21 @@ implementation; this spec remains the spec-zero reference for global cross-cutti
 
 ---
 
+## 10. Risks & Assumptions
+
+Open questions and decisions pending across the project-level spec. Each row links to the GitHub
+Issue that tracks resolution; see the spec template for row conventions.
+
+| ID   | Risk / Assumption / Open Question                                                                                                                  | Status   | Owner      | GH Issue                                                                                |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------- |
+| OQ-1 | `spatie/laravel-model-status ^1.18` is listed in [J68GZ FR-D6](J68GZ-system-requirements.md) and [FB792 §6.1](FB792-tech-stack.md) but has zero consumers in `app/`; only artifact is `config/model-status.php`. Remove from spec + composer.json. | Open     | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419)                                 |
+| OQ-2 | [ZT6VS FR-SESS1](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm whether the operational override is intentional or spec-lagging. | Open     | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433)                                 |
+| OQ-3 | [I1BCV](I1BCV-module-discovery.md) §4 mandates manual `config/module.php` and `tests/Pest.php` registry; code uses filesystem auto-discovery (more accurate). Rewrite the spec to document the actual model and align [B114U](B114U-module-manager.md) §6.3. M-size doc work. | Open     | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434)                                 |
+| A-1  | We assume all admin mutations land in `Log::channel('activity')` (per FR-G4) and that `PiiMasker` strips every PII field listed in [89SRA](89SRA-logging-and-error-handling.md) FR-PM9 — verified at file-level for 26 keys; full runtime coverage assumed.  | Accepted | Maintainer | —                                                                                       |
+| A-2  | We assume `tallstackui_formPassword` (TallStackUI v4) autofill is a known client-side quirk on shared hosting and that the production fix is a hidden text input fallback — pending `ui-development` deep review.                                              | Accepted | Maintainer | —                                                                                       |
+
+---
+
 ## Quick References
 
 - `docs/guides/product-definition.md` — scope, personas, 3S doctrine, system boundary

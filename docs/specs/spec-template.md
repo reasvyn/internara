@@ -2,7 +2,7 @@
 
 ## Description
 
-The fixed 11-section structure every spec in `docs/specs/` follows. Specs are the requirements
+The fixed 12-section structure every spec in `docs/specs/` follows. Specs are the requirements
 SSOT — implementation and tests trace back to the requirement IDs defined here. Section-by-section
 content rules live in the `spec-writing` skill.
 
@@ -60,6 +60,30 @@ Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID
 ## 9. Roadmap
 
 {Phasing, dependencies on other specs.}
+
+## 10. Risks & Assumptions
+
+Items that are **not yet decided, explicitly deferred, or unverified** at the time of writing.
+The `GH Issue` column links to the GitHub Issue that tracks the resolution; the `Status` column
+is updated when the issue closes. This section is the **spec-side counterpart** of GitHub Issues
+— keep the table lean, link out for detail.
+
+| ID    | Risk / Assumption / Open Question                                                            | Status   | Owner      | GH Issue                                                                                |
+| ----- | ------------------------------------------------------------------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------- |
+| R-1   | {statement of the risk or assumption — frame as a question if undecided}                   | Open     | Maintainer | [#NNN](https://github.com/{owner}/{repo}/issues/NNN) (link or "—")                      |
+| A-1   | {stated assumption — "We assume X" or "Until Y is verified, we proceed as Z"}               | Accepted | Maintainer | — (or link to issue if raised)                                                          |
+
+**How to fill:**
+- **R (Risk):** something that could go wrong, with mitigation. Format as "If X, then Y, mitigated by Z".
+- **A (Assumption):** something believed to be true but not formally verified. Format as "We assume X" or "Until Y, Z is the case".
+- **OQ (Open Question):** a decision the maintainer must make. Link to GH Issue.
+- **Status:** `Open` (GH issue active) · `Accepted` (assumption ratified, no action needed) · `Deferred` (postponed to a later phase) · `Resolved` (linked issue closed; spec updated).
+- **No row = no known risks/assumptions.** Empty section is fine — it means the spec author has
+  thought through it and there is nothing pending. Do not invent filler.
+
+**Where to read this in audits:** `spec-audit` Sessions 4-6 cross-reference this table against
+open GitHub Issues for the spec's owning module. If a row says "Open" but the linked issue is
+closed, the row is stale — update or remove it.
 
 ## Quick References
 
