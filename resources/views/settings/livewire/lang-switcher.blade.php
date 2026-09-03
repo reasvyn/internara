@@ -12,6 +12,14 @@
         </button>
     </x-slot:action>
 
-    <x-ts-dropdown.items text="{{ __('common.language.indonesian') }}" icon="globe-alt" wire:click="setLocale('id')" />
-    <x-ts-dropdown.items text="{{ __('common.language.english') }}" icon="globe-alt" wire:click="setLocale('en')" />
+    <x-ts-dropdown.items
+        text="{{ __('common.language.indonesian') }}"
+        icon="globe-alt"
+        x-on:click="$dispatch('lang-switch', 'id')"
+    />
+    <x-ts-dropdown.items
+        text="{{ __('common.language.english') }}"
+        icon="globe-alt"
+        x-on:click="$dispatch('lang-switch', 'en')"
+    />
 </x-ts-dropdown>

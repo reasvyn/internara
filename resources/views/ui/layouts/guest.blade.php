@@ -10,7 +10,7 @@
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <div x-data="tallstackui_darkTheme()" class="inline-flex">
+                        <div class="inline-flex">
                             <x-ui::components.theme-switch />
                         </div>
                         <livewire:settings.lang-switcher />

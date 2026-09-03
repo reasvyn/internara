@@ -44,7 +44,7 @@ Three layers, single source of truth in `resources/css/app.css` + `Theme::cssVar
 | Semantic (purpose) | Intent — what components consume | `@theme` semantic + `Theme` runtime | `bg-primary`, `text-primary-content`, `bg-base-100`, `border-warning` |
 | Component (variant) | Component API | TallStackUI props | `<x-ts-button color="primary">`, `.badge-success` |
 
-Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::layouts.base` scoped to `html[data-theme='light']` and `html[data-theme='dark']`. Changing Settings → next request reflects, no `npm run build`. Four configurable brand colors (`primary`, `secondary`, `accent`, `base` per `docs/guides/branding.md` §2) + `*-content` contrast (`Color::contrastColor()` luminance >0.5 → `#1a1a1a` else `#f0f0f0`), `base-200/300` shades, dark equivalents (light brand → `Color::lighten(40%)` for dark, base → `Color::computeDarkShades()` 80% darken). Cache key `theme_css_variables` TTL 3600 (`config/cache-keys.php`).
+Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::layouts.base` scoped to `html[data-theme='light']` and `html[data-theme='dark']`. Changing Settings → next request reflects, no `npm run build`. Four configurable brand colors (`primary`, `secondary`, `accent`, `base` per `docs/guides/branding.md` §2) + `*-content` contrast (`Color::contrastColor()` luminance >0.5 → `#1a1a1a` else `#f0f0f0`), `base-200/300` shades, dark equivalents (light brand → `Color::lighten(40%)` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Cache key `theme_css_variables` TTL 3600 (`config/cache-keys.php`).
 
 ```css
 /* resources/css/app.css — @theme is the SSOT */

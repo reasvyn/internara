@@ -28,8 +28,10 @@
             >
                 <x-ts-icon name="sun" class="size-4 opacity-60" x-show="! darkTheme" x-cloak />
                 <x-ts-icon name="moon" class="size-4 opacity-60" x-show="darkTheme" x-cloak />
-                <span x-show="! darkTheme" x-cloak>{{ __('common.theme.light') }}</span>
-                <span x-show="darkTheme" x-cloak>{{ __('common.theme.dark') }}</span>
+                @if ($showLabel)
+                    <span x-show="! darkTheme" x-cloak>{{ __('common.theme.light') }}</span>
+                    <span x-show="darkTheme" x-cloak>{{ __('common.theme.dark') }}</span>
+                @endif
             </button>
         </x-slot:action>
 

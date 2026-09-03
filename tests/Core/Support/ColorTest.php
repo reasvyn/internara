@@ -46,9 +46,11 @@ test('C8F0D-FR-SUP7: computeBaseShades() builds daisyUI base shades from a light
     expect($shades['content'])->toBe('#1a1a1a');
 });
 
-test('C8F0D-FR-SUP7: computeDarkShades() darkens a light color for dark mode', function () {
+test('C8F0D-FR-SUP7: computeDarkShades() returns black shades for dark mode background', function () {
     $shades = Color::computeDarkShades('#ffffff');
 
-    expect($shades['base100'])->toBe('#333333');
+    expect($shades['base100'])->toBe('#262626');
+    expect($shades['base200'])->toBe('#171717');
+    expect($shades['base300'])->toBe('#0a0a0a');
     expect($shades['content'])->toBe('#e5e5e5');
 });

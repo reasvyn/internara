@@ -55,20 +55,151 @@ Located at `resources/views/{module}/layouts/`:
 
 ---
 
-## 3. Dark Mode
+## 3. Theme System & Color Schema
 
-> 📖 Authoritative reference: [UX Pattern](../arch/ux-pattern.md) §1 — dual-signal theming, token architecture, dark-mode dual-signal contract.
+> 📖 Authoritative references: [UX Pattern](../arch/ux-pattern.md) §1 — dual-signal theming, token architecture, dark-mode dual-signal contract; [Branding](../branding.md) — brand assets, resolution chain, presets.
 
-Dual-signal dark mode via `data-theme` attribute + `.dark` class on `<html>`. Three-state switcher:
-light, dark, system preference. Implementation:
+Theming is **fully dynamic**: brand and surface colors are stored as database settings, resolved
+through a runtime chain, computed into CSS custom properties, and injected as an inline `<style>`
+block on every page — no CSS rebuild or redeploy. This section documents the complete color schema,
+the computation algorithm, and the injection + caching pipeline.
 
-- **Component:** `core::ui.theme-switch` wraps TallstackUI's built-in `<x-theme-switch>` (`x-data="tallstackui_darkTheme"`); persists to `localStorage` key `dark-theme` (`light`/`dark`/`system` plus legacy `true`/`false`) and dispatches a `theme` CustomEvent.
-- **JS:** `resources/js/app.js` `applyTheme()` sets **both** `data-theme` (semantic palette vars) and `.dark` (Tailwind/TallstackUI `dark:` variant) and mirrors to `theme` cookie for SSR accuracy (`base.blade.php` applies `class="dark"` server-side to avoid FOUC).
-- **CSS:** `resources/css/app.css` defines palette via `@theme` (`--color-base-*`, `--color-primary` etc.) with `[data-theme='dark']` overrides; legacy DaisyUI component classes (`.btn`, `.badge`, `.table` etc.) are shimmed via `@layer components` until fully migrated to `x-ts-*`.
+### 3.1 The Two Signals — Light / Dark
 
-Brand colors are not hardcoded — injected at runtime via `Theme::cssVariables()` inline `<style>` block (see [Branding](../branding.md)). Admin can change brand colors and see them reflected in both themes immediately, without CSS recompilation.
+Each page carries **two** attributes on `<html>` (set in `resources/views/ui/layouts/base.blade.php`):
 
-Dark mode lightens brand colors by 40% for visibility on dark backgrounds.
+| Signal | Source | Purpose |
+| ------ | ------ | ------- |
+| `data-theme` (`light`/`dark`/`system`) | `theme` cookie (`request()->cookie('theme', 'system')`) | Selects the injected CSS-property block (`html[data-theme='light']` / `html[data-theme='dark']`) |
+| `.dark` class | present when the cookie equals `dark` | Drives Tailwind/TallstackUI `dark:` variant (`@custom-variant dark`) and static status-token overrides |
+
+The `@custom-variant dark (&:where(.dark, .dark *))` in `resources/css/app.css` means the
+`dark:` variant keys off the `.dark` class only, while the semantic brand/surface properties key off
+`data-theme`. Both must stay in sync — `resources/js/app.js` `applyTheme()` sets them together and
+mirrors to the `theme` cookie for SSR accuracy, preventing flash-of-unstyled-content (FOUC).
+
+### 3.2 Resolution Chain
+
+Theme values never hardcode a color. Each slot resolves at runtime:
+
+```
+DB setting (cached forever) → Theme::defaults() from config → hardcoded fallback
+```
+
+`app/Modules/Settings/Domain/Theme/Support/Theme.php` exposes the chain:
+
+- `defaults()` → `config('settings.colors.defaults')`
+- `get($key)` → `all()[key] ?? defaults()[key] ?? '#000000'`
+- `base()` → `getSetting('base_color', defaults()['base'])`
+- `all()` → primary/secondary/accent/accent from DB, `base` via `base()`, `content` via `Color::computeBaseShades(base())['content']`
+
+### 3.3 Brand Color Schema (Configurable)
+
+Four brand colors are configurable in the admin panel (`SystemSetting` → Branding form;
+`app/Modules/Settings/Livewire/SystemSetting.php`), stored as **`*_color`** settings, validated as
+`#RRGGBB` hex in `BrandingForm`, and written via `SaveSystemSettingsAction`.
+
+**Default palette is green (Emerald) — `primary = #059669`:**
+
+| Slot | Setting key | Default (`config/settings.php`) | Usage |
+| ---- | ----------- | ------------------------------- | ----- |
+| Primary | `primary_color` | `#059669` (Emerald green) | Main actions, links, active navigation |
+| Secondary | `secondary_color` | `#6b7280` | Supporting elements |
+| Accent | `accent_color` | `#f97316` | Highlights, call-to-action |
+| Base | `base_color` | `#ffffff` | Page/surface background anchor |
+
+`content_color` is declared in `config('settings.theme_cache_keys')` for invalidation but the resolved
+content color is **computed**, not read from a setting — see §3.5.
+
+### 3.4 Presets
+
+Six presets live in `config/settings.php` `colors.presets` (checkbox swatches in the admin panel):
+
+| Key | Label | Primary | Secondary | Accent | Base |
+| --- | ----- | ------- | --------- | ------ | ---- |
+| `emerald` | Emerald (default) | `#059669` | `#6b7280` | `#f97316` | `#ffffff` |
+| `sky` | Sky | `#0ea5e9` | `#64748b` | `#f59e0b` | `#ffffff` |
+| `violet` | Violet | `#7c3aed` | `#71717a` | `#ec4899` | `#ffffff` |
+| `rose` | Rose | `#e11d48` | `#78716c` | `#f59e0b` | `#ffffff` |
+| `ocean` | Ocean | `#0891b2` | `#64748b` | `#7c3aed` | `#ffffff` |
+| `slate` | Slate | `#475569` | `#57534e` | `#d97706` | `#ffffff` |
+
+Applying a preset fills all four color pickers (`BrandingForm::applyPreset()`). `detectPreset()`
+compares the current four values against every preset and re-selects the matching swatch when the
+user's manual colors happen to match one — otherwise `selected_preset` is `null` (manual mode).
+
+### 3.5 Color Computation (`app/Modules/Core/Support/Color.php`)
+
+`Theme::cssVariables()` computes these values using `Color`:
+
+**Base surface hierarchy from `base_color`:**
+- `computeBaseShades($hex)` (light theme) — if `relativeLuminance > 0.5` (light base): `base-100 = base`, `base-200 = darken 3%`, `base-300 = darken 6%`, `content = #1a1a1a`. Dark base inverts the logic: lighten by 10%/20%, `content = #f0f0f0`.
+- `computeDarkShades($hex)` (dark theme) — returns a fixed **black** surface scale (`base-100` = `#262626` neutral-800, `base-200` = `#171717` neutral-900, `base-300` = `#0a0a0a` neutral-950, `content` = `#e5e5e5`) so the dark background reads as **black, not gray**. `base-200` is the main page background (`bg-base-200` across the app/guest/auth/home layouts), `base-100` are elevated surfaces (cards/modals), `base-300` borders/dividers.
+
+**Brand contrast + dark mode for primary/secondary/accent:**
+- `--color-{key}-content` / `--{c}` = `contrastColor($hex)` — dark `#1a1a1a` when luminance > 0.5, else light `#f0f0f0`.
+- Dark theme lightens each brand color by **40%** (`Color::lighten($hex, 40)`) for visibility on dark backgrounds; dark brand content is fixed `#ffffff`.
+
+### 3.6 Injected CSS Variables
+
+`Theme::cssVariables()` builds a `light` and a `dark` map and caches it for **1 hour** under
+`config('cache-keys.theme_css_variables')` (`theme.css_variables`). `base.blade.php` emits each map
+into an inline `<style>` under its scope selector:
+
+```blade
+html[data-theme='light'], html:not([data-theme='dark']) { … light vars … }
+html[data-theme='dark'] { … dark vars … }
+```
+
+Variables per brand key (both themes): the modern `--color-{key}`, the legacy DaisyUI `--{initial}`
+(`--p`/`--s`/`--a`), the content tokens `--color-{key}-content` + `--{initial}c`, and a brand alias
+`--brand-{key}`. Base variables: `--color-base-100/200/300`, `--color-base-content`.
+
+#### Static tokens in `resources/css/app.css`
+
+Non-branded status/neutral colors are **statically defined** in `@theme` and overridden for dark in
+`[data-theme='dark']` (in `oklch`):
+
+| Token | Light | Dark |
+| ----- | ----- | ---- |
+| `--color-neutral` | `oklch(50% 0 0)` | `oklch(30% 0 0)` |
+| `--color-info` | `oklch(60% 0.55 250)` | `oklch(70% 0.38 250)` |
+| `--color-success` | `oklch(55% 0.58 150)` | `oklch(65% 0.42 150)` |
+| `--color-warning` | `oklch(70% 0.6 80)` | `oklch(75% 0.45 80)` |
+| `--color-error` | `oklch(55% 0.5 25)` | `oklch(65% 0.38 25)` |
+
+Each status token also ships a `-content` counterpart (e.g. `--color-success-content`) that flips
+between white and near-black in dark mode. These are pre-validated for WCAG contrast — never override
+them with arbitrary utilities (see §6.1).
+
+### 3.7 DaisyUI Shim Bridge
+
+`app.css` `@layer components` re-declares the legacy DaisyUI component classes (`.btn`,
+`.badge`, `.table`, `.card`, `.alert`, `.input`, `.menu`, …) that still appear across committed views,
+mapping them to the CSS variables above (`background: var(--color-primary)`, etc.). This keeps old
+class-based markup styled while the codebase migrates to `x-ts-*` components. There is **no DaisyUI
+npm package**.
+
+### 3.8 Cache Invalidation
+
+`Settings::forget()` (and `forgetGroup()`) invalidates the theme variable cache. `Settings::forget()`
+checks `in_array($key, config('settings.theme_cache_keys'))` — the keys `primary_color`,
+`secondary_color`, `accent_color`, `base_color`, `content_color`, `logo`, `favicon`, `name`,
+`title` — and calls `Cache::forget(theme_css_variables)` when a matching key changes. So saving a new
+brand color invalidates the 1-hour CSS-variable cache and the change appears on the next page render
+without `php artisan cache:clear`.
+
+### 3.9 Theme Switcher & Dark Mode
+
+Dual-signal dark mode with a three-state switcher (light / dark / system):
+
+- **Component:** `resources/views/ui/components/theme-switch.blade.php` wraps TallstackUI's
+  `<x-ts-dropdown>` (Alpine scope drives the button icon/label); it is **not** a Livewire component.
+- **Persistence:** the three dropdown items set `mode` and `$dispatch('theme', { mode })`; `app.js`
+  `applyTheme()` stores the preference in `localStorage` `dark-theme` (`light`/`dark`/`system` plus
+  legacy `true`/`false`) and sets `data-theme` + `.dark` + the `theme` cookie.
+- **Legend:** the `theme` cookie → server sets `class="dark"` in `base.blade.php` already at first
+  render, so the correct theme is applied before hydration.
 
 ---
 
@@ -319,6 +450,11 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | UI components     | `resources/views/ui/components/` (incl. `theme-switch.blade.php`) |
 | CSS entry point   | `resources/css/app.css` (`@import tallstackui/css/v4.css` + self-hosted palette + shims) |
 | JS entry point    | `resources/js/app.js` (theme + flatpickr + marked + choices bridge) |
+| Theme resolver    | `app/Modules/Settings/Domain/Theme/Support/Theme.php` (`cssVariables()`, `defaults()`, `presets()`, `all()`) |
+| Color utility     | `app/Modules/Core/Support/Color.php` (base shades, contrast, lighten/darken) |
+| Color presets     | `config/settings.php` (`colors.defaults` + `colors.presets`, `theme_cache_keys`) |
+| Branding form     | `app/Modules/Settings/Domain/Branding/Livewire/Forms/BrandingForm.php` (preset apply/detect) |
+| Admin color UI    | `app/Modules/Settings/Livewire/SystemSetting.php` |
 | TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
 | Theme switcher    | `resources/views/ui/components/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |

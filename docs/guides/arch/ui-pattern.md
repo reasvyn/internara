@@ -156,7 +156,7 @@ Tailwind v4 doctrine: **CSS is the config.** No `tailwind.config.js` exists nor 
 
 What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border-warning`, `bg-info/10`, `bg-base-100`). Generates via `@theme` → utilities (`bg-*`, `text-*`, `border-*`, `fill-*`). OKLCH for semantic colors (`oklch(60% 0.55 250)`) gives perceptually even scales and safe `color-mix()` tints.
 
-**Theming bridge:** `app/Modules/Settings/Theme/Support/Theme.php::cssVariables()` injects inline `<style>` scoped to `html[data-theme='light']` / `html[data-theme='dark']` (light brand → 40% `Color::lighten()` for dark, base → `Color::computeDarkShades()` 80% darken). Components consume `var(--color-primary)` — never `brand('primary')` in CSS. `brand()` is for JS/meta only. New token requires entries in both `light` and `dark` scopes and `Color::isValid()` validation.
+**Theming bridge:** `app/Modules/Settings/Theme/Support/Theme.php::cssVariables()` injects inline `<style>` scoped to `html[data-theme='light']` / `html[data-theme='dark']` (light brand → 40% `Color::lighten()` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Components consume `var(--color-primary)` — never `brand('primary')` in CSS. `brand()` is for JS/meta only. New token requires entries in both `light` and `dark` scopes and `Color::isValid()` validation.
 
 **Do / Don't:**
 

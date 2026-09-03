@@ -18,11 +18,11 @@ final class Color
 
     private const CONTENT_DARK_MODE = '#e5e5e5';
 
-    private const DARK_BASE_PERCENT = 80;
+    private const DARK_BASE_100 = '#262626';
 
-    private const DARK_SHADE_200_PERCENT = 6;
+    private const DARK_BASE_200 = '#171717';
 
-    private const DARK_SHADE_300_PERCENT = 10;
+    private const DARK_BASE_300 = '#0a0a0a';
 
     private const LIGHT_SHADE_200_PERCENT = 10;
 
@@ -94,14 +94,10 @@ final class Color
 
     public static function computeDarkShades(string $lightHex): array
     {
-        $luminance = self::relativeLuminance($lightHex);
-
-        $darkBase = $luminance > 0.5 ? self::darken($lightHex, self::DARK_BASE_PERCENT) : $lightHex;
-
         return [
-            'base100' => $darkBase,
-            'base200' => self::darken($darkBase, self::DARK_SHADE_200_PERCENT),
-            'base300' => self::darken($darkBase, self::DARK_SHADE_300_PERCENT),
+            'base100' => self::DARK_BASE_100,
+            'base200' => self::DARK_BASE_200,
+            'base300' => self::DARK_BASE_300,
             'content' => self::CONTENT_DARK_MODE,
         ];
     }

@@ -8,7 +8,7 @@
                     <x-ui::components.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <div x-data="tallstackui_darkTheme()" class="inline-flex">
+                        <div class="inline-flex">
                             <x-ui::components.theme-switch />
                         </div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
