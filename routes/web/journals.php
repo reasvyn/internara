@@ -41,9 +41,11 @@ Route::get('/admin/logbook/report/{registration}', LogbookReportController::clas
     ->name('sysadmin.logbook.report')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);
 
+// Students may nominate either a teacher or a supervisor as the mentor of a
+// supervision log, so both roles need the review screen their sidebar links to.
 Route::prefix('supervision')
     ->name('supervision.')
-    ->middleware(['auth', 'role:supervisor'])
+    ->middleware(['auth', 'role:teacher|supervisor'])
     ->group(function () {
         Route::get('/logs', SupervisorReviewManager::class)->name('logs');
     });
