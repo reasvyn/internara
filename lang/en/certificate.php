@@ -70,4 +70,5 @@ return [
         'template_design_title' => 'Design Settings',
         'template_design_desc' => 'Configure the layout, fonts, colors, and placeholder fields for automatic certificate generation.',
     ],
+    'revoke' => 'Revoke',
 ];

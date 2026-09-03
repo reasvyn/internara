@@ -53,7 +53,7 @@
         <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="white" sm />
         <x-ts-button
             text="{{ __('setup.wizard.next_step') }}"
-            icon-right="o-arrow-right"
+            icon-right="arrow-right"
             color="primary"
             sm
             wire:click="nextStep"

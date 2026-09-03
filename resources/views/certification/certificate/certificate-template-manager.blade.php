@@ -44,7 +44,7 @@
                     <x-ts-select.native
                         :label="__('certificate.layout')"
                         wire:model="formData.layout"
-                        :options="['portrait' => __('certificate.layout_portrait'), 'landscape' => __('certificate.layout_landscape')]"
+                        :options="ts_options(['portrait' => __('certificate.layout_portrait'), 'landscape' => __('certificate.layout_landscape')])"
                     />
                     <x-ts-textarea
                         :label="__('certificate.content_template')"

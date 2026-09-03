@@ -18,10 +18,10 @@
         <x-ts-card class="card-enterprise">
             @php
                 $headers = [
-                    ['key' => 'date', 'label' => __('logbook.date')],
-                    ['key' => 'content', 'label' => __('logbook.activity_content')],
-                    ['key' => 'status', 'label' => __('logbook.status')],
-                    ['key' => 'actions', 'label' => ''],
+                    ['index' => 'date', 'label' => __('logbook.date')],
+                    ['index' => 'content', 'label' => __('logbook.activity_content')],
+                    ['index' => 'status', 'label' => __('logbook.status')],
+                    ['index' => 'actions', 'label' => ''],
                 ];
             @endphp
 
@@ -66,6 +66,7 @@
                     @endinteract
                 </x-ts-table>
             </div>
+        </x-ts-card>
     </div>
 
     {{-- Form Modal --}}

@@ -2,7 +2,7 @@
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.status"
-            :options="[null => __('placement_change.status')] + (['pending' => __('placement_change.status_pending'), 'approved' => __('placement_change.status_approved'), 'rejected' => __('placement_change.status_rejected')])"
+            :options="ts_options(['pending' => __('placement_change.status_pending'), 'approved' => __('placement_change.status_approved'), 'rejected' => __('placement_change.status_rejected')], __('placement_change.status'))"
         />
     </x-slot:filters>
 

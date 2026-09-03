@@ -7,9 +7,7 @@
                 <x-ts-select.native
                     :label="__('incident.registration')"
                     wire:model="formData.registration_id"
-                    :options="[null => __('incident.registration_placeholder')] + ($registrations)"
-                    option-label="internship.name"
-                    option-value="id"
+                    :options="ts_options($registrations, __('incident.registration_placeholder'), 'internship.name')"
                 />
 
                 <x-ts-input :label="__('incident.date')" wire:model="formData.incident_date" type="datetime-local" />
@@ -18,12 +16,12 @@
                     <x-ts-select.native
                         :label="__('incident.type')"
                         wire:model="formData.type"
-                        :options="[null => __('incident.type_placeholder')] + (['accident' => __('incident.types.accident'), 'safety_violation' => __('incident.types.safety_violation'), 'harassment' => __('incident.types.harassment'), 'disciplinary' => __('incident.types.disciplinary'), 'other' => __('incident.types.other')])"
+                        :options="ts_options(['accident' => __('incident.types.accident'), 'safety_violation' => __('incident.types.safety_violation'), 'harassment' => __('incident.types.harassment'), 'disciplinary' => __('incident.types.disciplinary'), 'other' => __('incident.types.other')], __('incident.type_placeholder'))"
                     />
                     <x-ts-select.native
                         :label="__('incident.severity')"
                         wire:model="formData.severity"
-                        :options="[null => __('incident.severity_placeholder')] + (['low' => __('incident.severities.low'), 'medium' => __('incident.severities.medium'), 'high' => __('incident.severities.high'), 'critical' => __('incident.severities.critical')])"
+                        :options="ts_options(['low' => __('incident.severities.low'), 'medium' => __('incident.severities.medium'), 'high' => __('incident.severities.high'), 'critical' => __('incident.severities.critical')], __('incident.severity_placeholder'))"
                     />
                 </div>
 
@@ -49,5 +47,6 @@
             <div class="mt-6 flex justify-end gap-2">
                 <x-ts-button :text="__('incident.submit')" color="primary" type="submit" loading="save" />
             </div>
+        </x-ts-card>
     </form>
 </div>

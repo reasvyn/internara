@@ -11,12 +11,12 @@
     <x-ts-card class="bg-base-100 border-base-200 border">
         @php
             $headers = [
-                ['key' => 'date', 'label' => __('journals.date')],
-                ['key' => 'registration.student.name', 'label' => __('journals.student')],
-                ['key' => 'type', 'label' => __('journals.supervision.type')],
-                ['key' => 'topic', 'label' => __('journals.topic')],
-                ['key' => 'status', 'label' => __('journals.status')],
-                ['key' => 'actions', 'label' => ''],
+                ['index' => 'date', 'label' => __('journals.date')],
+                ['index' => 'registration.student.name', 'label' => __('journals.student')],
+                ['index' => 'type', 'label' => __('journals.supervision.type')],
+                ['index' => 'topic', 'label' => __('journals.topic')],
+                ['index' => 'status', 'label' => __('journals.status')],
+                ['index' => 'actions', 'label' => ''],
             ];
         @endphp
 
@@ -61,7 +61,7 @@
                 <x-ts-select.native
                     :label="__('journals.student')"
                     wire:model="registrationId"
-                    :options="[null => __('journals.supervision.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
+                    :options="ts_options($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]), __('journals.supervision.select_student'))"
                 />
 
                 <x-ts-date :label="__('journals.date')" wire:model="date" />
@@ -90,4 +90,5 @@
                 />
             </x-slot:footer>
         </x-ts-modal>
+    </x-ts-card>
 </div>

@@ -2,15 +2,15 @@
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.type"
-            :options="[null => __('incident.type')] + (collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray())"
+            :options="ts_options(collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray(), __('incident.type'))"
         />
         <x-ts-select.native
             wire:model.live="filters.severity"
-            :options="[null => __('incident.severity')] + (collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
+            :options="ts_options(collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray(), __('incident.severity'))"
         />
         <x-ts-select.native
             wire:model.live="filters.status"
-            :options="[null => __('incident.status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
+            :options="ts_options(collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray(), __('incident.status'))"
         />
     </x-slot:filters>
 
@@ -94,7 +94,7 @@
                     <x-ts-select.native
                         :label="__('incident.status')"
                         wire:model="resolveData.status"
-                        :options="['resolved' => __('incident.statuses.resolved'), 'closed' => __('incident.statuses.closed')]"
+                        :options="ts_options(['resolved' => __('incident.statuses.resolved'), 'closed' => __('incident.statuses.closed')])"
                     />
                     <x-ts-textarea
                         :label="__('incident.resolution_notes')"
@@ -133,12 +133,12 @@
                         <x-ts-select.native
                             :label="__('incident.type')"
                             wire:model="editData.type"
-                            :options="collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray()"
+                            :options="ts_options(collect($typeOptions)->mapWithKeys(fn ($t) => [$t->value => $t->label()])->toArray())"
                         />
                         <x-ts-select.native
                             :label="__('incident.severity')"
                             wire:model="editData.severity"
-                            :options="collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray()"
+                            :options="ts_options(collect($severityOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
                         />
                     </div>
                     <x-ts-textarea :label="__('incident.description')" wire:model="editData.description" rows="4" />

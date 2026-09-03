@@ -36,7 +36,7 @@
                         @role('student')
                             <x-ts-button
                                 :text="__('registration.center.register_now')"
-                                icon-right="o-arrow-right"
+                                icon-right="arrow-right"
                                 class="w-full"
                                 color="primary"
                                 sm
@@ -64,6 +64,7 @@
                             wire:navigate
                         />
                     @endauth
+                </x-ts-card>
 
             @endforeach
         </div>

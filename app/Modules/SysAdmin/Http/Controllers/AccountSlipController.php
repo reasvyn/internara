@@ -18,7 +18,12 @@ final class AccountSlipController
 
     public function downloadBatch(Request $request, GenerateAccountSlipBatchAction $action): mixed
     {
-        $ids = explode(',', $request->string('ids', ''));
+        $ids = array_filter(explode(',', (string) $request->string('ids', '')));
+
+        if ($ids === []) {
+            abort(404);
+        }
+
         $users = User::whereIn('id', $ids)->get();
 
         return $action->execute($users->all());

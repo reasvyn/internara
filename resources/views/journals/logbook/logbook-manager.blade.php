@@ -23,11 +23,11 @@
                 <div class="w-72 space-y-4 p-4">
                     <x-ts-select.native
                         wire:model.live="filters.status"
-                        :options="[null => __('logbook.status')] + (['draft' => __('logbook.statuses.draft'), 'submitted' => __('logbook.statuses.submitted'), 'verified' => __('logbook.statuses.verified')])"
+                        :options="ts_options(['draft' => __('logbook.statuses.draft'), 'submitted' => __('logbook.statuses.submitted'), 'verified' => __('logbook.statuses.verified')], __('logbook.status'))"
                     />
                     <x-ts-select.native
                         wire:model.live="filters.is_verified"
-                        :options="[null => __('logbook.verified')] + (['yes' => __('logbook.verified'), 'no' => __('logbook.unverified')])"
+                        :options="ts_options(['yes' => __('logbook.verified'), 'no' => __('logbook.unverified')], __('logbook.verified'))"
                     />
                 </div>
             </x-ts-dropdown>
@@ -213,7 +213,7 @@
                     <x-ts-select.native
                         :label="__('logbook.student')"
                         wire:model="form.user_id"
-                        :options="[null => __('logbook.select_student')] + ($this->students)"
+                        :options="ts_options($this->students, __('logbook.select_student'))"
                         class="border-base-300 rounded-xl"
                     />
                 @endif
@@ -253,4 +253,5 @@
                 />
             </x-slot:footer>
         </x-ts-modal>
+    </x-ts-card>
 </div>

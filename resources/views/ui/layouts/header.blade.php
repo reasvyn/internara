@@ -85,7 +85,7 @@
             <div class="sm:hidden">
                 <x-ts-dropdown position="bottom-end">
                     <x-slot:action>
-                        <button type="button" class="btn btn-ghost btn-sm" aria-label="{{ __('common.actions') }}">
+                        <button type="button" class="btn btn-ghost btn-sm" aria-label="{{ __('common.actions.label') }}">
                             <x-ts-icon name="ellipsis-vertical" class="size-5" />
                         </button>
                     </x-slot:action>

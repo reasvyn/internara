@@ -110,7 +110,7 @@
                         <x-ts-select.native
                             :label="__('user.supervisor.company')"
                             wire:model="form.company_id"
-                            :options="[null => __('user.supervisor.company_placeholder')] + ($this->companies)"
+                            :options="ts_options($this->companies, __('user.supervisor.company_placeholder'))"
                             icon="building-office"
                         />
                     </div>

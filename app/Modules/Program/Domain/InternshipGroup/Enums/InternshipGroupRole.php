@@ -15,9 +15,9 @@ enum InternshipGroupRole: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::STUDENT => __('Student'),
-            self::SCHOOL_TEACHER => __('School Teacher'),
-            self::INDUSTRY_SUPERVISOR => __('Industry Supervisor'),
+            self::STUDENT => __('common.enums.student'),
+            self::SCHOOL_TEACHER => __('common.enums.school_teacher'),
+            self::INDUSTRY_SUPERVISOR => __('common.enums.industry_supervisor'),
         };
     }
 }

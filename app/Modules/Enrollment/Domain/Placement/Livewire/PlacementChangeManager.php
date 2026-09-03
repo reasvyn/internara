@@ -50,6 +50,17 @@ class PlacementChangeManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('reason', 'like', $term)
+                ->orWhere('status', 'like', $term)
+                ->orWhereHas('requester', fn (Builder $r) => $r->where('name', 'like', $term));
+        });
+    }
+
     protected function query(): Builder
     {
         return PlacementChangeRequest::query()->with([

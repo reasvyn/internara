@@ -49,6 +49,17 @@ final class BackupManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('type', 'like', $term)
+                ->orWhere('status', 'like', $term)
+                ->orWhereHas('creator', fn (Builder $c) => $c->where('name', 'like', $term));
+        });
+    }
+
     protected function query(): Builder
     {
         return Backup::query()->with('creator');

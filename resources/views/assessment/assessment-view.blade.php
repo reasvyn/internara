@@ -74,6 +74,7 @@
                     <p class="text-sm">{{ $assessment->feedback }}</p>
                 </div>
             @endif
+        </x-ts-card>
 
     @empty
         <x-ts-card shadowless>
@@ -82,6 +83,7 @@
                 <p class="text-lg font-medium">{{ __('assessment.no_assessments_yet') }}</p>
                 <p class="text-sm">{{ __('assessment.no_assessments_desc') }}</p>
             </div>
+        </x-ts-card>
 
     @endforelse
 </div>

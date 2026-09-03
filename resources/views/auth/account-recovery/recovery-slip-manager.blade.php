@@ -100,6 +100,7 @@
                     wire:navigate
                 >{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
             </div>
+        </x-ts-card>
     </div>
 
     @include('auth.account-recovery.components.recovery-slip-manager-guide')

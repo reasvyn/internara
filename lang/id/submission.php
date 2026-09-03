@@ -29,4 +29,7 @@ return [
     'confirm_verify' => 'Verifikasi pengumpulan ini?',
     'score_range' => 'Nilai harus antara 0 dan 100.',
     'only_submitted_can_revise' => 'Hanya pengumpulan yang sudah dikirim yang dapat direvisi.',
+    'submitted' => 'Dikirim',
+    'pending' => 'Menunggu',
+    'overdue' => 'Terlambat',
 ];

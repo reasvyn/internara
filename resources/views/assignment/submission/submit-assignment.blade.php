@@ -16,7 +16,7 @@
                 <h3 class="text-base-content/40 text-xl font-black tracking-tight">No assignments yet</h3>
                 <p class="text-base-content/60 text-sm">Assignments will appear here once published by your school.</p>
             </div>
-
+        </x-ts-card>
     @elseif (! $showDetail)
         {{-- Assignment List --}}
         <div class="grid grid-cols-1 gap-6">
@@ -163,7 +163,7 @@
                         <div class="border-base-content/5 flex justify-end border-t pt-4">
                             <x-ts-button
                                 text="{{ __('submission.resubmit') }}"
-                                icon-right="o-paper-airplane"
+                                icon-right="paper-airplane"
                                 class="shadow-warning/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="yellow"
                                 wire:click="submit"
@@ -242,7 +242,7 @@
                         <div class="border-base-content/5 flex justify-end border-t pt-4">
                             <x-ts-button
                                 :text="__('submission.submit')"
-                                icon-right="o-paper-airplane"
+                                icon-right="paper-airplane"
                                 class="shadow-primary/30 h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase shadow-2xl transition-transform hover:scale-[1.02]"
                                 color="primary"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
@@ -252,6 +252,6 @@
                     </div>
                 </div>
             @endif
-
+        </x-ts-card>
     @endif
 </div>

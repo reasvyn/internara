@@ -22,13 +22,13 @@ enum DocumentCategory: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::APPLICATION => __('Application'),
-            self::PERMIT => __('Permit'),
-            self::CERTIFICATE => __('Certificate'),
-            self::REPORT => __('Report'),
-            self::LETTER => __('Letter'),
-            self::POLICY => __('Policy'),
-            self::HANDBOOK => __('Handbook'),
+            self::APPLICATION => __('common.enums.application'),
+            self::PERMIT => __('common.enums.permit'),
+            self::CERTIFICATE => __('common.enums.certificate'),
+            self::REPORT => __('common.enums.report'),
+            self::LETTER => __('common.enums.letter'),
+            self::POLICY => __('common.enums.policy'),
+            self::HANDBOOK => __('common.enums.handbook'),
         };
     }
 }

@@ -182,7 +182,7 @@ return [
                     'label' => 'common.sidebar.incidents',
                 ],
                 [
-                    'route' => 'supervision.visits',
+                    'route' => 'monitoring-visits.index',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.visits',
                 ],
@@ -245,7 +245,7 @@ return [
                     'label' => 'common.sidebar.handbooks',
                 ],
                 [
-                    'route' => 'student.visits',
+                    'route' => 'student.monitoring-visits',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.visits',
                 ],
@@ -312,6 +312,11 @@ return [
                     'route' => 'sysadmin.reports.index',
                     'icon' => 'o-document-chart-bar',
                     'label' => 'common.sidebar.reports',
+                ],
+                [
+                    'route' => 'sysadmin.student-reports.index',
+                    'icon' => 'o-academic-cap',
+                    'label' => 'common.sidebar.student_reports',
                 ],
                 [
                     'route' => 'sysadmin.certificates',

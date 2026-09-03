@@ -58,7 +58,7 @@
                 <x-ts-select.native
                     :label="__('handbook.target_audience')"
                     wire:model="form.audience"
-                    :options="$this->audienceOptions"
+                    :options="ts_options($this->audienceOptions)"
                 />
                 <x-ts-textarea :label="__('handbook.content_field')" wire:model="form.description" rows="3" />
                 <x-ts-toggle :label="__('handbook.active')" wire:model="form.isActive" />

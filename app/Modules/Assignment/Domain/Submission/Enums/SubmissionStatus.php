@@ -28,11 +28,11 @@ enum SubmissionStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => __('Draft'),
-            self::SUBMITTED => __('Submitted'),
-            self::VERIFIED => __('Verified'),
-            self::GRADED => __('Graded'),
-            self::REVISION_REQUIRED => __('Revision Required'),
+            self::DRAFT => __('common.enums.draft'),
+            self::SUBMITTED => __('common.enums.submitted'),
+            self::VERIFIED => __('common.enums.verified'),
+            self::GRADED => __('common.enums.graded'),
+            self::REVISION_REQUIRED => __('common.enums.revision_required'),
         };
     }
 

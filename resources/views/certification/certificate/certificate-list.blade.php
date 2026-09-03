@@ -13,7 +13,7 @@
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.status"
-            :options="[null => __('certificate.filter_status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
+            :options="ts_options(collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray(), __('certificate.filter_status'))"
         />
     </x-slot:filters>
 
@@ -60,16 +60,12 @@
                     <x-ts-select.native
                         :label="__('certificate.registration')"
                         wire:model="issueRegistrationId"
-                        :options="[null => __('certificate.registration_placeholder')] + ($this->activeRegistrations)"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->activeRegistrations, __('certificate.registration_placeholder'))"
                     />
                     <x-ts-select.native
                         :label="__('certificate.template')"
                         wire:model="issueTemplateId"
-                        :options="[null => __('certificate.template_placeholder')] + ($this->templates)"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->templates, __('certificate.template_placeholder'))"
                     />
                 </div>
                 <div class="mt-6 flex justify-end gap-2">
@@ -90,14 +86,12 @@
                     <x-ts-select.native
                         :label="__('certificate.template')"
                         wire:model="batchIssueTemplateId"
-                        :options="[null => __('certificate.template_placeholder')] + ($this->templates)"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->templates, __('certificate.template_placeholder'))"
                     />
                     <x-ts-select.native
                         :label="__('certificate.batch_filter_status')"
                         wire:model="batchIssueFilter"
-                        :options="['active' => __('certificate.filter_active_registrations'), 'completed' => __('certificate.filter_completed_registrations')]"
+                        :options="ts_options(['active' => __('certificate.filter_active_registrations'), 'completed' => __('certificate.filter_completed_registrations')])"
                     />
                     <div class="bg-base-200 rounded-lg p-3 text-sm">
                         <p class="text-base-content/70">{{ __('certificate.batch_issue_info') }}</p>

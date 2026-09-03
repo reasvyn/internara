@@ -110,4 +110,5 @@
                 />
             </div>
         @endif
+    </x-ts-card>
 </div>

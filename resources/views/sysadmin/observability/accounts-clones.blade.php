@@ -21,4 +21,5 @@
                 <p>{{ __('sysadmin.clone_detection.no_suspicious') }}</p>
             </div>
         @endforelse
+    </x-ts-card>
 </div>

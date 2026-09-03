@@ -60,4 +60,5 @@ return [
         'stats_title' => 'Statistik',
         'stats_desc' => 'Lihat total perusahaan, kemitraan aktif, slot tersedia, dan perusahaan dengan penempatan sekilas.',
     ],
+    'confirm_delete' => 'Yakin ingin menghapus perusahaan ini?',
 ];

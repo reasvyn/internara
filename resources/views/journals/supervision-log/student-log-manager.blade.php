@@ -7,6 +7,10 @@
     </x-slot:headerActions>
 
     <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
+        @interact('column_date', $l)
+            <span class="text-sm">{{ $l->date?->format('d M Y') }}</span>
+        @endinteract
+
         @interact('column_status', $l)
             <x-ts-badge
                 :text="$l->status->label()"
@@ -46,7 +50,7 @@
                 <x-ts-select.native
                     :label="__('journals.supervisor')"
                     wire:model="supervisorId"
-                    :options="$this->supervisors->map(fn ($s) => ['id' => $s->id, 'name' => $s->name])"
+                    :options="ts_options($this->supervisors, __('journals.select_supervisor'))"
                 />
                 <x-ts-input :label="__('journals.date')" wire:model="date" type="date" icon="calendar" />
                 <x-ts-input :label="__('journals.topic')" wire:model="topic" />

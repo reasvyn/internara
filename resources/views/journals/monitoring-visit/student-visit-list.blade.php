@@ -20,7 +20,7 @@
                         :class="$visit->is_verified ? 'badge-success' : 'badge-warning'"
                     />
                 </div>
-
+            </x-ts-card>
         @empty
             <x-ts-alert :title="__('journals.no_visits')" icon="information-circle" class="bg-base-200" />
         @endforelse

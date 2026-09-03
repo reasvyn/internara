@@ -40,6 +40,7 @@
                     </div>
                 @endif
             </div>
+        </x-ts-card>
 
     @else
         <div class="text-base-content/60 py-12 text-center">

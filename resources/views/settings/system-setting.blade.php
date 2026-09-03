@@ -29,10 +29,10 @@
                         <x-ts-select.native
                             label="{{ __('setting.fields.default_locale') }}"
                             wire:model="generalForm.default_locale"
-                            :options="[
+                            :options="ts_options([
                                 ['id' => 'id', 'name' => __('setting.locales.id')],
                                 ['id' => 'en', 'name' => __('setting.locales.en')],
-                            ]"
+                            ])"
                         />
                         <x-ts-input
                             label="{{ __('setting.fields.site_title') }}"
@@ -43,7 +43,7 @@
                         <x-ts-select.native
                             label="{{ __('setting.fields.active_academic_year') }}"
                             wire:model="generalForm.active_academic_year"
-                            :options="$this->academicYearOptions"
+                            :options="ts_options($this->academicYearOptions)"
                         />
                         <x-ts-input
                             label="{{ __('setting.fields.support_email') }}"
@@ -176,7 +176,7 @@
                                 <x-ts-select.native
                                     label="{{ __('setting.fields.mail_encryption') }}"
                                     wire:model="mailSettingsForm.mail_encryption"
-                                    :options="[['id' => 'tls', 'name' => __('setting.encryptions.tls')], ['id' => 'ssl', 'name' => __('setting.encryptions.ssl')], ['id' => 'none', 'name' => __('setting.encryptions.none')]]"
+                                    :options="ts_options([['id' => 'tls', 'name' => __('setting.encryptions.tls')], ['id' => 'ssl', 'name' => __('setting.encryptions.ssl')], ['id' => 'none', 'name' => __('setting.encryptions.none')]])"
                                 />
                                 <x-ts-input
                                     label="{{ __('setting.fields.mail_username') }}"
@@ -195,13 +195,16 @@
                                     aria-label="{{ __('common.actions.remove') }}"
                                     aria-label="{{ __('common.actions.remove') }}"
                                     text="{{ __('setting.buttons.test_mail') }}"
-                                    icon-right="o-paper-airplane"
+                                    icon-right="paper-airplane"
                                     color="white"
                                     sm
                                     wire:click="testEmail"
                                     loading="testEmail"
                                 />
                             </div>
+                        </x-ts-card>
+                    </x-ts-card>
+                </x-ts-card>
             </div>
 
             {{-- Sidebar --}}
@@ -323,6 +326,8 @@
                             'message' => __('setting.messages.remove_asset_confirm'),
                             'confirmText' => __('common.actions.remove'),
                         ])
+                    </x-ts-card>
+                </x-ts-card>
             </div>
         </div>
 

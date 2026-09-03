@@ -120,4 +120,6 @@ return [
         'credential_changed_warning' => 'Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
         'credential_changed_warning_with_email' => 'Jika Anda tidak melakukan perubahan ini, hubungi administrator sistem Anda di :support_email.',
     ],
+    'password_confirmation_failed' => 'Kata sandi yang dimasukkan salah.',
+    'password_confirmation_mismatch' => 'Konfirmasi kata sandi tidak cocok.',
 ];

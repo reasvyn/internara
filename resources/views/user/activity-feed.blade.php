@@ -23,4 +23,5 @@
         @endforelse
 
         <div class="mt-4">{{ $activities->links() }}</div>
+    </x-ts-card>
 </div>

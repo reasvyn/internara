@@ -51,13 +51,13 @@
                 <x-ts-select.native
                     :label="__('journals.student')"
                     wire:model="registrationId"
-                    :options="[null => __('journals.select_student')] + ($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]))"
+                    :options="ts_options($this->students->map(fn ($r) => ['id' => $r->id, 'name' => $r->student->name]), __('journals.select_student'))"
                 />
                 <x-ts-input :label="__('journals.visit_date')" wire:model="visitDate" type="date" icon="calendar" />
                 <x-ts-select.native
                     :label="__('journals.method')"
                     wire:model="method"
-                    :options="$this->methodOptions"
+                    :options="ts_options($this->methodOptions)"
                 />
                 <x-ts-input :label="__('journals.location')" wire:model="location" icon="map-pin" />
                 <div class="grid grid-cols-2 gap-4">

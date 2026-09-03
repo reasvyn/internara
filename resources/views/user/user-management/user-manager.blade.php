@@ -238,7 +238,7 @@
                 <x-ts-select.native
                     :label="__('user.manager.new_status')"
                     wire:model="selectedStatus"
-                    :options="$this->statusOptions"
+                    :options="ts_options($this->statusOptions)"
                     icon="flag"
                 />
                 <x-ts-textarea
@@ -300,7 +300,7 @@
                         <x-ts-select.native
                             :label="__('user.fields.gender')"
                             wire:model="form.gender"
-                            :options="[['id' => 'L', 'name' => __('common.male')], ['id' => 'P', 'name' => __('common.female')]]"
+                            :options="ts_options([['id' => 'L', 'name' => __('common.male')], ['id' => 'P', 'name' => __('common.female')]])"
                         />
                         <x-ts-input :label="__('user.fields.pob')" wire:model="form.pob" icon="map-pin" />
                         <x-ts-input :label="__('user.fields.dob')" type="date" wire:model="form.dob" icon="calendar" />

@@ -17,11 +17,11 @@ enum IncidentType: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::ACCIDENT => __('Accident'),
-            self::SAFETY_VIOLATION => __('Safety Violation'),
-            self::HARASSMENT => __('Harassment'),
-            self::DISCIPLINARY => __('Disciplinary'),
-            self::OTHER => __('Other'),
+            self::ACCIDENT => __('common.enums.accident'),
+            self::SAFETY_VIOLATION => __('common.enums.safety_violation'),
+            self::HARASSMENT => __('common.enums.harassment'),
+            self::DISCIPLINARY => __('common.enums.disciplinary'),
+            self::OTHER => __('common.enums.other'),
         };
     }
 }

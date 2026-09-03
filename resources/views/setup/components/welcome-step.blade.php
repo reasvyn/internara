@@ -94,7 +94,7 @@
         @if ($auditPassed)
             <x-ts-button
                 text="{{ __('setup.wizard.start_setup') }}"
-                icon-right="o-arrow-right"
+                icon-right="arrow-right"
                 color="primary"
                 wire:click="nextStep"
                 loading="nextStep"

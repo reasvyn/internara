@@ -61,19 +61,13 @@
             <x-ts-select.native
                 label="{{ __('backups.filter_type') }}"
                 wire:model.live="filterType"
-                :options="[
-                    ['value' => '', 'label' => __('common.all')],
-                    ...collect(BackupType::cases())->map(fn ($t) => ['value' => $t->value, 'label' => $t->label()])->toArray(),
-                ]"
+                :options="ts_options(BackupType::cases(), __('common.all'))"
                 class="w-48"
             />
             <x-ts-select.native
                 label="{{ __('backups.filter_status') }}"
                 wire:model.live="filterStatus"
-                :options="[
-                    ['value' => '', 'label' => __('common.all')],
-                    ...collect(BackupStatus::cases())->map(fn ($s) => ['value' => $s->value, 'label' => $s->label()])->toArray(),
-                ]"
+                :options="ts_options(BackupStatus::cases(), __('common.all'))"
                 class="w-48"
             />
         </div>
@@ -120,10 +114,11 @@
             <p>{{ __('backups.confirm_delete_message') }}</p>
 
             <x-slot:footer>
-                <x-ts-button text="{{ __('common.cancel') }}" wire:click="cancelDelete" />
-                <x-ts-button text="{{ __('common.delete') }}" wire:click="delete" color="red" />
+                <x-ts-button text="{{ __('common.actions.cancel') }}" wire:click="cancelDelete" />
+                <x-ts-button text="{{ __('common.actions.delete') }}" wire:click="delete" color="red" />
             </x-slot:footer>
         </x-ts-modal>
 
         @include('sysadmin.backups.components.backup-guide')
+    </x-ts-card>
 </div>

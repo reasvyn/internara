@@ -18,9 +18,9 @@ enum SupervisionType: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::GUIDANCE => __('Guidance'),
-            self::SUPERVISORING => __('Mentoring'),
-            self::MONITORING => __('Monitoring'),
+            self::GUIDANCE => __('common.enums.guidance'),
+            self::SUPERVISORING => __('common.enums.mentoring'),
+            self::MONITORING => __('common.enums.monitoring'),
         };
     }
 }

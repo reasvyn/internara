@@ -24,12 +24,12 @@
             <div class="flex w-full gap-4 lg:w-auto">
                 <x-ts-select.native
                     wire:model.live="statusFilter"
-                    :options="[null => __('submission.status')] + (['submitted' => __('submission.statuses.submitted'), 'revision_required' => __('submission.statuses.revision_required')])"
+                    :options="ts_options(['submitted' => __('submission.statuses.submitted'), 'revision_required' => __('submission.statuses.revision_required')], __('submission.status'))"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
                 />
                 <x-ts-select.native
                     wire:model.live="assignmentFilter"
-                    :options="[null => __('submission.assignment')] + ($assignments->pluck('title', 'id'))"
+                    :options="ts_options($assignments->pluck('title', 'id'), __('submission.assignment'))"
                     class="border-base-content/5 bg-base-200/50 h-14 min-w-[200px] rounded-[1.5rem]"
                 />
             </div>
@@ -78,6 +78,7 @@
                 </div>
                 <div class="border-base-content/5 border-t p-5">{{ $submissions->links() }}</div>
             @endif
+        </x-ts-card>
 
     @else
         {{-- Submission Detail / Grading Form --}}
@@ -173,7 +174,7 @@
                             <x-ts-select.native
                                 :label="__('submission.status')"
                                 wire:model="gradeStatus"
-                                :options="['graded' => __('submission.grade_accept'), 'revision_required' => __('submission.request_revision')]"
+                                :options="ts_options(['graded' => __('submission.grade_accept'), 'revision_required' => __('submission.request_revision')])"
                                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                             />
                         </div>
@@ -218,6 +219,7 @@
                     </div>
                 </div>
             </div>
+        </x-ts-card>
 
     @endif
 </div>

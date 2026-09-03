@@ -31,7 +31,7 @@
                         <option value="">{{ __('report.all_statuses') }}</option>
                         @foreach ($statuses as $status)
                             <option value="{{ $status->value }}">
-                                {{ __('report.status_' . $status->name . '_label') }}
+                                {{ __('report.status_' . $status->value . '_label') }}
                             </option>
                         @endforeach
                     </x-ts-select.native>
@@ -52,11 +52,11 @@
                         <th class="px-4 py-3">{{ __('report.final_score') }}</th>
                         <th class="px-4 py-3">{{ __('report.grade_letter') }}</th>
                         <th class="px-4 py-3">{{ __('report.finalized_at') }}</th>
-                        <th class="px-4 py-3 text-right">{{ __('common.actions') }}</th>
+                        <th class="px-4 py-3 text-right">{{ __('common.actions.label') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-base-200 divide-y">
-                    @forelse ($reports as $report)
+                    @forelse ($this->reports as $report)
                         <tr class="hover:bg-base-200/50 transition-colors">
                             <td class="px-4 py-3">
                                 <div class="font-medium">{{ $report->registration->student->name }}</div>
@@ -75,7 +75,7 @@
                                     $isFinalized = $report->status->value === 'finalized';
                                 @endphp
                                 <x-ts-badge
-                                    :text="__('report.status_'.$report->status->name.'_label')"
+                                    :text="__('report.status_'.$report->status->value.'_label')"
                                     :color="$isFinalized ? 'green' : 'yellow'"
                                     xs
                                 />
@@ -106,7 +106,7 @@
                                         </button>
                                     @endif
                                     <a
-                                        href="{{ route('sysadmin.reports.download', $report) }}"
+                                        href="{{ route('sysadmin.student-reports.download', $report) }}"
                                         class="btn btn-sm btn-outline"
                                         title="{{ __('report.download') }}"
                                     >
@@ -116,7 +116,7 @@
                                         <button
                                             wire:click="askDelete('{{ $report->id }}')"
                                             class="btn btn-sm btn-outline btn-error"
-                                            title="{{ __('common.delete') }}"
+                                            title="{{ __('common.actions.delete') }}"
                                         >
                                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v10M7 7h10"></path></svg>
                                         </button>
@@ -137,8 +137,8 @@
         </div>
 
         {{-- Pagination --}}
-        @if ($reports->hasPages())
-            <div class="card-body border-base-200 border-t px-4 py-3">{{ $reports->links() }}</div>
+        @if ($this->reports->hasPages())
+            <div class="card-body border-base-200 border-t px-4 py-3">{{ $this->reports->links() }}</div>
         @endif
     </div>
 
@@ -146,7 +146,7 @@
     <x-ts-modal wire="createModal" :title="__('report.create_grade_card')" blur>
         <p class="text-base-content/70 mb-6 text-sm">{{ __('report.select_student') }}</p>
 
-        @if ($registrations->isEmpty())
+        @if ($this->registrations->isEmpty())
             <x-ts-alert color="info" :text="__('report.no_available_students')" icon="information-circle" />
         @else
             <div class="space-y-4">
@@ -156,7 +156,7 @@
                     class="w-full"
                 >
                     <option value="">{{ __('report.select_student_placeholder') }}</option>
-                    @foreach ($registrations as $registration)
+                    @foreach ($this->registrations as $registration)
                         <option value="{{ $registration->id }}">
                             {{ $registration->student->name }} ({{ $registration->student->email }}) - {{ $registration->internship->name ?? '—' }}
                         </option>
@@ -170,8 +170,8 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.cancel')" wire:click="$set('createModal', false)" color="white" sm />
-                @if (! $registrations->isEmpty())
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('createModal', false)" color="white" sm />
+                @if (! $this->registrations->isEmpty())
                     <x-ts-button :text="__('report.create_grade_card')" wire:click="createReport" color="primary" sm />
                 @endif
             </div>
@@ -184,7 +184,7 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.cancel')" wire:click="$set('calculateModal', false)" color="white" sm />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('calculateModal', false)" color="white" sm />
                 <x-ts-button :text="__('report.calculate_grades')" wire:click="calculateGrades" color="primary" sm />
             </div>
         </x-slot:footer>
@@ -196,20 +196,20 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.cancel')" wire:click="$set('finalizeModal', false)" color="white" sm />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('finalizeModal', false)" color="white" sm />
                 <x-ts-button :text="__('report.finalize_grade_card')" wire:click="finalizeReport" color="green" sm />
             </div>
         </x-slot:footer>
     </x-ts-modal>
 
     {{-- Delete Confirm Modal --}}
-    <x-ts-modal wire="showConfirm" :title="__('common.delete')" blur>
-        <p class="text-base-content/70 mb-4 text-sm">{{ __('common.delete_confirm') }}</p>
+    <x-ts-modal wire="showConfirm" :title="__('common.actions.delete')" blur>
+        <p class="text-base-content/70 mb-4 text-sm">{{ __('common.confirm_delete') }}</p>
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.cancel')" wire:click="$set('showConfirm', false)" color="white" sm />
-                <x-ts-button :text="__('common.delete')" wire:click="confirmDelete" color="red" sm />
+                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('showConfirm', false)" color="white" sm />
+                <x-ts-button :text="__('common.actions.delete')" wire:click="confirmDelete" color="red" sm />
             </div>
         </x-slot:footer>
     </x-ts-modal>

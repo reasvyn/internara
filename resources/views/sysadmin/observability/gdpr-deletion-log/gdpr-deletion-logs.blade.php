@@ -28,4 +28,5 @@
                 {{ $log->deleted_at?->format('Y-m-d H:i') }}
             @endinteract
         </x-ts-table>
+    </x-ts-card>
 </div>

@@ -63,6 +63,17 @@ class VisitManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('location', 'like', $term)
+                ->orWhere('notes', 'like', $term)
+                ->orWhereHas('teacher', fn (Builder $t) => $t->where('name', 'like', $term));
+        });
+    }
+
     protected function query(): Builder
     {
         $user = auth()->user();

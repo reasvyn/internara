@@ -228,4 +228,7 @@ return [
     ],
     'failed' => 'Validasi gagal.',
     'failed_hint' => 'Silakan periksa input Anda dan coba lagi.',
+    'roles_required' => 'Minimal satu peran harus dipilih.',
+    'roles_invalid' => 'Satu atau lebih peran yang dipilih tidak valid.',
+    'valid_setting_key' => 'Kunci pengaturan yang dipilih tidak terdaftar.',
 ];

@@ -34,7 +34,15 @@ class RegistrationWizard extends Component
     #[Computed]
     public function internships(): Collection
     {
-        return Internship::where('status', InternshipStatus::PUBLISHED->value)->get();
+        $open = array_map(
+            fn (InternshipStatus $status) => $status->value,
+            array_filter(
+                InternshipStatus::cases(),
+                fn (InternshipStatus $status) => $status->isAcceptingRegistrations(),
+            ),
+        );
+
+        return Internship::whereIn('status', $open)->get();
     }
 
     #[Computed]

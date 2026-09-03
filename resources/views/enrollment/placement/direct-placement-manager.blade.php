@@ -10,7 +10,7 @@
                 <x-ts-select.native
                     :label="__('placement.direct_placement.student')"
                     wire:model="form.student_id"
-                    :options="[null => __('placement.direct_placement.select_student')] + ($this->students)"
+                    :options="ts_options($this->students, __('placement.direct_placement.select_student'))"
                     icon="user"
                 />
 
@@ -23,7 +23,7 @@
                 <x-ts-select.native
                     :label="__('placement.direct_placement.placement')"
                     wire:model="form.placement_id"
-                    :options="[null => __('placement.direct_placement.select_placement')] + ($this->placements)"
+                    :options="ts_options($this->placements, __('placement.direct_placement.select_placement'))"
                     class="md:col-span-2"
                     icon="briefcase"
                 />
@@ -31,7 +31,7 @@
                 <x-ts-select.native
                     :label="__('placement.direct_placement.mentors')"
                     wire:model="form.mentor_ids"
-                    :options="[null => __('placement.direct_placement.select_mentors')] + ($this->mentors)"
+                    :options="ts_options($this->mentors, __('placement.direct_placement.select_mentors'))"
                     multiple
                     class="md:col-span-2"
                     icon="user-group"
@@ -47,4 +47,5 @@
                 />
             </div>
         </form>
+    </x-ts-card>
 </div>

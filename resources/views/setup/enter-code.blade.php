@@ -45,7 +45,7 @@
                     <x-ts-button
                         type="submit"
                         text="{{ __('setup.code_entry.submit') }}"
-                        icon-right="o-arrow-right"
+                        icon-right="arrow-right"
                         class="w-full"
                         color="primary"
                     />

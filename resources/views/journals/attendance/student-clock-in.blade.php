@@ -42,4 +42,28 @@
             @endif
         </x-ts-card>
     </div>
+
+    @if ($unaccountedDates->isNotEmpty())
+        <x-ts-alert
+            color="red"
+            icon="exclamation-triangle"
+            :title="__('journals.attendance.unaccounted_title')"
+            class="mt-6"
+        >
+            <p class="text-sm">{{ __('journals.attendance.unaccounted_hint') }}</p>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+                @foreach ($unaccountedDates as $missedDate)
+                    <x-ts-button
+                        :text="$missedDate->format('d M Y')"
+                        icon="pencil-square"
+                        color="red"
+                        sm
+                        :href="route('student.attendance.absence', ['date' => $missedDate->toDateString()])"
+                        wire:navigate
+                    />
+                @endforeach
+            </div>
+        </x-ts-alert>
+    @endif
 </div>

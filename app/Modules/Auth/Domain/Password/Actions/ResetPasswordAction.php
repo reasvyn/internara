@@ -43,7 +43,7 @@ final class ResetPasswordAction extends BaseCommandAction
                 ->activityOnly()
                 ->save();
 
-            throw new RejectedException(__('validation.custom.password.confirmed'));
+            throw new RejectedException(__('auth.password_confirmation_mismatch'));
         }
 
         $credentials = [

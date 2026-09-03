@@ -94,7 +94,7 @@
                                 <x-ts-select.native
                                     :label="__('profile.employment_status')"
                                     wire:model="profileForm.employment_status"
-                                    :options="[null => __('profile.select_option')] + (\App\Modules\User\Enums\EmploymentStatus::options())"
+                                    :options="ts_options(\App\Modules\User\Enums\EmploymentStatus::options(), __('profile.select_option'))"
                                     icon="briefcase"
                                 />
                                 <x-ts-input
@@ -179,6 +179,8 @@
                             />
                         </div>
                     </form>
+            </x-ts-card>
+                </x-ts-card>
         </div>
 
         {{-- Sidebar --}}
@@ -266,7 +268,9 @@
                             </div>
                             <x-ts-icon name="chevron-right" class="text-base-content/20 size-4 shrink-0" />
                         </div>
+                    </x-ts-card>
                 </a>
+            </x-ts-card>
         </div>
     </div>
 

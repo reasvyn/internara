@@ -54,7 +54,7 @@
                     <x-ts-select.native
                         :label="__('document.category')"
                         wire:model="templateData.type"
-                        :options="$this->categories()"
+                        :options="ts_options($this->categories())"
                     />
 
                     <x-ts-textarea
@@ -78,4 +78,5 @@
                 </div>
             </form>
         </x-ts-modal>
+    </x-ts-card>
 </div>
