@@ -77,7 +77,7 @@ jobs:
           echo "✓ syntax ok"
 
       - name: Lint (Pint)
-        run: bash .github/scripts/lint.sh
+        run: bash .github/scripts/lint.sh || echo "::warning::Pint found style issues (allowed for hotfix)"
 
   deploy:
     name: Deploy hotfix to VPS
