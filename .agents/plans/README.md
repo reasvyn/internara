@@ -4,6 +4,8 @@
 
 `L` = >10 files, multi-module, or cross-cutting. **MUST split into multiple sessions** per `AGENTS.md#Size Triage` + `workflow-5step.md`. This directory holds the per-session plan files that survive between sessions so no context is lost.
 
+**Scope:** This directory is for **non-audit L-size plans** — implementation roadmaps, refactor sessions, migration plans (TallstackUI, ADR rewrites, etc.). **Audit reports do not live here**; they live in **GitHub Issues** per `.agents/rules/audit-workflow.md` Phase 4 ("Audit record lives in GitHub Issues, not `.agents/plans/`").
+
 ## How to Use
 
 1. After **Plan** (Step 2), the agent writes `plans/{YYYY-MM-DD}-{slug}.md` from the template below

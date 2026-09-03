@@ -1,6 +1,6 @@
 ---
 name: sync-docs
-description: "SDLC Phase: MAINTENANCE. Comprehensive documentation sync against actual code implementation and feature specs — covering `docs/`, module docs, agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`), AND devtools (`tools/`, `.github/workflows/`, `.github/scripts/`). Discovers patterns and rules from authoritative docs, then verifies them against code and specs."
+description: "SDLC Phase: MAINTENANCE. Comprehensive documentation sync against actual code implementation and feature specs — covering `docs/`, module docs, agent guides & skills (`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`), AND devtools (`tools/`, `.github/workflows/`, `.github/scripts/`). Discovers patterns and rules from authoritative docs, then verifies them against code and specs."
 upstream:
   - feature-building
   - code-refactoring
@@ -22,7 +22,7 @@ upstream:
 Use this skill after any implementation, refactoring, or audit to keep documentation in sync with
 the actual codebase and its feature specs. Documentation is the single source of truth (see
 conventions) — code, docs, and specs must agree. **This includes agent guides & skills:**
-`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, and `.agents/plans/` must stay
+`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/` must stay
 consistent with the specs and code they document. **This includes devtools:**
 `tools/*.py` (scanners), `tools/README.md`, `.github/workflows/*.yaml`, `.github/scripts/*.sh` must
 stay consistent with the code and docs they automate. A spec amendment (renamed default, new
@@ -40,7 +40,7 @@ below — nothing else.
 ### Construct — Context & Scope
 
 - Locate the governing spec, the agent guides/skills that reference it — `AGENTS.md`,
-  `.agents/skills/*/SKILL.md`, `.agents/context/*.md`, `.agents/plans/` — and the devtools that
+  `.agents/skills/*/SKILL.md`, `.agents/context/*.md` — and the devtools that
   automate it — `tools/*.py`, `tools/README.md`, `.github/workflows/*.yaml`, `.github/scripts/*.sh`
   (a spec/code change must be mirrored there too)
 - Review git commits from at least the last 14 days (`git log --since="14 days ago" --oneline`,

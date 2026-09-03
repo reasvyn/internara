@@ -17,7 +17,7 @@ downstream:
 
 Use this skill to verify that feature specifications (`docs/specs/`) and code implementation
 (`app/`, `tests/`, `routes/`, `database/migrations/`) are in sync, and that **agent guides & skills**
-(`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`, `.agents/plans/`) accurately reflect
+(`AGENTS.md`, `.agents/skills/*/SKILL.md`, `.agents/context/`) accurately reflect
 the specs they reference. Detects three categories of drift:
 
 1. **Spec → Code:** Spec promises something the code doesn't deliver (missing implementation)

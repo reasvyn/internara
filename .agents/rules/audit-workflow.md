@@ -40,8 +40,11 @@ decision matrix (`decision-matrix.md`).
 - Auto-fix minor / spec-lagging / test-gap findings in-run (`fix-or-issue.md`)
 - **File one GitHub Issue per unresolved finding at the end of this scope/session** (not deferred
   to the end of the L-size audit). See `fix-or-issue.md` §"Filing rule (per scope)".
-- Update the session report (`.agents/plans/audits/{scope}/session-N-*.md`) with the issue numbers
-  in the "Issues filed" table before the scope commit closes.
+- **Audit record lives in GitHub Issues, not `.agents/plans/`.** Create one "audit report" issue
+  per L-size audit (or per scope for sub-L audits) and append session findings as comments. The
+  issue body holds the audit map, baselines, sync status, and verdict; comments hold per-session
+  detail. Do **not** write audit reports to \`.agents/plans/audits/{scope}/session-N-*.md\` —
+  that directory is reserved for non-audit L-size plans (e.g., TallstackUI migration, ADR rewrites).
 
 ### Phase 5 — Finalize
 
