@@ -6,7 +6,7 @@
         :description="__('journals.attendance.clock_in_out_subtitle')"
     />
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <x-ts-card shadowless>
             <h3 class="mb-2 text-sm font-bold">{{ __('journals.attendance.today_status') }}</h3>
             @if ($todayAttendance)

@@ -14,13 +14,12 @@
         @interact('column_status', $l)
             <x-ts-badge
                 :text="$l->status->label()"
-                :class="match($l->status->value) {
-                'draft' => 'badge-ghost',
-                'submitted' => 'badge-info',
-                'reviewed' => 'badge-success',
-                'acknowledged' => 'badge-primary',
-                default => 'badge-ghost',
-            }"
+                :color="match ($l->status->value) {
+                    'submitted' => 'blue',
+                    'reviewed', 'verified' => 'green',
+                    'acknowledged' => 'primary',
+                    default => 'gray',
+                }"
             />
         @endinteract
 
