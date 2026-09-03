@@ -198,7 +198,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Routes
 
-File: `routes/web/user.php` Named routes: `home`, `dashboard`, `user.dashboard`, `profile`,
+File: `routes/web/user.php` Named routes: `home`, `dashboard`, `profile`,
 `profile.recovery`, `notifications`, `logout`, `password.request`, `password.reset`,
 `recover.account`, `password.confirm`; role dashboards at `sysadmin.dashboard`, `student.dashboard`,
 `teacher.dashboard`, `supervisor.dashboard`

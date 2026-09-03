@@ -41,15 +41,17 @@ test('2CF4Y-FR-MW9: allows access when system is installed', function () {
     Settings::override(['setup.is_installed' => true]);
     Cache::forget(config('cache-keys.setup_installed'));
     $user = User::factory()->create();
+    $user->assignRole('admin');
 
-    $response = $this->actingAs($user)->get('/my-dashboard');
+    $response = $this->actingAs($user)->get('/admin/dashboard');
 
     expect($response->getStatusCode())->toBe(200);
 });
 
 test('2CF4Y-FR-MW9: allows Livewire requests when not installed', function () {
     $user = User::factory()->create();
-    $response = $this->actingAs($user)->withHeaders(['X-Livewire' => 'true'])->get('/my-dashboard');
+    $user->assignRole('admin');
+    $response = $this->actingAs($user)->withHeaders(['X-Livewire' => 'true'])->get('/admin/dashboard');
 
     expect($response->getStatusCode())->toBe(200);
 });

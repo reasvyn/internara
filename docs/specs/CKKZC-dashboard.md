@@ -148,16 +148,16 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 4. Next dashboard load triggers fresh data aggregation
 **Postconditions:** Dashboard statistics reflect the year change within one request cycle
 
-### UC-7 — Unknown Role Falls Back to Generic Dashboard
+### UC-7 — Unknown Role Is Rejected (Fail-Closed)
 
 **Actor:** User with unrecognized or missing role
 **Preconditions:** User authenticated but role does not match any known dashboard
 **Flow:**
 1. User navigates to `/dashboard`
 2. `DashboardService::getDashboardForUser()` falls through all `match` cases to `default`
-3. Returns `user.dashboard` route, controller redirects to `/my-dashboard`
-4. `UserDashboard` base component renders with user info and recent activities
-**Postconditions:** User sees a generic dashboard with basic profile info and recent activity log
+3. Service throws `HttpException(403, 'No dashboard assigned for this role.')` — fail-closed
+4. `DashboardController` does not redirect; Laravel renders 403
+**Postconditions:** User sees 403. `UserDashboard` remains a **base component** (template method) for role dashboards to extend — it is not directly routable. All routable dashboards follow `/<role>/dashboard` (e.g. `/admin/dashboard`, `/student/dashboard`).
 
 ---
 
@@ -172,8 +172,8 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 | FR-DR3 | `student` → route `student.dashboard` (`/student/dashboard`) |
 | FR-DR4 | `teacher` → route `teacher.dashboard` (`/teacher/dashboard`) |
 | FR-DR5 | `supervisor` → route `supervisor.dashboard` (`/supervisor/dashboard`) |
-| FR-DR6 | Unrecognized role → route `user.dashboard` (`/my-dashboard`) |
-| FR-DR7 | Role priority: `super_admin`/`admin` first, then `student`, `teacher`, `supervisor`, then default — via `match(true)` with ordered cases |
+| FR-DR6 | Unrecognized / missing role → throw `HttpException(403)` — `UserDashboard` is a base component, not a routable page. All dashboards are `/<role>/dashboard`. |
+| FR-DR7 | Role priority: `super_admin`/`admin` first, then `student`, `teacher`, `supervisor`, then default (403) — via `match(true)` with ordered cases |
 | FR-DR8 | `DashboardService::getProxyDashboardForUser()` must return `supervisor.dashboard` for `teacher` role, `null` otherwise |
 
 ### Dashboard — Data Aggregation
@@ -225,12 +225,11 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RT1 | `GET /dashboard` — `auth` middleware, named `dashboard` |
+| FR-RT1 | `GET /dashboard` — `auth` middleware, named `dashboard` (redirects via `DashboardController` to the role-specific route) |
 | FR-RT2 | `GET /admin/dashboard` — `auth` + `role:super_admin\|admin`, named `sysadmin.dashboard` |
 | FR-RT3 | `GET /student/dashboard` — `auth` + `role:student`, named `student.dashboard` |
 | FR-RT4 | `GET /teacher/dashboard` — `auth` + `role:teacher`, named `teacher.dashboard` |
 | FR-RT5 | `GET /supervisor/dashboard` — `auth` + `role:supervisor`, named `supervisor.dashboard` |
-| FR-RT6 | `GET /my-dashboard` — `auth`, named `user.dashboard` |
 
 ---
 
@@ -420,27 +419,27 @@ final class ClearDashboardCacheOnYearChange
 ### 6.8 Routes
 
 ```php
-// routes/web/user.php
+// routes/web/user.php — all dashboards are /<role>/dashboard; UserDashboard is base, not routable
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::livewire('/my-dashboard', UserDashboard::class)->name('user.dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard'); // redirects to role dashboard
 });
 
 Route::prefix('admin')->name('sysadmin.')->middleware(['auth', 'role:super_admin|admin'])->group(function () {
-    Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard');
+    Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard'); // /admin/dashboard
 });
 
 Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () {
-    Route::livewire('/dashboard', StudentDashboard::class)->name('dashboard');
+    Route::livewire('/dashboard', StudentDashboard::class)->name('dashboard'); // /student/dashboard
 });
 
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:teacher'])->group(function () {
-    Route::livewire('/dashboard', TeacherDashboard::class)->name('dashboard');
+    Route::livewire('/dashboard', TeacherDashboard::class)->name('dashboard'); // /teacher/dashboard
 });
 
 Route::prefix('supervisor')->name('supervisor.')->middleware(['auth', 'role:supervisor'])->group(function () {
-    Route::livewire('/dashboard', SupervisorDashboard::class)->name('dashboard');
+    Route::livewire('/dashboard', SupervisorDashboard::class)->name('dashboard'); // /supervisor/dashboard
 });
+// UserDashboard is a base component (FR-DU1), not a routable page. All dashboards are /<role>/dashboard.
 ```
 
 ### 6.9 Event → Listener Registration
@@ -543,7 +542,7 @@ total for all 5).
 | ------ | ------ | ----------- |
 | Role-based routing | 100% correct | `DashboardService` match cases |
 | Proxy routing | Teachers see supervisor dashboard | `getProxyDashboardForUser()` |
-| Fallback routing | Unknown role → `/my-dashboard` | Default match case |
+| Fallback routing | Unknown role → 403 (fail-closed) | `default` throws `HttpException` |
 | Cache key registration | 100% in `config/cache-keys.php` | No ad-hoc strings |
 
 ---

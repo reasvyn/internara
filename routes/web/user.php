@@ -13,7 +13,6 @@ use App\Modules\User\Domain\Dashboard\Livewire\AdminDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\StudentDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\SupervisorDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\TeacherDashboard;
-use App\Modules\User\Domain\Dashboard\Livewire\UserDashboard;
 use App\Modules\User\Domain\Notifications\Livewire\NotificationCenter;
 use App\Modules\User\Domain\Profile\Livewire\ProfileEditor;
 use App\Modules\User\Http\Controllers\AuthController;
@@ -24,7 +23,6 @@ Route::livewire('/', HomePage::class)->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
-    Route::livewire('/my-dashboard', UserDashboard::class)->name('user.dashboard');
     Route::livewire('/profile', ProfileEditor::class)->name('profile');
     Route::livewire('/profile/recovery', RecoveryCode::class)->name('profile.recovery');
     Route::livewire('/notifications', NotificationCenter::class)->name('notifications');

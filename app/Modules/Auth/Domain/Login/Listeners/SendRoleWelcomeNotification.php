@@ -41,7 +41,7 @@ class SendRoleWelcomeNotification
             type: 'welcome',
             title: __('notifications.welcome_to_dashboard.title'),
             message: __($this->roleWelcomeMap[$role]),
-            link: route('user.dashboard'),
+            link: route('dashboard'),
         ));
 
         $user->update(['first_login_at' => now()]);
