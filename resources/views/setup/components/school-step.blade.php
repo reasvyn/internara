@@ -62,7 +62,7 @@
     </div>
 
     <div class="border-base-content/10 mt-8 flex items-center justify-between border-t pt-6">
-        <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="white" sm />
+        <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="slate" outline sm />
         <x-ts-button
             text="{{ __('setup.wizard.next_step') }}"
             icon-right="arrow-right"

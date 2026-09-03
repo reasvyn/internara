@@ -49,7 +49,7 @@
                                 :text="__('registration.center.view_details')"
                                 icon="eye"
                                 class="w-full"
-                                color="white"
+                                color="slate" outline
                                 sm
                                 disabled
                             />

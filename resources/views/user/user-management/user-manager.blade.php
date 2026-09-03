@@ -254,7 +254,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('showStatusModal', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 <x-ts-button
@@ -304,18 +304,20 @@
                         />
                         <x-ts-input :label="__('user.fields.pob')" wire:model="form.pob" icon="map-pin" />
                         <x-ts-input :label="__('user.fields.dob')" type="date" wire:model="form.dob" icon="calendar" />
-                        <x-ts-input
-                            :label="__('user.fields.address')"
-                            wire:model="form.address"
-                            class="md:col-span-2"
-                            icon="map-pin"
-                        />
-                        <x-ts-textarea
-                            :label="__('user.fields.bio')"
-                            wire:model="form.bio"
-                            rows="2"
-                            class="md:col-span-2"
-                        />
+                        <div class="md:col-span-2">
+                            <x-ts-input
+                                :label="__('user.fields.address')"
+                                wire:model="form.address"
+                                icon="map-pin"
+                            />
+                        </div>
+                        <div class="md:col-span-2">
+                            <x-ts-textarea
+                                :label="__('user.fields.bio')"
+                                wire:model="form.bio"
+                                rows="2"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -334,12 +336,13 @@
                             wire:model="form.emergency_contact_phone"
                             icon="phone"
                         />
-                        <x-ts-input
-                            :label="__('user.fields.emergency_contact_address')"
-                            wire:model="form.emergency_contact_address"
-                            class="md:col-span-2"
-                            icon="map-pin"
-                        />
+                        <div class="md:col-span-2">
+                            <x-ts-input
+                                :label="__('user.fields.emergency_contact_address')"
+                                wire:model="form.emergency_contact_address"
+                                icon="map-pin"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -362,7 +365,7 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                     <x-ts-button :text="__('user.manager.save')" color="primary" sm type="submit" loading="saveUser" />

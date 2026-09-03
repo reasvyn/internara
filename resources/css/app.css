@@ -75,13 +75,16 @@
 
     --color-neutral: oklch(50% 0 0);
     --color-neutral-content: oklch(100% 0 0);
-    --color-info: oklch(60% 0.55 250); /* Bold Blue */
+    /* Chroma stays inside the sRGB gamut. Values above roughly 0.2 are clamped
+       by the browser to the nearest primary, which is what turned the funnel
+       bars and status badges into neon red/blue/green. */
+    --color-info: oklch(60% 0.16 250); /* Blue */
     --color-info-content: oklch(100% 0 0);
-    --color-success: oklch(55% 0.58 150); /* Bold Green */
+    --color-success: oklch(58% 0.15 150); /* Green */
     --color-success-content: oklch(100% 0 0);
-    --color-warning: oklch(70% 0.6 80); /* Bold Amber */
-    --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(55% 0.5 25); /* Muted Red */
+    --color-warning: oklch(75% 0.15 80); /* Amber */
+    --color-warning-content: oklch(20% 0 0);
+    --color-error: oklch(57% 0.19 25); /* Red */
     --color-error-content: oklch(100% 0 0);
 }
 
@@ -89,13 +92,13 @@
 [data-theme='dark'] {
     --color-neutral: oklch(30% 0 0);
     --color-neutral-content: oklch(95% 0 0);
-    --color-info: oklch(70% 0.38 250);
+    --color-info: oklch(70% 0.14 250);
     --color-info-content: oklch(10% 0 0);
-    --color-success: oklch(65% 0.42 150);
+    --color-success: oklch(70% 0.14 150);
     --color-success-content: oklch(10% 0 0);
-    --color-warning: oklch(75% 0.45 80);
+    --color-warning: oklch(80% 0.14 80);
     --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(65% 0.38 25);
+    --color-error: oklch(66% 0.17 25);
     --color-error-content: oklch(10% 0 0);
 }
 

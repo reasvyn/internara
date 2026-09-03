@@ -146,7 +146,13 @@ class AdminDashboard extends UserDashboard
             $prevV = $i > 0 ? $stages[$i - 1]['v'] : $stage['v'];
             $drop = $prevV > 0 ? (int) round((1 - $stage['v'] / $prevV) * 100) : 0;
             $stage['drop'] = $drop;
-            $stage['dropLabel'] = $i > 0 ? "-{$drop}%" : '—';
+            // A stage can grow (more registrations than students), which made the
+            // old "-{$drop}%" render as "--25%".
+            $stage['dropLabel'] = match (true) {
+                $i === 0 => '—',
+                $drop === 0 => '0%',
+                default => sprintf('%+d%%', -$drop),
+            };
             $stage['dropClass'] = $i > 0 ? ($drop > 20 ? 'text-error font-medium' : 'text-base-content/40') : 'text-base-content/60';
             $stage['width'] = max(2, ($stage['v'] / $maxV) * 100);
             $stage['barTextClass'] = $stage['v'] > 0 ? 'text-white drop-shadow-sm' : 'text-base-content/40';

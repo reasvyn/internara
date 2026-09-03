@@ -182,7 +182,19 @@
                                     </td>
                                 @else
                                     <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $customization['table.align.'.$alignment($header)], $customization['cell-clickable'] => $clickable])>
-                                        {{ data_get($value, $header['index']) }}
+                                        @php
+                                            // Local change: a Carbon cell stringifies as
+                                            // "2026-09-23 00:00:00". Render dates readably and
+                                            // only show a time when there is one.
+                                            $cell = data_get($value, $header['index']);
+                                            if ($cell instanceof \DateTimeInterface) {
+                                                $cell = \Illuminate\Support\Carbon::instance($cell);
+                                                $cell = $cell->format('H:i:s') === '00:00:00'
+                                                    ? $cell->translatedFormat('d M Y')
+                                                    : $cell->translatedFormat('d M Y H:i');
+                                            }
+                                        @endphp
+                                        {{ $cell }}
                                     </td>
                                 @endisset
                             @endforeach

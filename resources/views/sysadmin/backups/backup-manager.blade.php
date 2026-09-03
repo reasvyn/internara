@@ -110,15 +110,16 @@
             @endinteract
         </x-ts-table>
 
-        <x-ts-modal wire="showConfirmDelete" title="{{ __('backups.confirm_delete_title') }}" class="backdrop-blur">
-            <p>{{ __('backups.confirm_delete_message') }}</p>
-
-            <x-slot:footer>
-                <x-ts-button text="{{ __('common.actions.cancel') }}" wire:click="cancelDelete" />
-                <x-ts-button text="{{ __('common.actions.delete') }}" wire:click="delete" color="red" />
-            </x-slot:footer>
-        </x-ts-modal>
 
         @include('sysadmin.backups.components.backup-guide')
     </x-ts-card>
+    <x-ts-modal wire="showConfirmDelete" title="{{ __('backups.confirm_delete_title') }}" class="backdrop-blur">
+        <p>{{ __('backups.confirm_delete_message') }}</p>
+
+        <x-slot:footer>
+            <x-ts-button text="{{ __('common.actions.cancel') }}" wire:click="cancelDelete" />
+            <x-ts-button text="{{ __('common.actions.delete') }}" wire:click="delete" color="red" />
+        </x-slot:footer>
+    </x-ts-modal>
+
 </div>

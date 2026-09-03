@@ -32,7 +32,7 @@
             <x-ts-button
                 :text="__('sysadmin.activity_reset_filters')"
                 icon="x-mark"
-                color="white"
+                color="slate" outline
                 wire:click="resetFilters"
             />
         </div>

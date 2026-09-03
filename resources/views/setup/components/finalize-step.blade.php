@@ -51,7 +51,7 @@
     </div>
 
     <div class="border-base-content/10 flex items-center justify-between border-t pt-6">
-        <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="white" sm />
+        <x-ts-button text="{{ __('setup.wizard.back') }}" wire:click="prevStep" color="slate" outline sm />
         <x-ts-button
             text="{{ __('setup.wizard.finish_setup') }}"
             icon="check"

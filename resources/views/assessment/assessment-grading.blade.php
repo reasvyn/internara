@@ -32,7 +32,7 @@
                         :text="__('assessment.auto_import')"
                         icon="arrow-down-tray"
                         wire:click="autoImport"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                 </div>
@@ -122,7 +122,7 @@
                 <x-ts-card shadowless class="mb-3 opacity-70">
                     <div class="mb-3 flex items-center gap-2">
                         <h4 class="font-semibold">{{ $competency->name }}</h4>
-                        <x-ts-badge :text="$competency->weight.'%'" color="white" xs />
+                        <x-ts-badge :text="$competency->weight.'%'" color="gray" xs />
                         <span class="text-base-content/40 text-xs">({{ $competency->evaluator_role->label() }} only)</span>
                     </div>
 

@@ -5,7 +5,7 @@
     />
 
     {{-- People Overview --}}
-    <div class="mb-6 grid grid-cols-3 gap-3 sm:grid-cols-6">
+    <div class="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3">
         <x-ui::widgets.stat-card
             :title="__('dashboard.stats.total_students')"
             :value="$stats['totalStudents']"
@@ -231,9 +231,8 @@
             @foreach ($readiness as $key => $status)
                 <div class="bg-base-200/30 border-base-content/10 flex items-center gap-2 rounded-lg border px-3 py-2.5">
                     <x-ts-icon
-                        class="size-3 shrink-0"
                         :name="$status['passed'] ? 'check-circle' : 'x-circle'"
-                        :class="$status['passed'] ? 'text-success' : 'text-error'"
+                        :class="'size-3 shrink-0 '.($status['passed'] ? 'text-success' : 'text-error')"
                     />
                     <div class="min-w-0">
                         <p class="truncate text-xs font-medium">{{ $status['label'] }}</p>
@@ -328,7 +327,10 @@
 
     {{-- Bottom Row: Activity & Quick Links --}}
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <x-ts-card shadowless class="md:col-span-2" :header="__('dashboard.recent_activity')">
+        {{-- The span goes on a plain wrapper: x-ts-card merges incoming classes onto
+            an inner body div, so a grid span passed to the card is ignored. --}}
+        <div class="md:col-span-2">
+            <x-ts-card shadowless :header="__('dashboard.recent_activity')">
             @forelse ($this->getRecentActivities() as $activity)
                 <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
                     <div class="mt-1">
@@ -346,7 +348,8 @@
             @empty
                 <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
             @endforelse
-        </x-ts-card>
+            </x-ts-card>
+        </div>
 
         <div class="space-y-4">
             <x-ui::widgets.app-info :compact="false" />

@@ -16,7 +16,7 @@
             @endinteract
 
             @interact('column_method', $v)
-                <x-ts-badge :text="$v->method->label()" color="white" xs />
+                <x-ts-badge :text="$v->method->label()" color="gray" xs />
             @endinteract
 
             @interact('column_is_verified', $v)
@@ -77,7 +77,7 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                     <x-ts-button :text="__('common.actions.save')" color="primary" sm type="submit" loading="save" />

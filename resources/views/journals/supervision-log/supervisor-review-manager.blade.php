@@ -1,13 +1,18 @@
 <x-ui::components.record-manager :title="__('journals.review_title')" :subtitle="__('journals.review_subtitle')">
     <x-ts-table :headers="$this->headers()" :rows="$this->rows()" :sort-by="$sortBy" with-pagination class="table-sm">
+        @interact('column_date', $l)
+            <span class="text-sm">{{ $l->date?->format('d M Y') }}</span>
+        @endinteract
+
         @interact('column_status', $l)
             <x-ts-badge
                 :text="$l->status->label()"
-                :class="match($l->status->value) {
-                'submitted' => 'badge-info',
-                'reviewed' => 'badge-success',
-                default => 'badge-ghost',
-            }"
+                :color="match ($l->status->value) {
+                    'submitted' => 'blue',
+                    'reviewed', 'verified' => 'green',
+                    'acknowledged' => 'primary',
+                    default => 'gray',
+                }"
             />
         @endinteract
 
@@ -18,7 +23,7 @@
                         :text="__('journals.review')"
                         icon="check"
                         class="text-success"
-                        color="white"
+                        color="slate" outline
                         sm
                         wire:click="askReview('{{ $l->id }}')"
                     />
@@ -36,7 +41,7 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showReviewModal', false)"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                     <x-ts-button

@@ -27,7 +27,7 @@
                                 @if ($assignment->is_mandatory)
                                     <x-ts-badge :text="__('assignment.required')" color="red" xs />
                                 @else
-                                    <x-ts-badge :text="__('assignment.optional')" color="white" xs />
+                                    <x-ts-badge :text="__('assignment.optional')" color="gray" xs />
                                 @endif
                             </div>
                             <h3 class="text-base-content mb-2 text-xl font-black tracking-tight">
@@ -60,7 +60,7 @@
         {{-- Assignment Detail --}}
         <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="mb-6 flex items-center justify-between">
-                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="white" sm />
+                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="slate" outline sm />
             </div>
 
             <div class="mb-4 flex items-center gap-3">
@@ -68,7 +68,7 @@
                 @if ($selectedAssignment->is_mandatory)
                     <x-ts-badge :text="__('assignment.required')" color="red" xs />
                 @else
-                    <x-ts-badge :text="__('assignment.optional')" color="white" xs />
+                    <x-ts-badge :text="__('assignment.optional')" color="gray" xs />
                 @endif
                 @if ($selectedAssignment->asAssignmentRules()->isOverdue(now()))
                     <x-ts-badge :text="__('submission.overdue')" color="red" xs />

@@ -58,7 +58,8 @@
                 <div x-data="{ filtersOpen: false }" class="relative">
                     <x-ts-button
                         icon="adjustments-horizontal"
-                        color="white"
+                        color="slate"
+                        outline
                         sm
                         :text="__('common.actions.filters')"
                         x-on:click="filtersOpen = ! filtersOpen"
@@ -75,7 +76,7 @@
                         <x-ts-button
                             :text="__('common.actions.reset_filters')"
                             icon="x-mark"
-                            color="white"
+                            color="slate" outline
                             sm
                             class="w-full"
                             wire:click="resetFilters"
