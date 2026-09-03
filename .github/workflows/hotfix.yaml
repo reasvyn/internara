@@ -76,11 +76,11 @@ jobs:
           find app config database routes tests -name '*.php' -exec php -l {} \; 2>&1 | grep -v "No syntax errors" || true
           echo "✓ syntax ok"
 
-      - name: Format code (Pint - fix on run)
+      - name: Format code (Pint - fix on run, includes Blade)
         run: vendor/bin/pint
 
-      - name: Format views (Prettier - fix on run)
-        run: npx prettier --write "resources/views/**/*.blade.php" "resources/js/**/*.js" "resources/css/**/*.css" 2>&1 | head -20 || echo "::warning::Prettier fix completed with warnings"
+      - name: Format assets (Prettier - non-PHP only, fix on run)
+        run: npx prettier --write . 2>&1 | head -20 || echo "::warning::Prettier fix completed with warnings"
 
   deploy:
     name: Deploy hotfix to VPS
