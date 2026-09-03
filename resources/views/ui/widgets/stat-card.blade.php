@@ -14,7 +14,7 @@
         <div class="min-w-0">
             {{-- Wrap instead of truncating: six-across dashboards cut labels like
                 "Supervised Students" down to "Supervis...". --}}
-            <p class="text-base-content/50 line-clamp-2 text-xs leading-snug break-words">{{ $title }}</p>
+            <p class="text-base-content/50 line-clamp-2 text-xs leading-snug">{{ $title }}</p>
             <p class="text-2xl font-bold tracking-tight">{{ $value }}</p>
         </div>
     </div>

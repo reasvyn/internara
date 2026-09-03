@@ -18,7 +18,7 @@
             />
             <x-ts-dropdown>
                 <x-slot:action>
-                    <x-ts-button icon="adjustments-horizontal" color="white" sm :text="__('common.actions.filters')" / x-on:click="show = ! show">
+                    <x-ts-button icon="adjustments-horizontal" color="slate" outline sm :text="__('common.actions.filters')" / x-on:click="show = ! show">
                 </x-slot:action>
                 <div class="w-72 space-y-4 p-4">
                     <x-ts-select.native
@@ -66,7 +66,7 @@
                     text="{{ __('common.actions.cancel') }}"
                     wire:click="clearSelection"
                     class="rounded-xl text-[10px] font-black tracking-widest uppercase"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
             </div>
@@ -180,78 +180,80 @@
         </div>
 
         {{-- Supervisor Note Modal --}}
-        <x-ts-modal wire="showSupervisorNoteModal" :title="__('logbook.edit_supervisor_note')" separator blur>
-            <div class="space-y-6">
-                <x-ts-textarea
-                    :label="__('logbook.supervisor_note')"
-                    wire:model="supervisorNote"
-                    :placeholder="__('logbook.supervisor_note_placeholder')"
-                    rows="4"
-                    class="border-base-300 rounded-xl"
-                />
-            </div>
-            <x-slot:footer>
-                <x-ts-button
-                    :text="__('common.actions.cancel')"
-                    @click="$wire.showSupervisorNoteModal = false"
-                    class="rounded-xl"
-                />
-                <x-ts-button
-                    :text="__('logbook.save')"
-                    class="rounded-xl font-bold tracking-widest uppercase"
-                    color="primary"
-                    wire:click="saveSupervisorNote"
-                    loading="saveSupervisorNote"
-                />
-            </x-slot:footer>
-        </x-ts-modal>
 
         {{-- Form Modal --}}
-        <x-ts-modal wire="showModal" :title="$this->form->id ? __('logbook.edit') : __('logbook.new')" separator blur>
-            <div class="space-y-6">
-                @if (! $this->form->id)
-                    <x-ts-select.native
-                        :label="__('logbook.student')"
-                        wire:model="form.user_id"
-                        :options="ts_options($this->students, __('logbook.select_student'))"
-                        class="border-base-300 rounded-xl"
-                    />
-                @endif
-
-                <x-ts-date :label="__('logbook.date')" wire:model="form.date" class="border-base-300 rounded-xl" />
-
-                <x-ts-textarea
-                    :label="__('logbook.content')"
-                    wire:model="form.content"
-                    rows="4"
-                    class="border-base-300 rounded-xl"
-                />
-
-                <x-ts-textarea
-                    :label="__('logbook.learning_outcomes')"
-                    wire:model="form.learning_outcomes"
-                    rows="2"
-                    class="border-base-300 rounded-xl"
-                />
-
-                <x-ts-textarea
-                    :label="__('logbook.mentor_feedback')"
-                    wire:model="form.mentor_feedback"
-                    rows="2"
-                    class="border-base-300 rounded-xl"
-                />
-            </div>
-
-            <x-slot:footer>
-                <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" class="rounded-xl" />
-                <x-ts-button
-                    :text="__('logbook.save')"
-                    class="rounded-xl font-bold tracking-widest uppercase"
-                    color="primary"
-                    wire:click="save"
-                    loading="save"
-                />
-            </x-slot:footer>
-        </x-ts-modal>
     </x-ts-card>
+    <x-ts-modal wire="showSupervisorNoteModal" :title="__('logbook.edit_supervisor_note')" separator blur>
+        <div class="space-y-6">
+            <x-ts-textarea
+                :label="__('logbook.supervisor_note')"
+                wire:model="supervisorNote"
+                :placeholder="__('logbook.supervisor_note_placeholder')"
+                rows="4"
+                class="border-base-300 rounded-xl"
+            />
+        </div>
+        <x-slot:footer>
+            <x-ts-button
+                :text="__('common.actions.cancel')"
+                @click="$wire.showSupervisorNoteModal = false"
+                class="rounded-xl"
+            />
+            <x-ts-button
+                :text="__('logbook.save')"
+                class="rounded-xl font-bold tracking-widest uppercase"
+                color="primary"
+                wire:click="saveSupervisorNote"
+                loading="saveSupervisorNote"
+            />
+        </x-slot:footer>
+    </x-ts-modal>
+
+    <x-ts-modal wire="showModal" :title="$this->form->id ? __('logbook.edit') : __('logbook.new')" separator blur>
+        <div class="space-y-6">
+            @if (! $this->form->id)
+                <x-ts-select.native
+                    :label="__('logbook.student')"
+                    wire:model="form.user_id"
+                    :options="ts_options($this->students, __('logbook.select_student'))"
+                    class="border-base-300 rounded-xl"
+                />
+            @endif
+
+            <x-ts-date :label="__('logbook.date')" wire:model="form.date" class="border-base-300 rounded-xl" />
+
+            <x-ts-textarea
+                :label="__('logbook.content')"
+                wire:model="form.content"
+                rows="4"
+                class="border-base-300 rounded-xl"
+            />
+
+            <x-ts-textarea
+                :label="__('logbook.learning_outcomes')"
+                wire:model="form.learning_outcomes"
+                rows="2"
+                class="border-base-300 rounded-xl"
+            />
+
+            <x-ts-textarea
+                :label="__('logbook.mentor_feedback')"
+                wire:model="form.mentor_feedback"
+                rows="2"
+                class="border-base-300 rounded-xl"
+            />
+        </div>
+
+        <x-slot:footer>
+            <x-ts-button :text="__('common.actions.cancel')" @click="$wire.showModal = false" class="rounded-xl" />
+            <x-ts-button
+                :text="__('logbook.save')"
+                class="rounded-xl font-bold tracking-widest uppercase"
+                color="primary"
+                wire:click="save"
+                loading="save"
+            />
+        </x-slot:footer>
+    </x-ts-modal>
+
 </div>

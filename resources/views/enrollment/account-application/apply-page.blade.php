@@ -20,11 +20,12 @@
                     required
                 />
                 <x-ts-input :label="__('registration.account_application.phone')" wire:model="form.phone" />
-                <x-ts-textarea
-                    :label="__('registration.account_application.address')"
-                    wire:model="form.address"
-                    class="md:col-span-2"
-                />
+                <div class="md:col-span-2">
+                    <x-ts-textarea
+                        :label="__('registration.account_application.address')"
+                        wire:model="form.address"
+                    />
+                </div>
 
                 <div class="mt-4 md:col-span-2">
                     <h2 class="text-lg font-semibold">{{ __('registration.account_application.student_info') }}</h2>
@@ -59,13 +60,14 @@
                     <hr class="my-2" />
                 </div>
 
-                <x-ts-select.native
-                    :label="__('registration.wizard.step_program')"
-                    wire:model.live="form.internship_id"
-                    :options="ts_options($this->internships, __('registration.account_application.select_program'))"
-                    required
-                    class="md:col-span-2"
-                />
+                <div class="md:col-span-2">
+                    <x-ts-select.native
+                        :label="__('registration.wizard.step_program')"
+                        wire:model.live="form.internship_id"
+                        :options="ts_options($this->internships, __('registration.account_application.select_program'))"
+                        required
+                    />
+                </div>
                 <x-ts-input
                     :label="__('registration.wizard.label_academic_year')"
                     wire:model="form.academic_year"
@@ -88,23 +90,26 @@
                 </div>
 
                 @if ($form->use_placement)
-                    <x-ts-select.native
-                        :label="__('registration.account_application.available_placement')"
-                        wire:model="form.placement_id"
-                        :options="ts_options($this->placements, __('registration.account_application.select_placement'))"
-                        class="md:col-span-2"
-                    />
+                    <div class="md:col-span-2">
+                        <x-ts-select.native
+                            :label="__('registration.account_application.available_placement')"
+                            wire:model="form.placement_id"
+                            :options="ts_options($this->placements, __('registration.account_application.select_placement'))"
+                        />
+                    </div>
                 @else
-                    <x-ts-input
-                        :label="__('registration.account_application.proposed_company')"
-                        wire:model="form.proposed_company_name"
-                        class="md:col-span-2"
-                    />
-                    <x-ts-textarea
-                        :label="__('registration.account_application.proposed_address')"
-                        wire:model="form.proposed_company_address"
-                        class="md:col-span-2"
-                    />
+                    <div class="md:col-span-2">
+                        <x-ts-input
+                            :label="__('registration.account_application.proposed_company')"
+                            wire:model="form.proposed_company_name"
+                        />
+                    </div>
+                    <div class="md:col-span-2">
+                        <x-ts-textarea
+                            :label="__('registration.account_application.proposed_address')"
+                            wire:model="form.proposed_company_address"
+                        />
+                    </div>
                 @endif
             </div>
 

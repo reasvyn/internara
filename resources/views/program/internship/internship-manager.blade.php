@@ -219,7 +219,7 @@
                 </div>
             </div>
             <x-slot:actions>
-                <x-ts-button :text="__('internship.cancel')" @click="$wire.showModal = false" color="white" sm />
+                <x-ts-button :text="__('internship.cancel')" @click="$wire.showModal = false" color="slate" outline sm />
                 <x-ts-button :text="__('internship.save')" color="primary" sm wire:click="save" loading="save" />
             </x-slot:actions>
         </x-ts-modal>

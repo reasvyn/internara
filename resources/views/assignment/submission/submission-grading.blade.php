@@ -84,7 +84,7 @@
         {{-- Submission Detail / Grading Form --}}
         <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="mb-6">
-                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="white" sm />
+                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="slate" outline sm />
             </div>
 
             {{-- Student & Assignment Info --}}
@@ -206,7 +206,7 @@
                             :text="__('common.actions.cancel')"
                             wire:click="back"
                             class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
-                            color="white"
+                            color="slate" outline
                         />
                         <x-ts-button
                             :text="__('submission.submit_grade')"

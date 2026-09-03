@@ -34,12 +34,13 @@
                                 ['id' => 'en', 'name' => __('setting.locales.en')],
                             ])"
                         />
-                        <x-ts-input
-                            label="{{ __('setting.fields.site_title') }}"
-                            wire:model="generalForm.site_title"
-                            class="md:col-span-2"
-                            icon="globe-alt"
-                        />
+                        <div class="md:col-span-2">
+                            <x-ts-input
+                                label="{{ __('setting.fields.site_title') }}"
+                                wire:model="generalForm.site_title"
+                                icon="globe-alt"
+                            />
+                        </div>
                         <x-ts-select.native
                             label="{{ __('setting.fields.active_academic_year') }}"
                             wire:model="generalForm.active_academic_year"
@@ -196,7 +197,7 @@
                                     aria-label="{{ __('common.actions.remove') }}"
                                     text="{{ __('setting.buttons.test_mail') }}"
                                     icon-right="paper-airplane"
-                                    color="white"
+                                    color="slate" outline
                                     sm
                                     wire:click="testEmail"
                                     loading="testEmail"
@@ -322,10 +323,6 @@
                             </div>
                         </div>
 
-                        @include('ui.components.confirm', [
-                            'message' => __('setting.messages.remove_asset_confirm'),
-                            'confirmText' => __('common.actions.remove'),
-                        ])
                     </x-ts-card>
                 </x-ts-card>
             </div>
@@ -344,4 +341,8 @@
     </form>
 
     @include('settings.components.settings-guide')
+    @include('ui.components.confirm', [
+        'message' => __('setting.messages.remove_asset_confirm'),
+        'confirmText' => __('common.actions.remove'),
+    ])
 </div>

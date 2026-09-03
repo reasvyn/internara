@@ -66,20 +66,22 @@
                             :placeholder="__('profile.phone_placeholder')"
                             icon="phone"
                         />
-                        <x-ts-textarea
-                            :label="__('setup.wizard.school_address')"
-                            wire:model="profileForm.address"
-                            rows="2"
-                            class="md:col-span-2"
-                            :placeholder="__('profile.address_placeholder')"
-                        />
-                        <x-ts-textarea
-                            :label="__('profile.bio')"
-                            wire:model="profileForm.bio"
-                            rows="3"
-                            class="md:col-span-2"
-                            :placeholder="__('profile.bio_placeholder')"
-                        />
+                        <div class="md:col-span-2">
+                            <x-ts-textarea
+                                :label="__('setup.wizard.school_address')"
+                                wire:model="profileForm.address"
+                                rows="2"
+                                :placeholder="__('profile.address_placeholder')"
+                            />
+                        </div>
+                        <div class="md:col-span-2">
+                            <x-ts-textarea
+                                :label="__('profile.bio')"
+                                wire:model="profileForm.bio"
+                                rows="3"
+                                :placeholder="__('profile.bio_placeholder')"
+                            />
+                        </div>
                     </div>
 
                     @if ($isStaff)
@@ -109,13 +111,14 @@
                                     :placeholder="__('profile.id_number_placeholder')"
                                     icon="document-text"
                                 />
-                                <x-ts-input
-                                    :label="__('profile.competence_field')"
-                                    wire:model="profileForm.competence_field"
-                                    class="md:col-span-2"
-                                    :placeholder="__('profile.competence_field_placeholder')"
-                                    icon="academic-cap"
-                                />
+                                <div class="md:col-span-2">
+                                    <x-ts-input
+                                        :label="__('profile.competence_field')"
+                                        wire:model="profileForm.competence_field"
+                                        :placeholder="__('profile.competence_field_placeholder')"
+                                        icon="academic-cap"
+                                    />
+                                </div>
                             </div>
                         </div>
                     @endif
@@ -222,10 +225,6 @@
                         @endif
                     </div>
 
-                    @include('ui.components.confirm', [
-                        'message' => __('profile.avatar_remove_confirm'),
-                        'confirmText' => __('common.actions.remove'),
-                    ])
                     <h3 class="mt-2 text-lg font-semibold">{{ $user->name }}</h3>
                     <p class="text-base-content/50 mt-0.5 text-xs">{{ '@'.$user->username }}</p>
                     <div class="mt-3 flex flex-wrap justify-center gap-1">
@@ -275,4 +274,9 @@
     </div>
 
     @include('user.profile.components.profile-guide')
+    @include('ui.components.confirm', [
+        'message' => __('profile.avatar_remove_confirm'),
+        'confirmText' => __('common.actions.remove'),
+    ])
+
 </div>

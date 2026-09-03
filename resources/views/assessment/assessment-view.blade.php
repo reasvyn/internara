@@ -40,7 +40,7 @@
                     <div class="bg-base-200/50 mb-3 rounded-xl p-3">
                         <div class="mb-2 flex items-center gap-2">
                             <p class="text-sm font-medium">{{ $competency->name }}</p>
-                            <x-ts-badge :text="$competency->weight.'%'" color="white" xs />
+                            <x-ts-badge :text="$competency->weight.'%'" color="gray" xs />
                         </div>
 
                         @foreach ($competency->indicators as $indicator)

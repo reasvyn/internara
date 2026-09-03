@@ -33,7 +33,7 @@
                         <x-ts-button
                             :text="__('handbook.download')"
                             icon="arrow-down-tray"
-                            color="white"
+                            color="slate" outline
                             sm
                             wire:click="download('{{ $handbook->id }}')"
                         />

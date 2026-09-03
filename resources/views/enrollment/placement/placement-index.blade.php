@@ -148,7 +148,7 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                     <x-ts-button :text="__('placement.save')" color="primary" sm type="submit" loading="save" />

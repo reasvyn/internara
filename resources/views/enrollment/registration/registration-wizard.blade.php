@@ -67,7 +67,7 @@
 
         <div class="mt-6 flex justify-between gap-2">
             @if ($step > 1)
-                <x-ts-button :text="__('registration.wizard.previous')" color="white" wire:click="previousStep" />
+                <x-ts-button :text="__('registration.wizard.previous')" color="slate" outline wire:click="previousStep" />
             @endif
 
             <div class="flex gap-2">

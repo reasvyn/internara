@@ -32,6 +32,15 @@ abstract class BaseFormView extends Component
     public bool $isDirty = false;
 
     /**
+     * @var bool Whether the shared confirm dialog is open.
+     *
+     * ui.components.confirm binds x-ts-modal to `showConfirm`. Without the
+     * property declared the binding resolves to nothing and the dialog shows
+     * itself on page load.
+     */
+    public bool $showConfirm = false;
+
+    /**
      * Handle form save with consistent try/catch pattern.
      * Call this from save methods instead of writing try/catch manually.
      */

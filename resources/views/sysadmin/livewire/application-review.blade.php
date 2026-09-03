@@ -61,31 +61,32 @@
             </x-ts-table>
         @endif
 
-        <x-ts-modal wire="showRejectModal" :title="__('internship.applications.reject_title')" blur>
-            <form wire:submit="reject" class="space-y-4">
-                <x-ts-textarea
-                    :label="__('internship.applications.rejection_reason')"
-                    wire:model="rejectionReason"
-                    required
-                />
-                <div class="mt-6 flex justify-end gap-2">
-                    <x-ts-button
-                        :text="__('internship.applications.cancel')"
-                        wire:click="$set('showRejectModal', false)"
-                        color="white"
-                        sm
-                    />
-                    <x-ts-button
-                        :text="__('internship.applications.reject')"
-                        type="submit"
-                        icon="x-mark"
-                        color="red"
-                        sm
-                    />
-                </div>
-            </form>
-        </x-ts-modal>
 
         @include('sysadmin.components.application-review-guide')
     </x-ts-card>
+    <x-ts-modal wire="showRejectModal" :title="__('internship.applications.reject_title')" blur>
+        <form wire:submit="reject" class="space-y-4">
+            <x-ts-textarea
+                :label="__('internship.applications.rejection_reason')"
+                wire:model="rejectionReason"
+                required
+            />
+            <div class="mt-6 flex justify-end gap-2">
+                <x-ts-button
+                    :text="__('internship.applications.cancel')"
+                    wire:click="$set('showRejectModal', false)"
+                    color="slate" outline
+                    sm
+                />
+                <x-ts-button
+                    :text="__('internship.applications.reject')"
+                    type="submit"
+                    icon="x-mark"
+                    color="red"
+                    sm
+                />
+            </div>
+        </form>
+    </x-ts-modal>
+
 </div>

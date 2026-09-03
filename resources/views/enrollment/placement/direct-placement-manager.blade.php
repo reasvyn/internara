@@ -20,22 +20,24 @@
                     placeholder="e.g. 2025/2026"
                 />
 
-                <x-ts-select.native
-                    :label="__('placement.direct_placement.placement')"
-                    wire:model="form.placement_id"
-                    :options="ts_options($this->placements, __('placement.direct_placement.select_placement'))"
-                    class="md:col-span-2"
-                    icon="briefcase"
-                />
+                <div class="md:col-span-2">
+                    <x-ts-select.native
+                        :label="__('placement.direct_placement.placement')"
+                        wire:model="form.placement_id"
+                        :options="ts_options($this->placements, __('placement.direct_placement.select_placement'))"
+                        icon="briefcase"
+                    />
+                </div>
 
-                <x-ts-select.native
-                    :label="__('placement.direct_placement.mentors')"
-                    wire:model="form.mentor_ids"
-                    :options="ts_options($this->mentors, __('placement.direct_placement.select_mentors'))"
-                    multiple
-                    class="md:col-span-2"
-                    icon="user-group"
-                />
+                <div class="md:col-span-2">
+                    <x-ts-select.native
+                        :label="__('placement.direct_placement.mentors')"
+                        wire:model="form.mentor_ids"
+                        :options="ts_options($this->mentors, __('placement.direct_placement.select_mentors'))"
+                        multiple
+                        icon="user-group"
+                    />
+                </div>
             </div>
 
             <div class="mt-6 flex justify-end gap-2">

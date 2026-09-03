@@ -183,13 +183,14 @@
                             :placeholder="__('company.phone_placeholder')"
                             icon="phone"
                         />
-                        <x-ts-input
-                            :label="__('company.website')"
-                            wire:model="form.website"
-                            :placeholder="__('company.website_placeholder')"
-                            class="md:col-span-2"
-                            icon="globe-alt"
-                        />
+                        <div class="md:col-span-2">
+                            <x-ts-input
+                                :label="__('company.website')"
+                                wire:model="form.website"
+                                :placeholder="__('company.website_placeholder')"
+                                icon="globe-alt"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -209,7 +210,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('showModal', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 <x-ts-button :text="__('company.save')" color="primary" sm wire:click="save" loading="save" />

@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="mt-6 flex justify-end gap-2">
-                    <x-ts-button :text="__('common.actions.cancel')" wire:click="resetForm" color="white" sm />
+                    <x-ts-button :text="__('common.actions.cancel')" wire:click="resetForm" color="slate" outline sm />
                     <x-ts-button
                         :text="__('announcement.send')"
                         type="submit"

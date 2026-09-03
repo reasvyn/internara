@@ -44,7 +44,7 @@
                         @if ($journal->is_verified)
                             <x-ts-badge :text="__('logbook.verified')" color="green" xs />
                         @else
-                            <x-ts-badge :text="__('logbook.submitted')" color="white" xs />
+                            <x-ts-badge :text="__('logbook.submitted')" color="gray" xs />
                         @endif
                     @endinteract
 
@@ -163,7 +163,7 @@
                 :text="__('logbook.discard')"
                 @click="$wire.showModal = false"
                 class="text-[10px] font-bold tracking-widest uppercase"
-                color="white"
+                color="slate" outline
             />
             <x-ts-button
                 :text="__('logbook.save_activity')"

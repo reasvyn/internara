@@ -93,7 +93,7 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showScheduleModal', false)"
-                        color="white"
+                        color="slate" outline
                         sm
                     />
                     <x-ts-button

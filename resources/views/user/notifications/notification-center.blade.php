@@ -20,7 +20,7 @@
                 <x-ts-button
                     :text="__('notifications.ui.mark_all_read')"
                     icon="check-badge"
-                    color="white"
+                    color="slate" outline
                     sm
                     wire:click="markAllAsRead"
                 />
@@ -49,7 +49,7 @@
                     <x-ts-button
                         :text="__('notifications.ui.mark_read_batch')"
                         icon="check-badge"
-                        color="white"
+                        color="slate" outline
                         sm
                         wire:click="markSelectedAsRead"
                     />
@@ -210,31 +210,32 @@
         </div>
 
         {{-- Notification Viewer Modal --}}
-        <x-ts-modal wire="showViewer" title="{{ $this->viewedNotification?->title ?? '' }}" blur size="lg">
-            @if ($this->viewedNotification)
-                <div class="space-y-4">
-                    <div class="prose prose-sm max-w-none">
-                        {!! Str::markdown($this->viewedNotification->message ?? '', ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
-                    </div>
-                    <div class="text-base-content/40 border-base-content/10 border-t pt-3 text-xs">
-                        {{ $this->viewedNotification->created_at->format('d M Y H:i') }}
-                    </div>
-                </div>
-            @endif
-
-            <x-slot:footer>
-                <x-ts-button :text="__('common.actions.close')" wire:click="closeViewer" color="white" sm />
-                @if ($this->viewedNotification?->link)
-                    <x-ts-button
-                        :text="__('notifications.view_details')"
-                        icon="arrow-top-right-on-square"
-                        :link="$this->viewedNotification->link"
-                        class="btn-primary btn-sm"
-                    />
-                @endif
-            </x-slot:footer>
-        </x-ts-modal>
 
         @include('user.notifications.components.notification-guide')
     </x-ts-card>
+    <x-ts-modal wire="showViewer" title="{{ $this->viewedNotification?->title ?? '' }}" blur size="lg">
+        @if ($this->viewedNotification)
+            <div class="space-y-4">
+                <div class="prose prose-sm max-w-none">
+                    {!! Str::markdown($this->viewedNotification->message ?? '', ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
+                </div>
+                <div class="text-base-content/40 border-base-content/10 border-t pt-3 text-xs">
+                    {{ $this->viewedNotification->created_at->format('d M Y H:i') }}
+                </div>
+            </div>
+        @endif
+
+        <x-slot:footer>
+            <x-ts-button :text="__('common.actions.close')" wire:click="closeViewer" color="slate" outline sm />
+            @if ($this->viewedNotification?->link)
+                <x-ts-button
+                    :text="__('notifications.view_details')"
+                    icon="arrow-top-right-on-square"
+                    :link="$this->viewedNotification->link"
+                    class="btn-primary btn-sm"
+                />
+            @endif
+        </x-slot:footer>
+    </x-ts-modal>
+
 </div>

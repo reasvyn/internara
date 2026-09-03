@@ -173,7 +173,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('createModal', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 @if (! $this->registrations->isEmpty())
@@ -192,7 +192,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('calculateModal', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 <x-ts-button :text="__('report.calculate_grades')" wire:click="calculateGrades" color="primary" sm />
@@ -209,7 +209,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('finalizeModal', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 <x-ts-button :text="__('report.finalize_grade_card')" wire:click="finalizeReport" color="green" sm />
@@ -226,7 +226,7 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('showConfirm', false)"
-                    color="white"
+                    color="slate" outline
                     sm
                 />
                 <x-ts-button :text="__('common.actions.delete')" wire:click="confirmDelete" color="red" sm />

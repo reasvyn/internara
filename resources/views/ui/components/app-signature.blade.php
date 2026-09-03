@@ -14,7 +14,7 @@
 
         <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
 
-        <x-ts-badge :text="$appVersion" color="white" xs class="opacity-50" />
+        <x-ts-badge :text="$appVersion" color="gray" xs class="opacity-50" />
 
         @if (! empty($author))
             <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>

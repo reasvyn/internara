@@ -40,7 +40,7 @@
                             @if ($log->is_verified)
                                 <x-ts-badge :text="__('journals.verified')" color="green" xs />
                             @else
-                                <x-ts-badge :text="__('journals.pending')" color="white" xs />
+                                <x-ts-badge :text="__('journals.pending')" color="gray" xs />
                             @endif
                         @endinteract
                     </x-ts-table>

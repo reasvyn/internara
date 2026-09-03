@@ -25,6 +25,9 @@ class StudentReportsManager extends Component
     use Interactions;
     use WithPagination;
 
+    /** @var bool Whether the shared confirm dialog is open (see ui.components.confirm). */
+    public bool $showConfirm = false;
+
     public string $search = '';
 
     public ?string $statusFilter = null;

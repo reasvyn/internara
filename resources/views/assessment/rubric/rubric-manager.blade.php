@@ -19,7 +19,7 @@
                         @if ($rubric->is_active)
                             <x-ts-badge :text="__('assessment.active')" color="green" xs />
                         @else
-                            <x-ts-badge :text="__('assessment.inactive')" color="white" xs />
+                            <x-ts-badge :text="__('assessment.inactive')" color="gray" xs />
                         @endif
                     </div>
                 </div>
@@ -52,7 +52,7 @@
                                 <x-ts-badge :text="$competency['weight'].'%'" color="primary" xs />
                                 <x-ts-badge
                                     :text="\App\Modules\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role']"
-                                    color="white"
+                                    color="gray"
                                     xs
                                 />
                             </div>
