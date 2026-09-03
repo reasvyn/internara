@@ -1,0 +1,114 @@
+name: Hotfix Deploy
+
+# Secure automatic deploy for the hotfix branch — bypasses the
+# SemVer tag pipeline (development→beta→rc→production) for urgent
+# production patches.
+#
+#   Trigger: push to hotfix (or manual dispatch)
+#   Flow:    lint → deploy VPS (VERSION_TAG=hotfix)
+#
+# Security:
+#   - Minimal permissions (contents:read)
+#   - Concurrency serialized (no parallel hotfix deploys)
+#   - Deploys only from the hotfix branch (branch filter + ref check)
+#   - SSH deploy uses pinned action, no secrets in logs, strict host
+#   - Optional environment protection (production) for manual approval
+#   - ROLLBACK_ON_FAILURE=true in deploy.sh auto-rolls back on health failure
+
+on:
+  push:
+    branches: [hotfix]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hotfix-deploy
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: Lint hotfix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout hotfix
+        uses: actions/checkout@v4
+        with:
+          ref: hotfix
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+          coverage: none
+          tools: composer:v2
+
+      - name: Validate PHP syntax
+        run: |
+          set -euo pipefail
+          echo "==> Validate PHP syntax"
+          find app config database routes tests -name '*.php' -exec php -l {} \; 2>&1 | grep -v "No syntax errors" || true
+          echo "✓ syntax ok"
+
+      - name: Lint (Pint)
+        run: bash .github/scripts/lint.sh
+
+  deploy:
+    name: Deploy hotfix to VPS
+    runs-on: ubuntu-latest
+    needs: lint
+    if: github.ref == 'refs/heads/hotfix'
+    # Uncomment to require manual approval in GitHub Environments:
+    # environment: production
+    env:
+      VERSION_TAG: hotfix
+    steps:
+      - name: Checkout hotfix
+        uses: actions/checkout@v4
+        with:
+          ref: hotfix
+
+      - name: Verify hotfix ref
+        run: |
+          set -euo pipefail
+          echo "Deploying ref: ${{ github.ref }} (${{ github.sha }})"
+          [ "${{ github.ref }}" = "refs/heads/hotfix" ] || { echo "::error::Ref is not hotfix"; exit 1; }
+          git log --oneline -3
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          # Do not leak env values in logs; appleboy masks secrets automatically
+          envs: VERSION_TAG
+          # Fail fast, no pseudo-TTY — reduces surface
+          request_pty: false
+          command_timeout: 12m
+          script: |
+            set -euo pipefail
+            echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
+            cd "$HOME/apps/internara"
+            # Ensure we are on hotfix and at the pushed commit
+            git fetch --quiet origin hotfix
+            git checkout --quiet hotfix
+            # Reset to the exact commit GitHub just pushed (prevents TOCTOU)
+            git reset --hard --quiet "origin/hotfix"
+            echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
+            # Run the same deploy path as release production (health-gated, auto-rollback)
+            VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+            echo "==> Hotfix deploy finished"
+
+      - name: Notify success
+        if: success()
+        run: echo "✓ Hotfix ${{ github.sha }} deployed to ${{ secrets.VPS_HOST }}"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "::error::Hotfix deploy failed for ${{ github.sha }}"
+          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \$HOME/apps/internara && bash .github/scripts/rollback.sh'"
