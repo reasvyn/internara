@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 
+#[Layout('ui::layouts.app')]
 class AdminDashboard extends UserDashboard
 {
     public array $stats = [];

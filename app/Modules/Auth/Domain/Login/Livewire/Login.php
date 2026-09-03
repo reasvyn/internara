@@ -47,7 +47,7 @@ class Login extends Component
 
             $this->toast()->success(__('auth.login.welcome_back', ['name' => $user->name]))->send();
 
-            $this->redirect($this->getIntendedUrl(), navigate: true);
+            $this->redirect($this->getIntendedUrl(), navigate: false);
         } catch (RejectedException $e) {
             RateLimiter::hit($throttleKey, 60);
             $this->addError('form.identifier', $e->getMessage());
