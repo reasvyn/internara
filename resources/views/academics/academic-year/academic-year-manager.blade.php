@@ -17,19 +17,19 @@
         <x-ui::widgets.stat-card
             :title="__('academic_year.stats_total')"
             :value="$stats['total']"
-            icon="o-calendar-days"
+            icon="calendar-days"
             color="text-primary"
         />
         <x-ui::widgets.stat-card
             :title="__('academic_year.stats_total_internships')"
             :value="$stats['totalInternships']"
-            icon="o-briefcase"
+            icon="briefcase"
             color="text-info"
         />
         <x-ui::widgets.stat-card
             :title="__('academic_year.stats_with_internships')"
             :value="$stats['withInternships']"
-            icon="o-building-library"
+            icon="building-library"
             color="text-secondary"
         />
     </div>

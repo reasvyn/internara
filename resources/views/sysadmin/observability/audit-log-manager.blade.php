@@ -9,27 +9,21 @@
             <x-ts-select.native
                 :label="__('sysadmin.activity_filter_user_label')"
                 wire:model="filterUser"
-                :options="[null => __('sysadmin.activity_filter_user')] + ($users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]))"
-                option-value="id"
-                option-label="name"
+                :options="ts_options($users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name]), __('sysadmin.activity_filter_user'))"
                 clearable
             />
 
             <x-ts-select.native
                 :label="__('sysadmin.activity_filter_module_label')"
                 wire:model="filterModule"
-                :options="[null => __('sysadmin.activity_filter_module')] + ($modules->map(fn ($m) => ['id' => $m, 'name' => ucfirst($m)]))"
-                option-value="id"
-                option-label="name"
+                :options="ts_options($modules->map(fn ($m) => ['id' => $m, 'name' => ucfirst($m)]), __('sysadmin.activity_filter_module'))"
                 clearable
             />
 
             <x-ts-select.native
                 :label="__('sysadmin.activity_filter_action_label')"
                 wire:model="filterAction"
-                :options="[null => __('sysadmin.activity_filter_action')] + ($actions->map(fn ($a) => ['id' => $a, 'name' => ucfirst($a)]))"
-                option-value="id"
-                option-label="name"
+                :options="ts_options($actions->map(fn ($a) => ['id' => $a, 'name' => ucfirst($a)]), __('sysadmin.activity_filter_action'))"
                 clearable
             />
         </div>
@@ -106,4 +100,6 @@
             @endif
 
             @include('sysadmin.observability.components.audit-log-guide')
+        </x-ts-card>
+    </x-ts-card>
 </div>

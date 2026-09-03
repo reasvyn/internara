@@ -8,6 +8,7 @@ use App\Modules\Core\Livewire\Concerns\WithRecordSelection;
 use App\Modules\Core\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use Livewire\WithPagination;
 use TallStackUi\Traits\Interactions;
@@ -73,6 +74,43 @@ abstract class BaseRecordManager extends Component
         }
 
         return $this->applySorting($this->applyFilters($query));
+    }
+
+    /** @var array<string, string[]> Per-request column cache, keyed by table. */
+    private static array $tableColumns = [];
+
+    /**
+     * Widen the sort whitelist with the columns this manager actually renders.
+     *
+     * Header indexes are only accepted when they exist on the model's table, so
+     * virtual columns (roles_list, student_name, actions, relation paths) stay
+     * unsortable instead of producing an SQL error.
+     *
+     * @return string[]
+     */
+    protected function resolveSortableColumns(Builder $query): array
+    {
+        $table = $query->getModel()->getTable();
+        $columns = self::$tableColumns[$table] ??= Schema::getColumnListing($table);
+
+        $fromHeaders = [];
+
+        foreach ($this->headers() as $header) {
+            $index = $header['index'] ?? null;
+
+            if (! is_string($index) || ($header['sortable'] ?? true) === false) {
+                continue;
+            }
+
+            if (in_array($index, $columns, true)) {
+                $fromHeaders[] = $index;
+            }
+        }
+
+        return array_values(array_unique([
+            ...$fromHeaders,
+            ...array_values(array_intersect($this->sortableColumns, $columns)),
+        ]));
     }
 
     protected function perPageOptions(): array

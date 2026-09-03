@@ -21,6 +21,8 @@ class StudentLogManager extends BaseRecordManager
 {
     use Interactions;
 
+    public array $sortBy = ['column' => 'date', 'direction' => 'desc'];
+
     public bool $showModal = false;
 
     public string $confirmType = '';
@@ -53,14 +55,25 @@ class StudentLogManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('topic', 'like', $term)
+                ->orWhere('notes', 'like', $term)
+                ->orWhere('status', 'like', $term)
+                ->orWhere('supervisor_feedback', 'like', $term);
+        });
+    }
+
     protected function query(): Builder
     {
         $user = auth()->user();
         $registration = $user->registrations()->where('status', 'active')->first();
 
         return SupervisionLog::query()
-            ->where('registration_id', $registration?->id)
-            ->latest('date');
+            ->where('registration_id', $registration?->id);
     }
 
     public function create(): void

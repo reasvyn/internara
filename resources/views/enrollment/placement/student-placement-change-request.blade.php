@@ -10,6 +10,7 @@
                 <x-ts-icon name="information-circle" class="text-base-content/40 mx-auto mb-3 h-12 w-12" />
                 <p class="text-base-content/60">{{ __('placement_change.no_active_registration') }}</p>
             </div>
+        </x-ts-card>
 
     @elseif ($pendingRequest)
         <x-ts-card shadowless>
@@ -25,6 +26,7 @@
                     </p>
                 </div>
             </div>
+        </x-ts-card>
 
     @else
         <x-ts-card shadowless>
@@ -39,9 +41,7 @@
                     <x-ts-select.native
                         :label="__('placement_change.target_placement')"
                         wire:model="form.to_placement_id"
-                        :options="[null => __('placement_change.target_placeholder')] + ($availablePlacements)"
-                        option-label="company.name"
-                        option-value="id"
+                        :options="ts_options($availablePlacements, __('placement_change.target_placeholder'), 'company.name')"
                     />
                     <x-ts-textarea
                         :label="__('placement_change.reason')"
@@ -54,6 +54,7 @@
                     <x-ts-button :text="__('placement_change.submit')" color="primary" type="submit" loading="submit" />
                 </div>
             </form>
+        </x-ts-card>
 
     @endif
 </div>

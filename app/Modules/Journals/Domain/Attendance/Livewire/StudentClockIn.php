@@ -7,6 +7,7 @@ namespace App\Modules\Journals\Domain\Attendance\Livewire;
 use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Journals\Domain\Attendance\Actions\ClockInAction;
 use App\Modules\Journals\Domain\Attendance\Actions\ClockOutAction;
+use App\Modules\Journals\Domain\Attendance\Actions\ReadUnaccountedDatesAction;
 use App\Modules\Journals\Domain\Attendance\Data\ClockInData;
 use App\Modules\Journals\Domain\Attendance\Data\ClockOutData;
 use App\Modules\Journals\Domain\Attendance\Models\Attendance;
@@ -42,14 +43,21 @@ class StudentClockIn extends BaseFormView
     }
 
     #[Layout('ui::layouts.app')]
-    public function render(): View
+    public function render(ReadUnaccountedDatesAction $unaccountedDates): View
     {
         $today = Attendance::where('user_id', auth()->id())
             ->whereDate('date', now()->toDateString())
             ->first();
 
+        $registration = auth()->user()->getActiveRegistration();
+
         return view('journals.attendance.student-clock-in', [
             'todayAttendance' => $today,
+            // Working days with neither attendance nor an absence request: the
+            // student is required to file one for each of them.
+            'unaccountedDates' => $registration
+                ? $unaccountedDates->execute($registration)
+                : collect(),
         ]);
     }
 }

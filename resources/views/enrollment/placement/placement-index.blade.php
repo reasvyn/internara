@@ -32,12 +32,12 @@
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.company_id"
-            :options="[null => __('placement.filter_by_company')] + ($this->companies)"
+            :options="ts_options($this->companies, __('placement.filter_by_company'))"
             clearable
         />
         <x-ts-select.native
             wire:model.live="filters.internship_id"
-            :options="[null => __('placement.filter_by_batch')] + ($this->internships)"
+            :options="ts_options($this->internships, __('placement.filter_by_batch'))"
             clearable
         />
     </x-slot:filters>
@@ -127,12 +127,12 @@
                         <x-ts-select.native
                             :label="__('placement.company')"
                             wire:model="form.company_id"
-                            :options="[null => __('placement.company_placeholder')] + ($this->companies)"
+                            :options="ts_options($this->companies, __('placement.company_placeholder'))"
                         />
                         <x-ts-select.native
                             :label="__('placement.batch')"
                             wire:model="form.internship_id"
-                            :options="[null => __('placement.internship_placeholder')] + ($this->internships)"
+                            :options="ts_options($this->internships, __('placement.internship_placeholder'))"
                         />
                         <x-ts-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
                     </div>

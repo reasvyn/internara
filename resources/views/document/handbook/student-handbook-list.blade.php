@@ -39,7 +39,7 @@
                         />
                     </div>
                 </div>
-
+            </x-ts-card>
         @empty
             <div class="col-span-full">
                 <x-ts-alert :title="__('handbook.no_handbooks')" icon="information-circle" class="bg-base-200" />

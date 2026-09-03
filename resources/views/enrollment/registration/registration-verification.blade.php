@@ -91,14 +91,14 @@
                     <x-ts-select.native
                         :label="__('registration.verification.placement')"
                         wire:model="placement_id"
-                        :options="[null => __('registration.verification.select_placement')] + ($this->availablePlacements)"
+                        :options="ts_options($this->availablePlacements, __('registration.verification.select_placement'))"
                         icon="briefcase"
                     />
 
                     <x-ts-select.native
                         :label="__('registration.verification.assigned_mentors')"
                         wire:model="mentor_ids"
-                        :options="[null => __('registration.verification.select_mentors')] + ($this->mentors)"
+                        :options="ts_options($this->mentors, __('registration.verification.select_mentors'))"
                         multiple
                         icon="user-group"
                     />
@@ -118,4 +118,5 @@
                 </form>
             @endif
         </x-ts-modal>
+    </x-ts-card>
 </div>

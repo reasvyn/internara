@@ -68,7 +68,7 @@
                     <x-ts-select.native
                         :label="__('internship.title')"
                         wire:model="form.internship_id"
-                        :options="$this->internships"
+                        :options="ts_options($this->internships)"
                         icon="briefcase"
                         class="mt-4"
                     />
@@ -114,7 +114,7 @@
                             <x-ts-select.native
                                 :label="__('internship.member_role')"
                                 wire:model="memberFormData.{{ $index }}.role"
-                                :options="$this->roleOptions"
+                                :options="ts_options($this->roleOptions)"
                                 icon="user"
                             />
                             <x-ts-input

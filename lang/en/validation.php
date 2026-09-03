@@ -228,4 +228,7 @@ return [
     ],
     'failed' => 'Validation failed.',
     'failed_hint' => 'Please check your input and try again.',
+    'roles_required' => 'At least one role must be selected.',
+    'roles_invalid' => 'One or more selected roles are invalid.',
+    'valid_setting_key' => 'The selected setting key is not registered.',
 ];

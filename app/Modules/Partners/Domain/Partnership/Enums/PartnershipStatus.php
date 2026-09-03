@@ -16,9 +16,9 @@ enum PartnershipStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::ACTIVE => __('Active'),
-            self::EXPIRED => __('Expired'),
-            self::TERMINATED => __('Terminated'),
+            self::ACTIVE => __('common.enums.active'),
+            self::EXPIRED => __('common.enums.expired'),
+            self::TERMINATED => __('common.enums.terminated'),
         };
     }
 

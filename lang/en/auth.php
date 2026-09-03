@@ -120,4 +120,6 @@ return [
         'credential_changed_warning' => 'If you did not make this change, please contact your system administrator immediately.',
         'credential_changed_warning_with_email' => 'If you did not make this change, please contact your system administrator at :support_email.',
     ],
+    'password_confirmation_failed' => 'The provided password is incorrect.',
+    'password_confirmation_mismatch' => 'The password confirmation does not match.',
 ];

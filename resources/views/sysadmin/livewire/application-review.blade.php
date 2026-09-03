@@ -15,11 +15,11 @@
         @else
             @php
                 $headers = [
-                    ['key' => 'name', 'label' => __('internship.applications.name')],
-                    ['key' => 'email', 'label' => __('internship.applications.email')],
-                    ['key' => 'department', 'label' => __('internship.applications.program')],
-                    ['key' => 'created_at', 'label' => __('internship.applications.submitted')],
-                    ['key' => 'action', 'label' => ''],
+                    ['index' => 'name', 'label' => __('internship.applications.name')],
+                    ['index' => 'email', 'label' => __('internship.applications.email')],
+                    ['index' => 'department', 'label' => __('internship.applications.program')],
+                    ['index' => 'created_at', 'label' => __('internship.applications.submitted')],
+                    ['index' => 'action', 'label' => ''],
                 ];
             @endphp
 

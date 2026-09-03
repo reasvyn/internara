@@ -100,6 +100,8 @@ return [
     ],
 
     'guide_recovery' => [
+        'slip_manager_title' => 'Account Recovery Slips',
+        'slip_manager_intro' => 'Generate and print recovery slips so users can regain access to their accounts.',
         'title' => 'Recovery Codes Guide',
         'intro' => 'Recovery codes let you access your account if you lose your password:',
         'generate_title' => 'Generating Codes',

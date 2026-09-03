@@ -28,12 +28,12 @@
                         <x-ts-select.native
                             :label="__('announcement.fields.type')"
                             wire:model="form.type"
-                            :options="[
+                            :options="ts_options([
                                 ['id' => 'info', 'name' => __('announcement.types.info')],
                                 ['id' => 'success', 'name' => __('announcement.types.success')],
                                 ['id' => 'warning', 'name' => __('announcement.types.warning')],
                                 ['id' => 'error', 'name' => __('announcement.types.error')],
-                            ]"
+                            ])"
                         />
                         <x-ts-input
                             :label="__('announcement.fields.link')"
@@ -85,11 +85,12 @@
                         type="submit"
                         color="primary"
                         sm
-                        icon-right="o-paper-airplane"
+                        icon-right="paper-airplane"
                         loading="save"
                     />
                 </div>
             </form>
+        </x-ts-card>
 
     @endif
 
@@ -110,10 +111,10 @@
                             ])>
                                 <x-ts-icon
                                     :name="match($announcement->type) {
-                                    'success' => 'o-check-circle',
-                                    'warning' => 'o-exclamation-triangle',
-                                    'error' => 'o-x-circle',
-                                    default => 'o-information-circle',
+                                    'success' => 'check-circle',
+                                    'warning' => 'exclamation-triangle',
+                                    'error' => 'x-circle',
+                                    default => 'information-circle',
                                 }"
                                     class="size-4"
                                 />
@@ -149,7 +150,7 @@
                         <div class="flex shrink-0 items-center gap-1">
                             @if ($announcement->isDraft() || $announcement->isScheduled())
                                 <x-ts-button
-                                    icon-right="o-paper-airplane"
+                                    icon-right="paper-airplane"
                                     class="text-success"
                                     color="white"
                                     sm
@@ -172,4 +173,5 @@
         @endif
 
         @include('sysadmin.announcement.components.announcement-guide')
+    </x-ts-card>
 </div>

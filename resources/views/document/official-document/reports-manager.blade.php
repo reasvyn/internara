@@ -17,6 +17,7 @@
                     color="primary"
                     sm
                 />
+            </x-ts-card>
 
         @endforeach
     </div>
@@ -30,7 +31,7 @@
         >
             @interact('column_action', $report)
                 <div class="flex gap-2">
-                    <a href="{{ route('sysadmin.reports.download', $report->id) }}" class="btn btn-sm btn-primary">
+                    <a href="{{ $report->getFirstMediaUrl('file') }}" class="btn btn-sm btn-primary" target="_blank">
                         <x-ts-icon name="arrow-down-tray" class="size-4" />
                         {{ __('document.download') }}
                     </a>
@@ -43,4 +44,5 @@
                 </div>
             @endinteract
         </x-ts-table>
+    </x-ts-card>
 </div>

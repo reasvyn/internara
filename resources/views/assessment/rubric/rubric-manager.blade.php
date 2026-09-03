@@ -131,6 +131,7 @@
                     />
                 </div>
             @endif
+        </x-ts-card>
 
     @empty
         <x-ts-card shadowless>
@@ -139,6 +140,7 @@
                 <p class="text-lg font-medium">{{ __('assessment.no_rubrics') }}</p>
                 <p class="text-sm">{{ __('assessment.rubrics_subtitle') }}</p>
             </div>
+        </x-ts-card>
 
     @endforelse
 
@@ -188,7 +190,7 @@
             <x-ts-select.native
                 :label="__('assessment.evaluator_role')"
                 wire:model="competencyForm.evaluator_role"
-                :options="[null => __('assessment.select_role')] + ($this->evaluatorRoles)"
+                :options="ts_options($this->evaluatorRoles, __('assessment.select_role'))"
                 required
             />
             <x-slot:actions>

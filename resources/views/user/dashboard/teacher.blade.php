@@ -81,6 +81,7 @@
                         color="accent"
                     />
                 </div>
+            </x-ts-card>
         </div>
 
         <div class="space-y-4">
@@ -110,6 +111,7 @@
                         />
                     @endif
                 </div>
+            </x-ts-card>
         </div>
     </div>
 

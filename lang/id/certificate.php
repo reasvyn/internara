@@ -70,4 +70,5 @@ return [
         'template_design_title' => 'Pengaturan Desain',
         'template_design_desc' => 'Konfigurasikan tata letak, font, warna, dan bidang placeholder untuk pembuatan sertifikat otomatis.',
     ],
+    'revoke' => 'Cabut',
 ];

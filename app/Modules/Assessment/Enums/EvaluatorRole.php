@@ -16,10 +16,10 @@ enum EvaluatorRole: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::ADMIN => __('Admin'),
-            self::TEACHER => __('Teacher'),
-            self::SUPERVISOR => __('Industry Supervisor'),
-            self::SYSTEM => __('System (Auto)'),
+            self::ADMIN => __('common.enums.admin'),
+            self::TEACHER => __('common.enums.teacher'),
+            self::SUPERVISOR => __('common.enums.industry_supervisor'),
+            self::SYSTEM => __('common.enums.system_auto'),
         };
     }
 }

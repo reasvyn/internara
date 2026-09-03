@@ -143,7 +143,7 @@
                     <x-ts-select.native
                         :label="__('user.student.department')"
                         wire:model="form.department_id"
-                        :options="$this->departments"
+                        :options="ts_options($this->departments)"
                         icon="rectangle-group"
                         class="mt-4"
                     />

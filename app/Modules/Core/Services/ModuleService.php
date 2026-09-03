@@ -26,9 +26,36 @@ final readonly class ModuleService
 
     public function __construct(private Repository $cache) {}
 
+    /**
+     * Cache a discovery result, but never persist an empty one.
+     *
+     * An empty map means the scan found nothing — a transient deploy state, not a
+     * valid registry. Caching it would disable every policy (turning authorize()
+     * into a blanket 403), Livewire component or view namespace for the whole TTL.
+     *
+     * @param callable(): array<string, string> $discover
+     * @return array<string, string>
+     */
+    private function rememberDiscovery(string $key, callable $discover): array
+    {
+        $cached = $this->cache->get($key);
+
+        if (is_array($cached) && $cached !== []) {
+            return $cached;
+        }
+
+        $result = $discover();
+
+        if ($result !== []) {
+            $this->cache->put($key, $result, self::CACHE_TTL_SECONDS);
+        }
+
+        return $result;
+    }
+
     public function discoverLivewireComponents(): void
     {
-        $components = $this->cache->remember(config('cache-keys.module_livewire'), self::CACHE_TTL_SECONDS, function () {
+        $components = $this->rememberDiscovery(config('cache-keys.module_livewire'), function () {
             $result = [];
             $moduleDir = ModuleManager::basePath();
 
@@ -98,7 +125,7 @@ final readonly class ModuleService
 
     public function discoverPolicies(): void
     {
-        $policies = $this->cache->remember(config('cache-keys.module_policies'), self::CACHE_TTL_SECONDS, function () {
+        $policies = $this->rememberDiscovery(config('cache-keys.module_policies'), function () {
             $result = [];
             $moduleDir = ModuleManager::basePath();
 
@@ -182,7 +209,7 @@ final readonly class ModuleService
 
     public function registerBladeNamespaces(): void
     {
-        $namespaces = $this->cache->remember(config('cache-keys.module_views'), self::CACHE_TTL_SECONDS, function () {
+        $namespaces = $this->rememberDiscovery(config('cache-keys.module_views'), function () {
             $result = [];
             $viewsDir = realpath(ModuleManager::viewsPath());
             if ($viewsDir === false) {

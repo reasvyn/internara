@@ -8,6 +8,7 @@
                 <p class="text-lg font-medium">{{ __('assessment.no_rubric_available') }}</p>
                 <p class="text-sm">{{ __('assessment.no_rubric_desc') }}</p>
             </div>
+        </x-ts-card>
 
     @else
         <x-ts-card shadowless class="mb-4">
@@ -143,6 +144,7 @@
                             </div>
                         </div>
                     @endforeach
+                </x-ts-card>
 
             @endforeach
 
@@ -155,6 +157,7 @@
                         </div>
                         <p class="text-primary text-3xl font-bold">{{ number_format($totalWeightedScore, 1) }}</p>
                     </div>
+                </x-ts-card>
 
             @endif
 
@@ -163,6 +166,7 @@
                     <x-ts-button :text="__('assessment.finalize')" icon="lock" wire:click="askFinalize" color="green" />
                 </div>
             @endunless
+        </x-ts-card>
 
     @endif
 </div>

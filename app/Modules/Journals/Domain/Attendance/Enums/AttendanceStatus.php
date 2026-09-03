@@ -29,12 +29,12 @@ enum AttendanceStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::PRESENT => __('Present'),
-            self::LATE => __('Late'),
-            self::EARLY_OUT => __('Early Out'),
-            self::ABSENT => __('Absent'),
-            self::PERMISSION => __('Permission'),
-            self::SICK => __('Sick'),
+            self::PRESENT => __('common.enums.present'),
+            self::LATE => __('common.enums.late'),
+            self::EARLY_OUT => __('common.enums.early_out'),
+            self::ABSENT => __('common.enums.absent'),
+            self::PERMISSION => __('common.enums.permission'),
+            self::SICK => __('common.enums.sick'),
         };
     }
 

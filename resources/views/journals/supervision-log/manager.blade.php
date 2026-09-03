@@ -16,10 +16,10 @@
                 <x-ts-card class="bg-base-100 border-base-200 border">
                     @php
                         $headers = [
-                            ['key' => 'date', 'label' => __('journals.date')],
-                            ['key' => 'type', 'label' => __('journals.supervision.type')],
-                            ['key' => 'topic', 'label' => __('journals.topic')],
-                            ['key' => 'is_verified', 'label' => __('journals.status')],
+                            ['index' => 'date', 'label' => __('journals.date')],
+                            ['index' => 'type', 'label' => __('journals.supervision.type')],
+                            ['index' => 'topic', 'label' => __('journals.topic')],
+                            ['index' => 'is_verified', 'label' => __('journals.status')],
                         ];
                     @endphp
 
@@ -44,6 +44,7 @@
                             @endif
                         @endinteract
                     </x-ts-table>
+                </x-ts-card>
             </div>
 
             <div class="space-y-6">
@@ -76,6 +77,7 @@
                             </div>
                         </div>
                     </div>
+                </x-ts-card>
             </div>
         </div>
     @endif

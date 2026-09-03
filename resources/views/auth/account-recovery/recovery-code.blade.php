@@ -107,6 +107,7 @@
                     <x-ts-icon name="arrow-left" class="size-3" /> {{ __('profile.recovery.back') }}
                 </a>
             </div>
+        </x-ts-card>
     </div>
 
     @include('auth.account-recovery.components.recovery-guide')

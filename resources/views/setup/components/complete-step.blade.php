@@ -88,7 +88,7 @@
 
     <x-ts-button
         text="{{ __('setup.wizard.go_to_login') }}"
-        icon-right="o-arrow-right"
+        icon-right="arrow-right"
         color="primary"
         wire:click="finishSession"
     />

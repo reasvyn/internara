@@ -19,11 +19,11 @@
         @else
             @php
                 $headers = [
-                    ['key' => 'name', 'label' => __('auth.lifecycle.user')],
-                    ['key' => 'status', 'label' => __('auth.lifecycle.status')],
-                    ['key' => 'locked', 'label' => __('auth.lifecycle.locked')],
-                    ['key' => 'created_at', 'label' => __('auth.lifecycle.created')],
-                    ['key' => 'actions', 'label' => ''],
+                    ['index' => 'name', 'label' => __('auth.lifecycle.user')],
+                    ['index' => 'status', 'label' => __('auth.lifecycle.status')],
+                    ['index' => 'locked', 'label' => __('auth.lifecycle.locked')],
+                    ['index' => 'created_at', 'label' => __('auth.lifecycle.created')],
+                    ['index' => 'actions', 'label' => ''],
                 ];
             @endphp
 
@@ -88,4 +88,5 @@
         @endif
 
         @include('user.account-status.components.account-lifecycle-guide')
+    </x-ts-card>
 </div>

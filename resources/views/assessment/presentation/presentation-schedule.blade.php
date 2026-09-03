@@ -9,7 +9,7 @@
     <x-slot:filters>
         <x-ts-select.native
             wire:model.live="filters.status"
-            :options="[null => __('assessment.presentation_status')] + (collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray())"
+            :options="ts_options(collect($statusOptions)->mapWithKeys(fn ($s) => [$s->value => $s->label()])->toArray(), __('assessment.presentation_status'))"
         />
     </x-slot:filters>
 
@@ -69,9 +69,7 @@
                     <x-ts-select.native
                         :label="__('assessment.presentation_registration')"
                         wire:model="scheduleData.registration_id"
-                        :options="[null => __('assessment.presentation_registration_placeholder')] + ($this->activeRegistrations ?? [])"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->activeRegistrations ?? [], __('assessment.presentation_registration_placeholder'))"
                     />
                     <x-ts-input
                         :label="__('assessment.presentation_scheduled_at')"
@@ -82,9 +80,7 @@
                     <x-ts-select.native
                         :label="__('assessment.presentation_examiners')"
                         wire:model="scheduleData.examiner_ids"
-                        :options="$this->teachers"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->teachers)"
                         multiple
                     />
                     <x-ts-textarea

@@ -31,17 +31,17 @@
         <div class="flex w-full gap-4 lg:w-auto">
             <x-ts-select.native
                 wire:model.live="filters.status"
-                :options="[null => __('assignment.select_status')] + (['draft' => __('assignment.statuses.draft'), 'published' => __('assignment.statuses.published'), 'closed' => __('assignment.statuses.closed')])"
+                :options="ts_options(['draft' => __('assignment.statuses.draft'), 'published' => __('assignment.statuses.published'), 'closed' => __('assignment.statuses.closed')], __('assignment.select_status'))"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
             <x-ts-select.native
                 wire:model.live="filters.is_mandatory"
-                :options="[null => __('assignment.select_mandatory')] + (['yes' => __('assignment.mandatory'), 'no' => __('assignment.optional')])"
+                :options="ts_options(['yes' => __('assignment.mandatory'), 'no' => __('assignment.optional')], __('assignment.select_mandatory'))"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
             <x-ts-select.native
                 wire:model.live="filters.assignment_type"
-                :options="[null => __('assignment.select_type')] + (['project' => __('assignment.types.project'), 'report' => __('assignment.types.report'), 'essay' => __('assignment.types.essay')])"
+                :options="ts_options(['project' => __('assignment.types.project'), 'report' => __('assignment.types.report'), 'essay' => __('assignment.types.essay')], __('assignment.select_type'))"
                 class="border-base-content/5 bg-base-200/50 h-14 min-w-[160px] rounded-[1.5rem]"
             />
         </div>
@@ -183,14 +183,14 @@
                 <x-ts-select.native
                     :label="__('assignment.type')"
                     wire:model="formData.assignment_type_id"
-                    :options="[null => __('assignment.type_placeholder')] + ($this->assignmentTypes->pluck('name', 'id'))"
+                    :options="ts_options($this->assignmentTypes->pluck('name', 'id'), __('assignment.type_placeholder'))"
                     class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                 />
 
                 <x-ts-select.native
                     :label="__('assignment.internship')"
                     wire:model="formData.internship_id"
-                    :options="[null => __('assignment.internship_placeholder')] + ($this->internships->pluck('name', 'id'))"
+                    :options="ts_options($this->internships->pluck('name', 'id'), __('assignment.internship_placeholder'))"
                     class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                 />
 
@@ -235,4 +235,5 @@
                 </div>
             </x-slot:footer>
         </x-ts-modal>
+    </x-ts-card>
 </div>

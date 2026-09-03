@@ -159,9 +159,7 @@
                     <x-ts-select.native
                         :label="__('partnership.company')"
                         wire:model="form.company_id"
-                        :options="[null => __('partnership.company_placeholder')] + ($this->companies)"
-                        option-label="name"
-                        option-value="id"
+                        :options="ts_options($this->companies, __('partnership.company_placeholder'))"
                         icon="building-office"
                     />
                     <x-ts-input

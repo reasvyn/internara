@@ -36,6 +36,13 @@ class CertificateTemplateManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where('name', 'like', $term)->orWhere('layout', 'like', $term);
+    }
+
     protected function query(): Builder
     {
         return CertificateTemplate::query();

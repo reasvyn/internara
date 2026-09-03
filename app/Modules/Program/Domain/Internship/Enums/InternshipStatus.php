@@ -28,11 +28,11 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => __('Draft'),
-            self::PUBLISHED => __('Published'),
-            self::ACTIVE => __('Active'),
-            self::COMPLETED => __('Completed'),
-            self::CANCELLED => __('Cancelled'),
+            self::DRAFT => __('common.enums.draft'),
+            self::PUBLISHED => __('common.enums.published'),
+            self::ACTIVE => __('common.enums.active'),
+            self::COMPLETED => __('common.enums.completed'),
+            self::CANCELLED => __('common.enums.cancelled'),
         };
     }
 

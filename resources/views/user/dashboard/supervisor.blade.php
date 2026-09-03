@@ -69,6 +69,7 @@
                         color="secondary"
                     />
                 </div>
+            </x-ts-card>
         </div>
 
         <div class="space-y-4">
@@ -91,6 +92,7 @@
                         link="{{ route('notifications') }}"
                     />
                 </div>
+            </x-ts-card>
         </div>
     </div>
 

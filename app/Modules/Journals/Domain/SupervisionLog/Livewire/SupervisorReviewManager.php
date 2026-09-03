@@ -18,6 +18,8 @@ class SupervisorReviewManager extends BaseRecordManager
 {
     use Interactions;
 
+    public array $sortBy = ['column' => 'date', 'direction' => 'desc'];
+
     public bool $showReviewModal = false;
 
     public ?string $reviewTarget = null;
@@ -35,12 +37,23 @@ class SupervisorReviewManager extends BaseRecordManager
         ];
     }
 
+    protected function applySearch(Builder $query): Builder
+    {
+        $term = '%'.$this->search.'%';
+
+        return $query->where(function (Builder $q) use ($term) {
+            $q->where('topic', 'like', $term)
+                ->orWhere('notes', 'like', $term)
+                ->orWhere('status', 'like', $term)
+                ->orWhereHas('registration.student', fn (Builder $s) => $s->where('name', 'like', $term));
+        });
+    }
+
     protected function query(): Builder
     {
         return SupervisionLog::query()
             ->where('supervisor_id', auth()->id())
-            ->with(['registration.student'])
-            ->latest('date');
+            ->with(['registration.student']);
     }
 
     public function askReview(string $id): void

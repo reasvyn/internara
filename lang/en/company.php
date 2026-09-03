@@ -60,4 +60,5 @@ return [
         'stats_title' => 'Statistics',
         'stats_desc' => 'View total companies, active partnerships, available slots, and companies with placements at a glance.',
     ],
+    'confirm_delete' => 'Are you sure you want to delete this company?',
 ];

@@ -20,6 +20,8 @@ return [
     ],
 
     'wizard' => [
+        'proposed_company' => 'Perusahaan Usulan',
+        'proposed_address' => 'Alamat Perusahaan Usulan',
         'title' => 'Pendaftaran Magang',
         'subtitle' => 'Daftar untuk program magang Anda',
         'step_program' => 'Pilihan Program',
@@ -63,6 +65,7 @@ return [
     ],
 
     'account_application' => [
+        'student_info' => 'Informasi Siswa',
         'title' => 'Pendaftaran Akun & Magang',
         'subtitle' => 'Daftar akun dan daftar magang Anda',
         'personal_info' => 'Informasi Pribadi',

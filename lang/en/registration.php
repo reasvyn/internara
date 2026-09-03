@@ -20,6 +20,8 @@ return [
     ],
 
     'wizard' => [
+        'proposed_company' => 'Proposed Company',
+        'proposed_address' => 'Proposed Company Address',
         'title' => 'Internship Registration',
         'subtitle' => 'Register for your upcoming internship program',
         'step_program' => 'Program Selection',
@@ -63,6 +65,7 @@ return [
     ],
 
     'account_application' => [
+        'student_info' => 'Student Information',
         'title' => 'Account & Internship Application',
         'subtitle' => 'Apply for an account and register for your internship',
         'personal_info' => 'Personal Information',

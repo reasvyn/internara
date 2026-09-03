@@ -100,6 +100,8 @@ return [
     ],
 
     'guide_recovery' => [
+        'slip_manager_title' => 'Slip Pemulihan Akun',
+        'slip_manager_intro' => 'Buat dan cetak slip pemulihan agar pengguna dapat mengakses kembali akunnya.',
         'title' => 'Panduan Kode Pemulihan',
         'intro' => 'Kode pemulihan digunakan untuk mengakses akun jika kata sandi hilang:',
         'generate_title' => 'Membuat Kode',

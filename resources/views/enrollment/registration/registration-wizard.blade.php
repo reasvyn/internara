@@ -16,7 +16,7 @@
                 <x-ts-select.native
                     :label="__('registration.wizard.step_program')"
                     wire:model.live="form.internship_id"
-                    :options="[null => __('registration.wizard.step_program')] + ($this->internships)"
+                    :options="ts_options($this->internships, __('registration.wizard.step_program'))"
                 />
 
                 <x-ts-input
@@ -30,7 +30,7 @@
                 <x-ts-select.native
                     :label="__('registration.wizard.step_placement')"
                     wire:model="form.placement_id"
-                    :options="[null => __('registration.wizard.step_placement')] + ($this->placements)"
+                    :options="ts_options($this->placements, __('registration.wizard.step_placement'))"
                     :hint="__('registration.wizard.propose_hint')"
                 />
 
@@ -83,4 +83,5 @@
                 @endif
             </div>
         </div>
+    </x-ts-card>
 </div>

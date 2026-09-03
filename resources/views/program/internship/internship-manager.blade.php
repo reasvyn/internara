@@ -167,8 +167,7 @@
                     <x-ts-select.native
                         :label="__('internship.academic_year')"
                         wire:model="form.academic_year_id"
-                        :options="$this->academicYears"
-                        select="label:name|value:id"
+                        :options="ts_options($this->academicYears)"
                         icon="calendar-days"
                         class="mt-4"
                     />
@@ -214,7 +213,7 @@
                     <x-ts-select.native
                         :label="__('internship.status')"
                         wire:model="form.status"
-                        :options="$this->statusOptions"
+                        :options="ts_options($this->statusOptions)"
                         icon="flag"
                     />
                 </div>

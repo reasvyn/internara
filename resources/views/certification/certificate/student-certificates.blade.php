@@ -20,13 +20,13 @@
                     </a>
                 </div>
             </div>
-
+        </x-ts-card>
     @empty
         <x-ts-card shadowless>
             <div class="p-6 text-center">
                 <x-ts-icon name="document" class="text-base-content/40 mx-auto mb-3 h-12 w-12" />
                 <p class="text-base-content/60">{{ __('certificate.no_certificates') }}</p>
             </div>
-
+        </x-ts-card>
     @endforelse
 </div>

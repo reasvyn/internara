@@ -8,10 +8,10 @@
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <x-ts-select.native
                 wire:model.live="filters.status"
-                :options="[null => __('notifications.ui.all_status')] + ([
+                :options="ts_options([
                     ['id' => 'unread', 'name' => __('notifications.ui.unread')],
                     ['id' => 'read', 'name' => __('notifications.ui.read')],
-                ])"
+                ], __('notifications.ui.all_status'))"
                 clearable
                 class="sm:max-w-xs"
                 aria-label="{{ __('notifications.ui.all_status') }}"

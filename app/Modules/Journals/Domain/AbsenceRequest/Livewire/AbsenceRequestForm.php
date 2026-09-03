@@ -9,15 +9,16 @@ use App\Modules\Journals\Domain\AbsenceRequest\Actions\SubmitAbsenceAction;
 use App\Modules\Journals\Domain\AbsenceRequest\Data\SubmitAbsenceData;
 use App\Modules\Journals\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journals\Domain\AbsenceRequest\Models\AbsenceRequest;
-use App\Modules\Journals\Domain\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use TallStackUi\Traits\Interactions;
 
 class AbsenceRequestForm extends BaseFormView
 {
     use Interactions;
 
+    #[Url(as: 'date', except: '')]
     public string $startDate = '';
 
     public string $reasonType = '';
@@ -26,8 +27,17 @@ class AbsenceRequestForm extends BaseFormView
 
     protected function rules(): array
     {
+        // A missed day can only be explained after the fact, so past dates must be
+        // accepted — bounded by the internship period so the date stays meaningful.
+        $registration = auth()->user()?->getActiveRegistration();
+
+        $bounds = array_filter([
+            $registration?->start_date ? 'after_or_equal:'.$registration->start_date->toDateString() : null,
+            $registration?->end_date ? 'before_or_equal:'.$registration->end_date->toDateString() : null,
+        ]);
+
         return [
-            'startDate' => 'required|date|after_or_equal:today',
+            'startDate' => implode('|', ['required', 'date', ...$bounds]),
             'reasonType' => 'required|string|in:sick,permission,emergency,other',
             'reasonDescription' => 'required|string|min:10|max:1000',
         ];
@@ -72,9 +82,8 @@ class AbsenceRequestForm extends BaseFormView
     {
         return view('journals.absence-request.absence-request-form', [
             'reasonTypes' => AbsenceReasonType::cases(),
-            'existingRequests' => Attendance::where('user_id', auth()->id())
-                ->whereNotNull('absence_type')
-                ->latest()
+            'existingRequests' => AbsenceRequest::where('user_id', auth()->id())
+                ->latest('date')
                 ->paginate(10),
         ]);
     }
