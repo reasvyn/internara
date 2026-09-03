@@ -105,10 +105,10 @@ Batch all changes first, then verify **once**. Full suite is ~2GB+, 10+ min — 
   - `vendor/bin/pest --testsuite={ModuleName}` or `php artisan test --compact --filter={ClassName}`
   - Every test traces to a spec FR/NFR/UC ID (`{SpecID}-{ReqID}: description`); no orphan tests, no spec gaps; coverage = requirements covered
 - **Arch-guard scanners (run as a batch):**
-  - `python3 tools/scan_violations/cli.py` (C1-C8, D1-D6)
-  - `python3 tools/scan_class_contracts/cli.py` (Action/Entity/DTO/Model/Enum)
-  - `python3 tools/scan_security/cli.py` (XSS, SQLi, CSRF, auth)
-  - `python3 tools/scan_naming/cli.py` · `tools/scan_conventions/cli.py` · `tools/scan_doc_links/cli.py`
+  - `python3 tools/scan_violations.py` (C1-C8, D1-D6)
+  - `python3 tools/scan_class_contracts.py` (Action/Entity/DTO/Model/Enum)
+  - `python3 tools/scan_security.py` (XSS, SQLi, CSRF, auth)
+  - `python3 tools/scan_naming.py` · `tools/scan_conventions.py` · `tools/scan_doc_links.py`
 - **Full verification on-demand only** (merge-day or user explicitly asks):
   - `php artisan test --compact` (full suite, all modules)
   - Change-type matrix in `AGENTS.md` §Verification Strategy decides what is required for the current change type; default is targeted checks, not full suite.
@@ -142,7 +142,7 @@ Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) an
 
 | Fact | Value |
 |------|-------|
-| **Scope** | 19 modules = 18 business + UI + Core (693 PHP files in `app/` — 691 in `app/Modules/` — 45 migrations, 61 spec files incl. 3 meta / 58 feature specs, 17 web route files incl. `web.php`) |
+| **Scope** | 19 modules = 18 business + UI + Core (695 PHP files in `app/` — 693 in `app/Modules/` — 45 migrations, 61 feature specs + 3 meta = 64 spec files, 17 web route files incl. `web.php`) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
@@ -195,7 +195,7 @@ User → Livewire (validates, catches RejectedException) → Command Action::exe
 
 **Health tiers (agent SSOT: `.agents/context/module-health.md`):** `Production-Ready: Core,Auth,User,Settings,Setup,SysAdmin,Academics` · `Stable-Needs Attention: Program,Partners,Enrollment,Journals,Incident,Assignment,Reports` (dead DTOs, `event()` inside transactions, broken Blade, wrong `user_id` in attendance, ActionResponse gaps) · `Needs Work P0: Assessment,Certification,Document` (Blade crashes, relation/migration mismatches, missing Entity) · `Skeleton: Evaluation` · `Infra: Jobs,Providers`. Fix order: schema mismatch → ActionResponse → `__()` → Entity → `dispatchEvent()` → dead code.
 
-### Spec Build Order — 12 Phases, 61 Spec Files / 58 Feature Specs (SSOT: `docs/specs/index.md` + `implementation-matrix.md`)
+### Spec Build Order — 12 Phases, 64 Spec Files / 61 Feature Specs (SSOT: `docs/specs/index.md` + `implementation-matrix.md`)
 
 ```
 P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional → P5 Partnerships → P6 Programs
@@ -232,7 +232,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 | 19 modules (conceptual vs reference per module) | `docs/refs/modules/{module}.md` + `{module}-reference.md`, index `docs/refs/modules/index.md` |
 | Feature specs + build order | `docs/specs/index.md` → `docs/specs/{ID}-{feature}.md` |
 | Implementation status + coverage per spec | `docs/specs/implementation-matrix.md` |
-| Deep pattern guides (16 patterns) | `docs/guides/arch/{action,entity,model,data,enum,event,livewire,policy,exception,logging,cache,service,support,modular,testing,ui,ux}-pattern.md` |
+| Deep pattern guides (18 patterns) | `docs/guides/arch/{action,entity,model,data,enum,event,exception,logging,cache,service,support,modular,policy,livewire,ui,ux,repository,testing}-pattern.md` |
 | Operations (deploy, CI/CD, infra, health) | `docs/guides/infra/{deployment,infrastructure,configuration,ci-cd,database,cache,queue,filesystem,security,testing,scaling,tools}.md` |
 | Architecture decisions (14 ADRs) | `docs/adr/index.md` → `docs/adr/adr-*.md` |
 | Mandatory known context (must-read before tasks) | `.agents/context/index.md` → `module-health.md`, `deploy-topology.md`, `dependency-pins-tooling-quirks.md`, `dep-model-status-deprecated.md`, `ui-framework-coexistence.md`, `production-dummy-guard.md`, `codebase-intentional-states.md`, `testing-strategy.md`, `workflow-5step.md` |
@@ -313,7 +313,7 @@ Before handing off to any downstream skill, confirm:
 | Business logic | `app/Modules/{Module}/Domain/{Domain}/Actions/` |
 | Business rules | `app/Modules/{Module}/Domain/{Domain}/Entities/` |
 | Data structure | `app/Modules/{Module}/Domain/{Domain}/Models/` |
-| Data transfer | `app/Modules/{Module}/Domain/{Domain}/Entities/` (DTOs) |
+| Data transfer | `app/Modules/{Module}/Domain/{Domain}/Data/` (DTOs) |
 | State machines | `app/Modules/{Module}/Domain/{Domain}/Enums/` |
 | UI components | `app/Modules/{Module}/Domain/{Domain}/Livewire/` |
 | Authorization | `app/Modules/{Module}/Domain/{Domain}/Policies/` |
@@ -554,19 +554,25 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `tools/scan_files/cli.py` | File counts and lines of code per module | `python3 tools/scan_files/cli.py` |
-| `tools/scan_architecture/cli.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture/cli.py` |
-| `tools/scan_violations/cli.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations/cli.py` |
-| `tools/scan_class_contracts/cli.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts/cli.py` |
-| `tools/scan_security/cli.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security/cli.py` |
-| `tools/scan_naming/cli.py` | Naming conventions | `python3 tools/scan_naming/cli.py` |
-| `tools/scan_conventions/cli.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions/cli.py` |
-| `tools/scan_doc_links/cli.py` | Broken links in docs | `python3 tools/scan_doc_links/cli.py` |
-| `tools/scan_tests/cli.py` | Per-module test results | `python3 tools/scan_tests/cli.py` |
-| `tools/scan_issues/cli.py` | GitHub issues by module/severity | `python3 tools/scan_issues/cli.py` |
-| `tools/scan_dead_code/cli.py` | Dead code detection | `python3 tools/scan_dead_code/cli.py` |
+| `tools/scan_files.py` | File counts and lines of code per module | `python3 tools/scan_files.py` |
+| `tools/scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
+| `tools/scan_arch_patterns.py` | Architecture/pattern adherence (used by `composer arch`) | `python3 tools/scan_arch_patterns.py` |
+| `tools/scan_module_boundaries.py` | Cross-module boundary checks (used by `composer arch`) | `python3 tools/scan_module_boundaries.py` |
+| `tools/scan_ui_consistency.py` | UI/component consistency (used by `composer arch`) | `python3 tools/scan_ui_consistency.py` |
+| `tools/scan_violations.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations.py` |
+| `tools/scan_class_contracts.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts.py` |
+| `tools/scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security.py` |
+| `tools/scan_naming.py` | Naming conventions | `python3 tools/scan_naming.py` |
+| `tools/scan_conventions.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions.py` |
+| `tools/scan_doc_links.py` | Broken links in docs | `python3 tools/scan_doc_links.py` |
+| `tools/scan_spec_tests.py` | Spec-to-test coverage mapping | `python3 tools/scan_spec_tests.py` |
+| `tools/scan_tests.py` | Per-module test results | `python3 tools/scan_tests.py` |
+| `tools/scan_issues.py` | GitHub issues by module/severity | `python3 tools/scan_issues.py` |
+| `tools/scan_dead_code.py` | Dead code detection | `python3 tools/scan_dead_code.py` |
+| `tools/run_module_tests.py` | Run tests for a single module | `python3 tools/run_module_tests.py --module {Module}` |
+| `tools/tool_runner.py` | Orchestrate multiple scanners | `python3 tools/tool_runner.py --scanner violations,naming` |
 
-Output: `tools/outputs/{timestamp}-{description}.json`.
+All scanners accept `--module {Name}`, `--format summary|text|html|markdown`, `--output <path>`, `--json`, `--strict`, `--quiet`. Output (default JSON): `tools/outputs/{timestamp}-{description}.json`. Full interface in `tools/README.md`.
 
 **Automation-First:** before doing manual or repeated work, check `tools/` and this table for an existing scanner or helper. Never redo by hand what a script does. If a recurring pattern has no script, load `script-automation` to add one.
 
