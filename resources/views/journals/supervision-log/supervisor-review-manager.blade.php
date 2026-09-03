@@ -23,7 +23,8 @@
                         :text="__('journals.review')"
                         icon="check"
                         class="text-success"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                         wire:click="askReview('{{ $l->id }}')"
                     />
@@ -41,7 +42,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showReviewModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button

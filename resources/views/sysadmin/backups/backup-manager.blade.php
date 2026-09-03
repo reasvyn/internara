@@ -110,7 +110,6 @@
             @endinteract
         </x-ts-table>
 
-
         @include('sysadmin.backups.components.backup-guide')
     </x-ts-card>
     <x-ts-modal wire="showConfirmDelete" title="{{ __('backups.confirm_delete_title') }}" class="backdrop-blur">
@@ -121,5 +120,4 @@
             <x-ts-button text="{{ __('common.actions.delete') }}" wire:click="delete" color="red" />
         </x-slot:footer>
     </x-ts-modal>
-
 </div>

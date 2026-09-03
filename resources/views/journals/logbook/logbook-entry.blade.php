@@ -163,7 +163,8 @@
                 :text="__('logbook.discard')"
                 @click="$wire.showModal = false"
                 class="text-[10px] font-bold tracking-widest uppercase"
-                color="slate" outline
+                color="slate"
+                outline
             />
             <x-ts-button
                 :text="__('logbook.save_activity')"

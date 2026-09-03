@@ -72,7 +72,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showIssueModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button :text="__('certificate.issue')" color="green" sm type="submit" loading="saveIssue" />
@@ -101,7 +102,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showBatchIssueModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button

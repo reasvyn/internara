@@ -46,7 +46,8 @@
                         :text="__('user.manager.regenerate_code')"
                         icon="arrow-path"
                         class="flex-1"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         wire:click="regenerateCode"
                         loading="regenerateCode"
                     />
@@ -54,7 +55,8 @@
                         :text="__('user.manager.send_code')"
                         icon="envelope"
                         class="flex-1"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         wire:click="sendCode"
                         loading="sendCode"
                     />
@@ -64,6 +66,12 @@
     @endif
 
     <x-slot:footer>
-        <x-ts-button :text="__('common.actions.close')" wire:click="$set('showAccountSlip', false)" color="slate" outline sm />
+        <x-ts-button
+            :text="__('common.actions.close')"
+            wire:click="$set('showAccountSlip', false)"
+            color="slate"
+            outline
+            sm
+        />
     </x-slot:footer>
 </x-ts-modal>

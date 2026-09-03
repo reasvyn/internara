@@ -79,7 +79,8 @@
                     :text="__('common.actions.cancel')"
                     wire:click="clearSelection"
                     class="hover:bg-base-content/5 rounded-xl text-[10px] font-black tracking-widest uppercase"
-                    color="slate" outline
+                    color="slate"
+                    outline
                 />
             </div>
         </div>
@@ -210,11 +211,7 @@
                 class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
             />
 
-            <x-ts-toggle
-                :label="__('assignment.is_mandatory')"
-                wire:model="formData.is_mandatory"
-                class="rounded-xl"
-            />
+            <x-ts-toggle :label="__('assignment.is_mandatory')" wire:model="formData.is_mandatory" class="rounded-xl" />
         </div>
 
         <x-slot:footer>
@@ -223,7 +220,8 @@
                     :text="__('common.actions.cancel')"
                     wire:click="$set('assignmentModal', false)"
                     class="rounded-[1.5rem] px-8 text-[10px] font-black tracking-widest uppercase"
-                    color="slate" outline
+                    color="slate"
+                    outline
                 />
                 <x-ts-button
                     :text="__('common.actions.save')"
@@ -236,5 +234,4 @@
             </div>
         </x-slot:footer>
     </x-ts-modal>
-
 </div>

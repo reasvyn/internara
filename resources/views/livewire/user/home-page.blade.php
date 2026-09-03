@@ -26,9 +26,7 @@
                 </div>
 
                 {{-- Tagline --}}
-                <h1
-                    class="from-base-content to-base-content/60 mb-5 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl lg:text-5xl"
-                >
+                <h1 class="from-base-content to-base-content/60 mb-5 bg-gradient-to-br bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl lg:text-5xl">
                     {{ brand('tagline') ?: __('common.app_tagline') }}
                 </h1>
 

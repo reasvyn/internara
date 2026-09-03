@@ -47,7 +47,8 @@
                         :text="__('journals.verify')"
                         icon="check"
                         class="text-success"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                         wire:click="verify('{{ $log->id }}')"
                     />
@@ -91,5 +92,4 @@
             />
         </x-slot:footer>
     </x-ts-modal>
-
 </div>

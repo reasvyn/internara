@@ -28,7 +28,13 @@
     </div>
 
     <x-slot:footer>
-        <x-ts-button :text="__('common.actions.close')" wire:click="$set('showGuide', false)" color="slate" outline sm />
+        <x-ts-button
+            :text="__('common.actions.close')"
+            wire:click="$set('showGuide', false)"
+            color="slate"
+            outline
+            sm
+        />
     </x-slot:footer>
 </x-ts-modal>
 

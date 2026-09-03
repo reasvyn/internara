@@ -10,7 +10,14 @@
 >
     <div class="flex items-center gap-2">
         {{ $slot }}
-        <x-ts-button wire:click="clearSelection" sm color="slate" outline icon="x-mark" :text="__('common.actions.cancel')" />
+        <x-ts-button
+            wire:click="clearSelection"
+            sm
+            color="slate"
+            outline
+            icon="x-mark"
+            :text="__('common.actions.cancel')"
+        />
     </div>
     <p class="text-base-content/70 text-sm whitespace-nowrap">
         <span class="text-primary font-semibold" x-text="$wire.selectedIds.length"></span>

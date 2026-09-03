@@ -60,7 +60,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showRejectModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button :text="__('placement_change.reject')" color="red" sm type="submit" loading="reject" />

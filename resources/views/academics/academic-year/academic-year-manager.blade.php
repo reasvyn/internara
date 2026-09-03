@@ -171,7 +171,8 @@
             <div class="flex justify-end gap-2">
                 <x-ts-button
                     :text="__('common.actions.cancel')"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                     wire:click="$set('showModal', false)"
                 />

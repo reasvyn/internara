@@ -84,7 +84,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button :text="__('common.actions.save')" color="primary" sm type="submit" loading="save" />
@@ -139,7 +140,8 @@
                         icon="plus"
                         wire:click="addMemberRow"
                         class="w-full border border-dashed"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                 </div>
@@ -148,7 +150,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showMemberModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button

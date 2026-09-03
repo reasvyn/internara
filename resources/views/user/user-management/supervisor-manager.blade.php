@@ -120,7 +120,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button :text="__('user.supervisor.save')" color="primary" sm type="submit" loading="save" />

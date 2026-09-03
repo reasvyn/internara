@@ -20,7 +20,8 @@
                 <x-ts-button
                     :text="__('notifications.ui.mark_all_read')"
                     icon="check-badge"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                     wire:click="markAllAsRead"
                 />
@@ -49,7 +50,8 @@
                     <x-ts-button
                         :text="__('notifications.ui.mark_read_batch')"
                         icon="check-badge"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                         wire:click="markSelectedAsRead"
                     />
@@ -129,7 +131,7 @@
                             </details>
                         @else
                             <div
-                                class="flex cursor-pointer items-start gap-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 rounded-lg"
+                                class="focus-visible:ring-primary/50 flex cursor-pointer items-start gap-3 rounded-lg py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1"
                                 role="button"
                                 tabindex="0"
                                 aria-label="{{ $notification->title }}"
@@ -237,5 +239,4 @@
             @endif
         </x-slot:footer>
     </x-ts-modal>
-
 </div>

@@ -41,7 +41,6 @@
                 />
             @endinteract
         </x-ts-table>
-
     </x-ts-card>
     <x-ts-modal
         wire="templateModal"
@@ -68,10 +67,7 @@
                 </div>
 
                 <div class="md:col-span-2">
-                    <x-ts-textarea
-                        :label="__('document.description')"
-                        wire:model="templateData.description"
-                    />
+                    <x-ts-textarea :label="__('document.description')" wire:model="templateData.description" />
                 </div>
                 <x-ts-checkbox :label="__('document.active')" wire:model="templateData.is_active" />
             </div>
@@ -82,5 +78,4 @@
             </div>
         </form>
     </x-ts-modal>
-
 </div>

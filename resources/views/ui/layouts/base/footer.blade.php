@@ -59,6 +59,5 @@
                 </div>
             @endif
         </div>
-
     </div>
 </footer>

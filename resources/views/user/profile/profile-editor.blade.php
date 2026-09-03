@@ -278,5 +278,4 @@
         'message' => __('profile.avatar_remove_confirm'),
         'confirmText' => __('common.actions.remove'),
     ])
-
 </div>

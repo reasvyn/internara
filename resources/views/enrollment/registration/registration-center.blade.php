@@ -15,7 +15,7 @@
             @foreach ($this->openInternships as $internship)
                 <x-ts-card class="border-base-200 border transition-shadow hover:shadow-lg">
                     <x-ts-badge
-                        :text="__('internship.statuses.' . $internship->status->value)"
+                        :text="__('internship.statuses.'.$internship->status->value)"
                         color="blue"
                         class="mb-3"
                     />
@@ -49,7 +49,8 @@
                                 :text="__('registration.center.view_details')"
                                 icon="eye"
                                 class="w-full"
-                                color="slate" outline
+                                color="slate"
+                                outline
                                 sm
                                 disabled
                             />

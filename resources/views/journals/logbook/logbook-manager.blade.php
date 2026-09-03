@@ -66,7 +66,8 @@
                     text="{{ __('common.actions.cancel') }}"
                     wire:click="clearSelection"
                     class="rounded-xl text-[10px] font-black tracking-widest uppercase"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                 />
             </div>
@@ -255,5 +256,4 @@
             />
         </x-slot:footer>
     </x-ts-modal>
-
 </div>

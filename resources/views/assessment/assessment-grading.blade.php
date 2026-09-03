@@ -32,7 +32,8 @@
                         :text="__('assessment.auto_import')"
                         icon="arrow-down-tray"
                         wire:click="autoImport"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                 </div>

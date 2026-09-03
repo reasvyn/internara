@@ -31,7 +31,7 @@
         </div>
         <div class="flex items-center justify-between text-xs">
             <span class="text-neutral-800 dark:text-white/70">{{ __('dashboard.app_info.environment') }}</span>
-            <span class="font-semibold uppercase text-neutral-800 dark:text-white">{{ $env }}</span>
+            <span class="font-semibold text-neutral-800 uppercase dark:text-white">{{ $env }}</span>
         </div>
         @if (! $compact)
             <div class="border-base-content/10 mt-3 space-y-2 border-t pt-3 text-xs">
@@ -44,9 +44,7 @@
                     <span class="font-medium text-neutral-800 dark:text-white">{{ $laravelVersion }}</span>
                 </div>
             </div>
-            <p class="text-base-content/40 pt-2 text-[10px] leading-relaxed">
-                {{ __('dashboard.app_info.tagline') }}
-            </p>
+            <p class="text-base-content/40 pt-2 text-[10px] leading-relaxed">{{ __('dashboard.app_info.tagline') }}</p>
         @endif
     </div>
 </x-ts-card>

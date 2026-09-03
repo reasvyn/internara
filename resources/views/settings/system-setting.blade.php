@@ -197,7 +197,8 @@
                                     aria-label="{{ __('common.actions.remove') }}"
                                     text="{{ __('setting.buttons.test_mail') }}"
                                     icon-right="paper-airplane"
-                                    color="slate" outline
+                                    color="slate"
+                                    outline
                                     sm
                                     wire:click="testEmail"
                                     loading="testEmail"
@@ -322,7 +323,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </x-ts-card>
                 </x-ts-card>
             </div>

@@ -254,7 +254,8 @@
                 <x-ts-button
                     :text="__('common.actions.cancel')"
                     wire:click="$set('showStatusModal', false)"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                 />
                 <x-ts-button
@@ -305,18 +306,10 @@
                         <x-ts-input :label="__('user.fields.pob')" wire:model="form.pob" icon="map-pin" />
                         <x-ts-input :label="__('user.fields.dob')" type="date" wire:model="form.dob" icon="calendar" />
                         <div class="md:col-span-2">
-                            <x-ts-input
-                                :label="__('user.fields.address')"
-                                wire:model="form.address"
-                                icon="map-pin"
-                            />
+                            <x-ts-input :label="__('user.fields.address')" wire:model="form.address" icon="map-pin" />
                         </div>
                         <div class="md:col-span-2">
-                            <x-ts-textarea
-                                :label="__('user.fields.bio')"
-                                wire:model="form.bio"
-                                rows="2"
-                            />
+                            <x-ts-textarea :label="__('user.fields.bio')" wire:model="form.bio" rows="2" />
                         </div>
                     </div>
                 </div>
@@ -365,7 +358,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('userModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button :text="__('user.manager.save')" color="primary" sm type="submit" loading="saveUser" />

@@ -76,7 +76,8 @@
                         <x-ts-button
                             :text="__('common.actions.reset_filters')"
                             icon="x-mark"
-                            color="slate" outline
+                            color="slate"
+                            outline
                             sm
                             class="w-full"
                             wire:click="resetFilters"

@@ -107,7 +107,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showResolveModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button
@@ -158,7 +159,8 @@
                     <x-ts-button
                         :text="__('common.actions.cancel')"
                         wire:click="$set('showEditModal', false)"
-                        color="slate" outline
+                        color="slate"
+                        outline
                         sm
                     />
                     <x-ts-button

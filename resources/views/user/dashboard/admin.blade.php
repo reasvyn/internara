@@ -331,23 +331,23 @@
             an inner body div, so a grid span passed to the card is ignored. --}}
         <div class="md:col-span-2">
             <x-ts-card shadowless :header="__('dashboard.recent_activity')">
-            @forelse ($this->getRecentActivities() as $activity)
-                <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
-                    <div class="mt-1">
-                        <x-ts-icon class="text-base-content/30 size-4" name="bolt" />
-                    </div>
-                    <div>
-                        <div class="text-sm font-medium">
-                            {{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}
+                @forelse ($this->getRecentActivities() as $activity)
+                    <div class="border-base-content/10 flex items-start gap-4 border-b py-3 last:border-0">
+                        <div class="mt-1">
+                            <x-ts-icon class="text-base-content/30 size-4" name="bolt" />
                         </div>
-                        <div class="text-base-content/40 text-xs">
-                            {{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}
+                        <div>
+                            <div class="text-sm font-medium">
+                                {{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}
+                            </div>
+                            <div class="text-base-content/40 text-xs">
+                                {{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}
+                            </div>
                         </div>
                     </div>
-                </div>
-            @empty
-                <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
-            @endforelse
+                @empty
+                    <x-ui::widgets.empty-state icon="inbox" :title="__('dashboard.no_activity')" />
+                @endforelse
             </x-ts-card>
         </div>
 

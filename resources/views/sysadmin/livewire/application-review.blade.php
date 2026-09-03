@@ -61,7 +61,6 @@
             </x-ts-table>
         @endif
 
-
         @include('sysadmin.components.application-review-guide')
     </x-ts-card>
     <x-ts-modal wire="showRejectModal" :title="__('internship.applications.reject_title')" blur>
@@ -75,18 +74,12 @@
                 <x-ts-button
                     :text="__('internship.applications.cancel')"
                     wire:click="$set('showRejectModal', false)"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                 />
-                <x-ts-button
-                    :text="__('internship.applications.reject')"
-                    type="submit"
-                    icon="x-mark"
-                    color="red"
-                    sm
-                />
+                <x-ts-button :text="__('internship.applications.reject')" type="submit" icon="x-mark" color="red" sm />
             </div>
         </form>
     </x-ts-modal>
-
 </div>

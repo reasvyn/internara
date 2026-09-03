@@ -79,7 +79,6 @@
                 </table>
             </div>
         @endif
-
     </x-ts-card>
     <x-ts-modal wire="showProcessModal" :title="__('registration.verification.process_title')">
         @if ($this->selectedRegistration)
@@ -119,5 +118,4 @@
             </form>
         @endif
     </x-ts-modal>
-
 </div>

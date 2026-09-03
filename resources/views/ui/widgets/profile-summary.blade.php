@@ -17,7 +17,8 @@
                 <x-ts-button
                     :text="__('dashboard.edit_profile')"
                     icon="user"
-                    color="slate" outline
+                    color="slate"
+                    outline
                     sm
                     class="w-full"
                     :href="route('profile')"

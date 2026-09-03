@@ -21,10 +21,7 @@
                 />
                 <x-ts-input :label="__('registration.account_application.phone')" wire:model="form.phone" />
                 <div class="md:col-span-2">
-                    <x-ts-textarea
-                        :label="__('registration.account_application.address')"
-                        wire:model="form.address"
-                    />
+                    <x-ts-textarea :label="__('registration.account_application.address')" wire:model="form.address" />
                 </div>
 
                 <div class="mt-4 md:col-span-2">

@@ -23,7 +23,11 @@
                     <div class="flex items-start justify-between gap-6">
                         <div class="min-w-0 flex-1">
                             <div class="mb-3 flex items-center gap-3">
-                                <x-ts-badge :text="__('assignment.types.'.$assignment->assignment_type)" color="primary" xs />
+                                <x-ts-badge
+                                    :text="__('assignment.types.'.$assignment->assignment_type)"
+                                    color="primary"
+                                    xs
+                                />
                                 @if ($assignment->is_mandatory)
                                     <x-ts-badge :text="__('assignment.required')" color="red" xs />
                                 @else
@@ -60,7 +64,14 @@
         {{-- Assignment Detail --}}
         <x-ts-card class="!bg-base-100 shadow-base-content/5 border-base-content/5 overflow-hidden border shadow-2xl">
             <div class="mb-6 flex items-center justify-between">
-                <x-ts-button icon="arrow-left" :text="__('common.actions.back')" wire:click="back" color="slate" outline sm />
+                <x-ts-button
+                    icon="arrow-left"
+                    :text="__('common.actions.back')"
+                    wire:click="back"
+                    color="slate"
+                    outline
+                    sm
+                />
             </div>
 
             <div class="mb-4 flex items-center gap-3">
@@ -126,7 +137,9 @@
                             <x-ts-icon name="exclamation-triangle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-warning text-sm font-black tracking-tight uppercase">{{ __('submission.statuses.revision_required') }}</h4>
+                            <h4 class="text-warning text-sm font-black tracking-tight uppercase">
+                                {{ __('submission.statuses.revision_required') }}
+                            </h4>
                             <p class="text-warning/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
                                 {{ __('submission.revise_hint') }}
                             </p>
@@ -175,7 +188,9 @@
                             <x-ts-icon name="check-circle" class="size-6" />
                         </div>
                         <div>
-                            <h4 class="text-success text-sm font-black tracking-tight uppercase">{{ __('submission.statuses.submitted') }}</h4>
+                            <h4 class="text-success text-sm font-black tracking-tight uppercase">
+                                {{ __('submission.statuses.submitted') }}
+                            </h4>
                             <p class="text-success/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
                                 {{ $existingSubmission->submitted_at?->format('d M Y H:i') ?? __('submission.just_now') }}
                             </p>
@@ -213,7 +228,9 @@
             @elseif (! $selectedAssignment->asAssignmentRules()->isOverdue(now()))
                 {{-- Submission Form --}}
                 <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
-                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">{{ __('submission.submit_your_work') }}</h4>
+                    <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                        {{ __('submission.submit_your_work') }}
+                    </h4>
 
                     <div class="space-y-6">
                         <div>

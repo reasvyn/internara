@@ -54,7 +54,8 @@
                         <x-ts-button
                             :text="__('profile.recovery.generate_new')"
                             icon="arrow-path"
-                            color="slate" outline
+                            color="slate"
+                            outline
                             sm
                             wire:click="resetCode"
                         />
