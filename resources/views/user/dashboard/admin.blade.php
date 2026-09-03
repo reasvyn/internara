@@ -232,7 +232,7 @@
                 <div class="bg-base-200/30 border-base-content/10 flex items-center gap-2.5 rounded-lg border px-3 py-3">
                     <x-ts-icon
                         class="size-4 shrink-0"
-                        :name="$status['passed'] ? 'o-check-circle' : 'o-x-circle'"
+                        :name="$status['passed'] ? 'check-circle' : 'x-circle'"
                         :class="$status['passed'] ? 'text-success' : 'text-error'"
                     />
                     <div class="min-w-0">
