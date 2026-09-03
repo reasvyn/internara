@@ -40,6 +40,8 @@ class ProfileEditor extends BaseFormView
 
     public bool $isStaff = false;
 
+    public bool $showConfirm = false;
+
     /** @var string[] */
     public array $staffFields = [];
 

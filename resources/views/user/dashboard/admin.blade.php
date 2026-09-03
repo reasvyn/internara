@@ -229,9 +229,9 @@
         </div>
         <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
             @foreach ($readiness as $key => $status)
-                <div class="bg-base-200/30 border-base-content/10 flex items-center gap-2.5 rounded-lg border px-3 py-3">
+                <div class="bg-base-200/30 border-base-content/10 flex items-center gap-2 rounded-lg border px-3 py-2.5">
                     <x-ts-icon
-                        class="size-4 shrink-0"
+                        class="size-3 shrink-0"
                         :name="$status['passed'] ? 'check-circle' : 'x-circle'"
                         :class="$status['passed'] ? 'text-success' : 'text-error'"
                     />
@@ -349,6 +349,7 @@
         </x-ts-card>
 
         <div class="space-y-4">
+            <x-ui::widgets.app-info :compact="false" />
             <x-ui::widgets.profile-summary :showEdit="true" />
             <x-ts-card shadowless :header="__('dashboard.quick_links')">
                 <div class="space-y-1">

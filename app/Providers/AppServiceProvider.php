@@ -73,37 +73,43 @@ class AppServiceProvider extends ServiceProvider
 
         StudentReport::observe(StudentReportObserver::class);
 
-        // Sidebar: menu labels should be true black/white per theme, not primary green.
+        // Sidebar: labels neutral-800, icons primary (semantic from settings).
         TallStackUi::customize()
             ->sideBar('separator')
             ->block('simple.base')
-            ->replace('text-primary-600', 'text-black')
+            ->replace('text-primary-600', 'text-neutral-800')
             ->replace('dark:text-dark-100', 'dark:text-white')
             ->and()
             ->sideBar('item')
             ->block('item.state.normal')
-            ->replace('text-primary-500', 'text-black')
+            ->replace('text-primary-500', 'text-neutral-800')
             ->and()
             ->sideBar('item')
             ->block('item.state.current')
-            ->replace('text-primary-500', 'text-black')
+            ->replace('text-primary-500', 'text-neutral-800')
+            ->replace('bg-primary-50', 'bg-primary/10')
             ->and()
             ->sideBar('item')
             ->block('group.button')
-            ->replace('text-primary-500', 'text-black')
+            ->replace('text-primary-500', 'text-neutral-800')
             ->and()
+            // Icons keep primary color from theme settings
             ->sideBar('item')
             ->block('group.icon.base')
-            ->replace('text-primary-500', 'text-black')
+            ->replace('text-primary-500', 'text-primary')
+            ->and()
+            ->sideBar('item')
+            ->block('item.icon')
+            ->replace('text-primary-500', 'text-primary')
             ->and()
             ->sideBar('separator')
             ->block('line.base')
-            ->replace('text-primary-600', 'text-black')
+            ->replace('text-primary-600', 'text-neutral-800')
             ->replace('dark:text-dark-100', 'dark:text-white')
             ->and()
             ->sideBar('separator')
             ->block('line-right.base')
-            ->replace('text-primary-600', 'text-black')
+            ->replace('text-primary-600', 'text-neutral-800')
             ->replace('dark:text-dark-100', 'dark:text-white');
     }
 

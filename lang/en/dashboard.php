@@ -146,6 +146,16 @@ return [
         'internships' => 'Internships',
     ],
 
+    'app_info' => [
+        'title' => 'Internara Info',
+        'name' => 'Application',
+        'version' => 'Version',
+        'environment' => 'Environment',
+        'php_version' => 'PHP',
+        'laravel_version' => 'Laravel',
+        'tagline' => 'Self-hosted vocational fieldwork management for Indonesian SMKs.',
+    ],
+
     'help_title' => 'Need Help?',
     'help_desc' => 'Explore the documentation to master :app features.',
     'read_docs' => 'Read Documentation',

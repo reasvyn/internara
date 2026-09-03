@@ -27,6 +27,8 @@ class SchoolEditor extends BaseFormView
 
     public $logo_file = null;
 
+    public bool $showConfirm = false;
+
     public function mount(GetSchoolEntityAction $getEntity): void
     {
         $this->authorize('update', Setting::class);

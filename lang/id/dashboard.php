@@ -146,6 +146,16 @@ return [
         'internships' => 'Program PKL',
     ],
 
+    'app_info' => [
+        'title' => 'Info Internara',
+        'name' => 'Aplikasi',
+        'version' => 'Versi',
+        'environment' => 'Lingkungan',
+        'php_version' => 'PHP',
+        'laravel_version' => 'Laravel',
+        'tagline' => 'Manajemen PKL mandiri untuk SMK Indonesia.',
+    ],
+
     'help_title' => 'Butuh Bantuan?',
     'help_desc' => 'Pelajari dokumentasi untuk menguasai fitur :app.',
     'read_docs' => 'Baca Dokumentasi',
