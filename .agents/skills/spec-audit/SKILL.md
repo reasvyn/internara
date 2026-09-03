@@ -28,6 +28,20 @@ Agent guides & skills must stay aligned with the specs: a spec change with no ma
 skill/guide that documents it is a **Code → Spec** drift (guide lagging). See
 [Area 8: Agent Guides & Skills](#area-8-agent-guides--skills).
 
+> **Spec & Test Coverage Assertions (non-negotiable):**
+> - **Spec coverage:** Every initiative, feature, and API — including data contracts, endpoints,
+>   Livewire contracts, and DTOs — must be recorded in `docs/specs/` as an `FR`/`NFR`/`UC`. An
+>   initiative/feature/API without a requirement is a **spec gap** — amend the spec first
+>   (spec-first doctrine, `spec-writing` skill, `docs/specs/spec-template.md`).
+> - **Test coverage:** Every requirement in the spec must be verified and tested. Testable `FR`/`NFR`/`UC`
+>   require a spec-traceable test (`scan_spec_tests` must be 100% for testable; no requirement without
+>   a test, no test without a requirement — orphans are removed, gaps are filled in-run).
+> - **Trust nothing blindly:** Do not fully trust spec, code, or docs at face value. Every decision
+>   — spec→code vs code→spec vs both — must be justified via `git log --follow -- <file>`,
+>   `git blame <file>`, and code inspection against the governing spec's intent. If history is silent,
+>   treat it as a finding, don't silently decide. Prefer high-impact, low-effort fixes and record the
+>   rationale.
+
 **Key distinction from `arch-guard`:** `arch-guard` checks code against conventions and architecture
 rules (C1-C8, D1-D6); `spec-audit` checks code against feature specifications (FR/NFR/contracts).
 `arch-guard` is code-first; `spec-audit` is spec-first.
@@ -45,8 +59,8 @@ this skill adds the audit pipeline defined in the rule assets — nothing else.
 
 - Choose the audit scope and run Size Triage → `.agents/rules/scope-configuration.md`
 - Understand drift categories and which side is authoritative → `.agents/rules/bidirectional-audit.md`
-- Execute the 6/8 audit areas → `.agents/rules/audit-areas.md`
-- Run the spec's tests and fill spec-traceable test gaps in-run → `.agents/rules/run-and-write-tests.md`
+- Execute the 6/8 audit areas → `.agents/rules/audit-areas.md` (now includes `scan_spec_tests` priority scoring + browser-test hints for UI, and `scan_violations` SRP god class/long method/many params — derived thresholds, no hardcoding)
+- Run the spec's tests and fill spec-traceable test gaps in-run (Pest + `tests/Browser` for UI) → `.agents/rules/run-and-write-tests.md`
 - Classify findings via the decision matrix → `.agents/rules/decision-matrix.md`
 - Resolve each finding: fix-now (spec-lagging / test-gap / minor) vs GitHub Issue → `.agents/rules/fix-or-issue.md`
 - Run the full pipeline, structure the report, honor scope discipline → `.agents/rules/audit-workflow.md`
@@ -55,7 +69,7 @@ this skill adds the audit pipeline defined in the rule assets — nothing else.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `python3 tools/scan_violations.py` |
+| `scan_violations.py` | C1-C8, D1-D6 + SRP (god class, long method, many params) + Livewire/P | `python3 tools/scan_violations.py` |
 | `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `python3 tools/scan_class_contracts.py` |
 | `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `python3 tools/scan_security.py` |
 | `scan_naming.py` | File, class, method, variable naming conventions | `python3 tools/scan_naming.py` |
@@ -63,11 +77,13 @@ this skill adds the audit pipeline defined in the rule assets — nothing else.
 | `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 tools/scan_conventions.py` |
 | `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code.py` |
 | `scan_doc_links.py` | Validate all relative links in markdown files | `python3 tools/scan_doc_links.py` |
-| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 tools/scan_spec_tests.py` |
+| `scan_spec_tests.py` | Spec↔tests + browser coverage, priority scoring, module breakdown, top gaps | `python3 tools/scan_spec_tests.py` |
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues.py` |
 
 All scripts output to `tools/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
-to a single module. See `tools/README.md` for full documentation.
+to a single module. `scan_spec_tests` now scores uncovered FRs by priority (critical FR-A/L/M → high)
+and suggests `tests/Browser` (puppeteer-core) for UI requirements; `scan_violations` now flags SRP
+god class / long method / many params (derived thresholds, no hardcoding). See `tools/README.md`.
 
 ## Skill Rules
 
