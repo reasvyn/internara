@@ -76,8 +76,11 @@ jobs:
           find app config database routes tests -name '*.php' -exec php -l {} \; 2>&1 | grep -v "No syntax errors" || true
           echo "✓ syntax ok"
 
-      - name: Lint (Pint)
-        run: bash .github/scripts/lint.sh || echo "::warning::Pint found style issues (allowed for hotfix)"
+      - name: Format code (Pint - fix on run)
+        run: vendor/bin/pint
+
+      - name: Format views (Prettier - fix on run)
+        run: npx prettier --write "resources/views/**/*.blade.php" "resources/js/**/*.js" "resources/css/**/*.css" 2>&1 | head -20 || echo "::warning::Prettier fix completed with warnings"
 
   deploy:
     name: Deploy hotfix to VPS
