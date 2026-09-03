@@ -35,10 +35,13 @@ Execute Areas 1-8 in order (`audit-areas.md`), including **running the spec's te
 Classify each finding (direction, root cause, source of truth, severity) and resolve it through the
 decision matrix (`decision-matrix.md`).
 
-### Phase 4 — Fix or Issue
+### Phase 4 — Fix or Issue (per scope, mandatory cadence)
 
 - Auto-fix minor / spec-lagging / test-gap findings in-run (`fix-or-issue.md`)
-- File GitHub Issues for the rest
+- **File one GitHub Issue per unresolved finding at the end of this scope/session** (not deferred
+  to the end of the L-size audit). See `fix-or-issue.md` §"Filing rule (per scope)".
+- Update the session report (`.agents/plans/audits/{scope}/session-N-*.md`) with the issue numbers
+  in the "Issues filed" table before the scope commit closes.
 
 ### Phase 5 — Finalize
 
@@ -112,19 +115,20 @@ report is produced every time.
 3. **Evidence-based** — every finding includes file path, line number, concrete evidence
 4. **Decision transparency** — always explain WHY one side should be updated over the other
 5. **Minor auto-fix** — only fix trivial issues (typos, cross-refs, metadata); never change behavior
-6. **Major → Issue** — non-trivial findings become GitHub Issues with full context
+6. **Major → Issue (per scope)** — non-trivial findings become GitHub Issues filed at the end of
+   the scope, not the end of the L-size audit. No deferring.
 7. **No spec rewriting** — if a spec needs major rewrites, create an Issue; don't rewrite in-place
    (except spec-lagging catch-up)
 8. **No code fixing** — if code needs changes, create an Issue; don't modify business logic
    (writing **tests** for existing code is NOT code fixing — it is the audit's Test-Gap Fill Rule)
-9. **Always update GitHub Issues** — reflect audit findings in GitHub Issues
+9. **Always update GitHub Issues** — reflect audit findings in GitHub Issues (per scope)
 10. **Always report** — deliver the visual report even if zero findings
 11. **Audit every module** — not just the one being changed
 12. **Record issues even if fixing is out of scope** — prioritization happens downstream
 13. **Do NOT fix issues during audit** — that is the refactoring phase (except minor auto-fix,
     **spec-lagging catch-up**, and **test-gap filling**)
 14. **Verify findings against actual code** — docs and skills may be stale
-15. **Check existing issues before filing** — prevent duplicates
+15. **Check existing issues before filing** — prevent duplicates; comment + reopen when re-opened-worthy
 16. **Audit agent guides & skills too** — they must stay consistent with the specs (Area 8)
 17. **Run the spec's tests** — execute the audited spec's test suite and confirm it passes; a failing
     or absent test suite is a finding, not a silent pass

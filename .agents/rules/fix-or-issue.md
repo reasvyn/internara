@@ -5,6 +5,13 @@ catch-up, test-gap fill) and which become GitHub Issues. The split is a scope-di
 audit **does not implement features** and **does not rewrite the spec casually** — but it IS mandated
 to fix its own catch-up work. This rule defines both sides precisely.
 
+> **Filing cadence (mandatory):** When an audit scope/session completes, file all findings that did
+> **not** pass the Auto-Fix gate as GitHub Issues **at the end of that scope** — do not defer to a
+> final triage at the end of the entire audit. One scope = one batch of issues. The user's
+> expectation is that GitHub Issues reflect reality per work unit, not after the L-size audit
+> finishes days later. Already-filed issues from the same audit are not duplicated — a per-scope
+> batch is a slice of the triage decision matrix, not a separate triage.
+
 ---
 
 ## Auto-Fix Criteria (fix directly, no GitHub Issue)
@@ -15,6 +22,12 @@ Fix directly when **ALL** of these are true:
 - **No behavior change:** Fix is purely cosmetic or documentary
 - **High confidence:** No ambiguity about the correct fix
 - **Low risk:** Fix cannot break anything
+- **No design decision needed:** No new architecture, dependency, or trade-off to evaluate
+- **Low effort:** ≤ 1 file change, no schema/migration/test-suite refactor
+
+**If a finding needs a design decision, OR effort > 1 file, OR behavior could be intentional — file a
+GitHub Issue at the end of the scope, do not auto-fix.** "I could fix it" is not a sufficient reason;
+"the maintainer should know this exists" is.
 
 **Examples of auto-fixable issues:**
 
@@ -117,6 +130,19 @@ Update metadata line → Continue audit
 - **Missing implementation** — an FR has no corresponding code (its tests are written once the
   implementation lands — do not write tests for unimplemented behavior)
 - **Contract violation** — a class violates its architectural contract
+- **Design decision needed** — the fix involves an architectural choice, dependency, or trade-off
+  the agent cannot make on the maintainer's behalf
+- **Multi-file or migration refactor** — work that touches > 1 file, schema, or test suite
+- **Config/env override question** — `.env`/config drift that may be a deliberate operational choice
+
+**Filing rule (per scope):** When a session/scope finishes Phase 3 (Triage), open one GitHub Issue
+per unresolved finding **in the same commit cycle** as the scope's auto-fixes. Use the
+`issue-writing` skill template and the format below. Batch with `gh issue create` (one call per
+issue) — do not use bulk scripts that lose the structured body.
+
+**Pre-filing check (mandatory):** `gh issue list --search "{spec-id} OR {spec-name} in:title,body"`
+to find existing issues; comment on the existing one with the new evidence (do not duplicate). If
+the existing issue is closed and re-opened-worthy, comment + reopen rather than re-file.
 
 **Why these boundaries:** issues are for work with risk, ambiguity, or scope — exactly the work the
 audit must NOT do silently. Note the missing-implementation row: no tests for it, because a test for

@@ -25,16 +25,17 @@ not discovered first; a finding's severity without a direction cannot be argued 
 
 | Drift Direction | Evidence | Resolution |
 |----------------|----------|------------|
-| Spec→Code (missing impl) | Spec exists, code doesn't | **Create GitHub Issue** — spec is ahead of code |
+| Spec→Code (missing impl) | Spec exists, code doesn't | **Create GitHub Issue at end of scope** — spec is ahead of code |
 | Code→Spec (unspecified) | Code exists, spec doesn't | **Update spec immediately** — code is ahead of spec, spec lags |
 | Contract mismatch (spec older) | Git log shows code changed after spec | **Update spec immediately** to match code |
-| Contract mismatch (code older) | Git log shows spec changed after code | **Update code** to match spec (or update spec if behavior is intentional) |
+| Contract mismatch (code older) | Git log shows spec changed after code | **File Issue at end of scope** (design decision: align code to spec, or amend spec if behavior is intentional) |
 | Broken cross-ref | Wrong ID/name in spec | **Fix spec** — trivial fix |
 | Missing test | Code exists, no test | **Write tests immediately** — Test-Gap Fill Rule (spec-traceable, per `pest-testing`) |
 | Failing test | Spec'd component test fails | **Fix test immediately** — align test to spec (or fix code if spec is authoritative) |
-| Spec incomplete | Section missing/empty | **Update spec** — fill gap from code |
-| FR not implemented | Spec FR has no code | **Create GitHub Issue** — track as TODO |
+| Spec incomplete | Section missing/empty | **Update spec** — fill gap from code (if obvious) or **File Issue** (if design decision needed) |
+| FR not implemented | Spec FR has no code | **Create GitHub Issue at end of scope** — track as TODO |
 | Guide lags spec | Guide documents old value/section, spec amended | **Fix guide immediately** — align guide to spec |
+| Config/env drift | `.env` or `config/*` differs from spec FR | **File Issue at end of scope** (may be deliberate operational override) |
 
 **How to read the matrix:** the resolution is chosen by *which side is authoritative*, established by
 the evidence — never by convenience. Two rows hinge on git history: "Contract mismatch (spec older)"
