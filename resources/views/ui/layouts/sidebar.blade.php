@@ -65,7 +65,10 @@
                     @if (auth()->user()->hasRole($group['roles'] ?? []))
                         <div>
                             @if (! empty($group['title']))
-                                <x-ts-side-bar.separator :text="__($group['title'])" />
+                                <x-ts-side-bar.separator
+                                    :text="__($group['title'])"
+                                    class="text-base-content font-semibold dark:text-white"
+                                />
                             @endif
                             <ul class="space-y-1" role="list">
                                 @foreach ($group['items'] ?? [] as $item)
@@ -104,6 +107,7 @@
                                                     :route="$url"
                                                     :icon="$icon"
                                                     :current="$active"
+                                                    class="text-base-content hover:text-base-content dark:text-white dark:hover:text-white"
                                                 />
                                             @endif
                                         </li>
@@ -126,12 +130,22 @@
                     <livewire:settings.lang-switcher />
                 </div>
 
-                {{-- Desktop: collapse hint --}}
+                {{-- Desktop: collapse toggle --}}
                 @if ($collapsible)
-                    <div class="text-base-content/50 hidden items-center justify-between text-xs lg:flex">
+                    <button
+                        type="button"
+                        @click="$store['tsui.side-bar'].collapsed = ! $store['tsui.side-bar'].collapsed"
+                        class="text-base-content/60 hover:text-base-content hover:bg-base-200/50 dark:hover:bg-dark-700/50 hidden w-full items-center justify-between rounded-lg px-2 py-1.5 text-xs transition-colors lg:flex"
+                        :aria-expanded="! $store['tsui.side-bar'].collapsed"
+                        aria-label="{{ __('common.collapse') }}"
+                    >
                         <span>{{ __('common.collapse') }}</span>
-                        <x-ts-icon name="chevron-double-left" class="size-3.5" />
-                    </div>
+                        <x-ts-icon
+                            name="chevron-double-left"
+                            class="size-3.5 transition-transform duration-200"
+                            ::class="$store['tsui.side-bar'].collapsed ? 'rotate-180' : ''"
+                        />
+                    </button>
                 @endif
 
                 {{ $footer ?? '' }}

@@ -168,6 +168,7 @@
                         :label="__('internship.academic_year')"
                         wire:model="form.academic_year_id"
                         :options="$this->academicYears"
+                        select="label:name|value:id"
                         icon="calendar-days"
                         class="mt-4"
                     />

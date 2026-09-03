@@ -61,9 +61,7 @@
                 icon="adjustments-horizontal"
                 x-on:click="
                     mode = 'system';
-                    $dispatch('theme', {
-                        mode: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-                    });
+                    $dispatch('theme', { mode: 'system' });
                     show = false;
                 "
                 ::active="mode === 'system'"

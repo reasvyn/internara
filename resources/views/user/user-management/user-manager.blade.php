@@ -239,6 +239,7 @@
                     :label="__('user.manager.new_status')"
                     wire:model="selectedStatus"
                     :options="$this->statusOptions"
+                    select="label:name|value:id"
                     icon="flag"
                 />
                 <x-ts-textarea

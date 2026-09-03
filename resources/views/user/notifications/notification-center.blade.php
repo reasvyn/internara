@@ -236,4 +236,5 @@
         </x-ts-modal>
 
         @include('user.notifications.components.notification-guide')
+    </x-ts-card>
 </div>

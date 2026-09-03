@@ -130,55 +130,57 @@
                         />
                     </div>
                 </form>
+            </x-ts-card>
 
-                {{-- Password --}}
-                <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-                    <x-slot:header>
-                        <div class="flex items-center gap-2">
-                            <x-ts-icon name="lock-closed" class="text-primary size-5" />
-                            <span class="font-semibold">{{ __('profile.password') }}</span>
-                        </div>
-                    </x-slot:header>
-                    <div class="text-base-content/60 -mt-2 mb-3 text-sm">
-                        <span class="text-base-content/50 text-xs">{{ __('profile.password_desc') }}</span>
+            {{-- Password --}}
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                <x-slot:header>
+                    <div class="flex items-center gap-2">
+                        <x-ts-icon name="lock-closed" class="text-primary size-5" />
+                        <span class="font-semibold">{{ __('profile.password') }}</span>
+                    </div>
+                </x-slot:header>
+                <div class="text-base-content/60 -mt-2 mb-3 text-sm">
+                    <span class="text-base-content/50 text-xs">{{ __('profile.password_desc') }}</span>
+                </div>
+
+                <form wire:submit="updatePassword">
+                    <div class="space-y-5">
+                        <x-ts-password
+                            :label="__('profile.current_password')"
+                            wire:model="passwordForm.current_password"
+                            :placeholder="__('profile.current_password_placeholder')"
+                            icon="lock-closed"
+                            right
+                        />
+                        <x-ts-password
+                            :label="__('profile.new_password')"
+                            wire:model="passwordForm.password"
+                            :placeholder="__('profile.new_password_placeholder')"
+                            icon="key"
+                            right
+                        />
+                        <x-ts-password
+                            :label="__('profile.confirm_password')"
+                            wire:model="passwordForm.password_confirmation"
+                            :placeholder="__('profile.confirm_password_placeholder')"
+                            icon="key"
+                            right
+                        />
                     </div>
 
-                    <form wire:submit="updatePassword">
-                        <div class="space-y-5">
-                            <x-ts-password
-                                :label="__('profile.current_password')"
-                                wire:model="passwordForm.current_password"
-                                :placeholder="__('profile.current_password_placeholder')"
-                                icon="lock-closed"
-                                right
-                            />
-                            <x-ts-password
-                                :label="__('profile.new_password')"
-                                wire:model="passwordForm.password"
-                                :placeholder="__('profile.new_password_placeholder')"
-                                icon="key"
-                                right
-                            />
-                            <x-ts-password
-                                :label="__('profile.confirm_password')"
-                                wire:model="passwordForm.password_confirmation"
-                                :placeholder="__('profile.confirm_password_placeholder')"
-                                icon="key"
-                                right
-                            />
-                        </div>
-
-                        <div class="mt-6 flex justify-end gap-2">
-                            <x-ts-button
-                                aria-label="{{ __('common.actions.remove') }}"
-                                :text="__('profile.update_password')"
-                                type="submit"
-                                color="primary"
-                                icon="key"
-                                loading="updatePassword"
-                            />
-                        </div>
-                    </form>
+                    <div class="mt-6 flex justify-end gap-2">
+                        <x-ts-button
+                            aria-label="{{ __('common.actions.remove') }}"
+                            :text="__('profile.update_password')"
+                            type="submit"
+                            color="primary"
+                            icon="key"
+                            loading="updatePassword"
+                        />
+                    </div>
+                </form>
+            </x-ts-card>
         </div>
 
         {{-- Sidebar --}}
@@ -266,6 +268,7 @@
                             </div>
                             <x-ts-icon name="chevron-right" class="text-base-content/20 size-4 shrink-0" />
                         </div>
+                    </x-ts-card>
                 </a>
         </div>
     </div>

@@ -99,63 +99,67 @@
                         ></div>
                     </div>
                 </div>
+            </x-ts-card>
 
-                <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-                    <x-slot:header>
-                        <div class="flex items-center gap-2">
-                            <div class="bg-secondary/10 text-secondary flex size-6 items-center justify-center rounded-md">
-                                <x-ts-icon name="calendar" class="size-3.5" />
-                            </div>
-                            <span class="text-sm font-semibold">{{ __('dashboard.student.attendance_percentage') }}</span>
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                <x-slot:header>
+                    <div class="flex items-center gap-2">
+                        <div class="bg-secondary/10 text-secondary flex size-6 items-center justify-center rounded-md">
+                            <x-ts-icon name="calendar" class="size-3.5" />
                         </div>
-                    </x-slot:header>
-                    <div class="py-1 text-center">
-                        <span class="text-secondary text-2xl font-bold tabular-nums">{{ $attendancePercent }}%</span>
-                        <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
-                            <div
-                                class="bg-secondary h-full rounded-full transition-all"
-                                style="width: {{ $attendancePercent }}%"
-                            ></div>
-                        </div>
+                        <span class="text-sm font-semibold">{{ __('dashboard.student.attendance_percentage') }}</span>
                     </div>
+                </x-slot:header>
+                <div class="py-1 text-center">
+                    <span class="text-secondary text-2xl font-bold tabular-nums">{{ $attendancePercent }}%</span>
+                    <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
+                        <div
+                            class="bg-secondary h-full rounded-full transition-all"
+                            style="width: {{ $attendancePercent }}%"
+                        ></div>
+                    </div>
+                </div>
+            </x-ts-card>
 
-                    <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-                        <x-slot:header>
-                            <div class="flex items-center gap-2">
-                                <div class="bg-accent/10 text-accent flex size-6 items-center justify-center rounded-md">
-                                    <x-ts-icon name="clipboard-document-list" class="size-3.5" />
-                                </div>
-                                <span class="text-sm font-semibold">{{ __('dashboard.student.assignments_completed') }}</span>
-                            </div>
-                        </x-slot:header>
-                        <div class="py-1 text-center">
-                            <span class="text-accent text-2xl font-bold tabular-nums">{{ $assignmentSubmittedCount }}/{{ max($assignmentTotalCount, 1) }}</span>
-                            <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
-                                <div
-                                    class="bg-accent h-full rounded-full transition-all"
-                                    style="width: {{ $assignmentTotalCount > 0 ? ($assignmentSubmittedCount / $assignmentTotalCount) * 100 : 0 }}%"
-                                ></div>
-                            </div>
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                <x-slot:header>
+                    <div class="flex items-center gap-2">
+                        <div class="bg-accent/10 text-accent flex size-6 items-center justify-center rounded-md">
+                            <x-ts-icon name="clipboard-document-list" class="size-3.5" />
                         </div>
+                        <span class="text-sm font-semibold">{{ __('dashboard.student.assignments_completed') }}</span>
+                    </div>
+                </x-slot:header>
+                <div class="py-1 text-center">
+                    <span class="text-accent text-2xl font-bold tabular-nums">{{ $assignmentSubmittedCount }}/{{ max($assignmentTotalCount, 1) }}</span>
+                    <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
+                        <div
+                            class="bg-accent h-full rounded-full transition-all"
+                            style="width: {{ $assignmentTotalCount > 0 ? ($assignmentSubmittedCount / $assignmentTotalCount) * 100 : 0 }}%"
+                        ></div>
+                    </div>
+                </div>
+            </x-ts-card>
 
-                        <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-                            <x-slot:header>
-                                <div class="flex items-center gap-2">
-                                    <div class="bg-info/10 text-info flex size-6 items-center justify-center rounded-md">
-                                        <x-ts-icon name="book-open" class="size-3.5" />
-                                    </div>
-                                    <span class="text-sm font-semibold">{{ __('dashboard.student.handbook_acknowledgements') }}</span>
-                                </div>
-                            </x-slot:header>
-                            <div class="py-1 text-center">
-                                <span class="text-info text-2xl font-bold tabular-nums">{{ $handbookReadCount }}/{{ max($handbookTotalCount, 1) }}</span>
-                                <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
-                                    <div
-                                        class="bg-info h-full rounded-full transition-all"
-                                        style="width: {{ $handbookTotalCount > 0 ? ($handbookReadCount / $handbookTotalCount) * 100 : 0 }}%"
-                                    ></div>
-                                </div>
-                            </div>
+            <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+                <x-slot:header>
+                    <div class="flex items-center gap-2">
+                        <div class="bg-info/10 text-info flex size-6 items-center justify-center rounded-md">
+                            <x-ts-icon name="book-open" class="size-3.5" />
+                        </div>
+                        <span class="text-sm font-semibold">{{ __('dashboard.student.handbook_acknowledgements') }}</span>
+                    </div>
+                </x-slot:header>
+                <div class="py-1 text-center">
+                    <span class="text-info text-2xl font-bold tabular-nums">{{ $handbookReadCount }}/{{ max($handbookTotalCount, 1) }}</span>
+                    <div class="bg-base-200 mt-2 h-2 overflow-hidden rounded-full">
+                        <div
+                            class="bg-info h-full rounded-full transition-all"
+                            style="width: {{ $handbookTotalCount > 0 ? ($handbookReadCount / $handbookTotalCount) * 100 : 0 }}%"
+                        ></div>
+                    </div>
+                </div>
+            </x-ts-card>
         </div>
     </div>
 

@@ -49,7 +49,13 @@ const storedTheme = () => {
 applyTheme(storedTheme())
 
 document.addEventListener('theme', (event) => {
-    applyTheme(event.detail?.mode ?? storedTheme())
+    const mode = event.detail?.mode ?? storedTheme()
+    // Persist the raw mode (light/dark/system) for next reload — TallStackUI also does this via its $watch,
+    // but we mirror here for robustness when that component is not present.
+    if (['light', 'dark', 'system'].includes(mode)) {
+        localStorage.setItem('dark-theme', mode)
+    }
+    applyTheme(mode)
 })
 
 /**
