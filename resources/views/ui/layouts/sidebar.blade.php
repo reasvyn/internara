@@ -140,11 +140,15 @@
                         aria-label="{{ __('common.collapse') }}"
                     >
                         <span>{{ __('common.collapse') }}</span>
-                        <x-ts-icon
-                            name="chevron-double-left"
-                            class="size-3 transition-transform duration-200"
+                        {{-- The rotation binding lives on a wrapper: x-ts-icon overwrites its
+                            own class attribute with any ::class passed to it, which strips the
+                            sizing and blows the glyph up to its natural size. --}}
+                        <span
+                            class="inline-flex transition-transform duration-200"
                             ::class="$store['tsui.side-bar'].collapsed ? 'rotate-180' : ''"
-                        />
+                        >
+                            <x-ts-icon name="chevron-double-left" class="size-3.5" />
+                        </span>
                     </button>
                 @endif
 

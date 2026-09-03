@@ -60,8 +60,5 @@
             @endif
         </div>
 
-        <div class="border-base-content/5 text-base-content/40 mt-4 border-t pt-4 text-center text-xs sm:text-left">
-            <p>&copy; {{ date('Y') }} {{ brand('name') }} — {{ __('common.all_rights_reserved') }}</p>
-        </div>
     </div>
 </footer>

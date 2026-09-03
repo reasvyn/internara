@@ -27,7 +27,7 @@
                                 wire:click="acknowledge('{{ $handbook->id }}')"
                             />
                         @else
-                            <x-ts-badge :text="__('common.actions.done')" class="badge-success badge-sm" />
+                            <x-ts-badge :text="__('common.actions.done')" color="green" sm />
                         @endif
 
                         <x-ts-button

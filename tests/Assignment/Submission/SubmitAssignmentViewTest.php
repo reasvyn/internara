@@ -31,6 +31,7 @@ test('T657Z-FR-SS1: student assignments page renders without undefined relations
     $html = Livewire::test(SubmitAssignment::class)
         ->html();
 
-    expect($html)->toContain('report');
+    // The type badge shows the translated label, not the raw column value.
+    expect($html)->toContain(__('assignment.types.report'));
     expect($html)->not->toContain('Call to undefined relationship');
 });

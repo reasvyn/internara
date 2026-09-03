@@ -15,8 +15,9 @@
             @foreach ($this->openInternships as $internship)
                 <x-ts-card class="border-base-200 border transition-shadow hover:shadow-lg">
                     <x-ts-badge
-                        text="{{ __('internship.statuses.' . $internship->status->value) }}"
-                        class="badge-info mb-3"
+                        :text="__('internship.statuses.' . $internship->status->value)"
+                        color="blue"
+                        class="mb-3"
                     />
                     <h3 class="mb-2 text-lg font-bold">{{ $internship->name }}</h3>
                     <div class="text-base-content/60 mb-4 space-y-1 text-sm">

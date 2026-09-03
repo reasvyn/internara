@@ -17,7 +17,7 @@
                     </div>
                     <x-ts-badge
                         :text="$visit->is_verified ? __('journals.verified') : __('journals.pending')"
-                        :class="$visit->is_verified ? 'badge-success' : 'badge-warning'"
+                        :color="$visit->is_verified ? 'green' : 'amber'"
                     />
                 </div>
             </x-ts-card>
