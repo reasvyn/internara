@@ -34,6 +34,7 @@ final readonly class ModuleService
      * into a blanket 403), Livewire component or view namespace for the whole TTL.
      *
      * @param callable(): array<string, string> $discover
+     *
      * @return array<string, string>
      */
     private function rememberDiscovery(string $key, callable $discover): array

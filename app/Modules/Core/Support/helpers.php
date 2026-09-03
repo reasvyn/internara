@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Services\AppInfo;
+use Illuminate\Support\Collection;
 
 if (! function_exists('app_info')) {
     /**
@@ -36,10 +37,11 @@ if (! function_exists('ts_options')) {
      * @param string|null $placeholder Prepended entry rendered with an empty value
      * @param string $label Key/attribute holding the visible text (dot notation allowed)
      * @param string $value Key/attribute holding the submitted value (dot notation allowed)
+     *
      * @return array<int, array{label: string, value: string}>
      */
     function ts_options(
-        iterable|null $items = [],
+        ?iterable $items = [],
         ?string $placeholder = null,
         string $label = 'name',
         string $value = 'id',
@@ -50,7 +52,7 @@ if (! function_exists('ts_options')) {
             $options[] = ['label' => $placeholder, 'value' => ''];
         }
 
-        $items = $items instanceof Illuminate\Support\Collection
+        $items = $items instanceof Collection
             ? $items->all()
             : (is_array($items) ? $items : iterator_to_array($items));
 

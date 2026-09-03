@@ -170,7 +170,12 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('createModal', false)" color="white" sm />
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
+                    wire:click="$set('createModal', false)"
+                    color="white"
+                    sm
+                />
                 @if (! $this->registrations->isEmpty())
                     <x-ts-button :text="__('report.create_grade_card')" wire:click="createReport" color="primary" sm />
                 @endif
@@ -184,7 +189,12 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('calculateModal', false)" color="white" sm />
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
+                    wire:click="$set('calculateModal', false)"
+                    color="white"
+                    sm
+                />
                 <x-ts-button :text="__('report.calculate_grades')" wire:click="calculateGrades" color="primary" sm />
             </div>
         </x-slot:footer>
@@ -196,7 +206,12 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('finalizeModal', false)" color="white" sm />
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
+                    wire:click="$set('finalizeModal', false)"
+                    color="white"
+                    sm
+                />
                 <x-ts-button :text="__('report.finalize_grade_card')" wire:click="finalizeReport" color="green" sm />
             </div>
         </x-slot:footer>
@@ -208,7 +223,12 @@
 
         <x-slot:footer>
             <div class="flex justify-end gap-2">
-                <x-ts-button :text="__('common.actions.cancel')" wire:click="$set('showConfirm', false)" color="white" sm />
+                <x-ts-button
+                    :text="__('common.actions.cancel')"
+                    wire:click="$set('showConfirm', false)"
+                    color="white"
+                    sm
+                />
                 <x-ts-button :text="__('common.actions.delete')" wire:click="confirmDelete" color="red" sm />
             </div>
         </x-slot:footer>
