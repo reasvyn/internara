@@ -53,7 +53,7 @@
             @endif
 
             @if ($header)
-                <h1 class="truncate text-lg leading-tight font-semibold" tabindex="-1">{{ $header }}</h1>
+                <h1 class="truncate text-lg leading-tight font-semibold">{{ $header }}</h1>
                 @if ($subheader)
                     <p class="text-base-content/60 truncate text-xs">{{ $subheader }}</p>
                 @endif

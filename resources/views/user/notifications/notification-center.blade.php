@@ -129,7 +129,7 @@
                             </details>
                         @else
                             <div
-                                class="flex cursor-pointer items-start gap-3 py-2"
+                                class="flex cursor-pointer items-start gap-3 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 rounded-lg"
                                 role="button"
                                 tabindex="0"
                                 aria-label="{{ $notification->title }}"
