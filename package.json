@@ -8,7 +8,8 @@
         "dev": "vite",
         "build": "vite build",
         "format": "vendor/bin/pint && prettier --write .",
-        "lint": "vendor/bin/pint --test && prettier --check ."
+        "lint": "vendor/bin/pint --test && prettier --check .",
+        "test:browser": "node tests/Browser/example.test.mjs"
     },
     "dependencies": {
         "@alpinejs/anchor": "^3.17.1",
@@ -31,6 +32,7 @@
         "prettier": "^3.9.6",
         "prettier-plugin-blade": "^3.2.2",
         "prettier-plugin-tailwindcss": "^0.8.1",
+        "puppeteer-core": "^25.9.0",
         "tailwindcss": "^4.3.3"
     }
 }
