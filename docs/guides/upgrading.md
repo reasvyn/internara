@@ -173,6 +173,33 @@ Major version releases include a dedicated upgrade guide in the release notes.
 
 ---
 
+## 10. Hotfix Deployment (pipeline bypass)
+
+Internara's default release path is a tag-driven pipeline (`v*.*.*` → full QA → auto-deploy) which is
+the safe route for features and normal releases. When a bug must reach production **immediately**, the
+**`hotfix` branch** bypasses that pipeline and deploys straight to the VPS in a single command — no tag,
+no CI run, no version bump. Patches like this therefore ship faster than they otherwise would.
+
+```bash
+# 1. Push the fix to the hotfix branch (keep it on main too so the next release carries it)
+git push origin main:hotfix
+
+# 2. Deploy on the VPS
+ssh your-vps-user@your-vps 'cd $HOME/apps/internara \
+  && git fetch --all --prune \
+  && git checkout hotfix \
+  && git reset --hard origin/hotfix \
+  && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
+```
+
+`deploy.sh` reports success only after `HEALTH_URL` responds 200 within 60s. Because the hotfix path
+skips CI, run the local quality gates first — Pint, the targeted Pest tests, and the arch scanners.
+The same `main` commit is picked up by the next normal versioned release, so a hotfix never forks the
+codebase permanently. Full command walkthrough and caveats:
+[Deployment](infra/deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes), [CI/CD](infra/ci-cd.md#hotfix-branch--pipeline-bypass).
+
+---
+
 ## Quick References
 
 - `docs/specs/8NZAU-installation.md` — Installation feature specification

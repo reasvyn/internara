@@ -473,6 +473,48 @@ on a 60s health check against `HEALTH_URL` (product demo `https://internara.web.
 Only the workflow file and the credentials-free deploy script are committed here; production secrets
 live in GitHub Actions secrets, never in the repo.
 
+### Hotfix branch — pipeline bypass for fast fixes
+
+The tag-driven pipeline enforces full QA before production, which is right for ordinary releases but
+too slow when a bug needs to reach the live site immediately. For that case Internara keeps a **`hotfix`
+branch** that bypasses the pipeline entirely and deploys directly to the VPS in one command — no tag,
+no CI jobs, no version bump.
+
+> **When to use `hotfix`:** a fix that must reach production *now* (e.g. a live-site outage or a
+> regression blocking real users). **When NOT to use it:** for features, refactors, or anything that
+> should pass the staged QA gates — those belong on `main` and a regular `v*.*.*` release.
+
+The flow:
+
+1. **Commit the fix on `main`** (or any branch) and push it to the `hotfix` branch. `git push` a
+   non-merge fast-forward keeps `hotfix` aligned with `main`:
+
+   ```bash
+   git push origin main:hotfix
+   ```
+
+2. **On the VPS**, fetch, checkout `hotfix`, and reset hard against the *remote* branch (the local
+   `hotfix` can be stale after a fetch), then run the deploy script with `VERSION_TAG=hotfix`:
+
+   ```bash
+   ssh your-vps-user@your-vps 'cd $HOME/apps/internara \
+     && git fetch --all --prune \
+     && git checkout hotfix \
+     && git reset --hard origin/hotfix \
+     && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
+   ```
+
+3. **Verify** the health gate (`Deploy OK: ... HTTP 200, healthy body`) — `deploy.sh` only reports
+   success once `HEALTH_URL` responds 200 within 60s.
+
+`deploy.sh` builds from `GIT_URL=...git#hotfix`, so the rebuilt image always reflects the current
+`hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is created. Because the fix is also
+committed to `main`, it is picked up by the next normal release — keep `main` and `hotfix` in sync by
+always pushing the same commit to both.
+
+> **Caveat:** the hotfix path intentionally skips CI. Run at least the targeted tests and the arch
+> scanners locally before deploying (see [CI/CD](ci-cd.md#local-quality-commands)).
+
 ### Low-memory profile (1 GB RAM VPS)
 
 The default compose is tuned to run on a **1 GB RAM** VPS:

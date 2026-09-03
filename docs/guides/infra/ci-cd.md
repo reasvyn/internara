@@ -37,6 +37,41 @@ flowchart LR
 Releases are promoted upward: `development → testing → staging → production`. Every QA stage runs in
 GitHub Actions (free, no VPS load). A final tag never reaches the VPS unless every QA tier passes.
 
+### Hotfix branch — pipeline bypass
+
+For fixes that must reach production immediately, the **`hotfix` branch** bypasses the tag-driven
+pipeline and deploys directly to the VPS. It skips all CI jobs (and the auto-rollback safety they
+provide), so it is a deliberate, higher-risk shortcut, not the default path.
+
+| Aspect                | Tag-driven release            | `hotfix` branch                    |
+| --------------------- | ----------------------------- | ---------------------------------- |
+| Trigger               | Push `v*.*.*` tag             | `git push origin main:hotfix`      |
+| QA                    | Full staged gates on CI       | None (manual local checks only)    |
+| Deploy                | Via `deploy` job on Actions   | Manual SSH + `deploy.sh`           |
+| Version bump required | Yes                           | No                                 |
+| Rollback              | Automatic-on-failure          | Manual (`rollback.sh` or redeploy) |
+| Use for               | Features, releases            | Emergency / fast bug fixes         |
+
+The full manual flow:
+
+```bash
+# 1. Ship the fix (also on main so the next release carries it)
+git push origin main:hotfix
+
+# 2. Deploy on the VPS (reset against origin/hotfix, not the stale local branch)
+ssh $VPS_USER@$VPS_HOST 'cd $HOME/apps/internara \
+  && git fetch --all --prune \
+  && git checkout hotfix \
+  && git reset --hard origin/hotfix \
+  && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
+```
+
+Because `deploy.sh` builds from `GIT_URL=...#hotfix` and gates on the 60s `HEALTH_URL` check, a
+successful run guarantees the live site is serving the `hotfix` branch. Local quality gates still
+apply — run `vendor/bin/pint --test`, the targeted Pest tests, and the arch scanners before
+deploying. See [Deployment](deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes) for the
+full procedure and `.agents/context/deploy-topology.md` (agent context) for operational caveats.
+
 ---
 
 ## Reusable gate scripts (`.github/scripts/`)
