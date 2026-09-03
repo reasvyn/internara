@@ -143,7 +143,7 @@ Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) an
 
 | Fact | Value |
 |------|-------|
-| **Scope** | 19 modules = 18 business + UI + Core (695 PHP files in `app/` — 693 in `app/Modules/` — 45 migrations, 61 feature specs + 3 meta = 64 spec files, 17 web route files incl. `web.php`) |
+| **Scope** | 19 modules = 18 business + UI + Core (696 PHP files in `app/` — 694 in `app/Modules/` — 45 migrations, 61 feature specs + 3 meta = 64 spec files, 16 web route files incl. `web.php`) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
@@ -235,7 +235,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 | Implementation status + coverage per spec | `docs/specs/implementation-matrix.md` |
 | Deep pattern guides (18 patterns) | `docs/guides/arch/{action,entity,model,data,enum,event,exception,logging,cache,service,support,modular,policy,livewire,ui,ux,repository,testing}-pattern.md` |
 | Operations (deploy, CI/CD, infra, health) | `docs/guides/infra/{deployment,infrastructure,configuration,ci-cd,database,cache,queue,filesystem,security,testing,scaling,tools}.md` |
-| Architecture decisions (14 ADRs) | `docs/adr/index.md` → `docs/adr/adr-*.md` |
+| Architecture decisions (15 ADRs) | `docs/adr/index.md` → `docs/adr/adr-*.md` |
 | Mandatory known context (must-read before tasks) | `.agents/context/index.md` → `module-health.md`, `deploy-topology.md`, `dependency-pins-tooling-quirks.md`, `dep-model-status-deprecated.md`, `ui-framework-coexistence.md`, `production-dummy-guard.md`, `codebase-intentional-states.md`, `testing-strategy.md`, `workflow-5step.md` |
 | Autonomous agent memory (learnings, session captures) | `.agents/memory/index.md` → `learning-log.md`, session notes, promoted signals |
 | Agent rules (150+ consolidated) | `.agents/rules/{rule}.md` — load on demand via Rules Index |
