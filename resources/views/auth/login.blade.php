@@ -13,12 +13,12 @@
                 icon="identification"
             />
 
-            <x-ts-password
+            <x-ts-input
                 wire:model="form.password"
                 :label="__('auth.login.password')"
                 placeholder="••••••••"
                 icon="key"
-                right
+                type="password"
             />
 
             <div class="flex flex-col gap-2">

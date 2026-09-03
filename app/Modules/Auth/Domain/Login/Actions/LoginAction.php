@@ -22,18 +22,25 @@ final class LoginAction extends BaseCommandAction
         return $this->transaction(function () use ($data) {
             $identifierHash = hash('crc32b', $data->identifier);
 
-            $this->checkLockout($identifierHash);
+            // FR-LT7 timing: read lockout cache BEFORE user lookup to prevent enumeration.
+            // Enforcement is deferred until we know if the user is superadmin (NFR-S10 / G5).
+            $lockoutUntil = Cache::get(config('cache-keys.auth_login_lockout').$identifierHash);
 
             $loginField = filter_var($data->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
             $user = User::where($loginField, $data->identifier)->first();
 
             if ($user === null) {
-                $this->handleFailedAttempt($identifierHash, $data->identifier);
+                $this->handleFailedAttempt($identifierHash, $data->identifier, null);
                 event(new LoginFailed($data->identifier, 'user_not_found'));
                 throw new RejectedException(__('auth.failed'));
             }
 
-            $this->checkAccountStatus($user, $data->identifier);
+            $isSuperAdmin = $user->hasRole('super_admin');
+
+            if (! $isSuperAdmin) {
+                $this->enforceLockout($lockoutUntil);
+                $this->checkAccountStatus($user, $data->identifier);
+            }
 
             if (
                 ! Auth::attempt(
@@ -41,7 +48,7 @@ final class LoginAction extends BaseCommandAction
                     $data->remember,
                 )
             ) {
-                $this->handleFailedAttempt($identifierHash, $data->identifier);
+                $this->handleFailedAttempt($identifierHash, $data->identifier, $user);
                 event(new LoginFailed($data->identifier, 'invalid_password'));
                 throw new RejectedException(__('auth.failed'));
             }
@@ -57,21 +64,28 @@ final class LoginAction extends BaseCommandAction
         });
     }
 
+    private function enforceLockout(mixed $lockoutUntil): void
+    {
+        if ($lockoutUntil === null) {
+            return;
+        }
+
+        $lockoutTime = Carbon::parse($lockoutUntil);
+        if (now()->lt($lockoutTime)) {
+            $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
+            throw new RejectedException(
+                __('auth.throttle', ['seconds' => $seconds]) ??
+                    "Too many login attempts. Please try again in {$seconds} seconds.",
+            );
+        }
+    }
+
+    /**
+     * @deprecated Use enforceLockout() — kept for backward compatibility, delegates to enforceLockout().
+     */
     private function checkLockout(string $identifierHash): void
     {
-        $lockoutKey = config('cache-keys.auth_login_lockout').$identifierHash;
-        $lockoutUntil = Cache::get($lockoutKey);
-
-        if ($lockoutUntil !== null) {
-            $lockoutTime = Carbon::parse($lockoutUntil);
-            if (now()->lt($lockoutTime)) {
-                $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
-                throw new RejectedException(
-                    __('auth.throttle', ['seconds' => $seconds]) ??
-                        "Too many login attempts. Please try again in {$seconds} seconds.",
-                );
-            }
-        }
+        $this->enforceLockout(Cache::get(config('cache-keys.auth_login_lockout').$identifierHash));
     }
 
     private function checkAccountStatus(User $user, string $identifier): void
@@ -94,8 +108,17 @@ final class LoginAction extends BaseCommandAction
         }
     }
 
-    private function handleFailedAttempt(string $identifierHash, string $identifier): void
+    private function handleFailedAttempt(string $identifierHash, string $identifier, ?User $user = null): void
     {
+        // NFR-S10 / G5: superadmin is non-lockable — never create lockout entries for it.
+        if ($user !== null && $user->hasRole('super_admin')) {
+            return;
+        }
+
+        // For user_not_found ($user === null) we cannot know if the identifier was superadmin,
+        // so we keep counting — enumeration-safe and spec-compliant (FR-LT7).
+        // If the identifier was a superadmin but not found via the resolved field,
+        // the count is harmless because enforcement is skipped on next successful lookup.
         $attemptsKey = config('cache-keys.auth_login_attempts').$identifierHash;
         $lockoutKey = config('cache-keys.auth_login_lockout').$identifierHash;
 
