@@ -128,16 +128,16 @@ Per `decision-matrix.md` + `fix-or-issue.md`:
 
 | # | Decision | Justification |
 |---|----------|---------------|
-| X-1 | **File Issue** (#419 already exists, link to it; spec-lagging + config removal) | Pre-existing issue, scope expanded |
+| X-1 | **Comment on existing issue [#419](https://github.com/reasvyn/internara/issues/419)** (no duplicate) | Pre-existing issue covers dep removal; added audit evidence + spec-lagging scope (J68GZ FR-D6 + FB792 §6.1) |
 | X-2 | **Auto-fix spec** (add FR-E8) | Spec-lagging catch-up — pure documentation |
 | X-3 | **Auto-fix spec** (update path) | Spec-lagging catch-up — pure documentation |
 | X-4 | **Auto-fix spec** (update method list) | Spec-lagging catch-up — pure documentation |
-| X-5 | **File Issue** (deliberate override vs spec drift) | Decision needed from maintainer |
-| X-6 | **File Issue** (spec rewrite needed, scope M) | Larger than spec-lagging; needs decision |
+| X-5 | **File Issue [#433](https://github.com/reasvyn/internara/issues/433)** | Deliberate override vs spec drift; needs maintainer design decision |
+| X-6 | **File Issue [#434](https://github.com/reasvyn/internara/issues/434)** | Multi-file spec rewrite (I1BCV + B114U + AGENTS.md) exceeds 1-file gate |
 | X-7 | **Auto-fix spec** (extend layer map) | Spec-lagging catch-up — pure documentation |
 
 **Auto-fixed this session:** X-2, X-3, X-4, X-7 (spec doc updates only, no code change).
-**To file as issues:** X-1, X-5, X-6 (deferred to Session 6 — Triage phase).
+**Issues filed this session (per-scope cadence):** [#433](https://github.com/reasvyn/internara/issues/433) (X-5), [#434](https://github.com/reasvyn/internara/issues/434) (X-6), comment on [#419](https://github.com/reasvyn/internara/issues/419) (X-1).
 
 ---
 

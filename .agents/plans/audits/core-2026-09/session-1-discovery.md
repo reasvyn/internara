@@ -128,3 +128,23 @@ confirmed in Session 4.
 - `tools/outputs/20260903*-core-*.json` — baseline scanner outputs
 - Session 2-6 reports will append to this directory
 - Final report (Session 6) — `tools/outputs/{timestamp}-core-audit-final.md`
+
+---
+
+## Session 1 Issues Filed (per per-scope filing cadence)
+
+Per the updated rule (`.agents/rules/fix-or-issue.md`, 2026-09-03 commit `7ff66cc31`): each audit
+scope files its non-auto-fix findings as GitHub Issues at the end of the scope, not deferred to
+the end of the L-size audit.
+
+Session 1 produced **zero new unresolved findings that became issues**:
+
+- Quick wins 1 and 4 (model-status deprecation) — observation rolled forward into Session 2
+  finding **X-1**; **commented on existing issue [#419](https://github.com/reasvyn/internara/issues/419)**
+  in Session 2 (no duplicate filing).
+- Quick wins 2 and 3 — positive findings (NFR-M1 satisfied, tests/Core runs); no issues.
+- Preliminary test gap note — explicitly deferred to Session 4 per Session 1's own verdict.
+- 11 SRP findings — pre-existing baseline (`codebase-intentional-states.md`); out of audit scope.
+
+**Net issues filed from Session 1 scope:** 0. Cross-references captured in Session 2 issues
+[#433](https://github.com/reasvyn/internara/issues/433) and [#434](https://github.com/reasvyn/internara/issues/434).
