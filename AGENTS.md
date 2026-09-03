@@ -50,6 +50,7 @@ Internalize intent, not literal words. Do all scoping before reading files.
 
 - **Intent & constraints** — what the user actually wants, hidden requirements, non-goals, hard constraints (deadlines, scope limits, compatibility).
 - **Spec-First Doctrine (non-negotiable)** — locate the governing spec in `docs/specs/` via `docs/specs/index.md` (foundation, module, or feature); read its FR/NFR/UC IDs. No behavior without a requirement ID; if none exists, write the spec first — spec-first, never fix-first. Spec outranks literal wording and existing code. If spec and code disagree, fix code to spec; if spec is demonstrably wrong, amend spec with a recorded decision first, then align code and tests.
+- **SSoT Priority Framework (when sources conflict)** — `adr > specs > guides > code > refs` — higher wins when resolving contradictions. **Never trust blindly:** even the highest (ADR) must be verified via `git log --follow`, `git blame`, and intent before acting. If history is silent or contradictory, treat as a finding and justify the decision comprehensively.
 - **Define & scope** — list affected modules, layers (Action/Entity/DTO/Model/Livewire), and files; identify blockers (pending migrations, config, service registration, permission/policy gaps).
 - **Classify** — SDLC phase (see §Phase Classification) and size S/M/L (see §Size Triage). If **L** (>10 files / multi-module / cross-cutting), inform the user in one short paragraph and split into sessions before proceeding (L-size protocol).
 - **Instruction ordering** — if the message batches 2+ instructions, decompose → score by impact-to-effort ratio → sort → honor dependencies → group same-area work → surface resulting order only when it differs from the user's sequence (see `.agents/rules/instruction-ordering.md`).
@@ -436,9 +437,11 @@ Doc drift happens when code changes but docs don't. Detect it by asking:
 | Do the migration descriptions match the actual migrations? | Check `database/migrations/` |
 | Are the cross-references still valid? | Verify every `[text](path)` resolves |
 
-#### Mismatch Resolution — Git History First
+#### Mismatch Resolution — Git History First (with SSoT Priority)
 
 When code and docs disagree — or a claim cannot be confirmed in either — the discrepancy may be an **unrecorded change**. Do NOT assume the code is the source of truth just because it runs, nor that the doc is authoritative just because it was written first. **Both can be stale.**
+
+**SSoT Priority Framework:** `adr > specs > guides > code > refs` — higher wins when resolving contradictions, but **never trust blindly**. Even the highest (ADR) must be verified via `git log --follow`, `git blame`, and intent. If history is silent or contradictory, treat as a finding and justify the decision comprehensively.
 
 Before picking a side:
 
