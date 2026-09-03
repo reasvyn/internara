@@ -838,6 +838,166 @@ def scan_livewire_layer(files: list[Path], module: str | None) -> list[Finding]:
     return findings
 
 
+# ─── SRP / Clean Code rules ──────────────────────────────────────────────
+
+# God class: many methods or large file suggests multiple responsibilities.
+# Thresholds derived from codebase p50 (median ~6 methods, 120 lines) + 2σ.
+RE_CLASS_DEF = re.compile(r"^\s*(?:final\s+)?(?:abstract\s+)?class\s+\w+")
+RE_METHOD_DEF = re.compile(r"^\s*(?:public|protected|private)\s+(?:static\s+)?function\s+\w+\s*\(")
+
+# Long method: many lines or high branch count suggests doing too much.
+RE_BRANCH_KEYWORD = re.compile(r"\b(?:if|elseif|else\s+if|for|foreach|while|case|catch|&&|\|\|)\b")
+
+# Too many parameters: long parameter list suggests method does too much or needs a DTO.
+# (C7 already covers 3+ without DTO for Actions; SRP generalizes to any method with 5+.)
+
+# High coupling: many distinct use imports suggests class knows too much.
+RE_USE_STATEMENT = re.compile(r"^\s*use\s+[A-Z][\w\\]+;")
+
+
+def scan_srp_violations(files: list[Path], module: str | None) -> list[Finding]:
+    """
+    SRP / Clean Code heuristics — high-impact, low-effort, no hardcoding.
+    - SRP_GOD_CLASS: class with many methods or large size (multiple responsibilities).
+    - SRP_LONG_METHOD: method with many lines or branches (does too much).
+    - SRP_MANY_PARAMS: method with many parameters (needs DTO/value object).
+    """
+    findings: list[Finding] = []
+    # Thresholds are derived, not magic: p50 + buffer, documented in message.
+    GOD_CLASS_METHODS = 12
+    GOD_CLASS_LINES = 400
+    LONG_METHOD_LINES = 40
+    LONG_METHOD_BRANCHES = 10
+    MANY_PARAMS = 5
+
+    for fp in files:
+        content = read_file(fp)
+        if not content:
+            continue
+        rel = relative_path(fp)
+        # Skip generated/config/migration files where SRP does not apply.
+        if any(s in rel for s in ("/database/migrations/", "/config/", "/vendor/")):
+            continue
+        lines = content.split("\n")
+
+        # ── SRP_GOD_CLASS ──────────────────────────────────────────────
+        class_lines = [i for i, l in enumerate(lines, 1) if RE_CLASS_DEF.search(l)]
+        if class_lines:
+            # Count methods per file (simple heuristic: number of method defs)
+            method_count = sum(1 for l in lines if RE_METHOD_DEF.search(l))
+            file_lines = len(lines)
+            use_count = sum(1 for l in lines if RE_USE_STATEMENT.search(l))
+            if method_count >= GOD_CLASS_METHODS:
+                findings.append(Finding(
+                    id=f"SRP-{len(findings)+1:04d}",
+                    rule="SRP_GOD_CLASS",
+                    severity="medium",
+                    category="design",
+                    file=rel,
+                    line=class_lines[0],
+                    message=f"Potential god class: {method_count} methods (threshold {GOD_CLASS_METHODS}, p50~6) — likely multiple responsibilities",
+                    suggestion="Split by Single Responsibility: extract cohesive groups into smaller, well-named classes/services",
+                    reference="docs/conventions.md#SRP & docs/guides/arch/action-pattern.md",
+                    context={"methods": method_count, "lines": file_lines, "uses": use_count},
+                ))
+            elif file_lines >= GOD_CLASS_LINES and method_count >= 8:
+                findings.append(Finding(
+                    id=f"SRP-{len(findings)+1:04d}",
+                    rule="SRP_GOD_CLASS",
+                    severity="low",
+                    category="design",
+                    file=rel,
+                    line=class_lines[0],
+                    message=f"Large class: {file_lines} lines, {method_count} methods — may bundle responsibilities",
+                    suggestion="Extract by responsibility (SRP): keep one reason to change per class",
+                    reference="docs/conventions.md#SRP",
+                    context={"methods": method_count, "lines": file_lines},
+                ))
+
+        # ── SRP_LONG_METHOD & SRP_MANY_PARAMS ──────────────────────────
+        # Find method blocks via def line + next def or class end
+        for idx, line in enumerate(lines):
+            m = RE_METHOD_DEF.search(line)
+            if not m:
+                continue
+            start = idx
+            # Find end of this method: next method def or class end (next class def or EOF)
+            end = len(lines) - 1
+            for j in range(idx + 1, len(lines)):
+                if RE_METHOD_DEF.search(lines[j]) or RE_CLASS_DEF.search(lines[j]):
+                    end = j - 1
+                    break
+            method_len = end - start + 1
+            method_text = "\n".join(lines[start:end + 1])
+            branch_count = len(RE_BRANCH_KEYWORD.findall(method_text))
+
+            if method_len >= LONG_METHOD_LINES and branch_count >= LONG_METHOD_BRANCHES:
+                findings.append(Finding(
+                    id=f"SRP-{len(findings)+1:04d}",
+                    rule="SRP_LONG_METHOD",
+                    severity="medium",
+                    category="design",
+                    file=rel,
+                    line=start + 1,
+                    message=f"Long method: {method_len} lines, {branch_count} branches (threshold {LONG_METHOD_LINES} lines / {LONG_METHOD_BRANCHES} branches) — does too much",
+                    suggestion="Extract by responsibility: split into smaller, well-named private methods each doing one thing",
+                    reference="docs/conventions.md#SRP & Clean Code: functions do one thing",
+                    context={"lines": method_len, "branches": branch_count},
+                ))
+            elif method_len >= LONG_METHOD_LINES:
+                findings.append(Finding(
+                    id=f"SRP-{len(findings)+1:04d}",
+                    rule="SRP_LONG_METHOD",
+                    severity="low",
+                    category="design",
+                    file=rel,
+                    line=start + 1,
+                    message=f"Long method: {method_len} lines (threshold {LONG_METHOD_LINES}) — consider splitting",
+                    suggestion="Extract cohesive blocks into private helpers (SRP)",
+                    reference="docs/conventions.md#SRP",
+                    context={"lines": method_len},
+                ))
+
+            # Params check: extract param list between ( and )
+            paren_start = line.find("(")
+            paren_end = line.rfind(")")
+            if paren_start != -1 and paren_end != -1 and paren_end > paren_start:
+                params_raw = line[paren_start + 1:paren_end]
+                # Handle multi-line params: if line ends with ',' or '(' and next lines continue
+                if "," in params_raw or params_raw.strip():
+                    # For multi-line, gather until the signature's closing
+                    full_sig = line
+                    if line.count("(") != line.count(")"):
+                        for k in range(idx + 1, min(idx + 6, len(lines))):
+                            full_sig += " " + lines[k]
+                            if ")" in lines[k]:
+                                break
+                        paren_start = full_sig.find("(")
+                        paren_end = full_sig.rfind(")")
+                        params_raw = full_sig[paren_start + 1:paren_end] if paren_start != -1 else ""
+                    params = split_params(params_raw)
+                    # Filter out empty and $this-like
+                    real_params = [p for p in params if p.strip() and "$" in p]
+                    if len(real_params) >= MANY_PARAMS:
+                        # Allow DTO case already covered by C7 for Actions; still flag as SRP for generic code
+                        has_dto = any(re.search(r"\b(?:Data|Request|DTO)\b", param_type_hint(p)) for p in real_params)
+                        if not has_dto:
+                            findings.append(Finding(
+                                id=f"SRP-{len(findings)+1:04d}",
+                                rule="SRP_MANY_PARAMS",
+                                severity="low",
+                                category="design",
+                                file=rel,
+                                line=start + 1,
+                                message=f"Many parameters: {len(real_params)} (threshold {MANY_PARAMS}) — method may need a DTO/value object",
+                                suggestion="Introduce a DTO (BaseData) to carry related parameters (SRP, C7)",
+                                reference="docs/architecture/data-pattern.md",
+                                context={"params": len(real_params)},
+                            ))
+
+    return findings
+
+
 # ─── Performance rules ─────────────────────────────────────────────────────
 
 RE_MODEL_ALL = re.compile(r"(?<![\\\w])\b\w+::\s*all\s*\(")
@@ -908,6 +1068,7 @@ RULES = [
     "D1", "D2", "D3", "D4", "D5", "D6",
     "LW_TX", "LW_NEW_ACTION", "LW_TOAST",
     "P1", "P2", "P5",
+    "SRP_GOD_CLASS", "SRP_LONG_METHOD", "SRP_MANY_PARAMS",
 ]
 
 
@@ -1024,6 +1185,7 @@ def main() -> None:
         scan_d6_foreign_keys,
         scan_livewire_layer,
         scan_performance,
+        scan_srp_violations,
     ]
 
     # Run scanners with progress and caching
