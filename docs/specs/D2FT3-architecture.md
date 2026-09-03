@@ -245,10 +245,10 @@ app/{Module}/
 
 | Layer | Directories |
 | ----- | ----------- |
-| 4 — Presentation/UI | `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/{module}/`, `routes/web/{module}.php` |
-| 3 — Business/Domain Ops | `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/` |
-| 2 — Data/Persistent | `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database |
-| 1 — Framework/Infra | `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/`, PHP, Laravel, packages |
+| 4 — Presentation/UI | `{Module}/Livewire/`, `{Module}/Livewire/Concerns/`, `{Module}/Policies/`, `{Module}/Policies/Concerns/`, `{Module}/Http/Controllers/`, `{Module}/Http/Requests/`, `{Module}/Http/Middleware/`, `resources/views/{module}/`, `routes/web/{module}.php` |
+| 3 — Business/Domain Ops | `{Module}/Actions/`, `{Module}/Actions/Concerns/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `{Module}/Console/Commands/`, `app/Modules/Core/Channels/` (notification channels), `app/Modules/Core/Channels/Data/` (channel DTOs) |
+| 2 — Data/Persistent | `{Module}/Models/`, `{Module}/Models/Concerns/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, `app/Modules/Core/Events/BaseEvent.php` (cross-module event base), database |
+| 1 — Framework/Infra | `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/`, `app/Modules/Core/Contracts/`, `app/Modules/Core/Exceptions/` + `Concerns/`, `app/Modules/Core/Http/Middleware/`, PHP, Laravel, packages |
 
 ### Base Class Contracts
 

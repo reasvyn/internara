@@ -147,6 +147,7 @@ violations compile-time errors rather than runtime surprises.
 | FR-E5 | `UnauthorizedException` extends `PresentationException` — HTTP 403, authorization failures |
 | FR-E6 | `InfrastructureException` extends `AppException` — HTTP 500, not user-facing |
 | FR-E7 | `HasExceptionContext` trait — `hint`, `context`, `toCliOutput()`, `isUserFacing()`, `shouldReport()` |
+| FR-E8 | `ActionFailedException` extends `InfrastructureException` — terminal wrapper for unhandled errors from `HandlesActionErrors` (added in 0.15.x per git `faf24a61f`) |
 
 ### 4.6 Policies
 

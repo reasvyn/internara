@@ -82,7 +82,7 @@ in production while allowing development flexibility.
 | ------ | ----------- |
 | FR-SUP3 | `PasswordRules` — default password validation: 8+ chars, mixed case, numbers |
 | FR-SUP4 | `AppInfo` — reads `composer.json` metadata (name, version, author, license, etc.) with 24h cache |
-| FR-SUP5 | `Environment` — helpers: `isProduction()`, `isTesting()`, `isLocal()`, `isCLI()` |
+| FR-SUP5 | `Environment` — helpers: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` (located in `app/Modules/Core/Support/Environment.php`; `isProduction()` was renamed to `isDevelopment()` to better describe the local/dev environment check) |
 | FR-SUP7 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
 | FR-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
 | FR-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
@@ -147,12 +147,13 @@ if (! function_exists('app_info')) {
 ### Environment
 
 ```php
-// app/Modules/Core/Services/Environment.php
+// app/Modules/Core/Support/Environment.php
 final class Environment
 {
-    public static function isProduction(): bool;
-    public static function isTesting(): bool;
+    public static function isDebugMode(): bool;
+    public static function isDevelopment(): bool;
     public static function isLocal(): bool;
+    public static function isTesting(): bool;
     public static function isCLI(): bool;
 }
 ```
@@ -269,7 +270,7 @@ solely on this — these utilities are used broadly.
 
 - `app/Modules/Core/Services/AppInfo.php` — Composer metadata with 24h cache
 - `app/Modules/Core/Support/helpers.php` — Global `app_info()` helper wrapping AppInfo
-- `app/Modules/Core/Services/Environment.php` — Environment detection helpers
+- `app/Modules/Core/Support/Environment.php` — Environment detection helpers
 - `app/Modules/Core/Support/PasswordRules.php` — Password validation rules
 - `app/Modules/Core/Support/Color.php` — Color manipulation utilities
 - `app/Modules/Core/Services/AppIntegrity.php` — Attribution verification
