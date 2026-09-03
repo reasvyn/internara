@@ -52,7 +52,8 @@ class SupervisionLogPolicy extends BasePolicy
 
     public function review(User $user, SupervisionLog $log): bool
     {
-        if ($log->supervisor_id === $user->id && $user->hasRole('supervisor')) {
+        // The mentor the log was assigned to reviews it, whichever mentor role they hold.
+        if ($log->supervisor_id === $user->id && $user->hasAnyRole(['supervisor', 'teacher'])) {
             return true;
         }
 
