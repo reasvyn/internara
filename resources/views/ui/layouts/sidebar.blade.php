@@ -142,7 +142,7 @@
                         <span>{{ __('common.collapse') }}</span>
                         <x-ts-icon
                             name="chevron-double-left"
-                            class="size-3.5 transition-transform duration-200"
+                            class="size-3 transition-transform duration-200"
                             ::class="$store['tsui.side-bar'].collapsed ? 'rotate-180' : ''"
                         />
                     </button>

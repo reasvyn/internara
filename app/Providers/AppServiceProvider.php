@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use TallStackUi\Facades\TallStackUi;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -71,6 +72,42 @@ class AppServiceProvider extends ServiceProvider
         }
 
         StudentReport::observe(StudentReportObserver::class);
+
+        // Sidebar: menu labels should be true black/white per theme, not primary green.
+        // TallStackUI defaults use text-primary-600 / dark:text-dark-100 for separators
+        // and text-primary-500 for items. Override to text-black / dark:text-white.
+        TallStackUi::customize()
+            ->sideBarSeparator()
+            ->block('simple.base')
+            ->replace('text-primary-600', 'text-black')
+            ->replace('dark:text-dark-100', 'dark:text-white')
+            ->and()
+            ->sideBarItem()
+            ->block('item.state.normal')
+            ->replace('text-primary-500', 'text-black')
+            ->replace('dark:text-white', 'dark:text-white')
+            ->and()
+            ->sideBarItem()
+            ->block('item.state.current')
+            ->replace('text-primary-500', 'text-black')
+            ->and()
+            ->sideBarItem()
+            ->block('group.button')
+            ->replace('text-primary-500', 'text-black')
+            ->and()
+            ->sideBarItem()
+            ->block('group.icon.base')
+            ->replace('text-primary-500', 'text-black')
+            ->and()
+            ->sideBarSeparator()
+            ->block('line.base')
+            ->replace('text-primary-600', 'text-black')
+            ->replace('dark:text-dark-100', 'dark:text-white')
+            ->and()
+            ->sideBarSeparator()
+            ->block('line-right.base')
+            ->replace('text-primary-600', 'text-black')
+            ->replace('dark:text-dark-100', 'dark:text-white');
     }
 
     protected function service(): ModuleService
