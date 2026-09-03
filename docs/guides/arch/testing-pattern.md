@@ -18,7 +18,7 @@ Hard rules. Violations are architecture violations.
 
 4. **Scope isolation — one file, one scope.** Do not combine multiple distinct testing scopes into a single test file. Group the tests of one requirement area in one file. Never split a single requirement's tests across files unless it spans distinct layers.
 
-5. **Layer-by-layer entry points.** Test exactly the layer(s) the requirement touches, nothing more. Enum/Entity/DTO/Policy → unit test. Action/Livewire/Console → feature test.
+5. **Layer-by-layer entry points.** Test exactly the layer(s) the requirement touches, nothing more. Enum/Entity/DTO/Policy → unit test. Action/Livewire/Console → feature test. Critical user journeys (login, navigation, dashboard) → browser test (`tests/Browser` via `puppeteer-core`).
 
 6. **LazilyRefreshDatabase preferred.** Use `LazilyRefreshDatabase` (not `RefreshDatabase`) for all feature tests. Entity tests NEVER touch the database.
 
@@ -42,9 +42,10 @@ Red → Green → Refactor. Write the failing test first, make it pass with mini
 |-------|-------|-------|---------|
 | Unit tests | Many | Fast (ms) | Entity, Enum, DTO, Policy |
 | Feature tests | Some | Medium (s) | Action, Livewire, Console |
+| Browser tests | Few | Slow (s) | `puppeteer-core` headless — login, navigation, theme, sidebar, dashboard |
 | Integration tests | Few | Slow | API endpoints, third-party |
 
-Internara's testing strategy follows the pyramid: many unit tests for pure logic, some feature tests for Actions and Livewire, few integration tests for cross-module workflows.
+Internara's testing strategy follows the pyramid: many unit tests for pure logic, some feature tests for Actions and Livewire, few browser tests for critical user journeys, few integration tests for cross-module workflows.
 
 ### 3. AAA (Arrange-Act-Assert)
 

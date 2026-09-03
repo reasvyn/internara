@@ -80,6 +80,7 @@ php artisan test --compact --filter=CreateInternshipAction
 | **Read Action**     | Feature test    | Mandates a query and its returned shape                            |
 | **Process Action**  | Feature test    | Mandates orchestration / rollback semantics                        |
 | **Livewire**        | Feature test    | Mandates a UI behavior                                             |
+| **Browser**         | Browser test   | Mandates a critical user journey (login, theme, sidebar, dashboard) |
 | **Policy**          | Unit test       | Mandates an authorization gate per role                            |
 | **Console Command** | Feature test    | Mandates a CLI behavior and its exit/output                        |
 
@@ -145,6 +146,16 @@ php artisan test --compact
 Use a unit test for a pure business rule — an Entity method, an Action that computes a score, a
 Support class that formats data. Use a feature test for a user-visible workflow — registering a
 user, submitting an assignment, approving a placement.
+
+### Browser Tests (Headless)
+
+Critical user journeys are verified with `puppeteer-core` (reuses system Chrome, no download).
+
+- **Location:** `tests/Browser/` — `Support/browser.js` (`launch()`), `Support/login.js` (`login()`), `example.test.mjs`.
+- **Run:** `npm run test:browser` or `node tests/Browser/example.test.mjs`.
+- **When:** login, navigation (`/dashboard` → role dashboard), theme persistence, sidebar, dashboard widgets.
+- **Tracer:** same FR/NFR/UC prefix as other layers; group under `describe("Browser: ...")`.
+- **CI:** not in default `pint`/`pest` gates; run on-demand for UI regressions (e.g., `internara.web.id` 502/500 after deploy).
 
 ---
 
@@ -237,11 +248,13 @@ The `composer run coverage` script handles this automatically.
 - `tests/{Module}/Types/` — tests for value objects, flat enums, rules
 - `tests/{Module}/Enums/`, `tests/{Module}/Entities/` — pure logic tests (no database needed)
 - `tests/{Module}/Actions/`, `tests/{Module}/Livewire/` — integration tests (use `LazilyRefreshDatabase`)
+- `tests/Browser/` — headless browser tests (`puppeteer-core`, `Support/browser.js`, `Support/login.js`)
 - `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
 - `tests/Pest.php` — Pest global configuration
 - `phpunit.xml` — PHPUnit configuration
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
+- `package.json` — `test:browser` script for headless runs
 - `docs/specs/index.md`, `docs/specs/{feature}.md` — the source of truth for what tests must exist
 - `docs/conventions.md` — Section 12 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
