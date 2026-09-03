@@ -78,4 +78,4 @@ Locator for the Enrollment module's implementation.
 - Grep the conceptual doc for `app/`, `::class`, `.php`, `## Actions`, `## Routes` — any hit is a
   tier violation.
 - Grep the reference doc for "because", "why", "purpose", "intent" — any hit is a rationale leak.
-- `python3 tools/scan_doc_links/cli.py` — catches the file-listing drift that indicates tier mixing.
+- `python3 tools/scan_doc_links.py` — catches the file-listing drift that indicates tier mixing.

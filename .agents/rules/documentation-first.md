@@ -76,7 +76,7 @@ Before/after every doc edit, run `git diff` on that file to prove only the inten
 ## Verification / Detection
 
 - `git diff` on touched doc files — only intended lines changed, nothing dropped.
-- `python3 tools/scan_doc_links/cli.py` — validates links; history via git
+- `python3 tools/scan_doc_links.py` — validates links; history via git
   stale, a first-order signal of docs not updated alongside code.
 - `git log --since="14 days ago" --stat` (minimum window; extend to full log if needed) — cross-check code commits against doc commits; a code
   commit with no doc commit is a candidate SSOT violation.

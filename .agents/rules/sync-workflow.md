@@ -125,5 +125,5 @@ git log --since="14 days ago" --stat
 - `git log --since="14 days ago" --stat` (minimum; extend to full log if drift suspected) — confirm the audit surface matches actual commits.
 - `git diff` — the set of changed files must match the docs queued for update (no orphan doc
   updates, no missed ones).
-- `python3 tools/scan_doc_links/cli.py` — catches file-listing drift (renamed/deleted files still
+- `python3 tools/scan_doc_links.py` — catches file-listing drift (renamed/deleted files still
   referenced).

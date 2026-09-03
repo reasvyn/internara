@@ -89,4 +89,4 @@ Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.thrott
 - View path matches `{module}/{submodule}/{action}.blade.php`; no views outside that pattern.
 - No `@php`/direct DB calls in blade files; interactive sections are Livewire components.
 - Routes split per module/submodule; Livewire components registered with `Route::livewire(...)`.
-- `python3 tools/scan_doc_links/cli.py` clean after route renames (module reference docs list routes).
+- `python3 tools/scan_doc_links.py` clean after route renames (module reference docs list routes).

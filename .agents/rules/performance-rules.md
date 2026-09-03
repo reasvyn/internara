@@ -118,8 +118,8 @@ production (then also check `scan_dead_code.py`/monitoring for the root cause).
 ## Verification
 
 ```bash
-python3 tools/scan_violations/cli.py            # includes P1-P5 alongside C1-C8/D1-D6
-python3 tools/scan_violations/cli.py --module {Name}
+python3 tools/scan_violations.py            # includes P1-P5 alongside C1-C8/D1-D6
+python3 tools/scan_violations.py --module {Name}
 ```
 
 **Interpretation guidance:** the scanner detects *potential* N+1/`->get()` sites; confirm the loop

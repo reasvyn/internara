@@ -31,7 +31,7 @@ One paragraph — what the batched instruction achieves and why.
 ## Sessions
 ### Session 1 — {Title} (files: X, concern: Y)
 - [ ] Implement: {files/modules}
-- [ ] Verify: `vendor/bin/pest --testsuite={Module}`, `python3 tools/scan_violations/cli.py --module {Module}`
+- [ ] Verify: `vendor/bin/pest --testsuite={Module}`, `python3 tools/scan_violations.py --module {Module}`
 - [ ] Summarize: commit `type(scope): ...` + short report
 
 ### Session 2 — ...

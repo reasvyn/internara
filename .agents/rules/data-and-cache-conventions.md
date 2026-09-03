@@ -120,8 +120,8 @@ public function handle(InternUpdated $event): void
 
 ## Verification
 
-- Run `python3 tools/scan_conventions/cli.py` — flags `$fillable`, missing `#[Fillable]`, debug calls;
-  and `python3 tools/scan_violations/cli.py` for C4/D4/D5 checks.
+- Run `python3 tools/scan_conventions.py` — flags `$fillable`, missing `#[Fillable]`, debug calls;
+  and `python3 tools/scan_violations.py` for C4/D4/D5 checks.
 - Grep for raw `request()->all(` / `$request->all(` in create/update paths.
 - Review list/dashboard queries for `->with()`; `config/cache-keys.php` contains every key used.
 - `docs/guides/arch/model-pattern.md` §Mass Assignment and `docs/guides/arch/cache-pattern.md`

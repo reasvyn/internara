@@ -52,6 +52,6 @@ The gate exists to catch these before commit — a synced doc set is only as goo
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links/cli.py` — broken links (`BROKEN_FILE_LINK`, `BROKEN_ANCHOR`) across `docs/`, `.agents/context/`, `.agents/memory/`, `README.md`, `AGENTS.md`. Freshness via `git log --follow -- <file>`.
+- `python3 tools/scan_doc_links.py` — broken links (`BROKEN_FILE_LINK`, `BROKEN_ANCHOR`) across `docs/`, `.agents/context/`, `.agents/memory/`, `README.md`, `AGENTS.md`. Freshness via `git log --follow -- <file>`.
 - `git status` + `git diff` — confirm exactly the intended docs changed and nothing unrelated was dropped (Edit Policy).
 - Grep for tier violations: conceptual docs with `app/`, `.php`, `::class`; reference docs with "because"/"why"/"purpose".

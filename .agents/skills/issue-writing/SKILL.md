@@ -36,7 +36,7 @@ session splitting — an L-size issue notes the session-split plan in its body),
 strategy, and commit format. This skill adds the issue types, unified template, key rules, and
 labels reference below — nothing else.
 
-- **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 tools/scan_issues/cli.py`
+- **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 tools/scan_issues.py`
   and search existing open issues for the same concern/module; link to the existing one instead.
 - Write the issue using the **Unified Issue Template** below (every issue follows it; irrelevant
   sections may be removed).
@@ -203,7 +203,7 @@ For section-by-section filling guidance, the key rules, and the label set, load
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues/cli.py` |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues.py` |
 
 Output: `tools/outputs/{timestamp}-issues.json`.
 

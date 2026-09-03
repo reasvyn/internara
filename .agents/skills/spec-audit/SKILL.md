@@ -55,16 +55,16 @@ this skill adds the audit pipeline defined in the rule assets — nothing else.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `python3 tools/scan_violations/cli.py` |
-| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `python3 tools/scan_class_contracts/cli.py` |
-| `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `python3 tools/scan_security/cli.py` |
-| `scan_naming.py` | File, class, method, variable naming conventions | `python3 tools/scan_naming/cli.py` |
-| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture/cli.py` |
-| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 tools/scan_conventions/cli.py` |
-| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code/cli.py` |
-| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 tools/scan_doc_links/cli.py` |
-| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 tools/scan_spec_tests/cli.py` |
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues/cli.py` |
+| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `python3 tools/scan_violations.py` |
+| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `python3 tools/scan_class_contracts.py` |
+| `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `python3 tools/scan_security.py` |
+| `scan_naming.py` | File, class, method, variable naming conventions | `python3 tools/scan_naming.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
+| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 tools/scan_conventions.py` |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code.py` |
+| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 tools/scan_doc_links.py` |
+| `scan_spec_tests.py` | Spec↔tests coverage (FR/NFR/UC traceability, non-testable `*` marker) | `python3 tools/scan_spec_tests.py` |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 tools/scan_issues.py` |
 
 All scripts output to `tools/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
 to a single module. See `tools/README.md` for full documentation.

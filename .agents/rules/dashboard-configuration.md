@@ -64,5 +64,5 @@ Cluster the settings in `config/pulse.php`:
 ## Verification
 
 - `config/pulse.php` values match `docs/guides/infra/deployment.md` for the target tier.
-- `python3 tools/scan_doc_links/cli.py` clean (config changes rereference docs correctly).
+- `python3 tools/scan_doc_links.py` clean (config changes rereference docs correctly).
 - Manual: dashboard loads for an `admin`, 403/abort for others (see Authorization rule).

@@ -111,7 +111,7 @@ not check tier separation, section names, or PHPDoc. A clean scanner is necessar
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links/cli.py` — catches broken links, missing/stale metadata, wrong
+- `python3 tools/scan_doc_links.py` — catches broken links, missing/stale metadata, wrong
   section-name footers are NOT caught — review those manually.
 - Grep for tier violations: `grep -n "app/\|::class\|.php" docs/refs/modules/*.md` (conceptual docs
   should have no hits).

@@ -26,7 +26,7 @@ the audit categories, issue format, and key rules defined in the Skill Rules sec
 
 ### Execute — Security Audit Execution
 
-- Run `python3 tools/scan_security/cli.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
+- Run `python3 tools/scan_security.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
 - Audit authentication: password hashing, rate limiting, recovery flows
 - Audit authorization: Policy methods, super admin bypass, permissions config
 - Audit XSS: Blade escaping, `{!! !!}` occurrences, CSP headers

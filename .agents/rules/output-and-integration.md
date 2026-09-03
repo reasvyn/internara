@@ -142,14 +142,14 @@ and the change is rolled back.
 ## Verification
 
 ```bash
-python3 tools/scan_violations/cli.py            # full invariant+security+performance scan
-python3 tools/scan_class_contracts/cli.py       # class contract compliance
-python3 tools/scan_security/cli.py              # S1-S10
-python3 tools/scan_naming/cli.py                # naming
-python3 tools/scan_conventions/cli.py           # conventions
-python3 tools/scan_doc_links/cli.py             # doc links
-python3 tools/scan_tests/cli.py                 # per-module test results
-python3 tools/scan_issues/cli.py                # spec↔code gap analysis
+python3 tools/scan_violations.py            # full invariant+security+performance scan
+python3 tools/scan_class_contracts.py       # class contract compliance
+python3 tools/scan_security.py              # S1-S10
+python3 tools/scan_naming.py                # naming
+python3 tools/scan_conventions.py           # conventions
+python3 tools/scan_doc_links.py             # doc links
+python3 tools/scan_tests.py                 # per-module test results
+python3 tools/scan_issues.py                # spec↔code gap analysis
 ```
 
 Validate the JSON schema against this rule's report contract whenever a scanner is added or modified

@@ -72,7 +72,7 @@ Verify:
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links/cli.py` — validates every relative link and in-page/file anchor across
+- `python3 tools/scan_doc_links.py` — validates every relative link and in-page/file anchor across
   `docs/`, `.agents/context/`, `.agents/memory/`, `README.md`, and `AGENTS.md`; reports `BROKEN_FILE_LINK` and
   `BROKEN_ANCHOR` findings with file and line.
 - Grep for duplicated blocks across docs before committing: `grep -rn "S3" docs/guides/infra/`.

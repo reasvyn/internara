@@ -101,7 +101,7 @@ grep -c "C1\|C8\|D1\|D6" .agents/skills/*/SKILL.md       # must match docs/conve
 
 ## Verification / Detection
 
-- `python3 tools/scan_doc_links/cli.py` — catches broken links and stale metadata, the cheapest
+- `python3 tools/scan_doc_links.py` — catches broken links and stale metadata, the cheapest
   signal of rot (necessary but not sufficient).
 - Manual/grep checks per claim class: `find` against `app/` for file listings, `grep` of class
   signatures, migration files vs `docs/guides/infra/database.md`.

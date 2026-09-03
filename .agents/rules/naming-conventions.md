@@ -144,8 +144,8 @@ The scanner flagging a name is not noise — each replace-with is the canonical 
 ## Verification
 
 ```bash
-python3 tools/scan_naming/cli.py                # file/class/method/variable naming conventions
-python3 tools/scan_naming/cli.py --module {Name}   # scope to a module
+python3 tools/scan_naming.py                # file/class/method/variable naming conventions
+python3 tools/scan_naming.py --module {Name}   # scope to a module
 ```
 
 **Interpretation guidance:** naming findings are **MEDIUM** severity (maintainability impact) unless a

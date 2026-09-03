@@ -42,7 +42,7 @@ PHPDoc, link integrity, and the doc-quality gate — nothing else.
 
 ### Verify — Quality Gates
 
-- **Markdown-only changes:** run `python3 tools/scan_doc_links/cli.py` (doc changes don't need
+- **Markdown-only changes:** run `python3 tools/scan_doc_links.py` (doc changes don't need
   pint/tests)
 - All relative links resolve to existing files; anchor links match actual headings
 - Metadata block present with current date; `## Description` section present

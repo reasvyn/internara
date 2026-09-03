@@ -77,6 +77,6 @@ $user->addMedia($uploadedFile)->toMediaCollection('avatar');
 - Grep for `Storage::put|Storage::store|Storage::disk` in feature code — only MediaLibrary calls.
 - For every new `__()` key: entry present in both `lang/en/` and `lang/id/` (`vendor/bin/pint
   --dirty --test` + `php artisan tinker --execute="echo __('key');"`).
-- `python3 tools/scan_conventions/cli.py` (strict types, debug) and `python3 tools/scan_violations/cli.py`
+- `python3 tools/scan_conventions.py` (strict types, debug) and `python3 tools/scan_violations.py`
   (C1/C2/C4) clean.
 - `docs/conventions.md` is the authoritative source for all cross-cutting conventions.

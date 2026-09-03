@@ -28,8 +28,8 @@ PII and sensitive fields are identified at design time, encrypted or masked at r
 
 ## Verification
 
-- `python3 tools/scan_security/cli.py` — no XSS/SQLi/PII leak, no unescaped user HTML.
-- `python3 tools/scan_conventions/cli.py` — D4 (Fillable) clean.
+- `python3 tools/scan_security.py` — no XSS/SQLi/PII leak, no unescaped user HTML.
+- `python3 tools/scan_conventions.py` — D4 (Fillable) clean.
 - `grep -R "->all()" app --include="*.php"` shows no raw mass assignment of PII.
 - Activity log entries exist for PII writes (`activitylog` table + log file).
 

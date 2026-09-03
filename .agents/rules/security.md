@@ -36,7 +36,7 @@ sanitizer ran. Never pass request input straight to `{!! !!}`.
 **Anti-patterns to avoid:** `{!! $entry->body !!}` with no sanitize step anywhere; `x-html="
 rawUserInput"`.
 
-**Detection:** `python3 tools/scan_security/cli.py` (XSS regex on `{!!` and `x-html`).
+**Detection:** `python3 tools/scan_security.py` (XSS regex on `{!!` and `x-html`).
 
 ---
 
@@ -59,7 +59,7 @@ app/`.
 **Anti-patterns to avoid:** String-concatenating variables into `whereRaw`/`orderByRaw`; double
 "sanitizing" input and calling it bound.
 
-**Detection:** `python3 tools/scan_security/cli.py` · `scan_violations.py` (C3).
+**Detection:** `python3 tools/scan_security.py` · `scan_violations.py` (C3).
 
 ---
 
@@ -80,7 +80,7 @@ app/`.
 **Anti-patterns to avoid:** `Model::create($request->all())`; trusting "the form only sends what I
 render".
 
-**Detection:** `python3 tools/scan_security/cli.py` · `scan_violations.py` (D5).
+**Detection:** `python3 tools/scan_security.py` · `scan_violations.py` (D5).
 
 ---
 
@@ -102,4 +102,4 @@ comment with the reason and keep the route narrow.
 **Anti-patterns to avoid:** A bare `<form method="post">` with no `@csrf`; broad exemptions applied
 to an entire route group without comment.
 
-**Detection:** `python3 tools/scan_security/cli.py` (form/CSRF regex).
+**Detection:** `python3 tools/scan_security.py` (form/CSRF regex).

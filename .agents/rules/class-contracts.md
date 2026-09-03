@@ -253,9 +253,9 @@ injected; caching state on `$this`.
 ## Verification
 
 ```bash
-python3 tools/scan_class_contracts/cli.py        # Action/Entity/DTO/Model/Enum contracts
-python3 tools/scan_violations/cli.py             # C1-C8, D1-D6 cross-cutting
-python3 tools/scan_conventions/cli.py            # strict_types, Fillable, debug calls
+python3 tools/scan_class_contracts.py        # Action/Entity/DTO/Model/Enum contracts
+python3 tools/scan_violations.py             # C1-C8, D1-D6 cross-cutting
+python3 tools/scan_conventions.py            # strict_types, Fillable, debug calls
 ```
 
 **Interpretation guidance:** contract findings are **HIGH** when they break the guarantees consumers

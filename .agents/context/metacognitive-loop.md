@@ -19,17 +19,17 @@ CONSTRUCT → EVALUATE → VERIFY → DECIDE
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_files.py` | File counts and lines of code per module | `python3 tools/scan_files/cli.py` |
-| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture/cli.py` |
-| `scan_violations.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations/cli.py` |
-| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts/cli.py` |
-| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security/cli.py` |
-| `scan_naming.py` | Naming conventions | `python3 tools/scan_naming/cli.py` |
-| `scan_conventions.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions/cli.py` |
-| `scan_doc_links.py` | Broken links in docs | `python3 tools/scan_doc_links/cli.py` |
-| `scan_tests.py` | Per-module test results | `python3 tools/scan_tests/cli.py` |
-| `scan_issues.py` | GitHub issues by module/severity | `python3 tools/scan_issues/cli.py` |
-| `scan_dead_code.py` | Dead code detection | `python3 tools/scan_dead_code/cli.py` |
+| `scan_files.py` | File counts and lines of code per module | `python3 tools/scan_files.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
+| `scan_violations.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations.py` |
+| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts.py` |
+| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security.py` |
+| `scan_naming.py` | Naming conventions | `python3 tools/scan_naming.py` |
+| `scan_conventions.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions.py` |
+| `scan_doc_links.py` | Broken links in docs | `python3 tools/scan_doc_links.py` |
+| `scan_tests.py` | Per-module test results | `python3 tools/scan_tests.py` |
+| `scan_issues.py` | GitHub issues by module/severity | `python3 tools/scan_issues.py` |
+| `scan_dead_code.py` | Dead code detection | `python3 tools/scan_dead_code.py` |
 
 Output: `tools/outputs/{timestamp}-{description}.json`.
 

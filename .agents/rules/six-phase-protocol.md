@@ -74,7 +74,7 @@ A Phase 1 run on this project:
 ```bash
 composer audit 2>&1                                     # dependency vulnerabilities
 vendor/bin/pint --test 2>&1                             # code style
-python3 tools/scan_dead_code/cli.py                       # dead code (project scanner first)
+python3 tools/scan_dead_code.py                       # dead code (project scanner first)
 npm run build 2>&1                                      # build verification
 ```
 

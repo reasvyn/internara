@@ -171,7 +171,7 @@ code if the debt survives the refactor.
 silently change behavior at the new boundary.
 
 **How to apply:** Place `declare(strict_types=1);` immediately after `<?php` in every file created by
-the refactor; verify with `python3 tools/scan_conventions/cli.py`.
+the refactor; verify with `python3 tools/scan_conventions.py`.
 
 ### Imports sorted (Pint handles this automatically)
 
@@ -190,7 +190,7 @@ and violate the file-header order convention in `code-writing` §2.
 methods in the old location; these are compile-time noise and future confusion.
 
 **How to apply:** After extraction, grep the old file for removed symbols and delete leftovers. Use
-`python3 tools/scan_dead_code/cli.py` to catch unregistered observers / orphan events / unused DTOs.
+`python3 tools/scan_dead_code.py` to catch unregistered observers / orphan events / unused DTOs.
 
 ---
 

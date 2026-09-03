@@ -37,6 +37,6 @@ enum InternshipStatus: string implements StatusEnum { case DRAFT = 'draft'; case
 
 ## Verification
 
-- `python3 tools/scan_class_contracts/cli.py` — Entity/Enum contracts pass.
-- `python3 tools/scan_violations/cli.py` — C5 clean.
+- `python3 tools/scan_class_contracts.py` — Entity/Enum contracts pass.
+- `python3 tools/scan_violations.py` — C5 clean.
 - `match` on enums is exhaustive; tests verify completeness.

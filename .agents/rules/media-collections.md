@@ -78,6 +78,6 @@ $user->addMedia($uploadedFile)
   feature collection.
 - Each collection has `acceptsFile()` (MIME check) and a size guard (saved elsewhere in MediaLibrary
   config or an upload rule).
-- `python3 tools/scan_security/cli.py` does not flag the upload path; filename uses `Str::slug()`.
+- `python3 tools/scan_security.py` does not flag the upload path; filename uses `Str::slug()`.
 - Reference: `docs/guides/infra/media-library.md` §Collections and `docs/conventions.md`
   §File Upload Security.

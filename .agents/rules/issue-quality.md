@@ -223,7 +223,7 @@ note); a reviewer can open the cited spec and find the requirement.
 ## Deduplicate Before Filing
 
 **What it enforces:** Before creating an issue, check for duplicates — run
-`python3 tools/scan_issues/cli.py` and search existing open issues for the same concern/module. If the
+`python3 tools/scan_issues.py` and search existing open issues for the same concern/module. If the
 concern is already tracked, link to the existing issue instead of filing a new one.
 
 **Why it matters:** Duplicate issues split attention, double-assign work, and produce divergent
@@ -340,5 +340,5 @@ scrub the secrets.
 | Issue types & labels             | `rules/issue-types-and-labels.md` (this skill) |
 | Pre-existing defects             | `AGENTS.md` §Pre-existing Defects — Fix or File |
 | Dedup & alignment                | `AGENTS.md` §Clean Code & Dedup-Align Doctrine |
-| Issue scanner                    | `tools/scan_issues/cli.py`                    |
+| Issue scanner                    | `tools/scan_issues.py`                    |
 | Spec-first doctrine              | `AGENTS.md` §Spec-First Doctrine            |

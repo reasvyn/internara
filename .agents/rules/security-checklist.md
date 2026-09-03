@@ -28,8 +28,8 @@ Security is not a byproduct of feature work. A dedicated audit exists because:
 1. **Run the scanners first (Automation-First):**
 
    ```bash
-   python3 tools/scan_security/cli.py      # XSS, SQLi, mass assignment, auth patterns
-   python3 tools/scan_violations/cli.py    # C1-C8, D1-D6 invariants
+   python3 tools/scan_security.py      # XSS, SQLi, mass assignment, auth patterns
+   python3 tools/scan_violations.py    # C1-C8, D1-D6 invariants
    ```
 
 2. **Audit each category in order** — see the Coverage Map below for which rule file holds the

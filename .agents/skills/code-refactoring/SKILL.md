@@ -127,8 +127,8 @@ lines.
 
 | Script | What it does | Command |
 |--------|-------------|---------|
-| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code/cli.py` |
-| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture/cli.py` |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 tools/scan_dead_code.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
 
 Use `--module {Name}` to scope. Output: `tools/outputs/{timestamp}-{description}.json`.
 

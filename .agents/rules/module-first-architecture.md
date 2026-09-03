@@ -130,5 +130,5 @@ $result = $action->execute(PlacementData::from([
 - Every new class path matches `app/{Module}/{SubModule}/{Layer}/`.
 - Every Action with 3+ inputs accepts a DTO; no `execute(array ...)` in committed code.
 - No `app/Http/Requests/` classes; validation lives in Form Objects or Entity `rules()`/Rules classes.
-- `python3 tools/scan_violations/cli.py` (C7 DTO checks) and `python3 tools/scan_class_contracts/cli.py`
+- `python3 tools/scan_violations.py` (C7 DTO checks) and `python3 tools/scan_class_contracts.py`
   (Action contracts) report clean.
