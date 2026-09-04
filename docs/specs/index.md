@@ -95,7 +95,7 @@ Authentication, password management, profile, notifications, and dashboards. Dep
 
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
-| K8HP1 | [Homepage & Global Theming](K8HP1-homepage-and-theming.md) | User | 52O1I, 8XMYS, MBB5R | Shipped |
+| K8HP1 | [Homepage](K8HP1-homepage.md) | User | 52O1I, 8XMYS, MBB5R | Shipped |
 | 8XMYS | [Layout & UI System](8XMYS-layout-and-ui-system.md) | Core | SE5Q9, I1BCV, YB22J, 52O1I | Partial |
 | YB7RG | [Authentication](YB7RG-authentication.md) | Auth | SE5Q9, T4B26 | Shipped |
 | TXR2H | [Notification Infrastructure](TXR2H-notification-infrastructure.md) | User | SE5Q9, NUCY3 | Shipped |
