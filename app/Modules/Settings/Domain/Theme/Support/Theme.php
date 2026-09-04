@@ -109,6 +109,19 @@ final class Theme
 
                 $light['--brand-'.$key] = $hex;
                 $dark['--brand-'.$key] = $lightened;
+
+                // TallStackUI scale: --color-{key}-50 … --color-{key}-950
+                // TallStackUI components use `bg-primary-500` / `ring-primary-600` etc.,
+                // not the single `--color-primary` token. Without this scale the brand
+                // color never reaches TallStackUI — hence the stuck indigo.
+                foreach (Color::tailwindScale($hex) as $shade => $shadeHex) {
+                    $light['--color-'.$key.'-'.$shade] = $shadeHex;
+                    $light['--'.$key[0].'-'.$shade] = $shadeHex;
+                }
+                foreach (Color::tailwindScale($lightened) as $shade => $shadeHex) {
+                    $dark['--color-'.$key.'-'.$shade] = $shadeHex;
+                    $dark['--'.$key[0].'-'.$shade] = $shadeHex;
+                }
             }
 
             return compact('light', 'dark');

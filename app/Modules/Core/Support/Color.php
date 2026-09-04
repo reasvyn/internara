@@ -116,4 +116,31 @@ final class Color
 
         return self::rgbToHex($rgb[0], $rgb[1], $rgb[2]);
     }
+
+    /**
+     * Generate a Tailwind / TallStackUI-compatible 50-950 scale from a single hex.
+     * Used to bridge the single `--color-primary` token (from Theme) to the
+     * `--color-primary-50 … --color-primary-950` scale that TallStackUI components
+     * actually consume (e.g. `bg-primary-500`, `ring-primary-600`).
+     *
+     * Percentages are chosen to mimic the lightness curve of the default indigo
+     * scale shipped in `tallstackui/css/v4.css` so the brand hue stays recognizable
+     * across the full range while providing enough contrast for WCAG.
+     */
+    public static function tailwindScale(string $hex): array
+    {
+        return [
+            '50' => self::lighten($hex, 92),
+            '100' => self::lighten($hex, 85),
+            '200' => self::lighten($hex, 70),
+            '300' => self::lighten($hex, 50),
+            '400' => self::lighten($hex, 30),
+            '500' => $hex,
+            '600' => self::darken($hex, 12),
+            '700' => self::darken($hex, 22),
+            '800' => self::darken($hex, 34),
+            '900' => self::darken($hex, 48),
+            '950' => self::darken($hex, 62),
+        ];
+    }
 }
