@@ -1,14 +1,14 @@
 <div class="flex flex-1 flex-col">
     {{-- Hero Section --}}
-    <section class="from-primary/8 via-base-100 to-secondary/8 relative overflow-hidden bg-gradient-to-br">
+    <section class="from-primary/8 via-base-100 to-primary/5 relative overflow-hidden bg-gradient-to-br">
         {{-- Animated blobs --}}
         <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <div class="bg-primary/10 absolute -top-32 -right-32 size-[36rem] animate-pulse rounded-full blur-3xl"></div>
             <div
-                class="bg-secondary/10 absolute -bottom-32 -left-32 size-[36rem] animate-pulse rounded-full blur-3xl"
+                class="bg-primary/8 absolute -bottom-32 -left-32 size-[36rem] animate-pulse rounded-full blur-3xl"
                 style="animation-delay: 1.5s"
             ></div>
-            <div class="bg-accent/5 absolute top-1/2 left-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"></div>
+            <div class="bg-primary/5 absolute top-1/2 left-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"></div>
         </div>
 
         <div class="relative container mx-auto px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 lg:px-12 lg:pt-32 lg:pb-24">
@@ -21,8 +21,8 @@
                 {{-- Feature pills --}}
                 <div class="mb-6 flex flex-wrap items-center justify-center gap-2">
                     <x-ts-badge color="primary" text="{{ __('user.home.hero_secure') }}" icon="shield-check" />
-                    <x-ts-badge color="secondary" text="{{ __('user.home.hero_academic') }}" icon="academic-cap" />
-                    <x-ts-badge color="success" text="{{ __('user.home.hero_global') }}" icon="globe-alt" />
+                    <x-ts-badge color="primary" text="{{ __('user.home.hero_academic') }}" icon="academic-cap" />
+                    <x-ts-badge color="primary" text="{{ __('user.home.hero_global') }}" icon="globe-alt" />
                 </div>
 
                 {{-- Tagline --}}
@@ -132,10 +132,10 @@
                 </div>
 
                 {{-- Login Card --}}
-                <div class="group card bg-base-100 border-base-content/10 hover:border-secondary/30 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <div class="group card bg-base-100 border-base-content/10 hover:border-primary/30 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div class="card-body items-center p-6 text-center sm:p-8 lg:p-10">
-                        <div class="from-secondary/15 to-secondary/5 ring-base-content/10 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
-                            <x-ts-icon name="user-circle" class="text-secondary size-8 sm:size-10" />
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
+                            <x-ts-icon name="user-circle" class="text-primary size-8 sm:size-10" />
                         </div>
 
                         <h2 class="card-title mb-2 text-xl font-bold sm:text-2xl">{{ __('user.home.login_title') }}</h2>
@@ -150,7 +150,7 @@
                             :text="__('user.home.login_action')"
                             icon="arrow-right"
                             icon-right
-                            color="secondary"
+                            color="primary"
                             class="w-full sm:w-auto"
                         />
 
@@ -189,8 +189,8 @@
                     {{-- Supervision --}}
                     <div class="card bg-base-100 border-base-content/10 border shadow-sm transition-all duration-200 hover:shadow-md">
                         <div class="card-body p-6 text-center sm:p-8">
-                            <div class="from-secondary/10 to-secondary/5 mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br">
-                                <x-ts-icon name="users" class="text-secondary size-6" />
+                            <div class="from-primary/10 to-primary/5 mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br">
+                                <x-ts-icon name="users" class="text-primary size-6" />
                             </div>
                             <h3 class="mb-1.5 font-semibold">{{ __('user.home.feature_guidance_title') }}</h3>
                             <p class="text-base-content/55 text-sm leading-relaxed">
@@ -202,8 +202,8 @@
                     {{-- Certificate --}}
                     <div class="card bg-base-100 border-base-content/10 border shadow-sm transition-all duration-200 hover:shadow-md">
                         <div class="card-body p-6 text-center sm:p-8">
-                            <div class="from-accent/10 to-accent/5 mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br">
-                                <x-ts-icon name="identification" class="text-accent size-6" />
+                            <div class="from-primary/10 to-primary/5 mx-auto mb-4 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br">
+                                <x-ts-icon name="identification" class="text-primary size-6" />
                             </div>
                             <h3 class="mb-1.5 font-semibold">{{ __('user.home.feature_certificate_title') }}</h3>
                             <p class="text-base-content/55 text-sm leading-relaxed">
