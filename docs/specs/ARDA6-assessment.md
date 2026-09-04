@@ -479,6 +479,16 @@ After implementing this spec, the system has rubric-based assessment with scorin
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | The `ScoreIndicatorAction` (FR-AS5, FR-AS6, FR-AS7 in ARDA6 spec) is implemented but not wired up to any Livewire component. The spec requires authorized indicator scoring again... | Open | Maintainer | [#390](https://github.com/reasvyn/internara/issues/390) |
+
 ## Quick References
 
 - `app/Modules/Assessment/Models/Assessment.php` — Assessment model with fillable, casts, bridge

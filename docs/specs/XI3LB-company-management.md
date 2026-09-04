@@ -469,6 +469,16 @@ After implementing this spec, the system has company CRUD with industry type, co
 | 1 | [partnership-management.md](NTHQA-partnership-management.md) | Partnerships link companies from this spec to departments and academic years |
 | 2 | [csv-import-export.md](O2KCR-csv-import-export.md) | Bulk company import/export via CSV |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Partners/Company/Models/Company.php` — Company model with `#[Fillable]` attribute and relationships

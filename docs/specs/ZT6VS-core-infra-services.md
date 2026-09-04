@@ -460,6 +460,19 @@ Per-service requirements are satisfied by those configs plus the consuming modul
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| OQ-1 | - `docs/specs/ZT6VS-core-infra-services.md` **FR-SESS1** (Session 1: System Requirements section §6 / Session 1 §4.4.2): | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
+| R-2 | Missing tests for several ZT6VS requirements: | Open | Maintainer | [#405](https://github.com/reasvyn/internara/issues/405) |
+| R-3 | FR-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+
 ## Quick References
 
 - `config/cache.php`, `config/cache-keys.php` — cache stores and registry

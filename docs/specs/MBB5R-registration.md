@@ -392,6 +392,16 @@ After implementing this spec, students can register for internship programs and 
 | 1 | [placement.md](J9GBH-placement.md) | Placement reads enrollment records from this spec and matches with companies from #29 partnership-management |
 | 2 | [account-application.md](920SO-account-application.md) | New students self-register through this flow before reaching registration |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Enrollment/Registration/Models/Registration.php` — Registration model (UUID PK, status strings)

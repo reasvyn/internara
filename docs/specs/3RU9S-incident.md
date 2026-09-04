@@ -399,6 +399,16 @@ After implementing this spec, students and supervisors can report workplace inci
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Incident/IncidentReport/Models/IncidentReport.php` — Incident model with 12 fillable fields and 3 enum casts

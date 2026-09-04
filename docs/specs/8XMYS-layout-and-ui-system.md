@@ -361,6 +361,18 @@ Livewire component), then the dashboard, which renders inside `core::layouts.app
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| OQ-1 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
+| OQ-2 | - `resources/views/core/layouts/app.blade.php` `drawer lg:drawer-open` + `drawer-toggle` + `drawer-content` → `x-ts-layout` + `x-ts-layout.header` | Open | Maintainer | [#414](https://github.com/reasvyn/internara/issues/414) |
+| OQ-3 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+
 ## Quick References
 
 - `resources/views/ui/layouts/` — Base, app, guest, sidebar, header, head, footer shells

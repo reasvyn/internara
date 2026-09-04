@@ -398,6 +398,17 @@ module registration through the consolidated gateway.
 |-------|------|------------|
 | 1 | [installation.md](8NZAU-installation.md) (8NZAU) | Setup/installation flows verify module registration and rely on the consolidated gateway (`module:discover`) |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| OQ-1 | `docs/specs/I1BCV-module-discovery.md` assumes manual `config/module.php` registry and `tests/Pest.php` sync: | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
+
 ## Quick References
 
 - `config/module.php` — Module registry (single source of truth)

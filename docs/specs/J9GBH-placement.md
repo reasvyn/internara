@@ -331,6 +331,16 @@ After implementing this spec, the system can match enrolled students to company 
 | 2 | [assessment.md](ARDA6-assessment.md) | Scores student work against rubrics using placement context |
 | 3 | [evaluation.md](AXKZW-evaluation.md) | Gathers feedback using placement context |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Enrollment/Placement/Models/Placement.php` — Placement model (UUID PK, quota/filled_quota)

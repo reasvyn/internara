@@ -475,6 +475,16 @@ Registration model. Seed the document type registry.
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | FR-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+
 ## Quick References
 
 - `docs/specs/document-templates.md` — Template infrastructure, `DocumentRenderer`, PDF rendering

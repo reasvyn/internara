@@ -255,6 +255,25 @@ added here, versions are bumped here, and every other spec builds on the resulti
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| OQ-1 | - `resources/views/core/ui/` 13 files: `record-manager.blade.php` (92 lines, 5 `<x-mary`), `confirm.blade.php` (20 lines, `<x-core::ui.confirm>`), `app-signature`, `avatar`, `br... | Open | Maintainer | [#418](https://github.com/reasvyn/internara/issues/418) |
+| OQ-2 | - Replace `x-mary-table`, `x-mary-card`, `x-mary-badge`, `x-mary-modal`, `x-mary-dropdown`, `x-mary-tabs` + DaisyUI `card`/`badge`/`modal`/`dropdown` with `x-ts-table`, `x-ts-ca... | Open | Maintainer | [#417](https://github.com/reasvyn/internara/issues/417) |
+| OQ-3 | - Replace `x-mary-input`, `x-mary-select`, `x-mary-checkbox`, `x-mary-toggle`, `x-mary-textarea`, `x-mary-file`, `x-mary-datepicker` (flatpickr) + DaisyUI `btn`/`input`/`card` w... | Open | Maintainer | [#416](https://github.com/reasvyn/internara/issues/416) |
+| OQ-4 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
+| OQ-5 | - `resources/views/core/layouts/app.blade.php` `drawer lg:drawer-open` + `drawer-toggle` + `drawer-content` → `x-ts-layout` + `x-ts-layout.header` | Open | Maintainer | [#414](https://github.com/reasvyn/internara/issues/414) |
+| OQ-6 | - `app/Settings/Livewire/LangSwitcher.php` + `resources/views/settings/livewire/lang-switcher.blade.php` (mary dropdown → `x-ts-dropdown` / `x-ts-select.styled` for EN/ID). | Open | Maintainer | [#413](https://github.com/reasvyn/internara/issues/413) |
+| OQ-7 | - `app/Settings/Livewire/ThemeSwitcher.php` + `resources/views/settings/livewire/theme-switcher.blade.php` (mary dropdown → `x-ts-theme-switch` / `x-ts-toggle` + `x-ts-dropdown`). | Open | Maintainer | [#412](https://github.com/reasvyn/internara/issues/412) |
+| OQ-8 | - `app/**/Livewire/*.php` 235 `flash()` calls → `TallStackUi::toast()->send()->success/error` or `->dispatch()` (Interactions/Toast) / `<x-ts-alert />` for inline. | Open | Maintainer | [#411](https://github.com/reasvyn/internara/issues/411) |
+| OQ-9 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+
 ## Quick References
 
 - `composer.json` — Composer package and version constraints

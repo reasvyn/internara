@@ -449,6 +449,16 @@ After implementing this spec, the system has group CRUD with student and mentor 
 |-------|------|------------|
 | 1 | [registration.md](MBB5R-registration.md) | Registration creates enrollment records that are assigned to groups from this spec |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Program/InternshipGroup/Models/InternshipGroup.php` — Group model with placement FK

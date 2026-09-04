@@ -278,6 +278,18 @@ After implementing this spec, the system has role-based access control with 5 ro
 |-------|------|------------|
 | 1 | [middleware-pipeline.md](2CF4Y-middleware-pipeline.md) | `CheckRoleMiddleware` uses roles from this spec, `BasePolicy.before()` auto-allows super_admin |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| R-2 | enhancement: auth/permissions — proxy metadata tagging in activity logs (FR-CRP6) not implemented | Open | Maintainer | [#408](https://github.com/reasvyn/internara/issues/408) |
+| R-3 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
+
 ## Quick References
 
 - `app/Modules/Core/Policies/BasePolicy.php` — Base policy with super admin bypass

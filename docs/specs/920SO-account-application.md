@@ -402,6 +402,16 @@ After implementing this spec, new students can self-register through a public fo
 |-------|------|------------|
 | 1 | [user-crud-and-status.md](95EVB-user-crud-and-status.md) | Admin manages student accounts created via this application; status transitions flow to user CRUD |
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+
+
 ## Quick References
 
 - `app/Modules/Enrollment/AccountApplication/Models/AccountApplication.php` — Application model

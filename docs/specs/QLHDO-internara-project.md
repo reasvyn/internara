@@ -163,7 +163,12 @@ detail.
 | FR-G5 | Sensitive endpoints MUST be rate-limited (global 30/min/IP; login 5/60s; forgot 3/3600s; reset 5/300s; recovery 3/300s)                                                                                                    | [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md) FR-MW10     | Shipped  | 2026-09-03  |
 | FR-G6 | The system MUST run a system health check covering PHP, extensions, memory, DB, migrations, storage, queue, cache, and app key                                                                                               | [J68GZ-system-requirements](J68GZ-system-requirements.md) FR-SY8      | Shipped  | 2026-09-03  |
 | FR-G7 | All records MUST use UUID primary keys via `BaseModel`/`HasUuids`                                                                                                                                                            | [SE5Q9-base-classes](SE5Q9-base-classes.md)                            | Shipped  | 2026-09-03  |
-| FR-G8 | Program data MUST flow in dependency order: Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance (full phase inventory in [index.md](index.md)) | [index.md](index.md) (build order)                                    | Shipped  | 2026-09-03  |
+| FR-G8 | Program data MUST flow in dependency order: Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance (full phase inventory in [index.md](index.md)) | [index.md](index.md) (build order) | Shipped | 2026-09-03 |
+| FR-G9 | The system MUST validate all user input through a centralized validation layer (Form Request classes for HTTP, validated DTOs for Actions); validation rules MUST live next to the entry point, never in controllers or Livewire components | [D2FT3](D2FT3-architecture.md), [SE5Q9](SE5Q9-base-classes.md) | Proposed | — |
+| FR-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
+| FR-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
+| FR-G12 | The system MUST provide an in-app notification center for all role actors; email notifications MUST be queued asynchronously for non-critical notifications; notification preferences MUST be configurable per user | [TXR2H](TXR2H-notification-infrastructure.md) | Proposed | — |
+| FR-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
 
 ### 4.2 Lifecycle Phase Inventory (index only)
 
@@ -206,6 +211,13 @@ acceptance criteria; the owning spec is authoritative for verification.
 | NFR-D1 | Database: SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)                                                                                                                 | [J68GZ](J68GZ-system-requirements.md), [ZT6VS](ZT6VS-core-infra-services.md)                  | Shipped  | 2026-09-03  |
 | NFR-Q1 | Queue: separate `default` and `documents` pipelines                                                                                                                                                      | [8FVZA](8FVZA-job-queue-infrastructure.md)                                                    | Shipped  | 2026-09-03  |
 | NFR-G1 | GDPR: deletion logging and data erasure workflows                                                                                                                                                       | [7HNCF](7HNCF-gdpr-compliance.md)                                                             | Shipped  | 2026-09-03  |
+| NFR-S3 | Security headers: all responses MUST include `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; HSTS MUST be enabled in production | [1PGM4](1PGM4-security-headers.md) | Proposed | — |
+| NFR-S4 | CSRF protection: all state-changing HTTP requests MUST include a valid CSRF token; API endpoints MUST use token-based authentication (sanctum/passport) | [2CF4Y](2CF4Y-middleware-pipeline.md) | Proposed | — |
+| NFR-S5 | XSS prevention: all dynamic output MUST be escaped by default; `{!! !!}` is forbidden for user-generated content; rich text MUST be sanitized server-side before storage | [1PGM4](1PGM4-security-headers.md), [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| NFR-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
+| NFR-R2 | Backup strategy: automated daily incremental backups, weekly full backups; backup integrity MUST be verified monthly; restore procedure MUST be documented and tested quarterly | [HBXCI](HBXCI-backup-system.md) | Proposed | — |
+| NFR-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| NFR-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 > **Curriculum/regulatory alignment** (legacy §11 of the QLHDO draft) is tracked outside the
 > spec system as a research input in `docs/refs/curriculum-compliance.md` (non-testable
@@ -310,6 +322,10 @@ non-goals rather than accidental omissions.
 | Full suite                             | green                                      | `php artisan test --compact`                                         |
 | Backup                                 | 4h RPO / <1h RTO                           | drill + monitoring                                                   |
 | Security posture                       | no critical/high external-audit findings   | `qa-protocol` audits                                                 |
+| Test coverage                          | ≥80% new code, ≥90% critical paths (auth/audit/integrity) | `php artisan test --compact` + coverage report                       |
+| Performance benchmark                  | p95 page load < 2s, API p95 < 500ms under 100 concurrent users | Load test (k6/jmeter) in CI                                           |
+| Uptime                                 | ≥99.5% during academic terms              | Uptime monitoring + incident log                                     |
+| MTTR                                   | < 1 hour for critical failures            | Incident postmortem + runbook drill                                  |
 
 ---
 
@@ -353,6 +369,7 @@ Issue that tracks resolution; see the spec template for row conventions.
 | OQ-3 | [I1BCV](I1BCV-module-discovery.md) §4 mandates manual `config/module.php` and `tests/Pest.php` registry; code uses filesystem auto-discovery (more accurate). Rewrite the spec to document the actual model and align [B114U](B114U-module-manager.md) §6.3. M-size doc work. | Open     | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434)                                 |
 | A-1  | We assume all admin mutations land in `Log::channel('activity')` (per FR-G4) and that `PiiMasker` strips every PII field listed in [89SRA](89SRA-logging-and-error-handling.md) FR-PM9 — verified at file-level for 26 keys; full runtime coverage assumed.  | Accepted | Maintainer | —                                                                                       |
 | A-2  | We assume `tallstackui_formPassword` (TallStackUI v4) autofill is a known client-side quirk on shared hosting and that the production fix is a hidden text input fallback — pending `ui-development` deep review.                                              | Accepted | Maintainer | —                                                                                       |
+| A-3  | The proposed requirements (FR-G9 through FR-G13, NFR-S3 through NFR-U2) are not yet implemented; they represent gaps identified during spec audit and require prioritization before the Foundation phase completes.                                              | Accepted | Maintainer | —                                                                                       |
 
 ---
 

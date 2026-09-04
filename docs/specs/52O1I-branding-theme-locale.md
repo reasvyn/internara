@@ -336,6 +336,19 @@ After implementing this spec, the system has customizable branding (school name,
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| OQ-1 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
+| OQ-2 | - `app/Settings/Livewire/LangSwitcher.php` + `resources/views/settings/livewire/lang-switcher.blade.php` (mary dropdown → `x-ts-dropdown` / `x-ts-select.styled` for EN/ID). | Open | Maintainer | [#413](https://github.com/reasvyn/internara/issues/413) |
+| OQ-3 | - `app/Settings/Livewire/ThemeSwitcher.php` + `resources/views/settings/livewire/theme-switcher.blade.php` (mary dropdown → `x-ts-theme-switch` / `x-ts-toggle` + `x-ts-dropdown`). | Open | Maintainer | [#412](https://github.com/reasvyn/internara/issues/412) |
+| OQ-4 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+
 ## Quick References
 
 - `app/Modules/Settings/Support/Brand.php` — Dual-path brand resolution (DB + AppInfo)

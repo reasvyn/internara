@@ -276,6 +276,16 @@ After implementing this spec, supervisors can log monitoring visits, review stud
 
 ---
 
+## 10. Risks & Assumptions
+
+Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+for row conventions.
+
+| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| ---- | ---------------------------------- | ------ | ----- | -------- |
+| R-1 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
+
 ## Quick References
 
 - `app/Modules/Journals/SupervisionLog/` — SupervisionLog submodule (Actions, Entities, Enums, Livewire, Models, Policies)
