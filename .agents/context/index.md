@@ -4,7 +4,7 @@ This directory is the **curated, mandatory known context**: the small set of fac
 
 **How to use:** before planning or editing, find the row whose topic matches your task and read that context file. If no row matches, you do not need this directory. **When a context file conflicts with reality, update it directly in the same run** — this context is how mandatory knowledge survives between sessions. For evolving session learnings, write to `.agents/memory/` instead.
 
-**Required reading:** Every session start — `workflow-5step.md`, `project-snapshot.md`, `AGENTS.md` §Context Awareness. Before releasing new version — also read `project-snapshot.md`, `project-identity.md`, and `quick-reference.md`.
+**Required reading:** Every session start — `workflow-5step.md`, `project-snapshot.md`, `AGENTS.md` §Context Awareness. Before releasing new version — also read `project-snapshot.md`, `project-identity.md`, `quick-reference.md`, `version-bump-guide.md`.
 
 ---
 
@@ -31,6 +31,7 @@ This directory is the **curated, mandatory known context**: the small set of fac
 | [metacognitive-loop.md](metacognitive-loop.md) | **Every session** — construct→evaluate→verify→decide loop, automation scripts reference |
 | [skill-map.md](skill-map.md) | **Every session** — which skill to load for each task type, module/spec reference |
 | [quick-reference.md](quick-reference.md) | **Every session** — dev commands, commit format, branch naming, navigation map |
+| [version-bump-guide.md](version-bump-guide.md) | **Before releasing** — version bump checklist, release flow, tag-driven pipeline |
 
 ---
 
