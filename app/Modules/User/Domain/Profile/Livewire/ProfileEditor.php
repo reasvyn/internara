@@ -12,7 +12,6 @@ use App\Modules\User\Domain\Profile\Data\UpdateProfileData;
 use App\Modules\User\Domain\Profile\Livewire\Forms\PasswordForm;
 use App\Modules\User\Domain\Profile\Livewire\Forms\ProfileForm;
 use App\Modules\User\Models\User;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -26,7 +25,12 @@ class ProfileEditor extends BaseFormView
     use Interactions;
     use WithFileUploads;
 
-    public ?UploadedFile $avatar = null;
+    /**
+     * File upload — untyped untuk kompatibilitas Livewire TemporaryUploadedFile
+     * dengan strict_types=1. Typed ?UploadedFile menyebabkan TypeError saat
+     * Livewire hydrate/dehydrate snapshot (TemporaryUploadedFile vs UploadedFile).
+     */
+    public $avatar = null;
 
     public User $user;
 
@@ -84,25 +88,34 @@ class ProfileEditor extends BaseFormView
     {
         $this->authorize('update', $this->user);
 
-        $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
+        $this->validate(['avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
 
-        $updateProfile->execute(new UpdateProfileData(
-            userId: $this->user->id,
-            profile: [],
-            avatar: $this->avatar,
-        ));
+        $this->handleSave(function () use ($updateProfile): void {
+            $updateProfile->execute(new UpdateProfileData(
+                userId: (string) $this->user->id,
+                profile: [],
+                avatar: $this->avatar,
+            ));
 
-        $this->toast()->success(__('profile.avatar_saved'))->send();
+            // Refresh user agar getFirstMediaUrl('avatar') terbaru langsung tampil
+            $this->user->refresh()->load(['profile', 'roles']);
+            $this->avatar = null;
+
+            $this->toast()->success(__('profile.avatar_saved'))->send();
+        });
     }
 
     public function confirmRemoveAvatar(): void
     {
         $this->authorize('update', $this->user);
 
-        $this->user->clearMediaCollection('avatar');
-        $this->avatar = null;
+        $this->handleSave(function (): void {
+            $this->user->clearMediaCollection('avatar');
+            $this->avatar = null;
+            $this->user->refresh()->load(['profile', 'roles']);
 
-        $this->toast()->success(__('profile.avatar_removed'))->send();
+            $this->toast()->success(__('profile.avatar_removed'))->send();
+        });
     }
 
     public function save(UpdateProfileAction $updateProfile): void
@@ -151,15 +164,21 @@ class ProfileEditor extends BaseFormView
             ]);
         }
 
-        $updateProfile->execute(new UpdateProfileData(
-            userId: $this->user->id,
-            profile: $data,
-            name: $this->canChangeName ? $this->profileForm->name : null,
-            email: $this->profileForm->email,
-            username: $this->canChangeUsername ? $this->profileForm->username : null,
-        ));
+        $this->handleSave(function () use ($updateProfile, $data): void {
+            $updateProfile->execute(new UpdateProfileData(
+                userId: (string) $this->user->id,
+                profile: $data,
+                name: $this->canChangeName ? $this->profileForm->name : null,
+                email: $this->profileForm->email,
+                username: $this->canChangeUsername ? $this->profileForm->username : null,
+            ));
 
-        $this->toast()->success(__('profile.saved'))->send();
+            // Refresh agar UI langsung menampilkan data terbaru dan isDirty reset
+            $this->user->refresh()->load(['profile', 'roles']);
+            $this->profileForm->fillFromUser($this->user);
+
+            $this->toast()->success(__('profile.saved'))->send();
+        });
     }
 
     public function confirmAction(): void

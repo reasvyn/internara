@@ -9,7 +9,7 @@ use App\Modules\Core\Data\BaseData;
 final readonly class ActivateAccountData extends BaseData
 {
     public function __construct(
-        public int $userId,
+        public string $userId,
         public string $code,
         public string $password,
     ) {}

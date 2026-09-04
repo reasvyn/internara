@@ -18,9 +18,9 @@
         'container max-w-7xl' => ! $fullWidth,
         'w-full' => $fullWidth,
     ])>
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-center">
             {{-- Left: brand + links --}}
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
                 <a
                     href="{{ route('dashboard') }}"
                     wire:navigate
@@ -51,10 +51,10 @@
 
             {{-- Right: credit --}}
             @if ($showCredit)
-                <div class="text-base-content/50 flex items-center gap-3 text-xs">
+                <div class="text-base-content/50 flex w-full items-center justify-start gap-3 text-xs sm:w-auto sm:justify-center">
                     <x-ui::components.credit
                         :show-version="app()->environment('local')"
-                        class="justify-center sm:justify-end"
+                        class="w-full justify-start sm:w-auto sm:justify-center"
                     />
                 </div>
             @endif

@@ -10,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 final readonly class UpdateProfileData extends BaseData
 {
     public function __construct(
-        public int $userId,
+        public string $userId,
         public array $profile,
         public ?string $name = null,
         public ?string $email = null,

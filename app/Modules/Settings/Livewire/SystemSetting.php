@@ -124,14 +124,17 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
 
         if ($this->brandingForm->brand_logo instanceof UploadedFile) {
-            $url = $uploadBrand->execute($this->brandingForm->brand_logo);
-            $setSetting->execute(new SettingData(
-                key: 'brand_logo',
-                value: $url,
-                group: 'branding',
-            ));
-            $this->brandingForm->current_logo_url = $url;
-            $this->toast()->success(__('setting.messages.logo_saved'))->send();
+            $this->handleSave(function () use ($uploadBrand, $setSetting): void {
+                $url = $uploadBrand->execute($this->brandingForm->brand_logo);
+                $setSetting->execute(new SettingData(
+                    key: 'brand_logo',
+                    value: $url,
+                    group: 'branding',
+                ));
+                $this->brandingForm->current_logo_url = $url;
+                $this->brandingForm->brand_logo = null;
+                $this->toast()->success(__('setting.messages.logo_saved'))->send();
+            });
         }
     }
 
@@ -143,14 +146,17 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->validate(['site_favicon' => 'nullable|image|max:512']);
 
         if ($this->brandingForm->site_favicon instanceof UploadedFile) {
-            $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
-            $setSetting->execute(new SettingData(
-                key: 'site_favicon',
-                value: $url,
-                group: 'branding',
-            ));
-            $this->brandingForm->current_favicon_url = $url;
-            $this->toast()->success(__('setting.messages.favicon_saved'))->send();
+            $this->handleSave(function () use ($uploadBrand, $setSetting): void {
+                $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
+                $setSetting->execute(new SettingData(
+                    key: 'site_favicon',
+                    value: $url,
+                    group: 'branding',
+                ));
+                $this->brandingForm->current_favicon_url = $url;
+                $this->brandingForm->site_favicon = null;
+                $this->toast()->success(__('setting.messages.favicon_saved'))->send();
+            });
         }
     }
 
@@ -158,24 +164,28 @@ class SystemSetting extends BaseFormView
     {
         $this->authorize('update', Setting::class);
 
-        $action->execute('logo');
+        $this->handleSave(function () use ($action): void {
+            $action->execute('logo');
 
-        $this->brandingForm->current_logo_url = null;
-        $this->brandingForm->brand_logo = null;
+            $this->brandingForm->current_logo_url = null;
+            $this->brandingForm->brand_logo = null;
 
-        $this->toast()->success(__('setting.messages.logo_removed'))->send();
+            $this->toast()->success(__('setting.messages.logo_removed'))->send();
+        });
     }
 
     public function confirmRemoveFavicon(RemoveBrandAssetAction $action): void
     {
         $this->authorize('update', Setting::class);
 
-        $action->execute('favicon');
+        $this->handleSave(function () use ($action): void {
+            $action->execute('favicon');
 
-        $this->brandingForm->current_favicon_url = null;
-        $this->brandingForm->site_favicon = null;
+            $this->brandingForm->current_favicon_url = null;
+            $this->brandingForm->site_favicon = null;
 
-        $this->toast()->success(__('setting.messages.favicon_removed'))->send();
+            $this->toast()->success(__('setting.messages.favicon_removed'))->send();
+        });
     }
 
     public function confirmAction(): void
@@ -200,40 +210,46 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->validate();
         $this->mailSettingsForm->validate();
 
-        $data = new SystemSettingsData(
-            brandName: $this->generalForm->brand_name,
-            siteTitle: $this->generalForm->site_title,
-            supportEmail: $this->generalForm->support_email,
-            defaultLocale: $this->generalForm->default_locale,
-            activeAcademicYear: $this->generalForm->active_academic_year,
-            primaryColor: $this->brandingForm->primary_color,
-            secondaryColor: $this->brandingForm->secondary_color,
-            accentColor: $this->brandingForm->accent_color,
-            baseColor: $this->brandingForm->base_color,
-            brandLogo: $this->brandingForm->brand_logo,
-            siteFavicon: $this->brandingForm->site_favicon,
-            mailFromAddress: $this->mailSettingsForm->mail_from_address,
-            mailFromName: $this->mailSettingsForm->mail_from_name,
-            mailHost: $this->mailSettingsForm->mail_host,
-            mailPort: $this->mailSettingsForm->mail_port,
-            mailEncryption: $this->mailSettingsForm->mail_encryption,
-            mailUsername: $this->mailSettingsForm->mail_username,
-            mailPassword: $this->mailSettingsForm->mail_password ?: null,
-        );
+        $this->handleSave(function () use ($action, $activateYear): void {
+            $data = new SystemSettingsData(
+                brandName: $this->generalForm->brand_name,
+                siteTitle: $this->generalForm->site_title,
+                supportEmail: $this->generalForm->support_email,
+                defaultLocale: $this->generalForm->default_locale,
+                activeAcademicYear: $this->generalForm->active_academic_year,
+                primaryColor: $this->brandingForm->primary_color,
+                secondaryColor: $this->brandingForm->secondary_color,
+                accentColor: $this->brandingForm->accent_color,
+                baseColor: $this->brandingForm->base_color,
+                brandLogo: $this->brandingForm->brand_logo,
+                siteFavicon: $this->brandingForm->site_favicon,
+                mailFromAddress: $this->mailSettingsForm->mail_from_address,
+                mailFromName: $this->mailSettingsForm->mail_from_name,
+                mailHost: $this->mailSettingsForm->mail_host,
+                mailPort: $this->mailSettingsForm->mail_port,
+                mailEncryption: $this->mailSettingsForm->mail_encryption,
+                mailUsername: $this->mailSettingsForm->mail_username,
+                mailPassword: $this->mailSettingsForm->mail_password ?: null,
+            );
 
-        $action->execute($data);
+            $action->execute($data);
 
-        $selectedYear = $this->generalForm->active_academic_year;
+            $selectedYear = $this->generalForm->active_academic_year;
 
-        if ($selectedYear) {
-            $year = $this->readYearAction?->findByName($selectedYear);
+            if ($selectedYear) {
+                $year = $this->readYearAction?->findByName($selectedYear);
 
-            if ($year && $year->asAcademicYearState()->canBeActivated()) {
-                $activateYear->execute($year);
+                if ($year && $year->asAcademicYearState()->canBeActivated()) {
+                    $activateYear->execute($year);
+                }
             }
-        }
 
-        $this->toast()->success(__('setting.messages.saved'))->send();
+            // Clear file handles setelah sukses agar tidak re-upload
+            $this->brandingForm->brand_logo = null;
+            $this->brandingForm->site_favicon = null;
+
+            $this->toast()->success(__('setting.messages.saved'))->send();
+        });
     }
 
     public function testEmail(TestMailSettingsAction $action): void

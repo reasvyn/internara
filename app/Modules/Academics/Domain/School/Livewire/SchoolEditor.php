@@ -41,18 +41,20 @@ class SchoolEditor extends BaseFormView
         SetSettingAction $setSetting,
     ): void {
         $this->authorize('update', Setting::class);
-        $this->validate(['logo_file' => ['nullable', 'image', 'max:2048']]);
+        $this->validate(['logo_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
 
-        $url = $uploadBrand->execute($this->logo_file);
+        $this->handleSave(function () use ($uploadBrand, $setSetting): void {
+            $url = $uploadBrand->execute($this->logo_file);
 
-        $setSetting->execute(new SettingData(
-            key: 'brand_logo',
-            value: $url,
-            group: 'branding',
-        ));
+            $setSetting->execute(new SettingData(
+                key: 'brand_logo',
+                value: $url,
+                group: 'branding',
+            ));
 
-        $this->logo_file = null;
-        $this->toast()->success(__('school.logo_saved'))->send();
+            $this->logo_file = null;
+            $this->toast()->success(__('school.logo_saved'))->send();
+        });
     }
 
     public function save(SaveSchoolProfileAction $action, GetSchoolEntityAction $getEntity): void
@@ -85,10 +87,13 @@ class SchoolEditor extends BaseFormView
     {
         $this->authorize('update', Setting::class);
 
-        $action->execute('logo');
+        $this->handleSave(function () use ($action): void {
+            $action->execute('logo');
 
-        Settings::forget('brand_logo');
-        $this->toast()->success(__('school.logo_removed'))->send();
+            Settings::forget('brand_logo');
+            $this->logo_file = null;
+            $this->toast()->success(__('school.logo_removed'))->send();
+        });
     }
 
     public function render(): View

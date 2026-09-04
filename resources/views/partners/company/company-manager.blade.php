@@ -5,7 +5,7 @@
 
     <x-slot:extraMenu>
         <x-ts-dropdown.items :text="__('common.actions.import')" x-on:click="$refs.importCsvInput.click()" />
-        <input x-ref="importCsvInput" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <input x-ref="importCsvInput" type="file" accept=".csv" wire:model="importFile" class="sr-only" />
         <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
         <x-ts-dropdown.items
             :text="__('common.actions.template')"

@@ -123,16 +123,13 @@
                         {{ __('school.logo') }}
                     </p>
                     <div class="group relative mb-2">
-                        <div
-                            class="relative cursor-pointer"
-                            @click="document.getElementById('school-logo-upload').click()"
-                        >
+                        <label for="school-logo-upload" class="relative cursor-pointer">
                             <input
                                 id="school-logo-upload"
                                 type="file"
                                 wire:model="logo_file"
-                                accept="image/png,image/jpeg,image/webp"
-                                class="hidden"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="sr-only"
                             />
                             @if ($this->logoPreviewUrl())
                                 <img
@@ -148,7 +145,15 @@
                             <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                 <x-ts-icon name="camera" class="text-base-100 size-8" />
                             </div>
-                        </div>
+                            <div
+                                wire:loading
+                                wire:target="logo_file"
+                                class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-xl"
+                            >
+                                <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
+                            </div>
+                        </label>
+                        <x-ts-error name="logo_file" />
                         @if ($this->logoPreviewUrl())
                             <button
                                 type="button"

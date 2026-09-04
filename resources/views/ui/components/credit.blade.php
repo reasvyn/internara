@@ -6,7 +6,7 @@
     $authorUrl = $author['github'] ?? '';
 @endphp
 
-<div {{ $attributes->merge(['class' => 'flex flex-col sm:flex-row items-center gap-2 text-xs text-base-content/40']) }}>
+<div {{ $attributes->merge(['class' => 'flex flex-col items-start justify-start gap-2 text-xs text-base-content/40 sm:flex-row sm:items-center sm:justify-center']) }}>
     <span>&copy; {{ date('Y') }} {{ brand('name') }}. {{ __('common.all_rights_reserved') }}</span>
 
     @if ($showVersion)

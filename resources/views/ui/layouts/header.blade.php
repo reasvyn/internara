@@ -5,33 +5,31 @@
     'sticky' => true,
 ])
 
-{{-- Modern responsive Header — props-driven, no hardcoded menu. --}}
-<header
-    {{
-        $attributes->merge([
-            'class' => collect([
-                'flex h-16 shrink-0 items-center justify-between gap-4 border-b bg-base-100 border-base-content/10 px-4 sm:px-6 lg:px-8',
-                $sticky ? 'sticky top-0 z-20 backdrop-blur supports-[backdrop-filter]:bg-base-100/80' : '',
-            ])->filter()->implode(' '),
-        ])
-    }}
-    role="banner"
->
-    {{-- Left: mobile menu toggle + title/breadcrumbs --}}
-    <div class="flex min-w-0 flex-1 items-center gap-3">
-        {{-- Mobile sidebar toggle — controls sidebar drawer via Alpine store --}}
-        <button
-            type="button"
-            class="btn btn-ghost btn-sm -ml-2 lg:hidden"
-            @click="$dispatch('toggle-sidebar')"
-            aria-label="{{ __('common.menu') }}"
-            aria-controls="app-sidebar"
-            aria-expanded="false"
-        >
-            <x-ts-icon name="bars-3" class="size-5" />
-        </button>
+{{--
+    TallStackUI Header — mengikuti spec resmi.
 
-        <div class="min-w-0 flex-1">
+    Cara TallStackUI memasang toggler:
+    - Sidebar collapsible: <x-ts-side-bar collapsible> meng-set $store['tsui.side-bar'].collapsible = true
+      via x-init dan mendaftarkan Alpine.store('tsui.side-bar', {open, mobile, collapsible, collapsed getter, toggle()}).
+      collapsed = collapsible && !open && !mobile (rail mode). toggle() flip open + persist localStorage('side-bar').
+    - Header toggler DESKTOP: <x-ts-layout.header> otomatis merender tombol
+      x-show="$store['tsui.side-bar'].collapsible" x-on:click="$store['tsui.side-bar'].toggle()"
+      (collapse.class). Tombol ini HANYA muncul jika sidebar collapsible=true dan di desktop.
+    - Header toggler MOBILE: <x-ts-layout.header> merender hamburger
+      x-on:click="tallStackUiMenuMobile = !tallStackUiMenuMobile" yang mengontrol drawer
+      <x-ts-layout> x-data="tallstackui_layout()" -> tallStackUiMenuMobile. Drawer + backdrop + scroll-lock
+      sudah di-handle oleh <x-ts-side-bar> mobile wrapper (x-show="tallStackUiMenuMobile").
+    - Jangan dispatch custom event 'toggle-sidebar' atau mutasi $store.collapsed langsung; pakai
+      store.toggle() untuk persist dan header/footer harus sinkron via store yang sama.
+
+    Implementasi di sini: wrapper <x-ts-layout.header> menyediakan kedua toggler secara native.
+    Konten custom (breadcrumbs, judul, navbar-actions) dipetakan ke slot left/right milik header
+    tersebut. Tidak ada header manual lagi.
+--}}
+<x-ts-layout.header {{ $attributes->merge(['role' => 'banner']) }}>
+    {{-- LEFT: breadcrumbs + title (ditaruh di left slot header TallStackUI) --}}
+    <x-slot:left>
+        <div class="flex min-w-0 flex-col justify-center">
             @if ($breadcrumbs)
                 <nav
                     aria-label="Breadcrumb"
@@ -53,11 +51,12 @@
             @endif
 
             @if ($header)
-                <h1 class="truncate text-lg leading-tight font-semibold">{{ $header }}</h1>
+                <h1 class="truncate text-lg leading-tight font-semibold" tabindex="-1">{{ $header }}</h1>
                 @if ($subheader)
                     <p class="text-base-content/60 truncate text-xs">{{ $subheader }}</p>
                 @endif
             @else
+                {{-- Fallback mobile brand ketika tidak ada title --}}
                 <div class="flex items-center gap-2 lg:hidden">
                     <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
                         <x-ui::components.logo size="5" />
@@ -66,36 +65,40 @@
                 </div>
             @endif
         </div>
-    </div>
+    </x-slot:left>
 
-    {{-- Right: actions + navbar-actions --}}
-    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-        @isset($actions)
-            <div class="hidden items-center gap-2 sm:flex">{{ $actions }}</div>
-        @endisset
+    {{-- RIGHT: actions + navbar-actions --}}
+    <x-slot:right>
+        <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+            @isset($actions)
+                <div class="hidden items-center gap-2 sm:flex">{{ $actions }}</div>
+            @endisset
 
-        <x-ui::components.navbar-actions
-            :show-theme="true"
-            :show-language="true"
-            :show-notifications="true"
-            :show-user="true"
-        />
+            <x-ui::components.navbar-actions
+                :show-theme="true"
+                :show-language="true"
+                :show-notifications="true"
+                :show-user="true"
+            />
 
-        @isset($actions)
-            <div class="sm:hidden">
-                <x-ts-dropdown position="bottom-end">
-                    <x-slot:action>
-                        <button
-                            type="button"
-                            class="btn btn-ghost btn-sm"
-                            aria-label="{{ __('common.actions.label') }}"
-                        >
-                            <x-ts-icon name="ellipsis-vertical" class="size-5" />
-                        </button>
-                    </x-slot:action>
-                    <div class="p-2">{{ $actions }}</div>
-                </x-ts-dropdown>
-            </div>
-        @endisset
-    </div>
-</header>
+            @isset($actions)
+                <div class="sm:hidden">
+                    <x-ts-dropdown position="bottom-end">
+                        <x-slot:action>
+                            <button
+                                type="button"
+                                class="btn btn-ghost btn-sm"
+                                aria-label="{{ __('common.actions.label') }}"
+                            >
+                                <x-ts-icon name="ellipsis-vertical" class="size-5" />
+                            </button>
+                        </x-slot:action>
+                        <div class="p-2">{{ $actions }}</div>
+                    </x-ts-dropdown>
+                </div>
+            @endisset
+        </div>
+    </x-slot:right>
+
+    {{ $slot ?? '' }}
+</x-ts-layout.header>

@@ -242,18 +242,13 @@
                                     {{ __('setting.fields.brand_logo') }}
                                 </p>
                                 <div class="group relative">
-                                    <div
-                                        class="relative cursor-pointer"
-                                        x-data
-                                        x-on:click="$refs.brandLogoInput.click()"
-                                    >
+                                    <label for="brand-logo-upload" class="relative cursor-pointer">
                                         <input
                                             id="brand-logo-upload"
-                                            x-ref="brandLogoInput"
                                             type="file"
                                             wire:model="brandingForm.brand_logo"
-                                            accept="image/png,image/jpeg,image/webp"
-                                            class="hidden"
+                                            accept="image/png,image/jpeg,image/jpg,image/webp"
+                                            class="sr-only"
                                         />
                                         @if ($this->brandingForm->brandLogoPreviewUrl() ?? $brandingForm->current_logo_url)
                                             <img
@@ -269,7 +264,15 @@
                                         <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-xl opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                             <x-ts-icon name="camera" class="text-base-100 size-8" />
                                         </div>
-                                    </div>
+                                        <div
+                                            wire:loading
+                                            wire:target="brandingForm.brand_logo"
+                                            class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-xl"
+                                        >
+                                            <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
+                                        </div>
+                                    </label>
+                                    <x-ts-error name="brandingForm.brand_logo" />
                                     @if ($brandingForm->current_logo_url)
                                         <button
                                             type="button"
@@ -287,14 +290,13 @@
                                     {{ __('setting.fields.site_favicon') }}
                                 </p>
                                 <div class="group relative">
-                                    <div class="relative cursor-pointer" x-data x-on:click="$refs.faviconInput.click()">
+                                    <label for="favicon-upload" class="relative cursor-pointer">
                                         <input
                                             id="favicon-upload"
-                                            x-ref="faviconInput"
                                             type="file"
                                             wire:model="brandingForm.site_favicon"
-                                            accept="image/png,image/jpeg,image/x-icon"
-                                            class="hidden"
+                                            accept="image/png,image/jpeg,image/jpg,image/x-icon,image/webp"
+                                            class="sr-only"
                                         />
                                         @if ($this->brandingForm->faviconPreviewUrl() ?? $brandingForm->current_favicon_url)
                                             <img
@@ -310,7 +312,15 @@
                                         <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                             <x-ts-icon name="camera" class="text-base-100 size-5" />
                                         </div>
-                                    </div>
+                                        <div
+                                            wire:loading
+                                            wire:target="brandingForm.site_favicon"
+                                            class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-lg"
+                                        >
+                                            <x-ts-icon name="arrow-path" class="size-5 animate-spin" />
+                                        </div>
+                                    </label>
+                                    <x-ts-error name="brandingForm.site_favicon" />
                                     @if ($brandingForm->current_favicon_url)
                                         <button
                                             type="button"

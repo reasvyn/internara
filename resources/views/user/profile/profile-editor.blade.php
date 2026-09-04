@@ -191,13 +191,15 @@
             <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
                 <div class="flex flex-col items-center py-6">
                     <div class="group relative mb-3">
-                        <div class="relative cursor-pointer" @click="document.getElementById('avatar-upload').click()">
+                        {{-- Avatar upload — label-based trigger lebih andal daripada @click JS pada input hidden (display:none diblokir browser).
+                             Sr-only menjaga input tetap focusable untuk Livewire file upload. --}}
+                        <label for="avatar-upload" class="relative cursor-pointer">
                             <input
                                 id="avatar-upload"
                                 type="file"
                                 wire:model="avatar"
-                                accept="image/png,image/jpeg,image/webp"
-                                class="hidden"
+                                accept="image/png,image/jpeg,image/jpg,image/webp"
+                                class="sr-only"
                             />
                             <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
                                 @if ($this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb'))
@@ -209,11 +211,20 @@
                                 @else
                                     <span class="text-base-content/60 text-2xl font-bold">{{ $user->initials() }}</span>
                                 @endif
+                                {{-- Loading overlay saat upload --}}
+                                <div
+                                    wire:loading
+                                    wire:target="avatar"
+                                    class="bg-base-100/80 absolute inset-0 flex items-center justify-center"
+                                >
+                                    <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
+                                </div>
                             </div>
                             <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                 <x-ts-icon name="camera" class="text-base-100 size-6" />
                             </div>
-                        </div>
+                        </label>
+                        <x-ts-error :name="'avatar'" />
                         @if ($user->getFirstMediaUrl('avatar'))
                             <button
                                 type="button"
