@@ -226,21 +226,23 @@ Global token SSOT remains 52O1I + resources/css/app.css — this spec only manda
 
 ## 7. Design Decisions
 
-### DD-1 — Separate Homepage Spec, Theming Stays in 52O1I
+### DD-1 — Mount-Time Redirects for Auth & Setup Gating
 
-**Decision:** Create K8HP1 for homepage lifecycle and its theming consumption; keep the global semantic-color pipeline SSOT in 52O1I-branding-theme-locale.md (and shells in 8XMYS). K8HP1 references 52O1I via FR-HT-07 instead of redefining tokens or grep invariants.
-**Rationale:** Homepage was orphan (no spec). Global theming already has an authoritative spec — duplicating its invariant in a homepage spec mixes concerns and creates two SSOTs. A single FR that mandates consumption keeps the dependency explicit without coupling.
-**Alternatives rejected:** Extend 52O1I with homepage FRs — would hide homepage lifecycle in a theming spec; extend 8XMYS — would conflate shell with content.
+**Decision:** `HomePage::mount()` performs `SetupEntity::isInstalled()` → `redirectRoute('setup')` and `auth()->check()` → `redirectRoute('dashboard')` before fetching availability, instead of route middleware.
+**Rationale:** Keeps `GET /` as a single Livewire route that owns its guest-vs-authed branching; no extra middleware chain, consistent with other guest pages (`/apply`, `/login`) that use component-level gates and benefit from Livewire `wire:navigate` redirects.
+**Alternatives rejected:** `guest`/`auth` middleware split into two routes — would duplicate the homepage view and complicate `setup` vs `auth` ordering.
 
-### DD-2 — Reuse Existing Theme Pipeline Without New Computation
+### DD-2 — Reuse Guest Shell (`ui::layouts.guest` → `ui::layouts.base`)
 
-**Decision:** Rely on `Theme::cssVariables()` / `Color::computeBaseShades/computeDarkShades/lighten` / `base.blade.php` injection exactly as defined in 52O1I.
-**Rationale:** Pipeline already solves brand + dark mode + caching + invalidation. Homepage only needs to consume semantic utilities (`bg-primary`, `text-base-content`, etc.) — no new variables or per-page style.
+**Decision:** Homepage renders via `->layout('ui::layouts.guest')` which inherits `ui::layouts.base` (dual `data-theme`/`.dark`, `Theme::cssVariables()` injection, a11y chrome), rather than a standalone layout.
+**Rationale:** Shares sticky header (brand + theme-switch + lang-switcher), `main#main-content`, and footer credits with all auth pages; ensures theme, locale, and `wire:navigate` focus-reset behave identically on public and authenticated surfaces without duplicating markup.
+**Trade-off:** Homepage cannot diverge structurally from guest shell without affecting other guest pages — acceptable, as public pages share the same chrome.
 
-### DD-3 — Keep `bg-black/40` Scrim Out of Scope
+### DD-3 — Homepage Consumes Existing Semantic Pipeline (No New Tokens)
 
-**Decision:** Modal/guide backdrop `bg-black/40` remains as defined in 52O1I/8XMYS (view scrim, not palette) — not re-specified here.
-**Rationale:** Scrim handling belongs to the global theming/layout specs; homepage has no modal.
+**Decision:** All homepage markup uses only semantic utilities from the existing pipeline — `Theme::cssVariables()` / `Color::computeBaseShades` / `base.blade.php` inline `<style>` and `app.js applyTheme()` per 52O1I FR-T1/FR-T3 — verified via FR-HT-01..06.
+**Rationale:** Brand presets and dark mode already invalidate via `theme_cache_keys` and recolor via CSS variables without rebuild; introducing homepage-specific tokens would fork the palette and break preset consistency.
+**Alternatives rejected:** Hardcoded Tailwind palette (`bg-white`, `bg-gray-50`, `ring-white/10`) — bypasses `primary_color`/`base_color` and renders incorrectly in dark mode.
 
 ---
 
