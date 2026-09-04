@@ -115,7 +115,7 @@ jobs:
           envs: VERSION_TAG
           # Fail fast, no pseudo-TTY — reduces surface
           request_pty: false
-          command_timeout: 12m
+          command_timeout: 20m
           script: |
             set -euo pipefail
             echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
