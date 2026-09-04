@@ -36,7 +36,7 @@
                                     <div class="font-medium">
                                         {{ $reg->mentee?->user?->name ?? __('common.unknown') }}
                                     </div>
-                                    <div class="text-xs text-gray-500">{{ $reg->mentee?->user?->email }}</div>
+                                    <div class="text-base-content/50 text-xs">{{ $reg->mentee?->user?->email }}</div>
                                 </td>
                                 <td>{{ $reg->internship?->name ?? '-' }}</td>
                                 <td>
@@ -61,7 +61,7 @@
                                             @endif
                                         </div>
                                     @else
-                                        <span class="text-xs text-gray-400">{{ __('registration.verification.no_docs') }}</span>
+                                        <span class="text-base-content/40 text-xs">{{ __('registration.verification.no_docs') }}</span>
                                     @endif
                                 </td>
                                 <td>{{ $reg->created_at->diffForHumans() }}</td>
@@ -84,7 +84,7 @@
         @if ($this->selectedRegistration)
             <div class="bg-base-200 rounded-box mb-4 p-3">
                 <p class="font-medium">{{ $this->selectedRegistration->mentee?->user?->name }}</p>
-                <p class="text-sm text-gray-500">{{ $this->selectedRegistration->internship?->name }}</p>
+                <p class="text-base-content/50 text-sm">{{ $this->selectedRegistration->internship?->name }}</p>
             </div>
 
             <form wire:submit="confirmProcess">

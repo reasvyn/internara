@@ -52,7 +52,7 @@
                 {{-- Registration Card --}}
                 <div class="group card bg-base-100 border-base-content/10 hover:border-primary/30 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div class="card-body items-center p-6 text-center sm:p-8 lg:p-10">
-                        <div class="from-primary/15 to-primary/5 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-white/10 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
+                        <div class="from-primary/15 to-primary/5 ring-base-content/10 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
                             <x-ts-icon name="clipboard-document-list" class="text-primary size-8 sm:size-10" />
                         </div>
 
@@ -134,7 +134,7 @@
                 {{-- Login Card --}}
                 <div class="group card bg-base-100 border-base-content/10 hover:border-secondary/30 border shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                     <div class="card-body items-center p-6 text-center sm:p-8 lg:p-10">
-                        <div class="from-secondary/15 to-secondary/5 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 ring-white/10 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
+                        <div class="from-secondary/15 to-secondary/5 ring-base-content/10 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-500 ring-inset group-hover:scale-110 sm:mb-6 sm:size-20">
                             <x-ts-icon name="user-circle" class="text-secondary size-8 sm:size-10" />
                         </div>
 

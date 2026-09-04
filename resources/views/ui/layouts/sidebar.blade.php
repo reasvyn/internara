@@ -67,7 +67,7 @@
                             @if (! empty($group['title']))
                                 <x-ts-side-bar.separator
                                     :text="__($group['title'])"
-                                    class="text-base-content font-semibold dark:text-white"
+                                    class="text-base-content font-semibold"
                                 />
                             @endif
                             <ul class="space-y-1" role="list">
@@ -107,7 +107,7 @@
                                                     :route="$url"
                                                     :icon="$icon"
                                                     :current="$active"
-                                                    class="text-base-content hover:text-base-content dark:text-white dark:hover:text-white"
+                                                    class="text-base-content hover:text-base-content"
                                                 />
                                             @endif
                                         </li>
@@ -135,7 +135,7 @@
                     <button
                         type="button"
                         @click="$store['tsui.side-bar'].collapsed = ! $store['tsui.side-bar'].collapsed"
-                        class="text-base-content/60 hover:text-base-content hover:bg-base-200/50 dark:hover:bg-dark-700/50 hidden w-full items-center justify-between rounded-lg px-2 py-1.5 text-xs transition-colors lg:flex"
+                        class="text-base-content/60 hover:text-base-content hover:bg-base-200/50 hidden w-full items-center justify-between rounded-lg px-2 py-1.5 text-xs transition-colors lg:flex"
                         :aria-expanded="! $store['tsui.side-bar'].collapsed"
                         aria-label="{{ __('common.collapse') }}"
                     >
