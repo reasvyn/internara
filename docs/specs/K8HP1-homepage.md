@@ -1,4 +1,4 @@
-# Homepage — Public Landing Page
+# Public Landing Page
 
 > **Spec ID:** K8HP1
 
