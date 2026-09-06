@@ -203,15 +203,12 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 
 ---
 
-## Spec Implementation Matrix — Priority-Ordered
+## Spec Status
 
-The implementation matrix — tracking business-criticality ordering, implementation status, test
-coverage, last verification, and per-row notes — lives in its
-**[own file](implementation-matrix.md)** with a comprehensive status-usage legend ("when to use /
-when to promote each status").
-
-For a simplified status view (Planned / Partial / Shipped), see the **Status Legend** above each
-phase table in this file.
+Implementation status is shown per phase as a **Status Legend** (Planned / Partial / Shipped) above
+each phase table in this file. The legacy `implementation-matrix.md` (priority-ordered matrix with a
+detailed status-usage legend) was removed — per-spec status and coverage live in the phase tables
+here plus the spec files themselves.
 
 ---
 
@@ -252,6 +249,6 @@ Every spec follows the 12-section format defined by the `spec-writing` skill
 
 - `spec-writing` skill — Spec writing conventions and template
 - `feature-building` skill — How specs feed into implementation
-- `docs/specs/implementation-matrix.md` — Implementation status matrix (priority-ordered) with detailed status-usage legend (Impl Status / Test Coverage / Last Verified)
+- §Status Legend above each phase table in this file — Implementation status (Planned / Partial / Shipped)
 - `docs/specs/QLHDO-internara-project.md` — High-level feature specs
 - `docs/refs/modules/index.md` — Module dependency graph

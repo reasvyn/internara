@@ -131,8 +131,8 @@ setting a new one.
 | FR-RP3  | Action must return `canChangeName` / `canChangeUsername` (both `false` for super admin) |
 | FR-PE1  | `ProfileEditor` Livewire must load user with `profile` and `roles` relations on mount |
 | FR-PE2  | Component must delegate form population to `ReadProfileFormAction` |
-| FR-PE3  | Component must authorize via `ProfilePolicy` (admin or owner) |
-| FR-PE4  | Component must handle avatar upload with validation (image types, max 2MB) |
+| FR-PE3  | Component must authorize via `UserPolicy` (admin or owner) — `ProfilePolicy` is alternative for direct `Profile` instance, but `UserPolicy` is used when `profile` may be `null` (`updateOrCreate` path) |
+| FR-PE4  | Component must handle avatar upload with validation (mimes `jpeg,jpg,png,webp`, image, max 2MB, `sr-only` label trigger, `handleSave` + `toast`, clear `$avatar`, `wire:loading`) |
 | FR-PE5  | Component must support avatar removal (clear `avatar` media collection) |
 | FR-PE6  | Component must provide `avatarPreviewUrl()` for Livewire file upload preview |
 | FR-PE7  | Component must show role-aware ID number label (NISN for students, NIP for teachers) |
@@ -161,15 +161,27 @@ setting a new one.
 // app/Modules/User/Profile/Actions/UpdateProfileAction.php
 final class UpdateProfileAction extends BaseCommandAction
 {
-    public function execute(
-        User $user,
-        array $data,           // name, email, username, phone, address, bio, etc.
-        ?UploadedFile $avatar = null,
-    ): ActionResponse;
-    // Enforces SuperAdminIntegrityRules
-    // updateOrCreate on profiles table
-    // Uploads avatar to MediaLibrary
-    // Dispatches ProfileUpdated event
+    public function execute(UpdateProfileData $data): Profile;
+    // $data: string $userId (UUID, HasUuids/BaseModel), array $profile,
+    //       ?string $name, ?string $email, ?string $username, ?UploadedFile $avatar
+    // Validates via UpdateProfileData + SuperAdminIntegrityRules
+    // updateOrCreate on profiles table (profiles.user_id = users.id UUID)
+    // Uploads avatar to MediaLibrary `avatar` collection
+    // Dispatches ProfileUpdated event (after-commit via BaseAction::dispatchEvent)
+    // Logs profile_updated via SmartLogger
+}
+
+// app/Modules/User/Profile/Data/UpdateProfileData.php
+final readonly class UpdateProfileData extends BaseData
+{
+    public function __construct(
+        public string $userId,          // UUID string (BaseModel HasUuids), not int
+        public array $profile,          // phone, address, bio, etc.
+        public ?string $name = null,
+        public ?string $email = null,
+        public ?string $username = null,
+        public ?UploadedFile $avatar = null,
+    ) {}
 }
 
 // app/Modules/User/Profile/Actions/ReadProfileFormAction.php
@@ -188,17 +200,18 @@ class ProfileEditor extends BaseFormView
 {
     public ProfileForm $profileForm;
     public PasswordForm $passwordForm;
-    public ?UploadedFile $avatar = null;
-    public ?User $user = null;
+    public $avatar = null;              // untyped for Livewire hydration (TemporaryUploadedFile vs UploadedFile, strict_types)
+    public User $user;                   // non-nullable, loaded in mount() with profile+roles
 
     public function mount(): void;
-    public function save(UpdateProfileAction $action): void;
-    public function updatedAvatar(): void;
+    public function save(UpdateProfileAction $action): void; // handleSave + toast, refresh user, string userId
+    public function updatedAvatar(): void; // lifecycle hook, validate image mimes jpeg/jpg/png/webp max 2MB, handleSave, clear $avatar, toast
     public function confirmRemoveAvatar(): void;
     public function updatePassword(UpdateUserPasswordAction $action): void;
     public function avatarPreviewUrl(): ?string;
     public function getIdNumberLabel(): string;
 }
+// Blade: <label for="avatar-upload"><input class="sr-only" wire:model="avatar"> (not hidden @click) + wire:loading + x-ts-error
 ```
 
 ### Models
@@ -243,12 +256,19 @@ class SendProfileChangedMail implements ShouldQueue
 ### Policy
 
 ```php
-// app/Modules/User/Profile/Policies/ProfilePolicy.php
+// app/Modules/User/Profile/Policies/ProfilePolicy.php (alternative, direct Profile instance)
 class ProfilePolicy extends BasePolicy
 {
     // viewAny: admins only
     // view: admin or owner
     // update: admin or owner
+}
+
+// app/Modules/User/Policies/UserPolicy.php (actual for ProfileEditor when profile may be null)
+class UserPolicy extends BasePolicy
+{
+    // update: self (user.id == model.id) OR admin; super_admin target only self can update (see T4B26)
+    // ProfileEditor uses UserPolicy via $this->authorize('update', $this->user) for updateOrCreate path
 }
 ```
 

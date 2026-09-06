@@ -173,7 +173,7 @@ detail.
 ### 4.2 Lifecycle Phase Inventory (index only)
 
 Each phase's functional detail lives in its governing spec(s) — see [docs/specs/index.md](index.md)
-for the SSOT build order, and [implementation-matrix.md](implementation-matrix.md) for status. This
+for the SSOT build order, and [its Status Legend](index.md#status-legend) for status. This
 row is a navigation aid; do not duplicate per-feature detail here.
 
 | Phase             | Governing spec(s) |
@@ -314,7 +314,7 @@ non-goals rather than accidental omissions.
 
 | Metric                                 | Target                                     | Measurement                                                          |
 | -------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------- |
-| Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/implementation-matrix.md` (green/verified rows)          |
+| Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/index.md` §Status Legend (`Shipped` rows)               |
 | Module colocation                      | 100% of `app/` under modules + Core        | `python3 tools/scan_naming.py`, directory audit                      |
 | Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `python3 tools/scan_violations.py`                                   |
 | Spec↔code alignment                    | 0 spec gaps, 0 orphan tests                | per-module spec audits, `python3 tools/scan_spec_tests.py`           |
@@ -376,8 +376,7 @@ Issue that tracks resolution; see the spec template for row conventions.
 ## Quick References
 
 - `docs/guides/product-definition.md` — scope, personas, 3S doctrine, system boundary
-- `docs/specs/index.md` — full spec index and build order
-- `docs/specs/implementation-matrix.md` — implementation status matrix (priority-ordered)
+- `docs/specs/index.md` — full spec index, build order, and §Status Legend (Planned / Partial / Shipped)
 - `docs/refs/modules/index.md` — module dependency graph and registration
 - `config/module.php` — module bootstrap order
 - `docs/architecture.md` — 4-layer model, Action Triad

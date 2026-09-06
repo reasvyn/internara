@@ -247,7 +247,7 @@ based on current data.
 | FR-DM16 | `UpdateDepartmentAction` must wrap update in a transaction |
 | FR-DM17 | `UpdateDepartmentAction` must dispatch `DepartmentUpdated` event |
 | FR-DM18 | `UpdateDepartmentAction` must log update via activity log |
-| FR-DM19 | `DeleteDepartmentAction` must extend `BaseCommandAction` and check `profiles()->count() > 0` before deleting |
+| FR-DM19 | `DeleteDepartmentAction` must extend `BaseCommandAction` and check `profiles()->exists()` (or `count() > 0`) before deleting — `exists()` preferred for performance (same semantics) |
 | FR-DM20 | `DeleteDepartmentAction` must throw `RejectedException` when profiles are assigned |
 | FR-DM21 | `DeleteDepartmentAction` must wrap deletion in a transaction |
 | FR-DM22 | `DeleteDepartmentAction` must dispatch `DepartmentDeleted` event |
@@ -444,7 +444,7 @@ final class UpdateDepartmentAction extends BaseCommandAction
 final class DeleteDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department): void;
-    // Guard: profiles()->count() > 0 → throw RejectedException
+    // Guard: profiles()->exists() → throw RejectedException (exists() preferred over count() >0 for performance, same semantics)
     // Transaction: department->delete → dispatch DepartmentDeleted → log
 }
 ```
