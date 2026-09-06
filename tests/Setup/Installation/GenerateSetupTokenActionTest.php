@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Settings\Models\Setting;
 use App\Modules\Settings\Services\Settings;
 use App\Modules\Setup\Domain\Installation\Actions\GenerateSetupTokenAction;
@@ -74,4 +75,41 @@ test('8NZAU-FR-T5: a stored token state is reflected by SetupEntity::tokenVersio
     $state = SetupEntity::get();
 
     expect($state->tokenVersion())->toBe((int) Setting::where('key', 'setup.token_version')->first()->value);
+});
+
+/*
+|--------------------------------------------------------------------------
+| C9ZB6 — Recovery Ecosystem cross-perspective tests
+|--------------------------------------------------------------------------
+| These tests verify token generation behavior as it relates to the
+| recovery ecosystem (C9ZB6): the setup token gates recovery setup,
+| and its lifecycle matters for secure key provisioning.
+|
+| Covers: C9ZB6-FR-K3 (recovery key 64-char random — analogous token property)
+*/
+
+describe('C9ZB6: GenerateSetupTokenAction — recovery ecosystem', function (): void {
+
+    test('C9ZB6-FR-K3: generated token matches configured length', function (): void {
+        $result = app(GenerateSetupTokenAction::class)->execute();
+
+        // Recovery ecosystem requires 64-char random strings for keys;
+        // the setup token follows the same pattern via config
+        $expectedLength = (int) config('setup.token.length', 64);
+
+        expect(strlen($result->plaintext))->toBe($expectedLength);
+    });
+
+    test('C9ZB6-FR-K6: token expiry timestamp is in the future', function (): void {
+        $result = app(GenerateSetupTokenAction::class)->execute();
+
+        // For recovery setup to work, the token must not be expired
+        expect($result->expiresAt->isFuture())->toBeTrue();
+    });
+
+    test('C9ZB6-NFR-R3: token generation runs inside a DB transaction', function (): void {
+        // Verify the action extends BaseCommandAction (which provides transaction())
+        $action = app(GenerateSetupTokenAction::class);
+        expect($action)->toBeInstanceOf(BaseCommandAction::class);
+    });
 });

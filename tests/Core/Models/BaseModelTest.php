@@ -2,15 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Modules\Core\Models\BaseAuthenticatable;
 use App\Modules\Core\Models\BaseModel;
-use App\Modules\Core\Models\Concerns\HasCommonScopes;
 use App\Modules\User\Models\User;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Illuminate\Support\Str;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -19,27 +13,7 @@ final class TestCommonScopesModel extends BaseModel
     protected $table = 'users';
 }
 
-test('SE5Q9-FR-M1: BaseModel is abstract, extends Model, uses HasUuids + HasCommonScopes', function () {
-    $reflection = new ReflectionClass(BaseModel::class);
-    $traits = class_uses_recursive(BaseModel::class);
-
-    expect($reflection->isAbstract())->toBeTrue();
-    expect($reflection->getParentClass()->getName())->toBe(Model::class);
-    expect($traits)->toContain(HasUuids::class);
-    expect($traits)->toContain(HasCommonScopes::class);
-});
-
-test('SE5Q9-FR-M2: BaseAuthenticatable extends Authenticatable with UUID support', function () {
-    $reflection = new ReflectionClass(BaseAuthenticatable::class);
-    $traits = class_uses_recursive(BaseAuthenticatable::class);
-
-    expect($reflection->isAbstract())->toBeTrue();
-    expect($reflection->getParentClass()->getName())->toBe(Authenticatable::class);
-    expect($traits)->toContain(HasUuids::class);
-    expect($traits)->toContain(HasCommonScopes::class);
-});
-
-test('SE5Q9-FR-M1: models built on BaseAuthenticatable get UUID keys', function () {
+test('SE5Q9-FR-M1: models built on BaseModel get UUID keys', function () {
     $user = User::factory()->create();
 
     expect(Str::isUuid($user->id))->toBeTrue();

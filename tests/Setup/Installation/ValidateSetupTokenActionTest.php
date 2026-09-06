@@ -73,3 +73,51 @@ test('8NZAU-FR-T4: validating with no stored token at all is rejected as missing
     expect(fn () => app(ValidateSetupTokenAction::class)->execute('any-token'))
         ->toThrow(RejectedException::class, __('setup.token_missing'));
 });
+
+/*
+|--------------------------------------------------------------------------
+| C9ZB6 — Recovery Ecosystem cross-perspective tests
+|--------------------------------------------------------------------------
+| These tests verify token validation behavior from the recovery
+| ecosystem perspective: the setup token must be robust against
+| replay attacks, tampering, and must be single-use.
+|
+| Covers: C9ZB6-FR-R1 through FR-R5 (key regeneration lifecycle)
+*/
+
+describe('C9ZB6: ValidateSetupTokenAction — recovery ecosystem', function (): void {
+
+    test('C9ZB6-FR-R1: token is single-use — replay after validation is rejected', function (): void {
+        $generated = app(GenerateSetupTokenAction::class)->execute();
+
+        // First validation succeeds
+        app(ValidateSetupTokenAction::class)->execute($generated->plaintext);
+
+        // Second validation with the same token must fail (token cleared)
+        expect(fn () => app(ValidateSetupTokenAction::class)->execute($generated->plaintext))
+            ->toThrow(RejectedException::class, __('setup.token_missing'));
+    });
+
+    test('C9ZB6-FR-R5: successful validation clears token from settings', function (): void {
+        $generated = app(GenerateSetupTokenAction::class)->execute();
+
+        app(ValidateSetupTokenAction::class)->execute($generated->plaintext);
+
+        // Token should be cleared (null) — cannot be used again
+        $state = SetupEntity::get();
+        expect($state->hasStoredToken())->toBeFalse();
+        expect($state->setupToken())->toBeNull();
+    });
+
+    test('C9ZB6-FR-RL5: tampered token is rejected without side effects', function (): void {
+        $generated = app(GenerateSetupTokenAction::class)->execute();
+
+        // Attempt with wrong token
+        expect(fn () => app(ValidateSetupTokenAction::class)->execute('totally-wrong-token'))
+            ->toThrow(RejectedException::class, __('setup.token_mismatch'));
+
+        // Original token is still valid (not cleared)
+        $state = SetupEntity::get();
+        expect($state->hasStoredToken())->toBeTrue();
+    });
+});

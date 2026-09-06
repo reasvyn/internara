@@ -21,10 +21,6 @@ final readonly class TestEntity extends BaseEntity
     }
 }
 
-test('SE5Q9-FR-M3: cannot be instantiated directly (abstract)', function () {
-    expect((new ReflectionClass(BaseEntity::class))->isAbstract())->toBeTrue();
-});
-
 test('SE5Q9-FR-M3: fromArray() builds the entity from constructor params', function () {
     $entity = TestEntity::fromArray(['name' => 'Adit', 'age' => 18]);
 

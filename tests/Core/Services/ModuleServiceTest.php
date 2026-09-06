@@ -19,23 +19,23 @@ function moduleServiceWriteFixtures(): void
 
     File::put(
         $livewireDir.'/FixtureWidget.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire;\n\nuse Livewire\\Component;\n\nfinal class FixtureWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>fixture</div>';\n    }\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\Modules\\FixtureModule\\Livewire;\n\nuse Livewire\\Component;\n\nfinal class FixtureWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>fixture</div>';\n    }\n}\n",
     );
     File::put(
         $livewireDir.'/Concerns/SkippedWidget.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire\\Concerns;\n\nuse Livewire\\Component;\n\nfinal class SkippedWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>skipped</div>';\n    }\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\Modules\\FixtureModule\\Livewire\\Concerns;\n\nuse Livewire\\Component;\n\nfinal class SkippedWidget extends Component\n{\n    public function render(): string\n    {\n        return '<div>skipped</div>';\n    }\n}\n",
     );
     File::put(
         $livewireDir.'/NotAComponent.php',
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Livewire;\n\nfinal class NotAComponent\n{\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\Modules\\FixtureModule\\Livewire;\n\nfinal class NotAComponent\n{\n}\n",
     );
     File::put(
         app_path('Modules/FixtureModule/Models/FixtureModel.php'),
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nfinal class FixtureModel extends Model\n{\n    protected \$table = 'fixture_models';\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\Modules\\FixtureModule\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nfinal class FixtureModel extends Model\n{\n    protected \$table = 'fixture_models';\n}\n",
     );
     File::put(
         app_path('Modules/FixtureModule/Policies/FixtureModelPolicy.php'),
-        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\\Modules\\FixtureModule\\Policies;\n\nuse App\\Modules\\Core\\Policies\\BasePolicy;\n\nfinal class FixtureModelPolicy extends BasePolicy\n{\n}\n",
+        "<?php\n\ndeclare(strict_types=1);\n\nnamespace App\Modules\\FixtureModule\\Policies;\n\nuse App\Modules\\Core\\Policies\\BasePolicy;\n\nfinal class FixtureModelPolicy extends BasePolicy\n{\n}\n",
     );
     File::put(resource_path('views/FixtureModule/dashboard.blade.php'), '<div>fixture</div>');
 }

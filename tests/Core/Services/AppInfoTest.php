@@ -33,16 +33,15 @@ test('C8F0D-FR-SUP4: author accessors expose the composer author details', funct
     expect(AppInfo::gitUrl())->toBe('https://github.com/reasvyn');
 });
 
-test('C8F0D-FR-SUP8: clearCache() resets the cached metadata and reloads cleanly', function () {
+test('C8F0D-FR-SUP4: clearCache() resets the cached metadata and reloads cleanly', function () {
     AppInfo::clearCache();
 
     expect(AppInfo::all())->toHaveKey('name');
     expect(AppInfo::all()['name'])->toBe('Internara');
 });
 
-test('C8F0D-FR-SUP8: metadata is persisted in the configured cache store', function () {
+test('C8F0D-FR-SUP4: metadata is persisted in the configured cache store', function () {
     Cache::store('array')->forget(config('cache-keys.appinfo_metadata'));
-    (new ReflectionClass(AppInfo::class))->setStaticPropertyValue('metadata', null);
 
     AppInfo::all();
 

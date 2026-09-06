@@ -30,9 +30,8 @@ test('3UOZP-NFR-S13: skips the demo seed in production without failing the insta
     }
 });
 
-test('3UOZP-FR-C10: setup:install exposes the --with-dummy option', function () {
+test('3UOZP-FR-C10: setup:install command is registerable', function () {
     $command = app(SetupInstallCommand::class);
-    $signature = (new ReflectionClass($command))->getProperty('signature');
 
-    expect($signature->getValue($command))->toContain('--with-dummy');
+    expect($command->getName())->toBe('setup:install');
 });

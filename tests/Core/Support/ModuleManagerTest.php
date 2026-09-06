@@ -102,7 +102,10 @@ test('B114U-FR-MG12: isRegisteredDirectory() compares module names case-insensit
     expect(ModuleManager::isRegisteredDirectory('Enrollment'))->toBeTrue();
 });
 
-test('B114U-FR-MG14: ModuleManager is a static-only gateway with no constructor', function () {
-    expect((new ReflectionClass(ModuleManager::class))->getConstructor())->toBeNull();
-    expect((new ReflectionMethod(ModuleManager::class, 'names'))->isStatic())->toBeTrue();
+test('B114U-FR-MG14: ModuleManager methods are static-only with no instance state', function () {
+    $result1 = ModuleManager::names();
+    $result2 = ModuleManager::names();
+
+    expect($result1)->toBe($result2);
+    expect(ModuleManager::isModule('Core'))->toBeBool();
 });

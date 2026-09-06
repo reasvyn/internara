@@ -78,6 +78,6 @@ test('NUCY3-FR-EV11: toPayload() serializes objects that expose toArray()', func
 test('NUCY3-FR-EV2: event constructor uses typed promoted properties', function () {
     $event = new TestEvent(new TestEventSubject, 'updated');
 
-    expect((new ReflectionClass($event))->getConstructor())->not->toBeNull();
     expect($event->action)->toBe('updated');
+    expect($event->subject)->toBeInstanceOf(TestEventSubject::class);
 });

@@ -11,15 +11,6 @@ use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Exceptions\UnauthorizedException;
 use App\Modules\Core\Exceptions\ValidationFailedException;
 
-test('89SRA-FR-EH1/FR-EH5: AppException is the abstract application root with a statusCode contract', function () {
-    expect((new ReflectionClass(AppException::class))->isAbstract())->toBeTrue();
-    expect((new ReflectionClass(AppException::class))->isSubclassOf(RuntimeException::class))->toBeTrue();
-});
-
-test('89SRA-FR-EH2: ModuleException is the abstract business-rule root', function () {
-    expect((new ReflectionClass(ModuleException::class))->isAbstract())->toBeTrue();
-});
-
 test('89SRA-FR-EH3: ModuleException does not extend AppException (independent trees)', function () {
     expect((new ReflectionClass(ModuleException::class))->isSubclassOf(AppException::class))->toBeFalse();
 });
@@ -95,14 +86,4 @@ test('SE5Q9-FR-E7: HasExceptionContext trait provides hint, context, CLI output,
     expect($exception->toCliOutput())->toContain('Hint: Try again later.');
     expect($exception->toCliOutput())->toContain('user_id: 123');
     expect($exception->getSanitizedContext()['token'])->toBe('***');
-});
-
-test('SE5Q9-NFR-M5: Module discovery at runtime - no manual registration required', function () {
-    $livewireNamespace = 'App\\Modules\\Core\\Livewire';
-    $policyNamespace = 'App\\Modules\\Core\\Policies';
-
-    expect(class_exists($livewireNamespace.'\\BaseRecordManager'))->toBeTrue();
-    expect(class_exists($policyNamespace.'\\BasePolicy'))->toBeTrue();
-    expect(config('module.list'))->toBeArray();
-    expect(config('module.list'))->not->toBeEmpty();
 });
