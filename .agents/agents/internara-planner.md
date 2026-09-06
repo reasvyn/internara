@@ -1,4 +1,5 @@
 ---
+name: internara-planner
 description: Planning specialist — spec-first & issue scoping (spec-writing, issue-writing). Owns docs/specs/*.md FR/NFR/UC and GitHub issues
 mode: subagent
 temperature: 0.2

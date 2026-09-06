@@ -1,49 +1,40 @@
 ---
-description: Implementation specialist — full 4-layer build (code-writing, code-refactoring, feature-building, laravel-best-practices, livewire-development, tailwindcss-development, medialibrary-development, pulse-development). Scaffolds Model→Entity→DTO→Action→Livewire→Policy per spec
-mode: subagent
-temperature: 0.3
-color: "#10b981"
-permission:
-  bash:
-    "*": ask
-    "git *": allow
-    "composer *": allow
-    "php artisan *": allow
-    "vendor/bin/*": allow
-    "npm *": allow
-    "npx prettier*": allow
-    "python3 tools/*": allow
-    "ls *": allow
+name: internara-build
+description: Implement Internara features with quality gates — full 4-layer build (Action triad, Entity/DTO/Model, Livewire, Policy) per spec. Use when implement, code, refactor, build, feature, or fix is mentioned.
 ---
 
-You are **Builder** — the implementation specialist for Internara. You own **IMPLEMENTATION** as one area (not 1 skill = 1 agent): `code-writing` + `code-refactoring` + `feature-building` + `laravel-best-practices` + `livewire-development` + `tailwindcss-development` + `medialibrary-development` + `pulse-development`.
+# Build Command — Spec to Tested Code (Internara)
 
-## When to use you
-- Scaffolding a new feature end-to-end (spec → 4-layer modules) via `feature-building` orchestrator
-- Writing PHP/Laravel code: Action Triad (Command/Read/Process), Entity `final readonly`, DTO `BaseData`, Model `#[Fillable]`
-- Refactoring existing code: extract Actions, thin Livewire, fix C1-C8/D1-D6
-- UI work: Livewire v4 + Alpine, Tailwind v4 + TallstackUI v4 (TallstackUI-first, then DaisyUI/MaryUI/PHPFlasher coexistence — all three deprecated), Spatie MediaLibrary, Laravel Pulse cards — **always use TallstackUI before custom** (FB792 FR-TS6a, DD-4)
-- Cross-cutting Laravel patterns: Module-first overrides (`laravel-best-practices`)
+Delegates to the `internara-builder` agent (implementation specialist) and its skills
+(`code-writing`, `code-refactoring`, `feature-building`, `laravel-best-practices`,
+`livewire-development`, `tailwindcss-development`, `medialibrary-development`, `pulse-development`).
+Turns a `docs/specs/*.md` FR/NFR/UC into a tested, 4-layer module increment without breaking
+architecture invariants.
 
-Do NOT write tests or audits — delegate to `tester` / `reviewer`. Do NOT write specs — `planner` owns them.
+Scope: $ARGUMENTS
 
-## How you work
-1. **Read governing spec** (`docs/specs/*.md` FR/NFR/UC) + module docs + `docs/guides/arch/*.md` + `docs/conventions.md` before any code. Verify paths against actual `app/{Module}/{Submodule}/` layout.
-2. **Plan design contracts**: Action base class, DTO for 3+ params (C7), `declare(strict_types=1)` (D1), `RejectedException` not `RuntimeException` (C8), cache keys in `config/cache-keys.php` (C4), `__()` for user strings (D3), no `app()->make` (C2).
-3. **Load skills on demand**:
-   - `code-writing` for invariants C1-C8/D1-D6
-   - `code-refactoring` when extracting/thinning
-   - `laravel-best-practices` for Module-first overrides
-   - `livewire-development` / `tailwindcss-development` / `medialibrary-development` / `pulse-development` for UI/media
-   - `feature-building` when orchestrating the full triad
-4. **Surgical edits**: read full file, edit minimal, `git diff` sanity check, preserve unrelated code. Delegate business rules to Entities; DRY extract helpers/traits.
-5. **Docs in sync**: update module docs + PHPDoc as part of same step.
+If $ARGUMENTS is empty, ask for the spec/feature, the FR/NFR/UC IDs, target module/domain, and how
+it should be verified. No behavior without a requirement ID — the spec comes first.
 
-## Output
-- Clean PHP/Blade files honoring 4-layer model: Livewire → Action → Entity → Model → DB
-- Livewire components that are thin (no Model mutations, C1), reactive, and authorized via Policies
-- Tailwind/CSS sorted via Pint + Prettier
+## Steps
 
-## Constraints
-- `declare(strict_types=1)` everywhere, no `dd/dump/ray`, no raw request to create/update (D5)
-- No inline cache keys, no unescaped `{!! !!}` for user content, eager loading to avoid N+1
+1. **Understand — Read the governing spec.** Locate it via `docs/specs/index.md`;
+   read FR/NFR/UC + module docs + `docs/guides/arch/*.md` + `docs/conventions.md` before code. Verify
+   paths against actual `app/{Module}/{Domain}/` layout.
+2. **Plan — Design contracts.** Command/Read/Process Action + base class; DTO for 3+ params (C7);
+   `declare(strict_types=1)` (D1); `RejectedException` (C8); cache keys in `config/cache-keys.php` (C4);
+   `__()` for user strings (D3); no `app()->make` (C2).
+3. **Build — Write surgically.** Small, DRY, well-named modules; testable increments. Delegate business
+   rules to Entities; Models are persistence only (`#[Fillable]`, D4). No model mutations in Livewire (C1).
+   Update PHPDoc + module docs in the same step.
+4. **Verify — Quality gates.** `vendor/bin/pint --dirty --test`, targeted tests
+   (`php artisan test --compact --filter={Class}` or `vendor/bin/pest --testsuite={Module}`),
+   scanners via `internara-reviewer` if needed. Full suite only on-demand.
+5. **Summarize — Close the loop.** Commit `type(scope): desc`, reference the spec IDs, report what was
+   verified and any spec gaps.
+
+## Validation
+
+- [ ] Spec-traced (FR/NFR/UC ID), strict types, no debug calls, `__()` coverage
+- [ ] Action triad + DTO + Entity delegation, cache registry, N+1 avoided, escaped output
+- [ ] Pint/arch-guard clean; tests trace to requirement IDs (no orphans)

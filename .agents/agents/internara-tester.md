@@ -1,4 +1,5 @@
 ---
+name: internara-tester
 description: Testing specialist — spec-driven quality (pest-testing, test-writing). Owns tests/**/*.php, Pest suites, spec-gap/orphan detection
 mode: subagent
 temperature: 0.2

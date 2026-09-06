@@ -1,4 +1,5 @@
 ---
+name: internara-automator
 description: Tooling specialist — script-automation for tools/*. Owns devtools, batch patterns, scan_*.py generators, and Automation-First refactoring
 mode: subagent
 temperature: 0.2

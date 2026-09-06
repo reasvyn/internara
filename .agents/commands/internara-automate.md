@@ -1,36 +1,37 @@
 ---
-description: Tooling specialist — script-automation for tools/*. Owns devtools, batch patterns, scan_*.py generators, and Automation-First refactoring
-mode: subagent
-temperature: 0.2
-color: "#06b6d4"
-permission:
-  bash:
-    "*": ask
-    "git *": allow
-    "python3 tools/*": allow
-    "python3 -m json.tool*": allow
-    "vendor/bin/pint *": allow
-    "ls *": allow
-    "cat *": allow
+name: internara-automate
+description: Automate repetitive or batch work into Internara devtools — scripts, scanners, and generators in tools/. Use when automate, script, batch, tool, devtool, scan, dry-run, or repetitive multi-item work in this project is mentioned.
 ---
 
-You are **Automator** — the tooling specialist for Internara. You own **TOOLING**: `script-automation` skill (not 1:1 with a single script, but one area for all `tools/` devtools).
+# Automate Command — Turn Internal Repetition into Tools
 
-## When to use you
-- Creating or maintaining Python devtool scripts in `tools/` (scanners, batch renames, seeders, report generators)
-- Automation-First refactoring: if the same operation would run on 3+ items (files, lines, records, translations) or is scan/verify/batch-shaped, script it or reuse an existing tool
-- Integrating scripts with agent skills (standard interface, output format, error handling)
+Delegates to the `internara-automator` agent (tooling specialist) and the `script-automation` skill.
+Automation-First: if the same operation runs on 3+ items (files, lines, records, translations) or is
+scan/verify/batch-shaped in this repo, script it or reuse an existing scanner in `tools/` — never redo
+by hand what a script does.
 
-## How you work
-1. **Load `script-automation` skill first** — its `rules/*.md` define script interface, output format (`tools/outputs/{timestamp}-*.json`), error handling, testing, and integration with `arch-guard`/`sync-docs`.
-2. **Survey `tools/` before repeating anything** — `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py` are faster and deterministic than manual greps.
-3. **Batch your own ops**: group edits/tests/verification into few passes instead of many round-trips (full suite ~2GB+, 10+ min — never per-edit).
-4. **Keep scripts in `tools/`**, follow standards (strict types not applicable to Python, but follow error codes, JSON outputs, idempotency).
+Scope: $ARGUMENTS
 
-## Output
-- A new or updated `tools/*.py` with header docstring, arg handling, JSON report to `tools/outputs/`
-- Integration note in `AGENTS.md` Automation-First section or skill `Automation Scripts` table
+If $ARGUMENTS is empty, ask what repeats: how many items, how often, and the target outcome. A one-off
+job goes to `/tmp` (run then discard); durable value goes to `tools/`.
 
-## Constraints
-- Never redo by hand what a script does
-- Batch repetitive work via scripts — never run `vendor/bin/pest --testsuite` per-edit, run once after batch
+## Steps
+
+1. **Understand — Find the repetition.** Identify the items/operations that repeat. If fewer than ~3, do
+   it directly. Confirm durable vs one-off.
+2. **Survey `tools/` first** — `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
+   `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py` are faster and deterministic than manual
+   greps. Reuse before create.
+3. **Build — Write & place it.** Follow `.agents/skills/script-automation/SKILL.md` (interface, output
+   format `tools/outputs/{timestamp}-*.json`, error handling, idempotency, dry-run for destructive ops).
+   Batch edits into few passes.
+4. **Verify — Prove it works.** Run, confirm output shape, check idempotency. For renames/batch:
+   `git status` + `git diff` show only intended changes.
+5. **Summarize — Hand off.** Report script path, invocation, outcome. Add integration note to the
+   Automation Scripts section or skill table so future agents reuse it.
+
+## Validation
+
+- [ ] Script in `tools/` (durable) or `/tmp` + discarded (one-off)
+- [ ] Idempotent, dry-run guard for destructive ops, `tools/outputs/` JSON output follows standards
+- [ ] Reuse-before-create honored — no duplicate of an existing scanner

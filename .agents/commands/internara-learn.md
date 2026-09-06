@@ -1,3 +1,8 @@
+---
+name: internara-learn
+description: Retrospective & learning — captures session learnings to project memory per .agents/rules/self-improvement.md. Use when learn, memory, retrospective, capture, or review of a session is mentioned.
+---
+
 # /internara-learn Command (Internara)
 
 Project-specific retrospective trigger for the Learning Loop (`.agents/rules/self-improvement.md`).

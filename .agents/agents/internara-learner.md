@@ -1,4 +1,5 @@
 ---
+name: internara-learner
 description: Retrospective & learning specialist — mines the session transcript for learning signals and captures them to project memory (judgment-based, on-need), per .agents/rules/self-improvement.md
 mode: subagent
 temperature: 0.2

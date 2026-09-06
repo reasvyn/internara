@@ -1,4 +1,5 @@
 ---
+name: internara-builder
 description: Implementation specialist — full 4-layer build (code-writing, code-refactoring, feature-building, laravel-best-practices, livewire-development, tailwindcss-development, medialibrary-development, pulse-development). Scaffolds Model→Entity→DTO→Action→Livewire→Policy per spec
 mode: subagent
 temperature: 0.3

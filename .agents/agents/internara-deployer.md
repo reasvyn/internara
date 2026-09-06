@@ -1,4 +1,5 @@
 ---
+name: internara-deployer
 description: Deploy specialist — version-tag driven deploys (v*.*.* via release.yml 4-stage pipeline + deploy.sh, SSH deploy to $HOME/apps/internara)
 mode: subagent
 temperature: 0.1
