@@ -25,7 +25,7 @@ final class CreateAcademicYearAction extends BaseCommandAction
                 'name' => $validated['name'],
                 'start_date' => $validated['start_date'],
                 'end_date' => $validated['end_date'],
-                'is_active' => $validated['is_active'] ?? false,
+                'is_active' => $validated['is_active'] ?? (AcademicYear::count() === 0),
             ]);
 
             $this->dispatchEvent(new AcademicYearCreated($year));
