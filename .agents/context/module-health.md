@@ -1,5 +1,9 @@
 # Module Health — Stabilization Phase v0.15.9
 
+> **Folded (S7, 2026-09-06):** generic health-based fix order (debt-before-new-logic, healthy-module
+> as template, P0 order) → `~/.agents/rules/skill-building-refactoring.md`. This file keeps the
+> internara-specific health tiers, baselines, and module debts.
+
 ## Description
 
 Internara has **19 modules** in `app/Modules/` (18 business + UI + Core) at **v0.15.9 — Stabilization** (in progress). Architecture is sound (4-layer, Action Triad, Entity/DTO), but health is uneven. **Read this before touching any domain module** — it tells you which modules are safe to extend vs. which need P0 fixes first. This is the agent-facing version of `README.md#Project Status`; `README.md` is human-facing SSOT, this file is the agent's operational checklist.
@@ -26,6 +30,28 @@ Internara has **19 modules** in `app/Modules/` (18 business + UI + Core) at **v0
 4. **Missing Entity layer** — `Document` has no `Entities/`; business rules in Actions/Models. Extract to `final readonly` Entity with `fromModel()` + `bool` rule methods.
 5. **Event dispatch violations** — `event(new X)` inside DB transaction → race condition. Use `$this->dispatchEvent(new X())` (queued, fires after commit).
 6. **Dead code** — Unused DTOs, unregistered observers, events without listeners. Verify with `python3 tools/scan_dead_code.py --module {Module}`.
+
+---
+
+## Current Arch-Guard Baselines (refreshed 2026-09)
+
+Full-repo counts on current `main` — use as the "pre-existing, not a regression" baseline (scanner upgrade
+`4bad2c8fa`/`409dabb75` made old counts incomparable; details in `codebase-intentional-states.md`).
+
+| Metric | Value |
+|--------|-------|
+| `scan_violations.py` | **264** (200 medium / 64 low), checks 23 |
+| `scan_security.py` | 0 — clean |
+| `scan_conventions.py` | 2 — `L10N` hardcoded strings in Blade widgets |
+| `scan_spec_tests.py` | coverage **27.4% (Grade F)** — 395/1439 testable requirement IDs covered, 1056 uncovered; Shipped specs only 39.1% |
+
+**Violations by module (desc):** User 42 · Journals 27 · Enrollment 20 · SysAdmin 19 · Setup 18 · Auth 15 ·
+Program 15 · Partners 14 · Settings 14 · Academics 12 · Assessment 11 · Core 11 · Assignment 10 · Document 10 ·
+Certification 9 · Reports 7 · Evaluation 5 · Incident 4. Dominant class: `ARCH_ACT_RESPONSE` (153 — Actions
+returning `Model`/`void`, matching "ActionResponse gaps" above; worst in **User/Journals/Enrollment/SysAdmin**).
+
+**Spec↔test gaps (spec-testing skill):** biggest holes are Middleware pipeline (`2CF4Y` FR-MW*) and Deployment
+(`06IB6`) — the recent `fix(tests)` restored module namespaces, so re-measure before filling gaps.
 
 ---
 

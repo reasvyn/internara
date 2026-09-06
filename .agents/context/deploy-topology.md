@@ -1,5 +1,10 @@
 # Deploy Topology & Caveats — Operations Context
 
+> **Folded (S7, 2026-09-06):** generic orchestration/deploy gotchas (tag-as-contract, volume freeze,
+> `git reset --hard` destroys manual host edits, compose env mapping) →
+> `~/.agents/context/orchestration-gotchas.md`. This file keeps only internara-specific topology and
+> incidents.
+
 ## Description
 
 How the app gets from a Git tag push to a live site, and the operational traps to avoid when working on

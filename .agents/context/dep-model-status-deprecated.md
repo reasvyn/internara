@@ -1,5 +1,9 @@
 # Deprecation — spatie/laravel-model-status
 
+> **Folded (S7, 2026-09-06):** generic pattern (plain column + enum-backed setter, never a deprecated
+> package trait; evidence checklist) → `~/.agents/context/tooling-pins.md`. This file keeps only the
+> internara-specific facts and removal plan.
+
 ## Description
 
 `spatie/laravel-model-status` (composer `^1.18`) is **deprecated and scheduled for removal** via
