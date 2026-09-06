@@ -169,6 +169,25 @@ Full details: `.agents/context/module-health.md`
 
 ---
 
+## Agent Registry — Workspace (internara-*)
+
+Eight project-specific agents overlay the homespace subagents. Each is a **thin command → agent → skill** triad: the command entrypoint delegates to the agent, the agent loads skills on demand. Same names as homespace but prefixed `internara-` — these own Internara-specific contexts. SSoT for names/descriptions is each file's frontmatter (name first, then description); this table navigates, it does not override.
+
+| Agent | Description (frontmatter) | Skill(s) | Command |
+|-------|---------------------------|----------|---------|
+| `internara-automator` | Tooling specialist — `script-automation` for `tools/*`; owns devtools, batch patterns, `scan_*.py` generators, Automation-First refactoring | `script-automation` | `internara-automate` |
+| `internara-builder` | Implementation specialist — full 4-layer build per spec; scaffolds Model→Entity→DTO→Action→Livewire→Policy | `code-writing`, `code-refactoring`, `feature-building`, `laravel-best-practices`, `livewire-development`, `tailwindcss-development`, `medialibrary-development`, `pulse-development` | `internara-build` |
+| `internara-deployer` | Deploy specialist — version-tag deploys (`v*.*.*` release.yml 4-stage + `deploy.sh`); owns `.agents/context/deploy-topology.md` + `docs/guides/infra/deployment.md` | (deploy topology, no 1:1 skill) | `internara-deploy` |
+| `internara-learner` | Retrospective & learning specialist — mines session transcript for learning signals, captures to project memory per `.agents/rules/self-improvement.md` | `learning`, memory rules | `internara-learn` |
+| `internara-planner` | Planning specialist — spec-first & issue scoping; owns `docs/specs/*.md` FR/NFR/UC and GitHub issues | `spec-writing`, `issue-writing` | `internara-plan` |
+| `internara-reviewer` | Verification specialist — quality gates & audits (C1-C8/D1-D6, OWASP/CWE, spec↔code sync); never writes code, only reports | `arch-guard`, `qa-protocol`, `security-audit`, `spec-audit` | `internara-review` |
+| `internara-tester` | Testing specialist — spec-driven Pest tests, spec-gap/orphan detection | `pest-testing`, `test-writing` | `internara-test` |
+| `internara-writer` | Documentation specialist — SSOT keeper; owns `docs/`, module refs, AGENTS.md, skills, link/freshness checks | `doc-writing`, `sync-docs` | `internara-write` |
+
+Skill map (which skill for which task) lives in `.agents/context/skill-map.md` — read it every session.
+
+---
+
 ## Context Awareness — Project Orientation
 
 > **Prerequisite:** None — this is the orientation layer loaded after §Agent Workflow.

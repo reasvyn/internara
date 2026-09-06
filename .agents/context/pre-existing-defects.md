@@ -32,4 +32,4 @@ own instructions (rules/skills), not just logged. Update `context/` and `memory/
 never duplicate a topic.
 
 ---
-*Source: AGENTS.md §Pre-existing Defects & §Self-Improvement Loop. For the full procedure, see `.agents/rules/self-improvement.md`.*
+*Source: `.agents/context/pre-existing-defects.md` (workspace SSOT). For the full procedure, see `.agents/rules/self-improvement.md`.*

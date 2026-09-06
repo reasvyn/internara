@@ -42,4 +42,4 @@ remaining / next-session entry point) before the session ends. File with the `is
 template and dedup via `gh issue list --search` first (`fix-or-issue.md` §Pre-filing check).
 
 ---
-*Source: AGENTS.md §Phase Classification & §Size Triage. For instruction ordering, see `.agents/context/instruction-ordering.md`.*
+*Source: `.agents/context/phase-classification.md` (workspace SSOT). For instruction ordering, see `.agents/context/instruction-ordering.md`.*

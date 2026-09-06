@@ -37,7 +37,7 @@
 | Laravel Pulse dashboard | `pulse-development` | Dashboard, recorders, cards (1:1 laravel/pulse) |
 
 ---
-*Source: AGENTS.md §Skill Map. For skill deep-dives, see `.agents/skills/`.*
+*Source: `.agents/context/skill-map.md` (workspace registry; SSOT). For skill deep-dives, see `.agents/skills/`.*
 
 ## Module & Spec Reference
 

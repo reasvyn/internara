@@ -14,11 +14,11 @@
 | Topic | Doc |
 |-------|-----|
 | Full workflow & module map | `AGENTS.md` |
-| Verification matrix | `AGENTS.md` §Verification Strategy |
-| Pre-commit checklist | `AGENTS.md` §Pre-commit Checklist |
-| Skill map | `AGENTS.md` §Skill Map |
+| Verification matrix | `.agents/rules/verification-strategy.md` |
+| Pre-commit checklist | `.agents/rules/pre-commit-checklist.md` |
+| Skill map | `.agents/context/skill-map.md` |
 | Conventions & invariants | `docs/conventions.md` |
-| Instruction ordering rule | `.agents/rules/instruction-ordering.md` (this skill) |
+| Instruction ordering rule | `.agents/rules/instruction-ordering.md` (this context index) |
 
 ## Rules Index — Load on Demand
 
@@ -52,4 +52,4 @@
 | [`security`](../rules/security.md) | XSS, SQLi, mass assignment, CSRF | Any user input, output, or form |
 
 ---
-*Source: AGENTS.md §Skill Rules, §References & §Rules Index. For detailed rule bodies, see `.agents/rules/`.*
+*Source: `.agents/context/skill-rules.md` (workspace registry; SSOT). For detailed rule bodies, see `.agents/rules/`.*

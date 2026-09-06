@@ -113,4 +113,4 @@ npm run build              # Vite build (check frontend)
 | Thesis belongs in Assignment module | `docs/refs/modules/assignment.md` |
 
 ---
-*Source: AGENTS.md §Quick Reference & §Where to Find What.*
+*Source: `.agents/context/quick-reference.md` (workspace SSOT).*

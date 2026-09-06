@@ -36,4 +36,4 @@ Only the **production** stage deploys. A final tag never reaches the VPS unless 
 
 ---
 
-*Source: AGENTS.md §Version Bump Guide. For deploy topology details, see `.agents/context/deploy-topology.md`.*
+*Source: `.agents/context/version-bump-guide.md` (workspace SSOT). For deploy topology details, see `.agents/context/deploy-topology.md`.*

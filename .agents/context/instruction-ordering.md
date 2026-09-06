@@ -35,4 +35,4 @@ Before each action: *predict outcome → act → verify → adjust*. Anticipate 
 | **Algorithm design** | Plan ordered steps with clear inputs/outputs |
 
 ---
-*Source: AGENTS.md §Instruction Ordering & §Computational Thinking. For the full rule, see `.agents/rules/instruction-ordering.md`.*
+*Source: `.agents/context/instruction-ordering.md` (workspace SSOT). For the full rule, see `.agents/rules/instruction-ordering.md`.*

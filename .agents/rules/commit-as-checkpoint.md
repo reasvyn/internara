@@ -40,8 +40,7 @@ loss mid-operation must never strand more than one stage of work.
 Rules:
 
 - Run the [pre-commit checklist](pre-commit-checklist.md) before every checkpoint.
-- Commit format follows the project convention `type(scope): description` (AGENTS.md §Quick
-  Reference) — no empty commits, no dumping unrelated files into the checkpoint.
+- Commit format follows the project convention `type(scope): description` (see `.agents/context/quick-reference.md`) — no empty commits, no dumping unrelated files into the checkpoint.
 - The commit is the closing contract of its stage: after it lands, continue to the next stage or
   deliver the final report (what changed, what was verified, caveats).
 - A checkpoint may carry known-broken intermediate state **only** when the message body states it
