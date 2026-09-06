@@ -6,7 +6,7 @@
 
 | Fact | Value |
 |------|-------|
-| **Scope** | 19 modules = 18 business + UI + Core (693 PHP files in `app/` — 691 in `app/Modules/` — 45 migrations, 61 spec files incl. 3 meta / 58 feature specs, 17 web route files incl. `web.php`) |
+| **Scope** | 19 modules = 18 business + UI + Core (698 PHP files in `app/` — 696 in `app/Modules/` — 45 migrations, 64 spec files = 62 feature specs + 2 meta, 17 web route files incl. `web.php`) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |

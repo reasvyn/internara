@@ -138,7 +138,7 @@ Close the loop: version-control checkpoint, commit, and a concise final report.
 | Fact | Value |
 |------|-------|
 | **Version** | v0.15.9 — Stabilization |
-| **Scope** | 19 modules = 18 business + UI + Core (696 PHP files, 45 migrations, 62 spec files, 16 route files) |
+| **Scope** | 19 modules = 18 business + UI + Core (698 PHP files, 45 migrations, 64 spec files = 62 feature + 2 meta, 17 web route files) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo) or VPS/Docker Compose |

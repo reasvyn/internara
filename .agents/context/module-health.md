@@ -57,6 +57,6 @@ If the task is **new feature in a healthy module**, use that module as template;
 
 - `README.md#Project Status` — human SSOT for this file
 - `docs/refs/modules/index.md` — module docs (overview + reference per module)
-- `docs/specs/index.md` — spec registry (19 modules × 61 feature specs, 64 files incl. meta)
+- `docs/specs/index.md` — spec registry (19 modules × 62 feature specs, 64 files incl. 2 meta)
 - `tools/scan_violations.py`, `scan_class_contracts.py`, `scan_dead_code.py` — health scanners
 - `CONTRIBUTING.md` — branch/commit conventions for fixes

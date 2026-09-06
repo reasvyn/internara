@@ -12,7 +12,7 @@ Deep dive: `docs/project-vision.md` (personas, boundary, horizon 2026→2030) an
 
 | Fact | Value |
 |------|-------|
-| **Scope** | 19 modules = 18 business + UI + Core (693 PHP files in `app/` — 691 in `app/Modules/` — 45 migrations, 61 spec files incl. 3 meta / 58 feature specs, 17 web route files incl. `web.php`) |
+| **Scope** | 19 modules = 18 business + UI + Core (698 PHP files in `app/` — 696 in `app/Modules/` — 45 migrations, 64 spec files = 62 feature specs + 2 meta, 17 web route files incl. `web.php`) |
 | **Single-tenant** | No `tenant_id` overhead — one instance per school |
 | **DB** | SQLite default (zero-config) / MySQL 8 / MariaDB 10.6 / PG 15 |
 | **Deploy** | Shared hosting ($5/mo, SQLite+file+sync), **VPS/VM recommended** (Nginx+SQLite/MySQL+optional Redis), Docker Compose (app+queue+scheduler+Redis) |
@@ -66,7 +66,7 @@ User → Livewire (validates, catches RejectedException) → Command Action::exe
 
 **Health tiers** (`.agents/context/module-health.md`): `Production-Ready: Core,Auth,User,Settings,Setup,SysAdmin,Academics` · `Stable-Needs Attention: Program,Partners,Enrollment,Journals,Incident,Assignment,Reports` (dead DTOs, `event()` inside transactions, broken Blade, wrong `user_id` in attendance, ActionResponse gaps) · `Needs Work P0: Assessment,Certification,Document` (Blade crashes, relation/migration mismatches, missing Entity) · `Skeleton: Evaluation` · `Infra: Jobs,Providers`. Fix order: schema mismatch → ActionResponse → `__()` → Entity → `dispatchEvent()` → dead code.
 
-## Spec Build Order — 12 Phases, 61 Spec Files / 58 Feature Specs (SSOT: `docs/specs/index.md` + `implementation-matrix.md`)
+## Spec Build Order — 12 Phases, 64 Spec Files / 62 Feature Specs (SSOT: `docs/specs/index.md`)
 
 ```
 P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional → P5 Partnerships → P6 Programs
@@ -75,7 +75,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 
 **Spec-zero** `QLHDO Internara Project` (scope/lifecycle/roles/global NFR) parents all phases. Dependency order in `docs/specs/index.md` per-phase tables (e.g. `D2FT3 Arch → FB792 Tech Stack → ZT6VS Core Infra → SE5Q9 Base Classes → T4B26 RBAC → 89SRA Logging`; `81SMS School → 4HWSB Department+XW6F5 Year → XI3LB Company+NTHQA Partnership → 7C5WM Internship+IT0OE Groups → MBB5R Registration+J9GBH Placement → 1KSWL Daily+2EHSE Supervision … → ARDA6 Assessment+AXKZW Evaluation+T657Z Assignment → J0M04 Certification+PKYX6 Document → R6BMW Reports → HBXCI Backup/7HNCF GDPR/9YUUK Archiving`).
 
-**Spec template (11 sections):** problem, goals/non-goals, user stories/UC, FR/NFR, API/Data contracts, DD, success metrics, roadmap, quick refs — via `spec-writing` skill (`docs/specs/spec-template.md`). Status/coverage legend in `implementation-matrix.md` (Impl: Not Started/In Progress/Implemented/Verified/Need Review; Coverage: None/Partial/Full/Spec-Gap). Mostly `Verified/Full` as of 2026-08-19 except `8XMYS Layout & UI` (Implemented/Spec-Gap) and `QLHDO` (Spec-Gap).
+**Spec template (11 sections):** problem, goals/non-goals, user stories/UC, FR/NFR, API/Data contracts, DD, success metrics, roadmap, quick refs — via `spec-writing` skill (`docs/specs/spec-template.md`). Per-spec status via `docs/specs/index.md` §Status Legend (Planned/Partial/Shipped). The legacy `implementation-matrix.md` was removed — do not reference it.
 
 ## Cross-Cutting Protocols
 
@@ -103,7 +103,7 @@ P1 Foundation → P2 Configuration → P3 Identity&Auth → P4 Institutional →
 | Code rules, security, performance, naming | `docs/conventions.md` |
 | 19 modules (conceptual vs reference per module) | `docs/refs/modules/{module}.md` + `{module}-reference.md`, index `docs/refs/modules/index.md` |
 | Feature specs + build order | `docs/specs/index.md` → `docs/specs/{ID}-{feature}.md` |
-| Implementation status + coverage per spec | `docs/specs/implementation-matrix.md` |
+| Implementation status per spec | `docs/specs/index.md` §Status Legend (per-phase Planned/Partial/Shipped) |
 | Deep pattern guides (16 patterns) | `docs/guides/arch/{action,entity,model,data,enum,event,livewire,policy,exception,logging,cache,service,support,modular,testing,ui,ux}-pattern.md` |
 | Operations (deploy, CI/CD, infra, health) | `docs/guides/infra/{deployment,infrastructure,configuration,ci-cd,database,cache,queue,filesystem,security,testing,scaling,tools}.md` |
 | Architecture decisions (14 ADRs) | `docs/adr/index.md` → `docs/adr/adr-*.md` |
