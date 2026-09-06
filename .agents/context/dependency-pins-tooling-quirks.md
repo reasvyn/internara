@@ -1,8 +1,8 @@
 # Dependency Pins & Tooling Quirks — Environment Context
 
-> **Folded (S7, 2026-09-06):** generic essence → `~/.agents/context/tooling-pins.md` (composer
-> transitive-pin, codeload `--prefer-source`, npm `ERESOLVE` `--legacy-peer-deps`, deprecated-deps
-> pattern). This file keeps only internara-specific pins and values.
+> **Folded (S7, 2026-09-06):** generic essence (composer transitive-pin, codeload `--prefer-source`,
+> npm `ERESOLVE` `--legacy-peer-deps`, deprecated-deps pattern) moved to homespace. This file keeps
+> only internara-specific pins and values.
 
 ## Description
 

@@ -1,8 +1,7 @@
 # Version Bump Guide
 
-> **Folded (S7, 2026-09-06):** generic version-bump release orchestration checklist →
-> `~/.agents/rules/skill-building-orchestration.md`. This file keeps the internara-specific pre-flight
-> sources and release-flow QA gates.
+> **Folded (S7, 2026-09-06):** generic version-bump release orchestration checklist moved to
+> homespace. This file keeps the internara-specific pre-flight sources and release-flow QA gates.
 
 > **Curated mandatory known context** — how to bump versions and release Internara. Read before releasing a new version.
 

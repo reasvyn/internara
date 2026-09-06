@@ -1,8 +1,8 @@
 # Module Health — Stabilization Phase v0.15.9
 
 > **Folded (S7, 2026-09-06):** generic health-based fix order (debt-before-new-logic, healthy-module
-> as template, P0 order) → `~/.agents/rules/skill-building-refactoring.md`. This file keeps the
-> internara-specific health tiers, baselines, and module debts.
+> as template, P0 order) moved to homespace. This file keeps the internara-specific health tiers,
+> baselines, and module debts.
 
 ## Description
 

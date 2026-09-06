@@ -1,8 +1,8 @@
 # Codebase Intentional States — Architecture Context
 
 > **Folded (S7, 2026-09-06):** generic doctrine (regression = delta above pre-existing baseline,
-> intentional states are not casually fixed, fix-or-file) → `~/.agents/rules/skill-auditing.md`.
-> This file keeps only the internara-specific baselines and spec-ID convention.
+> intentional states are not casually fixed, fix-or-file) moved to homespace. This file keeps only
+> the internara-specific baselines and spec-ID convention.
 
 ## Description
 

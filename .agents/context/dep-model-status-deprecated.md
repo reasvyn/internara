@@ -1,8 +1,8 @@
 # Deprecation — spatie/laravel-model-status
 
 > **Folded (S7, 2026-09-06):** generic pattern (plain column + enum-backed setter, never a deprecated
-> package trait; evidence checklist) → `~/.agents/context/tooling-pins.md`. This file keeps only the
-> internara-specific facts and removal plan.
+> package trait; evidence checklist) moved to homespace. This file keeps only the internara-specific
+> facts and removal plan.
 
 ## Description
 

@@ -1,8 +1,8 @@
 # Production Dummy-Data Guard — Intentional Constraint
 
 > **Folded (S7, 2026-09-06):** generic defense-in-depth guard doctrine (layered guards intentional,
-> spec-amendment before change, ephemeral one-off container pattern) → `~/.agents/rules/skill-building.md`.
-> This file keeps only the internara-specific guards, demo procedure, and accounts.
+> spec-amendment before change, ephemeral one-off container pattern) moved to homespace. This file
+> keeps only the internara-specific guards, demo procedure, and accounts.
 
 ## Description
 
