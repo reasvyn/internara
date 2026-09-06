@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v2.0)
+scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v3.0)
 
 Validates that every FR/NFR/UC requirement in docs/specs/*.md has a
 corresponding Pest test that traces to it (spec-driven testing), and
@@ -11,11 +11,15 @@ Features:
   - Module-scoped scanning (--module)
   - Coverage score calculation
   - --list-modules to show available modules
+  - Placeholder test detection (empty/trivially true bodies)
+  - Scanner-gaming test detection (spec ID with only existence checks)
 
 Rules:
   SPEC_TEST_UNCOVERED  Requirement ID in spec but not found in any test (medium)
   SPEC_TEST_ORPHAN     Requirement ID in test but not found in any spec (low)
   SPEC_TEST_MISSING_FILE  Spec file has FR/NFR/UC but no test file mentions its Spec ID (high)
+  SPEC_TEST_PLACEHOLDER  Test body is empty or only has trivially true assertions (medium)
+  SPEC_TEST_GAMING    Test has spec ID but body only checks existence, not behavior (medium)
 
 Uses dynamic discovery — no hardcoded spec lists.
 Follows _common helpers for parallel execution, JSON report, and CLI flags.
@@ -68,6 +72,64 @@ RE_NON_TESTABLE = re.compile(r"(?:\*|~|!|-X\b|-NT\b|(?:^|\b)(?:FR|NFR|UC)-X-)")
 # Module mapping from spec index: | ID | [Name](file) | Module | ... |
 RE_SPEC_INDEX_ROW = re.compile(r"^\|\s*([A-Z0-9]{3,})\s*\|.*\|\s*(\w+)\s*\|")
 
+# ─── Placeholder & Gaming Detection ─────────────────────────────────
+
+# Test definition patterns ( Pest test/it with closure or arrow )
+RE_TEST_DEF = re.compile(
+    r"(?:test|it)\s*\(\s*['\"](.+?)['\"]\s*,\s*(?:function\s*\(\s*\)\s*\{|fn\s*\(\s*\)\s*=>)",
+    re.DOTALL,
+)
+
+# Trivially true / placeholder assertions
+RE_TRIVIAL = re.compile(
+    r"assertTrue\s*\(\s*true\s*\)|assertFalse\s*\(\s*false\s*\)|"
+    r"expect\s*\(\s*true\s*\)->toBeTrue|1\s*===\s*1",
+)
+
+# Structural / existence-only checks (no behavioral substance)
+# These are pure class/trait/interface/reflection checks — never behavioral alone
+RE_EXISTENCE_ONLY = re.compile(
+    r"class_exists\s*\(|is_subclass_of\s*\(|is_a\s*\(|method_exists\s*\(|"
+    r"ReflectionClass\s*\(|trait_exists\s*\(|interface_exists\s*\(|enum_exists\s*\(",
+)
+
+# Config existence checks (weak — only behavioral if combined with domain code)
+RE_CONFIG_ONLY = re.compile(
+    r"config\s*\(\s*['\"]\s*\)\s*\)|toHaveKey\s*\(|toBeArray\s*\(\s*\)",
+)
+
+# Behavioral code indicators — ANY of these means the test exercises real code
+# Covers: static calls (::), new instantiation, method calls (->), fakes, assertions, helpers
+RE_BEHAVIORAL = re.compile(
+    r"::factory\s*\(\s*\)|::create\s*\(\s*\)|->execute\s*\(\s*\)|"
+    r"assertModelExists\s*\(|assertDatabaseHas\s*\(|actingAs\s*\(|"
+    r"Http::fake|Queue::fake|Event::fake|Notification::fake|Cache::fake|"
+    r"Storage::fake|Bus::fake|Mail::fake|DB::table\s*\(|"
+    r"->dispatch\s*\(|->save\s*\(|->delete\s*\(|->assignRole\s*\(|"
+    r"->hasRole\s*\(|->paginate\s*\(|"
+    r"->fromArray\s*\(|->fromModel\s*\(|->statusCode\s*\(|"
+    r"->getContext\s*\(|->getMessage\s*\(|->getHint\s*\(|"
+    r"->isCritical\s*\(|->label\s*\(|captureLogs\s*\(|"
+    r"Request::create\s*\(|new\s+Response\s*\(|new\s+Request\s*\(|"
+    r"->handle\s*\(|->headers->get\s*\(|->headers->set\s*\(|"
+    r"->status\s*\(\s*\)|->getData\s*\(|->setContent\s*\(|"
+    r"app\s*\(\s*['\"]|resolve\s*\(\s*['\"]|"
+    r"config\s*\(\s*['\"][^)]+\)\s*->|config\s*\(\s*['\"][^)]+\)\s*,\s*['\"]|"
+    r"RateLimiter::|Gate::|View::|File::put\s*\(|File::delete\s*\(|"
+    r"json_decode\s*\(|file_get_contents\s*\(|base_path\s*\(|"
+    r"storage_path\s*\(|config_path\s*\(|database_path\s*\(|"
+    r"resource_path\s*\(|public_path\s*\(|"
+    r"new\s+[A-Z]\w+\s*\(|"
+    r"::\w+\s*\(|"
+    r"->toArray\s*\(\s*\)|->jsonSerialize\s*\(\s*\)|"
+    r"->toPayload\s*\(\s*\)|->eventName\s*\(\s*\)|->getName\s*\(\s*\)|"
+    r"->clearCache\s*\(\s*\)|->all\s*\(\s*\)|"
+    r"->forceFill\s*\(|->setAttribute\s*\(|->getAttribute\s*\(|"
+    r"->makeVisible\s*\(|->makeHidden\s*\(|"
+    r"discoverLivewireComponents\s*\(|discoverPolicies\s*\(|"
+    r"Storage::disk\s*\(|File::exists\s*\(|File::get\s*\(",
+)
+
 
 def is_non_testable(req_id: str) -> bool:
     """Return True if requirement is marked non-testable via short marker."""
@@ -82,29 +144,215 @@ def is_non_testable(req_id: str) -> bool:
     return False
 
 
-def is_ui_requirement(req_id: str, spec_file: Path | None = None) -> bool:
+def is_ui_requirement(req_id: str, spec_file: Path | None = None, line_text: str | None = None) -> bool:
     """
     Heuristic: UI/client-side requirements are those whose spec or ID
     suggests a view, layout, theme, or interaction. They are best
     verified by browser tests (tests/Browser) in addition to Pest.
+
+    Fix 2026-09: previous heuristic used first 3000 chars of the whole spec
+    as signal, causing false positives (e.g., OCEMS FR-UP flagged as UI
+    because spec snippet contains "Livewire" even though FR-UP is a Command
+    Action business logic). Now we check only:
+      - requirement ID itself (e.g., FR-UI, FR-L for layout)
+      - spec file name (only for known UI specs like 8XMYS, 52O1I, K8HP1)
+      - the specific requirement row text (not whole spec)
+
+    Justification: UI/client requirements are those where the requirement's
+    own description or ID explicitly mentions UI concepts, not where the spec
+    happens to mention Livewire elsewhere. This aligns with
+    docs/guides/infra/testing.md#browser-tests (Browser tests for critical
+    journeys: login, navigation, theme, sidebar; Pest for Action/Livewire).
     """
-    # Check ID pattern: layout/UI/view/theme/style etc. in the spec context
-    # We use the requirement ID plus the spec file name as hints
-    hints = req_id.lower()
-    if spec_file is not None:
-        hints += " " + spec_file.name.lower()
-        # Read a snippet around the requirement for better signal (first 2k of spec)
-        try:
-            snippet = read_file(spec_file)[:3000].lower()
-            hints += " " + snippet
-        except Exception:
-            pass
+    # 1. Check requirement ID pattern for UI-ish prefixes
+    #    e.g., FR-UI, FR-L (layout), FR-R (responsive), FR-S (shell), FR-A (a11y)
+    #    But FR-UP, FR-RP, FR-PE are profile business logic, not UI
+    ui_id_prefixes = ("FR-UI", "FR-L", "FR-R", "FR-S", "FR-A", "FR-C", "FR-N", "FR-SH", "FR-VD", "FR-P", "FR-D")
+    # Only treat as UI if the requirement's own row text contains UI keywords
+    # (checked below), not just ID prefix alone — ID prefix is weak signal.
+
+    # 2. Spec file name signal — only for specs that are primarily UI
+    #    (layout, branding, landing page). Profile (OCEMS) is mixed, so not UI-only.
+    ui_spec_ids = {"8XMYS", "52O1I", "K8HP1", "CKKZC", "06IB6"}  # layout, branding, landing, dashboard, deployment UI parts
+    spec_id = spec_file.stem.split("-")[0] if spec_file and "-" in spec_file.stem else (spec_file.stem if spec_file else "")
+    if spec_id in ui_spec_ids:
+        # For UI-primary specs, still check line text before flagging — not all FRs in a UI spec are UI
+        # Fall through to line-text check
+        pass
+    elif spec_file and any(kw in spec_file.name.lower() for kw in ["layout", "ui-system", "branding", "landing", "deployment"]):
+        # File name suggests UI, but still need line-text confirmation
+        pass
+    else:
+        # Not a UI-primary spec; require stronger line-text evidence
+        if line_text is None:
+            # No line context — be conservative, assume not UI (Pest-testable)
+            return False
+
+    # 3. Check the specific requirement row text (most precise signal)
+    if line_text is not None:
+        hints = (req_id + " " + line_text).lower()
+    else:
+        hints = req_id.lower()
+        if spec_file:
+            hints += " " + spec_file.name.lower()
+
     ui_keywords = [
         "ui", "view", "layout", "theme", "style", "css", "blade", "tailwind",
-        "sidebar", "header", "dashboard", "navigation", "component", "livewire",
-        "x-ts-", "alpine", "toast", "modal", "dropdown", "focus", "dark",
+        "sidebar", "header", "dashboard", "navigation", "component", "alpine",
+        "toast", "modal", "dropdown", "dark", "x-ts-", "wire:navigate",
     ]
-    return any(kw in hints for kw in ui_keywords)
+    # Note: "livewire" removed from generic UI list — many non-UI specs mention Livewire
+    # as implementation detail (e.g., ProfileEditor) but the requirement is business logic
+    # tested via Pest Livewire, not Browser. Only flag Livewire as UI when combined
+    # with explicit view/layout keywords in the row text.
+    has_ui_kw = any(kw in hints for kw in ui_keywords)
+    # Special case: if row explicitly says "Livewire" AND mentions view/component, treat as UI
+    if "livewire" in hints.lower() and has_ui_kw:
+        return True
+    return has_ui_kw
+
+
+# ─── Placeholder & Gaming Analysis ──────────────────────────────────
+
+def extract_test_bodies(content: str) -> list[tuple[str, int, str]]:
+    """
+    Extract individual test bodies from a test file.
+    Returns list of (test_name, start_line, body_text).
+    """
+    tests = []
+    lines = content.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Match test/it definition
+        m = RE_TEST_DEF.search(line)
+        if not m:
+            i += 1
+            continue
+        test_name = m.group(1)
+        start_line = i + 1  # 1-indexed
+        # Find the closing of the function body by tracking braces
+        body_lines = []
+        brace_count = 0
+        found_open = False
+        for j in range(i, len(lines)):
+            for ch in lines[j]:
+                if ch == "{":
+                    brace_count += 1
+                    found_open = True
+                elif ch == "}":
+                    brace_count -= 1
+            if found_open:
+                body_lines.append(lines[j])
+                if brace_count <= 0:
+                    break
+        body_text = "\n".join(body_lines)
+        tests.append((test_name, start_line, body_text))
+        i += len(body_lines) if body_lines else 1
+    return tests
+
+
+def classify_test_body(body_text: str) -> dict[str, bool]:
+    """
+    Classify a test body by what patterns it contains.
+    Returns dict with flags: has_trivial, has_existence_only, has_config_only, has_behavioral.
+    """
+    # Strip the test definition line itself (first line usually)
+    lines = body_text.splitlines()
+    # Find content after the opening brace
+    content_start = 0
+    for idx, line in enumerate(lines):
+        if "{" in line:
+            content_start = idx + 1
+            break
+    body_content = "\n".join(lines[content_start:])
+
+    has_trivial = bool(RE_TRIVIAL.search(body_content))
+    has_existence = bool(RE_EXISTENCE_ONLY.search(body_content))
+    has_config_only = bool(RE_CONFIG_ONLY.search(body_content))
+    has_behavioral = bool(RE_BEHAVIORAL.search(body_content))
+
+    return {
+        "has_trivial": has_trivial,
+        "has_existence_only": has_existence,
+        "has_config_only": has_config_only,
+        "has_behavioral": has_behavioral,
+    }
+
+
+def detect_placeholder_tests(
+    test_files: list[Path],
+) -> list[tuple[Path, str, int, str]]:
+    """
+    Scan test files for placeholder tests (empty/trivially true bodies).
+    Returns list of (file, test_name, line_no, reason).
+    """
+    results = []
+    for tf in test_files:
+        content = read_file(tf)
+        if not content:
+            continue
+        tests = extract_test_bodies(content)
+        for test_name, line_no, body in tests:
+            classification = classify_test_body(body)
+            # Placeholder: body is empty or only has trivially true assertions
+            lines = body.splitlines()
+            # Find content after opening brace
+            content_lines = []
+            in_body = False
+            for line in lines:
+                if "{" in line:
+                    in_body = True
+                    # Check if there's content after the brace on the same line
+                    after_brace = line.split("{", 1)[1].strip()
+                    if after_brace and after_brace != "}":
+                        content_lines.append(after_brace)
+                    continue
+                if in_body:
+                    stripped = line.strip()
+                    if stripped and stripped != "}":
+                        content_lines.append(stripped)
+            # Remove closing brace
+            content_lines = [l for l in content_lines if l != "}"]
+            if not content_lines:
+                results.append((tf, test_name, line_no, "empty body"))
+            elif classification["has_trivial"] and not classification["has_behavioral"]:
+                results.append((tf, test_name, line_no, "trivially true assertion"))
+    return results
+
+
+def detect_gaming_tests(
+    test_files: list[Path],
+) -> list[tuple[Path, str, int, str]]:
+    """
+    Scan test files for scanner-gaming tests (spec ID with only existence checks).
+    A test is gaming if it has a spec ID prefix but body contains ONLY existence/structural
+    checks and NO behavioral code.
+    Returns list of (file, test_name, line_no, reason).
+    """
+    results = []
+    for tf in test_files:
+        content = read_file(tf)
+        if not content:
+            continue
+        tests = extract_test_bodies(content)
+        for test_name, line_no, body in tests:
+            # Only check tests with spec ID prefix
+            if not RE_SPEC_REF.search(test_name):
+                continue
+            classification = classify_test_body(body)
+            # Gaming: has existence checks OR config-only, but NO behavioral code
+            has_structural = classification["has_existence_only"] or classification["has_config_only"]
+            if has_structural and not classification["has_behavioral"]:
+                # Determine the specific reason
+                reasons = []
+                if classification["has_existence_only"]:
+                    reasons.append("existence/class checks only")
+                if classification["has_config_only"] and not classification["has_existence_only"]:
+                    reasons.append("config/key existence checks only")
+                reason = " + ".join(reasons) if reasons else "structural checks only"
+                results.append((tf, test_name, line_no, reason))
+    return results
 
 
 def load_module_spec_mapping() -> dict[str, list[str]]:
@@ -457,7 +705,15 @@ def main() -> None:
         priority, _ = get_requirement_priority(req_id)
         # Map priority to severity for triage
         severity = {"critical": "high", "high": "high", "medium": "medium", "low": "low"}[priority]
-        is_ui = is_ui_requirement(req_id, spec_file)
+        # Retrieve the specific requirement row text for precise UI heuristic (fix false positives)
+        line_text = None
+        try:
+            lines = read_file(spec_file).splitlines()
+            if 1 <= line <= len(lines):
+                line_text = lines[line - 1]
+        except Exception:
+            line_text = None
+        is_ui = is_ui_requirement(req_id, spec_file, line_text)
         if is_ui:
             suggestion = f"Add Browser test (tests/Browser, puppeteer-core) that traces to {req_id} — UI requirement ({priority})"
         else:
@@ -491,6 +747,42 @@ def main() -> None:
             suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec",
             reference=".agents/rules/spec-first-doctrine.md",
             context={"requirement": req_id, "test": rel},
+        ))
+
+    # ─── Rule: SPEC_TEST_PLACEHOLDER ──────────────────────────────
+    placeholder_tests = detect_placeholder_tests(test_files)
+    for tf, test_name, line_no, reason in placeholder_tests:
+        rel = relative_path(tf)
+        findings.append(Finding(
+            id="SPEC-0000",
+            rule="SPEC_TEST_PLACEHOLDER",
+            severity="medium",
+            category="convention",
+            file=rel,
+            line=line_no,
+            message=f"Placeholder test '{test_name}' ({reason}) — not testing real behavior",
+            suggestion="Replace with a test that exercises domain code (Action/Entity/DTO/Model) or remove if the spec requirement was dropped",
+            reference="docs/guides/arch/testing-pattern.md",
+            context={"test": test_name, "reason": reason, "file": rel},
+        ))
+
+    # ─── Rule: SPEC_TEST_GAMING ───────────────────────────────────
+    gaming_tests = detect_gaming_tests(test_files)
+    for tf, test_name, line_no, reason in gaming_tests:
+        rel = relative_path(tf)
+        # Check if this test also has a spec ID — if so, it's gaming the tracer
+        has_spec_id = bool(RE_SPEC_REF.search(test_name))
+        findings.append(Finding(
+            id="SPEC-0000",
+            rule="SPEC_TEST_GAMING",
+            severity="medium" if has_spec_id else "low",
+            category="convention",
+            file=rel,
+            line=line_no,
+            message=f"Scanner-gaming test '{test_name}' ({reason}) — satisfies traceability but tests no behavior",
+            suggestion="Add behavioral assertions (Action::execute, Model operations, event dispatch) or remove the spec ID if the requirement is architectural-only",
+            reference="docs/guides/arch/testing-pattern.md",
+            context={"test": test_name, "reason": reason, "has_spec_id": has_spec_id, "file": rel},
         ))
 
     # ─── Rule: SPEC_TEST_MISSING_FILE ───────────────────────────────
@@ -547,6 +839,8 @@ def main() -> None:
         "test_requirements": len(test_req_set),
         "uncovered": len(uncovered),
         "orphans": len(orphans),
+        "placeholder_tests": len(placeholder_tests),
+        "gaming_tests": len(gaming_tests),
         "specs_without_tests": sum(1 for f in findings if f.rule == "SPEC_TEST_MISSING_FILE"),
         "coverage": coverage,
         "module_breakdown": module_breakdown,
