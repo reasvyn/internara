@@ -48,9 +48,9 @@ The pipeline runs **silently** — never narrate the steps. Surface only: (1) am
 |------|----------|-----------|----------|
 | **S** | ≤3 files, single concern | Single pass, full 5 at phase depth | None |
 | **M** | 4-10 files, 2-3 concerns | Single session, staged, Verify once → Summarize | 1 checkpoint before commit |
-| **L** | >10 files, multi-module | **MUST split** into sessions | **MUST inform user** (1 paragraph: "too broad — N sessions" + list) |
+| **L** | >10 files, multi-module | **MUST split** into sessions | **MUST inform user** (1 paragraph: "too broad — N sessions" + list) **+ file GitHub issue(s)** |
 
-L-size protocol: after **Plan**, inform user, then run each session `Implement → Verify → Summarize` with its own `git status`/`diff` + report.
+L-size protocol: after **Plan**, inform user, then run each session `Implement → Verify → Summarize` with its own `git status`/`diff` + report. **L-size must also file GitHub issue(s) at Plan time** as the continuation contract — the full scope + session plan recorded so a later session can resume without re-defining the task (details: `.agents/context/phase-classification.md` §Size Triage).
 
 ---
 
