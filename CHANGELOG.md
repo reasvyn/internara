@@ -45,12 +45,12 @@ PHPStan/Larastan were dropped in favor of Pint/Prettier/Pest/arch-guard scanners
 - PHPStan / Larastan static analysis (Pint, Prettier, Pest, and `tools/scan_*`
   arch-guards remain the quality gates)
 - `scan_skills.py` meta-framework scanner
-- `.ai/` rules directory (migrated into shared `.agents/`)
+- `.ai/` rules directory (migrated into the shared agent store, subsequently removed)
 
 ### Documentation
 - `docs(agents)`: reference AGENTS.md workflow/context instead of removed skills
 - `docs(agents)`: snapshot translated to English, memory paths split
-- `chore(agents)`: OpenCode config migrated to shared `.agents/` and docs synced
+- `chore(agents)`: OpenCode config migrated to the shared agent store and docs synced
 - `chore(rules)`: self-improvement memory capture made judgment-based (not per-summarize)
 
 ### Tests

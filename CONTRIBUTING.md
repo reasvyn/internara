@@ -119,7 +119,7 @@ php artisan test --compact --filter={ClassName}  # Single test class
 
 Test conventions:
 
-- Location: `tests/{Module}/{SubModule}/{Name}Test.php`
+- Location: `tests/{Type}/{Module}/{SubModule}/{Name}Test.php` ({Type} ∈ {Arch, Unit, Feature, Browser})
 - Use `LazilyRefreshDatabase` over `RefreshDatabase`; factories over model mocks
 - Mock external boundaries only (HTTP, mail, queue, filesystem)
 
@@ -151,11 +151,9 @@ updated (documentation-first approach in `docs/conventions.md`).
 
 ## AI Agent Development
 
-Internara is developed with heavy AI-agent assistance. Agent-facing assets live in `.agents/`:
-reusable skills (`.agents/skills/{name}/SKILL.md`), project memory (`.agents/context/`), and
-project-wide invariants (`AGENTS.md`). When extending them: follow the existing skill structure,
-reference rules in `docs/` instead of duplicating them, and update `AGENTS.md` if project-wide
-invariants change.
+Internara is developed with heavy AI-agent assistance. Project-wide invariants live in `AGENTS.md`,
+and document-type rules and templates live in `docs/templates/`. When extending them: reference rules
+in `docs/` instead of duplicating them, and update `AGENTS.md` if project-wide invariants change.
 
 ---
 
