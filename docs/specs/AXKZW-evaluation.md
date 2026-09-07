@@ -188,20 +188,6 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Evaluation/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Evaluation/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Evaluation/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Evaluation/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### EvaluationForm Model
@@ -460,24 +446,7 @@ After implementing this spec, the system has weighted feedback forms with sectio
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Evaluation/Models/EvaluationForm.php` — Form model with target_type and is_active
-- `app/Modules/Evaluation/Models/EvaluationSection.php` — Ordered section within a form
-- `app/Modules/Evaluation/Models/EvaluationQuestion.php` — Typed, weighted question with options
-- `app/Modules/Evaluation/Models/EvaluationResponse.php` — Submitted evaluation with polymorphic target
-- `app/Modules/Evaluation/Models/EvaluationAnswer.php` — Per-question answer with derived score
-- `database/migrations/2026_01_06_000001_create_evaluation_forms_table.php` — Forms schema
-- `database/migrations/2026_01_06_000002_create_evaluation_sections_table.php` — Sections schema
-- `database/migrations/2026_01_06_000003_create_evaluation_questions_table.php` — Questions schema
-- `database/migrations/2026_01_06_000004_create_evaluation_responses_table.php` — Responses schema
-- `database/migrations/2026_01_06_000005_create_evaluation_answers_table.php` — Answers schema
-- `docs/refs/modules/evaluation.md` — Module conceptual documentation

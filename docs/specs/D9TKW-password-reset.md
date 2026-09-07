@@ -117,20 +117,6 @@ request and the reset action is required to prevent abuse.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Auth/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Auth/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Auth/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Auth/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Actions
@@ -231,21 +217,7 @@ then wire Livewire components. Routes are `guest`-only middleware.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Auth/Password/Actions/SendPasswordResetLinkAction.php` — Reset link dispatch (41 lines)
-- `app/Modules/Auth/Password/Actions/ResetPasswordAction.php` — Token-based reset (83 lines)
-- `app/Modules/Auth/Password/Livewire/ForgotPassword.php` — Forgot password page
-- `app/Modules/Auth/Password/Livewire/ResetPassword.php` — Reset password page
-- `app/Modules/Auth/Password/Livewire/Forms/ForgotPasswordForm.php` — Email validation
-- `app/Modules/Auth/Password/Livewire/Forms/ResetPasswordForm.php` — Token+password validation
-- **Related spec:** [authentication.md](YB7RG-authentication.md) (YB7RG) — Login, activation, credential changes
-- **Related spec:** [password-confirmation.md](CQVSK-password-confirmation.md) (CQVSK) — Re-authentication gate

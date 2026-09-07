@@ -113,40 +113,40 @@ notes and verification timestamps.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ZUFG8-ZUFG8-HM1 | `HandbookManager` must be a Livewire component extending `BaseRecordManager`, accessible at `GET /admin/handbooks` with `auth` and `role:admin` middleware |
-| FR-ZUFG8-ZUFG8-HM2 | `HandbookManager` must support CRUD operations with file upload and audience selection |
-| FR-ZUFG8-ZUFG8-HM3 | `CreateHandbookAction::execute(HandbookData): Document` must create a Document with `type = 'handbook'` |
-| FR-ZUFG8-ZUFG8-HM4 | `UpdateHandbookAction::execute(Document, HandbookData): Document` must update an existing handbook Document |
-| FR-ZUFG8-ZUFG8-HM5 | `DeleteHandbookAction::execute(Document): void` must soft-delete or hard-delete a handbook Document |
-| FR-ZUFG8-ZUFG8-HM6 | `HandbookData` DTO must be `final readonly`, extend `BaseData`, with fields: `title` (string), `audience` (HandbookAudience), `description` (?string), `isActive` (bool), `file` (?UploadedFile) |
-| FR-ZUFG8-ZUFG8-HM7 | `HandbookAudience` enum must implement `LabelEnum` with cases: ALL, STUDENT, TEACHER, SUPERVISOR |
-| FR-ZUFG8-ZUFG8-HM8 | `HandbookEntity` must be `final readonly`, extend `BaseEntity`, with constructor: `id`, `title`, `version`, `isActive`, `audience` (HandbookAudience), `description`, `hasFile`, `createdAt` |
-| FR-ZUFG8-ZUFG8-HM9 | `HandbookEntity::isTargetedAt(?User): bool` must check if the handbook's audience matches the user's role |
-| FR-ZUFG8-ZUFG8-HM10 | `HandbookEntity::isNewerThan(?Activity): bool` must compare handbook version against an acknowledgment activity |
-| FR-ZUFG8-ZUFG8-HM11 | `HandbookEntity::isAvailable(): bool` must return true when `isActive` is true |
-| FR-ZUFG8-ZUFG8-HM12 | `HandbookEntity::canBeDeleted(): bool` must return true only if no acknowledgments exist |
-| FR-ZUFG8-ZUFG8-HM13 | `Document.asHandbook(): HandbookEntity` must be a bridge method returning a `HandbookEntity` snapshot |
-| FR-ZUFG8-ZUFG8-HM14 | Handbook events must dispatch: `HandbookCreated`, `HandbookUpdated`, `HandbookDeleted` (all extend `BaseEvent`) |
-| FR-ZUFG8-ZUFG8-HM15 | `ClearHandbookCache` listener must handle all 3 handbook events and clear dashboard cache |
+| FR-ZUFG8-HM1 | `HandbookManager` must be a Livewire component extending `BaseRecordManager`, accessible at `GET /admin/handbooks` with `auth` and `role:admin` middleware |
+| FR-ZUFG8-HM2 | `HandbookManager` must support CRUD operations with file upload and audience selection |
+| FR-ZUFG8-HM3 | `CreateHandbookAction::execute(HandbookData): Document` must create a Document with `type = 'handbook'` |
+| FR-ZUFG8-HM4 | `UpdateHandbookAction::execute(Document, HandbookData): Document` must update an existing handbook Document |
+| FR-ZUFG8-HM5 | `DeleteHandbookAction::execute(Document): void` must soft-delete or hard-delete a handbook Document |
+| FR-ZUFG8-HM6 | `HandbookData` DTO must be `final readonly`, extend `BaseData`, with fields: `title` (string), `audience` (HandbookAudience), `description` (?string), `isActive` (bool), `file` (?UploadedFile) |
+| FR-ZUFG8-HM7 | `HandbookAudience` enum must implement `LabelEnum` with cases: ALL, STUDENT, TEACHER, SUPERVISOR |
+| FR-ZUFG8-HM8 | `HandbookEntity` must be `final readonly`, extend `BaseEntity`, with constructor: `id`, `title`, `version`, `isActive`, `audience` (HandbookAudience), `description`, `hasFile`, `createdAt` |
+| FR-ZUFG8-HM9 | `HandbookEntity::isTargetedAt(?User): bool` must check if the handbook's audience matches the user's role |
+| FR-ZUFG8-HM10 | `HandbookEntity::isNewerThan(?Activity): bool` must compare handbook version against an acknowledgment activity |
+| FR-ZUFG8-HM11 | `HandbookEntity::isAvailable(): bool` must return true when `isActive` is true |
+| FR-ZUFG8-HM12 | `HandbookEntity::canBeDeleted(): bool` must return true only if no acknowledgments exist |
+| FR-ZUFG8-HM13 | `Document.asHandbook(): HandbookEntity` must be a bridge method returning a `HandbookEntity` snapshot |
+| FR-ZUFG8-HM14 | Handbook events must dispatch: `HandbookCreated`, `HandbookUpdated`, `HandbookDeleted` (all extend `BaseEvent`) |
+| FR-ZUFG8-HM15 | `ClearHandbookCache` listener must handle all 3 handbook events and clear dashboard cache |
 
 ### Student Handbook View
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ZUFG8-ZUFG8-SHV1 | `StudentHandbookList` must be a Livewire component accessible at `GET /student/handbooks` with `auth` and `role:student` middleware |
-| FR-ZUFG8-ZUFG8-SHV2 | `StudentHandbookList::handbooks()` computed must return active Documents with `type = 'handbook'` filtered by audience matching student's role |
-| FR-ZUFG8-ZUFG8-SHV3 | `StudentHandbookList::acknowledgments()` computed must return student's existing acknowledgments from `activity_log` |
-| FR-ZUFG8-ZUFG8-SHV4 | `HandbookForm` must be a Livewire Form object for handbook create/edit within `HandbookManager` |
+| FR-ZUFG8-SHV1 | `StudentHandbookList` must be a Livewire component accessible at `GET /student/handbooks` with `auth` and `role:student` middleware |
+| FR-ZUFG8-SHV2 | `StudentHandbookList::handbooks()` computed must return active Documents with `type = 'handbook'` filtered by audience matching student's role |
+| FR-ZUFG8-SHV3 | `StudentHandbookList::acknowledgments()` computed must return student's existing acknowledgments from `activity_log` |
+| FR-ZUFG8-SHV4 | `HandbookForm` must be a Livewire Form object for handbook create/edit within `HandbookManager` |
 
 ### Registration Documents
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ZUFG8-ZUFG8-RD1 | `registration_documents` pivot must link `registration_id` (FK→registrations, cascade) and `document_id` (FK→documents, cascade) |
-| FR-ZUFG8-ZUFG8-RD2 | `registration_documents` must include `status` field defaulting to `'pending'`, indexed, with composite index on `(registration_id, status)` |
-| FR-ZUFG8-ZUFG8-RD3 | `registration_documents` must include `admin_notes` (text, nullable), `verified_by` (FK→users, nullable), `verified_at` (timestamp, nullable) |
-| FR-ZUFG8-ZUFG8-RD4 | `registration_documents` must enforce unique constraint on `(registration_id, document_id)` |
-| FR-ZUFG8-ZUFG8-RD5 | Document access via `DocumentPolicy` must restrict `view` to admins or documents where `is_active = true` |
+| FR-ZUFG8-RD1 | `registration_documents` pivot must link `registration_id` (FK→registrations, cascade) and `document_id` (FK→documents, cascade) |
+| FR-ZUFG8-RD2 | `registration_documents` must include `status` field defaulting to `'pending'`, indexed, with composite index on `(registration_id, status)` |
+| FR-ZUFG8-RD3 | `registration_documents` must include `admin_notes` (text, nullable), `verified_by` (FK→users, nullable), `verified_at` (timestamp, nullable) |
+| FR-ZUFG8-RD4 | `registration_documents` must enforce unique constraint on `(registration_id, document_id)` |
+| FR-ZUFG8-RD5 | Document access via `DocumentPolicy` must restrict `view` to admins or documents where `is_active = true` |
 
 ---
 
@@ -154,26 +154,12 @@ notes and verification timestamps.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-ZUFG8-ZUFG8-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
-| NFR-ZUFG8-ZUFG8-P1 | `StudentHandbookList` page load must complete in < 500ms |
-| NFR-ZUFG8-ZUFG8-P2 | Handbook acknowledgment check must query `activity_log` efficiently (indexed on `event` + `subject_id`) |
-| NFR-ZUFG8-ZUFG8-R1 | Handbook events must be dispatched synchronously to ensure cache is cleared before response returns |
-| NFR-ZUFG8-ZUFG8-U1 | `StudentHandbookList` must show clear acknowledged/not-acknowledged status per handbook |
-| NFR-ZUFG8-ZUFG8-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Document/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Document/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Document/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Document/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-ZUFG8-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
+| NFR-ZUFG8-P1 | `StudentHandbookList` page load must complete in < 500ms |
+| NFR-ZUFG8-P2 | Handbook acknowledgment check must query `activity_log` efficiently (indexed on `event` + `subject_id`) |
+| NFR-ZUFG8-R1 | Handbook events must be dispatched synchronously to ensure cache is cleared before response returns |
+| NFR-ZUFG8-U1 | `StudentHandbookList` must show clear acknowledged/not-acknowledged status per handbook |
+| NFR-ZUFG8-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
 
 ---
 
@@ -331,29 +317,7 @@ After implementing this spec, the system has student and supervisor handbooks wi
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Document/Handbook/Actions/CreateHandbookAction.php` — Handbook creation
-- `app/Modules/Document/Handbook/Actions/UpdateHandbookAction.php` — Handbook update
-- `app/Modules/Document/Handbook/Actions/DeleteHandbookAction.php` — Handbook deletion
-- `app/Modules/Document/Handbook/Actions/AcknowledgeHandbookAction.php` — Student acknowledgment
-- `app/Modules/Document/Handbook/Entities/HandbookEntity.php` — Business rules entity
-- `app/Modules/Document/Handbook/Data/HandbookData.php` — Handbook DTO
-- `app/Modules/Document/Handbook/Enums/HandbookAudience.php` — Audience enum (4 cases)
-- `app/Modules/Document/Handbook/Events/` — HandbookCreated, HandbookUpdated, HandbookDeleted
-- `app/Modules/Document/Handbook/Listeners/ClearHandbookCache.php` — Cache invalidation listener
-- `app/Modules/Document/Handbook/Livewire/HandbookManager.php` — Admin handbook CRUD
-- `app/Modules/Document/Handbook/Livewire/StudentHandbookList.php` — Student handbook view
-- `app/Modules/Document/Handbook/Livewire/HandbookForm.php` — Handbook form object
-- `database/migrations/` — `documents` and `registration_documents` table migrations
-- `routes/web/document.php` — Route definitions
-- `docs/refs/modules/document.md` — Module conceptual documentation
-- **Related spec:** [document-templates.md](PKYX6-document-templates.md) — template management, PDF rendering, report generation

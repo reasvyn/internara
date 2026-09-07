@@ -486,36 +486,10 @@ the two-profile model and verify both paths end-to-end with `setup:install` + `s
 
 ---
 
+
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
-
-## Test Requirements
-
-Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
-
-| Layer | Test dir | Verifies |
-|-------|----------|----------|
-| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
-| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
-| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
-| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `config/deployment.php` — profile presets (new, single source of truth)
-- `docker-compose.yml` — VPS Docker topology (existing, referenced)
-- `docker/shared-hosting/docker-compose.yml` — shared-hosting simulation (existing)
-- `Dockerfile` — PHP-FPM app image (existing)
-- `.env.example` — shared-hosting-optimized defaults (existing)
-- `docs/guides/infra/deployment.md` — canonical deployment guide (to be aligned)
-- `docs/guides/infra/ci-cd.md` — CI/CD pipeline and artifact requirements
-- `routes/web/sysadmin.php` — `/cron/{secret}` webhook scheduler route
-- `app/Modules/SysAdmin/Http/Controllers/CronController.php` — webhook cron validation (existing)
-- **Related specs:** [system-requirements.md](J68GZ-system-requirements.md) (J68GZ), [installation.md](8NZAU-installation.md) (8NZAU), [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) (8FVZA), [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ)

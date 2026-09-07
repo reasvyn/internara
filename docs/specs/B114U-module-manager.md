@@ -147,48 +147,48 @@ automatically by `ModuleManager`/`ModuleService`.
 
 | ID     | Requirement                                                                 |
 | ------ | --------------------------------------------------------------------------- |
-| FR-B114U-B114U-MG1 | `ModuleManager::names(): array` must return the registered module list from `config('module.list')` |
-| FR-B114U-B114U-MG2 | `ModuleManager::isModule(string $name): bool` must be a strict membership check against `names()` |
-| FR-B114U-B114U-MG3 | `ModuleManager::registry(): array` must return the module → submodule mapping |
-| FR-B114U-B114U-MG4 | `ModuleManager::submodules(string $module): array` must return the module's submodule list (empty array if unknown) |
-| FR-B114U-B114U-MG5 | `ModuleManager::testDirs(): array` must return `config('module.test_dirs')` |
-| FR-B114U-B114U-MG6 | `ModuleManager::basePath()`, `viewsPath()`, `routesPath()` must return the configured paths |
-| FR-B114U-B114U-MG7 | `ModuleManager` must expose typed boolean accessors: `policiesEnabled()`, `livewireEnabled()`, `viewsEnabled()`, `factoriesEnabled()` |
-| FR-B114U-B114U-MG8 | `ModuleManager::livewireDirectory(): string` and `livewireExcludePaths(): array` must return the Livewire discovery settings |
-| FR-B114U-B114U-MG9 | `ModuleManager::policiesDirectory()`, `policiesExcludePaths()`, `policyModelNamespace()` must return the policy discovery settings |
-| FR-B114U-B114U-MG10 | `ModuleManager::viewsExcludeDirectories(): array` must return the view namespace exclusions |
-| FR-B114U-B114U-MG11 | `ModuleManager::routeFilePath(string $module): string` must return the route file path using the `Str::lower()` convention |
-| FR-B114U-B114U-MG12 | `ModuleManager::isRegisteredDirectory(string $directoryName): bool` must compare case-insensitively against `names()` |
-| FR-B114U-B114U-MG13 | `ModuleManager` must not perform any filesystem scanning (config reads only) |
-| FR-B114U-B114U-MG14 | All `ModuleManager` methods must be `public static` with no constructor (Support rules) |
+| FR-B114U-MG1 | `ModuleManager::names(): array` must return the registered module list from `config('module.list')` |
+| FR-B114U-MG2 | `ModuleManager::isModule(string $name): bool` must be a strict membership check against `names()` |
+| FR-B114U-MG3 | `ModuleManager::registry(): array` must return the module → submodule mapping |
+| FR-B114U-MG4 | `ModuleManager::submodules(string $module): array` must return the module's submodule list (empty array if unknown) |
+| FR-B114U-MG5 | `ModuleManager::testDirs(): array` must return `config('module.test_dirs')` |
+| FR-B114U-MG6 | `ModuleManager::basePath()`, `viewsPath()`, `routesPath()` must return the configured paths |
+| FR-B114U-MG7 | `ModuleManager` must expose typed boolean accessors: `policiesEnabled()`, `livewireEnabled()`, `viewsEnabled()`, `factoriesEnabled()` |
+| FR-B114U-MG8 | `ModuleManager::livewireDirectory(): string` and `livewireExcludePaths(): array` must return the Livewire discovery settings |
+| FR-B114U-MG9 | `ModuleManager::policiesDirectory()`, `policiesExcludePaths()`, `policyModelNamespace()` must return the policy discovery settings |
+| FR-B114U-MG10 | `ModuleManager::viewsExcludeDirectories(): array` must return the view namespace exclusions |
+| FR-B114U-MG11 | `ModuleManager::routeFilePath(string $module): string` must return the route file path using the `Str::lower()` convention |
+| FR-B114U-MG12 | `ModuleManager::isRegisteredDirectory(string $directoryName): bool` must compare case-insensitively against `names()` |
+| FR-B114U-MG13 | `ModuleManager` must not perform any filesystem scanning (config reads only) |
+| FR-B114U-MG14 | All `ModuleManager` methods must be `public static` with no constructor (Support rules) |
 
 ### 4.2 ModuleService (discovery orchestrator)
 
 | ID     | Requirement                                                                 |
 | ------ | --------------------------------------------------------------------------- |
-| FR-B114U-B114U-MS1 | `ModuleService` must accept a cache repository via constructor injection     |
-| FR-B114U-B114U-MS2 | `ModuleService::discoverLivewireComponents(): void` must register discovered Livewire components |
-| FR-B114U-B114U-MS3 | `ModuleService::discoverPolicies(): void` must bind discovered policies to models |
-| FR-B114U-B114U-MS4 | `ModuleService::registerBladeNamespaces(): void` must register view namespaces and anonymous component paths |
-| FR-B114U-B114U-MS5 | All `ModuleService` config reads must go through `ModuleManager` (no direct `config()`) |
-| FR-B114U-B114U-MS6 | Discovery caching must use keys from `config/cache-keys.php` (registered keys, 24-hour TTL) |
-| FR-B114U-B114U-MS7 | Discovery must scan only registered modules (`ModuleManager::names()`) |
-| FR-B114U-B114U-MS8 | Livewire/policy discovery must skip `Concerns/` and `Traits/` subdirectories |
-| FR-B114U-B114U-MS9 | Livewire aliases must use `{kebab-module}.{kebab-class}` and `{kebab-module}.{kebab-submodule}.{kebab-class}` |
-| FR-B114U-B114U-MS10 | Policies must bind to models in the same module (or submodule) `Models/` directory |
-| FR-B114U-B114U-MS11 | View registration must exclude the configured non-module directories |
+| FR-B114U-MS1 | `ModuleService` must accept a cache repository via constructor injection     |
+| FR-B114U-MS2 | `ModuleService::discoverLivewireComponents(): void` must register discovered Livewire components |
+| FR-B114U-MS3 | `ModuleService::discoverPolicies(): void` must bind discovered policies to models |
+| FR-B114U-MS4 | `ModuleService::registerBladeNamespaces(): void` must register view namespaces and anonymous component paths |
+| FR-B114U-MS5 | All `ModuleService` config reads must go through `ModuleManager` (no direct `config()`) |
+| FR-B114U-MS6 | Discovery caching must use keys from `config/cache-keys.php` (registered keys, 24-hour TTL) |
+| FR-B114U-MS7 | Discovery must scan only registered modules (`ModuleManager::names()`) |
+| FR-B114U-MS8 | Livewire/policy discovery must skip `Concerns/` and `Traits/` subdirectories |
+| FR-B114U-MS9 | Livewire aliases must use `{kebab-module}.{kebab-class}` and `{kebab-module}.{kebab-submodule}.{kebab-class}` |
+| FR-B114U-MS10 | Policies must bind to models in the same module (or submodule) `Models/` directory |
+| FR-B114U-MS11 | View registration must exclude the configured non-module directories |
 
 ### 4.3 Migration
 
 | ID      | Requirement                                                                 |
 | ------- | --------------------------------------------------------------------------- |
-| FR-B114U-B114U-MIG1 | `ModuleDiscoverService` must be removed; no remaining code may reference it  |
-| FR-B114U-B114U-MIG2 | `routes/web.php` must use `ModuleManager::names()` and `ModuleManager::routeFilePath()` |
-| FR-B114U-B114U-MIG3 | `AppServiceProvider` must inject `ModuleService` and gate on `ModuleManager` flags |
-| FR-B114U-B114U-MIG4 | `ModuleDiscoverCommand` must resolve `ModuleService` from the container      |
-| FR-B114U-B114U-MIG5 | Tests for discovery must target `ModuleService`                             |
-| FR-B114U-B114U-MIG6 | `config/module.php` must remain the single source of truth (no schema change) |
-| FR-B114U-B114U-MIG7 | `ModuleManager::names()` MUST match the directory listing of `app/Modules/` and `config/module.php` list | |
+| FR-B114U-MIG1 | `ModuleDiscoverService` must be removed; no remaining code may reference it  |
+| FR-B114U-MIG2 | `routes/web.php` must use `ModuleManager::names()` and `ModuleManager::routeFilePath()` |
+| FR-B114U-MIG3 | `AppServiceProvider` must inject `ModuleService` and gate on `ModuleManager` flags |
+| FR-B114U-MIG4 | `ModuleDiscoverCommand` must resolve `ModuleService` from the container      |
+| FR-B114U-MIG5 | Tests for discovery must target `ModuleService`                             |
+| FR-B114U-MIG6 | `config/module.php` must remain the single source of truth (no schema change) |
+| FR-B114U-MIG7 | `ModuleManager::names()` MUST match the directory listing of `app/Modules/` and `config/module.php` list | |
 
 ---
 
@@ -198,46 +198,32 @@ automatically by `ModuleManager`/`ModuleService`.
 
 | ID     | Requirement                                                                 |
 | ------ | --------------------------------------------------------------------------- |
-| NFR-B114U-B114U-M1 | No `config('module.*')` calls may exist outside `ModuleManager` (enforced by scan script) |
-| NFR-B114U-B114U-M2 | No filesystem scanning may exist outside `ModuleService`                    |
-| NFR-B114U-B114U-M3 | Every `ModuleManager` accessor must be individually unit-testable           |
-| NFR-B114U-B114U-M4 | `ModuleManager` must use `names()` for all module membership checks         |
+| NFR-B114U-M1 | No `config('module.*')` calls may exist outside `ModuleManager` (enforced by scan script) |
+| NFR-B114U-M2 | No filesystem scanning may exist outside `ModuleService`                    |
+| NFR-B114U-M3 | Every `ModuleManager` accessor must be individually unit-testable           |
+| NFR-B114U-M4 | `ModuleManager` must use `names()` for all module membership checks         |
 
 ### 5.2 Performance
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-B114U-B114U-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
-| NFR-B114U-B114U-P2 | Policy discovery must complete within 1 second on a cold cache       |
-| NFR-B114U-B114U-P3 | Cached discovery must have zero filesystem overhead                  |
+| NFR-B114U-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
+| NFR-B114U-P2 | Policy discovery must complete within 1 second on a cold cache       |
+| NFR-B114U-P3 | Cached discovery must have zero filesystem overhead                  |
 
 ### 5.3 Reliability
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-B114U-B114U-R1 | Discovery must not crash on malformed PHP files (graceful skip)      |
-| NFR-B114U-B114U-R2 | Cache must be cleared on `module:discover` and `config:clear`        |
+| NFR-B114U-R1 | Discovery must not crash on malformed PHP files (graceful skip)      |
+| NFR-B114U-R2 | Cache must be cleared on `module:discover` and `config:clear`        |
 
 ### 5.4 Security
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-B114U-B114U-S1 | Discovery must not register classes from unregistered directories    |
-| NFR-B114U-B114U-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("B114U: ...")` + `it("B114U-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
+| NFR-B114U-S1 | Discovery must not register classes from unregistered directories    |
+| NFR-B114U-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
 
 ## 6. API / Data Contracts
 
@@ -318,7 +304,7 @@ final readonly class ModuleService
 
 ### 6.3 Config & Cache Contracts
 
-- Config structure: `config/module.php` — see `module-discovery.md` (I1BCV) §6.1 (unchanged; FR-B114U-B114U-MIG6).
+- Config structure: `config/module.php` — see `module-discovery.md` (I1BCV) §6.1 (unchanged; FR-B114U-MIG6).
 - Cache keys: `config/cache-keys.php` keys `module_livewire`, `module_policies`, `module_views`,
   TTL 86400 — see `module-discovery.md` (I1BCV) §6.5 (unchanged).
 
@@ -387,8 +373,8 @@ cache-invalidation complexity without a verified need.
 
 | Metric                                       | Target             | Measurement                              |
 | -------------------------------------------- | ------------------ | ---------------------------------------- |
-| `config('module.*')` access outside ModuleManager | 0 occurrences      | Codebase scan (see NFR-B114U-B114U-M1)               |
-| Remaining `ModuleDiscoverService` references | 0                  | Codebase scan (FR-B114U-B114U-MIG1)                  |
+| `config('module.*')` access outside ModuleManager | 0 occurrences      | Codebase scan (see NFR-B114U-M1)               |
+| Remaining `ModuleDiscoverService` references | 0                  | Codebase scan (FR-B114U-MIG1)                  |
 | Registered modules discovered                | 100%               | All modules in config have discovery     |
 | Unregistered dirs excluded                   | 100%               | No discovery from non-module dirs        |
 | Cold-cache Livewire discovery                | < 2s               | Time to scan and register all            |
@@ -423,24 +409,7 @@ module registration through the consolidated gateway.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | `docs/specs/I1BCV-module-discovery.md` assumes manual `config/module.php` registry and `tests/Pest.php` sync: | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `config/module.php` — Module registry (single source of truth)
-- `config/cache-keys.php` — Cache key definitions
-- `app/Modules/Core/Support/ModuleManager.php` — Static module config gateway
-- `app/Modules/Core/Services/ModuleService.php` — Discovery orchestrator
-- `app/Modules/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
-- `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
-- `routes/web.php` — Route auto-inclusion
-- `docs/specs/module-discovery.md` (I1BCV) — Registry, discovery conventions, config contract
-- `docs/guides/arch/service-pattern.md` — Service vs Support boundaries
-- `docs/refs/modules/core.md` — Core module conceptual overview

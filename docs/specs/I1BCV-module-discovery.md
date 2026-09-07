@@ -268,20 +268,6 @@ models, all Blade view namespaces registered.
 | NFR-I1BCV-S1 | Discovery must not register classes from unregistered directories    |
 | NFR-I1BCV-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("I1BCV: ...")` + `it("I1BCV-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Config Structure
@@ -455,27 +441,7 @@ After implementing this spec, the system automatically discovers Livewire compon
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | `docs/specs/I1BCV-module-discovery.md` assumes manual `config/module.php` registry and `tests/Pest.php` sync: | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `config/module.php` — Module registry (single source of truth)
-- `config/cache-keys.php` — Cache key definitions
-- `app/Modules/Core/Support/ModuleManager.php` — Module config gateway (static)
-- `app/Modules/Core/Services/ModuleService.php` — Discovery orchestration
-- `app/Modules/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
-- `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
-- `routes/web.php` — Route auto-inclusion
-- `tests/Pest.php` — Test directory registration
-- `docs/specs/module-manager.md` — Module manager spec (B114U)
-- `docs/refs/modules/core.md` — Core module conceptual overview
-- `docs/refs/modules/core-reference.md` — Core module technical reference
-- `docs/guides/arch/service-pattern.md` — Service pattern documentation
-- `docs/guides/arch/modular-pattern.md` — Modular architecture documentation

@@ -207,20 +207,6 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Incident/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Incident/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Incident/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Incident/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### IncidentReport Model
@@ -422,25 +408,7 @@ After implementing this spec, students and supervisors can report workplace inci
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Incident/IncidentReport/Models/IncidentReport.php` — Incident model with 12 fillable fields and 3 enum casts
-- `app/Modules/Incident/IncidentReport/Enums/IncidentType.php` — 5-value type enum (LabelEnum)
-- `app/Modules/Incident/IncidentReport/Enums/IncidentSeverity.php` — 4-value severity enum (LabelEnum)
-- `app/Modules/Incident/IncidentReport/Enums/IncidentStatus.php` — 4-value status enum (StatusEnum) with transition map
-- `app/Modules/Incident/IncidentReport/Actions/ReportIncidentAction.php` — Creates incident, dispatches notification
-- `app/Modules/Incident/IncidentReport/Actions/UpdateIncidentAction.php` — Partial update of incident fields
-- `app/Modules/Incident/IncidentReport/Actions/ResolveIncidentAction.php` — Transitions to RESOLVED with resolution metadata
-- `app/Modules/Incident/IncidentReport/Policies/IncidentReportPolicy.php` — Role-based authorization for all operations
-- `app/Modules/Incident/IncidentReport/Livewire/IncidentForm.php` — Student-only incident report form
-- `app/Modules/Incident/IncidentReport/Livewire/IncidentManager.php` — Admin table with filters and resolve modal
-- `app/Modules/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — Admin notification on report
-- `docs/refs/modules/incident.md` — Module conceptual documentation

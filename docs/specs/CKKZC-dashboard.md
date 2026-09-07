@@ -258,20 +258,6 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 DashboardService
@@ -592,29 +578,7 @@ After implementing this spec, role-based dashboards display relevant stats, quic
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/User/Services/DashboardService.php` — role-based dashboard resolution (47 lines)
-- `app/Modules/User/Http/Controllers/DashboardController.php` — dashboard routing controller
-- `app/Modules/User/Dashboard/Livewire/UserDashboard.php` — base dashboard component (31 lines)
-- `app/Modules/User/Dashboard/Livewire/AdminDashboard.php` — admin dashboard with readiness checks
-- `app/Modules/User/Dashboard/Livewire/StudentDashboard.php` — student dashboard
-- `app/Modules/User/Dashboard/Livewire/TeacherDashboard.php` — teacher dashboard
-- `app/Modules/User/Dashboard/Livewire/SupervisorDashboard.php` — supervisor dashboard
-- `app/Modules/SysAdmin/Actions/ReadAdminDashboardAction.php` — admin data aggregation (91 lines)
-- `app/Modules/User/Dashboard/Actions/ReadStudentDashboardAction.php` — student aggregation (102 lines)
-- `app/Modules/User/Dashboard/Actions/ReadTeacherDashboardAction.php` — teacher aggregation (86 lines)
-- `app/Modules/User/Dashboard/Actions/ReadSupervisorDashboardAction.php` — supervisor aggregation (73 lines)
-- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — dept invalidation
-- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` — year invalidation
-- `config/cache-keys.php` — centralized cache key declarations
-- `routes/web/user.php` — all dashboard route definitions
-- **Related spec:** [authentication.md](YB7RG-authentication.md) — Login, logout, throttling

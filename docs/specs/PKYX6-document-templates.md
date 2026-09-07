@@ -101,46 +101,46 @@ manually compile reports from multiple sources.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PKYX6-PKYX6-TM1 | `TemplateManager` must be a Livewire component providing paginated CRUD for document templates |
-| FR-PKYX6-PKYX6-TM2 | `SaveDocumentTemplateAction` must accept an `array $data` with at least `title`, `type`, `content`, `version` and return `Document` |
-| FR-PKYX6-PKYX6-TM3 | `Document` model must use `#[Fillable]` attribute with `type`, `slug`, `title`, `content`, `file_path`, `version`, `is_active`, `metadata`, `created_by` |
-| FR-PKYX6-PKYX6-TM4 | `Document.type` must default to `'template'` and be indexed; composite index on `(type, is_active)` must exist |
-| FR-PKYX6-PKYX6-TM5 | `Document.slug` must be unique and auto-generated from `title` |
-| FR-PKYX6-PKYX6-TM6 | `Document.version` must be cast to `integer` and default to `1` |
-| FR-PKYX6-PKYX6-TM7 | `Document.is_active` must be cast to `boolean` and default to `true`, indexed |
-| FR-PKYX6-PKYX6-TM8 | `Document.metadata` must be cast to `json` and nullable |
-| FR-PKYX6-PKYX6-TM9 | `DocumentCategory` enum must implement `LabelEnum` with cases: APPLICATION, PERMIT, CERTIFICATE, REPORT, LETTER, POLICY, HANDBOOK |
-| FR-PKYX6-PKYX6-TM10 | `DocumentPolicy` must restrict create/update/delete to admin roles; view to admin+active document; viewAny to super_admin/admin/teacher/student |
-| FR-PKYX6-PKYX6-TM11 | `Document.createdBy()` must be a BelongsTo relation to User with `nullOnDelete` |
-| FR-PKYX6-PKYX6-TM12 | Document must support Spatie MediaLibrary attachments: `file` (single) and `handbook_file` (single) collections |
+| FR-PKYX6-TM1 | `TemplateManager` must be a Livewire component providing paginated CRUD for document templates |
+| FR-PKYX6-TM2 | `SaveDocumentTemplateAction` must accept an `array $data` with at least `title`, `type`, `content`, `version` and return `Document` |
+| FR-PKYX6-TM3 | `Document` model must use `#[Fillable]` attribute with `type`, `slug`, `title`, `content`, `file_path`, `version`, `is_active`, `metadata`, `created_by` |
+| FR-PKYX6-TM4 | `Document.type` must default to `'template'` and be indexed; composite index on `(type, is_active)` must exist |
+| FR-PKYX6-TM5 | `Document.slug` must be unique and auto-generated from `title` |
+| FR-PKYX6-TM6 | `Document.version` must be cast to `integer` and default to `1` |
+| FR-PKYX6-TM7 | `Document.is_active` must be cast to `boolean` and default to `true`, indexed |
+| FR-PKYX6-TM8 | `Document.metadata` must be cast to `json` and nullable |
+| FR-PKYX6-TM9 | `DocumentCategory` enum must implement `LabelEnum` with cases: APPLICATION, PERMIT, CERTIFICATE, REPORT, LETTER, POLICY, HANDBOOK |
+| FR-PKYX6-TM10 | `DocumentPolicy` must restrict create/update/delete to admin roles; view to admin+active document; viewAny to super_admin/admin/teacher/student |
+| FR-PKYX6-TM11 | `Document.createdBy()` must be a BelongsTo relation to User with `nullOnDelete` |
+| FR-PKYX6-TM12 | Document must support Spatie MediaLibrary attachments: `file` (single) and `handbook_file` (single) collections |
 
 ### PDF Rendering
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PKYX6-PKYX6-PR1 | `DocumentRenderer` must be a `final readonly` service class injectable via constructor |
-| FR-PKYX6-PKYX6-PR2 | `DocumentRenderer::renderHtml(Document, object): string` must resolve Blade template variables from the provided context object |
-| FR-PKYX6-PKYX6-PR3 | `DocumentRenderer::renderPdf(Document, object): string` must compile resolved HTML to PDF via DomPDF |
-| FR-PKYX6-PKYX6-PR4 | `DocumentRenderer::storePdf(Document, object, ?suffix): string` must render PDF, store to `generated-documents/` disk, and return stored file path |
-| FR-PKYX6-PKYX6-PR5 | Variable resolution must include registration context (student name, program, dates) and system settings (school name, principal name) |
-| FR-PKYX6-PKYX6-PR6 | `RenderDocumentAction::execute(Document, Registration): Document` must invoke `DocumentRenderer` and return a new Document record with stored PDF |
-| FR-PKYX6-PKYX6-PR7 | `RenderDocumentAction::download(Document): string` must return raw PDF content string for browser download |
-| FR-PKYX6-PKYX6-PR8 | `DocumentRenderController::show(Document, Registration)` must render PDF on-the-fly and return inline download |
-| FR-PKYX6-PKYX6-PR9 | `DocumentRenderController::store(Document, Registration, RenderDocumentAction)` must render, store, and redirect |
+| FR-PKYX6-PR1 | `DocumentRenderer` must be a `final readonly` service class injectable via constructor |
+| FR-PKYX6-PR2 | `DocumentRenderer::renderHtml(Document, object): string` must resolve Blade template variables from the provided context object |
+| FR-PKYX6-PR3 | `DocumentRenderer::renderPdf(Document, object): string` must compile resolved HTML to PDF via DomPDF |
+| FR-PKYX6-PR4 | `DocumentRenderer::storePdf(Document, object, ?suffix): string` must render PDF, store to `generated-documents/` disk, and return stored file path |
+| FR-PKYX6-PR5 | Variable resolution must include registration context (student name, program, dates) and system settings (school name, principal name) |
+| FR-PKYX6-PR6 | `RenderDocumentAction::execute(Document, Registration): Document` must invoke `DocumentRenderer` and return a new Document record with stored PDF |
+| FR-PKYX6-PR7 | `RenderDocumentAction::download(Document): string` must return raw PDF content string for browser download |
+| FR-PKYX6-PR8 | `DocumentRenderController::show(Document, Registration)` must render PDF on-the-fly and return inline download |
+| FR-PKYX6-PR9 | `DocumentRenderController::store(Document, Registration, RenderDocumentAction)` must render, store, and redirect |
 
 ### Report Generation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PKYX6-PKYX6-RG1 | `ReportsManager` must be a Livewire component accessible at `GET /admin/reports` with `auth` and `role:admin` middleware |
-| FR-PKYX6-PKYX6-RG2 | `ReportsManager` must support 4 report types: `internship_completion`, `student_performance`, `company_participation`, `mentor_evaluation` |
-| FR-PKYX6-PKYX6-RG3 | `GenerateReportAction::execute(Document, object $target): Document` must accept a document template and context object, invoke `DocumentRenderer`, and return a new Document |
-| FR-PKYX6-PKYX6-RG4 | `GenerateReportRequest` must validate: `document_id` (uuid, exists in documents), `registration_id` (uuid, exists in registrations), `options` (array, optional) |
-| FR-PKYX6-PKYX6-RG5 | `GenerateReportAction` must inject `DocumentRenderer` via constructor |
-| FR-PKYX6-PKYX6-RG6 | Generated reports must be created as Document records with `type = 'report'` and `is_active = true` |
-| FR-PKYX6-PKYX6-RG7 | `ReportsManager` must support report deletion via `DeleteReportAction::execute(Document): void` |
-| FR-PKYX6-PKYX6-RG8 | `GenerateReportAction` must create a Document record linked to the source template via `metadata['source_template_id']` |
-| FR-PKYX6-PKYX6-RG9 | `GenerateReportAction` must store the generated PDF via `DocumentRenderer::storePdf()` |
+| FR-PKYX6-RG1 | `ReportsManager` must be a Livewire component accessible at `GET /admin/reports` with `auth` and `role:admin` middleware |
+| FR-PKYX6-RG2 | `ReportsManager` must support 4 report types: `internship_completion`, `student_performance`, `company_participation`, `mentor_evaluation` |
+| FR-PKYX6-RG3 | `GenerateReportAction::execute(Document, object $target): Document` must accept a document template and context object, invoke `DocumentRenderer`, and return a new Document |
+| FR-PKYX6-RG4 | `GenerateReportRequest` must validate: `document_id` (uuid, exists in documents), `registration_id` (uuid, exists in registrations), `options` (array, optional) |
+| FR-PKYX6-RG5 | `GenerateReportAction` must inject `DocumentRenderer` via constructor |
+| FR-PKYX6-RG6 | Generated reports must be created as Document records with `type = 'report'` and `is_active = true` |
+| FR-PKYX6-RG7 | `ReportsManager` must support report deletion via `DeleteReportAction::execute(Document): void` |
+| FR-PKYX6-RG8 | `GenerateReportAction` must create a Document record linked to the source template via `metadata['source_template_id']` |
+| FR-PKYX6-RG9 | `GenerateReportAction` must store the generated PDF via `DocumentRenderer::storePdf()` |
 
 ---
 
@@ -148,28 +148,14 @@ manually compile reports from multiple sources.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-PKYX6-PKYX6-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
-| NFR-PKYX6-PKYX6-S2 | Template content rendered via Blade must be sanitized before DomPDF compilation to prevent XSS |
-| NFR-PKYX6-PKYX6-S3 | Generated PDFs stored on disk must not expose absolute server paths in responses |
-| NFR-PKYX6-PKYX6-P1 | On-the-fly PDF rendering (`DocumentRenderController::show`) must complete in < 5s for documents under 50 pages |
-| NFR-PKYX6-PKYX6-P2 | `TemplateManager` page load with pagination must complete in < 1s |
-| NFR-PKYX6-PKYX6-R1 | `DocumentRenderer::storePdf()` must write atomically — partial writes must not leave orphan files |
-| NFR-PKYX6-PKYX6-U1 | `ReportsManager` must visually present 4 report types as distinct selectable cards |
-| NFR-PKYX6-PKYX6-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Document/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Document/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Document/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Document/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-PKYX6-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
+| NFR-PKYX6-S2 | Template content rendered via Blade must be sanitized before DomPDF compilation to prevent XSS |
+| NFR-PKYX6-S3 | Generated PDFs stored on disk must not expose absolute server paths in responses |
+| NFR-PKYX6-P1 | On-the-fly PDF rendering (`DocumentRenderController::show`) must complete in < 5s for documents under 50 pages |
+| NFR-PKYX6-P2 | `TemplateManager` page load with pagination must complete in < 1s |
+| NFR-PKYX6-R1 | `DocumentRenderer::storePdf()` must write atomically — partial writes must not leave orphan files |
+| NFR-PKYX6-U1 | `ReportsManager` must visually present 4 report types as distinct selectable cards |
+| NFR-PKYX6-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
 
 ---
 
@@ -334,30 +320,7 @@ After implementing this spec, the system has PDF template infrastructure for cer
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Document/Models/Document.php` — Document model with fillable, casts, media, scopes, bridge
-- `app/Modules/Document/Policies/DocumentPolicy.php` — Role-based authorization
-- `app/Modules/Document/Services/DocumentRenderer.php` — PDF/HTML rendering service
-- `app/Modules/Document/Enums/DocumentCategory.php` — Document type enum (7 cases)
-- `app/Modules/Document/OfficialDocument/Actions/SaveDocumentTemplateAction.php` — Template CRUD
-- `app/Modules/Document/OfficialDocument/Actions/GenerateDocumentAction.php` — Document generation
-- `app/Modules/Document/OfficialDocument/Actions/GenerateReportAction.php` — Report generation
-- `app/Modules/Document/OfficialDocument/Actions/RenderDocumentAction.php` — On-the-fly render + store + download
-- `app/Modules/Document/OfficialDocument/Actions/DeleteReportAction.php` — Report deletion
-- `app/Modules/Document/OfficialDocument/Http/Controllers/DocumentRenderController.php` — Render controller
-- `app/Modules/Document/OfficialDocument/Http/Requests/GenerateReportRequest.php` — Report validation
-- `app/Modules/Document/OfficialDocument/Livewire/TemplateManager.php` — Template CRUD UI
-- `app/Modules/Document/OfficialDocument/Livewire/ReportsManager.php` — Report type selection + generation
-- `database/migrations/` — `documents` and `registration_documents` table migrations
-- `routes/web/document.php` — Route definitions
-- `docs/refs/modules/document.md` — Module conceptual documentation
-- **Related spec:** [handbooks.md](ZUFG8-handbooks.md) — handbook lifecycle, acknowledgment tracking, registration docs

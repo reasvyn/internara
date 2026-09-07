@@ -224,20 +224,6 @@ registrations would orphan these records and break foreign key relationships.
 | NFR-7C5WM-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
 | NFR-7C5WM-L3 | Internship status labels must use `InternshipStatus::label()` |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Program/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Program/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Program/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Program/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 InternshipStatus Enum
@@ -505,29 +491,7 @@ After implementing this spec, the system has internship program CRUD with phases
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Program/Internship/Models/Internship.php` — Internship model with JSON columns and entity bridges
-- `app/Modules/Program/Internship/Enums/InternshipStatus.php` — 5-state enum with state machine
-- `app/Modules/Program/Internship/Entities/InternshipState.php` — deletion guard
-- `app/Modules/Program/Internship/Entities/InternshipPeriod.php` — registration window + academic year checks
-- `app/Modules/Program/Internship/Data/InternshipData.php` — DTO for create/update
-- `app/Modules/Program/Internship/Actions/CreateInternshipAction.php` — creation with auto-fill
-- `app/Modules/Program/Internship/Actions/UpdateInternshipAction.php` — update with state machine
-- `app/Modules/Program/Internship/Actions/DeleteInternshipAction.php` — deletion with guard
-- `app/Modules/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php` — batch status update
-- `app/Modules/Program/Internship/Actions/ReadCloseReadinessAction.php` — 5-domain readiness check
-- `app/Modules/Program/Internship/Rules/OpenForRegistration.php` — validation rule
-- `app/Modules/Program/Internship/Policies/InternshipPolicy.php` — authorization
-- `app/Modules/Program/Internship/Livewire/InternshipManager.php` — CRUD, CSV, batch, readiness UI
-- `routes/web/program.php` — Route definitions
-- `docs/refs/modules/program.md` — Program module overview
-- **Related specs:** [internship-groups.md](IT0OE-internship-groups.md) — Group & member management

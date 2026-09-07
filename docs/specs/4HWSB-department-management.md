@@ -353,20 +353,6 @@ based on current data.
 | NFR-4HWSB-L1 | All user-facing strings must use `__()` translation helper |
 | NFR-4HWSB-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Academics/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Academics/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Academics/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Academics/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Department Model
@@ -774,33 +760,7 @@ After implementing this spec, the system has academic department CRUD with name,
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Academics/Department/Models/Department.php` — Department model with `#[Fillable]` and `hasMany` Profile
-- `app/Modules/Academics/Department/Entities/DepartmentState.php` — Deletion guard entity (`canBeDeleted()`)
-- `app/Modules/Academics/Department/Data/DepartmentData.php` — Department DTO extending `BaseData`
-- `app/Modules/Academics/Department/Actions/CreateDepartmentAction.php` — Department creation with validation
-- `app/Modules/Academics/Department/Actions/UpdateDepartmentAction.php` — Department update with name uniqueness
-- `app/Modules/Academics/Department/Actions/DeleteDepartmentAction.php` — Department deletion with profile guard
-- `app/Modules/Academics/Department/Livewire/DepartmentManager.php` — Department CRUD UI + CSV import/export
-- `app/Modules/Academics/Department/Livewire/Forms/DepartmentForm.php` — Livewire form validation
-- `app/Modules/Academics/Department/Policies/DepartmentPolicy.php` — Authorization with deletion guard
-- `app/Modules/Academics/Department/Events/DepartmentCreated.php` — Create event extending `BaseEvent`
-- `app/Modules/Academics/Department/Events/DepartmentUpdated.php` — Update event extending `BaseEvent`
-- `app/Modules/Academics/Department/Events/DepartmentDeleted.php` — Delete event extending `BaseEvent`
-- `app/Modules/User/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` — Dashboard cache invalidation
-- `app/Modules/Core/Support/CsvHandler.php` — Shared CSV import/export service
-- `config/event.php` — Event-to-listener registration
-- `database/migrations/2026_01_03_000002_create_departments_table.php` — Departments table schema
-- `routes/web/academics.php` — Department route registration
-- `docs/refs/modules/academics.md` — Academics module overview
-- `docs/refs/modules/academics-reference.md` — Academics module technical reference
-- **Related specs:** [school-profile.md](81SMS-school-profile.md) — School entity; [academic-year-management.md](XW6F5-academic-year-management.md) — Academic year lifecycle

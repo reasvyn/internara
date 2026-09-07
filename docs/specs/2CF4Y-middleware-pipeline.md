@@ -121,20 +121,6 @@ limiter to apply to which route group.
 | NFR-2CF4Y-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
 | NFR-2CF4Y-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("2CF4Y: ...")` + `it("2CF4Y-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Middleware Execution Order (Global)
@@ -271,23 +257,7 @@ After implementing this spec, the system has a complete middleware stack: securi
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Http/Middleware/LogContextMiddleware.php` — Request context enrichment
-- `app/Modules/Core/Http/Middleware/SecurityHeadersMiddleware.php` — Security header injection
-- `app/Modules/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — Login rate limiting
-- `app/Modules/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Role-based access
-- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Locale switching
-- `app/Modules/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` — Setup protection
-- `app/Modules/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` — Setup token
-- `app/Providers/AppServiceProvider.php` — Rate limiter registration
-- `docs/guides/arch/livewire-pattern.md` — Livewire authorization patterns
-- `docs/specs/security-headers.md` — CSP and header details

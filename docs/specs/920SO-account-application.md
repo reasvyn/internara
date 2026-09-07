@@ -171,20 +171,6 @@ to the admin, not a stack trace.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Enrollment/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Enrollment/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Enrollment/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Enrollment/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Enrollment/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 AccountApplication Model
@@ -425,29 +411,7 @@ After implementing this spec, new students can self-register through a public fo
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Enrollment/AccountApplication/Models/AccountApplication.php` — Application model
-- `app/Modules/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php` — Application status enum
-- `app/Modules/Enrollment/AccountApplication/Actions/ApplyAccountAction.php` — Guest application with re-activation
-- `app/Modules/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php` — Atomic user provisioning
-- `app/Modules/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php` — Application rejection
-- `app/Modules/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php` — Application authorization
-- `app/Modules/Enrollment/AccountApplication/Events/AccountApplicationApproved.php` — Approval event
-- `app/Modules/Enrollment/AccountApplication/Events/AccountApplicationRejected.php` — Rejection event
-- `app/Modules/Enrollment/AccountApplication/Livewire/ApplyPage.php` — Guest application form
-- `app/Modules/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php` — Application form validation
-- `app/Modules/Program/Internship/Rules/OpenForRegistration.php` — internship must be published/active
-- `routes/web/enrollment.php` — All enrollment route definitions
-- `database/migrations/2026_01_04_000004_create_account_applications_table.php` — Applications migration
-- `docs/refs/modules/enrollment.md` — Enrollment module overview
-- **Related specs:** [registration.md](MBB5R-registration.md) — Registration workflow & documents
-- **Related specs:** [placement.md](J9GBH-placement.md) — Placement CRUD & capacity management

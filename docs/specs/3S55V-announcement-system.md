@@ -256,20 +256,6 @@ or correction before the audience sees it.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/SysAdmin/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/SysAdmin/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/SysAdmin/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/SysAdmin/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Announcement Model
@@ -639,32 +625,7 @@ After implementing this spec, the announcement system provides admins with a com
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/SysAdmin/Announcement/Models/Announcement.php` — Eloquent model with `#[Fillable]`, scopes, and entity bridge (93 lines)
-- `app/Modules/SysAdmin/Announcement/Enums/AnnouncementStatus.php` — Three-state lifecycle enum implementing `StatusEnum` (58 lines)
-- `app/Modules/SysAdmin/Announcement/Entities/AnnouncementState.php` — `final readonly` entity with `fromModel()` and `isPendingPublish()` (52 lines)
-- `app/Modules/SysAdmin/Announcement/Actions/SendAnnouncementAction.php` — Create + conditional notification dispatch (81 lines)
-- `app/Modules/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php` — Status transition + notification dispatch (46 lines)
-- `app/Modules/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php` — Transactional deletion with audit log (22 lines)
-- `app/Modules/SysAdmin/Announcement/Livewire/AnnouncementManager.php` — Admin management UI with confirm actions (135 lines)
-- `app/Modules/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php` — Form object with validation rules (59 lines)
-- `app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — Multi-channel notification class (59 lines)
-- `app/Modules/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php` — Cron command for scheduled publishing (45 lines)
-- `database/migrations/2026_01_01_000007_create_announcements_table.php` — Table schema with indexes (39 lines)
-- `database/factories/AnnouncementFactory.php` — Test factory (28 lines)
-- `resources/views/sysadmin/announcement/announcement-manager.blade.php` — Management UI Blade template (136 lines)
-- `resources/views/sysadmin/announcement/components/announcement-guide.blade.php` — Help guide overlay (67 lines)
-- `routes/web/sysadmin.php:48-50` — Route definition with auth + role middleware
-- `routes/console.php:17-19` — Scheduler registration (every minute)
-- `lang/en/announcement.php` — English translation strings (52 lines)
-- **Related spec:** [notification-infrastructure.md](TXR2H-notification-infrastructure.md) — `CustomDatabaseChannel`, `AnnouncementNotification` dispatch backbone
-- **Related spec:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) — Role middleware and access gating

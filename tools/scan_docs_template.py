@@ -330,7 +330,7 @@ def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], co
         "3. User Stories / Use Cases", "4. Functional Requirements",
         "5. Non-Functional Requirements", "6. API / Data Contracts",
         "7. Design Decisions", "8. Success Metrics", "9. Roadmap",
-        "10. Risks & Assumptions", "Test Requirements"
+        "10. Risks & Assumptions"
     ]
     found_sections = {sec: False for sec in mandatory_sections}
     

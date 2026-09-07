@@ -246,20 +246,6 @@ to ensure administrators always see current data.
 | NFR-XI3LB-L1 | All user-facing strings must use `__()` translation helper |
 | NFR-XI3LB-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Partners/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Partners/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Partners/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Partners/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Company Model
@@ -489,32 +475,7 @@ After implementing this spec, the system has company CRUD with industry type, co
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Partners/Company/Models/Company.php` — Company model with `#[Fillable]` attribute and relationships
-- `app/Modules/Partners/Company/Entities/CompanyState.php` — Entity with `canBeDeleted()` dual guard
-- `app/Modules/Partners/Company/Data/CompanyData.php` — Company DTO (extends `BaseData`)
-- `app/Modules/Partners/Company/Actions/CreateCompanyAction.php` — Create command action
-- `app/Modules/Partners/Company/Actions/UpdateCompanyAction.php` — Update command action
-- `app/Modules/Partners/Company/Actions/DeleteCompanyAction.php` — Delete with dual guard check
-- `app/Modules/Partners/Company/Actions/BatchDeleteCompanyAction.php` — Batch delete with per-record guard
-- `app/Modules/Partners/Company/Policies/CompanyPolicy.php` — Authorization (admin-only writes)
-- `app/Modules/Partners/Company/Livewire/CompanyManager.php` — UI with CSV import/export
-- `app/Modules/Partners/Company/Livewire/Forms/CompanyForm.php` — Form validation
-- `app/Modules/Partners/Company/Events/CompanyCreated.php` — Created event
-- `app/Modules/Partners/Company/Events/CompanyUpdated.php` — Updated event
-- `app/Modules/Partners/Company/Events/CompanyDeleted.php` — Deleted event
-- `app/Modules/Partners/Company/Listeners/ClearDashboardOnCompanyChange.php` — Cache invalidation
-- `database/migrations/2026_01_03_000003_create_companies_table.php` — Companies schema
-- `routes/web/partners.php` — Route definitions
-- `docs/refs/modules/partners.md` — Module conceptual documentation
-- `docs/refs/modules/partners-reference.md` — Module technical reference
-- `docs/specs/partnership-management.md` — Partnership lifecycle spec (sibling split)

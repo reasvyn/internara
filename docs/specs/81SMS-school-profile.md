@@ -223,20 +223,6 @@ profile save flow.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("81SMS: ...")` + `it("81SMS-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Academics/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Academics/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Academics/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Academics/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Academics/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 SchoolEntity
@@ -481,32 +467,7 @@ After implementing this spec, the system has the school's identity (name, NPSN, 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Academics/School/Entities/SchoolEntity.php` — School profile value object (8 typed properties)
-- `app/Modules/Academics/School/Actions/SaveSchoolProfileAction.php` — Atomic save via BatchSetSettingAction
-- `app/Modules/Academics/School/Livewire/SchoolEditor.php` — Livewire component (form, logo upload, removal)
-- `app/Modules/Academics/School/Livewire/Forms/SchoolForm.php` — Form object with validation rules
-- `app/Modules/Settings/Actions/BatchSetSettingAction.php` — Transaction-wrapped batch upsert
-- `app/Modules/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection
-- `app/Modules/Settings/Data/SettingEntryData.php` — Single setting entry DTO
-- `app/Modules/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
-- `app/Modules/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
-- `app/Modules/Settings/Services/Settings.php` — Settings service (get, forget, resolution)
-- `app/Modules/Core/Actions/BaseCommandAction.php` — Transaction-wrapped action base class
-- `config/cache-keys.php:29` — `school_entity` cache key registration
-- `routes/web/academics.php:13` — Route definition (`/admin/school`)
-- `tests/Academics/School/SchoolEntityTest.php` — SchoolEntity unit tests
-- `tests/Academics/School/Entities/SchoolEntityTest.php` — SchoolEntity entity tests
-- **Related:** [settings-infrastructure.md](YB22J-settings-infrastructure.md) — Settings store, type system & cache
-- **Related:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — Branding, theme & locale UI
-- **Related:** [department-management.md](4HWSB-department-management.md) — Department CRUD
-- **Related:** [academic-year-management.md](XW6F5-academic-year-management.md) — Academic year lifecycle

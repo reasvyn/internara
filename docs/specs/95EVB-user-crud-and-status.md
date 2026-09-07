@@ -303,20 +303,6 @@ preserving the ability to recover access via recovery keys.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/User/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 AccountStatus Enum
@@ -809,50 +795,7 @@ After implementing this spec, the system has user CRUD with status management (a
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/User/Enums/AccountStatus.php` — 8-state status machine enum
-- `app/Modules/User/Models/User.php` — user model with roles, media, entity bridges, delete guard
-- `app/Modules/User/Profile/Models/Profile.php` — profile model with fillable fields, casts, relations
-- `app/Modules/User/Observers/UserObserver.php` — super admin deletion guard at model level
-- `app/Modules/User/UserManagement/Actions/CreateUserAction.php` — user creation with notifications
-- `app/Modules/User/UserManagement/Actions/UpdateUserAction.php` — atomic user update with super admin guard
-- `app/Modules/User/UserManagement/Actions/DeleteUserAction.php` — single user deletion with guards
-- `app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php` — batch deletion with skip logic
-- `app/Modules/User/UserManagement/Actions/SetUserStatusAction.php` — status change with transition guard
-- `app/Modules/User/UserManagement/Actions/ToggleUserStatusAction.php` — VERIFIED ↔ SUSPENDED toggle
-- `app/Modules/User/UserManagement/Actions/RevokeUserActivationTokensAction.php` — token revocation
-- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — mass student archival
-- `app/Modules/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — recovery key storage (0600)
-- `app/Modules/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — recovery key retrieval
-- `app/Modules/User/UserManagement/Actions/ReadUserManagerStatsAction.php` — manager statistics
-- `app/Modules/User/UserManagement/Livewire/UserManager.php` — main user management component
-- `app/Modules/User/UserManagement/Livewire/StudentManager.php` — student-specific manager
-- `app/Modules/User/UserManagement/Livewire/TeacherManager.php` — teacher-specific manager
-- `app/Modules/User/UserManagement/Livewire/SupervisorManager.php` — supervisor-specific manager
-- `app/Modules/User/UserManagement/Livewire/AdminManager.php` — admin-only manager
-- `app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` — PDF download/send trait
-- `app/Modules/User/UserManagement/Livewire/Forms/UserForm.php` — form object for user CRUD
-- `app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — 90-day inactivity command
-- `app/Modules/User/UserManagement/Events/UserCreated.php` — user creation event
-- `app/Modules/User/UserManagement/Events/UserUpdated.php` — user update event
-- `app/Modules/User/UserManagement/Events/UserDeleted.php` — user deletion event
-- `app/Modules/User/UserManagement/Events/UserStatusChanged.php` — status change event
-- `app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation email
-- `app/Modules/User/AccountStatus/Notifications/AccountStatusNotification.php` — status change notification
-- `app/Modules/User/Profile/Actions/UpdateProfileAction.php` — profile editing
-- `app/Modules/User/Profile/Actions/ReadProfileFormAction.php` — profile form data
-- `app/Modules/User/Profile/Livewire/ProfileEditor.php` — profile editing component
-- `app/Modules/User/Services/UserIdentifierGenerator.php` — username generation
-- `database/migrations/2026_01_01_000000_create_users_table.php` — users table schema
-- `database/migrations/2026_01_02_000006_create_profiles_table.php` — profiles table schema
-- `docs/refs/modules/user.md` — User module overview
-- `docs/refs/modules/user-reference.md` — User module technical reference

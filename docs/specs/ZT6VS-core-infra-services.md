@@ -261,20 +261,6 @@ behave at runtime** (this spec).
 | NFR-ZT6VS-R2 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
 | NFR-ZT6VS-M1 | Cache key registry in a single file (`config/cache-keys.php`) — discoverable, auditable |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("ZT6VS: ...")` + `it("ZT6VS-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Environment Variables (by service)
@@ -487,25 +473,7 @@ Per-service requirements are satisfied by those configs plus the consuming modul
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | - `docs/specs/ZT6VS-core-infra-services.md` **FR-ZT6VS-SESS1** (Session 1: System Requirements section §6 / Session 1 §4.4.2): | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
-| R-2 | Missing tests for several ZT6VS requirements: | Open | Maintainer | [#405](https://github.com/reasvyn/internara/issues/405) |
-| R-3 | FR-ZT6VS-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `config/cache.php`, `config/cache-keys.php` — cache stores and registry
-- `config/session.php` — session driver, cookie settings, lifetime
-- `config/queue.php` — queue connections and worker settings
-- `config/mail.php` — mail driver and SMTP configuration
-- `config/database.php` — database connections
-- `config/filesystems.php` — filesystem disks
-- `.env.example` — template environment variables
-- `docs/guides/arch/cache-pattern.md` — cache strategy and key registry
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — dependency manifest; [architecture-design](D2FT3-architecture.md) — layer placement; [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) — queue lifecycle; [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — logging; [file-uploads-media.md](WQGTP-file-uploads-media.md) — media; [system-maintenance.md](E1MSJ-system-maintenance.md) — health; [system-requirements.md](J68GZ-system-requirements.md) — platform requirements

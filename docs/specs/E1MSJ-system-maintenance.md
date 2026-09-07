@@ -214,20 +214,6 @@ only when users report errors.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/SysAdmin/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/SysAdmin/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/SysAdmin/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/SysAdmin/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### SystemCleanupCommand
@@ -416,29 +402,7 @@ manual cleanup. Mass student archival is available from the Student Manager UI.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Orchestrated cleanup (108 lines)
-- `app/Modules/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — Notification pruning (39 lines)
-- `app/Modules/User/UserManagement/Console/Commands/AutoInactivateAccounts.php` — Dormant account lifecycle
-- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Mass student archival (33 lines)
-- `app/Jobs/User/ArchiveStudentAccountsJob.php` — Queued batch archival (51 lines)
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming (98 lines)
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health diagnostics (388 lines)
-- `app/Modules/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php` — Pulse metrics (28 lines)
-- `routes/console.php` — Scheduler registration for all maintenance commands
-- `app/Modules/SysAdmin/Observability/Recorders/RegistrationRecorder.php` — Pulse registration snapshots
-- `app/Modules/SysAdmin/Observability/Recorders/SystemRecorder.php` — Pulse system snapshots
-- `app/Modules/User/Enums/AccountStatus.php` — ARCHIVED status enum value
-- **Related specs:** [backup-system.md](HBXCI-backup-system.md) — Backup creation and retention
-- **Related specs:** [gdpr-compliance.md](7HNCF-gdpr-compliance.md) — GDPR deletion logging
-- **Related specs:** [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) — Queue for archival jobs
-- **Related specs:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — SmartLogger

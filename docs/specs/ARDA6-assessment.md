@@ -163,75 +163,75 @@ grade information, creating unnecessary friction.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-RM1 | `RubricManager` must be accessible at route `admin/assessments/rubrics` with `auth` and `role:super_admin\|admin` middleware |
-| FR-ARDA6-ARDA6-RM2 | `CreateRubricAction` must accept `name` (string), `description` (?string), `isActive` (bool) and return `Rubric` |
-| FR-ARDA6-ARDA6-RM3 | `Rubric` model must use `#[Fillable]` attribute with `internship_id`, `name`, `structure`, `is_active`, `created_by` |
-| FR-ARDA6-ARDA6-RM4 | `Rubric.structure` must be cast to `array` and store nested competencies with UUID keys |
-| FR-ARDA6-ARDA6-RM5 | Each competency must contain: `name`, `description`, `weight` (int), `evaluator_role` (string), `order` (int), and nested `indicators` array |
-| FR-ARDA6-ARDA6-RM6 | Each indicator must contain: `name`, `description`, `max_score` (int), `weight` (int), `order` (int) |
-| FR-ARDA6-ARDA6-RM7 | `CreateCompetencyAction` must append a UUID-keyed competency to `structure['competencies']` |
-| FR-ARDA6-ARDA6-RM8 | `CreateIndicatorAction` must append a UUID-keyed indicator to a competency's `indicators` array |
-| FR-ARDA6-ARDA6-RM9 | `DeleteCompetencyAction` and `DeleteIndicatorAction` must filter out the target from the structure |
-| FR-ARDA6-ARDA6-RM10 | `RubricPolicy` must restrict create/update/delete to admin roles |
+| FR-ARDA6-RM1 | `RubricManager` must be accessible at route `admin/assessments/rubrics` with `auth` and `role:super_admin\|admin` middleware |
+| FR-ARDA6-RM2 | `CreateRubricAction` must accept `name` (string), `description` (?string), `isActive` (bool) and return `Rubric` |
+| FR-ARDA6-RM3 | `Rubric` model must use `#[Fillable]` attribute with `internship_id`, `name`, `structure`, `is_active`, `created_by` |
+| FR-ARDA6-RM4 | `Rubric.structure` must be cast to `array` and store nested competencies with UUID keys |
+| FR-ARDA6-RM5 | Each competency must contain: `name`, `description`, `weight` (int), `evaluator_role` (string), `order` (int), and nested `indicators` array |
+| FR-ARDA6-RM6 | Each indicator must contain: `name`, `description`, `max_score` (int), `weight` (int), `order` (int) |
+| FR-ARDA6-RM7 | `CreateCompetencyAction` must append a UUID-keyed competency to `structure['competencies']` |
+| FR-ARDA6-RM8 | `CreateIndicatorAction` must append a UUID-keyed indicator to a competency's `indicators` array |
+| FR-ARDA6-RM9 | `DeleteCompetencyAction` and `DeleteIndicatorAction` must filter out the target from the structure |
+| FR-ARDA6-RM10 | `RubricPolicy` must restrict create/update/delete to admin roles |
 
 ### Assessment Scoring
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-AS1 | `AssessmentGrading` must be accessible at route `admin/assessments/{registration}/grade` with `auth` and `role:super_admin\|admin` middleware |
-| FR-ARDA6-ARDA6-AS2 | `InitializeAssessmentAction` must find or create an Assessment record for the registration, linking the first active rubric |
-| FR-ARDA6-ARDA6-AS3 | `Assessment` model must use `#[Fillable]` with `registration_id`, `rubric_id`, `evaluator_id`, `assessment_type`, `score`, `scores_data`, `feedback`, `finalized_at` |
-| FR-ARDA6-ARDA6-AS4 | `scores_data` must be structured as `{'competencies': {compId: {indId: score}}, 'auto': {...}}` |
-| FR-ARDA6-ARDA6-AS5 | `ScoreIndicatorAction` must validate that the competency/indicator exist in the rubric structure |
-| FR-ARDA6-ARDA6-AS6 | `ScoreIndicatorAction` must authorize the evaluator: admin bypasses; teacher/supervisor must match `evaluator_role` on competency and be a mentor for the registration |
-| FR-ARDA6-ARDA6-AS7 | `ScoreIndicatorAction` must validate score range is 0..indicator's `max_score` |
-| FR-ARDA6-ARDA6-AS8 | `UpdateAssessmentScoresAction` must set/unset indicator scores in `scores_data` without authorization check (used by Livewire with prior authorization) |
-| FR-ARDA6-ARDA6-AS9 | `AssessmentGrading` must display `evaluableCompetencies` (current user's role + mentor match) and `readOnlyCompetencies` (others) separately |
-| FR-ARDA6-ARDA6-AS10 | `AssessmentGrading.updatedScores` must trigger live save on score change |
+| FR-ARDA6-AS1 | `AssessmentGrading` must be accessible at route `admin/assessments/{registration}/grade` with `auth` and `role:super_admin\|admin` middleware |
+| FR-ARDA6-AS2 | `InitializeAssessmentAction` must find or create an Assessment record for the registration, linking the first active rubric |
+| FR-ARDA6-AS3 | `Assessment` model must use `#[Fillable]` with `registration_id`, `rubric_id`, `evaluator_id`, `assessment_type`, `score`, `scores_data`, `feedback`, `finalized_at` |
+| FR-ARDA6-AS4 | `scores_data` must be structured as `{'competencies': {compId: {indId: score}}, 'auto': {...}}` |
+| FR-ARDA6-AS5 | `ScoreIndicatorAction` must validate that the competency/indicator exist in the rubric structure |
+| FR-ARDA6-AS6 | `ScoreIndicatorAction` must authorize the evaluator: admin bypasses; teacher/supervisor must match `evaluator_role` on competency and be a mentor for the registration |
+| FR-ARDA6-AS7 | `ScoreIndicatorAction` must validate score range is 0..indicator's `max_score` |
+| FR-ARDA6-AS8 | `UpdateAssessmentScoresAction` must set/unset indicator scores in `scores_data` without authorization check (used by Livewire with prior authorization) |
+| FR-ARDA6-AS9 | `AssessmentGrading` must display `evaluableCompetencies` (current user's role + mentor match) and `readOnlyCompetencies` (others) separately |
+| FR-ARDA6-AS10 | `AssessmentGrading.updatedScores` must trigger live save on score change |
 
 ### Auto-Calculation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-AC1 | `AutoCalculateAssessmentAction` must skip if assessment is already finalized |
-| FR-ARDA6-ARDA6-AC2 | Auto-calculation must query `Submission` model for average verified score |
-| FR-ARDA6-ARDA6-AC3 | Auto-calculation must query `logbooks` table for submitted/total completeness percentage |
-| FR-ARDA6-ARDA6-AC4 | Auto-calculation must query `Attendance` model for (present+late)/total rate percentage |
-| FR-ARDA6-ARDA6-AC5 | Auto-calculation must query `SupervisionLog` model for (reviewed+acknowledged)/total percentage |
-| FR-ARDA6-ARDA6-AC6 | Auto-calculation must query `MonitoringVisit` model for verified/total percentage |
-| FR-ARDA6-ARDA6-AC7 | Auto-calculation must query `Report` model for approved final_score |
-| FR-ARDA6-ARDA6-AC8 | All auto-calculated values must be stored under `scores_data['auto']` key |
+| FR-ARDA6-AC1 | `AutoCalculateAssessmentAction` must skip if assessment is already finalized |
+| FR-ARDA6-AC2 | Auto-calculation must query `Submission` model for average verified score |
+| FR-ARDA6-AC3 | Auto-calculation must query `logbooks` table for submitted/total completeness percentage |
+| FR-ARDA6-AC4 | Auto-calculation must query `Attendance` model for (present+late)/total rate percentage |
+| FR-ARDA6-AC5 | Auto-calculation must query `SupervisionLog` model for (reviewed+acknowledged)/total percentage |
+| FR-ARDA6-AC6 | Auto-calculation must query `MonitoringVisit` model for verified/total percentage |
+| FR-ARDA6-AC7 | Auto-calculation must query `Report` model for approved final_score |
+| FR-ARDA6-AC8 | All auto-calculated values must be stored under `scores_data['auto']` key |
 
 ### Finalization
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-FN1 | `FinalizeAssessmentAction` must reject if assessment is already finalized |
-| FR-ARDA6-ARDA6-FN2 | `FinalizeAssessmentAction` must reject if no rubric is linked |
-| FR-ARDA6-ARDA6-FN3 | `FinalizeAssessmentAction` must reject if no competencies have been scored |
-| FR-ARDA6-ARDA6-FN4 | `FinalizeAssessmentAction` must normalize indicator scores to 0–100 scale (score / max_score * 100) |
-| FR-ARDA6-ARDA6-FN5 | `FinalizeAssessmentAction` must apply indicator weights within each competency |
-| FR-ARDA6-ARDA6-FN6 | `FinalizeAssessmentAction` must apply competency weights to compute the overall score |
-| FR-ARDA6-ARDA6-FN7 | `FinalizeAssessmentAction` must redistribute weight when supervisor competencies are unscored (proportional increase of remaining competencies) |
-| FR-ARDA6-ARDA6-FN8 | `FinalizeAssessmentAction` must set `score`, `finalized_at`, and `evaluator_id` |
-| FR-ARDA6-ARDA6-FN9 | `FinalizeAssessmentAction` must dispatch `AssessmentFinalized` event |
-| FR-ARDA6-ARDA6-FN10 | `AssessmentResult::isFinalized()` must return true when `finalizedAt !== null` |
-| FR-ARDA6-ARDA6-FN11 | `AssessmentResult::calculateTotalScore()` must sum all indicator scores from `scores_data['competencies']` |
+| FR-ARDA6-FN1 | `FinalizeAssessmentAction` must reject if assessment is already finalized |
+| FR-ARDA6-FN2 | `FinalizeAssessmentAction` must reject if no rubric is linked |
+| FR-ARDA6-FN3 | `FinalizeAssessmentAction` must reject if no competencies have been scored |
+| FR-ARDA6-FN4 | `FinalizeAssessmentAction` must normalize indicator scores to 0–100 scale (score / max_score * 100) |
+| FR-ARDA6-FN5 | `FinalizeAssessmentAction` must apply indicator weights within each competency |
+| FR-ARDA6-FN6 | `FinalizeAssessmentAction` must apply competency weights to compute the overall score |
+| FR-ARDA6-FN7 | `FinalizeAssessmentAction` must redistribute weight when supervisor competencies are unscored (proportional increase of remaining competencies) |
+| FR-ARDA6-FN8 | `FinalizeAssessmentAction` must set `score`, `finalized_at`, and `evaluator_id` |
+| FR-ARDA6-FN9 | `FinalizeAssessmentAction` must dispatch `AssessmentFinalized` event |
+| FR-ARDA6-FN10 | `AssessmentResult::isFinalized()` must return true when `finalizedAt !== null` |
+| FR-ARDA6-FN11 | `AssessmentResult::calculateTotalScore()` must sum all indicator scores from `scores_data['competencies']` |
 
 ### Student View
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-SV1 | `AssessmentView` must be accessible at route `assessments` with `auth` middleware |
-| FR-ARDA6-ARDA6-SV2 | `AssessmentView` must display only finalized assessments for the current student's registrations |
-| FR-ARDA6-ARDA6-SV3 | `AssessmentView` must eager-load rubric competencies/indicators and internship data |
+| FR-ARDA6-SV1 | `AssessmentView` must be accessible at route `assessments` with `auth` middleware |
+| FR-ARDA6-SV2 | `AssessmentView` must display only finalized assessments for the current student's registrations |
+| FR-ARDA6-SV3 | `AssessmentView` must eager-load rubric competencies/indicators and internship data |
 
 ### Assessment Types
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ARDA6-ARDA6-AT1 | `assessment_type` must support: `midterm`, `final`, `periodic`, `industry` (default: `final`) |
-| FR-ARDA6-ARDA6-AT2 | Unique constraint must prevent duplicate assessment per (`registration_id`, `assessment_type`, `evaluator_id`) |
+| FR-ARDA6-AT1 | `assessment_type` must support: `midterm`, `final`, `periodic`, `industry` (default: `final`) |
+| FR-ARDA6-AT2 | Unique constraint must prevent duplicate assessment per (`registration_id`, `assessment_type`, `evaluator_id`) |
 
 ---
 
@@ -239,35 +239,21 @@ grade information, creating unnecessary friction.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-ARDA6-ARDA6-S1 | All assessment mutations must be authorized via `AssessmentPolicy` — no bypass allowed |
-| NFR-ARDA6-ARDA6-S2 | `ScoreIndicatorAction` must enforce evaluator role + mentor assignment — teacher cannot score supervisor competencies |
-| NFR-ARDA6-ARDA6-S3 | Finalized assessments must be immutable — no score updates permitted |
-| NFR-ARDA6-ARDA6-S4 | Rubric structure validation must occur at Action layer, not just in UI |
-| NFR-ARDA6-ARDA6-P1 | `AssessmentGrading` page must load in < 1s including rubric structure and existing scores |
-| NFR-ARDA6-ARDA6-P2 | Auto-calculation must complete in < 5s for a single registration |
-| NFR-ARDA6-ARDA6-P3 | `AssessmentView` for students must load in < 500ms |
-| NFR-ARDA6-ARDA6-R1 | Finalization must be wrapped in a database transaction |
-| NFR-ARDA6-ARDA6-R2 | Weight redistribution must be deterministic — same inputs always produce same final score |
-| NFR-ARDA6-ARDA6-U1 | Score changes must save in real-time without explicit save button |
-| NFR-ARDA6-ARDA6-U2 | `evaluableCompetencies` and `readOnlyCompetencies` must be visually distinguished |
-| NFR-ARDA6-ARDA6-U3 | Finalization must show a confirmation modal before proceeding |
-| NFR-ARDA6-ARDA6-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-ARDA6-ARDA6-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-ARDA6-ARDA6-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Assessment/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Assessment/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Assessment/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Assessment/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-ARDA6-S1 | All assessment mutations must be authorized via `AssessmentPolicy` — no bypass allowed |
+| NFR-ARDA6-S2 | `ScoreIndicatorAction` must enforce evaluator role + mentor assignment — teacher cannot score supervisor competencies |
+| NFR-ARDA6-S3 | Finalized assessments must be immutable — no score updates permitted |
+| NFR-ARDA6-S4 | Rubric structure validation must occur at Action layer, not just in UI |
+| NFR-ARDA6-P1 | `AssessmentGrading` page must load in < 1s including rubric structure and existing scores |
+| NFR-ARDA6-P2 | Auto-calculation must complete in < 5s for a single registration |
+| NFR-ARDA6-P3 | `AssessmentView` for students must load in < 500ms |
+| NFR-ARDA6-R1 | Finalization must be wrapped in a database transaction |
+| NFR-ARDA6-R2 | Weight redistribution must be deterministic — same inputs always produce same final score |
+| NFR-ARDA6-U1 | Score changes must save in real-time without explicit save button |
+| NFR-ARDA6-U2 | `evaluableCompetencies` and `readOnlyCompetencies` must be visually distinguished |
+| NFR-ARDA6-U3 | Finalization must show a confirmation modal before proceeding |
+| NFR-ARDA6-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-ARDA6-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-ARDA6-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -500,33 +486,7 @@ After implementing this spec, the system has rubric-based assessment with scorin
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | The `ScoreIndicatorAction` (FR-ARDA6-ARDA6-AS5, FR-ARDA6-ARDA6-AS6, FR-ARDA6-ARDA6-AS7 in ARDA6 spec) is implemented but not wired up to any Livewire component. The spec requires authorized indicator scoring again... | Open | Maintainer | [#390](https://github.com/reasvyn/internara/issues/390) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Assessment/Models/Assessment.php` — Assessment model with fillable, casts, bridge
-- `app/Modules/Assessment/Rubric/Models/Rubric.php` — Rubric model with JSON structure
-- `app/Modules/Assessment/Entities/AssessmentResult.php` — Entity with finalization check and score calculation
-- `app/Modules/Assessment/Enums/EvaluatorRole.php` — Evaluator role enum (4 cases)
-- `app/Modules/Assessment/Actions/InitializeAssessmentAction.php` — Assessment bootstrapping
-- `app/Modules/Assessment/Actions/AutoCalculateAssessmentAction.php` — Cross-module score aggregation
-- `app/Modules/Assessment/Actions/ScoreIndicatorAction.php` — Authorized indicator scoring
-- `app/Modules/Assessment/Actions/UpdateAssessmentScoresAction.php` — Lightweight score update for Livewire
-- `app/Modules/Assessment/Actions/FinalizeAssessmentAction.php` — Weighted finalization with redistribution
-- `app/Modules/Assessment/Rubric/Actions/` — 9 rubric CRUD actions
-- `app/Modules/Assessment/Livewire/AssessmentGrading.php` — Grading UI with live-save
-- `app/Modules/Assessment/Livewire/AssessmentView.php` — Student read-only view
-- `app/Modules/Assessment/Rubric/Livewire/RubricManager.php` — Rubric template management
-- `app/Modules/Assessment/Events/AssessmentFinalized.php` — Finalization event
-- `app/Modules/Assessment/Listeners/LogAssessmentFinalized.php` — Audit logging listener
-- `app/Modules/Assessment/Policies/AssessmentPolicy.php` — Role-based authorization
-- `database/migrations/2026_01_03_000006_create_rubrics_table.php` — Rubrics schema
-- `database/migrations/2026_01_04_000011_create_assessments_table.php` — Assessments schema
-- `routes/web/assessment.php` — Route definitions
-- `docs/refs/modules/assessment.md` — Module conceptual documentation

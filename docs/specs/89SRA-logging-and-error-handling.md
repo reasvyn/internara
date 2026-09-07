@@ -274,20 +274,6 @@ others would leak stack traces, and debugging would require inspecting each Acti
 | NFR-89SRA-A1 | Error pages must be keyboard-navigable and screen-reader accessible |
 | NFR-89SRA-A2 | Error page status codes must use semantic HTML (`<main>`, proper headings) |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("89SRA: ...")` + `it("89SRA-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 SmartLogger
@@ -594,29 +580,7 @@ After implementing this spec, the system has a dual exception hierarchy (AppExce
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | Documentation in 20+ files references the CLI scanners by the old path `tools/scan_<name>/cli.py`, while all scanners are actually flat files at `tools/scan_<name>.py` (the... | Open | Maintainer | [#430](https://github.com/reasvyn/internara/issues/430) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Services/SmartLogger.php` — single entry point for all logging (340 lines)
-- `app/Modules/Core/Support/PiiMasker.php` — PII masking rules and methods (187 lines)
-- `app/Modules/Core/Exceptions/AppException.php` — abstract root for application exceptions
-- `app/Modules/Core/Exceptions/ModuleException.php` — abstract root for business exceptions
-- `app/Modules/Core/Exceptions/RejectedException.php` — business rule violation (most common)
-- `app/Modules/Core/Exceptions/ValidationFailedException.php` — validation failure (422)
-- `app/Modules/Core/Exceptions/UnauthorizedException.php` — permission denied (403)
-- `app/Modules/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait (hint, context, CLI)
-- `app/Modules/Core/Actions/BaseAction.php` — `log()`, `fail()`, `dispatchEvent()` methods
-- `app/Modules/Core/Actions/Concerns/HandlesActionErrors.php` — Action error wrapping trait
-- `app/Modules/Core/Http/Middleware/LogContextMiddleware.php` — request context injection middleware
-- `bootstrap/app.php` — exception rendering configuration
-- `docs/guides/arch/exception-pattern.md` — dual hierarchy rationale and patterns
-- `docs/guides/arch/logging-pattern.md` — SmartLogger architecture, PII masking, translation
-- `docs/specs/base-classes.md` (SE5Q9) — foundation spec (§6.3, §DD-1)

@@ -158,20 +158,6 @@ apply on every request via middleware without database queries.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("52O1I: ...")` + `it("52O1I-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Settings/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Settings/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Settings/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Settings/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Settings/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### BrandData
@@ -356,28 +342,7 @@ After implementing this spec, the system has customizable branding (school name,
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| OQ-1 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
-| OQ-2 | - `app/Settings/Livewire/LangSwitch.php` + `resources/views/settings/livewire/lang-switch.blade.php` (mary dropdown → `x-ts-dropdown` / `x-ts-select.styled` for EN/ID). | Open | Maintainer | [#413](https://github.com/reasvyn/internara/issues/413) |
-| OQ-3 | - `app/Settings/Livewire/ThemeSwitcher.php` + `resources/views/settings/livewire/theme-switcher.blade.php` (mary dropdown → `x-ts-theme-switch` / `x-ts-toggle` + `x-ts-dropdown`). | Open | Maintainer | [#412](https://github.com/reasvyn/internara/issues/412) |
-| OQ-4 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Settings/Support/Brand.php` — Dual-path brand resolution (DB + AppInfo)
-- `app/Modules/Settings/Branding/Data/BrandData.php` — Brand identity DTO
-- `app/Modules/Settings/Branding/Actions/UploadBrandAssetAction.php` — Spatie Media Library upload
-- `app/Modules/Settings/Branding/Actions/RemoveBrandAssetAction.php` — Asset removal
-- `app/Modules/Settings/Branding/Livewire/Forms/BrandingForm.php` — Color/logo/favicon form
-- `app/Modules/Settings/Theme/Support/Theme.php` — Color resolution, CSS variables, presets
-- `app/Modules/Settings/Locale/Support/Locale.php` — EN/ID locale management
-- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — Per-request locale from cookie
-- `resources/views/ui/components/theme-switch.blade.php` — `<x-ts-theme-switch>` wrapper (light/dark/system, localStorage-based)
-- `app/Modules/Settings/Livewire/LangSwitcher.php` — EN/ID dropdown (cookie-based)
-- `docs/refs/modules/settings.md` — Module conceptual documentation
-- **Related specs:** [settings-infrastructure.md](YB22J-settings-infrastructure.md) — Settings store, type system & cache

@@ -347,20 +347,6 @@ never do.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/SysAdmin/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/SysAdmin/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/SysAdmin/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/SysAdmin/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Backup Model
@@ -799,39 +785,7 @@ After implementing this spec, the backup system is fully operational: admins can
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/SysAdmin/Backups/Models/Backup.php` — Eloquent model with `#[Fillable]` and `asBackupState()` bridge (56 lines)
-- `app/Modules/SysAdmin/Backups/Entities/BackupState.php` — Immutable entity for state logic: deletable, formatted size, type (62 lines)
-- `app/Modules/SysAdmin/Backups/Enums/BackupStatus.php` — Status enum: PENDING, RUNNING, COMPLETED, FAILED with transitions (49 lines)
-- `app/Modules/SysAdmin/Backups/Enums/BackupType.php` — Type enum: DATABASE, STORAGE, BOTH (19 lines)
-- `app/Modules/SysAdmin/Backups/Actions/CreateBackupAction.php` — Backup lifecycle orchestration with transaction and events (71 lines)
-- `app/Modules/SysAdmin/Backups/Actions/DeleteBackupAction.php` — Deletability check, file removal, record deletion (35 lines)
-- `app/Modules/SysAdmin/Backups/Actions/ReadBackupHistoryAction.php` — Paginated backup history with type/status filters (24 lines)
-- `app/Modules/SysAdmin/Backups/Actions/ReadBackupStatsAction.php` — Aggregate stats: total, completed, failed, latest (22 lines)
-- `app/Modules/SysAdmin/Backups/Actions/CleanupBackupsAction.php` — Retention-based cleanup preserving failed backups (44 lines)
-- `app/Modules/SysAdmin/Backups/Services/BackupRunner.php` — Multi-driver dump execution with secure credential handling (200 lines)
-- `app/Modules/SysAdmin/Backups/Console/Commands/SystemBackupCommand.php` — CLI `system:backup` with --type, --force, --cleanup (63 lines)
-- `app/Modules/SysAdmin/Backups/Livewire/BackupManager.php` — Admin UI: stats, history table, create/delete actions (111 lines)
-- `app/Modules/SysAdmin/Backups/Policies/BackupPolicy.php` — Admin-only authorization for all backup operations (32 lines)
-- `app/Modules/SysAdmin/Backups/Events/BackupCompleted.php` — Event dispatched on successful backup (18 lines)
-- `app/Modules/SysAdmin/Backups/Events/BackupFailed.php` — Event dispatched on failed backup (18 lines)
-- `app/Modules/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — Notifies super admins on failure (21 lines)
-- `app/Modules/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — Database channel notification with error details (34 lines)
-- `resources/views/sysadmin/backups/backup-manager.blade.php` — Backup manager Livewire view with TallstackUI `x-ts-*` (115 lines)
-- `resources/views/sysadmin/backups/components/backup-guide.blade.php` — Help guide modal with create/download/restore info (57 lines)
-- `database/migrations/2026_01_01_000006_create_backups_table.php` — Backups table schema (35 lines)
-- `routes/web/sysadmin.php:41` — Backup manager route (`admin.backups`) with auth + role middleware
-- `routes/console.php:35-37` — Daily scheduled `system:backup` command
-- **Related spec:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes (`BaseCommandAction`, `BaseEntity`, `BaseEvent`)
-- **Related spec:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) — `isAdmin()` policy helper, role middleware
-- **Related spec:** [notification-infrastructure.md](TXR2H-notification-infrastructure.md) — Database notification channel for failure alerts
-- **Related doc:** [backup-recovery.md](../guides/backup-recovery.md) — Restoration procedures, manual backup commands, monitoring

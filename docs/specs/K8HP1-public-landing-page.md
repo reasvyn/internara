@@ -183,20 +183,6 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Route
@@ -367,21 +353,6 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-|----|-----------------------------------|--------|-------|----------|
-| A-1 | Global theming (tokens, scrim `bg-black/40`, grep invariant) remains owned by 52O1I; K8HP1 only consumes — no token SSOT duplication. | Accepted | Maintainer | — |
-| A-2 | We assume `setting('registration_period_start/_end')` stored as `Y-m-d` strings parsable by `Carbon::parse` (as used in blade). If format changes, homepage period display drifts. | Accepted | Maintainer | — |
-| R-1 | If `brand('tagline')` is empty, homepage falls back to `__('common.app_tagline')`. Until a tagline CMS exists, fallback may repeat the common tagline verbatim — acceptable (NG1). | Accepted | Maintainer | — |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/User/Livewire/HomePage.php` — homepage Livewire (38 lines; mount redirects + availability)
-- `resources/views/livewire/user/home-page.blade.php` — homepage Blade (218 lines; hero + wave + 2 cards + 3 features)
-- `routes/web/user.php` — `GET /` → `HomePage::class` name `home`
-- `resources/views/ui/layouts/guest.blade.php` — guest shell (header brand + theme/lang, `main#main-content`, footer credits)
-- `resources/views/ui/components/brand.blade.php` — brand component (`size xl` on hero, `size sm` in header)
-- `resources/views/ui/components/credits.blade.php` — footer credits
-- `lang/en/user.php` + `lang/id/user.php` `user.home.*` — 20+ keys (page_title, hero_*, registration_*, login_*, features_*)
-- `app/Modules/Enrollment/Domain/Registration/Actions/ReadRegistrationAvailabilityAction.php` — 4-state window (50 lines)
-- `app/Modules/Setup/Entities/SetupEntity.php` — `isInstalled()` gate
-- `resources/views/ui/layouts/base.blade.php` + `resources/js/app.js` + `app/Modules/Settings/Domain/Theme/Support/Theme.php` + `resources/css/app.css` — theming pipeline per 52O1I (referenced, not redefined)
-- **Related specs:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — theming SSOT (consumed via FR-HP-20); [layout-and-ui-system.md](8XMYS-layout-and-ui-system.md) — shell SSOT; [registration.md](MBB5R-registration.md) — availability action; [settings-infrastructure.md](YB22J-settings-infrastructure.md) — settings cache

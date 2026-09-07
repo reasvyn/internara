@@ -270,20 +270,6 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("C9ZB6: ...")` + `it("C9ZB6-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Setup/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Setup/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Setup/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Setup/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Setup/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Recovery Key File Format
@@ -496,27 +482,7 @@ After implementing this spec, the system has emergency super admin recovery via 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/refs/modules/setup.md` — Setup module conceptual overview
-- `docs/refs/modules/setup-reference.md` — Setup module technical reference
-- `docs/specs/installation.md` — CLI installation and provisioning initiative
-- `docs/specs/setup-wizard.md` — Browser-based wizard initiative
-- `docs/specs/authentication.md` — Login, password reset, session management
-- `docs/guides/account-recovery.md` — All three recovery mechanisms
-- `app/Modules/SysAdmin/Console/Commands/RecoverAdminCommand.php` — Main recovery command
-- `app/Modules/SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` — Key display command
-- `app/Modules/SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` — Path display command
-- `app/Modules/Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` — Password reset action
-- `app/Modules/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP mail notification
-- `app/Modules/User/UserManagement/Actions/ReadRecoveryKeyAction.php` — Key file reader
-- `app/Modules/User/UserManagement/Actions/SaveRecoveryKeyAction.php` — Key file writer
-- `app/Modules/Setup/Entities/SetupEntity.php` — Setup state entity (recovery key hash)

@@ -251,20 +251,6 @@ wizard rather than seeing a broken or empty application.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("VEJCX: ...")` + `it("VEJCX-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Setup/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Setup/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Setup/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Setup/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Setup/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Settings Keys
@@ -476,21 +462,7 @@ After implementing this spec, the system has a 6-step browser wizard that create
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/refs/modules/setup.md` — Module conceptual overview
-- `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
-- `docs/specs/installation.md` — CLI provisioning initiative
-- `docs/specs/QLHDO-project-initialization.md` — High-level feature specs
-- `docs/guides/setup-wizard.md` — Wizard walkthrough
-- `docs/guides/post-setup.md` — Post-wizard configuration guide
-- `config/setup.php` — Setup configuration values
-- `app/Modules/Setup/` — Full module source code

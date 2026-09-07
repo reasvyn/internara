@@ -208,20 +208,6 @@ They are not part of the domain schema but coexist in the same database.
 | NFR-J68GZ-R1 | SQLite foreign keys enforced (`DB_FOREIGN_KEYS=true`) |
 | NFR-J68GZ-R2 | Migration freshness < 60 seconds on 55 tables |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("J68GZ: ...")` + `it("J68GZ-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Production Dependencies
@@ -350,25 +336,7 @@ After implementing this spec, the system has a verified dependency manifest, dat
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | - `app/**/Livewire/*.php` 235 `flash()` calls → `TallStackUi::toast()->send()->success/error` or `->dispatch()` (Interactions/Toast) / `<x-ts-alert />` for inline. | Open | Maintainer | [#411](https://github.com/reasvyn/internara/issues/411) |
-| OQ-2 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
-| R-2 | Missing tests for several ZT6VS requirements: | Open | Maintainer | [#405](https://github.com/reasvyn/internara/issues/405) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules
-- `docs/conventions.md` — Invariants C1-C8, D1-D6, naming, security, testing
-- `docs/refs/modules/core.md` — Core module overview
-- `docs/refs/modules/core-reference.md` — Core module technical reference
-- `docs/guides/infra/database.md` — Schema design, engine comparison
-- `docs/guides/infra/deployment.md` — Three deployment paths
-- `app/Modules/Core/` — All base classes, contracts, exceptions, services
-- `.env.example` — Default configuration values
-- **Related specs:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes, contracts, middleware, cache, session

@@ -195,20 +195,6 @@ violations compile-time errors rather than runtime surprises.
 | NFR-SE5Q9-L1 | All user-facing error messages in base classes must use `__()` translation helper |
 | NFR-SE5Q9-A1 | Error pages rendered by exception handlers must meet WCAG 2.1 Level AA |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("SE5Q9: ...")` + `it("SE5Q9-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Action Triad Signatures
@@ -473,43 +459,7 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | Documentation in 20+ files references the CLI scanners by the old path `tools/scan_<name>/cli.py`, while all scanners are actually flat files at `tools/scan_<name>.py` (the... | Open | Maintainer | [#430](https://github.com/reasvyn/internara/issues/430) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules
-- `docs/conventions.md` — Invariants C1-C8, D1-D6, naming, security, testing
-- `docs/refs/modules/core.md` — Core module overview
-- `docs/refs/modules/core-reference.md` — Core module technical reference
-- `docs/guides/arch/action-pattern.md` — Action Triad contracts and patterns
-- `docs/guides/arch/entity-pattern.md` — Entity contracts and bridge pattern
-- `docs/guides/arch/model-pattern.md` — Model conventions
-- `docs/guides/arch/data-pattern.md` — DTO and ActionResponse contracts
-- `docs/guides/arch/exception-pattern.md` — Dual exception hierarchy
-- `app/Modules/Core/Actions/` — BaseAction, BaseCommandAction, BaseReadAction, BaseProcessAction
-- `app/Modules/Core/Models/` — BaseModel, BaseAuthenticatable, ActivityLog
-- `app/Modules/Core/Entities/` — BaseEntity and all module entities
-- `app/Modules/Core/Data/` — BaseData, ActionResponse, AuditCheck, AuditReport
-- `app/Modules/Core/Enums/` — AuditCategory, AuditStatus, CsvRowResult
-- `app/Modules/Core/Livewire/` — BaseRecordManager, BaseRecordEntry, BaseRecordList, BaseFormView, BaseWizard
-- `app/Modules/Core/Livewire/Concerns/` — WithSorting, WithRecordSelection
-- `app/Modules/Core/Policies/` — BasePolicy, AuthorizesRoles, AuthorizesOwnership
-- `app/Modules/Core/Contracts/` — LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore
-- `app/Modules/Core/Channels/CustomDatabaseChannel.php` — Queued database notification channel
-- `app/Modules/Core/Channels/Data/NotificationData.php` — In-app notification payload DTO (`SendsNotifications::execute()` argument)
-- `app/Modules/Core/Exceptions/` — AppException, ModuleException, RejectedException, and hierarchy
-- `bootstrap/app.php` — Middleware registration
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel versions, dependency manifest
-- **Related specs:** [core-infra-services.md](ZT6VS-core-infra-services.md) — cache, session, queue, mail runtime behavior
-- **Related specs:** [shared-utilities.md](C8F0D-shared-utilities.md) — Cross-cutting utility classes
-- **Related specs:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — Exception hierarchy, SmartLogger, error handling
-- **Related specs:** [middleware-pipeline.md](2CF4Y-middleware-pipeline.md) — Middleware execution order and registration
-- **Related specs:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) — Policies, roles, authorization
-- **Related specs:** [event-system.md](NUCY3-event-system.md) — Event dispatch and listener infrastructure

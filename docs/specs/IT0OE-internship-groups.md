@@ -182,20 +182,6 @@ many registrations at once.
 | NFR-IT0OE-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 | NFR-IT0OE-L3 | Role labels must use `LabelEnum::label()` (calls `__()` internally) |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Program/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Program/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Program/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Program/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 InternshipGroupRole Enum
@@ -471,30 +457,7 @@ After implementing this spec, the system has group CRUD with student and mentor 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Program/InternshipGroup/Models/InternshipGroup.php` — Group model with placement FK
-- `app/Modules/Program/InternshipGroup/Models/InternshipGroupMember.php` — Member model with role, mentor_id
-- `app/Modules/Program/InternshipGroup/Enums/InternshipGroupRole.php` — 3-role enum
-- `app/Modules/Program/InternshipGroup/Entities/InternshipGroupState.php` — Deletion guard entity
-- `app/Modules/Program/InternshipGroup/Data/InternshipGroupData.php` — DTO
-- `app/Modules/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php` — Group creation
-- `app/Modules/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php` — Group update
-- `app/Modules/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php` — Deletion with guard
-- `app/Modules/Program/InternshipGroup/Actions/AddMemberToGroupAction.php` — Role-based member add
-- `app/Modules/Program/InternshipGroup/Actions/AddMembersToGroupAction.php` — Batch (repeater) member add, all-or-nothing
-- `app/Modules/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` — Member removal
-- `app/Modules/Program/InternshipGroup/Policies/InternshipGroupPolicy.php` — Authorization
-- `app/Modules/Program/InternshipGroup/Livewire/InternshipGroupManager.php` — CRUD + member modal
-- `app/Modules/Program/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` — Form validation
-- `routes/web/program.php` — Route definitions
-- `docs/refs/modules/program.md` — Program module overview
-- **Related specs:** [internship-lifecycle.md](7C5WM-internship-lifecycle.md) — Program lifecycle & readiness

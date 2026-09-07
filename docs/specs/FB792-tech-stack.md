@@ -96,32 +96,32 @@ manifest (no undeclared direct dependencies).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-FB792-FB792-TS1 | PHP >= 8.4 required (readonly properties, enums, fibers used throughout) |
-| FR-FB792-FB792-TS2 | Laravel >= 13.0 required (Livewire 4 integration, Folio routing, Volt) |
-| FR-FB792-FB792-TS3 | Livewire >= 4.0 required (Livewire::handle(), property binding, polling) |
-| FR-FB792-FB792-TS4 | Tailwind CSS >= 4.3 required (v4 `@theme` directive, CSS-first config) |
-| FR-FB792-FB792-TS5 | **REMOVED in 0.15.0** — DaisyUI/MaryUI/PHPFlasher deleted; `x-mary-*`, `flash()->`, `@flasher_render`, `@plugin daisyui` must be 0 |
-| FR-FB792-FB792-TS6 | TallstackUI >= 4.0 required (TALL stack UI kit, `tallstackui/tallstackui`); **always use TallstackUI** |
+| FR-FB792-TS1 | PHP >= 8.4 required (readonly properties, enums, fibers used throughout) |
+| FR-FB792-TS2 | Laravel >= 13.0 required (Livewire 4 integration, Folio routing, Volt) |
+| FR-FB792-TS3 | Livewire >= 4.0 required (Livewire::handle(), property binding, polling) |
+| FR-FB792-TS4 | Tailwind CSS >= 4.3 required (v4 `@theme` directive, CSS-first config) |
+| FR-FB792-TS5 | **REMOVED in 0.15.0** — DaisyUI/MaryUI/PHPFlasher deleted; `x-mary-*`, `flash()->`, `@flasher_render`, `@plugin daisyui` must be 0 |
+| FR-FB792-TS6 | TallstackUI >= 4.0 required (TALL stack UI kit, `tallstackui/tallstackui`); **always use TallstackUI** |
 | FR-FB792-TS6a | TallstackUI-only — every UI need must use TallstackUI components (`alert`, `toast`, `modal`, `form`, `table`, `badge`, etc.); custom Blade/Tailwind only if TallstackUI cannot achieve the design |
 
 ### Dependency Manifest
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-FB792-FB792-DEP1 | `composer.json` registers every runtime and dev dependency; `composer.lock` is committed and used for installs |
-| FR-FB792-FB792-DEP2 | Runtime installs use `composer install --locked --optimize-autoloader` |
-| FR-FB792-FB792-DEP3 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` |
-| FR-FB792-FB792-DEP4 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages |
-| FR-FB792-FB792-DEP5 | Package version constraints in `composer.json`/`package.json` are the source of truth for AGENTS.md and install docs |
-| FR-FB792-FB792-DEP6 | Dependency additions/upgrades are recorded in this spec's changelog with their version |
+| FR-FB792-DEP1 | `composer.json` registers every runtime and dev dependency; `composer.lock` is committed and used for installs |
+| FR-FB792-DEP2 | Runtime installs use `composer install --locked --optimize-autoloader` |
+| FR-FB792-DEP3 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` |
+| FR-FB792-DEP4 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages |
+| FR-FB792-DEP5 | Package version constraints in `composer.json`/`package.json` are the source of truth for AGENTS.md and install docs |
+| FR-FB792-DEP6 | Dependency additions/upgrades are recorded in this spec's changelog with their version |
 
 ### Verification
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-FB792-FB792-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
-| FR-FB792-FB792-TS7 | PHP version MUST match the pinned minor listed in `docs/specs/index.md`; mismatches fail the CI check | |
-| FR-FB792-FB792-DEP7 | `npm run build` MUST succeed without warnings for a production bundle | |
+| FR-FB792-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
+| FR-FB792-TS7 | PHP version MUST match the pinned minor listed in `docs/specs/index.md`; mismatches fail the CI check | |
+| FR-FB792-DEP7 | `npm run build` MUST succeed without warnings for a production bundle | |
 
 ---
 
@@ -129,25 +129,11 @@ manifest (no undeclared direct dependencies).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-FB792-FB792-DEP1 | Lockfiles (`composer.lock`, package lockfile) are committed to the repository |
-| NFR-FB792-FB792-DEP2 | No end-of-life (EOL) major dependencies; upgrades planned before EOL |
-| NFR-FB792-FB792-DEP3 | Dependency changes land as explicit, reviewable commits — never hidden in feature work |
-| NFR-FB792-FB792-DEP4 | The manifest matches the environment audit (`composer show` = lockfile) |
-| NFR-FB792-FB792-DEP5 | TallstackUI-only: UI must use TallstackUI components; custom only with documented gap (maryUI/DaisyUI removed) |
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("FB792: ...")` + `it("FB792-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
+| NFR-FB792-DEP1 | Lockfiles (`composer.lock`, package lockfile) are committed to the repository |
+| NFR-FB792-DEP2 | No end-of-life (EOL) major dependencies; upgrades planned before EOL |
+| NFR-FB792-DEP3 | Dependency changes land as explicit, reviewable commits — never hidden in feature work |
+| NFR-FB792-DEP4 | The manifest matches the environment audit (`composer show` = lockfile) |
+| NFR-FB792-DEP5 | TallstackUI-only: UI must use TallstackUI components; custom only with documented gap (maryUI/DaisyUI removed) |
 
 ## 6. API / Data Contracts
 
@@ -158,7 +144,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 | `php` | `^8.4` | Language |
 | `laravel/framework` | `^13.0` | Framework |
 | `livewire/livewire` | `^4.0` | Frontend |
-| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/MaryUI/PHPFlasher, FR-FB792-FB792-TS6) |
+| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/MaryUI/PHPFlasher, FR-FB792-TS6) |
 | `barryvdh/laravel-dompdf` | `^3.1` | PDF Generation |
 | `laravel-lang/lang` | `^15.26` | Localization |
 | `laravel/pulse` | `*` | Monitoring |
@@ -210,7 +196,7 @@ npm ci
 **Decision:** `composer.lock` and the JS package lockfile are committed to the repository and are
 the source of truth for exact versions.
 **Rationale:** Reproducible installs across the school's heterogeneous infrastructure (PS-1).
-**Trade-off:** Lockfile churn on upgrades — managed through FR-FB792-FB792-DEP3/FR-FB792-FB792-DEP6.
+**Trade-off:** Lockfile churn on upgrades — managed through FR-FB792-DEP3/FR-FB792-DEP6.
 
 ### DD-2 — Runtime Services Split into a Dedicated Spec
 
@@ -223,7 +209,7 @@ and serve different readers (PS-2).
 
 ### DD-3 — Security Scans as a Release Gate
 
-**Decision:** `composer audit` / `npm audit` gate releases (FR-FB792-FB792-VER1).
+**Decision:** `composer audit` / `npm audit` gate releases (FR-FB792-VER1).
 **Rationale:** Known-vulnerable dependencies are the cheapest class of vulnerability to fix; the
 gate makes it routine.
 **Trade-off:** Occasionally blocks a release on a transitive advisory — resolved via upgrade or a
@@ -277,28 +263,7 @@ added here, versions are bumped here, and every other spec builds on the resulti
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | - `resources/views/core/ui/` 13 files: `record-manager.blade.php` (92 lines, 5 `<x-mary`), `confirm.blade.php` (20 lines, `<x-core::ui.confirm>`), `app-signature`, `avatar`, `br... | Open | Maintainer | [#418](https://github.com/reasvyn/internara/issues/418) |
-| OQ-2 | - Replace `x-mary-table`, `x-mary-card`, `x-mary-badge`, `x-mary-modal`, `x-mary-dropdown`, `x-mary-tabs` + DaisyUI `card`/`badge`/`modal`/`dropdown` with `x-ts-table`, `x-ts-ca... | Open | Maintainer | [#417](https://github.com/reasvyn/internara/issues/417) |
-| OQ-3 | - Replace `x-mary-input`, `x-mary-select`, `x-mary-checkbox`, `x-mary-toggle`, `x-mary-textarea`, `x-mary-file`, `x-mary-datepicker` (flatpickr) + DaisyUI `btn`/`input`/`card` w... | Open | Maintainer | [#416](https://github.com/reasvyn/internara/issues/416) |
-| OQ-4 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
-| OQ-5 | - `resources/views/core/layouts/app.blade.php` `drawer lg:drawer-open` + `drawer-toggle` + `drawer-content` → `x-ts-layout` + `x-ts-layout.header` | Open | Maintainer | [#414](https://github.com/reasvyn/internara/issues/414) |
-| OQ-6 | - `app/Settings/Livewire/LangSwitch.php` + `resources/views/settings/livewire/lang-switch.blade.php` (mary dropdown → `x-ts-dropdown` / `x-ts-select.styled` for EN/ID). | Open | Maintainer | [#413](https://github.com/reasvyn/internara/issues/413) |
-| OQ-7 | - `app/Settings/Livewire/ThemeSwitcher.php` + `resources/views/settings/livewire/theme-switcher.blade.php` (mary dropdown → `x-ts-theme-switch` / `x-ts-toggle` + `x-ts-dropdown`). | Open | Maintainer | [#412](https://github.com/reasvyn/internara/issues/412) |
-| OQ-8 | - `app/**/Livewire/*.php` 235 `flash()` calls → `TallStackUi::toast()->send()->success/error` or `->dispatch()` (Interactions/Toast) / `<x-ts-alert />` for inline. | Open | Maintainer | [#411](https://github.com/reasvyn/internara/issues/411) |
-| OQ-9 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `composer.json` — Composer package and version constraints
-- `composer.lock` — Exact resolved dependency versions
-- `package.json` — JS toolchain versions
-- `.env.example` — Template environment variables
-- `docs/architecture.md` — Layer model these dependencies serve
-- **Related specs:** [architecture-design.md](D2FT3-architecture.md) — layer model; [core-infra-services.md](ZT6VS-core-infra-services.md) — runtime service behavior; [base-classes.md](SE5Q9-base-classes.md) — base classes; [shared-utilities.md](C8F0D-shared-utilities.md) — utility classes; [system-requirements.md](J68GZ-system-requirements.md) — platform dependencies and details

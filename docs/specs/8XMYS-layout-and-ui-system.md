@@ -215,20 +215,6 @@ link behaves identically and accessibly.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Menu Config (`config/menu.php`)
@@ -388,25 +374,7 @@ Livewire component), then the dashboard, which renders inside `core::layouts.app
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| OQ-1 | - Replace DaisyUI `focus:ring`, `focus:bg-base-100`, `sr-only focus:not-sr-only` custom with TallstackUI built-in focus/ARIA (Layout, ThemeSwitch, Dropdown, Modal all ship WCAG). | Open | Maintainer | [#415](https://github.com/reasvyn/internara/issues/415) |
-| OQ-2 | - `resources/views/core/layouts/app.blade.php` `drawer lg:drawer-open` + `drawer-toggle` + `drawer-content` → `x-ts-layout` + `x-ts-layout.header` | Open | Maintainer | [#414](https://github.com/reasvyn/internara/issues/414) |
-| OQ-3 | \| Rank \| Area \| Impact \| Effort \| Ratio \| Count \| | Open | Maintainer | [#410](https://github.com/reasvyn/internara/issues/410) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `resources/views/ui/layouts/` — Base, app, guest, sidebar, header, head, footer shells
-- `resources/views/ui/components/` — Shared `x-core::ui.*` component library
-- `config/menu.php` — Role-filtered navigation source
-- `resources/js/app.js` — Alpine helpers, flatpickr, markdown bootstrap
-- `docs/guides/ui-ux/design-system.md` — Design principles, responsive strategy, accessibility guidance
-- `docs/conventions.md` §13 — Theming & visual consistency (CSS variables, form icons)
-- `docs/guides/arch/modular-pattern.md` §22 — Project-wide accessibility rules
-- **Related specs:** [branding-theme-locale.md](52O1I-branding-theme-locale.md) — theming/locale;
-  [settings-infrastructure.md](YB22J-settings-infrastructure.md) — settings store;
-  [dashboard.md](CKKZC-dashboard.md) — first consumer of the app shell

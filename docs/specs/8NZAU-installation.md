@@ -290,20 +290,6 @@ integration point (FR-8NZAU-D1) and defers the rest to that spec.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("8NZAU: ...")` + `it("8NZAU-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Setup/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Setup/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Setup/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Setup/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Setup/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Settings Keys
@@ -654,26 +640,7 @@ After implementing this spec, the system can provision itself from zero: environ
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/refs/modules/setup.md` — Module conceptual overview
-- `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
-- `docs/specs/setup-wizard.md` — Browser-based wizard initiative
-- `docs/specs/QLHDO-project-initialization.md` — High-level feature specs
-- `docs/guides/product-definition.md` — Scope, personas, system boundary
-- `docs/guides/installation.md` — Detailed server prep guide
-- `docs/guides/account-recovery.md` — Recovery key lifecycle
-- **Related specs:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) — Super admin emergency access, CLI commands, OTP
-- `config/setup.php` — Setup configuration values
-- `config/module.php` — Module registry (SSOT)
-- `app/Modules/Setup/Installation/` — CLI installation module (commands, services, middleware, token actions)
-- `app/Modules/SysAdmin/Observability/Services/EnvironmentAuditor.php` — cross-module dependency: environment audit lives in the SysAdmin/Observability module, not under `app/Modules/Setup/`
-- `app/Modules/Core/Services/ModuleService.php` — Module discovery implementation

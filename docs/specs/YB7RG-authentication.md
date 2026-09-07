@@ -358,20 +358,6 @@ is unavailable or compromised.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Auth/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Auth/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Auth/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Auth/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 LoginData DTO
@@ -694,38 +680,7 @@ After implementing this spec, the system has login, account activation (token ve
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Auth/Login/Actions/LoginAction.php` — login pipeline with dual throttling
-- `app/Modules/Auth/Login/Data/LoginData.php` — login DTO
-- `app/Modules/Auth/Login/Events/LoginFailed.php` — failed login event
-- `app/Modules/Auth/Login/Events/LoginSucceeded.php` — successful login event
-- `app/Modules/Auth/Login/Http/Middleware/AuthThrottleMiddleware.php` — HTTP rate limiting
-- `app/Modules/Auth/Login/Listeners/LogLoginFailed.php` — SmartLogger integration
-- `app/Modules/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome
-- `app/Modules/Auth/Login/Livewire/Login.php` — login Livewire component
-- `app/Modules/Auth/Login/Livewire/Forms/LoginForm.php` — login form validation
-- `app/Modules/User/Http/Controllers/AuthController.php` — logout handler
-- `app/Modules/User/Enums/AccountStatus.php` — 8-state status machine with transition guards
-- `config/auth.php` — throttle configuration
-- `routes/web/auth.php` — login/logout routes
-- `docs/refs/modules/auth.md` — Auth module overview
-- `docs/refs/modules/auth-reference.md` — Auth module technical reference
-- `app/Modules/Auth/AccessTokens/Models/AccessToken.php` — token lifecycle (generate, verify, revoke)
-- `app/Modules/Auth/AccessTokens/Entities/AccessTokenState.php` — token validity state
-- `app/Modules/Auth/AccessTokens/Entities/ActivationToken.php` — activation token value object
-- `app/Modules/Auth/Account/Actions/ActivateAccountAction.php` — account activation pipeline
-- `app/Modules/Auth/Account/Entities/AccountActivation.php` — activation state entity
-- `app/Modules/Auth/Password/Events/PasswordUpdated.php` — credential change event
-- `app/Modules/Auth/Password/Listeners/SendPasswordChangedMail.php` — email notification on password change
-- `app/Modules/Auth/Password/Listeners/InvalidateSessionOnPasswordChange.php` — in-app notification on password change
-- `app/Modules/Auth/Notifications/CredentialChangedNotification.php` — credential change mail notification
-- **Related specs:** [registration.md](MBB5R-registration.md) — account provisioning and registration

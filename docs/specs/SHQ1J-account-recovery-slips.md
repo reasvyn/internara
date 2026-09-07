@@ -117,28 +117,28 @@ capability without exposing password reset to admins.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-SHQ1J-SHQ1J-GR1  | `GenerateRecoverySlipAction` must revoke all existing `account_recovery` tokens for the user before generating new ones |
-| FR-SHQ1J-SHQ1J-GR2  | Action must generate exactly 10 random 12-character uppercase alphanumeric codes |
-| FR-SHQ1J-SHQ1J-GR3  | Each code must be stored as a hashed `AccessToken` with `token_type = 'account_recovery'` and 100-year expiry |
-| FR-SHQ1J-SHQ1J-GR4  | Action must dispatch `RecoverySlipGenerated` event with user and code count |
-| FR-SHQ1J-SHQ1J-GR5  | Action must return array of plaintext codes + first `RecoveryCodeData` DTO |
-| FR-SHQ1J-SHQ1J-RD1  | `RedeemRecoverySlipAction` must throttle: max 3 attempts per 300 seconds (by IP) |
-| FR-SHQ1J-SHQ1J-RD2  | Action must look up user by username (throw `RejectedException` if not found) |
-| FR-SHQ1J-SHQ1J-RD3  | Action must iterate valid tokens and `Hash::check()` against each |
-| FR-SHQ1J-SHQ1J-RD4  | On match: update user's `password` field with `Hash::make($newPassword)` |
-| FR-SHQ1J-SHQ1J-RD5  | On match: set `last_used_at` on the matched token |
-| FR-SHQ1J-SHQ1J-RD6  | On no match: throw `RejectedException` with generic message |
-| FR-SHQ1J-SHQ1J-RD7  | Redemption must run in a database transaction |
-| FR-SHQ1J-SHQ1J-RC1  | `RecoveryCode` Livewire must store plaintext codes in session (display once only) |
-| FR-SHQ1J-SHQ1J-RC2  | Component must render codes as a numbered list with security warnings |
-| FR-SHQ1J-SHQ1J-RC3  | Component must support PDF download via DomPDF |
-| FR-SHQ1J-SHQ1J-RC4  | Component must clear session data when user navigates away or clicks "Done" |
-| FR-SHQ1J-SHQ1J-AR1  | `AccountRecovery` (guest) Livewire must show username, code, password, password confirmation fields |
-| FR-SHQ1J-SHQ1J-AR2  | Component must throttle: max 3 attempts per 300 seconds (by IP) |
-| FR-SHQ1J-SHQ1J-AR3  | On success: flash success message and redirect to login |
-| FR-SHQ1J-SHQ1J-RS1  | `RecoverySlipManager` (admin) must be authorized via `viewAny` User policy |
-| FR-SHQ1J-SHQ1J-RS2  | Component must allow user search by name/username/email |
-| FR-SHQ1J-SHQ1J-RS3  | Component must call `GenerateRecoverySlipAction` for selected user |
+| FR-SHQ1J-GR1  | `GenerateRecoverySlipAction` must revoke all existing `account_recovery` tokens for the user before generating new ones |
+| FR-SHQ1J-GR2  | Action must generate exactly 10 random 12-character uppercase alphanumeric codes |
+| FR-SHQ1J-GR3  | Each code must be stored as a hashed `AccessToken` with `token_type = 'account_recovery'` and 100-year expiry |
+| FR-SHQ1J-GR4  | Action must dispatch `RecoverySlipGenerated` event with user and code count |
+| FR-SHQ1J-GR5  | Action must return array of plaintext codes + first `RecoveryCodeData` DTO |
+| FR-SHQ1J-RD1  | `RedeemRecoverySlipAction` must throttle: max 3 attempts per 300 seconds (by IP) |
+| FR-SHQ1J-RD2  | Action must look up user by username (throw `RejectedException` if not found) |
+| FR-SHQ1J-RD3  | Action must iterate valid tokens and `Hash::check()` against each |
+| FR-SHQ1J-RD4  | On match: update user's `password` field with `Hash::make($newPassword)` |
+| FR-SHQ1J-RD5  | On match: set `last_used_at` on the matched token |
+| FR-SHQ1J-RD6  | On no match: throw `RejectedException` with generic message |
+| FR-SHQ1J-RD7  | Redemption must run in a database transaction |
+| FR-SHQ1J-RC1  | `RecoveryCode` Livewire must store plaintext codes in session (display once only) |
+| FR-SHQ1J-RC2  | Component must render codes as a numbered list with security warnings |
+| FR-SHQ1J-RC3  | Component must support PDF download via DomPDF |
+| FR-SHQ1J-RC4  | Component must clear session data when user navigates away or clicks "Done" |
+| FR-SHQ1J-AR1  | `AccountRecovery` (guest) Livewire must show username, code, password, password confirmation fields |
+| FR-SHQ1J-AR2  | Component must throttle: max 3 attempts per 300 seconds (by IP) |
+| FR-SHQ1J-AR3  | On success: flash success message and redirect to login |
+| FR-SHQ1J-RS1  | `RecoverySlipManager` (admin) must be authorized via `viewAny` User policy |
+| FR-SHQ1J-RS2  | Component must allow user search by name/username/email |
+| FR-SHQ1J-RS3  | Component must call `GenerateRecoverySlipAction` for selected user |
 
 ---
 
@@ -146,25 +146,11 @@ capability without exposing password reset to admins.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-SHQ1J-SHQ1J-L1  | All generation and redemption events must be logged via SmartLogger with PII masking |
-| NFR-SHQ1J-SHQ1J-S1  | Recovery codes must be stored as bcrypt hashes (not plaintext) |
-| NFR-SHQ1J-SHQ1J-S2  | Codes displayed only once after generation (session-based) |
-| NFR-SHQ1J-SHQ1J-S3  | PDF download must include security warning about code storage |
-| NFR-SHQ1J-SHQ1J-M1  | All actions must declare `strict_types=1` |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Auth/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Auth/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Auth/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Auth/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-SHQ1J-L1  | All generation and redemption events must be logged via SmartLogger with PII masking |
+| NFR-SHQ1J-S1  | Recovery codes must be stored as bcrypt hashes (not plaintext) |
+| NFR-SHQ1J-S2  | Codes displayed only once after generation (session-based) |
+| NFR-SHQ1J-S3  | PDF download must include security warning about code storage |
+| NFR-SHQ1J-M1  | All actions must declare `strict_types=1` |
 
 ---
 
@@ -349,26 +335,7 @@ exist from Phase 3 authentication — recovery codes reuse this infrastructure w
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` — Code generation (58 lines)
-- `app/Modules/Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php` — Code redemption (64 lines)
-- `app/Modules/Auth/AccountRecovery/Entities/RecoveryCodeState.php` — Code validity entity
-- `app/Modules/Auth/AccountRecovery/Data/RecoveryCodeData.php` — Code DTO
-- `app/Modules/Auth/AccountRecovery/Events/RecoverySlipGenerated.php` — Generation event
-- `app/Modules/Auth/AccountRecovery/Livewire/AccountRecovery.php` — Guest redemption page
-- `app/Modules/Auth/AccountRecovery/Livewire/RecoveryCode.php` — Auth user code page
-- `app/Modules/Auth/AccountRecovery/Livewire/RecoverySlipManager.php` — Admin slip manager
-- `app/Modules/Auth/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` — Redemption form validation
-- `app/Modules/Auth/AccessTokens/Models/AccessToken.php` — Shared token model (reused for recovery)
-- `resources/views/auth/account-recovery/` — Blade views (recovery page, codes page, admin manager, PDF template, guides)
-- **Related spec:** [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) (C9ZB6) — Super admin CLI recovery
-- **Related spec:** [password-reset.md](D9TKW-password-reset.md) (D9TKW) — Email-based password reset

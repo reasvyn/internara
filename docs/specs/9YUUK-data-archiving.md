@@ -152,20 +152,6 @@ feature is picked up.
 
 Written together with the FR rows in §4 at the start of implementation; none are recorded yet.
 
-## Test Requirements
-
-Review this section together with §4/§5 when the feature enters implementation. Tests will use
-`describe("9YUUK: ...")` + `it("9YUUK-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/SysAdmin/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/SysAdmin/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/SysAdmin/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/SysAdmin/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Config
@@ -450,29 +436,7 @@ the `ArchiveManager` UI — each layer tested against its FR IDs.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/SysAdmin/Archive/Models/ArchiveRecord.php` — Archive registry model (new)
-- `app/Modules/SysAdmin/Archive/Enums/ArchiveStatus.php` — `ARCHIVED`/`RESTORED`/`PURGED` enum (new)
-- `app/Modules/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php` — Cohort archival orchestrator (new)
-- `app/Modules/SysAdmin/Archive/Actions/RestoreArchiveAction.php` — Pre-expiry restore (new)
-- `app/Modules/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php` — Queued expired purge (new)
-- `app/Modules/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php` — `archives:purge-expired` (new)
-- `app/Modules/SysAdmin/Archive/Livewire/ArchiveManager.php` — Archive registry UI (new)
-- `config/retention.php` — Central retention policy (new)
-- `app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Delegated account archival (E1MSJ)
-- `app/Modules/User/Jobs/ArchiveStudentAccountsJob.php` — Queued account archival (E1MSJ)
-- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php` — Purge delegate (7HNCF)
-- `docs/refs/modules/sysadmin.md` — SysAdmin module overview
-- **Related specs:** [system-maintenance.md](E1MSJ-system-maintenance.md) — account archival, cleanup, scheduler
-- **Related specs:** [gdpr-compliance.md](7HNCF-gdpr-compliance.md) — deletion pipeline, `GdprDeletionLog`
-- **Related specs:** [backup-system.md](HBXCI-backup-system.md) — backup before purge
-- **Related specs:** [reports.md](R6BMW-reports.md) — report snapshot archival

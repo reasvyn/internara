@@ -298,20 +298,6 @@ notification dispatched by a scheduled command; the status transition itself sta
 | NFR-NTHQA-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 | NFR-NTHQA-L3 | Partnership status labels must use `LabelEnum::label()` which calls `__()` internally |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Partners/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Partners/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Partners/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Partners/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Partnership Model
@@ -545,41 +531,7 @@ After implementing this spec, the system has partnership CRUD linking companies 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Partners/Partnership/Models/Partnership.php` — Partnership model with MediaLibrary, Fillable, relationships
-- `app/Modules/Partners/Partnership/Entities/PartnershipState.php` — Entity with lifecycle queries and deletion guard
-- `app/Modules/Partners/Partnership/Data/PartnershipData.php` — Partnership DTO (BaseData)
-- `app/Modules/Partners/Partnership/Enums/PartnershipStatus.php` — Status enum with transitions and labels
-- `app/Modules/Partners/Partnership/Actions/CreatePartnershipAction.php` — Create command action
-- `app/Modules/Partners/Partnership/Actions/UpdatePartnershipAction.php` — Update command action
-- `app/Modules/Partners/Partnership/Actions/DeletePartnershipAction.php` — Delete with terminal-state guard
-- `app/Modules/Partners/Partnership/Actions/BatchDeletePartnershipAction.php` — Batch delete with per-record guard
-- `app/Modules/Partners/Partnership/Actions/TerminatePartnershipAction.php` — Active → Terminated transition
-- `app/Modules/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-NTHQA-ST11–ST12)
-- `app/Modules/Partners/Partnership/Actions/RenewPartnershipAction.php` — Renewal creating new record with MoU transfer
-- `app/Modules/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-NTHQA-EX1–FR-NTHQA-EX4)
-- `app/Modules/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-NTHQA-EX2–EX3)
-- `app/Modules/Partners/Partnership/Events/PartnershipExpired.php` — Expired transition event
-- `app/Modules/Partners/Partnership/Policies/PartnershipPolicy.php` — Authorization (admin writes, teacher read)
-- `app/Modules/Partners/Partnership/Livewire/PartnershipManager.php` — UI with company JOIN query
-- `app/Modules/Partners/Partnership/Livewire/Forms/PartnershipForm.php` — Form validation
-- `app/Modules/Partners/Partnership/Events/PartnershipCreated.php` — Created event
-- `app/Modules/Partners/Partnership/Events/PartnershipUpdated.php` — Updated event
-- `app/Modules/Partners/Partnership/Events/PartnershipDeleted.php` — Deleted event
-- `app/Modules/Partners/Partnership/Events/PartnershipTerminated.php` — Terminated event
-- `app/Modules/Partners/Partnership/Events/PartnershipRenewed.php` — Renewed event
-- `app/Modules/Partners/Partnership/Listeners/ClearDashboardOnPartnershipChange.php` — Cache invalidation listener
-- `app/Modules/Partners/Partnership/Listeners/NotifyOnPartnershipTerminated.php` — Queued termination notification
-- `database/migrations/2026_01_03_000007_create_partnerships_table.php` — Partnerships schema
-- `routes/web/partners.php` — Route definitions
-- `docs/refs/modules/partners.md` — Module conceptual documentation
-- `docs/refs/modules/partners-reference.md` — Module technical reference

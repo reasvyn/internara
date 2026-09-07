@@ -103,64 +103,64 @@ technical debt.
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-R1 | `ReadRegistrationAvailabilityAction` must return status: `not_configured`, `open`, `upcoming`, or `closed` based on `registration_period_start` and `registration_period_end` settings |
-| FR-MBB5R-MBB5R-R2 | Registration must be `open` only when current date falls within the configured registration period |
-| FR-MBB5R-MBB5R-R3 | `RegistrationState` must provide `isActive()`, `isPending()`, `isCurrentlyOngoing()`, `hasEnded()`, `canBeApproved()` methods |
-| FR-MBB5R-MBB5R-R4 | `canBeApproved()` must require both `isPending()` and `hasPlacement === true`        |
-| FR-MBB5R-MBB5R-R5 | `RegistrationState` must provide `daysRemaining()` and `totalDuration()` date calculations |
-| FR-MBB5R-MBB5R-R6 | `RegistrationState` must support `phases[]` with `currentPhaseIndex()` and `currentPhase()` based on elapsed percentage of total duration |
+| FR-MBB5R-R1 | `ReadRegistrationAvailabilityAction` must return status: `not_configured`, `open`, `upcoming`, or `closed` based on `registration_period_start` and `registration_period_end` settings |
+| FR-MBB5R-R2 | Registration must be `open` only when current date falls within the configured registration period |
+| FR-MBB5R-R3 | `RegistrationState` must provide `isActive()`, `isPending()`, `isCurrentlyOngoing()`, `hasEnded()`, `canBeApproved()` methods |
+| FR-MBB5R-R4 | `canBeApproved()` must require both `isPending()` and `hasPlacement === true`        |
+| FR-MBB5R-R5 | `RegistrationState` must provide `daysRemaining()` and `totalDuration()` date calculations |
+| FR-MBB5R-R6 | `RegistrationState` must support `phases[]` with `currentPhaseIndex()` and `currentPhase()` based on elapsed percentage of total duration |
 
 ### Registration — Creation & Constraints
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-R7 | `RegisterInternshipAction` must guard against duplicate registration (same student_id + internship_id where status is `active` or `pending`) |
-| FR-MBB5R-MBB5R-R8 | Registration model must enforce unique constraint on `(student_id, internship_id)` at database level |
-| FR-MBB5R-MBB5R-R9 | Registration model must use UUID primary key and cascade delete on `student_id` → `users` and `internship_id` → `internships` |
-| FR-MBB5R-MBB5R-R10 | `placement_id` foreign key must be nullable with `set null` on delete                 |
-| FR-MBB5R-MBB5R-R11 | `proposed_company_details` must be stored as JSON column for student-proposed companies |
-| FR-MBB5R-MBB5R-R12 | Registration status must use raw strings `'pending'` and `'active'` (enum conversion deferred — see DD-1) |
-| FR-MBB5R-MBB5R-R13 | `RegisterInternshipAction` must dispatch `StudentRegistered` event on successful creation |
-| FR-MBB5R-MBB5R-R14 | `StudentRegistered` event listener must clear dashboard cache                         |
+| FR-MBB5R-R7 | `RegisterInternshipAction` must guard against duplicate registration (same student_id + internship_id where status is `active` or `pending`) |
+| FR-MBB5R-R8 | Registration model must enforce unique constraint on `(student_id, internship_id)` at database level |
+| FR-MBB5R-R9 | Registration model must use UUID primary key and cascade delete on `student_id` → `users` and `internship_id` → `internships` |
+| FR-MBB5R-R10 | `placement_id` foreign key must be nullable with `set null` on delete                 |
+| FR-MBB5R-R11 | `proposed_company_details` must be stored as JSON column for student-proposed companies |
+| FR-MBB5R-R12 | Registration status must use raw strings `'pending'` and `'active'` (enum conversion deferred — see DD-1) |
+| FR-MBB5R-R13 | `RegisterInternshipAction` must dispatch `StudentRegistered` event on successful creation |
+| FR-MBB5R-R14 | `StudentRegistered` event listener must clear dashboard cache                         |
 
 ### Registration — Verification & Activation
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-R15 | `VerifyRegistrationAction` must guard: registration status must be `pending`          |
-| FR-MBB5R-MBB5R-R16 | `VerifyRegistrationAction` must guard: target placement must have available slots (`PlacementCapacity::hasAvailableSlots()`) |
-| FR-MBB5R-MBB5R-R17 | `VerifyRegistrationAction` must atomically: assign `placement_id`, set `start_date`, set `end_date`, set status to `active`, increment placement `filled_quota` |
-| FR-MBB5R-MBB5R-R18 | `RegistrationPolicy` must allow student to create/update own pending registrations    |
-| FR-MBB5R-MBB5R-R19 | `RegistrationPolicy` must allow admin to verify/approve registrations                |
+| FR-MBB5R-R15 | `VerifyRegistrationAction` must guard: registration status must be `pending`          |
+| FR-MBB5R-R16 | `VerifyRegistrationAction` must guard: target placement must have available slots (`PlacementCapacity::hasAvailableSlots()`) |
+| FR-MBB5R-R17 | `VerifyRegistrationAction` must atomically: assign `placement_id`, set `start_date`, set `end_date`, set status to `active`, increment placement `filled_quota` |
+| FR-MBB5R-R18 | `RegistrationPolicy` must allow student to create/update own pending registrations    |
+| FR-MBB5R-R19 | `RegistrationPolicy` must allow admin to verify/approve registrations                |
 
 ### Registration — Documents
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-D1 | `RegistrationDocument` model must track document submissions linked to a registration |
-| FR-MBB5R-MBB5R-D2 | Document status must use `RegistrationDocumentStatus` enum: `PENDING`, `VERIFIED`, `REJECTED` |
-| FR-MBB5R-MBB5R-D3 | `RegistrationDocumentStatus` must implement `LabelEnum` and `StatusEnum` contracts    |
-| FR-MBB5R-MBB5R-D4 | `UploadRegistrationDocumentAction` must handle file upload per required document type |
-| FR-MBB5R-MBB5R-D5 | `RegistrationDocumentUpload` Livewire component must display required document IDs and current upload status |
-| FR-MBB5R-MBB5R-D6 | `RegistrationDocumentPolicy` must govern upload and verification permissions          |
-| FR-MBB5R-MBB5R-D7 | Document verification transitions: `PENDING` → [`VERIFIED`, `REJECTED`]; terminal states: `VERIFIED`, `REJECTED` |
+| FR-MBB5R-D1 | `RegistrationDocument` model must track document submissions linked to a registration |
+| FR-MBB5R-D2 | Document status must use `RegistrationDocumentStatus` enum: `PENDING`, `VERIFIED`, `REJECTED` |
+| FR-MBB5R-D3 | `RegistrationDocumentStatus` must implement `LabelEnum` and `StatusEnum` contracts    |
+| FR-MBB5R-D4 | `UploadRegistrationDocumentAction` must handle file upload per required document type |
+| FR-MBB5R-D5 | `RegistrationDocumentUpload` Livewire component must display required document IDs and current upload status |
+| FR-MBB5R-D6 | `RegistrationDocumentPolicy` must govern upload and verification permissions          |
+| FR-MBB5R-D7 | Document verification transitions: `PENDING` → [`VERIFIED`, `REJECTED`]; terminal states: `VERIFIED`, `REJECTED` |
 
 ### Registration — Livewire Components & Routing
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-L1 | `RegistrationCenter` must display open internships at `/registration` with `auth` middleware |
-| FR-MBB5R-MBB5R-L2 | `RegistrationWizard` must implement 2-step flow at `/register` with `auth` middleware |
-| FR-MBB5R-MBB5R-L3 | `RegistrationVerification` must display pending registrations at `/admin/internships/registrations/pending` with `role:super_admin\|admin` middleware |
-| FR-MBB5R-MBB5R-L4 | `RegistrationDocumentUpload` must be at `/registration/documents` with `auth` middleware |
+| FR-MBB5R-L1 | `RegistrationCenter` must display open internships at `/registration` with `auth` middleware |
+| FR-MBB5R-L2 | `RegistrationWizard` must implement 2-step flow at `/register` with `auth` middleware |
+| FR-MBB5R-L3 | `RegistrationVerification` must display pending registrations at `/admin/internships/registrations/pending` with `role:super_admin\|admin` middleware |
+| FR-MBB5R-L4 | `RegistrationDocumentUpload` must be at `/registration/documents` with `auth` middleware |
 
 ### Registration — DTO
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-MBB5R-MBB5R-DTO1 | `RegistrationData` must extend `BaseData` with required `internshipId`              |
-| FR-MBB5R-MBB5R-DTO2 | `RegistrationData` must accept nullable: `placementId`, `academicYear`, `startDate`, `endDate`, `proposedCompanyName`, `proposedCompanyAddress` |
-| FR-MBB5R-MBB5R-DTO3 | `RegistrationWizardForm` must use Laravel Form Object for validation                 |
+| FR-MBB5R-DTO1 | `RegistrationData` must extend `BaseData` with required `internshipId`              |
+| FR-MBB5R-DTO2 | `RegistrationData` must accept nullable: `placementId`, `academicYear`, `startDate`, `endDate`, `proposedCompanyName`, `proposedCompanyAddress` |
+| FR-MBB5R-DTO3 | `RegistrationWizardForm` must use Laravel Form Object for validation                 |
 
 ---
 
@@ -168,34 +168,20 @@ technical debt.
 
 | ID    | Requirement                                                                          |
 | ----- | ------------------------------------------------------------------------------------ |
-| NFR-MBB5R-MBB5R-P1 | Registration wizard must complete in < 500ms (network-excluded) for submission step  |
-| NFR-MBB5R-MBB5R-P3 | `RegistrationVerification` page must load pending registrations in < 1s for up to 500 records |
-| NFR-MBB5R-MBB5R-R1 | Registration creation must be wrapped in a database transaction                       |
-| NFR-MBB5R-MBB5R-U1 | Registration wizard must clearly show which step the student is on (1 of 2, 2 of 2)  |
-| NFR-MBB5R-MBB5R-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
-| NFR-MBB5R-MBB5R-M2 | Registration status must be migrated to a backed enum before production launch (see DD-1 @todo) |
-| NFR-MBB5R-MBB5R-A1 | All enrollment UI (wizard, verification) must meet WCAG 2.1 Level AA                 |
-| NFR-MBB5R-MBB5R-A2 | Registration wizard step indicators must be keyboard-accessible and announced to screen readers |
-| NFR-MBB5R-MBB5R-A3 | Form inputs in wizard must have associated labels                                    |
-| NFR-MBB5R-MBB5R-A4 | Dynamic content updates (step transitions, validation errors) must use `aria-live` regions |
-| NFR-MBB5R-MBB5R-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text                   |
-| NFR-MBB5R-MBB5R-L1 | All user-facing strings in enrollment UI must use `__()` translation helper          |
-| NFR-MBB5R-MBB5R-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
-| NFR-MBB5R-MBB5R-L3 | Registration status labels must use `LabelEnum::label()` (calls `__()` internally)   |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Enrollment/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Enrollment/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Enrollment/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Enrollment/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Enrollment/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-MBB5R-P1 | Registration wizard must complete in < 500ms (network-excluded) for submission step  |
+| NFR-MBB5R-P3 | `RegistrationVerification` page must load pending registrations in < 1s for up to 500 records |
+| NFR-MBB5R-R1 | Registration creation must be wrapped in a database transaction                       |
+| NFR-MBB5R-U1 | Registration wizard must clearly show which step the student is on (1 of 2, 2 of 2)  |
+| NFR-MBB5R-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
+| NFR-MBB5R-M2 | Registration status must be migrated to a backed enum before production launch (see DD-1 @todo) |
+| NFR-MBB5R-A1 | All enrollment UI (wizard, verification) must meet WCAG 2.1 Level AA                 |
+| NFR-MBB5R-A2 | Registration wizard step indicators must be keyboard-accessible and announced to screen readers |
+| NFR-MBB5R-A3 | Form inputs in wizard must have associated labels                                    |
+| NFR-MBB5R-A4 | Dynamic content updates (step transitions, validation errors) must use `aria-live` regions |
+| NFR-MBB5R-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text                   |
+| NFR-MBB5R-L1 | All user-facing strings in enrollment UI must use `__()` translation helper          |
+| NFR-MBB5R-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
+| NFR-MBB5R-L3 | Registration status labels must use `LabelEnum::label()` (calls `__()` internally)   |
 
 ---
 
@@ -415,35 +401,7 @@ After implementing this spec, students can register for internship programs and 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Enrollment/Registration/Models/Registration.php` — Registration model (UUID PK, status strings)
-- `app/Modules/Enrollment/Registration/Entities/RegistrationState.php` — Registration state entity with lifecycle methods
-- `app/Modules/Enrollment/Registration/Data/RegistrationData.php` — Registration DTO
-- `app/Modules/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php` — Registration window status
-- `app/Modules/Enrollment/Registration/Actions/RegisterInternshipAction.php` — Registration creation with duplicate guard
-- `app/Modules/Enrollment/Registration/Actions/VerifyRegistrationAction.php` — Admin verification with atomic placement assignment
-- `app/Modules/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php` — Document upload handler
-- `app/Modules/Enrollment/Registration/Enums/RegistrationDocumentStatus.php` — Document status enum (PENDING/VERIFIED/REJECTED)
-- `app/Modules/Enrollment/Registration/Models/RegistrationDocument.php` — Document submission model
-- `app/Modules/Enrollment/Registration/Policies/RegistrationPolicy.php` — Registration authorization
-- `app/Modules/Enrollment/Registration/Policies/RegistrationDocumentPolicy.php` — Document authorization
-- `app/Modules/Enrollment/Registration/Events/StudentRegistered.php` — Registration creation event
-- `app/Modules/Enrollment/Registration/Listeners/ClearDashboardOnRegistration.php` — Dashboard cache invalidation
-- `app/Modules/Enrollment/Registration/Livewire/RegistrationCenter.php` — Open internships display
-- `app/Modules/Enrollment/Registration/Livewire/RegistrationWizard.php` — 2-step registration wizard
-- `app/Modules/Enrollment/Registration/Livewire/RegistrationVerification.php` — Admin pending registration review
-- `app/Modules/Enrollment/Registration/Livewire/RegistrationDocumentUpload.php` — Student document upload
-- `app/Modules/Enrollment/Registration/Livewire/Forms/RegistrationWizardForm.php` — Wizard form validation
-- `routes/web/enrollment.php` — All enrollment route definitions
-- `docs/refs/modules/enrollment.md` — Enrollment module overview
-- **Related specs:** [placement.md](J9GBH-placement.md) — Placement CRUD & capacity management
-- **Related specs:** [account-application.md](920SO-account-application.md) — Guest-to-student account pipeline

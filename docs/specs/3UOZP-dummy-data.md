@@ -475,33 +475,10 @@ new factory states in their module reference docs.
 
 ---
 
+
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
-
-## Test Requirements
-
-Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
-
-| Layer | Test dir | Verifies |
-|-------|----------|----------|
-| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
-| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
-| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
-| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `database/seeders/DummySeeder.php` — entry point (new, opt-in)
-- `database/seeders/RolePermissionSeeder.php`, `AppSettingSeeder.php`, `AcademicYearSeeder.php` — base data reused by the helper (FR-3UOZP-E4, FR-3UOZP-H14, DD-9)
-- `tests/Support/DummyData.php` — factory-driven generator (new, dev-only)
-- `tests/Support/WithSettingsSeed.php` — existing test-support convention being extended
-- `database/factories/*` — existing factories reused (38 factories)
-- `docs/guides/infra/database.md` — Seeders section (to be updated)
-- **Related specs:** [registration.md](MBB5R-registration.md) (MBB5R), [placement.md](J9GBH-placement.md) (J9GBH), [reports.md](R6BMW-reports.md) (R6BMW), [certification.md](J0M04-certification.md) (J0M04)

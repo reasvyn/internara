@@ -104,21 +104,21 @@ primary mutation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-NUCY3-NUCY3-EV1 | All events MUST extend `BaseEvent` abstract class |
-| FR-NUCY3-NUCY3-EV2 | Event classes MUST be `final` with `public` typed constructor promotion properties |
-| FR-NUCY3-NUCY3-EV3 | `eventName()` MUST return a dot-notation string matching `{entity}.{past_tense_action}` |
-| FR-NUCY3-NUCY3-EV4 | `toPayload()` MUST convert Model properties to `{name}_id` strings |
-| FR-NUCY3-NUCY3-EV5 | All event-to-listener mappings MUST be registered in `config/event.php` |
-| FR-NUCY3-NUCY3-EV6 | No event MAY exist without at least one registered listener |
-| FR-NUCY3-NUCY3-EV7 | Events dispatched inside transactions MUST use `$this->dispatchEvent()` (deferred) |
-| FR-NUCY3-NUCY3-EV8 | Events dispatched outside transactions MAY use `Event::dispatch()` (immediate) |
-| FR-NUCY3-NUCY3-EV9 | SmartLogger integration: `->event($baseEvent)->save()` auto-dispatches + logs |
-| FR-NUCY3-NUCY3-EV10 | I/O-bound listeners MUST implement `ShouldQueue` |
-| FR-NUCY3-NUCY3-EV11 | Payload extraction MUST preserve scalar values, convert objects via `toArray()`, skip nulls |
-| FR-NUCY3-NUCY3-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
-| FR-NUCY3-NUCY3-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
-| FR-NUCY3-NUCY3-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
-| FR-NUCY3-NUCY3-EV15 | Dispatch after commit MUST happen exactly once per Action execution (unit test asserts single listener invocation) | |
+| FR-NUCY3-EV1 | All events MUST extend `BaseEvent` abstract class |
+| FR-NUCY3-EV2 | Event classes MUST be `final` with `public` typed constructor promotion properties |
+| FR-NUCY3-EV3 | `eventName()` MUST return a dot-notation string matching `{entity}.{past_tense_action}` |
+| FR-NUCY3-EV4 | `toPayload()` MUST convert Model properties to `{name}_id` strings |
+| FR-NUCY3-EV5 | All event-to-listener mappings MUST be registered in `config/event.php` |
+| FR-NUCY3-EV6 | No event MAY exist without at least one registered listener |
+| FR-NUCY3-EV7 | Events dispatched inside transactions MUST use `$this->dispatchEvent()` (deferred) |
+| FR-NUCY3-EV8 | Events dispatched outside transactions MAY use `Event::dispatch()` (immediate) |
+| FR-NUCY3-EV9 | SmartLogger integration: `->event($baseEvent)->save()` auto-dispatches + logs |
+| FR-NUCY3-EV10 | I/O-bound listeners MUST implement `ShouldQueue` |
+| FR-NUCY3-EV11 | Payload extraction MUST preserve scalar values, convert objects via `toArray()`, skip nulls |
+| FR-NUCY3-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
+| FR-NUCY3-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
+| FR-NUCY3-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
+| FR-NUCY3-EV15 | Dispatch after commit MUST happen exactly once per Action execution (unit test asserts single listener invocation) | |
 
 ---
 
@@ -126,25 +126,11 @@ primary mutation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-NUCY3-NUCY3-EV1 | Event dispatch MUST NOT block the HTTP response |
-| NFR-NUCY3-NUCY3-EV2 | Deferred events MUST fire within the same process after commit (not via queue) |
-| NFR-NUCY3-NUCY3-EV3 | Queued listeners MUST complete within 60 seconds per attempt |
-| NFR-NUCY3-NUCY3-EV4 | Failed queued listeners MUST retry up to 3 times with exponential backoff |
-| NFR-NUCY3-NUCY3-EV5 | Event registration in `config/event.php` MUST be validatable at boot time |
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("NUCY3: ...")` + `it("NUCY3-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
+| NFR-NUCY3-EV1 | Event dispatch MUST NOT block the HTTP response |
+| NFR-NUCY3-EV2 | Deferred events MUST fire within the same process after commit (not via queue) |
+| NFR-NUCY3-EV3 | Queued listeners MUST complete within 60 seconds per attempt |
+| NFR-NUCY3-EV4 | Failed queued listeners MUST retry up to 3 times with exponential backoff |
+| NFR-NUCY3-EV5 | Event registration in `config/event.php` MUST be validatable at boot time |
 
 ## 6. API / Data Contracts
 
@@ -277,20 +263,7 @@ After implementing this spec, the system has event dispatch infrastructure with 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Events/BaseEvent.php` — Base event class
-- `config/event.php` — Event-to-listener registry (49 events, 20 listeners)
-- `app/Modules/Core/Services/SmartLogger.php` — SmartLogger with event integration
-- `docs/guides/arch/event-pattern.md` — Architecture pattern documentation
-- `docs/guides/arch/logging-pattern.md` — SmartLogger architecture
-- `docs/specs/base-classes.md` (SE5Q9) — Base classes and contracts
-- `docs/specs/logging-and-error-handling.md` — SmartLogger full specification

@@ -244,20 +244,6 @@ management UI, so admins can narrow results before downloading.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Enrollment/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Enrollment/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Enrollment/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Enrollment/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Enrollment/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 CsvHandler Service
@@ -560,22 +546,7 @@ After implementing this spec, the system has reusable CSV import/export with tem
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Support/CsvHandler.php` — shared CSV import/export/template service
-- `app/Modules/Core/Enums/CsvRowResult.php` — row result enum (CREATED, SKIPPED)
-- `app/Modules/User/UserManagement/Livewire/UserManager.php` — user import/export/template methods
-- `app/Modules/Academics/Department/Livewire/DepartmentManager.php` — department import/export/template methods
-- `app/Modules/Partners/Company/Livewire/CompanyManager.php` — company import/export/template methods
-- `docs/specs/user-crud-and-status.md` — User CRUD and AccountStatus
-- `docs/specs/company-management.md` — Company CRUD
-- `docs/specs/partnership-management.md` — Partnership lifecycle
-- `docs/specs/department-management.md` — Department CRUD

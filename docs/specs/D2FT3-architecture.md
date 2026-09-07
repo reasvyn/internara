@@ -226,20 +226,6 @@ surface.
 | NFR-D2FT3-A6 | Clean-Code/DRY: duplicated logic must be extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustain) |
 | NFR-D2FT3-A7 | Single-tenant deployment matrix MUST be SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk with zero external services by default; Redis/S3/Reverb are optional `.env` overrides — no centralized auth, billing, or tenant isolation |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("D2FT3: ...")` + `it("D2FT3-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Module Skeleton
@@ -430,27 +416,7 @@ authoritative contract.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | Documentation in 20+ files references the CLI scanners by the old path `tools/scan_<name>/cli.py`, while all scanners are actually flat files at `tools/scan_<name>.py` (the... | Open | Maintainer | [#430](https://github.com/reasvyn/internara/issues/430) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/architecture.md` — 4-layer model, data flow, dependency rules (living reference)
-- `docs/guides/arch/modular-pattern.md` — module boundaries and colocation
-- `docs/guides/arch/action-pattern.md` — Action Triad contracts (C1, C7)
-- `docs/guides/arch/entity-pattern.md` — Entity contract (C5)
-- `docs/guides/arch/data-pattern.md` — DTO/BaseData contract (C6)
-- `docs/guides/arch/model-pattern.md` — Model contract (D4)
-- `docs/guides/arch/enum-pattern.md` — Enum contracts
-- `docs/guides/arch/event-pattern.md` — Event dispatch & listeners
-- `docs/guides/arch/exception-pattern.md` — RejectedException (C8)
-- `docs/conventions.md` — Invariants C1–C8, D1–D6
-- `config/module.php` — module dependency order
-- `tools/scan_violations/cli.py`, `tools/scan_class_contracts/cli.py` — enforcement scans
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — dependency versions; [core-infra-services.md](ZT6VS-core-infra-services.md) — runtime services; [base-classes.md](SE5Q9-base-classes.md) — base class contracts; [event-system.md](NUCY3-event-system.md) — events

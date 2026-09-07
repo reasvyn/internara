@@ -152,20 +152,6 @@ workflow with atomic quota transfer is required.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Enrollment/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Enrollment/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Enrollment/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Enrollment/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Enrollment/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### 6.1 Placement Model
@@ -354,38 +340,7 @@ After implementing this spec, the system can match enrolled students to company 
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Enrollment/Placement/Models/Placement.php` — Placement model (UUID PK, quota/filled_quota)
-- `app/Modules/Enrollment/Placement/Entities/PlacementCapacity.php` — Capacity entity (isFull, availableSlots)
-- `app/Modules/Enrollment/Placement/Entities/PlacementState.php` — Placement state (canBeDeleted)
-- `app/Modules/Enrollment/Placement/Actions/CreatePlacementAction.php` — Placement CRUD
-- `app/Modules/Enrollment/Placement/Actions/UpdatePlacementAction.php` — Placement update
-- `app/Modules/Enrollment/Placement/Actions/DeletePlacementAction.php` — Placement deletion with guard
-- `app/Modules/Enrollment/Placement/Actions/DirectPlacementAction.php` — Atomic registration+placement creation
-- `app/Modules/Enrollment/Placement/Policies/PlacementPolicy.php` — Placement authorization
-- `app/Modules/Enrollment/Placement/Livewire/PlacementIndex.php` — Placement CRUD with stats
-- `app/Modules/Enrollment/Placement/Livewire/DirectPlacementManager.php` — Admin direct placement form
-- `app/Modules/Enrollment/Placement/Livewire/Forms/PlacementForm.php` — Placement form validation
-- `app/Modules/Enrollment/Placement/Livewire/Forms/DirectPlacementForm.php` — Direct placement form validation
-- `app/Modules/Enrollment/Placement/Models/PlacementChangeRequest.php` — Change request model
-- `app/Modules/Enrollment/Placement/Enums/PlacementChangeStatus.php` — Change status enum (PENDING/APPROVED/REJECTED)
-- `app/Modules/Enrollment/Placement/Actions/RequestPlacementChangeAction.php` — Student change request
-- `app/Modules/Enrollment/Placement/Actions/ApprovePlacementChangeAction.php` — Atomic quota swap on approval
-- `app/Modules/Enrollment/Placement/Actions/RejectPlacementChangeAction.php` — Change rejection
-- `app/Modules/Enrollment/Placement/Policies/PlacementChangeRequestPolicy.php` — Change request authorization
-- `app/Modules/Enrollment/Placement/Livewire/PlacementChangeManager.php` — Admin change review
-- `app/Modules/Enrollment/Placement/Livewire/StudentPlacementChangeRequest.php` — Student change request form
-- `app/Modules/Enrollment/Placement/Livewire/Forms/PlacementChangeForm.php` — Change form validation
-- `routes/web/enrollment.php` — All enrollment route definitions
-- `docs/refs/modules/enrollment.md` — Enrollment module overview
-- **Related specs:** [registration.md](MBB5R-registration.md) — Registration workflow & documents
-- **Related specs:** [account-application.md](920SO-account-application.md) — Guest-to-student account pipeline

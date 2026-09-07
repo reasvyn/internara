@@ -343,41 +343,10 @@ completed before any business feature.
 
 ---
 
+
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-|----|----------------------------------|--------|-------|----------|
-| OQ-1 | `spatie/laravel-model-status ^1.18` listed in [J68GZ FR-QLHDO-D6](J68GZ-system-requirements.md) but has zero consumers in `app/`. Remove from spec + composer.json. | Open | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419) |
-| OQ-2 | [ZT6VS](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm operational override is intentional. | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
-| OQ-3 | [I1BCV](I1BCV-module-discovery.md) mandates manual `config/module.php` and `tests/Pest.php` registry but code uses filesystem auto-discovery. Rewrite spec to match actual model. | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
-| OQ-4 | PWA/offline-first is deferred to post-MVP (rural connectivity gap). Confirm this is an explicit product decision, not a forgotten requirement. | Open | Maintainer | — |
-| A-1 | We assume all admin mutations log to `Log::channel('activity')` (FR-QLHDO-G4) and `PiiMasker` covers every PII field. Verified file-level for 26 keys; runtime coverage assumed. | Accepted | Maintainer | — |
-| A-2 | `tallstackui_formPassword` autofill is a client-side quirk on shared hosting; the production fix is a hidden text input fallback — pending `ui-development` review. | Accepted | Maintainer | — |
-| A-3 | NFR targets for p95 latency, coverage %, and load testing are deferred to post-MVP infrastructure. MVP is hand-tested for these dimensions. | Accepted | Maintainer | — |
-| R-1 | If rural students cannot reliably submit attendance on low-bandwidth connections, daily attendance becomes a bottleneck. Mitigated by responsive layout and retry-friendly submission (FR-QLHDO-G13). | Accepted | Maintainer | — |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the requirements retained in §4/§5. Tests use
-`describe("QLHDO: ...")` + `it("QLHDO-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Core/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Core/` | Entity/Enum/DTO/Policy pure business rules from FR-QLHDO-G* rows |
-| Feature | TR-FTR-01 | `tests/Feature/Core/` | Action execute() behavior, Livewire submit flows, events from FR-QLHDO-G* rows |
-| Browser | TR-BRW-01 | `tests/Browser/Core/` | Login, dashboard, primary flow journeys from UC-QLHDO-* rows |
-
----
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- [docs/specs/index.md](index.md) — spec registry, build order, status
-- [docs/refs/modules/index.md](../refs/modules/index.md) — module dependency graph
-- [docs/refs/articles/pkl-operational-research.md](../refs/articles/pkl-operational-research.md) — field pain evidence (non-testable)
-- [docs/refs/articles/curriculum-compliance.md](../refs/articles/curriculum-compliance.md) — regulatory alignment (non-testable)
-- [docs/architecture.md](../architecture.md) — 4-layer model, Action Triad
-- [config/module.php](../../config/module.php) — module registration order
-- [docs/guides/installation.md](../guides/installation.md) — installation walkthrough

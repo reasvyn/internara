@@ -163,104 +163,104 @@ center. A custom channel is required to persist notifications with the right sha
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-C1 | `CustomDatabaseChannel` must accept a `SendsNotifications` instance via constructor injection |
-| FR-TXR2H-TXR2H-C2 | `CustomDatabaseChannel::send()` must extract the notifiable's primary key via `$notifiable->getKey()` or `$notifiable->id` |
-| FR-TXR2H-TXR2H-C3 | `CustomDatabaseChannel::send()` must silently return if the notifiable has no valid user ID (null or empty) |
-| FR-TXR2H-TXR2H-C4 | `CustomDatabaseChannel::send()` must call `$notification->toCustomDatabase($notifiable)` to get structured data |
-| FR-TXR2H-TXR2H-C5 | `CustomDatabaseChannel::send()` must log a warning via `SmartLogger` if `type` or `title` keys are missing from the returned data |
-| FR-TXR2H-TXR2H-C6 | `CustomDatabaseChannel::send()` must delegate to `SendsNotifications::execute()` with a single `NotificationData` (`userId`, `type`, `title`, optional `message`, `data`, `link`) |
-| FR-TXR2H-TXR2H-C7 | All notification classes must implement `toCustomDatabase($notifiable)` returning an array with keys: `type` (string), `title` (string), `message` (?string), `link` (?string), `data` (?array) |
+| FR-TXR2H-C1 | `CustomDatabaseChannel` must accept a `SendsNotifications` instance via constructor injection |
+| FR-TXR2H-C2 | `CustomDatabaseChannel::send()` must extract the notifiable's primary key via `$notifiable->getKey()` or `$notifiable->id` |
+| FR-TXR2H-C3 | `CustomDatabaseChannel::send()` must silently return if the notifiable has no valid user ID (null or empty) |
+| FR-TXR2H-C4 | `CustomDatabaseChannel::send()` must call `$notification->toCustomDatabase($notifiable)` to get structured data |
+| FR-TXR2H-C5 | `CustomDatabaseChannel::send()` must log a warning via `SmartLogger` if `type` or `title` keys are missing from the returned data |
+| FR-TXR2H-C6 | `CustomDatabaseChannel::send()` must delegate to `SendsNotifications::execute()` with a single `NotificationData` (`userId`, `type`, `title`, optional `message`, `data`, `link`) |
+| FR-TXR2H-C7 | All notification classes must implement `toCustomDatabase($notifiable)` returning an array with keys: `type` (string), `title` (string), `message` (?string), `link` (?string), `data` (?array) |
 
 ### SendsNotifications Contract
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-S1 | `SendsNotifications` interface must define `execute(NotificationData $data): mixed`, where `NotificationData` (`app/Modules/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional `message`, `data`, `link` |
-| FR-TXR2H-TXR2H-S2 | `SendNotificationAction` must implement `SendsNotifications` and extend `BaseCommandAction` |
-| FR-TXR2H-TXR2H-S3 | `SendNotificationAction::execute()` must validate `userId`, `type` (max 50), and `title` (max 255) via `Validator` |
-| FR-TXR2H-TXR2H-S4 | `SendNotificationAction::execute()` must find the `User` by ID or throw `ModelNotFoundException` |
-| FR-TXR2H-TXR2H-S5 | `SendNotificationAction::execute()` must create a `Notification` record within a transaction and emit `NotificationSent` event |
-| FR-TXR2H-TXR2H-S6 | `SendNotificationAction::execute()` must log the send via `$this->log('notification_sent', ...)` |
+| FR-TXR2H-S1 | `SendsNotifications` interface must define `execute(NotificationData $data): mixed`, where `NotificationData` (`app/Modules/Core/Channels/Data/NotificationData.php`) carries `userId`, `type`, `title`, and optional `message`, `data`, `link` |
+| FR-TXR2H-S2 | `SendNotificationAction` must implement `SendsNotifications` and extend `BaseCommandAction` |
+| FR-TXR2H-S3 | `SendNotificationAction::execute()` must validate `userId`, `type` (max 50), and `title` (max 255) via `Validator` |
+| FR-TXR2H-S4 | `SendNotificationAction::execute()` must find the `User` by ID or throw `ModelNotFoundException` |
+| FR-TXR2H-S5 | `SendNotificationAction::execute()` must create a `Notification` record within a transaction and emit `NotificationSent` event |
+| FR-TXR2H-S6 | `SendNotificationAction::execute()` must log the send via `$this->log('notification_sent', ...)` |
 
 ### Notification Model
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-M1 | `Notification` model must use `#[Fillable]` attribute with: `user_id`, `type`, `title`, `message`, `data`, `link`, `is_read`, `read_at` |
-| FR-TXR2H-TXR2H-M2 | `Notification` model must cast `data` → `array`, `is_read` → `boolean`, `read_at` → `datetime` |
-| FR-TXR2H-TXR2H-M3 | `Notification` model must define `user(): BelongsTo` relationship to `User` |
-| FR-TXR2H-TXR2H-M4 | `notifications` table must have a composite index on `[user_id, is_read]` |
-| FR-TXR2H-TXR2H-M5 | `notifications` table `user_id` foreign key must use `onDelete('cascade')` |
+| FR-TXR2H-M1 | `Notification` model must use `#[Fillable]` attribute with: `user_id`, `type`, `title`, `message`, `data`, `link`, `is_read`, `read_at` |
+| FR-TXR2H-M2 | `Notification` model must cast `data` → `array`, `is_read` → `boolean`, `read_at` → `datetime` |
+| FR-TXR2H-M3 | `Notification` model must define `user(): BelongsTo` relationship to `User` |
+| FR-TXR2H-M4 | `notifications` table must have a composite index on `[user_id, is_read]` |
+| FR-TXR2H-M5 | `notifications` table `user_id` foreign key must use `onDelete('cascade')` |
 
 ### Notification Center UI
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-U1 | `NotificationCenter` must extend `BaseRecordManager` and render `user.notifications.notification-center` |
-| FR-TXR2H-TXR2H-U2 | `NotificationCenter::query()` must return `Notification::where('user_id', Auth::id())` |
-| FR-TXR2H-TXR2H-U3 | `NotificationCenter::headers()` must return columns: `title` (label from `__('notifications.ui.message_col')`), `created_at` (sortable, hidden on small screens), `actions` |
-| FR-TXR2H-TXR2H-U4 | `NotificationCenter::applySearch()` must search across `title` and `message` fields using `LIKE` |
-| FR-TXR2H-TXR2H-U5 | `NotificationCenter::applyFilters()` must support `status` filter: `unread` → `is_read = false`, `read` → `is_read = true` |
-| FR-TXR2H-TXR2H-U6 | `NotificationCenter::viewNotification($id)` must find notification by user ownership, mark as read if unread, dispatch `notification-read` Livewire event, and show viewer |
-| FR-TXR2H-TXR2H-U7 | `NotificationCenter::markAsRead($id)` must delegate to `MarkAsReadAction` and dispatch `notification-read` |
-| FR-TXR2H-TXR2H-U8 | `NotificationCenter::markAllAsRead()` must delegate to `MarkAllAsReadAction`, flash success message, and dispatch `notifications-read` |
-| FR-TXR2H-TXR2H-U9 | `NotificationCenter::markSelectedAsRead()` must delegate to `MarkBatchAsReadAction` with selected IDs, clear selection, and dispatch `notifications-read` |
-| FR-TXR2H-TXR2H-U10 | `NotificationCenter::confirmAction()` must use `performBulkAction()` for batch delete, catching `RejectedException` |
+| FR-TXR2H-U1 | `NotificationCenter` must extend `BaseRecordManager` and render `user.notifications.notification-center` |
+| FR-TXR2H-U2 | `NotificationCenter::query()` must return `Notification::where('user_id', Auth::id())` |
+| FR-TXR2H-U3 | `NotificationCenter::headers()` must return columns: `title` (label from `__('notifications.ui.message_col')`), `created_at` (sortable, hidden on small screens), `actions` |
+| FR-TXR2H-U4 | `NotificationCenter::applySearch()` must search across `title` and `message` fields using `LIKE` |
+| FR-TXR2H-U5 | `NotificationCenter::applyFilters()` must support `status` filter: `unread` → `is_read = false`, `read` → `is_read = true` |
+| FR-TXR2H-U6 | `NotificationCenter::viewNotification($id)` must find notification by user ownership, mark as read if unread, dispatch `notification-read` Livewire event, and show viewer |
+| FR-TXR2H-U7 | `NotificationCenter::markAsRead($id)` must delegate to `MarkAsReadAction` and dispatch `notification-read` |
+| FR-TXR2H-U8 | `NotificationCenter::markAllAsRead()` must delegate to `MarkAllAsReadAction`, flash success message, and dispatch `notifications-read` |
+| FR-TXR2H-U9 | `NotificationCenter::markSelectedAsRead()` must delegate to `MarkBatchAsReadAction` with selected IDs, clear selection, and dispatch `notifications-read` |
+| FR-TXR2H-U10 | `NotificationCenter::confirmAction()` must use `performBulkAction()` for batch delete, catching `RejectedException` |
 
 ### Notification Bell
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-B1 | `NotificationBell` must extend `Component`, maintain `int $unreadCount` property |
-| FR-TXR2H-TXR2H-B2 | `NotificationBell::mount()` must call `updateUnreadCount()` |
-| FR-TXR2H-TXR2H-B3 | `NotificationBell::updateUnreadCount()` must use `Cache::remember()` with key `config('cache-keys.notification_unread') . $userId` and 60-second TTL |
-| FR-TXR2H-TXR2H-B4 | `NotificationBell::updateUnreadCount()` must return 0 if user is not authenticated |
-| FR-TXR2H-TXR2H-B5 | `NotificationBell::getListeners()` must register `notification-read` and `notifications-read` events mapped to `updateUnreadCount` |
+| FR-TXR2H-B1 | `NotificationBell` must extend `Component`, maintain `int $unreadCount` property |
+| FR-TXR2H-B2 | `NotificationBell::mount()` must call `updateUnreadCount()` |
+| FR-TXR2H-B3 | `NotificationBell::updateUnreadCount()` must use `Cache::remember()` with key `config('cache-keys.notification_unread') . $userId` and 60-second TTL |
+| FR-TXR2H-B4 | `NotificationBell::updateUnreadCount()` must return 0 if user is not authenticated |
+| FR-TXR2H-B5 | `NotificationBell::getListeners()` must register `notification-read` and `notifications-read` events mapped to `updateUnreadCount` |
 
 ### Mark Actions
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-A1 | `MarkAsReadAction::execute(Notification)` must set `is_read = true` and `read_at = now()` only if currently unread, emit `NotificationRead` event, and return fresh model |
-| FR-TXR2H-TXR2H-A2 | `MarkAllAsReadAction::execute(string $userId)` must batch-update all unread notifications for the user and call `Cache::forget()` on the unread cache key |
-| FR-TXR2H-TXR2H-A3 | `MarkBatchAsReadAction::execute(string $userId, array $ids)` must update only notifications matching both `id IN $ids` and `user_id`, and call `Cache::forget()` on the unread cache key |
-| FR-TXR2H-TXR2H-A4 | `DeleteNotificationAction::execute(Notification)` must delete the notification within a transaction and call `Cache::forget()` on the unread cache key |
+| FR-TXR2H-A1 | `MarkAsReadAction::execute(Notification)` must set `is_read = true` and `read_at = now()` only if currently unread, emit `NotificationRead` event, and return fresh model |
+| FR-TXR2H-A2 | `MarkAllAsReadAction::execute(string $userId)` must batch-update all unread notifications for the user and call `Cache::forget()` on the unread cache key |
+| FR-TXR2H-A3 | `MarkBatchAsReadAction::execute(string $userId, array $ids)` must update only notifications matching both `id IN $ids` and `user_id`, and call `Cache::forget()` on the unread cache key |
+| FR-TXR2H-A4 | `DeleteNotificationAction::execute(Notification)` must delete the notification within a transaction and call `Cache::forget()` on the unread cache key |
 
 ### Events & Listeners
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-E1 | `NotificationSent` event must extend `BaseEvent`, carry the `Notification` model, and expose `eventName()` → `'notification.sent'` |
-| FR-TXR2H-TXR2H-E2 | `NotificationRead` event must extend `BaseEvent`, carry the `Notification` model, and expose `eventName()` → `'notification.read'` |
-| FR-TXR2H-TXR2H-E3 | `ClearUnreadNotificationCache` listener must handle `NotificationSent`, `NotificationRead`, and `ProfileUpdated` events |
-| FR-TXR2H-TXR2H-E4 | `ClearUnreadNotificationCache` must extract `user_id` from the event and call `Cache::forget(config('cache-keys.notification_unread') . $userId)` |
+| FR-TXR2H-E1 | `NotificationSent` event must extend `BaseEvent`, carry the `Notification` model, and expose `eventName()` → `'notification.sent'` |
+| FR-TXR2H-E2 | `NotificationRead` event must extend `BaseEvent`, carry the `Notification` model, and expose `eventName()` → `'notification.read'` |
+| FR-TXR2H-E3 | `ClearUnreadNotificationCache` listener must handle `NotificationSent`, `NotificationRead`, and `ProfileUpdated` events |
+| FR-TXR2H-E4 | `ClearUnreadNotificationCache` must extract `user_id` from the event and call `Cache::forget(config('cache-keys.notification_unread') . $userId)` |
 
 ### Authorization
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-P1 | `NotificationPolicy::viewAny()` must return `true` for all authenticated users |
-| FR-TXR2H-TXR2H-P2 | `NotificationPolicy::view()` must check `$notification->user_id === $user->id` |
-| FR-TXR2H-TXR2H-P3 | `NotificationPolicy::create()` must check `$this->isAdmin($user)` |
-| FR-TXR2H-TXR2H-P4 | `NotificationPolicy::update()` must check `$notification->user_id === $user->id` |
-| FR-TXR2H-TXR2H-P5 | `NotificationPolicy::delete()` must check `$this->isAdmin($user)` |
+| FR-TXR2H-P1 | `NotificationPolicy::viewAny()` must return `true` for all authenticated users |
+| FR-TXR2H-P2 | `NotificationPolicy::view()` must check `$notification->user_id === $user->id` |
+| FR-TXR2H-P3 | `NotificationPolicy::create()` must check `$this->isAdmin($user)` |
+| FR-TXR2H-P4 | `NotificationPolicy::update()` must check `$notification->user_id === $user->id` |
+| FR-TXR2H-P5 | `NotificationPolicy::delete()` must check `$this->isAdmin($user)` |
 
 ### Notification Classes by Module
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TXR2H-TXR2H-N1 | `WelcomeNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include `toCustomDatabase()` with `type: 'system_welcome'` |
-| FR-TXR2H-TXR2H-N2 | `GeneralNotification` must accept `$type`, `$title`, `$message`, `$link`, `$data`, `$sendEmail` and conditionally include `'mail'` channel based on `$sendEmail` flag |
-| FR-TXR2H-TXR2H-N3 | `AssignmentNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include assignment title and due date in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N4 | `RegistrationNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include internship name and status in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N5 | `IncidentReportedNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include incident severity and ID in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N6 | `AnnouncementNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include announcement title and message in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N7 | `AccountStatusNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include account status and optional reason in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N8 | `ActivationCodeNotification` must use channels `['mail', CustomDatabaseChannel::class]` (no broadcast), and include activation code info in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N9 | `CredentialChangedNotification` must use channel `['mail']` only (no database channel), and send a security warning email with optional support email |
-| FR-TXR2H-TXR2H-N10 | `SuperAdminRecoveredNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include recovered email in `toCustomDatabase()` |
-| FR-TXR2H-TXR2H-N11 | `RecoveryOtpNotification` must use channel `['mail']` only (no database channel) and send the OTP code |
-| FR-TXR2H-TXR2H-N12 | `TestMailNotification` must use channel `['mail']` only (no database channel) for settings test email |
+| FR-TXR2H-N1 | `WelcomeNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include `toCustomDatabase()` with `type: 'system_welcome'` |
+| FR-TXR2H-N2 | `GeneralNotification` must accept `$type`, `$title`, `$message`, `$link`, `$data`, `$sendEmail` and conditionally include `'mail'` channel based on `$sendEmail` flag |
+| FR-TXR2H-N3 | `AssignmentNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include assignment title and due date in `toCustomDatabase()` |
+| FR-TXR2H-N4 | `RegistrationNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include internship name and status in `toCustomDatabase()` |
+| FR-TXR2H-N5 | `IncidentReportedNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include incident severity and ID in `toCustomDatabase()` |
+| FR-TXR2H-N6 | `AnnouncementNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include announcement title and message in `toCustomDatabase()` |
+| FR-TXR2H-N7 | `AccountStatusNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include account status and optional reason in `toCustomDatabase()` |
+| FR-TXR2H-N8 | `ActivationCodeNotification` must use channels `['mail', CustomDatabaseChannel::class]` (no broadcast), and include activation code info in `toCustomDatabase()` |
+| FR-TXR2H-N9 | `CredentialChangedNotification` must use channel `['mail']` only (no database channel), and send a security warning email with optional support email |
+| FR-TXR2H-N10 | `SuperAdminRecoveredNotification` must use channels `['mail', 'broadcast', CustomDatabaseChannel::class]`, implement `ShouldQueue`, and include recovered email in `toCustomDatabase()` |
+| FR-TXR2H-N11 | `RecoveryOtpNotification` must use channel `['mail']` only (no database channel) and send the OTP code |
+| FR-TXR2H-N12 | `TestMailNotification` must use channel `['mail']` only (no database channel) for settings test email |
 
 ---
 
@@ -268,37 +268,23 @@ center. A custom channel is required to persist notifications with the right sha
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-TXR2H-TXR2H-P1 | `NotificationBell` unread count must be served from cache in < 10ms on cache hit (60s TTL) |
-| NFR-TXR2H-TXR2H-P2 | `NotificationCenter` page load must complete in < 500ms for users with up to 1000 notifications |
-| NFR-TXR2H-TXR2H-P3 | Unread count cache must be invalidated within one request cycle of notification state change |
-| NFR-TXR2H-TXR2H-S1 | Users can only view/update their own notifications — enforced by `NotificationPolicy` and `WHERE user_id = Auth::id()` query scoping |
-| NFR-TXR2H-TXR2H-S2 | Admin-only create/delete enforced by `NotificationPolicy::create()` and `NotificationPolicy::delete()` via `isAdmin()` check |
-| NFR-TXR2H-TXR2H-S3 | `CustomDatabaseChannel` must silently skip delivery if notifiable has no valid user ID — no exception thrown |
-| NFR-TXR2H-TXR2H-S4 | Notification `type` field is capped at 50 characters to prevent unbounded storage |
-| NFR-TXR2H-TXR2H-R1 | `NotificationCenter` must handle empty notification lists gracefully — render empty state |
-| NFR-TXR2H-TXR2H-R2 | `NotificationBell` must default to 0 unread count if `Auth::id()` returns null |
-| NFR-TXR2H-TXR2H-R3 | `MarkAsReadAction` must be idempotent — marking an already-read notification is a no-op |
-| NFR-TXR2H-TXR2H-U1 | All notification UI labels must use `__()` translation helper with keys from `notifications.*` namespace |
-| NFR-TXR2H-TXR2H-U2 | Notification bell must be visible on every authenticated page via the app layout |
-| NFR-TXR2H-TXR2H-U3 | `NotificationCenter` must support keyboard navigation for list items and action buttons |
-| NFR-TXR2H-TXR2H-M1 | All notification classes must implement `toCustomDatabase()` returning the standard array contract (→ DD-1) |
-| NFR-TXR2H-TXR2H-M2 | All notification classes must use `declare(strict_types=1)` |
-| NFR-TXR2H-TXR2H-M3 | Unread count cache key must be registered in `config/cache-keys.php` as `notification_unread` — no ad-hoc key strings |
-| NFR-TXR2H-TXR2H-M4 | Cross-module notification dispatch must use either `SendsNotifications::execute()` directly or `$user->notify()` with a class implementing `toCustomDatabase()` |
-
----
-
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| NFR-TXR2H-P1 | `NotificationBell` unread count must be served from cache in < 10ms on cache hit (60s TTL) |
+| NFR-TXR2H-P2 | `NotificationCenter` page load must complete in < 500ms for users with up to 1000 notifications |
+| NFR-TXR2H-P3 | Unread count cache must be invalidated within one request cycle of notification state change |
+| NFR-TXR2H-S1 | Users can only view/update their own notifications — enforced by `NotificationPolicy` and `WHERE user_id = Auth::id()` query scoping |
+| NFR-TXR2H-S2 | Admin-only create/delete enforced by `NotificationPolicy::create()` and `NotificationPolicy::delete()` via `isAdmin()` check |
+| NFR-TXR2H-S3 | `CustomDatabaseChannel` must silently skip delivery if notifiable has no valid user ID — no exception thrown |
+| NFR-TXR2H-S4 | Notification `type` field is capped at 50 characters to prevent unbounded storage |
+| NFR-TXR2H-R1 | `NotificationCenter` must handle empty notification lists gracefully — render empty state |
+| NFR-TXR2H-R2 | `NotificationBell` must default to 0 unread count if `Auth::id()` returns null |
+| NFR-TXR2H-R3 | `MarkAsReadAction` must be idempotent — marking an already-read notification is a no-op |
+| NFR-TXR2H-U1 | All notification UI labels must use `__()` translation helper with keys from `notifications.*` namespace |
+| NFR-TXR2H-U2 | Notification bell must be visible on every authenticated page via the app layout |
+| NFR-TXR2H-U3 | `NotificationCenter` must support keyboard navigation for list items and action buttons |
+| NFR-TXR2H-M1 | All notification classes must implement `toCustomDatabase()` returning the standard array contract (→ DD-1) |
+| NFR-TXR2H-M2 | All notification classes must use `declare(strict_types=1)` |
+| NFR-TXR2H-M3 | Unread count cache key must be registered in `config/cache-keys.php` as `notification_unread` — no ad-hoc key strings |
+| NFR-TXR2H-M4 | Cross-module notification dispatch must use either `SendsNotifications::execute()` directly or `$user->notify()` with a class implementing `toCustomDatabase()` |
 
 ---
 
@@ -664,50 +650,7 @@ dispatch notifications through this infrastructure.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Contracts/SendsNotifications.php` — notification dispatch contract (17 lines)
-- `app/Modules/Core/Channels/CustomDatabaseChannel.php` — custom channel bridging `toCustomDatabase()` to `SendsNotifications` (55 lines)
-- `app/Modules/User/Notifications/Actions/SendNotificationAction.php` — core persistence action implementing `SendsNotifications` (77 lines)
-- `app/Modules/User/Notifications/Actions/MarkAsReadAction.php` — single notification mark-as-read (40 lines)
-- `app/Modules/User/Notifications/Actions/MarkAllAsReadAction.php` — bulk mark-all-as-read (37 lines)
-- `app/Modules/User/Notifications/Actions/MarkBatchAsReadAction.php` — batch mark-selected-as-read (32 lines)
-- `app/Modules/User/Notifications/Actions/DeleteNotificationAction.php` — single notification delete (33 lines)
-- `app/Modules/User/Notifications/Models/Notification.php` — Eloquent model with `#[Fillable]` (33 lines)
-- `app/Modules/Core/Channels/Data/NotificationData.php` — DTO for notification payload (19 lines)
-- `app/Modules/User/Notifications/Events/NotificationSent.php` — event emitted on notification create (18 lines)
-- `app/Modules/User/Notifications/Events/NotificationRead.php` — event emitted on notification read (18 lines)
-- `app/Modules/User/Notifications/Listeners/ClearUnreadNotificationCache.php` — cache invalidation listener (25 lines)
-- `app/Modules/User/Notifications/Livewire/NotificationCenter.php` — full notification center UI (153 lines)
-- `app/Modules/User/Notifications/Livewire/NotificationBell.php` — header bell badge with cached count (53 lines)
-- `app/Modules/User/Notifications/Policies/NotificationPolicy.php` — ownership-based authorization (37 lines)
-- `app/Modules/User/Notifications/WelcomeNotification.php` — new user welcome (mail + broadcast + database) (73 lines)
-- `app/Modules/User/Notifications/GeneralNotification.php` — configurable multi-purpose notification (61 lines)
-- `app/Modules/User/Notifications/TestMailNotification.php` — settings test email (mail only) (26 lines)
-- `app/Modules/Auth/Notifications/CredentialChangedNotification.php` — credential change security alert (mail only) (46 lines)
-- `app/Modules/Auth/SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` — admin recovery alert (67 lines)
-- `app/Modules/Auth/SuperAdmin/Notifications/RecoveryOtpNotification.php` — OTP delivery (mail only) (33 lines)
-- `app/Modules/Auth/Login/Listeners/SendRoleWelcomeNotification.php` — first-login welcome dispatch (48 lines)
-- `app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php` — activation code delivery (42 lines)
-- `app/Modules/User/AccountStatus/Notifications/AccountStatusNotification.php` — account status change alert (71 lines)
-- `app/Modules/Assignment/Notifications/AssignmentNotification.php` — assignment publication alert (79 lines)
-- `app/Modules/Assignment/Submission/Notifications/SubmissionFeedbackNotification.php` — grading feedback alert (87 lines)
-- `app/Modules/Program/Notifications/RegistrationNotification.php` — registration status update (69 lines)
-- `app/Modules/Program/Internship/Notifications/InternshipCreatedNotification.php` — new internship alert (66 lines)
-- `app/Modules/Incident/IncidentReport/Notifications/IncidentReportedNotification.php` — incident report alert (75 lines)
-- `app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php` — announcement delivery (59 lines)
-- `app/Modules/SysAdmin/Backups/Notifications/BackupFailedNotification.php` — backup failure alert (uses native `database` channel) (34 lines)
-- `app/Modules/SysAdmin/Backups/Listeners/SendBackupFailedNotification.php` — backup failure dispatch (21 lines)
-- `config/cache-keys.php` — `notification_unread` key registration
-- `database/migrations/2026_01_01_000004_create_notifications_table.php` — notifications table schema
-- **Related spec:** [authentication.md](YB7RG-authentication.md) — User model with `Notifiable` trait, login events
-- **Related spec:** [dashboard.md](CKKZC-dashboard.md) — Dashboard bell integration, role-based welcome notifications
-- **Related spec:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes (`BaseCommandAction`, `BaseEvent`, `BaseData`)

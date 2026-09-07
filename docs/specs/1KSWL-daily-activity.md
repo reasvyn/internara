@@ -185,20 +185,6 @@ absences need coordinator approval.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Journals/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Journals/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Journals/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Journals/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Logbook Model
@@ -390,21 +376,7 @@ After implementing this spec, students can log daily activities (logbook entries
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Journals/Logbook/` — Logbook submodule (Actions, Entities, Enums, Livewire, Models, Policies)
-- `app/Modules/Journals/Attendance/` — Attendance submodule (Actions, Entities, Enums, Events, Livewire, Models, Policies)
-- `app/Modules/Journals/AbsenceRequest/` — AbsenceRequest submodule (Actions, Entities, Enums, Livewire, Models)
-- `database/migrations/2026_01_04_000005_create_attendances_table.php` — Attendance schema
-- `database/migrations/2026_01_04_000006_create_logbooks_table.php` — Logbook schema
-- `routes/web/journals.php` — Route definitions
-- `docs/refs/modules/journals.md` — Module conceptual documentation
-- **Related spec:** [supervision.md](2EHSE-supervision.md) — supervision logs, monitoring visits, cross-role proxy, compliance

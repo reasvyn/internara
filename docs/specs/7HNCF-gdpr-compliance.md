@@ -577,45 +577,10 @@ After implementing this spec, every user deletion (admin or batch) automatically
 
 ---
 
+
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
-
-## Test Requirements
-
-Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
-
-| Layer | Test dir | Verifies |
-|-------|----------|----------|
-| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
-| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
-| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
-| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php` — Eloquent model with `#[Fillable]`, `UPDATED_AT = null`, `asGdprDeletionLogState()` bridge (27 lines)
-- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` — Admin-only authorization for view/viewAny/create (27 lines)
-- `app/Modules/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` — Admin UI: search, filter, paginated table (56 lines)
-- `app/Modules/User/UserManagement/Actions/DeleteUserAction.php` — Existing user deletion action to be updated with GDPR logging (36 lines)
-- `app/Modules/User/UserManagement/Actions/BatchDeleteUserAction.php` — Existing batch deletion to propagate reason (54 lines)
-- `resources/views/sysadmin/observability/gdpr-deletion-log/gdpr-deletion-logs.blade.php` — Blade view with TallstackUI x-ts-table, x-ts-badge, date formatting (25 lines)
-- `database/migrations/2026_01_02_000005_create_gdpr_deletion_logs_table.php` — Original migration (25 lines)
-- `database/factories/GdprDeletionLogFactory.php` — Test factory with metadata snapshot (26 lines)
-- `routes/web/sysadmin.php:37` — GDPR logs route (`admin.gdpr-logs`) with auth + role middleware
-- `lang/en/sysadmin.php:88-92` — English translation keys for GDPR log UI
-- `config/menu.php:331-335` — Sidebar menu entry for GDPR Logs
-- `tests/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLogTest.php` — Model tests (37 lines)
-- `tests/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicyTest.php` — Policy tests (58 lines)
-- `tests/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogsTest.php` — Livewire render test (21 lines)
-- **Related spec:** [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) — Base classes (`BaseCommandAction`, `BaseEntity`, `BaseEvent`)
-- **Related spec:** [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) (T4B26) — `isAdmin()` policy helper, role middleware
-- **Related spec:** [user-crud-and-status.md](95EVB-user-crud-and-status.md) (95EVB) — `DeleteUserAction`, user lifecycle
-- **Related doc:** [security.md](../guides/infra/security.md) — GDPR compliance section (§5)
-- **Related doc:** [system-observability.md](../guides/system-observability.md) — GDPR deletion logs overview

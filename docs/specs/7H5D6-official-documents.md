@@ -257,20 +257,6 @@ accreditation visits or incident investigations.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Reports/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Reports/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Reports/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Reports/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### OfficialDocumentType Enum
@@ -494,22 +480,7 @@ Registration model. Seed the document type registry.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | FR-7H5D6-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `docs/specs/document-templates.md` — Template infrastructure, `DocumentRenderer`, PDF rendering
-- `docs/specs/registration.md` — Registration model, document upload, `document_status` column
-- `docs/specs/certification.md` — Certificate generation (separate from official documents)
-- `docs/specs/reports.md` — `ReportFinalized` event that triggers Completion Letter
-- `docs/specs/partnership-management.md` — MoU document storage (separate initiative)
-- `docs/refs/modules/document.md` — Document module overview
-- `docs/refs/modules/document-reference.md` — Document module technical reference
-- `docs/specs/QLHDO-project-initialization.md` — High-level feature list
-- `docs/conventions.md` — Naming conventions, `LabelEnum` contract

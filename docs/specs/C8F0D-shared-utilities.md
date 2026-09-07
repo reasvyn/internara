@@ -118,20 +118,6 @@ in production while allowing development flexibility.
 | NFR-C8F0D-M1 | All utilities must declare `strict_types=1` |
 | NFR-C8F0D-M2 | All public methods must have PHPDoc blocks |
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("C8F0D: ...")` + `it("C8F0D-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### AppInfo
@@ -293,26 +279,7 @@ solely on this — these utilities are used broadly.
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Core/Services/AppInfo.php` — Composer metadata with 24h cache
-- `app/Modules/Core/Support/helpers.php` — Global `app_info()` helper wrapping AppInfo
-- `app/Modules/Core/Support/Environment.php` — Environment detection helpers
-- `app/Modules/Core/Support/PasswordRules.php` — Password validation rules
-- `app/Modules/Core/Support/Color.php` — Color manipulation utilities
-- `app/Modules/Core/Services/AppIntegrity.php` — Attribution verification
-- `app/Modules/Core/Services/LangChecker.php` — Missing translation detection
-- `composer.json` — Source of truth for app metadata
-- **Related specs:** [tech-stack.md](FB792-tech-stack.md) — PHP/Laravel dependency manifest
-- **Related specs:** [base-classes.md](SE5Q9-base-classes.md) — Architectural base classes
-- **Related specs:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) — SmartLogger, PiiMasker
-- **Related specs:** [csv-import-export.md](O2KCR-csv-import-export.md) — CsvHandler utility
-- **Related specs:** [module-manager.md](B114U-module-manager.md) — ModuleService/ModuleManager module gateway

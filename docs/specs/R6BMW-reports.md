@@ -481,43 +481,10 @@ After implementing this spec, the system generates grade cards and archived snap
 
 ---
 
+
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
-
-## Test Requirements
-
-Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
-
-| Layer | Test dir | Verifies |
-|-------|----------|----------|
-| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
-| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
-| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
-| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Actions/Reports/CreateReportAction.php` — Report creation Action
-- `app/Actions/Reports/CalculateFinalGradeAction.php` — Weighted score aggregation Action
-- `app/Actions/Reports/FinalizeReportAction.php` — Finalization with state transition
-- `app/Models/Report.php` — Report model with `captureSnapshot()`
-- `app/Enums/ReportStatus.php` — DRAFT/FINALIZED enum with transitions
-- `app/DTOs/CreateReportData.php` — Creation DTO
-- `app/Events/Reports/GradeCalculated.php` — Grade calculation event
-- `app/Events/Reports/ReportFinalized.php` — Finalization event
-- `app/Observers/ReportObserver.php` — Snapshot observer
-- `app/Http/Controllers/ReportController.php` — Download controller
-- `database/migrations/*_create_reports_table.php` — Reports schema
-- `docs/refs/modules/reports.md` — Reports module conceptual documentation
-- `docs/refs/modules/reports-reference.md` — Reports module reference documentation
-- `docs/guides/arch/action-pattern.md` — Action Triad pattern
-- `docs/guides/arch/entity-pattern.md` — Entity contracts
-- `docs/guides/arch/data-pattern.md` — DTO/Data contracts
-- `docs/conventions.md` — Coding conventions and invariants

@@ -141,20 +141,6 @@ automated compliance checks, missing entries go undetected until it's too late.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Journals/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Journals/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Journals/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Journals/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### SupervisionLog Model
@@ -295,20 +281,7 @@ After implementing this spec, supervisors can log monitoring visits, review stud
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-2EHSE-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Journals/SupervisionLog/` — SupervisionLog submodule (Actions, Entities, Enums, Livewire, Models, Policies)
-- `app/Modules/Journals/MonitoringVisit/` — MonitoringVisit submodule (Actions, Entities, Enums, Livewire, Models, Policies)
-- `database/migrations/2026_01_04_000007_create_supervision_logs_table.php` — SupervisionLog schema
-- `database/migrations/2026_01_04_000008_create_monitoring_visits_table.php` — MonitoringVisit schema
-- `routes/web/journals.php` — Route definitions
-- `docs/refs/modules/journals.md` — Module conceptual documentation
-- **Related spec:** [daily-activity.md](1KSWL-daily-activity.md) — logbook, attendance, absence requests

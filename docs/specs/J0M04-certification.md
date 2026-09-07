@@ -217,20 +217,6 @@ Without self-service access, every certificate request becomes a support ticket.
 
 ---
 
-## Test Requirements
-
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/Certification/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/Certification/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/Certification/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/Certification/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
-
----
-
 ## 6. API / Data Contracts
 
 ### Certificate Model
@@ -434,32 +420,7 @@ After implementing this spec, the system generates PDF certificates for students
 
 ## 10. Risks & Assumptions
 
-Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
-for row conventions.
-
-| ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| ---- | ---------------------------------- | ------ | ----- | -------- |
-
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+| --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
-
-- `app/Modules/Certification/Certificate/Models/Certificate.php` — Certificate model with status and QR hash
-- `app/Modules/Certification/Certificate/Models/CertificateTemplate.php` — Template model with placeholder content
-- `app/Modules/Certification/Certificate/Enums/CertificateStatus.php` — ISSUED/REVOKED status enum
-- `app/Modules/Certification/Certificate/Services/CertificateRenderer.php` — PDF rendering with 17 placeholders
-- `app/Modules/Certification/Certificate/Actions/IssueCertificateAction.php` — Single certificate issuance
-- `app/Modules/Certification/Certificate/Actions/BatchIssueCertificateAction.php` — Batch issuance with error collection
-- `app/Modules/Certification/Certificate/Actions/CreateCertificateTemplateAction.php` — Template creation
-- `app/Modules/Certification/Certificate/Actions/RevokeCertificateAction.php` — Certificate revocation
-- `app/Modules/Certification/Certificate/Http/Controllers/CertificateDownloadController.php` — PDF download with lazy-generation
-- `app/Modules/Certification/Certificate/Livewire/CertificateList.php` — Admin certificate management
-- `app/Modules/Certification/Certificate/Livewire/CertificateTemplateManager.php` — Template CRUD
-- `app/Modules/Certification/Certificate/Livewire/StudentCertificates.php` — Student certificate view
-- `app/Modules/Certification/Certificate/Policies/CertificatePolicy.php` — Authorization
-- `app/Modules/Certification/Certificate/Policies/CertificateTemplatePolicy.php` — Template authorization
-- `app/Modules/Certification/Certificate/Events/CertificateIssued.php` — Issuance event
-- `database/migrations/2026_01_04_000012_create_certificates_table.php` — Certificates schema
-- `database/migrations/2026_01_04_000013_create_certificate_templates_table.php` — Templates schema
-- `routes/web/certification.php` — Route definitions
-- `docs/refs/modules/certification.md` — Module conceptual documentation
