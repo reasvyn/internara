@@ -1,16 +1,10 @@
-# Backup System — Database & Storage Backup, Restore, and Retention
+# Backup System — Database & Storage Backup, Restore, and Failure Notification
 
 > **Spec ID:** HBXCI
 
 ## Description
 
-Specification of Internara's backup system: a `BackupRunner` service that executes database dumps
-(MySQL, PostgreSQL, SQLite) and storage archives (tar.gz), a `CreateBackupAction` that orchestrates
-backup lifecycle (pending → running → completed/failed) with event dispatch, a `CleanupBackupsAction`
-for retention-based purging, a `SystemBackupCommand` CLI with scheduled execution, a `BackupManager`
-Livewire component for admin-facing backup management, and `BackupFailedNotification` dispatch to
-super admins on failure.
-
+Specification of Internara's backup system: a `BackupRunner` service that executes database dumps (MySQL, PostgreSQL, SQLite) and storage archives (tar.gz), a `CreateBackupAction` that orchestrates backup lifecycle (pending → running → completed/failed) with event dispatch, a `SystemBackupCommand` CLI with scheduled execution, a `BackupManager` Livewire component for admin-facing backup management, and `BackupFailedNotification` dispatch to super admins on failure. Backup retention and cleanup is defined in [backup-retention-cleanup.md](HBXCI-backup-retention-cleanup.md).
 ---
 
 ## 1. Problem Statements
@@ -27,12 +21,6 @@ commands on a schedule.
 Student photos, company logos, certificate templates, and generated PDFs live on local storage
 (`storage/app/`). A disk failure or accidental `rm -rf` destroys these files permanently. There is
 no mechanism to archive `storage/app/public/` alongside database dumps.
-
-### PS-3 — No Backup Retention Management
-
-Without retention policies, backup files accumulate indefinitely, consuming disk space. Schools
-running on shared hosting with limited storage (50–100 GB) will eventually run out of space if old
-backups are never purged.
 
 ### PS-4 — No Visibility Into Backup Status
 
@@ -55,7 +43,6 @@ never do.
 | --- | ---- |
 | G1  | Provide a `BackupRunner` service that executes database dumps for MySQL, PostgreSQL, and SQLite, and storage archives via tar.gz |
 | G2  | Provide a `CreateBackupAction` that orchestrates backup lifecycle (pending → running → completed/failed) within a database transaction |
-| G3  | Provide a `CleanupBackupsAction` that deletes completed backups older than a configurable retention period, preserving failed backups |
 | G4  | Provide a `SystemBackupCommand` CLI (`system:backup`) with `--type`, `--force`, and `--cleanup` options, scheduled daily via `Schedule::command()` |
 | G5  | Provide a `BackupManager` Livewire component with stats dashboard, filterable backup history table, create/delete actions, and confirmation modal |
 | G6  | Enforce admin-only authorization for all backup operations via `BackupPolicy` |
@@ -139,20 +126,6 @@ never do.
 7. Action deletes the database record within a transaction
 8. Flash success message displayed
 **Postconditions:** Backup record and physical file removed
-
-### UC-HBXCI-5 — Retention Cleanup Deletes Old Backups
-
-**Actor:** System (triggered by CLI `--cleanup` flag or scheduled command)
-**Preconditions:** Backups older than retention period exist
-**Flow:**
-1. `CleanupBackupsAction::execute(30)` is called with 30-day retention
-2. Action queries `Backup::where('status', 'completed')->where('created_at', '<', now()->subDays(30))`
-3. Action chunks results (100 at a time), deletes physical files via `BackupRunner::deleteFile()`, then deletes database records
-4. Action logs `backups_cleaned` with retention days and deleted count
-5. Returns the count of deleted backups
-**Postconditions:** Completed backups older than 30 days removed; failed backups preserved
-
----
 
 ## 4. Functional Requirements
 
@@ -238,18 +211,6 @@ never do.
 | FR-HBXCI-S2 | `ReadBackupStatsAction::execute()` must return an associative array with keys: `total`, `completed`, `failed`, `latest` |
 | FR-HBXCI-S3 | `latest` must be the most recent backup with `status = COMPLETED`, or `null` if none exist |
 
-### Actions — CleanupBackupsAction
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-HBXCI-CL1 | `CleanupBackupsAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
-| FR-HBXCI-CL2 | `CleanupBackupsAction::execute(int $retentionDays = 30)` must delete only completed backups older than `$retentionDays` |
-| FR-HBXCI-CL3 | `CleanupBackupsAction` must NOT delete failed backups during cleanup |
-| FR-HBXCI-CL4 | `CleanupBackupsAction` must process deletions in chunks of 100 records |
-| FR-HBXCI-CL5 | `CleanupBackupsAction` must delete physical files via `BackupRunner::deleteFile()` before deleting database records |
-| FR-HBXCI-CL6 | `CleanupBackupsAction` must log `backups_cleaned` with `retention_days` and `deleted_count` when deletions occur |
-| FR-HBXCI-CL7 | `CleanupBackupsAction::execute()` must return the count of deleted backups |
-
 ### BackupRunner Service
 
 | ID   | Requirement |
@@ -271,7 +232,7 @@ never do.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-HBXCI-CLI1 | `SystemBackupCommand` signature must be `system:backup {--type= : database, storage, or both} {--force : Skip pre-flight checks} {--cleanup : Run retention cleanup after backup}` |
+| FR-HBXCI-CLI1 | `SystemBackupCommand` signature must be `system:backup {--type= : database, storage, or both} {--force : Skip pre-flight checks} {--cleanup : Run retention cleanup after backup (see backup-retention-cleanup.md)` |
 | FR-HBXCI-CLI2 | `SystemBackupCommand` must check `config('backup.enabled')` and exit early with warning if disabled, unless `--force` is set |
 | FR-HBXCI-CLI3 | `SystemBackupCommand` must resolve `BackupType` from the `--type` option, defaulting to `BOTH` when null |
 | FR-HBXCI-CLI4 | `SystemBackupCommand` must output formatted size on success and deleted count when `--cleanup` is used |
@@ -336,7 +297,6 @@ never do.
 | NFR-HBXCI-S4 | The `backups` table `created_by` foreign key must use `nullOnDelete()` to preserve backup records if the creating user is deleted |
 | NFR-HBXCI-R1 | `CreateBackupAction` must wrap the entire backup lifecycle (record creation, dump execution, status update) in a single database transaction |
 | NFR-HBXCI-R2 | `DeleteBackupAction` must delete the physical file before the database record to avoid orphaned database entries pointing to deleted files |
-| NFR-HBXCI-R3 | `CleanupBackupsAction` must NOT delete failed backups — failed records serve as diagnostic evidence |
 | NFR-HBXCI-R4 | `BackupRunner` must clean up temporary credential files even if the dump operation throws an exception (`finally` block) |
 | NFR-HBXCI-U1 | All backup UI labels must use `__()` translation helper with keys from `backups.*` namespace |
 | NFR-HBXCI-U2 | The backup manager must display a help guide modal with create, download, and restore instructions |
@@ -502,19 +462,6 @@ final class ReadBackupStatsAction extends BaseReadAction
 
 ```
 
-### 6.10 CleanupBackupsAction
-
-```php
-// app/Modules/SysAdmin/Backups/Actions/CleanupBackupsAction.php (44 lines)
-final class CleanupBackupsAction extends BaseCommandAction
-{
-    public function __construct(protected readonly BackupRunner $runner) {}
-    public function execute(int $retentionDays = 30): int;
-    // Deletes completed backups older than retentionDays, preserves failed backups
-}
-
-```
-
 ### 6.11 BackupRunner Service
 
 ```php
@@ -540,7 +487,7 @@ final class SystemBackupCommand extends Command
     protected $signature = 'system:backup
         {--type= : Backup type: database, storage, or both}
         {--force : Skip pre-flight checks}
-        {--cleanup : Run retention cleanup after backup}';
+        {--cleanup : Run retention cleanup after backup (see backup-retention-cleanup.md)';
     // Checks config('backup.enabled'), resolves BackupType, delegates to CreateBackupAction
 }
 
@@ -694,24 +641,6 @@ Schedule::command('system:backup')
 **Rationale:** If the file deletion fails (permission denied, file already gone), the action can throw without leaving an orphaned database record. The reverse order (delete DB first, then file) would leave an unrecoverable reference to a file the system can't clean up.
 **Trade-off:** If the process crashes between file deletion and DB deletion, the database record persists without a corresponding file. This is the safer failure mode — a phantom record is less harmful than a phantom file reference.
 
-### DD-5 — Failed Backup Records Preserved During Cleanup
-
-**Decision:** `CleanupBackupsAction` only deletes `completed` backups during retention cleanup; failed backups are never auto-deleted.
-**Rationale:** Failed backup records contain `error_output` which is essential for diagnosing backup failures. Auto-deleting them would lose diagnostic evidence. Schools should review and manually delete failed backups via the UI.
-**Trade-off:** Disk space consumed by accumulated failed backup records (minimal — each record is a few KB of metadata with no associated file). Failed backup records without files do not consume significant storage.
-
-### DD-6 — Credential Isolation via Temporary Files
-
-**Decision:** Database credentials for `mysqldump` and `pg_dump` are written to temporary files with `chmod 0600`, passed via `--defaults-extra-file` or `PGPASSFILE`, and deleted after use.
-**Rationale:** Passing credentials via command-line arguments (`--password=...`) exposes them in `/proc/*/cmdline` and `ps` output. Temporary files with restrictive permissions are the standard secure approach for non-interactive database tools.
-**Trade-off:** Extra file I/O and cleanup logic (12 lines). Necessary for security — command-line password exposure is a well-known vulnerability.
-
-### DD-7 — Native `database` Channel for BackupFailedNotification
-
-**Decision:** `BackupFailedNotification` uses Laravel's native `database` channel with `toDatabase()`, not the custom `CustomDatabaseChannel` with `toCustomDatabase()`.
-**Rationale:** Backup failure notifications are simple alerts for super admins only. They do not need structured `type`/`title`/`message` fields in the notification center — the native `database` channel with a JSON `data` blob is sufficient. This avoids coupling the backup module to the notification infrastructure contract.
-**Trade-off:** Inconsistent with other notifications that use `CustomDatabaseChannel`. Acceptable because backup failures are admin-only operational events, not user-facing notifications.
-
 ---
 
 ## 8. Success Metrics
@@ -747,7 +676,6 @@ Schedule::command('system:backup')
 | ------ | ------ | ----------- |
 | Non-admin backup access | 0 incidents | `BackupPolicy` enforced on all routes |
 | Orphaned database records (file deleted, record persists) | < 1% | File deletion before DB deletion (→ DD-4) |
-| Auto-deleted failed backups | 0 | `CleanupBackupsAction` preserves failed records (→ DD-5) |
 | Credential leakage in CLI output | 0 | Credentials via temp files, not command-line args (→ DD-6) |
 
 ---
@@ -773,6 +701,7 @@ This spec can only be implemented after the following specs are **fully complete
 After implementing this spec, the backup system is fully operational: admins can create backups via the UI or CLI, view backup history with stats, delete old backups, and receive failure notifications. The `SystemBackupCommand` is scheduled daily and respects `config('backup.enabled')` and `config('backup.retention_days')`. The `BackupRunner` handles MySQL, PostgreSQL, and SQLite with secure credential handling. The next phase is integrating backup triggers with other module lifecycle events (e.g., notifying before data-intensive operations).
 
 ### Next Steps
+| 1 | [backup-retention-cleanup.md](HBXCI-backup-retention-cleanup.md) | Retention cleanup purges expired backups |
 
 | Order | Spec | Connection |
 |-------|------|------------|

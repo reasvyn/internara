@@ -1,14 +1,10 @@
-# Certification — Certificate Templates, Issuance, Batch Processing & QR Verification
+# Certification — Certificate Templates, Issuance, Batch Processing & Download
 
 > **Spec ID:** J0M04
 
 ## Description
 
-Complete specification of the Internara Certification module: admin-managed certificate templates
-with placeholder-based content, single and batch certificate issuance for completed PKL
-registrations, PDF rendering via DomPDF with dynamic placeholder resolution, QR hash generation
-for authenticity verification, revocation workflow, and student-facing certificate download.
-
+Specification of the admin-side certification lifecycle: certificate template management, single and batch issuance, PDF rendering via DomPDF, revocation workflow, and student-facing download. The public QR verification endpoint is defined in [certificate-qr-verify.md](J0M05-certificate-qr-verify.md).
 ---
 
 ## 1. Problem Statements
@@ -25,12 +21,6 @@ placeholder resolution.
 At the end of a PKL period, dozens or hundreds of students need certificates simultaneously.
 Issuing certificates one-by-one is impractical. The system must support batch issuance with
 per-student error collection and success reporting.
-
-### PS-3 — Authenticity Verification via QR Code
-
-Employers and institutions receiving PKL certificates need to verify their authenticity. Without
-a verification mechanism, forged certificates are indistinguishable from genuine ones. The system
-must generate unique QR hashes that can be validated against the certificate record.
 
 ### PS-4 — Certificate Revocation for Error Correction
 
@@ -57,7 +47,7 @@ Without self-service access, every certificate request becomes a support ticket.
 | G4  | Render certificates as PDF using DomPDF with 17 dynamic placeholders |
 | G5  | Store rendered PDFs on local disk for download |
 | G6  | Support certificate revocation (ISSUED → REVOKED transition) |
-| G7  | Provide students with a self-service certificate view and download |
+| G6  | Provide students with a self-service certificate view and download |
 | G8  | Lazy-generate PDF on first download if not pre-rendered |
 
 ### Non-Goals
@@ -66,7 +56,6 @@ Without self-service access, every certificate request becomes a support ticket.
 | ---- | -------- |
 | NG1  | Certificate template versioning or design history |
 | NG2  | Digital signatures or cryptographic certificate signing |
-| NG3  | Online verification portal (public URL with QR scan) |
 | NG4  | Email delivery of certificates |
 | NG5  | Certificate re-issuance after revocation (create new certificate instead) |
 
@@ -182,7 +171,7 @@ Without self-service access, every certificate request becomes a support ticket.
 | FR-J0M04-RV3 | `CertificatePolicy::revoke()` must require admin role |
 | FR-J0M04-RV4 | Revoked certificates must remain in the system (not deleted) |
 
-### Download & Verification
+### Download & Listing
 
 | ID   | Requirement |
 | ---- | ----------- |

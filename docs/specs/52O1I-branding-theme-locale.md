@@ -84,10 +84,10 @@ apply on every request via middleware without database queries.
 ### UC-52O1I-3 — Admin Changes Locale
 
 **Actor:** Any authenticated user
-**Preconditions:** User is on any page with the `LangSwitcher` component
+**Preconditions:** User is on any page with the `LangSwitch` component
 **Flow:**
 1. User selects "Bahasa Indonesia"
-2. `setLocale('id')` calls `Locale::set('id')`
+2. `changeLocale('id')` calls `Locale::set('id')`
 3. `Locale::set()` queues forever cookie and sets `App::setLocale('id')`
 4. On next request, `SetLocaleMiddleware` reads cookie
 **Postconditions:** UI renders in Indonesian on next page load; no DB write

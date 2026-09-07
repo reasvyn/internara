@@ -114,6 +114,7 @@ Internal academic structure. Depends on Phase 2 (school profile).
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
 | 4HWSB | [Department Management](4HWSB-department-management.md) | Academics | 81SMS | Full |
+| 4CSV1 | [Department Bulk Import](4CSV1-department-bulk-import.md) | Academics | 4HWSB, O2KCR | Planned |
 | XW6F5 | [Academic Year Management](XW6F5-academic-year-management.md) | Academics | 81SMS | Full |
 
 ### Phase 5 — Partnerships
@@ -166,6 +167,8 @@ Scoring, feedback, coursework. Depends on Phase 7 (placement active).
 | ARDA6 | [Assessment](ARDA6-assessment.md) | Assessment | J9GBH | Full |
 | AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | J9GBH | Full |
 | T657Z | [Assignment](T657Z-assignment.md) | Assignment | J9GBH | Full |
+| T657B | [Assignment Submission](T657Z-assignment-submission.md) | Assignment | T657Z | Planned |
+| T657C | [Assignment Grading](T657Z-assignment-grading.md) | Assignment | T657Z, T657B | Planned |
 
 ### Phase 10 — Certification
 
@@ -176,6 +179,7 @@ Credentials, documents, handbooks, media, PDF. Depends on Phases 8–9.
 | PKYX6 | [Document Templates](PKYX6-document-templates.md) | Document | 8NZAU | Full |
 | ZUFG8 | [Handbooks](ZUFG8-handbooks.md) | Document | PKYX6 | Full |
 | J0M04 | [Certification](J0M04-certification.md) | Certification | ARDA6, AXKZW | Full |
+| J0M05 | [Certificate QR Verify](J0M05-certificate-qr-verify.md) | Certification | J0M04 | Planned |
 | WQGTP | [File Uploads & Media](WQGTP-file-uploads-media.md) | Core | SE5Q9 | Full |
 | 7UB7S | [PDF Generation](7UB7S-pdf-generation.md) | Core | WQGTP | Full |
 
@@ -196,10 +200,13 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | -- | ---- | ------ | ---------- | ------ |
 | 8FVZA | [Job & Queue Infrastructure](8FVZA-job-queue-infrastructure.md) | Core | SE5Q9, NUCY3 | Full |
 | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | NUCY3, T4B26, YB22J, TXR2H, 8FVZA | Full |
+| HBXC2 | [Backup Retention Cleanup](HBXCI-backup-retention-cleanup.md) | SysAdmin | HBXCI | Planned |
 | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | YB22J, 95EVB | Full |
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI | Full |
 | 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW | Planned |
 | 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | J68GZ, 8NZAU, 8FVZA, E1MSJ | Full |
+| 06IB7 | [Docker VPS Deployment](06IB6-docker-vps-deployment.md) | Core | 06IB6, E1MSJ | Full |
+| 06IB8 | [Shared Hosting Deployment](06IB6-shared-hosting-deployment.md) | Core | 06IB6, 8NZAU, E1MSJ | Full |
 | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | T4B26, 4HWSB, XW6F5, XI3LB, NTHQA, 7C5WM, IT0OE, MBB5R, J9GBH, 1KSWL, 2EHSE, 3RU9S, ARDA6, AXKZW, T657Z, J0M04, R6BMW | Full |
 
 ---

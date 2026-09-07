@@ -1,4 +1,4 @@
-# Department Management — CRUD, Deletion Guards & CSV Import
+# Department Management — CRUD, Deletion Guards & Cache Invalidation
 
 > **Spec ID:** 4HWSB
 
@@ -7,8 +7,9 @@
 Specification of Internara's department management subsystem. Departments are the primary
 organizational unit for grouping students and teachers within a school. This spec covers
 the Department entity lifecycle (create, read, update, delete), the profile dependency
-deletion guard that prevents orphaning assigned profiles, bulk CSV import/export for
-migration and setup, and event dispatch with dashboard cache invalidation.
+deletion guard that prevents orphaning assigned profiles, and event dispatch with dashboard
+cache invalidation. Bulk file import/export is defined in
+[department-bulk-import.md](4CSV1-department-bulk-import.md).
 
 School profile, academic year lifecycle, and settings infrastructure are separate initiatives —
 see [school-profile.md](81SMS-school-profile.md),
@@ -33,13 +34,6 @@ Deleting a department that still has assigned profiles would orphan those profil
 `department_id` foreign key to NULL or violating integrity constraints. The system must detect
 this dependency and prevent deletion, requiring explicit reassignment first.
 
-### PS-3 — Bulk Department Setup via CSV Import
-
-During initial system setup, schools typically have 10–50 departments already defined in
-spreadsheets or other systems. Manual entry of each department is tedious and error-prone.
-The system must support CSV import for bulk creation, with duplicate detection and error
-reporting. Export is equally important for reporting, migration, and backup.
-
 ### PS-4 — Dashboard Cache Invalidation on Department Changes
 
 The admin dashboard displays aggregate statistics that include department counts and
@@ -58,11 +52,9 @@ based on current data.
 | --- | ---- |
 | G1  | Provide full Department CRUD (create, read, update, soft-delete) with validation |
 | G2  | Enforce profile dependency deletion guard (departments with profiles cannot be deleted) |
-| G3  | Support CSV import/export for bulk department creation and migration |
 | G4  | Dispatch domain events on all department CRUD operations |
 | G5  | Invalidate dashboard cache on any department change via event listener |
 | G6  | Support bulk delete with per-item deletion guard checks |
-| G7  | Provide CSV template download for import guidance |
 
 ### Non-Goals
 
@@ -172,47 +164,6 @@ based on current data.
 7. If any were blocked, flash warning: "{n} department(s) could not be deleted (have profiles)"
 **Postconditions:** Eligible departments deleted, blocked ones preserved, counts reported
 
-### UC-4HWSB-6 — Admin Imports Departments from CSV
-
-**Actor:** Admin / Super Admin
-**Preconditions:** Admin has a CSV file with department names and descriptions
-**Flow:**
-1. Admin navigates to Academics → Departments
-2. Admin clicks "Import" or drags a CSV file onto the import zone
-3. `DepartmentManager` validates file: required `mimes:csv,txt`, max 2MB
-4. `import()` method calls `CsvHandler::import()` with row processor:
-   - Row format: `[name, description]` (2 columns)
-   - Empty name rows → skipped (null return)
-   - Duplicate name rows → `CsvRowResult::SKIPPED`
-   - Valid rows → `CreateDepartmentAction::execute()` → `CsvRowResult::CREATED`
-5. `CsvHandler` returns summary: `{created, skipped, invalid}`
-6. If invalid (wrong headers), flash error: "Import file has invalid format"
-7. If valid, flash summary: "{n} created, {m} skipped (duplicates)"
-**Postconditions:** Departments created from CSV, duplicates skipped, summary shown
-
-### UC-4HWSB-7 — Admin Downloads CSV Template
-
-**Actor:** Admin / Super Admin
-**Preconditions:** None
-**Flow:**
-1. Admin clicks "Download Template" on department manager
-2. `downloadTemplate()` calls `CsvHandler::downloadTemplate()`
-3. Returns streamed CSV with headers `name,description` and one example row
-**Postconditions:** Template downloaded, ready for editing
-
-### UC-4HWSB-8 — Admin Exports Departments to CSV
-
-**Actor:** Admin / Super Admin
-**Preconditions:** At least one department exists
-**Flow:**
-1. Admin clicks "Export" on department manager
-2. `export()` queries departments (filtered by search if active), ordered by name
-3. `CsvHandler::export()` streams CSV with columns: name, description
-4. File downloads as `departments.csv`
-**Postconditions:** CSV file downloaded with all matching departments
-
----
-
 ## 4. Functional Requirements
 
 ### Department Model
@@ -295,52 +246,17 @@ based on current data.
 | FR-4HWSB-DM44 | `DepartmentManager::askDeleteSelected()` must show bulk delete confirmation |
 | FR-4HWSB-DM45 | `DepartmentManager::confirmAction()` must handle `RejectedException` with flash error |
 
-### CSV Import/Export
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-4HWSB-DM46 | `DepartmentManager::import()` must authorize `create` policy before processing |
-| FR-4HWSB-DM47 | `DepartmentManager::import()` must validate file as `mimes:csv,txt` with max 2MB |
-| FR-4HWSB-DM48 | `CsvHandler::import()` must parse CSV with columns `[name, description]` |
-| FR-4HWSB-DM49 | Rows with empty name must be skipped (return null) |
-| FR-4HWSB-DM50 | Rows with duplicate names must return `CsvRowResult::SKIPPED` |
-| FR-4HWSB-DM51 | Valid rows must call `CreateDepartmentAction::execute()` and return `CsvRowResult::CREATED` |
-| FR-4HWSB-DM52 | Import summary must report created count and skipped count via flash message |
-| FR-4HWSB-DM53 | Invalid CSV format (wrong headers) must flash error: import_invalid |
-| FR-4HWSB-DM54 | `DepartmentManager::export()` must stream CSV with headers `[name, description]` |
-| FR-4HWSB-DM55 | `DepartmentManager::export()` must apply search filter when active |
-| FR-4HWSB-DM56 | `DepartmentManager::exportSelected()` must export only selected department IDs |
-| FR-4HWSB-DM57 | `DepartmentManager::downloadTemplate()` must stream CSV with headers and one example row |
-
-### Events & Listeners
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-4HWSB-DM58 | `DepartmentCreated` event must extend `BaseEvent` and carry the `Department` model |
-| FR-4HWSB-DM59 | `DepartmentUpdated` event must extend `BaseEvent` and carry the `Department` model |
-| FR-4HWSB-DM60 | `DepartmentDeleted` event must extend `BaseEvent` and carry the `Department` model |
-| FR-4HWSB-DM61 | All three events must provide `eventName()` returning `department.created`, `department.updated`, `department.deleted` |
-| FR-4HWSB-DM62 | `ClearDashboardCacheOnDepartmentChange` listener must handle all three department events |
-| FR-4HWSB-DM63 | Listener must call `Cache::forget(config('cache-keys.admin_dashboard_stats'))` |
-| FR-4HWSB-DM64 | Event-to-listener mapping must be registered in `config/event.php` |
-
----
-
 ## 5. Non-Functional Requirements
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-4HWSB-P4 | CSV export must stream without buffering the entire dataset in memory |
 | NFR-4HWSB-S1 | All department mutations must be authorized via `DepartmentPolicy` |
-| NFR-4HWSB-S2 | CSV import file must be validated for MIME type and max 2MB size |
 | NFR-4HWSB-S3 | Department name must be unique (enforced at DB and Action level) |
 | NFR-4HWSB-S4 | Force delete must always be forbidden (`DepartmentPolicy::forceDelete()` returns false) |
 | NFR-4HWSB-R1 | Department CRUD operations must be wrapped in database transactions |
 | NFR-4HWSB-R2 | Bulk delete must handle partial failures gracefully (delete eligible, skip blocked) |
-| NFR-4HWSB-R3 | CSV import must be idempotent — duplicate names are skipped, not errored |
 | NFR-4HWSB-U1 | Department deletion blocked message must explain how many profiles are assigned |
 | NFR-4HWSB-U2 | Bulk delete feedback must separately report deleted count and blocked count |
-| NFR-4HWSB-U3 | CSV import summary must show created and skipped counts |
 | NFR-4HWSB-U4 | Department form must show inline validation errors on name uniqueness violation |
 | NFR-4HWSB-A1 | Department management UI must meet WCAG 2.1 Level AA |
 | NFR-4HWSB-A2 | Deletion blocked messages must be accessible to screen readers |
@@ -564,39 +480,6 @@ Migration: database/migrations/2026_01_03_000002_create_departments_table.php
 
 ```
 
-### 6.14 CsvHandler Contract
-
-```php
-// app/Modules/Core/Support/CsvHandler.php
-final class CsvHandler
-{
-    // Import: parses CSV, calls rowProcessor for each row
-    public function import(
-        string $filePath,
-        callable $rowProcessor,
-        ?array $expectedHeaders = null,
-    ): array;  // ['created' => int, 'skipped' => int, 'invalid' => bool]
-
-    // Export: streams CSV from Collection
-    public function export(
-        Collection $items,
-        array $headers,
-        callable $rowMapper,
-        string $filename = 'export.csv',
-    ): StreamedResponse;
-
-    // Template: streams single-row CSV
-    public function downloadTemplate(
-        array $headers,
-        array $exampleRow,
-        string $filename = 'template.csv',
-    ): StreamedResponse;
-}
-
-```
-
----
-
 ## 7. Design Decisions
 
 ### DD-1 — Department Deletion Guard via Entity, Not Policy
@@ -631,20 +514,6 @@ tracking is needed, the activity log already captures department creation/deleti
 **Trade-off:** Deleted departments cannot be restored. Mitigated by the activity log containing
 the department name and data for recreation. Rejected alternative: soft deletes (unnecessary
 complexity for a simple entity).
-
-### DD-3 — CSV Import via Shared CsvHandler Service
-
-**Decision:** Department CSV import/export uses the shared `App\Core\Support\CsvHandler`
-service, not a module-specific implementation.
-
-**Rationale:** CSV parsing, streaming, and template generation are cross-cutting concerns.
-`CsvHandler` already handles file opening, header validation, row iteration, and streamed
-responses. Duplicating this for departments would violate DRY. The department module only
-provides the row processor callback (column mapping and `CreateDepartmentAction` invocation).
-
-**Trade-off:** The shared service is generic — department-specific validation (e.g., column
-count, name format) happens in the row processor, not the handler. Mitigated by clear error
-reporting via `CsvRowResult` enum and flash message summaries.
 
 ### DD-4 — Dashboard Cache Invalidation via Event Listener
 
@@ -700,7 +569,7 @@ supports them, and 255 chars is well above realistic department-name length.
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
 | Deletion guard | 100% of departments with profiles blocked | `DepartmentState::canBeDeleted()` unit tests |
-| Name uniqueness | 0 duplicate departments after CSV import | `CsvRowResult::SKIPPED` for duplicates |
+| Name uniqueness | 0 duplicate departments after bulk import | `CsvRowResult::SKIPPED` for duplicates |
 | Event dispatch coverage | Every CRUD → event dispatched | Listener integration tests for all 3 events |
 | Force delete always blocked | 0 force deletes possible | `DepartmentPolicy::forceDelete()` returns false |
 
@@ -710,7 +579,6 @@ supports them, and 255 chars is well above realistic department-name length.
 | ------ | ------ | ----------- |
 | Deletion blocked feedback | Shows assigned profile count | Flash message includes `{count}` |
 | Bulk delete feedback | Separate deleted/blocked counts | Flash messages for both outcomes |
-| CSV import feedback | Shows created/skipped counts | Flash summary after import |
 | Template download | Available in one click | `downloadTemplate()` method |
 
 ---

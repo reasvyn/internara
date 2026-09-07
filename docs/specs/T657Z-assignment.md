@@ -1,14 +1,10 @@
-# Assignment — Coursework Management, Submission Lifecycle & Grading
+# Assignment — Coursework Management & Publishing
 
 > **Spec ID:** T657Z
 
 ## Description
 
-Complete specification of the Internara Assignment module: assignment creation and management
-(publish/draft lifecycle), student submission with draft-to-submitted workflow, file upload via
-Spatie MediaLibrary, teacher/supervisor grading with score and feedback, revision request loop,
-role-based authorization with Cross-Role Proxy, and notification dispatch on key state changes.
-
+Specification of the assignment coursework lifecycle: assignment creation, type/due-date metadata, draft-to-published state machine, and student notification on publish. The student submission lifecycle is defined in [assignment-submission.md](T657Z-assignment-submission.md). Teacher scoring and revision requests are defined in [assignment-grading.md](T657Z-assignment-grading.md).
 ---
 
 ## 1. Problem Statements
@@ -19,33 +15,6 @@ Teachers and supervisors need to assign coursework (projects, reports, essays) t
 their PKL period. Without a structured assignment system, tasks are communicated via chat or
 email, making tracking and deadline enforcement impossible.
 
-### PS-2 — Student Submission With Draft Workflow
-
-Students need to submit their work progressively — starting with drafts, finalizing when ready,
-and resubmitting after feedback. A single-submission model would force students to submit
-incomplete work or lose their previous submission on revision.
-
-### PS-3 — Teacher/Supervisor Grading With Feedback
-
-Educators need to grade submissions with numeric scores (0–100) and written feedback. Without
-structured grading, feedback is scattered across messages and students have no centralized view
-of their performance.
-
-### PS-4 — Revision Request Loop
-
-When a submission doesn't meet expectations, the evaluator should return it with feedback for
-revision rather than giving a low score. This supports iterative learning. Without a revision
-workflow, students would need to create entirely new submissions.
-
-### PS-5 — Notification on State Changes
-
-Students need to know when new assignments are published, and when their submissions are graded
-or returned for revision. Without push notifications, students must manually check for updates.
-
-### PS-6 — Deadline Enforcement With Overdue Detection
-
-Assignments have due dates. Submissions after the deadline should be flagged or blocked. Without
-automated enforcement, teachers must manually check dates and students may unknowingly submit late.
 
 ---
 
@@ -57,10 +26,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 | --- | ---- |
 | G1  | Provide full CRUD for assignments (project, report, essay types) scoped to internships |
 | G2  | Manage assignment lifecycle: DRAFT → PUBLISHED → CLOSED |
-| G3  | Support student submission with draft/submitted/revision_required workflow |
-| G4  | Allow file uploads via Spatie MediaLibrary (pdf, doc, docx, zip, ppt, pptx) |
 | G5  | Enable teacher/supervisor grading with numeric score (0–100) and written feedback |
-| G6  | Support revision request loop: SUBMITTED → REVISION_REQUIRED → SUBMITTED |
 | G7  | Dispatch notifications on assignment publish, grading, and revision request |
 | G8  | Enforce deadline-based submission blocking |
 | G9  | Enforce unique submission per student per assignment |
@@ -94,54 +60,6 @@ automated enforcement, teachers must manually check dates and students may unkno
 8. `PublishAssignmentAction` also sends `AssignmentNotification` to all enrolled students
 **Postconditions:** Assignment is PUBLISHED; enrolled students notified
 
-### UC-T657Z-2 — Student Submits Work
-
-**Actor:** Student
-**Preconditions:** Published assignment exists; student has active registration; assignment not overdue
-**Flow:**
-1. Student navigates to `/student/assignments`
-2. `SubmitAssignment` shows published assignments for student's internship
-3. Student selects an assignment, enters content (min 20 chars), optionally uploads file
-4. `submit()` validates, creates `SubmitAssignmentData(content)`, calls `SubmitAssignmentAction`
-5. Action guards: assignment is PUBLISHED, not overdue, student has active registration, no existing non-revision submission
-6. Creates `Submission` with status `SUBMITTED`, `submitted_at` set
-**Postconditions:** Submission exists with SUBMITTED status
-
-### UC-T657Z-3 — Teacher Grades a Submission
-
-**Actor:** Teacher
-**Preconditions:** SUBMITTED or REVISION_REQUIRED submission exists; teacher is authorized
-**Flow:**
-1. Teacher navigates to `/supervision/submissions/grading`
-2. `SubmissionGrading` lists pending submissions
-3. Teacher selects submission, enters score (0–100) and optional feedback
-4. `grade()` calls `GradeSubmissionAction::execute(submission, score, feedback)`
-5. Action validates score range, updates submission with score, feedback, `GRADED` status
-**Postconditions:** Submission graded; student notified via `SubmissionFeedbackNotification`
-
-### UC-T657Z-4 — Teacher Requests Revision
-
-**Actor:** Teacher
-**Preconditions:** SUBMITTED submission exists
-**Flow:**
-1. Teacher views submission in `SubmissionGrading`
-2. Enters feedback (min 10 chars), clicks "Request Revision"
-3. `RequestSubmissionRevisionAction::execute(submission, feedback)` transitions to REVISION_REQUIRED
-4. `SubmissionRevisionRequested` event dispatched
-5. Student notified via `SubmissionFeedbackNotification`
-**Postconditions:** Submission returned to student for revision
-
-### UC-T657Z-5 — Student Resubmits After Revision
-
-**Actor:** Student
-**Preconditions:** Submission is in REVISION_REQUIRED status
-**Flow:**
-1. Student views assignment in `SubmitAssignment`
-2. Sees existing submission with revision feedback
-3. Updates content, clicks "Resubmit"
-4. `SubmitAssignmentAction` detects REVISION_REQUIRED submission, updates content, transitions to SUBMITTED
-**Postconditions:** Submission back in SUBMITTED status with updated content
-
 ---
 
 ## 4. Functional Requirements
@@ -171,53 +89,11 @@ automated enforcement, teachers must manually check dates and students may unkno
 | FR-T657Z-AL5 | `PublishAssignmentAction` must send `AssignmentNotification` to all students registered for the internship |
 | FR-T657Z-AL6 | `NotifyOnAssignmentPublished` listener must notify the assignment creator |
 
-### Student Submission
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-T657Z-SS1 | `SubmitAssignment` must be accessible at route `/student/assignments` with `auth` and `role:student` middleware |
-| FR-T657Z-SS2 | `SubmitAssignmentAction` must guard: assignment is PUBLISHED (throw `RejectedException` otherwise) |
-| FR-T657Z-SS3 | `SubmitAssignmentAction` must guard: assignment is not overdue (use `AssignmentRules::isOverdue()`) |
-| FR-T657Z-SS4 | `SubmitAssignmentAction` must guard: student has active/placed registration |
-| FR-T657Z-SS5 | `SubmitAssignmentAction` must guard: no existing submission in SUBMITTED or GRADED status |
-| FR-T657Z-SS6 | If existing submission is REVISION_REQUIRED: update content, transition to SUBMITTED, clear feedback |
-| FR-T657Z-SS7 | `Submission` model must enforce unique constraint on `(assignment_id, registration_id)` |
-| FR-T657Z-SS8 | `SubmitAssignmentData` DTO must contain `content` (string); file upload handled separately via MediaLibrary |
-| FR-T657Z-SS9 | File uploads must accept: pdf, doc, docx, zip, ppt, pptx; max 10MB |
-| FR-T657Z-SS10 | Content must be minimum 20 characters |
-
-### Grading
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-T657Z-GD1 | `SubmissionGrading` must be accessible at routes for admin, teacher, and supervisor roles |
-| FR-T657Z-GD2 | `GradeSubmissionAction` must validate score range: 0–100 (throw `RejectedException` otherwise) |
-| FR-T657Z-GD3 | `GradeSubmissionAction` must set `score`, `feedback`, `status=GRADED`, `graded_by`, `graded_at` |
-| FR-T657Z-GD4 | `GradeSubmissionAction` must log `submission_graded` |
-| FR-T657Z-GD5 | `SubmissionGrading` must filter submissions by: status (SUBMITTED, REVISION_REQUIRED), search (student name), assignment, status filter |
-
-### Revision Request
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-T657Z-RV1 | `RequestSubmissionRevisionAction` must guard status is SUBMITTED (throw `RejectedException` otherwise) |
-| FR-T657Z-RV2 | `RequestSubmissionRevisionAction` must set status to REVISION_REQUIRED and store feedback |
-| FR-T657Z-RV3 | `RequestSubmissionRevisionAction` must dispatch `SubmissionRevisionRequested` event |
-| FR-T657Z-RV4 | Feedback must be minimum 10 characters for revision request |
-
-### Verification
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-T657Z-VF1 | `VerifySubmissionAction` must set status to `verified`, `verified_by`, `verified_at` |
-| FR-T657Z-VF2 | Verification must be available to admin, teacher, and supervisor (via mentor proxy) |
-
 ### Notifications
 
 | ID   | Requirement |
 | ---- | ----------- |
 | FR-T657Z-NF1 | `AssignmentNotification` must notify students on assignment publish (channels: mail, broadcast, database) |
-| FR-T657Z-NF2 | `SubmissionFeedbackNotification` must notify students on grading or revision request |
 | FR-T657Z-NF3 | Notifications must implement `ShouldQueue` for async delivery |
 
 ---
@@ -233,7 +109,6 @@ automated enforcement, teachers must manually check dates and students may unkno
 | NFR-T657Z-R1 | Submission creation must be wrapped in a database transaction |
 | NFR-T657Z-R2 | Unique constraint on `(assignment_id, registration_id)` must prevent duplicate submissions at DB level |
 | NFR-T657Z-U1 | File upload must show progress indicator during upload |
-| NFR-T657Z-U2 | Revision feedback must be prominently displayed on student submission view |
 | NFR-T657Z-U3 | Assignment due dates must display in the user's local timezone |
 | NFR-T657Z-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
 | NFR-T657Z-L1 | All user-facing strings must use `__()` translation helper |
@@ -328,17 +203,13 @@ App\Assignment\Submission\Data\SubmitAssignmentData extends BaseData
 | `DeleteAssignmentAction` | `BaseCommandAction` | `Assignment` | `void` |
 | `PublishAssignmentAction` | `BaseCommandAction` | `Assignment` | `Assignment` |
 | `SubmitAssignmentAction` | `BaseCommandAction` | `User $student, Assignment, SubmitAssignmentData` | `Submission` |
-| `GradeSubmissionAction` | `BaseCommandAction` | `Submission, int $score, ?feedback` | `Submission` |
-| `VerifySubmissionAction` | `BaseCommandAction` | `Submission` | `Submission` |
-| `RequestSubmissionRevisionAction` | `BaseCommandAction` | `Submission, string $feedback` | `Submission` |
 
 ### Events
 
 | Event | Dispatched By |
 | ----- | ------------- |
 | `AssignmentPublished` | `PublishAssignmentAction` |
-| `SubmissionRevisionRequested` | `RequestSubmissionRevisionAction` |
-
+| `SubmissionRevisionRequested` 
 ### Listeners
 
 | Listener | Event | Queued |
@@ -350,7 +221,6 @@ App\Assignment\Submission\Data\SubmitAssignmentData extends BaseData
 | Notification | Trigger | Channels |
 | ------------ | ------- | -------- |
 | `AssignmentNotification` | Assignment published (to students) | mail, broadcast, database |
-| `SubmissionFeedbackNotification` | Grading or revision request (to student) | mail, broadcast, database |
 
 ### Policies
 
@@ -365,9 +235,6 @@ App\Assignment\Submission\Data\SubmitAssignmentData extends BaseData
 | ----- | --------- | ---- | ---------- |
 | `GET /student/assignments` | `SubmitAssignment` | `student.assignments` | `auth`, `role:student` |
 | `GET /admin/assignments` | `AssignmentManager` | `sysadmin.assignments` | `auth`, `role:super_admin\|admin` |
-| `GET /admin/submissions/grading` | `SubmissionGrading` | `sysadmin.submissions.grading` | `auth`, `role:super_admin\|admin` |
-| `GET /supervision/submissions/grading` | `SubmissionGrading` | `supervision.submissions.grading` | `auth`, `role:teacher\|supervisor` |
-| `GET /teacher/submissions/grading` | `SubmissionGrading` | `teacher.submissions.grading` | `auth`, `role:teacher` |
 
 ### Database Schema
 
@@ -411,31 +278,7 @@ submissions:
 
 ## 7. Design Decisions
 
-### DD-1 — Separate Assignment Status and Submission Status
-
-**Decision:** `Assignment` and `Submission` each have independent status enums and state machines.
-**Rationale:** An assignment can be PUBLISHED while individual submissions are at different stages (SUBMITTED, GRADED, REVISION_REQUIRED). Coupling the statuses would force all-or-nothing transitions that don't reflect the one-to-many relationship.
-**Trade-off:** Two separate state machines to maintain and reason about. Rejected alternative: single status field on both (creates ambiguity when assignment is CLOSED but some submissions are still being graded).
-
-### DD-2 — File Upload via MediaLibrary, Not Through DTO
-
-**Decision:** File uploads are handled in the Livewire component via `WithFileUploads` and stored via Spatie MediaLibrary, bypassing the `SubmitAssignmentData` DTO.
-**Rationale:** The DTO carries business data (content) to the Action. File uploads are infrastructure concerns — they need Livewire's file upload handling, temporary storage, and MediaLibrary's collection management. Mixing file handling into the DTO would violate C6 (DTO must not import Model/Entity).
-**Trade-off:** File upload logic lives in the Presentation layer rather than the Action layer. Rejected alternative: pass UploadedFile through DTO (violates C6, adds framework dependency to DTO).
-
-### DD-3 — Revision Loop Instead of Resubmit-From-Scratch
-
-**Decision:** When a submission is returned for revision, the student updates the existing record rather than creating a new one.
-**Rationale:** Preserves the submission history (content changes are tracked in the DB via timestamps). The unique constraint on `(assignment_id, registration_id)` naturally enforces one submission per student per assignment. The REVISION_REQUIRED → SUBMITTED transition reuses the same record.
-**Trade-off:** Previous content versions are overwritten. Rejected alternative: create new submission records (breaks unique constraint, complicates grading history).
-
-### DD-4 — Deadline Enforcement at Action Layer
-
-**Decision:** `SubmitAssignmentAction` checks `AssignmentRules::isOverdue()` before accepting a submission.
-**Rationale:** Deadline enforcement must be authoritative at the business logic layer, not just hidden behind a disabled submit button in the UI. A determined user (or API call) could bypass UI restrictions. The Action layer is the single source of truth.
-**Trade-off:** Students cannot submit late work at all (no grace period). Rejected alternative: allow late submission with a flag (adds complexity, may not align with school policy).
-
-### DD-5 — Dual Notification on Publish
+### DD-1 — Dual Notification on Publish
 
 **Decision:** `PublishAssignmentAction` sends notifications to students inline AND dispatches `AssignmentPublished` event for the creator notification listener.
 **Rationale:** Student notifications are immediate and critical — they must be sent before the Action returns. Creator notification is a side effect that can be queued. Separating them ensures students are notified even if the event listener fails.
@@ -458,8 +301,6 @@ submissions:
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Notification delivery | < 30s after event | Queued notification processing |
-| Revision feedback visibility | Prominent on student view | Feedback displayed at top of submission |
 | Due date display | Timezone-aware | Shows in user's local timezone |
 
 ---
@@ -479,6 +320,11 @@ After implementing this spec, teachers can create assignments with deadlines, st
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
+| 1 | [assignment-submission.md](T657Z-assignment-submission.md) | Student submits work to the published assignment |
+| 2 | [assignment-grading.md](T657Z-assignment-grading.md) | Teacher grades the submission or requests revision |
+| 3 | [document-templates.md](PKYX6-document-templates.md) | Assignment grades feed into report cards generated from templates |
+
+-------|------|------------|
 | 1 | [document-templates.md](PKYX6-document-templates.md) | Assignment grades feed into report cards generated from templates |
 
 ---
