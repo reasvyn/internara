@@ -75,6 +75,12 @@ code can never run in a production deployment.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Boots a demo environment |
+| UC-2 | Presenter | Logs in as each role |
+| UC-3 | QA | Re-seeds after state mutation |
+
 ### UC-1 — Developer Boots a Demo Environment
 
 **Actor:** Developer

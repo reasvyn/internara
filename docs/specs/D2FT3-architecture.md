@@ -78,6 +78,12 @@ surface.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Implements a feature inside a module following the 4-layer stack; every public surface accessible via Actions |
+| UC-2 | Developer | Implements a cross-module feature via the ranked communication hierarchy without dependency cycles |
+| UC-3 | Developer | Traces a mutation end-to-end: UI → DTO → Command Action → Entity rule → Model write → Event |
+
 ### UC-1 — Developer Implements a Feature Inside a Module
 
 **Actor:** Developer
@@ -217,6 +223,18 @@ surface.
 | NFR-A5 | Authorization is enforced at every layer: Policies guard Presentation, Actions and Entities enforce business authorization with `RejectedException` (C8) |
 | NFR-A6 | Clean-Code/DRY: duplicated logic must be extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustain) |
 | NFR-A7 | Single-tenant deployment matrix MUST be SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk with zero external services by default; Redis/S3/Reverb are optional `.env` overrides — no centralized auth, billing, or tenant isolation |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("D2FT3: ...")` + `it("D2FT3-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

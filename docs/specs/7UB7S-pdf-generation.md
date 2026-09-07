@@ -56,6 +56,12 @@ business logic. Content (data) and presentation (template) should be separated.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | System | Generates student certificate |
+| UC-2 | Admin | Generates grade card |
+| UC-3 | System | Batch certificate issuance |
+
 ### UC-1 — System Generates Student Certificate
 
 **Actor:** System (automated)
@@ -119,6 +125,20 @@ business logic. Content (data) and presentation (template) should be separated.
 | NFR-PDF3 | PDF file size MUST be < 5MB per document |
 | NFR-PDF4 | Memory usage per PDF MUST NOT exceed 256MB |
 | NFR-PDF5 | Generated PDFs MUST be visually identical across browsers/OS |
+
+---
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Core/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Core/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Core/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Core/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

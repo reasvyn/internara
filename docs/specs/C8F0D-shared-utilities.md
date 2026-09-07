@@ -53,6 +53,11 @@ in production while allowing development flexibility.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Reads app metadata (version, attribution) |
+| UC-2 | System | Verifies application attribution |
+
 ### UC-1 — Developer Reads App Metadata
 
 **Actor:** Developer / System
@@ -111,6 +116,18 @@ in production while allowing development flexibility.
 | NFR-R1 | `AppIntegrity::verify()` must catch exceptions and degrade gracefully in non-production |
 | NFR-M1 | All utilities must declare `strict_types=1` |
 | NFR-M2 | All public methods must have PHPDoc blocks |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("C8F0D: ...")` + `it("C8F0D-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

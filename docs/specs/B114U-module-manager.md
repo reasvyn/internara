@@ -72,6 +72,14 @@ aliases independently. There is no shared definition of these transformations, s
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | System | Route auto-inclusion |
+| UC-2 | System | Boot-time discovery |
+| UC-3 | Developer | CLI rediscovery |
+| UC-4 | Developer | Checks a module flag |
+| UC-5 | Developer | Adds a new module |
+
 ### UC-1 — Route Auto-Inclusion
 
 **Actor:** Laravel router (automatic)
@@ -215,6 +223,18 @@ automatically by `ModuleManager`/`ModuleService`.
 | ------ | -------------------------------------------------------------------- |
 | NFR-S1 | Discovery must not register classes from unregistered directories    |
 | NFR-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("B114U: ...")` + `it("B114U-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

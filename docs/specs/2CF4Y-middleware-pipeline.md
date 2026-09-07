@@ -54,6 +54,12 @@ limiter to apply to which route group.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Adds new core middleware |
+| UC-2 | Developer | Adds module-specific middleware |
+| UC-3 | Developer | Configures rate limiting |
+
 ### UC-1 — Developer Adds New Core Middleware
 
 **Actor:** Developer
@@ -113,6 +119,18 @@ limiter to apply to which route group.
 | NFR-MW2 | Security headers MUST NOT break Vite hot module replacement in development |
 | NFR-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
 | NFR-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("2CF4Y: ...")` + `it("2CF4Y-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

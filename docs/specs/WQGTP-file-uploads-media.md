@@ -56,6 +56,12 @@ management, storage grows unbounded.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Student | Uploads profile photo |
+| UC-2 | Admin | Uploads document template |
+| UC-3 | System | Cleans up deleted model files |
+
 ### UC-1 — Student Uploads Profile Photo
 
 **Actor:** Student
@@ -113,8 +119,21 @@ management, storage grows unbounded.
 | -------- | ----------- |
 | NFR-MEDIA1 | Thumbnail generation MUST complete within 5 seconds per image |
 | NFR-MEDIA2 | File upload MUST support files up to 10MB |
-| NFR-MEDIA3 | Storage disk MUST support local filesystem and S3-compatible storage |
 | NFR-MEDIA4 | Media retrieval MUST NOT block the HTTP response for large files |
+
+---
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Core/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Core/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Core/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Core/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

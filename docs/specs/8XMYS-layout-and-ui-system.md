@@ -75,6 +75,14 @@ link behaves identically and accessibly.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | User | Authenticated user navigates the sidebar |
+| UC-2 | Mobile user | Mobile user opens the sidebar |
+| UC-3 | Developer | Module adds a menu item |
+| UC-4 | Developer | Module renders a record management page |
+| UC-5 | User | Navigates with keyboard and screen reader |
+
 ### UC-1 — Authenticated User Navigates the Sidebar
 
 **Actor:** Any authenticated user (admin, teacher, supervisor, student)
@@ -203,6 +211,20 @@ link behaves identically and accessibly.
 | NFR-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
 | NFR-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
 | NFR-M1  | Layout and UI components must be colocated in Core (`resources/views/ui/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |
+
+---
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/User/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/User/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/User/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/User/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

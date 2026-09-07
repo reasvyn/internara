@@ -73,6 +73,14 @@ participant can query, and no consistent reporting base.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Super Admin / Admin | School initializes and configures the system: setup wizard, branding, locale, departments, academic years, partners |
+| UC-2 | Student | Completes the PKL lifecycle: register → placed → attendance + logbook + assignments → certificate download |
+| UC-3 | Teacher | Supervises and assesses: logbook review, monitoring visits, rubric grading |
+| UC-4 | Supervisor | Evaluates industry-side performance |
+| UC-5 | Admin | Operates and audits the system |
+
 ### UC-1 — School Initializes and Configures the System
 
 **Actor:** Super Admin / Admin
@@ -167,7 +175,6 @@ detail.
 | FR-G9 | The system MUST validate all user input through a centralized validation layer (Form Request classes for HTTP, validated DTOs for Actions); validation rules MUST live next to the entry point, never in controllers or Livewire components | [D2FT3](D2FT3-architecture.md), [SE5Q9](SE5Q9-base-classes.md) | Proposed | — |
 | FR-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
 | FR-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
-| FR-G12 | The system MUST provide an in-app notification center for all role actors; email notifications MUST be queued asynchronously for non-critical notifications; notification preferences MUST be configurable per user | [TXR2H](TXR2H-notification-infrastructure.md) | Proposed | — |
 | FR-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
 
 ### 4.2 Lifecycle Phase Inventory (index only)
@@ -215,7 +222,6 @@ acceptance criteria; the owning spec is authoritative for verification.
 | NFR-S4 | CSRF protection: all state-changing HTTP requests MUST include a valid CSRF token; API endpoints MUST use token-based authentication (sanctum/passport) | [2CF4Y](2CF4Y-middleware-pipeline.md) | Proposed | — |
 | NFR-S5 | XSS prevention: all dynamic output MUST be escaped by default; `{!! !!}` is forbidden for user-generated content; rich text MUST be sanitized server-side before storage | [1PGM4](1PGM4-security-headers.md), [D2FT3](D2FT3-architecture.md) | Proposed | — |
 | NFR-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
-| NFR-R2 | Backup strategy: automated daily incremental backups, weekly full backups; backup integrity MUST be verified monthly; restore procedure MUST be documented and tested quarterly | [HBXCI](HBXCI-backup-system.md) | Proposed | — |
 | NFR-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
 | NFR-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
@@ -223,6 +229,18 @@ acceptance criteria; the owning spec is authoritative for verification.
 > spec system as a research input in `docs/refs/curriculum-compliance.md` (non-testable
 > description of how the system maps to Indonesian PKL regulations). It is intentionally **not** a
 > spec requirement — regulations evolve and are outside engineering control.
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("QLHDO: ...")` + `it("QLHDO-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

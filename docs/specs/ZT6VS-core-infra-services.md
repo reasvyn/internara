@@ -88,6 +88,15 @@ behave at runtime** (this spec).
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Deploys on shared hosting with zero external services |
+| UC-2 | System | Invalidates cache on settings change |
+| UC-3 | Deployer | Warms cache during deployment |
+| UC-4 | Admin | Validates SMTP before saving |
+| UC-5 | User | Uploads files through the media library |
+| UC-6 | System | Cache store fails gracefully |
+
 ### UC-1 — Developer Deploys on Shared Hosting
 
 **Actor:** Developer
@@ -250,6 +259,18 @@ behave at runtime** (this spec).
 | NFR-R1 | Graceful degradation: cache miss returns fresh data, never a cached error |
 | NFR-R2 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
 | NFR-M1 | Cache key registry in a single file (`config/cache-keys.php`) — discoverable, auditable |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("ZT6VS: ...")` + `it("ZT6VS-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

@@ -56,6 +56,11 @@ violations compile-time errors rather than runtime surprises.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Creates a new module using the base classes and contracts |
+| UC-2 | System | Handles business rule violation via RejectedException semantics |
+
 ### UC-1 — Developer Creates a New Module
 
 **Actor:** Developer
@@ -187,6 +192,18 @@ violations compile-time errors rather than runtime surprises.
 | NFR-M5 | Module discovery at runtime — no manual registration of Livewire/Policies/Views |
 | NFR-L1 | All user-facing error messages in base classes must use `__()` translation helper |
 | NFR-A1 | Error pages rendered by exception handlers must meet WCAG 2.1 Level AA |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("SE5Q9: ...")` + `it("SE5Q9-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

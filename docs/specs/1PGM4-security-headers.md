@@ -55,6 +55,12 @@ man-in-the-middle attacks.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Server | Production deployment with strict CSP |
+| UC-2 | Developer | Development with Vite hot reload |
+| UC-3 | Auditor | Security audit verification |
+
 ### UC-1 — Production Deployment with Strict CSP
 
 **Actor:** DevOps / Deployer
@@ -114,6 +120,18 @@ man-in-the-middle attacks.
 | NFR-SEC2 | CSP MUST NOT break application functionality in production |
 | NFR-SEC3 | Vite dev URL injection MUST NOT occur in production |
 | NFR-SEC4 | Header configuration MUST be overridable per-environment via `.env` |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("1PGM4: ...")` + `it("1PGM4-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

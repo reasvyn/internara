@@ -68,6 +68,15 @@ that must stay synchronized with the config.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Developer | Adds a new module |
+| UC-2 | Developer | Adds a submodule to an existing module |
+| UC-3 | System | App boot discovery |
+| UC-4 | System | Route auto-inclusion |
+| UC-5 | Developer | Cache clearing and rediscovery |
+| UC-6 | Developer | Disables discovery for a subsystem |
+
 ### UC-1 — Adding a New Module
 
 **Actor:** Developer
@@ -257,6 +266,18 @@ models, all Blade view namespaces registered.
 | ------ | -------------------------------------------------------------------- |
 | NFR-S1 | Discovery must not register classes from unregistered directories    |
 | NFR-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("I1BCV: ...")` + `it("I1BCV-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

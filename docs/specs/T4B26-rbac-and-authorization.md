@@ -57,6 +57,13 @@ role model with explicit capabilities per role prevents this.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | Admin | Assigns role to user |
+| UC-2 | Teacher | Accesses supervision resources |
+| UC-3 | Student | Views own profile |
+| UC-4 | Super Admin | Bypasses all checks |
+
 ### UC-1 — Admin Assigns Role to User
 
 **Actor:** Admin / Super Admin
@@ -146,6 +153,18 @@ role model with explicit capabilities per role prevents this.
 | NFR-AUTH3 | Role changes MUST take effect on next authenticated request |
 | NFR-AUTH4 | Super admin bypass MUST work even if policy class is missing or broken |
 | NFR-AUTH5 | All policies MUST be testable without database beyond the model instance |
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("T4B26: ...")` + `it("T4B26-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

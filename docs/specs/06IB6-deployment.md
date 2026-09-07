@@ -68,6 +68,13 @@ config drift independently.
 
 ## 3. User Stories / Use Cases
 
+| ID | Actor | Action / Expected Outcome |
+|----|-------|---------------------------|
+| UC-1 | School | Deploys on cheap conventional shared hosting |
+| UC-2 | Sysadmin | Deploys on Docker VPS |
+| UC-3 | System | Detection recommends a profile on an unknown server |
+| UC-4 | Operator | Overrides auto-detection |
+
 ### UC-1 — School Deploys on Cheap Conventional Shared Hosting
 
 **Actor:** School IT staff (cPanel / FTP access only)
