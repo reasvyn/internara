@@ -29,6 +29,7 @@ OUTPUT_DIR = TOOLS_DIR / "outputs"
 
 # Available scanners mapped to their CLI entry points
 SCANNERS = {
+    "project-summary": "tools/scan_project_summary.py",
     "architecture": "tools/scan_architecture.py",
     "arch-patterns": "tools/scan_arch_patterns.py",
     "class-contracts": "tools/scan_class_contracts.py",

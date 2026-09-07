@@ -121,6 +121,7 @@ contract source.
 
 | Script | Focus | Findings rules | Used by |
 |--------|-------|----------------|---------|
+| `scan_project_summary.py` | Project orientation dashboard: module inventory, component counts, domain structure, LOC, test suite, docs, translations | — (informational dashboard) | onboarding, orientation, arch-guard |
 | `scan_architecture.py` | Component counts per module, submodule structure | — (metadata only) | arch-guard |
 | `scan_arch_patterns.py` | Architecture pattern detection | `ARCH_*` | arch-guard |
 | `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contract compliance | `ACTION_*`, `ENTITY_*`, `DTO_*`, `MODEL_*`, `ENUM_*`, `EVENT_*`, `POLICY_*`, `SERVICE_*`, `LISTENER_*` | arch-guard |

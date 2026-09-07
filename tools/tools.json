@@ -11,6 +11,10 @@
     "diff": "Compare two JSON reports"
   },
   "outputs": {
+    "project-summary": {
+      "script": "scan_project_summary.py",
+      "description": "Project orientation dashboard — module/component inventory, doc coverage, LOC, test ratio"
+    },
     "architecture": {
       "script": "scan_architecture.py",
       "description": "Component counts per module, submodule structure"
