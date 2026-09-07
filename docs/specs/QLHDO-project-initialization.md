@@ -1,47 +1,57 @@
-# Internara Project — Initial Specification
+# QLHDO — Internara Project Initial Specification
 
 > **Spec ID:** QLHDO
+> **Status:** Partial
+> **Owner:** Core
+> **Depends on:** None (spec-zero)
 
 ## Description
 
-This is the **initial specification** of the Internara system — a self-hosted, single-tenant web
-application for managing compulsory industrial fieldwork programs (PKL — _Praktik Kerja Lapangan_)
-at Indonesian vocational schools (SMK). It is the **spec-zero blanket spec**: it establishes the
-project boundary, the role model, the global cross-cutting requirements every feature spec
-inherits, and the project-level design decisions. It deliberately does **not** restate
-implementation-level detail — each phase's functional detail lives in its own feature spec
-(indexed in [docs/specs/index.md](index.md)).
+Internara is a self-hosted, single-tenant web application for managing compulsory industrial fieldwork
+programs (PKL — *Praktik Kerja Lapangan*) at Indonesian vocational schools (SMK). It replaces the
+fragmented, paper-and-chat workflow — WhatsApp + Excel + physical forms — with a canonical digital
+record: placement, attendance, logbook, supervision, assessment, certification, and reporting.
+
+This is the **spec-zero** spec. It establishes the project boundary, role model, global requirements
+every feature spec inherits, and the MVP scope. All 62 feature specs are indexed in
+[docs/specs/index.md](index.md).
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — PKL Administration Is Fragmented
+### PS-1 — Fragmented Administration at Scale
 
-Indonesian vocational schools legally require PKL, yet most manage the full lifecycle — enrollment,
-placement, attendance, logbook, supervision, assessment, certification, reporting — with paper
-forms, Excel spreadsheets, WhatsApp messages, and ad-hoc email. A coordinator compiling final grade
-cards must manually gather data from dozens of disconnected artifacts, making errors, delays, and
-unfinished work inevitable.
+A medium-to-large SMK manages 500–1,000 active students across 150–300 partner companies (DUDI)
+per placement period: ≈45,000 attendance records, 6,000 logbook entries, 1,500–2,500 submissions,
+and 500 evaluation forms per period. No manual or semi-digital process (chat + Excel) survives that
+volume without data loss and delay. *(Source: pkl-operational-research.md POV 1–5, Sep 2026)*
 
-### PS-2 — Hidden Scale
+### PS-2 — Anti-Fraud Accountability Gap
 
-A typical medium-to-large SMK manages 500–1,000 active students across 150–300 partner companies
-(DUDI) per placement period — on the order of 45,000 attendance records, 6,000 logbook entries,
-1,500–2,500 submissions, and 500 evaluation forms per period. No manual process survives that volume
-without data loss.
+Paper logbooks and WhatsApp-reported attendance are trivially falsifiable: "Sering terjadi
+ketidakjujuran siswa dalam pengisian absensi dan logbook" (SMKN 1 Sintuk Toboh Gadang 2022). Schools
+need digital evidence of the educational process for BAN-PDM accreditation evidence folders and
+industry certificate sign-off. *(Source: pkl-operational-research.md PS-3, POV 3)*
 
-### PS-3 — No Accountability Trail
+### PS-3 — Supervision Degrades with Distance
 
-Without a unified system, verification and sign-off cannot be traced: attendance is unverifiable at
-scale, logbook entries are ungraded and unsearchable, certificates are forgeable, and there is no
-audit trail for administrative action. Schools need digital evidence of the educational process.
+City sites (<15 km): 3–4 visits/period. Out-of-town (50–150 km): 1 visit. Remote (>150 km): 0–1
+visits (Palangka Raya study, Kanderang Tingang Jan 2026). The standard monitoring visit (Panduan
+Monitoring PKL) requires attendance verification, work journal review, supervisor interview, and
+documentation check. Without digital tools, school supervision collapses beyond city distance.
 
-### PS-4 — No Single Source of Truth
+### PS-4 — Multi-System Re-Entry Burden
 
-Operational data lives in the private tooling of whoever happens to hold it (a teacher's sheet, a
-supervisor's notebook, an admin's mail queue). There is no canonical, role-filtered record any
-participant can query, and no consistent reporting base.
+Coordinators manually re-type the same data into WhatsApp → Excel → e-Rapor → Dapodik (PKS records,
+rombel, teacher data). This is a documented, verified friction across every POV. *(Source:
+pkl-operational-research.md POV 2)*
+
+### PS-5 — Grade Aggregation is Manual and Late
+
+Final grades are assembled from separate 0–100 sheets (site leader, field advisor, seminar) across
+paper and Google Docs/Scribd formats, then re-entered into e-Rapor. "Kurang efisien dalam mengolah
+nilai… kesalahan… lambatnya penyerahan data" (JRAMI Unindra). *(Source: pkl-operational-research.md POV 1)*
 
 ---
 
@@ -49,201 +59,179 @@ participant can query, and no consistent reporting base.
 
 ### Goals
 
-| ID  | Goal                                                                                                                                                                                                            |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| G1  | Digitize the complete PKL lifecycle end-to-end: foundation → configuration → identity → institutional → partnerships → programs → enrollment → daily ops → assessment → certification → reporting → maintenance |
-| G2  | Provide one canonical, role-filtered source of truth for every participant (student, teacher, supervisor, admin)                                                                                                |
-| G3  | Operate as a self-hosted, single-tenant, MIT-licensed application with zero recurring vendor costs and full data sovereignty                                                                                    |
-| G4  | Enforce authorization and an audit trail at every layer (Secure — S1)                                                                                                                                           |
-| G5  | Stay sustainable and maintainable through module colocation and clean boundaries (Sustain — S2)                                                                                                                 |
-| G6  | Scale cleanly within a single tenant via spec-driven features and an Action-triad architecture (Scalable — S3)                                                                                                  |
-| G7  | Support the full domain bilingually (Indonesian primary, English secondary) with `__()` on all user-facing strings                                                                                              |
+| ID | Goal | Why it matters |
+|----|------|----------------|
+| G1 | Digitize the complete PKL lifecycle: placement → attendance → logbook → supervision → assessment → certificate | Ends the paper-and-chat workflow at scale |
+| G2 | Role-filtered canonical record: every participant sees only what their role allows | Single source of truth, no informal data silos |
+| G3 | Anti-fraud attendance: verifiable, timestamped, with evidence trail | BAN-PDM evidence, certificate integrity |
+| G4 | Remote supervision support: digital monitoring where physical visits are impractical | Addresses PS-3 for schools with geographically dispersed placements |
+| G5 | Self-hosted, MIT-licensed, zero vendor cost per school | Data sovereignty, accessible to under-resourced SMK |
+| G6 | Bilingual (Indonesian primary, English secondary) with `__()` on all user-facing strings | Natively supports SMK staff and students |
+| G7 | Single-tenant by design; no `tenant_id` overhead | MVP simplicity, no multi-tenancy complexity |
 
 ### Non-Goals
 
-| ID  | Non-Goal                                                           |
-| --- | ------------------------------------------------------------------ |
-| NG1 | Multi-tenant SaaS — single-tenant by design, no tenant-ID overhead |
-| NG2 | HR / payroll features                                              |
-| NG3 | Real-time chat                                                     |
-| NG4 | Government database sync — CSV import/export only                  |
-| NG5 | Mobile native apps — responsive web only                           |
+| ID | Non-Goal | Why excluded |
+|----|----------|--------------|
+| NG1 | Multi-tenant SaaS | NG-1: single-tenant is a design decision, not a limitation |
+| NG2 | HR / payroll features | Out of PKL scope |
+| NG3 | Real-time chat | WhatsApp is the existing platform; integration is not MVP |
+| NG4 | Government database sync (Dapodik/e-Rapor) | CSV import/export only (NG-4) |
+| NG5 | Mobile native apps | Responsive web covers the use case; BPS 2024: 72.78% internet access nationally |
+| NG6 | Full WCAG AAA / formal accessibility audit | WCAG AA contrast + keyboard nav MVP only; full audit is post-MVP (NG-6) |
+| NG7 | Offline-first / PWA | Important for rural connectivity (5–20% gap vs urban) but scoped post-MVP; progressive enhancement acceptable for MVP |
 
 ---
 
 ## 3. User Stories / Use Cases
 
-| ID | Actor | Action / Expected Outcome |
-|----|-------|---------------------------|
-| UC-QLHDO-1 | Super Admin / Admin | School initializes and configures the system: setup wizard, branding, locale, departments, academic years, partners |
-| UC-QLHDO-2 | Student | Completes the PKL lifecycle: register → placed → attendance + logbook + assignments → certificate download |
-| UC-QLHDO-3 | Teacher | Supervises and assesses: logbook review, monitoring visits, rubric grading |
-| UC-QLHDO-4 | Supervisor | Evaluates industry-side performance |
-| UC-QLHDO-5 | Admin | Operates and audits the system |
+### Role Model
 
-### UC-QLHDO-1 — School Initializes and Configures the System
+| Role | Code | Description |
+|------|------|-------------|
+| Super Admin | `super_admin` | Infrastructure and superuser access; name immutable `Super Admin`, username `superadmin` |
+| Admin | `admin` | School operations: users, programs, companies, departments |
+| Teacher | `teacher` | Academic supervision: journal review, assignment grading, monitoring visits |
+| Student | `student` | Program participation: attendance, logbook, assignments, certificate download |
+| Supervisor | `supervisor` | Industry-side: attendance verification, journal review, competency evaluation |
 
-**Actor:** Super Admin / Admin
-**Preconditions:** Server deployed, environment audit passes
-**Flow:** Super Admin runs the 6-step setup wizard → Admin configures branding, theme, locale, and
-school profile; creates departments and academic years → Admin registers partner companies and
-formal partnerships with slot quotas.
+Three **runtime-functional roles** are resolved via `Role::resolvesTo()` for business logic only:
+`admin-group` (→ super_admin/admin), `mentor` (→ teacher/supervisor), `mentee` (→ student). Full
+RBAC contract in [T4B26](T4B26-rbac-and-authorization.md).
+
+### UC-QLHDO-1 — School Initializes
+
+**Actor:** Super Admin → Admin
+**Preconditions:** Server deployed
+**Flow:** Super Admin runs `setup:install` → Admin configures branding/locale/school profile →
+Admin creates departments and academic years → Admin registers companies and partnerships with slot
+quotas.
 **Postconditions:** School can enroll students; `superadmin` account exists.
-**Governing spec:** [8NZAU-installation](8NZAU-installation.md).
+**Governing specs:** [8NZAU](8NZAU-installation.md), [VEJCX](VEJCX-setup-wizard.md),
+[C9ZB6](C9ZB6-recovery-ecosystem.md), [52O1I](52O1I-branding-theme-locale.md).
 
 ### UC-QLHDO-2 — Student Completes the PKL Lifecycle
 
 **Actor:** Student
 **Preconditions:** Registration open, placement slots available
-**Flow:** Student registers → Admin verifies and places the student → Student clocks in/out, keeps
-a reflective logbook, submits assignments, and acknowledges handbooks → Student downloads certificate
-after assessment and report sign-off.
-**Postconditions:** Full digital trail of the internship exists and is auditable.
-**Governing specs:** [MBB5R-registration](MBB5R-registration.md), [J9GBH-placement](J9GBH-placement.md),
-[1KSWL-daily-activity](1KSWL-daily-activity.md), [T657Z-assignment](T657Z-assignment.md),
-[J0M04-certification](J0M04-certification.md).
+**Flow:** Student registers → Admin verifies and places the student → Student clocks in/out,
+keeps a reflective logbook, submits assignments, acknowledges handbooks → Student downloads
+certificate after assessment and report sign-off.
+**Postconditions:** Full digital trail of the internship exists.
+**Governing specs:** [MBB5R](MBB5R-registration.md), [J9GBH](J9GBH-placement.md),
+[1KSWL](1KSWL-daily-activity.md), [T657Z](T657Z-assignment.md), [J0M04](J0M04-certification.md).
 
 ### UC-QLHDO-3 — Teacher Supervises and Assesses
 
 **Actor:** Teacher
 **Preconditions:** Students placed, program active
-**Flow:** Teacher supervises assigned students (logbook review, supervision logs, monitoring visits)
-→ Teacher or supervisor scores against competency rubrics; submissions are graded → Teacher
-compiles and finalizes the grade card; certificate becomes issuable.
-**Postconditions:** Grades are aggregated; finalized artifacts are immutable.
-**Governing specs:** [2EHSE-supervision](2EHSE-supervision.md), [ARDA6-assessment](ARDA6-assessment.md),
-[R6BMW-reports](R6BMW-reports.md).
+**Flow:** Teacher supervises assigned students → reviews logbooks, logs monitoring visits →
+Teacher or supervisor scores against rubrics → Teacher compiles and finalizes the grade card.
+**Postconditions:** Grades aggregated; finalized artifacts immutable.
+**Governing specs:** [2EHSE](2EHSE-supervision.md), [ARDA6](ARDA6-assessment.md),
+[R6BMW](R6BMW-reports.md).
 
 ### UC-QLHDO-4 — Supervisor Evaluates Industry-Side Performance
 
-**Actor:** Supervisor (industry)
+**Actor:** Supervisor (DUDI)
 **Preconditions:** Student active at the DUDI site
-**Flow:** Supervisor verifies attendance and reviews logbook entries → Supervisor submits
-competency evaluations for assigned students (direct or proxy-stamped) → Evaluations flow into final
-score aggregation.
-**Postconditions:** Industry-side scores are present in the final record.
-**Governing specs:** [1KSWL-daily-activity](1KSWL-daily-activity.md), [ARDA6-assessment](ARDA6-assessment.md),
-[T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2 (Cross-Role Proxy).
+**Flow:** Supervisor verifies attendance and reviews logbook entries → submits competency
+evaluations for assigned students → evaluations flow into final score aggregation.
+**Postconditions:** Industry-side scores present in the final record.
+**Governing specs:** [1KSWL](1KSWL-daily-activity.md), [ARDA6](ARDA6-assessment.md),
+[T4B26](T4B26-rbac-and-authorization.md) §4.2 (Cross-Role Proxy).
 
-### UC-QLHDO-5 — Admin Operates and Audits the System
+### UC-QLHDO-5 — Admin Operates and Audits
 
 **Actor:** Admin / Super Admin
 **Preconditions:** System running
-**Flow:** Admin manages users (CRUD, lock/unlock, role assignment, account slips) and announcements
-→ Admin monitors health checks, audit logs, and job queues → Admin runs backups, GDPR
-export/erasure, and archival per policy.
-**Postconditions:** Operation is observable and recoverable within RPO/RTO targets.
-**Governing specs:** [95EVB-user-crud-and-status](95EVB-user-crud-and-status.md),
-[3S55V-announcement-system](3S55V-announcement-system.md), [E1MSJ-system-maintenance](E1MSJ-system-maintenance.md),
-[HBXCI-backup-system](HBXCI-backup-system.md), [7HNCF-gdpr-compliance](7HNCF-gdpr-compliance.md).
-
-### 3.1 Role Model (5 Roles + 2 Functional)
-
-| Role        | Code          | Description                                                                               |
-| ----------- | ------------- | ----------------------------------------------------------------------------------------- |
-| Super Admin | `super_admin` | Unrestricted system access, infrastructure management, bypasses all permission checks     |
-| Admin       | `admin`       | School-level operations: user management, programs, companies, departments                |
-| Teacher     | `teacher`     | Academic supervision: journal review, assignment grading, site visits, grade compilation  |
-| Student     | `student`     | Program participation: attendance, logbooks, assignments, certificate download            |
-| Supervisor  | `supervisor`  | Industry-side supervision: attendance verification, journal review, competency evaluation |
-
-Each user is assigned exactly one role. Three additional **functional roles** (`admin-group`, `mentor`,
-`mentee`) are resolved at runtime via `Role::resolvesTo()` for business logic — never stored or used in
-middleware. `admin-group` is the administrative grouping (`super_admin`/`admin`). Full RBAC contract
-in [T4B26](T4B26-rbac-and-authorization.md) §4.2.
+**Flow:** Admin manages users and announcements → monitors health checks and audit logs →
+Admin runs backups and GDPR export/erasure per policy.
+**Postconditions:** Operation observable and recoverable within RPO/RTO targets.
+**Governing specs:** [95EVB](95EVB-user-crud-and-status.md), [3S55V](3S55V-announcement-system.md),
+[E1MSJ](E1MSJ-system-maintenance.md), [HBXCI](HBXCI-backup-system.md).
 
 ---
 
 ## 4. Functional Requirements
 
-These are **global defaults every feature spec inherits**; a feature spec may tighten them but never
-violate them. Where this section references an owning spec, that document is authoritative for the
-detail.
+Global defaults every feature spec inherits. A feature spec may tighten but never violate these.
 
-### 4.1 Cross-Cutting Requirements
+### 4.1 Cross-Cutting (MVP Scoped)
 
-| ID    | Requirement                                                                                                                                                                                                                  | Owning spec                                                            | Status   | Last Verify |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- | ----------- |
-| FR-QLHDO-G1 | Every user-facing string MUST use the `__()` helper; all modules ship `lang/en/` and `lang/id/` (D3)                                                                                                                         | [YB22J-settings-infrastructure](YB22J-settings-infrastructure.md)     | Shipped  | 2026-09-03  |
-| FR-QLHDO-G2 | The system MUST expose exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) via `Role::resolvesTo()`   | [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2 | Shipped  | 2026-09-03  |
-| FR-QLHDO-G3 | The system MUST enforce `superadmin` integrity: name is always `Super Admin`, username always `superadmin`, immutable and non-deletable                                                                                       | [8NZAU-installation](8NZAU-installation.md)                           | Shipped  | 2026-09-03  |
-| FR-QLHDO-G4 | All administrative mutations MUST be audit-logged (activity channel) with PII masking                                                                                                                                       | [89SRA-logging-and-error-handling](89SRA-logging-and-error-handling.md) | Shipped  | 2026-09-03  |
-| FR-QLHDO-G5 | Sensitive endpoints MUST be rate-limited (global 30/min/IP; login 5/60s; forgot 3/3600s; reset 5/300s; recovery 3/300s)                                                                                                    | [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md) FR-QLHDO-MW10     | Shipped  | 2026-09-03  |
-| FR-QLHDO-G6 | The system MUST run a system health check covering PHP, extensions, memory, DB, migrations, storage, queue, cache, and app key                                                                                               | [J68GZ-system-requirements](J68GZ-system-requirements.md) FR-QLHDO-SY8      | Shipped  | 2026-09-03  |
-| FR-QLHDO-G7 | All records MUST use UUID primary keys via `BaseModel`/`HasUuids`                                                                                                                                                            | [SE5Q9-base-classes](SE5Q9-base-classes.md)                            | Shipped  | 2026-09-03  |
-| FR-QLHDO-G8 | Program data MUST flow in dependency order: Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance (full phase inventory in [index.md](index.md)) | [index.md](index.md) (build order) | Shipped | 2026-09-03 |
-| FR-QLHDO-G9 | The system MUST validate all user input through a centralized validation layer (Form Request classes for HTTP, validated DTOs for Actions); validation rules MUST live next to the entry point, never in controllers or Livewire components | [D2FT3](D2FT3-architecture.md), [SE5Q9](SE5Q9-base-classes.md) | Proposed | — |
-| FR-QLHDO-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
-| FR-QLHDO-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
-| FR-QLHDO-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| FR-QLHDO-G14 | The shell layout `core::layouts.app` MUST render from `config/menu.php` groups ordered by registration sequence | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
-| FR-QLHDO-G15 | Navigation MUST highlight the item matching the current route name (`request()->routeIs()`) | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| ID | Requirement | Owning spec | Priority |
+|----|-------------|--------------|----------|
+| FR-QLHDO-G1 | Every user-facing string uses the `__()` helper; all modules ship `lang/en/` and `lang/id/` | [YB22J](YB22J-settings-infrastructure.md) | P0 |
+| FR-QLHDO-G2 | Exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus three runtime-resolved functional roles via `Role::resolvesTo()` | [T4B26](T4B26-rbac-and-authorization.md) §4.2 | P0 |
+| FR-QLHDO-G3 | `superadmin` account is immutable: name always `Super Admin`, username always `superadmin`, non-deletable | [8NZAU](8NZAU-installation.md) | P0 |
+| FR-QLHDO-G4 | All administrative mutations are audit-logged (activity channel) with PII masking | [89SRA](89SRA-logging-and-error-handling.md) | P0 |
+| FR-QLHDO-G5 | Sensitive endpoints are rate-limited: login 5/60s, forgot-password 3/3600s, reset 5/300s | [2CF4Y](2CF4Y-middleware-pipeline.md) | P0 |
+| FR-QLHDO-G6 | `php artisan system:health` covers: PHP version, extensions, memory, DB, migrations, storage, queue, cache, APP_KEY | [J68GZ](J68GZ-system-requirements.md) | P0 |
+| FR-QLHDO-G7 | All primary models use UUID primary keys via `BaseModel` / `HasUuids` | [SE5Q9](SE5Q9-base-classes.md) | P0 |
+| FR-QLHDO-G8 | Authorization enforced at both Policy layer (gatekeeping) and Action/Entity layer (business rule via `RejectedException`) | [T4B26](T4B26-rbac-and-authorization.md) | P0 |
+| FR-QLHDO-G9 | All user input validated server-side: Form Request classes for HTTP, validated DTOs for Actions | [D2FT3](D2FT3-architecture.md) | P0 |
+| FR-QLHDO-G10 | Business-rule violations throw `RejectedException` with a translatable user-facing message; unexpected exceptions are logged with context and shown as generic failure | [89SRA](89SRA-logging-and-error-handling.md) | P0 |
+| FR-QLHDO-G11 | File uploads validated server-side: MIME type, configurable size per module, filename safety; stored outside web root with non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md) | P0 |
+| FR-QLHDO-G12 | Navigation layout renders menu groups from `config/menu.php` ordered by registration sequence; active route highlighted | [8XMYS](8XMYS-layout-and-ui-system.md) | P1 |
+| FR-QLHDO-G13 | Attendance records are timestamped, immutable after admin sign-off, and include the clock-in/out timestamp with actor identity | [1KSWL](1KSWL-daily-activity.md) | P0 |
+| FR-QLHDO-G14 | Logbook entries are daily, timestamped, and editable only within the same academic day by the student who created them | [1KSWL](1KSWL-daily-activity.md) | P0 |
 
-### 4.2 Lifecycle Phase Inventory (index only)
+### 4.2 Phase Inventory
 
-Each phase's functional detail lives in its governing spec(s) — see [docs/specs/index.md](index.md)
-for the SSOT build order, and [its Status Legend](index.md#status-legend) for status. This
-row is a navigation aid; do not duplicate per-feature detail here.
+Each phase's detail lives in its owning spec(s). This is a navigation index.
 
-| Phase             | Governing spec(s) |
-| ----------------- | ----------------- |
-| Foundation        | [D2FT3](D2FT3-architecture.md), [FB792](FB792-tech-stack.md), [ZT6VS](ZT6VS-core-infra-services.md), [SE5Q9](SE5Q9-base-classes.md), [C8F0D](C8F0D-shared-utilities.md), [J68GZ](J68GZ-system-requirements.md), [I1BCV](I1BCV-module-discovery.md), [89SRA](89SRA-logging-and-error-handling.md), [NUCY3](NUCY3-event-system.md), [T4B26](T4B26-rbac-and-authorization.md), [2CF4Y](2CF4Y-middleware-pipeline.md), [1PGM4](1PGM4-security-headers.md), [B114U](B114U-module-manager.md) |
-| Configuration     | [8NZAU](8NZAU-installation.md), [VEJCX](VEJCX-setup-wizard.md), [C9ZB6](C9ZB6-recovery-ecosystem.md), [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md), [81SMS](81SMS-school-profile.md) |
-| Identity & Auth   | [8XMYS](8XMYS-layout-and-ui-system.md), [YB7RG](YB7RG-authentication.md), [TXR2H](TXR2H-notification-infrastructure.md), [3S55V](3S55V-announcement-system.md), [CKKZC](CKKZC-dashboard.md), [D9TKW](D9TKW-password-reset.md), [CQVSK](CQVSK-password-confirmation.md), [SHQ1J](SHQ1J-account-recovery-slips.md), [OCEMS](OCEMS-profile-management.md) |
-| Institutional     | [4HWSB](4HWSB-department-management.md), [XW6F5](XW6F5-academic-year-management.md), [81SMS](81SMS-school-profile.md) |
-| Partnerships      | [XI3LB](XI3LB-company-management.md), [NTHQA](NTHQA-partnership-management.md) |
-| Programs          | [7C5WM](7C5WM-internship-lifecycle.md), [IT0OE](IT0OE-internship-groups.md) |
-| Enrollment        | [MBB5R](MBB5R-registration.md), [J9GBH](J9GBH-placement.md), [920SO](920SO-account-application.md), [95EVB](95EVB-user-crud-and-status.md), [O2KCR](O2KCR-csv-import-export.md), [EWCZ0](EWCZ0-account-slips.md) |
-| Daily Ops         | [1KSWL](1KSWL-daily-activity.md), [2EHSE](2EHSE-supervision.md), [3RU9S](3RU9S-incident.md) |
-| Assessment        | [ARDA6](ARDA6-assessment.md), [AXKZW](AXKZW-evaluation.md), [T657Z](T657Z-assignment.md) |
-| Certification     | [PKYX6](PKYX6-document-templates.md), [ZUFG8](ZUFG8-handbooks.md), [J0M04](J0M04-certification.md), [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) |
-| Reporting         | [R6BMW](R6BMW-reports.md), [7H5D6](7H5D6-official-documents.md) |
-| Maintenance       | [8FVZA](8FVZA-job-queue-infrastructure.md), [HBXCI](HBXCI-backup-system.md), [7HNCF](7HNCF-gdpr-compliance.md), [E1MSJ](E1MSJ-system-maintenance.md), [06IB6](06IB6-deployment.md), [3UOZP](3UOZP-dummy-data.md), [9YUUK](9YUUK-data-archiving.md) |
+| Phase | Specs |
+|-------|-------|
+| Foundation | [D2FT3](D2FT3-architecture.md) · [FB792](FB792-tech-stack.md) · [ZT6VS](ZT6VS-core-infra-services.md) · [SE5Q9](SE5Q9-base-classes.md) · [C8F0D](C8F0D-shared-utilities.md) · [J68GZ](J68GZ-system-requirements.md) · [I1BCV](I1BCV-module-discovery.md) · [89SRA](89SRA-logging-and-error-handling.md) · [NUCY3](NUCY3-event-system.md) · [T4B26](T4B26-rbac-and-authorization.md) · [2CF4Y](2CF4Y-middleware-pipeline.md) · [1PGM4](1PGM4-security-headers.md) · [B114U](B114U-module-manager.md) |
+| Configuration | [8NZAU](8NZAU-installation.md) · [VEJCX](VEJCX-setup-wizard.md) · [C9ZB6](C9ZB6-recovery-ecosystem.md) · [YB22J](YB22J-settings-infrastructure.md) · [52O1I](52O1I-branding-theme-locale.md) · [81SMS](81SMS-school-profile.md) |
+| Identity & Auth | [8XMYS](8XMYS-layout-and-ui-system.md) · [YB7RG](YB7RG-authentication.md) · [TXR2H](TXR2H-notification-infrastructure.md) · [3S55V](3S55V-announcement-system.md) · [CKKZC](CKKZC-dashboard.md) · [D9TKW](D9TKW-password-reset.md) · [CQVSK](CQVSK-password-confirmation.md) · [SHQ1J](SHQ1J-account-recovery-slips.md) · [OCEMS](OCEMS-profile-management.md) |
+| Institutional | [4HWSB](4HWSB-department-management.md) · [XW6F5](XW6F5-academic-year-management.md) · [81SMS](81SMS-school-profile.md) |
+| Partnerships | [XI3LB](XI3LB-company-management.md) · [NTHQA](NTHQA-partnership-management.md) |
+| Programs | [7C5WM](7C5WM-internship-lifecycle.md) · [IT0OE](IT0OE-internship-groups.md) |
+| Enrollment | [MBB5R](MBB5R-registration.md) · [J9GBH](J9GBH-placement.md) · [920SO](920SO-account-application.md) · [95EVB](95EVB-user-crud-and-status.md) · [O2KCR](O2KCR-csv-import-export.md) · [EWCZ0](EWCZ0-account-slips.md) |
+| Daily Ops | [1KSWL](1KSWL-daily-activity.md) · [2EHSE](2EHSE-supervision.md) · [3RU9S](3RU9S-incident.md) |
+| Assessment | [ARDA6](ARDA6-assessment.md) · [AXKZW](AXKZW-evaluation.md) · [T657Z](T657Z-assignment.md) |
+| Certification | [PKYX6](PKYX6-document-templates.md) · [ZUFG8](ZUFG8-handbooks.md) · [J0M04](J0M04-certification.md) · [WQGTP](WQGTP-file-uploads-media.md) · [7UB7S](7UB7S-pdf-generation.md) |
+| Reporting | [R6BMW](R6BMW-reports.md) · [7H5D6](7H5D6-official-documents.md) |
+| Maintenance | [8FVZA](8FVZA-job-queue-infrastructure.md) · [HBXCI](HBXCI-backup-system.md) · [7HNCF](7HNCF-gdpr-compliance.md) · [E1MSJ](E1MSJ-system-maintenance.md) · [06IB6](06IB6-deployment.md) · [3UOZP](3UOZP-dummy-data.md) · [9YUUK](9YUUK-data-archiving.md) |
 
 ---
 
 ## 5. Non-Functional Requirements
 
-These are **project-level NFRs**. Each row points to the owning spec for measurable targets and
-acceptance criteria; the owning spec is authoritative for verification.
+Project-level NFRs for MVP. Each row links to its owning spec for detailed acceptance criteria.
+"N/A" in Target means the requirement is enforced architecturally and verified via tests.
 
-| ID     | Requirement                                                                                                                                                                                              | Owning spec(s)                                                                                | Status   | Last Verify |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------- | ----------- |
-| NFR-QLHDO-S1 | Security: authorization at every layer (Policy + Action/Entity business authorization via `RejectedException`); PII masked in logs per PDP law (UU No. 27/2022); CSP + security headers on all responses | [T4B26](T4B26-rbac-and-authorization.md), [89SRA](89SRA-logging-and-error-handling.md), [1PGM4](1PGM4-security-headers.md) | Shipped  | 2026-09-03  |
-| NFR-QLHDO-S2 | Input: no raw SQL without bindings (C3); no raw `Request` into create/update (D5); all user input validated server-side — see `AGENTS.md` Critical Invariants                                              | [D2FT3](D2FT3-architecture.md), `AGENTS.md`                                                  | Shipped  | 2026-09-03  |
-| NFR-QLHDO-P1 | Performance: pages respond within target budgets; Actions eager-load relations (no N+1); expensive queries cached with registered cache keys                                                             | [ZT6VS](ZT6VS-core-infra-services.md), [SE5Q9](SE5Q9-base-classes.md)                         | Shipped  | 2026-09-03  |
-| NFR-QLHDO-R1 | Reliability: 4-hour RPO / under 1-hour RTO backup target; graceful degradation; job queues for heavy work (mail, PDF, reports)                                                                           | [HBXCI](HBXCI-backup-system.md), [8FVZA](8FVZA-job-queue-infrastructure.md), [E1MSJ](E1MSJ-system-maintenance.md) | Shipped  | 2026-09-03  |
-| NFR-QLHDO-U1 | Usability: every page with a non-trivial workflow has a `*-guide.blade.php`; WCAG AA contrast; keyboard navigable; mobile-first responsive                                                              | [8XMYS](8XMYS-layout-and-ui-system.md)                                                        | Shipped  | 2026-09-03  |
-| NFR-QLHDO-M1 | Maintainability: 4-layer module-first architecture enforced by `tools/` scans (C1–C8, D1–D6, contracts, naming, security); DRY — shared logic in Core                                                  | [D2FT3](D2FT3-architecture.md), `tools/`                                                      | Shipped  | 2026-09-03  |
-| NFR-QLHDO-L1 | Localization: English + Indonesian, locale stored in session, togglable at runtime                                                                                                                       | [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md)             | Shipped  | 2026-09-03  |
-| NFR-QLHDO-C1 | Compatibility: renders consistently across modern browsers; printed/exported artifacts (PDF/Excel/CSV) are precise and stable                                                                            | [7UB7S](7UB7S-pdf-generation.md), [O2KCR](O2KCR-csv-import-export.md)                         | Shipped  | 2026-09-03  |
-| NFR-QLHDO-D1 | Database: SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)                                                                                                                 | [J68GZ](J68GZ-system-requirements.md), [ZT6VS](ZT6VS-core-infra-services.md)                  | Shipped  | 2026-09-03  |
-| NFR-QLHDO-Q1 | Queue: separate `default` and `documents` pipelines                                                                                                                                                      | [8FVZA](8FVZA-job-queue-infrastructure.md)                                                    | Shipped  | 2026-09-03  |
-| NFR-QLHDO-G1 | GDPR: deletion logging and data erasure workflows                                                                                                                                                       | [7HNCF](7HNCF-gdpr-compliance.md)                                                             | Shipped  | 2026-09-03  |
-| NFR-QLHDO-S3 | Security headers: all responses MUST include `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; HSTS MUST be enabled in production | [1PGM4](1PGM4-security-headers.md) | Proposed | — |
-| NFR-QLHDO-S4 | CSRF protection: all state-changing HTTP requests MUST include a valid CSRF token; API endpoints MUST use token-based authentication (sanctum/passport) | [2CF4Y](2CF4Y-middleware-pipeline.md) | Proposed | — |
-| NFR-QLHDO-S5 | XSS prevention: all dynamic output MUST be escaped by default; `{!! !!}` is forbidden for user-generated content; rich text MUST be sanitized server-side before storage | [1PGM4](1PGM4-security-headers.md), [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| NFR-QLHDO-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
-| NFR-QLHDO-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| NFR-QLHDO-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
-| NFR-QLHDO-A3 | Every primary flow (setup, login, PKL lifecycle) MUST be covered by a browser journey test asserting role-based visibility | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| ID | Requirement | Target | Owning spec | Priority |
+|----|-------------|--------|--------------|----------|
+| NFR-QLHDO-S1 | Authorization at every layer: Policy (gatekeeping) + Action/Entity (business rules) | N/A | [T4B26](T4B26-rbac-and-authorization.md) | P0 |
+| NFR-QLHDO-S2 | Input safety: no raw SQL concatenation (C3), Form Request/DTO validation, PII masked in logs | N/A | [89SRA](89SRA-logging-and-error-handling.md), [D2FT3](D2FT3-architecture.md) | P0 |
+| NFR-QLHDO-S3 | Security headers on all responses: CSP, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin | N/A | [1PGM4](1PGM4-security-headers.md) | P0 |
+| NFR-QLHDO-S4 | CSRF protection on all state-changing requests; API uses Sanctum token auth | N/A | [2CF4Y](2CF4Y-middleware-pipeline.md) | P0 |
+| NFR-QLHDO-S5 | All dynamic output escaped; `{!! !!}` forbidden for user-generated content | N/A | [1PGM4](1PGM4-security-headers.md) | P0 |
+| NFR-QLHDO-P1 | Pages render under 2 seconds at p95 under normal load (single-server, SQLite); Actions eager-load relations to prevent N+1 | <2s p95 | [ZT6VS](ZT6VS-core-infra-services.md) | P1 |
+| NFR-QLHDO-P2 | Backup target: 4-hour RPO, under 1-hour RTO; backup retention configurable per policy | 4h RPO | [HBXCI](HBXCI-backup-system.md) | P1 |
+| NFR-QLHDO-U1 | Responsive layout; WCAG AA contrast minimum on interactive elements; keyboard navigable on all forms and navigation | N/A | [8XMYS](8XMYS-layout-and-ui-system.md) | P1 |
+| NFR-QLHDO-U2 | Every non-trivial workflow has an associated guide page at `guides/{feature}-guide.blade.php` | N/A | [8XMYS](8XMYS-layout-and-ui-system.md) | P1 |
+| NFR-QLHDO-M1 | 4-layer module-first architecture: all code under `app/Modules/`; shared logic in `Core` | N/A | [D2FT3](D2FT3-architecture.md) | P0 |
+| NFR-QLHDO-L1 | Indonesian primary + English secondary; locale stored in session and togglable at runtime | N/A | [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md) | P0 |
+| NFR-QLHDO-D1 | SQLite (default) or MySQL; UUID PKs on all primary entities; migration-driven schema | N/A | [J68GZ](J68GZ-system-requirements.md) | P0 |
+| NFR-QLHDO-G1 | GDPR: deletion logging and data-erasure workflows exist and are functional | N/A | [7HNCF](7HNCF-gdpr-compliance.md) | P1 |
 
-> **Curriculum/regulatory alignment** (legacy §11 of the QLHDO draft) is tracked outside the
-> spec system as a research input in `docs/refs/articles/curriculum-compliance.md` (non-testable
-> description of how the system maps to Indonesian PKL regulations). It is intentionally **not** a
-> spec requirement — regulations evolve and are outside engineering control.
+### What is NOT an MVP NFR
 
-## Test Requirements
+The following were in the previous spec but are **deferred to post-MVP** based on MVP scope:
 
-Deterministic four-layer coverage grounded in the retained requirements above. Tests use
-`describe("QLHDO: ...")` + `it("QLHDO-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
-
-| Layer | TR ID | Test dir | Verifies |
-|-------|-------|----------|----------|
-| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
-| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
-| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
-| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+| What | Why deferred |
+|------|-------------|
+| p95 latency under 100 concurrent users | Requires load-test infrastructure; hand-tested at MVP scale |
+| ≥80% code coverage on new code | Enforcement tooling exists; coverage % target set per-module post-MVP |
+| ≥90% coverage on auth/audit/integrity paths | Same as above; set per-module targets post-MVP |
+| Cross-browser pixel-perfect testing | Playwright smoke tests only at MVP; visual regression post-MVP |
+| PWA / offline-first / service workers | Important for rural connectivity (BPS: 5–20% urban–rural gap) but scoped post-MVP |
+| Formal WCAG audit by external tester | Internal AA checklist + keyboard nav tests at MVP |
+| k6/jMeter load test in CI | p95 target hand-tested at MVP; automated load test post-MVP |
+| Uptime SLA monitoring | Covered by `system:health`; dedicated uptime monitoring post-MVP |
 
 ---
 
@@ -251,11 +239,10 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 
 ### 6.1 Identity Contract
 
-- `users` table via `BaseModel` + `HasUuids` (UUID PK); one row per person; role column references
-  the `Role` enum.
-- `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`, with
-  `Role::resolvesTo()` mapping runtime functional roles `admin-group`/`mentor`/`mentee`. Full contract
-  in [T4B26](T4B26-rbac-and-authorization.md) §4.2.
+- `users` table: `BaseModel` + `HasUuids` (UUID PK); one row per person; `role` column references `Role` enum.
+- `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`; `Role::resolvesTo()` maps `admin-group`/`mentor`/`mentee` at runtime.
+
+Full contract: [T4B26](T4B26-rbac-and-authorization.md) §4.2.
 
 ### 6.2 Global Helpers
 
@@ -263,91 +250,71 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 setting(string|array|null $key = null, mixed $default = null, bool $skipCache = false): mixed
 brand(string $key, mixed $default = null): mixed
 app_info(?string $key = null, mixed $default = null): mixed
-
 ```
 
-Full contracts in [C8F0D-shared-utilities](C8F0D-shared-utilities.md) (FR-QLHDO-SUP11) and
-[YB22J-settings-infrastructure](YB22J-settings-infrastructure.md).
+Full contracts: [C8F0D](C8F0D-shared-utilities.md) (FR-QLHDO-SUP11), [YB22J](YB22J-settings-infrastructure.md).
 
-### 6.3 Module Landscape (18 business modules + Core + UI)
+### 6.3 Module Landscape
 
-`app/` hosts zero top-level business directories; all code lives in modules. Each module owns its
+`app/` contains zero top-level business directories. All code lives in modules. Each module owns its
 vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`,
-`Notifications/`, `Policies/`, `Livewire/`, `Services/`, `Support/`, routes, and `lang/`. The full
-module dependency graph and registration order live in `config/module.php` and
-`docs/refs/modules/index.md`.
-
-### 6.4 Architecture Contracts (authoritative references)
-
-- 4-layer model and Action Triad — [D2FT3-architecture](D2FT3-architecture.md)
-- Base classes — [SE5Q9-base-classes](SE5Q9-base-classes.md)
-- RBAC & authorization — [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md)
-- Module discovery & registration — [I1BCV-module-discovery](I1BCV-module-discovery.md)
-- Logging & error handling — [89SRA-logging-and-error-handling](89SRA-logging-and-error-handling.md)
-- Event system — [NUCY3-event-system](NUCY3-event-system.md)
-- Middleware pipeline — [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md)
-- Security headers — [1PGM4-security-headers](1PGM4-security-headers.md)
+`Notifications/`, `Policies/`, `Livewire/`, `Services/`, `Support/`, routes, and `lang/`. Module
+dependency graph: [docs/refs/modules/index.md](../refs/modules/index.md).
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Single-Tenant, Self-Hosted, MIT
+### DD-QLHDO-1 — Single-Tenant, Self-Hosted, MIT
 
-**Decision:** Distribute as a self-packaged Laravel codebase running on school-owned infrastructure.
-**Rationale:** Guarantees data sovereignty, offline robustness, zero recurring cost, and no vendor
-lock-in for under-resourced schools.
-**Trade-off:** No SaaS economics; every deployment is per-school (install cost accepted).
+**Decision:** Distribute as a self-packaged Laravel codebase on school-owned infrastructure.
+**Rationale:** Data sovereignty, offline robustness, zero recurring cost, no vendor lock-in for
+under-resourced SMK.
+**Trade-off:** Per-school deployment cost accepted; no SaaS economics.
 
-### DD-2 — Module-First Vertical Slicing
+### DD-QLHDO-2 — Module-First Vertical Slicing
 
-**Decision:** Organize code by business module rather than a flat `app/Models` +
-`app/Http/Controllers` + `app/Services` structure.
-**Rationale:** A business concept lives in one directory — findable, independently testable, safe to
-change; prevents silent cross-module coupling (S2). See [D2FT3](D2FT3-architecture.md) DD-1.
-**Trade-off:** Shared infrastructure must be deliberately extracted to Core (FR-QLHDO-G8 flow).
+**Decision:** All code under `app/Modules/{Module}/Domain/{Domain}/`; shared infrastructure in `Core`.
+**Rationale:** A business concept lives in one place — findable, independently testable, safe to
+change without silent cross-module coupling.
+**Trade-off:** Infrastructure must be deliberately extracted to Core.
 
-### DD-3 — Primary Indonesian, Secondary English
+### DD-QLHDO-3 — Primary Indonesian, Secondary English
 
-**Decision:** Ship full translations in both `lang/id/` (primary) and `lang/en/` (secondary) with a
-runtime toggle.
-**Rationale:** PKL is an Indonesian curriculum mandate; school staff and students are native
-speakers. English supports bilingual schools and developers.
-**Trade-off:** Every user-facing string has a translation cost — enforced by D3 and scan.
+**Decision:** Full translations in `lang/id/` (primary) and `lang/en/` (secondary); runtime toggle.
+**Rationale:** PKL is an Indonesian curriculum mandate; English supports developers and bilingual schools.
+**Trade-off:** Every user-facing string has a translation cost; enforced by D3 convention + scan.
 
-### DD-4 — Spec-Driven Build Order
+### DD-QLHDO-4 — Spec-First, Testable Requirements Only
 
-**Decision:** The project is built phase-by-phase; each feature traces to a governed spec with
-FR/NFR/UC IDs, and tests trace back to those IDs.
-**Rationale:** No behavior without a requirement; verification is spec-gap/orphan scoring rather
-than line coverage (maintains the S3 doctrine).
-**Trade-off:** Writing the spec precedes coding — documentation-first discipline required.
+**Decision:** This spec contains only verifiable, testable requirements. Research inputs (regulation
+text, field pain evidence, regulatory alignment) live in `docs/refs/articles/` and are explicitly
+marked non-testable.
+**Rationale:** Requirements without a test path are wishes, not specifications. Research informs
+prioritization; it does not drive implementation.
+**Trade-off:** Non-testable concerns (rural connectivity, government SOP variation) are addressed
+post-MVP with explicit product decisions.
 
-### DD-5 — Bounded Non-Goals Enforcement
+### DD-QLHDO-5 — No Tenant Isolation Overhead
 
-**Decision:** Out-of-scope areas (multi-tenant, HR, chat, gov sync, native apps) are explicit
-non-goals rather than accidental omissions.
-**Rationale:** Prevents scope creep and keeps the single-tenant PKL focus crisp at scale.
-**Trade-off:** Schools needing government sync or payroll run those systems externally.
+**Decision:** Single-tenant by design; no `tenant_id` columns, no tenant-scoped scopes, no
+multi-tenancy middleware.
+**Rationale:** One school per deployment; keeps the model clean for MVP.
+**Trade-off:** Multi-school deployments require separate installations (separate database + web root).
 
 ---
 
 ## 8. Success Metrics
 
-| Metric                                 | Target                                     | Measurement                                                          |
-| -------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------- |
-| Lifecycle coverage                     | All 12 phases fully spec'd and implemented | `docs/specs/index.md` §Status Legend (`Shipped` rows)               |
-| Module colocation                      | 100% of `app/` under modules + Core        | `python3 tools/scan_naming.py`, directory audit                      |
-| Architecture invariants (C1–C8, D1–D6) | 0 violations                               | `python3 tools/scan_violations.py`                                   |
-| Spec↔code alignment                    | 0 spec gaps, 0 orphan tests                | per-module spec audits, `python3 tools/scan_spec_tests.py`           |
-| Localization coverage                  | 0 hardcoded user strings in Blade/UI       | `python3 tools/scan_conventions.py` (D3)                             |
-| Full suite                             | green                                      | `php artisan test --compact`                                         |
-| Backup                                 | 4h RPO / <1h RTO                           | drill + monitoring                                                   |
-| Security posture                       | no critical/high external-audit findings   | `qa-protocol` audits                                                 |
-| Test coverage                          | ≥80% new code, ≥90% critical paths (auth/audit/integrity) | `php artisan test --compact` + coverage report                       |
-| Performance benchmark                  | p95 page load < 2s, API p95 < 500ms under 100 concurrent users | Load test (k6/jmeter) in CI                                           |
-| Uptime                                 | ≥99.5% during academic terms              | Uptime monitoring + incident log                                     |
-| MTTR                                   | < 1 hour for critical failures            | Incident postmortem + runbook drill                                  |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Lifecycle coverage | All 12 phases have at least one spec with Full status | [index.md](index.md) phase tables |
+| Architecture invariants | 0 violations in `scan_violations.py` | CI gate |
+| Spec↔code alignment | 0 spec gaps in `scan_spec_tests.py` | Per-feature scan |
+| Localization | 0 hardcoded user strings (D3 scan) | CI gate |
+| Test suite | Full suite passes on every PR | CI |
+| Backup | RTO drill confirms under 1 hour | Manual per-period drill |
+| Module colocation | 100% of `app/` under `Modules/` | `scan_naming.py` |
 
 ---
 
@@ -355,54 +322,62 @@ non-goals rather than accidental omissions.
 
 ### Prerequisites
 
-None — this is the foundational, **spec-zero** initial specification. Every other spec (and the
-architecture-first build order) operates inside its scope.
+None — this is spec-zero. All other specs depend on it; nothing depends on it.
 
-### Build Guide
+### Build Order
 
-Implement the lifecycle in dependency order — the Foundation phase specs first ([D2FT3](D2FT3-architecture.md)
-architecture, then [FB792](FB792-tech-stack.md) tech stack, [ZT6VS](ZT6VS-core-infra-services.md)
-infra services, [SE5Q9](SE5Q9-base-classes.md) base classes), then each subsequent phase in build
-order as listed in [docs/specs/index.md](index.md). Each phase's feature spec drives its own
-implementation; this spec remains the spec-zero reference for global cross-cutting requirements
-(roles, localization, security, audit).
+Build in phase sequence per [index.md](index.md) §Build Order. Within each phase, build in the
+listed spec order. The foundational specs (D2FT3 → FB792 → SE5Q9 → T4B26 → 89SRA) must be
+completed before any business feature.
 
 ### Next Steps
 
-| Order | Spec                                                           | Connection                                                                     |
-| ----- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| 1     | [Architecture Design](D2FT3-architecture.md)                   | Defines the 4-layer architecture the whole codebase must satisfy (FR-QLHDO-G8, DD-2) |
-| 2     | [Tech Stack](FB792-tech-stack.md)                              | Pins dependency versions the build executes on                                 |
-| 3     | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Runtime services (cache, session, DB, queue, mail, storage)                    |
-| 4     | [Base Classes](SE5Q9-base-classes.md)                          | BaseModel/BaseAction/BaseEntity/BaseData contracts                             |
-| 5     | [System Requirements](J68GZ-system-requirements.md)            | Domain table schema for all 12 phases                                          |
+| Order | Spec | Reason |
+|-------|------|--------|
+| 1 | [D2FT3-architecture](D2FT3-architecture.md) | Architecture contract |
+| 2 | [FB792-tech-stack](FB792-tech-stack.md) | Pins dependency versions |
+| 3 | [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) | Auth before any UI |
+| 4 | [8XMYS-layout-and-ui-system](8XMYS-layout-and-ui-system.md) | UI foundation |
+| 5 | [8NZAU-installation](8NZAU-installation.md) | Deployment first |
+| 6 | [VEJCX-setup-wizard](VEJCX-setup-wizard.md) | Super admin onboarding |
 
 ---
 
 ## 10. Risks & Assumptions
 
-Open questions and decisions pending across the project-level spec. Each row links to the GitHub
-Issue that tracks resolution; see the spec template for row conventions.
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+|----|----------------------------------|--------|-------|----------|
+| OQ-1 | `spatie/laravel-model-status ^1.18` listed in [J68GZ FR-QLHDO-D6](J68GZ-system-requirements.md) but has zero consumers in `app/`. Remove from spec + composer.json. | Open | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419) |
+| OQ-2 | [ZT6VS](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm operational override is intentional. | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
+| OQ-3 | [I1BCV](I1BCV-module-discovery.md) mandates manual `config/module.php` and `tests/Pest.php` registry but code uses filesystem auto-discovery. Rewrite spec to match actual model. | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
+| OQ-4 | PWA/offline-first is deferred to post-MVP (rural connectivity gap). Confirm this is an explicit product decision, not a forgotten requirement. | Open | Maintainer | — |
+| A-1 | We assume all admin mutations log to `Log::channel('activity')` (FR-QLHDO-G4) and `PiiMasker` covers every PII field. Verified file-level for 26 keys; runtime coverage assumed. | Accepted | Maintainer | — |
+| A-2 | `tallstackui_formPassword` autofill is a client-side quirk on shared hosting; the production fix is a hidden text input fallback — pending `ui-development` review. | Accepted | Maintainer | — |
+| A-3 | NFR targets for p95 latency, coverage %, and load testing are deferred to post-MVP infrastructure. MVP is hand-tested for these dimensions. | Accepted | Maintainer | — |
+| R-1 | If rural students cannot reliably submit attendance on low-bandwidth connections, daily attendance becomes a bottleneck. Mitigated by responsive layout and retry-friendly submission (FR-QLHDO-G13). | Accepted | Maintainer | — |
 
-| ID   | Risk / Assumption / Open Question                                                                                                                  | Status   | Owner      | GH Issue                                                                                |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------- |
-| OQ-1 | `spatie/laravel-model-status ^1.18` is listed in [J68GZ FR-QLHDO-D6](J68GZ-system-requirements.md) and [FB792 §6.1](FB792-tech-stack.md) but has zero consumers in `app/`; only artifact is `config/model-status.php`. Remove from spec + composer.json. | Open     | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419)                                 |
-| OQ-2 | [ZT6VS FR-QLHDO-SESS1](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm whether the operational override is intentional or spec-lagging. | Open     | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433)                                 |
-| OQ-3 | [I1BCV](I1BCV-module-discovery.md) §4 mandates manual `config/module.php` and `tests/Pest.php` registry; code uses filesystem auto-discovery (more accurate). Rewrite the spec to document the actual model and align [B114U](B114U-module-manager.md) §6.3. M-size doc work. | Open     | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434)                                 |
-| A-1  | We assume all admin mutations land in `Log::channel('activity')` (per FR-QLHDO-G4) and that `PiiMasker` strips every PII field listed in [89SRA](89SRA-logging-and-error-handling.md) FR-QLHDO-PM9 — verified at file-level for 26 keys; full runtime coverage assumed.  | Accepted | Maintainer | —                                                                                       |
-| A-2  | We assume `tallstackui_formPassword` (TallStackUI v4) autofill is a known client-side quirk on shared hosting and that the production fix is a hidden text input fallback — pending `ui-development` deep review.                                              | Accepted | Maintainer | —                                                                                       |
-| A-3  | The proposed requirements (FR-QLHDO-G9 through FR-QLHDO-G13, NFR-QLHDO-S3 through NFR-QLHDO-U2) are not yet implemented; they represent gaps identified during spec audit and require prioritization before the Foundation phase completes.                                              | Accepted | Maintainer | —                                                                                       |
+---
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the requirements retained in §4/§5. Tests use
+`describe("QLHDO: ...")` + `it("QLHDO-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Core/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Core/` | Entity/Enum/DTO/Policy pure business rules from FR-QLHDO-G* rows |
+| Feature | TR-FTR-01 | `tests/Feature/Core/` | Action execute() behavior, Livewire submit flows, events from FR-QLHDO-G* rows |
+| Browser | TR-BRW-01 | `tests/Browser/Core/` | Login, dashboard, primary flow journeys from UC-QLHDO-* rows |
 
 ---
 
 ## Quick References
 
-- `docs/guides/product-definition.md` — scope, personas, 3S doctrine, system boundary
-- `docs/specs/index.md` — full spec index, build order, and §Status Legend (Planned / Partial / Shipped)
-- `docs/refs/modules/index.md` — module dependency graph and registration
-- `config/module.php` — module bootstrap order
-- `docs/architecture.md` — 4-layer model, Action Triad
-- `docs/refs/articles/curriculum-compliance.md` — research input on Indonesian PKL regulation alignment
-  (non-spec, intentionally outside the spec system)
-- **Related specs:** every spec in this directory — each derives scope from this spec-zero and/or is
-  indexed under [index.md](index.md)
+- [docs/specs/index.md](index.md) — spec registry, build order, status
+- [docs/refs/modules/index.md](../refs/modules/index.md) — module dependency graph
+- [docs/refs/articles/pkl-operational-research.md](../refs/articles/pkl-operational-research.md) — field pain evidence (non-testable)
+- [docs/refs/articles/curriculum-compliance.md](../refs/articles/curriculum-compliance.md) — regulatory alignment (non-testable)
+- [docs/architecture.md](../architecture.md) — 4-layer model, Action Triad
+- [config/module.php](../../config/module.php) — module registration order
+- [docs/guides/installation.md](../guides/installation.md) — installation walkthrough

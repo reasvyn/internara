@@ -202,9 +202,11 @@ def check_no_inline_metadata(file_path: Path, lines: list[str], findings: list[F
 def check_blank_lines_around_code_blocks(file_path: Path, lines: list[str], findings: list[Finding]) -> None:
     in_code_block = False
     for i, line in enumerate(lines, 1):
-        is_code_fence = CODE_FENCE_START.match(line) or CODE_FENCE_END.match(line)
-        
-        if CODE_FENCE_START.match(line):
+        is_fence = CODE_FENCE_START.match(line) or CODE_FENCE_END.match(line)
+        is_start = CODE_FENCE_START.match(line)
+
+        if is_fence and not in_code_block:
+            # Opening fence — check if prev line is blank
             if i >= 2 and lines[i-2].strip() != "":
                 findings.append(Finding(
                     id=f"TMPL-CBLANK-{len(findings)+1:03d}",
@@ -215,10 +217,11 @@ def check_blank_lines_around_code_blocks(file_path: Path, lines: list[str], find
                     line=i,
                     message="Missing blank line before fenced code block",
                     suggestion="Add a blank line before the code block for readability",
-                    reference="docs/templates/doc-template.md", # General good practice
+                    reference="docs/templates/doc-template.md",
                 ))
             in_code_block = True
-        elif CODE_FENCE_END.match(line):
+        elif is_fence and in_code_block:
+            # Closing fence — check if next line is blank
             in_code_block = False
             if i < len(lines) and lines[i].strip() != "":
                 findings.append(Finding(
@@ -230,7 +233,7 @@ def check_blank_lines_around_code_blocks(file_path: Path, lines: list[str], find
                     line=i,
                     message="Missing blank line after fenced code block",
                     suggestion="Add a blank line after the code block for readability",
-                    reference="docs/templates/doc-template.md", # General good practice
+                    reference="docs/templates/doc-template.md",
                 ))
 
 # ─── Template-Specific Validators ─────────────────────────────────────────────
