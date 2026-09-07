@@ -1,14 +1,16 @@
 # Browser / Headless Tests
 
-Headless browser tests using `puppeteer-core` + system Chrome.
+Headless browser tests using `puppeteer-core` + system Chrome, organized per module:
+`tests/Browser/{Module}/*.test.mjs` (e.g., `tests/Browser/Auth/login.test.mjs`).
 
 - `puppeteer-core` is installed as devDependency; it reuses `/usr/bin/google-chrome` (no browser download).
-- Run: `npm run test:browser` or `node tests/Browser/run.mjs`
+- Run: `npm run test:browser` (equivalent to `node --test tests/Browser/`).
+- Shared helpers live in `tests/Support/` (not a test suite).
 
 ## Usage
 
 ```js
-import { launch } from '../Support/browser.js'
+import { launch } from '../../Support/browser.js'
 const browser = await launch()
 const page = await browser.newPage()
 await page.goto('https://internara.web.id/login')
@@ -16,7 +18,15 @@ await page.goto('https://internara.web.id/login')
 
 ## Helpers
 
-- `tests/Browser/Support/browser.js` — `launch()` wrapper with sensible defaults (no-sandbox, ignore certs)
-- `tests/Browser/Support/login.js` — `login(page, user, pass)` helper
+- `tests/Support/browser.js` — `launch()` wrapper with sensible defaults (no-sandbox, ignore certs)
+- `tests/Support/login.js` — `login(page, user, pass)` helper
 
-See `tests/Browser/example.test.mjs` for a minimal example.
+## Structure
+
+```
+tests/Browser/
+  Auth/          — login, password reset, logout journeys
+  User/          — dashboard, profile journeys
+  ...
+  (one directory per module, mirroring tests/Arch, tests/Unit, tests/Feature)
+```

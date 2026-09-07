@@ -13,43 +13,38 @@ use Tests\TestCase;
 | Test Directory Registration — Auto-discovered from filesystem
 |--------------------------------------------------------------------------
 |
-| Module test directories are discovered directly from the real directory
-| structure (tests/{Module}/), so no manual list is needed. Adding a new
-| Module test suite is just creating the directory.
+| Tests are organized by type (Arch, Unit, Feature, Browser) with
+| per-module subdirectories. Each type is registered as a Pest suite.
+| Adding a new module is just creating the directory under the type.
 |
-| Note: config() is not available at Pest discovery time, so we scan the
-| filesystem directly here instead of reading config/module.php.
+| Structure:
+|   tests/Arch/{Module}/*.php    — Architecture / contract tests
+|   tests/Unit/{Module}/*.php    — Unit tests (Entity, DTO, Enum, Model)
+|   tests/Feature/{Module}/*.php — Feature tests (Action, Livewire, Policy)
+|   tests/Browser/{Module}/*.php — Browser / E2E tests
+|   tests/Support/               — Shared helpers (NOT a test suite)
 |
 */
 
-$extraDirs = ['Stubs', 'Support'];
+$testTypes = ['Arch', 'Unit', 'Feature', 'Browser'];
 
-$modules = [];
-foreach (scandir(__DIR__) as $entry) {
-    if ($entry === '.' || $entry === '..') {
+$dirs = [];
+
+foreach ($testTypes as $type) {
+    $typePath = __DIR__.'/'.$type;
+    if (! is_dir($typePath)) {
         continue;
     }
-    $path = __DIR__.'/'.$entry;
-    if (! is_dir($path)) {
-        continue;
-    }
-    if (in_array($entry, $extraDirs, true)) {
-        continue;
-    }
-    // Only consider directories that contain at least one PHP file (a test suite)
-    if (glob($path.'/*.php') || glob($path.'/*/*.php') || glob($path.'/**/*.php')) {
-        $modules[] = $entry;
-    } elseif (is_dir($path)) {
-        // Empty module directories are also registered (suites get tests as they are rewritten)
-        $modules[] = $entry;
+    foreach (scandir($typePath) as $module) {
+        if ($module === '.' || $module === '..') {
+            continue;
+        }
+        $modulePath = $typePath.'/'.$module;
+        if (is_dir($modulePath)) {
+            $dirs[] = $modulePath;
+        }
     }
 }
-sort($modules);
-
-$dirs = array_merge(
-    array_map(fn (string $m) => __DIR__.'/'.$m, $modules),
-    array_map(fn (string $d) => __DIR__.'/'.$d, $extraDirs),
-);
 
 pest()
     ->extend(TestCase::class)
