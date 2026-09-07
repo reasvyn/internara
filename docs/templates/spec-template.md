@@ -91,6 +91,33 @@ is updated when the issue closes. This section is the **spec-side counterpart** 
 - **Requirement IDs:** stable per spec — `FR-{AREA}-NN`, `NFR-{AREA}-NN`, `UC-{AREA}-NN`; tests and
   implementation reference them verbatim.
 
+## How Requirements Are Verified
+
+Verification is **inferred from the requirement rows**, not declared as a separate block in the
+spec. The ID prefix carries the layer; the test file naming convention carries the rest.
+
+A test file's name must match the spec ID and the requirement ID it verifies. Use
+`describe("{SpecID}: {spec-name}")` + `it("{SpecID}-{ReqID}: {behavior}")`. The traceability
+checker (`tools/scan_spec_tests.py`) flags any FR/NFR/UC row that has no matching test, so a
+missing test fails the spec gate.
+
+The four test layers and where they live:
+
+- **Architecture tests** live in `tests/Arch/{Module}/` and assert structure — namespace
+  conventions, base-class usage, no forbidden patterns. Run `tools/scan_violations.py` and
+  `tools/scan_class_contracts.py` in CI; they cover the same ground.
+- **Unit tests** live in `tests/Unit/{Module}/` and exercise Entities, Enums, DTOs, Policies,
+  and Support classes. No database, no framework. Pure-logic.
+- **Feature tests** live in `tests/Feature/{Module}/` and drive Actions (`Action::execute()`)
+  end-to-end against a real database (`LazilyRefreshDatabase`). Mock only the framework boundary
+  (`Http::fake()`, `Queue::fake()`, `Mail::fake()`).
+- **Browser tests** live in `tests/Browser/{Module}/` and walk a real authenticated journey
+  through the UI. Use sparingly; one per major flow is enough.
+
+Mark a requirement as non-testable only when the *property* itself is uncheckable in code (visual
+contrast, latency under load, manual UX). The marker (e.g. `FR-AREA-01*`) suppresses the
+traceability check for that one row — it does not exempt a logic-level rule from test coverage.
+
 ## Writing Discipline
 
 - Every FR/NFR/UC gets a stable ID (`FR-{AREA}-NN`) — tests reference these IDs verbatim.
