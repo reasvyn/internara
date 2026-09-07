@@ -2,6 +2,10 @@
 """
 tool_runner.py — Orchestrate multiple scan tools with shared cache and reporting.
 
+The registry of available scanners is loaded from `tools/tools.json` (the
+single source of truth) at startup. If the file is missing or malformed, a
+hardcoded `FALLBACK_SCANNERS` dict is used so the tool still works offline.
+
 Usage:
     python3 tools/tool_runner.py                          # Run all scanners
     python3 tools/tool_runner.py --scanner violations      # Run single scanner
@@ -26,9 +30,11 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = ROOT / "tools"
 OUTPUT_DIR = TOOLS_DIR / "outputs"
+TOOLS_JSON = TOOLS_DIR / "tools.json"
 
-# Available scanners mapped to their CLI entry points
-SCANNERS = {
+# Hardcoded fallback registry used when tools.json is missing or unreadable.
+# Last-resort safety net — the SSOT is tools.json.
+FALLBACK_SCANNERS: dict[str, str] = {
     "project-summary": "tools/scan_project_summary.py",
     "architecture": "tools/scan_architecture.py",
     "arch-patterns": "tools/scan_arch_patterns.py",
@@ -47,6 +53,117 @@ SCANNERS = {
     "ui-consistency": "tools/scan_ui_consistency.py",
     "violations": "tools/scan_violations.py",
 }
+
+# Description map (used by --list when tools.json is the source). Kept as a
+# companion to FALLBACK_SCANNERS so the fallback is also self-describing.
+_FALLBACK_DESCRIPTIONS: dict[str, str] = {
+    "project-summary": "Project orientation dashboard",
+    "architecture": "Component counts per module",
+    "arch-patterns": "Architecture pattern detection",
+    "class-contracts": "Action/Entity/DTO/Model/Enum contract compliance",
+    "conventions": "D1 strict_types, D4 Fillable, D2 debug calls",
+    "dead-code": "Unregistered observers, orphan events, unused DTOs/Actions/Jobs",
+    "doc-links": "Broken relative links and anchors in markdown",
+    "docs-template": "Documentation template adherence",
+    "files": "File counts and lines of code per module",
+    "issues": "GitHub issue metrics",
+    "module-boundaries": "Module boundary and dependency checks",
+    "naming": "File and class naming conventions",
+    "security": "XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF",
+    "spec-tests": "Spec↔tests coverage (FR/NFR/UC traceability)",
+    "tests": "Test suite pass/fail results",
+    "ui-consistency": "UI consistency checks",
+    "violations": "C1-C8, D1-D6 architecture invariant violations",
+}
+
+
+@dataclass
+class ScannerEntry:
+    """A single scanner from the registry."""
+
+    name: str
+    script: str  # Relative path, e.g. "tools/scan_x.py"
+    description: str = ""
+
+
+# Cached registry — populated on first access.
+_REGISTRY: dict[str, ScannerEntry] | None = None
+_REGISTRY_SOURCE: str = ""  # "tools.json" | "fallback" | "fallback+missing"
+
+
+def load_registry(force: bool = False) -> dict[str, ScannerEntry]:
+    """Load scanner registry from tools.json (SSOT).
+
+    Falls back to FALLBACK_SCANNERS when the file is missing or malformed.
+    Result is cached — pass `force=True` to re-read.
+    """
+    global _REGISTRY, _REGISTRY_SOURCE
+
+    if _REGISTRY is not None and not force:
+        return _REGISTRY
+
+    entries: dict[str, ScannerEntry] = {}
+    source = "fallback"
+
+    if TOOLS_JSON.exists():
+        try:
+            data = json.loads(TOOLS_JSON.read_text(encoding="utf-8"))
+            for name, cfg in (data.get("outputs") or {}).items():
+                script = cfg.get("script", "")
+                if not script:
+                    continue
+                path = script if script.startswith("tools/") else f"tools/{script}"
+                entries[name] = ScannerEntry(
+                    name=name,
+                    script=path,
+                    description=cfg.get("description", ""),
+                )
+            if entries:
+                source = "tools.json"
+        except (OSError, json.JSONDecodeError, ValueError) as exc:
+            print(
+                f"Warning: failed to read {TOOLS_JSON.relative_to(ROOT)}: {exc}. "
+                f"Falling back to hardcoded registry.",
+                file=sys.stderr,
+            )
+
+    if not entries:
+        # Either tools.json missing or had no usable entries.
+        source = "fallback"
+        for name, script in FALLBACK_SCANNERS.items():
+            entries[name] = ScannerEntry(
+                name=name,
+                script=script,
+                description=_FALLBACK_DESCRIPTIONS.get(name, ""),
+            )
+
+    _REGISTRY = entries
+    _REGISTRY_SOURCE = source
+    return _REGISTRY
+
+
+def get_scanner(name: str) -> ScannerEntry | None:
+    """Look up a scanner by registry name. Returns None when unknown."""
+    return load_registry().get(name)
+
+
+def get_scanner_path(name: str) -> str | None:
+    """Backwards-compat helper — returns the script path or None."""
+    entry = get_scanner(name)
+    return entry.script if entry else None
+
+
+# Backwards-compat dict-style access. `SCANNERS` mirrors the name→path
+# contract previously exposed, but it is now derived from the registry.
+# Mutating this dict does NOT mutate the registry; rebuild via
+# `load_registry(force=True)` to re-read tools.json.
+def _scanners_dict() -> dict[str, str]:
+    return {name: entry.script for name, entry in load_registry().items()}
+
+
+# Frozen at import time so existing call-sites (`SCANNERS.get(name)`,
+# `SCANNERS.keys()`) keep working without modification.
+SCANNERS: dict[str, str] = _scanners_dict()
 
 
 @dataclass
@@ -124,14 +241,17 @@ def parse_args() -> argparse.Namespace:
 
 
 def list_scanners() -> None:
-    print("Available scanners:")
-    for name, path in SCANNERS.items():
-        print(f"  {name:20s} → {path}")
+    registry = load_registry()
+    print(f"Available scanners ({len(registry)}, source: {_REGISTRY_SOURCE}):")
+    width = max((len(name) for name in registry), default=20)
+    for name, entry in registry.items():
+        desc = f"  — {entry.description}" if entry.description else ""
+        print(f"  {name:{width}s} → {entry.script}{desc}")
 
 
 def run_scanner(name: str, module: str | None, use_cache: bool, quiet: bool) -> ToolResult:
     """Run a single scanner and return the result."""
-    script = SCANNERS.get(name)
+    script = get_scanner_path(name)
     if not script:
         return ToolResult(
             name=name,
@@ -330,20 +450,24 @@ def compare_reports(old_path: Path, new_path: Path) -> None:
 
 def main() -> int:
     args = parse_args()
-    
+
     if args.compare:
         compare_reports(Path(args.compare[0]), Path(args.compare[1]))
         return 0
-    
+
     if args.list:
         list_scanners()
         return 0
-    
+
+    # Re-read tools.json on every run so newly added tools are picked up.
+    # (Module is re-imported per invocation, so this is always fresh.)
+    registry = load_registry()
+
     # Determine which scanners to run
     if args.scanner:
         scanner_names = [s.strip() for s in args.scanner.split(",")]
     else:
-        scanner_names = list(SCANNERS.keys())
+        scanner_names = list(registry.keys())
     
     print(f"Running {len(scanner_names)} scanner(s)...")
     start_time = time.time()
