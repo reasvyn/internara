@@ -92,6 +92,7 @@ in production while allowing development flexibility.
 | FR-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
 | FR-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
 | FR-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by internara-project §7.4 |
+| FR-SUP12 | `Color::contrastColor()` MUST return white or black depending on relative luminance threshold | |
 
 ### Cross-References (Dedicated Specs)
 

@@ -229,6 +229,7 @@ models, all Blade view namespaces registered.
 | FR-T2 | Module list in `tests/Pest.php` must be kept in sync with `config/module.php` |
 | FR-T3 | Non-module test directories (`Providers`, `Stubs`, `Support`) must also be registered |
 | FR-T4 | `config()` must not be used in `tests/Pest.php` (Pest boots before Laravel) |
+| FR-T5 | `php artisan module:discover` MUST exit `0` and emit a completion log via SmartLogger | |
 
 ---
 

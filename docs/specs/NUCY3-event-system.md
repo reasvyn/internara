@@ -118,6 +118,7 @@ primary mutation.
 | FR-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
 | FR-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
 | FR-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
+| FR-EV15 | Dispatch after commit MUST happen exactly once per Action execution (unit test asserts single listener invocation) | |
 
 ---
 

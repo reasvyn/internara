@@ -108,6 +108,7 @@ limiter to apply to which route group.
 | FR-MW9 | `RequireSetupAccessMiddleware` MUST require valid setup access token |
 | FR-MW10 | `AppServiceProvider` MUST register the route-level named limiters `admin` (60/min per user) and `global` (30/min per IP); per-endpoint auth limits (login/forgot/reset/recovery/confirm) are enforced at the Action/Component layer as specified in their governing specs and MUST use the canonical values in §6 Rate Limiters table, never ad-hoc numbers |
 | FR-MW11 | Module middleware MUST be registrable via route files without modifying core |
+| FR-MW12 | SetLocaleMiddleware MUST persist the selected locale to the user/session for subsequent requests | |
 
 ---
 

@@ -172,6 +172,20 @@ explicit.
 
 ---
 
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("YB22J: ...")` + `it("YB22J-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Settings/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Settings/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Settings/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Settings/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Settings/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+
+---
+
 ## 6. API / Data Contracts
 
 ### SettingEntity

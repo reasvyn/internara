@@ -188,6 +188,7 @@ automatically by `ModuleManager`/`ModuleService`.
 | FR-MIG4 | `ModuleDiscoverCommand` must resolve `ModuleService` from the container      |
 | FR-MIG5 | Tests for discovery must target `ModuleService`                             |
 | FR-MIG6 | `config/module.php` must remain the single source of truth (no schema change) |
+| FR-MIG7 | `ModuleManager::names()` MUST match the directory listing of `app/Modules/` and `config/module.php` list | |
 
 ---
 

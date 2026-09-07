@@ -248,6 +248,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 | FR-LC3 | Must inject `user_id` and `user_role` when user is authenticated |
 | FR-LC4 | Must measure and inject `duration_ms` and `status` after response |
 | FR-LC5 | Must use `Log::withContext()` for automatic injection into all subsequent log entries |
+| FR-LC6 | `save()` MUST mask PII fields before writing to any channel (unit test asserts masked output) | |
 
 ---
 

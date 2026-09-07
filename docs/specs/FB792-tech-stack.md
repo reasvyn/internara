@@ -120,6 +120,8 @@ manifest (no undeclared direct dependencies).
 | ID     | Requirement |
 | ------ | ----------- |
 | FR-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
+| FR-TS7 | PHP version MUST match the pinned minor listed in `docs/specs/index.md`; mismatches fail the CI check | |
+| FR-DEP7 | `npm run build` MUST succeed without warnings for a production bundle | |
 
 ---
 

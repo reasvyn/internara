@@ -270,6 +270,20 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 ---
 
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("C9ZB6: ...")` + `it("C9ZB6-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Setup/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Setup/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Setup/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Setup/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Setup/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+
+---
+
 ## 6. API / Data Contracts
 
 ### 6.1 Recovery Key File Format

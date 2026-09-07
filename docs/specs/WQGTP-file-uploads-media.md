@@ -110,6 +110,7 @@ management, storage grows unbounded.
 | FR-MEDIA7 | Model deletion MUST trigger automatic media cleanup |
 | FR-MEDIA8 | Media URLs MUST be generated via `getFirstMediaUrl()` or `getMedia()` |
 | FR-MEDIA9 | Collection names MUST follow `{module}.{purpose}` convention |
+| FR-MEDIA10 | Upload FAILURE on invalid MIME type MUST NOT create a media record nor change model state | |
 
 ---
 

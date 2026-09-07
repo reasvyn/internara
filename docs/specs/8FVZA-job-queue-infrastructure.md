@@ -109,6 +109,7 @@ standardized conventions, new jobs may omit critical resilience patterns.
 | FR-JOB5 | Job payloads MUST reference models by UUID, not serialize full model objects |
 | FR-JOB6 | Failed jobs MUST be recorded in `failed_jobs` table automatically |
 | FR-JOB7 | Jobs MUST NOT dispatch events or log to activity log (keep side effects in the triggering Action) |
+| FR-JOB8 | Failed jobs MUST be retried per backoff `[2, 10, 30]` and land in `failed_jobs` after max tries | |
 
 ---
 

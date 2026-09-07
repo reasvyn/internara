@@ -223,6 +223,20 @@ profile save flow.
 
 ---
 
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("81SMS: ...")` + `it("81SMS-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/Academics/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Academics/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Academics/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Academics/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Academics/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+
+---
+
 ## 6. API / Data Contracts
 
 ### 6.1 SchoolEntity

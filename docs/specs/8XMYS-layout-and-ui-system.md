@@ -199,6 +199,7 @@ link behaves identically and accessibly.
 | FR-A3 | The drawer overlay must expose an accessible name ("close sidebar") and close on Escape                         |
 | FR-A4 | Icon-only buttons must carry `aria-label`; active-nav state must be conveyed beyond color (font weight + background) |
 | FR-A5 | Dynamic content (TallstackUI toast, Livewire updates, validation) must be wrapped in `aria-live` containers                 |
+| FR-NAV6 | Sidebar MUST render only items the current user's roles permit (browser test asserts hidden items absent)                    |
 
 ---
 

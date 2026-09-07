@@ -176,6 +176,8 @@ detail.
 | FR-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
 | FR-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
 | FR-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| FR-G14 | The shell layout `core::layouts.app` MUST render from `config/menu.php` groups ordered by registration sequence | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| FR-G15 | Navigation MUST highlight the item matching the current route name (`request()->routeIs()`) | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 ### 4.2 Lifecycle Phase Inventory (index only)
 
@@ -224,6 +226,7 @@ acceptance criteria; the owning spec is authoritative for verification.
 | NFR-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
 | NFR-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
 | NFR-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| NFR-A3 | Every primary flow (setup, login, PKL lifecycle) MUST be covered by a browser journey test asserting role-based visibility | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 > **Curriculum/regulatory alignment** (legacy §11 of the QLHDO draft) is tracked outside the
 > spec system as a research input in `docs/refs/curriculum-compliance.md` (non-testable

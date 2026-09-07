@@ -209,6 +209,8 @@ surface.
 | FR-ARC40 | DTO adoption MUST follow Start `array` → Stabilize `Data\|array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration |
 | FR-ARC41 | Cache invalidation MUST follow Start `Cache::forget()` inline → Stabilize event+listener → Final `config/cache-keys.php` registry with listener-driven invalidation |
 | FR-ARC42 | Validation rules MUST follow Start Form-Object-only → Stabilize `Entity::rules()` shared → Final centralized in Entities for full DRY |
+| FR-ARC43 | Every module MUST implement at least one Command or Read Action exposing its public surface | |
+| FR-ARC44 | Every mutation Flow MUST be traceable: Livewire → DTO → Command Action → Entity → Model → Event (arch test asserts the class hierarchy) | |
 
 ---
 

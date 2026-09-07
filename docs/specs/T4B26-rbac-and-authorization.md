@@ -141,6 +141,7 @@ role model with explicit capabilities per role prevents this.
 | FR-CRP4 | Proxy activation for teachers MUST require supervisor inactivity of a configurable window, stored in settings key `journals.proxy_inactivity_hours` (default `48`) |
 | FR-CRP5 | Proxy verification MUST apply to logbook verification, assessment grading, and supervision log verification |
 | FR-CRP6 | Every proxy-graded item MUST be tagged with `proxy_role` and `proxy_reason` metadata in the activity log for audit trail |
+| FR-RBAC4 | Role assignment MUST invalidate the user's cached roles before the next request | |
 
 ---
 

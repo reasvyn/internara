@@ -143,99 +143,26 @@ the cohort lifecycle in UC-1 (consolidated, not re-implemented)
 
 ## 4. Functional Requirements
 
-### Retention Policy
-
-| ID | Requirement |
-|-----|-------------|
-| FR-RE1 | `config/retention.php` must define a `categories` map with default retention per category: `cohort` (5y), `registration` (10y), `student_account` (5y), `logbook` (5y), `attendance` (10y), `assessment` (10y), `report` (10y), `certificate` (10y), `notification` (30d) |
-| FR-RE2 | Each category retention must be overridable via settings key `retention.{category}` through the settings infrastructure (YB22J), falling back to `config/retention.php` |
-| FR-RE3 | `ArchiveRetentionPolicy` (service) must expose `yearsFor(string $category): int` returning the effective retention in years (settings override → config default) |
-| FR-RE4 | Document-category retention must default from `config/document-official.php` `retention.*_years` when the category maps to an official document type |
-
-### ArchiveRecord Registry
-
-| ID | Requirement |
-|-----|-------------|
-| FR-AR1 | The `archive_records` table migration must contain: `id` (uuid PK), `category` (string), `reference_type`/`reference_id` (morph — the archived aggregate), `status` (string enum), `retention_until` (timestamp), `archived_at`, `archived_by` (nullable uuid FK users, `nullOnDelete`), `restored_at`, `restored_by`, `purged_at`, `reason` (nullable text), `timestamps` |
-| FR-AR2 | `ArchiveRecord` model must use `#[Fillable]` with: `category`, `reference_type`, `reference_id`, `status`, `retention_until`, `archived_at`, `archived_by`, `restored_at`, `restored_by`, `purged_at`, `reason` |
-| FR-AR3 | `ArchiveRecord` model must cast `retention_until`, `archived_at`, `restored_at`, `purged_at` to `datetime` |
-| FR-AR4 | `ArchiveRecord` must provide `archiver(): BelongsTo` → User via `archived_by` and `restorer(): BelongsTo` → User via `restored_by` |
-| FR-AR5 | `ArchiveRecord` must provide `asArchiveRecordState(): ArchiveRecordState` bridge method |
-| FR-AR6 | `ArchiveStatus` enum (string, `LabelEnum` + `StatusEnum`) must define cases: `ARCHIVED`, `RESTORED`, `PURGED` with translated labels via `__('sysadmin.archive.status.'.$this->value)` |
-| FR-AR7 | `ArchiveStatus::canTransitionTo()` must permit: `ARCHIVED → RESTORED`, `ARCHIVED → PURGED`; `RESTORED` and `PURGED` are terminal |
-
-### Cohort Archival
-
-| ID | Requirement |
-|-----|-------------|
-| FR-AC1 | `ArchiveCohortProcessAction extends BaseProcessAction` must expose `execute(ArchiveCohortData $data): ActionResponse` |
-| FR-AC2 | `ArchiveCohortData` (extends `BaseData`) must carry exactly: `internshipId: string`, `reason: ?string` |
-| FR-AC3 | Action must reject a non-`completed` Internship with `RejectedException` |
-| FR-AC4 | Action must reject a cohort that already has an active `ARCHIVED` `ArchiveRecord` (no double archive) |
-| FR-AC5 | Action must create an `ArchiveRecord` per cohort with `category = cohort`, `retention_until = now + yearsFor('cohort')`, `archived_by = auth()->id()` |
-| FR-AC6 | Action must delegate student-account archival to the existing `ArchiveStudentAccountsAction` capability (E1MSJ FR-AS1-4) |
-| FR-AC7 | Action must dispatch `CohortArchived` event after successful archival |
-| FR-AC8 | Action must log `data_archive.cohort_archived` via SmartLogger with PII masking and `withPayload(['internship_id', 'category', 'retention_until'])` |
-| FR-AC9 | Action must return `ActionResponse` carrying the created `ArchiveRecord` |
-
-### Purge
-
-| ID | Requirement |
-|-----|-------------|
-| FR-PU1 | `PurgeExpiredArchivesJob implements ShouldQueue` must accept `recordIds: array` in its constructor |
-| FR-PU2 | Job must set `tries = 3` and `backoff = [2, 10, 30]` |
-| FR-PU3 | `archives:purge-expired` command (signature `{--dry-run}`) must query `ArchiveRecord` where `status = ARCHIVED AND retention_until < now` and dispatch `PurgeExpiredArchivesJob` per record |
-| FR-PU4 | Job `handle()` must purge each record: user-context archives via `DeleteUserGdprAction` (7HNCF), aggregate archives via dependent-record deletion, then set `status = PURGED`, `purged_at = now()` |
-| FR-PU5 | Job must skip records already `PURGED` or `RESTORED` (idempotent) |
-| FR-PU6 | Job `failed()` must log via SmartLogger with `withPayload(['record_ids' => ...])` |
-| FR-PU7 | Command must support `--dry-run` reporting the count of eligible records without mutating |
-| FR-PU8 | Command must be scheduled daily at 03:30 in `routes/console.php` |
-
-### Restore
-
-| ID | Requirement |
-|-----|-------------|
-| FR-RS1 | `RestoreArchiveAction extends BaseCommandAction` must expose `execute(ArchiveRecord $record, ?string $reason = null): ActionResponse` |
-| FR-RS2 | Action must reject a record whose `status` is not `ARCHIVED` with `RejectedException` |
-| FR-RS3 | Action must reject a record whose `retention_until < now` (expired archives may only be purged, per UC-3) with `RejectedException` |
-| FR-RS4 | Action must set `status = RESTORED`, `restored_at = now()`, `restored_by = auth()->id()`, `reason` |
-| FR-RS5 | Action must dispatch `ArchiveRestored` event |
-| FR-RS6 | Action must log `data_archive.cohort_restored` via SmartLogger with the archive ID |
-
-### UI & Authorization
-
-| ID | Requirement |
-|-----|-------------|
-| FR-UI1 | Route `GET /admin/archives` → `ArchiveManager` with `auth` + `role:super_admin\|admin` middleware |
-| FR-UI2 | `ArchiveManager` must render a paginated table: category, reference, status badge, archived_at/by, retention countdown, status-filter, category-filter, actions |
-| FR-UI3 | `ArchiveManager` must trigger archive (select completed Internship), restore (confirm), and purge-now (confirm) via Actions — no model mutations in the component |
-| FR-UI4 | `ArchiveRecordPolicy` must restrict `viewAny/view/create/restore/purge` to admin roles via `isAdmin()` |
-| FR-UI5 | All UI strings must use `lang/en|id/sysadmin.php` `archive.*` keys |
-
-### Events
-
-| ID | Requirement |
-|-----|-------------|
-| FR-EV1 | `CohortArchived extends BaseEvent` must carry the `ArchiveRecord` and expose `eventName()` → `'data_archive.cohort_archived'` |
-| FR-EV2 | `ArchiveRestored extends BaseEvent` must carry the `ArchiveRecord` and expose `eventName()` → `'data_archive.cohort_restored'` |
-| FR-EV3 | `ArchivePurged extends BaseEvent` must carry the `ArchiveRecord` and expose `eventName()` → `'data_archive.record_purged'` |
-
----
+Deferred to the Roadmap phase (§9) — the archival lifecycle is not yet scheduled for
+implementation. Its goals (G1–G9), use cases (UC-1–UC-5), design decisions (DD-1–DD-5), and the
+contract sketches in §6 fix the intended shape; detailed FR rows will be recorded here when the
+feature is picked up.
 
 ## 5. Non-Functional Requirements
 
-| ID | Requirement |
-|-----|-------------|
-| NFR-S1 | Only `super_admin` and `admin` roles may view or trigger archive/restore/purge — enforced by `ArchiveRecordPolicy` |
-| NFR-S2 | All archival/purge logging must use SmartLogger with `withPiiMasking()` — no raw PII in log payloads |
-| NFR-S3 | `GdprDeletionLog` entries must be created for every `PURGED` record that references a user context (7HNCF integration) |
-| NFR-P1 | `ArchiveCohortProcessAction` must complete for a 500-student cohort in under 60 seconds |
-| NFR-P2 | `PurgeExpiredArchivesJob` must process records in bounded batches (≤ 100 per job dispatch) to cap memory |
-| NFR-R1 | Archive/restore/purge operations must run inside `BaseAction` transactions — no partial registry writes |
-| NFR-R2 | Scheduled purge must not halt if a single record fails — continuation pattern (E1MSJ NFR-R1 principle) |
-| NFR-M1 | All classes must declare `strict_types=1` (D1) |
-| NFR-M2 | All public methods must carry PHPDoc blocks |
-| NFR-U1 | All UI labels/statuses must use `__()` with `lang/{en,id}/sysadmin.php` `archive.*` keys (D3) |
+Written together with the FR rows in §4 at the start of implementation; none are recorded yet.
+
+## Test Requirements
+
+Review this section together with §4/§5 when the feature enters implementation. Tests will use
+`describe("9YUUK: ...")` + `it("9YUUK-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/SysAdmin/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/SysAdmin/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/SysAdmin/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/SysAdmin/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 

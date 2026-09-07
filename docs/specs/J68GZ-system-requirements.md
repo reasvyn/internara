@@ -179,6 +179,7 @@ They are not part of the domain schema but coexist in the same database.
 | FR-SY8 | The system MUST provide a 15-point system health check covering: environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, and maintenance mode |
 | FR-SY9 | The health check MUST be accessible via `php artisan system:health` (CLI) and expose an admin-accessible web surface |
 | FR-SY10 | Health check results MUST be cached under the registered cache key (`system.health_check`) to avoid re-running expensive checks on every request |
+| FR-SY11 | The `/up` endpoint MUST return 200 only when required extensions and DB connectivity pass | |
 
 ---
 

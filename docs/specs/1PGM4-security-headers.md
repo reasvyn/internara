@@ -109,6 +109,7 @@ man-in-the-middle attacks.
 | FR-SEC10 | In development (`APP_ENV=local`), CSP MUST include Vite dev server URL in `script-src` and `connect-src` |
 | FR-SEC11 | HSTS header MUST be omitted by default and only sent when `security-headers.hsts_enabled` is enabled (config-gated, independent of `APP_ENV`) |
 | FR-SEC12 | All header values MUST be configurable via `config/security-headers.php` |
+| FR-SEC13 | Every response MUST carry `X-Frame-Options: DENY` and `Referrer-Policy` in production (feature test asserts headers) | |
 
 ---
 

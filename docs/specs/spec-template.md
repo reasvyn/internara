@@ -2,9 +2,10 @@
 
 ## Description
 
-The fixed 12-section structure every spec in `docs/specs/` follows. Specs are the requirements
-SSOT — implementation and tests trace back to the requirement IDs defined here. Section-by-section
-content rules live in the `spec-writing` skill.
+The fixed section skeleton every spec in `docs/specs/` follows: the 10 numbered sections plus a
+Test Requirements footer (see below). Specs are the requirements SSOT — implementation and tests
+trace back to the requirement IDs defined here. Section-by-section content rules live in the
+`spec-writing` skill.
 
 ## The Skeleton
 
@@ -84,6 +85,31 @@ is updated when the issue closes. This section is the **spec-side counterpart** 
 **Where to read this in audits:** `spec-audit` Sessions 4-6 cross-reference this table against
 open GitHub Issues for the spec's owning module. If a row says "Open" but the linked issue is
 closed, the row is stale — update or remove it.
+
+## Test Requirements
+
+Every spec ends with this section (per ADR `adr-mvp-spec-trim`): the deterministic four-layer
+test mapping for the requirements retained in §4/§5. Fill `{Module}` with the spec's owning module
+name and keep the table format below verbatim.
+
+```markdown
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/{Module}/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+```
+
+> **TR rows are test-mapping metadata, not requirements.** They must never contain `FR-`/`NFR-`/
+> `UC-` tokens — requirement tables only cover lines starting with `|` that carry those prefixes,
+> so such tokens inside this table would corrupt `scan_spec_tests` counts. A roadmap-only spec
+> (no FR/NFR rows yet) keeps the section with an explanatory sentence instead of rows.
 
 ## Quick References
 

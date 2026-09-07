@@ -242,6 +242,7 @@ behave at runtime** (this spec).
 | FR-SVC1 | Redis, when enabled, is one shared server with distinct connections: `cache`, `queue`, `session`, `default` (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD` env) |
 | FR-SVC2 | `APP_KEY` must be present and non-empty (`base64:` value) in all environments — encryption at rest for sessions and data |
 | FR-SVC3 | System health reporting via `php artisan system:health` and the `/up` endpoint surfaces service status (see [system-maintenance](E1MSJ-system-maintenance.md)) |
+| FR-SVC4 | Default connections after install MUST be `queue=sync`, `cache=file`, `session=database` (asserted by config test) | |
 
 ---
 

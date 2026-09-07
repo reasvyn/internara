@@ -178,6 +178,8 @@ violations compile-time errors rather than runtime surprises.
 | ------ | ----------- |
 | FR-TR1 | `WithSorting` — Livewire trait: `$sortBy` property (column + direction), `$sortableColumns` whitelist, `applySorting(Builder)` method with column/direction validation |
 | FR-TR2 | `WithRecordSelection` — Livewire trait: `$selectedIds` array, `selectAll(ids)`, `clearSelection()`, computed `selected_count` |
+| FR-BASE6 | `BaseCommandAction::execute()` MUST return `ActionResponse` with `success` and `data` keys | |
+| FR-BASE7 | `BaseReadAction::execute()` MUST NOT mutate state (assert DB snapshot unchanged) | |
 
 ---
 

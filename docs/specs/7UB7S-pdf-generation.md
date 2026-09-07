@@ -113,6 +113,7 @@ business logic. Content (data) and presentation (template) should be separated.
 | FR-PDF7 | Batch operations MUST set `memory_limit` to 512M or use queued jobs |
 | FR-PDF8 | PDF rendering MUST NOT block the HTTP response for large documents |
 | FR-PDF9 | Templates MUST use `__()` for all user-facing strings (localization) |
+| FR-PDF10 | `CertificateRenderer` MUST embed the school logo and render the certificate number on the output | |
 
 ---
 

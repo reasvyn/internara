@@ -221,6 +221,7 @@ preset.
 | FR-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = minimal 3-service Docker topology running shared-hosting drivers (FR-VD1–FR-VD12), `docker/shared-hosting/` = shared-hosting simulation |
 | FR-V4 | `.env.example` must remain the shared-hosting-optimized default and document `DEPLOY_PROFILE` |
 | FR-V5 | Adding a new profile must not require changes to application business code |
+| FR-SH9 | `deploy:configure --profile=shared-hosting` MUST write `QUEUE_CONNECTION=sync` and `SESSION_DRIVER=database` to `.env` | |
 
 ---
 

@@ -170,6 +170,7 @@ code can never run in a production deployment.
 | FR-C17 | Certificates: `issued` for completed-internship registrations with unique `certificate_number` and `qr_hash` |
 | FR-C18 | Incident reports: 1–2 with mixed severities and statuses |
 | FR-C19 | Student names must be generated without academic titles (no faker `id_ID` `suffix` like S.Pd/S.Kom/M.TI.) — an SMK student does not hold a degree; teachers, supervisors, and admin may retain the default titled format |
+| FR-E6 | `DummySeeder` MUST refuse to run when `APP_ENV=production` (exit non-zero, no records) | |
 
 ---
 

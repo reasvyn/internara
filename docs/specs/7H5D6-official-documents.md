@@ -220,7 +220,6 @@ accreditation visits or incident investigations.
 | FR-GW1  | Admin-triggered documents must be generated synchronously for single documents, queued for batch operations (10+) |
 | FR-GW2  | Auto-generated documents (Completion Letter, Registration Form) must be triggered by their respective events (`ReportFinalized`, `StudentRegistered`) |
 | FR-GW3  | Each generated document must record: document_type_id, registration_id, generated_by (user_id), generated_at, template_version, variable_snapshot (JSON) |
-| FR-GW4  | Batch generation must produce a single multi-page PDF or a ZIP of individual PDFs, configurable by admin |
 
 ### Document Status Tracking
 
@@ -255,6 +254,20 @@ accreditation visits or incident investigations.
 | NFR-R2  | Single document generation must complete within 5 seconds (synchronous) |
 | NFR-U1  | Document checklist in registration detail must load in < 500ms |
 | NFR-U2  | Generated PDF must be downloadable within 2 seconds of request |
+
+---
+
+## Test Requirements
+
+Deterministic four-layer coverage grounded in the retained requirements above. Tests use
+`describe("{SpecID}: ...")` + `it("{SpecID}-{ReqID}: ...")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`.
+
+| Layer | TR ID | Test dir | Verifies |
+|-------|-------|----------|----------|
+| Architecture | TR-ARC-01 | `tests/Arch/Reports/` | Module boundaries, base-class/contract mandates, C1–C8/D1–D6 invariants, naming (arch-guard scanners) |
+| Unit | TR-UNT-01 | `tests/Unit/Reports/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
+| Feature | TR-FTR-01 | `tests/Feature/Reports/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
+| Browser | TR-BRW-01 | `tests/Browser/Reports/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
 
 ---
 
