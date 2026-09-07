@@ -279,10 +279,7 @@ notification dispatched by a scheduled command; the status transition itself sta
 | NFR-NTHQA-S3 | Partnership routes must require `auth` middleware and `role:super_admin\|admin` |
 | NFR-NTHQA-S4 | Partnership deletion must never remove records with ACTIVE status — enforced at both Action and Entity layers |
 | NFR-NTHQA-S5 | MoU file storage must be outside the public web root — served through MediaLibrary URL generation |
-| NFR-NTHQA-P1 | Partnership list page with company JOIN must load in < 500ms for up to 500 partnerships |
 | NFR-NTHQA-P2 | MoU thumb conversion (400px webp) must be generated non-queued to avoid worker dependency |
-| NFR-NTHQA-P3 | MoU thumbnail display must load in < 2s from MediaLibrary URL generation |
-| NFR-NTHQA-P4 | Partnership detail page including MoU metadata must load in < 300ms |
 | NFR-NTHQA-R1 | Partnership renewal must be atomic — old record status change and new record creation in a single transaction |
 | NFR-NTHQA-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
 | NFR-NTHQA-R3 | MoU transfer during renewal must be atomic — if transfer fails, neither old nor new record should persist the partial state |
@@ -480,15 +477,6 @@ partnerships:
 | Inconsistent state from partial renewal failure | 0 | Atomic transaction ensures old + new record persist together or not at all |
 | Active partnerships deleted via batch | 0 | `canBeDeleted()` guard skips non-terminal records in batch operations |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Partnership list load with company JOIN | < 500ms | `PartnershipManager` query with 500 partnerships |
-| MoU thumbnail display | < 2s | MediaLibrary URL generation for 400px webp thumb |
-| Partnership detail page with MoU metadata | < 300ms | Single partnership view including media metadata |
-| MoU thumb generation on upload | < 2s | Non-queued MediaLibrary conversion |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -498,17 +486,6 @@ partnerships:
 | Form validation feedback | Real-time, < 200ms | Livewire validation rules on `PartnershipForm` |
 | Status badge display | Consistent text + icon via `label()` | `PartnershipStatus::label()` with `__()` translation |
 | Renewal flow | Pre-populated form with old partnership data | `RenewPartnershipAction` copies fields to new record |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via Actions |
-| No service locator (C2) | 0 violations | Constructor injection throughout |
-| Entity purity (C5) | 0 violations | PartnershipState imports no Actions/Services |
-| DTO purity (C6) | 0 violations | PartnershipData imports no Models/Entities |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all Partnership PHP files |
-| RejectedException not RuntimeException (C8) | 0 violations | Business rule failures use `RejectedException` |
 
 ---
 

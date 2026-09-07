@@ -168,11 +168,8 @@ technical debt.
 
 | ID    | Requirement                                                                          |
 | ----- | ------------------------------------------------------------------------------------ |
-| NFR-MBB5R-P1 | Registration wizard must complete in < 500ms (network-excluded) for submission step  |
-| NFR-MBB5R-P3 | `RegistrationVerification` page must load pending registrations in < 1s for up to 500 records |
 | NFR-MBB5R-R1 | Registration creation must be wrapped in a database transaction                       |
 | NFR-MBB5R-U1 | Registration wizard must clearly show which step the student is on (1 of 2, 2 of 2)  |
-| NFR-MBB5R-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
 | NFR-MBB5R-M2 | Registration status must be migrated to a backed enum before production launch (see DD-1 @todo) |
 | NFR-MBB5R-A1 | All enrollment UI (wizard, verification) must meet WCAG 2.1 Level AA                 |
 | NFR-MBB5R-A2 | Registration wizard step indicators must be keyboard-accessible and announced to screen readers |

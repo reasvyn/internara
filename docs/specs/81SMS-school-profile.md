@@ -201,15 +201,12 @@ profile save flow.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-81SMS-P1* | `SchoolEntity` resolution from cache must complete in < 50ms (cache hit) — manual perf, not unit-testable |
-| NFR-81SMS-P2* | `SaveSchoolProfileAction` with 7 fields must complete in < 2s including DB write — manual perf, not unit-testable |
 | NFR-81SMS-S1 | Setting keys must match `^[a-z][a-z0-9_.]*$` pattern to prevent injection |
 | NFR-81SMS-S2 | Logo upload must validate MIME type and file size server-side (`image|max:2048`) |
 | NFR-81SMS-S3 | `SchoolEditor` must authorize all mutations via `Setting::class` policy |
 | NFR-81SMS-S4 | Logo removal must delete from Spatie Media Library and clear setting key atomically |
 | NFR-81SMS-R1 | Profile save must be atomic — all 7 keys written or none (`BatchSetSettingAction` transaction) |
 | NFR-81SMS-R2 | Cache invalidation must be synchronous (not queued) to prevent stale reads |
-| NFR-81SMS-U1* | Form must display all 8 fields with appropriate input types (text, email, URL, fax) — visual, verified manually |
 | NFR-81SMS-U2 | Logo upload must show live preview without page reload |
 | NFR-81SMS-U3 | Logo removal must require confirmation dialog before executing |
 | NFR-81SMS-U4 | Flash messages must confirm save, logo upload, and logo removal actions |
@@ -441,7 +438,6 @@ Prevents ad-hoc key strings and enables bulk invalidation.
 | Atomic save | All fields saved or none |
 | Cache invalidation coverage | 100% of saves invalidate cache |
 | FR test coverage | ≥ 90% of FR-81SMS-SP1–SP27 |
-| SchoolEntity accessor coverage | 100% |
 
 ---
 

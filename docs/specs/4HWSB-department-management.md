@@ -330,9 +330,6 @@ based on current data.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-4HWSB-P1 | Department CRUD operations must complete in < 1s (create, update, delete) |
-| NFR-4HWSB-P2 | CSV import of 50 departments must complete in < 15s |
-| NFR-4HWSB-P3 | Department list page must load in < 500ms for up to 200 departments |
 | NFR-4HWSB-P4 | CSV export must stream without buffering the entire dataset in memory |
 | NFR-4HWSB-S1 | All department mutations must be authorized via `DepartmentPolicy` |
 | NFR-4HWSB-S2 | CSV import file must be validated for MIME type and max 2MB size |
@@ -707,15 +704,6 @@ supports them, and 255 chars is well above realistic department-name length.
 | Event dispatch coverage | Every CRUD → event dispatched | Listener integration tests for all 3 events |
 | Force delete always blocked | 0 force deletes possible | `DepartmentPolicy::forceDelete()` returns false |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| CSV import 50 departments | < 15s | `CsvHandler` chunk processing time |
-| Department list page | < 500ms for 200 departments | Livewire component render time |
-| Single CRUD operation | < 1s | Action execution + event dispatch |
-| Cache invalidation | < 100ms | `Cache::forget()` call time |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -724,16 +712,6 @@ supports them, and 255 chars is well above realistic department-name length.
 | Bulk delete feedback | Separate deleted/blocked counts | Flash messages for both outcomes |
 | CSV import feedback | Shows created/skipped counts | Flash summary after import |
 | Template download | Available in one click | `downloadTemplate()` method |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via Actions |
-| No service locator (C2) | 0 violations | Constructor injection throughout |
-| Entity purity (C5) | 0 violations | `DepartmentState` imports no Actions |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
-| Debug calls absent (D2) | 0 violations | No dd/dump/ray/var_dump/print_r/die |
 
 ---
 

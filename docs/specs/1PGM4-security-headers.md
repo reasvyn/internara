@@ -117,7 +117,6 @@ man-in-the-middle attacks.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-1PGM4-SEC1 | Security header injection MUST add < 1ms overhead per request |
 | NFR-1PGM4-SEC2 | CSP MUST NOT break application functionality in production |
 | NFR-1PGM4-SEC3 | Vite dev URL injection MUST NOT occur in production |
 | NFR-1PGM4-SEC4 | Header configuration MUST be overridable per-environment via `.env` |
@@ -229,10 +228,7 @@ operators must configure it deliberately.
 
 | Metric | Target |
 | ------ | ------ |
-| Responses with CSP header | 100% |
-| Responses with X-Frame-Options | 100% |
 | Production CSP violations | 0 |
-| Vite HMR working in development | 100% |
 | CSP breakage in production | 0 incidents |
 
 ---

@@ -247,7 +247,6 @@ should delegate to Renderers for any PDF-specific work.
 | Single PDF generation time | < 10s |
 | Batch PDF throughput | ≥ 5/min |
 | Memory-related failures | 0 |
-| Visual consistency across all PDF types | 100% |
 
 ---
 

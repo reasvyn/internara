@@ -196,13 +196,6 @@ wizard rather than seeing a broken or empty application.
 | NFR-VEJCX-S7 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
 | NFR-VEJCX-S8 | All setup actions must be logged via SmartLogger for audit trail     |
 
-### 5.2 Performance
-
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-P1 | Wizard step navigation must respond within 1 second                  |
-| NFR-VEJCX-P2 | Finalization (all DB writes) must complete within 5 seconds          |
-
 ### 5.3 Reliability
 
 | ID    | Requirement                                                          |
@@ -419,8 +412,6 @@ unambiguous (always requires it) and the divergence is documented in both specs.
 
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
-| Wizard completion rate          | 100%        | All 6 steps reachable and completable |
-| Recovery key display            | 100%        | 64-char key with copy button          |
 | Auto-redirect                   | Always      | Uninstalled system redirects to setup |
 
 ### 8.2 Security Properties

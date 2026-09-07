@@ -133,7 +133,6 @@ automated compliance checks, missing entries go undetected until it's too late.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-2EHSE-P1 | Compliance check command must process 100 students in < 30s |
 | NFR-2EHSE-U1 | Pending supervision logs must be prominently visible on supervisor dashboard |
 | NFR-2EHSE-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
 | NFR-2EHSE-L1 | All user-facing strings must use `__()` translation helper |

@@ -230,9 +230,6 @@ automated enforcement, teachers must manually check dates and students may unkno
 | NFR-T657Z-S2 | `SubmissionPolicy` must enforce student-only create, owner-only update (when SUBMITTED), admin-only delete |
 | NFR-T657Z-S3 | Deadline enforcement must be checked at Action layer, not just UI |
 | NFR-T657Z-S4 | Cross-Role Proxy must be respected for supervisor verification via `HasMentorProxy` trait |
-| NFR-T657Z-P1 | Student assignment list must load in < 500ms |
-| NFR-T657Z-P2 | Submission grading list with JOINs must load in < 1s |
-| NFR-T657Z-P3 | File upload processing must complete in < 5s for 10MB files |
 | NFR-T657Z-R1 | Submission creation must be wrapped in a database transaction |
 | NFR-T657Z-R2 | Unique constraint on `(assignment_id, registration_id)` must prevent duplicate submissions at DB level |
 | NFR-T657Z-U1 | File upload must show progress indicator during upload |
@@ -457,14 +454,6 @@ submissions:
 | Invalid status transitions | 0 | `AssignmentStatus` and `SubmissionStatus` enforce valid transitions |
 | Orphaned submissions after assignment delete | 0 | Cascade delete via DB constraint |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Student assignment list | < 500ms | Published assignments for student's internship |
-| Submission grading list | < 1s | Filtered, paginated, JOINed query |
-| File upload (10MB) | < 5s | Livewire upload + MediaLibrary storage |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -472,16 +461,6 @@ submissions:
 | Notification delivery | < 30s after event | Queued notification processing |
 | Revision feedback visibility | Prominent on student view | Feedback displayed at top of submission |
 | Due date display | Timezone-aware | Shows in user's local timezone |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via Actions |
-| No service locator (C2) | 0 violations | Constructor injection throughout |
-| Entity purity (C5) | 0 violations | AssignmentRules/SubmissionState import no Actions |
-| DTO purity (C6) | 0 violations | SubmitAssignmentData imports no Models |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
 
 ---
 

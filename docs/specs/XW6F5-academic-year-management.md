@@ -210,8 +210,6 @@ administrators would see outdated statistics.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-XW6F5-P1 | Academic year activation must complete in < 1s (two UPDATEs + event in transaction) |
-| NFR-XW6F5-P2 | `AcademicYearManager` page load must complete in < 500ms |
 | NFR-XW6F5-S1 | All mutations must be authorized via `AcademicYearPolicy` |
 | NFR-XW6F5-S2 | `name` uniqueness enforced at both form validation and Action layer |
 | NFR-XW6F5-S3 | Deletion guard checks must execute within the same transaction as the delete |
@@ -417,17 +415,12 @@ half of the calendar year; or computing independently in each consumer — reint
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
 | Multiple active years | 0 at any time | Transaction: deactivate all → activate one |
-| Activation rejection (already active) | 100% | `canBeActivated()` returns false |
-| Active year deletion blocked | 100% | `DeleteAcademicYearAction` rejects when `isActive()` |
-| Related records deletion blocked | 100% | `DeleteAcademicYearAction` rejects when `hasRelatedRecords()` |
 | Bulk delete protection | All-or-nothing | Validates every year before deleting any |
 | First year auto-active | `is_active = true` | Count check in `CreateAcademicYearAction` |
 | Subsequent years inactive | `is_active = false` | Default in `CreateAcademicYearAction` |
 | Activation completes | < 1s | Two UPDATEs + event in transaction |
 | Manager page load | < 500ms | Paginated query with sorting |
-| All mutations dispatch events | 100% | Create/Activate/Update/Delete → respective events |
 | Dashboard cache invalidation | On every event | Listener registered for all 4 events |
-| Guard error messages include year name | 100% | `RejectedException` with `['name' => $year->name]` |
 
 ---
 

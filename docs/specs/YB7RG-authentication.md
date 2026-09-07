@@ -312,9 +312,6 @@ is unavailable or compromised.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-YB7RG-P1 | Login action must complete in < 500ms (cache miss) or < 100ms (cache hit) |
-| NFR-YB7RG-P2 | HTTP throttle check must add < 5ms overhead per request |
-| NFR-YB7RG-P3 | Cache-based lockout check must add < 10ms overhead per request |
 
 ### Usability (NFR-U)
 
@@ -353,7 +350,6 @@ is unavailable or compromised.
 | ID    | Requirement |
 | ----- | ----------- |
 | NFR-YB7RG-M1 | All PHP files must declare `strict_types=1` |
-| NFR-YB7RG-M2 | Login Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
 | NFR-YB7RG-M3 | Events must follow Action Triad convention: dispatched by Actions, not Livewire |
 
 ---
@@ -637,15 +633,6 @@ the likelihood of identifier confusion.
 | Lockout check before user lookup | 100% of login attempts | `LoginAction::checkLockout()` called before `User::where()` |
 | Generic error messages | Identical for all failure modes | No "user not found" vs "wrong password" distinction |
 | Timing consistency | < 5ms variance between valid/invalid identifiers | Lockout check + cache miss overhead uniform |
-
-### 8.4 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Login action (cache miss) | < 500ms | Full pipeline: DTO → lockout → lookup → attempt → session |
-| Login action (cache hit) | < 100ms | Lockout check skipped, user exists in DB |
-| HTTP throttle overhead | < 5ms per request | Middleware adds minimal latency |
-| Cache lockout check | < 10ms per request | Single `Cache::get()` call |
 
 ### 8.5 User Experience
 

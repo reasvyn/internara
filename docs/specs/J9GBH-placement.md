@@ -139,11 +139,9 @@ workflow with atomic quota transfer is required.
 
 | ID    | Requirement                                                                          |
 | ----- | ------------------------------------------------------------------------------------ |
-| NFR-J9GBH-P2 | Placement capacity check and increment must execute within a single DB transaction (< 100ms) |
 | NFR-J9GBH-R2 | Placement quota must never go negative — `filled_quota` decrement must be guarded     |
 | NFR-J9GBH-R3 | Concurrent placement registrations must not exceed quota — atomic check-and-increment required |
 | NFR-J9GBH-U2 | `PlacementChangeManager` must display request reason and both source/target placements for informed admin review |
-| NFR-J9GBH-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
 | NFR-J9GBH-A1 | All enrollment UI (placement management) must meet WCAG 2.1 Level AA                 |
 | NFR-J9GBH-A3 | Form inputs in placement forms must have associated labels                           |
 | NFR-J9GBH-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text                   |

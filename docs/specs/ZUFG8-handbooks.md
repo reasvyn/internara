@@ -155,7 +155,6 @@ notes and verification timestamps.
 | ID    | Requirement |
 | ----- | ----------- |
 | NFR-ZUFG8-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
-| NFR-ZUFG8-P1 | `StudentHandbookList` page load must complete in < 500ms |
 | NFR-ZUFG8-P2 | Handbook acknowledgment check must query `activity_log` efficiently (indexed on `event` + `subject_id`) |
 | NFR-ZUFG8-R1 | Handbook events must be dispatched synchronously to ensure cache is cleared before response returns |
 | NFR-ZUFG8-U1 | `StudentHandbookList` must show clear acknowledged/not-acknowledged status per handbook |

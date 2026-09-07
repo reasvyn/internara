@@ -193,20 +193,11 @@ They are not part of the domain schema but coexist in the same database.
 | NFR-J68GZ-S2 | No debug calls in committed code: dd, dump, ray, var_dump, print_r, die (D2 invariant) |
 | NFR-J68GZ-S3 | APP_KEY must be 32-byte base64 string; rotation supported via `APP_PREVIOUS_KEYS` |
 
-### 5.2 Performance
-
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-J68GZ-P1 | SQLite WAL mode with 5000ms busy timeout for concurrent reads |
-| NFR-J68GZ-P2 | OpCache enabled in production: 256MB memory, 20000 max files, validate_timestamps=0 |
-| NFR-J68GZ-P3 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
-
 ### 5.3 Reliability
 
 | ID     | Requirement |
 | ------ | ----------- |
 | NFR-J68GZ-R1 | SQLite foreign keys enforced (`DB_FOREIGN_KEYS=true`) |
-| NFR-J68GZ-R2 | Migration freshness < 60 seconds on 55 tables |
 
 ## 6. API / Data Contracts
 

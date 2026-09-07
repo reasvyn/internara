@@ -149,7 +149,6 @@ role model with explicit capabilities per role prevents this.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-T4B26-AUTH1 | Authorization check latency MUST be < 5ms per request |
 | NFR-T4B26-AUTH2 | Policy auto-discovery cache MUST invalidate on `php artisan cache:forget` |
 | NFR-T4B26-AUTH3 | Role changes MUST take effect on next authenticated request |
 | NFR-T4B26-AUTH4 | Super admin bypass MUST work even if policy class is missing or broken |
@@ -260,11 +259,8 @@ admin is a single-purpose recovery account.
 
 | Metric | Target |
 | ------ | ------ |
-| Protected endpoints with authorization | 100% |
-| Policies extending BasePolicy | 100% |
 | Super admin lockout incidents | 0 |
 | Authorization bypass vulnerabilities | 0 |
-| Policy test coverage | 100% |
 
 ---
 

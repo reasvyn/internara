@@ -738,7 +738,6 @@ Schedule::command('system:backup')
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
 | Credential exposure in logs | 0 occurrences | No `password` or `pass` in log output |
-| Temp file cleanup on failure | 100% | `finally` block in `runDatabaseDump()`, `__destruct()` |
 | Failed backup notification delivery | 100% to super admins | `SendBackupFailedNotification` iterates all superadmin-role users |
 | Path traversal in file deletion | 0 incidents | `BackupRunner::deleteFile()` validates `realpath()` within backup dir |
 

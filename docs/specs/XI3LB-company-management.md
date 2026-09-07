@@ -228,9 +228,6 @@ to ensure administrators always see current data.
 | NFR-XI3LB-S3 | Company routes must require `auth` middleware and `role:super_admin\|admin` for write operations |
 | NFR-XI3LB-S4 | CSV import must validate file MIME type and enforce maximum row count (1,000 rows per import) |
 | NFR-XI3LB-S5 | Company deletion must be blocked if any placement or partnership record references it — enforced at both Action and Entity layers |
-| NFR-XI3LB-P1 | Company list page must load in < 500ms for up to 1,000 companies |
-| NFR-XI3LB-P2 | CSV import of 100 companies must complete in < 10 seconds |
-| NFR-XI3LB-P3 | Dashboard stats query must execute in < 200ms with up to 1,000 companies and 500 partnerships |
 | NFR-XI3LB-P4 | CSV export must stream results for datasets exceeding 500 records to avoid memory exhaustion |
 | NFR-XI3LB-R1 | Company deletion must be blocked if any placement or partnership record references it — no exceptions |
 | NFR-XI3LB-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
@@ -422,15 +419,6 @@ App\Partners\Company\Enums\CsvRowResult: string
 | Partial CSV imports persisted | 0 | Transaction wrapping ensures atomicity |
 | Dashboard stale data window | 0 seconds | Synchronous cache invalidation on every company mutation |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Company list page load | < 500ms | `CompanyManager` query with 1,000 companies |
-| CSV import (100 companies) | < 10 seconds | `CompanyManager` import handler with validation |
-| Dashboard stats query | < 200ms | Aggregate query with 1,000 companies and 500 partnerships |
-| CSV export streaming | < 30 seconds | Export of 1,000 companies with all fields |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -439,18 +427,6 @@ App\Partners\Company\Enums\CsvRowResult: string
 | Batch delete summary | Exact deleted/skipped counts | `BatchDeleteCompanyAction` response with per-record reasons |
 | CSV import report | Per-row status with details | `CsvRowResult` enum per row: created, duplicate, or error with field/message |
 | Form validation latency | Real-time, < 200ms | Livewire validation rules on `CompanyForm` |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations delegated to Actions |
-| No service locator (C2) | 0 violations | Constructor injection throughout |
-| Entity purity (C5) | 0 violations | `CompanyState` imports no Actions or Services |
-| DTO purity (C6) | 0 violations | `CompanyData` imports no Models or Entities |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
-| All user strings localized (D3) | 100% strings | `__()` helper used for all user-facing text |
-| No debug calls (D2) | 0 occurrences | No `dd`, `dump`, `ray`, `var_dump`, `print_r`, or `die` |
 
 ---
 

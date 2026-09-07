@@ -206,8 +206,6 @@ registrations would orphan these records and break foreign key relationships.
 | NFR-7C5WM-S1 | Status transition validation must reject illegal transitions with `RejectedException` |
 | NFR-7C5WM-S2 | `InternshipPolicy` must enforce authorization at every CRUD operation                |
 | NFR-7C5WM-P1 | `ReadCloseReadinessAction` must complete within 2s for up to 200 active registrations |
-| NFR-7C5WM-P2 | `BatchUpdateInternshipStatusAction` must process up to 50 internships in < 3s        |
-| NFR-7C5WM-P3 | `InternshipPeriod` entity instantiation must complete in < 5ms (read-only, no queries) |
 | NFR-7C5WM-R1 | `CreateInternshipAction` must wrap creation in a database transaction                |
 | NFR-7C5WM-R2 | `BatchUpdateInternshipStatusAction` must wrap batch update in a database transaction  |
 | NFR-7C5WM-R3 | `DeleteInternshipAction` must verify related records within the same transaction     |
@@ -451,7 +449,6 @@ batch close, UI preview), keeping close Actions focused.
 
 | Metric                          | Target      | Measurement                                       |
 | ------------------------------- | ----------- | ------------------------------------------------- |
-| Illegal transition rejection    | 100%        | Unit tests covering all 5 states × all targets    |
 | Terminal state enforcement      | No transitions from COMPLETED/CANCELLED | `validTransitions()` returns [] for terminal |
 
 ### 8.2 Registration Windows

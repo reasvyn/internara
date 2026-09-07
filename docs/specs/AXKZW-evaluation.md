@@ -175,12 +175,8 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 | NFR-AXKZW-S2 | Response submission must validate evaluator identity matches `auth()->id()` |
 | NFR-AXKZW-S3 | Submitted responses must be immutable — no UPDATE or DELETE permitted |
 | NFR-AXKZW-S4 | `target_id` polymorphic values must be validated as existing records |
-| NFR-AXKZW-P1 | Form listing must load in < 300ms for up to 50 forms |
-| NFR-AXKZW-P2 | Response submission with 20 questions must complete in < 2s |
-| NFR-AXKZW-P3 | Score calculation must complete in < 100ms per response |
 | NFR-AXKZW-R1 | Response creation must be wrapped in a database transaction |
 | NFR-AXKZW-R2 | Unique constraint on `(response_id, question_id)` must prevent duplicate answers at DB level |
-| NFR-AXKZW-U1 | Evaluation forms must display question types with appropriate input controls |
 | NFR-AXKZW-U2 | Score bands must be displayed with human-readable labels alongside numeric scores |
 | NFR-AXKZW-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
 | NFR-AXKZW-L1 | All user-facing strings must use `__()` translation helper |
@@ -396,16 +392,7 @@ evaluation_answers:
 | ------ | ------ | ----------- |
 | Post-submission edits | 0 | Action layer blocks UPDATE/DELETE on submitted responses |
 | Duplicate answers per question | 0 | Unique constraint on `(response_id, question_id)` |
-| Score calculation accuracy | 100% | Weighted average matches manual calculation for test data |
 | Invalid target references | 0 | Action layer validates target_id exists in referenced model |
-
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Form listing load | < 300ms | Admin form management page with 50 forms |
-| Response submission | < 2s | 20-question form submission with score calculation |
-| Score calculation | < 100ms | Per-response weighted average computation |
 
 ### 8.3 User Experience
 
@@ -414,13 +401,6 @@ evaluation_answers:
 | Form builder usability | Intuitive section/question ordering | Admin can create a 10-question form in < 5 minutes |
 | Score band display | Human-readable labels | EXCELLENT/GOOD/etc. shown alongside numeric scores |
 | Question type variety | 6 types supported | rating_1_5, rating_1_10, yes_no, multiple_choice, text, agreement |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via planned Actions |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
 
 ---
 

@@ -208,7 +208,6 @@ link behaves identically and accessibly.
 | ID      | Requirement                                                                                          |
 | ------- | ---------------------------------------------------------------------------------------------------- |
 | NFR-8XMYS-A1  | All shell chrome must meet WCAG 2.1 Level AA (see [design-system.md](../guides/ui-ux/design-system.md) §6, [modular-pattern.md](../guides/arch/modular-pattern.md) §22) |
-| NFR-8XMYS-P1  | The layout shell must render in < 100 ms server-side; sidebar menu resolution must add no more than 2 queries (no N+1 over menu items) |
 | NFR-8XMYS-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
 | NFR-8XMYS-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
 | NFR-8XMYS-M1  | Layout and UI components must be colocated in Core (`resources/views/ui/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |

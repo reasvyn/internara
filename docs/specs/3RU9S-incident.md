@@ -196,11 +196,8 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 | NFR-3RU9S-S2 | Students may only create incidents — they must not update or delete existing reports |
 | NFR-3RU9S-S3 | Status transitions must be validated against `IncidentStatus::validTransitions()` before persistence |
 | NFR-3RU9S-S4 | `reported_by` and `resolved_by` must reference valid User IDs via foreign key constraints |
-| NFR-3RU9S-P1 | Incident list load must complete in < 300ms for up to 200 incidents |
-| NFR-3RU9S-P2 | Incident report submission must complete in < 2s including notification dispatch |
 | NFR-3RU9S-R1 | `ReportIncidentAction` and `ResolveIncidentAction` must execute within a database transaction |
 | NFR-3RU9S-R2 | Composite index on `(registration_id, status)` must support efficient filtered queries |
-| NFR-3RU9S-U1 | `IncidentForm` must display all fields with appropriate input controls and validation feedback |
 | NFR-3RU9S-U2 | `IncidentManager` must display severity and status with human-readable labels from enum `label()` methods |
 | NFR-3RU9S-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standards |
 | NFR-3RU9S-L1 | All user-facing strings must use `__()` translation helper with keys in both `lang/en/` and `lang/id/` |
@@ -360,14 +357,6 @@ incident_reports:
 | Orphaned resolved_by/resolved_at | 0 | `ResolveIncidentAction` sets both atomically |
 | Incidents without registration link | 0 | `registration_id` FK required on creation |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Incident list load | < 300ms | `IncidentManager` with 200 records and active filters |
-| Report submission | < 2s | `ReportIncidentAction` including notification dispatch |
-| Filtered query (status + severity) | < 100ms | Composite index on (registration_id, status) + individual indexes |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -375,15 +364,6 @@ incident_reports:
 | Report completion time | < 3 minutes | Student fills required fields and submits |
 | Enum label readability | Human-readable | All status/severity/type values display with `label()` |
 | Filter responsiveness | Instant re-render | `IncidentManager` table updates on filter change via Livewire |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via `ReportIncidentAction`, `UpdateIncidentAction`, `ResolveIncidentAction` |
-| Strict types (D1) | 100% PHP files | `declare(strict_types=1)` in all non-migration files |
-| No debug calls (D2) | 0 occurrences | No dd/dump/ray/var_dump/print_r/die in committed code |
-| Localization (D3) | 100% user strings | All UI strings wrapped in `__()` |
 
 ---
 

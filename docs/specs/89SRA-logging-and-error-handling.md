@@ -256,8 +256,6 @@ others would leak stack traces, and debugging would require inspecting each Acti
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-89SRA-P1 | SmartLogger `save()` must add < 5ms overhead to Action execution |
-| NFR-89SRA-P2 | PII masking must process typical payloads in < 1ms |
 | NFR-89SRA-S1 | No PII (passwords, tokens, emails, IPs) must appear unmasked in any log channel |
 | NFR-89SRA-S2 | Exception messages shown to users must never contain SQL queries, file paths, or stack traces |
 | NFR-89SRA-S3 | `InfrastructureException` must never be user-facing (`isUserFacing() = false`) |

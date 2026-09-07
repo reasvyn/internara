@@ -162,7 +162,6 @@ to the admin, not a stack trace.
 | NFR-920SO-U1 | `ApplyPage` must work without JavaScript for basic form submission (progressive enhancement) |
 | NFR-920SO-U2 | Mode toggle (placement vs proposed company) must dynamically show/hide relevant fields |
 | NFR-920SO-U3 | Success message after submission must not reveal whether an existing application was re-activated |
-| NFR-920SO-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
 | NFR-920SO-A1 | All enrollment UI (apply page) must meet WCAG 2.1 Level AA |
 | NFR-920SO-A2 | Form inputs in apply form must have associated labels |
 | NFR-920SO-A3 | Color contrast must meet 4.5:1 minimum for all enrollment UI text |

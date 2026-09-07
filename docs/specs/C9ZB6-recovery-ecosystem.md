@@ -243,14 +243,6 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 | NFR-C9ZB6-S9 | Failed recovery logged as error with event `super_admin.recovery.failed` |
 | NFR-C9ZB6-S10 | Recovery key file regeneration failure logged as warning (non-blocking) |
 
-### 5.2 Performance
-
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-C9ZB6-P1 | OTP verification uses cache (not database) for storage |
-| NFR-C9ZB6-P2 | Recovery key read is a single file read (no database query for plaintext) |
-| NFR-C9ZB6-P3 | `RecoveryOtpNotification` queued via `ShouldQueue` (non-blocking mail send) |
-
 ### 5.3 Reliability
 
 | ID     | Requirement |

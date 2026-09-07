@@ -243,9 +243,6 @@ grade information, creating unnecessary friction.
 | NFR-ARDA6-S2 | `ScoreIndicatorAction` must enforce evaluator role + mentor assignment — teacher cannot score supervisor competencies |
 | NFR-ARDA6-S3 | Finalized assessments must be immutable — no score updates permitted |
 | NFR-ARDA6-S4 | Rubric structure validation must occur at Action layer, not just in UI |
-| NFR-ARDA6-P1 | `AssessmentGrading` page must load in < 1s including rubric structure and existing scores |
-| NFR-ARDA6-P2 | Auto-calculation must complete in < 5s for a single registration |
-| NFR-ARDA6-P3 | `AssessmentView` for students must load in < 500ms |
 | NFR-ARDA6-R1 | Finalization must be wrapped in a database transaction |
 | NFR-ARDA6-R2 | Weight redistribution must be deterministic — same inputs always produce same final score |
 | NFR-ARDA6-U1 | Score changes must save in real-time without explicit save button |
@@ -435,15 +432,6 @@ assessments:
 | Post-finalization edits | 0 | All scoring Actions check `isFinalized()` before proceeding |
 | Structural rubric corruption | 0 | Action layer validates competency/indicator existence in rubric JSON |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Assessment grading page load | < 1s | Rubric structure + existing scores + student data |
-| Auto-calculation (single registration) | < 5s | Cross-module queries + computation |
-| Student assessment view | < 500ms | Finalized assessments + rubric display |
-| Score live-save latency | < 300ms | Livewire update round-trip |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -452,15 +440,6 @@ assessments:
 | Finalization confirmation | Modal dialog before commit | `AssessmentGrading.askFinalize()` |
 | Read-only competencies | Visually distinct from evaluable | CSS differentiation in `AssessmentGrading` |
 | Weight redistribution accuracy | Deterministic | Same inputs → same final score across runs |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via Actions |
-| No service locator (C2) | 0 violations | Constructor injection throughout |
-| Entity purity (C5) | 0 violations | `AssessmentResult` imports no Actions/Services |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
 
 ---
 

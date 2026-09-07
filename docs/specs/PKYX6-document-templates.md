@@ -151,8 +151,6 @@ manually compile reports from multiple sources.
 | NFR-PKYX6-S1 | All document mutations must be authorized via `DocumentPolicy` — no bypass allowed |
 | NFR-PKYX6-S2 | Template content rendered via Blade must be sanitized before DomPDF compilation to prevent XSS |
 | NFR-PKYX6-S3 | Generated PDFs stored on disk must not expose absolute server paths in responses |
-| NFR-PKYX6-P1 | On-the-fly PDF rendering (`DocumentRenderController::show`) must complete in < 5s for documents under 50 pages |
-| NFR-PKYX6-P2 | `TemplateManager` page load with pagination must complete in < 1s |
 | NFR-PKYX6-R1 | `DocumentRenderer::storePdf()` must write atomically — partial writes must not leave orphan files |
 | NFR-PKYX6-U1 | `ReportsManager` must visually present 4 report types as distinct selectable cards |
 | NFR-PKYX6-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |

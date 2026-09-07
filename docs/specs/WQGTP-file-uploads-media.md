@@ -218,7 +218,6 @@ A student's profile photo and a certificate template have completely different c
 
 | Metric | Target |
 | ------ | ------ |
-| File uploads using MediaLibrary | 100% |
 | Orphaned files after model deletion | 0 |
 | Thumbnail generation success rate | 99.9% |
 | Upload failure rate (validation errors excluded) | < 0.1% |

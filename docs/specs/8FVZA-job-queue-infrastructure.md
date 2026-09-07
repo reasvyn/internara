@@ -117,7 +117,6 @@ standardized conventions, new jobs may omit critical resilience patterns.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-8FVZA-JOB1 | Job execution timeout MUST be < 60 seconds per attempt |
 | NFR-8FVZA-JOB2 | Failed job retry MUST use exponential backoff (2s, 10s, 30s) |
 | NFR-8FVZA-JOB3 | Queue driver MUST be configurable via `QUEUE_CONNECTION` env variable |
 | NFR-8FVZA-JOB4 | Job failure MUST be logged with full exception context |

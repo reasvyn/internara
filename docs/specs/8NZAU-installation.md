@@ -253,16 +253,6 @@ integration point (FR-8NZAU-D1) and defers the rest to that spec.
 | NFR-8NZAU-S12 | All setup actions must be logged via SmartLogger for audit trail     |
 | NFR-8NZAU-S13 | `--with-dummy` seeds the demo dataset in any environment when explicitly requested (see [dummy-data.md](3UOZP-dummy-data.md) FR-8NZAU-E6); it never fails a successful provisioned install |
 
-### 5.2 Performance
-
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-8NZAU-P1 | Environment audit must complete within 5 seconds                     |
-| NFR-8NZAU-P2 | Full provisioning (migrations + seeders) must complete within 30 seconds |
-| NFR-8NZAU-P3 | Token generation must use cache lock to prevent race conditions      |
-| NFR-8NZAU-P4 | Post-install cache invalidation must complete within 2 seconds       |
-| NFR-8NZAU-P5 | Module discovery performance is governed by [module-discovery.md](I1BCV-module-discovery.md) (NFR-8NZAU-P1–P5) — not re-specified here |
-
 ### 5.3 Reliability
 
 | ID    | Requirement                                                          |
@@ -589,9 +579,6 @@ cleaned up/credentials rotated before a non-demo go-live (dummy-data DD-4).
 
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
-| CLI install success rate        | 100%        | All provisioning tasks complete       |
-| Recovery key generation         | 100%        | 64-char key, hashed in DB, file saved |
-| Super admin login success       | 100%        | Post-setup login works immediately    |
 
 ### 8.2 Security Properties
 
@@ -599,7 +586,6 @@ cleaned up/credentials rotated before a non-demo go-live (dummy-data DD-4).
 | ------------------------------- | ----------- | ------------------------------------- |
 | Token replay blocked            | Always      | Second validation attempt rejected    |
 | Force restricted to dev         | Always      | Production CLI rejects `--force`      |
-| Audit trail                     | 100%        | All setup actions logged via SmartLogger |
 
 ### 8.3 Environment Compatibility
 

@@ -234,9 +234,6 @@ any situation where digital delivery is preferred over printed distribution.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-EWCZ0-P1 | Single account slip PDF generation must complete in < 3 seconds |
-| NFR-EWCZ0-P2 | Batch PDF generation for 50 users must complete in < 15 seconds |
-| NFR-EWCZ0-P3 | Account slip modal must open in < 200ms (activation code generation only) |
 | NFR-EWCZ0-S1 | Activation codes must be generated server-side, never exposed in client JavaScript |
 | NFR-EWCZ0-S2 | Account slip routes must enforce admin role authorization |
 | NFR-EWCZ0-S3 | User data on PDF slips must not be accessible to other users or public |
@@ -483,15 +480,6 @@ well-defined views.
 
 ## 8. Success Metrics
 
-### 8.1 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Single slip generation | < 3s | `GenerateAccountSlipAction::execute()` total time including DomPDF render |
-| Batch slip generation (50 users) | < 15s | `GenerateAccountSlipAction::executeBatch()` total time |
-| Account slip modal open | < 200ms | `showSlip()` method — User lookup + AccessToken generation |
-| Activation code regeneration | < 200ms | `regenerateCode()` method — AccessToken generation only |
-
 ### 8.2 Functionality
 
 | Metric | Target | Measurement |
@@ -518,15 +506,6 @@ well-defined views.
 | No credential leakage | PDF not publicly accessible | Routes require authentication |
 | Activation code freshness | Generated at view time | `AccessToken::generateFor()` called on each `showSlip()` |
 | Previous code invalidation | Old codes superseded | New `AccessToken` replaces previous (implicit by token model) |
-
-### 8.5 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations delegated to Actions |
-| No service locator (C2) | 0 violations | `AccountSlipController` uses constructor injection |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
-| User strings use `__()` (D3) | 100% of UI strings | All flash messages and labels use translation helper |
 
 ---
 

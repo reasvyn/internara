@@ -170,8 +170,6 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 | ID | Requirement | Target |
 |----|-------------|--------|
-| NFR-HP-01 | Homepage `GET /` TTFB cache-hit < 200 ms (availability + theme vars cached; no N+1) | 200 ms |
-| NFR-HP-02 | Theme toggle repaint on homepage < 100 ms (client `applyTheme`, no roundtrip) | 100 ms |
 | NFR-HP-03 | Brand preset change reflects on homepage next load without `cache:clear` (52O1I `theme_cache_keys` invalidation) | 1 request |
 | NFR-HP-04* | Homepage is responsive without horizontal scroll at 320 px — hero padding scales `px-4→6→12`, `pt-20→24→32`, cards `grid-cols-1 → lg:grid-cols-2`, features `1 → sm:grid-cols-3`, text `text-3xl→4xl→5xl` | Manual 320 px |
 | NFR-HP-05* | Hover/interaction polish — blobs `animate-pulse blur-3xl`, cards `hover:-translate-y-1 hover:shadow-xl duration-300`, icon wells `group-hover:scale-110 duration-500` | Manual |
@@ -311,8 +309,6 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Homepage spec traces 1:1 to code | 100% | FR-HP-* ↔ `HomePage.php` + `home-page.blade.php` + `user.php` + `guest.blade.php` + `ReadRegistrationAvailabilityAction` |
-| Unauthenticated visitor sees hero + 2 cards + 3 features; no auth/setup leak | 100% | Manual `GET /` unauth / authed / fresh-install |
 | Registration status branching correct (open/upcoming/closed/not_configured) with correct CTA/alert/period | 4/4 states | Manual + any existing `ReadRegistrationAvailabilityAction` coverage |
 | Responsive no horizontal scroll at 320 px; hover/blur/pulse polish matches design | Pass | Manual 320/768/1024 px + hover |
 | Theme preset reflects on homepage next load (primary/secondary recolor) ≤ 1 request | ≤ 1 | Change `primary_color` via Branding form → reload `/` |

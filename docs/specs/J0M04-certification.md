@@ -203,10 +203,6 @@ Without self-service access, every certificate request becomes a support ticket.
 | NFR-J0M04-S2 | QR hash uniqueness must be enforced at database level |
 | NFR-J0M04-S3 | Revoked certificates must not be re-issued (same registration + template → new certificate) |
 | NFR-J0M04-S4 | PDF storage must use local disk (not public URL) to prevent unauthorized access |
-| NFR-J0M04-P1 | Single certificate issuance must complete in < 5s (PDF rendering + storage) |
-| NFR-J0M04-P2 | Batch issuance of 50 certificates must complete in < 60s |
-| NFR-J0M04-P3 | Certificate list page must load in < 500ms |
-| NFR-J0M04-P4 | PDF lazy-generation must complete in < 5s on first download |
 | NFR-J0M04-R1 | Certificate issuance must be wrapped in a database transaction |
 | NFR-J0M04-R2 | Batch issuance must collect errors per-registration without failing the entire batch |
 | NFR-J0M04-U1 | Certificate number and QR hash must be displayed in admin certificate list |
@@ -370,15 +366,6 @@ certificate_templates:
 | Revoked certificates re-issued | 0 | Status enum terminal state enforcement |
 | Template change affecting old certificates | 0 | Content snapshot at issuance time |
 
-### 8.2 Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Single issuance | < 5s | PDF rendering + storage |
-| Batch issuance (50 certs) | < 60s | Sequential processing with error collection |
-| Certificate list load | < 500ms | Admin list page |
-| PDF lazy-generation | < 5s | First download rendering |
-
 ### 8.3 User Experience
 
 | Metric | Target | Measurement |
@@ -386,14 +373,6 @@ certificate_templates:
 | Batch error reporting | Per-registration errors | Clear success/failure counts |
 | Student self-service | No admin intervention required | Student downloads directly |
 | Certificate status visibility | Color-coded ISSUED/REVOKED | Visual status indicator |
-
-### 8.4 Architecture Compliance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| No model mutations in Livewire (C1) | 0 violations | All mutations via Actions |
-| No service locator (C2) | 0 violations | CertificateRenderer injected via constructor |
-| Strict types (D1) | 100% files | `declare(strict_types=1)` in all PHP files |
 
 ---
 

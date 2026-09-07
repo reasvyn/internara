@@ -252,7 +252,6 @@ accreditation visits or incident investigations.
 | NFR-7H5D6-S2  | Parent consent forms must be retained for minimum 5 years (configurable) |
 | NFR-7H5D6-R1  | Batch generation of 500 documents must complete within 10 minutes (queued) |
 | NFR-7H5D6-R2  | Single document generation must complete within 5 seconds (synchronous) |
-| NFR-7H5D6-U1  | Document checklist in registration detail must load in < 500ms |
 | NFR-7H5D6-U2  | Generated PDF must be downloadable within 2 seconds of request |
 
 ---

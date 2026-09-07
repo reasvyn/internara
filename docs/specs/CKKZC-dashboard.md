@@ -237,8 +237,6 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-CKKZC-P1 | Dashboard load must complete in < 200ms on cache hit |
-| NFR-CKKZC-P2 | Dashboard load must complete in < 2s on cache miss |
 | NFR-CKKZC-P3 | Cache hit rate should exceed 90% under normal usage (5-min TTL covers repeated visits) |
 | NFR-CKKZC-P4 | Student dashboard cache must be per-user (key includes `$userId`) to prevent cross-user data leakage |
 | NFR-CKKZC-R1 | Dashboard must function correctly if any individual stat query fails — remaining stats render |

@@ -203,14 +203,6 @@ automatically by `ModuleManager`/`ModuleService`.
 | NFR-B114U-M3 | Every `ModuleManager` accessor must be individually unit-testable           |
 | NFR-B114U-M4 | `ModuleManager` must use `names()` for all module membership checks         |
 
-### 5.2 Performance
-
-| ID     | Requirement                                                          |
-| ------ | -------------------------------------------------------------------- |
-| NFR-B114U-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
-| NFR-B114U-P2 | Policy discovery must complete within 1 second on a cold cache       |
-| NFR-B114U-P3 | Cached discovery must have zero filesystem overhead                  |
-
 ### 5.3 Reliability
 
 | ID     | Requirement                                                          |
@@ -375,10 +367,7 @@ cache-invalidation complexity without a verified need.
 | -------------------------------------------- | ------------------ | ---------------------------------------- |
 | `config('module.*')` access outside ModuleManager | 0 occurrences      | Codebase scan (see NFR-B114U-M1)               |
 | Remaining `ModuleDiscoverService` references | 0                  | Codebase scan (FR-B114U-MIG1)                  |
-| Registered modules discovered                | 100%               | All modules in config have discovery     |
-| Unregistered dirs excluded                   | 100%               | No discovery from non-module dirs        |
 | Cold-cache Livewire discovery                | < 2s               | Time to scan and register all            |
-| Targeted discovery tests pass                | 100%               | ModuleService test suite                 |
 
 ---
 

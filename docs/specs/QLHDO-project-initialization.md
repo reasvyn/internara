@@ -209,7 +209,6 @@ Project-level NFRs for MVP. Each row links to its owning spec for detailed accep
 | NFR-QLHDO-S3 | Security headers on all responses: CSP, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin | N/A | [1PGM4](1PGM4-security-headers.md) | P0 |
 | NFR-QLHDO-S4 | CSRF protection on all state-changing requests; API uses Sanctum token auth | N/A | [2CF4Y](2CF4Y-middleware-pipeline.md) | P0 |
 | NFR-QLHDO-S5 | All dynamic output escaped; `{!! !!}` forbidden for user-generated content | N/A | [1PGM4](1PGM4-security-headers.md) | P0 |
-| NFR-QLHDO-P1 | Pages render under 2 seconds at p95 under normal load (single-server, SQLite); Actions eager-load relations to prevent N+1 | <2s p95 | [ZT6VS](ZT6VS-core-infra-services.md) | P1 |
 | NFR-QLHDO-P2 | Backup target: 4-hour RPO, under 1-hour RTO; backup retention configurable per policy | 4h RPO | [HBXCI](HBXCI-backup-system.md) | P1 |
 | NFR-QLHDO-U1 | Responsive layout; WCAG AA contrast minimum on interactive elements; keyboard navigable on all forms and navigation | N/A | [8XMYS](8XMYS-layout-and-ui-system.md) | P1 |
 | NFR-QLHDO-U2 | Every non-trivial workflow has an associated guide page at `guides/{feature}-guide.blade.php` | N/A | [8XMYS](8XMYS-layout-and-ui-system.md) | P1 |

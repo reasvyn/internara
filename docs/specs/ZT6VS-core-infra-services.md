@@ -435,7 +435,6 @@ and the split contract below.
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
 | SMTP validation | 100% of saved SMTP configs tested | `TestMailSettingsAction` before persist |
-| Uploads via media library | 100% | No raw `Storage::put` in `app/` upload paths |
 
 ### Deployment
 

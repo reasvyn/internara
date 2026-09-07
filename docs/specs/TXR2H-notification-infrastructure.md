@@ -268,8 +268,6 @@ center. A custom channel is required to persist notifications with the right sha
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-TXR2H-P1 | `NotificationBell` unread count must be served from cache in < 10ms on cache hit (60s TTL) |
-| NFR-TXR2H-P2 | `NotificationCenter` page load must complete in < 500ms for users with up to 1000 notifications |
 | NFR-TXR2H-P3 | Unread count cache must be invalidated within one request cycle of notification state change |
 | NFR-TXR2H-S1 | Users can only view/update their own notifications — enforced by `NotificationPolicy` and `WHERE user_id = Auth::id()` query scoping |
 | NFR-TXR2H-S2 | Admin-only create/delete enforced by `NotificationPolicy::create()` and `NotificationPolicy::delete()` via `isAdmin()` check |

@@ -235,16 +235,6 @@ models, all Blade view namespaces registered.
 
 ## 5. Non-Functional Requirements
 
-### 5.1 Performance
-
-| ID     | Requirement                                                          |
-| ------ | -------------------------------------------------------------------- |
-| NFR-I1BCV-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
-| NFR-I1BCV-P2 | Policy discovery must complete within 1 second on a cold cache       |
-| NFR-I1BCV-P3 | View namespace registration must complete within 1 second            |
-| NFR-I1BCV-P4 | Cached discovery must have zero filesystem overhead                  |
-| NFR-I1BCV-P5 | All three discovery methods must share the same module list from config (single read) |
-
 ### 5.2 Reliability
 
 | ID     | Requirement                                                          |
@@ -406,16 +396,7 @@ check silently skips missing files, so modules without routes don't need empty r
 
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
-| Registered modules discovered   | 100%        | All modules in config have discovery  |
-| Unregistered dirs excluded      | 100%        | No discovery from non-module dirs     |
 | Alias collision rate            | 0%          | All aliases unique                    |
-
-### 8.2 Performance
-
-| Metric                          | Target      | Measurement                           |
-| ------------------------------- | ----------- | ------------------------------------- |
-| Cold cache Livewire discovery   | < 2s        | Time to scan and register all         |
-| Warm cache overhead             | ~0ms        | Cache hit, no filesystem access       |
 
 ### 8.3 Maintainability
 

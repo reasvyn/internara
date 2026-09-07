@@ -236,14 +236,6 @@ preset.
 | NFR-06IB6-S3 | `deploy:configure` must never write secrets or clear `APP_KEY` |
 | NFR-06IB6-S4 | No secrets may be committed; `.env` remains excluded via `.gitignore` |
 
-### 5.2 Performance
-
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-06IB6-P1* | `deploy:detect` must complete in under 5 seconds — manual perf, not unit-testable |
-| NFR-06IB6-P2* | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) — manual perf, not unit-testable |
-| NFR-06IB6-P3* | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them — infra, verified manually |
-
 ### 5.3 Reliability
 
 | ID     | Requirement |

@@ -157,9 +157,6 @@ explicit.
 | NFR-YB22J-S1 | SMTP passwords and encrypted settings must use Laravel `Crypt` (AES-256-CBC)         |
 | NFR-YB22J-S2 | Setting keys must match `^[a-z][a-z0-9_.]*$` to prevent injection                   |
 | NFR-YB22J-S3 | Only `super_admin` may create/delete settings; `admin` may view/update               |
-| NFR-YB22J-P1 | Settings reads from cache must complete in < 5ms                                    |
-| NFR-YB22J-P2 | System Settings page load must complete in < 500ms                                  |
-| NFR-YB22J-P4 | `SettingObserver` cache invalidation must complete in < 10ms per key                 |
 | NFR-YB22J-R1 | `SaveSystemSettingsAction` must execute within a single DB transaction               |
 | NFR-YB22J-R2 | `Brand::resolve()` must catch exceptions and fall back to `AppInfo` defaults        |
 | NFR-YB22J-R3 | Cookie-based preferences must degrade gracefully: invalid values fall back to defaults |
@@ -385,16 +382,11 @@ Acceptable — `admin` can read, only `super_admin` mutates (NFR-YB22J-S3), and 
 
 | Metric                                   | Target |
 | ---------------------------------------- | ------ |
-| Brand resolution failure → fallback      | 100%   |
-| Partial write prevention (transaction)   | 100%   |
-| Cookie fallback for invalid values       | 100%   |
 
 ### Coverage
 
 | Metric                          | Target |
 | ------------------------------- | ------ |
-| Setting keys declared in config | 100%   |
-| Setting reads via helper/API    | 100%   |
 | FR coverage in tests            | ≥ 90%  |
 
 ---

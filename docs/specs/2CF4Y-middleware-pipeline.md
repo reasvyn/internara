@@ -116,7 +116,6 @@ limiter to apply to which route group.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-2CF4Y-MW1 | Middleware execution overhead MUST be < 2ms per layer |
 | NFR-2CF4Y-MW2 | Security headers MUST NOT break Vite hot module replacement in development |
 | NFR-2CF4Y-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
 | NFR-2CF4Y-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
@@ -228,10 +227,7 @@ understand actual limits.
 
 | Metric | Target |
 | ------ | ------ |
-| Routes with appropriate authorization middleware | 100% |
-| Security headers present on all responses | 100% |
 | Middleware execution overhead per request | < 10ms total |
-| Rate-limited endpoints functioning correctly | 100% |
 
 ---
 

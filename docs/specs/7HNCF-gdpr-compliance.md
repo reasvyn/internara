@@ -520,8 +520,6 @@ Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Every user deletion creates a GDPR log | 100% | `GdprDeletionLog` count matches `user_deleted` activity log count |
-| Metadata snapshot captured before deletion | 100% | Snapshot fields are non-null for all log entries |
 | Log records are immutable | 0 updates | No UPDATE queries on `gdpr_deletion_logs` table |
 
 ### Performance

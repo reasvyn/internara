@@ -172,9 +172,6 @@ absences need coordinator approval.
 | NFR-1KSWL-S2 | Attendance records must become immutable after configurable grace period (default 24h from clock-out) |
 | NFR-1KSWL-S3 | Absence request processing must be idempotent — double-approval must be rejected |
 | NFR-1KSWL-S4 | GPS coordinates must be optional (not all devices provide location) |
-| NFR-1KSWL-P1 | Logbook entry list must load in < 500ms for 90 entries (one per day for 3-month PKL) |
-| NFR-1KSWL-P2 | Attendance clock-in/out must complete in < 1s |
-| NFR-1KSWL-P3 | PDF logbook report generation must complete in < 10s for 90 entries |
 | NFR-1KSWL-R1 | Logbook submission must be wrapped in a database transaction |
 | NFR-1KSWL-R2 | Clock-in/out must be atomic — no race condition on daily unique constraint |
 | NFR-1KSWL-U1 | Student clock-in UI must show current status (not clocked in / clocked in at HH:MM) |

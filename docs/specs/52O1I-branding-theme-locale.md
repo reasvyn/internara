@@ -145,7 +145,6 @@ apply on every request via middleware without database queries.
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
 | NFR-52O1I-S4 | Brand asset uploads must validate MIME type and file size server-side                |
-| NFR-52O1I-P3 | Theme CSS variable generation must complete in < 50ms and be cached for 1h          |
 | NFR-52O1I-U1 | Logo/favicon upload must show live preview immediately without page reload           |
 | NFR-52O1I-U2 | Color preset selection must show visual preview of all 4 colors before applying      |
 | NFR-52O1I-A2 | Logo/favicon upload must show alt text preview for screen readers                   |
@@ -316,8 +315,6 @@ through to the next.
 
 | Metric                                   | Target |
 | ---------------------------------------- | ------ |
-| Brand resolution failure → fallback      | 100%   |
-| Cookie fallback for invalid theme/locale | 100%   |
 
 ---
 

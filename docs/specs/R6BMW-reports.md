@@ -200,7 +200,6 @@ communicated to the student or used for certificate generation.
 | NFR-R6BMW-R1 | Grade calculation must be idempotent — recalculating the same Report produces identical results given identical source data |
 | NFR-R6BMW-R2 | Report finalization must be atomic — status transition, snapshot capture, and event dispatch must succeed or fail as a unit |
 | NFR-R6BMW-U1 | Admin must see clear DRAFT/FINALIZED status indicators on all Report views |
-| NFR-R6BMW-U2 | Download endpoint must return appropriate `Content-Type` and `Content-Disposition` headers for PDF files |
 | NFR-R6BMW-M1 | Report model must use `#[Fillable]` attribute for mass-assignment protection |
 | NFR-R6BMW-M2 | All Actions must extend BaseCommandAction and follow Action Triad conventions |
 
