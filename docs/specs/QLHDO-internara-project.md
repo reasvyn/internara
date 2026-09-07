@@ -229,7 +229,7 @@ acceptance criteria; the owning spec is authoritative for verification.
 | NFR-A3 | Every primary flow (setup, login, PKL lifecycle) MUST be covered by a browser journey test asserting role-based visibility | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 > **Curriculum/regulatory alignment** (legacy §11 of the QLHDO draft) is tracked outside the
-> spec system as a research input in `docs/refs/curriculum-compliance.md` (non-testable
+> spec system as a research input in `docs/refs/articles/curriculum-compliance.md` (non-testable
 > description of how the system maps to Indonesian PKL regulations). It is intentionally **not** a
 > spec requirement — regulations evolve and are outside engineering control.
 
@@ -401,7 +401,7 @@ Issue that tracks resolution; see the spec template for row conventions.
 - `docs/refs/modules/index.md` — module dependency graph and registration
 - `config/module.php` — module bootstrap order
 - `docs/architecture.md` — 4-layer model, Action Triad
-- `docs/refs/curriculum-compliance.md` — research input on Indonesian PKL regulation alignment
+- `docs/refs/articles/curriculum-compliance.md` — research input on Indonesian PKL regulation alignment
   (non-spec, intentionally outside the spec system)
 - **Related specs:** every spec in this directory — each derives scope from this spec-zero and/or is
   indexed under [index.md](index.md)
