@@ -21,8 +21,8 @@
         {{ $slot }}
 
         <div class="mt-8 flex items-center justify-center gap-3 text-center">
-            <div class="inline-flex"><x-ui::components.theme-switch /></div>
-            <livewire:settings.lang-switch />
+            <div class="inline-flex"><x-settings::locale.theme-switch /></div>
+            <livewire:settings.locale.lang-switch />
         </div>
     </div>
 </x-ui::layouts.base>

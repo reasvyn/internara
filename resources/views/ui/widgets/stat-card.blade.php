@@ -12,8 +12,7 @@
             <x-ts-icon :name="$tsIcon" class="size-5" />
         </div>
         <div class="min-w-0">
-            {{-- Wrap instead of truncating: six-across dashboards cut labels like
-                "Supervised Students" down to "Supervis...". --}}
+            {{-- Wrap instead of truncating: six-across dashboards clip long stat labels. --}}
             <p class="text-base-content/50 line-clamp-2 text-xs leading-snug">{{ $title }}</p>
             <p class="text-2xl font-bold tracking-tight">{{ $value }}</p>
         </div>

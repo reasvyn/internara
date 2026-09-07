@@ -3,7 +3,7 @@
 ])
 
 @php
-    $appName = brand('name') ?: config('app.name', 'Internara');
+    $appName = brand('name') ?: config('app.name', __('common.app_name'));
     $appVersion = app_info('version') ?: config('app.version', '—');
     $env = app()->environment();
     $phpVersion = PHP_VERSION;

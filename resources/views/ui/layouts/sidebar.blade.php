@@ -100,8 +100,8 @@
         <div class="border-base-content/10 space-y-3 border-t p-3">
             {{-- Mobile-only: theme + lang --}}
             <div class="flex items-center justify-between gap-2 md:hidden">
-                <x-ui::components.theme-switch size="sm" />
-                <livewire:settings.lang-switch />
+                <x-settings::locale.theme-switch size="sm" />
+                <livewire:settings.locale.lang-switch />
             </div>
 
             {{-- Desktop: collapse toggle — WAJIB pakai store.toggle(), bukan mutasi collapsed getter.

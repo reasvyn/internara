@@ -46,8 +46,8 @@
         {{-- Default actions if no slot provided --}}
         @if (! isset($actions))
             <div class="hidden items-center gap-2 md:flex">
-                <x-ui::components.theme-switch size="sm" />
-                <livewire:settings.lang-switch />
+                <x-settings::locale.theme-switch size="sm" />
+                <livewire:settings.locale.lang-switch />
             </div>
         @endif
 
@@ -85,8 +85,8 @@
             {{ $slot }}
             <div class="border-base-content/10 mt-2 flex items-center justify-between border-t pt-3">
                 <div class="flex items-center gap-2">
-                    <x-ui::components.theme-switch size="sm" />
-                    <livewire:settings.lang-switch />
+                    <x-settings::locale.theme-switch size="sm" />
+                    <livewire:settings.locale.lang-switch />
                 </div>
                 @isset($mobileExtra)
                     {{ $mobileExtra }}

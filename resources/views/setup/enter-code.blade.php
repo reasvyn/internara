@@ -9,10 +9,10 @@
 
                     <div class="flex items-center gap-2">
                         <div class="inline-flex">
-                            <x-ui::components.theme-switch />
+                            <x-settings::locale.theme-switch />
                         </div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
-                        <livewire:settings.lang-switch class="px-2" />
+                        <livewire:settings.locale.lang-switch class="px-2" />
                     </div>
                 </div>
             </div>

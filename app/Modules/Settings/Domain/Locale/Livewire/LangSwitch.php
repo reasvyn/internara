@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Settings\Livewire;
+namespace App\Modules\Settings\Domain\Locale\Livewire;
 
 use App\Modules\Settings\Domain\Locale\Support\Locale;
 use Illuminate\View\View;

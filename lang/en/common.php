@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'app_name' => 'Internara',
     'language' => [
         'switch' => 'Switch Language',
         'indonesian' => 'Bahasa Indonesia',

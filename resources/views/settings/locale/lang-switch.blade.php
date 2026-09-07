@@ -27,7 +27,7 @@
             <button
                 type="button"
                 @if (isset($__livewire))
-                    wire:click="setLocale('{{ $code }}')"
+                        wire:click="changeLocale('{{ $code }}')"
                 @else
                     x-on:click="document.cookie='locale={{ $code }};path=/'; location.reload()"
                 @endif
@@ -58,7 +58,7 @@
                     <x-ts-dropdown.items
                         :text="$meta['label']"
                         icon="globe-alt"
-                        wire:click="setLocale('{{ $code }}')"
+                    wire:click="changeLocale('{{ $code }}')"
                         :active="$current === $code"
                     />
                 @else

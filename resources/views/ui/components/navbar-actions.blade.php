@@ -13,14 +13,14 @@
     {{-- Theme Switcher --}}
     @if ($showTheme)
         <div class="hidden md:block">
-            <x-ui::components.theme-switch />
+            <x-settings::locale.theme-switch />
         </div>
     @endif
 
     {{-- Language Switcher --}}
     @if ($showLanguage)
         <div class="hidden md:block">
-            <livewire:settings.lang-switch />
+            <livewire:settings.locale.lang-switch />
         </div>
     @endif
 

@@ -11,9 +11,9 @@
 
                     <div class="flex items-center gap-3">
                         <div class="inline-flex">
-                            <x-ui::components.theme-switch />
+                            <x-settings::locale.theme-switch />
                         </div>
-                        <livewire:settings.lang-switch />
+                        <livewire:settings.locale.lang-switch />
                     </div>
                 </div>
             </div>

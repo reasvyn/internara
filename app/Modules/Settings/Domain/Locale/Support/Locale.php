@@ -30,9 +30,21 @@ final class Locale
 
     public static function current(): string
     {
-        $locale = Cookie::get('locale', config('app.locale', self::DEFAULT_LOCALE));
+        $locale = Cookie::get('locale');
 
-        return isset(self::SUPPORTED_LOCALES[$locale]) ? $locale : self::DEFAULT_LOCALE;
+        if (isset(self::SUPPORTED_LOCALES[$locale])) {
+            return $locale;
+        }
+
+        $stored = setting('default_locale');
+
+        if (isset(self::SUPPORTED_LOCALES[$stored])) {
+            return (string) $stored;
+        }
+
+        $config = config('app.locale', self::DEFAULT_LOCALE);
+
+        return isset(self::SUPPORTED_LOCALES[$config]) ? $config : self::DEFAULT_LOCALE;
     }
 
     public static function all(): array
