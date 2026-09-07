@@ -4,63 +4,133 @@
          bootstrap="vendor/autoload.php"
          colors="true"
 >
+    <!--
+        Test suites by module. Each module suite spans all four test types
+        (docs/guides/infra/testing.md §Structure):
+
+          tests/Arch/{Module}/*.php    — Architecture / contract tests
+          tests/Unit/{Module}/*.php    — Unit tests (Entity, DTO, Enum, Model)
+          tests/Feature/{Module}/*.php — Feature tests (Action, Livewire, Policy)
+          tests/Browser/{Module}/*.php — Browser / E2E tests (Node runner, no PHP)
+
+        Build order (docs/specs/index.md §Build Order). All modules are
+        registered even when their spec-driven suites are not yet rewritten;
+        empty directories simply discover no tests.
+    -->
     <testsuites>
-        <!-- Build order (docs/specs/index.md §Build Order). All modules are
-             registered even when their spec-driven suites are not yet
-             rewritten; empty suites simply discover no tests. -->
         <testsuite name="Core">
-            <directory>tests/Core</directory>
+            <directory>tests/Arch/Core</directory>
+            <directory>tests/Unit/Core</directory>
+            <directory>tests/Feature/Core</directory>
+            <directory>tests/Browser/Core</directory>
         </testsuite>
         <testsuite name="Setup">
-            <directory>tests/Setup</directory>
+            <directory>tests/Arch/Setup</directory>
+            <directory>tests/Unit/Setup</directory>
+            <directory>tests/Feature/Setup</directory>
+            <directory>tests/Browser/Setup</directory>
         </testsuite>
         <testsuite name="Settings">
-            <directory>tests/Settings</directory>
+            <directory>tests/Arch/Settings</directory>
+            <directory>tests/Unit/Settings</directory>
+            <directory>tests/Feature/Settings</directory>
+            <directory>tests/Browser/Settings</directory>
         </testsuite>
         <testsuite name="Academics">
-            <directory>tests/Academics</directory>
+            <directory>tests/Arch/Academics</directory>
+            <directory>tests/Unit/Academics</directory>
+            <directory>tests/Feature/Academics</directory>
+            <directory>tests/Browser/Academics</directory>
         </testsuite>
         <testsuite name="Auth">
-            <directory>tests/Auth</directory>
+            <directory>tests/Arch/Auth</directory>
+            <directory>tests/Unit/Auth</directory>
+            <directory>tests/Feature/Auth</directory>
+            <directory>tests/Browser/Auth</directory>
         </testsuite>
         <testsuite name="User">
-            <directory>tests/User</directory>
+            <directory>tests/Arch/User</directory>
+            <directory>tests/Unit/User</directory>
+            <directory>tests/Feature/User</directory>
+            <directory>tests/Browser/User</directory>
         </testsuite>
         <testsuite name="SysAdmin">
-            <directory>tests/SysAdmin</directory>
+            <directory>tests/Arch/SysAdmin</directory>
+            <directory>tests/Unit/SysAdmin</directory>
+            <directory>tests/Feature/SysAdmin</directory>
+            <directory>tests/Browser/SysAdmin</directory>
         </testsuite>
         <testsuite name="Partners">
-            <directory>tests/Partners</directory>
+            <directory>tests/Arch/Partners</directory>
+            <directory>tests/Unit/Partners</directory>
+            <directory>tests/Feature/Partners</directory>
+            <directory>tests/Browser/Partners</directory>
         </testsuite>
         <testsuite name="Program">
-            <directory>tests/Program</directory>
+            <directory>tests/Arch/Program</directory>
+            <directory>tests/Unit/Program</directory>
+            <directory>tests/Feature/Program</directory>
+            <directory>tests/Browser/Program</directory>
         </testsuite>
         <testsuite name="Enrollment">
-            <directory>tests/Enrollment</directory>
+            <directory>tests/Arch/Enrollment</directory>
+            <directory>tests/Unit/Enrollment</directory>
+            <directory>tests/Feature/Enrollment</directory>
+            <directory>tests/Browser/Enrollment</directory>
         </testsuite>
         <testsuite name="Journals">
-            <directory>tests/Journals</directory>
+            <directory>tests/Arch/Journals</directory>
+            <directory>tests/Unit/Journals</directory>
+            <directory>tests/Feature/Journals</directory>
+            <directory>tests/Browser/Journals</directory>
         </testsuite>
         <testsuite name="Incident">
-            <directory>tests/Incident</directory>
+            <directory>tests/Arch/Incident</directory>
+            <directory>tests/Unit/Incident</directory>
+            <directory>tests/Feature/Incident</directory>
+            <directory>tests/Browser/Incident</directory>
         </testsuite>
         <testsuite name="Assessment">
-            <directory>tests/Assessment</directory>
+            <directory>tests/Arch/Assessment</directory>
+            <directory>tests/Unit/Assessment</directory>
+            <directory>tests/Feature/Assessment</directory>
+            <directory>tests/Browser/Assessment</directory>
         </testsuite>
         <testsuite name="Evaluation">
-            <directory>tests/Evaluation</directory>
+            <directory>tests/Arch/Evaluation</directory>
+            <directory>tests/Unit/Evaluation</directory>
+            <directory>tests/Feature/Evaluation</directory>
+            <directory>tests/Browser/Evaluation</directory>
         </testsuite>
         <testsuite name="Assignment">
-            <directory>tests/Assignment</directory>
+            <directory>tests/Arch/Assignment</directory>
+            <directory>tests/Unit/Assignment</directory>
+            <directory>tests/Feature/Assignment</directory>
+            <directory>tests/Browser/Assignment</directory>
         </testsuite>
         <testsuite name="Document">
-            <directory>tests/Document</directory>
+            <directory>tests/Arch/Document</directory>
+            <directory>tests/Unit/Document</directory>
+            <directory>tests/Feature/Document</directory>
+            <directory>tests/Browser/Document</directory>
         </testsuite>
         <testsuite name="Certification">
-            <directory>tests/Certification</directory>
+            <directory>tests/Arch/Certification</directory>
+            <directory>tests/Unit/Certification</directory>
+            <directory>tests/Feature/Certification</directory>
+            <directory>tests/Browser/Certification</directory>
         </testsuite>
         <testsuite name="Reports">
-            <directory>tests/Reports</directory>
+            <directory>tests/Arch/Reports</directory>
+            <directory>tests/Unit/Reports</directory>
+            <directory>tests/Feature/Reports</directory>
+            <directory>tests/Browser/Reports</directory>
+        </testsuite>
+        <testsuite name="UI">
+            <directory>tests/Arch/UI</directory>
+            <directory>tests/Unit/UI</directory>
+            <directory>tests/Feature/UI</directory>
+            <directory>tests/Browser/UI</directory>
         </testsuite>
     </testsuites>
     <source>

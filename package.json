@@ -9,7 +9,7 @@
         "build": "vite build",
         "format": "vendor/bin/pint && prettier --write .",
         "lint": "vendor/bin/pint --test && prettier --check .",
-        "test:browser": "node tests/Browser/example.test.mjs"
+        "test:browser": "node --test tests/Browser/"
     },
     "dependencies": {
         "@alpinejs/anchor": "^3.17.1",
