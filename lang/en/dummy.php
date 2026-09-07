@@ -6,7 +6,6 @@ return [
     'title' => 'Dummy Data Seeder',
     'starting' => 'Seeding dummy data...',
     'complete' => 'Dummy data seeded successfully.',
-    'production_guard' => 'Dummy seeding is disabled in the production environment.',
     'demo_accounts' => 'Demo accounts (password: :password)',
     'summary_header' => 'Seed summary',
 

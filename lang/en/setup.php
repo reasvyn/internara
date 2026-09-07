@@ -155,7 +155,6 @@ return [
             'discover_complete' => 'Module discovery caches warmed.',
             'discover_failed' => 'Module discovery failed',
         ],
-        'dummy_skipped_production' => 'Demo data skipped: APP_ENV is production. Demo seeding is not allowed in production.',
     ],
 
     'reset_token' => [

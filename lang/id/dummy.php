@@ -6,7 +6,6 @@ return [
     'title' => 'Seeder Data Dummy',
     'starting' => 'Menyemai data dummy...',
     'complete' => 'Data dummy berhasil disemai.',
-    'production_guard' => 'Penyemaian dummy dinonaktifkan pada lingkungan produksi.',
     'demo_accounts' => 'Akun demo (password: :password)',
     'summary_header' => 'Ringkasan penyemaian',
 

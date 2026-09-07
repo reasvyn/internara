@@ -155,7 +155,6 @@ return [
             'discover_complete' => 'Cache penemuan module dihangatkan.',
             'discover_failed' => 'Pendaftaran modul gagal',
         ],
-        'dummy_skipped_production' => 'Data demo dilewati: APP_ENV adalah production. Pengisian data demo tidak diizinkan di production.',
     ],
 
     'reset_token' => [

@@ -30,7 +30,7 @@ final class SetupInstallCommand extends Command
         {--check-only : Run environment audit without provisioning}
         {--optimize : Cache config, routes, views, and events (production only)}
         {--url= : The application URL (e.g., https://example.com)}
-        {--with-dummy : Seed demo data (DummySeeder) after provisioning (dev only)}';
+        {--with-dummy : Seed demo data (DummySeeder) after provisioning}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
@@ -76,14 +76,11 @@ final class SetupInstallCommand extends Command
             if ($this->option('with-dummy')) {
                 $this->newLine();
 
-                if ($this->seedDummyData->execute()) {
-                    $this->components->task(
-                        __('setup.cli.tasks.dummy_data'),
-                        fn () => true,
-                    );
-                } else {
-                    $this->components->warn(__('setup.cli.dummy_skipped_production'));
-                }
+                $this->seedDummyData->execute();
+                $this->components->task(
+                    __('setup.cli.tasks.dummy_data'),
+                    fn () => true,
+                );
             }
 
             $tokenData = $this->generateToken->execute();

@@ -7,15 +7,14 @@ namespace Database\Seeders;
 use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Settings\Models\Setting;
 use Illuminate\Database\Seeder;
-use RuntimeException;
 use Spatie\Permission\Models\Role;
 use Tests\Support\DummyData;
 
 /**
  * Opt-in entry point for the factory-driven demo dataset.
  *
- * Implements docs/specs/3UOZP-dummy-data.md §6.1: refuses to run in production (NFR-S1),
- * reuses base-seeded roles/settings/active academic year (FR-E4, FR-H14), delegates
+ * Implements docs/specs/3UOZP-dummy-data.md §6.1, reuses base-seeded
+ * roles/settings/active academic year (FR-E4, FR-H14), delegates
  * all generation to Tests\Support\DummyData (FR-E2), and prints a bilingual per-entity
  * summary via __() (FR-E5, NFR-U1). Never registered in DatabaseSeeder or SetupSeeder
  * (FR-E3, DD-3).
@@ -24,11 +23,6 @@ class DummySeeder extends Seeder
 {
     public function run(): void
     {
-        // NFR-S1 — refuse to run in production.
-        if (app()->environment('production')) {
-            throw new RuntimeException(__('dummy.production_guard'));
-        }
-
         // FR-E4 — call base seeders only when their data is absent.
         $this->seedBaseDataWhenAbsent();
 
