@@ -49,13 +49,13 @@ class AuditLogManager extends Component
 
         $logs = $query->latest()->paginate(20);
 
-        $modules = Cache::remember('audit_log.modules', 300, fn () => Activity::distinct()->pluck('log_name')->filter()->sort()->values()
+        $modules = Cache::remember(config('cache-keys.audit_log_modules'), 300, fn () => Activity::distinct()->pluck('log_name')->filter()->sort()->values()
         );
 
-        $actions = Cache::remember('audit_log.actions', 300, fn () => Activity::distinct()->pluck('description')->filter()->sort()->values()
+        $actions = Cache::remember(config('cache-keys.audit_log_actions'), 300, fn () => Activity::distinct()->pluck('description')->filter()->sort()->values()
         );
 
-        $users = Cache::remember('audit_log.users', 300, fn () => User::select('id', 'name')->orderBy('name')->get()
+        $users = Cache::remember(config('cache-keys.audit_log_users'), 300, fn () => User::select('id', 'name')->orderBy('name')->get()
         );
 
         return view('sysadmin.observability.audit-log-manager', [

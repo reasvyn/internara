@@ -27,6 +27,10 @@ return [
     'settings_keys' => 'settings.keys',
     'settings_key' => 'settings.',
     'school_entity' => 'academics.school.entity',
+    'registration_mentors' => 'registration.verification.mentors',
+    'audit_log_modules' => 'audit_log.modules',
+    'audit_log_actions' => 'audit_log.actions',
+    'audit_log_users' => 'audit_log.users',
     'user_single' => 'user.',
     'users_count' => 'users.count',
 ];

@@ -73,7 +73,7 @@ class RegistrationVerification extends Component
     #[Computed]
     public function mentors(): Collection
     {
-        return Cache::remember('registration.verification.mentors', 300, fn () => User::role(['teacher', 'supervisor'])->select('id', 'name', 'email')->get()
+        return Cache::remember(config('cache-keys.registration_mentors'), 300, fn () => User::role(['teacher', 'supervisor'])->select('id', 'name', 'email')->get()
         );
     }
 
