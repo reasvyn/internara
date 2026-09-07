@@ -1,444 +1,362 @@
 # AGENTS.md — Navigation Hub for AI Agents
 
-Mental model and navigation map for AI agents.
-**Does NOT duplicate `docs/`** — points there for rules, patterns, and depth.
-**Rule bodies live in `.agents/rules/{rule}.md`** — this file indexes them; load a rule file when
-a task reaches its concern.
+Mental model and operating contract for AI agents working on Internara. This file is the
+**navigation hub**, not the rule book: it points to the authoritative documentation under `docs/`
+and never duplicates it.
 
-> **Terminology (homespace vs workspace):** when the user says **agent homespace** they mean the
-> local configuration at **`~/.agents/`** (user-level — contents vary per user); when they say
-> **agent workspace** they mean the project-level overlay at **`./.agents/`** (this repo:
-> `internara/.agents/`). Homespace is whatever the user keeps at `~/.agents/`; workspace is the
-> project-specific instantiation. Paths below are workspace-relative (`.agents/...`) unless prefixed
-> with `~/`.
+**Single Source of Truth (SSoT) priority** when sources conflict: `adr > specs > guides > code > refs`.
+Higher wins — but never trust blindly: verify via `git log --follow` / `git blame` and intent before
+acting. If history is silent or contradictory, treat as a finding and justify the decision.
 
-
-## Agent Workflow — Canonical
-
-**Every instruction MUST run the full cycle** (`UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE`)
-— any instruction, in any form: a one-line question, a bug report, a feature request, a docs tweak,
-or an audit.
-
-The pipeline runs **silently**: the 5 steps are internal reasoning — never narrate them. Surface to
-the user **only**:
-
-1. Ambiguity that needs their input.
-2. A decision that changes scope, structure, or behavior.
-3. An L-size session plan (one short paragraph).
-4. One checkpoint before commit (M-size) or per-session (L-size).
-5. The final report (what changed, what was verified, caveats).
-
-```
-UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE
-```
-
-| Step | Purpose | Core questions answered | Key outputs |
-|------|---------|-------------------------|-------------|
-| **1. Understand** | Intent, scope, constraints before any exploration | What is asked? What is the governing spec? What is affected? How big is it? | Governing spec + FR/NFR/UC IDs, phase & size (S/M/L), affected modules/layers/files, blockers, reordered instruction list |
-| **2. Plan** | Context gathering, approach selection, and design | What exists today? Which approach? What contracts? | Read file/docs inventory, 2+ considered approaches, chosen design (Action triad, Entity/DTO/Model contracts, error & cache strategy), test & doc plan |
-| **3. Implement** | Surgical execution + documentation | What changes, minimally and cleanly? | Code edits (preserving unrelated code), doc/PHPDoc updates, automation/scripts |
-| **4. Verify** | Quality gates, batched once | Is anything broken or lost? | `git status`/`diff` review, style checks, targeted & arch-guard scans, full suite only on-demand |
-| **5. Summarize** | Commit and report | What was delivered and what remains? | Staged commit `type(scope): desc`, final report (changes, verification, caveats, next steps) |
-
-> **Mapping from legacy 9-step (for reference):** Understand absorbs `Understand + Define & Scope`; Plan absorbs `Explore + Plan + Design`; Implement absorbs `Develop + Document`; Verify = `Test & Verify`; Summarize = `Commit & Report`. All invariants and checks remain — only the grouping is simplified.
-
-### Step 1 — Understand
-
-Internalize intent, not literal words. Do all scoping before reading files.
-
-- **Intent & constraints** — what the user actually wants, hidden requirements, non-goals, hard constraints (deadlines, scope limits, compatibility).
-- **Spec-First Doctrine (non-negotiable)** — locate the governing spec in `docs/specs/` via `docs/specs/index.md` (foundation, module, or feature); read its FR/NFR/UC IDs. No behavior without a requirement ID; if none exists, write the spec first — spec-first, never fix-first. Spec outranks literal wording and existing code. If spec and code disagree, fix code to spec; if spec is demonstrably wrong, amend spec with a recorded decision first, then align code and tests.
-- **SSoT Priority Framework (when sources conflict)** — `adr > specs > guides > code > refs` — higher wins when resolving contradictions. **Never trust blindly:** even the highest (ADR) must be verified via `git log --follow`, `git blame`, and intent before acting. If history is silent or contradictory, treat as a finding and justify the decision comprehensively.
-- **Define & scope** — list affected modules, layers (Action/Entity/DTO/Model/Livewire), and files; identify blockers (pending migrations, config, service registration, permission/policy gaps).
-- **Classify** — SDLC phase (see §Phase Classification) and size S/M/L (see §Size Triage). If **L** (>10 files / multi-module / cross-cutting), inform the user in one short paragraph and split into sessions before proceeding (L-size protocol).
-- **Instruction ordering** — if the message batches 2+ instructions, decompose → score by impact-to-effort ratio → sort → honor dependencies → group same-area work → surface resulting order only when it differs from the user's sequence (see `.agents/rules/instruction-ordering.md`).
-- **Task type** — bug fix / feature / refactor / docs / audit / review / tooling; determines which downstream skills to load next (load only what the task actually uses; an unneeded skill bloats context).
-
-**Exit criteria:** governing spec identified (or explicit recorded decision to proceed without), scope bounded, phase & size classified, instruction order decided.
-
-### Step 2 — Plan
-
-Gather context, decide approach, design contracts — before touching code.
-
-- **Explore (context gathering)** — read module docs, architecture docs (`docs/guides/arch/*.md`), conventions (`docs/conventions.md`), and the **full current content of every file you may touch**; survey `tools/` for existing devtools before manual work (Automation-First — reuse `scan_*.py` scanners instead of manual greps; if 3+ items would be touched repetitively, script it).
-- **Plan (approach selection)** — consider **2+ approaches** and pick one; decide Action type (Command / Read / Process per `docs/guides/arch/action-pattern.md`), Entity boundaries (`final readonly` + `fromModel()`), DTO needs (C7: DTO for 3+ params), test strategy (spec-traceable, see Verification Strategy), doc changes, localization, and security implications.
-- **Design (contracts)** — define class contracts up front:
-  - Action signature and triad base class; `declare(strict_types=1)` (D1)
-  - Entity `final readonly`, forbidden imports (C5), business rules delegated to Entity
-  - DTO `BaseData`, forbidden imports (C6)
-  - Model `#[Fillable]` (D4), FK with `onDelete`/`onUpdate` (D6)
-  - Error handling: `RejectedException` not `RuntimeException` (C8)
-  - Cache strategy: registered keys in `config/cache-keys.php`, no inline keys (C4)
-  - Policy/authorization, validation (no raw request to create/update — D5), `__()` for user strings (D3)
-- **Risk & verification plan** — how verification will run (change-type matrix in AGENTS.md §Verification Strategy), which arch-guard scanners apply, and whether full suite is justified (on-demand only).
-
-**Exit criteria:** context inventoried, chosen approach documented (even if just internally), contracts sketched, test & doc plan clear. No code has been written yet.
-
-### Step 3 — Implement
-
-Execute surgically and keep code, specs, docs, and tests aligned.
-
-- **Surgical edits** — smallest change that satisfies the requirement; never full-rewrite a large file by default; preserve unrelated code, comments, formatting, and context. Read before edit, edit → `git diff` sanity check, repeat.
-- **Conventions (non-negotiable invariants):**
-  - `declare(strict_types=1)` (D1), no debug calls `dd/dump/ray/var_dump` (D2), `__()` for every user-facing string (D3)
-  - No Model mutations in Livewire — delegate to Actions (C1); constructor injection only, no `app()->make` (C2)
-  - No raw SQL without bindings (C3); no raw `$request->all()` to create/update — use validated DTO/FormRequest (D5)
-  - Cache keys via registry (C4), correct exception hierarchy (C8), `#[Fillable]` (D4), FK handling (D6)
-  - No unescaped `{!! !!}` for user content; eager loading to avoid N+1; DRY extraction — prefer more, smaller, well-named modules over one dense blob
-- **Automation-First in execution** — for repetitive / batch / pattern work (bulk renames, 3+ similar edits, seed data, mass scans), script it or reuse a devtool in `tools/`; batch your own edits into few passes instead of many round-trips.
-- **Documentation-first** — update module docs, architecture docs, conventions, and PHPDoc on public methods **before/after** code as part of the same step; keep `docs/specs/*.md` as SSOT and align docs ↔ code ↔ tests (Clean Code & Dedup-Align Doctrine — deduplicate on sight, reuse or extract instead of copy-pasting). History is tracked via `git log --follow -- <file>` and `git diff`, not inline metadata.
-- **Business rules in Entities** — Actions orchestrate; Entities own invariants; DTOs carry data; Models are persistence only.
-
-**Exit criteria:** all planned changes applied, docs/PHPDoc in sync, no unrelated drift, `git status` shows only intended files.
-
-### Step 4 — Verify
-
-Batch all changes first, then verify **once**. Full suite is ~2GB+, 10+ min — never per-edit.
-
-- **Version-control verification (Edit Policy, every change):** `git status` + `git diff` (and `git diff --stat`) before/after each edit — only intended files changed, nothing dropped; `git diff` is the lossless-edit proof.
-- **Incremental style & build gates:**
-  - `vendor/bin/pint --dirty --test --format agent` (PHP + Blade via `Pint/laravel_blade`)
-  - `npx prettier --check <file>` for non-PHP (CSS/JS/JSON — `*.php`/`*.blade.php`/`*.md` ignored)
-  - `npm run build` for Blade/CSS/JS changes; visual inspection for `*.md`/config
-- **Targeted tests (spec-driven, not line-coverage):**
-  - `vendor/bin/pest --testsuite={ModuleName}` or `php artisan test --compact --filter={ClassName}`
-  - Every test traces to a spec FR/NFR/UC ID (`{SpecID}-{ReqID}: description`); no orphan tests, no spec gaps; coverage = requirements covered
-- **Arch-guard scanners (run as a batch):**
-  - `python3 tools/scan_violations.py` (C1-C8, D1-D6)
-  - `python3 tools/scan_class_contracts.py` (Action/Entity/DTO/Model/Enum)
-  - `python3 tools/scan_security.py` (XSS, SQLi, CSRF, auth)
-  - `python3 tools/scan_naming.py` · `tools/scan_conventions.py` · `tools/scan_doc_links.py`
-- **Full verification on-demand only** (merge-day or user explicitly asks):
-  - `php artisan test --compact` (full suite, all modules)
-  - Change-type matrix in `AGENTS.md` §Verification Strategy decides what is required for the current change type; default is targeted checks, not full suite.
-
-**Exit criteria:** change-type-appropriate gates pass; arch-guard clean or deviations explicitly justified/recorded; no silent tolerance of pre-existing warnings — fix safe adjacent issues or file a GitHub issue (`issue-writing` skill) before ending the session.
-
-### Step 5 — Summarize
-
-Close the loop: version-control checkpoint, commit, and a concise final report.
-
-- **Final git review** — `git status` + `git diff` one last time; stage **only intended files**, never secrets or unrelated changes; confirm nothing was lost.
-- **Commit** — format `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`; scope = module name; one concern per commit (group quick wins / interdependent changes; split strategically-separate concerns).
-- **Report (surface to user):** what changed (files/modules/specs), what was verified (which gates ran and their result), caveats / known limitations, and **recommended next steps** (pending work, follow-ups, or L-size session plans). Keep it short — narration discipline applies.
-- **Session handling** — for M-size: one checkpoint before commit; for L-size: per-session report + `git status`/`diff` review at the end of each session, never attempting L-size in one pass.
-- **Pre-commit checklist** (AGENTS.md) must pass: strict types, no debug calls, `__()` coverage, Action triad + DTO rule, Entity delegation, cache registry, N+1 check, escaped output, tests traceable to spec, pint/arch-guard as appropriate.
-- **Capture learnings (Self-Improvement Loop, judgment-based)** — write to `memory/` (evolving learnings) or `context/` (mandatory facts) **only when the information is worth saving for a future agent**: a durable decision, non-obvious trap/correction, recurring pattern, or constraint a future session would re-learn. Not an automatic per-summarize step — skip when nothing novel emerged. When captured: update the topic file in place, write a descriptive commit message, add/update a row in `context/index.md` or `memory/index.md`, and append a one-liner to `memory/learning-log.md`. Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. Reserve `/internara-learn --deep` (`git diff` mining) for sessions with substantive changes.
-
-**Exit criteria:** clean commit(s), report delivered, **learning captured** (memory updated, repeats promoted), repo left cleaner than found.
+> **Workflow contract:** Every instruction runs the full silent cycle
+> `UNDERSTAND → PLAN → IMPLEMENT → VERIFY → SUMMARIZE`. The 5 steps are internal reasoning — never
+> narrate them. Surface to the user only: ambiguity, scope/structure/behavior changes, an L-size
+> session plan, one M-size pre-commit checkpoint, and the final report.
+>
+> **Spec-first doctrine (non-negotiable):** no behavior without a requirement ID from a governing
+> spec in `docs/specs/`. If none exists, write the spec first — never fix-first. If spec and code
+> disagree, fix code to spec; if spec is demonstrably wrong, amend spec with a recorded decision
+> first, then align code and tests.
 
 ---
 
-## Project Snapshot — Quick Reference
+## 1. Documentation Map — Where to Find What
 
-> For the full detailed map, read `.agents/context/project-snapshot.md`. For tech stack, design principles, and boundaries, read `.agents/context/project-identity.md`.
+Every rule, pattern, and decision lives in `docs/`. AGENTS.md never re-states them — it routes you
+to the right file. When a doc's concern is touched, load the matching file (or template); do not
+re-derive the rule from this hub.
 
-### Identity
+### 1.1 Authoritative Docs
 
-| Fact | Value |
-|------|-------|
-| **Version** | v0.15.9 — Stabilization |
-| **Scope** | 19 modules = 18 business + UI + Core (698 PHP files, 45 migrations, 64 spec files = 62 feature + 2 meta, 17 web route files) |
-| **Single-tenant** | No `tenant_id` overhead — one instance per school |
-| **DB** | SQLite default / MySQL 8 / MariaDB 10.6 / PG 15 |
-| **Deploy** | Shared hosting ($5/mo) or VPS/Docker Compose |
-| **License** | MIT |
+| Concern | File | What it owns |
+|---|---|---|
+| Vision, values, what-we-do-not-do | [`docs/philosophy.md`](docs/philosophy.md) | "Why we exist" — the 7 principles + core values table |
+| 4-layer architecture, data flow, layer rules, circular-dependency safety | [`docs/architecture.md`](docs/architecture.md) | High-level architecture + Action Triad intro + dependency rules R1–R7 |
+| Coding conventions: PHP style, security, naming, performance, testing, localization, theming | [`docs/conventions.md`](docs/conventions.md) | C1–C8, D1–D6 invariants, pre-commit & code-review checklists |
+| Pattern catalog (Action Triad, Entity/Model/DTO/Enum, Event, Cache, Logging, Livewire, Service, Support, Repository, Policy, UI/UX, Testing) | [`docs/guides/arch/index.md`](docs/guides/arch/index.md) | One link per pattern → deep-dive `*-pattern.md` |
+| Modular architecture deep-dive (SRP, base classes, contracts, naming, accessibility, localization patterns) | [`docs/guides/arch/modular-pattern.md`](docs/guides/arch/modular-pattern.md) | §1–§23 pattern catalog with industry-standard alignment |
+| Feature / module specs (62 feature specs + 2 meta — one FR/NFR/UC set per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; status per spec; spec template is `docs/templates/spec-template.md` |
+| ADRs — why each architectural decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 6 groups (Foundation / Observability / Quality / Proxy / Strategy) |
+| Module conceptual docs (purpose, principles, business rules) | [`docs/refs/modules/{module}.md`](docs/refs/modules/index.md) | One conceptual + one reference per module |
+| Tooling — scanners, CLI flags, output schema, scanner inventory | [`tools/README.md`](tools/README.md) | The full scanner reference lives there; only the runner command is duplicated below |
+| Doc-type templates (skeleton + writing rules) | [`docs/templates/index.md`](docs/templates/index.md) | 10 templates — load the matching one when a doc's concern is touched |
 
-### Architecture — 4-Layer + Action Triad
+### 1.2 Pattern & Convention Quick Reference — One-Liners
 
-```
-User → Livewire → Command Action::execute(DTO) → Entity::fromModel() → Model::create/update
-      → $this->log() → $this->dispatchEvent() [queued, after commit] → ActionResponse
-```
+These are the **recognition cues** (one row per common pattern). The **full rule, why, and
+exception list** for every row lives in `docs/conventions.md` and `docs/guides/arch/*-pattern.md`.
 
-| Layer | Role |
-|-------|------|
-| **4 Presentation/UI** | Livewire, Blade, Policies, Routes, TallstackUI v4 + Alpine + Tailwind v4 |
-| **3 Business/Domain Ops** | Command/Read/Process Actions, Events/Listeners |
-| **2 Data/Persistent** | Models, Entities, DTOs, Enums |
-| **1 Framework/Infra** | Base classes, Contracts, Exceptions, Services |
+| You see | It should be | Where the rule lives |
+|---|---|---|
+| `Model::create()` in a Livewire component | Command Action via DI (C1) | `docs/conventions.md` §3.3 + `docs/guides/arch/livewire-pattern.md` |
+| `app()->make(...)` or `new ClassName()` outside provider | Constructor / method injection (C2) | `docs/conventions.md` §10 + `docs/guides/arch/service-pattern.md` |
+| `DB::raw("...$user...")` concatenation | Parameterized binding or Eloquent (C3) | `docs/conventions.md` §3.2 |
+| Inline `'cache_key'` string | Registered key in `config/cache-keys.php` (C4) | `docs/guides/arch/cache-pattern.md` |
+| Entity imports Action/Service/Livewire | Pure entity — only scalars + Model in `fromModel()` (C5) | `docs/guides/arch/entity-pattern.md` |
+| DTO imports Model/Entity | DTO carries scalars only (C6) | `docs/guides/arch/data-pattern.md` |
+| `execute(array $data)` for 3+ params | `execute(DTO $data)` (C7) | `docs/guides/arch/data-pattern.md` |
+| `throw new RuntimeException('business rule')` | `RejectedException` or `$this->fail()` (C8) | `docs/guides/arch/exception-pattern.md` |
+| `$fillable = [...]` property | `#[Fillable([...])]` PHP 8.4 attribute (D4) | `docs/guides/arch/model-pattern.md` |
+| `$request->all()` to `create()`/`update()` | `$request->only(...)` or DTO `->toArray()` (D5) | `docs/guides/arch/data-pattern.md` |
+| FK without `->onDelete()` / `->onUpdate()` | Explicit cascade/set-null/restrict (D6) | `docs/guides/arch/model-pattern.md` |
+| Missing `declare(strict_types=1)` | Mandatory except migrations/config (D1) | `docs/conventions.md` §2 |
+| `dd()` / `dump()` / `ray()` / `var_dump()` / `die()` in code | Removed (D2) | `docs/conventions.md` §2 |
+| Hardcoded English in Blade/notification | `__()` helper, dual `en` + `id` (D3) | `docs/conventions.md` §15 + `docs/guides/arch/modular-pattern.md` §23 |
+| `{!! $userContent !!}` for untrusted content | `{{ }}` (auto-escaped); `{!! !!}` only with sanitizer + inline justification | `docs/conventions.md` §3.1 |
+| `@php` block with business math in Blade | Computed property on Livewire; Blade binds only | `docs/conventions.md` §14.1 + `docs/guides/arch/livewire-pattern.md` |
 
-### Module Health (Summary)
+### 1.3 Code → Where It Lives (Navigation Table)
 
-- **Production-Ready:** Core, Auth, User, Settings, Setup, SysAdmin, Academics
-- **Stable-Needs Attention:** Program, Partners, Enrollment, Journals, Incident, Assignment, Reports
-- **Needs Work P0:** Assessment, Certification, Document
-- **Skeleton:** Evaluation
-
-Full details: `.agents/context/module-health.md`
-
----
-
-## Agent Registry — Workspace (internara-*)
-
-Eight project-specific agents overlay the homespace subagents. Each is a **thin command → agent → skill** triad: the command entrypoint delegates to the agent, the agent loads skills on demand. Same names as homespace but prefixed `internara-` — these own Internara-specific contexts. SSoT for names/descriptions is each file's frontmatter (name first, then description); this table navigates, it does not override.
-
-| Agent | Description (frontmatter) | Skill(s) | Command |
-|-------|---------------------------|----------|---------|
-| `internara-automator` | Tooling specialist — `script-automation` for `tools/*`; owns devtools, batch patterns, `scan_*.py` generators, Automation-First refactoring | `script-automation` | `internara-automate` |
-| `internara-builder` | Implementation specialist — full 4-layer build per spec; scaffolds Model→Entity→DTO→Action→Livewire→Policy | `code-writing`, `code-refactoring`, `feature-building`, `laravel-best-practices`, `livewire-development`, `tailwindcss-development`, `medialibrary-development`, `pulse-development` | `internara-build` |
-| `internara-deployer` | Deploy specialist — version-tag deploys (`v*.*.*` release.yml 4-stage + `deploy.sh`); owns `.agents/context/deploy-topology.md` + `docs/guides/infra/deployment.md` | (deploy topology, no 1:1 skill) | `internara-deploy` |
-| `internara-learner` | Retrospective & learning specialist — mines session transcript for learning signals, captures to project memory per `.agents/rules/self-improvement.md` | `learning`, memory rules | `internara-learn` |
-| `internara-planner` | Planning specialist — spec-first & issue scoping; owns `docs/specs/*.md` FR/NFR/UC and GitHub issues | `spec-writing`, `issue-writing` | `internara-plan` |
-| `internara-reviewer` | Verification specialist — quality gates & audits (C1-C8/D1-D6, OWASP/CWE, spec↔code sync); never writes code, only reports | `arch-guard`, `qa-protocol`, `security-audit`, `spec-audit` | `internara-review` |
-| `internara-tester` | Testing specialist — spec-driven Pest tests, spec-gap/orphan detection | `pest-testing`, `test-writing` | `internara-test` |
-| `internara-writer` | Documentation specialist — SSOT keeper; owns `docs/`, module refs, AGENTS.md, skills, link/freshness checks | `doc-writing`, `sync-docs` | `internara-write` |
-
-Skill map (which skill for which task) lives in `.agents/context/skill-map.md` — read it every session.
-
----
-
-## Context Awareness — Project Orientation
-
-> **Prerequisite:** None — this is the orientation layer loaded after §Agent Workflow.
-
-### When to Activate
-
-Load this section at the start of every session. It provides the mental model all downstream skills depend on.
-
-### Orientation Workflow
-
-This is the **orientation layer** — it does NOT write code or run tests; it builds the mental model all downstream skills depend on. Follow the §Agent Workflow 5-step pipeline (Understand → Plan → Implement → Verify → Summarize) and **Size Triage** (S/M/L session splitting) for the overall instruction; this adds the orientation steps and memory-keeping duties below.
-
-#### Construct — Orientation
-
-- Read the user's instruction carefully; identify the **intent**, not just the literal request
-- Determine scope: single file change, cross-module refactor, or new feature
-- **Locate the governing spec** in `docs/specs/` (via `docs/specs/index.md`) — read the relevant FR/NFR/UC IDs; if no spec exists for the work, stop and raise it (write the spec first)
-- Identify which module(s) are affected
-- Read relevant docs: module docs, pattern docs, reference docs
-- **Check mandatory known context** — read `.agents/context/index.md` and load any context file matching the task topic (intentional constraints, deploy caveats, dependency pins, known states). Context is **read-only curated knowledge** that every agent must know.
-- **Check autonomous memory** — read `.agents/memory/index.md` (and `learning-log.md`) for prior session learnings relevant to the task. Memory is **agent-written evolving knowledge**.
-- Verify paths, class names, signatures against actual code — never trust docs blindly; on code/doc mismatch, check git history before deciding which side is correct
-
-#### Agent Memory — `.agents/context/` vs `.agents/memory/`
-
-Two distinct stores with different lifecycles — do not conflate them:
-
-| Store | Path | Nature | Who writes | When to read |
-|-------|------|--------|------------|--------------|
-| **Known Context (mandatory)** | `.agents/context/` | Curated, must-read before tasks; intentional constraints, deploy caveats, health tiers, deprecated states | Maintainers (human-approved) — agent updates only on proven inconsistency | **Every session start** — `index.md` + matching topic file |
-| **Autonomous Memory** | `.agents/memory/` | Evolving, agent-owned learnings; decisions, corrections, failures, patterns, gaps discovered during sessions | Agents autonomously (every session) | **During orientation** if task overlaps prior learnings; **always write** at Summarize |
-
-**Maintain Known Context (`.agents/context/`):**
-- Context files are **normative**. Do not invent new facts — if a context file conflicts with reality (code/spec/docs/config changed), update it **directly in the same run** — fix the stale fact and commit with a descriptive message. Never defer.
-- To add a new mandatory fact: create `.agents/context/{context}-{issue-name}.md` (flat, kebab-case) and register it in `.agents/context/index.md`. Record only facts where a future agent would make a costly wrong assumption without it; skip trivial/fluid facts.
-- Keep each file self-contained (paths, commands, rationale); never duplicate a fact elsewhere — update the existing file instead.
-
-**Maintain Autonomous Memory (`.agents/memory/`):**
-- **Capture is judgment-based** — write into `.agents/memory/` (self-contained topic files, registered in `.agents/memory/index.md`, one-liner appended to `.agents/memory/learning-log.md`) only when the learning is worth saving for a future agent; skip when nothing novel emerged. Not automatic per-summarize.
-- **Memory is local-only (gitignored).** Committed files outside it may *mention* the `memory/` path conceptually but must **never cross-reference its contents** — readers of committed docs don't have your local copy, so pointers to a specific `memory/` file break for them. Cross-refs between files are allowed only inside `memory/`.
-- Promote a signal seen ≥2 times to `rules/` or a skill; durable decisions get an ADR in `docs/adr/`. One-offs stay in memory — no rule-bloat.
-- Memory is append-evolving; context is curated-stable. Update `memory/` in place with a descriptive commit message; never duplicate a topic.
-
-**House style (both stores):** `## Description`, plain language, an `## AI Agent Guides` decision table where helpful. No inline `Last updated` metadata — history lives in `git log`.
-
-#### Verify — Orientation Completeness
-
-Before handing off to any downstream skill, confirm:
-- [ ] Which module(s) and layer(s) are affected
-- [ ] Which class types need to be created or modified
-- [ ] What invariants (C1-C8, D1-D6) apply to this task
-- [ ] What existing code can be followed as a pattern
-- [ ] What docs need to be read before writing code
-
-#### Report — Hand Off to Downstream Skill
-
-- Deliver orientation summary to the user:
-  - Affected modules and layers
-  - Architecture constraints that apply
-  - Existing patterns to follow
-  - Risks or edge cases identified
-- Recommend the appropriate downstream skill(s) for execution
-- If the task was classified **L**, present the proposed session plan (each session = one deliverable unit with its own verify + report) and get user approval before execution
-- If the work is repetitive, batch, or pattern-based, note the reusable tools/devtools to use (Automation-First — check `tools/` and the Automation Scripts section below first)
-
----
-
-## Navigation Patterns
-
-| Need to find... | Look here |
-|-----------------|-----------|
-| Business logic | `app/Modules/{Module}/Domain/{Domain}/Actions/` |
-| Business rules | `app/Modules/{Module}/Domain/{Domain}/Entities/` |
-| Data structure | `app/Modules/{Module}/Domain/{Domain}/Models/` |
-| Data transfer | `app/Modules/{Module}/Domain/{Domain}/Data/` (DTOs) |
-| State machines | `app/Modules/{Module}/Domain/{Domain}/Enums/` |
-| UI components | `app/Modules/{Module}/Domain/{Domain}/Livewire/` |
-| Authorization | `app/Modules/{Module}/Domain/{Domain}/Policies/` |
-| Side effects | `app/Modules/{Module}/Domain/{Domain}/Events/` and `Listeners/` |
-| Infrastructure | `app/Modules/{Module}/Domain/{Domain}/Services/` or `Support/` |
-| Base contracts | `app/Modules/Core/Actions/`, `app/Modules/Core/Entities/`, `app/Modules/Core/Enums/` |
-| Tests | `tests/{Module}/{Domain}/` |
+| Need to find | Look here |
+|---|---|
+| Business logic (Command/Read/Process Actions) | `app/Modules/{Module}/Domain/{Domain}/Actions/` |
+| Business rules (Entities) | `app/Modules/{Module}/Domain/{Domain}/Entities/` |
+| Persistence (Models) | `app/Modules/{Module}/Domain/{Domain}/Models/` |
+| Data transfer (DTOs) | `app/Modules/{Module}/Domain/{Domain}/Data/` |
+| State machines (Enums) | `app/Modules/{Module}/Domain/{Domain}/Enums/` |
+| UI components (Livewire) | `app/Modules/{Module}/Domain/{Domain}/Livewire/` |
+| Authorization (Policies) | `app/Modules/{Module}/Domain/{Domain}/Policies/` |
+| Side effects (Events/Listeners) | `app/Modules/{Module}/Domain/{Domain}/Events/`, `Listeners/` |
+| Infrastructure logic (Services) | `app/Modules/{Module}/Domain/{Domain}/Services/` |
+| Static utilities (Support) | `app/Modules/{Module}/Domain/{Domain}/Support/` or `app/Modules/Core/Support/` |
+| Base contracts | `app/Modules/Core/Actions/`, `app/Modules/Core/Entities/`, `app/Modules/Core/Enums/`, `app/Modules/Core/Models/` |
+| Cross-submodule files (shared Actions, Console, Http) | `app/Modules/{Module}/` (root) |
+| Tests | `tests/{Type}/{Module}/{Domain}/{Name}Test.php` where `{Type}` ∈ `Arch`, `Unit`, `Feature`, `Browser` |
 | Config | `config/{module}.php` |
-| Routes | `routes/web/{module}.php` (domains: `{domain}.php` in same dir) |
-| Translations | `lang/en/{module}.php`, `lang/id/{module}.php` (domains: `{domain}.php` in same dir) |
+| Routes | `routes/web/{module}.php` (subdomain → `{domain}.php` no module prefix) |
+| Translations | `lang/{en,id}/{module}.php` and `lang/{en,id}/{domain}.php` (no subdirs) |
+| ADRs | `docs/adr/adr-{topic}.md` |
+| Specs | `docs/specs/{ID}-{feature}.md` |
 
----
+A module's **primary domain** lives flat at `app/Modules/{Module}/` to avoid redundant nesting
+(`Module/Domain/Module`); separate domains go under `Domain/{Domain}/`. Split/collapse rules: §1.6
+of `docs/guides/arch/modular-pattern.md`.
 
-## Pattern Recognition
-
-| You see... | It should be... | Violation? |
-|------------|-----------------|------------|
-| `Model::create()` in a Livewire component | Command Action | **C1 violation** |
-| `app()->make(SomeAction::class)` | Constructor injection | **C2 violation** |
-| `DB::raw("...")` without binding | Eloquent query builder | **C3 violation** |
-| `'cache_key'` string inline | Key in `config/cache-keys.php` | **C4 violation** |
-| Entity importing `Action` or `Service` | Entity should be pure | **C5 violation** |
-| DTO importing `Model` or `Entity` | DTO should carry scalars only | **C6 violation** |
-| Action accepting raw `array` for 3+ params | Should accept DTO | **C7 violation** |
-| `throw new RuntimeException('business rule')` | Should be `RejectedException` | **C8 violation** |
-| `$fillable = [...]` property | `#[Fillable([...])]` attribute | **D4 violation** |
-| `$request->all()` in create/update | `->only()` or `->toArray()` | **D5 violation** |
-
----
-
-## Data Flow Tracing
-
-Every mutation in the system follows this path:
+### 1.4 Data Flow — The Mutation Path
 
 ```
-User interaction
-  → Livewire component (validates input, catches RejectedException)
-    → Command Action::execute(DTO)
-      → Entity::fromModel(model) → business rules
-      → Model::create/update(values from DTO)
-      → $this->log()
-      → $this->dispatchEvent() [queued, fires after commit]
+User
+  → Livewire component            (validation + RejectedException catch + auth gate)
+    → Command Action::execute(DTO)   (transaction + log + event; auto-dispatches queued events after commit)
+      → Entity::fromModel(model)     (business invariants; final readonly; throws RejectedException)
+      → Model::create/update(values)  (#[Fillable] only; explicit DTO fields)
+      → $this->log()                  (SmartLogger dual-channel; PII-masked)
+      → $this->dispatchEvent(...)     (queued; fires after DB::transaction() commits)
     ← ActionResponse
-  ← Flash message / redirect / re-render
+  ← Toast / redirect / re-render
 ```
 
-When debugging or reviewing code, trace this path. If any step is missing or out of order, there's likely a bug or architecture violation.
+When debugging or reviewing, trace this path. If any step is missing or out of order, it's a bug
+or a C1–C8 / D1–D6 violation. Read flow replaces Action with `BaseReadAction::execute()` — no
+transaction, no logging, no event; uses `remember()` / `forget()` against `config/cache-keys.php`.
+
+### 1.5 Module Boundary Awareness
+
+- Each module owns its full stack: Models, Actions, Livewire, Events, Policies, Services.
+- Each Domain under `app/Modules/{Module}/Domain/{Domain}/` owns its domain's full stack.
+- **Cross-module imports are allowed** — import Models, Actions, or Policies from sibling modules
+  directly. Prefer **events** for fire-and-forget side effects; only when there's no listener
+  should you skip the event (per `BaseAction::dispatchEvent()` docblock).
+- Shared code (base classes, contracts, exceptions, static utilities) lives in `app/Modules/Core/`.
+- Pattern: `adr > specs > guides > code > refs` — see SSoT priority above.
 
 ---
 
-## Module Boundary Awareness
+## 2. Agent Workflow — 5-Stage Silent Cycle
 
-- Each module owns its full stack: Models, Actions, Livewire, Events, Policies, Services
-- Each Domain lives under `app/Modules/{Module}/Domain/{Domain}/` and owns its domain's full stack
-- Cross-module imports are **allowed** but prefer events for side effects
-- If Module A needs to react to Module B's mutation, use an Event — don't import B's Actions
-- Shared code (base classes, contracts, exceptions) lives in `app/Modules/Core/`
+Every instruction — one-line question, bug report, feature, refactor, docs tweak, or audit — runs
+the full cycle. Stages are internal; never narrate them. Surface only the items listed in the
+opening note.
+
+| Stage | Question it answers | Output | Verification when done |
+|---|---|---|---|
+| **1. Understand** | What is asked? Which spec governs? What's affected? How big? | Governing spec + FR/NFR/UC IDs, phase & size (S/M/L), affected modules/layers/files, blockers, reordered instruction list | Exit: spec located (or decision to proceed without), scope bounded, phase & size classified, instruction order set |
+| **2. Plan** | What exists? Which approach? What contracts? | Read inventory, 2+ considered approaches, chosen design (Action triad, Entity/DTO/Model contracts, error & cache strategy), test & doc plan | Exit: context inventoried, approach documented, contracts sketched, test & doc plan clear — no code written yet |
+| **3. Implement** | What changes, minimally and cleanly? | Surgical code edits (preserve unrelated code), doc/PHPDoc updates, automation/scripts | Exit: all planned changes applied, docs/PHPDoc in sync, no drift, `git status` shows only intended files |
+| **4. Verify** | Is anything broken or lost? | `git status`/`diff` review, style checks, targeted & arch-guard scans; full suite only on-demand | Exit: change-type-appropriate gates pass; arch-guard clean or deviations justified/recorded; no silent tolerance of pre-existing warnings |
+| **5. Summarize** | What was delivered, what remains? | Staged commit `type(scope): desc`; final report (changes, verification, caveats, next steps) | Exit: clean commit(s), report delivered, repo left cleaner than found |
+
+**Size triage:**
+
+| Size | Files / Scope | Workflow |
+|---|---|---|
+| **S** | ≤3 files, single module | Standard cycle, no checkpoint needed |
+| **M** | 4–10 files, single module or close cluster | Standard cycle + **one checkpoint before commit** |
+| **L** | >10 files, multi-module, cross-cutting | **Split into sessions**, per-session report + `git status`/`diff` review, never one pass |
+
+**Classify before acting** — phase (12 phases in `docs/specs/index.md`) and size (S/M/L above) gate
+the verification depth and the checkpoint cadence.
 
 ---
 
-## Testing Senses
+## 3. Phase Classification & SDLC Mapping
 
-#### Spec-Driven Minimalism
+Phases from `docs/specs/index.md` (grouped). Locate the phase, then the spec ID, then the FR/NFR/UC
+IDs. Every spec lists them in §5 (FR), §6 (NFR), §4 (UC) per the spec template.
 
-**Write only the tests the spec requires, then stop.** This is deliberate, not lazy — it speeds up development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the full suite), reduces resource usage (~2GB+ RAM for the full suite), and reduces cognitive overwhelm: a suite that maps 1:1 to requirement IDs is self-explaining. Every test answers "which `FR-*` / `NFR-*` / `UC-*` does this verify?"; if the answer is "none", don't write it.
+| Phase | Specs | Module family |
+|---|---|---|
+| **0** Spec-zero | QLHDO | Core |
+| **1** Foundation | D2FT3, FB792, ZT6VS, SE5Q9, C8F0D, J68GZ, I1BCV, 89SRA, NUCY3, T4B26, 2CF4Y, 1PGM4, B114U | Core |
+| **2** Configuration | 8NZAU, VEJCX, C9ZB6, YB22J, 52O1I, 81SMS | Setup / Settings / Academics |
+| **3** Identity & Auth | K8HP1, 8XMYS, YB7RG, TXR2H, 3S55V, CKKZC, D9TKW, CQVSK, SHQ1J, OCEMS | User / Auth / SysAdmin / Core |
+| **4** Institutional | 4HWSB, XW6F5 | Academics |
+| **5** Partnerships | XI3LB, NTHQA | Partners |
+| **6** Programs | 7C5WM, IT0OE | Program |
+| **7** Enrollment | MBB5R, J9GBH, 920SO, 95EVB, O2KCR, EWCZ0 | Enrollment / User |
+| **8** Daily Ops | 1KSWL, 2EHSE, 3RU9S | Journals / Incident |
+| **9** Assessment | ARDA6, AXKZW, T657Z | Assessment / Evaluation / Assignment |
+| **10** Certification | PKYX6, ZUFG8, J0M04, WQGTP, 7UB7S | Document / Certification / Core |
+| **11** Reporting | R6BMW, 7H5D6 | Reports / Document |
+| **12** Maintenance | 8FVZA, HBXCI, 7HNCF, E1MSJ, 9YUUK, 06IB6, 3UOZP | Core / SysAdmin |
 
-#### Verification Strategy Selection
+**Instruction ordering** when a message batches multiple instructions:
+decompose → score by impact-to-effort ratio → sort → honor dependencies → group same-area work.
+Surface the resulting order only when it differs from the user's sequence.
 
-**Core principle:** Always ask "can I verify this without running tests?" before reaching for the test suite. The full suite consumes ~2GB+ RAM and 10+ minutes.
+---
 
-| Change type | Lightest verification |
-|-------------|----------------------|
-| Translation keys | `vendor/bin/pint --dirty --test` + tinker echo |
-| Config / docs | Visual inspection |
-| Blade / CSS / JS | `npm run build` |
+## 4. Verification Strategy — Change-Type Matrix
+
+**Core principle:** ask "can I verify this without running tests?" before reaching for the suite.
+The full suite consumes ~2GB+ RAM and 10+ minutes — never per-edit.
+
+| Change type | Lightest verification first |
+|---|---|
+| Translation keys | `vendor/bin/pint --dirty --test` + tinker echo + `LangChecker` |
+| Config / docs / pure markdown | Visual inspection + `python3 tools/scan_doc_links.py` |
+| Blade / CSS / JS | `npm run build` + `npx prettier --check <file>` |
 | Single method refactor | `php artisan test --compact --filter={ClassName}` |
 | Cross-module refactor | `vendor/bin/pest --testsuite={Module}` |
-| New feature / business logic | Full suite ONCE, after all changes batched |
+| New feature / business logic | Full suite ONCE, after all changes batched (per C7, D1, D4, D6 checks) |
+| Architecture / base class change | Targeted suites + arch-guard batch (see §5) |
 
-#### Test Pattern Recognition
+**Pre-commit baseline (every commit):**
 
-**Spec first, always.** Before choosing a pattern, map the requirement: which `FR-*` / `NFR-*` / `UC-*` ID in `docs/specs/{ID}-{feature}.md` does this test verify? Test descriptions carry that ID.
+1. `git status` + `git diff` + `git diff --stat` — only intended files, no drops.
+2. `vendor/bin/pint --dirty --test --format agent` (PHP + Blade).
+3. `npx prettier --check <file>` for non-PHP (CSS/JS/JSON; `*.php` / `*.blade.php` / `*.md` ignored).
+4. `npm run build` for Blade/CSS/JS changes; visual inspection for `*.md`/config.
+5. Targeted tests: `php artisan test --compact --filter={Class}` or `--testsuite={Module}`.
+6. Arch-guard batch (see §5) — every commit, never skipped.
 
-| What you're testing | Pattern to follow |
-|---------------------|-------------------|
-| Command Action (spec-defined mutation) | Arrange (factory + DTO) → Act (execute) → Assert (assertModelExists + ActionResponse) |
-| Read Action (spec-defined query) | Arrange (seed data) → Act (execute) → Assert (typed return, collection shape) |
-| Entity | Test only the business-rule methods a requirement names; no DB needed |
-| DTO | Test the shape the spec's §6 contract defines; no DB needed |
-| Enum | Test `label()` / transitions only for the cases and rules the spec lists |
-| Livewire | Test render, mount, form submission, authorization; use `actingAs()` |
-| Policy | Test `allow` / `deny` for each role; no DB needed beyond the model |
-
-#### Test Health Indicators
-
-| Symptom | Diagnosis |
-|---------|-----------|
-| Test passes in isolation, fails in suite | Shared state or ordering issue — check `LazilyRefreshDatabase` |
-| `Class "X" not found` | Autoload stale — `composer dump-autoload` |
-| `SQLSTATE[HY000]` | Migration missing — `php artisan migrate:fresh` |
-| Test times out | Infinite loop or queue not drained — add `Queue::fake()` |
-| Flaky test (sometimes passes) | Race condition or missing `RefreshDatabase` — isolate the test |
-| Test was failing before your change | Pre-existing issue — flag it, don't fix it unless asked |
-
-#### Coverage = Spec Coverage
-
-**Coverage is measured in spec requirements covered — never lines of code.** A requirement with no test is a **spec gap** (fill it). A test with no requirement is **orphan noise** (remove it). The old per-layer percentages (Enum/Entity/DTO 100%, Actions ≥90%, Livewire ≥80%) were removed because they produced padding tests; they may be used only as an internal diagnostic, never as a mandate.
-
-| Question | Answer |
-|----------|--------|
-| Which spec does this test verify? | Read `docs/specs/index.md` → `docs/specs/{ID}-{feature}.md` |
-| Does this test trace to a requirement ID? | If no → orphan, candidate for deletion |
-| Does every requirement have a test? | If no → spec gap, write the test |
-| Is the scenario beyond what the spec names? | If yes → noise, don't write it |
+**Full suite on-demand only:** `php artisan test --compact` on merge-day or when the user asks.
+Default is targeted checks.
 
 ---
 
-## Documentation Senses
+## 5. Arch-Guard Tooling — What to Run When
 
-#### Doc Drift Detection
+**Automation-First:** before doing manual or repeated work, check `tools/` and run the matching
+scanner. Never redo by hand what a script does. If a recurring pattern has no script, add one
+(`tools/scan_*.py` — full CLI in `tools/README.md`).
 
-Doc drift happens when code changes but docs don't. Detect it by asking:
+### 5.1 Standard Batched Run
+
+```bash
+# Architecture invariants + class contracts
+python3 tools/scan_violations.py          # C1–C8, D1–D6, P2, P5
+python3 tools/scan_class_contracts.py     # Action/Entity/DTO/Model/Enum/Event/Policy/Service/Listener
+
+# Code quality
+python3 tools/scan_conventions.py         # D1 strict_types, D4 Fillable, D2 debug calls
+python3 tools/scan_naming.py              # file + class naming
+
+# Security
+python3 tools/scan_security.py            # XSS, SQLi, CSRF, mass assignment, auth, secrets, uploads, rate limiting, dep audit
+
+# Docs integrity
+python3 tools/scan_doc_links.py           # broken file/anchor links
+python3 tools/scan_spec_tests.py          # spec↔test traceability (FR/NFR/UC)
+```
+
+### 5.2 Composer Shortcuts
+
+| Command | What it runs |
+|---|---|
+| `composer arch` | `scan_doc_links` + `scan_arch_patterns` + `scan_module_boundaries` + `scan_ui_consistency` (summary) |
+| `composer arch:strict` | Same scanners with `--strict` (exit 1 on findings) |
+| `composer lint` | `npm run lint` + `vendor/bin/pint --test` |
+| `composer test` | `php artisan optimize:clear` + `php artisan test` |
+| `composer test:suite {Module}` | `php artisan optimize:clear` + `vendor/bin/pest --testsuite={Module}` |
+| `composer quality` | lint + arch + test |
+| `composer quality:full` | format + test:coverage |
+
+### 5.3 One-Liner Scanners (full inventory in `tools/README.md`)
+
+| Scanner | What it checks |
+|---|---|
+| `scan_files.py` / `scan_architecture.py` | File counts, LoC, component counts per module (metadata only) |
+| `scan_arch_patterns.py` | Architecture pattern adherence (`ARCH_*` rules) |
+| `scan_module_boundaries.py` | Cross-module boundary checks (`MODULE_*` rules) |
+| `scan_ui_consistency.py` | UI/component consistency (`UI_*` rules) |
+| `scan_dead_code.py` | Unregistered observers, orphan events, unused DTOs/Actions/Jobs |
+| `scan_spec_tests.py` | Spec↔test coverage (`SPEC_TEST_*` rules) |
+| `scan_issues.py` | GitHub issues by module/severity |
+| `scan_tests.py` | Per-module test result parser |
+| `tool_runner.py --scanner a,b --module M` | Orchestrate multiple scanners with shared cache |
+| `clean_outputs.py --prune` | Keep latest timestamped output per category |
+
+All scanners accept `--module {Name}`, `--format summary|text|html|markdown`, `--output <path>`,
+`--json`, `--strict`, `--quiet`, `--severity high`, `--baseline file.json`, `--workers N`. Default
+output: `tools/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json` (directory is gitignored).
+
+---
+
+## 6. Testing — Spec-Driven Minimalism
+
+**Coverage = spec requirements covered, not lines of code.** A requirement with no test is a
+**spec gap** (fill it). A test with no requirement is **orphan noise** (remove it). The legacy
+per-layer percentage targets were removed because they produced padding tests — use them only as an
+internal diagnostic, never as a mandate.
+
+### 6.1 Pattern by What You're Testing
+
+| What | Pattern | Where the rule lives |
+|---|---|---|
+| Command Action (mutation) | Arrange (factory + DTO) → Act (execute) → Assert (`assertModelExists` + `ActionResponse`) | `docs/guides/arch/testing-pattern.md` |
+| Read Action (query) | Arrange (seed) → Act (execute) → Assert (typed return, collection shape) | same |
+| Entity | Only the business-rule methods a requirement names; no DB | same |
+| DTO | Only the shape the spec's §6 data contract defines; no DB | `docs/guides/arch/data-pattern.md` |
+| Enum | Only `label()` / transitions for the cases/rules the spec lists | `docs/guides/arch/enum-pattern.md` |
+| Livewire | Render, mount, form submission, authorization; `actingAs()` | `docs/guides/arch/livewire-pattern.md` |
+| Policy | `allow` / `deny` for each role; no DB beyond the model | `docs/guides/arch/policy-pattern.md` |
+
+**Naming:** test descriptions use `{SpecID}-{ReqID}: description` grouped under
+`describe("{SpecID}: short description")`. Example: `test("7C5WM-FR12: internship cannot start
+without placement")`. The ID lives in the file's `> **Spec ID:**` metadata, the filename
+`{ID}-{feature}.md`, and the index `ID` column.
+
+### 6.2 Layer Strategy (DB or no DB?)
+
+| Layer | Test type | DB? | Why |
+|---|---|---|---|
+| Enum, Entity, DTO, Policy, Support | Unit (`tests/Unit/`) | No | Pure logic, no I/O — fast |
+| Action, Livewire, Console, Process | Feature (`tests/Feature/`) | Yes | Real DB; `LazilyRefreshDatabase` |
+| Module structure / boundaries | Arch (`tests/Arch/`) | No | Static, file-level |
+| Browser flows | Browser (`tests/Browser/`) | Yes | Full-stack; use sparingly |
+
+### 6.3 Health Indicators
+
+| Symptom | Diagnosis |
+|---|---|
+| Passes in isolation, fails in suite | Shared state or ordering — check `LazilyRefreshDatabase` |
+| `Class "X" not found` | Autoload stale — `composer dump-autoload` |
+| `SQLSTATE[HY000]` | Migration missing — `php artisan migrate:fresh` |
+| Test times out | Infinite loop or undrained queue — add `Queue::fake()` |
+| Flaky test | Race condition or missing `RefreshDatabase` — isolate |
+| Was failing before your change | Pre-existing — flag it, don't fix unless asked |
+
+Mocking rules: never mock Eloquent or the Query Builder (use real DB); mock only external
+boundaries (HTTP `Http::fake()`, mail, queue, filesystem, cache, notifications). Full rules in
+`docs/conventions.md` §12.1 and `docs/guides/arch/testing-pattern.md`.
+
+### 6.4 TDD Build Order (per workflow pattern §21 of `docs/guides/arch/modular-pattern.md`)
+
+Docs → Migration/Model → Enum → Entity → DTO → Command → Read → Process → Livewire → Policy →
+Console. Tests follow the same order, written spec-traceable from the start.
+
+---
+
+## 7. Documentation Discipline
+
+### 7.1 Two-Tier Model
+
+| Tier | File | Audience | What goes in |
+|---|---|---|---|
+| **Conceptual** | `docs/refs/modules/{module}.md` | Architects, devs, stakeholders | Purpose, design principles, business rules, module boundary — no implementation details |
+| **Reference** | `docs/refs/modules/{module}-reference.md` | Devs, reviewers | Full API reference — file paths, class names, table schemas, dependency graphs, route tables, config keys |
+
+Rule of thumb: *why* → conceptual; *what* / *how* → reference. Conceptual docs never list class
+names; reference docs never explain rationale.
+
+### 7.2 Drift Detection
 
 | Question | How to check |
-|----------|-------------|
-| Does the doc's file listing match the actual directory? | `ls app/Modules/{Module}/Domain/{Domain}/` vs doc |
-| Does the Actions table list all current Actions? | `find app/Modules/{Module}/Domain/{Domain}/Actions -name '*Action.php'` |
-| Does the Entity description match the actual methods? | Read the Entity class |
-| Do the enum cases in the doc match the code? | Read the Enum class |
-| Do the migration descriptions match the actual migrations? | Check `database/migrations/` |
-| Are the cross-references still valid? | Verify every `[text](path)` resolves |
+|---|---|
+| Doc's file listing matches the directory? | `ls app/Modules/{Module}/Domain/{Domain}/` vs doc |
+| Actions table lists all current Actions? | `find app/Modules/{Module}/Domain/{Domain}/Actions -name '*Action.php'` |
+| Entity description matches the methods? | Read the Entity class |
+| Enum cases in doc match the code? | Read the Enum class |
+| Migration descriptions match? | `ls database/migrations/` |
+| Cross-references still valid? | `python3 tools/scan_doc_links.py --no-external` |
 
-#### Mismatch Resolution — Git History First (with SSoT Priority)
+### 7.3 Mismatch Resolution — Git History First
 
-When code and docs disagree — or a claim cannot be confirmed in either — the discrepancy may be an **unrecorded change**. Do NOT assume the code is the source of truth just because it runs, nor that the doc is authoritative just because it was written first. **Both can be stale.**
+When code and docs disagree, **neither is automatically authoritative** — both can be stale.
 
-**SSoT Priority Framework:** `adr > specs > guides > code > refs` — higher wins when resolving contradictions, but **never trust blindly**. Even the highest (ADR) must be verified via `git log --follow`, `git blame`, and intent before acting. If history is silent or contradictory, treat as a finding and justify the decision comprehensively.
+1. `git log -p -- {file}` and `git blame {file}` for **both** the code and the doc.
+2. Look for the intent — does a commit message explain the change?
+3. If a commit explains it, update the other side to match the documented intent.
+4. If neither side explains it, treat as a finding — report, don't silently decide.
 
-Before picking a side:
+SSoT priority (`adr > specs > guides > code > refs`) wins when sources conflict, but never
+trust blindly — even the highest must be verified via git history and intent.
 
-1. **Check git history** (`git log -p -- {file}`, `git blame {file}`) for the code and the doc to see when each last changed
-2. **Look for the intent** — does a commit message explain the change (e.g., a refactor that moved a file, or an intentional behavior change that skipped the docs)?
-3. **If a commit explains it**, update the other side to match the documented intent
-4. **If neither side explains it**, treat as a finding: report it, don't silently decide
-
-Only trust a claim after confirming it against the codebase **and** git history.
-
-#### Tier Selection
-
-| Content type | Tier | Example |
-|-------------|------|---------|
-| "Why does this module exist?" | Conceptual | `docs/refs/modules/{module}.md` |
-| "What business rules govern enrollment?" | Conceptual | `docs/refs/modules/enrollment.md` |
-| "Which files implement the Action?" | Reference | `docs/refs/modules/enrollment-reference.md` |
-| "What's the table schema?" | Reference | `docs/refs/modules/enrollment-reference.md` |
-| "Why did we choose Actions over Services?" | Conceptual (architecture) | `docs/guides/arch/action-pattern.md` |
-| "What's the Action contract?" | Reference (architecture) | `docs/guides/arch/action-pattern.md` |
-
-**Rule of thumb:** If it explains *why*, it's conceptual. If it explains *what* or *how*, it's reference.
-
-#### GitHub Version Senses
-
-Track the version that will be deployed — local, tag, and VPS often drift.
-
-| Question | How to check |
-|----------|-------------|
-| What version is the code at? | `cat composer.json \| grep version` + `git describe --tags` + `git tag --sort=-v:refname \| head` |
-| What version is on VPS? | `ssh internara-vps "cat ~/apps/internara/composer.json \| grep version; git -C ~/apps/internara describe --tags; git log --oneline -1"` |
-| Did the latest tag reach the VPS? | `ssh internara-vps "git -C ~/apps/internara describe --tags"` vs `git describe --tags` (local) — must match the pushed `vX.Y.Z` |
-| Is the Docker image stale? | `GIT_URL` in `docker-compose.yml` (`#main` vs `#vX.Y.Z`), `docker images internara-app` `CREATED`, `docker exec ... cat /app/public/index.php \| head` |
-| Why is VPS on older version? | `composer.json` version differs from the last pushed tag → bump `version`, create `git tag vX.Y.Z`, `git push origin vX.Y.Z` — `release.yml` deploys on tag push |
-
-#### When to Update Docs
+### 7.4 When to Update Docs
 
 | Code change | Doc to update |
-|-------------|--------------|
+|---|---|
 | New Action added | Module reference doc (Actions table) |
 | Entity method changed | Module conceptual doc (business rules) |
 | Enum case added/removed | Module reference doc (enum table) |
@@ -447,75 +365,120 @@ Track the version that will be deployed — local, tag, and VPS often drift.
 | Config key added | Module reference doc (config section) |
 | Route added/changed | Module reference doc (Routes table) |
 | Base class method changed | `docs/guides/arch/{pattern}-pattern.md` |
-| Invariant added/changed | `AGENTS.md` |
+| Invariant added/changed (C/D rule) | This file (`AGENTS.md`) |
 
-#### History Discipline (Git as Source of Truth)
+### 7.5 History Discipline (Git as SoT)
 
-No inline `Last updated` metadata in markdown files. Document freshness and change history are tracked via git:
+No inline `Last updated` metadata in markdown files. Freshness is tracked via git:
 
 ```bash
-git log --follow -- <file>      # history of a doc
-git diff -- <file>              # what changed in this branch
+git log --follow -- <file>        # history of a doc
+git diff -- <file>                # what changed in this branch
 git log --since="14 days ago" --oneline -- docs/
 ```
 
-Write a descriptive commit message (`type(scope): desc`); do not duplicate it inside the file.
+Commit message format: `type(scope): description` — types `feat`, `fix`, `refactor`, `docs`,
+`chore`, `test`, `perf`, `security`; scope = module name.
 
-#### Link Integrity
+### 7.6 Link Integrity (before every commit)
 
-Before committing any doc change:
 1. Every `[text](path)` resolves to an existing file
 2. Every `[text](path#anchor)` matches an existing heading
-3. No content is duplicated — cross-reference instead
-4. `## Where to Find It` is the standard footer (not `## References`)
+3. No content duplicated — cross-reference instead
+4. Standard footer: `## Quick References` (not `## References`)
+
+Run `python3 tools/scan_doc_links.py --no-external` to validate.
 
 ---
 
-## Metacognitive Loop
+## 8. GitHub Version Senses
+
+The version that ships is the one on the VPS, not the one in `composer.json`. Drift between
+local, tag, and VPS is the most common release bug.
+
+| Question | How to check |
+|---|---|
+| What version is the code at? | `grep '"version"' composer.json package.json` + `git describe --tags` + `git tag --sort=-v:refname \| head` |
+| What version is on VPS? | `ssh internara-vps "cat ~/apps/internara/composer.json \| grep version; git -C ~/apps/internara describe --tags; git -C ~/apps/internara log --oneline -1"` |
+| Did the latest tag reach the VPS? | Compare local `git describe --tags` with `ssh internara-vps "git -C ~/apps/internara describe --tags"` — must match the pushed `vX.Y.Z` |
+| Is the Docker image stale? | `GIT_URL` in `docker-compose.yml` (`#main` vs `#vX.Y.Z`), `docker images internara-app` `CREATED`, `docker exec ... cat /app/public/index.php \| head` |
+| Why is VPS on an older version? | `composer.json` version differs from last pushed tag → bump `version`, `git tag vX.Y.Z`, `git push origin vX.Y.Z` — `release.yml` deploys on tag push |
+
+Upgrading checklist: `docs/guides/upgrading.md`.
+
+---
+
+## 9. Metacognitive Loop — Per-Reasoning-Step
 
 ```
 CONSTRUCT → EVALUATE → VERIFY → DECIDE
 ```
 
-1. **CONSTRUCT** — Read relevant docs and existing code; verify paths and signatures; consider multiple approaches
-2. **EVALUATE** — Does it match requirements (FR/NFR/UC from the governing spec)? Respect layer boundaries? Do ONE thing?
-3. **VERIFY** — Lint + static analysis + tests pass; no debug calls; `__()` for strings
-4. **DECIDE** — Accept / Revise / Split / Escalate / Defer
-   - **Split** when: task classified **L** (Size Triage) or scope grew beyond one session — inform the user, propose a session plan, never push through in one pass
-   - **Escalate** when: the decision changes scope or architecture, or a governing spec is missing or ambiguous — surface it to the user rather than guessing
+1. **CONSTRUCT** — read relevant docs/code; verify paths and signatures; consider 2+ approaches.
+2. **EVALUATE** — matches FR/NFR/UC from the governing spec? Respects layer boundaries? Does ONE thing?
+3. **VERIFY** — lint + static analysis + tests pass; no debug calls; `__()` for user strings.
+4. **DECIDE** — Accept / Revise / Split / Escalate / Defer.
+   - **Split** when size is **L** or scope grew — inform the user, propose a session plan, never push through.
+   - **Escalate** when the decision changes scope/architecture, or a governing spec is missing/ambiguous — surface it, don't guess.
 
 ---
 
-## Automation Scripts
+## 10. Self-Improvement Loop (Judgment-Based)
 
-| Script | What it does | Command |
-|--------|-------------|---------|
-| `tools/scan_files.py` | File counts and lines of code per module | `python3 tools/scan_files.py` |
-| `tools/scan_architecture.py` | Component counts per module, submodule structure | `python3 tools/scan_architecture.py` |
-| `tools/scan_arch_patterns.py` | Architecture/pattern adherence (used by `composer arch`) | `python3 tools/scan_arch_patterns.py` |
-| `tools/scan_module_boundaries.py` | Cross-module boundary checks (used by `composer arch`) | `python3 tools/scan_module_boundaries.py` |
-| `tools/scan_ui_consistency.py` | UI/component consistency (used by `composer arch`) | `python3 tools/scan_ui_consistency.py` |
-| `tools/scan_violations.py` | C1-C8, D1-D6 invariant violations | `python3 tools/scan_violations.py` |
-| `tools/scan_class_contracts.py` | Action/Entity/DTO/Model/Enum class contracts | `python3 tools/scan_class_contracts.py` |
-| `tools/scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 tools/scan_security.py` |
-| `tools/scan_naming.py` | Naming conventions | `python3 tools/scan_naming.py` |
-| `tools/scan_conventions.py` | strict_types, Fillable, debug calls | `python3 tools/scan_conventions.py` |
-| `tools/scan_doc_links.py` | Broken links in docs | `python3 tools/scan_doc_links.py` |
-| `tools/scan_spec_tests.py` | Spec-to-test coverage mapping | `python3 tools/scan_spec_tests.py` |
-| `tools/scan_tests.py` | Per-module test results | `python3 tools/scan_tests.py` |
-| `tools/scan_issues.py` | GitHub issues by module/severity | `python3 tools/scan_issues.py` |
-| `tools/scan_dead_code.py` | Dead code detection | `python3 tools/scan_dead_code.py` |
-| `tools/run_module_tests.py` | Run tests for a single module | `python3 tools/run_module_tests.py --module {Module}` |
-| `tools/tool_runner.py` | Orchestrate multiple scanners | `python3 tools/tool_runner.py --scanner violations,naming` |
+When a session produced a **durable decision**, **non-obvious trap/correction**, or **recurring
+pattern** worth a future session knowing:
 
-All scanners accept `--module {Name}`, `--format summary|text|html|markdown`, `--output <path>`, `--json`, `--strict`, `--quiet`. Output (default JSON): `tools/outputs/{timestamp}-{description}.json`. Full interface in `tools/README.md`.
+- Record as a concise note in `docs/` where a future reader would look (or open a GitHub issue if
+  it needs action).
+- Durable architectural decisions become an ADR in `docs/adr/`.
+- Not an automatic step — skip when nothing novel emerged.
 
-**Automation-First:** before doing manual or repeated work, check `tools/` and this table for an existing scanner or helper. Never redo by hand what a script does. If a recurring pattern has no script, load `script-automation` to add one.
+Capture destinations: `docs/adr/adr-{topic}.md` for decisions, the matching
+`docs/guides/arch/*-pattern.md` for pattern refinements, the spec file for requirement clarifications.
 
 ---
 
-> **AGENTS.md is now lean** — containing only the 5-step workflow, project snapshot, and context awareness.
-> All supporting maps moved to `.agents/context/`: project-identity, phase-classification, instruction-ordering,
-> pre-existing-defects, skill-rules, documentation-senses, metacognitive-loop, skill-map, quick-reference,
-> version-bump-guide.
-> See `.agents/context/index.md` for the full context index.
+## 11. Project Snapshot — Quick Reference
+
+| Fact | Value |
+|---|---|
+| **Version** | v0.15.9 — Stabilization |
+| **Modules** | 19 = 17 business + UI + Core |
+| **Stack** | PHP 8.4 · Laravel 13 · Livewire 4 · TallstackUI v4 · Tailwind v4 · Alpine 3 · Pest 4 · Spatie (activitylog, medialibrary, model-status, permission) |
+| **DB** | SQLite default / MySQL 8 / MariaDB 10.6 / PostgreSQL 15 |
+| **Deploy** | Shared hosting ($5/mo) or VPS / Docker Compose |
+| **License** | MIT |
+| **Single-tenant** | No `tenant_id` overhead — one instance per school |
+
+**Module roster** (see `docs/refs/modules/index.md` for full dependency graph):
+
+Core · UI · Auth · User · SysAdmin · Setup · Settings · Academics · Program · Enrollment ·
+Assessment · Evaluation · Assignment · Journals · Incident · Partners · Certification · Reports ·
+Document.
+
+**Module health** (per `docs/refs/modules/{module}.md` and the AGENTS Snapshot above):
+
+- **Production-Ready:** Core, Auth, User, Settings, Setup, SysAdmin, Academics
+- **Stable-Needs Attention:** Program, Partners, Enrollment, Journals, Incident, Assignment, Reports
+- **Needs Work P0:** Assessment, Certification, Document
+- **Skeleton:** Evaluation
+
+---
+
+## 12. Quick References
+
+- `docs/architecture.md` — 4-layer architecture, data flow, dependency rules R1–R7
+- `docs/conventions.md` — C1–C8, D1–D6 invariants, pre-commit & code-review checklists
+- `docs/guides/arch/index.md` — pattern catalog (one link per pattern)
+- `docs/guides/arch/modular-pattern.md` — modular architecture deep-dive (§1–§23)
+- `docs/specs/index.md` — 62 feature specs + 2 meta, grouped in 12 phases
+- `docs/adr/index.md` — 16 ADRs across Foundation / Observability / Quality / Proxy / Strategy
+- `docs/philosophy.md` — 7 guiding principles + core values table
+- `docs/refs/modules/index.md` — module conceptual + reference doc index
+- `docs/templates/index.md` — 10 doc-type templates (load when a doc's concern is touched)
+- `tools/README.md` — scanner CLI flags, output schema, full scanner inventory
+- `docs/guides/upgrading.md` — version-up checklist
+- `CHANGELOG.md` — release notes
+- `CONTRIBUTING.md` — contribution flow
+- `SECURITY.md` — vulnerability disclosure
+- `CODE_OF_CONDUCT.md` — community standards
