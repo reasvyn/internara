@@ -5,6 +5,19 @@
 Three-tier configuration system: .env, config files, and runtime database settings with cache-first
 resolution.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Config File Organization
 
 Configuration files live in the `config/` directory, one file per subsystem. Each file returns a PHP
@@ -54,6 +67,7 @@ MUST NOT be committed to version control:
 APP_KEY=base64:abc123...
 DB_PASSWORD=supersecret
 MAIL_PASSWORD=mailpass
+
 ```
 
 Configuration files read environment variables via `env()`:
@@ -61,6 +75,7 @@ Configuration files read environment variables via `env()`:
 ```php
 // config/database.php
 'default' => env('DB_CONNECTION', 'sqlite'),
+
 ```
 
 Values from `config/*.php` are cached by `php artisan config:cache`, which merges all config files
@@ -73,6 +88,7 @@ The second argument to `env()` provides a hardcoded default:
 
 ```php
 'default' => env('DB_CONNECTION', 'sqlite'),  // sqlite is the code default
+
 ```
 
 These defaults are version-controlled and change only with deployments. They ensure the application
@@ -87,6 +103,7 @@ values:
 $value = setting('app_name', 'Internara'); // with default fallback
 $value = setting('primary_color'); // returns null if missing
 setting(['app_name' => 'My School'], $cacheTtl); // write (optional TTL override)
+
 ```
 
 | Feature | Behavior                                                      |
@@ -133,6 +150,7 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 ```bash
 # Verify all security settings
 php artisan system:health
+
 ```
 
 ---
@@ -155,6 +173,7 @@ Locale resolution order:
 ```env
 APP_LOCALE=en
 APP_FALLBACK_LOCALE=en
+
 ```
 
 See [Localization](localization.md) for adding new languages.
@@ -195,6 +214,7 @@ structured data for use in Blade templates:
 brand('name'); // Application name from settings
 brand('logo'); // Logo URL (uploaded or default)
 brand('colors'); // Array of primary, secondary, accent, base
+
 ```
 
 Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults.

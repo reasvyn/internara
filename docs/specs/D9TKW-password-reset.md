@@ -52,7 +52,7 @@ request and the reset action is required to prevent abuse.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — User Requests Password Reset
+### UC-D9TKW-1 — User Requests Password Reset
 
 **Actor:** User (unauthenticated)
 **Preconditions:** User has a registered email; app mail is configured
@@ -66,7 +66,7 @@ request and the reset action is required to prevent abuse.
 7. Component shows "link sent" confirmation state
 **Postconditions:** Reset email dispatched; throttle counter incremented
 
-### UC-2 — User Resets Password via Token
+### UC-D9TKW-2 — User Resets Password via Token
 
 **Actor:** User (unauthenticated, has reset link)
 **Preconditions:** Valid reset token in URL; token not expired
@@ -87,21 +87,21 @@ request and the reset action is required to prevent abuse.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-PR1  | `SendPasswordResetLinkAction` must throttle by email+IP: max 3 attempts per 3600 seconds |
-| FR-PR2  | When throttled, action must return `RESET_LINK_SENT` status (not reveal throttling to prevent enumeration) |
-| FR-PR3  | Action must call `Password::sendResetLink()` with `['email' => $email]` |
-| FR-PR4  | Action must log `password_reset_link_requested` and `password_reset_link_throttled` events via SmartLogger |
-| FR-PR5  | `ResetPasswordAction` must throttle by email+IP: max 5 attempts per 300 seconds |
-| FR-PR6  | When throttled, action must throw `RejectedException` with throttle message |
-| FR-PR7  | Action must validate password === passwordConfirmation before calling `Password::reset()` |
-| FR-PR8  | On confirmation mismatch, action must log `password_reset_confirmation_mismatch` and throw `RejectedException` |
-| FR-PR9  | Action must call `Password::reset()` with email, token, password, password_confirmation |
-| FR-PR10 | On `Password::PASSWORD_RESET` success, action must log `password_reset_success` and return `ActionResponse::ok()` |
-| FR-PR11 | On invalid token/user, action must throw `RejectedException` with localized message |
-| FR-PR12 | `ForgotPassword` Livewire must show email input and "link sent" confirmation state |
-| FR-PR13 | `ResetPassword` Livewire must accept token from URL, show email (pre-filled), password, confirmation fields |
-| FR-PR14 | Reset token must expire per Laravel default (60 minutes) |
-| FR-PR15 | Successful reset must consume the token (single-use) |
+| FR-D9TKW-PR1  | `SendPasswordResetLinkAction` must throttle by email+IP: max 3 attempts per 3600 seconds |
+| FR-D9TKW-PR2  | When throttled, action must return `RESET_LINK_SENT` status (not reveal throttling to prevent enumeration) |
+| FR-D9TKW-PR3  | Action must call `Password::sendResetLink()` with `['email' => $email]` |
+| FR-D9TKW-PR4  | Action must log `password_reset_link_requested` and `password_reset_link_throttled` events via SmartLogger |
+| FR-D9TKW-PR5  | `ResetPasswordAction` must throttle by email+IP: max 5 attempts per 300 seconds |
+| FR-D9TKW-PR6  | When throttled, action must throw `RejectedException` with throttle message |
+| FR-D9TKW-PR7  | Action must validate password === passwordConfirmation before calling `Password::reset()` |
+| FR-D9TKW-PR8  | On confirmation mismatch, action must log `password_reset_confirmation_mismatch` and throw `RejectedException` |
+| FR-D9TKW-PR9  | Action must call `Password::reset()` with email, token, password, password_confirmation |
+| FR-D9TKW-PR10 | On `Password::PASSWORD_RESET` success, action must log `password_reset_success` and return `ActionResponse::ok()` |
+| FR-D9TKW-PR11 | On invalid token/user, action must throw `RejectedException` with localized message |
+| FR-D9TKW-PR12 | `ForgotPassword` Livewire must show email input and "link sent" confirmation state |
+| FR-D9TKW-PR13 | `ResetPassword` Livewire must accept token from URL, show email (pre-filled), password, confirmation fields |
+| FR-D9TKW-PR14 | Reset token must expire per Laravel default (60 minutes) |
+| FR-D9TKW-PR15 | Successful reset must consume the token (single-use) |
 
 ---
 
@@ -109,11 +109,11 @@ request and the reset action is required to prevent abuse.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-L1  | All reset events must be logged via SmartLogger with module `Auth` |
-| NFR-L2  | PII (email) must be masked in logs via `withPiiMasking()` |
-| NFR-S1  | Throttle responses must not reveal whether the email exists in the system |
-| NFR-S2  | Reset tokens must be stored as hashed values (Laravel default) |
-| NFR-M1  | All actions must declare `strict_types=1` |
+| NFR-D9TKW-L1  | All reset events must be logged via SmartLogger with module `Auth` |
+| NFR-D9TKW-L2  | PII (email) must be masked in logs via `withPiiMasking()` |
+| NFR-D9TKW-S1  | Throttle responses must not reveal whether the email exists in the system |
+| NFR-D9TKW-S2  | Reset tokens must be stored as hashed values (Laravel default) |
+| NFR-D9TKW-M1  | All actions must declare `strict_types=1` |
 
 ---
 
@@ -151,6 +151,7 @@ final class ResetPasswordAction extends BaseCommandAction
     // Throttle: 'reset-password:{email}|{ip}', max 5, decay 300
     // Throws: RejectedException on throttle, mismatch, invalid token
 }
+
 ```
 
 ### Livewire Components
@@ -173,6 +174,7 @@ class ResetPassword extends BaseFormView
     public string $passwordConfirmation = '';
     public function resetPassword(ResetPasswordAction $action): void;
 }
+
 ```
 
 ### Routes

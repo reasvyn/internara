@@ -57,7 +57,7 @@ apply on every request via middleware without database queries.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Uploads Logo or Favicon
+### UC-52O1I-1 — Admin Uploads Logo or Favicon
 
 **Actor:** Admin
 **Preconditions:** User is on the System Settings page
@@ -70,7 +70,7 @@ apply on every request via middleware without database queries.
 6. Component updates preview
 **Postconditions:** Asset is live immediately; logo URL persisted
 
-### UC-2 — User Switches Theme
+### UC-52O1I-2 — User Switches Theme
 
 **Actor:** Any authenticated user
 **Preconditions:** User is on any page rendering `core::ui.theme-switch` (`<x-ts-theme-switch>`)
@@ -81,7 +81,7 @@ apply on every request via middleware without database queries.
 4. CSS variables from `Theme::cssVariables()` provide brand palettes
 **Postconditions:** Theme applied immediately without reload; preference persists across sessions; no DB write
 
-### UC-3 — Admin Changes Locale
+### UC-52O1I-3 — Admin Changes Locale
 
 **Actor:** Any authenticated user
 **Preconditions:** User is on any page with the `LangSwitcher` component
@@ -100,43 +100,43 @@ apply on every request via middleware without database queries.
 
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
-| FR-B1  | `Brand::resolve()` must return a `BrandData` DTO with name, title, logo, favicon, colors, version, author info |
-| FR-B2  | `Brand` resolution uses dual-path: DB settings for branding, `AppInfo` for static metadata |
-| FR-B3  | `Brand::colors()` must cache for 24h under `brand.colors` key                       |
-| FR-B4  | 6 color presets defined in config: sky, emerald (default), violet, rose, ocean, slate |
-| FR-B5  | `BrandingForm::detectPreset()` must compare current colors against presets and return matching key or null |
-| FR-B6  | `BrandingForm::applyPreset()` must set all 4 color fields from selected preset       |
-| FR-B7  | Logo upload: `image|max:1024` (KB), MIME: PNG, JPEG, WebP                           |
-| FR-B8  | Favicon upload: `image|max:512` (KB), MIME: PNG, JPEG, WebP, ICO                    |
-| FR-B9  | `UploadBrandAssetAction` must store via Spatie Media Library under `brand_logo` or `brand_favicon` collections |
-| FR-B10 | `RemoveBrandAssetAction` must delete from media collection and clear setting key     |
-| FR-B11 | Custom CSS stored in `brand.custom_css` setting key, rendered after theme stylesheet in a dedicated `<style>` block |
-| FR-B12 | Custom CSS is a free-text `STRING` setting; only `super_admin` may write it (SettingPolicy) |
-| FR-B13 | Custom CSS must be escaped via `{!! $css !!}` only after the value passes a CSS safety scan (no `<script>`, `url(` to external hosts, `@import`, `expression()`) |
+| FR-52O1I-B1  | `Brand::resolve()` must return a `BrandData` DTO with name, title, logo, favicon, colors, version, author info |
+| FR-52O1I-B2  | `Brand` resolution uses dual-path: DB settings for branding, `AppInfo` for static metadata |
+| FR-52O1I-B3  | `Brand::colors()` must cache for 24h under `brand.colors` key                       |
+| FR-52O1I-B4  | 6 color presets defined in config: sky, emerald (default), violet, rose, ocean, slate |
+| FR-52O1I-B5  | `BrandingForm::detectPreset()` must compare current colors against presets and return matching key or null |
+| FR-52O1I-B6  | `BrandingForm::applyPreset()` must set all 4 color fields from selected preset       |
+| FR-52O1I-B7  | Logo upload: `image|max:1024` (KB), MIME: PNG, JPEG, WebP                           |
+| FR-52O1I-B8  | Favicon upload: `image|max:512` (KB), MIME: PNG, JPEG, WebP, ICO                    |
+| FR-52O1I-B9  | `UploadBrandAssetAction` must store via Spatie Media Library under `brand_logo` or `brand_favicon` collections |
+| FR-52O1I-B10 | `RemoveBrandAssetAction` must delete from media collection and clear setting key     |
+| FR-52O1I-B11 | Custom CSS stored in `brand.custom_css` setting key, rendered after theme stylesheet in a dedicated `<style>` block |
+| FR-52O1I-B12 | Custom CSS is a free-text `STRING` setting; only `super_admin` may write it (SettingPolicy) |
+| FR-52O1I-B13 | Custom CSS must be escaped via `{!! $css !!}` only after the value passes a CSS safety scan (no `<script>`, `url(` to external hosts, `@import`, `expression()`) |
 
 ### Theme
 
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
-| FR-T1  | Theme preference mirrored in the `theme` cookie (values: `light`, `dark`, `system`) for SSR (`base.blade.php` reads it to set `data-theme` + `.dark` pre-hydration); the authoritative client store is localStorage `dark-theme` via `<x-ts-theme-switch>`, not DB |
-| FR-T2  | Theme switching must render via TallstackUI `<x-ts-theme-switch>` (wrapped by `core::ui.theme-switch`); persists mode to localStorage `dark-theme` and listens for the TallstackUI `theme` CustomEvent — no custom Livewire ThemeSwitcher, no DaisyUI/Alpine fallback (coexistence removed in 0.15.0) |
-| FR-T3  | `applyTheme()` in `resources/js/app.js` must listen for the TallstackUI `theme` CustomEvent and apply BOTH the `data-theme` attribute and the `.dark` class on `<html>` (Tailwind/TallstackUI `dark:` variant) |
-| FR-T4  | `Theme::cssVariables()` must generate CSS variables for light/dark palettes, cached 1h |
-| FR-T5  | CSS variables: `--color-primary`, `--color-secondary`, `--color-accent`, `--color-base-{100,200,300,content}`, `--brand-{primary,secondary,accent}` |
-| FR-T6  | Dark mode must apply `Color::lighten()` (40%) and `Color::computeDarkShades()` for base tones |
-| FR-T7  | `Color` helper: `hexToRgb()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
+| FR-52O1I-T1  | Theme preference mirrored in the `theme` cookie (values: `light`, `dark`, `system`) for SSR (`base.blade.php` reads it to set `data-theme` + `.dark` pre-hydration); the authoritative client store is localStorage `dark-theme` via `<x-ts-theme-switch>`, not DB |
+| FR-52O1I-T2  | Theme switching must render via TallstackUI `<x-ts-theme-switch>` (wrapped by `core::ui.theme-switch`); persists mode to localStorage `dark-theme` and listens for the TallstackUI `theme` CustomEvent — no custom Livewire ThemeSwitcher, no DaisyUI/Alpine fallback (coexistence removed in 0.15.0) |
+| FR-52O1I-T3  | `applyTheme()` in `resources/js/app.js` must listen for the TallstackUI `theme` CustomEvent and apply BOTH the `data-theme` attribute and the `.dark` class on `<html>` (Tailwind/TallstackUI `dark:` variant) |
+| FR-52O1I-T4  | `Theme::cssVariables()` must generate CSS variables for light/dark palettes, cached 1h |
+| FR-52O1I-T5  | CSS variables: `--color-primary`, `--color-secondary`, `--color-accent`, `--color-base-{100,200,300,content}`, `--brand-{primary,secondary,accent}` |
+| FR-52O1I-T6  | Dark mode must apply `Color::lighten()` (40%) and `Color::computeDarkShades()` for base tones |
+| FR-52O1I-T7  | `Color` helper: `hexToRgb()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
 
 ### Locale
 
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
-| FR-L1  | Supported locales: EN and ID, defined in `Locale::SUPPORTED_LOCALES` constant       |
-| FR-L2  | Locale preference stored in `locale` cookie (forever TTL), not DB                    |
-| FR-L3  | `SetLocaleMiddleware` must read `locale` cookie on every request and call `App::setLocale()` |
-| FR-L4  | `Locale::set()` must validate against `SUPPORTED_LOCALES`, queue cookie, set locale  |
-| FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown using TallstackUI `x-ts-dropdown`/`select.styled` (DaisyUI fallback removed with coexistence in 0.15.0); must dispatch `language-changed` event |
-| FR-L6  | `Locale::metadata()` must return `['name' => '...', 'native' => '...']` for display  |
-| FR-L7  | `Locale::current()` must resolve via chain: cookie → stored `default_locale` setting → config `app.locale` → `DEFAULT_LOCALE` constant; first valid (supported) value wins |
+| FR-52O1I-L1  | Supported locales: EN and ID, defined in `Locale::SUPPORTED_LOCALES` constant       |
+| FR-52O1I-L2  | Locale preference stored in `locale` cookie (forever TTL), not DB                    |
+| FR-52O1I-L3  | `SetLocaleMiddleware` must read `locale` cookie on every request and call `App::setLocale()` |
+| FR-52O1I-L4  | `Locale::set()` must validate against `SUPPORTED_LOCALES`, queue cookie, set locale  |
+| FR-52O1I-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown using TallstackUI `x-ts-dropdown`/`select.styled` (DaisyUI fallback removed with coexistence in 0.15.0); must dispatch `language-changed` event |
+| FR-52O1I-L6  | `Locale::metadata()` must return `['name' => '...', 'native' => '...']` for display  |
+| FR-52O1I-L7  | `Locale::current()` must resolve via chain: cookie → stored `default_locale` setting → config `app.locale` → `DEFAULT_LOCALE` constant; first valid (supported) value wins |
 
 ---
 
@@ -144,17 +144,17 @@ apply on every request via middleware without database queries.
 
 | ID     | Requirement                                                                          |
 | ------ | ------------------------------------------------------------------------------------ |
-| NFR-S4 | Brand asset uploads must validate MIME type and file size server-side                |
-| NFR-P3 | Theme CSS variable generation must complete in < 50ms and be cached for 1h          |
-| NFR-U1 | Logo/favicon upload must show live preview immediately without page reload           |
-| NFR-U2 | Color preset selection must show visual preview of all 4 colors before applying      |
-| NFR-A2 | Logo/favicon upload must show alt text preview for screen readers                   |
-| NFR-A3 | Color preset picker must indicate selection via non-color means (check icon, border) |
-| NFR-A4 | Theme and locale switches must announce the change to screen readers via `aria-live` |
-| NFR-A5 | All form inputs must have associated labels                                          |
-| NFR-L1 | All UI labels must use `__()` translation helper                                     |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/`                       |
-| NFR-L3 | Locale switcher must update `app()->setLocale()` and persist preference in cookie    |
+| NFR-52O1I-S4 | Brand asset uploads must validate MIME type and file size server-side                |
+| NFR-52O1I-P3 | Theme CSS variable generation must complete in < 50ms and be cached for 1h          |
+| NFR-52O1I-U1 | Logo/favicon upload must show live preview immediately without page reload           |
+| NFR-52O1I-U2 | Color preset selection must show visual preview of all 4 colors before applying      |
+| NFR-52O1I-A2 | Logo/favicon upload must show alt text preview for screen readers                   |
+| NFR-52O1I-A3 | Color preset picker must indicate selection via non-color means (check icon, border) |
+| NFR-52O1I-A4 | Theme and locale switches must announce the change to screen readers via `aria-live` |
+| NFR-52O1I-A5 | All form inputs must have associated labels                                          |
+| NFR-52O1I-L1 | All UI labels must use `__()` translation helper                                     |
+| NFR-52O1I-L2 | Translation keys must exist in both `lang/en/` and `lang/id/`                       |
+| NFR-52O1I-L3 | Locale switcher must update `app()->setLocale()` and persist preference in cookie    |
 
 ---
 
@@ -194,6 +194,7 @@ final readonly class BrandData extends BaseData
         public string $gitUrl,
     ) {}
 }
+
 ```
 
 ### Brand Class
@@ -211,6 +212,7 @@ final class Brand
     public static function get(string $key, mixed $default = null): mixed;
     public static function clearCache(): void;
 }
+
 ```
 
 ### Theme Class
@@ -226,6 +228,7 @@ final class Theme
     public static function base(): string;
     public static function cssVariables(): array;  // cached 1h
 }
+
 ```
 
 ### Locale Class
@@ -247,9 +250,10 @@ final class Locale
     public static function isSupported(string $locale): bool;
     public static function metadata(string $locale): ?array;
 }
+
 ```
 
-`current()` resolution chain (FR-L7): `Cookie::get('locale')` → `setting('default_locale')` →
+`current()` resolution chain (FR-52O1I-L7): `Cookie::get('locale')` → `setting('default_locale')` →
 `config('app.locale')` → `self::DEFAULT_LOCALE`. The `default_locale` setting (default `id`,
 declared in settings-infrastructure.md) is the admin-configured default; `DEFAULT_LOCALE = 'en'`
 is only the code-level last resort. `SetLocaleMiddleware` and `Locale::current()` share this
@@ -288,14 +292,14 @@ rendered in a dedicated `<style>` block after the theme stylesheet.
 without a file-upload pipeline or a build-time integration. Storing it as a setting means the
 `SettingObserver` invalidates caches on change, and `SettingPolicy` restricts writes to
 `super_admin`.
-**Trade-off:** Free-text CSS is powerful and risky. Mitigated by FR-B13 — a CSS safety scan
+**Trade-off:** Free-text CSS is powerful and risky. Mitigated by FR-52O1I-B13 — a CSS safety scan
 rejects `<script>`, external `url()`, `@import`, and `expression()`, so the value cannot escalate
 to script execution. Acceptable because the writer is already `super_admin` (highest trust).
 
 ### DD-5 — Locale Resolved From Stored Setting, Overridden by Cookie
 
 **Decision:** `Locale::current()` resolves cookie → stored `default_locale` setting → config →
-constant (FR-L7).
+constant (FR-52O1I-L7).
 **Rationale:** The project requirement ("Locale Management … resolved from stored setting",
 internara-project §6.1 Settings) demands an admin-configurable default. The per-browser cookie
 preserves the "preference, not account setting" property (DD-1) while the stored `default_locale`

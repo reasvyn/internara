@@ -79,7 +79,7 @@ based on current data.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Department
+### UC-4HWSB-1 — Admin Creates a Department
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Admin is authenticated with department management permission
@@ -101,7 +101,7 @@ based on current data.
 11. Flash success message: "Department created successfully"
 **Postconditions:** Department created, dashboard cache invalidated, activity logged
 
-### UC-2 — Admin Updates a Department
+### UC-4HWSB-2 — Admin Updates a Department
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Department exists; admin is authenticated with update permission
@@ -119,7 +119,7 @@ based on current data.
 7. Flash success message: "Department updated successfully"
 **Postconditions:** Department updated, cache invalidated, activity logged
 
-### UC-3 — Admin Attempts to Delete Department with Profiles
+### UC-4HWSB-3 — Admin Attempts to Delete Department with Profiles
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Department has assigned profiles (students or teachers)
@@ -136,7 +136,7 @@ based on current data.
 7. Admin must reassign profiles to another department before deletion
 **Postconditions:** Deletion blocked, admin informed of dependency, department unchanged
 
-### UC-4 — Admin Deletes a Department (No Profiles)
+### UC-4HWSB-4 — Admin Deletes a Department (No Profiles)
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Department has zero assigned profiles
@@ -155,7 +155,7 @@ based on current data.
 7. Flash success message: "Department deleted successfully"
 **Postconditions:** Department removed, cache invalidated, activity logged
 
-### UC-5 — Admin Bulk Deletes Departments
+### UC-4HWSB-5 — Admin Bulk Deletes Departments
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Multiple departments selected via checkbox
@@ -172,7 +172,7 @@ based on current data.
 7. If any were blocked, flash warning: "{n} department(s) could not be deleted (have profiles)"
 **Postconditions:** Eligible departments deleted, blocked ones preserved, counts reported
 
-### UC-6 — Admin Imports Departments from CSV
+### UC-4HWSB-6 — Admin Imports Departments from CSV
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Admin has a CSV file with department names and descriptions
@@ -190,7 +190,7 @@ based on current data.
 7. If valid, flash summary: "{n} created, {m} skipped (duplicates)"
 **Postconditions:** Departments created from CSV, duplicates skipped, summary shown
 
-### UC-7 — Admin Downloads CSV Template
+### UC-4HWSB-7 — Admin Downloads CSV Template
 
 **Actor:** Admin / Super Admin
 **Preconditions:** None
@@ -200,7 +200,7 @@ based on current data.
 3. Returns streamed CSV with headers `name,description` and one example row
 **Postconditions:** Template downloaded, ready for editing
 
-### UC-8 — Admin Exports Departments to CSV
+### UC-4HWSB-8 — Admin Exports Departments to CSV
 
 **Actor:** Admin / Super Admin
 **Preconditions:** At least one department exists
@@ -219,110 +219,110 @@ based on current data.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM1 | `Department` model must use `#[Fillable]` attribute with `name` and `description` |
-| FR-DM2 | `Department` must extend `BaseModel` and use `HasFactory` trait |
-| FR-DM3 | `Department` must have `hasMany` relationship with `Profile` model |
-| FR-DM4 | `Department` must provide `asDepartmentState()` bridge method returning `DepartmentState` entity |
-| FR-DM5 | `Department` must use `DepartmentFactory` for test data generation |
+| FR-4HWSB-DM1 | `Department` model must use `#[Fillable]` attribute with `name` and `description` |
+| FR-4HWSB-DM2 | `Department` must extend `BaseModel` and use `HasFactory` trait |
+| FR-4HWSB-DM3 | `Department` must have `hasMany` relationship with `Profile` model |
+| FR-4HWSB-DM4 | `Department` must provide `asDepartmentState()` bridge method returning `DepartmentState` entity |
+| FR-4HWSB-DM5 | `Department` must use `DepartmentFactory` for test data generation |
 
 ### Department State Entity
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM6 | `DepartmentState` must be `final readonly` extending `BaseEntity` |
-| FR-DM7 | `DepartmentState::fromModel()` must compute `profileCount` from loaded relation or query count |
-| FR-DM8 | `DepartmentState::fromModel()` must compute `hasProfiles` using eager-loaded check or `exists()` |
-| FR-DM9 | `DepartmentState::canBeDeleted()` must return `false` when `hasProfiles` is `true` |
-| FR-DM10 | `DepartmentState::canBeDeleted()` must return `true` when `hasProfiles` is `false` |
+| FR-4HWSB-DM6 | `DepartmentState` must be `final readonly` extending `BaseEntity` |
+| FR-4HWSB-DM7 | `DepartmentState::fromModel()` must compute `profileCount` from loaded relation or query count |
+| FR-4HWSB-DM8 | `DepartmentState::fromModel()` must compute `hasProfiles` using eager-loaded check or `exists()` |
+| FR-4HWSB-DM9 | `DepartmentState::canBeDeleted()` must return `false` when `hasProfiles` is `true` |
+| FR-4HWSB-DM10 | `DepartmentState::canBeDeleted()` must return `true` when `hasProfiles` is `false` |
 
 ### Department Actions
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM11 | `CreateDepartmentAction` must extend `BaseCommandAction` and validate name uniqueness |
-| FR-DM12 | `CreateDepartmentAction` must wrap creation in a transaction |
-| FR-DM13 | `CreateDepartmentAction` must dispatch `DepartmentCreated` event |
-| FR-DM14 | `CreateDepartmentAction` must log creation via activity log |
-| FR-DM15 | `UpdateDepartmentAction` must extend `BaseCommandAction` and validate name uniqueness excluding current record |
-| FR-DM16 | `UpdateDepartmentAction` must wrap update in a transaction |
-| FR-DM17 | `UpdateDepartmentAction` must dispatch `DepartmentUpdated` event |
-| FR-DM18 | `UpdateDepartmentAction` must log update via activity log |
-| FR-DM19 | `DeleteDepartmentAction` must extend `BaseCommandAction` and check `profiles()->exists()` (or `count() > 0`) before deleting — `exists()` preferred for performance (same semantics) |
-| FR-DM20 | `DeleteDepartmentAction` must throw `RejectedException` when profiles are assigned |
-| FR-DM21 | `DeleteDepartmentAction` must wrap deletion in a transaction |
-| FR-DM22 | `DeleteDepartmentAction` must dispatch `DepartmentDeleted` event |
-| FR-DM23 | `DeleteDepartmentAction` must log deletion via activity log |
+| FR-4HWSB-DM11 | `CreateDepartmentAction` must extend `BaseCommandAction` and validate name uniqueness |
+| FR-4HWSB-DM12 | `CreateDepartmentAction` must wrap creation in a transaction |
+| FR-4HWSB-DM13 | `CreateDepartmentAction` must dispatch `DepartmentCreated` event |
+| FR-4HWSB-DM14 | `CreateDepartmentAction` must log creation via activity log |
+| FR-4HWSB-DM15 | `UpdateDepartmentAction` must extend `BaseCommandAction` and validate name uniqueness excluding current record |
+| FR-4HWSB-DM16 | `UpdateDepartmentAction` must wrap update in a transaction |
+| FR-4HWSB-DM17 | `UpdateDepartmentAction` must dispatch `DepartmentUpdated` event |
+| FR-4HWSB-DM18 | `UpdateDepartmentAction` must log update via activity log |
+| FR-4HWSB-DM19 | `DeleteDepartmentAction` must extend `BaseCommandAction` and check `profiles()->exists()` (or `count() > 0`) before deleting — `exists()` preferred for performance (same semantics) |
+| FR-4HWSB-DM20 | `DeleteDepartmentAction` must throw `RejectedException` when profiles are assigned |
+| FR-4HWSB-DM21 | `DeleteDepartmentAction` must wrap deletion in a transaction |
+| FR-4HWSB-DM22 | `DeleteDepartmentAction` must dispatch `DepartmentDeleted` event |
+| FR-4HWSB-DM23 | `DeleteDepartmentAction` must log deletion via activity log |
 
 ### Department Policy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM24 | `DepartmentPolicy::viewAny()` must return `true` for all authenticated users |
-| FR-DM25 | `DepartmentPolicy::view()` must return `true` for all authenticated users |
-| FR-DM26 | `DepartmentPolicy::create()` must require admin role |
-| FR-DM27 | `DepartmentPolicy::update()` must require admin role |
-| FR-DM28 | `DepartmentPolicy::delete()` must require admin role AND `canBeDeleted()` to return true |
-| FR-DM29 | `DepartmentPolicy::forceDelete()` must always return `false` |
+| FR-4HWSB-DM24 | `DepartmentPolicy::viewAny()` must return `true` for all authenticated users |
+| FR-4HWSB-DM25 | `DepartmentPolicy::view()` must return `true` for all authenticated users |
+| FR-4HWSB-DM26 | `DepartmentPolicy::create()` must require admin role |
+| FR-4HWSB-DM27 | `DepartmentPolicy::update()` must require admin role |
+| FR-4HWSB-DM28 | `DepartmentPolicy::delete()` must require admin role AND `canBeDeleted()` to return true |
+| FR-4HWSB-DM29 | `DepartmentPolicy::forceDelete()` must always return `false` |
 
 ### Department Data Transfer Object
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM30 | `DepartmentData` must be `final readonly` extending `BaseData` |
-| FR-DM31 | `DepartmentData` must contain `name` (string), `description` (?string), `id` (?string) |
+| FR-4HWSB-DM30 | `DepartmentData` must be `final readonly` extending `BaseData` |
+| FR-4HWSB-DM31 | `DepartmentData` must contain `name` (string), `description` (?string), `id` (?string) |
 
 ### Department Form Object
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM32 | `DepartmentForm` must extend Livewire `Form` with `id`, `name`, `description` properties |
-| FR-DM33 | `DepartmentForm::rules()` must validate name as required, string, max 255, unique excluding current ID |
-| FR-DM34 | `DepartmentForm::rules()` must validate description as nullable, string, max 1000 |
-| FR-DM35 | `DepartmentForm::toArray()` must return array with `id`, `name`, `description` |
+| FR-4HWSB-DM32 | `DepartmentForm` must extend Livewire `Form` with `id`, `name`, `description` properties |
+| FR-4HWSB-DM33 | `DepartmentForm::rules()` must validate name as required, string, max 255, unique excluding current ID |
+| FR-4HWSB-DM34 | `DepartmentForm::rules()` must validate description as nullable, string, max 1000 |
+| FR-4HWSB-DM35 | `DepartmentForm::toArray()` must return array with `id`, `name`, `description` |
 
 ### Department Manager (Livewire)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM36 | `DepartmentManager` must extend `BaseRecordManager` and use `WithFileUploads` |
-| FR-DM37 | `DepartmentManager::headers()` must define columns: name, description, created_at, actions |
-| FR-DM38 | `DepartmentManager::query()` must return `Department::query()` |
-| FR-DM39 | `DepartmentManager::applySearch()` must filter by name using `LIKE` |
-| FR-DM40 | `DepartmentManager::create()` must authorize via `create` policy and reset form |
-| FR-DM41 | `DepartmentManager::edit()` must load department, authorize via `update` policy, populate form |
-| FR-DM42 | `DepartmentManager::save()` must dispatch to `CreateDepartmentAction` or `UpdateDepartmentAction` based on form ID |
-| FR-DM43 | `DepartmentManager::askDelete()` must show confirmation dialog with department name |
-| FR-DM44 | `DepartmentManager::askDeleteSelected()` must show bulk delete confirmation |
-| FR-DM45 | `DepartmentManager::confirmAction()` must handle `RejectedException` with flash error |
+| FR-4HWSB-DM36 | `DepartmentManager` must extend `BaseRecordManager` and use `WithFileUploads` |
+| FR-4HWSB-DM37 | `DepartmentManager::headers()` must define columns: name, description, created_at, actions |
+| FR-4HWSB-DM38 | `DepartmentManager::query()` must return `Department::query()` |
+| FR-4HWSB-DM39 | `DepartmentManager::applySearch()` must filter by name using `LIKE` |
+| FR-4HWSB-DM40 | `DepartmentManager::create()` must authorize via `create` policy and reset form |
+| FR-4HWSB-DM41 | `DepartmentManager::edit()` must load department, authorize via `update` policy, populate form |
+| FR-4HWSB-DM42 | `DepartmentManager::save()` must dispatch to `CreateDepartmentAction` or `UpdateDepartmentAction` based on form ID |
+| FR-4HWSB-DM43 | `DepartmentManager::askDelete()` must show confirmation dialog with department name |
+| FR-4HWSB-DM44 | `DepartmentManager::askDeleteSelected()` must show bulk delete confirmation |
+| FR-4HWSB-DM45 | `DepartmentManager::confirmAction()` must handle `RejectedException` with flash error |
 
 ### CSV Import/Export
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM46 | `DepartmentManager::import()` must authorize `create` policy before processing |
-| FR-DM47 | `DepartmentManager::import()` must validate file as `mimes:csv,txt` with max 2MB |
-| FR-DM48 | `CsvHandler::import()` must parse CSV with columns `[name, description]` |
-| FR-DM49 | Rows with empty name must be skipped (return null) |
-| FR-DM50 | Rows with duplicate names must return `CsvRowResult::SKIPPED` |
-| FR-DM51 | Valid rows must call `CreateDepartmentAction::execute()` and return `CsvRowResult::CREATED` |
-| FR-DM52 | Import summary must report created count and skipped count via flash message |
-| FR-DM53 | Invalid CSV format (wrong headers) must flash error: import_invalid |
-| FR-DM54 | `DepartmentManager::export()` must stream CSV with headers `[name, description]` |
-| FR-DM55 | `DepartmentManager::export()` must apply search filter when active |
-| FR-DM56 | `DepartmentManager::exportSelected()` must export only selected department IDs |
-| FR-DM57 | `DepartmentManager::downloadTemplate()` must stream CSV with headers and one example row |
+| FR-4HWSB-DM46 | `DepartmentManager::import()` must authorize `create` policy before processing |
+| FR-4HWSB-DM47 | `DepartmentManager::import()` must validate file as `mimes:csv,txt` with max 2MB |
+| FR-4HWSB-DM48 | `CsvHandler::import()` must parse CSV with columns `[name, description]` |
+| FR-4HWSB-DM49 | Rows with empty name must be skipped (return null) |
+| FR-4HWSB-DM50 | Rows with duplicate names must return `CsvRowResult::SKIPPED` |
+| FR-4HWSB-DM51 | Valid rows must call `CreateDepartmentAction::execute()` and return `CsvRowResult::CREATED` |
+| FR-4HWSB-DM52 | Import summary must report created count and skipped count via flash message |
+| FR-4HWSB-DM53 | Invalid CSV format (wrong headers) must flash error: import_invalid |
+| FR-4HWSB-DM54 | `DepartmentManager::export()` must stream CSV with headers `[name, description]` |
+| FR-4HWSB-DM55 | `DepartmentManager::export()` must apply search filter when active |
+| FR-4HWSB-DM56 | `DepartmentManager::exportSelected()` must export only selected department IDs |
+| FR-4HWSB-DM57 | `DepartmentManager::downloadTemplate()` must stream CSV with headers and one example row |
 
 ### Events & Listeners
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DM58 | `DepartmentCreated` event must extend `BaseEvent` and carry the `Department` model |
-| FR-DM59 | `DepartmentUpdated` event must extend `BaseEvent` and carry the `Department` model |
-| FR-DM60 | `DepartmentDeleted` event must extend `BaseEvent` and carry the `Department` model |
-| FR-DM61 | All three events must provide `eventName()` returning `department.created`, `department.updated`, `department.deleted` |
-| FR-DM62 | `ClearDashboardCacheOnDepartmentChange` listener must handle all three department events |
-| FR-DM63 | Listener must call `Cache::forget(config('cache-keys.admin_dashboard_stats'))` |
-| FR-DM64 | Event-to-listener mapping must be registered in `config/event.php` |
+| FR-4HWSB-DM58 | `DepartmentCreated` event must extend `BaseEvent` and carry the `Department` model |
+| FR-4HWSB-DM59 | `DepartmentUpdated` event must extend `BaseEvent` and carry the `Department` model |
+| FR-4HWSB-DM60 | `DepartmentDeleted` event must extend `BaseEvent` and carry the `Department` model |
+| FR-4HWSB-DM61 | All three events must provide `eventName()` returning `department.created`, `department.updated`, `department.deleted` |
+| FR-4HWSB-DM62 | `ClearDashboardCacheOnDepartmentChange` listener must handle all three department events |
+| FR-4HWSB-DM63 | Listener must call `Cache::forget(config('cache-keys.admin_dashboard_stats'))` |
+| FR-4HWSB-DM64 | Event-to-listener mapping must be registered in `config/event.php` |
 
 ---
 
@@ -330,28 +330,28 @@ based on current data.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Department CRUD operations must complete in < 1s (create, update, delete) |
-| NFR-P2 | CSV import of 50 departments must complete in < 15s |
-| NFR-P3 | Department list page must load in < 500ms for up to 200 departments |
-| NFR-P4 | CSV export must stream without buffering the entire dataset in memory |
-| NFR-S1 | All department mutations must be authorized via `DepartmentPolicy` |
-| NFR-S2 | CSV import file must be validated for MIME type and max 2MB size |
-| NFR-S3 | Department name must be unique (enforced at DB and Action level) |
-| NFR-S4 | Force delete must always be forbidden (`DepartmentPolicy::forceDelete()` returns false) |
-| NFR-R1 | Department CRUD operations must be wrapped in database transactions |
-| NFR-R2 | Bulk delete must handle partial failures gracefully (delete eligible, skip blocked) |
-| NFR-R3 | CSV import must be idempotent — duplicate names are skipped, not errored |
-| NFR-U1 | Department deletion blocked message must explain how many profiles are assigned |
-| NFR-U2 | Bulk delete feedback must separately report deleted count and blocked count |
-| NFR-U3 | CSV import summary must show created and skipped counts |
-| NFR-U4 | Department form must show inline validation errors on name uniqueness violation |
-| NFR-A1 | Department management UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | Deletion blocked messages must be accessible to screen readers |
-| NFR-A3 | All form inputs must have associated labels |
-| NFR-M1 | All PHP files must declare `strict_types=1` |
-| NFR-M2 | All entities must be `final readonly` with no framework imports |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-4HWSB-P1 | Department CRUD operations must complete in < 1s (create, update, delete) |
+| NFR-4HWSB-P2 | CSV import of 50 departments must complete in < 15s |
+| NFR-4HWSB-P3 | Department list page must load in < 500ms for up to 200 departments |
+| NFR-4HWSB-P4 | CSV export must stream without buffering the entire dataset in memory |
+| NFR-4HWSB-S1 | All department mutations must be authorized via `DepartmentPolicy` |
+| NFR-4HWSB-S2 | CSV import file must be validated for MIME type and max 2MB size |
+| NFR-4HWSB-S3 | Department name must be unique (enforced at DB and Action level) |
+| NFR-4HWSB-S4 | Force delete must always be forbidden (`DepartmentPolicy::forceDelete()` returns false) |
+| NFR-4HWSB-R1 | Department CRUD operations must be wrapped in database transactions |
+| NFR-4HWSB-R2 | Bulk delete must handle partial failures gracefully (delete eligible, skip blocked) |
+| NFR-4HWSB-R3 | CSV import must be idempotent — duplicate names are skipped, not errored |
+| NFR-4HWSB-U1 | Department deletion blocked message must explain how many profiles are assigned |
+| NFR-4HWSB-U2 | Bulk delete feedback must separately report deleted count and blocked count |
+| NFR-4HWSB-U3 | CSV import summary must show created and skipped counts |
+| NFR-4HWSB-U4 | Department form must show inline validation errors on name uniqueness violation |
+| NFR-4HWSB-A1 | Department management UI must meet WCAG 2.1 Level AA |
+| NFR-4HWSB-A2 | Deletion blocked messages must be accessible to screen readers |
+| NFR-4HWSB-A3 | All form inputs must have associated labels |
+| NFR-4HWSB-M1 | All PHP files must declare `strict_types=1` |
+| NFR-4HWSB-M2 | All entities must be `final readonly` with no framework imports |
+| NFR-4HWSB-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-4HWSB-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ## Test Requirements
 
@@ -383,6 +383,7 @@ class Department extends BaseModel
     public function asDepartmentState(): DepartmentState;
     protected static function newFactory(): DepartmentFactory;
 }
+
 ```
 
 ### 6.2 DepartmentState Entity
@@ -403,6 +404,7 @@ final readonly class DepartmentState extends BaseEntity
     public function canBeDeleted(): bool;
     // Returns !$this->hasProfiles
 }
+
 ```
 
 ### 6.3 DepartmentData DTO
@@ -417,6 +419,7 @@ final readonly class DepartmentData extends BaseData
         public ?string $id = null,
     ) {}
 }
+
 ```
 
 ### 6.4 CreateDepartmentAction
@@ -430,11 +433,12 @@ final class CreateDepartmentAction extends BaseCommandAction
     //            description (nullable, string, max:1000)
     // Transaction: Department::create → dispatch DepartmentCreated → log
 }
+
 ```
 
 > **Max-length canonical values:** `name` max 255, `description` max 1000 — matching the DB
 > schema (`string('name')` = varchar 255, `text('description')`) and `DepartmentForm` rules
-> (FR-DM33/34). Earlier draft values (max 100 / max 500) were superseded; see DD-8.
+> (FR-4HWSB-DM33/34). Earlier draft values (max 100 / max 500) were superseded; see DD-8.
 
 ### 6.5 UpdateDepartmentAction
 
@@ -447,6 +451,7 @@ final class UpdateDepartmentAction extends BaseCommandAction
     //            description (nullable, string, max:1000)
     // Transaction: department->update → dispatch DepartmentUpdated → log
 }
+
 ```
 
 ### 6.6 DeleteDepartmentAction
@@ -459,6 +464,7 @@ final class DeleteDepartmentAction extends BaseCommandAction
     // Guard: profiles()->exists() → throw RejectedException (exists() preferred over count() >0 for performance, same semantics)
     // Transaction: department->delete → dispatch DepartmentDeleted → log
 }
+
 ```
 
 ### 6.7 DepartmentPolicy
@@ -475,6 +481,7 @@ class DepartmentPolicy extends BasePolicy
         // isAdmin($user) && $department->asDepartmentState()->canBeDeleted()
     public function forceDelete(User $user, Department $department): bool; // false (always)
 }
+
 ```
 
 ### 6.8 DepartmentForm (Livewire)
@@ -494,6 +501,7 @@ class DepartmentForm extends Form
     public function toArray(): array;
     // ['id' => ..., 'name' => ..., 'description' => ...]
 }
+
 ```
 
 ### 6.9 Events
@@ -519,6 +527,7 @@ final class DepartmentDeleted extends BaseEvent
     public function __construct(public Department $department) {}
     public function eventName(): string { return 'department.deleted'; }
 }
+
 ```
 
 ### 6.10 Listener
@@ -530,6 +539,7 @@ final class ClearDashboardCacheOnDepartmentChange
     public function handle(DepartmentCreated|DepartmentDeleted|DepartmentUpdated $event): void;
     // Calls Cache::forget(config('cache-keys.admin_dashboard_stats'))
 }
+
 ```
 
 ### 6.11 Event Registration
@@ -544,6 +554,7 @@ use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 DepartmentCreated::class => [ClearDashboardCacheOnDepartmentChange::class],
 DepartmentDeleted::class => [ClearDashboardCacheOnDepartmentChange::class],
 DepartmentUpdated::class => [ClearDashboardCacheOnDepartmentChange::class],
+
 ```
 
 ### 6.12 Routes
@@ -553,6 +564,7 @@ DepartmentUpdated::class => [ClearDashboardCacheOnDepartmentChange::class],
 Route::prefix('admin')->middleware(['auth', 'role:super_admin|admin'])->group(function () {
     Route::get('/departments', DepartmentManager::class)->name('departments');
 });
+
 ```
 
 ### 6.13 Database Schema
@@ -566,6 +578,7 @@ departments:
   updated_at:  timestamp (nullable)
 
 Migration: database/migrations/2026_01_03_000002_create_departments_table.php
+
 ```
 
 ### 6.14 CsvHandler Contract
@@ -596,6 +609,7 @@ final class CsvHandler
         string $filename = 'template.csv',
     ): StreamedResponse;
 }
+
 ```
 
 ---
@@ -686,7 +700,7 @@ check per-item guard or dispatch individual events).
 layers (Actions, `DepartmentForm`, and DB).
 
 **Rationale:** These values match the DB schema (`string('name')` → varchar 255,
-`text('description')`) and the Livewire form rules (FR-DM33/34). Earlier draft values in the
+`text('description')`) and the Livewire form rules (FR-4HWSB-DM33/34). Earlier draft values in the
 Create/Update Action contracts (max 100 / max 500) contradicted the form and the column types;
 aligning everything to the largest schema-compatible bound removes the contradiction and avoids
 silent truncation where a 255-char name would be rejected by an overly strict Action rule.

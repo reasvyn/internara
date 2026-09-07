@@ -59,12 +59,12 @@ role model with explicit capabilities per role prevents this.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Admin | Assigns role to user |
-| UC-2 | Teacher | Accesses supervision resources |
-| UC-3 | Student | Views own profile |
-| UC-4 | Super Admin | Bypasses all checks |
+| UC-T4B26-1 | Admin | Assigns role to user |
+| UC-T4B26-2 | Teacher | Accesses supervision resources |
+| UC-T4B26-3 | Student | Views own profile |
+| UC-T4B26-4 | Super Admin | Bypasses all checks |
 
-### UC-1 — Admin Assigns Role to User
+### UC-T4B26-1 — Admin Assigns Role to User
 
 **Actor:** Admin / Super Admin
 **Preconditions:** User exists, assigner has Admin or Super Admin role
@@ -75,7 +75,7 @@ role model with explicit capabilities per role prevents this.
 4. Spatie permission updated, user's cached roles invalidated
 **Postconditions:** User can now access resources permitted for new role
 
-### UC-2 — Teacher Accesses Supervision Resources
+### UC-T4B26-2 — Teacher Accesses Supervision Resources
 
 **Actor:** Teacher
 **Preconditions:** Teacher is assigned as mentor to an internship group
@@ -86,7 +86,7 @@ role model with explicit capabilities per role prevents this.
 4. Component renders supervised students' data
 **Postconditions:** Teacher sees only supervised students' data
 
-### UC-3 — Student Views Own Profile
+### UC-T4B26-3 — Student Views Own Profile
 
 **Actor:** Student
 **Preconditions:** Student is authenticated
@@ -97,7 +97,7 @@ role model with explicit capabilities per role prevents this.
 4. Component renders own profile data
 **Postconditions:** Student sees only own data
 
-### UC-4 — Super Admin Bypasses All Checks
+### UC-T4B26-4 — Super Admin Bypasses All Checks
 
 **Actor:** Super Admin
 **Preconditions:** Authenticated as superadmin
@@ -113,18 +113,18 @@ role model with explicit capabilities per role prevents this.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-AUTH1 | `BasePolicy::before()` MUST return `Response::allow()` for `super_admin` role |
-| FR-AUTH2 | `BasePolicy::before()` MUST return `null` for all other roles (continue checks) |
-| FR-AUTH3 | `AuthorizesRoles` trait MUST provide `isAdmin()`, `isTeacher()`, `isStudent()`, `isSupervisor()`, `isAdminOrTeacher()`, `canManageAnyRole()`, `hasAnyOfRoles()` |
-| FR-AUTH4 | `AuthorizesOwnership` trait MUST provide `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` |
-| FR-AUTH5 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
-| FR-AUTH6 | Policy auto-discovery MUST scan `Policies/` directories for `BasePolicy` subclasses |
-| FR-AUTH7 | Auto-discovery MUST cache results for 24 hours |
-| FR-AUTH8 | `UserPolicy` MUST be registered manually in `AppServiceProvider` (exception to auto-discovery) |
-| FR-AUTH9 | Role normalization: code uses `super_admin`, Spatie stores `superadmin` |
-| FR-AUTH10 | Cross-Role Proxy — teachers may act as supervisors for assigned students (canonical contract in §4.2 Cross-Role Proxy below) |
-| FR-AUTH11 | Functional roles (`admin-group`, `mentor`, `mentee`) MUST be resolved at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()` (never stored in DB, never used in route middleware) |
-| FR-AUTH12 | Every policy MUST extend `BasePolicy` |
+| FR-T4B26-AUTH1 | `BasePolicy::before()` MUST return `Response::allow()` for `super_admin` role |
+| FR-T4B26-AUTH2 | `BasePolicy::before()` MUST return `null` for all other roles (continue checks) |
+| FR-T4B26-AUTH3 | `AuthorizesRoles` trait MUST provide `isAdmin()`, `isTeacher()`, `isStudent()`, `isSupervisor()`, `isAdminOrTeacher()`, `canManageAnyRole()`, `hasAnyOfRoles()` |
+| FR-T4B26-AUTH4 | `AuthorizesOwnership` trait MUST provide `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` |
+| FR-T4B26-AUTH5 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
+| FR-T4B26-AUTH6 | Policy auto-discovery MUST scan `Policies/` directories for `BasePolicy` subclasses |
+| FR-T4B26-AUTH7 | Auto-discovery MUST cache results for 24 hours |
+| FR-T4B26-AUTH8 | `UserPolicy` MUST be registered manually in `AppServiceProvider` (exception to auto-discovery) |
+| FR-T4B26-AUTH9 | Role normalization: code uses `super_admin`, Spatie stores `superadmin` |
+| FR-T4B26-AUTH10 | Cross-Role Proxy — teachers may act as supervisors for assigned students (canonical contract in §4.2 Cross-Role Proxy below) |
+| FR-T4B26-AUTH11 | Functional roles (`admin-group`, `mentor`, `mentee`) MUST be resolved at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()` (never stored in DB, never used in route middleware) |
+| FR-T4B26-AUTH12 | Every policy MUST extend `BasePolicy` |
 
 ### 4.2 Cross-Role Proxy (Canonical Contract)
 
@@ -135,13 +135,13 @@ role model with explicit capabilities per role prevents this.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-CRP1 | `HasMentorProxy` trait MUST be used by `AttendancePolicy`, `LogbookPolicy`, `SupervisionLogPolicy`, and `AssessmentPolicy` |
-| FR-CRP2 | Teachers MAY proxy for industry supervisors on records of students they mentor (mentor relationship to the student's registration) |
-| FR-CRP3 | Admins MAY proxy for either teacher or supervisor role on any record |
-| FR-CRP4 | Proxy activation for teachers MUST require supervisor inactivity of a configurable window, stored in settings key `journals.proxy_inactivity_hours` (default `48`) |
-| FR-CRP5 | Proxy verification MUST apply to logbook verification, assessment grading, and supervision log verification |
-| FR-CRP6 | Every proxy-graded item MUST be tagged with `proxy_role` and `proxy_reason` metadata in the activity log for audit trail |
-| FR-RBAC4 | Role assignment MUST invalidate the user's cached roles before the next request | |
+| FR-T4B26-CRP1 | `HasMentorProxy` trait MUST be used by `AttendancePolicy`, `LogbookPolicy`, `SupervisionLogPolicy`, and `AssessmentPolicy` |
+| FR-T4B26-CRP2 | Teachers MAY proxy for industry supervisors on records of students they mentor (mentor relationship to the student's registration) |
+| FR-T4B26-CRP3 | Admins MAY proxy for either teacher or supervisor role on any record |
+| FR-T4B26-CRP4 | Proxy activation for teachers MUST require supervisor inactivity of a configurable window, stored in settings key `journals.proxy_inactivity_hours` (default `48`) |
+| FR-T4B26-CRP5 | Proxy verification MUST apply to logbook verification, assessment grading, and supervision log verification |
+| FR-T4B26-CRP6 | Every proxy-graded item MUST be tagged with `proxy_role` and `proxy_reason` metadata in the activity log for audit trail |
+| FR-T4B26-RBAC4 | Role assignment MUST invalidate the user's cached roles before the next request | |
 
 ---
 
@@ -149,11 +149,11 @@ role model with explicit capabilities per role prevents this.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-AUTH1 | Authorization check latency MUST be < 5ms per request |
-| NFR-AUTH2 | Policy auto-discovery cache MUST invalidate on `php artisan cache:forget` |
-| NFR-AUTH3 | Role changes MUST take effect on next authenticated request |
-| NFR-AUTH4 | Super admin bypass MUST work even if policy class is missing or broken |
-| NFR-AUTH5 | All policies MUST be testable without database beyond the model instance |
+| NFR-T4B26-AUTH1 | Authorization check latency MUST be < 5ms per request |
+| NFR-T4B26-AUTH2 | Policy auto-discovery cache MUST invalidate on `php artisan cache:forget` |
+| NFR-T4B26-AUTH3 | Role changes MUST take effect on next authenticated request |
+| NFR-T4B26-AUTH4 | Super admin bypass MUST work even if policy class is missing or broken |
+| NFR-T4B26-AUTH5 | All policies MUST be testable without database beyond the model instance |
 
 ## Test Requirements
 
@@ -186,6 +186,7 @@ abstract class BasePolicy
         return null;
     }
 }
+
 ```
 
 ### AuthorizesRoles Trait Methods
@@ -307,8 +308,8 @@ for row conventions.
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
 | R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| R-2 | enhancement: auth/permissions — proxy metadata tagging in activity logs (FR-CRP6) not implemented | Open | Maintainer | [#408](https://github.com/reasvyn/internara/issues/408) |
-| R-3 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
+| R-2 | enhancement: auth/permissions — proxy metadata tagging in activity logs (FR-T4B26-CRP6) not implemented | Open | Maintainer | [#408](https://github.com/reasvyn/internara/issues/408) |
+| R-3 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-T4B26-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
 
 ## Quick References
 

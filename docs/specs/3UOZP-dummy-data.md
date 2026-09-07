@@ -77,11 +77,11 @@ on demand for demo instances.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Boots a demo environment |
-| UC-2 | Presenter | Logs in as each role |
-| UC-3 | QA | Re-seeds after state mutation |
+| UC-3UOZP-1 | Developer | Boots a demo environment |
+| UC-3UOZP-2 | Presenter | Logs in as each role |
+| UC-3UOZP-3 | QA | Re-seeds after state mutation |
 
-### UC-1 — Developer Boots a Demo Environment
+### UC-3UOZP-1 — Developer Boots a Demo Environment
 
 **Actor:** Developer
 **Preconditions:** `php artisan migrate --seed` (base seeders) has run; dev autoload (`autoload-dev`) present
@@ -94,7 +94,7 @@ on demand for demo instances.
 6. Helper reports a per-entity summary
 **Postconditions:** Application has a full demo dataset; demo credentials work
 
-### UC-2 — Demo Presenter Logs In as Each Role
+### UC-3UOZP-2 — Demo Presenter Logs In as Each Role
 
 **Actor:** Demo presenter
 **Preconditions:** `DummySeeder` has run
@@ -104,7 +104,7 @@ on demand for demo instances.
 3. Each role's dashboard and module screens show populated data
 **Postconditions:** All roles demonstrate real, populated screens
 
-### UC-3 — QA Re-seeds After State Mutation
+### UC-3UOZP-3 — QA Re-seeds After State Mutation
 
 **Actor:** QA tester
 **Preconditions:** A previous demo/QA session mutated the dataset
@@ -122,55 +122,55 @@ on demand for demo instances.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-E1 | A `Database\Seeders\DummySeeder` must exist and be the only entry point for dummy data |
-| FR-E2 | `DummySeeder` must delegate all generation to a helper in `Tests\Support\` |
-| FR-E3 | `DummySeeder` must NOT be registered in `DatabaseSeeder` or `SetupSeeder` — it is opt-in only |
-| FR-E4 | `DummySeeder` must reuse existing base-seeded data (roles, settings, active academic year) and call `RolePermissionSeeder`, `AppSettingSeeder`, `AcademicYearSeeder` only when base roles/settings/years are absent |
-| FR-E5 | `DummySeeder` must print a bilingual summary (counts per entity) via `__()` |
+| FR-3UOZP-E1 | A `Database\Seeders\DummySeeder` must exist and be the only entry point for dummy data |
+| FR-3UOZP-E2 | `DummySeeder` must delegate all generation to a helper in `Tests\Support\` |
+| FR-3UOZP-E3 | `DummySeeder` must NOT be registered in `DatabaseSeeder` or `SetupSeeder` — it is opt-in only |
+| FR-3UOZP-E4 | `DummySeeder` must reuse existing base-seeded data (roles, settings, active academic year) and call `RolePermissionSeeder`, `AppSettingSeeder`, `AcademicYearSeeder` only when base roles/settings/years are absent |
+| FR-3UOZP-E5 | `DummySeeder` must print a bilingual summary (counts per entity) via `__()` |
 
 ### 4.2 Helper & Data Generation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-H1 | A `Tests\Support\DummyData` helper must expose `run(): array` returning per-entity counts |
-| FR-H2 | All records must be created via model factories (`Database\Factories\*`) — never raw arrays |
-| FR-H3 | Generation must follow module dependency order: academic → partnerships → programs → enrollment → daily ops → assessment → certification → reporting |
-| FR-H4 | New factory states (e.g., `active()` registration, `verified()` logbook) must be added to existing factories as needed — no new factories for existing models |
-| FR-H5 | The helper must be idempotent: `firstOrCreate`/`updateOrCreate` keyed on natural unique fields (email/username for users; name for departments, companies, internships) |
-| FR-H6 | All demo users must share a known password (default `password`, configurable) |
-| FR-H7 | Registrations for the current internship must be `active` and reference real placements |
-| FR-H8 | Daily-ops records (logbooks, attendances, absence requests, supervision logs, monitoring visits) must only exist for `active` registrations |
-| FR-H9 | Assessments, submissions, reports, and certificates must only exist for registrations in matching lifecycle states (reports/certificates for completed internships) |
-| FR-H10 | Evaluation forms (with sections and questions) and responses must be seeded with a realistic structure |
-| FR-H11 | Announcements, notifications, account applications, and placement change requests must include at least one record in each status |
-| FR-H12 | Every placement's `filled_quota` must equal the number of `active` registrations assigned to it (computed from children, not hardcoded) |
-| FR-H13 | The entire generation must run inside a single database transaction — if any record fails to be created, the whole dataset must be rolled back and no partial data must persist |
-| FR-H14 | The helper must treat base-seeded data as read-only input: reuse the existing active academic year, roles, and settings instead of recreating them — it only supplements the dataset with records the base seeders do not provide |
+| FR-3UOZP-H1 | A `Tests\Support\DummyData` helper must expose `run(): array` returning per-entity counts |
+| FR-3UOZP-H2 | All records must be created via model factories (`Database\Factories\*`) — never raw arrays |
+| FR-3UOZP-H3 | Generation must follow module dependency order: academic → partnerships → programs → enrollment → daily ops → assessment → certification → reporting |
+| FR-3UOZP-H4 | New factory states (e.g., `active()` registration, `verified()` logbook) must be added to existing factories as needed — no new factories for existing models |
+| FR-3UOZP-H5 | The helper must be idempotent: `firstOrCreate`/`updateOrCreate` keyed on natural unique fields (email/username for users; name for departments, companies, internships) |
+| FR-3UOZP-H6 | All demo users must share a known password (default `password`, configurable) |
+| FR-3UOZP-H7 | Registrations for the current internship must be `active` and reference real placements |
+| FR-3UOZP-H8 | Daily-ops records (logbooks, attendances, absence requests, supervision logs, monitoring visits) must only exist for `active` registrations |
+| FR-3UOZP-H9 | Assessments, submissions, reports, and certificates must only exist for registrations in matching lifecycle states (reports/certificates for completed internships) |
+| FR-3UOZP-H10 | Evaluation forms (with sections and questions) and responses must be seeded with a realistic structure |
+| FR-3UOZP-H11 | Announcements, notifications, account applications, and placement change requests must include at least one record in each status |
+| FR-3UOZP-H12 | Every placement's `filled_quota` must equal the number of `active` registrations assigned to it (computed from children, not hardcoded) |
+| FR-3UOZP-H13 | The entire generation must run inside a single database transaction — if any record fails to be created, the whole dataset must be rolled back and no partial data must persist |
+| FR-3UOZP-H14 | The helper must treat base-seeded data as read-only input: reuse the existing active academic year, roles, and settings instead of recreating them — it only supplements the dataset with records the base seeders do not provide |
 
 ### 4.3 Dataset Composition
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-C1 | Academic years: the `active` year is provided by `AcademicYearSeeder` (base) and reused as-is (never duplicated); the helper adds exactly one past (inactive) year |
-| FR-C2 | Departments: at least three (vocational majors) |
-| FR-C3 | Companies: 6–8 across diverse industry sectors |
-| FR-C4 | Partnerships: one per company, at least one `active` and one `expired` |
-| FR-C5 | Internships: one `active` (current year, linked to the base active academic year) and one `completed` (past year, linked to the past year the helper adds) |
-| FR-C6 | Placements: one per company per internship with quotas (enforced by `placement_company_internship_unique`, FR-P2 in the placement spec — see DD-10); 6–8 placements per internship |
-| FR-C7 | Users: one `admin`, 3–5 teachers, 4–8 supervisors, and 20–30 students. No `superadmin` — the superadmin account is created exclusively by `SetupSuperAdminAction` (see §7 DD-8) |
-| FR-C8 | Profiles: every user has a profile; student profiles carry department + national id; supervisor profiles carry company + employment status |
-| FR-C9 | Registrations: at least 80% of students registered, majority `active` with placement, remainder `pending` |
-| FR-C10 | Internship groups: 3–6 groups whose members cover the placed students |
-| FR-C11 | Documents and registration documents: policy/handbook docs with mixed verification states |
-| FR-C12 | Rubrics: 1–2 per internship; assignments: 3–5 published per internship with submitted/graded submissions |
-| FR-C13 | Logbooks: 5–10 per `active` registration with mixed statuses (`draft`, `submitted`, `verified`) |
-| FR-C14 | Attendances: 10–20 per `active` registration with mixed statuses; a few absence requests |
-| FR-C15 | Supervision logs and monitoring visits: several per `active` registration |
-| FR-C16 | Assessments: `midterm` + `final` for active registrations; reports: `draft` for current, `finalized` for completed |
-| FR-C17 | Certificates: `issued` for completed-internship registrations with unique `certificate_number` and `qr_hash` |
-| FR-C18 | Incident reports: 1–2 with mixed severities and statuses |
-| FR-C19 | Student names must be generated without academic titles (no faker `id_ID` `suffix` like S.Pd/S.Kom/M.TI.) — an SMK student does not hold a degree; teachers, supervisors, and admin may retain the default titled format |
-| FR-E6 | `DummySeeder` MUST run in any environment, including production, when invoked explicitly (opted-in via `db:seed --class=DummySeeder` or `setup:install --with-dummy`) | |
+| FR-3UOZP-C1 | Academic years: the `active` year is provided by `AcademicYearSeeder` (base) and reused as-is (never duplicated); the helper adds exactly one past (inactive) year |
+| FR-3UOZP-C2 | Departments: at least three (vocational majors) |
+| FR-3UOZP-C3 | Companies: 6–8 across diverse industry sectors |
+| FR-3UOZP-C4 | Partnerships: one per company, at least one `active` and one `expired` |
+| FR-3UOZP-C5 | Internships: one `active` (current year, linked to the base active academic year) and one `completed` (past year, linked to the past year the helper adds) |
+| FR-3UOZP-C6 | Placements: one per company per internship with quotas (enforced by `placement_company_internship_unique`, FR-3UOZP-P2 in the placement spec — see DD-10); 6–8 placements per internship |
+| FR-3UOZP-C7 | Users: one `admin`, 3–5 teachers, 4–8 supervisors, and 20–30 students. No `superadmin` — the superadmin account is created exclusively by `SetupSuperAdminAction` (see §7 DD-8) |
+| FR-3UOZP-C8 | Profiles: every user has a profile; student profiles carry department + national id; supervisor profiles carry company + employment status |
+| FR-3UOZP-C9 | Registrations: at least 80% of students registered, majority `active` with placement, remainder `pending` |
+| FR-3UOZP-C10 | Internship groups: 3–6 groups whose members cover the placed students |
+| FR-3UOZP-C11 | Documents and registration documents: policy/handbook docs with mixed verification states |
+| FR-3UOZP-C12 | Rubrics: 1–2 per internship; assignments: 3–5 published per internship with submitted/graded submissions |
+| FR-3UOZP-C13 | Logbooks: 5–10 per `active` registration with mixed statuses (`draft`, `submitted`, `verified`) |
+| FR-3UOZP-C14 | Attendances: 10–20 per `active` registration with mixed statuses; a few absence requests |
+| FR-3UOZP-C15 | Supervision logs and monitoring visits: several per `active` registration |
+| FR-3UOZP-C16 | Assessments: `midterm` + `final` for active registrations; reports: `draft` for current, `finalized` for completed |
+| FR-3UOZP-C17 | Certificates: `issued` for completed-internship registrations with unique `certificate_number` and `qr_hash` |
+| FR-3UOZP-C18 | Incident reports: 1–2 with mixed severities and statuses |
+| FR-3UOZP-C19 | Student names must be generated without academic titles (no faker `id_ID` `suffix` like S.Pd/S.Kom/M.TI.) — an SMK student does not hold a degree; teachers, supervisors, and admin may retain the default titled format |
+| FR-3UOZP-E6 | `DummySeeder` MUST run in any environment, including production, when invoked explicitly (opted-in via `db:seed --class=DummySeeder` or `setup:install --with-dummy`) | |
 
 ---
 
@@ -178,17 +178,17 @@ on demand for demo instances.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | `DummySeeder` must run only when invoked explicitly (opt-in) — never registered in `DatabaseSeeder`/`SetupSeeder` |
-| NFR-S2 | Demo passwords must be hashed — never stored in plaintext |
-| NFR-S3 | Faker data must avoid real personal information |
-| NFR-P1 | Full seed must complete in under 60 seconds on a local SQLite database |
-| NFR-P2 | Idempotent re-run must complete in under 30 seconds |
-| NFR-R1 | Re-running the seeder must never error on duplicate records |
-| NFR-R2 | The dataset must be all-or-nothing: a single failed insert must roll back the entire generation, leaving the database unchanged |
-| NFR-U1 | All CLI output must use `__()` (English and Indonesian) |
-| NFR-M1 | The generator must live under `tests/` (dev-only autoload) — never in `app/` or `database/` |
-| NFR-M2 | The helper must not add new model factories — only reuse or extend existing ones |
-| NFR-M3 | Every new factory state must trace to a requirement in this spec or a module spec — no orphan states |
+| NFR-3UOZP-S1 | `DummySeeder` must run only when invoked explicitly (opt-in) — never registered in `DatabaseSeeder`/`SetupSeeder` |
+| NFR-3UOZP-S2 | Demo passwords must be hashed — never stored in plaintext |
+| NFR-3UOZP-S3 | Faker data must avoid real personal information |
+| NFR-3UOZP-P1 | Full seed must complete in under 60 seconds on a local SQLite database |
+| NFR-3UOZP-P2 | Idempotent re-run must complete in under 30 seconds |
+| NFR-3UOZP-R1 | Re-running the seeder must never error on duplicate records |
+| NFR-3UOZP-R2 | The dataset must be all-or-nothing: a single failed insert must roll back the entire generation, leaving the database unchanged |
+| NFR-3UOZP-U1 | All CLI output must use `__()` (English and Indonesian) |
+| NFR-3UOZP-M1 | The generator must live under `tests/` (dev-only autoload) — never in `app/` or `database/` |
+| NFR-3UOZP-M2 | The helper must not add new model factories — only reuse or extend existing ones |
+| NFR-3UOZP-M3 | Every new factory state must trace to a requirement in this spec or a module spec — no orphan states |
 
 ---
 
@@ -198,6 +198,7 @@ on demand for demo instances.
 
 ```
 php artisan db:seed --class=DummySeeder
+
 ```
 
 ```
@@ -206,6 +207,7 @@ Database\Seeders\DummySeeder extends Seeder
         → call RolePermissionSeeder / AppSettingSeeder / AcademicYearSeeder when base data absent
         → Tests\Support\DummyData::make()->run()
         → print bilingual summary via $this->command->info(__('...'))
+
 ```
 
 ### 6.2 Helper Contract
@@ -213,12 +215,12 @@ Database\Seeders\DummySeeder extends Seeder
 ```
 Tests\Support\DummyData (final, stateless)
     public function run(): array
-        // Wraps the entire generation in a single DB::transaction() (FR-H13, NFR-R2).
+        // Wraps the entire generation in a single DB::transaction() (FR-3UOZP-H13, NFR-3UOZP-R2).
         // Any exception aborts the closure and rolls back all inserts.
         // Returns ['users' => n, 'registrations' => n, ...] for the summary
 
-    // Internal orchestration, in module dependency order (FR-H3), all inside one transaction.
-    // seedAcademicYears reuses the active year from AcademicYearSeeder and adds only the past year (FR-C1, DD-9).
+    // Internal orchestration, in module dependency order (FR-3UOZP-H3), all inside one transaction.
+    // seedAcademicYears reuses the active year from AcademicYearSeeder and adds only the past year (FR-3UOZP-C1, DD-9).
     private function seedAcademicYears(): void
     private function seedDepartments(): void
     private function seedCompanies(): void
@@ -232,7 +234,8 @@ Tests\Support\DummyData (final, stateless)
     private function seedDailyOps(): void         // logbooks, attendances, supervision, visits
     private function seedFinalization(): void     // assessments, submissions, reports, certificates
     private function seedSysAdminData(): void     // announcements, notifications, account applications, placement changes
-    private function seedIncidents(): void        // incident reports (FR-C18)
+    private function seedIncidents(): void        // incident reports (FR-3UOZP-C18)
+
 ```
 
 ### 6.3 Demo Accounts (deterministic)
@@ -250,7 +253,7 @@ Tests\Support\DummyData (final, stateless)
 >
 > Roles and permissions are **not** created by the helper — they come from `RolePermissionSeeder`
 > (base). The helper only attaches existing roles via `assignRole` and reuses the active academic
-> year from `AcademicYearSeeder` (FR-H14, DD-9).
+> year from `AcademicYearSeeder` (FR-3UOZP-H14, DD-9).
 
 ### 6.4 Required Factory State Additions (to be implemented)
 
@@ -304,16 +307,16 @@ explicitly by the developer.
 Registering a dev-only seeder there would make it run automatically on every install. Opt-in keeps
 the door closed by default.
 **Trade-off:** One extra command for developers — mitigated by `setup:install --with-dummy`
-(installation spec FR-C10), which keeps the seeder unregistered while making demo seeding one
+(installation spec FR-3UOZP-C10), which keeps the seeder unregistered while making demo seeding one
 flag away on a fresh install.
 
 ### DD-4 — Deterministic Demo Accounts
 
 **Decision:** Demo accounts use predictable `role{n}@example.com` addresses and a shared `password`.
-**Rationale:** Demo presenters must log in without guessing (UC-2); deterministic identities also
-make idempotency (`firstOrCreate` on email/username) trivial (FR-H5).
+**Rationale:** Demo presenters must log in without guessing (UC-3UOZP-2); deterministic identities also
+make idempotency (`firstOrCreate` on email/username) trivial (FR-3UOZP-H5).
 **Trade-off:** Known credentials are a minor security surface — acceptable because the seeder is
-opt-in only (FR-E3) and the demo accounts are documented. The demo administrator account must be
+opt-in only (FR-3UOZP-E3) and the demo accounts are documented. The demo administrator account must be
 disabled or its password changed before a non-demo go-live.
 
 ### DD-5 — Idempotency via Natural Keys and Derived Counters
@@ -321,7 +324,7 @@ disabled or its password changed before a non-demo go-live.
 **Decision:** Use `firstOrCreate`/`updateOrCreate` keyed on natural unique fields (email/username,
 name) and compute derived counters (`filled_quota`) from actual child records rather than fixture
 values.
-**Rationale:** Re-runnable seeds (UC-3) without duplicates; consistency invariants (FR-H7, FR-H12)
+**Rationale:** Re-runnable seeds (UC-3UOZP-3) without duplicates; consistency invariants (FR-3UOZP-H7, FR-3UOZP-H12)
 hold because derived fields reflect real children.
 **Trade-off:** Slightly more query overhead — negligible at demo scale (tens of records).
 
@@ -330,13 +333,13 @@ hold because derived fields reflect real children.
 **Decision:** `Tests\Support\DummyData::run()` wraps the entire generation — from academic years
 through certificates — in a single `DB::transaction()`. Any exception aborts the closure and rolls
 back every insert.
-**Rationale:** The dataset is deeply interconnected (FR-H12, NFR-R2): a partially applied seed would
+**Rationale:** The dataset is deeply interconnected (FR-3UOZP-H12, NFR-3UOZP-R2): a partially applied seed would
 produce dangling references and a misleading demo state. Transactional wrapping guarantees the
 dataset is either fully present or entirely absent, and it matches the atomicity the Action Triad
 already enforces on application mutations.
 **Trade-off:** The transaction is held open for the full generation, which on MySQL/PostgreSQL holds
 locks longer than per-entity commits — negligible for a demo-sized dataset (tens of records, < 60s
-target in NFR-P1).
+target in NFR-3UOZP-P1).
 **Rejected alternative:** Per-entity commits with a manual cleanup-on-failure — risks leaving orphan
 records if cleanup itself fails, and reintroduces the very partial state the requirement forbids.
 
@@ -366,7 +369,7 @@ deleted).
 **Rationale:** Creating a second superadmin — or a superadmin that violates the immutable
 name/username contract — would break the single-account invariant and the setup module's integrity
 rules. The superadmin already exists after a normal `setup:install`, so seeding one is unnecessary.
-**Trade-off:** Demo presenters use `admin@example.com` (FR-C7) instead of a superadmin account for
+**Trade-off:** Demo presenters use `admin@example.com` (FR-3UOZP-C7) instead of a superadmin account for
 full-access demos; anything requiring superadmin is exercised through the real installed account.
 **Rejected alternative:** Seeding `superadmin@example.com` via `assignRole` — creates a second
 superadmin and/or an account violating `isNameValid`/`isUsernameValid`, corrupting the setup
@@ -376,7 +379,7 @@ contract.
 
 **Decision:** The helper assumes the base seeders (`RolePermissionSeeder`, `AppSettingSeeder`,
 `AcademicYearSeeder` — invoked by `SetupSeeder`/`DatabaseSeeder`/`setup:install`) have already run.
-It treats their output as read-only input: the active academic year is reused as-is (FR-C1), roles
+It treats their output as read-only input: the active academic year is reused as-is (FR-3UOZP-C1), roles
 are attached via `assignRole` but never recreated, and settings are left untouched. The helper only
 creates records the base seeders do not provide (past academic year, departments, companies,
 partnerships, internships, placements, users/profiles, registrations, daily ops, assessment,
@@ -385,37 +388,37 @@ certification, reporting, sysadmin data).
 year. Recreating them would duplicate rows (role names, active year), drift from the
 `active_academic_year` setting, and blur the boundary between base and demo data. The dummy dataset
 is additive by design — it *completes* the setup dataset (G8).
-**Trade-off:** `DummySeeder` is coupled to the base seeders' output shape; mitigated by FR-E4 (run
-base seeders only when absent) and FR-H5 idempotency (`firstOrCreate` on natural keys).
+**Trade-off:** `DummySeeder` is coupled to the base seeders' output shape; mitigated by FR-3UOZP-E4 (run
+base seeders only when absent) and FR-3UOZP-H5 idempotency (`firstOrCreate` on natural keys).
 **Rejected alternative:** Recreating base data unconditionally — duplicate roles/years and
 conflicts with settings; or making the dummy dataset fully standalone — duplicates the base
 seeders' job.
 
 ### DD-10 — One Placement per Company per Internship
 
-**Decision:** FR-C6 yields exactly **one** placement per company per internship. The schema's
-`placement_company_internship_unique` constraint (FR-P2 in the placement spec) forbids multiple
+**Decision:** FR-3UOZP-C6 yields exactly **one** placement per company per internship. The schema's
+`placement_company_internship_unique` constraint (FR-3UOZP-P2 in the placement spec) forbids multiple
 placements for the same company within a single internship, so the earlier "2–4 per company" draft
 is dropped.
-**Rationale:** Aligns the dataset spec with the authoritative placement module spec (FR-P2) and the
-migration constraint. With 6–8 companies (FR-C3) this still yields 6–8 placements per internship —
-ample for the 16–20 placed students (FR-C9) — and quotas plus `filled_quota` (FR-H12) still
+**Rationale:** Aligns the dataset spec with the authoritative placement module spec (FR-3UOZP-P2) and the
+migration constraint. With 6–8 companies (FR-3UOZP-C3) this still yields 6–8 placements per internship —
+ample for the 16–20 placed students (FR-3UOZP-C9) — and quotas plus `filled_quota` (FR-3UOZP-H12) still
 demonstrate placement saturation.
 **Trade-off:** Fewer placements than a multi-slot design would produce; acceptable because the
 schema intentionally models one placement (one PKL program) per company per internship.
 **Rejected alternative:** Relaxing the DB constraint to allow 2–4 placements per company —
-contradicts FR-P2 and requires a migration with no product need.
+contradicts FR-3UOZP-P2 and requires a migration with no product need.
 
 ### DD-11 — Student Names Carry No Academic Titles
 
 **Decision:** Student names are generated without the faker `id_ID` `suffix` provider (S.Pd, S.Kom,
 M.TI., etc.) — only `firstName` + `lastName`. Teachers, supervisors, and the admin keep the default
-`fake()->name()` format (FR-C19).
+`fake()->name()` format (FR-3UOZP-C19).
 **Rationale:** A student at an SMK has not earned a degree title; a titled demo student name is
 obviously fake and undermines demo credibility. Teachers and supervisors plausibly hold academic or
 professional titles, so only the student role is restricted.
 **Trade-off:** `firstName`+`lastName` yields slightly shorter names than `fake()->name()`; acceptable
-because it is still realistic Indonesian nomenclature and keeps idempotency (FR-H5) intact — the
+because it is still realistic Indonesian nomenclature and keeps idempotency (FR-3UOZP-H5) intact — the
 name is not a natural key.
 **Rejected alternative:** Stripping the suffix post-hoc via regex — brittle against future faker
 suffix additions; constructing the name explicitly at generation is deterministic.
@@ -432,8 +435,8 @@ suffix additions; constructing the name explicitly at generation is deterministi
 | Demo accounts                 | all roles work  | Login succeeds for each account in §6.3        |
 | Module screen coverage         | all modules     | Manual walkthrough of each module's list screen |
 | Duplicate records on re-run    | 0               | `firstOrCreate` on natural keys               |
-| Opt-in only                    | unregistered    | Not present in `DatabaseSeeder`/`SetupSeeder` (FR-E3) |
-| Partial data after failed seed | 0 records       | Inject a failure mid-generation; verify no records persist (FR-H13, NFR-R2) |
+| Opt-in only                    | unregistered    | Not present in `DatabaseSeeder`/`SetupSeeder` (FR-3UOZP-E3) |
+| Partial data after failed seed | 0 records       | Inject a failure mid-generation; verify no records persist (FR-3UOZP-H13, NFR-3UOZP-R2) |
 
 ---
 
@@ -458,7 +461,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 Implement `Tests\Support\DummyData` (orchestrating the existing factories in dependency order,
 wrapped in a single transaction, with the factory states in §6.4), add the thin
-`Database\Seeders\DummySeeder` entry point with the opt-in guard (FR-E3, NFR-S1) and bilingual
+`Database\Seeders\DummySeeder` entry point with the opt-in guard (FR-3UOZP-E3, NFR-3UOZP-S1) and bilingual
 summary, then document usage in `docs/guides/infra/database.md` (Seeders section) and register the
 new factory states in their module reference docs.
 
@@ -467,7 +470,7 @@ new factory states in their module reference docs.
 | Order | Spec | Connection |
 |-------|------|------------|
 | 1 | [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ) | `system:health` can assert demo dataset integrity after a dummy seed |
-| 2 | [installation.md](8NZAU-installation.md) (C9ZB6) | `setup:install --with-dummy` invokes `DummySeeder` after provisioning (FR-C10, NFR-S13) — removes the DD-3 "extra command" trade-off on fresh installs |
+| 2 | [installation.md](8NZAU-installation.md) (C9ZB6) | `setup:install --with-dummy` invokes `DummySeeder` after provisioning (FR-3UOZP-C10, NFR-3UOZP-S13) — removes the DD-3 "extra command" trade-off on fresh installs |
 | 3 | — | End of lifecycle — no downstream consumers |
 
 ---
@@ -496,7 +499,7 @@ Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: desc
 ## Quick References
 
 - `database/seeders/DummySeeder.php` — entry point (new, opt-in)
-- `database/seeders/RolePermissionSeeder.php`, `AppSettingSeeder.php`, `AcademicYearSeeder.php` — base data reused by the helper (FR-E4, FR-H14, DD-9)
+- `database/seeders/RolePermissionSeeder.php`, `AppSettingSeeder.php`, `AcademicYearSeeder.php` — base data reused by the helper (FR-3UOZP-E4, FR-3UOZP-H14, DD-9)
 - `tests/Support/DummyData.php` — factory-driven generator (new, dev-only)
 - `tests/Support/WithSettingsSeed.php` — existing test-support convention being extended
 - `database/factories/*` — existing factories reused (38 factories)

@@ -5,6 +5,19 @@
 Testing strategy, spec traceability, scope isolation, Pest conventions, factory usage, and mocking
 boundaries.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Testing Philosophy
 
 > 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable rules on spec-driven tests (every requirement has a test, no padding), requirement-first order, and traceability prefixes.
@@ -66,6 +79,7 @@ php artisan test --compact --filter=CreateInternshipAction
 
 # 6. Refactor and re-run
 php artisan test --compact --filter=CreateInternshipAction
+
 ```
 
 ### Layer-by-Layer Entry Points
@@ -102,6 +116,7 @@ Tests use `test()` with the requirement ID prefixed, so traceability is visible 
 ```php
 test("{SpecID}-{ReqID}: Test description...", function () { ... });
 test("{SpecID}-{ReqID}: Test description...", function () { ... });
+
 ```
 
 The description carries the spec ID and the requirement ID (`{SpecID}-{ReqID}: description`). Group
@@ -113,6 +128,7 @@ describe("{SpecID}: Test description...", function () {
     test("{SpecID}-{ReqID}: Test description...", function () { ... });
     test("{SpecID}-{ReqID}: Test description...", function () { ... });
 });
+
 ```
 
 ### Running Tests Efficiently
@@ -129,6 +145,7 @@ php artisan test --compact --filter=Internship
 
 # Full suite before committing
 php artisan test --compact
+
 ```
 
 ---
@@ -201,6 +218,7 @@ php artisan test --filter=Internship
 
 # Single test
 php artisan test --filter=testName
+
 ```
 
 ---
@@ -214,6 +232,7 @@ composer run coverage                                 # full app (all modules)
 composer run coverage -- --testsuite=Core             # single module (Core)
 composer run coverage -- --testsuite=User             # single module (User)
 composer run coverage -- --filter=BaseAction          # specific test
+
 ```
 
 Arguments after `--` are passed directly to Pest. The HTML report is written to
@@ -223,6 +242,7 @@ Pcov must be loaded at runtime:
 
 ```bash
 php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage
+
 ```
 
 The `composer run coverage` script handles this automatically.

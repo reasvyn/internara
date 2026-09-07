@@ -58,11 +58,11 @@ business logic. Content (data) and presentation (template) should be separated.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | System | Generates student certificate |
-| UC-2 | Admin | Generates grade card |
-| UC-3 | System | Batch certificate issuance |
+| UC-7UB7S-1 | System | Generates student certificate |
+| UC-7UB7S-2 | Admin | Generates grade card |
+| UC-7UB7S-3 | System | Batch certificate issuance |
 
-### UC-1 — System Generates Student Certificate
+### UC-7UB7S-1 — System Generates Student Certificate
 
 **Actor:** System (automated)
 **Preconditions:** Internship completed, assessments finalized, certificate template exists
@@ -74,7 +74,7 @@ business logic. Content (data) and presentation (template) should be separated.
 5. PDF stored via MediaLibrary on certificate model
 **Postconditions:** Certificate PDF available for download
 
-### UC-2 — Admin Generates Grade Card
+### UC-7UB7S-2 — Admin Generates Grade Card
 
 **Actor:** Admin
 **Preconditions:** Report finalized with grade data
@@ -86,7 +86,7 @@ business logic. Content (data) and presentation (template) should be separated.
 5. PDF returned as download response
 **Postconditions:** Admin receives grade card PDF
 
-### UC-3 — Batch Certificate Issuance
+### UC-7UB7S-3 — Batch Certificate Issuance
 
 **Actor:** System (queued job)
 **Preconditions:** `BatchIssueCertificatesJob` dispatched
@@ -104,16 +104,16 @@ business logic. Content (data) and presentation (template) should be separated.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-PDF1 | All PDF generation MUST use barryvdh/laravel-dompdf |
-| FR-PDF2 | PDF templates MUST be Blade views in `resources/views/pdf/` |
-| FR-PDF3 | Templates MUST use consistent CSS styling via shared layout |
-| FR-PDF4 | `CertificateRenderer` MUST handle certificate-specific rendering |
-| FR-PDF5 | `DocumentRenderer` MUST handle general document rendering |
-| FR-PDF6 | Generated PDFs MUST be stored via MediaLibrary for lifecycle management |
-| FR-PDF7 | Batch operations MUST set `memory_limit` to 512M or use queued jobs |
-| FR-PDF8 | PDF rendering MUST NOT block the HTTP response for large documents |
-| FR-PDF9 | Templates MUST use `__()` for all user-facing strings (localization) |
-| FR-PDF10 | `CertificateRenderer` MUST embed the school logo and render the certificate number on the output | |
+| FR-7UB7S-PDF1 | All PDF generation MUST use barryvdh/laravel-dompdf |
+| FR-7UB7S-PDF2 | PDF templates MUST be Blade views in `resources/views/pdf/` |
+| FR-7UB7S-PDF3 | Templates MUST use consistent CSS styling via shared layout |
+| FR-7UB7S-PDF4 | `CertificateRenderer` MUST handle certificate-specific rendering |
+| FR-7UB7S-PDF5 | `DocumentRenderer` MUST handle general document rendering |
+| FR-7UB7S-PDF6 | Generated PDFs MUST be stored via MediaLibrary for lifecycle management |
+| FR-7UB7S-PDF7 | Batch operations MUST set `memory_limit` to 512M or use queued jobs |
+| FR-7UB7S-PDF8 | PDF rendering MUST NOT block the HTTP response for large documents |
+| FR-7UB7S-PDF9 | Templates MUST use `__()` for all user-facing strings (localization) |
+| FR-7UB7S-PDF10 | `CertificateRenderer` MUST embed the school logo and render the certificate number on the output | |
 
 ---
 
@@ -121,11 +121,11 @@ business logic. Content (data) and presentation (template) should be separated.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-PDF1 | Single PDF generation MUST complete within 10 seconds |
-| NFR-PDF2 | Batch PDF generation MUST process ≥ 5 certificates per minute |
-| NFR-PDF3 | PDF file size MUST be < 5MB per document |
-| NFR-PDF4 | Memory usage per PDF MUST NOT exceed 256MB |
-| NFR-PDF5 | Generated PDFs MUST be visually identical across browsers/OS |
+| NFR-7UB7S-PDF1 | Single PDF generation MUST complete within 10 seconds |
+| NFR-7UB7S-PDF2 | Batch PDF generation MUST process ≥ 5 certificates per minute |
+| NFR-7UB7S-PDF3 | PDF file size MUST be < 5MB per document |
+| NFR-7UB7S-PDF4 | Memory usage per PDF MUST NOT exceed 256MB |
+| NFR-7UB7S-PDF5 | Generated PDFs MUST be visually identical across browsers/OS |
 
 ---
 
@@ -162,6 +162,7 @@ class CertificateRenderer
         // render() + store via MediaLibrary
     }
 }
+
 ```
 
 ### DocumentRenderer
@@ -180,6 +181,7 @@ class DocumentRenderer
         // render() + return as download response
     }
 }
+
 ```
 
 ### Blade Template Structure
@@ -204,6 +206,7 @@ class DocumentRenderer
     </div>
 </body>
 </html>
+
 ```
 
 ### Dompdf Configuration
@@ -214,6 +217,7 @@ class DocumentRenderer
 'isHtml5ParserEnabled' => true,
 'defaultFont' => 'DejaVu Sans',
 'isFontSubsettingEnabled' => true,
+
 ```
 
 ---

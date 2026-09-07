@@ -61,6 +61,7 @@ final readonly class InternshipPeriod extends BaseEntity
 {
     public static function rules(?string $excludeId = null): array { ... }
 }
+
 ```
 
 ### Positive Consequences

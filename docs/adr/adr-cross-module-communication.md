@@ -58,6 +58,7 @@ Internship\Actions\CreateInternshipAction
   → event(new InternshipCreated(...))
     → Internship\Listeners\NotifyAdmins (same module)
     → SysAdmin\Listeners\InvalidateCache (different module)
+
 ```
 
 **3. Action Delegation** — a module calls another module's public `execute()` method. Any Action
@@ -78,6 +79,7 @@ class CloseInternshipAction extends BaseAction
         $this->issueCertificates->execute($program);
     }
 }
+
 ```
 
 **4. Direct Import** — straightforward cross-module access when no decoupling is needed; the

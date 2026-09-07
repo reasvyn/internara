@@ -78,7 +78,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Dashboard Loads with 25+ Stats
+### UC-CKKZC-1 — Admin Dashboard Loads with 25+ Stats
 
 **Actor:** Admin or Super Admin
 **Preconditions:** User authenticated with `admin` or `super_admin` role
@@ -92,7 +92,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 7. Returns: people counts, internship stats, registration pipeline, placement data, attendance, logbooks, certificates, companies, throughput, audit entries, and 5 readiness checks (DB, mail, cache, queue, storage)
 **Postconditions:** Dashboard renders in < 200ms (cache hit) or < 2s (cache miss)
 
-### UC-2 — Student Dashboard Loads with Academic Progress
+### UC-CKKZC-2 — Student Dashboard Loads with Academic Progress
 
 **Actor:** Student
 **Preconditions:** User authenticated with `student` role
@@ -104,7 +104,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 5. Returns: active registration, journal counts, attendance %, assignment counts, handbook counts
 **Postconditions:** Dashboard shows student's academic progress and submission status
 
-### UC-3 — Teacher Dashboard Loads with Supervision Queue
+### UC-CKKZC-3 — Teacher Dashboard Loads with Supervision Queue
 
 **Actor:** Teacher
 **Preconditions:** User authenticated with `teacher` role
@@ -115,7 +115,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 4. Queries supervised students, pending journals, active companies, ungraded submissions, supervision logs, unresolved incidents
 **Postconditions:** Dashboard shows teacher's supervision workload
 
-### UC-4 — Supervisor Dashboard Loads with Intern Activity
+### UC-CKKZC-4 — Supervisor Dashboard Loads with Intern Activity
 
 **Actor:** Supervisor
 **Preconditions:** User authenticated with `supervisor` role
@@ -126,7 +126,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 4. Queries active interns, pending evaluations, verified/pending journals, pending attendance
 **Postconditions:** Dashboard shows intern activity and pending verification tasks
 
-### UC-5 — Dashboard Cache Invalidated on Department Change
+### UC-CKKZC-5 — Dashboard Cache Invalidated on Department Change
 
 **Actor:** Admin creating/updating/deleting a department
 **Preconditions:** Admin has department management permission
@@ -137,7 +137,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 4. Next dashboard load triggers fresh data aggregation
 **Postconditions:** Dashboard statistics reflect the change within one request cycle
 
-### UC-6 — Dashboard Cache Invalidated on Academic Year Change
+### UC-CKKZC-6 — Dashboard Cache Invalidated on Academic Year Change
 
 **Actor:** Admin managing academic years
 **Preconditions:** Admin has academic year management permission
@@ -148,7 +148,7 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 4. Next dashboard load triggers fresh data aggregation
 **Postconditions:** Dashboard statistics reflect the year change within one request cycle
 
-### UC-7 — Unknown Role Is Rejected (Fail-Closed)
+### UC-CKKZC-7 — Unknown Role Is Rejected (Fail-Closed)
 
 **Actor:** User with unrecognized or missing role
 **Preconditions:** User authenticated but role does not match any known dashboard
@@ -167,69 +167,69 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DR1 | `GET /dashboard` must invoke `DashboardController` which calls `DashboardService::getDashboardForUser()` and redirects to the resolved route |
-| FR-DR2 | `super_admin`/`admin` → route `sysadmin.dashboard` (`/admin/dashboard`) |
-| FR-DR3 | `student` → route `student.dashboard` (`/student/dashboard`) |
-| FR-DR4 | `teacher` → route `teacher.dashboard` (`/teacher/dashboard`) |
-| FR-DR5 | `supervisor` → route `supervisor.dashboard` (`/supervisor/dashboard`) |
-| FR-DR6 | Unrecognized / missing role → throw `HttpException(403)` — `UserDashboard` is a base component, not a routable page. All dashboards are `/<role>/dashboard`. |
-| FR-DR7 | Role priority: `super_admin`/`admin` first, then `student`, `teacher`, `supervisor`, then default (403) — via `match(true)` with ordered cases |
-| FR-DR8 | `DashboardService::getProxyDashboardForUser()` must return `supervisor.dashboard` for `teacher` role, `null` otherwise |
+| FR-CKKZC-DR1 | `GET /dashboard` must invoke `DashboardController` which calls `DashboardService::getDashboardForUser()` and redirects to the resolved route |
+| FR-CKKZC-DR2 | `super_admin`/`admin` → route `sysadmin.dashboard` (`/admin/dashboard`) |
+| FR-CKKZC-DR3 | `student` → route `student.dashboard` (`/student/dashboard`) |
+| FR-CKKZC-DR4 | `teacher` → route `teacher.dashboard` (`/teacher/dashboard`) |
+| FR-CKKZC-DR5 | `supervisor` → route `supervisor.dashboard` (`/supervisor/dashboard`) |
+| FR-CKKZC-DR6 | Unrecognized / missing role → throw `HttpException(403)` — `UserDashboard` is a base component, not a routable page. All dashboards are `/<role>/dashboard`. |
+| FR-CKKZC-DR7 | Role priority: `super_admin`/`admin` first, then `student`, `teacher`, `supervisor`, then default (403) — via `match(true)` with ordered cases |
+| FR-CKKZC-DR8 | `DashboardService::getProxyDashboardForUser()` must return `supervisor.dashboard` for `teacher` role, `null` otherwise |
 
 ### Dashboard — Data Aggregation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DD1 | `ReadAdminDashboardAction` must extend `BaseReadAction`, accept no parameters, and return 28 keys: `totalStudents`, `totalTeachers`, `totalSupervisors`, `totalMentors`, `totalCompanies`, `totalPartnerships`, `totalDepartments`, `activeInternships`, `allInternships`, `registrationsPending`, `registrationsActive`, `registrationsCompleted`, `registrationsTotal`, `placementTotal`, `placementFilled`, `placementCapacity`, `placementsByInternship`, `attendanceVerified`, `attendanceUnverified`, `logbookVerified`, `logbookPending`, `certificatesIssued`, `certificatesRevoked`, `certificatesTotal`, `companiesActive`, `placementRate`, `totalAuditEntries`, `failedLogins7d`, `activeUsersToday` |
-| FR-DD2 | `ReadStudentDashboardAction` must extend `BaseReadAction`, accept `string $userId`, and return 8 keys: `registration` (?Registration), `totalJournals`, `verifiedJournals`, `attendancePercent` (float), `assignmentSubmittedCount`, `assignmentTotalCount`, `handbookReadCount`, `handbookTotalCount` |
-| FR-DD3 | `ReadTeacherDashboardAction` must extend `BaseReadAction`, accept no parameters (reads `Auth::id()`), and return 6 keys: `supervisedStudents`, `pendingJournals`, `activeCompanies`, `ungradedSubmissions`, `supervisionLogsCount`, `unresolvedIncidents` |
-| FR-DD4 | `ReadSupervisorDashboardAction` must extend `BaseReadAction`, accept no parameters (reads `Auth::id()`), and return 5 keys: `activeInterns`, `pendingEvaluations`, `verifiedJournals`, `pendingJournals`, `pendingAttendance` |
-| FR-DD5 | `ReadStudentDashboardAction` must throw `RejectedException` if user not found |
-| FR-DD6 | `ReadStudentDashboardAction` must handle null registration gracefully (default counts to 0, attendance to 100.0) |
-| FR-DD7 | `ReadTeacherDashboardAction` and `ReadSupervisorDashboardAction` must scope queries to the authenticated user's supervised registrations via `whereHas('mentors', fn ($q) => $q->where('user_id', $userId))` |
+| FR-CKKZC-DD1 | `ReadAdminDashboardAction` must extend `BaseReadAction`, accept no parameters, and return 28 keys: `totalStudents`, `totalTeachers`, `totalSupervisors`, `totalMentors`, `totalCompanies`, `totalPartnerships`, `totalDepartments`, `activeInternships`, `allInternships`, `registrationsPending`, `registrationsActive`, `registrationsCompleted`, `registrationsTotal`, `placementTotal`, `placementFilled`, `placementCapacity`, `placementsByInternship`, `attendanceVerified`, `attendanceUnverified`, `logbookVerified`, `logbookPending`, `certificatesIssued`, `certificatesRevoked`, `certificatesTotal`, `companiesActive`, `placementRate`, `totalAuditEntries`, `failedLogins7d`, `activeUsersToday` |
+| FR-CKKZC-DD2 | `ReadStudentDashboardAction` must extend `BaseReadAction`, accept `string $userId`, and return 8 keys: `registration` (?Registration), `totalJournals`, `verifiedJournals`, `attendancePercent` (float), `assignmentSubmittedCount`, `assignmentTotalCount`, `handbookReadCount`, `handbookTotalCount` |
+| FR-CKKZC-DD3 | `ReadTeacherDashboardAction` must extend `BaseReadAction`, accept no parameters (reads `Auth::id()`), and return 6 keys: `supervisedStudents`, `pendingJournals`, `activeCompanies`, `ungradedSubmissions`, `supervisionLogsCount`, `unresolvedIncidents` |
+| FR-CKKZC-DD4 | `ReadSupervisorDashboardAction` must extend `BaseReadAction`, accept no parameters (reads `Auth::id()`), and return 5 keys: `activeInterns`, `pendingEvaluations`, `verifiedJournals`, `pendingJournals`, `pendingAttendance` |
+| FR-CKKZC-DD5 | `ReadStudentDashboardAction` must throw `RejectedException` if user not found |
+| FR-CKKZC-DD6 | `ReadStudentDashboardAction` must handle null registration gracefully (default counts to 0, attendance to 100.0) |
+| FR-CKKZC-DD7 | `ReadTeacherDashboardAction` and `ReadSupervisorDashboardAction` must scope queries to the authenticated user's supervised registrations via `whereHas('mentors', fn ($q) => $q->where('user_id', $userId))` |
 
 ### Dashboard — Caching
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DC1 | All dashboard data must be cached via `Cache::remember()` with 300-second TTL |
-| FR-DC2 | Admin cache key: `config('cache-keys.admin_dashboard_stats')` → `sysadmin.dashboard.stats` |
-| FR-DC3 | Student cache key: `config('cache-keys.dashboard_student') . $userId` → `dashboard.student.{userId}` |
-| FR-DC4 | Teacher cache key: `config('cache-keys.admin_dashboard_stats') . 'teacher.' . $userId` → `sysadmin.dashboard.stats.teacher.{userId}` |
-| FR-DC5 | Supervisor cache key: `config('cache-keys.admin_dashboard_stats') . 'supervisor.' . $userId` → `sysadmin.dashboard.stats.supervisor.{userId}` |
-| FR-DC6 | Cache keys must be declared in `config/cache-keys.php` — no inline key strings |
+| FR-CKKZC-DC1 | All dashboard data must be cached via `Cache::remember()` with 300-second TTL |
+| FR-CKKZC-DC2 | Admin cache key: `config('cache-keys.admin_dashboard_stats')` → `sysadmin.dashboard.stats` |
+| FR-CKKZC-DC3 | Student cache key: `config('cache-keys.dashboard_student') . $userId` → `dashboard.student.{userId}` |
+| FR-CKKZC-DC4 | Teacher cache key: `config('cache-keys.admin_dashboard_stats') . 'teacher.' . $userId` → `sysadmin.dashboard.stats.teacher.{userId}` |
+| FR-CKKZC-DC5 | Supervisor cache key: `config('cache-keys.admin_dashboard_stats') . 'supervisor.' . $userId` → `sysadmin.dashboard.stats.supervisor.{userId}` |
+| FR-CKKZC-DC6 | Cache keys must be declared in `config/cache-keys.php` — no inline key strings |
 
 ### Dashboard — Cache Invalidation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DI1 | `ClearDashboardCacheOnDepartmentChange` must listen to `DepartmentCreated`, `DepartmentUpdated`, `DepartmentDeleted` and call `Cache::forget()` on `admin_dashboard_stats` key |
-| FR-DI2 | `ClearDashboardCacheOnYearChange` must listen to `AcademicYearCreated`, `AcademicYearActivated`, `AcademicYearUpdated`, `AcademicYearDeleted` and call `Cache::forget()` on `admin_dashboard_stats` key |
-| FR-DI3 | Cache invalidation listeners must execute synchronously (not queued) |
+| FR-CKKZC-DI1 | `ClearDashboardCacheOnDepartmentChange` must listen to `DepartmentCreated`, `DepartmentUpdated`, `DepartmentDeleted` and call `Cache::forget()` on `admin_dashboard_stats` key |
+| FR-CKKZC-DI2 | `ClearDashboardCacheOnYearChange` must listen to `AcademicYearCreated`, `AcademicYearActivated`, `AcademicYearUpdated`, `AcademicYearDeleted` and call `Cache::forget()` on `admin_dashboard_stats` key |
+| FR-CKKZC-DI3 | Cache invalidation listeners must execute synchronously (not queued) |
 
 ### Dashboard — UI Components
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DU1 | `UserDashboard` must extend `Component` with `#[Layout('core::layouts.app')]`, provide `getUser()` (returns `?User`) and `getRecentActivities()` (5 most recent `ActivityLog` entries), render `user.dashboard.index` |
-| FR-DU2 | `AdminDashboard` must extend `UserDashboard`, call `ReadAdminDashboardAction::execute()` in `mount()`, run 5 readiness checks, render `user.dashboard.admin` with `$stats` and `$readiness` |
-| FR-DU3 | `StudentDashboard` must extend `UserDashboard`, enforce `abort_unless(hasRole('student'), 403)` in `boot()`, call `ReadStudentDashboardAction::execute($userId)` in `mount()`, render `user.dashboard.student` |
-| FR-DU4 | `TeacherDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `teacher` or `admin`), call `ReadTeacherDashboardAction::execute()` in `mount()`, render `user.dashboard.teacher` |
-| FR-DU5 | `SupervisorDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `supervisor`, `admin`, or `teacher`), call `ReadSupervisorDashboardAction::execute()` in `mount()`, render `user.dashboard.supervisor` |
-| FR-DU6 | `AdminDashboard` readiness checks: DB (`DB::connection()->getPdo()`), mail (host not empty/localhost, `log` mailer counts as configured), cache (write-read roundtrip via `config('cache-keys.health_check')`), queue (sync = ready, otherwise DB), storage (symlink + writable logs/cache dirs) |
-| FR-DU7 | Each dashboard must use constructor injection for its Read Action in `mount()` — no service locator |
-| FR-DU8 | `AdminDashboard::render()` must pass `roleContent => true` to the view alongside `$stats` and `$readiness` |
-| FR-DU9 | `AdminDashboard` view must conditionally render super admin-only system cards (audit entries, PHP/Laravel version, storage summary) gated by `auth()->user()?->hasRole('super_admin')` |
+| FR-CKKZC-DU1 | `UserDashboard` must extend `Component` with `#[Layout('core::layouts.app')]`, provide `getUser()` (returns `?User`) and `getRecentActivities()` (5 most recent `ActivityLog` entries), render `user.dashboard.index` |
+| FR-CKKZC-DU2 | `AdminDashboard` must extend `UserDashboard`, call `ReadAdminDashboardAction::execute()` in `mount()`, run 5 readiness checks, render `user.dashboard.admin` with `$stats` and `$readiness` |
+| FR-CKKZC-DU3 | `StudentDashboard` must extend `UserDashboard`, enforce `abort_unless(hasRole('student'), 403)` in `boot()`, call `ReadStudentDashboardAction::execute($userId)` in `mount()`, render `user.dashboard.student` |
+| FR-CKKZC-DU4 | `TeacherDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `teacher` or `admin`), call `ReadTeacherDashboardAction::execute()` in `mount()`, render `user.dashboard.teacher` |
+| FR-CKKZC-DU5 | `SupervisorDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `supervisor`, `admin`, or `teacher`), call `ReadSupervisorDashboardAction::execute()` in `mount()`, render `user.dashboard.supervisor` |
+| FR-CKKZC-DU6 | `AdminDashboard` readiness checks: DB (`DB::connection()->getPdo()`), mail (host not empty/localhost, `log` mailer counts as configured), cache (write-read roundtrip via `config('cache-keys.health_check')`), queue (sync = ready, otherwise DB), storage (symlink + writable logs/cache dirs) |
+| FR-CKKZC-DU7 | Each dashboard must use constructor injection for its Read Action in `mount()` — no service locator |
+| FR-CKKZC-DU8 | `AdminDashboard::render()` must pass `roleContent => true` to the view alongside `$stats` and `$readiness` |
+| FR-CKKZC-DU9 | `AdminDashboard` view must conditionally render super admin-only system cards (audit entries, PHP/Laravel version, storage summary) gated by `auth()->user()?->hasRole('super_admin')` |
 
 ### Dashboard — Routes
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RT1 | `GET /dashboard` — `auth` middleware, named `dashboard` (redirects via `DashboardController` to the role-specific route) |
-| FR-RT2 | `GET /admin/dashboard` — `auth` + `role:super_admin\|admin`, named `sysadmin.dashboard` |
-| FR-RT3 | `GET /student/dashboard` — `auth` + `role:student`, named `student.dashboard` |
-| FR-RT4 | `GET /teacher/dashboard` — `auth` + `role:teacher`, named `teacher.dashboard` |
-| FR-RT5 | `GET /supervisor/dashboard` — `auth` + `role:supervisor`, named `supervisor.dashboard` |
+| FR-CKKZC-RT1 | `GET /dashboard` — `auth` middleware, named `dashboard` (redirects via `DashboardController` to the role-specific route) |
+| FR-CKKZC-RT2 | `GET /admin/dashboard` — `auth` + `role:super_admin\|admin`, named `sysadmin.dashboard` |
+| FR-CKKZC-RT3 | `GET /student/dashboard` — `auth` + `role:student`, named `student.dashboard` |
+| FR-CKKZC-RT4 | `GET /teacher/dashboard` — `auth` + `role:teacher`, named `teacher.dashboard` |
+| FR-CKKZC-RT5 | `GET /supervisor/dashboard` — `auth` + `role:supervisor`, named `supervisor.dashboard` |
 
 ---
 
@@ -237,24 +237,24 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Dashboard load must complete in < 200ms on cache hit |
-| NFR-P2 | Dashboard load must complete in < 2s on cache miss |
-| NFR-P3 | Cache hit rate should exceed 90% under normal usage (5-min TTL covers repeated visits) |
-| NFR-P4 | Student dashboard cache must be per-user (key includes `$userId`) to prevent cross-user data leakage |
-| NFR-R1 | Dashboard must function correctly if any individual stat query fails — remaining stats render |
-| NFR-R2 | `ReadStudentDashboardAction` must handle missing user via `RejectedException` |
-| NFR-R3 | `ReadStudentDashboardAction` must handle null registration gracefully (default counts to 0) |
-| NFR-R4 | Cache invalidation listeners must execute synchronously — no queued jobs |
-| NFR-R5 | `AdminDashboard` readiness checks must catch exceptions and return `false`, never throw |
-| NFR-A1 | All dashboard UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | Dashboard must be navigable via keyboard alone (tab order follows logical reading order) |
-| NFR-A3 | Readiness check status must be conveyed via both color and text (not color alone) |
-| NFR-L1 | All dashboard labels must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-M1 | Dashboard data aggregation must be delegated to Read Actions, never inline in Livewire |
-| NFR-M2 | Read Actions must extend `BaseReadAction` and follow the Action Triad pattern |
-| NFR-M3 | Cache keys must be declared in `config/cache-keys.php` — no ad-hoc key strings |
-| NFR-M4 | Each dashboard component must be a single-responsibility class under `app/Modules/User/Dashboard/Livewire/` |
+| NFR-CKKZC-P1 | Dashboard load must complete in < 200ms on cache hit |
+| NFR-CKKZC-P2 | Dashboard load must complete in < 2s on cache miss |
+| NFR-CKKZC-P3 | Cache hit rate should exceed 90% under normal usage (5-min TTL covers repeated visits) |
+| NFR-CKKZC-P4 | Student dashboard cache must be per-user (key includes `$userId`) to prevent cross-user data leakage |
+| NFR-CKKZC-R1 | Dashboard must function correctly if any individual stat query fails — remaining stats render |
+| NFR-CKKZC-R2 | `ReadStudentDashboardAction` must handle missing user via `RejectedException` |
+| NFR-CKKZC-R3 | `ReadStudentDashboardAction` must handle null registration gracefully (default counts to 0) |
+| NFR-CKKZC-R4 | Cache invalidation listeners must execute synchronously — no queued jobs |
+| NFR-CKKZC-R5 | `AdminDashboard` readiness checks must catch exceptions and return `false`, never throw |
+| NFR-CKKZC-A1 | All dashboard UI must meet WCAG 2.1 Level AA |
+| NFR-CKKZC-A2 | Dashboard must be navigable via keyboard alone (tab order follows logical reading order) |
+| NFR-CKKZC-A3 | Readiness check status must be conveyed via both color and text (not color alone) |
+| NFR-CKKZC-L1 | All dashboard labels must use `__()` translation helper |
+| NFR-CKKZC-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-CKKZC-M1 | Dashboard data aggregation must be delegated to Read Actions, never inline in Livewire |
+| NFR-CKKZC-M2 | Read Actions must extend `BaseReadAction` and follow the Action Triad pattern |
+| NFR-CKKZC-M3 | Cache keys must be declared in `config/cache-keys.php` — no ad-hoc key strings |
+| NFR-CKKZC-M4 | Each dashboard component must be a single-responsibility class under `app/Modules/User/Dashboard/Livewire/` |
 
 ---
 
@@ -284,6 +284,7 @@ class DashboardService
     public function getProxyDashboardForUser(User $user): ?string;
     public function getSharedStats(): array;
 }
+
 ```
 
 ### 6.2 DashboardController
@@ -294,6 +295,7 @@ class DashboardController extends BaseController
 {
     public function __invoke(Request $request, DashboardService $dashboardService): RedirectResponse;
 }
+
 ```
 
 ### 6.3 UserDashboard (Base Component)
@@ -307,6 +309,7 @@ class UserDashboard extends Component
     public function getRecentActivities(): Collection; // 5 most recent ActivityLog
     public function render(): View; // user.dashboard.index
 }
+
 ```
 
 ### 6.4 Role-Specific Dashboard Components
@@ -360,6 +363,7 @@ class SupervisorDashboard extends UserDashboard
     public function boot(): void; // allows supervisor, admin, or teacher
     public function mount(ReadSupervisorDashboardAction $action): void;
 }
+
 ```
 
 ### 6.5 Read Actions
@@ -402,6 +406,7 @@ final class ReadSupervisorDashboardAction extends BaseReadAction
     // Queries: Registration, EvaluationResponse, Logbook, Attendance
     // All scoped to user's supervised registrations via mentors relationship
 }
+
 ```
 
 ### 6.6 Cache Invalidation Listeners
@@ -420,6 +425,7 @@ final class ClearDashboardCacheOnYearChange
     public function handle(AcademicYearCreated|AcademicYearActivated|AcademicYearUpdated|AcademicYearDeleted $event): void;
     // Cache::forget(config('cache-keys.admin_dashboard_stats'))
 }
+
 ```
 
 ### 6.7 Cache Keys
@@ -428,6 +434,7 @@ final class ClearDashboardCacheOnYearChange
 // config/cache-keys.php
 'admin_dashboard_stats' => 'sysadmin.dashboard.stats',  // Admin, Teacher, Supervisor
 'dashboard_student'     => 'dashboard.student.',         // Student (suffix: userId)
+
 ```
 
 ### 6.8 Routes
@@ -453,7 +460,8 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:teacher'])
 Route::prefix('supervisor')->name('supervisor.')->middleware(['auth', 'role:supervisor'])->group(function () {
     Route::livewire('/dashboard', SupervisorDashboard::class)->name('dashboard'); // /supervisor/dashboard
 });
-// UserDashboard is a base component (FR-DU1), not a routable page. All dashboards are /<role>/dashboard.
+// UserDashboard is a base component (FR-CKKZC-DU1), not a routable page. All dashboards are /<role>/dashboard.
+
 ```
 
 ### 6.9 Event → Listener Registration
@@ -466,6 +474,7 @@ AcademicYearCreated   → ClearDashboardCacheOnYearChange
 AcademicYearActivated → ClearDashboardCacheOnYearChange
 AcademicYearUpdated   → ClearDashboardCacheOnYearChange
 AcademicYearDeleted   → ClearDashboardCacheOnYearChange
+
 ```
 
 ---

@@ -8,6 +8,20 @@ and compliance features (GDPR deletion logs, account clone detection).
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
+
+## Steps
+
+This guide is organized as a sequence of topic sections, each covering a complete procedure:
+
+1. [SmartLogger](#smartlogger)
+2. [Laravel Pulse](#laravel-pulse)
+3. [System Health Command](#system-health-command)
+
 ## SmartLogger
 
 SmartLogger is the single entry point for all application logging. It dispatches to two channels
@@ -34,6 +48,7 @@ SmartLogger::info('internship_created')
     ->inModule('program')
     ->activityOnly()            // or systemOnly(), both()
     ->save();
+
 ```
 
 ### PII Masking
@@ -69,6 +84,7 @@ Default:
 LOG_CHANNEL=stack
 LOG_STACK=single
 LOG_LEVEL=debug
+
 ```
 
 ### Log Context Enrichment
@@ -110,6 +126,7 @@ Real-time performance monitoring dashboard at `/pulse` (admin-only).
 
 ```bash
 php artisan pulse:record-snapshots    # Runs hourly via scheduler
+
 ```
 
 Records registration lifecycle data and system statistics for custom Pulse cards.
@@ -121,6 +138,7 @@ Records registration lifecycle data and system statistics for custom Pulse cards
 ```bash
 php artisan system:health             # Human-readable table
 php artisan system:health --json      # JSON for monitoring tools
+
 ```
 
 Performs15-point verification. See [System Health](system-health.md) for full check list.
@@ -155,6 +173,7 @@ Activity log records every significant action. Navigate to **Admin → Audit Log
 php artisan system:cleanup            # With confirmation prompt
 php artisan system:cleanup --force    # Skip confirmation
 php artisan system:cleanup --log-retention=60  # Custom retention (days)
+
 ```
 
 ### What It Cleans
@@ -176,6 +195,7 @@ php artisan system:cleanup --log-retention=60  # Custom retention (days)
 
 ```bash
 php artisan system:cache-warm
+
 ```
 
 Pre-warms: settings cache, brand cache, config cache, view cache, event cache.
@@ -233,3 +253,14 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 - [Backup & Recovery](backup-recovery.md) — Backup management and restoration
 - `docs/guides/system-observability.md` — Architecture-level observability design
 - `docs/specs/J68GZ-system-requirements.md` — Database and dependency requirements
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

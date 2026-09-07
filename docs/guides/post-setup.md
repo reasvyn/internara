@@ -8,6 +8,21 @@ configuration. Organized as a developer checklist with code paths and module cro
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
+
+## Steps
+
+This guide is organized as a sequence of topic sections, each covering a complete procedure:
+
+1. [Phase 1: Foundation](#phase-1-foundation)
+2. [Phase 2: People](#phase-2-people)
+3. [Phase 3: Program Configuration](#phase-3-program-configuration)
+4. [Phase 4: Go-Live Verification](#phase-4-go-live-verification)
+
 ## Phase 1: Foundation
 
 | Step | Action | Module | Key Code Path |
@@ -77,6 +92,18 @@ Key settings populated during/after setup:
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.
 
 ## Quick References
 

@@ -19,6 +19,7 @@ Hard rules. Violations are architecture violations.
 ```php
 catch (ModuleException $e)         // Business rule violations only
 catch (InfrastructureException $e) // Infrastructure failures only
+
 ```
 
 If `ModuleException` extended `AppException`, a `catch (AppException $e)` would silently swallow business rule violations.
@@ -48,6 +49,7 @@ RuntimeException
 │
 └── ModuleException (abstract)         ← Business rule violations
     └── RejectedException
+
 ```
 
 ### 2. AppException Tree
@@ -90,6 +92,7 @@ catch (Throwable $e) {
     SmartLogger::critical('Unexpected error')->withContext([...])->save();
     throw new RuntimeException('An unexpected error occurred', 0, $e);
 }
+
 ```
 
 This is **Defence in Depth** (NIST) — never rely on a single error handling layer.

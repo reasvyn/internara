@@ -8,6 +8,20 @@ The wizard is locked after completion and cannot be re-run.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
+
+## Steps
+
+This guide is organized as a sequence of topic sections, each covering a complete procedure:
+
+1. [Signed URL Lifecycle](#signed-url-lifecycle)
+2. [Wizard Flow](#wizard-flow)
+3. [CLI Alternatives](#cli-alternatives)
+
 ## Signed URL Lifecycle
 
 ```
@@ -18,6 +32,7 @@ Browser opens URL → wizard loads
 User completes Step 5 → wizard locked, URL invalidated
     ↓
 URL expired before use → setup:reset-token (generates new URL)
+
 ```
 
 ---
@@ -127,3 +142,14 @@ See [Backup & Recovery](backup-recovery.md) for admin account CLI commands.
 - [Post-Setup](post-setup.md) — Configuration after wizard
 - [Backup & Recovery](backup-recovery.md) — Recovery key lifecycle
 - `docs/specs/VEJCX-setup-wizard.md` — Feature specification
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

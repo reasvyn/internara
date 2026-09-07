@@ -75,7 +75,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Emergency Super Admin Recovery
+### UC-C9ZB6-1 — Emergency Super Admin Recovery
 
 **Actor:** Server administrator (via SSH/CLI)
 **Preconditions:** System installed, super admin account inaccessible, recovery key available.
@@ -92,27 +92,27 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 10. System displays new recovery key and advises password change
 **Postconditions:** Super admin account accessible, old recovery key invalidated, new key generated.
 
-### UC-2 — Recovery with Manual Key
+### UC-C9ZB6-2 — Recovery with Manual Key
 
 **Actor:** Server administrator
 **Recovery key file missing or deleted, but key is known (written down, printed, etc.)
 **Flow:**
 1. Administrator runs `php artisan admin:recover --key=<64-char-key>`
 2. System verifies key against stored hash
-3. Flow continues from UC-1 step 4 (OTP in production) or step 6 (non-production)
-**Postconditions:** Same as UC-1.
+3. Flow continues from UC-C9ZB6-1 step 4 (OTP in production) or step 6 (non-production)
+**Postconditions:** Same as UC-C9ZB6-1.
 
-### UC-3 — Recovery Key File Regeneration
+### UC-C9ZB6-3 — Recovery Key File Regeneration
 
 **Actor:** Server administrator
 **Recovery key file was deleted, but administrator knows the key from database hash verification
 **Flow:**
 1. Administrator runs `php artisan admin:recover --key=<key> --regenerate-file`
 2. System verifies key, regenerates file via `SaveRecoveryKeyAction`
-3. Flow continues from UC-1
+3. Flow continues from UC-C9ZB6-1
 **Postconditions:** Recovery key file restored.
 
-### UC-4 — View Recovery Key
+### UC-C9ZB6-4 — View Recovery Key
 
 **Actor:** Server administrator
 **Recovery key file exists, administrator needs to read the plaintext key
@@ -123,7 +123,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 4. On confirmation, system displays key and logs the event
 **Postconditions:** Key displayed on screen, SmartLogger entry created.
 
-### UC-5 — Check Recovery Key File Path
+### UC-C9ZB6-5 — Check Recovery Key File Path
 
 **Actor:** Server administrator
 **Administrator wants to verify the recovery key file exists and its location
@@ -132,7 +132,7 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 2. System displays path (`storage/app/private/.recovery-key`) and existence status
 **Postconditions:** Path and status displayed.
 
-### UC-6 — Recovery Key Generation (During Setup)
+### UC-C9ZB6-6 — Recovery Key Generation (During Setup)
 
 **Actor:** System (automated during setup finalization)
 **Preconditions:** Setup wizard completing Step 6 (finalization)
@@ -151,78 +151,78 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-K1 | `ReadRecoveryKeyAction` reads plaintext from `storage/app/private/.recovery-key`, skips comments (`#`) and blank lines |
-| FR-K2 | `SaveRecoveryKeyAction` writes plaintext to `storage/app/private/.recovery-key` with header comments and `chmod 0600` |
-| FR-K3 | Recovery key is 64-character cryptographically random string (via `Str::random`) |
-| FR-K4 | Recovery key hash stored in `setup.install_recovery_key` setting (bcrypt via `Hash::make()`) |
-| FR-K5 | Recovery key file path is `storage/app/private/.recovery-key` (not web-accessible) |
-| FR-K6 | File header includes generation timestamp in ISO 8601 format |
+| FR-C9ZB6-K1 | `ReadRecoveryKeyAction` reads plaintext from `storage/app/private/.recovery-key`, skips comments (`#`) and blank lines |
+| FR-C9ZB6-K2 | `SaveRecoveryKeyAction` writes plaintext to `storage/app/private/.recovery-key` with header comments and `chmod 0600` |
+| FR-C9ZB6-K3 | Recovery key is 64-character cryptographically random string (via `Str::random`) |
+| FR-C9ZB6-K4 | Recovery key hash stored in `setup.install_recovery_key` setting (bcrypt via `Hash::make()`) |
+| FR-C9ZB6-K5 | Recovery key file path is `storage/app/private/.recovery-key` (not web-accessible) |
+| FR-C9ZB6-K6 | File header includes generation timestamp in ISO 8601 format |
 
 ### 4.2 CLI Commands
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-C1 | `admin:recover {email?} {--key=} {--regenerate-file}` — main recovery command |
-| FR-C2 | `admin:recovery-show` — displays stored recovery key (requires confirmation) |
-| FR-C3 | `admin:recovery-path` — displays recovery key file path and existence status |
-| FR-C4 | `admin:recover` without `--key` reads key from file via `ReadRecoveryKeyAction` |
-| FR-C5 | `admin:recover` with `--key` uses provided key for verification |
-| FR-C6 | `admin:recover` with `--regenerate-file` rewrites file via `SaveRecoveryKeyAction` after verification |
-| FR-C7 | `admin:recover` prompts for email (argument or interactive), password, and confirmation |
-| FR-C8 | `admin:recover` requires re-typing email as confirmation before executing recovery |
-| FR-C9 | `admin:recovery-show` reads key, prompts confirmation, then displays plaintext |
-| FR-C10 | All CLI commands display formatted banners and localized messages |
+| FR-C9ZB6-C1 | `admin:recover {email?} {--key=} {--regenerate-file}` — main recovery command |
+| FR-C9ZB6-C2 | `admin:recovery-show` — displays stored recovery key (requires confirmation) |
+| FR-C9ZB6-C3 | `admin:recovery-path` — displays recovery key file path and existence status |
+| FR-C9ZB6-C4 | `admin:recover` without `--key` reads key from file via `ReadRecoveryKeyAction` |
+| FR-C9ZB6-C5 | `admin:recover` with `--key` uses provided key for verification |
+| FR-C9ZB6-C6 | `admin:recover` with `--regenerate-file` rewrites file via `SaveRecoveryKeyAction` after verification |
+| FR-C9ZB6-C7 | `admin:recover` prompts for email (argument or interactive), password, and confirmation |
+| FR-C9ZB6-C8 | `admin:recover` requires re-typing email as confirmation before executing recovery |
+| FR-C9ZB6-C9 | `admin:recovery-show` reads key, prompts confirmation, then displays plaintext |
+| FR-C9ZB6-C10 | All CLI commands display formatted banners and localized messages |
 
 ### 4.3 OTP Verification
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-O1 | OTP is 6-digit random integer (`random_int(100000, 999999)`) |
-| FR-O2 | OTP sent via `RecoveryOtpNotification` (mail channel, queued via `ShouldQueue`) |
-| FR-O3 | OTP hash stored in cache with key `config('cache-keys.recovery_otp_hash') . email`, TTL 300 seconds |
-| FR-O4 | OTP verified via `Hash::check()` against stored hash |
-| FR-O5 | OTP cache entry cleared after successful verification |
-| FR-O6 | OTP verification only required in production environments (`app()->environment('production')`) |
-| FR-O7 | Non-production environments skip OTP (CLI-only access considered sufficient) |
+| FR-C9ZB6-O1 | OTP is 6-digit random integer (`random_int(100000, 999999)`) |
+| FR-C9ZB6-O2 | OTP sent via `RecoveryOtpNotification` (mail channel, queued via `ShouldQueue`) |
+| FR-C9ZB6-O3 | OTP hash stored in cache with key `config('cache-keys.recovery_otp_hash') . email`, TTL 300 seconds |
+| FR-C9ZB6-O4 | OTP verified via `Hash::check()` against stored hash |
+| FR-C9ZB6-O5 | OTP cache entry cleared after successful verification |
+| FR-C9ZB6-O6 | OTP verification only required in production environments (`app()->environment('production')`) |
+| FR-C9ZB6-O7 | Non-production environments skip OTP (CLI-only access considered sufficient) |
 
 ### 4.4 Password Reset
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-P1 | `RecoverSuperAdminAction` sets new password via `Hash::make()` |
-| FR-P2 | `RecoverSuperAdminAction` clears `locked_at` and `locked_reason` fields |
-| FR-P3 | `RecoverSuperAdminAction` syncs roles to `super_admin` (ensures role assignment) |
-| FR-P4 | `RecoverSuperAdminAction` rotates `remember_token` (invalidates all sessions) |
-| FR-P5 | Password must be minimum 8 characters (interactive validation) |
-| FR-P6 | Password confirmation required (must match) |
+| FR-C9ZB6-P1 | `RecoverSuperAdminAction` sets new password via `Hash::make()` |
+| FR-C9ZB6-P2 | `RecoverSuperAdminAction` clears `locked_at` and `locked_reason` fields |
+| FR-C9ZB6-P3 | `RecoverSuperAdminAction` syncs roles to `super_admin` (ensures role assignment) |
+| FR-C9ZB6-P4 | `RecoverSuperAdminAction` rotates `remember_token` (invalidates all sessions) |
+| FR-C9ZB6-P5 | Password must be minimum 8 characters (interactive validation) |
+| FR-C9ZB6-P6 | Password confirmation required (must match) |
 
 ### 4.5 Recovery Key Regeneration
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-R1 | After successful recovery, system generates new 64-char recovery key |
-| FR-R2 | New key hashed and stored in `setup.install_recovery_key` setting via `BatchSetSettingAction` |
-| FR-R3 | New key saved to file via `SaveRecoveryKeyAction` |
-| FR-R4 | File write failure does not block recovery (warning displayed, key still shown) |
-| FR-R5 | New plaintext key displayed to administrator after successful recovery |
+| FR-C9ZB6-R1 | After successful recovery, system generates new 64-char recovery key |
+| FR-C9ZB6-R2 | New key hashed and stored in `setup.install_recovery_key` setting via `BatchSetSettingAction` |
+| FR-C9ZB6-R3 | New key saved to file via `SaveRecoveryKeyAction` |
+| FR-C9ZB6-R4 | File write failure does not block recovery (warning displayed, key still shown) |
+| FR-C9ZB6-R5 | New plaintext key displayed to administrator after successful recovery |
 
 ### 4.6 Rate Limiting
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-RL1 | `RecoverSuperAdminAction` enforces max 3 recovery attempts per email per 15 minutes |
-| FR-RL2 | Attempt counter stored in cache with key `config('cache-keys.recover_admin_attempts') . md5(email)` |
-| FR-RL3 | Counter TTL is 900 seconds (15 minutes) |
-| FR-RL4 | Counter cleared on successful recovery |
-| FR-RL5 | Exceeded limit throws `RejectedException` |
+| FR-C9ZB6-RL1 | `RecoverSuperAdminAction` enforces max 3 recovery attempts per email per 15 minutes |
+| FR-C9ZB6-RL2 | Attempt counter stored in cache with key `config('cache-keys.recover_admin_attempts') . md5(email)` |
+| FR-C9ZB6-RL3 | Counter TTL is 900 seconds (15 minutes) |
+| FR-C9ZB6-RL4 | Counter cleared on successful recovery |
+| FR-C9ZB6-RL5 | Exceeded limit throws `RejectedException` |
 
 ### 4.7 Super Admin Integrity
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-I1 | `RecoverSuperAdminAction` verifies super admin has PROTECTED status before reset |
-| FR-I2 | Integrity violation throws `RejectedException` |
-| FR-I3 | Recovery only targets accounts with `super_admin` role |
+| FR-C9ZB6-I1 | `RecoverSuperAdminAction` verifies super admin has PROTECTED status before reset |
+| FR-C9ZB6-I2 | Integrity violation throws `RejectedException` |
+| FR-C9ZB6-I3 | Recovery only targets accounts with `super_admin` role |
 
 ---
 
@@ -232,41 +232,41 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | Recovery key file permissions: `0600` (owner-only read/write) |
-| NFR-S2 | Recovery key storage directory: `storage/app/private/` (not web-accessible) |
-| NFR-S3 | Database stores only bcrypt hash — plaintext never persisted to DB |
-| NFR-S4 | OTP sent via mail channel only (not displayed in CLI output) |
-| NFR-S5 | All recovery attempts logged via SmartLogger with PII masking |
-| NFR-S6 | Invalid key attempts logged as warnings with event `super_admin.recovery.invalid_key` |
-| NFR-S7 | Not-found email attempts logged as warnings with event `super_admin.recovery.blocked_not_found` |
-| NFR-S8 | Successful recovery logged as success with event `super_admin.recovery.succeeded` |
-| NFR-S9 | Failed recovery logged as error with event `super_admin.recovery.failed` |
-| NFR-S10 | Recovery key file regeneration failure logged as warning (non-blocking) |
+| NFR-C9ZB6-S1 | Recovery key file permissions: `0600` (owner-only read/write) |
+| NFR-C9ZB6-S2 | Recovery key storage directory: `storage/app/private/` (not web-accessible) |
+| NFR-C9ZB6-S3 | Database stores only bcrypt hash — plaintext never persisted to DB |
+| NFR-C9ZB6-S4 | OTP sent via mail channel only (not displayed in CLI output) |
+| NFR-C9ZB6-S5 | All recovery attempts logged via SmartLogger with PII masking |
+| NFR-C9ZB6-S6 | Invalid key attempts logged as warnings with event `super_admin.recovery.invalid_key` |
+| NFR-C9ZB6-S7 | Not-found email attempts logged as warnings with event `super_admin.recovery.blocked_not_found` |
+| NFR-C9ZB6-S8 | Successful recovery logged as success with event `super_admin.recovery.succeeded` |
+| NFR-C9ZB6-S9 | Failed recovery logged as error with event `super_admin.recovery.failed` |
+| NFR-C9ZB6-S10 | Recovery key file regeneration failure logged as warning (non-blocking) |
 
 ### 5.2 Performance
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | OTP verification uses cache (not database) for storage |
-| NFR-P2 | Recovery key read is a single file read (no database query for plaintext) |
-| NFR-P3 | `RecoveryOtpNotification` queued via `ShouldQueue` (non-blocking mail send) |
+| NFR-C9ZB6-P1 | OTP verification uses cache (not database) for storage |
+| NFR-C9ZB6-P2 | Recovery key read is a single file read (no database query for plaintext) |
+| NFR-C9ZB6-P3 | `RecoveryOtpNotification` queued via `ShouldQueue` (non-blocking mail send) |
 
 ### 5.3 Reliability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-R1 | Recovery key file write failure does not block password reset |
-| NFR-R2 | OTP send failure displays error and aborts (does not proceed without OTP in production) |
-| NFR-R3 | `RecoverSuperAdminAction` wraps all mutations in a database transaction |
+| NFR-C9ZB6-R1 | Recovery key file write failure does not block password reset |
+| NFR-C9ZB6-R2 | OTP send failure displays error and aborts (does not proceed without OTP in production) |
+| NFR-C9ZB6-R3 | `RecoverSuperAdminAction` wraps all mutations in a database transaction |
 
 ### 5.4 Usability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-U1 | CLI output includes formatted banner with version info |
-| NFR-U2 | All user-facing strings use `__()` translation helper |
-| NFR-U3 | Recovery key displayed with prominent visual styling (yellow background) |
-| NFR-U4 | Warning to change password displayed after successful recovery |
+| NFR-C9ZB6-U1 | CLI output includes formatted banner with version info |
+| NFR-C9ZB6-U2 | All user-facing strings use `__()` translation helper |
+| NFR-C9ZB6-U3 | Recovery key displayed with prominent visual styling (yellow background) |
+| NFR-C9ZB6-U4 | Warning to change password displayed after successful recovery |
 
 ---
 
@@ -295,6 +295,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 # Generated: {ISO 8601 timestamp}
 
 {64-char plaintext key}
+
 ```
 
 ### 6.2 Action Contracts
@@ -322,6 +323,7 @@ final class SaveRecoveryKeyAction extends BaseCommandAction
     // Returns file path on success
     // Throws: RejectedException on write failure
 }
+
 ```
 
 ### 6.3 Notification Contract
@@ -336,6 +338,7 @@ class RecoveryOtpNotification extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage;
     // Subject, greeting, OTP line, expiry warning, security note
 }
+
 ```
 
 ### 6.4 Command Signatures
@@ -349,6 +352,7 @@ class RecoveryOtpNotification extends Notification implements ShouldQueue
 
 // ShowRecoveryPathCommand
 'admin:recovery-path'
+
 ```
 
 ### 6.5 Cache Keys
@@ -376,6 +380,7 @@ class SuperAdminRecovered extends BaseEvent
     );
     public function eventName(): string; // 'super_admin.recovered'
 }
+
 ```
 
 ---

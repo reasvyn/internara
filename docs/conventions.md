@@ -299,6 +299,7 @@ class HealthCommand extends Command
         return Command::SUCCESS;
     }
 }
+
 ```
 
 ---
@@ -436,6 +437,7 @@ Schema::create('attendances', function (Blueprint $table) {
     $table->index(['user_id', 'date']);
     $table->timestamps();
 });
+
 ```
 
 ### Factories
@@ -464,6 +466,7 @@ class InternshipFactory extends Factory
         return $this->state(fn(array $attrs) => ['status' => InternshipStatus::PUBLISHED->value]);
     }
 }
+
 ```
 
 ### Seeders
@@ -531,6 +534,7 @@ All JSON error responses follow a consistent envelope:
         "field_name": ["Validation error 1", "Validation error 2"]
     }
 }
+
 ```
 
 - `message` is always present.
@@ -553,6 +557,7 @@ public function __construct(
     protected readonly SomeService $service,
     protected readonly AnotherService $another,
 ) {}
+
 ```
 
 This applies to all classes instantiated by the container: Actions, Services, Middleware, Console
@@ -568,6 +573,7 @@ public function save(CreateUserAction $action): void
 {
     $action->execute($this->form->toArray());
 }
+
 ```
 
 ### 8.3 Forbidden Patterns
@@ -677,6 +683,7 @@ Every test description prefixes its spec + requirement ID so traceability is vis
 
 ```php
 test("{SpecID}-{ReqID}: Test description...", function () { ... });
+
 ```
 
 Tests are grouped under `describe("{SpecID}: Test description...")`, which carries the spec ID plus
@@ -686,6 +693,7 @@ a short description; each `test()` inside still prefixes the full `{SpecID}-{Req
 describe("{SpecID}: Test description...", function () {
     test("{SpecID}-{ReqID}: Test description...", function () { ... });
 });
+
 ```
 
 Code coverage (`php artisan test --coverage`) is a **diagnostic only** — never a mandate for
@@ -712,6 +720,7 @@ type(scope): description
 
 - Bullet points for details (optional)
 - Reference issues: #123
+
 ```
 
 | Type       | When                                |
@@ -733,6 +742,7 @@ feat(internship): add CSV export for approved registrations
 fix(auth): prevent infinite redirect after setup completion
 
 refactor(setup): move dispatchEvent inside transaction callback
+
 ```
 
 ### 10.4 Technical Debt Annotation
@@ -749,6 +759,7 @@ Use these annotations in code comments for tracking technical debt:
 ```php
 // TODO(alice, 2026-07-01): Extract this inline query into a Read Action
 // HACK: This works but bypasses the standard validation chain because...
+
 ```
 
 ---
@@ -767,6 +778,7 @@ All components MUST use CSS variables from the Settings/Theme module for brand c
 
 {{-- ❌ Wrong — hardcoded color --}}
 <div class="bg-blue-500">
+
 ```
 
 - Primary, secondary, accent colors from `brand()` helper or CSS variables
@@ -825,6 +837,7 @@ branching that depends on business rules must be prepared before rendering.
 {{-- ✅ Correct — Livewire prepares the value --}}
 // AdminDashboard.php: public int $completionRate; computed in mount()
 <span>{{ $completionRate }}%</span>
+
 ```
 
 ```blade
@@ -833,6 +846,7 @@ branching that depends on business rules must be prepared before rendering.
 
 {{-- ✅ Correct — Livewire exposes $pipelineStages and $pipelineMaxV --}}
 @foreach ($pipelineStages as $stage) ... @endforeach
+
 ```
 
 Enforced by: `docs/guides/arch/livewire-pattern.md` §1 (Thin Component) and agent skills `livewire-development` + `tailwindcss-development`.
@@ -892,6 +906,7 @@ Some keys are resolved dynamically and cannot be renamed without affecting datab
 
 ```php
 {{ __("activity.{$activity->description}") }}
+
 ```
 
 The database stores `login_success`, `user_created`, etc. as activity descriptions. These keys must

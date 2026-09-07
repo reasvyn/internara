@@ -33,6 +33,7 @@ curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/inst
 
 # With options (custom dir / branch / pass-through to setup:install):
 curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash -s -- --dir my-pkl --branch main -- --force
+
 ```
 
 The installer clones into `./internara/`, installs dependencies, builds assets, and runs
@@ -41,6 +42,7 @@ The installer clones into `./internara/`, installs dependencies, builds assets, 
 ```bash
 cd internara
 composer run dev   # serve + queue + logs + vite
+
 ```
 
 Open the signed URL in your browser to complete the 6-step setup wizard.
@@ -59,6 +61,7 @@ php artisan setup:install
 php artisan serve
 # In another terminal:
 php artisan queue:work
+
 ```
 
 Both options produce the same result; the one-liner just automates the manual steps.
@@ -74,6 +77,7 @@ One-liner (does clone + all steps below via `scripts/install.sh`):
 ```bash
 curl -fsSL https://raw.githubusercontent.com/reasvyn/internara/main/scripts/install.sh | bash
 # or: bash scripts/install.sh   (when already inside a checkout)
+
 ```
 
 Manual alternative:
@@ -81,6 +85,7 @@ Manual alternative:
 ```bash
 git clone https://github.com/reasvyn/internara.git
 cd internara
+
 ```
 
 ### Step 2: Install PHP Dependencies
@@ -91,6 +96,7 @@ composer install
 
 # Production
 composer install --optimize-autoloader --no-dev
+
 ```
 
 ### Step 3: Build Frontend Assets
@@ -101,6 +107,7 @@ npm run build
 
 # For development with hot module replacement:
 npm run dev
+
 ```
 
 ### Step 4: Run the Installer
@@ -109,6 +116,7 @@ The `setup:install` command handles the entire technical installation:
 
 ```bash
 php artisan setup:install
+
 ```
 
 This command will:
@@ -138,12 +146,14 @@ its expiry time (default: 60 minutes).
 # Development — run these in separate terminals:
 php artisan serve       # Web server
 php artisan queue:work  # Queue worker
+
 ```
 
 Or use the all-in-one command:
 
 ```bash
 composer run dev
+
 ```
 
 **Production on shared hosting** uses sync queue (no worker needed) and webhook-based cron.

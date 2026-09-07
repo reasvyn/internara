@@ -57,11 +57,11 @@ man-in-the-middle attacks.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Server | Production deployment with strict CSP |
-| UC-2 | Developer | Development with Vite hot reload |
-| UC-3 | Auditor | Security audit verification |
+| UC-1PGM4-1 | Server | Production deployment with strict CSP |
+| UC-1PGM4-2 | Developer | Development with Vite hot reload |
+| UC-1PGM4-3 | Auditor | Security audit verification |
 
-### UC-1 — Production Deployment with Strict CSP
+### UC-1PGM4-1 — Production Deployment with Strict CSP
 
 **Actor:** DevOps / Deployer
 **Preconditions:** Application deployed to production with HTTPS
@@ -71,7 +71,7 @@ man-in-the-middle attacks.
 3. Browser enforces CSP policy, blocks unauthorized script sources
 **Postconditions:** All responses carry security headers
 
-### UC-2 — Development with Vite Hot Reload
+### UC-1PGM4-2 — Development with Vite Hot Reload
 
 **Actor:** Developer
 **Preconditions:** `APP_ENV=local`, Vite dev server running
@@ -81,7 +81,7 @@ man-in-the-middle attacks.
 3. HSTS disabled (HTTP is acceptable in development)
 **Postconditions:** Vite hot reload works, CSP is relaxed but still present
 
-### UC-3 — Security Audit Verification
+### UC-1PGM4-3 — Security Audit Verification
 
 **Actor:** Security auditor
 **Preconditions:** Application running
@@ -97,19 +97,19 @@ man-in-the-middle attacks.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SEC1 | `SecurityHeadersMiddleware` middleware MUST set `Content-Security-Policy` header on all responses |
-| FR-SEC2 | CSP MUST include `default-src 'self'` as baseline |
-| FR-SEC3 | CSP MUST include `script-src 'self'` (production) or with Vite dev URL (development) |
-| FR-SEC4 | CSP MUST include `style-src 'self' 'unsafe-inline'` (Tailwind requires inline styles) |
-| FR-SEC5 | CSP MUST include `img-src 'self' data: blob:` for uploaded images |
-| FR-SEC6 | `Strict-Transport-Security` MUST be set to `max-age=31536000; includeSubDomains` in production |
-| FR-SEC7 | `X-Frame-Options` MUST be set to `DENY` |
-| FR-SEC8 | `Referrer-Policy` MUST be set to `strict-origin-when-cross-origin` |
-| FR-SEC9 | `Permissions-Policy` MUST disable unnecessary browser features (camera, microphone, geolocation) |
-| FR-SEC10 | In development (`APP_ENV=local`), CSP MUST include Vite dev server URL in `script-src` and `connect-src` |
-| FR-SEC11 | HSTS header MUST be omitted by default and only sent when `security-headers.hsts_enabled` is enabled (config-gated, independent of `APP_ENV`) |
-| FR-SEC12 | All header values MUST be configurable via `config/security-headers.php` |
-| FR-SEC13 | Every response MUST carry `X-Frame-Options: DENY` and `Referrer-Policy` in production (feature test asserts headers) | |
+| FR-1PGM4-SEC1 | `SecurityHeadersMiddleware` middleware MUST set `Content-Security-Policy` header on all responses |
+| FR-1PGM4-SEC2 | CSP MUST include `default-src 'self'` as baseline |
+| FR-1PGM4-SEC3 | CSP MUST include `script-src 'self'` (production) or with Vite dev URL (development) |
+| FR-1PGM4-SEC4 | CSP MUST include `style-src 'self' 'unsafe-inline'` (Tailwind requires inline styles) |
+| FR-1PGM4-SEC5 | CSP MUST include `img-src 'self' data: blob:` for uploaded images |
+| FR-1PGM4-SEC6 | `Strict-Transport-Security` MUST be set to `max-age=31536000; includeSubDomains` in production |
+| FR-1PGM4-SEC7 | `X-Frame-Options` MUST be set to `DENY` |
+| FR-1PGM4-SEC8 | `Referrer-Policy` MUST be set to `strict-origin-when-cross-origin` |
+| FR-1PGM4-SEC9 | `Permissions-Policy` MUST disable unnecessary browser features (camera, microphone, geolocation) |
+| FR-1PGM4-SEC10 | In development (`APP_ENV=local`), CSP MUST include Vite dev server URL in `script-src` and `connect-src` |
+| FR-1PGM4-SEC11 | HSTS header MUST be omitted by default and only sent when `security-headers.hsts_enabled` is enabled (config-gated, independent of `APP_ENV`) |
+| FR-1PGM4-SEC12 | All header values MUST be configurable via `config/security-headers.php` |
+| FR-1PGM4-SEC13 | Every response MUST carry `X-Frame-Options: DENY` and `Referrer-Policy` in production (feature test asserts headers) | |
 
 ---
 
@@ -117,10 +117,10 @@ man-in-the-middle attacks.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-SEC1 | Security header injection MUST add < 1ms overhead per request |
-| NFR-SEC2 | CSP MUST NOT break application functionality in production |
-| NFR-SEC3 | Vite dev URL injection MUST NOT occur in production |
-| NFR-SEC4 | Header configuration MUST be overridable per-environment via `.env` |
+| NFR-1PGM4-SEC1 | Security header injection MUST add < 1ms overhead per request |
+| NFR-1PGM4-SEC2 | CSP MUST NOT break application functionality in production |
+| NFR-1PGM4-SEC3 | Vite dev URL injection MUST NOT occur in production |
+| NFR-1PGM4-SEC4 | Header configuration MUST be overridable per-environment via `.env` |
 
 ## Test Requirements
 
@@ -159,6 +159,7 @@ class SecurityHeadersMiddleware
         return $response;
     }
 }
+
 ```
 
 ### config/security-headers.php Structure
@@ -186,6 +187,7 @@ return [
         'geolocation' => false,
     ],
 ];
+
 ```
 
 ### Development Mode CSP Override

@@ -47,6 +47,7 @@ stateDiagram-v2
     RESOLVED --> CLOSED: Admin verifies outcome
     RESOLVED --> [*]
     CLOSED --> [*]
+
 ```
 
 Each transition requires an authorized actor and cannot skip steps. Transitions are recorded in an immutable timeline with timestamp, actor, action type, and notes.

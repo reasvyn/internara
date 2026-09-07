@@ -85,7 +85,7 @@ any situation where digital delivery is preferred over printed distribution.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Downloads Account Slip After Single User Creation
+### UC-EWCZ0-1 — Admin Downloads Account Slip After Single User Creation
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Admin has created a user account (or navigated to an existing user)
@@ -101,7 +101,7 @@ any situation where digital delivery is preferred over printed distribution.
 9. PDF is streamed to browser as `account-slip-{username}.pdf`
 **Postconditions:** Admin receives PDF account slip for the user, ready for printing
 
-### UC-2 — Admin Batch Downloads Slips for Imported Users
+### UC-EWCZ0-2 — Admin Batch Downloads Slips for Imported Users
 
 **Actor:** Admin
 **Preconditions:** Multiple users have been selected via checkboxes in the user management table
@@ -118,7 +118,7 @@ any situation where digital delivery is preferred over printed distribution.
 10. PDF is streamed to browser as `account-slips-batch.pdf`
 **Postconditions:** Admin receives single PDF containing all selected users' account slips
 
-### UC-3 — Admin Regenerates Activation Code
+### UC-EWCZ0-3 — Admin Regenerates Activation Code
 
 **Actor:** Admin
 **Preconditions:** Account slip modal is open for a user
@@ -130,7 +130,7 @@ any situation where digital delivery is preferred over printed distribution.
 5. Modal updates to display the new activation code
 **Postconditions:** New activation code displayed; previous code invalidated
 
-### UC-4 — Admin Sends Activation Code via Email
+### UC-EWCZ0-4 — Admin Sends Activation Code via Email
 
 **Actor:** Admin
 **Preconditions:** Account slip modal is open with a valid activation code
@@ -142,7 +142,7 @@ any situation where digital delivery is preferred over printed distribution.
 5. Flash success message: "Code sent"
 **Postconditions:** User receives email with activation code and activation link
 
-### UC-5 — Admin Views Account Slip Preview Before Download
+### UC-EWCZ0-5 — Admin Views Account Slip Preview Before Download
 
 **Actor:** Admin
 **Preconditions:** Admin has triggered account slip for a user
@@ -162,71 +162,71 @@ any situation where digital delivery is preferred over printed distribution.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AS1 | `GenerateAccountSlipAction` must extend `BaseCommandAction` |
-| FR-AS2 | `execute(User $user): Response` must generate a single-user PDF via DomPDF |
-| FR-AS3 | `executeBatch(array $users): Response` must generate a multi-user PDF via DomPDF |
-| FR-AS4 | PDF paper size must be custom: `[0, 0, 241, 156]` (width: 241mm, height: 156mm) |
-| FR-AS5 | Single-user PDF must be streamed as `account-slip-{username}.pdf` |
-| FR-AS6 | Batch PDF must be streamed as `account-slips-batch.pdf` |
-| FR-AS7 | PDF must be rendered from `user.user-management.account-slip-pdf` Blade view |
-| FR-AS8 | Blade view must receive `$user` (User model) and `$code` (plain-text activation code) |
-| FR-AS9 | PDF generation must log an `account_slip_generated` activity with user context |
+| FR-EWCZ0-EWCZ0-AS1 | `GenerateAccountSlipAction` must extend `BaseCommandAction` |
+| FR-EWCZ0-EWCZ0-AS2 | `execute(User $user): Response` must generate a single-user PDF via DomPDF |
+| FR-EWCZ0-EWCZ0-AS3 | `executeBatch(array $users): Response` must generate a multi-user PDF via DomPDF |
+| FR-EWCZ0-EWCZ0-AS4 | PDF paper size must be custom: `[0, 0, 241, 156]` (width: 241mm, height: 156mm) |
+| FR-EWCZ0-EWCZ0-AS5 | Single-user PDF must be streamed as `account-slip-{username}.pdf` |
+| FR-EWCZ0-EWCZ0-AS6 | Batch PDF must be streamed as `account-slips-batch.pdf` |
+| FR-EWCZ0-EWCZ0-AS7 | PDF must be rendered from `user.user-management.account-slip-pdf` Blade view |
+| FR-EWCZ0-EWCZ0-AS8 | Blade view must receive `$user` (User model) and `$code` (plain-text activation code) |
+| FR-EWCZ0-EWCZ0-AS9 | PDF generation must log an `account_slip_generated` activity with user context |
 
 ### Activation Code Lifecycle
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AC1 | Each slip generation must create a fresh activation code via `AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation'])` |
-| FR-AC2 | `DownloadsAccountSlips::showSlip(string $id)` must generate activation code and store in `$slipCode` |
-| FR-AC3 | `regenerateCode()` must invalidate the previous code by generating a new `AccessToken` |
-| FR-AC4 | Activation codes must expire after 30 days (enforced by `AccessToken` model) |
-| FR-AC5 | `$slipCode` must contain the `plain_text` value from `AccessToken::generateFor()` result |
+| FR-EWCZ0-EWCZ0-AC1 | Each slip generation must create a fresh activation code via `AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation'])` |
+| FR-EWCZ0-EWCZ0-AC2 | `DownloadsAccountSlips::showSlip(string $id)` must generate activation code and store in `$slipCode` |
+| FR-EWCZ0-EWCZ0-AC3 | `regenerateCode()` must invalidate the previous code by generating a new `AccessToken` |
+| FR-EWCZ0-EWCZ0-AC4 | Activation codes must expire after 30 days (enforced by `AccessToken` model) |
+| FR-EWCZ0-EWCZ0-AC5 | `$slipCode` must contain the `plain_text` value from `AccessToken::generateFor()` result |
 
 ### DownloadsAccountSlips Trait
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DA1 | Trait must provide `$showAccountSlip` (bool), `$slipUser` (?User), `$slipCode` (string) properties |
-| FR-DA2 | `showSlip(string $id)` must find User by ID, generate activation code, set modal open state |
-| FR-DA3 | `regenerateCode()` must generate new activation code, flash success message |
-| FR-DA4 | `sendCode()` must send `ActivationCodeNotification` with current code, flash success message |
-| FR-DA5 | `downloadSlip()` must redirect to `admin.users.account-slip` named route |
-| FR-DA6 | `downloadSelectedSlips()` must redirect to `admin.users.account-slips.batch` route with comma-separated IDs |
-| FR-DA7 | `downloadSelectedSlips()` must flash warning if `selectedIds` is empty |
-| FR-DA8 | All flash messages must use `__()` translation helper |
+| FR-EWCZ0-EWCZ0-DA1 | Trait must provide `$showAccountSlip` (bool), `$slipUser` (?User), `$slipCode` (string) properties |
+| FR-EWCZ0-EWCZ0-DA2 | `showSlip(string $id)` must find User by ID, generate activation code, set modal open state |
+| FR-EWCZ0-EWCZ0-DA3 | `regenerateCode()` must generate new activation code, flash success message |
+| FR-EWCZ0-EWCZ0-DA4 | `sendCode()` must send `ActivationCodeNotification` with current code, flash success message |
+| FR-EWCZ0-EWCZ0-DA5 | `downloadSlip()` must redirect to `admin.users.account-slip` named route |
+| FR-EWCZ0-EWCZ0-DA6 | `downloadSelectedSlips()` must redirect to `admin.users.account-slips.batch` route with comma-separated IDs |
+| FR-EWCZ0-EWCZ0-DA7 | `downloadSelectedSlips()` must flash warning if `selectedIds` is empty |
+| FR-EWCZ0-EWCZ0-DA8 | All flash messages must use `__()` translation helper |
 
 ### Account Slip Modal
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-M1 | Modal must use `x-ts-modal` with `wire="showAccountSlip"` (TallstackUI) |
-| FR-M2 | Modal must display: name, username (monospace), email, activation code (large, selectable) |
-| FR-M3 | Modal must show activation code expiry note: 30 days |
-| FR-M4 | Modal must provide "Download Slip" button wired to `downloadSlip` |
-| FR-M5 | Modal must provide "Regenerate Code" button wired to `regenerateCode` with spinner |
-| FR-M6 | Modal must provide "Send Code" button wired to `sendCode` with spinner |
-| FR-M7 | Modal must provide "Close" action button |
-| FR-M8 | Modal must use separator and `backdrop-blur-sm` styling, size `sm` |
+| FR-EWCZ0-EWCZ0-M1 | Modal must use `x-ts-modal` with `wire="showAccountSlip"` (TallstackUI) |
+| FR-EWCZ0-EWCZ0-M2 | Modal must display: name, username (monospace), email, activation code (large, selectable) |
+| FR-EWCZ0-EWCZ0-M3 | Modal must show activation code expiry note: 30 days |
+| FR-EWCZ0-EWCZ0-M4 | Modal must provide "Download Slip" button wired to `downloadSlip` |
+| FR-EWCZ0-EWCZ0-M5 | Modal must provide "Regenerate Code" button wired to `regenerateCode` with spinner |
+| FR-EWCZ0-EWCZ0-M6 | Modal must provide "Send Code" button wired to `sendCode` with spinner |
+| FR-EWCZ0-EWCZ0-M7 | Modal must provide "Close" action button |
+| FR-EWCZ0-EWCZ0-M8 | Modal must use separator and `backdrop-blur-sm` styling, size `sm` |
 
 ### HTTP Controller
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CTL1 | `AccountSlipController` must be a `final` class in `App\SysAdmin\Http\Controllers` |
-| FR-CTL2 | `download(User $user, GenerateAccountSlipAction $action)` must delegate to `$action->execute($user)` |
-| FR-CTL3 | `downloadBatch(Request $request, GenerateAccountSlipAction $action)` must parse comma-separated `ids` parameter |
-| FR-CTL4 | `downloadBatch` must fetch users via `User::whereIn('id', $ids)->get()` and pass array to `$action->executeBatch()` |
-| FR-CTL5 | Controller must receive `GenerateAccountSlipAction` via constructor injection (no service locator) |
+| FR-EWCZ0-EWCZ0-CTL1 | `AccountSlipController` must be a `final` class in `App\SysAdmin\Http\Controllers` |
+| FR-EWCZ0-EWCZ0-CTL2 | `download(User $user, GenerateAccountSlipAction $action)` must delegate to `$action->execute($user)` |
+| FR-EWCZ0-EWCZ0-CTL3 | `downloadBatch(Request $request, GenerateAccountSlipAction $action)` must parse comma-separated `ids` parameter |
+| FR-EWCZ0-EWCZ0-CTL4 | `downloadBatch` must fetch users via `User::whereIn('id', $ids)->get()` and pass array to `$action->executeBatch()` |
+| FR-EWCZ0-EWCZ0-CTL5 | Controller must receive `GenerateAccountSlipAction` via constructor injection (no service locator) |
 
 ### Routes
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-R1 | Single slip route: `GET /admin/users/{user}/account-slip` → `AccountSlipController::download` |
-| FR-R2 | Batch slip route: `GET /admin/users/account-slips/download?ids=...` → `AccountSlipController::downloadBatch` |
-| FR-R3 | Both routes must require `auth` middleware |
-| FR-R4 | Both routes must require `role:super_admin\|admin` middleware |
-| FR-R5 | Route names: `admin.users.account-slip` (single), `admin.users.account-slips.batch` (batch) |
+| FR-EWCZ0-EWCZ0-R1 | Single slip route: `GET /admin/users/{user}/account-slip` → `AccountSlipController::download` |
+| FR-EWCZ0-EWCZ0-R2 | Batch slip route: `GET /admin/users/account-slips/download?ids=...` → `AccountSlipController::downloadBatch` |
+| FR-EWCZ0-EWCZ0-R3 | Both routes must require `auth` middleware |
+| FR-EWCZ0-EWCZ0-R4 | Both routes must require `role:super_admin\|admin` middleware |
+| FR-EWCZ0-EWCZ0-R5 | Route names: `admin.users.account-slip` (single), `admin.users.account-slips.batch` (batch) |
 
 ---
 
@@ -234,30 +234,30 @@ any situation where digital delivery is preferred over printed distribution.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Single account slip PDF generation must complete in < 3 seconds |
-| NFR-P2 | Batch PDF generation for 50 users must complete in < 15 seconds |
-| NFR-P3 | Account slip modal must open in < 200ms (activation code generation only) |
-| NFR-S1 | Activation codes must be generated server-side, never exposed in client JavaScript |
-| NFR-S2 | Account slip routes must enforce admin role authorization |
-| NFR-S3 | User data on PDF slips must not be accessible to other users or public |
-| NFR-S4 | Activation token must not be stored in plaintext in database (hashed by `AccessToken` model) |
-| NFR-R1 | Batch slip generation must not fail entirely if one user's code generation fails |
-| NFR-R2 | `downloadSlip()` and `sendCode()` must silently return if `$slipUser` is null (defensive guard) |
-| NFR-R3 | PDF generation errors must not expose stack traces to the admin user |
-| NFR-U1 | Account slip PDF must include proper heading structure (H1 for school name, H2 for user info) |
-| NFR-U2 | Activation code must be displayed in monospace font for readability and copy-paste |
-| NFR-U3 | Modal must display all user info fields with clear labels (uppercase, tracking-wider) |
-| NFR-U4 | Download button must show spinner during PDF generation |
-| NFR-U5 | Flash messages must confirm success/failure for: code regeneration, code send, batch selection |
-| NFR-A1 | Account slip modal must meet WCAG 2.1 Level AA (keyboard navigable, screen reader accessible) |
-| NFR-A2 | Activation code text must use `select-all` class for easy copying |
-| NFR-A3 | Modal must trap focus while open |
-| NFR-A4 | PDF must include text alternatives for all visual elements |
-| NFR-M1 | `GenerateAccountSlipAction` must use Action single-responsibility (no Livewire mutations) |
-| NFR-M2 | `DownloadsAccountSlips` trait must not directly mutate models — must delegate to Actions |
-| NFR-M3 | All PHP files must declare `strict_types=1` |
-| NFR-L1 | All user-facing strings in account slip UI must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-EWCZ0-EWCZ0-P1 | Single account slip PDF generation must complete in < 3 seconds |
+| NFR-EWCZ0-EWCZ0-P2 | Batch PDF generation for 50 users must complete in < 15 seconds |
+| NFR-EWCZ0-EWCZ0-P3 | Account slip modal must open in < 200ms (activation code generation only) |
+| NFR-EWCZ0-EWCZ0-S1 | Activation codes must be generated server-side, never exposed in client JavaScript |
+| NFR-EWCZ0-EWCZ0-S2 | Account slip routes must enforce admin role authorization |
+| NFR-EWCZ0-EWCZ0-S3 | User data on PDF slips must not be accessible to other users or public |
+| NFR-EWCZ0-EWCZ0-S4 | Activation token must not be stored in plaintext in database (hashed by `AccessToken` model) |
+| NFR-EWCZ0-EWCZ0-R1 | Batch slip generation must not fail entirely if one user's code generation fails |
+| NFR-EWCZ0-EWCZ0-R2 | `downloadSlip()` and `sendCode()` must silently return if `$slipUser` is null (defensive guard) |
+| NFR-EWCZ0-EWCZ0-R3 | PDF generation errors must not expose stack traces to the admin user |
+| NFR-EWCZ0-EWCZ0-U1 | Account slip PDF must include proper heading structure (H1 for school name, H2 for user info) |
+| NFR-EWCZ0-EWCZ0-U2 | Activation code must be displayed in monospace font for readability and copy-paste |
+| NFR-EWCZ0-EWCZ0-U3 | Modal must display all user info fields with clear labels (uppercase, tracking-wider) |
+| NFR-EWCZ0-EWCZ0-U4 | Download button must show spinner during PDF generation |
+| NFR-EWCZ0-EWCZ0-U5 | Flash messages must confirm success/failure for: code regeneration, code send, batch selection |
+| NFR-EWCZ0-EWCZ0-A1 | Account slip modal must meet WCAG 2.1 Level AA (keyboard navigable, screen reader accessible) |
+| NFR-EWCZ0-EWCZ0-A2 | Activation code text must use `select-all` class for easy copying |
+| NFR-EWCZ0-EWCZ0-A3 | Modal must trap focus while open |
+| NFR-EWCZ0-EWCZ0-A4 | PDF must include text alternatives for all visual elements |
+| NFR-EWCZ0-EWCZ0-M1 | `GenerateAccountSlipAction` must use Action single-responsibility (no Livewire mutations) |
+| NFR-EWCZ0-EWCZ0-M2 | `DownloadsAccountSlips` trait must not directly mutate models — must delegate to Actions |
+| NFR-EWCZ0-EWCZ0-M3 | All PHP files must declare `strict_types=1` |
+| NFR-EWCZ0-EWCZ0-L1 | All user-facing strings in account slip UI must use `__()` translation helper |
+| NFR-EWCZ0-EWCZ0-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -300,6 +300,7 @@ final class GenerateAccountSlipAction extends BaseCommandAction
     private function download(User $user): Response;
     // Single-user PDF generation (called by execute)
 }
+
 ```
 
 ### DownloadsAccountSlips Trait
@@ -327,6 +328,7 @@ trait DownloadsAccountSlips
     public function downloadSelectedSlips(): void;
     // Redirects to batch slip download route with selected IDs
 }
+
 ```
 
 ### AccountSlipController
@@ -341,6 +343,7 @@ final class AccountSlipController
     public function downloadBatch(Request $request, GenerateAccountSlipAction $action): mixed;
     // Parses 'ids' query param, fetches users, delegates to $action->executeBatch()
 }
+
 ```
 
 ### ActivationCodeNotification
@@ -362,6 +365,7 @@ class ActivationCodeNotification extends Notification
     public function toCustomDatabase(object $notifiable): array;
     // In-app notification with type 'activation_code'
 }
+
 ```
 
 ### PDF Blade View Contract
@@ -374,6 +378,7 @@ Variables:
   $code — string (plain-text activation code)
 Output: HTML rendered by DomPDF to PDF
 Paper: [0, 0, 241, 156] mm (custom card)
+
 ```
 
 ### Routes
@@ -386,6 +391,7 @@ GET  /admin/users/{user}/account-slip        → AccountSlipController::download
 GET  /admin/users/account-slips/download?ids={csv}  → AccountSlipController::downloadBatch
      Name: admin.users.account-slips.batch
      Middleware: auth, role:super_admin|admin
+
 ```
 
 ### DomPDF Configuration
@@ -399,6 +405,7 @@ Font directory: storage_path('fonts')
 Chroot: realpath(base_path())
 Enable remote: false (no external resources in PDF)
 DPI: 96
+
 ```
 
 ### Activity Log
@@ -407,6 +414,7 @@ DPI: 96
 Event: account_slip_generated
 Context: ['user_id' => $user->id]
 Logged by: GenerateAccountSlipAction via $this->log()
+
 ```
 
 ---

@@ -82,13 +82,13 @@ others would leak stack traces, and debugging would require inspecting each Acti
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Admin | Reviews audit trail |
-| UC-2 | Developer | Debugs production error |
-| UC-3 | System | SmartLogger logs a business mutation |
-| UC-4 | User | Business rule violation returns user-friendly error |
-| UC-5 | System | Request context enriches all log entries |
+| UC-89SRA-1 | Admin | Reviews audit trail |
+| UC-89SRA-2 | Developer | Debugs production error |
+| UC-89SRA-3 | System | SmartLogger logs a business mutation |
+| UC-89SRA-4 | User | Business rule violation returns user-friendly error |
+| UC-89SRA-5 | System | Request context enriches all log entries |
 
-### UC-1 — Admin Reviews Audit Trail
+### UC-89SRA-1 — Admin Reviews Audit Trail
 
 **Actor:** School administrator
 **Preconditions:** Admin is authenticated with audit log read permission
@@ -99,7 +99,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 4. PII fields (email, name, IP) are masked in the display
 **Postconditions:** Admin can audit system actions without seeing raw PII
 
-### UC-2 — Developer Debugs Production Error
+### UC-89SRA-2 — Developer Debugs Production Error
 
 **Actor:** Developer
 **Preconditions:** An unexpected exception occurred in production
@@ -111,7 +111,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 5. User sees only a generic error page, not the stack trace
 **Postconditions:** Developer has full diagnostic info; user sees safe error message
 
-### UC-3 — SmartLogger Logs a Business Mutation
+### UC-89SRA-3 — SmartLogger Logs a Business Mutation
 
 **Actor:** System (automatic, from a Command Action)
 **Preconditions:** A Command Action is executing a business mutation
@@ -123,7 +123,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 5. IP and User-Agent are PII-masked before storage
 **Postconditions:** Both log channels have consistent, PII-safe entries
 
-### UC-4 — Business Rule Violation Returns User-Friendly Error
+### UC-89SRA-4 — Business Rule Violation Returns User-Friendly Error
 
 **Actor:** Student attempting to clock in twice
 **Preconditions:** Student is already clocked in for today
@@ -135,7 +135,7 @@ others would leak stack traces, and debugging would require inspecting each Acti
 5. No stack trace, no technical details exposed to user
 **Postconditions:** Student sees "Already clocked in today"; no exception reaches HTTP layer
 
-### UC-5 — Request Context Enriches All Log Entries
+### UC-89SRA-5 — Request Context Enriches All Log Entries
 
 **Actor:** System (automatic, via middleware)
 **Preconditions:** Any HTTP request arrives
@@ -154,101 +154,101 @@ others would leak stack traces, and debugging would require inspecting each Acti
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-SL1 | `SmartLogger` must be the single entry point for all application logging |
-| FR-SL2 | Must provide four severity levels: `success()`, `info()`, `warning()`, `error()` |
-| FR-SL3 | Must support fluent chaining: `for()`, `about()`, `withPayload()`, `withContext()`, `module()`, `event()`, `channel()` |
-| FR-SL4 | Terminal method `save()` must execute: process event → mask PII → resolve translations → write channels |
-| FR-SL5 | Must support three routing modes: `both()` (default), `systemOnly()`, `activityOnly()` |
-| FR-SL6 | PII masking must be enabled by default (`withPiiMasking()`) |
+| FR-89SRA-SL1 | `SmartLogger` must be the single entry point for all application logging |
+| FR-89SRA-SL2 | Must provide four severity levels: `success()`, `info()`, `warning()`, `error()` |
+| FR-89SRA-SL3 | Must support fluent chaining: `for()`, `about()`, `withPayload()`, `withContext()`, `module()`, `event()`, `channel()` |
+| FR-89SRA-SL4 | Terminal method `save()` must execute: process event → mask PII → resolve translations → write channels |
+| FR-89SRA-SL5 | Must support three routing modes: `both()` (default), `systemOnly()`, `activityOnly()` |
+| FR-89SRA-SL6 | PII masking must be enabled by default (`withPiiMasking()`) |
 
 ### SmartLogger — Dual Channel
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DC1 | System channel must write to `storage/logs/laravel.log` via `Log` facade |
-| FR-DC2 | Activity channel must write to `activity_log` table via Spatie `laravel-activitylog` v5 |
-| FR-DC3 | Activity channel must be wrapped in try-catch — database failure must not break the Action |
-| FR-DC4 | Activity channel failure must log an error to the system channel with diagnostic context |
-| FR-DC5 | System channel must NOT be wrapped in try-catch — unwritable logs must surface immediately |
-| FR-DC6 | Activity log must be skipped when no causer is resolved (unless `activityOnly()` was called) |
+| FR-89SRA-DC1 | System channel must write to `storage/logs/laravel.log` via `Log` facade |
+| FR-89SRA-DC2 | Activity channel must write to `activity_log` table via Spatie `laravel-activitylog` v5 |
+| FR-89SRA-DC3 | Activity channel must be wrapped in try-catch — database failure must not break the Action |
+| FR-89SRA-DC4 | Activity channel failure must log an error to the system channel with diagnostic context |
+| FR-89SRA-DC5 | System channel must NOT be wrapped in try-catch — unwritable logs must surface immediately |
+| FR-89SRA-DC6 | Activity log must be skipped when no causer is resolved (unless `activityOnly()` was called) |
 
 ### SmartLogger — Event Integration
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EI1 | `event()` must accept a string event name or a `BaseEvent` instance |
-| FR-EI2 | When `BaseEvent` is passed, `save()` must dispatch it via Laravel's `event()` helper |
-| FR-EI3 | Event's `toPayload()` must be merged into SmartLogger's payload (manual payload takes precedence) |
-| FR-EI4 | Event name must be resolved for translation lookup regardless of string or object |
+| FR-89SRA-EI1 | `event()` must accept a string event name or a `BaseEvent` instance |
+| FR-89SRA-EI2 | When `BaseEvent` is passed, `save()` must dispatch it via Laravel's `event()` helper |
+| FR-89SRA-EI3 | Event's `toPayload()` must be merged into SmartLogger's payload (manual payload takes precedence) |
+| FR-89SRA-EI4 | Event name must be resolved for translation lookup regardless of string or object |
 
 ### SmartLogger — Translation Resolution
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TR1 | When an event name is set, SmartLogger must resolve `log.{eventName}` for current locale |
-| FR-TR2 | Must also resolve for the alternative locale (en ↔ id) |
-| FR-TR3 | Resolved translations must be injected as `event_description` and `event_description_{locale}` in context |
-| FR-TR4 | Missing translation keys must not throw — silently skip injection |
+| FR-89SRA-TR1 | When an event name is set, SmartLogger must resolve `log.{eventName}` for current locale |
+| FR-89SRA-TR2 | Must also resolve for the alternative locale (en ↔ id) |
+| FR-89SRA-TR3 | Resolved translations must be injected as `event_description` and `event_description_{locale}` in context |
+| FR-89SRA-TR4 | Missing translation keys must not throw — silently skip injection |
 
 ### PII Masking
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PM1 | `PiiMasker::maskArray()` must recursively mask nested arrays |
-| FR-PM2 | Keys containing substrings in `MASKED_KEYS` list must be replaced with `'***'` (full mask) |
-| FR-PM3 | `email` key must be partially masked: first 2 chars + `***@domain` |
-| FR-PM4 | `phone` key must be partially masked: all but last 4 digits |
-| FR-PM5 | `name` key must be partially masked: first initial + last name (e.g., `J. Smith`) |
-| FR-PM6 | IPv4 addresses must preserve first two octets: `192.168.***.***` |
-| FR-PM7 | IPv6 addresses must preserve first segment: `2001:db8::****` |
-| FR-PM8 | User-Agent strings must be truncated to 50 characters with `...` suffix |
-| FR-PM9 | `MASKED_KEYS` must include: password, token, secret, api_key, credit_card, ssn, national_id, health_insurance, and 20+ additional sensitive field names |
+| FR-89SRA-PM1 | `PiiMasker::maskArray()` must recursively mask nested arrays |
+| FR-89SRA-PM2 | Keys containing substrings in `MASKED_KEYS` list must be replaced with `'***'` (full mask) |
+| FR-89SRA-PM3 | `email` key must be partially masked: first 2 chars + `***@domain` |
+| FR-89SRA-PM4 | `phone` key must be partially masked: all but last 4 digits |
+| FR-89SRA-PM5 | `name` key must be partially masked: first initial + last name (e.g., `J. Smith`) |
+| FR-89SRA-PM6 | IPv4 addresses must preserve first two octets: `192.168.***.***` |
+| FR-89SRA-PM7 | IPv6 addresses must preserve first segment: `2001:db8::****` |
+| FR-89SRA-PM8 | User-Agent strings must be truncated to 50 characters with `...` suffix |
+| FR-89SRA-PM9 | `MASKED_KEYS` must include: password, token, secret, api_key, credit_card, ssn, national_id, health_insurance, and 20+ additional sensitive field names |
 
 ### Exception Hierarchy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EH1 | `AppException` must be the abstract root for application/infrastructure exceptions |
-| FR-EH2 | `ModuleException` must be the abstract root for business rule violations |
-| FR-EH3 | `ModuleException` must NOT extend `AppException` (independent sibling trees) |
-| FR-EH4 | Both trees must use `HasExceptionContext` trait for hint, context, CLI output, PII sanitization |
-| FR-EH5 | `AppException` subtree must implement `statusCode()` returning HTTP status code |
-| FR-EH6 | `RejectedException` must extend `ModuleException` with status 400 |
-| FR-EH7 | `ValidationFailedException` must extend `ActionException` with status 422 |
-| FR-EH8 | `UnauthorizedException` must extend `PresentationException` with status 403 |
-| FR-EH9 | `InfrastructureException` must default to status 500 and `isUserFacing() = false` |
+| FR-89SRA-EH1 | `AppException` must be the abstract root for application/infrastructure exceptions |
+| FR-89SRA-EH2 | `ModuleException` must be the abstract root for business rule violations |
+| FR-89SRA-EH3 | `ModuleException` must NOT extend `AppException` (independent sibling trees) |
+| FR-89SRA-EH4 | Both trees must use `HasExceptionContext` trait for hint, context, CLI output, PII sanitization |
+| FR-89SRA-EH5 | `AppException` subtree must implement `statusCode()` returning HTTP status code |
+| FR-89SRA-EH6 | `RejectedException` must extend `ModuleException` with status 400 |
+| FR-89SRA-EH7 | `ValidationFailedException` must extend `ActionException` with status 422 |
+| FR-89SRA-EH8 | `UnauthorizedException` must extend `PresentationException` with status 403 |
+| FR-89SRA-EH9 | `InfrastructureException` must default to status 500 and `isUserFacing() = false` |
 
 ### Error Handling in Actions
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AE1 | `HandlesActionErrors` trait must wrap Action execution in try-catch |
-| FR-AE2 | Known exception types must be re-thrown without logging (they carry correct semantics) |
-| FR-AE3 | Unknown `\Throwable` instances must be logged with PII masking to system channel only |
-| FR-AE4 | Unknown exceptions must be re-thrown as `RuntimeException` with original as `$previous` |
-| FR-AE5 | `BaseAction::fail()` must throw `RejectedException` (never `RuntimeException`) for business rule violations |
-| FR-AE6 | `BaseAction::log()` must auto-derive module name from Action namespace |
+| FR-89SRA-AE1 | `HandlesActionErrors` trait must wrap Action execution in try-catch |
+| FR-89SRA-AE2 | Known exception types must be re-thrown without logging (they carry correct semantics) |
+| FR-89SRA-AE3 | Unknown `\Throwable` instances must be logged with PII masking to system channel only |
+| FR-89SRA-AE4 | Unknown exceptions must be re-thrown as `RuntimeException` with original as `$previous` |
+| FR-89SRA-AE5 | `BaseAction::fail()` must throw `RejectedException` (never `RuntimeException`) for business rule violations |
+| FR-89SRA-AE6 | `BaseAction::log()` must auto-derive module name from Action namespace |
 
 ### Exception Rendering (bootstrap/app.php)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ER1 | `AppException` must render with status from `statusCode()`, user-facing message if `isUserFacing()`, generic message otherwise |
-| FR-ER2 | `ModuleException` must always render as HTTP 400 with the exception message |
-| FR-ER3 | JSON requests must receive `{"message": "..."}` response |
-| FR-ER4 | Non-JSON requests must receive appropriate error page or `abort()` |
-| FR-ER5 | Password fields must be excluded from exception flashing (`dontFlash`) |
+| FR-89SRA-ER1 | `AppException` must render with status from `statusCode()`, user-facing message if `isUserFacing()`, generic message otherwise |
+| FR-89SRA-ER2 | `ModuleException` must always render as HTTP 400 with the exception message |
+| FR-89SRA-ER3 | JSON requests must receive `{"message": "..."}` response |
+| FR-89SRA-ER4 | Non-JSON requests must receive appropriate error page or `abort()` |
+| FR-89SRA-ER5 | Password fields must be excluded from exception flashing (`dontFlash`) |
 
 ### LogContext Middleware
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LC1 | Must generate a UUID `request_id` for every request |
-| FR-LC2 | Must inject `method`, `url`, `ip` into log context |
-| FR-LC3 | Must inject `user_id` and `user_role` when user is authenticated |
-| FR-LC4 | Must measure and inject `duration_ms` and `status` after response |
-| FR-LC5 | Must use `Log::withContext()` for automatic injection into all subsequent log entries |
-| FR-LC6 | `save()` MUST mask PII fields before writing to any channel (unit test asserts masked output) | |
+| FR-89SRA-LC1 | Must generate a UUID `request_id` for every request |
+| FR-89SRA-LC2 | Must inject `method`, `url`, `ip` into log context |
+| FR-89SRA-LC3 | Must inject `user_id` and `user_role` when user is authenticated |
+| FR-89SRA-LC4 | Must measure and inject `duration_ms` and `status` after response |
+| FR-89SRA-LC5 | Must use `Log::withContext()` for automatic injection into all subsequent log entries |
+| FR-89SRA-LC6 | `save()` MUST mask PII fields before writing to any channel (unit test asserts masked output) | |
 
 ---
 
@@ -256,23 +256,23 @@ others would leak stack traces, and debugging would require inspecting each Acti
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | SmartLogger `save()` must add < 5ms overhead to Action execution |
-| NFR-P2 | PII masking must process typical payloads in < 1ms |
-| NFR-S1 | No PII (passwords, tokens, emails, IPs) must appear unmasked in any log channel |
-| NFR-S2 | Exception messages shown to users must never contain SQL queries, file paths, or stack traces |
-| NFR-S3 | `InfrastructureException` must never be user-facing (`isUserFacing() = false`) |
-| NFR-R1 | Activity log database failure must not break the calling Action |
-| NFR-R2 | Activity log failure must be logged to system channel for diagnosis |
-| NFR-R3 | System log failure must propagate (intentional — unwritable logs are critical) |
-| NFR-R4 | All exceptions must be logged by default (`shouldReport() = true`) |
-| NFR-U1 | Error pages must display user-friendly messages, not technical details |
-| NFR-U2 | CLI output must display full context with PII masking for developer debugging |
-| NFR-M1 | Exception hierarchy must be flat — no more than 3 levels deep |
-| NFR-M2 | Every exception class must be a single file with single responsibility |
-| NFR-L1 | All user-facing error messages must use `__()` translation helper |
-| NFR-L2 | SmartLogger system channel names must be translatable via `__()` |
-| NFR-A1 | Error pages must be keyboard-navigable and screen-reader accessible |
-| NFR-A2 | Error page status codes must use semantic HTML (`<main>`, proper headings) |
+| NFR-89SRA-P1 | SmartLogger `save()` must add < 5ms overhead to Action execution |
+| NFR-89SRA-P2 | PII masking must process typical payloads in < 1ms |
+| NFR-89SRA-S1 | No PII (passwords, tokens, emails, IPs) must appear unmasked in any log channel |
+| NFR-89SRA-S2 | Exception messages shown to users must never contain SQL queries, file paths, or stack traces |
+| NFR-89SRA-S3 | `InfrastructureException` must never be user-facing (`isUserFacing() = false`) |
+| NFR-89SRA-R1 | Activity log database failure must not break the calling Action |
+| NFR-89SRA-R2 | Activity log failure must be logged to system channel for diagnosis |
+| NFR-89SRA-R3 | System log failure must propagate (intentional — unwritable logs are critical) |
+| NFR-89SRA-R4 | All exceptions must be logged by default (`shouldReport() = true`) |
+| NFR-89SRA-U1 | Error pages must display user-friendly messages, not technical details |
+| NFR-89SRA-U2 | CLI output must display full context with PII masking for developer debugging |
+| NFR-89SRA-M1 | Exception hierarchy must be flat — no more than 3 levels deep |
+| NFR-89SRA-M2 | Every exception class must be a single file with single responsibility |
+| NFR-89SRA-L1 | All user-facing error messages must use `__()` translation helper |
+| NFR-89SRA-L2 | SmartLogger system channel names must be translatable via `__()` |
+| NFR-89SRA-A1 | Error pages must be keyboard-navigable and screen-reader accessible |
+| NFR-89SRA-A2 | Error page status codes must use semantic HTML (`<main>`, proper headings) |
 
 ## Test Requirements
 
@@ -323,6 +323,7 @@ final class SmartLogger
     // Terminal
     public function save(): void;
 }
+
 ```
 
 ### 6.2 PiiMasker
@@ -340,6 +341,7 @@ final class PiiMasker
     public static function maskIp(?string $ip): ?string;
     public static function maskUserAgent(?string $ua): ?string;
 }
+
 ```
 
 ### 6.3 Exception Hierarchy
@@ -354,6 +356,7 @@ RuntimeException
 │       └── UnauthorizedException (403)        — default hint: "You do not have permission"
 └── ModuleException (abstract)                 — statusCode(): int, HasExceptionContext
     └── RejectedException (400)                — business rule violation
+
 ```
 
 ### 6.4 HasExceptionContext Trait
@@ -374,6 +377,7 @@ trait HasExceptionContext
     public function isUserFacing(): bool;         // default: true
     public function shouldReport(): bool;         // default: true
 }
+
 ```
 
 ### 6.5 HandlesActionErrors Trait
@@ -387,6 +391,7 @@ trait HandlesActionErrors
     //   ValidationException, AuthorizationException, ModelNotFoundException, NotFoundHttpException
     // Unknown \Throwable → logged via SmartLogger (systemOnly, PII-masked) → re-thrown as RuntimeException
 }
+
 ```
 
 ### 6.6 BaseAction Log Shorthand
@@ -408,6 +413,7 @@ abstract class BaseAction
     protected function dispatchEvent(BaseEvent $event): void;
     // Queues event for dispatch after current DB::transaction() commits
 }
+
 ```
 
 ### 6.7 Exception Rendering (bootstrap/app.php)
@@ -438,6 +444,7 @@ $exceptions->render(function (ModuleException $e, Request $request) {
     }
     abort(400, $message);
 });
+
 ```
 
 ### 6.8 LogContext Middleware
@@ -451,6 +458,7 @@ class LogContextMiddleware
     // After response: duration_ms, status
     // Uses Log::withContext() for automatic injection
 }
+
 ```
 
 ### 6.9 Activity Log Schema (Satie laravel-activitylog v5)
@@ -469,6 +477,7 @@ activity_log
 ├── batch_uuid    CHAR(36)        NULLABLE      — batch grouping
 └── created_at    TIMESTAMP       NULLABLE      — when the action occurred
     └── INDEXES: subject_type+subject_id, causer_type+causer_id, created_at
+
 ```
 
 ---

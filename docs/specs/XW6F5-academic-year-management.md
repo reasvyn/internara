@@ -74,7 +74,7 @@ administrators would see outdated statistics.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates an Academic Year
+### UC-XW6F5-1 — Admin Creates an Academic Year
 
 **Actor:** Admin | **Preconditions:** Admin authenticated with admin role
 **Flow:**
@@ -84,7 +84,7 @@ administrators would see outdated statistics.
 4. Dispatches `AcademicYearCreated` → cache invalidated
 **Postconditions:** Year created, dashboard cache invalidated
 
-### UC-2 — Admin Creates First Academic Year (Auto-Activate)
+### UC-XW6F5-2 — Admin Creates First Academic Year (Auto-Activate)
 
 **Actor:** Admin (setup/reset) | **Preconditions:** No academic years exist
 **Flow:**
@@ -93,7 +93,7 @@ administrators would see outdated statistics.
 3. Dispatches `AcademicYearCreated`
 **Postconditions:** First year created and automatically active
 
-### UC-3 — Admin Activates a New Academic Year
+### UC-XW6F5-3 — Admin Activates a New Academic Year
 
 **Actor:** Admin | **Preconditions:** A different year is currently active
 **Flow:**
@@ -105,7 +105,7 @@ administrators would see outdated statistics.
 3. Cache invalidated
 **Postconditions:** Only one year active
 
-### UC-4 — Admin Deletes an Academic Year
+### UC-XW6F5-4 — Admin Deletes an Academic Year
 
 **Actor:** Admin | **Preconditions:** Year not active, no related records
 **Flow:**
@@ -115,7 +115,7 @@ administrators would see outdated statistics.
 4. If safe → deletes in transaction, dispatches `AcademicYearDeleted`
 **Postconditions:** Year deleted, cache invalidated
 
-### UC-5 — Admin Bulk Deletes Academic Years
+### UC-XW6F5-5 — Admin Bulk Deletes Academic Years
 
 **Actor:** Admin | **Preconditions:** At least one deletable year
 **Flow:**
@@ -133,76 +133,76 @@ administrators would see outdated statistics.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY1 | `AcademicYear` model must use `#[Fillable]` with `name`, `start_date`, `end_date`, `is_active` |
-| FR-AY2 | `AcademicYear` must cast `start_date` → date, `end_date` → date, `is_active` → boolean |
-| FR-AY3 | `AcademicYear` must have `hasMany` relationship with `Internship` and `Assessment` models |
-| FR-AY4 | `AcademicYear` must provide `asAcademicYearState()` bridge returning `AcademicYearState` |
-| FR-AY5 | `AcademicYearState` must be `final readonly` extending `BaseEntity` |
-| FR-AY6 | `AcademicYearState::fromModel()` must resolve `isActive` from `$model->is_active` and `hasRelatedRecords` from `internships()->exists()` + `assessments()->exists()` |
-| FR-AY7 | `AcademicYearState::canBeActivated()` must return `false` when `isActive` is `true` |
-| FR-AY8 | `AcademicYearState::canBeDeleted()` must return `false` when `isActive` or `hasRelatedRecords` |
+| FR-XW6F5-AY1 | `AcademicYear` model must use `#[Fillable]` with `name`, `start_date`, `end_date`, `is_active` |
+| FR-XW6F5-AY2 | `AcademicYear` must cast `start_date` → date, `end_date` → date, `is_active` → boolean |
+| FR-XW6F5-AY3 | `AcademicYear` must have `hasMany` relationship with `Internship` and `Assessment` models |
+| FR-XW6F5-AY4 | `AcademicYear` must provide `asAcademicYearState()` bridge returning `AcademicYearState` |
+| FR-XW6F5-AY5 | `AcademicYearState` must be `final readonly` extending `BaseEntity` |
+| FR-XW6F5-AY6 | `AcademicYearState::fromModel()` must resolve `isActive` from `$model->is_active` and `hasRelatedRecords` from `internships()->exists()` + `assessments()->exists()` |
+| FR-XW6F5-AY7 | `AcademicYearState::canBeActivated()` must return `false` when `isActive` is `true` |
+| FR-XW6F5-AY8 | `AcademicYearState::canBeDeleted()` must return `false` when `isActive` or `hasRelatedRecords` |
 
 ### Singleton Activation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY9 | `ActivateAcademicYearAction` must reject if `canBeActivated()` returns `false` |
-| FR-AY10 | `ActivateAcademicYearAction` must deactivate ALL currently active years within a transaction |
-| FR-AY11 | `ActivateAcademicYearAction` must activate the target year in the same transaction |
-| FR-AY12 | `ActivateAcademicYearAction` must dispatch `AcademicYearActivated` event |
+| FR-XW6F5-AY9 | `ActivateAcademicYearAction` must reject if `canBeActivated()` returns `false` |
+| FR-XW6F5-AY10 | `ActivateAcademicYearAction` must deactivate ALL currently active years within a transaction |
+| FR-XW6F5-AY11 | `ActivateAcademicYearAction` must activate the target year in the same transaction |
+| FR-XW6F5-AY12 | `ActivateAcademicYearAction` must dispatch `AcademicYearActivated` event |
 
 ### Deletion & Bulk Delete
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY13 | `DeleteAcademicYearAction` must reject with `RejectedException` if year is active or has related records |
-| FR-AY14 | `DeleteAcademicYearAction` must dispatch `AcademicYearDeleted` event after deletion |
-| FR-AY15 | `BulkDeleteAcademicYearsAction` must return `0` for empty input |
-| FR-AY16 | `BulkDeleteAcademicYearsAction` must validate every year via `canBeDeleted()` before deleting any |
-| FR-AY17 | `BulkDeleteAcademicYearsAction` must throw `RejectedException` naming the violating year if any is protected |
-| FR-AY18 | `BulkDeleteAcademicYearsAction` must dispatch `AcademicYearDeleted` per deleted year and return count |
+| FR-XW6F5-AY13 | `DeleteAcademicYearAction` must reject with `RejectedException` if year is active or has related records |
+| FR-XW6F5-AY14 | `DeleteAcademicYearAction` must dispatch `AcademicYearDeleted` event after deletion |
+| FR-XW6F5-AY15 | `BulkDeleteAcademicYearsAction` must return `0` for empty input |
+| FR-XW6F5-AY16 | `BulkDeleteAcademicYearsAction` must validate every year via `canBeDeleted()` before deleting any |
+| FR-XW6F5-AY17 | `BulkDeleteAcademicYearsAction` must throw `RejectedException` naming the violating year if any is protected |
+| FR-XW6F5-AY18 | `BulkDeleteAcademicYearsAction` must dispatch `AcademicYearDeleted` per deleted year and return count |
 
 ### First-Year Auto-Activate
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY19 | `CreateAcademicYearAction` must check `AcademicYear::count()` before creation |
-| FR-AY20 | `CreateAcademicYearAction` must set `is_active = true` when creating the first year |
-| FR-AY21 | `CreateAcademicYearAction` must set `is_active = false` for subsequent years |
-| FR-AY22 | `CreateAcademicYearAction` must validate name uniqueness, start_date required, end_date after start_date |
-| FR-AY23 | `CreateAcademicYearAction` must dispatch `AcademicYearCreated` event |
+| FR-XW6F5-AY19 | `CreateAcademicYearAction` must check `AcademicYear::count()` before creation |
+| FR-XW6F5-AY20 | `CreateAcademicYearAction` must set `is_active = true` when creating the first year |
+| FR-XW6F5-AY21 | `CreateAcademicYearAction` must set `is_active = false` for subsequent years |
+| FR-XW6F5-AY22 | `CreateAcademicYearAction` must validate name uniqueness, start_date required, end_date after start_date |
+| FR-XW6F5-AY23 | `CreateAcademicYearAction` must dispatch `AcademicYearCreated` event |
 
 ### Update
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY24 | `UpdateAcademicYearAction` must persist changes within a transaction |
-| FR-AY25 | `UpdateAcademicYearAction` must dispatch `AcademicYearUpdated` event |
+| FR-XW6F5-AY24 | `UpdateAcademicYearAction` must persist changes within a transaction |
+| FR-XW6F5-AY25 | `UpdateAcademicYearAction` must dispatch `AcademicYearUpdated` event |
 
 ### Events & Cache
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY26 | `AcademicYearCreated` must carry the created model |
-| FR-AY27 | `AcademicYearActivated` must carry the activated model and optional `previousActive` |
-| FR-AY28 | `AcademicYearUpdated` must carry the updated model |
-| FR-AY29 | `AcademicYearDeleted` must carry the deleted model |
-| FR-AY30 | All four events must trigger `ClearDashboardCacheOnYearChange` listener |
-| FR-AY31 | `ClearDashboardCacheOnYearChange` must call `Cache::forget(config('cache-keys.admin_dashboard_stats'))` |
+| FR-XW6F5-AY26 | `AcademicYearCreated` must carry the created model |
+| FR-XW6F5-AY27 | `AcademicYearActivated` must carry the activated model and optional `previousActive` |
+| FR-XW6F5-AY28 | `AcademicYearUpdated` must carry the updated model |
+| FR-XW6F5-AY29 | `AcademicYearDeleted` must carry the deleted model |
+| FR-XW6F5-AY30 | All four events must trigger `ClearDashboardCacheOnYearChange` listener |
+| FR-XW6F5-AY31 | `ClearDashboardCacheOnYearChange` must call `Cache::forget(config('cache-keys.admin_dashboard_stats'))` |
 
 ### Livewire UI & Policy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AY32 | `AcademicYearManager` must extend `BaseRecordManager` with paginated list, search, and sorting |
-| FR-AY33 | `AcademicYearManager` must display columns: name, start_date, end_date, is_active, actions |
-| FR-AY34 | `AcademicYearManager` must sort active year first (`is_active DESC, name ASC`) |
-| FR-AY35 | `AcademicYearManager` must provide confirmation dialogs for activate, delete, and bulk-delete |
-| FR-AY36 | `AcademicYearManager` must display stats: total years, total internships, years with internships |
-| FR-AY37 | `AcademicYearForm` must validate: name (required, string, max 50, unique excluding current), start_date (required, date), end_date (required, date, after start_date) |
-| FR-AY38 | `AcademicYearPolicy` must grant `viewAny`/`view` to all authenticated users |
-| FR-AY39 | `AcademicYearPolicy` must grant `create`/`update` to admin roles only |
-| FR-AY40 | The active year is the school year containing today — the Indonesian school year runs July–June: a date in January–June maps to `Y-1/Y`, a date in July–December to `Y/Y+1` (DD-6). `AcademicYearSeeder` and the `active_academic_year` setting must both use this computation |
+| FR-XW6F5-AY32 | `AcademicYearManager` must extend `BaseRecordManager` with paginated list, search, and sorting |
+| FR-XW6F5-AY33 | `AcademicYearManager` must display columns: name, start_date, end_date, is_active, actions |
+| FR-XW6F5-AY34 | `AcademicYearManager` must sort active year first (`is_active DESC, name ASC`) |
+| FR-XW6F5-AY35 | `AcademicYearManager` must provide confirmation dialogs for activate, delete, and bulk-delete |
+| FR-XW6F5-AY36 | `AcademicYearManager` must display stats: total years, total internships, years with internships |
+| FR-XW6F5-AY37 | `AcademicYearForm` must validate: name (required, string, max 50, unique excluding current), start_date (required, date), end_date (required, date, after start_date) |
+| FR-XW6F5-AY38 | `AcademicYearPolicy` must grant `viewAny`/`view` to all authenticated users |
+| FR-XW6F5-AY39 | `AcademicYearPolicy` must grant `create`/`update` to admin roles only |
+| FR-XW6F5-AY40 | The active year is the school year containing today — the Indonesian school year runs July–June: a date in January–June maps to `Y-1/Y`, a date in July–December to `Y/Y+1` (DD-6). `AcademicYearSeeder` and the `active_academic_year` setting must both use this computation |
 
 ---
 
@@ -210,22 +210,22 @@ administrators would see outdated statistics.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Academic year activation must complete in < 1s (two UPDATEs + event in transaction) |
-| NFR-P2 | `AcademicYearManager` page load must complete in < 500ms |
-| NFR-S1 | All mutations must be authorized via `AcademicYearPolicy` |
-| NFR-S2 | `name` uniqueness enforced at both form validation and Action layer |
-| NFR-S3 | Deletion guard checks must execute within the same transaction as the delete |
-| NFR-R1 | Activation must be atomic — deactivate old + activate new in single transaction |
-| NFR-R2 | Bulk delete must be atomic — all years deleted or none |
-| NFR-U1 | Active year must be visually highlighted in the manager with a badge |
-| NFR-U2 | Deletion blocked messages must explain why (active / has data) and how to resolve |
-| NFR-U3 | Confirmation dialogs must appear before activate, delete, and bulk-delete |
-| NFR-A1 | All UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | Active year indicator must include text label alongside color |
-| NFR-A3 | All form inputs must have associated labels |
-| NFR-M1 | All PHP files must declare `strict_types=1` |
-| NFR-M2 | All user-facing strings must use `__()` translation helper |
-| NFR-M3 | Translation keys must exist in both `lang/en/` and `lang/id/` |
+| NFR-XW6F5-P1 | Academic year activation must complete in < 1s (two UPDATEs + event in transaction) |
+| NFR-XW6F5-P2 | `AcademicYearManager` page load must complete in < 500ms |
+| NFR-XW6F5-S1 | All mutations must be authorized via `AcademicYearPolicy` |
+| NFR-XW6F5-S2 | `name` uniqueness enforced at both form validation and Action layer |
+| NFR-XW6F5-S3 | Deletion guard checks must execute within the same transaction as the delete |
+| NFR-XW6F5-R1 | Activation must be atomic — deactivate old + activate new in single transaction |
+| NFR-XW6F5-R2 | Bulk delete must be atomic — all years deleted or none |
+| NFR-XW6F5-U1 | Active year must be visually highlighted in the manager with a badge |
+| NFR-XW6F5-U2 | Deletion blocked messages must explain why (active / has data) and how to resolve |
+| NFR-XW6F5-U3 | Confirmation dialogs must appear before activate, delete, and bulk-delete |
+| NFR-XW6F5-A1 | All UI must meet WCAG 2.1 Level AA |
+| NFR-XW6F5-A2 | Active year indicator must include text label alongside color |
+| NFR-XW6F5-A3 | All form inputs must have associated labels |
+| NFR-XW6F5-M1 | All PHP files must declare `strict_types=1` |
+| NFR-XW6F5-M2 | All user-facing strings must use `__()` translation helper |
+| NFR-XW6F5-M3 | Translation keys must exist in both `lang/en/` and `lang/id/` |
 
 ## Test Requirements
 
@@ -259,6 +259,7 @@ class AcademicYear extends BaseModel
     public function assessments(): HasMany;
     public function asAcademicYearState(): AcademicYearState;
 }
+
 ```
 
 ### 6.2 AcademicYearState Entity
@@ -277,6 +278,7 @@ final readonly class AcademicYearState extends BaseEntity
     public function canBeActivated(): bool;   // !isActive
     public function canBeDeleted(): bool;     // !isActive && !hasRelatedRecords
 }
+
 ```
 
 ### 6.3 AcademicYearData DTO
@@ -293,6 +295,7 @@ final readonly class AcademicYearData extends BaseData
         public ?string $id = null,
     ) {}
 }
+
 ```
 
 ### 6.4 Actions
@@ -407,7 +410,7 @@ creation source (UI, seeder, API).
 Indonesian school year runs **July–June**: January–June belongs to `Y-1/Y`, July–December to
 `Y/Y+1`. This computation lives in one place — `AcademicYearPeriod` support class
 (`app/Modules/Academics/AcademicYear/Support/AcademicYearPeriod.php`) — shared by `AcademicYearSeeder`,
-`AppSettingSeeder` (`active_academic_year`), and the settings UI default (FR-AY40).
+`AppSettingSeeder` (`active_academic_year`), and the settings UI default (FR-XW6F5-AY40).
 
 **Rationale:** Three independent computations existed and drifted: `AcademicYearSeeder` was
 month-aware (correct), while `AppSettingSeeder` hardcoded `Y-1/Y` and the settings UI default

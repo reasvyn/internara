@@ -10,6 +10,19 @@ ships with two complete language packs.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Supported Languages
 
 | Locale | Language   | Status                |
@@ -69,6 +82,7 @@ lang/
 │   └── ...
 ├── en.json
 └── id.json
+
 ```
 
 ### Submodule Translation Files
@@ -85,6 +99,7 @@ lang/en/
 ├── locale.php                # Submodule: Locale keys
 ├── theme.php                 # Submodule: Theme keys
 └── ...
+
 ```
 
 Keys in submodule files follow the same dot notation: `__('login.failed')`,
@@ -110,6 +125,7 @@ return [
         'excused' => 'Izin',
     ],
 ];
+
 ```
 
 Usage in code:
@@ -117,6 +133,7 @@ Usage in code:
 ```php
 __('attendance.clock_in');
 __('attendance.status.present');
+
 ```
 
 ### JSON Translation Files
@@ -131,12 +148,14 @@ translation:
     "Search...": "Cari...",
     "No records found.": "Tidak ada data ditemukan."
 }
+
 ```
 
 Usage in code:
 
 ```php
 __('Save');
+
 ```
 
 ---
@@ -160,6 +179,7 @@ enum AttendanceStatus: string implements LabelEnum
         return __("attendance.status.{$this->value}");
     }
 }
+
 ```
 
 State machine enums additionally implement `StatusEnum` for transition validation.
@@ -179,6 +199,7 @@ State machine enums additionally implement `StatusEnum` for transition validatio
 ```bash
 # Example: adding French
 mkdir -p lang/fr
+
 ```
 
 ### Step 2: Copy Existing Translations
@@ -186,6 +207,7 @@ mkdir -p lang/fr
 ```bash
 cp lang/en/*.php lang/fr/
 cp lang/en.json lang/fr.json
+
 ```
 
 ### Step 3: Translate String Values
@@ -202,6 +224,7 @@ return [
         'present' => 'Présent',
     ],
 ];
+
 ```
 
 ### Step 4: Update Config
@@ -214,6 +237,7 @@ Add the new locale to `config/app.php`:
     'id' => 'Bahasa Indonesia',
     'fr' => 'Français',  // ← add your language
 ],
+
 ```
 
 ### Step 5: Submit Contribution

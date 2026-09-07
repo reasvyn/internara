@@ -5,6 +5,19 @@
 Cache driver configuration, key naming conventions, event-driven invalidation strategy, and warming
 patterns.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Purpose
 
 The cache layer reduces database load and response latency by storing computed or frequently
@@ -33,6 +46,7 @@ CACHE_STORE=file
 CACHE_STORE=redis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
+
 ```
 
 ---
@@ -72,6 +86,7 @@ opcache.max_accelerated_files=20000     ; Enough for 2000+ PHP files
 opcache.validate_timestamps=0           ; Production: never recheck
 opcache.revalidate_freq=2               ; Not used when validate=0
 opcache.max_wasted_percentage=10        ; Auto-restart when wasted too much
+
 ```
 
 For **development**, disable OpCache or set `validate_timestamps=1`:
@@ -80,6 +95,7 @@ For **development**, disable OpCache or set `validate_timestamps=1`:
 opcache.enable=1
 opcache.validate_timestamps=1
 opcache.revalidate_freq=0               ; Check every request
+
 ```
 
 ---
@@ -104,6 +120,7 @@ Command Action → event({Entity}Updated)
            CacheInvalidationListener
                      ↓
            Cache::forget('affected.key')
+
 ```
 
 Example:
@@ -116,12 +133,14 @@ class InvalidateDashboardCache
         Cache::forget(config('cache-keys.admin_dashboard_stats'));
     }
 }
+
 ```
 
 ### Direct Invalidation (Inline, for simple cases)
 
 ```php
 Cache::forget(config('cache-keys.theme_css_variables'));
+
 ```
 
 ---
@@ -141,6 +160,7 @@ return [
     'brand_colors' => 'brand.colors',
     'notification_unread' => 'notification.unread:',
 ];
+
 ```
 
 ### Naming Convention
@@ -155,6 +175,7 @@ Examples:
   admin.dashboard.stats           → module: admin, purpose: dashboard statistics
   notification.unread:{userId}    → module: notification, purpose: unread count
   theme.css_variables             → module: theme, purpose: CSS custom properties
+
 ```
 
 ### TTL Legend
@@ -186,6 +207,7 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=null
 REDIS_CLIENT=phpredis
+
 ```
 
 ### Connection Settings
@@ -204,6 +226,7 @@ REDIS_CLIENT=phpredis
     'port' => env('REDIS_PORT', 6379),
     'database' => env('REDIS_DB', 0),
 ],
+
 ```
 
 ### Cluster Configuration (Tier 3)
@@ -212,6 +235,7 @@ REDIS_CLIENT=phpredis
 REDIS_CLUSTER=true
 REDIS_HOST=node1.host,node2.host,node3.host
 REDIS_PASSWORD=cluster-password
+
 ```
 
 ---
@@ -243,12 +267,14 @@ php artisan event:cache       # Cache event discovery
 # Maintenance
 php artisan cache:clear       # Flush only the cache store (not config/route/view)
 php artisan optimize:clear    # Clear ALL caches (config, route, view, events, cache store)
+
 ```
 
 ### Cache Warming
 
 ```bash
 php artisan system:cache-warm
+
 ```
 
 This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for

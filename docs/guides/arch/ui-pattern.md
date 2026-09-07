@@ -58,6 +58,7 @@ Limit to Instrument Sans `400/500/600` + `900` for display `h1`. Line length `ma
 
 {{-- ❌ Wrong — arbitrary spacing, hardcoded shadow/color --}}
 <div style="margin:12px; box-shadow:0 2px 11px rgba(0,0,0,.12); background:#fff">
+
 ```
 
 Use `p-2/p-4/p-6`, `gap-2/gap-4`, `space-y-6`, `py-4/py-5` for page rhythm; `gap-3` for button groups, `gap-4` for stat grids. Divider: `h-px bg-base-300 my-4`.
@@ -74,6 +75,7 @@ Use `p-2/p-4/p-6`, `gap-2/gap-4`, `space-y-6`, `py-4/py-5` for page rhythm; `gap
     {{-- header + actions --}}
   </div>
 </div>
+
 ```
 
 12-column mental model. Never fixed `w-[930px]`. Sidebar: `lg:drawer-open` with overlay label; hamburger only `lg:hidden` (see `core::layouts.sidebar`).
@@ -98,6 +100,7 @@ Author mobile first, enhance upward. This is MDN Responsive Design + WCAG 1.4.10
 
 {{-- ❌ Desktop-first — hides content on mobile, breaks reflow --}}
 <div class="hidden md:flex flex-row gap-6 w-[900px]">
+
 ```
 
 **Rules:**
@@ -144,6 +147,7 @@ Tailwind v4 doctrine: **CSS is the config.** No `tailwind.config.js` exists nor 
   --color-primary: #059669; /* overridden at runtime by Theme::cssVariables() */
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
+
 ```
 
 **Three-layer token hierarchy (W3C DTCG):**
@@ -168,6 +172,7 @@ What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border
 
 {{-- ❌ Drift — arbitrary value, hardcoded color, bypasses dark mode --}}
 <div class="bg-[#059669] text-white rounded-[7px] p-[13px] shadow-[0_2px_11px_rgba(0,0,0,.12)]">
+
 ```
 
 Prevent drift: ESLint/Prettier checks, code review flags arbitrary values (`[value]`), quarterly token audit. Fix by mapping arbitrary to nearest token; create new token only if truly needed (document why).

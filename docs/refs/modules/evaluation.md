@@ -34,6 +34,7 @@ EvaluationForm
 ├── EvaluationQuestions (un-sectioned)
 └── EvaluationResponses (submitted instances)
     └── EvaluationAnswers (per-question values + scores)
+
 ```
 
 ### Question Types
@@ -53,6 +54,7 @@ Overall score is auto-calculated from weighted question scores:
 
 ```
 overall_score = Σ(question_score × question_weight) / Σ(question_weight)
+
 ```
 
 **Score Band Mapping:**

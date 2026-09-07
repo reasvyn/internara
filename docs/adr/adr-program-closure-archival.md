@@ -50,6 +50,7 @@ CloseProgramProcess
   ├─ 5. ArchiveProgramAction — snapshot + lock records, transition to ARCHIVED
   ├─ 6. ArchiveStudentAccountsAction — mark active students as alumni (read-only)
   └─ 7. GenerateArchiveReportAction — summary document for school records
+
 ```
 
 **Data Snapshot** — at closure captures: roster, grade composites, attendance summary, logbook
@@ -62,6 +63,7 @@ versioned JSON document in an `archives` table.
 DRAFT → PUBLISHED → ACTIVE → COMPLETED → ARCHIVED
                                          ↓ (exceptional, super_admin only)
                                       COMPLETED
+
 ```
 
 `ARCHIVED` is terminal; un-archive is exceptional, super_admin-only, with audit trail.

@@ -93,7 +93,7 @@ new placements can be created under that agreement.
 | NG3  | Internship program definitions and scheduling (owned by Program module) |
 | NG4  | Certificate issuance for completed internships (owned by Certification module) |
 | NG5  | Multi-file document uploads or document versioning beyond single-file MoU |
-| NG6  | Automated expiry **status transition** on a schedule — expiry is a manual, explicit action (`ExpirePartnershipAction`); only the 30-day *warning* is delivered by a scheduled command (FR-EX1–FR-EX5) |
+| NG6  | Automated expiry **status transition** on a schedule — expiry is a manual, explicit action (`ExpirePartnershipAction`); only the 30-day *warning* is delivered by a scheduled command (FR-NTHQA-EX1–FR-NTHQA-EX5) |
 | NG7  | Placement capacity tracking (covered in [company-management.md](XI3LB-company-management.md) §Dashboard Integration) |
 | NG8  | CSV import/export for companies (covered in [csv-import-export.md](O2KCR-csv-import-export.md) §Company CSV) |
 
@@ -101,7 +101,7 @@ new placements can be created under that agreement.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Partnership with MoU Document
+### UC-NTHQA-1 — Admin Creates a Partnership with MoU Document
 
 **Actor:** Admin
 **Preconditions:** At least one company exists; admin has `admin` role
@@ -117,7 +117,7 @@ new placements can be created under that agreement.
 9. Dispatches `PartnershipCreated` event
 **Postconditions:** Partnership record exists with `ACTIVE` status, MoU stored (if provided), dashboard cache cleared
 
-### UC-2 — Admin Terminates an Active Partnership
+### UC-NTHQA-2 — Admin Terminates an Active Partnership
 
 **Actor:** Admin
 **Preconditions:** Partnership exists with `ACTIVE` status; admin has `admin` role
@@ -132,7 +132,7 @@ new placements can be created under that agreement.
 8. `ClearDashboardOnPartnershipChange` listener invalidates dashboard cache
 **Postconditions:** Partnership status is `TERMINATED`, notification queued, existing placements unaffected
 
-### UC-3 — Admin Renews a Partnership (Creates New Record)
+### UC-NTHQA-3 — Admin Renews a Partnership (Creates New Record)
 
 **Actor:** Admin
 **Preconditions:** Previous partnership is in a terminal state (EXPIRED or TERMINATED); admin has `admin` role
@@ -149,7 +149,7 @@ new placements can be created under that agreement.
 10. `ClearDashboardOnPartnershipChange` listener invalidates dashboard cache
 **Postconditions:** Old partnership is `EXPIRED`, new partnership is `ACTIVE`, MoU transferred, capacity recalculated
 
-### UC-4 — Batch Delete with Deletion Guards
+### UC-NTHQA-4 — Batch Delete with Deletion Guards
 
 **Actor:** Admin
 **Preconditions:** Multiple partnerships selected; admin has `admin` role
@@ -162,7 +162,7 @@ new placements can be created under that agreement.
 6. Returns count of deleted vs skipped records with flash message
 **Postconditions:** Only terminal-state records deleted, active records preserved, summary reported
 
-### UC-5 — Admin Updates Partnership Details
+### UC-NTHQA-5 — Admin Updates Partnership Details
 
 **Actor:** Admin
 **Preconditions:** Partnership exists; admin has `admin` role
@@ -176,7 +176,7 @@ new placements can be created under that agreement.
 7. `ClearDashboardOnPartnershipChange` listener invalidates dashboard cache
 **Postconditions:** Partnership record updated, dashboard cache cleared, success flash message shown
 
-### UC-6 — Admin Replaces MoU Document on Existing Partnership
+### UC-NTHQA-6 — Admin Replaces MoU Document on Existing Partnership
 
 **Actor:** Admin
 **Preconditions:** Partnership exists; admin has `admin` role
@@ -198,75 +198,75 @@ new placements can be created under that agreement.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PC1 | `PartnershipManager` must be accessible at route `admin/companies/partnerships` with `auth` and `role:super_admin\|admin` middleware |
-| FR-PC2 | `CreatePartnershipAction` must accept `PartnershipData` DTO and return `ActionResponse` |
-| FR-PC3 | `PartnershipData` must require `companyId`, `agreementNumber`, `title`, `startDate`, `endDate`; `scope`, `contactPersonName`, `contactPersonPhone`, `contactPersonEmail`, `signedBySchool`, `signedByCompany`, `signedAt`, `notes` must be nullable |
-| FR-PC4 | `Partnership` model must use `#[Fillable]` attribute with all 15 fillable fields |
-| FR-PC5 | `Partnership` model must define `company()` BelongsTo relationship to `Company` via `company_id` |
-| FR-PC6 | `PartnershipPolicy::viewAny()` and `view()` must allow `super_admin`, `admin`, and `teacher` roles |
-| FR-PC7 | `PartnershipPolicy::create()`, `update()`, `delete()` must require admin role |
-| FR-PC8 | `DeletePartnershipAction` must throw `RejectedException` if partnership status is not terminal |
-| FR-PC9 | `BatchDeletePartnershipAction` must iterate selected IDs, check `canBeDeleted()` per record, and delete only terminal-state records |
-| FR-PC10 | `PartnershipState::canBeDeleted()` must return true only if `isExpired()` or `isTerminated()` |
-| FR-PC11 | `Partnership` model must provide `asPartnershipState()` bridge method returning `PartnershipState::fromModel()` |
-| FR-PC12 | Partnership mutations must dispatch `PartnershipCreated`, `PartnershipUpdated`, or `PartnershipDeleted` events |
-| FR-PC13 | `ClearDashboardOnPartnershipChange` listener must handle all partnership CRUD events and invalidate dashboard cache |
-| FR-PC14 | `PartnershipManager` must JOIN `companies` table to expose a sortable `company_name` column in the record table |
+| FR-NTHQA-PC1 | `PartnershipManager` must be accessible at route `admin/companies/partnerships` with `auth` and `role:super_admin\|admin` middleware |
+| FR-NTHQA-PC2 | `CreatePartnershipAction` must accept `PartnershipData` DTO and return `ActionResponse` |
+| FR-NTHQA-PC3 | `PartnershipData` must require `companyId`, `agreementNumber`, `title`, `startDate`, `endDate`; `scope`, `contactPersonName`, `contactPersonPhone`, `contactPersonEmail`, `signedBySchool`, `signedByCompany`, `signedAt`, `notes` must be nullable |
+| FR-NTHQA-PC4 | `Partnership` model must use `#[Fillable]` attribute with all 15 fillable fields |
+| FR-NTHQA-PC5 | `Partnership` model must define `company()` BelongsTo relationship to `Company` via `company_id` |
+| FR-NTHQA-PC6 | `PartnershipPolicy::viewAny()` and `view()` must allow `super_admin`, `admin`, and `teacher` roles |
+| FR-NTHQA-PC7 | `PartnershipPolicy::create()`, `update()`, `delete()` must require admin role |
+| FR-NTHQA-PC8 | `DeletePartnershipAction` must throw `RejectedException` if partnership status is not terminal |
+| FR-NTHQA-PC9 | `BatchDeletePartnershipAction` must iterate selected IDs, check `canBeDeleted()` per record, and delete only terminal-state records |
+| FR-NTHQA-PC10 | `PartnershipState::canBeDeleted()` must return true only if `isExpired()` or `isTerminated()` |
+| FR-NTHQA-PC11 | `Partnership` model must provide `asPartnershipState()` bridge method returning `PartnershipState::fromModel()` |
+| FR-NTHQA-PC12 | Partnership mutations must dispatch `PartnershipCreated`, `PartnershipUpdated`, or `PartnershipDeleted` events |
+| FR-NTHQA-PC13 | `ClearDashboardOnPartnershipChange` listener must handle all partnership CRUD events and invalidate dashboard cache |
+| FR-NTHQA-PC14 | `PartnershipManager` must JOIN `companies` table to expose a sortable `company_name` column in the record table |
 
 ### Status Lifecycle
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-ST1 | `PartnershipStatus` enum must define three cases: `ACTIVE`, `EXPIRED`, `TERMINATED` |
-| FR-ST2 | `PartnershipStatus::validTransitions()` must return `[EXPIRED, TERMINATED]` for ACTIVE, `[]` for both terminal states |
-| FR-ST3 | `PartnershipStatus::isTerminal()` must return true for EXPIRED and TERMINATED only |
-| FR-ST4 | `PartnershipStatus::canTransitionTo()` must use `validTransitions()` to determine allowed targets |
-| FR-ST5 | `TerminatePartnershipAction` must validate `PartnershipState::isActive()` before transitioning to TERMINATED |
-| FR-ST6 | `TerminatePartnershipAction` must dispatch `PartnershipTerminated` event |
-| FR-ST7 | `NotifyOnPartnershipTerminated` listener must be queued and send notification on termination |
-| FR-ST8 | `PartnershipState::isExpiringSoon()` must accept configurable `thresholdDays` (default 30) and return true for ACTIVE partnerships with `end_date` within threshold |
-| FR-ST9 | New partnerships must default to `ACTIVE` status via model `$attributes` array |
-| FR-ST10 | `Partnership` model must cast `status` to `PartnershipStatus` enum |
-| FR-ST11 | `ExpirePartnershipAction` must validate `PartnershipState::isActive()` before transitioning to EXPIRED |
-| FR-ST12 | `ExpirePartnershipAction` must dispatch `PartnershipExpired` event and trigger `ClearDashboardOnPartnershipChange` |
-| FR-ST13 | `PartnershipStatus` transitions must be complete: `ACTIVE → [EXPIRED, TERMINATED]`, each performed by a dedicated action (`ExpirePartnershipAction`, `TerminatePartnershipAction`) — no transition without an action |
+| FR-NTHQA-ST1 | `PartnershipStatus` enum must define three cases: `ACTIVE`, `EXPIRED`, `TERMINATED` |
+| FR-NTHQA-ST2 | `PartnershipStatus::validTransitions()` must return `[EXPIRED, TERMINATED]` for ACTIVE, `[]` for both terminal states |
+| FR-NTHQA-ST3 | `PartnershipStatus::isTerminal()` must return true for EXPIRED and TERMINATED only |
+| FR-NTHQA-ST4 | `PartnershipStatus::canTransitionTo()` must use `validTransitions()` to determine allowed targets |
+| FR-NTHQA-ST5 | `TerminatePartnershipAction` must validate `PartnershipState::isActive()` before transitioning to TERMINATED |
+| FR-NTHQA-ST6 | `TerminatePartnershipAction` must dispatch `PartnershipTerminated` event |
+| FR-NTHQA-ST7 | `NotifyOnPartnershipTerminated` listener must be queued and send notification on termination |
+| FR-NTHQA-ST8 | `PartnershipState::isExpiringSoon()` must accept configurable `thresholdDays` (default 30) and return true for ACTIVE partnerships with `end_date` within threshold |
+| FR-NTHQA-ST9 | New partnerships must default to `ACTIVE` status via model `$attributes` array |
+| FR-NTHQA-ST10 | `Partnership` model must cast `status` to `PartnershipStatus` enum |
+| FR-NTHQA-ST11 | `ExpirePartnershipAction` must validate `PartnershipState::isActive()` before transitioning to EXPIRED |
+| FR-NTHQA-ST12 | `ExpirePartnershipAction` must dispatch `PartnershipExpired` event and trigger `ClearDashboardOnPartnershipChange` |
+| FR-NTHQA-ST13 | `PartnershipStatus` transitions must be complete: `ACTIVE → [EXPIRED, TERMINATED]`, each performed by a dedicated action (`ExpirePartnershipAction`, `TerminatePartnershipAction`) — no transition without an action |
 
 ### Expiry Warning Delivery
 
 The requirement (internara-project §6.2 "Expiry Detection | Warns 30 days before partnership
 expiry | System") demands a proactive warning, not only a dashboard count. Delivery is a queued
 notification dispatched by a scheduled command; the status transition itself stays manual
-(FR-ST11) so no partnership silently expires without an admin decision.
+(FR-NTHQA-ST11) so no partnership silently expires without an admin decision.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-EX1 | `partnerships:check-expiry` scheduled command must run daily via the scheduler and query ACTIVE partnerships where `end_date` is within `thresholdDays` (30, from `config('partners.expiry_threshold_days')`) of today |
-| FR-EX2 | For each expiring partnership, the command must dispatch a queued `PartnershipExpiringNotification` (mail channel) to all `admin` and `super_admin` users |
-| FR-EX3 | `PartnershipExpiringNotification` must include partnership title, company name, `end_date`, and a link to the partnership detail page |
-| FR-EX4 | The command must log `partnership.expiry_check` with expiring count via SmartLogger; zero results must log at info level without error |
-| FR-EX5 | The expiry threshold must be configurable via `config('partners.expiry_threshold_days')` (default 30) and shared by `isExpiringSoon()` and the command |
+| FR-NTHQA-EX1 | `partnerships:check-expiry` scheduled command must run daily via the scheduler and query ACTIVE partnerships where `end_date` is within `thresholdDays` (30, from `config('partners.expiry_threshold_days')`) of today |
+| FR-NTHQA-EX2 | For each expiring partnership, the command must dispatch a queued `PartnershipExpiringNotification` (mail channel) to all `admin` and `super_admin` users |
+| FR-NTHQA-EX3 | `PartnershipExpiringNotification` must include partnership title, company name, `end_date`, and a link to the partnership detail page |
+| FR-NTHQA-EX4 | The command must log `partnership.expiry_check` with expiring count via SmartLogger; zero results must log at info level without error |
+| FR-NTHQA-EX5 | The expiry threshold must be configurable via `config('partners.expiry_threshold_days')` (default 30) and shared by `isExpiringSoon()` and the command |
 
 ### Renewal
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RN1 | `RenewPartnershipAction` must reject if old partnership is currently `ACTIVE` |
-| FR-RN2 | `RenewPartnershipAction` must set old partnership status to `EXPIRED` if not already terminal |
-| FR-RN3 | `RenewPartnershipAction` must create a new `Partnership` record with provided data |
-| FR-RN4 | `RenewPartnershipAction` must copy scope, contact person, signed-by, and notes from old to new partnership |
-| FR-RN5 | `RenewPartnershipAction` must transfer MoU document from old to new partnership via MediaLibrary |
-| FR-RN6 | `RenewPartnershipAction` must dispatch `PartnershipRenewed` event |
+| FR-NTHQA-RN1 | `RenewPartnershipAction` must reject if old partnership is currently `ACTIVE` |
+| FR-NTHQA-RN2 | `RenewPartnershipAction` must set old partnership status to `EXPIRED` if not already terminal |
+| FR-NTHQA-RN3 | `RenewPartnershipAction` must create a new `Partnership` record with provided data |
+| FR-NTHQA-RN4 | `RenewPartnershipAction` must copy scope, contact person, signed-by, and notes from old to new partnership |
+| FR-NTHQA-RN5 | `RenewPartnershipAction` must transfer MoU document from old to new partnership via MediaLibrary |
+| FR-NTHQA-RN6 | `RenewPartnershipAction` must dispatch `PartnershipRenewed` event |
 
 ### MoU Documents
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-MD1 | `Partnership` model must implement `HasMedia` interface and use `InteractsWithMedia` trait |
-| FR-MD2 | `Partnership::registerMediaCollections()` must register `mou_document` as a single-file collection |
-| FR-MD3 | `Partnership::registerMediaConversions()` must register `thumb` conversion at 400px width, webp format, non-queued |
-| FR-MD4 | `PartnershipManager` must support MoU file upload via `WithFileUploads` trait |
-| FR-MD5 | MoU upload must use `addMedia()` or `addMediaFromRequest()` to store in `mou_document` collection |
-| FR-MD6 | MoU retrieval must use `getFirstMedia('mou_document')` or `getFirstMediaUrl('mou_document', 'thumb')` for thumbnail |
+| FR-NTHQA-MD1 | `Partnership` model must implement `HasMedia` interface and use `InteractsWithMedia` trait |
+| FR-NTHQA-MD2 | `Partnership::registerMediaCollections()` must register `mou_document` as a single-file collection |
+| FR-NTHQA-MD3 | `Partnership::registerMediaConversions()` must register `thumb` conversion at 400px width, webp format, non-queued |
+| FR-NTHQA-MD4 | `PartnershipManager` must support MoU file upload via `WithFileUploads` trait |
+| FR-NTHQA-MD5 | MoU upload must use `addMedia()` or `addMediaFromRequest()` to store in `mou_document` collection |
+| FR-NTHQA-MD6 | MoU retrieval must use `getFirstMedia('mou_document')` or `getFirstMediaUrl('mou_document', 'thumb')` for thumbnail |
 
 ---
 
@@ -274,29 +274,29 @@ notification dispatched by a scheduled command; the status transition itself sta
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All partnership mutations must be authorized via `PartnershipPolicy` — no bypass allowed |
-| NFR-S2 | MoU file uploads must validate MIME type and enforce maximum file size (10 MB) |
-| NFR-S3 | Partnership routes must require `auth` middleware and `role:super_admin\|admin` |
-| NFR-S4 | Partnership deletion must never remove records with ACTIVE status — enforced at both Action and Entity layers |
-| NFR-S5 | MoU file storage must be outside the public web root — served through MediaLibrary URL generation |
-| NFR-P1 | Partnership list page with company JOIN must load in < 500ms for up to 500 partnerships |
-| NFR-P2 | MoU thumb conversion (400px webp) must be generated non-queued to avoid worker dependency |
-| NFR-P3 | MoU thumbnail display must load in < 2s from MediaLibrary URL generation |
-| NFR-P4 | Partnership detail page including MoU metadata must load in < 300ms |
-| NFR-R1 | Partnership renewal must be atomic — old record status change and new record creation in a single transaction |
-| NFR-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
-| NFR-R3 | MoU transfer during renewal must be atomic — if transfer fails, neither old nor new record should persist the partial state |
-| NFR-U1 | Admin must see real-time validation feedback on partnership forms |
-| NFR-U2 | Deletion guard rejections must display actionable error messages with the specific reason |
-| NFR-U3 | Partnership status badge must use the enum's `label()` method for consistent, translatable display |
-| NFR-A1 | Partnership management UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | Form inputs must have associated labels |
-| NFR-A3 | Real-time validation feedback must be announced to screen readers via `aria-live` |
-| NFR-A4 | Status badges must convey meaning beyond color alone (text label + icon) |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standard |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-L3 | Partnership status labels must use `LabelEnum::label()` which calls `__()` internally |
+| NFR-NTHQA-S1 | All partnership mutations must be authorized via `PartnershipPolicy` — no bypass allowed |
+| NFR-NTHQA-S2 | MoU file uploads must validate MIME type and enforce maximum file size (10 MB) |
+| NFR-NTHQA-S3 | Partnership routes must require `auth` middleware and `role:super_admin\|admin` |
+| NFR-NTHQA-S4 | Partnership deletion must never remove records with ACTIVE status — enforced at both Action and Entity layers |
+| NFR-NTHQA-S5 | MoU file storage must be outside the public web root — served through MediaLibrary URL generation |
+| NFR-NTHQA-P1 | Partnership list page with company JOIN must load in < 500ms for up to 500 partnerships |
+| NFR-NTHQA-P2 | MoU thumb conversion (400px webp) must be generated non-queued to avoid worker dependency |
+| NFR-NTHQA-P3 | MoU thumbnail display must load in < 2s from MediaLibrary URL generation |
+| NFR-NTHQA-P4 | Partnership detail page including MoU metadata must load in < 300ms |
+| NFR-NTHQA-R1 | Partnership renewal must be atomic — old record status change and new record creation in a single transaction |
+| NFR-NTHQA-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
+| NFR-NTHQA-R3 | MoU transfer during renewal must be atomic — if transfer fails, neither old nor new record should persist the partial state |
+| NFR-NTHQA-U1 | Admin must see real-time validation feedback on partnership forms |
+| NFR-NTHQA-U2 | Deletion guard rejections must display actionable error messages with the specific reason |
+| NFR-NTHQA-U3 | Partnership status badge must use the enum's `label()` method for consistent, translatable display |
+| NFR-NTHQA-A1 | Partnership management UI must meet WCAG 2.1 Level AA |
+| NFR-NTHQA-A2 | Form inputs must have associated labels |
+| NFR-NTHQA-A3 | Real-time validation feedback must be announced to screen readers via `aria-live` |
+| NFR-NTHQA-A4 | Status badges must convey meaning beyond color alone (text label + icon) |
+| NFR-NTHQA-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standard |
+| NFR-NTHQA-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-NTHQA-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-NTHQA-L3 | Partnership status labels must use `LabelEnum::label()` which calls `__()` internally |
 
 ## Test Requirements
 
@@ -328,6 +328,7 @@ App\Partners\Partnership\Models\Partnership
   Bridge: asPartnershipState() → PartnershipState
   Default: status = ACTIVE
   Factory: PartnershipFactory
+
 ```
 
 ### PartnershipData DTO
@@ -339,6 +340,7 @@ App\Partners\Partnership\Data\PartnershipData extends BaseData
   Optional: scope: ?string, contactPersonName: ?string, contactPersonPhone: ?string,
             contactPersonEmail: ?string, signedBySchool: ?string, signedByCompany: ?string,
             signedAt: ?string, notes: ?string
+
 ```
 
 ### PartnershipState Entity
@@ -351,6 +353,7 @@ App\Partners\Partnership\Entities\PartnershipState extends BaseEntity (final rea
            isExpiringSoon(thresholdDays = 30): bool, canBeDeleted(): bool
   canBeDeleted(): true only if isExpired() || isTerminated()
   isExpiringSoon(): true if isActive() && endDate within thresholdDays of today
+
 ```
 
 ### PartnershipStatus Enum
@@ -363,6 +366,7 @@ App\Partners\Partnership\Enums\PartnershipStatus: string
            canTransitionTo(StatusEnum): bool
   Transitions: ACTIVE→[EXPIRED, TERMINATED], EXPIRED→[], TERMINATED→[]
   Terminal states: EXPIRED, TERMINATED (isTerminal() returns true for both)
+
 ```
 
 ### Actions
@@ -399,7 +403,7 @@ App\Partners\Partnership\Enums\PartnershipStatus: string
 
 | Command | Schedule | Purpose |
 | ------- | -------- | ------- |
-| `partnerships:check-expiry` | Daily | Dispatch `PartnershipExpiringNotification` for partnerships expiring within threshold (FR-EX1–FR-EX5) |
+| `partnerships:check-expiry` | Daily | Dispatch `PartnershipExpiringNotification` for partnerships expiring within threshold (FR-NTHQA-EX1–FR-NTHQA-EX5) |
 
 ### Policy
 
@@ -433,6 +437,7 @@ partnerships:
   signed_at: date (nullable)
   notes: text (nullable)
   timestamps
+
 ```
 
 ---
@@ -559,10 +564,10 @@ for row conventions.
 - `app/Modules/Partners/Partnership/Actions/DeletePartnershipAction.php` — Delete with terminal-state guard
 - `app/Modules/Partners/Partnership/Actions/BatchDeletePartnershipAction.php` — Batch delete with per-record guard
 - `app/Modules/Partners/Partnership/Actions/TerminatePartnershipAction.php` — Active → Terminated transition
-- `app/Modules/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-ST11–ST12)
+- `app/Modules/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-NTHQA-ST11–ST12)
 - `app/Modules/Partners/Partnership/Actions/RenewPartnershipAction.php` — Renewal creating new record with MoU transfer
-- `app/Modules/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-EX1–FR-EX4)
-- `app/Modules/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-EX2–EX3)
+- `app/Modules/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-NTHQA-EX1–FR-NTHQA-EX4)
+- `app/Modules/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-NTHQA-EX2–EX3)
 - `app/Modules/Partners/Partnership/Events/PartnershipExpired.php` — Expired transition event
 - `app/Modules/Partners/Partnership/Policies/PartnershipPolicy.php` — Authorization (admin writes, teacher read)
 - `app/Modules/Partners/Partnership/Livewire/PartnershipManager.php` — UI with company JOIN query

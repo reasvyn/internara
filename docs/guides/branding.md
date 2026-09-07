@@ -4,6 +4,11 @@
 
 Brand assets, color palette, typography, logo usage, and visual identity guidelines for Internara.
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
 ## 1. Dynamic Theming
 
 Branding is fully dynamic — colors, logos, and site metadata are configurable at runtime through the
@@ -15,6 +20,7 @@ Values resolve through a fallback chain at runtime:
 
 ```
 Runtime override → Database setting (cached forever) → Config file default → Hardcoded default
+
 ```
 
 ### The `brand()` Helper
@@ -29,6 +35,7 @@ brand('title')       // Site title
 brand('primary')     // Primary brand color (hex)
 brand('secondary')   // Secondary brand color (hex)
 brand('accent')      // Accent brand color (hex)
+
 ```
 
 The `app_info()` helper returns metadata from `composer.json`: version, author, license.
@@ -129,3 +136,14 @@ Sans finishes loading.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

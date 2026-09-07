@@ -58,6 +58,7 @@ ADMIN       → [ADMIN]
 TEACHER     → [MENTOR]
 SUPERVISOR  → [MENTOR]
 STUDENT     → [MENTEE]
+
 ```
 
 `$user->role->is(Role::ADMIN)` matches both super_admin and admin without `||`.

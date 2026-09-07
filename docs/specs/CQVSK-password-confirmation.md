@@ -50,7 +50,7 @@ timestamp must be refreshed each time the user confirms.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — User Confirms Password for Sensitive Action
+### UC-CQVSK-1 — User Confirms Password for Sensitive Action
 
 **Actor:** Authenticated user
 **Preconditions:** User is logged in; user navigates to a password-confirmation-requiring route
@@ -70,14 +70,14 @@ timestamp must be refreshed each time the user confirms.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-PC1  | `ConfirmPasswordAction` must verify password via `Hash::check()` against authenticated user's password |
-| FR-PC2  | On success, action must set `session(['auth.password_confirmed_at' => time()])` |
-| FR-PC3  | On failure, action must throw `RejectedException` with `auth.password_confirmation_failed` message |
-| FR-PC4  | Action must log `password_confirmed` event via SmartLogger on success |
-| FR-PC5  | `ConfirmPassword` Livewire must throttle: max 5 attempts per 300 seconds per user+IP |
-| FR-PC6  | Component must show password input field with validation |
-| FR-PC7  | On success, component must redirect to intended URL or `/profile` |
-| FR-PC8  | `password.confirm` middleware must check `auth.password_confirmed_at` freshness (configurable max age, default: configurable in `config/auth.php`) |
+| FR-CQVSK-PC1  | `ConfirmPasswordAction` must verify password via `Hash::check()` against authenticated user's password |
+| FR-CQVSK-PC2  | On success, action must set `session(['auth.password_confirmed_at' => time()])` |
+| FR-CQVSK-PC3  | On failure, action must throw `RejectedException` with `auth.password_confirmation_failed` message |
+| FR-CQVSK-PC4  | Action must log `password_confirmed` event via SmartLogger on success |
+| FR-CQVSK-PC5  | `ConfirmPassword` Livewire must throttle: max 5 attempts per 300 seconds per user+IP |
+| FR-CQVSK-PC6  | Component must show password input field with validation |
+| FR-CQVSK-PC7  | On success, component must redirect to intended URL or `/profile` |
+| FR-CQVSK-PC8  | `password.confirm` middleware must check `auth.password_confirmed_at` freshness (configurable max age, default: configurable in `config/auth.php`) |
 
 ---
 
@@ -85,9 +85,9 @@ timestamp must be refreshed each time the user confirms.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-L1  | Confirmation success and failure events must be logged via SmartLogger |
-| NFR-S1  | Password must never be stored or logged in plaintext |
-| NFR-M1  | Action must declare `strict_types=1` |
+| NFR-CQVSK-L1  | Confirmation success and failure events must be logged via SmartLogger |
+| NFR-CQVSK-S1  | Password must never be stored or logged in plaintext |
+| NFR-CQVSK-M1  | Action must declare `strict_types=1` |
 
 ---
 
@@ -118,6 +118,7 @@ final class ConfirmPasswordAction extends BaseCommandAction
     // Sets session auth.password_confirmed_at
     // Throws: RejectedException on mismatch
 }
+
 ```
 
 ### Livewire Component
@@ -131,6 +132,7 @@ class ConfirmPassword extends BaseFormView
     // Throttle: max 5 attempts per 300s
     // On success: redirect to intended URL
 }
+
 ```
 
 ### Route

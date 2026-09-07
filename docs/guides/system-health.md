@@ -8,6 +8,11 @@ categorized troubleshooting matrix.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
 ## 1. Problem Statements
 
 ### PS-1 — Health Verification
@@ -26,6 +31,7 @@ categorized reference with diagnostic commands and resolutions.
 
 ```bash
 php artisan system:health
+
 ```
 
 ### 2.1 Health Checks
@@ -53,6 +59,7 @@ php artisan system:health
 ```bash
 php artisan system:health          # Human-readable table
 php artisan system:health --json   # JSON array (for monitoring tools)
+
 ```
 
 ---
@@ -125,6 +132,7 @@ No daily maintenance required. The system manages itself via scheduler.
 ```bash
 php artisan system:health
 php artisan queue:failed
+
 ```
 
 ### Monthly
@@ -133,6 +141,7 @@ php artisan queue:failed
 php artisan system:cleanup
 df -h
 ls -lh storage/logs/
+
 ```
 
 ### After Each Deployment
@@ -143,6 +152,7 @@ npm install && npm run build
 php artisan optimize:clear
 php artisan optimize
 php artisan queue:restart
+
 ```
 
 ---
@@ -272,6 +282,7 @@ php artisan queue:failed               # List failed jobs
 php artisan queue:monitor default,documents  # Queue sizes
 php artisan cache:clear                # Clear cache store
 php artisan config:clear               # Clear config cache
+
 ```
 
 ---
@@ -298,3 +309,14 @@ php artisan config:clear               # Clear config cache
 - `storage/logs/laravel.log` — Application log file
 - [System Observability](system-observability.md) — Pulse, audit logs, backups
 - [Upgrading](upgrading.md) — Upgrade and rollback procedures
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

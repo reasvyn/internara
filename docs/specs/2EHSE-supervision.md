@@ -63,7 +63,7 @@ automated compliance checks, missing entries go undetected until it's too late.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Teacher Creates Monitoring Visit
+### UC-2EHSE-1 — Teacher Creates Monitoring Visit
 
 **Actor:** Teacher
 **Preconditions:** Teacher is assigned to a student's registration
@@ -74,7 +74,7 @@ automated compliance checks, missing entries go undetected until it's too late.
 4. Calls `CreateVisitAction::execute(teacher, registrationId, data)`
 **Postconditions:** Monitoring visit record created
 
-### UC-2 — Supervisor Reviews Supervision Log
+### UC-2EHSE-2 — Supervisor Reviews Supervision Log
 
 **Actor:** Industry Supervisor
 **Preconditions:** SUBMITTED supervision log exists; supervisor is assigned
@@ -93,39 +93,39 @@ automated compliance checks, missing entries go undetected until it's too late.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-SL1 | `SupervisionLogStatus` must define: DRAFT, SUBMITTED, REVIEWED, ACKNOWLEDGED, VERIFIED, COMPLETED |
-| FR-SL2 | `SupervisionType` must define: GUIDANCE, SUPERVISORING (value='mentoring'), MONITORING |
-| FR-SL3 | `CreateSupervisionLogAction` must be role-aware: teacher creates GUIDANCE (auto-verified, COMPLETED); non-teacher creates MENTORING (SUBMITTED) |
-| FR-SL4 | `ReviewLogAction` must transition SUBMITTED → REVIEWED with supervisor feedback |
-| FR-SL5 | `VerifySupervisionLogAction` must set `is_verified=true` and status to VERIFIED |
-| FR-SL6 | `DeleteLogAction` must reject if status is not DRAFT |
-| FR-SL7 | `SupervisionLogPolicy` must use `HasMentorProxy` for review authorization |
+| FR-2EHSE-SL1 | `SupervisionLogStatus` must define: DRAFT, SUBMITTED, REVIEWED, ACKNOWLEDGED, VERIFIED, COMPLETED |
+| FR-2EHSE-SL2 | `SupervisionType` must define: GUIDANCE, SUPERVISORING (value='mentoring'), MONITORING |
+| FR-2EHSE-SL3 | `CreateSupervisionLogAction` must be role-aware: teacher creates GUIDANCE (auto-verified, COMPLETED); non-teacher creates MENTORING (SUBMITTED) |
+| FR-2EHSE-SL4 | `ReviewLogAction` must transition SUBMITTED → REVIEWED with supervisor feedback |
+| FR-2EHSE-SL5 | `VerifySupervisionLogAction` must set `is_verified=true` and status to VERIFIED |
+| FR-2EHSE-SL6 | `DeleteLogAction` must reject if status is not DRAFT |
+| FR-2EHSE-SL7 | `SupervisionLogPolicy` must use `HasMentorProxy` for review authorization |
 
 ### MonitoringVisit
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-MV1 | `VisitMethod` must define: SITE_VISIT, VIRTUAL_MEETING, PHONE_CALL |
-| FR-MV2 | `CreateVisitAction` must accept teacher, registrationId, and data array |
-| FR-MV3 | `VerifyVisitAction` must reject if already verified |
-| FR-MV4 | `VisitState` must provide `canBeEdited()`, `canBeDeleted()`, `isRecent()` (within 7 days) |
-| FR-MV5 | `MonitoringVisitPolicy` must restrict verify to admin; create to admin/teacher |
+| FR-2EHSE-MV1 | `VisitMethod` must define: SITE_VISIT, VIRTUAL_MEETING, PHONE_CALL |
+| FR-2EHSE-MV2 | `CreateVisitAction` must accept teacher, registrationId, and data array |
+| FR-2EHSE-MV3 | `VerifyVisitAction` must reject if already verified |
+| FR-2EHSE-MV4 | `VisitState` must provide `canBeEdited()`, `canBeDeleted()`, `isRecent()` (within 7 days) |
+| FR-2EHSE-MV5 | `MonitoringVisitPolicy` must restrict verify to admin; create to admin/teacher |
 
 ### Cross-Role Proxy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CRP1 | `HasMentorProxy` trait must be used by AttendancePolicy, LogbookPolicy, and SupervisionLogPolicy |
-| FR-CRP2 | Proxy verification must tag entries with `proxy_role = 'supervisor'` in activity log |
-| FR-CRP3 | Proxy must activate after configurable inactivity window (default 48h for supervision logs) |
+| FR-2EHSE-CRP1 | `HasMentorProxy` trait must be used by AttendancePolicy, LogbookPolicy, and SupervisionLogPolicy |
+| FR-2EHSE-CRP2 | Proxy verification must tag entries with `proxy_role = 'supervisor'` in activity log |
+| FR-2EHSE-CRP3 | Proxy must activate after configurable inactivity window (default 48h for supervision logs) |
 
 ### Compliance Monitoring
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CM1 | If student has no logbook entry for N consecutive days (default 3), mentor must be notified |
-| FR-CM2 | At N+2 days, program coordinator must also be notified |
-| FR-CM3 | `journals:check-compliance` command must run this check on demand or via scheduler |
+| FR-2EHSE-CM1 | If student has no logbook entry for N consecutive days (default 3), mentor must be notified |
+| FR-2EHSE-CM2 | At N+2 days, program coordinator must also be notified |
+| FR-2EHSE-CM3 | `journals:check-compliance` command must run this check on demand or via scheduler |
 
 ---
 
@@ -133,11 +133,11 @@ automated compliance checks, missing entries go undetected until it's too late.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Compliance check command must process 100 students in < 30s |
-| NFR-U1 | Pending supervision logs must be prominently visible on supervisor dashboard |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-2EHSE-P1 | Compliance check command must process 100 students in < 30s |
+| NFR-2EHSE-U1 | Pending supervision logs must be prominently visible on supervisor dashboard |
+| NFR-2EHSE-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-2EHSE-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-2EHSE-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -167,6 +167,7 @@ App\Journals\SupervisionLog\Models\SupervisionLog
   Casts: date → date, status → SupervisionLogStatus, reviewed_at → datetime
   Relations: registration() BelongsTo Registration, supervisor() BelongsTo User, reviewer() BelongsTo User
   Bridge: asSupervisionLogState() → SupervisionLogState
+
 ```
 
 ### MonitoringVisit Model
@@ -180,6 +181,7 @@ App\Journals\MonitoringVisit\Models\MonitoringVisit
   Casts: visit_date → date, method → VisitMethod, is_verified → boolean
   Relations: registration() BelongsTo Registration, teacher() BelongsTo User, verifier() BelongsTo User
   Bridge: asVisitState() → VisitState
+
 ```
 
 ### Enums
@@ -225,6 +227,7 @@ monitoring_visits:
   visit_date, method, location (varchar 512), duration_minutes (unsigned int)
   notes, student_condition, company_feedback, follow_up_actions
   is_verified, verified_by: FK→users (null, set null), verified_at
+
 ```
 
 ---
@@ -298,7 +301,7 @@ for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
+| R-1 | enhancement: auth/permissions — configurable proxy inactivity window setting (FR-2EHSE-CRP4) not implemented | Open | Maintainer | [#407](https://github.com/reasvyn/internara/issues/407) |
 
 ## Quick References
 

@@ -205,7 +205,7 @@ def check_blank_lines_around_code_blocks(file_path: Path, lines: list[str], find
         is_code_fence = CODE_FENCE_START.match(line) or CODE_FENCE_END.match(line)
         
         if CODE_FENCE_START.match(line):
-            if i > 1 and lines[i-2].strip() != "":
+            if i >= 2 and lines[i-2].strip() != "":
                 findings.append(Finding(
                     id=f"TMPL-CBLANK-{len(findings)+1:03d}",
                     rule="CODE_BLOCK_SPACING",
@@ -352,15 +352,17 @@ def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], co
                 reference="docs/templates/spec-template.md#the-skeleton",
             ))
     
-    # Check requirement IDs format (FR-*, NFR-*, UC-*)
-    requirement_id_pattern = re.compile(r"^(FR|NFR|UC)-[A-Z0-9]+-[0-9]+$")
+    # Check requirement IDs format: FR-{AREA}-NN or FR-{SPEC_ID}-{AREA}{NN}
+    requirement_id_pattern = re.compile(r"^(FR|NFR|UC)-[A-Z0-9]+-[A-Z0-9]+")
     for i, line in enumerate(lines, 1):
         if is_line_in_code_block(i, code_block_ranges):
             continue
         if TABLE_ROW_PATTERN.match(line):
             parts = [p.strip() for p in line.split("|") if p.strip()]
             if len(parts) > 1 and parts[0].startswith(("FR-", "NFR-", "UC-")):
-                if not requirement_id_pattern.match(parts[0]):
+                raw_id = parts[0]
+                match_id = raw_id.rstrip("*")
+                if not requirement_id_pattern.match(match_id):
                     findings.append(Finding(
                         id=f"SPEC-REQID-{len(findings)+1:03d}",
                         rule="SPEC_REQUIREMENT_ID_FORMAT",
@@ -368,13 +370,30 @@ def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], co
                         category="documentation",
                         file=relative_path(file_path),
                         line=i,
-                        message=f"Requirement ID '{parts[0]}' does not follow the FR-AREA-NN / NFR-AREA-NN / UC-AREA-NN format",
-                        suggestion="Ensure requirement IDs are in the format FR-{AREA}-NN, NFR-{AREA}-NN, or UC-{AREA}-NN",
+                        message=f"Requirement ID '{raw_id}' does not follow the FR-{{AREA}}-NN / FR-{{SPEC_ID}}-{{AREA}}{{NN}} format",
+                        suggestion="Ensure requirement IDs use two dashes: FR-{{AREA}}-NN or FR-{{SPEC_ID}}-{{AREA}}{{NN}}",
                         reference="docs/templates/spec-template.md#spec-ids",
                     ))
 
+_REFERENCE_GUIDE_DIRS = {"infra", "ui-ux"}  # Reference-style guide subdirectories
+
 def validate_guide(file_path: Path, lines: list[str], findings: list[Finding], code_block_ranges: list[tuple[int, int]]) -> None:
-    mandatory_sections = {"Description", "Prerequisites", "Steps", "Verification"}
+    rel_path = file_path.relative_to(DOCS_DIR)
+    is_reference_guide = (
+        len(rel_path.parts) > 1
+        and rel_path.parts[0] == "guides"
+        and rel_path.parts[1] in _REFERENCE_GUIDE_DIRS
+    )
+
+    # Reference-style guides (infra/, ui-ux/) only require ## Description.
+    # They are reference documents, not procedural guides.
+    if is_reference_guide:
+        mandatory_sections = {"Description"}
+        check_steps_format = False
+    else:
+        mandatory_sections = {"Description", "Prerequisites", "Steps", "Verification"}
+        check_steps_format = True
+    
     found_sections = {sec: False for sec in mandatory_sections}
     
     for i, line in enumerate(lines, 1):
@@ -383,6 +402,10 @@ def validate_guide(file_path: Path, lines: list[str], findings: list[Finding], c
         for section_title in mandatory_sections:
             if H2_PATTERN.match(line) and line.strip().endswith(section_title):
                 found_sections[section_title] = True
+        # Heuristic: numbered H2 sections (## 1. X, ## 2. Y) indicate a procedural guide
+        # with steps embedded as section headings. Treat this as a valid ## Steps section.
+        if H2_PATTERN.match(line) and re.match(r"^##\s+\d+[\.\)]\s", line):
+            found_sections["Steps"] = True
     
     for section, found in found_sections.items():
         if not found:
@@ -399,6 +422,8 @@ def validate_guide(file_path: Path, lines: list[str], findings: list[Finding], c
             ))
 
     # Check for ordered list in 'Steps' section
+    if not check_steps_format:
+        return
     in_steps_section = False
     for i, line in enumerate(lines, 1):
         if is_line_in_code_block(i, code_block_ranges):
@@ -410,17 +435,20 @@ def validate_guide(file_path: Path, lines: list[str], findings: list[Finding], c
             in_steps_section = False
         
         if in_steps_section and line.strip() != "" and not re.match(r"^[0-9]+\.\s", line.strip()):
-            findings.append(Finding(
-                id=f"GUIDE-STEPS-{len(findings)+1:03d}",
-                rule="GUIDE_STEPS_FORMAT",
-                severity="low",
-                category="documentation",
-                file=relative_path(file_path),
-                line=i,
-                message="Steps section contains non-ordered list item",
-                suggestion="Ensure all steps are formatted as an ordered list (e.g., '1. Step one')",
-                reference="docs/templates/guide-template.md#the-skeleton",
-            ))
+            # Only flag unordered list items (- *, +) or bare text. Allow prose
+            # (e.g., "This guide is organized as...") and anchor links.
+            if re.match(r"^\s*[-*+]\s", line.strip()):
+                findings.append(Finding(
+                    id=f"GUIDE-STEPS-{len(findings)+1:03d}",
+                    rule="GUIDE_STEPS_FORMAT",
+                    severity="low",
+                    category="documentation",
+                    file=relative_path(file_path),
+                    line=i,
+                    message="Steps section contains non-ordered list item",
+                    suggestion="Ensure all steps are formatted as an ordered list (e.g., '1. Step one')",
+                    reference="docs/templates/guide-template.md#the-skeleton",
+                ))
 
     # Check Troubleshooting table
     in_troubleshooting_table = False

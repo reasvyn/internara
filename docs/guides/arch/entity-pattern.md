@@ -67,6 +67,7 @@ abstract readonly class BaseEntity implements JsonSerializable
     // Immutable "setter" — returns new instance with one property changed
     public function with(string $property, mixed $value): static;
 }
+
 ```
 
 ### 3. Bridge Pattern — fromModel + as{Entity}
@@ -91,6 +92,7 @@ final readonly class SomeEntity extends BaseEntity
         );
     }
 }
+
 ```
 
 **Named Accessor: `as{EntityName}(): EntityType`**
@@ -104,6 +106,7 @@ public function asSomeRole(): SomeEntity
 
 // ❌ Wrong — generic name reveals nothing
 public function entity(): SomeEntity
+
 ```
 
 The accessor name describes the **business role**, not the class. A Model may expose **multiple entities** for different business roles.
@@ -133,6 +136,7 @@ $updated = $current->with('hasRelated', true);
 
 $current->hasRelated; // false — unchanged
 $updated->hasRelated; // true — new instance
+
 ```
 
 **`equals()` — Value Equality:** Two entities are equal if they are the same instance OR their serialized arrays are identical (structural comparison, per Fowler's Value Object).
@@ -178,6 +182,7 @@ test('active entity can be approved', function () {
 
     expect($entity->canBeApproved())->toBeTrue();
 });
+
 ```
 
 ---

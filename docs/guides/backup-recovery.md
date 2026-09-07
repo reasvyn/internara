@@ -8,6 +8,21 @@ files, full), automated backup configuration, restoration procedures, and recove
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
+
+## Steps
+
+This guide is organized as a sequence of topic sections, each covering a complete procedure:
+
+1. [Account Recovery](#account-recovery)
+2. [System Backup](#system-backup)
+3. [Restoration](#restoration)
+4. [Recovery Scenarios](#recovery-scenarios)
+
 ## Account Recovery
 
 ### Super Admin Account
@@ -56,6 +71,7 @@ admin:recover
 4. Confirm via email address
     ↓
 5. New recovery key generated — save it!
+
 ```
 
 ### Security Properties
@@ -119,6 +135,7 @@ pg_dump -U internara -h localhost internara \
 
 # SQLite
 cp database/database.sqlite backups/$(date +%Y%m%d_%H%M%S).sqlite
+
 ```
 
 ### File Backup (Manual)
@@ -126,12 +143,14 @@ cp database/database.sqlite backups/$(date +%Y%m%d_%H%M%S).sqlite
 ```bash
 tar -czf backups/storage_$(date +%Y%m%d).tar.gz \
     -C storage/app public private
+
 ```
 
 ### Automated Backup via Cron
 
 ```cron
 0 2 * * * /path/to/backup-script.sh
+
 ```
 
 Example script:
@@ -151,6 +170,7 @@ tar -czf "$BACKUP_DIR/storage_$TIMESTAMP.tar.gz" \
 
 find "$BACKUP_DIR" -name "db_*.sql.gz" -mtime +30 -delete
 find "$BACKUP_DIR" -name "storage_*.tar.gz" -mtime +30 -delete
+
 ```
 
 ---
@@ -181,6 +201,7 @@ php artisan view:cache
 
 # 5. Verify
 php artisan system:health
+
 ```
 
 ### Point-in-Time Recovery (MySQL)
@@ -192,6 +213,7 @@ Enable binary logs for MySQL:
 server-id = 1
 log_bin = /var/log/mysql/mysql-bin.log
 expire_logs_days = 7
+
 ```
 
 Restore to a specific time:
@@ -199,6 +221,7 @@ Restore to a specific time:
 ```bash
 mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
     /var/log/mysql/mysql-bin.000001 | mysql -u internara -p internara
+
 ```
 
 ---
@@ -242,3 +265,14 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 - [System Health](system-health.md) — Health check and diagnostics
 - [System Observability](system-observability.md) — Monitoring, audit logs
 - `docs/guides/infra/deployment.md` — Deployment paths
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

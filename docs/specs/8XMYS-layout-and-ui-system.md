@@ -77,13 +77,13 @@ link behaves identically and accessibly.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | User | Authenticated user navigates the sidebar |
-| UC-2 | Mobile user | Mobile user opens the sidebar |
-| UC-3 | Developer | Module adds a menu item |
-| UC-4 | Developer | Module renders a record management page |
-| UC-5 | User | Navigates with keyboard and screen reader |
+| UC-8XMYS-1 | User | Authenticated user navigates the sidebar |
+| UC-8XMYS-2 | Mobile user | Mobile user opens the sidebar |
+| UC-8XMYS-3 | Developer | Module adds a menu item |
+| UC-8XMYS-4 | Developer | Module renders a record management page |
+| UC-8XMYS-5 | User | Navigates with keyboard and screen reader |
 
-### UC-1 — Authenticated User Navigates the Sidebar
+### UC-8XMYS-1 — Authenticated User Navigates the Sidebar
 
 **Actor:** Any authenticated user (admin, teacher, supervisor, student)
 **Preconditions:** User is logged in; session role is known
@@ -95,7 +95,7 @@ link behaves identically and accessibly.
 5. User clicks an item → `wire:navigate` swaps the content area
 **Postconditions:** Only authorized items visible; active item highlighted; no full page reload
 
-### UC-2 — Mobile User Opens the Sidebar
+### UC-8XMYS-2 — Mobile User Opens the Sidebar
 
 **Actor:** Any authenticated user on a viewport <1024px
 **Preconditions:** Sidebar is hidden behind the drawer toggle
@@ -105,7 +105,7 @@ link behaves identically and accessibly.
 3. Overlay label ("close sidebar") is focusable; Escape closes the drawer
 **Postconditions:** Navigation accessible on mobile in one tap
 
-### UC-3 — Module Adds a Menu Item
+### UC-8XMYS-3 — Module Adds a Menu Item
 
 **Actor:** Developer
 **Preconditions:** Menu group exists in `config/menu.php`
@@ -115,7 +115,7 @@ link behaves identically and accessibly.
 3. No Blade change required — the sidebar renders the item automatically
 **Postconditions:** Item appears for roles with access; broken routes degrade to `#` without error
 
-### UC-4 — Module Renders a Record Management Page
+### UC-8XMYS-4 — Module Renders a Record Management Page
 
 **Actor:** Developer
 **Preconditions:** A CRUD page needs the standard list scaffold
@@ -125,7 +125,7 @@ link behaves identically and accessibly.
 3. Puts the TallstackUI `x-ts-table` in the default slot
 **Postconditions:** Consistent search (300ms debounce), per-page selector, selection bar, and empty state across all modules
 
-### UC-5 — User Navigates With Keyboard and Screen Reader
+### UC-8XMYS-5 — User Navigates With Keyboard and Screen Reader
 
 **Actor:** Keyboard / screen-reader user
 **Preconditions:** User is on any page using a core layout
@@ -143,63 +143,63 @@ link behaves identically and accessibly.
 
 | ID    | Requirement                                                                                              |
 | ----- | -------------------------------------------------------------------------------------------------------- |
-| FR-L1 | `core::layouts.base` must be the root HTML shell: `<html lang>` from `app()->getLocale()`, `data-theme` from the `theme` cookie, head (meta, favicon, manifest, Vite assets), skip-to-content link, TallstackUI toast container (`<x-ts-toast />` via Interactions), and scripts stack |
-| FR-L2 | `core::layouts.app` must compose: drawer sidebar (`core::layouts.sidebar`), sticky header (`core::layouts.header`), breadcrumb (when `$context` given), `max-w-7xl` content container, and footer (`core::layouts.base.footer`) |
-| FR-L3 | `core::layouts.guest` must render a centered public shell: header with brand + theme/lang switchers, content slot, footer with credits |
-| FR-L4 | Layouts shared by multiple modules must live in `resources/views/ui/layouts/`; layouts specific to one module must live in `resources/views/{module}/layouts/` (e.g., `auth::layouts.auth`, `setup::layouts.setup`) |
-| FR-L5 | Livewire pages must select the shell via the `#[Layout('core::layouts.app')]` attribute (or `guest`), never by embedding chrome markup inline |
+| FR-8XMYS-L1 | `core::layouts.base` must be the root HTML shell: `<html lang>` from `app()->getLocale()`, `data-theme` from the `theme` cookie, head (meta, favicon, manifest, Vite assets), skip-to-content link, TallstackUI toast container (`<x-ts-toast />` via Interactions), and scripts stack |
+| FR-8XMYS-L2 | `core::layouts.app` must compose: drawer sidebar (`core::layouts.sidebar`), sticky header (`core::layouts.header`), breadcrumb (when `$context` given), `max-w-7xl` content container, and footer (`core::layouts.base.footer`) |
+| FR-8XMYS-L3 | `core::layouts.guest` must render a centered public shell: header with brand + theme/lang switchers, content slot, footer with credits |
+| FR-8XMYS-L4 | Layouts shared by multiple modules must live in `resources/views/ui/layouts/`; layouts specific to one module must live in `resources/views/{module}/layouts/` (e.g., `auth::layouts.auth`, `setup::layouts.setup`) |
+| FR-8XMYS-L5 | Livewire pages must select the shell via the `#[Layout('core::layouts.app')]` attribute (or `guest`), never by embedding chrome markup inline |
 
 ### Navigation
 
 | ID    | Requirement                                                                                               |
 | ----- | --------------------------------------------------------------------------------------------------------- |
-| FR-N1 | `config/menu.php` must define `groups`, each with `roles`, a `title` (`__()` key), and `items`; each item has `route`, `icon`, `label` (`__()` key), optional `roles` override, and optional `disabled` flag |
-| FR-N2 | `core::layouts.sidebar` must render only groups whose roles match `auth()->user()->hasRole()`, and only items whose roles (item override or group roles) match |
-| FR-N3 | The active item must be detected via `request()->routeIs($item['route'])` and highlighted with `bg-primary/10 text-primary font-medium` |
-| FR-N4 | Disabled items must render as non-interactive muted `<span>`s (not links) with reduced opacity |
-| FR-N5 | Missing routes must degrade gracefully: if `Route::has()` fails, the item links to `#` without throwing |
-| FR-N6 | All labels and icons must use `__()` keys and TallstackUI `x-ts-icon` (Heroicons) via `icon` keys; no raw text or inline SVG in menu definitions |
+| FR-8XMYS-N1 | `config/menu.php` must define `groups`, each with `roles`, a `title` (`__()` key), and `items`; each item has `route`, `icon`, `label` (`__()` key), optional `roles` override, and optional `disabled` flag |
+| FR-8XMYS-N2 | `core::layouts.sidebar` must render only groups whose roles match `auth()->user()->hasRole()`, and only items whose roles (item override or group roles) match |
+| FR-8XMYS-N3 | The active item must be detected via `request()->routeIs($item['route'])` and highlighted with `bg-primary/10 text-primary font-medium` |
+| FR-8XMYS-N4 | Disabled items must render as non-interactive muted `<span>`s (not links) with reduced opacity |
+| FR-8XMYS-N5 | Missing routes must degrade gracefully: if `Route::has()` fails, the item links to `#` without throwing |
+| FR-8XMYS-N6 | All labels and icons must use `__()` keys and TallstackUI `x-ts-icon` (Heroicons) via `icon` keys; no raw text or inline SVG in menu definitions |
 
 ### UI Component Library
 
 | ID    | Requirement                                                                                                |
 | ----- | ---------------------------------------------------------------------------------------------------------- |
-| FR-C1 | `x-core::ui.page-header` must render a page title, optional description, and an optional `$actions` slot     |
-| FR-C2 | `x-core::ui.record-manager` must scaffold the CRUD list page: title/subtitle + header actions + optional `$extraMenu` dropdown, `$stats` grid, search input (`wire:model.live.debounce.300ms`) + per-page selector + optional `$filters`, `$selectionBar`, default table slot, `$emptyState`, and `$modal` |
-| FR-C3 | `x-core::ui.display-field` must render a labeled read-only value with optional icon                        |
-| FR-C4 | `x-core::ui.confirm` must wrap a destructive action in a modal (title, message, icon, confirm/cancel text, `confirmClass`) bound to `showConfirm` and `confirmAction` |
-| FR-C5 | `x-core::ui.navbar-actions` must render theme switcher, language switcher, notification bell, and user dropdown, each toggleable via `showTheme`, `showLanguage`, `showNotifications`, `showUser` props |
-| FR-C6 | `x-core::ui.brand` / `x-core::ui.logo` must render the brand mark with `size` and `invert` props, tagline toggle for `brand` |
-| FR-C7 | `x-core::ui.avatar` must render a user avatar with configurable `size`                                  |
-| FR-C8 | `x-core::ui.credit` / `x-core::ui.credits` must render the footer attribution, with version visible in local only |
+| FR-8XMYS-C1 | `x-core::ui.page-header` must render a page title, optional description, and an optional `$actions` slot     |
+| FR-8XMYS-C2 | `x-core::ui.record-manager` must scaffold the CRUD list page: title/subtitle + header actions + optional `$extraMenu` dropdown, `$stats` grid, search input (`wire:model.live.debounce.300ms`) + per-page selector + optional `$filters`, `$selectionBar`, default table slot, `$emptyState`, and `$modal` |
+| FR-8XMYS-C3 | `x-core::ui.display-field` must render a labeled read-only value with optional icon                        |
+| FR-8XMYS-C4 | `x-core::ui.confirm` must wrap a destructive action in a modal (title, message, icon, confirm/cancel text, `confirmClass`) bound to `showConfirm` and `confirmAction` |
+| FR-8XMYS-C5 | `x-core::ui.navbar-actions` must render theme switcher, language switcher, notification bell, and user dropdown, each toggleable via `showTheme`, `showLanguage`, `showNotifications`, `showUser` props |
+| FR-8XMYS-C6 | `x-core::ui.brand` / `x-core::ui.logo` must render the brand mark with `size` and `invert` props, tagline toggle for `brand` |
+| FR-8XMYS-C7 | `x-core::ui.avatar` must render a user avatar with configurable `size`                                  |
+| FR-8XMYS-C8 | `x-core::ui.credit` / `x-core::ui.credits` must render the footer attribution, with version visible in local only |
 
 ### Responsive
 
 | ID    | Requirement                                                                                                   |
 | ----- | ------------------------------------------------------------------------------------------------------------- |
-| FR-R1 | The sidebar must be hidden below `lg` (1024px) and opened via a hamburger drawer toggle (`drawer` + `lg:drawer-open`) |
-| FR-R2 | The sidebar must be persistently visible at `lg` and above                                                    |
-| FR-R3 | Theme/lang switchers must appear in the sidebar on mobile (`md:hidden`) and in the header on larger screens (`hidden md:flex`) |
-| FR-R4 | Content must use `container mx-auto max-w-7xl` with responsive padding; tables must allow horizontal scroll (`overflow-x-auto`) at small viewports |
+| FR-8XMYS-R1 | The sidebar must be hidden below `lg` (1024px) and opened via a hamburger drawer toggle (`drawer` + `lg:drawer-open`) |
+| FR-8XMYS-R2 | The sidebar must be persistently visible at `lg` and above                                                    |
+| FR-8XMYS-R3 | Theme/lang switchers must appear in the sidebar on mobile (`md:hidden`) and in the header on larger screens (`hidden md:flex`) |
+| FR-8XMYS-R4 | Content must use `container mx-auto max-w-7xl` with responsive padding; tables must allow horizontal scroll (`overflow-x-auto`) at small viewports |
 
 ### SPA Navigation
 
 | ID    | Requirement                                                                                                    |
 | ----- | -------------------------------------------------------------------------------------------------------------- |
-| FR-S1 | All internal navigation links must use `wire:navigate` so content swaps without a full page reload             |
-| FR-S2 | After a `wire:navigate` transition, focus must reset to the page heading (`<h1>`) or the first interactive element |
-| FR-S3 | Toast feedback must render via TallstackUI `<x-ts-toast />` (Interactions `toast()->success()->send()`) and be announced to screen readers (`aria-live`) |
+| FR-8XMYS-S1 | All internal navigation links must use `wire:navigate` so content swaps without a full page reload             |
+| FR-8XMYS-S2 | After a `wire:navigate` transition, focus must reset to the page heading (`<h1>`) or the first interactive element |
+| FR-8XMYS-S3 | Toast feedback must render via TallstackUI `<x-ts-toast />` (Interactions `toast()->success()->send()`) and be announced to screen readers (`aria-live`) |
 
 ### Accessibility
 
 | ID    | Requirement                                                                                                    |
 | ----- | -------------------------------------------------------------------------------------------------------------- |
-| FR-A1 | Every core layout must include a skip-to-content link (`sr-only focus:not-sr-only`) as the first focusable element targeting `#main-content` |
-| FR-A2 | The shell must use semantic landmarks: `<nav>` (sidebar), `<main id="main-content">` (content), `<header>` (top bar), `<footer>` |
-| FR-A3 | The drawer overlay must expose an accessible name ("close sidebar") and close on Escape                         |
-| FR-A4 | Icon-only buttons must carry `aria-label`; active-nav state must be conveyed beyond color (font weight + background) |
-| FR-A5 | Dynamic content (TallstackUI toast, Livewire updates, validation) must be wrapped in `aria-live` containers                 |
-| FR-NAV6 | Sidebar MUST render only items the current user's roles permit (browser test asserts hidden items absent)                    |
+| FR-8XMYS-A1 | Every core layout must include a skip-to-content link (`sr-only focus:not-sr-only`) as the first focusable element targeting `#main-content` |
+| FR-8XMYS-A2 | The shell must use semantic landmarks: `<nav>` (sidebar), `<main id="main-content">` (content), `<header>` (top bar), `<footer>` |
+| FR-8XMYS-A3 | The drawer overlay must expose an accessible name ("close sidebar") and close on Escape                         |
+| FR-8XMYS-A4 | Icon-only buttons must carry `aria-label`; active-nav state must be conveyed beyond color (font weight + background) |
+| FR-8XMYS-A5 | Dynamic content (TallstackUI toast, Livewire updates, validation) must be wrapped in `aria-live` containers                 |
+| FR-8XMYS-NAV6 | Sidebar MUST render only items the current user's roles permit (browser test asserts hidden items absent)                    |
 
 ---
 
@@ -207,11 +207,11 @@ link behaves identically and accessibly.
 
 | ID      | Requirement                                                                                          |
 | ------- | ---------------------------------------------------------------------------------------------------- |
-| NFR-A1  | All shell chrome must meet WCAG 2.1 Level AA (see [design-system.md](../guides/ui-ux/design-system.md) §6, [modular-pattern.md](../guides/arch/modular-pattern.md) §22) |
-| NFR-P1  | The layout shell must render in < 100 ms server-side; sidebar menu resolution must add no more than 2 queries (no N+1 over menu items) |
-| NFR-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
-| NFR-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
-| NFR-M1  | Layout and UI components must be colocated in Core (`resources/views/ui/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |
+| NFR-8XMYS-A1  | All shell chrome must meet WCAG 2.1 Level AA (see [design-system.md](../guides/ui-ux/design-system.md) §6, [modular-pattern.md](../guides/arch/modular-pattern.md) §22) |
+| NFR-8XMYS-P1  | The layout shell must render in < 100 ms server-side; sidebar menu resolution must add no more than 2 queries (no N+1 over menu items) |
+| NFR-8XMYS-U1  | Mobile navigation must be reachable in at most 2 taps from any authenticated page                     |
+| NFR-8XMYS-L1  | Every chrome string (menu titles, item labels, skip-link, drawer overlay, search/filters/selection labels) must exist in both `lang/en/` and `lang/id/` |
+| NFR-8XMYS-M1  | Layout and UI components must be colocated in Core (`resources/views/ui/`) with no per-module duplication; adding a menu item must require only `config/menu.php` |
 
 ---
 
@@ -249,6 +249,7 @@ return [
         // ...
     ],
 ];
+
 ```
 
 ### Layout Components
@@ -282,6 +283,7 @@ return [
 ```php
 #[Layout('core::layouts.app')] // or 'core::layouts.guest' for public pages
 public function render(): View { ... }
+
 ```
 
 ---
@@ -312,7 +314,7 @@ Livewire component (e.g., `confirm`'s `showConfirm` binding) — the established
 **Decision:** All internal links use `wire:navigate` for partial-page swaps.
 **Rationale:** Full reloads lose focus/scroll state and add latency. `wire:navigate` preserves
 browser history, URL, and back-button semantics without a JS framework, and is the Livewire 4
-canonical approach. Focus reset (FR-S2) compensates for the accessibility gap a partial swap would
+canonical approach. Focus reset (FR-8XMYS-S2) compensates for the accessibility gap a partial swap would
 otherwise introduce.
 **Trade-off:** JS required for navigation; without it, links degrade to full reloads (progressive
 enhancement), which is acceptable.
@@ -320,15 +322,15 @@ enhancement), which is acceptable.
 ### DD-4 — Drawer Pattern for Responsive Sidebar
 
 **Decision:** The sidebar uses the drawer pattern (`drawer-toggle` + `drawer-side` +
-`lg:drawer-open`, styled via the self-hosted palette shims), with TallstackUI components everywhere else per FB792 FR-TS6a.
+`lg:drawer-open`, styled via the self-hosted palette shims), with TallstackUI components everywhere else per FB792 FR-8XMYS-TS6a.
 **Rationale:** The drawer ships keyboard/ARIA support (Escape to close, focusable overlay) out
-of the box, satisfying FR-A3 with no custom JS; the shimmed classes keep it theme-aware without DaisyUI.
+of the box, satisfying FR-8XMYS-A3 with no custom JS; the shimmed classes keep it theme-aware without DaisyUI.
 
 ### DD-5 — Accessibility Baked Into the Shell, Not Per Page
 
 **Decision:** Skip link, landmarks, and focus-reset are implemented once in `core::layouts.base` /
 `app` rather than repeated per module.
-**Rationale:** A single implementation guarantees the contract everywhere (FR-A1, FR-A2, FR-S2) and
+**Rationale:** A single implementation guarantees the contract everywhere (FR-8XMYS-A1, FR-8XMYS-A2, FR-8XMYS-S2) and
 prevents per-module drift.
 **Trade-off:** Pages that bypass the core shell (module-specific layouts) must re-provide these
 elements; only `auth` and `setup` do so today, and both inherit the base shell.

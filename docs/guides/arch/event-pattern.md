@@ -97,6 +97,7 @@ Listeners named by what they **do**: `{Action}{Entity}`. Registered in `config/e
         {Listener}::class,
     ],
 ],
+
 ```
 
 ### 7. ShouldQueue for Async Listeners
@@ -109,6 +110,7 @@ class {Listener} implements ShouldQueue
         // I/O-bound work
     }
 }
+
 ```
 
 **Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be queued.

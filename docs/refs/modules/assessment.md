@@ -48,6 +48,7 @@ grades remain readable even if the rubric template is later modified. Example st
         "indicators": [{ "id": "ind_1", "name": "Discipline", "max_score": 100, "weight": 50 }]
     }
 ]
+
 ```
 
 ### Assessment Finalization

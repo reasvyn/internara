@@ -5,6 +5,19 @@
 Queue driver configuration, job classes, failure handling, and worker management across different
 environments.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Purpose
 
 The queue layer enables asynchronous job processing. In Tier 1 (shared hosting), all jobs run
@@ -32,6 +45,7 @@ QUEUE_CONNECTION=sync
 QUEUE_CONNECTION=redis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
+
 ```
 
 ---
@@ -58,6 +72,7 @@ flowchart LR
 
     F --> H[Emails, Alerts,<br/>Notifications, Media]
     G --> I[PDF Certificates,<br/>Reports]
+
 ```
 
 ### Pipeline Responsibilities
@@ -99,6 +114,7 @@ numprocs=2
 redirect_stderr=true
 stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
+
 ```
 
 ```bash
@@ -108,6 +124,7 @@ php artisan queue:work --queue=documents --sleep=3 --tries=3
 
 # Check worker status
 php artisan queue:monitor default:default,documents:documents --max=100
+
 ```
 
 ---
@@ -141,6 +158,7 @@ class ProcessMediaConversion implements ShouldQueue
             ->save();
     }
 }
+
 ```
 
 ### Guidelines
@@ -177,6 +195,7 @@ When a worker is active, failed jobs are stored in the `failed_jobs` table for i
 php artisan queue:failed              # List failed jobs
 php artisan queue:retry all           # Retry all failed
 php artisan queue:prune-failed        # Prune old failed jobs (scheduled weekly)
+
 ```
 
 Failed jobs older than 7 days are automatically pruned by the scheduler via `queue:prune-failed`.

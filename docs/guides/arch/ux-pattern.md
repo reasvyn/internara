@@ -57,6 +57,7 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::l
 [data-theme='dark'] {
   --color-info: oklch(70% 0.38 250);
 }
+
 ```
 
 ```blade
@@ -66,6 +67,7 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::l
 </div>
 {{-- Theme switch — always this component --}}
 <x-core::ui.theme-switch />
+
 ```
 
 #### 1.2 Dark Mode — Dual-Signal
@@ -113,6 +115,7 @@ Commitment: **WCAG 2.2 Level AA** per `modular-pattern.md` §22 + `livewire-patt
 
 {{-- Icon-only — always aria-label --}}
 <x-ts-button icon="trash" wire:click="askDelete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
+
 ```
 
 #### 2.3 Understandable (WCAG Principle 3)
@@ -165,6 +168,7 @@ Number::currency($amount, 'IDR', locale: app()->getLocale())
 'Created ' . $count . ' items'
 date('d/m/Y', strtotime($date))
 number_format($amount, 2)
+
 ```
 
 #### 3.3 Process

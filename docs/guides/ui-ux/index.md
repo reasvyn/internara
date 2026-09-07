@@ -59,6 +59,7 @@ Complete documentation for Internara's UI system, built on the TALL stack:
 │  │  └─────────────┘  └─────────────┘  └─────────────┘     │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
+
 ```
 
 ### File Locations
@@ -77,6 +78,7 @@ resources/
     └── {module}/                  # Module-specific views
 
 app/Modules/{Module}/Livewire/     # Livewire components per module
+
 ```
 
 ### Key Conventions
@@ -98,6 +100,7 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 # PHP 8.4+, Composer 2.x, Node.js 20+, npm 10+
 composer install
 npm install
+
 ```
 
 ### TallStackUI Setup
@@ -108,6 +111,7 @@ composer require tallstackui/tallstackui:^4.0
 
 # Publish config (optional)
 php artisan vendor:publish --tag=tallstackui.config
+
 ```
 
 ### CSS Configuration (`resources/css/app.css`)
@@ -121,6 +125,7 @@ php artisan vendor:publish --tag=tallstackui.config
 @source '../../vendor/tallstackui/tallstackui/**/*.php';
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
 ```
 
 ### Layout Setup (`resources/views/layouts/app.blade.php`)
@@ -137,6 +142,7 @@ php artisan vendor:publish --tag=tallstackui.config
     @livewireScripts
 </body>
 </html>
+
 ```
 
 ---
@@ -159,6 +165,7 @@ Internara uses Tailwind's default palette with semantic aliases:
   --color-danger: var(--color-red-500);
   --color-info: var(--color-sky-500);
 }
+
 ```
 
 ### Typography
@@ -168,6 +175,7 @@ Internara uses Tailwind's default palette with semantic aliases:
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
+
 ```
 
 ### Spacing Scale

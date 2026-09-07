@@ -80,11 +80,11 @@ surface.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Implements a feature inside a module following the 4-layer stack; every public surface accessible via Actions |
-| UC-2 | Developer | Implements a cross-module feature via the ranked communication hierarchy without dependency cycles |
-| UC-3 | Developer | Traces a mutation end-to-end: UI → DTO → Command Action → Entity rule → Model write → Event |
+| UC-D2FT3-1 | Developer | Implements a feature inside a module following the 4-layer stack; every public surface accessible via Actions |
+| UC-D2FT3-2 | Developer | Implements a cross-module feature via the ranked communication hierarchy without dependency cycles |
+| UC-D2FT3-3 | Developer | Traces a mutation end-to-end: UI → DTO → Command Action → Entity rule → Model write → Event |
 
-### UC-1 — Developer Implements a Feature Inside a Module
+### UC-D2FT3-1 — Developer Implements a Feature Inside a Module
 
 **Actor:** Developer
 **Preconditions:** Module exists, architecture scans are green
@@ -96,7 +96,7 @@ surface.
 5. `scan_violations.py` passes — layer direction, contracts, and boundaries hold
 **Postconditions:** Feature is findable, testable, and arch-guarded
 
-### UC-2 — Developer Implements a Cross-Module Feature
+### UC-D2FT3-2 — Developer Implements a Cross-Module Feature
 
 **Actor:** Developer
 **Preconditions:** Two modules exist, dependency order in `config/module.php` allows the call
@@ -107,7 +107,7 @@ surface.
 3. If the call would create a cycle, the shared concept moves to Core or a contract in Core
 **Postconditions:** No circular dependency, no cross-module model reach-in
 
-### UC-3 — Developer Traces a Mutation End-to-End
+### UC-D2FT3-3 — Developer Traces a Mutation End-to-End
 
 **Actor:** Developer (debugging/auditing)
 **Preconditions:** Application running
@@ -127,90 +127,90 @@ surface.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC1 | All application code MUST live inside a business module under `app/Modules/{Module}` — never in a flat top-level layer |
-| FR-ARC2 | A module owns its full vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`, `Notifications/`, `Policies/`, `Livewire/`, `Http/`, routes, and `lang/` |
-| FR-ARC3 | A module's public surface is its `Actions/`, `Services/`, `Contracts/`, `Events/`, `Entities/`, and `Enums/`; everything else is internal to the module |
-| FR-ARC4 | The Core module (`app/Modules/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
-| FR-ARC5 | Each module is registered in `config/module.php`, auto-discovered from the directory listing of `app/Modules/` (deterministic alphabetical order, no manual registry); `docs/refs/modules/index.md` documents the dependency graph |
+| FR-D2FT3-ARC1 | All application code MUST live inside a business module under `app/Modules/{Module}` — never in a flat top-level layer |
+| FR-D2FT3-ARC2 | A module owns its full vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`, `Notifications/`, `Policies/`, `Livewire/`, `Http/`, routes, and `lang/` |
+| FR-D2FT3-ARC3 | A module's public surface is its `Actions/`, `Services/`, `Contracts/`, `Events/`, `Entities/`, and `Enums/`; everything else is internal to the module |
+| FR-D2FT3-ARC4 | The Core module (`app/Modules/Core/`) holds shared base classes, cross-cutting contracts, and module-independent infrastructure |
+| FR-D2FT3-ARC5 | Each module is registered in `config/module.php`, auto-discovered from the directory listing of `app/Modules/` (deterministic alphabetical order, no manual registry); `docs/refs/modules/index.md` documents the dependency graph |
 
 ### 4-Layer Model
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC6 | The architecture defines exactly four layers: 1 — Framework/Infrastructure/Utilities, 2 — Data/Persistent, 3 — Business/Domain Operations, 4 — Presentation/UI |
-| FR-ARC7 | Layer directories map as follows: 4 → `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/`, `routes/`; 3 → `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/`; 2 → `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database; 1 → `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/` |
-| FR-ARC8 | Dependencies flow downward only: 4 → 3 → 2 → 1. No upward, sideways-skipping, or layer-1-into-module-B business imports |
-| FR-ARC9 | Core (Layer 1) MUST depend on nothing except the framework and approved packages — never on business modules |
-| FR-ARC10 | A module at Layer 4 MAY import another module directly; prefer calling the other module's Read/Command Actions over its internals (FR-ARC14) |
+| FR-D2FT3-ARC6 | The architecture defines exactly four layers: 1 — Framework/Infrastructure/Utilities, 2 — Data/Persistent, 3 — Business/Domain Operations, 4 — Presentation/UI |
+| FR-D2FT3-ARC7 | Layer directories map as follows: 4 → `{Module}/Livewire/`, `{Module}/Policies/`, `{Module}/Http/`, `resources/views/`, `routes/`; 3 → `{Module}/Actions/`, `{Module}/Events/`, `{Module}/Listeners/`, `{Module}/Notifications/`, `Console/`; 2 → `{Module}/Models/`, `{Module}/Entities/`, `{Module}/Enums/`, `{Module}/Data/`, `Types/`, database; 1 → `app/Modules/Core/`, `{Module}/Services/`, `{Module}/Support/` |
+| FR-D2FT3-ARC8 | Dependencies flow downward only: 4 → 3 → 2 → 1. No upward, sideways-skipping, or layer-1-into-module-B business imports |
+| FR-D2FT3-ARC9 | Core (Layer 1) MUST depend on nothing except the framework and approved packages — never on business modules |
+| FR-D2FT3-ARC10 | A module at Layer 4 MAY import another module directly; prefer calling the other module's Read/Command Actions over its internals (FR-D2FT3-ARC14) |
 
 ### Action Triad
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC11 | Three action base classes: `BaseCommandAction` (state mutation), `BaseReadAction` (query), `BaseProcessAction` (multi-step orchestration) |
-| FR-ARC12 | Every Action exposes exactly one public entry point: `execute()` |
-| FR-ARC13 | Command and Process Actions return `ActionResponse`; Read Actions return a value object, collection, or DTO |
-| FR-ARC14 | Model mutations MUST happen through Command/Process Actions — never in Livewire, Controllers, or Views (C1 invariant) |
-| FR-ARC15 | Business rules MUST live in the module's Entity; Actions orchestrate and stay thin |
-| FR-ARC16 | Command/Process Actions with 3+ parameters MUST accept a DTO (C7 invariant) |
-| FR-ARC17 | Read-only data access SHOULD use Read Actions; direct Model queries are limited to the owning module |
+| FR-D2FT3-ARC11 | Three action base classes: `BaseCommandAction` (state mutation), `BaseReadAction` (query), `BaseProcessAction` (multi-step orchestration) |
+| FR-D2FT3-ARC12 | Every Action exposes exactly one public entry point: `execute()` |
+| FR-D2FT3-ARC13 | Command and Process Actions return `ActionResponse`; Read Actions return a value object, collection, or DTO |
+| FR-D2FT3-ARC14 | Model mutations MUST happen through Command/Process Actions — never in Livewire, Controllers, or Views (C1 invariant) |
+| FR-D2FT3-ARC15 | Business rules MUST live in the module's Entity; Actions orchestrate and stay thin |
+| FR-D2FT3-ARC16 | Command/Process Actions with 3+ parameters MUST accept a DTO (C7 invariant) |
+| FR-D2FT3-ARC17 | Read-only data access SHOULD use Read Actions; direct Model queries are limited to the owning module |
 
 ### Boundary Objects
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC18 | Entities are `final readonly`, constructed via `fromModel()` (or `fromArray()`), and expose value semantics (`equals()`, `with()`) |
-| FR-ARC19 | Entities MUST NOT import Models, Data, Actions, or Livewire (C5 invariant) — only value types (scalars, enums, Carbon) |
-| FR-ARC20 | DTOs extend `BaseData`, are `readonly`, and are the boundary object between UI and Business — never raw `Request` (D5 invariant) |
-| FR-ARC21 | DTOs MUST NOT import Models or Actions (C6 invariant); they carry validated scalars, enums, and `Carbon` values |
-| FR-ARC22 | A DTO is owned by the Action that consumes it and is defined in the module where that Action lives |
-| FR-ARC23 | Models are persistence-focused: `#[Fillable]` attribute (D4), `HasUuids`, common scopes, and an Entity bridge method; no business rules |
+| FR-D2FT3-ARC18 | Entities are `final readonly`, constructed via `fromModel()` (or `fromArray()`), and expose value semantics (`equals()`, `with()`) |
+| FR-D2FT3-ARC19 | Entities MUST NOT import Models, Data, Actions, or Livewire (C5 invariant) — only value types (scalars, enums, Carbon) |
+| FR-D2FT3-ARC20 | DTOs extend `BaseData`, are `readonly`, and are the boundary object between UI and Business — never raw `Request` (D5 invariant) |
+| FR-D2FT3-ARC21 | DTOs MUST NOT import Models or Actions (C6 invariant); they carry validated scalars, enums, and `Carbon` values |
+| FR-D2FT3-ARC22 | A DTO is owned by the Action that consumes it and is defined in the module where that Action lives |
+| FR-D2FT3-ARC23 | Models are persistence-focused: `#[Fillable]` attribute (D4), `HasUuids`, common scopes, and an Entity bridge method; no business rules |
 
 ### Data Flow
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC24 | UI → Business: validated DTO (or typed scalars), never raw Request (D5) |
-| FR-ARC25 | Business → Data: Model attributes derived from DTO values |
-| FR-ARC26 | Data → Business: a Model record is used to construct the Entity for rule evaluation |
-| FR-ARC27 | Cross-module side effects are dispatched as Events (see [event-system](NUCY3-event-system.md)) and handled by Listeners |
-| FR-ARC28 | Business → UI class imports are forbidden (Blade/Livewire never imported from Actions, Entities, or DTOs) |
+| FR-D2FT3-ARC24 | UI → Business: validated DTO (or typed scalars), never raw Request (D5) |
+| FR-D2FT3-ARC25 | Business → Data: Model attributes derived from DTO values |
+| FR-D2FT3-ARC26 | Data → Business: a Model record is used to construct the Entity for rule evaluation |
+| FR-D2FT3-ARC27 | Cross-module side effects are dispatched as Events (see [event-system](NUCY3-event-system.md)) and handled by Listeners |
+| FR-D2FT3-ARC28 | Business → UI class imports are forbidden (Blade/Livewire never imported from Actions, Entities, or DTOs) |
 
 ### Cross-Module Dependencies
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-ARC29 | Cross-module reads MUST call the source module's public `ReadAction` — never query another module's Models directly |
-| FR-ARC30 | Cross-module mutations MUST call the source module's public `CommandAction`; the caller never touches another module's Models |
-| FR-ARC31 | The module registry MUST be derived deterministically from `config/module.php` (auto-discovery of `app/Modules/`); a dependency cycle is an architecture violation |
-| FR-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Modules/Core/`) or a Core contract — never left as a cross-module shortcut |
-| FR-ARC33 | Cross-module visibility is decided at design time; bypassing an Action to reach another module's internals requires a recorded design decision |
+| FR-D2FT3-ARC29 | Cross-module reads MUST call the source module's public `ReadAction` — never query another module's Models directly |
+| FR-D2FT3-ARC30 | Cross-module mutations MUST call the source module's public `CommandAction`; the caller never touches another module's Models |
+| FR-D2FT3-ARC31 | The module registry MUST be derived deterministically from `config/module.php` (auto-discovery of `app/Modules/`); a dependency cycle is an architecture violation |
+| FR-D2FT3-ARC32 | When a shared concept would create a cycle, it moves to Core (`app/Modules/Core/`) or a Core contract — never left as a cross-module shortcut |
+| FR-D2FT3-ARC33 | Cross-module visibility is decided at design time; bypassing an Action to reach another module's internals requires a recorded design decision |
 
 ### Communication Discipline
 
 | ID | Requirement |
 |----|-------------|
-| FR-ARC34 | Cross-module communication MUST follow the ranked hierarchy: 1) Core Contracts (Layer 3 shared interfaces), 2) Module Events (fire-and-forget), 3) Action Delegation (explicit `execute()` call), 4) Direct Import (simplest) — use the lowest coupling that satisfies the need |
-| FR-ARC35 | Core Contracts in `App\Core\Contracts\` are the preferred decoupling for broadly-used abstractions (`LabelEnum`, `StatusEnum`, `SendsNotifications`) |
+| FR-D2FT3-ARC34 | Cross-module communication MUST follow the ranked hierarchy: 1) Core Contracts (Layer 3 shared interfaces), 2) Module Events (fire-and-forget), 3) Action Delegation (explicit `execute()` call), 4) Direct Import (simplest) — use the lowest coupling that satisfies the need |
+| FR-D2FT3-ARC35 | Core Contracts in `App\Core\Contracts\` are the preferred decoupling for broadly-used abstractions (`LabelEnum`, `StatusEnum`, `SendsNotifications`) |
 
 ### Performance & Growth Tiers
 
 | ID | Requirement |
 |----|-------------|
-| FR-ARC36 | Tier 0 no-regret optimizations MUST be enforced at any scale: composite indexes on FKs and `activity_log`, cache-key registry (`config/cache-keys.php`), eager-loading (no N+1), and Read Actions to avoid transaction overhead |
-| FR-ARC37 | Tier 1 (Shared, ≤500 users) MUST run on MySQL/MariaDB + file cache + sync queue + database session with zero external services |
-| FR-ARC38 | Tier 2 (VPS, 500–2000 users) and Tier 3 (HA, 2000+ users) transitions MUST be `.env` swaps with zero code changes (e.g., `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, read replica) |
-| FR-ARC39 | The following are explicitly deferred until measured need: Laravel Octane, horizontal auto-scaling, CDN for static assets, database sharding, queue job batching — `docs/architecture.md` and Pulse must show a bottleneck before adoption |
+| FR-D2FT3-ARC36 | Tier 0 no-regret optimizations MUST be enforced at any scale: composite indexes on FKs and `activity_log`, cache-key registry (`config/cache-keys.php`), eager-loading (no N+1), and Read Actions to avoid transaction overhead |
+| FR-D2FT3-ARC37 | Tier 1 (Shared, ≤500 users) MUST run on MySQL/MariaDB + file cache + sync queue + database session with zero external services |
+| FR-D2FT3-ARC38 | Tier 2 (VPS, 500–2000 users) and Tier 3 (HA, 2000+ users) transitions MUST be `.env` swaps with zero code changes (e.g., `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, read replica) |
+| FR-D2FT3-ARC39 | The following are explicitly deferred until measured need: Laravel Octane, horizontal auto-scaling, CDN for static assets, database sharding, queue job batching — `docs/architecture.md` and Pulse must show a bottleneck before adoption |
 
 ### Gradual Migration
 
 | ID | Requirement |
 |----|-------------|
-| FR-ARC40 | DTO adoption MUST follow Start `array` → Stabilize `Data\|array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration |
-| FR-ARC41 | Cache invalidation MUST follow Start `Cache::forget()` inline → Stabilize event+listener → Final `config/cache-keys.php` registry with listener-driven invalidation |
-| FR-ARC42 | Validation rules MUST follow Start Form-Object-only → Stabilize `Entity::rules()` shared → Final centralized in Entities for full DRY |
-| FR-ARC43 | Every module MUST implement at least one Command or Read Action exposing its public surface | |
-| FR-ARC44 | Every mutation Flow MUST be traceable: Livewire → DTO → Command Action → Entity → Model → Event (arch test asserts the class hierarchy) | |
+| FR-D2FT3-ARC40 | DTO adoption MUST follow Start `array` → Stabilize `Data\|array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration |
+| FR-D2FT3-ARC41 | Cache invalidation MUST follow Start `Cache::forget()` inline → Stabilize event+listener → Final `config/cache-keys.php` registry with listener-driven invalidation |
+| FR-D2FT3-ARC42 | Validation rules MUST follow Start Form-Object-only → Stabilize `Entity::rules()` shared → Final centralized in Entities for full DRY |
+| FR-D2FT3-ARC43 | Every module MUST implement at least one Command or Read Action exposing its public surface | |
+| FR-D2FT3-ARC44 | Every mutation Flow MUST be traceable: Livewire → DTO → Command Action → Entity → Model → Event (arch test asserts the class hierarchy) | |
 
 ---
 
@@ -218,13 +218,13 @@ surface.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-A1 | Architecture invariants C1–C8 and D1–D6 are enforced by automated scans (`tools/scan_violations/cli.py`) |
-| NFR-A2 | Class contracts (Action/Entity/DTO/Model/Enum) are enforced by `tools/scan_class_contracts/cli.py` |
-| NFR-A3 | New code must not introduce top-level directories under `app/` without a spec or recorded decision |
-| NFR-A4 | Actions eager-load relations; N+1 queries are an architecture defect (S3 — Scalable) |
-| NFR-A5 | Authorization is enforced at every layer: Policies guard Presentation, Actions and Entities enforce business authorization with `RejectedException` (C8) |
-| NFR-A6 | Clean-Code/DRY: duplicated logic must be extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustain) |
-| NFR-A7 | Single-tenant deployment matrix MUST be SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk with zero external services by default; Redis/S3/Reverb are optional `.env` overrides — no centralized auth, billing, or tenant isolation |
+| NFR-D2FT3-A1 | Architecture invariants C1–C8 and D1–D6 are enforced by automated scans (`tools/scan_violations/cli.py`) |
+| NFR-D2FT3-A2 | Class contracts (Action/Entity/DTO/Model/Enum) are enforced by `tools/scan_class_contracts/cli.py` |
+| NFR-D2FT3-A3 | New code must not introduce top-level directories under `app/` without a spec or recorded decision |
+| NFR-D2FT3-A4 | Actions eager-load relations; N+1 queries are an architecture defect (S3 — Scalable) |
+| NFR-D2FT3-A5 | Authorization is enforced at every layer: Policies guard Presentation, Actions and Entities enforce business authorization with `RejectedException` (C8) |
+| NFR-D2FT3-A6 | Clean-Code/DRY: duplicated logic must be extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustain) |
+| NFR-D2FT3-A7 | Single-tenant deployment matrix MUST be SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk with zero external services by default; Redis/S3/Reverb are optional `.env` overrides — no centralized auth, billing, or tenant isolation |
 
 ## Test Requirements
 
@@ -259,6 +259,7 @@ app/{Module}/
 ├── Http/             # controllers/requests if REST is used (Layer 4)
 ├── Services/         # infrastructure logic (Layer 1)
 └── Support/          # module-local helpers (Layer 1)
+
 ```
 
 ### Layer → Directory Map
@@ -280,7 +281,7 @@ abstract class BaseProcessAction extends BaseAction { }  // step()/trackProgress
 abstract class BaseReadAction      { }  // standalone (does NOT extend BaseAction): remember()/forget()/mask()/paginate()
 
 // execute(): exactly one public method, declared in each concrete Action
-// (convention + scan-enforced, FR-ARC12). Command/Process return ActionResponse;
+// (convention + scan-enforced, FR-D2FT3-ARC12). Command/Process return ActionResponse;
 // Read returns value data.
 
 // Layer 2 — Entities (app/Modules/Core/Entities/BaseEntity.php)
@@ -310,6 +311,7 @@ final readonly class ActionResponse implements JsonSerializable {
     public function failed(): bool;
     public function jsonSerialize(): array;   // {success, data, message, redirect, errors}
 }
+
 ```
 
 ### Data Flow
@@ -322,6 +324,7 @@ final readonly class ActionResponse implements JsonSerializable {
                                        │
                                        ▼
                                    Event (L3) ──▶ Listeners (side effects)
+
 ```
 
 ---
@@ -334,13 +337,13 @@ final readonly class ActionResponse implements JsonSerializable {
 **Rationale:** A business concept is one directory — findable, independently testable, and safe to
 change. Flat layering spreads concepts and allows silent coupling.
 **Trade-off:** Shared infrastructure must be deliberately extracted into Core instead of "shared
-folders"; managed by FR-ARC4/FR-ARC32.
+folders"; managed by FR-D2FT3-ARC4/FR-D2FT3-ARC32.
 
 ### DD-2 — Action Triad over a Generic Service Layer
 
 **Decision:** Command/Read/Process base classes are the only business entry points.
 **Rationale:** A typed triad makes intent explicit (mutation vs. query vs. orchestration), enables
-scan-enforcement, and gives every mutation a single traceable path (UC-3).
+scan-enforcement, and gives every mutation a single traceable path (UC-D2FT3-3).
 **Trade-off:** More classes than a generic `Service` — accepted for auditable single-tenant
 systems.
 
@@ -357,7 +360,7 @@ Models stay thin persistence adapters (D4, Entity bridge).
 **Decision:** UI → Business passes validated `BaseData` DTOs, never raw Request.
 **Rationale:** One validation surface per action (C7, D5), no framework dependence in business
 code, deterministic test construction.
-**Trade-off:** A DTO per action signature — accepted by FR-ARC16/FR-ARC21.
+**Trade-off:** A DTO per action signature — accepted by FR-D2FT3-ARC16/FR-D2FT3-ARC21.
 
 ### DD-5 — Events for Cross-Module Side Effects
 
@@ -366,14 +369,14 @@ and handled by Listeners (see [event-system](NUCY3-event-system.md)).
 **Rationale:** The originating Action stays focused; modules decouple; side effects are
 discoverable and replayable.
 **Trade-off:** Extra indirection versus a direct call — worth it across module boundaries
-(FR-ARC27).
+(FR-D2FT3-ARC27).
 
 ### DD-6 — No Repository Pattern
 
 **Decision:** Models are used directly by the owning module's Actions; no repository abstraction.
 **Rationale:** Eloquent already provides the persistence API; a repository would add indirection
 without benefit in a single-tenant app.
-**Trade-off:** The owning-module rule (FR-ARC29/FR-ARC30) is what keeps models encapsulated, not
+**Trade-off:** The owning-module rule (FR-D2FT3-ARC29/FR-D2FT3-ARC30) is what keeps models encapsulated, not
 a repository layer.
 
 ### DD-7 — Automated Architecture Enforcement
@@ -410,7 +413,7 @@ before the tech stack, infra services, and base-class specs.
 ### Build Guide
 
 This spec is satisfied continuously: every module, Action, Entity, DTO, and Model built by the
-lower-level specs must comply with FR-ARC1–FR-ARC33. `docs/architecture.md` and the
+lower-level specs must comply with FR-D2FT3-ARC1–FR-D2FT3-ARC33. `docs/architecture.md` and the
 `docs/guides/arch/` pattern docs are the living reference for implementation; this spec is the
 authoritative contract.
 
@@ -420,8 +423,8 @@ authoritative contract.
 | ----- | ---- | ---------- |
 | 1 | [tech-stack.md](FB792-tech-stack.md) | Pins the dependency versions the architecture builds upon |
 | 2 | [core-infra-services.md](ZT6VS-core-infra-services.md) | Defines the runtime services (cache, session, DB, queue, mail, storage) |
-| 3 | [base-classes.md](SE5Q9-base-classes.md) | Implements BaseAction/BaseEntity/BaseData/BaseModel contracts (FR-ARC11–FR-ARC23) |
-| 4 | [module-discovery.md](I1BCV-module-discovery.md) | Module registry and dependency order (FR-ARC5, FR-ARC31) |
+| 3 | [base-classes.md](SE5Q9-base-classes.md) | Implements BaseAction/BaseEntity/BaseData/BaseModel contracts (FR-D2FT3-ARC11–FR-D2FT3-ARC23) |
+| 4 | [module-discovery.md](I1BCV-module-discovery.md) | Module registry and dependency order (FR-D2FT3-ARC5, FR-D2FT3-ARC31) |
 
 ---
 

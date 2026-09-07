@@ -79,7 +79,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Teacher Creates and Publishes an Assignment
+### UC-T657Z-1 — Teacher Creates and Publishes an Assignment
 
 **Actor:** Teacher
 **Preconditions:** Teacher is authenticated; internship exists
@@ -94,7 +94,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 8. `PublishAssignmentAction` also sends `AssignmentNotification` to all enrolled students
 **Postconditions:** Assignment is PUBLISHED; enrolled students notified
 
-### UC-2 — Student Submits Work
+### UC-T657Z-2 — Student Submits Work
 
 **Actor:** Student
 **Preconditions:** Published assignment exists; student has active registration; assignment not overdue
@@ -107,7 +107,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 6. Creates `Submission` with status `SUBMITTED`, `submitted_at` set
 **Postconditions:** Submission exists with SUBMITTED status
 
-### UC-3 — Teacher Grades a Submission
+### UC-T657Z-3 — Teacher Grades a Submission
 
 **Actor:** Teacher
 **Preconditions:** SUBMITTED or REVISION_REQUIRED submission exists; teacher is authorized
@@ -119,7 +119,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 5. Action validates score range, updates submission with score, feedback, `GRADED` status
 **Postconditions:** Submission graded; student notified via `SubmissionFeedbackNotification`
 
-### UC-4 — Teacher Requests Revision
+### UC-T657Z-4 — Teacher Requests Revision
 
 **Actor:** Teacher
 **Preconditions:** SUBMITTED submission exists
@@ -131,7 +131,7 @@ automated enforcement, teachers must manually check dates and students may unkno
 5. Student notified via `SubmissionFeedbackNotification`
 **Postconditions:** Submission returned to student for revision
 
-### UC-5 — Student Resubmits After Revision
+### UC-T657Z-5 — Student Resubmits After Revision
 
 **Actor:** Student
 **Preconditions:** Submission is in REVISION_REQUIRED status
@@ -150,75 +150,75 @@ automated enforcement, teachers must manually check dates and students may unkno
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AM1 | `AssignmentManager` must be accessible at route `admin/assignments` with `auth` and `role:super_admin\|admin` middleware |
-| FR-AM2 | `CreateAssignmentAction` must accept `assignmentType`, `internshipId`, `title`, `description`, `isMandatory`, `dueDate` and return `Assignment` |
-| FR-AM3 | `Assignment` model must use `#[Fillable]` with `internship_id`, `document_id`, `assignment_type`, `title`, `description`, `is_mandatory`, `due_date`, `status`, `created_by` |
-| FR-AM4 | `assignment_type` must support: `project`, `report`, `essay` (default: `project`) |
-| FR-AM5 | New assignments must default to `DRAFT` status |
-| FR-AM6 | `UpdateAssignmentAction` must filter null values for partial updates |
-| FR-AM7 | `DeleteAssignmentAction` must cascade-delete submissions via DB constraint |
-| FR-AM8 | `AssignmentPolicy::delete()` must require admin role AND no existing submissions |
-| FR-AM9 | `AssignmentManager` must support search (title, type, internship name) and filters (status, type, is_mandatory) |
+| FR-T657Z-T657Z-AM1 | `AssignmentManager` must be accessible at route `admin/assignments` with `auth` and `role:super_admin\|admin` middleware |
+| FR-T657Z-T657Z-AM2 | `CreateAssignmentAction` must accept `assignmentType`, `internshipId`, `title`, `description`, `isMandatory`, `dueDate` and return `Assignment` |
+| FR-T657Z-T657Z-AM3 | `Assignment` model must use `#[Fillable]` with `internship_id`, `document_id`, `assignment_type`, `title`, `description`, `is_mandatory`, `due_date`, `status`, `created_by` |
+| FR-T657Z-T657Z-AM4 | `assignment_type` must support: `project`, `report`, `essay` (default: `project`) |
+| FR-T657Z-T657Z-AM5 | New assignments must default to `DRAFT` status |
+| FR-T657Z-T657Z-AM6 | `UpdateAssignmentAction` must filter null values for partial updates |
+| FR-T657Z-T657Z-AM7 | `DeleteAssignmentAction` must cascade-delete submissions via DB constraint |
+| FR-T657Z-T657Z-AM8 | `AssignmentPolicy::delete()` must require admin role AND no existing submissions |
+| FR-T657Z-T657Z-AM9 | `AssignmentManager` must support search (title, type, internship name) and filters (status, type, is_mandatory) |
 
 ### Assignment Lifecycle
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AL1 | `AssignmentStatus` enum must define: `DRAFT`, `PUBLISHED`, `CLOSED` |
-| FR-AL2 | Valid transitions: DRAFT → [PUBLISHED, CLOSED]; PUBLISHED → [CLOSED]; CLOSED → [] |
-| FR-AL3 | `PublishAssignmentAction` must guard that status is DRAFT (throw `RejectedException` otherwise) |
-| FR-AL4 | `PublishAssignmentAction` must dispatch `AssignmentPublished` event |
-| FR-AL5 | `PublishAssignmentAction` must send `AssignmentNotification` to all students registered for the internship |
-| FR-AL6 | `NotifyOnAssignmentPublished` listener must notify the assignment creator |
+| FR-T657Z-T657Z-AL1 | `AssignmentStatus` enum must define: `DRAFT`, `PUBLISHED`, `CLOSED` |
+| FR-T657Z-T657Z-AL2 | Valid transitions: DRAFT → [PUBLISHED, CLOSED]; PUBLISHED → [CLOSED]; CLOSED → [] |
+| FR-T657Z-T657Z-AL3 | `PublishAssignmentAction` must guard that status is DRAFT (throw `RejectedException` otherwise) |
+| FR-T657Z-T657Z-AL4 | `PublishAssignmentAction` must dispatch `AssignmentPublished` event |
+| FR-T657Z-T657Z-AL5 | `PublishAssignmentAction` must send `AssignmentNotification` to all students registered for the internship |
+| FR-T657Z-T657Z-AL6 | `NotifyOnAssignmentPublished` listener must notify the assignment creator |
 
 ### Student Submission
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-SS1 | `SubmitAssignment` must be accessible at route `/student/assignments` with `auth` and `role:student` middleware |
-| FR-SS2 | `SubmitAssignmentAction` must guard: assignment is PUBLISHED (throw `RejectedException` otherwise) |
-| FR-SS3 | `SubmitAssignmentAction` must guard: assignment is not overdue (use `AssignmentRules::isOverdue()`) |
-| FR-SS4 | `SubmitAssignmentAction` must guard: student has active/placed registration |
-| FR-SS5 | `SubmitAssignmentAction` must guard: no existing submission in SUBMITTED or GRADED status |
-| FR-SS6 | If existing submission is REVISION_REQUIRED: update content, transition to SUBMITTED, clear feedback |
-| FR-SS7 | `Submission` model must enforce unique constraint on `(assignment_id, registration_id)` |
-| FR-SS8 | `SubmitAssignmentData` DTO must contain `content` (string); file upload handled separately via MediaLibrary |
-| FR-SS9 | File uploads must accept: pdf, doc, docx, zip, ppt, pptx; max 10MB |
-| FR-SS10 | Content must be minimum 20 characters |
+| FR-T657Z-T657Z-SS1 | `SubmitAssignment` must be accessible at route `/student/assignments` with `auth` and `role:student` middleware |
+| FR-T657Z-T657Z-SS2 | `SubmitAssignmentAction` must guard: assignment is PUBLISHED (throw `RejectedException` otherwise) |
+| FR-T657Z-T657Z-SS3 | `SubmitAssignmentAction` must guard: assignment is not overdue (use `AssignmentRules::isOverdue()`) |
+| FR-T657Z-T657Z-SS4 | `SubmitAssignmentAction` must guard: student has active/placed registration |
+| FR-T657Z-T657Z-SS5 | `SubmitAssignmentAction` must guard: no existing submission in SUBMITTED or GRADED status |
+| FR-T657Z-T657Z-SS6 | If existing submission is REVISION_REQUIRED: update content, transition to SUBMITTED, clear feedback |
+| FR-T657Z-T657Z-SS7 | `Submission` model must enforce unique constraint on `(assignment_id, registration_id)` |
+| FR-T657Z-T657Z-SS8 | `SubmitAssignmentData` DTO must contain `content` (string); file upload handled separately via MediaLibrary |
+| FR-T657Z-T657Z-SS9 | File uploads must accept: pdf, doc, docx, zip, ppt, pptx; max 10MB |
+| FR-T657Z-T657Z-SS10 | Content must be minimum 20 characters |
 
 ### Grading
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-GD1 | `SubmissionGrading` must be accessible at routes for admin, teacher, and supervisor roles |
-| FR-GD2 | `GradeSubmissionAction` must validate score range: 0–100 (throw `RejectedException` otherwise) |
-| FR-GD3 | `GradeSubmissionAction` must set `score`, `feedback`, `status=GRADED`, `graded_by`, `graded_at` |
-| FR-GD4 | `GradeSubmissionAction` must log `submission_graded` |
-| FR-GD5 | `SubmissionGrading` must filter submissions by: status (SUBMITTED, REVISION_REQUIRED), search (student name), assignment, status filter |
+| FR-T657Z-T657Z-GD1 | `SubmissionGrading` must be accessible at routes for admin, teacher, and supervisor roles |
+| FR-T657Z-T657Z-GD2 | `GradeSubmissionAction` must validate score range: 0–100 (throw `RejectedException` otherwise) |
+| FR-T657Z-T657Z-GD3 | `GradeSubmissionAction` must set `score`, `feedback`, `status=GRADED`, `graded_by`, `graded_at` |
+| FR-T657Z-T657Z-GD4 | `GradeSubmissionAction` must log `submission_graded` |
+| FR-T657Z-T657Z-GD5 | `SubmissionGrading` must filter submissions by: status (SUBMITTED, REVISION_REQUIRED), search (student name), assignment, status filter |
 
 ### Revision Request
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RV1 | `RequestSubmissionRevisionAction` must guard status is SUBMITTED (throw `RejectedException` otherwise) |
-| FR-RV2 | `RequestSubmissionRevisionAction` must set status to REVISION_REQUIRED and store feedback |
-| FR-RV3 | `RequestSubmissionRevisionAction` must dispatch `SubmissionRevisionRequested` event |
-| FR-RV4 | Feedback must be minimum 10 characters for revision request |
+| FR-T657Z-T657Z-RV1 | `RequestSubmissionRevisionAction` must guard status is SUBMITTED (throw `RejectedException` otherwise) |
+| FR-T657Z-T657Z-RV2 | `RequestSubmissionRevisionAction` must set status to REVISION_REQUIRED and store feedback |
+| FR-T657Z-T657Z-RV3 | `RequestSubmissionRevisionAction` must dispatch `SubmissionRevisionRequested` event |
+| FR-T657Z-T657Z-RV4 | Feedback must be minimum 10 characters for revision request |
 
 ### Verification
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-VF1 | `VerifySubmissionAction` must set status to `verified`, `verified_by`, `verified_at` |
-| FR-VF2 | Verification must be available to admin, teacher, and supervisor (via mentor proxy) |
+| FR-T657Z-T657Z-VF1 | `VerifySubmissionAction` must set status to `verified`, `verified_by`, `verified_at` |
+| FR-T657Z-T657Z-VF2 | Verification must be available to admin, teacher, and supervisor (via mentor proxy) |
 
 ### Notifications
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-NF1 | `AssignmentNotification` must notify students on assignment publish (channels: mail, broadcast, database) |
-| FR-NF2 | `SubmissionFeedbackNotification` must notify students on grading or revision request |
-| FR-NF3 | Notifications must implement `ShouldQueue` for async delivery |
+| FR-T657Z-T657Z-NF1 | `AssignmentNotification` must notify students on assignment publish (channels: mail, broadcast, database) |
+| FR-T657Z-T657Z-NF2 | `SubmissionFeedbackNotification` must notify students on grading or revision request |
+| FR-T657Z-T657Z-NF3 | Notifications must implement `ShouldQueue` for async delivery |
 
 ---
 
@@ -226,21 +226,21 @@ automated enforcement, teachers must manually check dates and students may unkno
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All mutations must be authorized via `AssignmentPolicy` or `SubmissionPolicy` |
-| NFR-S2 | `SubmissionPolicy` must enforce student-only create, owner-only update (when SUBMITTED), admin-only delete |
-| NFR-S3 | Deadline enforcement must be checked at Action layer, not just UI |
-| NFR-S4 | Cross-Role Proxy must be respected for supervisor verification via `HasMentorProxy` trait |
-| NFR-P1 | Student assignment list must load in < 500ms |
-| NFR-P2 | Submission grading list with JOINs must load in < 1s |
-| NFR-P3 | File upload processing must complete in < 5s for 10MB files |
-| NFR-R1 | Submission creation must be wrapped in a database transaction |
-| NFR-R2 | Unique constraint on `(assignment_id, registration_id)` must prevent duplicate submissions at DB level |
-| NFR-U1 | File upload must show progress indicator during upload |
-| NFR-U2 | Revision feedback must be prominently displayed on student submission view |
-| NFR-U3 | Assignment due dates must display in the user's local timezone |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-T657Z-T657Z-S1 | All mutations must be authorized via `AssignmentPolicy` or `SubmissionPolicy` |
+| NFR-T657Z-T657Z-S2 | `SubmissionPolicy` must enforce student-only create, owner-only update (when SUBMITTED), admin-only delete |
+| NFR-T657Z-T657Z-S3 | Deadline enforcement must be checked at Action layer, not just UI |
+| NFR-T657Z-T657Z-S4 | Cross-Role Proxy must be respected for supervisor verification via `HasMentorProxy` trait |
+| NFR-T657Z-T657Z-P1 | Student assignment list must load in < 500ms |
+| NFR-T657Z-T657Z-P2 | Submission grading list with JOINs must load in < 1s |
+| NFR-T657Z-T657Z-P3 | File upload processing must complete in < 5s for 10MB files |
+| NFR-T657Z-T657Z-R1 | Submission creation must be wrapped in a database transaction |
+| NFR-T657Z-T657Z-R2 | Unique constraint on `(assignment_id, registration_id)` must prevent duplicate submissions at DB level |
+| NFR-T657Z-T657Z-U1 | File upload must show progress indicator during upload |
+| NFR-T657Z-T657Z-U2 | Revision feedback must be prominently displayed on student submission view |
+| NFR-T657Z-T657Z-U3 | Assignment due dates must display in the user's local timezone |
+| NFR-T657Z-T657Z-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-T657Z-T657Z-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-T657Z-T657Z-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -271,6 +271,7 @@ App\Assignment\Models\Assignment
              creator() BelongsTo User, document() BelongsTo Document
   Bridge: asAssignmentRules() → AssignmentRules
   Factory: AssignmentFactory
+
 ```
 
 ### Submission Model
@@ -288,6 +289,7 @@ App\Assignment\Submission\Models\Submission
   Media: file (single)
   Unique: (assignment_id, registration_id)
   Factory: SubmissionFactory
+
 ```
 
 ### AssignmentRules Entity
@@ -297,6 +299,7 @@ App\Assignment\Entities\AssignmentRules extends BaseEntity (final readonly)
   Constructor: (bool $isMandatory, ?Carbon $dueDate)
   Factory: fromModel(Model)
   Methods: isMandatory(): bool, isOverdue(Carbon $now): bool
+
 ```
 
 ### SubmissionState Entity
@@ -306,6 +309,7 @@ App\Assignment\Submission\Entities\SubmissionState extends BaseEntity (final rea
   Constructor: (SubmissionStatus $status)
   Factory: fromModel(Model)
   Methods: canBeEdited(): bool, isVerified(): bool
+
 ```
 
 ### Enums
@@ -321,6 +325,7 @@ App\Assignment\Submission\Enums\SubmissionStatus: string
   Cases: DRAFT='draft', SUBMITTED='submitted', VERIFIED='verified', GRADED='graded', REVISION_REQUIRED='revision_required'
   Transitions: DRAFT→[SUBMITTED], SUBMITTED→[VERIFIED, GRADED, REVISION_REQUIRED],
                REVISION_REQUIRED→[SUBMITTED], VERIFIED→[], GRADED→[]
+
 ```
 
 ### DTO
@@ -328,6 +333,7 @@ App\Assignment\Submission\Enums\SubmissionStatus: string
 ```
 App\Assignment\Submission\Data\SubmitAssignmentData extends BaseData
   Properties: content: string
+
 ```
 
 ### Actions
@@ -415,6 +421,7 @@ submissions:
   timestamps
   Unique: (assignment_id, registration_id)
   Indexes: (student_id, status), (assignment_id, status), (registration_id, status), status
+
 ```
 
 ---

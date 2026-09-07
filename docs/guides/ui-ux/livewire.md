@@ -8,6 +8,19 @@ from core concepts to advanced patterns, aligned with Internara's architecture.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Table of Contents
 
 1. [Core Concepts & Architecture](#core-concepts--architecture)
@@ -38,6 +51,7 @@ Browser (Blade + wire:* directives)
   ↔ AJAX requests
     ↔ Livewire Component (PHP class with properties/methods)
       ↔ Laravel (Eloquent, Validation, Auth, etc.)
+
 ```
 
 1. Component's `render()` method returns a Blade view
@@ -71,6 +85,7 @@ class ListRecords extends BaseRecordManager
         ];
     }
 }
+
 ```
 
 ---
@@ -100,12 +115,14 @@ new class extends Component {
     <input wire:model="title" type="text">
     <button wire:click="save">Save</button>
 </div>
+
 ```
 
 #### Multi-File Components (MFC)
 
 ```shell
 php artisan make:livewire post.create --mfc
+
 ```
 
 ```
@@ -116,6 +133,7 @@ resources/views/components/post/⚡create/
 ├── create.css          # Scoped styles (optional)
 ├── create.global.css   # Global styles (optional)
 └── create.test.php     # Pest test (optional)
+
 ```
 
 #### Class-Based Components (v3-style, still supported)
@@ -134,6 +152,7 @@ class CreatePost extends Component
         return view('livewire.create-post');
     }
 }
+
 ```
 
 ### Lifecycle Hooks
@@ -158,6 +177,7 @@ public function updatedSearch($value)
     // Called whenever $search is updated
     $this->results = Post::where('title', 'like', "%{$value}%")->get();
 }
+
 ```
 
 ---
@@ -170,6 +190,7 @@ public function updatedSearch($value)
 <input type="text" wire:model="title">
 <textarea wire:model="content"></textarea>
 <input type="checkbox" wire:model="active">
+
 ```
 
 ### Modifiers
@@ -194,6 +215,7 @@ public function posts()
 {
     return Auth::user()->posts;
 }
+
 ```
 
 Accessed in Blade as `$this->posts` — cached for the request lifecycle.
@@ -202,6 +224,7 @@ Accessed in Blade as `$this->posts` — cached for the request lifecycle.
 @foreach ($this->posts as $post)
     <div>{{ $post->title }}</div>
 @endforeach
+
 ```
 
 ### Reactive Properties (v4)
@@ -216,6 +239,7 @@ public function updatedSearch($value)
 {
     // Called whenever $search is updated
 }
+
 ```
 
 ### `wire:key` in Loops
@@ -228,6 +252,7 @@ Always use `wire:key` in loops to help Livewire track DOM elements:
         {{ $post->title }}
     </div>
 @endforeach
+
 ```
 
 ---
@@ -246,6 +271,7 @@ Always use `wire:key` in loops to help Livewire track DOM elements:
         Save
     </button>
 </form>
+
 ```
 
 ```php
@@ -259,6 +285,7 @@ public function save()
     Post::create($validated);
     return $this->redirect('/posts');
 }
+
 ```
 
 ### `#[Validate]` Attribute — Co-located Rules
@@ -280,6 +307,7 @@ class CreatePost extends Component
         // ...
     }
 }
+
 ```
 
 **Parameters:**
@@ -292,6 +320,7 @@ class CreatePost extends Component
 
 ```shell
 php artisan livewire:form PostForm
+
 ```
 
 ```php
@@ -314,6 +343,7 @@ class PostForm extends Form
         Post::create($this->all());
     }
 }
+
 ```
 
 ```php
@@ -325,11 +355,13 @@ public function save()
     $this->form->store();
     return $this->redirect('/posts');
 }
+
 ```
 
 ```blade
 <input wire:model="form.title">
 @error('form.title') {{ $message }} @enderror
+
 ```
 
 ### Real-Time Validation
@@ -340,12 +372,14 @@ public function save()
 
 {{-- Validates when field loses focus --}}
 <input wire:model.live.blur="email">
+
 ```
 
 ### Validation Error Display with TallStackUI
 
 ```blade
 <x-input label="Title" wire:model="title" :errors="$errors" />
+
 ```
 
 ---
@@ -357,6 +391,7 @@ public function save()
 ```php
 // Dispatch from component
 $this->dispatch('post-created', title: $post->title);
+
 ```
 
 ### Listening for Events
@@ -369,6 +404,7 @@ public function refreshList($title)
 {
     // Called when 'post-created' is dispatched
 }
+
 ```
 
 ### Dynamic Event Names
@@ -380,6 +416,7 @@ $this->dispatch("post-updated.{$post->id}");
 // Listen
 #[On('post-updated.{post.id}')]
 public function refreshPost() {}
+
 ```
 
 ### Parent-Child Communication
@@ -388,6 +425,7 @@ public function refreshPost() {}
 {{-- Listen to child events from parent --}}
 <livewire:edit-post @saved="$refresh">
 <livewire:edit-post @saved="close($event.detail.postId)">
+
 ```
 
 ### Action Directives
@@ -401,11 +439,13 @@ public function refreshPost() {}
 | `wire:transitionend="method"` | Any browser event |
 
 **Modifiers:**
+
 ```blade
 <button wire:click.prevent="save">Save</button>
 <button wire:click.stop="save">Save</button>
 <button wire:click.outside="close">Close</button>
 <input wire:keydown.ctrl.enter="submit">
+
 ```
 
 ### Passing Parameters
@@ -413,6 +453,7 @@ public function refreshPost() {}
 ```blade
 <button wire:click="delete({{ $post->id }})">Delete</button>
 <button wire:click="delete(post: {{ $post->id }})">Delete</button>
+
 ```
 
 ```php
@@ -421,6 +462,7 @@ public function delete(Post $post)
 {
     $post->delete();
 }
+
 ```
 
 ---
@@ -444,6 +486,7 @@ class UploadPhoto extends Component
         $this->photo->store('photos');
     }
 }
+
 ```
 
 ```blade
@@ -452,6 +495,7 @@ class UploadPhoto extends Component
 @if ($photo)
     <img src="{{ $photo->temporaryUrl() }}" alt="Preview">
 @endif
+
 ```
 
 ### Multiple Uploads
@@ -466,6 +510,7 @@ public function save()
         $photo->store('photos');
     }
 }
+
 ```
 
 ### Upload Configuration
@@ -480,6 +525,7 @@ public function save()
     'preview_mimes' => ['png', 'gif', 'bmp', 'svg', 'wav', 'mp4'],
     'max_upload_time' => 5,
 ],
+
 ```
 
 ### TallStackUI Upload Component
@@ -487,6 +533,7 @@ public function save()
 ```blade
 <x-upload label="Documents" wire:model="documents" multiple
     accept="application/pdf,image/*" hint="Max 10MB per file" />
+
 ```
 
 ---
@@ -520,6 +567,7 @@ public function save()
         console.log('increment');
     }
 </script>
+
 ```
 
 ### `@script` and `@assets` Directives
@@ -536,6 +584,7 @@ public function save()
     new Pikaday({ field: $wire.$el.querySelector('[data-picker]') });
 </script>
 @endscript
+
 ```
 
 ### Interceptors
@@ -554,6 +603,7 @@ $wire.interceptMessage(callback);
 
 // Request interceptors
 $wire.interceptRequest(callback);
+
 ```
 
 ### Script Timing
@@ -574,6 +624,7 @@ Scripts run when markup is in the DOM but **before** Alpine initializes:
 <div x-intersect="$wire.loadData()">
     Loading...
 </div>
+
 ```
 
 ### Polling
@@ -588,6 +639,7 @@ Scripts run when markup is in the DOM but **before** Alpine initializes:
 <div wire:poll.keep-alive.15s>
     {{ $this->notificationCount }}
 </div>
+
 ```
 
 ### Debouncing & Throttling
@@ -598,6 +650,7 @@ Scripts run when markup is in the DOM but **before** Alpine initializes:
 
 {{-- Throttle to once per second --}}
 <input wire:model.throttle.1s="search">
+
 ```
 
 ### Caching Computed Properties
@@ -608,6 +661,7 @@ public function expensiveCalculation()
 {
     return Cache::remember('key', 300, fn() => /* ... */);
 }
+
 ```
 
 ### Eager Loading & N+1 Prevention
@@ -618,6 +672,7 @@ public function mount()
 {
     $this->posts = Post::with('author', 'comments')->get();
 }
+
 ```
 
 ### Defer Loading
@@ -627,6 +682,7 @@ public function mount()
 <div wire:init="loadData">
     Loading...
 </div>
+
 ```
 
 ---
@@ -638,6 +694,7 @@ public function mount()
 ```shell
 composer require pestphp/pest --dev --with-all-dependencies
 ./vendor/bin/pest --init
+
 ```
 
 ### Configuring Pest for View-Based Components
@@ -646,6 +703,7 @@ composer require pestphp/pest --dev --with-all-dependencies
 // tests/Pest.php
 pest()->extend(Tests\TestCase::class)
     ->in('Feature', '../resources/views');
+
 ```
 
 ```xml
@@ -653,6 +711,7 @@ pest()->extend(Tests\TestCase::class)
 <testsuite name="Components">
     <directory suffix=".test.php">resources/views</directory>
 </testsuite>
+
 ```
 
 ### Basic Test
@@ -662,6 +721,7 @@ it('renders successfully', function () {
     Livewire::test('post.create')
         ->assertStatus(200);
 });
+
 ```
 
 ### Testing Interactions
@@ -675,6 +735,7 @@ it('can create a post', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/posts');
 });
+
 ```
 
 ### Testing Validation
@@ -686,6 +747,7 @@ it('requires title', function () {
         ->call('save')
         ->assertHasErrors(['title' => 'required']);
 });
+
 ```
 
 ### Testing Views
@@ -698,6 +760,7 @@ it('displays posts', function () {
         ->assertSee('My Post')
         ->assertViewHas('posts', fn($posts) => $posts->count() === 1);
 });
+
 ```
 
 ### Testing with Authentication
@@ -715,6 +778,7 @@ it('shows dashboard for authenticated users', function () {
         ->actingAs($user)
         ->assertSee('Welcome');
 });
+
 ```
 
 ### Browser Testing (Playwright)
@@ -723,6 +787,7 @@ it('shows dashboard for authenticated users', function () {
 composer require pestphp/pest-plugin-browser --dev
 npm install playwright@latest
 npx playwright install
+
 ```
 
 ```php
@@ -733,6 +798,7 @@ it('can create a post in browser', function () {
         ->press('Save')
         ->assertSee('Post created successfully');
 });
+
 ```
 
 ---
@@ -746,6 +812,7 @@ The default component format is now single-file — PHP class + Blade template i
 ### 2. Multi-File Components
 
 Split components into separate files for better organization:
+
 ```
 ⚡create/
 ├── create.php
@@ -753,6 +820,7 @@ Split components into separate files for better organization:
 ├── create.js
 ├── create.css
 └── create.test.php
+
 ```
 
 ### 3. New Attribute System
@@ -779,6 +847,7 @@ $wire.$dispatch('event', data)
 $wire.$on('event', callback)
 $wire.$nextTick(() => { /* after DOM update */ })
 $wire.intercept(callback)
+
 ```
 
 ### 5. Interceptors
@@ -791,12 +860,14 @@ Three levels of request interception:
 ### 6. Form Objects
 
 Extracted form logic with `Livewire\Form` base class:
+
 ```php
 class PostForm extends Form
 {
     #[Validate('required')]
     public $title = '';
 }
+
 ```
 
 ### 7. Route Model Binding in Actions
@@ -806,6 +877,7 @@ public function delete(Post $post)  // Auto-resolved
 {
     $post->delete();
 }
+
 ```
 
 ### 8. Layout & Title Attributes
@@ -815,6 +887,7 @@ new #[Layout('layouts::dashboard')] #[Title('Create Post')] class extends Compon
 {
     // ...
 }
+
 ```
 
 ### 9. Improved Script Timing
@@ -831,6 +904,7 @@ Load external scripts/styles that are only loaded once per page regardless of co
 <nav wire:navigate>
     <a href="/dashboard">Dashboard</a>  <!-- No full page reload -->
 </nav>
+
 ```
 
 ### 12. `x-intersect` for Lazy Loading
@@ -839,6 +913,7 @@ Load external scripts/styles that are only loaded once per page regardless of co
 <div x-intersect="$wire.loadMore()">
     Loading more...
 </div>
+
 ```
 
 ---
@@ -860,6 +935,7 @@ public function save()
     ));
     $this->redirectRoute('posts.index');
 }
+
 ```
 
 ### 2. Use `#[Validate]` for Real-Time Validation
@@ -869,6 +945,7 @@ Better UX with minimal code:
 ```php
 #[Validate('required|min:3')]
 public $title = '';
+
 ```
 
 ### 3. Extract Form Objects for Large Forms
@@ -877,6 +954,7 @@ Cleaner components, reusable logic:
 
 ```php
 public PostForm $form;
+
 ```
 
 ### 4. Use `wire:model.live` Sparingly
@@ -889,6 +967,7 @@ Only when real-time validation is needed:
 
 {{-- Avoid for regular forms --}}
 <input wire:model="title">
+
 ```
 
 ### 5. Leverage `#[Computed]`
@@ -904,6 +983,7 @@ public function stats(): array
         'published' => Post::published()->count(),
     ];
 }
+
 ```
 
 ### 6. Use `wire:key` in Loops
@@ -916,6 +996,7 @@ Helps Livewire track DOM elements:
         {{ $post->title }}
     </div>
 @endforeach
+
 ```
 
 ### 7. Prefer Events for Cross-Component Communication
@@ -929,6 +1010,7 @@ $this->dispatch('post-created');
 // Listen
 #[On('post-created')]
 public function refresh() {}
+
 ```
 
 ### 8. Use `actingAs()` in Tests
@@ -939,6 +1021,7 @@ Simplifies authenticated testing:
 Livewire::test('dashboard')
     ->actingAs(User::factory()->create())
     ->assertSee('Welcome');
+
 ```
 
 ### 9. Write Spec-Traceable Tests
@@ -949,6 +1032,7 @@ Every test maps to a requirement ID:
 it('SE5Q9-FR-L1: renders record manager with search and pagination', function () {
     // ...
 });
+
 ```
 
 ### 10. Use Interceptors for Cross-Cutting Concerns
@@ -960,6 +1044,7 @@ $wire.intercept(({ onSend, onFinish }) => {
     onSend(() => showLoading());
     onFinish(() => hideLoading());
 });
+
 ```
 
 ---

@@ -70,7 +70,7 @@ only when users report errors.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Triggers Manual Cleanup
+### UC-E1MSJ-1 — Admin Triggers Manual Cleanup
 
 **Actor:** Admin
 **Preconditions:** Admin authenticated, system installed
@@ -82,7 +82,7 @@ only when users report errors.
 4. Results reported via SmartLogger
 **Postconditions:** Stale data removed, disk usage reduced
 
-### UC-2 — System Auto-Inactivates Dormant Accounts
+### UC-E1MSJ-2 — System Auto-Inactivates Dormant Accounts
 
 **Actor:** Scheduler (daily)
 **Preconditions:** Users exist with last_login_at older than 90 days
@@ -93,7 +93,7 @@ only when users report errors.
 4. Logs transitions for audit
 **Postconditions:** Dormant accounts locked, audit trail updated
 
-### UC-3 — Admin Mass-Archives Cohort
+### UC-E1MSJ-3 — Admin Mass-Archives Cohort
 
 **Actor:** Admin (via Student Manager)
 **Preconditions:** Cohort completed PKL, placement finalized
@@ -105,7 +105,7 @@ only when users report errors.
 5. Count returned, logged via SmartLogger
 **Postconditions:** Student accounts archived, login blocked, count reported
 
-### UC-4 — Admin Runs Health Check
+### UC-E1MSJ-4 — Admin Runs Health Check
 
 **Actor:** Admin
 **Preconditions:** System installed
@@ -118,7 +118,7 @@ only when users report errors.
 4. FAIL if any check fails, SUCCESS if all pass
 **Postconditions:** Admin informed of system health status
 
-### UC-5 — Scheduler Pre-Warms Cache
+### UC-E1MSJ-5 — Scheduler Pre-Warms Cache
 
 **Actor:** Scheduler (hourly)
 **Preconditions:** Application running
@@ -136,67 +136,67 @@ only when users report errors.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-CL1  | `system:cleanup` must orchestrate sub-tasks: `auth:clear-resets`, `cache:prune-stale-tags`, `queue:prune-failed`, `activitylog:clean`, `media-library:clean` |
-| FR-CL2  | `--force` flag must skip confirmation prompt |
-| FR-CL3  | `--log-retention=N` flag must prune `storage/logs/laravel-*.log` files older than N days (default: 30) |
-| FR-CL4  | Each sub-task failure must be logged via SmartLogger but not halt subsequent tasks |
-| FR-CL5  | Cleanup completion must be logged via SmartLogger with module `system`, event `cleanup.completed` |
+| FR-E1MSJ-CL1  | `system:cleanup` must orchestrate sub-tasks: `auth:clear-resets`, `cache:prune-stale-tags`, `queue:prune-failed`, `activitylog:clean`, `media-library:clean` |
+| FR-E1MSJ-CL2  | `--force` flag must skip confirmation prompt |
+| FR-E1MSJ-CL3  | `--log-retention=N` flag must prune `storage/logs/laravel-*.log` files older than N days (default: 30) |
+| FR-E1MSJ-CL4  | Each sub-task failure must be logged via SmartLogger but not halt subsequent tasks |
+| FR-E1MSJ-CL5  | Cleanup completion must be logged via SmartLogger with module `system`, event `cleanup.completed` |
 
 ### PruneNotificationsCommand
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-PN1  | `notifications:prune` must delete notifications where `is_read = true` AND `created_at < cutoff` |
-| FR-PN2  | `--days=N` flag must set retention period (default: 30, minimum: 1) |
-| FR-PN3  | Must reject days < 1 with error message |
+| FR-E1MSJ-PN1  | `notifications:prune` must delete notifications where `is_read = true` AND `created_at < cutoff` |
+| FR-E1MSJ-PN2  | `--days=N` flag must set retention period (default: 30, minimum: 1) |
+| FR-E1MSJ-PN3  | Must reject days < 1 with error message |
 
 ### AutoInactivateAccounts
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-AI1  | `accounts:auto-inactivate` must find users where `last_login_at < now - N days` (default: 90) |
-| FR-AI2  | Must skip super_admin role and protected status |
-| FR-AI3  | Must transition eligible accounts to INACTIVE status with reason |
-| FR-AI4  | Scheduled daily at 03:00 via `routes/console.php` |
+| FR-E1MSJ-AI1  | `accounts:auto-inactivate` must find users where `last_login_at < now - N days` (default: 90) |
+| FR-E1MSJ-AI2  | Must skip super_admin role and protected status |
+| FR-E1MSJ-AI3  | Must transition eligible accounts to INACTIVE status with reason |
+| FR-E1MSJ-AI4  | Scheduled daily at 03:00 via `routes/console.php` |
 
 ### ArchiveStudentAccounts
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-AS1  | `ArchiveStudentAccountsAction` must chunk through query results (chunk size: 100) |
-| FR-AS2  | Must skip super_admin role users |
-| FR-AS3  | Must transition each user to ARCHIVED status with reason "Mass archived via Student Manager" |
-| FR-AS4  | Must log `student_accounts_archived` event with count via SmartLogger |
-| FR-AS5  | `ArchiveStudentAccountsJob` must accept `studentIds` array, dispatch on queue |
-| FR-AS6  | Job must retry up to 3 times with backoff [2, 10, 30] seconds |
-| FR-AS7  | Job must use `SetUserStatusAction` (not direct model mutation) for each user |
+| FR-E1MSJ-AS1  | `ArchiveStudentAccountsAction` must chunk through query results (chunk size: 100) |
+| FR-E1MSJ-AS2  | Must skip super_admin role users |
+| FR-E1MSJ-AS3  | Must transition each user to ARCHIVED status with reason "Mass archived via Student Manager" |
+| FR-E1MSJ-AS4  | Must log `student_accounts_archived` event with count via SmartLogger |
+| FR-E1MSJ-AS5  | `ArchiveStudentAccountsJob` must accept `studentIds` array, dispatch on queue |
+| FR-E1MSJ-AS6  | Job must retry up to 3 times with backoff [2, 10, 30] seconds |
+| FR-E1MSJ-AS7  | Job must use `SetUserStatusAction` (not direct model mutation) for each user |
 
 ### SystemCacheWarmCommand
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-CW1  | `system:cache-warm` must pre-warm: settings cache, brand cache, config cache, view cache, event cache |
-| FR-CW2  | Each warm step must be reported as a task with success/failure |
-| FR-CW3  | Completion must be logged via SmartLogger with module `system`, event `cache.warm.completed` |
-| FR-CW4  | Scheduled hourly via `routes/console.php` |
+| FR-E1MSJ-CW1  | `system:cache-warm` must pre-warm: settings cache, brand cache, config cache, view cache, event cache |
+| FR-E1MSJ-CW2  | Each warm step must be reported as a task with success/failure |
+| FR-E1MSJ-CW3  | Completion must be logged via SmartLogger with module `system`, event `cache.warm.completed` |
+| FR-E1MSJ-CW4  | Scheduled hourly via `routes/console.php` |
 
 ### SystemHealthCommand
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-HC1  | `system:health` must check 14 subsystems: environment (.env exists), setup status, PHP version, required extensions, recommended extensions, memory limit, database connectivity, migration status, storage writability, disk space, queue status, cache driver, app key, storage symlink, maintenance mode |
-| FR-HC2  | `--json` flag must output results as JSON array |
-| FR-HC3  | Each check returns status: OK, WARN, or FAIL with detail string |
-| FR-HC4  | Command exit code must be FAILURE if any check returns FAIL |
-| FR-HC5  | Disk space thresholds: >= 95% = FAIL, >= 85% = WARN |
-| FR-HC6  | Queue threshold: > 100 failed jobs = WARN |
+| FR-E1MSJ-HC1  | `system:health` must check 14 subsystems: environment (.env exists), setup status, PHP version, required extensions, recommended extensions, memory limit, database connectivity, migration status, storage writability, disk space, queue status, cache driver, app key, storage symlink, maintenance mode |
+| FR-E1MSJ-HC2  | `--json` flag must output results as JSON array |
+| FR-E1MSJ-HC3  | Each check returns status: OK, WARN, or FAIL with detail string |
+| FR-E1MSJ-HC4  | Command exit code must be FAILURE if any check returns FAIL |
+| FR-E1MSJ-HC5  | Disk space thresholds: >= 95% = FAIL, >= 85% = WARN |
+| FR-E1MSJ-HC6  | Queue threshold: > 100 failed jobs = WARN |
 
 ### PulseRecordSnapshotsCommand
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-PS1  | `pulse:record-snapshots` must invoke `RegistrationRecorder::recordSnapshot()` and `SystemRecorder::recordSnapshot()` |
-| FR-PS2  | Snapshots feed custom Pulse dashboard cards |
+| FR-E1MSJ-PS1  | `pulse:record-snapshots` must invoke `RegistrationRecorder::recordSnapshot()` and `SystemRecorder::recordSnapshot()` |
+| FR-E1MSJ-PS2  | Snapshots feed custom Pulse dashboard cards |
 
 ---
 
@@ -204,13 +204,13 @@ only when users report errors.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-M1  | All commands must declare `strict_types=1` |
-| NFR-M2  | All public methods must have PHPDoc blocks |
-| NFR-L1  | All cleanup operations must log via SmartLogger (not `logger()` directly) |
-| NFR-L2  | PII must be masked in all log output via `withPiiMasking()` |
-| NFR-P1  | `ArchiveStudentAccountsAction` peak memory must not exceed 50MB for 500 users |
-| NFR-R1  | Sub-task failures in `SystemCleanupCommand` must not halt subsequent tasks |
-| NFR-R2  | `ArchiveStudentAccountsJob` must use queue (not synchronous) for large batches |
+| NFR-E1MSJ-M1  | All commands must declare `strict_types=1` |
+| NFR-E1MSJ-M2  | All public methods must have PHPDoc blocks |
+| NFR-E1MSJ-L1  | All cleanup operations must log via SmartLogger (not `logger()` directly) |
+| NFR-E1MSJ-L2  | PII must be masked in all log output via `withPiiMasking()` |
+| NFR-E1MSJ-P1  | `ArchiveStudentAccountsAction` peak memory must not exceed 50MB for 500 users |
+| NFR-E1MSJ-R1  | Sub-task failures in `SystemCleanupCommand` must not halt subsequent tasks |
+| NFR-E1MSJ-R2  | `ArchiveStudentAccountsJob` must use queue (not synchronous) for large batches |
 
 ---
 
@@ -240,6 +240,7 @@ class SystemCleanupCommand extends Command
         {--force : Do not ask for confirmation}
         {--log-retention=30 : Days to retain log files}';
 }
+
 ```
 
 ### PruneNotificationsCommand
@@ -251,6 +252,7 @@ class PruneNotificationsCommand extends Command
     protected $signature = 'notifications:prune
         {--days=30 : Delete read notifications older than this many days}';
 }
+
 ```
 
 ### AutoInactivateAccounts
@@ -262,6 +264,7 @@ class AutoInactivateAccounts extends Command
     protected $signature = 'accounts:auto-inactivate
         {--days=90 : Days of inactivity before auto-inactivation}';
 }
+
 ```
 
 ### ArchiveStudentAccountsAction
@@ -273,6 +276,7 @@ final class ArchiveStudentAccountsAction extends BaseCommandAction
     public function execute(Builder $query): int;
     // Returns count of archived users
 }
+
 ```
 
 ### ArchiveStudentAccountsJob
@@ -287,6 +291,7 @@ class ArchiveStudentAccountsJob implements ShouldQueue
     public function __construct(protected readonly array $studentIds) {}
     public function handle(SetUserStatusAction $setUserStatus): void;
 }
+
 ```
 
 ### SystemCacheWarmCommand
@@ -297,6 +302,7 @@ class SystemCacheWarmCommand extends Command
 {
     protected $signature = 'system:cache-warm';
 }
+
 ```
 
 ### SystemHealthCommand
@@ -308,6 +314,7 @@ class SystemHealthCommand extends Command
     protected $signature = 'system:health
         {--json : Output results as JSON}';
 }
+
 ```
 
 ### PulseRecordSnapshotsCommand
@@ -318,6 +325,7 @@ class PulseRecordSnapshotsCommand extends Command
 {
     protected $signature = 'pulse:record-snapshots';
 }
+
 ```
 
 ---

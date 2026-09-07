@@ -70,14 +70,14 @@ that must stay synchronized with the config.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Adds a new module |
-| UC-2 | Developer | Adds a submodule to an existing module |
-| UC-3 | System | App boot discovery |
-| UC-4 | System | Route auto-inclusion |
-| UC-5 | Developer | Cache clearing and rediscovery |
-| UC-6 | Developer | Disables discovery for a subsystem |
+| UC-I1BCV-1 | Developer | Adds a new module |
+| UC-I1BCV-2 | Developer | Adds a submodule to an existing module |
+| UC-I1BCV-3 | System | App boot discovery |
+| UC-I1BCV-4 | System | Route auto-inclusion |
+| UC-I1BCV-5 | Developer | Cache clearing and rediscovery |
+| UC-I1BCV-6 | Developer | Disables discovery for a subsystem |
 
-### UC-1 — Adding a New Module
+### UC-I1BCV-1 — Adding a New Module
 
 **Actor:** Developer
 
@@ -91,7 +91,7 @@ that must stay synchronized with the config.
 **Postconditions:** Module's Livewire components, policies, and Blade views are auto-discovered
 on next boot.
 
-### UC-2 — Adding a Submodule to Existing Module
+### UC-I1BCV-2 — Adding a Submodule to Existing Module
 
 **Actor:** Developer
 
@@ -103,7 +103,7 @@ on next boot.
 **Postconditions:** Submodule's Livewire components and policies are discovered with
 kebab-case submodule prefix in alias (e.g., `enrollment.placement.show`).
 
-### UC-3 — App Boot Discovery
+### UC-I1BCV-3 — App Boot Discovery
 
 **Actor:** Laravel framework (automatic)
 
@@ -118,7 +118,7 @@ kebab-case submodule prefix in alias (e.g., `enrollment.placement.show`).
 **Postconditions:** All Livewire components registered with aliases, all policies bound to
 models, all Blade view namespaces registered.
 
-### UC-4 — Route Auto-Inclusion
+### UC-I1BCV-4 — Route Auto-Inclusion
 
 **Actor:** Laravel router (automatic)
 
@@ -129,7 +129,7 @@ models, all Blade view namespaces registered.
 
 **Postconditions:** Module routes are available without manual editing of `routes/web.php`.
 
-### UC-5 — Cache Clearing and Rediscovery
+### UC-I1BCV-5 — Cache Clearing and Rediscovery
 
 **Actor:** Developer via CLI
 
@@ -142,7 +142,7 @@ models, all Blade view namespaces registered.
 
 **Postconditions:** All discovery caches are refreshed.
 
-### UC-6 — Disabling Discovery for a Subsystem
+### UC-I1BCV-6 — Disabling Discovery for a Subsystem
 
 **Actor:** Developer (rare)
 
@@ -160,76 +160,76 @@ models, all Blade view namespaces registered.
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-MR1 | `config/module.php` must define a `$modules` array with module keys and submodule arrays |
-| FR-MR2 | Module names must be PascalCase (e.g., `Core`, `Enrollment`, `SysAdmin`) |
-| FR-MR3 | Module names must be in dependency order (foundation → lifecycle → administration) |
-| FR-MR4 | Config must export `list` key (array of module names)                   |
-| FR-MR5 | Config must export `registry` key (full module → submodule mapping)     |
-| FR-MR6 | Config must export `test_dirs` key (non-module test directories)        |
-| FR-MR7 | Config must define `paths.base`, `paths.views`, `paths.routes`         |
-| FR-MR8 | Config must define `livewire`, `policies`, `views` discovery settings  |
+| FR-I1BCV-MR1 | `config/module.php` must define a `$modules` array with module keys and submodule arrays |
+| FR-I1BCV-MR2 | Module names must be PascalCase (e.g., `Core`, `Enrollment`, `SysAdmin`) |
+| FR-I1BCV-MR3 | Module names must be in dependency order (foundation → lifecycle → administration) |
+| FR-I1BCV-MR4 | Config must export `list` key (array of module names)                   |
+| FR-I1BCV-MR5 | Config must export `registry` key (full module → submodule mapping)     |
+| FR-I1BCV-MR6 | Config must export `test_dirs` key (non-module test directories)        |
+| FR-I1BCV-MR7 | Config must define `paths.base`, `paths.views`, `paths.routes`         |
+| FR-I1BCV-MR8 | Config must define `livewire`, `policies`, `views` discovery settings  |
 
 ### 4.2 Livewire Component Discovery
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-LW1 | Discovery must scan `app/{Module}/Livewire/**/*.php` for each registered module |
-| FR-LW2 | Discovery must skip `Concerns/` and `Traits/` subdirectories            |
-| FR-LW3 | Discovered components must be registered with `{kebab-module}.{kebab-class}` alias |
-| FR-LW4 | Submodule components must use `{kebab-module}.{kebab-submodule}.{kebab-class}` alias |
-| FR-LW5 | Only classes extending `Livewire\Component` must be registered          |
-| FR-LW6 | Discovery results must be cached for 24 hours under `module.discovered_livewire` |
-| FR-LW7 | Only PHP files within registered modules must be scanned                |
+| FR-I1BCV-LW1 | Discovery must scan `app/{Module}/Livewire/**/*.php` for each registered module |
+| FR-I1BCV-LW2 | Discovery must skip `Concerns/` and `Traits/` subdirectories            |
+| FR-I1BCV-LW3 | Discovered components must be registered with `{kebab-module}.{kebab-class}` alias |
+| FR-I1BCV-LW4 | Submodule components must use `{kebab-module}.{kebab-submodule}.{kebab-class}` alias |
+| FR-I1BCV-LW5 | Only classes extending `Livewire\Component` must be registered          |
+| FR-I1BCV-LW6 | Discovery results must be cached for 24 hours under `module.discovered_livewire` |
+| FR-I1BCV-LW7 | Only PHP files within registered modules must be scanned                |
 
 ### 4.3 Policy Discovery
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-P1 | Discovery must scan `app/{Module}/Policies/**/*.php` for each registered module |
-| FR-P2 | Discovery must skip `Concerns/` and `Traits/` subdirectories            |
-| FR-P3 | Only classes ending in `Policy` and extending `BasePolicy` must be registered |
-| FR-P4 | Policy must be bound to its corresponding model in `app/{Module}/Models/` |
-| FR-P5 | Submodule policies must bind to `app/{Module}/{Submodule}/Models/`      |
-| FR-P6 | Discovery results must be cached for 24 hours under `module.discovered_policies` |
-| FR-P7 | Cross-module policies must be registered manually in `AppServiceProvider` |
+| FR-I1BCV-P1 | Discovery must scan `app/{Module}/Policies/**/*.php` for each registered module |
+| FR-I1BCV-P2 | Discovery must skip `Concerns/` and `Traits/` subdirectories            |
+| FR-I1BCV-P3 | Only classes ending in `Policy` and extending `BasePolicy` must be registered |
+| FR-I1BCV-P4 | Policy must be bound to its corresponding model in `app/{Module}/Models/` |
+| FR-I1BCV-P5 | Submodule policies must bind to `app/{Module}/{Submodule}/Models/`      |
+| FR-I1BCV-P6 | Discovery results must be cached for 24 hours under `module.discovered_policies` |
+| FR-I1BCV-P7 | Cross-module policies must be registered manually in `AppServiceProvider` |
 
 ### 4.4 Blade View Namespace Registration
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-V1 | Discovery must scan `resources/views/{Module}/` for each registered module |
-| FR-V2 | Non-module directories must be excluded (`components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`, `vendor`) |
-| FR-V3 | Registered modules must be registered as anonymous component paths and view namespaces |
-| FR-V4 | Discovery results must be cached for 24 hours under `module.discovered_views` |
-| FR-V5 | Only directories within `registeredModules` must be registered          |
+| FR-I1BCV-V1 | Discovery must scan `resources/views/{Module}/` for each registered module |
+| FR-I1BCV-V2 | Non-module directories must be excluded (`components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`, `vendor`) |
+| FR-I1BCV-V3 | Registered modules must be registered as anonymous component paths and view namespaces |
+| FR-I1BCV-V4 | Discovery results must be cached for 24 hours under `module.discovered_views` |
+| FR-I1BCV-V5 | Only directories within `registeredModules` must be registered          |
 
 ### 4.5 Route Auto-Inclusion
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-R1 | `routes/web.php` must auto-include route files from `ModuleManager::names()` |
-| FR-R2 | Route file path must be `routes/web/{lowercase_module}.php`             |
-| FR-R3 | Non-existent route files must be silently skipped                        |
-| FR-R4 | Module names must be lowercased for file lookup                         |
+| FR-I1BCV-R1 | `routes/web.php` must auto-include route files from `ModuleManager::names()` |
+| FR-I1BCV-R2 | Route file path must be `routes/web/{lowercase_module}.php`             |
+| FR-I1BCV-R3 | Non-existent route files must be silently skipped                        |
+| FR-I1BCV-R4 | Module names must be lowercased for file lookup                         |
 
 ### 4.6 CLI Cache Clearing
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-CLI1 | `php artisan module:discover` must clear all three discovery caches     |
-| FR-CLI2 | Command must verify `AppServiceProvider` is loaded before discovery      |
-| FR-CLI3 | Command must log completion/failure via SmartLogger                     |
-| FR-CLI4 | Command must display task progress with translated status messages      |
+| FR-I1BCV-CLI1 | `php artisan module:discover` must clear all three discovery caches     |
+| FR-I1BCV-CLI2 | Command must verify `AppServiceProvider` is loaded before discovery      |
+| FR-I1BCV-CLI3 | Command must log completion/failure via SmartLogger                     |
+| FR-I1BCV-CLI4 | Command must display task progress with translated status messages      |
 
 ### 4.7 Test Directory Registration
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-T1 | `tests/Pest.php` must register test directories for all modules         |
-| FR-T2 | Module list in `tests/Pest.php` must be kept in sync with `config/module.php` |
-| FR-T3 | Non-module test directories (`Providers`, `Stubs`, `Support`) must also be registered |
-| FR-T4 | `config()` must not be used in `tests/Pest.php` (Pest boots before Laravel) |
-| FR-T5 | `php artisan module:discover` MUST exit `0` and emit a completion log via SmartLogger | |
+| FR-I1BCV-T1 | `tests/Pest.php` must register test directories for all modules         |
+| FR-I1BCV-T2 | Module list in `tests/Pest.php` must be kept in sync with `config/module.php` |
+| FR-I1BCV-T3 | Non-module test directories (`Providers`, `Stubs`, `Support`) must also be registered |
+| FR-I1BCV-T4 | `config()` must not be used in `tests/Pest.php` (Pest boots before Laravel) |
+| FR-I1BCV-T5 | `php artisan module:discover` MUST exit `0` and emit a completion log via SmartLogger | |
 
 ---
 
@@ -239,34 +239,34 @@ models, all Blade view namespaces registered.
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
-| NFR-P2 | Policy discovery must complete within 1 second on a cold cache       |
-| NFR-P3 | View namespace registration must complete within 1 second            |
-| NFR-P4 | Cached discovery must have zero filesystem overhead                  |
-| NFR-P5 | All three discovery methods must share the same module list from config (single read) |
+| NFR-I1BCV-P1 | Livewire discovery must complete within 2 seconds on a cold cache    |
+| NFR-I1BCV-P2 | Policy discovery must complete within 1 second on a cold cache       |
+| NFR-I1BCV-P3 | View namespace registration must complete within 1 second            |
+| NFR-I1BCV-P4 | Cached discovery must have zero filesystem overhead                  |
+| NFR-I1BCV-P5 | All three discovery methods must share the same module list from config (single read) |
 
 ### 5.2 Reliability
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-R1 | Discovery must not crash on malformed PHP files (graceful skip)      |
-| NFR-R2 | Cache must be cleared on `module:discover` and `config:clear`        |
-| NFR-R3 | Duplicate alias registration must not throw (last-write-wins)        |
+| NFR-I1BCV-R1 | Discovery must not crash on malformed PHP files (graceful skip)      |
+| NFR-I1BCV-R2 | Cache must be cleared on `module:discover` and `config:clear`        |
+| NFR-I1BCV-R3 | Duplicate alias registration must not throw (last-write-wins)        |
 
 ### 5.3 Maintainability
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-M1 | `tests/Pest.php` sync comment must reference `config/module.php`    |
-| NFR-M2 | `ModuleService` must use `ModuleManager::names()` for all module checks |
-| NFR-M3 | All discovery methods must be individually testable                   |
+| NFR-I1BCV-M1 | `tests/Pest.php` sync comment must reference `config/module.php`    |
+| NFR-I1BCV-M2 | `ModuleService` must use `ModuleManager::names()` for all module checks |
+| NFR-I1BCV-M3 | All discovery methods must be individually testable                   |
 
 ### 5.4 Security
 
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
-| NFR-S1 | Discovery must not register classes from unregistered directories    |
-| NFR-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
+| NFR-I1BCV-S1 | Discovery must not register classes from unregistered directories    |
+| NFR-I1BCV-S2 | Policy discovery must only bind policies extending `BasePolicy`      |
 
 ## Test Requirements
 
@@ -317,6 +317,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
         'exclude_directories' => ['components', 'emails', 'errors', 'layouts', 'mcp', 'pdf', 'vendor'],
     ],
 ]
+
 ```
 
 ### 6.2 ModuleService API
@@ -335,6 +336,7 @@ class ModuleService
     /** Scan and register Blade view namespaces from registered modules. */
     public function registerBladeNamespaces(): void;
 }
+
 ```
 
 All module config reads go through `Support\ModuleManager` (see #11 §6.1).

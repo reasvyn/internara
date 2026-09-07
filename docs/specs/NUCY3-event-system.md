@@ -62,11 +62,11 @@ primary mutation.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Registers new event |
-| UC-2 | Developer | Debugs event flow |
-| UC-3 | System | Cross-module cache invalidation |
+| UC-NUCY3-1 | Developer | Registers new event |
+| UC-NUCY3-2 | Developer | Debugs event flow |
+| UC-NUCY3-3 | System | Cross-module cache invalidation |
 
-### UC-1 — Developer Registers New Event
+### UC-NUCY3-1 — Developer Registers New Event
 
 **Actor:** Developer
 **Preconditions:** New cross-module side effect identified
@@ -77,7 +77,7 @@ primary mutation.
 4. Implement listener class implementing `ShouldQueue` if I/O-bound
 **Postconditions:** Event fires after commit, listener executes
 
-### UC-2 — Developer Debugs Event Flow
+### UC-NUCY3-2 — Developer Debugs Event Flow
 
 **Actor:** Developer
 **Preconditions:** Event not firing or listener not executing
@@ -88,7 +88,7 @@ primary mutation.
 4. Inspect `failed_jobs` table for failed listener executions
 **Postconditions:** Root cause identified
 
-### UC-3 — Cross-Module Cache Invalidation
+### UC-NUCY3-3 — Cross-Module Cache Invalidation
 
 **Actor:** System (automated)
 **Preconditions:** Entity created/updated/deleted in Module A, Module B caches data from Module A
@@ -104,21 +104,21 @@ primary mutation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-EV1 | All events MUST extend `BaseEvent` abstract class |
-| FR-EV2 | Event classes MUST be `final` with `public` typed constructor promotion properties |
-| FR-EV3 | `eventName()` MUST return a dot-notation string matching `{entity}.{past_tense_action}` |
-| FR-EV4 | `toPayload()` MUST convert Model properties to `{name}_id` strings |
-| FR-EV5 | All event-to-listener mappings MUST be registered in `config/event.php` |
-| FR-EV6 | No event MAY exist without at least one registered listener |
-| FR-EV7 | Events dispatched inside transactions MUST use `$this->dispatchEvent()` (deferred) |
-| FR-EV8 | Events dispatched outside transactions MAY use `Event::dispatch()` (immediate) |
-| FR-EV9 | SmartLogger integration: `->event($baseEvent)->save()` auto-dispatches + logs |
-| FR-EV10 | I/O-bound listeners MUST implement `ShouldQueue` |
-| FR-EV11 | Payload extraction MUST preserve scalar values, convert objects via `toArray()`, skip nulls |
-| FR-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
-| FR-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
-| FR-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
-| FR-EV15 | Dispatch after commit MUST happen exactly once per Action execution (unit test asserts single listener invocation) | |
+| FR-NUCY3-NUCY3-EV1 | All events MUST extend `BaseEvent` abstract class |
+| FR-NUCY3-NUCY3-EV2 | Event classes MUST be `final` with `public` typed constructor promotion properties |
+| FR-NUCY3-NUCY3-EV3 | `eventName()` MUST return a dot-notation string matching `{entity}.{past_tense_action}` |
+| FR-NUCY3-NUCY3-EV4 | `toPayload()` MUST convert Model properties to `{name}_id` strings |
+| FR-NUCY3-NUCY3-EV5 | All event-to-listener mappings MUST be registered in `config/event.php` |
+| FR-NUCY3-NUCY3-EV6 | No event MAY exist without at least one registered listener |
+| FR-NUCY3-NUCY3-EV7 | Events dispatched inside transactions MUST use `$this->dispatchEvent()` (deferred) |
+| FR-NUCY3-NUCY3-EV8 | Events dispatched outside transactions MAY use `Event::dispatch()` (immediate) |
+| FR-NUCY3-NUCY3-EV9 | SmartLogger integration: `->event($baseEvent)->save()` auto-dispatches + logs |
+| FR-NUCY3-NUCY3-EV10 | I/O-bound listeners MUST implement `ShouldQueue` |
+| FR-NUCY3-NUCY3-EV11 | Payload extraction MUST preserve scalar values, convert objects via `toArray()`, skip nulls |
+| FR-NUCY3-NUCY3-EV12 | Eloquent Observers MUST be used only when ALL three criteria hold: same-module only, synchronous completion required before HTTP response, and single-model scope |
+| FR-NUCY3-NUCY3-EV13 | Observer side effects MUST run inside the same DB transaction (rollback with model) and MUST NOT be queueable — long-running logic is forbidden in observers |
+| FR-NUCY3-NUCY3-EV14 | For all other side effects (cross-module, async, fire-and-forget) the Event + Listener pattern MUST be used per decision framework in ADR `eloquent-observers` |
+| FR-NUCY3-NUCY3-EV15 | Dispatch after commit MUST happen exactly once per Action execution (unit test asserts single listener invocation) | |
 
 ---
 
@@ -126,11 +126,11 @@ primary mutation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-EV1 | Event dispatch MUST NOT block the HTTP response |
-| NFR-EV2 | Deferred events MUST fire within the same process after commit (not via queue) |
-| NFR-EV3 | Queued listeners MUST complete within 60 seconds per attempt |
-| NFR-EV4 | Failed queued listeners MUST retry up to 3 times with exponential backoff |
-| NFR-EV5 | Event registration in `config/event.php` MUST be validatable at boot time |
+| NFR-NUCY3-NUCY3-EV1 | Event dispatch MUST NOT block the HTTP response |
+| NFR-NUCY3-NUCY3-EV2 | Deferred events MUST fire within the same process after commit (not via queue) |
+| NFR-NUCY3-NUCY3-EV3 | Queued listeners MUST complete within 60 seconds per attempt |
+| NFR-NUCY3-NUCY3-EV4 | Failed queued listeners MUST retry up to 3 times with exponential backoff |
+| NFR-NUCY3-NUCY3-EV5 | Event registration in `config/event.php` MUST be validatable at boot time |
 
 ## Test Requirements
 
@@ -166,6 +166,7 @@ abstract class BaseEvent
         // Nulls → skipped
     }
 }
+
 ```
 
 ### Event Class Example
@@ -182,6 +183,7 @@ final class CompanyCreated extends BaseEvent
         return 'company.created';
     }
 }
+
 ```
 
 ### Three Dispatch Mechanisms
@@ -201,6 +203,7 @@ return [
     ],
     // 49 events, 20 listeners
 ];
+
 ```
 
 ---

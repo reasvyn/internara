@@ -58,11 +58,11 @@ management, storage grows unbounded.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Student | Uploads profile photo |
-| UC-2 | Admin | Uploads document template |
-| UC-3 | System | Cleans up deleted model files |
+| UC-WQGTP-1 | Student | Uploads profile photo |
+| UC-WQGTP-2 | Admin | Uploads document template |
+| UC-WQGTP-3 | System | Cleans up deleted model files |
 
-### UC-1 — Student Uploads Profile Photo
+### UC-WQGTP-1 — Student Uploads Profile Photo
 
 **Actor:** Student
 **Preconditions:** Authenticated, profile page open
@@ -74,7 +74,7 @@ management, storage grows unbounded.
 5. Profile updated with media reference
 **Postconditions:** Profile photo visible with responsive thumbnails
 
-### UC-2 — Admin Uploads Document Template
+### UC-WQGTP-2 — Admin Uploads Document Template
 
 **Actor:** Admin
 **Preconditions:** Document template management page
@@ -85,7 +85,7 @@ management, storage grows unbounded.
 4. Template linked to document type
 **Postconditions:** Template available for document generation
 
-### UC-3 — System Cleans Up Deleted Model Files
+### UC-WQGTP-3 — System Cleans Up Deleted Model Files
 
 **Actor:** System (automated)
 **Preconditions:** Model with media is deleted
@@ -101,16 +101,16 @@ management, storage grows unbounded.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-MEDIA1 | All file uploads MUST use Spatie MediaLibrary (`InteractsWithMedia` trait) |
-| FR-MEDIA2 | Files MUST be organized into named collections per module |
-| FR-MEDIA3 | Image conversions MUST generate responsive thumbnails (150x150, 300x300) |
-| FR-MEDIA4 | File validation MUST enforce allowed MIME types per collection |
-| FR-MEDIA5 | File validation MUST enforce max file size per collection |
-| FR-MEDIA6 | Storage disk MUST be configurable via `config/filesystems.php` |
-| FR-MEDIA7 | Model deletion MUST trigger automatic media cleanup |
-| FR-MEDIA8 | Media URLs MUST be generated via `getFirstMediaUrl()` or `getMedia()` |
-| FR-MEDIA9 | Collection names MUST follow `{module}.{purpose}` convention |
-| FR-MEDIA10 | Upload FAILURE on invalid MIME type MUST NOT create a media record nor change model state | |
+| FR-WQGTP-MEDIA1 | All file uploads MUST use Spatie MediaLibrary (`InteractsWithMedia` trait) |
+| FR-WQGTP-MEDIA2 | Files MUST be organized into named collections per module |
+| FR-WQGTP-MEDIA3 | Image conversions MUST generate responsive thumbnails (150x150, 300x300) |
+| FR-WQGTP-MEDIA4 | File validation MUST enforce allowed MIME types per collection |
+| FR-WQGTP-MEDIA5 | File validation MUST enforce max file size per collection |
+| FR-WQGTP-MEDIA6 | Storage disk MUST be configurable via `config/filesystems.php` |
+| FR-WQGTP-MEDIA7 | Model deletion MUST trigger automatic media cleanup |
+| FR-WQGTP-MEDIA8 | Media URLs MUST be generated via `getFirstMediaUrl()` or `getMedia()` |
+| FR-WQGTP-MEDIA9 | Collection names MUST follow `{module}.{purpose}` convention |
+| FR-WQGTP-MEDIA10 | Upload FAILURE on invalid MIME type MUST NOT create a media record nor change model state | |
 
 ---
 
@@ -118,9 +118,9 @@ management, storage grows unbounded.
 
 | ID       | Requirement |
 | -------- | ----------- |
-| NFR-MEDIA1 | Thumbnail generation MUST complete within 5 seconds per image |
-| NFR-MEDIA2 | File upload MUST support files up to 10MB |
-| NFR-MEDIA4 | Media retrieval MUST NOT block the HTTP response for large files |
+| NFR-WQGTP-MEDIA1 | Thumbnail generation MUST complete within 5 seconds per image |
+| NFR-WQGTP-MEDIA2 | File upload MUST support files up to 10MB |
+| NFR-WQGTP-MEDIA4 | Media retrieval MUST NOT block the HTTP response for large files |
 
 ---
 
@@ -165,6 +165,7 @@ class Document extends BaseModel implements HasMedia
             ->nonQueued();
     }
 }
+
 ```
 
 ### Collection Naming Convention
@@ -188,6 +189,7 @@ class Document extends BaseModel implements HasMedia
         'root' => storage_path('app/media'),
     ],
 ],
+
 ```
 
 ---

@@ -56,11 +56,11 @@ limiter to apply to which route group.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Adds new core middleware |
-| UC-2 | Developer | Adds module-specific middleware |
-| UC-3 | Developer | Configures rate limiting |
+| UC-2CF4Y-1 | Developer | Adds new core middleware |
+| UC-2CF4Y-2 | Developer | Adds module-specific middleware |
+| UC-2CF4Y-3 | Developer | Configures rate limiting |
 
-### UC-1 — Developer Adds New Core Middleware
+### UC-2CF4Y-1 — Developer Adds New Core Middleware
 
 **Actor:** Developer
 **Preconditions:** New global request processing needed (e.g., maintenance mode)
@@ -71,7 +71,7 @@ limiter to apply to which route group.
 4. Test that existing middleware still executes in correct order
 **Postconditions:** New middleware runs on every request at the correct position
 
-### UC-2 — Developer Adds Module-Specific Middleware
+### UC-2CF4Y-2 — Developer Adds Module-Specific Middleware
 
 **Actor:** Developer
 **Preconditions:** New route-group processing needed (e.g., setup gating)
@@ -81,7 +81,7 @@ limiter to apply to which route group.
 3. Apply to specific route group via `->middleware()`
 **Postconditions:** Middleware runs only on targeted routes
 
-### UC-3 — Developer Configures Rate Limiting
+### UC-2CF4Y-3 — Developer Configures Rate Limiting
 
 **Actor:** Developer
 **Preconditions:** Route needs rate limiting
@@ -97,18 +97,18 @@ limiter to apply to which route group.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-MW1 | Core middleware MUST apply to all HTTP requests globally |
-| FR-MW2 | `LogContextMiddleware` MUST attach `request_id` (UUID), `user_id`, `user_role`, `duration_ms` to log context |
-| FR-MW3 | `SecurityHeadersMiddleware` MUST set CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy headers |
-| FR-MW4 | `SecurityHeadersMiddleware` MUST inject Vite dev URL into CSP when `APP_ENV=local` |
-| FR-MW5 | `AuthThrottleMiddleware` MUST enforce login rate limiting per config keys `auth.throttle.login_max_attempts` (5) / `login_decay_seconds` (60) — 5 attempts/60s per IP (see `authentication.md` FR-LT1) |
-| FR-MW6 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
-| FR-MW7 | `SetLocaleMiddleware` MUST set locale from user preference or session |
-| FR-MW8 | `ProtectSetupRouteMiddleware` MUST block setup routes after installation is complete |
-| FR-MW9 | `RequireSetupAccessMiddleware` MUST require valid setup access token |
-| FR-MW10 | `AppServiceProvider` MUST register the route-level named limiters `admin` (60/min per user) and `global` (30/min per IP); per-endpoint auth limits (login/forgot/reset/recovery/confirm) are enforced at the Action/Component layer as specified in their governing specs and MUST use the canonical values in §6 Rate Limiters table, never ad-hoc numbers |
-| FR-MW11 | Module middleware MUST be registrable via route files without modifying core |
-| FR-MW12 | SetLocaleMiddleware MUST persist the selected locale to the user/session for subsequent requests | |
+| FR-2CF4Y-MW1 | Core middleware MUST apply to all HTTP requests globally |
+| FR-2CF4Y-MW2 | `LogContextMiddleware` MUST attach `request_id` (UUID), `user_id`, `user_role`, `duration_ms` to log context |
+| FR-2CF4Y-MW3 | `SecurityHeadersMiddleware` MUST set CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy headers |
+| FR-2CF4Y-MW4 | `SecurityHeadersMiddleware` MUST inject Vite dev URL into CSP when `APP_ENV=local` |
+| FR-2CF4Y-MW5 | `AuthThrottleMiddleware` MUST enforce login rate limiting per config keys `auth.throttle.login_max_attempts` (5) / `login_decay_seconds` (60) — 5 attempts/60s per IP (see `authentication.md` FR-2CF4Y-LT1) |
+| FR-2CF4Y-MW6 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
+| FR-2CF4Y-MW7 | `SetLocaleMiddleware` MUST set locale from user preference or session |
+| FR-2CF4Y-MW8 | `ProtectSetupRouteMiddleware` MUST block setup routes after installation is complete |
+| FR-2CF4Y-MW9 | `RequireSetupAccessMiddleware` MUST require valid setup access token |
+| FR-2CF4Y-MW10 | `AppServiceProvider` MUST register the route-level named limiters `admin` (60/min per user) and `global` (30/min per IP); per-endpoint auth limits (login/forgot/reset/recovery/confirm) are enforced at the Action/Component layer as specified in their governing specs and MUST use the canonical values in §6 Rate Limiters table, never ad-hoc numbers |
+| FR-2CF4Y-MW11 | Module middleware MUST be registrable via route files without modifying core |
+| FR-2CF4Y-MW12 | SetLocaleMiddleware MUST persist the selected locale to the user/session for subsequent requests | |
 
 ---
 
@@ -116,10 +116,10 @@ limiter to apply to which route group.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-MW1 | Middleware execution overhead MUST be < 2ms per layer |
-| NFR-MW2 | Security headers MUST NOT break Vite hot module replacement in development |
-| NFR-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
-| NFR-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
+| NFR-2CF4Y-MW1 | Middleware execution overhead MUST be < 2ms per layer |
+| NFR-2CF4Y-MW2 | Security headers MUST NOT break Vite hot module replacement in development |
+| NFR-2CF4Y-MW3 | Rate limit counters MUST use cache driver (not database) for performance |
+| NFR-2CF4Y-MW4 | `LogContextMiddleware` MUST NOT fail the request if logging infrastructure is down |
 
 ## Test Requirements
 
@@ -148,6 +148,7 @@ Request
   → CheckRoleMiddleware (if route requires role)
   → SetLocaleMiddleware (if route requires locale)
   → Route Handler
+
 ```
 
 ### Module Middleware (Per Route Group)
@@ -173,11 +174,11 @@ Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->
 
 | Endpoint | Limit | Enforcement Point | Governing Spec |
 |----------|-------|-------------------|----------------|
-| Login | 5/60s per IP | `AuthThrottleMiddleware` (config `auth.throttle.login_max_attempts`/`login_decay_seconds`) | [authentication.md](YB7RG-authentication.md) FR-LT1 |
-| Forgot-password link | 3/3600s per email+IP | `SendPasswordResetLinkAction` (inline `RateLimiter`) | [password-reset.md](D9TKW-password-reset.md) FR-PR1 |
-| Password reset | 5/300s per email+IP | `ResetPasswordAction` (inline `RateLimiter`) | [password-reset.md](D9TKW-password-reset.md) FR-PR5 |
-| Recovery-slip redemption | 3/300s per IP | `RedeemRecoverySlipAction` / `AccountRecovery` (inline `RateLimiter`) | [account-recovery-slips.md](SHQ1J-account-recovery-slips.md) FR-RD1 |
-| Password confirmation | 5/300s per user+IP | `ConfirmPassword` component (inline `RateLimiter`) | [password-confirmation.md](CQVSK-password-confirmation.md) FR-PC5 |
+| Login | 5/60s per IP | `AuthThrottleMiddleware` (config `auth.throttle.login_max_attempts`/`login_decay_seconds`) | [authentication.md](YB7RG-authentication.md) FR-2CF4Y-LT1 |
+| Forgot-password link | 3/3600s per email+IP | `SendPasswordResetLinkAction` (inline `RateLimiter`) | [password-reset.md](D9TKW-password-reset.md) FR-2CF4Y-PR1 |
+| Password reset | 5/300s per email+IP | `ResetPasswordAction` (inline `RateLimiter`) | [password-reset.md](D9TKW-password-reset.md) FR-2CF4Y-PR5 |
+| Recovery-slip redemption | 3/300s per IP | `RedeemRecoverySlipAction` / `AccountRecovery` (inline `RateLimiter`) | [account-recovery-slips.md](SHQ1J-account-recovery-slips.md) FR-2CF4Y-RD1 |
+| Password confirmation | 5/300s per user+IP | `ConfirmPassword` component (inline `RateLimiter`) | [password-confirmation.md](CQVSK-password-confirmation.md) FR-2CF4Y-PC5 |
 
 > The table above is the **single registration point** for the canonical values of
 > internara-project §10 (login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s) plus
@@ -198,6 +199,7 @@ Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->
     'user_role' => 'admin',
     'duration_ms' => 142,
 ]
+
 ```
 
 ---

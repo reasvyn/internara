@@ -79,7 +79,7 @@ never do.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Manual Backup via UI
+### UC-HBXCI-1 — Admin Creates a Manual Backup via UI
 
 **Actor:** Admin
 **Preconditions:** User authenticated with admin or super_admin role, on the Backup Manager page
@@ -96,7 +96,7 @@ never do.
 10. Flash success message displayed
 **Postconditions:** Backup record exists with `status = 'completed'`, file stored at `storage/app/backup/`
 
-### UC-2 — Admin Creates a Backup via CLI
+### UC-HBXCI-2 — Admin Creates a Backup via CLI
 
 **Actor:** System administrator (via terminal)
 **Preconditions:** Application installed, database accessible
@@ -110,7 +110,7 @@ never do.
 7. Outputs success message with formatted file size
 **Postconditions:** Backup created, old backups beyond retention deleted
 
-### UC-3 — Backup Fails and Super Admins Are Notified
+### UC-HBXCI-3 — Backup Fails and Super Admins Are Notified
 
 **Actor:** System (automated)
 **Preconditions:** Scheduled backup configured, database driver unavailable or disk full
@@ -125,7 +125,7 @@ never do.
 8. `BackupFailedNotification::via()` returns `['database']`, `toDatabase()` returns backup ID, type, error, and message
 **Postconditions:** Backup record has `status = 'failed'`, super admins see notification in notification center
 
-### UC-4 — Admin Deletes a Backup via UI
+### UC-HBXCI-4 — Admin Deletes a Backup via UI
 
 **Actor:** Admin
 **Preconditions:** User authenticated with admin role, at least one completed or failed backup exists
@@ -140,7 +140,7 @@ never do.
 8. Flash success message displayed
 **Postconditions:** Backup record and physical file removed
 
-### UC-5 — Retention Cleanup Deletes Old Backups
+### UC-HBXCI-5 — Retention Cleanup Deletes Old Backups
 
 **Actor:** System (triggered by CLI `--cleanup` flag or scheduled command)
 **Preconditions:** Backups older than retention period exist
@@ -160,60 +160,60 @@ never do.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-M1 | `Backup` model must use `#[Fillable]` attribute with: `type`, `file_path`, `file_size`, `status`, `metadata`, `error_output`, `created_by`, `started_at`, `completed_at` |
-| FR-M2 | `Backup` model must cast `file_size` → `integer`, `metadata` → `array`, `started_at` → `datetime`, `completed_at` → `datetime` |
-| FR-M3 | `Backup` model must define `creator(): BelongsTo` relationship to `User` via `created_by` foreign key |
-| FR-M4 | `Backup` model must provide `asBackupState(): BackupState` bridge method delegating to `BackupState::fromModel()` |
-| FR-M5 | `backups` table `id` must be a UUID primary key |
-| FR-M6 | `backups` table `type` column must be `string(20)` |
-| FR-M7 | `backups` table `file_path` must be `string(512)`, nullable |
-| FR-M8 | `backups` table `file_size` must be `unsignedBigInteger`, default `0` |
-| FR-M9 | `backups` table `status` must be `string(20)`, default `'pending'` |
-| FR-M10 | `backups` table `created_by` must be a nullable foreign UUID constrained to `users` with `nullOnDelete()` |
-| FR-M11 | `backups` table must have a composite index on `[status, created_at]` |
+| FR-HBXCI-M1 | `Backup` model must use `#[Fillable]` attribute with: `type`, `file_path`, `file_size`, `status`, `metadata`, `error_output`, `created_by`, `started_at`, `completed_at` |
+| FR-HBXCI-M2 | `Backup` model must cast `file_size` → `integer`, `metadata` → `array`, `started_at` → `datetime`, `completed_at` → `datetime` |
+| FR-HBXCI-M3 | `Backup` model must define `creator(): BelongsTo` relationship to `User` via `created_by` foreign key |
+| FR-HBXCI-M4 | `Backup` model must provide `asBackupState(): BackupState` bridge method delegating to `BackupState::fromModel()` |
+| FR-HBXCI-M5 | `backups` table `id` must be a UUID primary key |
+| FR-HBXCI-M6 | `backups` table `type` column must be `string(20)` |
+| FR-HBXCI-M7 | `backups` table `file_path` must be `string(512)`, nullable |
+| FR-HBXCI-M8 | `backups` table `file_size` must be `unsignedBigInteger`, default `0` |
+| FR-HBXCI-M9 | `backups` table `status` must be `string(20)`, default `'pending'` |
+| FR-HBXCI-M10 | `backups` table `created_by` must be a nullable foreign UUID constrained to `users` with `nullOnDelete()` |
+| FR-HBXCI-M11 | `backups` table must have a composite index on `[status, created_at]` |
 
 ### Enums
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-E1 | `BackupStatus` enum must implement `StatusEnum` with cases: `PENDING`, `RUNNING`, `COMPLETED`, `FAILED` |
-| FR-E2 | `BackupStatus::label()` must return translated string via `__('backups.status.'.$this->value)` |
-| FR-E3 | `BackupStatus::isTerminal()` must return `true` for `COMPLETED` and `FAILED` |
-| FR-E4 | `BackupStatus::validTransitions()` must define: PENDING → [RUNNING, FAILED], RUNNING → [COMPLETED, FAILED], COMPLETED → [], FAILED → [] |
-| FR-E5 | `BackupType` enum must implement `LabelEnum` with cases: `DATABASE`, `STORAGE`, `BOTH` |
-| FR-E6 | `BackupType::label()` must return translated string via `__('backups.type.'.$this->value)` |
+| FR-HBXCI-E1 | `BackupStatus` enum must implement `StatusEnum` with cases: `PENDING`, `RUNNING`, `COMPLETED`, `FAILED` |
+| FR-HBXCI-E2 | `BackupStatus::label()` must return translated string via `__('backups.status.'.$this->value)` |
+| FR-HBXCI-E3 | `BackupStatus::isTerminal()` must return `true` for `COMPLETED` and `FAILED` |
+| FR-HBXCI-E4 | `BackupStatus::validTransitions()` must define: PENDING → [RUNNING, FAILED], RUNNING → [COMPLETED, FAILED], COMPLETED → [], FAILED → [] |
+| FR-HBXCI-E5 | `BackupType` enum must implement `LabelEnum` with cases: `DATABASE`, `STORAGE`, `BOTH` |
+| FR-HBXCI-E6 | `BackupType::label()` must return translated string via `__('backups.type.'.$this->value)` |
 
 ### Entity
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EN1 | `BackupState` must be a `final readonly` class extending `BaseEntity` |
-| FR-EN2 | `BackupState::fromModel()` must extract `status`, `type`, `file_size` (cast to int), and `error_output` from the model |
-| FR-EN3 | `BackupState::isCompleted()` must return `true` when status equals `BackupStatus::COMPLETED` |
-| FR-EN4 | `BackupState::isFailed()` must return `true` when status equals `BackupStatus::FAILED` |
-| FR-EN5 | `BackupState::isDeletable()` must return `true` when completed OR failed |
-| FR-EN6 | `BackupState::formattedSize()` must format bytes into human-readable strings: B, KB, MB, GB |
-| FR-EN7 | `BackupState::type()` must return a `BackupType` enum instance |
+| FR-HBXCI-EN1 | `BackupState` must be a `final readonly` class extending `BaseEntity` |
+| FR-HBXCI-EN2 | `BackupState::fromModel()` must extract `status`, `type`, `file_size` (cast to int), and `error_output` from the model |
+| FR-HBXCI-EN3 | `BackupState::isCompleted()` must return `true` when status equals `BackupStatus::COMPLETED` |
+| FR-HBXCI-EN4 | `BackupState::isFailed()` must return `true` when status equals `BackupStatus::FAILED` |
+| FR-HBXCI-EN5 | `BackupState::isDeletable()` must return `true` when completed OR failed |
+| FR-HBXCI-EN6 | `BackupState::formattedSize()` must format bytes into human-readable strings: B, KB, MB, GB |
+| FR-HBXCI-EN7 | `BackupState::type()` must return a `BackupType` enum instance |
 
 ### Actions — CreateBackupAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-C1 | `CreateBackupAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
-| FR-C2 | `CreateBackupAction::execute(BackupType $type, ?User $user = null)` must create a `Backup` record within a transaction with `status = RUNNING` and `started_at = now()` |
-| FR-C3 | `CreateBackupAction` must delegate to `BackupRunner` methods based on type: `DATABASE` → `runDatabaseDump()`, `STORAGE` → `runStorageDump()`, `BOTH` → `runCombinedDump()` |
-| FR-C4 | On success, `CreateBackupAction` must update the record with `file_path`, `file_size`, `status = COMPLETED`, `completed_at = now()`, log `backup_created`, and dispatch `BackupCompleted` event |
-| FR-C5 | On failure, `CreateBackupAction` must update the record with `status = FAILED`, `error_output`, `completed_at = now()`, log `backup_failed`, dispatch `BackupFailed` event, and throw `RejectedException` |
-| FR-C6 | `CreateBackupAction::execute()` must return the `Backup` model on success |
+| FR-HBXCI-C1 | `CreateBackupAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
+| FR-HBXCI-C2 | `CreateBackupAction::execute(BackupType $type, ?User $user = null)` must create a `Backup` record within a transaction with `status = RUNNING` and `started_at = now()` |
+| FR-HBXCI-C3 | `CreateBackupAction` must delegate to `BackupRunner` methods based on type: `DATABASE` → `runDatabaseDump()`, `STORAGE` → `runStorageDump()`, `BOTH` → `runCombinedDump()` |
+| FR-HBXCI-C4 | On success, `CreateBackupAction` must update the record with `file_path`, `file_size`, `status = COMPLETED`, `completed_at = now()`, log `backup_created`, and dispatch `BackupCompleted` event |
+| FR-HBXCI-C5 | On failure, `CreateBackupAction` must update the record with `status = FAILED`, `error_output`, `completed_at = now()`, log `backup_failed`, dispatch `BackupFailed` event, and throw `RejectedException` |
+| FR-HBXCI-C6 | `CreateBackupAction::execute()` must return the `Backup` model on success |
 
 ### Actions — DeleteBackupAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-D1 | `DeleteBackupAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
-| FR-D2 | `DeleteBackupAction::execute(Backup)` must check `$backup->asBackupState()->isDeletable()` and throw `RejectedException` if not deletable |
-| FR-D3 | `DeleteBackupAction::execute(Backup)` must delete the physical file via `BackupRunner::deleteFile()` if `file_path` is set, then delete the database record within a transaction |
-| FR-D4 | `DeleteBackupAction::execute(Backup)` must log `backup_deleted` with type and file_size |
+| FR-HBXCI-D1 | `DeleteBackupAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
+| FR-HBXCI-D2 | `DeleteBackupAction::execute(Backup)` must check `$backup->asBackupState()->isDeletable()` and throw `RejectedException` if not deletable |
+| FR-HBXCI-D3 | `DeleteBackupAction::execute(Backup)` must delete the physical file via `BackupRunner::deleteFile()` if `file_path` is set, then delete the database record within a transaction |
+| FR-HBXCI-D4 | `DeleteBackupAction::execute(Backup)` must log `backup_deleted` with type and file_size |
 
 ### Backup History — BackupManager
 
@@ -221,105 +221,105 @@ never do.
 > the standard `BaseRecordManager` pipeline. A dedicated `ReadBackupHistoryAction` was deleted —
 > it duplicated the generic table query and could not integrate with `rows()` (Builder pipeline
 > with search/sorting/per-page), so wiring it would have broken base functionality. The original
-> FR-R1–R4 guarantees are preserved by the component pattern.
+> FR-HBXCI-R1–R4 guarantees are preserved by the component pattern.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-R1 | Backup history is served by `BackupManager` (`BaseRecordManager`): `query()` returns the `Backup` builder |
-| FR-R2 | History is paginated as a `LengthAwarePaginator` with per-page options via `BaseRecordManager::rows()` |
-| FR-R3 | `query()` must eager-load the `creator` relationship |
-| FR-R4 | `applyFilters()` must apply `type` and `status` filters conditionally when provided |
+| FR-HBXCI-R1 | Backup history is served by `BackupManager` (`BaseRecordManager`): `query()` returns the `Backup` builder |
+| FR-HBXCI-R2 | History is paginated as a `LengthAwarePaginator` with per-page options via `BaseRecordManager::rows()` |
+| FR-HBXCI-R3 | `query()` must eager-load the `creator` relationship |
+| FR-HBXCI-R4 | `applyFilters()` must apply `type` and `status` filters conditionally when provided |
 
 ### Actions — ReadBackupStatsAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-S1 | `ReadBackupStatsAction` must extend `BaseReadAction` |
-| FR-S2 | `ReadBackupStatsAction::execute()` must return an associative array with keys: `total`, `completed`, `failed`, `latest` |
-| FR-S3 | `latest` must be the most recent backup with `status = COMPLETED`, or `null` if none exist |
+| FR-HBXCI-S1 | `ReadBackupStatsAction` must extend `BaseReadAction` |
+| FR-HBXCI-S2 | `ReadBackupStatsAction::execute()` must return an associative array with keys: `total`, `completed`, `failed`, `latest` |
+| FR-HBXCI-S3 | `latest` must be the most recent backup with `status = COMPLETED`, or `null` if none exist |
 
 ### Actions — CleanupBackupsAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CL1 | `CleanupBackupsAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
-| FR-CL2 | `CleanupBackupsAction::execute(int $retentionDays = 30)` must delete only completed backups older than `$retentionDays` |
-| FR-CL3 | `CleanupBackupsAction` must NOT delete failed backups during cleanup |
-| FR-CL4 | `CleanupBackupsAction` must process deletions in chunks of 100 records |
-| FR-CL5 | `CleanupBackupsAction` must delete physical files via `BackupRunner::deleteFile()` before deleting database records |
-| FR-CL6 | `CleanupBackupsAction` must log `backups_cleaned` with `retention_days` and `deleted_count` when deletions occur |
-| FR-CL7 | `CleanupBackupsAction::execute()` must return the count of deleted backups |
+| FR-HBXCI-CL1 | `CleanupBackupsAction` must extend `BaseCommandAction` and accept `BackupRunner` via constructor injection |
+| FR-HBXCI-CL2 | `CleanupBackupsAction::execute(int $retentionDays = 30)` must delete only completed backups older than `$retentionDays` |
+| FR-HBXCI-CL3 | `CleanupBackupsAction` must NOT delete failed backups during cleanup |
+| FR-HBXCI-CL4 | `CleanupBackupsAction` must process deletions in chunks of 100 records |
+| FR-HBXCI-CL5 | `CleanupBackupsAction` must delete physical files via `BackupRunner::deleteFile()` before deleting database records |
+| FR-HBXCI-CL6 | `CleanupBackupsAction` must log `backups_cleaned` with `retention_days` and `deleted_count` when deletions occur |
+| FR-HBXCI-CL7 | `CleanupBackupsAction::execute()` must return the count of deleted backups |
 
 ### BackupRunner Service
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-BR1 | `BackupRunner::runDatabaseDump()` must detect the configured database driver via `config('database.default')` and dispatch to MySQL, PostgreSQL, or SQLite dump commands |
-| FR-BR2 | `BackupRunner::runDatabaseDump()` must store output at `storage/app/backup/backup_database_{timestamp}.sql.gz` |
-| FR-BR3 | `BackupRunner::runDatabaseDump()` must create the backup directory if it does not exist |
-| FR-BR4 | `BackupRunner::runDatabaseDump()` must throw `RuntimeException` for unsupported database drivers |
-| FR-BR5 | `BackupRunner::runStorageDump()` must archive `storage/app/public/` via `tar -czf` to `storage/app/backup/backup_storage_{timestamp}.tar.gz` |
-| FR-BR6 | `BackupRunner::runCombinedDump()` must create database and storage dumps individually, combine them into a single `backup_both_{timestamp}.tar.gz`, then delete the intermediate files |
-| FR-BR7 | `BackupRunner::deleteFile(string $path)` must verify the path resolves within the backup directory before deleting |
-| FR-BR8 | `BackupRunner::fileSize(string $path)` must return the file size in bytes, or `0` if the file does not exist |
-| FR-BR9 | MySQL dumps must use `--single-transaction --routines --skip-lock-tables` flags and pass credentials via a temporary config file (chmod 0600) |
-| FR-BR10 | PostgreSQL dumps must use `PGPASSFILE` environment variable with a temporary password file (chmod 0600) |
-| FR-BR11 | SQLite copies must use `cp` followed by `gzip -f` |
-| FR-BR12 | `BackupRunner` must clean up all temporary credential files in `__destruct()` and after each dump operation |
+| FR-HBXCI-BR1 | `BackupRunner::runDatabaseDump()` must detect the configured database driver via `config('database.default')` and dispatch to MySQL, PostgreSQL, or SQLite dump commands |
+| FR-HBXCI-BR2 | `BackupRunner::runDatabaseDump()` must store output at `storage/app/backup/backup_database_{timestamp}.sql.gz` |
+| FR-HBXCI-BR3 | `BackupRunner::runDatabaseDump()` must create the backup directory if it does not exist |
+| FR-HBXCI-BR4 | `BackupRunner::runDatabaseDump()` must throw `RuntimeException` for unsupported database drivers |
+| FR-HBXCI-BR5 | `BackupRunner::runStorageDump()` must archive `storage/app/public/` via `tar -czf` to `storage/app/backup/backup_storage_{timestamp}.tar.gz` |
+| FR-HBXCI-BR6 | `BackupRunner::runCombinedDump()` must create database and storage dumps individually, combine them into a single `backup_both_{timestamp}.tar.gz`, then delete the intermediate files |
+| FR-HBXCI-BR7 | `BackupRunner::deleteFile(string $path)` must verify the path resolves within the backup directory before deleting |
+| FR-HBXCI-BR8 | `BackupRunner::fileSize(string $path)` must return the file size in bytes, or `0` if the file does not exist |
+| FR-HBXCI-BR9 | MySQL dumps must use `--single-transaction --routines --skip-lock-tables` flags and pass credentials via a temporary config file (chmod 0600) |
+| FR-HBXCI-BR10 | PostgreSQL dumps must use `PGPASSFILE` environment variable with a temporary password file (chmod 0600) |
+| FR-HBXCI-BR11 | SQLite copies must use `cp` followed by `gzip -f` |
+| FR-HBXCI-BR12 | `BackupRunner` must clean up all temporary credential files in `__destruct()` and after each dump operation |
 
 ### CLI Command
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CLI1 | `SystemBackupCommand` signature must be `system:backup {--type= : database, storage, or both} {--force : Skip pre-flight checks} {--cleanup : Run retention cleanup after backup}` |
-| FR-CLI2 | `SystemBackupCommand` must check `config('backup.enabled')` and exit early with warning if disabled, unless `--force` is set |
-| FR-CLI3 | `SystemBackupCommand` must resolve `BackupType` from the `--type` option, defaulting to `BOTH` when null |
-| FR-CLI4 | `SystemBackupCommand` must output formatted size on success and deleted count when `--cleanup` is used |
-| FR-CLI5 | The `system:backup` command must be scheduled daily via `Schedule::command()` in `routes/console.php` |
+| FR-HBXCI-CLI1 | `SystemBackupCommand` signature must be `system:backup {--type= : database, storage, or both} {--force : Skip pre-flight checks} {--cleanup : Run retention cleanup after backup}` |
+| FR-HBXCI-CLI2 | `SystemBackupCommand` must check `config('backup.enabled')` and exit early with warning if disabled, unless `--force` is set |
+| FR-HBXCI-CLI3 | `SystemBackupCommand` must resolve `BackupType` from the `--type` option, defaulting to `BOTH` when null |
+| FR-HBXCI-CLI4 | `SystemBackupCommand` must output formatted size on success and deleted count when `--cleanup` is used |
+| FR-HBXCI-CLI5 | The `system:backup` command must be scheduled daily via `Schedule::command()` in `routes/console.php` |
 
 ### Livewire UI
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-U1 | `BackupManager` must extend `BaseRecordManager` and use `AuthorizesRequests` trait |
-| FR-U2 | `BackupManager::boot()` must call `$this->authorize('viewAny', Backup::class)` |
-| FR-U3 | `BackupManager::headers()` must return columns: `type`, `status`, `file_size`, `creator.name`, `created_at`, `actions` |
-| FR-U4 | `BackupManager::query()` must return `Backup::query()->with('creator')` |
-| FR-U5 | `BackupManager::applyFilters()` must filter by `filterType` and `filterStatus` properties |
-| FR-U6 | `BackupManager::stats()` must be a `#[Computed]` property delegating to `ReadBackupStatsAction::execute()` |
-| FR-U7 | `BackupManager::createBackup(string $type)` must authorize via `create` gate, resolve `BackupType`, call `CreateBackupAction::execute()`, and flash success/error |
-| FR-U8 | `BackupManager::confirmDelete(string $id)` must set `deleteId` and show the confirmation modal |
-| FR-U9 | `BackupManager::delete()` must authorize via `delete` gate, call `DeleteBackupAction::execute()`, reset state, and flash success |
-| FR-U10 | The backup manager view must display stats cards (total, completed, failed, latest size) above the filterable table |
-| FR-U11 | The backup manager view must show delete buttons only for deletable backups (`isDeletable()` returns `true`) |
-| FR-U12 | The backup manager view must include a help guide component (`backup-guide.blade.php`) accessible via a floating button |
+| FR-HBXCI-U1 | `BackupManager` must extend `BaseRecordManager` and use `AuthorizesRequests` trait |
+| FR-HBXCI-U2 | `BackupManager::boot()` must call `$this->authorize('viewAny', Backup::class)` |
+| FR-HBXCI-U3 | `BackupManager::headers()` must return columns: `type`, `status`, `file_size`, `creator.name`, `created_at`, `actions` |
+| FR-HBXCI-U4 | `BackupManager::query()` must return `Backup::query()->with('creator')` |
+| FR-HBXCI-U5 | `BackupManager::applyFilters()` must filter by `filterType` and `filterStatus` properties |
+| FR-HBXCI-U6 | `BackupManager::stats()` must be a `#[Computed]` property delegating to `ReadBackupStatsAction::execute()` |
+| FR-HBXCI-U7 | `BackupManager::createBackup(string $type)` must authorize via `create` gate, resolve `BackupType`, call `CreateBackupAction::execute()`, and flash success/error |
+| FR-HBXCI-U8 | `BackupManager::confirmDelete(string $id)` must set `deleteId` and show the confirmation modal |
+| FR-HBXCI-U9 | `BackupManager::delete()` must authorize via `delete` gate, call `DeleteBackupAction::execute()`, reset state, and flash success |
+| FR-HBXCI-U10 | The backup manager view must display stats cards (total, completed, failed, latest size) above the filterable table |
+| FR-HBXCI-U11 | The backup manager view must show delete buttons only for deletable backups (`isDeletable()` returns `true`) |
+| FR-HBXCI-U12 | The backup manager view must include a help guide component (`backup-guide.blade.php`) accessible via a floating button |
 
 ### Policy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-P1 | `BackupPolicy` must extend `BasePolicy` |
-| FR-P2 | `BackupPolicy::viewAny()` must return `$this->isAdmin($user)` |
-| FR-P3 | `BackupPolicy::view()` must return `$this->isAdmin($user)` |
-| FR-P4 | `BackupPolicy::create()` must return `$this->isAdmin($user)` |
-| FR-P5 | `BackupPolicy::delete()` must return `$this->isAdmin($user)` |
+| FR-HBXCI-P1 | `BackupPolicy` must extend `BasePolicy` |
+| FR-HBXCI-P2 | `BackupPolicy::viewAny()` must return `$this->isAdmin($user)` |
+| FR-HBXCI-P3 | `BackupPolicy::view()` must return `$this->isAdmin($user)` |
+| FR-HBXCI-P4 | `BackupPolicy::create()` must return `$this->isAdmin($user)` |
+| FR-HBXCI-P5 | `BackupPolicy::delete()` must return `$this->isAdmin($user)` |
 
 ### Events & Listeners
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EV1 | `BackupCompleted` must extend `BaseEvent`, accept a `Backup` model, and expose `eventName()` → `'backup.completed'` |
-| FR-EV2 | `BackupFailed` must extend `BaseEvent`, accept a `Backup` model, and expose `eventName()` → `'backup.failed'` |
-| FR-EV3 | `SendBackupFailedNotification` listener must handle `BackupFailed` event and notify all users with `superadmin` role |
-| FR-EV4 | `SendBackupFailedNotification` must call `$admin->notify(new BackupFailedNotification($backup))` for each super admin |
+| FR-HBXCI-EV1 | `BackupCompleted` must extend `BaseEvent`, accept a `Backup` model, and expose `eventName()` → `'backup.completed'` |
+| FR-HBXCI-EV2 | `BackupFailed` must extend `BaseEvent`, accept a `Backup` model, and expose `eventName()` → `'backup.failed'` |
+| FR-HBXCI-EV3 | `SendBackupFailedNotification` listener must handle `BackupFailed` event and notify all users with `superadmin` role |
+| FR-HBXCI-EV4 | `SendBackupFailedNotification` must call `$admin->notify(new BackupFailedNotification($backup))` for each super admin |
 
 ### Notification
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-N1 | `BackupFailedNotification` must use the `database` channel via `via()` returning `['database']` |
-| FR-N2 | `BackupFailedNotification::toDatabase()` must return an array with keys: `backup_id`, `type`, `error`, `message` |
-| FR-N3 | `BackupFailedNotification` must use `Queueable` trait for deferred delivery |
+| FR-HBXCI-N1 | `BackupFailedNotification` must use the `database` channel via `via()` returning `['database']` |
+| FR-HBXCI-N2 | `BackupFailedNotification::toDatabase()` must return an array with keys: `backup_id`, `type`, `error`, `message` |
+| FR-HBXCI-N3 | `BackupFailedNotification` must use `Queueable` trait for deferred delivery |
 
 ---
 
@@ -327,23 +327,23 @@ never do.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | `BackupRunner::runDatabaseDump()` must complete within 60 seconds for databases up to 500 MB |
-| NFR-P2 | `ReadBackupStatsAction::execute()` must complete within 100ms (3 indexed COUNT queries + 1 indexed latest query) |
-| NFR-P3 | Backup history paginated query must complete within 200ms for up to 1,000 backup records |
-| NFR-S1 | All backup operations must be restricted to admin users via `BackupPolicy` (→ FR-P1 through FR-P5) |
-| NFR-S2 | `BackupRunner::deleteFile()` must validate that the file path resolves within the backup directory to prevent path traversal deletion |
-| NFR-S3 | Database credentials must never appear in log output — `BackupRunner` writes them to temporary files with `chmod 0600` and deletes them after use |
-| NFR-S4 | The `backups` table `created_by` foreign key must use `nullOnDelete()` to preserve backup records if the creating user is deleted |
-| NFR-R1 | `CreateBackupAction` must wrap the entire backup lifecycle (record creation, dump execution, status update) in a single database transaction |
-| NFR-R2 | `DeleteBackupAction` must delete the physical file before the database record to avoid orphaned database entries pointing to deleted files |
-| NFR-R3 | `CleanupBackupsAction` must NOT delete failed backups — failed records serve as diagnostic evidence |
-| NFR-R4 | `BackupRunner` must clean up temporary credential files even if the dump operation throws an exception (`finally` block) |
-| NFR-U1 | All backup UI labels must use `__()` translation helper with keys from `backups.*` namespace |
-| NFR-U2 | The backup manager must display a help guide modal with create, download, and restore instructions |
-| NFR-U3 | The backup manager must show status badges with color coding: `completed` → success, `failed` → error, `running` → warning, `pending` → info |
-| NFR-M1 | All backup classes must use `declare(strict_types=1)` |
-| NFR-M2 | Backup file naming must follow the pattern `backup_{type}_{Y-m-d_His}.{ext}` for consistent identification |
-| NFR-M3 | Backup files must be stored in `storage/app/backup/` which is not publicly accessible |
+| NFR-HBXCI-P1 | `BackupRunner::runDatabaseDump()` must complete within 60 seconds for databases up to 500 MB |
+| NFR-HBXCI-P2 | `ReadBackupStatsAction::execute()` must complete within 100ms (3 indexed COUNT queries + 1 indexed latest query) |
+| NFR-HBXCI-P3 | Backup history paginated query must complete within 200ms for up to 1,000 backup records |
+| NFR-HBXCI-S1 | All backup operations must be restricted to admin users via `BackupPolicy` (→ FR-HBXCI-P1 through FR-HBXCI-P5) |
+| NFR-HBXCI-S2 | `BackupRunner::deleteFile()` must validate that the file path resolves within the backup directory to prevent path traversal deletion |
+| NFR-HBXCI-S3 | Database credentials must never appear in log output — `BackupRunner` writes them to temporary files with `chmod 0600` and deletes them after use |
+| NFR-HBXCI-S4 | The `backups` table `created_by` foreign key must use `nullOnDelete()` to preserve backup records if the creating user is deleted |
+| NFR-HBXCI-R1 | `CreateBackupAction` must wrap the entire backup lifecycle (record creation, dump execution, status update) in a single database transaction |
+| NFR-HBXCI-R2 | `DeleteBackupAction` must delete the physical file before the database record to avoid orphaned database entries pointing to deleted files |
+| NFR-HBXCI-R3 | `CleanupBackupsAction` must NOT delete failed backups — failed records serve as diagnostic evidence |
+| NFR-HBXCI-R4 | `BackupRunner` must clean up temporary credential files even if the dump operation throws an exception (`finally` block) |
+| NFR-HBXCI-U1 | All backup UI labels must use `__()` translation helper with keys from `backups.*` namespace |
+| NFR-HBXCI-U2 | The backup manager must display a help guide modal with create, download, and restore instructions |
+| NFR-HBXCI-U3 | The backup manager must show status badges with color coding: `completed` → success, `failed` → error, `running` → warning, `pending` → info |
+| NFR-HBXCI-M1 | All backup classes must use `declare(strict_types=1)` |
+| NFR-HBXCI-M2 | Backup file naming must follow the pattern `backup_{type}_{Y-m-d_His}.{ext}` for consistent identification |
+| NFR-HBXCI-M3 | Backup files must be stored in `storage/app/backup/` which is not publicly accessible |
 
 ---
 
@@ -374,6 +374,7 @@ class Backup extends BaseModel
     public function creator(): BelongsTo;       // → User via created_by
     public function asBackupState(): BackupState;
 }
+
 ```
 
 ### 6.2 backups Table Schema
@@ -394,6 +395,7 @@ Schema::create('backups', function (Blueprint $table) {
     $table->timestamps();
     $table->index(['status', 'created_at']);
 });
+
 ```
 
 ### 6.3 BackupStatus Enum
@@ -413,6 +415,7 @@ enum BackupStatus: string implements StatusEnum
     public function validTransitions(): array;    // PENDING→[RUNNING,FAILED], RUNNING→[COMPLETED,FAILED], COMPLETED→[], FAILED→[]
     public function isFinished(): bool;
 }
+
 ```
 
 ### 6.4 BackupType Enum
@@ -427,6 +430,7 @@ enum BackupType: string implements LabelEnum
 
     public function label(): string;
 }
+
 ```
 
 ### 6.5 BackupState Entity
@@ -449,6 +453,7 @@ final readonly class BackupState extends BaseEntity
     public function formattedSize(): string;     // "0 B" → "3 GB"
     public function type(): BackupType;
 }
+
 ```
 
 ### 6.6 CreateBackupAction
@@ -462,6 +467,7 @@ final class CreateBackupAction extends BaseCommandAction
     // Creates Backup record (status=RUNNING), delegates to BackupRunner,
     // updates to COMPLETED or FAILED, dispatches BackupCompleted/BackupFailed
 }
+
 ```
 
 ### 6.7 DeleteBackupAction
@@ -474,6 +480,7 @@ final class DeleteBackupAction extends BaseCommandAction
     public function execute(Backup $backup): void;
     // Validates isDeletable(), deletes file, deletes record, logs backup_deleted
 }
+
 ```
 
 ### 6.8 BackupManager History Query
@@ -494,6 +501,7 @@ final class BackupManager extends BaseRecordManager
             ->when($this->filterStatus, fn ($q, $s) => $q->where('status', $s));
     }
 }
+
 ```
 
 ### 6.9 ReadBackupStatsAction
@@ -505,6 +513,7 @@ final class ReadBackupStatsAction extends BaseReadAction
     public function execute(): array;
     // Returns ['total' => int, 'completed' => int, 'failed' => int, 'latest' => ?Backup]
 }
+
 ```
 
 ### 6.10 CleanupBackupsAction
@@ -517,6 +526,7 @@ final class CleanupBackupsAction extends BaseCommandAction
     public function execute(int $retentionDays = 30): int;
     // Deletes completed backups older than retentionDays, preserves failed backups
 }
+
 ```
 
 ### 6.11 BackupRunner Service
@@ -532,6 +542,7 @@ class BackupRunner
     public function fileSize(string $path): int;
     // Private: mysqlDumpCommand(), pgDumpCommand(), sqliteCopyCommand(), createTempFile(), cleanupTempFiles()
 }
+
 ```
 
 ### 6.12 SystemBackupCommand
@@ -546,6 +557,7 @@ final class SystemBackupCommand extends Command
         {--cleanup : Run retention cleanup after backup}';
     // Checks config('backup.enabled'), resolves BackupType, delegates to CreateBackupAction
 }
+
 ```
 
 ### 6.13 BackupManager Livewire Component
@@ -570,6 +582,7 @@ final class BackupManager extends BaseRecordManager
     public function cancelDelete(): void;
     #[Layout('core::layouts.app')] public function render(): View;
 }
+
 ```
 
 ### 6.14 BackupPolicy
@@ -583,6 +596,7 @@ class BackupPolicy extends BasePolicy
     public function create(User $user): bool;    // isAdmin
     public function delete(User $user, Backup $backup): bool; // isAdmin
 }
+
 ```
 
 ### 6.15 Events
@@ -601,6 +615,7 @@ final class BackupFailed extends BaseEvent
     public function __construct(public readonly Backup $backup) {}
     public function eventName(): string { return 'backup.failed'; }
 }
+
 ```
 
 ### 6.16 SendBackupFailedNotification Listener
@@ -612,6 +627,7 @@ final class SendBackupFailedNotification
     public function handle(BackupFailed $event): void;
     // Queries User::role('superadmin')->get(), notifies each with BackupFailedNotification
 }
+
 ```
 
 ### 6.17 BackupFailedNotification
@@ -626,6 +642,7 @@ final class BackupFailedNotification extends Notification
     public function toDatabase(User $notifiable): array;
     // Returns: backup_id, type, error, message (translated)
 }
+
 ```
 
 ### 6.18 Routes
@@ -634,6 +651,7 @@ final class BackupFailedNotification extends Notification
 // routes/web/sysadmin.php:41
 Route::get('/backups', BackupManager::class)->name('backups');
 // Middleware: auth, role:super_admin|admin
+
 ```
 
 ### 6.19 Schedule
@@ -643,6 +661,7 @@ Route::get('/backups', BackupManager::class)->name('backups');
 Schedule::command('system:backup')
     ->daily()
     ->description('Run scheduled system backup if enabled');
+
 ```
 
 ### 6.20 File Naming Convention

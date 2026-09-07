@@ -101,7 +101,7 @@ is unavailable or compromised.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Student Logs In with Email
+### UC-YB7RG-1 — Student Logs In with Email
 
 **Actor:** Student
 **Preconditions:** Student account exists, status is `activated` or `verified`
@@ -121,7 +121,7 @@ is unavailable or compromised.
 13. Redirect to `/dashboard` → role-based dashboard routing
 **Postconditions:** Student is authenticated, session is fresh, role-based dashboard loaded
 
-### UC-2 — Account Locked After 10 Failed Attempts (Exponential Backoff)
+### UC-YB7RG-2 — Account Locked After 10 Failed Attempts (Exponential Backoff)
 
 **Actor:** Attacker (or student who forgot password)
 **Preconditions:** No prior lockout for this identifier
@@ -135,7 +135,7 @@ is unavailable or compromised.
 7. On successful login: both attempts and lockout counters cleared
 **Postconditions:** Attacker is rate-limited with increasing delays; legitimate user can retry after lockout expires
 
-### UC-3 — User Logs Out
+### UC-YB7RG-3 — User Logs Out
 
 **Actor:** Any authenticated user
 **Preconditions:** User is logged in
@@ -148,7 +148,7 @@ is unavailable or compromised.
 6. Redirect to `/login`
 **Postconditions:** Session destroyed, CSRF token rotated, user returned to login page
 
-### UC-4 — Account Locked, Wait Expires, Retry Succeeds
+### UC-YB7RG-4 — Account Locked, Wait Expires, Retry Succeeds
 
 **Actor:** Student who forgot password
 **Preconditions:** Account locked after 10+ failed attempts; lockout expired
@@ -162,7 +162,7 @@ is unavailable or compromised.
 7. Session regenerated, `LoginSucceeded` dispatched
 **Postconditions:** User authenticated, counters reset, session fresh
 
-### UC-5 — Login Attempt Blocked by HTTP Middleware
+### UC-YB7RG-5 — Login Attempt Blocked by HTTP Middleware
 
 **Actor:** Automated script sending rapid requests
 **Preconditions:** No prior HTTP throttling for this IP
@@ -174,7 +174,7 @@ is unavailable or compromised.
 5. After 60 seconds: HTTP throttle resets
 **Postconditions:** Volumetric attack from single IP blocked at HTTP layer
 
-### UC-6 — Account Activation
+### UC-YB7RG-6 — Account Activation
 
 **Actor:** Student (new user)
 **Preconditions:** Student account exists with `PROVISIONED` status; activation token issued
@@ -190,7 +190,7 @@ is unavailable or compromised.
 9. Account transitions from `PROVISIONED` to `ACTIVATED`
 **Postconditions:** Account activated, password set, activation token revoked, user can now log in
 
-### UC-7 — Password Changed Notification
+### UC-YB7RG-7 — Password Changed Notification
 
 **Actor:** Any authenticated user
 **Preconditions:** User is logged in and changes their password
@@ -213,85 +213,85 @@ is unavailable or compromised.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LI1 | System must accept both email and username as login identifiers |
-| FR-LI2 | `LoginAction` must detect identifier type via `FILTER_VALIDATE_EMAIL` |
-| FR-LI3 | System must look up user by the detected field (`email` or `username`) |
-| FR-LI4 | System must check account status via `$user->asApprentice()->status()->allowsLogin()` |
-| FR-LI5 | System must reject login for `PROVISIONED`, `SUSPENDED`, and `ARCHIVED` statuses |
-| FR-LI6 | System must check `$user->asApprentice()->isLocked()` before credential validation |
-| FR-LI7 | System must check `$user->asApprentice()->requiresSetup()` and reject if true |
-| FR-LI8 | Successful login must call `session()->regenerate()` to prevent session fixation |
+| FR-YB7RG-LI1 | System must accept both email and username as login identifiers |
+| FR-YB7RG-LI2 | `LoginAction` must detect identifier type via `FILTER_VALIDATE_EMAIL` |
+| FR-YB7RG-LI3 | System must look up user by the detected field (`email` or `username`) |
+| FR-YB7RG-LI4 | System must check account status via `$user->asApprentice()->status()->allowsLogin()` |
+| FR-YB7RG-LI5 | System must reject login for `PROVISIONED`, `SUSPENDED`, and `ARCHIVED` statuses |
+| FR-YB7RG-LI6 | System must check `$user->asApprentice()->isLocked()` before credential validation |
+| FR-YB7RG-LI7 | System must check `$user->asApprentice()->requiresSetup()` and reject if true |
+| FR-YB7RG-LI8 | Successful login must call `session()->regenerate()` to prevent session fixation |
 
 ### Login — Throttling (FR-LT)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LT1 | `AuthThrottleMiddleware` must enforce 5 login attempts per 60 seconds per IP |
-| FR-LT2 | `LoginAction` must enforce cache-based lockout: 10 failures → exponential backoff |
-| FR-LT3 | Lockout duration formula: `10 * 2^(attempts - 10)` seconds |
-| FR-LT4 | Failed attempt counter stored in `auth.login.attempts:{hash}` with 24h TTL |
-| FR-LT5 | Lockout key stored in `auth.login.lockout:{hash}` with duration-based TTL |
-| FR-LT6 | Successful login must clear both attempts and lockout counters |
-| FR-LT7 | Lockout check must happen BEFORE user lookup (prevent user enumeration timing) |
+| FR-YB7RG-LT1 | `AuthThrottleMiddleware` must enforce 5 login attempts per 60 seconds per IP |
+| FR-YB7RG-LT2 | `LoginAction` must enforce cache-based lockout: 10 failures → exponential backoff |
+| FR-YB7RG-LT3 | Lockout duration formula: `10 * 2^(attempts - 10)` seconds |
+| FR-YB7RG-LT4 | Failed attempt counter stored in `auth.login.attempts:{hash}` with 24h TTL |
+| FR-YB7RG-LT5 | Lockout key stored in `auth.login.lockout:{hash}` with duration-based TTL |
+| FR-YB7RG-LT6 | Successful login must clear both attempts and lockout counters |
+| FR-YB7RG-LT7 | Lockout check must happen BEFORE user lookup (prevent user enumeration timing) |
 
 ### Login — Events & Logging (FR-LE)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LE1 | Failed login must dispatch `LoginFailed` event with identifier and reason |
-| FR-LE2 | `LogLoginFailed` listener must log via SmartLogger with PII masking |
-| FR-LE3 | Successful login must dispatch `LoginSucceeded` event with user model |
-| FR-LE4 | `SendRoleWelcomeNotification` must send first-login welcome notification by role |
-| FR-LE5 | Login success must be logged via `$this->log()` with user as subject |
+| FR-YB7RG-LE1 | Failed login must dispatch `LoginFailed` event with identifier and reason |
+| FR-YB7RG-LE2 | `LogLoginFailed` listener must log via SmartLogger with PII masking |
+| FR-YB7RG-LE3 | Successful login must dispatch `LoginSucceeded` event with user model |
+| FR-YB7RG-LE4 | `SendRoleWelcomeNotification` must send first-login welcome notification by role |
+| FR-YB7RG-LE5 | Login success must be logged via `$this->log()` with user as subject |
 
 ### Login — Form & UI (FR-LF)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LF1 | `Login` Livewire component must use `LoginForm` Form Object for validation |
-| FR-LF2 | `LoginForm` must validate: identifier required, password required |
-| FR-LF3 | Login page must be accessible at `/login` with `guest` middleware |
-| FR-LF4 | Login page must display flash messages for errors and lockout notifications |
+| FR-YB7RG-LF1 | `Login` Livewire component must use `LoginForm` Form Object for validation |
+| FR-YB7RG-LF2 | `LoginForm` must validate: identifier required, password required |
+| FR-YB7RG-LF3 | Login page must be accessible at `/login` with `guest` middleware |
+| FR-YB7RG-LF4 | Login page must display flash messages for errors and lockout notifications |
 
 ### Logout (FR-LO)
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LO1 | `POST /logout` must call `auth()->logout()` |
-| FR-LO2 | Must call `session()->invalidate()` to destroy session data |
-| FR-LO3 | Must call `session()->regenerateToken()` to rotate CSRF token |
-| FR-LO4 | Must redirect to `/login` after logout |
+| FR-YB7RG-LO1 | `POST /logout` must call `auth()->logout()` |
+| FR-YB7RG-LO2 | Must call `session()->invalidate()` to destroy session data |
+| FR-YB7RG-LO3 | Must call `session()->regenerateToken()` to rotate CSRF token |
+| FR-YB7RG-LO4 | Must redirect to `/login` after logout |
 
 ### Account Activation (FR-ACT)
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-ACT1 | `ActivateAccountAction` must verify token via `AccessToken::verify($user, 'activation', $code)` |
-| FR-ACT2 | Must revoke activation token after successful verification via `AccessToken::revokeFor()` |
-| FR-ACT3 | Must set hashed password via `Hash::make()` on successful activation |
-| FR-ACT4 | Must log `account_activated` via `$this->log()` |
-| FR-ACT5 | Must throw `RejectedException` with localized message on invalid/expired token |
-| FR-ACT6 | `AccountActivation` entity must expose `requiresActivation()`, `isTokenValid()`, `isTokenExpired()`, `hasExceededMaxAttempts()` |
+| FR-YB7RG-ACT1 | `ActivateAccountAction` must verify token via `AccessToken::verify($user, 'activation', $code)` |
+| FR-YB7RG-ACT2 | Must revoke activation token after successful verification via `AccessToken::revokeFor()` |
+| FR-YB7RG-ACT3 | Must set hashed password via `Hash::make()` on successful activation |
+| FR-YB7RG-ACT4 | Must log `account_activated` via `$this->log()` |
+| FR-YB7RG-ACT5 | Must throw `RejectedException` with localized message on invalid/expired token |
+| FR-YB7RG-ACT6 | `AccountActivation` entity must expose `requiresActivation()`, `isTokenValid()`, `isTokenExpired()`, `hasExceededMaxAttempts()` |
 
 ### Access Token Lifecycle (FR-TOK)
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-TOK1 | `AccessToken::generateFor()` must create hashed token with configurable TTL per type (activation: 30d, recovery: 7d, default: 1d) |
-| FR-TOK2 | `AccessToken::verify()` must check not revoked, not expired, hash matches; increment attempts on failure |
-| FR-TOK3 | `AccessToken::revokeFor()` must set `revoked_at` timestamp for user+type |
-| FR-TOK4 | `AccessToken::revokeAllExpired()` must bulk-revoke all expired unrevoked tokens |
-| FR-TOK5 | `AccessTokenState` entity must expose `isExpired()`, `isRevoked()`, `isValid()`, `hasExceededMaxAttempts()` |
-| FR-TOK6 | `ActivationToken` entity must expose `plainText()`, `tokenId()`, `expiresAt()` |
+| FR-YB7RG-TOK1 | `AccessToken::generateFor()` must create hashed token with configurable TTL per type (activation: 30d, recovery: 7d, default: 1d) |
+| FR-YB7RG-TOK2 | `AccessToken::verify()` must check not revoked, not expired, hash matches; increment attempts on failure |
+| FR-YB7RG-TOK3 | `AccessToken::revokeFor()` must set `revoked_at` timestamp for user+type |
+| FR-YB7RG-TOK4 | `AccessToken::revokeAllExpired()` must bulk-revoke all expired unrevoked tokens |
+| FR-YB7RG-TOK5 | `AccessTokenState` entity must expose `isExpired()`, `isRevoked()`, `isValid()`, `hasExceededMaxAttempts()` |
+| FR-YB7RG-TOK6 | `ActivationToken` entity must expose `plainText()`, `tokenId()`, `expiresAt()` |
 
 ### Credential Change Notifications (FR-CRED)
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-CRED1 | `PasswordUpdated` event must be dispatched after successful password change |
-| FR-CRED2 | `SendPasswordChangedMail` listener (queued) must send `CredentialChangedNotification` via mail channel |
-| FR-CRED3 | `InvalidateSessionOnPasswordChange` listener (queued) must send in-app notification via `SendsNotifications` interface |
-| FR-CRED4 | `CredentialChangedNotification` must include localized subject, greeting with user name, change type line, and optional support email from settings |
+| FR-YB7RG-CRED1 | `PasswordUpdated` event must be dispatched after successful password change |
+| FR-YB7RG-CRED2 | `SendPasswordChangedMail` listener (queued) must send `CredentialChangedNotification` via mail channel |
+| FR-YB7RG-CRED3 | `InvalidateSessionOnPasswordChange` listener (queued) must send in-app notification via `SendsNotifications` interface |
+| FR-YB7RG-CRED4 | `CredentialChangedNotification` must include localized subject, greeting with user name, change type line, and optional support email from settings |
 
 ---
 
@@ -301,60 +301,60 @@ is unavailable or compromised.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | Session ID must be regenerated on every login and logout |
-| NFR-S2 | CSRF token must be regenerated on logout |
-| NFR-S3 | Login failures must not reveal whether the identifier exists (generic error message) |
-| NFR-S4 | Lockout duration must increase exponentially to deter automated attacks |
-| NFR-S5 | Lockout check must occur before user lookup to prevent timing-based user enumeration |
-| NFR-S6 | Cache keys must use `crc32b` hash of identifier (not raw value) to prevent key injection |
+| NFR-YB7RG-S1 | Session ID must be regenerated on every login and logout |
+| NFR-YB7RG-S2 | CSRF token must be regenerated on logout |
+| NFR-YB7RG-S3 | Login failures must not reveal whether the identifier exists (generic error message) |
+| NFR-YB7RG-S4 | Lockout duration must increase exponentially to deter automated attacks |
+| NFR-YB7RG-S5 | Lockout check must occur before user lookup to prevent timing-based user enumeration |
+| NFR-YB7RG-S6 | Cache keys must use `crc32b` hash of identifier (not raw value) to prevent key injection |
 
 ### Performance (NFR-P)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Login action must complete in < 500ms (cache miss) or < 100ms (cache hit) |
-| NFR-P2 | HTTP throttle check must add < 5ms overhead per request |
-| NFR-P3 | Cache-based lockout check must add < 10ms overhead per request |
+| NFR-YB7RG-P1 | Login action must complete in < 500ms (cache miss) or < 100ms (cache hit) |
+| NFR-YB7RG-P2 | HTTP throttle check must add < 5ms overhead per request |
+| NFR-YB7RG-P3 | Cache-based lockout check must add < 10ms overhead per request |
 
 ### Usability (NFR-U)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-U1 | Lockout message must include the number of seconds to wait |
-| NFR-U2 | Error messages must be identical for invalid credentials and non-existent users |
-| NFR-U3 | Login form must support both email and username without requiring a mode selector |
+| NFR-YB7RG-U1 | Lockout message must include the number of seconds to wait |
+| NFR-YB7RG-U2 | Error messages must be identical for invalid credentials and non-existent users |
+| NFR-YB7RG-U3 | Login form must support both email and username without requiring a mode selector |
 
 ### Reliability (NFR-R)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-R1 | Login must gracefully handle database unavailability (reject, don't crash) |
-| NFR-R2 | Login must gracefully handle cache unavailability (skip lockout check, allow login attempt) |
+| NFR-YB7RG-R1 | Login must gracefully handle database unavailability (reject, don't crash) |
+| NFR-YB7RG-R2 | Login must gracefully handle cache unavailability (skip lockout check, allow login attempt) |
 
 ### Accessibility (NFR-A)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-A1 | Login form must meet WCAG 2.1 Level AA |
-| NFR-A2 | Login form must have associated labels for all inputs (not just placeholders) |
-| NFR-A3 | Lockout and error messages must be announced to screen readers via `aria-live` regions |
-| NFR-A4 | Login form must be navigable via keyboard alone (tab order follows logical reading order) |
+| NFR-YB7RG-A1 | Login form must meet WCAG 2.1 Level AA |
+| NFR-YB7RG-A2 | Login form must have associated labels for all inputs (not just placeholders) |
+| NFR-YB7RG-A3 | Lockout and error messages must be announced to screen readers via `aria-live` regions |
+| NFR-YB7RG-A4 | Login form must be navigable via keyboard alone (tab order follows logical reading order) |
 
 ### Localization (NFR-L)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-L1 | All user-facing strings (login form, error messages, lockout notifications) must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-L3 | Lockout duration display must use localized number formatting |
+| NFR-YB7RG-L1 | All user-facing strings (login form, error messages, lockout notifications) must use `__()` translation helper |
+| NFR-YB7RG-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-YB7RG-L3 | Lockout duration display must use localized number formatting |
 
 ### Maintainability (NFR-M)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-M1 | All PHP files must declare `strict_types=1` |
-| NFR-M2 | Login Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
-| NFR-M3 | Events must follow Action Triad convention: dispatched by Actions, not Livewire |
+| NFR-YB7RG-M1 | All PHP files must declare `strict_types=1` |
+| NFR-YB7RG-M2 | Login Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
+| NFR-YB7RG-M3 | Events must follow Action Triad convention: dispatched by Actions, not Livewire |
 
 ---
 
@@ -386,6 +386,7 @@ final readonly class LoginData extends BaseData
         public bool $remember = false,
     ) {}
 }
+
 ```
 
 ### 6.2 LoginAction
@@ -405,6 +406,7 @@ final class LoginAction extends BaseCommandAction
     // 6. Session regeneration — session()->regenerate()
     // 7. Dispatch LoginSucceeded / LoginFailed events
 }
+
 ```
 
 ### 6.3 AuthThrottleMiddleware
@@ -415,6 +417,7 @@ final class LoginAction extends BaseCommandAction
 // General auth: 30 attempts per 60 seconds
 // Config keys: config('auth.throttle.login_max_attempts'), config('auth.throttle.login_decay_seconds')
 // Returns 429 with Retry-After header when exceeded
+
 ```
 
 ### 6.4 Cache Key Schema
@@ -422,6 +425,7 @@ final class LoginAction extends BaseCommandAction
 ```
 auth.login.attempts:{crc32b(identifier)}  → int (failure count), TTL: 24 hours
 auth.login.lockout:{crc32b(identifier)}  → 1 (flag), TTL: lockout duration in seconds
+
 ```
 
 The `crc32b` hash provides:
@@ -447,6 +451,7 @@ Login-eligible statuses (allowsLogin):
 
 Terminal states (isTerminal):
   PROTECTED, ARCHIVED
+
 ```
 
 ### 6.6 Events
@@ -474,6 +479,7 @@ Route::get('/login', Login::class)
 Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
+
 ```
 
 ### 6.9 Config Values
@@ -486,6 +492,7 @@ return [
         'login_decay_seconds' => 60, // HTTP middleware: window duration in seconds
     ],
 ];
+
 ```
 
 ### 6.10 Lockout Duration Table
@@ -515,6 +522,7 @@ class AccessToken extends BaseModel {
     public function asActivationToken(): ActivationToken;
     public function asAccessTokenState(): AccessTokenState;
 }
+
 ```
 
 ### 6.12 ActivateAccountAction
@@ -525,6 +533,7 @@ final class ActivateAccountAction extends BaseCommandAction {
     public function execute(ActivateAccountData $data): User;
     // Pipeline: resolve user by ID → verify token → revoke → set password → log
 }
+
 ```
 
 ### 6.13 Credential Change Events & Listeners

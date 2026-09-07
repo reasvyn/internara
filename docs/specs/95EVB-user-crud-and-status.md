@@ -86,7 +86,7 @@ preserving the ability to recover access via recovery keys.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Single User
+### UC-95EVB-1 — Admin Creates a Single User
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Admin is authenticated with user management permission
@@ -102,7 +102,7 @@ preserving the ability to recover access via recovery keys.
 9. Redirects to account slip page for credential distribution
 **Postconditions:** User created, activation email sent, account slip ready for download
 
-### UC-2 — Admin Updates User Details
+### UC-95EVB-2 — Admin Updates User Details
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Target user exists, admin is authenticated
@@ -114,7 +114,7 @@ preserving the ability to recover access via recovery keys.
 5. `UserUpdated` event dispatched
 **Postconditions:** User and profile updated, event dispatched
 
-### UC-3 — Admin Locks Multiple Accounts
+### UC-95EVB-3 — Admin Locks Multiple Accounts
 
 **Actor:** Admin
 **Preconditions:** Users selected in the table, admin is authenticated
@@ -129,7 +129,7 @@ preserving the ability to recover access via recovery keys.
 8. `AccountStatusNotification` sent to each locked user
 **Postconditions:** Selected accounts locked, users notified, invalid transitions rejected
 
-### UC-4 — Super Admin Cannot Be Deleted or Modified
+### UC-95EVB-4 — Super Admin Cannot Be Deleted or Modified
 
 **Actor:** System (protection guard)
 **Preconditions:** Someone attempts to delete or modify the super admin account
@@ -142,7 +142,7 @@ preserving the ability to recover access via recovery keys.
 6. `UpdateUserAction` rejects name and username changes via `SuperAdminIntegrityRules`
 **Postconditions:** Super admin protected at observer, action, and UI layers
 
-### UC-5 — Admin Resets User Password
+### UC-95EVB-5 — Admin Resets User Password
 
 **Actor:** Admin
 **Preconditions:** Target user exists, admin is authenticated
@@ -153,7 +153,7 @@ preserving the ability to recover access via recovery keys.
 4. User must go through activation flow again to set new password
 **Postconditions:** Activation tokens revoked, user locked out until re-activation
 
-### UC-6 — System Auto-Inactivates Dormant Accounts
+### UC-95EVB-6 — System Auto-Inactivates Dormant Accounts
 
 **Actor:** System (scheduled artisan command)
 **Preconditions:** `accounts:auto-inactivate` command is run (scheduled daily)
@@ -165,7 +165,7 @@ preserving the ability to recover access via recovery keys.
 5. `--dry-run` flag available for preview without changes
 **Postconditions:** Dormant accounts transitioned to INACTIVE, super admin excluded
 
-### UC-7 — Admin Mass-Archives Student Accounts
+### UC-95EVB-7 — Admin Mass-Archives Student Accounts
 
 **Actor:** Admin / Super Admin
 **Preconditions:** Student cohort completed, admin is authenticated
@@ -185,91 +185,91 @@ preserving the ability to recover access via recovery keys.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-UC1 | `CreateUserAction` must validate name (required, max 255, not reserved), username (unique, system format, not reserved), email (unique, valid) |
-| FR-UC2 | `CreateUserAction` must auto-generate username from email if not provided, with collision resolution via `UserIdentifierGenerator` |
-| FR-UC3 | `CreateUserAction` must auto-generate 12-char random password if not provided |
-| FR-UC4 | `CreateUserAction` must create User + Profile + sync roles in a single database transaction |
-| FR-UC5 | `CreateUserAction` must send `ActivationCodeNotification` with activation token via `AccessToken::generateFor()` |
-| FR-UC6 | `CreateUserAction` must send `WelcomeNotification` with plain password when password was auto-generated |
-| FR-UC7 | `UpdateUserAction` must support atomic update of user data + profile (via `updateOrCreate`) + roles (via `syncRoles`) |
-| FR-UC8 | `UpdateUserAction` must prevent name and username changes on super admin via `SuperAdminIntegrityRules` |
-| FR-UC9 | `DeleteUserAction` must prevent deletion of super admin (`hasRole('super_admin')`) and self (`Auth::id()`) |
-| FR-UC10 | `BatchDeleteUserAction` must skip self and super_admin in batch operations, returning `['deleted' => int, 'skipped' => int]` |
-| FR-UC11 | All CRUD actions must extend `BaseCommandAction` and use `$this->transaction()` for atomic operations |
-| FR-UC12 | All CRUD actions must dispatch domain events (`UserCreated`, `UserUpdated`, `UserDeleted`) after successful operations |
+| FR-95EVB-UC1 | `CreateUserAction` must validate name (required, max 255, not reserved), username (unique, system format, not reserved), email (unique, valid) |
+| FR-95EVB-UC2 | `CreateUserAction` must auto-generate username from email if not provided, with collision resolution via `UserIdentifierGenerator` |
+| FR-95EVB-UC3 | `CreateUserAction` must auto-generate 12-char random password if not provided |
+| FR-95EVB-UC4 | `CreateUserAction` must create User + Profile + sync roles in a single database transaction |
+| FR-95EVB-UC5 | `CreateUserAction` must send `ActivationCodeNotification` with activation token via `AccessToken::generateFor()` |
+| FR-95EVB-UC6 | `CreateUserAction` must send `WelcomeNotification` with plain password when password was auto-generated |
+| FR-95EVB-UC7 | `UpdateUserAction` must support atomic update of user data + profile (via `updateOrCreate`) + roles (via `syncRoles`) |
+| FR-95EVB-UC8 | `UpdateUserAction` must prevent name and username changes on super admin via `SuperAdminIntegrityRules` |
+| FR-95EVB-UC9 | `DeleteUserAction` must prevent deletion of super admin (`hasRole('super_admin')`) and self (`Auth::id()`) |
+| FR-95EVB-UC10 | `BatchDeleteUserAction` must skip self and super_admin in batch operations, returning `['deleted' => int, 'skipped' => int]` |
+| FR-95EVB-UC11 | All CRUD actions must extend `BaseCommandAction` and use `$this->transaction()` for atomic operations |
+| FR-95EVB-UC12 | All CRUD actions must dispatch domain events (`UserCreated`, `UserUpdated`, `UserDeleted`) after successful operations |
 
 ### Account Status State Machine
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-AS1 | `AccountStatus` enum must implement `StatusEnum` and `ColorableEnum` contracts |
-| FR-AS2 | Must define 8 states: `PROVISIONED`, `ACTIVATED`, `VERIFIED`, `PROTECTED`, `RESTRICTED`, `SUSPENDED`, `INACTIVE`, `ARCHIVED` |
-| FR-AS3 | `allowsLogin()` must return `true` for ACTIVATED, VERIFIED, PROTECTED, RESTRICTED, INACTIVE and `false` for PROVISIONED, SUSPENDED, ARCHIVED |
-| FR-AS4 | `isTerminal()` must return `true` for PROTECTED and ARCHIVED — no further transitions allowed |
-| FR-AS5 | `validTransitions()` must define: PROVISIONED→{ACTIVATED,SUSPENDED}, ACTIVATED→{VERIFIED,SUSPENDED,ARCHIVED}, VERIFIED→{RESTRICTED,SUSPENDED,ARCHIVED,INACTIVE}, PROTECTED→{}, RESTRICTED→{VERIFIED,SUSPENDED,ARCHIVED}, SUSPENDED→{ACTIVATED,VERIFIED,ARCHIVED}, INACTIVE→{VERIFIED,ARCHIVED,SUSPENDED}, ARCHIVED→{} |
-| FR-AS6 | `canTransitionTo()` must return `false` for all transitions from terminal states |
-| FR-AS7 | `SetUserStatusAction` must validate transitions via `canTransitionTo()` before applying status change |
-| FR-AS8 | `SetUserStatusAction` must reject self-status-change (`auth()->id() === $user->id`) and super admin status change |
-| FR-AS9 | `ToggleUserStatusAction` must toggle between VERIFIED ↔ SUSPENDED only |
-| FR-AS10 | Status changes must dispatch `UserStatusChanged` event |
-| FR-AS11 | Status changes must send `AccountStatusNotification` to the affected user |
-| FR-AS12 | `color()` must return: PROVISIONED→warning, ACTIVATED→info, VERIFIED→success, PROTECTED→primary, RESTRICTED→warning, SUSPENDED→error, INACTIVE→warning, ARCHIVED→error |
-| FR-AS13 | `label()` must return translated string via `__('account_status.status.'.$this->value)` |
+| FR-95EVB-AS1 | `AccountStatus` enum must implement `StatusEnum` and `ColorableEnum` contracts |
+| FR-95EVB-AS2 | Must define 8 states: `PROVISIONED`, `ACTIVATED`, `VERIFIED`, `PROTECTED`, `RESTRICTED`, `SUSPENDED`, `INACTIVE`, `ARCHIVED` |
+| FR-95EVB-AS3 | `allowsLogin()` must return `true` for ACTIVATED, VERIFIED, PROTECTED, RESTRICTED, INACTIVE and `false` for PROVISIONED, SUSPENDED, ARCHIVED |
+| FR-95EVB-AS4 | `isTerminal()` must return `true` for PROTECTED and ARCHIVED — no further transitions allowed |
+| FR-95EVB-AS5 | `validTransitions()` must define: PROVISIONED→{ACTIVATED,SUSPENDED}, ACTIVATED→{VERIFIED,SUSPENDED,ARCHIVED}, VERIFIED→{RESTRICTED,SUSPENDED,ARCHIVED,INACTIVE}, PROTECTED→{}, RESTRICTED→{VERIFIED,SUSPENDED,ARCHIVED}, SUSPENDED→{ACTIVATED,VERIFIED,ARCHIVED}, INACTIVE→{VERIFIED,ARCHIVED,SUSPENDED}, ARCHIVED→{} |
+| FR-95EVB-AS6 | `canTransitionTo()` must return `false` for all transitions from terminal states |
+| FR-95EVB-AS7 | `SetUserStatusAction` must validate transitions via `canTransitionTo()` before applying status change |
+| FR-95EVB-AS8 | `SetUserStatusAction` must reject self-status-change (`auth()->id() === $user->id`) and super admin status change |
+| FR-95EVB-AS9 | `ToggleUserStatusAction` must toggle between VERIFIED ↔ SUSPENDED only |
+| FR-95EVB-AS10 | Status changes must dispatch `UserStatusChanged` event |
+| FR-95EVB-AS11 | Status changes must send `AccountStatusNotification` to the affected user |
+| FR-95EVB-AS12 | `color()` must return: PROVISIONED→warning, ACTIVATED→info, VERIFIED→success, PROTECTED→primary, RESTRICTED→warning, SUSPENDED→error, INACTIVE→warning, ARCHIVED→error |
+| FR-95EVB-AS13 | `label()` must return translated string via `__('account_status.status.'.$this->value)` |
 
 ### Profile Management
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-PM1 | `Profile` model must belong to User, Department, and Company via `BelongsTo` relationships |
-| FR-PM2 | `Profile` must cast `gender` to `Gender` enum, `blood_type` to `BloodType` enum, `dob` to date, `emergency_contact` to JSON |
-| FR-PM3 | `Profile` must use `#[Fillable]` attribute with: user_id, phone, address, bio, gender, blood_type, pob, dob, emergency_contact, id_number, national_id_number, competence_field, employment_status, job_title, internal_notes, department_id, company_id |
-| FR-PM4 | `UpdateProfileAction` must validate and persist profile changes with upsert semantics (`updateOrCreate`) |
-| FR-PM5 | Profile changes must dispatch `ProfileUpdated` event |
-| FR-PM6 | Profile must be guarded by `ProfilePolicy` (admin or owner access) |
+| FR-95EVB-PM1 | `Profile` model must belong to User, Department, and Company via `BelongsTo` relationships |
+| FR-95EVB-PM2 | `Profile` must cast `gender` to `Gender` enum, `blood_type` to `BloodType` enum, `dob` to date, `emergency_contact` to JSON |
+| FR-95EVB-PM3 | `Profile` must use `#[Fillable]` attribute with: user_id, phone, address, bio, gender, blood_type, pob, dob, emergency_contact, id_number, national_id_number, competence_field, employment_status, job_title, internal_notes, department_id, company_id |
+| FR-95EVB-PM4 | `UpdateProfileAction` must validate and persist profile changes with upsert semantics (`updateOrCreate`) |
+| FR-95EVB-PM5 | Profile changes must dispatch `ProfileUpdated` event |
+| FR-95EVB-PM6 | Profile must be guarded by `ProfilePolicy` (admin or owner access) |
 
 ### Livewire Managers
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-LM1 | `UserManager` must extend `BaseRecordManager` with full CRUD, search, filter, and pagination |
-| FR-LM2 | `UserManager` must support search across name, email, username, and phone (via profile relation) |
-| FR-LM3 | `UserManager` must support filters: role, status, created_from, created_to |
-| FR-LM4 | `UserManager` must display columns: name, email, profile.phone, roles_list, status, actions |
-| FR-LM5 | `UserManager` must eagerly load `roles` and `profile` to prevent N+1 queries |
-| FR-LM6 | `UserManager` must provide computed `roles()` excluding super_admin and admin roles (admin accounts are managed via `AdminManager`) |
-| FR-LM6a | `UserManager` list and CSV export must exclude users with the `admin` role; admin accounts are managed exclusively via `AdminManager` |
-| FR-LM7 | `UserManager` must provide computed `statusOptions()` excluding PROTECTED and ARCHIVED |
-| FR-LM8 | `StudentManager` must add department filter |
-| FR-LM9 | `TeacherManager` must include id_number column |
-| FR-LM10 | `SupervisorManager` must include company column |
-| FR-LM11 | `AdminManager` must be restricted to admin-only access |
-| FR-LM12 | All managers must enforce policy checks in `boot()` via `$this->authorize('viewAny', User::class)` |
+| FR-95EVB-LM1 | `UserManager` must extend `BaseRecordManager` with full CRUD, search, filter, and pagination |
+| FR-95EVB-LM2 | `UserManager` must support search across name, email, username, and phone (via profile relation) |
+| FR-95EVB-LM3 | `UserManager` must support filters: role, status, created_from, created_to |
+| FR-95EVB-LM4 | `UserManager` must display columns: name, email, profile.phone, roles_list, status, actions |
+| FR-95EVB-LM5 | `UserManager` must eagerly load `roles` and `profile` to prevent N+1 queries |
+| FR-95EVB-LM6 | `UserManager` must provide computed `roles()` excluding super_admin and admin roles (admin accounts are managed via `AdminManager`) |
+| FR-95EVB-LM6a | `UserManager` list and CSV export must exclude users with the `admin` role; admin accounts are managed exclusively via `AdminManager` |
+| FR-95EVB-LM7 | `UserManager` must provide computed `statusOptions()` excluding PROTECTED and ARCHIVED |
+| FR-95EVB-LM8 | `StudentManager` must add department filter |
+| FR-95EVB-LM9 | `TeacherManager` must include id_number column |
+| FR-95EVB-LM10 | `SupervisorManager` must include company column |
+| FR-95EVB-LM11 | `AdminManager` must be restricted to admin-only access |
+| FR-95EVB-LM12 | All managers must enforce policy checks in `boot()` via `$this->authorize('viewAny', User::class)` |
 
 ### Super Admin Protection
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SAP1 | `UserObserver::deleting()` must throw `RejectedException` when deleting a user with `superadmin` role |
-| FR-SAP2 | `User::delete()` must call `asSuperAdminIntegrityRules()->canBeDeleted()` and throw `RejectedException` if false |
-| FR-SAP3 | `DeleteUserAction` must check `$user->hasRole('super_admin')` before deletion |
-| FR-SAP4 | `UserManager::editUser()` must block edit modal with flash error for super admin |
-| FR-SAP5 | `UserManager::confirmAction()` must check super admin role before deletion confirmation |
-| FR-SAP6 | `UpdateUserAction` must reject name changes via `integrity->canChangeName()` and username changes via `integrity->canChangeUsername()` |
-| FR-SAP7 | `SetUserStatusAction` must reject status changes on super admin via `integrity->canBeLocked()` |
-| FR-SAP8 | `ToggleUserStatusAction` must reject toggle on super admin via `integrity->canBeLocked()` |
-| FR-SAP9 | `BatchDeleteUserAction` must skip super admin in batch iterations |
+| FR-95EVB-SAP1 | `UserObserver::deleting()` must throw `RejectedException` when deleting a user with `superadmin` role |
+| FR-95EVB-SAP2 | `User::delete()` must call `asSuperAdminIntegrityRules()->canBeDeleted()` and throw `RejectedException` if false |
+| FR-95EVB-SAP3 | `DeleteUserAction` must check `$user->hasRole('super_admin')` before deletion |
+| FR-95EVB-SAP4 | `UserManager::editUser()` must block edit modal with flash error for super admin |
+| FR-95EVB-SAP5 | `UserManager::confirmAction()` must check super admin role before deletion confirmation |
+| FR-95EVB-SAP6 | `UpdateUserAction` must reject name changes via `integrity->canChangeName()` and username changes via `integrity->canChangeUsername()` |
+| FR-95EVB-SAP7 | `SetUserStatusAction` must reject status changes on super admin via `integrity->canBeLocked()` |
+| FR-95EVB-SAP8 | `ToggleUserStatusAction` must reject toggle on super admin via `integrity->canBeLocked()` |
+| FR-95EVB-SAP9 | `BatchDeleteUserAction` must skip super admin in batch iterations |
 
 ### Account Lifecycle
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-AL1 | `AutoInactivateAccounts` artisan command (`accounts:auto-inactivate`) must transition VERIFIED accounts to INACTIVE after configurable threshold (default 90 days) based on `last_activity_at` |
-| FR-AL2 | `AutoInactivateAccounts` must exclude super admin accounts and support `--dry-run` flag |
-| FR-AL3 | `ArchiveStudentAccountsAction` must mass-archive users via chunked query (chunk size 100) |
-| FR-AL4 | `ArchiveStudentAccountsAction` must skip super admin accounts |
-| FR-AL5 | `RevokeUserActivationTokensAction` must revoke all activation tokens for a user via `AccessToken::revokeFor()` |
-| FR-AL6 | `SaveRecoveryKeyAction` must store recovery key in `storage/app/private/.recovery-key` with `0600` file permissions |
-| FR-AL7 | `ReadRecoveryKeyAction` must read `.recovery-key` from private storage, skipping comment lines (starting with `#`) and empty lines |
+| FR-95EVB-AL1 | `AutoInactivateAccounts` artisan command (`accounts:auto-inactivate`) must transition VERIFIED accounts to INACTIVE after configurable threshold (default 90 days) based on `last_activity_at` |
+| FR-95EVB-AL2 | `AutoInactivateAccounts` must exclude super admin accounts and support `--dry-run` flag |
+| FR-95EVB-AL3 | `ArchiveStudentAccountsAction` must mass-archive users via chunked query (chunk size 100) |
+| FR-95EVB-AL4 | `ArchiveStudentAccountsAction` must skip super admin accounts |
+| FR-95EVB-AL5 | `RevokeUserActivationTokensAction` must revoke all activation tokens for a user via `AccessToken::revokeFor()` |
+| FR-95EVB-AL6 | `SaveRecoveryKeyAction` must store recovery key in `storage/app/private/.recovery-key` with `0600` file permissions |
+| FR-95EVB-AL7 | `ReadRecoveryKeyAction` must read `.recovery-key` from private storage, skipping comment lines (starting with `#`) and empty lines |
 
 ---
 
@@ -277,29 +277,29 @@ preserving the ability to recover access via recovery keys.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | User list query must use eager loading (`roles`, `profile`) to prevent N+1 — enforced in `UserManager::query()` |
-| NFR-P2 | `ArchiveStudentAccountsAction` must process rows in chunks of 100 to prevent memory exhaustion |
-| NFR-P3 | Batch operations must skip invalid targets (self, super_admin) without failing the entire batch |
-| NFR-S1 | Super admin must be protected at three independent layers: model observer, action guard, and Livewire UI guard |
-| NFR-S2 | Password must never be stored in plain text — `Hash::make()` required in all creation/update paths |
-| NFR-S3 | Recovery key file must have `0600` permissions (owner read/write only) |
-| NFR-S4 | Account status transitions must be validated via `canTransitionTo()` before application |
-| NFR-S5 | Self-status-change must be rejected in `SetUserStatusAction` and `ToggleUserStatusAction` |
-| NFR-S6 | `SetUserStatusAction` must support `skipAuthCheck` parameter for system-initiated transitions (e.g., auto-inactivate) |
-| NFR-R1 | `BatchDeleteUserAction` must return `['deleted' => int, 'skipped' => int]` — partial success is acceptable |
-| NFR-R2 | `CreateUserAction` notification failures must be caught and logged, not propagated to caller |
-| NFR-U1 | Toast feedback must confirm success/failure for every CRUD operation via TallstackUI `$this->toast()->success()->send()` / `$this->toast()->error()->send()` (replaces removed `flash()->` / PHPFlasher) |
-| NFR-U2 | `UserManager` status badges must include translated text labels alongside color indicators via `LabelEnum::label()` |
-| NFR-U3 | Confirmation modals for delete/lock/unlock must be presented before destructive actions |
-| NFR-M1 | User CRUD must use Action classes, not inline Livewire logic — `UserManager` delegates to `CreateUserAction`, `UpdateUserAction`, `DeleteUserAction` |
-| NFR-M2 | All form validation must use Form Objects (`UserForm`), not inline rules |
-| NFR-M3 | All actions must extend `BaseCommandAction` (write) or `BaseReadAction` (read) and use `$this->log()` for audit |
-| NFR-A1 | All user management UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | Account status badges must include visible text labels, not color alone |
-| NFR-A3 | Bulk action confirmation modals must trap focus and be keyboard-navigable |
-| NFR-L1 | All user-facing strings in user management UI must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-L3 | Account status labels must use `LabelEnum::label()` which calls `__()` internally |
+| NFR-95EVB-P1 | User list query must use eager loading (`roles`, `profile`) to prevent N+1 — enforced in `UserManager::query()` |
+| NFR-95EVB-P2 | `ArchiveStudentAccountsAction` must process rows in chunks of 100 to prevent memory exhaustion |
+| NFR-95EVB-P3 | Batch operations must skip invalid targets (self, super_admin) without failing the entire batch |
+| NFR-95EVB-S1 | Super admin must be protected at three independent layers: model observer, action guard, and Livewire UI guard |
+| NFR-95EVB-S2 | Password must never be stored in plain text — `Hash::make()` required in all creation/update paths |
+| NFR-95EVB-S3 | Recovery key file must have `0600` permissions (owner read/write only) |
+| NFR-95EVB-S4 | Account status transitions must be validated via `canTransitionTo()` before application |
+| NFR-95EVB-S5 | Self-status-change must be rejected in `SetUserStatusAction` and `ToggleUserStatusAction` |
+| NFR-95EVB-S6 | `SetUserStatusAction` must support `skipAuthCheck` parameter for system-initiated transitions (e.g., auto-inactivate) |
+| NFR-95EVB-R1 | `BatchDeleteUserAction` must return `['deleted' => int, 'skipped' => int]` — partial success is acceptable |
+| NFR-95EVB-R2 | `CreateUserAction` notification failures must be caught and logged, not propagated to caller |
+| NFR-95EVB-U1 | Toast feedback must confirm success/failure for every CRUD operation via TallstackUI `$this->toast()->success()->send()` / `$this->toast()->error()->send()` (replaces removed `flash()->` / PHPFlasher) |
+| NFR-95EVB-U2 | `UserManager` status badges must include translated text labels alongside color indicators via `LabelEnum::label()` |
+| NFR-95EVB-U3 | Confirmation modals for delete/lock/unlock must be presented before destructive actions |
+| NFR-95EVB-M1 | User CRUD must use Action classes, not inline Livewire logic — `UserManager` delegates to `CreateUserAction`, `UpdateUserAction`, `DeleteUserAction` |
+| NFR-95EVB-M2 | All form validation must use Form Objects (`UserForm`), not inline rules |
+| NFR-95EVB-M3 | All actions must extend `BaseCommandAction` (write) or `BaseReadAction` (read) and use `$this->log()` for audit |
+| NFR-95EVB-A1 | All user management UI must meet WCAG 2.1 Level AA |
+| NFR-95EVB-A2 | Account status badges must include visible text labels, not color alone |
+| NFR-95EVB-A3 | Bulk action confirmation modals must trap focus and be keyboard-navigable |
+| NFR-95EVB-L1 | All user-facing strings in user management UI must use `__()` translation helper |
+| NFR-95EVB-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-95EVB-L3 | Account status labels must use `LabelEnum::label()` which calls `__()` internally |
 
 ---
 
@@ -351,6 +351,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
     public function validTransitions(): array { /* ... */ }
     public function canTransitionTo(StatusEnum $target): bool { /* ... */ }
 }
+
 ```
 
 ### 6.2 CreateUserAction
@@ -369,6 +370,7 @@ final class CreateUserAction extends BaseCommandAction
     // Sends ActivationCodeNotification + optional WelcomeNotification
     // Dispatches UserCreated event
 }
+
 ```
 
 ### 6.3 UpdateUserAction
@@ -387,6 +389,7 @@ final class UpdateUserAction extends BaseCommandAction
     // Uses profile()->updateOrCreate() for profile data
     // Dispatches UserUpdated event
 }
+
 ```
 
 ### 6.4 DeleteUserAction
@@ -399,6 +402,7 @@ final class DeleteUserAction extends BaseCommandAction
     // Guards: super_admin check, self-delete check
     // Dispatches UserDeleted event
 }
+
 ```
 
 ### 6.5 BatchDeleteUserAction
@@ -414,6 +418,7 @@ final class BatchDeleteUserAction extends BaseCommandAction
     // Skips: self (auth()->id()), super_admin, not-found users
     // Delegates each deletion to DeleteUserAction
 }
+
 ```
 
 ### 6.6 SetUserStatusAction
@@ -431,6 +436,7 @@ final class SetUserStatusAction extends BaseCommandAction
     // Guards: self-change rejection, super admin integrity, transition validation
     // Sets status via $user->setStatus(), dispatches UserStatusChanged, sends notification
 }
+
 ```
 
 ### 6.7 ToggleUserStatusAction
@@ -443,6 +449,7 @@ final class ToggleUserStatusAction extends BaseCommandAction
     // Toggles: VERIFIED ↔ SUSPENDED only
     // Guards: self-change rejection, super admin integrity
 }
+
 ```
 
 ### 6.8 UserManager Livewire
@@ -471,6 +478,7 @@ class UserManager extends BaseRecordManager
     // Import/Export: import(), export(), exportSelected(), downloadTemplate()
     // Slips: trait DownloadsAccountSlips
 }
+
 ```
 
 ### 6.9 StudentManager Livewire
@@ -479,6 +487,7 @@ class UserManager extends BaseRecordManager
 // app/Modules/User/UserManagement/Livewire/StudentManager.php
 // Extends UserManager pattern with department-specific columns and filters
 // Adds department filter, student-specific form fields
+
 ```
 
 ### 6.10 TeacherManager Livewire
@@ -487,6 +496,7 @@ class UserManager extends BaseRecordManager
 // app/Modules/User/UserManagement/Livewire/TeacherManager.php
 // Extends UserManager pattern with teacher-specific columns
 // Includes id_number column (NIP)
+
 ```
 
 ### 6.11 SupervisorManager Livewire
@@ -495,6 +505,7 @@ class UserManager extends BaseRecordManager
 // app/Modules/User/UserManagement/Livewire/SupervisorManager.php
 // Extends UserManager pattern with company-specific columns
 // Includes company column and company filter
+
 ```
 
 ### 6.12 AdminManager Livewire
@@ -503,6 +514,7 @@ class UserManager extends BaseRecordManager
 // app/Modules/User/UserManagement/Livewire/AdminManager.php
 // Restricted to admin-only access
 // Shows admin-specific columns
+
 ```
 
 ### 6.13 User Model
@@ -530,6 +542,7 @@ class User extends BaseAuthenticatable implements HasMedia
     // Scopes: scopeLocked(), scopeUnlocked(), scopeActive(), scopeRoleType()
     // Delete guard: asSuperAdminIntegrityRules()->canBeDeleted()
 }
+
 ```
 
 ### 6.14 Profile Model
@@ -546,6 +559,7 @@ class Profile extends BaseModel
     // Relations: user() → BelongsTo User, department() → BelongsTo Department,
     //   company() → BelongsTo Company
 }
+
 ```
 
 ### 6.15 Lifecycle Actions
@@ -578,6 +592,7 @@ final class ReadRecoveryKeyAction extends BaseReadAction
     public function execute(): ?string;
     // Reads .recovery-key from private storage, strips comments/blanks, returns key or null
 }
+
 ```
 
 ### 6.16 AutoInactivateAccounts Command
@@ -595,6 +610,7 @@ class AutoInactivateAccounts extends Command
     // Queries: VERIFIED status, last_activity_at < threshold, excludes super_admin
     // Uses SetUserStatusAction with skipAuthCheck: true
 }
+
 ```
 
 ### 6.17 UserObserver
@@ -608,6 +624,7 @@ class UserObserver
         // Checks $user->hasRole('superadmin') — throws RejectedException if true
     }
 }
+
 ```
 
 ### 6.18 Database Schema — `users` Table
@@ -636,6 +653,7 @@ CREATE TABLE users (
     INDEX idx_setup_required (setup_required),
     INDEX idx_is_active (is_active)
 );
+
 ```
 
 ### 6.19 Database Schema — `profiles` Table
@@ -666,6 +684,7 @@ CREATE TABLE profiles (
     INDEX idx_department_id (department_id),
     INDEX idx_company_id (company_id)
 );
+
 ```
 
 ---

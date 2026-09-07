@@ -55,6 +55,7 @@ reports, certificates, mentoring, email notifications.
 composer install --optimize-autoloader --no-dev --no-interaction
 npm install && npm run build
 rm -rf node_modules/
+
 ```
 
 **2. Upload files** to your host's document root. The document root must point to the `public/`
@@ -64,6 +65,7 @@ directory.
 
 ```bash
 cp .env.example .env
+
 ```
 
 The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CONNECTION=sync`,
@@ -75,12 +77,14 @@ The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CON
 
 ```bash
 php artisan migrate --force
+
 ```
 
 **5. Run the installer:**
 
 ```bash
 php artisan setup:install
+
 ```
 
 Copy the signed URL from the output and open it in your browser to complete the setup wizard.
@@ -89,6 +93,7 @@ Copy the signed URL from the output and open it in your browser to complete the 
 
 ```cron
 * * * * * curl -s https://your-school.sch.id/cron/your-cron-secret-here
+
 ```
 
 If your provider limits cron to 5-minute intervals, that is acceptable -- scheduled tasks run with a
@@ -98,6 +103,7 @@ slight delay.
 
 ```
 public/storage -> storage/app/public
+
 ```
 
 ### Performance for 500 Users
@@ -128,6 +134,7 @@ When the institution outgrows shared hosting:
 QUEUE_CONNECTION=redis
 CACHE_STORE=redis
 SESSION_DRIVER=redis
+
 ```
 
 4. Configure Supervisor with dual pipeline workers
@@ -172,6 +179,7 @@ server {
         deny all;
     }
 }
+
 ```
 
 For Apache, ensure `mod_rewrite` is enabled -- the included `public/.htaccess` handles URL
@@ -187,6 +195,7 @@ pm.start_servers = 5
 pm.min_spare_servers = 5
 pm.max_spare_servers = 15
 pm.max_requests = 500
+
 ```
 
 Each PHP-FPM process uses ~40-60 MB. With 50 children, reserve at least 3 GB RAM.
@@ -202,6 +211,7 @@ DB_PORT=3306
 DB_DATABASE=internara
 DB_USERNAME=internara
 DB_PASSWORD=<strong-password>
+
 ```
 
 Recommended `my.cnf` tuning:
@@ -211,6 +221,7 @@ innodb_buffer_pool_size = 2G
 innodb_log_file_size = 512M
 innodb_flush_method = O_DIRECT
 max_connections = 200
+
 ```
 
 #### MariaDB 10.6+
@@ -219,6 +230,7 @@ MariaDB is a drop-in replacement using the same `pdo_mysql` driver:
 
 ```env
 DB_CONNECTION=mariadb
+
 ```
 
 #### PostgreSQL 14+
@@ -230,6 +242,7 @@ DB_PORT=5432
 DB_DATABASE=internara
 DB_USERNAME=internara
 DB_PASSWORD=<strong-password>
+
 ```
 
 Recommended `postgresql.conf` tuning:
@@ -240,6 +253,7 @@ effective_cache_size = 1.5GB
 work_mem = 16MB
 maintenance_work_mem = 128MB
 random_page_cost = 1.1
+
 ```
 
 ### 4. Dual Pipeline Supervisor Configuration
@@ -277,6 +291,7 @@ numprocs=2
 redirect_stderr=true
 stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
+
 ```
 
 `/etc/supervisor/conf.d/internara-scheduler.conf`:
@@ -289,12 +304,14 @@ autorestart=true
 user=www-data
 redirect_stderr=true
 stdout_logfile=/path/to/app/storage/logs/scheduler.log
+
 ```
 
 Alternatively, use a cron entry for the scheduler:
 
 ```cron
 * * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1
+
 ```
 
 ### 5. Storage
@@ -303,6 +320,7 @@ Create the public storage symlink:
 
 ```bash
 php artisan storage:link
+
 ```
 
 For multi-server deployments, replace local storage with S3-compatible object storage. See
@@ -358,6 +376,7 @@ Important: Docker BuildKit is required to build directly from Git. Enable it in 
 
 ```bash
 export DOCKER_BUILDKIT=1
+
 ```
 
 ### Start the Stack (public repo)
@@ -371,12 +390,14 @@ APP_KEY=base64:REPLACE_WITH_APP_KEY
 GIT_URL=https://github.com/owner/repo.git#main
 ENV
 sudo chmod 600 /etc/internara.env
+
 ```
 
 2. Start the stack using the env file:
 
 ```bash
 DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+
 ```
 
 ### Serving on a domain over HTTPS (behind a reverse proxy)
@@ -392,6 +413,7 @@ The steps below use the Internara product demo setup (aaPanel vhost `internara.w
 APP_URL=https://internara.web.id  # product demo; override for your domain
 SESSION_SECURE_COOKIE=true
 NGINX_PORT=8080
+
 ```
 
 `APP_URL` defaults to `https://internara.web.id` (product demo) in `docker-compose.yml`, so it only needs to be
@@ -417,6 +439,7 @@ location ^~ / {
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
 }
+
 ```
 
 If the vhost declares a `proxy_cache_path`, create its directory before reloading nginx
@@ -437,6 +460,7 @@ acme.sh --home /root/.acme.sh --install-cert -d internara.web.id \
   --fullchain-file /www/server/panel/vhost/cert/internara.web.id/fullchain.pem \
   --key-file /www/server/panel/vhost/cert/internara.web.id/privkey.pem \
   --reloadcmd "nginx -s reload"
+
 ```
 
 Verify the SAN before reloading: `openssl x509 -in .../fullchain.pem -noout -text | grep -A1
@@ -452,6 +476,7 @@ curl -skI https://internara.web.id -o /dev/null -w "%{http_code}\n"    # 200 —
 curl -skI https://www.internara.web.id -o /dev/null -w "%{http_code}\n" # 200
 curl -s https://internara.web.id | grep -c localhost                     # 0 (app, not default page)
 curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
+
 ```
 
 ### Continuous deployment (tag-driven release pipeline)
@@ -557,6 +582,7 @@ eval "$(ssh-agent -s)" && ssh-add ~/.ssh/deploy_key
 # Then run the compose command using SSH URL
 export GIT_URL='git@github.com:owner/repo.git#main'
 DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+
 ```
 
 If using a CI/CD runner or systemd unit to start the stack on boot, ensure the ssh-agent is available
@@ -573,6 +599,7 @@ Generate a secure password on the VPS:
 
 ```bash
 DB_PASSWORD=$(openssl rand -base64 32)
+
 ```
 
 Do not commit `/etc/internara.env` or other secret files to Git.
@@ -594,6 +621,7 @@ Do not commit `/etc/internara.env` or other secret files to Git.
 
 # Or with MySQL instead of SQLite:
 ./vendor/bin/sail up -d -s mysql
+
 ```
 
 See `docker-compose.dev.yml` for the Sail configuration.

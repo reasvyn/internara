@@ -5,6 +5,19 @@
 UI/UX design principles, component library usage (TallstackUI v4 + Tailwind CSS v4), layout patterns,
 and accessibility guidelines.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## 1. Design System Philosophy
 
 > 📖 Authoritative references: [UI Pattern](../arch/ui-pattern.md) — visual hierarchy, Tailwind v4 tokens, component design, performance; [UX Pattern](../arch/ux-pattern.md) — theming, accessibility, localization, user flow.
@@ -84,6 +97,7 @@ Theme values never hardcode a color. Each slot resolves at runtime:
 
 ```
 DB setting (cached forever) → Theme::defaults() from config → hardcoded fallback
+
 ```
 
 `app/Modules/Settings/Domain/Theme/Support/Theme.php` exposes the chain:
@@ -149,6 +163,7 @@ into an inline `<style>` under its scope selector:
 ```blade
 html[data-theme='light'], html:not([data-theme='dark']) { … light vars … }
 html[data-theme='dark'] { … dark vars … }
+
 ```
 
 Variables per brand key (both themes): the modern `--color-{key}`, the legacy DaisyUI `--{initial}`
@@ -304,9 +319,11 @@ JavaScript framework needed.
 
 - After `wire:navigate` page transition, focus must reset to the page heading (`<h1>`) or the
   first interactive element. Use:
+
   ```blade
   <div wire:navigate x-init="$nextTick(() => $el.querySelector('h1, [autofocus]')?.focus())">
   ```
+
 - Loading indicators during transition must include `aria-busy="true"` and `role="status"` to
   announce the loading state to screen readers.
 
@@ -336,6 +353,7 @@ Route names are flexible and describe the URL path — no rigid convention. Exam
 Route::livewire('/registration', RegistrationCenter::class)->name('registration.center');
 Route::livewire('/apply', ApplyPage::class)->name('apply');
 Route::get('/dashboard', ...)->name('dashboard');
+
 ```
 
 ### Route Files
@@ -349,6 +367,7 @@ Livewire components are registered directly in route files:
 
 ```php
 Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
+
 ```
 
 Route middleware applies at the route level — `auth`, `guest`, `role:{roles}`, `auth.throttle`.
@@ -390,6 +409,7 @@ Carbon::locale(app()->getLocale())->isoFormat('D MMMM YYYY');
 
 // Locale-aware number
 Number::locale(app()->getLocale())->format(1234567.89);
+
 ```
 
 ### HTML Language Attribute

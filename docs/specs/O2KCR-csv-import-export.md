@@ -80,7 +80,7 @@ management UI, so admins can narrow results before downloading.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Imports Users via CSV
+### UC-O2KCR-1 — Admin Imports Users via CSV
 
 **Actor:** Admin
 **Preconditions:** CSV file prepared with columns: name, email, phone
@@ -97,7 +97,7 @@ management UI, so admins can narrow results before downloading.
 6. Flash message shows: "Imported: X, Skipped: Y"
 **Postconditions:** Users created from CSV, duplicates skipped, summary displayed
 
-### UC-2 — Admin Imports Departments via CSV
+### UC-O2KCR-2 — Admin Imports Departments via CSV
 
 **Actor:** Admin
 **Preconditions:** CSV file prepared with columns: name, description
@@ -113,7 +113,7 @@ management UI, so admins can narrow results before downloading.
 5. Flash message shows: "Imported: X, Skipped: Y"
 **Postconditions:** Departments created, duplicates skipped, summary displayed
 
-### UC-3 — Admin Imports Companies via CSV
+### UC-O2KCR-3 — Admin Imports Companies via CSV
 
 **Actor:** Admin
 **Preconditions:** CSV file prepared with columns: name, address, phone, email, website, description, industry_sector
@@ -129,7 +129,7 @@ management UI, so admins can narrow results before downloading.
 5. Flash message shows: "Imported: X, Skipped: Y"
 **Postconditions:** Companies created, duplicates skipped, summary displayed
 
-### UC-4 — Admin Exports Users with Filters
+### UC-O2KCR-4 — Admin Exports Users with Filters
 
 **Actor:** Admin
 **Preconditions:** Users exist in the system; admin has applied search or filters
@@ -141,7 +141,7 @@ management UI, so admins can narrow results before downloading.
 5. File downloads as `users.csv`
 **Postconditions:** CSV file contains only filtered users, respects current UI state
 
-### UC-5 — Admin Exports Selected Users
+### UC-O2KCR-5 — Admin Exports Selected Users
 
 **Actor:** Admin
 **Preconditions:** Users selected via checkboxes in the management table
@@ -153,7 +153,7 @@ management UI, so admins can narrow results before downloading.
 5. File downloads as `users-selected.csv`
 **Postconditions:** CSV contains only the selected users
 
-### UC-6 — Admin Downloads CSV Template
+### UC-O2KCR-6 — Admin Downloads CSV Template
 
 **Actor:** Admin
 **Preconditions:** None
@@ -172,50 +172,50 @@ management UI, so admins can narrow results before downloading.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-IE1 | CSV import must accept files up to 2048KB with MIME types `csv` or `txt` |
-| FR-IE2 | Import must validate header row against expected columns (`name`, `email`, `phone`) and reject mismatched files with `invalid: true` |
-| FR-IE3 | Import must detect duplicate emails — rows where email matches an existing user must be skipped (`CsvRowResult::SKIPPED`) |
-| FR-IE4 | Import must auto-generate credentials for each valid row via `CreateUserAction` (username from email, random 12-char password) |
+| FR-O2KCR-IE1 | CSV import must accept files up to 2048KB with MIME types `csv` or `txt` |
+| FR-O2KCR-IE2 | Import must validate header row against expected columns (`name`, `email`, `phone`) and reject mismatched files with `invalid: true` |
+| FR-O2KCR-IE3 | Import must detect duplicate emails — rows where email matches an existing user must be skipped (`CsvRowResult::SKIPPED`) |
+| FR-O2KCR-IE4 | Import must auto-generate credentials for each valid row via `CreateUserAction` (username from email, random 12-char password) |
 
 ### User CSV Export
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-IE5 | CSV export must respect current search and filter state from `UserManager` query builder |
-| FR-IE6 | Export columns must be: `full_name`, `email`, `username`, `phone`, `address` |
-| FR-IE7 | `downloadTemplate()` must provide a CSV template with headers and one placeholder example row |
-| FR-IE8 | `exportSelected()` must export only the rows selected via checkboxes in the UI |
+| FR-O2KCR-IE5 | CSV export must respect current search and filter state from `UserManager` query builder |
+| FR-O2KCR-IE6 | Export columns must be: `full_name`, `email`, `username`, `phone`, `address` |
+| FR-O2KCR-IE7 | `downloadTemplate()` must provide a CSV template with headers and one placeholder example row |
+| FR-O2KCR-IE8 | `exportSelected()` must export only the rows selected via checkboxes in the UI |
 
 ### Department CSV Import/Export
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-IE9 | Department CSV import must validate file constraints (2048KB, csv/txt MIME) |
-| FR-IE10 | Department import must deduplicate by name — skip rows where name matches existing department |
-| FR-IE11 | Department export columns must be: `name`, `description` |
-| FR-IE12 | Department template must include headers and a placeholder example row |
+| FR-O2KCR-IE9 | Department CSV import must validate file constraints (2048KB, csv/txt MIME) |
+| FR-O2KCR-IE10 | Department import must deduplicate by name — skip rows where name matches existing department |
+| FR-O2KCR-IE11 | Department export columns must be: `name`, `description` |
+| FR-O2KCR-IE12 | Department template must include headers and a placeholder example row |
 
 ### Company CSV Import/Export
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-IE13 | Company CSV import must validate file constraints (2048KB, csv/txt MIME) |
-| FR-IE14 | Company import must deduplicate by name — skip rows where name matches existing company |
-| FR-IE15 | Company import must pass data through `CompanyData` DTO for validation |
-| FR-IE16 | Company export columns must be: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
-| FR-IE17 | Company template must include all seven column headers and a placeholder example row |
+| FR-O2KCR-IE13 | Company CSV import must validate file constraints (2048KB, csv/txt MIME) |
+| FR-O2KCR-IE14 | Company import must deduplicate by name — skip rows where name matches existing company |
+| FR-O2KCR-IE15 | Company import must pass data through `CompanyData` DTO for validation |
+| FR-O2KCR-IE16 | Company export columns must be: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
+| FR-O2KCR-IE17 | Company template must include all seven column headers and a placeholder example row |
 
 ### Cross-Module Patterns
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-IE18 | All import operations must use the shared `CsvHandler::import()` service |
-| FR-IE19 | All export operations must use the shared `CsvHandler::export()` service returning `StreamedResponse` |
-| FR-IE20 | All template downloads must use `CsvHandler::downloadTemplate()` |
-| FR-IE21 | Import summary flash messages must use `common.actions.import_summary` with `created` and `skipped` counts |
-| FR-IE22 | Invalid header files must flash `common.actions.import_invalid` error message |
-| FR-IE23 | All user-facing strings in CSV operations must use `__()` translation helper |
-| FR-IE24 | Import operations must null out the `importFile` property after processing |
+| FR-O2KCR-IE18 | All import operations must use the shared `CsvHandler::import()` service |
+| FR-O2KCR-IE19 | All export operations must use the shared `CsvHandler::export()` service returning `StreamedResponse` |
+| FR-O2KCR-IE20 | All template downloads must use `CsvHandler::downloadTemplate()` |
+| FR-O2KCR-IE21 | Import summary flash messages must use `common.actions.import_summary` with `created` and `skipped` counts |
+| FR-O2KCR-IE22 | Invalid header files must flash `common.actions.import_invalid` error message |
+| FR-O2KCR-IE23 | All user-facing strings in CSV operations must use `__()` translation helper |
+| FR-O2KCR-IE24 | Import operations must null out the `importFile` property after processing |
 
 ---
 
@@ -223,24 +223,24 @@ management UI, so admins can narrow results before downloading.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | CSV import of 100 rows must complete in under 30 seconds |
-| NFR-P2 | CSV export must use `StreamedResponse` to avoid loading entire dataset into memory |
-| NFR-P3 | Template download must complete instantly (header + one example row) |
-| NFR-S1 | CSV import must sanitize all input fields — trim whitespace, prevent XSS in exported data |
-| NFR-S2 | Import file upload must enforce max size (2048KB) and MIME type validation at the form level |
-| NFR-S3 | Export must not include sensitive fields (passwords, tokens, recovery keys) |
-| NFR-S4 | Import operations must require admin-level authorization before processing |
-| NFR-R1 | CSV import must handle malformed rows gracefully — skip and continue, never halt the entire import |
-| NFR-R2 | Header mismatch must be detected before row processing begins and return `invalid: true` |
-| NFR-R3 | Export must handle empty datasets without errors (return CSV with headers only) |
-| NFR-U1 | Import success must display created and skipped counts via flash message |
-| NFR-U2 | Import failure (invalid headers) must display a clear error flash message |
-| NFR-U3 | Export must trigger file download with a descriptive filename (e.g., `users.csv`, `departments.csv`) |
-| NFR-A1 | CSV import form must have associated labels for the file input and accessible error messages |
-| NFR-A2 | Import/export buttons must be keyboard-navigable and have accessible labels |
-| NFR-A3 | Flash messages must be announced to screen readers via `aria-live` region |
-| NFR-L1 | All user-facing strings in CSV operations must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-O2KCR-P1 | CSV import of 100 rows must complete in under 30 seconds |
+| NFR-O2KCR-P2 | CSV export must use `StreamedResponse` to avoid loading entire dataset into memory |
+| NFR-O2KCR-P3 | Template download must complete instantly (header + one example row) |
+| NFR-O2KCR-S1 | CSV import must sanitize all input fields — trim whitespace, prevent XSS in exported data |
+| NFR-O2KCR-S2 | Import file upload must enforce max size (2048KB) and MIME type validation at the form level |
+| NFR-O2KCR-S3 | Export must not include sensitive fields (passwords, tokens, recovery keys) |
+| NFR-O2KCR-S4 | Import operations must require admin-level authorization before processing |
+| NFR-O2KCR-R1 | CSV import must handle malformed rows gracefully — skip and continue, never halt the entire import |
+| NFR-O2KCR-R2 | Header mismatch must be detected before row processing begins and return `invalid: true` |
+| NFR-O2KCR-R3 | Export must handle empty datasets without errors (return CSV with headers only) |
+| NFR-O2KCR-U1 | Import success must display created and skipped counts via flash message |
+| NFR-O2KCR-U2 | Import failure (invalid headers) must display a clear error flash message |
+| NFR-O2KCR-U3 | Export must trigger file download with a descriptive filename (e.g., `users.csv`, `departments.csv`) |
+| NFR-O2KCR-A1 | CSV import form must have associated labels for the file input and accessible error messages |
+| NFR-O2KCR-A2 | Import/export buttons must be keyboard-navigable and have accessible labels |
+| NFR-O2KCR-A3 | Flash messages must be announced to screen readers via `aria-live` region |
+| NFR-O2KCR-L1 | All user-facing strings in CSV operations must use `__()` translation helper |
+| NFR-O2KCR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -295,6 +295,7 @@ final class CsvHandler
         ?array $expectedHeaders = null,
     ): array; // ['created' => int, 'skipped' => int, 'invalid' => bool]
 }
+
 ```
 
 ### 6.2 CsvRowResult Enum
@@ -314,6 +315,7 @@ enum CsvRowResult: string implements LabelEnum
         };
     }
 }
+
 ```
 
 ### 6.3 UserManager Import/Export Methods
@@ -349,6 +351,7 @@ class UserManager extends BaseRecordManager
     // Example row: [name_placeholder, email_placeholder, phone_placeholder]
     // Filename: users-template.csv
 }
+
 ```
 
 ### 6.4 DepartmentManager Import/Export Methods
@@ -377,6 +380,7 @@ class DepartmentManager extends BaseRecordManager
     // Headers: name, description
     // Filename: departments-template.csv
 }
+
 ```
 
 ### 6.5 CompanyManager Import/Export Methods
@@ -405,6 +409,7 @@ class CompanyManager extends BaseRecordManager
     // Headers: all seven company columns
     // Filename: companies-template.csv
 }
+
 ```
 
 ### 6.6 File Upload Property
@@ -415,6 +420,7 @@ public Property $importFile;
 
 // Livewire file upload with validation:
 // ['required', 'file', 'mimes:csv,txt', 'max:2048']
+
 ```
 
 ---

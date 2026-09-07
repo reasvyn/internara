@@ -64,7 +64,7 @@ or correction before the audience sees it.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates and Immediately Publishes an Announcement
+### UC-3S55V-1 — Admin Creates and Immediately Publishes an Announcement
 
 **Actor:** Admin (super_admin or admin role)
 **Preconditions:** User authenticated with admin role, on the announcements page
@@ -80,7 +80,7 @@ or correction before the audience sees it.
 9. Flash message "Announcement sent successfully" displayed
 **Postconditions:** Announcement persisted as published, notifications delivered to all non-admin users
 
-### UC-2 — Admin Creates a Scheduled Announcement
+### UC-3S55V-2 — Admin Creates a Scheduled Announcement
 
 **Actor:** Admin
 **Preconditions:** User authenticated with admin role
@@ -94,7 +94,7 @@ or correction before the audience sees it.
 7. `PublishAnnouncementAction` transitions status to `PUBLISHED`, clears `scheduled_at`, dispatches notifications
 **Postconditions:** Announcement auto-published at scheduled time, notifications delivered
 
-### UC-3 — Admin Manually Publishes a Draft or Scheduled Announcement
+### UC-3S55V-3 — Admin Manually Publishes a Draft or Scheduled Announcement
 
 **Actor:** Admin
 **Preconditions:** Announcement exists with status `DRAFT` or `SCHEDULED`
@@ -106,7 +106,7 @@ or correction before the audience sees it.
 5. Flash message "Announcement published" displayed
 **Postconditions:** Announcement published, notifications dispatched
 
-### UC-4 — Admin Deletes an Announcement
+### UC-3S55V-4 — Admin Deletes an Announcement
 
 **Actor:** Admin
 **Preconditions:** Announcement exists, user is the creator (ownership check in query)
@@ -118,7 +118,7 @@ or correction before the audience sees it.
 5. Flash message "Announcement deleted" displayed
 **Postconditions:** Announcement removed from database
 
-### UC-5 — System Auto-Publishes Scheduled Announcements via Cron
+### UC-3S55V-5 — System Auto-Publishes Scheduled Announcements via Cron
 
 **Actor:** System (scheduler)
 **Preconditions:** At least one announcement with status `SCHEDULED` and `scheduled_at <= now()`
@@ -138,99 +138,99 @@ or correction before the audience sees it.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-M1 | `Announcement` model must use `#[Fillable]` attribute with: `title`, `message`, `type`, `status`, `scheduled_at`, `link`, `target_roles`, `created_by` (→ `Models/Announcement.php:17-27`) |
-| FR-M2 | `Announcement` model must cast `target_roles` → `array`, `status` → `AnnouncementStatus::class`, `scheduled_at` → `datetime` (→ `Models/Announcement.php:33-39`) |
-| FR-M3 | `Announcement` model must define `creator(): BelongsTo` relationship to `User` via `created_by` foreign key (→ `Models/Announcement.php:42-45`) |
-| FR-M4 | `Announcement` model must provide query scopes: `published()`, `draft()`, `scheduled()`, `pendingPublish()` — the last filtering `SCHEDULED` where `scheduled_at <= now()` (→ `Models/Announcement.php:47-67`) |
-| FR-M5 | `Announcement` model must provide `asAnnouncementState(): AnnouncementState` bridge method and status-check helpers: `isScheduled()`, `isDraft()`, `isPublished()` (→ `Models/Announcement.php:69-87`) |
-| FR-M6 | `announcements` table must have foreign key `created_by` → `users.id` with `onDelete('cascade')` and indexes on `created_by`, `created_at`, `status` (→ migration `2026_01_01_000007`) |
+| FR-3S55V-M1 | `Announcement` model must use `#[Fillable]` attribute with: `title`, `message`, `type`, `status`, `scheduled_at`, `link`, `target_roles`, `created_by` (→ `Models/Announcement.php:17-27`) |
+| FR-3S55V-M2 | `Announcement` model must cast `target_roles` → `array`, `status` → `AnnouncementStatus::class`, `scheduled_at` → `datetime` (→ `Models/Announcement.php:33-39`) |
+| FR-3S55V-M3 | `Announcement` model must define `creator(): BelongsTo` relationship to `User` via `created_by` foreign key (→ `Models/Announcement.php:42-45`) |
+| FR-3S55V-M4 | `Announcement` model must provide query scopes: `published()`, `draft()`, `scheduled()`, `pendingPublish()` — the last filtering `SCHEDULED` where `scheduled_at <= now()` (→ `Models/Announcement.php:47-67`) |
+| FR-3S55V-M5 | `Announcement` model must provide `asAnnouncementState(): AnnouncementState` bridge method and status-check helpers: `isScheduled()`, `isDraft()`, `isPublished()` (→ `Models/Announcement.php:69-87`) |
+| FR-3S55V-M6 | `announcements` table must have foreign key `created_by` → `users.id` with `onDelete('cascade')` and indexes on `created_by`, `created_at`, `status` (→ migration `2026_01_01_000007`) |
 
 ### AnnouncementStatus Enum
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-E1 | `AnnouncementStatus` must be a backed string enum implementing `StatusEnum` contract with cases: `DRAFT = 'draft'`, `SCHEDULED = 'scheduled'`, `PUBLISHED = 'published'` (→ `Enums/AnnouncementStatus.php:9-13`) |
-| FR-E2 | `AnnouncementStatus::canTransitionTo()` must enforce: `DRAFT` → `[SCHEDULED, PUBLISHED]`, `SCHEDULED` → `[PUBLISHED]`, `PUBLISHED` → `[]` (no transitions) (→ `Enums/AnnouncementStatus.php:24-35`) |
-| FR-E3 | `AnnouncementStatus::isTerminal()` must return `true` only for `PUBLISHED` (→ `Enums/AnnouncementStatus.php:37-43`) |
-| FR-E4 | `AnnouncementStatus::default()` must return `DRAFT` (→ `Enums/AnnouncementStatus.php:54-57`) |
-| FR-E5 | `AnnouncementStatus::label()` must return localized strings via `__('announcement.status.{value}')` (→ `Enums/AnnouncementStatus.php:15-22`) |
+| FR-3S55V-E1 | `AnnouncementStatus` must be a backed string enum implementing `StatusEnum` contract with cases: `DRAFT = 'draft'`, `SCHEDULED = 'scheduled'`, `PUBLISHED = 'published'` (→ `Enums/AnnouncementStatus.php:9-13`) |
+| FR-3S55V-E2 | `AnnouncementStatus::canTransitionTo()` must enforce: `DRAFT` → `[SCHEDULED, PUBLISHED]`, `SCHEDULED` → `[PUBLISHED]`, `PUBLISHED` → `[]` (no transitions) (→ `Enums/AnnouncementStatus.php:24-35`) |
+| FR-3S55V-E3 | `AnnouncementStatus::isTerminal()` must return `true` only for `PUBLISHED` (→ `Enums/AnnouncementStatus.php:37-43`) |
+| FR-3S55V-E4 | `AnnouncementStatus::default()` must return `DRAFT` (→ `Enums/AnnouncementStatus.php:54-57`) |
+| FR-3S55V-E5 | `AnnouncementStatus::label()` must return localized strings via `__('announcement.status.{value}')` (→ `Enums/AnnouncementStatus.php:15-22`) |
 
 ### AnnouncementState Entity
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EN1 | `AnnouncementState` must be `final readonly` extending `BaseEntity` with constructor params: `AnnouncementStatus $status`, `?Carbon $scheduledAt` (→ `Entities/AnnouncementState.php:12-17`) |
-| FR-EN2 | `AnnouncementState::fromModel()` must hydrate from an Eloquent model, handling both already-cast enum and raw string values for status (→ `Entities/AnnouncementState.php:19-27`) |
-| FR-EN3 | `AnnouncementState::isPendingPublish()` must return `true` when status is `SCHEDULED` and `scheduledAt <= now()` (→ `Entities/AnnouncementState.php:44-51`) |
+| FR-3S55V-EN1 | `AnnouncementState` must be `final readonly` extending `BaseEntity` with constructor params: `AnnouncementStatus $status`, `?Carbon $scheduledAt` (→ `Entities/AnnouncementState.php:12-17`) |
+| FR-3S55V-EN2 | `AnnouncementState::fromModel()` must hydrate from an Eloquent model, handling both already-cast enum and raw string values for status (→ `Entities/AnnouncementState.php:19-27`) |
+| FR-3S55V-EN3 | `AnnouncementState::isPendingPublish()` must return `true` when status is `SCHEDULED` and `scheduledAt <= now()` (→ `Entities/AnnouncementState.php:44-51`) |
 
 ### SendAnnouncementAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A1 | `SendAnnouncementAction` must extend `BaseCommandAction` and accept an `array $data` payload (→ `Actions/SendAnnouncementAction.php:15-17`) |
-| FR-A2 | `SendAnnouncementAction::execute()` must validate input via `Validator` with rules: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, status nullable|in:draft/scheduled/published, scheduled_at nullable|date|after_or_equal:now, link nullable|max:500, target_roles nullable|array (→ `Actions/SendAnnouncementAction.php:19-28`) |
-| FR-A3 | `SendAnnouncementAction::execute()` must create an `Announcement` record within a transaction, setting `created_by` to `auth()->id()` (→ `Actions/SendAnnouncementAction.php:34-44`) |
-| FR-A4 | `SendAnnouncementAction::execute()` must call `SendAnnouncementNotificationsAction::execute()` only when status is `PUBLISHED` (→ `Actions/SendAnnouncementAction.php:48-50`) |
-| FR-A5 | `SendAnnouncementNotificationsAction::execute()` must query users, excluding the sender's own roles when `target_roles` is non-empty, then dispatch `AnnouncementNotification` via `Notification::send()` — extracted from the former `SendAnnouncementAction::sendNotifications()` per the single-`execute()` rule (→ `Actions/SendAnnouncementNotificationsAction.php:18-40`) |
-| FR-A6 | `SendAnnouncementAction::execute()` must log `announcement_sent` with title, status, and target_roles via `$this->log()` (→ `Actions/SendAnnouncementAction.php:50-54`) |
+| FR-3S55V-A1 | `SendAnnouncementAction` must extend `BaseCommandAction` and accept an `array $data` payload (→ `Actions/SendAnnouncementAction.php:15-17`) |
+| FR-3S55V-A2 | `SendAnnouncementAction::execute()` must validate input via `Validator` with rules: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, status nullable|in:draft/scheduled/published, scheduled_at nullable|date|after_or_equal:now, link nullable|max:500, target_roles nullable|array (→ `Actions/SendAnnouncementAction.php:19-28`) |
+| FR-3S55V-A3 | `SendAnnouncementAction::execute()` must create an `Announcement` record within a transaction, setting `created_by` to `auth()->id()` (→ `Actions/SendAnnouncementAction.php:34-44`) |
+| FR-3S55V-A4 | `SendAnnouncementAction::execute()` must call `SendAnnouncementNotificationsAction::execute()` only when status is `PUBLISHED` (→ `Actions/SendAnnouncementAction.php:48-50`) |
+| FR-3S55V-A5 | `SendAnnouncementNotificationsAction::execute()` must query users, excluding the sender's own roles when `target_roles` is non-empty, then dispatch `AnnouncementNotification` via `Notification::send()` — extracted from the former `SendAnnouncementAction::sendNotifications()` per the single-`execute()` rule (→ `Actions/SendAnnouncementNotificationsAction.php:18-40`) |
+| FR-3S55V-A6 | `SendAnnouncementAction::execute()` must log `announcement_sent` with title, status, and target_roles via `$this->log()` (→ `Actions/SendAnnouncementAction.php:50-54`) |
 
 ### PublishAnnouncementAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A7 | `PublishAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/PublishAnnouncementAction.php:17-18`) |
-| FR-A8 | `PublishAnnouncementAction::execute()` must transition status to `PUBLISHED`, clear `scheduled_at` to null, send notifications to targeted users, and log `announcement_published` — all within a transaction (→ `Actions/PublishAnnouncementAction.php:19-32`) |
-| FR-A9 | `PublishAnnouncementAction` must query notification recipients with the same role-exclusion logic as `SendAnnouncementNotificationsAction` (→ `Actions/PublishAnnouncementAction.php:25-27` + `Actions/SendAnnouncementNotificationsAction.php:22-34`) |
+| FR-3S55V-A7 | `PublishAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/PublishAnnouncementAction.php:17-18`) |
+| FR-3S55V-A8 | `PublishAnnouncementAction::execute()` must transition status to `PUBLISHED`, clear `scheduled_at` to null, send notifications to targeted users, and log `announcement_published` — all within a transaction (→ `Actions/PublishAnnouncementAction.php:19-32`) |
+| FR-3S55V-A9 | `PublishAnnouncementAction` must query notification recipients with the same role-exclusion logic as `SendAnnouncementNotificationsAction` (→ `Actions/PublishAnnouncementAction.php:25-27` + `Actions/SendAnnouncementNotificationsAction.php:22-34`) |
 
 ### DeleteAnnouncementAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A10 | `DeleteAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/DeleteAnnouncementAction.php:10-12`) |
-| FR-A11 | `DeleteAnnouncementAction::execute()` must delete the announcement within a transaction and log `announcement_deleted` with the title (→ `Actions/DeleteAnnouncementAction.php:13-21`) |
+| FR-3S55V-A10 | `DeleteAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/DeleteAnnouncementAction.php:10-12`) |
+| FR-3S55V-A11 | `DeleteAnnouncementAction::execute()` must delete the announcement within a transaction and log `announcement_deleted` with the title (→ `Actions/DeleteAnnouncementAction.php:13-21`) |
 
 ### AnnouncementManager Livewire Component
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-L1 | `AnnouncementManager` must extend `BaseRecordManager`, render `sysadmin.announcement.announcement-manager`, and authorize `viewAny` on `User::class` in `boot()` (→ `Livewire/AnnouncementManager.php:20-35`) |
-| FR-L2 | `AnnouncementManager::query()` must scope to `Announcement::where('created_by', Auth::id())` — admins see only their own announcements (→ `Livewire/AnnouncementManager.php:48-51`) |
-| FR-L3 | `AnnouncementManager::headers()` must return columns: `title` (sortable), `type`, `status`, `created_at` (sortable), `actions` (→ `Livewire/AnnouncementManager.php:37-46`) |
-| FR-L4 | `AnnouncementManager::applySearch()` must filter by `title LIKE %search%` (→ `Livewire/AnnouncementManager.php:53-56`) |
-| FR-L5 | `AnnouncementManager::save()` must delegate to `SendAnnouncementAction::execute()` with `$this->form->toPayload()`, flash success, and reset form (→ `Livewire/AnnouncementManager.php:58-71`) |
-| FR-L6 | `AnnouncementManager::confirmAction()` must handle both `delete` and `publish` action types, verifying ownership via `where('created_by', Auth::id())->findOrFail($id)` before executing (→ `Livewire/AnnouncementManager.php:87-115`) |
-| FR-L7 | `AnnouncementManager::render()` must pass `announcements` (paginated rows) and `roles` (all roles except super_admin, mapped to `id`/`name`) to the view (→ `Livewire/AnnouncementManager.php:123-134`) |
+| FR-3S55V-L1 | `AnnouncementManager` must extend `BaseRecordManager`, render `sysadmin.announcement.announcement-manager`, and authorize `viewAny` on `User::class` in `boot()` (→ `Livewire/AnnouncementManager.php:20-35`) |
+| FR-3S55V-L2 | `AnnouncementManager::query()` must scope to `Announcement::where('created_by', Auth::id())` — admins see only their own announcements (→ `Livewire/AnnouncementManager.php:48-51`) |
+| FR-3S55V-L3 | `AnnouncementManager::headers()` must return columns: `title` (sortable), `type`, `status`, `created_at` (sortable), `actions` (→ `Livewire/AnnouncementManager.php:37-46`) |
+| FR-3S55V-L4 | `AnnouncementManager::applySearch()` must filter by `title LIKE %search%` (→ `Livewire/AnnouncementManager.php:53-56`) |
+| FR-3S55V-L5 | `AnnouncementManager::save()` must delegate to `SendAnnouncementAction::execute()` with `$this->form->toPayload()`, flash success, and reset form (→ `Livewire/AnnouncementManager.php:58-71`) |
+| FR-3S55V-L6 | `AnnouncementManager::confirmAction()` must handle both `delete` and `publish` action types, verifying ownership via `where('created_by', Auth::id())->findOrFail($id)` before executing (→ `Livewire/AnnouncementManager.php:87-115`) |
+| FR-3S55V-L7 | `AnnouncementManager::render()` must pass `announcements` (paginated rows) and `roles` (all roles except super_admin, mapped to `id`/`name`) to the view (→ `Livewire/AnnouncementManager.php:123-134`) |
 
 ### AnnouncementForm Livewire Form Object
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-F1 | `AnnouncementForm` must extend `Livewire\Form` with properties: `title`, `message`, `type` (default `'info'`), `status` (default `DRAFT->value`), `scheduled_at`, `link`, `target_roles`, `sendToAll` (default `true`) (→ `Livewire/Forms/AnnouncementForm.php:11-27`) |
-| FR-F2 | `AnnouncementForm::rules()` must validate: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, scheduled_at required_if:status=scheduled and after_or_equal:now, target_roles.* exists:roles,name (→ `Livewire/Forms/AnnouncementForm.php:29-45`) |
-| FR-F3 | `AnnouncementForm::toPayload()` must return array mapping form fields to action payload, nullifying `scheduled_at` when status is not `scheduled`, and nullifying `target_roles` when `sendToAll` is true (→ `Livewire/Forms/AnnouncementForm.php:47-58`) |
+| FR-3S55V-F1 | `AnnouncementForm` must extend `Livewire\Form` with properties: `title`, `message`, `type` (default `'info'`), `status` (default `DRAFT->value`), `scheduled_at`, `link`, `target_roles`, `sendToAll` (default `true`) (→ `Livewire/Forms/AnnouncementForm.php:11-27`) |
+| FR-3S55V-F2 | `AnnouncementForm::rules()` must validate: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, scheduled_at required_if:status=scheduled and after_or_equal:now, target_roles.* exists:roles,name (→ `Livewire/Forms/AnnouncementForm.php:29-45`) |
+| FR-3S55V-F3 | `AnnouncementForm::toPayload()` must return array mapping form fields to action payload, nullifying `scheduled_at` when status is not `scheduled`, and nullifying `target_roles` when `sendToAll` is true (→ `Livewire/Forms/AnnouncementForm.php:47-58`) |
 
 ### AnnouncementNotification
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-N1 | `AnnouncementNotification` must implement `ShouldQueue` and use channels `['mail', 'broadcast', CustomDatabaseChannel::class]` (→ `Notifications/AnnouncementNotification.php:13-26`) |
-| FR-N2 | `AnnouncementNotification::toMail()` must return `MailMessage` with subject = title, greeting = `__('Hello!')`, line = message, and conditional action link when `$this->link` is non-null (→ `Notifications/AnnouncementNotification.php:28-38`) |
-| FR-N3 | `AnnouncementNotification::toBroadcast()` must return array with `title`, `message`, `link` keys (→ `Notifications/AnnouncementNotification.php:40-47`) |
-| FR-N4 | `AnnouncementNotification::toCustomDatabase()` must return array with `type: 'announcement'`, `title`, `message`, `link`, `data: []` — following the standard notification contract (→ `Notifications/AnnouncementNotification.php:49-58`) |
+| FR-3S55V-N1 | `AnnouncementNotification` must implement `ShouldQueue` and use channels `['mail', 'broadcast', CustomDatabaseChannel::class]` (→ `Notifications/AnnouncementNotification.php:13-26`) |
+| FR-3S55V-N2 | `AnnouncementNotification::toMail()` must return `MailMessage` with subject = title, greeting = `__('Hello!')`, line = message, and conditional action link when `$this->link` is non-null (→ `Notifications/AnnouncementNotification.php:28-38`) |
+| FR-3S55V-N3 | `AnnouncementNotification::toBroadcast()` must return array with `title`, `message`, `link` keys (→ `Notifications/AnnouncementNotification.php:40-47`) |
+| FR-3S55V-N4 | `AnnouncementNotification::toCustomDatabase()` must return array with `type: 'announcement'`, `title`, `message`, `link`, `data: []` — following the standard notification contract (→ `Notifications/AnnouncementNotification.php:49-58`) |
 
 ### PublishScheduledAnnouncementsCommand
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-C1 | `PublishScheduledAnnouncementsCommand` must define signature `announcements:publish` and run every minute via Laravel scheduler (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:14-16`, `routes/console.php:17-19`) |
-| FR-C2 | `PublishScheduledAnnouncementsCommand::handle()` must query announcements where `status = SCHEDULED AND scheduled_at <= now()`, then call `PublishAnnouncementAction::execute()` for each (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:20-36`) |
-| FR-C3 | `PublishScheduledAnnouncementsCommand::handle()` must output per-announcement task status and a completion summary with count (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:32-43`) |
+| FR-3S55V-C1 | `PublishScheduledAnnouncementsCommand` must define signature `announcements:publish` and run every minute via Laravel scheduler (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:14-16`, `routes/console.php:17-19`) |
+| FR-3S55V-C2 | `PublishScheduledAnnouncementsCommand::handle()` must query announcements where `status = SCHEDULED AND scheduled_at <= now()`, then call `PublishAnnouncementAction::execute()` for each (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:20-36`) |
+| FR-3S55V-C3 | `PublishScheduledAnnouncementsCommand::handle()` must output per-announcement task status and a completion summary with count (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:32-43`) |
 
 ### Route & Access Control
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-R1 | Route `GET /admin/announcements` must map to `AnnouncementManager` with name `sysadmin.announcements` and middleware `['auth', 'role:super_admin|admin']` (→ `routes/web/sysadmin.php:48-50`) |
+| FR-3S55V-R1 | Route `GET /admin/announcements` must map to `AnnouncementManager` with name `sysadmin.announcements` and middleware `['auth', 'role:super_admin|admin']` (→ `routes/web/sysadmin.php:48-50`) |
 
 ---
 
@@ -238,21 +238,21 @@ or correction before the audience sees it.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | `announcements:publish` command must process all due announcements in a single invocation — no per-announcement process forking |
-| NFR-P2 | Notification dispatch for announcements must use `ShouldQueue` to avoid blocking the admin's request when targeting large user sets (→ `AnnouncementNotification` implements `ShouldQueue`) |
-| NFR-S1 | Only users with `super_admin` or `admin` role may access the announcements page — enforced by route middleware and `AnnouncementManager::boot()` authorization (→ FR-R1, FR-L1) |
-| NFR-S2 | Admins can only see and manage their own announcements — query scoped to `created_by = Auth::id()` (→ FR-L2, FR-L6) |
-| NFR-S3 | Sender is excluded from their own notification recipients via role exclusion query (→ FR-A5, FR-A9) |
-| NFR-S4 | `scheduled_at` validation enforces `after_or_equal:now` to prevent scheduling in the past (→ FR-A2, FR-F2) |
-| NFR-U1 | All user-facing strings must use `__('announcement.*')` translation keys (→ `lang/en/announcement.php`) |
-| NFR-U2 | Announcement message must support Markdown rendering with HTML sanitization (`html_input => strip`, `allow_unsafe_links => false`) (→ `announcement-manager.blade.php:99`) |
-| NFR-U3 | The management UI must provide an inline guide (help button) explaining create, schedule, publish, and target workflows (→ `announcement-guide.blade.php`) |
-| NFR-U4 | Delete and publish actions must require explicit user confirmation via modal dialog (→ FR-L6) |
-| NFR-R1 | `SendAnnouncementAction` and `PublishAnnouncementAction` must wrap state changes and notification dispatch in a database transaction (→ FR-A3, FR-A8) |
-| NFR-R2 | `PublishScheduledAnnouncementsCommand` must handle zero due announcements gracefully, outputting a "none found" info message (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:24-28`) |
-| NFR-M1 | All announcement classes must use `declare(strict_types=1)` (→ D1 convention) |
-| NFR-M2 | `AnnouncementStatus` enum must implement the `StatusEnum` contract with full transition validation (→ FR-E2) |
-| NFR-M3 | `AnnouncementState` entity must be `final readonly` with `fromModel()` bridge (→ FR-EN1) |
+| NFR-3S55V-P1 | `announcements:publish` command must process all due announcements in a single invocation — no per-announcement process forking |
+| NFR-3S55V-P2 | Notification dispatch for announcements must use `ShouldQueue` to avoid blocking the admin's request when targeting large user sets (→ `AnnouncementNotification` implements `ShouldQueue`) |
+| NFR-3S55V-S1 | Only users with `super_admin` or `admin` role may access the announcements page — enforced by route middleware and `AnnouncementManager::boot()` authorization (→ FR-3S55V-R1, FR-3S55V-L1) |
+| NFR-3S55V-S2 | Admins can only see and manage their own announcements — query scoped to `created_by = Auth::id()` (→ FR-3S55V-L2, FR-3S55V-L6) |
+| NFR-3S55V-S3 | Sender is excluded from their own notification recipients via role exclusion query (→ FR-3S55V-A5, FR-3S55V-A9) |
+| NFR-3S55V-S4 | `scheduled_at` validation enforces `after_or_equal:now` to prevent scheduling in the past (→ FR-3S55V-A2, FR-3S55V-F2) |
+| NFR-3S55V-U1 | All user-facing strings must use `__('announcement.*')` translation keys (→ `lang/en/announcement.php`) |
+| NFR-3S55V-U2 | Announcement message must support Markdown rendering with HTML sanitization (`html_input => strip`, `allow_unsafe_links => false`) (→ `announcement-manager.blade.php:99`) |
+| NFR-3S55V-U3 | The management UI must provide an inline guide (help button) explaining create, schedule, publish, and target workflows (→ `announcement-guide.blade.php`) |
+| NFR-3S55V-U4 | Delete and publish actions must require explicit user confirmation via modal dialog (→ FR-3S55V-L6) |
+| NFR-3S55V-R1 | `SendAnnouncementAction` and `PublishAnnouncementAction` must wrap state changes and notification dispatch in a database transaction (→ FR-3S55V-A3, FR-3S55V-A8) |
+| NFR-3S55V-R2 | `PublishScheduledAnnouncementsCommand` must handle zero due announcements gracefully, outputting a "none found" info message (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:24-28`) |
+| NFR-3S55V-M1 | All announcement classes must use `declare(strict_types=1)` (→ D1 convention) |
+| NFR-3S55V-M2 | `AnnouncementStatus` enum must implement the `StatusEnum` contract with full transition validation (→ FR-3S55V-E2) |
+| NFR-3S55V-M3 | `AnnouncementState` entity must be `final readonly` with `fromModel()` bridge (→ FR-3S55V-EN1) |
 
 ---
 
@@ -290,6 +290,7 @@ class Announcement extends BaseModel
     public function isDraft(): bool;
     public function isPublished(): bool;
 }
+
 ```
 
 ### 6.2 AnnouncementStatus Enum
@@ -308,6 +309,7 @@ enum AnnouncementStatus: string implements StatusEnum
     public function validTransitions(): array;
     public static function default(): self;                    // DRAFT
 }
+
 ```
 
 ### 6.3 AnnouncementState Entity
@@ -327,6 +329,7 @@ final readonly class AnnouncementState extends BaseEntity
     public function isScheduled(): bool;
     public function isPendingPublish(?Carbon $now = null): bool; // SCHEDULED + scheduledAt <= now
 }
+
 ```
 
 ### 6.4 SendAnnouncementAction
@@ -342,6 +345,7 @@ final class SendAnnouncementAction extends BaseCommandAction
     public function sendNotifications(Announcement $announcement, array $config): void;
     // Queries users, excludes sender's roles when target_roles non-empty, dispatches AnnouncementNotification
 }
+
 ```
 
 ### 6.5 PublishAnnouncementAction
@@ -353,6 +357,7 @@ final class PublishAnnouncementAction extends BaseCommandAction
     public function execute(Announcement $announcement): void;
     // Transitions to PUBLISHED, clears scheduled_at, sends notifications, logs 'announcement_published' — in transaction
 }
+
 ```
 
 ### 6.6 DeleteAnnouncementAction
@@ -364,6 +369,7 @@ final class DeleteAnnouncementAction extends BaseCommandAction
     public function execute(Announcement $announcement): void;
     // Deletes within transaction, logs 'announcement_deleted' with title
 }
+
 ```
 
 ### 6.7 AnnouncementForm
@@ -385,6 +391,7 @@ class AnnouncementForm extends Form
     public function rules(): array;
     public function toPayload(): array;
 }
+
 ```
 
 ### 6.8 AnnouncementManager
@@ -410,6 +417,7 @@ class AnnouncementManager extends BaseRecordManager
     public function resetForm(): void;
     public function render(): View;                        // passes announcements + roles to view
 }
+
 ```
 
 ### 6.9 AnnouncementNotification
@@ -429,6 +437,7 @@ class AnnouncementNotification extends Notification implements ShouldQueue
     public function toBroadcast($notifiable): array;
     public function toCustomDatabase($notifiable): array;  // type: 'announcement'
 }
+
 ```
 
 ### 6.10 PublishScheduledAnnouncementsCommand
@@ -443,6 +452,7 @@ class PublishScheduledAnnouncementsCommand extends Command
     public function handle(PublishAnnouncementAction $action): int;
     // Queries due announcements, calls PublishAnnouncementAction for each, outputs per-task status
 }
+
 ```
 
 ### 6.11 announcements Table Schema
@@ -464,6 +474,7 @@ Schema::create('announcements', function (Blueprint $table) {
     $table->index('created_at');
     $table->index('status');
 });
+
 ```
 
 ### 6.12 Route Definition
@@ -473,6 +484,7 @@ Schema::create('announcements', function (Blueprint $table) {
 Route::get('/admin/announcements', AnnouncementManager::class)
     ->name('sysadmin.announcements')
     ->middleware(['auth', 'role:super_admin|admin']);
+
 ```
 
 ### 6.13 Scheduler Registration
@@ -482,6 +494,7 @@ Route::get('/admin/announcements', AnnouncementManager::class)
 Schedule::command('announcements:publish')
     ->everyMinute()
     ->description('Publish scheduled announcements whose scheduled_at has passed');
+
 ```
 
 ---
@@ -549,16 +562,16 @@ for a rich text renderer without changing the data model.
 
 **Decision:** Delivery is broadcast to the targeted roles (internara-project §6.1 SysAdmin,
 "Announcement Manager … role-targeted"), but the management UI is scoped to the creator
-(`where('created_by', Auth::id())`, FR-L2).
+(`where('created_by', Auth::id())`, FR-3S55V-L2).
 
 **Rationale:** The two concerns are distinct. **Delivery** reaches every user in the target
 role(s) — this is what "broadcast" means for an announcement system; the sender's own roles are
-excluded to prevent self-notification (FR-A5). **Management** (edit/delete/publish/see-in-list)
+excluded to prevent self-notification (FR-3S55V-A5). **Management** (edit/delete/publish/see-in-list)
 is ownership-scoped so each admin maintains their own announcements without cross-admin
 interference or accidental deletion of a colleague's message. This is deliberately narrower than
 "all admins manage all announcements."
 **Trade-off:** An admin cannot see or retract an announcement created by another admin. Acceptable
-for a single-tenant school where announcements are low-volume; the audit trail (FR-A6/A8/A11) and
+for a single-tenant school where announcements are low-volume; the audit trail (FR-3S55V-A6/A8/A11) and
 `created_by` FK preserve accountability. If central administration becomes required, extract an
 `AnnouncementPolicy` (see DD-4) to widen scope for `super_admin`.
 

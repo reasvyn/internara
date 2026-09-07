@@ -58,10 +58,10 @@ violations compile-time errors rather than runtime surprises.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Creates a new module using the base classes and contracts |
-| UC-2 | System | Handles business rule violation via RejectedException semantics |
+| UC-SE5Q9-1 | Developer | Creates a new module using the base classes and contracts |
+| UC-SE5Q9-2 | System | Handles business rule violation via RejectedException semantics |
 
-### UC-1 — Developer Creates a New Module
+### UC-SE5Q9-1 — Developer Creates a New Module
 
 **Actor:** Developer
 **Preconditions:** Project cloned, `composer install` completed, PHP 8.4+ available
@@ -74,7 +74,7 @@ violations compile-time errors rather than runtime surprises.
 6. Creates Policy extending `BasePolicy` (role + ownership checks available)
 **Postconditions:** Module follows all architectural conventions, base classes enforce invariants
 
-### UC-2 — System Handles Business Rule Violation
+### UC-SE5Q9-2 — System Handles Business Rule Violation
 
 **Actor:** Student
 **Preconditions:** Student is logged in, attempting invalid operation
@@ -96,48 +96,48 @@ violations compile-time errors rather than runtime surprises.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-A1 | `BaseAction` — abstract root: transaction wrapper, event dispatch, logging, error handling |
-| FR-A2 | `BaseCommandAction` — all mutations: `respond()`, `respondDeleted()`, `respondError()`, `validate()`, `authorize()`, `flash()` |
-| FR-A3 | `BaseReadAction` — queries only: `remember()`, `cacheKey()`, `mask()` (PII), `paginate()`, `format()` |
-| FR-A4 | `BaseProcessAction` — orchestration: `step()` with success/failure tracking, `trackProgress()`, `notify()`, `logProgress()` |
-| FR-A5 | All Actions have exactly one public method: `execute()` |
-| FR-A6 | Command/Process Actions wrap DB operations in `$this->transaction()` |
-| FR-A7 | Command/Process Actions call `$this->log()` after successful mutation |
+| FR-SE5Q9-A1 | `BaseAction` — abstract root: transaction wrapper, event dispatch, logging, error handling |
+| FR-SE5Q9-A2 | `BaseCommandAction` — all mutations: `respond()`, `respondDeleted()`, `respondError()`, `validate()`, `authorize()`, `flash()` |
+| FR-SE5Q9-A3 | `BaseReadAction` — queries only: `remember()`, `cacheKey()`, `mask()` (PII), `paginate()`, `format()` |
+| FR-SE5Q9-A4 | `BaseProcessAction` — orchestration: `step()` with success/failure tracking, `trackProgress()`, `notify()`, `logProgress()` |
+| FR-SE5Q9-A5 | All Actions have exactly one public method: `execute()` |
+| FR-SE5Q9-A6 | Command/Process Actions wrap DB operations in `$this->transaction()` |
+| FR-SE5Q9-A7 | Command/Process Actions call `$this->log()` after successful mutation |
 
 ### 4.2 Data Layer
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-M1 | `BaseModel` — abstract, extends Eloquent, uses `HasUuids` + `HasCommonScopes` traits |
-| FR-M2 | `BaseAuthenticatable` — abstract, bridges Laravel Authenticatable with UUID support |
-| FR-M3 | `BaseEntity` — abstract, `final readonly`, implements `JsonSerializable`, requires `fromModel()` |
-| FR-M4 | `BaseData` — abstract, `final readonly`, implements `JsonSerializable`, `fromArray()` with camelCase/snake_case fallback |
-| FR-M5 | `ActionResponse` — final readonly DTO: `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()` |
-| FR-M6 | `HasCommonScopes` — `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()` |
-| FR-M7 | `ActivityLog` — extends Spatie `Activity` model: scopes `forUser()`, `whereSubject()`, `ofAction()`, `inLog()`, `recent()`, `lastDays()`, `forModule()`, `groupedByDay()` scope, `getSubjectModelAttribute()` |
+| FR-SE5Q9-M1 | `BaseModel` — abstract, extends Eloquent, uses `HasUuids` + `HasCommonScopes` traits |
+| FR-SE5Q9-M2 | `BaseAuthenticatable` — abstract, bridges Laravel Authenticatable with UUID support |
+| FR-SE5Q9-M3 | `BaseEntity` — abstract, `final readonly`, implements `JsonSerializable`, requires `fromModel()` |
+| FR-SE5Q9-M4 | `BaseData` — abstract, `final readonly`, implements `JsonSerializable`, `fromArray()` with camelCase/snake_case fallback |
+| FR-SE5Q9-M5 | `ActionResponse` — final readonly DTO: `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()` |
+| FR-SE5Q9-M6 | `HasCommonScopes` — `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()` |
+| FR-SE5Q9-M7 | `ActivityLog` — extends Spatie `Activity` model: scopes `forUser()`, `whereSubject()`, `ofAction()`, `inLog()`, `recent()`, `lastDays()`, `forModule()`, `groupedByDay()` scope, `getSubjectModelAttribute()` |
 
 ### 4.3 UI Layer — Livewire Base Classes
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-L1 | `BaseRecordManager` — table CRUD: search, filter, sort, pagination, selection, bulk actions, and **Extra Menu** (download template, import CSV/Excel, export CSV/Excel/PDF via `CsvHandler`) per internara-project §9.2; import/export mechanics specified in [csv-import-export.md](O2KCR-csv-import-export.md) |
-| FR-L2 | `BaseRecordEntry` — modal CRUD: create/edit modal with form, `handleError()` for RejectedException |
-| FR-L3 | `BaseRecordList` — read-only list: search, pagination (no create/edit) |
-| FR-L4 | `BaseFormView` — full-page form: dirty tracking, `handleSave()` |
-| FR-L5 | `BaseWizard` — multi-step wizard: `steps()` (abstract, returns key array), `nextStep()` (validates + advances), `prevStep()`, `goToStep()` (with access check), `isStepAccessible()` (all prior steps completed), `progressPercent()`, `currentStepKey()`, `handleStepError()` (catches `RejectedException`), state persistence hooks |
-| FR-L6 | `BaseController` — JSON response helpers: `jsonSuccess()`, `jsonCreated()`, `jsonError()`, `jsonPaginated()`, etc. |
-| FR-L7 | `BaseFormRequest` — throws `ValidationFailedException` on failed validation |
+| FR-SE5Q9-L1 | `BaseRecordManager` — table CRUD: search, filter, sort, pagination, selection, bulk actions, and **Extra Menu** (download template, import CSV/Excel, export CSV/Excel/PDF via `CsvHandler`) per internara-project §9.2; import/export mechanics specified in [csv-import-export.md](O2KCR-csv-import-export.md) |
+| FR-SE5Q9-L2 | `BaseRecordEntry` — modal CRUD: create/edit modal with form, `handleError()` for RejectedException |
+| FR-SE5Q9-L3 | `BaseRecordList` — read-only list: search, pagination (no create/edit) |
+| FR-SE5Q9-L4 | `BaseFormView` — full-page form: dirty tracking, `handleSave()` |
+| FR-SE5Q9-L5 | `BaseWizard` — multi-step wizard: `steps()` (abstract, returns key array), `nextStep()` (validates + advances), `prevStep()`, `goToStep()` (with access check), `isStepAccessible()` (all prior steps completed), `progressPercent()`, `currentStepKey()`, `handleStepError()` (catches `RejectedException`), state persistence hooks |
+| FR-SE5Q9-L6 | `BaseController` — JSON response helpers: `jsonSuccess()`, `jsonCreated()`, `jsonError()`, `jsonPaginated()`, etc. |
+| FR-SE5Q9-L7 | `BaseFormRequest` — throws `ValidationFailedException` on failed validation |
 
 ### 4.4 Contracts — Enum & Interface
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-C1 | `LabelEnum` — interface requiring `label(): string` on all enums |
-| FR-C2 | `StatusEnum` — extends `LabelEnum`, adds `isTerminal()`, `canTransitionTo()`, `validTransitions()` |
-| FR-C3 | `ColorableEnum` — interface requiring `color(): string` for badge styling |
-| FR-C4 | `SendsNotifications` — interface for notification dispatch: `execute(NotificationData $data)` |
-| FR-C5 | `SettingsStore` — interface for settings retrieval: `get(key, default)` |
-| FR-CH1 | `CustomDatabaseChannel` — notification channel: receives `SendsNotifications`, calls `toCustomDatabase()` on notification, validates `type`/`title` keys, delegates to `SendsNotifications::execute()` |
+| FR-SE5Q9-C1 | `LabelEnum` — interface requiring `label(): string` on all enums |
+| FR-SE5Q9-C2 | `StatusEnum` — extends `LabelEnum`, adds `isTerminal()`, `canTransitionTo()`, `validTransitions()` |
+| FR-SE5Q9-C3 | `ColorableEnum` — interface requiring `color(): string` for badge styling |
+| FR-SE5Q9-C4 | `SendsNotifications` — interface for notification dispatch: `execute(NotificationData $data)` |
+| FR-SE5Q9-C5 | `SettingsStore` — interface for settings retrieval: `get(key, default)` |
+| FR-SE5Q9-CH1 | `CustomDatabaseChannel` — notification channel: receives `SendsNotifications`, calls `toCustomDatabase()` on notification, validates `type`/`title` keys, delegates to `SendsNotifications::execute()` |
 
 ### 4.5 Exception Hierarchy
 
@@ -145,41 +145,41 @@ violations compile-time errors rather than runtime surprises.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-E1 | `AppException` (abstract) — framework-level errors, `statusCode()` abstract, `HasExceptionContext` trait |
-| FR-E2 | `ModuleException` (abstract) — business-level errors, `statusCode()` abstract, `HasExceptionContext` trait |
-| FR-E3 | `RejectedException` extends `ModuleException` — HTTP 400, business rule violations (C8 invariant) |
-| FR-E4 | `ValidationFailedException` extends `ActionException` — HTTP 422, form validation failures |
-| FR-E5 | `UnauthorizedException` extends `PresentationException` — HTTP 403, authorization failures |
-| FR-E6 | `InfrastructureException` extends `AppException` — HTTP 500, not user-facing |
-| FR-E7 | `HasExceptionContext` trait — `hint`, `context`, `toCliOutput()`, `isUserFacing()`, `shouldReport()` |
-| FR-E8 | `ActionFailedException` extends `InfrastructureException` — terminal wrapper for unhandled errors from `HandlesActionErrors` (added in 0.15.x per git `faf24a61f`) |
+| FR-SE5Q9-E1 | `AppException` (abstract) — framework-level errors, `statusCode()` abstract, `HasExceptionContext` trait |
+| FR-SE5Q9-E2 | `ModuleException` (abstract) — business-level errors, `statusCode()` abstract, `HasExceptionContext` trait |
+| FR-SE5Q9-E3 | `RejectedException` extends `ModuleException` — HTTP 400, business rule violations (C8 invariant) |
+| FR-SE5Q9-E4 | `ValidationFailedException` extends `ActionException` — HTTP 422, form validation failures |
+| FR-SE5Q9-E5 | `UnauthorizedException` extends `PresentationException` — HTTP 403, authorization failures |
+| FR-SE5Q9-E6 | `InfrastructureException` extends `AppException` — HTTP 500, not user-facing |
+| FR-SE5Q9-E7 | `HasExceptionContext` trait — `hint`, `context`, `toCliOutput()`, `isUserFacing()`, `shouldReport()` |
+| FR-SE5Q9-E8 | `ActionFailedException` extends `InfrastructureException` — terminal wrapper for unhandled errors from `HandlesActionErrors` (added in 0.15.x per git `faf24a61f`) |
 
 ### 4.6 Policies
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-P1 | `BasePolicy` — abstract, auto-allows `super_admin` via `before()` method |
-| FR-P2 | `AuthorizesRoles` trait — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` |
-| FR-P3 | `AuthorizesOwnership` trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` |
+| FR-SE5Q9-P1 | `BasePolicy` — abstract, auto-allows `super_admin` via `before()` method |
+| FR-SE5Q9-P2 | `AuthorizesRoles` trait — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` |
+| FR-SE5Q9-P3 | `AuthorizesOwnership` trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` |
 
 ### 4.7 Enums & Audit Data
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-D1 | `AuditCheck` — `final readonly` DTO extending `BaseData`: `category` (AuditCategory), `nameKey`, `status` (AuditStatus), `messageKey`, `nameParams`, `messageParams` |
-| FR-D2 | `AuditReport` — `final readonly` DTO extending `BaseData`: aggregates `AuditCheck[]`, provides `passed()` (no FAIL checks), `forCategory()` filter |
-| FR-D3 | `AuditCategory` — backed enum implementing `LabelEnum`: `REQUIREMENTS`, `PERMISSIONS`, `DATABASE`, `TERMINAL`, `RECOMMENDATIONS`; `isCritical()` method |
-| FR-D4 | `AuditStatus` — backed enum implementing `LabelEnum`: `PASS`, `FAIL`, `WARN`; `symbol()` method (✓/✗/⚠) |
-| FR-D5 | `CsvRowResult` — backed enum implementing `LabelEnum`: `CREATED`, `SKIPPED`; used by `CsvHandler` import to track per-row outcomes |
+| FR-SE5Q9-D1 | `AuditCheck` — `final readonly` DTO extending `BaseData`: `category` (AuditCategory), `nameKey`, `status` (AuditStatus), `messageKey`, `nameParams`, `messageParams` |
+| FR-SE5Q9-D2 | `AuditReport` — `final readonly` DTO extending `BaseData`: aggregates `AuditCheck[]`, provides `passed()` (no FAIL checks), `forCategory()` filter |
+| FR-SE5Q9-D3 | `AuditCategory` — backed enum implementing `LabelEnum`: `REQUIREMENTS`, `PERMISSIONS`, `DATABASE`, `TERMINAL`, `RECOMMENDATIONS`; `isCritical()` method |
+| FR-SE5Q9-D4 | `AuditStatus` — backed enum implementing `LabelEnum`: `PASS`, `FAIL`, `WARN`; `symbol()` method (✓/✗/⚠) |
+| FR-SE5Q9-D5 | `CsvRowResult` — backed enum implementing `LabelEnum`: `CREATED`, `SKIPPED`; used by `CsvHandler` import to track per-row outcomes |
 
 ### 4.8 Livewire Concerns
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-TR1 | `WithSorting` — Livewire trait: `$sortBy` property (column + direction), `$sortableColumns` whitelist, `applySorting(Builder)` method with column/direction validation |
-| FR-TR2 | `WithRecordSelection` — Livewire trait: `$selectedIds` array, `selectAll(ids)`, `clearSelection()`, computed `selected_count` |
-| FR-BASE6 | `BaseCommandAction::execute()` MUST return `ActionResponse` with `success` and `data` keys | |
-| FR-BASE7 | `BaseReadAction::execute()` MUST NOT mutate state (assert DB snapshot unchanged) | |
+| FR-SE5Q9-TR1 | `WithSorting` — Livewire trait: `$sortBy` property (column + direction), `$sortableColumns` whitelist, `applySorting(Builder)` method with column/direction validation |
+| FR-SE5Q9-TR2 | `WithRecordSelection` — Livewire trait: `$selectedIds` array, `selectAll(ids)`, `clearSelection()`, computed `selected_count` |
+| FR-SE5Q9-BASE6 | `BaseCommandAction::execute()` MUST return `ActionResponse` with `success` and `data` keys | |
+| FR-SE5Q9-BASE7 | `BaseReadAction::execute()` MUST NOT mutate state (assert DB snapshot unchanged) | |
 
 ---
 
@@ -187,13 +187,13 @@ violations compile-time errors rather than runtime surprises.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-R1 | Transaction wrapper retries up to 3 attempts on deadlock (BaseAction) |
-| NFR-M1 | All base classes are abstract — cannot be instantiated directly |
-| NFR-M2 | Entities are `final readonly` — no inheritance, no mutation |
-| NFR-M3 | DTOs carry only scalars/Enums/Carbon — never Models or Actions (C6 invariant) |
-| NFR-M5 | Module discovery at runtime — no manual registration of Livewire/Policies/Views |
-| NFR-L1 | All user-facing error messages in base classes must use `__()` translation helper |
-| NFR-A1 | Error pages rendered by exception handlers must meet WCAG 2.1 Level AA |
+| NFR-SE5Q9-R1 | Transaction wrapper retries up to 3 attempts on deadlock (BaseAction) |
+| NFR-SE5Q9-M1 | All base classes are abstract — cannot be instantiated directly |
+| NFR-SE5Q9-M2 | Entities are `final readonly` — no inheritance, no mutation |
+| NFR-SE5Q9-M3 | DTOs carry only scalars/Enums/Carbon — never Models or Actions (C6 invariant) |
+| NFR-SE5Q9-M5 | Module discovery at runtime — no manual registration of Livewire/Policies/Views |
+| NFR-SE5Q9-L1 | All user-facing error messages in base classes must use `__()` translation helper |
+| NFR-SE5Q9-A1 | Error pages rendered by exception handlers must meet WCAG 2.1 Level AA |
 
 ## Test Requirements
 
@@ -242,6 +242,7 @@ abstract class BaseProcessAction extends BaseAction {
     protected function trackProgress(float $percent, ?string $message = null): void;
     protected function notify(mixed $notifiables, Notification $notification): void;
 }
+
 ```
 
 ### Data Layer Signatures
@@ -278,6 +279,7 @@ final readonly class ActionResponse implements JsonSerializable {
     public static error(string $message, array $errors = []): self;
     public function withRedirect(string $url): self;
 }
+
 ```
 
 ### Contracts
@@ -304,6 +306,7 @@ interface SendsNotifications {
 interface SettingsStore {
     public function get(string $key, mixed $default = null): mixed;
 }
+
 ```
 
 ### Enum & Data Classes
@@ -358,6 +361,7 @@ final readonly class NotificationData extends BaseData {
         public ?string $link = null,
     ) {}
 }
+
 ```
 
 ### Livewire Concerns
@@ -375,6 +379,7 @@ trait WithRecordSelection {
     public function clearSelection(): void;
     #[Computed] public function selected_count(): int;
 }
+
 ```
 
 ### Notification Channel
@@ -384,6 +389,7 @@ class CustomDatabaseChannel {
     public function __construct(protected readonly SendsNotifications $sendNotification);
     public function send(mixed $notifiable, Notification $notification): void;
 }
+
 ```
 
 ### Exception Hierarchy
@@ -398,6 +404,7 @@ RuntimeException
 │       └── UnauthorizedException (403)
 └── ModuleException (abstract)
     └── RejectedException (400)
+
 ```
 
 ---

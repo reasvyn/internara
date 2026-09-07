@@ -9,6 +9,19 @@ each model.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Storage Architecture
 
 The media library stores files on Laravel filesystem disks:
@@ -24,6 +37,7 @@ The `public` disk requires a symlink:
 ```bash
 php artisan storage:link
 # Creates: public/storage → storage/app/public
+
 ```
 
 ---
@@ -63,6 +77,7 @@ class YourModel extends BaseModel implements HasMedia
             ->maxFileSize(10 * 1024 * 1024); // 10 MB
     }
 }
+
 ```
 
 ### Retrieving Files
@@ -72,6 +87,7 @@ $url = $model->getFirstMediaUrl('avatar'); // URL of first file
 $media = $model->getFirstMedia('avatar'); // Full media object
 $files = $model->getMedia('documents'); // All files in collection
 $thumb = $model->getFirstMediaUrl('avatar', 'thumb'); // Thumbnail conversion
+
 ```
 
 ---
@@ -89,6 +105,7 @@ public function registerMediaConversions(?Media $media = null): void
         ->format('webp')
         ->nonQueued();
 }
+
 ```
 
 | Conversion | Width | Format | Queued        |
@@ -100,6 +117,7 @@ The image driver defaults to `gd` (built into PHP). For higher quality conversio
 
 ```env
 IMAGE_DRIVER=imagick
+
 ```
 
 ### Queue Integration
@@ -116,6 +134,7 @@ If a conversion must be available immediately (synchronous):
 
 ```php
 $this->addMediaConversion('thumb')->nonQueued();
+
 ```
 
 ---
@@ -145,6 +164,7 @@ aws s3 sync storage/app/public s3://internara-media/ --storage-class STANDARD_IA
 
 # Then run the migration command to update media library paths
 php artisan media:migrate-to-s3
+
 ```
 
 ---
@@ -157,6 +177,7 @@ User uploads file → Livewire temporary upload → media library attaches to mo
                                             Queue worker processes conversions
                                                     ↓
                                             File accessible via getFirstMediaUrl()
+
 ```
 
 Files are validated before upload: MIME type, file size, and extension checks run on the server

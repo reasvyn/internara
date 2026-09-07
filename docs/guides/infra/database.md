@@ -5,6 +5,19 @@
 Schema design principles, migration conventions, supported database engines, UUID primary keys, and
 indexing strategy.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Design Philosophy
 
 The database is organized around the concept that every piece of persistent state belongs to a
@@ -121,6 +134,7 @@ An opt-in demo dataset for development is provided by `Database\Seeders\DummySee
 
 ```bash
 php artisan db:seed --class=Database\Seeders\DummySeeder
+
 ```
 
 On a fresh install, `php artisan setup:install --with-dummy` seeds it right after provisioning
@@ -175,6 +189,7 @@ Laravel supports read/write separation for replicas:
 // config/database.php
 'read' => ['host' => ['192.168.1.1']],
 'write' => ['host' => ['192.168.1.2']],
+
 ```
 
 ### Migration Strategy
@@ -187,6 +202,7 @@ php artisan migrate
 # 1. Configure new connection in .env
 # 2. Run migrations
 # 3. Import existing data using database dump tools
+
 ```
 
 ---

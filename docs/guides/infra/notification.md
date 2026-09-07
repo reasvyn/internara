@@ -5,6 +5,19 @@
 Multi-channel notification system covering mail, database, and broadcast channels with ShouldQueue
 conventions.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Channel Architecture
 
 Internara delivers notifications through multiple channels, each serving a different purpose. A
@@ -17,6 +30,7 @@ Notification sent
     ├── CustomDatabaseChannel ────► notifications table ──► in-app center
     ├── MailChannel ──────────────► SMTP / SES / Mailgun ─► email inbox
     └── (future) WebhookChannel ─► external URL ──────────► webhook receiver
+
 ```
 
 ### Channel Selection by Tier
@@ -48,6 +62,7 @@ notifications
 ├── is_read         BOOLEAN       DEFAULT 0    — Read status
 ├── read_at         TIMESTAMP     NULLABLE     — When user opened it
 └── created_at      TIMESTAMP                 — When it was sent
+
 ```
 
 ### Notification Class Contract
@@ -69,6 +84,7 @@ public function toCustomDatabase($notifiable): array
         ],
     ];
 }
+
 ```
 
 ### Retrieval
@@ -79,6 +95,7 @@ $notifications = Notification::forUser(auth()->id())->unread()->latest()->get();
 
 // Mark as read
 $notification->markAsRead();
+
 ```
 
 ---
@@ -121,6 +138,7 @@ MAIL_ENCRYPTION=tls
 
 MAIL_FROM_ADDRESS=noreply@your-school.sch.id
 MAIL_FROM_NAME="${APP_NAME}"
+
 ```
 
 **Common SMTP providers for Indonesian schools:**
@@ -139,6 +157,7 @@ MAIL_MAILER=ses
 AWS_ACCESS_KEY_ID=your-key
 AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=ap-southeast-1
+
 ```
 
 SES requires domain verification and may start in sandbox mode (verified emails only). Request
@@ -149,6 +168,7 @@ production access for sending to unverified recipients.
 ```env
 # Logs to storage/logs/laravel.log — no email sent
 MAIL_MAILER=log
+
 ```
 
 ### Deliverability Setup
@@ -162,6 +182,7 @@ SPF       TXT     v=spf1 include:_spf.google.com ~all
 DKIM      TXT     (provided by your email provider)
 DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-domain
 MX        MX      (your email provider's MX record)
+
 ```
 
 | Record                | Purpose                                               | Risk if Missing                           |
@@ -182,6 +203,7 @@ class WelcomeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 }
+
 ```
 
 In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (Shared Hosting — up to
@@ -221,6 +243,7 @@ saved." They are displayed as TallstackUI toast notifications and disappear afte
 $this->toast()->success(__('profile.updated'))->send();
 $this->toast()->error(__('settings.save_failed'))->send();
 $this->toast()->warning(__('disk_space_low'))->send();
+
 ```
 
 | Feature     | Toast (TallstackUI) | In-App Notification |
@@ -249,6 +272,7 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
         );
     }
 }
+
 ```
 
 For notifications triggered by user action (not event listeners), use `SendNotificationAction`:
@@ -268,6 +292,7 @@ public function execute(): void
         link: route('dashboard'),
     ));
 }
+
 ```
 
 ---
@@ -286,6 +311,7 @@ Created (via Action/Event)
     │
     └── old → pruned by scheduler
           └── system:cleanup prunes notifications older than retention period
+
 ```
 
 ### Retention

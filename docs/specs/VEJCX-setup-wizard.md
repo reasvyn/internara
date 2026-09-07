@@ -60,7 +60,7 @@ wizard rather than seeing a broken or empty application.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Browser Wizard (Primary Path)
+### UC-VEJCX-1 — Browser Wizard (Primary Path)
 
 **Actor:** Installer (may be same person as CLI installer, or different)
 
@@ -85,7 +85,7 @@ wizard rather than seeing a broken or empty application.
 **Postconditions:** System is fully operational, super admin can log in, recovery key saved to
 `storage/app/private/.recovery-key` (chmod 0600).
 
-### UC-2 — Auto-Redirect to Setup
+### UC-VEJCX-2 — Auto-Redirect to Setup
 
 **Actor:** Any visitor
 
@@ -98,7 +98,7 @@ wizard rather than seeing a broken or empty application.
 
 **Postconditions:** Visitor sees setup token entry page (or wizard if authorized).
 
-### UC-3 — Post-Finalization Window
+### UC-VEJCX-3 — Post-Finalization Window
 
 **Actor:** Installer completing setup
 
@@ -111,7 +111,7 @@ wizard rather than seeing a broken or empty application.
 
 **Postconditions:** Setup route is permanently inaccessible.
 
-### UC-4 — Backward Navigation
+### UC-VEJCX-4 — Backward Navigation
 
 **Actor:** Installer in wizard
 
@@ -132,52 +132,52 @@ wizard rather than seeing a broken or empty application.
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-W1 | Wizard must have exactly 6 steps: welcome, account, school, department, finalize, complete |
-| FR-W2 | Step 1 (Welcome) must show environment audit results                     |
-| FR-W3 | "Start Setup" button must be disabled until audit passes                 |
-| FR-W4 | Step 2 (Super Admin): name and username are immutable, read from config  |
-| FR-W5 | Super Admin password requires 8+ characters, mixed case, numbers         |
-| FR-W6 | Super Admin email is required and validated                              |
-| FR-W7 | Step 3 (School): name and institutional_code are required               |
-| FR-W8 | School website must be valid URL if provided                             |
-| FR-W9 | Step 4 (Department): name is required                                    |
-| FR-W10 | Step 5 (Finalize): requires both "data verified" and "security aware" checkboxes |
-| FR-W11 | Step 6 (Complete): displays recovery key with copy button and auto-redirect |
-| FR-W12 | Form data must persist in session across step navigation                 |
-| FR-W13 | Installer must be able to navigate backward to completed steps           |
-| FR-W14 | Installer must be able to navigate backward to any incomplete step       |
+| FR-VEJCX-W1 | Wizard must have exactly 6 steps: welcome, account, school, department, finalize, complete |
+| FR-VEJCX-W2 | Step 1 (Welcome) must show environment audit results                     |
+| FR-VEJCX-W3 | "Start Setup" button must be disabled until audit passes                 |
+| FR-VEJCX-W4 | Step 2 (Super Admin): name and username are immutable, read from config  |
+| FR-VEJCX-W5 | Super Admin password requires 8+ characters, mixed case, numbers         |
+| FR-VEJCX-W6 | Super Admin email is required and validated                              |
+| FR-VEJCX-W7 | Step 3 (School): name and institutional_code are required               |
+| FR-VEJCX-W8 | School website must be valid URL if provided                             |
+| FR-VEJCX-W9 | Step 4 (Department): name is required                                    |
+| FR-VEJCX-W10 | Step 5 (Finalize): requires both "data verified" and "security aware" checkboxes |
+| FR-VEJCX-W11 | Step 6 (Complete): displays recovery key with copy button and auto-redirect |
+| FR-VEJCX-W12 | Form data must persist in session across step navigation                 |
+| FR-VEJCX-W13 | Installer must be able to navigate backward to completed steps           |
+| FR-VEJCX-W14 | Installer must be able to navigate backward to any incomplete step       |
 
 ### 4.2 Finalization
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-F1 | Finalization must be atomic — all-or-nothing: school, department, admin, settings |
-| FR-F2 | System must create school profile in settings (`school.*` keys)          |
-| FR-F3 | System must create first department in database                          |
-| FR-F4 | System must create super admin: role=superadmin, status=PROTECTED, email verified |
-| FR-F5 | Super admin `setup_required` flag must be set to `false`                 |
-| FR-F6 | System must generate 64-char recovery key, store hashed in DB and plaintext in file |
-| FR-F7 | Recovery key file must be saved to `storage/app/private/.recovery-key` with chmod 0600 |
-| FR-F8 | System must set `is_installed = true` in settings                        |
-| FR-F9 | System must save `brand_name` and `site_title` from school name          |
-| FR-F10 | System must dispatch `SetupFinalized` event                              |
-| FR-F11 | System must send welcome notification to super admin                     |
-| FR-F12 | System must clear all caches after finalization                          |
-| FR-F13 | System must clear setup session data after finalization                  |
-| FR-F14 | Running finalization on an already-installed system must throw `RejectedException` |
+| FR-VEJCX-F1 | Finalization must be atomic — all-or-nothing: school, department, admin, settings |
+| FR-VEJCX-F2 | System must create school profile in settings (`school.*` keys)          |
+| FR-VEJCX-F3 | System must create first department in database                          |
+| FR-VEJCX-F4 | System must create super admin: role=superadmin, status=PROTECTED, email verified |
+| FR-VEJCX-F5 | Super admin `setup_required` flag must be set to `false`                 |
+| FR-VEJCX-F6 | System must generate 64-char recovery key, store hashed in DB and plaintext in file |
+| FR-VEJCX-F7 | Recovery key file must be saved to `storage/app/private/.recovery-key` with chmod 0600 |
+| FR-VEJCX-F8 | System must set `is_installed = true` in settings                        |
+| FR-VEJCX-F9 | System must save `brand_name` and `site_title` from school name          |
+| FR-VEJCX-F10 | System must dispatch `SetupFinalized` event                              |
+| FR-VEJCX-F11 | System must send welcome notification to super admin                     |
+| FR-VEJCX-F12 | System must clear all caches after finalization                          |
+| FR-VEJCX-F13 | System must clear setup session data after finalization                  |
+| FR-VEJCX-F14 | Running finalization on an already-installed system must throw `RejectedException` |
 
 ### 4.3 Access Control
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-AC1 | `RequireSetupAccessMiddleware` must redirect to `/setup` when not installed (globally applied) |
-| FR-AC2 | `ProtectSetupRouteMiddleware` must validate token for all setup routes   |
-| FR-AC3 | Authorized session must store `setup.authorized=true` and `setup.token_version` |
-| FR-AC4 | Post-finalization: setup route accessible for 30 seconds (configurable), then 404 |
-| FR-AC5 | Post-finalization outside window: clear session setup data, abort 404    |
-| FR-AC6 | Installed system: any `/setup` access without valid session → 404        |
-| FR-AC7 | Requests for real files in `public/` must pass through (Vite assets, etc.) |
-| FR-AC8 | Livewire header requests must pass through (prevent redirect during updates) |
+| FR-VEJCX-AC1 | `RequireSetupAccessMiddleware` must redirect to `/setup` when not installed (globally applied) |
+| FR-VEJCX-AC2 | `ProtectSetupRouteMiddleware` must validate token for all setup routes   |
+| FR-VEJCX-AC3 | Authorized session must store `setup.authorized=true` and `setup.token_version` |
+| FR-VEJCX-AC4 | Post-finalization: setup route accessible for 30 seconds (configurable), then 404 |
+| FR-VEJCX-AC5 | Post-finalization outside window: clear session setup data, abort 404    |
+| FR-VEJCX-AC6 | Installed system: any `/setup` access without valid session → 404        |
+| FR-VEJCX-AC7 | Requests for real files in `public/` must pass through (Vite assets, etc.) |
+| FR-VEJCX-AC8 | Livewire header requests must pass through (prevent redirect during updates) |
 
 ---
 
@@ -187,67 +187,67 @@ wizard rather than seeing a broken or empty application.
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-S1 | Token must be cryptographically random (64 chars, via `Str::random`) |
-| NFR-S2 | Token must be encrypted at rest (`Crypt::encryptString`)             |
-| NFR-S3 | Token must be single-use — cleared after validation                  |
-| NFR-S4 | Session ID must be regenerated after token validation                |
-| NFR-S5 | Rate limiting: 20 attempts/IP/60s on token validation                |
-| NFR-S6 | Super admin password must meet Laravel Password rules (8+ chars, mixed case, numbers) |
-| NFR-S7 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
-| NFR-S8 | All setup actions must be logged via SmartLogger for audit trail     |
+| NFR-VEJCX-S1 | Token must be cryptographically random (64 chars, via `Str::random`) |
+| NFR-VEJCX-S2 | Token must be encrypted at rest (`Crypt::encryptString`)             |
+| NFR-VEJCX-S3 | Token must be single-use — cleared after validation                  |
+| NFR-VEJCX-S4 | Session ID must be regenerated after token validation                |
+| NFR-VEJCX-S5 | Rate limiting: 20 attempts/IP/60s on token validation                |
+| NFR-VEJCX-S6 | Super admin password must meet Laravel Password rules (8+ chars, mixed case, numbers) |
+| NFR-VEJCX-S7 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
+| NFR-VEJCX-S8 | All setup actions must be logged via SmartLogger for audit trail     |
 
 ### 5.2 Performance
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-P1 | Wizard step navigation must respond within 1 second                  |
-| NFR-P2 | Finalization (all DB writes) must complete within 5 seconds          |
+| NFR-VEJCX-P1 | Wizard step navigation must respond within 1 second                  |
+| NFR-VEJCX-P2 | Finalization (all DB writes) must complete within 5 seconds          |
 
 ### 5.3 Reliability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-R1 | Finalization failures must roll back the entire transaction          |
-| NFR-R2 | Recovery key file write failure must not block finalization          |
+| NFR-VEJCX-R1 | Finalization failures must roll back the entire transaction          |
+| NFR-VEJCX-R2 | Recovery key file write failure must not block finalization          |
 
 ### 5.4 Usability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-U1 | Wizard must show progress bar with step indicators                   |
-| NFR-U2 | Wizard must support backward/forward navigation                     |
-| NFR-U3 | Form data must persist across step navigation (session)              |
-| NFR-U4 | Recovery key must be displayed with one-click copy button            |
-| NFR-U5 | Auto-redirect from Complete step must countdown (20 seconds)         |
-| NFR-U6 | Environment audit must show pass/fail/warn icons per check           |
-| NFR-U7 | All wizard text must be available in English and Indonesian          |
+| NFR-VEJCX-U1 | Wizard must show progress bar with step indicators                   |
+| NFR-VEJCX-U2 | Wizard must support backward/forward navigation                     |
+| NFR-VEJCX-U3 | Form data must persist across step navigation (session)              |
+| NFR-VEJCX-U4 | Recovery key must be displayed with one-click copy button            |
+| NFR-VEJCX-U5 | Auto-redirect from Complete step must countdown (20 seconds)         |
+| NFR-VEJCX-U6 | Environment audit must show pass/fail/warn icons per check           |
+| NFR-VEJCX-U7 | All wizard text must be available in English and Indonesian          |
 
 ### 5.5 Accessibility
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-A1 | Setup wizard must meet WCAG 2.1 Level AA                             |
-| NFR-A2 | Step indicators must be keyboard-accessible and announced to screen readers |
-| NFR-A3 | Environment audit results must include non-color indicators (icons alongside pass/fail colors) |
-| NFR-A4 | All form inputs in setup wizard must have associated labels          |
-| NFR-A5 | Recovery key display must be accessible (copy button has `aria-label`) |
+| NFR-VEJCX-A1 | Setup wizard must meet WCAG 2.1 Level AA                             |
+| NFR-VEJCX-A2 | Step indicators must be keyboard-accessible and announced to screen readers |
+| NFR-VEJCX-A3 | Environment audit results must include non-color indicators (icons alongside pass/fail colors) |
+| NFR-VEJCX-A4 | All form inputs in setup wizard must have associated labels          |
+| NFR-VEJCX-A5 | Recovery key display must be accessible (copy button has `aria-label`) |
 
 ### 5.6 Localization
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-L1 | All wizard text must use `__()` translation helper                   |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-L3 | Environment audit status must be translatable via `__()`             |
+| NFR-VEJCX-L1 | All wizard text must use `__()` translation helper                   |
+| NFR-VEJCX-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-VEJCX-L3 | Environment audit status must be translatable via `__()`             |
 
 ### 5.7 Maintainability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-M1 | Setup state must be stored in the shared `settings` table (no separate migrations) |
-| NFR-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
-| NFR-M3 | Setup entity must be `final readonly` with zero I/O                  |
-| NFR-M4 | All setup behavior must be testable via Pest test suite              |
+| NFR-VEJCX-M1 | Setup state must be stored in the shared `settings` table (no separate migrations) |
+| NFR-VEJCX-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
+| NFR-VEJCX-M3 | Setup entity must be `final readonly` with zero I/O                  |
+| NFR-VEJCX-M4 | All setup behavior must be testable via Pest test suite              |
 
 ---
 
@@ -272,7 +272,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 School profile stored with `group = 'school'`:
 
 > **Email rule divergence (resolved in DD-5):** the setup wizard requires `school.email`
-> (FR-W6, SchoolForm `required|email`) so an installed system always has a working contact
+> (FR-VEJCX-W6, SchoolForm `required|email`) so an installed system always has a working contact
 > address. The post-setup editor ([school-profile.md](81SMS-school-profile.md) §6.3) allows `nullable`
 > so an admin may clear the email later. DD-5 records this as intentional, not a contradiction.
 
@@ -317,6 +317,7 @@ class DepartmentForm extends LivewireForm
     public string $name = '';           // Required, max:255
     public string $description = '';    // Nullable
 }
+
 ```
 
 ### 6.3 Action Contracts
@@ -345,6 +346,7 @@ class SetupDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department;
 }
+
 ```
 
 ### 6.4 Routes
@@ -368,6 +370,7 @@ class SetupDepartmentAction extends BaseCommandAction
         'finalization_window_seconds' => 30,
     ],
 ]
+
 ```
 
 ---
@@ -410,12 +413,12 @@ be permanently inaccessible to prevent re-entry. The window is configurable via
 
 ### DD-5 — School Email Required at Setup, Nullable After
 
-**Decision:** The setup wizard requires `school.email` (FR-W6), while the post-setup school
+**Decision:** The setup wizard requires `school.email` (FR-VEJCX-W6), while the post-setup school
 profile editor ([school-profile.md](81SMS-school-profile.md) §6.3) allows `nullable`.
 
 **Rationale:** The wizard is a one-time provisioning act — requiring the email guarantees every
 installed instance has a working contact address for notifications and the welcome email
-(FR-F11). After install, the profile editor lets an admin correct or clear the address when the
+(FR-VEJCX-F11). After install, the profile editor lets an admin correct or clear the address when the
 school's circumstances change. The two specs are different validation contexts for the same
 setting key, not a contradiction.
 

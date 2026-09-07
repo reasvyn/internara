@@ -70,12 +70,12 @@ config drift independently.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | School | Deploys on cheap conventional shared hosting |
-| UC-2 | Sysadmin | Deploys on Docker VPS |
-| UC-3 | System | Detection recommends a profile on an unknown server |
-| UC-4 | Operator | Overrides auto-detection |
+| UC-06IB6-1 | School | Deploys on cheap conventional shared hosting |
+| UC-06IB6-2 | Sysadmin | Deploys on Docker VPS |
+| UC-06IB6-3 | System | Detection recommends a profile on an unknown server |
+| UC-06IB6-4 | Operator | Overrides auto-detection |
 
-### UC-1 — School Deploys on Cheap Conventional Shared Hosting
+### UC-06IB6-1 — School Deploys on Cheap Conventional Shared Hosting
 
 **Actor:** School IT staff (cPanel / FTP access only)
 
@@ -95,7 +95,7 @@ root, and cron (5-15 minute intervals acceptable).
 **Postconditions:** System runs with `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
 `SESSION_DRIVER=database`; all core features functional for up to 500 users.
 
-### UC-2 — Sysadmin Deploys on Docker VPS
+### UC-06IB6-2 — Sysadmin Deploys on Docker VPS
 
 **Actor:** Sysadmin
 
@@ -112,7 +112,7 @@ root, and cron (5-15 minute intervals acceptable).
 **Postconditions:** Full stack runs with sync queue, file cache, database sessions, a scheduler
 daemon inside the `app` container, and a reverse-proxying nginx `web` service.
 
-### UC-3 — Detection Recommends a Profile on an Unknown Server
+### UC-06IB6-3 — Detection Recommends a Profile on an Unknown Server
 
 **Actor:** Operator on a new server
 
@@ -126,7 +126,7 @@ daemon inside the `app` container, and a reverse-proxying nginx `web` service.
 
 **Postconditions:** Operator knows which profile matches the environment before tuning `.env`.
 
-### UC-4 — Operator Overrides Auto-Detection
+### UC-06IB6-4 — Operator Overrides Auto-Detection
 
 **Actor:** Operator
 
@@ -150,78 +150,78 @@ preset.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-P1 | The system must define exactly two canonical deployment profiles: `shared-hosting` and `vps-docker` |
-| FR-P2 | Profile presets must be declared in a single configuration source (`config/deployment.php`) |
-| FR-P3 | The `shared-hosting` preset must map to: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`, scheduler mode `webhook`, no Redis |
-| FR-P4 | The `vps-docker` preset must map to: `QUEUE_CONNECTION=redis`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`, `BROADCAST_CONNECTION=log`, scheduler mode `daemon`, Redis required |
-| FR-P5 | The active profile must be selectable via `DEPLOY_PROFILE` env var with values `shared-hosting`, `vps-docker`, or `auto` |
-| FR-P6 | When `DEPLOY_PROFILE` is `auto` or unset, the active profile must be resolved by automatic detection (see 4.2) |
-| FR-P7 | When detection is inconclusive, the system must default to the `shared-hosting` profile |
-| FR-P8 | `config/deployment.php` must declare the default profile as `shared-hosting` |
+| FR-06IB6-P1 | The system must define exactly two canonical deployment profiles: `shared-hosting` and `vps-docker` |
+| FR-06IB6-P2 | Profile presets must be declared in a single configuration source (`config/deployment.php`) |
+| FR-06IB6-P3 | The `shared-hosting` preset must map to: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`, scheduler mode `webhook`, no Redis |
+| FR-06IB6-P4 | The `vps-docker` preset must map to: `QUEUE_CONNECTION=redis`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`, `BROADCAST_CONNECTION=log`, scheduler mode `daemon`, Redis required |
+| FR-06IB6-P5 | The active profile must be selectable via `DEPLOY_PROFILE` env var with values `shared-hosting`, `vps-docker`, or `auto` |
+| FR-06IB6-P6 | When `DEPLOY_PROFILE` is `auto` or unset, the active profile must be resolved by automatic detection (see 4.2) |
+| FR-06IB6-P7 | When detection is inconclusive, the system must default to the `shared-hosting` profile |
+| FR-06IB6-P8 | `config/deployment.php` must declare the default profile as `shared-hosting` |
 
 ### 4.2 Automatic Detection
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-D1 | The system must provide a `deploy:detect` artisan command that probes the environment and recommends a profile |
-| FR-D2 | Detection must probe at minimum: container runtime presence, Redis reachability, daemon-capable extensions (pcntl/posix), and Composer availability at runtime |
-| FR-D3 | Detection must recommend `vps-docker` when a container runtime is detected or Redis is reachable together with daemon capability |
-| FR-D4 | Detection must recommend `shared-hosting` when no container, no Redis, or no daemon capability is detected |
-| FR-D5 | Detection must be non-destructive: it only reads environment state and writes nothing |
-| FR-D6 | Detection must support a `--json` flag for machine-readable output |
-| FR-D7 | An explicitly set `DEPLOY_PROFILE` (non-`auto`) must always take precedence over the detection recommendation |
+| FR-06IB6-D1 | The system must provide a `deploy:detect` artisan command that probes the environment and recommends a profile |
+| FR-06IB6-D2 | Detection must probe at minimum: container runtime presence, Redis reachability, daemon-capable extensions (pcntl/posix), and Composer availability at runtime |
+| FR-06IB6-D3 | Detection must recommend `vps-docker` when a container runtime is detected or Redis is reachable together with daemon capability |
+| FR-06IB6-D4 | Detection must recommend `shared-hosting` when no container, no Redis, or no daemon capability is detected |
+| FR-06IB6-D5 | Detection must be non-destructive: it only reads environment state and writes nothing |
+| FR-06IB6-D6 | Detection must support a `--json` flag for machine-readable output |
+| FR-06IB6-D7 | An explicitly set `DEPLOY_PROFILE` (non-`auto`) must always take precedence over the detection recommendation |
 
 ### 4.3 Profile Configuration Application
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-C1 | The system must provide a `deploy:configure` artisan command that applies a profile preset to `.env` |
-| FR-C2 | `deploy:configure` must accept `--profile=shared-hosting\|vps-docker` and validate the value against the known profiles |
-| FR-C3 | `deploy:configure` must write only driver keys (queue/cache/session/broadcast) and never secrets (DB_PASSWORD, APP_KEY, MAIL_PASSWORD) |
-| FR-C4 | `deploy:configure` must be idempotent — running it twice produces the same `.env` state |
-| FR-C5 | `deploy:configure` without `--profile` must use the resolved profile from FR-P6/FR-P7 |
-| FR-C6 | Applying a profile must not modify `docker-compose.yml` or `Dockerfile` |
+| FR-06IB6-C1 | The system must provide a `deploy:configure` artisan command that applies a profile preset to `.env` |
+| FR-06IB6-C2 | `deploy:configure` must accept `--profile=shared-hosting\|vps-docker` and validate the value against the known profiles |
+| FR-06IB6-C3 | `deploy:configure` must write only driver keys (queue/cache/session/broadcast) and never secrets (DB_PASSWORD, APP_KEY, MAIL_PASSWORD) |
+| FR-06IB6-C4 | `deploy:configure` must be idempotent — running it twice produces the same `.env` state |
+| FR-06IB6-C5 | `deploy:configure` without `--profile` must use the resolved profile from FR-06IB6-P6/FR-06IB6-P7 |
+| FR-06IB6-C6 | Applying a profile must not modify `docker-compose.yml` or `Dockerfile` |
 
 ### 4.4 Shared Hosting Operation
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-SH1 | Shared hosting must not require a queue worker daemon — jobs run synchronously via `QUEUE_CONNECTION=sync` |
-| FR-SH2 | Shared hosting must not require Redis or Memcached — cache is `file`, sessions are `database` |
-| FR-SH3 | The scheduler must be triggerable via the `/cron/{secret}` webhook route (`routes/web/sysadmin.php`) when minute-level cron is unavailable |
-| FR-SH4 | The deployable artifact must be buildable off-server — `composer install --optimize-autoloader --no-dev` and `npm run build` must be run before upload, and must not be required on the server |
-| FR-SH5 | Shared hosting must support a configurable document root pointed at `public/` |
-| FR-SH6 | The `public/storage` symlink must be creatable manually when SSH is unavailable (see [installation.md](8NZAU-installation.md)) |
-| FR-SH7 | MySQL 8+ / MariaDB 10.6+ and SQLite must both be supported as the database on shared hosting |
-| FR-SH8 | All core features (auth, registration, attendance, logbook, assignments, assessments, reports, certificates) must work under the shared-hosting preset |
+| FR-06IB6-SH1 | Shared hosting must not require a queue worker daemon — jobs run synchronously via `QUEUE_CONNECTION=sync` |
+| FR-06IB6-SH2 | Shared hosting must not require Redis or Memcached — cache is `file`, sessions are `database` |
+| FR-06IB6-SH3 | The scheduler must be triggerable via the `/cron/{secret}` webhook route (`routes/web/sysadmin.php`) when minute-level cron is unavailable |
+| FR-06IB6-SH4 | The deployable artifact must be buildable off-server — `composer install --optimize-autoloader --no-dev` and `npm run build` must be run before upload, and must not be required on the server |
+| FR-06IB6-SH5 | Shared hosting must support a configurable document root pointed at `public/` |
+| FR-06IB6-SH6 | The `public/storage` symlink must be creatable manually when SSH is unavailable (see [installation.md](8NZAU-installation.md)) |
+| FR-06IB6-SH7 | MySQL 8+ / MariaDB 10.6+ and SQLite must both be supported as the database on shared hosting |
+| FR-06IB6-SH8 | All core features (auth, registration, attendance, logbook, assignments, assessments, reports, certificates) must work under the shared-hosting preset |
 
 ### 4.5 Docker VPS Operation
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-VD1 | `docker-compose.yml` must provide the services: `app`, `web`, `db`. The queue worker and scheduler run **inside the `app` container**, managed by the Docker entrypoint via `RUN_QUEUE` / `RUN_SCHEDULER` env flags |
-| FR-VD2 | The `app` service must run PHP-FPM from the project `Dockerfile`, depend on healthy `db`, and run `php artisan migrate --force` from the entrypoint before starting processes |
-| FR-VD3 | The queue worker must be started by the entrypoint when `RUN_QUEUE=true` (`php artisan queue:work --sleep=3 --tries=3`). The default deploy uses `QUEUE_CONNECTION=sync` and needs no worker; a Redis-backed worker is supported when a `redis` service is present |
-| FR-VD4 | The scheduler must be started by the entrypoint when `RUN_SCHEDULER=true` (`php artisan schedule:work` daemon) |
-| FR-VD5 | The `web` service must be an nginx image built from `.docker/nginx.Dockerfile` proxying to `app:9000` on port 80 (configurable via `NGINX_PORT`) |
-| FR-VD6 | The `db` service must be `mysql:8` with a named volume and healthcheck |
-| FR-VD7 | Redis is optional — omitted from the default stack; the app image bundles the `phpredis` extension so a `redis:7-alpine` service can be added later without rebuilding the app |
-| FR-VD8 | Application storage must persist via the `storage_data` named volume shared across `app` and `web`; compiled public assets must persist via the `app_data` named volume shared across `app` and `web` |
-| FR-VD9 | Default runtime drivers must be non-Redis and match the shared-hosting preset: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`; Redis-backed drivers remain supported when a `redis` service is present |
-| FR-VD10 | `php artisan setup:install` and `php artisan system:health` must be runnable inside the `app` container |
-| FR-VD11 | The `app` service must expose a healthcheck (`docker/fpm-healthcheck` probing FPM port 9000) and `web` must depend on `app` with `condition: service_healthy` |
-| FR-VD12 | The `app` and `db` services must fail fast at start when required secrets are missing (`APP_KEY`, `DB_PASSWORD`) and use `restart: unless-stopped` |
+| FR-06IB6-VD1 | `docker-compose.yml` must provide the services: `app`, `web`, `db`. The queue worker and scheduler run **inside the `app` container**, managed by the Docker entrypoint via `RUN_QUEUE` / `RUN_SCHEDULER` env flags |
+| FR-06IB6-VD2 | The `app` service must run PHP-FPM from the project `Dockerfile`, depend on healthy `db`, and run `php artisan migrate --force` from the entrypoint before starting processes |
+| FR-06IB6-VD3 | The queue worker must be started by the entrypoint when `RUN_QUEUE=true` (`php artisan queue:work --sleep=3 --tries=3`). The default deploy uses `QUEUE_CONNECTION=sync` and needs no worker; a Redis-backed worker is supported when a `redis` service is present |
+| FR-06IB6-VD4 | The scheduler must be started by the entrypoint when `RUN_SCHEDULER=true` (`php artisan schedule:work` daemon) |
+| FR-06IB6-VD5 | The `web` service must be an nginx image built from `.docker/nginx.Dockerfile` proxying to `app:9000` on port 80 (configurable via `NGINX_PORT`) |
+| FR-06IB6-VD6 | The `db` service must be `mysql:8` with a named volume and healthcheck |
+| FR-06IB6-VD7 | Redis is optional — omitted from the default stack; the app image bundles the `phpredis` extension so a `redis:7-alpine` service can be added later without rebuilding the app |
+| FR-06IB6-VD8 | Application storage must persist via the `storage_data` named volume shared across `app` and `web`; compiled public assets must persist via the `app_data` named volume shared across `app` and `web` |
+| FR-06IB6-VD9 | Default runtime drivers must be non-Redis and match the shared-hosting preset: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`; Redis-backed drivers remain supported when a `redis` service is present |
+| FR-06IB6-VD10 | `php artisan setup:install` and `php artisan system:health` must be runnable inside the `app` container |
+| FR-06IB6-VD11 | The `app` service must expose a healthcheck (`docker/fpm-healthcheck` probing FPM port 9000) and `web` must depend on `app` with `condition: service_healthy` |
+| FR-06IB6-VD12 | The `app` and `db` services must fail fast at start when required secrets are missing (`APP_KEY`, `DB_PASSWORD`) and use `restart: unless-stopped` |
 
 ### 4.6 Verification & Documentation
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-V1 | `php artisan system:health` must be the final acceptance gate for both deployment conditions |
-| FR-V2 | `docs/guides/infra/deployment.md` must present the two profiles and their presets as the canonical deployment guide |
-| FR-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = minimal 3-service Docker topology running shared-hosting drivers (FR-VD1–FR-VD12), `docker/shared-hosting/` = shared-hosting simulation |
-| FR-V4 | `.env.example` must remain the shared-hosting-optimized default and document `DEPLOY_PROFILE` |
-| FR-V5 | Adding a new profile must not require changes to application business code |
-| FR-SH9 | `deploy:configure --profile=shared-hosting` MUST write `QUEUE_CONNECTION=sync` and `SESSION_DRIVER=database` to `.env` | |
+| FR-06IB6-V1 | `php artisan system:health` must be the final acceptance gate for both deployment conditions |
+| FR-06IB6-V2 | `docs/guides/infra/deployment.md` must present the two profiles and their presets as the canonical deployment guide |
+| FR-06IB6-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = minimal 3-service Docker topology running shared-hosting drivers (FR-06IB6-VD1–FR-06IB6-VD12), `docker/shared-hosting/` = shared-hosting simulation |
+| FR-06IB6-V4 | `.env.example` must remain the shared-hosting-optimized default and document `DEPLOY_PROFILE` |
+| FR-06IB6-V5 | Adding a new profile must not require changes to application business code |
+| FR-06IB6-SH9 | `deploy:configure --profile=shared-hosting` MUST write `QUEUE_CONNECTION=sync` and `SESSION_DRIVER=database` to `.env` | |
 
 ---
 
@@ -231,42 +231,42 @@ preset.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | `CRON_SECRET` must be required for the `/cron/{secret}` webhook; requests without a valid secret must be rejected (existing `CronController` behavior) |
-| NFR-S2 | Detection output must not expose credentials, hostnames, or internal paths beyond probe pass/fail status |
-| NFR-S3 | `deploy:configure` must never write secrets or clear `APP_KEY` |
-| NFR-S4 | No secrets may be committed; `.env` remains excluded via `.gitignore` |
+| NFR-06IB6-S1 | `CRON_SECRET` must be required for the `/cron/{secret}` webhook; requests without a valid secret must be rejected (existing `CronController` behavior) |
+| NFR-06IB6-S2 | Detection output must not expose credentials, hostnames, or internal paths beyond probe pass/fail status |
+| NFR-06IB6-S3 | `deploy:configure` must never write secrets or clear `APP_KEY` |
+| NFR-06IB6-S4 | No secrets may be committed; `.env` remains excluded via `.gitignore` |
 
 ### 5.2 Performance
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1* | `deploy:detect` must complete in under 5 seconds — manual perf, not unit-testable |
-| NFR-P2* | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) — manual perf, not unit-testable |
-| NFR-P3* | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them — infra, verified manually |
+| NFR-06IB6-P1* | `deploy:detect` must complete in under 5 seconds — manual perf, not unit-testable |
+| NFR-06IB6-P2* | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) — manual perf, not unit-testable |
+| NFR-06IB6-P3* | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them — infra, verified manually |
 
 ### 5.3 Reliability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-R1 | Detection must be safe to run repeatedly and at any time (idempotent, non-mutating) |
-| NFR-R2 | An explicit profile override must survive `deploy:configure` re-runs |
-| NFR-R3 | A deployment must be reproducible from documented commands alone (`composer install`, `npm run build`, `setup:install`, `system:health`) |
-| NFR-R4 | Docker services must use healthchecks so Compose waits for `db` before starting the `app`, and for a healthy `app` before starting `web` |
+| NFR-06IB6-R1 | Detection must be safe to run repeatedly and at any time (idempotent, non-mutating) |
+| NFR-06IB6-R2 | An explicit profile override must survive `deploy:configure` re-runs |
+| NFR-06IB6-R3 | A deployment must be reproducible from documented commands alone (`composer install`, `npm run build`, `setup:install`, `system:health`) |
+| NFR-06IB6-R4 | Docker services must use healthchecks so Compose waits for `db` before starting the `app`, and for a healthy `app` before starting `web` |
 
 ### 5.4 Usability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-U1 | All new CLI output must be bilingual via `__()` (English and Indonesian) |
-| NFR-U2 | `deploy:detect` output must explain each probe result in plain language |
+| NFR-06IB6-U1 | All new CLI output must be bilingual via `__()` (English and Indonesian) |
+| NFR-06IB6-U2 | `deploy:detect` output must explain each probe result in plain language |
 
 ### 5.5 Maintainability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-M1 | Presets must live only in `config/deployment.php` — docs and Docker files reference, never duplicate, the driver mapping |
-| NFR-M2 | New commands must follow the Action/Console conventions and carry `declare(strict_types=1)` |
-| NFR-M3 | All deployment behavior must be testable via the Pest suite (no manual-only steps) |
+| NFR-06IB6-M1 | Presets must live only in `config/deployment.php` — docs and Docker files reference, never duplicate, the driver mapping |
+| NFR-06IB6-M2 | New commands must follow the Action/Console conventions and carry `declare(strict_types=1)` |
+| NFR-06IB6-M3 | All deployment behavior must be testable via the Pest suite (no manual-only steps) |
 
 ---
 
@@ -297,12 +297,14 @@ return [
         ],
     ],
 ];
+
 ```
 
 ### 6.2 Environment Variable
 
 ```
 DEPLOY_PROFILE=auto|shared-hosting|vps-docker   # default: auto
+
 ```
 
 ### 6.3 CLI Contracts
@@ -327,6 +329,7 @@ class DeployConfigureCommand extends Command
     public function handle(): int;
     // Applies driver preset to .env; exits FAILURE on unknown profile
 }
+
 ```
 
 ### 6.4 Detection Probes
@@ -346,7 +349,7 @@ class DeployConfigureCommand extends Command
 | `web` | Custom (.docker/nginx.Dockerfile) | Reverse proxy → `app` |
 | `db` | mysql:8 | Database |
 
-Redis is optional (FR-VD7): no service by default; add a `redis:7-alpine` service and switch
+Redis is optional (FR-06IB6-VD7): no service by default; add a `redis:7-alpine` service and switch
 `QUEUE_CONNECTION`/`CACHE_STORE`/`SESSION_DRIVER` when throughput demands it.
 
 ### 6.6 Scheduler Webhook (existing)
@@ -356,6 +359,7 @@ Redis is optional (FR-VD7): no service by default; add a `redis:7-alpine` servic
 Route::get('/cron/{secret}', CronController::class)
     ->name('cron')
     ->middleware('throttle:...');
+
 ```
 
 ---
@@ -372,15 +376,15 @@ in prose. Centralizing them removes the risk of docs↔config drift (Clean Code 
 makes `deploy:configure` data-driven.
 
 **Trade-off:** A new config file must be kept in sync with `.env.example` defaults. Mitigated by
-FR-V4 and a single doc reference table.
+FR-06IB6-V4 and a single doc reference table.
 
 ### DD-2 — Auto-Detection with Explicit Override
 
 **Decision:** Detection recommends a profile, but an explicit `DEPLOY_PROFILE` always wins.
 
-**Rationale:** Auto-detection lowers the skill bar for school IT staff (UC-3); explicit override
+**Rationale:** Auto-detection lowers the skill bar for school IT staff (UC-06IB6-3); explicit override
 preserves operator control for ambiguous environments such as a low-cost VPS that happens to expose
-Redis (UC-4). Detection-only would force a config choice; override-only would lose the guidance.
+Redis (UC-06IB6-4). Detection-only would force a config choice; override-only would lose the guidance.
 
 **Trade-off:** Two code paths to maintain. Mitigated by a small, deterministic probe set (6.4).
 
@@ -393,7 +397,7 @@ it never assumes a daemon, Redis, or runtime Composer. A `vps-docker` default co
 services that are absent on a bare environment.
 
 **Trade-off:** A VPS deployer who skips detection gets sync queue (functional, lower throughput).
-Documented in UC-2/FR-P7.
+Documented in UC-06IB6-2/FR-06IB6-P7.
 
 ### DD-4 — Reuse Existing Docker Topology
 
@@ -403,7 +407,7 @@ compose stack is the single source of truth for services.
 **Rationale:** Redefining the topology in the spec would create a second source of truth and let the
 two drift (Clean Code / dedup doctrine).
 
-**Trade-off:** The compose file must stay in sync with FR-VD1–FR-VD12; enforced by the arch-guard
+**Trade-off:** The compose file must stay in sync with FR-06IB6-VD1–FR-06IB6-VD12; enforced by the arch-guard
 scanners, `docker compose config` validation, and the spec↔code audit (`spec-audit`).
 
 ### DD-5 — Configure Applies Drivers Only, Never Secrets
@@ -415,7 +419,7 @@ writes or rewrites secrets (`DB_PASSWORD`, `APP_KEY`, `MAIL_PASSWORD`).
 them would encourage committing them or complicate rotation.
 
 **Trade-off:** Operators must supply secrets themselves. Mitigated by fail-fast env validation in the
-compose file (FR-VD12) and `.env.example` documentation.
+compose file (FR-06IB6-VD12) and `.env.example` documentation.
 
 ### DD-6 — Minimal Docker Topology Without Redis
 
@@ -430,7 +434,7 @@ jobs inline during the HTTP request — entirely sufficient for certificate/PDF 
 notifications at this scale — and removes a whole class of operational burden (Redis availability,
 memory, backup). Consolidating scheduler/queue into the app container keeps the stack to three
 services and a single restart policy. The image still bundles `phpredis` so a Redis service can be
-added later without rebuilding the app (FR-VD7, FR-VD9).
+added later without rebuilding the app (FR-06IB6-VD7, FR-06IB6-VD9).
 
 **Trade-off:** Heavy or long-running document jobs block the request under the sync driver; the
 `documents` queue pipeline exists specifically to isolate such work once a Redis-backed worker is
@@ -462,10 +466,10 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|------------------|
-| [system-requirements.md](J68GZ-system-requirements.md) (J68GZ) | PHP/extensions contract (FR-SY1–FR-SY3), database portability (FR-DB2–FR-DB4) the presets rely on |
+| [system-requirements.md](J68GZ-system-requirements.md) (J68GZ) | PHP/extensions contract (FR-06IB6-SY1–FR-06IB6-SY3), database portability (FR-06IB6-DB2–FR-06IB6-DB4) the presets rely on |
 | [installation.md](8NZAU-installation.md) (8NZAU) | `setup:install` provisioning, environment audit, and `.env` handling used in both deployment paths |
 | [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) (8FVZA) | Queue driver contract (sync/redis) and worker lifecycle consumed by `vps-docker` |
-| [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ) | `system:health` command used as the deployment acceptance gate (FR-V1) |
+| [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ) | `system:health` command used as the deployment acceptance gate (FR-06IB6-V1) |
 
 ### Build Guide
 

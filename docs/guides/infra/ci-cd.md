@@ -9,6 +9,19 @@ including automatic rollback and release notes generation.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Pipeline Overview
 
 The whole pipeline is triggered by pushing a SemVer tag (`v*.*.*`) to GitHub. The stage is derived
@@ -23,6 +36,7 @@ flowchart LR
     D -->|vX.Y.Z| PROD[validate + all QA gates]
     PROD -->|pass| DEP[Deploy VPS]
     DEP -->|fail| ROLL[Auto-rollback]
+
 ```
 
 ### Stage mapping
@@ -64,6 +78,7 @@ ssh $VPS_USER@$VPS_HOST 'cd $HOME/apps/internara \
   && git checkout hotfix \
   && git reset --hard origin/hotfix \
   && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
+
 ```
 
 Because `deploy.sh` builds from `GIT_URL=...#hotfix` and gates on the 60s `HEALTH_URL` check, a
@@ -142,6 +157,7 @@ python3 tools/scan_violations.py --strict   # C1-C8 / D1-D6 invariants
 python3 tools/scan_security.py --strict     # security anti-patterns
 python3 tools/scan_conventions.py --strict  # conventions
 npm run build                               # Vite production build
+
 ```
 
 ---
@@ -156,11 +172,13 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
    `docs/project-vision.md`, `docs/guides/upgrading.md`).
 2. Update `CHANGELOG.md` with the new version section.
 3. Push the final tag (or pre-release tags to run QA tiers first):
+
    ```bash
    git tag vX.Y.Z && git push origin vX.Y.Z
    # optional staged rollout:
    git tag vX.Y.Z-rc.1 && git push origin vX.Y.Z-rc.1
    ```
+
 4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS (`$HOME/apps/internara`).
 5. Release notes are automatically generated and uploaded as artifacts.
 

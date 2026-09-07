@@ -82,7 +82,7 @@ communicated to the student or used for certificate generation.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Report (Grade Card)
+### UC-R6BMW-1 — Admin Creates a Report (Grade Card)
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` role; a Registration exists for a student
@@ -94,7 +94,7 @@ communicated to the student or used for certificate generation.
 5. Report persisted with `registration_id` linked to the Registration
 **Postconditions:** DRAFT Report exists, ready for grade calculation
 
-### UC-2 — Admin Calculates Final Grades
+### UC-R6BMW-2 — Admin Calculates Final Grades
 
 **Actor:** Admin
 **Preconditions:** Report exists in DRAFT status; linked Registration has an Internship with `grading_weights` configured; student has Assessment and/or Submission records
@@ -110,7 +110,7 @@ communicated to the student or used for certificate generation.
 9. Action returns updated Report with populated score fields
 **Postconditions:** Report has `final_score` and `grade_letter` populated; `GradeCalculated` event dispatched
 
-### UC-3 — Admin Finalizes Report
+### UC-R6BMW-3 — Admin Finalizes Report
 
 **Actor:** Admin
 **Preconditions:** Report exists in DRAFT status with `final_score` and `grade_letter` populated
@@ -125,7 +125,7 @@ communicated to the student or used for certificate generation.
 8. Report saved quietly (without triggering observer again)
 **Postconditions:** Report is FINALIZED, immutable; `archived_data` populated with identity snapshot; `ReportFinalized` event dispatched
 
-### UC-4 — Admin Downloads Report
+### UC-R6BMW-4 — Admin Downloads Report
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` role; finalized Report exists with generated PDF
@@ -146,46 +146,46 @@ communicated to the student or used for certificate generation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-CR1 | System must allow admins to create a Report linked to a Registration via `CreateReportAction` |
-| FR-CR2 | System must enforce 1:1 uniqueness between Report and Registration (unique constraint on `registration_id`) |
-| FR-CR3 | Newly created Reports must default to `status = DRAFT` with all score fields `null` |
-| FR-CR4 | `CreateReportData` DTO must accept exactly one field: `registrationId` (string) |
+| FR-R6BMW-CR1 | System must allow admins to create a Report linked to a Registration via `CreateReportAction` |
+| FR-R6BMW-CR2 | System must enforce 1:1 uniqueness between Report and Registration (unique constraint on `registration_id`) |
+| FR-R6BMW-CR3 | Newly created Reports must default to `status = DRAFT` with all score fields `null` |
+| FR-R6BMW-CR4 | `CreateReportData` DTO must accept exactly one field: `registrationId` (string) |
 
 ### Grade Calculation
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-GC1 | System must read `grading_weights` from `$registration->internship->grading_weights` with defaults: supervisor=40, teacher=20, assignment=20, exam=20 |
-| FR-GC2 | System must query Assessment model for `supervisor_score`, `teacher_score`, and `exam_score` |
-| FR-GC3 | System must query Submission model for assignment average score |
-| FR-GC4 | System must compute weighted composite: `(supervisor_score × supervisor_weight) + (teacher_score × teacher_weight) + (assignment_avg × assignment_weight) + (exam_score × exam_weight)` normalized to 0–100 |
-| FR-GC5 | System must assign grade letter: A ≥ 90, B ≥ 80, C ≥ 70, D ≥ 60, E < 60 |
-| FR-GC6 | System must dispatch `GradeCalculated` event carrying the updated Report |
+| FR-R6BMW-GC1 | System must read `grading_weights` from `$registration->internship->grading_weights` with defaults: supervisor=40, teacher=20, assignment=20, exam=20 |
+| FR-R6BMW-GC2 | System must query Assessment model for `supervisor_score`, `teacher_score`, and `exam_score` |
+| FR-R6BMW-GC3 | System must query Submission model for assignment average score |
+| FR-R6BMW-GC4 | System must compute weighted composite: `(supervisor_score × supervisor_weight) + (teacher_score × teacher_weight) + (assignment_avg × assignment_weight) + (exam_score × exam_weight)` normalized to 0–100 |
+| FR-R6BMW-GC5 | System must assign grade letter: A ≥ 90, B ≥ 80, C ≥ 70, D ≥ 60, E < 60 |
+| FR-R6BMW-GC6 | System must dispatch `GradeCalculated` event carrying the updated Report |
 
 ### Finalization
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-FI1 | System must transition Report `status` from DRAFT to FINALIZED via `FinalizeReportAction` |
-| FR-FI2 | System must record `finalized_by` (User ID) and `finalized_at` (timestamp) on finalization |
-| FR-FI3 | System must dispatch `ReportFinalized` event carrying the finalized Report |
-| FR-FI4 | System must enforce immutability: no score or status modifications allowed after FINALIZED |
-| FR-FI5 | System must require `final_score` and `grade_letter` to be non-null before allowing finalization |
+| FR-R6BMW-FI1 | System must transition Report `status` from DRAFT to FINALIZED via `FinalizeReportAction` |
+| FR-R6BMW-FI2 | System must record `finalized_by` (User ID) and `finalized_at` (timestamp) on finalization |
+| FR-R6BMW-FI3 | System must dispatch `ReportFinalized` event carrying the finalized Report |
+| FR-R6BMW-FI4 | System must enforce immutability: no score or status modifications allowed after FINALIZED |
+| FR-R6BMW-FI5 | System must require `final_score` and `grade_letter` to be non-null before allowing finalization |
 
 ### Archival
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-AR1 | System must capture `archived_data` snapshot on finalization containing: student name/NISN, internship dates, company name/address, department name, supervisor name, teacher name |
-| FR-AR2 | Snapshot must be captured via `ReportObserver::saved()` when status transitions to FINALIZED |
-| FR-AR3 | Snapshot save must use quiet update to avoid recursive observer invocation |
+| FR-R6BMW-AR1 | System must capture `archived_data` snapshot on finalization containing: student name/NISN, internship dates, company name/address, department name, supervisor name, teacher name |
+| FR-R6BMW-AR2 | Snapshot must be captured via `ReportObserver::saved()` when status transitions to FINALIZED |
+| FR-R6BMW-AR3 | Snapshot save must use quiet update to avoid recursive observer invocation |
 
 ### Download
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-DL1 | System must serve finalized Report PDFs via `ReportController@download` at `GET /admin/reports/{report}/download` |
-| FR-DL2 | Controller must resolve Document by cross-module reference, authorize user, try media URL then local file fallback |
+| FR-R6BMW-DL1 | System must serve finalized Report PDFs via `ReportController@download` at `GET /admin/reports/{report}/download` |
+| FR-R6BMW-DL2 | Controller must resolve Document by cross-module reference, authorize user, try media URL then local file fallback |
 
 ---
 
@@ -193,16 +193,16 @@ communicated to the student or used for certificate generation.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | Report creation and finalization endpoints must require authenticated admin role via middleware |
-| NFR-S2 | `archived_data` must be stored as encrypted JSON to protect PII (student NISN, names) |
-| NFR-P1 | Grade calculation (`CalculateFinalGradeAction`) must complete within 2 seconds for a single Report |
-| NFR-P2 | `reports` table must use UUID primary keys to prevent enumeration |
-| NFR-R1 | Grade calculation must be idempotent — recalculating the same Report produces identical results given identical source data |
-| NFR-R2 | Report finalization must be atomic — status transition, snapshot capture, and event dispatch must succeed or fail as a unit |
-| NFR-U1 | Admin must see clear DRAFT/FINALIZED status indicators on all Report views |
-| NFR-U2 | Download endpoint must return appropriate `Content-Type` and `Content-Disposition` headers for PDF files |
-| NFR-M1 | Report model must use `#[Fillable]` attribute for mass-assignment protection |
-| NFR-M2 | All Actions must extend BaseCommandAction and follow Action Triad conventions |
+| NFR-R6BMW-S1 | Report creation and finalization endpoints must require authenticated admin role via middleware |
+| NFR-R6BMW-S2 | `archived_data` must be stored as encrypted JSON to protect PII (student NISN, names) |
+| NFR-R6BMW-P1 | Grade calculation (`CalculateFinalGradeAction`) must complete within 2 seconds for a single Report |
+| NFR-R6BMW-P2 | `reports` table must use UUID primary keys to prevent enumeration |
+| NFR-R6BMW-R1 | Grade calculation must be idempotent — recalculating the same Report produces identical results given identical source data |
+| NFR-R6BMW-R2 | Report finalization must be atomic — status transition, snapshot capture, and event dispatch must succeed or fail as a unit |
+| NFR-R6BMW-U1 | Admin must see clear DRAFT/FINALIZED status indicators on all Report views |
+| NFR-R6BMW-U2 | Download endpoint must return appropriate `Content-Type` and `Content-Disposition` headers for PDF files |
+| NFR-R6BMW-M1 | Report model must use `#[Fillable]` attribute for mass-assignment protection |
+| NFR-R6BMW-M2 | All Actions must extend BaseCommandAction and follow Action Triad conventions |
 
 ---
 
@@ -248,6 +248,7 @@ final class Report extends Model
     // Methods
     public function captureSnapshot(): void { /* snapshots identity into archived_data */ }
 }
+
 ```
 
 ### ReportStatus Enum
@@ -272,6 +273,7 @@ enum ReportStatus: string
         };
     }
 }
+
 ```
 
 ### CreateReportData DTO
@@ -284,6 +286,7 @@ final readonly class CreateReportData extends BaseData
         public string $registrationId,
     ) {}
 }
+
 ```
 
 ### Action Signatures
@@ -306,6 +309,7 @@ class FinalizeReportAction extends BaseCommandAction
 {
     public function execute(Report $report, string $finalizedBy): Report { /* ... */ }
 }
+
 ```
 
 ### Events
@@ -324,6 +328,7 @@ class ReportFinalized extends BaseEvent
     public string $eventName = 'report.finalized';
     public function __construct(public Report $report) {}
 }
+
 ```
 
 ### Observer
@@ -340,6 +345,7 @@ class ReportObserver
         }
     }
 }
+
 ```
 
 ### Route
@@ -348,6 +354,7 @@ class ReportObserver
 Route::get('/admin/reports/{report}/download', [ReportController::class, 'download'])
     ->middleware(['auth', 'admin'])
     ->name('admin.reports.download');
+
 ```
 
 ### Database Schema — `reports`
@@ -381,6 +388,7 @@ $defaults = [
 ];
 
 // Read from: $report->registration->internship->grading_weights
+
 ```
 
 ---

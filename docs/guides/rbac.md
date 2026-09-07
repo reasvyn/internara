@@ -7,10 +7,16 @@ permission registration, and the super_admin bypass.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
 ## 1. Authentication Flow
 
 ```
 Request → Authenticate middleware → Session created → RBAC gate
+
 ```
 
 | Feature         | Implementation                                           |
@@ -67,6 +73,7 @@ admin       → admin-group
 teacher     → mentor
 supervisor  → mentor
 student     → mentee
+
 ```
 
 This allows policy code to check `$user->role->is(Role::ADMIN)` instead of writing
@@ -149,3 +156,14 @@ See [Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

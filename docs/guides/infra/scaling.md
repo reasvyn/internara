@@ -14,6 +14,19 @@ The philosophy is **start simple, scale by measured need** -- codified in
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## 1. Decision Framework: When to Scale
 
 Do NOT scale preemptively. Scale when you observe these symptoms:
@@ -90,6 +103,7 @@ QUEUE_CONNECTION=redis
 REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
 REDIS_PORT=6379
+
 ```
 
 7. Run `php artisan migrate --force`
@@ -124,6 +138,7 @@ numprocs=2
 redirect_stderr=true
 stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
+
 ```
 
 12. Configure system cron: `* * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1`
@@ -157,6 +172,7 @@ stopwaitsecs=3600
 ```env
 DB_READ_HOST=replica1.host,replica2.host
 DB_WRITE_HOST=primary.host
+
 ```
 
 3. Monitor replica lag (Pulse custom recorder)
@@ -169,6 +185,7 @@ DB_WRITE_HOST=primary.host
 ```env
 REDIS_CLUSTER=true
 REDIS_CLUSTER_NODES=node1:6379,node2:6379,node3:6379
+
 ```
 
 #### Phase C: Media Storage
@@ -183,6 +200,7 @@ AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=us-east-1
 AWS_BUCKET=internara-production
 AWS_URL=https://cdn.your-school.sch.id
+
 ```
 
 3. Migrate existing files to S3:
@@ -193,6 +211,7 @@ aws s3 sync storage/app/public s3://internara-production/ --storage-class STANDA
 
 # Run the migration command to update media library paths
 php artisan media:migrate-to-s3
+
 ```
 
 #### Phase D: App Server Scaling
@@ -220,6 +239,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+
 ```
 
 3. Configure Supervisor on each app server (4-8 workers per pipeline depending on RAM)
@@ -232,6 +252,7 @@ Update `RateLimiter::for()` calls to use user-based limits:
 RateLimiter::for('global', function (Request $request) {
     return Limit::perMinute(500)->by($request->user()?->id ?: $request->ip());
 });
+
 ```
 
 ---
@@ -256,6 +277,7 @@ CACHE_STORE=redis
 SESSION_DRIVER=redis
 QUEUE_CONNECTION=redis
 FILESYSTEM_DISK=local     # S3 backup via cron
+
 ```
 
 ### From Tier 2 (VPS) to Tier 3 (HA)
@@ -274,6 +296,7 @@ CACHE_STORE=redis          # cluster
 SESSION_DRIVER=redis       # cluster
 QUEUE_CONNECTION=redis     # cluster
 FILESYSTEM_DISK=s3
+
 ```
 
 ---
@@ -339,6 +362,7 @@ Examples:
   10 children x 50 MB + 256 MB OS = 756 MB   (Tier 1, Shared Hosting)
   25 children x 50 MB + 512 MB OS = 1.8 GB    (Tier 2, VPS)
   50 children x 50 MB + 1 GB OS = 3.5 GB      (Tier 3 per server)
+
 ```
 
 ### Connection Pool Size Estimate
@@ -350,6 +374,7 @@ Examples:
   500 registered users (~75 concurrent) x 1.5 + 25 = 138  -> pm.max_children = 10-15 (Tier 1)
   1000 registered users (~150 concurrent) x 1.5 + 50 = 275 -> pm.max_children = 25 (Tier 2)
   2000 registered users (~300 concurrent) x 1.5 + 50 = 500 -> pm.max_children = 50 per server (Tier 3)
+
 ```
 
 ---
@@ -433,6 +458,7 @@ k6 run --vus 10 --duration 30s path/to/BasicSmoke.js
 
 # For Tier 3 validation:
 k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
+
 ```
 
 ### Key Metrics to Track During Load Test

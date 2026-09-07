@@ -12,6 +12,11 @@ Internara provides three account recovery mechanisms, each designed for a differ
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
 ## 1. Password Reset (Self-Service)
 
 Standard Laravel password reset flow.
@@ -30,6 +35,7 @@ User clicks "Forgot Password" on login page
           → Password::reset() → Password updated
           → SmartLogger: password_reset_success
   → Redirect to login
+
 ```
 
 ### Rate Limiting
@@ -68,6 +74,7 @@ Admin → RecoverySlipManager (admin/recovery-slips)
   │       ├── No expiry (valid indefinitely until used)
   │       └── Logged: recovery_slips_generated
   └── Deliver codes offline (in person, phone, etc.)
+
 ```
 
 ### User Flow
@@ -83,6 +90,7 @@ User → /recover-account
       ├── Update password
       ├── Mark code used (last_attempt_at = now)
       └── Logged: recovery_slip_redeemed
+
 ```
 
 ### Database
@@ -152,6 +160,7 @@ php artisan admin:recovery-path
 
 # Display stored recovery key (requires confirmation):
 php artisan admin:recovery-show
+
 ```
 
 ### Flow
@@ -166,6 +175,7 @@ Server admin SSH into machine
     │   ├── Set new password
     │   └── Confirm: type email
     └── On success: SmartLogger: super_admin_recovered
+
 ```
 
 ### Security
@@ -190,6 +200,7 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
   ├── ResetPassword: 5/300s
   ├── ConfirmPassword: 5/300s
   └── AccountRecovery: 3/300s
+
 ```
 
 ---
@@ -211,3 +222,14 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

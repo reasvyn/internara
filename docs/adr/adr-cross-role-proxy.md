@@ -62,6 +62,7 @@ proxy is a runtime permission check, not a role expansion.
 Admin ── can proxy ──> Teacher ── can proxy ──> Supervisor
   │                           │
   └────── can proxy ──────────┘
+
 ```
 
 | Acting User | Can Proxy As | Scope |
@@ -89,6 +90,7 @@ class SupervisionLogPolicy extends BasePolicy
         return $registration->asMentorEntity()->canReviewSupervisionLog($user);
     }
 }
+
 ```
 
 **2. Audit Trail** — activity log stores proxy metadata in `properties` JSON (no new columns):
@@ -99,6 +101,7 @@ activity()
     ->performedOn($model)
     ->withProperties(['proxy_role' => 'supervisor', 'proxy_reason' => 'supervisor_inactive'])
     ->event('verified')->log('logbook_verified_via_proxy');
+
 ```
 
 **3. Policy Layer Integration** — every supervisor-scoped policy delegates:
@@ -108,6 +111,7 @@ public function verify(User $user, Logbook $entry): bool
 {
     return $entry->registration?->asMentorEntity()->canVerifyLogbook($user) ?? false;
 }
+
 ```
 
 **4. MentorEntity (Entity-Model Separation)** — business rules in `app/Modules/User/Mentor/Entities/MentorEntity.php`,
@@ -136,6 +140,7 @@ final readonly class MentorEntity extends BaseEntity
         return $this->canProxyAsSupervisor($user);
     }
 }
+
 ```
 
 **Testability** — MentorEntity unit-tests without DB:
@@ -147,6 +152,7 @@ test('teacher can proxy supervisor for assigned student', function () {
     $entity = new MentorEntity(registrationId: 'reg-1', mentors: $mentors);
     expect($entity->canProxyAsSupervisor($teacher))->toBeTrue();
 });
+
 ```
 
 **5. Livewire Layer** — `@can('verify', $logbook)` gates buttons; policy-driven visibility

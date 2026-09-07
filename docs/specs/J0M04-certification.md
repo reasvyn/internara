@@ -74,7 +74,7 @@ Without self-service access, every certificate request becomes a support ticket.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Certificate Template
+### UC-J0M04-1 — Admin Creates a Certificate Template
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` or `super_admin` role
@@ -85,7 +85,7 @@ Without self-service access, every certificate request becomes a support ticket.
 4. Calls `CreateCertificateTemplateAction::execute(data)`
 **Postconditions:** Template exists and is active
 
-### UC-2 — Admin Issues a Certificate
+### UC-J0M04-2 — Admin Issues a Certificate
 
 **Actor:** Admin
 **Preconditions:** Active template exists; student has completed registration
@@ -102,7 +102,7 @@ Without self-service access, every certificate request becomes a support ticket.
 5. Dispatches `CertificateIssued` event
 **Postconditions:** Certificate issued with PDF stored; student notified
 
-### UC-3 — Admin Batch Issues Certificates
+### UC-J0M04-3 — Admin Batch Issues Certificates
 
 **Actor:** Admin
 **Preconditions:** Active template exists; multiple students have completed registrations
@@ -113,7 +113,7 @@ Without self-service access, every certificate request becomes a support ticket.
 4. Returns array of issued certificates and error details
 **Postconditions:** Certificates issued for eligible registrations; errors reported for ineligible
 
-### UC-4 — Student Downloads Certificate
+### UC-J0M04-4 — Student Downloads Certificate
 
 **Actor:** Student
 **Preconditions:** Student has an issued certificate
@@ -134,64 +134,64 @@ Without self-service access, every certificate request becomes a support ticket.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-TM1 | `CertificateTemplateManager` must be accessible at route `admin/certificates/templates` with `auth` and `role:super_admin\|admin` middleware |
-| FR-TM2 | `CertificateTemplate` model must use `#[Fillable]` with `name`, `layout`, `content_template`, `is_active`, `created_by` |
-| FR-TM3 | `layout` must support: `portrait` (default), `landscape` |
-| FR-TM4 | `content_template` must contain HTML with `{placeholder}` syntax for dynamic values |
-| FR-TM5 | `CertificateTemplatePolicy` must restrict all operations to admin roles |
-| FR-TM6 | Templates must support `is_active` flag — only active templates available for issuance |
+| FR-J0M04-TM1 | `CertificateTemplateManager` must be accessible at route `admin/certificates/templates` with `auth` and `role:super_admin\|admin` middleware |
+| FR-J0M04-TM2 | `CertificateTemplate` model must use `#[Fillable]` with `name`, `layout`, `content_template`, `is_active`, `created_by` |
+| FR-J0M04-TM3 | `layout` must support: `portrait` (default), `landscape` |
+| FR-J0M04-TM4 | `content_template` must contain HTML with `{placeholder}` syntax for dynamic values |
+| FR-J0M04-TM5 | `CertificateTemplatePolicy` must restrict all operations to admin roles |
+| FR-J0M04-TM6 | Templates must support `is_active` flag — only active templates available for issuance |
 
 ### Certificate Issuance
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CI1 | `IssueCertificateAction` must accept `Registration` and `CertificateTemplate`, return `Certificate` |
-| FR-CI2 | `certificate_number` must be globally unique (generated with random component) |
-| FR-CI3 | `qr_hash` must be globally unique (random string for verification) |
-| FR-CI4 | Default status must be `ISSUED` |
-| FR-CI5 | `template_content` must snapshot the template's `content_template` at issuance time |
-| FR-CI6 | `issued_by` must record the admin who issued the certificate |
-| FR-CI7 | `issued_at` must be set to issuance timestamp |
+| FR-J0M04-CI1 | `IssueCertificateAction` must accept `Registration` and `CertificateTemplate`, return `Certificate` |
+| FR-J0M04-CI2 | `certificate_number` must be globally unique (generated with random component) |
+| FR-J0M04-CI3 | `qr_hash` must be globally unique (random string for verification) |
+| FR-J0M04-CI4 | Default status must be `ISSUED` |
+| FR-J0M04-CI5 | `template_content` must snapshot the template's `content_template` at issuance time |
+| FR-J0M04-CI6 | `issued_by` must record the admin who issued the certificate |
+| FR-J0M04-CI7 | `issued_at` must be set to issuance timestamp |
 
 ### Batch Processing
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-BP1 | `BatchIssueCertificateAction` must extend `BaseProcessAction` |
-| FR-BP2 | `execute(array $registrationIds, CertificateTemplate)` must iterate and attempt issuance per registration |
-| FR-BP3 | Errors must be collected per registration — batch must not fail entirely on one error |
-| FR-BP4 | `executeFiltered(Builder $query, CertificateTemplate)` must accept a query builder for filtered batch issuance |
-| FR-BP5 | Batch results must return array of issued certificates and error details |
+| FR-J0M04-BP1 | `BatchIssueCertificateAction` must extend `BaseProcessAction` |
+| FR-J0M04-BP2 | `execute(array $registrationIds, CertificateTemplate)` must iterate and attempt issuance per registration |
+| FR-J0M04-BP3 | Errors must be collected per registration — batch must not fail entirely on one error |
+| FR-J0M04-BP4 | `executeFiltered(Builder $query, CertificateTemplate)` must accept a query builder for filtered batch issuance |
+| FR-J0M04-BP5 | Batch results must return array of issued certificates and error details |
 
 ### PDF Rendering
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-PR1 | `CertificateRenderer` must resolve 17 placeholders: `{student_name}`, `{school_name}`, `{company_name}`, `{score}`, `{score_letter}`, `{certificate_number}`, `{issue_date}`, `{start_date}`, `{end_date}`, `{internship_name}`, `{department_name}`, `{supervisor_name}`, `{teacher_name}`, `{student_number}`, `{student_email}`, `{student_phone}`, `{school_address}` |
-| FR-PR2 | `renderHtml(Registration, Certificate)` must return HTML string |
-| FR-PR3 | `renderPdf(Registration, Certificate)` must return PDF string via DomPDF |
-| FR-PR4 | `storePdf(Registration, Certificate)` must store to `local` disk at `certificates/` directory |
-| FR-PR5 | `getDiskPath(string)` must return full filesystem path for a certificate file |
+| FR-J0M04-PR1 | `CertificateRenderer` must resolve 17 placeholders: `{student_name}`, `{school_name}`, `{company_name}`, `{score}`, `{score_letter}`, `{certificate_number}`, `{issue_date}`, `{start_date}`, `{end_date}`, `{internship_name}`, `{department_name}`, `{supervisor_name}`, `{teacher_name}`, `{student_number}`, `{student_email}`, `{student_phone}`, `{school_address}` |
+| FR-J0M04-PR2 | `renderHtml(Registration, Certificate)` must return HTML string |
+| FR-J0M04-PR3 | `renderPdf(Registration, Certificate)` must return PDF string via DomPDF |
+| FR-J0M04-PR4 | `storePdf(Registration, Certificate)` must store to `local` disk at `certificates/` directory |
+| FR-J0M04-PR5 | `getDiskPath(string)` must return full filesystem path for a certificate file |
 
 ### Revocation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RV1 | `RevokeCertificateAction` must transition status from ISSUED to REVOKED |
-| FR-RV2 | `CertificateStatus::isTerminal()` must return true for REVOKED |
-| FR-RV3 | `CertificatePolicy::revoke()` must require admin role |
-| FR-RV4 | Revoked certificates must remain in the system (not deleted) |
+| FR-J0M04-RV1 | `RevokeCertificateAction` must transition status from ISSUED to REVOKED |
+| FR-J0M04-RV2 | `CertificateStatus::isTerminal()` must return true for REVOKED |
+| FR-J0M04-RV3 | `CertificatePolicy::revoke()` must require admin role |
+| FR-J0M04-RV4 | Revoked certificates must remain in the system (not deleted) |
 
 ### Download & Verification
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DV1 | `CertificateDownloadController` must check student ownership or admin role |
-| FR-DV2 | If PDF not pre-rendered, controller must lazy-generate via `CertificateRenderer::storePdf()` |
-| FR-DV3 | `CertificateList` must display certificate number, status, issue date, and student info |
-| FR-DV4 | `StudentCertificates` must show only the current student's certificates |
-| FR-DV5 | `CertificatePolicy::viewAny` must allow super_admin, admin, and student roles |
-| FR-DV6 | `CertificatePolicy::view` must allow admin or the certificate's student |
+| FR-J0M04-DV1 | `CertificateDownloadController` must check student ownership or admin role |
+| FR-J0M04-DV2 | If PDF not pre-rendered, controller must lazy-generate via `CertificateRenderer::storePdf()` |
+| FR-J0M04-DV3 | `CertificateList` must display certificate number, status, issue date, and student info |
+| FR-J0M04-DV4 | `StudentCertificates` must show only the current student's certificates |
+| FR-J0M04-DV5 | `CertificatePolicy::viewAny` must allow super_admin, admin, and student roles |
+| FR-J0M04-DV6 | `CertificatePolicy::view` must allow admin or the certificate's student |
 
 ---
 
@@ -199,21 +199,21 @@ Without self-service access, every certificate request becomes a support ticket.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | Certificate number uniqueness must be enforced at database level |
-| NFR-S2 | QR hash uniqueness must be enforced at database level |
-| NFR-S3 | Revoked certificates must not be re-issued (same registration + template → new certificate) |
-| NFR-S4 | PDF storage must use local disk (not public URL) to prevent unauthorized access |
-| NFR-P1 | Single certificate issuance must complete in < 5s (PDF rendering + storage) |
-| NFR-P2 | Batch issuance of 50 certificates must complete in < 60s |
-| NFR-P3 | Certificate list page must load in < 500ms |
-| NFR-P4 | PDF lazy-generation must complete in < 5s on first download |
-| NFR-R1 | Certificate issuance must be wrapped in a database transaction |
-| NFR-R2 | Batch issuance must collect errors per-registration without failing the entire batch |
-| NFR-U1 | Certificate number and QR hash must be displayed in admin certificate list |
-| NFR-U2 | Student certificate view must show status (ISSUED/REVOKED) with visual indicator |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-J0M04-S1 | Certificate number uniqueness must be enforced at database level |
+| NFR-J0M04-S2 | QR hash uniqueness must be enforced at database level |
+| NFR-J0M04-S3 | Revoked certificates must not be re-issued (same registration + template → new certificate) |
+| NFR-J0M04-S4 | PDF storage must use local disk (not public URL) to prevent unauthorized access |
+| NFR-J0M04-P1 | Single certificate issuance must complete in < 5s (PDF rendering + storage) |
+| NFR-J0M04-P2 | Batch issuance of 50 certificates must complete in < 60s |
+| NFR-J0M04-P3 | Certificate list page must load in < 500ms |
+| NFR-J0M04-P4 | PDF lazy-generation must complete in < 5s on first download |
+| NFR-J0M04-R1 | Certificate issuance must be wrapped in a database transaction |
+| NFR-J0M04-R2 | Batch issuance must collect errors per-registration without failing the entire batch |
+| NFR-J0M04-U1 | Certificate number and QR hash must be displayed in admin certificate list |
+| NFR-J0M04-U2 | Student certificate view must show status (ISSUED/REVOKED) with visual indicator |
+| NFR-J0M04-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-J0M04-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-J0M04-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -243,6 +243,7 @@ App\Certification\Certificate\Models\Certificate
   Default: status = CertificateStatus::ISSUED
   Relations: registration() BelongsTo Registration, issuer() BelongsTo User
   Factory: CertificateFactory
+
 ```
 
 ### CertificateTemplate Model
@@ -254,6 +255,7 @@ App\Certification\Certificate\Models\CertificateTemplate
   Casts: is_active → boolean
   Relations: createdBy() BelongsTo User
   Factory: CertificateTemplateFactory
+
 ```
 
 ### CertificateStatus Enum
@@ -265,6 +267,7 @@ App\Certification\Certificate\Enums\CertificateStatus: string
   Methods: label(): string, isTerminal(): bool (true for REVOKED),
            validTransitions(): array, canTransitionTo(StatusEnum): bool
   Transitions: ISSUED→[REVOKED], REVOKED→[]
+
 ```
 
 ### CertificateRenderer Service
@@ -278,6 +281,7 @@ App\Certification\Certificate\Services\CertificateRenderer (final readonly)
     storePdf(Registration, Certificate): string — returns stored file path
     pdfPath(Certificate): string — deterministic disk path for the certificate PDF
     getDiskPath(string): string — full filesystem path
+
 ```
 
 ### Actions
@@ -336,6 +340,7 @@ certificate_templates:
   created_by: foreignUuid → users.id (nullOnDelete, nullable)
   timestamps
   Indexes: created_at
+
 ```
 
 ---

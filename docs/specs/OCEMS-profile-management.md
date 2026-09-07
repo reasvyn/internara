@@ -67,7 +67,7 @@ setting a new one.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — User Edits Profile
+### UC-OCEMS-1 — User Edits Profile
 
 **Actor:** Any authenticated user
 **Preconditions:** User is logged in; navigates to `/profile`
@@ -82,7 +82,7 @@ setting a new one.
 8. If email/username changed: dispatches `ProfileUpdated` event → `SendProfileChangedMail` listener sends notification
 **Postconditions:** Profile updated; credential change notification sent if applicable
 
-### UC-2 — User Uploads/Removes Avatar
+### UC-OCEMS-2 — User Uploads/Removes Avatar
 
 **Actor:** Any authenticated user
 **Preconditions:** User is on profile page
@@ -93,7 +93,7 @@ setting a new one.
 4. User can click "Remove Avatar" to clear the `avatar` media collection
 **Postconditions:** Avatar stored in media library; old avatar replaced or removed
 
-### UC-3 — User Changes Password
+### UC-OCEMS-3 — User Changes Password
 
 **Actor:** Any authenticated user
 **Preconditions:** User is on profile page
@@ -104,7 +104,7 @@ setting a new one.
 4. On success: password updated, `CredentialChangedNotification` sent
 **Postconditions:** Password changed; notification dispatched
 
-### UC-4 — User Views Recovery Codes
+### UC-OCEMS-4 — User Views Recovery Codes
 
 **Actor:** Any authenticated user
 **Preconditions:** User is on profile page
@@ -119,26 +119,26 @@ setting a new one.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-UP1  | `UpdateProfileAction` must validate all profile fields with explicit rules |
-| FR-UP2  | Action must update `users` table fields (name, email, username) in a transaction |
-| FR-UP3  | Action must `updateOrCreate` on `profiles` table for profile-specific data |
-| FR-UP4  | Action must upload avatar to Spatie MediaLibrary `avatar` collection (if provided) |
-| FR-UP5  | Action must enforce super admin integrity: reject name/username changes for super admin via `RejectedException` |
-| FR-UP6  | Action must dispatch `ProfileUpdated` event with profile, previous email, previous username |
-| FR-UP7  | Action must log profile update via SmartLogger |
-| FR-RP1  | `ReadProfileFormAction` must return `fields` array (always: name, email, phone, address, bio) |
-| FR-RP2  | Action must return `staffFields` (employment_status, job_title, id_number, competence_field) only for super_admin, admin, teacher roles |
-| FR-RP3  | Action must return `canChangeName` / `canChangeUsername` (both `false` for super admin) |
-| FR-PE1  | `ProfileEditor` Livewire must load user with `profile` and `roles` relations on mount |
-| FR-PE2  | Component must delegate form population to `ReadProfileFormAction` |
-| FR-PE3  | Component must authorize via `UserPolicy` (admin or owner) — `ProfilePolicy` is alternative for direct `Profile` instance, but `UserPolicy` is used when `profile` may be `null` (`updateOrCreate` path) |
-| FR-PE4  | Component must handle avatar upload with validation (mimes `jpeg,jpg,png,webp`, image, max 2MB, `sr-only` label trigger, `handleSave` + `toast`, clear `$avatar`, `wire:loading`) |
-| FR-PE5  | Component must support avatar removal (clear `avatar` media collection) |
-| FR-PE6  | Component must provide `avatarPreviewUrl()` for Livewire file upload preview |
-| FR-PE7  | Component must show role-aware ID number label (NISN for students, NIP for teachers) |
-| FR-PW1  | `UpdateUserPasswordAction` must verify current password via `Hash::check()` |
-| FR-PW2  | Action must throttle: max 5 attempts per 300 seconds per user+IP |
-| FR-PW3  | On success: update password and dispatch `CredentialChangedNotification` |
+| FR-OCEMS-UP1  | `UpdateProfileAction` must validate all profile fields with explicit rules |
+| FR-OCEMS-UP2  | Action must update `users` table fields (name, email, username) in a transaction |
+| FR-OCEMS-UP3  | Action must `updateOrCreate` on `profiles` table for profile-specific data |
+| FR-OCEMS-UP4  | Action must upload avatar to Spatie MediaLibrary `avatar` collection (if provided) |
+| FR-OCEMS-UP5  | Action must enforce super admin integrity: reject name/username changes for super admin via `RejectedException` |
+| FR-OCEMS-UP6  | Action must dispatch `ProfileUpdated` event with profile, previous email, previous username |
+| FR-OCEMS-UP7  | Action must log profile update via SmartLogger |
+| FR-OCEMS-RP1  | `ReadProfileFormAction` must return `fields` array (always: name, email, phone, address, bio) |
+| FR-OCEMS-RP2  | Action must return `staffFields` (employment_status, job_title, id_number, competence_field) only for super_admin, admin, teacher roles |
+| FR-OCEMS-RP3  | Action must return `canChangeName` / `canChangeUsername` (both `false` for super admin) |
+| FR-OCEMS-PE1  | `ProfileEditor` Livewire must load user with `profile` and `roles` relations on mount |
+| FR-OCEMS-PE2  | Component must delegate form population to `ReadProfileFormAction` |
+| FR-OCEMS-PE3  | Component must authorize via `UserPolicy` (admin or owner) — `ProfilePolicy` is alternative for direct `Profile` instance, but `UserPolicy` is used when `profile` may be `null` (`updateOrCreate` path) |
+| FR-OCEMS-PE4  | Component must handle avatar upload with validation (mimes `jpeg,jpg,png,webp`, image, max 2MB, `sr-only` label trigger, `handleSave` + `toast`, clear `$avatar`, `wire:loading`) |
+| FR-OCEMS-PE5  | Component must support avatar removal (clear `avatar` media collection) |
+| FR-OCEMS-PE6  | Component must provide `avatarPreviewUrl()` for Livewire file upload preview |
+| FR-OCEMS-PE7  | Component must show role-aware ID number label (NISN for students, NIP for teachers) |
+| FR-OCEMS-PW1  | `UpdateUserPasswordAction` must verify current password via `Hash::check()` |
+| FR-OCEMS-PW2  | Action must throttle: max 5 attempts per 300 seconds per user+IP |
+| FR-OCEMS-PW3  | On success: update password and dispatch `CredentialChangedNotification` |
 
 ---
 
@@ -146,10 +146,10 @@ setting a new one.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-L1  | Profile changes must be logged via SmartLogger with PII masking |
-| NFR-E1  | `ProfileUpdated` event must carry previous email/username for change detection |
-| NFR-S1  | Super admin name/username changes must be rejected at both UI and business logic layers |
-| NFR-M1  | All actions must declare `strict_types=1` |
+| NFR-OCEMS-L1  | Profile changes must be logged via SmartLogger with PII masking |
+| NFR-OCEMS-E1  | `ProfileUpdated` event must carry previous email/username for change detection |
+| NFR-OCEMS-S1  | Super admin name/username changes must be rejected at both UI and business logic layers |
+| NFR-OCEMS-M1  | All actions must declare `strict_types=1` |
 
 ---
 
@@ -204,6 +204,7 @@ final class ReadProfileFormAction extends BaseReadAction
     public function execute(User $user): array;
     // Returns: fields, staffFields, canChangeName, canChangeUsername, role
 }
+
 ```
 
 ### Livewire Component
@@ -226,6 +227,7 @@ class ProfileEditor extends BaseFormView
     public function getIdNumberLabel(): string;
 }
 // Blade: <label for="avatar-upload"><input class="sr-only" wire:model="avatar"> (not hidden @click) + wire:loading + x-ts-error
+
 ```
 
 ### Models
@@ -244,6 +246,7 @@ class Profile extends BaseModel
 // User model additions:
 // profile(): HasOne
 // asSuperAdminIntegrityRules(): SuperAdminIntegrityRules
+
 ```
 
 ### Events & Listeners
@@ -265,6 +268,7 @@ class SendProfileChangedMail implements ShouldQueue
 {
     // Sends CredentialChangedNotification when email or username changes
 }
+
 ```
 
 ### Policy
@@ -284,6 +288,7 @@ class UserPolicy extends BasePolicy
     // update: self (user.id == model.id) OR admin; super_admin target only self can update (see T4B26)
     // ProfileEditor uses UserPolicy via $this->authorize('update', $this->user) for updateOrCreate path
 }
+
 ```
 
 ### Route

@@ -72,7 +72,7 @@ registrations would orphan these records and break foreign key relationships.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates and Publishes an Internship
+### UC-7C5WM-1 — Admin Creates and Publishes an Internship
 
 **Actor:** Admin
 **Preconditions:** At least one academic year exists; admin has internship permission
@@ -85,7 +85,7 @@ registrations would orphan these records and break foreign key relationships.
 6. Admin clicks "Publish" → validates DRAFT → PUBLISHED transition
 **Postconditions:** Internship created as DRAFT, published successfully
 
-### UC-2 — Student Registers During Open Window
+### UC-7C5WM-2 — Student Registers During Open Window
 
 **Actor:** Student (via Enrollment module, validated by Program)
 **Preconditions:** Internship is PUBLISHED or ACTIVE; registration window dates set; current date within window
@@ -96,7 +96,7 @@ registrations would orphan these records and break foreign key relationships.
 4. If all checks pass, registration proceeds; if any fail, validation rejects
 **Postconditions:** Registration accepted or rejected based on compound status+date check
 
-### UC-3 — Admin Runs Pre-Close Readiness Check
+### UC-7C5WM-3 — Admin Runs Pre-Close Readiness Check
 
 **Actor:** Admin
 **Preconditions:** Internship has active registrations
@@ -107,7 +107,7 @@ registrations would orphan these records and break foreign key relationships.
 4. If all five domains pass, admin can proceed with batch close
 **Postconditions:** Readiness report displayed; admin informed of blockers
 
-### UC-4 — Admin Batch Closes Internships
+### UC-7C5WM-4 — Admin Batch Closes Internships
 
 **Actor:** Admin
 **Preconditions:** Multiple internships are ACTIVE
@@ -126,76 +126,76 @@ registrations would orphan these records and break foreign key relationships.
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-IC1 | `Internship` model must use `#[Fillable]` with: academic_year_id, name, start_date, end_date, description, status, phases, required_document_ids, grading_weights |
-| FR-IC2 | `Internship` must cast status to `InternshipStatus` enum, dates to date, JSON columns to json |
-| FR-IC3 | `Internship` must have `belongsTo` AcademicYear (FK nullable, set null), `hasMany` Placements, `hasMany` Registrations |
-| FR-IC4 | `Internship` must provide `asInternshipPeriod()` and `asInternshipState()` bridge methods |
-| FR-IC5 | `InternshipData` DTO must require: name, academicYearId, startDate, endDate; accept optional: description, status, registrationStartDate, registrationEndDate |
-| FR-IC6 | `CreateInternshipAction` must auto-fill active academic year and create with DRAFT status |
-| FR-IC7 | `UpdateInternshipAction` must validate status transition via `InternshipStatus::canTransitionTo()` |
-| FR-IC8 | `UpdateInternshipAction` must reject illegal transitions with `RejectedException` |
-| FR-IC9 | `DeleteInternshipAction` must check `InternshipState::canBeDeleted()` — blocks when placementCount > 0 or registrationCount > 0 |
-| FR-IC10 | `InternshipManager` must display: name, academic year, date range, status, action buttons |
-| FR-IC11 | `InternshipManager` must support search by name and filter by: status, academic_year_id, date_from, date_to |
-| FR-IC12 | `InternshipPolicy` must grant view/viewAny to all 5 roles; create/update/delete to admin only; delete must check placements and registrations |
+| FR-7C5WM-IC1 | `Internship` model must use `#[Fillable]` with: academic_year_id, name, start_date, end_date, description, status, phases, required_document_ids, grading_weights |
+| FR-7C5WM-IC2 | `Internship` must cast status to `InternshipStatus` enum, dates to date, JSON columns to json |
+| FR-7C5WM-IC3 | `Internship` must have `belongsTo` AcademicYear (FK nullable, set null), `hasMany` Placements, `hasMany` Registrations |
+| FR-7C5WM-IC4 | `Internship` must provide `asInternshipPeriod()` and `asInternshipState()` bridge methods |
+| FR-7C5WM-IC5 | `InternshipData` DTO must require: name, academicYearId, startDate, endDate; accept optional: description, status, registrationStartDate, registrationEndDate |
+| FR-7C5WM-IC6 | `CreateInternshipAction` must auto-fill active academic year and create with DRAFT status |
+| FR-7C5WM-IC7 | `UpdateInternshipAction` must validate status transition via `InternshipStatus::canTransitionTo()` |
+| FR-7C5WM-IC8 | `UpdateInternshipAction` must reject illegal transitions with `RejectedException` |
+| FR-7C5WM-IC9 | `DeleteInternshipAction` must check `InternshipState::canBeDeleted()` — blocks when placementCount > 0 or registrationCount > 0 |
+| FR-7C5WM-IC10 | `InternshipManager` must display: name, academic year, date range, status, action buttons |
+| FR-7C5WM-IC11 | `InternshipManager` must support search by name and filter by: status, academic_year_id, date_from, date_to |
+| FR-7C5WM-IC12 | `InternshipPolicy` must grant view/viewAny to all 5 roles; create/update/delete to admin only; delete must check placements and registrations |
 
 ### Status Lifecycle
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-SL1 | `InternshipStatus` enum must define 5 cases: DRAFT, PUBLISHED, ACTIVE, COMPLETED, CANCELLED |
-| FR-SL2 | Valid transitions: DRAFT → [PUBLISHED, CANCELLED], PUBLISHED → [ACTIVE, CANCELLED], ACTIVE → [COMPLETED, CANCELLED] |
-| FR-SL3 | COMPLETED and CANCELLED must be terminal (no valid transitions out)                  |
-| FR-SL4 | `isAcceptingRegistrations()` returns true for PUBLISHED and ACTIVE only              |
-| FR-SL5 | `isTerminal()` returns true for COMPLETED and CANCELLED only                        |
-| FR-SL6 | `UpdateInternshipAction` must enforce the state machine for single-record changes    |
-| FR-SL7 | `BatchUpdateInternshipStatusAction` must apply target status without per-record transition validation |
-| FR-SL8 | `InternshipCreated` event dispatched after creation; `InternshipStatusBatchUpdated` after batch update |
+| FR-7C5WM-SL1 | `InternshipStatus` enum must define 5 cases: DRAFT, PUBLISHED, ACTIVE, COMPLETED, CANCELLED |
+| FR-7C5WM-SL2 | Valid transitions: DRAFT → [PUBLISHED, CANCELLED], PUBLISHED → [ACTIVE, CANCELLED], ACTIVE → [COMPLETED, CANCELLED] |
+| FR-7C5WM-SL3 | COMPLETED and CANCELLED must be terminal (no valid transitions out)                  |
+| FR-7C5WM-SL4 | `isAcceptingRegistrations()` returns true for PUBLISHED and ACTIVE only              |
+| FR-7C5WM-SL5 | `isTerminal()` returns true for COMPLETED and CANCELLED only                        |
+| FR-7C5WM-SL6 | `UpdateInternshipAction` must enforce the state machine for single-record changes    |
+| FR-7C5WM-SL7 | `BatchUpdateInternshipStatusAction` must apply target status without per-record transition validation |
+| FR-7C5WM-SL8 | `InternshipCreated` event dispatched after creation; `InternshipStatusBatchUpdated` after batch update |
 
 ### Registration Windows
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-RW1 | `InternshipPeriod` entity must encapsulate: status, registrationStartDate, registrationEndDate, academicYearStart, academicYearEnd |
-| FR-RW2 | `InternshipPeriod::isAcceptingRegistrations()` checks status + date window           |
-| FR-RW3 | `InternshipPeriod::isRegistrationWindowOpen()` checks only date range (ignore status) |
-| FR-RW4 | `InternshipPeriod::isBeforeRegistrationWindow()` / `isAfterRegistrationWindow()` for status messaging |
-| FR-RW5 | `InternshipPeriod::isWithinAcademicYear()` / `datesSpanOutsideAcademicYear()` for validation |
-| FR-RW6 | `OpenForRegistration` validation rule must use `InternshipPeriod` to gate registration attempts |
-| FR-RW7 | `InternshipForm` must include registrationStartDate and registrationEndDate fields    |
+| FR-7C5WM-RW1 | `InternshipPeriod` entity must encapsulate: status, registrationStartDate, registrationEndDate, academicYearStart, academicYearEnd |
+| FR-7C5WM-RW2 | `InternshipPeriod::isAcceptingRegistrations()` checks status + date window           |
+| FR-7C5WM-RW3 | `InternshipPeriod::isRegistrationWindowOpen()` checks only date range (ignore status) |
+| FR-7C5WM-RW4 | `InternshipPeriod::isBeforeRegistrationWindow()` / `isAfterRegistrationWindow()` for status messaging |
+| FR-7C5WM-RW5 | `InternshipPeriod::isWithinAcademicYear()` / `datesSpanOutsideAcademicYear()` for validation |
+| FR-7C5WM-RW6 | `OpenForRegistration` validation rule must use `InternshipPeriod` to gate registration attempts |
+| FR-7C5WM-RW7 | `InternshipForm` must include registrationStartDate and registrationEndDate fields    |
 
 ### Pre-Close Readiness
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-PC1 | `ReadCloseReadinessAction` must accept an `Internship` and return an array of 5 readiness domains |
-| FR-PC2 | Assessments check: all active registrations must have `finalized_at` set             |
-| FR-PC3 | Submissions check: no submissions in DRAFT, SUBMITTED, or REVISION_REQUIRED status   |
-| FR-PC4 | Supervision logs check: all logs must have `is_verified = true`                      |
-| FR-PC5 | Attendance check: all records must have `is_verified = true`                         |
-| FR-PC6 | Certificates check: all must be ISSUED status, and at least one must exist          |
-| FR-PC7 | Each domain returns: `passed` (bool), `total` (int), `pending` (int), `message` (string) |
-| FR-PC8 | `InternshipManager` must display readiness check results with pass/fail indicators   |
+| FR-7C5WM-PC1 | `ReadCloseReadinessAction` must accept an `Internship` and return an array of 5 readiness domains |
+| FR-7C5WM-PC2 | Assessments check: all active registrations must have `finalized_at` set             |
+| FR-7C5WM-PC3 | Submissions check: no submissions in DRAFT, SUBMITTED, or REVISION_REQUIRED status   |
+| FR-7C5WM-PC4 | Supervision logs check: all logs must have `is_verified = true`                      |
+| FR-7C5WM-PC5 | Attendance check: all records must have `is_verified = true`                         |
+| FR-7C5WM-PC6 | Certificates check: all must be ISSUED status, and at least one must exist          |
+| FR-7C5WM-PC7 | Each domain returns: `passed` (bool), `total` (int), `pending` (int), `message` (string) |
+| FR-7C5WM-PC8 | `InternshipManager` must display readiness check results with pass/fail indicators   |
 
 ### Program Closure & Archival
 
 | ID | Requirement |
 |----|-------------|
-| FR-CL1 | `InternshipStatus` MUST include `ARCHIVED` case; valid transition `COMPLETED → ARCHIVED` only, with exceptional `ARCHIVED → COMPLETED` for `super_admin` via audit-trailed un-archive |
-| FR-CL2 | `ARCHIVED` MUST be terminal — no transitions out except exceptional un-archive; archived programs are read-only at model, policy, and UI layers |
-| FR-CL3 | `CloseProgramProcess` (Process Action) MUST coordinate 7 steps: 1) `CheckCloseReadinessAction`, 2) trigger Program Quality Evaluation, 3) `FinalizeAssessmentsAction`, 4) `IssueCertificatesAction`, 5) `ArchiveProgramAction`, 6) `ArchiveStudentAccountsAction`, 7) `GenerateArchiveReportAction` |
-| FR-CL4 | `CloseProgramProcess` MUST create a versioned JSON snapshot in an `archives` table capturing at closure: roster, grade composites, attendance summary, logbook stats, assignment/rubric scores, evaluation results, certificate serials |
-| FR-CL5 | Archived student accounts MUST transition to `AccountStatus::ARCHIVED` with read-only dashboard (view certificates/grades) — no registration, logbook, or attendance writes |
-| FR-CL6 | Archived data MUST be retained indefinitely with no automatic deletion; post-regulatory expiry deletion is manual, database-level, documented but not automated |
+| FR-7C5WM-CL1 | `InternshipStatus` MUST include `ARCHIVED` case; valid transition `COMPLETED → ARCHIVED` only, with exceptional `ARCHIVED → COMPLETED` for `super_admin` via audit-trailed un-archive |
+| FR-7C5WM-CL2 | `ARCHIVED` MUST be terminal — no transitions out except exceptional un-archive; archived programs are read-only at model, policy, and UI layers |
+| FR-7C5WM-CL3 | `CloseProgramProcess` (Process Action) MUST coordinate 7 steps: 1) `CheckCloseReadinessAction`, 2) trigger Program Quality Evaluation, 3) `FinalizeAssessmentsAction`, 4) `IssueCertificatesAction`, 5) `ArchiveProgramAction`, 6) `ArchiveStudentAccountsAction`, 7) `GenerateArchiveReportAction` |
+| FR-7C5WM-CL4 | `CloseProgramProcess` MUST create a versioned JSON snapshot in an `archives` table capturing at closure: roster, grade composites, attendance summary, logbook stats, assignment/rubric scores, evaluation results, certificate serials |
+| FR-7C5WM-CL5 | Archived student accounts MUST transition to `AccountStatus::ARCHIVED` with read-only dashboard (view certificates/grades) — no registration, logbook, or attendance writes |
+| FR-7C5WM-CL6 | Archived data MUST be retained indefinitely with no automatic deletion; post-regulatory expiry deletion is manual, database-level, documented but not automated |
 
 ### CSV Import/Export
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-CE1 | `InternshipManager` must support CSV import with columns: name, description          |
-| FR-CE2 | CSV import must create DRAFT internships with active academic year start/end dates   |
-| FR-CE3 | `InternshipManager` must support CSV export of filtered internships                   |
-| FR-CE4 | CSV export must include: name, description, status, start_date, end_date, academic_year |
+| FR-7C5WM-CE1 | `InternshipManager` must support CSV import with columns: name, description          |
+| FR-7C5WM-CE2 | CSV import must create DRAFT internships with active academic year start/end dates   |
+| FR-7C5WM-CE3 | `InternshipManager` must support CSV export of filtered internships                   |
+| FR-7C5WM-CE4 | CSV export must include: name, description, status, start_date, end_date, academic_year |
 
 ---
 
@@ -203,26 +203,26 @@ registrations would orphan these records and break foreign key relationships.
 
 | ID    | Requirement                                                                          |
 | ----- | ------------------------------------------------------------------------------------ |
-| NFR-S1 | Status transition validation must reject illegal transitions with `RejectedException` |
-| NFR-S2 | `InternshipPolicy` must enforce authorization at every CRUD operation                |
-| NFR-P1 | `ReadCloseReadinessAction` must complete within 2s for up to 200 active registrations |
-| NFR-P2 | `BatchUpdateInternshipStatusAction` must process up to 50 internships in < 3s        |
-| NFR-P3 | `InternshipPeriod` entity instantiation must complete in < 5ms (read-only, no queries) |
-| NFR-R1 | `CreateInternshipAction` must wrap creation in a database transaction                |
-| NFR-R2 | `BatchUpdateInternshipStatusAction` must wrap batch update in a database transaction  |
-| NFR-R3 | `DeleteInternshipAction` must verify related records within the same transaction     |
-| NFR-U1 | `InternshipManager` must show status badges with distinct colors per status          |
-| NFR-U2 | Pre-close readiness UI must display per-domain pass/fail with actionable pending counts |
-| NFR-U4 | Deletion blocked messages must explain which related records prevent deletion         |
-| NFR-M1 | All Program module classes must use `declare(strict_types=1)`                       |
-| NFR-M2 | All models must use `#[Fillable]` attribute                                         |
-| NFR-A1 | All internship management UI must meet WCAG 2.1 Level AA                            |
-| NFR-A2 | Status badges must include text labels alongside color                              |
-| NFR-A3 | Pre-close readiness modal must trap focus and be keyboard-navigable                  |
-| NFR-A5 | All interactive elements must have visible focus indicators                          |
-| NFR-L1 | All user-facing strings must use `__()` translation helper                          |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
-| NFR-L3 | Internship status labels must use `InternshipStatus::label()` |
+| NFR-7C5WM-S1 | Status transition validation must reject illegal transitions with `RejectedException` |
+| NFR-7C5WM-S2 | `InternshipPolicy` must enforce authorization at every CRUD operation                |
+| NFR-7C5WM-P1 | `ReadCloseReadinessAction` must complete within 2s for up to 200 active registrations |
+| NFR-7C5WM-P2 | `BatchUpdateInternshipStatusAction` must process up to 50 internships in < 3s        |
+| NFR-7C5WM-P3 | `InternshipPeriod` entity instantiation must complete in < 5ms (read-only, no queries) |
+| NFR-7C5WM-R1 | `CreateInternshipAction` must wrap creation in a database transaction                |
+| NFR-7C5WM-R2 | `BatchUpdateInternshipStatusAction` must wrap batch update in a database transaction  |
+| NFR-7C5WM-R3 | `DeleteInternshipAction` must verify related records within the same transaction     |
+| NFR-7C5WM-U1 | `InternshipManager` must show status badges with distinct colors per status          |
+| NFR-7C5WM-U2 | Pre-close readiness UI must display per-domain pass/fail with actionable pending counts |
+| NFR-7C5WM-U4 | Deletion blocked messages must explain which related records prevent deletion         |
+| NFR-7C5WM-M1 | All Program module classes must use `declare(strict_types=1)`                       |
+| NFR-7C5WM-M2 | All models must use `#[Fillable]` attribute                                         |
+| NFR-7C5WM-A1 | All internship management UI must meet WCAG 2.1 Level AA                            |
+| NFR-7C5WM-A2 | Status badges must include text labels alongside color                              |
+| NFR-7C5WM-A3 | Pre-close readiness modal must trap focus and be keyboard-navigable                  |
+| NFR-7C5WM-A5 | All interactive elements must have visible focus indicators                          |
+| NFR-7C5WM-L1 | All user-facing strings must use `__()` translation helper                          |
+| NFR-7C5WM-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
+| NFR-7C5WM-L3 | Internship status labels must use `InternshipStatus::label()` |
 
 ## Test Requirements
 
@@ -258,6 +258,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
     public function canTransitionTo(StatusEnum $target): bool;
     public function label(): string;
 }
+
 ```
 
 ### 6.2 Internship Model
@@ -273,6 +274,7 @@ class Internship extends BaseModel
     // Relations: belongsTo AcademicYear, hasMany Placements, hasMany Registrations
     // Bridges: asInternshipPeriod() → InternshipPeriod, asInternshipState() → InternshipState
 }
+
 ```
 
 ### 6.3 InternshipState Entity
@@ -287,6 +289,7 @@ final readonly class InternshipState extends BaseEntity
     public static function fromModel(Model $model): static;
     public function canBeDeleted(): bool;  // placementCount === 0 && registrationCount === 0
 }
+
 ```
 
 ### 6.4 InternshipPeriod Entity
@@ -310,6 +313,7 @@ final readonly class InternshipPeriod extends BaseEntity
     public function isWithinAcademicYear(?Carbon $date = null): bool;
     public function datesSpanOutsideAcademicYear(?Carbon $start = null, ?Carbon $end = null): bool;
 }
+
 ```
 
 ### 6.5 InternshipData DTO
@@ -329,6 +333,7 @@ final readonly class InternshipData extends BaseData
         public ?string $registrationEndDate = null,
     ) {}
 }
+
 ```
 
 ### 6.6 Actions
@@ -368,6 +373,7 @@ final class ReadCloseReadinessAction extends BaseReadAction
     public function execute(Internship $internship): array;
     // Returns 5-domain readiness report
 }
+
 ```
 
 ### 6.7 Validation Rule
@@ -378,6 +384,7 @@ final class OpenForRegistration implements ValidationRule
 {
     // Uses InternshipPeriod entity to validate registration eligibility
 }
+
 ```
 
 ### 6.8 Events & Listeners
@@ -386,6 +393,7 @@ final class OpenForRegistration implements ValidationRule
 // app/Modules/Program/Internship/Events/InternshipCreated.php
 // app/Modules/Program/Internship/Events/InternshipStatusBatchUpdated.php
 // app/Modules/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php
+
 ```
 
 ### 6.9 Routes
@@ -398,6 +406,7 @@ Route::prefix('admin')
     ->group(function () {
         Route::livewire('/internships', InternshipManager::class)->name('internships');
     });
+
 ```
 
 ### 6.10 Livewire Components
@@ -407,6 +416,7 @@ Route::prefix('admin')
 // Features: CRUD, search, filter, CSV import/export, batch close, pre-close readiness check UI
 
 // app/Modules/Program/Internship/Livewire/Forms/InternshipForm.php
+
 ```
 
 ---

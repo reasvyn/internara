@@ -61,7 +61,7 @@ capability without exposing password reset to admins.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — User Generates Recovery Codes
+### UC-SHQ1J-1 — User Generates Recovery Codes
 
 **Actor:** Authenticated user
 **Preconditions:** User is logged in; navigates to `/profile/recovery`
@@ -75,7 +75,7 @@ capability without exposing password reset to admins.
 7. User can download codes as PDF via DomPDF
 **Postconditions:** 10 codes active; old codes revoked; user has seen/downloaded codes
 
-### UC-2 — User Redeems Recovery Code
+### UC-SHQ1J-2 — User Redeems Recovery Code
 
 **Actor:** User (unauthenticated, locked out)
 **Preconditions:** User has a valid recovery code; navigates to `/recover-account`
@@ -89,7 +89,7 @@ capability without exposing password reset to admins.
 7. On no match: throws `RejectedException`
 **Postconditions:** Password reset; code consumed; user can log in with new password
 
-### UC-3 — Admin Generates Codes for User
+### UC-SHQ1J-3 — Admin Generates Codes for User
 
 **Actor:** Super admin or admin
 **Preconditions:** Admin navigates to `/admin/recovery-slips`
@@ -100,7 +100,7 @@ capability without exposing password reset to admins.
 4. Codes displayed to admin (who should share securely with user)
 **Postconditions:** 10 codes generated; admin views them once
 
-### UC-4 — User Downloads Codes as PDF
+### UC-SHQ1J-4 — User Downloads Codes as PDF
 
 **Actor:** Authenticated user
 **Preconditions:** Codes were just generated (stored in session)
@@ -117,28 +117,28 @@ capability without exposing password reset to admins.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-GR1  | `GenerateRecoverySlipAction` must revoke all existing `account_recovery` tokens for the user before generating new ones |
-| FR-GR2  | Action must generate exactly 10 random 12-character uppercase alphanumeric codes |
-| FR-GR3  | Each code must be stored as a hashed `AccessToken` with `token_type = 'account_recovery'` and 100-year expiry |
-| FR-GR4  | Action must dispatch `RecoverySlipGenerated` event with user and code count |
-| FR-GR5  | Action must return array of plaintext codes + first `RecoveryCodeData` DTO |
-| FR-RD1  | `RedeemRecoverySlipAction` must throttle: max 3 attempts per 300 seconds (by IP) |
-| FR-RD2  | Action must look up user by username (throw `RejectedException` if not found) |
-| FR-RD3  | Action must iterate valid tokens and `Hash::check()` against each |
-| FR-RD4  | On match: update user's `password` field with `Hash::make($newPassword)` |
-| FR-RD5  | On match: set `last_used_at` on the matched token |
-| FR-RD6  | On no match: throw `RejectedException` with generic message |
-| FR-RD7  | Redemption must run in a database transaction |
-| FR-RC1  | `RecoveryCode` Livewire must store plaintext codes in session (display once only) |
-| FR-RC2  | Component must render codes as a numbered list with security warnings |
-| FR-RC3  | Component must support PDF download via DomPDF |
-| FR-RC4  | Component must clear session data when user navigates away or clicks "Done" |
-| FR-AR1  | `AccountRecovery` (guest) Livewire must show username, code, password, password confirmation fields |
-| FR-AR2  | Component must throttle: max 3 attempts per 300 seconds (by IP) |
-| FR-AR3  | On success: flash success message and redirect to login |
-| FR-RS1  | `RecoverySlipManager` (admin) must be authorized via `viewAny` User policy |
-| FR-RS2  | Component must allow user search by name/username/email |
-| FR-RS3  | Component must call `GenerateRecoverySlipAction` for selected user |
+| FR-SHQ1J-SHQ1J-GR1  | `GenerateRecoverySlipAction` must revoke all existing `account_recovery` tokens for the user before generating new ones |
+| FR-SHQ1J-SHQ1J-GR2  | Action must generate exactly 10 random 12-character uppercase alphanumeric codes |
+| FR-SHQ1J-SHQ1J-GR3  | Each code must be stored as a hashed `AccessToken` with `token_type = 'account_recovery'` and 100-year expiry |
+| FR-SHQ1J-SHQ1J-GR4  | Action must dispatch `RecoverySlipGenerated` event with user and code count |
+| FR-SHQ1J-SHQ1J-GR5  | Action must return array of plaintext codes + first `RecoveryCodeData` DTO |
+| FR-SHQ1J-SHQ1J-RD1  | `RedeemRecoverySlipAction` must throttle: max 3 attempts per 300 seconds (by IP) |
+| FR-SHQ1J-SHQ1J-RD2  | Action must look up user by username (throw `RejectedException` if not found) |
+| FR-SHQ1J-SHQ1J-RD3  | Action must iterate valid tokens and `Hash::check()` against each |
+| FR-SHQ1J-SHQ1J-RD4  | On match: update user's `password` field with `Hash::make($newPassword)` |
+| FR-SHQ1J-SHQ1J-RD5  | On match: set `last_used_at` on the matched token |
+| FR-SHQ1J-SHQ1J-RD6  | On no match: throw `RejectedException` with generic message |
+| FR-SHQ1J-SHQ1J-RD7  | Redemption must run in a database transaction |
+| FR-SHQ1J-SHQ1J-RC1  | `RecoveryCode` Livewire must store plaintext codes in session (display once only) |
+| FR-SHQ1J-SHQ1J-RC2  | Component must render codes as a numbered list with security warnings |
+| FR-SHQ1J-SHQ1J-RC3  | Component must support PDF download via DomPDF |
+| FR-SHQ1J-SHQ1J-RC4  | Component must clear session data when user navigates away or clicks "Done" |
+| FR-SHQ1J-SHQ1J-AR1  | `AccountRecovery` (guest) Livewire must show username, code, password, password confirmation fields |
+| FR-SHQ1J-SHQ1J-AR2  | Component must throttle: max 3 attempts per 300 seconds (by IP) |
+| FR-SHQ1J-SHQ1J-AR3  | On success: flash success message and redirect to login |
+| FR-SHQ1J-SHQ1J-RS1  | `RecoverySlipManager` (admin) must be authorized via `viewAny` User policy |
+| FR-SHQ1J-SHQ1J-RS2  | Component must allow user search by name/username/email |
+| FR-SHQ1J-SHQ1J-RS3  | Component must call `GenerateRecoverySlipAction` for selected user |
 
 ---
 
@@ -146,11 +146,11 @@ capability without exposing password reset to admins.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-L1  | All generation and redemption events must be logged via SmartLogger with PII masking |
-| NFR-S1  | Recovery codes must be stored as bcrypt hashes (not plaintext) |
-| NFR-S2  | Codes displayed only once after generation (session-based) |
-| NFR-S3  | PDF download must include security warning about code storage |
-| NFR-M1  | All actions must declare `strict_types=1` |
+| NFR-SHQ1J-SHQ1J-L1  | All generation and redemption events must be logged via SmartLogger with PII masking |
+| NFR-SHQ1J-SHQ1J-S1  | Recovery codes must be stored as bcrypt hashes (not plaintext) |
+| NFR-SHQ1J-SHQ1J-S2  | Codes displayed only once after generation (session-based) |
+| NFR-SHQ1J-SHQ1J-S3  | PDF download must include security warning about code storage |
+| NFR-SHQ1J-SHQ1J-M1  | All actions must declare `strict_types=1` |
 
 ---
 
@@ -190,6 +190,7 @@ final class RedeemRecoverySlipAction extends BaseCommandAction
     // Hash::check against each valid token
     // Updates password on match, marks token used
 }
+
 ```
 
 ### Entities & DTOs
@@ -214,6 +215,7 @@ final readonly class RecoveryCodeData extends BaseData
         public ?string $expiresAt,
     );
 }
+
 ```
 
 ### Livewire Components
@@ -246,6 +248,7 @@ class RecoverySlipManager extends BaseFormView
     public function searchUsers(): Collection;
     public function generate(GenerateRecoverySlipAction $action): void;
 }
+
 ```
 
 ### Model (Shared)
@@ -260,6 +263,7 @@ class AccessToken extends BaseModel
     //          last_used_at, revoked_at, timestamps
     public function asRecoveryCodeState(): RecoveryCodeState;
 }
+
 ```
 
 ### Routes

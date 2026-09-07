@@ -38,6 +38,7 @@ The most common web caching strategy: the application checks the cache first; on
 
 ```
 {module}.{purpose}[.{qualifier}]
+
 ```
 
 Register in `config/cache-keys.php`. Dynamic keys concatenate prefix with qualifier at call site.

@@ -44,6 +44,7 @@ Phase 11         Phase 12
 Reporting      → Maintenance
 (grade cards,     (backup, GDPR, job queues,
  snapshots)        archiving, cleanup)
+
 ```
 
 ### Spec-Zero — Initial Specification
@@ -216,6 +217,7 @@ here plus the spec files themselves.
 
 ```
 spec-writing → docs/specs/{feature}.md → feature-building → code-writing → pest-testing
+
 ```
 
 1. **`spec-writing`** skill produces a spec document in this directory

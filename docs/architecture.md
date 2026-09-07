@@ -110,6 +110,7 @@ only on layers below it — never the reverse.
 │  See: docs/guides/arch/support-pattern.md                                  │
 │  See: docs/guides/arch/exception-pattern.md                                │
 └─────────────────────────────────────────────────────────────────────────────┘
+
 ```
 
 ### How Module Directories Map to Layers
@@ -181,6 +182,7 @@ For the complete directory tree and path conventions, see
 │  🚫  NEVER: Business → UI classes                                        │
 │  🚫  NEVER: Entity → Action or Service                                   │
 └──────────────────────────────────────────────────────────────────────────┘
+
 ```
 
 ### Two Kinds of Logic: Domain vs Infrastructure
@@ -203,6 +205,7 @@ Does the class contain a business rule about internships, students, grades, etc.
 └─ No → Does it need constructor injection / instance methods?
     ├─ Yes → Service (infrastructure logic only)
     └─ No → Support (static utilities only)
+
 ```
 
 For comprehensive guidance on each type, see:

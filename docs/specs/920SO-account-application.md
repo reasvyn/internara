@@ -64,7 +64,7 @@ to the admin, not a stack trace.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Guest Applies for Student Account
+### UC-920SO-1 — Guest Applies for Student Account
 
 **Actor:** Guest (unauthenticated)
 **Preconditions:** At least one published, active internship exists with non-full placements
@@ -81,7 +81,7 @@ to the admin, not a stack trace.
 10. Account activation notification dispatched
 **Postconditions:** User account created; Profile created; Registration active; applicant receives activation email
 
-### UC-2 — Admin Approves Guest Account Application
+### UC-920SO-2 — Admin Approves Guest Account Application
 
 **Actor:** Admin (role: super_admin or admin)
 **Preconditions:** Pending account applications exist
@@ -99,7 +99,7 @@ to the admin, not a stack trace.
 4. Or admin rejects: `RejectAccountApplicationAction` records rejection reason
 **Postconditions:** Full user provisioning complete in single transaction; activation email sent
 
-### UC-3 — Guest Re-Apply After Rejection
+### UC-920SO-3 — Guest Re-Apply After Rejection
 
 **Actor:** Guest (unauthenticated)
 **Preconditions:** Guest previously applied and was rejected
@@ -119,33 +119,33 @@ to the admin, not a stack trace.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A1 | `AccountApplicationStatus` enum must implement `LabelEnum` and `StatusEnum` contracts |
-| FR-A2 | Valid transitions: `PENDING` → [`APPROVED`, `REJECTED`]; `APPROVED` and `REJECTED` are terminal |
-| FR-A3 | `ApplyAccountAction` must guard: no duplicate `PENDING` or `APPROVED` application by email |
-| FR-A4 | `ApplyAccountAction` must re-activate previously `REJECTED` applications on re-apply (set back to `PENDING`) |
-| FR-A5 | `ApplyAccountAction` must execute within a transaction for both new and re-activation paths |
-| FR-A6 | `ApproveAccountApplicationAction` must execute within a single DB transaction: mark approved → create User (random 32-char password, `setup_required`, student role) → create Profile → create Registration (status `active`) |
-| FR-A7 | `ApproveAccountApplicationAction` must validate application is still PENDING (concurrent guard) |
-| FR-A8 | `ApproveAccountApplicationAction` must validate form_data contains internship_id (throw RejectedException if missing) |
-| FR-A9 | `RejectAccountApplicationAction` must record `rejection_reason` and transition to `REJECTED` |
-| FR-A10 | `RejectAccountApplicationAction` must validate application is still PENDING |
-| FR-A11 | `AccountApplication` model must store `form_data` as JSON column for flexible form fields |
-| FR-A12 | `AccountApplication` must have `belongsTo` Department and `belongsTo` User (processed_by) |
-| FR-A13 | `AccountApplicationPolicy` must allow: create → all users (guest); viewAny/view → admin; update/delete → admin |
+| FR-920SO-A1 | `AccountApplicationStatus` enum must implement `LabelEnum` and `StatusEnum` contracts |
+| FR-920SO-A2 | Valid transitions: `PENDING` → [`APPROVED`, `REJECTED`]; `APPROVED` and `REJECTED` are terminal |
+| FR-920SO-A3 | `ApplyAccountAction` must guard: no duplicate `PENDING` or `APPROVED` application by email |
+| FR-920SO-A4 | `ApplyAccountAction` must re-activate previously `REJECTED` applications on re-apply (set back to `PENDING`) |
+| FR-920SO-A5 | `ApplyAccountAction` must execute within a transaction for both new and re-activation paths |
+| FR-920SO-A6 | `ApproveAccountApplicationAction` must execute within a single DB transaction: mark approved → create User (random 32-char password, `setup_required`, student role) → create Profile → create Registration (status `active`) |
+| FR-920SO-A7 | `ApproveAccountApplicationAction` must validate application is still PENDING (concurrent guard) |
+| FR-920SO-A8 | `ApproveAccountApplicationAction` must validate form_data contains internship_id (throw RejectedException if missing) |
+| FR-920SO-A9 | `RejectAccountApplicationAction` must record `rejection_reason` and transition to `REJECTED` |
+| FR-920SO-A10 | `RejectAccountApplicationAction` must validate application is still PENDING |
+| FR-920SO-A11 | `AccountApplication` model must store `form_data` as JSON column for flexible form fields |
+| FR-920SO-A12 | `AccountApplication` must have `belongsTo` Department and `belongsTo` User (processed_by) |
+| FR-920SO-A13 | `AccountApplicationPolicy` must allow: create → all users (guest); viewAny/view → admin; update/delete → admin |
 
 ### Account Application — Livewire Components & Routing
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-L1 | `ApplyPage` must be at `/apply` with `guest` middleware |
-| FR-L2 | `ApplyPage` must extend `BaseFormView` and use `AccountApplicationForm` Form Object |
-| FR-L3 | `ApplyPage` must filter internships to published/active status |
-| FR-L4 | `ApplyPage` must filter placements by internship and exclude full slots (via PlacementCapacity) |
-| FR-L5 | `ApplyPage` must support mode toggle: placement-based vs proposed-company |
-| FR-L6 | `ApplyPage` must clear placement_id and proposed fields when mode toggles |
-| FR-L7 | `AccountApplicationForm` must validate: name (required, string, max:255), email (required, email, unique:account_applications,email, unique:users,email), internship_id (required, exists, OpenForRegistration rule), academic_year (required, string, max:20) |
-| FR-L8 | `AccountApplicationForm` must conditionally validate: placement_id (required if use_placement) OR proposed_company_name + proposed_company_address (required if not use_placement) |
-| FR-L9 | `AccountApplicationForm::toArray()` must return all form fields as flat array for Action consumption |
+| FR-920SO-L1 | `ApplyPage` must be at `/apply` with `guest` middleware |
+| FR-920SO-L2 | `ApplyPage` must extend `BaseFormView` and use `AccountApplicationForm` Form Object |
+| FR-920SO-L3 | `ApplyPage` must filter internships to published/active status |
+| FR-920SO-L4 | `ApplyPage` must filter placements by internship and exclude full slots (via PlacementCapacity) |
+| FR-920SO-L5 | `ApplyPage` must support mode toggle: placement-based vs proposed-company |
+| FR-920SO-L6 | `ApplyPage` must clear placement_id and proposed fields when mode toggles |
+| FR-920SO-L7 | `AccountApplicationForm` must validate: name (required, string, max:255), email (required, email, unique:account_applications,email, unique:users,email), internship_id (required, exists, OpenForRegistration rule), academic_year (required, string, max:20) |
+| FR-920SO-L8 | `AccountApplicationForm` must conditionally validate: placement_id (required if use_placement) OR proposed_company_name + proposed_company_address (required if not use_placement) |
+| FR-920SO-L9 | `AccountApplicationForm::toArray()` must return all form fields as flat array for Action consumption |
 
 ---
 
@@ -153,21 +153,21 @@ to the admin, not a stack trace.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | Guest application endpoint (`/apply`) must be rate-limited to prevent spam submissions |
-| NFR-S2 | `AccountApplication` `form_data` JSON must be sanitized before storage (prevent XSS via stored JSON) |
-| NFR-S3 | Account provisioning must use random 32-char passwords — never allow password choice during application |
-| NFR-S4 | Email uniqueness must be checked against both `account_applications` and `users` tables (prevent creating application for existing user) |
-| NFR-R1 | Guest-to-student provisioning must be atomic — if User creation fails, entire transaction rolls back (no orphaned Registration) |
-| NFR-R2 | Application re-activation must preserve original rejection reason in activity log |
-| NFR-U1 | `ApplyPage` must work without JavaScript for basic form submission (progressive enhancement) |
-| NFR-U2 | Mode toggle (placement vs proposed company) must dynamically show/hide relevant fields |
-| NFR-U3 | Success message after submission must not reveal whether an existing application was re-activated |
-| NFR-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
-| NFR-A1 | All enrollment UI (apply page) must meet WCAG 2.1 Level AA |
-| NFR-A2 | Form inputs in apply form must have associated labels |
-| NFR-A3 | Color contrast must meet 4.5:1 minimum for all enrollment UI text |
-| NFR-L1 | All user-facing strings in enrollment UI must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-920SO-S1 | Guest application endpoint (`/apply`) must be rate-limited to prevent spam submissions |
+| NFR-920SO-S2 | `AccountApplication` `form_data` JSON must be sanitized before storage (prevent XSS via stored JSON) |
+| NFR-920SO-S3 | Account provisioning must use random 32-char passwords — never allow password choice during application |
+| NFR-920SO-S4 | Email uniqueness must be checked against both `account_applications` and `users` tables (prevent creating application for existing user) |
+| NFR-920SO-R1 | Guest-to-student provisioning must be atomic — if User creation fails, entire transaction rolls back (no orphaned Registration) |
+| NFR-920SO-R2 | Application re-activation must preserve original rejection reason in activity log |
+| NFR-920SO-U1 | `ApplyPage` must work without JavaScript for basic form submission (progressive enhancement) |
+| NFR-920SO-U2 | Mode toggle (placement vs proposed company) must dynamically show/hide relevant fields |
+| NFR-920SO-U3 | Success message after submission must not reveal whether an existing application was re-activated |
+| NFR-920SO-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
+| NFR-920SO-A1 | All enrollment UI (apply page) must meet WCAG 2.1 Level AA |
+| NFR-920SO-A2 | Form inputs in apply form must have associated labels |
+| NFR-920SO-A3 | Color contrast must meet 4.5:1 minimum for all enrollment UI text |
+| NFR-920SO-L1 | All user-facing strings in enrollment UI must use `__()` translation helper |
+| NFR-920SO-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -196,6 +196,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 //           status, processed_by, processed_at, rejection_reason
 // Casts: form_data → json, processed_at → datetime, status → AccountApplicationStatus
 // Relations: belongsTo Department, belongsTo User (processed_by)
+
 ```
 
 ### 6.2 AccountApplicationStatus Enum
@@ -213,6 +214,7 @@ enum AccountApplicationStatus: string implements LabelEnum, StatusEnum
     public function validTransitions(): array;  // PENDING → [APPROVED, REJECTED]
     public function canTransitionTo(StatusEnum $target): bool;
 }
+
 ```
 
 ### 6.3 Action Signatures
@@ -250,6 +252,7 @@ final class RejectAccountApplicationAction extends BaseCommandAction
     // Updates: status → REJECTED, processed_by, processed_at, rejection_reason
     // Dispatches AccountApplicationRejected event
 }
+
 ```
 
 ### 6.4 Policy
@@ -264,6 +267,7 @@ class AccountApplicationPolicy extends BasePolicy
     public function update(User $user, AccountApplication $application): bool; // admin only
     public function delete(User $user, AccountApplication $application): bool; // admin only
 }
+
 ```
 
 ### 6.5 Form Object
@@ -285,6 +289,7 @@ class AccountApplicationForm extends Form
     public function toArray(): array;
     // Returns flat array for Action consumption
 }
+
 ```
 
 ### 6.6 Events
@@ -297,6 +302,7 @@ class AccountApplicationForm extends Form
 // app/Modules/Enrollment/AccountApplication/Events/AccountApplicationRejected.php
 // Dispatched by: RejectAccountApplicationAction
 // Payload: AccountApplication model
+
 ```
 
 ### 6.7 Routes
@@ -311,6 +317,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'role:super_admin|admin'])->group(function () {
     Route::get('/admin/account-applications', AccountApplicationManager::class)->name('account-applications.index');
 });
+
 ```
 
 ### 6.8 Database Migrations

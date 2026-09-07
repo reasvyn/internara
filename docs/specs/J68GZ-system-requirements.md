@@ -58,11 +58,11 @@ module-specific SQL, using only portable Eloquent queries and migrations.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Clones and installs the project on a compatible environment |
-| UC-2 | School | Deploys on shared hosting within requirements |
-| UC-3 | System | Checks requirements on boot |
+| UC-J68GZ-1 | Developer | Clones and installs the project on a compatible environment |
+| UC-J68GZ-2 | School | Deploys on shared hosting within requirements |
+| UC-J68GZ-3 | System | Checks requirements on boot |
 
-### UC-1 — Developer Clones and Installs the Project
+### UC-J68GZ-1 — Developer Clones and Installs the Project
 
 **Actor:** Developer
 **Preconditions:** PHP 8.4+, Composer 2.0+, Node.js + npm available
@@ -74,7 +74,7 @@ module-specific SQL, using only portable Eloquent queries and migrations.
 5. Runs `npm install && npm run build` — Vite build completes
 **Postconditions:** System ready for development without additional configuration
 
-### UC-2 — School Deploys on Shared Hosting
+### UC-J68GZ-2 — School Deploys on Shared Hosting
 
 **Actor:** School IT staff
 **Preconditions:** Shared hosting with PHP 8.4+, MySQL 8.0+, no Redis
@@ -86,7 +86,7 @@ module-specific SQL, using only portable Eloquent queries and migrations.
 5. System operates with file cache and database sessions
 **Postconditions:** System functional without Redis or additional services
 
-### UC-3 — System Checks Requirements on Boot
+### UC-J68GZ-3 — System Checks Requirements on Boot
 
 **Actor:** System (automated)
 **Preconditions:** PHP version or extensions missing
@@ -104,42 +104,42 @@ module-specific SQL, using only portable Eloquent queries and migrations.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-SY1 | PHP >= 8.4.0 is required |
-| FR-SY2 | Required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
-| FR-SY3 | Recommended extensions: redis, pcntl, posix |
-| FR-SY4 | Composer >= 2.0 is required for dependency management |
-| FR-SY5 | Node.js + npm required for frontend build (Vite, Tailwind CSS) |
-| FR-SY6 | `storage/` and `bootstrap/cache/` directories must be writable |
-| FR-SY7 | `APP_KEY` must be set (32-character base64 string) |
+| FR-J68GZ-SY1 | PHP >= 8.4.0 is required |
+| FR-J68GZ-SY2 | Required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
+| FR-J68GZ-SY3 | Recommended extensions: redis, pcntl, posix |
+| FR-J68GZ-SY4 | Composer >= 2.0 is required for dependency management |
+| FR-J68GZ-SY5 | Node.js + npm required for frontend build (Vite, Tailwind CSS) |
+| FR-J68GZ-SY6 | `storage/` and `bootstrap/cache/` directories must be writable |
+| FR-J68GZ-SY7 | `APP_KEY` must be set (32-character base64 string) |
 
 ### 4.2 Dependencies
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-D1 | `laravel/framework` ^13.0 — core framework |
-| FR-D2 | `livewire/livewire` ^4.0 — reactive UI components |
-| FR-D3 | `spatie/laravel-permission` ^8.0 — RBAC (roles + permissions) |
-| FR-D4 | `spatie/laravel-activitylog` ^5.0 — audit trail logging |
-| FR-D5 | `spatie/laravel-medialibrary` ^11.17 — file upload + image conversions |
-| FR-D6 | `spatie/laravel-model-status` ^1.18 — model status tracking |
-| FR-D7 | `laravel-lang/lang` ^15.26 — bilingual translations (en/id) |
-| FR-D8 | `barryvdh/laravel-dompdf` ^3.1 — PDF generation |
-| FR-D9 | `laravel/pulse` * — performance monitoring dashboard |
-| FR-D10 | `tallstackui/tallstackui` ^4.0 — UI kit (TallstackUI-only, replaces DaisyUI/MaryUI/PHPFlasher, FB792 FR-TS6) |
-| FR-D11 | `laravel/tinker` ^3.0 — REPL for debugging |
+| FR-J68GZ-D1 | `laravel/framework` ^13.0 — core framework |
+| FR-J68GZ-D2 | `livewire/livewire` ^4.0 — reactive UI components |
+| FR-J68GZ-D3 | `spatie/laravel-permission` ^8.0 — RBAC (roles + permissions) |
+| FR-J68GZ-D4 | `spatie/laravel-activitylog` ^5.0 — audit trail logging |
+| FR-J68GZ-D5 | `spatie/laravel-medialibrary` ^11.17 — file upload + image conversions |
+| FR-J68GZ-D6 | `spatie/laravel-model-status` ^1.18 — model status tracking |
+| FR-J68GZ-D7 | `laravel-lang/lang` ^15.26 — bilingual translations (en/id) |
+| FR-J68GZ-D8 | `barryvdh/laravel-dompdf` ^3.1 — PDF generation |
+| FR-J68GZ-D9 | `laravel/pulse` * — performance monitoring dashboard |
+| FR-J68GZ-D10 | `tallstackui/tallstackui` ^4.0 — UI kit (TallstackUI-only, replaces DaisyUI/MaryUI/PHPFlasher, FB792 FR-J68GZ-TS6) |
+| FR-J68GZ-D11 | `laravel/tinker` ^3.0 — REPL for debugging |
 
 ### 4.3 Database
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-DB1 | SQLite is the default and zero-config database (WAL mode, busy_timeout=5000) |
-| FR-DB2 | MySQL 8.0+ supported for shared hosting deployments |
-| FR-DB3 | MariaDB 10.6+ supported |
-| FR-DB4 | PostgreSQL 15+ supported for larger deployments |
-| FR-DB5 | All models use UUID v7 primary keys (time-ordered, via `HasUuids` trait) |
-| FR-DB6 | All foreign keys define `onDelete` and `onUpdate` behavior (D6 invariant) |
-| FR-DB7 | Migrations organized in 6 sequential layers: Foundation → Auth → Config → Internship Core → Grouping → Evaluation |
-| FR-DB8 | 55 tables total: 37 domain + 18 system/package |
+| FR-J68GZ-DB1 | SQLite is the default and zero-config database (WAL mode, busy_timeout=5000) |
+| FR-J68GZ-DB2 | MySQL 8.0+ supported for shared hosting deployments |
+| FR-J68GZ-DB3 | MariaDB 10.6+ supported |
+| FR-J68GZ-DB4 | PostgreSQL 15+ supported for larger deployments |
+| FR-J68GZ-DB5 | All models use UUID v7 primary keys (time-ordered, via `HasUuids` trait) |
+| FR-J68GZ-DB6 | All foreign keys define `onDelete` and `onUpdate` behavior (D6 invariant) |
+| FR-J68GZ-DB7 | Migrations organized in 6 sequential layers: Foundation → Auth → Config → Internship Core → Grouping → Evaluation |
+| FR-J68GZ-DB8 | 55 tables total: 37 domain + 18 system/package |
 
 ### 4.4 Package/Framework Database Tables
 
@@ -176,10 +176,10 @@ They are not part of the domain schema but coexist in the same database.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-SY8 | The system MUST provide a 15-point system health check covering: environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, and maintenance mode |
-| FR-SY9 | The health check MUST be accessible via `php artisan system:health` (CLI) and expose an admin-accessible web surface |
-| FR-SY10 | Health check results MUST be cached under the registered cache key (`system.health_check`) to avoid re-running expensive checks on every request |
-| FR-SY11 | The `/up` endpoint MUST return 200 only when required extensions and DB connectivity pass | |
+| FR-J68GZ-SY8 | The system MUST provide a 15-point system health check covering: environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, and maintenance mode |
+| FR-J68GZ-SY9 | The health check MUST be accessible via `php artisan system:health` (CLI) and expose an admin-accessible web surface |
+| FR-J68GZ-SY10 | Health check results MUST be cached under the registered cache key (`system.health_check`) to avoid re-running expensive checks on every request |
+| FR-J68GZ-SY11 | The `/up` endpoint MUST return 200 only when required extensions and DB connectivity pass | |
 
 ---
 
@@ -189,24 +189,24 @@ They are not part of the domain schema but coexist in the same database.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | `declare(strict_types=1)` in every PHP file except migrations and config (D1 invariant) |
-| NFR-S2 | No debug calls in committed code: dd, dump, ray, var_dump, print_r, die (D2 invariant) |
-| NFR-S3 | APP_KEY must be 32-byte base64 string; rotation supported via `APP_PREVIOUS_KEYS` |
+| NFR-J68GZ-S1 | `declare(strict_types=1)` in every PHP file except migrations and config (D1 invariant) |
+| NFR-J68GZ-S2 | No debug calls in committed code: dd, dump, ray, var_dump, print_r, die (D2 invariant) |
+| NFR-J68GZ-S3 | APP_KEY must be 32-byte base64 string; rotation supported via `APP_PREVIOUS_KEYS` |
 
 ### 5.2 Performance
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | SQLite WAL mode with 5000ms busy timeout for concurrent reads |
-| NFR-P2 | OpCache enabled in production: 256MB memory, 20000 max files, validate_timestamps=0 |
-| NFR-P3 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
+| NFR-J68GZ-P1 | SQLite WAL mode with 5000ms busy timeout for concurrent reads |
+| NFR-J68GZ-P2 | OpCache enabled in production: 256MB memory, 20000 max files, validate_timestamps=0 |
+| NFR-J68GZ-P3 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
 
 ### 5.3 Reliability
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-R1 | SQLite foreign keys enforced (`DB_FOREIGN_KEYS=true`) |
-| NFR-R2 | Migration freshness < 60 seconds on 55 tables |
+| NFR-J68GZ-R1 | SQLite foreign keys enforced (`DB_FOREIGN_KEYS=true`) |
+| NFR-J68GZ-R2 | Migration freshness < 60 seconds on 55 tables |
 
 ## Test Requirements
 
@@ -241,6 +241,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
   "tallstackui/tallstackui": "^4.0",
   "laravel/tinker": "^3.0"
 }
+
 ```
 
 ### 6.2 Database Configuration
@@ -262,6 +263,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
     'cache'   => ['database' => 1],  // Cache
     // Session uses SESSION_CONNECTION env
 ],
+
 ```
 
 ---
@@ -310,8 +312,8 @@ decisions shaped the final schema — each documented in the relevant spec's Des
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| PHP version check | Always accurate | `php -v` parse result matches FR-SY1 |
-| Extension check | 11 required + 3 recommended | `php -m` comparison against FR-SY2/FR-SY3 |
+| PHP version check | Always accurate | `php -v` parse result matches FR-J68GZ-SY1 |
+| Extension check | 11 required + 3 recommended | `php -m` comparison against FR-J68GZ-SY2/FR-J68GZ-SY3 |
 | First-run provisioning | < 30 seconds | `time php artisan setup:install` |
 
 ### 8.2 Dependencies

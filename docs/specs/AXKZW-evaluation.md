@@ -75,7 +75,7 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates an Evaluation Form
+### UC-AXKZW-1 — Admin Creates an Evaluation Form
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` or `super_admin` role
@@ -87,7 +87,7 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 5. Activates the form (`is_active = true`)
 **Postconditions:** Active evaluation form exists with structured questions
 
-### UC-2 — Student Evaluates Their Mentor
+### UC-AXKZW-2 — Student Evaluates Their Mentor
 
 **Actor:** Student
 **Preconditions:** Student has an active registration with an assigned mentor; an active form targeting `mentor` exists
@@ -101,7 +101,7 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 7. System computes `overall_score = sum(score * weight) / sum(weight)`
 **Postconditions:** Response submitted, score calculated, submission immutable
 
-### UC-3 — Admin Views Evaluation Results
+### UC-AXKZW-3 — Admin Views Evaluation Results
 
 **Actor:** Admin
 **Preconditions:** At least one evaluation response exists for a form
@@ -120,50 +120,50 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-FB1 | `EvaluationForm` model must use `#[Fillable]` with `name`, `description`, `target_type`, `is_active`, `created_by` |
-| FR-FB2 | `target_type` must support: `teacher`, `supervisor`, `program`, `company`, `overall` |
-| FR-FB3 | `EvaluationSection` model must support ordered grouping with `form_id`, `title`, `description`, `order` |
-| FR-FB4 | Cascade delete: form deleted → sections, questions, responses cascade |
-| FR-FB5 | Section deleted → questions nullOnDelete (preserve question-level history) |
+| FR-AXKZW-FB1 | `EvaluationForm` model must use `#[Fillable]` with `name`, `description`, `target_type`, `is_active`, `created_by` |
+| FR-AXKZW-FB2 | `target_type` must support: `teacher`, `supervisor`, `program`, `company`, `overall` |
+| FR-AXKZW-FB3 | `EvaluationSection` model must support ordered grouping with `form_id`, `title`, `description`, `order` |
+| FR-AXKZW-FB4 | Cascade delete: form deleted → sections, questions, responses cascade |
+| FR-AXKZW-FB5 | Section deleted → questions nullOnDelete (preserve question-level history) |
 
 ### Question Management
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-QM1 | `EvaluationQuestion` must support 6 types: `rating_1_5`, `rating_1_10`, `yes_no`, `multiple_choice`, `text`, `agreement` |
-| FR-QM2 | `options` field (JSON) must be populated only for `multiple_choice` type |
-| FR-QM3 | `weight` field (int, default 1) must determine the question's contribution to overall score |
-| FR-QM4 | `is_required` field (bool, default true) must gate submission completeness |
-| FR-QM5 | Questions must be orderable via `order` field within their section or form |
+| FR-AXKZW-QM1 | `EvaluationQuestion` must support 6 types: `rating_1_5`, `rating_1_10`, `yes_no`, `multiple_choice`, `text`, `agreement` |
+| FR-AXKZW-QM2 | `options` field (JSON) must be populated only for `multiple_choice` type |
+| FR-AXKZW-QM3 | `weight` field (int, default 1) must determine the question's contribution to overall score |
+| FR-AXKZW-QM4 | `is_required` field (bool, default true) must gate submission completeness |
+| FR-AXKZW-QM5 | Questions must be orderable via `order` field within their section or form |
 
 ### Response Submission
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RS1 | `EvaluationResponse` must link `evaluator_id` → User, `form_id` → EvaluationForm |
-| FR-RS2 | `target_type` + `target_id` must form a polymorphic pair (mentor/program/company) |
-| FR-RS3 | `registration_id` must optionally link the response to an enrollment context |
-| FR-RS4 | `EvaluationAnswer` must enforce unique constraint on `(response_id, question_id)` — one answer per question per response |
-| FR-RS5 | `submitted_at` must be set on submission (useCurrent default) |
-| FR-RS6 | Once submitted, responses must be immutable (enforcement via planned Action layer) |
+| FR-AXKZW-RS1 | `EvaluationResponse` must link `evaluator_id` → User, `form_id` → EvaluationForm |
+| FR-AXKZW-RS2 | `target_type` + `target_id` must form a polymorphic pair (mentor/program/company) |
+| FR-AXKZW-RS3 | `registration_id` must optionally link the response to an enrollment context |
+| FR-AXKZW-RS4 | `EvaluationAnswer` must enforce unique constraint on `(response_id, question_id)` — one answer per question per response |
+| FR-AXKZW-RS5 | `submitted_at` must be set on submission (useCurrent default) |
+| FR-AXKZW-RS6 | Once submitted, responses must be immutable (enforcement via planned Action layer) |
 
 ### Score Calculation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-SC1 | Per-question `score` must be derived from `value` (e.g., rating_1_5: score = value * 20 to normalize to 0–100) |
-| FR-SC2 | `overall_score` must be computed as `sum(answer_score * question_weight) / sum(question_weight)` |
-| FR-SC3 | Text questions (no numeric score) must be excluded from weighted average |
-| FR-SC4 | `overall_score` must be stored as float on `EvaluationResponse` |
-| FR-SC5 | Score bands: EXCELLENT (85–100), GOOD (70–84), SATISFACTORY (55–69), NEEDS_IMPROVEMENT (40–54), POOR (0–39) |
+| FR-AXKZW-SC1 | Per-question `score` must be derived from `value` (e.g., rating_1_5: score = value * 20 to normalize to 0–100) |
+| FR-AXKZW-SC2 | `overall_score` must be computed as `sum(answer_score * question_weight) / sum(question_weight)` |
+| FR-AXKZW-SC3 | Text questions (no numeric score) must be excluded from weighted average |
+| FR-AXKZW-SC4 | `overall_score` must be stored as float on `EvaluationResponse` |
+| FR-AXKZW-SC5 | Score bands: EXCELLENT (85–100), GOOD (70–84), SATISFACTORY (55–69), NEEDS_IMPROVEMENT (40–54), POOR (0–39) |
 
 ### Form Lifecycle
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-FL1 | `is_active` flag must control form availability — inactive forms cannot receive new responses |
-| FR-FL2 | Composite index on `(target_type, is_active)` must support efficient form lookup |
-| FR-FL3 | `created_by` must track the admin who created the form (FK → users, nullOnDelete) |
+| FR-AXKZW-FL1 | `is_active` flag must control form availability — inactive forms cannot receive new responses |
+| FR-AXKZW-FL2 | Composite index on `(target_type, is_active)` must support efficient form lookup |
+| FR-AXKZW-FL3 | `created_by` must track the admin who created the form (FK → users, nullOnDelete) |
 
 ---
 
@@ -171,20 +171,20 @@ score bands (EXCELLENT, GOOD, etc.) for quick interpretation.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All form mutations must be authorized via Policy classes (admin-only writes) |
-| NFR-S2 | Response submission must validate evaluator identity matches `auth()->id()` |
-| NFR-S3 | Submitted responses must be immutable — no UPDATE or DELETE permitted |
-| NFR-S4 | `target_id` polymorphic values must be validated as existing records |
-| NFR-P1 | Form listing must load in < 300ms for up to 50 forms |
-| NFR-P2 | Response submission with 20 questions must complete in < 2s |
-| NFR-P3 | Score calculation must complete in < 100ms per response |
-| NFR-R1 | Response creation must be wrapped in a database transaction |
-| NFR-R2 | Unique constraint on `(response_id, question_id)` must prevent duplicate answers at DB level |
-| NFR-U1 | Evaluation forms must display question types with appropriate input controls |
-| NFR-U2 | Score bands must be displayed with human-readable labels alongside numeric scores |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-AXKZW-S1 | All form mutations must be authorized via Policy classes (admin-only writes) |
+| NFR-AXKZW-S2 | Response submission must validate evaluator identity matches `auth()->id()` |
+| NFR-AXKZW-S3 | Submitted responses must be immutable — no UPDATE or DELETE permitted |
+| NFR-AXKZW-S4 | `target_id` polymorphic values must be validated as existing records |
+| NFR-AXKZW-P1 | Form listing must load in < 300ms for up to 50 forms |
+| NFR-AXKZW-P2 | Response submission with 20 questions must complete in < 2s |
+| NFR-AXKZW-P3 | Score calculation must complete in < 100ms per response |
+| NFR-AXKZW-R1 | Response creation must be wrapped in a database transaction |
+| NFR-AXKZW-R2 | Unique constraint on `(response_id, question_id)` must prevent duplicate answers at DB level |
+| NFR-AXKZW-U1 | Evaluation forms must display question types with appropriate input controls |
+| NFR-AXKZW-U2 | Score bands must be displayed with human-readable labels alongside numeric scores |
+| NFR-AXKZW-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-AXKZW-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-AXKZW-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -215,6 +215,7 @@ App\Evaluation\Models\EvaluationForm
              questions() HasMany EvaluationQuestion, responses() HasMany EvaluationResponse
   Indexes: is_active, (target_type, is_active)
   Factory: EvaluationFormFactory
+
 ```
 
 ### EvaluationSection Model
@@ -226,6 +227,7 @@ App\Evaluation\Models\EvaluationSection
   Relations: form() BelongsTo EvaluationForm, questions() HasMany EvaluationQuestion
   Indexes: (form_id, order)
   Factory: EvaluationSectionFactory
+
 ```
 
 ### EvaluationQuestion Model
@@ -239,6 +241,7 @@ App\Evaluation\Models\EvaluationQuestion
              answers() HasMany EvaluationAnswer
   Indexes: (form_id, order), (section_id, order)
   Factory: EvaluationQuestionFactory
+
 ```
 
 ### EvaluationResponse Model
@@ -253,6 +256,7 @@ App\Evaluation\Models\EvaluationResponse
   Indexes: (form_id, evaluator_id), (target_type, target_id), submitted_at,
            (registration_id, form_id), registration_id
   Factory: EvaluationResponseFactory
+
 ```
 
 ### EvaluationAnswer Model
@@ -265,6 +269,7 @@ App\Evaluation\Models\EvaluationAnswer
   Relations: response() BelongsTo EvaluationResponse, question() BelongsTo EvaluationQuestion
   Unique: (response_id, question_id)
   Factory: EvaluationAnswerFactory
+
 ```
 
 ### Planned Enums
@@ -281,6 +286,7 @@ App\Evaluation\Enums\ScoreBand: string
   Cases: EXCELLENT='excellent', GOOD='good', SATISFACTORY='satisfactory',
          NEEDS_IMPROVEMENT='needs_improvement', POOR='poor'
   Methods: fromScore(float $score): self, label(): string
+
 ```
 
 ### Planned Actions
@@ -357,6 +363,7 @@ evaluation_answers:
   score: float (nullable)
   timestamps
   Unique: (response_id, question_id)
+
 ```
 
 ---

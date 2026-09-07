@@ -47,6 +47,18 @@ installation, environment configuration, database provisioning, and signed URL g
 
 ---
 
+## Steps
+
+Follow the sections in order:
+
+1. [Prerequisites](#prerequisites) — server requirements and extension checks
+2. [Installation Procedure](#installation-procedure) — `setup:install` command and post-install steps
+3. [Database Quick Start](#database-quick-start) — connection and schema setup
+4. [Installer Commands](#installer-commands) — available Artisan commands
+5. [Troubleshooting](#troubleshooting) — fix common problems
+
+For a quick non-interactive check without provisioning: `php artisan setup:install --check-only`
+
 ## Installation Procedure
 
 ### Clone & Install Dependencies
@@ -56,12 +68,14 @@ git clone <repository-url> /var/www/internara
 cd /var/www/internara
 composer install --no-interaction
 npm install
+
 ```
 
 ### Environment Configuration
 
 ```bash
 cp .env.example .env
+
 ```
 
 Key `.env` variables:
@@ -87,12 +101,14 @@ php artisan key:generate          # Generate APP_KEY
 php artisan migrate --force       # Run migrations (idempotent)
 php artisan storage:link          # Create public/storage symlink
 npm run build                     # Compile Vite assets
+
 ```
 
 ### Run Installer
 
 ```bash
 php artisan setup:install
+
 ```
 
 The installer performs:
@@ -105,6 +121,7 @@ Output:
 
 ```
 https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4e5f6...
+
 ```
 
 If the URL expires: `php artisan setup:reset-token`
@@ -113,6 +130,7 @@ If the URL expires: `php artisan setup:reset-token`
 
 ```bash
 php artisan optimize              # Cache config, routes, views, events
+
 ```
 
 ### Verification
@@ -120,6 +138,7 @@ php artisan optimize              # Cache config, routes, views, events
 ```bash
 php artisan system:health         # 15-point health check
 php artisan setup:install --check-only  # Audit without provisioning
+
 ```
 
 ---
@@ -161,6 +180,18 @@ php artisan setup:install --check-only  # Audit without provisioning
 | "Extension X not found" | Missing PHP extension | Install the listed extension |
 
 ---
+
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.
 
 ## Quick References
 

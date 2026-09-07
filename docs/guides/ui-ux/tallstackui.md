@@ -8,6 +8,19 @@ form inputs to complex interactions, aligned with Internara's UI system.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Table of Contents
 
 1. [Core Concepts & Architecture](#core-concepts--architecture)
@@ -38,6 +51,7 @@ All components are namespaced with an optional prefix configurable globally:
 ```php
 // config/tallstackui.php
 'prefix' => env('TALLSTACKUI_PREFIX')
+
 ```
 
 Set to `ts-` so components become `<x-ts-alert />`. Default (no prefix): `<x-modal />`, `<x-input />`.
@@ -62,6 +76,7 @@ A global Alpine magic provided by TallStackUI that exposes imperative helpers:
 <button x-on:click="$tsui.close.select('languages')">Close</button>
 <button x-on:click="$tsui.open.slide('slide-id')">Open</button>
 <button x-on:click="$tsui.focus('email')">Focus input</button>
+
 ```
 
 ### Size Shorthand Convention
@@ -93,6 +108,7 @@ Variations: bare flag (filled), `light` (tinted bg), `outline` (border only).
 
 ```bash
 composer require tallstackui/tallstackui:^4.0
+
 ```
 
 ### Base Layout
@@ -108,6 +124,7 @@ The TallStackUI script must be loaded **above** the `@vite` tag and **above** `@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 </html>
+
 ```
 
 ### Tailwind v4 — `resources/css/app.css`
@@ -121,17 +138,21 @@ The TallStackUI script must be loaded **above** the `@vite` tag and **above** `@
 @source '../../vendor/tallstackui/tallstackui/**/*.php';
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
 ```
 
 When using soft customization, also add:
+
 ```css
 @source '../../app/Providers/*.php';
+
 ```
 
 ### Build & Clear
 
 ```bash
 npm run build && php artisan optimize:clear
+
 ```
 
 ---
@@ -139,8 +160,10 @@ npm run build && php artisan optimize:clear
 ## Configuration
 
 Publish with:
+
 ```bash
 php artisan vendor:publish --tag=tallstackui.config
+
 ```
 
 File: `config/tallstackui.php` — a flat array mapping components to classes and per-component settings.
@@ -207,19 +230,23 @@ All form components share these conventions:
 <x-input label="Name" invalidate />
 <x-input label="Readonly" value="Readonly" readonly />
 <x-input label="Disabled" value="Disabled" disabled />
+
 ```
 
 ### Select — Three Variants
 
 **Native (`<x-select.native>`)** — plain `<select>`:
+
 ```blade
 <x-select.native :options="[1,2,3]" />
 <x-select.native label="Plan" hint="…" :options="[1,2,3]" />
 <x-select.native :options="[['label'=>'TALL','value'=>1], ['label'=>'LIVT','value'=>2]]" />
 <x-select.native :options="[['name'=>'TALL','id'=>1]]" select="label:name|value:id" />
+
 ```
 
 **Styled (`<x-select.styled>`)** — custom Alpine floating UI:
+
 ```blade
 <x-select.styled :options="[1,2,3]" />
 <x-select.styled label="Select One" placeholder="Custom" hint="…" :options="[1,2,3]" />
@@ -254,11 +281,13 @@ All form components share these conventions:
 {{-- Events --}}
 <x-select.styled :options="[…]" multiple x-on:select="alert(`Select: ${JSON.stringify($event.detail.select)}`)"
     x-on:remove="alert(`Remove: ${JSON.stringify($event.detail.select)}`)" />
+
 ```
 
 Events: `select` (option picked, detail: `{ select }`), `remove` (option removed, detail: `{ select }`).
 
 **Styled API (`<x-select.styled :request="…">`)** — fetches options from a URL:
+
 ```blade
 <x-select.styled :request="route('api.users')" />
 <x-select.styled :request="route('api.users')" indicator="spinner" />
@@ -270,6 +299,7 @@ Events: `select` (option picked, detail: `{ select }`), `remove` (option removed
     'params' => ['library' => 'TallStackUi'],
 ]" />
 <x-select.styled :request="route('api.users')" recycle />
+
 ```
 
 Backend contract — the route must return JSON `[{label, value}]` (or use `select="label:col|value:col"` to remap).
@@ -286,11 +316,13 @@ Backend contract — the route must return JSON `[{label, value}]` (or use `sele
 <x-textarea count />       {{-- shows character count --}}
 <x-textarea label="Readonly" value="…" readonly />
 <x-textarea label="Disabled" value="…" disabled />
+
 ```
 
 ### Checkbox (`<x-checkbox>` + `<x-checkbox.group>`)
 
 **Single:**
+
 ```blade
 <x-checkbox />
 <x-checkbox label="Receive Alert" />
@@ -302,9 +334,11 @@ Backend contract — the route must return JSON `[{label, value}]` (or use `sele
 </x-checkbox>
 <x-checkbox xs|sm|md|lg />
 <x-checkbox color="red" label="Red" />
+
 ```
 
 **Group (`<x-checkbox.group>`):**
+
 ```blade
 <x-checkbox.group label="Features" :options="[
     ['label'=>'Newsletter','value'=>'newsletter','description'=>'Weekly digest'],
@@ -328,6 +362,7 @@ Backend contract — the route must return JSON `[{label, value}]` (or use `sele
         <span class="font-mono">${{ $option['price'] }}</span>
     @endinteract
 </x-checkbox.group>
+
 ```
 
 ### Radio (`<x-radio>` + `<x-radio.group>`)
@@ -344,6 +379,7 @@ Same API as checkbox:
 <x-radio.group list|card|panel|inline :options="$plans" />
 <x-radio.group card :columns="3" :options="$plans" />
 <x-radio.group position="right" :options="$plans" />
+
 ```
 
 ### Toggle (`<x-toggle>`)
@@ -359,6 +395,7 @@ Same API as checkbox:
 <x-toggle>
     <x-slot:label start>Align on Start</x-slot:label>
 </x-toggle>
+
 ```
 
 ### Date (`<x-date>`)
@@ -393,6 +430,7 @@ Backend always receives `YYYY-MM-DD`.
 {{-- Events --}}
 <x-date x-on:select="alert(`Selected: ${$event.detail.date}`)"
     x-on:clear="alert('Cleaned!')" />
+
 ```
 
 ### Time (`<x-time>`)
@@ -415,6 +453,7 @@ Backend always receives `YYYY-MM-DD`.
 <x-time x-on:hour="alert(`Hour: ${$event.detail.hour}`)"
     x-on:minute="alert(`Min: ${$event.detail.minute}`)"
     x-on:interval="alert(`Interval: ${$event.detail.interval}`)" />
+
 ```
 
 ### Upload (`<x-upload>`)
@@ -440,9 +479,11 @@ Uses Livewire's normal `WithFileUploads` mechanism:
 
 <x-upload x-on:upload="console.log($event.detail.files)" />
 <x-upload delete x-on:remove="console.log($event.detail.file)" />
+
 ```
 
 Recommended `deleteUpload(array $content)` skeleton:
+
 ```php
 use Illuminate\Support\Arr;
 use Illuminate\Http\UploadedFile;
@@ -458,6 +499,7 @@ public function deleteUpload(array $content): void
         $item->getFilename() !== $content['temporary_name']);
     $this->photo = is_array($this->photo) ? $collect->toArray() : $collect->first();
 }
+
 ```
 
 ### Other Form Components
@@ -525,6 +567,7 @@ public function deleteUpload(array $content): void
         <x-button>Save</x-button>
     </x-slot:footer>
 </x-modal>
+
 ```
 
 Events: `open` (modal opens), `close` (modal closes).
@@ -579,6 +622,7 @@ Events: `open` (modal opens), `close` (modal closes).
 </x-dropdown>
 
 <x-dropdown x-on:open="alert(…)" x-on:select="alert('Selected')">…</x-dropdown>
+
 ```
 
 Events: `open {status}` (open/close), `select` (item clicked).
@@ -610,6 +654,7 @@ Dropped Tippy.js in v4 → smaller bundle.
         Hover me
     </span>
 </div>
+
 ```
 
 ### Card (`<x-card>`)
@@ -656,6 +701,7 @@ Dropped Tippy.js in v4 → smaller bundle.
     x-on:minimize="alert('Minimized!')"
     x-on:maximize="alert('Maximized!')"
     x-on:close="alert('Closed!')">…</x-card>
+
 ```
 
 Events: `minimize`, `maximize`, `close`. Used inside `#[Lazy]` component `placeholder()` for skeleton.
@@ -679,6 +725,7 @@ new class extends Component {
         ];
     }
 };
+
 ```
 
 ```blade
@@ -710,6 +757,7 @@ new class extends Component {
         <x-button sm>Edit</x-button>
     </x-slot:actions>
 </x-table>
+
 ```
 
 ### Pagination (`<x-pagination>`)
@@ -717,6 +765,7 @@ new class extends Component {
 ```blade
 <x-pagination :paginator="$users" />
 <x-pagination :paginator="$users" simple />
+
 ```
 
 ### Badge (`<x-badge>`)
@@ -729,6 +778,7 @@ new class extends Component {
 <x-badge text="Active" light />
 <x-badge text="Active" outline />
 <x-badge icon="check" text="Verified" />
+
 ```
 
 ### Alert (`<x-alert>`)
@@ -742,6 +792,7 @@ new class extends Component {
 
 <x-alert close>Closable alert</x-alert>
 <x-alert icon="check-circle" color="green">With icon</x-alert>
+
 ```
 
 ### Loading (`<x-loading>`)
@@ -751,6 +802,7 @@ new class extends Component {
 <x-loading text="Loading…" />
 <x-loading color="primary" />
 <x-loading spinner="bars" />
+
 ```
 
 ### Button (`<x-button>`)
@@ -778,6 +830,7 @@ new class extends Component {
 
 <x-button wire:click="save">Save</x-button>
 <x-button wire:loading wire:target="save">Saving…</x-button>
+
 ```
 
 ### Avatar (`<x-avatar>`)
@@ -788,6 +841,7 @@ new class extends Component {
 <x-avatar :model="$user" xs|sm|md|lg|xl />
 <x-avatar :model="$user" round />
 <x-avatar label="AB" /> {{-- Initials --}}
+
 ```
 
 ---
@@ -813,6 +867,7 @@ Confirmation dialogs with async support:
     })">
     Delete
 </x-button>
+
 ```
 
 ### Slide (`<x-slide>`)
@@ -829,6 +884,7 @@ Side panel for forms or details:
 
 <x-slide position="right" size="lg">…</x-slide>
 <x-slide persistent>…</x-slide> {{-- no outside-click close --}}
+
 ```
 
 ### Toast (`<x-toast>`)
@@ -848,6 +904,7 @@ Notification messages:
     ?.error('Error!', 'Something went wrong')">
     Delete
 </x-button>
+
 ```
 
 ### Error (`<x-error>`)
@@ -859,6 +916,7 @@ Form error display:
 <x-error :errors="$errors" />
 <x-error :errors="$errors" title="Please fix the following errors:" />
 <x-error :errors="$errors" color="red" />
+
 ```
 
 ---
@@ -873,6 +931,7 @@ TallStackUI uses Heroicons by default:
 <x-input icon="users" />
 <x-button icon="plus">Add</x-button>
 <x-dropdown.items icon="cog" text="Settings" />
+
 ```
 
 ### Custom Icon Mapping
@@ -887,6 +946,7 @@ TallStackUI uses Heroicons by default:
         ],
     ],
 ],
+
 ```
 
 ---
@@ -907,6 +967,7 @@ Use the "Customize" button in TallStackUI docs to reveal named blocks:
 .wrapper.sizes.sm {
     @apply px-3 py-1.5 text-sm;
 }
+
 ```
 
 ### Color Classes
@@ -925,6 +986,7 @@ class CustomButtonColor extends ButtonColor
         'secondary' => 'bg-gray-500 hover:bg-gray-600 text-white',
     ];
 }
+
 ```
 
 ---
@@ -939,6 +1001,7 @@ class CustomButtonColor extends ButtonColor
 <x-select.styled wire:model="role" :options="$roles" />
 <x-checkbox label="Active" wire:model="active" />
 <x-toggle label="Notifications" wire:model="notifications" />
+
 ```
 
 ### Wire Loading States
@@ -948,6 +1011,7 @@ class CustomButtonColor extends ButtonColor
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
 </x-button>
+
 ```
 
 ### Wire Events
@@ -961,6 +1025,7 @@ class CustomButtonColor extends ButtonColor
     })">
     Delete
 </x-button>
+
 ```
 
 ### Form Validation
@@ -968,6 +1033,7 @@ class CustomButtonColor extends ButtonColor
 ```blade
 <x-input label="Name" wire:model="name" :errors="$errors" />
 <x-input label="Name" wire:model="name" invalidate /> {{-- hide errors --}}
+
 ```
 
 ---
@@ -981,6 +1047,7 @@ Use the same size across related components:
 ```blade
 <x-input sm label="Search" wire:model="search" />
 <x-button sm wire:click="filter">Filter</x-button>
+
 ```
 
 ### 2. Semantic Colors
@@ -991,6 +1058,7 @@ Use semantic colors for actions:
 <x-button color="green">Save</x-button>
 <x-button color="red">Delete</x-button>
 <x-button color="yellow">Edit</x-button>
+
 ```
 
 ### 3. Loading States
@@ -1002,6 +1070,7 @@ Always provide loading feedback:
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
 </x-button>
+
 ```
 
 ### 4. Confirmation Dialogs
@@ -1016,6 +1085,7 @@ Use dialogs for destructive actions:
     })">
     Delete
 </x-button>
+
 ```
 
 ### 5. Toast Notifications
@@ -1028,6 +1098,7 @@ public function save()
     // …
     $this->dispatch('notify', type: 'success', message: 'Record created');
 }
+
 ```
 
 ```blade
@@ -1035,6 +1106,7 @@ public function save()
     $tsui.interaction('toast')
         ?.success($event.detail.message, 'Success')
 " />
+
 ```
 
 ### 6. Error Display
@@ -1043,6 +1115,7 @@ Show validation errors consistently:
 
 ```blade
 <x-error :errors="$errors" />
+
 ```
 
 ### 7. Accessibility

@@ -90,14 +90,14 @@ behave at runtime** (this spec).
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Deploys on shared hosting with zero external services |
-| UC-2 | System | Invalidates cache on settings change |
-| UC-3 | Deployer | Warms cache during deployment |
-| UC-4 | Admin | Validates SMTP before saving |
-| UC-5 | User | Uploads files through the media library |
-| UC-6 | System | Cache store fails gracefully |
+| UC-ZT6VS-1 | Developer | Deploys on shared hosting with zero external services |
+| UC-ZT6VS-2 | System | Invalidates cache on settings change |
+| UC-ZT6VS-3 | Deployer | Warms cache during deployment |
+| UC-ZT6VS-4 | Admin | Validates SMTP before saving |
+| UC-ZT6VS-5 | User | Uploads files through the media library |
+| UC-ZT6VS-6 | System | Cache store fails gracefully |
 
-### UC-1 — Developer Deploys on Shared Hosting
+### UC-ZT6VS-1 — Developer Deploys on Shared Hosting
 
 **Actor:** Developer
 **Preconditions:** PHP 8.4+ available, Composer installed
@@ -109,7 +109,7 @@ behave at runtime** (this spec).
 5. Application works without Redis, Memcached, or queue workers
 **Postconditions:** Zero-config deployment on shared hosting
 
-### UC-2 — Cache Invalidates on Settings Change
+### UC-ZT6VS-2 — Cache Invalidates on Settings Change
 
 **Actor:** Super Admin
 **Preconditions:** System installed, admin changing a setting
@@ -120,7 +120,7 @@ behave at runtime** (this spec).
 4. Next request reads fresh data from the database
 **Postconditions:** No stale cached values, no full cache flush needed
 
-### UC-3 — Deployment Warms Cache
+### UC-ZT6VS-3 — Deployment Warms Cache
 
 **Actor:** DevOps / CI pipeline
 **Preconditions:** Code deployed, `.env` configured
@@ -130,7 +130,7 @@ behave at runtime** (this spec).
 3. First user request hits warm cache, no cold-start penalty
 **Postconditions:** First-request latency reduced by ~60%
 
-### UC-4 — Admin Validates SMTP Before Saving
+### UC-ZT6VS-4 — Admin Validates SMTP Before Saving
 
 **Actor:** School Admin
 **Preconditions:** Settings page open
@@ -141,7 +141,7 @@ behave at runtime** (this spec).
 4. On success, settings are saved and future mail uses SMTP
 **Postconditions:** Mail configuration is verified before it takes effect
 
-### UC-5 — File Upload Through the Media Library
+### UC-ZT6VS-5 — File Upload Through the Media Library
 
 **Actor:** Student / Admin
 **Preconditions:** Upload feature (avatar, evidence, media) available
@@ -151,7 +151,7 @@ behave at runtime** (this spec).
 3. The media library registers the file and serves it through its secure route
 **Postconditions:** Uploads are governed by disk config and media policies (see [file-uploads-media](WQGTP-file-uploads-media.md))
 
-### UC-6 — Cache Store Fails Gracefully
+### UC-ZT6VS-6 — Cache Store Fails Gracefully
 
 **Actor:** Runtime system
 **Preconditions:** Cache store unavailable (e.g. file store unwritable)
@@ -169,80 +169,80 @@ behave at runtime** (this spec).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-DB1 | Default (development): SQLite via `DB_CONNECTION=sqlite` |
-| FR-DB2 | Production supported: MySQL >= 8.0, MariaDB >= 10.6, PostgreSQL >= 15 |
-| FR-DB3 | UTF-8 charset enforced: `DB_CHARSET=utf8mb4` (PostgreSQL: `utf8`) |
-| FR-DB4 | UUID v7 primary keys via `HasUuids` trait — no auto-increment IDs |
-| FR-DB5 | SQLite: WAL journal mode and `busy_timeout` enabled for concurrency safety |
-| FR-DB6 | Foreign keys MUST declare `onDelete`/`onUpdate` behavior (D6 invariant) |
+| FR-ZT6VS-DB1 | Default (development): SQLite via `DB_CONNECTION=sqlite` |
+| FR-ZT6VS-DB2 | Production supported: MySQL >= 8.0, MariaDB >= 10.6, PostgreSQL >= 15 |
+| FR-ZT6VS-DB3 | UTF-8 charset enforced: `DB_CHARSET=utf8mb4` (PostgreSQL: `utf8`) |
+| FR-ZT6VS-DB4 | UUID v7 primary keys via `HasUuids` trait — no auto-increment IDs |
+| FR-ZT6VS-DB5 | SQLite: WAL journal mode and `busy_timeout` enabled for concurrency safety |
+| FR-ZT6VS-DB6 | Foreign keys MUST declare `onDelete`/`onUpdate` behavior (D6 invariant) |
 
 ### Cache Infrastructure
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-CACHE1 | Default cache driver: `file` (zero-config, shared hosting compatible) |
-| FR-CACHE2 | Supported drivers: `file`, `database`, `redis`, `memcached`, `dynamodb`, `array` (testing) |
-| FR-CACHE3 | All cache keys MUST be registered in `config/cache-keys.php` (C4 invariant) |
-| FR-CACHE4 | Cache key naming: `{module}.{purpose}[.{qualifier}]` |
-| FR-CACHE5 | TTL categories: short (<5min), medium (5min–1h), long (1h–24h), forever (explicit invalidation) |
-| FR-CACHE6 | Invalidation: event-driven preferred (Command Action → Event → Listener → Cache::forget) |
-| FR-CACHE7 | Invalidation: direct inline for simple cases (`Cache::forget(config('cache-keys.xxx'))`) |
-| FR-CACHE8 | Application caches: `config:cache`, `route:cache`, `view:cache`, `event:cache` on deployment |
-| FR-CACHE9 | Cache warming command: `php artisan system:cache-warm` |
-| FR-CACHE10 | Redis prefix: `internara-cache-` (via `CACHE_PREFIX` env) |
+| FR-ZT6VS-CACHE1 | Default cache driver: `file` (zero-config, shared hosting compatible) |
+| FR-ZT6VS-CACHE2 | Supported drivers: `file`, `database`, `redis`, `memcached`, `dynamodb`, `array` (testing) |
+| FR-ZT6VS-CACHE3 | All cache keys MUST be registered in `config/cache-keys.php` (C4 invariant) |
+| FR-ZT6VS-CACHE4 | Cache key naming: `{module}.{purpose}[.{qualifier}]` |
+| FR-ZT6VS-CACHE5 | TTL categories: short (<5min), medium (5min–1h), long (1h–24h), forever (explicit invalidation) |
+| FR-ZT6VS-CACHE6 | Invalidation: event-driven preferred (Command Action → Event → Listener → Cache::forget) |
+| FR-ZT6VS-CACHE7 | Invalidation: direct inline for simple cases (`Cache::forget(config('cache-keys.xxx'))`) |
+| FR-ZT6VS-CACHE8 | Application caches: `config:cache`, `route:cache`, `view:cache`, `event:cache` on deployment |
+| FR-ZT6VS-CACHE9 | Cache warming command: `php artisan system:cache-warm` |
+| FR-ZT6VS-CACHE10 | Redis prefix: `internara-cache-` (via `CACHE_PREFIX` env) |
 
 ### Session Infrastructure
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SESS1 | Default session driver: `database` (auto-migrated, zero-config) |
-| FR-SESS2 | Supported drivers: `database`, `redis`, `file`, `array` (testing) |
-| FR-SESS3 | Session lifetime: 120 minutes of inactivity (configurable via `SESSION_LIFETIME`) |
-| FR-SESS4 | Session encryption: enabled (`SESSION_ENCRYPT=true`) |
-| FR-SESS5 | Cookie flags: HTTP-only, SameSite=lax, secure in production |
-| FR-SESS6 | Session fixation prevention: ID regenerated on login/logout and privilege changes |
-| FR-SESS7 | Garbage collection: probabilistic `[2, 100]` (2% chance per request) for database driver |
-| FR-SESS8 | Redis driver: key expiry handles GC automatically (no application-level GC) |
-| FR-SESS9 | Session stores: auth state, CSRF token, locale preference, wizard progress, setup authorization |
+| FR-ZT6VS-SESS1 | Default session driver: `database` (auto-migrated, zero-config) |
+| FR-ZT6VS-SESS2 | Supported drivers: `database`, `redis`, `file`, `array` (testing) |
+| FR-ZT6VS-SESS3 | Session lifetime: 120 minutes of inactivity (configurable via `SESSION_LIFETIME`) |
+| FR-ZT6VS-SESS4 | Session encryption: enabled (`SESSION_ENCRYPT=true`) |
+| FR-ZT6VS-SESS5 | Cookie flags: HTTP-only, SameSite=lax, secure in production |
+| FR-ZT6VS-SESS6 | Session fixation prevention: ID regenerated on login/logout and privilege changes |
+| FR-ZT6VS-SESS7 | Garbage collection: probabilistic `[2, 100]` (2% chance per request) for database driver |
+| FR-ZT6VS-SESS8 | Redis driver: key expiry handles GC automatically (no application-level GC) |
+| FR-ZT6VS-SESS9 | Session stores: auth state, CSRF token, locale preference, wizard progress, setup authorization |
 
 ### Queue
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-Q1  | Default queue connection: `sync` (synchronous, no worker needed) |
-| FR-Q2  | Supported connections: `sync`, `database`, `redis`, `beanstalkd` |
-| FR-Q3  | Queue-specific tables auto-created by migration for `database` driver |
-| FR-Q4  | Failed jobs table: `failed_jobs` with full exception trace |
-| FR-Q5  | Horizon available for Redis queue monitoring (optional) |
-| FR-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (internara-project §8 NFR-Q1; see [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md) and [official-documents](7H5D6-official-documents.md)) |
+| FR-ZT6VS-Q1  | Default queue connection: `sync` (synchronous, no worker needed) |
+| FR-ZT6VS-Q2  | Supported connections: `sync`, `database`, `redis`, `beanstalkd` |
+| FR-ZT6VS-Q3  | Queue-specific tables auto-created by migration for `database` driver |
+| FR-ZT6VS-Q4  | Failed jobs table: `failed_jobs` with full exception trace |
+| FR-ZT6VS-Q5  | Horizon available for Redis queue monitoring (optional) |
+| FR-ZT6VS-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (internara-project §8 NFR-ZT6VS-Q1; see [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md) and [official-documents](7H5D6-official-documents.md)) |
 
 ### Mail
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-M1  | Default mailer: `log` (development), `smtp` (production) |
-| FR-M2  | SMTP configuration via `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` env |
-| FR-M3  | `TestMailSettingsAction` validates SMTP config before persisting |
-| FR-M4  | Mail from address: `MAIL_FROM_ADDRESS` env, fallback `support_email` setting |
+| FR-ZT6VS-M1  | Default mailer: `log` (development), `smtp` (production) |
+| FR-ZT6VS-M2  | SMTP configuration via `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` env |
+| FR-ZT6VS-M3  | `TestMailSettingsAction` validates SMTP config before persisting |
+| FR-ZT6VS-M4  | Mail from address: `MAIL_FROM_ADDRESS` env, fallback `support_email` setting |
 
 ### Filesystem & Storage
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-FS1 | Default disk: `local` (via `FILESYSTEM_DISK=local`) |
-| FR-FS2 | `public` disk serves publicly accessible assets; `storage:link` is part of `setup:install` |
-| FR-FS3 | `s3` disk available for object-storage deployments (via `AWS_*` env) |
-| FR-FS4 | All user uploads go through the media library on a configured disk — never raw `Storage::put` (see [file-uploads-media](WQGTP-file-uploads-media.md)) |
-| FR-FS5 | Media collections declare their storage disk and conversion presets in the owning Model |
+| FR-ZT6VS-FS1 | Default disk: `local` (via `FILESYSTEM_DISK=local`) |
+| FR-ZT6VS-FS2 | `public` disk serves publicly accessible assets; `storage:link` is part of `setup:install` |
+| FR-ZT6VS-FS3 | `s3` disk available for object-storage deployments (via `AWS_*` env) |
+| FR-ZT6VS-FS4 | All user uploads go through the media library on a configured disk — never raw `Storage::put` (see [file-uploads-media](WQGTP-file-uploads-media.md)) |
+| FR-ZT6VS-FS5 | Media collections declare their storage disk and conversion presets in the owning Model |
 
 ### Supporting Services
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SVC1 | Redis, when enabled, is one shared server with distinct connections: `cache`, `queue`, `session`, `default` (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD` env) |
-| FR-SVC2 | `APP_KEY` must be present and non-empty (`base64:` value) in all environments — encryption at rest for sessions and data |
-| FR-SVC3 | System health reporting via `php artisan system:health` and the `/up` endpoint surfaces service status (see [system-maintenance](E1MSJ-system-maintenance.md)) |
-| FR-SVC4 | Default connections after install MUST be `queue=sync`, `cache=file`, `session=database` (asserted by config test) | |
+| FR-ZT6VS-SVC1 | Redis, when enabled, is one shared server with distinct connections: `cache`, `queue`, `session`, `default` (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD` env) |
+| FR-ZT6VS-SVC2 | `APP_KEY` must be present and non-empty (`base64:` value) in all environments — encryption at rest for sessions and data |
+| FR-ZT6VS-SVC3 | System health reporting via `php artisan system:health` and the `/up` endpoint surfaces service status (see [system-maintenance](E1MSJ-system-maintenance.md)) |
+| FR-ZT6VS-SVC4 | Default connections after install MUST be `queue=sync`, `cache=file`, `session=database` (asserted by config test) | |
 
 ---
 
@@ -250,16 +250,16 @@ behave at runtime** (this spec).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | Session cookie must be HTTP-only, SameSite=lax, secure in production |
-| NFR-S2 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
-| NFR-S3 | `APP_KEY` is enforced — missing key fails fast at boot in production |
-| NFR-S4 | Upload validation and media security follow [file-uploads-media](WQGTP-file-uploads-media.md) |
-| NFR-P1 | Cache warming reduces first-request latency after deployment |
-| NFR-P2 | Application cache (config/route/view/event) reduces bootstrap time by ~60% |
-| NFR-P3 | Redis connection pool: persistent connections optional (`REDIS_PERSISTENT`) |
-| NFR-R1 | Graceful degradation: cache miss returns fresh data, never a cached error |
-| NFR-R2 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
-| NFR-M1 | Cache key registry in a single file (`config/cache-keys.php`) — discoverable, auditable |
+| NFR-ZT6VS-S1 | Session cookie must be HTTP-only, SameSite=lax, secure in production |
+| NFR-ZT6VS-S2 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
+| NFR-ZT6VS-S3 | `APP_KEY` is enforced — missing key fails fast at boot in production |
+| NFR-ZT6VS-S4 | Upload validation and media security follow [file-uploads-media](WQGTP-file-uploads-media.md) |
+| NFR-ZT6VS-P1 | Cache warming reduces first-request latency after deployment |
+| NFR-ZT6VS-P2 | Application cache (config/route/view/event) reduces bootstrap time by ~60% |
+| NFR-ZT6VS-P3 | Redis connection pool: persistent connections optional (`REDIS_PERSISTENT`) |
+| NFR-ZT6VS-R1 | Graceful degradation: cache miss returns fresh data, never a cached error |
+| NFR-ZT6VS-R2 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
+| NFR-ZT6VS-M1 | Cache key registry in a single file (`config/cache-keys.php`) — discoverable, auditable |
 
 ## Test Requirements
 
@@ -321,6 +321,7 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=null
 REDIS_PERSISTENT=false
+
 ```
 
 ### Cache Key Registry
@@ -338,6 +339,7 @@ return [
     'health_check'           => 'system.health_check',
     // ... 25+ registered keys
 ];
+
 ```
 
 ### Redis Connection Map
@@ -352,8 +354,9 @@ return [
 ### Queue Pipeline Contract
 
 ```php
-// Batch document generation uses the 'documents' pipeline (FR-Q6):
+// Batch document generation uses the 'documents' pipeline (FR-ZT6VS-Q6):
 dispatch(new GenerateDocumentJob(...))->onQueue('documents');
+
 ```
 
 ---
@@ -364,7 +367,7 @@ dispatch(new GenerateDocumentJob(...))->onQueue('documents');
 
 **Decision:** Default cache driver is `file`, not Redis.
 **Rationale:** Shared hosting cannot install Redis; file cache works without external services.
-Switching to Redis is a one-line `.env` change (FR-CACHE1, G2).
+Switching to Redis is a one-line `.env` change (FR-ZT6VS-CACHE1, G2).
 **Trade-off:** File cache is slower and lacks atomic operations — acceptable for single-tenant
 workloads.
 
@@ -372,27 +375,27 @@ workloads.
 
 **Decision:** Default session driver is `database`, not `file`.
 **Rationale:** Database sessions survive process restarts (important for queue workers) and
-support multi-process deployments; the sessions table is auto-created by migration (FR-SESS1).
+support multi-process deployments; the sessions table is auto-created by migration (FR-ZT6VS-SESS1).
 **Trade-off:** Slightly higher DB load per request — negligible for <1000 concurrent users.
 
 ### DD-3 — Sync Queue as Default
 
 **Decision:** Default queue connection is `sync` (synchronous execution).
 **Rationale:** Shared hosting has no queue workers; sync executes jobs inline. Production switches
-to `database`/`redis` via `.env` plus `php artisan queue:work` (FR-Q1).
+to `database`/`redis` via `.env` plus `php artisan queue:work` (FR-ZT6VS-Q1).
 **Trade-off:** No background processing on default config — all jobs run synchronously.
 Acceptable for small-scale deployments.
 
 ### DD-4 — SQLite as Default Database
 
 **Decision:** Default connection is SQLite for development and shared hosting.
-**Rationale:** Zero-config, file-based, WAL-enabled (FR-DB1, FR-DB5). Production uses MySQL 8 /
-MariaDB 10.6 / PostgreSQL 15 via `.env` (FR-DB2).
+**Rationale:** Zero-config, file-based, WAL-enabled (FR-ZT6VS-DB1, FR-ZT6VS-DB5). Production uses MySQL 8 /
+MariaDB 10.6 / PostgreSQL 15 via `.env` (FR-ZT6VS-DB2).
 **Trade-off:** SQLite is single-writer; adequate for single-tenant with low concurrency.
 
 ### DD-5 — SMTP Validation Gate
 
-**Decision:** `TestMailSettingsAction` probes SMTP before settings are persisted (FR-M3).
+**Decision:** `TestMailSettingsAction` probes SMTP before settings are persisted (FR-ZT6VS-M3).
 **Rationale:** Wrong mail config silently breaks notifications; validating before persist surfaces
 errors at edit time (PS-4).
 **Trade-off:** Requires a working SMTP at save time — acceptable for a school admin workflow.
@@ -401,13 +404,13 @@ errors at edit time (PS-4).
 
 **Decision:** Default mailer is `log`.
 **Rationale:** Development and default installs never fail on missing SMTP; `smtp` is the
-documented production choice (FR-M1).
+documented production choice (FR-ZT6VS-M1).
 **Trade-off:** Default install does not send real mail until configured — expected for zero-config
 deployment.
 
 ### DD-7 — Media Library as the Only Upload Path
 
-**Decision:** All user uploads go through the media library on a configured disk (FR-FS4).
+**Decision:** All user uploads go through the media library on a configured disk (FR-ZT6VS-FS4).
 **Rationale:** Centralizes storage, conversions, and serving behind a security-reviewed package
 instead of ad-hoc `Storage::put` calls.
 **Trade-off:** Adds Spatie MediaLibrary as a hard dependency (already pinned in FB792).
@@ -477,7 +480,7 @@ Per-service requirements are satisfied by those configs plus the consuming modul
 | Order | Spec | Connection |
 | ----- | ---- | ---------- |
 | 1 | [base-classes.md](SE5Q9-base-classes.md) | Base classes (BaseModel, actions) consume cache/session/queue/mail services |
-| 2 | [file-uploads-media.md](WQGTP-file-uploads-media.md) | Media library storage on configured disks (FR-FS4) |
+| 2 | [file-uploads-media.md](WQGTP-file-uploads-media.md) | Media library storage on configured disks (FR-ZT6VS-FS4) |
 | 3 | [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) | Queue lifecycle, retries, batches (FR-Q) |
 
 ---
@@ -491,9 +494,9 @@ for row conventions.
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
 | R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | - `docs/specs/ZT6VS-core-infra-services.md` **FR-SESS1** (Session 1: System Requirements section §6 / Session 1 §4.4.2): | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
+| OQ-1 | - `docs/specs/ZT6VS-core-infra-services.md` **FR-ZT6VS-SESS1** (Session 1: System Requirements section §6 / Session 1 §4.4.2): | Open | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433) |
 | R-2 | Missing tests for several ZT6VS requirements: | Open | Maintainer | [#405](https://github.com/reasvyn/internara/issues/405) |
-| R-3 | FR-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+| R-3 | FR-ZT6VS-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
 
 ## Quick References
 

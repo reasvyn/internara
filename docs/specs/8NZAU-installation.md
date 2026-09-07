@@ -71,7 +71,7 @@ requires login).
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — CLI Installation (Primary Path)
+### UC-8NZAU-1 — CLI Installation (Primary Path)
 
 **Actor:** Server administrator (sysadmin, IT staff)
 
@@ -90,7 +90,7 @@ created), storage directory writable.
 **Postconditions:** Database is provisioned, token is valid for 60 minutes, setup routes are
 accessible via token.
 
-### UC-2 — Token Reset (Lost Token)
+### UC-8NZAU-2 — Token Reset (Lost Token)
 
 **Actor:** Server administrator
 
@@ -104,7 +104,7 @@ accessible via token.
 
 **Postconditions:** Previous token is invalid, new token is valid for 60 minutes.
 
-### UC-3 — Emergency Super Admin Recovery
+### UC-8NZAU-3 — Emergency Super Admin Recovery
 
 **Actor:** Server administrator
 
@@ -117,7 +117,7 @@ accessible via token.
 
 **Postconditions:** Super admin account is accessible with new password.
 
-### UC-4 — Environment Audit Only
+### UC-8NZAU-4 — Environment Audit Only
 
 **Actor:** Server administrator
 
@@ -130,15 +130,15 @@ accessible via token.
 
 **Postconditions:** Administrator knows environment readiness status.
 
-### UC-5 — CLI Installation with Demo Dataset
+### UC-8NZAU-5 — CLI Installation with Demo Dataset
 
 **Actor:** Server administrator / developer
 
-**Preconditions:** Same as UC-1.
+**Preconditions:** Same as UC-8NZAU-1.
 
 **Flow:**
 1. Administrator runs `php artisan setup:install --with-dummy`
-2. System provisions as in UC-1 (audit → provision → token)
+2. System provisions as in UC-8NZAU-1 (audit → provision → token)
 3. After provisioning, system seeds the demo dataset via `DummySeeder`
    (see [dummy-data.md](3UOZP-dummy-data.md))
 
@@ -152,84 +152,84 @@ accessible via token.
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-A1 | System must check PHP version >= 8.4.0                                 |
-| FR-A2 | System must check 12 required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
-| FR-A3 | System must warn about recommended extensions: redis, pcntl, posix      |
-| FR-A4 | System must verify directory permissions: storage/, bootstrap/cache/     |
-| FR-A5 | System must verify database connectivity                                |
-| FR-A6 | System must verify terminal access (for artisan commands)               |
-| FR-A7 | Audit results must be categorized: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
-| FR-A8 | Each check must show pass/fail/warning status with specific details      |
-| FR-A9 | Audit must be re-runnable (Recheck button in wizard)                    |
-| FR-A10 | Frontend assets check: verify `public/build/manifest.json` exists (Vite build output) |
-| FR-A11 | TERMINAL checks: `pcntl_fork` (animations) and `posix_isatty` (interactive terminal) — WARN if missing |
-| FR-A12 | Post-install template `.env` warnings: detect placeholder values in APP_URL, DB_PASSWORD, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM_ADDRESS |
+| FR-8NZAU-A1 | System must check PHP version >= 8.4.0                                 |
+| FR-8NZAU-A2 | System must check 12 required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
+| FR-8NZAU-A3 | System must warn about recommended extensions: redis, pcntl, posix      |
+| FR-8NZAU-A4 | System must verify directory permissions: storage/, bootstrap/cache/     |
+| FR-8NZAU-A5 | System must verify database connectivity                                |
+| FR-8NZAU-A6 | System must verify terminal access (for artisan commands)               |
+| FR-8NZAU-A7 | Audit results must be categorized: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
+| FR-8NZAU-A8 | Each check must show pass/fail/warning status with specific details      |
+| FR-8NZAU-A9 | Audit must be re-runnable (Recheck button in wizard)                    |
+| FR-8NZAU-A10 | Frontend assets check: verify `public/build/manifest.json` exists (Vite build output) |
+| FR-8NZAU-A11 | TERMINAL checks: `pcntl_fork` (animations) and `posix_isatty` (interactive terminal) — WARN if missing |
+| FR-8NZAU-A12 | Post-install template `.env` warnings: detect placeholder values in APP_URL, DB_PASSWORD, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM_ADDRESS |
 
 ### 4.2 System Provisioning
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-P1 | System must create `.env` from `.env.example` if missing, set chmod 0600 |
-| FR-P2 | System must generate APP_KEY if empty                                    |
-| FR-P3 | System must run all database migrations (`migrate` or `migrate:fresh` with `--force`) |
-| FR-P4 | System must seed: roles (Spatie), default settings, academic year        |
-| FR-P5 | System must create storage symlink if missing                            |
-| FR-P6 | System must clear all caches: config, application, routes, views         |
-| FR-P7 | All provisioning tasks must execute in order within a single transaction (where applicable) |
-| FR-P8 | `--force` flag must only work in local, dev, development, testing environments |
+| FR-8NZAU-P1 | System must create `.env` from `.env.example` if missing, set chmod 0600 |
+| FR-8NZAU-P2 | System must generate APP_KEY if empty                                    |
+| FR-8NZAU-P3 | System must run all database migrations (`migrate` or `migrate:fresh` with `--force`) |
+| FR-8NZAU-P4 | System must seed: roles (Spatie), default settings, academic year        |
+| FR-8NZAU-P5 | System must create storage symlink if missing                            |
+| FR-8NZAU-P6 | System must clear all caches: config, application, routes, views         |
+| FR-8NZAU-P7 | All provisioning tasks must execute in order within a single transaction (where applicable) |
+| FR-8NZAU-P8 | `--force` flag must only work in local, dev, development, testing environments |
 
 ### 4.3 Setup Token
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-T1 | Token must be 64-character cryptographically random string               |
-| FR-T2 | Token must be encrypted with `Crypt::encryptString` before storage       |
-| FR-T3 | Token must expire after 60 minutes (configurable via `config/setup.php`) |
-| FR-T4 | Token must be single-use — cleared after successful validation           |
-| FR-T5 | Token version must increment on each generation to invalidate stale sessions |
-| FR-T6 | Rate limiting: max 20 validation attempts per IP per 60 seconds          |
-| FR-T7 | Failed validation must log the attempt and throttle the client            |
-| FR-T8 | Token generation must use cache lock (`setup.token.generation`) to prevent races |
+| FR-8NZAU-T1 | Token must be 64-character cryptographically random string               |
+| FR-8NZAU-T2 | Token must be encrypted with `Crypt::encryptString` before storage       |
+| FR-8NZAU-T3 | Token must expire after 60 minutes (configurable via `config/setup.php`) |
+| FR-8NZAU-T4 | Token must be single-use — cleared after successful validation           |
+| FR-8NZAU-T5 | Token version must increment on each generation to invalidate stale sessions |
+| FR-8NZAU-T6 | Rate limiting: max 20 validation attempts per IP per 60 seconds          |
+| FR-8NZAU-T7 | Failed validation must log the attempt and throttle the client            |
+| FR-8NZAU-T8 | Token generation must use cache lock (`setup.token.generation`) to prevent races |
 
 ### 4.4 CLI Commands
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-C1 | `setup:install` — provisions system, generates token, displays URL       |
-| FR-C2 | `setup:install --check-only` — runs audit only, no provisioning         |
-| FR-C3 | `setup:install --force` — wipes DB and re-provisions (restricted envs)   |
-| FR-C4 | `setup:install --url=URL` — sets APP_URL in `.env` and generates token URL |
-| FR-C5 | `setup:install --optimize` — caches config, routes, views, events (production) |
-| FR-C6 | `setup:reset-token` — generates new token, invalidates old              |
-| FR-C7 | `admin:recover` — generates new password for super admin (see [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md)) |
-| FR-C8 | `setup:install` on installed system must fail unless `--force`           |
-| FR-C9 | `--force` on non-local environments must be rejected                    |
-| FR-C10 | `setup:install --with-dummy` — after provisioning, seeds the demo dataset via `DummySeeder` (see [dummy-data.md](3UOZP-dummy-data.md)) |
+| FR-8NZAU-C1 | `setup:install` — provisions system, generates token, displays URL       |
+| FR-8NZAU-C2 | `setup:install --check-only` — runs audit only, no provisioning         |
+| FR-8NZAU-C3 | `setup:install --force` — wipes DB and re-provisions (restricted envs)   |
+| FR-8NZAU-C4 | `setup:install --url=URL` — sets APP_URL in `.env` and generates token URL |
+| FR-8NZAU-C5 | `setup:install --optimize` — caches config, routes, views, events (production) |
+| FR-8NZAU-C6 | `setup:reset-token` — generates new token, invalidates old              |
+| FR-8NZAU-C7 | `admin:recover` — generates new password for super admin (see [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md)) |
+| FR-8NZAU-C8 | `setup:install` on installed system must fail unless `--force`           |
+| FR-8NZAU-C9 | `--force` on non-local environments must be rejected                    |
+| FR-8NZAU-C10 | `setup:install --with-dummy` — after provisioning, seeds the demo dataset via `DummySeeder` (see [dummy-data.md](3UOZP-dummy-data.md)) |
 
 ### 4.5 Module Discovery
 
 | ID   | Requirement                                                              |
 | ---- | ------------------------------------------------------------------------ |
-| FR-D1 | `setup:install` must run `module:discover` after provisioning            |
-| FR-D2 | Boot-time discovery (Livewire, policies, view namespaces) is governed by [module-discovery.md](I1BCV-module-discovery.md) — not re-specified here |
+| FR-8NZAU-D1 | `setup:install` must run `module:discover` after provisioning            |
+| FR-8NZAU-D2 | Boot-time discovery (Livewire, policies, view namespaces) is governed by [module-discovery.md](I1BCV-module-discovery.md) — not re-specified here |
 
 Full discovery requirements (FR-V*, FR-CLI*, FR-R*, FR-T*, NFR-*) live in
 [module-discovery.md](I1BCV-module-discovery.md). This spec only adds the installation
-integration point (FR-D1) and defers the rest to that spec.
+integration point (FR-8NZAU-D1) and defers the rest to that spec.
 
 ### 4.6 HTTP Middleware, Routes & Controller
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-H1 | Before installation, all non-setup web routes must redirect to `/setup` (`RequireSetupAccessMiddleware`) |
-| FR-H2 | `RequireSetupAccessMiddleware` must allow Livewire requests and static assets through |
-| FR-H3 | Setup routes must be protected by `setup.protected` alias → `ProtectSetupRouteMiddleware` |
-| FR-H4 | When installed, setup routes must be unreachable (404) except during the post-finalization window |
-| FR-H5 | `GET/POST /setup` and `POST /setup/cleanup` (name `setup.cleanup`) must exist under the protected group |
-| FR-H6 | The `setup` route must be excluded from CSRF verification (token-based auth instead) |
-| FR-H7 | Session authorization (`setup.authorized` + `token_version`) must gate access instead of re-validating the token on every request |
-| FR-H8 | Session ID must be regenerated after successful token validation |
-| FR-H9 | `/setup/cleanup` must purge all setup session state (`authorized`, `token`, `token_input`, `form_data`, `completed`) |
+| FR-8NZAU-H1 | Before installation, all non-setup web routes must redirect to `/setup` (`RequireSetupAccessMiddleware`) |
+| FR-8NZAU-H2 | `RequireSetupAccessMiddleware` must allow Livewire requests and static assets through |
+| FR-8NZAU-H3 | Setup routes must be protected by `setup.protected` alias → `ProtectSetupRouteMiddleware` |
+| FR-8NZAU-H4 | When installed, setup routes must be unreachable (404) except during the post-finalization window |
+| FR-8NZAU-H5 | `GET/POST /setup` and `POST /setup/cleanup` (name `setup.cleanup`) must exist under the protected group |
+| FR-8NZAU-H6 | The `setup` route must be excluded from CSRF verification (token-based auth instead) |
+| FR-8NZAU-H7 | Session authorization (`setup.authorized` + `token_version`) must gate access instead of re-validating the token on every request |
+| FR-8NZAU-H8 | Session ID must be regenerated after successful token validation |
+| FR-8NZAU-H9 | `/setup/cleanup` must purge all setup session state (`authorized`, `token`, `token_input`, `form_data`, `completed`) |
 
 ---
 
@@ -239,54 +239,54 @@ integration point (FR-D1) and defers the rest to that spec.
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-S1 | Token must be cryptographically random (64 chars, via `Str::random`) |
-| NFR-S2 | Token must be encrypted at rest (`Crypt::encryptString`)             |
-| NFR-S3 | Token must be single-use — cleared after validation                  |
-| NFR-S4 | Session ID must be regenerated after token validation                |
-| NFR-S5 | Rate limiting: 20 attempts/IP/60s on token validation                |
-| NFR-S6 | Recovery key must be hashed in database, plaintext only in file      |
-| NFR-S7 | Recovery key file must have permissions 0600 (owner-only read/write) |
-| NFR-S8 | `.env` file must be created with permissions 0600                    |
-| NFR-S9 | Super admin password must meet Laravel Password rules (8+ chars, mixed case, numbers) |
-| NFR-S10 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
-| NFR-S11 | `--force` must be restricted to non-production environments          |
-| NFR-S12 | All setup actions must be logged via SmartLogger for audit trail     |
-| NFR-S13 | `--with-dummy` seeds the demo dataset in any environment when explicitly requested (see [dummy-data.md](3UOZP-dummy-data.md) FR-E6); it never fails a successful provisioned install |
+| NFR-8NZAU-S1 | Token must be cryptographically random (64 chars, via `Str::random`) |
+| NFR-8NZAU-S2 | Token must be encrypted at rest (`Crypt::encryptString`)             |
+| NFR-8NZAU-S3 | Token must be single-use — cleared after validation                  |
+| NFR-8NZAU-S4 | Session ID must be regenerated after token validation                |
+| NFR-8NZAU-S5 | Rate limiting: 20 attempts/IP/60s on token validation                |
+| NFR-8NZAU-S6 | Recovery key must be hashed in database, plaintext only in file      |
+| NFR-8NZAU-S7 | Recovery key file must have permissions 0600 (owner-only read/write) |
+| NFR-8NZAU-S8 | `.env` file must be created with permissions 0600                    |
+| NFR-8NZAU-S9 | Super admin password must meet Laravel Password rules (8+ chars, mixed case, numbers) |
+| NFR-8NZAU-S10 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
+| NFR-8NZAU-S11 | `--force` must be restricted to non-production environments          |
+| NFR-8NZAU-S12 | All setup actions must be logged via SmartLogger for audit trail     |
+| NFR-8NZAU-S13 | `--with-dummy` seeds the demo dataset in any environment when explicitly requested (see [dummy-data.md](3UOZP-dummy-data.md) FR-8NZAU-E6); it never fails a successful provisioned install |
 
 ### 5.2 Performance
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-P1 | Environment audit must complete within 5 seconds                     |
-| NFR-P2 | Full provisioning (migrations + seeders) must complete within 30 seconds |
-| NFR-P3 | Token generation must use cache lock to prevent race conditions      |
-| NFR-P4 | Post-install cache invalidation must complete within 2 seconds       |
-| NFR-P5 | Module discovery performance is governed by [module-discovery.md](I1BCV-module-discovery.md) (NFR-P1–P5) — not re-specified here |
+| NFR-8NZAU-P1 | Environment audit must complete within 5 seconds                     |
+| NFR-8NZAU-P2 | Full provisioning (migrations + seeders) must complete within 30 seconds |
+| NFR-8NZAU-P3 | Token generation must use cache lock to prevent race conditions      |
+| NFR-8NZAU-P4 | Post-install cache invalidation must complete within 2 seconds       |
+| NFR-8NZAU-P5 | Module discovery performance is governed by [module-discovery.md](I1BCV-module-discovery.md) (NFR-8NZAU-P1–P5) — not re-specified here |
 
 ### 5.3 Reliability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-R1 | Provisioning failures must roll back the entire transaction          |
-| NFR-R2 | Recovery key file write failure must not block finalization          |
-| NFR-R3 | Token generation lock must have 10s lock duration, 15s block timeout |
-| NFR-R4 | System must handle concurrent token generation attempts gracefully   |
+| NFR-8NZAU-R1 | Provisioning failures must roll back the entire transaction          |
+| NFR-8NZAU-R2 | Recovery key file write failure must not block finalization          |
+| NFR-8NZAU-R3 | Token generation lock must have 10s lock duration, 15s block timeout |
+| NFR-8NZAU-R4 | System must handle concurrent token generation attempts gracefully   |
 
 ### 5.4 Usability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-U1 | CLI output must include a visual banner and formatted sections       |
-| NFR-U2 | All CLI output must be available in English and Indonesian           |
+| NFR-8NZAU-U1 | CLI output must include a visual banner and formatted sections       |
+| NFR-8NZAU-U2 | All CLI output must be available in English and Indonesian           |
 
 ### 5.5 Maintainability
 
 | ID    | Requirement                                                          |
 | ----- | -------------------------------------------------------------------- |
-| NFR-M1 | Setup state must be stored in the shared `settings` table (no separate migrations) |
-| NFR-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
-| NFR-M3 | Setup entity must be `final readonly` with zero I/O                  |
-| NFR-M4 | All setup behavior must be testable via Pest test suite              |
+| NFR-8NZAU-M1 | Setup state must be stored in the shared `settings` table (no separate migrations) |
+| NFR-8NZAU-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
+| NFR-8NZAU-M3 | Setup entity must be `final readonly` with zero I/O                  |
+| NFR-8NZAU-M4 | All setup behavior must be testable via Pest test suite              |
 
 ---
 
@@ -354,6 +354,7 @@ final readonly class SetupEntity extends BaseEntity
     public static function keys(): array;
     public static function toSettingsEntries(array $attributes): array;
 }
+
 ```
 
 ### 6.3 Setup Token Data
@@ -366,6 +367,7 @@ final readonly class SetupTokenData extends BaseData
         public Carbon $expiresAt,
     );
 }
+
 ```
 
 ### 6.4 Action Contracts
@@ -390,6 +392,7 @@ class SetupSuperAdminAction extends BaseCommandAction
     public function execute(string $email, string $password): User;
     // @throws RejectedException when super admin immutable
 }
+
 ```
 
 > **ADR — `InstallSystemAction` removed.** An earlier revision of this spec defined
@@ -414,6 +417,7 @@ return [
     'test_dirs' => ['Providers', 'Stubs', 'Support'],
     // ...
 ];
+
 ```
 
 ### 6.6 Events
@@ -428,6 +432,7 @@ class SetupFinalized extends BaseEvent
     );
     public function eventName(): string; // 'setup.finalized'
 }
+
 ```
 
 ### 6.7 Config
@@ -473,6 +478,7 @@ class SetupFinalized extends BaseEvent
     ],
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
 ]
+
 ```
 
 ---
@@ -583,7 +589,7 @@ after provisioning, in any environment.
 
 **Rationale:** A fresh install is immediately demo-able for developers, presenters, QA, and demo
 instances, removing the extra `db:seed --class=DummySeeder` step (dummy-data DD-3 trade-off).
-Demo seeding is opt-in via the explicit flag — never automatic (dummy-data FR-E6, NFR-S1).
+Demo seeding is opt-in via the explicit flag — never automatic (dummy-data FR-8NZAU-E6, NFR-8NZAU-S1).
 
 **Trade-off:** A production install with `--with-dummy` receives demo accounts with known
 credentials — the administrator opts in knowingly; demo accounts are documented and must be
@@ -622,7 +628,7 @@ cleaned up/credentials rotated before a non-demo go-live (dummy-data DD-4).
 | Metric                          | Target      | Measurement                           |
 | ------------------------------- | ----------- | ------------------------------------- |
 | Time to provision (CLI)         | < 30s       | From `setup:install` to token display |
-| Module discovery (cached)       | < 2s        | See [module-discovery.md](I1BCV-module-discovery.md) NFR-P1 |
+| Module discovery (cached)       | < 2s        | See [module-discovery.md](I1BCV-module-discovery.md) NFR-8NZAU-P1 |
 
 ---
 

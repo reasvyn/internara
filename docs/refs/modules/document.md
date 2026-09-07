@@ -52,6 +52,7 @@ flowchart LR
     C --> D[Inject into Blade]
     D --> E[Compile to PDF]
     E --> F[Store & Return]
+
 ```
 
 Variables resolve from the registration context (student name, program, dates) and system settings (school name, principal name). Rendering failures throw a `RenderException` logged via SmartLogger. Each rendered document records the exact template version used for historical accuracy.

@@ -58,11 +58,11 @@ standardized conventions, new jobs may omit critical resilience patterns.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Admin | Triggers batch certificate issuance |
-| UC-2 | Developer | Creates new queued job |
-| UC-3 | Developer | Investigates failed job |
+| UC-8FVZA-1 | Admin | Triggers batch certificate issuance |
+| UC-8FVZA-2 | Developer | Creates new queued job |
+| UC-8FVZA-3 | Developer | Investigates failed job |
 
-### UC-1 — Admin Triggers Batch Certificate Issuance
+### UC-8FVZA-1 — Admin Triggers Batch Certificate Issuance
 
 **Actor:** Admin
 **Preconditions:** Internship program completed, assessments finalized
@@ -73,7 +73,7 @@ standardized conventions, new jobs may omit critical resilience patterns.
 4. Admin sees "Processing" status, receives notification when complete
 **Postconditions:** All certificates issued, failed ones logged for retry
 
-### UC-2 — Developer Creates New Queued Job
+### UC-8FVZA-2 — Developer Creates New Queued Job
 
 **Actor:** Developer
 **Preconditions:** New long-running operation identified
@@ -85,7 +85,7 @@ standardized conventions, new jobs may omit critical resilience patterns.
 5. Register dispatch site in the relevant Action
 **Postconditions:** Job executes asynchronously with retry capability
 
-### UC-3 — Developer Investigates Failed Job
+### UC-8FVZA-3 — Developer Investigates Failed Job
 
 **Actor:** Developer
 **Preconditions:** Job failed after all retry attempts
@@ -102,14 +102,14 @@ standardized conventions, new jobs may omit critical resilience patterns.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-JOB1 | All queued jobs MUST implement `ShouldQueue` interface |
-| FR-JOB2 | All jobs MUST set `tries = 3` |
-| FR-JOB3 | All jobs MUST set `backoff = [2, 10, 30]` (seconds) |
-| FR-JOB4 | Job constructors MUST use dependency injection (no `app()->make()`) |
-| FR-JOB5 | Job payloads MUST reference models by UUID, not serialize full model objects |
-| FR-JOB6 | Failed jobs MUST be recorded in `failed_jobs` table automatically |
-| FR-JOB7 | Jobs MUST NOT dispatch events or log to activity log (keep side effects in the triggering Action) |
-| FR-JOB8 | Failed jobs MUST be retried per backoff `[2, 10, 30]` and land in `failed_jobs` after max tries | |
+| FR-8FVZA-JOB1 | All queued jobs MUST implement `ShouldQueue` interface |
+| FR-8FVZA-JOB2 | All jobs MUST set `tries = 3` |
+| FR-8FVZA-JOB3 | All jobs MUST set `backoff = [2, 10, 30]` (seconds) |
+| FR-8FVZA-JOB4 | Job constructors MUST use dependency injection (no `app()->make()`) |
+| FR-8FVZA-JOB5 | Job payloads MUST reference models by UUID, not serialize full model objects |
+| FR-8FVZA-JOB6 | Failed jobs MUST be recorded in `failed_jobs` table automatically |
+| FR-8FVZA-JOB7 | Jobs MUST NOT dispatch events or log to activity log (keep side effects in the triggering Action) |
+| FR-8FVZA-JOB8 | Failed jobs MUST be retried per backoff `[2, 10, 30]` and land in `failed_jobs` after max tries | |
 
 ---
 
@@ -117,11 +117,11 @@ standardized conventions, new jobs may omit critical resilience patterns.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-JOB1 | Job execution timeout MUST be < 60 seconds per attempt |
-| NFR-JOB2 | Failed job retry MUST use exponential backoff (2s, 10s, 30s) |
-| NFR-JOB3 | Queue driver MUST be configurable via `QUEUE_CONNECTION` env variable |
-| NFR-JOB4 | Job failure MUST be logged with full exception context |
-| NFR-JOB5 | Queue worker MUST be monitorable via `php artisan queue:work --status` |
+| NFR-8FVZA-JOB1 | Job execution timeout MUST be < 60 seconds per attempt |
+| NFR-8FVZA-JOB2 | Failed job retry MUST use exponential backoff (2s, 10s, 30s) |
+| NFR-8FVZA-JOB3 | Queue driver MUST be configurable via `QUEUE_CONNECTION` env variable |
+| NFR-8FVZA-JOB4 | Job failure MUST be logged with full exception context |
+| NFR-8FVZA-JOB5 | Queue worker MUST be monitorable via `php artisan queue:work --status` |
 
 ---
 
@@ -166,6 +166,7 @@ class BatchIssueCertificatesJob implements ShouldQueue
         // Log failure, notify admin
     }
 }
+
 ```
 
 ### Queue Configuration
@@ -182,15 +183,15 @@ class BatchIssueCertificatesJob implements ShouldQueue
 | Job | Module | Purpose |
 |-----|--------|---------|
 | `BatchIssueCertificatesJob` | Certification | Batch certificate issuance |
-| `GenerateDocumentJob` | Document | Async PDF generation (batch pipeline, 7H5D6 FR-GW1) |
+| `GenerateDocumentJob` | Document | Async PDF generation (batch pipeline, 7H5D6 FR-8FVZA-GW1) |
 | `ArchiveStudentAccountsJob` | User | Batch account archival |
 
 > **Removed:** `SendAnnouncementJob` was deleted — announcement broadcasting uses per-recipient
-> queued notifications (`AnnouncementNotification implements ShouldQueue`, 3S55V FR-N1/NFR-P2) and
+> queued notifications (`AnnouncementNotification implements ShouldQueue`, 3S55V FR-8FVZA-N1/NFR-8FVZA-P2) and
 > scheduled publishing deliberately uses the `announcements:publish` scheduler command instead of
 > delayed jobs (3S55V §Design).
 > **Removed:** `CompileLogbookReportJob` was deleted — logbook report compilation is a synchronous
-> Read Action with a <10s performance budget for 90 entries (1KSWL FR-LB8, NFR-P3); no queued
+> Read Action with a <10s performance budget for 90 entries (1KSWL FR-8FVZA-LB8, NFR-8FVZA-P3); no queued
 > compilation is required by the spec.
 
 ---
@@ -271,7 +272,7 @@ for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | FR-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+| R-1 | FR-8FVZA-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
 
 ## Quick References
 

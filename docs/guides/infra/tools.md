@@ -10,6 +10,19 @@ Can be run standalone or piped to `jq`.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Output Convention
 
 All scripts follow the same output schema:
@@ -30,6 +43,7 @@ All scripts follow the same output schema:
   "findings": [...],
   "metadata": {}
 }
+
 ```
 
 **Default output path:** `tools/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
@@ -62,6 +76,7 @@ python3 tools/scan_violations/cli.py --quiet
 
 # Pipe to jq
 python3 tools/scan_violations/cli.py --json | jq '.summary'
+
 ```
 
 ---
@@ -89,6 +104,7 @@ python3 tools/scan_violations/cli.py --json | jq '.summary'
 ```bash
 python3 tools/scan_violations/cli.py
 python3 tools/scan_violations/cli.py --module Auth --strict
+
 ```
 
 ---
@@ -108,6 +124,7 @@ python3 tools/scan_violations/cli.py --module Auth --strict
 ```bash
 python3 tools/scan_class_contracts/cli.py
 python3 tools/scan_class_contracts/cli.py --module Assessment
+
 ```
 
 ---
@@ -128,6 +145,7 @@ python3 tools/scan_class_contracts/cli.py --module Assessment
 ```bash
 python3 tools/scan_security/cli.py
 python3 tools/scan_security/cli.py --module Auth
+
 ```
 
 ---
@@ -147,6 +165,7 @@ python3 tools/scan_security/cli.py --module Auth
 ```bash
 python3 tools/scan_naming/cli.py
 python3 tools/scan_naming/cli.py --module Journals
+
 ```
 
 ---
@@ -166,6 +185,7 @@ python3 tools/scan_naming/cli.py --module Journals
 
 ```bash
 python3 tools/scan_conventions/cli.py
+
 ```
 
 ---
@@ -183,6 +203,7 @@ python3 tools/scan_conventions/cli.py
 
 ```bash
 python3 tools/scan_dead_code/cli.py
+
 ```
 
 ---
@@ -199,6 +220,7 @@ python3 tools/scan_dead_code/cli.py
 
 ```bash
 python3 tools/scan_doc_links/cli.py
+
 ```
 
 ---
@@ -219,6 +241,7 @@ python3 tools/scan_doc_links/cli.py
 ```bash
 python3 tools/scan_architecture/cli.py
 python3 tools/scan_architecture/cli.py --module Program
+
 ```
 
 ---
@@ -235,6 +258,7 @@ python3 tools/scan_architecture/cli.py --module Program
 
 ```bash
 python3 tools/scan_files/cli.py
+
 ```
 
 ---
@@ -252,6 +276,7 @@ python3 tools/scan_files/cli.py
 ```bash
 python3 tools/scan_tests/cli.py
 python3 tools/scan_tests/cli.py --module User
+
 ```
 
 ---
@@ -268,6 +293,7 @@ python3 tools/scan_tests/cli.py --module User
 
 ```bash
 python3 tools/scan_issues/cli.py
+
 ```
 
 ---

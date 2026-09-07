@@ -94,6 +94,7 @@ test mapping for the requirements retained in §4/§5. Fill `{Module}` with the 
 name and keep the table format below verbatim.
 
 ```markdown
+
 ## Test Requirements
 
 Deterministic four-layer coverage grounded in the retained requirements above. Tests use
@@ -105,6 +106,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 | Unit | TR-UNT-01 | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules from the retained rows |
 | Feature | TR-FTR-01 | `tests/Feature/{Module}/` | Action execute() behavior, Livewire submit flows, events/notifications from the retained rows |
 | Browser | TR-BRW-01 | `tests/Browser/{Module}/` | Client → UI/UX → interaction journeys (login, dashboard, primary flows) from retained UC rows |
+
 ```
 
 > **TR rows are test-mapping metadata, not requirements.** They must never contain `FR-`/`NFR-`/

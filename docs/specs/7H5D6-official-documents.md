@@ -77,7 +77,7 @@ accreditation visits or incident investigations.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Generates Introduction Letter to Company
+### UC-7H5D6-1 — Admin Generates Introduction Letter to Company
 
 **Actor:** Admin
 **Preconditions:** Internship program is published; at least one placement exists
@@ -90,7 +90,7 @@ accreditation visits or incident investigations.
 6. Admin downloads PDF for physical delivery or email to company
 **Postconditions:** Introduction letter issued; registration chain status advanced
 
-### UC-2 — Student Uploads Parent Consent Letter
+### UC-7H5D6-2 — Student Uploads Parent Consent Letter
 
 **Actor:** Student
 **Preconditions:** Student has active/pending registration; consent form template exists
@@ -101,7 +101,7 @@ accreditation visits or incident investigations.
 4. System records upload; admin notified for verification
 **Postconditions:** Consent document uploaded; awaiting admin verification
 
-### UC-3 — Admin Generates Acceptance Confirmation
+### UC-7H5D6-3 — Admin Generates Acceptance Confirmation
 
 **Actor:** Admin
 **Preconditions:** Company has accepted student (placement active); acceptance letter template exists
@@ -112,7 +112,7 @@ accreditation visits or incident investigations.
 4. Document issuance status updated for this registration
 **Postconditions:** Acceptance confirmation issued; available for student records
 
-### UC-4 — Admin Batch-Generates Supervisor Assignment Letters
+### UC-7H5D6-4 — Admin Batch-Generates Supervisor Assignment Letters
 
 **Actor:** Admin
 **Preconditions:** Supervisors assigned to placements; assignment letter template exists
@@ -123,7 +123,7 @@ accreditation visits or incident investigations.
 4. All letters generated and stored
 **Postconditions:** Assignment letters ready for principal signature and distribution
 
-### UC-5 — Admin Tracks Document Completion for Registration
+### UC-7H5D6-5 — Admin Tracks Document Completion for Registration
 
 **Actor:** Admin
 **Preconditions:** Registration exists with required document types defined
@@ -133,7 +133,7 @@ accreditation visits or incident investigations.
 3. Admin can filter registrations by document completion status
 **Postconditions:** Admin has visibility into document compliance per student
 
-### UC-6 — System Generates Completion Letter on Finalization
+### UC-7H5D6-6 — System Generates Completion Letter on Finalization
 
 **Actor:** System (automatic)
 **Preconditions:** Report is FINALIZED; all required documents have been issued
@@ -152,9 +152,9 @@ accreditation visits or incident investigations.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-DR1  | System must maintain a registry of official document types with: id, name (Indonesian), name_en, lifecycle_phase, audience, approval_required, auto_generate, variables_contract |
-| FR-DR2  | Each document type must declare its required variables as a JSON schema: variable name, type (string/date/number), source (registration/placement/school/settings), optional flag |
-| FR-DR3  | Document types must be seeded as initial data via database seeder, not migration |
+| FR-7H5D6-DR1  | System must maintain a registry of official document types with: id, name (Indonesian), name_en, lifecycle_phase, audience, approval_required, auto_generate, variables_contract |
+| FR-7H5D6-DR2  | Each document type must declare its required variables as a JSON schema: variable name, type (string/date/number), source (registration/placement/school/settings), optional flag |
+| FR-7H5D6-DR3  | Document types must be seeded as initial data via database seeder, not migration |
 
 ### Document Type Definitions
 
@@ -162,81 +162,81 @@ accreditation visits or incident investigations.
 
 | ID      | Document Type | Indonesian Name | Audience | Approval |
 | ------- | ------------- | --------------- | -------- | -------- |
-| FR-DT1  | Introduction Letter | Surat Pengantar PKL | School → Company | Principal signature required |
-| FR-DT2  | Application Letter | Surat Permohonan PKL | School → Company | Principal signature required |
-| FR-DT3  | Parent Consent Form | Surat Izin Orang Tua/Wali | Student (parent signs) | Admin verification required |
-| FR-DT4  | Student Acceptance Letter | Surat Penerimaan Siswa PKL | Company → School | Company representative signature |
-| FR-DT5  | Supervisor Assignment Letter | Surat Tugas Guru Pembimbing | School (internal) | Principal signature required |
-| FR-DT6  | Student Registration Form | Formulir Pendaftaran PKL | Student (internal) | Auto-generated |
+| FR-7H5D6-DT1  | Introduction Letter | Surat Pengantar PKL | School → Company | Principal signature required |
+| FR-7H5D6-DT2  | Application Letter | Surat Permohonan PKL | School → Company | Principal signature required |
+| FR-7H5D6-DT3  | Parent Consent Form | Surat Izin Orang Tua/Wali | Student (parent signs) | Admin verification required |
+| FR-7H5D6-DT4  | Student Acceptance Letter | Surat Penerimaan Siswa PKL | Company → School | Company representative signature |
+| FR-7H5D6-DT5  | Supervisor Assignment Letter | Surat Tugas Guru Pembimbing | School (internal) | Principal signature required |
+| FR-7H5D6-DT6  | Student Registration Form | Formulir Pendaftaran PKL | Student (internal) | Auto-generated |
 
 #### During-PKL Documents (Daily Operations Phase)
 
 | ID      | Document Type | Indonesian Name | Audience | Approval |
 | ------- | ------------- | --------------- | -------- | -------- |
-| FR-DT7  | Absence Approval Letter | Surat Persetujuan Izin Absen | Student → Mentor | Mentor approval required |
-| FR-DT8  | Monitoring Visit Report | Berita Acara Kunjungan | School (internal) | Teacher signature required |
-| FR-DT9  | Incident Report Document | Berita Acara Insiden | School (internal) | Admin signature required |
+| FR-7H5D6-DT7  | Absence Approval Letter | Surat Persetujuan Izin Absen | Student → Mentor | Mentor approval required |
+| FR-7H5D6-DT8  | Monitoring Visit Report | Berita Acara Kunjungan | School (internal) | Teacher signature required |
+| FR-7H5D6-DT9  | Incident Report Document | Berita Acara Insiden | School (internal) | Admin signature required |
 
 #### Post-PKL Documents (Certification Phase)
 
 | ID      | Document Type | Indonesian Name | Audience | Approval |
 | ------- | ------------- | --------------- | -------- | -------- |
-| FR-DT10 | Completion Letter | Surat Keterangan Selesai PKL | School → Student | Auto-generated on report finalization |
-| FR-DT11 | Company Evaluation Form | Penilaian dari Perusahaan | Company → School | Company representative signature |
-| FR-DT12 | Final Report Cover | Sampul Laporan PKL | Student (internal) | Auto-generated |
+| FR-7H5D6-DT10 | Completion Letter | Surat Keterangan Selesai PKL | School → Student | Auto-generated on report finalization |
+| FR-7H5D6-DT11 | Company Evaluation Form | Penilaian dari Perusahaan | Company → School | Company representative signature |
+| FR-7H5D6-DT12 | Final Report Cover | Sampul Laporan PKL | Student (internal) | Auto-generated |
 
 #### Administrative Documents
 
 | ID      | Document Type | Indonesian Name | Audience | Approval |
 | ------- | ------------- | --------------- | -------- | -------- |
-| FR-DT13 | Document Submission Receipt | Tanda Terima Dokumen | School → Student | Auto-generated |
-| FR-DT14 | Handover Record | Berita Acara Serah Terima | School ↔ Company | Both parties sign |
-| FR-DT15 | Program Circular | Surat Edaran PKL | School → Parents | Principal signature required |
+| FR-7H5D6-DT13 | Document Submission Receipt | Tanda Terima Dokumen | School → Student | Auto-generated |
+| FR-7H5D6-DT14 | Handover Record | Berita Acara Serah Terima | School ↔ Company | Both parties sign |
+| FR-7H5D6-DT15 | Program Circular | Surat Edaran PKL | School → Parents | Principal signature required |
 
 ### Variable Contracts per Document Type
 
 | ID      | Document | Required Variables |
 | ------- | -------- | ------------------ |
-| FR-VC1  | Introduction Letter | `school_name`, `school_address`, `school_phone`, `school_email`, `principal_name`, `program_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `letter_date`, `letter_number` |
-| FR-VC2  | Application Letter | `school_name`, `principal_name`, `program_name`, `department_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `student_count`, `letter_date`, `letter_number` |
-| FR-VC3  | Parent Consent Form | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `program_start_date`, `program_end_date`, `parent_name`, `parent_phone`, `school_name`, `principal_name` |
-| FR-VC4  | Acceptance Letter | `student_name`, `student_nisn`, `program_name`, `company_name`, `company_address`, `company_contact_person`, `start_date`, `end_date`, `letter_date` |
-| FR-VC5  | Supervisor Assignment | `supervisor_name`, `supervisor_nip`, `program_name`, `company_name`, `student_names` (array), `department_name`, `program_start_date`, `program_end_date`, `principal_name`, `letter_date`, `letter_number` |
-| FR-VC6  | Registration Form | `student_name`, `student_nisn`, `student_class`, `student_email`, `student_phone`, `program_name`, `department_name`, `company_name`, `registration_date`, `school_name` |
-| FR-VC7  | Absence Approval | `student_name`, `student_nisn`, `absence_date`, `absence_reason`, `absence_type` (planned/unplanned), `mentor_name`, `program_name`, `company_name` |
-| FR-VC8  | Monitoring Visit Report | `visit_date`, `teacher_name`, `teacher_nip`, `company_name`, `company_address`, `students_visited` (array), `visit_summary`, `issues_found`, `follow_up_actions`, `school_name` |
-| FR-VC9  | Incident Report | `incident_date`, `incident_type`, `description`, `student_name`, `student_nisn`, `company_name`, `teacher_name`, `witnesses`, `action_taken`, `school_name`, `report_number` |
-| FR-VC10 | Completion Letter | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `start_date`, `end_date`, `final_score`, `grade_letter`, `school_name`, `principal_name`, `letter_date`, `certificate_number` |
-| FR-VC11 | Company Evaluation | `student_name`, `student_nisn`, `program_name`, `company_name`, `supervisor_name`, `evaluation_date`, `competency_scores` (array), `overall_rating`, `comments` |
-| FR-VC12 | Final Report Cover | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `department_name`, `school_name`, `academic_year`, `submission_date` |
-| FR-VC13 | Submission Receipt | `student_name`, `document_type`, `submission_date`, `received_by`, `school_name`, `receipt_number` |
-| FR-VC14 | Handover Record | `student_name`, `student_nisn`, `company_name`, `handover_date`, `items_handed` (array), `school_representative`, `company_representative`, `school_name`, `report_number` |
-| FR-VC15 | Program Circular | `program_name`, `program_start_date`, `program_end_date`, `registration_deadline`, `requirements_summary`, `school_name`, `principal_name`, `letter_date`, `letter_number` |
+| FR-7H5D6-VC1  | Introduction Letter | `school_name`, `school_address`, `school_phone`, `school_email`, `principal_name`, `program_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `letter_date`, `letter_number` |
+| FR-7H5D6-VC2  | Application Letter | `school_name`, `principal_name`, `program_name`, `department_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `student_count`, `letter_date`, `letter_number` |
+| FR-7H5D6-VC3  | Parent Consent Form | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `program_start_date`, `program_end_date`, `parent_name`, `parent_phone`, `school_name`, `principal_name` |
+| FR-7H5D6-VC4  | Acceptance Letter | `student_name`, `student_nisn`, `program_name`, `company_name`, `company_address`, `company_contact_person`, `start_date`, `end_date`, `letter_date` |
+| FR-7H5D6-VC5  | Supervisor Assignment | `supervisor_name`, `supervisor_nip`, `program_name`, `company_name`, `student_names` (array), `department_name`, `program_start_date`, `program_end_date`, `principal_name`, `letter_date`, `letter_number` |
+| FR-7H5D6-VC6  | Registration Form | `student_name`, `student_nisn`, `student_class`, `student_email`, `student_phone`, `program_name`, `department_name`, `company_name`, `registration_date`, `school_name` |
+| FR-7H5D6-VC7  | Absence Approval | `student_name`, `student_nisn`, `absence_date`, `absence_reason`, `absence_type` (planned/unplanned), `mentor_name`, `program_name`, `company_name` |
+| FR-7H5D6-VC8  | Monitoring Visit Report | `visit_date`, `teacher_name`, `teacher_nip`, `company_name`, `company_address`, `students_visited` (array), `visit_summary`, `issues_found`, `follow_up_actions`, `school_name` |
+| FR-7H5D6-VC9  | Incident Report | `incident_date`, `incident_type`, `description`, `student_name`, `student_nisn`, `company_name`, `teacher_name`, `witnesses`, `action_taken`, `school_name`, `report_number` |
+| FR-7H5D6-VC10 | Completion Letter | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `start_date`, `end_date`, `final_score`, `grade_letter`, `school_name`, `principal_name`, `letter_date`, `certificate_number` |
+| FR-7H5D6-VC11 | Company Evaluation | `student_name`, `student_nisn`, `program_name`, `company_name`, `supervisor_name`, `evaluation_date`, `competency_scores` (array), `overall_rating`, `comments` |
+| FR-7H5D6-VC12 | Final Report Cover | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `department_name`, `school_name`, `academic_year`, `submission_date` |
+| FR-7H5D6-VC13 | Submission Receipt | `student_name`, `document_type`, `submission_date`, `received_by`, `school_name`, `receipt_number` |
+| FR-7H5D6-VC14 | Handover Record | `student_name`, `student_nisn`, `company_name`, `handover_date`, `items_handed` (array), `school_representative`, `company_representative`, `school_name`, `report_number` |
+| FR-7H5D6-VC15 | Program Circular | `program_name`, `program_start_date`, `program_end_date`, `registration_deadline`, `requirements_summary`, `school_name`, `principal_name`, `letter_date`, `letter_number` |
 
 ### Document Generation Workflow
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-GW1  | Admin-triggered documents must be generated synchronously for single documents, queued for batch operations (10+) |
-| FR-GW2  | Auto-generated documents (Completion Letter, Registration Form) must be triggered by their respective events (`ReportFinalized`, `StudentRegistered`) |
-| FR-GW3  | Each generated document must record: document_type_id, registration_id, generated_by (user_id), generated_at, template_version, variable_snapshot (JSON) |
+| FR-7H5D6-GW1  | Admin-triggered documents must be generated synchronously for single documents, queued for batch operations (10+) |
+| FR-7H5D6-GW2  | Auto-generated documents (Completion Letter, Registration Form) must be triggered by their respective events (`ReportFinalized`, `StudentRegistered`) |
+| FR-7H5D6-GW3  | Each generated document must record: document_type_id, registration_id, generated_by (user_id), generated_at, template_version, variable_snapshot (JSON) |
 
 ### Document Status Tracking
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-DS1  | Each registration must track a `document_status` JSON column: `{document_type_id: 'issued'|'pending'|'missing'|'uploaded'}` |
-| FR-DS2  | Admin dashboard must show per-registration document completion percentage |
-| FR-DS3  | System must warn when a registration reaches placement-active status with missing required documents |
-| FR-DS4  | Document status must auto-update: `issued` when generated, `uploaded` when student uploads, `pending` when required but not yet actioned |
+| FR-7H5D6-DS1  | Each registration must track a `document_status` JSON column: `{document_type_id: 'issued'|'pending'|'missing'|'uploaded'}` |
+| FR-7H5D6-DS2  | Admin dashboard must show per-registration document completion percentage |
+| FR-7H5D6-DS3  | System must warn when a registration reaches placement-active status with missing required documents |
+| FR-7H5D6-DS4  | Document status must auto-update: `issued` when generated, `uploaded` when student uploads, `pending` when required but not yet actioned |
 
 ### Letter Numbering
 
 | ID      | Requirement |
 | ------- | ----------- |
-| FR-LN1  | Documents requiring letter numbers must follow configurable format: `{prefix}/{sequence}/{year}` (e.g., `SMK-001/PKL/2026`) |
-| FR-LN2  | Letter number sequence must be per-document-type, reset annually |
-| FR-LN3  | Format prefix must be configurable in settings (key: `document.letter_prefix`, default: school code) |
+| FR-7H5D6-LN1  | Documents requiring letter numbers must follow configurable format: `{prefix}/{sequence}/{year}` (e.g., `SMK-001/PKL/2026`) |
+| FR-7H5D6-LN2  | Letter number sequence must be per-document-type, reset annually |
+| FR-7H5D6-LN3  | Format prefix must be configurable in settings (key: `document.letter_prefix`, default: school code) |
 
 ---
 
@@ -244,16 +244,16 @@ accreditation visits or incident investigations.
 
 | ID      | Requirement |
 | ------- | ----------- |
-| NFR-M1  | All document types must be defined in a PHP enum or config, not hardcoded in Blade templates |
-| NFR-M2  | Variable contracts must be validated at generation time — missing required variables must throw `RenderException` |
-| NFR-L1  | All document generation events must be logged via SmartLogger with module `document` |
-| NFR-L2  | Variable snapshots must be stored with each generated document for audit trail |
-| NFR-S1  | Documents containing student PII (NISN, name) must not be stored in publicly accessible paths |
-| NFR-S2  | Parent consent forms must be retained for minimum 5 years (configurable) |
-| NFR-R1  | Batch generation of 500 documents must complete within 10 minutes (queued) |
-| NFR-R2  | Single document generation must complete within 5 seconds (synchronous) |
-| NFR-U1  | Document checklist in registration detail must load in < 500ms |
-| NFR-U2  | Generated PDF must be downloadable within 2 seconds of request |
+| NFR-7H5D6-M1  | All document types must be defined in a PHP enum or config, not hardcoded in Blade templates |
+| NFR-7H5D6-M2  | Variable contracts must be validated at generation time — missing required variables must throw `RenderException` |
+| NFR-7H5D6-L1  | All document generation events must be logged via SmartLogger with module `document` |
+| NFR-7H5D6-L2  | Variable snapshots must be stored with each generated document for audit trail |
+| NFR-7H5D6-S1  | Documents containing student PII (NISN, name) must not be stored in publicly accessible paths |
+| NFR-7H5D6-S2  | Parent consent forms must be retained for minimum 5 years (configurable) |
+| NFR-7H5D6-R1  | Batch generation of 500 documents must complete within 10 minutes (queued) |
+| NFR-7H5D6-R2  | Single document generation must complete within 5 seconds (synchronous) |
+| NFR-7H5D6-U1  | Document checklist in registration detail must load in < 500ms |
+| NFR-7H5D6-U2  | Generated PDF must be downloadable within 2 seconds of request |
 
 ---
 
@@ -309,6 +309,7 @@ enum OfficialDocumentType: string implements LabelEnum
     public function autoGenerate(): bool { /* auto-generate flag */ }
     public function requiredVariables(): array { /* variable contract */ }
 }
+
 ```
 
 ### DocumentIssuance Model
@@ -334,6 +335,7 @@ class DocumentIssuance extends BaseModel
     // letter_number: string, nullable (for documents requiring sequential numbers)
     // issued_at: timestamp
 }
+
 ```
 
 ### Registration Document Status
@@ -347,6 +349,7 @@ class DocumentIssuance extends BaseModel
 //   "acceptance_letter": "pending",
 //   ...
 // }
+
 ```
 
 ### Actions
@@ -383,6 +386,7 @@ return [
         'certification' => ['completion_letter'],
     ],
 ];
+
 ```
 
 ---
@@ -496,7 +500,7 @@ for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | FR-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
+| R-1 | FR-7H5D6-Q6 requires separate `default` and `documents` queue pipelines with batch document generation dispatching to `documents`. The `documents` queue connection exists in `config/q... | Open | Maintainer | [#404](https://github.com/reasvyn/internara/issues/404) |
 
 ## Quick References
 

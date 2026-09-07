@@ -55,10 +55,10 @@ in production while allowing development flexibility.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Reads app metadata (version, attribution) |
-| UC-2 | System | Verifies application attribution |
+| UC-C8F0D-1 | Developer | Reads app metadata (version, attribution) |
+| UC-C8F0D-2 | System | Verifies application attribution |
 
-### UC-1 — Developer Reads App Metadata
+### UC-C8F0D-1 — Developer Reads App Metadata
 
 **Actor:** Developer / System
 **Preconditions:** `composer.json` exists with author info
@@ -68,7 +68,7 @@ in production while allowing development flexibility.
 3. Subsequent calls return cached values
 **Postconditions:** Consistent metadata across all modules, zero repeated file reads
 
-### UC-2 — System Verifies Application Attribution
+### UC-C8F0D-2 — System Verifies Application Attribution
 
 **Actor:** System (startup or admin trigger)
 **Preconditions:** Application deployed
@@ -85,14 +85,14 @@ in production while allowing development flexibility.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-SUP3 | `PasswordRules` — default password validation: 8+ chars, mixed case, numbers |
-| FR-SUP4 | `AppInfo` — reads `composer.json` metadata (name, version, author, license, etc.) with 24h cache |
-| FR-SUP5 | `Environment` — helpers: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` (located in `app/Modules/Core/Support/Environment.php`; `isProduction()` was renamed to `isDevelopment()` to better describe the local/dev environment check) |
-| FR-SUP7 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
-| FR-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
-| FR-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
-| FR-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by internara-project §7.4 |
-| FR-SUP12 | `Color::contrastColor()` MUST return white or black depending on relative luminance threshold | |
+| FR-C8F0D-SUP3 | `PasswordRules` — default password validation: 8+ chars, mixed case, numbers |
+| FR-C8F0D-SUP4 | `AppInfo` — reads `composer.json` metadata (name, version, author, license, etc.) with 24h cache |
+| FR-C8F0D-SUP5 | `Environment` — helpers: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` (located in `app/Modules/Core/Support/Environment.php`; `isProduction()` was renamed to `isDevelopment()` to better describe the local/dev environment check) |
+| FR-C8F0D-SUP7 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
+| FR-C8F0D-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
+| FR-C8F0D-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
+| FR-C8F0D-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by internara-project §7.4 |
+| FR-C8F0D-SUP12 | `Color::contrastColor()` MUST return white or black depending on relative luminance threshold | |
 
 ### Cross-References (Dedicated Specs)
 
@@ -103,7 +103,7 @@ in production while allowing development flexibility.
 | ModuleService/ModuleManager | [module-manager.md](B114U-module-manager.md) |
 | `setting()` / `brand()` global helpers | [settings-infrastructure.md](YB22J-settings-infrastructure.md) |
 
-> **Note:** internara-project §7.4 lists three global helpers. `app_info()` (FR-SUP11) is
+> **Note:** internara-project §7.4 lists three global helpers. `app_info()` (FR-C8F0D-SUP11) is
 > specified here; `setting()` and `brand()` are specified in settings-infrastructure.md and
 > cross-referenced above to avoid duplication.
 
@@ -113,10 +113,10 @@ in production while allowing development flexibility.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | `AppInfo` metadata cache TTL: 24 hours (86400s) |
-| NFR-R1 | `AppIntegrity::verify()` must catch exceptions and degrade gracefully in non-production |
-| NFR-M1 | All utilities must declare `strict_types=1` |
-| NFR-M2 | All public methods must have PHPDoc blocks |
+| NFR-C8F0D-P1 | `AppInfo` metadata cache TTL: 24 hours (86400s) |
+| NFR-C8F0D-R1 | `AppIntegrity::verify()` must catch exceptions and degrade gracefully in non-production |
+| NFR-C8F0D-M1 | All utilities must declare `strict_types=1` |
+| NFR-C8F0D-M2 | All public methods must have PHPDoc blocks |
 
 ## Test Requirements
 
@@ -149,6 +149,7 @@ final class AppInfo
     public static function gitUrl(): string;      // composer.json homepage
     // All values cached 24h via Cache::rememberForever
 }
+
 ```
 
 ### app_info() Global Helper
@@ -160,6 +161,7 @@ if (! function_exists('app_info')) {
     // app_info()          → AppInfo::all() — full metadata array
     // app_info('name')    → AppInfo::get('name') — single metadata key
 }
+
 ```
 
 ### Environment
@@ -174,6 +176,7 @@ final class Environment
     public static function isTesting(): bool;
     public static function isCLI(): bool;
 }
+
 ```
 
 ### PasswordRules
@@ -185,6 +188,7 @@ final class PasswordRules
     public static function default(): array;   // ['min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/']
     public static function strict(): array;    // additional rules for high-security contexts
 }
+
 ```
 
 ### Color
@@ -202,6 +206,7 @@ final class Color
     public static function computeBaseShades(string $hex): array;
     public static function computeDarkShades(string $hex): array;
 }
+
 ```
 
 ### AppIntegrity
@@ -215,6 +220,7 @@ final class AppIntegrity
     // Production: throws RejectedException if attribution removed
     // Local/testing: logs warning via SmartLogger
 }
+
 ```
 
 ### LangChecker
@@ -228,6 +234,7 @@ final class LangChecker extends Translator
     // Logs via SmartLogger with caller file:line
     // Does NOT prevent key resolution (returns key as fallback)
 }
+
 ```
 
 ---

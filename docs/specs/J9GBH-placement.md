@@ -57,7 +57,7 @@ workflow with atomic quota transfer is required.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Student Requests Placement Change
+### UC-J9GBH-1 — Student Requests Placement Change
 
 **Actor:** Student (role: student)
 **Preconditions:** Student has an active registration with a placement assigned; no existing pending change request for this registration
@@ -72,7 +72,7 @@ workflow with atomic quota transfer is required.
 8. Or admin rejects: `RejectPlacementChangeAction` records rejection reason
 **Postconditions:** Either placement swapped atomically (quota transferred) or request rejected with reason
 
-### UC-2 — Admin Manages Placements
+### UC-J9GBH-2 — Admin Manages Placements
 
 **Actor:** Admin (role: super_admin or admin)
 **Preconditions:** Admin is authenticated
@@ -92,46 +92,46 @@ workflow with atomic quota transfer is required.
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-P1 | Placement model must use UUID primary key with cascade delete on `company_id` → `companies` and `internship_id` → `internships` |
-| FR-P2 | Placement must enforce unique constraint on `(company_id, internship_id)`            |
-| FR-P3 | Placement `quota` must default to 1; `filled_quota` must default to 0               |
-| FR-P4 | `PlacementCapacity` entity must provide `isFull()`, `availableSlots()`, `hasAvailableSlots()` |
-| FR-P5 | `PlacementState` entity must provide `registrationCount` and `canBeDeleted()` (only when `registrationCount === 0`) |
-| FR-P6 | `DeletePlacementAction` must block deletion when registrations exist for the placement |
-| FR-P7 | `CreatePlacementAction` and `UpdatePlacementAction` must handle standard CRUD with validation |
-| FR-P8 | `PlacementIndex` Livewire component must display stats: total placements, total quota, filled slots, available slots |
-| FR-P9 | `PlacementIndex` must support search and filter by company and internship             |
+| FR-J9GBH-P1 | Placement model must use UUID primary key with cascade delete on `company_id` → `companies` and `internship_id` → `internships` |
+| FR-J9GBH-P2 | Placement must enforce unique constraint on `(company_id, internship_id)`            |
+| FR-J9GBH-P3 | Placement `quota` must default to 1; `filled_quota` must default to 0               |
+| FR-J9GBH-P4 | `PlacementCapacity` entity must provide `isFull()`, `availableSlots()`, `hasAvailableSlots()` |
+| FR-J9GBH-P5 | `PlacementState` entity must provide `registrationCount` and `canBeDeleted()` (only when `registrationCount === 0`) |
+| FR-J9GBH-P6 | `DeletePlacementAction` must block deletion when registrations exist for the placement |
+| FR-J9GBH-P7 | `CreatePlacementAction` and `UpdatePlacementAction` must handle standard CRUD with validation |
+| FR-J9GBH-P8 | `PlacementIndex` Livewire component must display stats: total placements, total quota, filled slots, available slots |
+| FR-J9GBH-P9 | `PlacementIndex` must support search and filter by company and internship             |
 
 ### Placement — Direct Placement
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-P10 | `DirectPlacementAction` must atomically create registration + placement in a single transaction |
-| FR-P11 | `DirectPlacementAction` must guard: target placement must have available slots         |
-| FR-P12 | `DirectPlacementManager` Livewire component must provide admin form: select student, select placement, assign mentors |
+| FR-J9GBH-P10 | `DirectPlacementAction` must atomically create registration + placement in a single transaction |
+| FR-J9GBH-P11 | `DirectPlacementAction` must guard: target placement must have available slots         |
+| FR-J9GBH-P12 | `DirectPlacementManager` Livewire component must provide admin form: select student, select placement, assign mentors |
 
 ### Placement Change Requests — Workflow
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-C1 | `PlacementChangeStatus` enum must implement `LabelEnum` and `StatusEnum` contracts    |
-| FR-C2 | Valid transitions: `PENDING` → [`APPROVED`, `REJECTED`]; `APPROVED` and `REJECTED` are terminal |
-| FR-C3 | `RequestPlacementChangeAction` must guard: no existing `PENDING` request for this registration |
-| FR-C4 | `ApprovePlacementChangeAction` must guard: request is not terminal, target placement has available slots |
-| FR-C5 | `ApprovePlacementChangeAction` must atomically: decrement old placement `filled_quota`, increment new placement `filled_quota`, update registration `placement_id` |
-| FR-C6 | `RejectPlacementChangeAction` must record `rejection_reason` and transition to `REJECTED` |
-| FR-C7 | `PlacementChangeManager` Livewire component must display pending requests for admin review |
-| FR-C8 | `StudentPlacementChangeRequest` must display available placements within the same internship, excluding current placement |
-| FR-C9 | `PlacementChangeRequestPolicy` must govern request creation and review permissions     |
+| FR-J9GBH-C1 | `PlacementChangeStatus` enum must implement `LabelEnum` and `StatusEnum` contracts    |
+| FR-J9GBH-C2 | Valid transitions: `PENDING` → [`APPROVED`, `REJECTED`]; `APPROVED` and `REJECTED` are terminal |
+| FR-J9GBH-C3 | `RequestPlacementChangeAction` must guard: no existing `PENDING` request for this registration |
+| FR-J9GBH-C4 | `ApprovePlacementChangeAction` must guard: request is not terminal, target placement has available slots |
+| FR-J9GBH-C5 | `ApprovePlacementChangeAction` must atomically: decrement old placement `filled_quota`, increment new placement `filled_quota`, update registration `placement_id` |
+| FR-J9GBH-C6 | `RejectPlacementChangeAction` must record `rejection_reason` and transition to `REJECTED` |
+| FR-J9GBH-C7 | `PlacementChangeManager` Livewire component must display pending requests for admin review |
+| FR-J9GBH-C8 | `StudentPlacementChangeRequest` must display available placements within the same internship, excluding current placement |
+| FR-J9GBH-C9 | `PlacementChangeRequestPolicy` must govern request creation and review permissions     |
 
 ### Placement — Livewire Components & Routing
 
 | ID   | Requirement                                                                          |
 | ---- | ------------------------------------------------------------------------------------ |
-| FR-L1 | `PlacementIndex` must provide full CRUD at `/admin/internships/placements` with admin middleware |
-| FR-L2 | `DirectPlacementManager` must be at `/admin/internships/placements/direct` with admin middleware |
-| FR-L3 | `PlacementChangeManager` must be at `/admin/internships/placements/changes` with admin middleware |
-| FR-L4 | `StudentPlacementChangeRequest` must be at `/student/internships/placement-change` with `role:student` middleware |
+| FR-J9GBH-L1 | `PlacementIndex` must provide full CRUD at `/admin/internships/placements` with admin middleware |
+| FR-J9GBH-L2 | `DirectPlacementManager` must be at `/admin/internships/placements/direct` with admin middleware |
+| FR-J9GBH-L3 | `PlacementChangeManager` must be at `/admin/internships/placements/changes` with admin middleware |
+| FR-J9GBH-L4 | `StudentPlacementChangeRequest` must be at `/student/internships/placement-change` with `role:student` middleware |
 
 ---
 
@@ -139,16 +139,16 @@ workflow with atomic quota transfer is required.
 
 | ID    | Requirement                                                                          |
 | ----- | ------------------------------------------------------------------------------------ |
-| NFR-P2 | Placement capacity check and increment must execute within a single DB transaction (< 100ms) |
-| NFR-R2 | Placement quota must never go negative — `filled_quota` decrement must be guarded     |
-| NFR-R3 | Concurrent placement registrations must not exceed quota — atomic check-and-increment required |
-| NFR-U2 | `PlacementChangeManager` must display request reason and both source/target placements for informed admin review |
-| NFR-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
-| NFR-A1 | All enrollment UI (placement management) must meet WCAG 2.1 Level AA                 |
-| NFR-A3 | Form inputs in placement forms must have associated labels                           |
-| NFR-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text                   |
-| NFR-L1 | All user-facing strings in enrollment UI must use `__()` translation helper          |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
+| NFR-J9GBH-P2 | Placement capacity check and increment must execute within a single DB transaction (< 100ms) |
+| NFR-J9GBH-R2 | Placement quota must never go negative — `filled_quota` decrement must be guarded     |
+| NFR-J9GBH-R3 | Concurrent placement registrations must not exceed quota — atomic check-and-increment required |
+| NFR-J9GBH-U2 | `PlacementChangeManager` must display request reason and both source/target placements for informed admin review |
+| NFR-J9GBH-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
+| NFR-J9GBH-A1 | All enrollment UI (placement management) must meet WCAG 2.1 Level AA                 |
+| NFR-J9GBH-A3 | Form inputs in placement forms must have associated labels                           |
+| NFR-J9GBH-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text                   |
+| NFR-J9GBH-L1 | All user-facing strings in enrollment UI must use `__()` translation helper          |
+| NFR-J9GBH-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files          |
 
 ---
 
@@ -178,6 +178,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 // FK: internship_id → internships (cascade delete)
 // Fillable: company_id, internship_id, name, address, quota (default 1), filled_quota (default 0), description
 // Unique: (company_id, internship_id)
+
 ```
 
 ### 6.2 Placement Entities
@@ -198,6 +199,7 @@ final readonly class PlacementState extends BaseEntity
     public static function fromModel(Model $model): static;
     public function canBeDeleted(): bool;     // registrationCount === 0
 }
+
 ```
 
 ### 6.3 Placement Actions
@@ -215,6 +217,7 @@ final class DirectPlacementAction extends BaseCommandAction
     // Atomic: create Registration + increment placement filled_quota
     // Guards: placement must have available slots
 }
+
 ```
 
 ### 6.4 PlacementChangeRequest Model
@@ -223,6 +226,7 @@ final class DirectPlacementAction extends BaseCommandAction
 // app/Modules/Enrollment/Placement/Models/PlacementChangeRequest.php
 // Table: placement_change_requests
 // Fillable: registration_id, from_placement_id, to_placement_id, reason, requested_by, status, processed_by, processed_at, rejection_reason
+
 ```
 
 ### 6.5 PlacementChangeStatus Enum
@@ -238,6 +242,7 @@ enum PlacementChangeStatus: string implements LabelEnum, StatusEnum
     // Transitions: PENDING → [APPROVED, REJECTED]
     // Terminal: APPROVED, REJECTED
 }
+
 ```
 
 ### 6.6 Placement Change Actions
@@ -252,6 +257,7 @@ enum PlacementChangeStatus: string implements LabelEnum, StatusEnum
 
 // app/Modules/Enrollment/Placement/Actions/RejectPlacementChangeAction.php
 // Records rejection_reason
+
 ```
 
 ### 6.7 Routes
@@ -270,6 +276,7 @@ Route::prefix('admin')->name('enrollment.')->middleware(['auth', 'role:super_adm
     Route::livewire('/internships/placements/direct', DirectPlacementManager::class)->name('internships.placements.direct');
     Route::livewire('/internships/placements/changes', PlacementChangeManager::class)->name('internships.placements.changes');
 });
+
 ```
 
 ### 6.8 Database Migrations

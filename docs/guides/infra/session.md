@@ -5,6 +5,19 @@
 Session driver configuration, security settings, cookie parameters, and session lifecycle
 management.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Purpose
 
 The session layer manages user authentication state across HTTP requests. It remembers who a user is
@@ -33,6 +46,7 @@ SESSION_DRIVER=database
 SESSION_DRIVER=redis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
+
 ```
 
 ---
@@ -58,6 +72,7 @@ sessions
 ├── payload         TEXT           NOT NULL      — encrypted session data
 └── last_activity   INTEGER        NOT NULL      — UNIX timestamp
     └── INDEX
+
 ```
 
 The `last_activity` column is indexed because garbage collection queries against it.
@@ -97,6 +112,7 @@ session()->regenerate();
 
 // Also called on privilege changes
 session()->regenerate();
+
 ```
 
 ### Password Confirmation
@@ -118,6 +134,7 @@ refreshed during active sessions.
 'http_only' => true,     // Inaccessible to JavaScript
 'secure' => env('APP_ENV') === 'production',  // HTTPS only in production
 'same_site' => 'lax',    // Prevent CSRF from external origins
+
 ```
 
 ---
@@ -148,6 +165,7 @@ The user's language preference is stored in the session by `SetLocaleMiddleware`
 // app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php
 $locale = session('locale', config('app.locale'));
 app()->setLocale($locale);
+
 ```
 
 The preference is set by the `LanguageSwitcher` Livewire component and persists across requests.

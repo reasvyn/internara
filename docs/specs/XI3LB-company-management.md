@@ -79,7 +79,7 @@ to ensure administrators always see current data.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Company Profile
+### UC-XI3LB-1 — Admin Creates a Company Profile
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` or `super_admin` role
@@ -93,7 +93,7 @@ to ensure administrators always see current data.
 7. `ClearDashboardOnCompanyChange` listener invalidates dashboard cache
 **Postconditions:** Company record exists, dashboard cache cleared, success flash message shown
 
-### UC-2 — Admin Updates a Company Profile
+### UC-XI3LB-2 — Admin Updates a Company Profile
 
 **Actor:** Admin
 **Preconditions:** Company exists; admin has `admin` role
@@ -107,7 +107,7 @@ to ensure administrators always see current data.
 7. `ClearDashboardOnCompanyChange` listener invalidates dashboard cache
 **Postconditions:** Company record updated, dashboard cache cleared, success flash message shown
 
-### UC-3 — Admin Deletes a Single Company
+### UC-XI3LB-3 — Admin Deletes a Single Company
 
 **Actor:** Admin
 **Preconditions:** Company exists; admin has `admin` role
@@ -122,7 +122,7 @@ to ensure administrators always see current data.
 8. If either guard fails, `RejectedException` is thrown with translated reason
 **Postconditions:** Company deleted (or rejection shown), dashboard cache cleared
 
-### UC-4 — Admin Batch Deletes Companies with Deletion Guards
+### UC-XI3LB-4 — Admin Batch Deletes Companies with Deletion Guards
 
 **Actor:** Admin
 **Preconditions:** Multiple companies selected; admin has `admin` role
@@ -135,7 +135,7 @@ to ensure administrators always see current data.
 6. Returns count of deleted vs skipped records with flash message explaining reasons
 **Postconditions:** Only eligible records deleted, ineligible records preserved, summary reported
 
-### UC-5 — Admin Imports Companies via CSV
+### UC-XI3LB-5 — Admin Imports Companies via CSV
 
 **Actor:** Admin
 **Preconditions:** Admin has `admin` role; CSV file prepared (or template downloaded)
@@ -150,7 +150,7 @@ to ensure administrators always see current data.
 8. Summary displayed: X created, Y duplicates, Z errors
 **Postconditions:** Companies created for valid rows, duplicates/errors reported per-row
 
-### UC-6 — Admin Exports Companies to CSV
+### UC-XI3LB-6 — Admin Exports Companies to CSV
 
 **Actor:** Admin
 **Preconditions:** Admin has `admin` role; at least one company exists
@@ -162,7 +162,7 @@ to ensure administrators always see current data.
 5. Browser initiates file download
 **Postconditions:** CSV file downloaded containing all company records
 
-### UC-7 — Admin Downloads CSV Import Template
+### UC-XI3LB-7 — Admin Downloads CSV Import Template
 
 **Actor:** Admin
 **Preconditions:** Admin has `admin` role
@@ -181,41 +181,41 @@ to ensure administrators always see current data.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CC1 | `CompanyManager` must be accessible at route `admin/companies` with `auth` and `role:super_admin\|admin` middleware |
-| FR-CC2 | `CreateCompanyAction` must accept `CompanyData` DTO and return `ActionResponse` |
-| FR-CC3 | `CompanyData` must require `name` (string); `address`, `phone`, `email`, `website`, `description`, `industrySector` must be nullable strings |
-| FR-CC4 | `Company` model must use `#[Fillable]` attribute with all seven fields: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
-| FR-CC5 | `CompanyPolicy::create()`, `update()`, `delete()` must require admin role via `isAdmin()` check |
-| FR-CC6 | `CompanyPolicy::delete()` must additionally deny when the company has placements **or** partnerships — matching `CompanyState::canBeDeleted()` (FR-CC10); the policy guard and entity guard must never diverge |
-| FR-CC7 | `CompanyPolicy::viewAny()` and `view()` must return true for all authenticated users |
-| FR-CC8 | `DeleteCompanyAction` must throw `RejectedException` if `CompanyState::canBeDeleted()` returns false |
-| FR-CC9 | `BatchDeleteCompanyAction` must iterate selected IDs, check `canBeDeleted()` per record, and delete only eligible records |
-| FR-CC10 | `CompanyState::canBeDeleted()` must require both `placementCount === 0` and `partnershipCount === 0` |
-| FR-CC11 | `Company` model must provide `asCompanyState()` bridge method returning `CompanyState::fromModel()` |
-| FR-CC12 | Company mutations must dispatch `CompanyCreated`, `CompanyUpdated`, or `CompanyDeleted` events |
-| FR-CC13 | `ClearDashboardOnCompanyChange` listener must handle all three company events and invalidate dashboard cache |
+| FR-XI3LB-CC1 | `CompanyManager` must be accessible at route `admin/companies` with `auth` and `role:super_admin\|admin` middleware |
+| FR-XI3LB-CC2 | `CreateCompanyAction` must accept `CompanyData` DTO and return `ActionResponse` |
+| FR-XI3LB-CC3 | `CompanyData` must require `name` (string); `address`, `phone`, `email`, `website`, `description`, `industrySector` must be nullable strings |
+| FR-XI3LB-CC4 | `Company` model must use `#[Fillable]` attribute with all seven fields: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
+| FR-XI3LB-CC5 | `CompanyPolicy::create()`, `update()`, `delete()` must require admin role via `isAdmin()` check |
+| FR-XI3LB-CC6 | `CompanyPolicy::delete()` must additionally deny when the company has placements **or** partnerships — matching `CompanyState::canBeDeleted()` (FR-XI3LB-CC10); the policy guard and entity guard must never diverge |
+| FR-XI3LB-CC7 | `CompanyPolicy::viewAny()` and `view()` must return true for all authenticated users |
+| FR-XI3LB-CC8 | `DeleteCompanyAction` must throw `RejectedException` if `CompanyState::canBeDeleted()` returns false |
+| FR-XI3LB-CC9 | `BatchDeleteCompanyAction` must iterate selected IDs, check `canBeDeleted()` per record, and delete only eligible records |
+| FR-XI3LB-CC10 | `CompanyState::canBeDeleted()` must require both `placementCount === 0` and `partnershipCount === 0` |
+| FR-XI3LB-CC11 | `Company` model must provide `asCompanyState()` bridge method returning `CompanyState::fromModel()` |
+| FR-XI3LB-CC12 | Company mutations must dispatch `CompanyCreated`, `CompanyUpdated`, or `CompanyDeleted` events |
+| FR-XI3LB-CC13 | `ClearDashboardOnCompanyChange` listener must handle all three company events and invalidate dashboard cache |
 
 ### CSV Import/Export
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-CV1 | `CompanyManager` must support CSV import via `CsvHandler` integration |
-| FR-CV2 | CSV import must validate required column `name` and optional columns `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
-| FR-CV3 | CSV import must deduplicate by company name — skip rows where name matches existing company (exact, case-sensitive match) |
-| FR-CV4 | CSV import must report per-row results using `CsvRowResult` enum (`created`, `duplicate`, `error`) |
-| FR-CV5 | `CompanyManager` must provide a CSV template download with correct column headers and no data rows |
-| FR-CV6 | `CompanyManager` must support CSV export of all company records with all seven fields |
-| FR-CV7 | CSV import operations must be wrapped in database transactions for atomicity — either all valid rows succeed or none persist |
+| FR-XI3LB-CV1 | `CompanyManager` must support CSV import via `CsvHandler` integration |
+| FR-XI3LB-CV2 | CSV import must validate required column `name` and optional columns `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
+| FR-XI3LB-CV3 | CSV import must deduplicate by company name — skip rows where name matches existing company (exact, case-sensitive match) |
+| FR-XI3LB-CV4 | CSV import must report per-row results using `CsvRowResult` enum (`created`, `duplicate`, `error`) |
+| FR-XI3LB-CV5 | `CompanyManager` must provide a CSV template download with correct column headers and no data rows |
+| FR-XI3LB-CV6 | `CompanyManager` must support CSV export of all company records with all seven fields |
+| FR-XI3LB-CV7 | CSV import operations must be wrapped in database transactions for atomicity — either all valid rows succeed or none persist |
 
 ### Dashboard Integration
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-DI1 | Company dashboard stats must expose: `total_companies`, `with_placements`, `active_partnerships`, `available_slots` |
-| FR-DI2 | `available_slots` must be computed as sum of `(quota - filled_quota)` across all active partnerships |
-| FR-DI3 | `with_placements` must count companies that have at least one associated placement record |
-| FR-DI4 | `active_partnerships` must count companies that have at least one partnership with `ACTIVE` status |
-| FR-DI5 | Dashboard cache must be invalidated on any company mutation via `ClearDashboardOnCompanyChange` listener handling `CompanyCreated`, `CompanyUpdated`, and `CompanyDeleted` events |
+| FR-XI3LB-DI1 | Company dashboard stats must expose: `total_companies`, `with_placements`, `active_partnerships`, `available_slots` |
+| FR-XI3LB-DI2 | `available_slots` must be computed as sum of `(quota - filled_quota)` across all active partnerships |
+| FR-XI3LB-DI3 | `with_placements` must count companies that have at least one associated placement record |
+| FR-XI3LB-DI4 | `active_partnerships` must count companies that have at least one partnership with `ACTIVE` status |
+| FR-XI3LB-DI5 | Dashboard cache must be invalidated on any company mutation via `ClearDashboardOnCompanyChange` listener handling `CompanyCreated`, `CompanyUpdated`, and `CompanyDeleted` events |
 
 ---
 
@@ -223,28 +223,28 @@ to ensure administrators always see current data.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All company mutations must be authorized via `CompanyPolicy` — no bypass allowed |
-| NFR-S2 | CSV import must sanitize all input fields to prevent XSS and SQL injection |
-| NFR-S3 | Company routes must require `auth` middleware and `role:super_admin\|admin` for write operations |
-| NFR-S4 | CSV import must validate file MIME type and enforce maximum row count (1,000 rows per import) |
-| NFR-S5 | Company deletion must be blocked if any placement or partnership record references it — enforced at both Action and Entity layers |
-| NFR-P1 | Company list page must load in < 500ms for up to 1,000 companies |
-| NFR-P2 | CSV import of 100 companies must complete in < 10 seconds |
-| NFR-P3 | Dashboard stats query must execute in < 200ms with up to 1,000 companies and 500 partnerships |
-| NFR-P4 | CSV export must stream results for datasets exceeding 500 records to avoid memory exhaustion |
-| NFR-R1 | Company deletion must be blocked if any placement or partnership record references it — no exceptions |
-| NFR-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
-| NFR-R3 | CSV import must use database transactions — partial imports must not persist |
-| NFR-U1 | Admin must see real-time validation feedback on company creation and edit forms |
-| NFR-U2 | CSV import errors must display per-row with row number, field name, and error message |
-| NFR-U3 | Batch delete results must show exact counts: X deleted, Y skipped (with reason per skipped record) |
-| NFR-A1 | Company management UI must meet WCAG 2.1 Level AA |
-| NFR-A2 | CSV import error messages must be associated with their fields via `aria-describedby` |
-| NFR-A3 | Real-time validation feedback must be announced to screen readers via `aria-live` regions |
-| NFR-A4 | All form inputs must have associated labels |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standard |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-XI3LB-S1 | All company mutations must be authorized via `CompanyPolicy` — no bypass allowed |
+| NFR-XI3LB-S2 | CSV import must sanitize all input fields to prevent XSS and SQL injection |
+| NFR-XI3LB-S3 | Company routes must require `auth` middleware and `role:super_admin\|admin` for write operations |
+| NFR-XI3LB-S4 | CSV import must validate file MIME type and enforce maximum row count (1,000 rows per import) |
+| NFR-XI3LB-S5 | Company deletion must be blocked if any placement or partnership record references it — enforced at both Action and Entity layers |
+| NFR-XI3LB-P1 | Company list page must load in < 500ms for up to 1,000 companies |
+| NFR-XI3LB-P2 | CSV import of 100 companies must complete in < 10 seconds |
+| NFR-XI3LB-P3 | Dashboard stats query must execute in < 200ms with up to 1,000 companies and 500 partnerships |
+| NFR-XI3LB-P4 | CSV export must stream results for datasets exceeding 500 records to avoid memory exhaustion |
+| NFR-XI3LB-R1 | Company deletion must be blocked if any placement or partnership record references it — no exceptions |
+| NFR-XI3LB-R2 | Batch delete must report exactly which records were deleted and which were skipped with reasons |
+| NFR-XI3LB-R3 | CSV import must use database transactions — partial imports must not persist |
+| NFR-XI3LB-U1 | Admin must see real-time validation feedback on company creation and edit forms |
+| NFR-XI3LB-U2 | CSV import errors must display per-row with row number, field name, and error message |
+| NFR-XI3LB-U3 | Batch delete results must show exact counts: X deleted, Y skipped (with reason per skipped record) |
+| NFR-XI3LB-A1 | Company management UI must meet WCAG 2.1 Level AA |
+| NFR-XI3LB-A2 | CSV import error messages must be associated with their fields via `aria-describedby` |
+| NFR-XI3LB-A3 | Real-time validation feedback must be announced to screen readers via `aria-live` regions |
+| NFR-XI3LB-A4 | All form inputs must have associated labels |
+| NFR-XI3LB-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standard |
+| NFR-XI3LB-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-XI3LB-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ## Test Requirements
 
@@ -273,6 +273,7 @@ App\Partners\Company\Models\Company
     partnerships() HasMany Partnership
   Bridge: asCompanyState() → CompanyState::fromModel()
   Factory: CompanyFactory
+
 ```
 
 ### CompanyData DTO
@@ -282,6 +283,7 @@ App\Partners\Company\Data\CompanyData extends BaseData
   Required: name: string
   Optional: address: ?string, phone: ?string, email: ?string, website: ?string,
             description: ?string, industrySector: ?string
+
 ```
 
 ### CompanyState Entity
@@ -292,6 +294,7 @@ App\Partners\Company\Entities\CompanyState extends BaseEntity (final readonly)
   Factory: fromModel(Model) — aggregates withCount from related tables
   Methods:
     canBeDeleted(): bool  — both placementCount and partnershipCount must === 0
+
 ```
 
 ### CompanyPolicy
@@ -302,8 +305,9 @@ App\Partners\Company\Policies\CompanyPolicy
   view(User, Company): bool — all authenticated users
   create(User): bool — admin role required (isAdmin())
   update(User, Company): bool — admin role required (isAdmin())
-  delete(User, Company): bool — admin role required AND no existing placements or partnerships (mirrors CompanyState::canBeDeleted(), FR-CC10)
+  delete(User, Company): bool — admin role required AND no existing placements or partnerships (mirrors CompanyState::canBeDeleted(), FR-XI3LB-CC10)
   forceDelete(User, Company): bool — super_admin role required
+
 ```
 
 ### Actions
@@ -349,6 +353,7 @@ companies:
   industry_sector:  string      (nullable, indexed)
   created_at:       timestamp
   updated_at:       timestamp
+
 ```
 
 ### CSV Column Mapping
@@ -369,6 +374,7 @@ companies:
 App\Partners\Company\Enums\CsvRowResult: string
   Cases: CREATED='created', DUPLICATE='duplicate', ERROR='error'
   Methods: label(): string (LabelEnum implementation)
+
 ```
 
 ### Livewire Components
@@ -385,7 +391,7 @@ App\Partners\Company\Enums\CsvRowResult: string
 ### DD-1 — Dual Deletion Guard Layers
 
 **Decision:** Enforce deletion guards at the Action layer (query-based check before calling entity), the Entity layer (`canBeDeleted()` using `withCount` aggregation), **and the Policy layer** (`CompanyPolicy::delete()`). All three layers must evaluate the *same* predicate — a company is undeletable if it has any placements **or** partnerships. The Policy must not check a subset (e.g., placements only), otherwise authorization and business rules diverge and admins hit inconsistent "policy allowed but action rejected" states.
-**Rationale:** The Action-layer check handles the common path with an upfront query for placements and partnerships. The Entity-layer check provides a safety net against race conditions where concurrent requests may have added dependent records between the Action check and the actual delete. The Policy-layer check keeps the rule visible at the authorization boundary (FR-CC5/CC6). Both must agree before deletion proceeds.
+**Rationale:** The Action-layer check handles the common path with an upfront query for placements and partnerships. The Entity-layer check provides a safety net against race conditions where concurrent requests may have added dependent records between the Action check and the actual delete. The Policy-layer check keeps the rule visible at the authorization boundary (FR-XI3LB-CC5/CC6). Both must agree before deletion proceeds.
 **Trade-off:** Slightly more code per deletion path, but significantly reduces risk of orphaned records.
 **Rejected alternative:** Single-layer guard at database constraint level only — cannot provide user-friendly error messages or granular skip reporting in batch operations.
 

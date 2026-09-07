@@ -13,6 +13,19 @@ policies, see [Policy Pattern](../arch/policy-pattern.md).
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## 1. Network Security
 
 ### Perimeter
@@ -120,6 +133,7 @@ redaction.
 // Automatic masking in activity log
 SmartLogger::activity()->info('User profile updated', ['user_id' => $user->id]);
 // email, phone, address are auto-masked in the log entry
+
 ```
 
 PII masking reference: [System Observability §PII Masking](../system-observability.md#pii-masking).
@@ -165,6 +179,7 @@ GDPR reference: [System Observability §GDPR Deletion Logs](../system-observabil
 ```bash
 composer audit          # Check for known vulnerabilities in PHP dependencies
 npm audit               # Check for known vulnerabilities in JS dependencies
+
 ```
 
 Both audits are bundled into `scan_security.py` (rule S10) and enforced `--strict` by the

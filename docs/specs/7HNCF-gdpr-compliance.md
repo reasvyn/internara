@@ -89,7 +89,7 @@ GDPR logs would see an empty table despite deletions occurring.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Deletes a User Account and GDPR Log Is Created
+### UC-7HNCF-1 — Admin Deletes a User Account and GDPR Log Is Created
 
 **Actor:** Admin
 **Preconditions:** Admin authenticated with `super_admin` or `admin` role, target user exists and is not a super admin
@@ -104,7 +104,7 @@ GDPR logs would see an empty table despite deletions occurring.
 8. `DeleteUserAction` proceeds with `$user->delete()` (hard delete, cascade)
 **Postconditions:** User record deleted, GDPR deletion log record exists with complete metadata snapshot
 
-### UC-2 — Admin Deletes Users via Batch Action
+### UC-7HNCF-2 — Admin Deletes Users via Batch Action
 
 **Actor:** Admin
 **Preconditions:** Admin authenticated, multiple non-super-admin users selected
@@ -117,7 +117,7 @@ GDPR logs would see an empty table despite deletions occurring.
 6. `BatchDeleteUserAction` returns `['deleted' => N, 'skipped' => M]`
 **Postconditions:** N user records deleted, N GDPR deletion log records created
 
-### UC-3 — Admin Views GDPR Deletion Log History
+### UC-7HNCF-3 — Admin Views GDPR Deletion Log History
 
 **Actor:** Admin
 **Preconditions:** Admin authenticated, at least one deletion log record exists
@@ -130,7 +130,7 @@ GDPR logs would see an empty table despite deletions occurring.
 6. Admin clicks the "Deleted At" column header → table sorts by `deleted_at` descending/ascending
 **Postconditions:** Admin sees a complete, filterable, sortable log of all GDPR deletion events
 
-### UC-4 — Admin Reviews Deletion Detail via Log Entry
+### UC-7HNCF-4 — Admin Reviews Deletion Detail via Log Entry
 
 **Actor:** Admin
 **Preconditions:** Admin on the GDPR Logs page, log entries exist
@@ -148,95 +148,95 @@ GDPR logs would see an empty table despite deletions occurring.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-E1 | `GdprDeletionType` enum must implement `LabelEnum` with cases: `ANONYMIZATION`, `PERMANENT_DELETION` |
-| FR-E2 | `GdprDeletionType::label()` must return a translated string via `__('sysadmin.gdpr_logs.type.'.$this->value)` |
-| FR-E3 | `GdprDeletionType` values must match the Blade filter options: `'anonymization'` and `'permanent_deletion'` (→ existing `gdpr-deletion-logs.blade.php:11-12`) |
+| FR-7HNCF-E1 | `GdprDeletionType` enum must implement `LabelEnum` with cases: `ANONYMIZATION`, `PERMANENT_DELETION` |
+| FR-7HNCF-E2 | `GdprDeletionType::label()` must return a translated string via `__('sysadmin.gdpr_logs.type.'.$this->value)` |
+| FR-7HNCF-E3 | `GdprDeletionType` values must match the Blade filter options: `'anonymization'` and `'permanent_deletion'` (→ existing `gdpr-deletion-logs.blade.php:11-12`) |
 
 ### Entity — GdprDeletionLogState
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EN1 | `GdprDeletionLogState` must be a `final readonly` class extending `BaseEntity` |
-| FR-EN2 | `GdprDeletionLogState::fromModel()` must extract `user_email`, `deletion_type`, `reason`, `metadata_snapshot`, `deleted_at` from the model |
-| FR-EN3 | `GdprDeletionLogState::typeLabel()` must return the translated label for the `GdprDeletionType` enum |
-| FR-EN4 | `GdprDeletionLogState::formattedDeletedAt()` must return `deleted_at` formatted as `'Y-m-d H:i'` or `'N/A'` when null |
-| FR-EN5 | `GdprDeletionLogState::snapshotSummary()` must return a human-readable summary of the metadata snapshot (e.g., "Jane Doe (jane@example.com)") |
-| FR-EN6 | `GdprDeletionLogState::isAnonymization()` must return `true` when deletion type is `ANONYMIZATION` |
-| FR-EN7 | `GdprDeletionLogState::isPermanentDeletion()` must return `true` when deletion type is `PERMANENT_DELETION` |
+| FR-7HNCF-EN1 | `GdprDeletionLogState` must be a `final readonly` class extending `BaseEntity` |
+| FR-7HNCF-EN2 | `GdprDeletionLogState::fromModel()` must extract `user_email`, `deletion_type`, `reason`, `metadata_snapshot`, `deleted_at` from the model |
+| FR-7HNCF-EN3 | `GdprDeletionLogState::typeLabel()` must return the translated label for the `GdprDeletionType` enum |
+| FR-7HNCF-EN4 | `GdprDeletionLogState::formattedDeletedAt()` must return `deleted_at` formatted as `'Y-m-d H:i'` or `'N/A'` when null |
+| FR-7HNCF-EN5 | `GdprDeletionLogState::snapshotSummary()` must return a human-readable summary of the metadata snapshot (e.g., "Jane Doe (jane@example.com)") |
+| FR-7HNCF-EN6 | `GdprDeletionLogState::isAnonymization()` must return `true` when deletion type is `ANONYMIZATION` |
+| FR-7HNCF-EN7 | `GdprDeletionLogState::isPermanentDeletion()` must return `true` when deletion type is `PERMANENT_DELETION` |
 
 ### Model — GdprDeletionLog
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-M1 | `GdprDeletionLog` model must use `#[Fillable]` attribute with: `user_id`, `user_email`, `deletion_type`, `reason`, `metadata_snapshot`, `deleted_at` |
-| FR-M2 | `GdprDeletionLog` model must cast `metadata_snapshot` → `array` |
-| FR-M3 | `GdprDeletionLog` model must set `UPDATED_AT = null` to enforce immutability |
-| FR-M4 | `GdprDeletionLog` model must provide `asGdprDeletionLogState(): GdprDeletionLogState` bridge method |
-| FR-M5 | `GdprDeletionLog` model must provide `deleter(): BelongsTo` relationship to `User` via `deleter_id` foreign key (nullable) |
+| FR-7HNCF-M1 | `GdprDeletionLog` model must use `#[Fillable]` attribute with: `user_id`, `user_email`, `deletion_type`, `reason`, `metadata_snapshot`, `deleted_at` |
+| FR-7HNCF-M2 | `GdprDeletionLog` model must cast `metadata_snapshot` → `array` |
+| FR-7HNCF-M3 | `GdprDeletionLog` model must set `UPDATED_AT = null` to enforce immutability |
+| FR-7HNCF-M4 | `GdprDeletionLog` model must provide `asGdprDeletionLogState(): GdprDeletionLogState` bridge method |
+| FR-7HNCF-M5 | `GdprDeletionLog` model must provide `deleter(): BelongsTo` relationship to `User` via `deleter_id` foreign key (nullable) |
 
 ### Migration — Complete gdpr_deletion_logs Schema
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-MG1 | A new migration must add `user_email` column: `string(255)`, nullable, indexed — stores the email at time of deletion for post-deletion lookup |
-| FR-MG2 | A new migration must add `deletion_type` column: `string(30)`, nullable — stores `'anonymization'` or `'permanent_deletion'` |
-| FR-MG3 | A new migration must add `reason` column: `text`, nullable — optional human-readable reason for deletion |
-| FR-MG4 | A new migration must add `deleted_at` column: `timestamp`, nullable, indexed — the actual deletion timestamp (distinct from `created_at` which is the log creation timestamp) |
-| FR-MG5 | A new migration must add `deleter_id` column: nullable foreign UUID constrained to `users` with `nullOnDelete()` — records who initiated the deletion |
-| FR-MG6 | The existing `user_id` column (orphaned UUID) must be retained to reference the deleted user's original UUID |
+| FR-7HNCF-MG1 | A new migration must add `user_email` column: `string(255)`, nullable, indexed — stores the email at time of deletion for post-deletion lookup |
+| FR-7HNCF-MG2 | A new migration must add `deletion_type` column: `string(30)`, nullable — stores `'anonymization'` or `'permanent_deletion'` |
+| FR-7HNCF-MG3 | A new migration must add `reason` column: `text`, nullable — optional human-readable reason for deletion |
+| FR-7HNCF-MG4 | A new migration must add `deleted_at` column: `timestamp`, nullable, indexed — the actual deletion timestamp (distinct from `created_at` which is the log creation timestamp) |
+| FR-7HNCF-MG5 | A new migration must add `deleter_id` column: nullable foreign UUID constrained to `users` with `nullOnDelete()` — records who initiated the deletion |
+| FR-7HNCF-MG6 | The existing `user_id` column (orphaned UUID) must be retained to reference the deleted user's original UUID |
 
 ### Action — DeleteUserGdprAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A1 | `DeleteUserGdprAction` must extend `BaseCommandAction` |
-| FR-A2 | `DeleteUserGdprAction::execute(User $user, GdprDeletionType $type, ?string $reason = null, ?User $deleter = null)` must capture a metadata snapshot before deletion containing: `name`, `email`, `username`, `role`, `status` |
-| FR-A3 | `DeleteUserGdprAction` must create a `GdprDeletionLog` record with: `user_id = $user->id`, `user_email = $user->email`, `deletion_type = $type->value`, `reason`, `metadata_snapshot`, `deleted_at = now()`, `deleter_id = $deleter?->id` |
-| FR-A4 | `DeleteUserGdprAction` must dispatch `UserGdprDeleted` event with the `GdprDeletionLog` record |
-| FR-A5 | `DeleteUserGdprAction` must log `gdpr_user_deleted` via SmartLogger with user email, deletion type, and deleter ID |
-| FR-A6 | `DeleteUserGdprAction` must return the created `GdprDeletionLog` model |
+| FR-7HNCF-A1 | `DeleteUserGdprAction` must extend `BaseCommandAction` |
+| FR-7HNCF-A2 | `DeleteUserGdprAction::execute(User $user, GdprDeletionType $type, ?string $reason = null, ?User $deleter = null)` must capture a metadata snapshot before deletion containing: `name`, `email`, `username`, `role`, `status` |
+| FR-7HNCF-A3 | `DeleteUserGdprAction` must create a `GdprDeletionLog` record with: `user_id = $user->id`, `user_email = $user->email`, `deletion_type = $type->value`, `reason`, `metadata_snapshot`, `deleted_at = now()`, `deleter_id = $deleter?->id` |
+| FR-7HNCF-A4 | `DeleteUserGdprAction` must dispatch `UserGdprDeleted` event with the `GdprDeletionLog` record |
+| FR-7HNCF-A5 | `DeleteUserGdprAction` must log `gdpr_user_deleted` via SmartLogger with user email, deletion type, and deleter ID |
+| FR-7HNCF-A6 | `DeleteUserGdprAction` must return the created `GdprDeletionLog` model |
 
 ### Integration — DeleteUserAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-I1 | `DeleteUserAction::execute(User $user)` must accept an optional `?string $reason = null` parameter to propagate the reason to the GDPR log |
-| FR-I2 | `DeleteUserAction` must call `DeleteUserGdprAction::execute($user, GdprDeletionType::PERMANENT_DELETION, $reason, Auth::user())` before the `$user->delete()` call |
-| FR-I3 | `DeleteUserAction` must continue to dispatch `UserDeleted` event and perform the hard delete after GDPR logging |
+| FR-7HNCF-I1 | `DeleteUserAction::execute(User $user)` must accept an optional `?string $reason = null` parameter to propagate the reason to the GDPR log |
+| FR-7HNCF-I2 | `DeleteUserAction` must call `DeleteUserGdprAction::execute($user, GdprDeletionType::PERMANENT_DELETION, $reason, Auth::user())` before the `$user->delete()` call |
+| FR-7HNCF-I3 | `DeleteUserAction` must continue to dispatch `UserDeleted` event and perform the hard delete after GDPR logging |
 
 ### Integration — BatchDeleteUserAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-I4 | `BatchDeleteUserAction::execute(array $ids)` must propagate the `reason` parameter to `DeleteUserAction::execute()` for each user |
-| FR-I5 | Each successful deletion within the batch must create an individual `GdprDeletionLog` record (via `DeleteUserAction` → `DeleteUserGdprAction`) |
+| FR-7HNCF-I4 | `BatchDeleteUserAction::execute(array $ids)` must propagate the `reason` parameter to `DeleteUserAction::execute()` for each user |
+| FR-7HNCF-I5 | Each successful deletion within the batch must create an individual `GdprDeletionLog` record (via `DeleteUserAction` → `DeleteUserGdprAction`) |
 
 ### Livewire UI — GdprDeletionLogs
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-U1 | `GdprDeletionLogs` component must display columns: `user_email` (Email), `deletion_type` (Type), `reason` (Reason), `deleted_at` (Deleted At) |
-| FR-U2 | `GdprDeletionLogs` must support live search by `user_email` with 300ms debounce |
-| FR-U3 | `GdprDeletionLogs` must support filtering by `deletion_type` with options: All, Anonymization, Permanent Deletion |
-| FR-U4 | `GdprDeletionLogs` must support sorting by `deleted_at` and `user_email` columns |
-| FR-U5 | `GdprDeletionLogs` must paginate results at 20 per page |
-| FR-U6 | The `deletion_type` column must render as a badge: `permanent_deletion` → error style, `anonymization` → warning style (→ existing `gdpr-deletion-logs.blade.php:18`) |
-| FR-U7 | The `deleted_at` column must format timestamps as `Y-m-d H:i` |
+| FR-7HNCF-U1 | `GdprDeletionLogs` component must display columns: `user_email` (Email), `deletion_type` (Type), `reason` (Reason), `deleted_at` (Deleted At) |
+| FR-7HNCF-U2 | `GdprDeletionLogs` must support live search by `user_email` with 300ms debounce |
+| FR-7HNCF-U3 | `GdprDeletionLogs` must support filtering by `deletion_type` with options: All, Anonymization, Permanent Deletion |
+| FR-7HNCF-U4 | `GdprDeletionLogs` must support sorting by `deleted_at` and `user_email` columns |
+| FR-7HNCF-U5 | `GdprDeletionLogs` must paginate results at 20 per page |
+| FR-7HNCF-U6 | The `deletion_type` column must render as a badge: `permanent_deletion` → error style, `anonymization` → warning style (→ existing `gdpr-deletion-logs.blade.php:18`) |
+| FR-7HNCF-U7 | The `deleted_at` column must format timestamps as `Y-m-d H:i` |
 
 ### Policy — GdprDeletionLogPolicy
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-P1 | `GdprDeletionLogPolicy` must extend `BasePolicy` (→ existing policy at `app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php`) |
-| FR-P2 | `GdprDeletionLogPolicy::viewAny()` must return `$this->isAdmin($user)` |
-| FR-P3 | `GdprDeletionLogPolicy::view()` must return `$this->isAdmin($user)` |
-| FR-P4 | `GdprDeletionLogPolicy::create()` must return `$this->isAdmin($user)` — only admins can create deletion logs (via `DeleteUserGdprAction`) |
+| FR-7HNCF-P1 | `GdprDeletionLogPolicy` must extend `BasePolicy` (→ existing policy at `app/Modules/SysAdmin/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php`) |
+| FR-7HNCF-P2 | `GdprDeletionLogPolicy::viewAny()` must return `$this->isAdmin($user)` |
+| FR-7HNCF-P3 | `GdprDeletionLogPolicy::view()` must return `$this->isAdmin($user)` |
+| FR-7HNCF-P4 | `GdprDeletionLogPolicy::create()` must return `$this->isAdmin($user)` — only admins can create deletion logs (via `DeleteUserGdprAction`) |
 
 ### Events
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-EV1 | `UserGdprDeleted` must extend `BaseEvent`, accept a `GdprDeletionLog` model, and expose `eventName()` → `'user.gdpr_deleted'` |
+| FR-7HNCF-EV1 | `UserGdprDeleted` must extend `BaseEvent`, accept a `GdprDeletionLog` model, and expose `eventName()` → `'user.gdpr_deleted'` |
 
 ---
 
@@ -244,17 +244,17 @@ GDPR logs would see an empty table despite deletions occurring.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | GDPR deletion log records must be append-only — the `GdprDeletionLog` model must set `UPDATED_AT = null` to prevent update timestamps, and no update/delete operations must be exposed via the admin UI (→ DD-2) |
-| NFR-S2 | Only admin or super_admin users may view GDPR deletion logs — enforced by `GdprDeletionLogPolicy` (→ FR-P2, FR-P3) |
-| NFR-S3 | The metadata snapshot must be captured BEFORE the user record is deleted — `DeleteUserGdprAction` must read snapshot fields before calling `$user->delete()` (→ DD-3) |
-| NFR-S4 | The `deleter_id` foreign key must use `nullOnDelete()` to preserve log records if the deleting admin is later removed |
-| NFR-P1 | `GdprDeletionLogs` paginated query must complete within 200ms for up to 10,000 log records (indexed `user_email` and `deleted_at` columns) |
-| NFR-R1 | `DeleteUserGdprAction` must create the `GdprDeletionLog` record within the same transaction as the user deletion to ensure atomicity (→ DD-4) |
-| NFR-R2 | If `GdprDeletionLog` creation fails, the entire deletion must roll back — no user is deleted without a GDPR compliance record |
-| NFR-U1 | All GDPR log UI labels must use `__()` translation helper with keys from `sysadmin.gdpr_logs.*` namespace |
-| NFR-U2 | The deletion type badge must use color coding: `permanent_deletion` → error (red), `anonymization` → warning (yellow) |
-| NFR-M1 | All GDPR compliance classes must use `declare(strict_types=1)` |
-| NFR-M2 | `GdprDeletionLog` must not have an `updated_at` column — logs are immutable after creation (→ DD-2) |
+| NFR-7HNCF-S1 | GDPR deletion log records must be append-only — the `GdprDeletionLog` model must set `UPDATED_AT = null` to prevent update timestamps, and no update/delete operations must be exposed via the admin UI (→ DD-2) |
+| NFR-7HNCF-S2 | Only admin or super_admin users may view GDPR deletion logs — enforced by `GdprDeletionLogPolicy` (→ FR-7HNCF-P2, FR-7HNCF-P3) |
+| NFR-7HNCF-S3 | The metadata snapshot must be captured BEFORE the user record is deleted — `DeleteUserGdprAction` must read snapshot fields before calling `$user->delete()` (→ DD-3) |
+| NFR-7HNCF-S4 | The `deleter_id` foreign key must use `nullOnDelete()` to preserve log records if the deleting admin is later removed |
+| NFR-7HNCF-P1 | `GdprDeletionLogs` paginated query must complete within 200ms for up to 10,000 log records (indexed `user_email` and `deleted_at` columns) |
+| NFR-7HNCF-R1 | `DeleteUserGdprAction` must create the `GdprDeletionLog` record within the same transaction as the user deletion to ensure atomicity (→ DD-4) |
+| NFR-7HNCF-R2 | If `GdprDeletionLog` creation fails, the entire deletion must roll back — no user is deleted without a GDPR compliance record |
+| NFR-7HNCF-U1 | All GDPR log UI labels must use `__()` translation helper with keys from `sysadmin.gdpr_logs.*` namespace |
+| NFR-7HNCF-U2 | The deletion type badge must use color coding: `permanent_deletion` → error (red), `anonymization` → warning (yellow) |
+| NFR-7HNCF-M1 | All GDPR compliance classes must use `declare(strict_types=1)` |
+| NFR-7HNCF-M2 | `GdprDeletionLog` must not have an `updated_at` column — logs are immutable after creation (→ DD-2) |
 
 ---
 
@@ -272,6 +272,7 @@ enum GdprDeletionType: string implements LabelEnum
     public function label(): string;
     // Returns __('sysadmin.gdpr_logs.type.'.$this->value)
 }
+
 ```
 
 ### 6.2 GdprDeletionLogState Entity
@@ -300,6 +301,7 @@ final readonly class GdprDeletionLogState extends BaseEntity
     public function metadataSnapshot(): ?array;
     public function deletedAt(): ?string;
 }
+
 ```
 
 ### 6.3 GdprDeletionLog Model
@@ -320,6 +322,7 @@ class GdprDeletionLog extends BaseModel
     public function deleter(): BelongsTo;              // → User via deleter_id (nullable)
     public function asGdprDeletionLogState(): GdprDeletionLogState;
 }
+
 ```
 
 ### 6.4 gdpr_deletion_logs Table Schema (After Migration)
@@ -333,6 +336,7 @@ Schema::table('gdpr_deletion_logs', function (Blueprint $table) {
     $table->timestamp('deleted_at')->nullable()->after('reason')->index();
     $table->foreignUuid('deleter_id')->nullable()->after('deleted_at')->constrained('users')->nullOnDelete();
 });
+
 ```
 
 **Existing columns (retained from original migration):**
@@ -360,6 +364,7 @@ final class DeleteUserGdprAction extends BaseCommandAction
     // Captures metadata snapshot, creates GdprDeletionLog,
     // dispatches UserGdprDeleted, logs gdpr_user_deleted
 }
+
 ```
 
 ### 6.6 Updated DeleteUserAction
@@ -375,6 +380,7 @@ final class DeleteUserAction extends BaseCommandAction
     public function execute(User $user, ?string $reason = null): void;
     // Calls gdprAction->execute() with PERMANENT_DELETION type before $user->delete()
 }
+
 ```
 
 ### 6.7 Updated BatchDeleteUserAction
@@ -390,6 +396,7 @@ final class BatchDeleteUserAction extends BaseCommandAction
     public function execute(array $ids, ?string $reason = null): array;
     // Passes reason to DeleteUserAction::execute() for each user
 }
+
 ```
 
 ### 6.8 UserGdprDeleted Event
@@ -401,6 +408,7 @@ final class UserGdprDeleted extends BaseEvent
     public function __construct(public readonly GdprDeletionLog $log) {}
     public function eventName(): string { return 'user.gdpr_deleted'; }
 }
+
 ```
 
 ### 6.9 GdprDeletionLogPolicy
@@ -413,6 +421,7 @@ class GdprDeletionLogPolicy extends BasePolicy
     public function view(User $user, GdprDeletionLog $log): bool;  // isAdmin
     public function create(User $user): bool;    // isAdmin
 }
+
 ```
 
 ### 6.10 GdprDeletionLogs Livewire Component
@@ -435,6 +444,7 @@ class GdprDeletionLogs extends Component
     #[Layout('core::layouts.app')]
     public function render(): View;
 }
+
 ```
 
 ### 6.11 Routes
@@ -443,6 +453,7 @@ class GdprDeletionLogs extends Component
 // routes/web/sysadmin.php:37
 Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
 // Middleware: auth, role:super_admin|admin
+
 ```
 
 ### 6.12 Localization Keys
@@ -458,6 +469,7 @@ Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
         'permanent_deletion' => 'Permanent Deletion',
     ],
 ],
+
 ```
 
 ---

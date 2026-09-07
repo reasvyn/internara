@@ -55,7 +55,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Visitor Opens Homepage (Unauthenticated, Installed)
+### UC-K8HP1-1 — Visitor Opens Homepage (Unauthenticated, Installed)
 
 **Actor:** Unauthenticated visitor on installed instance
 **Preconditions:** `SetupEntity::get()->isInstalled() === true`, `auth()->check() === false`, `GET /`
@@ -64,26 +64,26 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 2. `render()` returns `view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])`
    3. Guest shell renders: sticky header (brand `wire:navigate /` + `theme-switch` + `lang-switch`), `main#main-content`, footer `credits`
 4. Hero renders: brand `size=xl`, 3 pills, tagline `brand('tagline') ?: __('common.app_tagline')` as gradient `h1`, `hero_desc`, wave divider
-5. Cards section (`bg-base-200`) shows registration card (branch per UC-4) + login card + 3 feature highlights
+5. Cards section (`bg-base-200`) shows registration card (branch per UC-K8HP1-4) + login card + 3 feature highlights
 **Postconditions:** Landing visible without auth; internal links use `wire:navigate` (SPA); theme/lang switchers functional
 
-### UC-2 — Authenticated User Hits `/`
+### UC-K8HP1-2 — Authenticated User Hits `/`
 
 **Actor:** Any `auth()->check() === true`
 **Preconditions:** User logged in
 **Flow:** `HomePage::mount()` calls `$this->redirectRoute('dashboard')` and returns — before availability fetch
 **Postconditions:** Lands on `GET /dashboard` (role-routed); homepage Blade never rendered
 
-### UC-3 — Fresh Install Hits `/`
+### UC-K8HP1-3 — Fresh Install Hits `/`
 
 **Actor:** Visitor on `isInstalled() === false`
 **Preconditions:** `setup.is_installed` falsy
 **Flow:** `HomePage::mount()` calls `$this->redirectRoute('setup')` and returns — takes precedence over auth check
 **Postconditions:** Redirected to setup wizard; no availability query
 
-### UC-4 — Registration Card Branches on `status`
+### UC-K8HP1-4 — Registration Card Branches on `status`
 
-**Actor:** Visitor on homepage (UC-1)
+**Actor:** Visitor on homepage (UC-K8HP1-1)
 **Flow:** `home-page.blade.php` switches on `$registration['status']`:
 - `open`: `x-ts-badge` success + `registration_open` + period `j F Y` (`start`→`end`) + info alert not shown + `x-ts-button` `wire:navigate href=route('apply')` primary `register_now`
 - `upcoming`: badge info + `registration_upcoming` + upcoming period + `x-ts-alert` info `registration_not_open_yet`
@@ -91,13 +91,13 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 - default (`not_configured`/unknown): neutral badge `registration_unavailable` + alert `registration_unavailable_desc`
 **Postconditions:** Single CTA or explanatory alert; translated in EN/ID; dates via `Carbon::parse()->translatedFormat('j F Y')`
 
-### UC-5 — Visitor Explores Feature Highlights
+### UC-K8HP1-5 — Visitor Explores Feature Highlights
 
 **Actor:** Visitor scrolling past cards
 **Flow:** Section `features_title`/`features_subtitle` + grid `1 → 3` cols shows 3 cards: Logbook (`book-open`, `primary`), Guidance (`users`, `secondary`), Certificate (`identification`, `accent`) with `feature_*_title/desc`
 **Postconditions:** Marketing overview of platform value without requiring auth
 
-### UC-6 — Visitor Changes Locale or Theme on Homepage
+### UC-K8HP1-6 — Visitor Changes Locale or Theme on Homepage
 
 **Actor:** Visitor on homepage
 **Flow:** Clicks `livewire:settings.lang-switch` (EN↔ID, cookie `locale` via `SetLocale`) or `x-ui::components.theme-switch` (light/dark/system → `app.js applyTheme()` sets `data-theme`+`.dark`+cookie)
@@ -141,7 +141,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 |----|-------------|----------|
 | FR-HP-14 | Cards `section` must be `bg-base-200 flex-1 pb-16 sm:pb-20 lg:pb-24` with inner `container mx-auto -mt-8 sm:-mt-10 px-4 sm:px-6 lg:px-12`; grid `mx-auto max-w-5xl grid gap-6 sm:gap-8 lg:grid-cols-2 grid-cols-1` | P0 |
 | FR-HP-15 | Registration card must be `group card bg-base-100 border-base-content/10 border shadow-lg hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300`; `card-body items-center text-center p-6 sm:p-8 lg:p-10`; icon well `from-primary/15 to-primary/5 ring-base-content/10 size-16 sm:size-20 rounded-2xl ring-1 ring-inset group-hover:scale-110` with `x-ts-icon clipboard-document-list text-primary size-8 sm:size-10`; title `card-title text-xl sm:text-2xl font-bold`, desc `text-base-content/60 max-w-sm sm:text-base` | P1 |
-| FR-HP-16 | Registration card body must branch exactly as UC-4 (badge + period + alert/CTA per `status`); `open` CTA is `x-ts-button wire:navigate href=route('apply') color=primary text=register_now icon=arrow-right icon-right w-full sm:w-auto` | P0 |
+| FR-HP-16 | Registration card body must branch exactly as UC-K8HP1-4 (badge + period + alert/CTA per `status`); `open` CTA is `x-ts-button wire:navigate href=route('apply') color=primary text=register_now icon=arrow-right icon-right w-full sm:w-auto` | P0 |
 | FR-HP-17 | Login card must be `group card bg-base-100 border-base-content/10 hover:border-secondary/30` with matching `card-body`/`icon well from-secondary/15 to-secondary/5`; title `login_title`, desc `login_desc`, `x-ts-button wire:navigate href=route('login') color=secondary login_action`, footer divider `border-base-content/10 mt-6 border-t pt-5` with `no_account text-base-content/40 text-xs` | P0 |
 
 ### Homepage — Feature Highlights
@@ -155,7 +155,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| FR-HP-20 | Homepage visual tokens must be semantic only via the existing pipeline — hero `from-primary/8 via-base-100 to-secondary/8` + blobs `bg-primary/10 secondary/10 accent/5`, wave `text-base-200`, cards `bg-base-100 border-base-content/10 hover:border-primary/30 secondary/30`, icon wells `from-{primary,secondary,accent}/15→/5` + `ring-base-content/10`, text `text-base-content/40–60`/`text-primary/secondary/accent`, badges/buttons/alerts via TallstackUI `color="primary secondary success info warning"` — reusing `Theme::cssVariables()` inline `<style>` in `ui::layouts.base` (cached 1h, invalidated via `theme_cache_keys`) and `app.js applyTheme()` dual `data-theme`+`.dark` per 52O1I FR-T1/FR-T3; no hardcoded hex/`bg-white`/`bg-gray-*`/`ring-white` or per-page `<style>` | P1 |
+| FR-HP-20 | Homepage visual tokens must be semantic only via the existing pipeline — hero `from-primary/8 via-base-100 to-secondary/8` + blobs `bg-primary/10 secondary/10 accent/5`, wave `text-base-200`, cards `bg-base-100 border-base-content/10 hover:border-primary/30 secondary/30`, icon wells `from-{primary,secondary,accent}/15→/5` + `ring-base-content/10`, text `text-base-content/40–60`/`text-primary/secondary/accent`, badges/buttons/alerts via TallstackUI `color="primary secondary success info warning"` — reusing `Theme::cssVariables()` inline `<style>` in `ui::layouts.base` (cached 1h, invalidated via `theme_cache_keys`) and `app.js applyTheme()` dual `data-theme`+`.dark` per 52O1I FR-K8HP1-T1/FR-K8HP1-T3; no hardcoded hex/`bg-white`/`bg-gray-*`/`ring-white` or per-page `<style>` | P1 |
 
 ### Homepage — i18n & Content
 
@@ -206,6 +206,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 use App\Modules\User\Livewire\HomePage;
 
 Route::livewire('/', HomePage::class)->name('home'); // GET /
+
 ```
 
 ### 6.2 HomePage Livewire
@@ -231,6 +232,7 @@ final class HomePage extends Component
     // Else → $this->registration = $action->execute()
     public function render(): View; // view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])
 }
+
 ```
 
 ### 6.3 ReadRegistrationAvailabilityAction Contract
@@ -248,6 +250,7 @@ final class ReadRegistrationAvailabilityAction extends BaseReadAction
     // ['status' => 'upcoming',   'start_date' => Carbon, 'end_date' => Carbon] // start within now+1 month, not open
     // ['status' => 'closed',     'start_date' => Carbon, 'end_date' => Carbon] // otherwise, start & end set
 }
+
 ```
 
 ### 6.4 Blade View Contract
@@ -260,6 +263,7 @@ final class ReadRegistrationAvailabilityAction extends BaseReadAction
 //       Carbon::parse()->translatedFormat('j F Y'), route('apply'), route('login')
 //       @if ($registration['status'] === 'open'|'upcoming'|'closed') @else (not_configured)
 // Layout: ui::layouts.guest → ui::layouts.base
+
 ```
 
 ### 6.5 Guest Shell Injected Variables (52O1I, referenced)
@@ -269,6 +273,7 @@ HTML: <html lang="{{ app()->getLocale() }}" data-theme="{{ cookie('theme','syste
 CSS vars: html[data-theme='light'] { --color-primary: Theme::cssVariables()['light'] } + html[data-theme='dark'] { --color-primary: lightened 40% }
          Cached 1h under config('cache-keys.theme_css_variables'), invalidated via config('settings.theme_cache_keys')
 JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie + localStorage dark-theme
+
 ```
 
 ### 6.6 Translations
@@ -283,6 +288,7 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 //   features_title/subtitle, feature_logbook/guidance/certificate_title/desc
 // ]
 // 2 locales × 20+ keys, all required
+
 ```
 
 ---

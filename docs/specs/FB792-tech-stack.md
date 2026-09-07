@@ -64,10 +64,10 @@ manifest (no undeclared direct dependencies).
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Developer | Reproduces the tested environment from documented versions and build commands |
-| UC-2 | Release gate | Scans for vulnerable dependencies and blocks release on critical findings |
+| UC-FB792-1 | Developer | Reproduces the tested environment from documented versions and build commands |
+| UC-FB792-2 | Release gate | Scans for vulnerable dependencies and blocks release on critical findings |
 
-### UC-1 — Developer Reproduces the Tested Environment
+### UC-FB792-1 — Developer Reproduces the Tested Environment
 
 **Actor:** Developer
 **Preconditions:** Git checkout, PHP 8.4+, Composer, Node available
@@ -78,7 +78,7 @@ manifest (no undeclared direct dependencies).
 4. The resulting environment matches the tested dependency set
 **Postconditions:** Identical dependency set on every machine — no version drift
 
-### UC-2 — Release Gate Scans for Vulnerable Dependencies
+### UC-FB792-2 — Release Gate Scans for Vulnerable Dependencies
 
 **Actor:** Developer / CI
 **Preconditions:** Release candidate branch
@@ -96,32 +96,32 @@ manifest (no undeclared direct dependencies).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-TS1 | PHP >= 8.4 required (readonly properties, enums, fibers used throughout) |
-| FR-TS2 | Laravel >= 13.0 required (Livewire 4 integration, Folio routing, Volt) |
-| FR-TS3 | Livewire >= 4.0 required (Livewire::handle(), property binding, polling) |
-| FR-TS4 | Tailwind CSS >= 4.3 required (v4 `@theme` directive, CSS-first config) |
-| FR-TS5 | **REMOVED in 0.15.0** — DaisyUI/MaryUI/PHPFlasher deleted; `x-mary-*`, `flash()->`, `@flasher_render`, `@plugin daisyui` must be 0 |
-| FR-TS6 | TallstackUI >= 4.0 required (TALL stack UI kit, `tallstackui/tallstackui`); **always use TallstackUI** |
-| FR-TS6a | TallstackUI-only — every UI need must use TallstackUI components (`alert`, `toast`, `modal`, `form`, `table`, `badge`, etc.); custom Blade/Tailwind only if TallstackUI cannot achieve the design |
+| FR-FB792-FB792-TS1 | PHP >= 8.4 required (readonly properties, enums, fibers used throughout) |
+| FR-FB792-FB792-TS2 | Laravel >= 13.0 required (Livewire 4 integration, Folio routing, Volt) |
+| FR-FB792-FB792-TS3 | Livewire >= 4.0 required (Livewire::handle(), property binding, polling) |
+| FR-FB792-FB792-TS4 | Tailwind CSS >= 4.3 required (v4 `@theme` directive, CSS-first config) |
+| FR-FB792-FB792-TS5 | **REMOVED in 0.15.0** — DaisyUI/MaryUI/PHPFlasher deleted; `x-mary-*`, `flash()->`, `@flasher_render`, `@plugin daisyui` must be 0 |
+| FR-FB792-FB792-TS6 | TallstackUI >= 4.0 required (TALL stack UI kit, `tallstackui/tallstackui`); **always use TallstackUI** |
+| FR-FB792-TS6a | TallstackUI-only — every UI need must use TallstackUI components (`alert`, `toast`, `modal`, `form`, `table`, `badge`, etc.); custom Blade/Tailwind only if TallstackUI cannot achieve the design |
 
 ### Dependency Manifest
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-DEP1 | `composer.json` registers every runtime and dev dependency; `composer.lock` is committed and used for installs |
-| FR-DEP2 | Runtime installs use `composer install --locked --optimize-autoloader` |
-| FR-DEP3 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` |
-| FR-DEP4 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages |
-| FR-DEP5 | Package version constraints in `composer.json`/`package.json` are the source of truth for AGENTS.md and install docs |
-| FR-DEP6 | Dependency additions/upgrades are recorded in this spec's changelog with their version |
+| FR-FB792-FB792-DEP1 | `composer.json` registers every runtime and dev dependency; `composer.lock` is committed and used for installs |
+| FR-FB792-FB792-DEP2 | Runtime installs use `composer install --locked --optimize-autoloader` |
+| FR-FB792-FB792-DEP3 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` |
+| FR-FB792-FB792-DEP4 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages |
+| FR-FB792-FB792-DEP5 | Package version constraints in `composer.json`/`package.json` are the source of truth for AGENTS.md and install docs |
+| FR-FB792-FB792-DEP6 | Dependency additions/upgrades are recorded in this spec's changelog with their version |
 
 ### Verification
 
 | ID     | Requirement |
 | ------ | ----------- |
-| FR-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
-| FR-TS7 | PHP version MUST match the pinned minor listed in `docs/specs/index.md`; mismatches fail the CI check | |
-| FR-DEP7 | `npm run build` MUST succeed without warnings for a production bundle | |
+| FR-FB792-FB792-VER1 | `composer audit` (and `npm audit`) run in CI and must be clean or explicitly accepted |
+| FR-FB792-FB792-TS7 | PHP version MUST match the pinned minor listed in `docs/specs/index.md`; mismatches fail the CI check | |
+| FR-FB792-FB792-DEP7 | `npm run build` MUST succeed without warnings for a production bundle | |
 
 ---
 
@@ -129,11 +129,11 @@ manifest (no undeclared direct dependencies).
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-DEP1 | Lockfiles (`composer.lock`, package lockfile) are committed to the repository |
-| NFR-DEP2 | No end-of-life (EOL) major dependencies; upgrades planned before EOL |
-| NFR-DEP3 | Dependency changes land as explicit, reviewable commits — never hidden in feature work |
-| NFR-DEP4 | The manifest matches the environment audit (`composer show` = lockfile) |
-| NFR-DEP5 | TallstackUI-only: UI must use TallstackUI components; custom only with documented gap (maryUI/DaisyUI removed) |
+| NFR-FB792-FB792-DEP1 | Lockfiles (`composer.lock`, package lockfile) are committed to the repository |
+| NFR-FB792-FB792-DEP2 | No end-of-life (EOL) major dependencies; upgrades planned before EOL |
+| NFR-FB792-FB792-DEP3 | Dependency changes land as explicit, reviewable commits — never hidden in feature work |
+| NFR-FB792-FB792-DEP4 | The manifest matches the environment audit (`composer show` = lockfile) |
+| NFR-FB792-FB792-DEP5 | TallstackUI-only: UI must use TallstackUI components; custom only with documented gap (maryUI/DaisyUI removed) |
 
 ## Test Requirements
 
@@ -158,7 +158,7 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 | `php` | `^8.4` | Language |
 | `laravel/framework` | `^13.0` | Framework |
 | `livewire/livewire` | `^4.0` | Frontend |
-| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/MaryUI/PHPFlasher, FR-TS6) |
+| `tallstackui/tallstackui` | `^4.0` | UI Component (TallstackUI — replaces DaisyUI/MaryUI/PHPFlasher, FR-FB792-FB792-TS6) |
 | `barryvdh/laravel-dompdf` | `^3.1` | PDF Generation |
 | `laravel-lang/lang` | `^15.26` | Localization |
 | `laravel/pulse` | `*` | Monitoring |
@@ -195,9 +195,10 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 ### Lockfile Contract
 
 ```bash
-# Reproducible install (UC-1)
+# Reproducible install (UC-FB792-1)
 composer install --locked --optimize-autoloader
 npm ci
+
 ```
 
 ---
@@ -209,7 +210,7 @@ npm ci
 **Decision:** `composer.lock` and the JS package lockfile are committed to the repository and are
 the source of truth for exact versions.
 **Rationale:** Reproducible installs across the school's heterogeneous infrastructure (PS-1).
-**Trade-off:** Lockfile churn on upgrades — managed through FR-DEP3/FR-DEP6.
+**Trade-off:** Lockfile churn on upgrades — managed through FR-FB792-FB792-DEP3/FR-FB792-FB792-DEP6.
 
 ### DD-2 — Runtime Services Split into a Dedicated Spec
 
@@ -222,7 +223,7 @@ and serve different readers (PS-2).
 
 ### DD-3 — Security Scans as a Release Gate
 
-**Decision:** `composer audit` / `npm audit` gate releases (FR-VER1).
+**Decision:** `composer audit` / `npm audit` gate releases (FR-FB792-FB792-VER1).
 **Rationale:** Known-vulnerable dependencies are the cheapest class of vulnerability to fix; the
 gate makes it routine.
 **Trade-off:** Occasionally blocks a release on a transitive advisory — resolved via upgrade or a

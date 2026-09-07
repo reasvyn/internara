@@ -75,13 +75,13 @@ participant can query, and no consistent reporting base.
 
 | ID | Actor | Action / Expected Outcome |
 |----|-------|---------------------------|
-| UC-1 | Super Admin / Admin | School initializes and configures the system: setup wizard, branding, locale, departments, academic years, partners |
-| UC-2 | Student | Completes the PKL lifecycle: register → placed → attendance + logbook + assignments → certificate download |
-| UC-3 | Teacher | Supervises and assesses: logbook review, monitoring visits, rubric grading |
-| UC-4 | Supervisor | Evaluates industry-side performance |
-| UC-5 | Admin | Operates and audits the system |
+| UC-QLHDO-1 | Super Admin / Admin | School initializes and configures the system: setup wizard, branding, locale, departments, academic years, partners |
+| UC-QLHDO-2 | Student | Completes the PKL lifecycle: register → placed → attendance + logbook + assignments → certificate download |
+| UC-QLHDO-3 | Teacher | Supervises and assesses: logbook review, monitoring visits, rubric grading |
+| UC-QLHDO-4 | Supervisor | Evaluates industry-side performance |
+| UC-QLHDO-5 | Admin | Operates and audits the system |
 
-### UC-1 — School Initializes and Configures the System
+### UC-QLHDO-1 — School Initializes and Configures the System
 
 **Actor:** Super Admin / Admin
 **Preconditions:** Server deployed, environment audit passes
@@ -91,7 +91,7 @@ formal partnerships with slot quotas.
 **Postconditions:** School can enroll students; `superadmin` account exists.
 **Governing spec:** [8NZAU-installation](8NZAU-installation.md).
 
-### UC-2 — Student Completes the PKL Lifecycle
+### UC-QLHDO-2 — Student Completes the PKL Lifecycle
 
 **Actor:** Student
 **Preconditions:** Registration open, placement slots available
@@ -103,7 +103,7 @@ after assessment and report sign-off.
 [1KSWL-daily-activity](1KSWL-daily-activity.md), [T657Z-assignment](T657Z-assignment.md),
 [J0M04-certification](J0M04-certification.md).
 
-### UC-3 — Teacher Supervises and Assesses
+### UC-QLHDO-3 — Teacher Supervises and Assesses
 
 **Actor:** Teacher
 **Preconditions:** Students placed, program active
@@ -114,7 +114,7 @@ compiles and finalizes the grade card; certificate becomes issuable.
 **Governing specs:** [2EHSE-supervision](2EHSE-supervision.md), [ARDA6-assessment](ARDA6-assessment.md),
 [R6BMW-reports](R6BMW-reports.md).
 
-### UC-4 — Supervisor Evaluates Industry-Side Performance
+### UC-QLHDO-4 — Supervisor Evaluates Industry-Side Performance
 
 **Actor:** Supervisor (industry)
 **Preconditions:** Student active at the DUDI site
@@ -125,7 +125,7 @@ score aggregation.
 **Governing specs:** [1KSWL-daily-activity](1KSWL-daily-activity.md), [ARDA6-assessment](ARDA6-assessment.md),
 [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2 (Cross-Role Proxy).
 
-### UC-5 — Admin Operates and Audits the System
+### UC-QLHDO-5 — Admin Operates and Audits the System
 
 **Actor:** Admin / Super Admin
 **Preconditions:** System running
@@ -164,20 +164,20 @@ detail.
 
 | ID    | Requirement                                                                                                                                                                                                                  | Owning spec                                                            | Status   | Last Verify |
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------- | ----------- |
-| FR-G1 | Every user-facing string MUST use the `__()` helper; all modules ship `lang/en/` and `lang/id/` (D3)                                                                                                                         | [YB22J-settings-infrastructure](YB22J-settings-infrastructure.md)     | Shipped  | 2026-09-03  |
-| FR-G2 | The system MUST expose exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) via `Role::resolvesTo()`   | [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2 | Shipped  | 2026-09-03  |
-| FR-G3 | The system MUST enforce `superadmin` integrity: name is always `Super Admin`, username always `superadmin`, immutable and non-deletable                                                                                       | [8NZAU-installation](8NZAU-installation.md)                           | Shipped  | 2026-09-03  |
-| FR-G4 | All administrative mutations MUST be audit-logged (activity channel) with PII masking                                                                                                                                       | [89SRA-logging-and-error-handling](89SRA-logging-and-error-handling.md) | Shipped  | 2026-09-03  |
-| FR-G5 | Sensitive endpoints MUST be rate-limited (global 30/min/IP; login 5/60s; forgot 3/3600s; reset 5/300s; recovery 3/300s)                                                                                                    | [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md) FR-MW10     | Shipped  | 2026-09-03  |
-| FR-G6 | The system MUST run a system health check covering PHP, extensions, memory, DB, migrations, storage, queue, cache, and app key                                                                                               | [J68GZ-system-requirements](J68GZ-system-requirements.md) FR-SY8      | Shipped  | 2026-09-03  |
-| FR-G7 | All records MUST use UUID primary keys via `BaseModel`/`HasUuids`                                                                                                                                                            | [SE5Q9-base-classes](SE5Q9-base-classes.md)                            | Shipped  | 2026-09-03  |
-| FR-G8 | Program data MUST flow in dependency order: Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance (full phase inventory in [index.md](index.md)) | [index.md](index.md) (build order) | Shipped | 2026-09-03 |
-| FR-G9 | The system MUST validate all user input through a centralized validation layer (Form Request classes for HTTP, validated DTOs for Actions); validation rules MUST live next to the entry point, never in controllers or Livewire components | [D2FT3](D2FT3-architecture.md), [SE5Q9](SE5Q9-base-classes.md) | Proposed | — |
-| FR-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
-| FR-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
-| FR-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| FR-G14 | The shell layout `core::layouts.app` MUST render from `config/menu.php` groups ordered by registration sequence | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
-| FR-G15 | Navigation MUST highlight the item matching the current route name (`request()->routeIs()`) | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| FR-QLHDO-G1 | Every user-facing string MUST use the `__()` helper; all modules ship `lang/en/` and `lang/id/` (D3)                                                                                                                         | [YB22J-settings-infrastructure](YB22J-settings-infrastructure.md)     | Shipped  | 2026-09-03  |
+| FR-QLHDO-G2 | The system MUST expose exactly five stored roles — `super_admin`, `admin`, `teacher`, `student`, `supervisor` — plus three runtime-resolved functional roles (`admin-group`, `mentor`, `mentee`) via `Role::resolvesTo()`   | [T4B26-rbac-and-authorization](T4B26-rbac-and-authorization.md) §4.2 | Shipped  | 2026-09-03  |
+| FR-QLHDO-G3 | The system MUST enforce `superadmin` integrity: name is always `Super Admin`, username always `superadmin`, immutable and non-deletable                                                                                       | [8NZAU-installation](8NZAU-installation.md)                           | Shipped  | 2026-09-03  |
+| FR-QLHDO-G4 | All administrative mutations MUST be audit-logged (activity channel) with PII masking                                                                                                                                       | [89SRA-logging-and-error-handling](89SRA-logging-and-error-handling.md) | Shipped  | 2026-09-03  |
+| FR-QLHDO-G5 | Sensitive endpoints MUST be rate-limited (global 30/min/IP; login 5/60s; forgot 3/3600s; reset 5/300s; recovery 3/300s)                                                                                                    | [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md) FR-QLHDO-MW10     | Shipped  | 2026-09-03  |
+| FR-QLHDO-G6 | The system MUST run a system health check covering PHP, extensions, memory, DB, migrations, storage, queue, cache, and app key                                                                                               | [J68GZ-system-requirements](J68GZ-system-requirements.md) FR-QLHDO-SY8      | Shipped  | 2026-09-03  |
+| FR-QLHDO-G7 | All records MUST use UUID primary keys via `BaseModel`/`HasUuids`                                                                                                                                                            | [SE5Q9-base-classes](SE5Q9-base-classes.md)                            | Shipped  | 2026-09-03  |
+| FR-QLHDO-G8 | Program data MUST flow in dependency order: Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance (full phase inventory in [index.md](index.md)) | [index.md](index.md) (build order) | Shipped | 2026-09-03 |
+| FR-QLHDO-G9 | The system MUST validate all user input through a centralized validation layer (Form Request classes for HTTP, validated DTOs for Actions); validation rules MUST live next to the entry point, never in controllers or Livewire components | [D2FT3](D2FT3-architecture.md), [SE5Q9](SE5Q9-base-classes.md) | Proposed | — |
+| FR-QLHDO-G10 | The system MUST handle errors consistently: business-rule violations MUST throw `RejectedException` with a translatable user-facing message; unexpected exceptions MUST be logged with context and presented as generic failure messages to the user | [89SRA](89SRA-logging-and-error-handling.md) | Proposed | — |
+| FR-QLHDO-G11 | The system MUST validate all file uploads server-side: MIME type (not extension), size (configurable per module), and filename safety (no path traversal); uploaded files MUST be stored outside the web root with generated, non-guessable filenames | [WQGTP](WQGTP-file-uploads-media.md), [7UB7S](7UB7S-pdf-generation.md) | Proposed | — |
+| FR-QLHDO-G13 | The system MUST provide role-filtered search across primary entities (students, companies, logbooks, assignments); search MUST respect authorization boundaries (no data leakage across roles) | [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| FR-QLHDO-G14 | The shell layout `core::layouts.app` MUST render from `config/menu.php` groups ordered by registration sequence | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| FR-QLHDO-G15 | Navigation MUST highlight the item matching the current route name (`request()->routeIs()`) | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 ### 4.2 Lifecycle Phase Inventory (index only)
 
@@ -209,24 +209,24 @@ acceptance criteria; the owning spec is authoritative for verification.
 
 | ID     | Requirement                                                                                                                                                                                              | Owning spec(s)                                                                                | Status   | Last Verify |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------- | ----------- |
-| NFR-S1 | Security: authorization at every layer (Policy + Action/Entity business authorization via `RejectedException`); PII masked in logs per PDP law (UU No. 27/2022); CSP + security headers on all responses | [T4B26](T4B26-rbac-and-authorization.md), [89SRA](89SRA-logging-and-error-handling.md), [1PGM4](1PGM4-security-headers.md) | Shipped  | 2026-09-03  |
-| NFR-S2 | Input: no raw SQL without bindings (C3); no raw `Request` into create/update (D5); all user input validated server-side — see `AGENTS.md` Critical Invariants                                              | [D2FT3](D2FT3-architecture.md), `AGENTS.md`                                                  | Shipped  | 2026-09-03  |
-| NFR-P1 | Performance: pages respond within target budgets; Actions eager-load relations (no N+1); expensive queries cached with registered cache keys                                                             | [ZT6VS](ZT6VS-core-infra-services.md), [SE5Q9](SE5Q9-base-classes.md)                         | Shipped  | 2026-09-03  |
-| NFR-R1 | Reliability: 4-hour RPO / under 1-hour RTO backup target; graceful degradation; job queues for heavy work (mail, PDF, reports)                                                                           | [HBXCI](HBXCI-backup-system.md), [8FVZA](8FVZA-job-queue-infrastructure.md), [E1MSJ](E1MSJ-system-maintenance.md) | Shipped  | 2026-09-03  |
-| NFR-U1 | Usability: every page with a non-trivial workflow has a `*-guide.blade.php`; WCAG AA contrast; keyboard navigable; mobile-first responsive                                                              | [8XMYS](8XMYS-layout-and-ui-system.md)                                                        | Shipped  | 2026-09-03  |
-| NFR-M1 | Maintainability: 4-layer module-first architecture enforced by `tools/` scans (C1–C8, D1–D6, contracts, naming, security); DRY — shared logic in Core                                                  | [D2FT3](D2FT3-architecture.md), `tools/`                                                      | Shipped  | 2026-09-03  |
-| NFR-L1 | Localization: English + Indonesian, locale stored in session, togglable at runtime                                                                                                                       | [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md)             | Shipped  | 2026-09-03  |
-| NFR-C1 | Compatibility: renders consistently across modern browsers; printed/exported artifacts (PDF/Excel/CSV) are precise and stable                                                                            | [7UB7S](7UB7S-pdf-generation.md), [O2KCR](O2KCR-csv-import-export.md)                         | Shipped  | 2026-09-03  |
-| NFR-D1 | Database: SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)                                                                                                                 | [J68GZ](J68GZ-system-requirements.md), [ZT6VS](ZT6VS-core-infra-services.md)                  | Shipped  | 2026-09-03  |
-| NFR-Q1 | Queue: separate `default` and `documents` pipelines                                                                                                                                                      | [8FVZA](8FVZA-job-queue-infrastructure.md)                                                    | Shipped  | 2026-09-03  |
-| NFR-G1 | GDPR: deletion logging and data erasure workflows                                                                                                                                                       | [7HNCF](7HNCF-gdpr-compliance.md)                                                             | Shipped  | 2026-09-03  |
-| NFR-S3 | Security headers: all responses MUST include `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; HSTS MUST be enabled in production | [1PGM4](1PGM4-security-headers.md) | Proposed | — |
-| NFR-S4 | CSRF protection: all state-changing HTTP requests MUST include a valid CSRF token; API endpoints MUST use token-based authentication (sanctum/passport) | [2CF4Y](2CF4Y-middleware-pipeline.md) | Proposed | — |
-| NFR-S5 | XSS prevention: all dynamic output MUST be escaped by default; `{!! !!}` is forbidden for user-generated content; rich text MUST be sanitized server-side before storage | [1PGM4](1PGM4-security-headers.md), [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| NFR-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
-| NFR-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
-| NFR-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
-| NFR-A3 | Every primary flow (setup, login, PKL lifecycle) MUST be covered by a browser journey test asserting role-based visibility | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| NFR-QLHDO-S1 | Security: authorization at every layer (Policy + Action/Entity business authorization via `RejectedException`); PII masked in logs per PDP law (UU No. 27/2022); CSP + security headers on all responses | [T4B26](T4B26-rbac-and-authorization.md), [89SRA](89SRA-logging-and-error-handling.md), [1PGM4](1PGM4-security-headers.md) | Shipped  | 2026-09-03  |
+| NFR-QLHDO-S2 | Input: no raw SQL without bindings (C3); no raw `Request` into create/update (D5); all user input validated server-side — see `AGENTS.md` Critical Invariants                                              | [D2FT3](D2FT3-architecture.md), `AGENTS.md`                                                  | Shipped  | 2026-09-03  |
+| NFR-QLHDO-P1 | Performance: pages respond within target budgets; Actions eager-load relations (no N+1); expensive queries cached with registered cache keys                                                             | [ZT6VS](ZT6VS-core-infra-services.md), [SE5Q9](SE5Q9-base-classes.md)                         | Shipped  | 2026-09-03  |
+| NFR-QLHDO-R1 | Reliability: 4-hour RPO / under 1-hour RTO backup target; graceful degradation; job queues for heavy work (mail, PDF, reports)                                                                           | [HBXCI](HBXCI-backup-system.md), [8FVZA](8FVZA-job-queue-infrastructure.md), [E1MSJ](E1MSJ-system-maintenance.md) | Shipped  | 2026-09-03  |
+| NFR-QLHDO-U1 | Usability: every page with a non-trivial workflow has a `*-guide.blade.php`; WCAG AA contrast; keyboard navigable; mobile-first responsive                                                              | [8XMYS](8XMYS-layout-and-ui-system.md)                                                        | Shipped  | 2026-09-03  |
+| NFR-QLHDO-M1 | Maintainability: 4-layer module-first architecture enforced by `tools/` scans (C1–C8, D1–D6, contracts, naming, security); DRY — shared logic in Core                                                  | [D2FT3](D2FT3-architecture.md), `tools/`                                                      | Shipped  | 2026-09-03  |
+| NFR-QLHDO-L1 | Localization: English + Indonesian, locale stored in session, togglable at runtime                                                                                                                       | [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md)             | Shipped  | 2026-09-03  |
+| NFR-QLHDO-C1 | Compatibility: renders consistently across modern browsers; printed/exported artifacts (PDF/Excel/CSV) are precise and stable                                                                            | [7UB7S](7UB7S-pdf-generation.md), [O2KCR](O2KCR-csv-import-export.md)                         | Shipped  | 2026-09-03  |
+| NFR-QLHDO-D1 | Database: SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)                                                                                                                 | [J68GZ](J68GZ-system-requirements.md), [ZT6VS](ZT6VS-core-infra-services.md)                  | Shipped  | 2026-09-03  |
+| NFR-QLHDO-Q1 | Queue: separate `default` and `documents` pipelines                                                                                                                                                      | [8FVZA](8FVZA-job-queue-infrastructure.md)                                                    | Shipped  | 2026-09-03  |
+| NFR-QLHDO-G1 | GDPR: deletion logging and data erasure workflows                                                                                                                                                       | [7HNCF](7HNCF-gdpr-compliance.md)                                                             | Shipped  | 2026-09-03  |
+| NFR-QLHDO-S3 | Security headers: all responses MUST include `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; HSTS MUST be enabled in production | [1PGM4](1PGM4-security-headers.md) | Proposed | — |
+| NFR-QLHDO-S4 | CSRF protection: all state-changing HTTP requests MUST include a valid CSRF token; API endpoints MUST use token-based authentication (sanctum/passport) | [2CF4Y](2CF4Y-middleware-pipeline.md) | Proposed | — |
+| NFR-QLHDO-S5 | XSS prevention: all dynamic output MUST be escaped by default; `{!! !!}` is forbidden for user-generated content; rich text MUST be sanitized server-side before storage | [1PGM4](1PGM4-security-headers.md), [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| NFR-QLHDO-P2 | Performance: server-rendered pages MUST respond within 2 seconds at p95 under normal load (100 concurrent users); API endpoints MUST respond within 500ms at p95 | [ZT6VS](ZT6VS-core-infra-services.md) | Proposed | — |
+| NFR-QLHDO-M2 | Testing: all features MUST have spec-traceable tests (each test maps to a FR/NFR/UC ID); minimum 80% line coverage for new code; full test suite MUST pass before merge to main | [D2FT3](D2FT3-architecture.md) | Proposed | — |
+| NFR-QLHDO-U2 | Accessibility: all user-facing interfaces MUST be tested for WCAG AA compliance; keyboard navigation MUST work for all interactive elements; color contrast MUST meet 4.5:1 minimum | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
+| NFR-QLHDO-A3 | Every primary flow (setup, login, PKL lifecycle) MUST be covered by a browser journey test asserting role-based visibility | [8XMYS](8XMYS-layout-and-ui-system.md) | Proposed | — |
 
 > **Curriculum/regulatory alignment** (legacy §11 of the QLHDO draft) is tracked outside the
 > spec system as a research input in `docs/refs/articles/curriculum-compliance.md` (non-testable
@@ -263,9 +263,10 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 setting(string|array|null $key = null, mixed $default = null, bool $skipCache = false): mixed
 brand(string $key, mixed $default = null): mixed
 app_info(?string $key = null, mixed $default = null): mixed
+
 ```
 
-Full contracts in [C8F0D-shared-utilities](C8F0D-shared-utilities.md) (FR-SUP11) and
+Full contracts in [C8F0D-shared-utilities](C8F0D-shared-utilities.md) (FR-QLHDO-SUP11) and
 [YB22J-settings-infrastructure](YB22J-settings-infrastructure.md).
 
 ### 6.3 Module Landscape (18 business modules + Core + UI)
@@ -304,7 +305,7 @@ lock-in for under-resourced schools.
 `app/Http/Controllers` + `app/Services` structure.
 **Rationale:** A business concept lives in one directory — findable, independently testable, safe to
 change; prevents silent cross-module coupling (S2). See [D2FT3](D2FT3-architecture.md) DD-1.
-**Trade-off:** Shared infrastructure must be deliberately extracted to Core (FR-G8 flow).
+**Trade-off:** Shared infrastructure must be deliberately extracted to Core (FR-QLHDO-G8 flow).
 
 ### DD-3 — Primary Indonesian, Secondary English
 
@@ -370,7 +371,7 @@ implementation; this spec remains the spec-zero reference for global cross-cutti
 
 | Order | Spec                                                           | Connection                                                                     |
 | ----- | -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| 1     | [Architecture Design](D2FT3-architecture.md)                   | Defines the 4-layer architecture the whole codebase must satisfy (FR-G8, DD-2) |
+| 1     | [Architecture Design](D2FT3-architecture.md)                   | Defines the 4-layer architecture the whole codebase must satisfy (FR-QLHDO-G8, DD-2) |
 | 2     | [Tech Stack](FB792-tech-stack.md)                              | Pins dependency versions the build executes on                                 |
 | 3     | [Core & Infrastructure Services](ZT6VS-core-infra-services.md) | Runtime services (cache, session, DB, queue, mail, storage)                    |
 | 4     | [Base Classes](SE5Q9-base-classes.md)                          | BaseModel/BaseAction/BaseEntity/BaseData contracts                             |
@@ -385,12 +386,12 @@ Issue that tracks resolution; see the spec template for row conventions.
 
 | ID   | Risk / Assumption / Open Question                                                                                                                  | Status   | Owner      | GH Issue                                                                                |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- | --------------------------------------------------------------------------------------- |
-| OQ-1 | `spatie/laravel-model-status ^1.18` is listed in [J68GZ FR-D6](J68GZ-system-requirements.md) and [FB792 §6.1](FB792-tech-stack.md) but has zero consumers in `app/`; only artifact is `config/model-status.php`. Remove from spec + composer.json. | Open     | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419)                                 |
-| OQ-2 | [ZT6VS FR-SESS1](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm whether the operational override is intentional or spec-lagging. | Open     | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433)                                 |
+| OQ-1 | `spatie/laravel-model-status ^1.18` is listed in [J68GZ FR-QLHDO-D6](J68GZ-system-requirements.md) and [FB792 §6.1](FB792-tech-stack.md) but has zero consumers in `app/`; only artifact is `config/model-status.php`. Remove from spec + composer.json. | Open     | Maintainer | [#419](https://github.com/reasvyn/internara/issues/419)                                 |
+| OQ-2 | [ZT6VS FR-QLHDO-SESS1](ZT6VS-core-infra-services.md) says default session driver is `database` but `.env` has `SESSION_DRIVER=file`. Confirm whether the operational override is intentional or spec-lagging. | Open     | Maintainer | [#433](https://github.com/reasvyn/internara/issues/433)                                 |
 | OQ-3 | [I1BCV](I1BCV-module-discovery.md) §4 mandates manual `config/module.php` and `tests/Pest.php` registry; code uses filesystem auto-discovery (more accurate). Rewrite the spec to document the actual model and align [B114U](B114U-module-manager.md) §6.3. M-size doc work. | Open     | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434)                                 |
-| A-1  | We assume all admin mutations land in `Log::channel('activity')` (per FR-G4) and that `PiiMasker` strips every PII field listed in [89SRA](89SRA-logging-and-error-handling.md) FR-PM9 — verified at file-level for 26 keys; full runtime coverage assumed.  | Accepted | Maintainer | —                                                                                       |
+| A-1  | We assume all admin mutations land in `Log::channel('activity')` (per FR-QLHDO-G4) and that `PiiMasker` strips every PII field listed in [89SRA](89SRA-logging-and-error-handling.md) FR-QLHDO-PM9 — verified at file-level for 26 keys; full runtime coverage assumed.  | Accepted | Maintainer | —                                                                                       |
 | A-2  | We assume `tallstackui_formPassword` (TallStackUI v4) autofill is a known client-side quirk on shared hosting and that the production fix is a hidden text input fallback — pending `ui-development` deep review.                                              | Accepted | Maintainer | —                                                                                       |
-| A-3  | The proposed requirements (FR-G9 through FR-G13, NFR-S3 through NFR-U2) are not yet implemented; they represent gaps identified during spec audit and require prioritization before the Foundation phase completes.                                              | Accepted | Maintainer | —                                                                                       |
+| A-3  | The proposed requirements (FR-QLHDO-G9 through FR-QLHDO-G13, NFR-QLHDO-S3 through NFR-QLHDO-U2) are not yet implemented; they represent gaps identified during spec audit and require prioritization before the Foundation phase completes.                                              | Accepted | Maintainer | —                                                                                       |
 
 ---
 

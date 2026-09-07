@@ -10,6 +10,19 @@ The same codebase runs across all tiers; only configuration differs.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## 1. Three Deployment Tiers
 
 Internara uses the same codebase across all tiers — only configuration changes. Tiers reflect
@@ -40,6 +53,7 @@ period** (~50–100 peak concurrent) with no external services beyond MySQL/Mari
 +-------------------------------------------------+
 |  Est. cost: $3-15/month                         |
 +-------------------------------------------------+
+
 ```
 
 ### Tier 2: VPS / Dedicated Server
@@ -65,6 +79,7 @@ dedicated resources.
 +-------------------------------------------------+
 |  Est. cost: $20-80/month                        |
 +-------------------------------------------------+
+
 ```
 
 ### Tier 3: High-Availability (Multi-Server)
@@ -89,6 +104,7 @@ For large institutions requiring redundancy, read replicas, and horizontal scali
 +-------------------------------------------------+
 |  Est. cost: $100-500/month                      |
 +-------------------------------------------------+
+
 ```
 
 ### Feature Availability by Tier
@@ -141,6 +157,7 @@ Internet
                                 +--------------+  +--------------+
 
 * SQLite only in development / testing, never in production
+
 ```
 
 ---
@@ -190,12 +207,14 @@ numprocs=2
 redirect_stderr=true
 stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
+
 ```
 
 ### Cron Entry (Tier 2+)
 
 ```cron
 * * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1
+
 ```
 
 ### Web Cron Fallback (Tier 1)
@@ -204,6 +223,7 @@ For shared hosting without minute-level cron, a web-accessible endpoint triggers
 
 ```cron
 * * * * * curl -s https://your-school.sch.id/cron/your-cron-secret-here
+
 ```
 
 Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`
@@ -243,6 +263,7 @@ provides this; `User` applies it manually since it extends `Authenticatable`.
         'host' => ['primary.host'],
     ],
 ],
+
 ```
 
 ### Migration Strategy
@@ -256,6 +277,7 @@ php artisan migrate
 # 2. Configure MySQL in .env
 # 3. Run migrations
 # 4. Import data
+
 ```
 
 ---
@@ -286,6 +308,7 @@ Tier 3 (Multi-Server):
       +- MinIO (self-hosted)
       +- DigitalOcean Spaces
       +- Cloudflare R2
+
 ```
 
 ### Storage Link
@@ -293,6 +316,7 @@ Tier 3 (Multi-Server):
 ```bash
 php artisan storage:link
 # Creates: public/storage -> storage/app/public
+
 ```
 
 ---
@@ -313,6 +337,7 @@ php artisan storage:link
 REDIS_DB=0        # Cache
 REDIS_CACHE_DB=1  # Cache fallback (if different from above)
 # Session uses SESSION_DRIVER, queue uses its own connection
+
 ```
 
 ### Cache vs Session (Critical Distinction)
@@ -340,6 +365,7 @@ REDIS_CACHE_DB=1  # Cache fallback (if different from above)
 |  system:health    -> 15-point verification (CLI + JSON) |
 |  system:cleanup   -> Prune stale data (nightly cron)    |
 +-------------------------------------------------------+
+
 ```
 
 SmartLogger supports three modes: `both()` (default -- logs to both system and activity channels),
@@ -373,6 +399,7 @@ automatically obfuscates `password`, `token`, `secret`, `credit_card` (full); `e
 02:00 daily  -- Database dump (mysqldump / pg_dump)
 03:00 daily  -- File archive (tar.gz of storage/)
 04:00 daily  -- Push offsite (rsync to S3 / backup server)
+
 ```
 
 ### Retention Policy

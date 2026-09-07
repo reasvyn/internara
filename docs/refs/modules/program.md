@@ -62,6 +62,7 @@ stateDiagram-v2
     ACTIVE --> CANCELLED: Cancel
     COMPLETED --> [*]
     CANCELLED --> [*]
+
 ```
 
 DRAFT → PUBLISHED requires at least one placement slot configured. ACTIVE → CANCELLED requires a reason for audit trail.

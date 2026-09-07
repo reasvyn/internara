@@ -82,6 +82,7 @@ public function asSomeRole(): SomeEntity
 
 // ❌ Wrong — generic name reveals nothing
 public function entity(): SomeEntity
+
 ```
 
 A model may expose multiple entity accessors for different domain concepts.

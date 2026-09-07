@@ -20,7 +20,7 @@ isolated one-offs.
 ### PS-1 — No Single Archival Lifecycle
 
 Archival exists as disconnected one-offs: student accounts can be mass-archived (E1MSJ FR-AS), grade
-reports freeze an `archived_data` snapshot (R6BMW FR-AR1-3), and documents carry per-type retention
+reports freeze an `archived_data` snapshot (R6BMW FR-9YUUK-AR1-3), and documents carry per-type retention
 (config). Nothing coordinates a **whole cohort**: when a PKL group finishes, its registrations,
 logbooks, attendance, assessments, reports, and certificates have no single "this cohort is done and
 sealed" operation, so data lingers editable or is left to manual, per-module effort.
@@ -73,7 +73,7 @@ There is no audit-friendly distinction between "archived for retention" (reversi
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Archives a Completed Cohort
+### UC-9YUUK-1 — Admin Archives a Completed Cohort
 
 **Actor:** Admin (super_admin / admin)
 **Preconditions:** An Internship exists with status `completed` (7C5WM); registrations and their
@@ -89,7 +89,7 @@ child records (logbooks, attendance, assessments, reports, certificates) exist f
 **Postconditions:** Cohort sealed in the archive registry; student accounts transitioned to
 `ARCHIVED`; audit trail records the operation
 
-### UC-2 — Scheduler Purges Expired Archives
+### UC-9YUUK-2 — Scheduler Purges Expired Archives
 
 **Actor:** Scheduler (daily)
 **Preconditions:** An `ArchiveRecord` exists with `status = ARCHIVED` and `retention_until < now`
@@ -102,7 +102,7 @@ child records (logbooks, attendance, assessments, reports, certificates) exist f
 5. `ArchiveRecord.status` transitions to `PURGED`; `purged_at` recorded
 **Postconditions:** Expired archives permanently deleted; GDPR deletion logged; registry marks `PURGED`
 
-### UC-3 — Admin Restores an Archived Cohort
+### UC-9YUUK-3 — Admin Restores an Archived Cohort
 
 **Actor:** Admin
 **Preconditions:** An `ArchiveRecord` exists with `status = ARCHIVED` and `retention_until > now`
@@ -115,7 +115,7 @@ child records (logbooks, attendance, assessments, reports, certificates) exist f
 **Postconditions:** Archive reversed and visible in the registry as `RESTORED`; `GdprDeletionLog`
 required for `PURGED` records only — no restore after purge
 
-### UC-4 — Admin Browses the Archive Registry
+### UC-9YUUK-4 — Admin Browses the Archive Registry
 
 **Actor:** Admin
 **Preconditions:** Admin authenticated; at least one `ArchiveRecord` exists
@@ -127,24 +127,24 @@ required for `PURGED` records only — no restore after purge
 4. Admin triggers archive / restore / purge with confirmation for destructive actions
 **Postconditions:** Admin has full visibility and control over the archival lifecycle
 
-### UC-5 — Existing Capability: Admin Mass-Archives Student Accounts
+### UC-9YUUK-5 — Existing Capability: Admin Mass-Archives Student Accounts
 
 **Actor:** Admin (via Student Manager)
-**Preconditions:** Cohort completed PKL, placement finalized (E1MSJ UC-3)
+**Preconditions:** Cohort completed PKL, placement finalized (E1MSJ UC-9YUUK-3)
 **Flow:**
 1. Admin filters students in Student Manager
 2. Clicks "Archive Filtered"
 3. `ArchiveStudentAccountsAction` chunks through the filtered query (100/batch)
 4. Each user transitioned to `ARCHIVED` status (super_admin skipped)
 **Postconditions:** Student accounts archived, login blocked, count reported — this capability feeds
-the cohort lifecycle in UC-1 (consolidated, not re-implemented)
+the cohort lifecycle in UC-9YUUK-1 (consolidated, not re-implemented)
 
 ---
 
 ## 4. Functional Requirements
 
 Deferred to the Roadmap phase (§9) — the archival lifecycle is not yet scheduled for
-implementation. Its goals (G1–G9), use cases (UC-1–UC-5), design decisions (DD-1–DD-5), and the
+implementation. Its goals (G1–G9), use cases (UC-9YUUK-1–UC-9YUUK-5), design decisions (DD-1–DD-5), and the
 contract sketches in §6 fix the intended shape; detailed FR rows will be recorded here when the
 feature is picked up.
 
@@ -185,6 +185,7 @@ return [
         'notification'      => env('RETENTION_NOTIFICATION_DAYS', 30), // days, not years
     ],
 ];
+
 ```
 
 Settings override keys (YB22J): `retention.cohort`, `retention.registration`, `retention.student_account`,
@@ -200,6 +201,7 @@ final class ArchiveRetentionPolicy
     public function yearsFor(string $category): int;
     // settings('retention.'.$category) ?? config('retention.categories.'.$category)
 }
+
 ```
 
 ### Model
@@ -221,6 +223,7 @@ class ArchiveRecord extends BaseModel
     public function restorer(): BelongsTo;   // User via restored_by
     public function asArchiveRecordState(): ArchiveRecordState;
 }
+
 ```
 
 ### Enum
@@ -236,6 +239,7 @@ enum ArchiveStatus: string implements LabelEnum, StatusEnum
     // label(): __('sysadmin.archive.status.'.$this->value)
     // canTransitionTo(): ARCHIVED->[RESTORED, PURGED]; RESTORED/PURGED terminal
 }
+
 ```
 
 ### Actions
@@ -252,6 +256,7 @@ final class RestoreArchiveAction extends BaseCommandAction
 {
     public function execute(ArchiveRecord $record, ?string $reason = null): ActionResponse;
 }
+
 ```
 
 ### DTO
@@ -265,6 +270,7 @@ final class ArchiveCohortData extends BaseData
         public readonly ?string $reason = null,
     ) {}
 }
+
 ```
 
 ### Job
@@ -280,6 +286,7 @@ class PurgeExpiredArchivesJob implements ShouldQueue
     public function handle(): void;   // purge via DeleteUserGdprAction / dependent deletion
     public function failed(\Throwable $e): void;
 }
+
 ```
 
 ### Command
@@ -290,6 +297,7 @@ class ArchivePurgeCommand extends Command
 {
     protected $signature = 'archives:purge-expired {--dry-run : Report eligible records without purging}';
 }
+
 ```
 
 ### Events
@@ -299,6 +307,7 @@ class ArchivePurgeCommand extends Command
 // app/Modules/SysAdmin/Archive/Events/ArchiveRestored.php  — eventName() = 'data_archive.cohort_restored'
 // app/Modules/SysAdmin/Archive/Events/ArchivePurged.php    — eventName() = 'data_archive.record_purged'
 // Each extends BaseEvent and carries public readonly ArchiveRecord $record
+
 ```
 
 ### Routes
@@ -334,6 +343,7 @@ Schema::create('archive_records', function (Blueprint $table) {
 
     $table->index(['status', 'retention_until']);
 });
+
 ```
 
 ---
@@ -392,10 +402,10 @@ default.
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Cohort archival coverage | 100% of completed internships archivable | `ArchiveCohortProcessAction` on every completed cohort |
-| Double-archive prevention | 0 duplicate `ARCHIVED` records per cohort | Unique constraint + `FR-AC4` check |
+| Double-archive prevention | 0 duplicate `ARCHIVED` records per cohort | Unique constraint + `FR-9YUUK-AC4` check |
 | Purge enforcement | 100% of retention-expired records purged within 24h | `archives:purge-expired --dry-run` vs `PURGED` count |
 | GDPR log coverage per purge | 100% of user-context purges log a `GdprDeletionLog` (7HNCF) | Log row count per purged user-context record |
-| Restore gate | 0 restores after retention expiry or purge | `FR-RS3`/`FR-PU5` assertions in tests |
+| Restore gate | 0 restores after retention expiry or purge | `FR-9YUUK-RS3`/`FR-9YUUK-PU5` assertions in tests |
 | Cohort archive latency | < 60s for 500-student cohort | `ArchiveCohortProcessAction` execution time |
 | Registry query | < 200ms paginated browse with 10k records | `ArchiveManager` query time |
 | Retention completeness | 100% of records have a non-null `retention_until` at archive time | Migration not-null invariant + test |

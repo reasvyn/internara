@@ -46,6 +46,7 @@ Hard rules. Violations are architecture violations.
 │  └── ColorableEnum (UI badges)                  │
 │      color(): string                            │
 └─────────────────────────────────────────────────┘
+
 ```
 
 | Contract | Mandate | Purpose |
@@ -61,6 +62,7 @@ interface LabelEnum
 {
     public function label(): string;
 }
+
 ```
 
 All `label()` implementations delegate to `__()` for i18n. Three styles: per-case `match()` (most common), dynamic key from value, plain value (no translation needed).
@@ -74,6 +76,7 @@ interface StatusEnum extends LabelEnum
     public function canTransitionTo(self $target): bool;
     public function validTransitions(): array;
 }
+
 ```
 
 **Common `canTransitionTo` implementation:**
@@ -87,6 +90,7 @@ public function canTransitionTo(StatusEnum $target): bool
 
     return in_array($target, $this->validTransitions(), true);
 }
+
 ```
 
 ### 4. State Machine Patterns
@@ -116,6 +120,7 @@ public function validTransitions(): array
         self::STATE_D => [], // Terminal
     };
 }
+
 ```
 
 Rules: Terminal states return `[]`. All valid destinations listed explicitly — no wildcards. `match()` is exhaustive. Return type `list<static>`.
@@ -143,6 +148,7 @@ class SubmitAction extends BaseCommandAction
         });
     }
 }
+
 ```
 
 ### 7. Business Logic on Enums
@@ -166,6 +172,7 @@ interface ColorableEnum
 {
     public function color(): string;
 }
+
 ```
 
 Returns a Tailwind color keyword: `primary`, `success`, `warning`, `error`, `info`.
@@ -187,6 +194,7 @@ protected $attributes = [
 protected $casts = [
     'status' => ExampleStatus::class,
 ];
+
 ```
 
 ---

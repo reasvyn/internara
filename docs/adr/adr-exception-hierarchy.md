@@ -49,6 +49,7 @@ RuntimeException
 │
 └── ModuleException (abstract)       ← Business rule violations
     └── RejectedException
+
 ```
 
 `ModuleException` is deliberately **not** a child of `AppException`:
@@ -60,6 +61,7 @@ catch (ModuleException $e) {           // Business rules only
 catch (InfrastructureException $e) {   // Infrastructure failures only
     Log::error('External service failed', ['exception' => $e]);
 }
+
 ```
 
 **Shared trait — HasExceptionContext** — both trees use `HasExceptionContext` providing

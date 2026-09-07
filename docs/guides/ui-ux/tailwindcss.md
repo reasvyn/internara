@@ -8,6 +8,19 @@ system, from core concepts to advanced theming, aligned with Internara's design 
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Table of Contents
 
 1. [Core Concepts & Philosophy](#core-concepts--philosophy)
@@ -56,38 +69,46 @@ shared `filter` property, allowing composition:
 ```css
 .blur-sm    { --tw-blur: blur(var(--blur-sm)); filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-grayscale,); }
 .grayscale  { --tw-grayscale: grayscale(100%); filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-grayscale,); }
+
 ```
 
 ### Complex Selectors & Variants Stacking
 
 ```html
 <button class="dark:lg:data-current:hover:bg-indigo-600">…</button>
+
 ```
 
 Compiles to:
+
 ```css
 @media (prefers-color-scheme: dark) and (width >= 64rem) {
   button[data-current]:hover { background-color: var(--color-indigo-600); }
 }
+
 ```
 
 ### Arbitrary Variants
 
 For selectors Tailwind doesn't pre-define:
+
 ```html
 <div class="[&>[data-active]+span]:text-blue-600">
   <span data-active>…</span>
   <span>This text will be blue</span>
 </div>
+
 ```
 
 ### Group Variants
 
 Style a child based on parent state without writing CSS:
+
 ```html
 <button class="group">
   <span class="group-hover:text-blue-500">Hover me</span>
 </button>
+
 ```
 
 ---
@@ -102,6 +123,7 @@ Style a child based on parent state without writing CSS:
 
 ```bash
 npm install tailwindcss @tailwindcss/vite
+
 ```
 
 ```ts
@@ -109,11 +131,13 @@ npm install tailwindcss @tailwindcss/vite
 import { defineConfig } from 'vite'
 import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({ plugins: [tailwindcss()] })
+
 ```
 
 ```css
 /* app.css */
 @import "tailwindcss";
+
 ```
 
 That's it — no `content` array, no `tailwind.config.js`, no `postcss.config.js` needed for Vite.
@@ -133,6 +157,7 @@ utility classes**.
   --color-avocado-500: oklch(0.84 0.18 117.33);
   --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
 }
+
 ```
 
 Adding `--color-mint-500` automatically creates `bg-mint-500`, `text-mint-500`, `fill-mint-500`,
@@ -147,6 +172,7 @@ tokens anywhere:
 ```html
 <div style="background-color: var(--color-mint-500)">…</div>
 <div class="bg-[calc(var(--color-blue-500)/0.5)]">…</div>
+
 ```
 
 ### Theme Variable Namespaces
@@ -176,25 +202,32 @@ tokens anywhere:
 ### Extending vs Overriding vs Disabling Defaults
 
 **Extend** — add new variables alongside defaults:
+
 ```css
 @theme { --font-script: Great Vibes, cursive; }
+
 ```
 
 **Override** — redefine an existing one:
+
 ```css
 @theme { --breakpoint-sm: 30rem; }   /* sm:* now fires at 480px */
+
 ```
 
 **Disable a namespace** — set to `initial` with `*`:
+
 ```css
 @theme {
   --color-*: initial;
   --color-white: #fff;
   --color-purple: #3f3cbb;
 }
+
 ```
 
 **Wipe the entire default theme:**
+
 ```css
 @theme {
   --*: initial;
@@ -202,6 +235,7 @@ tokens anywhere:
   --font-body: Inter, sans-serif;
   --color-lagoon: oklch(0.72 0.11 221.19);
 }
+
 ```
 
 ### `@theme inline` — Resolving Variable Chains
@@ -211,11 +245,14 @@ the *resolved value*:
 
 ```css
 @theme inline { --font-sans: var(--font-inter); }
+
 ```
 
 Generates:
+
 ```css
 .font-sans { font-family: var(--font-inter); }
+
 ```
 
 Instead of `font-family: var(--font-sans)`. This matters for nested contexts.
@@ -230,6 +267,7 @@ the final output (e.g., for white-label theming):
   --color-primary: var(--color-red-500);
   --color-secondary: var(--color-blue-500);
 }
+
 ```
 
 ### Custom Keyframes
@@ -242,6 +280,7 @@ the final output (e.g., for white-label theming):
     100% { opacity: 1; transform: scale(1);    }
   }
 }
+
 ```
 
 ### Sharing Across Projects / Monorepos
@@ -249,12 +288,14 @@ the final output (e.g., for white-label theming):
 ```css
 /* packages/brand/theme.css */
 @theme { --color-primary: oklch(0.7 0.15 250); /* … */ }
+
 ```
 
 ```css
 /* packages/admin/app.css */
 @import "tailwindcss";
 @import "../brand/theme.css";
+
 ```
 
 ---
@@ -272,15 +313,19 @@ the final output (e.g., for white-label theming):
 ### `@import "tailwindcss"` Replaces Three `@tailwind` Directives
 
 Old (v3):
+
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 ```
 
 New (v4):
+
 ```css
 @import "tailwindcss";
+
 ```
 
 ### Automatic Content Detection
@@ -289,6 +334,7 @@ New (v4):
 - Auto-ignores everything in `.gitignore`
 - Auto-ignores binary file types (images, videos, .zip, …)
 - Add explicit sources with `@source`:
+
   ```css
   @import "tailwindcss";
   @source "../node_modules/@my-company/ui-lib";
@@ -314,6 +360,7 @@ moved to `@tailwindcss/postcss`.
   inherits: false;
   initial-value: #0000;
 }
+
 ```
 
 - **Cascade layers** for ordering control
@@ -324,9 +371,11 @@ moved to `@tailwindcss/postcss`.
 ### Dynamic Utility Values and Variants
 
 No configuration needed for things you used to declare in `safelist`/`extend`:
+
 ```html
 <div class="grid grid-cols-15">…</div> <!-- any column count -->
 <div data-current class="opacity-75 data-current:opacity-100">…</div>
+
 ```
 
 ### Container Queries — Built Into Core
@@ -335,6 +384,7 @@ No configuration needed for things you used to declare in `safelist`/`extend`:
 <div class="@container">
   <div class="grid grid-cols-1 @sm:grid-cols-3 @lg:grid-cols-4">…</div>
 </div>
+
 ```
 
 - `@min-*` / `@max-*` for ranges (`@min-md:@max-xl:hidden`)
@@ -354,6 +404,7 @@ No configuration needed for things you used to declare in `safelist`/`extend`:
 <div class="bg-linear-to-r/oklch from-indigo-500 to-teal-400"></div>    <!-- OKLCH interpolation -->
 <div class="size-24 rounded-full bg-conic/[in_hsl_longer_hue] from-red-600 to-red-600"></div>
 <div class="size-24 rounded-full bg-radial-[at_25%_25%] from-white to-zinc-900 to-75%"></div>
+
 ```
 
 Default interpolation is OKLAB in v4 (more vivid gradients across the color wheel).
@@ -363,6 +414,7 @@ Default interpolation is OKLAB in v4 (more vivid gradients across the color whee
 ```html
 <button popovertarget="my-popover">Check for updates</button>
 <div popover id="my-popover" class="transition-discrete starting:open:opacity-0 …">…</div>
+
 ```
 
 ### `not-*` Variant — Negates Anything
@@ -370,6 +422,7 @@ Default interpolation is OKLAB in v4 (more vivid gradients across the color whee
 ```html
 <div class="not-hover:opacity-75">…</div>
 <div class="not-supports-hanging-punctuation:px-4">…</div>
+
 ```
 
 ### Other Notable Additions
@@ -399,9 +452,11 @@ the saturated end; perceptual balance preserved from v3.
 sky, blue, indigo, violet, purple, fuchsia, pink, rose, slate, gray, zinc, neutral, stone**.
 
 All values are `oklch()`:
+
 ```css
 --color-red-500: oklch(63.7% 0.237 25.331);
 --color-sky-500: oklch(0.685 0.169 237.323);
+
 ```
 
 ### Semantic Tokens (Recommended Approach)
@@ -430,6 +485,7 @@ Define primitives with `--color-*`, then alias them in custom properties:
   --color-canvas: var(--color-bg);
   --color-text:   var(--color-fg);
 }
+
 ```
 
 Now use `bg-canvas`, `text-text` and have them swap automatically by toggling `data-theme="dark"`.
@@ -437,16 +493,19 @@ Now use `bg-canvas`, `text-text` and have them swap automatically by toggling `d
 ### Opacity Modifier
 
 Slash syntax works on any color, including arbitrary values:
+
 ```html
 <div class="bg-sky-500/50">…</div>
 <div class="bg-pink-500/[71.37%]">…</div>
 <div class="bg-cyan-400/(--my-alpha-value)">…</div>   <!-- CSS-var shorthand -->
+
 ```
 
 ### `light-Dual-Theme
 
 ```css
 .bg-canvas { background: light-dark(var(--color-white), var(--color-gray-950)); }
+
 ```
 
 ### Color Utilities That Consume the Palette
@@ -481,6 +540,7 @@ Unprefixed = mobile. `md:` means "at md and above". Each breakpoint has a `max-*
 
 <!-- exactly the md band -->
 <div class="md:max-lg:flex">…</div>
+
 ```
 
 ### Custom Breakpoints
@@ -497,12 +557,14 @@ Unprefixed = mobile. `md:` means "at md and above". Each breakpoint has a `max-*
   --breakpoint-laptop: 64rem;
   --breakpoint-desktop: 80rem;
 }
+
 ```
 
 ### One-Off Arbitrary Breakpoints
 
 ```html
 <div class="max-[600px]:bg-sky-300 min-[320px]:text-center">…</div>
+
 ```
 
 ### Container Queries (Component-Level Responsive)
@@ -517,8 +579,10 @@ containers.
 ### Default
 
 Out of the box, `dark:` = `@media (prefers-color-scheme: dark)`:
+
 ```html
 <div class="bg-white dark:bg-gray-800 …">…</div>
+
 ```
 
 ### Class-Based Toggling (Recommended for User-Controlled Themes)
@@ -526,18 +590,21 @@ Out of the box, `dark:` = `@media (prefers-color-scheme: dark)`:
 ```css
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
 ```
 
 ```html
 <html class="dark">
   <body><div class="bg-white dark:bg-black">…</div></body>
 </html>
+
 ```
 
 ### Data-Attribute-Based Toggling
 
 ```css
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 ```
 
 ### Three-Way: Light / Dark / System
@@ -552,12 +619,14 @@ document.documentElement.classList.toggle(
 localStorage.theme = "light";        // user picks light
 localStorage.theme = "dark";         // user picks dark
 localStorage.removeItem("theme"); // user picks "system"
+
 ```
 
 ### Beyond Dark/Light — Multi-Theme via Data Attribute
 
 ```css
 @custom-variant theme-midnight (&:where([data-theme="midnight"] *));
+
 ```
 
 ```html
@@ -565,6 +634,7 @@ localStorage.removeItem("theme"); // user picks "system"
   …
   <button class="theme-midnight:bg-black theme-midnight:text-white">…</button>
 </html>
+
 ```
 
 ---
@@ -587,6 +657,7 @@ Tailwind recommends a layered approach:
     @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600;
   }
 }
+
 ```
 
 **Note:** Internara prefers direct utility classes in markup over `@apply` for better
@@ -599,6 +670,7 @@ portability and clarity.
   <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Card Title</h2>
   <p class="mt-2 text-gray-600 dark:text-gray-300">Card content goes here.</p>
 </div>
+
 ```
 
 ### Button Variants
@@ -623,6 +695,7 @@ portability and clarity.
 <button class="border border-blue-500 text-blue-500 hover:bg-blue-50 px-4 py-2 rounded-lg">
   Outline
 </button>
+
 ```
 
 ### Form Input Styling
@@ -636,6 +709,7 @@ portability and clarity.
 <input type="text"
   class="w-full px-3 py-2 border border-red-500 rounded-lg focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:border-red-400">
 <p class="mt-1 text-sm text-red-500">This field is required</p>
+
 ```
 
 ---
@@ -651,6 +725,7 @@ classes are included in `@source` paths:
 @import "tailwindcss";
 @source '../views';
 @source '../../vendor/tallstackui/tallstackui/**/*.php';
+
 ```
 
 ### PurgeCSS (Built-In)
@@ -669,6 +744,7 @@ For above-the-fold content, consider inlining critical styles or using `preload`
 
 ```html
 <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+
 ```
 
 ---
@@ -692,12 +768,14 @@ export default defineConfig({
     tailwindcss(),
   ],
 })
+
 ```
 
 ### Blade Directive for Assets
 
 ```blade
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 ```
 
 ### Livewire-Specific Patterns
@@ -720,6 +798,7 @@ export default defineConfig({
 <div wire:transition>
   Content fades in/out on update
 </div>
+
 ```
 
 ### Alpine.js Integration
@@ -736,6 +815,7 @@ export default defineConfig({
 <style>
   [x-cloak] { display: none !important; }
 </style>
+
 ```
 
 ---
@@ -751,6 +831,7 @@ Define semantic color aliases for consistent theming:
   --color-primary: oklch(0.65 0.20 250);
   --color-secondary: oklch(0.70 0.15 160);
 }
+
 ```
 
 ### 2. Mobile-First Approach
@@ -761,6 +842,7 @@ Start with mobile styles, then add responsive prefixes:
 <div class="w-full md:w-1/2 lg:w-1/3">
   <!-- Full width on mobile, half on tablet, third on desktop -->
 </div>
+
 ```
 
 ### 3. Consistent Spacing Scale
@@ -783,6 +865,7 @@ Always provide dark mode variants:
 <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
   Content
 </div>
+
 ```
 
 ### 5. Focus States
@@ -793,6 +876,7 @@ Include focus states for accessibility:
 <button class="focus:outline-none focus:ring-2 focus:ring-blue-500">
   Accessible button
 </button>
+
 ```
 
 ### 6. Avoid `@apply` in CSS
@@ -812,6 +896,7 @@ Prefer utility classes directly in markup for better portability:
   }
 </style>
 <button class="btn-save">Save</button>
+
 ```
 
 ### 7. Use Arbitrary Values Sparingly
@@ -827,6 +912,7 @@ Arbitrary values are powerful but reduce consistency:
 
 <!-- Avoid: Multiple arbitrary values -->
 <div class="bg-[#316ff6] text-[13px] p-[7px]">…</div>
+
 ```
 
 ### 8. Group Related Classes
@@ -847,6 +933,7 @@ Organize classes by purpose for readability:
 ">
   Content
 </div>
+
 ```
 
 ---

@@ -69,7 +69,7 @@ many registrations at once.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Admin Creates a Group
+### UC-IT0OE-1 — Admin Creates a Group
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated; at least one internship exists
@@ -81,7 +81,7 @@ many registrations at once.
 5. Dispatches `internship_group_created` log entry
 **Postconditions:** Group created with internship and optional placement association
 
-### UC-2 — Admin Manages Group Members
+### UC-IT0OE-2 — Admin Manages Group Members
 
 **Actor:** Admin
 **Preconditions:** Internship group exists; admin is authenticated
@@ -99,7 +99,7 @@ many registrations at once.
 8. Admin clicks "Delete Group" → `DeleteInternshipGroupAction` checks `canBeDeleted()` (blocks if has members)
 **Postconditions:** All valid batch rows become members atomically; deletion guarded by member count
 
-### UC-3 — Admin Deactivates a Group
+### UC-IT0OE-3 — Admin Deactivates a Group
 
 **Actor:** Admin
 **Preconditions:** Group exists, currently active
@@ -117,52 +117,52 @@ many registrations at once.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-GM1 | `InternshipGroup` model must use `#[Fillable]` with: name, internship_id, placement_id, description, is_active |
-| FR-GM2 | `InternshipGroup` must have `belongsTo` Internship (FK cascadeOnDelete), `belongsTo` Placement (nullable), `hasMany` InternshipGroupMember |
-| FR-GM3 | `InternshipGroup` must provide `asInternshipGroupState()` bridge to `InternshipGroupState` entity |
-| FR-GM4 | `InternshipGroupState` must track memberCount (via `members()->count()`) and isActive |
-| FR-GM5 | `InternshipGroupState::canBeDeleted()` must return false when `hasMembers()` is true |
-| FR-GM6 | `InternshipGroupState::isActive()` must return the `is_active` boolean |
-| FR-GM7 | `CreateInternshipGroupAction` must create group with internship_id, name, and optional placement_id/description |
-| FR-GM8 | `UpdateInternshipGroupAction` must accept group instance and data array, update within transaction |
-| FR-GM9 | `DeleteInternshipGroupAction` must check `canBeDeleted()` before deleting; throw `RejectedException` if not deletable |
-| FR-GM10 | `InternshipGroupManager` must display groups with columns: name, internship title, member count, actions |
-| FR-GM11 | `InternshipGroupManager` must extend `BaseRecordManager` with search (name), query with `withCount('members')` |
-| FR-GM12 | `InternshipGroupData` DTO must require: internshipId, name; accept optional: placementId, isActive |
+| FR-IT0OE-GM1 | `InternshipGroup` model must use `#[Fillable]` with: name, internship_id, placement_id, description, is_active |
+| FR-IT0OE-GM2 | `InternshipGroup` must have `belongsTo` Internship (FK cascadeOnDelete), `belongsTo` Placement (nullable), `hasMany` InternshipGroupMember |
+| FR-IT0OE-GM3 | `InternshipGroup` must provide `asInternshipGroupState()` bridge to `InternshipGroupState` entity |
+| FR-IT0OE-GM4 | `InternshipGroupState` must track memberCount (via `members()->count()`) and isActive |
+| FR-IT0OE-GM5 | `InternshipGroupState::canBeDeleted()` must return false when `hasMembers()` is true |
+| FR-IT0OE-GM6 | `InternshipGroupState::isActive()` must return the `is_active` boolean |
+| FR-IT0OE-GM7 | `CreateInternshipGroupAction` must create group with internship_id, name, and optional placement_id/description |
+| FR-IT0OE-GM8 | `UpdateInternshipGroupAction` must accept group instance and data array, update within transaction |
+| FR-IT0OE-GM9 | `DeleteInternshipGroupAction` must check `canBeDeleted()` before deleting; throw `RejectedException` if not deletable |
+| FR-IT0OE-GM10 | `InternshipGroupManager` must display groups with columns: name, internship title, member count, actions |
+| FR-IT0OE-GM11 | `InternshipGroupManager` must extend `BaseRecordManager` with search (name), query with `withCount('members')` |
+| FR-IT0OE-GM12 | `InternshipGroupData` DTO must require: internshipId, name; accept optional: placementId, isActive |
 
 ### Member Management
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-MM1 | `InternshipGroupMember` model must use `#[Fillable]` with: internship_group_id, registration_id, user_id (mentor), role, joined_at |
-| FR-MM2 | `InternshipGroupMember` must have `belongsTo` InternshipGroup, `belongsTo` Registration, `belongsTo` User (mentor) |
-| FR-MM3 | `InternshipGroupRole` enum must define 3 cases: STUDENT, SCHOOL_TEACHER, INDUSTRY_SUPERVISOR — all implement `LabelEnum` |
-| FR-MM4 | `AddMemberToGroupAction` must accept group + data array (role, registration_id, mentor_id); create member with `joined_at = now()` |
-| FR-MM5 | `AddMemberToGroupAction` must execute within a transaction |
-| FR-MM6 | `RemoveMemberFromGroupAction` must accept member instance, log removal, then delete within transaction |
-| FR-MM7 | `InternshipGroupManager::addMember()` must validate: role (required, valid enum), registration_id (required_if:role=student, exists:registrations,id), mentor_id (required_if:role=school_teacher OR industry_supervisor, exists:users,id) |
-| FR-MM8 | `InternshipGroupManager::removeMember()` must authorize update on the parent group |
-| FR-MM9 | `AddMembersToGroupAction` must accept group + array of member rows; create all rows within a single transaction with `joined_at = now()`, returning the count created |
-| FR-MM10 | `InternshipGroupManager` must expose repeater row management: `memberFormData` array of rows, `addMemberRow()`, `removeMemberRow(int $index)`, and `resetMemberForm()` |
-| FR-MM11 | `InternshipGroupManager::addMembers()` must validate **all** repeater rows before calling `AddMembersToGroupAction`; one invalid row fails the entire batch (all-or-nothing) |
+| FR-IT0OE-MM1 | `InternshipGroupMember` model must use `#[Fillable]` with: internship_group_id, registration_id, user_id (mentor), role, joined_at |
+| FR-IT0OE-MM2 | `InternshipGroupMember` must have `belongsTo` InternshipGroup, `belongsTo` Registration, `belongsTo` User (mentor) |
+| FR-IT0OE-MM3 | `InternshipGroupRole` enum must define 3 cases: STUDENT, SCHOOL_TEACHER, INDUSTRY_SUPERVISOR — all implement `LabelEnum` |
+| FR-IT0OE-MM4 | `AddMemberToGroupAction` must accept group + data array (role, registration_id, mentor_id); create member with `joined_at = now()` |
+| FR-IT0OE-MM5 | `AddMemberToGroupAction` must execute within a transaction |
+| FR-IT0OE-MM6 | `RemoveMemberFromGroupAction` must accept member instance, log removal, then delete within transaction |
+| FR-IT0OE-MM7 | `InternshipGroupManager::addMember()` must validate: role (required, valid enum), registration_id (required_if:role=student, exists:registrations,id), mentor_id (required_if:role=school_teacher OR industry_supervisor, exists:users,id) |
+| FR-IT0OE-MM8 | `InternshipGroupManager::removeMember()` must authorize update on the parent group |
+| FR-IT0OE-MM9 | `AddMembersToGroupAction` must accept group + array of member rows; create all rows within a single transaction with `joined_at = now()`, returning the count created |
+| FR-IT0OE-MM10 | `InternshipGroupManager` must expose repeater row management: `memberFormData` array of rows, `addMemberRow()`, `removeMemberRow(int $index)`, and `resetMemberForm()` |
+| FR-IT0OE-MM11 | `InternshipGroupManager::addMembers()` must validate **all** repeater rows before calling `AddMembersToGroupAction`; one invalid row fails the entire batch (all-or-nothing) |
 
 ### Policies
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-P1 | `InternshipGroupPolicy` must extend `BasePolicy` |
-| FR-P2 | `viewAny` and `view` must allow all users (public read access) |
-| FR-P3 | `create`, `update`, `delete` must require admin role |
+| FR-IT0OE-P1 | `InternshipGroupPolicy` must extend `BasePolicy` |
+| FR-IT0OE-P2 | `viewAny` and `view` must allow all users (public read access) |
+| FR-IT0OE-P3 | `create`, `update`, `delete` must require admin role |
 
 ### Livewire Components & Routing
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-L1 | `InternshipGroupManager` must be at `/admin/internships/groups` with admin middleware |
-| FR-L2 | `InternshipGroupManager` must extend `BaseRecordManager` |
-| FR-L3 | `InternshipGroupManager` must provide: showModal (group CRUD), showMemberModal (member add), showConfirm (delete confirm) |
-| FR-L4 | `InternshipGroupManager` must provide computed `internships()` and `roleOptions()` |
-| FR-L5 | `InternshipGroupForm` must validate group fields before save |
+| FR-IT0OE-L1 | `InternshipGroupManager` must be at `/admin/internships/groups` with admin middleware |
+| FR-IT0OE-L2 | `InternshipGroupManager` must extend `BaseRecordManager` |
+| FR-IT0OE-L3 | `InternshipGroupManager` must provide: showModal (group CRUD), showMemberModal (member add), showConfirm (delete confirm) |
+| FR-IT0OE-L4 | `InternshipGroupManager` must provide computed `internships()` and `roleOptions()` |
+| FR-IT0OE-L5 | `InternshipGroupForm` must validate group fields before save |
 
 ---
 
@@ -170,17 +170,17 @@ many registrations at once.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | Group member uniqueness constraints must be enforced at both database and application level |
-| NFR-S2 | Member add must authorize update permission on the parent group |
-| NFR-U1 | Member modal must dynamically adapt input fields **per repeater row** based on selected role (student → registration_id; teacher/supervisor → mentor_id) |
-| NFR-U2 | Deletion blocked messages must explain which related records prevent deletion |
-| NFR-U3 | Member count must update in real-time after add/remove |
-| NFR-U4 | Confirm dialog must show group name before deletion |
-| NFR-A1 | Group member modal inputs must have associated labels |
-| NFR-A2 | All interactive elements must have visible focus indicators |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-L3 | Role labels must use `LabelEnum::label()` (calls `__()` internally) |
+| NFR-IT0OE-S1 | Group member uniqueness constraints must be enforced at both database and application level |
+| NFR-IT0OE-S2 | Member add must authorize update permission on the parent group |
+| NFR-IT0OE-U1 | Member modal must dynamically adapt input fields **per repeater row** based on selected role (student → registration_id; teacher/supervisor → mentor_id) |
+| NFR-IT0OE-U2 | Deletion blocked messages must explain which related records prevent deletion |
+| NFR-IT0OE-U3 | Member count must update in real-time after add/remove |
+| NFR-IT0OE-U4 | Confirm dialog must show group name before deletion |
+| NFR-IT0OE-A1 | Group member modal inputs must have associated labels |
+| NFR-IT0OE-A2 | All interactive elements must have visible focus indicators |
+| NFR-IT0OE-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-IT0OE-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-IT0OE-L3 | Role labels must use `LabelEnum::label()` (calls `__()` internally) |
 
 ## Test Requirements
 
@@ -213,6 +213,7 @@ enum InternshipGroupRole: string implements LabelEnum
     // SCHOOL_TEACHER → __('School Teacher')
     // INDUSTRY_SUPERVISOR → __('Industry Supervisor')
 }
+
 ```
 
 ### 6.2 InternshipGroup Model
@@ -228,6 +229,7 @@ class InternshipGroup extends BaseModel
     // Bridge: asInternshipGroupState() → InternshipGroupState
     // Factory: InternshipGroupFactory
 }
+
 ```
 
 ### 6.3 InternshipGroupMember Model
@@ -243,6 +245,7 @@ class InternshipGroupMember extends BaseModel
     //            belongsTo User (user_id — mentor)
     // Factory: InternshipGroupMemberFactory
 }
+
 ```
 
 ### 6.4 InternshipGroupState Entity
@@ -260,6 +263,7 @@ final readonly class InternshipGroupState extends BaseEntity
     public function hasMembers(): bool;       // memberCount > 0
     public function canBeDeleted(): bool;     // !hasMembers()
 }
+
 ```
 
 ### 6.5 InternshipGroupData DTO
@@ -275,6 +279,7 @@ final readonly class InternshipGroupData extends BaseData
         public ?bool $isActive = null,
     ) {}
 }
+
 ```
 
 ### 6.6 Action Signatures
@@ -325,6 +330,7 @@ final class RemoveMemberFromGroupAction extends BaseCommandAction
     public function execute(InternshipGroupMember $member): void;
     // Logs removal, deletes member within transaction
 }
+
 ```
 
 ### 6.7 Policy
@@ -339,6 +345,7 @@ class InternshipGroupPolicy extends BasePolicy
     public function update(User $user, InternshipGroup $group): bool; // admin only
     public function delete(User $user, InternshipGroup $group): bool; // admin only
 }
+
 ```
 
 ### 6.8 Routes
@@ -351,6 +358,7 @@ Route::prefix('admin')
     ->group(function () {
         Route::livewire('/internships/groups', InternshipGroupManager::class)->name('internships.groups');
     });
+
 ```
 
 ---
@@ -440,7 +448,7 @@ loops rows serially, which is acceptable for group sizes in practice.
 | Removal logging | Every removal logged | `RemoveMemberFromGroupAction` audit trail |
 | Authorization | Only admins can add/remove members | Policy + Livewire authorization tests |
 | Batch atomicity | 0 partial batches | `AddMembersToGroupAction` transaction + `addMembers()` validation tests |
-| Batch all-or-nothing | 1 invalid row blocks entire batch | Livewire validation tests (FR-MM11) |
+| Batch all-or-nothing | 1 invalid row blocks entire batch | Livewire validation tests (FR-IT0OE-MM11) |
 
 ---
 

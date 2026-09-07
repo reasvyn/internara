@@ -109,6 +109,7 @@ class {Verb}{Entity}Action extends BaseCommandAction
         });
     }
 }
+
 ```
 
 #### Return Type Conventions
@@ -196,6 +197,7 @@ The `transaction()` method implements the **Unit of Work** pattern (Fowler, PoEA
 ```php
 protected function beforeExecute(): void {}  // Called before every transaction
 protected function afterExecute(mixed $result): void {}  // Called after every transaction
+
 ```
 
 Override these in Command/Process Actions to set up context or clean up resources. Most Actions do not need them.
@@ -218,6 +220,7 @@ protected function log(string $action, ?Model $subject = null, array $payload = 
         ->both()
         ->save();
 }
+
 ```
 
 **What to Log:** Action identifier (always), subject model (always), context payload (recommended), PII (masked via `withPiiMasking()`).
@@ -301,6 +304,7 @@ ActionResponse::created($model, '{Entity} created');
 ActionResponse::updated($model, '{Entity} updated');
 ActionResponse::deleted('{Entity} removed');
 ActionResponse::error('Something went wrong', $errors);
+
 ```
 
 #### When to Use vs. Direct Return

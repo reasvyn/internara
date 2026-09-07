@@ -26,8 +26,8 @@ Follows _common helpers for parallel execution, JSON report, and CLI flags.
 
 References:
   docs/guides/arch/testing-pattern.md
-  .agents/rules/spec-first-doctrine.md
-  .agents/rules/verification-strategy.md
+  docs/templates/spec-template.md
+  docs/index.md
 """
 
 from __future__ import annotations
@@ -745,7 +745,7 @@ def main() -> None:
             line=line,
             message=f"Test traces to {req_id} but no spec defines it (orphan test)",
             suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec",
-            reference=".agents/rules/spec-first-doctrine.md",
+            reference="docs/templates/spec-template.md",
             context={"requirement": req_id, "test": rel},
         ))
 

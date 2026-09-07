@@ -83,7 +83,7 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Student Reports a Workplace Incident
+### UC-3RU9S-1 — Student Reports a Workplace Incident
 
 **Actor:** Student
 **Preconditions:** Student is authenticated with `student` role; student has an active registration
@@ -97,7 +97,7 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 7. Component redirects or flashes success message
 **Postconditions:** Incident report exists with REPORTED status; admins notified
 
-### UC-2 — Admin Investigates an Incident
+### UC-3RU9S-2 — Admin Investigates an Incident
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` or `super_admin` role; at least one incident exists with REPORTED or INVESTIGATING status
@@ -109,7 +109,7 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 5. `UpdateIncidentAction::execute(IncidentReport $incident, array $data)` updates the record
 **Postconditions:** Incident status updated to INVESTIGATING; admin is tracking the case
 
-### UC-3 — Admin Resolves an Incident
+### UC-3RU9S-3 — Admin Resolves an Incident
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated with `admin` or `super_admin` role; incident is in INVESTIGATING status
@@ -121,7 +121,7 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 5. Action sets `resolved_by = auth()->id()`, `resolved_at = now()`, stores `resolution_notes`
 **Postconditions:** Incident status is RESOLVED with resolution metadata recorded
 
-### UC-4 — Admin Escalates Incident Severity
+### UC-3RU9S-4 — Admin Escalates Incident Severity
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated; incident exists in REPORTED or INVESTIGATING status
@@ -131,7 +131,7 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 3. `UpdateIncidentAction::execute(IncidentReport $incident, array $data)` persists the change
 **Postconditions:** Incident severity updated; subsequent notifications reflect new severity
 
-### UC-5 — Admin Views Incident List With Filters
+### UC-3RU9S-5 — Admin Views Incident List With Filters
 
 **Actor:** Admin
 **Preconditions:** Admin is authenticated; one or more incidents exist
@@ -150,41 +150,41 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-R1 | `IncidentReport` model must use `#[Fillable]` with all 12 fillable fields |
-| FR-R2 | `ReportIncidentAction` must accept `array $data`, create an `IncidentReport`, and return the model instance |
-| FR-R3 | New incidents must default to `status = IncidentStatus::REPORTED` |
-| FR-R4 | `reported_by` must be set to `auth()->id()` on creation |
-| FR-R5 | `registration_id` must link the incident to a valid Registration (FK, cascade, indexed) |
-| FR-R6 | `IncidentType` enum must implement `LabelEnum` with cases: ACCIDENT, SAFETY_VIOLATION, HARASSMENT, DISCIPLINARY, OTHER |
-| FR-R7 | `IncidentSeverity` enum must implement `LabelEnum` with cases: LOW, MEDIUM, HIGH, CRITICAL |
-| FR-R8 | `description` (text) is required; `location` (string) and `action_taken` (text) are nullable |
-| FR-R9 | `IncidentForm` Livewire component must be student-only and call `ReportIncidentAction` on submit |
+| FR-3RU9S-R1 | `IncidentReport` model must use `#[Fillable]` with all 12 fillable fields |
+| FR-3RU9S-R2 | `ReportIncidentAction` must accept `array $data`, create an `IncidentReport`, and return the model instance |
+| FR-3RU9S-R3 | New incidents must default to `status = IncidentStatus::REPORTED` |
+| FR-3RU9S-R4 | `reported_by` must be set to `auth()->id()` on creation |
+| FR-3RU9S-R5 | `registration_id` must link the incident to a valid Registration (FK, cascade, indexed) |
+| FR-3RU9S-R6 | `IncidentType` enum must implement `LabelEnum` with cases: ACCIDENT, SAFETY_VIOLATION, HARASSMENT, DISCIPLINARY, OTHER |
+| FR-3RU9S-R7 | `IncidentSeverity` enum must implement `LabelEnum` with cases: LOW, MEDIUM, HIGH, CRITICAL |
+| FR-3RU9S-R8 | `description` (text) is required; `location` (string) and `action_taken` (text) are nullable |
+| FR-3RU9S-R9 | `IncidentForm` Livewire component must be student-only and call `ReportIncidentAction` on submit |
 
 ### Investigation
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-I1 | `IncidentStatus` enum must implement `StatusEnum` with cases: REPORTED, INVESTIGATING, RESOLVED, CLOSED |
-| FR-I2 | `validTransitions()` must return: REPORTED→[INVESTIGATING, RESOLVED], INVESTIGATING→[RESOLVED, CLOSED], RESOLVED→[CLOSED], CLOSED→[] |
-| FR-I3 | `CLOSED` must be the terminal state — no further transitions allowed |
-| FR-I4 | `UpdateIncidentAction` must accept an `IncidentReport` instance and an `array $data` for partial updates |
-| FR-I5 | `IncidentManager` must render an admin-only table with status, severity, and type filter controls |
+| FR-3RU9S-I1 | `IncidentStatus` enum must implement `StatusEnum` with cases: REPORTED, INVESTIGATING, RESOLVED, CLOSED |
+| FR-3RU9S-I2 | `validTransitions()` must return: REPORTED→[INVESTIGATING, RESOLVED], INVESTIGATING→[RESOLVED, CLOSED], RESOLVED→[CLOSED], CLOSED→[] |
+| FR-3RU9S-I3 | `CLOSED` must be the terminal state — no further transitions allowed |
+| FR-3RU9S-I4 | `UpdateIncidentAction` must accept an `IncidentReport` instance and an `array $data` for partial updates |
+| FR-3RU9S-I5 | `IncidentManager` must render an admin-only table with status, severity, and type filter controls |
 
 ### Resolution
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-RE1 | `ResolveIncidentAction` must accept an `IncidentReport` instance and `array $data` containing `resolution_notes` |
-| FR-RE2 | `ResolveIncidentAction` must transition status to `IncidentStatus::RESOLVED` |
-| FR-RE3 | Resolution must set `resolved_by = auth()->id()` and `resolved_at = now()` |
-| FR-RE4 | `resolution_notes` (text) must be stored on resolution |
+| FR-3RU9S-RE1 | `ResolveIncidentAction` must accept an `IncidentReport` instance and `array $data` containing `resolution_notes` |
+| FR-3RU9S-RE2 | `ResolveIncidentAction` must transition status to `IncidentStatus::RESOLVED` |
+| FR-3RU9S-RE3 | Resolution must set `resolved_by = auth()->id()` and `resolved_at = now()` |
+| FR-3RU9S-RE4 | `resolution_notes` (text) must be stored on resolution |
 
 ### Notifications
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-N1 | `IncidentReportedNotification` must be dispatched on successful incident creation |
-| FR-N2 | Notification must be sent to admin/teacher-role users per RBAC policy |
+| FR-3RU9S-N1 | `IncidentReportedNotification` must be dispatched on successful incident creation |
+| FR-3RU9S-N2 | Notification must be sent to admin/teacher-role users per RBAC policy |
 
 ---
 
@@ -192,18 +192,18 @@ schools lack the cross-module visibility needed for data-driven safety decisions
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All incident mutations must be authorized via `IncidentReportPolicy` — only admins may update; only admins may delete |
-| NFR-S2 | Students may only create incidents — they must not update or delete existing reports |
-| NFR-S3 | Status transitions must be validated against `IncidentStatus::validTransitions()` before persistence |
-| NFR-S4 | `reported_by` and `resolved_by` must reference valid User IDs via foreign key constraints |
-| NFR-P1 | Incident list load must complete in < 300ms for up to 200 incidents |
-| NFR-P2 | Incident report submission must complete in < 2s including notification dispatch |
-| NFR-R1 | `ReportIncidentAction` and `ResolveIncidentAction` must execute within a database transaction |
-| NFR-R2 | Composite index on `(registration_id, status)` must support efficient filtered queries |
-| NFR-U1 | `IncidentForm` must display all fields with appropriate input controls and validation feedback |
-| NFR-U2 | `IncidentManager` must display severity and status with human-readable labels from enum `label()` methods |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standards |
-| NFR-L1 | All user-facing strings must use `__()` translation helper with keys in both `lang/en/` and `lang/id/` |
+| NFR-3RU9S-S1 | All incident mutations must be authorized via `IncidentReportPolicy` — only admins may update; only admins may delete |
+| NFR-3RU9S-S2 | Students may only create incidents — they must not update or delete existing reports |
+| NFR-3RU9S-S3 | Status transitions must be validated against `IncidentStatus::validTransitions()` before persistence |
+| NFR-3RU9S-S4 | `reported_by` and `resolved_by` must reference valid User IDs via foreign key constraints |
+| NFR-3RU9S-P1 | Incident list load must complete in < 300ms for up to 200 incidents |
+| NFR-3RU9S-P2 | Incident report submission must complete in < 2s including notification dispatch |
+| NFR-3RU9S-R1 | `ReportIncidentAction` and `ResolveIncidentAction` must execute within a database transaction |
+| NFR-3RU9S-R2 | Composite index on `(registration_id, status)` must support efficient filtered queries |
+| NFR-3RU9S-U1 | `IncidentForm` must display all fields with appropriate input controls and validation feedback |
+| NFR-3RU9S-U2 | `IncidentManager` must display severity and status with human-readable labels from enum `label()` methods |
+| NFR-3RU9S-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standards |
+| NFR-3RU9S-L1 | All user-facing strings must use `__()` translation helper with keys in both `lang/en/` and `lang/id/` |
 
 ---
 
@@ -238,6 +238,7 @@ App\Incident\IncidentReport\Models\IncidentReport
              resolver() BelongsTo User (resolved_by)
   Indexes: type (indexed), severity (indexed), status (indexed),
            (registration_id, status) composite
+
 ```
 
 ### IncidentType Enum
@@ -247,6 +248,7 @@ App\Incident\IncidentReport\Enums\IncidentType: string implements LabelEnum
   Cases: ACCIDENT='accident', SAFETY_VIOLATION='safety_violation',
          HARASSMENT='harassment', DISCIPLINARY='disciplinary', OTHER='other'
   Methods: label(): string
+
 ```
 
 ### IncidentSeverity Enum
@@ -255,6 +257,7 @@ App\Incident\IncidentReport\Enums\IncidentType: string implements LabelEnum
 App\Incident\IncidentReport\Enums\IncidentSeverity: string implements LabelEnum
   Cases: LOW='low', MEDIUM='medium', HIGH='high', CRITICAL='critical'
   Methods: label(): string
+
 ```
 
 ### IncidentStatus Enum
@@ -269,6 +272,7 @@ App\Incident\IncidentReport\Enums\IncidentStatus: string implements StatusEnum
                RESOLVED → [CLOSED]
                CLOSED → []
   Methods: label(): string, validTransitions(): array
+
 ```
 
 ### Actions
@@ -286,6 +290,7 @@ App\Incident\IncidentReport\Notifications\IncidentReportedNotification
   Triggered: on ReportIncidentAction success
   Recipients: admin/teacher-role users
   Payload: incident details (type, severity, description, reported_by)
+
 ```
 
 ### Policy
@@ -297,6 +302,7 @@ App\Incident\IncidentReport\Policies\IncidentReportPolicy
   create:  any authenticated user
   update:  admin
   delete:  admin
+
 ```
 
 ### Routes
@@ -325,6 +331,7 @@ incident_reports:
   resolution_notes: text (nullable)
   timestamps
   Indexes: type, severity, status, (registration_id, status)
+
 ```
 
 ---

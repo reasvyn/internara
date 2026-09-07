@@ -61,7 +61,7 @@ absences need coordinator approval.
 
 ## 3. User Stories / Use Cases
 
-### UC-1 — Student Submits Daily Logbook Entry
+### UC-1KSWL-1 — Student Submits Daily Logbook Entry
 
 **Actor:** Student
 **Preconditions:** Student has active registration; no entry exists for today
@@ -73,7 +73,7 @@ absences need coordinator approval.
 5. Attaches photos via MediaLibrary `photos` collection
 **Postconditions:** Logbook entry created/submitted with SUBMITTED status; one-per-day enforced
 
-### UC-2 — Supervisor Verifies Logbook Entry
+### UC-1KSWL-2 — Supervisor Verifies Logbook Entry
 
 **Actor:** Industry Supervisor
 **Preconditions:** SUBMITTED logbook entry exists; supervisor is assigned as mentor
@@ -83,7 +83,7 @@ absences need coordinator approval.
 3. Adds mentor feedback, updates status to VERIFIED via `UpdateLogbookAction`
 **Postconditions:** Entry verified; supervisor feedback stored
 
-### UC-3 — Student Clocks In and Out
+### UC-1KSWL-3 — Student Clocks In and Out
 
 **Actor:** Student
 **Preconditions:** No existing attendance record for today
@@ -96,7 +96,7 @@ absences need coordinator approval.
 6. Event `AttendanceClockOut` dispatched
 **Postconditions:** Attendance record with clock_in, clock_out, auto-computed duration
 
-### UC-4 — Student Requests Absence
+### UC-1KSWL-4 — Student Requests Absence
 
 **Actor:** Student
 **Preconditions:** Student has active registration
@@ -108,7 +108,7 @@ absences need coordinator approval.
 5. Record created with `absence_status = PENDING`
 **Postconditions:** Absence request pending approval
 
-### UC-5 — Teacher Approves/Rejects Absence
+### UC-1KSWL-5 — Teacher Approves/Rejects Absence
 
 **Actor:** Teacher (Mentor)
 **Preconditions:** PENDING absence request exists
@@ -126,41 +126,41 @@ absences need coordinator approval.
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-LB1 | `SubmitLogbookAction` must enforce one entry per student per calendar day via `updateOrCreate` on `(user_id, date)` |
-| FR-LB2 | `Logbook` model must use `#[Fillable]` with `user_id`, `registration_id`, `date`, `content`, `learning_outcomes`, `status`, `is_verified`, `verified_by`, `verified_at`, `mentor_feedback`, `supervisor_note`, `supervisor_reviewed_at`, `supervisor_id` |
-| FR-LB3 | `LogbookStatus` must define: DRAFT, SUBMITTED, VERIFIED, REVISION_REQUIRED |
-| FR-LB4 | Valid transitions: DRAFT→[SUBMITTED]; SUBMITTED→[VERIFIED, REVISION_REQUIRED]; REVISION_REQUIRED→[DRAFT]; VERIFIED→[] |
-| FR-LB5 | `Logbook` must support photo attachments via MediaLibrary `photos` collection (jpeg, png, webp, heic, heif) |
-| FR-LB6 | `LogbookPolicy` must allow: create (student), update (admin OR owner when not SUBMITTED), view (admin/owner/mentorProxy) |
-| FR-LB7 | `CreateLogbookAction` (admin/teacher) must resolve active registration and reject if none exists |
-| FR-LB8 | `CompileLogbookReportAction` must generate a PDF from verified entries with media, using DomPDF |
+| FR-1KSWL-LB1 | `SubmitLogbookAction` must enforce one entry per student per calendar day via `updateOrCreate` on `(user_id, date)` |
+| FR-1KSWL-LB2 | `Logbook` model must use `#[Fillable]` with `user_id`, `registration_id`, `date`, `content`, `learning_outcomes`, `status`, `is_verified`, `verified_by`, `verified_at`, `mentor_feedback`, `supervisor_note`, `supervisor_reviewed_at`, `supervisor_id` |
+| FR-1KSWL-LB3 | `LogbookStatus` must define: DRAFT, SUBMITTED, VERIFIED, REVISION_REQUIRED |
+| FR-1KSWL-LB4 | Valid transitions: DRAFT→[SUBMITTED]; SUBMITTED→[VERIFIED, REVISION_REQUIRED]; REVISION_REQUIRED→[DRAFT]; VERIFIED→[] |
+| FR-1KSWL-LB5 | `Logbook` must support photo attachments via MediaLibrary `photos` collection (jpeg, png, webp, heic, heif) |
+| FR-1KSWL-LB6 | `LogbookPolicy` must allow: create (student), update (admin OR owner when not SUBMITTED), view (admin/owner/mentorProxy) |
+| FR-1KSWL-LB7 | `CreateLogbookAction` (admin/teacher) must resolve active registration and reject if none exists |
+| FR-1KSWL-LB8 | `CompileLogbookReportAction` must generate a PDF from verified entries with media, using DomPDF |
 
 ### Attendance
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AT1 | `ClockInAction` must reject if no active registration or if already clocked in today |
-| FR-AT2 | `ClockInAction` must create record with status PRESENT, store IP and optional GPS |
-| FR-AT3 | `ClockOutAction` must reject if no clock-in or already clocked out |
-| FR-AT4 | `ClockOutAction` must update clock_out time, IP, and GPS coordinates |
-| FR-AT5 | `AttendanceStatus` must define: PRESENT, LATE, EARLY_OUT, ABSENT, PERMISSION, SICK (all terminal) |
-| FR-AT6 | Unique constraint on `(user_id, date)` — one attendance per student per day |
-| FR-AT7 | `AttendancePolicy` must allow: create (student), verify (admin/mentorProxy), update (admin), delete (admin) |
-| FR-AT8 | `VerifyAttendanceAction` must set `is_verified=true`, `verified_by`, `verified_at` |
-| FR-AT9 | `AttendanceManager` must display pending absence requests for teacher/admin approval |
-| FR-AT10 | `AttendanceManager` must scope attendance queries to the authenticated user's supervised registrations (mentors pivot) — no unscoped reads across all registrations for a date |
+| FR-1KSWL-AT1 | `ClockInAction` must reject if no active registration or if already clocked in today |
+| FR-1KSWL-AT2 | `ClockInAction` must create record with status PRESENT, store IP and optional GPS |
+| FR-1KSWL-AT3 | `ClockOutAction` must reject if no clock-in or already clocked out |
+| FR-1KSWL-AT4 | `ClockOutAction` must update clock_out time, IP, and GPS coordinates |
+| FR-1KSWL-AT5 | `AttendanceStatus` must define: PRESENT, LATE, EARLY_OUT, ABSENT, PERMISSION, SICK (all terminal) |
+| FR-1KSWL-AT6 | Unique constraint on `(user_id, date)` — one attendance per student per day |
+| FR-1KSWL-AT7 | `AttendancePolicy` must allow: create (student), verify (admin/mentorProxy), update (admin), delete (admin) |
+| FR-1KSWL-AT8 | `VerifyAttendanceAction` must set `is_verified=true`, `verified_by`, `verified_at` |
+| FR-1KSWL-AT9 | `AttendanceManager` must display pending absence requests for teacher/admin approval |
+| FR-1KSWL-AT10 | `AttendanceManager` must scope attendance queries to the authenticated user's supervised registrations (mentors pivot) — no unscoped reads across all registrations for a date |
 
 ### AbsenceRequest
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-AR1 | `AbsenceRequest` model shares `attendances` table with Attendance, filtered by global scope `whereNotNull('absence_type')` |
-| FR-AR2 | `AbsenceReasonType` must define: SICK, PERMISSION, EMERGENCY, OTHER |
-| FR-AR3 | `AbsenceRequestStatus` must define: PENDING, APPROVED, REJECTED |
-| FR-AR4 | `requiresAttachment()` must return true for SICK and EMERGENCY reason types |
-| FR-AR5 | `SubmitAbsenceAction` must create record with `absence_status = PENDING` |
-| FR-AR6 | `ProcessAbsenceAction` must reject if already processed (not PENDING) |
-| FR-AR7 | `ProcessAbsenceAction` must set `absence_status`, `absence_processed_by`, `absence_processed_at`, `absence_admin_notes` |
+| FR-1KSWL-AR1 | `AbsenceRequest` model shares `attendances` table with Attendance, filtered by global scope `whereNotNull('absence_type')` |
+| FR-1KSWL-AR2 | `AbsenceReasonType` must define: SICK, PERMISSION, EMERGENCY, OTHER |
+| FR-1KSWL-AR3 | `AbsenceRequestStatus` must define: PENDING, APPROVED, REJECTED |
+| FR-1KSWL-AR4 | `requiresAttachment()` must return true for SICK and EMERGENCY reason types |
+| FR-1KSWL-AR5 | `SubmitAbsenceAction` must create record with `absence_status = PENDING` |
+| FR-1KSWL-AR6 | `ProcessAbsenceAction` must reject if already processed (not PENDING) |
+| FR-1KSWL-AR7 | `ProcessAbsenceAction` must set `absence_status`, `absence_processed_by`, `absence_processed_at`, `absence_admin_notes` |
 
 ---
 
@@ -168,20 +168,20 @@ absences need coordinator approval.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-S1 | All mutations must be authorized via submodule-specific Policies |
-| NFR-S2 | Attendance records must become immutable after configurable grace period (default 24h from clock-out) |
-| NFR-S3 | Absence request processing must be idempotent — double-approval must be rejected |
-| NFR-S4 | GPS coordinates must be optional (not all devices provide location) |
-| NFR-P1 | Logbook entry list must load in < 500ms for 90 entries (one per day for 3-month PKL) |
-| NFR-P2 | Attendance clock-in/out must complete in < 1s |
-| NFR-P3 | PDF logbook report generation must complete in < 10s for 90 entries |
-| NFR-R1 | Logbook submission must be wrapped in a database transaction |
-| NFR-R2 | Clock-in/out must be atomic — no race condition on daily unique constraint |
-| NFR-U1 | Student clock-in UI must show current status (not clocked in / clocked in at HH:MM) |
-| NFR-U2 | Pending absence requests must be prominently displayed on teacher dashboard |
-| NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
-| NFR-L1 | All user-facing strings must use `__()` translation helper |
-| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-1KSWL-S1 | All mutations must be authorized via submodule-specific Policies |
+| NFR-1KSWL-S2 | Attendance records must become immutable after configurable grace period (default 24h from clock-out) |
+| NFR-1KSWL-S3 | Absence request processing must be idempotent — double-approval must be rejected |
+| NFR-1KSWL-S4 | GPS coordinates must be optional (not all devices provide location) |
+| NFR-1KSWL-P1 | Logbook entry list must load in < 500ms for 90 entries (one per day for 3-month PKL) |
+| NFR-1KSWL-P2 | Attendance clock-in/out must complete in < 1s |
+| NFR-1KSWL-P3 | PDF logbook report generation must complete in < 10s for 90 entries |
+| NFR-1KSWL-R1 | Logbook submission must be wrapped in a database transaction |
+| NFR-1KSWL-R2 | Clock-in/out must be atomic — no race condition on daily unique constraint |
+| NFR-1KSWL-U1 | Student clock-in UI must show current status (not clocked in / clocked in at HH:MM) |
+| NFR-1KSWL-U2 | Pending absence requests must be prominently displayed on teacher dashboard |
+| NFR-1KSWL-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 |
+| NFR-1KSWL-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-1KSWL-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
 
 ---
 
@@ -215,6 +215,7 @@ App\Journals\Logbook\Models\Logbook
   Media: photos (jpeg, png, webp, heic, heif)
   Unique: (user_id, date), (registration_id, date)
   Bridge: asLogbookState() → LogbookState
+
 ```
 
 ### Attendance Model
@@ -232,6 +233,7 @@ App\Journals\Attendance\Models\Attendance
   Relations: user() BelongsTo User, registration() BelongsTo Registration, verifier() BelongsTo User
   Unique: (user_id, date)
   Bridge: asAttendanceState() → AttendanceState
+
 ```
 
 ### AbsenceRequest Model
@@ -243,6 +245,7 @@ App\Journals\AbsenceRequest\Models\AbsenceRequest
             absence_status, absence_processed_by, absence_processed_at, absence_admin_notes
   Casts: date → date, absence_type → AbsenceReasonType, absence_status → AbsenceRequestStatus
   Relations: user() BelongsTo User, processor() BelongsTo User, registration() BelongsTo Registration
+
 ```
 
 ### Enums
@@ -302,6 +305,7 @@ logbooks:
   status (default 'draft'), is_verified, verified_by: FK→users (set null), verified_at
   mentor_feedback, supervisor_note, supervisor_reviewed_at, supervisor_id: FK→users (set null)
   Unique: (user_id, date), (registration_id, date)
+
 ```
 
 ---

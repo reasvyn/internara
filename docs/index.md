@@ -154,6 +154,7 @@ flowchart LR
     E --> F[architecture.md]
     F --> G[conventions.md]
     G --> H[modules/index.md]
+
 ```
 
 ### For Operations / DevOps
@@ -166,6 +167,7 @@ flowchart LR
     D --> E[foundation/backup-recovery.md]
     E --> F[foundation/system-observability.md]
     F --> G[foundation/system-health.md]
+
 ```
 
 ### For Contributors
@@ -178,6 +180,7 @@ flowchart LR
     D --> E[architecture/entity-pattern.md]
     E --> F[architecture/testing-pattern.md]
     F --> G[modules/index.md]
+
 ```
 
 ### By Role

@@ -7,6 +7,11 @@ procedure, rollback strategy, version numbering, and major version consideration
 
 ---
 
+
+## Prerequisites
+
+See [Installation](installation.md#prerequisites) for full server requirements and verification commands.
+
 ## 1. Problem Statements
 
 ### PS-1 — Safe Upgrades
@@ -39,6 +44,7 @@ must handle all three while warning about breaking changes.
 
 ```bash
 php artisan system:backup --type=both --force
+
 ```
 
 Stored in `storage/app/backup/`, recorded in database.
@@ -58,6 +64,7 @@ cp database/database.sqlite backup-$(date +%Y%m%d).sqlite
 # Files
 tar -czf storage-backup-$(date +%Y%m%d).tar.gz storage/app/
 cp .env .env.backup-$(date +%Y%m%d)
+
 ```
 
 ---
@@ -91,6 +98,7 @@ php artisan system:health
 
 # 8. Take site live
 php artisan up
+
 ```
 
 ---
@@ -119,6 +127,7 @@ php artisan optimize
 
 # 6. Bring site live
 php artisan up
+
 ```
 
 ---
@@ -190,6 +199,7 @@ ssh your-vps-user@your-vps 'cd $HOME/apps/internara \
   && git checkout hotfix \
   && git reset --hard origin/hotfix \
   && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
+
 ```
 
 `deploy.sh` reports success only after `HEALTH_URL` responds 200 within 60s. Because the hotfix path
@@ -212,3 +222,14 @@ codebase permanently. Full command walkthrough and caveats:
 - [System Health](system-health.md) — Health check reference
 - [System Observability](system-observability.md) — Backup management
 - GitHub Releases: `https://github.com/reasvyn/internara/releases`
+
+
+## Verification
+
+Confirm the guide's procedures succeeded by:
+
+- Re-running any commands in [Description](#description) and comparing expected vs. actual output
+- Verifying the documented post-conditions hold (file presence, user state, log entries, dashboard status)
+- Cross-checking against the [Troubleshooting](#troubleshooting) section if any step fails
+
+For system-level verification, run `php artisan system:health` and confirm all checks pass.

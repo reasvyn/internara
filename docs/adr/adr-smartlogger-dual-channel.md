@@ -56,6 +56,7 @@ BaseAction::log()                    HandlesActionErrors
         ▼             ▼
    System Log    Activity Log
    (laravel.log) (activity_log)
+
 ```
 
 **Fluent API:**
@@ -65,6 +66,7 @@ SmartLogger::success('User registered')->for($user)->save();
 SmartLogger::info('Profile updated')->for($user)->about($profile)->save();
 SmartLogger::warning('Disk space low')->systemOnly()->save();
 SmartLogger::error('Payment failed', ['txn' => 'abc'])->activityOnly()->save();
+
 ```
 
 **Channel Routing:**

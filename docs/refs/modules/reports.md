@@ -33,6 +33,7 @@ The composite final grade is calculated using program-defined weights. The stand
 
 ```
 Final Grade = (Industry Supervisor × 40%) + (School Teacher × 20%) + (Assignment × 20%) + (Exam × 20%)
+
 ```
 
 Weights are configurable per internship program in the Program module. The

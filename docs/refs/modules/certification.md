@@ -57,6 +57,7 @@ verification endpoint has not been implemented:
 
 ```
 GET /verify/{hash}   (not yet implemented)
+
 ```
 
 **Planned response (JSON):**
@@ -69,6 +70,7 @@ GET /verify/{hash}   (not yet implemented)
     "issued_at": "2026-06-15T10:00:00Z",
     "status": "issued"
 }
+
 ```
 
 ### Integration Patterns

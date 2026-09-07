@@ -8,6 +8,19 @@ conventions, and best practices for building cohesive interfaces.
 
 ---
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Table of Contents
 
 1. [Architecture Overview](#architecture-overview)
@@ -52,6 +65,7 @@ conventions, and best practices for building cohesive interfaces.
 │  │  └─────────────┘  └─────────────┘  └─────────────┘     │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
+
 ```
 
 ### File Locations
@@ -70,6 +84,7 @@ resources/
     └── {module}/                  # Module-specific views
 
 app/Modules/{Module}/Livewire/     # Livewire components per module
+
 ```
 
 ---
@@ -85,6 +100,7 @@ Foundation layer — utility classes for layout, spacing, typography, colors:
     <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Page Title</h2>
     <x-button sm wire:click="create">New Record</x-button>
 </div>
+
 ```
 
 ### Layer 2: TallStackUI Components
@@ -101,6 +117,7 @@ Pre-built components for common patterns:
         <x-button color="green" wire:click="save">Save</x-button>
     </x-slot:footer>
 </x-card>
+
 ```
 
 ### Layer 3: Alpine.js Interactivity
@@ -120,6 +137,7 @@ Lightweight interactivity for dropdowns, toggles, tooltips:
         <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Item</a>
     </div>
 </div>
+
 ```
 
 ### Layer 4: Livewire Reactivity
@@ -137,6 +155,7 @@ class UserList extends Component
         return User::where('name', 'like', "%{$this->search}%")->paginate(15);
     }
 }
+
 ```
 
 ```blade
@@ -145,6 +164,7 @@ class UserList extends Component
 
     <x-table :headers="['Name', 'Email', 'Actions']" :rows="$this->users" />
 </div>
+
 ```
 
 ---
@@ -159,6 +179,7 @@ class UserList extends Component
 <x-select.styled label="Status" wire:model="status" :options="$statuses" />
 <x-checkbox label="Active" wire:model="active" />
 <x-toggle label="Notifications" wire:model="notifications" />
+
 ```
 
 ### One-Way Data Display
@@ -166,6 +187,7 @@ class UserList extends Component
 ```blade
 <x-badge :text="$user->status->label()" :color="$user->status->color()" />
 <x-avatar :model="$user" />
+
 ```
 
 ### Action Dispatch
@@ -180,6 +202,7 @@ class UserList extends Component
     })">
     Delete
 </x-button>
+
 ```
 
 ### Loading States
@@ -193,6 +216,7 @@ class UserList extends Component
 </x-button>
 
 <x-table :headers="$headers" :rows="$rows" loading wire:loading.delay.shortest />
+
 ```
 
 ### Error Display
@@ -201,6 +225,7 @@ class UserList extends Component
 <x-error :errors="$errors" />
 
 <x-input label="Name" wire:model="name" :errors="$errors" />
+
 ```
 
 ---
@@ -224,6 +249,7 @@ class UserList extends Component
         <x-button color="green" wire:click="save">Save Changes</x-button>
     </x-slot:footer>
 </x-card>
+
 ```
 
 ### Data Table with Actions
@@ -250,6 +276,7 @@ class UserList extends Component
         </x-slot:actions>
     </x-table>
 </x-card>
+
 ```
 
 ### Search and Filter Bar
@@ -269,6 +296,7 @@ class UserList extends Component
         Reset
     </x-button>
 </div>
+
 ```
 
 ---
@@ -300,6 +328,7 @@ class UserList extends Component
         </x-button>
     </div>
 </form>
+
 ```
 
 ### Multi-Step Wizard
@@ -354,6 +383,7 @@ class UserList extends Component
         @endif
     </div>
 </div>
+
 ```
 
 ### File Upload with Preview
@@ -375,6 +405,7 @@ class UserList extends Component
         </div>
     @endif
 </div>
+
 ```
 
 ---
@@ -390,6 +421,7 @@ class UserList extends Component
     ['index' => 'email', 'label' => 'Email'],
     ['index' => 'created_at', 'label' => 'Created'],
 ]" :rows="$this->users" striped />
+
 ```
 
 ### Searchable Table with Pagination
@@ -401,6 +433,7 @@ class UserList extends Component
     @search="$set('search', $event.detail)" />
 
 <x-pagination :paginator="$this->users" />
+
 ```
 
 ### Table with Loading State
@@ -409,6 +442,7 @@ class UserList extends Component
 <x-table :headers="$headers" :rows="$this->users"
     loading wire:loading
     wire:target="search,filter,sort" />
+
 ```
 
 ### Table with Actions
@@ -423,6 +457,7 @@ class UserList extends Component
         </div>
     </x-slot:actions>
 </x-table>
+
 ```
 
 ---
@@ -442,6 +477,7 @@ class UserList extends Component
 </x-modal>
 
 <x-button x-on:click="$tsui.open.modal('create-modal')">Create</x-button>
+
 ```
 
 ### Confirmation Modal
@@ -461,6 +497,7 @@ class UserList extends Component
         </x-slot:footer>
     </x-dialog.content>
 </x-dialog>
+
 ```
 
 ### Slide Panel
@@ -474,6 +511,7 @@ class UserList extends Component
 <x-button wire:click="loadEdit({{ $id }})" x-on:click="$tsui.open.slide('edit-slide')">
     Edit
 </x-button>
+
 ```
 
 ---
@@ -489,6 +527,7 @@ class UserList extends Component
 }}"
 x-on:notify.window="showToast($event.detail.message, $event.detail.type)"
 <x-toast position="top-right" />
+
 ```
 
 ```php
@@ -504,6 +543,7 @@ public function delete()
     // …
     $this->dispatch('notify', type: 'success', message: 'Record deleted');
 }
+
 ```
 
 ### Inline Error Messages
@@ -514,6 +554,7 @@ public function delete()
 @error('name')
     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
 @enderror
+
 ```
 
 ### Alert Component
@@ -526,6 +567,7 @@ public function delete()
 @if (session('error'))
     <x-alert color="red" close>{{ session('error') }}</x-alert>
 @endif
+
 ```
 
 ---
@@ -562,6 +604,7 @@ public function delete()
   --color-bg: var(--color-gray-950);
   --color-fg: var(--color-gray-50);
 }
+
 ```
 
 ### Theme Toggle Component
@@ -577,6 +620,7 @@ public function delete()
 }" x-init="$watch('dark', val => document.documentElement.classList.toggle('dark', val))">
     <x-toggle x-model="dark" @change="toggle()" label="Dark Mode" />
 </div>
+
 ```
 
 ### Semantic Color Usage
@@ -591,6 +635,7 @@ public function delete()
 <div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
     Themed content
 </div>
+
 ```
 
 ---
@@ -604,6 +649,7 @@ public function delete()
 <div x-intersect="$wire.loadData()">
     <x-card skeleton header footer />
 </div>
+
 ```
 
 ### Deferring Component Load
@@ -615,6 +661,7 @@ public function delete()
         <div class="h-64"></div>
     </x-card>
 </div>
+
 ```
 
 ### Debouncing Search Inputs
@@ -622,6 +669,7 @@ public function delete()
 ```blade
 {{-- Debounce to reduce server requests --}}
 <x-input wire:model.live.debounce.300ms="search" placeholder="Search…" />
+
 ```
 
 ### Pagination
@@ -630,6 +678,7 @@ public function delete()
 {{-- Always paginate large datasets --}}
 <x-table :headers="$headers" :rows="$this->records" />
 <x-pagination :paginator="$this->records" />
+
 ```
 
 ### Minimizing Re-renders
@@ -640,6 +689,7 @@ public function delete()
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
 </x-button>
+
 ```
 
 ---
@@ -659,6 +709,7 @@ it('renders form with TallStackUI components', function () {
         ->assertHasNoErrors()
         ->assertRedirect(route('users.index'));
 });
+
 ```
 
 ### Testing Validation
@@ -671,6 +722,7 @@ it('shows validation errors', function () {
         ->call('save')
         ->assertHasErrors(['name' => 'required', 'email' => 'email']);
 });
+
 ```
 
 ### Testing Interactions
@@ -683,6 +735,7 @@ it('dispatches notification on save', function () {
         ->call('save')
         ->assertDispatched('notify');
 });
+
 ```
 
 ---
@@ -694,6 +747,7 @@ it('dispatches notification on save', function () {
 **Problem:** Content appears unstyled before Alpine initializes.
 
 **Solution:**
+
 ```html
 <style>
     [x-cloak] { display: none !important; }
@@ -702,6 +756,7 @@ it('dispatches notification on save', function () {
 <div x-data x-cloak>
     <!-- Content hidden until Alpine initializes -->
 </div>
+
 ```
 
 ### 2. TallStackUI Script Not Loaded
@@ -709,6 +764,7 @@ it('dispatches notification on save', function () {
 **Problem:** Components don't work, JavaScript errors in console.
 
 **Solution:**
+
 ```blade
 <head>
     <!-- Correct order -->
@@ -716,6 +772,7 @@ it('dispatches notification on save', function () {
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 ```
 
 ### 3. Tailwind Classes Not Generated
@@ -723,10 +780,12 @@ it('dispatches notification on save', function () {
 **Problem:** Custom classes don't appear in output.
 
 **Solution:**
+
 ```css
 /* Add source paths for all files using Tailwind classes */
 @source '../views';
 @source '../../vendor/tallstackui/tallstackui/**/*.php';
+
 ```
 
 ### 4. Dark Mode Not Toggling
@@ -734,9 +793,11 @@ it('dispatches notification on save', function () {
 **Problem:** Dark mode class not applied to `<html>`.
 
 **Solution:**
+
 ```js
 // Ensure class is on <html>, not <body>
 document.documentElement.classList.toggle('dark', isDark);
+
 ```
 
 ### 5. Livewire Events Not Firing

@@ -148,6 +148,7 @@ AppException (abstract, extends RuntimeException)
 
 ModuleException (abstract, extends RuntimeException)
 └── RejectedException (400) — domain invariant violation
+
 ```
 
 ---

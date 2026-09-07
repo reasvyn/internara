@@ -5,6 +5,19 @@
 File storage architecture, directory structure, disk configuration, and media file handling
 conventions.
 
+
+## Prerequisites
+
+See [Installation](../installation.md#prerequisites) for full server requirements and verification commands.
+
+## Steps
+
+This document is reference-oriented. For installation and setup procedures, see:
+
+1. [Installation](../installation.md) — server preparation and CLI provisioning
+2. [Setup Wizard](../setup-wizard.md) — browser-based initial configuration
+3. [Post-Setup](../post-setup.md) — initial data population after wizard completion
+
 ## Storage Architecture
 
 The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage
@@ -34,6 +47,7 @@ Tier 3 (Multi-Server / HA):
       ├─ AWS S3, MinIO, DigitalOcean Spaces, or Cloudflare R2
       ├─ No local storage dependency
       └─ All servers share the same bucket
+
 ```
 
 ### Public Storage Symlink
@@ -41,6 +55,7 @@ Tier 3 (Multi-Server / HA):
 ```bash
 php artisan storage:link
 # Creates: public/storage → storage/app/public
+
 ```
 
 Without this symlink, media URLs return 404.
@@ -91,6 +106,7 @@ AWS_DEFAULT_REGION=us-east-1
 AWS_BUCKET=internara-uploads
 AWS_ENDPOINT=https://s3.amazonaws.com
 AWS_USE_PATH_STYLE_ENDPOINT=false
+
 ```
 
 ### Supported Providers
@@ -108,10 +124,12 @@ For schools that need local storage with S3 backup:
 
 ```env
 FILESYSTEM_DISK=local
+
 ```
 
 ```bash
 0 4 * * * s3cmd sync /path/to/storage/app/public/ s3://internara-backups/
+
 ```
 
 ---
@@ -126,6 +144,7 @@ User upload → Livewire temp (local disk)
           Queue worker (if async) processes conversions
                   ↓
           File accessible via getFirstMediaUrl()
+
 ```
 
 Files are validated before upload: MIME type, file size, and extension checks run on the server
