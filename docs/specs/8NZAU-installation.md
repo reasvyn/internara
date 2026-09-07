@@ -141,11 +141,8 @@ accessible via token.
 2. System provisions as in UC-1 (audit → provision → token)
 3. After provisioning, system seeds the demo dataset via `DummySeeder`
    (see [dummy-data.md](3UOZP-dummy-data.md))
-4. In `APP_ENV=production`, the demo seed is refused — a warning is shown, the seed is skipped,
-   and the installation continues normally
 
-**Postconditions:** Database provisioned with demo data (non-production) or skip-warned
-(production); token valid for 60 minutes.
+**Postconditions:** Database provisioned with demo data; token valid for 60 minutes.
 
 ---
 
@@ -254,7 +251,7 @@ integration point (FR-D1) and defers the rest to that spec.
 | NFR-S10 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
 | NFR-S11 | `--force` must be restricted to non-production environments          |
 | NFR-S12 | All setup actions must be logged via SmartLogger for audit trail     |
-| NFR-S13 | `--with-dummy` must be refused in production: the demo seed is skipped with a warning and the installation continues; `DummySeeder` keeps its own independent production guard (dummy-data NFR-S1) as defense in depth |
+| NFR-S13 | `--with-dummy` seeds the demo dataset in any environment when explicitly requested (see [dummy-data.md](3UOZP-dummy-data.md) FR-E6); it never fails a successful provisioned install |
 
 ### 5.2 Performance
 
@@ -582,17 +579,15 @@ warning is informational, not blocking.
 ### DD-10 — Demo Dataset Seed on Install
 
 **Decision:** Provide `--with-dummy` flag to seed the demo dataset (`DummySeeder`) immediately
-after provisioning. In `APP_ENV=production` the seed is skipped with a warning and the install
-continues; it never fails the installation.
+after provisioning, in any environment.
 
-**Rationale:** A fresh install is immediately demo-able for developers, presenters, and QA,
-removing the extra `db:seed --class=DummySeeder` step (dummy-data DD-3 trade-off). Skipping
-rather than failing in production keeps `setup:install`'s single-execution guarantee intact
-while `DummySeeder`'s own guard (dummy-data NFR-S1) remains the last line of defense.
+**Rationale:** A fresh install is immediately demo-able for developers, presenters, QA, and demo
+instances, removing the extra `db:seed --class=DummySeeder` step (dummy-data DD-3 trade-off).
+Demo seeding is opt-in via the explicit flag — never automatic (dummy-data FR-E6, NFR-S1).
 
-**Trade-off:** The production check is duplicated at orchestration level (the seeder also
-guards) — deliberate defense in depth: the command must not fail an otherwise-successful
-production install.
+**Trade-off:** A production install with `--with-dummy` receives demo accounts with known
+credentials — the administrator opts in knowingly; demo accounts are documented and must be
+cleaned up/credentials rotated before a non-demo go-live (dummy-data DD-4).
 
 ---
 
@@ -654,7 +649,7 @@ After implementing this spec, the system can provision itself from zero: environ
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
@@ -666,7 +661,7 @@ for row conventions.
 - `docs/refs/modules/setup.md` — Module conceptual overview
 - `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/setup-wizard.md` — Browser-based wizard initiative
-- `docs/specs/QLHDO-internara-project.md` — High-level feature specs
+- `docs/specs/QLHDO-project-initialization.md` — High-level feature specs
 - `docs/guides/product-definition.md` — Scope, personas, system boundary
 - `docs/guides/installation.md` — Detailed server prep guide
 - `docs/guides/account-recovery.md` — Recovery key lifecycle

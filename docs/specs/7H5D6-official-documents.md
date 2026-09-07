@@ -491,7 +491,7 @@ Registration model. Seed the document type registry.
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
@@ -507,5 +507,5 @@ for row conventions.
 - `docs/specs/partnership-management.md` — MoU document storage (separate initiative)
 - `docs/refs/modules/document.md` — Document module overview
 - `docs/refs/modules/document-reference.md` — Document module technical reference
-- `docs/specs/QLHDO-internara-project.md` — High-level feature list
+- `docs/specs/QLHDO-project-initialization.md` — High-level feature list
 - `docs/conventions.md` — Naming conventions, `LabelEnum` contract

@@ -1,11 +1,13 @@
 # Architecture Decision Records
 
 Index of all Architecture Decision Records (ADRs) documenting key architectural decisions behind
-Internara.
+Internara. Groups are ordered by **SSOT priority**: decisions in earlier groups are pre-requisites
+that later decisions depend on (Foundation → Quality → Observability → Proxy → Strategy).
 
 ## Foundation
 
-Decisions that establish the core structural principles of the codebase.
+Structural decisions that establish the core shape of the codebase. Every other ADR inherits
+from these.
 
 - **[UUID Primary Keys (v7)](adr-uuid-primary-keys.md)** — Why UUID v7 was chosen over
   auto-increment or UUID v4 for database primary keys, balancing distributed identity with index
@@ -18,16 +20,10 @@ Decisions that establish the core structural principles of the codebase.
 - **[Entity-Model Separation](adr-entity-model-separation.md)** — Why business rules are extracted
   from Eloquent Models into separate immutable Entity classes
 
-## Observability
-
-Decisions that govern runtime behaviour, logging, and observability.
-
-- **[SmartLogger Dual-Channel Logging](adr-smartlogger-dual-channel.md)** — Why logging uses both
-  system log and activity log simultaneously, with PII masking and translation resolution
-
 ## Quality
 
-Decisions that enforce consistency, maintainability, and security.
+Decisions that enforce consistency, maintainability, and security across all code paths.
+Depends on Foundation.
 
 - **[Base Class Mandate](adr-base-class-mandate.md)** — Why every class type (Action, Model, Entity,
   Policy, Enum) must extend or implement a specific base class or contract
@@ -38,27 +34,38 @@ Decisions that enforce consistency, maintainability, and security.
 - **[Eloquent Observers](adr-eloquent-observers.md)** — When to use Eloquent Observers vs
   Event+Listeners for model-level side effects, with decision framework and current observer inventory
 
+## Observability
+
+Decisions that govern runtime behaviour, logging, and observability. Depends on Foundation + Quality.
+
+- **[SmartLogger Dual-Channel Logging](adr-smartlogger-dual-channel.md)** — Why logging uses both
+  system log and activity log simultaneously, with PII masking and translation resolution
+
 ## Proxy
 
-Decisions governing cross-role delegation and supervisory override mechanisms.
+Decisions governing cross-role delegation and supervisory override mechanisms. Depends on Quality
+(RBAC).
 
 - **[Cross-Role Proxy](adr-cross-role-proxy.md)** — Why teachers can proxy for inactive supervisors
   at the application layer, with inactivity windows and transparent compliance stamping
 
 ## Strategy
 
-Broad architectural strategies that span the entire system.
+Broad, long-term architectural strategies that span the entire system. Depends on all preceding
+groups.
 
-- **[Performance & Optimization Strategy](adr-performance-optimization.md)** — What performance
-  optimization strategy guides the codebase, balancing correctness with speed
 - **[Self-Hosted Single-Tenant Architecture](adr-self-hosted-single-tenant.md)** — Why self-hosted
   single-tenant was chosen over multi-tenant SaaS for data sovereignty and offline robustness
 - **[Cross-Module Communication Discipline](adr-cross-module-communication.md)** — How modules
   communicate without circular dependencies, preferring direct imports over events for simple cases
+- **[Performance & Optimization Strategy](adr-performance-optimization.md)** — What performance
+  optimization strategy guides the codebase, balancing correctness with speed
 - **[Gradual Migration / Optional Complexity](adr-gradual-migration.md)** — How the project supports
   gradual adoption, optional complexity, and migration paths
 - **[Program Closure & Archival](adr-program-closure-archival.md)** — How internship programs are
   closed and archived, with read-only snapshots and data retention
+- **[MVP Spec Trim](adr-mvp-spec-trim.md)** — How over-engineered requirements are removed from feature
+  specs so the spec corpus equals the MVP test contract, plus the four-layer Test Requirements sections
 
 ## References
 

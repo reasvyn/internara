@@ -4,7 +4,7 @@ Operational guides and design documents. Product scope and project status live i
 **[README.md](../../README.md)**.
 
 - **[README — Product & Project Status](../../README.md)** — Product scope, design principles, user personas, system boundary, deployment model, localization, licensing, and project status (merged from `product-definition.md` + `project-overview.md`)
-- **[Internara Project Spec](../specs/QLHDO-internara-project.md)** — Functional and non-functional requirements
+- **[Internara Project Spec](../specs/QLHDO-project-initialization.md)** — Functional and non-functional requirements
   for Indonesian SMA/SMK PKL management, UI/UX standards, scalability targets, and compliance
 - **[RBAC & Authentication](rbac.md)** — Authentication flow, flat role hierarchy, functional roles,
   permissions model, Gate::before bypass

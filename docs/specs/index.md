@@ -54,7 +54,7 @@ inherits, and the project-level roadmap. No dependency — everything depends on
 
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
-| QLHDO | [Internara Project (Initial Specification)](QLHDO-internara-project.md) | Core | — | Partial |
+| QLHDO | [Internara Project (Initial Specification)](QLHDO-project-initialization.md) | Core | — | Partial |
 
 ### Phase 1 — Foundation
 
@@ -228,7 +228,7 @@ spec-writing → docs/specs/{feature}.md → feature-building → code-writing �
 ## Spec Template
 
 Every spec follows the 12-section format defined by the `spec-writing` skill
-(see [`spec-template.md`](spec-template.md) for the human-facing skeleton):
+(see [`spec-template.md`](../templates/spec-template.md) for the human-facing skeleton):
 
 1. Description
 2. Problem Statements
@@ -250,5 +250,5 @@ Every spec follows the 12-section format defined by the `spec-writing` skill
 - `spec-writing` skill — Spec writing conventions and template
 - `feature-building` skill — How specs feed into implementation
 - §Status Legend above each phase table in this file — Implementation status (Planned / Partial / Shipped)
-- `docs/specs/QLHDO-internara-project.md` — High-level feature specs
+- `docs/specs/QLHDO-project-initialization.md` — High-level feature specs
 - `docs/refs/modules/index.md` — Module dependency graph

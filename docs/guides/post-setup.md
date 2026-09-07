@@ -80,4 +80,4 @@ Key settings populated during/after setup:
 - [Installation](installation.md) — CLI provisioning
 - [Setup Wizard](setup-wizard.md) — Browser-based initial config
 - [System Health](system-health.md) — Post-setup verification
-- `docs/specs/QLHDO-internara-project.md` — Full feature inventory
+- `docs/specs/QLHDO-project-initialization.md` — Full feature inventory

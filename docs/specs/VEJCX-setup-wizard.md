@@ -474,7 +474,7 @@ After implementing this spec, the system has a 6-step browser wizard that create
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
@@ -486,7 +486,7 @@ for row conventions.
 - `docs/refs/modules/setup.md` — Module conceptual overview
 - `docs/refs/modules/setup-reference.md` — Technical reference (Actions, Entity, Routes)
 - `docs/specs/installation.md` — CLI provisioning initiative
-- `docs/specs/QLHDO-internara-project.md` — High-level feature specs
+- `docs/specs/QLHDO-project-initialization.md` — High-level feature specs
 - `docs/guides/setup-wizard.md` — Wizard walkthrough
 - `docs/guides/post-setup.md` — Post-wizard configuration guide
 - `config/setup.php` — Setup configuration values

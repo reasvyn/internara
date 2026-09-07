@@ -96,7 +96,7 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 |------|-----|
 | Product scope, personas, boundary, deployment, module landscape | `README.md` |
 | Guiding principles, values, “what we do not do” in depth | `philosophy.md` |
-| Requirements (FR/NFR/UC) that vision traces to | `docs/specs/index.md` → `docs/specs/QLHDO-internara-project.md` |
+| Requirements (FR/NFR/UC) that vision traces to | `docs/specs/index.md` → `docs/specs/QLHDO-project-initialization.md` |
 | Architecture that makes vision buildable | `architecture.md` (4-layer, Action Triad) |
 | How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/release.yml` (tag-driven 4-stage release pipeline), `infrastructure/deployment.md` |
 | Current health & where to contribute | Module-health tiers (agent memory) + `CONTRIBUTING.md` |
@@ -105,5 +105,5 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 
 - `README.md` — product scope, 3S doctrine, system boundary, project status
 - `philosophy.md` — values, principles, pragmatic trade-offs
-- `docs/specs/QLHDO-internara-project.md` — umbrella spec (functional/non-functional/UI-UX)
+- `docs/specs/QLHDO-project-initialization.md` — umbrella spec (functional/non-functional/UI-UX)
 - `architecture.md` — 4-layer model and Action Triad that make the vision executable

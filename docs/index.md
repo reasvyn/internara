@@ -19,13 +19,13 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 - **[Foundation Index](guides/index.md)** — Browse all foundation documents
 - **[README](../README.md)** — Project overview: pitch, features, requirements, installation, deployment, status (deep product definition in `project-vision.md`)
-- **[Internara Project Spec](specs/QLHDO-internara-project.md)** — Functional, non-functional, and UI/UX requirements
+- **[Internara Project Spec](specs/QLHDO-project-initialization.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Project Vision](project-vision.md)** — 3–5 year direction, strategic pillars, success metrics, boundaries, decision compass
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
-- **[Documentation Standards](doc-template.md)** — Diátaxis four-quadrant model mapped to this repo, writing principles, metadata contract; copy-paste skeletons live per directory (`specs/spec-template.md`, `modules/*-template.md`, `architecture/pattern-template.md`, `foundation/guide-template.md`)
+- **[Documentation Standards](doc-template.md)** — Diátaxis four-quadrant model mapped to this repo, writing principles, metadata contract; copy-paste skeletons for all doc types live in [`docs/templates/`](templates/) (spec, ADR, guide, pattern, module, module-reference, dep)
 
 ---
 
@@ -37,7 +37,6 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Configuration](guides/infra/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
 - **[CI/CD Pipeline](guides/infra/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
 - **[System Health & Troubleshooting](guides/system-health.md)** — Health checks, common problems, diagnostics
-- **[Project Contexts](../.agents/context/index.md)** — Intentional design constraints, deploy caveats, dependency pins, and codebase intentional states (agent-oriented)
 
 ---
 
