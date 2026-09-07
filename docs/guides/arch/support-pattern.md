@@ -56,7 +56,7 @@ Ideally, Support methods are pure functions: same input → same output, no side
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `SmartLogger` with instance methods in Support | Move to Service | Support/Service boundary |
 | Support class with `__construct(private Cache $cache)` | Rename and move to Service | Constructor injection in Support |

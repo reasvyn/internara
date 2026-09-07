@@ -17,9 +17,9 @@ Simplified implementation status for quick reference:
 
 | Status | Meaning |
 | ------ | ------- |
-| **Planned** | Not yet started; spec exists, no implementation code |
-| **Partial** | Work in progress; some requirements implemented |
-| **Shipped** | Implemented and verified; ready for production |
+| [**Planned**](index.md#status-legend) | Not yet started; spec exists, no implementation code |
+| [**Partial**](index.md#status-legend) | Work in progress; some requirements implemented |
+| [**Shipped**](index.md#status-legend) | Implemented and verified; ready for production |
 
 ---
 

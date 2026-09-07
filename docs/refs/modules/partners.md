@@ -71,3 +71,14 @@ attached MoU.
 
 - Program (company slot references for internship groups)
 - Enrollment (placement slot capacity)
+
+## Design Principles
+
+- **Partnership lifecycle is terminal on exit** — both `expired` (automatic on end date) and `terminated` (admin action) are final states. They preserve the partnership record for audit but filter out of the placement UI. Existing placements are unaffected by lifecycle transitions — the rule only gates new placements.
+- **Company deletion is blocked by active placements** — a company with active placements cannot be soft-deleted. This prevents orphaned enrollment records and ensures the company record remains queryable for historical placement reporting.
+- **Partnership capacity is the placement budget** — each partnership defines slot count consumed by the Enrollment module. Capacity is enforced atomically at placement creation time. One partnership may cover multiple programs with independent slot pools; capacity is per-partnership, not per-company.
+- **MoU upload is recommended but not mandatory** — the system warns when finalizing a partnership without an attached MoU document but does not block finalization. The warning is the signal; enforcement of document completeness is a policy decision outside the module.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

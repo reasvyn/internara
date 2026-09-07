@@ -896,3 +896,13 @@ Some keys are resolved dynamically and cannot be renamed without affecting datab
 
 The database stores `login_success`, `user_created`, etc. as activity descriptions. These keys must
 remain in `activity.php` under their original names.
+
+---
+
+## Quick References
+
+- [Documentation index](index.md) — Browse all documentation
+- [Feature spec index](specs/index.md) — All feature specifications
+- [Architecture Decision Records](adr/index.md) — Why-key decisions
+- [Guides index](guides/index.md) — Operational how-tos
+- [Module reference index](refs/modules/index.md) — Module API reference

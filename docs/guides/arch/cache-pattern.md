@@ -78,7 +78,7 @@ When a frequently-accessed key expires and concurrent requests all trigger recom
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `Cache::remember('dashboard_stats', ...)` inline key | `Cache::remember(config('cache-keys.dashboard_stats'), ...)` | C4 — inline cache key |
 | `Cache::flush()` in normal operations | `Cache::forget(config('cache-keys.affected_key'))` | Blanket flush — clears rate limits, sessions |

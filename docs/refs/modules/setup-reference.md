@@ -11,13 +11,17 @@ Detailed structural and implementation reference for the **Setup** module.
 Handles one-time technical installation, environment checks, database provisioning, setup token
 lifecycle, and the interactive setup wizard for initial configuration.
 
+## Models
+
+None — Setup uses Actions and Entities only, no persistent Eloquent models.
+
 ## Actions
 
 | File | Class | Extends |
 |---|---|---|
 | `Domain/Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseCommandAction` |
 | `Domain/Installation/Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseCommandAction` |
-| `Domain/Installation/Actions/SeedDummyDataAction.php` | `SeedDummyDataAction` | `BaseCommandAction` |
+| `Domain/Installation/Actions/SeedDummyDataAction.php` | `SeedDummyDataAction` | `BaseProcessAction` |
 | `Domain/Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseCommandAction` |
 | `Domain/SetupWizard/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseCommandAction` |
 | `Domain/SetupWizard/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseCommandAction` |
@@ -96,6 +100,10 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token protected)
 
+## Policies & Permissions
+
+*Content to be added — verify against actual implementation.*
+
 ## Views
 
 Views are located in `resources/views/setup/`. See [UI/UX](../../guides/ui-ux/design-system.md) for the design
@@ -103,7 +111,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Setup/`. See [Testing](../../guides/infra/testing.md) for the testing
+Tests are located in `tests/{Type}/Setup/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for the testing
 conventions.
 
 ## Factories
@@ -122,7 +130,7 @@ None.
 - **Business Logic**: `app/Modules/Setup/`
 - **Routing**: `routes/web/setup.php`
 - **Views**: `resources/views/setup/`
-- **Testing**: `tests/Setup/`
+- **Testing**: `tests/{Type}/Setup/`
 - **Dependencies**: Core, Academics
 
 _For overview and business context, see [setup.md](setup.md)._

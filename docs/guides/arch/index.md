@@ -1,5 +1,7 @@
 # Architecture Patterns
 
+## Description
+
 Design patterns and conventions that govern the Internara codebase. See
 [`docs/architecture.md`](../../architecture.md) for the high-level architecture overview.
 
@@ -35,3 +37,7 @@ Design patterns and conventions that govern the Internara codebase. See
 
 - **[Modular Architecture](modular-pattern.md)** — Modular Monolith, Clean Architecture, Hexagonal Architecture, SOLID, DRY
 - **[Testing](testing-pattern.md)** — TDD, Testing Pyramid, AAA, FIRST, Four Phase Test, spec-driven testing
+
+## Rules
+
+All entries in this index are sorted by dependency order. New entries must follow the same ordering.

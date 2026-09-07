@@ -32,11 +32,15 @@ Manages workplace incident reports, severity classification, and resolution trac
 | `Domain/IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `LabelEnum` | — |
 | `Domain/IncidentReport/Enums/IncidentType.php` | `IncidentType` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
 | `Domain/IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` |
+
+## Events
+
+*Content to be added — verify against actual implementation.*
 
 ## Notifications
 
@@ -62,7 +66,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Incident/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Incident/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -85,7 +89,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Incident/`
 - **Routing**: `routes/web/incident.php`
 - **Views**: `resources/views/incident/`
-- **Testing**: `tests/Incident/`
+- **Testing**: `tests/{Type}/Incident/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [incident.md](incident.md)._

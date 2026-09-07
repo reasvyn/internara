@@ -66,7 +66,7 @@ Laravel's Gate pattern provides a centralized authorization mechanism. `Gate::be
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | Checking `$user->role === 'superadmin'` in code | Use `$user->hasRole('super_admin')` with normalization | Role string inconsistency |
 | Storing functional roles in database | Derive at runtime from user roles | Functional roles not derived |

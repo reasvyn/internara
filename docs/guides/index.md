@@ -1,7 +1,10 @@
 # Guides — Operational & Design Documents
 
-Operational guides and design documents. Product scope and project status live in the root
-**[README.md](../../README.md)**.
+## Description
+
+Operational guides and design documents for the Internara project. Covers UI/UX standards, branding,
+RBAC, authentication flows, system operations, and deployment. Product scope and project status
+live in the root **[README.md](../../README.md)**.
 
 - **[README — Product & Project Status](../../README.md)** — Product scope, design principles, user personas, system boundary, deployment model, localization, licensing, and project status (merged from `product-definition.md` + `project-overview.md`)
 - **[Internara Project Spec](../specs/QLHDO-project-initialization.md)** — Functional and non-functional requirements
@@ -30,3 +33,7 @@ Operational guides and design documents. Product scope and project status live i
 - **[Upgrading](upgrading.md)** — Upgrade procedure, rollback, version numbering
 - **[Backup & Recovery](backup-recovery.md)** — Account recovery, system backup, restoration procedures
 - **[System Observability](system-observability.md)** — Pulse dashboard, audit logs, cleanup, backups
+
+## Rules
+
+All entries in this index are sorted by dependency order. New entries must follow the same ordering.

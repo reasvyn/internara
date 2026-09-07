@@ -55,7 +55,7 @@ feature toggles.
 |---|---|---|
 | `Entities/SettingEntity.php` | `SettingEntity` | `BaseEntity` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -123,7 +123,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Settings/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Settings/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
 (`FR-*` / `NFR-*` / `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention
 (grouped under `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.
@@ -148,7 +148,7 @@ for the testing conventions. Tests are spec-driven: each test traces to a spec r
 - **Business Logic**: `app/Modules/Settings/`
 - **Routing**: `routes/web/settings.php`
 - **Views**: `resources/views/settings/`
-- **Testing**: `tests/Settings/`
+- **Testing**: `tests/{Type}/Settings/`
 - **Dependencies**: Core, Academics
 - **Used By**: All modules (via `setting()` and `brand()` helpers)
 

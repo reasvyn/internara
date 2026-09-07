@@ -422,12 +422,12 @@ module registration through the consolidated gateway.
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
 | OQ-1 | `docs/specs/I1BCV-module-discovery.md` assumes manual `config/module.php` registry and `tests/Pest.php` sync: | Open | Maintainer | [#434](https://github.com/reasvyn/internara/issues/434) |
 
 ## Quick References

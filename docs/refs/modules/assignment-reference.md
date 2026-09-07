@@ -37,7 +37,7 @@ Manages course assignments and submission tracking with grading and revision wor
 | `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum` | — |
 | `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -101,7 +101,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Assignment/`. See [Testing](../../guides/infra/testing.md) for the
+Tests are located in `tests/{Type}/Assignment/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for the
 testing conventions.
 
 ## Factories
@@ -126,7 +126,7 @@ testing conventions.
 - **Business Logic**: `app/Modules/Assignment/`
 - **Routing**: `routes/web/assignment.php`
 - **Views**: `resources/views/assignment/`
-- **Testing**: `tests/Assignment/`
+- **Testing**: `tests/{Type}/Assignment/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [assignment.md](assignment.md)._

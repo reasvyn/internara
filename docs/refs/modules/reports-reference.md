@@ -75,7 +75,7 @@ finalization.
 | `Domain/StudentReport/Listeners/LogStudentReportFinalized.php` | `LogStudentReportFinalized` | — |
 
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -87,7 +87,7 @@ File: `routes/web/reports.php` Only admin download route: `sysadmin.reports.down
 
 ## Tests
 
-Tests are located in `tests/Reports/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Reports/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -109,7 +109,7 @@ for the testing conventions.
 - **Submodules**: `Report`
 - **Business Logic**: `app/Modules/Reports/`
 - **Routing**: `routes/web/reports.php`
-- **Testing**: `tests/Reports/`
+- **Testing**: `tests/{Type}/Reports/`
 - **Dependencies**: User, Program, Assessment, Assignment, Enrollment, Core
 
 _For overview and business context, see [reports.md](reports.md)._

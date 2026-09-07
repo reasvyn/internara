@@ -1,6 +1,10 @@
 # Infrastructure Documentation
 
-Deployment, configuration, CI/CD, database, and operations.
+## Description
+
+Deployment, configuration, CI/CD, database, and operations documentation. Covers infrastructure
+overview, deployment paths, configuration, database schema, caching, filesystem, routes, sessions,
+notifications, queue workers, testing, security, scaling, localization, and developer tooling.
 
 - **[Infrastructure Overview](infrastructure.md)** — Deployment options, background process architecture, database and storage
 - **[Deployment](deployment.md)** — Three deployment paths (VPS, Docker, shared hosting), production checklist
@@ -19,3 +23,7 @@ Deployment, configuration, CI/CD, database, and operations.
 - **[Scaling Guide](scaling.md)** — Scaling from MVP to 2000+ users, tier transitions, load testing, monitoring thresholds
 - **[Localization](localization.md)** — Supported languages, translation structure, locale resolution, community contribution guide
 - **[Developer Tools](tools.md)** — Python scan scripts, CLI flags, output schema
+
+## Rules
+
+All entries in this index are sorted by dependency order. New entries must follow the same ordering.

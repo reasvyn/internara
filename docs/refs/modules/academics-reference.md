@@ -63,7 +63,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | `Domain/Department/Events/DepartmentDeleted.php` | `DepartmentDeleted` | `BaseEvent` |
 | `Domain/Department/Events/DepartmentUpdated.php` | `DepartmentUpdated` | `BaseEvent` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -93,7 +93,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Academics/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Academics/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -118,7 +118,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Academics/`
 - **Routing**: `routes/web/academics.php`
 - **Views**: `resources/views/academics/`
-- **Testing**: `tests/Academics/`
+- **Testing**: `tests/{Type}/Academics/`
 - **Dependencies**: Core (BaseModel, BaseAction, BaseEntity, BaseData, BasePolicy)
 - **Events Consumed By**: `User/Dashboard` (cache invalidation listeners)
 - **Used By**: Program, Enrollment, Assessment, User/Dashboard

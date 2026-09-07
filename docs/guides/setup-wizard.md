@@ -108,7 +108,7 @@ See [Backup & Recovery](backup-recovery.md) for admin account CLI commands.
 
 ## Troubleshooting
 
-| Problem | Cause | Resolution |
+| Symptom | Cause | Fix |
 | ------- | ----- | ---------- |
 | Setup URL 403 | Token invalid or already used | `php artisan setup:reset-token` |
 | Setup URL 404 | Wizard already completed | `php artisan setup:install --force` to reset |

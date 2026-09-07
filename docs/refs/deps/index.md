@@ -8,6 +8,12 @@ and `package.json` (check versions via `git log --follow -- <file>`).
 
 ---
 
+## Installed & Role
+
+*Content to be added.*
+
+---
+
 ## Core Framework
 
 | Doc | Package | Installed |
@@ -49,7 +55,15 @@ and `package.json` (check versions via `git log --follow -- <file>`).
 | [marked.md](marked.md) | marked + dompurify | ^18.0.7 / ^3.4.14 |
 | [prettier.md](prettier.md) | prettier + blade/tailwind plugins | ^3.9.6 family |
 
+---
+
+## How Internara Uses It
+
+*Content to be added — per-package usage documented in each sibling dep doc.*
+
+---
+
 ## Quick References
 
-- [dep-template.md](dep-template.md) — skeleton for adding a new dependency doc
+- [dep-template.md](../../templates/dep-template.md) — skeleton for adding a new dependency doc
 - [`../../index.md`](../../index.md) — full documentation catalog

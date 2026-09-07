@@ -76,7 +76,7 @@ Tests should be:
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | Test with no requirement ID in description | Prefix with `{SpecID}-{ReqID}:` | No traceability |
 | Test testing two unrelated requirements | Split into separate files | Scope isolation violated |

@@ -310,3 +310,13 @@ See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.m
 | **Module structure & naming**                                                      | [Modular Pattern](guides/arch/modular-pattern.md)                                                     |
 | **19 modules overview (18 business + UI + Core)**                                  | [Module Index](refs/modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |
+
+---
+
+## Quick References
+
+- [Documentation index](index.md) — Browse all documentation
+- [Feature spec index](specs/index.md) — All feature specifications
+- [Architecture Decision Records](adr/index.md) — Why-key decisions
+- [Guides index](guides/index.md) — Operational how-tos
+- [Module reference index](refs/modules/index.md) — Module API reference

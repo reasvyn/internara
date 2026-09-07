@@ -1071,3 +1071,9 @@ Show validation errors consistently:
 | TallStackUI Components | https://tallstackui.com/docs/components |
 | TallStackUI GitHub | https://github.com/tallstackui/tallstackui |
 | Heroicons | https://heroicons.com/ |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

@@ -106,7 +106,7 @@ This is **Defence in Depth** (NIST) — never rely on a single error handling la
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `throw new RuntimeException('business rule')` | `throw new RejectedException('business rule')` | C8 — wrong exception type |
 | `catch (Exception $e)` catching everything | `catch (RejectedException $e)` / `catch (InfrastructureException $e)` | Imprecise catch — swallows all types |

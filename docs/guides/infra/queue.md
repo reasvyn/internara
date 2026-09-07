@@ -204,3 +204,9 @@ Failed jobs older than 7 days are automatically pruned by the scheduler via `que
 - [Deployment](deployment.md) — Supervisor configuration (dual pipelines)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 - [Notification](notification.md) — notification channels and delivery
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

@@ -99,5 +99,16 @@ The readiness check returns a detailed report of blocking items with actionable 
 - Journals (activity context)
 - Assessment (grading context)
 - Reports (grade compilation)
+
+## Design Principles
+
+- **JSON-inlined phases are self-contained and order-enforced** — phases (duration, weights) live as a JSON column on `internships`, not in a separate table. The application layer enforces chronological ordering and contiguity (no gaps, no overlaps) at write time. A gap between phases is a validation error, not a UI rendering quirk.
+- **Closure readiness is a gate, not a suggestion** — before a program transitions to `closed`, all checks (grade cards finalized, evaluations collected, no pending HIGH/CRITICAL incidents, logbook compliance met) must pass. The readiness report enumerates blocking items with remediation steps; no silent override is possible.
+- **Grading weight distribution is program-owned, report-consumed** — each internship program defines the split between supervisor, teacher, and exam. Reports reads these weights to calculate composite scores. Weight changes after assessments are finalized do not retroactively alter grade cards.
+- **Program dates bound all student activity** — logbook entries, attendance, and assessment submissions outside the active program period are rejected. The program date range is the session window; nothing meaningful happens outside it.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
 - Journals (monitoring visits scope)
 

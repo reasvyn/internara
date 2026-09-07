@@ -41,7 +41,7 @@ logging, Pulse observability, and GDPR compliance.
 | `Domain/Backups/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
 | `Domain/Backups/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -133,7 +133,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/SysAdmin/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/SysAdmin/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -160,7 +160,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`
-- **Testing**: `tests/SysAdmin/`
+- **Testing**: `tests/{Type}/SysAdmin/`
 - **Dependencies**: User, Academics, Core
 
 _For overview and business context, see [sysadmin.md](sysadmin.md)._

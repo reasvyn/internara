@@ -770,3 +770,9 @@ document.documentElement.classList.toggle('dark', isDark);
 | Livewire + Tailwind | https://livewire.laravel.com/docs/styling |
 | TallStackUI + Livewire | https://tallstackui.com/docs/livewire |
 | Alpine.js + Livewire | https://livewire.laravel.com/docs/javascript |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

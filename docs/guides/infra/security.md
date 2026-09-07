@@ -202,6 +202,11 @@ Full policy: [SECURITY.md](../../../SECURITY.md).
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 | Concern | Document |

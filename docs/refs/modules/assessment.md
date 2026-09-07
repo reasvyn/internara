@@ -80,3 +80,14 @@ as proxy for supervisors via the Cross-Role Proxy mechanism (see
 
 - Reports (grade card score aggregation)
 - Evaluation (grading context)
+
+## Design Principles
+
+- **Rubrics are templates, assessments are records** — rubric structure lives as JSON (free-form competencies + weighted indicators) so schema never drifts between rubric designs. Finalized assessments must reference indicator keys, never live template data, so template edits never silently rewrite history.
+- **Finalization is immutable** — once an assessment is finalized, every score is locked. Corrections require a new assessment round, preserving the original. Enforce at both the Action layer (no update path) and the model layer (finalization event blocks mutation).
+- **Cross-role proxy is a first-class mechanism, not an exception** — teacher-as-supervisor proxy must be explicit (`proxy_role` in the audit trail) and the weight redistribution fallback must be deterministic. Never silently attribute a supervisor's grade to a teacher without logging why.
+- **Supervisor grading is optional, not blocking** — program workflows must not stall when an industry supervisor is missing. Proxy and weight redistribution are design defaults, not afterthoughts.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

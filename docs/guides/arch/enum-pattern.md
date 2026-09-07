@@ -193,7 +193,7 @@ protected $casts = [
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `'status' => 'draft'` hardcoded in `$attributes` | `'status' => ExampleStatus::DRAFT->value` | String drift from enum definition |
 | `$model->status === 'active'` string comparison | `$model->status === ExampleStatus::ACTIVE` enum comparison | No type safety, no IDE support |

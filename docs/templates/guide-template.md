@@ -47,5 +47,5 @@ knowledge goes in Prerequisites, not in the body.
 
 ## Quick References
 
-- [`doc-template.md`](../doc-template.md) — shared documentation standards
-- [`infrastructure/tools.md`](infra/tools.md) — scanner toolkit referenced by guides
+- [`doc-template.md`](doc-template.md) — shared documentation standards
+- [`../../guides/infra/tools.md`](../guides/infra/tools.md) — scanner toolkit referenced by guides

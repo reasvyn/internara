@@ -38,7 +38,7 @@ and compliance acknowledgements.
 | `Domain/Handbook/Enums/HandbookAudience.php` | `HandbookAudience` | `LabelEnum` | — |
 | `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -147,7 +147,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Document/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Document/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -170,7 +170,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Document/`
 - **Routing**: `routes/web/document.php`
 - **Views**: `resources/views/document/`
-- **Testing**: `tests/Document/`
+- **Testing**: `tests/{Type}/Document/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [document.md](document.md)._

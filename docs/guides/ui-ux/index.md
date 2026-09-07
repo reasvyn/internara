@@ -10,13 +10,11 @@ Complete documentation for Internara's UI system, built on the TALL stack:
 
 ## UI Stack Overview
 
-| Layer | Technology | Version | Role |
-|-------|-----------|---------|------|
-| **CSS Framework** | Tailwind CSS | v4.3+ | Utility-first styling, CSS-first configuration, design tokens |
-| **Interactivity** | Alpine.js | v3.x | Lightweight reactivity for dropdowns, modals, toggles |
-| **Full-Stack Components** | Livewire | v4.x | Server-rendered reactive components, SPA-like experience |
-| **Component Library** | TallStackUI | v4.x | 80+ pre-built Blade components (forms, UI, interactions) |
-| **Build Tool** | Vite | v5.x | Fast HMR, production bundling, Tailwind integration |
+- **CSS Framework — Tailwind CSS v4.3+**: Utility-first styling, CSS-first configuration, design tokens
+- **Interactivity — Alpine.js v3.x**: Lightweight reactivity for dropdowns, modals, toggles
+- **Full-Stack Components — Livewire v4.x**: Server-rendered reactive components, SPA-like experience
+- **Component Library — TallStackUI v4.x**: 80+ pre-built Blade components (forms, UI, interactions)
+- **Build Tool — Vite v5.x**: Fast HMR, production bundling, Tailwind integration
 
 ---
 
@@ -83,14 +81,12 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 
 ### Key Conventions
 
-| Convention | Rule | Rationale |
-|------------|------|-----------|
-| **Component prefix** | TallStackUI: `x-` (e.g., `<x-modal>`) | Consistent with Laravel Blade components |
-| **Livewire binding** | `wire:model` for two-way, `wire:click` for actions | Standard Livewire directives |
-| **Tailwind config** | CSS-first via `@theme` in `app.css` | v4 standard, no `tailwind.config.js` |
-| **Dark mode** | Class-based: `@custom-variant dark` | User-controllable theme toggle |
-| **Component size** | `xs`, `sm`, `md` (default), `lg`, `xl` | Consistent across TallStackUI |
-| **Component color** | `primary` (default), `secondary`, `red`, etc. | Tailwind palette integration |
+- **Component prefix**: TallStackUI uses `x-` (e.g., `<x-modal>`) — consistent with Laravel Blade components
+- **Livewire binding**: `wire:model` for two-way, `wire:click` for actions — standard Livewire directives
+- **Tailwind config**: CSS-first via `@theme` in `app.css` — v4 standard, no `tailwind.config.js`
+- **Dark mode**: Class-based: `@custom-variant dark` — user-controllable theme toggle
+- **Component size**: `xs`, `sm`, `md` (default), `lg`, `xl` — consistent across TallStackUI
+- **Component color**: `primary` (default), `secondary`, `red`, etc. — Tailwind palette integration
 
 ---
 
@@ -183,26 +179,22 @@ Tailwind v4 uses a single `--spacing` value (default: `4px`) that drives all spa
 
 ## Browser Support
 
-| Browser | Version | Notes |
-|---------|---------|-------|
-| Chrome | 90+ | Full support |
-| Firefox | 90+ | Full support |
-| Safari | 15+ | Full support |
-| Edge | 90+ | Full support |
-| Mobile Chrome | Latest | Responsive design |
-| Mobile Safari | 15+ | Responsive design |
+- **Chrome 90+**: Full support
+- **Firefox 90+**: Full support
+- **Safari 15+**: Full support
+- **Edge 90+**: Full support
+- **Mobile Chrome (Latest)**: Responsive design
+- **Mobile Safari 15+**: Responsive design
 
 ---
 
 ## Performance Budget
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| First Contentful Paint | < 1.5s | Lighthouse |
-| Largest Contentful Paint | < 2.5s | Lighthouse |
-| Time to Interactive | < 3.5s | Lighthouse |
-| Total CSS size | < 50KB | `npm run build` |
-| JavaScript bundle | < 200KB | `npm run build` |
+- **First Contentful Paint**: < 1.5s — measured via Lighthouse
+- **Largest Contentful Paint**: < 2.5s — measured via Lighthouse
+- **Time to Interactive**: < 3.5s — measured via Lighthouse
+- **Total CSS size**: < 50KB — measured via `npm run build`
+- **JavaScript bundle**: < 200KB — measured via `npm run build`
 
 ---
 
@@ -219,11 +211,9 @@ Tailwind v4 uses a single `--spacing` value (default: `4px`) that drives all spa
 
 ## External Resources
 
-| Resource | URL | Description |
-|----------|-----|-------------|
-| Livewire Docs | https://livewire.laravel.com/docs | Official Livewire 4 documentation |
-| Tailwind CSS Docs | https://tailwindcss.com/docs | Official Tailwind CSS 4 documentation |
-| TallStackUI Docs | https://tallstackui.com/docs | Official TallStackUI 4 documentation |
-| Alpine.js Docs | https://alpinejs.dev/start-here | Official Alpine.js 3 documentation |
-| Vite Docs | https://vitejs.dev/guide/ | Official Vite 5 documentation |
-| TALL Stack | https://tallstack.dev/ | TALL stack overview |
+- **Livewire Docs**: https://livewire.laravel.com/docs — Official Livewire 4 documentation
+- **Tailwind CSS Docs**: https://tailwindcss.com/docs — Official Tailwind CSS 4 documentation
+- **TallStackUI Docs**: https://tallstackui.com/docs — Official TallStackUI 4 documentation
+- **Alpine.js Docs**: https://alpinejs.dev/start-here — Official Alpine.js 3 documentation
+- **Vite Docs**: https://vitejs.dev/guide/ — Official Vite 5 documentation
+- **TALL Stack**: https://tallstack.dev/ — TALL stack overview

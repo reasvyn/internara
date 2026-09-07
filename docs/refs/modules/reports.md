@@ -76,3 +76,14 @@ transparency.
 ## Used By
 
 - Certification (finalized grade card as prerequisite)
+
+## Design Principles
+
+- **Finalization is the point of no return** — once a coordinator signs off on a grade card, all scores are locked. No further edits are permitted. This is enforced at both the Action layer (no update path after finalization) and the model layer (finalization event sets a read-only flag). Corrections require a new report cycle.
+- **Identity and metadata are snapshotted at finalization** — student name, NISN, class, host company, department, teacher names, supervisor names, and all component scores are captured as an immutable record at finalization. The grade card remains valid even if the source entities (student account, company, program) are later deleted.
+- **Grade aggregation reads weights from the program, not from config** — `CalculateFinalGradeAction` reads the current grading weight distribution from the linked internship program. If the program's weights change after assessments are finalized, the grade card score remains unchanged because the snapshot preserves the component scores.
+- **Cross-Role Proxy is reflected in the grade card** — when a teacher acts as supervisor proxy in Assessment, the weight redistribution and proxy status are recorded in the grade card for audit transparency. The final score is mathematically correct even when supervisor input was absent.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

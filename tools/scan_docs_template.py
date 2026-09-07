@@ -55,7 +55,13 @@ EXCLUDED_FILES = {
     "AGENTS.md", "README.md", "CONTRIBUTING.md", "SECURITY.md",
     "CODE_OF_CONDUCT.md", "CHANGELOG.md"
 }
-EXCLUDED_DIRS = {"templates"} # All files inside templates are excluded
+EXCLUDED_DIRS = {"templates", "refs/articles"}  # templates: structural docs; refs/articles: standalone articles
+
+# Docs that legitimately don't follow doc-template.md (they have their own template).
+# Keyed by relative path from DOCS_DIR.
+_GENERIC_DOC_EXEMPTIONS: dict[str, bool] = {
+    "architecture.md": True,  # Has its own architecture.md template, not doc-template.md
+}
 
 # Regex patterns
 H1_PATTERN = re.compile(r"^#\s+(.+)$")
@@ -77,6 +83,12 @@ def classify_doc_type(filepath: Path) -> str:
     if rel_path.parts[0] == "templates" or filepath.name in EXCLUDED_FILES:
         return "EXCLUDED"
     
+    # INDEX check first: any index.md is a navigation hub, not a guide/spec/pattern.
+    # This must run before branch-specific defaults (e.g., guides/) so that
+    # docs/guides/index.md and docs/guides/{sub}/index.md are classified as INDEX.
+    if rel_path.name == "index.md":
+        return "INDEX"
+    
     if rel_path.parts[0] == "adr" and rel_path.name.startswith("adr-"):
         return "ADR"
     if rel_path.parts[0] == "specs" and re.match(r"^[A-Z0-9]{5}-.+\.md$", rel_path.name):
@@ -93,11 +105,6 @@ def classify_doc_type(filepath: Path) -> str:
                 return "MODULE_CONCEPTUAL"
         if len(rel_path.parts) > 2 and rel_path.parts[1] == "deps" and rel_path.name.endswith(".md"):
             return "DEP"
-        if rel_path.name == "index.md": # refs/index.md
-            return "INDEX"
-    
-    if rel_path.name == "index.md": # docs/index.md, docs/guides/index.md, etc.
-        return "INDEX"
 
     return "GENERAL" # Default for other root docs like architecture.md, philosophy.md
 
@@ -258,48 +265,59 @@ def validate_adr(file_path: Path, lines: list[str], findings: list[Finding], cod
             ))
 
     # Check the metadata table in ADR
-    in_table = False
-    table_lines = []
-    for i, line in enumerate(lines, 1):
-        if H1_PATTERN.match(line) and not is_line_in_code_block(i, code_block_ranges):
-            # After H1, look for the table
-            for j in range(i, len(lines)):
-                if is_line_in_code_block(j+1, code_block_ranges):
-                    continue
-                if TABLE_ROW_PATTERN.match(lines[j]) or TABLE_SEP_PATTERN.match(lines[j]):
-                    in_table = True
-                elif in_table and (TABLE_ROW_PATTERN.match(lines[j]) or TABLE_SEP_PATTERN.match(lines[j])):
-                    table_lines.append(lines[j])
-                elif in_table and not (TABLE_ROW_PATTERN.match(lines[j]) or TABLE_SEP_PATTERN.match(lines[j])):
-                    break # Table ended
-        if in_table and line.strip() == "":
-            break # Stop after table
-        elif in_table and (H2_PATTERN.match(line) and "Context and Problem Statement" in line):
-            break # Stop once we hit the next section
-    
-    if in_table:
-        expected_fields = {"Status", "Deciders", "Date", "Technical Story"}
-        found_fields = set()
-        for line in table_lines:
-            if "|" in line:
-                parts = [p.strip() for p in line.split("|") if p.strip()]
-                if len(parts) >= 1:
-                    field_name = parts[0].replace("`", "")
-                    if field_name in expected_fields:
-                        found_fields.add(field_name)
-        if expected_fields != found_fields:
-            missing = expected_fields - found_fields
-            findings.append(Finding(
-                id=f"ADR-META-{len(findings)+1:03d}",
-                rule="ADR_METADATA_MISSING",
-                severity="medium",
-                category="documentation",
-                file=relative_path(file_path),
-                line=1,
-                message=f"ADR metadata table missing required fields: {', '.join(missing)}",
-                suggestion="Ensure the ADR metadata table contains Status, Deciders, Date, and Technical Story fields",
-                reference="docs/templates/adr-template.md#the-skeleton",
-            ))
+    # After finding H1, scan forward to collect the first contiguous table block
+    # (header row + separator + data rows). Skip leading blank lines; stop at the
+    # next H2 after the table begins.
+    table_lines: list[str] = []
+    h1_idx = -1  # 0-based index into lines[]
+    for idx, line in enumerate(lines):
+        if H1_PATTERN.match(line) and not is_line_in_code_block(idx + 1, code_block_ranges):
+            h1_idx = idx
+            break
+
+    if h1_idx >= 0:
+        in_table = False
+        # Scan forward from the line after H1
+        for j in range(h1_idx + 1, len(lines)):
+            line_num = j + 1
+            if is_line_in_code_block(line_num, code_block_ranges):
+                continue
+            current_line = lines[j]
+            stripped = current_line.strip()
+            is_table_row = TABLE_ROW_PATTERN.match(current_line) or TABLE_SEP_PATTERN.match(current_line)
+            if is_table_row:
+                in_table = True
+                table_lines.append(current_line)
+            elif in_table:
+                # We've left the table — stop scanning
+                break
+            # else: blank line or other non-table content before the table starts; keep scanning
+
+    # Verify expected fields in the collected table rows
+    expected_fields = {"Status", "Deciders", "Date", "Technical Story"}
+    found_fields: set[str] = set()
+    for line in table_lines:
+        if "|" not in line:
+            continue
+        parts = [p.strip() for p in line.split("|") if p.strip()]
+        if len(parts) >= 1:
+            field_name = parts[0].replace("`", "")
+            if field_name in expected_fields:
+                found_fields.add(field_name)
+
+    if expected_fields != found_fields:
+        missing = expected_fields - found_fields
+        findings.append(Finding(
+            id=f"ADR-META-{len(findings)+1:03d}",
+            rule="ADR_METADATA_MISSING",
+            severity="medium",
+            category="documentation",
+            file=relative_path(file_path),
+            line=h1_idx + 1 if h1_idx >= 0 else 1,
+            message=f"ADR metadata table missing required fields: {', '.join(missing)}",
+            suggestion="Ensure the ADR metadata table contains Status, Deciders, Date, and Technical Story fields",
+            reference="docs/templates/adr-template.md#the-skeleton",
+        ))
 
 
 def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], code_block_ranges: list[tuple[int, int]]) -> None:
@@ -515,11 +533,21 @@ def validate_module_conceptual(file_path: Path, lines: list[str], findings: list
             ))
 
     # Check for content that belongs in reference doc (file paths, class names, schemas)
+    # Narrow heuristic: only flag lines that look like actual code/paths, not prose mentions.
+    file_path_re = re.compile(r"(?:app/Modules/[\w/]+|database/[\w/]+)")
+    code_construct_re = re.compile(
+        r"new\s+\w+\(|::create\(|->get\(\)|Model::find\("
+    )
+    code_fragment_re = re.compile(r"^<\?php|^\s*use\s+|^\s*namespace\s+")
     for i, line in enumerate(lines, 1):
         if is_line_in_code_block(i, code_block_ranges):
             continue
-        # Simple heuristic: look for /app/Modules/, .php, ClassName::
-        if re.search(r"app/Modules/|\.php\b|\b\w+::", line):
+        stripped = line.lstrip()
+        if (
+            file_path_re.search(line)
+            or code_construct_re.search(line)
+            or code_fragment_re.match(stripped)
+        ):
             findings.append(Finding(
                 id=f"MOD-CONCEPT-LEAK-{len(findings)+1:03d}",
                 rule="MOD_CONCEPT_LEAK_REFERENCE",
@@ -557,12 +585,27 @@ def validate_module_reference(file_path: Path, lines: list[str], findings: list[
                 reference="docs/templates/module-reference-template.md#the-skeleton",
             ))
     
-    # Check for design rationale (opposite of conceptual doc)
-    rationale_keywords = ["because", "why", "purpose", "intent", "rationale"]
+    # Check for design rationale leaks (opposite of conceptual doc).
+    # Use structural markers instead of broad keyword matching — table rows like
+    # `| Purpose | ...` are fine, but a paragraph that explains WHY a decision
+    # was made is a leak.
+    rationale_phrase_re = re.compile(
+        r"\b(?:because|rationale|the rationale is|the design decision|"
+        r"this approach (?:was|is) chosen|we chose .+ because|the reason (?:is|was))\b",
+        re.IGNORECASE,
+    )
     for i, line in enumerate(lines, 1):
         if is_line_in_code_block(i, code_block_ranges):
             continue
-        if any(keyword in line.lower() for keyword in rationale_keywords):
+        stripped = line.strip()
+        # Skip table rows (reference docs legitimately have `| Purpose | ...` cells)
+        if TABLE_ROW_PATTERN.match(stripped):
+            continue
+        # Skip headings and list items
+        if H_ANY_PATTERN.match(stripped) or re.match(r"^\s*[-*+]\s", line):
+            continue
+        # Only flag prose paragraphs that contain a rationale marker
+        if rationale_phrase_re.search(line):
             findings.append(Finding(
                 id=f"MOD-REF-LEAK-{len(findings)+1:03d}",
                 rule="MOD_REF_LEAK_CONCEPTUAL",
@@ -651,9 +694,17 @@ def validate_general(file_path: Path, lines: list[str], findings: list[Finding],
 
 def scan_docs_template(files: list[Path], module: str | None) -> list[Finding]:
     findings: list[Finding] = []
-    
+
     for filepath in files:
-        if filepath.name in EXCLUDED_FILES or filepath.parts[0] == "templates": # Ensure templates are not scanned
+        if filepath.name in EXCLUDED_FILES or filepath.parts[0] == "templates":
+            continue
+        # Skip docs in excluded subdirectories (e.g., docs/refs/articles/ standalone articles)
+        rel_path_str = relative_path(filepath)
+        if any(f"/{excluded}/" in f"/{rel_path_str}" or rel_path_str.startswith(f"{excluded}/")
+               for excluded in EXCLUDED_DIRS):
+            continue
+
+        if rel_path_str in _GENERIC_DOC_EXEMPTIONS:
             continue
 
         content = read_file(filepath)

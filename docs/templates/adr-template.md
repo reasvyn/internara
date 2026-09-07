@@ -58,12 +58,12 @@ domain-specific coverage maps. Keep them after Links.
 - Every Considered Options entry earns its place from real deliberation recorded in prose or git
   history — never invented alternatives.
 - Superseded ADRs are never deleted; flip `Status` to `Superseded by …` and link the successor,
-  then update [index.md](index.md).
-- Register every new record in [index.md](index.md) and mention it in the relevant module/spec
-  docs.
+  then update [../adr/index.md](../adr/index.md).
+- Register every new record in [../adr/index.md](../adr/index.md) and mention it in the relevant
+  module/spec docs.
 
 ## Quick References
 
-- [index.md](index.md) — ADR registry
-- [pattern-template.md](../guides/arch/pattern-template.md) — sibling skeleton for pattern docs
-- [`../doc-template.md`](../doc-template.md) — shared documentation standards
+- [`../adr/index.md`](../adr/index.md) — ADR registry
+- [`pattern-template.md`](pattern-template.md) — sibling skeleton for pattern docs
+- [`doc-template.md`](doc-template.md) — shared documentation standards

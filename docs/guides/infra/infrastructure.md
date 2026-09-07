@@ -459,3 +459,9 @@ See [Backup & Recovery](../backup-recovery.md) for detailed restoration procedur
 | Localization & i18n                            | [Localization](localization.md)             |
 | Testing & CI/CD                                | [Testing](testing.md)                       |
 | Scaling guide                                  | [Scaling](scaling.md)                       |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

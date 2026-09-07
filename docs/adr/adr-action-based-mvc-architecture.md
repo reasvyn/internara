@@ -75,7 +75,7 @@ policies and event listeners are registered manually.
 * Module-specific: `app/{Module}/{Submodule}/{Component}/{ClassName}.php`
 * Shared (cross-module): `app/{Component}/{ClassName}.php`
 * Views: `resources/views/{module}/{submodule}/{component-name}.blade.php`
-* Tests: `tests/{Module}/{Submodule}/{Name}Test.php` — no redundant namespace segments.
+* Tests: `tests/{Type}/{Module}/{Submodule}/{Name}Test.php` ({Type} ∈ {Arch, Unit, Feature, Browser}) — no redundant namespace segments.
 
 **Cross-Module Communication** — direct imports are allowed. Four patterns are available
 in ranked guidance: direct import (simplest), Core contracts, module events, Action delegation.

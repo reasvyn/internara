@@ -18,7 +18,7 @@ logbook reflections (Journals).
 
 ## Submodules
 
-None — all components are directly under `app/Modules/Evaluation/`.
+None — all components live directly under the Evaluation module namespace.
 
 ## Key Concepts
 
@@ -86,4 +86,15 @@ Once submitted, an evaluation response cannot be modified. The audit trail prese
 
 - Reports (program quality data)
 - Certification (eligibility checks)
+
+## Design Principles
+
+- **Forms are polymorphic targets, not fixed entities** — the same form structure targets different subjects (`mentor`, `program`, `company`, `overall`) via `target_type`/`target_id`. This avoids building a separate evaluation workflow per target; the form builder is universal.
+- **Score auto-calculation is formulaic and transparent** — overall score is `Σ(score × weight) / Σ(weight)`, normalized to percentage. Score band mapping (EXCELLENT → POOR) is deterministic. No hidden rounding, no undocumented weights — the calculation is auditable by anyone with the form definition.
+- **Submissions are immutable after submit** — once an evaluation response is submitted, answers cannot be modified. Enforce this at the database level and the Action layer. Corrections require a new submission with an audit trail linking it to the original.
+- **Form structure is cached, not the submission** — form definitions are cached by key `evaluation.form.{id}` and invalidated on update. Submissions are live data — never cache them.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
 

@@ -359,7 +359,7 @@ Data Transfer Objects provide type safety for Action parameters. Instead of pass
 
 ### 14. Testing Actions — Spec-Driven Verification
 
-Tests are organized by module scope (`tests/{Module}/{SubModule}/{Name}Test.php`). An Action is tested when its behavior implements a spec requirement — the test is named after the requirement ID. One class → one test file for spec-defined behavior.
+Tests are organized by type then module scope (`tests/{Type}/{Module}/{SubModule}/{Name}Test.php`, with {Type} ∈ {Arch, Unit, Feature, Browser}). An Action is tested when its behavior implements a spec requirement — the test is named after the requirement ID. One class → one test file for spec-defined behavior.
 
 #### What to Test
 
@@ -414,7 +414,7 @@ Tests are organized by module scope (`tests/{Module}/{SubModule}/{Name}Test.php`
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `Model::create()` in Livewire component | `Create{Entity}Action::execute(DTO)` via DI | C1 — direct model mutation in UI layer |
 | `DB::transaction()` in Livewire | `$this->transaction()` in Command Action | Unit of Work bypass, no logging |

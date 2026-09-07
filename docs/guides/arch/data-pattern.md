@@ -51,7 +51,7 @@ PHP type hints on DTO properties catch mismatches at compile time. `fromArray()`
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | DTO importing `User` Model or `Internship` Entity | Remove — DTOs carry scalars/DTOs/enums only | C6 — forbidden imports |
 | Action with 5 array params, no DTO | Create `VerbEntityData` DTO | C7 — DTO for 3+ params |

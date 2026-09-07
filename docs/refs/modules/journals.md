@@ -85,3 +85,14 @@ daily record.
 
 - Evaluation (logbook, attendance, and supervision log data for scoring)
 - Reports (attendance, logbook compliance, supervision log, and visit compliance data for grade card)
+
+## Design Principles
+
+- **One entry per student per calendar day** — the database enforces a unique constraint on `student_id + date` for logbook entries. This prevents duplicate records and ensures a clean daily audit trail. Any attempt to create a second entry for the same day throws `RejectedException`.
+- **Cross-Role Proxy is a default, not an exception** — teacher-as-supervisor verification must be explicit and tagged (`proxy_role = 'supervisor'` in the activity log). The 48-hour inactivity window before proxy activates is a configuration default, not a hard rule. Logbook progression must never permanently stall due to supervisor unavailability.
+- **Attendance becomes immutable after the grace period** — clock-in/out records are locked after a configurable grace period (default 24 hours from clock-out). Admin override is available for corrections, but passive auto-lock ensures the attendance record is the primary source of truth for compliance calculations.
+- **Compliance monitoring is proactive, not reactive** — the `journals:check-compliance` command runs on a schedule and sends escalating notifications (mentor at N days → coordinator at N+2 days). Students who fall behind receive no silent pass; the system surfaces the gap, not the teacher.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

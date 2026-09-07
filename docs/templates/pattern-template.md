@@ -39,9 +39,9 @@ architecture pattern: why it exists, then how to apply it correctly, then how vi
 - Anti-pattern tables mirror the Codebase Senses format used across the project
   ("You see… → It should be…") so agents can pattern-match mechanically.
 - Cross-link the invariant IDs (C1–C8, D1–D6) this pattern enforces where applicable.
-- Register the pattern in [`architecture/index.md`](index.md).
+- Register the pattern in [`guides/arch/index.md`](../guides/arch/index.md).
 
 ## Quick References
 
-- [`doc-template.md`](../../doc-template.md) — shared documentation standards
-- [`../conventions.md`](../../conventions.md) — architecture invariants C1–C8, D1–D6
+- [`doc-template.md`](doc-template.md) — shared documentation standards
+- [`../conventions.md`](../conventions.md) — architecture invariants C1–C8, D1–D6

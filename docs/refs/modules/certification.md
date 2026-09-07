@@ -91,3 +91,14 @@ GET /verify/{hash}   (not yet implemented)
 
 - Student certificate list and admin issuance UI
 
+## Design Principles
+
+- **Certificate issuance is gated by a finalized grade card** — no certificate may be issued without a corresponding finalized Report card. `IssueCertificateAction` is the single gate; reject with `RejectedException` and enumerate ineligible students rather than silently skipping.
+- **Cryptographic hash is the verification primitive** — the QR code encodes a SHA-256 hash over student ID, institutional code, final score, and issuer private key. Verification must remain possible offline (no DB lookup required at the verification point); the hash is the truth, not the database row.
+- **Revocation is terminal and idempotent** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke is a no-op; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
+- **Frozen layout snapshots** — at issuance, the rendered HTML layout is snapshotted into the certificate record. Later template edits must never alter already-issued certificates; the snapshot is the legal artifact. Treat issuance as a write-once event.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
+

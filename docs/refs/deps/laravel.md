@@ -9,6 +9,15 @@ contributor must know, and how this repository builds on them. Component-specifi
 
 ---
 
+## Installed & Role
+
+| | |
+|---|---|
+| Installed | `laravel/framework v13.24.0` (`composer.json`: `^13.0`) |
+| Role | Application backbone — HTTP, CLI, ORM, queue, cache, auth, events, and testing |
+
+---
+
 ## Version & Support Lifecycle
 
 | | |
@@ -66,7 +75,7 @@ The framework's mental model — everything below resolves through these primiti
 
 ---
 
-## How Internara Builds on It
+## How Internara Uses It
 
 Framework capability → project convention that shapes its use:
 

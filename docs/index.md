@@ -2,6 +2,10 @@
 
 Complete catalog of all documentation files, organized by topic and audience.
 
+## Description
+
+This index provides a structured map of all documentation in the Internara project. Documents are organized by audience and purpose: from foundational architecture and philosophy to operational guides and module references.
+
 ---
 
 ## Quick Links
@@ -25,7 +29,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
-- **[Documentation Standards](doc-template.md)** — Diátaxis four-quadrant model mapped to this repo, writing principles, metadata contract; copy-paste skeletons for all doc types live in [`docs/templates/`](templates/) (spec, ADR, guide, pattern, module, module-reference, dep)
+- **[Documentation Standards](templates/doc-template.md)** — Diátaxis four-quadrant model mapped to this repo, writing principles, metadata contract; copy-paste skeletons for all doc types live in [`docs/templates/`](templates/) (spec, ADR, guide, pattern, module, module-reference, dep)
 
 ---
 

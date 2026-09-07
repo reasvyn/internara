@@ -982,3 +982,9 @@ $wire.intercept(({ onSend, onFinish }) => {
 | Livewire Official Docs | https://livewire.laravel.com/docs |
 | Livewire API Reference | https://livewire.laravel.com/docs/api |
 | Livewire Discord | https://discord.gg/livewire |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

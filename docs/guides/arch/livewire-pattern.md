@@ -60,7 +60,7 @@ Each layer has a single concern:
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `Model::create()` in Livewire method | Inject and call `CreateAction` | C1 — mutation in Livewire |
 | `$this->validate()` without Action re-validation | Action re-validates authoritatively | Validation only in UI |

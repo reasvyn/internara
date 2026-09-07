@@ -54,7 +54,7 @@ internships.
 |---|---|---|
 | `Domain/Certificate/Events/CertificateIssued.php` | `CertificateIssued` | `BaseEvent` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -95,7 +95,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Certification/`. See
+Tests are located in `tests/{Type}/Certification/` (Arch, Unit, Feature, Browser). See
 [Testing](../../guides/infra/testing.md) for the testing conventions.
 
 ## Factories
@@ -120,7 +120,7 @@ Tests are located in `tests/Certification/`. See
 - **Business Logic**: `app/Modules/Certification/`
 - **Routing**: `routes/web/certification.php`
 - **Views**: `resources/views/certification/`
-- **Testing**: `tests/Certification/`
+- **Testing**: `tests/{Type}/Certification/`
 - **Dependencies**: User, Evaluation, Program, Core
 
 _For overview and business context, see [certification.md](certification.md)._

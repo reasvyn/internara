@@ -48,12 +48,21 @@ Events. Design rationale lives in `{module}.md`.
 
 ## Writing Discipline
 
-- Every table row must match real code — run `python3 tools/scan_architecture/cli.py` to reconcile
+- Every table row must match real code — run `python3 tools/scan_architecture.py` to reconcile
   component counts before publishing.
 - Reference docs go stale fastest; update them in the same PR as any Action/Route/Model change.
 - Dry tone: state facts, no "why" paragraphs, no usage tutorials.
 
+## Two-Tier Model — Reference Half
+
+The reference tier pairs with the conceptual tier — see [`module-template.md`](module-template.md)
+§Two-Tier Model for the split rule. In this (reference) half: **no design rationale, no "why"**.
+Facts live here once; if both tiers need a fact, keep the overview in the conceptual doc and link.
+
+Anti-pattern check: grep this doc for "because", "why", "purpose", "intent" — any hit is a
+rationale leak.
+
 ## Quick References
 
-- [`doc-template.md`](../../doc-template.md) — shared documentation standards
+- [`doc-template.md`](doc-template.md) — shared documentation standards
 - [`module-template.md`](module-template.md) — companion conceptual-tier template

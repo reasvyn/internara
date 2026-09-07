@@ -66,7 +66,7 @@ Manages industrial partner companies and partnership agreements for internship p
 | `Domain/Partnership/Listeners/ClearDashboardOnPartnershipChange.php` | `ClearDashboardOnPartnershipChange` | — |
 | `Domain/Partnership/Listeners/NotifyOnPartnershipTerminated.php` | `NotifyOnPartnershipTerminated` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -93,7 +93,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Partners/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Partners/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -118,7 +118,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Partners/`
 - **Routing**: `routes/web/partners.php`
 - **Views**: `resources/views/partners/`
-- **Testing**: `tests/Partners/`
+- **Testing**: `tests/{Type}/Partners/`
 - **Dependencies**: Core
 - **Used By**: Program
 

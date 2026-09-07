@@ -62,3 +62,14 @@ are dual-logged via SmartLogger to both the system channel (detailed debug) and 
 ## Used By
 
 - Setup (initial admin creation)
+
+## Design Principles
+
+- **All administrative mutations are dual-logged** — SmartLogger writes to both the system channel (detailed debug) and the activity channel (immutable, PII-masked audit records). Account creation, suspension, role changes, and announcement publishing are all traceable to an operator and a timestamp.
+- **GDPR deletion logs are append-only** — deletion requests are tracked with timestamps, deleted record summaries, and operator identity. Logs cannot be modified or deleted after creation. This makes the deletion record legally meaningful for compliance audits.
+- **Super admin integrity is enforced at multiple layers** — uniqueness (exactly one), permanence (undeletable), immutability (name/username locked), and `PROTECTED` status are enforced at the Model layer (blocking events) and the Action layer (no update path). No single point of failure can bypass these safeguards.
+- **Pulse health counters are passive, not blocking** — Pulse metrics (incident counters, operational dashboards) are updated by background events, never by synchronous health checks that could slow down workflows. A Pulse failure does not block user-facing operations.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

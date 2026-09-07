@@ -68,3 +68,14 @@ that expect the standard Spatie guard name.
 ## Used By
 
 All modules (via user foreign keys, morph relationships, or policy checks).
+
+## Design Principles
+
+- **User and Profile are separate concerns** — the `User` model handles authentication (email, password, status); the `Profile` model holds personal data (name, phone, avatar, bio). This separation keeps auth logic lean and allows the profile schema to evolve independently. Both are UUID-keyed and independently soft-deletable.
+- **Account status is a state machine with guarded transitions** — the eight states (`provisioned` → `activated` → `verified` → `restricted` / `suspended` / `inactive` / `archived` / `protected`) have explicit transition rules. A suspended account cannot be archived without reactivation. All transitions are immutably logged. The state machine is enforced at the Action layer, not guessed at the call site.
+- **Username is auto-derived and collision-resolved** — usernames are lowercased alphanumeric derived from the email local part. Collisions append numeric suffixes (`user` → `user1` → `user2`). No manual username entry means no user-controlled collision or profanity.
+- **Notifications are dual-channel with real-time counter updates** — in-app (database) and email channels fire together via the notification pipeline. The navbar bell counter uses Livewire polling for near-real-time updates. Bulk mark-as-read operations target the notification set, not individual rows.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

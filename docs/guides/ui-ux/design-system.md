@@ -459,3 +459,9 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | Sidebar menu      | `config/menu.php`                         |
 | Theme switcher    | `resources/views/ui/components/theme-switch.blade.php` (`<x-theme-switch>` TallstackUI) |
 | Language switcher | `app/Modules/Settings/Livewire/LangSwitcher.php`  |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

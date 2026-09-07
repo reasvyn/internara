@@ -485,12 +485,23 @@ the two-profile model and verify both paths end-to-end with `setup:install` + `s
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
 
+
+## Test Requirements
+
+Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
+
+| Layer | Test dir | Verifies |
+|-------|----------|----------|
+| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
+| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
+| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
+| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
 
 ## Quick References
 

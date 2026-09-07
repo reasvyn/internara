@@ -151,8 +151,9 @@ user, submitting an assignment, approving a placement.
 
 Critical user journeys are verified with `puppeteer-core` (reuses system Chrome, no download).
 
-- **Location:** `tests/Browser/` — `Support/browser.js` (`launch()`), `Support/login.js` (`login()`), `example.test.mjs`.
-- **Run:** `npm run test:browser` or `node tests/Browser/example.test.mjs`.
+- **Location:** `tests/Browser/{Module}/` — per-module browser test files (`.mjs`).
+  Shared helpers live in `tests/Support/` (`browser.js` with `launch()`, `login.js` with `login()`); they are not a test suite.
+- **Run:** `npm run test:browser` = `node --test tests/Browser/`.
 - **When:** login, navigation (`/dashboard` → role dashboard), theme persistence, sidebar, dashboard widgets.
 - **Tracer:** same FR/NFR/UC prefix as other layers; group under `describe("Browser: ...")`.
 - **CI:** not in default `pint`/`pest` gates; run on-demand for UI regressions (e.g., `internara.web.id` 502/500 after deploy).
@@ -244,17 +245,23 @@ The `composer run coverage` script handles this automatically.
 
 ## Where to Find It
 
-- `tests/{Module}/{SubModule}/` — all tests organized by module and submodule (no Unit/Feature split)
-- `tests/{Module}/Types/` — tests for value objects, flat enums, rules
-- `tests/{Module}/Enums/`, `tests/{Module}/Entities/` — pure logic tests (no database needed)
-- `tests/{Module}/Actions/`, `tests/{Module}/Livewire/` — integration tests (use `LazilyRefreshDatabase`)
-- `tests/Browser/` — headless browser tests (`puppeteer-core`, `Support/browser.js`, `Support/login.js`)
+- `tests/Arch/{Module}/` — architecture/contract tests
+- `tests/Unit/{Module}/` — unit tests (Entity, DTO, Enum, Model, Policy)
+- `tests/Feature/{Module}/` — feature tests (Action, Livewire, Console)
+- `tests/Browser/{Module}/` — browser/E2E tests (Node, `node --test tests/Browser/`)
+- `tests/Support/` — shared helpers (not a test suite)
 - `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
 - `tests/Pest.php` — Pest global configuration
-- `phpunit.xml` — PHPUnit configuration
+- `phpunit.xml` — defines one suite per module (19 suites) spanning Arch/Unit/Feature/Browser
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
 - `package.json` — `test:browser` script for headless runs
 - `docs/specs/index.md`, `docs/specs/{feature}.md` — the source of truth for what tests must exist
 - `docs/conventions.md` — Section 12 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

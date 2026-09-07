@@ -125,7 +125,7 @@ php artisan up
 
 ## 6. Upgrade Troubleshooting
 
-| Problem | Likely Cause | Resolution |
+| Symptom | Cause | Fix |
 | ------- | ------------ | ---------- |
 | Migration fails | DB user lacks permissions | Grant `ALTER` and `CREATE` privileges |
 | White screen after upgrade | Cached config conflicts | `php artisan optimize:clear` |
@@ -199,6 +199,11 @@ codebase permanently. Full command walkthrough and caveats:
 [Deployment](infra/deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes), [CI/CD](infra/ci-cd.md#hotfix-branch--pipeline-bypass).
 
 ---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
 
 ## Quick References
 

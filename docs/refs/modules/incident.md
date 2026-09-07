@@ -79,3 +79,14 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 - SysAdmin (escalation handling, pulse monitoring)
 - Evaluation (incident data may influence program quality evaluation)
 
+## Design Principles
+
+- **Severity determines routing and urgency, not the reporter** — severity levels (LOW → CRITICAL) are the primary routing signal. CRITICAL incidents reach all superadmin and admin users immediately via out-of-band channels and Pulse. Severity is set by the reporter; admins can escalate it during investigation but never downgrade a severity classification.
+- **Incident reports are immutable after creation** — reports cannot be deleted, only status-transitioned. All mutations are recorded in an immutable timeline (timestamp, actor, action type, notes). No anonymous reports — the reporter identity is always recorded.
+- **Investigation workflow is sequential, not skippable** — the workflow `REPORTED → INVESTIGATING → RESOLVED → CLOSED` enforces a fixed sequence. Each transition requires an authorized actor; no step can be skipped. A CRITICAL incident that is never investigated cannot be closed.
+- **Resolution outcomes are enumerated and meaningful** — the four outcomes (`CONFIRMED_ACTION_TAKEN`, `CONFIRMED_NO_ACTION`, `UNFOUNDED`, `REFERRED`) are intentionally limited so that the resolution record is programmatically meaningful, not free text. An UNFOUNDED report is different from one where no action was needed — this distinction matters for program quality scoring.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
+

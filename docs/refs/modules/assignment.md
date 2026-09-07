@@ -66,3 +66,14 @@ extensions that adjust the deadline for specific individuals.
 ## Used By
 
 - Reports (assignment grades feed into final grade card)
+
+## Design Principles
+
+- **Lifecycle is the contract** — every submission moves through `draft → submitted → verified → graded` (or back via `revision_required`). Treat state transitions as guarded events; never allow direct field writes that skip stages. `graded` is terminal.
+- **Version history is append-only** — every save, submit, and revision snapshots the full submission state as immutable JSON. Never update versions in place; the timeline is the audit record. Snapshots must capture actor and timestamp, not just content.
+- **Deadlines are per-cohort, per-individual** — assignment due dates set the cohort baseline, but per-student extensions override at the individual level. Always preserve both the original deadline and the submission timestamp so late flags remain accurate after extensions.
+- **Late is a flag, not a block** — by default late submissions are accepted and flagged; blocking is opt-in via configuration. Never silently drop late work; the flag is the signal.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

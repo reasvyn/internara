@@ -492,7 +492,7 @@ After implementing this spec, the system has emergency super admin recovery via 
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |

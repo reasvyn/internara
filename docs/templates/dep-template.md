@@ -49,9 +49,9 @@ Map framework capability to project conventions/invariants where applicable.}
 - Versions come from lock files only — never from memory or docs.
 - Every claim in "How Internara Uses It" must be verifiable in the codebase (grep first).
 - Support-lifecycle rows only where the vendor publishes them (e.g., Laravel); otherwise omit.
-- Register new docs in [index.md](index.md) under the matching category.
+- Register new docs in [../refs/deps/index.md](../refs/deps/index.md) under the matching category.
 
 ## Quick References
 
-- [../module-template.md](../modules/module-template.md) — sibling template style for modules
-- [`../../doc-template.md`](../../doc-template.md) — shared documentation standards
+- [`module-template.md`](module-template.md) — sibling template style for modules
+- [`doc-template.md`](doc-template.md) — shared documentation standards

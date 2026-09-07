@@ -222,6 +222,11 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 - [System Health](system-health.md) — Health check, troubleshooting, diagnostic commands

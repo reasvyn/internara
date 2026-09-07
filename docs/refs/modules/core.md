@@ -48,19 +48,18 @@ audit logging with PII masking), `Services/AppInfo` (static metadata), `Services
 **Shared models**: `Models/ActivityLog` (SmartLogger persistence), `Models/BaseAuthenticatable`
 (User model base with manual HasUuids).
 
-**Helper functions**: `app/Modules/Core/Support/helpers.php` provides `app_info()`. The `setting()` and
-`brand()` helpers live in `app/Modules/Settings/Support/helpers.php`.
+**Helper functions**: Core provides `app_info()` for static metadata. The `setting()` and `brand()` helpers
+provide runtime settings and branding access.
 
 ## Key Concepts
 
 ### Separation of Abstract and Concrete
 
-Core provides abstract contracts and base classes alongside concrete implementations under the same
-`app/Modules/Core/` namespace. The distinction prevents framework-level abstractions from being polluted
-with application-specific defaults. `Data/`, `Enums/`, `Exceptions/`, `Livewire/`,
-`Policies/Concerns/`, and `Support/` contain concrete classes, while `Contracts/`,
-`Actions/BaseAction.php`, `Models/BaseModel.php`, `Entities/BaseEntity.php`, etc. contain abstract
-infrastructure.
+Core provides abstract contracts and base classes alongside concrete implementations. The distinction
+prevents framework-level abstractions from being polluted with application-specific defaults. The
+concrete layer (Data, Enums, Exceptions, Livewire, Policies/Concerns, Support) contains reusable
+classes, while the abstract layer (Contracts, base classes) provides the infrastructure every module
+builds on.
 
 ### Action Triad
 
@@ -87,12 +86,11 @@ key collisions and enables centralized cache management.
 
 ### Global Helpers
 
-The three helper functions are split across two files:
+The three helper functions are split by responsibility:
 
-- `app_info()` in `app/Modules/Core/Support/helpers.php` — static metadata from config/composer.json
-- `setting()` in `app/Modules/Settings/Support/helpers.php` — runtime key-value settings
-- `brand()` in `app/Modules/Settings/Support/helpers.php` — dynamic branding values from database with
-  config fallback
+- `app_info()` — static metadata from config/composer.json
+- `setting()` — runtime key-value settings
+- `brand()` — dynamic branding values from database with config fallback
 
 ### Cross-Module Communication
 
@@ -120,3 +118,16 @@ components, route directories, and cache keys dynamically. Results are cached in
 ## Used By
 
 Every module in the application.
+
+## Design Principles
+
+- **Zero upward dependencies** — Core depends only on Laravel, Spatie packages, and PHP 8.4. It must never import from any business module. If a business concept feels like it belongs in Core, it almost certainly does not — push it back to its owning module and expose a contract.
+- **Abstract and concrete stay separate** — abstract contracts and base classes (the framework) live alongside concrete reusable implementations (DTOs, enums, exceptions, support) but are clearly partitioned. Never bury an abstract contract inside a concrete namespace; the boundary is the architectural invariant.
+- **Action Triad is non-negotiable** — mutations are `Command Actions` (transaction + audit + event), reads are plain classes (no transaction, no logging), and multi-step coordination is a `Process Action` extending `BaseAction`. The triad shape is enforced by type, not convention.
+- **Exceptions are dual hierarchies** — `AppException` (system failures) and `ModuleException` (business invariants) never mix. Use `AppException` for infrastructure (DB, Redis, filesystem); use `ModuleException` (with `RejectedException`) for business rule violations.
+- **Cache keys are registered, never hardcoded** — every cache key string lives in `config/cache-keys.php`. Inline `'cache_key'` strings anywhere in business code is a violation; the registry is the only source of truth.
+- **Audit logging is centralized** — `SmartLogger` is the only path for dual-channel audit. Never write directly to `Log` for audit-worthy events; never write directly to `activity_log` from business code — bypass loses PII masking.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

@@ -1,5 +1,7 @@
 # Module Index — Module Dependency Graph & Navigation
 
+## Description
+
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
 components.
@@ -348,3 +350,7 @@ All 19 modules are vertical slices cross-cutting the 4-layer architecture define
   Config
 - **Layer 1 — Framework/Infra** — PHP 8.4, Laravel 13, Core base classes, Contracts, Exceptions,
   Services
+
+## Rules
+
+All entries in this index are sorted by dependency order. New entries must follow the same ordering.

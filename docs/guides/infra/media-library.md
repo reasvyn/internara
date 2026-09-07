@@ -174,3 +174,9 @@ traversal.
 - `database/migrations/` — the `media` table migration
 - [Filesystem](filesystem.md) — storage architecture and disk definitions
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

@@ -17,6 +17,6 @@ Design intent and operational guides live elsewhere — see [../index.md](../ind
 
 ## Quick References
 
-- [Documentation standards & templates](../doc-template.md) — how these docs are written
+- [Documentation standards & templates](../templates/doc-template.md) — how these docs are written
 - [Guides](../guides/index.md) — operational and design documents
 - [Specs](../specs/index.md) — requirements SSOT feeding all references

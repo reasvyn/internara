@@ -17,6 +17,20 @@ None — all components are directly under `app/Modules/Evaluation/`.
 
 ---
 
+## Actions
+
+*Content to be added — verify against actual implementation.*
+
+## Policies & Permissions
+
+*Content to be added — verify against actual implementation.*
+
+## Events
+
+*Content to be added — verify against actual implementation.*
+
+---
+
 ## Models
 
 | File | Class | Extends |
@@ -69,8 +83,7 @@ No dedicated tests. Tests will be added with feature implementation.
 
 ---
 
-No Actions, Entities, Policies, or Livewire components yet — these will be added with the form
-builder and response collection features.
+*Entities and Livewire components to be added with the form builder and response collection features.*
 
 ---
 

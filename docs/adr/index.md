@@ -4,6 +4,10 @@ Index of all Architecture Decision Records (ADRs) documenting key architectural 
 Internara. Groups are ordered by **SSOT priority**: decisions in earlier groups are pre-requisites
 that later decisions depend on (Foundation → Quality → Observability → Proxy → Strategy).
 
+## Description
+
+Architecture Decision Records (ADRs) capture significant design choices made during development, documenting the context, decision, and consequences. Each ADR is a standalone document that explains *why* a particular approach was chosen over alternatives.
+
 ## Foundation
 
 Structural decisions that establish the core shape of the codebase. Every other ADR inherits

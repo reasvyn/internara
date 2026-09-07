@@ -41,7 +41,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `Domain/Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum` | — |
 | `Domain/InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -108,7 +108,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Program/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Program/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -135,7 +135,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Program/`
 - **Routing**: `routes/web/program.php`
 - **Views**: `resources/views/program/`
-- **Testing**: `tests/Program/`
+- **Testing**: `tests/{Type}/Program/`
 - **Dependencies**: Academics, Partners, Core
 - **Used By**: Enrollment, Journals, Evaluation
 

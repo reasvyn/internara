@@ -63,7 +63,7 @@ For complex queries that exceed simple scopes, use Read Actions instead of Query
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | Creating `UserRepositoryInterface` + `EloquentUserRepository` | Use `User` Model directly or Read Action | Unnecessary abstraction |
 | Repository with single `find()` method | Use `Model::find()` directly | Wrapper for no value |

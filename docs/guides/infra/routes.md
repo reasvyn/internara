@@ -260,3 +260,9 @@ php artisan route:cache
 - `app/Modules/Setup/Installation/Http/Middleware/` — setup middleware classes
 - `config/menu.php` — sidebar navigation mapping routes to menu items
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

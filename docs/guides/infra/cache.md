@@ -268,3 +268,9 @@ first requests after deployment.
 - `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

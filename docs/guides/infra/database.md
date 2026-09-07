@@ -124,9 +124,11 @@ php artisan db:seed --class=Database\Seeders\DummySeeder
 ```
 
 On a fresh install, `php artisan setup:install --with-dummy` seeds it right after provisioning
-(installation spec FR-C10); in `APP_ENV=production` the seed is skipped with a warning (NFR-S13).
+(installation spec FR-C10); the seed runs in any environment when explicitly requested
+(dummy-data spec FR-E6, installation spec NFR-S13).
 
-- Aborts when `APP_ENV=production` (NFR-S1) — see [Dummy Data spec](../../specs/3UOZP-dummy-data.md).
+- Opt-in only — never registered in `DatabaseSeeder`/`SetupSeeder` (FR-E3, NFR-S1); invoked
+  explicitly via `db:seed --class=Database\Seeders\DummySeeder` or `setup:install --with-dummy`.
 - Reuses base-seeded roles/settings/active academic year and seeds them only when absent (FR-E4).
 - Delegates all generation to `Tests\Support\DummyData` (dev-only, `autoload-dev`), which runs the
   whole dataset inside a single transaction (FR-H13) and is idempotent via `firstOrCreate` on natural
@@ -211,3 +213,9 @@ php artisan migrate
 - Database configuration: `config/database.php` (overridable via `.env`)
 - Module reference: [Module Index](../../refs/modules/index.md)
 - Infrastructure design: [Infrastructure](infrastructure.md#4-database-strategy)
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

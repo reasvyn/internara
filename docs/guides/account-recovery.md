@@ -205,3 +205,9 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 | SaveRecoveryKeyAction    | `User/UserManagement/Actions/SaveRecoveryKeyAction.php` |
 | ReadRecoveryKeyAction    | `User/UserManagement/Actions/ReadRecoveryKeyAction.php` |
 | SuperAdminIntegrityRules | `Auth/SuperAdmin/Entities/SuperAdminIntegrityRules.php` |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

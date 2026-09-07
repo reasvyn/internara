@@ -211,3 +211,9 @@ See [Branding](../branding.md) for details.
 - Brand resolver: `app/Modules/Settings/Support/Brand.php`
 - App info (composer.json): `app/Modules/Core/Services/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

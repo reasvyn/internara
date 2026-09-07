@@ -87,7 +87,7 @@ applications, and registration document uploads.
 | `Domain/Registration/Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` |
 | `Domain/Registration/Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -111,7 +111,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Enrollment/`. See [Testing](../../guides/infra/testing.md) for the
+Tests are located in `tests/{Type}/Enrollment/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for the
 testing conventions.
 
 ## Factories
@@ -142,7 +142,7 @@ testing conventions.
 - **Business Logic**: `app/Modules/Enrollment/`
 - **Routing**: `routes/web/enrollment.php`
 - **Views**: `resources/views/enrollment/`
-- **Testing**: `tests/Enrollment/`
+- **Testing**: `tests/{Type}/Enrollment/`
 - **Dependencies**: Core, Program, Partners, User
 - **Events Consumed By**: `User/Dashboard` (cache invalidation)
 

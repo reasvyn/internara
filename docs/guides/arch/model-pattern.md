@@ -112,7 +112,7 @@ Do NOT test Eloquent relationships directly — the framework is trusted. Do NOT
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `$model->canLogin()` / `$model->isActive()` on Model | `$model->asRole()->allowsLogin()` / `$entity->asState()->isActive()` | Anemic Domain Model — business logic on data access object |
 | `protected $fillable = [...]` property | `#[Fillable([...])]` PHP 8 attribute | D4 — legacy mass assignment syntax |

@@ -55,7 +55,7 @@ Services may act as Factories when they create infrastructure objects (e.g., `Mo
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `DashboardService` with 15+ methods | Split into focused Read Actions | God Object — too many responsibilities |
 | Service calling `CreateUserAction` | Extract orchestration into Process Action | Service calls Actions |

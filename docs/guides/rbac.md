@@ -143,3 +143,9 @@ See [Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
 | Gate::before config  | `config/permission.php`                                        |
 | RolePermissionSeeder | `database/seeders/RolePermissionSeeder.php`                    |
 | Policies directory   | `app/*/Policies/` (27 policy files)                            |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

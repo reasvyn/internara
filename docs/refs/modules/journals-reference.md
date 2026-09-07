@@ -57,7 +57,7 @@ field monitoring visit scheduling/verification.
 | `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum` | — |
 | `Domain/SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -133,7 +133,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Journals/`. See [Testing](../../guides/infra/testing.md)
+Tests are located in `tests/{Type}/Journals/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -163,7 +163,7 @@ for the testing conventions.
 - **Business Logic**: `app/Modules/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`
-- **Testing**: `tests/Journals/`
+- **Testing**: `tests/{Type}/Journals/`
 - **Dependencies**: Enrollment, Program, Core
 - **Used By**: Evaluation, Reports
 

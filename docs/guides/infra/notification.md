@@ -309,3 +309,10 @@ Created (via Action/Event)
 - `config/tallstackui.php` — toast styling and timeout (replaces removed `config/flasher.php`)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 - [Queue](queue.md) — queue infrastructure and worker management
+
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

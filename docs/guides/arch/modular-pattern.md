@@ -11,6 +11,30 @@ business modules.
 > **Modular Monolith** (vertical slicing), **Clean Architecture** (dependency rule),
 > **Hexagonal Architecture** (ports & adapters), **SOLID**, and **DRY**.
 
+## Non-Negotiable
+
+Hard rules for this pattern. Violations are architecture violations.
+
+- [TODO: Add module boundary non-negotiables here]
+
+## How to Apply
+
+This catalog is the entry point. For each pattern area:
+
+1. Read the conceptual overview in this catalog to understand the "why" and the boundary rules.
+2. Follow the deep-dive link to the corresponding `*-pattern.md` for implementation details, code examples, and enforcement rules.
+3. Run the scanner tools before committing to validate adherence (`composer quality` or the specific scanner for the layer).
+
+## Anti-Patterns
+
+| You see… | It should be… | Violation |
+| --- | --- | --- |
+| Business logic in a Livewire component | Delegate mutations to a Command Action | C1 |
+| Inline `'cache_key'` strings | Register keys in `config/cache-keys.php` | C4 |
+| Domain entity importing Model or Action | Entity stays pure — only scalars + Entity in `fromModel()` | C5 |
+| FK without `onDelete()`/`onUpdate()` | Always specify cascade behavior explicitly | D6 |
+| `dd()`/`dump()` in committed code | Debug output removed before commit | D2 |
+
 ## Global Standards Foundations
 
 Internara's module-first, Action-based architecture intentionally aligns with established industry
@@ -68,8 +92,8 @@ other docs link here, never duplicate. Enforced by `tools/scan_class_contracts/c
 
 | Unit                | One responsibility                  | Boundary rules                                                                                              |
 | ------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Module              | One business area (owns 1+ Domains) | Owns its primary domain flat (`app/Modules/{Module}/` — `Actions/`, `Models/` ...) untuk hindari `Module/Domain/Module` yang mubazir, plus Domains berbeda di `Domain/{Domain}/`; tiap Domain owns full stack; modul lain hanya via public surface — Actions, contracts, events (see 1.4) |
-| Domain              | One *distinct* business domain      | Tepat satu Domain untuk domain yang berbeda dari Module (`app/Modules/{Module}/Domain/{Domain}/`); owns full stack; tidak boleh split satu domain ke beberapa Domain, maupun collapsed domain matang ke flat Module (see `.agents/rules/domain-boundary.md`) |
+| Module              | One business area (owns 1+ Domains) | Owns its primary domain flat (`app/Modules/{Module}/` — `Actions/`, `Models/`, ...) to avoid the redundant `Module/Domain/Module` nesting; separate Domains live in `Domain/{Domain}/`; each Domain owns its full stack; other modules access it only via its public surface — Actions, contracts, events (see 1.4) |
+| Domain              | One *distinct* business domain      | Exactly one Domain per module-distinct business domain (`app/Modules/{Module}/Domain/{Domain}/`); owns its full stack; must not split one domain across several Domains, nor collapse a mature Domain into a flat Module |
 | Command/Read Action | ONE business operation or query     | Single public `execute()`; DTO for 3+ params (C7); never a second copy of an existing operation             |
 | Process Action      | ONE multi-step workflow             | Orchestrates Command/Read Actions; no inline business rules                                                 |
 | Entity              | Business invariants of ONE concept  | `final readonly`, pure — no Action/Service/Livewire imports (C5)                                            |
@@ -86,11 +110,11 @@ Prose rules:
   each other's internals (4-layer rule).
 - **Extraction bias** — when a unit grows past its single responsibility, extract smaller named
   units instead of accumulating branches (DRY-first clean code).
-- **Domain decomposition** — domain bisnis yang **berbeda** dari Module menjadi Domain sendiri
-  (`app/Modules/{Module}/Domain/{Domain}/`) ketika owns 3+ dari 4 operasi CRUD standar atau melayani
-  operasi role-scoped yang distinct. Domain utama Module boleh tetap flat di `app/Modules/{Module}/`
-  agar tidak terlalu dalam. Domain berbeda tidak boleh di-split maupun di-collapse ke flat setelah matang.
-  See `.agents/rules/domain-boundary.md`.
+- **Domain decomposition** — a business domain that is distinct from its Module becomes its own
+  Domain (`app/Modules/{Module}/Domain/{Domain}/`) when it owns 3+ of the 4 standard CRUD operations
+  or serves distinct role-scoped operations. The Module's primary domain may stay flat in
+  `app/Modules/{Module}/` to keep depth manageable. Separate Domains must not be split further nor
+  collapsed back to flat once mature.
 
 ---
 
@@ -180,7 +204,7 @@ unexpected `Throwable`, logs, rethrows. **HasExceptionContext** — `withHint()`
 
 ## 11. Testing Patterns
 
-**Module-First** — `tests/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** —
+**Type-First, Module-Scoped** — `tests/{Type}/{Module}/{SubModule}/{Name}Test.php` where {Type} ∈ {Arch, Unit, Feature, Browser}. **Scope Isolation** —
 one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB);
 Actions/Livewire: feature (with DB). **Action Testing** — test DTO construction, ActionResponse
 handling, Entity rule enforcement, event dispatch. **Performance** — `LazilyRefreshDatabase`,

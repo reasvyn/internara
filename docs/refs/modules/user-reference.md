@@ -80,7 +80,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
 | `Entities/TeacherEntity.php` | `TeacherEntity` | `BaseEntity` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -210,7 +210,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/User/`. See [Testing](../../guides/infra/testing.md) for the testing
+Tests are located in `tests/{Type}/User/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for the testing
 conventions. Tests are spec-driven: each test traces to a spec requirement ID (`FR-*` / `NFR-*` /
 `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention (grouped under
 `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.
@@ -239,7 +239,7 @@ conventions. Tests are spec-driven: each test traces to a spec requirement ID (`
 - **Business Logic**: `app/Modules/User/`
 - **Routing**: `routes/web/user.php`
 - **Views**: `resources/views/user/`
-- **Testing**: `tests/User/`
+- **Testing**: `tests/{Type}/User/`
 - **Dependencies**: Core, SysAdmin
 
 _For overview and business context, see [user.md](user.md)._

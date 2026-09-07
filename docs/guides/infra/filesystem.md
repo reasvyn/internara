@@ -144,3 +144,9 @@ traversal.
 - `database/migrations/` — media table migration
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 - [Media Library](media-library.md) — detailed media library documentation
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

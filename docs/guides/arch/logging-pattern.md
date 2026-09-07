@@ -70,7 +70,7 @@ Three independent layers ensure logging integrity:
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `Log::info('User created')` outside SmartLogger | `SmartLogger::info('User created')->save()` | Single point of entry bypassed |
 | Logging raw email/IP without `withPiiMasking()` | `SmartLogger::info(...)->withPiiMasking()->save()` | PII exposure in logs |

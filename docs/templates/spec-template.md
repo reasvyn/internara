@@ -4,13 +4,14 @@
 
 The fixed section skeleton every spec in `docs/specs/` follows: the 10 numbered sections plus a
 Test Requirements footer (see below). Specs are the requirements SSOT — implementation and tests
-trace back to the requirement IDs defined here. Section-by-section content rules live in the
-`spec-writing` skill.
+trace back to the requirement IDs defined here. Section-by-section content rules are documented
+inline in §Writing Discipline below.
 
 ## The Skeleton
 
 Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID}` is a fresh
-5-character alphanumeric registry key (see the spec-indexing rule for allocation).
+5-character alphanumeric registry key, unique under `docs/specs/` and registered in
+`docs/specs/index.md` (see §Spec IDs below).
 
 ```markdown
 # {ID} — {Feature Name}
@@ -116,6 +117,14 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 - [specs/index.md](index.md) — registry entry
 ```
 
+## Spec IDs
+
+- **Format:** `{ID}-{feature}.md` where `{ID}` is a unique 5-character `A-Z0-9` key (e.g.
+  `D2FT3-architecture.md`). Allocation order is irrelevant; uniqueness and registry entry are not.
+- **Registry:** every spec is registered in `docs/specs/index.md` with the same ID.
+- **Requirement IDs:** stable per spec — `FR-{AREA}-NN`, `NFR-{AREA}-NN`, `UC-{AREA}-NN`; tests and
+  implementation reference them verbatim.
+
 ## Writing Discipline
 
 - Every FR/NFR/UC gets a stable ID (`FR-{AREA}-NN`) — tests reference these IDs verbatim.
@@ -127,6 +136,5 @@ Deterministic four-layer coverage grounded in the retained requirements above. T
 
 ## Quick References
 
-- [`doc-template.md`](../doc-template.md) — shared documentation standards (Diátaxis, principles)
-- `spec-writing` skill rules — section-by-section intent for each template section (agent-facing)
-- [`index.md`](index.md) — spec registry and build order
+- [`doc-template.md`](doc-template.md) — shared documentation standards (Diátaxis, principles)
+- [`specs/index.md`](../specs/index.md) — spec registry and build order

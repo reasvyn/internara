@@ -60,3 +60,14 @@ All time-scoped features — programs, enrollments, reports — reference the ac
 - Program (internship scoping by academic year)
 - Enrollment (registration scoping by academic year)
 - User (department assignment for teachers and students)
+
+## Design Principles
+
+- **Single-tenant school context** — one school per installation. School-wide attributes (legal name, NPSN, principal, address) live as `school.*` keys in the Settings key-value store, not as a dedicated table. Avoid creating a `schools` table or `tenant_id` columns; they contradict the operating model.
+- **Active year singleton** — exactly one academic year is active at any time. Enforce this at the model/Action layer (deactivating all others on activation); never rely on the database alone, and never allow overlapping year ranges or start dates after end dates.
+- **Calendar as scoping boundary** — academic years scope programs, enrollments, and reports by default. Treat date-validity as a hard invariant: cross-year queries must reference the active year explicitly, never implicitly.
+- **Departments are organizational, not hierarchical** — a department groups teachers, students, and programs. Guarded deletion must always enumerate blocking records (active programs, assigned users, active placements) before rejecting, so operators can resolve dependencies.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

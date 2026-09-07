@@ -137,7 +137,7 @@ Events integrate with SmartLogger in two ways:
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | Event class with no listener registered | Add event only when listener exists | YAGNI — dead code |
 | `event(new EntityCreated())` preemptively | Add event only when listener is implemented | Premature dispatch |

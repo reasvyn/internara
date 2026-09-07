@@ -628,3 +628,9 @@ See `docker-compose.dev.yml` for the Sail configuration.
 - [Media Library](media-library.md) -- file uploads, S3 storage, image conversions
 - [Backup & Recovery](../backup-recovery.md) -- account recovery, database dumps, restoration
 - [Observability](../system-observability.md) -- logging, Pulse, health checks
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

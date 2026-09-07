@@ -225,6 +225,11 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 - `app/Modules/SysAdmin/Backup/` — Backup management Livewire components

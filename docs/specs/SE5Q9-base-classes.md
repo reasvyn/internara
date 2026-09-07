@@ -467,13 +467,13 @@ utility classes and then the event/RBAC infrastructure that these base classes d
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
-| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing the temporary `.agents/plans/audits/core-2026-09/` files (which will be r... | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
-| OQ-1 | Dokumentasi di 20+ file mereferensikan CLI scanner dengan path lama `tools/scan_<name>/cli.py`, sementara semua scanner sebenarnya berupa file flat di `tools/scan_<name>.py` (ti... | Open | Maintainer | [#430](https://github.com/reasvyn/internara/issues/430) |
+| R-1 | This issue is the **authoritative audit record** for the Core module spec audit Sessions 1+2, replacing temporary provisional audit notes (now archived beyond git history) | Open | Maintainer | [#435](https://github.com/reasvyn/internara/issues/435) |
+| OQ-1 | Documentation in 20+ files references the CLI scanners by the old path `tools/scan_<name>/cli.py`, while all scanners are actually flat files at `tools/scan_<name>.py` (the... | Open | Maintainer | [#430](https://github.com/reasvyn/internara/issues/430) |
 
 ## Quick References
 

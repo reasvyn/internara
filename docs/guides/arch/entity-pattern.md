@@ -184,7 +184,7 @@ test('active entity can be approved', function () {
 
 ## Anti-Patterns
 
-| You see... | It should be... | Violation |
+| You see… | It should be… | Violation |
 |-----------|----------------|-----------|
 | `$model->canLogin()` / `$model->isActive()` on Eloquent Model | `$model->asRole()->allowsLogin()` / `$entity->asState()->isActive()` | Anemic Domain Model (Fowler) — business logic on data access object |
 | Entity with `DB::query()` / `Cache::get()` / `Http::get()` | Pure entity — zero I/O, zero framework deps | Domain Model Purity violation (Khorikov) |

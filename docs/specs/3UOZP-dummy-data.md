@@ -40,9 +40,9 @@ lifecycle state. Ad-hoc or out-of-order seeding produces dangling references and
 ### PS-4 — Demo Code Must Not Pollute Application Core
 
 A dummy-data generator placed in `app/` or `database/` (both autoloaded in production installs)
-risks being invoked in production and blurs the line between real seeders and demo helpers. The
-generator belongs in `tests/` — which ships only with dev dependencies (`autoload-dev`) — so dummy
-code can never run in a production deployment.
+would blur the line between real seeders and demo helpers. The generator belongs in `tests/` so it
+ships only with dev dependencies, staying out of normal production code while remaining invocable
+on demand for demo instances.
 
 ---
 
@@ -54,7 +54,7 @@ code can never run in a production deployment.
 | --- | ---- |
 | G1  | Provide one command (`php artisan db:seed --class=DummySeeder`) that populates a complete demo dataset |
 | G2  | Generate data exclusively from existing model factories — no hand-written fixture files |
-| G3  | Keep the generator in `tests/Support/` so it is dev-only and never part of production code |
+| G3  | Keep the generator in `tests/Support/` so it is dev-only and stays out of production application code |
 | G4  | Produce a coherent dataset: FK references resolve, counters (`filled_quota`) are consistent, lifecycle states are valid |
 | G5  | Provide deterministic demo accounts with known credentials for every role |
 | G6  | Be idempotent — re-runnable without duplicating records |
@@ -65,7 +65,7 @@ code can never run in a production deployment.
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Production seed data — `DummySeeder` is demo/testing only and must never run in production |
+| NG1  | Automatic production seeding — `DummySeeder` is opt-in only and never registered in `DatabaseSeeder`/`SetupSeeder`; it does not run unless explicitly invoked |
 | NG2  | Static JSON/CSV fixtures (`database/dummy-data.json`) — replaced by factory generation |
 | NG3  | Media/PDF file generation — attachments reference metadata only; actual file uploads are out of scope |
 | NG4  | Realistic quantity at scale — the dataset is sized for demo (tens of students), not load testing |
@@ -170,7 +170,7 @@ code can never run in a production deployment.
 | FR-C17 | Certificates: `issued` for completed-internship registrations with unique `certificate_number` and `qr_hash` |
 | FR-C18 | Incident reports: 1–2 with mixed severities and statuses |
 | FR-C19 | Student names must be generated without academic titles (no faker `id_ID` `suffix` like S.Pd/S.Kom/M.TI.) — an SMK student does not hold a degree; teachers, supervisors, and admin may retain the default titled format |
-| FR-E6 | `DummySeeder` MUST refuse to run when `APP_ENV=production` (exit non-zero, no records) | |
+| FR-E6 | `DummySeeder` MUST run in any environment, including production, when invoked explicitly (opted-in via `db:seed --class=DummySeeder` or `setup:install --with-dummy`) | |
 
 ---
 
@@ -178,7 +178,7 @@ code can never run in a production deployment.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | `DummySeeder` must refuse to run when `APP_ENV=production` |
+| NFR-S1 | `DummySeeder` must run only when invoked explicitly (opt-in) — never registered in `DatabaseSeeder`/`SetupSeeder` |
 | NFR-S2 | Demo passwords must be hashed — never stored in plaintext |
 | NFR-S3 | Faker data must avoid real personal information |
 | NFR-P1 | Full seed must complete in under 60 seconds on a local SQLite database |
@@ -203,7 +203,6 @@ php artisan db:seed --class=DummySeeder
 ```
 Database\Seeders\DummySeeder extends Seeder
     run(): void
-        → refuse when app()->environment('production')
         → call RolePermissionSeeder / AppSettingSeeder / AcademicYearSeeder when base data absent
         → Tests\Support\DummyData::make()->run()
         → print bilingual summary via $this->command->info(__('...'))
@@ -287,21 +286,23 @@ drifts from the schema.
 
 **Decision:** The generator lives at `Tests\Support\DummyData` under the `autoload-dev` PSR-4
 mapping (`Tests\` → `tests/`); the `DummySeeder` in `Database\Seeders` invokes it.
-**Rationale:** `composer install --no-dev` (production) drops `autoload-dev`, so the generator can
-never ship to or run in a production deployment. It also keeps `app/` and `database/` free of demo
-logic, mirroring the existing `Tests\Support\WithSettingsSeed` trait convention.
-**Trade-off:** `DummySeeder` depends on a dev-autoloaded class — acceptable because it is
-explicitly demo-only and never registered in the base seeders.
+**Rationale:** Keeping the generator in `tests/` keeps `app/` and `database/` free of demo logic,
+mirroring the existing `Tests\Support\WithSettingsSeed` trait convention. The seeder remains
+invocable explicitly from any environment where dev dependencies are present (e.g., demo or
+staging instances that run `composer install` including dev).
+**Trade-off:** `DummySeeder` depends on a dev-autoloaded class, so running it requires dev
+dependencies to be installed (`composer install --no-dev` excludes it) — acceptable for opt-in
+demo seeding.
 **Rejected alternative:** Helper in `app/Support/` or `database/helpers/` — pollutes production
-code and risks accidental production invocation.
+code.
 
 ### DD-3 — `DummySeeder` Is Opt-In Only
 
 **Decision:** `DummySeeder` is never added to `DatabaseSeeder` or `SetupSeeder`; it is invoked
 explicitly by the developer.
 **Rationale:** The base seeders run in production installs (`setup:install`, Docker entrypoint).
-Registering a dev-only seeder that loads a tests-autoloaded helper there would break production.
-Opt-in keeps the door closed by default.
+Registering a dev-only seeder there would make it run automatically on every install. Opt-in keeps
+the door closed by default.
 **Trade-off:** One extra command for developers — mitigated by `setup:install --with-dummy`
 (installation spec FR-C10), which keeps the seeder unregistered while making demo seeding one
 flag away on a fresh install.
@@ -311,8 +312,9 @@ flag away on a fresh install.
 **Decision:** Demo accounts use predictable `role{n}@example.com` addresses and a shared `password`.
 **Rationale:** Demo presenters must log in without guessing (UC-2); deterministic identities also
 make idempotency (`firstOrCreate` on email/username) trivial (FR-H5).
-**Trade-off:** Known credentials are a minor security surface — acceptable because the seeder
-refuses to run in `APP_ENV=production` (NFR-S1).
+**Trade-off:** Known credentials are a minor security surface — acceptable because the seeder is
+opt-in only (FR-E3) and the demo accounts are documented. The demo administrator account must be
+disabled or its password changed before a non-demo go-live.
 
 ### DD-5 — Idempotency via Natural Keys and Derived Counters
 
@@ -430,7 +432,7 @@ suffix additions; constructing the name explicitly at generation is deterministi
 | Demo accounts                 | all roles work  | Login succeeds for each account in §6.3        |
 | Module screen coverage         | all modules     | Manual walkthrough of each module's list screen |
 | Duplicate records on re-run    | 0               | `firstOrCreate` on natural keys               |
-| Production guard               | blocked         | `APP_ENV=production` run exits with error      |
+| Opt-in only                    | unregistered    | Not present in `DatabaseSeeder`/`SetupSeeder` (FR-E3) |
 | Partial data after failed seed | 0 records       | Inject a failure mid-generation; verify no records persist (FR-H13, NFR-R2) |
 
 ---
@@ -456,9 +458,9 @@ This spec can only be implemented after the following specs are **fully complete
 
 Implement `Tests\Support\DummyData` (orchestrating the existing factories in dependency order,
 wrapped in a single transaction, with the factory states in §6.4), add the thin
-`Database\Seeders\DummySeeder` entry point with the production guard and bilingual summary, then
-document usage in `docs/guides/infra/database.md` (Seeders section) and register the new factory
-states in their module reference docs.
+`Database\Seeders\DummySeeder` entry point with the opt-in guard (FR-E3, NFR-S1) and bilingual
+summary, then document usage in `docs/guides/infra/database.md` (Seeders section) and register the
+new factory states in their module reference docs.
 
 ### Next Steps
 
@@ -473,12 +475,23 @@ states in their module reference docs.
 ## 10. Risks & Assumptions
 
 Open risks, assumptions, and unresolved decisions tracked against this spec. Each row links to the
-GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](spec-template.md)
+GitHub Issue that tracks resolution; status updates as issues close. See [`spec-template.md`](../templates/spec-template.md)
 for row conventions.
 
 | ID   | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | ---- | ---------------------------------- | ------ | ----- | -------- |
 
+
+## Test Requirements
+
+Tests follow `describe("{SpecID}: {description}")` + `it("{SpecID}-{ReqID}: description")` under `tests/{Arch,Unit,Feature,Browser}/{Module}/`. See [`scan_spec_tests.py`](../../tools/scan_spec_tests.py) for coverage tracking.
+
+| Layer | Test dir | Verifies |
+|-------|----------|----------|
+| Architecture | `tests/Arch/{Module}/` | Module boundaries, base-class mandates, C1–C8/D1–D6 invariants |
+| Unit | `tests/Unit/{Module}/` | Entity/Enum/DTO/Policy pure business rules |
+| Feature | `tests/Feature/{Module}/` | Action execute() behavior, Livewire flows, events |
+| Browser | `tests/Browser/{Module}/` | Client → UI/UX interaction journeys |
 
 ## Quick References
 

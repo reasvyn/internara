@@ -23,8 +23,8 @@ Core installation orchestration via `php artisan setup:install`. Provisions the 
 (migrations), seeds base roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor` via
 Spatie), creates the initial academic year, generates a cryptographically secure setup token, and
 marks the system as installed. With `--with-dummy`, the demo dataset (`DummySeeder`) is seeded
-after provisioning for development/demo environments; in `APP_ENV=production` the seed is skipped
-with a warning (installation spec FR-C10, NFR-S13).
+after provisioning in any environment when explicitly requested (installation spec FR-C10, NFR-S13;
+dummy-data spec FR-E6).
 
 ### Wizard
 
@@ -84,3 +84,14 @@ username must match the config values, so a config change alone does not rename 
 ## Used By
 
 - SysAdmin (recovery commands reference setup token)
+
+## Design Principles
+
+- **Setup runs exactly once** — the `is_installed` flag permanently disables all setup routes and actions after finalization. Re-running `php artisan setup:install` on an installed system throws `ModuleException`. This is the primary security boundary between the installation phase and production runtime.
+- **System provisioning is fully atomic** — role seeding, initial academic year creation, and admin placeholder provisioning happen in a single database transaction. If any step fails, the entire provision rolls back. No partial state is left behind.
+- **The super admin is provisioned from config, not wizard input** — `SetupSuperAdminAction` reads name and username from `config('setup.defaults.*')`. Config changes after provisioning do not retroactively rename the super admin account; the invariant is enforced by `SuperAdminIntegrityRules`.
+- **Setup token is one-time and time-limited** — the token is generated cryptographically, stored encrypted, redeemed once during finalization, and then invalidated. Regeneration is blocked after finalization. The token is the access key to the setup wizard, not a long-lived credential.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*

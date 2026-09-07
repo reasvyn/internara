@@ -36,7 +36,7 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | `Domain/Rubric/Models/Rubric.php` | `Rubric` | `BaseModel` |
 | `Models/Assessment.php` | `Assessment` | `BaseModel` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -95,7 +95,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/Assessment/`. See [Testing](../../guides/infra/testing.md) for the
+Tests are located in `tests/{Type}/Assessment/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for the
 testing conventions.
 
 ## Factories
@@ -120,7 +120,7 @@ testing conventions.
 - **Business Logic**: `app/Modules/Assessment/`
 - **Routing**: `routes/web/assessment.php`
 - **Views**: `resources/views/assessment/`
-- **Testing**: `tests/Assessment/`
+- **Testing**: `tests/{Type}/Assessment/`
 - **Dependencies**: Core
 - **Used By**: Evaluation
 

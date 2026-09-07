@@ -173,7 +173,7 @@ ModuleException (abstract, extends RuntimeException)
 | `Livewire/Concerns/WithRecordSelection.php` | `WithRecordSelection` | `Component` |
 | `Livewire/Concerns/WithSorting.php` | `WithSorting` | `Component` |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -270,7 +270,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Core/`. See [Testing](../../guides/infra/testing.md) for
+Tests are located in `tests/{Type}/Core/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for
 the testing conventions.
 
 ## Factories
@@ -294,7 +294,7 @@ None - Core provides base classes only.
 - **Business Logic**: `app/Modules/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
 - **Views**: `resources/views/ui/`
-- **Testing**: `tests/Core/`
+- **Testing**: `tests/{Type}/Core/`
 - **Cache Config**: `config/cache-keys.php`
 
 _For overview and business context, see [core.md](core.md)._

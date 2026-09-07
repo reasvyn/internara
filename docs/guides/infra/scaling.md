@@ -462,3 +462,9 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 | [ADR: Self-Hosted Single-Tenant](../../adr/adr-self-hosted-single-tenant.md) | Why shared-hosting-first                              |
 | [ADR: Gradual Migration](../../adr/adr-gradual-migration.md)                 | Governing principle for scaling                       |
 | [ADR: Performance Optimization](../../adr/adr-performance-optimization.md)   | Performance tiers, deferred optimizations             |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

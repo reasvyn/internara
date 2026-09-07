@@ -163,3 +163,9 @@ When Redis is the session driver, locale preference survives application restart
 - `routes/web/auth.php` — password confirmation routes (`/user/confirm-password`)
 - `bootstrap/app.php` — middleware configuration
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

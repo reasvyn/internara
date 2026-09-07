@@ -107,3 +107,13 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 - `philosophy.md` — values, principles, pragmatic trade-offs
 - `docs/specs/QLHDO-project-initialization.md` — umbrella spec (functional/non-functional/UI-UX)
 - `architecture.md` — 4-layer model and Action Triad that make the vision executable
+
+---
+
+## Quick References
+
+- [Documentation index](index.md) — Browse all documentation
+- [Feature spec index](specs/index.md) — All feature specifications
+- [Architecture Decision Records](adr/index.md) — Why-key decisions
+- [Guides index](guides/index.md) — Operational how-tos
+- [Module reference index](refs/modules/index.md) — Module API reference

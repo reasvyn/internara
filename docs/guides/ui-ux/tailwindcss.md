@@ -871,3 +871,9 @@ Organize classes by purpose for readability:
 | Tailwind CSS Theme | https://tailwindcss.com/docs/theme |
 | Tailwind UI (Components) | https://tailwindui.com/components |
 | Heroicons (Icons) | https://heroicons.com/ |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

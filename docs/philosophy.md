@@ -124,3 +124,13 @@ supervisors.
 - We do not sacrifice reliability for architectural purity.
 - We do not ship untested code.
 - We do not deprecate patterns without a documented migration path.
+
+---
+
+## Quick References
+
+- [index.md](index.md) — Documentation index
+- [specs/index.md](specs/index.md) — Feature spec index
+- [adr/index.md](adr/index.md) — Architecture Decision Records
+- [guides/index.md](guides/index.md) — Guides index
+- [refs/modules/index.md](refs/modules/index.md) — Module reference index

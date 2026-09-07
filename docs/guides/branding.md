@@ -123,3 +123,9 @@ Sans finishes loading.
 | Color presets config             | `config/settings.php`                     |
 | Font files                       | `resources/fonts/`                        |
 | CSS entry point                  | `resources/css/app.css`                   |
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

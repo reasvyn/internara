@@ -73,6 +73,11 @@ Key settings populated during/after setup:
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 - `app/Modules/Settings/` — Settings CRUD and observer

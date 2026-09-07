@@ -191,3 +191,13 @@ Follow the [Setup Wizard](guides/setup-wizard.md) guide for a detailed walkthrou
 | [Post-Setup](guides/post-setup.md)               | First actions after the wizard completes                    |
 | [Architecture](architecture.md)                    | System design, modules, layers                              |
 | [Infrastructure](guides/infra/infrastructure.md) | Deployment options, background processes, storage           |
+
+---
+
+## Quick References
+
+- [Documentation index](index.md) — Browse all documentation
+- [Feature spec index](specs/index.md) — All feature specifications
+- [Architecture Decision Records](adr/index.md) — Why-key decisions
+- [Guides index](guides/index.md) — Operational how-tos
+- [Module reference index](refs/modules/index.md) — Module API reference

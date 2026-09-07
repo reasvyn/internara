@@ -147,7 +147,7 @@ php artisan setup:install --check-only  # Audit without provisioning
 
 ## Troubleshooting
 
-| Problem | Likely Cause | Resolution |
+| Symptom | Cause | Fix |
 | ------- | ------------ | ---------- |
 | Blank white page | Storage not writable | `chmod -R 775 storage bootstrap/cache` |
 | Images not loading | Storage link missing | `php artisan storage:link` |

@@ -38,7 +38,7 @@ permissions.
 |---|---|---|---|
 | `Domain/Permissions/Enums/Role.php` | `Role` | `LabelEnum` | — |
 
-## Policies
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|
@@ -124,7 +124,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/Auth/`. See [Testing](../../guides/infra/testing.md) for
+Tests are located in `tests/{Type}/Auth/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md) for
 the testing conventions.
 
 ## Factories
@@ -153,7 +153,7 @@ None.
 - **Business Logic**: `app/Modules/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
-- **Testing**: `tests/Auth/`
+- **Testing**: `tests/{Type}/Auth/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [auth.md](auth.md)._

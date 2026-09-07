@@ -70,7 +70,7 @@ Because `deploy.sh` builds from `GIT_URL=...#hotfix` and gates on the 60s `HEALT
 successful run guarantees the live site is serving the `hotfix` branch. Local quality gates still
 apply — run `vendor/bin/pint --test`, the targeted Pest tests, and the arch scanners before
 deploying. See [Deployment](deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes) for the
-full procedure and `.agents/context/deploy-topology.md` (agent context) for operational caveats.
+full procedure.
 
 ---
 
@@ -148,8 +148,7 @@ npm run build                               # Vite production build
 
 ## Release workflow
 
-See [Deployment](deployment.md) for the full VPS/CI/CD operational details and
-`.agents/context/deploy-topology.md` for operational caveats (agent context).
+See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
 
 ### How to release (staged)
 
@@ -189,3 +188,9 @@ repo. `deploy.sh` requires no credentials — the SSH key authenticates on the r
 - [Deployment](deployment.md) — environment setup, Docker stack, reverse proxy
 - [Infrastructure](infrastructure.md) — tier-based infra design
 - [Testing](testing.md) — test strategy & quality gates
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

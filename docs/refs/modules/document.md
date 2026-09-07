@@ -86,3 +86,14 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 - Enrollment (document upload verification references)
 - SysAdmin (compliance reporting)
 
+## Design Principles
+
+- **Unified document table with type discriminator** — templates and handbooks share the same `documents` table distinguished by `type`. A single polymorphic table prevents table sprawl while keeping type-specific behavior (Blade+DomPDF rendering for templates, acknowledgement tracking for handbooks) in the application layer.
+- **Layout snapshots are frozen at render time** — rendered HTML and PDF are stored as immutable snapshots within the document record. Later template edits must never alter already-generated documents; the snapshot is the compliance artifact. Treat the render pipeline as a write-once event.
+- **Policy acknowledgement is append-only and immutable** — each acknowledgement is a row in `activity_log` (append-only, never updated or deleted). Capturing IP address and user agent makes the record legally meaningful. A new handbook version automatically requires a new acknowledgement cycle.
+- **Rendering failures do not corrupt document state** — a `RenderException` thrown by the DomPDF pipeline is logged via SmartLogger but does not mutate the document record. The operator sees the failure reason; the document remains in a consistent state for retry.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
+

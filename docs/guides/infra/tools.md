@@ -285,6 +285,11 @@ python3 tools/scan_issues/cli.py
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 | Topic | Location |

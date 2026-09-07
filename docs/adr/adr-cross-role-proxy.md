@@ -59,9 +59,9 @@ proxy is a runtime permission check, not a role expansion.
 **Proxy Hierarchy:**
 
 ```
-Admin ── dapat proxy ──> Teacher ── dapat proxy ──> Supervisor
+Admin ── can proxy ──> Teacher ── can proxy ──> Supervisor
   │                           │
-  └────── dapat proxy ─────────┘
+  └────── can proxy ──────────┘
 ```
 
 | Acting User | Can Proxy As | Scope |

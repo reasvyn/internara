@@ -49,6 +49,17 @@ Status handling does **not** flow through this package:
   simple column, not a package-managed history table
 - Removal plan and evidence: [#419](https://github.com/reasvyn/internara/issues/419)
 
+## How Internara Uses It
+
+This package is **not** used in the codebase. No model imports `HasStatus`, no
+`model_statuses` migration exists, and the only artifact is `config/model-status.php` with no
+consumer. Status persistence is owned by the application (plain `status` column on `User` and
+`Registration`, governed by the `StatusEnum` contract).
+
+The package is retained in `composer.json` pending removal under
+[#419](https://github.com/reasvyn/internara/issues/419); new code must not adopt the `HasStatus`
+trait or reference any `Spatie\ModelStatus\*` symbol.
+
 ## Quick References
 
 - [Official docs](https://github.com/spatie/laravel-model-status) — full package documentation

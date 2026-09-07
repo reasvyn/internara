@@ -245,3 +245,9 @@ Before submitting, verify:
 - `lang/` — translation files (module-level `{module}.php` and optional submodule `{submodule}.php`)
 - `app/Modules/Core/Contracts/LabelEnum.php` — enum label contract
 - `app/Modules/Core/Contracts/StatusEnum.php` — state machine enum contract
+---
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|

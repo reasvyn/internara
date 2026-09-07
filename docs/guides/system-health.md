@@ -284,6 +284,11 @@ php artisan config:clear               # Clear config cache
 
 ---
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+
 ## Quick References
 
 - `app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health check implementation

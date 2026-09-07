@@ -85,3 +85,14 @@ events).
 
 - SysAdmin (account lifecycle management)
 - Every module that requires authorization checks
+
+## Design Principles
+
+- **Flat RBAC, explicit checks** — Internara uses five flat roles with permission checks at both middleware (route-level) and policy (model-level) layers. Never introduce implicit role hierarchies; add a new role or a capability check instead. Composite roles derive from group membership, not Spatie assignments.
+- **Super admin is a system invariant** — exactly one super admin must exist, be undeletable, and have locked name/username/status. Enforcement lives at both the Action layer (only `SetupSuperAdminAction` can create it) and the Model layer (block `deleting` events). Config changes alone cannot rename an existing account.
+- **Sequential validation pipeline** — login attempts validate in a fixed order (format → existence → status → password) with per-step rate limiting. Never short-circuit the pipeline or merge steps; each stage gates the next so that rate limits apply at the appropriate scope (IP+identifier, not IP alone).
+- **Token types are scoped, not shared** — activation tokens, recovery codes, and generic access tokens all use the same `access_tokens` table but with distinct type discriminators. Tokens are hashed in storage (`Hash::make()`), support soft-revocation, and never expose the raw token in URLs or logs.
+
+## How It Works
+
+*Content to be added — verify against actual implementation.*
