@@ -15,11 +15,11 @@
     <x-ts-dropdown.items
         text="{{ __('common.language.indonesian') }}"
         icon="globe-alt"
-        x-on:click="$dispatch('lang-switch', 'id')"
+        wire:click="changeLocale('id')"
     />
     <x-ts-dropdown.items
         text="{{ __('common.language.english') }}"
         icon="globe-alt"
-        x-on:click="$dispatch('lang-switch', 'en')"
+        wire:click="changeLocale('en')"
     />
 </x-ts-dropdown>

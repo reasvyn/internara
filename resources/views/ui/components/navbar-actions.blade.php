@@ -20,7 +20,7 @@
     {{-- Language Switcher --}}
     @if ($showLanguage)
         <div class="hidden md:block">
-            <livewire:settings.lang-switcher />
+            <livewire:settings.lang-switch />
         </div>
     @endif
 

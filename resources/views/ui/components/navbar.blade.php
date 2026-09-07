@@ -47,7 +47,7 @@
         @if (! isset($actions))
             <div class="hidden items-center gap-2 md:flex">
                 <x-ui::components.theme-switch size="sm" />
-                <livewire:settings.lang-switcher />
+                <livewire:settings.lang-switch />
             </div>
         @endif
 
@@ -86,7 +86,7 @@
             <div class="border-base-content/10 mt-2 flex items-center justify-between border-t pt-3">
                 <div class="flex items-center gap-2">
                     <x-ui::components.theme-switch size="sm" />
-                    <livewire:settings.lang-switcher />
+                    <livewire:settings.lang-switch />
                 </div>
                 @isset($mobileExtra)
                     {{ $mobileExtra }}

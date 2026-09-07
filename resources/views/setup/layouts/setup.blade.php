@@ -19,7 +19,7 @@
                             <x-ui::components.theme-switch />
                         </div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
-                        <livewire:settings.lang-switcher class="px-2" />
+                        <livewire:settings.lang-switch class="px-2" />
                     </div>
                 </div>
             </div>

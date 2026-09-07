@@ -170,7 +170,7 @@ number_format($amount, 2)
 #### 3.3 Process
 
 - Add key to `lang/en/{file}.php` **and** `lang/id/{file}.php` in same commit. CI `LangChecker` fails otherwise.
-- Switcher: `settings.livewire.lang-switcher` (`<x-ts-dropdown>` + `wire:click="setLocale('id'/'en')"` + `aria-label`); header also exposes `livewire:settings.lang-switcher`. Never hand-roll locale toggle.
+- Switcher: `settings.livewire.lang-switch` (`<x-ts-dropdown>` + `wire:click="setLocale('id'/'en')"` + `aria-label`); header also exposes `livewire:settings.lang-switch`. Never hand-roll locale toggle.
 - Switching dispatches `language-changed` → JS reload (see `resources/js/app.js` `livewire:init`).
 
 ### 4. User Flow & Information Architecture

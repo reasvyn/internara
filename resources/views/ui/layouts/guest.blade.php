@@ -13,7 +13,7 @@
                         <div class="inline-flex">
                             <x-ui::components.theme-switch />
                         </div>
-                        <livewire:settings.lang-switcher />
+                        <livewire:settings.lang-switch />
                     </div>
                 </div>
             </div>

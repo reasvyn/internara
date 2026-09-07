@@ -62,7 +62,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 **Flow:**
 1. `HomePage::mount(ReadRegistrationAvailabilityAction)` runs — no redirect, sets `$registration = $action->execute()`
 2. `render()` returns `view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])`
-3. Guest shell renders: sticky header (brand `wire:navigate /` + `theme-switch` + `lang-switcher`), `main#main-content`, footer `credits`
+   3. Guest shell renders: sticky header (brand `wire:navigate /` + `theme-switch` + `lang-switch`), `main#main-content`, footer `credits`
 4. Hero renders: brand `size=xl`, 3 pills, tagline `brand('tagline') ?: __('common.app_tagline')` as gradient `h1`, `hero_desc`, wave divider
 5. Cards section (`bg-base-200`) shows registration card (branch per UC-4) + login card + 3 feature highlights
 **Postconditions:** Landing visible without auth; internal links use `wire:navigate` (SPA); theme/lang switchers functional
@@ -100,7 +100,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 ### UC-6 — Visitor Changes Locale or Theme on Homepage
 
 **Actor:** Visitor on homepage
-**Flow:** Clicks `livewire:settings.lang-switcher` (EN↔ID, cookie `locale` via `SetLocale`) or `x-ui::components.theme-switch` (light/dark/system → `app.js applyTheme()` sets `data-theme`+`.dark`+cookie)
+**Flow:** Clicks `livewire:settings.lang-switch` (EN↔ID, cookie `locale` via `SetLocale`) or `x-ui::components.theme-switch` (light/dark/system → `app.js applyTheme()` sets `data-theme`+`.dark`+cookie)
 **Postconditions:** Locale/theme updates in-place; hero/cards/wave recolor via CSS variables; persists on reload
 
 ---
@@ -122,7 +122,7 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 | ID | Requirement | Priority |
 |----|-------------|----------|
-| FR-HP-07 | Guest shell (`ui::layouts.guest` → `ui::layouts.base`) must be `bg-base-200 flex min-h-screen flex-col` with: sticky header `bg-base-100/80 border-base-content/10 backdrop-blur-sm` containing brand link `wire:navigate href="/"` (`x-ui::components.brand size=sm`) + `x-ui::components.theme-switch` + `livewire:settings.lang-switcher`; `main#main-content.flex.flex-1.flex-col` for `$slot`; footer `border-base-content/10 mt-auto border-t py-8` with `x-ui::components.credits` (fallback) | P0 |
+| FR-HP-07 | Guest shell (`ui::layouts.guest` → `ui::layouts.base`) must be `bg-base-200 flex min-h-screen flex-col` with: sticky header `bg-base-100/80 border-base-content/10 backdrop-blur-sm` containing brand link `wire:navigate href="/"` (`x-ui::components.brand size=sm`) + `x-ui::components.theme-switch` + `livewire:settings.lang-switch`; `main#main-content.flex.flex-1.flex-col` for `$slot`; footer `border-base-content/10 mt-auto border-t py-8` with `x-ui::components.credits` (fallback) | P0 |
 | FR-HP-08 | `ui::layouts.base` must provide `<html lang="{{ app()->getLocale() }}" data-theme>` + `.dark` class, injected `Theme::cssVariables()` `<style>`, `<head>` via `base/head`, and `wire:navigate` focus-reset chrome per 8XMYS | P0 |
 
 ### Homepage — Hero

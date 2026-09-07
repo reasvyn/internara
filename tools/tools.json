@@ -39,6 +39,10 @@
       "script": "scan_doc_links.py",
       "description": "Broken relative links and anchors in markdown"
     },
+    "docs-template": {
+      "script": "scan_docs_template.py",
+      "description": "Documentation template adherence (ADR, Spec, Guide, Pattern, Module, Index structures)"
+    },
     "files": {
       "script": "scan_files.py",
       "description": "File counts and lines of code per module"

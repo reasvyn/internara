@@ -101,7 +101,7 @@
             {{-- Mobile-only: theme + lang --}}
             <div class="flex items-center justify-between gap-2 md:hidden">
                 <x-ui::components.theme-switch size="sm" />
-                <livewire:settings.lang-switcher />
+                <livewire:settings.lang-switch />
             </div>
 
             {{-- Desktop: collapse toggle — WAJIB pakai store.toggle(), bukan mutasi collapsed getter.

@@ -36,6 +36,7 @@ SCANNERS = {
     "conventions": "tools/scan_conventions.py",
     "dead-code": "tools/scan_dead_code.py",
     "doc-links": "tools/scan_doc_links.py",
+    "docs-template": "tools/scan_docs_template.py",
     "files": "tools/scan_files.py",
     "issues": "tools/scan_issues.py",
     "module-boundaries": "tools/scan_module_boundaries.py",

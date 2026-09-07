@@ -6,10 +6,9 @@ namespace App\Modules\Settings\Livewire;
 
 use App\Modules\Settings\Domain\Locale\Support\Locale;
 use Illuminate\View\View;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
-class LangSwitcher extends Component
+class LangSwitch extends Component
 {
     public string $locale = 'en';
 
@@ -18,7 +17,6 @@ class LangSwitcher extends Component
         $this->locale = Locale::current();
     }
 
-    #[On('lang-switch')]
     public function changeLocale(string $locale): void
     {
         if (! Locale::isSupported($locale)) {
@@ -36,6 +34,6 @@ class LangSwitcher extends Component
 
     public function render(): View
     {
-        return view('settings.livewire.lang-switcher');
+        return view('settings.livewire.lang-switch');
     }
 }

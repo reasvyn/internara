@@ -128,6 +128,7 @@ contract source.
 | `scan_conventions.py` | D1 strict_types, D4 Fillable, D2 debug calls, hardcoded strings | `D1_*`, `D2_*`, `D4_*`, `HARDCODED_STRING` | arch-guard, code-writing |
 | `scan_dead_code.py` | Unregistered observers, orphan events, unused DTOs/Actions/Jobs | `UNREGISTERED_OBSERVER`, `EVENT_NO_LISTENER`, `UNUSED_DTO`, `UNUSED_ACTION`, `UNUSED_JOB` | arch-guard, code-refactoring |
 | `scan_doc_links.py` | Validate relative links + in-page/other-file anchors in markdown | `BROKEN_FILE_LINK`, `BROKEN_ANCHOR` | sync-docs, doc-writing |
+| `scan_docs_template.py` | Documentation template adherence (ADR, Spec, Guide, Pattern, Module, Index structures) | `TMPL_*`, `ADR_*`, `SPEC_*`, `GUIDE_*`, `PATTERN_*`, `MOD_*`, `DEP_*`, `INDEX_*` | doc-writing |
 | `scan_files.py` | File counts and lines of code per module | — (metadata only) | — |
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | issue-writing, arch-guard |
 | `scan_module_boundaries.py` | Module boundary and dependency checks | `MODULE_*` | arch-guard |
