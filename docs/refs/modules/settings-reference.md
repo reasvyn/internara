@@ -68,7 +68,7 @@ feature toggles.
 | `Domain/Branding/Livewire/Forms/BrandingForm.php` | `BrandingForm` | `BaseFormView` |
 | `Livewire/Forms/GeneralSettingsForm.php` | `GeneralSettingsForm` | `BaseFormView` |
 | `Livewire/Forms/MailSettingsForm.php` | `MailSettingsForm` | `BaseFormView` |
-| `Livewire/LangSwitcher.php` | `LangSwitcher` | `Component` |
+| `Domain/Locale/Livewire/LangSwitch.php` | `LangSwitch` | `Component` |
 | `Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
 
 ## Casts

@@ -9,7 +9,7 @@ organizational unit for grouping students and teachers within a school. This spe
 the Department entity lifecycle (create, read, update, delete), the profile dependency
 deletion guard that prevents orphaning assigned profiles, and event dispatch with dashboard
 cache invalidation. Bulk file import/export is defined in
-[department-bulk-import.md](4CSV1-department-bulk-import.md).
+[department-bulk-import.md](O2KCR-csv-import-export.md).
 
 School profile, academic year lifecycle, and settings infrastructure are separate initiatives —
 see [school-profile.md](81SMS-school-profile.md),

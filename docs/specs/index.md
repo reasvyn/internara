@@ -114,7 +114,6 @@ Internal academic structure. Depends on Phase 2 (school profile).
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
 | 4HWSB | [Department Management](4HWSB-department-management.md) | Academics | 81SMS | Full |
-| 4CSV1 | [Department Bulk Import](4CSV1-department-bulk-import.md) | Academics | 4HWSB, O2KCR | Planned |
 | XW6F5 | [Academic Year Management](XW6F5-academic-year-management.md) | Academics | 81SMS | Full |
 
 ### Phase 5 — Partnerships
@@ -145,7 +144,7 @@ Student intake, placement, user administration. Depends on Phase 6.
 | J9GBH | [Placement](J9GBH-placement.md) | Enrollment | MBB5R, XI3LB | Full |
 | 920SO | [Account Application](920SO-account-application.md) | Enrollment | MBB5R | Full |
 | 95EVB | [User CRUD & Status](95EVB-user-crud-and-status.md) | User | YB7RG | Full |
-| O2KCR | [CSV Import & Export](O2KCR-csv-import-export.md) | Enrollment | 95EVB, XI3LB, 4HWSB | Full |
+| O2KCR | [Bulk Import & Export (Cross-Cutting)](O2KCR-csv-import-export.md) | Core | 95EVB, XI3LB, 4HWSB, 7C5WM, IT0OE, NTHQA, 3S55V, J0M04, XW6F5 | Full |
 | EWCZ0 | [Account Slips](EWCZ0-account-slips.md) | User | 95EVB | Full |
 
 ### Phase 8 — Daily Operations

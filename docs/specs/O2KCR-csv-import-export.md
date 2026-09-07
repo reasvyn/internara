@@ -1,14 +1,19 @@
-# CSV Import & Export — Bulk Data Operations
+# Bulk Import & Export — Cross-Module Tabular Data Operations
 
 > **Spec ID:** O2KCR
 
 ## Description
 
-Specification of Internara's cross-module CSV import and export subsystem. Defines bulk data
-operations for users, departments, and companies — covering file upload, row-by-row validation,
-duplicate detection, credential generation, per-row result reporting, template downloads, and
-filtered export. The shared `CsvHandler` service and `CsvRowResult` enum provide consistent
-behavior across all three modules.
+Specification of Internara's cross-module bulk import and export subsystem for tabular data
+files. Defines the shared `CsvHandler` service and `CsvRowResult` enum that power bulk operations
+across all record managers in the system — covering file upload, row-by-row validation, duplicate
+detection, per-row result reporting, template download, and filtered export. The infrastructure
+currently powers **9 managers** (Users, Departments, Companies, Internships, Internship Groups,
+Partnerships, Announcements, Certificate Templates, Academic Years) and is the canonical place to
+add bulk import/export to additional managers as new bulk operations are introduced.
+
+The system stores data in tabular form, supports CSV import/export today, and is designed to
+accommodate Excel/TSV via format-agnostic column-mapping without changing the manager-side API.
 
 ---
 
@@ -16,16 +21,17 @@ behavior across all three modules.
 
 ### PS-1 — Bulk Onboarding at Scale
 
-Schools may have 500+ students, dozens of departments, and numerous partner companies to onboard
-at the start of an academic year. Manual one-by-one creation through forms is impractical and
-error-prone at this volume. CSV import must handle bulk data entry with consistent validation,
-deduplication, and clear feedback on what was created versus skipped.
+Schools may have 500+ students, dozens of departments, hundreds of partner companies, and many
+internships to onboard at the start of an academic year. Manual one-by-one creation through forms
+is impractical and error-prone at this volume. Bulk import must handle large datasets with
+consistent validation, deduplication, and clear feedback on what was created versus skipped.
 
 ### PS-2 — Duplicate Detection Across Modules
 
 Each module has a natural uniqueness constraint: users by email, departments by name, companies
-by name. Without duplicate detection during import, admins could create redundant records that
-break referential integrity (e.g., duplicate user emails causing login ambiguity). The import
+by name, internships by code, partnerships by company+year. Without duplicate detection during
+import, admins could create redundant records that break referential integrity (e.g., duplicate
+user emails causing login ambiguity, duplicate internships confusing students). The import
 process must detect existing records and skip duplicates transparently.
 
 ### PS-3 — Credential Generation for User Imports
@@ -38,15 +44,22 @@ distribution via account slips.
 ### PS-4 — Per-Row Error Reporting
 
 CSV files from external systems often contain malformed rows — missing required fields, invalid
-email formats, or encoding issues. Rather than failing the entire import on the first bad row,
-the system must process all rows, report per-row results (created, skipped, error), and present
-a clear summary to the admin.
+email formats, encoding issues, or rows referencing unknown foreign keys. Rather than failing
+the entire import on the first bad row, the system must process all rows, report per-row
+results (created, skipped, error), and present a clear summary to the admin.
 
-### PS-5 — Filtered Export for Reporting
+### PS-5 — Filtered Export for Reporting and Migration
 
 Administrators need to export subsets of data for offline reporting, migration to other systems,
-or spreadsheet analysis. Exports must respect the current search and filter state applied in the
-management UI, so admins can narrow results before downloading.
+spreadsheet analysis, and audit. Exports must respect the current search and filter state in the
+management UI so admins can narrow results before downloading.
+
+### PS-6 — Cross-Cutting Pattern for New Managers
+
+Adding a new manager (e.g., `EventManager` for an event module) shouldn't require re-inventing
+the import/export pipeline. The bulk import/export infrastructure must be reusable as a
+convention: any manager that extends `BaseRecordManager` can opt in by implementing 4 methods
+(`import`, `export`, `exportSelected`, `downloadTemplate`) using the shared `CsvHandler`.
 
 ---
 
@@ -56,166 +69,235 @@ management UI, so admins can narrow results before downloading.
 
 | ID  | Goal |
 | --- | ---- |
-| G1  | Provide CSV import with row-by-row validation and duplicate detection across users, departments, and companies |
-| G2  | Auto-generate credentials (username, password) for each valid user row during CSV import |
-| G3  | Report per-row results using `CsvRowResult` enum (created, skipped) with summary flash message |
-| G4  | Provide CSV export that respects current search and filter state in the management UI |
-| G5  | Support per-selection export (`exportSelected`) for downloading only checked rows |
-| G6  | Provide downloadable CSV templates with correct headers and placeholder example rows |
-| G7  | Validate CSV header row against expected columns and reject mismatched files |
-| G8  | Limit import file size to 2048KB and restrict MIME types to csv/txt |
+| G1  | Provide a shared `CsvHandler` service that every record manager can call for import/export/template |
+| G2  | Provide a type-safe `CsvRowResult` enum (`CREATED`, `SKIPPED`) for per-row status reporting |
+| G3  | Auto-generate credentials (username, password) for each valid user row during import |
+| G4  | Report per-row results with summary flash message (created count + skipped count) |
+| G5  | Provide filtered export that respects current search and filter state in the management UI |
+| G6  | Support per-selection export (`exportSelected`) for downloading only checked rows |
+| G7  | Provide downloadable templates with correct headers and placeholder example rows |
+| G8  | Validate header row against expected columns and reject mismatched files |
+| G9  | Limit import file size to 2048KB and restrict MIME types to csv/txt |
+| G10 | Cover **9 managers** in the system: Users, Departments, Companies, Internships, Internship Groups, Partnerships, Announcements, Certificate Templates, Academic Years |
+| G11 | Provide a clear convention for future managers to opt into bulk import/export |
 
 ### Non-Goals
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | CSV import with update-on-duplicate (merge or overwrite existing records) |
+| NG1  | Bulk import with update-on-duplicate (merge or overwrite existing records) |
 | NG2  | Real-time streaming import for files exceeding memory limits |
 | NG3  | Import scheduling or queue-based async processing |
-| NG4  | Export to formats other than CSV (Excel, PDF, JSON) |
-| NG5  | Import of related/nested data (e.g., importing users with their departments in one file) |
+| NG4  | Native Excel/TSV rendering (must be reformatted to CSV; future enhancement) |
+| NG5  | Import of related/nested data in one file (e.g., users with their department FK) — must be split into separate imports |
 | NG6  | Column mapping UI (admin must prepare CSV with correct column order) |
+| NG7  | Cross-table referential validation at import time (FKs must already exist in the database) |
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-O2KCR-1 — Admin Imports Users via CSV
+### UC-O2KCR-1 — Admin Imports Users via Tabular File
 
 **Actor:** Admin
-**Preconditions:** CSV file prepared with columns: name, email, phone
-**Flow:**
-1. Admin navigates to User Management, clicks "Import"
-2. Uploads CSV file (max 2048KB, mimes: csv, txt)
-3. `UserManager::import()` validates file constraints
-4. `CsvHandler::import()` reads header row, validates against expected headers
-5. For each data row:
-   - Empty name → skip (return null)
-   - Email already exists in database → skip (`CsvRowResult::SKIPPED`)
-   - Valid row → `CreateUserAction::execute()` creates user with auto-generated credentials
-   - Return `CsvRowResult::CREATED`
-6. Flash message shows: "Imported: X, Skipped: Y"
-**Postconditions:** Users created from CSV, duplicates skipped, summary displayed
+**Preconditions:** File prepared with columns: full_name, email, phone
+**Flow:** Same as O2KCR import flow — file upload, header validation, per-row processing, summary flash.
+**Postconditions:** Users created, credentials auto-generated, duplicates skipped, summary displayed
 
-### UC-O2KCR-2 — Admin Imports Departments via CSV
+### UC-O2KCR-2 — Admin Imports Departments
 
 **Actor:** Admin
-**Preconditions:** CSV file prepared with columns: name, description
-**Flow:**
-1. Admin navigates to Academics → Departments, clicks "Import"
-2. Uploads CSV file (max 2048KB, mimes: csv, txt)
-3. `DepartmentManager::import()` validates file and checks admin create permission
-4. `CsvHandler::import()` processes each row:
-   - Empty name → skip
-   - Name already exists → skip (`CsvRowResult::SKIPPED`)
-   - Valid row → `CreateDepartmentAction::execute()` creates department
-   - Return `CsvRowResult::CREATED`
-5. Flash message shows: "Imported: X, Skipped: Y"
-**Postconditions:** Departments created, duplicates skipped, summary displayed
+**Preconditions:** File with columns: name, description
+**Flow:** Standard import flow
+**Postconditions:** Departments created, duplicates skipped
 
-### UC-O2KCR-3 — Admin Imports Companies via CSV
+### UC-O2KCR-3 — Admin Imports Companies
 
 **Actor:** Admin
-**Preconditions:** CSV file prepared with columns: name, address, phone, email, website, description, industry_sector
-**Flow:**
-1. Admin navigates to Partners → Companies, clicks "Import"
-2. Uploads CSV file (max 2048KB, mimes: csv, txt)
-3. `CompanyManager::import()` validates file constraints
-4. `CsvHandler::import()` processes each row:
-   - Empty name → skip
-   - Name already exists → skip (`CsvRowResult::SKIPPED`)
-   - Valid row → `CreateCompanyAction::execute(CompanyData)` creates company
-   - Return `CsvRowResult::CREATED`
-5. Flash message shows: "Imported: X, Skipped: Y"
-**Postconditions:** Companies created, duplicates skipped, summary displayed
+**Preconditions:** File with columns: name, address, phone, email, website, description, industry_sector
+**Flow:** Standard import flow with DTO validation
+**Postconditions:** Companies created, duplicates skipped
 
-### UC-O2KCR-4 — Admin Exports Users with Filters
+### UC-O2KCR-4 — Admin Imports Internships
 
 **Actor:** Admin
-**Preconditions:** Users exist in the system; admin has applied search or filters
+**Preconditions:** File with columns: code, title, academic_year, department_name, company_name
 **Flow:**
-1. Admin navigates to User Management, applies search term or role/status filters
-2. Clicks "Export" button
-3. `UserManager::export()` builds query with current search/filter state
-4. `CsvHandler::export()` streams CSV with columns: full_name, email, username, phone, address
-5. File downloads as `users.csv`
-**Postconditions:** CSV file contains only filtered users, respects current UI state
+1. Admin uploads file at Program → Internships → Import
+2. For each row, lookup existing `AcademicYear` by name, `Department` by name, `Company` by name
+3. If any lookup misses → skip the row with reason "Referenced {entity} not found"
+4. If all lookups succeed → create internship via `CreateInternshipAction`
+**Postconditions:** Internships created with FKs resolved from existing data; orphan rows skipped
 
-### UC-O2KCR-5 — Admin Exports Selected Users
+### UC-O2KCR-5 — Admin Imports Internship Groups
 
 **Actor:** Admin
-**Preconditions:** Users selected via checkboxes in the management table
-**Flow:**
-1. Admin selects specific users via row checkboxes
-2. Clicks "Export Selected"
-3. `UserManager::exportSelected()` queries only selected IDs
-4. `CsvHandler::export()` streams CSV with same columns as full export
-5. File downloads as `users-selected.csv`
-**Postconditions:** CSV contains only the selected users
+**Preconditions:** File with columns: name, internship_codes, student_emails
+**Flow:** Each row's `internship_codes` (semicolon-separated) and `student_emails` (semicolon-separated) are split and looked up
+**Postconditions:** Groups created with FK relationships resolved
 
-### UC-O2KCR-6 — Admin Downloads CSV Template
+### UC-O2KCR-6 — Admin Imports Partnerships
+
+**Actor:** Admin
+**Preconditions:** File with columns: company_name, partner_school, start_date, end_date, mou_number
+**Flow:** Lookup `Company` by name; skip if not found. Create partnership with status `DRAFT`.
+**Postconditions:** Partnership drafts created, duplicates skipped by company_name + start_date
+
+### UC-O2KCR-7 — Admin Bulk-Imports Announcements
+
+**Actor:** Admin
+**Preconditions:** File with columns: title, body, target_role, publish_at
+**Flow:** Each row creates an announcement with auto-generated `target_role` parsing
+**Postconditions:** Announcements created in `DRAFT` status; published via separate batch action
+
+### UC-O2KCR-8 — Admin Imports Certificate Templates
+
+**Actor:** Admin
+**Preconditions:** File with columns: name, layout, content_template, is_active
+**Flow:** Each row creates a template with `is_active=0` (requires manual activation)
+**Postconditions:** Templates created in inactive state, can be edited before activation
+
+### UC-O2KCR-9 — Admin Imports Academic Years
+
+**Actor:** Admin
+**Preconditions:** File with columns: name, start_date, end_date
+**Flow:** Standard import flow
+**Postconditions:** Academic years created, duplicates skipped
+
+### UC-O2KCR-10 — Admin Exports Filtered Data
+
+**Actor:** Admin
+**Preconditions:** Admin has applied search/filter on the management UI
+**Flow:** Clicks "Export" → query builder applies current filters → CsvHandler streams file
+**Postconditions:** File downloaded with only matching rows
+
+### UC-O2KCR-11 — Admin Exports Selected Rows
+
+**Actor:** Admin
+**Preconditions:** Admin has selected specific rows via checkboxes
+**Flow:** Clicks "Export Selected" → query filters by `whereIn('id', $this->selectedIds)`
+**Postconditions:** File downloaded with only selected rows
+
+### UC-O2KCR-12 — Admin Downloads Template
 
 **Actor:** Admin
 **Preconditions:** None
-**Flow:**
-1. Admin navigates to any management UI (Users, Departments, or Companies)
-2. Clicks "Download Template"
-3. `downloadTemplate()` calls `CsvHandler::downloadTemplate()` with headers and example row
-4. File downloads with correct column headers and a placeholder row
-**Postconditions:** Template CSV downloaded with correct format
+**Flow:** Clicks "Download Template" → file with headers + one example row
+**Postconditions:** Template downloaded with correct column format
 
 ---
 
 ## 4. Functional Requirements
 
-### User CSV Import
+### Cross-Module Infrastructure
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-O2KCR-IE1 | CSV import must accept files up to 2048KB with MIME types `csv` or `txt` |
-| FR-O2KCR-IE2 | Import must validate header row against expected columns (`name`, `email`, `phone`) and reject mismatched files with `invalid: true` |
-| FR-O2KCR-IE3 | Import must detect duplicate emails — rows where email matches an existing user must be skipped (`CsvRowResult::SKIPPED`) |
-| FR-O2KCR-IE4 | Import must auto-generate credentials for each valid row via `CreateUserAction` (username from email, random 12-char password) |
+| FR-O2KCR-IE1 | All import operations must use the shared `CsvHandler::import()` service |
+| FR-O2KCR-IE2 | All export operations must use the shared `CsvHandler::export()` service returning `StreamedResponse` |
+| FR-O2KCR-IE3 | All template downloads must use `CsvHandler::downloadTemplate()` |
+| FR-O2KCR-IE4 | Import must validate file: max 2048KB, MIME types `csv` or `txt` |
+| FR-O2KCR-IE5 | Import must validate header row against expected columns and reject mismatched files with `invalid: true` |
+| FR-O2KCR-IE6 | All imports must deduplicate by the module's natural uniqueness key (email for users, name for departments/companies, code for internships, etc.) |
+| FR-O2KCR-IE7 | Row processor callback returns `CsvRowResult::CREATED`, `CsvRowResult::SKIPPED`, or `null` (silent skip) |
+| FR-O2KCR-IE8 | Import summary flash must use `common.actions.import_summary` with `created` and `skipped` counts |
+| FR-O2KCR-IE9 | Invalid header files must flash `common.actions.import_invalid` error message |
+| FR-O2KCR-IE10 | Export must respect current search and filter state from the manager's `applySearch()` and `applyFilters()` |
+| FR-O2KCR-IE11 | `exportSelected()` must export only the rows selected via checkboxes in the UI |
+| FR-O2KCR-IE12 | `downloadTemplate()` must provide a template with headers and one placeholder example row |
+| FR-O2KCR-IE13 | All imports must null out the `importFile` property after processing |
+| FR-O2KCR-IE14 | All user-facing strings in CSV operations must use `__()` translation helper |
 
-### User CSV Export
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-O2KCR-IE5 | CSV export must respect current search and filter state from `UserManager` query builder |
-| FR-O2KCR-IE6 | Export columns must be: `full_name`, `email`, `username`, `phone`, `address` |
-| FR-O2KCR-IE7 | `downloadTemplate()` must provide a CSV template with headers and one placeholder example row |
-| FR-O2KCR-IE8 | `exportSelected()` must export only the rows selected via checkboxes in the UI |
-
-### Department CSV Import/Export
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-O2KCR-IE9 | Department CSV import must validate file constraints (2048KB, csv/txt MIME) |
-| FR-O2KCR-IE10 | Department import must deduplicate by name — skip rows where name matches existing department |
-| FR-O2KCR-IE11 | Department export columns must be: `name`, `description` |
-| FR-O2KCR-IE12 | Department template must include headers and a placeholder example row |
-
-### Company CSV Import/Export
+### UserManager
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-O2KCR-IE13 | Company CSV import must validate file constraints (2048KB, csv/txt MIME) |
-| FR-O2KCR-IE14 | Company import must deduplicate by name — skip rows where name matches existing company |
-| FR-O2KCR-IE15 | Company import must pass data through `CompanyData` DTO for validation |
-| FR-O2KCR-IE16 | Company export columns must be: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
-| FR-O2KCR-IE17 | Company template must include all seven column headers and a placeholder example row |
+| FR-O2KCR-UM1 | Import columns: `full_name`, `email`, `phone` |
+| FR-O2KCR-UM2 | Duplicate detection: skip rows where `email` matches an existing user |
+| FR-O2KCR-UM3 | Auto-generate credentials (username from email, random 12-char password) via `CreateUserAction` |
+| FR-O2KCR-UM4 | Export columns: `full_name`, `email`, `username`, `phone`, `address` |
+| FR-O2KCR-UM5 | Filenames: `users.csv`, `users-selected.csv`, `users-template.csv` |
 
-### Cross-Module Patterns
+### DepartmentManager
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-O2KCR-IE18 | All import operations must use the shared `CsvHandler::import()` service |
-| FR-O2KCR-IE19 | All export operations must use the shared `CsvHandler::export()` service returning `StreamedResponse` |
-| FR-O2KCR-IE20 | All template downloads must use `CsvHandler::downloadTemplate()` |
-| FR-O2KCR-IE21 | Import summary flash messages must use `common.actions.import_summary` with `created` and `skipped` counts |
-| FR-O2KCR-IE22 | Invalid header files must flash `common.actions.import_invalid` error message |
-| FR-O2KCR-IE23 | All user-facing strings in CSV operations must use `__()` translation helper |
-| FR-O2KCR-IE24 | Import operations must null out the `importFile` property after processing |
+| FR-O2KCR-DM1 | Import columns: `name`, `description` |
+| FR-O2KCR-DM2 | Duplicate detection: skip rows where `name` matches an existing department |
+| FR-O2KCR-DM3 | Authorize `create` on Department model before import |
+| FR-O2KCR-DM4 | Export columns: `name`, `description` |
+| FR-O2KCR-DM5 | Filenames: `departments.csv`, `departments-selected.csv`, `departments-template.csv` |
+
+### CompanyManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-CM1 | Import columns: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
+| FR-O2KCR-CM2 | Duplicate detection: skip rows where `name` matches an existing company |
+| FR-O2KCR-CM3 | Data must pass through `CompanyData` DTO for validation before `CreateCompanyAction` |
+| FR-O2KCR-CM4 | Export columns: same 7 import columns |
+| FR-O2KCR-CM5 | Filenames: `companies.csv`, `companies-selected.csv`, `companies-template.csv` |
+
+### InternshipManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-IM1 | Import columns: `code`, `title`, `academic_year_name`, `department_name`, `company_name` |
+| FR-O2KCR-IM2 | Each row must resolve `AcademicYear` by name, `Department` by name, `Company` by name — rows with missing FKs must be skipped with reason |
+| FR-O2KCR-IM3 | Duplicate detection: skip rows where `code` matches an existing internship |
+| FR-O2KCR-IM4 | Export columns: `code`, `title`, `academic_year`, `department`, `company`, `start_date`, `end_date`, `status` |
+| FR-O2KCR-IM5 | Filenames: `internships.csv`, `internships-selected.csv`, `internships-template.csv` |
+
+### InternshipGroupManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-IG1 | Import columns: `name`, `internship_codes` (semicolon-separated), `student_emails` (semicolon-separated) |
+| FR-O2KCR-IG2 | Each cell value must be split and resolved; missing FKs skip the row |
+| FR-O2KCR-IG3 | Duplicate detection: skip rows where `name` matches an existing group |
+| FR-O2KCR-IG4 | Export columns: `name`, `internship_count`, `student_count`, `created_at` |
+| FR-O2KCR-IG5 | Filenames: `internship-groups.csv`, `internship-groups-selected.csv`, `internship-groups-template.csv` |
+
+### PartnershipManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-PM1 | Import columns: `company_name`, `partner_school`, `start_date`, `end_date`, `mou_number` |
+| FR-O2KCR-PM2 | `Company` must be resolved by name; missing companies skip the row |
+| FR-O2KCR-PM3 | New partnerships start in `DRAFT` status; activation requires admin action |
+| FR-O2KCR-PM4 | Duplicate detection: skip rows where `(company_name, start_date)` matches existing partnership |
+| FR-O2KCR-PM5 | Export columns: `company`, `partner_school`, `start_date`, `end_date`, `mou_number`, `status` |
+| FR-O2KCR-PM6 | Filenames: `partnerships.csv`, `partnerships-selected.csv`, `partnerships-template.csv` |
+
+### AnnouncementManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-AM1 | Import columns: `title`, `body`, `target_role`, `publish_at` |
+| FR-O2KCR-AM2 | Imported announcements start in `DRAFT` status; bulk publish is a separate action |
+| FR-O2KCR-AM3 | Duplicate detection: skip rows where `(title, publish_at)` matches existing announcement |
+| FR-O2KCR-AM4 | Export columns: `title`, `target_role`, `publish_at`, `status` |
+| FR-O2KCR-AM5 | Filenames: `announcements.csv`, `announcements-selected.csv`, `announcements-template.csv` |
+
+### CertificateTemplateManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-CT1 | Import columns: `name`, `layout`, `content_template`, `is_active` |
+| FR-O2KCR-CT2 | Imported templates are created with `is_active=0` regardless of input; admin must manually activate |
+| FR-O2KCR-CT3 | Duplicate detection: skip rows where `name` matches an existing template |
+| FR-O2KCR-CT4 | Export columns: `name`, `layout`, `is_active`, `created_at` |
+| FR-O2KCR-CT5 | Filenames: `certificate-templates.csv`, `certificate-templates-selected.csv`, `certificate-templates-template.csv` |
+
+### AcademicYearManager
+
+| ID   | Requirement |
+| ---- | ----------- |
+| FR-O2KCR-AY1 | Import columns: `name`, `start_date`, `end_date` |
+| FR-O2KCR-AY2 | Duplicate detection: skip rows where `name` matches an existing academic year |
+| FR-O2KCR-AY3 | New academic years start in `INACTIVE` status; activation requires admin action |
+| FR-O2KCR-AY4 | Export columns: `name`, `start_date`, `end_date`, `status` |
+| FR-O2KCR-AY5 | Filenames: `academic-years.csv`, `academic-years-selected.csv`, `academic-years-template.csv` |
 
 ---
 
@@ -226,16 +308,17 @@ management UI, so admins can narrow results before downloading.
 | NFR-O2KCR-P1 | CSV import of 100 rows must complete in under 30 seconds |
 | NFR-O2KCR-P2 | CSV export must use `StreamedResponse` to avoid loading entire dataset into memory |
 | NFR-O2KCR-P3 | Template download must complete instantly (header + one example row) |
-| NFR-O2KCR-S1 | CSV import must sanitize all input fields — trim whitespace, prevent XSS in exported data |
-| NFR-O2KCR-S2 | Import file upload must enforce max size (2048KB) and MIME type validation at the form level |
+| NFR-O2KCR-S1 | All imports must sanitize input fields — trim whitespace, prevent XSS in exported data |
+| NFR-O2KCR-S2 | Import file upload must enforce max size and MIME type at the form level |
 | NFR-O2KCR-S3 | Export must not include sensitive fields (passwords, tokens, recovery keys) |
 | NFR-O2KCR-S4 | Import operations must require admin-level authorization before processing |
 | NFR-O2KCR-R1 | CSV import must handle malformed rows gracefully — skip and continue, never halt the entire import |
 | NFR-O2KCR-R2 | Header mismatch must be detected before row processing begins and return `invalid: true` |
 | NFR-O2KCR-R3 | Export must handle empty datasets without errors (return CSV with headers only) |
+| NFR-O2KCR-R4 | When an FK lookup fails (e.g., referenced Company not found), the row must be skipped with a clear reason in the summary |
 | NFR-O2KCR-U1 | Import success must display created and skipped counts via flash message |
 | NFR-O2KCR-U2 | Import failure (invalid headers) must display a clear error flash message |
-| NFR-O2KCR-U3 | Export must trigger file download with a descriptive filename (e.g., `users.csv`, `departments.csv`) |
+| NFR-O2KCR-U3 | Export must trigger file download with a descriptive filename per module |
 | NFR-O2KCR-A1 | CSV import form must have associated labels for the file input and accessible error messages |
 | NFR-O2KCR-A2 | Import/export buttons must be keyboard-navigable and have accessible labels |
 | NFR-O2KCR-A3 | Flash messages must be announced to screen readers via `aria-live` region |
@@ -281,7 +364,6 @@ final class CsvHandler
         ?array $expectedHeaders = null,
     ): array; // ['created' => int, 'skipped' => int, 'invalid' => bool]
 }
-
 ```
 
 ### 6.2 CsvRowResult Enum
@@ -301,225 +383,186 @@ enum CsvRowResult: string implements LabelEnum
         };
     }
 }
-
 ```
 
-### 6.3 UserManager Import/Export Methods
+### 6.3 Manager Implementation Convention
+
+Every record manager that opts in to bulk import/export must implement four methods using
+`CsvHandler`:
 
 ```php
-// app/Modules/User/UserManagement/Livewire/UserManager.php
-class UserManager extends BaseRecordManager
+// app/Modules/{Module}/Domain/{Domain}/Livewire/{Name}Manager.php
+class XxxManager extends BaseRecordManager
 {
     public Property $importFile;
 
-    public function processImport(CsvHandler $csv, CreateUserAction $create): void;
-    // Validates file: required, file, mimes:csv,txt, max:2048
-    // Delegates to import()
+    /** Authorize + delegate to CsvHandler::import() */
+    public function import(CsvHandler $csv, CreateXxxAction $create): void
+    {
+        $this->authorize('create', Xxx::class);
+        $this->validate(['importFile' => 'required|file|mimes:csv,txt|max:2048']);
 
-    public function import(CsvHandler $csv, CreateUserAction $create): void;
-    // CsvHandler::import() with row processor:
-    //   $row[0] = name, $row[1] = email, $row[2] = phone
-    //   Empty name → null (skip silently)
-    //   Email exists → CsvRowResult::SKIPPED
-    //   Valid → CreateUserAction::execute() → CsvRowResult::CREATED
+        $summary = $csv->import(
+            $this->importFile->getRealPath(),
+            fn (array $row) => $this->processImportRow($row, $create),
+            expectedHeaders: ['col1', 'col2', 'col3'],
+        );
 
-    public function export(CsvHandler $csv): StreamedResponse;
-    // Query with search filter → CsvHandler::export()
-    // Headers: full_name, email, username, phone, address
-    // Filename: users.csv
+        $this->importFile = null;
+        $this->flashSummary($summary);
+    }
 
-    public function exportSelected(CsvHandler $csv): ?StreamedResponse;
-    // Query selected IDs only → CsvHandler::export()
-    // Filename: users-selected.csv
+    /** Apply current query + search + filters, stream via CsvHandler::export() */
+    public function export(CsvHandler $csv): StreamedResponse
+    {
+        $items = $this->applySearch($this->applyFilters($this->query()->get()));
+        return $csv->export($items, $this->exportColumns(), $this->exportRowMapper(), 'xxxs.csv');
+    }
 
-    public function downloadTemplate(CsvHandler $csv): StreamedResponse;
-    // Headers: full_name, email, phone
-    // Example row: [name_placeholder, email_placeholder, phone_placeholder]
-    // Filename: users-template.csv
+    /** Export only checked rows */
+    public function exportSelected(CsvHandler $csv): ?StreamedResponse
+    {
+        if (empty($this->selectedIds)) return null;
+        $items = $this->query()->whereIn('id', $this->selectedIds)->get();
+        return $csv->export($items, $this->exportColumns(), $this->exportRowMapper(), 'xxxs-selected.csv');
+    }
+
+    /** Stream template with headers + one example row */
+    public function downloadTemplate(CsvHandler $csv): StreamedResponse
+    {
+        return $csv->downloadTemplate(
+            $this->exportColumns(),
+            $this->exportExampleRow(),
+            'xxxs-template.csv'
+        );
+    }
 }
-
 ```
 
-### 6.4 DepartmentManager Import/Export Methods
+### 6.4 File Upload Property
 
 ```php
-// app/Modules/Academics/Department/Livewire/DepartmentManager.php
-class DepartmentManager extends BaseRecordManager
-{
-    public Property $importFile;
-
-    public function import(CsvHandler $csv, CreateDepartmentAction $create): void;
-    // Authorizes 'create' on Department model
-    // Validates file: required, file, mimes:csv,txt, max:2048
-    // Row processor: $row[0] = name, $row[1] = description
-    //   Empty name → null, Name exists → SKIPPED, Valid → CREATED
-
-    public function export(CsvHandler $csv): StreamedResponse;
-    // Authorizes 'viewAny' on Department model
-    // Query with search filter → Headers: name, description
-    // Filename: departments.csv
-
-    public function exportSelected(CsvHandler $csv): ?StreamedResponse;
-    // Filename: departments-selected.csv
-
-    public function downloadTemplate(CsvHandler $csv): StreamedResponse;
-    // Headers: name, description
-    // Filename: departments-template.csv
-}
-
-```
-
-### 6.5 CompanyManager Import/Export Methods
-
-```php
-// app/Modules/Partners/Company/Livewire/CompanyManager.php
-class CompanyManager extends BaseRecordManager
-{
-    public Property $importFile;
-
-    public function import(CsvHandler $csv, CreateCompanyAction $create): void;
-    // Validates file: required, file, mimes:csv,txt, max:2048
-    // Row processor: $row[0]=name, $row[1]=address, $row[2]=phone, $row[3]=email,
-    //   $row[4]=website, $row[5]=description, $row[6]=industry_sector
-    //   Empty name → null, Name exists → SKIPPED, Valid → CompanyData DTO → CREATED
-
-    public function export(CsvHandler $csv): StreamedResponse;
-    // Query with search filter → Headers: name, address, phone, email,
-    //   website, description, industry_sector
-    // Filename: companies.csv
-
-    public function exportSelected(CsvHandler $csv): ?StreamedResponse;
-    // Filename: companies-selected.csv
-
-    public function downloadTemplate(CsvHandler $csv): StreamedResponse;
-    // Headers: all seven company columns
-    // Filename: companies-template.csv
-}
-
-```
-
-### 6.6 File Upload Property
-
-```php
-// Shared across all three managers
+// Shared across all managers with bulk import
 public Property $importFile;
 
 // Livewire file upload with validation:
 // ['required', 'file', 'mimes:csv,txt', 'max:2048']
-
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — CSV Import with Skip-on-Duplicate (Not Update)
+### DD-1 — Skip-on-Duplicate (Not Update)
 
 **Decision:** CSV import skips rows with existing uniqueness keys (email for users, name for
-departments/companies) and does not update or merge existing records.
+departments/companies, code for internships) and does not update or merge existing records.
+
 **Rationale:** Import is for onboarding new records, not updating existing ones. Update-via-CSV
-would require conflict resolution logic (which fields to overwrite? preserve which values?) and
-audit trail complexity. Skip-on-duplicate is predictable, safe, and matches admin expectations
-during initial bulk onboarding.
+would require conflict resolution logic and audit trail complexity. Skip-on-duplicate is
+predictable, safe, and matches admin expectations during initial bulk onboarding.
+
 **Trade-off:** Admin must manually update existing records outside the import flow. Acceptable
-because updates are infrequent compared to initial onboarding and the management UI provides
-full CRUD for edits.
+because updates are infrequent compared to initial onboarding.
 
-### DD-2 — Chunk Processing for Memory Efficiency
+### DD-2 — Streaming I/O for Memory Efficiency
 
-**Decision:** `CsvHandler::import()` processes rows one at a time via `fgetcsv()` in a while
-loop, not loading the entire file into memory.
+**Decision:** `CsvHandler::import()` processes rows one at a time via `fgetcsv()`; export streams
+via `fputcsv()` to `php://output`.
+
 **Rationale:** CSV files with 500+ rows could exhaust PHP memory if loaded into an array.
-Streaming via `fgetcsv()` keeps memory usage constant regardless of file size. The
-`StreamedResponse` for export follows the same pattern — writing rows to `php://output` via
-`fputcsv()` without buffering.
-**Trade-off:** Cannot pre-validate all rows before processing (partial imports may occur on
-fatal errors). Mitigated by the `invalid` flag catching header mismatches before row processing
-begins, and individual row errors being caught by the callback returning null or SKIPPED.
+Streaming keeps memory usage constant regardless of file size.
 
-### DD-3 — CsvRowResult Enum for Type-Safe Row Status
+**Trade-off:** Cannot pre-validate all rows before processing. Mitigated by the `invalid` flag
+catching header mismatches before row processing, and individual row errors being caught by
+the callback returning null or SKIPPED.
 
-**Decision:** Row processing status represented as a `CsvRowResult` enum (`CREATED`, `SKIPPED`)
-rather than string constants or integers.
+### DD-3 — Type-Safe CsvRowResult Enum
+
+**Decision:** Row processing status is a `CsvRowResult` enum (`CREATED`, `SKIPPED`), not string
+constants or integers.
+
 **Rationale:** Enums provide type safety, IDE autocompletion, and self-documenting code. The
-enum implements `LabelEnum` for translated display labels. Returning null from the row processor
-silently skips the row (for empty rows), while `CsvRowResult::SKIPPED` counts the skip in the
-summary. This distinction allows empty rows to be invisible while duplicate skips are reported.
-**Trade-off:** Adding new row statuses (e.g., `UPDATED`, `FAILED`) requires updating the enum.
-Mitigated by the current spec limiting statuses to CREATED and SKIPPED.
+`null` return value is reserved for silent skip (empty rows), while `SKIPPED` counts in the
+summary — this distinction makes empty rows invisible while duplicate skips are reported.
 
-### DD-4 — Cross-Module Shared CsvHandler Service
+### DD-4 — Shared CsvHandler Service Across All Managers
 
-**Decision:** All three modules (Users, Departments, Companies) share a single `CsvHandler`
-service class in `App\Core\Support`, not module-specific CSV handlers.
-**Rationale:** The CSV operations (read rows, write rows, stream response, validate headers)
-are identical across modules. The only variation is the row processor callback and column
-headers, which are passed as parameters. A shared service eliminates code duplication and
-ensures consistent behavior (file handling, error formatting, streaming).
-**Trade-off:** The service is generic — module-specific validation logic lives in the Livewire
-manager's callback, not in the handler. This is intentional: CsvHandler is infrastructure,
-not business logic.
+**Decision:** All managers share a single `CsvHandler` service in `App\Core\Support`, not
+module-specific CSV handlers.
+
+**Rationale:** CSV operations (read rows, write rows, stream response, validate headers) are
+identical across modules. The only variation is the row processor callback and column headers,
+which are passed as parameters. A shared service eliminates code duplication and ensures
+consistent behavior (file handling, error formatting, streaming).
 
 ### DD-5 — Header Validation Before Row Processing
 
 **Decision:** `CsvHandler::import()` validates the header row against expected column names
-before processing any data rows. Mismatched headers cause immediate return with `invalid: true`.
-**Rationale:** Processing rows with wrong columns would produce garbage data (mapping column B
-to field A). Early header validation prevents silent data corruption. The case-insensitive
-comparison (`strtolower`) accommodates minor capitalization differences.
-**Trade-off:** Strict header matching rejects files with extra columns. Acceptable because the
-template download provides the exact expected format.
+before processing any data rows.
 
-### DD-6 — Per-Module Authorization on Import
+**Rationale:** Processing rows with wrong columns would produce garbage data. Early header
+validation prevents silent data corruption. Case-insensitive comparison accommodates minor
+capitalization differences.
 
-**Decision:** Each manager enforces its own authorization before CSV import — `DepartmentManager`
-explicitly calls `$this->authorize('create', Department::class)`, while `UserManager` and
-`CompanyManager` rely on `BaseRecordManager` policy checks in `boot()`.
-**Rationale:** CSV import is a create operation at scale. The same authorization rules that
-govern single-record creation must apply to bulk import. Different modules have different policy
-structures (DepartmentPolicy separates `create` ability; CompanyPolicy uses `isAdmin()`), so
-each manager enforces its own check.
-**Trade-off:** Authorization logic is duplicated across managers. Mitigated by policies being
-the single source of truth — managers simply delegate to them.
+### DD-6 — FK Resolution at Row Level, Not Pre-Import
+
+**Decision:** For managers with foreign keys (Internship, InternshipGroup, Partnership), the
+row processor resolves FKs from existing data and skips rows with missing references.
+
+**Rationale:** Pre-import validation would require loading all related tables, which is
+expensive and not reusable. Per-row resolution lets the import proceed with valid rows even when
+some references are missing.
+
+**Trade-off:** Imports may create partial datasets (valid rows succeed, missing-FK rows skip).
+Mitigated by clear summary reporting and the row processor returning `SKIPPED` with a reason.
+
+### DD-7 — Cross-Module Manager Convention (Not Force)
+
+**Decision:** Bulk import/export is a convention, not a hard inheritance requirement. New
+managers opt in by implementing the 4-method contract using `CsvHandler`.
+
+**Rationale:** Some entities (Assignment, Logbook, Incident) are event-driven and have no
+natural tabular source. Forcing bulk import on them would create empty templates.
+
+**Trade-off:** New managers may forget to opt in. Mitigated by the convention being documented
+in this spec and the `BaseRecordManager` providing shared helpers.
 
 ---
 
 ## 8. Success Metrics
 
-### 8.1 Import Performance
+### 8.1 Coverage
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| CSV import 100 rows (users) | < 30 seconds | `UserManager::import()` end-to-end time |
-| CSV import 100 rows (companies) | < 10 seconds | `CompanyManager::import()` end-to-end time |
-| CSV import 50 rows (departments) | < 15 seconds | `DepartmentManager::import()` end-to-end time |
-| Memory usage during import | Constant regardless of file size | `fgetcsv()` streaming, no array loading |
+| Managers with bulk import/export | 9 (Users, Departments, Companies, Internships, Groups, Partnerships, Announcements, Templates, Academic Years) | Count of `import()` methods in managers |
+| Convention adoption | New managers follow the 4-method contract | Code review of new manager PRs |
 
-### 8.2 Duplicate Detection
+### 8.2 Performance
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| User duplicate detection | 100% skip existing emails | `CsvRowResult::SKIPPED` returned for matching emails |
-| Department duplicate detection | 100% skip existing names | `CsvRowResult::SKIPPED` returned for matching names |
-| Company duplicate detection | 100% skip existing names | `CsvRowResult::SKIPPED` returned for matching names |
+| CSV import 100 rows (any manager) | < 30 seconds | `import()` end-to-end time |
+| CSV export | Streaming, constant memory | `StreamedResponse` for any size dataset |
+| Template download | < 100ms | `downloadTemplate()` end-to-end time |
 
-### 8.3 Export Accuracy
+### 8.3 Data Integrity
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Export respects search filter | Search term applied to query | `UserManager::export()` query builder |
-| Export respects filters | Role/status filters applied | Query builder `when()` conditions |
-| Selected export | Only checked row IDs queried | `whereIn('id', $this->selectedIds)` |
+| Duplicate detection | 100% skip existing uniqueness keys | `CsvRowResult::SKIPPED` for matching rows |
+| FK resolution | Orphan rows skipped with reason | Summary flash shows FK-skip count |
 | Empty dataset export | Headers-only CSV, no error | `StreamedResponse` with empty collection |
 
 ### 8.4 User Experience
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
-| Import success feedback | Created + skipped counts shown | Flash message with `import_summary` key |
+| Import success feedback | Created + skipped counts | Flash message with `import_summary` key |
 | Import failure feedback | Clear invalid-header error | Flash message with `import_invalid` key |
-| Template accuracy | Correct headers and example row | `downloadTemplate()` output matches import expectations |
-| Filename convention | Descriptive names per module | `users.csv`, `departments.csv`, `companies.csv` |
+| Template accuracy | Correct headers and example row | `downloadTemplate()` matches import expectations |
+| Filename convention | Descriptive per module | `{entity}.csv`, `{entity}-selected.csv`, `{entity}-template.csv` |
 
 ---
 
@@ -530,12 +573,21 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [user-crud-and-status.md](95EVB-user-crud-and-status.md) | User entities — bulk import/export of students, teachers |
-| [company-management.md](XI3LB-company-management.md) | Company entities — bulk import/export of companies |
-| [department-management.md](4HWSB-department-management.md) | Department entities — bulk import/export of departments |
+| [base-classes.md](SE5Q9-base-classes.md) | `BaseRecordManager` shared infrastructure |
+| [user-crud-and-status.md](95EVB-user-crud-and-status.md) | `User` model, `CreateUserAction` |
+| [department-management.md](4HWSB-department-management.md) | `Department` model, `CreateDepartmentAction` |
+| [company-management.md](XI3LB-company-management.md) | `Company` model, `CreateCompanyAction`, `CompanyData` |
+| [internship-lifecycle.md](7C5WM-internship-lifecycle.md) | `Internship` model, `CreateInternshipAction` |
+| [internship-groups.md](IT0OE-internship-groups.md) | `InternshipGroup` model |
+| [partnership-management.md](NTHQA-partnership-management.md) | `Partnership` model |
+| [announcement-system.md](3S55V-announcement-system.md) | `Announcement` model |
+| [certification.md](J0M04-certification.md) | `CertificateTemplate` model |
+| [academic-year-management.md](XW6F5-academic-year-management.md) | `AcademicYear` model |
 
 ### Build Guide
-After implementing this spec, the system has reusable CSV import/export with template download, header validation, and error reporting. This utility is used across user, company, and department modules. The next step is to build account slips, which generates credential documents for placed students.
+After implementing this spec, the system has reusable bulk import/export with template download,
+header validation, error reporting, and FK resolution. The shared `CsvHandler` and `CsvRowResult`
+are the canonical place to extend with new bulk operations.
 
 ### Next Steps
 | Order | Spec | Connection |
