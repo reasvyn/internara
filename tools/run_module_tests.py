@@ -30,7 +30,8 @@ ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "tools" / "outputs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Test suites from phpunit.xml (in build order per docs/specs/index.md)
+# Test suites from phpunit.xml (in build order per docs/specs/index.md).
+# Each module suite spans tests/Arch, tests/Unit, tests/Feature, and tests/Browser.
 MODULES = [
     "Core",
     "Setup",
@@ -50,6 +51,7 @@ MODULES = [
     "Document",
     "Certification",
     "Reports",
+    "UI",
 ]
 
 

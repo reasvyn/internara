@@ -82,7 +82,7 @@ def discover_pattern_files() -> list[str]:
 # ─── Regex library ────────────────────────────────────────────────────────
 
 RE_STRICT_TYPES = re.compile(r"declare\s*\(\s*strict_types\s*=\s*1\s*\)")
-RE_FILLABLE_ATTR = re.compile(r"#\[Fillable")
+RE_FILLABLE_ATTR = re.compile(r"#\[\s*Fillable\b")
 RE_FINAL_READONLY_ENTITY = re.compile(r"final\s+readonly\s+class\s+\w+")
 RE_EXECUTE_METHOD = re.compile(r"public\s+function\s+execute\s*\(")
 RE_ACTION_BASE = re.compile(r"extends\s+Base(?:Command|Read|Process)Action")

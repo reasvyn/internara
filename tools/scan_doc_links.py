@@ -3,7 +3,7 @@
 Enhanced v2.3: removed per-file freshness enforcement (git history is source of truth),
 retains strict link validation (file, anchor, external HTTP 200).
 scan_doc_links.py — Documentation Link Validation
-Validates all relative markdown links across docs/, .agents/context/, README.md, AGENTS.md:
+Validates all relative markdown links across docs/, README.md, AGENTS.md:
 file targets must exist, and in-page anchors must resolve to a heading. Also validates every
 external http(s) link with a live HTTP request — response must be 2xx/3xx (use --no-external to skip).
 Enforces the spec filename convention. Freshness is tracked via git history, not inline metadata.
@@ -156,9 +156,6 @@ def find_markdown_files(module: str | None = None) -> list[Path]:
             return sorted(module_path.rglob("*.md"))
         return []
     files = list(DOCS_DIR.rglob("*.md"))
-    contexts_dir = ROOT / ".agents" / "context"
-    if contexts_dir.exists():
-        files.extend(contexts_dir.rglob("*.md"))
     for name in ["README.md", "AGENTS.md"]:
         f = ROOT / name
         if f.exists():
@@ -398,7 +395,7 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
                 line=1,
                 message=f"Spec file '{p.name}' does not follow the XXXXX-description.md naming convention",
                 suggestion="Rename to docs/specs/{ID}-{description}.md where {ID} is a unique 5-char A-Z0-9 ID",
-                reference=".agents/skills/spec-writing/SKILL.md §Spec IDs",
+                reference="docs/templates/spec-template.md §Spec IDs",
             ))
             added += 1
             continue
@@ -419,7 +416,7 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
                     f"{'but metadata is missing' if meta_id is None else f'vs metadata ID {meta_id}'}"
                 ),
                 suggestion=f"Add/align the `> **Spec ID:** {spec_id}` metadata line",
-                reference=".agents/skills/spec-writing/SKILL.md §Spec IDs",
+                reference="docs/templates/spec-template.md §Spec IDs",
             ))
             added += 1
 
@@ -428,8 +425,8 @@ def validate_spec_conventions(findings: list[Finding]) -> int:
 
 # ─── Doc freshness (removed) ──────────────────────────────────────────────
 # Freshness is now tracked via git history (git log --follow -- <file>, git diff),
-# not via inline `> **Last updated:**` metadata. See docs/conventions.md §0 and
-# .agents/rules/metadata-structure.md for the new contract.
+# not via inline `> **Last updated:**` metadata. See docs/conventions.md for the
+# new contract.
 
 
 # ─── Report ──────────────────────────────────────────────────────────────────
