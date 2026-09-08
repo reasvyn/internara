@@ -66,6 +66,7 @@ yarn-error.log
 /storage/coverage/
 
 # AI Agent Files
+.ai/
 .blackboxcli/
 .gemini/
 /tools/outputs/*.json
