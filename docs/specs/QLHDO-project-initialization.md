@@ -14,44 +14,72 @@ record: placement, attendance, logbook, supervision, assessment, certification, 
 
 This is the **spec-zero** spec. It establishes the project boundary, role model, global requirements
 every feature spec inherits, and the MVP scope. All 62 feature specs are indexed in
-[docs/specs/index.md](index.md).
+[docs/specs/index.md](index.md). The requirements here are project-global: each feature spec may
+tighten but never violate them. Research evidence that *informs* these requirements lives in
+[`../refs/articles/`](../refs/articles/) and is explicitly non-testable (DD-ARCH-004) — the
+requirement statements below, by contrast, are verifiable.
 
 ---
 
 ## 1. Problem Statements
 
+Each problem statement cites the field evidence it is grounded in. Evidence files are in
+`docs/refs/articles/` (`pkl-operational-research.md`, `curriculum-compliance.md`); the `→ Requirement`
+traces connect each statement to the global requirements (§4) that address it.
+
 ### PS-1 — Fragmented Administration at Scale
 
-A medium-to-large SMK manages 500–1,000 active students across 150–300 partner companies (DUDI)
-per placement period: ≈45,000 attendance records, 6,000 logbook entries, 1,500–2,500 submissions,
-and 500 evaluation forms per period. No manual or semi-digital process (chat + Excel) survives that
-volume without data loss and delay. *(Source: pkl-operational-research.md POV 1–5, Sep 2026)*
+A medium-to-large SMK manages 500–1,000 active students across 150–300 partner companies (DUDI) per
+placement period: ≈45,000 attendance records, 6,000 logbook entries, 1,500–2,500 submissions, and 500
+evaluation forms per period. No manual or semi-digital process (chat + Excel) survives that volume
+without data loss and delay. National context: 14,391 SMK and 4.88M students (2024/25), with
+Gr.11+Gr.12 ≈ 3.16M PKL-candidate students/year — the same manual mechanics replicate across every
+school *(Source: pkl-operational-research.md "Scale", POV 1–5, Sep 2026)*.
+**→ Requirement:** FR-GLB-001 (localized, single UI), FR-GLB-013/014 (attendance & logbook integrity),
+NFR-MOD-001 (module colocation). Research inputs stay non-testable (DD-ARCH-004).
 
 ### PS-2 — Anti-Fraud Accountability Gap
 
 Paper logbooks and WhatsApp-reported attendance are trivially falsifiable: "Sering terjadi
-ketidakjujuran siswa dalam pengisian absensi dan logbook" (SMKN 1 Sintuk Toboh Gadang 2022). Schools
-need digital evidence of the educational process for BAN-PDM accreditation evidence folders and
-industry certificate sign-off. *(Source: pkl-operational-research.md PS-3, POV 3)*
+ketidakjujuran siswa dalam pengisian absensi dan logbook" (SMKN 1 Sintuk Toboh Gadang 2022); paper
+books are "mudah dimanipulasi" without attached documentation (SMKN 1 Gesi). A broad, industry-validated
+fix-market converges on the same core: **QR-code/GPS/selfie check-in, daily e-logbook, real-time
+supervisor visibility** (Sintuk Toboh Gadang, Gesi, Al Hidayah Cirebon, YPT Pringsewu, PKLTRACK, PKL
+Smart). Schools need digital evidence of the educational process for BAN-PDM accreditation evidence
+folders and industry certificate sign-off *(Source: pkl-operational-research.md POV 3, "Cross-Cutting
+Synthesis" item 4, POV 3)*.
+**→ Requirement:** FR-GLB-013 (timestamped, actor-identified attendance), FR-GLB-014 (immutable logbook
+window), NFR-SEC-005 (escaped output).
 
 ### PS-3 — Supervision Degrades with Distance
 
-City sites (<15 km): 3–4 visits/period. Out-of-town (50–150 km): 1 visit. Remote (>150 km): 0–1
-visits (Palangka Raya study, Kanderang Tingang Jan 2026). The standard monitoring visit (Panduan
-Monitoring PKL) requires attendance verification, work journal review, supervisor interview, and
-documentation check. Without digital tools, school supervision collapses beyond city distance.
+City sites (<15 km): 3–4 visits/period. Out-of-town (50–150 km): 1 visit. Remote (>150 km): 0–1 visits
+(Palangka Raya study, Kanderang Tingang Jan 2026; average 1.6 visits/period). The standard monitoring
+visit (Panduan Monitoring PKL) requires attendance verification, work journal review, supervisor
+interview, and documentation check — and the same distance effect degrades *industry* supervision too
+("degradasi kualitas bimbingan seiring bertambahnya jarak"). Without digital tools, school supervision
+collapses beyond city distance *(Source: pkl-operational-research.md POV 1, POV 3, POV 5)*.
+**→ Requirement:** FR-GLB-004 (audit trail), NFR-UX-001/002 (usable, guided workflows), route through
+[2EHSE](2EHSE-supervision.md) supervision tooling.
 
 ### PS-4 — Multi-System Re-Entry Burden
 
-Coordinators manually re-type the same data into WhatsApp → Excel → e-Rapor → Dapodik (PKS records,
-rombel, teacher data). This is a documented, verified friction across every POV. *(Source:
-pkl-operational-research.md POV 2)*
+Coordinator (Pokja PKL) is the manual hub. The same data is re-typed across WhatsApp → Excel → e-Rapor
+→ Dapodik (PKS records, rombel, teacher data), while assembling physical BAN-PDM evidence folders.
+DIY stopgaps (SMART PKL AppSheet on a shared personal Gmail account; Google Sites hubs; e-jurnal portals)
+proliferate with data-ownership and versioning risk *(Source: pkl-operational-research.md POV 2,
+"Cross-Cutting Synthesis" item 2)*.
+**→ Requirement:** UC-OPS-001 (operate & audit), FR-GLB-004 (audit logging).
 
 ### PS-5 — Grade Aggregation is Manual and Late
 
 Final grades are assembled from separate 0–100 sheets (site leader, field advisor, seminar) across
-paper and Google Docs/Scribd formats, then re-entered into e-Rapor. "Kurang efisien dalam mengolah
-nilai… kesalahan… lambatnya penyerahan data" (JRAMI Unindra). *(Source: pkl-operational-research.md POV 1)*
+paper and Google Docs/Scribd formats, then re-entered into e-Rapor: "Kurang efisien dalam mengolah
+nilai… kesalahan… lambatnya penyerahan data" (JRAMI Unindra). Different stakeholders weight different
+dimensions — schools weight administrative completeness (logbook), industry weights soft skills —
+so the aggregate must be role-aware and auditable *(Source: pkl-operational-research.md POV 1, POV 5)*.
+**→ Requirement:** [ARDA6](ARDA6-assessment.md) and [R6BMW](R6BMW-reports.md) feature specs; global
+FR-GLB-008 (dual-layer authorization) guarantees the aggregation path is role-gated.
 
 ---
 
@@ -78,9 +106,9 @@ nilai… kesalahan… lambatnya penyerahan data" (JRAMI Unindra). *(Source: pkl-
 
 ## 3. User Stories / Use Cases
 
-Use Cases are optional to test, like Design Decisions (§7). The table format matches FR/NFR/DD;
-fill `Layer` / `Status` only when the UC has a verifiable, code-testable consequence at this
-spec's level — otherwise they remain `—`.
+Use Cases are **optional** to test, like Design Decisions (§7). The table format matches FR/NFR/DD;
+fill `Layer` / `Status` only when the UC has a verifiable, code-testable consequence at this spec's
+level — otherwise they remain `—`.
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
@@ -89,6 +117,10 @@ spec's level — otherwise they remain `—`.
 | UC-SUP-001 | Teacher Supervises and Assesses: reviews logbooks, logs monitoring visits, scores against rubrics, finalizes grade card | P0 | — | — |
 | UC-EVAL-001 | Supervisor Evaluates Industry-Side Performance: verifies attendance, reviews logbook, submits competency evaluations into final aggregation | P1 | — | — |
 | UC-OPS-001 | Admin Operates and Audits: manages users/announcements, monitors health + audit logs, runs backups and GDPR export/erasure | P0 | F | Partial |
+
+> **UC → layer note:** UC-LCYC-001, UC-SUP-001, UC-EVAL-001 span multiple feature specs and are not
+> code-verifiable at this spec's scope — their `Layer`/`Status` stay `—` (template §3). Their
+> verifiable behavior is decomposed into the FR/NFR rows in §4/§5 and the governing feature specs.
 
 ### Role Model
 
@@ -107,15 +139,19 @@ RBAC contract in [T4B26](T4B26-rbac-and-authorization.md).
 #### UC-SETUP-001 — School Initializes
 
 **Actor(s):** Super Admin → Admin
+**Preconditions:** Fresh deployment; no non-seed data; APP_KEY set.
 **Flow:** 1. Super Admin runs `setup:install` → 2. Admin configures branding/locale/school profile → 3. Admin creates departments and academic years → 4. Admin registers companies and partnerships with slot quotas.
-**Postconditions:** School can enroll students; `superadmin` account exists.
+**Postconditions:** School can enroll students; `superadmin` account exists (FR-GLB-003); settings persist via `setting()` (FR-GLB-001).
+**Acceptance basis:** After the flow, an authenticated Super Admin can reach the setup-complete milestone and an Admin can enroll a student; verified by the governing specs' F-layer tests.
 **Governing specs:** [8NZAU](8NZAU-installation.md), [VEJCX](VEJCX-setup-wizard.md), [C9ZB6](C9ZB6-recovery-ecosystem.md), [52O1I](52O1I-branding-theme-locale.md).
 
 #### UC-OPS-001 — Admin Operates and Audits
 
 **Actor(s):** Admin / Super Admin
+**Preconditions:** Setup complete (UC-SETUP-001); operator holds `admin` or `super_admin` role.
 **Flow:** 1. Admin manages users and announcements → 2. Admin monitors health checks and audit logs → 3. Admin runs backups and GDPR export/erasure per policy.
-**Postconditions:** Operation observable and recoverable within RPO/RTO targets.
+**Postconditions:** Operation observable and recoverable within RPO/RTO targets (NFR-BCK-001); every governed mutation audit-logged (FR-GLB-004).
+**Acceptance basis:** Health check reflects system state (FR-GLB-006); backup/restore RTO drill within target; GDPR erasure removes the subject's personal rows.
 **Governing specs:** [95EVB](95EVB-user-crud-and-status.md), [3S55V](3S55V-announcement-system.md), [E1MSJ](E1MSJ-system-maintenance.md), [HBXCI](HBXCI-backup-system.md).
 
 ### 3.2 PKL Lifecycle
@@ -123,22 +159,28 @@ RBAC contract in [T4B26](T4B26-rbac-and-authorization.md).
 #### UC-LCYC-001 — Student Completes the PKL Lifecycle
 
 **Actor(s):** Student
+**Preconditions:** Student account exists; active academic year; placement open.
 **Flow:** 1. Student registers → 2. Admin verifies and places the student → 3. Student clocks in/out, keeps a reflective logbook, submits assignments, acknowledges handbooks → 4. Student downloads certificate after assessment and report sign-off.
-**Postconditions:** Full digital trail of the internship exists.
+**Postconditions:** Full digital trail of the internship exists; attendance and logbook respect integrity windows (FR-GLB-013/014).
+**Acceptance basis:** A completed lifecycle yields a retrievable, immutable artifact set; decomposed and verified per governing feature spec.
 **Governing specs:** [MBB5R](MBB5R-registration.md), [J9GBH](J9GBH-placement.md), [1KSWL](1KSWL-daily-activity.md), [T657Z](T657Z-assignment.md), [J0M04](J0M04-certification.md).
 
 #### UC-SUP-001 — Teacher Supervises and Assesses
 
 **Actor(s):** Teacher
+**Preconditions:** Teacher is assigned students for an active period.
 **Flow:** 1. Teacher supervises assigned students → 2. Teacher reviews logbooks and logs monitoring visits → 3. Teacher or supervisor scores against rubrics → 4. Teacher compiles and finalizes the grade card.
 **Postconditions:** Grades aggregated; finalized artifacts immutable.
+**Acceptance basis:** Post-finalize grade card rejects mutation; review and scoring actions are audit-logged (FR-GLB-004).
 **Governing specs:** [2EHSE](2EHSE-supervision.md), [ARDA6](ARDA6-assessment.md), [R6BMW](R6BMW-reports.md).
 
 #### UC-EVAL-001 — Supervisor Evaluates Industry-Side Performance
 
 **Actor(s):** Supervisor (DUDI)
+**Preconditions:** Supervisor associated with the student's company/partnership.
 **Flow:** 1. Supervisor verifies attendance and reviews logbook entries → 2. Supervisor submits competency evaluations for assigned students → 3. Evaluations flow into final score aggregation.
 **Postconditions:** Industry-side scores present in the final record.
+**Acceptance basis:** Evaluations appear in the aggregation subset visible to the teacher's grade card (FR-GLB-008 role gating).
 **Governing specs:** [1KSWL](1KSWL-daily-activity.md), [ARDA6](ARDA6-assessment.md), [T4B26](T4B26-rbac-and-authorization.md) §4.2 (Cross-Role Proxy).
 
 ---
@@ -169,6 +211,87 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 | FR-GLB-013 | Attendance records are timestamped, immutable after admin sign-off, and include the clock-in/out timestamp with actor identity · [1KSWL](1KSWL-daily-activity.md) | P0 | F | Planned |
 | FR-GLB-014 | Logbook entries are daily, timestamped, and editable only within the same academic day by the student who created them · [1KSWL](1KSWL-daily-activity.md) | P0 | F | Planned |
 
+#### FR-GLB-001 — Localized strings
+
+- Every user-facing string passes through `__()`; no hardcoded text in Blade templates, Livewire components, or notifications.
+- Each module ships `lang/en/` and `lang/id/` with mirrored keys; enforced by the D3 scan.
+- **Edge case:** dynamic content (student names, company names) is never concatenated into a message — pass it as a placeholder parameter to `__()`.
+
+#### FR-GLB-002 — Five-role RBAC
+
+- Exactly the five stored roles exist as `Role` enum cases; adding or renaming a stored role requires a spec amendment.
+- `Role::resolvesTo()` resolves `admin-group` → `super_admin`/`admin`, `mentor` → `teacher`/`supervisor`, `mentee` → `student` for business logic only (contract in T4B26 §4.2).
+- **Verification:** unit-test the resolution map for every role input; ensure unresolvable input throws/never silently grants (layer `A`).
+
+#### FR-GLB-003 — Immutable superadmin
+
+- After `setup:install`, a `superadmin` user exists with name `Super Admin` and username `superadmin`.
+- The account is non-deletable; its name and username cannot be modified; violations are rejected at both UI and Action level.
+- **Edge case:** a second Super Admin-role account is a normal `admin_group` user — the named `superadmin` is the only immutable singleton.
+
+#### FR-GLB-004 — Audit-logged mutations
+
+- Every administrative mutation on governed entities writes an activity-log entry including actor identity and a change summary.
+- Entries mask PII; secrets never reach logs (dual-channel SmartLogger, activity channel).
+- **Verification:** a governed mutation produces exactly one activity entry with the acting user id and a before/after diff; PII fields appear masked.
+
+#### FR-GLB-005 — Rate-limited endpoints
+
+- login: 5 requests per 60s; forgot-password: 3 per 3600s; reset: 5 per 300s; exceeding returns HTTP 429.
+- Enforcement via throttling middleware (2CF4Y), keyed per actor/IP; limits configurable.
+- **Verification:** burst requests beyond the window return 429; config keys are overridable without code change.
+
+#### FR-GLB-006 — system:health coverage
+
+- `php artisan system:health` reports PHP version, required extensions, memory limit, DB connectivity, pending migrations, storage writable, queue, cache, and APP_KEY presence.
+- A failing check yields a non-zero exit code and a failed status in the summary.
+- **Verification:** each listed subsystem appears in output; a deliberately broken dependency marks that check failed and non-zero exit.
+
+#### FR-GLB-007 — UUID primary keys
+
+- All primary entities extend `BaseModel` (uses `HasUuids`); `id` is a UUID PK; no auto-increment primary keys on primary entities.
+- **Verification:** arch scan (layer `A`) asserts no auto-increment PK on primary entities.
+
+#### FR-GLB-008 — Dual-layer authorization
+
+- The Policy layer gates route/resource access (403); the Action/Entity layer re-validates the business rule and throws `RejectedException` when violated.
+- Calling an Action directly must not bypass authorization.
+- **Verification:** for each protected mutation, a direct Action call without authorization throws `RejectedException`; an authenticated-but-unauthorized HTTP call returns 403 (layer `A` + spot `F`).
+
+#### FR-GLB-009 — Server-side validation
+
+- HTTP entry points validate via Form Request classes; Action entry points validate via DTOs; `$request->all()` never feeds `create()`/`update()`.
+- **Verification:** invalid payloads reject before persistence; DTO validation runs inside `execute()`.
+
+#### FR-GLB-010 — RejectedException contract
+
+- Business-rule violations throw `RejectedException` carrying a translatable, user-facing message.
+- Unexpected exceptions are logged with context and shown to the user as a generic failure (no stack traces in responses).
+- **Verification:** a business-rule violation surfaces the translatable message; an unexpected exception surfaces a generic message and writes a context-log entry.
+
+#### FR-GLB-011 — Upload validation & storage
+
+- Uploads are validated on MIME type, per-module configurable max size, and filename safety.
+- Files are stored outside the web root with non-guessable names; public URLs are entity-derived.
+- **Verification:** a disallowed MIME or oversized file is rejected; stored path is outside web root and name is non-guessable.
+
+#### FR-GLB-012 — Menu from config
+
+- Navigation menu groups render from `config/menu.php` in registration order; active route is highlighted.
+- No menu group is hardcoded in Blade outside the config-driven layout component.
+- **Verification:** adding an entry to `config/menu.php` changes the rendered menu without a Blade edit.
+
+#### FR-GLB-013 — Attendance integrity
+
+- Attendance records carry clock-in/out timestamps and actor identity.
+- Records are immutable after admin sign-off; any pre-sign-off edit is audit-logged.
+- **Verification:** after sign-off the record is immutable; a pre-sign-off edit writes an audit entry.
+
+#### FR-GLB-014 — Logbook edit window
+
+- Logbook entries are daily and timestamped; editable only within the same academic day and only by the owning student; later edits are rejected.
+- **Verification (edge cases):** same-day owner edit succeeds; same-day non-owner is rejected; next-day edit is rejected regardless of owner.
+
 ---
 
 ## 5. Non-Functional Requirements
@@ -192,16 +315,91 @@ via tests. NFRs deliberately deferred to post-MVP are tracked in §10 (R-1 … R
 | NFR-I18N-001 | Indonesian primary + English secondary; locale stored in session and togglable at runtime · [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md) | N/A | P0 | F | Planned |
 | NFR-GDPR-001 | GDPR: deletion logging and data-erasure workflows exist and are functional · [7HNCF](7HNCF-gdpr-compliance.md) | N/A | P1 | F | Planned |
 
+### 5.1 Security
+
+#### NFR-SEC-001 — Authorization at every layer
+
+- **Measurement:** arch scan over Policies and Actions; a direct Action call on a protected mutation is rejected when unauthorized.
+- **Verification:** `scan_class_contracts.py` + policy-allow/deny unit tests per role.
+
+#### NFR-SEC-002 — Input safety & PII masking
+
+- **Measurement:** static scan for raw SQL concatenation (C3) and `$request->all()` → `create()`/`update()` (D5); log review for PII leakage.
+- **Verification:** `scan_violations.py` clean on C3/D5; SmartLogger masks configured PII attributes.
+
+#### NFR-SEC-003 — Security headers
+
+- **Measurement:** every HTTP response carries the four headers.
+- **Verification:** feature test asserts headers on a representative sample of pages (layer `F`).
+
+#### NFR-SEC-004 — CSRF & token auth
+
+- **Measurement:** all state-changing web requests carry a valid CSRF token; API endpoints use Sanctum.
+- **Verification:** an unsigned state-changing request is rejected (419/403); Sanctum guards the API routes.
+
+#### NFR-SEC-005 — Escaped output
+
+- **Measurement:** arch scan asserts no `{!! !!}` on user-generated content; user input rendered via `{{ }}`.
+- **Verification:** `scan_security.py` XSS checks clean (layer `A`).
+
+### 5.2 Backup
+
+#### NFR-BCK-001 — Backup RPO/RTO
+
+- **Measurement:** RPO ≤ 4h, RTO < 1h from last backup.
+- **Verification:** periodic restore drill on staging; backup retention configurable per policy (governing [HBXCI](HBXCI-backup-system.md)).
+
+### 5.3 UX
+
+#### NFR-UX-001 — Responsive & accessible
+
+- **Measurement:** responsive breakpoints render without horizontal scroll; WCAG AA contrast on interactive elements; full keyboard navigation.
+- **Verification:** browser smoke journey on primary flows (layer `B`); manual contrast spot-check (non-testable marker applies to pure-contrast rows).
+
+#### NFR-UX-002 — Guide pages
+
+- **Measurement:** each non-trivial workflow ships a `guides/{feature}-guide.blade.php`.
+- **Verification:** arch scan asserts guide file presence for workflows defined as non-trivial (layer `A`).
+
+### 5.4 Architecture & Data
+
+#### NFR-MOD-001 — Module-first colocation
+
+- **Measurement:** 100% of business code under `app/Modules/`; shared infra in `app/Modules/Core/`.
+- **Verification:** `scan_naming.py` + `scan_module_boundaries.py` clean.
+
+#### NFR-DATA-001 — DB & PK strategy
+
+- **Measurement:** SQLite default; MySQL compatible; UUID PKs on primary entities; schema via migrations.
+- **Verification:** fresh migrate on SQLite and MySQL in CI; arch scan for UUID PKs (layer `A`).
+
+### 5.5 Globalization
+
+#### NFR-I18N-001 — Bilingual runtime toggle
+
+- **Measurement:** Indonesian primary, English secondary; locale in session; toggleable at runtime.
+- **Verification:** switching locale re-renders strings without restart; all D3 keys present in both `lang/` files.
+
+### 5.6 Privacy
+
+#### NFR-GDPR-001 — GDPR erasure
+
+- **Measurement:** deletion logged; data-erasure workflow functional.
+- **Verification:** erasure removes subject rows and writes a deletion record (governing [7HNCF](7HNCF-gdpr-compliance.md)).
+
 ---
 
 ## 6. API / Data Contracts
 
+Non-negotiable precision — precise enough to implement against. Full per-feature contracts live in the
+governing specs; this section fixes the project-global contracts every feature spec relies on.
+
 ### 6.1 Identity Contract
 
 - `users` table: `BaseModel` + `HasUuids` (UUID PK); one row per person; `role` column references `Role` enum.
-- `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`; `Role::resolvesTo()` maps `admin-group`/`mentor`/`mentee` at runtime.
-
-Full contract: [T4B26](T4B26-rbac-and-authorization.md) §4.2.
+- `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`.
+- `Role::resolvesTo(): array{stored: Role[], functional: string[]}` maps the four runtime groups from
+  FR-GLB-002. Exact mapping and storage semantics: [T4B26](T4B26-rbac-and-authorization.md) §4.2.
 
 ### 6.2 Global Helpers
 
@@ -211,10 +409,23 @@ brand(string $key, mixed $default = null): mixed
 app_info(?string $key = null, mixed $default = null): mixed
 ```
 
-Full contracts: [C8F0D](C8F0D-shared-utilities.md) (`app_info()` is FR-C8F0D-SUP11) and
-[YB22J](YB22J-settings-infrastructure.md) (`setting()` / `brand()`).
+Signatures above are the fixed call contract. Full contracts: [C8F0D](C8F0D-shared-utilities.md)
+(`app_info()` is FR-C8F0D-SUP11) and [YB22J](YB22J-settings-infrastructure.md)
+(`setting()` / `brand()`).
 
-### 6.3 Module Landscape
+### 6.3 Canonical PKL Record Shape
+
+The PKL lifecycle (UC-LCYC-001) produces one retrievable, immutable artifact set. The cross-cutting
+integrity contracts are fixed here; per-phase fields are owned by their feature specs:
+
+- **Attendance** (FR-GLB-013): timestamps + actor identity + sign-off immutability — owner [1KSWL](1KSWL-daily-activity.md).
+- **Logbook** (FR-GLB-014): daily, timestamped, same-day edit window — owner [1KSWL](1KSWL-daily-activity.md).
+- **Evaluation aggregation** (PS-5 / UC-EVAL-001): role-aware, auditable subset feeding the grade card — owner [ARDA6](ARDA6-assessment.md), [R6BMW](R6BMW-reports.md).
+
+Each owner spec defines the exact columns/JSON for its artifact. QLHDO only fixes the integrity
+invariants above so all feature specs stay consistent.
+
+### 6.4 Module Landscape
 
 `app/` contains zero top-level business directories. All code lives in modules. Each module owns its
 vertical slice: `Models/`, `Entities/`, `Enums/`, `Data/`, `Actions/`, `Events/`, `Listeners/`,
@@ -242,7 +453,7 @@ decision has a code-testable consequence.
 
 **Decision:** Distribute as a self-packaged Laravel codebase on school-owned infrastructure.
 **Rationale:** Data sovereignty, offline robustness, zero recurring cost, no vendor lock-in for
-under-resourced SMK.
+under-resourced SMK (PS-1 scale, POV 4 device/connectivity constraints).
 **Trade-off:** Per-school deployment cost accepted; no SaaS economics.
 
 #### DD-ARCH-005 — No Tenant Isolation Overhead
@@ -258,7 +469,7 @@ multi-tenancy middleware.
 
 **Decision:** All code under `app/Modules/{Module}/Domain/{Domain}/`; shared infrastructure in `Core`.
 **Rationale:** A business concept lives in one place — findable, independently testable, safe to
-change without silent cross-module coupling.
+change without silent cross-module coupling (NFR-MOD-001).
 **Trade-off:** Infrastructure must be deliberately extracted to Core.
 
 ### 7.3 Localization
@@ -277,9 +488,9 @@ change without silent cross-module coupling.
 text, field pain evidence, regulatory alignment) live in `docs/refs/articles/` and are explicitly
 marked non-testable.
 **Rationale:** Requirements without a test path are wishes, not specifications. Research informs
-prioritization; it does not drive implementation.
+prioritization; it does not drive implementation (see §1 tracebacks).
 **Trade-off:** Non-testable concerns (rural connectivity, government SOP variation) are addressed
-post-MVP with explicit product decisions.
+post-MVP with explicit product decisions (R-4).
 
 ---
 
@@ -361,3 +572,5 @@ Items **not yet decided, explicitly deferred, or unverified** at the time of wri
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
 - [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
 - [Architecture](D2FT3-architecture.md) — module-first 4-layer architecture (governing spec for FR-GLB-007/008/009)
+- [PKL research](../refs/articles/pkl-operational-research.md) — field evidence, non-testable (input, not spec)
+- [Curriculum compliance](../refs/articles/curriculum-compliance.md) — regulatory mapping, non-testable (input, not spec)
