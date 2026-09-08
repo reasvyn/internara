@@ -355,16 +355,17 @@ def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], co
                 reference="docs/templates/spec-template.md#the-skeleton",
             ))
     
-    # Check requirement IDs format: FR-{AREA}-NN or FR-{SPEC_ID}-{AREA}{NN}
-    requirement_id_pattern = re.compile(r"^(FR|NFR|UC)-[A-Z0-9]+-[A-Z0-9]+")
+    # Check requirement IDs format: {FR|NFR|UC|DD}-{SCOPE}-{XXX}
+    # SCOPE is a short alphanumeric scope code (1-8 chars). XXX is a 3-digit running number (001-999).
+    requirement_id_pattern = re.compile(r"^(FR|NFR|UC|DD)-[A-Z0-9]{1,8}-[0-9]{3}$")
     for i, line in enumerate(lines, 1):
         if is_line_in_code_block(i, code_block_ranges):
             continue
         if TABLE_ROW_PATTERN.match(line):
             parts = [p.strip() for p in line.split("|") if p.strip()]
-            if len(parts) > 1 and parts[0].startswith(("FR-", "NFR-", "UC-")):
-                raw_id = parts[0]
-                match_id = raw_id.rstrip("*")
+            if len(parts) > 1 and parts[0].startswith(("FR-", "NFR-", "UC-", "DD-")):
+                raw_id = re.sub(r"[*~!].*$", "", parts[0]).rstrip("-NT").rstrip("-X")
+                match_id = raw_id.rstrip("*~!")
                 if not requirement_id_pattern.match(match_id):
                     findings.append(Finding(
                         id=f"SPEC-REQID-{len(findings)+1:03d}",
@@ -373,10 +374,182 @@ def validate_spec(file_path: Path, lines: list[str], findings: list[Finding], co
                         category="documentation",
                         file=relative_path(file_path),
                         line=i,
-                        message=f"Requirement ID '{raw_id}' does not follow the FR-{{AREA}}-NN / FR-{{SPEC_ID}}-{{AREA}}{{NN}} format",
-                        suggestion="Ensure requirement IDs use two dashes: FR-{{AREA}}-NN or FR-{{SPEC_ID}}-{{AREA}}{{NN}}",
+                        message=f"Requirement ID '{parts[0]}' does not follow the {{FR|NFR|UC|DD}}-{{SCOPE}}-{{XXX}} format",
+                        suggestion="Ensure requirement IDs use the format {FR|NFR|UC|DD}-{SCOPE}-{XXX}, e.g. FR-HTTP-001",
                         reference="docs/templates/spec-template.md#spec-ids",
                     ))
+
+    # Validate requirement tables across the four sections (UC/FR/NFR/DD).
+    # Unified column format: ID | Requirement | [Target] | Priority | Layer | Status
+    #   - UC, FR, DD: ID | Requirement | Priority | Layer | Status
+    #   - NFR:        ID | Requirement | Target | Priority | Layer | Status
+    #   - UC and DD are optional to test: Layer/Status may be '—'.
+    _ID_SCOPE = re.compile(r"^(FR|NFR|UC|DD)-[A-Z0-9]{1,8}-[0-9]{3}$")
+
+    def _section_for(header: str) -> str | None:
+        if "User Stories / Use Cases" in header or header.startswith("## 3"):
+            return "UC"
+        if "Non-Functional Requirements" in header:
+            return "NFR"
+        if "Functional Requirements" in header:
+            return "FR"
+        if "Design Decisions" in header:
+            return "DD"
+        return None
+
+    current_section = ""
+    for i, line in enumerate(lines, 1):
+        if is_line_in_code_block(i, code_block_ranges):
+            continue
+        if H2_PATTERN.match(line):
+            current_section = line.strip()
+            continue
+        if not TABLE_ROW_PATTERN.match(line):
+            continue
+
+        parts = [p.strip() for p in line.split("|") if p.strip()]
+        if not parts:
+            continue
+        first = parts[0]
+        section = _section_for(current_section)
+        if section is None:
+            continue
+
+        # Separator / header rows
+        if TABLE_SEP_PATTERN.match(line):
+            continue
+        if first == "ID" or first in {"Requirement", "Priority", "Layer", "Status", "Target"}:
+            _validate_header_columns(parts, i, file_path, findings, section)
+            continue
+
+        raw_id = re.sub(r"[*~!].*$", "", first).rstrip("-NT").rstrip("-X").rstrip("*~!")
+        if not _ID_SCOPE.match(raw_id):
+            continue  # not a requirement row (already flagged above)
+        _validate_req_row(parts, i, file_path, findings, section)
+
+
+# Value constants shared by the row/header validators.
+_PRIORITY_RE = re.compile(r"^P[0-3](?:\*|\\|!)?$|^—$")
+_STATUS_RE = re.compile(r"^(Planned|Partial|Full)(?:\*|~|!)?$|^—$", re.IGNORECASE)
+
+# Sections where Layer/Status are optional (may be '—').
+_OPTIONAL_LAYER_SECTIONS = {"UC", "DD"}
+
+
+def _validate_header_columns(
+    parts: list[str],
+    line_no: int,
+    file_path: Path,
+    findings: list[Finding],
+    section: str,
+) -> None:
+    """Ensure a requirement table header carries ID | Requirement [Target] | Priority | Layer | Status."""
+    if section == "NFR":
+        required = {"ID", "Requirement", "Target", "Priority", "Layer", "Status"}
+    else:
+        required = {"ID", "Requirement", "Priority", "Layer", "Status"}
+    header = set(parts)
+    missing = required - header
+    if missing:
+        findings.append(Finding(
+            id=f"SPEC-COL-{len(findings)+1:03d}",
+            rule="SPEC_REQUIREMENT_TABLE_COLUMNS",
+            severity="medium",
+            category="documentation",
+            file=relative_path(file_path),
+            line=line_no,
+            message=f"{section} requirement table missing columns: {', '.join(sorted(missing))}",
+            suggestion=f"Ensure {section} table header is 'ID | Requirement | {'Target | ' if section=='NFR' else ''}Priority | Layer | Status'",
+            reference="docs/templates/spec-template.md#4-functional-requirements",
+        ))
+
+
+def _validate_req_row(
+    parts: list[str],
+    line_no: int,
+    file_path: Path,
+    findings: list[Finding],
+    section: str,
+) -> None:
+    """Validate Priority/Layer/Status values on a requirement row.
+
+    Column layout:
+      - UC/FR/DD: [ID, Requirement, Priority, Layer, Status]
+      - NFR:      [ID, Requirement, Target, Priority, Layer, Status]
+    UC/DD columns are optional — Priority/Layer/Status may be '—'.
+    """
+    if section == "NFR":
+        if len(parts) < 6:
+            findings.append(Finding(
+                id=f"SPEC-NFR-{len(findings)+1:03d}",
+                rule="SPEC_NFR_ROW_COLUMNS",
+                severity="medium",
+                category="documentation",
+                file=relative_path(file_path),
+                line=line_no,
+                message=f"NFR row '{parts[0]}' is missing Target, Priority, Layer, or Status column",
+                suggestion="Ensure each NFR row has: ID | Requirement | Target | Priority (P0-P3) | Layer (U/F/B/A) | Status (Planned/Partial/Full)",
+                reference="docs/templates/spec-template.md#5-non-functional-requirements",
+            ))
+            return
+        priority, layer, status = parts[3], parts[4], parts[5]
+    else:
+        if len(parts) < 5:
+            findings.append(Finding(
+                id=f"SPEC-{section}-{len(findings)+1:03d}",
+                rule=f"SPEC_{section}_ROW_COLUMNS",
+                severity="medium",
+                category="documentation",
+                file=relative_path(file_path),
+                line=line_no,
+                message=f"{section} row '{parts[0]}' is missing Priority, Layer, or Status column",
+                suggestion=f"Ensure each {section} row has: ID | Requirement | Priority (P0-P3) | Layer (U/F/B/A) | Status (Planned/Partial/Full)",
+                reference="docs/templates/spec-template.md#4-functional-requirements",
+            ))
+            return
+        priority, layer, status = parts[2], parts[3], parts[4]
+
+    optional = section in _OPTIONAL_LAYER_SECTIONS
+
+    if not _PRIORITY_RE.match(priority):
+        if not optional or priority != "—":
+            findings.append(Finding(
+                id=f"SPEC-{section}-PRI-{len(findings)+1:03d}",
+                rule=f"SPEC_{section}_PRIORITY_FORMAT",
+                severity="low",
+                category="documentation",
+                file=relative_path(file_path),
+                line=line_no,
+                message=f"{section} '{parts[0]}' priority '{priority}' is not in P0-P3",
+                suggestion="Priority must be one of P0, P1, P2, P3",
+                reference="docs/templates/spec-template.md#4-functional-requirements",
+            ))
+    if layer not in ("U", "F", "B", "A") and not (optional and layer == "—"):
+        findings.append(Finding(
+            id=f"SPEC-{section}-LAYER-{len(findings)+1:03d}",
+            rule=f"SPEC_{section}_LAYER_FORMAT",
+            severity="low",
+            category="documentation",
+            file=relative_path(file_path),
+            line=line_no,
+            message=f"{section} '{parts[0]}' layer '{layer}' is invalid",
+            suggestion="Layer must be one of U (Unit), F (Feature), B (Browser), A (Arch)" + (" or — when untested" if optional else ""),
+            reference="docs/templates/spec-template.md#4-functional-requirements",
+        ))
+
+    if not _STATUS_RE.match(status):
+        findings.append(Finding(
+            id=f"SPEC-{section}-STATUS-{len(findings)+1:03d}",
+            rule=f"SPEC_{section}_STATUS_FORMAT",
+            severity="low",
+            category="documentation",
+            file=relative_path(file_path),
+            line=line_no,
+            message=f"{section} '{parts[0]}' status '{status}' is not a recognized status",
+            suggestion="Status must be one of Planned, Partial, Full" + (" or — when untested" if optional else ""),
+            reference="docs/templates/spec-template.md#4-functional-requirements",
+        ))
+
 
 _REFERENCE_GUIDE_DIRS = {"infra", "ui-ux"}  # Reference-style guide subdirectories
 
