@@ -85,23 +85,26 @@ FR-GLB-008 (dual-layer authorization) guarantees the aggregation path is role-ga
 
 ## 2. Goals & Non-Goals
 
-| Goal | Why |
-|------|-----|
-| **Digitize the complete PKL lifecycle** — placement → attendance → logbook → supervision → assessment → certificate | Ends the paper-and-chat workflow at scale |
-| **Role-filtered canonical record** — every participant sees only what their role allows | Single source of truth, no informal data silos |
-| **Anti-fraud attendance** — verifiable, timestamped, with evidence trail | BAN-PDM evidence, certificate integrity |
-| **Remote supervision support** — digital monitoring where physical visits are impractical | Addresses PS-3 for schools with geographically dispersed placements |
-| **Self-hosted, MIT-licensed, zero vendor cost per school** | Data sovereignty, accessible to under-resourced SMK |
-| **Bilingual** — Indonesian primary, English secondary, with `__()` on all user-facing strings | Natively supports SMK staff and students |
-| **Single-tenant by design** — no `tenant_id` overhead | MVP simplicity, no multi-tenancy complexity |
-| **Non-goal:** Multi-tenant SaaS | Single-tenant is a design decision, not a limitation |
-| **Non-goal:** Telemetry / usage reporting / external API calls for core features | Data sovereignty per [self-hosted ADR](../adr/adr-self-hosted-single-tenant.md) |
-| **Non-goal:** HR / payroll features | Out of PKL scope |
-| **Non-goal:** Real-time chat | WhatsApp is the existing platform; integration is not MVP |
-| **Non-goal:** Government database sync (Dapodik/e-Rapor) | CSV import/export only |
-| **Non-goal:** Mobile native apps | Responsive web covers the use case; BPS 2024: 72.78% internet access nationally |
-| **Non-goal:** Full WCAG AAA / formal accessibility audit | WCAG AA contrast + keyboard nav MVP only; full audit is post-MVP |
-| **Non-goal:** Offline-first / PWA | Important for rural connectivity (5–20% gap vs urban) but scoped post-MVP; progressive enhancement acceptable for MVP |
+### Goals
+
+- **Digitize the complete PKL lifecycle** — placement → attendance → logbook → supervision → assessment → certificate. *Why:* ends the paper-and-chat workflow at scale.
+- **Role-filtered canonical record** — every participant sees only what their role allows. *Why:* single source of truth, no informal data silos.
+- **Anti-fraud attendance** — verifiable, timestamped, with evidence trail. *Why:* BAN-PDM evidence, certificate integrity.
+- **Remote supervision support** — digital monitoring where physical visits are impractical. *Why:* addresses PS-3 for schools with geographically dispersed placements.
+- **Self-hosted, MIT-licensed, zero vendor cost per school**. *Why:* data sovereignty, accessible to under-resourced SMK.
+- **Bilingual** — Indonesian primary, English secondary, with `__()` on all user-facing strings. *Why:* natively supports SMK staff and students.
+- **Single-tenant by design** — no `tenant_id` overhead. *Why:* MVP simplicity, no multi-tenancy complexity.
+
+### Non-Goals
+
+- **Multi-tenant SaaS**. *Why:* single-tenant is a design decision, not a limitation.
+- **Telemetry / usage reporting / external API calls for core features**. *Why:* data sovereignty per [self-hosted ADR](../adr/adr-self-hosted-single-tenant.md).
+- **HR / payroll features**. *Why:* out of PKL scope.
+- **Real-time chat**. *Why:* WhatsApp is the existing platform; integration is not MVP.
+- **Government database sync** (Dapodik/e-Rapor). *Why:* CSV import/export only.
+- **Mobile native apps**. *Why:* responsive web covers the use case; BPS 2024: 72.78% internet access nationally.
+- **Full WCAG AAA / formal accessibility audit**. *Why:* WCAG AA contrast + keyboard nav MVP only; full audit is post-MVP.
+- **Offline-first / PWA**. *Why:* important for rural connectivity (5–20% gap vs urban) but scoped post-MVP; progressive enhancement acceptable for MVP.
 
 ---
 
