@@ -311,7 +311,7 @@ See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.m
 | **Testing patterns**                                                               | [Testing Pattern](guides/arch/testing-pattern.md)                                                     |
 | **Validation strategy**                                                            | [Modular Pattern](guides/arch/modular-pattern.md) §4                                                  |
 | **Module structure & naming**                                                      | [Modular Pattern](guides/arch/modular-pattern.md)                                                     |
-| **19 modules overview (18 business + UI + Core)**                                  | [Module Index](refs/modules/index.md)                                                                       |
+| **19 modules overview (17 business + UI + Core)**                                  | [Module Index](refs/modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |
 
 ---

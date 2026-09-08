@@ -100,7 +100,7 @@ Open the signed URL printed by `setup:install` and complete the 6-step setup wiz
 
 ## Architecture
 
-Action-based MVC with vertical slicing: 18 business modules each own their complete stack
+Action-based MVC with vertical slicing: 17 business modules each own their complete stack
 (Models, Actions, Livewire, Events, Policies) colocated under `app/{Module}/`. Every mutation
 follows one path:
 
@@ -158,11 +158,8 @@ scanner toolkit (`tools/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/
 
 ## Project Status
 
-**v0.15.9** (`composer.json`) / **v0.15.9** (`package.json`) — all 19 modules (18 business + UI + Core) have a full stack; test suite passes at ~98%, though coverage is
-uneven (core modules solid, domain modules need work; known issues tracked in
-[GitHub Issues](https://github.com/reasvyn/internara/issues)). Current focus: fixing P0 runtime
-errors, improving domain-module coverage, UI polish. Roadmap horizons through 2030:
-[`docs/project-vision.md`](docs/project-vision.md).
+**v0.15.9** (`composer.json`) / **v0.15.9** (`package.json`) — all 19 modules (17 business + UI + Core) have a full stack; known issues are tracked in
+[GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 ## Contributing
 

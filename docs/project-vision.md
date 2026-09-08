@@ -23,14 +23,14 @@ Internara is not a school management system. It is a *single-purpose, deep* syst
 | **P1 — Workflow Fidelity** | Mirror real school operations (DUDI MoU quotas, dual mentors, placement change requests, absence approvals) rather than forcing schools to adapt to software | Persona walkthroughs pass without “workaround” steps; spec QLHDO UC coverage = 100% |
 | **P2 — Zero-Admin Operations** | Teacher and supervisor actions are one-tap, offline-resilient, and self-explanatory; coordinator dashboards show placement rate, slot capacity, and anomalies in real time | Grade-card compilation 2–3 weeks → instant; logbook review <2 min per entry |
 | **P3 — Security & Trust First (S1)** | Authorization at every layer, PII masking, immutable activity logs, GPS-tagged attendance, QR-verifiable certificates | `scan_security.py` 0 high, `scan_violations.py` C1–C8 clean; external audit 0 critical |
-| **P4 — Sustained Maintainability (S2)** | Module colocation (18 modules own their stack), Action Triad (one `execute()`), Entity/DTO boundaries — a new contributor ships a feature after reading `architecture.md` + `conventions.md` | `scan_class_contracts.py` 0 high, bus factor >2 per module |
+| **P4 — Sustained Maintainability (S2)** | Module colocation (17 modules own their stack), Action Triad (one `execute()`), Entity/DTO boundaries — a new contributor ships a feature after reading `architecture.md` + `conventions.md` | `scan_class_contracts.py` 0 high, bus factor >2 per module |
 | **P5 — Pragmatic Scalability (S3)** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad keeps read/write paths decoupled — system “does not collapse as features are added” | Handles 1,000 active students / 300 companies on VPS 1 vCPU / 1.9G RAM (current prod) without queue saturation (`pm.max_children=6`) |
 
 ## 3–5 Year Horizon (2026 → 2030)
 
 | Horizon | Outcome for schools | Technical enabler |
 |---------|---------------------|-------------------|
-| **2026 — Stabilization (v0.15.9)** | 18 modules full-stack, P0 runtime crashes fixed, test suite ~98% pass, Docker deploy on `internara.web.id` (product demo) stable | 4-layer Action MVC, `fe4096b9c` production hardening, version-tagged deploys (`v*.*.*`) |
+| **2026 — Stabilization (v0.15.9)** | 17 modules full-stack, P0 runtime crashes fixed, test suite passing with coverage uneven, Docker deploy on `internara.web.id` (product demo) stable | 4-layer Action MVC, `fe4096b9c` production hardening, version-tagged deploys (`v*.*.*`) |
 | **2027 — Scale & Trust** | 50+ schools in production, Dapodik CSV export adopted for accreditation, certificate QR verification used by companies for hiring | `docs` ⇄ `specs` ⇄ `code` sync (`sync-docs` skill), `module-health.md` green tiers, `scan_violations.py` 0 high |
 | **2028 — Ecosystem** | Regional Dinas PKL forks with custom certificate templates and Dapodik extensions; contributions flow upstream | MIT license, `CONTRIBUTING.md` contributor POV, `project-vision.md` as decision gate for forks |
 | **2030 — Reference Implementation** | PKL is cited as example of “infrastructure sovereignty for public education” — schools self-host, data stays on-prem, program fully auditable end-to-end | No multi-tenant SaaS, no telemetry, no upsell — intentional non-goals below |

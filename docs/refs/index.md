@@ -11,7 +11,7 @@ Design intent and operational guides live elsewhere — see [../index.md](../ind
 
 | Directory | Content | Entry point |
 |-----------|---------|-------------|
-| [`modules/`](modules/index.md) | Conceptual overview + full API reference for each of the 18 business modules | [modules/index.md](modules/index.md) |
+| [`modules/`](modules/index.md) | Conceptual overview + full API reference for each of the 17 business modules | [modules/index.md](modules/index.md) |
 | [`deps/`](deps/index.md) | One conceptual reference per runtime dependency (framework, packages, frontend stack) | [deps/index.md](deps/index.md) |
 | [`articles/`](articles/index.md) | Research inputs on external context (regulation compliance, real-world PKL operational needs) that influence — but are **not** — spec requirements | [articles/index.md](articles/index.md) |
 
