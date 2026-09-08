@@ -95,6 +95,7 @@ FR-GLB-008 (dual-layer authorization) guarantees the aggregation path is role-ga
 | **Bilingual** — Indonesian primary, English secondary, with `__()` on all user-facing strings | Natively supports SMK staff and students |
 | **Single-tenant by design** — no `tenant_id` overhead | MVP simplicity, no multi-tenancy complexity |
 | **Non-goal:** Multi-tenant SaaS | Single-tenant is a design decision, not a limitation |
+| **Non-goal:** Telemetry / usage reporting / external API calls for core features | Data sovereignty per [self-hosted ADR](../adr/adr-self-hosted-single-tenant.md) |
 | **Non-goal:** HR / payroll features | Out of PKL scope |
 | **Non-goal:** Real-time chat | WhatsApp is the existing platform; integration is not MVP |
 | **Non-goal:** Government database sync (Dapodik/e-Rapor) | CSV import/export only |
@@ -202,7 +203,7 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 | FR-GLB-004 | All administrative mutations are audit-logged (activity channel) with PII masking · [89SRA](89SRA-logging-and-error-handling.md) | P0 | F | Planned |
 | FR-GLB-005 | Sensitive endpoints are rate-limited: login 5/60s, forgot-password 3/3600s, reset 5/300s · [2CF4Y](2CF4Y-middleware-pipeline.md) | P0 | F | Planned |
 | FR-GLB-006 | `php artisan system:health` covers: PHP version, extensions, memory, DB, migrations, storage, queue, cache, APP_KEY · [J68GZ](J68GZ-system-requirements.md) | P0 | F | Planned |
-| FR-GLB-007 | All primary models use UUID primary keys via `BaseModel` / `HasUuids` · [SE5Q9](SE5Q9-base-classes.md) | P0 | A | Planned |
+| FR-GLB-007 | All primary models use UUID v7 primary keys via `BaseModel` / `HasUuids`; foreign keys use `foreignUuid()->constrained()` — no mixed key types · [SE5Q9](SE5Q9-base-classes.md) | P0 | A | Planned |
 | FR-GLB-008 | Authorization enforced at both Policy layer (gatekeeping) and Action/Entity layer (business rule via `RejectedException`) · [T4B26](T4B26-rbac-and-authorization.md) | P0 | A | Planned |
 | FR-GLB-009 | All user input validated server-side: Form Request classes for HTTP, validated DTOs for Actions · [D2FT3](D2FT3-architecture.md) | P0 | A | Planned |
 | FR-GLB-010 | Business-rule violations throw `RejectedException` with a translatable user-facing message; unexpected exceptions are logged with context and shown as generic failure · [89SRA](89SRA-logging-and-error-handling.md) | P0 | A | Planned |
@@ -247,10 +248,11 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 - A failing check yields a non-zero exit code and a failed status in the summary.
 - **Verification:** each listed subsystem appears in output; a deliberately broken dependency marks that check failed and non-zero exit.
 
-#### FR-GLB-007 — UUID primary keys
+#### FR-GLB-007 — UUID v7 primary keys
 
-- All primary entities extend `BaseModel` (uses `HasUuids`); `id` is a UUID PK; no auto-increment primary keys on primary entities.
-- **Verification:** arch scan (layer `A`) asserts no auto-increment PK on primary entities.
+- All primary entities extend `BaseModel` (uses `HasUuids` with ordered UUID v7); `id` is a UUID PK; no auto-increment primary keys on primary entities.
+- Foreign keys use `foreignUuid()->constrained()` in every migration with composite indexes; mixed key types are forbidden (ADR: UUID primary keys).
+- **Verification:** arch scan (layer `A`) asserts no auto-increment PK on primary entities; migration review asserts `foreignUuid()->constrained()` FKs.
 
 #### FR-GLB-008 — Dual-layer authorization
 
@@ -396,10 +398,12 @@ governing specs; this section fixes the project-global contracts every feature s
 
 ### 6.1 Identity Contract
 
-- `users` table: `BaseModel` + `HasUuids` (UUID PK); one row per person; `role` column references `Role` enum.
+- `users` table: `BaseModel` + `HasUuids` (UUID v7 PK); one row per person; `role` column references `Role` enum.
 - `Role` enum cases: `super_admin`, `admin`, `teacher`, `student`, `supervisor`.
-- `Role::resolvesTo(): array{stored: Role[], functional: string[]}` maps the four runtime groups from
-  FR-GLB-002. Exact mapping and storage semantics: [T4B26](T4B26-rbac-and-authorization.md) §4.2.
+- `Role::resolvesTo(): Role[]` maps each functional role to the stored roles it stands for —
+  `admin-group` → `super_admin`/`admin`, `mentor` → `teacher`/`supervisor`, `mentee` → `student`; a
+  stored role resolves to itself. `functionalRoles(): Role[]` and `is(Role): bool` complete the runtime
+  contract (FR-GLB-002). Exact mapping and storage semantics: [T4B26](T4B26-rbac-and-authorization.md) §4.2.
 
 ### 6.2 Global Helpers
 
@@ -421,6 +425,7 @@ integrity contracts are fixed here; per-phase fields are owned by their feature 
 - **Attendance** (FR-GLB-013): timestamps + actor identity + sign-off immutability — owner [1KSWL](1KSWL-daily-activity.md).
 - **Logbook** (FR-GLB-014): daily, timestamped, same-day edit window — owner [1KSWL](1KSWL-daily-activity.md).
 - **Evaluation aggregation** (PS-5 / UC-EVAL-001): role-aware, auditable subset feeding the grade card — owner [ARDA6](ARDA6-assessment.md), [R6BMW](R6BMW-reports.md).
+- **Closure & archival** ([program-closure-archival ADR](../adr/adr-program-closure-archival.md)): terminal `COMPLETED → ARCHIVED` lifecycle, readiness verification, locked final grades, and model/policy/UI immutability belong to [7C5WM](7C5WM-internship-lifecycle.md) + [9YUUK](9YUUK-data-archiving.md); retention-pipeline numbers are post-MVP depth per [mvp-spec-trim ADR](../adr/adr-mvp-spec-trim.md) — QLHDO fixes none of them.
 
 Each owner spec defines the exact columns/JSON for its artifact. QLHDO only fixes the integrity
 invariants above so all feature specs stay consistent.
