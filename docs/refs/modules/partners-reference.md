@@ -21,6 +21,7 @@ Manages industrial partner companies and partnership agreements for internship p
 | `Domain/Partnership/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseCommandAction` |
 | `Domain/Partnership/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseCommandAction` |
 | `Domain/Partnership/Actions/DeletePartnershipAction.php` | `DeletePartnershipAction` | `BaseCommandAction` |
+| `Domain/Partnership/Actions/ExpirePartnershipAction.php` | `ExpirePartnershipAction` | `BaseCommandAction` |
 | `Domain/Partnership/Actions/RenewPartnershipAction.php` | `RenewPartnershipAction` | `BaseCommandAction` |
 | `Domain/Partnership/Actions/TerminatePartnershipAction.php` | `TerminatePartnershipAction` | `BaseCommandAction` |
 | `Domain/Partnership/Actions/UpdatePartnershipAction.php` | `UpdatePartnershipAction` | `BaseCommandAction` |

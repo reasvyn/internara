@@ -21,6 +21,7 @@ field monitoring visit scheduling/verification.
 | `Domain/Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseCommandAction` |
+| `Domain/Attendance/Actions/ReadUnaccountedDatesAction.php` | `ReadUnaccountedDatesAction` | `BaseReadAction` |
 | `Domain/Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseCommandAction` |
 | `Domain/Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | `BaseCommandAction` |
