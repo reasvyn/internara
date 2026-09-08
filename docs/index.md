@@ -25,7 +25,7 @@ This index provides a structured map of all documentation in the Internara proje
 - **[README](../README.md)** — Project overview: pitch, features, requirements, installation, deployment, status (deep product definition in `project-vision.md`)
 - **[Internara Project Spec](specs/QLHDO-project-initialization.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
-- **[Project Vision](project-vision.md)** — 3–5 year direction, strategic pillars, success metrics, boundaries, decision compass
+- **[Project Vision](project-vision.md)** — vision statement, strategic pillars, success metrics, boundaries, decision compass
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)

@@ -2,7 +2,7 @@
 
 ## Description
 
-Long-term direction for Internara — why it exists, where it is going in 3–5 years, and how every decision is evaluated. This document is the north star for contributors, maintainers, and schools adopting the platform. A condensed product overview lives in `README.md`; day-to-day principles live in `philosophy.md`; this file answers *what the future looks like* and *how we will know we got there*.
+Direction for Internara — why it exists, where it is going, and how every decision is evaluated. This document is the north star for contributors, maintainers, and schools adopting the platform. A condensed product overview lives in `README.md`; day-to-day principles live in `philosophy.md`; this file answers *what the future looks like* and *how we will know we got there*.
 
 ## Vision Statement
 
@@ -25,15 +25,6 @@ Internara is not a school management system. It is a *single-purpose, deep* syst
 | **P3 — Security & Trust First (S1)** | Authorization at every layer, PII masking, immutable activity logs, GPS-tagged attendance, QR-verifiable certificates | `scan_security.py` 0 high, `scan_violations.py` C1–C8 clean; external audit 0 critical |
 | **P4 — Sustained Maintainability (S2)** | Module colocation (17 modules own their stack), Action Triad (one `execute()`), Entity/DTO boundaries — a new contributor ships a feature after reading `architecture.md` + `conventions.md` | `scan_class_contracts.py` 0 high, bus factor >2 per module |
 | **P5 — Pragmatic Scalability (S3)** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad keeps read/write paths decoupled — system “does not collapse as features are added” | Handles 1,000 active students / 300 companies on VPS 1 vCPU / 1.9G RAM (current prod) without queue saturation (`pm.max_children=6`) |
-
-## 3–5 Year Horizon (2026 → 2030)
-
-| Horizon | Outcome for schools | Technical enabler |
-|---------|---------------------|-------------------|
-| **2026 — Stabilization (v0.15.9)** | 17 modules full-stack, P0 runtime crashes fixed, test suite passing with coverage uneven, Docker deploy on `internara.web.id` (product demo) stable | 4-layer Action MVC, `fe4096b9c` production hardening, version-tagged deploys (`v*.*.*`) |
-| **2027 — Scale & Trust** | 50+ schools in production, Dapodik CSV export adopted for accreditation, certificate QR verification used by companies for hiring | `docs` ⇄ `specs` ⇄ `code` sync (`sync-docs` skill), `module-health.md` green tiers, `scan_violations.py` 0 high |
-| **2028 — Ecosystem** | Regional Dinas PKL forks with custom certificate templates and Dapodik extensions; contributions flow upstream | MIT license, `CONTRIBUTING.md` contributor POV, `project-vision.md` as decision gate for forks |
-| **2030 — Reference Implementation** | PKL is cited as example of “infrastructure sovereignty for public education” — schools self-host, data stays on-prem, program fully auditable end-to-end | No multi-tenant SaaS, no telemetry, no upsell — intentional non-goals below |
 
 ## Personas — Future State
 
@@ -63,8 +54,8 @@ Any proposal that violates these boundaries is closed with a reference to this s
 ## Success Metrics (how we know we got there)
 
 - **Operational:** Grade-card compilation median <5 minutes (from 2–3 weeks); MoU expiry alerts 30/14/7 days before; attendance anomalies flagged <24h
-- **Adoption:** 50 production schools by end-2027 without multi-tenant; 0 critical `scan_security.py` findings on every release
-- **Quality:** `vendor/bin/pest` ~98% pass *and* `specs/*` FR coverage = 100% (no spec gaps, no orphan tests)
+- **Adoption:** 50 production schools without multi-tenant; 0 critical `scan_security.py` findings on every release
+- **Quality:** test suite stays green and `specs/*` FR coverage = 100% (no spec gaps, no orphan tests)
 - **Trust:** 100% of certificates QR-verifiable; every mutation has `activity_log` entry (SmartLogger, PII-masked, `systemOnly`); PII retention 5 years then GDPR delete
 - **Sustainability:** New contributor ships `feat(enrollment):` in <1 week after reading `architecture.md` + `conventions.md` + `modules/index.md`; bus factor ≥2 per healthy module
 
@@ -100,15 +91,6 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 | Architecture that makes vision buildable | `architecture.md` (4-layer, Action Triad) |
 | How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/release.yml` (tag-driven 4-stage release pipeline), `infrastructure/deployment.md` |
 | Current health & where to contribute | Module-health tiers (agent memory) + `CONTRIBUTING.md` |
-
-## Where to Find It
-
-- `README.md` — product scope, 3S doctrine, system boundary, project status
-- `philosophy.md` — values, principles, pragmatic trade-offs
-- `docs/specs/QLHDO-project-initialization.md` — umbrella spec (functional/non-functional/UI-UX)
-- `architecture.md` — 4-layer model and Action Triad that make the vision executable
-
----
 
 ## Quick References
 
