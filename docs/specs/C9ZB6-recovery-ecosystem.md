@@ -1,14 +1,13 @@
 # Recovery Ecosystem — Super Admin Emergency Access
 
 > **Spec ID:** C9ZB6
+> **Status:** Full
+> **Owner:** Setup
+> **Depends on:** FB792, 8NZAU
 
 ## Description
 
-Specification for Internara's super admin recovery ecosystem. Covers the full lifecycle from
-recovery key generation during setup through emergency access via CLI, including key storage,
-retrieval, OTP verification, password reset, and key regeneration. Other recovery mechanisms
-(password reset, recovery slips) are separate initiatives — see
-[authentication.md](YB7RG-authentication.md) and `docs/guides/account-recovery.md`.
+Defines the full lifecycle of the super admin recovery key — minted once at setup finalization, verified over CLI when every account is locked, and regenerated after each use — including dual storage, the recovery commands, rate limiting, and integrity guards. Provisioning that creates the key belongs to [8NZAU-installation.md](8NZAU-installation.md); the wizard screen that first displays it belongs to [VEJCX-setup-wizard.md](VEJCX-setup-wizard.md).
 
 ---
 
@@ -16,35 +15,28 @@ retrieval, OTP verification, password reset, and key regeneration. Other recover
 
 ### PS-1 — Super Admin Lockout
 
-After setup, the super admin may lose access through forgotten password, account lockout, or
-corrupted session. The web UI requires login, and email-based recovery may not be configured
-(shared hosting often lacks SMTP). A non-email, non-web recovery path must exist.
+After setup, the super admin may lose access through a forgotten password, a locked account, or a corrupted session. The web UI requires login, and email-based recovery may never have been configured. A path must exist that depends on neither the browser nor SMTP.
+**→ Requirement:** FR-RECOV-004 (CLI recovery), FR-RECOV-007 (credential reset).
 
-### PS-2 — Recovery Key Lifecycle
+### PS-2 — Key Lifecycle Without Loss or Misuse
 
-The recovery key is generated once during setup finalization (Step 6 of the wizard), displayed once, and stored in two
-forms: plaintext in a private file (for CLI retrieval) and bcrypt hash in the database (for
-verification). The lifecycle spans generation → storage → verification → reset → regeneration,
-and must be fully documented to prevent key loss or misuse.
+The key is generated once, shown once, and must survive until needed without leaking in between. Generation, storage, verification, reset, and regeneration form one chain, and a gap anywhere — an unverified copy, an unrotated reuse — breaks the whole promise.
+**→ Requirement:** FR-RECOV-001/002 (minting and dual storage), FR-RECOV-009 (single-use regeneration).
 
 ### PS-3 — Dual Storage Trade-Off
 
-Storing the recovery key only in the database creates a chicken-and-egg problem: database access
-requires a running application, which requires a working super admin account. Storing only in a
-file risks silent file deletion. Dual storage (file + hashed DB) provides both offline retrieval
-and cryptographic verification, but introduces synchronization risk on regeneration.
+Database-only storage recreates the lockout it is meant to solve: reaching the database needs a working application. File-only storage risks silent deletion with no verification anchor. Dual storage covers both, at the price of keeping the copies in sync.
+**→ Requirement:** FR-RECOV-002 (hash plus file), FR-RECOV-005 (file restoration).
 
-### PS-4 — OTP Verification in Production
+### PS-4 — Recovery Without a Second Factor
 
-In production environments, CLI-based password reset without any secondary verification is a
-single-factor operation. An attacker with SSH access could reset any super admin account. OTP
-via email adds a second factor, but only when mail is configured. The system must degrade
-gracefully when mail is unavailable.
+A CLI password reset guarded only by key possession is single-factor by construction. Email OTP would add a factor, but only where mail is configured — which, on the shared hosting this system targets, is frequently nowhere.
+**→ Requirement:** FR-RECOV-010 (attempt budget as the compensating control); OTP deferred per §10 R-1.
 
 ### PS-5 — Audit Trail for Recovery Actions
 
-Super admin recovery is a security-sensitive operation. Every attempt — successful or failed —
-must be logged via SmartLogger with PII masking, providing an audit trail for forensic analysis.
+Recovery is the most security-sensitive operation in the system. Every attempt, successful or failed, must log through SmartLogger with PII masked, or forensics after an incident is guesswork.
+**→ Requirement:** NFR-RECOV-002 (masked audit of all outcomes).
 
 ---
 
@@ -52,217 +44,184 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Enable emergency super admin access via CLI when all accounts are locked |
-| G2  | Regenerate recovery key after each successful recovery (key is single-use) |
-| G3  | Support key retrieval from file (`storage/app/private/.recovery-key`) |
-| G4  | Support manual key input via `--key` flag |
-| G5  | Verify OTP in production environments for second-factor protection |
-| G6  | Log all recovery attempts (success and failure) via SmartLogger |
-| G7  | Regenerate recovery key file from known key (`--regenerate-file`) |
+- **Emergency access with no working account** — key plus CLI restores the super admin when everything else is locked. *Why:* a school with zero admins is a school back on paper.
+- **Single-use keys** — every successful recovery mints a fresh key. *Why:* a used key was on a screen, possibly photographed; it must not remain valid.
+- **File-first retrieval** — the key reads from a private file without a running application. *Why:* the database cannot be the rescue path for a system whose application layer is untrusted.
+- **Manual-key fallback** — a printed or written-down key works when the file is gone. *Why:* files get deleted during migrations; paper survives.
+- **Attempt budget against guessing** — strict rate limits on verification. *Why:* without a second factor, the attempt budget is the brute-force defense.
+- **Complete masked audit** — every outcome logged with PII masked. *Why:* recovery events are exactly the rows an investigator reads first.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | Web-based super admin recovery (CLI-only by design) |
-| NG2  | Recovery of non-super-admin accounts (use password reset or recovery slips) |
-| NG3  | Multi-factor recovery beyond OTP (hardware keys, TOTP) |
-| NG4  | Automatic key rotation on a schedule |
+- **Web-based super admin recovery**. *Why:* CLI-only by design — the browser requires the login that is broken (see DD-RECOV-005).
+- **Recovery of non-super-admin accounts**. *Why:* ordinary accounts use password reset and recovery slips; see [D9TKW-password-reset.md](D9TKW-password-reset.md).
+- **One-time-password or multi-factor verification**. *Why:* needs configured mail, absent on much target hosting; deferred post-MVP (see §10 R-1).
+- **Automatic key rotation on a schedule**. *Why:* rotation on use is the meaningful event; calendar rotation adds operations without threat-model benefit.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-C9ZB6-1 — Emergency Super Admin Recovery
+One table holds every use case; the groups below (§3.1–§3.2) carry the free-form detail for each row.
 
-**Actor:** Server administrator (via SSH/CLI)
-**Preconditions:** System installed, super admin account inaccessible, recovery key available.
-**Flow:**
-1. Administrator runs `php artisan admin:recover`
-2. System detects recovery key file and displays key-detected notice
-3. System verifies recovery key against stored bcrypt hash in database
-4. In production: system generates 6-digit OTP, sends via `RecoveryOtpNotification` (mail channel)
-5. Administrator enters OTP from email
-6. System prompts for target email and new password (with confirmation)
-7. System displays warning and requires email re-entry for confirmation
-8. `RecoverSuperAdminAction` executes: rate limit check, password reset, lock clearing, role sync, remember token rotation
-9. System regenerates recovery key (new 64-char string, new hash, new file)
-10. System displays new recovery key and advises password change
-**Postconditions:** Super admin account accessible, old recovery key invalidated, new key generated.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-RECOV-001 | Locked-out school restores super admin access via the key file and CLI prompts | P0 | F | Full |
+| UC-RECOV-002 | Administrator recovers with a manually supplied key and restores a deleted key file | P0 | F | Full |
+| UC-RECOV-003 | Administrator inspects the key file path and, with confirmation, views the key | P1 | F | Full |
+| UC-RECOV-004 | Setup finalization mints the recovery key into both stores and displays it once | P0 | F | Full |
 
-### UC-C9ZB6-2 — Recovery with Manual Key
+### 3.1 Emergency Journeys
 
-**Actor:** Server administrator
-**Recovery key file missing or deleted, but key is known (written down, printed, etc.)
-**Flow:**
-1. Administrator runs `php artisan admin:recover --key=<64-char-key>`
-2. System verifies key against stored hash
-3. Flow continues from UC-C9ZB6-1 step 4 (OTP in production) or step 6 (non-production)
-**Postconditions:** Same as UC-C9ZB6-1.
+#### UC-RECOV-001 — Unlock the School
 
-### UC-C9ZB6-3 — Recovery Key File Regeneration
+It is Monday morning, report week, and the only super admin password belongs to a teacher on leave with no phone signal. The district technician SSHes in and runs the recovery command with no flags. The system finds the key file, verifies its contents against the stored hash, and walks the technician through prompts: target email, new password with confirmation, then a deliberate re-type of the email as a final brake. The reset executes — password hashed, lock cleared, roles re-synced, sessions rotated — and a brand-new recovery key appears on screen because the old one is now retired. Total time under a minute, and the school makes its reporting deadline.
 
-**Actor:** Server administrator
-**Recovery key file was deleted, but administrator knows the key from database hash verification
-**Flow:**
-1. Administrator runs `php artisan admin:recover --key=<key> --regenerate-file`
-2. System verifies key, regenerates file via `SaveRecoveryKeyAction`
-3. Flow continues from UC-C9ZB6-1
-**Postconditions:** Recovery key file restored.
+#### UC-RECOV-002 — The File Is Gone
 
-### UC-C9ZB6-4 — View Recovery Key
+A server migration copied the database but skipped the hidden key file, and the new admin holds only a photograph of the original key taken on setup day. Recovery accepts the photographed secret through the manual flag, verifies it against the unchanged hash, and proceeds exactly as the file path would have — then the regenerate-file variant rewrites the missing file from the verified key, restoring dual storage in the same motion. Paper plus flag covers every way a file can die: deletion, migration, permission loss.
 
-**Actor:** Server administrator
-**Recovery key file exists, administrator needs to read the plaintext key
-**Flow:**
-1. Administrator runs `php artisan admin:recovery-show`
-2. System reads key from file via `ReadRecoveryKeyAction`
-3. System prompts for confirmation before displaying
-4. On confirmation, system displays key and logs the event
-**Postconditions:** Key displayed on screen, SmartLogger entry created.
+### 3.2 Stewardship Journeys
 
-### UC-C9ZB6-5 — Check Recovery Key File Path
+#### UC-RECOV-003 — Look Before a Crisis
 
-**Actor:** Server administrator
-**Administrator wants to verify the recovery key file exists and its location
-**Flow:**
-1. Administrator runs `php artisan admin:recovery-path`
-2. System displays path (`storage/app/private/.recovery-key`) and existence status
-**Postconditions:** Path and status displayed.
+Between emergencies, an admin wants to confirm the safety net exists: one command prints the key file's path and whether it is present, another — after an explicit confirmation prompt, because displaying the secret is itself sensitive — shows the plaintext and logs that it did. These are audit-hygiene commands, the equivalent of checking the fire extinguisher's gauge. Their existence is also what makes the migration story survivable: the admin who checks before moving servers discovers the missing file on their own schedule.
 
-### UC-C9ZB6-6 — Recovery Key Generation (During Setup)
+#### UC-RECOV-004 — Minting at Birth
 
-**Actor:** System (automated during setup finalization)
-**Preconditions:** Setup wizard completing Step 6 (finalization)
-**Flow:**
-1. `FinalizeSetupAction` generates 64-char random string
-2. Hash with `Hash::make()`, store in `setup.install_recovery_key` setting
-3. Save plaintext to `storage/app/private/.recovery-key` via `SaveRecoveryKeyAction`
-4. Display key on finalization screen with copy button
-**Postconditions:** Key in two locations, user has copied/printed it.
+Behind the wizard's completion screen, finalization generates the 64-character secret, hashes it into settings, writes the plaintext file with its timestamped header, and hands the plaintext up to the screen exactly once. The administrator copies it into the school's vault and the moment passes. Everything this spec operates — verification, rotation, restoration — depends on that one careful minute, which is why minting rules are requirements here even though the wizard triggers them.
 
 ---
 
 ## 4. Functional Requirements
 
-### 4.1 Recovery Key Operations
+One table holds every functional requirement; each row's detail lives under its group (§4.1–§4.3).
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-K1 | `ReadRecoveryKeyAction` reads plaintext from `storage/app/private/.recovery-key`, skips comments (`#`) and blank lines |
-| FR-C9ZB6-K2 | `SaveRecoveryKeyAction` writes plaintext to `storage/app/private/.recovery-key` with header comments and `chmod 0600` |
-| FR-C9ZB6-K3 | Recovery key is 64-character cryptographically random string (via `Str::random`) |
-| FR-C9ZB6-K4 | Recovery key hash stored in `setup.install_recovery_key` setting (bcrypt via `Hash::make()`) |
-| FR-C9ZB6-K5 | Recovery key file path is `storage/app/private/.recovery-key` (not web-accessible) |
-| FR-C9ZB6-K6 | File header includes generation timestamp in ISO 8601 format |
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) · `A` = Arch (structure/contracts).
+**Status legend:** `Planned` = not started · `Partial` = in progress · `Full` = implemented & verified.
 
-### 4.2 CLI Commands
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-RECOV-001 | Recovery key is a 64-character cryptographically random string | P0 | F | Full |
+| FR-RECOV-002 | Key persists twice: bcrypt hash in settings and plaintext file at 0600 with header | P0 | F | Full |
+| FR-RECOV-003 | Key file reads skip comments and blank lines and return null when absent or empty | P0 | F | Full |
+| FR-RECOV-004 | `admin:recover` accepts file or manual key, prompts for email and password, confirms by re-type | P0 | F | Full |
+| FR-RECOV-005 | `--regenerate-file` rewrites a missing key file from a verified key | P1 | F | Full |
+| FR-RECOV-006 | Inspection commands show the key path and, after confirmation, the plaintext | P1 | F | Full |
+| FR-RECOV-007 | Reset hashes the new password, clears the lock, re-syncs the role, and rotates sessions | P0 | F | Full |
+| FR-RECOV-008 | Interactive passwords enforce minimum length with confirmation match | P0 | F | Full |
+| FR-RECOV-009 | Successful recovery mints a fresh key into both stores and displays it; file failure warns on | P0 | F | Full |
+| FR-RECOV-010 | Verification allows 3 attempts per email per 15 minutes, then throws `RejectedException` | P0 | F | Full |
+| FR-RECOV-011 | Recovery targets PROTECTED super admin accounts only; violations throw `RejectedException` | P0 | F | Full |
+| FR-RECOV-012 | Every failed precondition — unknown key, unknown email, exhausted budget — fails as `RejectedException` | P0 | F | Full |
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-C1 | `admin:recover {email?} {--key=} {--regenerate-file}` — main recovery command |
-| FR-C9ZB6-C2 | `admin:recovery-show` — displays stored recovery key (requires confirmation) |
-| FR-C9ZB6-C3 | `admin:recovery-path` — displays recovery key file path and existence status |
-| FR-C9ZB6-C4 | `admin:recover` without `--key` reads key from file via `ReadRecoveryKeyAction` |
-| FR-C9ZB6-C5 | `admin:recover` with `--key` uses provided key for verification |
-| FR-C9ZB6-C6 | `admin:recover` with `--regenerate-file` rewrites file via `SaveRecoveryKeyAction` after verification |
-| FR-C9ZB6-C7 | `admin:recover` prompts for email (argument or interactive), password, and confirmation |
-| FR-C9ZB6-C8 | `admin:recover` requires re-typing email as confirmation before executing recovery |
-| FR-C9ZB6-C9 | `admin:recovery-show` reads key, prompts confirmation, then displays plaintext |
-| FR-C9ZB6-C10 | All CLI commands display formatted banners and localized messages |
+### 4.1 Key Lifecycle
 
-### 4.3 OTP Verification
+#### FR-RECOV-001 — A Secret Worth 64 Characters
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-O1 | OTP is 6-digit random integer (`random_int(100000, 999999)`) |
-| FR-C9ZB6-O2 | OTP sent via `RecoveryOtpNotification` (mail channel, queued via `ShouldQueue`) |
-| FR-C9ZB6-O3 | OTP hash stored in cache with key `config('cache-keys.recovery_otp_hash') . email`, TTL 300 seconds |
-| FR-C9ZB6-O4 | OTP verified via `Hash::check()` against stored hash |
-| FR-C9ZB6-O5 | OTP cache entry cleared after successful verification |
-| FR-C9ZB6-O6 | OTP verification only required in production environments (`app()->environment('production')`) |
-| FR-C9ZB6-O7 | Non-production environments skip OTP (CLI-only access considered sufficient) |
+Sixty-four characters from the cryptographic generator is the floor, not a flourish: the key must survive offline guessing by anyone who ever glimpsed part of it, and shorter secrets invite partial-knowledge attacks. Generation happens exactly twice in the key's life — once at setup, once per recovery — so the randomness source is exercised rarely and every output carries full entropy. There is no user-chosen recovery secret anywhere in this design, because humans choose birthdays.
 
-### 4.4 Password Reset
+#### FR-RECOV-002 — Two Copies, Two Jobs
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-P1 | `RecoverSuperAdminAction` sets new password via `Hash::make()` |
-| FR-C9ZB6-P2 | `RecoverSuperAdminAction` clears `locked_at` and `locked_reason` fields |
-| FR-C9ZB6-P3 | `RecoverSuperAdminAction` syncs roles to `super_admin` (ensures role assignment) |
-| FR-C9ZB6-P4 | `RecoverSuperAdminAction` rotates `remember_token` (invalidates all sessions) |
-| FR-C9ZB6-P5 | Password must be minimum 8 characters (interactive validation) |
-| FR-C9ZB6-P6 | Password confirmation required (must match) |
+The bcrypt hash in `setup.install_recovery_key` is the verification anchor: it proves a presented key without storing anything an attacker can reuse. The plaintext file at `storage/app/private/.recovery-key` is the retrieval path: readable over SSH with no application running, locked to owner-only permissions, headed by comments and an ISO 8601 generation timestamp so a human opening it knows what they hold. Hash without file means verification with no rescue; file without hash means rescue with no verification. The design refuses to choose.
 
-### 4.5 Recovery Key Regeneration
+#### FR-RECOV-003 — Forgiving Reads
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-R1 | After successful recovery, system generates new 64-char recovery key |
-| FR-C9ZB6-R2 | New key hashed and stored in `setup.install_recovery_key` setting via `BatchSetSettingAction` |
-| FR-C9ZB6-R3 | New key saved to file via `SaveRecoveryKeyAction` |
-| FR-C9ZB6-R4 | File write failure does not block recovery (warning displayed, key still shown) |
-| FR-C9ZB6-R5 | New plaintext key displayed to administrator after successful recovery |
+The file reader skips comment lines and blanks and returns null for a missing or empty file instead of throwing — because a deleted key file is a supported state with its own recovery path, not a crash. Null propagates to the command as "no file key available," which is what routes the administrator toward the manual flag rather than a stack trace. Strictness belongs at verification; the reader's job is to report what exists, calmly.
 
-### 4.6 Rate Limiting
+### 4.2 Command Contract
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-RL1 | `RecoverSuperAdminAction` enforces max 3 recovery attempts per email per 15 minutes |
-| FR-C9ZB6-RL2 | Attempt counter stored in cache with key `config('cache-keys.recover_admin_attempts') . md5(email)` |
-| FR-C9ZB6-RL3 | Counter TTL is 900 seconds (15 minutes) |
-| FR-C9ZB6-RL4 | Counter cleared on successful recovery |
-| FR-C9ZB6-RL5 | Exceeded limit throws `RejectedException` |
+#### FR-RECOV-004 — The Recovery Conversation
 
-### 4.7 Super Admin Integrity
+`admin:recover` takes an optional email argument and two flags — manual key and file regeneration — then conducts the rest interactively: key sourcing (file first, flag when given), email and new password prompts, and finally the email re-type that forces a pause before the irreversible write. The re-type is the cheapest safety device in the spec: it converts "oops, wrong account" from a post-incident discovery into a pre-execution catch. Every prompt is localized, because emergencies do not wait for translators.
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-C9ZB6-I1 | `RecoverSuperAdminAction` verifies super admin has PROTECTED status before reset |
-| FR-C9ZB6-I2 | Integrity violation throws `RejectedException` |
-| FR-C9ZB6-I3 | Recovery only targets accounts with `super_admin` role |
+#### FR-RECOV-005 — Restoring the Missing File
+
+When verification succeeds against a manually supplied key but the file is absent, the regenerate-file variant rewrites it through the save action — same header, same permissions, verified content. This closes the loop that migrations open: the database moved, the file did not, and now they agree again. Treating restoration as a flag on recovery rather than a separate ceremony keeps the tool count at three commands an admin can actually remember.
+
+#### FR-RECOV-006 — Inspect With Intent
+
+The path command reports where the file should be and whether it is there — read-only, no confirmation needed, safe to run in any audit. The show command goes further and therefore asks first: an explicit confirmation before the plaintext appears, plus a log entry that it did. Displaying a secret is a security event even when the operator is legitimate, and the confirmation plus the audit line are what keep it an accountable one.
+
+### 4.3 Reset and Integrity
+
+#### FR-RECOV-007 — What Reset Actually Does
+
+The reset action performs four writes in one transaction: the new password hashed, the lock timestamp and reason cleared, the role re-synced to super admin in case it drifted, and the remember token rotated so every existing session dies. Each write answers a real incident — the drifted role that would otherwise leave a "recovered" admin unable to act, the surviving session on a compromised laptop, the lock flag nobody cleared. A recovery that restores the password but not the authority is a second lockout wearing a success message.
+
+#### FR-RECOV-008 — Passwords at the Prompt
+
+Interactive entry enforces a minimum length with confirmation match before the action ever runs, rejecting weak or mismatched input at the prompt rather than inside the transaction. Emergency pressure is exactly when humans choose `admin123`, so the prompt refuses to be hurried: type it twice, meet the floor, or try again. The rules here are intentionally simpler than account-creation strength — length plus match — because the operator is authenticated by key possession, not by password creativity.
+
+#### FR-RECOV-009 — Retire Every Used Key
+
+Success mints a fresh 64-character key into both stores and shows it on screen, because the used key has now appeared in terminal scrollback, possibly on a shared screen, certainly in human memory. If the file rewrite fails, recovery still counts — the password already changed — and the command warns loudly while displaying the key for manual safekeeping. Blocking success on the file would strand the admin with a new password and no key anywhere; warning instead strands nothing.
+
+#### FR-RECOV-010 — Three Tries Per Quarter Hour
+
+Three verification attempts per email per fifteen minutes, counted in cache and cleared on success, is deliberately tight: legitimate recovery needs one careful attempt, maybe two with a transcription slip, while guessing needs thousands. The counter keys on a hash of the email so the cache never stores the address itself. Past the budget the action throws `RejectedException`, and the waiting period — not an administrator — is what reopens the door.
+
+#### FR-RECOV-011 — Only the Protected Singleton
+
+Recovery refuses to touch anything but a PROTECTED super admin account: the integrity check runs before any write, and ordinary admin, teacher, or student accounts are unreachable through this path by construction. Those accounts have their own recovery flows with their own threat models. Funneling every privileged reset through the singleton check is what keeps an emergency tool from becoming a privilege-escalation tool.
+
+#### FR-RECOV-012 — One Failure Voice
+
+Unknown key, unknown email, exhausted budget, integrity mismatch — every failed precondition surfaces as `RejectedException` with a translatable, user-safe message, per the [exception hierarchy ADR](../adr/adr-exception-hierarchy.md). A single failure type means the command's error handling is one catch with full context, and it means callers never branch on failure taxonomy to decide what to log. The messages stay generic where enumeration would help an attacker and specific where the legitimate operator needs direction — that calibration, not the exception type, is where the security judgment lives.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-### 5.1 Security
+One table holds every non-functional constraint; `Target` carries the concrete number or SLO, or `N/A` where enforcement is architectural.
 
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-C9ZB6-S1 | Recovery key file permissions: `0600` (owner-only read/write) |
-| NFR-C9ZB6-S2 | Recovery key storage directory: `storage/app/private/` (not web-accessible) |
-| NFR-C9ZB6-S3 | Database stores only bcrypt hash — plaintext never persisted to DB |
-| NFR-C9ZB6-S4 | OTP sent via mail channel only (not displayed in CLI output) |
-| NFR-C9ZB6-S5 | All recovery attempts logged via SmartLogger with PII masking |
-| NFR-C9ZB6-S6 | Invalid key attempts logged as warnings with event `super_admin.recovery.invalid_key` |
-| NFR-C9ZB6-S7 | Not-found email attempts logged as warnings with event `super_admin.recovery.blocked_not_found` |
-| NFR-C9ZB6-S8 | Successful recovery logged as success with event `super_admin.recovery.succeeded` |
-| NFR-C9ZB6-S9 | Failed recovery logged as error with event `super_admin.recovery.failed` |
-| NFR-C9ZB6-S10 | Recovery key file regeneration failure logged as warning (non-blocking) |
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-RECOV-001 | Key file is owner-only outside the web root; the database holds a hash, never plaintext | 0600, private dir | P0 | F | Full |
+| NFR-RECOV-002 | Every recovery attempt logs through SmartLogger with PII masked, keyed by outcome event | 100% of attempts | P0 | F | Full |
+| NFR-RECOV-003 | Reset mutations run inside a single database transaction | 0 partial resets | P0 | F | Full |
+| NFR-RECOV-004 | Key-file write failure warns without blocking the completed reset | 0 blocked recoveries | P0 | F | Full |
+| NFR-RECOV-005 | Brute-force budget holds per email within its window | 3 attempts / 900 s | P0 | F | Full |
+| NFR-RECOV-006 | All recovery output is localized with prominent key display and a rotation reminder | en + id, 100% via `__()` | P1 | F | Full |
+| NFR-RECOV-007 | Emergency access restores within the backup/restore RTO basis | supports 1 h RTO | P1 | F | Full |
 
-### 5.3 Reliability
+### 5.1 Secrecy and Audit
 
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-C9ZB6-R1 | Recovery key file write failure does not block password reset |
-| NFR-C9ZB6-R2 | OTP send failure displays error and aborts (does not proceed without OTP in production) |
-| NFR-C9ZB6-R3 | `RecoverSuperAdminAction` wraps all mutations in a database transaction |
+#### NFR-RECOV-001 — Secrets Stay Secret
 
-### 5.4 Usability
+Owner-only file mode, a directory the web server never serves, and a database column holding an irreversible hash form three independent barriers: filesystem disclosure yields the file only to the owner, web probing cannot reach the path at all, and database theft yields a bcrypt string, not a key. Each barrier assumes the others have failed, which is the correct way to think about a secret whose compromise means total system control.
 
-| ID     | Requirement |
-| ------ | ----------- |
-| NFR-C9ZB6-U1 | CLI output includes formatted banner with version info |
-| NFR-C9ZB6-U2 | All user-facing strings use `__()` translation helper |
-| NFR-C9ZB6-U3 | Recovery key displayed with prominent visual styling (yellow background) |
-| NFR-C9ZB6-U4 | Warning to change password displayed after successful recovery |
+#### NFR-RECOV-002 — Every Attempt Leaves a Trace
+
+Invalid keys, unknown emails, successes, failures, even file-regeneration warnings — each outcome logs through SmartLogger under its own event name with PII masked before either sink, so the activity table tells the complete story of who tried what, without ever recording the key or password involved. An investigator opening these rows after a suspected incident should find a timeline, not a puzzle. Missing log coverage on any outcome is a defect against this row, not a gap in diligence.
+
+### 5.2 Reliability and Operations
+
+#### NFR-RECOV-003 — Transactional Reset
+
+Password, lock, role, and session writes commit together or not at all, because a reset that changes the password but dies before rotating sessions leaves the account simultaneously recovered and compromised. The transaction is also what makes the rate-limit clearing safe to bundle: success clears the counter in the same commit, so a crashed recovery never burns the legitimate operator's remaining attempts.
+
+#### NFR-RECOV-004 — File Failure Is a Warning
+
+The file write sits outside the transaction's critical path by design: once the database commits, the human is safe, and a filesystem problem must not retroactively endanger them. The warning is prominent rather than silent because an unwritten key file is a real degradation — the next recovery will need the manual flag — but degradation is not failure, and conflating them would manufacture lockouts out of permission errors.
+
+#### NFR-RECOV-005 — The Attempt Budget as SLO
+
+Three attempts per email per nine-hundred-second window is stated here as the measurable SLO behind FR-RECOV-010: bursts beyond it are rejected, the counter survives process restarts in cache, and success resets it. The number is small enough to make guessing futile and large enough to forgive one transcription slip. Any proposal to loosen it trades directly against the single-factor threat model and must say so openly.
+
+#### NFR-RECOV-006 — Panic-Readable Output
+
+Recovery runs during emergencies, so every string is localized, the key renders with unmissable styling, and a rotation reminder follows every success telling the operator to change the password and vault the new key. The banner with version info matters more than it looks: pasted into a support thread, it tells the helper exactly which release misbehaved. Design for the operator whose hands are shaking — clarity is a safety feature.
+
+#### NFR-RECOV-007 — Access Recovery Inside RTO
+
+The maintenance contract promises under-one-hour restoration from backup; access recovery must fit inside the same envelope, not beside it. A key-verified CLI reset completes in about a minute, which keeps the human-access leg of any disaster drill negligible against the hour. This row is the recovery side of the basis owned by [HBXCI-backup-system.md](HBXCI-backup-system.md): restorable data plus recoverable access, together, inside one target.
 
 ---
 
 ## 6. API / Data Contracts
+
+Non-negotiable precision — precise enough to implement against without asking.
 
 ### 6.1 Recovery Key File Format
 
@@ -273,7 +232,6 @@ must be logged via SmartLogger with PII masking, providing an audit trail for fo
 # Generated: {ISO 8601 timestamp}
 
 {64-char plaintext key}
-
 ```
 
 ### 6.2 Action Contracts
@@ -301,25 +259,9 @@ final class SaveRecoveryKeyAction extends BaseCommandAction
     // Returns file path on success
     // Throws: RejectedException on write failure
 }
-
 ```
 
-### 6.3 Notification Contract
-
-```php
-// RecoveryOtpNotification — 6-digit OTP via mail
-class RecoveryOtpNotification extends Notification implements ShouldQueue
-{
-    public function __construct(public string $otp);
-
-    public function via($notifiable): array;    // ['mail']
-    public function toMail($notifiable): MailMessage;
-    // Subject, greeting, OTP line, expiry warning, security note
-}
-
-```
-
-### 6.4 Command Signatures
+### 6.3 Command Signatures
 
 ```php
 // RecoverAdminCommand
@@ -330,23 +272,22 @@ class RecoveryOtpNotification extends Notification implements ShouldQueue
 
 // ShowRecoveryPathCommand
 'admin:recovery-path'
-
 ```
 
-### 6.5 Cache Keys
+### 6.4 Cache Keys
 
 | Key | Config Reference | Purpose |
-| --- | --------------- | ------- |
-| `recovery_otp_hash` | `config('cache-keys.recovery_otp_hash')` | OTP hash storage (5min TTL) |
-| `recover_admin_attempts` | `config('cache-keys.recover_admin_attempts')` | Rate limit counter (15min TTL) |
+|-----|------------------|---------|
+| `recovery_otp_hash` | — (removed with OTP; reserved name, do not reuse) | Deferred post-MVP, see §10 R-1 |
+| `recover_admin_attempts` | `config('cache-keys.recover_admin_attempts')` | Rate limit counter (15 min TTL) |
 
-### 6.6 Settings Keys
+### 6.5 Settings Keys
 
 | Key | Type | Description |
-| --- | ---- | ----------- |
+|-----|------|-------------|
 | `setup.install_recovery_key` | string | Bcrypt hash of recovery key (set during setup finalization) |
 
-### 6.7 Events
+### 6.6 Events
 
 ```php
 // SuperAdminRecovered — dispatched after successful recovery
@@ -358,123 +299,105 @@ class SuperAdminRecovered extends BaseEvent
     );
     public function eventName(): string; // 'super_admin.recovered'
 }
-
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Dual Storage (File + Hashed DB)
+One table holds every design decision; detail prose below states each decision with its history and accepted cost.
 
-**Decision:** Store recovery key as plaintext in a private file AND as a bcrypt hash in the
-database.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-RECOV-001 | Key lives twice: bcrypt hash in settings, plaintext in a private file | P0 | — | — |
+| DD-RECOV-002 | Every successful recovery retires the used key and mints a fresh one | P0 | — | — |
+| DD-RECOV-003 | Recovery requires re-typing the target email before execution | P1 | — | — |
+| DD-RECOV-004 | Key-file write failure warns and continues instead of aborting recovery | P0 | — | — |
+| DD-RECOV-005 | Super admin recovery is CLI-only; no web recovery path exists by design | P0 | — | — |
 
-**Rationale:** The file is the "break glass" mechanism — readable by server administrators with
-filesystem access (SSH), independent of the application. The hash enables cryptographic
-verification without exposing the plaintext in the database. If the database is compromised,
-the attacker gets only a hash. If the file is deleted, the administrator can still verify
-via `--key` flag (but cannot retrieve the key).
+### 7.1 Key Stewardship
 
-**Trade-off:** Synchronization risk on regeneration — if file write succeeds but DB write fails
-(or vice versa), the key becomes inconsistent. Mitigated by wrapping in transaction and
-displaying the new key regardless of file write outcome.
+#### DD-RECOV-001 — Two Copies, Deliberately Unsynchronized in Kind
 
-### DD-2 — OTP Only in Production
+Storing the plaintext only in the file and only the hash in the database means the two copies can never leak the same way: a file read needs host access, a database read yields an unverifiable string. The synchronization risk on regeneration — one write landing without the other — is real and accepted, mitigated by displaying the fresh key regardless so the human becomes the tiebreaker. A design with no failure mode would be preferable; no such design exists for a secret that must be both retrievable offline and verifiable online.
 
-**Decision:** OTP verification via email is only required in production environments.
+#### DD-RECOV-002 — Use Means Retire
 
-**Rationale:** In non-production environments (local, dev, testing), SSH access already
-implies server-level trust. Adding OTP would require configured mail, which is often absent
-in development. In production, SSH access + email OTP provides two-factor protection.
+A recovery key that survives its own use is a secret with an unknown audience — terminal history, shoulder surfers, screen shares during the emergency call. Minting fresh on every success converts each incident's exposure into a non-event, at the price of demanding the admin vault the new key while the adrenaline is still up. Forgetting the new key only costs another recovery with the new key, which the file already holds; keeping the old one could cost the system.
 
-**Trade-off:** An attacker with SSH access in non-production can reset without OTP. Acceptable
-because non-production environments should not contain sensitive data.
+### 7.2 Interaction Safety
 
-### DD-3 — Key Regeneration After Every Recovery
+#### DD-RECOV-003 — The Re-Typed Email
 
-**Decision:** Generate a new recovery key after every successful recovery operation.
+Password prompts already confirm by repetition; the target email gets the same treatment because recovering the wrong account is the one mistake no audit log can undo gracefully. The re-type forces the operator to read the warning, hold the address in mind, and produce it twice — three cognitive checkpoints for the cost of ten seconds. Automation that skips the prompt must supply the argument explicitly, which preserves deliberateness in scripts too.
 
-**Rationale:** A recovery key used to gain access should not remain valid — it may have been
-exposed during the recovery process (screen capture, shoulder surfing, log files). Fresh
-key forces the administrator to securely store the new key.
+#### DD-RECOV-004 — Mercy Over Symmetry
 
-**Trade-off:** If the administrator fails to save the new key and loses access again, they
-must repeat the recovery process with the new key. Acceptable because the alternative
-(retaining a potentially compromised key) is worse.
+Aborting a completed password reset over a failed file write would convert a filesystem hiccup into a full lockout: new password set, new key nowhere, admin told the operation failed. Continuing with a warning instead treats the database as the system of record and the file as a convenience to be restored — which is exactly what the regenerate flag then does. The ordering encodes a hierarchy: human access first, key hygiene second, transactional elegance third.
 
-### DD-4 — Confirmation by Email Re-Entry
+#### DD-RECOV-005 — No Web Door to the Kingdom
 
-**Decision:** Require the administrator to re-type the target email address before executing
-recovery.
-
-**Rationale:** Prevents accidental recovery of the wrong account. The warning message explicitly
-states the consequences, and email re-entry forces deliberate action.
-
-### DD-5 — File Write Failure is Non-Blocking
-
-**Decision:** If `SaveRecoveryKeyAction` fails during key regeneration, display a warning but
-do not abort the recovery.
-
-**Rationale:** The password reset has already succeeded. Blocking on file write would leave the
-administrator with a new password but no recovery key (neither in file nor displayed). By
-continuing, the administrator gets the new key on screen and can manually save it or fix the
-file permissions.
+A browser recovery flow would need to authenticate someone with no credentials, over a channel that may be observed, to manufacture the highest privilege in the system — every design for that page ends in either theater or vulnerability. The CLI inherits the host's own access control: whoever can SSH as the owner already owns the data, so granting them the admin is no escalation. The inconvenience to panel-only hosting without terminal access is real, acknowledged, and cheaper than a public key-reset endpoint.
 
 ---
 
 ## 8. Success Metrics
 
-### 8.1 Recovery Completeness
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Recovery success rate | 100% with valid key | `php artisan admin:recover` completes |
-| Key regeneration | Always after recovery | New key displayed, hash updated in DB |
-| File restoration | 100% with `--regenerate-file` | File written with correct permissions |
-
-### 8.2 Security Properties
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| OTP enforcement | Always in production | `app()->environment('production')` check |
-| Rate limiting | Max 3 attempts / 15min | Cache counter per email |
-| Audit coverage | 100% of attempts | SmartLogger entries for all outcomes |
-| Key file permissions | Always 0600 | `chmod` after write |
-
-### 8.3 Operational
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Recovery time | < 30 seconds (non-production) | SSH command to password display |
-| OTP delivery | < 30 seconds | Mail queue processing |
-| Key read latency | < 100ms | Single file read |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Recovery with a valid key | 100% complete with new password working | End-to-end CLI run in tests |
+| Key retired after use | Old key fails verification post-recovery | Verify-then-recover-then-verify sequence |
+| Missing file restored | 100% via `--regenerate-file` with correct mode | Delete file, recover, assert 0600 and content |
+| Attempt budget enforced | 4th attempt in window rejected | Burst verification attempts in tests |
+| All outcomes audited | Log entry for success, failure, invalid key, unknown email | Review activity entries per scenario |
+| Recovery inside RTO | Access restored well under the hour | Timed drill alongside backup restore |
 
 ---
 
 ## 9. Roadmap
 
 ### Prerequisites
-This spec can only be implemented after the following specs are **fully complete**:
+
+This spec builds after its dependencies are complete:
 
 | Spec | What It Provides |
 |------|-----------------|
-| [installation.md](8NZAU-installation.md) | `setup.install_recovery_key` setting (bcrypt hash), `SetupEntity` for key verification |
-| [setup-wizard.md](VEJCX-setup-wizard.md) | Recovery key generated during finalization, saved to `storage/app/private/.recovery-key` |
+| [8NZAU-installation.md](8NZAU-installation.md) | `setup.install_recovery_key` hash, `SetupEntity` verification basis |
+| [VEJCX-setup-wizard.md](VEJCX-setup-wizard.md) | Key minted at finalization, saved to the private file |
 
 ### Build Guide
-After implementing this spec, the system has emergency super admin recovery via CLI: 3 commands (`admin:recover`, `admin:recovery-show`, `admin:recovery-path`), OTP verification in production, key file read/write, and key regeneration after each recovery. The next step is to build settings infrastructure, which provides the key-value store that all modules use for configuration.
+
+After this spec, the system owns emergency super admin recovery over CLI: key read and write actions, three commands, single-use rotation, attempt budgets, and integrity guards. The school that loses every password still has exactly one door, and it is guarded by a secret, a budget, and an audit trail.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [settings-infrastructure.md](YB22J-settings-infrastructure.md) | `BatchSetSettingAction` used for recovery key hash updates; `settings` table stores all configuration |
+| 1 | [YB22J-settings-infrastructure.md](YB22J-settings-infrastructure.md) | `BatchSetSettingAction` persists key-hash rotation; the settings table holds all recovery state |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+|----|----------------------------------|--------|-------|----------|
+| R-1 | Deferred: email OTP as a second recovery factor — needs universally configured mail, absent on much target hosting; revisit post-MVP | Deferred | Maintainer | — |
+| R-2 | CLI error output distinguishes unknown-key from unknown-email cases in logs; confirm messages stay generic toward untrusted observers while guiding the legitimate operator | Open | Maintainer | — |
+| A-1 | We assume whoever holds shell access as the file owner is authorized to recover; host-level access control is the outer perimeter | Accepted | Maintainer | — |
+| A-2 | We assume the recovery-key file backup rides with storage backups; a restore that drops hidden files silently disarms file-first recovery until `--regenerate-file` runs | Accepted | Maintainer | — |
+
+---
 
 ## Quick References
+
+- [Installation](8NZAU-installation.md) — provisioning and token lifecycle that precede recovery
+- [Setup wizard](VEJCX-setup-wizard.md) — first display of the key at finalization
+- [Password reset](D9TKW-password-reset.md) — ordinary account recovery, explicitly out of scope here
+- [Authentication](YB7RG-authentication.md) — login that recovered credentials flow back into
+- [Settings infrastructure](YB22J-settings-infrastructure.md) — owns the settings store holding the key hash
+- [Backup system](HBXCI-backup-system.md) — owns the RTO target this spec fits inside
+- [ADR: SmartLogger dual-channel](../adr/adr-smartlogger-dual-channel.md) — masked audit for every attempt
+- [ADR: Exception hierarchy](../adr/adr-exception-hierarchy.md) — `RejectedException` as the single failure voice
+- [ADR: Base class mandate](../adr/adr-base-class-mandate.md) — command and read action shapes
+- [ADR: UUID primary keys](../adr/adr-uuid-primary-keys.md) — key strategy for all touched rows
+- [Spec registry](index.md) — all specs grouped in 12 phases
