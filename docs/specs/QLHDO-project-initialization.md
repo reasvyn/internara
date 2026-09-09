@@ -214,6 +214,12 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 | FR-GLB-012 | Navigation layout renders menu groups from `config/menu.php` ordered by registration sequence; active route highlighted · [8XMYS](8XMYS-layout-and-ui-system.md) | P1 | F | Planned |
 | FR-GLB-013 | Attendance records are timestamped, immutable after admin sign-off, and include the clock-in/out timestamp with actor identity · [1KSWL](1KSWL-daily-activity.md) | P0 | F | Planned |
 | FR-GLB-014 | Logbook entries are daily, timestamped, and editable only within the same academic day by the student who created them · [1KSWL](1KSWL-daily-activity.md) | P0 | F | Planned |
+| FR-GLB-015 | Business logic lives in Action Triad classes (Command / Read / Process) with a single `execute()` each; Commands wrap writes in transactions and audit-log, Reads never mutate, Processes orchestrate via DI · [D2FT3](D2FT3-architecture.md) | P0 | A | Planned |
+| FR-GLB-016 | Business rules live in `final readonly` Entity classes bridged via `fromModel()`; Entities never persist, Models never enforce business invariants · [D2FT3](D2FT3-architecture.md) | P0 | A | Planned |
+| FR-GLB-017 | Every class extends its layer base (Model→`BaseModel`, Command/Process→`BaseAction`, Entity→`BaseEntity`, Policy→`BasePolicy`, Enum→`LabelEnum`); the sole exception is `User` which extends `Authenticatable` with manual `HasUuids` · [SE5Q9](SE5Q9-base-classes.md) | P0 | A | Planned |
+| FR-GLB-018 | Failures use sibling exception trees: `AppException` for infrastructure, `ModuleException → RejectedException` for business-rule violations; the two trees are never mixed in a single `catch` · [89SRA](89SRA-logging-and-error-handling.md) | P0 | A | Planned |
+| FR-GLB-019 | Single-model synchronous side effects (cache invalidation, deletion guards, status snapshots) use Eloquent Observers; everything cross-module or deferrable uses Events + Listeners · [NUCY3](NUCY3-event-system.md) | P1 | A | Planned |
+| FR-GLB-020 | Cross-module imports are permitted; mandatory workflows prefer Action delegation, fire-and-forget side effects prefer Events, shared shapes prefer Core contracts · [D2FT3](D2FT3-architecture.md) | P1 | A | Planned |
 
 #### FR-GLB-001 — Localized strings
 
@@ -294,8 +300,31 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 
 #### FR-GLB-014 — Logbook edit window
 
-- Logbook entries are daily and timestamped; editable only within the same academic day and only by the owning student; later edits are rejected.
-- **Verification (edge cases):** same-day owner edit succeeds; same-day non-owner is rejected; next-day edit is rejected regardless of owner.
+A vocational school in Sintuk Toboh Gadang caught students back-filling a week's worth of logbooks the night before a supervision visit — every entry timestamped 08:00 sharp, clearly fabricated. The edit window exists because of that exact fraud shape. The academic day boundary follows the school's configured timezone (Asia/Jakarta by default, overridable per school profile), not UTC, so a student working a night shift at a partner workshop is still inside the same academic day until midnight local time. The owner check runs inside the Action, not just the policy: even if someone crafts a direct Livewire call, `UpdateLogbookAction` re-resolves ownership from the registration bridge and throws `RejectedException` for non-owners. Next-day edits are rejected even by admins — correction after the window requires a supervisor-annotated revision entry, never a silent rewrite, so the audit trail preserves what was originally claimed versus what was corrected.
+
+#### FR-GLB-015 — Action Triad as the only home for business logic
+
+Newcomers from classic Laravel reach for a `RegistrationService` with ten public methods. That file becomes a god class within two sprints: `register()`, `approve()`, `reject()`, `bulkApprove()`, each with different transaction needs, all sharing mutable state. The triad exists to make that shape impossible. A Command (`CreatePlacementAction extends BaseAction`) wraps its writes in `$this->transaction()`, calls `$this->log()` on success, and dispatches its event after commit — the PLACEMENT transaction either fully lands or fully rolls back, never a half-placed student with a slot decremented but no registration row. A Read (`ReadAvailableSlotsAction extends BaseReadAction`) is deliberately crippled: no `transaction()`, no `log()`, so a dashboard widget cannot accidentally lock rows during a morning attendance rush of 1,000 concurrent students. A Process (`CloseProgramProcess`) is the only place allowed to inject three other Actions and sequence them; without it that orchestration leaks into a Livewire component where it cannot be unit-tested. Real-world consequence: during enrollment week, placement writes contend heavily — Commands serialize correctly through transactions while Reads stay lock-free, which is exactly why the two types must never be confused.
+
+#### FR-GLB-016 — Entities carry rules, Models carry persistence
+
+Eloquent models are convenient liars: `$placement->approve()` looks like domain logic but it couples the approval invariant to the query builder, the connection, and the test database. An Entity (`PlacementState extends BaseEntity`, `final readonly`) is a frozen snapshot — construct it from any array in a millisecond unit test, no factory, no migration, no SQLite. The bridge `PlacementState::fromModel($placement)` is the single point where a column rename ripples; everything downstream (Actions, Policies, Livewire) talks to the Entity's named predicates (`canTransitionTo()`, `isOverCapacity()`), never to raw attributes. Framework pragmatism is deliberate: an Entity may use Carbon for date math or a Collection for mentor lists — banning those would trade velocity for purity nobody at a 500-student school needs. The one hard line: an Entity never calls `save()`, `create()`, or `dispatch()` — persistence and side effects belong to the Action that holds the Entity, so the rule stays testable in isolation from the write it guards.
+
+#### FR-GLB-017 — One base class per layer, no opt-outs
+
+Across 18 modules and 400+ files, consistency cannot survive on code-review memory. The mandate means a reviewer never asks "does this Action wrap in a transaction?" — if it extends `BaseAction`, the `transaction()` and `log()` contract is structural, and `scan_class_contracts.py` proves it. Each base pays for itself: `BaseModel` guarantees UUID v7 everywhere (one missed model would break every `foreignUuid` join against it), `BasePolicy` composes `AuthorizesRoles + AuthorizesOwnership` so no policy forgets the ownership check that prevents a student from grading another student's submission, `BaseRecordManager` gives every CRUD table search/filter/sort/pagination for free so the 40th admin table behaves like the first. The `User` exception is the scar that proves the rule: because Laravel's auth system demands `Authenticatable`, `User` manually replicates the `HasUuids` + non-incrementing contract, and every `BaseModel` change must be mirrored there by hand — documented here so nobody "simplifies" it back to auto-increment. Until `pest-plugin-arch` stabilizes, review enforces this; after that, arch tests do.
+
+#### FR-GLB-018 — Two exception trees that never meet
+
+A controller that catches `AppException` to render a 500 page must never accidentally swallow a `RejectedException` that should have been a friendly "slot is full" toast — that confusion is what the sibling-tree design kills. `ModuleException → RejectedException` carries a translatable, user-safe message ("Placement quota for PT Maju Jaya is full for this period") plus structured context for the activity log; it is the Action and Entity layer's only business-failure voice, and Livewire renders it as a toast without consulting the logs. `AppException` and its children (`ValidationFailedException`, `InfrastructureException`, `UnauthorizedException`) carry hints and debug context for operators instead; an external API timeout during certificate PDF generation surfaces as a generic "try again" to the student while the full payload lands in the system log with PII masked. Both trees share `HasExceptionContext` (`withHint`, `withContext`, `toCliOutput`) so `system:health` and artisan commands render either tree identically. The legacy trio (`ConflictException`, `NotFoundException`, `RateLimitException`) was folded into `RejectedException` precisely because three extra catch branches in every Livewire component taught developers to catch `Exception` — the exact habit this hierarchy exists to break.
+
+#### FR-GLB-019 — Observers for the synchronous few, Events for the decoupled many
+
+Cache invalidation is the canonical Observer case and it is a correctness bug when done as an event. When an admin renames a setting, the very next request — milliseconds later, during enrollment-week traffic — must see the new value; a deferred `SettingUpdated` listener that runs after commit leaves a window where the old quota renders and a student grabs a phantom slot. `SettingObserver` runs synchronously inside the same request, so correctness holds. The deletion guard is the mirror: `UserObserver::deleting()` throws `RejectedException` before the row disappears, which an after-commit event can never do. Everything else — welcome notifications, cross-module cache flushes, audit fan-out — belongs in Events + Listeners precisely because those want decoupling, queuing (`ShouldQueue`), and discard-on-rollback semantics. The three-gate test (same module? synchronous required? single-model scope?) keeps the two mechanisms from bleeding into each other: the day an "observer" needs a second model or a queue, it gets refactored into an event, no exceptions.
+
+#### FR-GLB-020 — Pragmatic cross-module calls without circular rot
+
+A strict-boundaries regime would force `CloseProgramProcess` (Program module) to communicate with Assessment and Certification through events and contracts — three new interfaces and two async listeners for what is, at MVP, a synchronous three-line sequence. That ceremony slows enrollment-week fixes to a crawl. The permitted default — direct import of another module's public `execute()` — keeps the call graph readable: `CloseProgramProcess` injects `FinalizeAssessmentsAction` and `IssueCertificatesAction` and the sequence reads top to bottom. The discipline sits in the preference order, not a ban: when the second listener appears for the same event, or when a side effect must survive rollback, the call graduates to an Event; when a shape is consumed by three modules, it graduates to a Core contract. Circular imports are the tripwire — Program importing Assessment while Assessment imports Program is a review-blocking smell that forces an event or a Core extraction. At single-tenant school scale, this yields traceable mandatory workflows (delegation) alongside decoupled notifications (events) without paying microservice-grade decoupling tax.
 
 ---
 
@@ -319,6 +348,7 @@ via tests. NFRs deliberately deferred to post-MVP are tracked in §10 (R-1 … R
 | NFR-DATA-001 | SQLite (default) or MySQL; UUID PKs on all primary entities; migration-driven schema · [J68GZ](J68GZ-system-requirements.md) | N/A | P0 | A | Planned |
 | NFR-I18N-001 | Indonesian primary + English secondary; locale stored in session and togglable at runtime · [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md) | N/A | P0 | F | Planned |
 | NFR-GDPR-001 | GDPR: deletion logging and data-erasure workflows exist and are functional · [7HNCF](7HNCF-gdpr-compliance.md) | N/A | P1 | F | Planned |
+| NFR-PERF-001 | Tier-0 no-regret performance always on (UUID v7 PKs, composite FK indexes, eager-loading, cache-key registry, lock-free Reads); Tier 2/3 growth via `.env` swaps only, never rewrites · [J68GZ](J68GZ-system-requirements.md) | N/A | P1 | A | Planned |
 
 ### 5.1 Security
 
@@ -392,6 +422,12 @@ via tests. NFRs deliberately deferred to post-MVP are tracked in §10 (R-1 … R
 - **Measurement:** deletion logged; data-erasure workflow functional.
 - **Verification:** erasure removes subject rows and writes a deletion record (governing [7HNCF](7HNCF-gdpr-compliance.md)).
 
+### 5.7 Performance Tiers
+
+#### NFR-PERF-001 — No-regret Tier 0, config-only growth
+
+An SMK with 400 students on $5 shared hosting and an SMK with 1,800 students on a VPS run the same binary — that is the whole point. Tier 0 is non-negotiable at every scale: ordered UUID v7 keys keep B-tree inserts local during the 45,000-row attendance import, composite indexes on every foreign key keep the placement join fast, the N+1 eager-loading convention keeps the morning Livewire dashboard from firing 1,000 queries, the `config/cache-keys.php` registry keeps invalidation greppable, and Read Actions stay transaction-free so reporting never blocks enrollment writes. None of this requires a developer decision; it is structural. When sustained load crosses ~500 users or P95 passes a second, growth is an `.env` swap — `QUEUE_CONNECTION=redis` plus a worker, `CACHE_STORE=redis`, `SESSION_DRIVER=redis` — with zero code change, because every queue/cache/session call already goes through the framework drivers. Octane, sharding, CDN, and read replicas are explicitly deferred until evidence (Pulse metrics, §10 R-1/R-6) demands them; premature HA ceremony during MVP feature work is the failure mode this NFR exists to prevent.
+
 ---
 
 ## 6. API / Data Contracts
@@ -454,6 +490,7 @@ decision has a code-testable consequence.
 | DD-ARCH-003 | Primary Indonesian, secondary English — full translations in `lang/id/` + `lang/en/` with runtime toggle | P1 | — | — |
 | DD-ARCH-004 | Spec-first, testable requirements only — research inputs stay in `docs/refs/articles/` and are explicitly non-testable | P0 | — | — |
 | DD-ARCH-005 | No tenant isolation overhead — no `tenant_id` columns, scopes, or multi-tenancy middleware | P0 | — | — |
+| DD-ARCH-006 | Gradual migration over day-one purity — ship `array` inputs, inline side effects, and inline cache calls first; migrate to DTOs, Events, and registry-driven invalidation when the documented trigger fires | P1 | — | — |
 
 ### 7.1 Deployment & Tenancy
 
@@ -499,6 +536,10 @@ marked non-testable.
 prioritization; it does not drive implementation (see §1 tracebacks).
 **Trade-off:** Non-testable concerns (rural connectivity, government SOP variation) are addressed
 post-MVP with explicit product decisions (R-4).
+
+#### DD-ARCH-006 — Good Enough Today Beats Perfect Next Week
+
+A developer adding the first placement import should not be blocked designing a `PlacementImportData` DTO with twelve validated fields while the CSV shape is still changing weekly during pilot. They ship `execute(array $data)` today; when the shape settles, they widen to `execute(PlacementData|array $data)` with `fromArray()` keeping old callers green, and only then narrow to `execute(PlacementData $data)`. Same story for side effects: the first notification lives inline in the Action, the Event + listener pair appears when the second consumer arrives or when the Action test needs to assert state without side effects. Cache invalidation starts as `Cache::forget()` next to the write and graduates to listener-driven registry invalidation when two events touch the same key. This is not permission to stagnate — mixed phases are expected mid-migration, but a quarterly architecture pass hunts areas stalled at phase one. Velocity now, direction preserved.
 
 ---
 
