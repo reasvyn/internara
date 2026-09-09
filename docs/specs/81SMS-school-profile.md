@@ -1,51 +1,54 @@
-# School Profile — Settings-Based Entity Management
+# 81SMS — School Profile
 
 > **Spec ID:** 81SMS
+> **Status:** Full
+> **Owner:** Academics
+> **Depends on:** YB22J
 
 ## Description
 
-Specification of Internara's school profile feature: a settings-based entity that stores school
-identity information as individual `Setting` records under the `school.*` namespace. Covers
-`SchoolEntity`, `SaveSchoolProfileAction`, logo upload, form object, and cache invalidation.
-Departments and academic years are defined in [department-management.md](4HWSB-department-management.md) and [academic-year-management.md](XW6F5-academic-year-management.md).
+Internara's school profile: the single-tenant school's identity (name, institutional code,
+contacts, address, website, principal) stored as individual `Setting` records under the
+`school.*` namespace, read through a typed `SchoolEntity`, written atomically through the
+settings batch pipeline, and edited in the `SchoolEditor` page with live logo handling.
+Departments and academic years scoped to this school are specified in
+[department-management.md](4HWSB-department-management.md) and
+[academic-year-management.md](XW6F5-academic-year-management.md).
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — School Profile Without a Dedicated Model
+### PS-1 — One School, No Table
 
-The school profile (name, institutional code, email, address, phone, fax, website, principal name)
-is conceptually a single entity, but has no dedicated database table. This is intentional: the
-Settings module already provides caching, validation, type casting, and observer-based cache
-invalidation. Creating a `schools` table for 8 string columns would duplicate this infrastructure
-and fragment the Settings resolution chain — every place that reads `school.name` via the
-`setting()` helper would break.
+The deployment serves exactly one school, whose profile is eight strings — yet those strings
+appear on certificates, reports, official documents, and the landing page. A dedicated
+`schools` table for a singleton row would duplicate the caching, typing, and invalidation the
+settings store already provides, while splitting reads between two systems every consumer
+must then reconcile.
+**→ Requirement:** FR-SCH-001/002 (entity over settings), DD-SCH-001 (no dedicated model).
 
-### PS-2 — Typed Access Without Eloquent
+### PS-2 — String Keys Do Not Belong in Business Code
 
-Because there is no Eloquent model, the school profile cannot use `Model::findOrFail()` or
-relationship accessors. The system needs a typed value object (`SchoolEntity`) that reads from
-the Settings store and provides named accessors — otherwise every consumer would manually call
-`setting('school.name')` with string keys and cast results.
+Without a typed accessor, every certificate template and report query would call
+`setting('school.principal_name')` from memory — misspellings rendering blank on official
+documents, discovered only when a principal holds a misprinted certificate. Named accessors
+turn that runtime embarrassment into a method the IDE autocompletes.
+**→ Requirement:** FR-SCH-005 (accessors), FR-SCH-004 (single batch read).
 
-### PS-3 — Atomic Save Across Multiple Setting Keys
+### PS-3 — Half-Saved Identities Are Worse Than Stale Ones
 
-A school profile update touches 8 keys. Without atomic writes, a failure mid-save could leave
-the profile partially updated — name changed but email stale. The system must ensure all keys
-are written or none are.
+A profile update touches eight keys; a failure after key five leaves the name new but the
+email old, and outgoing letters carry the mismatch for weeks before anyone notices. Either
+the whole profile lands or none of it does.
+**→ Requirement:** FR-SCH-006/007 (atomic save), DD-SCH-003 (batch reuse).
 
-### PS-4 — Cache Consistency After Profile Updates
+### PS-4 — Cached Identity Must Track the Save
 
-`SchoolEntity` resolves from cached Settings. If a profile update doesn't invalidate the
-`school_entity` cache key, subsequent reads serve stale data. The system must synchronously
-invalidate the entity cache after every save.
-
-### PS-5 — Logo Upload as Brand Asset
-
-The school logo is displayed on certificates, reports, and official documents. It must be
-uploaded via Spatie Media Library and its URL persisted as a setting, independently of the
-profile save flow.
+The entity resolves from cached settings for speed, which makes a save without invalidation
+a lie the system tells itself: the admin sees the confirmation toast while every subsequent
+page renders yesterday's address. Invalidation must be synchronous with the write.
+**→ Requirement:** FR-SCH-014/015 (registry and sync invalidation).
 
 ---
 
@@ -53,170 +56,328 @@ profile save flow.
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Provide school profile management via Settings infrastructure (no dedicated model) |
-| G2  | Deliver typed `SchoolEntity` value object with named accessors for all 8 properties |
-| G3  | Atomic save of all school profile fields via `BatchSetSettingAction` transaction |
-| G4  | Synchronous cache invalidation of `school_entity` key after profile save |
-| G5  | Logo upload, storage, and removal via Spatie Media Library |
-| G6  | Form object (`SchoolForm`) with validation rules that load from and serialize to `SchoolEntity` |
-| G7  | Live logo upload via Livewire `updated*` hook without requiring a full form save |
+- **Singleton identity on the settings store** — eight `school.*` keys, no dedicated model or migration. *Why:* PS-1 forbids duplicating infrastructure for one row.
+- **Typed reads through a readonly entity** — named accessors, single batch query, purity from framework I/O. *Why:* PS-2 replaces string-key spelunking with autocompleted methods.
+- **Atomic profile saves** — all keys commit together inside the batch transaction. *Why:* PS-3 makes partial identity corruption the failure to prevent.
+- **Synchronous entity-cache invalidation** — the next read after any save is fresh. *Why:* PS-4 turns stale identity into a correctness bug.
+- **Live logo handling independent of the form** — immediate upload, confirmed removal, always-accurate preview. *Why:* file failures must never block or corrupt textual saves.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | Multi-school / multi-tenant support (single-tenant only) |
-| NG2  | School logo auto-generation, cropping, or resizing beyond Spatie conversions |
-| NG3  | Dedicated `School` model, migration, or Eloquent relationships |
-| NG4  | School profile versioning, audit trail, or rollback |
-| NG5  | Settings infrastructure, resolution chain, or type system (see [settings-infrastructure.md](YB22J-settings-infrastructure.md)) |
-| NG6  | Branding, theme, or locale management (see [branding-theme-locale.md](52O1I-branding-theme-locale.md)) |
-| NG7  | Department management (see [department-management.md](4HWSB-department-management.md)) |
-| NG8  | Academic year management (see [academic-year-management.md](XW6F5-academic-year-management.md)) |
+- **Multi-school or multi-tenant support**. *Why:* single-tenant by product decision; one school per deployment, no scoping columns.
+- **Logo generation, cropping, or resizing beyond media conversions**. *Why:* the media library's conversions suffice; an image editor is a different product.
+- **Profile versioning, audit trail, or rollback UI**. *Why:* settings audit logging covers forensics; a versions interface is post-MVP depth.
+- **Settings machinery, branding, theme, or locale**. *Why:* owned by [YB22J](YB22J-settings-infrastructure.md) and [52O1I](52O1I-branding-theme-locale.md); this spec consumes both.
+- **Departments and academic years**. *Why:* separate specs own those entities; they reference this profile, not vice versa.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-81SMS-1 — Admin Updates School Profile
+One editor, three interactions: save the identity, change the face, remove the face. Each
+carries its own consistency demand.
 
-**Actor:** Admin / Super Admin
-**Preconditions:** Admin is authenticated with `super_admin` or `admin` role; Settings permission granted
-**Flow:**
-1. Admin navigates to Settings → School Profile (`/admin/school`)
-2. `SchoolEditor` Livewire component mounts, authorizes via `SettingPolicy`
-3. `SchoolForm::loadFromEntity()` reads `SchoolEntity::get()` and populates form fields
- 4. Admin updates one or more fields: name, institutional code, email, address, phone, fax, website, principal name
- 5. Admin clicks Save — `beforeunload` unsaved guard is cleared *before* submit (NFR-81SMS-U5) so save itself does not trigger dialog
- 6. `SchoolEditor::save()` validates form, calls `SaveSchoolProfileAction::execute(data: form.toPayload())` via `BaseFormView::handleSave()` and on success `dispatch('saved')` to reset Alpine `isDirty`
- 7. `SaveSchoolProfileAction` executes within a transaction:
-    - Maps each field to `SettingEntryData(key: "school.{key}", value: value)`
-    - Calls `BatchSetSettingAction` for atomic upsert
-    - Forgets `school_entity` cache key
- 8. Form reloads from fresh `SchoolEntity::get()` (including `fax`)
- 9. Flash message confirms save; `isDirty` is `false` both in PHP (`handleSave`) and Alpine (`saved` event)
-**Postconditions:** All school profile fields updated atomically, cache invalidated, UI refreshed
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-SCH-001 | Admin updates the school profile fields atomically with cache invalidation and dirty-state handling | P0 | F | Full |
+| UC-SCH-002 | Admin uploads the school logo with immediate preview independent of the profile save | P0 | F | Full |
+| UC-SCH-003 | Admin removes the school logo through a confirmation step with full cleanup | P1 | F | Full |
 
-### UC-81SMS-2 — Admin Uploads School Logo
+### 3.1 Profile Editing
 
-**Actor:** Admin
-**Preconditions:** Admin is on the School Profile editor page
-**Flow:**
-1. Admin selects a file in the logo upload field
-2. Livewire `updatedLogoFile` hook fires immediately
-3. Validates: `nullable|image|max:2048` (KB)
-4. `UploadBrandAssetAction::execute()` stores file via Spatie Media Library
-5. `SetSettingAction::execute()` persists the URL under `brand_logo` key
-6. Component updates logo preview via `logoPreviewUrl()`
-7. Flash message confirms logo saved
-**Postconditions:** Logo uploaded, URL persisted, preview updated
+#### UC-SCH-001 — Admin rewrites the school's identity
 
-### UC-81SMS-3 — Admin Removes School Logo
+The new principal's name arrives on a Monday memo and the admin opens `/admin/school` to find
+all eight fields already populated from the entity — name, institutional code, email, phone,
+fax, address, website, principal. She edits two, and the Alpine dirty tracker arms itself on
+first keystroke, guarding against accidental navigation. Save clears that guard before the
+request leaves (so the save itself never triggers its own warning), validates, funnels the
+payload through the atomic batch write, forgets the entity cache, and reloads the form from
+fresh reads — the confirmation toast and the re-rendered fields agreeing, dirty flag at rest.
 
-**Actor:** Admin
-**Preconditions:** A logo is currently set
-**Flow:**
-1. Admin clicks "Remove Logo" and confirms via `showConfirm` modal
-2. `confirmAction()` authorizes, calls `RemoveBrandAssetAction::execute('logo')`
-3. `Settings::forget('brand_logo')` clears the setting key
-4. Flash message confirms removal
-**Postconditions:** Logo removed from media collection and setting, preview cleared
+### 3.2 Logo Lifecycle
+
+#### UC-SCH-002 — The crest lands before the form is saved
+
+Certificates go out Friday and the crest file finally arrives Wednesday. The admin drops it
+into the logo field and the preview swaps to the upload before she touches save — the
+Livewire hook authorizes, validates image and size, stores through the media library,
+persists the URL setting, and flashes confirmation, all outside the profile transaction. When
+she later saves the textual fields, the logo is already live on every document template; had
+the upload failed, the text save would have proceeded untouched rather than failing with it.
+
+#### UC-SCH-003 — Removing the crest takes two deliberate clicks
+
+A rebrand retires the old crest. The admin clicks remove, a confirmation modal asks whether
+she means it — because this click deletes bytes, not just a pointer — and confirming runs
+the removal action, clears the setting key, and empties the preview slot. There is no undo
+beyond re-uploading, which is exactly why the modal exists: destructive, immediate, and
+never accidental.
 
 ---
 
 ## 4. Functional Requirements
 
-### School Entity
+Entity and reads (§4.1), atomic writes (§4.2), form and validation (§4.3), the Livewire page
+(§4.4), and cache plus routing (§4.5) form the complete surface. Every row below is
+implemented.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP1 | `SchoolEntity` must be a `final readonly class` extending `BaseEntity` with 8 typed `string` properties (including `fax`) |
-| FR-81SMS-SP2 | `SchoolEntity` must define a `KEYS` constant mapping property names to `school.*` setting keys (8 entries) |
-| FR-81SMS-SP3 | `SchoolEntity` must be pure — **no** `use App\Settings\*;` import (C5, MOD_XMOD_INTERNAL). Must provide `fromSettingsArray(array $values): self` that hydrates from a `Settings::get()` result array; must not call Settings directly |
-| FR-81SMS-SP3a | `GetSchoolEntityAction` (Read Action) must read all 8 keys via `Settings::get(array_values(SchoolEntity::keys()))` and return `SchoolEntity::fromSettingsArray()` (single batch query) |
-| FR-81SMS-SP3b | `SchoolEntity::get()` is legacy compat — must delegate to `GetSchoolEntityAction` via FQCN without `use` import (no `use` → C5/MOD pass) and is deprecated for new code |
-| FR-81SMS-SP4 | `SchoolEntity::keys()` must return the `KEYS` constant array for iteration by setup and other consumers |
-| FR-81SMS-SP5 | `SchoolEntity::fromModel()` must delegate to `SchoolEntity::get()` (no Model dependency) |
-| FR-81SMS-SP6 | `SchoolEntity` must provide named accessors: `name()`, `institutionalCode()`, `email()`, `address()`, `phone()`, `fax()`, `website()`, `principalName()` |
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) ·
+`A` = Arch (structure/contracts). **Status legend:** `Planned` = not started ·
+`Partial` = in progress · `Full` = implemented & verified.
 
-### Save Action
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-SCH-001 | `SchoolEntity` is a `final readonly` value object extending `BaseEntity` with eight typed string properties including `fax` | P0 | U | Full |
+| FR-SCH-002 | `SchoolEntity::KEYS` maps each property to its `school.*` setting key as the single source of truth | P0 | U | Full |
+| FR-SCH-003 | `SchoolEntity` stays pure with no settings imports; hydration flows through `fromSettingsArray()` fed by callers | P0 | A | Full |
+| FR-SCH-004 | `GetSchoolEntityAction` performs the single batch read of all eight keys and hydrates the entity; it is the only place that queries school keys | P0 | F | Full |
+| FR-SCH-005 | `SchoolEntity` exposes named accessors for all eight properties with empty-string defaults | P0 | U | Full |
+| FR-SCH-006 | `SaveSchoolProfileAction` accepts the payload plus an optional logo file and delegates to `BatchSetSettingAction` for atomic upsert with logging | P0 | F | Full |
+| FR-SCH-007 | Profile writes execute inside the command transaction: all eight keys land or none do | P0 | F | Full |
+| FR-SCH-008 | Logo bytes flow through `UploadBrandAssetAction` and removals through `RemoveBrandAssetAction` with setting cleanup | P0 | F | Full |
+| FR-SCH-009 | `SchoolForm` carries all eight properties, loads from an injected entity, and serializes via `toPayload()` | P0 | F | Full |
+| FR-SCH-010 | Form rules require the school name and validate contacts with type-specific rules; rules shared via `Entity::rules()` where a second form edits the same entity | P0 | F | Full |
+| FR-SCH-011 | `SchoolEditor` mounts and saves through injected actions with policy authorization, form reload from fresh reads, success flash, and a `saved` event resetting dirty state | P0 | F | Full |
+| FR-SCH-012 | Live logo upload validates and previews immediately; removal requires confirmation; save never triggers the unsaved-changes guard | P1 | F | Full |
+| FR-SCH-013 | `logoPreviewUrl()` returns the pending-upload temporary URL or the current logo URL | P2 | F | Full |
+| FR-SCH-014 | The `school_entity` cache key is registered in `config/cache-keys.php` as `academics.school.entity` | P0 | A | Full |
+| FR-SCH-015 | Entity cache invalidates synchronously after every write; cached resolution completes within budget | P0 | F | Full |
+| FR-SCH-016 | The editor lives at `GET /admin/school` (name `sysadmin.school`) behind `auth` plus `role:super_admin\|admin` with all mutations policy-authorized | P0 | F | Full |
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP7 | `SaveSchoolProfileAction` must extend `BaseCommandAction` and accept `array $data` and optional `?UploadedFile $logoFile` |
-| FR-81SMS-SP8 | Must execute within `BaseCommandAction::transaction()` for atomicity |
-| FR-81SMS-SP9 | Must map each `$data` key to `SettingEntryData(key: "school.{$key}", value: $value)` |
-| FR-81SMS-SP10 | Must call `BatchSetSettingAction::execute(...$entries)` for atomic batch upsert |
-| FR-81SMS-SP11 | Must call `UploadBrandAssetAction::execute()` when `$logoFile` is provided |
-| FR-81SMS-SP12 | Must forget `school_entity` cache key via `Cache::forget()` after write |
-| FR-81SMS-SP13 | Must log `school_profile_updated` event with affected keys |
+### 4.1 Entity and Reads
 
-### Form Object
+#### FR-SCH-001 — Eight strings in an immutable shell
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP14 | `SchoolForm` must extend Livewire `Form` with 8 properties: `name`, `institutional_code`, `email`, `phone`, `fax`, `address`, `website`, `principal_name` |
-| FR-81SMS-SP15 | `rules()` must validate: `name` required/max:255, others nullable with type-specific rules (email, url, max) |
-| FR-81SMS-SP16 | `loadFromEntity(?SchoolEntity $entity = null)` must populate **all 8** form properties (including `fax`). When no entity is passed, must resolve via `GetSchoolEntityAction::execute()` (keeps Entity pure); callers `SchoolEditor::mount()` and `save()` must inject `GetSchoolEntityAction` and pass the entity |
-| FR-81SMS-SP17 | `toPayload()` must return associative array mapping form fields to setting key suffixes (8 keys) |
+The entity holds name, institutional code, email, address, phone, fax, website, and principal
+name — all strings, `final readonly`, extending `BaseEntity`. Immutability is doing quiet
+work here: no consumer can "fix up" the school name on a local copy and diverge from the
+store, because there are no setters to call. The `fax` field survives on lineage rather than
+usage — legacy school letterheads still carry fax numbers, and dropping the column would
+orphan data the setup wizard once collected.
 
-### Read Action (NEW — arch pattern compliance)
+#### FR-SCH-002 — One constant maps properties to keys
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP16a | `GetSchoolEntityAction` must extend `BaseReadAction` and `execute(): SchoolEntity` must be the **only** place that calls `Settings::get()` for school keys |
-| FR-81SMS-SP16b | Must use single batch query `Settings::get(array_values(SchoolEntity::keys()))` and hydrate via `SchoolEntity::fromSettingsArray()` |
+`KEYS` pairs each property name with its `school.*` key exactly once, and every other
+consumer — the batch reader, the save mapper, the setup seeder — iterates that constant
+instead of naming keys. When a key rename becomes necessary, the diff touches one constant
+and the tests around it, not a grep across modules hoping every string literal was found.
 
-### Livewire Component
+#### FR-SCH-003 — Purity by construction, not by review
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP18 | `SchoolEditor` must extend `BaseFormView` with `WithFileUploads` trait |
-| FR-81SMS-SP19 | `mount(GetSchoolEntityAction $getEntity)` must authorize via `Setting::class` policy and load form via `$form->loadFromEntity($getEntity->execute())` (no direct `SchoolEntity::get()` in Livewire) |
-| FR-81SMS-SP20 | `save(SaveSchoolProfileAction $action, GetSchoolEntityAction $getEntity)` must authorize, validate, call `SaveSchoolProfileAction` **via `BaseFormView::handleSave()`**, reload form via `$form->loadFromEntity($getEntity->execute())`, flash success, and `dispatch('saved')` to reset Alpine `isDirty` |
-| FR-81SMS-SP20a | `SchoolEditor` must not trigger `beforeunload` unsaved dialog on save: Blade `form` must clear Alpine `isDirty` on submit (`x-on:submit="isDirty = false"`) before `wire:submit` dispatch, and `saved` event must reset it after success (FR-81SMS-SP20) |
-| FR-81SMS-SP21 | `updatedLogoFile()` must authorize, validate (`image|max:2048`), upload, persist URL, flash success |
-| FR-81SMS-SP22 | `confirmAction()` must authorize, remove logo via `RemoveBrandAssetAction`, forget setting, flash |
-| FR-81SMS-SP23 | `logoPreviewUrl()` must return temporary URL for pending upload or current logo URL |
+The entity imports nothing from the settings module — no service, no model, no helper — so
+the forbidden-dependency question never reaches code review; the class simply cannot reach
+what it cannot import. Hydration arrives as a plain array through `fromSettingsArray()`,
+which keeps the entity instantiable in millisecond unit tests with hand-built arrays. The
+legacy `get()` convenience delegates to the read action without a `use` import, deprecated
+for new code that should inject the action directly.
 
-### Cache Invalidation
+#### FR-SCH-004 — One action reads, everyone else asks it
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP24 | `school_entity` cache key must be registered in `config/cache-keys.php` as `academics.school.entity` |
-| FR-81SMS-SP25 | Must synchronously invalidate `school_entity` cache key after writing entries |
-| FR-81SMS-SP26 | `SchoolEntity::get()` resolution from cache must complete in < 50ms on hit |
+Before this action existed, three different call sites each queried school keys in their own
+way — different key lists, different caching, different hydration. `GetSchoolEntityAction`
+collapses that to one batch `Settings::get()` over the `KEYS` values and one hydration call,
+so the query count for "who is this school" is exactly one, everywhere, forever. Livewire
+components inject it rather than touching the entity's static conveniences, which keeps the
+read path dependency-injected and test-seeable.
 
-### Routes
+#### FR-SCH-005 — Accessors with graceful absence
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-81SMS-SP27 | Route must be `GET /admin/school`, name `sysadmin.school`, middleware `['auth', 'role:super_admin\|admin']` |
+Each of the eight accessors returns a string, defaulting to empty when the setting was never
+configured — a fresh install renders blank fields rather than null explosions in certificate
+templates. The contract callers rely on is totality: call any accessor on any entity, get a
+string back, no exceptions, no null checks at the call site. Missing configuration shows as
+emptiness in the UI, which is honest and debuggable.
+
+### 4.2 Atomic Writes
+
+#### FR-SCH-006 — The save action as a thin mapper
+
+`SaveSchoolProfileAction` does deliberately little: prefix each payload key with `school.`,
+wrap in entry data, hand the bundle to the batch action, handle the optional logo through
+the brand-asset pipeline, forget the entity cache, and log the update with affected keys.
+Thinness is the design — transactions, type detection, and observer hooks already live in
+the batch path, so this action reuses rather than reimplements. Its constructor-injected
+collaborators make the whole flow assertable in feature tests without touching HTTP.
+
+#### FR-SCH-007 — Eight keys or zero
+
+The transaction wraps the batch upsert so a database failure after key five rolls back keys
+one through four — the profile the next reader sees is either fully new or fully old, never
+a chimera. Observers fire inside the transaction, preserving the rollback-undoes-everything
+property the observer ADR requires. The scenario this prevents (new name, stale email on
+official letters) is precisely the kind of silent corruption no test would catch after the
+fact, so the guarantee sits in the write path itself.
+
+#### FR-SCH-008 — Bytes and pointers cleaned together
+
+Logo upload stores through the media collection and persists the returned URL; removal
+deletes the media row and forgets the setting key in the same handling. Either half alone
+is a bug with a visible symptom — orphaned files nobody references, or a setting pointing
+at bytes that no longer exist and rendering broken images on certificates. The pairing is
+enforced in the action rather than trusted to caller discipline.
+
+### 4.3 Form and Validation
+
+#### FR-SCH-009 — The form mirrors the entity exactly
+
+Eight properties, same names modulo snake case, loading from an injected entity and
+serializing back through `toPayload()` with the same key suffixes. Symmetry between load
+and payload is what makes round-trips lossless: a profile loaded, untouched, and saved
+writes back identical values. The form never resolves the entity itself — callers inject
+the read action and pass the result in — which keeps the class free of settings imports and
+testable with fabricated entities.
+
+#### FR-SCH-010 — Required name, validated contacts, shared rules
+
+Only the name is required; a school without a name is not a school but a database accident,
+while every contact field tolerates absence because half-configured installs are normal
+mid-setup. Email and website carry type-specific rules so malformed values fail at the form
+rather than on printed letterhead. Where a second surface edits the same fields — the setup
+wizard demanding email upfront while this editor allows clearing it later — the shared rules
+live once as `Entity::rules()` per the gradual-migration trigger, and the wizard's stricter
+variant layers its requirement on top without forking the base.
+
+### 4.4 The Livewire Page
+
+#### FR-SCH-011 — Mount, save, and reset through the base view
+
+Mount authorizes against the `Setting` policy and hydrates the form from the injected read
+action; save authorizes again, validates, delegates through the base view's save handler,
+reloads from fresh reads, flashes success, and dispatches `saved` so the Alpine dirty flag
+stands down. The double authorization (mount and save) closes the crafted-request gap where
+a client skips the page and calls the save directly. Reloading from fresh reads rather than
+echoing submitted values proves the write actually landed instead of assuming it.
+
+#### FR-SCH-012 — Uploads now, confirmation for destruction, no self-blocking guard
+
+Three interaction details share one theme: the UI must never punish the operator for its own
+bookkeeping. Logo selection uploads and validates immediately with a live preview; removal
+pauses on a confirmation modal because it destroys bytes; and the unsaved-changes guard
+clears on submit before the request dispatches, so saving can never trigger the very dialog
+meant to catch navigation away. Each behavior was fixed in response to a real complaint —
+the guard blocking its own save most memorably — rather than speculated upfront.
+
+#### FR-SCH-013 — Preview prefers the pending file
+
+While an upload sits selected but unconfirmed, the preview shows its temporary URL; once
+settled, it shows the persisted logo; with neither, it shows nothing rather than a broken
+frame. The precedence order matters because the operator's question is always "what will it
+look like" — answered by the freshest available image, not by the last saved one.
+
+### 4.5 Cache and Routing
+
+#### FR-SCH-014 — The entity key in the registry
+
+`school_entity` → `academics.school.entity` sits alongside every other settings key in
+`config/cache-keys.php`, referenced by config path rather than literal. Registration is what
+lets the nightly key audit assert completeness: any cache key the school profile touches
+appears in exactly one file, greppable, with no string literal hiding in an action method.
+
+#### FR-SCH-015 — Synchronous invalidation within budget
+
+Every profile write forgets the entity key before the response returns — through the model
+observer for settings-path writes and explicitly in the save action for the entity key —
+so the confirmation toast and the next render cannot disagree. Cached resolution stays
+under fifty milliseconds on hit; a slower hit means something bypassed the cache with a
+direct query, which the read-path discipline (FR-SCH-004) already forbids.
+
+#### FR-SCH-016 — Route and dual-layer authorization
+
+`GET /admin/school`, named `sysadmin.school`, behind `auth` and `role:super_admin|admin` —
+reachable by both operator roles, like the settings page it neighbors. The middleware gate
+keeps anonymous and student traffic out; the `Setting` policy check inside mount and every
+mutation keeps authorization at the business layer too, so direct action invocation without
+the role meets denial rather than compliance.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID    | Requirement |
-| ----- | ----------- |
-| NFR-81SMS-S1 | Setting keys must match `^[a-z][a-z0-9_.]*$` pattern to prevent injection |
-| NFR-81SMS-S2 | Logo upload must validate MIME type and file size server-side (`image|max:2048`) |
-| NFR-81SMS-S3 | `SchoolEditor` must authorize all mutations via `Setting::class` policy |
-| NFR-81SMS-S4 | Logo removal must delete from Spatie Media Library and clear setting key atomically |
-| NFR-81SMS-R1 | Profile save must be atomic — all 7 keys written or none (`BatchSetSettingAction` transaction) |
-| NFR-81SMS-R2 | Cache invalidation must be synchronous (not queued) to prevent stale reads |
-| NFR-81SMS-U2 | Logo upload must show live preview without page reload |
-| NFR-81SMS-U3 | Logo removal must require confirmation dialog before executing |
-| NFR-81SMS-U4 | Flash messages must confirm save, logo upload, and logo removal actions |
-| NFR-81SMS-U5* | Unsaved-changes guard (`beforeunload` via Alpine `isDirty`) must not block save: `isDirty` is set on `@input`, cleared on `x-on:submit` (before request) and on `$wire.on('saved')` (after success); dialog only on actual navigation away with dirty state — manual UX, not unit-testable |
-| NFR-81SMS-A1* | All form inputs must have associated `<label>` elements (WCAG 2.1 Level AA) — a11y, verified manually |
-| NFR-81SMS-A2* | Logo upload field must include alt text for screen readers — a11y, verified manually |
-| NFR-81SMS-A3* | Flash messages must be announced via `aria-live` region — a11y, verified manually |
-| NFR-81SMS-L1* | All user-facing strings must use `__()` translation helper — i18n, verified via scan_ui_consistency |
-| NFR-81SMS-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-81SMS-M1 | `SchoolEntity` must be accessed via `::get()`, not direct `setting()` calls in consumers |
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-SCH-001 | School setting keys match the key pattern to prevent injection | zero non-matching keys | P0 | A | Full |
+| NFR-SCH-002 | Logo uploads validate MIME type and size server-side | 100% gated; `image\|max:2048` | P0 | F | Full |
+| NFR-SCH-003 | Editor mutations authorize via the `Setting` policy at mount and on every mutation | 100% of mutations gated | P0 | F | Full |
+| NFR-SCH-004 | Profile saves are atomic across all eight keys | zero partial saves | P0 | F | Full |
+| NFR-SCH-005 | Cache invalidation is synchronous, never queued | zero stale reads after save | P0 | F | Full |
+| NFR-SCH-006 | Logo upload previews live; removal requires confirmation; flashes confirm save, upload, and removal | 100% of flows acknowledged | P1 | B | Full |
+| NFR-SCH-007 | Form inputs carry labels, uploads carry alt text, flashes announce via live regions | WCAG 2.1 AA on editor controls | P1 | B | Full |
+| NFR-SCH-008 | Every editor string uses `__()` with mirrored `en`/`id` keys; consumers read via the entity, not raw setting calls | zero missing-key pairs; zero raw school-key reads | P0 | A | Full |
+| NFR-SCH-009 | Cached entity resolution and save complete within budget | < 50ms hit; < 2s p95 save | P1 | F | Full |
+
+### 5.1 Integrity and Access
+
+#### NFR-SCH-001 — Keys that cannot smuggle syntax
+
+The `school.*` keys travel into cache-key construction and batch lookups, so the lowercase
+dotted pattern is load-bearing rather than cosmetic. A key with uppercase or whitespace
+would cache under a namespace no invalidation clears — the exact stale-forever shape the
+observer exists to prevent. Non-matching keys in the table are rename candidates, never
+precedent.
+
+#### NFR-SCH-002 — The 2 MB ceiling with teeth
+
+Two megabytes admits any reasonable crest photograph while refusing print-shop TIFFs that
+would bloat every certificate render. Enforcement runs on the stored bytes server-side; the
+client `accept` attribute is courtesy, not control. An oversized file fails with a field
+error while the textual form values wait patiently — the independence UC-SCH-002 promises.
+
+#### NFR-SCH-003 — Authorization in two places on purpose
+
+Middleware turns away the wrong roles at the door; the policy check inside mount and each
+mutation turns away the right role calling the wrong way — a crafted Livewire payload that
+skips the page entirely. Either layer alone leaves a gap the other closes, which is why the
+dual-layer requirement from the project spec lands here as concrete checks rather than
+aspiration.
+
+### 5.2 Reliability and Experience
+
+#### NFR-SCH-004 — Atomicity as a letterhead guarantee
+
+The printed letterhead is the artifact that makes partial saves unforgivable: mismatched
+name and email persist on paper long after the database is corrected. Transactional
+all-or-nothing writes make that state unreachable, and the feature tests prove it by
+failing mid-batch and asserting the earlier keys rolled back.
+
+#### NFR-SCH-005 — Freshness before the toast fades
+
+By the time the admin reads the success flash, the next navigation already renders — and it
+must render the new profile, not the cached old one. Synchronous invalidation buys that
+ordering unconditionally; a queued clearer would trade correctness for write-path speed the
+school never asked for, since profile saves happen a few times a year, not a thousand times
+a day.
+
+#### NFR-SCH-006 — Every action answers visibly
+
+Saves, uploads, and removals each end in a flash message; uploads additionally preview
+without reload and removals pause on confirmation. The unifying demand is operator
+confidence: no click should leave the admin wondering whether anything happened. Silent
+success is treated as a defect here, not as minimalism.
+
+### 5.3 Access and Localization
+
+#### NFR-SCH-007 — An editor operable beyond the mouse
+
+Labelled inputs, alt-texted upload previews, and live-region announcements make the editor
+usable by keyboard and screen reader — the AA behaviors that matter most on a form the
+school revisits rarely enough that nobody memorizes it. These live in markup rather than
+component styling so they survive the next UI library migration untouched.
+
+#### NFR-SCH-008 — Two languages, one read path
+
+Indonesian and English operators edit the same profile through fully translated chrome,
+with every key present in both locale files. Meanwhile consumers never call
+`setting('school.*')` directly — the entity is the read path — so a future key rename
+touches the constant and its tests instead of every certificate template in the system.
+
+#### NFR-SCH-009 — Budgets that fit the usage shape
+
+Fifty milliseconds on cache hit keeps the entity invisible inside page renders that read it
+multiple times; two seconds at p95 for the full eight-field save keeps the admin waiting
+comfortably, uploads excluded (they travel the immediate path). Breaching either budget
+points at a bypassed cache or a bundled upload — both already forbidden elsewhere in this
+spec, which is how performance requirements compose instead of repeating.
 
 ---
 
@@ -225,7 +386,6 @@ profile save flow.
 ### 6.1 SchoolEntity
 
 ```php
-// app/Modules/Academics/School/Entities/SchoolEntity.php
 final readonly class SchoolEntity extends BaseEntity
 {
     private const array KEYS = [
@@ -251,6 +411,7 @@ final readonly class SchoolEntity extends BaseEntity
     ) {}
 
     public static function keys(): array;
+    public static function fromSettingsArray(array $values): self;
     public static function fromModel(Model $model): static;
     public static function get(): self;
     public function name(): string;
@@ -262,18 +423,15 @@ final readonly class SchoolEntity extends BaseEntity
     public function website(): string;
     public function principalName(): string;
 }
-
 ```
 
-- `KEYS` maps property names to `school.*` setting keys
-- `get()` reads via `Settings::get(array_values(self::KEYS))` — single batch query
-- `fromModel()` delegates to `get()` — no Eloquent model dependency
-- All accessors return `string`, defaulting to `''` when settings are absent
+`fromModel()` delegates to `get()` (no model dependency). `get()` is legacy compat
+delegating to `GetSchoolEntityAction`; new code injects the action. All accessors return
+`string`, defaulting to `''`.
 
-### 6.2 SaveSchoolProfileAction
+### 6.2 Actions
 
 ```php
-// app/Modules/Academics/School/Actions/SaveSchoolProfileAction.php
 final class SaveSchoolProfileAction extends BaseCommandAction
 {
     public function __construct(
@@ -284,32 +442,16 @@ final class SaveSchoolProfileAction extends BaseCommandAction
     public function execute(array $data, ?UploadedFile $logoFile = null): void;
 }
 
-```
-
-Wraps in `transaction()`: maps `$data` → `SettingEntryData("school.{$key}")`, uploads logo if
-provided, calls `BatchSetSettingAction`, forgets `school_entity` cache, logs update.
-
-### 6.3 SchoolForm
-
-```php
-// app/Modules/Academics/School/Livewire/Forms/SchoolForm.php
-class SchoolForm extends Form
+final class GetSchoolEntityAction extends BaseReadAction
 {
-    public string $name = '';
-    public string $institutional_code = '';
-    public string $email = '';
-    public string $phone = '';
-    public string $fax = '';
-    public string $address = '';
-    public string $website = '';
-    public string $principal_name = '';
-
-    public function rules(): array;
-    public function loadFromEntity(): void;
-    public function toPayload(): array;
+    public function execute(): SchoolEntity;
 }
-
 ```
+
+`GetSchoolEntityAction::execute()` is the only place querying school keys: one batch
+`Settings::get(array_values(SchoolEntity::keys()))` hydrated via `fromSettingsArray()`.
+
+### 6.3 SchoolForm Rules
 
 | Field | Rules |
 | ----- | ----- |
@@ -322,32 +464,11 @@ class SchoolForm extends Form
 | `website` | `nullable\|url\|max:255` |
 | `principal_name` | `nullable\|string\|max:255` |
 
-> `email` is `nullable` here but `required` in the setup wizard ([setup-wizard.md](VEJCX-setup-wizard.md)
-> §6.1, FR-81SMS-W6). This is intentional — the wizard provisions a working contact address, the editor
-> allows clearing it later. See setup-wizard.md DD-5.
+`email` is `nullable` here but `required` in the setup wizard
+([VEJCX](VEJCX-setup-wizard.md)): the wizard provisions a working contact address, the
+editor allows clearing it later.
 
-### 6.4 SchoolEditor
-
-```php
-// app/Modules/Academics/School/Livewire/SchoolEditor.php
-class SchoolEditor extends BaseFormView
-{
-    use WithFileUploads;
-    public SchoolForm $form;
-    public $logo_file = null;
-    public bool $showConfirm = false;
-
-    public function mount(): void;
-    public function updatedLogoFile(UploadBrandAssetAction, SetSettingAction): void;
-    public function save(SaveSchoolProfileAction $action): void;
-    public function logoPreviewUrl(): ?string;
-    public function confirmAction(): void;
-    public function render(): View;
-}
-
-```
-
-### 6.5 Setting Keys
+### 6.4 Setting Keys and Cache
 
 | Key | Type | Default |
 | --- | ---- | ------- |
@@ -360,110 +481,119 @@ class SchoolEditor extends BaseFormView
 | `school.website` | string | `''` |
 | `school.principal_name` | string | `''` |
 
-### 6.6 Cache Key
-
-| Config Key | Cache Value | TTL |
-| ---------- | ----------- | --- |
-| `school_entity` | `academics.school.entity` | forever |
-
-### 6.7 Route
-
-```
-GET /admin/school → SchoolEditor (Livewire)
-Name: sysadmin.school
-Middleware: auth, role:super_admin|admin
-
-```
+Cache: `school_entity` → `academics.school.entity`, forever. Route: `GET /admin/school`
+(name `sysadmin.school`), middleware `auth`, `role:super_admin|admin`.
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — School Profile via Settings, Not a Dedicated Model
+Each decision records a settled tradeoff argued once in prose; the linked FR rows carry the
+verifiable behavior, so no separate test layer is recorded here.
 
-**Decision:** School profile stored as individual `Setting` records under `school.*` namespace,
-not a dedicated `School` model/table.
-**Rationale:** The Settings module already provides caching, validation, type casting, and
-observer-based invalidation. A dedicated School model would duplicate this infrastructure for
-8 string columns. The `SchoolEntity` class provides typed access without Eloquent overhead.
-The `setting()` helper and `Settings::get()` resolution chain work seamlessly with `school.*`
-keys without any adapter layer.
-**Trade-off:** No Eloquent relationships (school → departments). Acceptable because school is a
-singleton entity with no relational queries needed. No `School::find()` or `School::where()`
-patterns — all access goes through `SchoolEntity::get()`.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-SCH-001 | School profile persists as `school.*` settings, not as a dedicated model and table | P0 | — | — |
+| DD-SCH-002 | Reads flow through an immutable value object with a private key map | P0 | — | — |
+| DD-SCH-003 | Saves reuse the settings batch action instead of a bespoke writer | P0 | — | — |
+| DD-SCH-004 | Logo upload and removal run outside the profile transaction | P0 | — | — |
+| DD-SCH-005 | The entity cache key joins the shared registry instead of living as a literal | P1 | — | — |
 
-### DD-2 — SchoolEntity as Final Readonly Value Object
+### 7.1 Representation
 
-**Decision:** `SchoolEntity` is `final readonly` with a private `KEYS` constant and named
-accessors.
-**Rationale:** `final` prevents subclassing. `readonly` ensures immutability. The `KEYS` constant
-provides a single source of truth for property-to-key mapping. Named accessors provide typed
-access without magic methods.
-**Trade-off:** No fluent setter. Acceptable — mutations go through `SaveSchoolProfileAction`.
+#### DD-SCH-001 — Eight strings do not deserve a table
 
-### DD-3 — Batch Save via BatchSetSettingAction
+A `schools` table with one row and eight string columns would need its own model, its own
+cache story, its own invalidation, and an adapter everywhere the settings resolution chain
+is expected — all to store what the key-value store already stores. The singleton shape is
+exactly where a dedicated table pays the most ceremony for the least benefit, and the
+singleton has no relations to justify Eloquent anyway. Settings rows with a typed reader
+cover the need with zero new infrastructure.
 
-**Decision:** `SaveSchoolProfileAction` maps fields to `SettingEntryData` and delegates to
-`BatchSetSettingAction` for atomic upsert.
-**Rationale:** `BatchSetSettingAction` handles transactions, type auto-detection, and
-observer-triggered cache invalidation. Reusing it prevents duplicate transaction logic.
-**Trade-off:** Extra indirection (Action → Action). Acceptable — the batch action is the canonical
-way to write multiple settings atomically.
+#### DD-SCH-002 — Immutability plus a private map
 
-### DD-4 — Logo Upload Independent of Profile Save
+The alternative — array access with string keys at every call site — was the pre-entity
+reality, and it produced the misspelled-key-on-certificate incident PS-2 describes. A
+readonly object with named accessors moves every keystroke under IDE and test visibility,
+while the private constant keeps the property-to-key mapping in one owned place. No
+setters exist because mutation has exactly one door: the save action.
 
-**Decision:** Logo upload fires immediately via `updatedLogoFile` hook, separate from save.
-**Rationale:** File uploads can fail. Immediate upload provides instant feedback and allows retry.
-Bundling with profile save would block the entire save on upload failure.
-**Trade-off:** Orphaned files if user uploads logo but never saves. Mitigated by < 2MB size and
-local storage. `RemoveBrandAssetAction` provides cleanup.
+### 7.2 Write Paths
 
-### DD-5 — Cache Key Registered in Config
+#### DD-SCH-003 — Reuse the batch, don't re-own transactions
 
-**Decision:** `school_entity` cache key declared in `config/cache-keys.php`.
-**Rationale:** All cache keys must be registered in one place (NFR-81SMS-M1 from settings spec).
-Prevents ad-hoc key strings and enables bulk invalidation.
-**Trade-off:** Extra config entry for a single key. Negligible overhead.
+Writing a bespoke eight-key writer would duplicate transaction handling, type detection,
+and observer triggering that the batch action already proves in tests. Delegation costs one
+extra call frame and buys every future improvement to the batch path for free — including
+invalidation semantics the school profile must never diverge from. The day the batch
+action changes, the profile follows without a second migration.
+
+#### DD-SCH-004 — Files fail differently from text
+
+Bundling the logo bytes into the profile transaction couples two failure modes with
+nothing in common: a 3 MB upload rejection should never discard eight valid text fields,
+and a text validation error should never strand an uploaded file. Independent handling
+lets each fail on its own terms with its own feedback, at the accepted cost of a possible
+orphan file — small, local, and removable through the same removal action.
+
+#### DD-SCH-005 — One registry for every key
+
+A cache key literal inside the save action is invisible to the key audit and to the next
+developer hunting a stale read. Registering `school_entity` in the shared config puts it
+under the same greppability and bulk-invalidation story as every settings key, for the
+price of one config line. The rule generalizes: any future entity cache starts in the
+registry, never in a method body.
 
 ---
 
 ## 8. Success Metrics
 
-| Metric | Target |
-| ------ | ------ |
-| School entity load (cache hit) | < 50ms |
-| School entity load (cache miss) | < 200ms |
-| Profile save (8 fields) | < 2s p95 |
-| Cache invalidation | < 10ms |
-| Atomic save | All fields saved or none |
-| Cache invalidation coverage | 100% of saves invalidate cache |
-| FR test coverage | ≥ 90% of FR-81SMS-SP1–SP27 |
+| Metric | Target | How to measure |
+|--------|--------|----------------|
+| Entity load on cache hit | < 50ms | feature-test timing |
+| Entity load on cache miss | < 200ms | feature-test timing |
+| Profile save (8 fields) | < 2s p95 | feature-test timing |
+| Partial saves | 0 | transaction coverage |
+| Saves without invalidation | 0 | observer coverage |
+| Missing `en`/`id` key pairs | 0 | locale consistency scan |
 
 ---
 
 ## 9. Roadmap
 
 ### Prerequisites
-This spec can only be implemented after the following specs are **fully complete**:
 
 | Spec | What It Provides |
-|------|-----------------|
-| [settings-infrastructure.md](YB22J-settings-infrastructure.md) | `school.*` settings keys, `SchoolEntity` cached via `SettingsStore` |
+|------|------------------|
+| [settings-infrastructure.md](YB22J-settings-infrastructure.md) (YB22J) | Typed store, `school.*` keys, batch writes, observer invalidation |
 
 ### Build Guide
-After implementing this spec, the system has the school's identity (name, NPSN, address, contact info) stored as settings. This is the single-tenant school profile — one school per deployment. Departments and academic years are scoped to this school. The next step is to build department management, which creates the academic departments that companies reference in internship offerings.
+
+With this spec implemented, the deployment knows who it serves: a named school with
+contacts and a crest, readable in one cached call from any certificate, report, or
+document template. Departments and academic years build outward from this identity.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [department-management.md](4HWSB-department-management.md) | Departments belong to this school; `school_profile` entity used in department context |
-| 2 | [company-management.md](XI3LB-company-management.md) | Companies offer internships to departments from this school |
+| 1 | [department-management.md](4HWSB-department-management.md) | Departments belong to this school's identity |
+| 2 | [company-management.md](XI3LB-company-management.md) | Partners offer placements to this school's departments |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+| -- | --------------------------------- | ------ | ----- | -------- |
+| A-1 | We assume one school per deployment for the lifetime of the instance; splitting an instance into two schools is unsupported and requires a fresh install | Accepted | Maintainer | — |
 
 ## Quick References
+
+- [Spec registry](index.md) — Phase 2 Configuration specs and build order
+- [Settings infrastructure](YB22J-settings-infrastructure.md) — the store, batch writes, and observer this spec reuses
+- [Branding, theme & locale](52O1I-branding-theme-locale.md) — sibling consumer; logo pipeline shared via brand assets
+- [Department management](4HWSB-department-management.md) — first consumer of the school identity
+- [ADR: Entity-model separation](../adr/adr-entity-model-separation.md) — readonly entities and shared `rules()`
+- [ADR: Eloquent observers](../adr/adr-eloquent-observers.md) — synchronous invalidation gates
+- [ADR: Gradual migration](../adr/adr-gradual-migration.md) — validation-sharing trigger
