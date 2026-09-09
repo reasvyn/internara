@@ -77,36 +77,15 @@ and needs the same contractual force as the headers.
 
 #### UC-SEC-001 — Production Deployment with Strict CSP
 
-**Actor:** DevOps / Deployer
-**Preconditions:** Application deployed to production with HTTPS; HSTS explicitly enabled.
-**Flow:**
-1. `SecurityHeadersMiddleware` reads `config/security-headers.php`
-2. Applies CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy to the response
-3. Browser enforces the CSP policy, blocking unauthorized script sources
-**Postconditions:** All responses carry security headers.
-**Governing guidance:** FR-SEC-001–009, FR-SEC-013.
+An SMK in Bekasi shipped its production site on HTTPS with HSTS explicitly enabled, then watched the browser block an injected crypto miner on a lab machine because the headers held. `SecurityHeadersMiddleware` reads `config/security-headers.php` and applies CSP, HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy to the response, so the browser enforces the CSP and unauthorized script sources never execute. Every response leaves carrying those headers, under FR-SEC-001 through 009 plus the every-response backstop of FR-SEC-013.
 
 #### UC-SEC-002 — Development with Vite Hot Reload
 
-**Actor:** Developer
-**Preconditions:** `APP_ENV=local`, Vite dev server running.
-**Flow:**
-1. `SecurityHeadersMiddleware` detects the local environment
-2. Injects the Vite dev server URL (`http://localhost:5173`) into CSP `script-src` and `connect-src`
-3. HSTS stays off (HTTP is acceptable in development)
-**Postconditions:** Vite hot reload works; CSP is relaxed but still present.
-**Governing guidance:** FR-SEC-010/011.
+With `APP_ENV=local` and the Vite dev server running, the middleware detects the local environment and injects `http://localhost:5173` into CSP `script-src` and `connect-src`, while HSTS stays off because plain HTTP remains acceptable in development. Hot reload flows through the relaxed directives, yet CSP stays present rather than disappearing. FR-SEC-010 and FR-SEC-011 own that split.
 
 #### UC-SEC-003 — Security Audit Verification
 
-**Actor:** Security auditor
-**Preconditions:** Application running.
-**Flow:**
-1. Send a request to any endpoint
-2. Inspect response headers for CSP, HSTS, X-Frame-Options
-3. Verify the CSP policy is restrictive (no `unsafe-inline` in `script-src` in production)
-**Postconditions:** All required headers present with correct values.
-**Governing guidance:** Manual verification procedure — no code-testable consequence at this spec's level, hence `—`.
+The edge an auditor hunts is the quiet exception: one endpoint serving a permissive policy while the rest look strict. The manual pass sends a request to any running endpoint, inspects the response headers for CSP, HSTS, and X-Frame-Options, and confirms the CSP stays restrictive with no `unsafe-inline` in production `script-src`. All required headers present with correct values is the bar, and because this is a manual verification procedure with no code-testable consequence at this spec's level, the row carries `—`.
 
 ---
 
@@ -137,81 +116,65 @@ and needs the same contractual force as the headers.
 
 #### FR-SEC-001 — CSP on every response
 
-- Set in middleware (DD-SEC-001), never in Blade layouts — JSON, redirects, and error pages are covered.
-- **Verification:** feature test asserts the header on normal, redirect, and error responses (layer `F`).
+Headers once lived in the main Blade layout, which meant JSON endpoints, redirects, and error pages shipped without any policy at all. Setting `Content-Security-Policy` in middleware per DD-SEC-001 closed those gaps in one move — every response shape inherits the same header because none of them can bypass the pipeline. A feature test asserts the header on normal, redirect, and error responses at layer `F`.
 
 #### FR-SEC-002 — Baseline default-src
 
-- The catch-all baseline; every other directive tightens from here.
-- **Verification:** header-value assertion in the security-headers feature test (layer `F`).
+Without a catch-all baseline, any directive the policy forgets to name falls open to every source. `default-src 'self'` shuts that default, and every other directive tightens from there rather than inventing its own floor. The header-value assertion in the security-headers feature test pins the baseline at layer `F`.
 
 #### FR-SEC-003 — Production script-src
 
-- Production allows `'self'` only — no `unsafe-inline`, no remote script hosts. Development appends the Vite URL per FR-SEC-010.
-- **Edge case:** a third-party script need (analytics, embeds) requires a spec amendment adding the host — never an inline exception.
-- **Verification:** production header assertion contains exactly `script-src 'self'` (layer `F`).
+An SMK webmaster once pasted an analytics snippet into a handbook page and watched production refuse to run it — exactly the intended outcome. Production `script-src` allows `'self'` only, with no `unsafe-inline` and no remote script hosts; development alone appends the Vite URL per FR-SEC-010. A future third-party need such as analytics or embeds requires a spec amendment adding the host, never an inline exception. The production header assertion contains exactly `script-src 'self'`, checked at layer `F`.
 
 #### FR-SEC-004 — Style-src with unsafe-inline
 
-- Tailwind's JIT compiler produces inline `style` attributes; `'self'`-only would break all styling. Inline *scripts* (the primary XSS vector) stay forbidden — see DD-SEC-002.
-- **Verification:** header assertion + visual smoke that styling is intact (layer `F`).
+At render time Tailwind's JIT compiler emits inline `style` attributes on countless elements, so a `style-src 'self'`-only policy would strip all styling and ship an unstyled page. The policy therefore carries `style-src 'self' 'unsafe-inline'`, while inline scripts — the primary XSS vector — stay forbidden per DD-SEC-002. Header assertion plus a visual smoke that styling survives confirms the split at layer `F`.
 
 #### FR-SEC-005 — Image sources for uploads
 
-- `data:` and `blob:` cover preview/upload flows for user-supplied media alongside first-party images.
-- **Verification:** header assertion (layer `F`).
+The preview edge breaks a strict image policy first: a student selects a photo for upload and the browser renders it from a `blob:` URL, while a cropped avatar arrives as a `data:` URL. `img-src 'self' data: blob:` keeps those user-supplied flows working alongside first-party images instead of blocking every preview. A header assertion pins the three sources at layer `F`.
 
 ### 4.2 Transport, Framing & Client Hints
 
 #### FR-SEC-006 — HSTS value
 
-- One-year max-age with subdomain coverage; sent only when `security-headers.hsts_enabled` is on (FR-SEC-011).
-- **Verification:** header assertion with the flag enabled (layer `F`).
+First-visit downgrade attacks kept stealing credentials before the application ever saw the request, which is why the policy carries a full year of memory. `Strict-Transport-Security` sends `max-age=31536000; includeSubDomains` with subdomain coverage, but only when `security-headers.hsts_enabled` is on per FR-SEC-011, so operators opt in deliberately. A header assertion with the flag enabled proves the value at layer `F`.
 
 #### FR-SEC-007 — Deny framing
 
-- No embedding, same-origin included — the app never legitimately frames itself.
-- **Verification:** every-response assertion (FR-SEC-013 covers the guarantee; layer `F`).
+Allow same-origin framing and an attacker page earns one invisible iframe around the grade-approval button — the classic clickjacking conversion of a teacher's click into the attacker's action. `X-Frame-Options: DENY` forbids all embedding, same-origin included, because the app never legitimately frames itself. The every-response assertion behind FR-SEC-013 carries the guarantee at layer `F`.
 
 #### FR-SEC-008 — Referrer policy
 
-- Cross-origin navigations leak origin only, never the full URL (which may contain IDs and tokens in query strings).
-- **Verification:** header assertion (layer `F`).
+An SMK coordinator once shared a support link to an external helpdesk and the full URL — student identifier and reset token in the query string — arrived in the vendor's logs via the referrer. `Referrer-Policy: strict-origin-when-cross-origin` stops that class of leak: cross-origin navigations expose the origin only, never the full URL. A header assertion locks the value at layer `F`.
 
 #### FR-SEC-009 — Permissions policy
 
-- Camera, microphone, and geolocation are disabled; the school-admin domain has no legitimate use for them.
-- **Verification:** header assertion (layer `F`).
+When the browser builds a page context it checks which device capabilities the response permits, and this response permits none of the risky ones. Camera, microphone, and geolocation arrive disabled because the school-admin domain has no legitimate use for them. A header assertion confirms the disabled trio at layer `F`.
 
 ### 4.3 Environment Behavior
 
 #### FR-SEC-010 — Vite development relaxation
 
-- Appends `http://localhost:5173` to `script-src` and `connect-src` only; every other directive keeps its production value.
-- **Edge case:** NFR-SEC-003 asserts the injection never occurs in production — the middleware branches on `APP_ENV=local`, not on host detection.
-- **Verification:** feature test with `APP_ENV=local` asserts the appended URL; production-env test asserts its absence (layer `F`).
+The leak edge would be a dev URL surviving into production headers, quietly widening the script surface for every school. The relaxation therefore appends `http://localhost:5173` to `script-src` and `connect-src` only, while every other directive keeps its production value, and per NFR-SEC-003 the injection never occurs in production because the middleware branches on `APP_ENV=local`, not on host detection. A feature test with `APP_ENV=local` asserts the appended URL appears, while the production-env test asserts its absence, both at layer `F`.
 
 #### FR-SEC-011 — Config-gated HSTS
 
-- Operators enable HSTS explicitly (typically in production) via `.env`; local HTTP workflows (`http://localhost:8000`) keep working until they do. Staging can trial HSTS with HTTPS on.
-- **Verification:** default-off assertion + enabled assertion (layer `F`).
+HSTS was once tied to environment detection, and local developers on `http://localhost:8000` found their browsers force-remembering HTTPS and breaking every subsequent run. Config-gating fixed that: HSTS is omitted by default and sent only when `security-headers.hsts_enabled` is enabled, independent of `APP_ENV`, so operators enable it explicitly via `.env` typically in production while local HTTP keeps working until they do, and staging can trial HSTS with HTTPS on. Default-off plus enabled assertions prove both states at layer `F`.
 
 ### 4.4 Configuration & Output Escaping
 
 #### FR-SEC-012 — Centralized header config
 
-- Full structure in §6.2; environment overrides flow through `.env` keys, never through code branches.
-- **Verification:** config-override feature test (layer `F`).
+Scatter header values through conditionals and the failure is a deploy that cannot be tuned without a code edit — an operator wanting a longer HSTS max-age waits on a developer. Centralizing every value in `config/security-headers.php` with the full structure in §6.2 means environment overrides flow through `.env` keys, never through code branches. A config-override feature test proves an env change takes effect untouched at layer `F`.
 
 #### FR-SEC-013 — Headers on every response
 
-- The backstop guarantee behind FR-SEC-001/007/008: a dedicated feature test hits representative endpoints (page, redirect, 404) and asserts the framing and referrer headers each time.
-- **Verification:** the assertion test itself (layer `F`).
+An SMK security scan once flagged a single redirect endpoint missing its framing headers while every page passed — the one gap an attacker would have framed. This backstop behind FR-SEC-001, FR-SEC-007, and FR-SEC-008 demands every response carry `X-Frame-Options: DENY` and `Referrer-Policy` in production. A dedicated feature test hits representative endpoints — a page, a redirect, a 404 — and asserts the framing and referrer headers each time, at layer `F`.
 
 #### FR-SEC-014 — Escaped-output rule
 
-- `{{ }}` auto-escapes; raw `{!! !!}` of untrusted content executes inside the trusted origin where no header can stop it. Each raw echo needs two things inline: the sanitizer used and why raw output is required.
-- **Verification:** `scan_security.py` XSS rule + review gate (layer `A`).
+At render time `{{ }}` auto-escapes every byte, while a raw `{!! !!}` echo of untrusted content executes inside the trusted origin where no header can intervene. That is why each raw echo carries two things inline at the call site: the sanitizer used and why raw output is required. The `scan_security.py` XSS rule plus review gate enforces the discipline at layer `A`.
 
 ---
 
@@ -227,15 +190,15 @@ and needs the same contractual force as the headers.
 
 #### NFR-SEC-001 — No production breakage
 
-- **Verification:** post-deploy smoke across representative pages plus the FR-SEC-001/013 header tests; any blocked legitimate resource is a release defect.
+The strict-policy edge is self-inflicted downtime: a tightened directive silently blocks the certificate logo or the Livewire bundle, and the app looks hacked on launch day. Holding zero CSP-breakage incidents takes a post-deploy smoke across representative pages alongside the FR-SEC-001 and FR-SEC-013 header tests — any blocked legitimate resource counts as a release defect, not a security win.
 
 #### NFR-SEC-002 — No dev leakage
 
-- **Verification:** production-env header test asserts `localhost:5173` is absent (paired with FR-SEC-010).
+The relaxation was built local-first, and the earliest version keyed off host detection — which meant a production deploy behind a localhost-named proxy inherited the dev URL. Branching on `APP_ENV` instead closed that hole, holding zero dev URLs in production headers. A production-env header test asserts `localhost:5173` is absent, paired with FR-SEC-010.
 
 #### NFR-SEC-003 — Env overrides without code edits
 
-- **Verification:** `.env`-driven override test (e.g., toggling `hsts_enabled`) with no code change (layer `F`).
+Force operators to edit PHP to toggle HSTS and the change waits for a deploy window that never comes during enrollment season. Keeping every header override behind `.env` holds zero code edits for environment changes. An env-driven override test toggling `hsts_enabled` with no code change proves it at layer `F`.
 
 ---
 
@@ -324,33 +287,15 @@ not test rows, so `Layer`/`Status` stay `—`.
 
 #### DD-SEC-001 — Middleware-Based Header Injection
 
-**Decision:** Security headers are set via HTTP middleware, not via response middleware or
-Blade layout.
-**Rationale:** Middleware guarantees headers are present on ALL responses (including JSON, redirects,
-error pages). Blade layouts only cover rendered views.
-**Trade-off:** Headers are set even for API responses (if any exist in future). This is correct
-behavior — APIs benefit from security headers too.
+An SMK audit once showed clean headers on every page but bare JSON attendance feeds, because headers had been baked into the Blade layout that API-style responses never touch. Setting headers via HTTP middleware instead of response middleware or Blade layout guarantees they ride along on all responses — JSON, redirects, and error pages alike, where layouts only cover rendered views. Headers land on future API responses too, which is correct behavior since those endpoints benefit from the same protections.
 
 #### DD-SEC-002 — `unsafe-inline` for Styles
 
-**Decision:** CSP allows `'unsafe-inline'` for `style-src` because Tailwind CSS generates
-inline styles — while `script-src` stays `'self'`-only.
-**Rationale:** Tailwind's JIT compiler produces inline `style` attributes. Restricting to
-`'self'` only would break all styling. The risk is mitigated because inline scripts (not styles)
-are the primary XSS vector, and FR-SEC-014 holds the output-escaping line regardless.
-**Trade-off:** Inline styles can theoretically be injected by XSS, but the practical risk is
-low compared to inline scripts.
+At runtime Tailwind's JIT compiler stamps inline `style` attributes across the markup, so a `style-src 'self'`-only policy arrives as a broken, unstyled page while `script-src` can safely stay `'self'`-only. The policy therefore allows `'unsafe-inline'` for `style-src` alone. Inline scripts remain the primary XSS vector rather than styles, and FR-SEC-014 holds the output-escaping line regardless, leaving the theoretical style-injection residue low beside the script risk it avoids.
 
 #### DD-SEC-003 — HSTS Config-Gated (Off by Default)
 
-**Decision:** HSTS is gated on the `security-headers.hsts_enabled` config flag (default `false`),
-independent of `APP_ENV`. Operators explicitly enable it (typically in production) via `.env`.
-**Rationale:** Local development often uses HTTP (e.g., `http://localhost:8000`). HSTS would
-force the browser to remember HTTPS-only, potentially breaking local development workflows.
-Config-gating (instead of `APP_ENV` detection) keeps the behavior explicit and lets staging
-instances test HSTS with HTTPS enabled.
-**Trade-off:** HSTS can be accidentally enabled in non-production environments if the flag is set;
-operators must configure it deliberately.
+Consider a developer testing on `http://localhost:8000` after visiting a staging host with HSTS on — the browser remembers HTTPS-only and the local workflow breaks for weeks with no server-side fix. Gating HSTS on the `security-headers.hsts_enabled` flag defaulting to `false`, independent of `APP_ENV`, avoids that trap: operators enable it explicitly via `.env` typically in production, local HTTP keeps working until they do, and staging can still trial HSTS with HTTPS on. The remaining edge is an operator accidentally enabling the flag outside production, so the flag must be set deliberately.
 
 ---
 
