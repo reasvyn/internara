@@ -74,37 +74,15 @@ both locales complete without changing resolution behavior.
 
 #### UC-UTIL-001 — Developer Reads App Metadata
 
-**Actor:** Developer / System
-**Preconditions:** `composer.json` exists with author info.
-**Flow:**
-1. Code calls `AppInfo::name()`, `AppInfo::version()`, `AppInfo::authorName()` — or `app_info('name')`
-2. `AppInfo` reads `composer.json` once, caches for 24h under a registered cache key
-3. Subsequent calls return cached values
-**Postconditions:** Consistent metadata across all modules, zero repeated file reads.
-**Governing guidance:** FR-UTIL-001/002/003.
+An SMK operator once opened the about page, the certificate footer, and the health report side by side and found three different version strings, because each screen had parsed `composer.json` on its own. Reading metadata now goes through one path: code calls `AppInfo::name()`, `AppInfo::version()`, or `AppInfo::authorName()` — or the `app_info('name')` helper — and `AppInfo` reads `composer.json` once, then serves the values from a registered cache key for 24 hours. Every module sees the same strings with zero repeated file reads, a behavior owned jointly by FR-UTIL-001, FR-UTIL-002, and FR-UTIL-003.
 
 #### UC-UTIL-002 — System Verifies Application Attribution
 
-**Actor:** System (startup or admin trigger)
-**Preconditions:** Application deployed.
-**Flow:**
-1. `AppIntegrity::verify()` reads the `composer.json` author name
-2. Compares against expected attribution
-3. In production: throws `RejectedException` if attribution removed
-4. In local/testing: logs warning via SmartLogger
-**Postconditions:** Unauthorized redistribution detected and reported.
-**Governing guidance:** FR-UTIL-008; [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md) for the `RejectedException` semantics.
+A vocational school in Cirebon once received a USB installer from a neighboring school with all author credits stripped and the version string edited to look like a paid fork. That is the shape `AppIntegrity::verify()` exists to catch. On startup or when an admin triggers the check on an already deployed application, the routine reads the `composer.json` author name and compares it against the expected attribution. In production a mismatch throws `RejectedException`, so the redistributed copy fails loudly instead of running silently, while in local or testing the same mismatch only logs a SmartLogger warning and lets development continue. Either path leaves unauthorized redistribution detected and reported, with the strict behavior owned by FR-UTIL-008 and the rejection semantics following the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md).
 
 #### UC-UTIL-003 — Developer Reads Setting / Brand Values
 
-**Actor:** Developer
-**Preconditions:** Settings infrastructure seeded.
-**Flow:**
-1. Code calls `setting('key')` or `brand('key')` from `app/Modules/Settings/Support/helpers.php`
-2. Values resolve per the settings-infrastructure contract (cache-backed, group-scoped)
-3. This spec asserts only that the helpers exist and are the single access path — behavior is verified in [settings-infrastructure](YB22J-settings-infrastructure.md)
-**Postconditions:** No direct `Setting` model reads outside the settings module; one access vocabulary.
-**Governing guidance:** [settings-infrastructure](YB22J-settings-infrastructure.md) (contract owner). This row carries `—` because its code-testable consequence is verified there, not here.
+Once the settings infrastructure is seeded, a call like `setting('key')` or `brand('key')` from `app/Modules/Settings/Support/helpers.php` travels a fixed path: the helper resolves the value through the cache-backed, group-scoped contract owned by [settings-infrastructure](YB22J-settings-infrastructure.md), never by querying the `Setting` model directly from another module. This spec asserts only that those two helpers exist and remain the single access vocabulary, so no direct `Setting` reads leak outside the settings module. The behavior itself — caching, grouping, fallbacks — is exercised by the owning spec's tests, which is why this row carries `—` and defers its code-testable consequence to [settings-infrastructure](YB22J-settings-infrastructure.md).
 
 ---
 
@@ -130,58 +108,45 @@ both locales complete without changing resolution behavior.
 
 #### FR-UTIL-001 — AppInfo reads composer.json with 24h cache
 
-- Accessors: `name()`, `version()`, `authorName()`, `authorEmail()`, `description()`, `license()`, `gitUrl()` — see §6.
-- **Edge case:** a missing optional field returns a sane default rather than throwing; only the author-name check (FR-UTIL-008) is strict.
-- **Verification:** feature test asserts cached values match `composer.json` and no file re-read occurs within TTL (layer `F`).
+A school technician once deleted the `description` field from `composer.json` while cleaning up the deploy, and the about page white-screened because the old helper threw on a missing key. `AppInfo` refuses to repeat that: the seven accessors `name()`, `version()`, `authorName()`, `authorEmail()`, `description()`, `license()`, and `gitUrl()` in §6 each return a sane default when their optional field is absent, so a trimmed manifest still renders. Only the author-name check stays strict, because FR-UTIL-008 needs it for attribution. The feature test proves both halves by asserting cached values match `composer.json` and that no file re-read occurs within TTL, at layer `F`.
 
 #### FR-UTIL-002 — app_info() global helper
 
-- `app_info()` → full metadata array; `app_info('name')` → single key; `app_info('missing', $default)` → default. Defined in `app/Modules/Core/Support/helpers.php` behind `function_exists`.
-- **Verification:** feature test covers all three call shapes (layer `F`).
+Early modules each reached into `AppInfo` differently — one called `AppInfo::all()`, another guessed at `get()` — until the helper consolidated the vocabulary. Now `app_info()` returns the full metadata array, `app_info('name')` returns a single key, and `app_info('missing', $default)` falls back to the supplied default, all defined in `app/Modules/Core/Support/helpers.php` behind `function_exists` so package overrides never fatal. The feature test walks all three call shapes to lock that vocabulary in at layer `F`.
 
 #### FR-UTIL-003 — Registered cache keys (C4)
 
-- Per the [cache pattern](../guides/arch/cache-pattern.md): inline `'cache_key'` strings are forbidden; the AppInfo key lives in `config/cache-keys.php` and invalidation (if ever needed) is listener-driven per the [gradual-migration ADR](../adr/adr-gradual-migration.md).
-- **Verification:** `scan_violations.py` C4 check (layer `A`).
+Let an inline `'cache_key'` string slip into one helper and the failure arrives months later: version bumps stop invalidating because two keys spell the same cache differently, and the certificate footer shows last semester's release. The [cache pattern](../guides/arch/cache-pattern.md) forbids that drift outright — the AppInfo key lives in `config/cache-keys.php`, and any future invalidation runs listener-driven per the [gradual-migration ADR](../adr/adr-gradual-migration.md) without touching call sites. `scan_violations.py` enforces the C4 invariant at layer `A`, so a stray literal fails the gate before it ships.
 
 ### 4.2 Environment Detection
 
 #### FR-UTIL-004 — Environment predicates
 
-- `isProduction()` was renamed to `isDevelopment()` to better describe the local/dev environment check; callers branch on the positive predicate they mean, never on negated environment strings.
-- **Edge case:** CLI context (`isCLI()`) composes with the others — artisan commands running in production are production *and* CLI.
-- **Verification:** unit test per predicate with environment overrides (layer `U`).
+An SMK operator in Semarang once ran a production backup from artisan and the job sent test notifications to all parents, because the code had branched on `! app()->environment('production')` and CLI had slipped through the negation. The five predicates in `app/Modules/Core/Support/Environment.php` — `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` — remove that trap. The old `isProduction()` was renamed to `isDevelopment()` so callers name the positive condition they mean instead of negating environment strings, and `isCLI()` composes with the rest, so an artisan command running in production is honestly both. Unit tests pin each predicate with environment overrides at layer `U`.
 
 ### 4.3 Validation & Presentation Helpers
 
 #### FR-UTIL-005 — Default password rules
 
-- `['min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/']` — every password field uses this baseline; deviations require a recorded reason.
-- **Verification:** unit test asserts the rule set; `grep -r "PasswordRules" app/` shows universal adoption (layer `U`).
+Every password field resolves its rules through `PasswordRules::default()`, which returns `['min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/']` at call time — eight characters minimum with mixed case and a digit — so validation behaves identically whether the request comes from registration, reset, or admin creation. Any deviation from that baseline needs a recorded reason, not a local copy-paste. A unit test asserts the exact rule set and `grep -r "PasswordRules" app/` shows universal adoption, holding the line at layer `U`.
 
 #### FR-UTIL-006 — Strict password rules
 
-- Extends the default set for high-security contexts (e.g., superadmin recovery); owning specs reference this variant instead of inventing local rules.
-- **Verification:** unit test (layer `U`).
+Superadmin recovery is the edge that justifies a second tier: the same eight-character baseline would technically pass, yet a recovery slip photographed on a staff-room desk deserves a harder secret. `PasswordRules::strict()` extends the default set for those high-security contexts, and owning specs reference this variant instead of inventing local rules that drift on the next audit. A unit test locks the extended set at layer `U`, so the stricter path cannot silently regress to default.
 
 #### FR-UTIL-007 — Color math
 
-- `contrastColor()` returns white or black depending on the relative-luminance threshold — light backgrounds get dark text and vice versa. `computeBaseShades()` / `computeDarkShades()` derive the self-hosted palette from one brand hex.
-- **Edge case:** malformed hex input is rejected (no silent black); shorthand (`#fff`) is normalized before conversion.
-- **Verification:** unit tests over known conversions, the luminance threshold boundary, and shade-table shape (layer `U`).
+Branding started as ad-hoc hex arithmetic scattered across Blade files, with every school computing its own lighten and darken by hand. The `Color` helper ended that by fixing one deterministic vocabulary — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, and `computeDarkShades()` — where `contrastColor()` returns white or black across the relative-luminance threshold and the two shade builders derive the whole self-hosted palette from a single brand hex. Malformed hex is rejected rather than collapsing to silent black, while shorthand like `#fff` is normalized before conversion. Unit tests cover known conversions, the threshold boundary, and the shade-table shape at layer `U`.
 
 ### 4.4 Integrity & i18n Support
 
 #### FR-UTIL-008 — Attribution verification
 
-- Production: throws `RejectedException` (business-rule violation per the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md)) when attribution is removed. Local/testing: logs a SmartLogger warning and continues.
-- **Edge case:** `verify()` catches its own infrastructure exceptions and degrades gracefully outside production (NFR-UTIL-002) — a broken check must never take down a dev boot.
-- **Verification:** feature tests for the production-throw and dev-warn paths (layer `F`).
+If the attribution check failed open in production, a stripped redistribution would boot cleanly and the project would never know; if it failed closed in development, every forked pilot would crash on first boot. The rule splits the consequence: in production a removed attribution throws `RejectedException` as a business-rule violation per the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md), while local and testing only log a SmartLogger warning and continue. `verify()` even catches its own infrastructure exceptions and degrades gracefully outside production per NFR-UTIL-002, so a broken check never takes down a dev boot. Feature tests walk both the production-throw and dev-warn paths at layer `F`.
 
 #### FR-UTIL-009 — Missing-translation detection
 
-- Intercepts `missing()` calls; logs via SmartLogger with caller file:line; does NOT prevent key resolution (returns key as fallback).
-- **Verification:** feature test asserts the log entry and the fallback return (layer `F`).
+During a demo at an SMK in Yogyakarta, the attendance page rendered a raw `attendance.check_in` key in front of parents because the Indonesian translation had never been written and nothing had complained. `LangChecker` makes that silence impossible: it intercepts `missing()` calls, logs the absent key with its caller file and line through SmartLogger, and still returns the key as fallback so the request that hit the gap keeps working. The feature test asserts both halves — the log entry appears and the fallback returns — at layer `F`.
 
 ---
 
@@ -198,19 +163,19 @@ both locales complete without changing resolution behavior.
 
 #### NFR-UTIL-001 — 24h metadata cache
 
-- **Verification:** TTL assertion in the AppInfo feature test; cache-hit rate is effectively total since metadata rarely changes.
+At runtime `AppInfo` reads `composer.json` once and serves every later call from cache for 86400 seconds, a full 24 hours, because version and attribution never change between deploys. The AppInfo feature test asserts that TTL directly, and since metadata rarely changes the hit rate is effectively total — the file read happens once per day, not once per request.
 
 #### NFR-UTIL-002 — Graceful integrity degradation
 
-- **Verification:** feature test forces an internal exception and asserts boot continues outside production.
+Picture a corrupted `composer.json` on a developer laptop the morning of a school pilot — the integrity check itself throws while trying to read the author name. Outside production that must never take down the boot, so `verify()` swallows its own infrastructure exceptions and degrades, holding the target of zero dev-boot failures caused by the check. The feature test forces an internal exception and asserts boot continues, proving the guard never becomes the outage.
 
 #### NFR-UTIL-003 — Strict types everywhere
 
-- **Verification:** `scan_conventions.py` D1 check (layer `A`).
+Shared helpers are called from everywhere, so a silent string-to-int coercion in `Color::darken()` would surface three modules away as a wrong shade nobody can trace. The D1 invariant answers that history: every utility file declares `strict_types=1`, all one hundred percent of them, and `scan_conventions.py` proves it at layer `A`.
 
 #### NFR-UTIL-004 — Documented public API
 
-- **Verification:** review gate + `scan_conventions.py` (layer `A`).
+Undocumented helpers rot into tribal knowledge — the next developer reimplements `contrastColor()` because nobody knew what the threshold meant. Requiring PHPDoc on one hundred percent of public methods keeps each helper self-describing, and the review gate plus `scan_conventions.py` at layer `A` makes a missing block a visible failure instead of a quiet gap.
 
 ---
 
@@ -333,27 +298,15 @@ not test rows, so `Layer`/`Status` stay `—`.
 
 #### DD-UTIL-001 — Composer.json as Single Source of Truth for Metadata
 
-**Decision:** `AppInfo` reads from `composer.json`, not `.env` or database.
-**Rationale:** `composer.json` is always present, version-controlled, and authoritative for
-package metadata. Duplicating this in `.env` creates drift risk.
-**Trade-off:** Cannot override individual fields without modifying `composer.json`. Acceptable —
-overrides belong in settings (brand_name, site_title), not in app metadata.
+An SMK in Bandung once showed version `1.4.0` in `.env` while `composer.json` said `1.3.2`, and nobody knew which screen to believe during a bug report. That drift is why `AppInfo` reads from `composer.json` alone, never from `.env` or the database — the manifest is always present, version-controlled, and authoritative for package metadata. The cost is that individual fields cannot be overridden without editing `composer.json`, which is acceptable because display overrides belong in settings as `brand_name` and `site_title`, not in app metadata.
 
 #### DD-UTIL-002 — Graceful Degradation for Integrity Checks
 
-**Decision:** `AppIntegrity::verify()` throws in production, warns in dev/test.
-**Rationale:** Development workflows legitimately modify attribution (forking, rebranding).
-Blocking development is counterproductive. Production deployments must enforce attribution.
-**Trade-off:** Attribution removal in staging is not caught. Acceptable — staging is not distributed.
+At runtime `AppIntegrity::verify()` takes two different exits from the same comparison: in production a stripped attribution throws and stops the boot, while in development or testing it logs a warning and continues, because forking and rebranding are legitimate workflows that must not be blocked. Production alone enforces attribution. The gap is that a stripped staging copy slips through uncaught, which is acceptable because staging is never distributed.
 
 #### DD-UTIL-003 — Registry-Owned Cache Keys
 
-**Decision:** `AppInfo` caching uses keys registered in `config/cache-keys.php` (FR-UTIL-003),
-following the Start → Stabilize → Final invalidation path in the
-[gradual-migration ADR](../adr/adr-gradual-migration.md).
-**Rationale:** One registry means cache ownership is auditable and invalidation can move to
-listener-driven without touching call sites.
-**Trade-off:** A new cached utility must register its key before use — a small, owned ceremony.
+Consider the second cached utility after `AppInfo`: its author invents a key inline, and six months later nobody can answer who owns that cache or what invalidates it. Registering every key up front in `config/cache-keys.php` per FR-UTIL-003 prevents that orphan, following the Start → Stabilize → Final invalidation path in the [gradual-migration ADR](../adr/adr-gradual-migration.md). One registry keeps ownership auditable and lets invalidation graduate to listener-driven without touching call sites, at the small price that each new cached utility registers its key before first use.
 
 ---
 
