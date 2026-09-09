@@ -57,11 +57,11 @@ Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Stat
 
 #### UC-BASE-001 — Create a New Module From the Bases
 
-A developer scaffolds a new module under `app/{Module}/`: the Model extends `BaseModel` (UUID keys automatic), the Entity extends `BaseEntity` (`final readonly`, bridged via `fromModel()`), mutations become `BaseCommandAction`s (transaction + logging automatic), the table screen extends `BaseRecordManager` (search, filter, sort, pagination, selection, bulk actions free), and the Policy extends `BasePolicy` (super-admin allow free). The result follows every architectural convention by construction, and `scan_class_contracts.py` confirms each class extends the mandated base. **Governing guidance:** [base-class-mandate ADR](../adr/adr-base-class-mandate.md), §6.1.
+A developer assigned to a new SMK reporting module once scaffolded it under `app/{Module}/` and found the architecture assembling itself beneath her: the Model extending `BaseModel` brought UUID keys without a thought, the Entity extending `BaseEntity` arrived `final readonly` and bridged through `fromModel()`, mutations became `BaseCommandAction`s with transaction and logging already wired, the table screen extending `BaseRecordManager` inherited search, filter, sort, pagination, selection, and bulk actions, and the Policy extending `BasePolicy` carried the super-admin allow for free. Because every convention arrives by construction, `scan_class_contracts.py` simply confirms what the bases already guaranteed, under the governing guidance of the [base-class-mandate ADR](../adr/adr-base-class-mandate.md) and §6.1.
 
 #### UC-BASE-002 — Business-Rule Violation Surfaces Cleanly
 
-A student submits an invalid operation through a Livewire form. The component calls the Command Action, which delegates the rule check to the Entity; the rule fails, the Action throws `RejectedException`, and the Livewire base catches it into a user-friendly localized (`__()`) toast — no stack trace, no 500. The attempt is recorded through `BaseAction::log()` for audit. This is the C8 invariant end to end: business rejection travels as `ModuleException`, never as a bare `RuntimeException`. **Verification:** feature test on an invalid submission (layer `F`).
+When a student submits an invalid operation through a Livewire form, the request travels a fixed pipeline: the component calls the Command Action, the Action delegates the rule check to the Entity, the rule fails, the Action throws `RejectedException`, and the Livewire base catches it into a user-friendly toast rendered through `__()` — no stack trace, no 500 page. Behind the scenes the attempt is recorded through `BaseAction::log()` for audit. A feature test driving an invalid submission through the full path demonstrates the C8 invariant end to end, with the business rejection traveling as `ModuleException` and never as a bare `RuntimeException`.
 
 ---
 
@@ -122,146 +122,117 @@ The full base-class mandate — every architectural role extends or implements e
 
 #### FR-BASE-001 — BaseAction root
 
-- Marker plus shared concerns: transaction, event dispatch, SmartLogger-backed logging, `HandlesActionErrors` safety net. Command and Process Actions extend it; Read Actions stand alone (FR-BASE-003).
-- **Verification:** `scan_class_contracts.py` extends-check (layer `A`).
+Consider a team that once wrapped transactions in one Action, logged in another, and forgot both in a third — three mutations with three reliability stories. `BaseAction` ends that variance by gathering the shared concerns — the `transaction()` wrapper, `dispatchEvent()`, SmartLogger-backed `log()`, and the `HandlesActionErrors` safety net — into the abstract root that Command and Process Actions extend. Read Actions deliberately stand apart under FR-BASE-003 rather than inheriting ceremony they must never use. The `scan_class_contracts.py` extends-check at the arch layer confirms the lineage holds.
 
 #### FR-BASE-002 — BaseCommandAction
 
-- The mutation workhorse: response factories, input validation, authorization gate, flash messaging. Named `{Verb}{Entity}Action` per [action-pattern ADR](../adr/adr-action-pattern-over-services.md).
-- **Verification:** contract scan (layer `A`).
+The mutation workhorse grew out of the god-service era, when a single `RegistrationService` accumulated `register()`, `approve()`, and `bulkApprove()` until nobody could say which path validated or logged. `BaseCommandAction` replaces that sprawl with a fixed toolkit — response factories `respond()`, `respondDeleted()`, and `respondError()`, plus `validate()`, the `authorize()` gate, and `flash()` messaging — and every concrete mutation takes the `{Verb}{Entity}Action` name the [action-pattern ADR](../adr/adr-action-pattern-over-services.md) mandates. Contract scanning at the arch layer shows each command carrying exactly that shape.
 
 #### FR-BASE-003 — BaseReadAction
 
-- Standalone base (does NOT extend `BaseAction`): cache-backed reads with auto key generation, PII masking, consistent pagination, standard envelope. Must not mutate state, open transactions, or write audit logs — reads pay no write ceremony.
-- **Edge case:** trivial same-module `Model::find()` stays inline in Livewire; a Read Action is for complex aggregation, filtering, or cross-module assembly.
-- **Verification:** contract scan + no-mutation feature test (layer `A`/`F`).
+Give a dashboard widget transaction and logging powers and, during the morning attendance rush of a thousand concurrent students, it will eventually lock rows it only meant to count. `BaseReadAction` is deliberately crippled to prevent exactly that: a standalone base that never extends `BaseAction`, offering cache-backed reads with auto key generation alongside `remember()`, `rememberForever()`, `cacheKey()`, PII `mask()`, consistent `paginate()`, and a standard `format()` envelope, while never mutating state, opening transactions, or writing audit logs. A trivial same-module `Model::find()` may stay inline in Livewire; a Read Action earns its keep for complex aggregation, filtering, or cross-module assembly. Contract scanning plus a no-mutation feature test confirms reads stay lean.
 
 #### FR-BASE-004 — BaseProcessAction
 
-- Multi-step coordination that composes other Actions via constructor injection (see [cross-module-communication ADR](../adr/adr-cross-module-communication.md) delegation): per-step tracking, progress, notifications, one module event for the completed process. Named `{Verb}{Entity}Process`.
-- **Verification:** contract scan (layer `A`).
+An SMK program-closure week once ran as copy-pasted orchestration inside three Livewire components, each sequencing finalize-assessments then issue-certificates slightly differently until one school issued certificates without finalized grades. `BaseProcessAction` exists so that orchestration has exactly one home: multi-step coordination composing other Actions through constructor injection per the [cross-module-communication ADR](../adr/adr-cross-module-communication.md) delegation guidance, with `step()` success and failure tracking, `trackProgress()`, `notify()`, `logProgress()`, and a single module event for the completed process under the `{Verb}{Entity}Process` name. Contract scanning at the arch layer verifies the shape.
 
 #### FR-BASE-005 — One public execute()
 
-- Helpers (`validate()`, `authorize()`, `step()`, `remember()`) live on the bases; the concrete class contributes exactly one public method. Convention plus scan-enforced.
-- **Verification:** `scan_class_contracts.py` (layer `A`).
+Inside any concrete Action, the call graph stays trivially auditable: helpers such as `validate()`, `authorize()`, `step()`, and `remember()` live on the bases, and the subclass contributes exactly one public method, `execute()`. A reviewer tracing a mutation therefore starts at one doorway every time, and `scan_class_contracts.py` at the arch layer enforces the count mechanically — any second public method is a violation, not a style choice.
 
 #### FR-BASE-006 — Transaction wrapping
 
-- Every write path is atomic; partial writes on failure are a defect. Retry on deadlock per NFR-BASE-001.
-- **Verification:** review + failure-path feature tests (layer `A`/`F`).
+A placement write that decrements a company slot but fails before creating the registration row leaves a phantom vacancy no report can explain — and enrollment week at a 1,000-student SMK produces exactly the contention that makes such halves likely. Every write path therefore runs atomic inside `$this->transaction()`, so a failed path rolls back whole and partial writes count as defects. Transient deadlocks retry per NFR-BASE-001, a behavior review plus failure-path feature tests confirm.
 
 #### FR-BASE-007 — Logging after mutation
 
-- Success paths record through SmartLogger (dual-channel: system log + activity log) so every significant business event is auditable by default per [smartlogger ADR](../adr/adr-smartlogger-dual-channel.md).
-- **Verification:** mutation feature tests assert activity rows (layer `F`).
+Silent mutations were once the norm: records changed, nobody knew who changed them, and BAN-PDM accreditation evidence had gaps no coordinator could fill. Success paths now record through SmartLogger — dual-channel into the system log and the activity log — following the [smartlogger ADR](../adr/adr-smartlogger-dual-channel.md), so every significant business event is auditable by default. Mutation feature tests asserting the activity rows turn the default into a verified habit.
 
 #### FR-BASE-008 — Return contracts
 
-- Command/Process → `ActionResponse` (`success` + `data` keys); Read → value object, collection, or DTO. A Read returning a raw cross-module Eloquent Model is a boundary violation — map to Entity/DTO first.
-- **Verification:** contract scan + DB-snapshot no-mutation test for Reads.
+Let each Action invent its own return shape and every Livewire component becomes a branching mess of `if (isset($result['ok']))` guesses. The contract removes the guessing: Command and Process Actions return `ActionResponse` with its `success` and `data` keys, while Reads return value data — a value object, collection, or DTO — and never mutate state. A Read smuggling a raw cross-module Eloquent Model across the boundary breaks the rule and must map to Entity or DTO first. Contract scanning together with a DB-snapshot no-mutation test for Reads proves both halves.
 
 ### 4.2 Data Layer
 
 #### FR-BASE-009 — BaseModel
 
-- Persistence adapter only: UUID keys, common scopes, Entity bridge accessor — no business rules (those live on the Entity per [entity-model-separation ADR](../adr/adr-entity-model-separation.md)). `#[Fillable]` attribute per D4.
-- **Verification:** extends-check + `scan_conventions.py` D4 (layer `A`).
+A school that once mixed auto-increment integers with UUIDs learned the cost during a join: every `foreignUuid` against an integer PK failed, and the fix touched a dozen migrations. `BaseModel` makes that mixture structurally impossible by remaining a pure persistence adapter — UUID v7 keys through `HasUuids`, common scopes through `HasCommonScopes`, `$incrementing = false` with `$keyType = 'string'`, an Entity bridge accessor, and the `#[Fillable]` attribute per D4 — while carrying no business rules at all, those belonging to the Entity under the [entity-model-separation ADR](../adr/adr-entity-model-separation.md). The extends-check with the `scan_conventions.py` D4 pass at the arch layer confirms the adapter stays lean.
 
 #### FR-BASE-010 — BaseAuthenticatable + User exception
 
-- `User` must extend Laravel `Authenticatable` for auth, so it cannot extend `BaseModel`; `BaseAuthenticatable` carries the UUID contract instead (`HasUuids`, non-incrementing string key). This is the sole documented exception — kept in sync with `BaseModel` explicitly (DD-BASE-003).
-- **Verification:** `User extends BaseAuthenticatable` + UUID overrides review (layer `A`).
+`User` cannot extend `BaseModel` no matter how tidy that would be, because Laravel's auth system demands an `Authenticatable` root. `BaseAuthenticatable` bridges the gap: it carries the UUID contract — `HasUuids` with a non-incrementing string key — onto the auth hierarchy so `User` keeps UUID consistency without forking authentication. This is the sole documented exception to the mandate, tracked explicitly under DD-BASE-003, and the `User extends BaseAuthenticatable` assertion with its UUID-override review at the arch layer keeps the bridge from drifting away from `BaseModel`.
 
 #### FR-BASE-011 — BaseEntity
 
-- `final readonly` snapshot of state at a point in time; `fromModel(Model): static` is the only persistence bridge (models expose named accessors like `asRegistrationState()`); value semantics via `equals()`/`with()`. Framework dependencies allowed where practical — testability over purity.
-- **Verification:** extends + `final` scan; entity unit tests construct via `fromModel()` without a database.
-- **Governance:** [entity-model-separation ADR](../adr/adr-entity-model-separation.md).
+An approval invariant buried inside an Eloquent model once required a full database seed just to unit-test a single state transition — a millisecond predicate paying a seconds-long fixture tax. `BaseEntity` inverts that economy: a `final readonly` snapshot of state whose only persistence bridge is `fromModel(Model): static`, with models exposing named accessors like `asRegistrationState()` for the crossing, and value semantics through `equals()` and `with()` with `toArray()` and `JsonSerializable` for transport. Framework types stay welcome where they earn their keep, favoring testability over purity, and the whole arrangement answers to the [entity-model-separation ADR](../adr/adr-entity-model-separation.md). The extends-plus-`final` scan with entity unit tests constructing via `fromModel()` sans database shows the isolation holding.
 
 #### FR-BASE-012 — BaseData DTOs
 
-- The UI→Business boundary object: validated scalars, enums, `Carbon` — never Models or Actions (C6). `fromArray()` keeps legacy callers compiling during DTO migration (§4.7).
-- **Verification:** C6 scan + contract scan (layer `A`).
+Before the DTO boundary, Livewire components passed raw arrays — and occasionally whole Models — straight into Actions, so a renamed column broke the UI and a lazy import dragged the query builder into validation logic. `BaseData` fixes the UI-to-business boundary as an `abstract readonly` object carrying only validated scalars, enums, and `Carbon`, never Models or Actions per C6, with `fromArray()` absorbing legacy keys (camelCase and snake_case alike) during the §4.7 migration alongside `toArray()`, `only()`, `except()`, and `merge()`. The C6 scan with the contract scan at the arch layer confirms the boundary stays clean.
 
 #### FR-BASE-013 — ActionResponse
 
-- Uniform `{success, data, message, redirect, errors}` envelope from every Command/Process Action; Livewire maps it to toasts/redirects without branching on ad-hoc shapes.
-- **Verification:** contract scan (layer `A`).
+Without a shared envelope, a placement success returned `['ok' => true]` while a certificate success returned `['status' => 'done']`, and the toast layer needed per-module adapters to render either. `ActionResponse` collapses that dialect into one `final readonly` DTO — the uniform `{success, data, message, redirect, errors}` envelope built through `ok()`, `created()`, `updated()`, `deleted()`, and `error()` with `withRedirect()` and `failed()` for the edges — so Livewire maps every Command and Process result to toasts and redirects without branching on ad-hoc shapes. Contract scanning at the arch layer watches the envelope stay single.
 
 #### FR-BASE-014 — HasCommonScopes
 
-- Shared query vocabulary (`active/inactive/recent/...`) so modules never redefine the same scopes with slightly different semantics.
-- **Verification:** trait presence + scope unit tests (layer `A`).
+An SMK dashboard once filtered "recent" as seven days while its report filtered "recent" as thirty, and both numbers reached the principal's desk in the same meeting. `HasCommonScopes` ends that quiet divergence by fixing the shared query vocabulary — `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()` — so modules never redefine the same scopes with slightly different semantics. Trait presence with scope unit tests at the arch layer proves the vocabulary holds.
 
 ### 4.3 UI Layer — Livewire Base Classes
 
 #### FR-BASE-015 — BaseRecordManager
 
-- The default table screen for all 18 modules; the Extra Menu wires import/export through `CsvHandler` so every module's bulk operations behave identically (row-outcome tracking is specified in [csv-import-export](O2KCR-csv-import-export.md)).
-- **Verification:** extends-check (layer `A`).
+Inside `BaseRecordManager` the default table screen for all 18 modules assembles itself: search, filter, sort, pagination, selection, and bulk actions arrive as inherited behavior, while the Extra Menu wires template download, CSV and Excel import-export, and PDF export through `CsvHandler` with row-outcome tracking specified in [csv-import-export](O2KCR-csv-import-export.md). A module's fortieth admin table therefore behaves like its first without reimplementation. The extends-check at the arch layer confirms every manager inherits rather than reinvents.
 
 #### FR-BASE-016 — BaseRecordEntry
 
-- Modal CRUD with `RejectedException` mapped to inline form errors — the UC-BASE-002 path at the component level.
-- **Verification:** extends-check + invalid-submission feature test.
+A coordinator entering a duplicate partnership at an SMK in Cirebon once received a raw 500 page; after the base took over, the same mistake highlights the offending field inline. `BaseRecordEntry` carries that modal create-and-edit behavior with form binding built in, mapping `RejectedException` through `handleError()` onto inline form errors — the UC-BASE-002 path rendered at component level. The extends-check with an invalid-submission feature test shows the mapping working.
 
 #### FR-BASE-017 — BaseRecordList
 
-- Read-only counterpart to the manager for screens that must not offer mutation affordances.
-- **Verification:** extends-check (layer `A`).
+Not every screen should offer a create button: public-facing lists and audit views must stay read-only even when the underlying table supports mutation elsewhere. `BaseRecordList` is the manager's deliberately narrowed sibling — search plus pagination, with no create or edit affordances to accidentally expose. The narrowing is historical as much as structural: it was extracted after a read-only report screen inherited full CRUD buttons by copy-paste. The extends-check at the arch layer confirms list screens inherit the restraint.
 
 #### FR-BASE-018 — BaseFormView
 
-- Full-page forms (settings, profiles) with unsaved-changes awareness via dirty tracking.
-- **Verification:** extends-check (layer `A`).
+Lose a half-completed school-profile form to an accidental navigation and the SMK operator retypes thirty fields from memory — the failure mode `BaseFormView` was built to absorb. Full-page forms for settings, profiles, and their kin inherit dirty tracking with `handleSave()`, so unsaved-changes awareness arrives without per-screen wiring. The extends-check at the arch layer verifies the inheritance.
 
 #### FR-BASE-019 — BaseWizard
 
-- Setup and other multi-step flows (see [installation](8NZAU-installation.md)): step gating via `isStepAccessible()` (all prior steps completed), validated advancement, localized step errors, resumable state.
-- **Verification:** extends-check + wizard-journey feature test.
+An SMK setup flow that lets operators jump to step four before step one validates produces half-configured schools and cryptic failures three screens later. `BaseWizard` sequences multi-step flows such as [installation](8NZAU-installation.md) through an abstract `steps()` definition with `nextStep()` validating before advancing, `prevStep()` retreating, `goToStep()` gated by `isStepAccessible()` so only completed ground is reachable, plus `progressPercent()`, `currentStepKey()`, localized `handleStepError()`, and state persistence hooks for resumability. The extends-check with a wizard-journey feature test walks the gates end to end.
 
 #### FR-BASE-020 — BaseController
 
-- Cross-cutting HTTP concerns for the rare REST surface: uniform JSON envelopes and paginated responses.
-- **Verification:** extends-check (layer `A`).
+Inside the rare REST surface the application exposes, each endpoint still needs the same JSON manners: success, creation, error, and paginated envelopes shaped identically so API consumers parse once. `BaseController` contributes those cross-cutting helpers — `jsonSuccess()`, `jsonCreated()`, `jsonError()`, `jsonPaginated()` — without pulling in any domain logic. The extends-check at the arch layer confirms controllers inherit the manners rather than improvising them.
 
 #### FR-BASE-021 — BaseFormRequest
 
-- One validation-failure behavior everywhere: throw `ValidationFailedException` (HTTP 422), never an ad-hoc redirect or silent pass.
-- **Verification:** extends-check + validation feature test.
+One endpoint redirecting on validation failure while its neighbor returns JSON trained SMK frontend code to handle both — until a silent pass let bad data straight into the database. `BaseFormRequest` collapses the variance into a single behavior: failed validation throws `ValidationFailedException` for HTTP 422 everywhere, never an ad-hoc redirect and never a quiet pass. The extends-check with a validation feature test demonstrates the uniformity.
 
 #### FR-BASE-022 — WithSorting
 
-- Column whitelist prevents sort-by-arbitrary-input (including SQL-adjacent injection through order clauses); direction validated.
-- **Verification:** concern usage + unit test on `applySorting()`.
+Sort parameters arrive from the browser, which makes `sortBy=requested_column` a quiet injection vector when the value flows near an order clause. `WithSorting` neutralizes it with a whitelist: the `$sortBy` column-plus-direction pair validates against `$sortableColumns`, and `applySorting(Builder)` applies only what survives validation. The convention grew from that exact probe — sorting is user input and must be treated as such. Concern usage with a unit test on `applySorting()` proves the gate.
 
 #### FR-BASE-023 — WithRecordSelection
 
-- Shared selection state for bulk actions across all manager screens; `selectAll` is scoped to the visible/authorized ID set by the caller.
-- **Verification:** concern usage review (layer `A`).
+Bulk-approve 300 placements and the selection state has to survive pagination, filtering, and a distracted coordinator switching tabs mid-task. `WithRecordSelection` carries that shared state — `$selectedIds` with `selectAll(ids)`, `clearSelection()`, and the computed `selected_count` — identically across every manager screen, while `selectAll` stays scoped to the visible and authorized ID set the caller supplies. Concern-usage review at the arch layer confirms managers share rather than reimplement.
 
 ### 4.4 Contracts — Enum & Interface
 
 #### FR-BASE-024 — LabelEnum
 
-- Every enum is human-renderable (bilingual labels via `__()`); no raw `->value` leaks into Blade.
-- **Verification:** implements-check (layer `A`).
+A status column rendering its raw `->value` leaks `pending_verification` into an SMK operator's screen where `Menunggu Verifikasi` belongs. `LabelEnum` makes that leak a contract violation by requiring `label(): string` on every enum, with bilingual text through `__()` at the implementation. The implements-check at the arch layer verifies no enum escapes human-renderability.
 
 #### FR-BASE-025 — StatusEnum
 
-- State machines declare terminal states and legal transitions in code; illegal transitions are rejected (via `RejectedException`), not silently applied.
-- **Verification:** implements-check + transition unit tests.
+Inside `StatusEnum` the state machine stops living in comments and starts living in code: extending `LabelEnum` and adding `isTerminal()`, `canTransitionTo()`, and `validTransitions()`, so illegal transitions are rejected through `RejectedException` instead of being silently applied. A certificate marked terminal can never drift back to draft because the transition table says no. The implements-check with transition unit tests exercises every legal edge and probes the illegal ones.
 
 #### FR-BASE-026 — ColorableEnum
 
-- Badge colors travel with the enum so status pills stay consistent across all 18 modules' tables.
-- **Verification:** implements-check (layer `A`).
+An SMK principal scanning eighteen modules' tables learns green-means-final in one module and then finds green-means-draft in the next — the kind of inconsistency that erodes trust in every badge on screen. `ColorableEnum` fixes badge colors to the enum itself through `color(): string`, so status pills stay consistent wherever the status travels. The implements-check at the arch layer confirms the coupling.
 
 #### FR-BASE-027 — SendsNotifications
 
-- The preferred cross-module decoupling for notifications per [cross-module-communication ADR](../adr/adr-cross-module-communication.md): modules consume the Core contract, never a concrete sibling class. Channel wiring and dispatch mechanics live in [notification-infrastructure](TXR2H-notification-infrastructure.md).
-- **Verification:** implements-check (layer `A`).
+Direct imports of a sibling's notification class once wove the modules into a knot where renaming one notification broke three unrelated features. The `SendsNotifications` Core contract cuts that knot per the [cross-module-communication ADR](../adr/adr-cross-module-communication.md): modules consume the contract's `execute(NotificationData $data)` shape and never a concrete sibling class, while channel wiring and dispatch mechanics stay owned by [notification-infrastructure](TXR2H-notification-infrastructure.md). The implements-check at the arch layer shows the decoupling holding.
 
 ### 4.5 Exception Hierarchy
 
@@ -269,89 +240,73 @@ The full base-class mandate — every architectural role extends or implements e
 
 #### FR-BASE-028 — AppException root
 
-- Framework and infrastructure failures (action plumbing, external services, presentation) share one catchable root with structured status codes.
-- **Verification:** extends-check (layer `A`).
+Catch a bare `RuntimeException` to render a 500 page and a business rejection meant as a friendly toast disappears into the error log — the confusion the sibling-tree design was built to kill. `AppException` gives framework and infrastructure failures (action plumbing, external services, presentation) their own abstract root with structured status codes via `statusCode()` and the `HasExceptionContext` trait, so infrastructure catches never overlap business ones. The extends-check at the arch layer confirms the root.
 
 #### FR-BASE-029 — ModuleException sibling root
 
-- Deliberately NOT a child of `AppException`: `catch (ModuleException)` targets business rules only and can never accidentally swallow infrastructure failures. Per [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md).
-- **Verification:** hierarchy assertion (layer `A`).
+A vocational school deployment once swallowed a payment-gateway timeout as a "quota full" message because one hierarchy forced both failures through the same catch. `ModuleException` exists so that story never repeats: deliberately not a child of `AppException` but its sibling, it lets `catch (ModuleException)` target business rules only and never accidentally swallow infrastructure failures, exactly as the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md) prescribes. A hierarchy assertion at the arch layer proves the two trees share no bloodline.
 
 #### FR-BASE-030 — RejectedException (C8)
 
-- The single business-rejection type: legacy `ConflictException`/`NotFoundException`/`RateLimitException` are superseded — use `RejectedException` consistently. Throw it (or `$this->fail()`), never a bare `RuntimeException`, for rule violations.
-- **Verification:** `scan_violations.py` C8 check (layer `A`).
+Inside the Action the failure path reads like a sentence: the rule check fails, the code calls `$this->fail()` or throws `RejectedException`, and Livewire renders the translatable message as a toast. That single business-rejection type — HTTP 400 for invalid transitions, duplicates, not-found-as-rule, and rate limits — supersedes the legacy `ConflictException`, `NotFoundException`, and `RateLimitException` trio precisely because three catch branches taught developers to catch `Exception` instead. Throwing a bare `RuntimeException` for a rule violation is the C8 defect, and the `scan_violations.py` C8 check at the arch layer catches it.
 
 #### FR-BASE-031 — ValidationFailedException
 
-- Thrown by `BaseFormRequest` and `BaseCommandAction::validate()`; renders as 422 with field errors.
-- **Verification:** validation feature tests (layer `F`).
+A coordinator submitting a half-filled placement form with an invalid company ID should see field errors, not a vanished draft. `ValidationFailedException` carries that outcome: thrown by `BaseFormRequest` and by `BaseCommandAction::validate()`, it renders as HTTP 422 with the field errors attached. Validation feature tests at the feature layer drive bad payloads through both entry points and watch the same 422 shape emerge.
 
 #### FR-BASE-032 — UnauthorizedException
 
-- Thrown by `BaseCommandAction::authorize()` and policy denials; renders as 403.
-- **Verification:** policy unit tests (layer `U`).
+Authorization failures once surfaced as generic 500s that sent SMK operators to the developer for what was really a permissions question. `UnauthorizedException` gives those denials their own voice: thrown by `BaseCommandAction::authorize()` and by policy denials, it renders as HTTP 403 with a message the operator can act on. Policy unit tests confirm the denial path without touching the database.
 
 #### FR-BASE-033 — InfrastructureException
 
-- External-service and framework failures; logged with full context, never shown verbatim to users.
-- **Verification:** extends-check (layer `A`).
+Show a student the raw certificate-PDF timeout payload and you leak internals while helping nobody; swallow it silently and the operator never learns the disk filled up. `InfrastructureException` threads the distinction: external-service and framework failures log with full context for operators yet never render verbatim to users, who see a generic retry instead. The extends-check at the arch layer confirms the type sits under `AppException` where infrastructure catches expect it.
 
 #### FR-BASE-034 — HasExceptionContext
 
-- Every exception carries a user-facing hint (resolution guidance) plus key-value debug context and CLI rendering — shared by both trees.
-- **Verification:** trait-use scan (layer `A`).
+An exception without guidance — no hint for the user, no context for the log, no CLI rendering for the artisan run — forces every catch site to reinvent all three. `HasExceptionContext` supplies them once for both trees: `withHint()` and `withContext()` to attach resolution guidance and key-value debug detail, `getHint()` and `getContext()` to read them back, and `toCliOutput()` so commands render either tree identically. A trait-use scan at the arch layer shows both hierarchies sharing the capability.
 
 #### FR-BASE-035 — ActionFailedException
 
-- `HandlesActionErrors` wraps unknown `Throwable`s escaping an Action into this terminal type so raw failures never leak across layer boundaries unwrapped.
-- **Verification:** failure-path test asserting the wrapper (layer `F`).
+Inside `HandlesActionErrors` the safety net has one job left for failures nobody anticipated: an unknown `Throwable` escaping an Action must never cross layer boundaries raw, where a Livewire component might render a stack trace to a student. It is wrapped into `ActionFailedException`, the terminal infrastructure type that marks the error as unhandled-but-contained. A failure-path test asserting the wrapper lands at the feature layer proves raw failures never leak unwrapped.
 
 ### 4.6 Policies
 
 #### FR-BASE-036 — BasePolicy + super-admin gate
 
-- No policy may lock out `super_admin`; the `before()` hook guarantees the escape hatch before any ability check runs. Consumed per [rbac-and-authorization](T4B26-rbac-and-authorization.md).
-- **Verification:** extends-check + super-admin-allow unit test.
+A policy author at an SMK once wrote a meticulous ownership check that locked out everyone — including the super admin called in to fix the outage it caused. The `before()` hook on `BasePolicy` makes that lockout structurally impossible by auto-allowing `super_admin` before any ability check runs, a guarantee consumed per [rbac-and-authorization](T4B26-rbac-and-authorization.md). The extends-check with a super-admin-allow unit test demonstrates the escape hatch surviving even the strictest policy.
 
 #### FR-BASE-037 — AuthorizesRoles
 
-- Role vocabulary in one trait so "admin" means the same thing in every module's policy.
-- **Verification:** trait-use + unit tests (layer `A`/`U`).
+When each module defined "admin" locally, a supervisor counted as admin in one policy and not in another, and cross-module authorization reviews became archaeology. `AuthorizesRoles` centralizes the role vocabulary — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` — so the word means the same thing in every module's gate. Trait use with unit tests at the arch and unit layers keeps the vocabulary single.
 
 #### FR-BASE-038 — AuthorizesOwnership
 
-- Owner-or-admin is the recurring authorization shape (students see their own records, admins see all); the trait prevents per-policy reimplementation drift.
-- **Verification:** trait-use + unit tests (layer `A`/`U`).
+Copy-pasted owner-or-admin checks drift: one policy compares `user_id`, another traverses a different relation, a third forgets the admin branch, and students intermittently see each other's logbooks. `AuthorizesOwnership` stops the drift by fixing the recurring shape once — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` — so students see their own records and admins see all, identically everywhere. Trait use with unit tests at the arch and unit layers confirms no policy reimplements the shape by hand.
 
 ### 4.7 Gradual DTO Migration (ADR-Demanded)
 
 #### FR-BASE-039 — Array start
 
-- No developer hesitates to write an Action for lack of a DTO — ship the array version first. Governing principle: good enough today beats perfect next week.
-- **Governance:** [gradual-migration ADR](../adr/adr-gradual-migration.md).
+A developer facing a placement CSV whose columns changed weekly during pilot once stalled for days designing a twelve-field DTO that was obsolete before review. The Start phase refuses that trap: while the input shape is still changing, the Action ships as `execute(array $data)` and the feature moves. The governing principle is good enough today beats perfect next week, owned by the [gradual-migration ADR](../adr/adr-gradual-migration.md) — velocity now, with the migration path ahead keeping direction.
 
 #### FR-BASE-040 — Union stabilize
 
-- Backward-compatible intermediate: the union type accepts both shapes while callers migrate; `fromArray()` (with camelCase/snake_case fallback) absorbs legacy keys.
-- **Verification:** review — mixed phases during migration are expected and temporary.
+Once callers multiply, changing the signature overnight would break every one of them at once. The Stabilize phase bridges the gap with a backward-compatible union: `execute(Data|array $data)` accepts both shapes while callers migrate at their own pace, and `BaseData::fromArray()` with its camelCase and snake_case fallback absorbs legacy keys so old call sites keep compiling. Mixed phases during migration are expected and temporary, a tolerance review confirms rather than punishes.
 
 #### FR-BASE-041 — DTO final
 
-- Settled shapes collapse to `Data`-only signatures (C7 for 3+ params); the DTO carries the validation surface.
-- **Verification:** `scan_violations.py` C7 check (layer `A`).
+An SMK enrollment Action that still accepted raw arrays after its shape settled kept sprouting ad-hoc keys — `company_id` here, `companyId` there — until validation lived nowhere. The Final phase collapses settled shapes to `Data`-only signatures, `execute(Data $data)`, so the DTO becomes the single validated contract and the C7 rule for three or more parameters holds by construction. The `scan_violations.py` C7 check at the arch layer marks the arrival.
 
 ### 4.8 Shared Validation & Key Registry (ADR-Demanded)
 
 #### FR-BASE-042 — Entity::rules() sharing
 
-- When the same entity is created from two forms, rules move from the Form Object into `Entity::rules()` referenced by both (Stabilize); full DRY centralizes all rules in Entities (Final). Eliminates duplication across UI layers without forcing day-one ceremony.
-- **Governance:** [gradual-migration ADR](../adr/adr-gradual-migration.md), [entity-model-separation ADR](../adr/adr-entity-model-separation.md).
+Validation rules for the same entity once lived in two form objects that diverged field by field until identical forms rejected different input. The centralization path heals the split in stages: when the second form appears, rules move into `Entity::rules()` where both forms reference them, and full DRY later gathers every rule in the Entity. The journey spares day-one ceremony while converging on one truth, governed jointly by the [gradual-migration ADR](../adr/adr-gradual-migration.md) and the [entity-model-separation ADR](../adr/adr-entity-model-separation.md).
 
 #### FR-BASE-043 — Registry-backed read caching
 
-- `BaseReadAction::remember()`/`cacheKey()` build module-scoped keys from the registry; an unregistered key is a C4 violation. Final phase of the cache-migration path (see ZT6VS FR-CORE-010/013).
-- **Verification:** `scan_violations.py` C4 check (layer `A`).
+Inline cache-key strings rot: two Reads caching under `slots` with different TTLs, a third forgetting to invalidate, and enrollment numbers that disagree by screen. The final phase of the cache-migration path builds keys from the registry instead — `BaseReadAction::remember()` and `cacheKey()` deriving module-scoped keys from `config/cache-keys.php` — so an unregistered key fails the C4 check rather than silently forking. The migration's earlier legs live in ZT6VS FR-CORE-010 and FR-CORE-013, and the `scan_violations.py` C4 check at the arch layer enforces arrival.
 
 ---
 
@@ -373,33 +328,33 @@ The full base-class mandate — every architectural role extends or implements e
 
 #### NFR-BASE-001 — Deadlock retries
 
-- `BaseAction::transaction(callable $callback, int $attempts = 3)` absorbs transient deadlocks (concurrent attendance writes) without surfacing them. **Measurement:** signature review + concurrent-write test.
+During concurrent attendance writes at an SMK with 800 students clocking in within the same ten minutes, two transactions occasionally deadlock — a transient collision, not a bug, that should never surface as a student-facing error. `BaseAction::transaction(callable $callback, int $attempts = 3)` absorbs those moments by retrying up to three attempts before admitting defeat. Signature review with a concurrent-write test demonstrates the absorption holding under contention.
 
 #### NFR-BASE-002 — Abstract-only bases
 
-- A directly instantiated base is a contradiction — bases exist to be extended. **Measurement:** `scan_class_contracts.py` (layer `A`).
+Inside the container, a directly instantiated base is a contradiction: bases exist to be extended, and an instance of one carries shared machinery with no domain to govern. The mandate therefore keeps every base abstract with zero direct instantiations permitted. The `scan_class_contracts.py` pass at the arch layer walks the mandate table in §6.1 and reports any instantiation as a structural break.
 
 #### NFR-BASE-003 — Purity (C5/C6)
 
-- Entity and DTO purity keep business rules database-free and Actions single-surfaced. **Measurement:** `scan_violations.py` C5/C6 (layer `A`).
+An Entity importing a Model drags the query builder into what should be a millisecond unit test; a DTO importing an Action turns the validation surface into a dependency knot. Purity forbids both: Entities stay `final readonly` and DTOs carry only scalars, enums, and Carbon, never Models or Actions. The `scan_violations.py` C5 and C6 checks at the arch layer keep business rules database-free and Actions single-surfaced.
 
 #### NFR-BASE-004 — Runtime discovery
 
-- With 18 modules, manual Livewire/policy registration would rot; `ModuleService` discovery plus cached results keeps boot fast and registration automatic. **Measurement:** discovery test in [module-discovery](I1BCV-module-discovery.md).
+Manual registration of Livewire components, policies, and views across 18 modules would rot within a semester — every new screen a chance to forget a line. Runtime discovery through `ModuleService` with cached results removes the forgetting by removing the manual step: boot finds what the filesystem declares. The arrangement exists because hand-maintained provider lists failed that way before, and the discovery tests in [module-discovery](I1BCV-module-discovery.md) demonstrate the automatic registration holding.
 
 #### NFR-BASE-005 — Scan coverage of the mandate
 
-- Architecture tests were removed over a `pest-plugin-arch` compatibility bug; until restored, blocking review plus the `tools/` scan batch enforces the mandate table (§6.1). **Measurement:** pre-commit arch-guard green (AGENTS.md §4–§5).
+Losing the architecture tests to the `pest-plugin-arch` compatibility bug could have left the mandate in §6.1 on honor-system enforcement — exactly how contract drift begins. Until the plugin returns, blocking review plus the `tools/` scan batch (naming, conventions, contracts) stands in as the enforcer, with the pre-commit arch-guard from AGENTS.md §4–§5 as the gate every change passes. A green batch is the standard met.
 
 ### 5.2 Localization & Accessibility
 
 #### NFR-BASE-006 — Translated base messages
 
-- Base-class toasts, validation messages, and wizard labels resolve through `__()` with both `en` and `id` strings — a hardcoded English string in a base reaches every module. **Measurement:** `LangChecker` + review.
+A hardcoded English string in a base class does not stay a single oversight — it replicates into every module's toasts, validation messages, and wizard labels, greeting SMK operators in a foreign language on dozens of screens. Base-class messages therefore resolve through `__()` with both `en` and `id` strings from the start. `LangChecker` with review proves zero hardcoded user strings survive.
 
 #### NFR-BASE-007 — Accessible error pages
 
-- Error rendering detail lives in [logging-and-error-handling](89SRA-logging-and-error-handling.md); the bar (WCAG 2.1 AA) is recorded here because the exception hierarchy in §4.5 is what routes users to those pages. Manual verification — hence `—`.
+Inside the failure journey, the exception hierarchy in §4.5 decides which error page a user lands on, so the bar for those pages belongs beside the hierarchy even though the rendering detail lives elsewhere. The bar is WCAG 2.1 Level AA per [logging-and-error-handling](89SRA-logging-and-error-handling.md), verified manually — which is why no layer tag claims an automated check here.
 
 ---
 
@@ -584,30 +539,19 @@ Design Decisions are **optional** to test, like Use Cases (§3). `Layer` / `Stat
 
 #### DD-BASE-001 — Dual Exception Hierarchy
 
-**Decision:** Two sibling exception trees: `AppException` (framework) and `ModuleException` (business) under `RuntimeException`.
-**Rationale:** Precise catch targeting — a controller catching module violations never accidentally catches infrastructure errors; `RejectedException` (the most common business exception) always means HTTP 400.
-**Trade-off:** Slightly more complex hierarchy, but prevents the "catch everything as RuntimeException" anti-pattern.
-**Canonical detail:** [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) §4.5, §7.1.
+A controller catching one `RuntimeException` root once rendered an infrastructure outage as a business toast and a business rejection as a 500 page — both wrong, both confusing to the SMK operator reading them. Two sibling trees under `RuntimeException` fix the targeting: `AppException` for framework failures, `ModuleException` for business violations, with `RejectedException` as the familiar HTTP 400 face of the business side. The hierarchy costs a little extra shape to learn, but it ends the catch-everything habit, with canonical detail in [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) §4.5 and §7.1.
 
 #### DD-BASE-002 — Module Discovery at Runtime
 
-**Decision:** Livewire components, policies, and Blade namespaces are discovered dynamically via `ModuleService`, not manually registered.
-**Rationale:** With 18 modules, manual registration in service providers would be error-prone and a maintenance burden. Runtime scanning adds negligible startup cost and picks up new modules automatically.
-**Trade-off:** Slightly slower boot time, mitigated by caching discovery results. Detail in [module-discovery](I1BCV-module-discovery.md).
+In the early flat-layout days every new Livewire component meant a hand-written registration line in a service provider, and the forgotten line always surfaced as a blank page during a school demo — never in development, where the component had been registered months earlier by someone who has since left. With nineteen modules that failure mode multiplies by every component, policy, and Blade namespace the system owns. Runtime discovery through `ModuleService` removes the manual registry step entirely: a new module is picked up simply for existing on disk in the right directory, and the slight boot cost is paid once and cached. Full mechanics in [module-discovery](I1BCV-module-discovery.md).
 
 #### DD-BASE-003 — User/Authenticatable Exception
 
-**Decision:** `User` extends `BaseAuthenticatable` (which bridges Laravel `Authenticatable` with `HasUuids`), not `BaseModel` — the sole documented exception to the mandate, kept in sync with `BaseModel` explicitly.
-**Rationale:** Laravel auth requires `Authenticatable`; the bridge preserves UUID consistency (`getIncrementing()`/`getKeyType()` overrides) without forking the auth system.
-**Trade-off:** The exception adds maintenance burden — it must track `BaseModel` evolution (FR-BASE-010).
-**Verification:** `User extends BaseAuthenticatable` assertion (layer `A`).
+Laravel's auth system only recognizes `Authenticatable`, so `User` cannot extend `BaseModel` no matter how uniform the mandate wants to be. The bridge `BaseAuthenticatable` carries the missing half of the contract — `HasUuids` plus the `getIncrementing()` / `getKeyType()` overrides — which keeps every `foreignUuid` join against `users` honest. The day someone "simplifies" `User` back onto auto-increment, half the schema's foreign keys silently disagree in type, and the failure arrives as corrupt joins rather than a loud error. That is why this is the sole documented exception and why it is pinned by an arch assertion at layer `A`: any `BaseModel` evolution must be mirrored here by hand (FR-BASE-010).
 
 #### DD-BASE-004 — Gradual DTO Adoption
 
-**Decision:** Actions may start with `execute(array)`, stabilize through `execute(Data|array)`, and settle on `execute(Data)` — enforced migration triggers, not day-one DTO purity.
-**Rationale:** DTOs demand a class before any business logic; enforcing them upfront blocks velocity and discourages Action creation. Each phase's trigger is explicit (§6.5).
-**Trade-off:** Mixed phases during migration (some Actions on DTOs, some on arrays) — expected and temporary; stalls need periodic architecture review.
-**Governance:** [gradual-migration ADR](../adr/adr-gradual-migration.md).
+Ask a developer to design the perfect `PlacementImportData` DTO before writing a line of import logic during a pilot where the CSV shape changes weekly, and the rational response is to not write the Action at all — velocity dies to ceremony. The three-phase path (§6.5) exists so the first version ships on `execute(array)`, the union signature keeps old callers green while the shape settles, and the DTO becomes the sole contract only when there is something stable to contract against. Mixed phases are the visible cost and they are temporary by design; the real risk is areas that stall at phase one forever, which is what the quarterly architecture review hunts. Governance lives in the [gradual-migration ADR](../adr/adr-gradual-migration.md).
 
 ---
 
