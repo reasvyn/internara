@@ -84,29 +84,29 @@ Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Stat
 
 #### UC-CORE-001 — Deploy on Shared Hosting With Zero External Services
 
-A developer clones the repo on a plain shared-hosting account — no Redis, no Memcached, no worker supervisor. They run `composer install`, copy `.env.example`, and run `php artisan setup:install`: SQLite is created, migrations run, cache resolves to `file`, sessions to `database`, queue to `sync`, mail to `log`. The application works end to end. **Verification:** config defaults assert `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database` (FR-CORE-042, layer `A`); the shared-hosting deploy preset pins the same matrix (see [shared-hosting-deployment](06IB6-shared-hosting-deployment.md)).
+A small SMK outside Semarang pays $5 a month for a shared-hosting account with no Redis, no Memcached, and no supervisor for workers. The operator clones the repo, runs `composer install`, copies `.env.example`, and runs `php artisan setup:install`. SQLite is created on disk, migrations run, cache resolves to `file`, sessions to `database`, queue to `sync`, and mail to `log`, and the application works end to end without any daemon to babysit. That zero-external-services promise is pinned by a config test asserting `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, and `SESSION_DRIVER=database` under FR-CORE-042 at layer `A`, and the same matrix is repeated in the deploy preset described in [shared-hosting-deployment](06IB6-shared-hosting-deployment.md).
 
 #### UC-CORE-002 — Cache Invalidates on Settings Change
 
-A super admin updates a setting in the Settings UI. The Command Action dispatches an event on success; the listener calls `Cache::forget()` against the affected registered key. The next request reads fresh data — no full cache flush, no stale window beyond the request. This is the Stabilize phase of the gradual-migration cache path ([gradual-migration ADR](../adr/adr-gradual-migration.md)): inline forget where trivial, event + listener where multiple writers touch the key. **Verification:** feature test on the settings update flow (layer `F`).
+When a super admin presses save in the Settings UI, the request travels through a Command Action that commits the row inside a transaction and only then dispatches its success event. A listener waiting on that event calls `Cache::forget()` against the single affected registered key, so the very next request recomputes fresh data without a full cache flush and without a stale window longer than one request. This is the Stabilize phase of the gradual-migration cache path from the [gradual-migration ADR](../adr/adr-gradual-migration.md), where a trivial single-writer key still uses an inline forget while any key with multiple writers graduates to the event plus listener shape. A feature test exercising the settings update flow at layer `F` proves the old value disappears and the fresh value renders.
 
 #### UC-CORE-003 — Deployment Warms Caches
 
-After code lands, the pipeline runs `php artisan config:cache route:cache view:cache event:cache` followed by `php artisan system:cache-warm` (implemented in `SysAdmin/.../Console/Commands/SystemCacheWarmCommand.php`). The first real user request hits warm caches instead of paying cold-start bootstrap. **Verification:** the artisan command exists and exits clean (layer `F`).
+Picture enrollment Monday at 07:00: three hundred students hit the login page at once and the first request pays the full cold-start bootstrap of config, routes, views, and events. The deploy pipeline avoids that stampede by baking `php artisan config:cache route:cache view:cache event:cache` and then running `php artisan system:cache-warm`, implemented in `SysAdmin/.../Console/Commands/SystemCacheWarmCommand.php`, so application caches are already populated before real traffic arrives. The command simply has to exist and exit clean, which a layer `F` smoke test asserts after every pipeline change.
 
 ### 3.2 Admin & End-User Flows
 
 #### UC-CORE-004 — Admin Validates SMTP Before Saving
 
-A school admin types SMTP host, port, and credentials into the Settings page and clicks "Test". `TestMailSettingsAction` (a `BaseCommandAction` in the Settings module) sends a probe email with the unsaved values. On failure the form shows the error and nothing is persisted; on success the settings save and future mail uses SMTP. This gate exists because mail misconfiguration is otherwise discovered weeks later via a missing password-reset email. **Verification:** feature test on the probe-then-persist flow (layer `F`).
+The probe gate was added after too many schools discovered a mail typo weeks later, when a password-reset email never arrived during placement week. Now the admin types host, port, and credentials into the Settings page and clicks Test, and `TestMailSettingsAction`, a `BaseCommandAction` in the Settings module, sends a probe email using the unsaved values. A failure surfaces the error inline and nothing is persisted, while a success lets the settings save so future mail flows through SMTP. A layer `F` feature test walks the whole probe-then-persist flow to keep that gate honest.
 
 #### UC-CORE-005 — File Upload Through the Media Library
 
-A student uploads internship evidence through a Livewire upload field. The Command Action stores it via the media library on the configured disk; the library registers conversions and serves the file through its secure route. No caller writes user content with raw `Storage::put`. Full upload mechanics (validation, collections, conversions) live in [file-uploads-media](WQGTP-file-uploads-media.md). **Verification:** feature test on the upload flow (layer `F`).
+Let any caller write user content with raw `Storage::put` and the failure modes multiply: an executable lands in a web-reachable folder, a thumbnail variant is missing on the certificate page, a disk swap to S3 breaks half the call sites. The single allowed path avoids all of that. A student uploads internship evidence through a Livewire upload field, the Command Action stores it via the media library on the configured disk, and the library registers conversions and serves the file through its secure route. Validation, collections, and conversions are specified in [file-uploads-media](WQGTP-file-uploads-media.md), and a layer `F` feature test on the upload flow confirms nothing bypasses the library.
 
 #### UC-CORE-006 — Cache Store Fails Gracefully
 
-The file cache directory becomes unwritable at runtime. A request needing a cached value misses, recomputes from the database, and completes normally — the miss never surfaces as an error page, and no error payload is ever written back into the cache. **Verification:** feature test simulating an unwritable store (layer `F`).
+An SMK in Cirebon filled its hosting quota the night before report printing, leaving the file cache directory unwritable at runtime. A request needing a cached value simply missed, recomputed from the database, and completed normally. No error page appeared and no error payload was written back into the cache to poison later reads. A layer `F` feature test simulates that unwritable store so degradation stays invisible to users.
 
 ---
 
@@ -167,235 +167,191 @@ Per-service behavior contracts. Defaults are Tier 1 (shared hosting, ≤500 user
 
 #### FR-CORE-001 — SQLite by default
 
-- `config/database.php` defaults to `DB_CONNECTION=sqlite`; `.env.example` documents the MySQL/PostgreSQL overrides beside it.
-- **Verification:** config default assertion (layer `A`).
+At boot Laravel reads `config/database.php`, which defaults to `DB_CONNECTION=sqlite`, while `.env.example` documents the MySQL and PostgreSQL overrides beside it for schools that outgrow the file. A layer `A` config default assertion guards that default so a careless edit cannot silently flip fresh installs to a driver with no server behind it.
 
 #### FR-CORE-002 — Production databases via .env
 
-- Switching to MySQL/MariaDB/PostgreSQL is connection, host, port, database, and credential keys only — no code branch on driver.
-- **Edge case:** charset/collation differences (utf8mb4 vs utf8) are handled in config, not in migrations.
-- **Verification:** config review (layer `A`).
+A school that starts on SQLite and moves to MySQL, MariaDB, or PostgreSQL changes only connection, host, port, database, and credential keys. No application code branches on the driver name, which is why the same binary runs in both places.
+
+The one place this bites is charset: MySQL wants `utf8mb4` while PostgreSQL expects `utf8`, and a student name like "Siti Nurhaliza ♥" will corrupt if the wrong one leaks into a migration. That difference is resolved in config, never in migrations, and a layer `A` config review confirms no migration hardcodes a collation.
 
 #### FR-CORE-003 — UTF-8 charset enforced
 
-- Full emoji and multilingual school-name support; Indonesian locale content must never corrupt.
-- **Verification:** config review (layer `A`).
+The rule exists because school names, street addresses, and student notes routinely mix Indonesian, Arabic script, and emoji. Full emoji and multilingual support means Indonesian locale content never corrupts between form submit and report print, a property a layer `A` config review of the charset settings keeps pinned.
 
 #### FR-CORE-004 — UUID v7 primary keys
 
-- Every model uses ordered UUID v7 (`HasUuids`, `$incrementing = false`, `$keyType = 'string'`); migrations use `foreignUuid()->constrained()`; mixed key types are forbidden. The sole exception is the `User` model path via `BaseAuthenticatable` (see SE5Q9 DD-BASE-003).
-- **Governance:** [uuid-primary-keys ADR](../adr/adr-uuid-primary-keys.md).
-- **Verification:** `scan_conventions.py` + migration review (layer `A`).
+Mix one auto-increment table into a UUID-joined schema and every `foreignUuid` join against it breaks at migration time. So every model uses ordered UUID v7 through `HasUuids` with `$incrementing = false` and `$keyType = 'string'`, migrations use `foreignUuid()->constrained()`, and mixed key types are forbidden outright. The sole exception is the `User` model path through `BaseAuthenticatable` described in SE5Q9 DD-BASE-003, governed by the [uuid-primary-keys ADR](../adr/adr-uuid-primary-keys.md) and checked by `scan_conventions.py` plus migration review at layer `A`.
 
 #### FR-CORE-005 — SQLite WAL + busy_timeout
 
-- Single-writer SQLite stays safe under the light concurrency of a school install (concurrent attendance submissions).
-- **Verification:** `config/database.php` review (layer `A`).
+Thirty students tapping clock-in within the same minute is enough to collide writers on single-writer SQLite. WAL journal mode plus `busy_timeout` keeps those concurrent attendance submissions safe on a school install, and a layer `A` review of `config/database.php` confirms both flags stay set.
 
 #### FR-CORE-006 — Explicit FK behavior (D6)
 
-- Every foreign key declares what happens on delete/update (cascade, restrict, set-null) — no silent framework default.
-- **Verification:** `scan_violations.py` D6 check (layer `A`).
+When a partnership row is deleted, the framework default would silently decide what happens to its placements — and silently is exactly the problem. Every foreign key therefore declares its own on-delete and on-update behavior, cascade, restrict, or set-null, so a reviewer can read intent off the migration. The `scan_violations.py` D6 check at layer `A` fails the build if any key leans on the framework default.
 
 #### FR-CORE-007 — Composite indexes (Tier-0)
 
-- Indexes on FKs and the high-volume `activity_log` table are a no-regret move enforced at any scale — they cost nothing at 500 users and prevent rewrites at 2,000.
-- **Verification:** migration review (layer `A`).
+Consider the `activity_log` table after one placement period: tens of thousands of rows, and every audit view filters by foreign key plus timestamp. Without composite indexes that page crawls at 2,000 users; with them it costs nothing extra at 500 users. Indexes on foreign keys and the high-volume `activity_log` table are therefore enforced at any scale as a no-regret move, confirmed by migration review at layer `A`.
 
 ### 4.2 Cache
 
 #### FR-CORE-008 — File cache by default
 
-- `CACHE_STORE=file` needs no daemon and survives on the cheapest hosting. Redis is a one-line swap (DD-CORE-001).
-- **Verification:** `config/cache.php` default (layer `A`).
+Early pilots assumed Redis would be available and then met real school hosting, where no daemon can be installed. The default was flipped to `CACHE_STORE=file` so the cheapest account works with nothing to run, while Redis remains a one-line swap described in DD-CORE-001. A layer `A` check of the `config/cache.php` default keeps that promise from drifting.
 
 #### FR-CORE-009 — Supported cache drivers
 
-- `array` is reserved for the test suite (`phpunit.xml`); production chooses `file`, `database`, or `redis`.
-- **Verification:** config review (layer `A`).
+Let a developer reach for `array` in production and every request silently recomputes everything, turning the morning attendance rush into a database stampede. The `array` driver is therefore reserved for the test suite through `phpunit.xml`, while production chooses `file`, `database`, or `redis`, a boundary a layer `A` config review enforces.
 
 #### FR-CORE-010 — Key registry (C4)
 
-- `config/cache-keys.php` exists and holds 25+ registered keys; no inline key strings in application code.
-- **Verification:** `scan_violations.py` C4 check; `grep -r "Cache::" app/` resolves every key to the registry.
+An SMK admin renamed a setting and half the dashboard kept showing the old quota for a day, because the key lived as a string literal in three files and the forget call missed one. The registry fixes that shape: `config/cache-keys.php` exists and holds 25+ registered keys, and no inline key strings survive in application code. The `scan_violations.py` C4 check plus a `grep -r "Cache::" app/` pass that resolves every key to the registry, both at layer `A`, make an unregistered key a build failure.
 
 #### FR-CORE-011 — Key naming convention
 
-- Namespaced keys (`settings.all`, `notification.unread:{id}`) keep ownership obvious and collisions impossible across modules.
-- **Verification:** registry review (layer `A`).
+At runtime a read builds its key as `{module}.{purpose}` with an optional `.{qualifier}`, so `settings.all` and `notification.unread:{id}` carry their owner in the name. Collisions across eighteen modules become structurally impossible instead of a matter of memory, and a layer `A` registry review confirms every entry follows the namespace.
 
 #### FR-CORE-012 — TTL categories
 
-- Authors pick a category instead of inventing seconds; `forever` keys must name their explicit invalidation path.
-- **Verification:** review (layer `A`).
+A dashboard author guessing 47 seconds for one widget and 3600 for another leaves the next maintainer with no idea which values are safe to tune. Authors instead pick a category, short under five minutes, medium five minutes to an hour, long one hour to a day, or forever, and any `forever` key must name its explicit invalidation path so it can never linger by accident. A layer `A` review checks the category choice and the named path together.
 
 #### FR-CORE-013 — Event-driven invalidation
 
-- The Final phase of the gradual-migration cache path: registry keys plus listener-driven invalidation for cross-module keys; inline `Cache::forget(config('cache-keys.xxx'))` stays legal for simple single-writer cases.
-- **Governance:** [gradual-migration ADR](../adr/adr-gradual-migration.md).
-- **Verification:** settings-update feature test (UC-CORE-002, layer `F`).
+The cache path migrated in phases because ripping every inline forget out on day one would have stalled feature work. The Final phase pairs registry keys with listener-driven invalidation for cross-module keys, while inline `Cache::forget(config('cache-keys.xxx'))` stays legal for simple single-writer cases. That migration story is recorded in the [gradual-migration ADR](../adr/adr-gradual-migration.md), and the settings-update feature test from UC-CORE-002 at layer `F` proves the listener path clears what the writer changed.
 
 #### FR-CORE-014 — Deploy-time caches + warming
 
-- Framework caches cut bootstrap time; `system:cache-warm` pre-populates application caches so the first user avoids the cold penalty.
-- **Verification:** `SystemCacheWarmCommand` exists (`system:cache-warm`); pipeline review.
+Skip the bake step and the first teacher login after a deploy pays full bootstrap while thirty students queue behind her. Framework caches cut that bootstrap time and `system:cache-warm` pre-populates application caches so the first user avoids the cold penalty. The pipeline review confirms the steps run, and the existence of `SystemCacheWarmCommand` behind `system:cache-warm` is itself asserted.
 
 ### 4.3 Session
 
 #### FR-CORE-015 — Database sessions by default
 
-- Database sessions survive process restarts (matters once queue workers exist) and need no daemon; the sessions table ships in migrations. `config/session.php` defaults to `SESSION_DRIVER=database`.
-- **Verification:** config default (layer `A`).
+A vocational school in Bandung restarted its worker process mid-morning and every file-backed session evaporated, logging out a whole grading room. Database sessions survive those restarts, which starts to matter the moment queue workers exist, and they need no daemon, with the sessions table shipping in migrations. `config/session.php` therefore defaults to `SESSION_DRIVER=database`, a default a layer `A` config check holds in place.
 
 #### FR-CORE-016 — Supported session drivers
 
-- `file` suits single-process dev; `redis` is the Tier-2 swap; `array` is test-only.
-- **Verification:** config review (layer `A`).
+At runtime the driver resolves from environment: `file` for single-process development, `redis` as the Tier-2 swap when the school grows onto a VPS, and `array` strictly for tests. A layer `A` config review keeps each driver in its lane so production never accidentally runs on the test driver.
 
 #### FR-CORE-017 — 120-minute lifetime
 
-- Long enough for a teacher grading session, short enough to bound a stolen cookie. One env key, no code.
-- **Verification:** config default (layer `A`).
+A teacher grading forty logbooks needs room to work without re-authenticating every few minutes, yet a stolen cookie should not stay useful until tomorrow. One hundred twenty minutes of inactivity threads that needle, set through a single `SESSION_LIFETIME` env key with no code change, and a layer `A` config default test locks the value.
 
 #### FR-CORE-018 — Encryption + cookie flags
 
-- Encrypted payloads plus HTTP-only/SameSite/secure flags close the cheap session attacks (XSS cookie theft, CSRF riding).
-- **Verification:** config review + NFR-CORE-001 (layer `A`).
+Session hijacking used to be a cheap attack: steal the cookie over XSS, ride it over CSRF. Encrypted payloads plus HTTP-only, SameSite, and secure flags close those cheap paths, which is why the defaults demand encryption and hardened cookies from the first boot. A layer `A` config review alongside NFR-CORE-001 confirms the flags are actually set.
 
 #### FR-CORE-019 — Fixation prevention
 
-- `session()->regenerate()` runs on every authentication-state transition so a pre-login session ID is worthless after login.
-- **Verification:** auth-flow feature test (layer `F`).
+Hand an attacker a pre-login session ID and, without regeneration, that ID stays valid after the victim logs in. Calling `session()->regenerate()` on every authentication-state transition, login, logout, and privilege change, makes the pre-login ID worthless the moment identity changes. An auth-flow feature test at layer `F` logs in and out to prove the ID actually turns over.
 
 #### FR-CORE-020 — Garbage collection
 
-- Probabilistic GC keeps the sessions table bounded without a scheduler dependency on shared hosting; Redis expiry makes application GC unnecessary there.
-- **Verification:** config review (layer `A`).
+An SMK with no cron and no scheduler still accumulates abandoned session rows every term. Probabilistic garbage collection keeps the sessions table bounded without any scheduler dependency on shared hosting, while the Redis driver simply relies on key expiry so application GC becomes unnecessary there. A layer `A` config review checks the `[2, 100]` lottery settings and the Redis exemption side by side.
 
 #### FR-CORE-021 — Session contents
 
-- The closed list (auth, CSRF, locale, wizard, setup gate) keeps sessions small and cookie/database rows predictable; business data lives in the database, not the session.
-- **Verification:** review (layer `A`).
+Every value placed in the session is read on every request, so the framework resolves only a closed list: auth state, CSRF token, locale preference, wizard progress, and setup authorization. Business data lives in the database, never in the session, which keeps cookie and database rows small and predictable, a boundary a layer `A` review enforces whenever someone proposes stashing a report in the session.
 
 ### 4.4 Queue
 
 #### FR-CORE-022 — Sync queue by default
 
-- Shared hosting runs no daemon, so jobs execute inline during the request. `config/queue.php` defaults to `QUEUE_CONNECTION=sync`. Acceptable at school scale; Tier 2 adds a worker via env.
-- **Verification:** config default (layer `A`).
+A student submitting an assignment at an SMK on shared hosting cannot wait for a worker daemon that does not exist. Jobs therefore execute inline during the request, with `config/queue.php` defaulting to `QUEUE_CONNECTION=sync`. That inline shape is acceptable at school scale, Tier 2 adds a worker purely through environment, and a layer `A` config default test keeps sync as the starting point.
 
 #### FR-CORE-023 — Supported queue connections
 
-- `database` is the first step off sync (needs only the migrated tables); `redis` is the Tier-2 target. Worker supervision and retry policy live in [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md).
-- **Verification:** config review (layer `A`).
+The connection ladder was ordered by operational cost: `database` is the first step off sync because it needs only the migrated tables, and `redis` is the Tier-2 target once a server is available. Worker supervision and retry policy for those drivers live in [job-queue-infrastructure](8FVZA-job-queue-infrastructure.md), and a layer `A` config review confirms the three connections stay wired.
 
 #### FR-CORE-024 — Queue tables auto-migrated
 
-- Enabling the `database` driver never requires hand-created tables.
-- **Verification:** migration inventory (layer `A`).
+Forgetting to create the jobs table turns the first background dispatch into a midnight 500. Enabling the `database` driver therefore never requires hand-created tables; migrations carry the jobs and batch tables along. A layer `A` migration inventory proves the tables ship with the codebase.
 
 #### FR-CORE-025 — Failed jobs with traces
 
-- Every failed job keeps its exception trace for post-mortem; silent job loss is a defect.
-- **Verification:** migration + queue-failure feature test (layer `A`/`F`).
+An SMK operator once lost a whole certificate batch with no trace of why, because failed jobs vanished. Every failed job now keeps its full exception trace in `failed_jobs` for post-mortem, and silent job loss counts as a defect. Migration presence plus a queue-failure feature test, at layers `A` and `F` together, guard that trail.
 
 #### FR-CORE-026 — Documents pipeline
 
-- Long-running batch document generation is isolated on `documents` so a report batch never head-of-line-blocks interactive jobs on `default`: `dispatch(new GenerateDocumentJob(...))->onQueue('documents')`.
-- **Verification:** dispatch-target feature test (layer `F`).
+At runtime a batch report fans out dozens of long PDF jobs that would head-of-line-block password resets and notifications if they shared one queue. Long-running batch document generation is therefore isolated on `documents` while everything interactive stays on `default`, dispatched as `dispatch(new GenerateDocumentJob(...))->onQueue('documents')`. A layer `F` dispatch-target feature test asserts each job lands on its intended pipeline.
 
 ### 4.5 Mail
 
 #### FR-CORE-027 — Log mailer by default
 
-- A fresh install never fails on missing SMTP; `config/mail.php` defaults to `MAIL_MAILER=log`.
-- **Verification:** config default (layer `A`).
+A fresh install with no SMTP credentials should still boot, register users, and run the setup wizard. The `log` mailer makes that true: `config/mail.php` defaults to `MAIL_MAILER=log` so mail is captured to the log instead of failing, a default a layer `A` config check protects.
 
 #### FR-CORE-028 — SMTP via env
 
-- Standard Laravel mailer keys; `ses`/`sendmail` remain available for schools that need them.
-- **Verification:** config + `.env.example` review (layer `A`).
+Production mail was always meant to be configuration, never code. Standard Laravel mailer keys carry `MAIL_MAILER`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, and `MAIL_PASSWORD`, while `ses` and `sendmail` remain available for schools that need them. A layer `A` review of config plus `.env.example` keeps those keys documented and swappable.
 
 #### FR-CORE-029 — SMTP probe gate
 
-- The Settings module's `TestMailSettingsAction` (extends `BaseCommandAction`) sends a probe with the unsaved values; the save is rejected unless the probe succeeds (DD-CORE-005, UC-CORE-004).
-- **Verification:** probe-then-persist feature test (layer `F`).
+A typo in the SMTP host once silenced a school's notifications for three weeks. The Settings module now refuses to persist untested values: `TestMailSettingsAction`, extending `BaseCommandAction`, sends a probe with the unsaved values and the save is rejected unless the probe succeeds, per DD-CORE-005 and UC-CORE-004. A layer `F` probe-then-persist feature test types bad credentials on purpose to prove the gate holds.
 
 #### FR-CORE-030 — From-address fallback
 
-- Transactional mail always carries a valid sender even when the admin never configured one.
-- **Verification:** review (layer `A`).
+An SMK secretary who never opens the mail settings still triggers password resets and assignment notices. Transactional mail therefore always carries a valid sender, resolving `MAIL_FROM_ADDRESS` first and falling back to the `support_email` setting when nothing was configured. A layer `A` review confirms no mail path can emit a blank sender.
 
 ### 4.6 Filesystem & Storage
 
 #### FR-CORE-031 — Local disk by default
 
-- `config/filesystems.php` defaults to `FILESYSTEM_DISK=local`; zero credentials, zero network.
-- **Verification:** config default (layer `A`).
+At boot the filesystem resolves through `config/filesystems.php`, which defaults to `FILESYSTEM_DISK=local`. Zero credentials and zero network calls mean uploads work on the cheapest hosting on day one, and a layer `A` config default test prevents that default from quietly changing.
 
 #### FR-CORE-032 — Public disk + install-time link
 
-- Public assets resolve without manual symlink steps after install.
-- **Verification:** `setup:install` review (layer `A`).
+A teacher sharing a handbook link the day after install should never meet a broken image because someone forgot a symlink step. The `public` disk serves public assets and `storage:link` runs as part of `setup:install`, so assets resolve with no manual intervention. A layer `A` review of the install command keeps that step wired.
 
 #### FR-CORE-033 — S3 for object storage
 
-- Tier-2/3 schools can move blobs to S3 with env keys only; application code always addresses the named disk, never a driver.
-- **Verification:** config review (layer `A`).
+Object storage was held back until schools actually asked for it, then added as pure configuration. Tier-2 and Tier-3 schools move blobs to the `s3` disk with `AWS_*` env keys only, while application code always addresses the named disk and never a driver name. A layer `A` config review confirms no caller hardcodes the driver.
 
 #### FR-CORE-034 — Media library as the only upload path
 
-- Centralizes storage, conversions, and secure serving behind a reviewed package instead of ad-hoc disk writes (DD-CORE-007, UC-CORE-005).
-- **Verification:** `scan_violations.py` + upload feature test (layer `A`/`F`).
+Scattered `Storage::put` calls once meant one module validated MIME types while another served uploads executable. Centralizing storage, conversions, and secure serving behind the media library, per DD-CORE-007 and UC-CORE-005, leaves a single reviewed path for every upload. The `scan_violations.py` check plus an upload feature test, at layers `A` and `F`, fail any raw disk write for user content.
 
 #### FR-CORE-035 — Collections declare disk + conversions
 
-- Ownership is explicit: the Model that owns a collection names where its files live and which conversions exist.
-- **Verification:** model review (layer `A`).
+An SMK avatar collection that lives on `public` with a thumbnail conversion and an evidence collection that lives on `local` with a preview conversion should declare that difference where it belongs. Ownership is explicit: the Model that owns a collection names where its files live and which conversions exist. A layer `A` model review reads that declaration off each owning Model.
 
 ### 4.7 Growth Tiers (ADR-Demanded)
 
 #### FR-CORE-036 — Tier 0 no-regret
 
-- Always-on costs that never need a rewrite: UUID v7 locality, indexes, registry, eager loading, transaction-free reads. None requires a developer decision; all are structural.
-- **Governance:** [performance-optimization ADR](../adr/adr-performance-optimization.md).
-- **Verification:** migration review + C4 scan + N+1 review (layer `A`).
+Tier 0 never asks a developer to decide: ordered UUID v7 keys keep inserts local, composite indexes keep joins fast, the `config/cache-keys.php` registry keeps invalidation greppable, eager loading avoids N+1, and Read Actions stay transaction-free so reporting never blocks writes. Those always-on structural choices are governed by the [performance-optimization ADR](../adr/adr-performance-optimization.md) and checked by migration review plus the C4 scan plus N+1 review at layer `A`.
 
 #### FR-CORE-037 — Tier-1 defaults
 
-- The deployable default matrix, asserted by config test: sync queue, file cache, database session, local disk. Per [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md).
-- **Verification:** FR-CORE-042 config test (layer `A`).
+A school unpacking the release on shared hosting gets sync queue, file cache, database session, and local disk with no questions asked. That deployable default matrix, per the [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md), is asserted by the FR-CORE-042 config test at layer `A`, so any drift breaks the suite before it reaches a school.
 
 #### FR-CORE-038 — Tier-2 via config only
 
-- No code branches on tier; every cache/queue/session call already goes through framework drivers, so the swap is env keys plus a worker process. Trigger: sustained >500 users or P95 > 1s. Full tier table in §6.4.
-- **Verification:** config reads env keys; `.env` variants documented in [scaling guide](../guides/infra/scaling.md).
+Growth was designed as an `.env` swap because every cache, queue, and session call already goes through framework drivers. No code branches on tier; the operator sets `CACHE_STORE=redis` or `QUEUE_CONNECTION=redis` plus a worker and restarts, once sustained load passes roughly 500 users or P95 passes a second, with the full tier table in §6.4. Config reading env keys plus the `.env` variants documented in the [scaling guide](../guides/infra/scaling.md) prove the swap needs no rewrite.
 
 #### FR-CORE-039 — Deferred until measured
 
-- Adopting any of these ahead of demand violates the no-regret doctrine; `Planned` is the deliberate status, not a gap. Before measurement, before the bottleneck is understood, before the feature stabilizes — no optimization.
+Spinning up Octane, sharding, a CDN, or read replicas before any bottleneck is measured burns weeks and complicates every later fix. Adopting any of them ahead of demand violates the no-regret doctrine, so `Planned` here is a deliberate status rather than a gap: no optimization before measurement, before the bottleneck is understood, and before the feature stabilizes.
 
 ### 4.8 Supporting Services
 
 #### FR-CORE-040 — One shared Redis, distinct connections
 
-- A single Redis server serves all three drivers with separate connections and prefixes (§6.3) — no per-driver servers to operate at school scale.
-- **Verification:** `config/database.php` redis map (layer `A`).
+An SMK running its first VPS cannot operate three separate Redis clusters. A single shared Redis server therefore serves cache, queue, and session through distinct connections and prefixes as mapped in §6.3, and a layer `A` check of the redis map in `config/database.php` confirms the separation.
 
 #### FR-CORE-041 — APP_KEY enforced
 
-- Missing key fails fast at boot in production (NFR-CORE-002); no encrypted payload may exist without it.
-- **Verification:** boot assertion (layer `A`).
+At boot in production the framework refuses to serve with null encryption: a missing `APP_KEY` fails fast instead of writing session payloads nobody can safely read. That fail-fast behavior, tracked as NFR-CORE-002, is covered by a layer `A` boot assertion.
 
 #### FR-CORE-042 — Defaults asserted by config test
 
-- The Tier-1 matrix is a test, not a comment: drift in any default fails the suite.
-- **Verification:** config test green (layer `A`).
+A comment saying the defaults are sync, file, and database rots within a month. The Tier-1 matrix lives as a test instead: drift in any default fails the suite, and a green layer `A` config test is the proof the matrix still holds.
 
 #### FR-CORE-043 — Health reporting
 
-- Operators and load balancers read service status from one command and one endpoint; per-service checks live in the maintenance spec.
-- **Verification:** `SystemHealthCommand` (`system:health`) exists; endpoint smoke (layer `F`).
+The maintenance story split early: this spec owns the surface, one `SystemHealthCommand` behind `system:health` plus the `/up` endpoint for operators and load balancers, while per-service checks live in the maintenance spec. Existence of the command plus an endpoint smoke at layer `F` keeps that surface from silently disappearing.
 
 ---
 
@@ -416,31 +372,31 @@ Per-service behavior contracts. Defaults are Tier 1 (shared hosting, ≤500 user
 
 #### NFR-CORE-001 — Session cookie hardening
 
-- Verified by reading `config/session.php` defaults: encrypt on, http-only on, same-site lax, secure flag honored in production. **Measurement:** config assertion (layer `A`).
+Leave one cookie flag off and a stolen session rides over plain HTTP or leaks through JavaScript. Reading the `config/session.php` defaults shows encrypt on, http-only on, same-site lax, and the secure flag honored in production, and a layer `A` config assertion keeps all four from regressing.
 
 #### NFR-CORE-002 — APP_KEY fail-fast
 
-- A production boot without a key must crash loudly at startup, never serve with null encryption. **Measurement:** boot test (layer `A`).
+An SMK that deploys with an empty `.env` must see a loud crash at startup, never a login page running on null encryption. A production boot without a key therefore fails fast instead of serving, and a layer `A` boot test proves the crash happens.
 
 #### NFR-CORE-003 — Media security by reference
 
-- This spec owns the disk wiring; the security bar (validation, script-execution prevention) is defined and measured in [file-uploads-media](WQGTP-file-uploads-media.md). **Measurement:** that spec's gates.
+At runtime the disk wiring in this spec hands every upload to the media library, while the actual security bar for validation and script-execution prevention is defined and measured in [file-uploads-media](WQGTP-file-uploads-media.md). That spec's gates are the measurement here, so this requirement never duplicates its thresholds.
 
 ### 5.2 Reliability
 
 #### NFR-CORE-004 — Graceful degradation
 
-- Cache faults are invisible to users: misses recompute, failures fall through to the database, and error payloads are never cached. **Measurement:** UC-CORE-006 feature test (layer `F`).
+Picture the cache disk filling up during report week: requests miss, fall through to the database, recompute, and render normally, with error payloads never written back to poison later reads. Cache faults stay invisible to users that way, and the UC-CORE-006 feature test at layer `F` simulates the fault to prove it.
 
 ### 5.3 Operability
 
 #### NFR-CORE-005 — Single registry file
 
-- One file to grep, one file to audit; a key that cannot be found in the registry is a defect. **Measurement:** C4 scan (layer `A`).
+The registry survived because there is exactly one file to grep and one file to audit. `config/cache-keys.php` holds every key, so a key that cannot be found there is a defect by definition, and the C4 scan at layer `A` enforces the single-file rule.
 
 #### NFR-CORE-006 — Warm beats cold
 
-- The deploy pipeline's cache steps must produce a measurably faster first request than a cold boot. **Measurement:** deploy smoke comparing cold vs warm first request.
+Skipping the warm step leaves the first teacher after a deploy waiting on a cold bootstrap while students queue behind her. The deploy pipeline's cache steps must therefore produce a measurably faster first request than a cold boot, compared by a deploy smoke that times cold versus warm.
 
 ---
 
@@ -559,51 +515,35 @@ Design Decisions are **optional** to test, like Use Cases (§3). `Layer` / `Stat
 
 #### DD-CORE-001 — File Cache as Default
 
-**Decision:** Default cache driver is `file`, not Redis.
-**Rationale:** Shared hosting cannot install Redis; file cache works without external services. Switching is a one-line `.env` change (FR-CORE-008, FR-CORE-038).
-**Trade-off:** File cache is slower and lacks atomic operations — acceptable for single-tenant workloads.
+A $5 shared-hosting account in Yogyakarta cannot install Redis, so defaulting to it would exclude the very schools Internara targets. The default cache driver is therefore `file`, which works with no daemon, and switching stays a one-line `.env` change per FR-CORE-008 and FR-CORE-038. File cache runs slower and lacks atomic operations, an accepted cost at single-tenant school scale.
 
 #### DD-CORE-002 — Database Session as Default
 
-**Decision:** Default session driver is `database`, not `file`.
-**Rationale:** Database sessions survive process restarts (important once queue workers exist) and support multi-process deployments; the sessions table is auto-created by migration (FR-CORE-015).
-**Trade-off:** Slightly higher DB load per request — negligible below 1,000 concurrent users.
+At runtime `file` sessions vanish when the process restarts, which starts to hurt the moment queue workers exist and breaks multi-process deployments outright. The default session driver is `database` instead, with the sessions table auto-created by migration per FR-CORE-015. The extra write per request is negligible below a thousand concurrent users.
 
 #### DD-CORE-003 — Sync Queue as Default
 
-**Decision:** Default queue connection is `sync` (synchronous execution).
-**Rationale:** Shared hosting has no queue workers; sync executes jobs inline. Production switches to `database`/`redis` via `.env` plus `php artisan queue:work` (FR-CORE-022).
-**Trade-off:** No background processing on default config — acceptable for small-scale deployments.
+Consider a fresh install with no supervisor and no worker: any queued job would sit unprocessed forever. The default queue connection is `sync` so jobs execute inline during the request, and production moves to `database` or `redis` through `.env` plus `php artisan queue:work` per FR-CORE-022. No background processing on the default config is the accepted price for zero-config startup.
 
 #### DD-CORE-004 — SQLite as Default Database
 
-**Decision:** Default connection is SQLite for development and shared hosting.
-**Rationale:** Zero-config, file-based, WAL-enabled (FR-CORE-001, FR-CORE-005). Production uses MySQL 8 / MariaDB 10.6 / PostgreSQL 15 via `.env` (FR-CORE-002).
-**Trade-off:** SQLite is single-writer; adequate for single-tenant with low concurrency.
+The zero-config story demanded a database that is just a file. The default connection is SQLite for development and shared hosting, file-based and WAL-enabled per FR-CORE-001 and FR-CORE-005, while production uses MySQL 8, MariaDB 10.6, or PostgreSQL 15 through `.env` per FR-CORE-002. Single-writer limits are adequate for a single tenant with light concurrency.
 
 #### DD-CORE-005 — SMTP Validation Gate
 
-**Decision:** `TestMailSettingsAction` probes SMTP before settings persist (FR-CORE-029).
-**Rationale:** Wrong mail config silently breaks notifications; validating before persist surfaces errors at edit time (PS-4).
-**Trade-off:** Requires reachable SMTP at save time — acceptable for a school admin workflow.
+A mistyped SMTP password once silenced a school for weeks because nothing validates at save time. `TestMailSettingsAction` now probes SMTP with the unsaved values before settings persist per FR-CORE-029 and UC-CORE-004, surfacing errors at edit time as PS-4 demands. Requiring a reachable SMTP server at save time is accepted because admins save mail settings rarely.
 
 #### DD-CORE-006 — Log Mailer as Default
 
-**Decision:** Default mailer is `log`.
-**Rationale:** Development and default installs never fail on missing SMTP; `smtp` is the documented production choice (FR-CORE-027).
-**Trade-off:** Default install sends no real mail until configured — expected for zero-config deployment.
+An SMK secretary running setup for the first time has no SMTP credentials yet. The default mailer is `log` so development and default installs never fail on missing mail, with `smtp` as the documented production choice per FR-CORE-027. Sending no real mail until configured is the expected shape of a zero-config deployment.
 
 #### DD-CORE-007 — Media Library as the Only Upload Path
 
-**Decision:** All user uploads go through the media library on a configured disk (FR-CORE-034).
-**Rationale:** Centralizes storage, conversions, and serving behind a security-reviewed package instead of ad-hoc `Storage::put` calls.
-**Trade-off:** Adds Spatie MediaLibrary as a hard dependency (already pinned in FB792).
+At runtime every upload flows through the media library on a configured disk: storage, conversions, and secure serving resolve in one place instead of scattered `Storage::put` calls with divergent validation. All user uploads take that path per FR-CORE-034 and UC-CORE-005. The cost is a hard dependency on Spatie MediaLibrary, already pinned in FB792.
 
 #### DD-CORE-008 — Split from the Tech-Stack Spec (Recorded Decision)
 
-**Decision:** Runtime service behavior moved from FB792 into this spec; FB792 retains only the dependency manifest.
-**Rationale:** Separate "what is installed" from "how it behaves" so each side evolves independently and service docs stay navigable (PS-6).
-**Trade-off:** Two specs to consult for service topics — mitigated by explicit cross-references in §9.
+Early readers kept tripping over one spec that mixed version pins with driver lifetimes and security flags. Runtime service behavior therefore moved from FB792 into this spec while FB792 retains only the dependency manifest, separating what is installed from how it behaves so each side evolves independently per PS-6. Consulting two specs for service topics is mitigated by explicit cross-references in §9.
 
 ---
 
