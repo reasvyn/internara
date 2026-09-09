@@ -109,65 +109,25 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### UC-LOG-001 — Admin Reviews Audit Trail
 
-**Actor:** School administrator (authenticated, audit-log read permission).
-**Preconditions:** Business mutations have been logged through SmartLogger's activity channel.
-**Flow:**
-1. Admin opens the audit-trail view
-2. System queries the `activity_log` table (Spatie ActivityLog): causer, subject, description, timestamp, IP
-3. PII fields (email, name, IP) render masked
-**Postconditions:** Admin audits system actions without seeing raw PII.
-**Exercises:** FR-LOG-008, FR-LOG-021–030.
+During a BAN-PDM accreditation visit at SMKN 2 Bandung, the assessor asked who had finalized a disputed grade and from which terminal the change came. The administrator opened the audit-trail view, which queries the `activity_log` table built on Spatie ActivityLog, and each row carried causer, subject, description, timestamp, and IP in one glance. Email, name, and IP rendered masked, so the assessor got evidence without harvesting student PII. The flow exercises FR-LOG-008 together with the masking family FR-LOG-021 through FR-LOG-030, and it only works because business mutations were logged through SmartLogger's activity channel in the first place.
 
 #### UC-LOG-002 — Developer Debugs Production Error
 
-**Actor:** Developer.
-**Preconditions:** An unexpected exception occurred in production.
-**Flow:**
-1. Exception is caught by `HandlesActionErrors::withErrorHandling()`
-2. Known types (`AppException`, `ModuleException`, framework mapped types) re-throw untouched
-3. Unknown throwables are logged via SmartLogger (system channel, PII-masked) and wrapped in `RuntimeException`
-4. Developer reads `storage/logs/laravel.log` with full context: message, file, line, module
-5. User sees only a generic error page, never the trace
-**Postconditions:** Developer has full diagnostics; user sees a safe message.
-**Exercises:** FR-LOG-040–043, FR-LOG-046–049.
+A Monday-morning attendance rush once threw an unexpected database deadlock while a student stared at a spinner. The Livewire boundary inside `HandlesActionErrors::withErrorHandling()` caught it, recognized the throwable as unknown rather than one of the known types — `AppException`, `ModuleException`, and the mapped framework types — and sent it to SmartLogger on the system channel with PII masked before wrapping it in a `RuntimeException` for the framework. The developer later opened `storage/logs/laravel.log` to find message, file, line, and module waiting, while the student had seen only a generic error page with no trace. That split exercises FR-LOG-040 through FR-LOG-043 and the safe-rendering pair FR-LOG-046 through FR-LOG-049.
 
 ### 3.2 System Flows
 
 #### UC-LOG-003 — SmartLogger Logs a Business Mutation
 
-**Actor:** System (automatic, from a Command Action).
-**Preconditions:** A Command Action is executing a mutation.
-**Flow:**
-1. Action calls `$this->log('Submitted logbook', $logbook, ['entries' => 5])`
-2. `BaseAction::log()` wraps SmartLogger with module auto-detection and PII masking
-3. SmartLogger writes the system log (structured context) and the activity log (audit trail)
-4. Activity entry records causer, subject, payload, masked IP and User-Agent
-**Postconditions:** Both channels hold consistent, PII-safe entries.
-**Exercises:** FR-LOG-001–006, FR-LOG-013–016.
+When a Command Action finishes a mutation, it calls `$this->log('Submitted logbook', $logbook, ['entries' => 5])` and moves on. Underneath, `BaseAction::log()` wraps SmartLogger with automatic module detection and PII masking, then SmartLogger fans out to two sinks: the system log with structured context and the activity log with causer, subject, payload, masked IP, and masked User-Agent. Both channels hold the same event in their own dialect, PII-safe on arrival. The path exercises FR-LOG-001 through FR-LOG-006 and FR-LOG-013 through FR-LOG-016.
 
 #### UC-LOG-004 — Business Rule Violation Returns User-Friendly Error
 
-**Actor:** Student attempting to clock in twice (already clocked in today).
-**Preconditions:** The duplicate state exists.
-**Flow:**
-1. Student clicks "Clock In" again
-2. The Action detects the duplicate and calls `$this->fail('Already clocked in today')`
-3. `fail()` throws `RejectedException`
-4. The Livewire component catches it and shows a flash message — no trace, no technical detail
-**Postconditions:** Student sees the plain message; no exception reaches the HTTP layer.
-**Exercises:** FR-LOG-036, FR-LOG-044, FR-LOG-047.
+A student at SMK Al Hidayah Cirebon tapped Clock In twice in one morning because the first tap seemed to hang. The Action saw the duplicate state and called `$this->fail('Already clocked in today')`, which threw a `RejectedException` that the Livewire component caught and rendered as a plain flash message. No trace leaked, nothing technical reached the HTTP layer, and the student simply understood the rule. That small kindness exercises FR-LOG-036, FR-LOG-044, and FR-LOG-047.
 
 #### UC-LOG-005 — Request Context Enriches All Log Entries
 
-**Actor:** System (automatic, via middleware).
-**Preconditions:** Any HTTP request arrives.
-**Flow:**
-1. `LogContextMiddleware` generates a UUID `request_id`
-2. Injects `method`, `url`, `ip`, plus `user_id`/`user_role` when authenticated
-3. After the response, appends `duration_ms` and `status`
-4. All log entries within the request carry this context automatically
-**Postconditions:** Every entry traces to one request, user, and response time.
-**Exercises:** FR-LOG-051–055.
+Every HTTP request enters through `LogContextMiddleware`, which mints a UUID `request_id` before anything else runs. The middleware attaches `method`, `url`, and `ip`, adds `user_id` and `user_role` when someone is authenticated, and after the response appends `duration_ms` and `status`. Because injection rides on `Log::withContext()`, every line written during the request inherits that envelope without any Action passing context by hand, so one user gesture stays traceable across entries. The mechanism exercises FR-LOG-051 through FR-LOG-055.
 
 ---
 
@@ -239,295 +199,239 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### FR-LOG-001 — Single entry point
 
-- Any direct `Log::` or `activity()` call outside SmartLogger (and the framework's own internals) is a violation — review-enforced until a dedicated scan rule exists.
-- **Verification:** code review + unit tests constructing only via SmartLogger factories.
+A single stray `Log::info($request->all())` in a placement Action once wrote raw student passwords into `laravel.log` on a staging server, and nobody noticed for two weeks. That is the failure this rule exists to make structurally impossible. `SmartLogger` is the only legitimate doorway for application logging; direct `Log::` or `activity()` calls outside SmartLogger and the framework's own internals count as violations. Review catches them today, and a unit suite that constructs loggers only through SmartLogger factories proves the doorway holds.
 
 #### FR-LOG-002 — Four severity levels
 
-- Static factories `success/info/warning/error` accept `(string $message, array $context = [])`.
-- **Verification:** unit test per factory asserting the recorded severity.
+Inside SmartLogger the call starts with intent, not plumbing. `SmartLogger::success()`, `info()`, `warning()`, and `error()` each accept a message plus an optional context array and stamp the entry with its level before anything else runs. A unit test per factory asserts the recorded severity survives the pipeline untouched.
 
 #### FR-LOG-003 — Fluent chaining
 
-- Every setter returns `self`; full signature list in §6.1.
-- **Verification:** unit test chaining the full fluent sequence before `save()`.
+Early prototypes passed six positional arguments to a log helper and every call site disagreed about their order. The fluent setters — `for()`, `about()`, `withPayload()`, `withContext()`, `module()`, `event()`, `channel()`, with the full signatures fixed in §6.1 — replaced that confusion with a chain that reads left to right. Each setter returns `self`, and a unit test runs the entire chain into `save()` to prove the links compose.
 
 #### FR-LOG-004 — save() pipeline order
 
-- Event processing (dispatch + payload merge) happens before masking so payload keys are complete; masking precedes translation injection and channel writes so no sink ever sees raw PII.
-- **Verification:** unit test asserting masked output in both channels from one `save()`.
+`save()` is a small assembly line and its order is load-bearing. Event processing runs first so dispatch and payload merging see complete keys, masking runs next so translation injection and both channel writers only ever touch scrubbed data, and no sink can glimpse raw PII even for a millisecond. One unit test pushes secrets through a single `save()` and asserts masked output in both channels.
 
 #### FR-LOG-005 — Three routing modes
 
-- `both()` is the default for Command Actions; `systemOnly()` for technical ops and `HandlesActionErrors`; `activityOnly()` for audit-only events. Routing table in §6.2.
-- **Verification:** unit tests asserting each mode writes exactly its channels.
+Not every event deserves two audiences. A placement approval goes `both()`, the default for Command Actions, while a queue-retry heartbeat goes `systemOnly()` and a quiet permission grant goes `activityOnly()`; the routing table in §6.2 fixes which mode fits where, with `HandlesActionErrors` living on `systemOnly()`. Separate unit tests assert each mode writes exactly its own channels and nothing else.
 
 #### FR-LOG-006 — Masking on by default
 
-- A fresh SmartLogger instance masks; only an explicit `withoutPiiMasking()` call disables it, and that call must be justifiable in review.
-- **Verification:** unit test asserting default instances mask without any opt-in.
+Picture a tired developer at 11pm adding a debug payload with a phone number in it. With masking on by default via `withPiiMasking()`, that mistake is harmless; only a deliberate `withoutPiiMasking()` call, defensible in review, turns protection off. A unit test builds a fresh instance, logs without opting into anything, and asserts the output is already masked.
 
 ### 4.2 Dual-Channel Routing
 
 #### FR-LOG-007 — System channel sink
 
-- Daily rotation with 14-day retention per the SmartLogger ADR; message plus structured context.
-- **Verification:** feature test asserting file output for a `systemOnly()` save.
+When the night-shift operator at SMK YPT Pringsewu tails the server during enrollment week, there is exactly one place to look. The system channel appends through the `Log` facade into `storage/logs/laravel.log` on a daily rotation with 14-day retention per the SmartLogger ADR, message plus structured context on every line. A feature test performs a `systemOnly()` save and asserts the file output appears.
 
 #### FR-LOG-008 — Activity channel sink
 
-- Schema in §6.6 (`log_name`, `description`, subject/causer morphs, `event`, `properties`, `batch_uuid`); `log_name` carries the module name.
-- **Verification:** feature test asserting one `activity_log` row per `activityOnly()` save.
+The call travels a different road when auditors are the audience. SmartLogger writes a row into the `activity_log` table through Spatie `laravel-activitylog` v5, with the schema fixed in §6.6 — `log_name` carrying the module name alongside description, subject and causer morphs, `event`, `properties`, and `batch_uuid`. A feature test performs an `activityOnly()` save and asserts exactly one row lands.
 
 #### FR-LOG-009 — Activity failure never breaks Actions
 
-- The audit trail is compliance, not the business-critical path: a temporarily unreachable database must not fail a logbook submission.
-- **Edge case:** during a full DB outage the business write itself fails anyway — this row only guarantees the *logging* write is never the cause.
-- **Verification:** feature test with the activity write forced to throw; the Action still succeeds.
+The audit trail is compliance evidence, not the business transaction itself. If the `activity_log` table hiccups while a student submits a logbook, the submission must still succeed — failing homework because the audit write stumbled inverts every priority the school cares about. The narrow exception is a total database outage, where the business write fails on its own; this requirement only promises the logging write is never the cause. A feature test forces the activity write to throw and asserts the Action still succeeds.
 
 #### FR-LOG-010 — Activity failure is diagnosed
 
-- The catch in FR-LOG-009 logs to the system channel with the original error context so audit loss is visible.
-- **Verification:** feature test asserting a system-log entry when the activity write fails.
+Silence about lost audit rows would rot BAN-PDM evidence quietly. So the catch that protects FR-LOG-009 immediately writes to the system channel with the original error context, making every swallowed audit write visible to whoever tails the file log. A feature test breaks the activity write and asserts that diagnostic system entry exists.
 
 #### FR-LOG-011 — System failure propagates
 
-- Unwritable system logs are critical by definition — swallowing them would hide total observability loss.
-- **Verification:** review of `writeSystemLog()` (no try-catch) + feature test.
+An unwritable system log means total observability loss, and swallowing that would leave operators blind while everything looks green. `writeSystemLog()` therefore carries no try-catch by design: the failure surfaces immediately instead of dissolving into a fallback. Review confirms the absence of the catch, and a feature test exercises the unwritable path.
 
 #### FR-LOG-012 — Causer-less skip
 
-- Without a causer the audit row is unattributable noise; `activityOnly()` overrides because the caller explicitly wants the row anyway.
-- **Verification:** feature test asserting no activity row for causer-less `both()`, and one row for causer-less `activityOnly()`.
+At SMKN 1 Gesi a midnight cron job once flooded the audit trail with hundreds of unattributable system rows nobody could assign to a person. Without a resolved causer, a `both()` save now skips the activity row rather than writing noise — unless the caller passed `activityOnly()`, which is an explicit statement that the row is wanted anyway. A feature test asserts both halves: no row for causer-less `both()`, one row for causer-less `activityOnly()`.
 
 ### 4.3 Event Integration
 
 #### FR-LOG-013 — String or object event
 
-- `event(string|BaseEvent $event)`; a string names the event for translation only, an object additionally dispatches.
-- **Verification:** unit test passing each form.
+`event()` accepts either a plain string or a `BaseEvent` instance, and the difference matters downstream. A string only names the event for translation lookup, while an object additionally dispatches through Laravel. A unit test passes each form and asserts both are accepted.
 
 #### FR-LOG-014 — Dispatch on save
 
-- Dispatch happens inside `save()` so logging and side effects stay atomic from the caller's view; see [NUCY3](NUCY3-event-system.md) for listener contracts.
-- **Verification:** feature test asserting the event fired after `save()` with a `BaseEvent`.
+Dispatch happens inside `save()` rather than beside it, so from the caller's viewpoint logging and side effects land atomically — there is no window where the log exists but the listeners never fired. Listener contracts themselves live in [NUCY3](NUCY3-event-system.md). A feature test saves with a `BaseEvent` and asserts the event fired.
 
 #### FR-LOG-015 — Payload merge precedence
 
-- `toPayload()` public properties merge under explicitly passed `withPayload()` keys — the caller always wins on collision.
-- **Verification:** unit test with a colliding key asserting the manual value survives.
+Imagine an event whose `toPayload()` reports five logbook entries while the Action author explicitly passes `['entries' => 7]` because a correction arrived mid-flight. The manual payload must win: public properties from `toPayload()` merge underneath explicitly passed `withPayload()` keys. A unit test engineers that collision and asserts the manual value survives.
 
 #### FR-LOG-016 — Name resolution for both forms
 
-- Objects resolve via `eventName()`; strings resolve directly — either way FR-LOG-017's lookup runs.
-- **Verification:** unit test asserting translation injection for both forms.
+Whether the caller handed over an object or a bare string, translation still needs a name. Objects resolve through `eventName()`, strings resolve directly, and either way the lookup in FR-LOG-017 runs unchanged. A unit test asserts description injection for both forms.
 
 ### 4.4 Translation Resolution
 
 #### FR-LOG-017 — Current-locale lookup
 
-- Key `log.{eventName}` via `__()` for the active locale.
-- **Verification:** unit test with locale `id` asserting the Indonesian description.
+A coordinator reading the audit trail in Indonesian should see Bahasa, not developer English. When an event name is set, SmartLogger resolves `log.{eventName}` through `__()` for the active locale. A unit test with locale `id` asserts the Indonesian description appears.
 
 #### FR-LOG-018 — Alternative-locale lookup
 
-- The mirror locale is resolved in the same `save()` so both texts ship in one entry.
-- **Verification:** unit test asserting both `event_description` and the suffixed mirror key.
+International support staff and local coordinators read the same row, so one language is not enough. The mirror locale (`en` against `id` and back) resolves inside the same `save()`, and both texts ship in a single entry. A unit test asserts `event_description` and its suffixed mirror key arrive together.
 
 #### FR-LOG-019 — Injection keys
 
-- Exact context keys `event_description` (current) and `event_description_{locale}` (mirror).
-- **Verification:** unit test asserting both keys present in written context.
+Downstream consumers parse these entries mechanically, so the key names are a contract, not a suggestion: `event_description` for the current locale and `event_description_{locale}` for the mirror. A unit test asserts both keys are present in the written context.
 
 #### FR-LOG-020 — Missing keys are silent
 
-- A new event without translations yet must still log — translation debt never blocks observability.
-- **Verification:** unit test with an untranslated event name asserting `save()` succeeds with no description keys.
+A brand-new event drafted at 5pm should still be observable that evening even though nobody has written its translations yet. Missing keys never throw; injection is silently skipped and the log lands without descriptions. Translation debt must never block observability, and a unit test with an untranslated event name asserts `save()` succeeds with no description keys.
 
 ### 4.5 PII Masking
 
 #### FR-LOG-021 — Recursive masking
 
-- Masking descends into nested payload arrays to any depth; key-name-based, not content-aware (per ADR).
-- **Verification:** unit test with a three-level nested payload asserting masked leaves.
+Payloads nest: a placement array holds a student array that holds contact details, three levels deep. `PiiMasker::maskArray()` descends to any depth by key name rather than sniffing content, per the ADR, so a password buried inside a nested form still becomes `'***'`. A unit test feeds a three-level payload and asserts the masked leaves.
 
 #### FR-LOG-022 — Full mask on sensitive keys
 
-- Substring match against `MASKED_KEYS` (e.g., `user_password_confirmation` matches via `password`).
-- **Verification:** unit test asserting `'***'` for each listed key family.
+During a UU PDP review at one SMK, an auditor grepped the log archive for `password` and found a confirmation field nobody remembered logging. Substring matching against `MASKED_KEYS` closes that class of leak: `user_password_confirmation` matches via `password` and collapses to `'***'`. A unit test asserts the full mask for each listed key family.
 
 #### FR-LOG-023 — Email partial mask
 
-- `johndoe@example.com` → `jo***@example.com`: enough to identify, not enough to harvest.
-- **Verification:** unit test on `maskEmail()` output format.
+Full email addresses in logs are a harvesting gift to anyone who steals a backup. The compromise keeps the first two characters and the domain — `johndoe@example.com` becomes `jo***@example.com` — enough for a coordinator to recognize the row, useless for a spammer. A unit test on `maskEmail()` pins that output format.
 
 #### FR-LOG-024 — Phone partial mask
 
-- All but the last 4 digits masked so support can confirm identity by the tail.
-- **Verification:** unit test on phone output format.
+Support staff confirming a parent's identity by phone need the tail, not the whole number. Every digit except the last four is masked, so the log still answers "is this the number ending 7890?" without exposing a callable full number. A unit test on the phone output format locks the behavior.
 
 #### FR-LOG-025 — Name partial mask
 
-- First initial plus full last name balances identifiability against exposure.
-- **Verification:** unit test on name output format.
+A BAN-PDM evidence folder once shipped with full student names in every audit printout, and the school had to reprint the bundle. Names now collapse to first initial plus last name — `John Smith` renders `J. Smith` — which keeps rows attributable across a semester while shrinking exposure. A unit test on the name output format guards the shape.
 
 #### FR-LOG-026 — IPv4 partial mask
 
-- First two octets preserved for rough geo/debugging; host octets hidden.
-- **Verification:** unit test on `maskIp()` with a v4 address.
+The first two octets tell an operator the request came from the school network versus a mobile carrier, which is usually all debugging needs. `192.168.1.10` therefore becomes `192.168.***.***`, preserving rough origin while hiding the host. A unit test on `maskIp()` with a v4 address verifies the cut.
 
 #### FR-LOG-027 — IPv6 partial mask
 
-- First segment preserved; remainder hidden.
-- **Verification:** unit test on `maskIp()` with a v6 address.
+IPv6 addresses are longer but the instinct is identical: keep the routing prefix, drop the interface identifier. Only the first segment survives — `2001:db8::1` renders `2001:db8::****` — and a unit test on `maskIp()` with a v6 address confirms the boundary.
 
 #### FR-LOG-028 — User-Agent truncation
 
-- 50 characters plus `...` keeps browser/OS signal while bounding row size.
-- **Verification:** unit test on `maskUserAgent()` with a long UA string.
+A raw User-Agent string can run past 200 characters and bloat every `activity_log` row it touches. Truncating to 50 characters plus a `...` suffix keeps the browser-and-OS signal that matters for debugging while bounding row size. A unit test on `maskUserAgent()` with a long UA string asserts the cut.
 
 #### FR-LOG-029 — MASKED_KEYS breadth
 
-- At least the eight named families plus 20+ more; masking is key-name discipline — non-standard key names miss, so payload keys must use conventional names.
-- **Verification:** unit test asserting the count and the eight named families.
+Masking is key-name discipline, which is both its strength and its warning. The list holds at least the eight named families — password, token, secret, api_key, credit_card, ssn, national_id, health_insurance — plus 20 or more additional sensitive names, and any payload key that avoids conventional naming slips through. That is why payload keys must use standard names. A unit test asserts both the count and the eight named families.
 
 #### FR-LOG-030 — Mask-before-write guarantee
 
-- No channel write path bypasses masking; the pipeline order in FR-LOG-004 enforces it structurally.
-- **Verification:** unit test feeding passwords/tokens through `save()` and asserting masked output in both sinks.
+No channel write path is allowed to bypass masking, and the guarantee is structural rather than habitual: the FR-LOG-004 pipeline order forces every payload through the masker before any sink sees it. A unit test feeds passwords and tokens through `save()` and asserts masked output in both sinks, so a future shortcut in either writer fails loudly.
 
 ### 4.6 Exception Hierarchy
 
 #### FR-LOG-031 — AppException root
 
-- Abstract, extends `RuntimeException`; framework and infrastructure failures only. Full tree in §6.3.
-- **Verification:** class-contract scan asserting the root and abstractness (layer `A`).
+Every framework-side and infrastructure failure descends from one abstract root that extends `RuntimeException` — never a business-rule complaint, never a validation message. The full tree is drawn in §6.3. A class-contract scan at layer `A` asserts the root exists and stays abstract.
 
 #### FR-LOG-032 — ModuleException root
 
-- Abstract, extends `RuntimeException`; business-rule violations only.
-- **Verification:** class-contract scan (layer `A`).
+The business side mirrors the infrastructure side with its own abstract root under `RuntimeException`, reserved for rule violations like full quotas and invalid transitions. It carries no status-code machinery of its own beyond what the shared trait provides. A class-contract scan at layer `A` asserts the root and its abstractness.
 
 #### FR-LOG-033 — Sibling trees, never nested
 
-- `catch (ModuleException)` must never catch an infrastructure failure and vice versa — if `ModuleException` extended `AppException`, a framework catch-all would silently swallow business rejections.
-- **Verification:** unit test asserting `ModuleException` is not an instance of `AppException`.
+At SMKN 1 Sintuk Toboh Gadang a well-meaning catch-all once swallowed a quota rejection and rendered it as a 500 page, sending the coordinator hunting a server fault that was really a full workshop. Had `ModuleException` extended `AppException`, every framework catch would keep making that mistake. As siblings, `catch (ModuleException)` can only ever catch business rejections and never an infrastructure failure, and vice versa. A unit test asserts a `ModuleException` is not an instance of `AppException`.
 
 #### FR-LOG-034 — Shared context trait
 
-- `withHint()`, `withContext()`, `getHint()`, `getContext()`, `toCliOutput()`, `getSanitizedContext()`, `isUserFacing()` (default true), `shouldReport()` (default true). Signature in §6.4.
-- **Verification:** unit tests calling the trait API on one exception from each tree.
+Both trees speak one dialect for diagnostics. `HasExceptionContext` supplies `withHint()`, `withContext()`, `getHint()`, `getContext()`, `toCliOutput()`, `getSanitizedContext()`, plus `isUserFacing()` defaulting true and `shouldReport()` defaulting true, with signatures fixed in §6.4. Unit tests exercise that API on one exception from each tree so neither side drifts.
 
 #### FR-LOG-035 — statusCode() contract
 
-- Every `AppException` leaf returns its HTTP status; the renderer in FR-LOG-046 consumes it.
-- **Verification:** unit test asserting `statusCode()` per concrete AppException class.
+Rendering cannot guess. Every `AppException` leaf returns its own HTTP status through `statusCode()`, and the renderer in FR-LOG-046 simply consumes that number without branching on class names. A unit test asserts the code for each concrete `AppException` class.
 
 #### FR-LOG-036 — RejectedException as the single business exception
 
-- Duplicates, not-found-as-business-rule, rate limits, invalid transitions, invariant violations all throw `RejectedException` — the legacy `ConflictException`/`NotFoundException`/`RateLimitException` names are superseded per the exception-hierarchy ADR.
-- **Verification:** unit test asserting status 400; review rejects resurrected legacy names.
+Duplicates, not-found-as-business-rule, rate limits, invalid transitions, invariant violations — all of them throw `RejectedException` at status 400, the sole business-rule voice. The legacy `ConflictException`, `NotFoundException`, and `RateLimitException` names are superseded per the exception-hierarchy ADR precisely because three extra catch branches taught developers to catch `Exception` and swallow everything. A unit test asserts the 400 status, and review rejects any resurrected legacy name.
 
 #### FR-LOG-037 — ValidationFailedException
 
-- Extends `ActionException` (400 family) with status 422 and default hint "Please check your input".
-- **Verification:** unit test asserting status and hint.
+A student submitting a logbook with an empty date field meets this exception first. It extends `ActionException` in the 400 family, carries status 422, and defaults to the hint "Please check your input" so Livewire has something humane to show. A unit test asserts both the status and the hint.
 
 #### FR-LOG-038 — UnauthorizedException
 
-- Extends `PresentationException` (400 family) with status 403 and default hint "You do not have permission".
-- **Verification:** unit test asserting status and hint.
+When a student crafts a URL to another student's grade card, this is the wall. `UnauthorizedException` extends `PresentationException` in the 400 family with status 403 and the default hint "You do not have permission". A unit test asserts the status and the hint text.
 
 #### FR-LOG-039 — InfrastructureException never user-facing
 
-- Status 500, `isUserFacing() = false` — the renderer substitutes the generic message (FR-LOG-046).
-- **Verification:** unit test asserting both defaults.
+A certificate PDF worker that loses its storage mount must never narrate mount paths to a student. `InfrastructureException` defaults to status 500 with `isUserFacing()` returning false, so the renderer in FR-LOG-046 substitutes the generic message automatically. A unit test pins both defaults.
 
 ### 4.7 Error Handling in Actions
 
 #### FR-LOG-040 — Uniform Action wrapper
 
-- `withErrorHandling(callable $callback, string $context)` is the single error boundary for Action execution. Signature in §6.5.
-- **Verification:** feature test executing an Action through the wrapper.
+With hundreds of Actions across 19 modules, error behavior cannot be a per-author improvisation. `withErrorHandling(callable $callback, string $context)` is the single error boundary every Action executes inside, its signature fixed in §6.5. A feature test runs an Action through the wrapper to prove the boundary holds.
 
 #### FR-LOG-041 — Known types pass through
 
-- `AppException`, `ModuleException`, `RuntimeException`, `ValidationException`, `AuthorizationException`, `ModelNotFoundException`, `NotFoundHttpException` re-throw untouched — logging them would double-report expected control flow.
-- **Verification:** feature test asserting each known type emerges unlogged and unwrapped.
+Logging an expected rejection as if it were a crash would flood the system log with control flow. `AppException`, `ModuleException`, `RuntimeException`, `ValidationException`, `AuthorizationException`, `ModelNotFoundException`, and `NotFoundHttpException` therefore re-throw untouched — they already carry correct semantics. A feature test throws each known type and asserts it emerges unlogged and unwrapped.
 
 #### FR-LOG-042 — Unknown throwables go system-only
 
-- Logged via SmartLogger `systemOnly()` with PII masking — an unknown error must never land in the user-visible audit trail.
-- **Verification:** feature test throwing an unexpected exception and asserting a masked system-log entry with no activity row.
+An unknown error once wrote a student's session token into the queryable audit table because the handler logged to both channels by habit. Unknown `\Throwable` instances now travel `systemOnly()` with PII masking — they must never land in the user-visible audit trail. A feature test throws an unexpected exception and asserts a masked system-log entry with no accompanying activity row.
 
 #### FR-LOG-043 — Wrapped re-throw preserves causality
 
-- `new RuntimeException($message, previous: $original)` — the chain stays debuggable while the type signals "unexpected".
-- **Verification:** feature test asserting `$previous` identity on the re-thrown exception.
+The wrapper re-throws as `new RuntimeException($message, previous: $original)`, which keeps the type signaling "unexpected" while the chain stays debuggable through `$previous`. A feature test catches the re-thrown exception and asserts the identity of the original inside it.
 
 #### FR-LOG-044 — fail() means RejectedException
 
-- `$this->fail()` is the only acceptable way to signal a business-rule violation (C8 invariant) — throwing `RuntimeException` for a rule rejection misclassifies it into the infrastructure tree.
-- **Verification:** `scan_violations.py` C8 check + feature tests asserting `RejectedException` from rule violations.
+Throwing `RuntimeException` for a full quota misclassifies a business fact as an infrastructure fault and routes it to the wrong renderer. `$this->fail()` is therefore the only acceptable business-rule signal under the C8 invariant — it always throws `RejectedException`. The `scan_violations.py` C8 check plus feature tests asserting `RejectedException` from rule violations keep authors honest.
 
 #### FR-LOG-045 — Module auto-detection
 
-- Namespace segment (e.g., `Auth`, `Journals`, `Settings`) becomes the `log_name` without the Action author passing it.
-- **Verification:** feature test asserting `log_name` from two different modules.
+Nobody passes a module name by hand anymore. The namespace segment — `Auth`, `Journals`, `Settings`, whichever Action is logging — becomes the `log_name` automatically, so a copy-pasted `log()` call cannot misattribute its row to the wrong module. A feature test logs from Actions in two different modules and asserts each `log_name`.
 
 ### 4.8 Exception Rendering
 
 #### FR-LOG-046 — AppException render path
 
-- `UnauthorizedException` → 403, `ValidationFailedException` → 422, default → 500; non-user-facing exceptions render `__('exceptions.unexpected')`. Registered in `bootstrap/app.php` — contract in §6.7.
-- **Verification:** feature tests hitting each render branch.
+The renderer registered in `bootstrap/app.php` reads the status the exception already declared: `UnauthorizedException` renders 403, `ValidationFailedException` renders 422, everything else falls to 500, and non-user-facing exceptions show `__('exceptions.unexpected')` instead of their internals. The full contract sits in §6.7. Feature tests hit each branch and assert the status plus the message shown.
 
 #### FR-LOG-047 — ModuleException render path
 
-- Always 400 with the raw message — business rejections are user-facing by definition.
-- **Verification:** feature test asserting 400 + message for a `RejectedException`.
+Business rejections are user-facing by definition — "slot full" is information, not a fault. Every `ModuleException` therefore renders as HTTP 400 carrying the raw exception message, with no generic substitution. A feature test throws a `RejectedException` and asserts the 400 plus the message.
 
 #### FR-LOG-048 — JSON envelope
 
-- API consumers get `{"message": "..."}` with the resolved status — no trace, no context dump.
-- **Verification:** feature test with `Accept: application/json` asserting the envelope shape.
+API consumers get a predictable shape and nothing else: `{"message": "..."}` with the resolved status, no trace frames, no context dump. A feature test sends `Accept: application/json` and asserts the envelope shape exactly.
 
 #### FR-LOG-049 — Non-JSON path
 
-- 500 renders the `errors.500` view; other statuses `abort($status, $message)`.
-- **Verification:** feature test asserting view vs abort per status.
+A browser that hits a 500 sees the `errors.500` view, while any other status goes through `abort($status, $message)` so the standard error pages render. The split keeps catastrophic failures styled and ordinary rejections conventional. A feature test asserts view versus abort per status.
 
 #### FR-LOG-050 — dontFlash passwords
 
-- `password`, `password_confirmation`, `current_password` never flash back into the session on exception.
-- **Verification:** feature test asserting flashed session data excludes the three keys.
+After a failed login at a shared lab computer, the password must not linger in the flashed session where the next student could read it from old input. `password`, `password_confirmation`, and `current_password` are excluded via `dontFlash`. A feature test asserts flashed session data excludes all three keys.
 
 ### 4.9 Request Context
 
 #### FR-LOG-051 — Correlation ID
 
-- UUID v4 (or v7) per request — the join key across system-log lines for one user action.
-- **Verification:** feature test asserting distinct `request_id`s across two requests.
+One user action can scatter a dozen lines across the system log, and timestamps alone cannot reunite them. `LogContextMiddleware` mints a UUID v4 or v7 `request_id` per request as the join key for those lines. A feature test fires two requests and asserts distinct IDs.
 
 #### FR-LOG-052 — Request basics
 
-- HTTP method, full URL, and client IP (IP masked at write time per FR-LOG-026).
-- **Verification:** feature test asserting the three keys in context.
+The middleware staples the HTTP method, the full URL, and the client IP onto the context before the request reaches any Action. The IP is masked at write time per FR-LOG-026, so attribution survives without exposure. A feature test asserts all three keys are present in context.
 
 #### FR-LOG-053 — Authenticated identity
 
-- `user_id` + `user_role` only when authenticated; guests log without them rather than with nulls.
-- **Verification:** feature tests for guest (absent) and authenticated (present) requests.
+Guests and members must not look alike in the trail. `user_id` and `user_role` appear only when a user is authenticated; guest requests log without those keys rather than with nulls that invite mis-parsing. Feature tests cover both halves, absent for guests and present for the authenticated.
 
 #### FR-LOG-054 — Response telemetry
 
-- Millisecond duration and final status appended post-response — the cheapest latency signal in the system.
-- **Verification:** feature test asserting both keys after a handled request.
+Duration and outcome arrive after the fact: once the response is ready, the middleware appends `duration_ms` and the final `status`. It is the cheapest latency signal in the system — no profiler, no extra query, just every request reporting how long it took. A feature test asserts both keys exist after a handled request.
 
 #### FR-LOG-055 — Automatic propagation
 
-- `Log::withContext()` means Action and SmartLogger code never passes context manually.
-- **Verification:** feature test asserting a downstream log line carries the request keys.
+Because injection rides on `Log::withContext()`, Action code and SmartLogger calls never pass request context manually — every downstream line inherits the envelope for free. Removing that manual plumbing also removes the forgetting. A feature test writes a downstream log line and asserts it carries the request keys.
 
 ---
 
@@ -555,71 +459,71 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### NFR-LOG-001 — Zero unmasked PII
 
-- Covers both sinks and CLI output (`getSanitizedContext()`). **Verification:** `PiiMasker` unit tests + `scan_security.py` over log output.
+An assessor paging through a BAN-PDM folder must never stumble on a parent's phone number or a student's token. Neither sink — file nor table — nor the terminal rendering in `getSanitizedContext()` may carry unmasked PII. `PiiMasker` unit tests plus `scan_security.py` over log output prove the zero.
 
 #### NFR-LOG-002 — No internals to users
 
-- Enforced structurally by the two render paths (FR-LOG-046/047) — the message reaching the user is either an explicit business string or the generic fallback. **Verification:** feature tests asserting response bodies contain no `SQLSTATE`, path, or `#0` trace frames.
+The two render paths in FR-LOG-046 and FR-LOG-047 enforce this structurally: whatever reaches a user is either an explicit business string or the generic fallback, never a frame or a query. Feature tests assert response bodies contain no `SQLSTATE`, no file path, and no `#0` trace frame.
 
 #### NFR-LOG-003 — Infrastructure never user-facing
 
-- The `false` default on `InfrastructureException` cannot be flipped per-instance without review justification. **Verification:** unit test on the default.
+The false default on `InfrastructureException` is a one-way door: flipping it per instance needs review justification, because a single user-facing 500 with a mount path undoes months of masking discipline. A unit test pins the default false.
 
 #### NFR-LOG-004 — Friendly error surface
 
-- Manual/visual property of the shipped error views — marked `—` because no code assertion captures "friendly". **Verification:** manual review of `errors.*` views.
+No assertion can capture "friendly", so this row stays manual by design with its layer marker `—`. A human opens the shipped `errors.*` views and judges tone, clarity, and the absence of technical residue.
 
 ### 5.2 Reliability
 
 #### NFR-LOG-005 — Audit failure isolation
 
-- Same guarantee as FR-LOG-009, stated as the reliability SLO: audit loss never causes business failure. **Verification:** FR-LOG-009's feature test.
+Stated here as the reliability SLO behind FR-LOG-009: audit loss never causes business failure, full stop. The same feature test that forces the activity write to throw and watches the Action succeed carries this row.
 
 #### NFR-LOG-006 — Audit failure visibility
 
-- Same guarantee as FR-LOG-010: every swallowed audit write leaves exactly one diagnostic system entry. **Verification:** FR-LOG-010's feature test.
+Every swallowed audit write leaves exactly one diagnostic system entry — the mirror guarantee to FR-LOG-010. Silence would let evidence gaps accumulate unnoticed until accreditation day. FR-LOG-010's feature test is the proof.
 
 #### NFR-LOG-007 — System failure loudness
 
-- Same guarantee as FR-LOG-011: total observability loss is always loud. **Verification:** FR-LOG-011's feature test.
+Total observability loss is always loud — the FR-LOG-011 promise restated as an SLO. A logging pipeline that fails quietly teaches operators to trust empty files. FR-LOG-011's feature test demonstrates the noise.
 
 #### NFR-LOG-008 — Report by default
 
-- `shouldReport() = true` on the shared trait; opting out is per-class and review-visible. **Verification:** unit test on the trait default.
+`shouldReport()` returns true on the shared trait, so every exception volunteers for reporting unless its class opts out in a review-visible declaration. There is no silent-by-default corner for a new exception to hide in. A unit test asserts the trait default.
 
 ### 5.3 Operability & Maintainability
 
 #### NFR-LOG-009 — Masked CLI output
 
-- `toCliOutput()` gives terminal debugging the full context with the same masking as file sinks. **Verification:** unit test asserting masked secrets in CLI output.
+Terminal debugging gets the full context with the same masking as the file sinks — `toCliOutput()` formats everything an operator needs while scrubbing secrets identically. A developer pasting terminal output into a chat window therefore leaks nothing the file log would have hidden. A unit test asserts masked secrets in CLI output.
 
 #### NFR-LOG-010 — Flat hierarchy
 
-- Depth counted from `RuntimeException`: `RuntimeException → AppException → ActionException → ValidationFailedException` is the maximum at 3. **Verification:** arch-level review / class-tree inspection.
+Depth is counted from `RuntimeException`, and the ceiling is three: `RuntimeException → AppException → ActionException → ValidationFailedException` is the deepest legal shape. Anything deeper means a middle layer has started freelancing as taxonomy. Arch-level review with class-tree inspection enforces the flatness.
 
 #### NFR-LOG-011 — One class per file
 
-- Single-responsibility exception files; no aggregate `Exceptions.php`. **Verification:** `scan_naming.py` (layer `A`).
+An aggregate `Exceptions.php` once hid four unrelated failures behind one import, and a rename broke three modules at once. Exception files now hold a single class with a single responsibility each. `scan_naming.py` at layer `A` proves the split.
 
 ### 5.4 Localization
 
 #### NFR-LOG-012 — Translatable user messages
 
-- Every string a user can see passes through `__()` with both `en` and `id` lines (D3 invariant). **Verification:** `LangChecker` + translation-file presence.
+Every string a user can see passes through `__()` with both `en` and `id` lines present, under the D3 invariant — a Javanese-speaking coordinator and an English-speaking contributor read the same rejection in their own language. `LangChecker` plus translation-file presence checks carry the proof.
 
 #### NFR-LOG-013 — Translatable channel names
 
-- SmartLogger system-channel names resolve via `__()` like any user-visible string. **Verification:** translation-file presence + unit test.
+Channel names surface in tooling and audit exports, so they translate like any user-visible string through `__()`. Translation-file presence plus a unit test asserting the resolution keeps a new channel from shipping English-only.
 
 ### 5.5 Accessibility
 
 #### NFR-LOG-014 — Navigable error pages
 
-- Keyboard navigation and screen-reader announcements on the shipped error views — manual property, hence `—`. **Verification:** manual audit; owned by the UI system ([8XMYS](8XMYS-layout-and-ui-system.md)) on next pass.
+Keyboard navigation and screen-reader announcements on the shipped error views are manual properties, hence the `—` layer marker. When the UI system in [8XMYS](8XMYS-layout-and-ui-system.md) takes its next pass, it owns the manual audit that proves a blind coordinator can still understand a 500.
 
 #### NFR-LOG-015 — Semantic error markup
 
-- `<main>` landmark and a proper heading hierarchy carrying the status code — manual property, hence `—`. **Verification:** manual audit alongside NFR-LOG-014.
+The `<main>` landmark and a proper heading hierarchy carrying the status code give assistive technology something honest to announce. Like its sibling above, this is a manual property marked `—`, verified by the same manual audit alongside NFR-LOG-014.
 
 ---
 
@@ -836,39 +740,27 @@ these are recorded decisions, not test rows.
 
 #### DD-LOG-001 — Dual Exception Hierarchy over a Single Tree
 
-**Decision:** Two separate trees — `AppException` (framework) and `ModuleException` (business) — as siblings under `RuntimeException` (reaffirms [SE5Q9](SE5Q9-base-classes.md) and the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md)).
-**Rationale:** Precise catch targeting: `catch (ModuleException)` catches only business rejections, `catch (AppException)` only infrastructure/presentation failures. A single tree forces every handler to inspect the hierarchy to discriminate.
-**Trade-off:** Exception authors must choose the correct tree — misclassification is a review catch, not a compiler catch.
+Early prototypes used one tree, and every handler had to inspect depth to tell a full quota from a dead database — most handlers stopped bothering and caught `Exception`. Splitting into `AppException` for framework failures and `ModuleException` for business rejections as siblings under `RuntimeException` gives each catch a precise target, reaffirming [SE5Q9](SE5Q9-base-classes.md) and the [exception-hierarchy ADR](../adr/adr-exception-hierarchy.md). The price is that exception authors must choose the right tree, which review catches but no compiler enforces.
 
 #### DD-LOG-002 — SmartLogger over Direct Log Calls
 
-**Decision:** All logging routes through `SmartLogger`; direct `Log::` / `activity()` calls are violations.
-**Rationale:** Centralizes masking, routing, and translation — without one entry point developers forget masking or write to the wrong channel, and the fluent API makes correct usage the easiest usage.
-**Trade-off:** One abstraction layer; mitigated by the concise, self-documenting fluent API.
+Before the single entry point, developers forgot masking or wrote to the wrong channel in roughly every third Action, and audit rows arrived half-masked. Routing all logging through `SmartLogger` centralized masking, routing, and translation in one place, and the fluent API made the correct call the shortest call to write. One abstraction layer remains, kept honest by how concisely it reads.
 
 #### DD-LOG-003 — Audit Failure Never Breaks Business
 
-**Decision:** Activity writes are try-caught; failures log to the system channel only.
-**Rationale:** The audit trail is compliance, not the critical path — failing a logbook submission because the audit write hiccuped is the worse outcome.
-**Trade-off:** Audit entries can be lost during DB outages; mitigated by the diagnostic system entry (FR-LOG-010).
+Failing a logbook submission because the audit write hiccuped inverts the school's priorities — homework first, evidence second. Activity writes are therefore try-caught with failures redirected to the system channel only. Audit rows can still be lost during a real database outage, and the diagnostic entry from FR-LOG-010 is what makes that loss visible instead of silent.
 
 #### DD-LOG-004 — Secure by Default Masking
 
-**Decision:** Masking on unless `withoutPiiMasking()` is called explicitly; `BaseAction::log()` always masks.
-**Rationale:** Developers must consciously choose exposure rather than accidentally forget protection; partial masking (email/phone/name) preserves enough signal for debugging.
-**Trade-off:** Slightly reduced log detail in masked fields — accepted for UU PDP compliance.
+Masking stays on unless `withoutPiiMasking()` is called explicitly, and `BaseAction::log()` always masks, because protection that requires remembering fails exactly when developers are tired. Partial masking for email, phone, and name preserves enough signal for debugging while satisfying UU PDP expectations. The accepted cost is slightly thinner detail in masked fields.
 
 #### DD-LOG-005 — Shared Context Trait
 
-**Decision:** Both trees share `HasExceptionContext` (hint, context, CLI output, sanitization).
-**Rationale:** One interface for handlers regardless of tree — Livewire catch blocks call `getHint()` on anything; CLI gets formatted output from both trees; sanitization is uniform.
-**Trade-off:** Trait coupling between trees; acceptable — pure utility methods, no business logic.
+Livewire catch blocks call `getHint()` on whatever they caught without caring which tree it fell from, and artisan commands render either tree through `toCliOutput()`. Sharing `HasExceptionContext` — hint, context, CLI output, sanitization — across both trees gives handlers one interface and keeps masking uniform. The trait couples the trees, but with pure utility methods and no business logic the coupling never bites.
 
 #### DD-LOG-006 — Middleware Request Tracing
 
-**Decision:** Global `LogContextMiddleware` mints a UUID `request_id` and injects request/response metadata into every entry.
-**Rationale:** Across 19 modules, tracing one user action across entries needs a correlation ID — otherwise debugging means manual timestamp/user/IP correlation.
-**Trade-off:** One middleware (~0.1ms overhead) — negligible.
+Tracing one student's double-submit across 19 modules by timestamp and IP correlation was miserable enough that developers stopped trying. A global `LogContextMiddleware` mints a UUID `request_id` and injects request and response metadata into every entry, restoring the thread for roughly a tenth of a millisecond per request — overhead nobody has ever been able to measure twice.
 
 ---
 
