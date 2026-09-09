@@ -98,74 +98,29 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### UC-MOD-001 — Adding a New Module
 
-**Actor:** Developer.
-**Preconditions:** None — greenfield addition.
-**Flow:**
-1. Create the module directory under `app/Modules/{Module}/` with standard layers
-2. Confirm the registry picks it up (`config/module.php` auto-discovers from the filesystem; the frozen roster in FR-MOD-001 still governs — a genuinely *new* name needs a spec amendment first)
-3. Add the test directory name to the module list in `tests/Pest.php` (alphabetical order)
-4. Create the route file at `routes/web/{lowercase_module}.php` (optional)
-5. Run `php artisan module:discover` to clear caches and verify registration
-**Postconditions:** The module's Livewire components, policies, and Blade views are auto-discovered on next boot.
-**Exercises:** FR-MOD-001–003, FR-MOD-034, FR-MOD-038.
+A new intern joining an SMK deployment team expects adding a capability to mean creating directories, not rewiring the framework. She creates `app/Modules/{Module}/` with the standard layers, confirms the registry in `config/module.php` picks it up from the filesystem — remembering that a genuinely new name still needs a spec amendment first under the frozen roster in FR-MOD-001 — adds the test directory name alphabetically in `tests/Pest.php`, drops an optional route file at `routes/web/{lowercase_module}.php`, and runs `php artisan module:discover` to clear caches and verify registration. On the next boot the module's Livewire components, policies, and Blade views are discovered without further wiring. The walk exercises FR-MOD-001 through FR-MOD-003 alongside FR-MOD-034 and FR-MOD-038.
 
 #### UC-MOD-002 — Adding a Submodule to an Existing Module
 
-**Actor:** Developer.
-**Preconditions:** Parent module exists and is registered.
-**Flow:**
-1. Create the submodule directory under `app/Modules/{Module}/Domain/{Submodule}/`
-2. Run `php artisan module:discover`
-**Postconditions:** Submodule Livewire components and policies are discovered with the kebab-case submodule prefix in the alias (e.g., `enrollment.placement.show`).
-**Exercises:** FR-MOD-014, FR-MOD-020.
+Inside `ModuleService::discoverLivewireComponents()` the scanner descends into `Domain/` subdirectories, so a submodule is just a new folder. The developer creates `app/Modules/{Module}/Domain/{Submodule}/`, runs `php artisan module:discover`, and the components surface with the kebab-case submodule prefix — `enrollment.placement.show` rather than a colliding bare `show`. The flow exercises FR-MOD-014 and FR-MOD-020.
 
 #### UC-MOD-005 — Cache Clearing and Rediscovery
 
-**Actor:** Developer via CLI.
-**Preconditions:** Structural change (new component, policy, view namespace, or module).
-**Flow:**
-1. Developer runs `php artisan module:discover`
-2. The command resolves `ModuleService` from the container
-3. Runs `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()`
-4. Each method overwrites its cache entry; the command exits `0` and logs completion via SmartLogger
-**Postconditions:** All discovery caches are refreshed.
-**Exercises:** FR-MOD-034–037.
+After renaming a policy file, a developer once spent an hour wondering why the old binding still resolved — the 24-hour cache had kept the stale map. The fix is one command: `php artisan module:discover` resolves `ModuleService` from the container, runs `discoverLivewireComponents()`, `discoverPolicies()`, and `registerBladeNamespaces()`, overwrites each cache entry, exits `0`, and logs completion through SmartLogger. Every discovery cache comes back fresh. The path exercises FR-MOD-034 through FR-MOD-037.
 
 #### UC-MOD-006 — Disabling Discovery for a Subsystem
 
-**Actor:** Developer (rare — testing or partial setups).
-**Preconditions:** None.
-**Flow:**
-1. Set `module.livewire.enabled = false` (or `policies.enabled`, `views.enabled`) in config
-2. `AppServiceProvider` skips that discovery method
-**Postconditions:** That subsystem's discovery is skipped; everything else discovers normally.
-**Exercises:** FR-MOD-010.
+Rarely — usually while isolating a broken view namespace in a partial test setup — a developer needs one subsystem quiet while the rest discovers normally. Setting `module.livewire.enabled` to false, or the `policies.enabled` or `views.enabled` siblings, makes `AppServiceProvider` skip that discovery method entirely. Everything else boots untouched. The toggle exercises FR-MOD-010.
 
 ### 3.2 System Flows
 
 #### UC-MOD-003 — App Boot Discovery
 
-**Actor:** Laravel framework (automatic).
-**Preconditions:** Application booting; caches warm or cold.
-**Flow:**
-1. `AppServiceProvider::boot()` fires
-2. If `ModuleManager::policiesEnabled()`, runs `ModuleService::discoverPolicies()`
-3. If `ModuleManager::livewireEnabled()`, runs `ModuleService::discoverLivewireComponents()`
-4. If `ModuleManager::viewsEnabled()`, runs `ModuleService::registerBladeNamespaces()`
-5. Each method reads `ModuleManager::names()`, scans only registered module directories, caches results for 24 hours
-**Postconditions:** All Livewire aliases registered, all policies bound, all Blade namespaces available.
-**Exercises:** FR-MOD-011–029.
+`AppServiceProvider::boot()` fires and three guarded calls follow: policies when `ModuleManager::policiesEnabled()` says so, Livewire components when `livewireEnabled()` agrees, Blade namespaces when `viewsEnabled()` does. Each method reads `ModuleManager::names()`, walks only registered module directories, and caches the result for 24 hours. When boot completes, every Livewire alias is registered, every policy bound, every Blade namespace available. The sequence exercises FR-MOD-011 through FR-MOD-029.
 
 #### UC-MOD-004 — Route Auto-Inclusion
 
-**Actor:** Laravel router (automatic).
-**Preconditions:** Routes loading.
-**Flow:**
-1. `routes/web.php` loads `ModuleManager::names()`
-2. For each module, resolves `ModuleManager::routeFilePath($module)`
-3. Existing files are `require`d; missing files are silently skipped
-**Postconditions:** Module routes are available with no manual edits to `routes/web.php`.
-**Exercises:** FR-MOD-030–033.
+This convention was born the third time someone forgot a manual `require` and a whole module's pages 404'd after deploy. Now `routes/web.php` loads `ModuleManager::names()`, resolves each module through `ModuleManager::routeFilePath($module)`, requires the files that exist, and silently skips the ones that do not. No hand-edited wiring means no forgotten wiring. The loop exercises FR-MOD-030 through FR-MOD-033.
 
 ---
 
@@ -223,223 +178,181 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### FR-MOD-001 — Locked roster of 19
 
-- The on-disk `app/Modules/` listing matches this roster exactly — verified during this rewrite (19 directories, names identical). Renaming cascades into Livewire aliases, routes, policies, config, tests, and docs, so the roster is treated as immutable.
-- **Verification:** directory listing vs roster (layer `A`); full list in §6.1.
+A new contributor joining an SMK deployment team once asked why she could not simply rename `Journals` to `DailyLogs` to match her ticket wording. The answer is the cascade she could not see: that single rename rewrites Livewire aliases, route filenames, policy bindings, config keys, Pest directories, and the module docs. The roster of 19 names fixed in §6.1 is therefore frozen, and the on-disk `app/Modules/` listing — checked during this rewrite at exactly 19 directories with identical names — must mirror it name for name, a correspondence the arch-layer directory-versus-roster comparison keeps proving on every structural review.
 
 #### FR-MOD-002 — Amendment before rename
 
-- Process requirement enforced at review: a module-name diff without a linked spec amendment + ADR is rejected. Registry sync covers `config/module.php`, `tests/Pest.php`, and `docs/refs/modules/index.md`.
-- **Verification:** review gate (layer `A`).
+When a module-name diff arrives in review, the gate walks it backwards: the reviewer looks first for the linked spec amendment and ADR, then for the synchronized edits to `config/module.php`, `tests/Pest.php`, and `docs/refs/modules/index.md`, and only then at the code itself. A rename with no amendment paper trail is rejected at review before any runtime is exercised, which is why the check lives at the arch layer rather than in a test — the discipline is procedural, and the review gate is its enforcement.
 
 ### 4.2 Registry Contract
 
 #### FR-MOD-003 — Filesystem-derived single source
 
-- No hand-maintained module list: `config/module.php` scans `app/Modules/` (PascalCase directories with a `Domain/` subtree) and derives the mapping. Consumers (`ModuleManager`, `ModuleService`, `routes/web.php`, `tests/Pest.php` docs) read the derived keys — never re-list directories themselves.
-- **Edge case:** a stray non-module directory under `app/Modules/` is ignored by the PascalCase + `Domain/` guard.
-- **Verification:** config review + boot smoke (layer `A`).
+Someone will eventually drop a `Scratch/` folder or a lowercase `notes/` directory into `app/Modules/` during a hectic pilot week at an SMK, and the registry must shrug it off. `config/module.php` earns that resilience by never trusting a hand-maintained list: it scans `app/Modules/`, keeps only PascalCase directories carrying a `Domain/` subtree, and derives the whole mapping from what survives the guard. `ModuleManager`, `ModuleService`, `routes/web.php`, and the `tests/Pest.php` documentation all read those derived keys rather than re-listing directories themselves, so the stray folder stays invisible. Config review plus a boot smoke at the arch layer confirms the derivation still holds.
 
 #### FR-MOD-004 — PascalCase names
 
-- Directory name is the module name verbatim; lowercase/kebab variants derive by convention (routes, aliases) but never rename the source.
-- **Verification:** `scan_naming.py` (layer `A`).
+Early in the project, route files and Blade aliases each invented their own casing for the same module until `SysAdmin` appeared as `sysadmin`, `sys-admin`, and `Sysadmin` in three different places. The rule that ended that drift is simple: the directory name is the module name verbatim in PascalCase, and every lowercase or kebab variant used by routes and aliases derives from it by convention without ever renaming the source. The `scan_naming.py` arch-layer check keeps that derivation honest.
 
 #### FR-MOD-005 — Deterministic order
 
-- `ksort`ed discovery output keeps boot deterministic; the *dependency* order (foundation → lifecycle → administration) is documented in the module graph, not re-encoded in config.
-- **Verification:** config review (layer `A`).
+If discovery ever returned modules in filesystem whim-order, two identical deploys at two SMKs could boot Livewire aliases in different sequences and turn a duplicate-alias report into a non-reproducible ghost. The `ksort`ed discovery output exists to kill that class of heisenbug: boot order stays deterministic regardless of disk layout. The deeper dependency story — foundation before lifecycle before administration — is deliberately not re-encoded in config; it lives in the module graph documentation where humans reason about it, while config review at the arch layer confirms the sort still holds.
 
 #### FR-MOD-006 — `list` key
 
-- `array_keys` of the mapping — the flat name list `ModuleManager::names()` serves.
-- **Verification:** tinker/config assertion (layer `A`).
+During onboarding at an SMK in Bandung, a junior developer looking for "the list of modules" was handed three different files by three teammates. The `list` key ends that confusion: it is simply the `array_keys` of the derived mapping, the flat name list served by `ModuleManager::names()`. A tinker session asserting the config value at the arch layer proves the key tracks the filesystem without manual curation.
 
 #### FR-MOD-007 — `registry` key
 
-- Full `Module → [domains]` map; submodule-aware discovery (FR-MOD-014/020) reads it.
-- **Verification:** config assertion (layer `A`).
+`ModuleManager::names()` answers "which modules exist," but submodule-aware discovery needs the deeper question answered: which domains live inside each module. The `registry` key carries that full `Module → [domains]` map, so the FR-MOD-014 and FR-MOD-020 submodule paths can resolve without guessing directory depth. At runtime the mapping flows straight from config into the scanners, and a config assertion at the arch layer confirms the map still reflects the filesystem.
 
 #### FR-MOD-008 — `test_dirs` key
 
-- Non-module test directories (`Providers`, `Stubs`, `Support`) registered alongside modules for the Pest side (FR-MOD-040).
-- **Verification:** config + `tests/Pest.php` review (layer `A`).
+Shared test scaffolding has no module home, so `Providers`, `Stubs`, and `Support` would silently vanish from the suite if Pest only knew about modules. The `test_dirs` key registers those non-module test directories alongside the module list, mirroring what FR-MOD-040 expects on the Pest side. A side-by-side review of the config and `tests/Pest.php` at the arch layer shows the two lists agreeing.
 
 #### FR-MOD-009 — Path keys
 
-- `paths.base` (`app_path()`), `paths.views` (`resource_path('views')`), `paths.routes` (`base_path('routes/web')`) — discovery never hardcodes a path. Full structure in §6.2.
-- **Verification:** config review (layer `A`).
+Hardcoded `app/Modules` strings scattered across scanners were a quiet portability trap — one relocation of the application root would have broken discovery in four places at once. The three path keys close it: `paths.base` resolving through `app_path()`, `paths.views` through `resource_path('views')`, and `paths.routes` through `base_path('routes/web')`, with the full structure spelled out in §6.2. Discovery reads those keys and never a literal, a habit config review at the arch layer verifies.
 
 #### FR-MOD-010 — Subsystem settings
 
-- Each subsystem (`livewire`, `policies`, `views`) carries `enabled`, its directory name, and exclusions — UC-MOD-006 toggles these.
-- **Verification:** config review + disabled-subsystem boot test (layer `A`).
+Leave every discovery subsystem permanently on and the day a broken view namespace blocks a partial test setup becomes a full-boot outage instead of a ten-minute isolation exercise. Each subsystem — `livewire`, `policies`, `views` — therefore carries its own `enabled` flag alongside its directory name and exclusions, the same toggles UC-MOD-006 flips. Booting once with a subsystem disabled and watching the rest discover normally proves the flags work at the arch layer.
 
 ### 4.3 Livewire Component Discovery
 
 #### FR-MOD-011 — Registered-module scan
 
-- Scan roots derive from `ModuleManager::names()` — never a hardcoded path list. (Path shape reflects the `Domain/` layout; the convention, not the depth, is normative.)
-- **Verification:** `ModuleService` review + boot smoke (layer `A`).
+A trainee at an SMK in Surabaya once added a `Livewire/` folder under a draft module and was baffled when its components never appeared. That silence was the design working: scan roots derive from `ModuleManager::names()`, never from a hardcoded path list, so anything outside the registry is simply never entered. What matters is the convention that registered roots follow the `Domain/` layout, not the exact depth of the glob — `ModuleService` review combined with a boot smoke at the arch layer confirms only registered ground gets walked.
 
 #### FR-MOD-012 — Concern/trait exclusion
 
-- `Concerns/` and `Traits/` hold shared behavior, not components — registering them would create bogus aliases.
-- **Verification:** boot smoke asserting no `*.concerns.*` aliases (layer `A`).
+Inside `ModuleService::discoverLivewireComponents()` the walker explicitly steps around `Concerns/` and `Traits/` directories, because those folders hold shared behavior rather than components and registering them would mint bogus aliases that collide with real screens. The exclusion runs before any class check, so a helper placed beside a component never even reaches the alias stage. A boot smoke at the arch layer asserting that no `*.concerns.*` alias exists shows the guard holding.
 
 #### FR-MOD-013 — Two-part alias
 
-- `Auth/Livewire/LoginForm.php` → `auth.login-form`. Convention table in §6.4.
-- **Verification:** alias assertion after discovery (layer `A`).
+Picture an SMK operator typing `<livewire:auth.login-form />` into a Blade file and trusting it resolves to `Auth/Livewire/LoginForm.php` on every deploy. That trust rests on the two-part alias convention — kebab-cased module plus kebab-cased class — tabulated in §6.4. The mapping is mechanical enough that an alias assertion after discovery at the arch layer catches any drift the moment a class is renamed without updating its consumers.
 
 #### FR-MOD-014 — Three-part submodule alias
 
-- `Enrollment/…/Placement/…/Show.php` → `enrollment.placement.show` — prevents collisions between submodules (`enrollment.placement.show` vs `enrollment.registration.show`).
-- **Verification:** alias assertion with two same-named submodule components (layer `A`).
+Two submodules each grew a `Show` component — one for placement, one for registration — and the bare two-part alias would have forced them to fight over a single name. The three-part form resolves it: `Enrollment/…/Placement/…/Show.php` surfaces as `enrollment.placement.show`, keeping it distinct from `enrollment.registration.show`. Proving it takes two same-named submodule components and asserting both aliases resolve at the arch layer.
 
 #### FR-MOD-015 — Component superclass gate
 
-- Plain helpers living under `Livewire/` are skipped; only `Livewire\Component` subclasses register.
-- **Verification:** discovery review + alias-list assertion (layer `A`).
+Without a superclass check, every plain helper class parked under a `Livewire/` directory would gain a phantom alias and clutter the component table until a typo'd tag resolved to dead code. Discovery avoids that rot by registering only subclasses of `Livewire\Component` and skipping everything else in silence. Discovery review paired with an alias-list assertion at the arch layer confirms the helpers stay out while genuine components register.
 
 #### FR-MOD-016 — Registry-bounded scan
 
-- Unregistered directories are never entered, even if they contain valid components (PS-3).
-- **Verification:** fixture unregistered directory asserting zero aliases from it (layer `A`).
+An intern at a vocational school in Yogyakarta once scaffolded an experimental module directly on the staging server to demo a new attendance idea, complete with valid components — and was alarmed when nothing appeared. That invisibility is PS-3 working as intended: unregistered directories are never entered even when they contain perfectly valid components. A fixture directory left deliberately unregistered, asserting zero aliases from it at the arch layer, locks the boundary in place.
 
 #### FR-MOD-017 — 24-hour Livewire cache
 
-- Key `module.discovered_livewire` (registered in `config/cache-keys.php`), TTL 86400; busted by `module:discover` / `config:clear`. Rationale in DD-MOD-004; key table in §6.6.
-- **Verification:** cache assertion after discovery (layer `A`).
+Resolving the Livewire map means walking dozens of directories on every boot, a cost a $5 shared-hosting SMK deploy feels on each request without caching. The result therefore persists for 86400 seconds under `module.discovered_livewire`, a key registered in `config/cache-keys.php` and tabulated in §6.6, with `module:discover` and `config:clear` as the explicit bust paths whose rationale DD-MOD-004 records. A cache assertion after discovery at the arch layer shows the entry landing with the right TTL.
 
 ### 4.4 Policy Discovery
 
 #### FR-MOD-018 — Registered-module policy scan
 
-- Same registry-bounded roots as Livewire, under `Policies/`.
-- **Verification:** `ModuleService` review + boot smoke (layer `A`).
+Policy discovery follows the same registry-bounded roots as Livewire, only under `Policies/` instead of component directories. The symmetry is deliberate: one registry feeds both walkers, so a module that gains authorization coverage cannot be discovered for UI but forgotten for gates. `ModuleService` review together with a boot smoke at the arch layer watches both walkers stay in step.
 
 #### FR-MOD-019 — Concern/trait exclusion
 
-- Shared authorization helpers under `Concerns/`/`Traits/` are not policies.
-- **Verification:** binding-list assertion (layer `A`).
+A shared ownership helper tucked under `Policies/Concerns/` looks, to a naive glob, exactly like a policy — same directory, same suffix habits, no model of its own. Binding it would register a gate with no backing model and fail obscurely at authorization time. The scanner therefore skips `Concerns/` and `Traits/` before shape-checking, and a binding-list assertion at the arch layer confirms those helpers never appear as gates.
 
 #### FR-MOD-020 — Policy shape gate
 
-- Suffix `Policy` + `extends BasePolicy` (per the base-class mandate) — anything else is skipped, never bound.
-- **Verification:** binding assertion + `scan_class_contracts.py` (layer `A`).
+Let any class ending in `Policy` bind and an SMK deploy eventually authorizes through a helper that never learned the role-plus-ownership contract, silently letting students see each other's records. The shape gate prevents that drift: only classes carrying the `Policy` suffix and extending `BasePolicy` register, everything else is skipped without binding. The binding assertion backed by `scan_class_contracts.py` at the arch layer proves every bound policy honors the base-class mandate.
 
 #### FR-MOD-021 — Model binding
 
-- `Module/Policies/XPolicy.php` → `Module/Models/X`. Convention table in §6.5.
-- **Verification:** `Gate` binding assertion per module (layer `A`).
+When an onboarding developer at an SMK in Semarang asked where authorization for attendance actually lives, the answer needed no search: `Module/Policies/XPolicy.php` always guards `Module/Models/X`, exactly as the convention table in §6.5 lays out. That adjacency means finding the policy finds the model and vice versa. A per-module `Gate` binding assertion at the arch layer walks the pairing and reports any orphan on either side.
 
 #### FR-MOD-022 — Submodule model binding
 
-- `Module/Submodule/Policies/XPolicy.php` → `Module/Submodule/Models/X`.
-- **Verification:** binding assertion for a submodule policy (layer `A`).
+As submodules multiply, the flat module-level pairing would start binding a submodule policy to the wrong model namespace and authorize against a sibling's table. The submodule rule keeps the binding local: a policy at `Module/Submodule/Policies/XPolicy.php` resolves to `Module/Submodule/Models/X`, never upward. A binding assertion exercised against a real submodule policy at the arch layer demonstrates the locality holding.
 
 #### FR-MOD-023 — 24-hour policy cache
 
-- Key `module.discovered_policies`, TTL 86400; same bust rules as FR-MOD-017.
-- **Verification:** cache assertion after discovery (layer `A`).
+Policy maps change only on deploys, yet resolving them costs a full directory walk — the same economics that motivated the Livewire cache. The result rests for 86400 seconds under `module.discovered_policies` and busts through the same two commands as FR-MOD-017, keeping all three discovery caches on one freshness story. A cache assertion after discovery at the arch layer confirms the entry and its TTL.
 
 #### FR-MOD-024 — Manual cross-module policies
 
-- Discovery only binds within a module; a policy guarding another module's model is explicit in `AppServiceProvider` so the exception is visible.
-- **Verification:** provider review (layer `A`).
+Discovery deliberately binds only within a module, because an automatic cross-module binding would hide a privilege edge where nobody thinks to look for it. When a policy must guard another module's model, the binding is written explicitly in `AppServiceProvider` so the exception is visible in review and greppable in the codebase. Provider review at the arch layer is the check: anything crossing a boundary without an explicit line is a defect.
 
 ### 4.5 Blade View Namespace Registration
 
 #### FR-MOD-025 — Registered-module view scan
 
-- View roots derive from the registry, not from listing `resources/views/`.
-- **Verification:** namespace assertion after boot (layer `A`).
+Left to list `resources/views/` directly, view registration would pick up half-finished theme experiments an SMK designer left in the directory and expose them as namespaces. Deriving view roots from the registry instead means only modules the application knows about gain namespaces, and draft folders stay inert. A namespace assertion after boot at the arch layer shows registered modules present and nothing else.
 
 #### FR-MOD-026 — Shared-directory exclusion
 
-- Framework/shared view directories are not module namespaces — registering them would shadow real namespaces.
-- **Verification:** namespace-list assertion excluding all seven (layer `A`).
+A trainee once placed a custom login Blade file inside `layouts/` and watched it shadow a module namespace after a naive registration pass. The seven shared directories — `components`, `emails`, `errors`, `layouts`, `mcp`, `pdf`, `vendor` — are framework and cross-cutting ground, never module namespaces, and registering them would let generic names shadow real ones. A namespace-list assertion at the arch layer names all seven exclusions and fails if any of them ever registers.
 
 #### FR-MOD-027 — Dual registration
 
-- Each module directory registers both as an anonymous-component path and as a `Module::view` namespace.
-- **Verification:** component + namespaced-view resolution smoke (layer `A`).
+Registering a module directory only as a view namespace would leave `<x-module::card />` anonymous-component tags unresolved, while registering only the component path would break `Module::view` namespaced references — either half breaks a different author's templates. Discovery therefore performs both registrations for every module directory in one pass. A resolution smoke at the arch layer renders one component tag and one namespaced view to prove both halves landed.
 
 #### FR-MOD-028 — Registry-bounded views
 
-- A view directory without a registered module stays unregistered (PS-3).
-- **Verification:** fixture directory asserting no namespace (layer `A`).
+The view layer honors the same PS-3 boundary as Livewire and policies: a view directory without a registered module gains no namespace, no matter how well-formed its Blade files are. This keeps a designer's spike folder from becoming addressable UI simply by existing on disk. A fixture directory left outside the registry, asserting no namespace emerges at the arch layer, guards the rule.
 
 #### FR-MOD-029 — 24-hour view cache
 
-- Key `module.discovered_views`, TTL 86400; same bust rules as FR-MOD-017.
-- **Verification:** cache assertion after discovery (layer `A`).
+View namespaces are the third leg of the discovery triple, and they share the family's freshness economics: stable across deploys, expensive to re-walk, cheap to cache. The map persists for 86400 seconds under `module.discovered_views` and busts through the same `module:discover` and `config:clear` paths as FR-MOD-017, so no single cache goes stale while its siblings refresh. The arch-layer cache assertion after discovery closes the loop.
 
 ### 4.6 Route Auto-Inclusion
 
 #### FR-MOD-030 — Convention over requires
 
-- No manual `require` per module — the loop over the registry is the only wiring. Rationale in DD-MOD-005.
-- **Verification:** route-list smoke after adding a fixture route file (layer `A`).
+Every hand-written `require` in `routes/web.php` was a deploy landmine: the module worked locally where the developer remembered the line, then 404'd in production where the line never landed. The registry loop removes the whole class — no per-module require exists anymore, and the reasoning DD-MOD-005 records is that wiring nobody can forget beats wiring everyone must remember. A route-list smoke after adding a fixture route file at the arch layer shows the new pages appearing with zero wiring edits.
 
 #### FR-MOD-031 — Path convention
 
-- Single resolver `ModuleManager::routeFilePath()` so the convention has one definition.
-- **Verification:** unit test on the resolver (layer `A`).
+A newcomer onboarding onto an SMK rollout should need exactly one answer to "where do this module's routes live," not a grep across the codebase. The single resolver `ModuleManager::routeFilePath()` is that answer: it owns the convention so callers never reconstruct it. A unit test against the resolver at the arch layer pins the mapping for every registry name.
 
 #### FR-MOD-032 — Silent skip
 
-- Modules without routes need no empty file — `file_exists` guards the require.
-- **Verification:** boot smoke with a routeless registered module (layer `A`).
+Forcing every registered module to ship an empty route file just to satisfy the loader would litter the tree with placeholders that confuse the next developer into thinking routes exist where they do not. The loader instead guards each require with a `file_exists` check, so routeless modules boot cleanly and no empty file is ever needed. Booting with a registered-but-routeless module and watching the smoke pass at the arch layer confirms the skip.
 
 #### FR-MOD-033 — Lowercase lookup
 
-- `SysAdmin` → `sysadmin.php`; lookup lowercases, so filesystem case never matters.
-- **Verification:** resolver unit test with a mixed-case name (layer `A`).
+`SysAdmin` on disk must resolve to `sysadmin.php` on every filesystem, case-sensitive or not, or a deploy that works on a developer's laptop fails on the school's Linux host. Lowercasing the module name before lookup removes filesystem case from the equation entirely. A resolver unit test feeding a mixed-case name and expecting the lowercase file at the arch layer locks the normalization in.
 
 ### 4.7 CLI Cache Clearing
 
 #### FR-MOD-034 — One-command refresh
 
-- Clears `module.discovered_livewire`, `module.discovered_policies`, `module.discovered_views`, then re-runs all three discovery methods; exits `0` on success.
-- **Verification:** feature test running the command and asserting fresh caches + exit code (layer `F`).
+Stale discovery caches were once a rite of passage: rename a component, spend an afternoon wondering why the old alias still resolves. The `php artisan module:discover` command collapses that debugging session into one step — it clears `module.discovered_livewire`, `module.discovered_policies`, and `module.discovered_views`, then re-runs all three discovery methods and exits `0` on success. A feature-layer test running the command and asserting fresh caches plus the exit code proves the refresh is real.
 
 #### FR-MOD-035 — Provider guard
 
-- Discovery without the provider's boot context would register into a half-wired app — the command refuses instead.
-- **Verification:** feature test asserting the guard path (layer `F`).
+Running discovery without the provider's boot context would register aliases, policies, and namespaces into a half-wired application — bindings that look healthy until the first real request fails. The command refuses that path outright instead of producing a plausible-but-broken map. A feature-layer test exercising the guard path shows the refusal firing before any registration happens.
 
 #### FR-MOD-036 — SmartLogger completion log
 
-- Success and failure both log through SmartLogger ([89SRA](89SRA-logging-and-error-handling.md)) so discovery runs appear in the audit trail.
-- **Verification:** feature test asserting the completion entry (layer `F`).
+A discovery run at an SMK in Medan once silently fixed a missing-policy outage, and nobody could later answer when the map had healed. Both success and failure now log through SmartLogger as specified in [89SRA](89SRA-logging-and-error-handling.md), so every discovery run leaves its mark in the audit trail. A feature-layer test asserting the completion entry lands turns that trail from intention into guarantee.
 
 #### FR-MOD-037 — Translated progress
 
-- Status messages via `__()` with `en` + `id` lines (D3 invariant).
-- **Verification:** command output review + `LangChecker` (layer `F`).
+Inside the command, each status line passes through `__()` with matching `en` and `id` entries, honoring the D3 invariant that no user-facing string ships in one language only. An Indonesian operator running the command during a school rollout therefore sees the same guidance as the English-speaking developer who wrote it. Command output review together with `LangChecker` at the feature layer confirms both locales resolve.
 
 ### 4.8 Test Directory Registration
 
 #### FR-MOD-038 — Pest module list
 
-- Every registered module has its `tests/{Type}/{Module}/` directory registered so suites discover it.
-- **Verification:** Pest run covering all modules (layer `A`).
+A module whose tests Pest never discovers is worse than a module with no tests — it reports green while covering nothing. Every registered module therefore has its `tests/{Type}/{Module}/` directory registered, so each suite run actually walks the module's tests. A full Pest run spanning all modules at the arch layer demonstrates that no registered module is left unscanned.
 
 #### FR-MOD-039 — Manual sync discipline
 
-- The accepted deviation from single-source (DD-MOD-001): a sync comment in `tests/Pest.php` references `config/module.php`, and module-change reviews check both files.
-- **Verification:** review gate + NFR-MOD-004 (layer `A`).
+The dual listing — `config/module.php` for runtime, `tests/Pest.php` for the suite — is the one place the single-source principle knowingly bends, and DD-MOD-001 owns that compromise. What keeps the bend from becoming a break is humble process: a sync comment in `tests/Pest.php` naming `config/module.php` explicitly, plus a standing review habit of checking both files on every module change. The review gate backed by NFR-MOD-004 at the arch layer is where that habit is enforced.
 
 #### FR-MOD-040 — Non-module test dirs
 
-- Mirrors the `test_dirs` config key (FR-MOD-008) so shared test support loads.
-- **Verification:** Pest boot smoke (layer `A`).
+Skip the shared scaffolding and the suite boots without its own helpers — `Providers`, `Stubs`, and `Support` must load or nothing else can run. Their registration mirrors the `test_dirs` config key from FR-MOD-008, keeping the Pest side and the config side telling the same story about what "everything" means. A Pest boot smoke at the arch layer fails fast if any of the three stops loading.
 
 #### FR-MOD-041 — No config() in Pest.php
 
-- Hard constraint, not style: the config container does not exist at Pest discovery time — calling it fatals the suite.
-- **Verification:** static review of `tests/Pest.php` (layer `A`).
+An eager contributor once "cleaned up" `tests/Pest.php` by replacing the hardcoded module list with a tidy `config()` call, and the entire suite died before running a single test. The constraint is structural, not stylistic: Pest discovers test directories before Laravel boots, so the config container simply does not exist yet and the call fatals. Static review of `tests/Pest.php` at the arch layer keeps the hardcode — and the suite — intact.
 
 ---
 
@@ -460,39 +373,39 @@ their code-testable consequences live on the FR rows they exercise.
 
 #### NFR-MOD-001 — Malformed-file tolerance
 
-- A developer's half-written component must not take down boot — the scanner skips what it cannot parse. **Verification:** fixture malformed file + boot smoke.
+Inside the scanner, each candidate file parses defensively: what cannot be parsed is skipped while the rest of the map still builds. That restraint matters on a school deployment where a developer's half-written component saved at 17:55 must never take down the evening attendance boot. A deliberately malformed fixture file paired with a boot smoke proves the tolerance — boot succeeds and the bad file simply contributes nothing.
 
 #### NFR-MOD-002 — Deterministic busting
 
-- Both commands guarantee fresh discovery afterward; no stale-alias debugging sessions. **Verification:** cache-absence assertion after each command.
+A cache that sometimes busts is worse than no cache: developers learn to distrust discovery and restart servers ritualistically before every demo at the SMK. Both `module:discover` and `config:clear` therefore guarantee a full refresh of every discovery entry, with no stale-alias debugging sessions afterward. Asserting cache absence after each command shows the freshness promise holding on both paths.
 
 #### NFR-MOD-003 — Collision tolerance
 
-- Two components resolving to one alias resolve last-write-wins instead of throwing — collisions surface via alias audit, not boot crashes. **Verification:** duplicate-alias fixture asserting boot succeeds.
+Two components resolving to one alias once threatened to halt boot entirely — a hard throw that turned a naming accident into a school-wide outage during enrollment week. The tolerant behavior resolves last-write-wins instead: boot succeeds, and the collision surfaces later through an alias audit rather than a crash. A duplicate-alias fixture asserting that boot still succeeds pins the tolerance in place.
 
 ### 5.2 Maintainability
 
 #### NFR-MOD-004 — Sync comment
 
-- The one-line comment is the entire drift defense for the Pest hardcode (DD-MOD-001) — it must name `config/module.php` explicitly. **Verification:** `grep` for the reference in `tests/Pest.php`.
+The entire drift defense for the Pest hardcode from DD-MOD-001 fits on one line: a comment in `tests/Pest.php` that names `config/module.php` outright. Without that pointer, the next developer editing the test list has no reason to suspect a second list exists, and the two silently diverge. A grep for the config reference in `tests/Pest.php` is the whole check — present means defended, absent means drifting.
 
 #### NFR-MOD-005 — Single config gateway
 
-- `ModuleService` never lists directories itself — `ModuleManager::names()` / `isModule()` are the only module-config reads (static by design, DD-MOD-003). **Verification:** review + `scan_violations.py`.
+A junior developer's first instinct is to call `scandir()` directly from a new service — faster than learning the manager API, and the start of three divergent notions of "registered." `ModuleService` closes that path by reading module configuration only through `ModuleManager::names()` and `isModule()`, static by design under DD-MOD-003, with zero direct directory listings of its own. Review backed by `scan_violations.py` catches any service that wanders off the gateway.
 
 #### NFR-MOD-006 — Per-method testability
 
-- `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` each run standalone so a regression points at one method. **Verification:** one test per method.
+When view namespaces broke the week before an SMK pilot, the team needed to know in minutes whether the fault sat in `discoverLivewireComponents()`, `discoverPolicies()`, or `registerBladeNamespaces()` — not "somewhere in discovery." Each method therefore runs standalone with its own test, so a regression points at exactly one of them. One test per method is both the design and the proof.
 
 ### 5.3 Security
 
 #### NFR-MOD-007 — Registry-bounded registration
 
-- An attacker- or accident-placed class outside registered modules can never gain a Livewire alias, policy binding, or view namespace. **Verification:** fixture outside the registry asserting zero registrations.
+Imagine a stray class planted outside the registered modules — left by a mistaken copy, or worse, by someone probing the server — quietly gaining a Livewire alias and becoming invocable UI. The registry boundary exists so that story never runs: nothing outside registered directories can earn an alias, a policy binding, or a view namespace. A fixture placed deliberately outside the registry, asserting zero registrations emerge, keeps the boundary provable.
 
 #### NFR-MOD-008 — BasePolicy gate
 
-- Only `BasePolicy` subclasses (role + ownership authorization per the base-class mandate) bind — a rogue policy class without the base cannot authorize. **Verification:** `scan_class_contracts.py` + binding assertion.
+Authorization uniformity across 18 modules cannot survive on goodwill: one policy written without the role-plus-ownership traits becomes the hole through which a student reaches another student's submission. Only `BasePolicy` subclasses bind, which carries that contract structurally per the base-class mandate. The `scan_class_contracts.py` run combined with a binding assertion shows every bound policy extending the base.
 
 ---
 
@@ -598,33 +511,23 @@ these are recorded decisions, not test rows.
 
 #### DD-MOD-001 — Config-Only Discovery, No Pest Integration
 
-**Decision:** `tests/Pest.php` keeps a hardcoded module list synchronized via a sync comment referencing `config/module.php`, instead of calling `config()`.
-**Rationale:** Pest's test discovery runs before Laravel boots, so `config()` is unavailable — calling it fatals the suite. The comment plus review discipline is the only viable sync.
-**Trade-off:** The single-source principle bends in exactly one place; every module change must touch two files (Success Metrics tracks the count at 2).
+Keeping the `tests/Pest.php` module list hardcoded with only a sync comment pointing at `config/module.php` looks like unfinished work until you learn that Pest discovers test directories before Laravel boots, so calling `config()` there fatals the whole suite. That boot-order reality forced the design: a config-only runtime plus a comment-synced hardcode instead of the integration every instinct suggests. The single-source principle bends in exactly this one place, which is why every module change must touch two files — a count the Success Metrics track at 2 so the exception never quietly spreads.
 
 #### DD-MOD-002 — Submodule Alias Naming
 
-**Decision:** Submodule component aliases use three parts: `module.submodule.class` in kebab-case.
-**Rationale:** Prevents collisions between same-named components in different submodules (`enrollment.placement.show` vs `enrollment.registration.show`); kebab-case matches Livewire's standard naming.
-**Trade-off:** Longer aliases — accepted for collision-proofing.
+An SMK rollout once fielded two `show` screens — placement detail and registration detail — and the flat alias gave both teams the same tag. Submodule aliases answer with three kebab-cased parts, `module.submodule.class`, so `enrollment.placement.show` and `enrollment.registration.show` coexist without negotiation. The aliases run longer than anyone loves, but collision-proofing won over brevity because Livewire's standard naming already leans kebab and the extra segment reads naturally in Blade.
 
 #### DD-MOD-003 — Static Reads on ModuleManager
 
-**Decision:** `ModuleManager::names()` and `ModuleManager::isModule()` are `public static` on `Core\Support\ModuleManager` (see B114U DD-1); `ModuleService` keeps instanced methods with constructor injection for orchestration.
-**Rationale:** Pure config reads need no instance state or I/O — static access serves contexts without a container (route files, model boot methods) without violating the service pattern.
-**Trade-off:** Static surface on one narrow gateway — contained by keeping all other discovery logic instanced and injected.
+Route files and model boot methods need the module list in contexts where no container exists to inject, which is why `ModuleManager::names()` and `ModuleManager::isModule()` are public statics on `Core\Support\ModuleManager` while `ModuleService` keeps its orchestration instanced with constructor injection per B114U DD-1. Pure config reads carry no instance state and no I/O, so static access costs nothing and serves everywhere. The static surface stays confined to that narrow gateway — all remaining discovery logic lives instanced and injected, which review confirms.
 
 #### DD-MOD-004 — 24-Hour Cache TTL
 
-**Decision:** Discovery results cache for 86400 seconds.
-**Rationale:** Module structure changes only on deploys; development busts explicitly via `module:discover` / `config:clear`. 24 hours balances production boot speed against freshness.
-**Trade-off:** A mid-day structural deploy needs an explicit cache clear — documented in the deploy flow, not hidden.
+Module structure changes only when a deploy lands, so re-walking the tree on every boot spends production cycles relearning what rarely changes. Caching discovery results for 86400 seconds trades a day of staleness risk for fast boots, with development refreshing explicitly through `module:discover` or `config:clear`. A structural deploy landing mid-day therefore needs that explicit clear — a step the deploy flow documents rather than hiding, so freshness stays a conscious act.
 
 #### DD-MOD-005 — Route Auto-Inclusion Pattern
 
-**Decision:** `routes/web.php` loops `ModuleManager::names()` and requires by convention (`ModuleManager::routeFilePath()`), silently skipping missing files.
-**Rationale:** Eliminates manual `require` edits per module; routeless modules need no empty placeholder files.
-**Trade-off:** A typo'd route filename fails silently — mitigated by the `module:discover` verification step in the add-module workflow (UC-MOD-001).
+The pattern grew out of embarrassment: three separate deploys 404'd whole modules because a manual `require` was forgotten, the third during a live SMK demo. Now `routes/web.php` loops `ModuleManager::names()` and requires through `ModuleManager::routeFilePath()`, silently skipping modules without files so routeless modules need no placeholders. A mistyped filename still fails silently rather than loudly — the accepted cost, mitigated by running the `module:discover` verification step from the UC-MOD-001 add-module workflow before shipping.
 
 ---
 
