@@ -77,37 +77,15 @@ stated session-auth position, state-changing requests are exposed to cross-site 
 
 #### UC-MID-001 — Developer Adds New Core Middleware
 
-**Actor:** Developer
-**Preconditions:** New global request processing needed (e.g., maintenance mode).
-**Flow:**
-1. Create class in `app/Modules/Core/Http/Middleware/`
-2. Register in `bootstrap/app.php` (alias or global position)
-3. Position in pipeline relative to existing middleware per §6.1
-4. Test that existing middleware still executes in correct order
-**Postconditions:** New middleware runs on every request at the correct position.
-**Governing guidance:** FR-MID-001/012, DD-MID-001.
+When an SMK needed a maintenance-mode banner during enrollment-week database work, the fix had to run on every request without disturbing authentication. The developer creates the class in `app/Modules/Core/Http/Middleware/`, registers it in `bootstrap/app.php` as an alias or at a global position, slots it into the pipeline relative to the existing order in §6.1, then proves the neighbors still execute in sequence. The new middleware ends up running on every request at the correct position, under FR-MID-001 and FR-MID-012 with DD-MID-001 fixing the first-slot rationale.
 
 #### UC-MID-002 — Developer Adds Module-Specific Middleware
 
-**Actor:** Developer
-**Preconditions:** New route-group processing needed (e.g., setup gating).
-**Flow:**
-1. Create class in `{Module}/Http/Middleware/` (or the domain path, e.g. `Setup/Domain/Installation/Http/Middleware/`)
-2. Register as alias in the module's route file
-3. Apply to specific route group via `->middleware()`
-**Postconditions:** Middleware runs only on targeted routes.
-**Governing guidance:** FR-MID-012.
+For route-group work like setup gating, the class lives beside its module in `{Module}/Http/Middleware/` or the domain path such as `Setup/Domain/Installation/Http/Middleware/`, never in Core. Registration happens as an alias inside the module's own route file, and the route group applies it with `->middleware()`, so the check runs only on targeted routes and global traffic never pays for it. FR-MID-012 owns that extension path.
 
 #### UC-MID-003 — Developer Configures Rate Limiting
 
-**Actor:** Developer
-**Preconditions:** Route needs rate limiting.
-**Flow:**
-1. Choose the existing named limiter (`admin` or `global`) or a canonical per-endpoint budget from §6.4
-2. Apply via `->middleware('throttle:admin')` on the route group — or via the governing spec's enforcement point for auth endpoints
-3. Verify throttling behavior with test requests using the canonical values, never ad-hoc numbers
-**Postconditions:** Rate limiting active with the correct, auditable limits.
-**Governing guidance:** FR-MID-010/011; per-endpoint governing specs linked in §6.4.
+The edge that keeps biting is the tempting inline number: a developer throttles a new admin route at 100 per minute because it feels safe, and the audit now holds two truths. The disciplined path starts from the named limiter — `admin` or `global` — or a canonical per-endpoint budget from §6.4, applies it with `->middleware('throttle:admin')` on the route group or through the governing spec's enforcement point for auth endpoints, then verifies with test requests using those canonical values, never ad-hoc numbers. The route ends rate-limited with auditable limits under FR-MID-010 and FR-MID-011, with per-endpoint owners linked in §6.4.
 
 ---
 
@@ -137,76 +115,61 @@ stated session-auth position, state-changing requests are exposed to cross-site 
 
 #### FR-MID-001 — Global pipeline with fixed order
 
-- Order: LogContext → SecurityHeaders → CSRF → Authenticate → CheckRole → SetLocale → handler (§6.1). Registration lives in `bootstrap/app.php`.
-- **Verification:** `bootstrap/app.php` review + header/context feature tests proving order effects (layer `A`).
+The fixed order exists because every permutation was once tried and each broke something: role checks before authentication let anonymous users probe admin routes, headers after handling missed every error page. Now `bootstrap/app.php` pins one sequence — LogContext, then SecurityHeaders, then CSRF, then Authenticate, then CheckRole, then SetLocale, then the handler in §6.1 — applied to all HTTP requests globally. Review of `bootstrap/app.php` plus header and context feature tests prove the order effects at layer `A`.
 
 #### FR-MID-002 — Request log context
 
-- Payload in §6.5; `request_id` is a UUID v4 generated per request so every downstream log line is correlatable.
-- **Edge case:** logging infrastructure down MUST NOT fail the request (NFR-MID-003) — context assembly degrades silently.
-- **Verification:** feature test asserts context keys on a logged request (layer `F`).
+Lose the request identifier and a production incident becomes seven disconnected log lines nobody can join. `LogContextMiddleware` attaches the full payload from §6.5 — `request_id` as a UUID v4 generated per request, plus `user_id`, `user_role`, `duration_ms`, method, URL, and IP — so every downstream line stays correlatable. If logging infrastructure itself goes down, context assembly degrades silently and the request still succeeds per NFR-MID-003. A feature test asserts the context keys on a logged request at layer `F`.
 
 #### FR-MID-003 — Security headers before handling
 
-- Values contracted in [security-headers](1PGM4-security-headers.md); this row owns the position (before the handler, never as an afterthought on rendered views only).
-- **Verification:** feature test asserts headers on normal, redirect, and error responses (layer `F`).
+An SMK in Solo once passed its homepage security scan yet served its 404 page with no headers at all, because headers had been added in the Blade layout instead of the pipeline. This row owns the position, not the values: `SecurityHeadersMiddleware` sets CSP, HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy before route handling, with values contracted in [security-headers](1PGM4-security-headers.md). A feature test asserts the headers on normal, redirect, and error responses alike at layer `F`.
 
 #### FR-MID-004 — Auth and CSRF positions
 
-- Authentication and forgery validation run after context/headers (so denials are logged and hardened) and before role/locale (which need identity). Mechanics in FR-MID-013.
-- **Verification:** `bootstrap/app.php` review (layer `A`).
+A request enters with context attached and headers already set, then meets Laravel built-in `Authenticate` and CSRF validation in that sheltered position — late enough that denials are logged and hardened, early enough that role and locale downstream already have an identity to work with. The mechanics live in FR-MID-013. Review of `bootstrap/app.php` confirms the two slots hold at layer `A`.
 
 ### 4.2 Module Middleware Behaviors
 
 #### FR-MID-005 — Login throttling
 
-- Canonical values in §6.4; governing spec is [authentication](YB7RG-authentication.md). Throttling keys on IP so credential-stuffing from one source is contained.
-- **Verification:** feature test exceeds 5 attempts in 60s and is throttled (layer `F`).
+The credential-stuffing edge is a single IP hammering logins at dawn before staff arrive. `AuthThrottleMiddleware` keys on IP and enforces 5 attempts per 60 seconds per the canonical values in §6.4, driven by config keys `auth.throttle.login_max_attempts` holding 5 and `login_decay_seconds` holding 60, with [authentication](YB7RG-authentication.md) as governing spec. A feature test exceeds five attempts inside sixty seconds and proves the sixth is throttled, at layer `F`.
 
 #### FR-MID-006 — Role gate
 
-- Role semantics owned by [rbac-and-authorization](T4B26-rbac-and-authorization.md); this middleware is the route-level enforcement point returning 403 on failure.
-- **Verification:** feature tests for allow/deny per role (layer `F`).
+Route protection once lived inside each Livewire component, and every forgotten check was a silent privilege grant. `CheckRoleMiddleware` pulled that decision into one route-level enforcement point that verifies the required role before execution and returns 403 on failure, while role semantics themselves stay owned by [rbac-and-authorization](T4B26-rbac-and-authorization.md). Feature tests walk allow and deny per role at layer `F`.
 
 #### FR-MID-007 — Locale resolution and persistence
 
-- Resolution order: authenticated user preference → session → application default; the resolved locale persists so the next request needs no re-negotiation.
-- **Verification:** feature test asserts locale switch persists across requests (layer `F`).
+Without persistence every click renegotiates language, and an Indonesian teacher flips to English on each navigation because the session forgot. `SetLocaleMiddleware` resolves once in strict order — authenticated user preference, then session, then application default — and persists the selection so the next request inherits it without renegotiation. A feature test asserts a locale switch survives across requests at layer `F`.
 
 #### FR-MID-008 — Setup route protection
 
-- After installation completes, setup routes are unreachable — reinstall-via-URL is impossible.
-- **Verification:** feature test hits a setup route post-install and is blocked (layer `F`).
+A curious student at an SMK in Bogor once guessed the `/setup` URL months after go-live and reached a live installer pointed at the production database. `ProtectSetupRouteMiddleware` closes that door: after installation completes, setup routes become unreachable and reinstall-via-URL is impossible. The feature test hits a setup route post-install and proves it is blocked, at layer `F`.
 
 #### FR-MID-009 — Setup access token
 
-- Setup routes additionally require a valid access token, so network access alone is insufficient during installation.
-- **Verification:** feature test with missing/invalid/valid token (layer `F`).
+During installation the request first meets `RequireSetupAccessMiddleware`, which demands a valid setup access token before any setup screen renders — network reachability alone never suffices. The feature test walks the three outcomes in sequence, missing token rejected, invalid token rejected, valid token admitted, at layer `F`.
 
 ### 4.3 Rate Limiting
 
 #### FR-MID-010 — Named route limiters
 
-- Registered via `RateLimiter::for()`; applied with `->middleware('throttle:admin')` / `throttle:global` on route groups. `global` is per-IP at 30/min per QLHDO §10.
-- **Verification:** limiter registration review + throttling feature test (layer `F`).
+The shared-lab edge is thirty students behind one school IP hitting the dashboard at once, which a naive per-user limiter would wave through and a global one must absorb fairly. `AppServiceProvider` registers two named limiters via `RateLimiter::for()` — `admin` at 60 per minute per user for settings and user management, `global` at 30 per minute per IP for general authenticated routes per QLHDO §10 — applied with `->middleware('throttle:admin')` or `throttle:global` on route groups. Limiter registration review plus a throttling feature test holds both at layer `F`.
 
 #### FR-MID-011 — Canonical per-endpoint budgets
 
-- The §6.4 table is the single registration point for the QLHDO §10 budgets (FR-GLB-005): login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s, plus password confirmation 5/300s. Enforcement mechanics live in the governing specs; login via `AuthThrottleMiddleware`, the rest via inline `RateLimiter` in Actions/Components.
-- **Verification:** each governing spec's throttling test uses these exact values (layer `F`).
+Per-endpoint limits once drifted because each auth spec invented its own numbers, and forgot-password ended up stricter than login on some deploys. The §6.4 table stopped that by becoming the single registration point for the QLHDO §10 budgets under FR-GLB-005: login 5 per 60 seconds, forgot 3 per 3600, reset 5 per 300, recovery 3 per 300, plus password confirmation 5 per 300. Enforcement mechanics stay in the governing specs — login through `AuthThrottleMiddleware`, the rest through inline `RateLimiter` in Actions and Components — and each governing spec's throttling test uses these exact values at layer `F`.
 
 ### 4.4 Request Integrity & Extensibility
 
 #### FR-MID-012 — Extension without core edits
 
-- New middleware ships as an alias applied in the module's route file; `bootstrap/app.php` and existing middleware stay untouched.
-- **Edge case:** genuinely global new middleware (maintenance mode) registers in `bootstrap/app.php` at an explicit §6.1-relative position with a DD note.
-- **Verification:** alias registration review (layer `A`).
+Editing Core to add a module check is how regressions ship: one touched line in `bootstrap/app.php` reorders the whole pipeline. New middleware therefore ships as an alias applied in the module's own route file, leaving `bootstrap/app.php` and every existing middleware untouched. Only genuinely global middleware such as maintenance mode registers in `bootstrap/app.php`, at an explicit §6.1-relative position with a DD note. Alias registration review enforces the boundary at layer `A`.
 
 #### FR-MID-013 — CSRF on web, session auth, no token layer
 
-- `preventRequestForgery` is active with the `setup` exception (setup runs pre-install without sessions); authentication is session-cookie via Laravel defaults. No Sanctum/token guard exists because there is no API surface (see [tech-stack](FB792-tech-stack.md) non-goals).
-- **Verification:** `bootstrap/app.php` review + CSRF rejection feature test (layer `F`).
+A Livewire-only frontend still posts through HTTP, and an SMK lab browser with a stale session proved that forgery protection cannot be assumed away. `preventRequestForgery` stays active on web routes with only the `setup` exception, since setup runs pre-install without sessions, and authentication remains session-cookie via Laravel defaults. No Sanctum or token guard exists because there is no API surface, per the [tech-stack](FB792-tech-stack.md) non-goals. Review of `bootstrap/app.php` plus a CSRF rejection feature test holds the line at layer `F`.
 
 ---
 
@@ -222,16 +185,15 @@ stated session-auth position, state-changing requests are exposed to cross-site 
 
 #### NFR-MID-001 — Headers coexist with HMR
 
-- Development CSP relaxations for the Vite dev server are contracted in [security-headers](1PGM4-security-headers.md) (FR-SEC-010); this row asserts the observable outcome.
-- **Verification:** manual HMR smoke in local env (layer `F`).
+In a local run the request passes the full header middleware and still has to reach the Vite dev server for hot reload. The development CSP relaxations contracted in [security-headers](1PGM4-security-headers.md) under FR-SEC-010 carve that path, and this row asserts only the observable outcome: HMR works with headers active. A manual smoke in the local environment confirms it at layer `F`.
 
 #### NFR-MID-002 — Cache-backed counters
 
-- **Verification:** limiter definitions review — all `RateLimiter::for()` closures resolve against cache (layer `A`).
+The slow edge is a database-backed throttle table under a login flood: every attempt writes a row, and the guard meant to protect authentication becomes the bottleneck that topples it. Counters therefore resolve against the cache driver, never the database, holding zero DB-backed counters. Limiter definitions review confirms every `RateLimiter::for()` closure points at cache, at layer `A`.
 
 #### NFR-MID-003 — Logging never breaks requests
 
-- **Verification:** feature test with logging disabled/broken asserts the response still succeeds (layer `F`).
+Observability must never outrank availability — a full disk on the log volume once turned every admin page into a 500 before this rule existed. `LogContextMiddleware` therefore never fails the request when logging infrastructure is down, holding zero logging-caused 500s. A feature test with logging disabled and then broken asserts the response still succeeds at layer `F`.
 
 ---
 
@@ -316,27 +278,15 @@ not test rows, so `Layer`/`Status` stay `—`.
 
 #### DD-MID-001 — LogContext as First Middleware
 
-**Decision:** `LogContextMiddleware` is the first middleware in the pipeline.
-**Rationale:** Every subsequent middleware and the route handler can rely on request context
-being available. Placing it later would mean some operations lack traceability.
-**Trade-off:** Adds ~1ms to every request for context assembly. Negligible for the debugging
-benefit.
+Place context assembly anywhere but first and the failure is a blind denial: a rejected CSRF token or failed role check logs without a request identifier, and the incident is untraceable. `LogContextMiddleware` runs first so every later middleware and the handler inherits request context. The assembly costs roughly one millisecond per request, negligible against the debugging benefit.
 
 #### DD-MID-002 — Security Headers Before Route Handling
 
-**Decision:** `SecurityHeadersMiddleware` runs before the route handler, not as a response middleware.
-**Rationale:** Headers must be set before any response content is generated. Running as
-response middleware risks headers being omitted on early returns or exceptions.
-**Trade-off:** Headers are set even for 404/403 responses, which is correct behavior.
+An SMK penetration test once flagged headerless 403 pages: the app set headers in a response wrapper that early denials never reached. `SecurityHeadersMiddleware` now runs before the route handler rather than as response middleware, so headers are bound before any content or exception path executes. Headers land on 404 and 403 responses too, which is correct behavior rather than overhead.
 
 #### DD-MID-003 — Named Rate Limiters Over Inline Configuration
 
-**Decision:** Rate limiters are registered by name in `AppServiceProvider`, not configured
-inline in route files.
-**Rationale:** Centralizes rate limiting policy. Makes it easy to audit and adjust limits
-without modifying individual route files.
-**Trade-off:** Adds a layer of indirection. Developers must check `AppServiceProvider` to
-understand actual limits — mitigated by the §6.3/§6.4 tables.
+At boot `AppServiceProvider` registers each limiter once by name, and route files only reference that name instead of embedding numbers. Centralizing policy this way means an audit or a tuning pass touches one file rather than hunting inline values across routes. The indirection costs developers a lookup in `AppServiceProvider` to see actual limits, mitigated by the §6.3 and §6.4 tables that publish every value in one place.
 
 ---
 
