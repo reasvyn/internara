@@ -79,26 +79,13 @@ CI and repo inspection rather than application tests, so `Layer`/`Status` are fi
 
 #### UC-STACK-001 — Developer Reproduces the Tested Environment
 
-**Actor:** Developer
-**Preconditions:** Git checkout, PHP 8.4+, Composer, Node available.
-**Flow:**
-1. Developer runs `composer install --locked --optimize-autoloader`
-2. Composer resolves the exact versions recorded in `composer.lock`
-3. Developer runs `npm ci` for the locked JS toolchain
-4. The resulting environment matches the tested dependency set
-**Postconditions:** Identical dependency set on every machine — no version drift.
-**Governing guidance:** §6 lockfile contract; [installation](8NZAU-installation.md) for the full setup flow.
+A technician at an SMK in Cimahi once set up Internara on a refurbished admin PC and spent an afternoon chasing a Livewire error that nobody in Bandung could reproduce, only to discover his Composer had resolved newer minor versions than the tested set. That incident is why reproduction starts from a plain Git checkout with PHP 8.4+, Composer, and Node available and proceeds through two locked commands: `composer install --locked --optimize-autoloader` pulls exactly the versions recorded in `composer.lock`, then `npm ci` rebuilds the locked JS toolchain.
+
+When both steps complete, the machine holds an identical dependency set to every other machine, with no drift to debug. The §6 lockfile contract owns that guarantee, and the full setup flow lives in [installation](8NZAU-installation.md), where a passing locked install is the observable proof the environment matches.
 
 #### UC-STACK-002 — Release Gate Scans for Vulnerable Dependencies
 
-**Actor:** Developer / CI
-**Preconditions:** Release candidate branch.
-**Flow:**
-1. CI runs `composer audit` and `npm audit` against the manifest
-2. Any known vulnerability fails the gate until upgraded or explicitly accepted
-3. Version bumps are recorded in the manifest before release
-**Postconditions:** No known-vulnerable dependencies in a release.
-**Governing guidance:** FR-STACK-013, DD-STACK-003.
+When a release candidate branch is cut, CI loads the manifest and runs `composer audit` and `npm audit` against it before anything is tagged. If either scanner reports a known vulnerability, the gate fails and the release waits while the package is upgraded to a fixed version or the risk is explicitly accepted with its reasoning recorded; the version bump itself lands in the manifest first so the lockfile tells the same story as the release notes. A green gate therefore means the shipped archive carries no known-vulnerable dependency, a property governed jointly by FR-STACK-013 and DD-STACK-003.
 
 ---
 
@@ -132,78 +119,63 @@ A manifest entry is a verifiable declaration: the constraint is in `composer.jso
 
 #### FR-STACK-001 — PHP 8.4 floor
 
-- `composer.json` requires `php: ^8.4`; CI installs and tests on PHP 8.4.
-- **Edge case:** a host offering only PHP 8.1/8.3 is an unsupported environment per [system-requirements](J68GZ-system-requirements.md) — fail the install check, not the runtime.
-- **Verification:** `composer.json` require block + CI matrix (layer `A`).
+A school host that offers only PHP 8.1 once produced a deployment where readonly properties parsed but behaved subtly wrong, and the failure surfaced weeks later as corrupt placement state rather than a clean error. `composer.json` therefore requires `php: ^8.4` outright, and CI installs and tests on PHP 8.4 so the `composer.json` require block and the CI matrix agree as the layer `A` proof. Per [system-requirements](J68GZ-system-requirements.md) such a host is an unsupported environment, which means the install check fails loudly instead of letting the runtime fail quietly.
 
 #### FR-STACK-002 — Laravel 13 floor
 
-- Middleware registration (`bootstrap/app.php`), queue configuration, and migration syntax follow Laravel 13 conventions.
-- **Verification:** `composer.json` + `composer.lock` (layer `A`).
+Laravel 13 moved middleware registration into `bootstrap/app.php` and tightened queue configuration and migration syntax, so code written against Laravel 11 idioms silently registers nothing on the new bootstrap. The floor exists to end that class of ghost failure: every middleware registration, queue definition, and migration in the codebase follows Laravel 13 conventions, pinned by `laravel/framework ^13.0`. The `composer.json` constraint together with the resolved `composer.lock` entry is the layer `A` evidence, and any drift shows up there first.
 
 #### FR-STACK-003 — Livewire 4 floor
 
-- Components use Livewire 4 APIs (`Livewire::handle()`, property binding, polling); no Livewire 3 shims.
-- **Verification:** `composer.json` + component smoke tests in owning specs (layer `A`).
+Mixing Livewire 3 shims into a Livewire 4 tree leaves components that mount fine but stop polling under load, and the resulting stale attendance dashboard looks correct while showing yesterday's numbers. Components therefore use only Livewire 4 APIs — `Livewire::handle()`, property binding, polling — with no compatibility shims smuggled in. `composer.json` pins `livewire/livewire ^4.0`, and the component smoke tests in the owning specs confirm the running behavior at layer `A`.
 
 #### FR-STACK-004 — Tailwind CSS v4 floor
 
-- Styling uses the v4 `@theme` directive and CSS-first config; no v3 `tailwind.config.js` semantics.
-- **Verification:** `package.json` + `npm run build` (layer `A`).
+During the v3-to-v4 migration at an SMK in Yogyakarta, a teacher's laptop rendered the supervision dashboard with no spacing at all because the old `tailwind.config.js` semantics were silently ignored by the v4 compiler. Styling now uses only the v4 `@theme` directive and CSS-first configuration, so there is no v3 config file for a deploy to misread. The `package.json` pin on `tailwindcss ^4.3` plus a passing `npm run build` is the layer `A` confirmation that the stylesheet compiled under the intended compiler.
 
 #### FR-STACK-005 — TallstackUI v4 kit
 
-- `tallstackui/tallstackui: ^4.0` is the UI component kit (`alert`, `toast`, `modal`, `form`, `table`, `badge`, …); new components use `<x-ts-*>`.
-- **Verification:** `composer.json` + `grep -R "x-ts-" resources/views` (layer `A`).
+When a new dialog or data table is needed, the code reaches for `tallstackui/tallstackui ^4.0` first — `alert`, `toast`, `modal`, `form`, `table`, `badge`, and the rest render as `<x-ts-*>` tags in `resources/views`. That single-kit habit is what keeps the toast path and the theme system unified instead of fragmenting into per-module widgets. The `composer.json` pin proves the kit is present, and a repository search for `x-ts-` usage shows the convention is actually followed at layer `A`.
 
 #### FR-STACK-006 — TallstackUI-only with documented exceptions
 
-- Custom Blade/Tailwind is a fallback, not a parallel system; each fallback carries a comment naming the TallstackUI gap it works around.
-- **Verification:** review gate + `scan_ui_consistency.py` (layer `A`).
+A placement table at one school grew a hand-rolled Blade paginator because TallstackUI's table could not yet render merged supervision cells, and within a month two more screens had copied the pattern into a shadow design system. Custom Blade or Tailwind is therefore a fallback rather than a parallel system: it is permitted only where TallstackUI cannot achieve the design, and each fallback carries an inline comment naming the exact gap it works around so the workaround can retire when the kit catches up. Reviewers read those comments alongside the `scan_ui_consistency.py` output as the layer `A` check that no undocumented parallel UI has taken root.
 
 #### FR-STACK-007 — Zero legacy UI tokens
 
-- `grep -R "x-mary" resources/ app/` returns 0; `grep -R "flash()->" app/` returns 0; no `@plugin daisyui` in CSS entrypoints. Self-hosted palette shims in `app.css` bridge remaining legacy class tokens until `x-ts-*` migration completes.
-- **Verification:** grep gates in CI (layer `A`).
+The DaisyUI, MaryUI, and PHPFlasher era ended in 0.15.0, when the manifests dropped the old packages and the great rename swept every `x-mary-*` component and `flash()->` call out of the tree. What remains is enforced absence: searching `resources/` and `app/` for `x-mary` returns nothing, searching `app/` for `flash()->` returns nothing, and no CSS entrypoint carries `@plugin daisyui`. Only the self-hosted palette shims in `app.css` survive, bridging legacy class tokens until the last `x-ts-*` migration lands. CI grep gates hold that zero at layer `A`, so a reintroduced legacy token fails the build instead of quietly coexisting.
 
 ### 4.2 Dependency Manifest & Reproducibility
 
 #### FR-STACK-008 — Registered manifest with committed lockfile
 
-- Full runtime/dev tables in §6; the lockfile diff is reviewed on every dependency change.
-- **Verification:** `git ls-files | grep lock` + `composer validate --strict` (layer `A`).
+Without a committed lockfile, two schools installing the same release get two different dependency trees, and the bug report from one cannot be reproduced on the other. The full runtime and dev tables in §6 declare every allowed package, `composer.lock` pins the exact tested versions, and the lockfile diff is reviewed on every dependency change like any other code. Listing tracked files for a lock entry and running `composer validate --strict` confirms the manifest is well-formed at layer `A`.
 
 #### FR-STACK-009 — Locked installs
 
-- `--locked` fails the install when `composer.json` and `composer.lock` disagree, instead of silently resolving.
-- **Verification:** CI install step uses the exact §6 command (layer `A`).
+An operator at an SMK in Semarang once ran a plain `composer install` after editing a version constraint and unknowingly upgraded three transitive packages, turning a routine deploy into a morning of red attendance pages. The `--locked` flag exists for that moment: when `composer.json` and `composer.lock` disagree, the install fails instead of silently resolving something new. CI runs the exact §6 command, so the layer `A` evidence is simply that the pipeline installs the locked way every time.
 
 #### FR-STACK-010 — Pinned JS toolchain
 
-- `vite`, `laravel-vite-plugin`, `tailwindcss` + `@tailwindcss/vite`, and formatter plugins are pinned in `package.json`; `npm ci` (never `npm install`) reproduces the toolchain.
-- **Verification:** CI frontend step + `npm run build` (layer `A`).
+When `npm install` runs on the frontend tree, it happily floats Vite or the Tailwind plugin forward and the resulting bundle differs from the one QA approved. The toolchain therefore pins `vite`, `laravel-vite-plugin`, `tailwindcss` with `@tailwindcss/vite`, and the formatter plugins in `package.json`, and reproduction always goes through `npm ci`, never `npm install`. CI's frontend step followed by `npm run build` exercises that exact path, which is the layer `A` proof the shipped assets came from the pinned set.
 
 #### FR-STACK-011 — No undeclared direct packages
 
-- A module importing a package not listed in `composer.json`/`package.json` is a manifest defect, fixed by declaring the dependency — not by relying on a transitive copy.
-- **Verification:** `composer show --direct` vs manifest review (layer `A`).
+A module once imported a date helper that happened to arrive transitively through a PDF package, and the next PDF upgrade silently removed it, breaking certificate generation the night before graduation prints. A module that imports a package not listed in `composer.json` or `package.json` carries exactly that defect, and the fix is to declare the dependency rather than lean on the transitive copy. Comparing `composer show --direct` against the manifest during review catches the gap at layer `A`, before an unrelated upgrade turns it into an outage.
 
 ### 4.3 Tier Defaults & Release Gates
 
 #### FR-STACK-012 — Tier-1 zero-external-services defaults
 
-- Per [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md) and [performance-optimization ADR](../adr/adr-performance-optimization.md): Tier 1 (shared hosting, ≤500 users) needs nothing beyond MySQL/MariaDB; Tier 2/3 transitions are `.env` swaps with zero code changes. No feature is disabled in any tier.
-- **Verification:** fresh shared-hosting deploy smoke per [deployment](../guides/infra/deployment.md) (layer `A`).
+The tiering story predates the current hosting guide: early pilots showed small schools stalling because the install assumed Redis and S3 that their $5 shared hosting simply did not have. Per the [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md) and the [performance-optimization ADR](../adr/adr-performance-optimization.md), Tier 1 with up to 500 users needs nothing beyond MySQL or MariaDB plus file cache, sync queue, database sessions, and local disk, and moving to Tier 2 or 3 is a set of `.env` swaps with zero code changes. No feature is disabled in any tier, so the same release runs everywhere. A fresh shared-hosting deploy smoke per the [deployment](../guides/infra/deployment.md) guide is the layer `A` demonstration.
 
 #### FR-STACK-013 — Audit gate
 
-- A critical advisory blocks the release until the package is upgraded or the acceptance is recorded with its rationale.
-- **Verification:** CI audit job (layer `A`).
+Shipping with a published critical advisory is the cheapest vulnerability to prevent and the most embarrassing to explain to a school principal. The gate blocks the release until the affected package is upgraded or the acceptance is recorded alongside its rationale, so silence can never pass as approval. The CI audit job is the layer `A` witness that the check ran and the manifest it checked was the one being released.
 
 #### FR-STACK-014 — Clean production bundle
 
-- Warnings fail the frontend gate; the shipped bundle is warning-free.
-- **Verification:** `npm run build` in CI (layer `A`).
+At an SMK in Surabaya the production bundle built fine but carried a dozen Vite warnings about unresolved chunks, and the certificate page loaded its styling a full second late on lab PCs. Warnings now fail the frontend gate outright, so the shipped bundle leaves the pipeline warning-free. Running `npm run build` in CI is both the build and the layer `A` test: a warning is a failure, not a footnote.
 
 ---
 
@@ -223,23 +195,23 @@ A manifest entry is a verifiable declaration: the constraint is in `composer.jso
 
 #### NFR-STACK-001 — Committed lockfiles
 
-- **Verification:** `git ls-files | grep lock` lists both lockfiles.
+When the build runs, it resolves dependencies from the repository rather than from whatever the registry offers that morning. Both lockfiles — the Composer lock and the JS lock — live in version control, and listing tracked files for a lock entry shows them present, which is the standing proof installs converge.
 
 #### NFR-STACK-002 — No EOL majors
 
-- **Verification:** audit output plus EOL calendar review at each minor release; upgrade planned before upstream EOL.
+A framework major that goes end-of-life stops receiving security fixes, and a school server running it becomes an unpatchable target during exam season when nobody dares upgrade. The manifest therefore carries zero end-of-life majors, checked through audit output plus an EOL calendar review at each minor release, with the upgrade planned before upstream support ends rather than after an advisory forces it.
 
 #### NFR-STACK-003 — Explicit dependency commits
 
-- **Verification:** `git log -- composer.lock package-lock.json` shows isolated upgrade commits.
+Dependency upgrades used to hide inside feature commits, so reverting a broken feature also reverted a security fix nobody knew was bundled with it. Upgrades now land as isolated commits touching the lockfiles on their own, and the history of `composer.lock` and `package-lock.json` reads as a clean sequence of deliberate bumps, each reviewable and revertible without collateral.
 
 #### NFR-STACK-004 — Manifest matches audit
 
-- **Verification:** `composer show --direct` compared against `composer.json` in CI.
+If the manifest claims one set of direct dependencies while the installed tree contains another, every audit result is fiction. CI compares `composer show --direct` against `composer.json` on every run, so a package that is installed but undeclared — or declared but never installed — surfaces as a mismatch long before release.
 
 #### NFR-STACK-005 — TallstackUI-only UI
 
-- **Verification:** FR-STACK-006/007 grep gates plus review of documented gaps.
+An SMK admin once filed a bug that toasts looked different on the placement page than everywhere else, and the cause was a surviving MaryUI dialog that had escaped the migration. The UI stays TallstackUI-only with zero undocumented custom paths: the FR-STACK-006 and FR-STACK-007 grep gates catch strays mechanically, and review of the documented gaps confirms each remaining fallback still earns its place.
 
 ---
 
@@ -326,37 +298,19 @@ not test rows, so `Layer`/`Status` stay `—`.
 
 #### DD-STACK-001 — Committed Lockfiles
 
-**Decision:** `composer.lock` and the JS package lockfile are committed to the repository and are
-the source of truth for exact versions.
-**Rationale:** Reproducible installs across the school's heterogeneous infrastructure (PS-1).
-**Trade-off:** Lockfile churn on upgrades — managed through isolated upgrade commits (NFR-STACK-003).
+When a dependency is installed, Composer and npm consult the committed `composer.lock` and JS package lockfile as the source of truth for exact versions rather than re-resolving constraints. That choice answers PS-1 directly: with schools deploying on hardware ranging from shared hosting to local servers, only pinned lockfiles make every install converge on the tested tree. The price is lockfile churn on every upgrade, contained by routing those bumps through isolated upgrade commits per NFR-STACK-003.
 
 #### DD-STACK-002 — Runtime Services Split into a Dedicated Spec
 
-**Decision:** Database/cache/session/queue/mail/storage behavior moved to
-[core-infra-services](ZT6VS-core-infra-services.md); this spec keeps versions and manifest.
-**Rationale:** A dependency manifest and a service-behavior contract evolve at different cadences
-and serve different readers (PS-2).
-**Trade-off:** Service topics now span two specs — mitigated by explicit cross-references in both directions.
+A version bump ships weekly while a queue-driver semantic changes once a year, and keeping both in one document meant every manifest edit forced a re-read of service behavior. Database, cache, session, queue, mail, and storage behavior therefore moved to [core-infra-services](ZT6VS-core-infra-services.md), leaving this spec to own versions and the manifest. Service topics now span two documents, which the explicit cross-references in both directions are meant to bridge.
 
 #### DD-STACK-003 — Security Scans as a Release Gate
 
-**Decision:** `composer audit` / `npm audit` gate releases (FR-STACK-013).
-**Rationale:** Known-vulnerable dependencies are the cheapest class of vulnerability to fix; the
-gate makes it routine.
-**Trade-off:** Occasionally blocks a release on a transitive advisory — resolved via upgrade or a
-recorded acceptance.
+The project learned from watching teams debate whether an advisory was serious enough to delay a release, a debate the vulnerable dependency always won by being ignored. `composer audit` and `npm audit` now gate releases under FR-STACK-013 because known-vulnerable dependencies are the cheapest class of vulnerability to fix, and the gate turns the fix into routine. Occasionally the gate blocks a release on a transitive advisory nobody directly chose, and then the path is an upgrade or a recorded acceptance, never silence.
 
 #### DD-STACK-004 — DaisyUI/MaryUI/PHPFlasher → TallstackUI Migration (COMPLETE 0.15.0)
 
-**Decision:** UI stack migrated from DaisyUI v5 + MaryUI v2 + `php-flasher` to TallstackUI v4 (TallstackUI-only since 0.15.0; migration complete).
-**History:**
-1. **Spec & Docs:** Pinned `tallstackui/tallstackui ^4.0`, marked `daisyui`/`mary`/`flasher` as DEPRECATED (coexistence).
-2. **Coexistence:** TallstackUI alongside DaisyUI/MaryUI/PHPFlasher; new components used `<x-ts-*>`.
-3. **Replacement:** Per-module, replaced `btn`/`card`/`drawer`/`data-theme`, `<x-mary-*>`, `flash()->success()` with TallstackUI.
-4. **Removal (0.15.0):** Deleted `daisyui` npm, `robsontenorio/mary`, `php-flasher/flasher-laravel` from manifests, removed `config/mary.php`/`config/flasher.php`, `@plugin daisyui`/`@source mary` from `app.css`, and all `x-mary`/`flash()->` calls (verified `grep -R x-mary` = 0, `grep -R flash()->` = 0). Self-hosted palette + shims in `app.css` bridge remaining legacy class tokens until `x-ts-*` fully replaces them.
-**Rationale:** TallstackUI-only reduces bundle size, removes `data-theme`/`fl-dark` / `MutationObserver` legacy, and leaves one toast path (`$this->toast()->send()`).
-**Trade-off:** Custom fallbacks remain where TallstackUI has gaps (FR-STACK-006) — each documented at its call site.
+Running three UI kits at once meant three toast paths, a ballooning bundle, and theme attributes fighting each other through `data-theme`, `fl-dark`, and a legacy `MutationObserver`. The migration therefore ran in four phases: first the spec pinned `tallstackui/tallstackui ^4.0` while marking `daisyui`, `mary`, and `flasher` as deprecated for coexistence, then new components shipped as `<x-ts-*>` alongside the old kits, then each module replaced its `btn`, `card`, `drawer`, and `data-theme` pieces plus every `<x-mary-*>` tag and `flash()->success()` call with TallstackUI equivalents. The 0.15.0 removal deleted the `daisyui` npm package, `robsontenorio/mary`, and `php-flasher/flasher-laravel` from the manifests, removed `config/mary.php` and `config/flasher.php`, stripped `@plugin daisyui` and `@source mary` from `app.css`, and eliminated all `x-mary` and `flash()->` calls until both repository searches returned zero. Only the self-hosted palette and shims in `app.css` remain to bridge legacy class tokens until `x-ts-*` fully replaces them, leaving one toast path through `$this->toast()->send()` and a smaller bundle. Where TallstackUI still has gaps, custom fallbacks survive under FR-STACK-006, each documented at its call site.
 
 ---
 
