@@ -81,62 +81,23 @@ audit trail; the need is directed, per-method delegation with full audit context
 
 #### UC-RBAC-001 — Admin Assigns Role to User
 
-**Actor:** Admin / Super Admin
-**Preconditions:** Target user exists; assigner holds admin or super-admin role.
-**Flow:**
-1. Admin navigates to user management
-2. Selects the target user, chooses a role from the dropdown
-3. Action validates the role transition and persists it
-4. Spatie permission updated; the user's cached roles invalidated (FR-RBAC-015)
-**Postconditions:** User can access resources permitted for the new role on the next request.
-**Governing guidance:** FR-RBAC-001 (role set), FR-RBAC-015 (cache invalidation).
+An admin correcting a mis-assigned teacher during enrollment week opens user management, picks the target user, chooses the new role from the dropdown, and the assignment path validates the transition, persists it, updates the Spatie permission, and invalidates the user's cached roles under FR-RBAC-015. On the very next request the user reaches exactly the new role's resources. That round trip exercises the role set in FR-RBAC-001 with the cache invalidation in FR-RBAC-015, proven by the assignment feature test.
 
 #### UC-RBAC-002 — Teacher Accesses Supervision Resources
 
-**Actor:** Teacher
-**Preconditions:** Teacher is assigned as mentor to an internship group.
-**Flow:**
-1. Teacher navigates to the supervision log page
-2. `CheckRoleMiddleware` verifies the `teacher` role
-3. `SupervisionLogPolicy::viewAny()` checks mentor relationship via `MentorEntity`
-4. Component renders supervised students' data only
-**Postconditions:** Teacher sees only mentored students' data.
-**Governing guidance:** FR-RBAC-007 (middleware), FR-RBAC-009 (policy), FR-RBAC-006 (bridge).
+A supervising teacher opening the supervision log during visit season must see her mentees and nobody else's. `CheckRoleMiddleware` first verifies the `teacher` role, then `SupervisionLogPolicy::viewAny()` checks the mentor relationship through `MentorEntity`, and the component renders supervised students' data only. The journey binds FR-RBAC-007 for the middleware layer, FR-RBAC-009 for the policy layer, and FR-RBAC-006 for the bridge, proven by the supervision feature tests.
 
 #### UC-RBAC-003 — Student Views Own Profile
 
-**Actor:** Student
-**Preconditions:** Student is authenticated.
-**Flow:**
-1. Student navigates to the profile page
-2. `CheckRoleMiddleware` verifies the `student` role
-3. `ProfilePolicy::view()` checks `isOwner()` against the authenticated user
-4. Component renders own profile data
-**Postconditions:** Student sees only own data.
-**Governing guidance:** FR-RBAC-012 (ownership trait).
+The probing story this journey guards is simple: a curious student edits the profile URL to another student's id and hopes for a render. `CheckRoleMiddleware` verifies the `student` role, `ProfilePolicy::view()` checks `isOwner()` against the authenticated user, and the component renders own profile data or nothing at all. FR-RBAC-012 owns the ownership trait behind that refusal, proven by the profile feature tests.
 
 #### UC-RBAC-004 — Super Admin Bypasses All Checks
 
-**Actor:** Super Admin
-**Preconditions:** Authenticated as super-admin.
-**Flow:**
-1. Super admin accesses any protected endpoint
-2. `BasePolicy::before()` returns `Response::allow()` immediately
-3. No further policy checks execute
-**Postconditions:** Full access to all resources.
-**Governing guidance:** FR-RBAC-010/011; unit-verified without DB beyond the model instance.
+When every policy in the system is suspect after a bad deploy, the recovery account must still move. Authenticated as super-admin, any protected endpoint hits `BasePolicy::before()` first, which returns `Response::allow()` immediately with no further policy check executing and full access following. FR-RBAC-010 and FR-RBAC-011 own that bypass plus continuation pair, proven by unit tests that need no database beyond the model instance.
 
 #### UC-RBAC-005 — Teacher Proxies a Supervisor Verification
 
-**Actor:** Teacher (as proxy for supervisor)
-**Preconditions:** Teacher mentors the student's registration; supervisor unreachable.
-**Flow:**
-1. Teacher opens the pending logbook entry
-2. Policy delegates to `Registration::asMentorEntity()->canVerifyLogbook($teacher)`
-3. `MentorEntity` confirms mentorship and grants the proxy gate
-4. Verification persists with `proxy_role` + `proxy_reason` in `activity_log.properties`
-**Postconditions:** Entry verified in the supervisor's stead with a complete audit trail.
-**Governing guidance:** FR-RBAC-017 (teacher scope), FR-RBAC-021 (audit).
+A teacher staring at a pending logbook entry while the industry supervisor's phone stays off for the third day is the reason proxy exists. She opens the entry, the policy delegates to `Registration::asMentorEntity()->canVerifyLogbook($teacher)`, `MentorEntity` confirms mentorship and grants the proxy gate, and verification persists carrying `proxy_role` plus `proxy_reason` in `activity_log.properties`. The entry ends verified in the supervisor's stead with a complete audit trail, under FR-RBAC-017 for scope and FR-RBAC-021 for audit, proven by the proxy feature test.
 
 ---
 
@@ -175,108 +136,73 @@ audit trail; the need is directed, per-method delegation with full audit context
 
 #### FR-RBAC-001 — Five concrete roles
 
-- `Role::userRoles()` enumerates the five; `excludeSuperAdmin()` / `excludeAdmin()` support
-  assignment dropdowns. No sixth role may appear without a spec amendment.
-- **Verification:** enum unit test asserting the five-case set (layer `U`).
+A sixth role once slipped into a pilot as a well-meant admin-teacher hybrid and every policy matrix silently grew a hole where the new role matched nothing. `Role::userRoles()` therefore enumerates exactly the five concrete roles — super_admin for global recovery, admin for school management, teacher for academic supervision, student for self scope, supervisor for company supervision — with `excludeSuperAdmin()` and `excludeAdmin()` supporting the assignment dropdowns. No sixth role may appear without a spec amendment, and an enum unit test asserting the five-case set (layer U) locks that closed.
 
 #### FR-RBAC-002 — One role per user
 
-- Cross-role needs are met by proxy (FR-RBAC-016), never by stacking roles — the audit trail
-  must always show one identity plus optional proxy context.
-- **Verification:** assignment action test rejects a second role (layer `F`).
+At SMK Negeri 4 Surabaya a teacher who also supervised a partner workshop held two roles, and when she verified a logbook nobody could tell whether she had acted as mentor or as industry — the audit row showed one identity with two hats. Every user therefore holds exactly one role, and cross-role needs are met by proxy under FR-RBAC-016 rather than stacking, so the trail always shows one identity plus optional proxy context. An assignment action test rejecting a second role (layer F) proves the single-role invariant.
 
 #### FR-RBAC-003 — Role-name normalization
 
-- `Role::SUPER_ADMIN` carries value `'superadmin'` (the stored Spatie name); policy and
-  middleware checks spell `super_admin`. The mismatch is contained in the enum plus the
-  normalization both layers share — see §10 R-1.
-- **Verification:** round-trip test stored-name ↔ checked-name (layer `U`).
+The codebase spells the recovery check `super_admin` while Spatie stores `superadmin` as the `Role::SUPER_ADMIN` value, and that one-underscore gap once failed closed an entire morning until someone diffed the strings. The mismatch is now contained inside the enum plus the normalization both layers share, as §10 R-1 records. A round-trip test from stored name to checked name and back (layer U) proves the two spellings can never diverge again.
 
 ### 4.2 Functional Roles
 
 #### FR-RBAC-004 — Runtime derivation only
 
-- `functionalRoles()` enumerates the functional set; `functionalRolesFor()` maps a concrete role
-  at runtime. Route middleware uses concrete roles; functional roles evaluate at the policy layer.
-- Exact map in §6.2; governance is the [flat-RBAC ADR](../adr/adr-flat-rbac-with-functional-roles.md).
-- **Verification:** enum unit test over the full map (layer `U`).
+At runtime a policy asking whether the caller counts as a mentor should not spell out teacher-or-supervisor with an `||` that the next author forgets to copy. `functionalRoles()` enumerates the functional set while `functionalRolesFor()` maps each concrete role at runtime — admin-group from super_admin plus admin, mentor from teacher plus supervisor, mentee from student — derived, never stored in the database, and never used in route middleware, which stays concrete. Route middleware uses concrete roles while functional roles evaluate at the policy layer, the exact map lives in §6.2 under the [flat-RBAC ADR](../adr/adr-flat-rbac-with-functional-roles.md), and an enum unit test over the full map (layer U) proves it.
 
 #### FR-RBAC-005 — Admin-group check
 
-- Shared admin permission checks collapse to one `is()` call; adding a member to the group edits
-  the map, not every policy.
-- **Verification:** unit test both members match (layer `U`).
+Shared admin permission checks used to sprawl as `||` branches across a dozen policies, and adding a member to the group meant editing every one of them. `$user->role->is(Role::ADMIN)` collapses all of that to a single call matching both super_admin and admin, so group membership edits the map rather than every policy. A unit test asserting both members match (layer U) is the proof.
 
 #### FR-RBAC-006 — MentorEntity bridge
 
-- `MentorEntity::fromModel()` bridges the registration record; role queries (`isTeacher`,
-  `isSupervisor`, `isMentor`) read the mentors collection, unit-testable without DB.
-- **Verification:** entity unit tests with fabricated collections (layer `U`).
+The edge case that breaks naive mentorship checks is a teacher who mentors one internship group but probes another group's supervision log — a bare role check would wave her through. Mentorship therefore resolves through the `MentorEntity` bridge built from internship-group membership via `Registration::asMentorEntity()`, whose `fromModel()` bridges the registration record while role queries (`isTeacher`, `isSupervisor`, `isMentor`) read the mentors collection. Because the bridge constructs from a fabricated collection, entity unit tests with fabricated collections (layer U) prove scoping without touching a database.
 
 ### 4.3 Three Authorization Layers
 
 #### FR-RBAC-007 — Route middleware
 
-- Middleware takes concrete role params (`role:super_admin|admin`); functional roles never appear
-  here. Denied access is logged via SmartLogger with PII masking.
-- **Verification:** middleware feature test per role matrix (layer `F`).
+When a request arrives, `CheckRoleMiddleware` (`role:...`) verifies concrete roles before any controller or component code runs, so guests bounce to login while authenticated-but-forbidden callers receive 401 for JSON and Livewire versus 403 for web — the distinction matters because a Livewire component retrying on 403 would loop where 401 tells it to re-authenticate. Functional roles never appear at this layer. Denied access is logged via SmartLogger with PII masking, and a middleware feature test per role matrix (layer F) proves the gating.
 
 #### FR-RBAC-008 — Livewire authorization
 
-- No Livewire change is needed for proxy visibility — policy gates drive it; the explicit
-  "Act as Supervisor" toggle with banner is optional and session-flagged.
-- **Verification:** component tests asserting 403 vs render (layer `F`).
+A student once opened DevTools, flipped a hidden Verify button visible, and clicked it — the button had been hidden by CSS alone with no server-side gate behind it. Components therefore call `authorize()` so policy-driven visibility gates real behaviour such as `@can('verify', $logbook)`, and no Livewire change is needed for proxy visibility since policy gates drive it, with the explicit Act as Supervisor toggle and banner remaining optional and session-flagged via `session('proxy_mode')`. Component tests asserting 403 versus render (layer F) prove the gate is real.
 
 #### FR-RBAC-009 — Policy base contract
 
-- `BasePolicy` is the single inheritance root; `AuthorizesRoles` mentor-adjacent helpers are
-  deprecated in favor of `MentorEntity` proxy methods (`isAdmin()` and `hasAnyOfRoles()` remain
-  for admin-only gates).
-- **Verification:** class-contract scan asserting the extends chain (layer `A`).
+Without a single inheritance root, nineteen modules grow nineteen policy dialects and the ownership check gets forgotten in the seventh. Every policy extends `BasePolicy`, which composes `AuthorizesRoles` plus `AuthorizesOwnership`, while supervisor-scoped methods delegate to `MentorEntity`; the mentor-adjacent helpers on `AuthorizesRoles` are deprecated in favour of the entity proxy methods, with `isAdmin()` and `hasAnyOfRoles()` retained for admin-only gates. A class-contract scan asserting the extends chain (layer A) proves the root holds.
 
 #### FR-RBAC-010 — Super-admin bypass
 
-- Bypass is a `Gate::before`-style early return (`BasePolicy::before()`), distinct from granting
-  "all permissions" in the database — no lookup runs.
-- **Verification:** policy unit test asserting allow without further evaluation (layer `U`).
+During a broken deploy where the permissions table had not finished migrating, every permission lookup threw and the recovery account could not reach the fix. `BasePolicy::before()` therefore returns `Response::allow()` for the `super_admin` role with no permission lookup at all — a `Gate::before`-style early return, distinct from granting all permissions in the database. A policy unit test asserting allow without further evaluation (layer U) proves the bypass needs nothing else alive.
 
 #### FR-RBAC-011 — Null continuation
 
-- Non-super-admin evaluation must fall through to the concrete ability method; an early deny here
-  would silently close proxy paths.
-- **Verification:** unit test asserting `null` for admin/teacher/student/supervisor (layer `U`).
+The subtle failure here is an early deny in the before-hook that silently closes proxy paths a teacher legitimately needs when covering an inactive supervisor. For every role other than super_admin the hook returns `null` so evaluation falls through to the concrete ability method. A unit test asserting `null` for admin, teacher, student, and supervisor (layer U) proves continuation is unconditional.
 
 ### 4.4 Traits, Discovery, and Assignment
 
 #### FR-RBAC-012 — Ownership trait
 
-- `isOwner()` compares `user_id`; `isRelatedThrough()` follows a relation; `isOwnerOrAdmin()`
-  unions ownership with the admin group.
-- **Verification:** trait unit tests with stub models (layer `U`).
+At SMKN 1 Gesi a student guessed another student's profile URL and, for one deploy, actually saw it — ownership had been checked in three policies three different ways, and the fourth had been forgotten. `AuthorizesOwnership` ends that drift with one shared vocabulary: `isOwner()` comparing `user_id`, `isRelatedThrough()` following a relation, and `isOwnerOrAdmin()` unioning ownership with the admin group. Trait unit tests with stub models (layer U) prove each helper.
 
 #### FR-RBAC-013 — Role trait (admin gates)
 
-- Only admin-gate helpers stay on the trait; teacher/supervisor/mentor questions go through
-  `MentorEntity` so mentorship scope is never bypassed by a bare role check.
-- **Verification:** unit tests for the three retained helpers (layer `U`).
+This trait exists because admin-only gates kept collecting teacher and supervisor shortcuts until a bare role check waved a supervisor into an admin screen. Only the admin-gate helpers stay on the trait — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` — while every teacher, supervisor, and mentor question goes through `MentorEntity` so mentorship scope is never bypassed by a role alone. Unit tests for the three retained helpers (layer U) pin the boundary.
 
 #### FR-RBAC-014 — Auto-discovery with cache
 
-- Discovery is owned by the module infrastructure ([B114U](B114U-module-manager.md)); the 24-hour
-  TTL uses registered cache keys.
-- **Verification:** discovery feature test + TTL assertion (layer `F`).
+With nineteen modules contributing policies, manual registration rotted on the first forgotten entry — a new policy class shipped, nobody registered it, and its endpoints fell through to default-deny confusion for a week. Auto-discovery scans `Policies/` directories for `BasePolicy` subclasses instead, caching results for 24 hours and invalidating on cache clear, with mechanics owned by the module infrastructure ([B114U](B114U-module-manager.md)) on registered cache keys. A discovery feature test plus a TTL assertion (layer F) proves-scan and expiry both hold.
 
 #### FR-RBAC-015 — UserPolicy exception
 
-- `Gate::policy(User::class, UserPolicy::class)` is registered manually because the user policy
-  must exist before discovery runs.
-- **Verification:** provider audit (layer `A`).
+The user policy must exist before discovery runs, otherwise the very first authorization decision during boot races the scanner. `Gate::policy(User::class, UserPolicy::class)` is therefore registered manually in `AppServiceProvider` as the single exception to auto-discovery. A provider audit (layer A) proves the exception is present and singular.
 
 #### FR-RBAC-016 — Assignment invalidates cache
 
-- Stale role cache after assignment is a privilege-escalation vector in reverse (or a
-  lockout); invalidation is synchronous in the assignment path.
-- **Verification:** assignment feature test asserting fresh roles next request (layer `F`).
+The edge every role system dreads is the stale cache: an admin demotes a user, the cached roles still say teacher, and the next request serves the old permissions — a privilege vector in one direction, a lockout in the other. Assignment therefore invalidates the user's cached roles synchronously inside the assignment path, before the next request. An assignment feature test asserting fresh roles on the next request (layer F) proves the window is closed.
 
 ### 4.5 Cross-Role Proxy
 
@@ -286,42 +212,27 @@ audit trail; the need is directed, per-method delegation with full audit context
 
 #### FR-RBAC-017 — Hierarchy and scope
 
-- Admin scope is global; teacher scope is bounded by `isTeacher($user)` on the registration's
-  mentor set — a teacher never proxies for unassigned students.
-- **Verification:** `MentorEntity` unit tests per hierarchy cell (layer `U`).
+A teacher covering for an industry supervisor who has not opened the app in nine days needs to verify her student's logbook tonight, but she must never verify a stranger's — while an admin stepping in during a cross-program audit legitimately acts on any record. The hierarchy encodes exactly that: `admin` may proxy as `teacher` or `supervisor` on any record, `teacher` may proxy as `supervisor` only for students in that teacher's mentorship bounded by `isTeacher($user)` on the registration's mentor set, and `supervisor` and `student` hold no proxy capability at all. `MentorEntity` unit tests per hierarchy cell (layer U) prove each grant and each refusal.
 
 #### FR-RBAC-018 — Delegation pattern
 
-- Policies contain the one-line delegation (`$entry->registration?->asMentorEntity()->... ?? false`);
-  all branching lives in the entity, tested once.
-- **Verification:** entity unit tests + policy feature tests (layer `U` + spot `F`).
+At runtime the policy method stays a single delegation line — `$entry->registration?->asMentorEntity()->... ?? false` — naming one of `canProxyAsSupervisor`, `canProxyAsTeacher`, `canVerifyLogbook`, `canScoreCompetency`, `canReviewSupervisionLog`, or `canGradeSubmission` reached via `Registration::asMentorEntity()`, while every branch lives inside the entity and is tested once. That shape keeps six call sites from growing six dialects. Entity unit tests plus policy feature tests (layer U with spot F) prove delegation and branching together.
 
 #### FR-RBAC-019 — Inactivity window
 
-- No `journals.proxy_inactivity_hours` key or inactivity check exists in code — proxy today is
-  implicit via the policy gate. The window is specified here and stays `Planned` until the
-  settings key plus the gate land; see §10 R-1.
-- **Verification (pending):** settings-key test + gate test with stale-supervisor fixture.
+Today no `journals.proxy_inactivity_hours` key and no inactivity check exist in code — proxy is implicit via the policy gate — so a teacher could step in minutes after the supervisor's last heartbeat rather than after genuine abandonment. The specified gate requires supervisor inactivity across a configurable window stored in settings key `journals.proxy_inactivity_hours` with default `48` hours before teacher proxy activates. The row stays Planned until that settings key plus the gate land per §10 R-1, with a settings-key test and a stale-supervisor-fixture gate test as its pending proof.
 
 #### FR-RBAC-020 — Per-domain coverage
 
-- Each adopting domain wires its own policy method; domains never share proxy shortcuts. Priority
-  order: logbook verify and assessment score/finalize first, supervision review and submission
-  grading next.
-- **Verification:** one feature test per proxy path (layer `F`).
+If proxy coverage were one shared shortcut, a change to logbook verification would ripple into assessment finalization unreviewed. Each domain therefore wires its own policy method and no domain borrows another's: logbook verification with assessment scoring and finalization first, supervision-log review with submission grading next. One feature test per proxy path (layer F) proves every adoption independently.
 
 #### FR-RBAC-021 — Audit properties
 
-- `causedBy($user)` records the teacher who acted; `withProperties(['proxy_role' => ...,
-  'proxy_reason' => ...])` records the stead and cause — distinguishable primary vs proxy in
-  every log row.
-- **Verification:** feature test asserting properties JSON on a proxied act (layer `F`).
+When an accreditation auditor asks who verified a logbook, caused-by must name the teacher who clicked while the stead and cause name the absent supervisor — a single actor column cannot carry both. Every proxy action therefore records `proxy_role` and `proxy_reason` in `activity_log.properties`, with `causedBy($user)` holding the acting teacher and `withProperties(['proxy_role' => ..., 'proxy_reason' => ...])` holding stead and cause, distinguishable primary versus proxy in every row with no schema change and no new columns. A feature test asserting the properties JSON on a proxied act (layer F) proves the trail.
 
 #### FR-RBAC-022 — No role expansion
 
-- What does not change: single role assignment, no pivot columns, super-admin-only `before()`,
-  role-based route middleware. Proxy replaces inline role checks with one testable source.
-- **Verification:** migration audit (no new columns) + contract scan (layer `A`).
+Proxy must never become a quiet second role: the day `model_has_roles` gains a proxy row, route middleware starts honouring it, or `BasePolicy::before()` widens beyond super-admin, the audit model collapses. What does not change is therefore stated plainly — single role assignment, no pivot columns, super-admin-only `before()`, role-based route middleware — with proxy living purely as a runtime permission check that replaces inline role checks with one testable source. A migration audit confirming no new columns plus a contract scan (layer A) prove the boundary holds.
 
 ---
 
@@ -341,31 +252,23 @@ rather than a runtime measurement.
 
 #### NFR-RBAC-001 — Discovery invalidation
 
-- Deploy-time `config:clear` / `cache:forget` must flush discovered bindings; a stale policy map
-  after deploy is a silent authorization regression.
-- **Verification:** clear-then-rediscover feature test (layer `F`).
+A deploy that clears config but keeps yesterday's discovered policy map serves stale bindings — new policies ignored, removed ones still enforced — which is a silent authorization regression. Deploy-time `config:clear` and `cache:forget` must therefore flush the discovered bindings. A clear-then-rediscover feature test (layer F) proves stale maps cannot survive a deploy.
 
 #### NFR-RBAC-002 — Next-request effect
 
-- Follows from FR-RBAC-016; session or cache must never pin the old role past one request.
-- **Verification:** assignment feature test (layer `F`).
+At SMK Negeri 6 Malang an admin fixed a mis-assigned role during enrollment rush and watched the teacher's screen keep the old permissions for the rest of the session, sowing panic that the fix had failed. Role changes take effect on the next authenticated request because FR-RBAC-016 invalidates synchronously — session and cache must never pin the old role past one request. The assignment feature test (layer F) proves the freshness.
 
 ### 5.2 Bypass Robustness
 
 #### NFR-RBAC-003 — Bypass survives broken policies
 
-- Today the bypass lives in `BasePolicy::before()`, which only runs when the policy class
-  resolves — a missing policy class bypasses nothing. A framework-level `Gate::before` in the
-  provider is specified but not yet implemented; status `Planned` (see §10 R-2).
-- **Verification (pending):** missing-policy fixture test asserting super-admin allow.
+Today the bypass lives in `BasePolicy::before()`, which only runs when the policy class resolves — so a missing or broken policy class bypasses nothing and the recovery account loses its guarantee at the worst possible moment. The specified hardening is a framework-level `Gate::before` in the provider, not yet implemented, which is why the row stays Planned per §10 R-2. Its pending proof is a missing-policy fixture test asserting super-admin allow.
 
 ### 5.3 Testability
 
 #### NFR-RBAC-004 — No-DB policy and entity tests
 
-- `MentorEntity` constructs from a mentors collection; policy helpers take model instances —
-  pure logic, fast suite.
-- **Verification:** existing entity unit tests run without DB (layer `U`).
+Slow authorization tests get skipped during enrollment-week pressure, and skipped tests hide regressions. `MentorEntity` constructs from a mentors collection while policy helpers take plain model instances, so the whole policy and entity surface stays pure logic with a fast suite and no database beyond the model instance. The existing entity unit tests running without a database (layer U) prove the suite stays fast.
 
 ---
 
@@ -506,38 +409,19 @@ Decisions are recorded rationale, not test rows — `Layer`/`Status` stay `—`.
 
 #### DD-RBAC-001 — Flat Roles Without Hierarchy
 
-**Decision:** Roles are flat — no role inherits permissions from another role.
-**Rationale:** Hierarchical roles create invisible permission chains that are hard to audit.
-Indonesian vocational schools have clear role boundaries (admin ≠ teacher ≠ student).
-**Trade-off:** Some permissions are duplicated across roles (e.g., both admin and teacher can
-view student data). Acceptable for clarity; the admin-group mapping removes the worst of it.
+Indonesian vocational schools draw crisp lines — the admin runs operations, the teacher supervises, the student participates — and an inheritance chain where admin silently absorbs teacher permissions would blur exactly the boundary principals rely on. Roles therefore stay flat, each owning precisely its own permissions with no silent leakage through a hierarchy. Some permissions are duplicated across roles, such as both admin and teacher viewing student data, and that duplication is accepted for clarity while the admin-group mapping removes the worst of it.
 
 #### DD-RBAC-002 — Three-Layer Authorization Stack
 
-**Decision:** Authorization is enforced at three layers: route middleware, Livewire component,
-and policy gate.
-**Rationale:** Defense in depth. Middleware prevents unauthorized route access. Livewire
-authorization prevents component rendering. Policy gates protect individual methods.
-**Trade-off:** Triple-checking adds minor overhead. Mitigated by the super-admin bypass and
-framework-level caching.
+A single missing authorization check once left an export endpoint open to every authenticated user, and nobody noticed for a term because each layer assumed another layer had checked. Enforcement at three layers — route middleware stopping unauthorized route access, Livewire authorization stopping component rendering, policy gates protecting individual methods — means a gap must slip past all three to become a vulnerability. Triple-checking costs minor overhead, mitigated by the super-admin bypass and framework-level caching.
 
 #### DD-RBAC-003 — Super-Admin Bypass via Before-Hook
 
-**Decision:** `BasePolicy::before()` returns `Response::allow()` for super_admin, bypassing all
-subsequent checks.
-**Rationale:** Super admin is the emergency recovery account. A misconfigured policy must never
-lock out the only account that can fix the system.
-**Trade-off:** Super admin cannot be restricted from specific actions. Acceptable because super
-admin is a single-purpose recovery account. Framework-level hardening is NFR-RBAC-003.
+When a misconfigured policy deploy locked every teacher out of supervision logs, the only account that could revert the deploy was the one the policy had also locked out. `BasePolicy::before()` returning `Response::allow()` for super_admin exists so that emergency recovery account survives any misconfigured policy, bypassing all subsequent checks. A super admin consequently cannot be restricted from specific actions, which is acceptable for a single-purpose recovery account, with framework-level hardening tracked as NFR-RBAC-003.
 
 #### DD-RBAC-004 — Cross-Role Proxy over Multi-Role
 
-**Decision:** Directed runtime delegation via `MentorEntity`, not a second role on the user.
-**Rationale:** Multi-role assignment causes audit confusion, workload obfuscation, policy
-duplication, scope creep, and pivot pollution; the earlier "Dual Mentor Fallback" was too narrow
-and misnamed. Proxy is scope-isolated, auditable, schema-free, and adoptable per domain.
-**Trade-off:** One proxy clause per policy method plus a test per path — the cost of explicit
-delegation. See the [cross-role-proxy ADR](../adr/adr-cross-role-proxy.md).
+An earlier Dual Mentor Fallback tried to cover supervisor absence with a narrow second-role hack, and it produced exactly the audit confusion, workload obfuscation, policy duplication, scope creep, and pivot pollution the cross-role-proxy ADR names. Directed runtime delegation via `MentorEntity` replaces it: scope-isolated, auditable, schema-free, and adoptable per domain. Each policy method carries one proxy clause plus one test per path, which is the honest cost of explicit delegation, as the [cross-role-proxy ADR](../adr/adr-cross-role-proxy.md) records.
 
 ---
 
