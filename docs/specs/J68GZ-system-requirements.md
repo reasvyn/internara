@@ -80,41 +80,15 @@ pest layers, so `Layer`/`Status` stay `—`; the boot check is backed by the hea
 
 #### UC-SYS-001 — Developer Clones and Installs the Project
 
-**Actor:** Developer
-**Preconditions:** PHP 8.4+, Composer 2.0+, Node.js + npm available.
-**Flow:**
-1. Developer clones the repository
-2. Runs `composer install` — all production packages install successfully
-3. Runs `cp .env.example .env` and `php artisan key:generate`
-4. Runs `php artisan migrate` — SQLite database created with the full schema
-5. Runs `npm install && npm run build` — Vite build completes
-**Postconditions:** System ready for development without additional configuration.
-**Governing guidance:** FR-SYS-001–FR-SYS-007 (floor), FR-SYS-008–FR-SYS-018 (manifest).
+A new contributor on a borrowed Windows laptop is the audience here: she clones the repository, runs `composer install` until all production packages land, copies `.env.example` to `.env` and generates the key, migrates into a zero-config SQLite database carrying the full schema, then runs `npm install && npm run build` so the Vite build completes. When each step succeeds with no extra configuration, the checkout is ready for development. That journey exercises the floor in FR-SYS-001 through FR-SYS-007 and the manifest in FR-SYS-008 through FR-SYS-018, and install CI proves it still works.
 
 #### UC-SYS-002 — School Deploys on Shared Hosting
 
-**Actor:** School IT staff
-**Preconditions:** Shared hosting with PHP 8.4+, MySQL 8.0+, no Redis.
-**Flow:**
-1. IT staff uploads files via FTP/File Manager
-2. Creates a MySQL database via the hosting control panel
-3. Updates `.env` with DB credentials (`DB_CONNECTION=mysql`)
-4. Runs `php artisan migrate` — all migrations execute on MySQL
-5. System operates with file cache and database sessions
-**Postconditions:** System functional without Redis or additional services.
-**Governing guidance:** FR-SYS-020 (MySQL), FR-SYS-027 (Tier-1 defaults).
+At boot the school IT staff member has a cPanel login, a MySQL wizard, and no Redis — and no patience for framework internals. Uploaded over FTP, pointed at a freshly created MySQL database via `DB_CONNECTION=mysql` in `.env`, migrated cleanly onto MySQL, the system settles into file cache with database sessions and simply runs. That it needs no Redis or extra service is the whole point, and FR-SYS-020 with FR-SYS-027 records the contract the smoke deploy verifies.
 
 #### UC-SYS-003 — System Checks Requirements on Boot
 
-**Actor:** System (automated)
-**Preconditions:** PHP version or extensions missing.
-**Flow:**
-1. Boot or `php artisan system:health` detects PHP < 8.4.0
-2. Reports a clear message: "PHP 8.4.0 or higher required (current: 8.3.x)"
-3. Lists missing required versus recommended extensions separately
-**Postconditions:** Operator receives an actionable error message, not a cryptic failure.
-**Governing guidance:** FR-SYS-031/032; full command contract in
-[system-maintenance.md](E1MSJ-system-maintenance.md).
+The edge case this journey owns is the misleading failure: PHP 8.3 installed where 8.4 is required, or the `gd` extension missing after a hoster upgrade, surfacing as a white screen. Boot or `php artisan system:health` instead names the gap plainly — `PHP 8.4.0 or higher required (current: 8.3.x)` — and lists missing required extensions separately from recommended ones. The operator gets an actionable message rather than a stack trace, under the full command contract in [system-maintenance.md](E1MSJ-system-maintenance.md) behind FR-SYS-031 and FR-SYS-032.
 
 ---
 
@@ -165,184 +139,129 @@ pest layers, so `Layer`/`Status` stay `—`; the boot check is backed by the hea
 
 #### FR-SYS-001 — PHP 8.4 floor
 
-- The floor follows the [tech-stack](FB792-tech-stack.md) pin; anything lower fails fast with the
-  current version echoed.
-- **Verification:** health-command PHP check (layer `F`) + `composer.json` `php: ^8.4`.
+This floor exists because schools install on unknown hosting, and a silent misbehaviour on PHP 8.3 costs a week of WhatsApp debugging. Anything below the [tech-stack](FB792-tech-stack.md) pin fails fast at boot with the current version echoed, so the operator sees what is running, not a cryptic fatal. The health command's PHP check (layer F) and the `composer.json` `php: ^8.4` pin together prove the gate holds.
 
 #### FR-SYS-002 — Required extensions
 
-- The 12-extension list is the install gate; a missing required extension blocks boot, never a
-  single feature at runtime.
-- **Verification:** health-command extension check (layer `F`).
+If a single required extension is missing, the failure must land at install time, never halfway through grading week as a broken export. The twelve-extension gate — bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip — blocks boot when any member is absent. That the gate fires is proven by the health command's extension check (layer F), which reports each missing member by name.
 
 #### FR-SYS-003 — Recommended extensions
 
-- Recommended extensions degrade gracefully (sync queue without pcntl, file cache without redis);
-  no feature is disabled in any tier.
-- **Verification:** health-command recommended-extension check reports, never blocks.
+At an SMK in Cirebon the hosting panel offered no redis extension and no shell to install one, and the coordinator assumed the whole system would refuse to run. It does not: without pcntl the queue falls back to sync, without redis the cache falls back to file, and no feature is disabled in any tier. The health command's recommended-extension check reports the absence without blocking, which is exactly the graceful degradation this requirement promises.
 
 #### FR-SYS-004 — Composer floor
 
-- Reproducible installs depend on Composer 2 lockfile handling.
-- **Verification:** manifest audit (layer `A`).
+At runtime the installer reads the Composer 2 lockfile format to guarantee reproducible installs, and Composer 1 cannot parse it — the failure looks like dependency rot when it is really toolchain rot. Requiring Composer 2.0 or newer keeps every one of the nineteen modules building from the same manifest. A manifest audit (layer A) confirms the floor is declared and honoured.
 
 #### FR-SYS-005 — Node build toolchain
 
-- Vite + Tailwind v4 build runs at deploy time; Blade/CSS/JS changes rebuild via `npm run build`.
-- **Verification:** build smoke (layer `A`).
+The edge case that taught this rule was a deploy where PHP was perfect but the landing pages rendered unstyled for a day because nobody had run the frontend build. Vite with Tailwind v4 compiles at deploy time, so every Blade, CSS, or JS change only takes effect after `npm run build`. A build smoke run (layer A) proves the Node toolchain is present and the bundle completes.
 
 #### FR-SYS-006 — Writable directories
 
-- `storage/` and `bootstrap/cache/` writability is checked, not assumed — shared-hosting FTP
-  uploads routinely break permissions.
-- **Verification:** health-command storage check (layer `F`).
+This requirement exists because shared-hosting FTP uploads routinely land files owned by the wrong user with read-only permissions, and the first symptom is a blank page on logo upload. Writability of `storage/` and `bootstrap/cache/` is therefore checked at boot, never assumed from a fresh clone. The health command's storage check (layer F) exercises a real write and fails loudly when permissions are wrong.
 
 #### FR-SYS-007 — Application key
 
-- A missing or malformed `APP_KEY` fails with a rotation-safe message; rotation via
-  `APP_PREVIOUS_KEYS` keeps existing sessions valid.
-- **Verification:** health-command app-key check (layer `F`).
+If session decryption silently fails, students get logged out mid-attendance with no message anyone can act on. A missing or malformed `APP_KEY` — expected as a 32-character base64 string — fails early with a rotation-safe message, and rotation via `APP_PREVIOUS_KEYS` keeps existing sessions valid across the change. The health command's app-key check (layer F) proves both the presence gate and the rotation path.
 
 ### 4.2 Dependencies
 
 #### FR-SYS-008 — Framework pin
 
-- Laravel 13 is the foundation every module builds on; the major pin is tightened only via the
-  [tech-stack](FB792-tech-stack.md) spec and the upgrade guide.
-- **Verification:** `composer.json` audit (layer `A`).
+At SMK Negeri 2 Bandung the pilot stalled for a week when a tutorial written for Laravel 11 was followed on a Laravel 12 checkout and queued events behaved differently. Laravel 13 is the foundation every module builds on, so the major pin is declared once and tightened only through the [tech-stack](FB792-tech-stack.md) spec and the upgrade guide. A `composer.json` audit (layer A) confirms the pin holds.
 
 #### FR-SYS-009 — Livewire pin
 
-- Livewire 4 is the only reactive UI layer; no parallel REST controller surface for module UI.
-- **Verification:** `composer.json` audit (layer `A`).
+Two reactive UI layers on the same page — say a REST controller surface beside Livewire — would split validation and authorization into two dialects the reviewers must hold in their heads. Livewire 4 is therefore the only reactive UI layer, with no parallel REST controller surface for module screens. That exclusivity is proven by a `composer.json` audit (layer A) plus review that no competing UI stack ships.
 
 #### FR-SYS-010 — RBAC package
 
-- Spatie permission provides the role store underneath the flat-RBAC model; functional roles are
-  derived at runtime, never stored (see [T4B26](T4B26-rbac-and-authorization.md)).
-- **Verification:** `composer.json` audit + RBAC feature tests.
+A teacher covering for an industry supervisor who has not logged in for a week needs the system to know she may verify in his stead, without granting her a second stored role. Spatie permission supplies the role store underneath that flat model, while functional roles stay derived at runtime and are never stored, exactly as [T4B26](T4B26-rbac-and-authorization.md) contracts. The `composer.json` audit plus the RBAC feature tests (layer A with behaviour coverage) verify both the package pin and the derivation rule.
 
 #### FR-SYS-011 — Activity log package
 
-- Append-only audit trail; proxy metadata rides in `properties` JSON with no schema change (see
-  [T4B26](T4B26-rbac-and-authorization.md) FR-RBAC-021).
-- **Verification:** `composer.json` audit + composite index review on `activity_log`.
+When a disputed grade lands on the coordinator's desk, the question is always who verified what on whose behalf, and a plain `updated_at` cannot answer it. The append-only audit trail carries that answer, with proxy metadata riding in the `properties` JSON so no schema change is ever needed, as [T4B26](T4B26-rbac-and-authorization.md) FR-RBAC-021 contracts. The `composer.json` audit and a review of the composite index on `activity_log` confirm the package pin and the query shape stay fast at 45,000-row scale.
 
 #### FR-SYS-012 — Media library package
 
-- File attachments with conversions; local disk default, S3 optional per tier.
-- **Verification:** `composer.json` audit; contract in [WQGTP](WQGTP-file-uploads-media.md).
+This pin exists because certificate photos, handbook attachments, and logbook evidence all funnel through one upload path, and three competing upload stacks would triple the validation audit. File attachments with conversions run through the media library, on local disk by default with S3 optional per tier. The `composer.json` audit (layer A) pins the package while the full behavioural contract lives in [WQGTP](WQGTP-file-uploads-media.md).
 
 #### FR-SYS-013 — Model status package
 
-- Status tracking for models with lifecycle states.
-- **Verification:** `composer.json` audit (layer `A`).
+A placement record drifts through proposed, active, suspended, and completed states, and without a status history the coordinator cannot explain how a student ended up archived. Status tracking gives every lifecycle model that history. Presence of the pin is confirmed by a `composer.json` audit (layer A).
 
 #### FR-SYS-014 — Translation package
 
-- Bilingual `en` + `id` coverage via `__()`; hardcoded UI English is a D3 violation.
-- **Verification:** `composer.json` audit + LangChecker.
+At SMK Al Hidayah the staff switch between Indonesian and English mid-morning, and a single hardcoded English button label breaks trust in the whole translation effort. Bilingual `en` plus `id` coverage flows through `__()`, so hardcoded UI English counts as a D3 violation. The `composer.json` audit plus LangChecker together prove the package pin and the mirrored-key coverage.
 
 #### FR-SYS-015 — PDF package
 
-- Server-side PDF generation for grade cards, certificates, and official documents.
-- **Verification:** `composer.json` audit; contract in [7UB7S](7UB7S-pdf-generation.md).
+Grade cards, certificates, and official letters must print identically on the school printer and the industry partner's printer, which rules out browser-print CSS as the source of truth. Server-side PDF generation produces those documents deterministically. The `composer.json` audit (layer A) pins the generator while the rendering contract lives in [7UB7S](7UB7S-pdf-generation.md).
 
 #### FR-SYS-016 — Pulse monitoring
 
-- Pulse ingest is sync by default (Tier 1); Redis ingest is a Tier-2 `.env` swap. Pulse is the
-  measurement source the performance ADR requires before any optimization.
-- **Verification:** `composer.json` audit (layer `A`).
+The failure this guards against is optimizing blind — adding Redis or Octane because traffic felt slow, without a single measurement. Pulse ingest runs synchronously by default on Tier 1 and becomes a Tier-2 `.env` swap to Redis, and Pulse is the measurement source the performance ADR demands before any optimization lands. A `composer.json` audit (layer A) confirms the monitor ships with the binary.
 
 #### FR-SYS-017 — UI kit pin
 
-- TallstackUI v4 is the only UI kit; DaisyUI, MaryUI, and PHPFlasher are excluded per the
-  tech-stack decision.
-- **Verification:** `composer.json` audit (layer `A`).
+Three UI kits in one codebase mean three button styles, three modal dialects, and a new contributor guessing which one to copy. TallstackUI v4 is the only UI kit, and DaisyUI, MaryUI, and PHPFlasher are excluded by the tech-stack decision. The `composer.json` audit (layer A) proves no competing kit drifts back in.
 
 #### FR-SYS-018 — Locked reproducible manifest
 
-- `composer.lock` is committed; `composer audit` runs clean with no abandoned production deps.
-- **Verification:** lockfile presence in CI + `composer audit` (layer `A`).
+If the lockfile is missing, Tuesday's deploy installs different transitive versions than Monday's identical checkout and the diff is invisible. Committing `composer.lock` makes builds reproducible, and a clean `composer audit` with no abandoned production dependencies keeps the supply chain honest. CI proves it by asserting lockfile presence and running `composer audit` (layer A).
 
 ### 4.3 Database Portability
 
 #### FR-SYS-019 — SQLite default
 
-- WAL journal mode plus `busy_timeout=5000` and enforced foreign keys (`DB_FOREIGN_KEYS=true`);
-  handles single-tenant Tier-1 concurrency without a DBA.
-- **Edge case:** SQLite is unsuitable for production write concurrency — Tier-1 production uses
-  MySQL/MariaDB, never SQLite.
-- **Verification:** `config/database.php` audit + migrate smoke (layer `F`).
+A vocational school in Sintuk Toboh Gadang ran its pilot on a borrowed laptop with no database server and no administrator password, yet attendance for sixty students had to be recorded that same morning. SQLite with WAL journal mode, `busy_timeout=5000`, and enforced foreign keys (`DB_FOREIGN_KEYS=true`) handles that single-tenant Tier-1 concurrency with no DBA involved. The honest edge is that SQLite never serves Tier-1 production write concurrency — production runs MySQL or MariaDB — and `config/database.php` audit plus a migrate smoke run (layer F) prove the settings hold.
 
 #### FR-SYS-020 — MySQL support
 
-- MySQL 8.0+ is the Tier-1 production engine on shared hosting.
-- **Verification:** migration run on MySQL (layer `F`).
+Shared-hosting panels in Indonesia overwhelmingly offer MySQL and nothing else, so Tier-1 production has to live there or schools cannot deploy at all. MySQL 8.0 and newer is that production engine. A full migration run against MySQL (layer F) proves the schema lands cleanly on the engine schools actually have.
 
 #### FR-SYS-021 — MariaDB support
 
-- MariaDB 10.6+ stays compatible through the same portable migration set; no engine branches.
-- **Verification:** migration run on MariaDB (layer `F`).
+One district standardizes on MariaDB while the neighbouring district's hoster ships only MySQL, and the same release zip must install on both without a fork. MariaDB 10.6 and newer stays compatible through the identical portable migration set, with no engine branches anywhere. A migration run on MariaDB (layer F) confirms the single migration set serves both engines.
 
 #### FR-SYS-022 — PostgreSQL support
 
-- Support is by construction (portable Eloquent, no module-specific SQL) rather than by verified
-  matrix — the dedicated PostgreSQL CI run is still open.
-- **Verification (pending):** CI matrix run against PostgreSQL 15+ (layer `F`); status `Planned`.
+This requirement exists because larger deployments eventually ask for PostgreSQL, and the cheapest time to stay portable is before the first raw query ships. Support is by construction — portable Eloquent with no module-specific SQL — rather than by a verified matrix, since the dedicated PostgreSQL CI run is still open. The pending proof is a CI matrix run against PostgreSQL 15 or newer (layer F), which is why the status stays Planned.
 
 #### FR-SYS-023 — UUID v7 primary keys
 
-- `BaseModel` applies ordered `HasUuids` with non-incrementing string keys; the `User` model is
-  the sole documented exception (extends `Authenticatable`, applies `HasUuids` manually).
-- **Governance:** [uuid-primary-keys ADR](../adr/adr-uuid-primary-keys.md); D4-adjacent model contract.
-- **Verification:** `scan_conventions.py` + model contract scan (layer `A`).
+Sequential ids leak enrolment order and invite guessing, while random UUIDs scatter B-tree inserts and slow the 45,000-row attendance import to a crawl. Ordered UUID v7 via `BaseModel` with non-incrementing string keys through `HasUuids` solves both, and the `User` model is the sole documented exception — it extends `Authenticatable` and applies `HasUuids` manually. Governance sits with the [uuid-primary-keys ADR](../adr/adr-uuid-primary-keys.md), and `scan_conventions.py` plus the model contract scan (layer A) prove the invariant holds.
 
 #### FR-SYS-024 — Explicit FK behavior
 
-- Every foreign key declares `onDelete`/`onUpdate` (D6); `foreignUuid()->constrained()` with
-  composite indexes; mixed key types forbidden.
-- **Verification:** `scan_violations.py` D6 check (layer `A`).
+An orphaned attendance row pointing at a deleted placement is the kind of silent corruption that surfaces only during accreditation week. Every foreign key therefore declares its `onDelete` and `onUpdate` behaviour under the D6 invariant, built with `foreignUuid()->constrained()` and composite indexes, with mixed key types forbidden. The `scan_violations.py` D6 check (layer A) proves no bare foreign key slips through.
 
 #### FR-SYS-025 — Layered migrations
 
-- Six sequential layers keep foundation tables (users, settings, cache, jobs) before domain
-  tables; a layer never references a later layer's tables.
-- **Verification:** migration filename audit (layer `A`).
+At 6 a.m. on enrollment day the migration order is load-bearing: users, settings, cache, and jobs tables must exist before domain tables reference them. Six sequential layers — Foundation, then Auth, then Config, then Internship Core, then Grouping, then Evaluation — enforce that, and no layer ever references a later layer's tables. A migration filename audit (layer A) proves the layering holds.
 
 #### FR-SYS-026 — Domain plus package tables
 
-- Package tables (media, activity_log, permission pivots, sessions, jobs, notifications, cache,
-  Sanctum tokens, password resets, Pulse) coexist in the same database, owned by their packages'
-  own migrations — full listing in §6.4.
-- **Verification:** `migrate:fresh` table inventory (layer `A`).
+A fresh clone that migrates only domain tables boots into a system with no sessions table, no job tables, and no audit trail — every login fails. The full schema therefore ships domain tables alongside package tables (media, activity_log, permission pivots, sessions, jobs, notifications, cache, Sanctum tokens, password resets, Pulse) in one database, with each package's own migrations owning its tables as §6.4 lists. A `migrate:fresh` table inventory (layer A) proves nothing is missing.
 
 ### 4.4 Deployment Tiers
 
 #### FR-SYS-027 — Tier-1 defaults
 
-- The `.env.example` matrix runs the full feature set synchronously (emails and media conversions
-  block the response; real-time updates need a refresh without Reverb).
-- **Governance:** [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md).
-- **Verification:** fresh shared-hosting deploy smoke.
+The $5 shared-hosting reality is MySQL or MariaDB with file cache, sync queue, database sessions, and local disk — no Redis, no object storage, no daemon the school cannot restart. The `.env.example` matrix runs the entire feature set synchronously on exactly that floor, where emails and media conversions block the response and real-time updates need a refresh without Reverb. Governance is the [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md), and a fresh shared-hosting deploy smoke proves the defaults carry the full product.
 
 #### FR-SYS-028 — Tier-2 trigger and switches
 
-- Trigger: sustained > 500 users or P95 > 1s as shown by Pulse. Every switch is an env key the
-  config already reads — no code branches on tier.
-- **Governance:** [performance-optimization ADR](../adr/adr-performance-optimization.md).
-- **Verification:** config reads env keys; documented `.env` variant.
+When Pulse shows sustained load above 500 users or P95 latency past a second, the answer must be a config change, not a sprint. Each Tier-2 switch is an env key the config already reads — `QUEUE_CONNECTION=redis`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`, optional S3 disk — with no code branching on tier. Governance is the [performance-optimization ADR](../adr/adr-performance-optimization.md), and review that config reads those env keys plus a documented `.env` variant proves the switch is real.
 
 #### FR-SYS-029 — Tier-3 trigger and switches
 
-- Trigger: sustained > 2000 users or DB write > 50ms. Status is `Planned` — specified, not yet
-  exercised against a live HA instance.
-- **Verification (pending):** HA deploy rehearsal.
+Past roughly 2000 sustained users or 50ms database writes the single-database shape starts to strain, and the team specified the HA answer — read replica, S3 plus CDN, Redis cluster, PHP-FPM tuning, user-aware rate limiting — before the pain arrived. That specification is deliberately still Planned: it is written down but not yet exercised against a live HA instance. The pending proof is a full HA deploy rehearsal.
 
 #### FR-SYS-030 — Config-only growth
 
-- Tier is a deployment concern, never an application branch; feature code never reads the tier.
-- **Verification:** review — no tier conditionals in `app/` (layer `A`).
+If feature code reads the tier, every new feature ships three behaviours and QA triples. Tier therefore stays a deployment concern that application code never branches on, with no feature disabled in any tier. Review asserting no tier conditionals exist under `app/` (layer A) is the whole proof, and it runs on every change.
 
 ### 4.5 System Health Check
 
@@ -352,26 +271,19 @@ pest layers, so `Layer`/`Status` stay `—`; the boot check is backed by the hea
 
 #### FR-SYS-031 — Fifteen-point coverage
 
-- The 15 checks are implemented as `SystemHealthCommand` check methods (environment through
-  maintenance mode); the list is frozen here so Phase-12 detail cannot silently shrink coverage.
-- **Verification:** command test asserting all 15 checks run (layer `F`).
+A health check that silently drops its queue-connectivity probe is worse than none, because operators trust the green output. The fifteen checks — environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, maintenance mode — are implemented as `SystemHealthCommand` check methods, and the list is frozen here so Phase-12 detail cannot shrink coverage. A command test asserting all fifteen checks run (layer F) locks the coverage in.
 
 #### FR-SYS-032 — CLI plus admin surface
 
-- CLI is the deploy-time gate; the web surface lets an admin re-verify without SSH.
-- **Verification:** command invocation + route smoke (layer `F`).
+The deploy-time gate runs over SSH, but the school operator who needs reassurance at 7 a.m. has no SSH access — she has a browser. The check is therefore reachable both as `php artisan system:health` on the CLI and as an admin-accessible web surface. Command invocation plus a route smoke (layer F) prove both doors open onto the same checks.
 
 #### FR-SYS-033 — Cached results
 
-- Key `system.health_check` is registered in `config/cache-keys.php`; expensive checks never run
-  per request.
-- **Verification:** cache-key registry audit + command test (layer `F`).
+Re-running disk-space probes and queue handshakes on every dashboard request would turn monitoring into the load it warns about. Results are cached under the registered key `system.health_check` in `config/cache-keys.php`, so expensive checks never run per request. The cache-key registry audit plus the command test (layer F) prove the key is registered and honoured.
 
 #### FR-SYS-034 — Gated `/up` endpoint
 
-- No gated `/up` customization was found in `routes/` — the default Laravel probe does not yet
-  enforce the extension + DB gates. Status `Planned` until the override lands.
-- **Verification (pending):** HTTP assertion on `/up` under broken-DB fixture (layer `F`).
+The default Laravel `/up` probe returns 200 while the database is down, which tells the load balancer everything is fine during the exact outage it should catch. The gated endpoint must return 200 only when required extensions and database connectivity pass. No such customization was found in `routes/` yet, so the row stays Planned until the override lands, with an HTTP assertion on `/up` under a broken-database fixture (layer F) as its pending proof.
 
 ---
 
@@ -391,26 +303,21 @@ than a runtime measurement.
 
 #### NFR-SYS-001 — Strict types everywhere
 
-- D1 invariant; migrations and config are the only exemptions.
-- **Verification:** `scan_conventions.py` D1 (layer `A`).
+A missing strict-types declaration once let a string placement id slip into an integer comparison and pass silently until accreditation export. `declare(strict_types=1)` is therefore required in every PHP file, with migrations and config the only exemptions under the D1 invariant. The `scan_conventions.py` D1 check (layer A) proves the coverage holds.
 
 #### NFR-SYS-002 — No debug calls
 
-- D2 invariant; `dd()`/`dump()`/`ray()` never reach a commit.
-- **Verification:** `scan_conventions.py` D2 (layer `A`).
+A forgotten `dd()` in a grading action once blanked the assessor's screen during a live review with industry partners in the room. Debug calls — dd, dump, ray, var_dump, print_r, die — must never reach a commit under the D2 invariant. The `scan_conventions.py` D2 check (layer A) is the gate that catches them.
 
 ### 5.2 Runtime Integrity
 
 #### NFR-SYS-003 — Key strength and rotation
 
-- 32-byte base64 identity; previous-keys support keeps rotation non-breaking.
-- **Verification:** health-command app-key check (layer `F`).
+If key rotation logs everyone out at midnight before certificate downloads, the helpdesk drowns. The key must be a 32-byte base64 string, and `APP_PREVIOUS_KEYS` support keeps rotation non-breaking so old sessions survive the change. The health command's app-key check (layer F) proves both strength and rotation.
 
 #### NFR-SYS-004 — SQLite FK enforcement
 
-- Foreign-key constraints are on in every environment including tests; silent orphan rows are a
-  defect, not a dialect quirk.
-- **Verification:** `config/database.php` audit (layer `F`).
+SQLite silently accepts orphan rows when foreign-key enforcement is off, and the corruption only surfaces months later as placements pointing at deleted students. Constraints stay on in every environment including tests via `DB_FOREIGN_KEYS=true`, because silent orphans are a defect rather than a dialect quirk. A `config/database.php` audit (layer F) proves enforcement is unconditional.
 
 ---
 
@@ -525,49 +432,23 @@ Decisions are recorded rationale, not test rows — `Layer`/`Status` stay `—`.
 
 #### DD-SYS-001 — SQLite as Default Database
 
-**Decision:** SQLite is the default database driver, not MySQL.
-**Rationale:** Zero-config development and shared hosting. Schools often lack DBA expertise.
-SQLite with WAL mode handles concurrent reads well for single-tenant workloads up to 500 users.
-**Trade-off:** No connection pooling, limited concurrent writes. Mitigated by the migration path
-to MySQL/PostgreSQL for larger deployments (FR-SYS-020/022).
+At SMKN 1 Bangil the only machine available for a pilot was an old staff laptop with no database server installed, and the intern-student who volunteered to set things up had never created a MySQL user. That is the exact situation SQLite as default exists for: zero-config development and hosting where no DBA exists, with WAL journal mode carrying concurrent reads comfortably up to about 500 single-tenant users. The cost is honest — no connection pooling and limited concurrent writes — so any deployment that outgrows Tier 1 follows the documented migration path to MySQL or PostgreSQL under FR-SYS-020 and FR-SYS-022 rather than stretching SQLite past its shape.
 
 #### DD-SYS-002 — UUID v7 Primary Keys
 
-**Decision:** All models use UUID v7 (time-ordered) primary keys via Laravel's `HasUuids` trait.
-**Rationale:** Time-ordered UUIDs improve B-tree index performance. UUIDs eliminate sequential ID
-exposure (no user can guess `/users/2` → `/users/3`). No migration coordination needed across
-environments.
-**Trade-off:** 16 bytes per PK vs 4 bytes for auto-increment. Storage overhead is negligible for
-<100K rows.
+A placement coordinator once guessed the next student's record by incrementing the id in the URL from `/users/2` to `/users/3` and landed on another student's profile. UUID v7 primary keys via Laravel's `HasUuids` trait close that hole while staying time-ordered, so B-tree index performance does not collapse the way random UUIDs would, and no migration coordination is needed across environments. Sixteen bytes per key instead of four is the price, and below roughly 100K rows that overhead is negligible for a school deployment.
 
 ### 7.2 Growth Strategy
 
 #### DD-SYS-003 — Tiered No-Regret Growth
 
-**Decision:** Enforce cheap universal wins at any scale; Tier-1 defaults run on MySQL alone;
-Tier-2/3 are `.env` swaps with an explicit deferral list.
-**Rationale:** MVP velocity is preserved while the same binary runs at 500 and 2000 users; the
-deferred list removes ambiguity about premature needs.
-**Trade-off:** Default `.env.example` is not production-optimal; deployers must override for
-Tier 2+. See the [performance-optimization ADR](../adr/adr-performance-optimization.md).
+The team watched an early pilot stall when every growth conversation turned into a rewrite proposal — queue workers, cache servers, read replicas — before the school had even finished enrollment week. Tiered no-regret growth answers that by enforcing the cheap universal wins at every scale while Tier-1 defaults run on MySQL alone and Tier-2/3 stay pure `.env` swaps with an explicit deferral list. The default `.env.example` is therefore deliberately not production-optimal, and deployers override it for Tier 2 and above as the [performance-optimization ADR](../adr/adr-performance-optimization.md) describes.
 
 ### 7.3 Schema Design Philosophy
 
 #### DD-SYS-004 — Consolidated Domain Schema
 
-**Decision:** The domain schema consolidates 37 tables from a larger original design; nine
-optimization decisions shaped the final schema, each owned by its domain spec (not duplicated
-here): `mentors` eliminated into user profiles ([95EVB](95EVB-user-crud-and-status.md)),
-`schools` eliminated into settings ([YB22J](YB22J-settings-infrastructure.md)), `handbooks`
-merged into `documents` ([ZUFG8](ZUFG8-handbooks.md)), `absence_requests` merged into
-`attendances` ([1KSWL](1KSWL-daily-activity.md)), `rubric_metrics` as JSON
-([ARDA6](ARDA6-assessment.md)), `handbook_acknowledgments` replaced by `activity_log`
-([ZUFG8](ZUFG8-handbooks.md)), `registration_mentor` eliminated into group membership
-([IT0OE](IT0OE-internship-groups.md)), `reports` snapshot columns ([R6BMW](R6BMW-reports.md)),
-`internship_phases` as JSON ([7C5WM](7C5WM-internship-lifecycle.md)).
-**Rationale:** One table per true entity; cross-references replace duplication.
-**Trade-off:** JSON columns trade queryability for schema flexibility — accepted for variable
-rubric/phase shapes.
+The original domain design sprawled past forty tables, including near-duplicate entities like `mentors` beside user profiles and `absence_requests` beside `attendances` that coordinators could never keep consistent. Consolidation to 37 tables removed nine such redundancies, each owned by its domain spec rather than duplicated here: `mentors` folded into user profiles ([95EVB](95EVB-user-crud-and-status.md)), `schools` into settings ([YB22J](YB22J-settings-infrastructure.md)), `handbooks` into `documents` ([ZUFG8](ZUFG8-handbooks.md)), `absence_requests` into `attendances` ([1KSWL](1KSWL-daily-activity.md)), `rubric_metrics` as JSON ([ARDA6](ARDA6-assessment.md)), `handbook_acknowledgments` into `activity_log` ([ZUFG8](ZUFG8-handbooks.md)), `registration_mentor` into group membership ([IT0OE](IT0OE-internship-groups.md)), `reports` snapshot columns ([R6BMW](R6BMW-reports.md)), and `internship_phases` as JSON ([7C5WM](7C5WM-internship-lifecycle.md)). One table per true entity with cross-references instead of duplication is the standing rule, and the accepted consequence is that JSON columns trade queryability for schema flexibility wherever rubric and phase shapes genuinely vary.
 
 ---
 
