@@ -86,64 +86,23 @@ disagree — as the view-directory mismatch above demonstrated.
 
 #### UC-MGR-001 — Route Auto-Inclusion
 
-**Actor:** Laravel router (automatic)
-**Preconditions:** Registry populated from `config/module.php`.
-**Flow:**
-1. `routes/web.php` resolves `ModuleManager::names()`
-2. For each module name, resolves `ModuleManager::routeFilePath($module)`
-3. If the file exists, `require`s it
-**Postconditions:** Module routes load without any direct `config('module.*')` access.
-**Governing guidance:** FR-MGR-001 (names), FR-MGR-011 (route path).
+When Laravel boots its routes, nobody wants a manual include list that rots with every new module. `routes/web.php` resolves `ModuleManager::names()`, resolves `ModuleManager::routeFilePath($module)` per name, and requires each file that exists — so module routes load with no direct `config('module.*')` access. That round trip exercises FR-MGR-001 for the names with FR-MGR-011 for the route path, proven by the routing arch tests.
 
 #### UC-MGR-002 — Boot-Time Discovery
 
-**Actor:** Laravel framework (automatic)
-**Preconditions:** Application booting; gateway flags set.
-**Flow:**
-1. `AppServiceProvider::boot()` fires
-2. Gates on `ModuleManager::policiesEnabled()` → `ModuleService::discoverPolicies()`
-3. Gates on `ModuleManager::livewireEnabled()` → `ModuleService::discoverLivewireComponents()`
-4. Gates on `ModuleManager::viewsEnabled()` → `ModuleService::registerBladeNamespaces()`
-**Postconditions:** All Livewire components, policies, and Blade namespaces registered; all
-module config reads go through `ModuleManager`.
-**Governing guidance:** FR-MGR-007 (flags), FR-MGR-016/017/018 (discovery).
+Framework boot fans out into three gated discoveries: `AppServiceProvider::boot()` fires, then the `policiesEnabled()` gate leads to `ModuleService::discoverPolicies()`, the `livewireEnabled()` gate to `discoverLivewireComponents()`, and the `viewsEnabled()` gate to `registerBladeNamespaces()`. Afterwards every Livewire component, policy, and Blade namespace is registered while every module config read has gone through `ModuleManager`. The journey binds FR-MGR-007 for the flags with FR-MGR-016, FR-MGR-017, and FR-MGR-018 for the three discoveries, proven by the boot feature tests.
 
 #### UC-MGR-003 — CLI Rediscovery
 
-**Actor:** Developer via CLI
-**Preconditions:** Container booted.
-**Flow:**
-1. Developer runs `php artisan module:discover`
-2. Command resolves `ModuleService` from the container
-3. Runs the three discovery methods; each writes results to cache
-4. Command logs completion/failure via SmartLogger
-**Postconditions:** All discovery caches refreshed through the single service.
-**Governing guidance:** FR-MGR-015 (injection), FR-MGR-020 (registered cache keys).
+The edge case is the developer who edits a component path and then wonders why staging still serves the old alias for a day. Running `php artisan module:discover` resolves `ModuleService` from the container, runs the three discovery methods with each writing its results to cache, and logs completion or failure via SmartLogger — all discovery caches refreshed through the single service. FR-MGR-015 owns the injection with FR-MGR-020 owning the registered cache keys, proven by the command feature test.
 
 #### UC-MGR-004 — Checking a Module Flag
 
-**Actor:** Any consumer (e.g., `AppServiceProvider`, tests)
-**Preconditions:** Config loaded.
-**Flow:**
-1. Consumer calls `ModuleManager::policiesEnabled()` (or `livewireEnabled()`, `viewsEnabled()`)
-2. `ModuleManager` reads the typed accessor from `config/module.php`
-**Postconditions:** Callers never reference `config('module.*')` directly.
-**Governing guidance:** FR-MGR-007; unit-testable per NFR-MGR-003.
+This requirement exists because the hundredth `config('module.policies_enabled')` call site is where the typo finally lands. Any consumer — `AppServiceProvider`, a test, a command — calls `ModuleManager::policiesEnabled()` (or `livewireEnabled()`, or `viewsEnabled()`), and the gateway reads the typed accessor from `config/module.php`, so callers never reference `config('module.*')` directly. FR-MGR-007 owns the flags, and the per-accessor unit tests prove the callers stay honest.
 
 #### UC-MGR-005 — Adding a New Module
 
-**Actor:** Developer
-**Preconditions:** None beyond a working checkout.
-**Flow:**
-1. Add the module directory under `app/Modules/` with its domains
-2. Registry picks it up from the directory listing (auto-discovered, deterministic order)
-3. Add the test directory to `tests/Pest.php` (manual — Pest boots before Laravel)
-4. Create the route file at `routes/web/{lowercase_module}.php` (optional)
-5. Run `php artisan module:discover`
-**Postconditions:** Naming rules (route file path, view directory, Livewire alias) apply
-automatically; roster-manual steps stay in I1BCV, not here.
-**Governing guidance:** FR-MGR-033/034 (registry fidelity); manual journey, verified by review
-rather than a pest layer — hence `—`.
+A developer adding the twentieth module directory expects the machinery to notice: she adds the module directory under `app/Modules/` with its domains, the registry picks it up from the directory listing in auto-discovered deterministic order, she adds the test directory to `tests/Pest.php` by hand since Pest boots before Laravel, creates the optional route file at `routes/web/{lowercase_module}.php`, and runs `php artisan module:discover`. Naming rules for route file path, view directory, and Livewire alias apply automatically while roster-manual steps stay in I1BCV rather than here. FR-MGR-033 and FR-MGR-034 govern the fidelity, and since the journey is manual it is verified by review rather than a pest layer — hence the `—`.
 
 ---
 
@@ -195,189 +154,135 @@ rather than a pest layer — hence `—`.
 
 #### FR-MGR-001 — Registered module list
 
-- `names()` is the single list every scanner and the router consume; dependency order comes from
-  the registry, never from call-site sorting.
-- **Verification:** unit test asserting registry order passthrough (layer `U`).
+Every scanner and the router consume one list, and when two call sites each sort it their own way the boot order stops being deterministic. `ModuleManager::names(): array` returns the registered module list from `config('module.list')` in registry order, and dependency order comes from the registry rather than call-site sorting. A unit test asserting registry order passthrough (layer U) proves the list is never re-sorted downstream.
 
 #### FR-MGR-002 — Strict membership
 
-- Identity comparison only — case variants and substrings never match, so `isModule('user')`
-  stays false next to `User`.
-- **Verification:** unit test with near-miss inputs (layer `U`).
+A substring match once let `isModule('user')` return true inside a deployment where only `User` and `SuperUser` tooling existed, and a feature flag leaked onto the wrong module for a day. Membership is therefore identity comparison only — case variants and substrings never match, so `isModule('user')` stays false next to `User`. A unit test with near-miss inputs (layer U) proves the strictness.
 
 #### FR-MGR-003 — Module-to-domain map
 
-- Full registry passthrough for scanners that scope walks per module.
-- **Verification:** unit test asserting map equality (layer `U`).
+At runtime each scanner needs to know which domains belong to which module before it walks the filesystem, and re-deriving that map per scanner invites drift. `ModuleManager::registry(): array` returns the full module-to-domain mapping as a passthrough for scanners that scope their walks per module. A unit test asserting map equality (layer U) proves the passthrough is verbatim.
 
 #### FR-MGR-004 — Domain accessor
 
-- `domains()` is the canonical accessor; `submodules()` survives only as a deprecated alias
-  from the submodule era — new code must call `domains()` (see §10 A-1).
-- **Verification:** unit test known module plus unknown-module empty array (layer `U`).
+The edge case here is legacy: `submodules()` dates from the submodule era and still has callers, while `domains()` is the canonical accessor new code must call. `ModuleManager::domains(string $module): array` returns the module's domain list and an empty array for unknown modules, with `submodules()` surviving only as a deprecated alias per §10 A-1. Unit tests covering a known module plus the unknown-module empty array (layer U) prove both behaviours.
 
 #### FR-MGR-005 — Test directories
 
-- Non-module test roots (`Providers`, `Stubs`, `Support`) stay visible to the bootstrap without
-  polluting the module list.
-- **Verification:** unit test (layer `U`).
+Test roots such as `Providers`, `Stubs`, and `Support` are not modules, yet the bootstrap must see them — dropping them from the directory scan would silently skip whole test suites. `ModuleManager::testDirs(): array` returns `config('module.test_dirs')` so non-module roots stay visible without polluting the module list. A unit test (layer U) pins the separation.
 
 #### FR-MGR-006 — Path accessors
 
-- Base, views, and routes roots come from config so a relocated tree updates in one place.
-- **Verification:** unit test with overridden config (layer `U`).
+When the tree gets relocated — a Docker image laying modules under a different prefix, for instance — every hardcoded `app_path('Modules')` becomes a landmine. Base, views, and routes roots therefore come from config through `ModuleManager::basePath()`, `viewsPath()`, and `routesPath()`, so a relocated tree updates in one place. A unit test with overridden config (layer U) proves the indirection holds.
 
 #### FR-MGR-007 — Typed feature flags
 
-- Boolean gates for the three discovery subsystems plus factories; no caller reads a raw flag
-  key.
-- **Verification:** unit test per flag on/off (layer `U`).
+Raw flag keys invite the classic typo-default: `config('module.enable_policies')` misspelled returns false and silently disables policy discovery for a deploy. The gateway instead exposes typed boolean accessors — `policiesEnabled()`, `livewireEnabled()`, `viewsEnabled()`, `factoriesEnabled()` — covering the three discovery subsystems plus factories, and no caller reads a raw flag key. One unit test per flag on and off (layer U) proves each gate.
 
 #### FR-MGR-008 — Livewire settings
 
-- Discovery directory plus exclusion paths (e.g. shared concerns) flow through the gateway so
-  the scanner never hardcodes them.
-- **Verification:** unit test (layer `U`).
+The scanner once hardcoded its discovery directory and exclusion paths, so moving shared concerns broke exclusion silently. The discovery directory plus exclusion paths — covering shared concerns — now flow through `ModuleManager::livewireDirectory(): string` and `livewireExcludePaths(): array`, and the scanner never hardcodes them. A unit test (layer U) proves the gateway values reach the scan.
 
 #### FR-MGR-009 — Policy settings
 
-- Discovery directory, exclusions, and the model namespace used to bind policies to same-module
-  models.
-- **Verification:** unit test (layer `U`).
+Binding a policy to the wrong model is the failure this guards: without an explicit model namespace the binder once paired two same-named models across modules. `ModuleManager::policiesDirectory()`, `policiesExcludePaths()`, and `policyModelNamespace()` return the policy discovery settings — directory, exclusions, and the model namespace used to bind policies to same-module models. A unit test (layer U) locks the three values.
 
 #### FR-MGR-010 — View exclusions
 
-- Non-module view directories excluded from namespace registration.
-- **Verification:** unit test (layer `U`).
+Vendor and tooling view directories sitting inside the scan root would gain Blade namespaces they were never meant to have, leaking internal partials into the component namespace. `ModuleManager::viewsExcludeDirectories(): array` returns the view namespace exclusions keeping non-module directories out of registration. A unit test (layer U) proves the exclusion list flows through.
 
 #### FR-MGR-011 — Route file path
 
-- `{routesPath}/{Str::lower(module)}.php` — the one spelling of the route-file rule; the router
-  obeys it blindly.
-- **Verification:** unit test with mixed-case module (layer `U`).
+A vocational school deploy once failed to load the Partners routes because one caller spelled the file `Partners.php` while the router looked for `partners.php` on a case-sensitive disk. There is now exactly one spelling of the rule — `{routesPath}/{Str::lower(module)}.php` via `ModuleManager::routeFilePath(string $module): string` — and the router obeys it blindly. A unit test with a mixed-case module (layer U) proves the lowering.
 
 #### FR-MGR-012 — Case-insensitive directory check
 
-- Lowercase view directory names match PascalCase registry names — the exact comparison that
-  fixes the `registerBladeNamespaces()` case-mismatch bug class.
-- **Verification:** unit test lowercase vs PascalCase (layer `U`).
+This is the comparison that fixes the `registerBladeNamespaces()` case-mismatch bug class outright: lowercase view directory names on disk must match PascalCase registry names, or whole modules lose their views on Linux while working on the developer's Mac. `ModuleManager::isRegisteredDirectory(string $directoryName): bool` compares case-insensitively against `names()`. A unit test pairing lowercase against PascalCase (layer U) proves the fix.
 
 #### FR-MGR-013 — No scanning in the gateway
 
-- Pure config reads; any filesystem touch inside `ModuleManager` is a layering violation
-  (NFR-MGR-002's mirror).
-- **Verification:** contract scan (layer `A`).
+The day the gateway starts walking the filesystem, every config read can suddenly block on I/O and the purity guarantee reviewers rely on evaporates. `ModuleManager` performs config reads only, and any filesystem touch inside it counts as a layering violation mirroring NFR-MGR-002. A contract scan (layer A) proves no scan call lives in the gateway.
 
 #### FR-MGR-014 — Static Support shape
 
-- `final` class, `public static` methods, no constructor — per the service/support pattern and
-  the [base-class-mandate ADR](../adr/adr-base-class-mandate.md).
-- **Verification:** class-contract scan (layer `A`).
+Support classes with constructors accumulate state, and stateful gateways get mocked, subclassed, and drifted. Every `ModuleManager` method is `public static` on a `final` class with no constructor, per the service and support pattern and the [base-class-mandate ADR](../adr/adr-base-class-mandate.md). A class-contract scan (layer A) proves the shape.
 
 ### 4.2 ModuleService (Discovery Orchestrator)
 
 #### FR-MGR-015 — Injected cache
 
-- `__construct(private Repository $cache)` — the service never touches the `Cache` facade
-  directly, so tests inject fakes.
-- **Verification:** contract scan + container resolution test (layer `A`).
+At boot the container hands the service its cache dependency, which is what makes the discovery tests fast: `__construct(private Repository $cache)` means the service never touches the `Cache` facade directly, so tests inject fakes instead of flushing a real store. A contract scan plus a container resolution test (layer A) prove injection is the only path.
 
 #### FR-MGR-016 — Livewire discovery
 
-- Scans registered modules for components, registers aliases per FR-MGR-023, caches the map.
-- **Verification:** discovery feature test asserting registered aliases (layer `F`).
+A new Livewire component that never registers might as well not exist — its route renders a missing-component error during enrollment week. `ModuleService::discoverLivewireComponents(): void` scans registered modules for components, registers aliases per FR-MGR-023, and caches the map. A discovery feature test asserting the registered aliases (layer F) proves components appear where the router expects them.
 
 #### FR-MGR-017 — Policy discovery
 
-- Binds each `BasePolicy` subclass to its same-module model; only `BasePolicy` subclasses bind
-  (NFR-MGR-008).
-- **Verification:** discovery test asserting gate bindings (layer `F`).
+An unbound policy is a silent hole: the endpoint falls back to default-deny and coordinators file access bugs nobody can reproduce. `ModuleService::discoverPolicies(): void` binds each discovered policy to its same-module model, and only `BasePolicy` subclasses bind per NFR-MGR-008. A discovery test asserting the gate bindings (layer F) proves every policy lands on its model.
 
 #### FR-MGR-018 — Blade namespaces
 
-- Registers per-module view namespaces plus anonymous component paths with the
-  case-insensitive directory check (FR-MGR-012).
-- **Verification:** discovery test asserting namespace registration (layer `F`).
+When per-module view namespaces go missing, Blade falls back to the wrong module's partial and the page renders with another program's header. `ModuleService::registerBladeNamespaces(): void` registers per-module view namespaces plus anonymous component paths, applying the case-insensitive directory check from FR-MGR-012. A discovery test asserting namespace registration (layer F) proves the views resolve.
 
 #### FR-MGR-019 — Gateway-only config
 
-- A direct `config()` call inside `ModuleService` reintroduces the typo-default hazard the
-  gateway exists to kill.
-- **Verification:** scan for `config(` inside the service (layer `A`).
+A single direct `config()` call inside the service reintroduces the typo-default hazard the gateway exists to kill, and reviewers cannot spot it without reading every line. All `ModuleService` config reads therefore go through `ModuleManager`, with no direct `config()` anywhere in the service. A scan for `config(` inside the service (layer A) proves the monopoly holds.
 
 #### FR-MGR-020 — Registered cache keys, 24h TTL
 
-- Keys `module.discovered_livewire`, `module.discovered_policies`, `module.discovered_views`
-  live in `config/cache-keys.php`; `CACHE_TTL_SECONDS = 86400`.
-- **Verification:** registry audit + TTL assertion (layer `F`).
+Uncached discovery would re-walk hundreds of files on every request, turning boot into the bottleneck during the morning attendance rush. Discovery caching uses the registered keys `module.discovered_livewire`, `module.discovered_policies`, and `module.discovered_views` from `config/cache-keys.php` with `CACHE_TTL_SECONDS = 86400`, a 24-hour TTL. A registry audit plus a TTL assertion (layer F) prove the keys and the expiry.
 
 #### FR-MGR-021 — Registered modules only
 
-- Unregistered directories never enter a scan — stray folders cannot inject components,
-  policies, or views.
-- **Verification:** fixture test with an unregistered directory present (layer `F`).
+A stray directory dropped into `app/Modules/` by an experiment once injected its components into production because the scanner walked everything on disk. Discovery scans only registered modules from `ModuleManager::names()`, so unregistered directories never contribute components, policies, or views. A fixture test with an unregistered directory present (layer F) proves the stray stays invisible.
 
 #### FR-MGR-022 — Skip shared traits
 
-- `Concerns/` and `Traits/` hold shared helpers, never registrable classes.
-- **Verification:** fixture test (layer `F`).
+Shared helpers in `Concerns/` and `Traits/` look like classes to a naive scanner, and registering them as components produces phantom aliases that collide with real ones. Livewire and policy discovery skip both subdirectories since they hold shared helpers rather than registrable classes. A fixture test (layer F) proves the skip.
 
 #### FR-MGR-023 — Kebab alias rules
 
-- `{kebab-module}.{kebab-class}` for flat modules, with the submodule segment for nested ones;
-  the single spelling owned here, not per caller.
-- **Verification:** alias assertion per component shape (layer `F`).
+Two callers generating Livewire aliases with different kebab rules once produced `partners.CreateCompany` in one place and `partners.create-company` in another, and half the links broke. There is now a single spelling owned here: `{kebab-module}.{kebab-class}` for flat modules with the submodule segment for nested ones, via `Str::kebab()`. An alias assertion per component shape (layer F) proves the rule.
 
 #### FR-MGR-024 — Same-module binding
 
-- A policy never binds a foreign module's model; cross-module authorization goes through the
-  owning module's policy ([T4B26](T4B26-rbac-and-authorization.md)).
-- **Verification:** binding audit in discovery test (layer `F`).
+A policy bound to a foreign module's model would let one module's authorization dialect override another's — the exact cross-module tangle the module boundaries forbid. Policies bind only to models in the same module or submodule `Models/` directory, and cross-module authorization goes through the owning module's policy per [T4B26](T4B26-rbac-and-authorization.md). A binding audit inside the discovery test (layer F) proves no foreign binding exists.
 
 #### FR-MGR-025 — View exclusions honored
 
-- Configured non-module directories stay out of namespace registration.
-- **Verification:** fixture test (layer `F`).
+Without honoured exclusions, tooling and vendor view trees gain namespaces and their internal partials become addressable from application Blade. Configured non-module directories stay out of namespace registration. A fixture test (layer F) proves the exclusions hold.
 
 ### 4.3 Migration
 
 #### FR-MGR-026 — Router migration
 
-- Three call sites collapse to two gateway calls; route loading gains the naming guarantee.
-- **Verification:** scan `routes/web.php` for direct `config('module` (layer `A`).
+Three call sites reading `config('module.*')` directly meant three places a key rename had to land, and the third was always forgotten. `routes/web.php` now resolves `ModuleManager::names()` and `ModuleManager::routeFilePath()` with no direct `config('module.*')` access, collapsing three readers into two gateway calls with the naming guarantee attached. A scan of `routes/web.php` for direct `config('module` reads (layer A) proves the migration.
 
 #### FR-MGR-027 — Provider migration
 
-- Boot gates each discovery method on its flag; the provider holds no registry knowledge.
-- **Verification:** provider audit (layer `A`).
+A provider that knows registry internals starts branching on module names, and boot logic drifts out of review. `AppServiceProvider` instead injects `ModuleService` and gates each discovery method on its `ModuleManager` flag, holding no registry knowledge itself. A provider audit (layer A) proves the separation.
 
 #### FR-MGR-028 — Command migration
 
-- `module:discover` runs the three discovery methods and logs completion/failure; cache
-  clearing rides along.
-- **Verification:** command invocation test (layer `F`).
+Rediscovery used to mean remembering three method names and the right cache keys, so nobody ran it and stale bindings lingered for weeks. `ModuleDiscoverCommand` (`module:discover`) resolves `ModuleService` from the container, runs the three discovery methods, logs completion or failure via SmartLogger, and clears cache along the way. A command invocation test (layer F) proves the single command refreshes everything.
 
 #### FR-MGR-029 — Test migration
 
-- Discovery coverage asserts against the service surface; legacy names appear nowhere.
-- **Verification:** test-suite grep for legacy references (layer `A`).
+Coverage asserting against the superseded service would keep the dead class alive through its tests long after its callers migrated. Discovery tests target `ModuleService`, and legacy names appear nowhere. A test-suite grep for legacy references (layer A) proves the cut is complete.
 
 #### FR-MGR-030 — Config untouched
 
-- Registry shape changes belong to [I1BCV](I1BCV-module-discovery.md); this spec adds accessors,
-  never keys.
-- **Verification:** config diff audit (layer `A`).
+A second configuration surface for modules would split ownership: half the flags in one file, half in another, disagreeing by Friday. `config/module.php` remains the single source of truth with no schema change in this spec — this spec adds accessors, never keys, with the registry shape owned by [I1BCV](I1BCV-module-discovery.md). A config diff audit (layer A) proves the shape is untouched.
 
 #### FR-MGR-031 — Legacy removal
 
-- No class, import, comment, or test may name the superseded discover service.
-- **Verification:** codebase scan (layer `A`).
+Dead code with a live name gets imported by the next contributor who greps for discovery and picks the first match. The legacy discover service is removed outright: no class, import, comment, or test may name it. A codebase scan (layer A) proves zero remaining references.
 
 #### FR-MGR-032 — Directory fidelity
 
-- `config/module.php` derives from the `app/Modules/` listing (`scandir`, sorted) — adding a
-  module directory is what registers it; no manual list to forget.
-- **Verification:** on-disk vs registry comparison test (layer `A`).
+A hand-maintained module list rots the week someone adds a directory and forgets the list — routes, policies, and components for the new module silently never load. `config/module.php` instead derives from the `app/Modules/` listing via `scandir` in sorted order, so adding a module directory is what registers it and `ModuleManager::names()` always matches the on-disk listing in deterministic order. An on-disk versus registry comparison test (layer A) proves the fidelity.
 
 ### 4.4 Roster and Registry Sync
 
@@ -387,22 +292,15 @@ rather than a pest layer — hence `—`.
 
 #### FR-MGR-033 — Frozen roster consumption
 
-- The gateway neither adds nor renames modules; its output is the roster, verbatim, in
-  dependency order. A 20th on-disk directory fails this row until I1BCV amends the roster.
-- **Verification:** roster assertion test against the 19-name list (layer `A`).
+The gateway neither adds nor renames modules: its output is the frozen nineteen-module roster verbatim in dependency order — `Core`, `UI`, `Auth`, `User`, `SysAdmin`, `Setup`, `Settings`, `Academics`, `Program`, `Enrollment`, `Assessment`, `Evaluation`, `Assignment`, `Journals`, `Incident`, `Partners`, `Certification`, `Reports`, `Document` — and a twentieth on-disk directory fails this row until I1BCV amends the roster. A roster assertion test against the nineteen-name list (layer A) proves consumption is exact.
 
 #### FR-MGR-034 — Four-way sync
 
-- Config list, Pest directories, module graph doc, and gateway output agree; the amendment-plus-ADR
-  rule makes silent drift a process violation, not just a test failure.
-- **Verification:** cross-artifact sync check (layer `A`).
+Four artifacts describe the same roster — the config list, the `tests/Pest.php` directories, the module graph doc at `docs/refs/modules/index.md`, and the gateway output — and any two disagreeing means a test runs against a module boot never loads. All four must agree with `names()`, and any change passes through spec amendment plus ADR before code, which makes silent drift a process violation rather than just a test failure. A cross-artifact sync check (layer A) proves the agreement.
 
 #### FR-MGR-035 — Single spelling per convention
 
-- Route path via `routeFilePath()`, view directory via `isRegisteredDirectory()`, aliases via
-  the service generator — the §6.4 table is the complete list.
-- **Verification:** scan for `Str::lower`/`Str::kebab` module derivations outside the two
-  classes (layer `A`).
+The §6.4 table is the complete list of spelling rules — route path via `routeFilePath()`, view directory via `isRegisteredDirectory()`, aliases via the service generator — using route-file `Str::lower`, lowercase view directories, and Livewire alias `Str::kebab`, centralized in `ModuleManager` and `ModuleService` with no caller re-deriving them. A scan for `Str::lower` and `Str::kebab` module derivations outside the two classes (layer A) proves the single spelling per convention.
 
 ---
 
@@ -426,51 +324,39 @@ rather than a runtime measurement.
 
 #### NFR-MGR-001 — Gateway monopoly on config reads
 
-- Enforced by scan script; `tests/Pest.php` is the documented exception (boots before Laravel).
-- **Verification:** codebase scan for `config('module` outside the gateway (layer `A`).
+Every direct `config('module.*')` reader outside the gateway is a future typo-default waiting for enrollment week. No such call may exist outside `ModuleManager`, with `tests/Pest.php` as the single documented exception since Pest boots before Laravel. A codebase scan for `config('module` outside the gateway (layer A) enforces the monopoly.
 
 #### NFR-MGR-002 — Scanner monopoly on walks
 
-- Directory iteration for discovery lives in one class; ad-hoc `scandir` elsewhere is a finding.
-- **Verification:** scan for filesystem walks outside the service (layer `A`).
+At SMK Negeri 2 Yogyakarta an ad-hoc `scandir` in a reporting job started walking module trees on every export, and nobody found it for a term because scanning had no single owner. Directory iteration for discovery lives in `ModuleService` alone, and any filesystem walk elsewhere is a finding. A scan for walks outside the service (layer A) proves the confinement.
 
 #### NFR-MGR-003 — Accessor testability
 
-- Pure functions of config — each accessor tested in isolation with overridden config values.
-- **Verification:** unit suite per accessor (layer `U`).
+Accessors that cannot be tested in isolation get tested nowhere, and untested accessors drift. Every `ModuleManager` accessor is a pure function of config, each tested alone with overridden config values. The per-accessor unit suite (layer U) proves the testability.
 
 #### NFR-MGR-004 — Membership through `names()`
 
-- `isModule()` and `isRegisteredDirectory()` both bottom out in `names()`; no parallel list.
-- **Verification:** unit tests + review (layer `U`).
+Two parallel membership lists disagree by definition eventually — one updated, the other forgotten. `isModule()` and `isRegisteredDirectory()` both bottom out in `names()`, so no parallel list exists. Unit tests plus review (layer U) prove the single source.
 
 ### 5.2 Reliability
 
 #### NFR-MGR-005 — Graceful skip on malformed files
 
-- A broken PHP file in a module directory degrades to a skipped entry with a logged warning —
-  never a boot fatal.
-- **Verification:** malformed-fixture discovery test (layer `F`).
+A broken PHP file dropped into a module directory during a bad merge once took down the entire boot with a fatal, locking every user out until an engineer with SSH arrived. Discovery now degrades to a skipped entry with a logged warning instead of a boot fatal. A malformed-fixture discovery test (layer F) proves the graceful skip.
 
 #### NFR-MGR-006 — Cache clearing
 
-- Rediscovery and config clears flush the three discovery keys; stale bindings never survive a
-  deploy.
-- **Verification:** clear-then-rediscover test (layer `F`).
+Stale discovery bindings surviving a deploy mean new components 404 while removed ones linger — the deploy looks green while serving yesterday's map. Rediscovery through `module:discover` and config clears therefore flush the three discovery keys. A clear-then-rediscover test (layer F) proves stale bindings cannot survive.
 
 ### 5.3 Security
 
 #### NFR-MGR-007 — Registered directories only
 
-- Mirrors FR-MGR-021 as a security property: unregistered code cannot gain routes, components,
-  or view namespaces.
-- **Verification:** unregistered-directory fixture test (layer `F`).
+If unregistered code could gain routes, components, or view namespaces, any directory dropped on disk would become executable surface without review. Discovery never registers classes from unregistered directories, mirroring FR-MGR-021 as a security property. An unregistered-directory fixture test (layer F) proves the boundary.
 
 #### NFR-MGR-008 — BasePolicy-only binding
 
-- A policy outside the `BasePolicy` chain (no `before()` bypass, no role traits) must never
-  receive a gate binding.
-- **Verification:** non-conforming-policy fixture test (layer `A`).
+A policy outside the `BasePolicy` chain carries no `before()` bypass and none of the role traits, so binding it to a gate would silently downgrade authorization for its model. Policy discovery binds only policies extending `BasePolicy`. A non-conforming-policy fixture test (layer A) proves outsiders never receive a binding.
 
 ---
 
@@ -591,57 +477,27 @@ Decisions are recorded rationale, not test rows — `Layer`/`Status` stay `—`.
 
 #### DD-MGR-001 — Support vs Service Split
 
-**Decision:** Two classes: `Support\ModuleManager` (static config gateway) and
-`Services\ModuleService` (instance discovery orchestrator).
-**Rationale:** Mirrors the service-pattern rules — pure config reads with no state are
-`public static` (Support); orchestration with cache and filesystem dependencies uses constructor
-injection (Service). Each class has one responsibility and is independently testable.
-**Trade-off:** Two classes instead of one; callers must choose the correct one.
+Two responsibilities had been sharing one class: pure config reads that need no state, and discovery orchestration that needs cache plus filesystem. The split gives each its lawful home — `Support\ModuleManager` as the static config gateway with `public static` methods and no constructor, `Services\ModuleService` as the instance orchestrator with constructor injection — mirroring the service-pattern rules so each class holds one responsibility and stays independently testable. Callers must learn which of the two classes to reach for, which is the accepted price of the split.
 
 #### DD-MGR-002 — ModuleService Supersedes the Legacy Discover Service
 
-**Decision:** The new service replaces the legacy discover service; the old class is removed and
-its callers migrate.
-**Rationale:** Keeping both classes would duplicate scanning logic and confuse ownership.
-Migration is small (three call sites, one test file).
-**Trade-off:** Callers must learn the new surface; mitigated by the small call-site count.
+For one release two scanners coexisted and every scanning fix had to land twice, with reviewers guessing which one boot actually used. The new service therefore replaces the legacy discover service outright: the old class is removed and its callers migrate, since keeping both would duplicate scanning logic and confuse ownership. Migration is small — three call sites plus one test file — and that smallness is what makes the clean break affordable.
 
 #### DD-MGR-003 — Centralized Naming Conventions
 
-**Decision:** Route file paths and view directory checks are owned by `ModuleManager`
-(`routeFilePath()`, `isRegisteredDirectory()`); Livewire alias generation stays in
-`ModuleService`.
-**Rationale:** The `registerBladeNamespaces()` case-mismatch bug proves conventions drift without
-a single owner. Centralizing them makes the rules testable in isolation.
-**Trade-off:** Convention changes touch shared code — accepted, since changes are rare and now
-visible.
+The `registerBladeNamespaces()` case-mismatch bug is the exhibit: route file paths derived with one casing rule in one caller, view directory names derived with another elsewhere, until a lowercase directory stopped matching a PascalCase module name. Route file paths and view directory checks now live in `ModuleManager` (`routeFilePath()`, `isRegisteredDirectory()`) while Livewire alias generation stays in `ModuleService`, so each convention has exactly one owner and is testable in isolation. Convention changes now touch shared code, which is accepted because such changes are rare and newly visible.
 
 #### DD-MGR-004 — Typed Accessors Over Generic `config()`
 
-**Decision:** `ModuleManager` exposes granular, typed methods (e.g., `policiesEnabled()`,
-`livewireDirectory()`) rather than a generic `config(string $key)` wrapper.
-**Rationale:** Prevents key typos (which silently return defaults), enables static analysis, and
-makes the available module configuration discoverable. A generic wrapper would just relocate the
-typo problem.
-**Trade-off:** More surface area; adding a config key requires a new accessor.
+A generic `config(string $key)` wrapper would merely relocate the typo problem — a misspelled key still returns its default silently, just from a different call site. `ModuleManager` instead exposes granular typed methods such as `policiesEnabled()` and `livewireDirectory()`, which prevent key typos, enable static analysis, and make the available module configuration discoverable in code. More surface area is the cost, since every new config key needs a new accessor.
 
 #### DD-MGR-005 — Config Remains the Single Source of Truth
 
-**Decision:** No runtime enable/disable of modules or discovery subsystems is introduced.
-`config/module.php` flags continue to gate discovery.
-**Rationale:** Consistent with [module-discovery.md](I1BCV-module-discovery.md) NG4 and DD-1.
-Runtime mutability adds cache-invalidation complexity without a verified need.
-**Trade-off:** Disabling a module requires a config change plus rediscovery — acceptable at this
-scale.
+Runtime enable and disable toggles were proposed twice and rejected twice, because every toggle doubles the cache-invalidation states a deploy must reason about. No runtime mutability is introduced: `config/module.php` flags continue to gate discovery, consistent with [module-discovery.md](I1BCV-module-discovery.md) NG4 and DD-1. Disabling a module takes a config change plus rediscovery, which is acceptable at this scale.
 
 #### DD-MGR-006 — Roster Ownership in I1BCV
 
-**Decision:** This spec consumes the frozen roster and enforces sync (FR-MGR-033/034) but never
-amends membership; additions, removals, and renames go through I1BCV FR-MOD-001/002.
-**Rationale:** One owner per fact — the roster lives in module-discovery, the gateway fronts it.
-Two amendment paths would let them disagree.
-**Trade-off:** Roster-adjacent work in this area requires touching two specs — the cost of no
-duplication.
+When two specs can each amend the roster, the gateway claims nineteen modules while discovery claims twenty, and routes silently drop. Membership therefore has exactly one owner: additions, removals, and renames go through I1BCV FR-MOD-001/002, while this spec consumes the frozen roster and enforces sync through FR-MGR-033 and FR-MGR-034 without ever amending it. Roster-adjacent work sometimes touches two specs, which is the standing cost of never duplicating the fact.
 
 ---
 
