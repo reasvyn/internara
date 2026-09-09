@@ -1,12 +1,13 @@
 # Setup Wizard — Feature Specification
 
 > **Spec ID:** VEJCX
+> **Status:** Full
+> **Owner:** Setup
+> **Depends on:** 8NZAU
 
 ## Description
 
-Specification for the browser-based setup wizard of Internara. Covers the 6-step wizard UI,
-token validation, access control during setup, and post-finalization lifecycle. CLI provisioning
-is a separate initiative — see [installation.md](8NZAU-installation.md).
+Defines the browser-based setup wizard that turns a provisioned instance into a working school: six guided steps from environment welcome through super admin creation, school profile, first department, and atomic finalization. CLI provisioning that precedes it belongs to [8NZAU-installation.md](8NZAU-installation.md); the recovery key born here is operated in [C9ZB6-recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md).
 
 ---
 
@@ -14,23 +15,23 @@ is a separate initiative — see [installation.md](8NZAU-installation.md).
 
 ### PS-1 — Access Control During Setup
 
-The setup wizard creates the super admin account and writes sensitive configuration. Untrusted
-parties must not be able to access the wizard, guess the setup URL, or replay expired sessions.
+The wizard creates the super admin account and writes sensitive configuration. Untrusted parties must not reach it, guess its URL, or replay expired sessions.
+**→ Requirement:** FR-WIZ-016 (token gate), FR-WIZ-017 (versioned session), FR-WIZ-018 (post-finalization lockout).
 
-### PS-2 — Recovery Key Lifecycle
+### PS-2 — Recovery Key Handoff
 
-After setup, the super admin may lose access (forgotten password, account lockout). The wizard
-must display the recovery key at finalization and provide a clear way to save it.
+Finalization mints the recovery key exactly once. The installer must see it, copy it, and store it elsewhere — a key displayed but not saved is a lockout scheduled for next semester.
+**→ Requirement:** FR-WIZ-007 (key display with copy), FR-WIZ-013 (dual persistence).
 
 ### PS-3 — Guided Configuration
 
-School IT staff may not be technical. The wizard must guide them through super admin creation,
-school profile, and department setup with clear instructions and validation at each step.
+School IT staff may not be technical. The wizard must walk them through super admin creation, school profile, and first department with plain instructions and validation at every step.
+**→ Requirement:** FR-WIZ-001/002 (step structure and audit gate), FR-WIZ-003/004/005 (validated forms).
 
 ### PS-4 — Auto-Redirect for Uninstalled Systems
 
-Any visitor to an uninstalled Internara instance must be automatically redirected to the setup
-wizard rather than seeing a broken or empty application.
+Any visitor to an uninstalled instance must land on the wizard, not on a broken or empty application.
+**→ Requirement:** FR-WIZ-016 (global redirect to `/setup`).
 
 ---
 
@@ -38,232 +39,256 @@ wizard rather than seeing a broken or empty application.
 
 ### Goals
 
-| ID  | Goal                                                               |
-| --- | ------------------------------------------------------------------ |
-| G1  | Complete wizard in under 5 minutes from Step 1 to Step 6          |
-| G2  | Prevent unauthorized access to setup wizard via cryptographic token |
-| G3  | Auto-redirect non-installed instances to setup wizard              |
-| G4  | Provide bilingual UI (English/Indonesian) throughout the wizard    |
-| G5  | Ensure idempotent finalization — running twice causes no harm      |
-| G6  | Display recovery key with one-click copy at finalization           |
+- **Six steps, five minutes** — welcome to complete without a manual. *Why:* setup day competes with every other first-week task; a wizard that needs its own training has failed.
+- **Token-gated access end to end** — no anonymous path to account creation. *Why:* the wizard manufactures the most powerful account in the system.
+- **Uninstalled means redirected** — every route leads to `/setup` until finalization. *Why:* a half-born system must never look finished.
+- **Bilingual throughout** — every string in Indonesian and English. *Why:* the person provisioning and the person filling forms often read different languages.
+- **Idempotent finalization** — finishing twice changes nothing. *Why:* double-clicks and impatient refreshes are part of every real setup day.
+- **Recovery key copied, not glanced at** — one-click copy at finalization. *Why:* transcription errors in a 64-character secret are a support ticket with no self-service fix.
 
 ### Non-Goals
 
-| ID   | Non-Goal                                                         |
-| ---- | ---------------------------------------------------------------- |
-| NG1  | CLI wizard (use `setup:install` for CLI path)                   |
-| NG2  | Multi-step progress persistence across browser sessions          |
-| NG3  | Import/export of setup configuration                             |
-| NG4  | Custom theme/branding during setup (post-setup only)             |
+- **CLI wizard**. *Why:* the terminal path is owned by [8NZAU-installation.md](8NZAU-installation.md).
+- **Progress persistence across browsers**. *Why:* session-scoped state is enough; an expired session restarts cheaply from step one with no orphaned rows.
+- **Import or export of setup configuration**. *Why:* one school, one setup, no fleet to clone at MVP.
+- **Custom theme or branding during setup**. *Why:* branding is post-setup configuration; see [52O1I-branding-theme-locale.md](52O1I-branding-theme-locale.md).
+- **One-time-password verification during recovery**. *Why:* shared hosting frequently lacks SMTP; deferred post-MVP (see §10 R-1).
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-VEJCX-1 — Browser Wizard (Primary Path)
+One table holds every use case; the groups below (§3.1–§3.2) carry the free-form detail for each row.
 
-**Actor:** Installer (may be same person as CLI installer, or different)
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-WIZ-001 | Installer completes the six-step browser wizard from welcome to recovery key | P0 | B | Full |
+| UC-WIZ-002 | Any visitor to an uninstalled instance is redirected to the setup entry | P0 | F | Full |
+| UC-WIZ-003 | Installer copies the recovery key inside the post-finalization window, then setup locks | P0 | F | Full |
+| UC-WIZ-004 | Installer navigates back to completed steps with all entered data preserved | P1 | B | Full |
 
-**Preconditions:** Token generated via CLI or `setup:reset-token`, browser access to application.
+### 3.1 The Wizard Journey
 
-**Flow:**
-1. Installer opens the setup URL with `?setup_token=XXXX` parameter
-2. `ProtectSetupRouteMiddleware` validates token, stores authorization in session, regenerates
-   session ID
-3. **Step 1 — Welcome:** Environment audit results displayed. Installer must see all checks pass
-   (or click "Recheck") before "Start Setup" button enables.
-4. **Step 2 — Super Admin:** Name ("Super Admin") and username ("superadmin") are locked. Installer
-   enters email and password. Password requires 8+ chars, mixed case, numbers.
-5. **Step 3 — School:** Installer enters school name, NPSN code, email, phone (optional), website
-   (optional), address (optional), principal name (optional).
-6. **Step 4 — Department:** Installer enters first department name and optional description.
-7. **Step 5 — Finalize:** Two checkboxes (data verified + security aware). Summary display of
-   entered data. "Finish" button disabled until both checked.
-8. **Step 6 — Complete:** Recovery key displayed (64-char random string) with copy button. Access
-   credentials summary. Auto-redirect to login after 20 seconds.
+#### UC-WIZ-001 — Walk the Six Steps
 
-**Postconditions:** System is fully operational, super admin can log in, recovery key saved to
-`storage/app/private/.recovery-key` (chmod 0600).
+The vice principal opens the signed URL from WhatsApp and meets a welcome screen showing the environment audit — green across the board, because the technician already ran it. Super admin step: name and username locked to their immutable values, email and a strong password filled in. School step: name, NPSN code, contact email, and the optional address and principal fields. Department step: the first department, named in full. Finalize step: a summary of everything entered and two checkboxes — data verified, security implications understood — without which the finish button stays asleep. Then the completion screen with the recovery key, a copy button, and a slow twenty-second countdown to the login page. Five minutes, no manual, one working school.
 
-### UC-VEJCX-2 — Auto-Redirect to Setup
+#### UC-WIZ-004 — Go Back Without Losing Work
 
-**Actor:** Any visitor
+Halfway through the school step, the installer realizes the admin email has a typo — it was entered two screens ago. The step indicator lets them walk back to the account step, where every field is exactly as left, fix the address, and walk forward again without retyping the school data. Form state lives in the session across navigation, so backward movement is review, not rework. Only completed steps allow return; the wizard never lets anyone skip ahead into a step whose prerequisites are unmet.
 
-**Preconditions:** System not yet installed.
+### 3.2 Entry and Exit
 
-**Flow:**
-1. Visitor navigates to any page (e.g., `/dashboard`)
-2. `RequireSetupAccessMiddleware` detects `is_installed = false`
-3. Visitor is redirected to `/setup` with appropriate middleware handling
+#### UC-WIZ-002 — Every Road Leads to Setup
 
-**Postconditions:** Visitor sees setup token entry page (or wizard if authorized).
+A curious teacher types the dashboard URL into a browser before setup day. Instead of an error page or, worse, a functioning-looking shell with no data, the middleware sees the uninstalled flag and delivers them to the setup entry — the token prompt, not the wizard itself, because curiosity is not authorization. This holds for every route on an uninstalled system, which is what makes it a guarantee rather than a suggestion: there is no URL that shows a half-born school.
 
-### UC-VEJCX-3 — Post-Finalization Window
+#### UC-WIZ-003 — Copy the Key, Then the Door Closes
 
-**Actor:** Installer completing setup
-
-**Preconditions:** Setup wizard completed, session has `setup.completed` flag.
-
-**Flow:**
-1. Installer sees Step 6 (Complete) with recovery key
-2. Within 30 seconds, installer can still view the setup page (for copying recovery key)
-3. After 30 seconds, session setup data is cleared and setup route returns 404
-
-**Postconditions:** Setup route is permanently inaccessible.
-
-### UC-VEJCX-4 — Backward Navigation
-
-**Actor:** Installer in wizard
-
-**Preconditions:** Wizard started, at least Step 2 completed.
-
-**Flow:**
-1. Installer clicks "Back" or a step indicator
-2. System navigates to the selected completed step
-3. Form data is preserved from session
-
-**Postconditions:** Installer can review/modify previous entries.
+Finalization lands the installer on the completion screen with the recovery key displayed and thirty seconds of guaranteed access to copy it — long enough to click copy, paste into the school's password vault, and breathe. When the window closes, the session's setup state purges and the route answers 404 permanently. An installer who lingered too long finds no key on screen but loses nothing: the key already rests hashed in settings and in plaintext in its private file, retrievable through the recovery commands.
 
 ---
 
 ## 4. Functional Requirements
 
-### 4.1 Setup Wizard
+One table holds every functional requirement; each row's detail lives under its group (§4.1–§4.3).
 
-| ID   | Requirement                                                              |
-| ---- | ------------------------------------------------------------------------ |
-| FR-VEJCX-W1 | Wizard must have exactly 6 steps: welcome, account, school, department, finalize, complete |
-| FR-VEJCX-W2 | Step 1 (Welcome) must show environment audit results                     |
-| FR-VEJCX-W3 | "Start Setup" button must be disabled until audit passes                 |
-| FR-VEJCX-W4 | Step 2 (Super Admin): name and username are immutable, read from config  |
-| FR-VEJCX-W5 | Super Admin password requires 8+ characters, mixed case, numbers         |
-| FR-VEJCX-W6 | Super Admin email is required and validated                              |
-| FR-VEJCX-W7 | Step 3 (School): name and institutional_code are required               |
-| FR-VEJCX-W8 | School website must be valid URL if provided                             |
-| FR-VEJCX-W9 | Step 4 (Department): name is required                                    |
-| FR-VEJCX-W10 | Step 5 (Finalize): requires both "data verified" and "security aware" checkboxes |
-| FR-VEJCX-W11 | Step 6 (Complete): displays recovery key with copy button and auto-redirect |
-| FR-VEJCX-W12 | Form data must persist in session across step navigation                 |
-| FR-VEJCX-W13 | Installer must be able to navigate backward to completed steps           |
-| FR-VEJCX-W14 | Installer must be able to navigate backward to any incomplete step       |
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) · `A` = Arch (structure/contracts).
+**Status legend:** `Planned` = not started · `Partial` = in progress · `Full` = implemented & verified.
+
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-WIZ-001 | Wizard presents exactly six ordered steps: welcome, account, school, department, finalize, complete | P0 | B | Full |
+| FR-WIZ-002 | Welcome step shows the environment audit and holds Start until every gate passes | P0 | B | Full |
+| FR-WIZ-003 | Account step locks super admin name and username and validates email plus a strong password | P0 | F | Full |
+| FR-WIZ-004 | School step requires name, NPSN code, and contact email with URL validation on the website | P0 | F | Full |
+| FR-WIZ-005 | Department step requires the first department name with optional description | P0 | F | Full |
+| FR-WIZ-006 | Finalize step requires both confirmation checkboxes and shows an entered-data summary | P0 | B | Full |
+| FR-WIZ-007 | Complete step shows the recovery key with one-click copy and a timed redirect to login | P0 | B | Full |
+| FR-WIZ-008 | Form data persists in session and backward navigation reaches completed steps intact | P1 | B | Full |
+| FR-WIZ-009 | Finalization is atomic across school, department, admin, settings, and key material | P0 | F | Full |
+| FR-WIZ-010 | Finalization writes the school profile and derives brand and site title from the school name | P0 | F | Full |
+| FR-WIZ-011 | Finalization creates the first department row | P0 | F | Full |
+| FR-WIZ-012 | Finalization creates the PROTECTED, email-verified super admin and clears its setup flag | P0 | F | Full |
+| FR-WIZ-013 | Finalization mints the 64-character recovery key, hashed in settings and plaintext in its file | P0 | F | Full |
+| FR-WIZ-014 | Finalization sets the installed flag, fires the event, notifies, clears caches and session state | P0 | F | Full |
+| FR-WIZ-015 | Re-running finalization on an installed system throws `RejectedException` with no side effects | P0 | F | Full |
+| FR-WIZ-016 | Global middleware redirects uninstalled traffic to `/setup` and token-gates setup routes | P0 | F | Full |
+| FR-WIZ-017 | Validated tokens establish a versioned session authorization with a regenerated session ID | P0 | F | Full |
+| FR-WIZ-018 | Setup stays reachable for 30 seconds after finalization, then purges state and answers 404 | P0 | F | Full |
+| FR-WIZ-019 | Installed systems answer 404 on setup routes while assets and Livewire requests pass through | P0 | F | Full |
+
+### 4.1 Steps and Validation
+
+#### FR-WIZ-001 — Six Steps, Fixed Order
+
+The step keys — welcome, account, school, department, finalize, complete — are configuration, but their order is contract: identity before institution, institution before department, everything before the summary that commits it. Fixed order is what makes the finalize summary trustworthy; if steps could shuffle, the summary would be reviewing a sequence nobody followed. Six is also a completeness claim — anything the school needs on day one fits in these screens, and anything else waits for post-setup settings.
+
+#### FR-WIZ-002 — The Audit Gate
+
+A school technician once clicked through a warning-colored audit, created the admin, and discovered mid-semester that the missing extension broke certificate PDFs. The welcome step exists so that story cannot repeat: full audit results render before anything else, the Start control stays disabled while any gate fails, and a Recheck button re-runs the audit after fixes. Entering the wizard with a red audit is simply not a path the interface offers.
+
+#### FR-WIZ-003 — The Immutable Account
+
+Name and username arrive locked from configuration — `Super Admin`, `superadmin` — because every policy, recovery command, and audit query in the system addresses that fixed point. What the installer does provide is the email, validated as an address, and a password held to the full Laravel strength rules with confirmation. Locking identity while validating contact cleanly separates what the system owns from what the human supplies.
+
+#### FR-WIZ-004 — School Profile With a Required Email
+
+Name, NPSN institutional code, and contact email are required; address, phone, website, and principal name are optional, with the website checked as a URL when given. The email deserves its deliberate strictness: the wizard is a one-time provisioning act, and requiring a contact address guarantees every installed instance can receive its welcome notification and future mail. Post-setup editing may later relax that field (see DD-WIZ-005) — provisioning strictness and operational flexibility are different contexts, not a contradiction.
+
+#### FR-WIZ-005 — The First Department
+
+Every school needs at least one department before anything academic can happen — placements hang from departments, teachers belong to them — so the wizard refuses to finalize an institution with nowhere to put students. One name, one optional description, real validation. Later departments are ordinary admin work; this first one is structural, which is why it holds a step of its own instead of hiding in an advanced section nobody opens.
+
+#### FR-WIZ-006 — The Deliberate Finish
+
+The finalize screen shows everything entered, then demands two explicit acknowledgments: the data was verified, and the installer understands the security implications of what they are creating. The finish control sleeps until both boxes are checked, because a summary nobody confirmed is decoration. This is the last moment where going back is cheap — after this click, creation is atomic and the system is a school.
+
+#### FR-WIZ-007 — Key Display and Countdown
+
+Completion shows the fresh recovery key beside a one-click copy control and the account summary, then counts down twenty seconds toward the login page. The countdown is theater with a purpose: it paces the installer to copy now rather than screenshot-later, while guaranteeing the screen does not linger as a standing secret. Everything on this screen is designed around a single human behavior — save the key somewhere that is not this browser.
+
+#### FR-WIZ-008 — Session Memory
+
+Step forms persist in the session, so navigation never destroys work and a dropped connection costs minutes, not the whole setup. Backward travel reaches completed steps with values intact; forward travel follows only the validated path. Notably, there is no forward jump into uncompleted steps — the wizard is a sequence, not a menu, and the session is what enforces that shape without writing a single partial row to the database.
 
 ### 4.2 Finalization
 
-| ID   | Requirement                                                              |
-| ---- | ------------------------------------------------------------------------ |
-| FR-VEJCX-F1 | Finalization must be atomic — all-or-nothing: school, department, admin, settings |
-| FR-VEJCX-F2 | System must create school profile in settings (`school.*` keys)          |
-| FR-VEJCX-F3 | System must create first department in database                          |
-| FR-VEJCX-F4 | System must create super admin: role=superadmin, status=PROTECTED, email verified |
-| FR-VEJCX-F5 | Super admin `setup_required` flag must be set to `false`                 |
-| FR-VEJCX-F6 | System must generate 64-char recovery key, store hashed in DB and plaintext in file |
-| FR-VEJCX-F7 | Recovery key file must be saved to `storage/app/private/.recovery-key` with chmod 0600 |
-| FR-VEJCX-F8 | System must set `is_installed = true` in settings                        |
-| FR-VEJCX-F9 | System must save `brand_name` and `site_title` from school name          |
-| FR-VEJCX-F10 | System must dispatch `SetupFinalized` event                              |
-| FR-VEJCX-F11 | System must send welcome notification to super admin                     |
-| FR-VEJCX-F12 | System must clear all caches after finalization                          |
-| FR-VEJCX-F13 | System must clear setup session data after finalization                  |
-| FR-VEJCX-F14 | Running finalization on an already-installed system must throw `RejectedException` |
+#### FR-WIZ-009 — All or Nothing
+
+Finalization writes the school, the department, the admin, the settings, and the key material inside one transaction, because every partial outcome is a distinct disaster: an admin with no school, a school with no admin, an installed flag with nothing behind it. The atomicity requirement is the reason setup-day failures are boring — the system either fully works or remains honestly uninstalled, and the installer simply retries. Partial setup is not a state this system has.
+
+#### FR-WIZ-010 — Profile and Brand From One Name
+
+The school name the installer typed becomes three things: the `school.*` settings rows, and the derived `brand_name` and `site_title` that the layout reads from the first render. Deriving brand from the authoritative name avoids the classic fresh-install look where the header says a template string while the profile says the real school. One source, three consumers, zero drift from the first page load.
+
+#### FR-WIZ-011 — Department Row
+
+The first department materializes as a real database row in the same transaction — not a setting, not a promise, a row other modules can immediately reference. Its simplicity is the point: name in, record out, ready for teachers and placements within the same request cycle that created the school around it.
+
+#### FR-WIZ-012 — Birth of the Super Admin
+
+The super admin arrives with role, PROTECTED status, verified email, and its setup-required flag already cleared — fully formed, never passing through a half-provisioned state where it exists but cannot act. PROTECTED from birth means no later misclick can delete or lock the account the whole system leans on. Clearing the setup flag in the same write is what stops the account from being treated as provisional a moment longer than necessary.
+
+#### FR-WIZ-013 — Minting the Last Resort
+
+Finalization generates the 64-character recovery key, stores its bcrypt hash in settings, and writes the plaintext to the private file at owner-only permissions. The hash enables verification without ever persisting the secret where dumps can find it; the file enables retrieval without a working application. If the file write fails, finalization still completes and warns — a missing file is recoverable, a missing admin is not, and the ordering of those priorities is deliberate.
+
+#### FR-WIZ-014 — Closing Ceremony
+
+Installed flag set, `SetupFinalized` event dispatched, welcome notification queued to the new admin, caches cleared so the first real request sees the finished system, setup session state purged. Each item has bitten someone when forgotten: the flag left false re-triggers the redirect loop, the uncleared cache serves setup pages to a finished school, the missing event starves listeners that warm post-install state. The ceremony is a checklist because checklists are what prevent exactly these omissions.
+
+#### FR-WIZ-015 — Finishing Twice Changes Nothing
+
+Double-clicks, refresh storms, and retried requests all converge on finalization, so re-running it against an installed system throws `RejectedException` before touching anything — no second admin, no duplicate department, no rotated key. Idempotency here is not politeness; it is the property that lets the completion screen be safely reloaded while the installer hunts for the copy button. The guard reads the installed flag first and refuses before the transaction even opens.
 
 ### 4.3 Access Control
 
-| ID   | Requirement                                                              |
-| ---- | ------------------------------------------------------------------------ |
-| FR-VEJCX-AC1 | `RequireSetupAccessMiddleware` must redirect to `/setup` when not installed (globally applied) |
-| FR-VEJCX-AC2 | `ProtectSetupRouteMiddleware` must validate token for all setup routes   |
-| FR-VEJCX-AC3 | Authorized session must store `setup.authorized=true` and `setup.token_version` |
-| FR-VEJCX-AC4 | Post-finalization: setup route accessible for 30 seconds (configurable), then 404 |
-| FR-VEJCX-AC5 | Post-finalization outside window: clear session setup data, abort 404    |
-| FR-VEJCX-AC6 | Installed system: any `/setup` access without valid session → 404        |
-| FR-VEJCX-AC7 | Requests for real files in `public/` must pass through (Vite assets, etc.) |
-| FR-VEJCX-AC8 | Livewire header requests must pass through (prevent redirect during updates) |
+#### FR-WIZ-016 — Redirect Everything, Gate the Gate
+
+One middleware watches all traffic on uninstalled systems and delivers it to the setup entry; a second validates the token on the setup routes themselves. The pairing matters: the first guarantees no visitor ever sees a half-born system, the second guarantees no visitor reaches account creation without the secret. Together they make setup both unavoidable and inaccessible — unavoidable to stumble past, inaccessible to enter uninvited.
+
+#### FR-WIZ-017 — From Token to Session
+
+A validated token is exchanged for session authorization carrying the token version, and the session identifier regenerates at that instant against fixation. After the exchange the wizard reads the session, never the token — which is precisely why the token can be single-use without breaking a six-step flow. The version binding travels silently: rotate the token from the CLI and every session minted from its predecessor stops authorizing.
+
+#### FR-WIZ-018 — Thirty Seconds of Grace
+
+After finalization the setup route survives exactly one short window — thirty seconds, configurable — so the completion screen stays readable while the key is copied. Then the session's setup keys purge and the route answers 404. Thirty seconds is a human-factoring choice: enough for copy-paste into a vault, short enough that a forgotten tab is not a standing credential. The configurability exists for schools whose vault ritual runs slower.
+
+#### FR-WIZ-019 — Locked Doors, Open Windows
+
+On installed systems every setup access without a live authorized session is a 404, full stop — there is no setup page to discover on a working school. Meanwhile real files under `public/` stream through untouched and Livewire update requests pass the middleware without redirect, because a gate that breaks styling or interactivity trains users to disable gates. The strictness is aimed at people; the leniency is aimed at the framework's own traffic.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-### 5.1 Security
+One table holds every non-functional constraint; `Target` carries the concrete number or SLO, or `N/A` where enforcement is architectural.
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-S1 | Token must be cryptographically random (64 chars, via `Str::random`) |
-| NFR-VEJCX-S2 | Token must be encrypted at rest (`Crypt::encryptString`)             |
-| NFR-VEJCX-S3 | Token must be single-use — cleared after validation                  |
-| NFR-VEJCX-S4 | Session ID must be regenerated after token validation                |
-| NFR-VEJCX-S5 | Rate limiting: 20 attempts/IP/60s on token validation                |
-| NFR-VEJCX-S6 | Super admin password must meet Laravel Password rules (8+ chars, mixed case, numbers) |
-| NFR-VEJCX-S7 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
-| NFR-VEJCX-S8 | All setup actions must be logged via SmartLogger for audit trail     |
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-WIZ-001 | Token secrecy, single-use, throttling, and session discipline hold end to end per installation | per 8NZAU §5.1 | P0 | F | Full |
+| NFR-WIZ-002 | Super admin password meets strength rules and the account is PROTECTED from birth | 8+ chars, mixed case, numbers | P0 | F | Full |
+| NFR-WIZ-003 | Finalization logs through SmartLogger with PII masked before any sink | 100% of finalizations | P0 | F | Full |
+| NFR-WIZ-004 | Finalization rolls back wholly on failure; key-file failure warns without blocking | 0 partial installs | P0 | F | Full |
+| NFR-WIZ-005 | Wizard guides with progress, navigation, persistence, copy control, and countdown | N/A | P1 | B | Full |
+| NFR-WIZ-006 | Every wizard string is translatable with mirrored locale keys | en + id, 100% via `__()` | P0 | F | Full |
+| NFR-WIZ-007 | Accessible baseline: labels, keyboard paths, non-color status, announced copy control | N/A | P1 | B | Full |
+| NFR-WIZ-008 | Wizard state lives in session and settings; no wizard-specific migration exists | 0 wizard migrations | P1 | A | Full |
+| NFR-WIZ-009 | Wizard code follows the Action Triad with pure entities, covered by Pest | 0 triad violations | P0 | A | Full |
+| NFR-WIZ-010 | A prepared installer walks all six steps quickly | < 5 min | P2 | B | Full |
 
-### 5.3 Reliability
+### 5.1 Security and Audit
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-R1 | Finalization failures must roll back the entire transaction          |
-| NFR-VEJCX-R2 | Recovery key file write failure must not block finalization          |
+#### NFR-WIZ-001 — Token Guarantees Inherited
 
-### 5.4 Usability
+The wizard mints no tokens and weakens none: randomness, encryption at rest, single-use clearing, versioned sessions, throttled validation, and regenerated session identifiers all hold exactly as specified in [8NZAU-installation.md](8NZAU-installation.md) §5.1. Stating it here as inheritance rather than restating the numbers is deliberate — two copies of a secret's parameters will eventually disagree, and the installation spec is the authority both files point to.
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-U1 | Wizard must show progress bar with step indicators                   |
-| NFR-VEJCX-U2 | Wizard must support backward/forward navigation                     |
-| NFR-VEJCX-U3 | Form data must persist across step navigation (session)              |
-| NFR-VEJCX-U4 | Recovery key must be displayed with one-click copy button            |
-| NFR-VEJCX-U5 | Auto-redirect from Complete step must countdown (20 seconds)         |
-| NFR-VEJCX-U6 | Environment audit must show pass/fail/warn icons per check           |
-| NFR-VEJCX-U7 | All wizard text must be available in English and Indonesian          |
+#### NFR-WIZ-002 — First Account Strength
 
-### 5.5 Accessibility
+The password rules apply at the form and at the action, because client-side checks are courtesy and server-side checks are law. PROTECTED status from the first write means the account the school depends on cannot be deleted or locked by any later workflow, including its own profile page. Strength plus immutability is the whole hardening story for an account created before any security policy exists to govern it.
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-A1 | Setup wizard must meet WCAG 2.1 Level AA                             |
-| NFR-VEJCX-A2 | Step indicators must be keyboard-accessible and announced to screen readers |
-| NFR-VEJCX-A3 | Environment audit results must include non-color indicators (icons alongside pass/fail colors) |
-| NFR-VEJCX-A4 | All form inputs in setup wizard must have associated labels          |
-| NFR-VEJCX-A5 | Recovery key display must be accessible (copy button has `aria-label`) |
+#### NFR-WIZ-003 — Masked Finalization Trail
 
-### 5.6 Localization
+Finalization handles the densest PII of the system's life — admin email, school contact details, the recovery secret — so its SmartLogger entries mask before either channel sees them, per the [SmartLogger ADR](../adr/adr-smartlogger-dual-channel.md). An auditor reviewing the install trail sees that an admin was created and a key was minted, never the values themselves. The activity entry is the proof; the masking is what makes the proof safe to keep for a year.
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-L1 | All wizard text must use `__()` translation helper                   |
-| NFR-VEJCX-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
-| NFR-VEJCX-L3 | Environment audit status must be translatable via `__()`             |
+#### NFR-WIZ-004 — Failure Without Debris
 
-### 5.7 Maintainability
+A failed finalization leaves the system uninstalled and unmarked — zero partial rows, zero half-written settings — because the transaction boundary from FR-WIZ-009 is also this row's enforcement. The single exception is the recovery-key file: if its write fails after the database commits, the wizard warns and continues, showing the key on screen for manual safekeeping. Ordering mercy above symmetry here reflects a simple ranking — a found key beats a perfect transaction.
 
-| ID    | Requirement                                                          |
-| ----- | -------------------------------------------------------------------- |
-| NFR-VEJCX-M1 | Setup state must be stored in the shared `settings` table (no separate migrations) |
-| NFR-VEJCX-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
-| NFR-VEJCX-M3 | Setup entity must be `final readonly` with zero I/O                  |
-| NFR-VEJCX-M4 | All setup behavior must be testable via Pest test suite              |
+### 5.2 Experience
+
+#### NFR-WIZ-005 — Guidance You Can Feel
+
+Progress indicators, backward and forward movement, form memory, audit icons, a copy button that works, a countdown that paces — none of these is individually remarkable, and together they are the difference between a five-minute setup and a support call. The requirement is deliberately holistic: judge the wizard by watching a non-technical installer use it, not by ticking widgets. Anything that confuses that observer is a defect against this row.
+
+#### NFR-WIZ-006 — Two Languages, No Exceptions
+
+Indonesian primary, English secondary, every string through the helper, every key mirrored in both locale files — enforced by the D3 scan, not by reviewer memory. The wizard is many users' first contact with the system, and a hardcoded English sentence on the account step tells an Indonesian technician exactly how much the system was built for them. Setup day carries enough anxiety without a language barrier.
+
+#### NFR-WIZ-007 — Accessible Baseline Without Ceremony
+
+Every input carries a real label, every step is reachable and operable by keyboard, audit status never depends on color alone, and the copy control announces itself to assistive technology. This is the MVP baseline — contrast minimums and keyboard paths — explicitly short of a formal external audit, which waits post-MVP per the spec-zero non-goals. Baseline accessibility is a build habit; the audit is an event. Only the habit ships now.
+
+#### NFR-WIZ-010 — Five Minutes, End to End
+
+A prepared installer — token in hand, school facts ready — reaches completion in under five minutes. The budget disciplines the design: no step may demand research, no validation may require a phone call, no screen may present a decision the installer cannot make on the spot. When a step threatens the budget, the step is wrong, not the installer.
+
+### 5.3 Structure and Verification
+
+#### NFR-WIZ-008 — No Wizard Tables
+
+Transient wizard state lives in the session; durable outcomes live in settings and domain tables. Zero wizard-specific migrations exist because a table for a six-screen flow used once per school would be schema clutter with permanent maintenance. The day the wizard needs persistence it does not have, that day justifies a migration — until then, absence is the design.
+
+#### NFR-WIZ-009 — Triad Shape, Tested
+
+Finalization and its supporting writes travel through command actions with validated inputs, entities stay pure and readonly, and the Pest suite covers the journey including the double-submit case. The wizard's Livewire layer validates for humans and delegates for truth — no model writes in components, no business rules in Blade. Reviewers check this structurally; the scans prove it continuously.
 
 ---
 
 ## 6. API / Data Contracts
 
+Non-negotiable precision — precise enough to implement against without asking.
+
 ### 6.1 Settings Keys
 
 School profile stored with `group = 'school'`:
 
-> **Email rule divergence (resolved in DD-5):** the setup wizard requires `school.email`
-> (FR-VEJCX-W6, SchoolForm `required|email`) so an installed system always has a working contact
-> address. The post-setup editor ([school-profile.md](81SMS-school-profile.md) §6.3) allows `nullable`
-> so an admin may clear the email later. DD-5 records this as intentional, not a contradiction.
+> **Email rule divergence (resolved in DD-WIZ-005):** the setup wizard requires `school.email`
+> (FR-WIZ-004, SchoolForm `required|email`) so an installed system always has a working contact
+> address. The post-setup editor ([81SMS-school-profile.md](81SMS-school-profile.md) §6.3) allows `nullable`
+> so an admin may clear the email later. DD-WIZ-005 records this as intentional, not a contradiction.
 
-| Key                  | Type   | Required | Description              |
-| -------------------- | ------ | -------- | ------------------------ |
-| `school.name`        | string | yes      | Institution name         |
-| `school.institutional_code` | string | yes | NPSN code               |
-| `school.email`       | string | yes      | Contact email            |
-| `school.address`     | string | no       | Physical address         |
-| `school.phone`       | string | no       | Contact phone            |
-| `school.website`     | string | no       | Institution website      |
-| `school.principal_name` | string | no   | Principal name           |
+| Key | Type | Required | Description |
+|-----|------|----------|-------------|
+| `school.name` | string | yes | Institution name |
+| `school.institutional_code` | string | yes | NPSN code |
+| `school.email` | string | yes | Contact email |
+| `school.address` | string | no | Physical address |
+| `school.phone` | string | no | Contact phone |
+| `school.website` | string | no | Institution website |
+| `school.principal_name` | string | no | Principal name |
 
 ### 6.2 Setup Wizard Form Contracts
 
@@ -296,7 +321,6 @@ class DepartmentForm extends LivewireForm
     public string $name = '';           // Required, max:255
     public string $description = '';    // Nullable
 }
-
 ```
 
 ### 6.3 Action Contracts
@@ -325,16 +349,15 @@ class SetupDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department;
 }
-
 ```
 
 ### 6.4 Routes
 
-| Method | URI            | Handler                | Name            | Middleware          |
-| ------ | -------------- | ---------------------- | --------------- | ------------------- |
-| GET    | `/setup`       | `SetupWizard` (Livewire) | `setup`       | `setup.protected`   |
-| POST   | `/setup`       | `SetupController@redirect` | —           | `setup.protected`   |
-| POST   | `/setup/cleanup` | `SetupController@cleanup` | `setup.cleanup` | `setup.protected` |
+| Method | URI | Handler | Name | Middleware |
+|--------|-----|---------|------|------------|
+| GET | `/setup` | `SetupWizard` (Livewire) | `setup` | `setup.protected` |
+| POST | `/setup` | `SetupController@redirect` | — | `setup.protected` |
+| POST | `/setup/cleanup` | `SetupController@cleanup` | `setup.cleanup` | `setup.protected` |
 
 ### 6.5 Config
 
@@ -349,111 +372,101 @@ class SetupDepartmentAction extends BaseCommandAction
         'finalization_window_seconds' => 30,
     ],
 ]
-
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Session-Based Wizard State
+One table holds every design decision; detail prose below states each decision with its history and accepted cost.
 
-**Decision:** Persist form data in session across step navigation rather than database writes.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-WIZ-001 | Wizard progress lives in session state, never in partial database rows | P0 | — | — |
+| DD-WIZ-002 | Setup redirect is enforced by global middleware, not per-route guards | P0 | — | — |
+| DD-WIZ-003 | Finalization commits school, department, admin, and settings atomically | P0 | — | — |
+| DD-WIZ-004 | Setup route survives 30 seconds past finalization, then locks permanently | P0 | — | — |
+| DD-WIZ-005 | School email is required at setup and nullable in post-setup editing | P1 | — | — |
 
-**Rationale:** Setup is a transient process — if the session expires, the installer simply restarts
-from Step 1. No orphaned partial records in the database. The 30-second post-finalization window
-allows copying the recovery key without re-entering data.
+### 7.1 Flow and State
 
-### DD-2 — Global Middleware for Setup Redirect
+#### DD-WIZ-001 — Session State, No Partial Rows
 
-**Decision:** Apply `RequireSetupAccessMiddleware` globally (all routes) rather than only on
-specific routes.
+Persisting wizard progress to the database would mean inventing a lifecycle for half-schools: draft flags, cleanup jobs, ownership of abandoned rows. Session storage sidesteps all of it — an expired session simply restarts from welcome with nothing to clean, because nothing was written. The thirty-second post-finalization grace is the one deliberate exception, and it exists so the key can be copied, not so progress can be saved.
 
-**Rationale:** Every page in an uninstalled system should redirect to setup. Applying globally
-ensures no page is accidentally accessible before provisioning. The middleware passes through
-real files (Vite assets), Livewire requests, and setup routes themselves.
+#### DD-WIZ-002 — Global Redirect
 
-### DD-3 — Atomic Finalization
+Per-route guards fail open: every new route is unprotected until someone remembers, and the one forgotten route on an uninstalled system is the one indexed or probed. Global middleware inverts the default — everything redirects until proven setup-related — with narrow passthroughs for real files and Livewire traffic. The cost is eternal vigilance over the passthrough list, which is cheap compared to auditing every future route for setup-safety.
 
-**Decision:** `FinalizeSetupAction` creates school, department, admin, and settings in a single
-database transaction.
+#### DD-WIZ-003 — Atomic Commit
 
-**Rationale:** Partial setup creates an unusable state — database seeded but no admin, or admin
-created but `is_installed` still false. Atomicity ensures the system either fully works or
-remains in setup mode.
+The transaction around finalization is the load-bearing wall of setup day. Without it, each failure mode in §4.2 becomes a distinct rescue operation requiring database surgery by someone who may not know SQL. With it, failures are boring: retry from the finalize screen against untouched state. The accepted cost is a slightly larger transaction holding locks a moment longer — negligible for an operation that runs once per school, ever.
 
-### DD-4 — 30-Second Post-Finalization Window
+### 7.2 Locking and Context
 
-**Decision:** Keep setup route accessible for 30 seconds after finalization, then 404.
+#### DD-WIZ-004 — Grace Before the Lock
 
-**Rationale:** Installer needs time to copy the recovery key. After that, the setup route should
-be permanently inaccessible to prevent re-entry. The window is configurable via
-`config/setup.php`.
+Thirty seconds of post-finalization access balances two fears: the installer who needs one more look at the key, and the operator who fears a permanently reachable setup page. The window is configurable because vault rituals differ, but its existence is not negotiable — shipping a key display with zero grace time would train installers to photograph screens, which is worse than any window. After it closes, the purge is total and the 404 is forever.
 
-### DD-5 — School Email Required at Setup, Nullable After
+#### DD-WIZ-005 — Strict at Birth, Lenient for Life
 
-**Decision:** The setup wizard requires `school.email` (FR-VEJCX-W6), while the post-setup school
-profile editor ([school-profile.md](81SMS-school-profile.md) §6.3) allows `nullable`.
-
-**Rationale:** The wizard is a one-time provisioning act — requiring the email guarantees every
-installed instance has a working contact address for notifications and the welcome email
-(FR-VEJCX-F11). After install, the profile editor lets an admin correct or clear the address when the
-school's circumstances change. The two specs are different validation contexts for the same
-setting key, not a contradiction.
-
-**Trade-off:** A key whose requiredness varies by context. Acceptable — the wizard is
-unambiguous (always requires it) and the divergence is documented in both specs.
+Requiring the school email during setup while allowing it to be cleared later looks contradictory until you see the two contexts: provisioning must guarantee a contactable instance with a deliverable welcome message, while post-setup editing must tolerate a school whose address genuinely changed or lapsed. The same key, two validation contexts, each correct for its moment. Both specs document the split so no future reader "fixes" one side into matching the other.
 
 ---
 
 ## 8. Success Metrics
 
-### 8.1 Wizard Completeness
-
-| Metric                          | Target      | Measurement                           |
-| ------------------------------- | ----------- | ------------------------------------- |
-| Auto-redirect                   | Always      | Uninstalled system redirects to setup |
-
-### 8.2 Security Properties
-
-| Metric                          | Target      | Measurement                           |
-| ------------------------------- | ----------- | ------------------------------------- |
-| Unauthorized wizard access      | Always      | Token validation enforced             |
-| Session hijacking               | Always      | Session ID regenerated after auth     |
-| Post-finalization lockout       | Always      | Setup route 404s after 30s window     |
-
-### 8.3 Usability
-
-| Metric                          | Target      | Measurement                           |
-| ------------------------------- | ----------- | ------------------------------------- |
-| Time to complete wizard         | < 5 min     | From Step 1 to Step 6                 |
-| Step navigation                 | Always      | Backward/forward works correctly      |
-| Form data persistence           | Always      | Data preserved across step changes    |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Uninstalled traffic reaches setup | 100% of probed routes redirect | HTTP sweep of representative routes pre-install |
+| Anonymous wizard entry | 0 successes without a valid token | Attempted entry without and with expired tokens |
+| Double finalization harmless | 0 duplicate rows, `RejectedException` raised | Submit finalization twice in tests |
+| Setup route locked after window | 404 past 30 s, session purged | HTTP assertions post-window |
+| Prepared installer to completion | < 5 min | Timed walkthrough of the six steps |
 
 ---
 
 ## 9. Roadmap
 
 ### Prerequisites
-This spec can only be implemented after the following specs are **fully complete**:
+
+This spec builds after its dependencies are complete:
 
 | Spec | What It Provides |
 |------|-----------------|
-| [installation.md](8NZAU-installation.md) | Setup token, provisioned database, seeded roles, `setup.is_installed` flag |
+| [8NZAU-installation.md](8NZAU-installation.md) | Setup token, provisioned database, seeded roles, `setup.is_installed` flag |
 
 ### Build Guide
-After implementing this spec, the system has a 6-step browser wizard that creates the super admin account, school profile, department, and generates the recovery key. The wizard is the entry point for all configuration. The next step is to build the recovery ecosystem, which enables emergency super admin access via the recovery key generated during finalization.
+
+After this spec, the system owns a six-step browser wizard that creates the super admin, the school profile, and the first department, then finalizes atomically and mints the recovery key. The wizard is the entry point for all configuration; nothing academic exists before it completes.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Recovery key hash stored in `setup.install_recovery_key` during finalization; `admin:recover` verifies against this hash |
+| 1 | [C9ZB6-recovery-ecosystem.md](C9ZB6-recovery-ecosystem.md) | Operates the recovery key minted here; verifies against `setup.install_recovery_key` |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+|----|----------------------------------|--------|-------|----------|
+| R-1 | No second factor on recovery while SMTP is optional; revisit OTP if managed mail becomes universal on target hosting | Open | Maintainer | — |
+| R-2 | Session-scoped wizard state means a mid-wizard session loss restarts the flow; accepted because nothing partial was ever written | Accepted | Maintainer | — |
+| A-1 | We assume the token holder reaching the browser is authorized to create the super admin; physical and chat-channel security of the URL is the school's responsibility | Accepted | Maintainer | — |
+
+---
 
 ## Quick References
+
+- [Installation](8NZAU-installation.md) — CLI provisioning and token minting that precede the wizard
+- [Recovery ecosystem](C9ZB6-recovery-ecosystem.md) — operates the recovery key minted at finalization
+- [School profile](81SMS-school-profile.md) — post-setup editor with the relaxed email context
+- [Branding, theme & locale](52O1I-branding-theme-locale.md) — owns brand keys derived here
+- [Authentication](YB7RG-authentication.md) — owns login that the wizard hands off to
+- [ADR: Gradual migration](../adr/adr-gradual-migration.md) — array-first inputs stabilizing toward DTOs
+- [ADR: SmartLogger dual-channel](../adr/adr-smartlogger-dual-channel.md) — masked audit trail for finalization
+- [ADR: Exception hierarchy](../adr/adr-exception-hierarchy.md) — `RejectedException` on re-finalization
+- [ADR: Base class mandate](../adr/adr-base-class-mandate.md) — action and entity shape requirements
+- [Spec registry](index.md) — all specs grouped in 12 phases
