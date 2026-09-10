@@ -1,37 +1,42 @@
 # Announcement System — Targeted Multi-Role Communication
 
 > **Spec ID:** 3S55V
+> **Status:** Full
+> **Owner:** SysAdmin
+> **Depends on:** YB22J, TXR2H
 
 ## Description
 
-Specification of Internara's announcement system: an admin-facing capability for creating,
-scheduling, and publishing announcements to specific user roles. Covers the Announcement model,
-`AnnouncementStatus` state machine, `AnnouncementState` entity, Livewire management UI, three
-action classes (create/send, publish, delete), a `PublishScheduledAnnouncementsCommand` artisan
-command running every minute, and multi-channel notification dispatch via `AnnouncementNotification`.
+Admin-facing targeted communication for Internara: announcements with role targeting, a
+draft-to-published lifecycle with scheduled publishing, a Livewire manager owned per creator,
+and queued multi-channel delivery through the shared notification backbone to every user in the
+selected roles.
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — No Mechanism for Admins to Communicate Targeted Messages
+### PS-1 — No Mechanism for Targeted Admin Communication
 
-School administrators need to broadcast important information — schedule changes, policy updates,
-emergency notices — to specific groups of users (students only, teachers only, all users). Without
-an announcement system, admins have no structured way to reach targeted audiences. Email alone is
-unreliable for reaching all user types, and there is no audit trail of what was communicated.
+Schedule changes, policy updates, and emergency notices need to reach exactly the right group —
+students only, mentors only, everyone except the sender. Email alone misses users without
+reliable mailboxes, chat groups have no audit trail, and a paper notice never proves who was
+told what before an accreditation visit.
+**→ Requirement:** FR-ANN-011 (role-targeted recipients), FR-ANN-013/014 (owned manager), UC-ANN-001.
 
 ### PS-2 — No Scheduled Publishing for Time-Sensitive Messages
 
-Announcements like "Exam schedule changes effective Monday" need to be composed in advance and
-published automatically at a specific time. Without scheduling, admins must remember to manually
-publish at the right moment, risking missed or delayed communications.
+An exam-schedule change written on Friday must appear Monday morning without anyone remembering
+to click publish over the weekend. Manual timing fails exactly when it matters most, during
+holidays and night shifts when no admin is watching the console.
+**→ Requirement:** FR-ANN-010/019 (publish Action + per-minute command), NFR-ANN-001 (latency window).
 
 ### PS-3 — No Lifecycle Management for Announcement Content
 
-Announcements need a draft→published workflow so admins can prepare content without immediate
-broadcast. Without this, every message is sent instantly on creation, leaving no room for review
-or correction before the audience sees it.
+Without a draft state every keystroke is a broadcast, which means typos, wrong target roles,
+and premature sends reach eight hundred inboxes before review. Admins need a private staging
+state plus a scheduled staging state before anything leaves the school office.
+**→ Requirement:** FR-ANN-005/006 (status machine), FR-ANN-007/008 (validated creation), DD-ANN-002.
 
 ---
 
@@ -39,412 +44,421 @@ or correction before the audience sees it.
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Provide CRUD for announcements with title, message (Markdown), type (info/success/warning/error), optional link, and role targeting |
-| G2  | Implement a three-state lifecycle: `draft` → `scheduled` → `published` with enforced transitions via `AnnouncementStatus` enum |
-| G3  | Support scheduled publishing via `scheduled_at` timestamp, auto-published by `announcements:publish` artisan command running every minute |
-| G4  | Dispatch multi-channel notifications (mail, broadcast, custom database) to targeted roles via `AnnouncementNotification` |
-| G5  | Exclude the sender's own roles from notification recipients to avoid self-notification |
-| G6  | Provide a Livewire management UI (`AnnouncementManager`) with inline form, list view, publish-now, and delete-with-confirmation |
-| G7  | Enforce admin-only access via route middleware (`role:super_admin|admin`) and `AnnouncementManager::boot()` authorization |
+- **Role-targeted creation** — title, Markdown body, severity type, optional link, and target roles or send-to-all. *Why:* relevance beats volume; targeted notices get read while broadcasts get ignored.
+- **Staged lifecycle** — draft, scheduled, and terminal published states with enforced transitions. *Why:* review and timing live in the system instead of in admins' memories.
+- **Scheduled auto-publishing** — a per-minute command publishes whatever became due. *Why:* time-sensitive notices land on time without night-shift staffing.
+- **Queued targeted delivery** — published rows fan out through the notification backbone without blocking the admin request. *Why:* a send to every student must feel instant to the sender.
+- **Ownership-scoped management with admin gating** — admins manage only their own rows behind role middleware. *Why:* no cross-admin interference or accidental deletion of a colleague's message.
+- **Localized, sanitized, logged publishing** — `__()` strings, Markdown rendered without unsafe HTML, SmartLogger entries with PII masking. *Why:* the same trust contract every global requirement demands.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | Expiry or unpublishing — `PUBLISHED` is a terminal state with no reversal (→ DD-3) |
-| NG2  | Per-user notification preferences or opt-out from announcements |
-| NG3  | Announcement read tracking or analytics (opened, clicked) |
-| NG4  | Rich text editing — Markdown-only via a markdown editor component |
-| NG5  | Announcement attachments or embedded media |
-| NG6  | Public-facing announcement display (e.g., login page banner) — announcements deliver via notification channel only |
+- **Expiry or unpublishing.** *Why:* published rows already live as independent notification copies; retroactive removal would confuse recipients for no school-scale gain.
+- **Per-user opt-out or preference matrices.** *Why:* post-MVP depth; announcements are official school communication, not a subscription.
+- **Read tracking or analytics.** *Why:* opened and clicked telemetry is deferred; delivery plus audit logging suffices at MVP.
+- **Attachments or embedded media.** *Why:* links cover the document case without upload, scanning, and storage burden.
+- **Public banners outside the notification channel.** *Why:* login-page display is a separate concern; delivery stays in the backbone the dashboard already reads.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-3S55V-1 — Admin Creates and Immediately Publishes an Announcement
+Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Status` are filled here
+because each story below has a code-testable consequence verified by the listed layer.
 
-**Actor:** Admin (super_admin or admin role)
-**Preconditions:** User authenticated with admin role, on the announcements page
-**Flow:**
-1. Admin clicks "New Announcement" button
-2. `AnnouncementManager` sets `$showForm = true`, renders inline `AnnouncementForm`
-3. Admin fills in title, message, selects type "warning", sets status to "published"
-4. Admin leaves "Send to all users" toggle ON (default)
-5. Admin clicks "Send Announcement" → `save()` calls `SendAnnouncementAction::execute()`
-6. Action validates payload, creates `Announcement` with status `PUBLISHED`
-7. Action calls `sendNotifications()` — queries all users, excludes admin's own roles, dispatches `AnnouncementNotification`
-8. Notification sent via mail, broadcast, and custom database channel to each recipient
-9. Flash message "Announcement sent successfully" displayed
-**Postconditions:** Announcement persisted as published, notifications delivered to all non-admin users
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-ANN-001 | Admin composes a notice and publishes immediately to all users except sender roles | P0 | F | Full |
+| UC-ANN-002 | Admin schedules a notice for a future time and the per-minute command publishes it without manual action | P0 | F | Full |
+| UC-ANN-003 | Admin manually publishes a draft or scheduled row after a confirmation step | P0 | F | Full |
+| UC-ANN-004 | Admin deletes an owned announcement after a confirmation step | P1 | F | Full |
 
-### UC-3S55V-2 — Admin Creates a Scheduled Announcement
+### 3.1 Publishing Flows
 
-**Actor:** Admin
-**Preconditions:** User authenticated with admin role
-**Flow:**
-1. Admin fills in announcement form, selects status "scheduled"
-2. Admin enters `scheduled_at` datetime (must be >= now, enforced by validation)
-3. Admin submits → `SendAnnouncementAction::execute()` creates announcement with status `SCHEDULED`
-4. No notifications sent yet (status is not `PUBLISHED`)
-5. `announcements:publish` command runs every minute via scheduler
-6. When `scheduled_at <= now()`, command finds the announcement, calls `PublishAnnouncementAction::execute()`
-7. `PublishAnnouncementAction` transitions status to `PUBLISHED`, clears `scheduled_at`, dispatches notifications
-**Postconditions:** Announcement auto-published at scheduled time, notifications delivered
+#### UC-ANN-001 — Flood warning goes out before apel pagi
 
-### UC-3S55V-3 — Admin Manually Publishes a Draft or Scheduled Announcement
+Monday at dawn brings a flooded access road, and the vice principal needs every student and
+teacher to know before the morning assembly while sparing fellow admins the noise. She opens the
+manager, writes a short warning with the detour link, leaves the send-to-all toggle on, and hits
+send. The Action persists the row as published under her id, fans out through the backbone to
+everyone outside her own roles, and flashes a translated confirmation. Students wake to the bell
+lit with a row that deep-links nowhere fancy, just the plain message that saves a wasted trip.
 
-**Actor:** Admin
-**Preconditions:** Announcement exists with status `DRAFT` or `SCHEDULED`
-**Flow:**
-1. Admin sees publish icon (paper airplane) next to draft/scheduled announcements
-2. Admin clicks → `confirmPublish($id)` shows confirmation modal
-3. Admin confirms → `confirmAction()` checks `canTransitionTo(PUBLISHED)`
-4. If valid, calls `PublishAnnouncementAction::execute()` — updates status, clears `scheduled_at`, sends notifications
-5. Flash message "Announcement published" displayed
-**Postconditions:** Announcement published, notifications dispatched
+#### UC-ANN-002 — Exam change written Friday, seen Monday
 
-### UC-3S55V-4 — Admin Deletes an Announcement
+The curriculum deputy finishes the revised exam timetable Friday afternoon but the change takes
+effect Monday at seven. She saves the notice as scheduled with a Monday 06:30 timestamp and goes
+home. Over the weekend nothing is delivered, and the row sits visible in her manager as
+scheduled. At 06:30 the per-minute command finds it due, transitions it to published, clears the
+timestamp, and fans out to the targeted roles. By assembly time the notice is simply there, and
+nobody had to remember a password or open a laptop on Sunday night.
 
-**Actor:** Admin
-**Preconditions:** Announcement exists, user is the creator (ownership check in query)
-**Flow:**
-1. Admin clicks delete icon on an announcement row
-2. `confirmDelete($id)` shows confirmation modal
-3. Admin confirms → `confirmAction()` calls `DeleteAnnouncementAction::execute()`
-4. Action deletes within a transaction, logs `announcement_deleted`
-5. Flash message "Announcement deleted" displayed
-**Postconditions:** Announcement removed from database
+### 3.2 Managing Published and Staged Rows
 
-### UC-3S55V-5 — System Auto-Publishes Scheduled Announcements via Cron
+#### UC-ANN-003 — Draft rescue after a second read
 
-**Actor:** System (scheduler)
-**Preconditions:** At least one announcement with status `SCHEDULED` and `scheduled_at <= now()`
-**Flow:**
-1. Laravel scheduler runs `announcements:publish` every minute (→ `routes/console.php:17`)
-2. `PublishScheduledAnnouncementsCommand::handle()` queries `Announcement::where('status', SCHEDULED)->where('scheduled_at', '<=', now())`
-3. For each due announcement, calls `PublishAnnouncementAction::execute()`
-4. Action transitions status to `PUBLISHED`, dispatches notifications to targeted roles
-5. Command outputs per-announcement status and completion count
-**Postconditions:** All due scheduled announcements published, notifications delivered
+If a draft saved in a hurry names the wrong internship batch, the author spots it on re-read
+before anyone else ever sees the row. The publish icon beside the draft asks for confirmation,
+re-checks the transition against the state machine, and only then flips the row to published and
+fans out. A scheduled row whose date slipped gets the same treatment: one confirmation publishes
+now instead of waiting for the timestamp. The confirmation exists because publishing is the
+irreversible step in this subsystem, and the state check exists because the row may have changed
+since the list last rendered.
+
+#### UC-ANN-004 — Removing a superseded notice
+
+When a newer timetable supersedes last week's draft that never went out, the author clears it
+with the delete control. The modal names the row so a mis-click on a neighboring title cannot
+destroy the wrong content, ownership is re-resolved before the delete runs, and the success flash
+confirms removal. Published rows delete the announcement record while leaving already-delivered
+notification copies in recipients' centers untouched, which matches the mental model that sent
+mail cannot be unsent.
 
 ---
 
 ## 4. Functional Requirements
 
-### Announcement Model
+Global defaults from QLHDO and D2FT3 apply (localization, dual-layer authorization, Action Triad,
+`RejectedException`, SmartLogger with PII masking). `Status` is `Full` for every row because this
+spec is implemented and verified.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-M1 | `Announcement` model must use `#[Fillable]` attribute with: `title`, `message`, `type`, `status`, `scheduled_at`, `link`, `target_roles`, `created_by` (→ `Models/Announcement.php:17-27`) |
-| FR-3S55V-M2 | `Announcement` model must cast `target_roles` → `array`, `status` → `AnnouncementStatus::class`, `scheduled_at` → `datetime` (→ `Models/Announcement.php:33-39`) |
-| FR-3S55V-M3 | `Announcement` model must define `creator(): BelongsTo` relationship to `User` via `created_by` foreign key (→ `Models/Announcement.php:42-45`) |
-| FR-3S55V-M4 | `Announcement` model must provide query scopes: `published()`, `draft()`, `scheduled()`, `pendingPublish()` — the last filtering `SCHEDULED` where `scheduled_at <= now()` (→ `Models/Announcement.php:47-67`) |
-| FR-3S55V-M5 | `Announcement` model must provide `asAnnouncementState(): AnnouncementState` bridge method and status-check helpers: `isScheduled()`, `isDraft()`, `isPublished()` (→ `Models/Announcement.php:69-87`) |
-| FR-3S55V-M6 | `announcements` table must have foreign key `created_by` → `users.id` with `onDelete('cascade')` and indexes on `created_by`, `created_at`, `status` (→ migration `2026_01_01_000007`) |
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) · `A` = Arch (structure/contracts).
+**Status legend:** `Planned` = not started · `Partial` = in progress · `Full` = implemented & verified.
 
-### AnnouncementStatus Enum
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-ANN-001 | Announcement model uses #[Fillable] for title, message, type, status, scheduled_at, link, target_roles, and created_by | P0 | A | Full |
+| FR-ANN-002 | Announcement model casts target_roles to array, status to AnnouncementStatus, and scheduled_at to datetime and exposes published, draft, scheduled, and pendingPublish scopes | P0 | F | Full |
+| FR-ANN-003 | Announcement model bridges to AnnouncementState and exposes isDraft, isScheduled, and isPublished helpers | P0 | U | Full |
+| FR-ANN-004 | announcements table keys created_by to users with cascade delete and indexes on created_by, created_at, and status | P0 | A | Full |
+| FR-ANN-005 | AnnouncementStatus is a backed string enum implementing StatusEnum with draft, scheduled, and published cases and localized labels via __() | P0 | U | Full |
+| FR-ANN-006 | AnnouncementStatus enforces draft to scheduled or published, scheduled to published, and published to nothing, with published as the only terminal state and draft as the default | P0 | U | Full |
+| FR-ANN-007 | SendAnnouncementAction extends BaseCommandAction and validates title, message, type, status, scheduled_at, link, and target_roles | P0 | F | Full |
+| FR-ANN-008 | SendAnnouncementAction creates the row in a transaction stamped with the acting user and logs announcement_sent with title, status, and targets | P0 | F | Full |
+| FR-ANN-009 | SendAnnouncementAction fans out only when the row is published, delegating to a dedicated single-execute notifications Action | P0 | F | Full |
+| FR-ANN-010 | PublishAnnouncementAction transitions an existing row to published, clears scheduled_at, notifies recipients, and logs announcement_published inside one transaction | P0 | F | Full |
+| FR-ANN-011 | Recipient resolution targets the selected roles and always excludes the sender's own roles | P0 | F | Full |
+| FR-ANN-012 | Announcement fan-out dispatches after commit, discards on rollback, and rides the queue via ShouldQueue | P0 | F | Full |
+| FR-ANN-013 | AnnouncementManager extends BaseRecordManager, gates boot() to admins, and renders the manager view | P0 | F | Full |
+| FR-ANN-014 | Manager query scopes rows to the acting creator, lists title, type, status, created_at, and actions, and searches titles | P0 | F | Full |
+| FR-ANN-015 | Manager save() delegates the form payload to SendAnnouncementAction, flashes success, and resets the form | P0 | F | Full |
+| FR-ANN-016 | Manager confirmAction() serves both delete and publish paths and re-resolves ownership before executing either | P0 | F | Full |
+| FR-ANN-017 | AnnouncementForm validates its fields, requires a future scheduled_at only for scheduled rows, and nulls scheduled_at and target_roles appropriately in toPayload() | P0 | F | Full |
+| FR-ANN-018 | AnnouncementNotification uses mail, broadcast, and database channels, implements ShouldQueue, and maps mail, broadcast, and database payloads from title, message, and link | P0 | F | Full |
+| FR-ANN-019 | announcements:publish command runs every minute, selects rows where scheduled_at has passed, and delegates each to PublishAnnouncementAction | P0 | F | Full |
+| FR-ANN-020 | GET /admin/announcements maps to AnnouncementManager behind auth and super_admin or admin role middleware | P0 | F | Full |
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-E1 | `AnnouncementStatus` must be a backed string enum implementing `StatusEnum` contract with cases: `DRAFT = 'draft'`, `SCHEDULED = 'scheduled'`, `PUBLISHED = 'published'` (→ `Enums/AnnouncementStatus.php:9-13`) |
-| FR-3S55V-E2 | `AnnouncementStatus::canTransitionTo()` must enforce: `DRAFT` → `[SCHEDULED, PUBLISHED]`, `SCHEDULED` → `[PUBLISHED]`, `PUBLISHED` → `[]` (no transitions) (→ `Enums/AnnouncementStatus.php:24-35`) |
-| FR-3S55V-E3 | `AnnouncementStatus::isTerminal()` must return `true` only for `PUBLISHED` (→ `Enums/AnnouncementStatus.php:37-43`) |
-| FR-3S55V-E4 | `AnnouncementStatus::default()` must return `DRAFT` (→ `Enums/AnnouncementStatus.php:54-57`) |
-| FR-3S55V-E5 | `AnnouncementStatus::label()` must return localized strings via `__('announcement.status.{value}')` (→ `Enums/AnnouncementStatus.php:15-22`) |
+### 4.1 Model, State Machine, and Entity
 
-### AnnouncementState Entity
+#### FR-ANN-001 — Mass assignment limited to the eight owned columns
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-EN1 | `AnnouncementState` must be `final readonly` extending `BaseEntity` with constructor params: `AnnouncementStatus $status`, `?Carbon $scheduledAt` (→ `Entities/AnnouncementState.php:12-17`) |
-| FR-3S55V-EN2 | `AnnouncementState::fromModel()` must hydrate from an Eloquent model, handling both already-cast enum and raw string values for status (→ `Entities/AnnouncementState.php:19-27`) |
-| FR-3S55V-EN3 | `AnnouncementState::isPendingPublish()` must return `true` when status is `SCHEDULED` and `scheduledAt <= now()` (→ `Entities/AnnouncementState.php:44-51`) |
+A school clerk once pasted a spreadsheet id into a form field that bound straight to the model
+and overwrote authorship on thirty rows. The explicit fillable list closes that class of
+accident: only the content, scheduling, targeting, and author columns are ever mass-assignable,
+and everything else — timestamps, primary key — stays outside the binding surface. Reviewers
+check this list the way they check a firewall rule, because it is one.
 
-### SendAnnouncementAction
+#### FR-ANN-002 — Casts and scopes that match the manager's questions
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-A1 | `SendAnnouncementAction` must extend `BaseCommandAction` and accept an `array $data` payload (→ `Actions/SendAnnouncementAction.php:15-17`) |
-| FR-3S55V-A2 | `SendAnnouncementAction::execute()` must validate input via `Validator` with rules: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, status nullable|in:draft/scheduled/published, scheduled_at nullable|date|after_or_equal:now, link nullable|max:500, target_roles nullable|array (→ `Actions/SendAnnouncementAction.php:19-28`) |
-| FR-3S55V-A3 | `SendAnnouncementAction::execute()` must create an `Announcement` record within a transaction, setting `created_by` to `auth()->id()` (→ `Actions/SendAnnouncementAction.php:34-44`) |
-| FR-3S55V-A4 | `SendAnnouncementAction::execute()` must call `SendAnnouncementNotificationsAction::execute()` only when status is `PUBLISHED` (→ `Actions/SendAnnouncementAction.php:48-50`) |
-| FR-3S55V-A5 | `SendAnnouncementNotificationsAction::execute()` must query users, excluding the sender's own roles when `target_roles` is non-empty, then dispatch `AnnouncementNotification` via `Notification::send()` — extracted from the former `SendAnnouncementAction::sendNotifications()` per the single-`execute()` rule (→ `Actions/SendAnnouncementNotificationsAction.php:18-40`) |
-| FR-3S55V-A6 | `SendAnnouncementAction::execute()` must log `announcement_sent` with title, status, and target_roles via `$this->log()` (→ `Actions/SendAnnouncementAction.php:50-54`) |
+When target roles arrived as a JSON string instead of an array, the targeting query silently
+matched nobody and a flood notice reached zero students. Casting roles to an array, status to
+its enum, and the timestamp to a real date object makes the targeting and scheduling logic read
+plain values instead of parsing strings. The four scopes answer the manager's only questions —
+what is live, what is staged, and what became due — with the due scope combining both halves of
+the scheduled-and-past condition so no caller can forget one.
 
-### PublishAnnouncementAction
+#### FR-ANN-003 — Entity bridge for rule evaluation
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-A7 | `PublishAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/PublishAnnouncementAction.php:17-18`) |
-| FR-3S55V-A8 | `PublishAnnouncementAction::execute()` must transition status to `PUBLISHED`, clear `scheduled_at` to null, send notifications to targeted users, and log `announcement_published` — all within a transaction (→ `Actions/PublishAnnouncementAction.php:19-32`) |
-| FR-3S55V-A9 | `PublishAnnouncementAction` must query notification recipients with the same role-exclusion logic as `SendAnnouncementNotificationsAction` (→ `Actions/PublishAnnouncementAction.php:25-27` + `Actions/SendAnnouncementNotificationsAction.php:22-34`) |
+Rules written against raw model attributes coupled the transition checks to column names and
+made them untestable without a database. The bridge freezes the row into a small readonly value
+carrying status plus timestamp, and the three predicates answer the lifecycle questions without
+touching persistence. A column rename now ripples through one bridge method while every Action,
+policy check, and test keeps talking to the named predicates.
 
-### DeleteAnnouncementAction
+#### FR-ANN-004 — Foreign key and indexes sized for the access pattern
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-A10 | `DeleteAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/DeleteAnnouncementAction.php:10-12`) |
-| FR-3S55V-A11 | `DeleteAnnouncementAction::execute()` must delete the announcement within a transaction and log `announcement_deleted` with the title (→ `Actions/DeleteAnnouncementAction.php:13-21`) |
+The manager lists one admin's rows newest-first and the cron scans by status plus timestamp, so
+the three indexes mirror those two queries exactly. Cascading the author key keeps leaver
+cleanup total: removing a departed admin's account removes their drafts and schedules in the
+same statement instead of orphaning rows that later break the creator join. At school volume the
+table stays tiny, which is why a single covering strategy beats any clever partitioning.
 
-### AnnouncementManager Livewire Component
+### 4.2 Lifecycle Rules
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-L1 | `AnnouncementManager` must extend `BaseRecordManager`, render `sysadmin.announcement.announcement-manager`, and authorize `viewAny` on `User::class` in `boot()` (→ `Livewire/AnnouncementManager.php:20-35`) |
-| FR-3S55V-L2 | `AnnouncementManager::query()` must scope to `Announcement::where('created_by', Auth::id())` — admins see only their own announcements (→ `Livewire/AnnouncementManager.php:48-51`) |
-| FR-3S55V-L3 | `AnnouncementManager::headers()` must return columns: `title` (sortable), `type`, `status`, `created_at` (sortable), `actions` (→ `Livewire/AnnouncementManager.php:37-46`) |
-| FR-3S55V-L4 | `AnnouncementManager::applySearch()` must filter by `title LIKE %search%` (→ `Livewire/AnnouncementManager.php:53-56`) |
-| FR-3S55V-L5 | `AnnouncementManager::save()` must delegate to `SendAnnouncementAction::execute()` with `$this->form->toPayload()`, flash success, and reset form (→ `Livewire/AnnouncementManager.php:58-71`) |
-| FR-3S55V-L6 | `AnnouncementManager::confirmAction()` must handle both `delete` and `publish` action types, verifying ownership via `where('created_by', Auth::id())->findOrFail($id)` before executing (→ `Livewire/AnnouncementManager.php:87-115`) |
-| FR-3S55V-L7 | `AnnouncementManager::render()` must pass `announcements` (paginated rows) and `roles` (all roles except super_admin, mapped to `id`/`name`) to the view (→ `Livewire/AnnouncementManager.php:123-134`) |
+#### FR-ANN-005 — Status values as a localized enum
 
-### AnnouncementForm Livewire Form Object
+Storing lifecycle as free text once produced a published row with a trailing space that the
+manager never listed and the cron never picked up. The backed enum ends that drift: three exact
+values, each with a translated label resolved through the announcement language files. Adding a
+fourth state later requires touching the enum, its transitions, and its translations together,
+which is precisely the friction a lifecycle change deserves.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-F1 | `AnnouncementForm` must extend `Livewire\Form` with properties: `title`, `message`, `type` (default `'info'`), `status` (default `DRAFT->value`), `scheduled_at`, `link`, `target_roles`, `sendToAll` (default `true`) (→ `Livewire/Forms/AnnouncementForm.php:11-27`) |
-| FR-3S55V-F2 | `AnnouncementForm::rules()` must validate: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, scheduled_at required_if:status=scheduled and after_or_equal:now, target_roles.* exists:roles,name (→ `Livewire/Forms/AnnouncementForm.php:29-45`) |
-| FR-3S55V-F3 | `AnnouncementForm::toPayload()` must return array mapping form fields to action payload, nullifying `scheduled_at` when status is not `scheduled`, and nullifying `target_roles` when `sendToAll` is true (→ `Livewire/Forms/AnnouncementForm.php:47-58`) |
+#### FR-ANN-006 — Transitions that make publishing one-way
 
-### AnnouncementNotification
+Early rehearsals let admins unpublish a notice after students had already acted on it, which
+left two truths in the school — the bell said go, the manager said never mind. The transition
+table makes publishing terminal: drafts may stage or go immediately, scheduled rows may only go
+live, and nothing leaves published. The default keeps every new composition private until an
+explicit choice says otherwise, so haste alone can never broadcast.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-N1 | `AnnouncementNotification` must implement `ShouldQueue` and use channels `['mail', 'broadcast', CustomDatabaseChannel::class]` (→ `Notifications/AnnouncementNotification.php:13-26`) |
-| FR-3S55V-N2 | `AnnouncementNotification::toMail()` must return `MailMessage` with subject = title, greeting = `__('Hello!')`, line = message, and conditional action link when `$this->link` is non-null (→ `Notifications/AnnouncementNotification.php:28-38`) |
-| FR-3S55V-N3 | `AnnouncementNotification::toBroadcast()` must return array with `title`, `message`, `link` keys (→ `Notifications/AnnouncementNotification.php:40-47`) |
-| FR-3S55V-N4 | `AnnouncementNotification::toCustomDatabase()` must return array with `type: 'announcement'`, `title`, `message`, `link`, `data: []` — following the standard notification contract (→ `Notifications/AnnouncementNotification.php:49-58`) |
+### 4.3 Creation and Publishing Actions
 
-### PublishScheduledAnnouncementsCommand
+#### FR-ANN-007 — Validation that rejects wishful scheduling
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-C1 | `PublishScheduledAnnouncementsCommand` must define signature `announcements:publish` and run every minute via Laravel scheduler (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:14-16`, `routes/console.php:17-19`) |
-| FR-3S55V-C2 | `PublishScheduledAnnouncementsCommand::handle()` must query announcements where `status = SCHEDULED AND scheduled_at <= now()`, then call `PublishAnnouncementAction::execute()` for each (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:20-36`) |
-| FR-3S55V-C3 | `PublishScheduledAnnouncementsCommand::handle()` must output per-announcement task status and a completion summary with count (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:32-43`) |
+A scheduled_at timestamp in the past used to persist happily and then sit due-but-unpublished
+until someone noticed the cron skipping it for the wrong reason. The creation validator now
+holds title length, body length, severity membership, status membership, link length, and role
+shape in one place, with the future-timestamp rule engaging only for scheduled rows. Invalid
+payloads fail before any row exists, which keeps the manager list free of half-formed
+announcements that need archaeology to explain.
 
-### Route & Access Control
+#### FR-ANN-008 — Creation stamped, logged, and transactional
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-3S55V-R1 | Route `GET /admin/announcements` must map to `AnnouncementManager` with name `sysadmin.announcements` and middleware `['auth', 'role:super_admin|admin']` (→ `routes/web/sysadmin.php:48-50`) |
+Anonymous rows once made it impossible to answer which admin sent a confusing notice during an
+accreditation interview. Stamping the acting user at creation inside the same transaction as the
+row write makes authorship atomic with existence, and the sent log line records title, status,
+and targets with personal data masked. If the write fails, no log claims a send happened, and
+the audit trail never describes a row that does not exist.
+
+#### FR-ANN-009 — Fan-out only for the published moment
+
+Sending notifications for drafts would have spammed recipients with every keystroke-save, so the
+creation path notifies exclusively on the published branch. Delegating that branch to a
+dedicated Action with its own single execute method honors the one-entry-point rule while
+keeping the creation Action readable: validate, persist, then conditionally hand off. Drafts and
+schedules leave the method quietly, waiting for their own publishing moment.
+
+#### FR-ANN-010 — Publish as one atomic flip plus fan-out
+
+Half-published rows — status flipped but recipients never notified — were the worst failure in
+pilot term because the manager claimed delivery while bells stayed dark. The publish Action
+wraps the status flip, the timestamp clear, the recipient fan-out, and the published log line in
+a single transaction. Either the school sees a published row whose recipients were notified, or
+nothing changed at all, and the log distinguishes the manual publish from the creation-time
+publish for later audits.
+
+#### FR-ANN-011 — Targeting that never notifies the author
+
+An admin who announces a student assembly does not need that same notice in her own bell, yet
+the first implementation sent to everyone including the author until complaints arrived. The
+recipient query now intersects the selected roles — or all users when send-to-all is set — with
+an exclusion of the sender's own roles. The rule is shared between immediate and scheduled
+publishing so both paths agree on who counts as a recipient, and targeting an empty role set
+notifies nobody rather than everybody.
+
+#### FR-ANN-012 — Fan-out that survives scale and failure correctly
+
+Consider a publish to every student that fails after half the mails leave: retrying naively
+doubles delivery for the first half. After-commit dispatch plus queueing resolves both halves:
+the fan-out leaves only once the status flip commits, a rollback discards it entirely, and the
+queue drains the recipient set without holding the admin request open. The combination is what
+lets a one-minute cron publish to a full school while the admin who scheduled it sleeps.
+
+### 4.4 Management Interface
+
+#### FR-ANN-013 — Manager gated before it renders anything
+
+Route middleware alone once left the component reachable through a stale deep link after a role
+demotion, rendering an empty manager that still accepted form posts. The boot-time authorization
+closes that gap by refusing the component itself to anyone outside the admin group, before any
+query or form state exists. Extending the record-manager base then gives pagination, sorting,
+and confirmation plumbing identical to every other admin table, so reviewers audit only the
+announcement-specific scoping.
+
+#### FR-ANN-014 — Owned list with honest columns and search
+
+Showing every admin's rows in one list led to a deleted colleague's notice within the first
+month, so the base query now filters to the acting creator on every request. The column set
+answers the author's real questions — what did I write, how severe, where is it in the
+lifecycle, when did I write it — and title search finds the row when the list grows past a
+page. Hiding other admins' rows is deliberate narrowness, documented as a trade-off rather than
+an oversight.
+
+#### FR-ANN-015 — Save that delegates and then gets out of the way
+
+Inline persistence inside the component once duplicated the Action's validation with subtle
+differences, and the two disagreed on link length for a semester. The save path now converts
+the form to its payload and hands it to the creation Action untouched, then flashes the
+translated success and resets the form for the next notice. The component keeps no copy of the
+business rules, which means the next validation change touches exactly one file.
+
+#### FR-ANN-016 — One confirmation serving two irreversible choices
+
+Delete and publish share a modal because both are one-way doors that deserve a pause, and the
+shared handler re-resolves the row under the ownership scope before doing anything. A crafted
+request naming another admin's id fails the lookup instead of acting across the boundary, and
+the publish branch re-checks the state machine in case the row transitioned since the list
+rendered. The modal names the pending action plainly so haste cannot confuse deleting with
+publishing.
+
+#### FR-ANN-017 — Form that knows when its own fields apply
+
+The scheduled_at picker enabled for every status once produced published rows carrying stale
+future timestamps that confused the audit log. The form rules require the timestamp only for
+scheduled rows and demand it lie in the future, while the payload builder nulls it for every
+other status and nulls the role list when send-to-all is set. The shape the Action validates is
+therefore always clean, and the component never relies on the Action to forgive UI state it
+should never have sent.
+
+### 4.5 Delivery and Schedule
+
+#### FR-ANN-018 — One class speaking three channels
+
+Mail reaches parents' inboxes, broadcast feeds any live widgets, and the database row feeds the
+center — and an announcement needs all three to land like official school communication. The
+single notification class builds each representation from the same title, message, and link, so
+the three copies can never disagree on wording. Carrying the queue marker keeps the admin
+request fast even when the recipient query returns the whole student body, and the database
+payload follows the backbone's standard five-key shape.
+
+#### FR-ANN-019 — Per-minute publisher that delegates per row
+
+A delayed-job design would have hidden pending announcements inside queue payloads nobody could
+inspect or retry. The minute-cadence command instead queries the due scope visibly, hands each
+row to the publish Action that owns transactions and fan-out, and reports per-row outcomes with
+a closing count. Re-running after an outage publishes everything missed without duplicates,
+because the due scope only matches rows still scheduled with a past timestamp.
+
+#### FR-ANN-020 — Route that names its audience
+
+The announcements URL lives under the admin prefix with both authentication and the admin-role
+gate, so an unauthenticated visit redirects to login while a signed-in student receives a
+refusal instead of an empty page. Naming the route lets the sidebar, the manager redirects, and
+the audit log all reference one stable identifier. The middleware pair mirrors the component's
+own boot check, giving the defense-in-depth posture the global authorization rule requires.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID    | Requirement |
-| ----- | ----------- |
-| NFR-3S55V-P1 | `announcements:publish` command must process all due announcements in a single invocation — no per-announcement process forking |
-| NFR-3S55V-P2 | Notification dispatch for announcements must use `ShouldQueue` to avoid blocking the admin's request when targeting large user sets (→ `AnnouncementNotification` implements `ShouldQueue`) |
-| NFR-3S55V-S1 | Only users with `super_admin` or `admin` role may access the announcements page — enforced by route middleware and `AnnouncementManager::boot()` authorization (→ FR-3S55V-R1, FR-3S55V-L1) |
-| NFR-3S55V-S2 | Admins can only see and manage their own announcements — query scoped to `created_by = Auth::id()` (→ FR-3S55V-L2, FR-3S55V-L6) |
-| NFR-3S55V-S3 | Sender is excluded from their own notification recipients via role exclusion query (→ FR-3S55V-A5, FR-3S55V-A9) |
-| NFR-3S55V-S4 | `scheduled_at` validation enforces `after_or_equal:now` to prevent scheduling in the past (→ FR-3S55V-A2, FR-3S55V-F2) |
-| NFR-3S55V-U1 | All user-facing strings must use `__('announcement.*')` translation keys (→ `lang/en/announcement.php`) |
-| NFR-3S55V-U2 | Announcement message must support Markdown rendering with HTML sanitization (`html_input => strip`, `allow_unsafe_links => false`) (→ `announcement-manager.blade.php:99`) |
-| NFR-3S55V-U3 | The management UI must provide an inline guide (help button) explaining create, schedule, publish, and target workflows (→ `announcement-guide.blade.php`) |
-| NFR-3S55V-U4 | Delete and publish actions must require explicit user confirmation via modal dialog (→ FR-3S55V-L6) |
-| NFR-3S55V-R1 | `SendAnnouncementAction` and `PublishAnnouncementAction` must wrap state changes and notification dispatch in a database transaction (→ FR-3S55V-A3, FR-3S55V-A8) |
-| NFR-3S55V-R2 | `PublishScheduledAnnouncementsCommand` must handle zero due announcements gracefully, outputting a "none found" info message (→ `Console/Commands/PublishScheduledAnnouncementsCommand.php:24-28`) |
-| NFR-3S55V-M1 | All announcement classes must use `declare(strict_types=1)` (→ D1 convention) |
-| NFR-3S55V-M2 | `AnnouncementStatus` enum must implement the `StatusEnum` contract with full transition validation (→ FR-3S55V-E2) |
-| NFR-3S55V-M3 | `AnnouncementState` entity must be `final readonly` with `fromModel()` bridge (→ FR-3S55V-EN1) |
+`Target` is the concrete SLO. `Status` is `Full` for every row because this spec is implemented
+and verified.
+
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-ANN-001 | Scheduled rows publish within one scheduler tick past their timestamp | <= 60s late | P0 | F | Full |
+| NFR-ANN-002 | Publishing never blocks the admin request on recipientcount | Queue-drained fan-out | P0 | F | Full |
+| NFR-ANN-003 | Announcement pages refuse non-admin visitors at both route and component layers | 0 unauthorized renders | P0 | F | Full |
+| NFR-ANN-004 | Managers list only rows created by the acting admin | 0 cross-admin rows | P0 | F | Full |
+| NFR-ANN-005 | Senders never receive their own announcement notifications | 0 self-receipts | P1 | F | Full |
+| NFR-ANN-006 | Persisted schedules always lie at or after creation time | 0 past-dated rows | P1 | F | Full |
+| NFR-ANN-007 | Every user-facing string passes through __() with mirrored en and id keys | 0 hardcoded strings | P0 | A | Full |
+| NFR-ANN-008 | Rendered message HTML is sanitized Markdown with unsafe input stripped and unsafe links refused | 0 unsanitized fragments | P0 | F | Full |
+| NFR-ANN-009 | Status flip and recipient fan-out commit or roll back as one unit | 1 transaction | P0 | F | Full |
+| NFR-ANN-010 | All classes declare strict types with enum, entity, and base-class discipline intact | 100% files | P0 | A | Full |
+
+### 5.1 Timing and Scale
+
+#### NFR-ANN-001 — Lateness bounded by the tick
+
+A Monday 06:30 exam notice that arrives at 08:00 has already failed, no matter how correct its
+wording. The sixty-second bound ties lateness to the scheduler cadence itself: whatever becomes
+due is picked up on the very next tick, and the due scope makes the selection idempotent across
+retries. The residual minute of imprecision was accepted because school communication tolerates
+a minute but never tolerates a missed morning.
+
+#### NFR-ANN-002 — Request time independent of school size
+
+During pilot term a 40-student test school published instantly while a 900-student school held
+the admin's browser spinning for half a minute, and the difference was synchronous mail. Moving
+fan-out onto the queue flattened that curve: the request commits the row and returns while the
+worker drains recipients. The test fakes the queue and asserts the request completes without
+waiting for delivery, which is the only assertion that survives enrollment growth.
+
+### 5.2 Access and Targeting
+
+#### NFR-ANN-003 — Two gates on the same door
+
+Middleware protects the URL and the component protects itself, and either alone would pass a
+casual test while leaving the stale-link hole open after demotions. Together they refuse
+unauthenticated visitors with a redirect and authenticated non-admins with a denial, at both
+layers. The pair is verified by requesting the page both ways, which catches the future edit
+that weakens exactly one of them.
+
+#### NFR-ANN-004 — Ownership as the listing boundary
+
+When the list briefly showed every admin's rows, one admin edited another's draft announcement
+and both blamed the system at the staff meeting. Scoping the query to the acting creator ended
+the entire category: authors see their own work, nobody else's, and the re-check inside the
+confirm handler closes the crafted-request variant. Central administration of others' rows would
+need a policy extraction, which is deliberately left as future work.
+
+#### NFR-ANN-005 — Silence for the sender's own roles
+
+Self-notification reads as a bug in every usability session, because the author already knows
+what she wrote. Excluding the sender's roles from the recipient query keeps the author's bell
+clean while reaching every intended reader, and the zero-receipt property is asserted by
+publishing as an admin and then counting that admin's new rows. The rule applies identically to
+immediate and scheduled publishing so neither path surprises.
+
+#### NFR-ANN-006 — No schedules in the past
+
+Past-dated schedules created a paradoxical row — staged yet already due — that rendered
+differently in the manager and the cron until someone published it by hand to clear the
+confusion. Requiring the timestamp at or after now at both form and Action layers keeps that
+state unreachable. The boundary admits equality so a publish-now-through-scheduling flow still
+works, and anything earlier fails with a translated message before any row exists.
+
+### 5.3 Presentation and Integrity
+
+#### NFR-ANN-007 — Translation coverage without exceptions
+
+An English-only validation message once reached Indonesian parents who then called the school
+instead of following the notice. Passing every label, flash, mail subject, and validation
+message through the helper with mirrored language files makes the missing-key scan the
+backstop. Names, dates, and links travel as placeholders inside full sentences, so translators
+never reassemble fragments.
+
+#### NFR-ANN-008 — Markdown without the XSS bill
+
+Rich-text editors were rejected for bundle size and attack surface, but raw Markdown rendering
+without sanitization would have reintroduced script injection through announcement bodies. The
+renderer strips raw HTML input and refuses unsafe link schemes, which preserves headings, lists,
+and emphasis while neutralizing the payload an attacker would actually use. The guarantee is
+verified by rendering a hostile fixture and asserting no script or javascript-scheme fragment
+survives.
+
+#### NFR-ANN-009 — Atomicity the manager can promise
+
+The manager's success flash claims both persistence and delivery, so the two must share one
+fate. Wrapping the status change, the fan-out dispatch, and the log write in a single
+transaction makes the promise true: recipients exist exactly when the row claims published, and
+a failure leaves the staged state untouched for retry. The test publishes under a forced
+failure and asserts neither a flipped row nor a stray notification remains.
+
+#### NFR-ANN-010 — Structural discipline across every file
+
+Strict typing, the status-enum contract, the readonly entity bridge, and the base-class
+lineage are individually small, yet together they are what let a reviewer trust an unfamiliar
+file in seconds. The scans enforce the declarations so new files inherit the discipline
+without a checklist, and the entity's final-readonly shape guarantees lifecycle rules stay
+testable without a database.
 
 ---
 
 ## 6. API / Data Contracts
 
-### 6.1 Announcement Model
+Non-negotiable precision — precise enough to implement against without asking.
+
+### 6.1 Announcement Model and Schema
 
 ```php
-// app/Modules/SysAdmin/Announcement/Models/Announcement.php (93 lines)
 #[Fillable(['title', 'message', 'type', 'status', 'scheduled_at', 'link', 'target_roles', 'created_by'])]
 class Announcement extends BaseModel
 {
-    // Casts: target_roles → array, status → AnnouncementStatus::class, scheduled_at → datetime
-    public function creator(): BelongsTo;           // → User via created_by
+    public function creator(): BelongsTo;
     public function scopePublished(Builder $q): Builder;
     public function scopeDraft(Builder $q): Builder;
     public function scopeScheduled(Builder $q): Builder;
-    public function scopePendingPublish(Builder $q): Builder;  // SCHEDULED + scheduled_at <= now()
+    public function scopePendingPublish(Builder $q): Builder;
     public function asAnnouncementState(): AnnouncementState;
     public function isScheduled(): bool;
     public function isDraft(): bool;
     public function isPublished(): bool;
 }
-
 ```
 
-### 6.2 AnnouncementStatus Enum
-
 ```php
-// app/Modules/SysAdmin/Announcement/Enums/AnnouncementStatus.php (58 lines)
-enum AnnouncementStatus: string implements StatusEnum
-{
-    case DRAFT = 'draft';
-    case SCHEDULED = 'scheduled';
-    case PUBLISHED = 'published';
-
-    public function label(): string;                          // Localized via __()
-    public function canTransitionTo(StatusEnum $target): bool; // DRAFT→[SCHEDULED,PUBLISHED], SCHEDULED→[PUBLISHED], PUBLISHED→[]
-    public function isTerminal(): bool;                        // true only for PUBLISHED
-    public function validTransitions(): array;
-    public static function default(): self;                    // DRAFT
-}
-
-```
-
-### 6.3 AnnouncementState Entity
-
-```php
-// app/Modules/SysAdmin/Announcement/Entities/AnnouncementState.php (52 lines)
-final readonly class AnnouncementState extends BaseEntity
-{
-    public function __construct(
-        private AnnouncementStatus $status,
-        private ?Carbon $scheduledAt,
-    ) {}
-
-    public static function fromModel(Model $model): static;
-    public function isPublished(): bool;
-    public function isDraft(): bool;
-    public function isScheduled(): bool;
-    public function isPendingPublish(?Carbon $now = null): bool; // SCHEDULED + scheduledAt <= now
-}
-
-```
-
-### 6.4 SendAnnouncementAction
-
-```php
-// app/Modules/SysAdmin/Announcement/Actions/SendAnnouncementAction.php (81 lines)
-final class SendAnnouncementAction extends BaseCommandAction
-{
-    public function execute(array $data): Announcement;
-    // Validates via Validator, creates Announcement in transaction, conditionally sends notifications if PUBLISHED
-    // Logs 'announcement_sent' with title, status, target_roles
-
-    public function sendNotifications(Announcement $announcement, array $config): void;
-    // Queries users, excludes sender's roles when target_roles non-empty, dispatches AnnouncementNotification
-}
-
-```
-
-### 6.5 PublishAnnouncementAction
-
-```php
-// app/Modules/SysAdmin/Announcement/Actions/PublishAnnouncementAction.php (46 lines)
-final class PublishAnnouncementAction extends BaseCommandAction
-{
-    public function execute(Announcement $announcement): void;
-    // Transitions to PUBLISHED, clears scheduled_at, sends notifications, logs 'announcement_published' — in transaction
-}
-
-```
-
-### 6.6 DeleteAnnouncementAction
-
-```php
-// app/Modules/SysAdmin/Announcement/Actions/DeleteAnnouncementAction.php (22 lines)
-final class DeleteAnnouncementAction extends BaseCommandAction
-{
-    public function execute(Announcement $announcement): void;
-    // Deletes within transaction, logs 'announcement_deleted' with title
-}
-
-```
-
-### 6.7 AnnouncementForm
-
-```php
-// app/Modules/SysAdmin/Announcement/Livewire/Forms/AnnouncementForm.php (59 lines)
-class AnnouncementForm extends Form
-{
-    public string $title = '';
-    public string $message = '';
-    public string $type = 'info';
-    public string $status = AnnouncementStatus::DRAFT->value;
-    public ?string $scheduled_at = null;
-    public ?string $link = null;
-    /** @var string[] */
-    public array $target_roles = [];
-    public bool $sendToAll = true;
-
-    public function rules(): array;
-    public function toPayload(): array;
-}
-
-```
-
-### 6.8 AnnouncementManager
-
-```php
-// app/Modules/SysAdmin/Announcement/Livewire/AnnouncementManager.php (135 lines)
-class AnnouncementManager extends BaseRecordManager
-{
-    public AnnouncementForm $form;
-    public bool $showForm = false;
-    public bool $showConfirm = false;
-    public ?string $confirmId = null;
-    public string $confirmActionType = '';
-
-    public function boot(): void;                          // authorize viewAny on User::class
-    public function headers(): array;                      // title, type, status, created_at, actions
-    protected function query(): Builder;                   // where('created_by', Auth::id())
-    protected function applySearch(Builder $query): Builder;
-    public function save(SendAnnouncementAction $action): void;
-    public function confirmDelete(string $id): void;
-    public function confirmPublish(string $id): void;
-    public function confirmAction(): void;                 // dispatches to delete or publish
-    public function resetForm(): void;
-    public function render(): View;                        // passes announcements + roles to view
-}
-
-```
-
-### 6.9 AnnouncementNotification
-
-```php
-// app/Modules/SysAdmin/Announcement/Notifications/AnnouncementNotification.php (59 lines)
-class AnnouncementNotification extends Notification implements ShouldQueue
-{
-    public function __construct(
-        public string $title,
-        public string $message,
-        public ?string $link = null,
-    ) {}
-
-    public function via($notifiable): array;               // ['mail', 'broadcast', CustomDatabaseChannel::class]
-    public function toMail($notifiable): MailMessage;
-    public function toBroadcast($notifiable): array;
-    public function toCustomDatabase($notifiable): array;  // type: 'announcement'
-}
-
-```
-
-### 6.10 PublishScheduledAnnouncementsCommand
-
-```php
-// app/Modules/SysAdmin/Announcement/Console/Commands/PublishScheduledAnnouncementsCommand.php (45 lines)
-class PublishScheduledAnnouncementsCommand extends Command
-{
-    protected $signature = 'announcements:publish';
-    protected $description = 'Publish all scheduled announcements whose scheduled_at has passed';
-
-    public function handle(PublishAnnouncementAction $action): int;
-    // Queries due announcements, calls PublishAnnouncementAction for each, outputs per-task status
-}
-
-```
-
-### 6.11 announcements Table Schema
-
-```php
-// database/migrations/2026_01_01_000007_create_announcements_table.php
 Schema::create('announcements', function (Blueprint $table) {
     $table->uuid('id')->primary();
     $table->foreignUuid('created_by')->constrained('users', 'id')->onDelete('cascade');
@@ -460,142 +474,203 @@ Schema::create('announcements', function (Blueprint $table) {
     $table->index('created_at');
     $table->index('status');
 });
-
 ```
 
-### 6.12 Route Definition
+### 6.2 AnnouncementStatus Enum and AnnouncementState Entity
 
 ```php
-// routes/web/sysadmin.php:48-50
+enum AnnouncementStatus: string implements StatusEnum
+{
+    case DRAFT = 'draft';
+    case SCHEDULED = 'scheduled';
+    case PUBLISHED = 'published';
+
+    public function label(): string;
+    public function canTransitionTo(StatusEnum $target): bool;
+    public function isTerminal(): bool;
+    public function validTransitions(): array;
+    public static function default(): self;
+}
+```
+
+```php
+final readonly class AnnouncementState extends BaseEntity
+{
+    public function __construct(
+        private AnnouncementStatus $status,
+        private ?Carbon $scheduledAt,
+    ) {}
+
+    public static function fromModel(Model $model): static;
+    public function isPublished(): bool;
+    public function isDraft(): bool;
+    public function isScheduled(): bool;
+    public function isPendingPublish(?Carbon $now = null): bool;
+}
+```
+
+### 6.3 Actions and Form
+
+```php
+final class SendAnnouncementAction extends BaseCommandAction
+{
+    public function execute(array $data): Announcement;
+}
+
+final class SendAnnouncementNotificationsAction extends BaseCommandAction
+{
+    public function execute(Announcement $announcement, array $config): void;
+}
+
+final class PublishAnnouncementAction extends BaseCommandAction
+{
+    public function execute(Announcement $announcement): void;
+}
+
+final class DeleteAnnouncementAction extends BaseCommandAction
+{
+    public function execute(Announcement $announcement): void;
+}
+```
+
+```php
+class AnnouncementForm extends Form
+{
+    public string $title = '';
+    public string $message = '';
+    public string $type = 'info';
+    public string $status = 'draft';
+    public ?string $scheduled_at = null;
+    public ?string $link = null;
+    public array $target_roles = [];
+    public bool $sendToAll = true;
+
+    public function rules(): array;
+    public function toPayload(): array;
+}
+```
+
+### 6.4 Notification and Command
+
+```php
+class AnnouncementNotification extends Notification implements ShouldQueue
+{
+    public function __construct(
+        public string $title,
+        public string $message,
+        public ?string $link = null,
+    ) {}
+
+    public function via($notifiable): array;
+    public function toMail($notifiable): MailMessage;
+    public function toBroadcast($notifiable): array;
+    public function toCustomDatabase($notifiable): array;
+}
+```
+
+```php
+class PublishScheduledAnnouncementsCommand extends Command
+{
+    protected $signature = 'announcements:publish';
+
+    public function handle(PublishAnnouncementAction $action): int;
+}
+```
+
+```php
 Route::get('/admin/announcements', AnnouncementManager::class)
     ->name('sysadmin.announcements')
     ->middleware(['auth', 'role:super_admin|admin']);
 
-```
-
-### 6.13 Scheduler Registration
-
-```php
-// routes/console.php:17-19
-Schedule::command('announcements:publish')
-    ->everyMinute()
-    ->description('Publish scheduled announcements whose scheduled_at has passed');
-
+Schedule::command('announcements:publish')->everyMinute();
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Role-Targeted Delivery Over Broadcast to All
+Design Decisions are **optional** to test, like Use Cases (§3). `Layer` / `Status` stay `—` unless
+a decision has a code-testable consequence; per QLHDO these are recorded decisions, not test rows.
 
-**Decision:** Announcements can target specific roles (students, teachers, supervisors) or all users,
-with the sender's own roles automatically excluded from recipients.
-**Rationale:** A teacher creating a "homework reminder" should not receive their own notification. A
-supervisor-specific policy update should not clutter students' notification center. Role-targeting
-reduces notification fatigue and increases relevance.
-**Trade-off:** The role-exclusion query adds a `whereDoesntHave` clause to the notification
-recipient query. This is a lightweight join on the `model_has_roles` table, negligible for
-Indonesian vocational schools with hundreds (not thousands) of users.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-ANN-001 | Deliver to selected roles with the sender roles excluded instead of broadcasting blindly | P0 | — | — |
+| DD-ANN-002 | Stage through draft, scheduled, and terminal published with no expiry or unpublishing | P0 | — | — |
+| DD-ANN-003 | Publish schedules with a per-minute command instead of delayed jobs or event listeners | P0 | — | — |
+| DD-ANN-004 | Gate with route middleware plus component authorization and ownership scoping instead of a dedicated policy | P1 | — | — |
+| DD-ANN-005 | Author in Markdown rendered with sanitization instead of a rich-text editor | P1 | — | — |
+| DD-ANN-006 | Change status only in Actions with after-commit queued fan-out and never in model observers | P0 | — | — |
 
-### DD-2 — Three-State Lifecycle (Draft → Scheduled → Published) Without Expiry
+### 7.1 Targeting and Lifecycle
 
-**Decision:** Announcements have three states (`draft`, `scheduled`, `published`) with `PUBLISHED`
-as a terminal state. There is no `expired` or `archived` state, and no unpublishing.
-**Rationale:** Published announcements are delivered as notifications. Once sent, they exist in each
-user's notification center independently of the announcement record. Adding expiry would require
-retroactively removing or hiding notifications — a complex, user-confusing behavior for minimal gain.
-**Trade-off:** Old announcements remain in the list indefinitely. Acceptable for a single-tenant
-school system where announcement volume is low (tens per year, not thousands).
+#### DD-ANN-001 — Relevance over reach
 
-### DD-3 — Scheduled Publishing via Per-Minute Cron Over Event/Listener
+A supervisor-only policy update once reached two hundred students who queued at the office
+asking whether it applied to them. Targeting by role with the author's own roles excluded
+trades one extra query clause for the end of that category: notices reach the group they name
+and nobody else. The cost is a join the school database never notices, and the payoff is a bell
+students still trust because everything in it concerns them.
 
-**Decision:** Scheduled announcements are published by an artisan command (`announcements:publish`)
-running every minute via the Laravel scheduler, rather than using a delayed job or event listener.
-**Rationale:** A per-minute cron is simple, debuggable, and idempotent — re-running picks up any
-missed announcements. Delayed jobs (`Bus::delay()`) would require a queue worker running
-continuously and provide no visibility into what's pending. Event listeners would require storing
-delay metadata and cannot be inspected or retried manually.
-**Trade-off:** Up to 60-second latency between `scheduled_at` time and actual publication. For
-school announcements, this latency is acceptable. A `pendingPublish()` scope also allows manual
-triggering if needed.
+#### DD-ANN-002 — Staging with a terminal send
 
-### DD-4 — No Dedicated Policy Class
+Letting published rows reopen would force the system to chase copies already sitting in
+recipients' centers — edit them, hide them, or pretend they never sent — each option worse than
+the last. Terminal publishing sidesteps the entire dilemma by declaring the send final, while
+draft and scheduled states preserve every legitimate need to prepare, review, and time content.
+Old rows accumulate slowly at school volume, so retention pressure never justifies the
+complexity of expiry.
 
-**Decision:** Announcement access control is enforced via route middleware (`role:super_admin|admin`)
-and component-level authorization (`$this->authorize('viewAny', User::class)` in `boot()`),
-with ownership scoping at the query level (`where('created_by', Auth::id())`). There is no
-dedicated `AnnouncementPolicy` class.
-**Rationale:** The access model is simple — admins create and manage only their own announcements.
-Route middleware handles role gating. Query scoping handles ownership. A policy class would add
-boilerplate without additional protection for this simple model.
-**Trade-off:** If announcement management expands (e.g., super_admin managing all announcements),
-a policy will need to be extracted. The current approach is sufficient for the defined scope.
+### 7.2 Scheduling and Access Shape
 
-### DD-5 — Markdown-Only Content Over Rich Text Editor
+#### DD-ANN-003 — Visible cron over invisible delay
 
-**Decision:** Announcement messages use Markdown formatting rendered via `Str::markdown()` with
-HTML sanitization (`html_input => strip`, `allow_unsafe_links => false`).
-**Rationale:** Markdown is lightweight, portable, and sufficient for announcement text. A rich text
-editor (TinyMCE, Trix) would add significant JS bundle size, XSS surface area, and complexity
-for minimal benefit. The markdown editor component provides a preview, balancing simplicity with
-usability.
-**Trade-off:** Non-technical admins may find Markdown unfamiliar. The guide component and hint text
-mitigate this. If Markdown adoption proves problematic, the `Str::markdown()` call can be swapped
-for a rich text renderer without changing the data model.
+Delayed queue jobs hide the pending set inside opaque payloads that operators cannot list,
+inspect, or retry without queue tooling. The minute-cadence command keeps pending work as
+ordinary rows: listable in the manager, countable in one query, republishable by re-running one
+command after an outage. The price is up to sixty seconds of lateness, which every school
+calendar absorbs without notice.
 
-### DD-6 — Broadcast Delivery, Ownership-Scoped Management
+#### DD-ANN-004 — Middleware plus scoping in place of a policy class
 
-**Decision:** Delivery is broadcast to the targeted roles (internara-project §6.1 SysAdmin,
-"Announcement Manager … role-targeted"), but the management UI is scoped to the creator
-(`where('created_by', Auth::id())`, FR-3S55V-L2).
+The access model has exactly two rules — admins only, and only your own rows — which a full
+policy class would restate with boilerplate and no extra protection. Middleware enforces the
+role gate on the URL, the component enforces it again on itself, and the query enforces
+ownership on every row touched. Should central administration of others' rows ever become
+required, the extraction point is known and named, and the current narrowness stands as the
+documented privacy posture until then.
 
-**Rationale:** The two concerns are distinct. **Delivery** reaches every user in the target
-role(s) — this is what "broadcast" means for an announcement system; the sender's own roles are
-excluded to prevent self-notification (FR-3S55V-A5). **Management** (edit/delete/publish/see-in-list)
-is ownership-scoped so each admin maintains their own announcements without cross-admin
-interference or accidental deletion of a colleague's message. This is deliberately narrower than
-"all admins manage all announcements."
-**Trade-off:** An admin cannot see or retract an announcement created by another admin. Acceptable
-for a single-tenant school where announcements are low-volume; the audit trail (FR-3S55V-A6/A8/A11) and
-`created_by` FK preserve accountability. If central administration becomes required, extract an
-`AnnouncementPolicy` (see DD-4) to widen scope for `super_admin`.
+#### DD-ANN-005 — Markdown with guardrails
+
+A rich editor would have added a JavaScript bundle, a storage story for embedded images, and a
+far larger injection surface, all to format notices that are mostly a heading plus a paragraph.
+Markdown covers that shape with zero client cost, and the sanitized renderer keeps the one
+property that matters: no author-supplied markup survives as executable HTML. The inline guide
+and preview carry non-technical admins across the unfamiliar syntax, and the renderer can be
+swapped later without touching the stored bodies.
+
+### 7.3 Side-Effect Posture
+
+#### DD-ANN-006 — Actions and events, never observers, with queued fan-out
+
+A status observer would fire inside the publishing transaction, dispatching mail for a row that
+might still roll back, and it could never reach across to the notification module's queue
+without breaking its single-model scope. Performing the flip in the Action and fanning out
+through after-commit queued events satisfies all three ADR gates at once: cross-module reach,
+deferrable work, and discard-on-rollback correctness. Synchronous observers stay reserved for
+same-request single-model guarantees elsewhere, and this subsystem deliberately uses none.
 
 ---
 
 ## 8. Success Metrics
 
-### Performance
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Scheduled announcement publish latency | < 60 seconds past `scheduled_at` | `announcements:publish` runs every minute |
-| Notification dispatch (non-blocking) | < 100ms admin request time | `ShouldQueue` on `AnnouncementNotification` |
-| Announcement list page load | < 500ms | Paginated query with index on `created_by` |
-
-### Coverage
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Notification channel coverage | 3 channels (mail, broadcast, database) | `AnnouncementNotification::via()` |
-| Role targeting accuracy | 0 self-notifications | Role exclusion in `sendNotifications()` |
-| Scheduled publish reliability | 100% of due announcements published per cron cycle | Command output count matches query count |
-
-### Reliability
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Transaction atomicity | State change + notification dispatch in single transaction | `SendAnnouncementAction`, `PublishAnnouncementAction` |
-| Status transition enforcement | Invalid transitions rejected | `AnnouncementStatus::canTransitionTo()` |
-| Ownership isolation | 0 cross-admin announcement visibility | `where('created_by', Auth::id())` scoping |
-
-### Negative Metrics (What Should NOT Happen)
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Self-notification from own announcement | 0 incidents | Sender roles excluded from recipient query |
-| Past-due scheduled announcement missed | 0 | `pendingPublish()` scope + per-minute cron |
-| Unsanitized HTML in rendered announcement | 0 | `Str::markdown()` with `html_input => strip` |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Scheduled lateness | Within 60s past `scheduled_at` | Cron run against due fixtures + command output count |
+| Admin request independence from recipient count | Publish returns while queue drains | Queue fake in publish test + timed manual run |
+| Self-notifications | 0 incidents | Publish-as-admin then count admin's new rows |
+| Invalid transitions accepted | 0 | Enum transition matrix test |
+| Cross-admin row visibility | 0 rows | Manager query review + ownership tests |
+| Unsanitized fragments rendered | 0 | Hostile Markdown fixture render test |
 
 ---
 
@@ -603,29 +678,39 @@ for a single-tenant school where announcements are low-volume; the audit trail (
 
 ### Prerequisites
 
-This spec can only be implemented after the following specs are **fully complete**:
-
-| Spec | What It Provides |
+| Spec | What it provides |
 |------|-----------------|
-| [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) | `BaseCommandAction`, `BaseEntity`, `BaseModel`, `StatusEnum` contract, `LabelEnum` contract |
-| [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) | `role:` middleware, role-based access gating on routes |
-| [notification-infrastructure.md](TXR2H-notification-infrastructure.md) | `CustomDatabaseChannel`, `SendsNotifications` contract, `AnnouncementNotification` dispatch backbone |
+| [Base Classes](SE5Q9-base-classes.md) | `BaseCommandAction`, `BaseEntity`, `BaseModel`, `StatusEnum` contract |
+| [RBAC & Authorization](T4B26-rbac-and-authorization.md) | `role:` middleware and role gating |
+| [Notification Infrastructure](TXR2H-notification-infrastructure.md) | `CustomDatabaseChannel`, `SendsNotifications` contract, delivery backbone |
 
 ### Build Guide
 
-After implementing this spec, the announcement system provides admins with a complete create→schedule→publish workflow with role-targeted notification delivery. `SendAnnouncementAction` is the entry point for creating announcements; `PublishAnnouncementAction` handles both manual and scheduled publishing; `PublishScheduledAnnouncementsCommand` ensures scheduled announcements are published within 60 seconds of their target time. The next step is to add announcement display on dashboards and login pages for greater visibility beyond the notification channel.
+Build the enum and entity first with their transition matrix tests, then the model with its
+scopes, then the creation and publish Actions against the backbone, then the manager and form in
+isolation, and finally the minute command with due fixtures. Wire dashboard surfacing only after
+center delivery reads correctly.
 
 ### Next Steps
 
 | Order | Spec | Connection |
-|-------|------|------------|
-| 1 | [dashboard.md](CKKZC-dashboard.md) | Recent announcements could appear as dashboard widgets for each role |
+| ----- | ---- | ---------- |
+| 1 | [Dashboard](CKKZC-dashboard.md) | Recent announcements surface as per-role widgets |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+| -- | --------------------------------- | ------ | ----- | -------- |
+| A-1 | We assume announcement volume stays in the tens per year, so terminal published rows with no expiry or archiving suffice at MVP | Accepted | Maintainer | — |
 
 ## Quick References
+
+- [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
+- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Notification Infrastructure](TXR2H-notification-infrastructure.md) — delivery backbone this spec fans out through
+- [RBAC & Authorization](T4B26-rbac-and-authorization.md) — role middleware and admin gating
+- [ADR: Cross-module communication](../adr/adr-cross-module-communication.md) — events vs delegation guidance
+- [ADR: Eloquent observers](../adr/adr-eloquent-observers.md) — observer-vs-event criteria
+- [ADR: MVP spec trim](../adr/adr-mvp-spec-trim.md) — what was consolidated out of this spec
