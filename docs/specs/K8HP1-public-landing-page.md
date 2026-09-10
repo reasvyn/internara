@@ -1,10 +1,16 @@
 # Public Landing Page
 
 > **Spec ID:** K8HP1
+> **Status:** Full
+> **Owner:** User
+> **Depends on:** 52O1I, 8XMYS, MBB5R
 
 ## Description
 
-Public landing page at `GET /` (`App\Modules\User\Livewire\HomePage`). The single entry point for unauthenticated visitors on an installed instance — shows hero branding, registration availability (open/upcoming/closed/not_configured), login CTA, and feature highlights (logbook, supervision, certificate). Handles setup-not-installed → `setup` and authenticated → `dashboard` redirects, renders in the guest shell (`ui::layouts.guest` → `base`), and consumes the existing branding/theme/locale pipeline (52O1I) via semantic tokens among its other requirements.
+Public landing page at `GET /` serving unauthenticated visitors on an installed instance: hero
+branding, live registration availability, login entry, and feature highlights. Setup and
+authenticated states redirect before render, the page inherits the guest shell, and it consumes
+the existing branding, theme, and locale pipeline without redefining any of it.
 
 ---
 
@@ -12,19 +18,33 @@ Public landing page at `GET /` (`App\Modules\User\Livewire\HomePage`). The singl
 
 ### PS-1 — No Public Entry Spec
 
-`GET /` (`HomePage` Livewire + `home-page.blade.php`) shipped without a spec. Without FR/NFR/UC IDs, the page is orphan in audits, untestable traceably, and future edits lack an SSOT for branching (setup vs auth vs guest), copy, and layout.
+`GET /` shipped without specifying its branching, copy, or layout, leaving the page an orphan
+in audits with no requirement IDs for tests to trace. Future edits lacked a source of truth
+for setup-versus-auth branching, marketing copy, and shell inheritance.
+**→ Requirement:** FR-LAND-001–006 (routing and component), UC-LAND-001–003 (branching journeys).
 
-### PS-2 — Visitors Need Clear Next Step
+### PS-2 — Visitors Need a Clear Next Step
 
-Unauthenticated visitors arrive with two distinct intents — register for PKL or sign in. Without a dedicated landing, they must guess URLs (`/apply`, `/login`). Registration is also time-boxed (`registration_period_start`/`_end`); the landing must communicate `open`/`upcoming`/`closed`/`not_configured` with correct CTA or explanatory alert — not a static link.
+Unauthenticated visitors arrive with two intents — register for the program or sign in — and
+registration is time-boxed, so the landing must communicate open, upcoming, closed, or
+unconfigured states with the correct call to action or explanatory message rather than a
+static link.
+**→ Requirement:** FR-LAND-014–017 (registration and login cards), UC-LAND-004 (status branching).
 
 ### PS-3 — Setup and Auth Must Not Leak the Landing
 
-Fresh-install instances must force `/setup`; authenticated users must not see the public marketing view. If `GET /` renders for these states, it leaks the wrong chrome (guest header instead of wizard or dashboard) and breaks install flow.
+Fresh-install instances must force the setup flow and authenticated users must reach their
+dashboard; rendering marketing chrome for either state breaks installation and confuses signed-in
+users.
+**→ Requirement:** FR-LAND-003/004 (mount-time redirects), UC-LAND-002/003 (redirect journeys).
 
 ### PS-4 — Public Page Must Feel Like the Product
 
-The landing shares the same brand (logo, `brand('tagline')` fallback), locale switcher (EN/ID), theme switcher (light/dark/system via `52O1I` dual signals), responsive breakpoints, WCAG AA chrome, and visual language (gradient hero, card hover, blur blobs) as the rest of the app. A one-off static page would diverge in styling, i18n, and dark-mode behavior.
+The landing shares the brand, locale switcher, theme pipeline, responsive breakpoints,
+accessibility chrome, and visual language of the rest of the app. A one-off static page would
+diverge in styling, translations, and dark-mode behavior within a release.
+**→ Requirement:** FR-LAND-007/008 (guest shell), FR-LAND-020 (semantic tokens only),
+FR-LAND-021/022 (localized copy and dates).
 
 ---
 
@@ -32,152 +52,330 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 
 ### Goals
 
-| ID | Goal |
-|----|------|
-| G1 | Provide a single `GET /` landing that guides unauthenticated visitors to the correct next step (register vs sign in) based on live registration window |
-| G2 | Branch `GET /` correctly for setup-not-installed and authenticated states via Livewire mount redirects |
-| G3 | Present hero (brand, tagline, pills, description, wave), two primary cards (registration + login), and three feature highlights with responsive and interactive polish that matches the app |
-| G4 | Support EN/ID via `__()` and `Carbon::translatedFormat('j F Y')` for the period |
-| G5 | Consume the existing semantic theme pipeline (52O1I) — gradient, blobs, cards, wave, borders — so brand preset and dark-mode changes reflect without rebuild (one of several requirements, not the sole focus) |
-| G6 | Meet WCAG 2.1 AA for a public page (heading order, focus, `aria-hidden` décor, keyboard reachability) |
+- **One landing guiding visitors to the next step** — registration or sign-in based on the live window. *Why:* unauthenticated arrivals should never guess URLs.
+- **Correct branching for setup and authenticated states** — mount-time redirects before any other work. *Why:* install flow and signed-in users must never see marketing chrome.
+- **Hero, primary cards, and feature highlights** — brand-led hero with status-aware cards and marketing overview. *Why:* the page both converts and informs without requiring auth.
+- **Indonesian and English throughout** — translated copy with locale-aware period dates. *Why:* the landing is the product's first impression in both languages.
+- **Consume the shared theme pipeline** — semantic tokens only, so brand and dark-mode changes reflect without rebuild. *Why:* the landing recolors with the product instead of forking it.
+- **WCAG 2.1 AA for a public page** — heading order, focus behavior, decorated regions hidden from assistive technology, keyboard reachability. *Why:* the most-visited page sets the accessibility bar.
 
 ### Non-Goals
 
-| ID | Non-Goal |
-|----|----------|
-| NG1 | CMS-editable homepage — copy is in `lang/{en,id}/user.php` (`user.home.*`), tagline is `brand('tagline') ?: __('common.app_tagline')` |
-| NG2 | Redefining the global theming contract — owned by [branding-theme-locale.md](52O1I-branding-theme-locale.md); homepage only consumes it |
-| NG3 | New palette computation or theme switcher — reuses `Theme::cssVariables()`, `Color`, `base.blade.php` injection, `app.js applyTheme()` from 52O1I |
-| NG4 | SEO/OpenGraph beyond `base/head` (`<title>`, meta, `app()->getLocale()`) |
-| NG5 | Visual regression harness — verified via `npm run build` + manual toggle |
+- **CMS-editable homepage**. *Why:* copy lives in language files with the tagline from brand settings; no content-management surface at MVP.
+- **Redefining the global theming contract**. *Why:* owned by [branding-theme-locale](52O1I-branding-theme-locale.md); the homepage only consumes it.
+- **New palette computation or theme switcher**. *Why:* reuses the existing variables, injection, and client-side applier from the theming spec.
+- **SEO and OpenGraph beyond the base head block**. *Why:* title, meta, and locale come from the shared head; deeper SEO is post-MVP.
+- **Visual regression harness**. *Why:* post-MVP depth per the [mvp-spec-trim ADR](../adr/adr-mvp-spec-trim.md); build checks plus manual review suffice.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-K8HP1-1 — Visitor Opens Homepage (Unauthenticated, Installed)
+Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Status` are filled here
+because each journey below has a code-verifiable consequence at this spec's scope.
 
-**Actor:** Unauthenticated visitor on installed instance
-**Preconditions:** `SetupEntity::get()->isInstalled() === true`, `auth()->check() === false`, `GET /`
-**Flow:**
-1. `HomePage::mount(ReadRegistrationAvailabilityAction)` runs — no redirect, sets `$registration = $action->execute()`
-2. `render()` returns `view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])`
-   3. Guest shell renders: sticky header (brand `wire:navigate /` + `theme-switch` + `lang-switch`), `main#main-content`, footer `credits`
-4. Hero renders: brand `size=xl`, 3 pills, tagline `brand('tagline') ?: __('common.app_tagline')` as gradient `h1`, `hero_desc`, wave divider
-5. Cards section (`bg-base-200`) shows registration card (branch per UC-K8HP1-4) + login card + 3 feature highlights
-**Postconditions:** Landing visible without auth; internal links use `wire:navigate` (SPA); theme/lang switchers functional
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-LAND-001 | Unauthenticated visitor on an installed instance sees the landing with live registration state | P0 | F | Full |
+| UC-LAND-002 | Authenticated user hitting `/` is redirected to the dashboard without rendering the landing | P0 | F | Full |
+| UC-LAND-003 | Visitor on a fresh install hitting `/` is redirected to setup without querying availability | P0 | F | Full |
+| UC-LAND-004 | Registration card branches across open, upcoming, closed, and unconfigured states | P0 | F | Full |
+| UC-LAND-005 | Visitor surveys feature highlights without needing authentication | P2 | F | Full |
+| UC-LAND-006 | Visitor switches locale or theme in place with persisted, reactive updates | P1 | B | Full |
 
-### UC-K8HP1-2 — Authenticated User Hits `/`
+### 3.1 Entry and Branching
 
-**Actor:** Any `auth()->check() === true`
-**Preconditions:** User logged in
-**Flow:** `HomePage::mount()` calls `$this->redirectRoute('dashboard')` and returns — before availability fetch
-**Postconditions:** Lands on `GET /dashboard` (role-routed); homepage Blade never rendered
+#### UC-LAND-001 — Visitor Opens the Homepage
 
-### UC-K8HP1-3 — Fresh Install Hits `/`
+A parent hearing about the program types the school's URL into a phone browser and lands on a
+page that already knows whether registration is open. The mount ran no redirects, fetched the
+availability shape, and rendered inside the guest shell — sticky header with brand and
+switchers, hero with tagline and pills, status-aware cards, feature highlights — with every
+internal link gliding through SPA navigation. No login wall, no guessing, just the next step.
 
-**Actor:** Visitor on `isInstalled() === false`
-**Preconditions:** `setup.is_installed` falsy
-**Flow:** `HomePage::mount()` calls `$this->redirectRoute('setup')` and returns — takes precedence over auth check
-**Postconditions:** Redirected to setup wizard; no availability query
+#### UC-LAND-002 — Authenticated User Hits the Root
 
-### UC-K8HP1-4 — Registration Card Branches on `status`
+A student with a bookmarked root URL opens it mid-session and never sees marketing content:
+the mount notices the session before touching availability data and redirects to the
+role-routed dashboard. Skipping the availability fetch is deliberate — signed-in users have no
+use for registration marketing, and the redirect keeps their navigation history clean.
 
-**Actor:** Visitor on homepage (UC-K8HP1-1)
-**Flow:** `home-page.blade.php` switches on `$registration['status']`:
-- `open`: `x-ts-badge` success + `registration_open` + period `j F Y` (`start`→`end`) + info alert not shown + `x-ts-button` `wire:navigate href=route('apply')` primary `register_now`
-- `upcoming`: badge info + `registration_upcoming` + upcoming period + `x-ts-alert` info `registration_not_open_yet`
-- `closed`: badge warning + `registration_closed` + `x-ts-alert` warning `registration_closed_desc`
-- default (`not_configured`/unknown): neutral badge `registration_unavailable` + alert `registration_unavailable_desc`
-**Postconditions:** Single CTA or explanatory alert; translated in EN/ID; dates via `Carbon::parse()->translatedFormat('j F Y')`
+#### UC-LAND-003 — Fresh Install Hits the Root
 
-### UC-K8HP1-5 — Visitor Explores Feature Highlights
+On a just-deployed instance the very first visit must become the setup wizard, not a landing
+page advertising a school that is not configured yet. The installation check runs first,
+takes precedence over the auth check, and redirects without issuing the availability query
+that would read settings which do not exist.
 
-**Actor:** Visitor scrolling past cards
-**Flow:** Section `features_title`/`features_subtitle` + grid `1 → 3` cols shows 3 cards: Logbook (`book-open`, `primary`), Guidance (`users`, `secondary`), Certificate (`identification`, `accent`) with `feature_*_title/desc`
-**Postconditions:** Marketing overview of platform value without requiring auth
+### 3.2 Content Journeys
 
-### UC-K8HP1-6 — Visitor Changes Locale or Theme on Homepage
+#### UC-LAND-004 — Registration Card Branches on Status
 
-**Actor:** Visitor on homepage
-**Flow:** Clicks `livewire:settings.lang-switch` (EN↔ID, cookie `locale` via `SetLocale`) or `x-ui::components.theme-switch` (light/dark/system → `app.js applyTheme()` sets `data-theme`+`.dark`+cookie)
-**Postconditions:** Locale/theme updates in-place; hero/cards/wave recolor via CSS variables; persists on reload
+The registration card is four cards wearing one layout: open shows a success badge, the
+formatted period, and a register call to action; upcoming shows an informational badge with
+the future window and a waiting notice; closed shows a warning badge with the closure
+explanation; unconfigured shows a neutral badge with the unavailable notice. Each state
+carries exactly one honest message — a call to action or an explanation, never a dead button.
+
+#### UC-LAND-005 — Visitor Explores Feature Highlights
+
+Scrolling past the cards, a curious teacher finds three compact stories — daily logbooks,
+guidance tooling, certificates — each with an icon, a title, and a line of description in a
+responsive grid. The section asks nothing of her: no account, no redirect, just enough
+understanding to decide whether the login card above is worth her time.
+
+#### UC-LAND-006 — Visitor Changes Locale or Theme
+
+Tapping the language switcher re-renders every string in place, including the period dates
+which reformat to the new locale's conventions; toggling the theme repaints hero, cards, and
+wave through CSS variables without a reload. Both choices persist, so a parent who prefers
+Indonesian and dark mode finds the whole visit — and the next one — already arranged.
 
 ---
 
 ## 4. Functional Requirements
 
-### Homepage — Routing & Component
+A Functional Requirement is a verifiable behavior the system must support. `Priority` ranks
+criticality on a P0–P3 scale. `Layer` declares the test layer (`U` Unit · `F` Feature ·
+`B` Browser · `A` Arch). `Status` tracks implementation of the requirement itself.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-01 | `GET /` must be `Route::livewire('/', HomePage::class)->name('home')` in `routes/web/user.php` | P0 |
-| FR-HP-02 | `HomePage` must be `final class HomePage extends Component` with `public array $registration = []` | P0 |
-| FR-HP-03 | `mount(ReadRegistrationAvailabilityAction $action)` must DI-inject the action; if `!SetupEntity::get()->isInstalled()` call `$this->redirectRoute('setup')` and return (takes precedence over auth) | P0 |
-| FR-HP-04 | If `auth()->check()` call `$this->redirectRoute('dashboard')` and return — before `$action->execute()` | P0 |
-| FR-HP-05 | Otherwise set `$this->registration = $action->execute()` | P0 |
-| FR-HP-06 | `render(): View` must return `view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])` | P0 |
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-LAND-001 | `GET /` is a Livewire route named `home` in the user routes file | P0 | A | Full |
+| FR-LAND-002 | The homepage component is a final Livewire class holding the availability shape as a public array | P0 | A | Full |
+| FR-LAND-003 | Mount redirects to setup when the instance is not installed, taking precedence over the auth check | P0 | F | Full |
+| FR-LAND-004 | Mount redirects to the dashboard for authenticated users before fetching availability | P0 | F | Full |
+| FR-LAND-005 | Mount otherwise stores the executed availability result for the view | P0 | F | Full |
+| FR-LAND-006 | Render returns the homepage view inside the guest layout with the translated page title | P0 | F | Full |
+| FR-LAND-007 | The guest shell provides the sticky branded header with navigation brand link and switchers, the main content region, and the credits footer | P0 | F | Full |
+| FR-LAND-008 | The base shell provides locale attribute, theme signals, injected theme variables, head block, and SPA focus chrome | P0 | F | Full |
+| FR-LAND-009 | The hero section renders the branded gradient backdrop with hidden decorative blobs | P1 | F | Full |
+| FR-LAND-010 | The hero inner container centers the brand mark with responsive spacing | P1 | F | Full |
+| FR-LAND-011 | The pills row renders three status badges with icons and translated labels | P1 | F | Full |
+| FR-LAND-012 | The tagline renders as the page heading with gradient text and fallback copy; the description follows as supporting paragraph | P0 | F | Full |
+| FR-LAND-013 | The wave divider renders the section-transition SVG marked hidden from assistive technology | P1 | F | Full |
+| FR-LAND-014 | The cards section lays out registration and login cards in a responsive grid | P0 | F | Full |
+| FR-LAND-015 | The registration card renders the elevated interactive card with icon well, title, and description | P1 | F | Full |
+| FR-LAND-016 | The registration card body branches exactly across the four availability states with matching badge, period, notice, or call to action | P0 | F | Full |
+| FR-LAND-017 | The login card renders the secondary interactive card with title, description, sign-in action, and account footer | P0 | F | Full |
+| FR-LAND-018 | The feature section renders the header and responsive three-column card grid | P1 | F | Full |
+| FR-LAND-019 | The three feature cards cover logbook, guidance, and certificate stories with distinct accents | P1 | F | Full |
+| FR-LAND-020 | All homepage visual tokens are semantic through the existing theme pipeline; hardcoded colors and per-page style blocks are forbidden | P1 | A | Full |
+| FR-LAND-021 | All user-facing copy resolves through translation keys present in both locale files with brand-tagline fallback | P0 | A | Full |
+| FR-LAND-022 | Registration period dates render locale-aware through translated formatting | P1 | F | Full |
 
-### Homepage — Shell (Guest Layout)
+### 4.1 Routing and Component
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-07 | Guest shell (`ui::layouts.guest` → `ui::layouts.base`) must be `bg-base-200 flex min-h-screen flex-col` with: sticky header `bg-base-100/80 border-base-content/10 backdrop-blur-sm` containing brand link `wire:navigate href="/"` (`x-ui::components.brand size=sm`) + `x-ui::components.theme-switch` + `livewire:settings.lang-switch`; `main#main-content.flex.flex-1.flex-col` for `$slot`; footer `border-base-content/10 mt-auto border-t py-8` with `x-ui::components.credits` (fallback) | P0 |
-| FR-HP-08 | `ui::layouts.base` must provide `<html lang="{{ app()->getLocale() }}" data-theme>` + `.dark` class, injected `Theme::cssVariables()` `<style>`, `<head>` via `base/head`, and `wire:navigate` focus-reset chrome per 8XMYS | P0 |
+#### FR-LAND-001 — Root route registration
 
-### Homepage — Hero
+The root URL maps to the homepage Livewire component under its stable route name, so every
+redirect target, menu entry, and test in the product points at one canonical home. Renaming
+or duplicating this route would silently fork the product's front door.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-09 | Hero `section` must be `from-primary/8 via-base-100 to-secondary/8 bg-gradient-to-br relative overflow-hidden` with decorative blobs `pointer-events-none absolute inset-0` (`aria-hidden="true"`) — `bg-primary/10 size-[36rem] -top-32 -right-32 blur-3xl animate-pulse`, `bg-secondary/10 -bottom-32 -left-32 blur-3xl animate-pulse delay 1.5s`, `bg-accent/5 size-64 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 blur-2xl` | P1 |
-| FR-HP-10 | Hero inner must be `container mx-auto px-4 pt-20 pb-16 sm:px-6 sm:pt-24 sm:pb-20 lg:px-12 lg:pt-32 lg:pb-24` + `max-w-3xl text-center`; brand row `mb-8 flex justify-center` with `x-ui::components.brand size=xl withTagline=false` | P1 |
-| FR-HP-11 | Pills row `mb-6 flex flex-wrap justify-center gap-2` must render 3 `x-ts-badge`: `primary shield-check hero_secure`, `secondary academic-cap hero_academic`, `success globe-alt hero_global` | P1 |
-| FR-HP-12 | Tagline `h1` must be `from-base-content to-base-content/60 bg-gradient-to-br bg-clip-text text-transparent text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl mb-5` with `{{ brand('tagline') ?: __('common.app_tagline') }}`; desc `p` `text-base-content/60 max-w-xl mx-auto sm:text-lg` with `__('user.home.hero_desc')` | P0 |
-| FR-HP-13 | Wave divider `div.h-16.sm:h-20[aria-hidden]` must contain `svg.text-base-200.w-full.h-16.sm:h-20[viewBox="0 0 1440 80" preserveAspectRatio="none" fill="none"] > path[d="M0 80C240 80 480 20 720 20C960 20 1200 80 1440 80V0H0V80Z" fill="currentColor"]` | P1 |
+#### FR-LAND-002 — Component shape
 
-### Homepage — Primary Cards
+A final component class with a single public array for availability keeps the view contract
+obvious: whatever the availability Action returns is what the Blade branches on. There is no
+second state channel to drift out of sync, and reviewers can see the entire data surface in
+one property declaration.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-14 | Cards `section` must be `bg-base-200 flex-1 pb-16 sm:pb-20 lg:pb-24` with inner `container mx-auto -mt-8 sm:-mt-10 px-4 sm:px-6 lg:px-12`; grid `mx-auto max-w-5xl grid gap-6 sm:gap-8 lg:grid-cols-2 grid-cols-1` | P0 |
-| FR-HP-15 | Registration card must be `group card bg-base-100 border-base-content/10 border shadow-lg hover:border-primary/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300`; `card-body items-center text-center p-6 sm:p-8 lg:p-10`; icon well `from-primary/15 to-primary/5 ring-base-content/10 size-16 sm:size-20 rounded-2xl ring-1 ring-inset group-hover:scale-110` with `x-ts-icon clipboard-document-list text-primary size-8 sm:size-10`; title `card-title text-xl sm:text-2xl font-bold`, desc `text-base-content/60 max-w-sm sm:text-base` | P1 |
-| FR-HP-16 | Registration card body must branch exactly as UC-K8HP1-4 (badge + period + alert/CTA per `status`); `open` CTA is `x-ts-button wire:navigate href=route('apply') color=primary text=register_now icon=arrow-right icon-right w-full sm:w-auto` | P0 |
-| FR-HP-17 | Login card must be `group card bg-base-100 border-base-content/10 hover:border-secondary/30` with matching `card-body`/`icon well from-secondary/15 to-secondary/5`; title `login_title`, desc `login_desc`, `x-ts-button wire:navigate href=route('login') color=secondary login_action`, footer divider `border-base-content/10 mt-6 border-t pt-5` with `no_account text-base-content/40 text-xs` | P0 |
+#### FR-LAND-003 — Setup redirect takes precedence
 
-### Homepage — Feature Highlights
+When the instance is not installed, the mount redirects to setup before anything else —
+before the auth check, before the availability query. Ordering matters here because the
+availability query reads settings that do not exist yet, and the auth check answers a
+question nobody asked on a fresh install.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-18 | Feature section `mx-auto max-w-5xl mt-16 sm:mt-20` with header `text-center mb-8 sm:mb-12`: `h2 features_title text-xl sm:text-2xl lg:text-3xl font-bold text-base-content mb-2` + `p features_subtitle text-base-content/50 max-w-2xl mx-auto sm:text-base`; grid `grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6`; each card `card bg-base-100 border-base-content/10 border shadow-sm hover:shadow-md transition-all` with `card-body p-6 sm:p-8 text-center` | P1 |
-| FR-HP-19 | Three cards: Logbook (`from-primary/10 to-primary/5` well `size-12 rounded-xl` + `book-open text-primary size-6` + `feature_logbook_title/desc text-base-content/55`), Guidance (`from-secondary/10 secondary` + `users` + `feature_guidance_*`), Certificate (`from-accent/10 accent` + `identification` + `feature_certificate_*`) | P1 |
+#### FR-LAND-004 — Auth redirect skips the fetch
 
-### Homepage — Theming (One Requirement Among Several)
+Signed-in visitors hitting the root go straight to their dashboard without the component
+ever asking about registration windows. Beyond saving a query, the ordering guarantees the
+marketing view never flashes for authenticated users on slow connections.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-20 | Homepage visual tokens must be semantic only via the existing pipeline — hero `from-primary/8 via-base-100 to-secondary/8` + blobs `bg-primary/10 secondary/10 accent/5`, wave `text-base-200`, cards `bg-base-100 border-base-content/10 hover:border-primary/30 secondary/30`, icon wells `from-{primary,secondary,accent}/15→/5` + `ring-base-content/10`, text `text-base-content/40–60`/`text-primary/secondary/accent`, badges/buttons/alerts via TallstackUI `color="primary secondary success info warning"` — reusing `Theme::cssVariables()` inline `<style>` in `ui::layouts.base` (cached 1h, invalidated via `theme_cache_keys`) and `app.js applyTheme()` dual `data-theme`+`.dark` per 52O1I FR-K8HP1-T1/FR-K8HP1-T3; no hardcoded hex/`bg-white`/`bg-gray-*`/`ring-white` or per-page `<style>` | P1 |
+#### FR-LAND-005 — Availability stored for guests
 
-### Homepage — i18n & Content
+For the remaining case — unauthenticated on an installed instance — the mount executes the
+availability Action once and stores the result. One execution per visit keeps the view pure
+branching logic with no queries hiding in Blade.
 
-| ID | Requirement | Priority |
-|----|-------------|----------|
-| FR-HP-21 | All user-facing copy must be `__()` with keys existing in both `lang/en/user.php` and `lang/id/user.php` under `user.home.*` (page_title, hero_desc, hero_secure/academic/global, registration_*, login_*, no_account, features_*, feature_logbook/guidance/certificate_*) — tagline fallback is `brand('tagline') ?: __('common.app_tagline')` | P0 |
-| FR-HP-22 | Registration period `p` must be `__('user.home.registration_period'/'registration_upcoming_period', ['start' => Carbon::parse(start_date)->translatedFormat('j F Y'), 'end' => ...])` respecting `app()->getLocale()` | P1 |
+#### FR-LAND-006 — Guest layout with translated title
+
+Rendering wraps the homepage view in the guest layout with the translated page title, which
+is what puts the correct `<title>` in the tab and the correct chrome around the content.
+A homepage rendered outside its layout would lose header, footer, and theme in one stroke.
+
+### 4.2 Guest Shell Consumption
+
+#### FR-LAND-007 — Sticky header, main region, credits footer
+
+The guest shell frames the page with a blurred sticky header — brand link home plus theme and
+language switchers — a main content region owning the page background, and a footer carrying
+credits. Because the shell owns the background, the hero-to-cards transition reads as one
+continuous surface rather than stacked boxes.
+
+#### FR-LAND-008 — Base chrome inherited wholesale
+
+Locale attribute, theme signals, injected brand variables, the shared head block, and SPA
+focus management all arrive through the base layout the guest shell extends. The homepage
+declares none of this itself, which is precisely why a theming fix lands on the landing page
+without anyone touching the landing page.
+
+### 4.3 Hero
+
+#### FR-LAND-009 — Gradient backdrop with hidden décor
+
+The hero opens with a soft brand-tinted gradient and three blurred, gently pulsing blobs that
+exist purely for atmosphere. Marking them hidden from assistive technology and inert to
+pointers keeps decoration from becoming noise for screen readers or an obstacle for touch.
+
+#### FR-LAND-010 — Centered brand presentation
+
+Responsive inner spacing centers the brand mark above the copy, growing airier as the
+viewport widens. The progression from tight phone padding to generous desktop whitespace is
+what makes the same hero feel composed at 360 pixels and at 1440.
+
+#### FR-LAND-011 — Trust pills with icons and labels
+
+Three badges — security, academic purpose, global reach — pair an icon with a translated
+phrase so each signal survives color-vision differences. They answer the visitor's first
+unspoken question, "is this legitimate," before she has read a single paragraph.
+
+#### FR-LAND-012 — Tagline heading with fallback
+
+The brand tagline renders as the page's single top-level heading in gradient text, falling
+back to the shared application tagline when no custom tagline is set. One heading keeps the
+document outline honest, and the fallback keeps fresh installs from showing an empty hero.
+
+#### FR-LAND-013 — Wave transition to cards
+
+The wave SVG eases the hero into the cards section with a seamless color handoff, drawn from
+the surface token so it recolors with the theme automatically. Like the blobs it is hidden
+from assistive technology — pure seam, no semantics.
+
+### 4.4 Primary Cards
+
+#### FR-LAND-014 — Two-card responsive grid
+
+Registration and login cards share a grid that stacks on phones and sits side by side on
+wider screens, overlapped slightly onto the hero for a layered feel. The grid is the page's
+decision point, so its two options always appear together, never one without the other.
+
+#### FR-LAND-015 — Registration card treatment
+
+The registration card carries the primary accent: elevated surface, hover lift, icon well
+that scales on hover, title, and description. Its visual weight declares it the page's main
+action, which is why the hover choreography exists — affordance you can feel before reading.
+
+#### FR-LAND-016 — Four-state card body
+
+Open shows the live period with a register action; upcoming shows the future window with a
+waiting notice; closed shows the closure explanation; unconfigured shows the unavailable
+notice. The Blade switches on the exact status value, so adding a fifth state in future
+would fail visibly in review rather than rendering a blank card in production.
+
+#### FR-LAND-017 — Login card with account footer
+
+The login card mirrors the registration card in the secondary accent with its own icon well,
+title, description, and sign-in action, plus a quiet footer for visitors without accounts.
+That footer line closes the loop: lost users find registration from the login card just as
+easily as the reverse.
+
+### 4.5 Feature Highlights
+
+#### FR-LAND-018 — Section header with card grid
+
+A centered header introduces the highlights above a grid that stacks on phones and opens to
+three columns on larger screens. The section's job is orientation, not conversion, so it sits
+below the decision cards where it informs without competing.
+
+#### FR-LAND-019 — Three product stories
+
+Logbook discipline, supervision guidance, and certification each get a card with a distinct
+accent, icon, title, and description. Three is a deliberate limit: enough to convey the
+lifecycle's shape, few enough that a scrolling visitor actually reads them.
+
+### 4.6 Theming Consumption
+
+#### FR-LAND-020 — Semantic tokens only
+
+Every visual token on the page — hero gradient, blobs, wave, card surfaces, borders, wells,
+text tones, badge and button colors — resolves through the shared theme pipeline's semantic
+names. The prohibition on hardcoded hex values and per-page style blocks is what lets a
+brand-preset change recolor the landing on the next load, and the architecture check enforces
+it so no well-meaning one-off ever forks the palette.
+
+### 4.7 Localization and Content
+
+#### FR-LAND-021 — Translated copy with tagline fallback
+
+All visible strings resolve through namespaced translation keys mirrored in both locale
+files, with the brand tagline preferred and the shared tagline as fallback. A key missing in
+either language fails the duality check, which keeps the landing bilingual by construction
+rather than by translator heroics.
+
+#### FR-LAND-022 — Locale-aware period dates
+
+Registration windows render through translated date formatting under the active locale, so
+the same period reads naturally in Indonesian and in English. Dates formatted in only one
+convention would quietly tell half the visitors the wrong month name.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID | Requirement | Target |
-|----|-------------|--------|
-| NFR-HP-03 | Brand preset change reflects on homepage next load without `cache:clear` (52O1I `theme_cache_keys` invalidation) | 1 request |
-| NFR-HP-04* | Homepage is responsive without horizontal scroll at 320 px — hero padding scales `px-4→6→12`, `pt-20→24→32`, cards `grid-cols-1 → lg:grid-cols-2`, features `1 → sm:grid-cols-3`, text `text-3xl→4xl→5xl` | Manual 320 px |
-| NFR-HP-05* | Hover/interaction polish — blobs `animate-pulse blur-3xl`, cards `hover:-translate-y-1 hover:shadow-xl duration-300`, icon wells `group-hover:scale-110 duration-500` | Manual |
-| NFR-HP-06* | WCAG 2.1 AA on homepage: `h1` tagline gradient uses `from-base-content` for contrast, badges/CTAs pair icon+text (not color alone), `aria-hidden="true"` on blobs/wave, `pointer-events-none` on décor, tab order header→hero→cards→features, all focusable elements have visible focus, `wire:navigate` retains focus-reset | Lighthouse ≥ 95 |
-| NFR-HP-07 | All `__('user.home.*')` keys resolve in EN and ID; `translatedFormat('j F Y')` respects locale | — |
-| NFR-HP-08 | `npm run build` passes (Tailwind v4 + Vite); `vendor/bin/pint --dirty --test` passes if PHP touched | — |
+Landing constraints with measurable targets. `*` marks rows whose property is visual or
+manual and therefore exempt from the spec↔test traceability check.
 
-`*` = non-testable visual/manual — excluded from `scan_spec_tests` gap.
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-LAND-001 | Brand preset change reflects on the homepage on the next load without cache clearing | 1 request | P1 | F | Full |
+| NFR-LAND-002* | Homepage renders without horizontal scroll at 320px with scaling spacing and grids | Manual 320px | P1 | B | Full |
+| NFR-LAND-003* | Hover and interaction polish present on blobs, cards, and icon wells | Manual | P2 | B | Full |
+| NFR-LAND-004* | WCAG 2.1 AA holds on the homepage with contrast-safe heading, paired icon-text signals, hidden décor, ordered tabs, visible focus, and focus reset | Lighthouse ≥ 95 | P1 | B | Full |
+| NFR-LAND-005 | All homepage translation keys resolve in both locales with locale-aware date formatting | 0 missing | P0 | A | Full |
+| NFR-LAND-006 | Asset build passes; PHP style check passes when PHP is touched | Pass | P1 | A | Full |
+
+### 5.1 Freshness and Build
+
+#### NFR-LAND-001 — Preset changes visible next load
+
+An admin who picks a new brand preset and reloads the landing sees the new palette
+immediately, because theme invalidation flows through the settings pipeline rather than
+requiring a cache clear. The single-request target is what makes branding feel live instead
+of batched.
+
+#### NFR-LAND-006 — Build and style gates
+
+The asset build must pass for any markup or style change, and the PHP style check must pass
+whenever component code is touched. These gates catch the Tailwind class typo and the
+formatting slip long before they reach a visitor's browser.
+
+### 5.2 Visual and Access Properties
+
+#### NFR-LAND-002* — Small-screen integrity
+
+At the narrowest supported width the page must show no horizontal scroll, with padding,
+grids, and type scales stepping down gracefully. Marked non-testable because only eyes and
+fingers confirm it, verified by manual passes at phone, tablet, and desktop widths.
+
+#### NFR-LAND-003* — Interaction polish
+
+Pulsing blobs, lifting cards, and scaling icon wells give the page its tactile quality. Also
+marked non-testable — no assertion captures "feels alive" — and likewise confirmed by manual
+review rather than the traceability scanner.
+
+#### NFR-LAND-004* — Public-page accessibility bar
+
+Contrast-safe heading tones, icon-plus-text badges, hidden décor, logical tab order, visible
+focus, and SPA focus reset together hold the AA bar with a high lighthouse target. Manual and
+tool-assisted rather than unit-tested, hence the marker, but reviewed on the same cadence as
+any functional gate.
+
+#### NFR-LAND-005 — Bilingual completeness
+
+Every homepage key resolves in both locales and period dates obey the active locale's
+formatting. Unlike its visual neighbors this row is fully checkable — key presence scans and
+locale-switch tests — so it carries no marker.
 
 ---
 
@@ -190,22 +388,11 @@ The landing shares the same brand (logo, `brand('tagline')` fallback), locale sw
 use App\Modules\User\Livewire\HomePage;
 
 Route::livewire('/', HomePage::class)->name('home'); // GET /
-
 ```
 
 ### 6.2 HomePage Livewire
 
 ```php
-// app/Modules/User/Livewire/HomePage.php
-declare(strict_types=1);
-
-namespace App\Modules\User\Livewire;
-
-use App\Modules\Enrollment\Domain\Registration\Actions\ReadRegistrationAvailabilityAction;
-use App\Modules\Setup\Entities\SetupEntity;
-use Illuminate\View\View;
-use Livewire\Component;
-
 final class HomePage extends Component
 {
     public array $registration = [];
@@ -214,50 +401,41 @@ final class HomePage extends Component
     // Setup check → redirectRoute('setup') (precedence)
     // Auth check → redirectRoute('dashboard')
     // Else → $this->registration = $action->execute()
-    public function render(): View; // view('livewire.user.home-page')->layout('ui::layouts.guest', ['title' => __('user.home.page_title')])
+    public function render(): View;
 }
-
 ```
 
 ### 6.3 ReadRegistrationAvailabilityAction Contract
 
 ```php
-// App\Modules\Enrollment\Domain\Registration\Actions\ReadRegistrationAvailabilityAction
-// final class extends BaseReadAction
 final class ReadRegistrationAvailabilityAction extends BaseReadAction
 {
     public function execute(): array;
-    // Reads setting('registration_period_start'), setting('registration_period_end') (Y-m-d or null)
-    // Returns one of:
-    // ['status' => 'not_configured']                                  // start or end null
-    // ['status' => 'open',       'start_date' => Carbon, 'end_date' => Carbon] // now between start/end
-    // ['status' => 'upcoming',   'start_date' => Carbon, 'end_date' => Carbon] // start within now+1 month, not open
-    // ['status' => 'closed',     'start_date' => Carbon, 'end_date' => Carbon] // otherwise, start & end set
+    // ['status' => 'not_configured']
+    // ['status' => 'open',     'start_date' => Carbon, 'end_date' => Carbon]
+    // ['status' => 'upcoming', 'start_date' => Carbon, 'end_date' => Carbon]
+    // ['status' => 'closed',   'start_date' => Carbon, 'end_date' => Carbon]
 }
-
 ```
 
 ### 6.4 Blade View Contract
 
-```php
-// resources/views/livewire/user/home-page.blade.php
-// Expects public $registration from Component
-// Uses: x-ui::components.brand, x-ts-badge, x-ts-button, x-ts-alert, x-ts-icon
-//       brand('tagline'), __('user.home.*'), __('common.app_tagline'),
-//       Carbon::parse()->translatedFormat('j F Y'), route('apply'), route('login')
-//       @if ($registration['status'] === 'open'|'upcoming'|'closed') @else (not_configured)
-// Layout: ui::layouts.guest → ui::layouts.base
-
+```
+resources/views/livewire/user/home-page.blade.php
+Expects public $registration from the component.
+Uses brand, badge, button, alert, and icon components with
+brand('tagline'), namespaced translations, locale-aware dates,
+and the apply/login routes. Branches on $registration['status'].
+Layout: guest shell inheriting the base shell.
 ```
 
-### 6.5 Guest Shell Injected Variables (52O1I, referenced)
+### 6.5 Guest Shell Injected Variables (Referenced)
 
 ```
-HTML: <html lang="{{ app()->getLocale() }}" data-theme="{{ cookie('theme','system') }}" class="dark?">
-CSS vars: html[data-theme='light'] { --color-primary: Theme::cssVariables()['light'] } + html[data-theme='dark'] { --color-primary: lightened 40% }
-         Cached 1h under config('cache-keys.theme_css_variables'), invalidated via config('settings.theme_cache_keys')
-JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie + localStorage dark-theme
-
+HTML lang from the active locale; theme signals from cookie plus client applier.
+CSS variables injected from the theme pipeline with hourly caching and
+settings-driven invalidation. Client script syncs theme attribute, dark class,
+cookie, and stored preference.
 ```
 
 ### 6.6 Translations
@@ -271,49 +449,63 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 //   login_title/desc/action, no_account,
 //   features_title/subtitle, feature_logbook/guidance/certificate_title/desc
 // ]
-// 2 locales × 20+ keys, all required
-
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Mount-Time Redirects for Setup & Auth Gating
+Design Decisions are **optional** to test, like Use Cases (§3). `Layer` / `Status` stay `—` unless
+a decision has a code-testable consequence.
 
-**Decision:** `HomePage::mount()` performs `SetupEntity::get()->isInstalled() → redirectRoute('setup')` and `auth()->check() → redirectRoute('dashboard')` before availability fetch, instead of route middleware.
-**Rationale:** Keeps `GET /` as a single Livewire route owning its guest/unauth vs setup vs authed branching; matches other public pages (`/apply`, `/login`) that gate in component and benefits from Livewire `wire:navigate` redirects without extra middleware ordering.
-**Alternatives rejected:** `guest`/`auth` middleware split into two routes for `/` — would duplicate the Blade and complicate `setup` precedence.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-LAND-001 | Mount-time redirects own setup and auth gating instead of route middleware | P0 | — | — |
+| DD-LAND-002 | Rendering inherits the guest shell over the base shell instead of page-local chrome | P0 | — | — |
+| DD-LAND-003 | Window logic delegates to the availability Read Action instead of inline date math | P0 | — | — |
+| DD-LAND-004 | Hero uses gradient, blobs, and wave with no image assets | P1 | — | — |
 
-### DD-2 — Guest Shell Inheritance
+### 7.1 Gating and Shell
 
-**Decision:** `render()->layout('ui::layouts.guest')` which inherits `ui::layouts.base` (sticky header, `main#main-content`, footer credits, `data-theme`/`.dark`, `Theme::cssVariables()` injection, `wire:navigate` focus-reset).
-**Rationale:** Public pages (homepage, `/login`, `/apply`) share identical chrome; homepage intro hero → `bg-base-200` cards → footer `credits` reads as continuous surface because guest shell's `bg-base-200 flex min-h-screen flex-col` owns the page background. Standalone shell would duplicate theme/locale/a11y wiring.
-**Alternatives rejected:** Page-local header/footer — diverges from guest pages and requires duplicating theme/locale switchers.
+#### DD-LAND-001 — Redirects in mount over middleware split
 
-### DD-3 — Availability via `ReadRegistrationAvailabilityAction`
+Owning all three branches in the component keeps one route, one Blade, and one precedence
+story, and it rides SPA redirects naturally. Splitting guest and authenticated roots across
+middleware would duplicate the view and tangle setup precedence into middleware ordering —
+complexity paid on every future edit for no runtime gain.
 
-**Decision:** Homepage delegates window logic to `ReadRegistrationAvailabilityAction::execute()` (reads `setting('registration_period_start/_end')`, Carbon `between`/`addMonth` branching) instead of inline Carbon in the component.
-**Rationale:** Window rule (`open` if `now∈[start,end]`, `upcoming` if `start∈[now,now+1m]`, `closed` otherwise, `not_configured` if null) is domain logic with 4 states; action is unit-testable, cache-friendly, and reused by the registration module.
-**Alternatives rejected:** Inline `Carbon::parse(setting(...))` in `HomePage::mount` — mixes domain rule with presentation and hinders reuse.
+#### DD-LAND-002 — Inherited guest chrome over local header
 
-### DD-4 — Hero with Gradient Tagline + Blobs + Wave (No Image)
+Sharing the guest shell with sibling public pages means theme, locale, and accessibility
+fixes land everywhere at once. A page-local header would start identical and end divergent;
+inheritance removes the second outcome from the possibility space.
 
-**Decision:** Hero uses `from-primary/8 via-base-100 to-secondary/8` gradient background, three `blur-3xl`/`blur-2xl` blobs with `animate-pulse`, `h1` `from-base-content to-base-content/60 bg-clip-text`, and `text-base-200` SVG wave `M0 80C240...` (`preserveAspectRatio="none"`), rather than a hero image.
-**Rationale:** Reacts to brand `primary`/`secondary` and dark mode via CSS variables without asset swaps; lightweight (no image load), responsive via `container`/`px-4→12`/`pt-20→32`, and wave creates a seamless `via-base-100` → `bg-base-200` cards transition.
-**Alternatives rejected:** Static hero image — would not recolor with brand preset, adds LCP weight, and requires dark-mode variant.
+### 7.2 Content and Presentation
+
+#### DD-LAND-003 — Availability Action over inline dates
+
+The four-state window rule is domain logic with boundary subtleties — inclusive ranges,
+month-ahead upcoming detection, null handling — that deserves isolated tests and reuse by the
+registration module. Inline date math in the component would bury that rule where neither
+tests nor siblings could reach it.
+
+#### DD-LAND-004 — Code-drawn hero over image assets
+
+Gradients, blurred blobs, and the wave SVG recolor with brand presets and dark mode for
+free, weigh nothing on first paint, and scale to any viewport. A photographic hero would
+need per-theme variants, add load weight, and fight the palette instead of wearing it.
 
 ---
 
 ## 8. Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Registration status branching correct (open/upcoming/closed/not_configured) with correct CTA/alert/period | 4/4 states | Manual + any existing `ReadRegistrationAvailabilityAction` coverage |
-| Responsive no horizontal scroll at 320 px; hover/blur/pulse polish matches design | Pass | Manual 320/768/1024 px + hover |
-| Theme preset reflects on homepage next load (primary/secondary recolor) ≤ 1 request | ≤ 1 | Change `primary_color` via Branding form → reload `/` |
-| i18n keys exist in EN & ID; `j F Y` respects locale | 20+ keys | `grep user.home` in both `lang/` |
-| `npm run build` + `pint --dirty --test` | Pass | CI |
+| Metric | Target | How to measure |
+|--------|--------|----------------|
+| Registration status branching correct with matching CTA, notice, and period | 4/4 states | Manual pass plus availability Action coverage |
+| Responsive integrity with matching interactive polish | Pass | Manual 320/768/1024px plus hover review |
+| Theme preset visible on next load | ≤ 1 request | Change preset via branding form, reload `/` |
+| Translation keys present in both locales with locale-aware dates | All keys | Key scan in both language files |
+| Build and style gates | Pass | CI |
 
 ---
 
@@ -323,26 +515,25 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 
 | Spec | What It Provides |
 |------|------------------|
-| [branding-theme-locale.md](52O1I-branding-theme-locale.md) | `Brand::('logo','name','tagline')`, `Theme::cssVariables()` (1h cache, `theme_cache_keys`), `theme-switch` + `applyTheme()` dual signals — **SSOT for theming; homepage only consumes it (FR-HP-20)** |
-| [layout-and-ui-system.md](8XMYS-layout-and-ui-system.md) | `ui::layouts.base/guest/app`, `ui::components.brand/credits/theme-switch`, `container`/`wire:navigate`/a11y chrome |
-| [installation.md](8NZAU-installation.md) + [setup-wizard.md](VEJCX-setup-wizard.md) | `SetupEntity::isInstalled()` + `setup` route |
-| [registration.md](MBB5R-registration.md) | `ReadRegistrationAvailabilityAction` + `setting('registration_period_*')` keys |
-| [settings-infrastructure.md](YB22J-settings-infrastructure.md) | `Settings::get/forget()` + `theme_cache_keys` invalidation |
+| [branding-theme-locale](52O1I-branding-theme-locale.md) | Brand fields, theme variables with caching and invalidation, theme and locale switchers — the theming source of truth |
+| [layout-and-ui-system](8XMYS-layout-and-ui-system.md) | Base and guest shells, brand and credits components, container and navigation chrome |
+| [installation](8NZAU-installation.md) + [setup-wizard](VEJCX-setup-wizard.md) | Installation state and the setup route |
+| [registration](MBB5R-registration.md) | Availability Action and the registration period settings keys |
+| [settings-infrastructure](YB22J-settings-infrastructure.md) | Settings access with theme-cache invalidation |
 
 ### Build Guide
 
-1. Register K8HP1 in `docs/specs/index.md` Phase 3.
-2. Implement `HomePage` per §6.2; `ReadRegistrationAvailabilityAction` already exists — verify 4-state return.
-3. Implement `home-page.blade.php` per FR-HP-09..19; wire `guest.blade.php` header/footer; add `lang/*/user.php home.*` keys.
-4. Verify `npm run build` + `vendor/bin/pint --dirty --test`; manual checks on `/` unauth / authed / fresh-install, each registration status, `320px` responsive, light/dark/system + preset recolor.
+1. Register this spec's route and component per §6.1–§6.2; verify the availability Action's four-state return.
+2. Implement the Blade per FR-LAND-009–019 with guest header and footer wiring and namespaced language keys.
+3. Verify the asset build and PHP style check; manually exercise unauthenticated, authenticated, and fresh-install visits, all four registration states, small-screen rendering, and theme plus preset changes.
 
 ### Next Steps
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [authentication.md](YB7RG-authentication.md) | `route('login')` CTA from FR-HP-17; `auth::layouts.auth` also inherits `base` but separate flow |
-| 2 | [registration.md](MBB5R-registration.md) | `route('apply')` CTA from FR-HP-16 opens the enrollment flow |
-| 3 | [dashboard.md](CKKZC-dashboard.md) | `HomePage::mount` authed → `dashboard` role router |
+| 1 | [authentication](YB7RG-authentication.md) | Login call to action target; auth layouts share the same base shell |
+| 2 | [registration](MBB5R-registration.md) | Apply call to action target opening the enrollment flow |
+| 3 | [dashboard](CKKZC-dashboard.md) | Authenticated redirect destination with role routing |
 
 ---
 
@@ -352,3 +543,11 @@ JS: resources/js/app.js applyTheme(mode) syncs data-theme + .dark + theme cookie
 | --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
+
+- [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
+- [Spec registry](index.md) — all feature specs grouped in 12 phases
+- [Layout & UI system](8XMYS-layout-and-ui-system.md) — shells and components this page inherits
+- [Branding, theme & locale](52O1I-branding-theme-locale.md) — theming source of truth consumed here
+- [Registration](MBB5R-registration.md) — availability Action and period settings
+- [Dashboard](CKKZC-dashboard.md) — authenticated redirect destination
+- [MVP trim ADR](../adr/adr-mvp-spec-trim.md) — why visual harnesses and SEO depth stay out
