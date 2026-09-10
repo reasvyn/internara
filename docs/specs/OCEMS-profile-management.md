@@ -1,14 +1,17 @@
 # Profile Management — User Profile & Settings
 
 > **Spec ID:** OCEMS
+> **Status:** Full
+> **Owner:** User
+> **Depends on:** SE5Q9, T4B26, YB7RG, WQGTP
 
 ## Description
 
-User profile management page where authenticated users view and edit their personal
-information, upload/remove avatar, change password, and access recovery codes. Role-aware
-form fields show staff-specific fields (employment status, job title, ID number) only for
-admin/teacher/super_admin roles. Super admin identity fields (name, username) are protected
-from changes.
+User profile management where authenticated users view and edit personal information,
+upload or remove an avatar, change their password, and reach recovery codes. Role-aware form
+fields expose staff-only data solely to staff roles, super admin identity stays immutable at
+both UI and business layers, and every change is validated, authorized, logged, and announced
+through domain events.
 
 ---
 
@@ -16,27 +19,30 @@ from changes.
 
 ### PS-1 — Users Need to Manage Their Profile
 
-Users need a single page to view and edit their name, email, phone, address, bio, and
-avatar. Without this, profile changes require admin intervention, creating unnecessary
-support overhead.
+Users need one page to view and edit name, email, phone, address, bio, and avatar. Without
+it, every correction becomes an admin support ticket, and the queue of trivial edits grows
+exactly as fast as enrollment does.
+**→ Requirement:** FR-PROF-001–007 (update Action), FR-PROF-011–017 (editor component).
 
 ### PS-2 — Role-Specific Profile Fields
 
-Teachers and staff have additional profile data (employment status, job title, ID number,
-competence field) that students and supervisors do not. A one-size-fits-all form would
-either expose irrelevant fields or require separate pages per role.
+Staff carry employment data — status, job title, ID number, competence field — that students
+and supervisors do not. A one-size form either exposes irrelevant fields or forces separate
+pages per role, doubling maintenance for a distinction the form shape can express.
+**→ Requirement:** FR-PROF-008–010 (role-aware form shape), FR-PROF-017 (role-aware labels).
 
 ### PS-3 — Super Admin Identity Protection
 
-The super admin's name and username must never be changed (they are fixed by design — see
-`setup-wizard.md`). The profile editor must enforce this constraint at both the UI and
-business logic layers.
+The super admin's name and username are fixed by design, and the profile editor must enforce
+that constraint in business logic — not merely by disabling inputs that a crafted request can
+bypass.
+**→ Requirement:** FR-PROF-005 (integrity rejection), FR-PROF-010 (immutable flags).
 
 ### PS-4 — Password Change From Profile
 
-Users should be able to change their password from the profile page without navigating
-to a separate password-reset flow. This requires verifying the current password before
-setting a new one.
+Users expect to change passwords where they manage their identity, with current-password
+verification and throttling, rather than detouring through the reset flow while authenticated.
+**→ Requirement:** FR-PROF-018–020 (password change path).
 
 ---
 
@@ -44,112 +50,290 @@ setting a new one.
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Provide `UpdateProfileAction` — validates and persists profile data + avatar upload |
-| G2  | Provide `ReadProfileFormAction` — determines form fields based on user role |
-| G3  | Provide `ProfileEditor` Livewire — profile form + password change + avatar management |
-| G4  | Enforce super admin integrity (name/username cannot be changed) |
-| G5  | Support avatar upload via Spatie MediaLibrary (`avatar` collection) |
-| G6  | Log profile changes and dispatch `ProfileUpdated` event |
-| G7  | Send `CredentialChangedNotification` when email or username changes |
+- **Validated profile updates with avatar support** — one Command Action persisting identity and profile data plus media handling. *Why:* a single transactional path keeps the two tables consistent.
+- **Role-aware form shape** — a Read Action declaring common fields, staff fields, and immutability flags per caller. *Why:* the form adapts to roles without per-role pages.
+- **Single editor component** — profile form, password change, and avatar management on one page. *Why:* users expect identity management at one destination.
+- **Super admin integrity at the business layer** — name and username changes rejected regardless of UI state. *Why:* client-side disabling alone cannot survive a crafted request.
+- **Avatar lifecycle on the media library** — upload with validation, instant preview, and removal. *Why:* photos need lifecycle rules, not just an upload button.
+- **Logged changes with credential-change events** — audit entries plus notifications when identity credentials move. *Why:* email and username changes are security-relevant and must leave traces.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | School profile management — see `school-profile.md` (81SMS) |
-| NG2  | User CRUD by admins — see `user-crud-and-status.md` (95EVB) |
-| NG3  | Two-factor authentication setup |
-| NG4  | Profile visibility/privacy settings |
+- **School profile management**. *Why:* owned by [school-profile](81SMS-school-profile.md); this spec covers people, not institutions.
+- **Admin user CRUD and status transitions**. *Why:* owned by [user-crud-and-status](95EVB-user-crud-and-status.md); self-service editing is a different trust context.
+- **Two-factor authentication setup**. *Why:* security extension beyond MVP core per the [mvp-spec-trim ADR](../adr/adr-mvp-spec-trim.md).
+- **Profile visibility and privacy settings**. *Why:* role gating already bounds visibility; granular privacy controls are post-MVP.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-OCEMS-1 — User Edits Profile
+Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Status` are filled here
+because each journey below has a code-verifiable consequence at this spec's scope.
 
-**Actor:** Any authenticated user
-**Preconditions:** User is logged in; navigates to `/profile`
-**Flow:**
-1. `ProfileEditor` Livewire mounts, loads user with `profile` and `roles` relations
-2. `ReadProfileFormAction` determines available fields based on role
-3. Common fields: name, email, phone, address, bio (always visible)
-4. Staff fields: employment_status, job_title, id_number, competence_field (admin/teacher/super_admin only)
-5. Super admin: name and username fields shown but disabled
-6. User edits fields and submits
-7. `UpdateProfileAction` validates all fields, updates `users` and `profiles` tables
-8. If email/username changed: dispatches `ProfileUpdated` event → `SendProfileChangedMail` listener sends notification
-**Postconditions:** Profile updated; credential change notification sent if applicable
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-PROF-001 | Authenticated user edits profile fields with role-appropriate visibility and credential notifications | P0 | F | Full |
+| UC-PROF-002 | Authenticated user uploads or removes an avatar with validation and instant preview | P0 | F | Full |
+| UC-PROF-003 | Authenticated user changes password with current-password verification and throttling | P0 | F | Full |
+| UC-PROF-004 | Authenticated user reaches recovery codes from the profile area | P2 | F | Full |
 
-### UC-OCEMS-2 — User Uploads/Removes Avatar
+### 3.1 Identity Journeys
 
-**Actor:** Any authenticated user
-**Preconditions:** User is on profile page
-**Flow:**
-1. User selects image file (max 2MB, image types only)
-2. `ProfileEditor::updatedAvatar()` validates and uploads to Spatie MediaLibrary `avatar` collection
-3. Avatar preview updates immediately via Livewire reactivity
-4. User can click "Remove Avatar" to clear the `avatar` media collection
-**Postconditions:** Avatar stored in media library; old avatar replaced or removed
+#### UC-PROF-001 — User Edits Profile
 
-### UC-OCEMS-3 — User Changes Password
+A teacher opens her profile, updates her phone number and bio, and saves. The editor had
+loaded her record with its relations, asked the form-shape Action which fields her role may
+see, and rendered staff fields alongside common ones while keeping nothing editable that her
+role forbids. The update ran transactionally across both tables, and because her email moved,
+a credential-change notification followed — the kind of trace that turns "who changed this"
+from a mystery into a log query.
 
-**Actor:** Any authenticated user
-**Preconditions:** User is on profile page
-**Flow:**
-1. User enters current password, new password, and confirmation
-2. `ProfileEditor::updatePassword()` validates with `PasswordRules::default()` + confirmed
-3. Delegates to `UpdateUserPasswordAction` (throttled: 5 per 300s)
-4. On success: password updated, `CredentialChangedNotification` sent
-**Postconditions:** Password changed; notification dispatched
+#### UC-PROF-002 — User Uploads or Removes Avatar
 
-### UC-OCEMS-4 — User Views Recovery Codes
+Choosing a photo starts with validation — image type, size ceiling — then stores the file in
+the avatar collection, replacing any previous portrait, with the preview updating
+immediately so the user sees the result before saving anything else. Removal clears the
+collection outright. The lifecycle matters because a photo feature without removal rules
+slowly accumulates stale images nobody owns.
 
-**Actor:** Any authenticated user
-**Preconditions:** User is on profile page
-**Flow:**
-1. Profile sidebar shows "Recovery Codes" link to `/profile/recovery`
-2. User navigates to `RecoveryCode` Livewire (see `account-recovery-slips.md`)
-**Postconditions:** User can generate/view/download recovery codes
+### 3.2 Security Journeys
+
+#### UC-PROF-003 — User Changes Password
+
+Entering the current password plus a new confirmed one, the user triggers verification
+against the stored hash first — a wrong current password stops everything — then throttling
+bounds repeated attempts before the new hash persists and a notification confirms the
+change. Keeping this flow on the profile page removes the absurdity of logging out to prove
+you know your password.
+
+#### UC-PROF-004 — User Views Recovery Codes
+
+A sidebar link carries the user from profile to the recovery-code surface owned by the
+account-recovery spec, where generation, viewing, and download live. The profile page links
+rather than reimplements, so recovery logic keeps exactly one home and the profile keeps a
+stable doorway to it.
 
 ---
 
 ## 4. Functional Requirements
 
-| ID      | Requirement |
-| ------- | ----------- |
-| FR-OCEMS-UP1  | `UpdateProfileAction` must validate all profile fields with explicit rules |
-| FR-OCEMS-UP2  | Action must update `users` table fields (name, email, username) in a transaction |
-| FR-OCEMS-UP3  | Action must `updateOrCreate` on `profiles` table for profile-specific data |
-| FR-OCEMS-UP4  | Action must upload avatar to Spatie MediaLibrary `avatar` collection (if provided) |
-| FR-OCEMS-UP5  | Action must enforce super admin integrity: reject name/username changes for super admin via `RejectedException` |
-| FR-OCEMS-UP6  | Action must dispatch `ProfileUpdated` event with profile, previous email, previous username |
-| FR-OCEMS-UP7  | Action must log profile update via SmartLogger |
-| FR-OCEMS-RP1  | `ReadProfileFormAction` must return `fields` array (always: name, email, phone, address, bio) |
-| FR-OCEMS-RP2  | Action must return `staffFields` (employment_status, job_title, id_number, competence_field) only for super_admin, admin, teacher roles |
-| FR-OCEMS-RP3  | Action must return `canChangeName` / `canChangeUsername` (both `false` for super admin) |
-| FR-OCEMS-PE1  | `ProfileEditor` Livewire must load user with `profile` and `roles` relations on mount |
-| FR-OCEMS-PE2  | Component must delegate form population to `ReadProfileFormAction` |
-| FR-OCEMS-PE3  | Component must authorize via `UserPolicy` (admin or owner) — `ProfilePolicy` is alternative for direct `Profile` instance, but `UserPolicy` is used when `profile` may be `null` (`updateOrCreate` path) |
-| FR-OCEMS-PE4  | Component must handle avatar upload with validation (mimes `jpeg,jpg,png,webp`, image, max 2MB, `sr-only` label trigger, `handleSave` + `toast`, clear `$avatar`, `wire:loading`) |
-| FR-OCEMS-PE5  | Component must support avatar removal (clear `avatar` media collection) |
-| FR-OCEMS-PE6  | Component must provide `avatarPreviewUrl()` for Livewire file upload preview |
-| FR-OCEMS-PE7  | Component must show role-aware ID number label (NISN for students, NIP for teachers) |
-| FR-OCEMS-PW1  | `UpdateUserPasswordAction` must verify current password via `Hash::check()` |
-| FR-OCEMS-PW2  | Action must throttle: max 5 attempts per 300 seconds per user+IP |
-| FR-OCEMS-PW3  | On success: update password and dispatch `CredentialChangedNotification` |
+A Functional Requirement is a verifiable behavior the system must support. `Priority` ranks
+criticality on a P0–P3 scale. `Layer` declares the test layer (`U` Unit · `F` Feature ·
+`B` Browser · `A` Arch). `Status` tracks implementation of the requirement itself.
+
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-PROF-001 | The update Action validates all profile fields with explicit rules before persisting | P0 | F | Full |
+| FR-PROF-002 | The update Action writes identity fields to the users table inside a transaction | P0 | F | Full |
+| FR-PROF-003 | The update Action creates or updates the profiles row for profile-specific data | P0 | F | Full |
+| FR-PROF-004 | The update Action stores a provided avatar in the media library avatar collection | P0 | F | Full |
+| FR-PROF-005 | The update Action rejects super admin name and username changes with a business-rule exception | P0 | F | Full |
+| FR-PROF-006 | The update Action dispatches the profile-updated event carrying previous credentials | P0 | F | Full |
+| FR-PROF-007 | The update Action logs the profile update with masked personal data | P0 | F | Full |
+| FR-PROF-008 | The form-shape Action returns the always-visible common field set | P0 | F | Full |
+| FR-PROF-009 | The form-shape Action returns staff fields only for staff roles | P0 | F | Full |
+| FR-PROF-010 | The form-shape Action returns name and username mutability flags, both false for the super admin | P0 | F | Full |
+| FR-PROF-011 | The editor loads the user with profile and role relations on mount | P0 | F | Full |
+| FR-PROF-012 | The editor delegates form population to the form-shape Action | P1 | F | Full |
+| FR-PROF-013 | The editor authorizes through the user policy, covering the nullable-profile creation path | P0 | F | Full |
+| FR-PROF-014 | The editor validates avatar uploads on type and size with accessible trigger, save handling, feedback, and loading state | P0 | F | Full |
+| FR-PROF-015 | The editor supports avatar removal by clearing the avatar collection | P1 | F | Full |
+| FR-PROF-016 | The editor provides an instant preview URL for pending avatar uploads | P2 | F | Full |
+| FR-PROF-017 | The editor labels the ID number field per role, student versus staff terminology | P1 | F | Full |
+| FR-PROF-018 | Password change verifies the current password against the stored hash | P0 | F | Full |
+| FR-PROF-019 | Password change throttles attempts per user and address | P0 | F | Full |
+| FR-PROF-020 | Successful password change persists the new hash and dispatches the credential notification | P0 | F | Full |
+
+### 4.1 Profile Update Action
+
+#### FR-PROF-001 — Explicit validation before persistence
+
+Every field passes declared rules before anything touches the database, so a malformed phone
+number or oversized bio fails fast with messages rather than half-persisting. Centralizing
+the rules in the Action's data contract gives tests one surface to attack with invalid
+payloads.
+
+#### FR-PROF-002 — Identity writes inside a transaction
+
+Name, email, and username updates on the users table run transactionally, because identity
+fields are read by authentication on every request and a partial write there is a lockout
+waiting to happen. Either the whole identity change lands or none of it does.
+
+#### FR-PROF-003 — Profile row created or updated
+
+Profile-specific data lands through create-or-update keyed on the user, which gracefully
+covers both the newcomer with no profile row and the veteran editing hers. The nullable
+profile is a normal state in this design, not a missing migration.
+
+#### FR-PROF-004 — Avatar stored in its collection
+
+A provided avatar file goes to the dedicated media collection, replacing any predecessor so
+each user owns at most one portrait. Collection-scoped storage keeps avatars queryable and
+deletable independently of document attachments elsewhere in the product.
+
+#### FR-PROF-005 — Super admin identity rejected as a business rule
+
+When the target is the super admin singleton, any name or username change throws a
+translatable business-rule exception no matter what the request claims. This is the load-
+bearing wall: UI disabling is courtesy, but the Action's rejection is the guarantee, and it
+holds against direct Livewire calls that never render the form.
+
+#### FR-PROF-006 — Profile-updated event with previous credentials
+
+After commit the Action dispatches the domain event carrying the profile plus the previous
+email and username, letting listeners detect exactly which credential moved. Downstream
+notifications and audit entries subscribe to this event rather than re-deriving diffs, so
+the change story stays consistent everywhere.
+
+#### FR-PROF-007 — Logged update with masked data
+
+The update writes an activity entry with personal data masked, preserving "who changed
+what, when" without turning the log into a phone book. Masking at write time — not at
+display time — means log exports and backups inherit the protection automatically.
+
+### 4.2 Profile Form Shape Action
+
+#### FR-PROF-008 — Common fields for every role
+
+Name, email, phone, address, and bio form the universal set every authenticated user may see
+and edit. Fixing this list in a Read Action rather than in Blade keeps the form's contract
+testable: a test can assert the shape for a student without rendering a pixel.
+
+#### FR-PROF-009 — Staff fields gated by role
+
+Employment status, job title, ID number, and competence field appear only for staff roles,
+so students and supervisors never see — or submit — data outside their domain. Gating the
+shape server-side matters because hidden-but-submittable fields are a classic
+mass-assignment-adjacent trap.
+
+#### FR-PROF-010 — Mutability flags with super admin false
+
+The shape carries two booleans governing whether name and username may change, both false
+for the super admin. Flags rather than role-sniffing in Blade keep the template dumb and
+the rule in one testable place, and the super admin case stays visibly special instead of
+implicitly handled.
+
+### 4.3 Profile Editor Component
+
+#### FR-PROF-011 — Relations loaded on mount
+
+Mounting with profile and role relations eager-loaded prevents the slow drip of lazy queries
+as the form renders field after field. It also guarantees the component works from a
+complete snapshot rather than re-querying mid-render.
+
+#### FR-PROF-012 — Population delegated to the shape Action
+
+The component asks the form-shape Action what to show instead of deciding itself, which
+keeps presentation and policy cleanly separated. When the staff-field rule changes, one
+Action changes — not every template branch that consumed it.
+
+#### FR-PROF-013 — User-policy authorization covering creation
+
+Authorization runs through the user policy — self or admin — precisely because the profile
+row may not exist yet and a policy bound to a nullable model cannot decide. Choosing the
+user as the authorization target closes the creation-path hole where no profile instance
+exists to authorize against.
+
+#### FR-PROF-014 — Validated upload with accessible trigger and feedback
+
+Avatar selection validates type and size immediately, announces through an accessible
+trigger rather than a hidden click proxy, saves through the shared handler, confirms with
+feedback, and shows loading state during transfer. Each clause exists because uploads fail
+in public: oversized files, screen-reader-invisible buttons, and silent transfers that
+leave users clicking twice.
+
+#### FR-PROF-015 — Removal clears the collection
+
+Removing the avatar empties the media collection rather than flagging a boolean, so no
+orphaned file lingers in storage and the fallback rendering resumes deterministically. A
+collection clear is also idempotent — removing twice is harmless, which removal buttons
+need to be.
+
+#### FR-PROF-016 — Instant preview for pending uploads
+
+Before anything persists, the component exposes a temporary preview URL for the selected
+file. The preview turns an anxious "did it take my photo" moment into immediate visual
+confirmation, and it costs nothing because the upload plumbing already stages the file.
+
+#### FR-PROF-017 — Role-aware ID terminology
+
+Students see their national student number label while staff see the employment number
+label, because the same field means different things across roles. Terminology that matches
+the user's world reduces misfiled numbers more effectively than any placeholder text.
+
+### 4.4 Password Change
+
+#### FR-PROF-018 — Current password verified first
+
+The stored hash check runs before anything else, and a mismatch stops the flow with a
+validation message. This ordering turns a stolen session with an unlocked laptop into a
+read-only problem rather than a full account takeover.
+
+#### FR-PROF-019 — Throttled attempts per user and address
+
+Repeated password-change attempts are bounded per user-and-address window, which blunts
+both guessing and automated abuse without punishing legitimate typos. Throttling at this
+layer — not just at login — matters because an authenticated session is exactly where
+rate limits are most often forgotten.
+
+#### FR-PROF-020 — New hash persisted with notification
+
+On success the new hash replaces the old and a credential notification goes out, closing
+the loop for the user who changed it and alerting the account holder if someone else did.
+Persistence without notification would leave half the security story untold.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID      | Requirement |
-| ------- | ----------- |
-| NFR-OCEMS-L1  | Profile changes must be logged via SmartLogger with PII masking |
-| NFR-OCEMS-E1  | `ProfileUpdated` event must carry previous email/username for change detection |
-| NFR-OCEMS-S1  | Super admin name/username changes must be rejected at both UI and business logic layers |
-| NFR-OCEMS-M1  | All actions must declare `strict_types=1` |
+Profile constraints with measurable targets. `Target` holds the concrete SLO; `N/A` means
+architectural enforcement verified via scans or tests.
+
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-PROF-001 | Profile changes are logged with personal-data masking | 0 unmasked PII | P0 | F | Full |
+| NFR-PROF-002 | The profile-updated event carries previous credentials for change detection | 100% carry | P0 | F | Full |
+| NFR-PROF-003 | Super admin identity changes are rejected at both UI and business layers | 0 successes | P0 | F | Full |
+| NFR-PROF-004 | Profile classes declare strict typing | 100% files | P0 | A | Full |
+| NFR-PROF-005 | All profile strings resolve through the translation helper in both locales | 0 missing keys | P0 | A | Full |
+
+### 5.1 Trust and Integrity
+
+#### NFR-PROF-001 — Masked audit trail
+
+Every profile mutation leaves an activity entry with personal data masked at write time. A
+test asserting masked output on a governed mutation guards this permanently, because
+unmasked logs are the breach that happens without any attacker at all.
+
+#### NFR-PROF-002 — Credential diff travels with the event
+
+Carrying previous email and username on the event means every listener — mail, audit,
+security review — detects credential movement identically. Recomputing diffs per listener
+would eventually disagree, and disagreements in security signals are how real changes go
+unnoticed.
+
+#### NFR-PROF-003 — Dual-layer super admin protection
+
+Disabled inputs in the UI plus rejection in the Action give two independent checkpoints,
+verified by attempting the change through both paths. Either layer alone invites its own
+bypass — cosmetic disabling falls to crafted requests, server rules fall to confused users
+— so both hold the line together.
+
+### 5.2 Code and Language Discipline
+
+#### NFR-PROF-004 — Strict typing throughout
+
+Profile classes declare strict types without exception, keeping coercion surprises out of
+identity data where a silently cast value could corrupt a lookup. The convention scan
+asserts this structurally across the feature.
+
+#### NFR-PROF-005 — Dual-language profile strings
+
+Labels, validation messages, toasts, and notifications on the profile surface all resolve
+through the translation helper with keys present in English and Indonesian. Profile pages
+are visited by every role in both languages, so a monolingual validation message here
+fails the widest possible audience.
 
 ---
 
@@ -158,25 +342,20 @@ setting a new one.
 ### Actions
 
 ```php
-// app/Modules/User/Profile/Actions/UpdateProfileAction.php
 final class UpdateProfileAction extends BaseCommandAction
 {
     public function execute(UpdateProfileData $data): Profile;
-    // $data: string $userId (UUID, HasUuids/BaseModel), array $profile,
-    //       ?string $name, ?string $email, ?string $username, ?UploadedFile $avatar
-    // Validates via UpdateProfileData + SuperAdminIntegrityRules
-    // updateOrCreate on profiles table (profiles.user_id = users.id UUID)
-    // Uploads avatar to MediaLibrary `avatar` collection
-    // Dispatches ProfileUpdated event (after-commit via BaseAction::dispatchEvent)
-    // Logs profile_updated via SmartLogger
+    // Validates via UpdateProfileData + super-admin integrity rules.
+    // Updates users fields transactionally; create-or-update on profiles.
+    // Stores avatar in the media library avatar collection.
+    // Dispatches ProfileUpdated after commit; logs with masked data.
 }
 
-// app/Modules/User/Profile/Data/UpdateProfileData.php
 final readonly class UpdateProfileData extends BaseData
 {
     public function __construct(
-        public string $userId,          // UUID string (BaseModel HasUuids), not int
-        public array $profile,          // phone, address, bio, etc.
+        public string $userId,
+        public array $profile,
         public ?string $name = null,
         public ?string $email = null,
         public ?string $username = null,
@@ -184,61 +363,49 @@ final readonly class UpdateProfileData extends BaseData
     ) {}
 }
 
-// app/Modules/User/Profile/Actions/ReadProfileFormAction.php
 final class ReadProfileFormAction extends BaseReadAction
 {
     public function execute(User $user): array;
     // Returns: fields, staffFields, canChangeName, canChangeUsername, role
 }
-
 ```
 
 ### Livewire Component
 
 ```php
-// app/Modules/User/Profile/Livewire/ProfileEditor.php
 class ProfileEditor extends BaseFormView
 {
     public ProfileForm $profileForm;
     public PasswordForm $passwordForm;
-    public $avatar = null;              // untyped for Livewire hydration (TemporaryUploadedFile vs UploadedFile, strict_types)
-    public User $user;                   // non-nullable, loaded in mount() with profile+roles
+    public $avatar = null; // untyped for Livewire hydration
+    public User $user;
 
     public function mount(): void;
-    public function save(UpdateProfileAction $action): void; // handleSave + toast, refresh user, string userId
-    public function updatedAvatar(): void; // lifecycle hook, validate image mimes jpeg/jpg/png/webp max 2MB, handleSave, clear $avatar, toast
+    public function save(UpdateProfileAction $action): void;
+    public function updatedAvatar(): void;
     public function confirmRemoveAvatar(): void;
     public function updatePassword(UpdateUserPasswordAction $action): void;
     public function avatarPreviewUrl(): ?string;
     public function getIdNumberLabel(): string;
 }
-// Blade: <label for="avatar-upload"><input class="sr-only" wire:model="avatar"> (not hidden @click) + wire:loading + x-ts-error
-
 ```
 
 ### Models
 
 ```php
-// app/Modules/User/Profile/Models/Profile.php
 class Profile extends BaseModel
 {
-    // UUID primary key, belongsTo(User), belongsTo(Department), belongsTo(Company)
-    // Fields: phone, address, bio, gender (Gender enum), blood_type (BloodType enum),
-    //         pob, dob, emergency_contact (JSON), id_number, national_id_number,
-    //         competence_field, employment_status, job_title, internal_notes,
-    //         department_id, company_id
+    // UUID primary key; belongsTo User, Department, Company.
+    // Fields: phone, address, bio, gender, blood_type, pob, dob,
+    // emergency_contact (JSON), id_number, national_id_number,
+    // competence_field, employment_status, job_title, internal_notes,
+    // department_id, company_id
 }
-
-// User model additions:
-// profile(): HasOne
-// asSuperAdminIntegrityRules(): SuperAdminIntegrityRules
-
 ```
 
 ### Events & Listeners
 
 ```php
-// app/Modules/User/Profile/Events/ProfileUpdated.php
 class ProfileUpdated extends BaseEvent
 {
     public function __construct(
@@ -249,32 +416,24 @@ class ProfileUpdated extends BaseEvent
     public function eventName(): string; // 'profile.updated'
 }
 
-// app/Modules/User/Profile/Listeners/SendProfileChangedMail.php
 class SendProfileChangedMail implements ShouldQueue
 {
-    // Sends CredentialChangedNotification when email or username changes
+    // Sends CredentialChangedNotification when email or username changes.
 }
-
 ```
 
 ### Policy
 
 ```php
-// app/Modules/User/Profile/Policies/ProfilePolicy.php (alternative, direct Profile instance)
 class ProfilePolicy extends BasePolicy
 {
-    // viewAny: admins only
-    // view: admin or owner
-    // update: admin or owner
+    // viewAny: admins only; view/update: admin or owner.
 }
 
-// app/Modules/User/Policies/UserPolicy.php (actual for ProfileEditor when profile may be null)
 class UserPolicy extends BasePolicy
 {
-    // update: self (user.id == model.id) OR admin; super_admin target only self can update (see T4B26)
-    // ProfileEditor uses UserPolicy via $this->authorize('update', $this->user) for updateOrCreate path
+    // update: self or admin; used by the editor for the nullable-profile path.
 }
-
 ```
 
 ### Route
@@ -287,42 +446,50 @@ class UserPolicy extends BasePolicy
 
 ## 7. Design Decisions
 
-### DD-1 — Single Page for All Profile Actions
+Design Decisions are **optional** to test, like Use Cases (§3). `Layer` / `Status` stay `—` unless
+a decision has a code-testable consequence.
 
-**Decision:** Profile editing, password change, and avatar management are on one page
-(`/profile`) rather than separate routes.
-**Rationale:** Reduces navigation complexity. Users expect profile management to be a
-single destination. The `ProfileEditor` component handles all three concerns via
-separate Livewire methods.
-**Trade-off:** The component is larger than a single-responsibility component. Acceptable
-because the actions are thematically related and the component delegates business logic
-to dedicated Actions.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-PROF-001 | Profile editing, password change, and avatar management share one page rather than separate routes | P1 | — | — |
+| DD-PROF-002 | Super admin protection is enforced in business logic, with UI disabling as visual feedback only | P0 | — | — |
+| DD-PROF-003 | Profile data lives in a dedicated table in one-to-one relation with users rather than as user columns | P0 | — | — |
 
-### DD-2 — Super Admin Integrity at Business Logic Layer
+### 7.1 Page and Protection Shape
 
-**Decision:** Super admin name/username protection is enforced in `UpdateProfileAction`
-via `SuperAdminIntegrityRules`, not just in the UI.
-**Rationale:** UI-only protection can be bypassed via direct API calls or Livewire
-payload manipulation. Business logic enforcement is the authoritative guard. The UI
-disables fields for visual feedback, but the Action rejects changes regardless.
+#### DD-PROF-001 — One page for all profile actions
 
-### DD-3 — Profile as Separate Table (Not Embedded in User)
+Users think of "my profile" as a place, not three workflows, so editing, password change,
+and avatar management share one destination with separate component methods. The component
+grows larger than a purist would like, but the business logic still lives in dedicated
+Actions — the page is a shared hallway, not a god object.
 
-**Decision:** Profile data lives in a `profiles` table with a one-to-one relationship
-to `users`, rather than adding columns to `users`.
-**Rationale:** Separates auth-critical fields (name, email, username, password) from
-optional profile data (phone, address, bio, employment info). Keeps the `users` table
-lean for auth queries. Allows profile to be null (new user without completed profile).
+#### DD-PROF-002 — Business layer as the real guard
+
+Interface disabling tells honest users what to expect; only the Action's rejection stops a
+determined request. Placing the authoritative rule beside the data it protects — rather than
+in the template that most users see — is what makes the super admin singleton actually
+immutable instead of merely appearing so.
+
+### 7.2 Data Shape
+
+#### DD-PROF-003 — Separate profile table over wide users
+
+Auth-critical columns stay lean on the users table for fast authentication queries while
+optional profile data lives beside them in a one-to-one row that may simply not exist yet.
+The split keeps login queries narrow and makes "incomplete profile" a representable state
+rather than a row full of nulls.
 
 ---
 
 ## 8. Success Metrics
 
-| Metric | Target |
-| ------ | ------ |
-| Profile update | < 2 seconds from submit to confirmation |
-| Avatar upload | < 5 seconds for 2MB image |
-| Super admin protection | 0 successful name/username changes for super admin |
+| Metric | Target | How to measure |
+|--------|--------|----------------|
+| Profile update submit to confirmation | < 2s | Timed feature journey |
+| Avatar upload for a 2MB image | < 5s | Timed upload journey |
+| Super admin name or username changes succeeding | 0 | Dual-layer rejection tests |
+| Credential-change notification on email move | 100% sent | Event listener test |
 
 ---
 
@@ -331,21 +498,24 @@ lean for auth queries. Allows profile to be null (new user without completed pro
 ### Prerequisites
 
 | Spec | What It Provides |
-|------|-----------------|
-| [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) | `BaseCommandAction`, `BaseReadAction`, `ActionResponse`, `RejectedException` |
-| [authentication.md](YB7RG-authentication.md) (YB7RG) | `User` model, `AccessToken`, auth infrastructure |
-| [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) (T4B26) | `ProfilePolicy`, role-based field visibility |
-| [file-uploads-media.md](WQGTP-file-uploads-media.md) (WQGTP) | Spatie MediaLibrary for avatar uploads |
+|------|------------------|
+| [base-classes](SE5Q9-base-classes.md) | Command and read bases, action responses, business-rule exceptions |
+| [authentication](YB7RG-authentication.md) | User model and auth infrastructure |
+| [rbac-and-authorization](T4B26-rbac-and-authorization.md) | Profile policy and role-based field visibility |
+| [file-uploads-media](WQGTP-file-uploads-media.md) | Media library backing avatar uploads |
 
 ### Build Guide
-Implement `ReadProfileFormAction` and `UpdateProfileAction` first, then `ProfileEditor`
-Livewire component. The `Profile` model and `profiles` table already exist from earlier
-migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
+
+Implement the form-shape and update Actions first, then the editor component. The profile
+model and table arrive with earlier migration work, and avatar handling uses the media
+library's avatar collection. Password change delegates to the shared password action with
+its throttling intact.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [user-crud-and-status.md](95EVB-user-crud-and-status.md) (95EVB) | Admin user management builds on profile infrastructure |
+| 1 | [user-crud-and-status](95EVB-user-crud-and-status.md) | Admin user management builds on profile infrastructure |
 
 ---
 
@@ -355,3 +525,12 @@ migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
 | --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
+
+- [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
+- [Spec registry](index.md) — all feature specs grouped in 12 phases
+- [Architecture](D2FT3-architecture.md) — Action Triad and boundary objects behind profile flows
+- [Authentication](YB7RG-authentication.md) — user model and auth infrastructure
+- [RBAC & authorization](T4B26-rbac-and-authorization.md) — policy contracts and the proxy model
+- [File uploads & media](WQGTP-file-uploads-media.md) — media library backing avatars
+- [Account recovery slips](SHQ1J-account-recovery-slips.md) — recovery-code surface linked from profile
+- [Base-class mandate ADR](../adr/adr-base-class-mandate.md) — why editor tables and Actions extend their bases
