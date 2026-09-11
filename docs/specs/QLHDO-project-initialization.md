@@ -142,50 +142,25 @@ RBAC contract in [T4B26](T4B26-rbac-and-authorization.md).
 
 #### UC-SETUP-001 — School Initializes
 
-**Actor(s):** Super Admin → Admin
-**Preconditions:** Fresh deployment; no non-seed data; APP_KEY set.
-**Flow:** 1. Super Admin runs `setup:install` → 2. Admin configures branding/locale/school profile → 3. Admin creates departments and academic years → 4. Admin registers companies and partnerships with slot quotas.
-**Postconditions:** School can enroll students; `superadmin` account exists (FR-GLB-003); settings persist via `setting()` (FR-GLB-001).
-**Acceptance basis:** After the flow, an authenticated Super Admin can reach the setup-complete milestone and an Admin can enroll a student; verified by the governing specs' F-layer tests.
-**Governing specs:** [8NZAU](8NZAU-installation.md), [VEJCX](VEJCX-setup-wizard.md), [C9ZB6](C9ZB6-recovery-ecosystem.md), [52O1I](52O1I-branding-theme-locale.md).
+Picture the first morning after deployment: a bare instance, an APP_KEY, and nobody able to log in yet. The super admin runs `setup:install`, which creates the immutable `superadmin` account (FR-GLB-003) and the baseline settings the whole school will read through `setting()` (FR-GLB-001). From there an admin takes over in the setup wizard — school profile and branding first ([52O1I](52O1I-branding-theme-locale.md)), then departments and the academic year, then companies with their partnership slot quotas. Enrollment is the proof it worked: if an admin can enroll the first student, setup is done. The full contracts live in [installation](8NZAU-installation.md), the [setup wizard](VEJCX-setup-wizard.md), and [recovery](C9ZB6-recovery-ecosystem.md), whose F-layer tests verify each leg.
 
 #### UC-OPS-001 — Admin Operates and Audits
 
-**Actor(s):** Admin / Super Admin
-**Preconditions:** Setup complete (UC-SETUP-001); operator holds `admin` or `super_admin` role.
-**Flow:** 1. Admin manages users and announcements → 2. Admin monitors health checks and audit logs → 3. Admin runs backups and GDPR export/erasure per policy.
-**Postconditions:** Operation observable and recoverable within RPO/RTO targets (NFR-BCK-001); every governed mutation audit-logged (FR-GLB-004).
-**Acceptance basis:** Health check reflects system state (FR-GLB-006); backup/restore RTO drill within target; GDPR erasure removes the subject's personal rows.
-**Governing specs:** [95EVB](95EVB-user-crud-and-status.md), [3S55V](3S55V-announcement-system.md), [E1MSJ](E1MSJ-system-maintenance.md), [HBXCI](HBXCI-backup-system.md).
+Once students are in the system, the admin's week settles into a rhythm: users and announcements on demand ([95EVB](95EVB-user-crud-and-status.md), [3S55V](3S55V-announcement-system.md)), health checks and audit logs as a habit ([E1MSJ](E1MSJ-system-maintenance.md)), backups and the occasional GDPR erasure as duty ([HBXCI](HBXCI-backup-system.md)). Two invariants make that rhythm trustworthy rather than theatrical. First, every governed mutation writes an audit entry (FR-GLB-004), so the log always answers "who changed what". Second, recovery is drilled, not assumed: the restore drill must land inside the 4-hour RPO / 1-hour RTO basis (NFR-BCK-001), and an erasure must actually remove the subject's rows. A health check that cannot reflect a broken dependency (FR-GLB-006) fails this journey outright.
 
 ### 3.2 PKL Lifecycle
 
 #### UC-LCYC-001 — Student Completes the PKL Lifecycle
 
-**Actor(s):** Student
-**Preconditions:** Student account exists; active academic year; placement open.
-**Flow:** 1. Student registers → 2. Admin verifies and places the student → 3. Student clocks in/out, keeps a reflective logbook, submits assignments, acknowledges handbooks → 4. Student downloads certificate after assessment and report sign-off.
-**Postconditions:** Full digital trail of the internship exists; attendance and logbook respect integrity windows (FR-GLB-013/014).
-**Acceptance basis:** A completed lifecycle yields a retrievable, immutable artifact set; decomposed and verified per governing feature spec.
-**Governing specs:** [MBB5R](MBB5R-registration.md), [J9GBH](J9GBH-placement.md), [1KSWL](1KSWL-daily-activity.md), [T657Z](T657Z-assignment.md), [J0M04](J0M04-certification.md).
+Follow one student from an active academic year through an open placement: registration ([MBB5R](MBB5R-registration.md)), verification and placement by an admin ([J9GBH](J9GBH-placement.md)), then months of clocking in and out, daily logbooks, assignment submissions, handbook acknowledgments ([1KSWL](1KSWL-daily-activity.md), [T657Z](T657Z-assignment.md)), and finally a downloaded certificate after assessment and sign-off ([J0M04](J0M04-certification.md)). The trail left behind is the product: attendance and logbooks bound by their integrity windows (FR-GLB-013/014), every step retrievable, the finalized artifacts immutable. No single test proves this journey — each governing spec verifies its own leg, and this row exists so the legs stay one journey instead of five features.
 
 #### UC-SUP-001 — Teacher Supervises and Assesses
 
-**Actor(s):** Teacher
-**Preconditions:** Teacher is assigned students for an active period.
-**Flow:** 1. Teacher supervises assigned students → 2. Teacher reviews logbooks and logs monitoring visits → 3. Teacher or supervisor scores against rubrics → 4. Teacher compiles and finalizes the grade card.
-**Postconditions:** Grades aggregated; finalized artifacts immutable.
-**Acceptance basis:** Post-finalize grade card rejects mutation; review and scoring actions are audit-logged (FR-GLB-004).
-**Governing specs:** [2EHSE](2EHSE-supervision.md), [ARDA6](ARDA6-assessment.md), [R6BMW](R6BMW-reports.md).
+A teacher with assigned students for an active period works this loop all semester: review logbooks, log monitoring visits ([2EHSE](2EHSE-supervision.md)), score against rubrics alongside the industry supervisor ([ARDA6](ARDA6-assessment.md)), and finally compile the grade card ([R6BMW](R6BMW-reports.md)). The two properties that matter are at the edges — every review and scoring action audit-logged on the way in (FR-GLB-004), and the finalized card rejecting mutation on the way out. Anything softer turns the grade card into a draft that happens to have been printed.
 
 #### UC-EVAL-001 — Supervisor Evaluates Industry-Side Performance
 
-**Actor(s):** Supervisor (DUDI)
-**Preconditions:** Supervisor associated with the student's company/partnership.
-**Flow:** 1. Supervisor verifies attendance and reviews logbook entries → 2. Supervisor submits competency evaluations for assigned students → 3. Evaluations flow into final score aggregation.
-**Postconditions:** Industry-side scores present in the final record.
-**Acceptance basis:** Evaluations appear in the aggregation subset visible to the teacher's grade card (FR-GLB-008 role gating).
-**Governing specs:** [1KSWL](1KSWL-daily-activity.md), [ARDA6](ARDA6-assessment.md), [T4B26](T4B26-rbac-and-authorization.md) §4.2 (Cross-Role Proxy).
+The industry supervisor sees what the school never can: how the student actually behaves on the workshop floor. Tied to the student's company, the supervisor verifies attendance, reviews the logbook ([1KSWL](1KSWL-daily-activity.md)), and submits competency evaluations that flow into the final aggregation ([ARDA6](ARDA6-assessment.md)). Those scores surface in the teacher's grade card only through role gating (FR-GLB-008) — and when the supervisor never opens the app, the covering teacher proxies the verification under the cross-role rules ([T4B26](T4B26-rbac-and-authorization.md) §4.2), with the proxy recorded rather than hidden. Either path ends with industry-side scores present in the final record; neither path lets them in ungated.
 
 ---
 
@@ -223,80 +198,57 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 
 #### FR-GLB-001 — Localized strings
 
-- Every user-facing string passes through `__()`; no hardcoded text in Blade templates, Livewire components, or notifications.
-- Each module ships `lang/en/` and `lang/id/` with mirrored keys; enforced by the D3 scan.
-- **Edge case:** dynamic content (student names, company names) is never concatenated into a message — pass it as a placeholder parameter to `__()`.
+A coordinator flipping the locale to Indonesian expects every button, toast, and notification to follow. A single hardcoded "Submit" inside a Blade template or Livewire component breaks that trust, so all user-facing strings in Blade, Livewire, and notifications pass through `__()` with no exceptions. Each module ships `lang/en/` and `lang/id/` with mirrored keys, enforced by the D3 scan.
+
+Student and company names never get concatenated into sentences. A placement confirmation for a student assigned to a partner workshop renders through a placeholder parameter to `__()`, keeping word order and grammar intact in both languages.
 
 #### FR-GLB-002 — Five-role RBAC
 
-- Exactly the five stored roles exist as `Role` enum cases; adding or renaming a stored role requires a spec amendment.
-- `Role::resolvesTo()` resolves `admin-group` → `super_admin`/`admin`, `mentor` → `teacher`/`supervisor`, `mentee` → `student` for business logic only (contract in T4B26 §4.2).
-- **Verification:** unit-test the resolution map for every role input; ensure unresolvable input throws/never silently grants (layer `A`).
+Only five stored roles exist as `Role` enum cases, and adding or renaming one requires a spec amendment — a school cannot invent a "vice-coordinator" role over a weekend to paper over a workflow gap. Business logic never branches on the stored names directly; `Role::resolvesTo()` resolves `admin-group` to `super_admin`/`admin`, `mentor` to `teacher`/`supervisor`, and `mentee` to `student`, exactly as contracted in T4B26 §4.2. The resolution map carries unit coverage for every role input at layer `A`, and an unresolvable input throws rather than silently granting access, so a typo in a role string fails closed.
 
 #### FR-GLB-003 — Immutable superadmin
 
-- After `setup:install`, a `superadmin` user exists with name `Super Admin` and username `superadmin`.
-- The account is non-deletable; its name and username cannot be modified; violations are rejected at both UI and Action level.
-- **Edge case:** a second Super Admin-role account is a normal `admin_group` user — the named `superadmin` is the only immutable singleton.
+After `setup:install` a `superadmin` user exists with name `Super Admin` and username `superadmin`. The account is non-deletable and its name and username cannot be modified, with violations rejected at both the UI and the Action level — when a school IT operator tries to rename it to match a staff member or delete it during handover cleanup, the attempt bounces. A second account holding Super Admin privileges is simply an ordinary `admin_group` user; the named `superadmin` remains the single immutable singleton.
 
 #### FR-GLB-004 — Audit-logged mutations
 
-- Every administrative mutation on governed entities writes an activity-log entry including actor identity and a change summary.
-- Entries mask PII; secrets never reach logs (dual-channel SmartLogger, activity channel).
-- **Verification:** a governed mutation produces exactly one activity entry with the acting user id and a before/after diff; PII fields appear masked.
+When a coordinator moves a student between partner companies mid-period, the governed mutation writes exactly one activity-log entry through the dual-channel SmartLogger activity channel, carrying the actor identity and a before/after change summary. PII fields appear masked in that entry and secrets never reach the logs at all. During an accreditation dispute months later, the trail shows which acting user id made the change and what shifted, without leaking anything a log reader should not see.
 
 #### FR-GLB-005 — Rate-limited endpoints
 
-- login: 5 requests per 60s; forgot-password: 3 per 3600s; reset: 5 per 300s; exceeding returns HTTP 429.
-- Enforcement via throttling middleware (2CF4Y), keyed per actor/IP; limits configurable.
-- **Verification:** burst requests beyond the window return 429; config keys are overridable without code change.
+Enrollment week brings credential-stuffing bursts against the login form from a single boarding-house IP. Throttling middleware from 2CF4Y holds the line: login allows 5 requests per 60s, forgot-password 3 per 3600s, and reset 5 per 300s, keyed per actor/IP, with anything beyond the window answered by HTTP 429. The limits stay configurable, and overriding the config keys needs no code change.
 
 #### FR-GLB-006 — system:health coverage
 
-- `php artisan system:health` reports PHP version, required extensions, memory limit, DB connectivity, pending migrations, storage writable, queue, cache, and APP_KEY presence.
-- A failing check yields a non-zero exit code and a failed status in the summary.
-- **Verification:** each listed subsystem appears in output; a deliberately broken dependency marks that check failed and non-zero exit.
+A rural SMK deploys on shared hosting where a missing PHP extension only surfaces at midnight before attendance week. Running `php artisan system:health` reports PHP version, required extensions, memory limit, DB connectivity, pending migrations, storage writability, queue, cache, and APP_KEY presence, with every listed subsystem appearing in the output. A failing check marks that check failed in the summary and exits non-zero, so a deliberately broken dependency during a drill is impossible to miss.
 
 #### FR-GLB-007 — UUID v7 primary keys
 
-- All primary entities extend `BaseModel` (uses `HasUuids` with ordered UUID v7); `id` is a UUID PK; no auto-increment primary keys on primary entities.
-- Foreign keys use `foreignUuid()->constrained()` in every migration with composite indexes; mixed key types are forbidden (ADR: UUID primary keys).
-- **Verification:** arch scan (layer `A`) asserts no auto-increment PK on primary entities; migration review asserts `foreignUuid()->constrained()` FKs.
+During the 45,000-row attendance import, random UUID v4 keys would scatter B-tree inserts and stall the enrollment-week queue. Every primary entity therefore extends `BaseModel` with `HasUuids` issuing ordered UUID v7 values, `id` serving as the UUID primary key with no auto-increment primary keys anywhere on primary entities. Migrations declare each foreign key with `foreignUuid()->constrained()` plus composite indexes, and mixed key types are forbidden under the UUID-primary-keys ADR. The layer `A` arch scan asserts the absence of auto-increment primary keys while migration review confirms the `foreignUuid()->constrained()` shape on every foreign key.
 
 #### FR-GLB-008 — Dual-layer authorization
 
-- The Policy layer gates route/resource access (403); the Action/Entity layer re-validates the business rule and throws `RejectedException` when violated.
-- Calling an Action directly must not bypass authorization.
-- **Verification:** for each protected mutation, a direct Action call without authorization throws `RejectedException`; an authenticated-but-unauthorized HTTP call returns 403 (layer `A` + spot `F`).
+A student once crafted a direct Livewire call to finalize another group's grade card, bypassing the visible buttons entirely. The Policy layer gates route and resource access with a 403, and the Action/Entity layer re-validates the same business rule and throws `RejectedException` when violated, so calling an Action directly never bypasses authorization. Each protected mutation is exercised both ways: a direct Action call without authorization throws `RejectedException` at layer `A`, and an authenticated-but-unauthorized HTTP call returns 403 as the spot `F` check.
 
 #### FR-GLB-009 — Server-side validation
 
-- HTTP entry points validate via Form Request classes; Action entry points validate via DTOs; `$request->all()` never feeds `create()`/`update()`.
-- **Verification:** invalid payloads reject before persistence; DTO validation runs inside `execute()`.
+A placement form once arrived with an extra `approved_at` field injected by a curious browser extension. HTTP entry points validate through Form Request classes and Action entry points validate through DTOs, so `$request->all()` never feeds `create()` or `update()` and the injected attribute dies before persistence. DTO validation runs inside `execute()` itself, which keeps even a direct Action call honest.
 
 #### FR-GLB-010 — RejectedException contract
 
-- Business-rule violations throw `RejectedException` carrying a translatable, user-facing message.
-- Unexpected exceptions are logged with context and shown to the user as a generic failure (no stack traces in responses).
-- **Verification:** a business-rule violation surfaces the translatable message; an unexpected exception surfaces a generic message and writes a context-log entry.
+When PT Maju Jaya fills its quota for the period, the student sees a translatable "quota is full" message carried by `RejectedException` — the Action and Entity layer's business-failure voice. An external timeout during certificate PDF generation behaves differently: the unexpected exception is logged with context while the student only sees a generic failure, never a stack trace. That split keeps business rejections readable and operational failures diagnosable, with the user-safe message on one path and the context-rich log entry on the other.
 
 #### FR-GLB-011 — Upload validation & storage
 
-- Uploads are validated on MIME type, per-module configurable max size, and filename safety.
-- Files are stored outside the web root with non-guessable names; public URLs are entity-derived.
-- **Verification:** a disallowed MIME or oversized file is rejected; stored path is outside web root and name is non-guessable.
+A student once renamed an executable to `laporan.pdf` and uploaded it as a weekly report. Server-side validation now checks MIME type, the per-module configurable maximum size, and filename safety, rejecting disallowed types and oversized files outright. Accepted files land outside the web root under non-guessable names, with public URLs derived from the owning entity rather than the stored path.
 
 #### FR-GLB-012 — Menu from config
 
-- Navigation menu groups render from `config/menu.php` in registration order; active route is highlighted.
-- No menu group is hardcoded in Blade outside the config-driven layout component.
-- **Verification:** adding an entry to `config/menu.php` changes the rendered menu without a Blade edit.
+Navigation groups render from `config/menu.php` in registration order, with the active route highlighted. No menu group is hardcoded in Blade outside the config-driven layout component, so registering a new company-management section means adding one entry to `config/menu.php` and watching it appear without touching a template.
 
 #### FR-GLB-013 — Attendance integrity
 
-- Attendance records carry clock-in/out timestamps and actor identity.
-- Records are immutable after admin sign-off; any pre-sign-off edit is audit-logged.
-- **Verification:** after sign-off the record is immutable; a pre-sign-off edit writes an audit entry.
+WhatsApp-reported attendance once let a whole group mark each other present from the boarding house. Records here carry clock-in/out timestamps together with actor identity, closing that shape of fraud. After admin sign-off the record turns immutable; before sign-off an edit is still possible but writes an audit entry, preserving both the correction and the fact that a correction happened.
 
 #### FR-GLB-014 — Logbook edit window
 
@@ -354,73 +306,61 @@ via tests. NFRs deliberately deferred to post-MVP are tracked in §10 (R-1 … R
 
 #### NFR-SEC-001 — Authorization at every layer
 
-- **Measurement:** arch scan over Policies and Actions; a direct Action call on a protected mutation is rejected when unauthorized.
-- **Verification:** `scan_class_contracts.py` + policy-allow/deny unit tests per role.
+A supervisor from one partner company probing another company's evaluation form meets the same wall twice: the Policy denies the route and the Action rejects the direct call. The arch scan walks Policies and Actions together to confirm every protected mutation refuses unauthorized callers, while `scan_class_contracts.py` and per-role policy allow/deny unit tests pin the behavior for each role.
 
 #### NFR-SEC-002 — Input safety & PII masking
 
-- **Measurement:** static scan for raw SQL concatenation (C3) and `$request->all()` → `create()`/`update()` (D5); log review for PII leakage.
-- **Verification:** `scan_violations.py` clean on C3/D5; SmartLogger masks configured PII attributes.
+A search box containing a quote and a semicolon should be a boring string, never a query fragment. Static scanning hunts raw SQL concatenation under C3 and `$request->all()` flowing into `create()` or `update()` under D5, with `scan_violations.py` clean on both, while Form Request and DTO validation plus log review close the remaining paths. SmartLogger masks the configured PII attributes so student identity numbers never settle into the log files.
 
 #### NFR-SEC-003 — Security headers
 
-- **Measurement:** every HTTP response carries the four headers.
-- **Verification:** feature test asserts headers on a representative sample of pages (layer `F`).
+Every HTTP response carries the same four headers: CSP, X-Frame-Options: DENY, X-Content-Type-Options: nosniff, and Referrer-Policy: strict-origin-when-cross-origin. A feature test over a representative sample of pages at layer `F` asserts their presence, catching the stray route that renders outside the standard middleware stack.
 
 #### NFR-SEC-004 — CSRF & token auth
 
-- **Measurement:** all state-changing web requests carry a valid CSRF token; API endpoints use Sanctum.
-- **Verification:** an unsigned state-changing request is rejected (419/403); Sanctum guards the API routes.
+A state-changing web request without a valid CSRF token dies with a 419 or 403 before touching business logic, while API endpoints answer only to Sanctum token auth. Sanctum guards the API routes outright, so a browser session cookie borrowed by a script gains nothing against the API surface.
 
 #### NFR-SEC-005 — Escaped output
 
-- **Measurement:** arch scan asserts no `{!! !!}` on user-generated content; user input rendered via `{{ }}`.
-- **Verification:** `scan_security.py` XSS checks clean (layer `A`).
+A logbook reflection containing `<script>` tags from a copied web article renders as harmless text through `{{ }}`, because `{!! !!}` is forbidden for user-generated content. The layer `A` XSS checks in `scan_security.py` stay clean, which is the tripwire that catches a well-meaning developer reaching for unescaped output to fix a formatting quirk.
 
 ### 5.2 Backup
 
 #### NFR-BCK-001 — Backup RPO/RTO
 
-- **Measurement:** RPO ≤ 4h, RTO < 1h from last backup.
-- **Verification:** periodic restore drill on staging; backup retention configurable per policy (governing [HBXCI](HBXCI-backup-system.md)).
+When a school server disk dies the week before certificate issuance, the question is how much attendance history is gone and how fast the office is back. Recovery targets RPO of at most 4 hours and RTO under 1 hour from the last backup, with retention configurable per policy under the governing [HBXCI](HBXCI-backup-system.md) spec. A periodic restore drill on staging proves the numbers instead of assuming them — the drill restores, boots, and hands back a working school record inside the hour.
 
 ### 5.3 UX
 
 #### NFR-UX-001 — Responsive & accessible
 
-- **Measurement:** responsive breakpoints render without horizontal scroll; WCAG AA contrast on interactive elements; full keyboard navigation.
-- **Verification:** browser smoke journey on primary flows (layer `B`); manual contrast spot-check (non-testable marker applies to pure-contrast rows).
+A field advisor reviews logbooks from a low-end Android phone on a 3G connection at the workshop, then continues from a school desktop. Breakpoints render without horizontal scroll at both widths, interactive elements hold WCAG AA contrast, and every form plus the navigation answers to keyboard alone. The layer `B` browser smoke journey walks the primary flows end to end, with a manual contrast spot-check covering what automation cannot judge.
 
 #### NFR-UX-002 — Guide pages
 
-- **Measurement:** each non-trivial workflow ships a `guides/{feature}-guide.blade.php`.
-- **Verification:** arch scan asserts guide file presence for workflows defined as non-trivial (layer `A`).
+Each non-trivial workflow ships its own `guides/{feature}-guide.blade.php` beside the screens it explains, so a new coordinator learns placement quotas from the placement pages rather than a chat forward. The layer `A` arch scan asserts that presence for every workflow defined as non-trivial, keeping documentation from silently falling behind new screens.
 
 ### 5.4 Architecture & Data
 
 #### NFR-MOD-001 — Module-first colocation
 
-- **Measurement:** 100% of business code under `app/Modules/`; shared infra in `app/Modules/Core/`.
-- **Verification:** `scan_naming.py` + `scan_module_boundaries.py` clean.
+Every line of business code lives under `app/Modules/`, with shared infrastructure settled in `app/Modules/Core/` — a placement rule is found next to its model and Livewire screens, never in a distant top-level folder. Both `scan_naming.py` and `scan_module_boundaries.py` run clean against that layout, which is how a reviewer trusts that a change to supervision touched supervision alone.
 
 #### NFR-DATA-001 — DB & PK strategy
 
-- **Measurement:** SQLite default; MySQL compatible; UUID PKs on primary entities; schema via migrations.
-- **Verification:** fresh migrate on SQLite and MySQL in CI; arch scan for UUID PKs (layer `A`).
+The default install boots on SQLite while a larger school points the same migrations at MySQL, with UUID primary keys on every primary entity and no schema drift between the two. CI migrates fresh on both engines, and the layer `A` arch scan holds the UUID line. A migration that forgets the UUID shape fails long before it reaches a school server.
 
 ### 5.5 Globalization
 
 #### NFR-I18N-001 — Bilingual runtime toggle
 
-- **Measurement:** Indonesian primary, English secondary; locale in session; toggleable at runtime.
-- **Verification:** switching locale re-renders strings without restart; all D3 keys present in both `lang/` files.
+Indonesian is primary and English secondary, with the locale held in the session and togglable at runtime. Flipping the toggle re-renders strings immediately without a restart, so a bilingual supervisor can demo in English and hand the laptop back in Indonesian. Every D3 key exists in both `lang/` files, which keeps the toggle from revealing a half-translated screen.
 
 ### 5.6 Privacy
 
 #### NFR-GDPR-001 — GDPR erasure
 
-- **Measurement:** deletion logged; data-erasure workflow functional.
-- **Verification:** erasure removes subject rows and writes a deletion record (governing [7HNCF](7HNCF-gdpr-compliance.md)).
+When a graduated student requests erasure, the data-erasure workflow under the governing [7HNCF](7HNCF-gdpr-compliance.md) spec removes the subject rows and writes a deletion record in their place. The record keeps the school honest about what was removed and when, while the personal data itself is gone rather than merely hidden.
 
 ### 5.7 Performance Tiers
 
@@ -453,7 +393,7 @@ app_info(?string $key = null, mixed $default = null): mixed
 ```
 
 Signatures above are the fixed call contract. Full contracts: [C8F0D](C8F0D-shared-utilities.md)
-(`app_info()` is FR-C8F0D-SUP11) and [YB22J](YB22J-settings-infrastructure.md)
+(`app_info()` is FR-UTIL-002) and [YB22J](YB22J-settings-infrastructure.md)
 (`setting()` / `brand()`).
 
 ### 6.3 Canonical PKL Record Shape
@@ -496,46 +436,29 @@ decision has a code-testable consequence.
 
 #### DD-ARCH-001 — Single-Tenant, Self-Hosted, MIT
 
-**Decision:** Distribute as a self-packaged Laravel codebase on school-owned infrastructure.
-**Rationale:** Data sovereignty, offline robustness, zero recurring cost, no vendor lock-in for
-under-resourced SMK (PS-1 scale, POV 4 device/connectivity constraints).
-**Trade-off:** Per-school deployment cost accepted; no SaaS economics.
+An under-resourced SMK cannot pay per-seat SaaS fees, cannot trust student data to a vendor's cloud, and cannot assume the internet works during grading week — so Internara ships as a self-packaged Laravel codebase running on the school's own infrastructure, MIT-licensed. Data sovereignty, offline robustness, and zero recurring cost are the payoff; per-school deployment effort is the accepted price, and SaaS economics are explicitly not pursued.
 
 #### DD-ARCH-005 — No Tenant Isolation Overhead
 
-**Decision:** Single-tenant by design; no `tenant_id` columns, no tenant-scoped scopes, no
-multi-tenancy middleware.
-**Rationale:** One school per deployment; keeps the model clean for MVP.
-**Trade-off:** Multi-school deployments require separate installations (separate database + web root).
+One school per deployment means the entire multi-tenancy apparatus — `tenant_id` columns on every table, scoped queries, tenant middleware, per-tenant config — buys nothing and complicates everything, so none of it exists. The model stays clean for MVP at exactly one cost, stated plainly: serving three schools means three installations, three databases, three web roots. If that ever stops being acceptable, it becomes a new product decision, not a quiet schema addition.
 
 ### 7.2 Architecture
 
 #### DD-ARCH-002 — Module-First Vertical Slicing
 
-**Decision:** All code under `app/Modules/{Module}/Domain/{Domain}/`; shared infrastructure in `Core`.
-**Rationale:** A business concept lives in one place — findable, independently testable, safe to
-change without silent cross-module coupling (NFR-MOD-001).
-**Trade-off:** Infrastructure must be deliberately extracted to Core.
+Every business concept lives as one vertical slice under `app/Modules/{Module}/Domain/{Domain}/`, with shared infrastructure deliberately extracted to `Core`. Findability is the mechanism that enforces everything else: when placement logic sits in exactly one directory, it is independently testable and safe to change without silent cross-module coupling (NFR-MOD-001). The discipline runs one way — anything two modules genuinely share graduates to `Core` instead of being imported sideways.
 
 ### 7.3 Localization
 
 #### DD-ARCH-003 — Primary Indonesian, Secondary English
 
-**Decision:** Full translations in `lang/id/` (primary) and `lang/en/` (secondary); runtime toggle.
-**Rationale:** PKL is an Indonesian curriculum mandate; English supports developers and bilingual schools.
-**Trade-off:** Every user-facing string has a translation cost; enforced by D3 convention + scan.
+PKL is an Indonesian curriculum mandate run by Indonesian staff, so `lang/id/` is primary and complete; `lang/en/` exists for developers and the occasional bilingual school, toggled at runtime. Every user-facing string pays the translation cost up front — the D3 convention plus its scan make untranslated strings a CI failure rather than a backlog item nobody reads.
 
 ### 7.4 Spec Discipline
 
 #### DD-ARCH-004 — Spec-First, Testable Requirements Only
 
-**Decision:** This spec contains only verifiable, testable requirements. Research inputs (regulation
-text, field pain evidence, regulatory alignment) live in `docs/refs/articles/` and are explicitly
-marked non-testable.
-**Rationale:** Requirements without a test path are wishes, not specifications. Research informs
-prioritization; it does not drive implementation (see §1 tracebacks).
-**Trade-off:** Non-testable concerns (rural connectivity, government SOP variation) are addressed
-post-MVP with explicit product decisions (R-4).
+A requirement without a test path is a wish, not a specification — so this spec contains only verifiable, testable requirements, while regulation text, field pain evidence, and regulatory alignment live in `docs/refs/articles/` explicitly marked non-testable. Research still matters: it informs prioritization and every §1 statement traces to it. It simply never drives implementation directly. Genuinely non-testable concerns like rural connectivity or government SOP variation wait for explicit post-MVP product decisions (R-4) instead of smuggling themselves in as untestable rows.
 
 #### DD-ARCH-006 — Good Enough Today Beats Perfect Next Week
 
