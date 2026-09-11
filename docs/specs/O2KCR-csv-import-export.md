@@ -325,7 +325,7 @@ dedup rule before touching the create call it guards.
 #### FR-CSV-007 — Three outcomes plus meaningful silence
 
 Created, skipped, failed-with-reason — and `null` reserved for the truly empty line that
-deserves no mention. The `FAILED` case is the ADR-demanded addition: validation explosions
+deserves no mention. The `FAILED` case closes that gap: validation explosions
 and FK misses are failures with explanations, not silent skips that leave admins guessing.
 Four returns, each with a distinct fate in the summary.
 

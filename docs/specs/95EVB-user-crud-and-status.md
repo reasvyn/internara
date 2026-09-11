@@ -358,7 +358,7 @@ a closed account through normal operations.
 
 #### FR-USER-019 — The Entity owns the truth about movement
 
-This is the ADR-demanded row: transition knowledge lives on the account Entity — the map,
+Transition knowledge lives on the account Entity — the map,
 the terminal predicate, the check — and `SetUserStatusAction` calls into it rather than
 carrying a second copy. Two copies of a state map always diverge; one copy with many readers
 stays honest. Unit tests construct the Entity from arrays in milliseconds, no database, and

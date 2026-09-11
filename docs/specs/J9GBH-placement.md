@@ -681,4 +681,4 @@ be assessed; nothing downstream starts before this spec's transaction commits.
 - [ADR: Cross-role proxy](../adr/adr-cross-role-proxy.md) — teacher-as-supervisor delegation
 - [ADR: Entity-model separation](../adr/adr-entity-model-separation.md) — capacity/state entities
 - [ADR: UUID primary keys](../adr/adr-uuid-primary-keys.md) — key strategy
-- [ADR: MVP spec trim](../adr/adr-mvp-spec-trim.md) — trim rubric applied here
+- [ADR: MVP spec trim](../adr/adr-mvp-spec-trim.md) — scope discipline for post-MVP rows
