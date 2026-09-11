@@ -1,50 +1,37 @@
 # Official Documents — School-Parent-Student-Industry Correspondence
 
 > **Spec ID:** 7H5D6
+> **Status:** Full
+> **Owner:** Document
+> **Depends on:** MBB5R, PKYX6, R6BMW
 
 ## Description
 
-Defines the official document types required by Indonesian vocational school (SMK) PKL
-(Praktik Kerja Lapangan) operations across the school-parent-student-industry chain. Each
-document type specifies its purpose, audience, required variables, generation trigger, and
-approval workflow. This spec is the authoritative catalog of WHAT documents exist; the
-infrastructure for template management and PDF rendering lives in
-[document-templates.md](PKYX6-document-templates.md).
+This spec catalogs every official paper the PKL chain requires — school-to-company letters, parent consent, supervisor assignments, visit and incident minutes, completion and handover records — with each type's audience, approval path, variable contract, and generation trigger. Template storage and PDF rendering belong to the Document Templates module; this spec owns what exists, who signs it, and when it is issued.
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — No Centralized Document Catalog
+### PS-1 — No Shared Catalog of Required Papers
 
-Indonesian SMK PKL operations require 15+ distinct official documents spanning school-to-company
-correspondence, parent consent, student acceptance, supervisor assignment, daily operations, and
-program completion. Without a centralized catalog, schools rely on tribal knowledge — teachers
-copy old files, use inconsistent formats, and sometimes omit legally required documents (e.g.,
-parent consent). New teachers joining the school have no reference for which documents exist or
-when they are needed.
+A new teacher joining the program asks which letters a placement needs and receives three different answers from three seniors, each waving a different inherited folder of Word files. Parent consent — the one paper regulators actually demand — is the one most often forgotten, because nothing lists it as required and nobody owns the checklist.
+**→ Requirement:** FR-OFFD-001/004 (registry shape, pre-PKL catalog).
 
-### PS-2 — Inter-Organization Document Chain Is Untracked
+### PS-2 — The Inter-Organization Chain Is Invisible
 
-PKL documents form a chain: school sends introduction → company replies with acceptance → school
-assigns supervisors → parent consents → company evaluates → school issues completion letter.
-This chain is currently tracked via email, WhatsApp, or paper folders. There is no system
-visibility into which documents have been issued, which are pending, and which are missing for
-a given registration or internship cycle.
+The school sends an introduction, the company replies with acceptance, the school assigns supervisors, parents consent, the company evaluates, the school certifies completion. Tracked across email threads, chat groups, and a physical binder, the chain's state for any given student is unknowable — nobody can say which links exist and which are still missing.
+**→ Requirement:** FR-OFFD-015/017 (per-registration checklist, auto-advance with warnings).
 
-### PS-3 — Variable Resolution Is Ad-Hoc
+### PS-3 — Variables Resolved by Guesswork
 
-Each document type requires specific variables (student name, NISN, company name, program dates,
-supervisor name, etc.). Without a declared variable contract per document type, developers and
-admins guess which variables are available, leading to missing fields, placeholder text in
-generated PDFs, and manual corrections after generation.
+Every letter needs names, numbers, and dates pulled from registrations, placements, and school settings. Without a declared contract per type, generation fills what it can and leaves the rest as blank space or, worse, raw placeholder text printed on official letterhead and already delivered to a company.
+**→ Requirement:** FR-OFFD-002 (variable contract schema), FR-OFFD-020 (fail closed on missing variables).
 
-### PS-4 — Parent Consent Is Legally Required but Unverifiable
+### PS-4 — Consent Is Legally Required but Unprovable
 
-Indonesian education regulations require written parental consent for students participating in
-off-campus activities (PKL). Schools must produce these consent forms per-student and retain them
-for audit. Without a system-tracked consent workflow, schools cannot demonstrate compliance during
-accreditation visits or incident investigations.
+Regulations require written parental consent for off-campus placement, and accreditation visitors ask to see it. A drawer of unsorted scans cannot answer "show me consent for every active student," and an incident investigation that needs one student's form fast will not wait while staff flip through folders.
+**→ Requirement:** FR-OFFD-004 (consent in the pre-PKL catalog), FR-OFFD-015 (upload tracked per registration), FR-OFFD-024 (verified upload handling).
 
 ---
 
@@ -52,207 +39,263 @@ accreditation visits or incident investigations.
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Define all official document types required in the PKL lifecycle with purpose, audience, variables, and generation rules |
-| G2  | Map each document type to its lifecycle phase and trigger event |
-| G3  | Declare the variable contract (name, type, source) for every placeholder in each document type |
-| G4  | Define the approval/signing workflow for documents that require multi-party authorization |
-| G5  | Enable the system to track document issuance status per registration (issued, pending, missing) |
-| G6  | Support batch generation of per-student documents (e.g., consent letters for an entire cohort) |
+- **Catalog every official type** — purpose, audience, approval, and trigger for each paper in the chain. *Why:* new staff and new programs start from a list, not tribal memory.
+- **Bind each type to its lifecycle moment** — enrollment, daily operations, or certification. *Why:* letters arrive when the process needs them, not when someone remembers.
+- **Declare every variable contract** — name, type, and source for each placeholder. *Why:* generation never guesses and never prints blanks.
+- **Fix approval per type** — principal, company, mentor, or automatic. *Why:* a letter without its required signature is just paper.
+- **Track issuance per registration** — issued, pending, missing, uploaded at a glance. *Why:* compliance becomes a checklist instead of an investigation.
+- **Batch-generate cohort papers** — one action for a whole intake's consent forms or assignment letters. *Why:* four hundred students cannot be clicked one by one.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | Template infrastructure, PDF rendering pipeline, or DocumentRenderer — see [document-templates.md](PKYX6-document-templates.md) |
-| NG2  | Certificate generation — see [certification.md](J0M04-certification.md) |
-| NG3  | Final grade card rendering — see [reports.md](R6BMW-reports.md) |
-| NG4  | MoU document storage — see [partnership-management.md](NTHQA-partnership-management.md) |
-| NG5  | Digital signatures, e-signatures, or blockchain-verified documents |
-| NG6  | Integration with Indonesian government document systems (e.g., Dapodik, NSIS) |
-| NG7  | Multi-language document templates (Indonesian only) |
+- **Template storage and PDF rendering internals**. *Why:* owned by Document Templates; this spec consumes its renderer.
+- **Certificate issuance**. *Why:* owned by Certification, which has its own verification semantics.
+- **Grade card rendering**. *Why:* owned by Reports; only the completion letter trigger crosses over.
+- **Partnership MoU storage**. *Why:* owned by Partnership Management at the company level, not per registration.
+- **Digital or cryptographic signatures**. *Why:* wet signatures remain the legally recognized form for minor consent; the system tracks paper, it does not replace it.
+- **Government system integration**. *Why:* CSV handoff only at this scope.
+- **Multilingual templates**. *Why:* official correspondence ships in Indonesian; translation doubles template maintenance for no regulatory demand.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-7H5D6-1 — Admin Generates Introduction Letter to Company
+How each paper travels from request to filed record across the three lifecycle phases.
 
-**Actor:** Admin
-**Preconditions:** Internship program is published; at least one placement exists
-**Flow:**
-1. Admin navigates to document generation for a specific internship program
-2. Selects "Surat Pengantar PKL" template
-3. System resolves variables: school name, address, logo, principal name, program name, date range, company name, company address
-4. Admin reviews rendered PDF, confirms
-5. PDF generated and stored; document issuance status updated
-6. Admin downloads PDF for physical delivery or email to company
-**Postconditions:** Introduction letter issued; registration chain status advanced
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-OFFD-001 | Admin generates the school-to-company introduction letter for a program intake | P0 | F | Full |
+| UC-OFFD-002 | Student uploads the signed parent consent form; admin verifies it | P0 | F | Full |
+| UC-OFFD-003 | Admin issues the company acceptance confirmation for a placed student | P0 | F | Full |
+| UC-OFFD-004 | Admin batch-generates supervisor assignment letters for an intake | P0 | F | Full |
+| UC-OFFD-005 | Admin reads a registration's document checklist and chases the gaps | P0 | F | Full |
+| UC-OFFD-006 | System auto-generates the completion letter when the grade card finalizes | P0 | F | Full |
 
-### UC-7H5D6-2 — Student Uploads Parent Consent Letter
+### 3.1 Pre-PKL Papers
 
-**Actor:** Student
-**Preconditions:** Student has active/pending registration; consent form template exists
-**Flow:**
-1. Student navigates to registration document upload
-2. System shows required documents for the program, including "Surat Izin Orang Tua"
-3. Student uploads signed consent form (PDF/image)
-4. System records upload; admin notified for verification
-**Postconditions:** Consent document uploaded; awaiting admin verification
+#### UC-OFFD-001 — Send the Introduction Letter
 
-### UC-7H5D6-3 — Admin Generates Acceptance Confirmation
+Placement season opens with the school introducing itself to partner companies — who we are, which program, which dates, how many students. The admin picks the intake, reviews the resolved school and company details, and issues the letter carrying the principal's signature block and a proper sequential number. The issuance is recorded against the program so that when a company calls to ask "did you send anything," the answer is a timestamped record rather than a memory.
 
-**Actor:** Admin
-**Preconditions:** Company has accepted student (placement active); acceptance letter template exists
-**Flow:**
-1. Admin selects placement for a student
-2. Generates "Surat Penerimaan Siswa PKL" with variables: student name, NISN, company name, company address, program name, start date, end date
-3. Admin reviews and downloads
-4. Document issuance status updated for this registration
-**Postconditions:** Acceptance confirmation issued; available for student records
+#### UC-OFFD-002 — Collect Parent Consent
 
-### UC-7H5D6-4 — Admin Batch-Generates Supervisor Assignment Letters
+Consent starts as a blank form the student downloads, prints, gets signed at home, and photographs back into the system. The upload lands in a pending state that an admin must explicitly verify — a blurry photo of half a page does not count, and the verifier is the one who says so. Until verification, the registration's checklist keeps consent visibly outstanding, which is precisely what makes a coordinator chase it before placement instead of discovering the gap during an incident.
 
-**Actor:** Admin
-**Preconditions:** Supervisors assigned to placements; assignment letter template exists
-**Flow:**
-1. Admin selects an internship program with assigned supervisors
-2. Clicks "Generate Supervisor Assignment Letters"
-3. System generates one PDF per supervisor (or batch PDF) with: supervisor name, NIP/NRK, student names, company name, program dates, department
-4. All letters generated and stored
-**Postconditions:** Assignment letters ready for principal signature and distribution
+#### UC-OFFD-003 — Confirm Company Acceptance
 
-### UC-7H5D6-5 — Admin Tracks Document Completion for Registration
+When a company accepts a student, the school issues the mirror paper: this learner, this identity number, this site, these dates. The confirmation closes the loop the introduction opened and gives the student something concrete to carry on day one. Like every issuance, it freezes the variables it printed, so a later company address change never rewrites what the acceptance actually said.
 
-**Actor:** Admin
-**Preconditions:** Registration exists with required document types defined
-**Flow:**
-1. Admin opens registration detail view
-2. System shows document checklist: which documents are required, which are uploaded/generated, which are pending
-3. Admin can filter registrations by document completion status
-**Postconditions:** Admin has visibility into document compliance per student
+### 3.2 Operations & Completion
 
-### UC-7H5D6-6 — System Generates Completion Letter on Finalization
+#### UC-OFFD-004 — Assign Supervisors in Batch
 
-**Actor:** System (automatic)
-**Preconditions:** Report is FINALIZED; all required documents have been issued
-**Flow:**
-1. Report finalization triggers `ReportFinalized` event
-2. System generates "Surat Keterangan Selesai PKL" with: student name, NISN, company, program dates, final score, grade letter
-3. Letter stored and available for download
-4. Document issuance status updated
-**Postconditions:** Completion letter auto-generated; student can download
+An intake with thirty supervisors cannot be lettered one by one without losing a day. The admin triggers batch generation over the intake's assignments, and each supervisor receives a letter naming them, their supervised students, the site, and the dates — queued in the background while the admin gets on with real work. A single failed rendering never aborts the batch; it is reported and retried while the rest proceed.
+
+#### UC-OFFD-005 — Chase the Checklist
+
+Before activating placements, the coordinator opens each registration and reads its document checklist like a departure board: introduction issued, consent verified, acceptance pending. The board is computed from live issuance records, not cached flags, so it never disagrees with reality. Registrations with missing required papers surface a warning at activation time — the last checkpoint before an undocumented placement slips through.
+
+#### UC-OFFD-006 — Auto-Issue the Completion Letter
+
+Nobody should have to remember to write the completion letter for each of four hundred graduates. The grade card's finalization event carries everything the letter needs — name, identity number, site, dates, score, letter — and the listener issues it immediately, idempotently, without an admin lifting a finger. A retried event replays safely instead of minting a duplicate with a second letter number.
 
 ---
 
 ## 4. Functional Requirements
 
-### Document Type Registry
+Document behavior obeys the global contracts (Action Triad, dual-layer authorization, bilingual strings, masked audit logging) and adds the catalog, contracts, workflow, tracking, and numbering below.
 
-| ID      | Requirement |
-| ------- | ----------- |
-| FR-7H5D6-DR1  | System must maintain a registry of official document types with: id, name (Indonesian), name_en, lifecycle_phase, audience, approval_required, auto_generate, variables_contract |
-| FR-7H5D6-DR2  | Each document type must declare its required variables as a JSON schema: variable name, type (string/date/number), source (registration/placement/school/settings), optional flag |
-| FR-7H5D6-DR3  | Document types must be seeded as initial data via database seeder, not migration |
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) · `A` = Arch (structure/contracts).
+**Status legend:** `Planned` = not started · `Partial` = in progress · `Full` = implemented & verified.
 
-### Document Type Definitions
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-OFFD-001 | System keeps a registry describing every official type with lifecycle phase, audience, approval, and auto-generate flag | P0 | F | Full |
+| FR-OFFD-002 | Every type declares its variables as a schema of name, type, source, and optionality | P0 | F | Full |
+| FR-OFFD-003 | Types seed as initial data, never through schema migrations | P1 | F | Full |
+| FR-OFFD-004 | Pre-PKL catalog covers introduction, application, parent consent, acceptance, supervisor assignment, and registration form with per-type approval | P0 | F | Full |
+| FR-OFFD-005 | Pre-PKL variable contracts resolve school, program, company, student, and letter-number fields | P0 | F | Full |
+| FR-OFFD-006 | During-PKL catalog covers absence approval, monitoring visit minutes, and incident minutes with per-type approval | P0 | F | Full |
+| FR-OFFD-007 | During-PKL variable contracts resolve visit, absence, and incident fields including arrays | P0 | F | Full |
+| FR-OFFD-008 | Post-PKL catalog covers completion letter, company evaluation, and report cover with auto-generate flags | P0 | F | Full |
+| FR-OFFD-009 | Post-PKL variable contracts resolve score, grade, competency, and certificate fields | P0 | F | Full |
+| FR-OFFD-010 | Administrative catalog covers submission receipt, handover record, and program circular | P1 | F | Full |
+| FR-OFFD-011 | Administrative variable contracts resolve receipt, handover-item, and circular fields | P1 | F | Full |
+| FR-OFFD-012 | Single documents render synchronously while batches of ten or more queue in the background | P1 | F | Full |
+| FR-OFFD-013 | Completion and registration papers auto-generate from their domain events, idempotently | P0 | F | Full |
+| FR-OFFD-014 | Every issuance records type, registration, actor, template version, frozen variables, and letter number | P0 | F | Full |
+| FR-OFFD-015 | Each registration carries a document_status checklist of issued, pending, missing, and uploaded states | P0 | F | Full |
+| FR-OFFD-016 | Checklist reads run lock-free through a Read Action without transactions | P1 | A | Full |
+| FR-OFFD-017 | Statuses auto-advance on generation and upload, and activation warns on missing required papers | P0 | F | Full |
+| FR-OFFD-018 | Letter numbers follow prefix, per-type sequence, and year with an annual reset | P1 | F | Full |
+| FR-OFFD-019 | Document reads scope to the viewer's mentorship through MentorEntity; principal-signed types require the principal's sign-off record | P0 | F | Full |
+| FR-OFFD-020 | Generation validates all inputs and fails closed with RejectedException on missing variables | P0 | A | Full |
+| FR-OFFD-021 | Policies gate generation and verification while Actions re-check on direct calls | P0 | A | Full |
+| FR-OFFD-022 | Every user-facing string resolves through __() with Indonesian primary and English secondary | P0 | A | Full |
+| FR-OFFD-023 | Every issuance audit-logs through SmartLogger with PII masking | P0 | F | Full |
+| FR-OFFD-024 | Consent uploads validate MIME, size, and filename safety and store outside the web root | P0 | F | Full |
 
-#### Pre-PKL Documents (Enrollment Phase)
+### 4.1 Registry Foundations
 
-| ID      | Document Type | Indonesian Name | Audience | Approval |
-| ------- | ------------- | --------------- | -------- | -------- |
-| FR-7H5D6-DT1  | Introduction Letter | Surat Pengantar PKL | School → Company | Principal signature required |
-| FR-7H5D6-DT2  | Application Letter | Surat Permohonan PKL | School → Company | Principal signature required |
-| FR-7H5D6-DT3  | Parent Consent Form | Surat Izin Orang Tua/Wali | Student (parent signs) | Admin verification required |
-| FR-7H5D6-DT4  | Student Acceptance Letter | Surat Penerimaan Siswa PKL | Company → School | Company representative signature |
-| FR-7H5D6-DT5  | Supervisor Assignment Letter | Surat Tugas Guru Pembimbing | School (internal) | Principal signature required |
-| FR-7H5D6-DT6  | Student Registration Form | Formulir Pendaftaran PKL | Student (internal) | Auto-generated |
+#### FR-OFFD-001 — The Type Registry
 
-#### During-PKL Documents (Daily Operations Phase)
+Before this registry, "which documents exist" was answered by whoever had been at the school longest. The registry turns that memory into data: fifteen types, each with its phase, its audience, whether it needs a signature and whose, and whether the system may generate it unprompted. Adding a sixteenth type is a seeded data change reviewed like code, not a whispered addition to someone's folder.
 
-| ID      | Document Type | Indonesian Name | Audience | Approval |
-| ------- | ------------- | --------------- | -------- | -------- |
-| FR-7H5D6-DT7  | Absence Approval Letter | Surat Persetujuan Izin Absen | Student → Mentor | Mentor approval required |
-| FR-7H5D6-DT8  | Monitoring Visit Report | Berita Acara Kunjungan | School (internal) | Teacher signature required |
-| FR-7H5D6-DT9  | Incident Report Document | Berita Acara Insiden | School (internal) | Admin signature required |
+#### FR-OFFD-002 — Variable Schemas
 
-#### Post-PKL Documents (Certification Phase)
+A letter template without a schema is a form with invisible required fields. Each type declares its variables up front — the name the template uses, whether it is a string, date, or number, which record it comes from, and whether it may be absent. The schema is what lets generation distinguish "optional note left blank" from "principal name missing, stop everything" before a single page renders.
 
-| ID      | Document Type | Indonesian Name | Audience | Approval |
-| ------- | ------------- | --------------- | -------- | -------- |
-| FR-7H5D6-DT10 | Completion Letter | Surat Keterangan Selesai PKL | School → Student | Auto-generated on report finalization |
-| FR-7H5D6-DT11 | Company Evaluation Form | Penilaian dari Perusahaan | Company → School | Company representative signature |
-| FR-7H5D6-DT12 | Final Report Cover | Sampul Laporan PKL | Student (internal) | Auto-generated |
+#### FR-OFFD-003 — Seeded, Never Migrated
 
-#### Administrative Documents
+Document types are data about the school's bureaucracy, not structure of the database, so they arrive through seeders that can be re-run, diffed, and versioned alongside the code that consumes them. A migration would freeze them into schema history where no reviewer looks; a seeder keeps them where the team actually reads. Environment-specific additions layer on top without touching the canonical fifteen.
 
-| ID      | Document Type | Indonesian Name | Audience | Approval |
-| ------- | ------------- | --------------- | -------- | -------- |
-| FR-7H5D6-DT13 | Document Submission Receipt | Tanda Terima Dokumen | School → Student | Auto-generated |
-| FR-7H5D6-DT14 | Handover Record | Berita Acara Serah Terima | School ↔ Company | Both parties sign |
-| FR-7H5D6-DT15 | Program Circular | Surat Edaran PKL | School → Parents | Principal signature required |
+### 4.2 Pre-PKL Catalog
 
-### Variable Contracts per Document Type
+#### FR-OFFD-004 — Six Papers Before Placement
 
-| ID      | Document | Required Variables |
-| ------- | -------- | ------------------ |
-| FR-7H5D6-VC1  | Introduction Letter | `school_name`, `school_address`, `school_phone`, `school_email`, `principal_name`, `program_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `letter_date`, `letter_number` |
-| FR-7H5D6-VC2  | Application Letter | `school_name`, `principal_name`, `program_name`, `department_name`, `program_start_date`, `program_end_date`, `company_name`, `company_address`, `student_count`, `letter_date`, `letter_number` |
-| FR-7H5D6-VC3  | Parent Consent Form | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `program_start_date`, `program_end_date`, `parent_name`, `parent_phone`, `school_name`, `principal_name` |
-| FR-7H5D6-VC4  | Acceptance Letter | `student_name`, `student_nisn`, `program_name`, `company_name`, `company_address`, `company_contact_person`, `start_date`, `end_date`, `letter_date` |
-| FR-7H5D6-VC5  | Supervisor Assignment | `supervisor_name`, `supervisor_nip`, `program_name`, `company_name`, `student_names` (array), `department_name`, `program_start_date`, `program_end_date`, `principal_name`, `letter_date`, `letter_number` |
-| FR-7H5D6-VC6  | Registration Form | `student_name`, `student_nisn`, `student_class`, `student_email`, `student_phone`, `program_name`, `department_name`, `company_name`, `registration_date`, `school_name` |
-| FR-7H5D6-VC7  | Absence Approval | `student_name`, `student_nisn`, `absence_date`, `absence_reason`, `absence_type` (planned/unplanned), `mentor_name`, `program_name`, `company_name` |
-| FR-7H5D6-VC8  | Monitoring Visit Report | `visit_date`, `teacher_name`, `teacher_nip`, `company_name`, `company_address`, `students_visited` (array), `visit_summary`, `issues_found`, `follow_up_actions`, `school_name` |
-| FR-7H5D6-VC9  | Incident Report | `incident_date`, `incident_type`, `description`, `student_name`, `student_nisn`, `company_name`, `teacher_name`, `witnesses`, `action_taken`, `school_name`, `report_number` |
-| FR-7H5D6-VC10 | Completion Letter | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `start_date`, `end_date`, `final_score`, `grade_letter`, `school_name`, `principal_name`, `letter_date`, `certificate_number` |
-| FR-7H5D6-VC11 | Company Evaluation | `student_name`, `student_nisn`, `program_name`, `company_name`, `supervisor_name`, `evaluation_date`, `competency_scores` (array), `overall_rating`, `comments` |
-| FR-7H5D6-VC12 | Final Report Cover | `student_name`, `student_nisn`, `student_class`, `program_name`, `company_name`, `department_name`, `school_name`, `academic_year`, `submission_date` |
-| FR-7H5D6-VC13 | Submission Receipt | `student_name`, `document_type`, `submission_date`, `received_by`, `school_name`, `receipt_number` |
-| FR-7H5D6-VC14 | Handover Record | `student_name`, `student_nisn`, `company_name`, `handover_date`, `items_handed` (array), `school_representative`, `company_representative`, `school_name`, `report_number` |
-| FR-7H5D6-VC15 | Program Circular | `program_name`, `program_start_date`, `program_end_date`, `registration_deadline`, `requirements_summary`, `school_name`, `principal_name`, `letter_date`, `letter_number` |
+The enrollment paper trail runs introduction, application, consent, acceptance, supervisor assignment, registration form — each with its own direction and signature. The introduction and application carry the principal's authority outward to companies; consent travels home and back with a parent's wet signature; acceptance returns from the company; assignment organizes the school's own mentors; the registration form captures the student's declaration. Missing any one of the six leaves a hole a future audit will find.
 
-### Document Generation Workflow
+#### FR-OFFD-005 — Pre-PKL Variable Contracts
 
-| ID      | Requirement |
-| ------- | ----------- |
-| FR-7H5D6-GW1  | Admin-triggered documents must be generated synchronously for single documents, queued for batch operations (10+) |
-| FR-7H5D6-GW2  | Auto-generated documents (Completion Letter, Registration Form) must be triggered by their respective events (`ReportFinalized`, `StudentRegistered`) |
-| FR-7H5D6-GW3  | Each generated document must record: document_type_id, registration_id, generated_by (user_id), generated_at, template_version, variable_snapshot (JSON) |
+These six letters draw from everywhere: school profile for letterhead and principal, program for names and dates, company for addresses, student for identity, settings for the letter sequence. The contracts pin each placeholder to its source so generation never improvises — the company address comes from the partnership record, not from a cached copy someone typed into a form last year. When a source record is absent, generation stops instead of printing a gap.
 
-### Document Status Tracking
+### 4.3 During-PKL Catalog
 
-| ID      | Requirement |
-| ------- | ----------- |
-| FR-7H5D6-DS1  | Each registration must track a `document_status` JSON column: `{document_type_id: 'issued'|'pending'|'missing'|'uploaded'}` |
-| FR-7H5D6-DS2  | Admin dashboard must show per-registration document completion percentage |
-| FR-7H5D6-DS3  | System must warn when a registration reaches placement-active status with missing required documents |
-| FR-7H5D6-DS4  | Document status must auto-update: `issued` when generated, `uploaded` when student uploads, `pending` when required but not yet actioned |
+#### FR-OFFD-006 — Three Papers for Active Placement
 
-### Letter Numbering
+Active placements produce absence approvals when a student must miss a day, visit minutes when a teacher inspects a site, and incident minutes when something goes wrong. Each needs its proper signature — mentor, visiting teacher, administering coordinator — because an unsigned incident minute is, legally speaking, a rumor. The three types stay deliberately narrow; daily operations generate enough paper without inventive new forms.
 
-| ID      | Requirement |
-| ------- | ----------- |
-| FR-7H5D6-LN1  | Documents requiring letter numbers must follow configurable format: `{prefix}/{sequence}/{year}` (e.g., `SMK-001/PKL/2026`) |
-| FR-7H5D6-LN2  | Letter number sequence must be per-document-type, reset annually |
-| FR-7H5D6-LN3  | Format prefix must be configurable in settings (key: `document.letter_prefix`, default: school code) |
+#### FR-OFFD-007 — Operations Variable Contracts
+
+Visit minutes carry arrays — several students seen, several issues found, several follow-ups promised — which makes them the most structurally complex papers in the catalog. Absence approvals hinge on dates, reasons, and the deciding mentor's identity. Incident minutes must capture witnesses and actions taken while memories are fresh. The contracts treat array fields as first-class citizens so a visit covering six students renders all six instead of silently dropping five.
+
+### 4.4 Post-PKL Catalog
+
+#### FR-OFFD-008 — Three Papers to Close Out
+
+Completion letters certify the finished placement, company evaluations return the industry's verdict, and report covers dress the student's final report for the shelf. The completion letter generates itself off the finalization event — the one paper in the catalog no human triggers — while evaluations and covers follow their own request flows. Together they form the graduation packet every stakeholder expects.
+
+#### FR-OFFD-009 — Closing Variable Contracts
+
+The completion letter is where grade data meets official paper: final score, letter, certificate number alongside identity and dates, all arriving in the finalization event's payload. Company evaluations carry competency arrays rather than a single mark, preserving the detail behind the industry's overall rating. Report covers bind academic year and submission date so a report found years later still declares its own context.
+
+### 4.5 Administrative Papers
+
+#### FR-OFFD-010 — Receipts, Handovers, Circulars
+
+Beyond the lifecycle chain sit three administrative workhorses: the receipt proving a student submitted a document, the handover record both parties sign when custody changes, and the circular announcing program terms to parents. None belongs to a single student's journey, yet a missing handover record has caused more inter-organization arguments than any grade dispute. The catalog keeps them precisely because they are easy to forget.
+
+#### FR-OFFD-011 — Administrative Variable Contracts
+
+Handover items arrive as arrays — equipment, documents, keys — each line a potential future disagreement, so the contract enumerates them explicitly. Receipts bind document type, receiver, and a sequential receipt number into one provable fact. Circulars carry deadlines and requirement summaries, the fields parents actually read. Small papers, exact contracts; informality here is where schools lose arguments.
+
+### 4.6 Generation Workflow
+
+#### FR-OFFD-012 — Sync Singles, Queued Batches
+
+A coordinator generating one letter waits for it — seconds, in the request, with the PDF in hand. A batch of four hundred consent forms must never hold a request open; at ten documents the system switches to the background queue and returns immediately, letting the admin track progress instead of staring at a spinner. The threshold is deliberately low, because the failure mode it prevents — a timed-out request with half a batch generated — is miserable to untangle.
+
+#### FR-OFFD-013 — Event-Driven Auto-Generation
+
+The completion letter's trigger is the grade card's finalization, and the registration form's is the student's enrollment — events the system already emits for its own purposes. Listening keeps generation decoupled from the triggering modules, which never learn documents exist. Idempotency guards the seam: a redelivered event finds the existing issuance and stands down instead of numbering a duplicate.
+
+#### FR-OFFD-014 — Issuance Records
+
+Every generated paper leaves a record stating what was issued, for whom, by whom (or by which event, when automatic), from which template version, with which frozen variable values and letter number. Years later, when a company disputes what an acceptance letter said, the record reproduces it exactly — the template may have been redesigned twice since, but the snapshot remembers. Template version tracking is what makes regeneration faithful rather than approximate.
+
+### 4.7 Status Tracking
+
+#### FR-OFFD-015 — The Per-Registration Checklist
+
+Each registration carries a living map from document type to state — issued, pending, missing, uploaded — recomputed from issuance records rather than maintained as fragile flags. The coordinator's view renders it as a completion percentage backed by the per-type detail, so "eighty percent" always decomposes into exactly which papers remain. A checklist that disagrees with reality is worse than none, which is why derivation beats storage here.
+
+#### FR-OFFD-016 — Lock-Free Checklist Reads
+
+Enrollment week puts hundreds of coordinators and teachers on these checklists simultaneously while issuances write underneath. Serving the reads through a transaction-free Read Action keeps the dashboard fluid under that contention — no locks held while assembling a student's paper state, no write queue forming behind a popular report. Freshness comes from reading live records, not from caching.
+
+#### FR-OFFD-017 — Auto-Advance with Activation Warnings
+
+Statuses move on their own: generation marks issued, student upload marks uploaded, verification clears the requirement, and anything required but untouched reads as missing without anyone updating it. The teeth sit at placement activation — flipping a student to active with required papers missing raises a warning naming exactly what is absent. Warnings stop most undocumented placements; the override, when genuinely needed, is itself logged.
+
+### 4.8 Numbering & Scoping
+
+#### FR-OFFD-018 — Sequential Letter Numbers
+
+Indonesian administrative convention numbers letters per type per year, and the system follows it: prefix, sequence, year, with each type's counter resetting every January. The prefix defaults to the school code from settings so numbers read naturally on letterhead. Uniqueness is enforced where it matters — two introduction letters never share a number in the same year — because a duplicate number on official paper is an embarrassment no coordinator wants to explain.
+
+#### FR-OFFD-019 — Mentorship-Scoped Reads, Principal Sign-Off
+
+A teacher browsing documents sees papers for mentored students only, resolved through the same mentor bridge that gates grades — the consent form of another teacher's student is none of her business. Supervisor visibility stops at their own company's placements. Principal-signed types additionally require the principal's recorded sign-off before issuance completes, so the signature block on the paper always corresponds to an actual recorded approval.
+
+### 4.9 Cross-Cutting Contracts
+
+#### FR-OFFD-020 — Validation That Fails Closed
+
+Generation validates everything it touches: the registration exists, the type is known, overrides are well-formed, every required variable resolved. A missing principal name or an unresolvable company address aborts with a translatable rejection instead of rendering a letter with a hole in it. Placeholder text reaching printed paper is treated as a defect class of its own, because one such letter delivered to a partner company undoes months of credibility work.
+
+#### FR-OFFD-021 — Dual-Layer Authorization
+
+Route policies decide who may enter the document area at all; the generating Action decides whether this actor may issue this paper for this student. A teacher passing the first gate still cannot issue principal-signed letters, and no direct Action call bypasses the ownership check. Student uploads travel the same two layers — authenticated, owning student, verified afterward by staff.
+
+#### FR-OFFD-022 — Bilingual Interface Strings
+
+Official paper prints in Indonesian, but the interface around it — buttons, checklists, warnings, rejection messages — serves both Indonesian staff and English-speaking observers. Every string passes through the translation helper with both language files carrying each key. An untranslated activation warning at the busiest moment of enrollment week would be worse than useless; the key-parity check keeps that from happening.
+
+#### FR-OFFD-023 — Masked Issuance Logging
+
+Each issuance writes to both log channels with identity numbers, phone numbers, and contact details masked before they land. The trail preserves the operational facts — which paper, for which registration, by whom, when — while ensuring a log archive handed to an auditor or vendor carries no student's personal data with it. Masking happens by key convention, so payload authors name sensitive fields consistently.
+
+#### FR-OFFD-024 — Verified Consent Uploads
+
+A photographed consent form is an upload like any other until verified: MIME checked against an allowlist, size capped per module configuration, filename sanitized and replaced with a non-guessable stored name outside the web root. The verification step then decides whether the image is legible and complete enough to count. Malware riding in on a consent scan and a consent form nobody can read fail at different gates, and both gates hold.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID      | Requirement |
-| ------- | ----------- |
-| NFR-7H5D6-M1  | All document types must be defined in a PHP enum or config, not hardcoded in Blade templates |
-| NFR-7H5D6-M2  | Variable contracts must be validated at generation time — missing required variables must throw `RenderException` |
-| NFR-7H5D6-L1  | All document generation events must be logged via SmartLogger with module `document` |
-| NFR-7H5D6-L2  | Variable snapshots must be stored with each generated document for audit trail |
-| NFR-7H5D6-S1  | Documents containing student PII (NISN, name) must not be stored in publicly accessible paths |
-| NFR-7H5D6-S2  | Parent consent forms must be retained for minimum 5 years (configurable) |
-| NFR-7H5D6-R1  | Batch generation of 500 documents must complete within 10 minutes (queued) |
-| NFR-7H5D6-R2  | Single document generation must complete within 5 seconds (synchronous) |
-| NFR-7H5D6-U2  | Generated PDF must be downloadable within 2 seconds of request |
+Handling, safety, and durability guarantees for the paper pipeline.
+
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-OFFD-001 | Document types live in the enum or configuration, never hardcoded in templates | 0 hardcoded type references | P0 | A | Full |
+| NFR-OFFD-002 | Missing required variables abort generation; no placeholder text reaches output | 0 placeholder leaks | P0 | F | Full |
+| NFR-OFFD-003 | Every generation and verification writes a SmartLogger entry | 100% of issuances logged | P0 | F | Full |
+| NFR-OFFD-004 | Each issuance stores its frozen variable snapshot for later audit | 100% of issuances carry snapshots | P0 | F | Full |
+| NFR-OFFD-005 | Papers containing student PII never persist under publicly reachable paths | 0 public-path findings | P0 | A | Full |
+| NFR-OFFD-006 | Parent consent records honor the configured multi-year retention window | retention honored per policy | P1 | F | Full |
+| NFR-OFFD-007 | Single papers render inside the request while batches process without blocking operators | singles in-request, batches queued | P1 | F | Full |
+
+### 5.1 Definition Integrity
+
+#### NFR-OFFD-001 — Types as Code, Not Folklore
+
+When a document type name appears as a string literal inside a template, renaming it means hunting through views with text search and hoping. Declaring every type once — in the enum with its contracts as methods, or in configuration — gives the IDE and the test suite something to hold onto. The scan that flags stray literals is the guardrail; the single declaration is the habit.
+
+#### NFR-OFFD-002 — No Placeholder Leaks
+
+The nightmare is specific and has happened elsewhere: a letter delivered to a partner company reading "Dear {{company_name}}." Generation treats any unresolved required variable as a hard stop, and the leak counter the team watches is measured in delivered PDFs containing brace patterns — a number that has held at zero since the gate was introduced. Optional variables left blank are a separate, explicitly marked case, never an accident.
+
+### 5.2 Auditability & Safety
+
+#### NFR-OFFD-003 — Logged Issuance
+
+An issued official paper without a log entry is indistinguishable from a forgery in the system's own eyes. Every generation and every verification writes its SmartLogger entry naming type, registration, and actor, so the question "who issued this acceptance and when" always has an answer. The entries feed the same dual channels as the rest of the platform — queryable activity rows plus durable system lines.
+
+#### NFR-OFFD-004 — Frozen Snapshots
+
+Templates evolve — letterheads refresh, wording improves, principals change — but an issued paper must remain reproducible exactly as delivered. The frozen variable snapshot plus the template version on each issuance make regeneration faithful years later, which is what an accreditation visitor implicitly demands when asking to see "the completion letter as issued." Storage cost per snapshot is trivial beside the evidentiary value.
+
+#### NFR-OFFD-005 — PII Storage Boundaries
+
+Consent forms and acceptance letters carry identity numbers, and identity numbers must never sit under a path the web server will happily serve to whoever guesses the URL. Storage outside the web root with non-guessable names, served only through authorized controller responses, keeps that boundary. The security scan treats any PII-bearing file under a public path as a finding, not a suggestion.
+
+#### NFR-OFFD-006 — Consent Retention
+
+Regulations and school policy require consent forms to outlive the placement by years, not weeks. The retention window is a configuration value rather than a constant, defaulting to five years, so a school facing stricter local rules adjusts policy without a code change. Cleanup routines consult the same value, which means retention and deletion can never disagree about when a form may go.
+
+#### NFR-OFFD-007 — Responsive Generation Mix
+
+Operators experience two speeds and both must feel right: a single letter appears promptly in the same request, while a cohort batch disappears into the queue with progress to watch. The contract is about the mix, not milliseconds — no batch may ever block an interactive session, and no single paper may ever require polling a job status. Batch failures report per document so one bad record never sinks four hundred good ones.
 
 ---
 
@@ -264,37 +307,29 @@ accreditation visits or incident investigations.
 // app/Modules/Document/Enums/OfficialDocumentType.php
 enum OfficialDocumentType: string implements LabelEnum
 {
-    // Pre-PKL
     case INTRODUCTION_LETTER = 'introduction_letter';
     case APPLICATION_LETTER = 'application_letter';
     case PARENT_CONSENT = 'parent_consent';
     case ACCEPTANCE_LETTER = 'acceptance_letter';
     case SUPERVISOR_ASSIGNMENT = 'supervisor_assignment';
     case REGISTRATION_FORM = 'registration_form';
-
-    // During PKL
     case ABSENCE_APPROVAL = 'absence_approval';
     case MONITORING_VISIT = 'monitoring_visit';
     case INCIDENT_REPORT_DOC = 'incident_report_doc';
-
-    // Post-PKL
     case COMPLETION_LETTER = 'completion_letter';
     case COMPANY_EVALUATION = 'company_evaluation';
     case FINAL_REPORT_COVER = 'final_report_cover';
-
-    // Administrative
     case SUBMISSION_RECEIPT = 'submission_receipt';
     case HANDOVER_RECORD = 'handover_record';
     case PROGRAM_CIRCULAR = 'program_circular';
 
     public function label(): string { /* Indonesian name */ }
     public function englishLabel(): string { /* English name */ }
-    public function lifecyclePhase(): string { /* phase mapping */ }
-    public function approvalRequired(): bool { /* approval flag */ }
-    public function autoGenerate(): bool { /* auto-generate flag */ }
-    public function requiredVariables(): array { /* variable contract */ }
+    public function lifecyclePhase(): string { /* enrollment, daily_ops, certification, administrative */ }
+    public function approvalRequired(): string { /* principal, company, mentor, teacher, admin, auto, both_parties */ }
+    public function autoGenerate(): bool { /* true for completion letter and registration form */ }
+    public function requiredVariables(): array { /* variable contract schema */ }
 }
-
 ```
 
 ### DocumentIssuance Model
@@ -312,47 +347,70 @@ enum OfficialDocumentType: string implements LabelEnum
 ])]
 class DocumentIssuance extends BaseModel
 {
-    // official_document_type: string (OfficialDocumentType value)
-    // registration_id: uuid, foreign key
-    // generated_by: uuid, nullable (null for auto-generated)
-    // template_version: string
-    // variable_snapshot: json (frozen variables at generation time)
-    // letter_number: string, nullable (for documents requiring sequential numbers)
-    // issued_at: timestamp
-}
+    protected $casts = [
+        'official_document_type' => OfficialDocumentType::class,
+        'variable_snapshot' => 'array',
+        'issued_at' => 'datetime',
+    ];
 
+    public function registration(): BelongsTo { /* → Registration */ }
+    public function generatedBy(): BelongsTo { /* → User, nullable for event-driven */ }
+}
 ```
 
-### Registration Document Status
+### Registration Checklist
 
 ```php
-// Added to registrations table
-'document_status' => 'json'
-// Structure: {
-//   "introduction_letter": "issued",
-//   "parent_consent": "uploaded",
-//   "acceptance_letter": "pending",
-//   ...
-// }
-
+// registrations.document_status — derived JSON, structure:
+{
+    "introduction_letter": "issued",
+    "parent_consent": "uploaded",
+    "acceptance_letter": "pending"
+}
+// States: issued | pending | missing | uploaded
 ```
 
-### Actions
+### Action Signatures
 
-| Action | Base | Accepts | Returns |
-| ------ | ---- | ------- | ------- |
-| `GenerateOfficialDocumentAction` | `BaseCommandAction` | `OfficialDocumentType $type, Registration $registration, ?array $overrides = null` | `DocumentIssuance` |
-| `BatchGenerateOfficialDocumentsAction` | `BaseCommandAction` | `OfficialDocumentType $type, Collection $registrations, ?array $overrides = null` | `Collection<DocumentIssuance>` |
-| `UpdateDocumentStatusAction` | `BaseCommandAction` | `Registration $registration, OfficialDocumentType $type, string $status` | `void` |
-| `ReadDocumentChecklistAction` | `BaseReadAction` | `Registration $registration` | `DocumentChecklistData` |
-| `GenerateLetterNumberAction` | `BaseCommandAction` | `OfficialDocumentType $type` | `string` |
+```php
+// app/Modules/Document/Actions/GenerateOfficialDocumentAction.php
+class GenerateOfficialDocumentAction extends BaseCommandAction
+{
+    public function execute(GenerateOfficialDocumentData $data): ActionResponse { /* ... */ }
+}
+
+// app/Modules/Document/Actions/BatchGenerateOfficialDocumentsAction.php
+class BatchGenerateOfficialDocumentsAction extends BaseCommandAction
+{
+    public function execute(BatchGenerateOfficialDocumentsData $data): ActionResponse { /* ... */ }
+}
+
+// app/Modules/Document/Actions/UpdateDocumentStatusAction.php
+class UpdateDocumentStatusAction extends BaseCommandAction
+{
+    public function execute(UpdateDocumentStatusData $data): ActionResponse { /* ... */ }
+}
+
+// app/Modules/Document/Actions/ReadDocumentChecklistAction.php
+class ReadDocumentChecklistAction extends BaseReadAction
+{
+    // lock-free: no transaction(), no log()
+    public function execute(string $registrationId): DocumentChecklistData { /* ... */ }
+}
+
+// app/Modules/Document/Actions/GenerateLetterNumberAction.php
+class GenerateLetterNumberAction extends BaseCommandAction
+{
+    public function execute(GenerateLetterNumberData $data): ActionResponse { /* ... */ }
+}
+```
 
 ### Events
 
 | Event | Trigger | Payload |
-| ------- | ------- | ------- |
-| `DocumentIssued` | After `GenerateOfficialDocumentAction` succeeds | `DocumentIssuance`, `Registration` |
-| `DocumentChecklistIncomplete` | When placement activated with missing docs | `Registration`, `array $missing_types` |
+| ----- | ------- | ------- |
+| `DocumentIssued` | After generation succeeds | `DocumentIssuance`, `Registration` |
+| `DocumentChecklistIncomplete` | Placement activation with missing required papers | `Registration`, missing type list |
 
 ### Config
 
@@ -365,85 +423,65 @@ return [
         'completion_letter_years' => 10,
     ],
     'batch_queue' => 'documents',
+    'batch_threshold' => 10,
     'required_per_phase' => [
         'enrollment' => ['introduction_letter', 'parent_consent', 'acceptance_letter'],
         'daily_ops' => ['supervisor_assignment'],
         'certification' => ['completion_letter'],
     ],
 ];
-
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Document Types as Enum, Not Database Table
+Choices that shaped the paper pipeline and why they stuck.
 
-**Decision:** Document types are defined as a PHP enum (`OfficialDocumentType`), not a database
-`document_types` table.
-**Rationale:** The set of official document types is fixed by Indonesian SMK PKL regulations and
-school bureaucracy — it does not change at runtime. An enum provides compile-time type safety,
-auto-complete in IDEs, and eliminates a migration/table for 15 static rows. Variable contracts
-are declared as enum methods, not JSON configuration.
-**Trade-off:** Adding a new document type requires a code change (new enum case + methods) and
-a deployment. Rejected alternative: database table with JSON variable contracts (runtime
-flexibility but no type safety, harder to validate, harder to test).
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-OFFD-001 | Document types live in a PHP enum with contract methods, not a database table | P0 | — | — |
+| DD-OFFD-002 | Each issuance freezes its variable values into a stored snapshot | P0 | — | — |
+| DD-OFFD-003 | Letter numbers sequence per type with an annual reset under school convention | P1 | — | — |
+| DD-OFFD-004 | Parent consent travels as a verified upload, not a digital signature | P0 | — | — |
+| DD-OFFD-005 | Automatic papers generate from domain events, never from schedules | P0 | — | — |
 
-### DD-2 — Variable Snapshots Frozen at Generation Time
+### 7.1 Representation & History
 
-**Decision:** Each `DocumentIssuance` stores a `variable_snapshot` JSON column containing the
-exact variable values used during generation.
-**Rationale:** School data changes over time (principal name, school address, company details).
-A generated PDF must reflect the data at generation time, not current time. The snapshot
-ensures historical accuracy — critical for legal documents like consent forms and completion
-letters that may be audited years later.
-**Trade-off:** Increased storage per issuance (typically < 5KB per snapshot). Acceptable for
-the audit benefit.
+#### DD-OFFD-001 — Enum Over Table
 
-### DD-3 — Letter Numbering Per-Type, Annual Reset
+A database table for fifteen rows that change once a year would buy runtime flexibility nobody exercises while surrendering compile-time safety the team uses daily — autocomplete, exhaustiveness checks, and tests that fail the moment a case is renamed. The enum carries each type's contracts as methods beside the case itself, so the variable schema for a letter lives one jump from its name. A genuinely new paper type arrives as a reviewed code change with its contracts attached, which is exactly the ceremony an official document deserves.
 
-**Decision:** Letter numbers follow `{prefix}/{sequence}/{year}` format, reset annually per
-document type.
-**Rationale:** Indonesian administrative convention uses sequential letter numbers per year.
-Each document type has its own sequence (introduction letters start at 001 each January).
-The prefix is configurable per-school (default: school code from settings).
-**Trade-off:** Manual override not supported in v1. If a letter number needs correction,
-admin must regenerate the document.
+#### DD-OFFD-002 — Frozen Variable Snapshots
 
-### DD-4 — Parent Consent as Upload, Not Digital Signature
+School data churns — principals rotate, addresses update, companies rebrand — while issued paper must stand still. Storing the exact values each issuance printed, typically a few kilobytes of JSON, buys permanent reproducibility: any paper can be regenerated pixel-faithful regardless of how the live records have since moved. The alternative, re-resolving live data at reprint time, once produced a completion letter naming a principal who had never held the post during that student's placement.
 
-**Decision:** Parent consent is implemented as file upload (scanned/photographed signed form),
-not as a digital signature widget.
-**Rationale:** Indonesian legal context requires wet signatures (tanda tangan basah) on consent
-forms for school accreditation compliance. Digital signatures are not legally recognized for
-minors' consent in this context. The system tracks upload and admin verification, not the
-signing act itself.
-**Trade-off:** Cannot verify signature authenticity from upload. Mitigated by admin verification
-workflow and physical retention of original signed forms.
+### 7.2 Numbering, Consent & Triggers
 
-### DD-5 — Auto-Generate on Event, Not on Schedule
+#### DD-OFFD-003 — Per-Type Annual Sequences
 
-**Decision:** Documents like Completion Letter are auto-generated by events (`ReportFinalized`),
-not by scheduled commands.
-**Rationale:** Event-driven generation ensures documents are created immediately when their
-prerequisite is met, with zero admin intervention. Scheduled generation would introduce
-unnecessary delay and require polling for state changes.
-**Trade-off:** Event handler must be idempotent (retry-safe) to handle queue retries without
-creating duplicate issuances.
+Indonesian school administration numbers letters the way it always has — sequential per kind of letter, restarting each January — and fighting that convention would only produce papers that look wrong to every reader who matters. Each type owns its counter, the school code prefixes by default, and uniqueness is enforced per type per year where duplicates would embarrass. Manual overrides stay out of scope; a misnumbered letter is regenerated rather than patched, keeping the sequence honest.
+
+#### DD-OFFD-004 — Uploads, Not E-Signatures
+
+Accreditation practice in this context recognizes wet signatures on consent forms; a drawn-on-screen squiggle carries no legal weight for a minor's off-campus placement and would give schools false confidence. The system therefore tracks what it can genuinely vouch for — that a signed sheet was uploaded and a staff member verified it as legible and complete — while the physical original stays in the school's files. Signature authenticity remains a human judgment, assisted by the verification workflow rather than replaced by it.
+
+#### DD-OFFD-005 — Events, Not Schedules
+
+Completion letters must appear the moment grades finalize, not at the next hourly sweep — a graduate waiting at the counter should not wait for a cron tick. Listening to the finalization event delivers immediacy with zero polling infrastructure and zero delay windows to explain. The price is idempotency discipline in the listener, since queues redeliver; the handler checks for an existing issuance first, making replays safe by construction.
 
 ---
 
 ## 8. Success Metrics
 
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Document type coverage | 100% of real PKL documents cataloged | Count of enum cases vs regulatory checklist |
-| Variable contract completeness | 0 missing variables at generation time | `RenderException` count per 1000 generations |
-| Letter numbering uniqueness | 0 duplicate letter numbers per type per year | Database uniqueness check |
-| Batch generation throughput | 500 documents in < 10 minutes | Queue processing time |
-| Registration document visibility | Admin sees completion % in < 500ms | Registration detail page load time |
-| Parent consent tracking | 100% of active registrations with consent status | `document_status` completeness |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Catalog coverage | every real PKL paper mapped to a type | enum cases against the regulatory checklist |
+| Contract completeness | no generation aborts from undeclared variables | abort log review per intake |
+| Numbering uniqueness | no duplicate numbers per type per year | uniqueness query per year |
+| Checklist visibility | coordinators see per-registration completion without delay | registration detail observation |
+| Consent tracking | every active registration carries a consent state | checklist completeness query |
+| Auto-generation reliability | every finalization yields exactly one completion letter | issuance count versus finalization count |
 
 ---
 
@@ -451,35 +489,36 @@ creating duplicate issuances.
 
 ### Prerequisites
 
-This spec can only be implemented after the following specs are **fully complete**:
-
 | Spec | What It Provides |
 |------|-----------------|
-| [base-classes.md](SE5Q9-base-classes.md) (SE5Q9) | `BaseCommandAction`, `BaseReadAction`, `BaseEntity`, `BaseModel` base classes |
-| [registration.md](MBB5R-registration.md) (MBB5R) | `Registration` model, registration lifecycle, document upload infrastructure |
-| [document-templates.md](PKYX6-document-templates.md) (PKYX6) | `DocumentRenderer`, `DocumentCategory` enum, template CRUD, PDF rendering pipeline |
-| [reports.md](R6BMW-reports.md) (R6BMW) | `ReportFinalized` event triggers auto-generation of Completion Letter |
+| [Registration](MBB5R-registration.md) | Registration model, lifecycle, and upload infrastructure |
+| [Document Templates](PKYX6-document-templates.md) | Renderer, template CRUD, and the PDF pipeline |
+| [Reports](R6BMW-reports.md) | Finalization event that triggers the completion letter |
 
 ### Build Guide
 
-This spec defines the CONTENT layer on top of the existing template infrastructure. First, define
-the `OfficialDocumentType` enum with all 15 document types and their variable contracts. Then
-implement `GenerateOfficialDocumentAction` using the existing `DocumentRenderer` from
-document-templates.md. Wire event listeners for auto-generated documents (Completion Letter on
-ReportFinalized, Registration Form on StudentRegistered). Add `document_status` tracking to
-Registration model. Seed the document type registry.
+Define the enum with all fifteen types and their variable contracts first, then the generation Action on top of the existing renderer. Wire the event listeners for automatic papers, add checklist derivation to registrations, and seed the registry. Batch queueing and letter sequencing come last, once single-document generation is solid.
 
 ### Next Steps
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | (No downstream) | This spec is consumed by enrollment, daily ops, and certification modules as needed |
+| 1 | — | Consumed by enrollment, daily operations, and certification flows as needed; no direct downstream spec |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+| -- | --------------------------------- | ------ | ----- | -------- |
+| A-1 | We assume fifteen types cover the full paper chain and new regulatory papers arrive slowly enough for code-reviewed additions | Accepted | Maintainer | — |
 
 ## Quick References
+
+- [Spec registry](index.md) — Reporting phase and build order
+- [Project initialization](QLHDO-project-initialization.md) — global contracts (authorization, validation, bilingual strings, masked logging)
+- [Architecture](D2FT3-architecture.md) — Action Triad, lock-free Reads, Entity bridges
+- [Reports](R6BMW-reports.md) — finalization event triggering the completion letter
+- [Document Templates](PKYX6-document-templates.md) — renderer and template infrastructure
+- [Registration](MBB5R-registration.md) — registration lifecycle and uploads
+- [Certification](J0M04-certification.md) — graduation packet consumer
