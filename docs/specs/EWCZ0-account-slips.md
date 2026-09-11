@@ -1,16 +1,18 @@
-# Account Slips — PDF Credential Distribution
+# EWCZ0 — Account Slips
 
 > **Spec ID:** EWCZ0
+> **Status:** Full
+> **Owner:** User
+> **Depends on:** 95EVB
 
 ## Description
 
-Complete specification of Internara's account slip subsystem for PDF credential distribution.
-Defines single and batch PDF slip generation via DomPDF with custom card dimensions, activation
-code lifecycle management through `AccessToken` generation, email delivery via
-`ActivationCodeNotification`, the `DownloadsAccountSlips` Livewire trait for in-component slip
-operations, the `AccountSlipController` HTTP layer, and the account slip modal UI. This subsystem
-spans the User Management and SysAdmin modules and serves as the primary credential distribution
-mechanism for Indonesian vocational schools.
+Printable credential slips for Internara: single and batch PDF generation through DomPDF
+at custom card size, a freshly minted activation code on every slip, email delivery as the
+alternate channel, and the `DownloadsAccountSlips` trait plus modal that bring slip
+operations into every user manager. Credential scope uses the `ASLIP` prefix throughout —
+the `SLIP` scope belongs to [account recovery slips](SHQ1J-account-recovery-slips.md) and
+the two systems share nothing but the paper metaphor.
 
 ---
 
@@ -19,17 +21,19 @@ mechanism for Indonesian vocational schools.
 ### PS-1 — Credential Distribution After Account Creation
 
 When administrators create user accounts (individually or via CSV import), they must distribute
-login credentials to users. Indonesian vocational schools (SMA/SMK) require printed credential
+login credentials to users. Indonesian vocational schools require printed credential
 distribution as the standard practice — students receive physical account slips with their
 username, temporary password, and activation instructions. Without a slip generation system,
 administrators must manually write or copy credentials, which is error-prone and does not scale.
+**→ Requirement:** FR-ASLIP-001–009 (PDF generation), UC-ASLIP-001.
 
 ### PS-2 — Batch Import Requires Bulk Slip Generation
 
 CSV import may create 500+ student accounts in a single operation. Generating account slips
 one-by-one for each imported user is impractical. The system must support batch PDF generation
-that produces a single multi-page or multi-card PDF containing all imported users' credentials,
+that produces a single multi-card PDF containing all imported users' credentials,
 ready for printing and physical distribution.
+**→ Requirement:** FR-ASLIP-003 (batch execute), UC-ASLIP-002, NFR-ASLIP-005.
 
 ### PS-3 — Printed Slips as Indonesian School Standard
 
@@ -38,6 +42,7 @@ Students may not have personal email access, school internet may be intermittent
 need physical handout materials for classroom distribution. PDF account slips designed for
 standard paper printing (custom card dimensions) are the accepted credential delivery mechanism
 in this educational context.
+**→ Requirement:** FR-ASLIP-004 (card size), FR-ASLIP-007/008 (slip view contract).
 
 ### PS-4 — Activation Code Lifecycle for Slip Content
 
@@ -46,12 +51,14 @@ account. Activation codes are time-limited (30-day expiry) and must be freshly g
 time a slip is viewed or downloaded. If a code expires or is lost, the administrator must be
 able to regenerate it without recreating the account. The slip content (name, username, email,
 activation code) must reflect the current state of the user record at generation time.
+**→ Requirement:** FR-ASLIP-010–014 (code lifecycle), UC-ASLIP-003.
 
 ### PS-5 — Email Distribution as Alternative Channel
 
 While PDF slips are the primary distribution method, administrators also need the option to send
 credentials directly via email. This is useful for teacher accounts, supervisor accounts, or
 any situation where digital delivery is preferred over printed distribution.
+**→ Requirement:** FR-ASLIP-019 (send path), UC-ASLIP-004.
 
 ---
 
@@ -59,208 +66,566 @@ any situation where digital delivery is preferred over printed distribution.
 
 ### Goals
 
-| ID  | Goal |
-| --- | ---- |
-| G1  | Generate single-user PDF account slips via DomPDF with custom card dimensions (241×156mm) |
-| G2  | Generate batch PDF account slips (multiple users in a single PDF) for bulk printing |
-| G3  | Display user credentials: name, username, email, activation code on each slip |
-| G4  | Freshly generate activation codes via `AccessToken::generateFor()` at slip generation time |
-| G5  | Provide email distribution of activation codes via `ActivationCodeNotification` |
-| G6  | Support activation code regeneration without account recreation |
-| G7  | Integrate slip operations into user management Livewire components via `DownloadsAccountSlips` trait |
-| G8  | Display account slip modal with credential preview, download, regenerate, and send actions |
+- **Single-user PDF slips at card size** — DomPDF, 241×156mm, streamed to the browser. *Why:* classroom handouts need a printable card, not a web page.
+- **Batch PDFs for bulk printing** — all selected users in one multi-card file. *Why:* five hundred imports cannot mean five hundred downloads.
+- **Current-state credentials on every slip** — name, username, email, fresh activation code. *Why:* a slip showing last month's code is worse than no slip.
+- **Fresh activation code per generation** — minted at view time, 30-day expiry. *Why:* printed codes must be alive when the student types them.
+- **Regeneration without account surgery** — new code, same account, old code superseded. *Why:* lost slips must be recoverable without touching identity.
+- **Email delivery as second channel** — activation notification on demand. *Why:* staff accounts and connected students prefer inbox over paper.
+- **Slip operations inside the managers** — trait plus modal in every role table. *Why:* slips happen where the users are listed, not on a separate pilgrimage.
+- **Preview before print** — modal showing exactly what the PDF will carry. *Why:* printing five hundred wrong slips is the mistake this prevents.
 
 ### Non-Goals
 
-| ID   | Non-Goal |
-| ---- | -------- |
-| NG1  | Customizable slip templates or school-configurable layouts |
-| NG2  | Digital certificate-style slips with QR codes or digital signatures |
-| NG3  | Automatic email delivery of slips on account creation (on-demand only) |
-| NG4  | Slip generation for non-user entities (certificates, reports, etc.) |
-| NG5  | Bulk email delivery of slips to all imported users in one operation |
-| NG6  | Slip PDF storage on disk (PDFs are streamed to browser, not persisted) |
+- **School-configurable slip layouts**. *Why:* one fixed card keeps printing predictable across schools.
+- **QR codes or digital signatures on slips**. *Why:* verification ceremony belongs to certificates, not credentials.
+- **Automatic slip email on account creation**. *Why:* delivery stays on-demand; bulk auto-send is explicitly out.
+- **Slips for non-user entities**. *Why:* certificates and reports own their own rendering paths.
+- **Bulk email blasts to all imported users**. *Why:* one-click mass credential email is a phishing-shaped feature.
+- **PDF persistence on disk**. *Why:* stored slips would be stale-credential archives; streaming keeps every PDF current.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-EWCZ0-1 — Admin Downloads Account Slip After Single User Creation
+Single slip, batch slip, code maintenance, email, and preview. Each row is verified by a
+Feature test with real PDF rendering or notification delivery.
 
-**Actor:** Admin / Super Admin
-**Preconditions:** Admin has created a user account (or navigated to an existing user)
-**Flow:**
-1. Admin clicks the account slip action for a specific user in the user management table
-2. Account slip modal opens, showing: name, username, email, activation code
-3. Activation code is freshly generated via `AccessToken::generateFor()` (type: `activation`)
-4. Admin clicks "Download Slip" button
-5. `downloadSlip()` method redirects to `AccountSlipController::download()` route
-6. Controller calls `GenerateAccountSlipAction::execute($user)`
-7. Action renders `user.user-management.account-slip-pdf` Blade view with user data
-8. DomPDF renders HTML to PDF with custom paper size [0, 0, 241, 156] (mm)
-9. PDF is streamed to browser as `account-slip-{username}.pdf`
-**Postconditions:** Admin receives PDF account slip for the user, ready for printing
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-ASLIP-001 | Admin downloads a single user's PDF slip with a fresh activation code | P0 | F | Full |
+| UC-ASLIP-002 | Admin batch-downloads one PDF for all checked users | P0 | F | Full |
+| UC-ASLIP-003 | Admin regenerates a user's activation code from the slip modal | P0 | F | Full |
+| UC-ASLIP-004 | Admin emails the activation code to the user from the slip modal | P1 | F | Full |
+| UC-ASLIP-005 | Admin previews slip contents in the modal before downloading or sending | P1 | F | Full |
 
-### UC-EWCZ0-2 — Admin Batch Downloads Slips for Imported Users
+### 3.1 Generation
 
-**Actor:** Admin
-**Preconditions:** Multiple users have been selected via checkboxes in the user management table
-**Flow:**
-1. Admin selects multiple users via checkboxes in the table
-2. Admin clicks "Download Selected Slips" batch action
-3. `downloadSelectedSlips()` method checks that `selectedIds` is not empty
-4. If empty, shows warning flash: "No records selected"
-5. If not empty, redirects to `AccountSlipController::downloadBatch()` with `ids` query parameter
-6. Controller parses comma-separated IDs, fetches users via `User::whereIn('id', $ids)->get()`
-7. Controller calls `GenerateAccountSlipAction::executeBatch($users)`
-8. For each user: generates activation code, renders PDF Blade view, appends to HTML
-9. DomPDF renders concatenated HTML to single PDF with custom paper size [0, 0, 241, 156] (mm)
-10. PDF is streamed to browser as `account-slips-batch.pdf`
-**Postconditions:** Admin receives single PDF containing all selected users' account slips
+#### UC-ASLIP-001 — One student, one card, one minute
 
-### UC-EWCZ0-3 — Admin Regenerates Activation Code
+The admin clicks the slip action on a new student's row; the modal opens showing name,
+monospace username, email, and a freshly minted activation code with its 30-day note.
+Download streams `account-slip-{username}.pdf` — a 241×156mm card rendered from current
+record state. The whole errand, from click to printable file, fits inside a minute, which
+is exactly the budget it has during enrollment week.
 
-**Actor:** Admin
-**Preconditions:** Account slip modal is open for a user
-**Flow:**
-1. Admin clicks "Regenerate Code" button in the account slip modal
-2. `regenerateCode()` method calls `AccessToken::generateFor()` for the `slipUser`
-3. New activation code replaces the current `slipCode` value
-4. Flash success message: "Code regenerated"
-5. Modal updates to display the new activation code
-**Postconditions:** New activation code displayed; previous code invalidated
+#### UC-ASLIP-002 — Morning after the big import
 
-### UC-EWCZ0-4 — Admin Sends Activation Code via Email
+Five hundred accounts landed overnight; five hundred separate downloads would end the
+morning. The admin checks all, hits the batch action, and receives one multi-card PDF —
+each card with its own fresh code — ready for the print shop. Empty selection answers with
+a warning instead of an empty file, because the honest response to "print nothing" is a
+question, not a blank page.
 
-**Actor:** Admin
-**Preconditions:** Account slip modal is open with a valid activation code
-**Flow:**
-1. Admin clicks "Send Code" button in the account slip modal
-2. `sendCode()` method checks that `slipUser` and `slipCode` are set
-3. Sends `ActivationCodeNotification` to the user with the current code
-4. Notification delivered via `mail` channel (email) and `CustomDatabaseChannel` (in-app)
-5. Flash success message: "Code sent"
-**Postconditions:** User receives email with activation code and activation link
+### 3.2 Code Care & Preview
 
-### UC-EWCZ0-5 — Admin Views Account Slip Preview Before Download
+#### UC-ASLIP-003 — The lost slip gets a new code
 
-**Actor:** Admin
-**Preconditions:** Admin has triggered account slip for a user
-**Flow:**
-1. Account slip modal opens with `showAccountSlip = true`
-2. Modal displays user info card: name, username (monospace), email
-3. Modal displays activation code prominently (large monospace, selectable text, 30-day expiry note)
-4. Modal shows three action buttons: Download Slip, Regenerate Code, Send Code
-5. Admin reviews the information before deciding to download or send
-**Postconditions:** Admin has visual confirmation of slip content before action
+A student returns with a crumpled, month-old slip whose code long expired. No new account,
+no password surgery: one Regenerate click mints a replacement, the modal shows it, the old
+code dies quietly. Recovery takes seconds and teaches nothing to nobody — the account never
+changed, only its key did.
+
+#### UC-ASLIP-004 — The connected teacher gets email
+
+For the new teacher with a working inbox, paper is the slow path. Send Code dispatches the
+activation notification carrying the current code — by mail and in-app — with a confirmation
+flash closing the loop. Same credential, different envelope, chosen per recipient rather
+than per system.
+
+#### UC-ASLIP-005 — Look before you print
+
+Before any download or send, the modal lays out the card's contents — identity block,
+prominent selectable code, expiry note, three action buttons — so the admin verifies with
+eyes, not faith. Preview is the cheapest quality gate in the building: one glance prevents
+a reprint run.
 
 ---
 
 ## 4. Functional Requirements
 
-### PDF Generation
+PDF generation, code lifecycle, trait, modal, controller, routes. Every row is implemented
+and verified.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-AS1 | `GenerateAccountSlipAction` must extend `BaseCommandAction` |
-| FR-EWCZ0-AS2 | `execute(User $user): Response` must generate a single-user PDF via DomPDF |
-| FR-EWCZ0-AS3 | `executeBatch(array $users): Response` must generate a multi-user PDF via DomPDF |
-| FR-EWCZ0-AS4 | PDF paper size must be custom: `[0, 0, 241, 156]` (width: 241mm, height: 156mm) |
-| FR-EWCZ0-AS5 | Single-user PDF must be streamed as `account-slip-{username}.pdf` |
-| FR-EWCZ0-AS6 | Batch PDF must be streamed as `account-slips-batch.pdf` |
-| FR-EWCZ0-AS7 | PDF must be rendered from `user.user-management.account-slip-pdf` Blade view |
-| FR-EWCZ0-AS8 | Blade view must receive `$user` (User model) and `$code` (plain-text activation code) |
-| FR-EWCZ0-AS9 | PDF generation must log an `account_slip_generated` activity with user context |
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-ASLIP-001 | `GenerateAccountSlipAction` extends `BaseCommandAction` | P0 | A | Full |
+| FR-ASLIP-002 | `execute(User $user)` renders one user's PDF through DomPDF and streams it | P0 | F | Full |
+| FR-ASLIP-003 | `executeBatch(array $users)` renders all given users into one multi-card PDF and streams it | P0 | F | Full |
+| FR-ASLIP-004 | PDF paper size is the custom card `[0, 0, 241, 156]` (241mm by 156mm) | P0 | F | Full |
+| FR-ASLIP-005 | Single-user PDFs stream as `account-slip-{username}.pdf` | P1 | F | Full |
+| FR-ASLIP-006 | Batch PDFs stream as `account-slips-batch.pdf` | P1 | F | Full |
+| FR-ASLIP-007 | PDFs render from the `user.user-management.account-slip-pdf` Blade view | P0 | F | Full |
+| FR-ASLIP-008 | The view receives the User model as `$user` and the plaintext code as `$code` | P0 | F | Full |
+| FR-ASLIP-009 | Every generation writes a PII-masked `account_slip_generated` activity entry with user context | P0 | F | Full |
+| FR-ASLIP-010 | Every slip generation mints a fresh code via `AccessToken::generateFor()` for `activation` | P0 | F | Full |
+| FR-ASLIP-011 | `showSlip(string $id)` mints the code and holds it in `$slipCode` | P0 | F | Full |
+| FR-ASLIP-012 | Regeneration mints a new token, superseding the previous code | P0 | F | Full |
+| FR-ASLIP-013 | Activation codes expire after 30 days per the `AccessToken` model | P0 | F | Full |
+| FR-ASLIP-014 | `$slipCode` holds the `plain_text` value from the generation result | P0 | F | Full |
+| FR-ASLIP-015 | Slip generation for an ineligible account (archived or suspended) is refused via `RejectedException` | P0 | F | Full |
+| FR-ASLIP-016 | The trait exposes `$showAccountSlip`, `$slipUser`, and `$slipCode` state | P1 | F | Full |
+| FR-ASLIP-017 | `showSlip(string $id)` finds the user, mints the code, and opens the modal | P0 | F | Full |
+| FR-ASLIP-018 | `regenerateCode()` mints a replacement code and flashes translated success | P0 | F | Full |
+| FR-ASLIP-019 | `sendCode()` delivers `ActivationCodeNotification` with the current code and flashes translated success | P1 | F | Full |
+| FR-ASLIP-020 | `downloadSlip()` redirects to the single-slip named route | P0 | F | Full |
+| FR-ASLIP-021 | `downloadSelectedSlips()` redirects to the batch route with comma-separated ids | P0 | F | Full |
+| FR-ASLIP-022 | `downloadSelectedSlips()` flashes a translated warning on empty selection | P1 | F | Full |
+| FR-ASLIP-023 | Every trait flash message resolves through `__()` | P0 | A | Full |
+| FR-ASLIP-024 | The modal uses `x-ts-modal` bound to `showAccountSlip` at size `sm` | P1 | F | Full |
+| FR-ASLIP-025 | The modal shows name, monospace username, email, and a large selectable activation code | P0 | F | Full |
+| FR-ASLIP-026 | The modal states the 30-day code expiry beside the code | P1 | F | Full |
+| FR-ASLIP-027 | The modal wires a Download Slip button to `downloadSlip` | P0 | F | Full |
+| FR-ASLIP-028 | The modal wires a Regenerate Code button to `regenerateCode` with spinner state | P0 | F | Full |
+| FR-ASLIP-029 | The modal wires a Send Code button to `sendCode` with spinner state | P1 | F | Full |
+| FR-ASLIP-030 | The modal offers a Close action | P1 | F | Full |
+| FR-ASLIP-031 | The modal uses a separator with `backdrop-blur-sm` styling | P2 | F | Full |
+| FR-ASLIP-032 | `AccountSlipController` is a `final` class receiving `GenerateAccountSlipAction` by constructor injection | P0 | A | Full |
+| FR-ASLIP-033 | `download()` delegates to `$action->execute($user)` | P0 | F | Full |
+| FR-ASLIP-034 | `downloadBatch()` parses the comma-separated `ids` query parameter | P0 | F | Full |
+| FR-ASLIP-035 | `downloadBatch()` loads users via `whereIn` and delegates to `$action->executeBatch()` | P0 | F | Full |
+| FR-ASLIP-036 | Constructor injection is the only resolution path; no service-locator calls | P0 | A | Full |
+| FR-ASLIP-037 | Single-slip route is `GET /admin/users/{user}/account-slip` → `download` | P0 | F | Full |
+| FR-ASLIP-038 | Batch route is `GET /admin/users/account-slips/download?ids=...` → `downloadBatch` | P0 | F | Full |
+| FR-ASLIP-039 | Both routes require `auth` middleware | P0 | F | Full |
+| FR-ASLIP-040 | Both routes require `role:super_admin\|admin` middleware | P0 | F | Full |
+| FR-ASLIP-041 | Route names are `admin.users.account-slip` and `admin.users.account-slips.batch` | P1 | F | Full |
+| FR-ASLIP-042 | Slip operations enforce dual-layer authorization: route/policy gating plus Action-level `RejectedException` refusal | P0 | A | Full |
 
-### Activation Code Lifecycle
+### 4.1 PDF Generation
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-AC1 | Each slip generation must create a fresh activation code via `AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation'])` |
-| FR-EWCZ0-AC2 | `DownloadsAccountSlips::showSlip(string $id)` must generate activation code and store in `$slipCode` |
-| FR-EWCZ0-AC3 | `regenerateCode()` must invalidate the previous code by generating a new `AccessToken` |
-| FR-EWCZ0-AC4 | Activation codes must expire after 30 days (enforced by `AccessToken` model) |
-| FR-EWCZ0-AC5 | `$slipCode` must contain the `plain_text` value from `AccessToken::generateFor()` result |
+#### FR-ASLIP-001 — The generator wears the uniform
 
-### DownloadsAccountSlips Trait
+Extending `BaseCommandAction` gives generation its transaction discipline, error mapping,
+and `$this->log()` audit path for free. A PDF Action might look read-only, but it mints
+tokens and writes audit entries — side effects that deserve the Command contract. The scan
+proves the inheritance; reviewers never wonder.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-DA1 | Trait must provide `$showAccountSlip` (bool), `$slipUser` (?User), `$slipCode` (string) properties |
-| FR-EWCZ0-DA2 | `showSlip(string $id)` must find User by ID, generate activation code, set modal open state |
-| FR-EWCZ0-DA3 | `regenerateCode()` must generate new activation code, flash success message |
-| FR-EWCZ0-DA4 | `sendCode()` must send `ActivationCodeNotification` with current code, flash success message |
-| FR-EWCZ0-DA5 | `downloadSlip()` must redirect to `admin.users.account-slip` named route |
-| FR-EWCZ0-DA6 | `downloadSelectedSlips()` must redirect to `admin.users.account-slips.batch` route with comma-separated IDs |
-| FR-EWCZ0-DA7 | `downloadSelectedSlips()` must flash warning if `selectedIds` is empty |
-| FR-EWCZ0-DA8 | All flash messages must use `__()` translation helper |
+#### FR-ASLIP-002 — One user in, one card out
 
-### Account Slip Modal
+Trace the call: controller hands a User, the Action mints a fresh code, renders the Blade
+card with user plus code, DomPDF converts, the response streams. Each step depends on the
+last, which is why one Action owns the chain instead of scattering it across controller
+helpers. Single-purpose, single-owner, single test path.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-M1 | Modal must use `x-ts-modal` with `wire="showAccountSlip"` (TallstackUI) |
-| FR-EWCZ0-M2 | Modal must display: name, username (monospace), email, activation code (large, selectable) |
-| FR-EWCZ0-M3 | Modal must show activation code expiry note: 30 days |
-| FR-EWCZ0-M4 | Modal must provide "Download Slip" button wired to `downloadSlip` |
-| FR-EWCZ0-M5 | Modal must provide "Regenerate Code" button wired to `regenerateCode` with spinner |
-| FR-EWCZ0-M6 | Modal must provide "Send Code" button wired to `sendCode` with spinner |
-| FR-EWCZ0-M7 | Modal must provide "Close" action button |
-| FR-EWCZ0-M8 | Modal must use separator and `backdrop-blur-sm` styling, size `sm` |
+#### FR-ASLIP-003 — Many users in, one file out
 
-### HTTP Controller
+Batch execution loops the same single-card render per user and concatenates the HTML
+before one DomPDF pass — the print shop receives one file, not a zip of five hundred. Per
+user a fresh code, per batch a single filename. The loop reuses the single path's pieces
+so batch and single can never disagree about what a card contains.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-CTL1 | `AccountSlipController` must be a `final` class in `App\SysAdmin\Http\Controllers` |
-| FR-EWCZ0-CTL2 | `download(User $user, GenerateAccountSlipAction $action)` must delegate to `$action->execute($user)` |
-| FR-EWCZ0-CTL3 | `downloadBatch(Request $request, GenerateAccountSlipAction $action)` must parse comma-separated `ids` parameter |
-| FR-EWCZ0-CTL4 | `downloadBatch` must fetch users via `User::whereIn('id', $ids)->get()` and pass array to `$action->executeBatch()` |
-| FR-EWCZ0-CTL5 | Controller must receive `GenerateAccountSlipAction` via constructor injection (no service locator) |
+#### FR-ASLIP-004 — A card, not a page
 
-### Routes
+241 by 156 millimeters fits the credential facts without an ocean of margin and tiles
+neatly onto standard stock at print time. Standard A4 would waste most of the sheet per
+student and look like a ransom note of whitespace. The custom size is set per request, so
+the global A4 default serving every other document stays untouched.
 
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-EWCZ0-R1 | Single slip route: `GET /admin/users/{user}/account-slip` → `AccountSlipController::download` |
-| FR-EWCZ0-R2 | Batch slip route: `GET /admin/users/account-slips/download?ids=...` → `AccountSlipController::downloadBatch` |
-| FR-EWCZ0-R3 | Both routes must require `auth` middleware |
-| FR-EWCZ0-R4 | Both routes must require `role:super_admin\|admin` middleware |
-| FR-EWCZ0-R5 | Route names: `admin.users.account-slip` (single), `admin.users.account-slips.batch` (batch) |
+- Dimensions live as named constants on the Action, not magic numbers at the call site.
+- DomPDF receives the box per render; no global config is mutated.
+
+#### FR-ASLIP-005 — Filenames that file themselves
+
+`account-slip-{username}.pdf` sorts, searches, and identifies in a downloads folder without
+opening. The username inside the filename matches the username inside the card — a small
+consistency with outsized value when an admin downloads twelve singles in a row.
+
+#### FR-ASLIP-006 — One name for every batch
+
+`account-slips-batch.pdf`, always: the plural marks it, the fixed name keeps print-shop
+instructions simple ("print the batch file"). Contents vary; the handle never does, so
+spoken instructions survive from term to term.
+
+#### FR-ASLIP-007 — One view, every card
+
+All cards render from the same Blade template, single and batch alike. A branding change
+touches one file and reaches both paths simultaneously — the alternative, two templates
+drifting apart until batch cards show last year's logo, is precisely what this row
+forecloses.
+
+#### FR-ASLIP-008 — Two variables, fully specified
+
+`$user` carrying identity, `$code` carrying the plaintext secret: the view's entire world,
+named and typed. Constraining the view's inputs keeps credential rendering reviewable —
+nothing else is in scope to leak, because nothing else is in scope at all.
+
+#### FR-ASLIP-009 — Printing leaves a masked trail
+
+Each generation logs `account_slip_generated` with the subject's id through SmartLogger —
+actor, target, timestamp — with contact details masked before either channel. When a Plain
+code is later misused, this entry answers who printed what for whom and when, without
+itself becoming a credential leak investigators must then protect.
+
+### 4.2 Activation Code Lifecycle
+
+#### FR-ASLIP-010 — Freshness is generated, not assumed
+
+Minting at generation time through `AccessToken::generateFor()` guarantees the printed
+code is alive, full-validity, and tied to this moment. Reusing a stored code would print
+whatever remains of its window — possibly hours. Freshness by construction beats expiry
+arithmetic in every reviewer's head.
+
+#### FR-ASLIP-011 — Viewing mints, holding displays
+
+`showSlip()` performs the mint the instant the modal opens, so the displayed code was born
+seconds ago with its whole 30 days ahead. Display and validity start together; there is no
+stale-code window between "generated yesterday" and "viewed today" because generation and
+viewing are the same gesture.
+
+#### FR-ASLIP-012 — Regeneration replaces, never duplicates
+
+The new token supersedes the old: exactly one live code per user after the click. Two
+simultaneously valid codes would double the attack surface and confuse every "which code
+do I type?" conversation. Replacement semantics keep the answer singular.
+
+#### FR-ASLIP-013 — Thirty days, enforced by the token
+
+Expiry lives in the `AccessToken` model, not in slip code — slips display the window, they
+do not implement it. Thirty days covers the print-to-activate journey with margin while
+bounding the life of a secret traveling on paper. Centralized expiry means one policy
+change reaches every slip ever printed that is still unredeemed.
+
+#### FR-ASLIP-014 — Plaintext travels in memory only
+
+`$slipCode` carries the one-time plaintext the hashed store can never return — shown,
+emailed, rendered, then gone with the request. Persisting it anywhere would defeat the
+hashing; the property's lifetime is the session's lifetime, and nothing longer.
+
+#### FR-ASLIP-015 — Dead accounts get no new keys
+
+Minting a live code for an archived or suspended user would hand a working key to a closed
+door — confusing at best, a policy hole at worst. The `RejectedException` refusal names
+the account state so the admin learns why instead of staring at a generic failure. Business
+rules, enforced where the business happens.
+
+### 4.3 Trait
+
+#### FR-ASLIP-016 — Three properties, one concern
+
+Open flag, subject, code: the trait's entire state surface, prefixed against collisions in
+whatever manager hosts it. Three properties is the whole API the modal needs — anything
+more would leak manager internals into shared code. Small surface, many hosts.
+
+#### FR-ASLIP-017 — One call opens the whole flow
+
+Find, mint, open: `showSlip()` performs the trio that every manager's slip button needs,
+identically. Centralizing here means the student, teacher, and supervisor tables cannot
+diverge in behavior — the slip experience is one experience with many doors.
+
+#### FR-ASLIP-018 — Regeneration confirms itself
+
+New code minted, translated success flashed, modal updated in place. The flash matters:
+without it the admin cannot tell a fresh code from the one already on screen, and prints
+the old card twice. Feedback closes the loop the mint opened.
+
+#### FR-ASLIP-019 — Sending confirms itself too
+
+Notification dispatched with the current code, translated success flashed. Delivery runs
+through mail plus the in-app channel, so the code survives a down mail server in the
+recipient's notification box. One gesture, two channels, zero ambiguity about whether it
+sent.
+
+#### FR-ASLIP-020 — Downloads leave through the named door
+
+Redirecting to `admin.users.account-slip` instead of building responses inline keeps HTTP
+mechanics in the controller and state mechanics in the component. The trait asks; the route
+serves. Separation here is what lets the controller stay thin enough to read in one
+glance.
+
+#### FR-ASLIP-021 — Batches leave through the batch door
+
+Comma-separated ids ride the redirect to the batch route — the selection serialized into
+a GET the controller parses back. Simple, bookmarkable, and visible in logs, which beats a
+POST body for an operation the admin may need to describe to support later.
+
+#### FR-ASLIP-022 — Nothing checked, kindly said
+
+Empty selection meets a translated warning, not an empty PDF or an exception page. The
+kindest error in the system: it assumes a misclick, says so politely, and leaves all state
+untouched for the retry that follows within seconds.
+
+#### FR-ASLIP-023 — Every word translatable
+
+All trait flashes resolve through `__()` — the modal speaks Indonesian or English with the
+session, never a hardcoded fragment. Shared-trait strings multiply across every host
+manager, so one hardcoded sentence here would echo in five tables.
+
+### 4.4 Modal
+
+#### FR-ASLIP-024 — The TallstackUI shell at small size
+
+`x-ts-modal` bound to the open flag, size `sm`: the card preview needs focus, not acreage.
+Standard shell means standard keyboard and backdrop behavior inherited, not reimplemented.
+Small is a choice — the modal previews a card, it does not reproduce the print shop.
+
+#### FR-ASLIP-025 — Identity plus secret, clearly separated
+
+Name, monospace username, email above; large selectable code below — layout that teaches
+which part is typed once (identity) and which is typed once and secrets away (code).
+Monospace plus select-all makes transcription errors rare; visual hierarchy makes the
+code unmissable.
+
+#### FR-ASLIP-026 — The deadline sits beside the code
+
+"Valid 30 days" next to the code sets the student's clock at first glance. Expiry
+discovered at login time feels like betrayal; expiry stated at handover feels like terms.
+One line prevents a month-later support conversation.
+
+#### FR-ASLIP-027 — Download one click away
+
+The button calls `downloadSlip` and nothing else — no options, no dialogs, no format
+choices. Single-purpose buttons survive tired admins at midnight; clever ones do not. The
+wire name matches the trait method exactly, keeping the template greppable.
+
+#### FR-ASLIP-028 — Regeneration shows its work
+
+Spinner state on the regenerate button covers the mint round-trip, so double-clicks do not
+mint double codes. Async honesty in one attribute: the button admits it is busy instead of
+inviting the click that creates the duplicate the admin then cannot distinguish.
+
+#### FR-ASLIP-029 — Sending shows its work too
+
+Same spinner discipline on send — delivery takes time, and the button says so while it
+happens. Two spinners, one rule: every async gesture in the modal reports its own
+progress, and none accepts a second press mid-flight.
+
+#### FR-ASLIP-030 — An obvious way out
+
+Close always present, always working, keyboard reachable. A modal without a clear exit
+traps the admin's attention hostage; this one releases it on demand. Small row, large
+courtesy.
+
+#### FR-ASLIP-031 — Quiet, consistent chrome
+
+Separator plus soft-blur backdrop at small size: the modal looks like every other modal in
+the system. Visual consistency is not vanity here — admins operate five managers, and
+chrome that shifts per table slows every interaction by a fraction that compounds.
+
+### 4.5 Controller
+
+#### FR-ASLIP-032 — Final class, injected collaborator
+
+`final` forbids the subclass that would override `download` into inconsistency; constructor
+injection names the Action dependency where tests can see and substitute it. No service
+locator, no hidden resolution — the controller's needs are its signature.
+
+#### FR-ASLIP-033 — Single download is one line
+
+Delegation, pure and simple: receive User, call execute, return the stream. A controller
+action this thin cannot harbor bugs — there is nowhere for them to hide. Thinness here is
+verified by reading, all eight words of it.
+
+#### FR-ASLIP-034 — The query string is parsed, not trusted
+
+Comma-separated `ids` split, trimmed, and filtered before any query runs — malformed
+segments die at parse time, never reaching the database as confusing errors. Input
+hygiene at the boundary keeps the failure messages about the request, not the schema.
+
+#### FR-ASLIP-035 — Batch loads exactly the asked set
+
+`whereIn` on the parsed ids, then delegation to `executeBatch()`: the file contains the
+checked rows and only them. Exactness is a privacy property when selections are sensitive
+— the batch must not freelance with extra records.
+
+#### FR-ASLIP-036 — Injection is the only path
+
+Banning service-locator calls forces every dependency into the constructor, where the
+container, the tests, and the next maintainer all find it. Hidden resolution is how
+controllers become untestable; this row keeps them honest by construction.
+
+### 4.6 Routes & Authorization
+
+#### FR-ASLIP-037 — The single-slip address
+
+Fixed path, route-model-bound user, one controller method: the address printed in admin
+guides and linked from the trait. Stability matters — spoken instructions ("open the
+user's slip page") assume it — so the path is specified, not incidental.
+
+#### FR-ASLIP-038 — The batch address with its query
+
+Fixed path plus `ids` parameter: the batch counterpart, equally stable. GET keeps the
+operation describable and log-visible; the parameter contract is pinned so trait and
+controller cannot drift apart.
+
+#### FR-ASLIP-039 — Login required, no exceptions
+
+`auth` on both routes: slips carry secrets, and secrets never travel to anonymous
+browsers. The middleware runs before any user lookup, so unauthenticated probes learn
+nothing — not even whether an id exists.
+
+#### FR-ASLIP-040 — Admin roles only
+
+`role:super_admin|admin` narrows further: authenticated students must not mint codes for
+anyone, including themselves. Credential power concentrates in the hands already holding
+user administration. Two middleware, two concentric walls.
+
+#### FR-ASLIP-041 — Names both ends agree on
+
+`admin.users.account-slip` and `admin.users.account-slips.batch`: the trait redirects by
+these names, the routes register them. Naming the contract kills the string-duplication
+bug where a renamed route orphans a redirect nobody tested.
+
+#### FR-ASLIP-042 — Two layers say no
+
+Route and policy gating stop unauthorized clicks; the Action's `RejectedException`
+refusal stops direct invocations that skip HTTP entirely. Tinker sessions and future
+callers meet the same wall the browser meets — authorization travels with the operation,
+not with its wrapper.
 
 ---
 
 ## 5. Non-Functional Requirements
 
-| ID    | Requirement |
-| ----- | ----------- |
-| NFR-EWCZ0-S1 | Activation codes must be generated server-side, never exposed in client JavaScript |
-| NFR-EWCZ0-S2 | Account slip routes must enforce admin role authorization |
-| NFR-EWCZ0-S3 | User data on PDF slips must not be accessible to other users or public |
-| NFR-EWCZ0-S4 | Activation token must not be stored in plaintext in database (hashed by `AccessToken` model) |
-| NFR-EWCZ0-R1 | Batch slip generation must not fail entirely if one user's code generation fails |
-| NFR-EWCZ0-R2 | `downloadSlip()` and `sendCode()` must silently return if `$slipUser` is null (defensive guard) |
-| NFR-EWCZ0-R3 | PDF generation errors must not expose stack traces to the admin user |
-| NFR-EWCZ0-U1 | Account slip PDF must include proper heading structure (H1 for school name, H2 for user info) |
-| NFR-EWCZ0-U2 | Activation code must be displayed in monospace font for readability and copy-paste |
-| NFR-EWCZ0-U3 | Modal must display all user info fields with clear labels (uppercase, tracking-wider) |
-| NFR-EWCZ0-U4 | Download button must show spinner during PDF generation |
-| NFR-EWCZ0-U5 | Flash messages must confirm success/failure for: code regeneration, code send, batch selection |
-| NFR-EWCZ0-A1 | Account slip modal must meet WCAG 2.1 Level AA (keyboard navigable, screen reader accessible) |
-| NFR-EWCZ0-A2 | Activation code text must use `select-all` class for easy copying |
-| NFR-EWCZ0-A3 | Modal must trap focus while open |
-| NFR-EWCZ0-A4 | PDF must include text alternatives for all visual elements |
-| NFR-EWCZ0-M1 | `GenerateAccountSlipAction` must use Action single-responsibility (no Livewire mutations) |
-| NFR-EWCZ0-M2 | `DownloadsAccountSlips` trait must not directly mutate models — must delegate to Actions |
-| NFR-EWCZ0-M3 | All PHP files must declare `strict_types=1` |
-| NFR-EWCZ0-L1 | All user-facing strings in account slip UI must use `__()` translation helper |
-| NFR-EWCZ0-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-ASLIP-001 | Activation codes are minted server-side and never exposed in client script | Zero code logic in JS | P0 | A | Full |
+| NFR-ASLIP-002 | Slip routes enforce admin-role authorization | Non-admin requests refused | P0 | F | Full |
+| NFR-ASLIP-003 | One user's slip data is never reachable by another user or the public | Auth + role on every path | P0 | F | Full |
+| NFR-ASLIP-004 | Activation tokens persist hashed; plaintext exists only in transit | Zero plaintext at rest | P0 | A | Full |
+| NFR-ASLIP-005 | One user's code failure never aborts the whole batch | Valid cards still land | P0 | F | Full |
+| NFR-ASLIP-006 | Null subject or code makes trait actions return silently instead of erroring | Zero null-pointer flashes | P1 | F | Full |
+| NFR-ASLIP-007 | PDF failures surface a generic message; stack traces never reach the admin | Generic message only | P1 | F | Full |
+| NFR-ASLIP-008 | Slip PDFs carry proper heading structure for school name and user info | H1 school, H2 identity | P2 | F | Full |
+| NFR-ASLIP-009 | Codes render monospace for readability and copy-paste | Monospace + select-all | P1 | F | Full |
+| NFR-ASLIP-010 | Modal fields carry clear uppercase tracking-wider labels | Labeled every field | P1 | F | Full |
+| NFR-ASLIP-011 | Download and send controls show spinner state while working | No double-submit | P1 | F | Full |
+| NFR-ASLIP-012 | Every slip operation confirms via flash, success or failure | Zero silent outcomes | P1 | F | Full |
+| NFR-ASLIP-013 | The modal is keyboard-navigable with trapped focus and screen-reader labels | Focus trapped; Esc closes | P1 | B | Full |
+| NFR-ASLIP-014 | Generation stays in the Action; Livewire never mutates models | Zero model writes in trait | P0 | A | Full |
+| NFR-ASLIP-015 | The trait delegates persistence to Actions and owns none | Zero direct writes | P0 | A | Full |
+| NFR-ASLIP-016 | All PHP files declare `strict_types=1` | 100% of slip files | P0 | A | Full |
+| NFR-ASLIP-017 | Every user-facing string in slip UI passes through `__()` | Zero hardcoded strings | P0 | A | Full |
+| NFR-ASLIP-018 | Translation keys exist in both `lang/en/` and `lang/id/` | Keys mirrored both locales | P0 | A | Full |
+| NFR-ASLIP-019 | Slip activity entries mask PII before either log channel | Zero raw PII in logs | P0 | F | Full |
+
+### 5.1 Security
+
+#### NFR-ASLIP-001 — Secrets are born on the server
+
+No code value, generator, or token material ever appears in JavaScript — minting happens
+in PHP, the client receives only the finished string to display. Client-side secret logic
+would expose the mint to anyone reading page source; server-side keeps the machinery
+where the authorization already runs.
+
+#### NFR-ASLIP-002 — The door checks badges twice
+
+Auth plus role middleware on both routes: the combination that keeps students, guests, and
+expired sessions out of credential generation. Tested by knocking unauthorized — each
+refusal asserted, each bypass attempt logged nowhere because it never gets inside.
+
+#### NFR-ASLIP-003 — Your slip is yours alone
+
+Route binding plus role plus ownership-blind admin scope means no URL guessing reaches
+another user's credentials. The invariant is simple to state and critical to hold: slips
+are admin-vended per recipient, never browsable, never enumerable.
+
+#### NFR-ASLIP-004 — Hashes at rest, plaintext in flight
+
+The token store holds hashes; only the freshly minted response carries plaintext, once.
+A database backup, a log file, a curious query — none reveal a usable code. Hashing is the
+difference between a leaked table and a leaked system.
+
+#### NFR-ASLIP-019 — The audit trail wears a mask
+
+Names, emails, and codes are masked before the slip activity entry reaches either channel,
+so the log proves printing happened without becoming a credential archive itself. An
+investigator reading the trail learns who, when, and for whom — never the secret that
+would let them impersonate the answer.
+
+### 5.2 Reliability
+
+#### NFR-ASLIP-005 — Batches bend around the broken
+
+One user's mint failure skips that card with a recorded reason while the rest still print
+— five hundred minus one beats zero plus an error page. Partial success is the specified
+batch behavior, matching the import pipeline's philosophy row for row.
+
+#### NFR-ASLIP-006 — Nulls exit quietly
+
+Stale modals, raced deletions, double clicks: when subject or code is missing, the trait
+returns instead of exploding. Defensive silence here is correct — the user's next click
+rebuilds valid state, and an exception page would punish them for the system's timing.
+
+#### NFR-ASLIP-007 — Failures speak generically
+
+PDF engine errors become "generation failed, try again" — never a stack trace naming
+paths, versions, and internals to whoever happens to be operating. Details go to the
+system log with context; the admin gets composure, not internals.
+
+### 5.3 Experience & Structure
+
+#### NFR-ASLIP-008 — Documents with a skeleton
+
+H1 for the school, H2 for identity: heading structure that survives PDF conversion into
+something assistive tech and print pipelines can navigate. Structure costs nothing at
+authoring time and pays every time the document outlives its first printing.
+
+#### NFR-ASLIP-009 — Codes built for transcription
+
+Monospace plus select-all turns a 32-character secret from a typing ordeal into a copy
+gesture. Every character distinguishable, the whole string selectable in one action —
+small typographic choices with outsized effect on activation success rates.
+
+#### NFR-ASLIP-010 — Labels that announce themselves
+
+Uppercase, letter-spaced labels above every field: name, username, email, code each
+introduced before shown. Structure the eye can scan at arm's length — the distance of a
+teacher holding a freshly printed card across a desk.
+
+#### NFR-ASLIP-011 — Buttons that admit busyness
+
+Spinners on download and send during their async work: the interface confesses it is
+occupied instead of inviting the second click that mints the duplicate. Honest controls
+produce patient operators.
+
+#### NFR-ASLIP-012 — No silent outcomes
+
+Regeneration, send, batch selection — each answers with a flash, success or failure. An
+operation whose result the admin must infer from scrolling is an operation half built.
+Confirmation is the closing bracket on every gesture.
+
+#### NFR-ASLIP-013 — A modal everyone can operate
+
+Keyboard traversal, trapped focus, Escape to close, labeled controls for screen readers:
+the modal merged its accessibility rows into one because they ship and regress as a unit.
+Credential work must not require a mouse — many school machines barely have a working one.
+
+#### NFR-ASLIP-014 — The Action does, the component asks
+
+Generation, minting, logging: all inside the Action. The trait and modal request and
+render; they never write. One home for side effects means one place to test them, and the
+scan proves the components stayed clean.
+
+#### NFR-ASLIP-015 — Delegation all the way down
+
+The trait owns zero persistence calls — every write flows through an Action's `execute()`.
+Shared UI code that writes directly becomes five managers' worth of divergent writes; a
+trait that only asks keeps all five identical. Asking scales; writing diverges.
+
+#### NFR-ASLIP-016 — Strict types, every file
+
+`declare(strict_types=1)` atop all slip PHP: coercion surprises die at the call boundary
+instead of surfacing as a misrendered card. Strictness is cheapest at the top of the file
+and most expensive everywhere else.
+
+#### NFR-ASLIP-017 — Every word through the helper
+
+`__()` on all slip strings — buttons, flashes, labels, expiry notes. Slips travel to
+parents and community boards; untranslated fragments there embarrass the school, not just
+the software. The helper keeps every word accountable.
+
+#### NFR-ASLIP-018 — Both locales, no gaps
+
+Keys mirrored in English and Indonesian, asserted by scan. A missing key renders as a raw
+identifier on a printed card handed to a parent — the most public failure surface in the
+system. Mirroring is verified, not assumed.
 
 ---
 
 ## 6. API / Data Contracts
 
-### GenerateAccountSlipAction
+### 6.1 GenerateAccountSlipAction
 
 ```php
 // app/Modules/User/UserManagement/Actions/GenerateAccountSlipAction.php
@@ -270,23 +635,18 @@ final class GenerateAccountSlipAction extends BaseCommandAction
     private const int CARD_H = 156; // mm
 
     public function execute(User $user): Response;
-    // 1. Logs 'account_slip_generated' activity
-    // 2. Generates activation code via AccessToken::generateFor()
-    // 3. Renders 'user.user-management.account-slip-pdf' Blade view
-    // 4. Returns PDF as streamed response (account-slip-{username}.pdf)
+    // Refuses ineligible accounts (RejectedException); logs account_slip_generated (PII-masked);
+    // mints activation code; renders account-slip-pdf view; streams account-slip-{username}.pdf
 
     public function executeBatch(array $users): Response;
-    // 1. Iterates over $users array
-    // 2. For each: generates activation code, renders Blade view, appends HTML
-    // 3. Returns concatenated HTML as single PDF (account-slips-batch.pdf)
+    // Per user: guard → mint → render → append; single DomPDF pass;
+    // streams account-slips-batch.pdf; per-user failure skips that card only
 
-    private function download(User $user): Response;
-    // Single-user PDF generation (called by execute)
+    private function download(User $user): Response; // single-user render path
 }
-
 ```
 
-### DownloadsAccountSlips Trait
+### 6.2 DownloadsAccountSlips Trait
 
 ```php
 // app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php
@@ -294,237 +654,175 @@ trait DownloadsAccountSlips
 {
     public bool $showAccountSlip = false;
     public ?User $slipUser = null;
-    public string $slipCode = '';
+    public string $slipCode = ''; // plain_text from generateFor(); request-lived only
 
-    public function showSlip(string $id): void;
-    // Finds user, generates activation code, opens modal
-
-    public function regenerateCode(): void;
-    // Generates new activation code, flashes success
-
-    public function sendCode(): void;
-    // Sends ActivationCodeNotification, flashes success
-
-    public function downloadSlip(): void;
-    // Redirects to single slip download route
-
-    public function downloadSelectedSlips(): void;
-    // Redirects to batch slip download route with selected IDs
+    public function showSlip(string $id): void;        // find + mint + open
+    public function regenerateCode(): void;            // mint replacement + flash
+    public function sendCode(): void;                  // notify + flash
+    public function downloadSlip(): void;              // redirect single route
+    public function downloadSelectedSlips(): void;     // redirect batch route or warn
 }
-
 ```
 
-### AccountSlipController
+### 6.3 AccountSlipController
 
 ```php
 // app/Modules/SysAdmin/Http/Controllers/AccountSlipController.php
 final class AccountSlipController
 {
-    public function download(User $user, GenerateAccountSlipAction $action): mixed;
-    // Delegates to $action->execute($user)
+    public function __construct(protected readonly GenerateAccountSlipAction $slips) {}
 
-    public function downloadBatch(Request $request, GenerateAccountSlipAction $action): mixed;
-    // Parses 'ids' query param, fetches users, delegates to $action->executeBatch()
+    public function download(User $user): mixed;            // delegates execute()
+    public function downloadBatch(Request $request): mixed; // parses ids, delegates executeBatch()
 }
-
 ```
 
-### ActivationCodeNotification
+### 6.4 ActivationCodeNotification
 
 ```php
 // app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php
 class ActivationCodeNotification extends Notification
 {
     public function __construct(public readonly User $user, public readonly string $code);
-
-    public function via(object $notifiable): array;
-    // Returns ['mail', CustomDatabaseChannel::class]
-
+    public function via(object $notifiable): array; // ['mail', CustomDatabaseChannel::class]
     public function toMail(object $notifiable): object;
-    // Subject: __('user.activation.email_subject')
-    // Greeting: user name
-    // Content: activation code, action link (route('activate')), 30-day expiry
-
-    public function toCustomDatabase(object $notifiable): array;
-    // In-app notification with type 'activation_code'
+    // Subject __('user.activation.email_subject'); greeting with user name;
+    // body: code + action link (activate route) + 30-day expiry note
+    public function toCustomDatabase(object $notifiable): array; // type 'activation_code'
 }
-
 ```
 
-### PDF Blade View Contract
+### 6.5 PDF Blade View Contract
 
 ```
 View: user.user-management.account-slip-pdf
 Path: resources/views/user/user-management/account-slip-pdf.blade.php
-Variables:
-  $user — App\User\Models\User (name, username, email)
-  $code — string (plain-text activation code)
-Output: HTML rendered by DomPDF to PDF
-Paper: [0, 0, 241, 156] mm (custom card)
-
+Variables: $user (name, username, email), $code (plaintext activation code)
+Output: HTML rendered by DomPDF; paper [0, 0, 241, 156] mm set per request
 ```
 
-### Routes
+### 6.6 DomPDF Configuration
 
 ```
-GET  /admin/users/{user}/account-slip        → AccountSlipController::download
-     Name: admin.users.account-slip
-     Middleware: auth, role:super_admin|admin
-
-GET  /admin/users/account-slips/download?ids={csv}  → AccountSlipController::downloadBatch
-     Name: admin.users.account-slips.batch
-     Middleware: auth, role:super_admin|admin
-
+Config: config/dompdf.php — global default a4, overridden per slip request
+Backend: CPDF; font dir storage_path('fonts'); chroot realpath(base_path())
+Remote: disabled (no external resources in slips); DPI 96
 ```
 
-### DomPDF Configuration
+### 6.7 Activity Log
 
 ```
-Config: config/dompdf.php
-Paper size override: [0, 0, 241, 156] (set per-request, not global config)
-Default paper size: a4 (global default, overridden for account slips)
-PDF backend: CPDF
-Font directory: storage_path('fonts')
-Chroot: realpath(base_path())
-Enable remote: false (no external resources in PDF)
-DPI: 96
-
+Event: account_slip_generated — context ['user_id' => $user->id]
+Logged by GenerateAccountSlipAction via $this->log() with PII masking (FR-ASLIP-009)
 ```
 
-### Activity Log
+### 6.8 Routes
 
 ```
-Event: account_slip_generated
-Context: ['user_id' => $user->id]
-Logged by: GenerateAccountSlipAction via $this->log()
-
+GET /admin/users/{user}/account-slip            → AccountSlipController::download
+    Name: admin.users.account-slip · Middleware: auth, role:super_admin|admin
+GET /admin/users/account-slips/download?ids={csv} → AccountSlipController::downloadBatch
+    Name: admin.users.account-slips.batch · Middleware: auth, role:super_admin|admin
 ```
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — PDF Account Slips via DomPDF (Not HTML or Email)
+Choices behind the slip system; each names the shape it produced.
 
-**Decision:** Account slips are generated as PDF via `barryvdh/laravel-dompdf`, not rendered as
-HTML pages or sent as email bodies.
-**Rationale:** Indonesian schools require printed credential distribution. Teachers physically hand
-out account slips to students in classrooms. PDF is the universal format for printable documents
-across all operating systems and printers. DomPDF runs server-side without external services or
-API dependencies, which is critical for self-hosted deployments in schools with limited
-infrastructure.
-**Trade-off:** DomPDF has limited CSS support (no flexbox, no grid, limited font loading). Mitigated
-by using simple table-based or block layouts in the slip template. Complex visual designs are
-not required for credential slips.
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-ASLIP-001 | PDF slips via DomPDF, server-side, no external services | P0 | — | — |
+| DD-ASLIP-002 | Custom 241×156mm card instead of A4/Letter | P1 | — | — |
+| DD-ASLIP-003 | Fresh activation code minted on every view, download, and regeneration | P0 | — | — |
+| DD-ASLIP-004 | Slip operations as a Livewire trait, not a standalone component | P1 | — | — |
+| DD-ASLIP-005 | PDFs streamed, never stored on disk | P0 | — | — |
+| DD-ASLIP-006 | Batch as concatenated single-card renders in one DomPDF pass | P0 | — | — |
 
-### DD-2 — Custom Card Dimensions (241×156mm)
+### 7.1 Rendering Shape
 
-**Decision:** Account slips use custom paper size `[0, 0, 241, 156]` (241mm wide, 156mm tall)
-instead of standard A4 or Letter.
-**Rationale:** Account slips are compact credential cards, not full-page documents. The custom
-size produces a card-like format that fits multiple slips per A4 page when printed, reducing
-paper waste. The dimensions are chosen to accommodate the school logo, user credentials, and
-activation code without excessive white space.
-**Trade-off:** Custom sizes may not align perfectly with all printer driver defaults. Mitigated by
-the slip being a standalone PDF that can be positioned on standard paper at print time.
+#### DD-ASLIP-001 — Paper needs PDF, schools need offline
 
-### DD-3 — Fresh Activation Code Per Slip Generation
+HTML pages cannot be handed across a desk; emailed bodies cannot be printed uniformly.
+DomPDF runs inside the deployment with no external service — critical for self-hosted
+schools — and produces the universal printable artifact. Its limited CSS is no hardship:
+credential cards want tables and blocks, not flexbox artistry. Boring technology for a
+job where reliability outranks beauty.
 
-**Decision:** Each time a slip is viewed, downloaded, or regenerated, a new `AccessToken` of
-type `activation` is created via `AccessToken::generateFor()`.
-**Rationale:** Activation codes are time-limited (30-day expiry). Generating a fresh code at slip
-view time ensures the displayed code is always valid and ready for use. If an admin downloads
-a slip, then later regenerates, the previous code is automatically superseded. This avoids
-stale/expired codes appearing on printed slips.
-**Trade-off:** Multiple `AccessToken` records may exist for a single user (only the latest is
-valid). Mitigated by the activation system accepting any valid non-expired token.
+#### DD-ASLIP-002 — Cards tile, pages waste
 
-### DD-4 — DownloadsAccountSlips as Livewire Trait (Not Standalone Component)
+A full page per student burns paper and looks absurd; the compact card carries logo,
+identity, and code with room to spare and tiles efficiently onto standard stock. Custom
+dimensions per request keep the global A4 default honest for everything else. Print
+economics decided the size, not aesthetics.
 
-**Decision:** Slip download/send operations are encapsulated in a `DownloadsAccountSlips` trait
-consumed by `UserManager` and other role-specific managers, rather than being a standalone
-Livewire component.
-**Rationale:** Account slip operations are tightly coupled to the user management table context
-(selected users, current user context). A trait keeps the slip logic co-located with the manager
-that owns the selection state (`$selectedIds`). Each manager (UserManager, StudentManager,
-TeacherManager, SupervisorManager) can compose in the trait independently.
-**Trade-off:** Trait state (`$showAccountSlip`, `$slipUser`, `$slipCode`) is mixed into the
-consuming component's property namespace. Mitigated by using the `slip` prefix on all properties
-to avoid collisions.
+#### DD-ASLIP-003 — Codes minted at the moment of need
 
-### DD-5 — PDF Streamed, Not Stored
+View, download, regenerate — each mints, so displayed codes are always alive with full
+validity. The alternative, reusing stored codes, prints whatever remains of old windows
+and teaches admins to distrust the card. Multiple token rows per user are the accepted
+cost; only the latest works, and the model enforces that without anyone thinking about it.
 
-**Decision:** PDF account slips are streamed directly to the browser (`->stream()`) and not
-persisted to disk storage.
-**Rationale:** Account slips contain sensitive credentials (activation codes) that change on each
-generation. Storing PDFs would create stale credential artifacts that could be accessed later.
-Streaming ensures each PDF reflects the current state of the user and their latest activation
-code. The PDF generation cost is acceptable for the use case (on-demand, admin-initiated).
-**Trade-off:** PDF cannot be cached or pre-generated. Regenerating the same slip produces a new
-activation code each time. This is intentional — re-generation implies the previous code should
-be replaced.
+### 7.2 Delivery Shape
 
-### DD-6 — Batch Slips as Concatenated HTML to Single PDF
+#### DD-ASLIP-004 — The trait lives where the selection lives
 
-**Decision:** Batch slip generation concatenates individual user Blade renders into a single
-HTML string, then renders the entire string as one DomPDF document.
-**Rationale:** Producing a single multi-card PDF is more convenient for printing than downloading
-individual PDFs per user. Concatenation is simple — each user's card is an independent HTML
-block that stacks vertically. DomPDF handles the multi-page rendering automatically when content
-exceeds the custom card dimensions.
-**Trade-off:** If one user's rendering fails, the entire batch could fail. Mitigated by wrapping
-each iteration in the foreach loop and the fact that Blade rendering failures are rare for
-well-defined views.
+Slip actions operate on the manager's checked rows and current user — context a standalone
+component would have to be handed expensively. A trait composes into each role manager
+independently, sharing behavior while staying co-located with selection state. The
+`slip` prefix on all state keeps the mixed-in properties collision-free.
+
+#### DD-ASLIP-005 — Streamed because stored would lie
+
+Persisted PDFs would fossilize credentials that change on every regeneration — stale
+secrets sitting on disk waiting to be found. Streaming renders current state on demand:
+current user, current code, no archive of superseded secrets. Regeneration implying
+replacement is not a side effect here; it is the design.
+
+#### DD-ASLIP-006 — One pass, many cards
+
+Concatenating single-card HTML then rendering once yields a single multi-page PDF the
+print shop handles natively — simpler than merging files, friendlier than zips. Per-card
+failures skip instead of sinking the batch, so one broken record cannot hold five hundred
+cards hostage. Simple composition, robust at scale.
 
 ---
 
 ## 8. Success Metrics
 
-### 8.2 Functionality
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Single slip PDF correctness | All fields rendered | Name, username, email, activation code visible in PDF |
-| Batch slip PDF correctness | All users rendered | Each user card present in batch PDF with unique credentials |
-| Activation code validity | 100% of generated codes work | Codes accepted by activation system |
-| Email delivery | Code received by user | `ActivationCodeNotification` sent via mail channel |
-
-### 8.3 User Experience
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Modal preview accuracy | Matches PDF content | Admin sees same data in modal as in PDF |
-| Flash message clarity | User understands result | Success/failure messages for all operations |
-| Empty selection handling | Graceful warning | `downloadSelectedSlips()` warns when no users selected |
-| Button responsiveness | Spinner during action | Download/send buttons show loading state |
-
-### 8.4 Security
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Route authorization | Admin-only access | `role:super_admin\|admin` middleware on both routes |
-| No credential leakage | PDF not publicly accessible | Routes require authentication |
-| Activation code freshness | Generated at view time | `AccessToken::generateFor()` called on each `showSlip()` |
-| Previous code invalidation | Old codes superseded | New `AccessToken` replaces previous (implicit by token model) |
+| Metric | Target | How to measure |
+|--------|--------|---------------|
+| Single-slip correctness | Name, username, email, code all rendered | PDF content assertions |
+| Batch completeness | Every selected user carded with unique codes | Per-card assertions in batch PDF |
+| Code validity | 100% of printed codes activate | Activation acceptance test |
+| Email delivery | Code received via mail channel | Notification assertions |
+| Preview fidelity | Modal matches PDF contents | Side-by-side content assertions |
+| Empty selection | Warning, no file | Empty-selection test |
+| Route gating | Admin-only on both routes | Unauthorized-access tests |
+| Freshness | Code minted at each view | Token-timestamp assertions |
+| Supersession | Old code dead after regenerate | Old-code rejection test |
 
 ---
 
 ## 9. Roadmap
 
 ### Prerequisites
-This spec can only be implemented after the following specs are **fully complete**:
 
 | Spec | What It Provides |
 |------|-----------------|
-| [user-crud-and-status.md](95EVB-user-crud-and-status.md) | User entities — account slips are generated for placed students |
+| [user-crud-and-status](95EVB-user-crud-and-status.md) | User entities slips are generated for |
 
 ### Build Guide
-After implementing this spec, the system can generate account slips — credential documents given to students for their internship placement. Slips contain student info, company details, and placement dates. The next phase is daily operations — once students are placed with slips, they begin logging activities and attendance.
+
+Slips close the provisioning loop: accounts created singly or by import become printable,
+emailable credentials. Placed students with slips in hand move into daily operations.
 
 ### Next Steps
+
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [daily-activity.md](1KSWL-daily-activity.md) | Students with active placements (confirmed by account slips) begin logbook entries |
+| 1 | [daily-activity](1KSWL-daily-activity.md) | Students with active placements begin logbook entries |
 
 ---
 
@@ -534,3 +832,10 @@ After implementing this spec, the system can generate account slips — credenti
 | --- | --------------------------------- | ------ | ----- | -------- |
 
 ## Quick References
+
+- [Spec registry](index.md) — Enrollment phase; this spec is `EWCZ0` with status Full
+- [User CRUD & status](95EVB-user-crud-and-status.md) — user entities behind every slip
+- [Bulk import](O2KCR-csv-import-export.md) — batch provisioning that feeds batch slips
+- [Account recovery slips](SHQ1J-account-recovery-slips.md) — owns the `SLIP` scope; no overlap
+- [Architecture](D2FT3-architecture.md) — Action Triad, Entity rules, DTO boundary
+- [Project initialization](QLHDO-project-initialization.md) — global FR-GLB/NFR every row inherits
