@@ -97,7 +97,7 @@ Once the settings infrastructure is seeded, a call like `setting('key')` or `bra
 | FR-UTIL-001 | `AppInfo` reads `composer.json` metadata (name, version, author, license, description, git URL) with a 24h cache | P0 | F | Full |
 | FR-UTIL-002 | The `app_info()` global helper returns all metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by QLHDO §7.4 | P0 | F | Full |
 | FR-UTIL-003 | `AppInfo` cache entries use keys registered in `config/cache-keys.php` (C4 invariant) — no inline cache-key strings | P0 | A | Full |
-| FR-UTIL-004 | `Environment` helpers: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` in `app/Modules/Core/Support/Environment.php` | P0 | U | Full |
+| FR-UTIL-004 | `Environment` helpers: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()`, `isStaging()`, `isMaintenance()`, `isProduction()` in `app/Modules/Core/Support/Environment.php` | P0 | U | Full |
 | FR-UTIL-005 | `PasswordRules::default()` — 8+ chars, mixed case, numbers | P0 | U | Full |
 | FR-UTIL-006 | `PasswordRules::strict()` — additional rules for high-security contexts | P1 | U | Full |
 | FR-UTIL-007 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` | P0 | U | Full |
@@ -122,7 +122,7 @@ Let an inline `'cache_key'` string slip into one helper and the failure arrives 
 
 #### FR-UTIL-004 — Environment predicates
 
-An SMK operator in Semarang once ran a production backup from artisan and the job sent test notifications to all parents, because the code had branched on `! app()->environment('production')` and CLI had slipped through the negation. The five predicates in `app/Modules/Core/Support/Environment.php` — `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()` — remove that trap. The old `isProduction()` was renamed to `isDevelopment()` so callers name the positive condition they mean instead of negating environment strings, and `isCLI()` composes with the rest, so an artisan command running in production is honestly both. Unit tests pin each predicate with environment overrides at layer `U`.
+An SMK operator in Semarang once ran a production backup from artisan and the job sent test notifications to all parents, because the code had branched on `! app()->environment('production')` and CLI had slipped through the negation. The eight predicates in `app/Modules/Core/Support/Environment.php` remove that trap: `isDebugMode()`, `isDevelopment()`, `isLocal()`, `isTesting()`, `isCLI()`, plus `isStaging()`, `isMaintenance()`, and `isProduction()` for the positive checks callers actually need — an artisan command running in production is honestly both CLI and production, no negation required. (> Decision 2026-09-11: the earlier five-predicate text predated `isStaging()`/`isMaintenance()` and wrongly claimed `isProduction()` was renamed; corrected to the implemented API.) Unit tests pin each predicate at layer `U`.
 
 ### 4.3 Validation & Presentation Helpers
 

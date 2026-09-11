@@ -353,11 +353,11 @@ Duplicates, not-found-as-business-rule, rate limits, invalid transitions, invari
 
 #### FR-LOG-037 — ValidationFailedException
 
-A student submitting a logbook with an empty date field meets this exception first. It extends `ActionException` in the 400 family, carries status 422, and defaults to the hint "Please check your input" so Livewire has something humane to show. A unit test asserts both the status and the hint.
+A student submitting a logbook with an empty date field meets this exception first. It extends `ActionException` in the 400 family, carries status 422, and defaults to the `core.exceptions.validation_failed_hint` translation ("Please review the provided data and try again." in English) so Livewire has something humane to show. A unit test asserts both the status and the resolved hint.
 
 #### FR-LOG-038 — UnauthorizedException
 
-When a student crafts a URL to another student's grade card, this is the wall. `UnauthorizedException` extends `PresentationException` in the 400 family with status 403 and the default hint "You do not have permission". A unit test asserts the status and the hint text.
+When a student crafts a URL to another student's grade card, this is the wall. `UnauthorizedException` extends `PresentationException` in the 400 family with status 403 and the default `core.exceptions.unauthorized_hint` translation ("You are not authorized to perform this action." in English). A unit test asserts the status and the resolved hint text.
 
 #### FR-LOG-039 — InfrastructureException never user-facing
 
