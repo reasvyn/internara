@@ -1,7 +1,7 @@
 # T657Z — Assignment Submission
 
 > **Spec ID:** T657B
-> **Status:** Full
+> **Status:** Planned
 > **Owner:** Assignment
 > **Depends on:** [T657Z](T657Z-assignment.md), [J9GBH](J9GBH-placement.md)
 
@@ -75,9 +75,9 @@ grading spec.
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
-| UC-SUBM-001 | Student drafts content, attaches a file, and submits against a published brief before the deadline | P0 | F | Full |
-| UC-SUBM-002 | Student returned for revision updates the same record and resubmits | P0 | F | Full |
-| UC-SUBM-003 | Student submits minutes before the deadline and the server clock decides, not the student's device | P1 | F | Full |
+| UC-SUBM-001 | Student drafts content, attaches a file, and submits against a published brief before the deadline | P0 | F | Planned |
+| UC-SUBM-002 | Student returned for revision updates the same record and resubmits | P0 | F | Planned |
+| UC-SUBM-003 | Student submits minutes before the deadline and the server clock decides, not the student's device | P1 | F | Planned |
 
 ### 3.1 Happy Path
 
@@ -121,20 +121,20 @@ Guards, content, files, state, and contracts. `U` unit (no DB), `F` feature (rea
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
-| FR-SUBM-001 | `SubmitAssignment` is served at `/student/assignments` for the student role, scoped to the student's own internship | P0 | F | Full |
-| FR-SUBM-002 | `SubmitAssignmentAction` refuses briefs that are not PUBLISHED with `RejectedException` | P0 | F | Full |
-| FR-SUBM-003 | Overdue briefs refuse new submissions; a null due date means the window is open until closure | P0 | F | Full |
-| FR-SUBM-004 | The submitting student must hold an active placed registration for the brief's internship | P0 | F | Full |
-| FR-SUBM-005 | One submission per student per assignment, enforced by guard and by unique `(assignment_id, registration_id)` | P0 | F | Full |
-| FR-SUBM-006 | Draft content persists before submit; submit transitions DRAFT→SUBMITTED with server timestamp | P0 | F | Full |
-| FR-SUBM-007 | Resubmission from REVISION_REQUIRED updates the same record, refreshes content, and returns it to SUBMITTED | P0 | F | Full |
-| FR-SUBM-008 | Attachments validate MIME (pdf, doc, docx, zip, ppt, pptx), 10MB max, filename safety; stored outside web root under non-guessable names | P0 | F | Full |
-| FR-SUBM-009 | `SubmissionStatus` defines DRAFT, SUBMITTED, VERIFIED, GRADED, REVISION_REQUIRED with the fixed transition matrix | P0 | U | Full |
-| FR-SUBM-010 | `SubmissionState` exposes `canBeEdited()` and `isVerified()` predicates evaluated from status, never from raw attributes | P0 | U | Full |
-| FR-SUBM-011 | Submission writes run inside a transaction with dual-channel logging, PII masking, and server-clock timestamps | P0 | F | Full |
-| FR-SUBM-012 | Mutations are dual-gated: `SubmissionPolicy` at the boundary (student-only create, owner-only update), business rule re-checked in the Action | P0 | A | Full |
-| FR-SUBM-013 | Content validates server-side (minimum length, DTO boundary); failures throw `RejectedException` with translatable messages; all strings via `__()` | P0 | A | Full |
-| FR-SUBM-014 | `Submission` persists on UUID v7 PK with `#[Fillable]` whitelist and `foreignUuid` cascades to assignment, registration, and student | P0 | A | Full |
+| FR-SUBM-001 | `SubmitAssignment` is served at `/student/assignments` for the student role, scoped to the student's own internship | P0 | F | Planned |
+| FR-SUBM-002 | `SubmitAssignmentAction` refuses briefs that are not PUBLISHED with `RejectedException` | P0 | F | Planned |
+| FR-SUBM-003 | Overdue briefs refuse new submissions; a null due date means the window is open until closure | P0 | F | Planned |
+| FR-SUBM-004 | The submitting student must hold an active placed registration for the brief's internship | P0 | F | Planned |
+| FR-SUBM-005 | One submission per student per assignment, enforced by guard and by unique `(assignment_id, registration_id)` | P0 | F | Planned |
+| FR-SUBM-006 | Draft content persists before submit; submit transitions DRAFT→SUBMITTED with server timestamp | P0 | F | Planned |
+| FR-SUBM-007 | Resubmission from REVISION_REQUIRED updates the same record, refreshes content, and returns it to SUBMITTED | P0 | F | Planned |
+| FR-SUBM-008 | Attachments validate MIME (pdf, doc, docx, zip, ppt, pptx), 10MB max, filename safety; stored outside web root under non-guessable names | P0 | F | Planned |
+| FR-SUBM-009 | `SubmissionStatus` defines DRAFT, SUBMITTED, VERIFIED, GRADED, REVISION_REQUIRED with the fixed transition matrix | P0 | U | Planned |
+| FR-SUBM-010 | `SubmissionState` exposes `canBeEdited()` and `isVerified()` predicates evaluated from status, never from raw attributes | P0 | U | Planned |
+| FR-SUBM-011 | Submission writes run inside a transaction with dual-channel logging, PII masking, and server-clock timestamps | P0 | F | Planned |
+| FR-SUBM-012 | Mutations are dual-gated: `SubmissionPolicy` at the boundary (student-only create, owner-only update), business rule re-checked in the Action | P0 | A | Planned |
+| FR-SUBM-013 | Content validates server-side (minimum length, DTO boundary); failures throw `RejectedException` with translatable messages; all strings via `__()` | P0 | A | Planned |
+| FR-SUBM-014 | `Submission` persists on UUID v7 PK with `#[Fillable]` whitelist and `foreignUuid` cascades to assignment, registration, and student | P0 | A | Planned |
 
 ### 4.1 Submission Guards
 
@@ -282,12 +282,12 @@ enrollment's trail — so none of them degrades into a full-table scan at period
 
 | ID | Requirement | Target | Priority | Layer | Status |
 |----|-------------|--------|----------|-------|--------|
-| NFR-SUBM-001 | All PHP files declare `strict_types=1` | N/A | P0 | A | Full |
-| NFR-SUBM-002 | Every translation key exists in both `lang/en/` and `lang/id/` | N/A | P0 | A | Full |
-| NFR-SUBM-003 | File upload shows progress during transfer | N/A | P2 | B | Full |
-| NFR-SUBM-004 | Revision feedback renders prominently atop the student's submission view | N/A | P1 | B | Full |
-| NFR-SUBM-005 | Student and inbox listings are paginated with eager-loaded relations; no N+1 | N/A | P1 | F | Full |
-| NFR-SUBM-006 | Stored files are unreachable by path guessing; downloads resolve through entity-derived URLs | N/A | P0 | F | Full |
+| NFR-SUBM-001 | All PHP files declare `strict_types=1` | N/A | P0 | A | Planned |
+| NFR-SUBM-002 | Every translation key exists in both `lang/en/` and `lang/id/` | N/A | P0 | A | Planned |
+| NFR-SUBM-003 | File upload shows progress during transfer | N/A | P2 | B | Planned |
+| NFR-SUBM-004 | Revision feedback renders prominently atop the student's submission view | N/A | P1 | B | Planned |
+| NFR-SUBM-005 | Student and inbox listings are paginated with eager-loaded relations; no N+1 | N/A | P1 | F | Planned |
+| NFR-SUBM-006 | Stored files are unreachable by path guessing; downloads resolve through entity-derived URLs | N/A | P0 | F | Planned |
 
 ### 5.1 Conventions
 

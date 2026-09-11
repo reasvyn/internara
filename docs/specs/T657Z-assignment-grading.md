@@ -1,7 +1,7 @@
 # T657Z — Assignment Grading
 
 > **Spec ID:** T657C
-> **Status:** Full
+> **Status:** Planned
 > **Owner:** Assignment
 > **Depends on:** [T657Z](T657Z-assignment.md), [T657Z](T657Z-assignment-submission.md)
 
@@ -67,9 +67,9 @@ submission spec.
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
-| UC-GRADE-001 | Teacher scores a submitted report with number and feedback; the student is notified | P0 | F | Full |
-| UC-GRADE-002 | Teacher returns weak work for revision with actionable feedback instead of failing it | P0 | F | Full |
-| UC-GRADE-003 | Teacher grades on behalf of an inactive industry supervisor with the proxy recorded | P1 | F | Full |
+| UC-GRADE-001 | Teacher scores a submitted report with number and feedback; the student is notified | P0 | F | Planned |
+| UC-GRADE-002 | Teacher returns weak work for revision with actionable feedback instead of failing it | P0 | F | Planned |
+| UC-GRADE-003 | Teacher grades on behalf of an inactive industry supervisor with the proxy recorded | P1 | F | Planned |
 
 ### 3.1 Direct Grading
 
@@ -114,19 +114,19 @@ Scoring, revision, verification, and contracts. `U` unit (no DB), `F` feature (r
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
-| FR-GRADE-001 | `SubmissionGrading` inbox lists awaiting submissions with status, student, and assignment filters | P1 | F | Full |
-| FR-GRADE-002 | `GradeSubmissionAction` accepts only scores 0–100, refusing anything else with `RejectedException` | P0 | F | Full |
-| FR-GRADE-003 | Grading writes score, feedback, GRADED status, grader identity, and server timestamp in one transaction | P0 | F | Full |
-| FR-GRADE-004 | The grader's scope is enforced in the Entity: teachers score mentored students, supervisors their company's, admins any | P0 | U | Full |
-| FR-GRADE-005 | Every grading, revision, and verification writes a dual-channel audit entry with PII masking | P0 | F | Full |
-| FR-GRADE-006 | Graded students are notified via queued `SubmissionFeedbackNotification` | P1 | F | Full |
-| FR-GRADE-007 | `RequestSubmissionRevisionAction` accepts only SUBMITTED records, refusing others with `RejectedException` | P0 | F | Full |
-| FR-GRADE-008 | Revision feedback is required, substantive, stored on the record, and shown to the student | P1 | F | Full |
-| FR-GRADE-009 | Revision dispatches `SubmissionRevisionRequested` and notifies the student without blocking the request | P1 | F | Full |
-| FR-GRADE-010 | `VerifySubmissionAction` records supervisor confirmation with identity and timestamp, reachable via mentor proxy | P1 | F | Full |
-| FR-GRADE-011 | Every mutation is dual-gated: Policy at the boundary, scope and state re-checked in Action/Entity | P0 | A | Full |
-| FR-GRADE-012 | Input validates server-side through DTOs; failures throw translatable `RejectedException`; all strings via `__()` | P0 | A | Full |
-| FR-GRADE-013 | Cross-role proxy (teacher→supervisor, admin→teacher/supervisor) resolves through the registration bridge with proxy identity audited | P0 | F | Full |
+| FR-GRADE-001 | `SubmissionGrading` inbox lists awaiting submissions with status, student, and assignment filters | P1 | F | Planned |
+| FR-GRADE-002 | `GradeSubmissionAction` accepts only scores 0–100, refusing anything else with `RejectedException` | P0 | F | Planned |
+| FR-GRADE-003 | Grading writes score, feedback, GRADED status, grader identity, and server timestamp in one transaction | P0 | F | Planned |
+| FR-GRADE-004 | The grader's scope is enforced in the Entity: teachers score mentored students, supervisors their company's, admins any | P0 | U | Planned |
+| FR-GRADE-005 | Every grading, revision, and verification writes a dual-channel audit entry with PII masking | P0 | F | Planned |
+| FR-GRADE-006 | Graded students are notified via queued `SubmissionFeedbackNotification` | P1 | F | Planned |
+| FR-GRADE-007 | `RequestSubmissionRevisionAction` accepts only SUBMITTED records, refusing others with `RejectedException` | P0 | F | Planned |
+| FR-GRADE-008 | Revision feedback is required, substantive, stored on the record, and shown to the student | P1 | F | Planned |
+| FR-GRADE-009 | Revision dispatches `SubmissionRevisionRequested` and notifies the student without blocking the request | P1 | F | Planned |
+| FR-GRADE-010 | `VerifySubmissionAction` records supervisor confirmation with identity and timestamp, reachable via mentor proxy | P1 | F | Planned |
+| FR-GRADE-011 | Every mutation is dual-gated: Policy at the boundary, scope and state re-checked in Action/Entity | P0 | A | Planned |
+| FR-GRADE-012 | Input validates server-side through DTOs; failures throw translatable `RejectedException`; all strings via `__()` | P0 | A | Planned |
+| FR-GRADE-013 | Cross-role proxy (teacher→supervisor, admin→teacher/supervisor) resolves through the registration bridge with proxy identity audited | P0 | F | Planned |
 
 ### 4.1 Scoring
 
@@ -270,11 +270,11 @@ authority is how trust in the grade card erodes.
 
 | ID | Requirement | Target | Priority | Layer | Status |
 |----|-------------|--------|----------|-------|--------|
-| NFR-GRADE-001 | All PHP files declare `strict_types=1` | N/A | P0 | A | Full |
-| NFR-GRADE-002 | Every translation key exists in both `lang/en/` and `lang/id/` | N/A | P0 | A | Full |
-| NFR-GRADE-003 | Grading inbox is paginated with eager-loaded relations; no N+1 | N/A | P1 | F | Full |
-| NFR-GRADE-004 | Grade commit precedes notification queueing; no notice for rolled-back writes | N/A | P0 | F | Full |
-| NFR-GRADE-005 | Scores render from the submission record everywhere; no cached copies in grade cards | N/A | P1 | A | Full |
+| NFR-GRADE-001 | All PHP files declare `strict_types=1` | N/A | P0 | A | Planned |
+| NFR-GRADE-002 | Every translation key exists in both `lang/en/` and `lang/id/` | N/A | P0 | A | Planned |
+| NFR-GRADE-003 | Grading inbox is paginated with eager-loaded relations; no N+1 | N/A | P1 | F | Planned |
+| NFR-GRADE-004 | Grade commit precedes notification queueing; no notice for rolled-back writes | N/A | P0 | F | Planned |
+| NFR-GRADE-005 | Scores render from the submission record everywhere; no cached copies in grade cards | N/A | P1 | A | Planned |
 
 ### 5.1 Conventions
 
