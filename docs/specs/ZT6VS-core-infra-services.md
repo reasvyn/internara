@@ -317,7 +317,7 @@ Scattered `Storage::put` calls once meant one module validated MIME types while 
 
 An SMK avatar collection that lives on `public` with a thumbnail conversion and an evidence collection that lives on `local` with a preview conversion should declare that difference where it belongs. Ownership is explicit: the Model that owns a collection names where its files live and which conversions exist. A layer `A` model review reads that declaration off each owning Model.
 
-### 4.7 Growth Tiers (ADR-Demanded)
+### 4.7 Growth Tiers
 
 #### FR-CORE-036 — Tier 0 no-regret
 

@@ -245,7 +245,7 @@ date-and-integer logic always hides.
 The forty-first student against a forty-slot agreement meets `RejectedException` with a
 translatable message naming the exhausted quota — thrown from the entity predicate, enforced
 in the placement-accepting Action, and therefore identical whether the assignment came from
-the UI, the bulk placer, or a console script. This is the ADR-demanded quota-cap rule: the
+the UI, the bulk placer, or a console script. This is the quota-cap rule: the
 cap is a business invariant evaluated in the entity, not a dashboard number. Because the
 refusal precedes the write, `filled_quota` can never exceed `quota`, every remaining-capacity
 term stays non-negative, and the company's aggregated headline number never contradicts the

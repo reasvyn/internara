@@ -284,7 +284,7 @@ When each module defined "admin" locally, a supervisor counted as admin in one p
 
 Copy-pasted owner-or-admin checks drift: one policy compares `user_id`, another traverses a different relation, a third forgets the admin branch, and students intermittently see each other's logbooks. `AuthorizesOwnership` stops the drift by fixing the recurring shape once — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` — so students see their own records and admins see all, identically everywhere. Trait use with unit tests at the arch and unit layers confirms no policy reimplements the shape by hand.
 
-### 4.7 Gradual DTO Migration (ADR-Demanded)
+### 4.7 Gradual DTO Migration
 
 #### FR-BASE-039 — Array start
 
@@ -298,7 +298,7 @@ Once callers multiply, changing the signature overnight would break every one of
 
 An SMK enrollment Action that still accepted raw arrays after its shape settled kept sprouting ad-hoc keys — `company_id` here, `companyId` there — until validation lived nowhere. The Final phase collapses settled shapes to `Data`-only signatures, `execute(Data $data)`, so the DTO becomes the single validated contract and the C7 rule for three or more parameters holds by construction. The `scan_violations.py` C7 check at the arch layer marks the arrival.
 
-### 4.8 Shared Validation & Key Registry (ADR-Demanded)
+### 4.8 Shared Validation & Key Registry
 
 #### FR-BASE-042 — Entity::rules() sharing
 
