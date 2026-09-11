@@ -1,44 +1,42 @@
 # Data Archiving & Retention — Full Archival Lifecycle
 
 > **Spec ID:** 9YUUK
+> **Status:** Planned
+> **Owner:** SysAdmin
+> **Depends on:** E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW
 
 ## Description
 
-Defines the full data-archival lifecycle for completed PKL cohorts: a configurable retention policy
-per data category, a central archive registry (`ArchiveRecord`) that tracks what was archived, when,
-by whom, and until when, a Process Action that archives a completed cohort across modules, a queued
-purge job that irreversibly deletes expired archives via the GDPR deletion pipeline, and a restore
-action that reverses an archive before its retention expiry. Existing archival capabilities —
-`ArchiveStudentAccountsAction`/`ArchiveStudentAccountsJob` (E1MSJ), report snapshots (R6BMW), and
-per-document retention (config) — become coordinated capabilities inside this lifecycle rather than
-isolated one-offs.
+Defines what happens to a finished cohort after the certificates are handed out: a sealing operation that freezes a versioned snapshot, locks the records behind an archived status at every layer, and keeps alumni reading their certificates while writing nothing. Retention periods are declared per data category with school-level overrides, recorded on every archive row, and never enforced by automatic deletion. Reopening a sealed cohort is an exceptional, fully audited act reserved for the highest operator role.
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — No Single Archival Lifecycle
+### PS-1 — A Finished Cohort Has No Moment of Being Finished
 
-Archival exists as disconnected one-offs: student accounts can be mass-archived (E1MSJ FR-AS), grade
-reports freeze an `archived_data` snapshot (R6BMW FR-9YUUK-AR1-3), and documents carry per-type retention
-(config). Nothing coordinates a **whole cohort**: when a PKL group finishes, its registrations,
-logbooks, attendance, assessments, reports, and certificates have no single "this cohort is done and
-sealed" operation, so data lingers editable or is left to manual, per-module effort.
+Registrations, logbooks, attendance, assessments, reports, and certificates for a graduated group simply linger, editable, months after the closing ceremony. Nothing ever declares the cohort sealed, so a well-meaning correction in October quietly rewrites history that a regulator in March assumes was frozen in June. The absence of a sealing moment turns every old record into a draft forever.
+**→ Requirement:** FR-ARCH-001 (sealing gate), FR-ARCH-002 (versioned snapshot).
 
-### PS-2 — Retention Is Configured But Never Enforced
+### PS-2 — Retention Periods Are Declared and Then Ignored
 
-Retention periods exist as scattered config (`config/document-official.php` `retention`, `config/backup.php`
-`retention_days`, E1MSJ log/notification pruning defaults) but nothing **acts** on them: no record
-knows *when it becomes eligible for deletion*, and no scheduled job purges data whose retention has
-expired. Data accumulates indefinitely against unbounded storage and legal-retention requirements.
+Configuration files name retention lengths per category, but no record carries its own expiry and no view shows the countdown. Data accumulates without bound while the school believes it is compliant, because a number in a config file enforces nothing by itself. Each archived aggregate needs its retention written onto it at sealing time, visible to anyone who opens the registry.
+**→ Requirement:** FR-ARCH-003 (retention recorded per row), FR-ARCH-004 (declared policy, manual enforcement).
 
-### PS-3 — No Distinction Between Archive, Restore, and Purge
+### PS-3 — Alumni Lose Their Certificates With Their Logins
 
-The current model conflates reversible archiving with irreversible deletion: an archived student
-account is a terminal `AccountStatus` transition (E1MSJ DD-4), yet nothing records why or how long it
-must be kept, and nothing offers a controlled restore path for records that were archived by mistake.
-There is no audit-friendly distinction between "archived for retention" (reversible, time-boxed) and
-"purged under compliance" (irreversible, logged to `GdprDeletionLog`).
+Graduation currently ends access entirely: the same transition that closes the cohort locks graduates out of the certificates they earned. An alumna applying for work five years later must phone the school office and wait days for a reprint, while the system that issued her certificate claims never to have known her. Continued read-only access is not generosity; it is the purpose of keeping the records at all.
+**→ Requirement:** FR-ARCH-008 (alumni read-only continuity).
+
+### PS-4 — Policies Alone Cannot Keep History Honest
+
+A policy that denies edits is one forgotten gate away from silent writes: a new action, a console command, a seed script, each capable of touching rows the UI hides. Integrity that lives only in the presentation layer is a curtain, not a lock. The archived state must refuse writes in the model, deny them in the policy, and hide the controls in the interface, so all three have to fail together before history can move.
+**→ Requirement:** FR-ARCH-005 (model immutability), FR-ARCH-006 (policy denial), FR-ARCH-007 (read-only interface).
+
+### PS-5 — Reopening Must Be Possible and Must Hurt a Little
+
+Sealed records sometimes need reopening: a mis-sealed cohort, a grade dispute upheld on appeal, a regulator asking for a correction with a paper trail. Banning reversal entirely guarantees the first emergency will be solved with database surgery and no audit trail. The honest design names the reversal, restricts it to the highest role, and records it indelibly, so the exceptional path is visible instead of clandestine.
+**→ Requirement:** FR-ARCH-009 (exceptional audited reversal).
 
 ---
 
@@ -46,151 +44,184 @@ There is no audit-friendly distinction between "archived for retention" (reversi
 
 ### Goals
 
-| ID | Goal |
-|----|------|
-| G1 | Provide `config/retention.php` — central retention policy per data category, overridable via settings |
-| G2 | Provide an `ArchiveRecord` model + `archive_records` table as the single registry of archived records |
-| G3 | Provide `ArchiveStatus` enum (`ARCHIVED`, `RESTORED`, `PURGED`) with `LabelEnum`/`StatusEnum` transition rules |
-| G4 | Provide `ArchiveCohortProcessAction` — archive a completed Internship cohort across modules in one operation |
-| G5 | Provide `PurgeExpiredArchivesJob` — queued, scheduled deletion of retention-expired archives via GDPR pipeline |
-| G6 | Provide `RestoreArchiveAction` — revert an archive before retention expiry, audited |
-| G7 | Provide `ArchiveManager` Livewire component + admin routes for browsing and triggering the lifecycle |
-| G8 | Integrate existing student-account archival (E1MSJ) and report snapshots (R6BMW) as capabilities of this lifecycle |
-| G9 | Register `archives:purge-expired` on the scheduler for unattended compliance |
+- **One sealing moment per cohort** — a coordinated operation that snapshots, locks, and registers the finished group. *Why:* without a single moment of closure, old records stay editable forever.
+- **Immutable, layered archives** — writes refused in the model, denied in policy, hidden in the interface. *Why:* a single layer of protection fails the first time someone adds a new write path.
+- **Alumni continuity** — graduates keep reading certificates and grades while writing nothing. *Why:* the archive exists so former students can prove what they earned.
+- **Declared, visible retention** — every archive row carries its own retention horizon from overridable policy. *Why:* a retention number nobody can see on the record enforces nothing.
+- **Audited exceptional reversal** — a highest-role-only reopening with a permanent trail. *Why:* emergencies will happen; the design must channel them, not pretend they won't.
 
 ### Non-Goals
 
-| ID | Non-Goal |
-|----|----------|
-| NG1 | Backup creation/restoration — see [backup-system.md](HBXCI-backup-system.md) |
-| NG2 | GDPR deletion mechanics, anonymization, deletion-log schema — see [gdpr-compliance.md](7HNCF-gdpr-compliance.md) |
-| NG3 | Log pruning, notification pruning, cache warming, health checks — see [system-maintenance.md](E1MSJ-system-maintenance.md) |
-| NG4 | Auto-archiving without operator intent — cohort archival is always an explicit admin action (E1MSJ DD-4 principle) |
-| NG5 | Cloud/S3 lifecycle policies or object-tiering — single-tenant local storage only |
-| NG6 | Multi-tenant partitioning of archives — single-tenant product (S3) |
+- **Backup creation and restoration**. *Why:* owned by the backup system; archives live alongside backups, not inside them.
+- **Erasure mechanics and deletion-log schema**. *Why:* owned by GDPR compliance; archival reuses that pipeline for manual post-expiry deletion.
+- **Routine pruning, warming, and health checks**. *Why:* owned by system maintenance; archiving coordinates with the scheduler but never duplicates it.
+- **Automatic deletion at expiry**. *Why:* expiry only marks eligibility; deletion stays a deliberate manual act with its own audit.
+- **Cloud tiering or multi-tenant partitioning**. *Why:* single-tenant local storage at school scale needs neither.
 
 ---
 
 ## 3. User Stories / Use Cases
 
-### UC-9YUUK-1 — Admin Archives a Completed Cohort
+Sealing is an operator ceremony; retrieval is an alumni right; reversal is a rare, highest-role exception.
 
-**Actor:** Admin (super_admin / admin)
-**Preconditions:** An Internship exists with status `completed` (7C5WM); registrations and their
-child records (logbooks, attendance, assessments, reports, certificates) exist for it
-**Flow:**
-1. Admin opens **Admin → Archives** (`/admin/archives`)
-2. Admin selects a completed Internship and confirms archival
-3. `ArchiveCohortProcessAction::execute(ArchiveCohortData $data)` validates status, resolves the cohort
-4. Action creates one `ArchiveRecord` per cohort aggregate (category `cohort`), stores `retention_until`
-   from the retention policy, and records `archived_at` / `archived_by`
-5. Action delegates student-account archival to the existing `ArchiveStudentAccountsAction` capability
-6. Action logs `data_archive.cohort_archived` via SmartLogger with PII masking
-**Postconditions:** Cohort sealed in the archive registry; student accounts transitioned to
-`ARCHIVED`; audit trail records the operation
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| UC-ARCH-001 | Admin seals a completed cohort into an immutable snapshot with recorded retention | P0 | F | Planned |
+| UC-ARCH-002 | Alumna retrieves her certificate and grades years later through read-only access | P0 | B | Planned |
+| UC-ARCH-003 | Highest operator exceptionally reopens a sealed cohort with a permanent audit trail | P0 | F | Planned |
+| UC-ARCH-004 | Admin browses the archive registry with status, retention countdown, and lifecycle actions | P1 | F | Planned |
 
-### UC-9YUUK-2 — Scheduler Purges Expired Archives
+### 3.1 Sealing and Retrieval
 
-**Actor:** Scheduler (daily)
-**Preconditions:** An `ArchiveRecord` exists with `status = ARCHIVED` and `retention_until < now`
-**Flow:**
-1. `archives:purge-expired` runs daily at 03:30 via `routes/console.php`
-2. Command queries `ArchiveRecord` rows where `retention_until < now AND status = ARCHIVED`
-3. Command dispatches `PurgeExpiredArchivesJob` per record (queued)
-4. Job purges each record: user-scoped archives via `DeleteUserGdprAction` (7HNCF), record/aggregate
-   archives via dependent-record deletion, capturing `GdprDeletionLog` entries
-5. `ArchiveRecord.status` transitions to `PURGED`; `purged_at` recorded
-**Postconditions:** Expired archives permanently deleted; GDPR deletion logged; registry marks `PURGED`
+#### UC-ARCH-001 — Sealing the Class of 2026
 
-### UC-9YUUK-3 — Admin Restores an Archived Cohort
+June arrives, certificates are issued, and the coordinator opens the archive registry, selects the completed internship, and confirms the sealing with a short reason. The operation first verifies every readiness condition: assessments finalized, submissions accounted for, attendance reconciled, certificates issued. Then it freezes the versioned snapshot, the roster and composites and serials exactly as they stand, transitions the cohort to its terminal state, seals the student accounts through the existing account archival, and writes the registry row with the retention horizon resolved from policy. By afternoon the cohort reads as history. A teacher who opens an old grade afterward finds it exactly as the examination board signed it, which is the entire point.
 
-**Actor:** Admin
-**Preconditions:** An `ArchiveRecord` exists with `status = ARCHIVED` and `retention_until > now`
-**Flow:**
-1. Admin opens the Archive Manager and selects an archived cohort
-2. `RestoreArchiveAction::execute(ArchiveRecord $record)` validates status and retention window
-3. Action re-opens the archive (reverses the cohort seal), sets `status = RESTORED`, records
-   `restored_at` / `restored_by`
-4. Action logs `data_archive.cohort_restored` via SmartLogger
-**Postconditions:** Archive reversed and visible in the registry as `RESTORED`; `GdprDeletionLog`
-required for `PURGED` records only — no restore after purge
+#### UC-ARCH-002 — A Five-Year-Old Archive Retrieved for a Legal Check
 
-### UC-9YUUK-4 — Admin Browses the Archive Registry
+Five years later, the same graduate needs her certificate for a civil-service application, and the hiring office wants to verify its serial. She signs in with her alumni credentials and reaches a quiet dashboard showing her certificate and her final grades, nothing else. No placement form accepts her input, no logbook offers a blank row, no attendance button responds. She downloads the certificate, the hiring office matches its serial against the school's copy, and the verification closes the same day. The archive justified its storage costs in that single afternoon.
 
-**Actor:** Admin
-**Preconditions:** Admin authenticated; at least one `ArchiveRecord` exists
-**Flow:**
-1. Admin navigates to **Admin → Archives** (`/admin/archives`)
-2. `ArchiveManager` renders a paginated table: category, entity reference, status badge, archived
-   at/by, retention until / countdown, actions (restore / purge-now)
-3. Admin filters by category or status, sorts by archived_at
-4. Admin triggers archive / restore / purge with confirmation for destructive actions
-**Postconditions:** Admin has full visibility and control over the archival lifecycle
+### 3.2 Reversal and Oversight
 
-### UC-9YUUK-5 — Existing Capability: Admin Mass-Archives Student Accounts
+#### UC-ARCH-003 — Reopening What Should Not Have Been Sealed
 
-**Actor:** Admin (via Student Manager)
-**Preconditions:** Cohort completed PKL, placement finalized (E1MSJ UC-9YUUK-3)
-**Flow:**
-1. Admin filters students in Student Manager
-2. Clicks "Archive Filtered"
-3. `ArchiveStudentAccountsAction` chunks through the filtered query (100/batch)
-4. Each user transitioned to `ARCHIVED` status (super_admin skipped)
-**Postconditions:** Student accounts archived, login blocked, count reported — this capability feeds
-the cohort lifecycle in UC-9YUUK-1 (consolidated, not re-implemented)
+In September an appeal upholds a grade dispute for one student of the sealed cohort: the board orders a correction. The coordinator cannot reopen anything; the control simply is not shown to her role. The highest operator reviews the appeal letter, invokes the exceptional reversal with the appeal reference as the reason, and the cohort steps back to its pre-seal state while the audit trail records who ordered it, when, and why. The correction is made, the cohort is sealed again as a new snapshot version, and the registry now tells the whole story: sealed, reopened by name, corrected, resealed. Had this path not existed, someone would have edited the database directly and none of that would be written anywhere.
+
+#### UC-ARCH-004 — Reading the Registry on a Quiet Morning
+
+The operator opens the archive overview and sees every sealed aggregate in one paginated table: category, referenced cohort, status badge, who sealed it and when, the retention horizon with its countdown, and the available actions. Filtering by status isolates the sealed rows from the handful reopened over the years; sorting by sealing date puts the oldest first. Destructive actions ask for confirmation with the consequences spelled out, and the expired rows display their eligibility plainly without offering any automatic purge, because the registry advises and humans decide.
 
 ---
 
 ## 4. Functional Requirements
 
-Deferred to the Roadmap phase (§9) — the archival lifecycle is not yet scheduled for
-implementation. Its goals (G1–G9), use cases (UC-9YUUK-1–UC-9YUUK-5), design decisions (DD-1–DD-5), and the
-contract sketches in §6 fix the intended shape; detailed FR rows will be recorded here when the
-feature is picked up.
+One table for the whole section. Group 4.1 seals the cohort, 4.2 locks the records while keeping alumni reading, 4.3 governs the exceptional way back.
+
+**Layer legend:** `U` = Unit (no DB) · `F` = Feature (real DB) · `B` = Browser (E2E) · `A` = Arch (structure/contracts).
+**Status legend:** `Planned` = not started · `Partial` = in progress · `Full` = implemented & verified.
+
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| FR-ARCH-001 | Cohort sealing validates completion and readiness before any write | P0 | F | Planned |
+| FR-ARCH-002 | Sealing freezes a versioned JSON snapshot of roster, grades, attendance, logbook, scores, evaluations, and certificate serials | P0 | F | Planned |
+| FR-ARCH-003 | Every archive row records category, reference, status, retention horizon, sealer identity, and sealing time | P0 | F | Planned |
+| FR-ARCH-004 | Effective retention resolves from school override to config default and expiry never triggers automatic deletion | P0 | F | Planned |
+| FR-ARCH-005 | Archived records refuse writes at the model layer behind the archived-state gate | P0 | U | Planned |
+| FR-ARCH-006 | Policies deny non-read operations on archived records to every role including operators | P0 | U | Planned |
+| FR-ARCH-007 | The interface renders sealed cohorts read-only with no edit controls offered | P1 | B | Planned |
+| FR-ARCH-008 | Alumni retain sign-in to a read-only dashboard with certificates and grades and no write paths | P0 | F | Planned |
+| FR-ARCH-009 | Exceptional reversal is restricted to the highest role, returns the cohort to its pre-seal state, and writes a permanent audit entry | P0 | F | Planned |
+| FR-ARCH-010 | Cohort sealing delegates student-account archival to the existing account archival action | P1 | F | Planned |
+| FR-ARCH-011 | Sealing and reversal emit domain events and structured log entries with masked personal data | P1 | F | Planned |
+| FR-ARCH-012 | Sealing and reversal validate input and authorization and reject violations with translatable business errors | P0 | F | Planned |
+
+### 4.1 Sealing
+
+#### FR-ARCH-001 — No Seal Before the Work Is Done
+
+A coordinator eager to tidy the dashboard might seal a cohort with two unissued certificates and a missing evaluation round. The sealing operation therefore interrogates readiness first: every assessment finalized, every submission accounted for, attendance reconciled, supervision logs present, certificates issued. Any gap aborts the whole operation before the first write, and the refusal names the missing piece in plain language. The examination board's sign-off meeting and this check are the same event in two forms: human judgment up front, mechanical verification at the gate.
+
+#### FR-ARCH-002 — Freezing the Cohort Exactly As It Stood
+
+At sealing time the operation assembles the roster, the grade composites, the attendance summary, logbook statistics, assignment and rubric scores, evaluation outcomes, and every certificate serial into one versioned JSON document. That document is the cohort's photograph: later corrections never retouch it but instead produce a new version beside it. Five years on, when a hiring office questions a serial, the school opens the version that was current at graduation rather than reconstructing truth from live tables that have since moved on.
+
+#### FR-ARCH-003 — The Registry Remembers the Circumstances
+
+Alongside the snapshot, the registry records which category was sealed and which cohort it points at, the current status, the retention horizon, the identity of the operator who sealed it, and the sealing timestamp. The retention horizon is never left blank: a missing horizon would make the row silently immortal or silently eligible, and both silences are unacceptable. Restoration and purge moments, when they occur, land in their own columns rather than overwriting the sealing facts.
+
+#### FR-ARCH-004 — Declared Horizons, Human Hands
+
+The horizon for each category resolves in one place: the school's stored override wins when present, otherwise the shipped configuration default applies, so a school with stricter local rules needs no deployment to honor them. When the horizon passes, the registry marks the row eligible and waits. No job sweeps eligible rows away overnight, because automatic deletion converts a misconfigured horizon into silent data loss. Expiry is advice displayed to an operator; deletion is a decision made by one.
+
+### 4.2 Immutability and Access
+
+#### FR-ARCH-005 — The Model Says No First
+
+The deepest lock sits where new code is most likely to forget it. Model observers and state gates inspect the archived flag before any update or delete reaches the database and refuse with a business error. A future console command, an import script, or a well-meaning patch that bypasses the interface still meets this refusal, because it lives on the write path itself rather than on any particular screen. Tests prove the gate by attempting writes against sealed fixtures and asserting the refusal, not by clicking buttons.
+
+#### FR-ARCH-006 — The Policy Says No Second
+
+Above the model, authorization denies every non-read operation on sealed records regardless of the caller's role: coordinator, operator, supervisor, and student alike. Read operations continue to pass for those entitled to see them, so the denial is surgical rather than a blanket invisibility. The double barrier matters because each layer fails differently: policies are bypassed by direct action calls, models by raw queries, and only the pair covers both shortcuts at once.
+
+#### FR-ARCH-007 — The Screen Does Not Offer What Is Forbidden
+
+The cohort views check the archived state before rendering and simply omit every edit control: no inline editors, no bulk actions, no drag handles, no "quick fix" links. What remains is a calm, legible record with its sealed badge and its retention note. Hiding the controls is the least of the three locks technically, but it is the one users actually meet, and a forbidden button that invites a click before refusing breeds exactly the resentment the design wants to avoid.
+
+#### FR-ARCH-008 — Graduation Ends Writing, Not Reading
+
+Sealed students keep their credentials and meet a reduced dashboard: certificates downloadable, grades visible, and nothing else actionable. Placement applications, logbook entries, attendance buttons, and assignment uploads are absent rather than disabled, so there is no form to submit against a gate. Re-enrollment in a later cohort travels through a fresh status rather than by resurrecting the sealed identity, keeping the archive's meaning intact while the person's journey continues.
+
+### 4.3 Exceptional Reversal
+
+#### FR-ARCH-009 — The Way Back Is Narrow, Lit, and Watched
+
+Only the highest operator role may invoke the reversal, and only against rows still sealed rather than already purged. The operation returns the cohort to its pre-seal state, stamps the reversal identity and moment, and writes an audit entry naming the authorizing reason, typically an appeal reference or a regulatory order. Coordinators and supervisors never see the control, so social pressure to "just reopen it for a moment" meets a genuine inability rather than a reluctant refusal. Each reversal is rare enough that its audit entry should be readable years later without supplementary explanation.
+
+#### FR-ARCH-010 — Account Sealing Is Borrowed, Not Rebuilt
+
+The cohort operation does not reimplement student-account transitions. It delegates that step to the existing account archival action, inheriting its chunking, its protection of the system identity, and its per-account logging. If that action's behavior ever improves, cohort sealing improves with it; if its guards tighten, sealing tightens too. The orchestration stays an orchestration instead of slowly accreting a second copy of account logic that drifts out of sync.
+
+#### FR-ARCH-011 — Sealing Announces Itself Twice
+
+Persisting the snapshot is followed by a domain event carrying the registry record and a structured log entry with the operator, the cohort reference, and the retention horizon. Personal data in the payload passes through the masking step before reaching any sink. Downstream reactions such as notification fan-out or cache invalidation attach to the event rather than lodging inside the sealing transaction, keeping the moment of closure itself small, synchronous, and easy to reason about.
+
+#### FR-ARCH-012 — Refusals Speak the User's Language
+
+Every validation failure and every authorization denial in the sealing and reversal paths surfaces as a business-rule rejection carrying a translatable sentence, never as a raw database error or an empty denial. The coordinator who selects a not-yet-completed cohort learns which readiness condition failed; the supervisor who guesses at a reversal URL meets a denial that explains nothing about the record's existence. Input arrives through validated data objects, so malformed payloads are rejected before any business logic runs.
+
+---
 
 ## 5. Non-Functional Requirements
 
-Written together with the FR rows in §4 at the start of implementation; none are recorded yet.
+| ID | Requirement | Target | Priority | Layer | Status |
+|----|-------------|--------|----------|-------|--------|
+| NFR-ARCH-001 | Archive, retrieval, and reversal strings render through the translation helper in both locales | N/A | P1 | A | Planned |
+| NFR-ARCH-002 | Sealing is operator-only and reversal is highest-role-only through layered gates | N/A | P0 | U | Planned |
+| NFR-ARCH-003 | Every sealing and reversal writes an actor-identified audit entry in both log channels | N/A | P0 | F | Planned |
+| NFR-ARCH-004 | Snapshots and registry rows are never silently rewritten; corrections arrive as new versions | N/A | P0 | F | Planned |
+
+### 5.1 Language, Access, and Proof
+
+#### NFR-ARCH-001 — Two Languages Over the Same Archive
+
+A coordinator sealing a cohort reads Indonesian; an external auditor reviewing the registry a year later may read English. Every status label, action name, confirmation sentence, and error string resolves through the translation helper with mirrored keys, and dynamic values like cohort names travel as placeholders. The snapshot content itself stays in its stored form, but everything around it, the badges, the countdowns, the confirmations, meets each reader in their own language.
+
+#### NFR-ARCH-002 — The Most Dangerous Button Belongs to the Fewest Hands
+
+Sealing reshapes the daily views for hundreds of students, so it sits behind the operator gate at both the route and the action. Reversal unmakes that decision, so it sits one level higher still, where only the system's highest role may reach it. Each gate is enforced twice, in the policy and in the action, because a single forgotten annotation on a new entry point must never promote a coordinator into an archivist by accident.
+
+#### NFR-ARCH-003 — Every Transition Leaves Two Footprints
+
+Sealing and reversal each write to the queryable activity store for the auditor and to the technical system log for the operator, with personal data masked before either sink. The entry names the actor, the cohort, the previous and new states, and the stated reason. Years later, when the question is not what the archive holds but who ordered each change, these paired footprints answer without requiring anyone's memory.
+
+#### NFR-ARCH-004 — Corrections Accumulate Instead of Overwriting
+
+A sealed snapshot is never edited in place, and a registry row's sealing facts are never revised to look tidier. When an upheld appeal changes a grade, the reversal and reseal produce a new snapshot version beside the old one, and the registry shows the full chain. Storage cost at school scale is negligible; the credibility earned by showing every version instead of only the latest is the reason the archive exists.
+
+---
 
 ## 6. API / Data Contracts
 
-### Config
+### 6.1 Retention Policy
 
 ```php
 // config/retention.php
 return [
     'categories' => [
-        'cohort'            => env('RETENTION_COHORT_YEARS', 5),
-        'registration'      => env('RETENTION_REGISTRATION_YEARS', 10),
-        'student_account'   => env('RETENTION_STUDENT_ACCOUNT_YEARS', 5),
-        'logbook'           => env('RETENTION_LOGBOOK_YEARS', 5),
-        'attendance'        => env('RETENTION_ATTENDANCE_YEARS', 10),
-        'assessment'        => env('RETENTION_ASSESSMENT_YEARS', 10),
-        'report'            => env('RETENTION_REPORT_YEARS', 10),
-        'certificate'       => env('RETENTION_CERTIFICATE_YEARS', 10),
-        'notification'      => env('RETENTION_NOTIFICATION_DAYS', 30), // days, not years
+        'cohort'          => env('RETENTION_COHORT_YEARS', 5),
+        'registration'    => env('RETENTION_REGISTRATION_YEARS', 10),
+        'student_account' => env('RETENTION_STUDENT_ACCOUNT_YEARS', 5),
+        'logbook'         => env('RETENTION_LOGBOOK_YEARS', 5),
+        'attendance'      => env('RETENTION_ATTENDANCE_YEARS', 10),
+        'assessment'      => env('RETENTION_ASSESSMENT_YEARS', 10),
+        'report'          => env('RETENTION_REPORT_YEARS', 10),
+        'certificate'     => env('RETENTION_CERTIFICATE_YEARS', 10),
     ],
 ];
-
+// School overrides via settings('retention.{category}'); resolution lives in one policy class.
 ```
 
-Settings override keys (YB22J): `retention.cohort`, `retention.registration`, `retention.student_account`,
-`retention.logbook`, `retention.attendance`, `retention.assessment`, `retention.report`,
-`retention.certificate`, `retention.notification`.
-
-### Service
-
-```php
-// app/Modules/SysAdmin/Archive/Services/ArchiveRetentionPolicy.php
-final class ArchiveRetentionPolicy
-{
-    public function yearsFor(string $category): int;
-    // settings('retention.'.$category) ?? config('retention.categories.'.$category)
-}
-
-```
-
-### Model
+### 6.2 Registry Model and Status
 
 ```php
 // app/Modules/SysAdmin/Archive/Models/ArchiveRecord.php
@@ -210,44 +241,29 @@ class ArchiveRecord extends BaseModel
     public function asArchiveRecordState(): ArchiveRecordState;
 }
 
+// Enums/ArchiveStatus.php — ARCHIVED, RESTORED, PURGED with translated labels;
+// ARCHIVED may reverse to RESTORED only through the exceptional reversal;
+// PURGED is terminal and reached only by deliberate manual deletion.
 ```
 
-### Enum
-
-```php
-// app/Modules/SysAdmin/Archive/Enums/ArchiveStatus.php
-enum ArchiveStatus: string implements LabelEnum, StatusEnum
-{
-    case ARCHIVED = 'archived';
-    case RESTORED = 'restored';
-    case PURGED   = 'purged';
-
-    // label(): __('sysadmin.archive.status.'.$this->value)
-    // canTransitionTo(): ARCHIVED->[RESTORED, PURGED]; RESTORED/PURGED terminal
-}
-
-```
-
-### Actions
+### 6.3 Lifecycle Actions
 
 ```php
 // app/Modules/SysAdmin/Archive/Actions/ArchiveCohortProcessAction.php
 final class ArchiveCohortProcessAction extends BaseProcessAction
 {
     public function execute(ArchiveCohortData $data): ActionResponse;
+    // Validates COMPLETED + readiness, freezes the versioned snapshot,
+    // delegates account sealing, writes the registry row, emits the event.
 }
 
 // app/Modules/SysAdmin/Archive/Actions/RestoreArchiveAction.php
 final class RestoreArchiveAction extends BaseCommandAction
 {
     public function execute(ArchiveRecord $record, ?string $reason = null): ActionResponse;
+    // Highest role only; pre-expiry sealed rows; audited; purged rows never reverse.
 }
 
-```
-
-### DTO
-
-```php
 // app/Modules/SysAdmin/Archive/Data/ArchiveCohortData.php
 final class ArchiveCohortData extends BaseData
 {
@@ -256,130 +272,50 @@ final class ArchiveCohortData extends BaseData
         public readonly ?string $reason = null,
     ) {}
 }
-
 ```
 
-### Job
+### 6.4 Events, Routes, Locales, Schema
 
-```php
-// app/Modules/SysAdmin/Archive/Jobs/PurgeExpiredArchivesJob.php
-class PurgeExpiredArchivesJob implements ShouldQueue
-{
-    public int $tries = 3;
-    public array $backoff = [2, 10, 30];
-
-    public function __construct(protected readonly array $recordIds) {}
-    public function handle(): void;   // purge via DeleteUserGdprAction / dependent deletion
-    public function failed(\Throwable $e): void;
-}
-
-```
-
-### Command
-
-```php
-// app/Modules/SysAdmin/Archive/Console/Commands/ArchivePurgeCommand.php
-class ArchivePurgeCommand extends Command
-{
-    protected $signature = 'archives:purge-expired {--dry-run : Report eligible records without purging}';
-}
-
-```
-
-### Events
-
-```php
-// app/Modules/SysAdmin/Archive/Events/CohortArchived.php   — eventName() = 'data_archive.cohort_archived'
-// app/Modules/SysAdmin/Archive/Events/ArchiveRestored.php  — eventName() = 'data_archive.cohort_restored'
-// app/Modules/SysAdmin/Archive/Events/ArchivePurged.php    — eventName() = 'data_archive.record_purged'
-// Each extends BaseEvent and carries public readonly ArchiveRecord $record
-
-```
-
-### Routes
-
-| Method | URI | Handler | Middleware |
-|--------|-----|---------|------------|
-| GET | `/admin/archives` | `ArchiveManager` | `auth`, `role:super_admin\|admin` |
-
-### Localization
-
-`lang/en|id/sysadmin.php` `archive` section keys: `title`, `empty`, `category.*` (per category),
-`status.*` (`archived`/`restored`/`purged`), `actions.*` (`archive`/`restore`/`purge_now`),
-`success.*` (`archived`/`restored`/`purged`), `errors.*` (`not_completed`/`already_archived`/
-`not_archived`/`expired`).
-
-### Migration
-
-```php
-// database/migrations/2026_08_19_000001_create_archive_records_table.php
-Schema::create('archive_records', function (Blueprint $table) {
-    $table->uuid('id')->primary();
-    $table->string('category');
-    $table->uuidMorphs('reference');
-    $table->string('status');
-    $table->timestamp('retention_until')->nullable();
-    $table->timestamp('archived_at')->nullable();
-    $table->foreignUuid('archived_by')->nullable()->constrained('users')->nullOnDelete();
-    $table->timestamp('restored_at')->nullable();
-    $table->foreignUuid('restored_by')->nullable()->constrained('users')->nullOnDelete();
-    $table->timestamp('purged_at')->nullable();
-    $table->text('reason')->nullable();
-    $table->timestamps();
-
-    $table->index(['status', 'retention_until']);
-});
-
-```
+Events `CohortArchived`, `ArchiveRestored`, and `ArchivePurged` extend the base event, each carrying the registry record with its translation key. Routes expose `GET /admin/archives` behind authentication plus the operator role gate; the alumni dashboard reuses the existing authenticated layout with archived-state scoping. Locale namespace `sysadmin.archive.*` is mirrored in both languages across titles, categories, statuses, actions, confirmations, and errors. The `archive_records` table carries a UUID primary key, category, polymorphic reference, status, non-nullable retention horizon, sealing and reversal audit columns with null-on-delete operator references, purge timestamp, reason, and a composite index over status and retention horizon.
 
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — Central Registry vs. Distributed Archive Flags
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-ARCH-001 | A central archive registry instead of per-table archive flags | P1 | — | — |
+| DD-ARCH-002 | Sealed and purged as distinct states with manual-only deletion at expiry | P0 | — | — |
+| DD-ARCH-003 | Post-expiry deletion reuses the GDPR erasure pipeline by hand, never by scheduler | P0 | — | — |
+| DD-ARCH-004 | Cohort sealing delegates account transitions to the existing archival action | P1 | — | — |
+| DD-ARCH-005 | Retention resolves from school override to config default at a single point | P1 | — | — |
+| DD-ARCH-006 | Reversal is exceptional, highest-role-only, and permanently audited | P0 | — | — |
 
-**Decision:** A single `ArchiveRecord` registry tracks archive state, instead of adding an
-`is_archived` flag to every archiveable table.
-**Rationale:** A registry gives one queryable place for retention, status, and audit (who/when/until).
-Cross-module archives (cohort → accounts, reports, certificates) are correlated by one `category` +
-morph reference. It also avoids touching every module's schema.
-**Trade-off:** The registry references aggregates by morph rather than storing copies — restoring a
-purged record is impossible (data is gone), which is the intended compliance behavior.
+### 7.1 Registry, Retention, and Reversal
 
-### DD-2 — Archive vs. Purge: Two Explicit States
+#### DD-ARCH-001 — One Register Instead of Flags Everywhere
 
-**Decision:** `ARCHIVED` (reversible, time-boxed) and `PURGED` (irreversible, GDPR-deleted) are
-distinct terminal branches, with `RESTORED` as the exit from `ARCHIVED`.
-**Rationale:** Mirrors the legal distinction — retention keeps data safely sealed; after retention
-expiry the only legal action is deletion. Restore is allowed only *before* expiry, preventing a
-loophole where expired data is resurrected instead of purged.
-**Trade-off:** An archived record past retention can no longer be restored even for legitimate
-re-opens; the admin must purge-then-export if needed.
+Adding an archive flag to every sealable table would scatter retention logic across a dozen migrations and leave the question "what is sealed, until when, by whom" answerable only by joining the whole database. A single registry row per sealed aggregate gathers category, reference, status, horizon, and provenance in one queryable place while leaving module schemas untouched. The registry points at aggregates rather than duplicating them, which means a truly purged record is genuinely gone, the intended compliance behavior rather than a caching accident.
 
-### DD-3 — Purge Delegates to GDPR Pipeline
+#### DD-ARCH-002 — Eligibility Is Not Execution
 
-**Decision:** `PurgeExpiredArchivesJob` purges user-context archives through `DeleteUserGdprAction`
-(7HNCF) rather than raw `Model::delete()`.
-**Rationale:** Reuses the snapshot capture, PII handling, and `GdprDeletionLog` append-only audit that
-7HNCF already guarantees — no second deletion path, no orphaned audit.
-**Trade-off:** User-context purge depends on the GDPR subsystem; acceptable since compliance demands it.
+Sealed means frozen but recoverable; purged means gone with paperwork. Between them sits the retention horizon, which marks eligibility and does nothing else. Collapsing those states would either resurrect expired data through casual restores or delete live history through eager automation. Keeping them distinct lets the registry say "this may now be deleted" while requiring a human to answer "and so it shall be," with the deletion log as the receipt.
 
-### DD-4 — Cohort Archival Reuses Student-Account Capability
+#### DD-ARCH-003 — The Scheduler Never Deletes
 
-**Decision:** `ArchiveCohortProcessAction` calls the existing `ArchiveStudentAccountsAction` (E1MSJ)
-for the account-sealing step instead of duplicating transition logic.
-**Rationale:** DRY — account archival already chunks at 100/batch, skips super_admin, and logs
-`student_accounts_archived`. The cohort action is the orchestrator, not a re-implementation.
-**Trade-off:** Cohort archival transitively inherits E1MSJ's account behavior (e.g., super_admin
-skip); acceptable and intended.
+An overnight job that deletes on a predicate is one misconfigured horizon away from an empty archive and an apology letter. Post-expiry deletion therefore travels through the GDPR erasure workflow by an operator's explicit hand: snapshot already frozen, compliance record written, reason stated. The school keeps the proven deletion machinery without granting it autonomy, and every purge carries a human name beside it.
 
-### DD-5 — Retention Driven by Settings + Config
+#### DD-ARCH-004 — Borrowed Account Logic Stays Borrowed
 
-**Decision:** Effective retention = settings override (`retention.{category}`) → `config/retention.php`
-default.
-**Rationale:** A school should adjust legal-retention periods without a deploy; the settings infra
-(YB22J) already provides that. Config supplies deterministic defaults for fresh installs.
-**Trade-off:** Two sources of truth; `ArchiveRetentionPolicy` is the single resolution point.
+Account archival already handles chunking, protects the system identity, and logs its count. Reimplementing any of that inside the cohort operation would create two definitions of "archived student" that diverge within a year. Delegation keeps one definition with two callers, and the cohort operation remains what it should be: readiness, snapshot, registry, event. The inherited behaviors, including which identities are skipped, apply identically in both contexts by construction.
+
+#### DD-ARCH-005 — Two Sources, One Answer
+
+Schools need to adjust horizons without deploying, and fresh installs need sane defaults without a database. Stored overrides plus configuration defaults satisfy both, but two sources invite disagreement about which won. Funneling every read through a single policy class removes the ambiguity: callers ask for the horizon of a category and receive one number with a known provenance. Reviews check the policy class instead of hunting scattered fallbacks.
+
+#### DD-ARCH-006 — Emergencies Deserve a Lit Path
+
+The alternative to an audited reversal is not "nobody ever reopens" but "somebody reopens with raw SQL at midnight." Naming the reversal, gating it to the highest role, demanding a reason, and recording it permanently converts the midnight edit into a daylight procedure. The friction is calibrated: low enough that a genuine appeal succeeds, high enough that convenience never reaches for it.
 
 ---
 
@@ -387,14 +323,11 @@ default.
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
-| Cohort archival coverage | 100% of completed internships archivable | `ArchiveCohortProcessAction` on every completed cohort |
-| Double-archive prevention | 0 duplicate `ARCHIVED` records per cohort | Unique constraint + `FR-9YUUK-AC4` check |
-| Purge enforcement | 100% of retention-expired records purged within 24h | `archives:purge-expired --dry-run` vs `PURGED` count |
-| GDPR log coverage per purge | 100% of user-context purges log a `GdprDeletionLog` (7HNCF) | Log row count per purged user-context record |
-| Restore gate | 0 restores after retention expiry or purge | `FR-9YUUK-RS3`/`FR-9YUUK-PU5` assertions in tests |
-| Cohort archive latency | < 60s for 500-student cohort | `ArchiveCohortProcessAction` execution time |
-| Registry query | < 200ms paginated browse with 10k records | `ArchiveManager` query time |
-| Retention completeness | 100% of records have a non-null `retention_until` at archive time | Migration not-null invariant + test |
+| Completed cohorts left unsealed past term end | 0 | Registry coverage against completed internships |
+| Writes accepted against sealed records | 0 | Refusal assertions across model, policy, and interface paths |
+| Alumni certificate retrievals served read-only | All served | Alumni dashboard walkthrough per term |
+| Reversals lacking actor, reason, and timestamp | 0 | Audit completeness review of reversal entries |
+| Rows auto-deleted at expiry | 0 | Absence of any scheduled deletion path |
 
 ---
 
@@ -402,41 +335,45 @@ default.
 
 ### Prerequisites
 
-This spec can only be implemented after the following specs are **fully complete**:
-
 | Spec | What It Provides |
-|------|-----------------|
-| [system-maintenance.md](E1MSJ-system-maintenance.md) | `ArchiveStudentAccountsAction`, `AccountStatus::ARCHIVED`, scheduler patterns for `routes/console.php` |
-| [gdpr-compliance.md](7HNCF-gdpr-compliance.md) | `DeleteUserGdprAction`, `GdprDeletionLog`, `GdprDeletionType` for user-context purge |
-| [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) | `ShouldQueue`, job dispatch conventions, queue configuration |
-| [reports.md](R6BMW-reports.md) | FINALIZED report snapshots (`archived_data`) — the report archive target |
-| [settings-infrastructure.md](YB22J-settings-infrastructure.md) | `settings()` resolution for retention overrides |
-| [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) | `isAdmin()` policy helper, `role:super_admin\|admin` middleware |
-| [base-classes.md](SE5Q9-base-classes.md) | `BaseData`, `BaseCommandAction`, `BaseProcessAction`, `BaseEvent`, `BaseModel`, `RejectedException` |
-| [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) | `SmartLogger` with `withPiiMasking()` |
-| [internship-lifecycle.md](7C5WM-internship-lifecycle.md) | `InternshipStatus::COMPLETED` — the archival trigger state |
+|------|------------------|
+| [system-maintenance.md](E1MSJ-system-maintenance.md) | Account archival action, archived status, and scheduler patterns |
+| [gdpr-compliance.md](7HNCF-gdpr-compliance.md) | Erasure workflow and deletion log for manual post-expiry deletion |
+| [job-queue-infrastructure.md](8FVZA-job-queue-infrastructure.md) | Queue conventions for any deferred archival fan-out |
+| [reports.md](R6BMW-reports.md) | Finalized report snapshots as archive content |
+| [settings-infrastructure.md](YB22J-settings-infrastructure.md) | Stored overrides for retention horizons |
+| [rbac-and-authorization.md](T4B26-rbac-and-authorization.md) | Operator gates and the highest-role distinction |
+| [base-classes.md](SE5Q9-base-classes.md) | Data, action, process, event, model, and rejection contracts |
+| [logging-and-error-handling.md](89SRA-logging-and-error-handling.md) | Structured logger with masking |
+| [internship-lifecycle.md](7C5WM-internship-lifecycle.md) | Completed state as the sealing trigger |
 
 ### Build Guide
 
-After implementing this spec, `ArchiveCohortProcessAction` seals a completed cohort into the
-`archive_records` registry while delegating account archival to `ArchiveStudentAccountsAction`;
-`archives:purge-expired` runs daily to delete retention-expired archives through `DeleteUserGdprAction`
-(7HNCF) and mark them `PURGED`; `RestoreArchiveAction` reopens pre-expiry archives. Implement the
-retention policy first (`config/retention.php` + `ArchiveRetentionPolicy`), then the registry
-(migration + model + status enum), then the lifecycle actions, the purge job + command, and finally
-the `ArchiveManager` UI — each layer tested against its FR IDs.
+Policy and registry first: horizons, the migration, the model, and the status vocabulary. Sealing follows with readiness, snapshot, delegation, and events, each exercised against its requirement ids. Immutability gates land alongside the first sealed fixture so no write path ever predates its lock. The reversal and the alumni dashboard close the build, proving the archive is both trustworthy and useful.
 
 ### Next Steps
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | (No downstream) | Maintenance is the final phase — runs continuously after all features are built |
+| 1 | (No downstream) | Maintenance is the final phase — the lifecycle runs continuously once built |
 
 ---
 
 ## 10. Risks & Assumptions
 
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
-| --- | --------------------------------- | ------ | ----- | -------- |
+|----|----------------------------------|--------|-------|----------|
+| A-1 | We assume school-scale cohorts produce snapshots and registries that stay small enough for indefinite local retention | Accepted | Maintainer | — |
 
 ## Quick References
+
+- [Spec registry](index.md) — Phase 12 maintenance group and dependency order
+- [System maintenance](E1MSJ-system-maintenance.md) — account archival and scheduler patterns reused here
+- [GDPR compliance](7HNCF-gdpr-compliance.md) — erasure workflow for manual post-expiry deletion
+- [Internship lifecycle](7C5WM-internship-lifecycle.md) — completed state as the sealing trigger
+- [Reports](R6BMW-reports.md) — finalized snapshots as archive content
+- [Program closure archival ADR](../adr/adr-program-closure-archival.md) — snapshot, terminal state, alumni, and exceptional reversal
+- [MVP trim ADR](../adr/adr-mvp-spec-trim.md) — pipeline depth deferred to post-MVP phases
+- [Cross-module communication ADR](../adr/adr-cross-module-communication.md) — delegation to account archival
+- [SmartLogger dual-channel ADR](../adr/adr-smartlogger-dual-channel.md) — activity plus system channels
+- [Exception hierarchy ADR](../adr/adr-exception-hierarchy.md) — business-rule rejection contract
