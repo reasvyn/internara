@@ -110,7 +110,9 @@ Picture attendance needing a student's enrollment state: the attendance develope
 Dependency order comes from `config/module.php`, so a call the registry forbids is caught before it becomes a cycle. When two modules genuinely need each other, the shared concept drops into Core or behind a Core contract rather than surviving as a shortcut. The result carries no circular dependency and no cross-module model reach-in, governed by the [cross-module-communication ADR](../adr/adr-cross-module-communication.md) and FR-ARC-029–034.
 
 #### UC-ARC-003 — Trace a Mutation End-to-End
-An auditor chasing a disputed grade approval walks one fixed road. The Livewire component receives a validated DTO, never a raw `Request`, honoring D5 at the door. It calls `CommandAction::execute(DTO)`, and the Action orchestrates the rest: rule evaluation delegated to the Entity, persistence through the injected Model, and an Event dispatched for everything downstream. Listeners then absorb notifications, cache invalidation, and the activity log without bloating the Action. An `ActionResponse` carries success or failure back to the UI, so every mutation stays on one traceable, auditable path described in QLHDO §1.4 and [action-pattern.md](../guides/arch/action-pattern.md). ---
+An auditor chasing a disputed grade approval walks one fixed road. The Livewire component receives a validated DTO, never a raw `Request`, honoring D5 at the door. It calls `CommandAction::execute(DTO)`, and the Action orchestrates the rest: rule evaluation delegated to the Entity, persistence through the injected Model, and an Event dispatched for everything downstream. Listeners then absorb notifications, cache invalidation, and the activity log without bloating the Action. An `ActionResponse` carries success or failure back to the UI, so every mutation stays on one traceable, auditable path described in QLHDO §1.4 and [action-pattern.md](../guides/arch/action-pattern.md).
+
+---
 
 ## 4. Functional Requirements
 
@@ -359,7 +361,9 @@ No module ships as a sealed box. Each one exposes at least one Command or Read A
 A module without an Action is undiscoverable by construction. The `scan_class_contracts.py` and module scans confirm the doorway exists at layer `A`.
 
 #### FR-ARC-044 — Mutation flow traceability
-Every mutation walks the same road: Livewire into a DTO, into a Command Action, through the Entity, into the Model, out through an Event. The original arch-test guard that once proved this fell to a `pest-plugin-arch` compatibility bug, as the [action-based-mvc ADR](../adr/adr-action-based-mvc-architecture.md) records, so enforcement currently pairs the C1 leg of `scan_violations.py` with review at layer `A` until the guard returns. ---
+Every mutation walks the same road: Livewire into a DTO, into a Command Action, through the Entity, into the Model, out through an Event. The original arch-test guard that once proved this fell to a `pest-plugin-arch` compatibility bug, as the [action-based-mvc ADR](../adr/adr-action-based-mvc-architecture.md) records, so enforcement currently pairs the C1 leg of `scan_violations.py` with review at layer `A` until the guard returns.
+
+---
 
 ## 5. Non-Functional Requirements
 
@@ -538,7 +542,9 @@ Eloquent already answers the persistence question, so a repository layer would w
 Models stay directly usable by their owning module's Actions, and the owning-module rule under FR-ARC-029 and FR-ARC-030 provides the encapsulation a repository would promise. The full argument against the extra layer lives in [repository-pattern.md](../guides/arch/repository-pattern.md).
 
 #### DD-ARC-007 — Automated Architecture Enforcement
-A conventions document that nobody runs rots within a sprint; the `tools/` scans covering C1–C8, D1–D6, contracts, naming, and module boundaries run before commit and fail loudly instead. Deterministic checks beat manual review on speed and memory, which is the Automation-First doctrine applied to architecture itself. The standing cost is scan maintenance as the architecture evolves, a small owned burden next to the coupling it prevents. ---
+A conventions document that nobody runs rots within a sprint; the `tools/` scans covering C1–C8, D1–D6, contracts, naming, and module boundaries run before commit and fail loudly instead. Deterministic checks beat manual review on speed and memory, which is the Automation-First doctrine applied to architecture itself. The standing cost is scan maintenance as the architecture evolves, a small owned burden next to the coupling it prevents.
+
+---
 
 ## 8. Success Metrics
 
