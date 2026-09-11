@@ -41,8 +41,7 @@ Vocational schools operate in Indonesian; developers and bilingual programs need
 operator's choice must survive navigation, apply before the first string renders, and cost no
 database query — while the admin-configured default still governs fresh browsers that never
 chose anything.
-**→ Requirement:** FR-BRAND-016/017/018 (locale stack), FR-BRAND-019 (resolution chain),
-FR-BRAND-020 (bilingual duality).
+**→ Requirement:** FR-BRAND-016/017/018 (locale stack, resolution chain, bilingual duality).
 
 ---
 

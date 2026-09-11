@@ -451,7 +451,7 @@ Readiness indicators pair their color with explicit text, so a red-green distinc
 carries meaning alone. An operator checking system health on a monochrome printout or with
 color-vision deficiency gets the same verdict as everyone else.
 
-### 4.7 ADR-Demanded Discipline
+### 4.7 Cross-Cutting Discipline
 
 #### FR-DASH-039 — Lock-free widget reads
 
