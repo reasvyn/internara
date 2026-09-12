@@ -77,7 +77,9 @@ abstract readonly class BaseEntity implements JsonSerializable
 
     public function with(string $property, mixed $value): static
     {
-        $data = $this->toArray();
+        // Raw property values (not toArray()): Carbon and nested entities
+        // must round-trip through fromArray() without serialization loss.
+        $data = get_object_vars($this);
         $data[$property] = $value;
 
         return static::fromArray($data);

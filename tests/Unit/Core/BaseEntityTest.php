@@ -3,7 +3,40 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Entities\BaseEntity;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+
+final readonly class EntityInnerDouble extends BaseEntity
+{
+    public function __construct(
+        public string $code,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        return new self(code: (string) ($model->getAttributes()['code'] ?? ''));
+    }
+}
+
+final readonly class EntityRichDouble extends BaseEntity
+{
+    public function __construct(
+        public string $name,
+        public Carbon $at,
+        public EntityInnerDouble $inner,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        $attributes = $model->getAttributes();
+
+        return new self(
+            name: (string) ($attributes['name'] ?? ''),
+            at: Carbon::parse($attributes['at'] ?? 'now'),
+            inner: new EntityInnerDouble(code: (string) ($attributes['code'] ?? '')),
+        );
+    }
+}
 
 final readonly class EntityTestDouble extends BaseEntity
 {
@@ -72,5 +105,19 @@ describe('SE5Q9: base entity', function (): void {
         expect($a->equals($c))->toBeFalse();
         expect($c->name)->toBe('Renamed');
         expect($a->name)->toBe('Placement');
+    });
+
+    test('SE5Q9-FR-BASE-011: with() preserves Carbon and nested-entity value types', function (): void {
+        $at = Carbon::parse('2026-01-15 08:00:00');
+        $entity = new EntityRichDouble(name: 'Placement', at: $at, inner: new EntityInnerDouble(code: 'A1'));
+
+        $copy = $entity->with('name', 'Renamed');
+
+        expect($copy->name)->toBe('Renamed');
+        expect($copy->at)->toBeInstanceOf(Carbon::class);
+        expect($copy->at->equalTo($at))->toBeTrue();
+        expect($copy->inner)->toBeInstanceOf(EntityInnerDouble::class);
+        expect($copy->inner->code)->toBe('A1');
+        expect($entity->name)->toBe('Placement');
     });
 });
