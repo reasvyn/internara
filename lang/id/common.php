@@ -195,6 +195,7 @@ return [
         'admin' => 'Admin',
         'application' => 'Permohonan',
         'approved' => 'Disetujui',
+        'archived' => 'Diarsipkan',
         'cancelled' => 'Dibatalkan',
         'certificate' => 'Sertifikat',
         'closed' => 'Ditutup',

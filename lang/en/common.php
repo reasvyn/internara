@@ -195,6 +195,7 @@ return [
         'admin' => 'Admin',
         'application' => 'Application',
         'approved' => 'Approved',
+        'archived' => 'Archived',
         'cancelled' => 'Cancelled',
         'certificate' => 'Certificate',
         'closed' => 'Closed',

@@ -14,6 +14,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
     case ACTIVE = 'active';
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
+    case ARCHIVED = 'archived';
 
     public function isAcceptingRegistrations(): bool
     {
@@ -22,7 +23,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
 
     public function isTerminal(): bool
     {
-        return in_array($this, [self::COMPLETED, self::CANCELLED], true);
+        return in_array($this, [self::COMPLETED, self::CANCELLED, self::ARCHIVED], true);
     }
 
     public function label(): string
@@ -33,6 +34,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
             self::ACTIVE => __('common.enums.active'),
             self::COMPLETED => __('common.enums.completed'),
             self::CANCELLED => __('common.enums.cancelled'),
+            self::ARCHIVED => __('common.enums.archived'),
         };
     }
 
@@ -42,8 +44,9 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
             self::DRAFT => [self::PUBLISHED, self::CANCELLED],
             self::PUBLISHED => [self::ACTIVE, self::CANCELLED],
             self::ACTIVE => [self::COMPLETED, self::CANCELLED],
-            self::COMPLETED => [],
+            self::COMPLETED => [self::ARCHIVED],
             self::CANCELLED => [],
+            self::ARCHIVED => [],
         };
     }
 
