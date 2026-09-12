@@ -12,6 +12,10 @@ return [
         'color_scheme' => 'Color Scheme',
         'mail' => 'Mail Services',
         'system' => 'System Information',
+        'branding' => 'Branding & Appearance',
+        'features' => 'Feature Flags',
+        'localization' => 'Localization',
+        'notifications' => 'Notifications',
     ],
 
     'fields' => [
@@ -56,6 +60,11 @@ return [
         'color_scheme' => 'Customize brand colors and background across the entire interface.',
         'mail' => 'Configure SMTP settings for email notifications.',
         'support_email' => 'Used as the contact address in security notifications sent to users.',
+    ],
+
+    'media_collection' => [
+        'brand_logo' => 'Brand Logo',
+        'brand_favicon' => 'Brand Favicon',
     ],
 
     'presets_title' => 'Preset Palettes',

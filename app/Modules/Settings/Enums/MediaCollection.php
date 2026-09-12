@@ -13,6 +13,6 @@ enum MediaCollection: string implements LabelEnum
 
     public function label(): string
     {
-        return __('settings.media_collection.'.$this->value);
+        return __('setting.media_collection.'.$this->value);
     }
 }

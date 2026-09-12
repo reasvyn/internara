@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 use App\Modules\Settings\Enums\MediaCollection;
 
-describe('MediaCollection enum', function (): void {
-    test('cases carry the specified backing values: cases carry the specified backing values', function (): void {
+describe('52O1I: MediaCollection enum', function (): void {
+    test('52O1I-FR-BRAND-006: cases carry the specified backing values', function (): void {
         expect(MediaCollection::LOGO->value)->toBe('brand_logo');
         expect(MediaCollection::from('brand_logo'))->toBe(MediaCollection::LOGO);
         expect(MediaCollection::FAVICON->value)->toBe('brand_favicon');
@@ -13,7 +13,18 @@ describe('MediaCollection enum', function (): void {
         expect(MediaCollection::cases())->toHaveCount(2);
         expect(MediaCollection::tryFrom('no-such-value'))->toBeNull();
     });
-    // NOTE: label() is not asserted here — it resolves to __('settings.media_collection.*')
-    // while the lang file is lang/{en,id}/setting.php (singular), so the translator
-    // returns the raw key. Recorded as drift for review.
+
+    test('52O1I-FR-BRAND-018: labels resolve in English', function (): void {
+        app()->setLocale('en');
+
+        expect(MediaCollection::LOGO->label())->toBe('Brand Logo');
+        expect(MediaCollection::FAVICON->label())->toBe('Brand Favicon');
+    });
+
+    test('52O1I-FR-BRAND-018: labels resolve in Indonesian', function (): void {
+        app()->setLocale('id');
+
+        expect(MediaCollection::LOGO->label())->toBe('Logo Brand');
+        expect(MediaCollection::FAVICON->label())->toBe('Favicon Brand');
+    });
 });

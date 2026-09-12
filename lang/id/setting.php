@@ -12,6 +12,10 @@ return [
         'color_scheme' => 'Skema Warna',
         'mail' => 'Layanan Email',
         'system' => 'Informasi Sistem',
+        'branding' => 'Branding & Tampilan',
+        'features' => 'Flag Fitur',
+        'localization' => 'Lokalisasi',
+        'notifications' => 'Notifikasi',
     ],
 
     'fields' => [
@@ -56,6 +60,11 @@ return [
         'color_scheme' => 'Sesuaikan warna brand dan latar di seluruh antarmuka.',
         'mail' => 'Konfigurasi pengaturan SMTP untuk notifikasi email.',
         'support_email' => 'Digunakan sebagai alamat kontak dalam notifikasi keamanan yang dikirim ke pengguna.',
+    ],
+
+    'media_collection' => [
+        'brand_logo' => 'Logo Brand',
+        'brand_favicon' => 'Favicon Brand',
     ],
 
     'presets_title' => 'Palet Prasetel',
