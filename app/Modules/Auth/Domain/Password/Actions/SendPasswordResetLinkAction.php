@@ -36,6 +36,6 @@ final class SendPasswordResetLinkAction extends BaseCommandAction
             'status' => $status,
         ]);
 
-        return ActionResponse::ok($status);
+        return ActionResponse::ok(Password::RESET_LINK_SENT);
     }
 }

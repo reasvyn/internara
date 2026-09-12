@@ -44,6 +44,26 @@ describe('D9TKW: password reset', function (): void {
             ->and($responses[3]->data)->toBe(Password::RESET_LINK_SENT);
     });
 
+    test('D9TKW-FR-PWRST-002: unknown email still returns RESET_LINK_SENT', function (): void {
+        $response = app(SendPasswordResetLinkAction::class)->execute('ghost-'.uniqid().'@example.com');
+
+        expect($response->success)->toBeTrue()
+            ->and($response->data)->toBe(Password::RESET_LINK_SENT);
+    });
+
+    test('D9TKW-FR-PWRST-002: broker throttle still returns RESET_LINK_SENT', function (): void {
+        $user = User::factory()->create();
+        $action = app(SendPasswordResetLinkAction::class);
+
+        $first = $action->execute($user->email);
+        $second = $action->execute($user->email);
+
+        expect($first->success)->toBeTrue()
+            ->and($first->data)->toBe(Password::RESET_LINK_SENT)
+            ->and($second->success)->toBeTrue()
+            ->and($second->data)->toBe(Password::RESET_LINK_SENT);
+    });
+
     test('D9TKW-FR-PWRST-009: valid token resets the password and returns ActionResponse::ok', function (): void {
         $user = User::factory()->withPassword('old-secret')->create();
         $token = Password::createToken($user);
