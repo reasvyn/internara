@@ -44,15 +44,29 @@ describe('XW6F5: AcademicYearPolicy', function () {
             ->and(Gate::allows('update', $year))->toBeFalse();
     });
 
-    test('XW6F5-FR-YEAR-013: activate and delete are denied even for admin', function () {
+    test('XW6F5-FR-YEAR-013: admin can activate and delete', function () {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $year = AcademicYear::factory()->create();
 
         $this->actingAs($admin);
 
-        expect(Gate::allows('activate', $year))->toBeFalse()
-            ->and(Gate::allows('delete', $year))->toBeFalse();
+        expect(Gate::allows('activate', $year))->toBeTrue()
+            ->and(Gate::allows('delete', $year))->toBeTrue();
+    });
+
+    test('XW6F5-FR-YEAR-013: teacher and student cannot activate or delete', function () {
+        $year = AcademicYear::factory()->create();
+
+        foreach (['teacher', 'student'] as $role) {
+            $user = User::factory()->create();
+            $user->assignRole($role);
+
+            $this->actingAs($user);
+
+            expect(Gate::allows('activate', $year))->toBeFalse()
+                ->and(Gate::allows('delete', $year))->toBeFalse();
+        }
     });
 
     test('T4B26-FR-RBAC-010: superadmin bypasses hard-deny via before()', function () {

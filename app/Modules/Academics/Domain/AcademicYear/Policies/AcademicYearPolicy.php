@@ -35,11 +35,11 @@ class AcademicYearPolicy extends BasePolicy
 
     public function activate(User $user, AcademicYear $year): bool
     {
-        return false;
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user, AcademicYear $year): bool
     {
-        return false;
+        return $this->isAdmin($user);
     }
 }
