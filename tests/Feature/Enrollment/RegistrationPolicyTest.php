@@ -75,4 +75,37 @@ describe('MBB5R: RegistrationPolicy', function () {
 
         expect(Gate::allows('update', $registration))->toBeTrue();
     });
+
+    test('MBB5R-FR-REG-018: owner can update and delete own pending registration', function () {
+        $owner = User::factory()->create();
+        $owner->assignRole('student');
+        $registration = Registration::factory()->pending()->create(['student_id' => $owner->id]);
+
+        $this->actingAs($owner);
+
+        expect(Gate::allows('update', $registration))->toBeTrue()
+            ->and(Gate::allows('delete', $registration))->toBeTrue();
+    });
+
+    test('MBB5R-FR-REG-018: owner cannot update or delete non-pending registration', function () {
+        $owner = User::factory()->create();
+        $owner->assignRole('student');
+        $registration = Registration::factory()->active()->create(['student_id' => $owner->id]);
+
+        $this->actingAs($owner);
+
+        expect(Gate::allows('update', $registration))->toBeFalse()
+            ->and(Gate::allows('delete', $registration))->toBeFalse();
+    });
+
+    test('MBB5R-FR-REG-018: non-owner cannot update or delete pending registration', function () {
+        $registration = Registration::factory()->pending()->create();
+
+        $outsider = User::factory()->create();
+        $outsider->assignRole('student');
+        $this->actingAs($outsider);
+
+        expect(Gate::allows('update', $registration))->toBeFalse()
+            ->and(Gate::allows('delete', $registration))->toBeFalse();
+    });
 });

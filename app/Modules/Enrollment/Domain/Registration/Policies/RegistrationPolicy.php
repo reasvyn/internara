@@ -45,7 +45,7 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $this->isOwner($registration, $user) && $registration->isPending();
+        return $this->isOwner($user, $registration, 'student_id') && $registration->isPending();
     }
 
     public function approve(User $user, Registration $registration): bool
@@ -59,7 +59,7 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $this->isOwner($registration, $user) && $registration->isPending();
+        return $this->isOwner($user, $registration, 'student_id') && $registration->isPending();
     }
 
     private function isAssignedMentor(User $user, Registration $registration): bool

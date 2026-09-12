@@ -91,6 +91,11 @@ class Registration extends BaseModel
         return $this->status === $status;
     }
 
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
     public function scopeCurrentStatus(Builder $query, string $status): Builder
     {
         return $query->where('status', $status);
