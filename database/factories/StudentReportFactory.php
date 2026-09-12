@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Reports\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -56,7 +57,7 @@ class StudentReportFactory extends Factory
     public function finalized(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => StudentStudentReportStatus::FINALIZED,
+            'status' => StudentReportStatus::FINALIZED->value,
             'finalized_by' => User::factory(),
             'finalized_at' => now(),
         ]);

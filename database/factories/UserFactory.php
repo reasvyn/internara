@@ -20,11 +20,13 @@ class UserFactory extends Factory
     {
         $email = $this->faker->unique()->safeEmail();
         $local = Str::of($email)->before('@')->replaceMatches('/[^a-zA-Z0-9]/', '')->value();
+        $base = $local ?: 'user';
+        $username = $base.'_'.substr(md5($email), 0, 6);
 
         return [
             'name' => $this->faker->name(),
             'email' => $email,
-            'username' => $local ?: 'user',
+            'username' => $username,
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'setup_required' => false,
