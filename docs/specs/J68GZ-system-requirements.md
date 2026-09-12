@@ -132,7 +132,7 @@ The edge case this journey owns is the misleading failure: PHP 8.3 installed whe
 | FR-SYS-030 | Tier transitions require zero code changes; no feature is disabled in any tier | P0 | A | Full |
 | FR-SYS-031 | The system MUST provide a 15-point health check covering: environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, and maintenance mode | P0 | F | Full |
 | FR-SYS-032 | The health check MUST be accessible via `php artisan system:health` (CLI) and expose an admin-accessible web surface | P0 | F | Full |
-| FR-SYS-033 | Health check results MUST be cached under the registered cache key (`system.health_check`) to avoid re-running expensive checks on every request | P1 | F | Full |
+| FR-SYS-033 | The health check MUST exercise the registered cache key (`system.health_check`) as a driver probe on every run; result caching with a TTL is deferred (see detail) | P1 | F | Full |
 | FR-SYS-034 | The `/up` endpoint MUST return 200 only when required extensions and DB connectivity pass | P1 | F | Planned |
 
 ### 4.1 Minimum System Requirements
@@ -279,7 +279,9 @@ The deploy-time gate runs over SSH, but the school operator who needs reassuranc
 
 #### FR-SYS-033 — Cached results
 
-Re-running disk-space probes and queue handshakes on every dashboard request would turn monitoring into the load it warns about. Results are cached under the registered key `system.health_check` in `config/cache-keys.php`, so expensive checks never run per request. The cache-key registry audit plus the command test (layer F) prove the key is registered and honoured.
+Re-running disk-space probes and queue handshakes on every dashboard request would turn monitoring into the load it warns about. The command currently exercises the registered key `system.health_check` in `config/cache-keys.php` as a cache-driver probe (write-then-read) rather than caching results, so every run executes all fifteen checks live.
+
+> Decision: probe-only behavior is kept because caching health output introduces staleness the spec never bounded (no TTL was specified). If result caching is wanted later, it needs a TTL requirement plus a read-through contract first. The cache-key registry audit plus the command test (layer F) prove the key is registered and honoured.
 
 #### FR-SYS-034 — Gated `/up` endpoint
 

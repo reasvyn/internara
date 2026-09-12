@@ -23,7 +23,7 @@ final class LoginAction extends BaseCommandAction
             $identifierHash = hash('crc32b', $data->identifier);
 
             // FR-LT7 timing: read lockout cache BEFORE user lookup to prevent enumeration.
-            // Enforcement is deferred until we know if the user is superadmin (NFR-S10 / G5).
+            // Enforcement is deferred until we know if the user is superadmin (YB7RG FR-AUTH-046).
             $lockoutUntil = Cache::get(config('cache-keys.auth_login_lockout').$identifierHash);
 
             $loginField = filter_var($data->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -110,7 +110,7 @@ final class LoginAction extends BaseCommandAction
 
     private function handleFailedAttempt(string $identifierHash, string $identifier, ?User $user = null): void
     {
-        // NFR-S10 / G5: superadmin is non-lockable — never create lockout entries for it.
+        // YB7RG FR-AUTH-046: superadmin is non-lockable — never create lockout entries for it.
         if ($user !== null && $user->hasRole('super_admin')) {
             return;
         }

@@ -239,6 +239,7 @@ takeover, delivered twice by design.
 | FR-AUTH-043 | InvalidateSessionOnPasswordChange listener sends the in-app password_changed notice | P0 | F | Full |
 | FR-AUTH-044 | CredentialChangedNotification carries localized subject, named greeting, change line, and optional support address | P1 | F | Full |
 | FR-AUTH-045 | Login establishes the user's own stored role only; proxy capability resolves later at the policy layer | P0 | F | Full |
+| FR-AUTH-046 | `super_admin` users skip the account-status, lockout, and setup gates (break-glass exemption, audited like any login) | P0 | F | Full |
 
 ### 4.1 Identifier & Credential Validation
 
@@ -598,6 +599,16 @@ baked into the session at login, so the audit trail always shows a plain stored 
 every authenticated request. Conflating the two would have made every login event ambiguous and
 every policy check redundant; keeping them apart makes login boring and proxy explicit, which is
 precisely the division the cross-role-proxy design demands.
+
+#### FR-AUTH-046 — Superadmin Break-Glass Exemption
+
+FR-AUTH-004–007 build gates that can lock everyone out — including the person who must fix
+the lock. `super_admin` therefore skips the account-status, lockout, and setup gates in
+`LoginAction`, so a suspended-state misconfiguration or a poisoned lockout counter can never
+seal the recovery account out of its own system. The exemption is narrow (role check only,
+no credential bypass) and every superadmin login is audited like any other. The exemption
+test at layer `F` proves the gates open for `super_admin` while staying shut for all
+other roles.
 
 ---
 

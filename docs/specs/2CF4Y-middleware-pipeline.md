@@ -103,9 +103,9 @@ The edge that keeps biting is the tempting inline number: a developer throttles 
 | FR-MID-004 | Laravel built-in `Authenticate` and CSRF validation MUST hold their §6.1 positions (after context/headers, before role and locale) | P0 | A | Full |
 | FR-MID-005 | `AuthThrottleMiddleware` MUST enforce login rate limiting per config keys `auth.throttle.login_max_attempts` (5) / `login_decay_seconds` (60) — 5 attempts/60s per IP | P0 | F | Full |
 | FR-MID-006 | `CheckRoleMiddleware` MUST verify the user has the required role before route execution | P0 | F | Full |
-| FR-MID-007 | `SetLocaleMiddleware` MUST set the locale from user preference or session, and persist the selection for subsequent requests | P1 | F | Full |
+| FR-MID-007 | `SetLocaleMiddleware` MUST set the locale via `Locale::current()`: cookie, then `default_locale` setting, then `app.locale` config, then the `DEFAULT_LOCALE` constant | P1 | F | Full |
 | FR-MID-008 | `ProtectSetupRouteMiddleware` MUST block setup routes after installation is complete | P0 | F | Full |
-| FR-MID-009 | `RequireSetupAccessMiddleware` MUST require a valid setup access token | P0 | F | Full |
+| FR-MID-009 | Setup routes MUST require a valid setup access token, validated by `ProtectSetupRouteMiddleware`; `RequireSetupAccessMiddleware` passes setup URLs through and redirects all other pre-install traffic to `setup` | P0 | F | Full |
 | FR-MID-010 | `AppServiceProvider` MUST register the route-level named limiters `admin` (60/min per user) and `global` (30/min per IP) | P0 | F | Full |
 | FR-MID-011 | Per-endpoint auth limits (login/forgot/reset/recovery/confirm) are enforced at the Action/Component layer in their governing specs and MUST use the canonical §6.4 values, never ad-hoc numbers | P0 | F | Full |
 | FR-MID-012 | Module middleware MUST be registrable via route files without modifying core | P0 | A | Full |
@@ -141,7 +141,7 @@ Route protection once lived inside each Livewire component, and every forgotten 
 
 #### FR-MID-007 — Locale resolution and persistence
 
-Without persistence every click renegotiates language, and an Indonesian teacher flips to English on each navigation because the session forgot. `SetLocaleMiddleware` resolves once in strict order — authenticated user preference, then session, then application default — and persists the selection so the next request inherits it without renegotiation. A feature test asserts a locale switch survives across requests at layer `F`.
+Without persistence every click renegotiates language, and an Indonesian teacher flips to English on each navigation because the request forgot. `SetLocaleMiddleware` resolves once in strict order via `Locale::current()` — `locale` cookie, then the `default_locale` setting, then `app.locale` config, then the `DEFAULT_LOCALE` constant — and the cookie carries the selection so the next request inherits it without renegotiation. A feature test asserts a locale switch survives across requests at layer `F`.
 
 #### FR-MID-008 — Setup route protection
 
@@ -149,7 +149,7 @@ A curious student at an SMK in Bogor once guessed the `/setup` URL months after 
 
 #### FR-MID-009 — Setup access token
 
-During installation the request first meets `RequireSetupAccessMiddleware`, which demands a valid setup access token before any setup screen renders — network reachability alone never suffices. The feature test walks the three outcomes in sequence, missing token rejected, invalid token rejected, valid token admitted, at layer `F`.
+During installation the request first meets `ProtectSetupRouteMiddleware`, which demands a valid setup access token (query or input, version-checked against the session) before any setup screen renders — network reachability alone never suffices. `RequireSetupAccessMiddleware` is the companion passthrough: it lets installed traffic and setup URLs (including Livewire updates) through and redirects everything else to the `setup` route. The feature test walks the three outcomes in sequence, missing token rejected, invalid token rejected, valid token admitted, at layer `F`.
 
 ### 4.3 Rate Limiting
 

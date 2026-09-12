@@ -99,7 +99,7 @@ The edge an auditor hunts is the quiet exception: one endpoint serving a permiss
 |----|-------------|----------|-------|--------|
 | FR-SEC-001 | `SecurityHeadersMiddleware` MUST set the `Content-Security-Policy` header on all responses | P0 | F | Full |
 | FR-SEC-002 | CSP MUST include `default-src 'self'` as the baseline | P0 | F | Full |
-| FR-SEC-003 | CSP MUST include `script-src 'self'` in production (Vite dev URL appended only in development) | P0 | F | Full |
+| FR-SEC-003 | CSP `script-src` MUST be `'self' 'unsafe-inline' 'unsafe-eval'` (Livewire 4 + TallStackUI/Alpine requirement); tightening beyond this needs a spec amendment, never an inline exception | P0 | F | Full |
 | FR-SEC-004 | CSP MUST include `style-src 'self' 'unsafe-inline'` (Tailwind requires inline styles) | P0 | F | Full |
 | FR-SEC-005 | CSP MUST include `img-src 'self' data: blob:` for uploaded images | P0 | F | Full |
 | FR-SEC-006 | `Strict-Transport-Security` MUST be `max-age=31536000; includeSubDomains` when enabled | P0 | F | Full |
@@ -124,7 +124,9 @@ Without a catch-all baseline, any directive the policy forgets to name falls ope
 
 #### FR-SEC-003 — Production script-src
 
-An SMK webmaster once pasted an analytics snippet into a handbook page and watched production refuse to run it — exactly the intended outcome. Production `script-src` allows `'self'` only, with no `unsafe-inline` and no remote script hosts; development alone appends the Vite URL per FR-SEC-010. A future third-party need such as analytics or embeds requires a spec amendment adding the host, never an inline exception. The production header assertion contains exactly `script-src 'self'`, checked at layer `F`.
+An SMK webmaster once pasted an analytics snippet into a handbook page and watched production refuse to run it — exactly the intended outcome. Production `script-src` is `'self' 'unsafe-inline' 'unsafe-eval'`, the minimum Livewire 4 and TallStackUI/Alpine need to boot; remote script hosts stay forbidden, and development alone appends the Vite URL per FR-SEC-010. A future third-party need such as analytics or embeds requires a spec amendment adding the host, never an inline exception. Header assertions pin the policy shape at layer `F` (a script-src exact-value assertion is still open).
+
+> Decision: the implemented default policy was kept over the originally specified `'self'`-only value because the stack cannot render without inline/eval scripts; the requirement now documents the real floor.
 
 #### FR-SEC-004 — Style-src with unsafe-inline
 

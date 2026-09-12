@@ -134,7 +134,7 @@ row is tested; every row is implemented and verified.
 | FR-APPLY-013 | `RejectAccountApplicationAction` refuses unless the application is still `PENDING` at execution time | P0 | F | Full |
 | FR-APPLY-014 | Approval and rejection stamp `processed_by` and `processed_at` on the application | P0 | F | Full |
 | FR-APPLY-015 | Approval dispatches the activation notification for the provisioned account | P0 | F | Full |
-| FR-APPLY-016 | `AccountApplicationPolicy` opens create to guests and reserves viewAny, view, update, and delete to admins | P0 | A | Full |
+| FR-APPLY-016 | `AccountApplicationPolicy` opens create to guests, reserves viewAny, update, and delete to admins, and opens view to admins plus the applicant owning the email | P0 | A | Full |
 | FR-APPLY-017 | Every approval and rejection writes a PII-masked SmartLogger activity entry with actor identity | P0 | F | Full |
 | FR-APPLY-018 | Approval and rejection enforce authorization in both the Policy layer and the Action layer via `RejectedException` | P0 | A | Full |
 | FR-APPLY-019 | `ApplyPage` lives at `/apply` behind `guest` middleware | P0 | F | Full |
@@ -271,9 +271,14 @@ account.
 #### FR-APPLY-016 — Guests may ask, only admins may touch
 
 The policy draws the building's floor plan: anyone, including strangers, may create; only
-admin roles may list, view, update, or delete. Opening create this wide is safe because
+admin roles may list, update, or delete. View has one deliberate exception: the applicant
+may see their own application (matched on email) so they can track its progress.
+Opening create this wide is safe because
 creation only files a request — it grants no access, creates no session, and touches no
-other record. Everything past the inbox door requires the admin key.
+other record. Everything past the inbox door requires the admin key, except an applicant
+reading their own letter.
+
+> Decision: the owner-view exception stays because applicants need progress visibility; it is email-matched, read-only, and scoped to a single record.
 
 #### FR-APPLY-017 — Decisions are logged with masks on
 

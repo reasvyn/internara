@@ -126,7 +126,7 @@ describe('YB7RG: LoginAction', function (): void {
         expect(auth()->check())->toBeFalse();
     });
 
-    test('YB7RG-FR-AUTH-004: superadmin bypasses status checks and is never lockable', function (): void {
+    test('YB7RG-FR-AUTH-046: superadmin bypasses status checks and is never lockable', function (): void {
         $admin = User::factory()->withPassword('secret-123')->create(['status' => 'suspended']);
         $admin->assignRole('super_admin');
 
