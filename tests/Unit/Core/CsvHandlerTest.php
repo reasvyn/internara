@@ -54,7 +54,59 @@ describe('O2KCR: CsvHandler import', function (): void {
                 return CsvRowResult::CREATED;
             });
 
-            expect($result)->toBe(['created' => 1, 'skipped' => 1, 'invalid' => false]);
+            expect($result)->toBe(['created' => 1, 'skipped' => 1, 'failed' => 0, 'errors' => [], 'invalid' => false]);
+        } finally {
+            unlink($path);
+        }
+    });
+
+    test('O2KCR-FR-CSV-007: throwing row is recorded as failed with line number and import continues', function (): void {
+        $path = writeTempCsv([['name'], ['RPL'], ['TKJ'], ['BAD'], ['MM']]);
+
+        try {
+            $result = (new CsvHandler)->import($path, function (array $row): ?CsvRowResult {
+                $name = trim($row[0] ?? '');
+
+                if ($name === '') {
+                    return null;
+                }
+
+                if ($name === 'TKJ') {
+                    return CsvRowResult::SKIPPED;
+                }
+
+                if ($name === 'BAD') {
+                    throw new RuntimeException('validation explosion');
+                }
+
+                return CsvRowResult::CREATED;
+            });
+
+            expect($result['created'])->toBe(2);
+            expect($result['skipped'])->toBe(1);
+            expect($result['failed'])->toBe(1);
+            expect($result['errors'])->toBe([4 => 'validation explosion']);
+            expect($result['invalid'])->toBeFalse();
+        } finally {
+            unlink($path);
+        }
+    });
+
+    test('O2KCR-FR-CSV-008: summary carries failed counts with per-line reasons and empty rows stay silent', function (): void {
+        $path = writeTempCsv([['name'], ['RPL'], [''], ['TKJ']]);
+
+        try {
+            $result = (new CsvHandler)->import($path, function (array $row): ?CsvRowResult {
+                $name = trim($row[0] ?? '');
+
+                if ($name === '') {
+                    return null;
+                }
+
+                return CsvRowResult::CREATED;
+            });
+
+            expect($result)->toBe(['created' => 2, 'skipped' => 0, 'failed' => 0, 'errors' => [], 'invalid' => false]);
         } finally {
             unlink($path);
         }
@@ -88,7 +140,7 @@ describe('O2KCR: CsvHandler import', function (): void {
                 ['name', 'description'],
             );
 
-            expect($result)->toBe(['created' => 1, 'skipped' => 0, 'invalid' => false]);
+            expect($result)->toBe(['created' => 1, 'skipped' => 0, 'failed' => 0, 'errors' => [], 'invalid' => false]);
         } finally {
             unlink($path);
         }

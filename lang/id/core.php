@@ -14,6 +14,7 @@ return [
     'csv' => [
         'created' => 'Dibuat',
         'skipped' => 'Dilewati',
+        'failed' => 'Gagal',
     ],
 
     'discover' => [

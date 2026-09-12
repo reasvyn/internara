@@ -95,9 +95,21 @@ final class CsvHandler
 
             $created = 0;
             $skipped = 0;
+            $failed = 0;
+            $errors = [];
+            $lineNumber = 1;
 
             while (($row = fgetcsv($handle, escape: '')) !== false) {
-                $result = $rowProcessor($row);
+                $lineNumber++;
+
+                try {
+                    $result = $rowProcessor($row);
+                } catch (\Throwable $e) {
+                    $failed++;
+                    $errors[$lineNumber] = $e->getMessage();
+
+                    continue;
+                }
 
                 if ($result === null) {
                     continue;
@@ -112,7 +124,7 @@ final class CsvHandler
                 $created++;
             }
 
-            return ['created' => $created, 'skipped' => $skipped, 'invalid' => false];
+            return ['created' => $created, 'skipped' => $skipped, 'failed' => $failed, 'errors' => $errors, 'invalid' => false];
         } finally {
             fclose($handle);
         }

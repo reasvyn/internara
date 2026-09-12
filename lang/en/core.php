@@ -14,6 +14,7 @@ return [
     'csv' => [
         'created' => 'Created',
         'skipped' => 'Skipped',
+        'failed' => 'Failed',
     ],
 
     'discover' => [
