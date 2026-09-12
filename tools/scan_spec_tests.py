@@ -60,10 +60,10 @@ SCAN_NAME = "spec-tests"
 
 # ─── Regex — dynamic, no hardcoding ─────────────────────────────────
 
-# FR-SP1, FR-TST-01, NFR-U5, UC-1 — require at least one digit; allow hyphens; optional non-testable markers
-RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
-# For spec-prefixed refs like 81SMS-FR-SP1*
-RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC)-(?:X-)?[A-Z0-9][A-Z0-9\-]*[0-9][A-Z0-9\-]*(?:\*|~|!|-(?:NT|X))?\b")
+# FR-AUTH-001, NFR-AUTH-002, UC-AUTH-003, DD-AUTH-001 — {SCOPE} 1-8 alnum + 3-digit running number; optional non-testable markers
+RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC|DD)-(?:X-)?[A-Z0-9]{1,8}-[0-9]{3}(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
+# For spec-prefixed refs like 81SMS-FR-AUTH-001
+RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC|DD)-(?:X-)?[A-Z0-9]{1,8}-[0-9]{3}(?:\*|~|!|-(?:NT|X))?\b")
 # Spec ID from header: > **Spec ID:** 81SMS
 RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
 # Non-testable marker check
@@ -478,6 +478,8 @@ def get_requirement_priority(req_id: str) -> tuple[str, int]:
         return ("medium", 4)
     if req_id.startswith("NFR-"):
         return ("low", 2)
+    if req_id.startswith("DD-"):
+        return ("low", 1)
     return ("low", 1)
 
 
