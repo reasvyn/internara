@@ -66,7 +66,10 @@ DRAFT → PUBLISHED → ACTIVE → COMPLETED → ARCHIVED
 
 ```
 
-`ARCHIVED` is terminal; un-archive is exceptional, super_admin-only, with audit trail.
+`ARCHIVED` is operationally terminal: normal Actions, policies, and UI expose no mutation path
+after archival. An emergency un-archive is a separate, explicitly authorized super-admin
+operation, not a normal lifecycle transition; it must record the reason and actor in the audit
+trail before restoring the program to `COMPLETED`.
 
 **Alumni Accounts** — `AccountStatus::ARCHIVED` students retain login to a read-only dashboard
 (certificates, grades) but cannot register, submit logbooks, or clock attendance. Re-enrollment

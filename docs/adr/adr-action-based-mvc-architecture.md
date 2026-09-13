@@ -69,7 +69,7 @@ app/{Module}/
 
 ```
 
-**Auto-Discovery** — `AppServiceProvider` discovers Livewire components (`app/*/Livewire/`),
+**Auto-Discovery** — `AppServiceProvider` discovers Livewire components (`app/Modules/*/Livewire/`),
 policies (by naming convention), and Blade namespaces (`resources/views/*/`). Cross-module
 policies and event listeners are registered manually.
 

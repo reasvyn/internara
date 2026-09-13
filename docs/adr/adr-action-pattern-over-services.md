@@ -43,8 +43,8 @@ that need neither, and multi-step orchestrations that need process-level coordin
 **Chosen option: Action Triad** — three distinct action types, all under
 `app/{Module}/Actions/`, all with a single `execute()` method.
 
-**1. Command Actions (Mutations)** — extend `BaseAction` (`transaction()`, `log()`,
-`HandlesActionErrors`). Every write wraps DB operations in `$this->transaction()`, calls
+**1. Command Actions (Mutations)** — extend `BaseCommandAction`, the command specialization of
+`BaseAction` (`transaction()`, `log()`, `HandlesActionErrors`). Every write wraps DB operations in `$this->transaction()`, calls
 `$this->log()` on success, and dispatches events for significant state changes.
 Named `{Verb}{Entity}Action`.
 
@@ -53,19 +53,19 @@ Named `{Verb}{Entity}Action`.
 `log()`. For complex aggregations, filtering, or cross-module assembly; simple
 `Model::find()` stays inline in Livewire. Named `Read{Entity}Action`.
 
-**3. Process Actions (Orchestration)** — extend `BaseAction` and compose other Actions via
-constructor injection. Coordinate multi-step workflows, handle partial failures, emit one
+**3. Process Actions (Orchestration)** — extend `BaseProcessAction`, the process specialization of
+`BaseAction`, and compose other Actions via constructor injection. Coordinate multi-step workflows, handle partial failures, emit one
 module event for the completed process. Named `{Verb}{Entity}Process`.
 
 **Decision Table:**
 
 | Scenario | Pattern | Base Class | Transaction | Logging | Event |
 |----------|---------|------------|-------------|---------|-------|
-| Create/update/delete | Command | BaseAction | Required | Required | Recommended |
-| State transition | Command | BaseAction | Required | Required | Required |
+| Create/update/delete | Command | BaseCommandAction | Required | Required | Recommended |
+| State transition | Command | BaseCommandAction | Required | Required | Required |
 | Simple list query | Inline | — | No | No | No |
 | Complex query | Read Action | BaseReadAction | No | No | No |
-| Multi-step workflow | Process | BaseAction | Required | Required | Required |
+| Multi-step workflow | Process | BaseProcessAction | Required | Required | Required |
 
 ### Positive Consequences
 

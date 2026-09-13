@@ -66,7 +66,7 @@ type may delegate to other modules' Actions. Prefer events over delegation when 
 is fire-and-forget.
 
 ```php
-class CloseInternshipAction extends BaseAction
+class CloseInternshipProcess extends BaseProcessAction
 {
     public function __construct(
         protected readonly FinalizeAssessmentsAction $finalizeAssessments, // Assessment

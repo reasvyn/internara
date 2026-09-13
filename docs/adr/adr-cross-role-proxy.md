@@ -96,11 +96,13 @@ class SupervisionLogPolicy extends BasePolicy
 **2. Audit Trail** — activity log stores proxy metadata in `properties` JSON (no new columns):
 
 ```php
-activity()
-    ->causedBy($user) // teacher who acted
-    ->performedOn($model)
-    ->withProperties(['proxy_role' => 'supervisor', 'proxy_reason' => 'supervisor_inactive'])
-    ->event('verified')->log('logbook_verified_via_proxy');
+SmartLogger::info('logbook_verified_via_proxy')
+    ->for($user) // teacher who acted
+    ->about($model)
+    ->withPayload(['proxy_role' => 'supervisor', 'proxy_reason' => 'supervisor_inactive'])
+    ->withPiiMasking()
+    ->both()
+    ->save();
 
 ```
 

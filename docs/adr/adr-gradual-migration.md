@@ -58,7 +58,12 @@ later. Each pattern's trigger is explicit.
 |-------|------------|------|
 | Start | `Cache::forget()` inline | Quick fix |
 | Stabilize | Event dispatches, listener flushes | Multiple events affect same key |
-| Final | `config/cache-keys.php` registry, listener-driven | Full cross-module invalidation |
+| Final | `config/cache-keys.php` registry, listener-driven by default | Full cross-module invalidation |
+
+The observer decision is an explicit exception to this default. A same-module, single-model
+invalidation that must complete synchronously may use an Eloquent Observer when all criteria in
+[Eloquent Observers](adr-eloquent-observers.md) are satisfied. Cross-module or asynchronous
+invalidation remains event/listener based.
 
 **Shared Validation in Entities:**
 

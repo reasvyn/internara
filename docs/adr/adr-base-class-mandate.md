@@ -40,7 +40,8 @@ Core base; there is no alternative.
 | Layer | Base Class | Provides | Enforced By |
 |-------|------------|----------|-------------|
 | Model | BaseModel | UUID v7 (HasUuids), non-incrementing string PK | extends check |
-| Action (Command/Process) | BaseAction | `transaction()`, `log()`, HandlesActionErrors | extends check |
+| Action (Command) | BaseCommandAction | `transaction()`, `log()`, HandlesActionErrors | extends check |
+| Action (Process) | BaseProcessAction | `transaction()`, `log()`, process-step tracking | extends check |
 | Action (Read) | — (none required) | — | — |
 | Entity | BaseEntity | `final readonly`, `fromModel` bridge | extends + final |
 | Policy | BasePolicy | AuthorizesRoles + AuthorizesOwnership | extends check |

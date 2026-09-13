@@ -59,7 +59,7 @@ gains a **Test Requirements** section mapping its retained behavior to the four 
 |----------|----------|
 | Portability scaffolding | Multi-driver conditional dispatch (MySQL/PostgreSQL/SQLite dump variants) when a fixed deployment driver suffices |
 | Deep infrastructure orchestration | Infra management UIs beyond a single status view, retention schedulers, cleanup daemons, worker supervision |
-| Compliance subsystems | GDPR erasure engines, archiving & retention policy engines, deletion-log matrices |
+| Compliance subsystems | GDPR erasure engines, retention policy engines, deletion-log matrices |
 | Security extensions | Recovery slips, recovery-key ecosystems, 2FA/OTP/passwordless on top of core auth |
 | Notification/preference fanout | Per-recipient preference matrices, multi-channel fanout when a simple notify covers MVP |
 | Export/import multipliers | Multi-format (CSV/XLSX/PDF) matrices when a single format satisfies MVP |
@@ -73,6 +73,11 @@ logbook/attendance/incident, assessment/evaluation/assignment, certification/doc
 reliability basics (logging with PII masking, error handling, base event/notification infra, cache
 registry, basic queue for mail/PDF). If removing rows would empty a subsection that maps to an
 implemented feature, keep those rows. **When in doubt, KEEP.**
+
+The archival lifecycle is an MVP-core exception to the compliance rubric: the closure gate,
+immutable snapshot, `ARCHIVED` state, alumni read-only access, and certificate continuity defined
+by [Program Closure & Archival](adr-program-closure-archival.md) must not be trimmed. Only optional
+retention-policy automation or deletion engines may be deferred.
 
 ### Positive Consequences
 

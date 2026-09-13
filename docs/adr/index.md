@@ -71,7 +71,7 @@ groups.
 - **[MVP Spec Trim](adr-mvp-spec-trim.md)** — How over-engineered requirements are removed from feature
   specs so the spec corpus equals the MVP test contract, plus the four-layer Test Requirements sections
 
-## References
+## Quick References
 
 - `docs/architecture.md` — high-level architecture overview and 4-layer model
 - `docs/conventions.md` — coding conventions derived from these ADRs
