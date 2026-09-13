@@ -235,24 +235,9 @@ def check_file(path: Path) -> list[Finding]:
                 suggestion="Ensure single public execute() per docs/guides/arch/action-pattern.md §Non-Negotiable",
                 reference="docs/guides/arch/action-pattern.md §Non-Negotiable",
             ))
-        if not RE_ACTION_RESPONSE_RETURN.search(content):
-            # Only medium for Command/Process; low for Read (which often returns data directly)
-            sev = "low" if "BaseReadAction" in content else "medium"
-            # Skip flagging if file is clearly a Read that returns collection/model (allowed per pattern)
-            if sev == "low":
-                # For Read Actions, ActionResponse is optional — downgrade to low and allow
-                pass
-            findings.append(Finding(
-                id=f"ARCH-{len(findings)+1:04d}",
-                rule="ARCH_ACT_RESPONSE",
-                severity=sev,
-                category="architecture",
-                file=rel,
-                line=1,
-                message="Action execute() should return ActionResponse (Command/Process) or typed data (Read)",
-                suggestion="Command/Process: return ActionResponse::ok()/created()/error(); Read: may return DTO/collection per action-pattern.md",
-                reference="docs/guides/arch/action-pattern.md §ActionResponse",
-            ))
+        # ActionResponse is a SHOULD, not a required return contract. The ADR and
+        # action pattern explicitly allow Model, void, array, or DTO returns when
+        # the caller does not need response context.
         if RE_DTO_3_PARAMS.search(content) and "BaseData" not in content and "Data $data" not in content:
             findings.append(Finding(
                 id=f"ARCH-{len(findings)+1:04d}",
@@ -351,7 +336,7 @@ def main() -> None:
     # 2. Scan PHP files in parallel
     php_files = find_php_files(args.module)
     from _common import find_files_parallel
-    findings.extend(find_files_parallel(php_files, check_file))
+    findings.extend(find_files_parallel(php_files, check_file, use_cache=not args.no_cache))
 
     # Sort for deterministic output
     findings.sort(key=lambda f: (f.file, f.line))

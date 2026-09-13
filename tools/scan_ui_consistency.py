@@ -206,7 +206,7 @@ def main() -> None:
     from _common import find_blade_files, find_files_parallel
     blade_files = find_blade_files(args.module)
 
-    findings.extend(find_files_parallel(blade_files, check_blade))
+    findings.extend(find_files_parallel(blade_files, check_blade, use_cache=not args.no_cache))
     findings.sort(key=lambda f: (f.file, f.line))
     for i, f in enumerate(findings):
         f.id = f"UI-{i+1:04d}"

@@ -54,10 +54,10 @@ _FALLBACK_MODULES = [
 
 def discover_business_modules() -> list[str]:
     """Discover business modules from app/ dynamically; Core is excluded."""
-    if not APP_DIR.exists():
+    if not MODULES_DIR.exists():
         return list(_FALLBACK_MODULES)
     mods: list[str] = []
-    for entry in APP_DIR.iterdir():
+    for entry in MODULES_DIR.iterdir():
         if not entry.is_dir() or entry.name.startswith((".", "_")):
             continue
         if entry.name == "Core":
@@ -81,7 +81,7 @@ RE_MODEL_IMPORT = re.compile(r"use\s+App\\(\w+)\\Models\\(\w+)")
 
 
 def is_core_file(rel: str) -> bool:
-    return rel.startswith("app/Core/")
+    return rel.startswith("app/Modules/Core/")
 
 
 def get_module_from_rel(rel: str, modules: list[str] | None = None) -> str | None:
@@ -216,7 +216,7 @@ def main() -> None:
 
     php_files = find_php_files(args.module)
     from _common import find_files_parallel
-    findings.extend(find_files_parallel(php_files, check_file))
+    findings.extend(find_files_parallel(php_files, check_file, use_cache=not args.no_cache))
     if not args.module:
         findings.extend(detect_circular())
 
