@@ -15,82 +15,11 @@ final class FinalizeAssessmentAction extends BaseCommandAction
     public function execute(Assessment $assessment, User $finalizer): Assessment
     {
         return $this->transaction(function () use ($assessment, $finalizer) {
-            if ($assessment->finalized_at !== null) {
-                throw new RejectedException(__('assessment.already_finalized'));
-            }
-
-            $rubric = $assessment->rubric;
-
-            if ($rubric === null) {
-                throw new RejectedException(__('assessment.rubric_required'));
-            }
-
-            $structure = $rubric->structure ?? ['competencies' => []];
-            $competencies = $structure['competencies'] ?? [];
-            $content = $assessment->scores_data ?? [];
-            $competencyScores = $content['competencies'] ?? [];
-
-            $scoredCompetencies = [];
-
-            foreach ($competencies as $competency) {
-                $compId = $competency['id'] ?? '';
-                $indicatorsData = $competencyScores[$compId]['indicators'] ?? [];
-                $hasAnyScore = false;
-
-                foreach ($competency['indicators'] ?? [] as $indicator) {
-                    if (($indicatorsData[$indicator['id']] ?? null) !== null) {
-                        $hasAnyScore = true;
-                        break;
-                    }
-                }
-
-                if (! $hasAnyScore && ($competency['evaluator_role'] ?? 'teacher') === 'supervisor') {
-                    continue;
-                }
-
-                $scoredCompetencies[] = $competency;
-            }
-
-            if (empty($scoredCompetencies)) {
-                throw new RejectedException(__('assessment.no_competencies_scored'));
-            }
-
-            $originalTotalWeight = (int) collect($competencies)->sum('weight');
-            $scoredTotalWeight = (int) collect($scoredCompetencies)->sum('weight');
-
-            if ($scoredTotalWeight === 0) {
-                throw new RejectedException(__('assessment.no_competencies_scored'));
-            }
-
-            $totalWeightedScore = 0.0;
-
-            foreach ($scoredCompetencies as $competency) {
-                $effectiveWeight =
-                    $originalTotalWeight > 0
-                        ? ($competency['weight'] / $scoredTotalWeight) * $originalTotalWeight
-                        : ($competency['weight'] ?? 0);
-
-                $compId = $competency['id'] ?? '';
-                $indicatorsData = $competencyScores[$compId]['indicators'] ?? [];
-                $competencyScore = 0.0;
-                $totalIndicatorWeight = 0;
-
-                foreach ($competency['indicators'] ?? [] as $indicator) {
-                    $score = $indicatorsData[$indicator['id']] ?? null;
-                    if ($score !== null) {
-                        $maxScore = $indicator['max_score'] ?? 100;
-                        $normalized = ($score / $maxScore) * 100;
-                        $competencyScore += $normalized * (($indicator['weight'] ?? 0) / 100);
-                        $totalIndicatorWeight += $indicator['weight'] ?? 0;
-                    }
-                }
-
-                if ($totalIndicatorWeight > 0) {
-                    $totalWeightedScore += $competencyScore * ($effectiveWeight / 100);
-                }
-            }
-
-            $finalScore = round($totalWeightedScore, 1);
+            $this->ensureCanFinalize($assessment);
+            $competencies = $this->getCompetencies($assessment);
+            $competencyScores = ($assessment->scores_data ?? [])['competencies'] ?? [];
+            $scoredCompetencies = $this->getScoredCompetencies($competencies, $competencyScores);
+            $finalScore = $this->calculateFinalScore($competencies, $scoredCompetencies, $competencyScores);
 
             $assessment->update([
                 'score' => $finalScore,
@@ -104,5 +33,106 @@ final class FinalizeAssessmentAction extends BaseCommandAction
 
             return $assessment->fresh();
         });
+    }
+
+    private function ensureCanFinalize(Assessment $assessment): void
+    {
+        if ($assessment->finalized_at !== null) {
+            throw new RejectedException(__('assessment.already_finalized'));
+        }
+
+        if ($assessment->rubric === null) {
+            throw new RejectedException(__('assessment.rubric_required'));
+        }
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function getCompetencies(Assessment $assessment): array
+    {
+        return $assessment->rubric->structure['competencies'] ?? [];
+    }
+
+    /**
+     * @param list<array<string, mixed>> $competencies
+     * @param array<string, mixed> $competencyScores
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function getScoredCompetencies(array $competencies, array $competencyScores): array
+    {
+        $scored = [];
+
+        foreach ($competencies as $competency) {
+            $scores = $competencyScores[$competency['id'] ?? '']['indicators'] ?? [];
+            $hasScore = collect($competency['indicators'] ?? [])
+                ->contains(fn (array $indicator): bool => ($scores[$indicator['id']] ?? null) !== null);
+
+            if (! $hasScore && ($competency['evaluator_role'] ?? 'teacher') === 'supervisor') {
+                continue;
+            }
+
+            $scored[] = $competency;
+        }
+
+        if ($scored === []) {
+            throw new RejectedException(__('assessment.no_competencies_scored'));
+        }
+
+        return $scored;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $competencies
+     * @param list<array<string, mixed>> $scoredCompetencies
+     * @param array<string, mixed> $competencyScores
+     */
+    private function calculateFinalScore(
+        array $competencies,
+        array $scoredCompetencies,
+        array $competencyScores,
+    ): float {
+        $originalTotalWeight = (int) collect($competencies)->sum('weight');
+        $scoredTotalWeight = (int) collect($scoredCompetencies)->sum('weight');
+
+        if ($scoredTotalWeight === 0) {
+            throw new RejectedException(__('assessment.no_competencies_scored'));
+        }
+
+        $totalWeightedScore = 0.0;
+
+        foreach ($scoredCompetencies as $competency) {
+            $effectiveWeight = $originalTotalWeight > 0
+                ? ($competency['weight'] / $scoredTotalWeight) * $originalTotalWeight
+                : ($competency['weight'] ?? 0);
+            $scores = $competencyScores[$competency['id'] ?? '']['indicators'] ?? [];
+            $totalWeightedScore += $this->calculateCompetencyScore($competency, $scores, $effectiveWeight);
+        }
+
+        return round($totalWeightedScore, 1);
+    }
+
+    /**
+     * @param array<string, mixed> $competency
+     * @param array<string, mixed> $scores
+     */
+    private function calculateCompetencyScore(array $competency, array $scores, float $effectiveWeight): float
+    {
+        $score = 0.0;
+        $totalIndicatorWeight = 0;
+
+        foreach ($competency['indicators'] ?? [] as $indicator) {
+            $indicatorScore = $scores[$indicator['id']] ?? null;
+            if ($indicatorScore === null) {
+                continue;
+            }
+
+            $maxScore = $indicator['max_score'] ?? 100;
+            $score += ($indicatorScore / $maxScore) * 100 * (($indicator['weight'] ?? 0) / 100);
+            $totalIndicatorWeight += $indicator['weight'] ?? 0;
+        }
+
+        return $totalIndicatorWeight > 0 ? $score * ($effectiveWeight / 100) : 0.0;
     }
 }
