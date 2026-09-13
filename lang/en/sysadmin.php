@@ -89,6 +89,10 @@ return [
         'title' => 'GDPR Deletion Logs',
         'search_placeholder' => 'Search by email...',
         'type_placeholder' => 'All types',
+        'types' => [
+            'anonymization' => 'Anonymization',
+            'permanent_deletion' => 'Permanent Deletion',
+        ],
     ],
 
     'clone_detection' => [

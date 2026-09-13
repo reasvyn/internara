@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>Logbook Report</title>
+    <title>{{ __('logbook.report_title') }}</title>
     <style>
         body {
             font-family: sans-serif;

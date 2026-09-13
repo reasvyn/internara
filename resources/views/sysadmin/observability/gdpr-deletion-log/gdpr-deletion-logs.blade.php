@@ -1,5 +1,5 @@
 <div>
-    <x-slot:title>GDPR Deletion Logs</x-slot:title>
+    <x-slot:title>{{ __('sysadmin.gdpr_logs.title') }}</x-slot:title>
 
     <x-ui::components.page-header :title="__('sysadmin.gdpr_logs.title')" />
 
@@ -11,9 +11,9 @@
                 class="w-72"
             />
             <x-ts-select.native wire:model.live="filterType" class="w-48">
-                <option value="">All types</option>
-                <option value="anonymization">Anonymization</option>
-                <option value="permanent_deletion">Permanent Deletion</option>
+                <option value="">{{ __('sysadmin.gdpr_logs.type_placeholder') }}</option>
+                <option value="anonymization">{{ __('sysadmin.gdpr_logs.types.anonymization') }}</option>
+                <option value="permanent_deletion">{{ __('sysadmin.gdpr_logs.types.permanent_deletion') }}</option>
             </x-ts-select.native>
         </div>
 

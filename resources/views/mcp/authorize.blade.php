@@ -118,7 +118,7 @@
                             class="ring-offset-background focus-visible:ring-ring bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-10 w-full items-center justify-center rounded-md px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
                             id="authorizeButton"
                         >
-                            <span id="authorizeText">Authorize</span>
+                            <span id="authorizeText">{{ __('mcp.authorize_action') }}</span>
 
                             <svg id="loadingSpinner" class="mr-3 -ml-1 hidden h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

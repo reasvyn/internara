@@ -89,6 +89,10 @@ return [
         'title' => 'Log Penghapusan GDPR',
         'search_placeholder' => 'Cari berdasarkan email...',
         'type_placeholder' => 'Semua tipe',
+        'types' => [
+            'anonymization' => 'Anonimisasi',
+            'permanent_deletion' => 'Penghapusan Permanen',
+        ],
     ],
 
     'clone_detection' => [

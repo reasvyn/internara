@@ -117,5 +117,6 @@ return [
     'activity_feed' => [
         'title' => 'Activity Feed',
         'subtitle' => 'Recent user activity',
+        'empty' => 'No activity found.',
     ],
 ];

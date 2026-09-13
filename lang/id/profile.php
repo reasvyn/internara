@@ -117,5 +117,6 @@ return [
     'activity_feed' => [
         'title' => 'Aktivitas Terbaru',
         'subtitle' => 'Aktivitas pengguna terkini',
+        'empty' => 'Tidak ada aktivitas.',
     ],
 ];

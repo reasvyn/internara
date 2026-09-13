@@ -33,6 +33,7 @@ return [
     'industry_ready' => 'Industry Ready',
     'enterprise_secured' => 'Enterprise Secured',
     'open_source' => 'Open Source',
+    'handcrafted_by' => 'Handcrafted by',
     'avatar' => 'Avatar',
     'all_rights_reserved' => 'All rights reserved.',
     'built_with_love' => 'Built with ❤️ by',

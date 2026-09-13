@@ -2,9 +2,11 @@
     {{-- Header --}}
     <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-            <h2 class="tracking-tightest text-base-content text-3xl font-black">Submission Grading</h2>
+            <h2 class="tracking-tightest text-base-content text-3xl font-black">
+                {{ __('submission.grading_title') }}
+            </h2>
             <p class="text-base-content/40 mt-2 text-[10px] font-black tracking-[0.3em] uppercase">
-                Evaluate and score student submissions
+                {{ __('submission.grading_subtitle') }}
             </p>
         </div>
     </div>
@@ -40,8 +42,10 @@
             @if ($submissions->isEmpty())
                 <div class="flex flex-col items-center justify-center gap-4 py-20">
                     <x-ts-icon name="check-circle" class="text-base-content/20 size-16" />
-                    <h3 class="text-base-content/40 text-xl font-black tracking-tight">All caught up!</h3>
-                    <p class="text-base-content/60 text-sm">No submissions pending grading.</p>
+                    <h3 class="text-base-content/40 text-xl font-black tracking-tight">
+                        {{ __('submission.all_caught_up') }}
+                    </h3>
+                    <p class="text-base-content/60 text-sm">{{ __('submission.no_pending_grading') }}</p>
                 </div>
             @else
                 <div class="divide-base-content/5 divide-y">
@@ -59,7 +63,7 @@
                                     {{ $submission->assignment->title }}
                                 </p>
                                 <p class="text-base-content/40 mt-1 text-[10px]">
-                                    Submitted {{ $submission->submitted_at?->diffForHumans() ?? '—' }}
+                                    {{ __('submission.submitted_at') }} {{ $submission->submitted_at?->diffForHumans() ?? '—' }}
                                 </p>
                             </div>
                             <div class="ml-4 shrink-0 text-right">
@@ -127,7 +131,7 @@
             @if ($selectedSubmission->content)
                 <div class="mb-8">
                     <h4 class="text-base-content mb-4 text-sm font-black tracking-tight uppercase">
-                        Student Submission
+                        {{ __('submission.student_submission') }}
                     </h4>
                     <div class="bg-base-200/30 text-base-content/70 rounded-[2rem] p-6 text-sm leading-relaxed">
                         {{ $selectedSubmission->content }}
@@ -146,7 +150,7 @@
                         <div>
                             <h4 class="text-primary text-sm font-black">{{ $media->file_name }}</h4>
                             <p class="text-primary/40 mt-1 text-[9px] font-black tracking-[0.3em] uppercase">
-                                Attached File
+                                {{ __('submission.attached_file') }}
                             </p>
                         </div>
                     </div>
@@ -156,14 +160,16 @@
                         class="btn btn-primary btn-sm shadow-primary/20 rounded-[1.5rem] px-6 text-[10px] font-black tracking-wider uppercase shadow-lg"
                     >
                         <x-ts-icon name="arrow-down-tray" class="size-4" />
-                        Download
+                        {{ __('submission.download') }}
                     </a>
                 </div>
             @endif
 
             {{-- Grading Form --}}
             <div class="bg-base-200/30 border-base-content/5 rounded-[2rem] border p-6">
-                <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">Grade Submission</h4>
+                <h4 class="text-base-content mb-6 text-sm font-black tracking-tight uppercase">
+                    {{ __('submission.grade_submission') }}
+                </h4>
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -191,7 +197,7 @@
                         <x-ts-textarea
                             :label="__('submission.feedback')"
                             wire:model="feedback"
-                            placeholder="Provide detailed feedback for the student..."
+                            :placeholder="__('submission.feedback_placeholder')"
                             rows="4"
                             class="border-base-content/5 focus:border-primary/30 bg-base-200/50 rounded-[1.5rem]"
                         />

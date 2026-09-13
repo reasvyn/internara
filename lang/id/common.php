@@ -33,6 +33,7 @@ return [
     'industry_ready' => 'Siap Industri',
     'enterprise_secured' => 'Keamanan Enterprise',
     'open_source' => 'Sumber Terbuka',
+    'handcrafted_by' => 'Dibuat oleh',
     'avatar' => 'Avatar',
     'all_rights_reserved' => 'Hak cipta dilindungi.',
     'built_with_love' => 'Dibuat dengan ❤️ oleh',

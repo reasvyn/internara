@@ -18,7 +18,7 @@
         @empty
             <div class="py-8 text-center opacity-60">
                 <x-ts-icon name="inbox" class="mx-auto mb-3 h-12 w-12" />
-                <p>No activity found.</p>
+                <p>{{ __('profile.activity_feed.empty') }}</p>
             </div>
         @endforelse
 

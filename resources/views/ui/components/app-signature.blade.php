@@ -19,7 +19,7 @@
         @if (! empty($author))
             <div class="bg-base-content/10 hidden size-1 rounded-full sm:block"></div>
             <div class="flex items-center gap-1.5">
-                <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">Handcrafted by</span>
+                <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">{{ __('common.handcrafted_by') }}</span>
                 @if (! empty($author['github']))
                     <a
                         href="{{ $author['github'] }}"
