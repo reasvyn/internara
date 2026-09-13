@@ -8,6 +8,7 @@ use App\Modules\Academics\Domain\AcademicYear\Events\AcademicYearDeleted;
 use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
+use Illuminate\Support\Collection;
 
 final class BulkDeleteAcademicYearsAction extends BaseCommandAction
 {
@@ -23,6 +24,18 @@ final class BulkDeleteAcademicYearsAction extends BaseCommandAction
             return 0;
         }
 
+        $this->ensureDeletable($years);
+
+        return $this->transaction(function () use ($years): int {
+            return $this->deleteYears($years);
+        });
+    }
+
+    /**
+     * @param Collection<int, AcademicYear> $years
+     */
+    private function ensureDeletable(Collection $years): void
+    {
         foreach ($years as $year) {
             $state = $year->asAcademicYearState();
 
@@ -32,24 +45,27 @@ final class BulkDeleteAcademicYearsAction extends BaseCommandAction
                 throw new RejectedException(__("academic_year.{$key}", ['name' => $year->name]));
             }
         }
+    }
 
-        return $this->transaction(function () use ($years) {
-            $count = 0;
+    /**
+     * @param Collection<int, AcademicYear> $years
+     */
+    private function deleteYears(Collection $years): int
+    {
+        $count = 0;
 
-            foreach ($years as $year) {
-                $yearId = $year->id;
-                $yearName = $year->name;
+        foreach ($years as $year) {
+            $yearName = $year->name;
 
-                $year->delete();
+            $year->delete();
 
-                $this->log('academic_year_deleted', $year, ['name' => $yearName]);
+            $this->log('academic_year_deleted', $year, ['name' => $yearName]);
 
-                event(new AcademicYearDeleted($year));
+            event(new AcademicYearDeleted($year));
 
-                $count++;
-            }
+            $count++;
+        }
 
-            return $count;
-        });
+        return $count;
     }
 }
