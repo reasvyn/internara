@@ -24,66 +24,80 @@ final class ScoreIndicatorAction extends BaseCommandAction
             throw new RejectedException(__('assessment.cannot_modify_finalized'));
         }
 
-        $structure = $rubric->structure;
-        $competency = null;
-        $indicator = null;
-
-        foreach ($structure['competencies'] as $c) {
-            if ($c['id'] === $data->competencyId) {
-                $competency = $c;
-                foreach ($c['indicators'] as $i) {
-                    if ($i['id'] === $data->indicatorId) {
-                        $indicator = $i;
-                        break 2;
-                    }
-                }
-            }
-        }
-
-        if ($competency === null || $indicator === null) {
-            throw new RejectedException(__('assessment.not_found'));
-        }
-
+        [$competency, $indicator] = $this->findIndicator($rubric, $data);
         $this->ensureAuthorized($assessment, $competency, $evaluator);
 
         if ($data->score < 0 || $data->score > $indicator['max_score']) {
             throw new RejectedException("Score must be between 0 and {$indicator['max_score']}.");
         }
 
-        $scoresData = $assessment->scores_data ?? [];
-        $scoresData['competencies'] ??= [];
+        return $this->transaction(function () use ($assessment, $data, $evaluator): ActionResponse {
+            $assessment->update([
+                'scores_data' => $this->recordScore($assessment, $data, $evaluator),
+            ]);
 
-        $found = false;
-        foreach ($scoresData['competencies'] as &$compData) {
-            if (($compData['id'] ?? null) === $data->competencyId) {
-                $compData['indicators'][$data->indicatorId] = $data->score;
-                $compData['evaluator_id'] = $evaluator->id;
-                $compData['evaluated_at'] = now()->toIso8601String();
-                $found = true;
-                break;
+            $this->log('indicator_scored', $assessment, [
+                'competency_id' => $data->competencyId,
+                'indicator_id' => $data->indicatorId,
+                'score' => $data->score,
+            ]);
+
+            return ActionResponse::updated($assessment->fresh());
+        });
+    }
+
+    /**
+     * @return array{0: array<string, mixed>, 1: array<string, mixed>}
+     */
+    private function findIndicator(Rubric $rubric, ScoreIndicatorData $data): array
+    {
+        foreach ($rubric->structure['competencies'] as $competency) {
+            if ($competency['id'] !== $data->competencyId) {
+                continue;
+            }
+
+            foreach ($competency['indicators'] as $indicator) {
+                if ($indicator['id'] === $data->indicatorId) {
+                    return [$competency, $indicator];
+                }
             }
         }
 
-        if (! $found) {
-            $scoresData['competencies'][] = [
-                'id' => $data->competencyId,
-                'evaluator_id' => $evaluator->id,
-                'evaluated_at' => now()->toIso8601String(),
-                'indicators' => [
-                    $data->indicatorId => $data->score,
-                ],
-            ];
+        throw new RejectedException(__('assessment.not_found'));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function recordScore(
+        Assessment $assessment,
+        ScoreIndicatorData $data,
+        User $evaluator,
+    ): array {
+        $scoresData = $assessment->scores_data ?? [];
+        $scoresData['competencies'] ??= [];
+        $evaluatedAt = now()->toIso8601String();
+
+        foreach ($scoresData['competencies'] as &$competency) {
+            if (($competency['id'] ?? null) !== $data->competencyId) {
+                continue;
+            }
+
+            $competency['indicators'][$data->indicatorId] = $data->score;
+            $competency['evaluator_id'] = $evaluator->id;
+            $competency['evaluated_at'] = $evaluatedAt;
+
+            return $scoresData;
         }
 
-        $assessment->update(['scores_data' => $scoresData]);
+        $scoresData['competencies'][] = [
+            'id' => $data->competencyId,
+            'evaluator_id' => $evaluator->id,
+            'evaluated_at' => $evaluatedAt,
+            'indicators' => [$data->indicatorId => $data->score],
+        ];
 
-        $this->log('indicator_scored', $assessment, [
-            'competency_id' => $data->competencyId,
-            'indicator_id' => $data->indicatorId,
-            'score' => $data->score,
-        ]);
-
-        return ActionResponse::updated($assessment->fresh());
+        return $scoresData;
     }
 
     private function ensureAuthorized(
