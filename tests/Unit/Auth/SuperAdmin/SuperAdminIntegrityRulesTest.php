@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\Auth\Domain\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;

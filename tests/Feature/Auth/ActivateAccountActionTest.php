@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
+use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Auth\Domain\Account\Actions\ActivateAccountAction;
 use App\Modules\Auth\Domain\Account\Data\ActivateAccountData;
 use App\Modules\Core\Exceptions\RejectedException;

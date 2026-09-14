@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Setup\Domain\SetupWizard\Actions;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Support\PasswordRules;

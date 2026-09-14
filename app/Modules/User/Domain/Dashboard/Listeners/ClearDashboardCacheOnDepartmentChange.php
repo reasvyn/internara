@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\Dashboard\Listeners;
 
-use App\Modules\Academics\Domain\Department\Events\DepartmentCreated;
-use App\Modules\Academics\Domain\Department\Events\DepartmentDeleted;
-use App\Modules\Academics\Domain\Department\Events\DepartmentUpdated;
+use App\Modules\Academic\Domain\Department\Events\DepartmentCreated;
+use App\Modules\Academic\Domain\Department\Events\DepartmentDeleted;
+use App\Modules\Academic\Domain\Department\Events\DepartmentUpdated;
 use Illuminate\Support\Facades\Cache;
 
 final class ClearDashboardCacheOnDepartmentChange

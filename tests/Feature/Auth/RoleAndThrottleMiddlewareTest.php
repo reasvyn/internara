@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Domain\Login\Http\Middleware\AuthThrottleMiddleware;
-use App\Modules\Auth\Domain\Permissions\Http\Middleware\CheckRoleMiddleware;
+use App\Modules\Auth\Domain\Permission\Http\Middleware\CheckRoleMiddleware;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;

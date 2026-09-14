@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Livewire;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
-use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Academic\Domain\Department\Models\Department;
+use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Core\Support\CsvHandler;

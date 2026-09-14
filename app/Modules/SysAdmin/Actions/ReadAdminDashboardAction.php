@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Actions;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
-use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Academic\Domain\Department\Models\Department;
+use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Core\Models\ActivityLog;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\Journals\Domain\Attendance\Models\Attendance;
-use App\Modules\Journals\Domain\Logbook\Models\Logbook;
-use App\Modules\Partners\Domain\Company\Models\Company;
-use App\Modules\Partners\Domain\Partnership\Models\Partnership;
+use App\Modules\Journal\Domain\Attendance\Models\Attendance;
+use App\Modules\Journal\Domain\Logbook\Models\Logbook;
+use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Partnership\Models\Partnership;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Cache;

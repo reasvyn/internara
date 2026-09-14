@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Notifications;
 
-use App\Modules\Settings\Services\Settings;
+use App\Modules\Setting\Services\Settings;
 use App\Modules\User\Models\User;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;

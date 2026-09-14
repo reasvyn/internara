@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Setting\Enums;
+
+use App\Modules\Core\Contracts\LabelEnum;
+
+enum MediaCollection: string implements LabelEnum
+{
+    case LOGO = 'brand_logo';
+    case FAVICON = 'brand_favicon';
+
+    public function label(): string
+    {
+        return __('setting.media_collection.'.$this->value);
+    }
+}

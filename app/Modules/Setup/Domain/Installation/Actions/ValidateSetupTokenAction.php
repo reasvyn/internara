@@ -6,7 +6,7 @@ namespace App\Modules\Setup\Domain\Installation\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Settings\Actions\BatchSetSettingAction;
+use App\Modules\Setting\Actions\BatchSetSettingAction;
 use App\Modules\Setup\Entities\SetupEntity;
 use Illuminate\Support\Facades\Crypt;
 

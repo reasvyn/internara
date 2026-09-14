@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Modules\Journal\Domain\SupervisionLog\Enums;
+
+use App\Modules\Core\Contracts\LabelEnum;
+
+/**
+ * Types of supervision activities.
+ */
+enum SupervisionType: string implements LabelEnum
+{
+    case GUIDANCE = 'guidance';
+    case SUPERVISORING = 'mentoring';
+    case MONITORING = 'monitoring';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::GUIDANCE => __('common.enums.guidance'),
+            self::SUPERVISORING => __('common.enums.mentoring'),
+            self::MONITORING => __('common.enums.monitoring'),
+        };
+    }
+}

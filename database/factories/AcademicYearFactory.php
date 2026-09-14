@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AcademicYearFactory extends Factory

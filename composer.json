@@ -53,7 +53,7 @@
         },
         "files": [
             "app/Modules/Core/Support/helpers.php",
-            "app/Modules/Settings/Support/helpers.php"
+            "app/Modules/Setting/Support/helpers.php"
         ],
         "exclude-from-classmap": [
             ".temp"

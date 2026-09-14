@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Domain\AccountRecovery\Actions;
 
-use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
+use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Auth\Domain\AccountRecovery\Data\RedeemRecoverySlipData;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;

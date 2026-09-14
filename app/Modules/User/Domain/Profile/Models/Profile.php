@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\Profile\Models;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Core\Models\BaseModel;
-use App\Modules\Partners\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\User\Enums\BloodType;
 use App\Modules\User\Enums\Gender;
 use App\Modules\User\Models\User;

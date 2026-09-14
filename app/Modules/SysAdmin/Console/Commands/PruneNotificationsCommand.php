@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Console\Commands;
 
-use App\Modules\User\Domain\Notifications\Models\Notification;
+use App\Modules\User\Domain\Notify\Models\Notification;
 use Illuminate\Console\Command;
 
 class PruneNotificationsCommand extends Command

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Program\Domain\Internship\Actions;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Program\Domain\Internship\Events\InternshipCreated;
 use App\Modules\Program\Domain\Internship\Models\Internship;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 
 describe('T4B26: Role enum', function (): void {
     test('T4B26-FR-RBAC-003: cases carry the specified backing values', function (): void {

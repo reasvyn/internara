@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Setup\Domain\SetupWizard\Actions;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;

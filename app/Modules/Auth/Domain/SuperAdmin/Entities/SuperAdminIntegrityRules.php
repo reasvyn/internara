@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Auth\Domain\SuperAdmin\Entities;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Model;

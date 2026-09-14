@@ -6,7 +6,7 @@ namespace App\Modules\Auth\Domain\SuperAdmin\Console\Commands;
 
 use App\Modules\Auth\Domain\SuperAdmin\Actions\InitializeSuperAdminAction;
 use App\Modules\Core\Services\AppInfo;
-use App\Modules\Settings\Actions\BatchSetSettingAction;
+use App\Modules\Setting\Actions\BatchSetSettingAction;
 use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\User\Domain\UserManagement\Actions\SaveRecoveryKeyAction;
 use App\Modules\User\Models\User;

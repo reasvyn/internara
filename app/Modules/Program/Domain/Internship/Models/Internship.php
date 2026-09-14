@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Program\Domain\Internship\Models;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;

@@ -13,14 +13,14 @@
     {{-- Theme Switcher --}}
     @if ($showTheme)
         <div class="hidden md:block">
-            <x-settings::locale.theme-switch />
+            <x-setting::locale.theme-switch />
         </div>
     @endif
 
     {{-- Language Switcher --}}
     @if ($showLanguage)
         <div class="hidden md:block">
-            <livewire:settings.locale.lang-switch />
+            <livewire:setting.locale.lang-switch />
         </div>
     @endif
 
@@ -28,7 +28,7 @@
         {{-- Notification Bell --}}
         @if ($showNotifications)
             <div class="relative">
-                <livewire:user.notifications.notification-bell />
+                <livewire:user.notify.notification-bell />
             </div>
         @endif
         {{-- User Dropdown --}}

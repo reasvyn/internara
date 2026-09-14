@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Enums\BloodType;
 use App\Modules\User\Enums\Gender;

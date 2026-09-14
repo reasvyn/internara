@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\Journals\Domain\Logbook\Enums\LogbookStatus;
-use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use App\Modules\Journal\Domain\Logbook\Enums\LogbookStatus;
+use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

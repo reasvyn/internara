@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Modules\Auth\Domain\Permissions\Policies\UserPolicy;
+use App\Modules\Auth\Domain\Permission\Policies\UserPolicy;
 use App\Modules\Core\Contracts\SendsNotifications;
 use App\Modules\Core\Contracts\SettingsStore;
 use App\Modules\Core\Services\LangChecker;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Support\ModuleManager;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
-use App\Modules\Reports\Domain\StudentReport\Observers\StudentReportObserver;
-use App\Modules\Settings\Services\Settings;
-use App\Modules\User\Domain\Notifications\Actions\SendNotificationAction;
+use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
+use App\Modules\Report\Domain\StudentReport\Observers\StudentReportObserver;
+use App\Modules\Setting\Services\Settings;
+use App\Modules\User\Domain\Notify\Actions\SendNotificationAction;
 use App\Modules\User\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
 
         StudentReport::observe(StudentReportObserver::class);
 
-        // Sidebar: labels neutral-800, icons primary (semantic from settings).
+        // Sidebar: labels neutral-800, icons primary (semantic from setting).
         TallStackUi::customize()
             ->sideBar('separator')
             ->block('simple.base')
@@ -93,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
             ->block('group.button')
             ->replace('text-primary-500', 'text-neutral-800')
             ->and()
-            // Icons keep primary color from theme settings
+            // Icons keep primary color from theme setting
             ->sideBar('item')
             ->block('group.icon.base')
             ->replace('text-primary-500', 'text-primary')

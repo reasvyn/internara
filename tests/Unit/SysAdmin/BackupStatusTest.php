@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Assignment\Enums\AssignmentStatus;
-use App\Modules\SysAdmin\Domain\Backups\Enums\BackupStatus;
+use App\Modules\SysAdmin\Domain\Backup\Enums\BackupStatus;
 
 describe('HBXCI: BackupStatus enum', function (): void {
     test('HBXCI-FR-BACK-003: cases carry the specified backing values', function (): void {

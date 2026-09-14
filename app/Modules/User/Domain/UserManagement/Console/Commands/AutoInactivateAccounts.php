@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Console\Commands;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use App\Modules\User\Domain\UserManagement\Data\SetUserStatusData;
 use App\Modules\User\Enums\AccountStatus;

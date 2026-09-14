@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Actions;
 
-use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
+use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Core\Actions\BaseProcessAction;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Blade;

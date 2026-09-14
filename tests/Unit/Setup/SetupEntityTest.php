@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\Settings\Data\SettingEntryData;
+use App\Modules\Setting\Data\SettingEntryData;
 use App\Modules\Setup\Entities\SetupEntity;
 use Carbon\Carbon;
 

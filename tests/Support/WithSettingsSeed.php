@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Support;
 
-use App\Modules\Settings\Models\Setting;
+use App\Modules\Setting\Models\Setting;
 
 trait WithSettingsSeed
 {

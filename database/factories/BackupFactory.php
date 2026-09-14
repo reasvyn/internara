@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Modules\SysAdmin\Domain\Backups\Enums\BackupStatus;
-use App\Modules\SysAdmin\Domain\Backups\Enums\BackupType;
-use App\Modules\SysAdmin\Domain\Backups\Models\Backup;
+use App\Modules\SysAdmin\Domain\Backup\Enums\BackupStatus;
+use App\Modules\SysAdmin\Domain\Backup\Enums\BackupType;
+use App\Modules\SysAdmin\Domain\Backup\Models\Backup;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

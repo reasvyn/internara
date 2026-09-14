@@ -10,8 +10,8 @@ use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
-use App\Modules\Journals\Domain\Logbook\Models\Logbook;
-use App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog;
+use App\Modules\Journal\Domain\Logbook\Models\Logbook;
+use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 

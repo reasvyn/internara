@@ -16,10 +16,10 @@
 
                     <div class="flex items-center gap-2">
                         <div class="inline-flex">
-                            <x-settings::locale.theme-switch />
+                            <x-setting::locale.theme-switch />
                         </div>
                         <div class="bg-base-content/10 h-5 w-px"></div>
-                        <livewire:settings.locale.lang-switch class="px-2" />
+                        <livewire:setting.locale.lang-switch class="px-2" />
                     </div>
                 </div>
             </div>

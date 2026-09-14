@@ -11,7 +11,7 @@ use App\Modules\Enrollment\Domain\Placement\Actions\DeletePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\UpdatePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\PlacementForm;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
-use App\Modules\Partners\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;

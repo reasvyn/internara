@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Program\Domain\Internship\Livewire;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Enums\CsvRowResult;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Livewire\BaseRecordManager;

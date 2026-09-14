@@ -14,7 +14,7 @@
 
     {{-- Dynamic Branding Colors --}}
     @php
-        use App\Modules\Settings\Domain\Theme\Support\Theme;
+        use App\Modules\Setting\Domain\Theme\Support\Theme;
 
         $themeVars = Theme::cssVariables();
     @endphp

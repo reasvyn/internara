@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-use App\Modules\User\Domain\Notifications\Models\Notification;
+use App\Modules\User\Domain\Notify\Models\Notification;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Gate;
 

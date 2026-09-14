@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Livewire;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Core\Support\CsvHandler;
-use App\Modules\Partners\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\User\Domain\UserManagement\Actions\CreateUserAction;
 use App\Modules\User\Domain\UserManagement\Actions\DeleteUserAction;
 use App\Modules\User\Domain\UserManagement\Actions\UpdateUserAction;

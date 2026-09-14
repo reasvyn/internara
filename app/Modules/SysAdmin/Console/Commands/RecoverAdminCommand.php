@@ -8,7 +8,7 @@ use App\Modules\Auth\Domain\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\Modules\Auth\Domain\SuperAdmin\Notifications\RecoveryOtpNotification;
 use App\Modules\Core\Services\AppInfo;
 use App\Modules\Core\Services\SmartLogger;
-use App\Modules\Settings\Actions\BatchSetSettingAction;
+use App\Modules\Setting\Actions\BatchSetSettingAction;
 use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\User\Domain\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\Modules\User\Domain\UserManagement\Actions\SaveRecoveryKeyAction;

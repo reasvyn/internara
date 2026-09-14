@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\Journals\Domain\AbsenceRequest\Enums\AbsenceReasonType;
-use App\Modules\Journals\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
-use App\Modules\Journals\Domain\AbsenceRequest\Models\AbsenceRequest;
+use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceReasonType;
+use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
+use App\Modules\Journal\Domain\AbsenceRequest\Models\AbsenceRequest;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Actions;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Builder;

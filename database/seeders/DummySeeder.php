@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Modules\Academics\Domain\AcademicYear\Models\AcademicYear;
-use App\Modules\Settings\Models\Setting;
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Setting\Models\Setting;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Tests\Support\DummyData;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\AccountApplication\Models;
 
-use App\Modules\Academics\Domain\Department\Models\Department;
+use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationStatus;
 use App\Modules\User\Models\User;

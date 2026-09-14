@@ -13,7 +13,7 @@ use App\Modules\User\Domain\Dashboard\Livewire\AdminDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\StudentDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\SupervisorDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\TeacherDashboard;
-use App\Modules\User\Domain\Notifications\Livewire\NotificationCenter;
+use App\Modules\User\Domain\Notify\Livewire\NotificationCenter;
 use App\Modules\User\Domain\Profile\Livewire\ProfileEditor;
 use App\Modules\User\Http\Controllers\AuthController;
 use App\Modules\User\Http\Controllers\DashboardController;

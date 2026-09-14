@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Domain\Login\Http\Middleware\AuthThrottleMiddleware;
-use App\Modules\Auth\Domain\Permissions\Http\Middleware\CheckRoleMiddleware;
+use App\Modules\Auth\Domain\Permission\Http\Middleware\CheckRoleMiddleware;
 use App\Modules\Core\Exceptions\AppException;
 use App\Modules\Core\Exceptions\ModuleException;
 use App\Modules\Core\Exceptions\UnauthorizedException;
 use App\Modules\Core\Exceptions\ValidationFailedException;
 use App\Modules\Core\Http\Middleware\LogContextMiddleware;
 use App\Modules\Core\Http\Middleware\SecurityHeadersMiddleware;
-use App\Modules\Settings\Domain\Locale\Http\Middleware\SetLocaleMiddleware;
+use App\Modules\Setting\Domain\Locale\Http\Middleware\SetLocaleMiddleware;
 use App\Modules\Setup\Domain\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
 use App\Modules\Setup\Domain\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use App\Providers\EventServiceProvider;

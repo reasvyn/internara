@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\SysAdmin\Domain\Backups\Enums\BackupType;
+use App\Modules\SysAdmin\Domain\Backup\Enums\BackupType;
 
 describe('HBXCI: BackupType enum', function (): void {
     test('HBXCI-FR-BACK-004: cases carry the specified backing values', function (): void {

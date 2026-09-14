@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Livewire\Forms;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role as RoleEnum;
+use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-use App\Modules\SysAdmin\Domain\Backups\Models\Backup;
+use App\Modules\SysAdmin\Domain\Backup\Models\Backup;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Gate;
 

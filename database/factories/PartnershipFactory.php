@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Modules\Partners\Domain\Company\Models\Company;
-use App\Modules\Partners\Domain\Partnership\Enums\PartnershipStatus;
-use App\Modules\Partners\Domain\Partnership\Models\Partnership;
+use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Partnership\Enums\PartnershipStatus;
+use App\Modules\Partner\Domain\Partnership\Models\Partnership;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PartnershipFactory extends Factory

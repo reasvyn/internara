@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\SysAdmin\Domain\Announcement\Livewire\AnnouncementManager;
-use App\Modules\SysAdmin\Domain\Backups\Livewire\BackupManager;
+use App\Modules\SysAdmin\Domain\Backup\Livewire\BackupManager;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\Modules\SysAdmin\Domain\Observability\Livewire\AccountCloneDetector;
 use App\Modules\SysAdmin\Domain\Observability\Livewire\AuditLogManager;

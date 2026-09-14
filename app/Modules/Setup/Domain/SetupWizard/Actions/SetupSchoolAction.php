@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Setup\Domain\SetupWizard\Actions;
 
-use App\Modules\Academics\Domain\School\Entities\SchoolEntity;
+use App\Modules\Academic\Domain\School\Entities\SchoolEntity;
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\Settings\Actions\BatchSetSettingAction;
-use App\Modules\Settings\Data\SettingEntryData;
+use App\Modules\Setting\Actions\BatchSetSettingAction;
+use App\Modules\Setting\Data\SettingEntryData;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseCommandAction

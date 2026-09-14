@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\User\Domain\UserManagement\Actions;
 
-use App\Modules\Auth\Domain\AccessTokens\Models\AccessToken;
+use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\User\Domain\Notifications\WelcomeNotification;
+use App\Modules\User\Domain\Notify\WelcomeNotification;
 use App\Modules\User\Domain\UserManagement\Data\CreateUserData;
 use App\Modules\User\Domain\UserManagement\Events\UserCreated;
 use App\Modules\User\Domain\UserManagement\Notifications\ActivationCodeNotification;

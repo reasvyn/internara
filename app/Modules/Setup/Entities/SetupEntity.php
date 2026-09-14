@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Setup\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
-use App\Modules\Settings\Data\SettingEntryData;
-use App\Modules\Settings\Services\Settings;
+use App\Modules\Setting\Data\SettingEntryData;
+use App\Modules\Setting\Services\Settings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 

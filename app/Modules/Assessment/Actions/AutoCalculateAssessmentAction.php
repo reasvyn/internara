@@ -7,10 +7,10 @@ namespace App\Modules\Assessment\Actions;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\Journals\Domain\Attendance\Models\Attendance;
-use App\Modules\Journals\Domain\MonitoringVisit\Models\MonitoringVisit;
-use App\Modules\Journals\Domain\SupervisionLog\Models\SupervisionLog;
-use App\Modules\Reports\Domain\StudentReport\Models\StudentReport;
+use App\Modules\Journal\Domain\Attendance\Models\Attendance;
+use App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit;
+use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
+use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
 use Illuminate\Support\Facades\DB;
 
 final class AutoCalculateAssessmentAction extends BaseCommandAction

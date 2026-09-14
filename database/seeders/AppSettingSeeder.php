@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Modules\Academics\Domain\AcademicYear\Support\AcademicYearPeriod;
+use App\Modules\Academic\Domain\AcademicYear\Support\AcademicYearPeriod;
 use App\Modules\Core\Services\AppInfo;
-use App\Modules\Settings\Casts\SettingValueCast;
-use App\Modules\Settings\Domain\Theme\Support\Theme;
-use App\Modules\Settings\Models\Setting;
+use App\Modules\Setting\Casts\SettingValueCast;
+use App\Modules\Setting\Domain\Theme\Support\Theme;
+use App\Modules\Setting\Models\Setting;
 use Illuminate\Database\Seeder;
 
 /**

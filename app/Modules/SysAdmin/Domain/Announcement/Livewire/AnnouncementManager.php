@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Domain\Announcement\Livewire;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\DeleteAnnouncementAction;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\PublishAnnouncementAction;

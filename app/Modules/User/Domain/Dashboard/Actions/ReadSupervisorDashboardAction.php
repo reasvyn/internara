@@ -7,8 +7,8 @@ namespace App\Modules\User\Domain\Dashboard\Actions;
 use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Evaluation\Models\EvaluationResponse;
-use App\Modules\Journals\Domain\Attendance\Models\Attendance;
-use App\Modules\Journals\Domain\Logbook\Models\Logbook;
+use App\Modules\Journal\Domain\Attendance\Models\Attendance;
+use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 

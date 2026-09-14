@@ -8,7 +8,7 @@ use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementCapacity;
 use App\Modules\Enrollment\Domain\Placement\Entities\PlacementState;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
-use App\Modules\Partners\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use Database\Factories\PlacementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

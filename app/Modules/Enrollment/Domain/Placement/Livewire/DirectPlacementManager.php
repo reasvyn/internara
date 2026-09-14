@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
-use App\Modules\Auth\Domain\Permissions\Enums\Role;
+use App\Modules\Auth\Domain\Permission\Enums\Role;
 use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Enrollment\Domain\Placement\Actions\DirectPlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\DirectPlacementForm;
