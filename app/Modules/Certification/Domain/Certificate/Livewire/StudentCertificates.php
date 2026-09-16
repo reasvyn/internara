@@ -23,7 +23,7 @@ class StudentCertificates extends Component
         $certificates = Certificate::query()
             ->whereHas('registration.mentee', fn (Builder $q) => $q->where('user_id', auth()->id()))
             ->where('status', 'issued')
-            ->with('template', 'registration.internship')
+            ->with('registration.internship')
             ->orderByDesc('issued_at')
             ->get();
 
