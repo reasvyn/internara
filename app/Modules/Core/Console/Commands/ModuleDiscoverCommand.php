@@ -8,6 +8,7 @@ use App\Modules\Core\Exceptions\InfrastructureException;
 use App\Modules\Core\Services\ModuleService;
 use App\Modules\Core\Services\SmartLogger;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class ModuleDiscoverCommand extends Command
 {
@@ -32,6 +33,10 @@ class ModuleDiscoverCommand extends Command
                     __('core.discover.service_provider_not_registered'),
                     hint: __('core.discover.service_provider_not_registered_hint'),
                 );
+            }
+
+            foreach (['module_livewire', 'module_policies', 'module_views'] as $cacheKey) {
+                Cache::forget(config('cache-keys.'.$cacheKey));
             }
 
             $this->components->task(

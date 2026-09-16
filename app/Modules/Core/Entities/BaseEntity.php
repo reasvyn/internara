@@ -79,7 +79,10 @@ abstract readonly class BaseEntity implements JsonSerializable
     {
         // Raw property values (not toArray()): Carbon and nested entities
         // must round-trip through fromArray() without serialization loss.
-        $data = get_object_vars($this);
+        $data = [];
+        foreach ((new ReflectionClass($this))->getProperties() as $reflectionProperty) {
+            $data[$reflectionProperty->getName()] = $reflectionProperty->getValue($this);
+        }
         $data[$property] = $value;
 
         return static::fromArray($data);
