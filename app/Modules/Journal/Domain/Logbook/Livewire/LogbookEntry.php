@@ -91,7 +91,7 @@ class LogbookEntry extends BaseRecordEntry
         $journal = Logbook::where('user_id', auth()->id())->latest('date')->paginate(10);
 
         return view('journal.logbook.logbook-entry', [
-            'journal' => $journal,
+            'journals' => $journal,
         ]);
     }
 }
