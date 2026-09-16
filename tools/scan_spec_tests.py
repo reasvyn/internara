@@ -456,6 +456,23 @@ def extract_requirements_from_test(path: Path) -> list[tuple[str, int]]:
             req_id = match.group(0)
             if len(req_id) >= 4:
                 reqs.append((req_id, idx))
+
+        # Tests conventionally use the full `SPECID-FR-...` traceability label.
+        # Normalize that form to the bare requirement ID used by spec tables.
+        for match in RE_SPEC_REF.finditer(line):
+            req_id = match.group(0).split('-', 1)[1]
+            if req_id not in {requirement for requirement, _ in reqs}:
+                reqs.append((req_id, idx))
+
+            # Allow the compact `SPEC-FR-ABC-001/002/003` form used by the
+            # test suite while keeping the spec tables normalized to bare IDs.
+            requirement_prefix, first_number = req_id.rsplit('-', 1)
+            suffixes = re.match(r'(?:/(\d{3}))+', line[match.end():])
+            if suffixes:
+                for number in re.findall(r'\d{3}', suffixes.group(0)):
+                    expanded = f'{requirement_prefix}-{number}'
+                    if expanded not in {requirement for requirement, _ in reqs}:
+                        reqs.append((expanded, idx))
     return reqs
 
 
