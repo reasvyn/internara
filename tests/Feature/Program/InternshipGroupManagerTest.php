@@ -22,7 +22,7 @@ function groupManagerAsAdmin(): User
 }
 
 describe('IT0OE: internship group manager flows', function (): void {
-    test('IT0OE-FR-GROUP-010: the manager lists group name, internship title, and member count', function (): void {
+    test('IT0OE-FR-GROUP-010/IT0OE-NFR-GROUP-008: the manager lists group name, internship title, and member count', function (): void {
         groupManagerAsAdmin();
         $internship = Internship::factory()->create(['name' => 'PKL Ganjil 2026']);
         $group = InternshipGroup::factory()->create([
@@ -46,7 +46,7 @@ describe('IT0OE: internship group manager flows', function (): void {
             ->assertSee('PKL Ganjil 2026');
     });
 
-    test('IT0OE-FR-GROUP-011: name search narrows the list without extra member queries', function (): void {
+    test('IT0OE-FR-GROUP-011/IT0OE-NFR-GROUP-003: name search narrows the list without extra member queries', function (): void {
         groupManagerAsAdmin();
         InternshipGroup::factory()->create(['name' => 'Kelompok Alpha']);
         InternshipGroup::factory()->create(['name' => 'Kelompok Beta']);
@@ -57,7 +57,7 @@ describe('IT0OE: internship group manager flows', function (): void {
             ->assertDontSee('Kelompok Beta');
     });
 
-    test('IT0OE-FR-GROUP-022: repeater rows can be added, removed by index, and reset', function (): void {
+    test('IT0OE-FR-GROUP-022/IT0OE-FR-GROUP-024: repeater rows can be added, removed by index, and reset', function (): void {
         groupManagerAsAdmin();
         $group = InternshipGroup::factory()->create();
 
@@ -268,7 +268,7 @@ describe('IT0OE: internship group manager flows', function (): void {
         expect($internship->exists)->toBeTrue();
     });
 
-    test('IT0OE-FR-GROUP-031: the group form refuses a nameless save and accepts a valid one', function (): void {
+    test('IT0OE-FR-GROUP-031/IT0OE-FR-GROUP-007: the group form refuses a nameless save and accepts a valid one', function (): void {
         groupManagerAsAdmin();
         $internship = Internship::factory()->create();
 
@@ -291,7 +291,7 @@ describe('IT0OE: internship group manager flows', function (): void {
         expect(InternshipGroup::where('name', 'Kelompok Valid')->exists())->toBeTrue();
     });
 
-    test('IT0OE-FR-GROUP-027: the groups route sits behind admin middleware', function (): void {
+    test('IT0OE-FR-GROUP-027/IT0OE-NFR-GROUP-007: the groups route sits behind admin middleware', function (): void {
         $this->get('/admin/internships/groups')->assertRedirect();
 
         $student = User::factory()->create();
