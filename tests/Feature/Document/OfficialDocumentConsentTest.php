@@ -105,6 +105,33 @@ describe('7H5D6: parent consent upload and checklist', function () {
         expect($missing)->toBe([$acceptance->id]);
     });
 
+    test('7H5D6-UC-OFFD-005: registration checklist renders issued documents as uploaded and unresolved requirements as actionable gaps', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
+
+        $issued = Document::factory()->create(['title' => 'Introduction Letter']);
+        $missing = Document::factory()->create(['title' => 'Parent Consent Form']);
+        $internship = Internship::factory()->create(['required_document_ids' => [$issued->id, $missing->id]]);
+        $registration = Registration::factory()->create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+        ]);
+        RegistrationDocument::factory()->create([
+            'registration_id' => $registration->id,
+            'document_id' => $issued->id,
+            'status' => RegistrationDocumentStatus::PENDING->value,
+        ]);
+
+        Livewire::test(RegistrationDocumentUpload::class)
+            ->set('registration', $registration)
+            ->assertSee('Introduction Letter')
+            ->assertSee('Parent Consent Form')
+            ->assertSee(__('registration.doc_uploaded'))
+            ->assertSee('uploads.'.$missing->id)
+            ->assertSee(__('common.submit'));
+    });
+
     test('7H5D6-FR-OFFD-017: uploads outside the required set are ignored, never recorded', function (): void {
         Storage::fake('public');
         $admin = User::factory()->create();

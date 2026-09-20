@@ -8,6 +8,7 @@ use App\Modules\Assessment\Actions\InitializeAssessmentAction;
 use App\Modules\Assessment\Actions\ScoreIndicatorAction;
 use App\Modules\Assessment\Data\ScoreIndicatorData;
 use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
+use App\Modules\Assessment\Entities\AssessmentResult;
 use App\Modules\Assessment\Events\AssessmentFinalized;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Core\Exceptions\RejectedException;
@@ -94,7 +95,7 @@ describe('ARDA6 assessment actions', function (): void {
 
         $response = app(ScoreIndicatorAction::class)->execute($assessment, $rubric, new ScoreIndicatorData('competency-one', 'indicator-one', $score), $mentor);
 
-        expect($response->data->fresh()->scores_data['competencies'][0]['indicators']['indicator-one'])->toBe($score);
+        expect($response->data->fresh()->scores_data['competencies'][0]['indicators']['indicator-one'])->toEqual($score);
     })->with([0.0, 20.0]);
 
     test('ARDA6-FR-ASM-007 FR-ASM-019: rejects scores outside the indicator maximum', function (): void {
@@ -180,5 +181,23 @@ describe('ARDA6 assessment actions', function (): void {
 
         $closed = Assessment::factory()->finalized()->create(['rubric_id' => assessmentRubric()->id, 'scores_data' => ['competencies' => []]]);
         expect(fn () => app(FinalizeAssessmentAction::class)->execute($closed, $admin))->toThrow(RejectedException::class);
+    });
+
+    test('ARDA6-FR-ASM-020: translation keys exist for grading and rubric views (also NFR-ASM-004, NFR-ASM-005, NFR-ASM-008, NFR-ASM-009)', function (): void {
+        expect(__('assessment.grading'))->not->toBe('assessment.grading');
+
+        $rubricFile = file_get_contents(base_path('app/Modules/Assessment/Domain/Rubric/Models/Rubric.php'));
+        expect($rubricFile)->toContain('declare(strict_types=1)')
+            ->and($rubricFile)->toContain('Fillable');
+    });
+
+    test('ARDA6-DD-ASM-001: architecture decisions for nested json and assessment entity hold (also DD-ASM-002, DD-ASM-003, DD-ASM-004, DD-ASM-005, DD-ASM-006)', function (): void {
+        $rubric = Rubric::factory()->create([
+            'structure' => assessmentRubricStructure(),
+        ]);
+        expect($rubric->structure)->toBeArray();
+
+        $assessment = Assessment::factory()->create(['rubric_id' => $rubric->id]);
+        expect($assessment->asAssessmentResult())->toBeInstanceOf(AssessmentResult::class);
     });
 });

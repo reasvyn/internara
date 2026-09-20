@@ -3,13 +3,16 @@
 declare(strict_types=1);
 
 use App\Modules\Document\Models\Document;
+use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Actions\UploadRegistrationDocumentAction;
+use App\Modules\Enrollment\Domain\Registration\Entities\RegistrationState;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationDocumentUpload;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationWizard;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Lang;
@@ -76,7 +79,7 @@ test('MBB5R-FR-REG-024: document page marks an uploaded requirement as complete'
 test('MBB5R-NFR-REG-002: wizard exposes a labeled first step', function (): void {
     additionalRegistrationStudent();
 
-    Livewire::test(RegistrationWizard::class)->assertSet('step', 1)->assertSee(__('registration.wizard.step', ['step' => 1, 'total' => 2]));
+    Livewire::test(RegistrationWizard::class)->assertSet('step', 1)->assertSee(__('registration.wizard.step_program'));
 });
 
 test('MBB5R-NFR-REG-006: registration document file input identifies its requirement', function (): void {
@@ -89,6 +92,10 @@ test('MBB5R-NFR-REG-006: registration document file input identifies its require
 });
 
 test('MBB5R-NFR-REG-007: registration page renders translated title text', function (): void {
+    $student = User::factory()->create();
+    $student->assignRole('student');
+    test()->actingAs($student);
+
     expect(test()->get('/registration')->assertOk()->getContent())->toContain(__('registration.center_title'));
 });
 
@@ -116,4 +123,43 @@ test('MBB5R-FR-REG-023: uploaded document starts in pending state', function ():
     ]);
 
     expect(RegistrationDocument::firstOrFail()->status->value)->toBe('pending');
+});
+
+test('MBB5R-FR-REG-003: registration state exposes active, pending, ongoing, and ended predicates', function (): void {
+    $registration = Registration::factory()->create([
+        'status' => 'active',
+        'start_date' => now()->subDay(),
+        'end_date' => now()->addDay(),
+        'placement_id' => Placement::factory()->create()->id,
+    ]);
+
+    $state = RegistrationState::fromModel($registration);
+
+    expect($state->isActive())->toBeTrue()
+        ->and($state->isPending())->toBeFalse()
+        ->and($state->isCurrentlyOngoing())->toBeTrue()
+        ->and($state->hasEnded())->toBeFalse()
+        ->and($state->canBeApproved())->toBeFalse();
+});
+
+test('MBB5R-FR-REG-004: pending registration is approvable only after placement assignment', function (): void {
+    $pending = Registration::factory()->create(['status' => 'pending', 'placement_id' => null]);
+    $placed = Registration::factory()->create([
+        'status' => 'pending',
+        'placement_id' => Placement::factory()->create()->id,
+    ]);
+
+    expect($pending->asRegistrationState()->canBeApproved())->toBeFalse()
+        ->and($placed->asRegistrationState()->canBeApproved())->toBeTrue();
+});
+
+test('MBB5R-FR-REG-005: registration state calculates remaining and total duration', function (): void {
+    $registration = Registration::factory()->create([
+        'start_date' => now()->subDays(5)->startOfDay(),
+        'end_date' => now()->addDays(5)->startOfDay(),
+    ]);
+
+    $state = RegistrationState::fromModel($registration);
+
+    expect($state->daysRemaining(Carbon::today()))->toBe(5)->and($state->totalDuration())->toBe(10);
 });

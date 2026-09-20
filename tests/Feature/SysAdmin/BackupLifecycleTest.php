@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\SysAdmin\Domain\Backup\Actions\CleanupBackupsAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\CreateBackupAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\DeleteBackupAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\ReadBackupStatsAction;
@@ -637,6 +638,67 @@ describe('HBXCI: backup operator workflows', function (): void {
             ->and(Backup::whereKey($kept->id)->exists())->toBeTrue()
             ->and(is_file($expiredPath))->toBeFalse()
             ->and(Artisan::output())->toContain('old backup');
+    });
+
+    test('HBXC2-FR-RET-002: cleanup deletes only expired completed backups and preserves failed and fresh rows', function (): void {
+        $runner = new HbxStubBackupRunner;
+        $expired = Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'file_path' => null,
+            'created_at' => now()->subDays(31),
+        ]);
+        $failed = Backup::factory()->create([
+            'status' => BackupStatus::FAILED->value,
+            'error_output' => 'diagnostic evidence',
+            'file_path' => null,
+            'created_at' => now()->subDays(90),
+        ]);
+        $fresh = Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'file_path' => null,
+            'created_at' => now()->subDays(2),
+        ]);
+
+        $deleted = app(CleanupBackupsAction::class, ['runner' => $runner])->execute(30);
+
+        expect($deleted)->toBe(1)
+            ->and(Backup::find($expired->id))->toBeNull()
+            ->and(Backup::find($failed->id)->error_output)->toBe('diagnostic evidence')
+            ->and(Backup::find($fresh->id))->not->toBeNull();
+    });
+
+    test('HBXC2-FR-RET-003: cleanup processes an expired backlog in bounded chunks and returns its count', function (): void {
+        $runner = new HbxStubBackupRunner;
+        Backup::factory()->count(100)->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'file_path' => null,
+            'created_at' => now()->subDays(31),
+        ]);
+
+        $deleted = app(CleanupBackupsAction::class, ['runner' => $runner])->execute(30);
+
+        expect($deleted)->toBe(100)
+            ->and(Backup::where('status', BackupStatus::COMPLETED->value)->count())->toBe(0);
+    });
+
+    test('HBXC2-FR-RET-006: cleanup flag runs retention after a successful backup using configured days', function (): void {
+        config()->set('backup.enabled', true);
+        config()->set('backup.retention_days', 14);
+        $runner = new HbxStubBackupRunner;
+        $old = Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'file_path' => null,
+            'created_at' => now()->subDays(15),
+        ]);
+        $create = app(CreateBackupAction::class, ['runner' => $runner]);
+
+        $this->app->instance(CreateBackupAction::class, $create);
+        $this->app->instance(BackupRunner::class, $runner);
+        $this->artisan('system:backup', ['--cleanup' => true, '--force' => true])
+            ->assertExitCode(0)
+            ->expectsOutputToContain('old backup');
+
+        expect(Backup::find($old->id))->toBeNull();
     });
 
     test('HBXCI-UC-BACK-004: admin deletes a deletable backup with confirmation from the UI', function (): void {

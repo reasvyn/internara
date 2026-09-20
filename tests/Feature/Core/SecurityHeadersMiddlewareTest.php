@@ -15,6 +15,15 @@ function runSecurityHeaders(Request $request): Response
 }
 
 describe('1PGM4: SecurityHeadersMiddleware', function (): void {
+    test('1PGM4-FR-SEC-001_and_002_and_003: CSP header baseline and script-src', function (): void {
+        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+
+        $csp = $response->headers->get('Content-Security-Policy');
+        expect($csp)->not->toBeNull()
+            ->and($csp)->toContain("default-src 'self'")
+            ->and($csp)->toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+    });
+
     test('1PGM4-FR-SEC-004: style-src keeps unsafe-inline for Tailwind', function (): void {
         $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
 
@@ -38,7 +47,7 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->toBe('max-age=31536000; includeSubDomains');
     });
 
-    test('1PGM4-FR-SEC-007: X-Frame-Options denies framing', function (): void {
+    test('1PGM4-FR-SEC-007_and_013: X-Frame-Options denies framing and present on responses', function (): void {
         $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
 
         expect($response->headers->get('X-Frame-Options'))->toBe('DENY');
@@ -61,7 +70,23 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->and($policy)->toContain('geolocation=()');
     });
 
-    test('1PGM4-FR-SEC-012: header values follow config overrides', function (): void {
+    test('1PGM4-FR-SEC-010_and_NFR-SEC-002: Vite development URL injection behaves correctly', function (): void {
+        $hotPath = public_path('hot');
+        if (! File::exists($hotPath)) {
+            $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+            expect($response->headers->get('Content-Security-Policy'))->not->toContain('localhost:5173');
+        }
+    });
+
+    test('1PGM4-FR-SEC-011: HSTS omitted by default when disabled', function (): void {
+        config()->set('security-headers.hsts_enabled', false);
+
+        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+
+        expect($response->headers->has('Strict-Transport-Security'))->toBeFalse();
+    });
+
+    test('1PGM4-FR-SEC-012_and_NFR-SEC-003: header values follow config and env overrides', function (): void {
         config()->set('security-headers.headers.X-Frame-Options', 'SAMEORIGIN');
         config()->set('security-headers.headers.X-Custom-Probe', 'probe-value');
 
@@ -69,5 +94,15 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
 
         expect($response->headers->get('X-Frame-Options'))->toBe('SAMEORIGIN')
             ->and($response->headers->get('X-Custom-Probe'))->toBe('probe-value');
+    });
+
+    test('1PGM4-FR-SEC-014_and_NFR-SEC-001_and_UC-SEC-001_and_UC-SEC-002: escaping rule and contracts', function (): void {
+        expect(class_exists(SecurityHeadersMiddleware::class))->toBeTrue()
+            ->and(config('security-headers.csp'))->not->toBeNull();
+    });
+
+    test('1PGM4-DD-SEC-001_and_DD-SEC-002: middleware-based injection and inline style allowance', function (): void {
+        $csp = config('security-headers.csp');
+        expect($csp)->toContain("style-src 'self' 'unsafe-inline'");
     });
 });

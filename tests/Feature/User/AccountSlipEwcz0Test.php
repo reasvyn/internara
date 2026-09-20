@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\User\Domain\UserManagement\Actions\GenerateAccountSlipAction;
 use App\Modules\User\Domain\UserManagement\Actions\GenerateAccountSlipBatchAction;
 use App\Modules\User\Domain\UserManagement\Actions\RenderAccountSlipAction;
 use App\Modules\User\Domain\UserManagement\Livewire\UserManager;
 use App\Modules\User\Domain\UserManagement\Notifications\ActivationCodeNotification;
+use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -247,5 +250,36 @@ describe('EWCZ0: account slips', function (): void {
         $this->get(route('admin.users.account-slips.batch'))->assertNotFound();
 
         expect($second->fresh())->not->toBeNull();
+    });
+
+    test('EWCZ0-FR-ASLIP-015: generation for ineligible account is refused with RejectedException (also FR-ASLIP-042)', function (): void {
+        $user = User::factory()->create([
+            'status' => AccountStatus::SUSPENDED->value,
+        ]);
+
+        expect(fn () => app(GenerateAccountSlipAction::class)->execute($user))
+            ->toThrow(RejectedException::class);
+    });
+
+    test('EWCZ0-FR-ASLIP-016: trait exposes showAccountSlip, slipUser, and slipCode state (also FR-ASLIP-018, DD-ASLIP-004, NFR-ASLIP-012)', function (): void {
+        $user = User::factory()->create();
+
+        $component = Livewire::test(UserManager::class)
+            ->call('showSlip', (string) $user->id);
+
+        expect($component->get('showAccountSlip'))->toBeTrue()
+            ->and($component->get('slipUser')->id)->toBe($user->id)
+            ->and($component->get('slipCode'))->not->toBeEmpty();
+
+        $component->call('regenerateCode');
+        expect($component->get('slipCode'))->not->toBeEmpty();
+    });
+
+    test('EWCZ0-DD-ASLIP-001: PDF generation uses DomPdf and streams server side (also NFR-ASLIP-001, NFR-ASLIP-005, NFR-ASLIP-007)', function (): void {
+        $user = User::factory()->create();
+        $response = app(GenerateAccountSlipAction::class)->execute($user);
+
+        expect($response)->toBeInstanceOf(Response::class)
+            ->and($response->headers->get('Content-Type'))->toContain('application/pdf');
     });
 });

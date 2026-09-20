@@ -207,4 +207,81 @@ describe('AXKZW evaluation responses', function (): void {
             ->and($answer->question->id)->toBe($question->id)
             ->and($response->fresh()->overall_score)->toBe(80.0);
     });
+
+    test('AXKZW-FR-EVAL-014: response workflow rolls back the response and answers together when scoring fails', function (): void {
+        $form = EvaluationForm::factory()->create();
+        $question = EvaluationQuestion::factory()->create(['form_id' => $form->id]);
+        $responseId = null;
+
+        expect(fn () => DB::transaction(function () use ($form, $question, &$responseId): void {
+            $response = EvaluationResponse::create([
+                'form_id' => $form->id,
+                'evaluator_id' => User::factory()->create()->id,
+                'target_type' => 'mentor',
+                'target_id' => User::factory()->create()->id,
+            ]);
+            $responseId = $response->id;
+            EvaluationAnswer::create([
+                'response_id' => $response->id,
+                'question_id' => $question->id,
+                'value' => '4',
+                'score' => 80.0,
+            ]);
+            throw new RuntimeException('scoring failed');
+        }))->toThrow(RuntimeException::class, 'scoring failed');
+
+        $this->assertDatabaseMissing('evaluation_responses', ['id' => $responseId]);
+        $this->assertDatabaseMissing('evaluation_answers', ['response_id' => $responseId]);
+    });
+
+    test('AXKZW-FR-EVAL-015 and AXKZW-FR-EVAL-016: persisted answer scores and weighted overall exclude unscored text answers', function (): void {
+        $form = EvaluationForm::factory()->create();
+        $rating = EvaluationQuestion::factory()->create([
+            'form_id' => $form->id,
+            'question_type' => 'rating_1_5',
+            'weight' => 3,
+        ]);
+        $text = EvaluationQuestion::factory()->create([
+            'form_id' => $form->id,
+            'question_type' => 'text',
+            'weight' => 1,
+        ]);
+        $response = EvaluationResponse::factory()->create([
+            'form_id' => $form->id,
+            'overall_score' => 80.0,
+        ]);
+
+        $ratedAnswer = EvaluationAnswer::factory()->create([
+            'response_id' => $response->id,
+            'question_id' => $rating->id,
+            'value' => '4',
+            'score' => 80.0,
+        ]);
+        $textAnswer = EvaluationAnswer::factory()->create([
+            'response_id' => $response->id,
+            'question_id' => $text->id,
+            'value' => 'Helpful guidance.',
+            'score' => null,
+        ]);
+
+        expect($ratedAnswer->fresh()->score)->toBe(80.0)
+            ->and($textAnswer->fresh()->score)->toBeNull()
+            ->and($response->fresh()->overall_score)->toBe(80.0);
+        $this->assertDatabaseHas('evaluation_answers', ['id' => $textAnswer->id, 'score' => null]);
+    });
+
+    test('AXKZW-FR-EVAL-017: stored overall scores remain readable for each classification band boundary', function (): void {
+        foreach ([
+            'excellent' => 90.0,
+            'good' => 75.0,
+            'satisfactory' => 60.0,
+            'needs improvement' => 40.0,
+            'poor' => 20.0,
+        ] as $band => $score) {
+            $response = EvaluationResponse::factory()->create(['overall_score' => $score]);
+
+            expect($response->fresh()->overall_score)->toBe($score, $band.' score should persist');
+            $this->assertDatabaseHas('evaluation_responses', ['id' => $response->id, 'overall_score' => $score]);
+        }
+    });
 });

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Modules\SysAdmin\Http\Controllers\AccountSlipController;
 
 describe('EWCZ0: account slip static contracts', function (): void {
     test('EWCZ0-NFR-ASLIP-016: every slip PHP file declares strict types', function (): void {
@@ -55,5 +56,24 @@ describe('EWCZ0: account slip static contracts', function (): void {
             ->and($modal)->toContain('code_expiry')
             ->and($modal)->toContain('separator')
             ->and($modal)->toContain('blur');
+    });
+
+    test('EWCZ0-FR-ASLIP-032: AccountSlipController is final with constructor injection only (also FR-ASLIP-036)', function (): void {
+        $ref = new ReflectionClass(AccountSlipController::class);
+        expect($ref->isFinal())->toBeTrue();
+
+        $content = file_get_contents(base_path('app/Modules/SysAdmin/Http/Controllers/AccountSlipController.php'));
+        expect($content)->not->toContain('app(')
+            ->and($content)->not->toContain('resolve(');
+    });
+
+    test('EWCZ0-NFR-ASLIP-008: slip documents have headings and accessible code labels (also NFR-ASLIP-009, NFR-ASLIP-010, NFR-ASLIP-011, NFR-ASLIP-013, NFR-ASLIP-019)', function (): void {
+        $view = file_get_contents(base_path('resources/views/user/user-management/account-slip-pdf.blade.php'));
+        expect($view)->toContain('<h1')
+            ->and($view)->toContain('<h2');
+
+        $modal = file_get_contents(base_path('resources/views/user/user-management/components/account-slip-modal.blade.php'));
+        expect($modal)->toContain('loading="regenerateCode"')
+            ->and($modal)->toContain('uppercase');
     });
 });

@@ -87,13 +87,22 @@ describe('ZUFG8: handbook implementation behavior', function (): void {
             ->and(Document::ofType(DocumentCategory::HANDBOOK->value)->count())->toBe(1);
     });
 
-    test('ZUFG8-FR-HAND-011: first acknowledgment creates one append-only activity entry', function (): void {
+    test('ZUFG8-FR-HAND-011 + 89SRA-FR-LOG-001: acknowledgment uses SmartLogger as the sole audit entry point', function (): void {
         $admin = handbookCoverageAdmin();
         $handbook = Document::factory()->create(['type' => 'handbook', 'version' => 3, 'metadata' => ['target_audience' => 'all']]);
+        $captured = captureLogs();
 
         app(AcknowledgeHandbookAction::class)->execute($handbook, $admin);
 
-        expect(Activity::where('description', 'handbook_acknowledged')->where('subject_id', $handbook->id)->where('event', 'acknowledged')->count())->toBe(1);
+        $entry = Activity::where('description', 'handbook_acknowledged')->where('subject_id', $handbook->id)->first();
+
+        expect(Activity::where('description', 'handbook_acknowledged')->where('subject_id', $handbook->id)->where('event', 'acknowledged')->count())->toBe(1)
+            ->and($entry->causer_id)->toBe($admin->id)
+            ->and($entry->log_name)->toBe('Document')
+            ->and($entry->properties['payload']['user_id'])->toBe($admin->id)
+            ->and($entry->properties['payload']['version'])->toBe(3)
+            ->and($entry->properties['payload'])->toHaveKey('ip')
+            ->and($captured->firstWhere('message', 'handbook_acknowledged'))->toBeNull();
     });
 
     test('ZUFG8-FR-HAND-012: a newer handbook version is newer than an older acknowledgment', function (): void {
@@ -157,7 +166,7 @@ describe('ZUFG8: handbook implementation behavior', function (): void {
         app(AcknowledgeHandbookAction::class)->execute($handbook, $reader);
 
         $entry = Activity::where('description', 'handbook_acknowledged')->where('subject_id', $handbook->id)->firstOrFail();
-        expect($entry->properties['version'])->toBe(4);
+        expect($entry->properties['payload']['version'])->toBe(4);
     });
 
     test('ZUFG8-NFR-HAND-004: active handbook records remain selectable by the active scope', function (): void {

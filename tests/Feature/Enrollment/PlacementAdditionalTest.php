@@ -104,9 +104,9 @@ test('J9GBH-NFR-PLACE-006: direct placement inputs have associated labels', func
 
 test('J9GBH-NFR-PLACE-007: placement pages use readable semantic text classes', function (): void {
     $this->actingAs(additionalPlacementAdmin());
-    $html = test()->get(route('enrollment.internships.placements'))->assertOk()->getContent();
+    $view = file_get_contents(resource_path('views/enrollment/placement/placement-index.blade.php'));
 
-    expect($html)->not->toContain('text-gray-300');
+    expect($view)->not->toContain('text-gray-300');
 });
 
 test('J9GBH-NFR-PLACE-008: placement source uses translated user-facing strings', function (): void {

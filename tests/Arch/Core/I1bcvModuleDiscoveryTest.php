@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use App\Modules\Core\Support\ModuleManager;
 
 describe('I1BCV: module discovery registry', function (): void {
     test('I1BCV-FR-MOD-003: registry is filesystem-discovered and exposes the module list', function (): void {
@@ -77,10 +78,27 @@ describe('I1BCV: module discovery registry', function (): void {
         expect($source)->toContain('ModuleManager::names()')
             ->and($source)->toContain('ModuleManager::routeFilePath($module)')
             ->and($source)->toContain('file_exists($file)')
-            ->and(\App\Modules\Core\Support\ModuleManager::routeFilePath('Academic'))
+            ->and(ModuleManager::routeFilePath('Academic'))
             ->toBe(base_path('routes/web/academic.php'))
-            ->and(\App\Modules\Core\Support\ModuleManager::routeFilePath('SysAdmin'))
+            ->and(ModuleManager::routeFilePath('SysAdmin'))
             ->toBe(base_path('routes/web/sysadmin.php'));
+    });
+
+    test('I1BCV-FR-MOD-002: module roster changes require amendment evidence before registry synchronization', function (): void {
+        $spec = file_get_contents(base_path('docs/specs/I1BCV-module-discovery.md'));
+        $moduleIndex = file_get_contents(base_path('docs/refs/modules/index.md'));
+        $pestSource = file_get_contents(base_path('tests/Pest.php'));
+        $registeredModules = config('module.list');
+
+        expect($spec)->toContain('#### FR-MOD-002 — Amendment before rename')
+            ->toContain('governing-spec update + ADR')
+            ->toContain('config/module.php')
+            ->toContain('tests/Pest.php')
+            ->toContain('docs/refs/modules/index.md')
+            ->toContain('before any code is touched')
+            ->and($moduleIndex)->toContain('All 19 modules are vertical slices')
+            ->and($pestSource)->toContain('$dirs[] = $modulePath')
+            ->and($registeredModules)->toHaveCount(19);
     });
 
     test('I1BCV-FR-MOD-040: non-module support test directories are present and registered', function (): void {

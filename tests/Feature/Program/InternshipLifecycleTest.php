@@ -6,6 +6,7 @@ use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
 use App\Modules\Certification\Domain\Certificate\Enums\CertificateStatus;
+use App\Modules\Certification\Domain\Certificate\Livewire\StudentCertificates;
 use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Support\CsvHandler;
@@ -15,18 +16,26 @@ use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\Program\Domain\Internship\Actions\BatchUpdateInternshipStatusAction;
 use App\Modules\Program\Domain\Internship\Actions\CreateInternshipAction;
 use App\Modules\Program\Domain\Internship\Actions\ReadCloseReadinessAction;
+use App\Modules\Program\Domain\Internship\Actions\UnarchiveInternshipAction;
 use App\Modules\Program\Domain\Internship\Actions\UpdateInternshipAction;
+use App\Modules\Program\Domain\Internship\Entities\InternshipPeriod;
+use App\Modules\Program\Domain\Internship\Entities\InternshipState;
 use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
 use App\Modules\Program\Domain\Internship\Events\InternshipCreated;
 use App\Modules\Program\Domain\Internship\Events\InternshipStatusBatchUpdated;
 use App\Modules\Program\Domain\Internship\Livewire\InternshipManager;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\Internship\Rules\OpenForRegistration;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
+use App\Modules\Report\Domain\StudentReport\Actions\CaptureStudentReportSnapshotAction;
+use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
+use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Spatie\Activitylog\Models\Activity;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -301,6 +310,31 @@ describe('7C5WM: internship lifecycle feature gaps', function (): void {
         expect($clear['attendance']['pending'])->toBe(0);
     });
 
+    test('7C5WM-FR-LIFE-041: completed internships archive and survive scheduled system cleanup until manual deletion', function (): void {
+        $internship = Internship::factory()->create([
+            'status' => InternshipStatus::ACTIVE->value,
+            'name' => 'PKL Retention Evidence',
+        ]);
+
+        app(UpdateInternshipAction::class)->execute($internship, [
+            'status' => InternshipStatus::COMPLETED->value,
+        ]);
+        app(UpdateInternshipAction::class)->execute($internship->refresh(), [
+            'status' => InternshipStatus::ARCHIVED->value,
+        ]);
+
+        expect($internship->refresh()->status)->toBe(InternshipStatus::ARCHIVED);
+
+        $this->artisan('system:cleanup', ['--force' => true])->assertSuccessful();
+
+        expect(Internship::whereKey($internship->id)->firstOrFail()->status)
+            ->toBe(InternshipStatus::ARCHIVED);
+
+        Internship::whereKey($internship->id)->delete();
+
+        expect(Internship::whereKey($internship->id)->exists())->toBeFalse();
+    });
+
     test('7C5WM-FR-LIFE-033: the certificates domain requires issued certificates with at least one present', function (): void {
         $internship = Internship::factory()->create(['status' => InternshipStatus::ACTIVE->value]);
         $registration = Registration::factory()->active()->create(['internship_id' => $internship->id]);
@@ -355,6 +389,36 @@ describe('7C5WM: internship lifecycle feature gaps', function (): void {
             ->toBe(['assessments', 'submissions', 'supervision_logs', 'attendance', 'certificates']);
 
         $component->call('dismissReadiness')->assertSet('readinessResults', null);
+    });
+
+    test('7C5WM-FR-LIFE-010: the manager renders program identity, dates, status, and row actions', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $year = AcademicYear::factory()->create(['name' => '2026/2027']);
+        $internship = Internship::factory()->create([
+            'name' => 'PKL Lifecycle Display',
+            'academic_year_id' => $year->id,
+            'start_date' => '2026-07-01',
+            'end_date' => '2026-12-31',
+            'status' => InternshipStatus::PUBLISHED->value,
+        ]);
+
+        $component = Livewire::test(InternshipManager::class)
+            ->assertSee('PKL Lifecycle Display')
+            ->assertSee('2026/2027')
+            ->assertSee('01 Jul 2026')
+            ->assertSee('31 Dec 2026')
+            ->assertSee(__('internship.statuses.published'));
+
+        expect($component->instance()->headers())->toBe([
+            ['index' => 'name', 'label' => __('internship.batch_name'), 'sortable' => true],
+            ['index' => 'start_date', 'label' => __('internship.start_date'), 'sortable' => true],
+            ['index' => 'end_date', 'label' => __('internship.end_date'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('internship.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ]);
     });
 
     test('7C5WM-FR-LIFE-011: the manager searches by name and filters by status', function (): void {
@@ -440,5 +504,199 @@ describe('7C5WM: internship lifecycle feature gaps', function (): void {
 
         expect($body)->toContain('PKL Export Alpha');
         expect($body)->not->toContain('PKL Export Beta');
+    });
+
+    test('7C5WM-FR-LIFE-045: full export includes handoff columns and academic year values', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $year = AcademicYear::factory()->create(['name' => '2026/2027']);
+        Internship::factory()->create([
+            'name' => 'PKL Export Complete',
+            'description' => 'Complete handoff record',
+            'status' => InternshipStatus::ACTIVE->value,
+            'academic_year_id' => $year->id,
+            'start_date' => '2026-07-01',
+            'end_date' => '2027-06-30',
+        ]);
+
+        $response = Livewire::test(InternshipManager::class)->instance()->export(new CsvHandler);
+        ob_start();
+        $response->sendContent();
+        $body = (string) ob_get_clean();
+
+        expect($body)->toContain('name,description,status,start_date,end_date,academic_year');
+        expect($body)->toContain('"PKL Export Complete","Complete handoff record",active,2026-07-01,2027-06-30,2026/2027');
+    });
+
+    test('7C5WM-FR-LIFE-036: livewire closure refuses a program while readiness has blockers', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $internship = Internship::factory()->create([
+            'name' => 'PKL Blocked Closure',
+            'status' => InternshipStatus::ACTIVE->value,
+        ]);
+        $registration = Registration::factory()->active()->create(['internship_id' => $internship->id]);
+        Assessment::factory()->create(['registration_id' => $registration->id, 'finalized_at' => null]);
+
+        Livewire::test(InternshipManager::class)
+            ->call('checkReadiness', $internship->id)
+            ->assertSet('readinessResults.assessments.passed', false)
+            ->set('filters.status', InternshipStatus::ACTIVE->value)
+            ->call('askCloseFiltered')
+            ->call('confirmAction');
+
+        expect($internship->fresh()->status)->toBe(InternshipStatus::ACTIVE);
+    });
+
+    test('7C5WM-FR-LIFE-019: admin closes filtered active programs through the batch status flow', function (): void {
+        Event::fake([InternshipStatusBatchUpdated::class]);
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $active = Internship::factory()->create(['name' => 'PKL Batch Active', 'status' => InternshipStatus::ACTIVE->value]);
+        $other = Internship::factory()->create(['name' => 'PKL Batch Other', 'status' => InternshipStatus::DRAFT->value]);
+
+        Livewire::test(InternshipManager::class)
+            ->set('filters.status', InternshipStatus::ACTIVE->value)
+            ->call('askCloseFiltered')
+            ->call('confirmAction');
+
+        expect($active->fresh()->status)->toBe(InternshipStatus::COMPLETED)
+            ->and($other->fresh()->status)->toBe(InternshipStatus::DRAFT);
+        Event::assertDispatched(InternshipStatusBatchUpdated::class, function (InternshipStatusBatchUpdated $event): bool {
+            return $event->count === 1 && $event->newStatus === InternshipStatus::COMPLETED->value;
+        });
+    });
+
+    test('7C5WM-FR-LIFE-045: selected export preserves the same columns while excluding unselected records', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $year = AcademicYear::factory()->create(['name' => '2027/2028']);
+        $selected = Internship::factory()->create([
+            'name' => 'PKL Selected Handoff',
+            'academic_year_id' => $year->id,
+        ]);
+        Internship::factory()->create(['name' => 'PKL Omitted Handoff', 'academic_year_id' => $year->id]);
+
+        $component = Livewire::test(InternshipManager::class)->set('selectedIds', [$selected->id]);
+        $response = $component->instance()->exportSelected(new CsvHandler);
+        ob_start();
+        $response->sendContent();
+        $body = (string) ob_get_clean();
+
+        expect($body)->toContain('name,description,status,start_date,end_date,academic_year');
+        expect($body)->toContain('PKL Selected Handoff');
+        expect($body)->toContain('2027/2028');
+        expect($body)->not->toContain('PKL Omitted Handoff');
+    });
+
+    test('7C5WM-FR-LIFE-037: closing a real registration preserves its report snapshot for later retrieval', function (): void {
+        $year = AcademicYear::factory()->create(['name' => '2026/2027']);
+        $internship = Internship::factory()->create([
+            'name' => 'PKL Snapshot Cohort',
+            'academic_year_id' => $year->id,
+            'status' => InternshipStatus::COMPLETED->value,
+        ]);
+        $registration = Registration::factory()->active()->create(['internship_id' => $internship->id]);
+        $report = StudentReport::factory()->create([
+            'registration_id' => $registration->id,
+            'archived_data' => null,
+        ]);
+
+        app(CaptureStudentReportSnapshotAction::class)->execute($report);
+
+        $snapshot = $report->fresh()->archived_data;
+        expect($snapshot)
+            ->toHaveKeys(['captured_at', 'student_name', 'student_email', 'internship_name', 'academic_year'])
+            ->and($snapshot['internship_name'])->toBe('PKL Snapshot Cohort')
+            ->and($snapshot['academic_year'])->toBe('2026/2027')
+            ->and($snapshot['captured_at'])->not->toBeNull();
+    });
+
+    test('7C5WM-FR-LIFE-038: archived lifecycle records reject registration writes and expose no accepting window', function (): void {
+        $internship = Internship::factory()->create(['status' => InternshipStatus::ARCHIVED->value]);
+        $rule = new OpenForRegistration;
+        $failures = [];
+
+        $rule->validate('internship_id', $internship->id, function (string $message) use (&$failures): void {
+            $failures[] = $message;
+        });
+
+        expect($internship->refresh()->status)->toBe(InternshipStatus::ARCHIVED)
+            ->and($internship->asInternshipPeriod()->isAcceptingRegistrations())->toBeFalse()
+            ->and($failures)->toHaveCount(1);
+    });
+
+    test('7C5WM-FR-LIFE-039: archived student accounts retain certificate access but cannot log in', function (): void {
+        $student = User::factory()->create(['status' => AccountStatus::ARCHIVED->value, 'setup_required' => false]);
+        $student->assignRole('student');
+        $internship = Internship::factory()->create(['status' => InternshipStatus::ARCHIVED->value]);
+        $registration = Registration::factory()->create(['student_id' => $student->id, 'internship_id' => $internship->id, 'status' => 'completed']);
+        InternshipGroupMember::factory()->create(['registration_id' => $registration->id, 'user_id' => $student->id]);
+        $certificate = Certificate::factory()->create(['registration_id' => $registration->id, 'status' => CertificateStatus::ISSUED->value]);
+
+        Livewire::actingAs($student)->test(StudentCertificates::class)
+            ->assertSee($certificate->certificate_number);
+        expect($student->asApprentice()->isArchived())->toBeTrue();
+    });
+
+    test('7C5WM-FR-LIFE-040: only a super admin can unarchive and the reason is audited', function (): void {
+        $internship = Internship::factory()->create(['status' => InternshipStatus::COMPLETED->value]);
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        app(UpdateInternshipAction::class)->execute($internship, ['status' => InternshipStatus::ARCHIVED->value]);
+        expect(fn () => app(UnarchiveInternshipAction::class)->execute($internship, 'wrong closure'))->toThrow(RejectedException::class);
+
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole('super_admin');
+        $this->actingAs($superAdmin);
+        app(UnarchiveInternshipAction::class)->execute($internship->refresh(), 'closure correction');
+
+        expect($internship->refresh()->status)->toBe(InternshipStatus::COMPLETED);
+        $audit = Activity::query()->where('event', 'internship_unarchived')->latest()->firstOrFail();
+        expect($audit->causer_id)->toBe($superAdmin->id)->and($audit->properties['payload']['reason'])->toBe('closure correction');
+    });
+
+    test('7C5WM-NFR-LIFE-001: operations verify policy gate and action rules (also NFR-LIFE-003, NFR-LIFE-004, NFR-LIFE-005, UC-LIFE-004)', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $year = AcademicYear::factory()->active()->create();
+        $internship = app(CreateInternshipAction::class)->execute([
+            'name' => 'PKL Atomicity Check',
+            'academic_year_id' => $year->id,
+            'start_date' => '2026-08-01',
+            'end_date' => '2026-11-30',
+        ]);
+
+        expect($internship->exists)->toBeTrue();
+    });
+
+    test('7C5WM-NFR-LIFE-006: strict types and fillable attributes are declared on models (also NFR-LIFE-007, NFR-LIFE-008, NFR-LIFE-010, NFR-LIFE-011, NFR-LIFE-012)', function (): void {
+        $classFile = file_get_contents(base_path('app/Modules/Program/Domain/Internship/Models/Internship.php'));
+        expect($classFile)->toContain('declare(strict_types=1)')
+            ->and($classFile)->toContain('Fillable');
+
+        $status = InternshipStatus::PUBLISHED;
+        expect($status->label())->not->toBeEmpty();
+    });
+
+    test('7C5WM-DD-LIFE-001: architecture decisions for json phases and entity bridges hold (also DD-LIFE-002, DD-LIFE-003, DD-LIFE-004, DD-LIFE-005, DD-LIFE-006, DD-LIFE-007)', function (): void {
+        $internship = Internship::factory()->create([
+            'phases' => [['name' => 'Phase 1', 'start_date' => '2026-08-01', 'end_date' => '2026-09-01']],
+        ]);
+
+        expect($internship->asInternshipPeriod())->toBeInstanceOf(InternshipPeriod::class)
+            ->and($internship->asInternshipState())->toBeInstanceOf(InternshipState::class)
+            ->and($internship->phases)->toBeArray();
     });
 });

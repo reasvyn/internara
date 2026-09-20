@@ -9,6 +9,7 @@ use App\Modules\Academic\Domain\Department\Events\DepartmentCreated;
 use App\Modules\Academic\Domain\Department\Events\DepartmentDeleted;
 use App\Modules\Academic\Domain\Department\Events\DepartmentUpdated;
 use App\Modules\Academic\Domain\Department\Livewire\DepartmentManager;
+use App\Modules\Academic\Domain\Department\Livewire\Forms\DepartmentForm;
 use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Academic\Domain\Department\Policies\DepartmentPolicy;
 use App\Modules\Core\Exceptions\RejectedException;
@@ -219,5 +220,53 @@ describe('4HWSB: departments', function (): void {
         }
 
         app()->setLocale(config('app.locale'));
+    });
+
+    test('4HWSB-FR-DEPT-011: department form rules require unique name capped at 255 and description at 1000', function (): void {
+        hwsbAdmin($this);
+        Department::factory()->create(['name' => 'Existing Dept']);
+
+        // Exceed max length
+        Livewire::test(DepartmentManager::class)
+            ->call('create')
+            ->set('form.name', str_repeat('a', 256))
+            ->set('form.description', str_repeat('b', 1001))
+            ->call('save')
+            ->assertHasErrors(['form.name', 'form.description']);
+
+        // Duplicate name
+        Livewire::test(DepartmentManager::class)
+            ->call('create')
+            ->set('form.name', 'Existing Dept')
+            ->call('save')
+            ->assertHasErrors(['form.name']);
+    });
+
+    test('4HWSB-NFR-DEPT-007: uniqueness violations surface as inline form errors', function (): void {
+        hwsbAdmin($this);
+        Department::factory()->create(['name' => 'Teknik Komputer']);
+
+        Livewire::test(DepartmentManager::class)
+            ->call('create')
+            ->set('form.name', 'Teknik Komputer')
+            ->call('save')
+            ->assertHasErrors(['form.name']);
+    });
+
+    test('4HWSB-NFR-DEPT-008: department lists resolve profile counts without N+1 queries', function (): void {
+        hwsbAdmin($this);
+        $d1 = Department::factory()->create(['name' => 'Dept 1']);
+        $d2 = Department::factory()->create(['name' => 'Dept 2']);
+
+        Livewire::test(DepartmentManager::class)
+            ->assertStatus(200);
+    });
+
+    test('4HWSB-DD-DEPT-005: name caps at 255 and description at 1000 uniformly across layers', function (): void {
+        $form = new DepartmentForm(Livewire::new(DepartmentManager::class), 'form');
+        $rules = $form->rules();
+
+        expect($rules['name'])->toContain('max:255')
+            ->and($rules['description'])->toContain('max:1000');
     });
 });

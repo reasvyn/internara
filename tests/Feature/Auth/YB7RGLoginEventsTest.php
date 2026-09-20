@@ -6,6 +6,7 @@ use App\Modules\Auth\Domain\Login\Actions\LoginAction;
 use App\Modules\Auth\Domain\Login\Data\LoginData;
 use App\Modules\Auth\Domain\Login\Events\LoginFailed;
 use App\Modules\Auth\Domain\Login\Events\LoginSucceeded;
+use App\Modules\Auth\Domain\Login\Listeners\LogLoginFailed;
 use App\Modules\Auth\Domain\Login\Listeners\SendRoleWelcomeNotification;
 use App\Modules\Core\Channels\Data\NotificationData;
 use App\Modules\Core\Contracts\SendsNotifications;
@@ -92,6 +93,37 @@ describe('YB7RG: login identity, events and logging', function (): void {
         $listener->handle(new LoginSucceeded($user->fresh(), $user->email));
 
         expect($sent->calls)->toHaveCount(1);
+    });
+
+    test('YB7RG-FR-AUTH-017: failed-login listener masks the identifier in the system audit record', function (): void {
+        $captured = captureLogs();
+        $identifier = 'budi.santoso@example.sch.id';
+
+        (new LogLoginFailed)->handle(new LoginFailed($identifier, 'invalid_password'));
+
+        $record = $captured->firstWhere('message', 'login_failed');
+
+        expect($record)->not->toBeNull()
+            ->and($record->context['payload']['identifier'])->toContain('***')
+            ->and($record->context['payload']['identifier'])->not->toContain('budi.santoso')
+            ->and($record->context['payload']['reason'])->toBe('invalid_password');
+    });
+
+    test('YB7RG-FR-AUTH-016 + YB7RG-FR-AUTH-017: failed login event reaches masked logging with its reason', function (): void {
+        $captured = captureLogs();
+        $user = User::factory()->withPassword('secret-123')->create();
+        $identifier = $user->email;
+
+        try {
+            app(LoginAction::class)->execute(new LoginData(identifier: $identifier, password: 'wrong-password'));
+        } catch (RejectedException) {
+        }
+
+        $record = $captured->firstWhere('message', 'login_failed');
+
+        expect($record)->not->toBeNull()
+            ->and($record->context['payload']['identifier'])->not->toContain($identifier)
+            ->and($record->context['payload']['reason'])->toBe('invalid_password');
     });
 
     test('YB7RG-FR-AUTH-020: login success is recorded with the user as subject', function (): void {

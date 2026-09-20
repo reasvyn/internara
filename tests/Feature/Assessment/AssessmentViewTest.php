@@ -7,6 +7,7 @@ use App\Modules\Assessment\Livewire\AssessmentGrading;
 use App\Modules\Assessment\Livewire\AssessmentView;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Models\User;
@@ -88,6 +89,45 @@ describe('ARDA6 assessment views', function (): void {
             ->and($component->instance()->assessmentId)->toBe($assessment->id);
     });
 
+    test('ARDA6-UC-ASM-003 FR-ASM-013: coordinator auto-imports attendance and lifecycle sub-scores through grading', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $registration = Registration::factory()->create();
+        $rubric = Rubric::factory()->create([
+            'internship_id' => $registration->internship_id,
+            'structure' => viewRubricStructure(),
+        ]);
+        $assessment = Assessment::factory()->create([
+            'registration_id' => $registration->id,
+            'rubric_id' => $rubric->id,
+            'scores_data' => ['competencies' => ['competency-one' => ['indicators' => ['indicator-one' => 15]]]],
+        ]);
+        Attendance::factory()->count(2)->create([
+            'registration_id' => $registration->id,
+            'status' => 'present',
+        ]);
+        Attendance::factory()->create([
+            'registration_id' => $registration->id,
+            'status' => 'absent',
+        ]);
+
+        $component = Livewire::actingAs($admin)->test(AssessmentGrading::class, ['registrationId' => $registration->id]);
+        $component->call('autoImport');
+
+        expect($assessment->fresh()->scores_data)
+            ->toMatchArray([
+                'competencies' => ['competency-one' => ['indicators' => ['indicator-one' => 15]]],
+            ])
+            ->and($assessment->fresh()->scores_data['auto']['attendance_rate'])->toBe(66.7)
+            ->and($assessment->fresh()->scores_data['auto'])->toHaveKeys([
+                'avg_submission_score',
+                'logbook_completeness',
+                'supervision_completeness',
+                'monitoring_visit_completeness',
+                'report_score',
+            ]);
+    });
+
     test('ARDA6-FR-ASM-010 FR-ASM-018 NFR-ASM-003: finalized grading ignores score updates and auto import', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -99,7 +139,7 @@ describe('ARDA6 assessment views', function (): void {
         $assessment = Assessment::factory()->finalized()->create(['registration_id' => $registration->id, 'rubric_id' => $rubric->id, 'scores_data' => ['competencies' => []]]);
 
         $component = Livewire::actingAs($admin)->test(AssessmentGrading::class, ['registrationId' => $registration->id]);
-        $component->call('updatedScores', 18, 'competency-one.indicator-one');
+        $component->set('scores.competency-one.indicator-one', 18);
         $component->call('autoImport');
 
         expect($assessment->fresh()->scores_data)->toBe(['competencies' => []]);

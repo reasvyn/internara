@@ -12,6 +12,7 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Setting\Actions\SetSettingAction;
 use App\Modules\Setting\Actions\TestMailSettingsAction;
 use App\Modules\Setting\Data\SettingData;
+use App\Modules\Setting\Services\Settings;
 use App\Modules\User\Domain\Notify\TestMailNotification;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -92,13 +93,13 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
         $action = app(SetSettingAction::class);
         $action->execute(new SettingData(key: 'zt6vs.probe_flag', value: 'v1', group: 'zt6vs'));
 
-        Setting::all();
+        Settings::all();
         expect(Cache::get(config('cache-keys.settings_all')))->not->toBeNull();
 
         $action->execute(new SettingData(key: 'zt6vs.probe_flag', value: 'v2', group: 'zt6vs'));
 
         expect(Cache::get(config('cache-keys.settings_all')))->toBeNull()
-            ->and(Setting::all()->get('zt6vs.probe_flag'))->toBe('v2')
+            ->and(Settings::all()->get('zt6vs.probe_flag'))->toBe('v2')
             ->and(setting('zt6vs.probe_flag'))->toBe('v2');
     });
 
@@ -326,13 +327,13 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
     });
 
     test('ZT6VS-NFR-CORE-004: cache miss falls through to fresh database data', function (): void {
-        $warm = Setting::all();
+        $warm = Settings::all();
 
         expect($warm->isNotEmpty())->toBeTrue();
 
         Cache::flush();
 
-        $fresh = Setting::all();
+        $fresh = Settings::all();
 
         expect($fresh->isNotEmpty())->toBeTrue()
             ->and($fresh->toArray())->toBe($warm->toArray())
@@ -342,7 +343,7 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
     test('ZT6VS-UC-CORE-006: setting reads survive a cold cache without user-facing errors', function (): void {
         Cache::flush();
 
-        expect(Setting::all()->isNotEmpty())->toBeTrue()
+        expect(Settings::all()->isNotEmpty())->toBeTrue()
             ->and(setting('setup.is_installed'))->not->toBeNull();
     });
 

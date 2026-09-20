@@ -108,7 +108,7 @@ describe('PKYX6: document templates and report', function (): void {
             'parameters' => [],
         ]);
 
-        expect($report->file_path)->toStartWith('report/')
+        expect($report->file_path)->toStartWith('reports/')
             ->and(Storage::disk('local')->exists($report->file_path))->toBeTrue();
     });
 
@@ -131,7 +131,7 @@ describe('PKYX6: document templates and report', function (): void {
 
         expect($report->file_path)->not->toContain('/app')
             ->and($report->file_path)->not->toContain(base_path())
-            ->and($report->file_path)->toStartWith('report/');
+            ->and($report->file_path)->toStartWith('reports/');
     });
 
     test('PKYX6-FR-DOC-024: template and report actions share the layer bases with strict types', function (): void {

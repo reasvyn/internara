@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Assignment\Events\AssignmentPublished;
+use App\Modules\Assignment\Listeners\NotifyOnAssignmentPublished;
 use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Assignment\Notifications\AssignmentNotification;
 use App\Modules\Auth\Domain\Login\Events\LoginSucceeded;
@@ -12,6 +13,7 @@ use App\Modules\Auth\Notifications\CredentialChangedNotification;
 use App\Modules\Core\Channels\CustomDatabaseChannel;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
 use App\Modules\Incident\Domain\IncidentReport\Notifications\IncidentReportedNotification;
+use App\Modules\Program\Domain\Internship\Listeners\NotifyAdminsInternshipCreated;
 use App\Modules\Program\Notifications\RegistrationNotification;
 use App\Modules\SysAdmin\Domain\Announcement\Notifications\AnnouncementNotification;
 use App\Modules\User\Domain\AccountStatus\Notifications\AccountStatusNotification;
