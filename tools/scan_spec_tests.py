@@ -144,6 +144,63 @@ def is_non_testable(req_id: str) -> bool:
     return False
 
 
+def classify_required_layers(
+    req_id: str,
+    line_text: str,
+    spec_file: Path | None = None,
+) -> set[str]:
+    """Infer the minimum test layers from the requirement's declared behavior.
+
+    The scanner is intentionally conservative: feature is the default for executable
+    application behavior, while unit/arch/browser are added only when the requirement
+    names the corresponding boundary. This is guidance, not a substitute for review.
+    """
+    text = f"{req_id} {line_text} {(spec_file.name if spec_file else '')}".lower()
+    layers: set[str] = set()
+
+    architecture_terms = (
+        "architecture", "module boundary", "dependency rule", "contract",
+        "must not import", "directory structure", "auto-discover", "class contract",
+    )
+    unit_terms = (
+        "entity", "dto", "data transfer", "enum", "state transition", "value object",
+        "pure function", "business rule", "policy", "authorization rule", "formatter",
+    )
+    browser_terms = (
+        "critical user journey", "theme persistence", "browser", "responsive", "visual",
+        "keyboard", "screen reader", "landing page", "user interface", "ui layout",
+    )
+    feature_terms = (
+        "action", "workflow", "process", "command", "livewire", "console", "route",
+        "database", "persist", "create", "update", "delete", "upload", "notification",
+        "queue", "event", "report", "api",
+    )
+
+    if any(term in text for term in architecture_terms) or req_id.startswith("DD-"):
+        layers.add("arch")
+    if any(term in text for term in unit_terms):
+        layers.add("unit")
+    if any(term in text for term in browser_terms) or is_ui_requirement(req_id, spec_file, line_text):
+        layers.add("browser")
+    if any(term in text for term in feature_terms):
+        layers.add("feature")
+
+    # Executable requirements without a stronger signal belong in feature tests.
+    if not layers:
+        layers.add("feature")
+    return layers
+
+
+def test_layer(path: Path, browser_files: set[Path]) -> str:
+    """Return the scanner layer represented by a test path."""
+    if path in browser_files or "Browser" in path.parts:
+        return "browser"
+    for layer in ("Arch", "Unit", "Feature"):
+        if layer in path.parts:
+            return layer.lower()
+    return "unknown"
+
+
 def is_ui_requirement(req_id: str, spec_file: Path | None = None, line_text: str | None = None) -> bool:
     """
     Heuristic: UI/client-side requirements are those whose spec or ID
@@ -647,6 +704,7 @@ def main() -> None:
     # ─── Build maps ───────────────────────────────────────────────────
     spec_id_to_file: dict[str, Path] = {}
     req_to_specs: dict[str, list[tuple[Path, int]]] = {}
+    req_to_layers: dict[str, set[str]] = {}
     spec_req_counts: dict[Path, int] = {}
     spec_ids_in_specs: set[str] = set()
 
@@ -665,6 +723,10 @@ def main() -> None:
                 non_testable_entries.append((sf, req_id, line))
             else:
                 req_to_specs.setdefault(req_id, []).append((sf, line))
+                row = read_file(sf).splitlines()[line - 1]
+                req_to_layers.setdefault(req_id, set()).update(
+                    classify_required_layers(req_id, row, sf)
+                )
 
     all_spec_reqs: set[str] = set(req_to_specs.keys())
 
@@ -674,6 +736,7 @@ def main() -> None:
     spec_ref_in_tests: set[str] = set()
     browser_req_set: set[str] = set()
     req_to_browser: dict[str, list[tuple[Path, int]]] = {}
+    req_to_test_layers: dict[str, set[str]] = {}
 
     all_test_files = test_files + browser_files
     for tf in all_test_files:
@@ -684,6 +747,8 @@ def main() -> None:
                 continue
             req_to_tests.setdefault(req_id, []).append((tf, line))
             test_req_set.add(req_id)
+            layer = test_layer(tf, set(browser_files))
+            req_to_test_layers.setdefault(req_id, set()).add(layer)
             if tf in browser_files:
                 browser_req_set.add(req_id)
                 req_to_browser.setdefault(req_id, []).append((tf, line))
@@ -748,6 +813,34 @@ def main() -> None:
             suggestion=suggestion,
             reference="docs/guides/arch/testing-pattern.md" if not is_ui else "docs/guides/infra/testing.md#browser-tests",
             context={"requirement": req_id, "spec": spec_file.name, "priority": priority, "is_ui": is_ui},
+        ))
+
+    # ─── Rule: SPEC_TEST_LAYER_MISSING ──────────────────────────────
+    # A requirement can be traceable yet still be tested at the wrong boundary.
+    for req_id in sorted(all_spec_reqs):
+        required = req_to_layers.get(req_id, {"feature"})
+        covered_layers = req_to_test_layers.get(req_id, set())
+        missing_layers = sorted(required - covered_layers)
+        if not missing_layers:
+            continue
+        spec_file, line = req_to_specs[req_id][0]
+        rel = relative_path(spec_file)
+        findings.append(Finding(
+            id="SPEC-0000",
+            rule="SPEC_TEST_LAYER_MISSING",
+            severity="medium" if req_id in test_req_set else "high",
+            category="convention",
+            file=rel,
+            line=line,
+            message=f"Requirement {req_id} needs {', '.join(missing_layers)} test layer(s); covered by {', '.join(sorted(covered_layers)) or 'none'}",
+            suggestion=f"Add a traceable test under tests/{missing_layers[0].title()}/ for {req_id}",
+            reference="docs/guides/arch/testing-pattern.md",
+            context={
+                "requirement": req_id,
+                "required_layers": sorted(required),
+                "covered_layers": sorted(covered_layers),
+                "missing_layers": missing_layers,
+            },
         ))
 
     # ─── Rule: SPEC_TEST_ORPHAN ─────────────────────────────────────
@@ -842,6 +935,15 @@ def main() -> None:
         non_testable_reqs=len(non_testable_reqs),
     )
     module_breakdown = calculate_module_breakdown(spec_files, req_to_specs, test_req_set)
+    layer_breakdown: dict[str, dict[str, int]] = {}
+    for req_id in sorted(all_spec_reqs):
+        for layer in sorted(req_to_layers.get(req_id, {"feature"})):
+            stats = layer_breakdown.setdefault(layer, {"required": 0, "covered": 0, "missing": 0})
+            stats["required"] += 1
+            if layer in req_to_test_layers.get(req_id, set()):
+                stats["covered"] += 1
+            else:
+                stats["missing"] += 1
     # Prioritize modules by uncovered count (high-impact first)
     top_gaps = sorted(
         [(mod, s) for mod, s in module_breakdown.items() if s["uncovered"] > 0],
@@ -863,6 +965,7 @@ def main() -> None:
         "specs_without_tests": sum(1 for f in findings if f.rule == "SPEC_TEST_MISSING_FILE"),
         "coverage": coverage,
         "module_breakdown": module_breakdown,
+        "layer_breakdown": layer_breakdown,
         "top_gaps": [{"module": m, **s} for m, s in top_gaps],
     }
     total_checks = len(all_spec_reqs) + len([sf for sf in spec_files if spec_req_counts.get(sf, 0) > 0])
@@ -881,6 +984,12 @@ def main() -> None:
             print(f"\n  Top spec gaps by module (high-impact first):")
             for mod, stats in top_gaps:
                 print(f"    {mod:<15} {stats['uncovered']} uncovered / {stats['total']} total ({stats['coverage']}% {stats['grade']})")
+        if layer_breakdown:
+            print(f"\n  Required test layers:")
+            for layer in ("arch", "unit", "feature", "browser"):
+                stats = layer_breakdown.get(layer)
+                if stats:
+                    print(f"    {layer:<8} {stats['missing']} missing / {stats['required']} required ({stats['covered']} covered)")
         # Show top 5 uncovered critical/high priority
         critical_uncovered = [r for r in scored_uncovered if get_requirement_priority(r)[0] in ("critical", "high")][:5]
         if critical_uncovered:

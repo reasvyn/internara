@@ -173,6 +173,7 @@ Critical user journeys are verified with `puppeteer-core` (reuses system Chrome,
 - **Run:** `npm run test:browser` = `node --test tests/Browser/`.
 - **When:** login, navigation (`/dashboard` → role dashboard), theme persistence, sidebar, dashboard widgets.
 - **Tracer:** same FR/NFR/UC prefix as other layers; group under `describe("Browser: ...")`.
+- **Scanner:** `scan_spec_tests.py` classifies each requirement's expected layer (`Arch`, `Unit`, `Feature`, or `Browser`) and reports `SPEC_TEST_LAYER_MISSING` when a traceable test exists at the wrong layer or a required layer is absent. The JSON report includes `metadata.layer_breakdown`.
 - **CI:** not in default `pint`/`pest` gates; run on-demand for UI regressions (e.g., `internara.web.id` 502/500 after deploy).
 
 ---

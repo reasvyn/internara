@@ -18,7 +18,7 @@ Hard rules. Violations are architecture violations.
 
 4. **Scope isolation — one file, one scope.** Do not combine multiple distinct testing scopes into a single test file. Group the tests of one requirement area in one file. Never split a single requirement's tests across files unless it spans distinct layers.
 
-5. **Layer-by-layer entry points.** Test exactly the layer(s) the requirement touches, nothing more. Enum/Entity/DTO/Policy → unit test. Action/Livewire/Console → feature test. Critical user journeys (login, navigation, dashboard) → browser test (`tests/Browser` via `puppeteer-core`).
+5. **Layer-by-layer entry points.** Test exactly the layer(s) the requirement touches, nothing more. Enum/Entity/DTO/Policy → unit test. Action/Livewire/Console → feature test. Critical user journeys (login, navigation, dashboard) → browser test (`tests/Browser` via `puppeteer-core`). `scan_spec_tests.py` reports `SPEC_TEST_LAYER_MISSING` when a requirement is traceable but lacks one of its inferred layer tests; the JSON metadata exposes `layer_breakdown` for arch/unit/feature/browser triage.
 
 6. **LazilyRefreshDatabase preferred.** Use `LazilyRefreshDatabase` (not `RefreshDatabase`) for all feature tests. Entity tests NEVER touch the database.
 
