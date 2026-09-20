@@ -22,7 +22,7 @@ use Spatie\Activitylog\Models\Activity;
 uses(LazilyRefreshDatabase::class);
 
 describe('IT0OE: internship group actions', function (): void {
-    test('IT0OE-UC-GROUP-001: admin creates a group with and without a placement', function (): void {
+    test('IT0OE-UC-GROUP-001/IT0OE-FR-GROUP-001: admin creates a group with and without a placement', function (): void {
         $internship = Internship::factory()->create();
         $placement = Placement::factory()->create(['internship_id' => $internship->id]);
 
@@ -46,7 +46,7 @@ describe('IT0OE: internship group actions', function (): void {
             ->and(InternshipGroup::where('name', 'Kelompok B')->exists())->toBeTrue();
     });
 
-    test('IT0OE-FR-GROUP-002: group belongs to its internship and placement links stay nullable', function (): void {
+    test('IT0OE-FR-GROUP-002/IT0OE-FR-GROUP-003: group belongs to its internship and placement links stay nullable', function (): void {
         $internship = Internship::factory()->create();
         $placement = Placement::factory()->create(['internship_id' => $internship->id]);
 
@@ -65,7 +65,7 @@ describe('IT0OE: internship group actions', function (): void {
         expect(InternshipGroup::where('id', $groupId)->exists())->toBeFalse();
     });
 
-    test('IT0OE-FR-GROUP-008: update persists renamed group fields', function (): void {
+    test('IT0OE-FR-GROUP-008/IT0OE-FR-GROUP-007: update persists renamed group fields', function (): void {
         $group = InternshipGroup::factory()->create(['name' => 'Old name']);
 
         $updated = app(UpdateInternshipGroupAction::class)->execute($group, [
@@ -116,7 +116,7 @@ describe('IT0OE: internship group actions', function (): void {
         expect(InternshipGroup::where('id', $empty->id)->exists())->toBeFalse();
     });
 
-    test('IT0OE-FR-GROUP-016: single student add stores the registration reference and join timestamp', function (): void {
+    test('IT0OE-FR-GROUP-016/IT0OE-FR-GROUP-017: single student add stores the registration reference and join timestamp', function (): void {
         $group = InternshipGroup::factory()->create();
         $registration = Registration::factory()->create();
         $before = now()->subSecond();
@@ -167,7 +167,7 @@ describe('IT0OE: internship group actions', function (): void {
             ->and(Activity::where('event', 'internship_group_member_removed')->exists())->toBeTrue();
     });
 
-    test('IT0OE-FR-GROUP-021: batch add writes every row in one go and report the count', function (): void {
+    test('IT0OE-FR-GROUP-021/IT0OE-FR-GROUP-024: batch add writes every row in one go and report the count', function (): void {
         $group = InternshipGroup::factory()->create();
         $registrations = Registration::factory()->count(3)->create();
 
@@ -179,7 +179,7 @@ describe('IT0OE: internship group actions', function (): void {
             ->and($group->members()->count())->toBe(3);
     });
 
-    test('IT0OE-FR-GROUP-023: a duplicate row inside the batch rolls the whole batch back', function (): void {
+    test('IT0OE-FR-GROUP-023/IT0OE-NFR-GROUP-002: a duplicate row inside the batch rolls the whole batch back', function (): void {
         $group = InternshipGroup::factory()->create();
         $registration = Registration::factory()->create();
         $other = Registration::factory()->create();
@@ -198,7 +198,7 @@ describe('IT0OE: internship group actions', function (): void {
         expect($group->members()->count())->toBe(0);
     });
 
-    test('IT0OE-NFR-GROUP-001: duplicate group-plus-registration pairs are refused at the database', function (): void {
+    test('IT0OE-NFR-GROUP-001/IT0OE-FR-GROUP-003: duplicate group-plus-registration pairs are refused at the database', function (): void {
         $group = InternshipGroup::factory()->create();
         $registration = Registration::factory()->create();
         app(AddMemberToGroupAction::class)->execute($group, [
