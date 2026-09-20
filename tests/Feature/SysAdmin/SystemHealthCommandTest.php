@@ -28,7 +28,7 @@ describe('J68GZ and E1MSJ: system health command', function (): void {
         }
     });
 
-    test('J68GZ-FR-SYS-031: health output covers fifteen subsystem checks', function (): void {
+    test('J68GZ-FR-SYS-001/002/031: health output covers fifteen subsystem checks', function (): void {
         [$exit, $output] = runHealth(true);
         $rows = json_decode(trim($output), true);
 
