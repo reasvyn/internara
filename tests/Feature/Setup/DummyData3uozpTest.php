@@ -16,6 +16,7 @@ use App\Modules\User\Models\User;
 use Database\Seeders\AcademicYearSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\Support\DummyData;
 
@@ -95,6 +96,20 @@ describe('3UOZP: dummy dataset', function (): void {
         expect(EvaluationForm::with(['sections', 'questions'])->first())->not->toBeNull();
         expect(Announcement::query()->distinct()->pluck('status')->count())->toBeGreaterThanOrEqual(1);
         expect(Announcement::count())->toBeGreaterThan(0);
+    });
+
+    test('3UOZP-UC-SEED-001, 3UOZP-FR-SEED-021/025/028/029/030/031/033: creates a coherent demo dataset with reusable base data', function (): void {
+        DummyData::make()->run();
+
+        expect(DB::table('users')->where('email', 'superadmin@example.com')->exists())->toBeFalse()
+            ->and(DB::table('users')->where('email', 'admin@example.com')->exists())->toBeTrue()
+            ->and(DB::table('partnerships')->count())->toBeGreaterThanOrEqual(1)
+            ->and(DB::table('profiles')->count())->toBe(DB::table('users')->count())
+            ->and(DB::table('registrations')->whereNotNull('placement_id')->count())->toBeGreaterThan(0)
+            ->and(DB::table('internship_groups')->count())->toBeGreaterThanOrEqual(3)
+            ->and(DB::table('rubrics')->count())->toBeGreaterThan(0)
+            ->and(DB::table('assignments')->where('status', 'published')->count())->toBeGreaterThanOrEqual(3)
+            ->and(DB::table('submissions')->count())->toBeGreaterThan(0);
     });
 
     test('3UOZP-FR-SEED-006: explicit db-seed invocation prints the bilingual summary (also FR-SEED-001, FR-SEED-005)', function (): void {

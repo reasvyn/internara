@@ -75,7 +75,7 @@ test('T657B-FR-SUBM-005: a second submission is rejected', function (): void {
         ->toThrow(RejectedException::class);
 });
 
-test('T657B-FR-SUBM-006: submission stores content and a server timestamp', function (): void {
+test('T657B-UC-SUBM-001, T657B-FR-SUBM-006: submission stores content and a server timestamp', function (): void {
     [$student, $assignment, $registration] = submissionFixture();
     $before = now();
 
@@ -86,7 +86,7 @@ test('T657B-FR-SUBM-006: submission stores content and a server timestamp', func
         ->and($submission->submitted_at->greaterThanOrEqualTo($before->copy()->subSecond()))->toBeTrue();
 });
 
-test('T657B-FR-SUBM-007: revision required submissions reuse their row', function (): void {
+test('T657B-UC-SUBM-002, T657B-FR-SUBM-007: revision required submissions reuse their row', function (): void {
     [$student, $assignment, $registration] = submissionFixture();
     $submission = Submission::factory()->create([
         'student_id' => $student->id,

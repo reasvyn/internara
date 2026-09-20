@@ -104,7 +104,7 @@ test('T657Z-FR-ASG-007: publish changes only draft assignments', function (): vo
         ->toThrow(RejectedException::class);
 });
 
-test('T657Z-FR-ASG-008: publish emits its event and notifies enrolled students', function (): void {
+test('T657Z-UC-ASG-001, T657Z-FR-ASG-008: publish emits its event and notifies enrolled students', function (): void {
     Event::fake();
     Notification::fake();
     $assignment = Assignment::factory()->create();
@@ -120,7 +120,7 @@ test('T657Z-FR-ASG-008: publish emits its event and notifies enrolled students',
     Notification::assertSentTo($student, AssignmentNotification::class);
 });
 
-test('T657Z-FR-ASG-010: a closed assignment remains readable with its submissions', function (): void {
+test('T657Z-UC-ASG-002, T657Z-FR-ASG-010: a closed assignment remains readable with its submissions', function (): void {
     $assignment = Assignment::factory()->closed()->create();
     $submission = Submission::factory()->create(['assignment_id' => $assignment->id, 'score' => 88]);
 
