@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Event;
 uses(LazilyRefreshDatabase::class);
 
 describe('YB7RG: throttling and lockout', function (): void {
-    test('YB7RG-FR-AUTH-009 + YB7RG-UC-AUTH-005: sixth login post inside a minute answers 429', function (): void {
+    test('YB7RG-FR-AUTH-009 + YB7RG-UC-AUTH-005 + YB7RG-NFR-AUTH-014: sixth login post inside a minute answers 429', function (): void {
         $middleware = app(AuthThrottleMiddleware::class);
         $identifier = 'flood-probe-'.uniqid().'@example.test';
 

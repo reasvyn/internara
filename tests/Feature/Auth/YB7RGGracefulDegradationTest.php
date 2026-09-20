@@ -11,7 +11,7 @@ use Livewire\Livewire;
 uses(LazilyRefreshDatabase::class);
 
 describe('YB7RG: graceful degradation at the gate', function (): void {
-    test('YB7RG-NFR-AUTH-010: login rejects cleanly when the database is unreachable', function (): void {
+    test('YB7RG-NFR-AUTH-010/011: login rejects cleanly when the database is unreachable', function (): void {
         $user = User::factory()->withPassword('secret-123')->create();
 
         // Real database failure, no mocks: dropping the table makes the

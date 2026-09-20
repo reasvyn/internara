@@ -53,7 +53,7 @@ describe('7H5D6: official document implementation behavior', function (): void {
         expect(Document::query()->ofType('letter')->active()->count())->toBe(1);
     });
 
-    test('7H5D6-FR-OFFD-006: generated documents update their source record with a generated timestamp', function (): void {
+    test('7H5D6-UC-OFFD-006, 7H5D6-FR-OFFD-006: generated documents update their source record with a generated timestamp', function (): void {
         Storage::fake('local');
         officialCoverageAdmin();
         $document = Document::factory()->create(['content' => '<p>Official</p>']);

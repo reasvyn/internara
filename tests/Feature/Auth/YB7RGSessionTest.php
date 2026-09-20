@@ -96,7 +96,7 @@ describe('YB7RG: login form, routes and session lifecycle', function (): void {
         $this->assertAuthenticatedAs($byUsername);
     });
 
-    test('YB7RG-NFR-AUTH-001: session identifier rotates on login and again on logout', function (): void {
+    test('YB7RG-NFR-AUTH-001/012: session identifier rotates on login and again on logout', function (): void {
         $user = User::factory()->withPassword('secret-123')->create();
         $guestId = session()->getId();
 
@@ -151,7 +151,7 @@ describe('YB7RG: login form, routes and session lifecycle', function (): void {
 });
 
 describe('YB7RG: auth locale parity', function (): void {
-    test('YB7RG-NFR-AUTH-017: every auth string the gate renders exists in English and Indonesian', function (): void {
+    test('YB7RG-NFR-AUTH-017/018: every auth string the gate renders exists in English and Indonesian', function (): void {
         $keys = [
             'auth.failed',
             'auth.blocked',

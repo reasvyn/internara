@@ -111,7 +111,7 @@ describe('J0M04: certificate issuance', function (): void {
             ->and($html)->not->toContain('{student_name}');
     });
 
-    test('J0M04-FR-CERT-005: sequential issuance yields distinct serials and hashes', function (): void {
+    test('J0M04-FR-CERT-005/006: sequential issuance yields distinct serials and hashes', function (): void {
         $this->actingAs(j0m04aAdmin());
         $template = j0m04aTemplate();
 

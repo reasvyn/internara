@@ -82,7 +82,7 @@ describe('J0M04: certificate access and policy guards', function (): void {
         $this->get(route('certificates.download', $certificate))->assertRedirect();
     });
 
-    test('J0M04-FR-CERT-016: admin download lazily stores the PDF', function (): void {
+    test('J0M04-UC-CERT-004, J0M04-FR-CERT-016: admin download lazily stores the PDF', function (): void {
         Storage::fake('local');
         $admin = j0m04eRole('admin');
         $certificate = j0m04eCertificate();
@@ -94,7 +94,7 @@ describe('J0M04: certificate access and policy guards', function (): void {
         Storage::disk('local')->assertExists('certificates/certificate_'.$certificate->certificate_number.'.pdf');
     });
 
-    test('J0M04-FR-CERT-016: owner download serves an already stored PDF', function (): void {
+    test('J0M04-UC-CERT-005, J0M04-FR-CERT-016: owner download serves an already stored PDF', function (): void {
         Storage::fake('local');
         $student = j0m04eRole('student');
         $certificate = j0m04eOwnedCertificate($student);

@@ -234,7 +234,7 @@ describe('AXKZW evaluation responses', function (): void {
         $this->assertDatabaseMissing('evaluation_answers', ['response_id' => $responseId]);
     });
 
-    test('AXKZW-FR-EVAL-015 and AXKZW-FR-EVAL-016: persisted answer scores and weighted overall exclude unscored text answers', function (): void {
+    test('AXKZW-UC-EVAL-002, AXKZW-FR-EVAL-015 and AXKZW-FR-EVAL-016: persisted answer scores and weighted overall exclude unscored text answers', function (): void {
         $form = EvaluationForm::factory()->create();
         $rating = EvaluationQuestion::factory()->create([
             'form_id' => $form->id,
@@ -270,7 +270,7 @@ describe('AXKZW evaluation responses', function (): void {
         $this->assertDatabaseHas('evaluation_answers', ['id' => $textAnswer->id, 'score' => null]);
     });
 
-    test('AXKZW-FR-EVAL-017: stored overall scores remain readable for each classification band boundary', function (): void {
+    test('AXKZW-UC-EVAL-003, AXKZW-FR-EVAL-017: stored overall scores remain readable for each classification band boundary', function (): void {
         foreach ([
             'excellent' => 90.0,
             'good' => 75.0,
