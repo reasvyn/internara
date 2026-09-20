@@ -6,6 +6,14 @@ return [
     'title' => 'Pusat Kendali Administrator',
     'version' => 'v:version',
 
+    'maintenance' => [
+        'title' => 'Pemeliharaan sedang berlangsung',
+        'notice' => 'Sistem sementara tidak tersedia: :reason',
+        'opened' => 'Mode pemeliharaan diaktifkan.',
+        'closed' => 'Mode pemeliharaan dinonaktifkan.',
+        'reason_required' => 'Alasan wajib diisi saat membuka mode pemeliharaan.',
+    ],
+
     'section_account' => 'Informasi Akun',
     'field_email' => 'Alamat Email',
     'field_email_result' => 'Email',

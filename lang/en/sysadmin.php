@@ -6,6 +6,14 @@ return [
     'title' => 'Administrator Console',
     'version' => 'v:version',
 
+    'maintenance' => [
+        'title' => 'Maintenance in progress',
+        'notice' => 'The system is temporarily unavailable: :reason',
+        'opened' => 'Maintenance mode enabled.',
+        'closed' => 'Maintenance mode disabled.',
+        'reason_required' => 'A reason is required when opening maintenance mode.',
+    ],
+
     'section_account' => 'Account Information',
     'field_email' => 'Email Address',
     'field_email_result' => 'Email',

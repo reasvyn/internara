@@ -46,6 +46,7 @@ return [
     'starting' => 'Memulai cadangan :type...',
     'completed_info' => 'Cadangan selesai. Ukuran: :size',
     'cleanup_completed' => 'Pembersihan selesai. :count cadangan lama dihapus.',
+    'old_backups_removed' => ':count cadangan lama dihapus.',
 
     'notification_failed' => 'Cadangan sistem gagal (:type). Periksa log untuk detail.',
 ];

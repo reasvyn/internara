@@ -5,10 +5,12 @@ declare(strict_types=1);
 return [
     'status' => [
         'pending' => 'Tertunda',
+        'active' => 'Aktif',
         'approved' => 'Disetujui',
         'rejected' => 'Ditolak',
     ],
 
+    'center_title' => 'Pendaftaran Praktik Kerja Lapangan',
     'center' => [
         'title' => 'Pendaftaran Magang',
         'subtitle' => 'Jelajahi program magang yang sedang menerima pendaftaran',
@@ -24,6 +26,7 @@ return [
         'proposed_address' => 'Alamat Perusahaan Usulan',
         'title' => 'Pendaftaran Magang',
         'subtitle' => 'Daftar untuk program magang Anda',
+        'step' => 'Langkah :step dari :total',
         'step_program' => 'Pilihan Program',
         'step_placement' => 'Pilihan Penempatan',
         'step_finalize' => 'Finalisasi',

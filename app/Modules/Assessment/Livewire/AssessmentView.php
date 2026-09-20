@@ -21,7 +21,6 @@ class AssessmentView extends Component
 
         return Assessment::with([
             'registration.mentee.user',
-            'rubric.competencies.indicators',
             'registration.internship',
         ])
             ->whereHas('registration.mentee.user', fn ($q) => $q->where('id', $user->id))

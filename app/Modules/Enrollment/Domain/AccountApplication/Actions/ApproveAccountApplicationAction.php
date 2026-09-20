@@ -10,6 +10,7 @@ use App\Modules\Enrollment\Domain\AccountApplication\Enums\AccountApplicationSta
 use App\Modules\Enrollment\Domain\AccountApplication\Events\AccountApplicationApproved;
 use App\Modules\Enrollment\Domain\AccountApplication\Models\AccountApplication;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Models\User;
 
@@ -23,7 +24,19 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
             throw new RejectedException(__('registration.application_not_pending'));
         }
 
-        return $this->transaction(function () use ($application, $admin) {
+        if (User::where('email', $application->email)->exists()) {
+            throw new RejectedException(__('registration.application_exists'));
+        }
+
+        $formData = $application->form_data;
+
+        if (empty($formData['internship_id']) || ! Internship::whereKey($formData['internship_id'])->exists()) {
+            throw new RejectedException(
+                __('registration.validation.missing_internship'),
+            );
+        }
+
+        return $this->transaction(function () use ($application, $admin, $formData) {
             $application->update([
                 'status' => AccountApplicationStatus::APPROVED->value,
                 'processed_by' => $admin->id,

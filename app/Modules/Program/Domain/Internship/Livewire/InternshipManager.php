@@ -244,6 +244,7 @@ class InternshipManager extends BaseRecordManager
     public function confirmAction(
         DeleteInternshipAction $deleteAction,
         BatchUpdateInternshipStatusAction $batchAction,
+        ReadCloseReadinessAction $readinessAction,
     ): void {
         if (
             $this->confirmTarget === null &&
@@ -257,7 +258,7 @@ class InternshipManager extends BaseRecordManager
             match ($this->confirmType) {
                 'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
                 'delete_selected' => $this->executeDeleteSelected($deleteAction),
-                'close_filtered' => $this->executeCloseFiltered($batchAction),
+                'close_filtered' => $this->executeCloseFiltered($batchAction, $readinessAction),
                 default => null,
             };
         } catch (RejectedException $e) {
@@ -291,10 +292,22 @@ class InternshipManager extends BaseRecordManager
         });
     }
 
-    private function executeCloseFiltered(BatchUpdateInternshipStatusAction $action): void
-    {
-        $this->performMassAction('Close All Filtered', function ($query) use ($action) {
-            $action->execute($query, InternshipStatus::COMPLETED);
+    private function executeCloseFiltered(
+        BatchUpdateInternshipStatusAction $action,
+        ReadCloseReadinessAction $readinessAction,
+    ): void {
+        $this->performMassAction('Close All Filtered', function (Builder $query) use ($action, $readinessAction) {
+            $readyIds = $query->get()->filter(function (Internship $internship) use ($readinessAction): bool {
+                if (! Registration::where('internship_id', $internship->id)->where('status', 'active')->exists()) {
+                    return true;
+                }
+
+                return collect($readinessAction->execute($internship))->every(
+                    fn (array $check): bool => $check['passed'] === true,
+                );
+            })->modelKeys();
+
+            $action->execute($query->whereIn('id', $readyIds), InternshipStatus::COMPLETED);
         });
     }
 
@@ -366,13 +379,14 @@ class InternshipManager extends BaseRecordManager
 
         return $csv->export(
             $internships,
-            ['name', 'description', 'status', 'start_date', 'end_date'],
+            ['name', 'description', 'status', 'start_date', 'end_date', 'academic_year'],
             fn ($i) => [
                 $i->name,
                 $i->description ?? '',
                 $i->status->value,
                 $i->start_date->format('Y-m-d'),
                 $i->end_date->format('Y-m-d'),
+                $i->academicYear?->name ?? '',
             ],
             'internships.csv',
         );
@@ -393,13 +407,14 @@ class InternshipManager extends BaseRecordManager
 
         return $csv->export(
             $internships,
-            ['name', 'description', 'status', 'start_date', 'end_date'],
+            ['name', 'description', 'status', 'start_date', 'end_date', 'academic_year'],
             fn ($i) => [
                 $i->name,
                 $i->description ?? '',
                 $i->status->value,
                 $i->start_date->format('Y-m-d'),
                 $i->end_date->format('Y-m-d'),
+                $i->academicYear?->name ?? '',
             ],
             'internships-selected.csv',
         );

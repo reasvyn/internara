@@ -41,6 +41,7 @@ final class PiiMasker
 
     private const PARTIAL_MASK_KEYS = [
         'email' => 'maskEmail',
+        'identifier' => 'maskEmail',
         'phone' => 'maskPhone',
         'name' => 'maskName',
     ];

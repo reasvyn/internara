@@ -83,7 +83,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
                 continue;
             }
 
-            $competency['indicators'][$data->indicatorId] = $data->score;
+            $competency['indicators'][$data->indicatorId] = (float) $data->score;
             $competency['evaluator_id'] = $evaluator->id;
             $competency['evaluated_at'] = $evaluatedAt;
 
@@ -94,7 +94,7 @@ final class ScoreIndicatorAction extends BaseCommandAction
             'id' => $data->competencyId,
             'evaluator_id' => $evaluator->id,
             'evaluated_at' => $evaluatedAt,
-            'indicators' => [$data->indicatorId => $data->score],
+            'indicators' => [$data->indicatorId => (float) $data->score],
         ];
 
         return $scoresData;

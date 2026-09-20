@@ -30,17 +30,17 @@
             <directory>tests/Feature/Setup</directory>
             <directory>tests/Browser/Setup</directory>
         </testsuite>
-        <testsuite name="Settings">
-            <directory>tests/Arch/Settings</directory>
-            <directory>tests/Unit/Settings</directory>
-            <directory>tests/Feature/Settings</directory>
-            <directory>tests/Browser/Settings</directory>
+        <testsuite name="Setting">
+            <directory>tests/Arch/Setting</directory>
+            <directory>tests/Unit/Setting</directory>
+            <directory>tests/Feature/Setting</directory>
+            <directory>tests/Browser/Setting</directory>
         </testsuite>
-        <testsuite name="Academics">
-            <directory>tests/Arch/Academics</directory>
-            <directory>tests/Unit/Academics</directory>
-            <directory>tests/Feature/Academics</directory>
-            <directory>tests/Browser/Academics</directory>
+        <testsuite name="Academic">
+            <directory>tests/Arch/Academic</directory>
+            <directory>tests/Unit/Academic</directory>
+            <directory>tests/Feature/Academic</directory>
+            <directory>tests/Browser/Academic</directory>
         </testsuite>
         <testsuite name="Auth">
             <directory>tests/Arch/Auth</directory>
@@ -60,11 +60,11 @@
             <directory>tests/Feature/SysAdmin</directory>
             <directory>tests/Browser/SysAdmin</directory>
         </testsuite>
-        <testsuite name="Partners">
-            <directory>tests/Arch/Partners</directory>
-            <directory>tests/Unit/Partners</directory>
-            <directory>tests/Feature/Partners</directory>
-            <directory>tests/Browser/Partners</directory>
+        <testsuite name="Partner">
+            <directory>tests/Arch/Partner</directory>
+            <directory>tests/Unit/Partner</directory>
+            <directory>tests/Feature/Partner</directory>
+            <directory>tests/Browser/Partner</directory>
         </testsuite>
         <testsuite name="Program">
             <directory>tests/Arch/Program</directory>
@@ -78,11 +78,11 @@
             <directory>tests/Feature/Enrollment</directory>
             <directory>tests/Browser/Enrollment</directory>
         </testsuite>
-        <testsuite name="Journals">
-            <directory>tests/Arch/Journals</directory>
-            <directory>tests/Unit/Journals</directory>
-            <directory>tests/Feature/Journals</directory>
-            <directory>tests/Browser/Journals</directory>
+        <testsuite name="Journal">
+            <directory>tests/Arch/Journal</directory>
+            <directory>tests/Unit/Journal</directory>
+            <directory>tests/Feature/Journal</directory>
+            <directory>tests/Browser/Journal</directory>
         </testsuite>
         <testsuite name="Incident">
             <directory>tests/Arch/Incident</directory>
@@ -120,11 +120,11 @@
             <directory>tests/Feature/Certification</directory>
             <directory>tests/Browser/Certification</directory>
         </testsuite>
-        <testsuite name="Reports">
-            <directory>tests/Arch/Reports</directory>
-            <directory>tests/Unit/Reports</directory>
-            <directory>tests/Feature/Reports</directory>
-            <directory>tests/Browser/Reports</directory>
+        <testsuite name="Report">
+            <directory>tests/Arch/Report</directory>
+            <directory>tests/Unit/Report</directory>
+            <directory>tests/Feature/Report</directory>
+            <directory>tests/Browser/Report</directory>
         </testsuite>
         <testsuite name="UI">
             <directory>tests/Arch/UI</directory>

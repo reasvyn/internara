@@ -27,6 +27,7 @@ class PlacementChangeManager extends BaseRecordManager
 
     public function boot(): void
     {
+        abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'admin']), 403);
         $this->authorize('viewAny', PlacementChangeRequest::class);
     }
 
@@ -46,6 +47,7 @@ class PlacementChangeManager extends BaseRecordManager
             ['index' => 'fromPlacement.company.name', 'label' => __('placement_change.from_company')],
             ['index' => 'toPlacement.company.name', 'label' => __('placement_change.to_company')],
             ['index' => 'status', 'label' => __('placement_change.status'), 'sortable' => true],
+            ['index' => 'reason', 'label' => __('placement_change.reason')],
             ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
@@ -59,6 +61,15 @@ class PlacementChangeManager extends BaseRecordManager
                 ->orWhere('status', 'like', $term)
                 ->orWhereHas('requester', fn (Builder $r) => $r->where('name', 'like', $term));
         });
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        if (($this->filters['status'] ?? '') !== '') {
+            $query->where('status', $this->filters['status']);
+        }
+
+        return $query;
     }
 
     protected function query(): Builder

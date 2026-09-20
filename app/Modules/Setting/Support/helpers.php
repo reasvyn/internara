@@ -47,3 +47,18 @@ if (! function_exists('brand')) {
         return Brand::get($key, $default);
     }
 }
+
+if (! function_exists('feature')) {
+    /**
+     * Resolve a feature flag through the setting resolution chain and cast to bool.
+     *
+     * Spec: YB22J FR-SET-017 / 6.1
+     *
+     * @param string $key Feature flag key (without 'features.' prefix)
+     * @param bool $default Default value when flag is not set
+     */
+    function feature(string $key, bool $default = false): bool
+    {
+        return (bool) setting("features.{$key}", $default);
+    }
+}

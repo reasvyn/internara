@@ -4,11 +4,11 @@
 @endphp
 
 <div>
-    <x-ui::components.page-header :title="__('backups.title')" :description="__('backups.subtitle')">
+    <x-ui::components.page-header :title="__('backup.title')" :description="__('backup.subtitle')">
         <x-slot:actions>
             <x-ts-dropdown>
                 <x-slot:action>
-                    <x-ts-button text="{{ __('backups.create_button') }}" icon="arrow-path" color="primary" / x-on:click="show = ! show">
+                    <x-ts-button text="{{ __('backup.create_button') }}" icon="arrow-path" color="primary" / x-on:click="show = ! show">
                 </x-slot:action>
                 <x-ts-dropdown.items
                     text="{{ BackupType::DATABASE->label() }}"
@@ -31,25 +31,25 @@
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
         <x-ts-stats
-            title="{{ __('backups.total') }}"
+            title="{{ __('backup.total') }}"
             number="{{ $this->stats['total'] }}"
             icon="archive-box"
             class="bg-base-200"
         />
         <x-ts-stats
-            title="{{ __('backups.completed') }}"
+            title="{{ __('backup.completed') }}"
             number="{{ $this->stats['completed'] }}"
             icon="check-circle"
             class="text-success"
         />
         <x-ts-stats
-            title="{{ __('backups.failed') }}"
+            title="{{ __('backup.failed') }}"
             number="{{ $this->stats['failed'] }}"
             icon="exclamation-circle"
             class="text-error"
         />
         <x-ts-stats
-            title="{{ __('backups.latest') }}"
+            title="{{ __('backup.latest') }}"
             number="{{ $this->stats['latest']?->asBackupState()->formattedSize() ?? '--' }}"
             icon="clock"
             class="bg-base-200"
@@ -59,13 +59,13 @@
     <x-ts-card shadowless>
         <div class="mb-4 flex gap-4">
             <x-ts-select.native
-                label="{{ __('backups.filter_type') }}"
+                label="{{ __('backup.filter_type') }}"
                 wire:model.live="filterType"
                 :options="ts_options(BackupType::cases(), __('common.all'))"
                 class="w-48"
             />
             <x-ts-select.native
-                label="{{ __('backups.filter_status') }}"
+                label="{{ __('backup.filter_status') }}"
                 wire:model.live="filterStatus"
                 :options="ts_options(BackupStatus::cases(), __('common.all'))"
                 class="w-48"
@@ -112,8 +112,8 @@
 
         @include('sysadmin.backups.components.backup-guide')
     </x-ts-card>
-    <x-ts-modal wire="showConfirmDelete" title="{{ __('backups.confirm_delete_title') }}" class="backdrop-blur">
-        <p>{{ __('backups.confirm_delete_message') }}</p>
+    <x-ts-modal wire="showConfirmDelete" title="{{ __('backup.confirm_delete_title') }}" class="backdrop-blur">
+        <p>{{ __('backup.confirm_delete_message') }}</p>
 
         <x-slot:footer>
             <x-ts-button text="{{ __('common.actions.cancel') }}" wire:click="cancelDelete" />

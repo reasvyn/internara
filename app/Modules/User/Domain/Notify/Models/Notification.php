@@ -27,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['user_id', 'type', 'title', 'message', 'data', 'link', 'is_read', 'read_at'])]
 class Notification extends BaseModel
 {
+    protected $table = 'notify';
+
     use HasFactory;
 
     protected $casts = [

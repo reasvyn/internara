@@ -18,6 +18,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
@@ -36,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
         __DIR__.'/../app/Modules/SysAdmin/Console/Commands',
         __DIR__.'/../app/Modules/SysAdmin/Domain/Announcement/Console/Commands',
         __DIR__.'/../app/Modules/SysAdmin/Domain/Observability/Console/Commands',
-        __DIR__.'/../app/Modules/SysAdmin/Domain/Backups/Console/Commands',
+        __DIR__.'/../app/Modules/SysAdmin/Domain/Backup/Console/Commands',
         __DIR__.'/../app/Modules/User/Console/Commands',
         __DIR__.'/../app/Modules/User/Domain/UserManagement/Console/Commands',
     ])
@@ -69,6 +70,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 $e instanceof ValidationFailedException => 422,
                 default => 500,
             };
+
+            $locale = null;
+            try {
+                $locale = app('encrypter')->decrypt($request->cookie('locale'), false);
+            } catch (Throwable) {
+                $locale = Cookie::get('locale');
+            }
+
+            if (is_string($locale) && in_array($locale, ['en', 'id'], true)) {
+                app()->setLocale($locale);
+            }
 
             $message = $e->isUserFacing() ? $e->getMessage() : __('exceptions.unexpected');
 

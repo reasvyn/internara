@@ -17,7 +17,7 @@ final class Theme
 
     public static function defaults(): array
     {
-        $defaults = config('setting.colors.defaults');
+        $defaults = config('settings.colors.defaults');
 
         if (is_array($defaults)) {
             return $defaults;
@@ -34,7 +34,7 @@ final class Theme
 
     public static function presets(): array
     {
-        return config('setting.colors.presets', []);
+        return config('settings.colors.presets', []);
     }
 
     public static function all(): array

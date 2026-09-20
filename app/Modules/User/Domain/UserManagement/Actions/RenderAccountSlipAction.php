@@ -7,7 +7,6 @@ namespace App\Modules\User\Domain\UserManagement\Actions;
 use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Core\Actions\BaseProcessAction;
 use App\Modules\User\Models\User;
-use Illuminate\Support\Facades\Blade;
 
 final class RenderAccountSlipAction extends BaseProcessAction
 {
@@ -21,10 +20,9 @@ final class RenderAccountSlipAction extends BaseProcessAction
             'name' => 'Account Activation',
         ]);
 
-        return Blade::render(
-            'user.user-management.account-slip-pdf',
-            ['user' => $user, 'code' => $result['plain_text']],
-            deleteCachedView: true,
-        );
+        return view('user.user-management.account-slip-pdf', [
+            'user' => $user,
+            'code' => $result['plain_text'],
+        ])->render();
     }
 }

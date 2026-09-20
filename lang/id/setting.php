@@ -16,6 +16,7 @@ return [
         'features' => 'Flag Fitur',
         'localization' => 'Lokalisasi',
         'notifications' => 'Notifikasi',
+        'notify' => 'Notifikasi',
     ],
 
     'fields' => [

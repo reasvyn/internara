@@ -121,4 +121,17 @@ final readonly class SettingEntity extends BaseEntity
     {
         return $this->group === $group;
     }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public static function rules(): array
+    {
+        return [
+            'key' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9_.-]+$/'],
+            'value' => ['nullable'],
+            'type' => ['nullable', 'string', 'max:50'],
+            'group' => ['nullable', 'string', 'max:50'],
+        ];
+    }
 }

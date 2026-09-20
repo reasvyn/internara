@@ -18,43 +18,45 @@ final class GenerateRecoverySlipAction extends BaseCommandAction
 
     public function execute(User $user): ActionResponse
     {
-        AccessToken::revokeFor($user, 'account_recovery');
+        return $this->transaction(function () use ($user) {
+            AccessToken::revokeFor($user, 'account_recovery');
 
-        $codes = [];
-        $firstCode = null;
+            $codes = [];
+            $firstCode = null;
 
-        for ($i = 0; $i < self::CODE_COUNT; $i++) {
-            $plaintext = strtoupper(str()->random(12));
-            $hashed = Hash::make($plaintext);
+            for ($i = 0; $i < self::CODE_COUNT; $i++) {
+                $plaintext = strtoupper(str()->random(12));
+                $hashed = Hash::make($plaintext);
 
-            $recoveryCode = RecoveryCodeData::from([
-                'plainText' => $plaintext,
-                'hashedToken' => $hashed,
-                'expiresAt' => now()->addYears(100)->toDateTimeString(),
-            ]);
+                $recoveryCode = RecoveryCodeData::from([
+                    'plainText' => $plaintext,
+                    'hashedToken' => $hashed,
+                    'expiresAt' => now()->addYears(100)->toDateTimeString(),
+                ]);
 
-            AccessToken::create([
-                'user_id' => $user->id,
-                'token' => $hashed,
-                'token_type' => 'account_recovery',
-                'expires_at' => now()->addYears(100),
-                'attempts' => 0,
-            ]);
+                AccessToken::create([
+                    'user_id' => $user->id,
+                    'token' => $hashed,
+                    'token_type' => 'account_recovery',
+                    'expires_at' => now()->addYears(100),
+                    'attempts' => 0,
+                ]);
 
-            if ($i === 0) {
-                $firstCode = $recoveryCode;
+                if ($i === 0) {
+                    $firstCode = $recoveryCode;
+                }
+
+                $codes[] = $plaintext;
             }
 
-            $codes[] = $plaintext;
-        }
+            $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT]);
+            $this->dispatchEvent(new RecoverySlipGenerated($user, self::CODE_COUNT));
 
-        $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT]);
-        $this->dispatchEvent(new RecoverySlipGenerated($user, self::CODE_COUNT));
-
-        return ActionResponse::ok([
-            'code' => $firstCode,
-            'plaintext' => $codes,
-            'expires_at' => null,
-        ]);
+            return ActionResponse::ok([
+                'code' => $firstCode,
+                'plaintext' => $codes,
+                'expires_at' => null,
+            ]);
+        });
     }
 }

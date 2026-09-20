@@ -14,7 +14,10 @@ class SetLocaleMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = Locale::current();
+        $locale = $request->cookie('locale') ?? Locale::current();
+        if (! Locale::isSupported($locale)) {
+            $locale = Locale::current();
+        }
 
         App::setLocale($locale);
 

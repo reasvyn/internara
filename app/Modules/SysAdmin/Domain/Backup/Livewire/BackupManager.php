@@ -122,6 +122,6 @@ final class BackupManager extends BaseRecordManager
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('sysadmin.backup.backup-manager');
+        return view('sysadmin.backups.backup-manager');
     }
 }

@@ -79,7 +79,7 @@
                         @php
                             $indWeight = $indicator->weight;
                             $compIndicatorWeight += $indWeight;
-                            $currentScore = $this->scores[$indicator->id] ?? 0;
+                            $currentScore = $this->scores[$competency->id][$indicator->id] ?? 0;
                             $compScore += ($currentScore * $indWeight) / 100;
                         @endphp
                         <div class="mb-3 flex items-center gap-4">
@@ -98,7 +98,7 @@
                                     min="0"
                                     max="100"
                                     step="0.1"
-                                    wire:model.live="scores.{{ $indicator->id }}"
+                                    wire:model.live="scores.{{ $competency->id }}.{{ $indicator->id }}"
                                     :disabled="$this->isFinalized"
                                     sm
                                 />
@@ -164,7 +164,12 @@
 
             @unless ($this->isFinalized)
                 <div class="mt-4 flex justify-end">
-                    <x-ts-button :text="__('assessment.finalize')" icon="lock" wire:click="askFinalize" color="green" />
+                    <x-ts-button
+                        :text="__('assessment.finalize')"
+                        icon="lock-closed"
+                        wire:click="askFinalize"
+                        color="green"
+                    />
                 </div>
             @endunless
         </x-ts-card>

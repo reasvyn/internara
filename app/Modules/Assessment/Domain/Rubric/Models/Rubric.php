@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Assessment\Domain\Rubric\Models;
 
+use App\Modules\Assessment\Enums\EvaluatorRole;
 use App\Modules\Assessment\Models\Assessment;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Program\Domain\Internship\Models\Internship;
@@ -52,6 +53,26 @@ class Rubric extends BaseModel
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class);
+    }
+
+    /**
+     * @return Collection<int, object>
+     */
+    public function getCompetenciesAttribute(): Collection
+    {
+        $competencies = collect($this->structure['competencies'] ?? [])
+            ->map(function (array $competency): object {
+                $competency['evaluator_role'] = EvaluatorRole::tryFrom(
+                    $competency['evaluator_role'] ?? EvaluatorRole::TEACHER->value,
+                ) ?? EvaluatorRole::TEACHER;
+                $competency['indicators'] = collect($competency['indicators'] ?? [])
+                    ->map(fn (array $indicator): object => (object) $indicator)
+                    ->all();
+
+                return (object) $competency;
+            });
+
+        return new Collection($competencies->all());
     }
 
     protected static function newFactory(): RubricFactory

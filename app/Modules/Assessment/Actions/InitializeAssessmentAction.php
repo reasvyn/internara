@@ -15,19 +15,25 @@ final class InitializeAssessmentAction extends BaseCommandAction
     {
         $registration = Registration::with('internship')->findOrFail($registrationId);
 
-        $rubric = Rubric::where('internship_id', $registration->internship_id)
-            ->orWhereNull('internship_id')
+        $rubric = Rubric::where(function ($query) use ($registration): void {
+            $query->where('internship_id', $registration->internship_id)
+                ->orWhereNull('internship_id');
+        })
             ->where('is_active', true)
+            ->orderByRaw('internship_id IS NULL')
             ->first();
 
         if ($rubric === null) {
             return ['assessment' => null, 'rubric' => null];
         }
 
-        $assessment = $this->transaction(function () use ($registrationId, $rubric) {
+        $assessment = $this->transaction(function () use ($registration, $registrationId, $rubric) {
             $assessment = Assessment::firstOrCreate(
                 ['registration_id' => $registrationId],
-                ['rubric_id' => $rubric->id],
+                [
+                    'rubric_id' => $rubric->id,
+                    'evaluator_id' => auth()->id() ?? $registration->student_id,
+                ],
             );
 
             $this->log('assessment_initialized', $assessment, [

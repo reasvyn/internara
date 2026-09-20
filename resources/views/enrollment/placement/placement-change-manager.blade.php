@@ -27,6 +27,10 @@
                 <span class="text-sm">{{ $r->created_at?->format('d M Y H:i') ?? '—' }}</span>
             @endinteract
 
+            @interact('column_reason', $r)
+                <span class="text-sm">{{ $r->reason }}</span>
+            @endinteract
+
             @interact('column_action', $r)
                 <div class="flex justify-end gap-1">
                     @if ($r->status->value === 'pending')

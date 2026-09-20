@@ -47,7 +47,7 @@ class AssessmentGrading extends BaseFormView
         $competencies = $content['competencies'] ?? [];
         foreach ($competencies as $compId => $compData) {
             foreach ($compData['indicators'] ?? [] as $indId => $score) {
-                $this->scores["{$compId}.{$indId}"] = (string) $score;
+                $this->scores[$compId][$indId] = (string) $score;
             }
         }
     }
@@ -77,12 +77,15 @@ class AssessmentGrading extends BaseFormView
         }
 
         $user = auth()->user();
+        if ($user === null) {
+            return new Collection;
+        }
 
-        $competencies = $assessment->rubric->structure['competencies'] ?? [];
+        $competencies = $assessment->rubric->competencies;
 
-        return collect($competencies)
-            ->filter(function (array $competency) use ($user) {
-                $role = $competency['evaluator_role'] ?? 'teacher';
+        $evaluable = collect($competencies)
+            ->filter(function (object $competency) use ($user) {
+                $role = $competency->evaluator_role->value;
 
                 if ($role === 'system') {
                     return false;
@@ -99,6 +102,8 @@ class AssessmentGrading extends BaseFormView
                 return $this->isAssignedAsMentor($role);
             })
             ->values();
+
+        return new Collection($evaluable->all());
     }
 
     private function isAssignedAsMentor(string $evaluatorRole): bool
@@ -127,12 +132,15 @@ class AssessmentGrading extends BaseFormView
         }
 
         $user = auth()->user();
+        if ($user === null) {
+            return new Collection;
+        }
 
-        $competencies = $assessment->rubric->structure['competencies'] ?? [];
+        $competencies = $assessment->rubric->competencies;
 
-        return collect($competencies)
-            ->filter(function (array $competency) use ($user) {
-                $role = $competency['evaluator_role'] ?? 'teacher';
+        $readOnly = collect($competencies)
+            ->filter(function (object $competency) use ($user) {
+                $role = $competency->evaluator_role->value;
 
                 if ($role === 'system') {
                     return true;
@@ -143,6 +151,8 @@ class AssessmentGrading extends BaseFormView
                     ! $user->hasRole('admin');
             })
             ->values();
+
+        return new Collection($readOnly->all());
     }
 
     public function updatedScores($value, string $key, UpdateAssessmentScoresAction $action): void

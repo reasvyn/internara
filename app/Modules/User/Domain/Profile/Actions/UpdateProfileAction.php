@@ -59,6 +59,9 @@ final class UpdateProfileAction extends BaseCommandAction
         $profileData = array_filter($data->profile, fn ($v) => $v !== null);
 
         return $this->transaction(function () use ($user, $profileData, $userData, $data) {
+            $previousEmail = $user->email;
+            $previousUsername = $user->username;
+
             if ($userData !== []) {
                 $user->update($userData);
             }
@@ -72,8 +75,8 @@ final class UpdateProfileAction extends BaseCommandAction
             $this->dispatchEvent(
                 new ProfileUpdated(
                     profile: $profile,
-                    previousEmail: $user->getOriginal('email'),
-                    previousUsername: $user->getOriginal('username'),
+                    previousEmail: $previousEmail,
+                    previousUsername: $previousUsername,
                 ),
             );
 

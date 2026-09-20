@@ -69,7 +69,7 @@ final class FinalizeAssessmentAction extends BaseCommandAction
             $hasScore = collect($competency['indicators'] ?? [])
                 ->contains(fn (array $indicator): bool => ($scores[$indicator['id']] ?? null) !== null);
 
-            if (! $hasScore && ($competency['evaluator_role'] ?? 'teacher') === 'supervisor') {
+            if (! $hasScore) {
                 continue;
             }
 

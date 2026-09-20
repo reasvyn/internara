@@ -51,6 +51,9 @@ final class SystemBackupCommand extends Command
                 $retention = (int) config('backup.retention_days', 30);
                 $deleted = $cleanupBackups->execute($retention);
                 $this->info(__('backup.cleanup_completed', ['count' => $deleted]));
+                if ($deleted > 0) {
+                    $this->info(__('backup.old_backups_removed', ['count' => $deleted]));
+                }
             }
 
             return Command::SUCCESS;

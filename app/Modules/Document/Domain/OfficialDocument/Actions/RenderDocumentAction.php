@@ -19,7 +19,7 @@ final class RenderDocumentAction extends BaseCommandAction
             'mentee.user.profile',
             'internship',
             'placement.company',
-            'mentors.user',
+            'mentors',
         ]);
 
         $path = $this->renderer->storePdf($document, $target, $registration->id);

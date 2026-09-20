@@ -4,10 +4,7 @@
         {{-- Animated blobs --}}
         <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
             <div class="bg-primary/10 absolute -top-32 -right-32 size-[36rem] animate-pulse rounded-full blur-3xl"></div>
-            <div
-                class="bg-primary/8 absolute -bottom-32 -left-32 size-[36rem] animate-pulse rounded-full blur-3xl"
-                style="animation-delay: 1.5s"
-            ></div>
+            <div class="bg-primary/8 absolute -bottom-32 -left-32 size-[36rem] animate-pulse rounded-full blur-3xl"></div>
             <div class="bg-primary/5 absolute top-1/2 left-1/2 size-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"></div>
         </div>
 

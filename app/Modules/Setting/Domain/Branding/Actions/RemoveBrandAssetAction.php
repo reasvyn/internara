@@ -6,6 +6,7 @@ namespace App\Modules\Setting\Domain\Branding\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Setting\Actions\SetSettingAction;
+use App\Modules\Setting\Data\SettingData;
 use App\Modules\Setting\Enums\MediaCollection;
 use App\Modules\Setting\Models\Setting;
 
@@ -31,7 +32,11 @@ final class RemoveBrandAssetAction extends BaseCommandAction
                 $media->delete();
             }
 
-            $this->setSetting->execute(key: $settingKey, value: '');
+            $this->setSetting->execute(new SettingData(
+                key: $settingKey,
+                value: '',
+                group: 'branding',
+            ));
 
             $this->log('brand_asset_removed', $setting, ['type' => $type]);
         });

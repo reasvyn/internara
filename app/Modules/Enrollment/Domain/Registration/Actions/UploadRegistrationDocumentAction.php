@@ -30,11 +30,14 @@ final class UploadRegistrationDocumentAction extends BaseCommandAction
                     continue;
                 }
 
-                $registrationDoc = RegistrationDocument::create([
-                    'registration_id' => $registration->id,
-                    'document_id' => $document->id,
-                    'status' => RegistrationDocumentStatus::PENDING->value,
-                ]);
+                $registrationDoc = RegistrationDocument::updateOrCreate(
+                    [
+                        'registration_id' => $registration->id,
+                        'document_id' => $document->id,
+                    ],
+                    ['status' => RegistrationDocumentStatus::PENDING->value],
+                );
+                $registrationDoc->clearMediaCollection('file');
 
                 $registrationDoc->addMedia($uploads[$document->id])->toMediaCollection('file');
             }

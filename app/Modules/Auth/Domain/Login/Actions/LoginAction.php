@@ -74,8 +74,7 @@ final class LoginAction extends BaseCommandAction
         if (now()->lt($lockoutTime)) {
             $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
             throw new RejectedException(
-                __('auth.throttle', ['seconds' => $seconds]) ??
-                    "Too many login attempts. Please try again in {$seconds} seconds.",
+                __('auth.throttle', ['seconds' => $seconds]),
             );
         }
     }

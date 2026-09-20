@@ -16,6 +16,7 @@ return [
         'features' => 'Feature Flags',
         'localization' => 'Localization',
         'notifications' => 'Notifications',
+        'notify' => 'Notify',
     ],
 
     'fields' => [

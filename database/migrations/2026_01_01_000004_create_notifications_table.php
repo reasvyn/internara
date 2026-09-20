@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('notify', function (Blueprint $table) {
             // Basic data
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')
@@ -33,6 +33,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('notify');
     }
 };

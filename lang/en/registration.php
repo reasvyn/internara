@@ -5,10 +5,12 @@ declare(strict_types=1);
 return [
     'status' => [
         'pending' => 'Pending',
+        'active' => 'Active',
         'approved' => 'Approved',
         'rejected' => 'Rejected',
     ],
 
+    'center_title' => 'Internship Registration',
     'center' => [
         'title' => 'Internship Registration',
         'subtitle' => 'Browse internship programs currently accepting registrations',
@@ -24,6 +26,7 @@ return [
         'proposed_address' => 'Proposed Company Address',
         'title' => 'Internship Registration',
         'subtitle' => 'Register for your upcoming internship program',
+        'step' => 'Step :step of :total',
         'step_program' => 'Program Selection',
         'step_placement' => 'Placement Choice',
         'step_finalize' => 'Finalize',
