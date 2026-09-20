@@ -126,7 +126,7 @@ describe('YB7RG: login identity, events and logging', function (): void {
             ->and($record->context['payload']['reason'])->toBe('invalid_password');
     });
 
-    test('YB7RG-FR-AUTH-020: login success is recorded with the user as subject', function (): void {
+    test('YB7RG-DD-AUTH-001 + YB7RG-FR-AUTH-020: login success is recorded with the user as subject', function (): void {
         $user = User::factory()->withPassword('secret-123')->create();
 
         app(LoginAction::class)->execute(new LoginData(identifier: $user->email, password: 'secret-123'));

@@ -96,7 +96,7 @@ describe('YB7RG: login form, routes and session lifecycle', function (): void {
         $this->assertAuthenticatedAs($byUsername);
     });
 
-    test('YB7RG-NFR-AUTH-001/012: session identifier rotates on login and again on logout', function (): void {
+    test('YB7RG-DD-AUTH-002 + YB7RG-NFR-AUTH-001/012: session identifier rotates on login and again on logout', function (): void {
         $user = User::factory()->withPassword('secret-123')->create();
         $guestId = session()->getId();
 

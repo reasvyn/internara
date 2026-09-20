@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 uses(LazilyRefreshDatabase::class);
 
 describe('YB7RG: activation and access-token lifecycle', function (): void {
-    test('YB7RG-FR-AUTH-030 + YB7RG-UC-AUTH-006 + YB7RG-FR-AUTH-032: provisioned account activates once, code dies, transition is logged', function (): void {
+    test('YB7RG-FR-AUTH-030 + YB7RG-UC-AUTH-006 + YB7RG-DD-AUTH-003 + YB7RG-FR-AUTH-032: provisioned account activates once, code dies, transition is logged', function (): void {
         Log::spy();
 
         $user = User::factory()->create(['status' => 'provisioned']);
