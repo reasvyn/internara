@@ -274,7 +274,7 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
         }
     });
 
-    test('ZT6VS-UC-CORE-005: user uploads flow through the media library on a configured disk', function (): void {
+    test('ZT6VS-UC-CORE-005, ZT6VS-FR-CORE-030: user uploads flow through the media library on a configured disk', function (): void {
         $user = User::factory()->create();
         $media = null;
 
@@ -297,7 +297,7 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
         }
     });
 
-    test('ZT6VS-FR-CORE-034: raw disk writes never carry user uploads — the library owns the path', function (): void {
+    test('ZT6VS-FR-CORE-034, ZT6VS-NFR-CORE-006: raw disk writes never carry user uploads — the library owns the path', function (): void {
         $user = User::factory()->create();
         $media = null;
 
@@ -311,7 +311,7 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
         }
     });
 
-    test('ZT6VS-FR-CORE-035: avatar collection declares its conversions on the owning model', function (): void {
+    test('ZT6VS-FR-CORE-035, ZT6VS-NFR-CORE-006: avatar collection declares its conversions on the owning model', function (): void {
         $user = User::factory()->create();
         $media = null;
 
