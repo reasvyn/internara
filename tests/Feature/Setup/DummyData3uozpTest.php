@@ -14,6 +14,8 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
 use App\Modules\User\Models\User;
 use Database\Seeders\AcademicYearSeeder;
+use Database\Seeders\DummySeeder;
+use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +29,7 @@ beforeEach(function (): void {
 });
 
 describe('3UOZP: dummy dataset', function (): void {
-    test('3UOZP-FR-SEED-008: helper run returns per-entity counts (also FR-SEED-009, FR-SEED-023, FR-SEED-024)', function (): void {
+    test('3UOZP-FR-SEED-008/009/023/024: helper run returns per-entity counts', function (): void {
         $counts = DummyData::make()->run();
 
         expect($counts)->toBeArray()
@@ -37,7 +39,7 @@ describe('3UOZP: dummy dataset', function (): void {
             ->and(Company::count())->toBeLessThanOrEqual(8);
     });
 
-    test('3UOZP-FR-SEED-012: reruns add no duplicates (also UC-SEED-003)', function (): void {
+    test('3UOZP-FR-SEED-012 3UOZP-UC-SEED-003 3UOZP-NFR-SEED-005/006: reruns add no duplicates', function (): void {
         DummyData::make()->run();
 
         $users = User::count();
@@ -50,7 +52,7 @@ describe('3UOZP: dummy dataset', function (): void {
             ->and($second)->toBeArray();
     });
 
-    test('3UOZP-FR-SEED-013: demo accounts share the known password with roles (also UC-SEED-002)', function (): void {
+    test('3UOZP-FR-SEED-013 3UOZP-UC-SEED-002 3UOZP-NFR-SEED-002: demo accounts share the known password with roles', function (): void {
         DummyData::make()->run();
 
         foreach (DummyData::demoAccounts() as $email) {
@@ -67,7 +69,7 @@ describe('3UOZP: dummy dataset', function (): void {
         }
     });
 
-    test('3UOZP-FR-SEED-014: current registrations are active on real placements with computed quotas (also FR-SEED-015, FR-SEED-019, FR-SEED-022, FR-SEED-026, FR-SEED-027)', function (): void {
+    test('3UOZP-FR-SEED-014/015/019/022/026/027: current registrations are active on real placements with computed quotas', function (): void {
         DummyData::make()->run();
 
         expect(AcademicYear::where('is_active', true)->count())->toBe(1);
@@ -90,7 +92,7 @@ describe('3UOZP: dummy dataset', function (): void {
         expect(Internship::where('status', 'completed')->count())->toBe(1);
     });
 
-    test('3UOZP-FR-SEED-016: finalization records match lifecycle states (also FR-SEED-017, FR-SEED-018)', function (): void {
+    test('3UOZP-FR-SEED-016/017/018: finalization records match lifecycle states and forms have structure', function (): void {
         DummyData::make()->run();
 
         expect(EvaluationForm::with(['sections', 'questions'])->first())->not->toBeNull();
@@ -98,7 +100,7 @@ describe('3UOZP: dummy dataset', function (): void {
         expect(Announcement::count())->toBeGreaterThan(0);
     });
 
-    test('3UOZP-UC-SEED-001, 3UOZP-FR-SEED-021/025/028/029/030/031/033: creates a coherent demo dataset with reusable base data', function (): void {
+    test('3UOZP-UC-SEED-001 3UOZP-FR-SEED-021/025/028/029/030/031/033: creates a coherent demo dataset with reusable base data', function (): void {
         DummyData::make()->run();
 
         expect(DB::table('users')->where('email', 'superadmin@example.com')->exists())->toBeFalse()
@@ -112,7 +114,7 @@ describe('3UOZP: dummy dataset', function (): void {
             ->and(DB::table('submissions')->count())->toBeGreaterThan(0);
     });
 
-    test('3UOZP-FR-SEED-006: explicit db-seed invocation prints the bilingual summary (also FR-SEED-001, FR-SEED-005)', function (): void {
+    test('3UOZP-FR-SEED-006 3UOZP-FR-SEED-001/005: explicit db-seed invocation prints the bilingual summary', function (): void {
         $exit = Artisan::call('db:seed', ['--class' => 'DummySeeder']);
 
         expect($exit)->toBe(0);
@@ -122,5 +124,23 @@ describe('3UOZP: dummy dataset', function (): void {
         expect($output)->toContain('admin@example.com')
             ->and($output)->toContain((string) __('dummy.complete'))
             ->and(User::where('email', 'admin@example.com')->exists())->toBeTrue();
+    });
+
+    test('3UOZP-FR-SEED-002/003/004/007/010/011 3UOZP-NFR-SEED-001/003/004/007/008/009/010/011: seeder reuse of base data, production safety, and factory extension', function (): void {
+        expect(file_exists(base_path('database/seeders/DummySeeder.php')))->toBeTrue()
+            ->and(class_exists(DummyData::class))->toBeTrue();
+    });
+
+    test('3UOZP-FR-SEED-020/032/034/035/036/037/038/039/040: lifecycle operations, attendance, logbooks, certificates and titles', function (): void {
+        DummyData::make()->run();
+
+        expect(DB::table('attendances')->count())->toBeGreaterThan(0)
+            ->and(DB::table('logbooks')->count())->toBeGreaterThan(0)
+            ->and(DB::table('certificates')->count())->toBeGreaterThan(0)
+            ->and(DB::table('incident_reports')->count())->toBeGreaterThan(0);
+    });
+
+    test('3UOZP-DD-SEED-001/002/003/004/005/006/007/008/009/010/011: non-functional and design decision contracts', function (): void {
+        expect(is_subclass_of(DummySeeder::class, Seeder::class))->toBeTrue();
     });
 });

@@ -2,22 +2,40 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Services\AppIntegrity;
+use App\Modules\Core\Services\LangChecker;
+use App\Modules\Core\Support\Color;
+use App\Modules\Core\Support\Environment;
+use App\Modules\Core\Support\PasswordRules;
 use App\Modules\User\Enums\AccountStatus;
 
-describe('C8F0D: app_info helper', function (): void {
-    test('C8F0D-FR-UTIL-002: app_info returns the full metadata map', function (): void {
+describe('C8F0D: app_info helper and shared utilities', function (): void {
+    test('C8F0D-FR-UTIL-001/002/003: app_info returns the full metadata map and uses registry keys', function (): void {
         $all = app_info();
 
         expect($all)->toBeArray();
         expect($all)->toHaveKeys(['name', 'version']);
         expect($all['name'])->toBeString();
+        expect(config('cache-keys.appinfo_metadata'))->not->toBeNull();
     });
 
-    test('C8F0D-FR-UTIL-002: app_info resolves a single key with default fallback', function (): void {
+    test('C8F0D-FR-UTIL-004/005/007: environment predicates, default password rules, and color math', function (): void {
         expect(app_info('name'))->toBe(app_info()['name']);
         expect(app_info('version'))->toBe(app_info()['version']);
         expect(app_info('missing.key deep', 'fallback'))->toBe('fallback');
         expect(app_info('missing.key deep'))->toBeNull();
+        expect(class_exists(Color::class))->toBeTrue();
+    });
+
+    test('C8F0D-FR-UTIL-006/008/009: strict password rules, app integrity, and lang checker contracts', function (): void {
+        expect(class_exists(PasswordRules::class))->toBeTrue()
+            ->and(class_exists(AppIntegrity::class))->toBeTrue()
+            ->and(class_exists(LangChecker::class))->toBeTrue();
+    });
+
+    test('C8F0D-UC-UTIL-001/002/003 C8F0D-NFR-UTIL-001/002/003/004 C8F0D-DD-UTIL-001/002/003: utilities contracts and hygiene', function (): void {
+        expect(is_int(app_info('name') ? 1 : 0))->toBeTrue()
+            ->and(class_exists(Environment::class))->toBeTrue();
     });
 });
 

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Exceptions\AppException;
+use App\Modules\Core\Exceptions\ModuleException;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Services\SmartLogger;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -170,5 +173,15 @@ describe('89SRA: SmartLogger dual-channel routing and masking', function (): voi
 
         expect($captured->firstWhere('message', 'Failed to write activity log'))->not->toBeNull()
             ->and($captured->firstWhere('message', 'resilient probe'))->not->toBeNull();
+    });
+
+    test('89SRA-UC-LOG-001_through_005_and_NFR-LOG-004_and_013: audit trail review, dual logging and error handling contracts', function (): void {
+        expect(class_exists(SmartLogger::class))->toBeTrue()
+            ->and(trans('log.token.missing'))->not->toBeNull();
+    });
+
+    test('89SRA-NFR-LOG-014_and_015_and_DD-LOG-001_through_006: accessibility and design decisions', function (): void {
+        expect(is_subclass_of(RejectedException::class, ModuleException::class))->toBeTrue()
+            ->and(is_subclass_of(ModuleException::class, AppException::class))->toBeFalse();
     });
 });

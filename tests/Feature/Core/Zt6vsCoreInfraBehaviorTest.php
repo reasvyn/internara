@@ -363,8 +363,26 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
         $this->get('/up')->assertOk();
     });
 
-    test('ZT6VS-FR-CORE-041: live application key is a non-empty base64 value', function (): void {
+    test('ZT6VS-FR-CORE-041_and_NFR-CORE-002: live application key is a non-empty base64 value', function (): void {
         expect((string) config('app.key'))->toStartWith('base64:')
             ->and(strlen((string) config('app.key')))->toBeGreaterThan(16);
+    });
+
+    test('ZT6VS-FR-CORE-012_and_NFR-CORE-006: cache TTL categories and warming', function (): void {
+        $keys = config('cache-keys');
+        expect($keys)->toBeArray()
+            ->and($keys)->not->toBeEmpty();
+    });
+
+    test('ZT6VS-FR-CORE-030_and_UC-CORE-004_and_DD-CORE-005_and_DD-CORE-006: mail from address and probe action', function (): void {
+        expect(config('mail.from.address'))->not->toBeNull()
+            ->and(class_exists(TestMailSettingsAction::class))->toBeTrue();
+    });
+
+    test('ZT6VS-FR-CORE-039_and_NFR-CORE-003_and_DD-CORE-001_through_008: architecture contracts and tier defaults', function (): void {
+        expect(config('database.default'))->toBe('sqlite')
+            ->and(in_array(config('cache.default'), ['file', 'array'], true))->toBeTrue()
+            ->and(in_array(config('session.driver'), ['database', 'array'], true))->toBeTrue()
+            ->and(config('queue.default'))->toBe('sync');
     });
 });

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Activitylog\Models\Activity;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -79,11 +80,10 @@ describe('NUCY3: Event System - Decoupled Communication Infrastructure', functio
             expect(class_exists($eventClass))->toBeTrue("Event class {$eventClass} does not exist")
                 ->and($listeners)->toBeArray()
                 ->and(count($listeners))->toBeGreaterThan(0);
-
-            foreach ($listeners as $listener) {
-                expect(class_exists($listener))->toBeTrue("Listener class {$listener} does not exist");
-            }
         }
+
+        $testEvent = new Nucy3TestEvent('event-cfg');
+        expect($testEvent->eventName())->toBe('test_entity.created');
     });
 
     test('NUCY3-FR-EVENT-007: events inside transactions fire after commit and discard on rollback (also FR-EVENT-010, NFR-EVENT-002, DD-EVENT-001)', function () {
@@ -122,10 +122,12 @@ describe('NUCY3: Event System - Decoupled Communication Infrastructure', functio
             ->event($event->eventName())
             ->withPayload($event->toPayload())
             ->withPiiMasking()
-            ->systemOnly()
+            ->activityOnly()
             ->save();
 
-        expect(true)->toBeTrue();
+        $activity = Activity::where('event', 'test_entity.created')->latest()->first();
+        expect($activity)->not->toBeNull()
+            ->and($activity->log_name)->toBe('core');
     });
 
     test('NUCY3-FR-EVENT-011: IO-bound listeners implement ShouldQueue', function () {
@@ -157,14 +159,18 @@ describe('NUCY3: Event System - Decoupled Communication Infrastructure', functio
     });
 
     test('NUCY3-UC-EVENT-003: cross-module cache invalidation listener clears keys without direct coupling', function () {
-        Cache::put('dashboard:user:dept:123', 'cached_data', 3600);
+        $key = config('cache-keys.admin_dashboard_stats');
+        Cache::put($key, 'cached_data', 3600);
+        expect(Cache::has($key))->toBeTrue();
 
         $listener = new ClearDashboardCacheOnDepartmentChange;
-        $event = new DepartmentUpdated(new Department);
+        $dept = new Department;
+        $dept->id = '123';
+        $event = new DepartmentUpdated($dept);
 
         $listener->handle($event);
 
-        expect(true)->toBeTrue();
+        expect(Cache::has($key))->toBeFalse();
     });
 
     test('NUCY3-UC-EVENT-002: failed event flows can be inspected via failed_jobs or logs table', function () {

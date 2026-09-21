@@ -192,12 +192,16 @@ describe('T4B26: RBAC and Authorization Comprehensive Lifecycle', function () {
     });
 
     test('T4B26-FR-RBAC-009: every policy extends BasePolicy', function () {
-        expect(is_subclass_of(UserPolicy::class, BasePolicy::class))->toBeTrue();
+        $policy = new UserPolicy;
+        expect($policy)->toBeInstanceOf(BasePolicy::class);
     });
 
     test('T4B26-FR-RBAC-014: policy auto discovery and cache invalidation (also NFR-RBAC-001)', function () {
+        Cache::put('module.policies', ['dummy'], 60);
+        expect(Cache::has('module.policies'))->toBeTrue();
+
         Cache::forget('module.policies');
-        expect(true)->toBeTrue();
+        expect(Cache::has('module.policies'))->toBeFalse();
     });
 
     test('T4B26-FR-RBAC-019: journals proxy inactivity hours configuration', function () {

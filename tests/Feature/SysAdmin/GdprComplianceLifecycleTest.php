@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Models\GdprDeletionLog;
-use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Policies\GdprDeletionLogPolicy;
 use App\Modules\User\Domain\UserManagement\Actions\BatchDeleteUserAction;
 use App\Modules\User\Domain\UserManagement\Actions\DeleteUserAction;
 use App\Modules\User\Models\User;
@@ -13,6 +12,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Spatie\Activitylog\Models\Activity;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -183,7 +183,21 @@ describe('7HNCF: GDPR Compliance Lifecycle', function () {
     });
 
     test('7HNCF-NFR-GDPR-004: erasure and export activity is logged through logger with PII masking', function () {
-        expect(true)->toBeTrue();
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $user = User::factory()->create([
+            'name' => 'Masked Subject',
+            'email' => 'masked.subject@example.com',
+        ]);
+
+        $deleteAction = app(DeleteUserAction::class);
+        $deleteAction->execute($user);
+
+        $activity = Activity::where('event', 'user_deleted')->latest()->first();
+        expect($activity)->not->toBeNull()
+            ->and($activity->properties['payload']['name'])->toBe('M. Subject');
     });
 
     test('7HNCF-NFR-GDPR-005: every user-facing deletion-log string passes through translation helper', function () {
@@ -192,9 +206,13 @@ describe('7HNCF: GDPR Compliance Lifecycle', function () {
     });
 
     test('7HNCF-NFR-GDPR-006: compliance classes follow strict typing', function () {
-        expect(class_exists(GdprDeletionLog::class))->toBeTrue()
-            ->and(class_exists(GdprDeletionLogs::class))->toBeTrue()
-            ->and(class_exists(GdprDeletionLogPolicy::class))->toBeTrue();
+        $log = GdprDeletionLog::factory()->make([
+            'user_id' => '00000000-0000-0000-0000-000000000001',
+            'metadata_snapshot' => ['key' => 'val'],
+        ]);
+
+        expect($log->user_id)->toBeString()
+            ->and($log->metadata_snapshot)->toBeArray();
     });
 
     test('7HNCF-DD-GDPR-005: deletion logs are retained indefinitely with no automatic cleanup', function () {
