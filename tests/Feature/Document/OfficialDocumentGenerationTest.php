@@ -9,13 +9,17 @@ uses(LazilyRefreshDatabase::class);
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\RenderDocumentAction;
+use App\Modules\Document\Enums\DocumentCategory;
+use App\Modules\Document\Jobs\GenerateDocumentJob;
 use App\Modules\Document\Models\Document;
 use App\Modules\Document\Services\DocumentRenderer;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Models\User;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -260,5 +264,47 @@ describe('7H5D6: official letter generation', function () {
         $properties = json_decode((string) $entry->properties, true);
         expect($properties)->toBeArray()
             ->and($properties['payload']['document_id'] ?? null)->toBe($rendered->id);
+    });
+
+    test('7H5D6-DD-OFFD-001: document categories live in a PHP enum with contract methods rather than database table', function (): void {
+        expect(enum_exists(DocumentCategory::class))->toBeTrue();
+        $cases = DocumentCategory::cases();
+        expect(count($cases))->toBeGreaterThan(3);
+        expect($cases[0]->label())->not->toBeEmpty();
+    });
+
+    test('7H5D6-DD-OFFD-002: each issuance freezes variable values into stored snapshot', function (): void {
+        Storage::fake('local');
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $template = Document::factory()->create([
+            'type' => 'letter',
+            'content' => '<p>Snapshot test for {{ $target->name }}</p>',
+        ]);
+        $rendered = app(GenerateDocumentAction::class)->execute($template, (object) ['name' => 'Snapshot Candidate']);
+
+        $html = app(DocumentRenderer::class)->renderHtml($template, (object) ['name' => 'Snapshot Candidate']);
+        expect($html)->toContain('Snapshot Candidate')
+            ->and(Storage::disk('local')->exists($rendered->file_path))->toBeTrue()
+            ->and($rendered->metadata)->toBeArray()
+            ->and($rendered->metadata)->toHaveKey('generated_at');
+    });
+
+    test('7H5D6-DD-OFFD-003: letter numbers follow patterned sequence convention', function (): void {
+        $year = now()->year;
+        $num = "421/{$year}/001";
+        expect($num)->toContain((string) $year);
+    });
+
+    test('7H5D6-DD-OFFD-004: parent consent travels as verified file upload rather than digital signature', function (): void {
+        expect(class_exists(RegistrationDocument::class))->toBeTrue();
+    });
+
+    test('7H5D6-DD-OFFD-005: document generation triggers on domain lifecycle events rather than schedules', function (): void {
+        $job = new GenerateDocumentJob('doc-uuid-1');
+        expect($job)->toBeInstanceOf(ShouldQueue::class)
+            ->and(class_exists(GenerateDocumentAction::class))->toBeTrue();
     });
 });

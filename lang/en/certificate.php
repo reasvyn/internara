@@ -71,4 +71,18 @@ return [
         'template_design_desc' => 'Configure the layout, fonts, colors, and placeholder fields for automatic certificate generation.',
     ],
     'revoke' => 'Revoke',
+    'verify' => [
+        'title' => 'Certificate Verification',
+        'subtitle' => 'Official authenticity check',
+        'status_issued' => 'Valid Certificate (ISSUED)',
+        'status_revoked' => 'Revoked Certificate (REVOKED)',
+        'status_not_found' => 'Certificate Not Found',
+        'holder' => 'Student Name',
+        'school' => 'School Name',
+        'number' => 'Certificate Number',
+        'issued_at' => 'Issuance Date',
+        'revoked_at' => 'Revocation Date',
+        'not_found_message' => 'The certificate reference provided could not be verified in the school registry.',
+        'revoked_warning' => 'This certificate has been formally revoked and is no longer valid.',
+    ],
 ];

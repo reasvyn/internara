@@ -71,4 +71,18 @@ return [
         'template_design_desc' => 'Konfigurasikan tata letak, font, warna, dan bidang placeholder untuk pembuatan sertifikat otomatis.',
     ],
     'revoke' => 'Cabut',
+    'verify' => [
+        'title' => 'Verifikasi Sertifikat',
+        'subtitle' => 'Pemeriksaan keaslian resmi',
+        'status_issued' => 'Sertifikat Sah (DITERBITKAN)',
+        'status_revoked' => 'Sertifikat Dicabut (DICABUT)',
+        'status_not_found' => 'Sertifikat Tidak Ditemukan',
+        'holder' => 'Nama Siswa',
+        'school' => 'Nama Sekolah',
+        'number' => 'Nomor Sertifikat',
+        'issued_at' => 'Tanggal Penerbitan',
+        'revoked_at' => 'Tanggal Pencabutan',
+        'not_found_message' => 'Referensi sertifikat yang diberikan tidak dapat diverifikasi dalam registri sekolah.',
+        'revoked_warning' => 'Sertifikat ini telah dicabut secara resmi dan tidak lagi berlaku.',
+    ],
 ];

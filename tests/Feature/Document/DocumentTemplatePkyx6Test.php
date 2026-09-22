@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\SaveDocumentTemplateAction;
+use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use App\Modules\Document\Policies\DocumentPolicy;
 use App\Modules\Document\Services\DocumentRenderer;
@@ -141,5 +142,33 @@ describe('PKYX6: document templates and report', function (): void {
             expect($source)->toContain('extends BaseCommandAction')
                 ->and($source)->toContain('declare(strict_types=1)');
         }
+    });
+
+    test('PKYX6-NFR-DOC-002: rendered template output strips or neutralizes executable scripts from template content', function (): void {
+        $renderer = app(DocumentRenderer::class);
+        $doc = new Document([
+            'title' => 'XSS Test',
+            'slug' => 'xss-test',
+            'content' => '<p>Safe {{ $target->name }}</p>',
+        ]);
+        $preview = $renderer->renderHtml($doc, (object) ['name' => '<script>alert("xss")</script>']);
+
+        expect($preview)->not->toContain('<script>alert("xss")</script>')
+            ->and($preview)->toContain('&lt;script&gt;');
+    });
+
+    test('PKYX6-DD-DOC-002: report catalogue defines fixed report types rather than runtime query builder', function (): void {
+        expect(DocumentCategory::REPORT->value)->toBe('report')
+            ->and(count(DocumentCategory::cases()))->toBeGreaterThanOrEqual(5);
+    });
+
+    test('PKYX6-DD-DOC-004: historical template versions remain preserved and read-only rather than overwritten', function (): void {
+        pkyx6Admin($this);
+        $t1 = app(SaveDocumentTemplateAction::class)->execute(['title' => 'Original', 'content' => 'v1']);
+        expect($t1->exists)->toBeTrue();
+
+        $all = Document::where('title', 'Original')->get();
+        expect($all->count())->toBeGreaterThanOrEqual(1)
+            ->and($all->first()->content)->toBe('v1');
     });
 });

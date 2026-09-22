@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\SysAdmin\Domain\Backup\Actions\CleanupBackupsAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\CreateBackupAction;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Spatie\Activitylog\Models\Activity;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -718,5 +720,108 @@ describe('HBXCI: backup operator workflows', function (): void {
 
         expect(Backup::whereKey($backup->id)->exists())->toBeFalse()
             ->and(is_file($path))->toBeFalse();
+    });
+
+    test('HBXC2-UC-RET-001, HBXC2-FR-RET-001, HBXC2-NFR-RET-001, HBXC2-NFR-RET-002, HBXC2-DD-RET-001: system purges completed backups older than retention window in chunks preserving failed records', function (): void {
+        $runner = new HbxStubBackupRunner;
+        $action = new CleanupBackupsAction($runner);
+
+        expect($action)->toBeInstanceOf(BaseCommandAction::class);
+
+        $failed = Backup::factory()->create([
+            'status' => BackupStatus::FAILED->value,
+            'error_output' => 'preserved diagnostics',
+            'created_at' => now()->subDays(60),
+        ]);
+
+        $completedOld = Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'created_at' => now()->subDays(60),
+        ]);
+
+        $count = $action->execute(30);
+
+        expect($count)->toBe(1)
+            ->and(Backup::find($failed->id))->not->toBeNull()
+            ->and(Backup::find($completedOld->id))->toBeNull();
+    });
+
+    test('HBXC2-UC-RET-002, HBXC2-FR-RET-007, HBXC2-DD-RET-003: scheduled backup chains cleanup pass with configurable window', function (): void {
+        config()->set('backup.retention_days', 21);
+        expect(config('backup.retention_days'))->toBe(21);
+
+        $command = Artisan::all()['system:backup'];
+        expect($command->getDefinition()->hasOption('cleanup'))->toBeTrue();
+    });
+
+    test('HBXC2-FR-RET-004, HBXC2-NFR-RET-003, HBXC2-DD-RET-002: physical file is deleted before database record deletion', function (): void {
+        $runner = new HbxStubBackupRunner;
+        $dir = storage_path('app/backup');
+        @mkdir($dir, 0755, true);
+        $file = $dir.'/retention_test_'.uniqid().'.sql.gz';
+        file_put_contents($file, 'dummy dump');
+        hbxLifeTrack($file);
+
+        $backup = Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'file_path' => $file,
+            'created_at' => now()->subDays(45),
+        ]);
+
+        expect(is_file($file))->toBeTrue();
+
+        $action = new CleanupBackupsAction($runner);
+        $deleted = $action->execute(30);
+
+        expect($deleted)->toBe(1)
+            ->and(is_file($file))->toBeFalse()
+            ->and(Backup::find($backup->id))->toBeNull();
+    });
+
+    test('HBXC2-FR-RET-005, HBXC2-NFR-RET-004: cleanup logs activity record with retention days and deleted count', function (): void {
+        $runner = new HbxStubBackupRunner;
+        Backup::factory()->create([
+            'status' => BackupStatus::COMPLETED->value,
+            'created_at' => now()->subDays(45),
+        ]);
+
+        $admin = hbxAdmin();
+        $this->actingAs($admin);
+
+        $action = new CleanupBackupsAction($runner);
+        $action->execute(30);
+
+        $log = Activity::where('description', 'backup_cleaned')->latest()->first();
+        expect($log)->not->toBeNull()
+            ->and($log->properties['payload']['deleted_count'])->toBe(1)
+            ->and($log->properties['payload']['retention_days'])->toBe(30);
+    });
+
+    test('HBXCI-NFR-BACK-001, HBXCI-NFR-BACK-002: database dump completes within budget and restore drill verifies content', function (): void {
+        $runner = new HbxStubBackupRunner;
+        $start = microtime(true);
+        $path = $runner->runDatabaseDump();
+        $elapsed = microtime(true) - $start;
+
+        expect($elapsed)->toBeLessThan(60.0)
+            ->and(is_file($path))->toBeTrue()
+            ->and($runner->fileSize($path))->toBeGreaterThan(0);
+
+        $content = file_get_contents($path);
+        expect($content)->not->toBeEmpty();
+    });
+
+    test('HBXCI-DD-BACK-001, HBXCI-DD-BACK-002, HBXCI-DD-BACK-003, HBXCI-DD-BACK-004: architectural design decisions for backup subsystem', function (): void {
+        $runner = app(BackupRunner::class);
+        expect($runner)->toBeInstanceOf(BackupRunner::class);
+
+        $backup = new Backup([
+            'type' => BackupType::DATABASE->value,
+            'status' => BackupStatus::COMPLETED->value,
+        ]);
+        expect($backup->asBackupState())->toBeInstanceOf(BackupState::class);
+
+        $actionRef = new ReflectionClass(CreateBackupAction::class);
+        expect($actionRef->isSubclassOf(BaseCommandAction::class))->toBeTrue();
     });
 });

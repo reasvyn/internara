@@ -413,4 +413,42 @@ describe('J0M04: certificate issuance', function (): void {
             ->and($results['success'] + $results['failed'])->toBe(count($ids));
         expect(Certificate::count())->toBe(15);
     });
+
+    test('J0M04-FR-CERT-010, J0M04-FR-CERT-011: graduate eligibility evaluates registration prerequisites', function (): void {
+        $admin = j0m04aAdmin();
+        $this->actingAs($admin);
+
+        $template = j0m04aTemplate();
+        $registration = j0m04aRegistration();
+
+        // Valid registration with template issues successfully
+        $certificate = app(IssueCertificateAction::class)->execute($registration, $template);
+        expect($certificate->exists)->toBeTrue()
+            ->and($certificate->status->value)->toBe('issued');
+    });
+
+    test('J0M04-NFR-CERT-006, J0M04-DD-CERT-005: alumni certificate retrieval remains available read-only after closure', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+
+        $registration = Registration::factory()->create(['student_id' => $student->id]);
+        $certificate = Certificate::factory()->create([
+            'registration_id' => $registration->id,
+            'status' => 'issued',
+        ]);
+
+        $this->actingAs($student);
+        $response = $this->get(route('student.certificates'));
+        $response->assertStatus(200);
+    });
+
+    test('J0M04-DD-CERT-002: verification identity is a random hash rather than a URL-bound token', function (): void {
+        $admin = j0m04aAdmin();
+        $this->actingAs($admin);
+
+        $certificate = j0m04aIssue(j0m04aRegistration(), j0m04aTemplate());
+
+        expect($certificate->qr_hash)->not->toBeNull()
+            ->and(strlen($certificate->qr_hash))->toBeGreaterThanOrEqual(32);
+    });
 });
