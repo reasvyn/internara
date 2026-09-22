@@ -26,6 +26,10 @@ return [
         'action_failed_hint' => 'An unexpected error occurred while performing this action.',
     ],
 
+    'deploy' => [
+        'detection_heading' => 'Server Capability Probes:',
+    ],
+
     'exceptions' => [
         'unauthorized_hint' => 'You are not authorized to perform this action.',
         'validation_failed_hint' => 'Please review the provided data and try again.',

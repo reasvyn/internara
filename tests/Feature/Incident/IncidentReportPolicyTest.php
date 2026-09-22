@@ -44,7 +44,7 @@ describe('IncidentReportPolicy', function () {
         expect(Gate::allows('view', $report))->toBeFalse();
     });
 
-    test('allows any authenticated user to create', function () {
+    test('3RU9S-FR-INC-017, 3RU9S-DD-INC-002: allows any authenticated user to create', function () {
         $student = User::factory()->create();
         $student->assignRole('student');
         $this->actingAs($student);
@@ -56,7 +56,7 @@ describe('IncidentReportPolicy', function () {
         expect(Gate::allows('create', IncidentReport::class))->toBeTrue();
     });
 
-    test('reserves update and delete to admin', function () {
+    test('3RU9S-FR-INC-017, 3RU9S-DD-INC-002: reserves update and delete to admin', function () {
         $report = IncidentReport::factory()->create();
 
         $admin = User::factory()->create();

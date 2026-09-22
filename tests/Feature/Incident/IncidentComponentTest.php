@@ -13,7 +13,7 @@ use Livewire\Livewire;
 uses(LazilyRefreshDatabase::class);
 
 describe('3RU9S: incident Livewire components', function (): void {
-    test('3RU9S-UC-INC-001/FR-INC-007: form saves a report for an active student registration', function (): void {
+    test('3RU9S-UC-INC-001, 3RU9S-FR-INC-004, 3RU9S-FR-INC-007: form saves a report for an active student registration and stamps reported_by', function (): void {
         $student = User::factory()->create();
         $student->assignRole('student');
         $registration = Registration::factory()->active()->create(['student_id' => $student->id]);
@@ -62,7 +62,7 @@ describe('3RU9S: incident Livewire components', function (): void {
         expect(IncidentReport::count())->toBe(0);
     });
 
-    test('3RU9S-UC-INC-005/FR-INC-011: manager searches and filters incidents', function (): void {
+    test('3RU9S-UC-INC-005, 3RU9S-FR-INC-011: manager searches and filters incidents', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $this->actingAs($admin);
@@ -78,7 +78,7 @@ describe('3RU9S: incident Livewire components', function (): void {
             ->and($rows->first()->description)->toBe('Broken guard in press room');
     });
 
-    test('3RU9S-UC-INC-003/FR-INC-013: manager resolves an incident and closes its modal', function (): void {
+    test('3RU9S-UC-INC-003, 3RU9S-FR-INC-013: manager resolves an incident and closes its modal', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $this->actingAs($admin);

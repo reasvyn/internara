@@ -33,6 +33,7 @@ return [
     'resolution_notes' => 'Catatan Penyelesaian',
     'resolution_notes_placeholder' => 'Jelaskan bagaimana insiden ini diselesaikan',
     'already_closed' => 'Insiden ini sudah ditutup.',
+    'illegal_transition' => 'Tidak dapat mengubah status insiden dari :from ke :to.',
     'edit_title' => 'Edit Insiden',
     'update_success' => 'Insiden berhasil diperbarui.',
 

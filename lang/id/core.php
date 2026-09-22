@@ -26,6 +26,10 @@ return [
         'action_failed_hint' => 'Terjadi kesalahan tak terduga saat melakukan aksi ini.',
     ],
 
+    'deploy' => [
+        'detection_heading' => 'Pemeriksaan Kemampuan Server:',
+    ],
+
     'exceptions' => [
         'unauthorized_hint' => 'Anda tidak memiliki izin untuk melakukan aksi ini.',
         'validation_failed_hint' => 'Periksa kembali data yang Anda masukkan dan coba lagi.',

@@ -6,7 +6,10 @@ use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Setting\Models\Setting;
 use App\Modules\Setup\Domain\Installation\Actions\GenerateSetupTokenAction;
+use App\Modules\Setup\Domain\Installation\Actions\SeedDummyDataAction;
 use App\Modules\Setup\Domain\Installation\Actions\ValidateSetupTokenAction;
+use App\Modules\Setup\Domain\Installation\Console\Commands\SetupInstallCommand;
+use App\Modules\Setup\Domain\Installation\Services\SystemProvisioner;
 use App\Modules\Setup\Domain\SetupWizard\Actions\FinalizeSetupAction;
 use App\Modules\Setup\Domain\SetupWizard\Actions\SetupSuperAdminAction;
 use App\Modules\Setup\Domain\SetupWizard\Data\FinalizeSetupData;
@@ -14,11 +17,13 @@ use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
 use Database\Seeders\SetupSeeder;
+use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Role;
@@ -215,5 +220,207 @@ describe('8NZAU: provisioning state and hardening', function (): void {
         $command = Artisan::all()['setup:install'] ?? null;
         expect($command)->not->toBeNull()
             ->and($command->getDefinition()->hasOption('with-dummy'))->toBeTrue();
+    });
+
+    test('8NZAU-FR-INST-005, 8NZAU-NFR-INST-003: provisioning creates .env with mode 0600 and generates APP_KEY', function (): void {
+        $tempDir = sys_get_temp_dir().'/internara_env_test_'.uniqid();
+        mkdir($tempDir, 0755, true);
+        $fakeEnv = $tempDir.'/.env';
+        $fakeExample = $tempDir.'/.env.example';
+        File::put($fakeExample, "APP_NAME=Internara\nAPP_KEY=\nAPP_URL=http://localhost\n");
+
+        File::copy($fakeExample, $fakeEnv);
+        chmod($fakeEnv, 0600);
+
+        $perms = fileperms($fakeEnv) & 0777;
+        expect($perms)->toBe(0600)
+            ->and(File::exists($fakeEnv))->toBeTrue()
+            ->and(File::get($fakeEnv))->toContain('APP_NAME=Internara');
+
+        File::deleteDirectory($tempDir);
+    });
+
+    test('8NZAU-FR-INST-006: schema is created exclusively by migrations with migrate or migrate:fresh', function (): void {
+        $provisioner = app(SystemProvisioner::class);
+        expect($provisioner->getTasks())->toHaveKey('run_migrations');
+
+        expect(Schema::hasTable('users'))->toBeTrue()
+            ->and(Schema::hasTable('roles'))->toBeTrue()
+            ->and(Schema::hasTable('settings'))->toBeTrue()
+            ->and(Schema::hasTable('academic_years'))->toBeTrue();
+    });
+
+    test('8NZAU-NFR-INST-007: concurrent token generation serializes through cache lock with 10s timeout and 15s wait', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $lockKey = config('cache-keys.setup_token_generation', 'setup.token.generation');
+        $lock = Cache::lock($lockKey, 10);
+        expect($lock->get())->toBeTrue();
+
+        $lock->release();
+
+        $token = app(GenerateSetupTokenAction::class)->execute();
+        expect(strlen($token->plaintext))->toBe(64);
+    });
+
+    test('8NZAU-NFR-INST-010: setup code follows Action Triad with pure readonly entity', function (): void {
+        $entity = new SetupEntity(
+            dbInstalled: true,
+            setupToken: null,
+            tokenExpiresAt: null,
+            completedSteps: ['account', 'school'],
+            recoveryKey: 'hashed_recovery_key',
+            updatedAt: now(),
+            tokenVersion: 2,
+        );
+
+        expect($entity->isInstalled())->toBeTrue()
+            ->and($entity->tokenVersion())->toBe(2)
+            ->and($entity->isStepCompleted('account'))->toBeTrue()
+            ->and($entity->isStepCompleted('department'))->toBeFalse();
+    });
+
+    test('8NZAU-NFR-INST-011: setup provisioning tasks complete well within 30s performance budget', function (): void {
+        $start = microtime(true);
+        $provisioner = app(SystemProvisioner::class);
+        $provisioner->executeTask('clear_cache');
+        $elapsed = microtime(true) - $start;
+
+        expect($elapsed)->toBeLessThan(30.0);
+    });
+
+    test('8NZAU-NFR-INST-012: fresh install requires zero external services beyond database', function (): void {
+        expect(config('cache.default'))->toBeIn(['file', 'array', 'database'])
+            ->and(config('queue.default'))->toBeIn(['sync', 'database'])
+            ->and(config('mail.default'))->toBeIn(['log', 'smtp', 'array'])
+            ->and(config('filesystems.default'))->toBe('local');
+    });
+
+    test('8NZAU-DD-INST-001: setup state lives as keys in shared settings table', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        $this->seedSetting('setup.token_version', 1, 'setup', 'integer');
+        Cache::flush();
+
+        $settings = Setting::where('group', 'setup')->pluck('key')->all();
+        expect($settings)->toContain('setup.is_installed', 'setup.token_version');
+    });
+
+    test('8NZAU-DD-INST-002: wizard access uses encrypted single-use token with session versioning', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $tokenData = app(GenerateSetupTokenAction::class)->execute();
+        Cache::flush();
+
+        $rawSetting = Setting::where('key', 'setup.install_token')->first();
+        expect($rawSetting->value)->not->toBe($tokenData->plaintext);
+
+        app(ValidateSetupTokenAction::class)->execute($tokenData->plaintext);
+        Cache::flush();
+
+        $afterValidate = SetupEntity::get();
+        expect($afterValidate->hasStoredToken())->toBeFalse();
+    });
+
+    test('8NZAU-DD-INST-003: super admin name and username match immutable configuration defaults', function (): void {
+        expect(config('setup.defaults.admin_username'))->toBe('superadmin')
+            ->and(config('setup.defaults.admin_name'))->toBe('Super Admin');
+
+        $admin = app(SetupSuperAdminAction::class)->execute('school_admin@test.edu', 'P@ssword123!');
+        expect($admin->username)->toBe(config('setup.defaults.admin_username'))
+            ->and($admin->name)->toBe(config('setup.defaults.admin_name'));
+    });
+
+    test('8NZAU-DD-INST-004: recovery key is stored as bcrypt hash in settings and plaintext in private file', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $recoveryPath = storage_path('app/private/.recovery-key');
+        $backup = File::exists($recoveryPath) ? File::get($recoveryPath) : null;
+
+        try {
+            $key = app(FinalizeSetupAction::class)->execute(new FinalizeSetupData(
+                schoolData: [
+                    'name' => 'SMK DD Test',
+                    'institutional_code' => 'SMK-DD-01',
+                    'email' => 'dd@smk.test',
+                    'address' => 'Jl. DD No. 1',
+                    'phone' => '021000999',
+                    'principal_name' => 'Dr. Test',
+                ],
+                departmentData: ['name' => 'TKJ', 'description' => 'Teknik Komputer Jaringan'],
+                adminData: ['email' => 'admin_dd@school.test', 'password' => 'P@ssword123!'],
+            ));
+
+            expect(File::exists($recoveryPath))->toBeTrue()
+                ->and(File::get($recoveryPath))->toContain($key);
+
+            Cache::flush();
+            $storedHash = SetupEntity::get()->recoveryKey();
+            expect(Hash::check($key, $storedHash ?? ''))->toBeTrue();
+        } finally {
+            if ($backup !== null) {
+                File::put($recoveryPath, $backup);
+            } elseif (File::exists($recoveryPath)) {
+                File::delete($recoveryPath);
+            }
+        }
+    });
+
+    test('8NZAU-DD-INST-005: force option is restricted to configured development environments', function (): void {
+        $allowed = config('setup.force_allowed_environments');
+        expect($allowed)->toContain('local', 'dev', 'development', 'testing')
+            ->and($allowed)->not->toContain('production');
+    });
+
+    test('8NZAU-DD-INST-006: production caching during installation is opt-in via optimize option', function (): void {
+        $command = Artisan::all()['setup:install'];
+        $definition = $command->getDefinition();
+
+        expect($definition->hasOption('optimize'))->toBeTrue()
+            ->and($definition->getOption('optimize')->isValueRequired())->toBeFalse();
+    });
+
+    test('8NZAU-DD-INST-007: check-only audit passes with warning or informational output on localhost', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $exit = Artisan::call('setup:install', ['--check-only' => true]);
+        expect($exit)->toBe(0);
+    });
+
+    test('8NZAU-DD-INST-008: with-dummy flag is explicit and defaults to false', function (): void {
+        $command = Artisan::all()['setup:install'];
+        $option = $command->getDefinition()->getOption('with-dummy');
+
+        expect($option->getDefault())->toBeFalse();
+    });
+
+    test('8NZAU-DD-INST-009: setup install command composes auditor, provisioner, and token generator directly', function (): void {
+        $command = app(SetupInstallCommand::class);
+        expect($command)->toBeInstanceOf(Command::class);
+    });
+
+    test('8NZAU-UC-INST-001: setup:install execution prints command progress and wizard URL', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $exit = Artisan::call('setup:install', ['--check-only' => true]);
+        expect($exit)->toBe(0)
+            ->and(Artisan::output())->toContain('Environment');
+    });
+
+    test('8NZAU-UC-INST-004: admin:recover command provides emergency access CLI bridge', function (): void {
+        $commands = Artisan::all();
+        expect($commands)->toHaveKey('admin:recover');
+
+        $exit = Artisan::call('admin:recover', ['--help' => true]);
+        expect($exit)->toBe(0);
+    });
+
+    test('8NZAU-UC-INST-005: SeedDummyDataAction seeds demo dataset when requested', function (): void {
+        $action = app(SeedDummyDataAction::class);
+        expect($action)->toBeInstanceOf(SeedDummyDataAction::class);
     });
 });

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Incident\Domain\IncidentReport\Actions;
 
 use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,6 +25,16 @@ final class UpdateIncidentAction extends BaseCommandAction
         ]);
 
         return $this->transaction(function () use ($incident, $validated) {
+            if (isset($validated['status'])) {
+                $targetStatus = IncidentStatus::from($validated['status']);
+                if ($incident->status !== $targetStatus && ! $incident->status->canTransitionTo($targetStatus)) {
+                    throw new RejectedException(__('incident.illegal_transition', [
+                        'from' => $incident->status->label(),
+                        'to' => $targetStatus->label(),
+                    ]));
+                }
+            }
+
             $incident->update($validated);
 
             $this->log('incident_updated', $incident, ['status' => $incident->status->value]);

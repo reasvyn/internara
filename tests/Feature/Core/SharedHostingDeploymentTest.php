@@ -54,4 +54,23 @@ describe('06IB8: shared hosting deployment behavior', function (): void {
         expect(is_writable(storage_path()))->toBeTrue()
             ->and(is_writable(storage_path('framework/views')))->toBeTrue();
     });
+
+    test('06IB8-FR-HOST-004 06IB8-FR-HOST-005 06IB8-DD-HOST-001 06IB8-DD-HOST-002: shared-hosting preset configures sync queue and database session', function (): void {
+        $preset = config('deployment.profiles.shared-hosting');
+        expect($preset['queue'])->toBe('sync')
+            ->and($preset['session'])->toBe('database')
+            ->and($preset['cache'])->toBe('file');
+    });
+
+    test('06IB8-FR-HOST-007 06IB8-FR-HOST-009 06IB8-NFR-HOST-002 06IB8-NFR-HOST-003: package manifests allow off-server build and storage link', function (): void {
+        $composer = json_decode(File::get(base_path('composer.json')), true);
+        expect($composer)->toHaveKey('scripts')
+            ->and($composer['scripts'])->toHaveKey('post-autoload-dump');
+
+        $package = json_decode(File::get(base_path('package.json')), true);
+        expect($package)->toHaveKey('scripts')
+            ->and($package['scripts'])->toHaveKey('build');
+
+        expect(config('filesystems.disks.public.driver'))->toBe('local');
+    });
 });

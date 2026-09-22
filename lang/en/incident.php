@@ -33,6 +33,7 @@ return [
     'resolution_notes' => 'Resolution Notes',
     'resolution_notes_placeholder' => 'Describe how this incident was resolved',
     'already_closed' => 'This incident is already closed.',
+    'illegal_transition' => 'Cannot transition incident from :from to :to.',
     'edit_title' => 'Edit Incident',
     'update_success' => 'Incident updated successfully.',
 
