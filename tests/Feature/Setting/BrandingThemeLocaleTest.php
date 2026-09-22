@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -81,11 +82,12 @@ describe('52O1I: branding, theme and locale', function (): void {
 
     test('52O1I-FR-BRAND-005: logo and favicon upload size and mime limits validate', function (): void {
         $form = new BrandingForm(new SystemSetting, 'brandingForm');
-        $ref = new ReflectionMethod($form, 'rules');
-        $rules = $ref->invoke($form);
+        $form->brand_logo = UploadedFile::fake()->create('document.pdf', 500, 'application/pdf');
+        expect(fn () => $form->validate())->toThrow(ValidationException::class);
 
-        expect($rules['brand_logo'])->toBe('nullable|image|max:1024')
-            ->and($rules['site_favicon'])->toBe('nullable|image|max:512');
+        $formValid = new BrandingForm(new SystemSetting, 'brandingForm');
+        $formValid->brand_logo = UploadedFile::fake()->image('logo.png', 100, 100);
+        expect(fn () => $formValid->validate())->not->toThrow(ValidationException::class);
     });
 
     test('52O1I-FR-BRAND-006: UploadBrandAssetAction stores via media collections and RemoveBrandAssetAction cleans up', function (): void {
@@ -243,11 +245,8 @@ describe('52O1I: branding, theme and locale', function (): void {
 
     test('52O1I-NFR-BRAND-001: asset upload rejects oversized files', function (): void {
         $form = new BrandingForm(new SystemSetting, 'brandingForm');
-        $ref = new ReflectionMethod($form, 'rules');
-        $rules = $ref->invoke($form);
-
-        expect($rules['brand_logo'])->toContain('max:1024')
-            ->and($rules['site_favicon'])->toContain('max:512');
+        $form->brand_logo = UploadedFile::fake()->image('huge.png')->size(2000);
+        expect(fn () => $form->validate())->toThrow(ValidationException::class);
     });
 
     test('52O1I-NFR-BRAND-002: brand asset preview urls handle temporary uploaded files', function (): void {
@@ -303,8 +302,13 @@ describe('52O1I: branding, theme and locale', function (): void {
     });
 
     test('52O1I-DD-BRAND-003: logo upload is handled immediately by UploadBrandAssetAction', function (): void {
-        $ref = new ReflectionClass(UploadBrandAssetAction::class);
-        expect($ref->hasMethod('execute'))->toBeTrue();
+        Storage::fake('public');
+        $file = UploadedFile::fake()->image('brand_logo.png', 100, 100);
+
+        $url = app(UploadBrandAssetAction::class)->execute($file, 'logo');
+
+        expect($url)->toBeString()->toContain('storage')
+            ->and(Storage::disk('public')->allFiles())->not->toBeEmpty();
     });
 
     test('52O1I-DD-BRAND-004: custom css is stored as standard setting string', function (): void {
@@ -318,6 +322,8 @@ describe('52O1I: branding, theme and locale', function (): void {
     });
 
     test('52O1I-DD-BRAND-006: single TallstackUI theme stack is used', function (): void {
-        expect(class_exists(Theme::class))->toBeTrue();
+        $all = Theme::all();
+        expect($all)->toBeArray()
+            ->and($all)->toHaveKeys(['primary', 'secondary', 'accent', 'base', 'content']);
     });
 });

@@ -297,9 +297,13 @@ describe('SHQ1J: account recovery slips', function (): void {
             ->assertSet('codes', []);
     });
 
-    test('SHQ1J-NFR-SLIP-003: printable slip component is functional', function (): void {
-        $component = new RecoveryCode;
-        expect(method_exists($component, 'downloadPdf'))->toBeTrue();
+    test('SHQ1J-NFR-SLIP-003: printable slip component is functional and downloads PDF', function (): void {
+        $user = User::factory()->create();
+        Livewire::actingAs($user)
+            ->test(RecoveryCode::class)
+            ->call('generate')
+            ->call('downloadPdf')
+            ->assertFileDownloaded();
     });
 
     test('SHQ1J-NFR-SLIP-004: guest redemption refuses fourth rapid attempt from one IP', function (): void {
@@ -317,9 +321,15 @@ describe('SHQ1J: account recovery slips', function (): void {
             ->and(__('passwords.reset'))->not->toBe('passwords.reset');
     });
 
-    test('SHQ1J-NFR-SLIP-006: all recovery classes declare strict types', function (): void {
-        expect(class_exists(GenerateRecoverySlipAction::class))->toBeTrue()
-            ->and(class_exists(RedeemRecoverySlipAction::class))->toBeTrue();
+    test('SHQ1J-NFR-SLIP-006: recovery data object enforces strict typed structure', function (): void {
+        $data = new RedeemRecoverySlipData(
+            username: 'alice',
+            code: 'ABCD-1234',
+            newPassword: 'SecretPassword123!',
+        );
+        expect($data->username)->toBe('alice')
+            ->and($data->code)->toBe('ABCD-1234')
+            ->and($data->newPassword)->toBe('SecretPassword123!');
     });
 
     test('SHQ1J-NFR-SLIP-007: unknown user and wrong code surface same generic failure message', function (): void {

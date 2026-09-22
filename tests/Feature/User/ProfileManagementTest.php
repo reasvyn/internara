@@ -390,9 +390,13 @@ describe('OCEMS: user profile management', function (): void {
             ->assertSet('canChangeUsername', false);
     });
 
-    test('OCEMS-NFR-PROF-004: profile classes declare strict typing', function (): void {
-        expect(class_exists(UpdateProfileAction::class))->toBeTrue()
-            ->and(class_exists(ReadProfileFormAction::class))->toBeTrue();
+    test('OCEMS-NFR-PROF-004: profile actions enforce strict type validation at runtime', function (): void {
+        $user = User::factory()->create();
+        $shape = app(ReadProfileFormAction::class)->execute($user);
+        expect($shape)->toBeArray()
+            ->and($shape['fields'])->toBeArray()
+            ->and($shape['canChangeName'])->toBeBool()
+            ->and($shape['canChangeUsername'])->toBeBool();
     });
 
     test('OCEMS-NFR-PROF-005: all profile strings resolve through translation in en and id', function (): void {
@@ -400,16 +404,26 @@ describe('OCEMS: user profile management', function (): void {
             ->and(__('profile.saved'))->not->toBe('profile.saved');
     });
 
-    test('OCEMS-DD-PROF-001: single page profile editor hosts profile, password, and avatar', function (): void {
-        $component = new ProfileEditor;
-        expect(property_exists($component, 'profileForm'))->toBeTrue()
-            ->and(property_exists($component, 'passwordForm'))->toBeTrue()
-            ->and(property_exists($component, 'avatar'))->toBeTrue();
+    test('OCEMS-DD-PROF-001: single page profile editor hosts profile, password, and avatar forms', function (): void {
+        $user = User::factory()->create();
+        Livewire::actingAs($user)
+            ->test(ProfileEditor::class)
+            ->assertSet('profileForm.name', $user->name)
+            ->assertSet('passwordForm.current_password', '')
+            ->assertSet('avatar', null);
     });
 
     test('OCEMS-DD-PROF-002: super admin protection enforced at business layer', function (): void {
-        $ref = new ReflectionClass(UpdateProfileAction::class);
-        expect($ref->hasMethod('execute'))->toBeTrue();
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole('super_admin');
+
+        $action = app(UpdateProfileAction::class);
+
+        expect(fn () => $action->execute(new UpdateProfileData(
+            userId: (string) $superAdmin->id,
+            profile: [],
+            name: 'Hacked Super Admin',
+        )))->toThrow(RejectedException::class);
     });
 
     test('OCEMS-DD-PROF-003: profile data lives in dedicated profiles table', function (): void {

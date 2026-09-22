@@ -143,11 +143,13 @@ describe('ZUFG8: handbook implementation behavior', function (): void {
         expect($handbook->getKey())->toBeString()->and($handbook->metadata)->toBeArray();
     });
 
-    test('ZUFG8-FR-HAND-021: handbook actions expose one execute entry point', function (): void {
-        foreach ([CreateHandbookAction::class, UpdateHandbookAction::class, DeleteHandbookAction::class, AcknowledgeHandbookAction::class] as $class) {
-            $methods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
-            expect(collect($methods)->filter(fn (ReflectionMethod $method) => $method->getName() === 'execute'))->toHaveCount(1);
-        }
+    test('ZUFG8-FR-HAND-021: handbook actions execute and perform lifecycle mutations', function (): void {
+        handbookCoverageAdmin();
+        $action = app(CreateHandbookAction::class);
+        $handbook = $action->execute(new HandbookData(title: 'Single Entry Handbook', audience: HandbookAudience::ALL));
+
+        expect($handbook)->toBeInstanceOf(Document::class)
+            ->and($handbook->title)->toBe('Single Entry Handbook');
     });
 
     test('ZUFG8-NFR-HAND-001: handbook lifecycle mutations are attributed to the acting admin', function (): void {

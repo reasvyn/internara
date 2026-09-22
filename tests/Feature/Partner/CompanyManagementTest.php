@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Core\Support\CsvHandler;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Partner\Domain\Company\Actions\BatchDeleteCompanyAction;
 use App\Modules\Partner\Domain\Company\Actions\CreateCompanyAction;
@@ -25,6 +26,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Livewire\Livewire;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -274,8 +276,9 @@ describe('XI3LB: company management lifecycle', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $test = Livewire::actingAs($admin)->test(CompanyManager::class);
-        expect(method_exists($test->instance(), 'export'))->toBeTrue();
+        $component = Livewire::actingAs($admin)->test(CompanyManager::class);
+        $response = $component->instance()->export(app(CsvHandler::class));
+        expect($response)->toBeInstanceOf(StreamedResponse::class);
     });
 
     test('XI3LB-NFR-COMP-001: deletion integrity blocks orphaned placement or partnership references', function (): void {
@@ -328,10 +331,13 @@ describe('XI3LB: company management lifecycle', function (): void {
         expect($form->rules())->toHaveKey('name');
     });
 
-    test('XI3LB-NFR-COMP-008: company classes declare strict types', function (): void {
-        expect(class_exists(Company::class))->toBeTrue()
-            ->and(class_exists(CompanyData::class))->toBeTrue()
-            ->and(class_exists(CompanyState::class))->toBeTrue();
+    test('XI3LB-NFR-COMP-008: company data transfer object enforces typed properties', function (): void {
+        $dto = new CompanyData(
+            name: 'PT Validasi Ketat',
+            email: 'validasi@pt.test',
+        );
+        expect($dto->name)->toBe('PT Validasi Ketat')
+            ->and($dto->email)->toBe('validasi@pt.test');
     });
 
     test('XI3LB-NFR-COMP-009: user facing translations exist for company module', function (): void {
@@ -344,8 +350,11 @@ describe('XI3LB: company management lifecycle', function (): void {
     });
 
     test('XI3LB-DD-COMP-002: company business rules live in CompanyState entity', function (): void {
-        $ref = new ReflectionClass(CompanyState::class);
-        expect($ref->isReadOnly())->toBeTrue();
+        $stateBlocked = new CompanyState(placementCount: 2, partnershipCount: 0);
+        $stateClear = new CompanyState(placementCount: 0, partnershipCount: 0);
+
+        expect($stateBlocked->canBeDeleted())->toBeFalse()
+            ->and($stateClear->canBeDeleted())->toBeTrue();
     });
 
     test('XI3LB-DD-COMP-003: exact name matching deduplicates in CSV imports', function (): void {
@@ -354,7 +363,14 @@ describe('XI3LB: company management lifecycle', function (): void {
     });
 
     test('XI3LB-DD-COMP-004: listener invalidates dashboard stats on company events', function (): void {
-        expect(class_exists(ClearDashboardOnCompanyChange::class))->toBeTrue();
+        $key = config('cache-keys.admin_dashboard_stats');
+        Cache::put($key, ['stat' => 123], 60);
+        expect(Cache::has($key))->toBeTrue();
+
+        $company = Company::factory()->create();
+        (new ClearDashboardOnCompanyChange)->handle(new CompanyCreated($company));
+
+        expect(Cache::has($key))->toBeFalse();
     });
 
     test('XI3LB-DD-COMP-005: single CSV shape serves template and export', function (): void {

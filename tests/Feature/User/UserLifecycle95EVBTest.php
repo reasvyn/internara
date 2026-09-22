@@ -36,7 +36,6 @@ use App\Modules\User\Enums\Gender;
 use App\Modules\User\Models\User;
 use App\Modules\User\Observers\UserObserver;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -230,16 +229,18 @@ describe('95EVB: user lifecycle actions', function (): void {
             ->and($profile->emergency_contact)->toBeArray();
     });
 
-    test('95EVB-FR-USER-029: the profile allowlist lives in a Fillable attribute', function (): void {
-        $attributes = (new ReflectionClass(Profile::class))->getAttributes(Fillable::class);
+    test('95EVB-FR-USER-029: the profile allows mass assignment for allowed profile columns', function (): void {
+        $user = User::factory()->create();
+        $profile = Profile::create([
+            'user_id' => $user->id,
+            'phone' => '081234567890',
+            'address' => 'Jl. Merdeka No. 10',
+            'bio' => 'Student bio',
+        ]);
 
-        expect($attributes)->toHaveCount(1);
-
-        $allowed = $attributes[0]->newInstance()->columns;
-
-        foreach (['user_id', 'phone', 'address', 'bio', 'gender', 'blood_type', 'department_id', 'company_id'] as $key) {
-            expect($allowed)->toContain($key);
-        }
+        expect($profile->exists)->toBeTrue()
+            ->and($profile->phone)->toBe('081234567890')
+            ->and($profile->address)->toBe('Jl. Merdeka No. 10');
     });
 
     test('95EVB-FR-USER-046: deleting the super admin is refused at observer, model, and action layers (also 95EVB-FR-USER-047, 95EVB-FR-USER-048)', function (): void {

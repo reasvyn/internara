@@ -72,10 +72,8 @@ test('T657C-FR-GRADE-003: grading data allows optional feedback at the DTO bound
 });
 
 test('T657C-FR-GRADE-005: feedback notification is queueable', function (): void {
-    expect(is_subclass_of(
-        SubmissionFeedbackNotification::class,
-        ShouldQueue::class,
-    ))->toBeTrue();
+    $notification = new SubmissionFeedbackNotification('Final report', 'graded');
+    expect($notification)->toBeInstanceOf(ShouldQueue::class);
 });
 
 test('T657C-FR-GRADE-007: revision transitions are limited to submitted records', function (): void {

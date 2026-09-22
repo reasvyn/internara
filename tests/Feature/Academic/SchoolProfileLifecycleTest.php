@@ -7,7 +7,6 @@ use App\Modules\Academic\Domain\School\Actions\SaveSchoolProfileAction;
 use App\Modules\Academic\Domain\School\Entities\SchoolEntity;
 use App\Modules\Academic\Domain\School\Livewire\Forms\SchoolForm;
 use App\Modules\Academic\Domain\School\Livewire\SchoolEditor;
-use App\Modules\Setting\Actions\BatchSetSettingAction;
 use App\Modules\Setting\Actions\SetSettingAction;
 use App\Modules\Setting\Data\SettingData;
 use App\Modules\Setting\Domain\Branding\Actions\RemoveBrandAssetAction;
@@ -352,24 +351,40 @@ describe('81SMS: school profile lifecycle', function (): void {
         expect(Schema::hasTable('schools'))->toBeFalse();
     });
 
-    test('81SMS-DD-SCH-002: SchoolEntity is readonly and does not define setters', function (): void {
-        $ref = new ReflectionClass(SchoolEntity::class);
-        expect($ref->isReadOnly())->toBeTrue();
-        foreach ($ref->getMethods() as $method) {
-            expect($method->getName())->not->toStartWith('set');
-        }
+    test('81SMS-DD-SCH-002: SchoolEntity encapsulates properties and exposes domain getters', function (): void {
+        $entity = SchoolEntity::fromSettingsArray([
+            'school.name' => 'SMK Negeri 1',
+            'school.email' => 'smk1@test.sch.id',
+            'school.address' => 'Jl. Pendidikan No. 1',
+        ]);
+        expect($entity->name())->toBe('SMK Negeri 1')
+            ->and($entity->email())->toBe('smk1@test.sch.id')
+            ->and($entity->address())->toBe('Jl. Pendidikan No. 1');
     });
 
-    test('81SMS-DD-SCH-003: SaveSchoolProfileAction reuses BatchSetSettingAction', function (): void {
-        $ref = new ReflectionClass(SaveSchoolProfileAction::class);
-        $constructor = $ref->getConstructor();
-        $paramTypes = array_map(fn ($p) => (string) $p->getType(), $constructor->getParameters());
-        expect($paramTypes)->toContain(BatchSetSettingAction::class);
+    test('81SMS-DD-SCH-003: SaveSchoolProfileAction persists profile settings in batch', function (): void {
+        $action = app(SaveSchoolProfileAction::class);
+        $action->execute([
+            'name' => 'SMK Negeri 2',
+            'email' => 'smk2@test.sch.id',
+        ]);
+        expect(setting('school.name'))->toBe('SMK Negeri 2')
+            ->and(setting('school.email'))->toBe('smk2@test.sch.id');
     });
 
-    test('81SMS-DD-SCH-004: logo upload runs outside profile transaction', function (): void {
-        $ref = new ReflectionClass(SchoolEditor::class);
-        expect($ref->hasMethod('updatedLogoFile'))->toBeTrue();
+    test('81SMS-DD-SCH-004: logo upload saves brand logo immediately via updatedLogoFile handler', function (): void {
+        Storage::fake('public');
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        test()->actingAs($admin);
+
+        $file = UploadedFile::fake()->image('logo.png', 100, 100);
+        $component = new SchoolEditor;
+        $component->logo_file = $file;
+        $component->updatedLogoFile(app(UploadBrandAssetAction::class), app(SetSettingAction::class));
+
+        expect(setting('brand_logo'))->not->toBeNull()
+            ->and($component->logo_file)->toBeNull();
     });
 
     test('81SMS-DD-SCH-005: school_entity cache key is present in config', function (): void {

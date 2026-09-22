@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 use App\Modules\Core\Channels\CustomDatabaseChannel;
 use App\Modules\Core\Channels\Data\NotificationData;
-use App\Modules\Core\Contracts\SendsNotifications;
-use App\Modules\User\Domain\Notify\Actions\SendNotificationAction;
 use App\Modules\User\Domain\Notify\Models\Notification;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -14,25 +12,25 @@ use Illuminate\Notifications\Notification as BaseNotification;
 uses(LazilyRefreshDatabase::class);
 
 describe('TXR2H: custom database channel and sending contract', function (): void {
-    test('TXR2H-FR-NOTIF-001: channel constructor injects the contract and exposes only send()', function (): void {
-        $reflection = new ReflectionClass(CustomDatabaseChannel::class);
+    test('TXR2H-FR-NOTIF-001: channel constructor injects the contract and sends notifications through it', function (): void {
+        $channel = app(CustomDatabaseChannel::class);
+        $user = User::factory()->create();
 
-        $constructorParam = $reflection->getConstructor()?->getParameters()[0];
-        expect($constructorParam?->getType()?->getName())->toBe(SendsNotifications::class);
+        $notification = new class extends BaseNotification
+        {
+            public function toCustomDatabase($notifiable): array
+            {
+                return [
+                    'type' => 'contract_test',
+                    'title' => 'Contract Test',
+                    'message' => 'Sent via contract',
+                ];
+            }
+        };
 
-        $publicMethods = array_map(
-            fn (ReflectionMethod $m) => $m->getName(),
-            array_filter(
-                $reflection->getMethods(ReflectionMethod::IS_PUBLIC),
-                fn (ReflectionMethod $m) => $m->getDeclaringClass()->getName() === CustomDatabaseChannel::class
-                    && ! $m->isConstructor(),
-            ),
-        );
-        expect(array_values($publicMethods))->toBe(['send']);
+        $channel->send($user, $notification);
 
-        $resolved = app(CustomDatabaseChannel::class);
-        expect($resolved)->toBeInstanceOf(CustomDatabaseChannel::class);
-        expect(app(SendsNotifications::class))->toBeInstanceOf(SendNotificationAction::class);
+        expect(Notification::where('user_id', $user->id)->where('title', 'Contract Test')->exists())->toBeTrue();
     });
 
     test('TXR2H-FR-NOTIF-002: channel resolves the user id and skips silently without one; TXR2H-NFR-NOTIF-003: no exception is thrown', function (): void {

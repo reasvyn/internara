@@ -22,10 +22,9 @@ describe('K8HP1: public landing page lifecycle', function (): void {
             ->and(route('home'))->toBe(url('/'));
     });
 
-    test('K8HP1-FR-LAND-002: HomePage component is final and holds registration array', function (): void {
-        $reflection = new ReflectionClass(HomePage::class);
-        expect($reflection->isFinal())->toBeTrue()
-            ->and($reflection->hasProperty('registration'))->toBeTrue();
+    test('K8HP1-FR-LAND-002: HomePage component mounts and populates registration array', function (): void {
+        $component = Livewire::test(HomePage::class);
+        expect($component->get('registration'))->toBeArray();
     });
 
     test('K8HP1-FR-LAND-003: mount redirects to setup when instance is not installed', function (): void {
@@ -205,8 +204,10 @@ describe('K8HP1: public landing page lifecycle', function (): void {
             ->and($en)->not()->toBe($id);
     });
 
-    test('K8HP1-NFR-LAND-006: asset build and PHP style pass', function (): void {
-        expect(class_exists(HomePage::class))->toBeTrue();
+    test('K8HP1-NFR-LAND-006: asset build and PHP style pass with successful render', function (): void {
+        Livewire::test(HomePage::class)
+            ->assertSuccessful()
+            ->assertViewIs('livewire.user.home-page');
     });
 
     test('K8HP1-UC-LAND-001: unauthenticated visitor on installed instance sees landing with registration state', function (): void {

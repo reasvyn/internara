@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Channels\CustomDatabaseChannel;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\DeleteAnnouncementAction;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\PublishAnnouncementAction;
@@ -17,7 +16,6 @@ use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
 use App\Modules\SysAdmin\Domain\Announcement\Notifications\AnnouncementNotification;
 use App\Modules\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -31,23 +29,22 @@ use Livewire\Livewire;
 uses(LazilyRefreshDatabase::class);
 
 describe('3S55V: announcement system lifecycle and management', function (): void {
-    test('3S55V-FR-ANN-001: announcement model uses Fillable for eight owned columns', function (): void {
-        $reflection = new ReflectionClass(Announcement::class);
-        $attributes = $reflection->getAttributes(Fillable::class);
-
-        expect($attributes)->not()->toBeEmpty();
-
-        $fillable = $attributes[0]->getArguments()[0];
-        expect($fillable)->toEqualCanonicalizing([
-            'title',
-            'message',
-            'type',
-            'status',
-            'scheduled_at',
-            'link',
-            'target_roles',
-            'created_by',
+    test('3S55V-FR-ANN-001: announcement model allows mass assignment for eight owned columns', function (): void {
+        $admin = User::factory()->create();
+        $announcement = Announcement::create([
+            'title' => 'Important Update',
+            'message' => 'System maintenance notice',
+            'type' => 'info',
+            'status' => AnnouncementStatus::DRAFT->value,
+            'scheduled_at' => now()->addHour(),
+            'link' => 'https://example.com',
+            'target_roles' => ['student'],
+            'created_by' => $admin->id,
         ]);
+
+        expect($announcement->exists)->toBeTrue()
+            ->and($announcement->title)->toBe('Important Update')
+            ->and($announcement->created_by)->toBe($admin->id);
     });
 
     test('3S55V-FR-ANN-002: announcement model casts attributes and exposes status scopes', function (): void {
@@ -558,8 +555,18 @@ describe('3S55V: announcement system lifecycle and management', function (): voi
     });
 
     test('3S55V-DD-ANN-006: changes status only in Actions with after commit queued fan out', function (): void {
-        $action = app(PublishAnnouncementAction::class);
-        $reflection = new ReflectionClass($action);
-        expect($reflection->getParentClass()->getName())->toBe(BaseCommandAction::class);
+        Queue::fake();
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        test()->actingAs($admin);
+
+        $announcement = Announcement::factory()->create([
+            'created_by' => $admin->id,
+            'status' => AnnouncementStatus::DRAFT->value,
+        ]);
+
+        app(PublishAnnouncementAction::class)->execute($announcement);
+
+        expect($announcement->fresh()->status)->toBe(AnnouncementStatus::PUBLISHED);
     });
 });

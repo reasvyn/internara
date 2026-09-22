@@ -6,9 +6,11 @@ use App\Modules\Academic\Domain\Department\Events\DepartmentUpdated;
 use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Auth\Domain\SuperAdmin\Listeners\NotifySuperAdminsOfRecovery;
 use App\Modules\Core\Events\BaseEvent;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Services\SmartLogger;
 use App\Modules\Partner\Domain\Company\Events\CompanyCreated;
 use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\Setting\Models\Setting;
 use App\Modules\Setting\Observers\SettingObserver;
 use App\Modules\User\Domain\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\Modules\User\Models\User;
@@ -39,11 +41,14 @@ final class Nucy3TestEvent extends BaseEvent
 
 describe('NUCY3: Event System - Decoupled Communication Infrastructure', function () {
     test('NUCY3-FR-EVENT-001: all events extend BaseEvent abstract class (also FR-EVENT-002)', function () {
-        $reflection = new ReflectionClass(Nucy3TestEvent::class);
+        $event = new Nucy3TestEvent('uuid-base-1');
+        expect($event)->toBeInstanceOf(BaseEvent::class)
+            ->and($event->eventName())->toBe('test_entity.created')
+            ->and($event->toPayload())->toHaveKey('entityId', 'uuid-base-1');
 
-        expect($reflection->isSubclassOf(BaseEvent::class))->toBeTrue()
-            ->and($reflection->isFinal())->toBeTrue()
-            ->and(new ReflectionClass(CompanyCreated::class)->isSubclassOf(BaseEvent::class))->toBeTrue();
+        $companyEvent = new CompanyCreated(new Company);
+        expect($companyEvent)->toBeInstanceOf(BaseEvent::class)
+            ->and($companyEvent->eventName())->toBe('company.created');
     });
 
     test('NUCY3-FR-EVENT-003: eventName returns dot-notation string matching entity.past_tense_action', function () {
@@ -131,16 +136,24 @@ describe('NUCY3: Event System - Decoupled Communication Infrastructure', functio
     });
 
     test('NUCY3-FR-EVENT-011: IO-bound listeners implement ShouldQueue', function () {
-        $reflection = new ReflectionClass(NotifySuperAdminsOfRecovery::class);
-        expect($reflection->implementsInterface(ShouldQueue::class))->toBeTrue();
+        $listener = new NotifySuperAdminsOfRecovery;
+        expect($listener)->toBeInstanceOf(ShouldQueue::class);
     });
 
     test('NUCY3-FR-EVENT-012: observers adhere to 3-gate rule for single-model synchronous side effects (also FR-EVENT-013, FR-EVENT-014, NFR-EVENT-006, DD-EVENT-004)', function () {
-        expect(class_exists(SettingObserver::class))->toBeTrue()
-            ->and(class_exists(UserObserver::class))->toBeTrue();
+        $userObserver = new UserObserver;
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole('super_admin');
 
-        $observerReflection = new ReflectionClass(SettingObserver::class);
-        expect($observerReflection->implementsInterface(ShouldQueue::class))->toBeFalse();
+        expect(fn () => $userObserver->deleting($superAdmin))
+            ->toThrow(RejectedException::class);
+
+        $settingKey = 'test_obs_key';
+        Cache::put(config('cache-keys.settings_key').$settingKey, 'cached_val', 60);
+        $setting = new Setting(['key' => $settingKey]);
+        (new SettingObserver)->created($setting);
+
+        expect(Cache::has(config('cache-keys.settings_key').$settingKey))->toBeFalse();
     });
 
     test('NUCY3-NFR-EVENT-001: event dispatch is non-blocking and decoupled', function () {

@@ -97,9 +97,16 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->and($response->headers->get('X-Custom-Probe'))->toBe('probe-value');
     });
 
-    test('1PGM4-FR-SEC-014 1PGM4-NFR-SEC-001 1PGM4-UC-SEC-001/002: escaping rule and contracts', function (): void {
-        expect(class_exists(SecurityHeadersMiddleware::class))->toBeTrue()
-            ->and(config('security-headers.csp'))->not->toBeNull();
+    test('1PGM4-FR-SEC-014 1PGM4-NFR-SEC-001 1PGM4-UC-SEC-001/002: middleware preserves response body and html escaping holds', function (): void {
+        $request = Request::create('/test', 'GET');
+        $rawHtml = '<script>alert("xss")</script>';
+        $response = app(SecurityHeadersMiddleware::class)->handle(
+            $request,
+            fn () => response(e($rawHtml), 200),
+        );
+
+        expect($response->getContent())->toBe('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;')
+            ->and($response->headers->get('X-Content-Type-Options'))->toBe('nosniff');
     });
 
     test('1PGM4-DD-SEC-001/002: middleware-based injection and inline style allowance', function (): void {

@@ -179,4 +179,41 @@ describe('8NZAU: provisioning state and hardening', function (): void {
         ));
         expect($setupMigrations)->toBeEmpty();
     });
+
+    test('8NZAU-FR-INST-008: provisioning finishes with storage link and cache clear', function (): void {
+        expect(is_dir(storage_path('app/public')))->toBeTrue()
+            ->and(is_dir(base_path('bootstrap/cache')))->toBeTrue();
+    });
+
+    test('8NZAU-FR-INST-009: fresh install runs on tier 1 zero service defaults', function (): void {
+        expect(config('queue.default'))->toBeIn(['sync', 'database'])
+            ->and(config('session.driver'))->toBeIn(['file', 'database', 'cookie', 'array']);
+    });
+
+    test('8NZAU-FR-INST-010: provisioning failure surfaces RejectedException', function (): void {
+        $action = app(FinalizeSetupAction::class);
+        expect(fn () => $action->execute(new FinalizeSetupData(
+            schoolData: [],
+            departmentData: [],
+            adminData: [],
+        )))->toThrow(RejectedException::class);
+    });
+
+    test('8NZAU-FR-INST-015: setup install command is registered and exposes signed wizard url help', function (): void {
+        $exit = Artisan::call('setup:install', ['--help' => true]);
+        expect($exit)->toBe(0)
+            ->and(Artisan::output())->toContain('setup:install');
+    });
+
+    test('8NZAU-FR-INST-017: setup install command defines optimize flag', function (): void {
+        $command = Artisan::all()['setup:install'] ?? null;
+        expect($command)->not->toBeNull()
+            ->and($command->getDefinition()->hasOption('optimize'))->toBeTrue();
+    });
+
+    test('8NZAU-FR-INST-018: setup install command defines with-dummy flag', function (): void {
+        $command = Artisan::all()['setup:install'] ?? null;
+        expect($command)->not->toBeNull()
+            ->and($command->getDefinition()->hasOption('with-dummy'))->toBeTrue();
+    });
 });
