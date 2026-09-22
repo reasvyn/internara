@@ -36,7 +36,7 @@ function runLogContext(?User $user = null): array
 }
 
 describe('89SRA: LogContextMiddleware channel behavior', function (): void {
-    test('89SRA-FR-LOG-051: every request carries a UUID request_id', function (): void {
+    test('89SRA-FR-LOG-051, 89SRA-UC-LOG-005, 89SRA-DD-LOG-006: every request carries a UUID request_id for request tracing', function (): void {
         [, $records] = runLogContext();
 
         $after = $records->firstWhere('message', 'after probe');

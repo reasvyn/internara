@@ -16,7 +16,7 @@ function runSecurityHeaders(Request $request): Response
 }
 
 describe('1PGM4: SecurityHeadersMiddleware', function (): void {
-    test('1PGM4-FR-SEC-001/002/003: CSP header baseline and script-src', function (): void {
+    test('1PGM4-FR-SEC-001, 1PGM4-FR-SEC-002, 1PGM4-FR-SEC-003: CSP header baseline and script-src', function (): void {
         $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
 
         $csp = $response->headers->get('Content-Security-Policy');
@@ -97,7 +97,7 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->and($response->headers->get('X-Custom-Probe'))->toBe('probe-value');
     });
 
-    test('1PGM4-FR-SEC-014 1PGM4-NFR-SEC-001 1PGM4-UC-SEC-001/002: middleware preserves response body and html escaping holds', function (): void {
+    test('1PGM4-FR-SEC-014, 1PGM4-NFR-SEC-001, 1PGM4-UC-SEC-001, 1PGM4-UC-SEC-002: middleware preserves response body and html escaping holds', function (): void {
         $request = Request::create('/test', 'GET');
         $rawHtml = '<script>alert("xss")</script>';
         $response = app(SecurityHeadersMiddleware::class)->handle(
@@ -109,7 +109,17 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->and($response->headers->get('X-Content-Type-Options'))->toBe('nosniff');
     });
 
-    test('1PGM4-DD-SEC-001/002: middleware-based injection and inline style allowance', function (): void {
+    test('1PGM4-UC-SEC-003: auditor verifies the security posture by inspecting response headers', function (): void {
+        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+
+        expect($response->headers->has('X-Content-Type-Options'))->toBeTrue()
+            ->and($response->headers->has('X-Frame-Options'))->toBeTrue()
+            ->and($response->headers->has('Referrer-Policy'))->toBeTrue()
+            ->and($response->headers->has('Content-Security-Policy'))->toBeTrue()
+            ->and($response->headers->has('Permissions-Policy'))->toBeTrue();
+    });
+
+    test('1PGM4-DD-SEC-001, 1PGM4-DD-SEC-002: middleware-based injection and inline style allowance', function (): void {
         $csp = config('security-headers.csp');
         expect($csp)->toContain("style-src 'self' 'unsafe-inline'");
     });

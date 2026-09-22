@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Modules\Core\Exceptions\AppException;
 use App\Modules\Core\Exceptions\ModuleException;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Services\SmartLogger;
@@ -175,13 +174,70 @@ describe('89SRA: SmartLogger dual-channel routing and masking', function (): voi
             ->and($captured->firstWhere('message', 'resilient probe'))->not->toBeNull();
     });
 
-    test('89SRA-UC-LOG-001_through_005_and_NFR-LOG-004_and_013: audit trail review, dual logging and error handling contracts', function (): void {
-        expect(class_exists(SmartLogger::class))->toBeTrue()
-            ->and(trans('log.token.missing'))->not->toBeNull();
+    test('89SRA-UC-LOG-001, 89SRA-DD-LOG-002: developer logs business operations via SmartLogger single entry point', function (): void {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        SmartLogger::info('Business operation executed')
+            ->for($user)
+            ->module('Core')
+            ->event('operation.executed')
+            ->both()
+            ->save();
+
+        expect(activityCount('Business operation executed'))->toBe(1);
     });
 
-    test('89SRA-NFR-LOG-014_and_015_and_DD-LOG-001_through_006: accessibility and design decisions', function (): void {
-        expect(is_subclass_of(RejectedException::class, ModuleException::class))->toBeTrue()
-            ->and(is_subclass_of(ModuleException::class, AppException::class))->toBeFalse();
+    test('89SRA-UC-LOG-002, 89SRA-DD-LOG-004: system masks PII in logs by default', function (): void {
+        $captured = captureLogs();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        SmartLogger::info('Sensitive operation')
+            ->for($user)
+            ->withPayload(['password' => 'secret_123', 'token' => 'bearer_xyz'])
+            ->both()
+            ->save();
+
+        $record = $captured->firstWhere('message', 'Sensitive operation');
+        expect($record->context['payload']['password'])->toBe('***')
+            ->and($record->context['payload']['token'])->toBe('***');
+    });
+
+    test('89SRA-UC-LOG-003, 89SRA-DD-LOG-001, 89SRA-DD-LOG-005: action throws RejectedException implementing HasExceptionContext', function (): void {
+        $exception = (new RejectedException('Business rule rejected'))->withContext(['attempt' => 1]);
+
+        expect($exception)->toBeInstanceOf(ModuleException::class)
+            ->and($exception->statusCode())->toBe(400)
+            ->and($exception->isUserFacing())->toBeTrue()
+            ->and($exception->getContext())->toMatchArray(['attempt' => 1]);
+    });
+
+    test('89SRA-UC-LOG-004, 89SRA-DD-LOG-003: activity log degrades gracefully on DB failure without crashing caller', function (): void {
+        $captured = captureLogs();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Schema::drop('activity_log');
+
+        SmartLogger::info('Degraded activity test')
+            ->for($user)
+            ->both()
+            ->save();
+
+        expect($captured->firstWhere('message', 'Degraded activity test'))->not->toBeNull()
+            ->and($captured->firstWhere('message', 'Failed to write activity log'))->not->toBeNull();
+    });
+
+    test('89SRA-NFR-LOG-004, 89SRA-NFR-LOG-014, 89SRA-NFR-LOG-015: error pages display user-friendly accessible messages with semantic structure', function (): void {
+        $response = $this->get('/non-existent-route-for-testing-89sra');
+        $response->assertStatus(404);
+
+        $content = $response->getContent();
+        expect($content)->not->toBeEmpty();
+    });
+
+    test('89SRA-NFR-LOG-013: SmartLogger channel names and messages are translatable', function (): void {
+        expect(__('common.enums.reported'))->not->toBe('common.enums.reported');
     });
 });

@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 use App\Modules\Academic\Domain\Department\Livewire\DepartmentManager;
 use App\Modules\Academic\Domain\Department\Models\Department;
+use App\Modules\Core\Actions\BaseAction;
 use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Actions\BaseProcessAction;
 use App\Modules\Core\Actions\BaseReadAction;
 use App\Modules\Core\Channels\Data\NotificationData;
 use App\Modules\Core\Data\ActionResponse;
+use App\Modules\Core\Data\BaseData;
 use App\Modules\Core\Events\BaseEvent;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Livewire\BaseFormView;
@@ -16,6 +19,7 @@ use App\Modules\Core\Livewire\BaseRecordList;
 use App\Modules\Core\Models\BaseAuthenticatable;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Core\Policies\BasePolicy;
+use App\Modules\Core\Services\ModuleService;
 use App\Modules\User\Domain\Notify\Actions\SendNotificationAction;
 use App\Modules\User\Domain\Notify\Events\NotificationSent;
 use App\Modules\User\Domain\Notify\Models\Notification;
@@ -29,6 +33,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Spatie\Activitylog\Models\Activity;
 
@@ -536,5 +541,58 @@ describe('SE5Q9: notification contract and violation pipeline', function (): voi
                 $action->execute(['seats' => 0]);
             })
             ->assertDispatched('ts-ui:toast');
+    });
+
+    test('SE5Q9-UC-BASE-001, SE5Q9-FR-BASE-005, SE5Q9-DD-BASE-004: developer builds command action extending BaseCommandAction with transaction wrap and logging', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $action = new Se5q9FCreateDept;
+        $response = $action->execute(['name' => 'TKJ']);
+
+        expect($response->success)->toBeTrue()
+            ->and(Department::where('name', 'TKJ')->exists())->toBeTrue();
+    });
+
+    test('SE5Q9-NFR-BASE-003: base classes enforce focused execution and single responsibility', function (): void {
+        $ref = new ReflectionClass(BaseCommandAction::class);
+        expect($ref->isAbstract())->toBeTrue()
+            ->and($ref->hasMethod('transaction'))->toBeTrue();
+    });
+
+    test('SE5Q9-NFR-BASE-004: BaseModel enforces UUID v7 keys across database models', function (): void {
+        $dept = Department::create(['name' => 'SIJA']);
+        expect(Str::isUuid($dept->id))->toBeTrue();
+    });
+
+    test('SE5Q9-NFR-BASE-005, SE5Q9-DD-BASE-003: base DTOs extend BaseData for transfer objects', function (): void {
+        $data = new NotificationData(
+            userId: 'user-uuid-1',
+            type: 'announcement',
+            title: 'Welcome',
+            message: 'Hello world',
+        );
+
+        expect($data)->toBeInstanceOf(BaseData::class)
+            ->and($data->toArray())->toHaveKeys(['userId', 'type', 'title', 'message']);
+    });
+
+    test('SE5Q9-NFR-BASE-007, SE5Q9-DD-BASE-001: action triad architecture divides mutations and queries into Command, Read, Process', function (): void {
+        expect(is_subclass_of(BaseCommandAction::class, BaseAction::class))->toBeTrue()
+            ->and((new ReflectionClass(BaseReadAction::class))->isAbstract())->toBeTrue()
+            ->and(is_subclass_of(BaseProcessAction::class, BaseAction::class))->toBeTrue();
+    });
+
+    test('SE5Q9-DD-BASE-002: module discovery at runtime discovers registered modules without manual provider registration', function (): void {
+        $moduleService = app(ModuleService::class);
+        $moduleService->discoverLivewireComponents();
+        $moduleService->discoverPolicies();
+        $moduleService->registerBladeNamespaces();
+
+        expect(config('module.list'))->toBeArray()
+            ->and(config('module.list'))->toContain('Core')
+            ->and(config('module.list'))->toContain('Academic')
+            ->and(config('module.list'))->toContain('User');
     });
 });

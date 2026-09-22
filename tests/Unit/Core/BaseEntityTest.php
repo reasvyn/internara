@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Actions\BaseAction;
+use App\Modules\Core\Actions\BaseCommandAction;
+use App\Modules\Core\Actions\BaseProcessAction;
+use App\Modules\Core\Actions\BaseReadAction;
+use App\Modules\Core\Data\BaseData;
 use App\Modules\Core\Entities\BaseEntity;
+use App\Modules\Core\Models\BaseAuthenticatable;
+use App\Modules\Core\Models\BaseModel;
+use App\Modules\Core\Policies\BasePolicy;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,6 +63,30 @@ final readonly class EntityTestDouble extends BaseEntity
             name: (string) ($attributes['name'] ?? ''),
             score: (float) ($attributes['score'] ?? 0.0),
         );
+    }
+}
+
+final readonly class EntityWithRulesDouble extends BaseEntity
+{
+    public function __construct(
+        public string $name,
+        public int $quota = 0,
+    ) {}
+
+    public static function fromModel(Model $model): static
+    {
+        return new self(
+            name: (string) ($model->getAttributes()['name'] ?? ''),
+            quota: (int) ($model->getAttributes()['quota'] ?? 0),
+        );
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'quota' => ['required', 'integer', 'min:1'],
+        ];
     }
 }
 
@@ -119,5 +151,33 @@ describe('SE5Q9: base entity', function (): void {
         expect($copy->inner)->toBeInstanceOf(EntityInnerDouble::class);
         expect($copy->inner->code)->toBe('A1');
         expect($entity->name)->toBe('Placement');
+    });
+
+    test('SE5Q9-FR-BASE-042: entities may expose static rules returning validation arrays shared by form objects', function (): void {
+        $rules = EntityWithRulesDouble::rules();
+
+        expect($rules)->toHaveKeys(['name', 'quota'])
+            ->and($rules['name'])->toContain('required')
+            ->and($rules['quota'])->toContain('min:1');
+    });
+
+    test('SE5Q9-NFR-BASE-002: all base classes are abstract and cannot be directly instantiated', function (): void {
+        $bases = [
+            BaseEntity::class,
+            BaseAction::class,
+            BaseCommandAction::class,
+            BaseReadAction::class,
+            BaseProcessAction::class,
+            BaseModel::class,
+            BaseAuthenticatable::class,
+            BaseData::class,
+            BasePolicy::class,
+        ];
+
+        foreach ($bases as $base) {
+            $ref = new ReflectionClass($base);
+            expect($ref->isAbstract())->toBeTrue();
+            expect(fn () => new $base)->toThrow(Error::class);
+        }
     });
 });
