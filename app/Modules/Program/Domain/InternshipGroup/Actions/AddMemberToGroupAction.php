@@ -15,7 +15,7 @@ final class AddMemberToGroupAction extends BaseCommandAction
         return $this->transaction(function () use ($group, $data) {
             $member = $group->members()->create([
                 'registration_id' => $data['registration_id'] ?? null,
-                'mentor_id' => $data['mentor_id'] ?? null,
+                'user_id' => $data['user_id'] ?? $data['mentor_id'] ?? null,
                 'role' => $data['role'],
                 'joined_at' => now(),
             ]);
