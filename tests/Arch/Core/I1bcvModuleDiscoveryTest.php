@@ -72,7 +72,7 @@ describe('I1BCV: module discovery registry', function (): void {
             ->and(config('module.policies.directory'))->toBe('Policies');
     });
 
-    test('I1BCV-FR-MOD-030, I1BCV-UC-MOD-004: route inclusion derives lowercase module paths and skips missing files', function (): void {
+    test('I1BCV-FR-MOD-030, I1BCV-FR-MOD-031, I1BCV-FR-MOD-032, I1BCV-FR-MOD-033, I1BCV-UC-MOD-004: route inclusion derives lowercase module paths and skips missing files', function (): void {
         $source = file_get_contents(base_path('routes/web.php'));
 
         expect($source)->toContain('ModuleManager::names()')

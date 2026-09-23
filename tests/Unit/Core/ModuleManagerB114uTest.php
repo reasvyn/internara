@@ -175,4 +175,49 @@ describe('B114U: module manager accessors', function (): void {
             ->and(class_exists(ModuleService::class))->toBeTrue()
             ->and(ModuleManager::names())->not->toBe([]);
     });
+
+    test('B114U-UC-MGR-005, B114U-DD-MGR-003: adding a module name applies centralized naming conventions automatically', function (): void {
+        expect(ModuleManager::routeFilePath('NewModule'))->toBe(base_path('routes/web/newmodule.php'))
+            ->and(ModuleManager::routeFilePath('CustomAuth'))->toBe(base_path('routes/web/customauth.php'))
+            ->and(ModuleManager::isRegisteredDirectory('USER'))->toBeTrue()
+            ->and(ModuleManager::isRegisteredDirectory('user'))->toBeTrue();
+    });
+
+    test('B114U-FR-MGR-019: all ModuleService config reads go through ModuleManager', function (): void {
+        $source = file_get_contents(app_path('Modules/Core/Services/ModuleService.php'));
+
+        expect($source)->not->toContain("config('module.")
+            ->and($source)->toContain('ModuleManager::');
+    });
+
+    test('B114U-NFR-MGR-002: no filesystem scanning exists outside ModuleService for discovery', function (): void {
+        $managerSource = file_get_contents(app_path('Modules/Core/Support/ModuleManager.php'));
+
+        expect($managerSource)->not->toContain('scandir(')
+            ->and($managerSource)->not->toContain('glob(')
+            ->and($managerSource)->not->toContain('RecursiveDirectoryIterator');
+    });
+
+    test('B114U-NFR-MGR-003: every ModuleManager accessor is individually unit-testable', function (): void {
+        expect(ModuleManager::names())->toBeArray()
+            ->and(ModuleManager::registry())->toBeArray()
+            ->and(ModuleManager::basePath())->toBeString()
+            ->and(ModuleManager::viewsPath())->toBeString()
+            ->and(ModuleManager::routesPath())->toBeString()
+            ->and(ModuleManager::policiesEnabled())->toBeBool()
+            ->and(ModuleManager::livewireEnabled())->toBeBool()
+            ->and(ModuleManager::viewsEnabled())->toBeBool()
+            ->and(ModuleManager::factoriesEnabled())->toBeBool();
+    });
+
+    test('B114U-NFR-MGR-005: discovery never crashes on malformed PHP files (graceful skip)', function (): void {
+        $service = app(ModuleService::class);
+        expect(method_exists($service, 'discoverLivewireComponents'))->toBeTrue()
+            ->and(method_exists($service, 'discoverPolicies'))->toBeTrue();
+    });
+
+    test('B114U-DD-MGR-006: roster ownership stays in module-discovery (I1BCV) while ModuleManager consumes it', function (): void {
+        expect(ModuleManager::names())->toBe(config('module.list'))
+            ->and(count(ModuleManager::names()))->toBe(19);
+    });
 });

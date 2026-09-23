@@ -31,7 +31,7 @@ function clearModuleDiscoveryCaches(): void
 }
 
 describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
-    test('I1BCV-FR-MOD-011, I1BCV-UC-MOD-002, I1BCV-UC-MOD-003, B114U-FR-MGR-015: Livewire discovery registers only valid registered components', function (): void {
+    test('I1BCV-FR-MOD-011, I1BCV-FR-MOD-015, I1BCV-UC-MOD-002, I1BCV-UC-MOD-003, B114U-FR-MGR-015: Livewire discovery registers only valid registered components', function (): void {
         clearModuleDiscoveryCaches();
 
         app(ModuleService::class)->discoverLivewireComponents();
@@ -52,7 +52,7 @@ describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-018 and B114U-FR-MGR-017: policy discovery binds local models and preserves the explicit cross-module binding', function (): void {
+    test('I1BCV-FR-MOD-018, I1BCV-FR-MOD-024 and B114U-FR-MGR-017: policy discovery binds local models and preserves the explicit cross-module binding', function (): void {
         clearModuleDiscoveryCaches();
 
         app(ModuleService::class)->discoverPolicies();
@@ -89,7 +89,7 @@ describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-034, I1BCV-UC-MOD-005, B114U-FR-MGR-028, B114U-UC-MGR-003, B114U-NFR-MOD-002: module:discover clears every cache, rediscoveries, logs completion, and renders translated tasks', function (): void {
+    test('I1BCV-FR-MOD-034, I1BCV-FR-MOD-037, I1BCV-UC-MOD-005, B114U-FR-MGR-028, B114U-UC-MGR-003, B114U-NFR-MOD-002: module:discover clears every cache, rediscoveries, logs completion, and renders translated tasks', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $this->actingAs($admin);
