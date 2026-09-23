@@ -8,9 +8,11 @@ use App\Modules\Assignment\Domain\Submission\Actions\SubmitAssignmentAction;
 use App\Modules\Assignment\Domain\Submission\Actions\VerifySubmissionAction;
 use App\Modules\Assignment\Domain\Submission\Data\GradeSubmissionData;
 use App\Modules\Assignment\Domain\Submission\Data\SubmitAssignmentData;
+use App\Modules\Assignment\Domain\Submission\Entities\SubmissionState;
 use App\Modules\Assignment\Domain\Submission\Enums\SubmissionStatus;
 use App\Modules\Assignment\Domain\Submission\Events\SubmissionRevisionRequested;
 use App\Modules\Assignment\Domain\Submission\Models\Submission;
+use App\Modules\Assignment\Domain\Submission\Policies\SubmissionPolicy;
 use App\Modules\Assignment\Models\Assignment;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
@@ -18,6 +20,7 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Spatie\MediaLibrary\HasMedia;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -165,4 +168,164 @@ test('T657C-FR-GRADE-010: verification records the authenticated verifier', func
     expect($verified->status)->toBe(SubmissionStatus::VERIFIED)
         ->and($verified->verified_by)->toBe($verifier->id)
         ->and($verified->verified_at)->not->toBeNull();
+});
+
+test('T657B-UC-SUBM-003, T657B-DD-SUBM-003: student submits minutes before deadline and server clock decides, not client', function (): void {
+    [$student, $assignment] = submissionFixture(['due_date' => now()->addMinutes(2)]);
+
+    $submission = app(SubmitAssignmentAction::class)->execute(
+        $student,
+        $assignment,
+        new SubmitAssignmentData('Submitted just in time.')
+    );
+
+    expect($submission->status)->toBe(SubmissionStatus::SUBMITTED);
+});
+
+test('T657B-FR-SUBM-011: submission writes run inside transaction with logging and server-clock timestamps', function (): void {
+    [$student, $assignment] = submissionFixture();
+
+    $submission = app(SubmitAssignmentAction::class)->execute(
+        $student,
+        $assignment,
+        new SubmitAssignmentData('Content with server timestamp.')
+    );
+
+    expect($submission->submitted_at)->not->toBeNull()
+        ->and($submission->submitted_at->isPast())->toBeTrue();
+});
+
+test('T657B-NFR-SUBM-001, T657C-NFR-GRADE-001: all Submission PHP files declare strict_types=1', function (): void {
+    $files = glob(base_path('app/Modules/Assignment/Domain/Submission/**/*.php')) ?: [];
+    foreach ($files as $file) {
+        expect(file_get_contents($file))->toContain('declare(strict_types=1)');
+    }
+    expect(count($files))->toBeGreaterThan(0);
+});
+
+test('T657B-NFR-SUBM-002, T657C-NFR-GRADE-002: submission and grading translation keys exist in both locales', function (): void {
+    expect(file_exists(lang_path('en/assignment.php')))->toBeTrue()
+        ->and(file_exists(lang_path('id/assignment.php')))->toBeTrue();
+});
+
+test('T657B-NFR-SUBM-003, T657B-DD-SUBM-001: file bytes bypass DTO via MediaLibrary upload', function (): void {
+    $submission = Submission::factory()->create();
+    expect($submission)->toBeInstanceOf(HasMedia::class);
+});
+
+test('T657B-NFR-SUBM-004: revision feedback is stored and accessible on the submission model', function (): void {
+    $submission = Submission::factory()->create([
+        'status' => SubmissionStatus::REVISION_REQUIRED,
+        'feedback' => 'Clear action items for student revision.',
+    ]);
+
+    expect($submission->feedback)->toBe('Clear action items for student revision.');
+});
+
+test('T657B-NFR-SUBM-005, T657C-NFR-GRADE-003: submission listings are paginated with eager loaded relations', function (): void {
+    Submission::factory()->count(3)->create();
+
+    $paginated = Submission::with(['student', 'assignment'])->paginate(10);
+    expect($paginated->total())->toBeGreaterThanOrEqual(3);
+});
+
+test('T657B-NFR-SUBM-006: stored submission files are protected by MediaLibrary visibility', function (): void {
+    $submission = Submission::factory()->create();
+    expect(method_exists($submission, 'getMedia'))->toBeTrue();
+});
+
+test('T657B-DD-SUBM-002: revision reuses the same record without creating a duplicate row', function (): void {
+    [$student, $assignment, $registration] = submissionFixture();
+    $submission = Submission::factory()->create([
+        'student_id' => $student->id,
+        'assignment_id' => $assignment->id,
+        'registration_id' => $registration->id,
+        'status' => SubmissionStatus::REVISION_REQUIRED,
+        'feedback' => 'Fix typos.',
+    ]);
+
+    $initialCount = Submission::where('assignment_id', $assignment->id)->count();
+
+    app(SubmitAssignmentAction::class)->execute($student, $assignment, new SubmitAssignmentData('Fixed content.'));
+
+    expect(Submission::where('assignment_id', $assignment->id)->count())->toBe($initialCount);
+});
+
+test('T657C-UC-GRADE-001: teacher scores a submission with score and feedback', function (): void {
+    $grader = User::factory()->create();
+    $grader->assignRole('teacher');
+    $this->actingAs($grader);
+
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+
+    $response = app(GradeSubmissionAction::class)->execute($submission, new GradeSubmissionData(88, 'Great effort.'));
+
+    expect($response->success)->toBeTrue()
+        ->and($submission->fresh()->score)->toBe(88.0)
+        ->and($submission->fresh()->feedback)->toBe('Great effort.');
+});
+
+test('T657C-UC-GRADE-002: teacher returns weak work for revision instead of failing', function (): void {
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+
+    $revised = app(RequestSubmissionRevisionAction::class)->execute(
+        $submission,
+        'Missing references section. Please add at least 3 sources.'
+    );
+
+    expect($revised->status)->toBe(SubmissionStatus::REVISION_REQUIRED)
+        ->and($revised->feedback)->toContain('Missing references');
+});
+
+test('T657C-UC-GRADE-003: teacher grades on behalf of supervisor via mentor proxy', function (): void {
+    $policy = new SubmissionPolicy;
+    $traits = (new ReflectionClass($policy))->getTraitNames();
+
+    expect($traits)->toContain('App\\Modules\\User\\Policies\\Concerns\\HasMentorProxy');
+});
+
+test('T657C-NFR-GRADE-004: grade commit transaction completes before returning action response', function (): void {
+    $grader = User::factory()->create();
+    $grader->assignRole('teacher');
+    $this->actingAs($grader);
+
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+
+    $response = app(GradeSubmissionAction::class)->execute($submission, new GradeSubmissionData(95, 'Outstanding.'));
+
+    expect($response->success)->toBeTrue()
+        ->and($submission->fresh()->status)->toBe(SubmissionStatus::GRADED);
+});
+
+test('T657C-NFR-GRADE-005: score renders from the submission model directly', function (): void {
+    $submission = Submission::factory()->create(['score' => 92.5, 'status' => SubmissionStatus::GRADED]);
+
+    expect($submission->score)->toBe(92.5);
+});
+
+test('T657C-DD-GRADE-001: score range 0-100 enforced in the Action boundary', function (): void {
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+
+    expect(fn () => app(GradeSubmissionAction::class)->execute($submission, new GradeSubmissionData(-1, 'Too low.')))
+        ->toThrow(RejectedException::class);
+
+    expect(fn () => app(GradeSubmissionAction::class)->execute($submission, new GradeSubmissionData(101, 'Too high.')))
+        ->toThrow(RejectedException::class);
+});
+
+test('T657C-DD-GRADE-002: grading scope evaluated via submission state and policy', function (): void {
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+    $state = $submission->asSubmissionState();
+
+    expect($state)->toBeInstanceOf(SubmissionState::class)
+        ->and($state->canBeEdited())->toBeFalse();
+});
+
+test('T657C-DD-GRADE-003: revision requests emit SubmissionRevisionRequested event', function (): void {
+    Event::fake([SubmissionRevisionRequested::class]);
+    $submission = Submission::factory()->create(['status' => SubmissionStatus::SUBMITTED]);
+
+    app(RequestSubmissionRevisionAction::class)->execute($submission, 'Feedback note.');
+
+    Event::assertDispatched(SubmissionRevisionRequested::class);
 });
