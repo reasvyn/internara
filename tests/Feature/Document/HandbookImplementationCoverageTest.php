@@ -7,8 +7,10 @@ use App\Modules\Document\Domain\Handbook\Actions\CreateHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\DeleteHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\UpdateHandbookAction;
 use App\Modules\Document\Domain\Handbook\Data\HandbookData;
+use App\Modules\Document\Domain\Handbook\Entities\HandbookEntity;
 use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
 use App\Modules\Document\Domain\Handbook\Events\HandbookCreated;
+use App\Modules\Document\Domain\Handbook\Listeners\ClearHandbookCache;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use App\Modules\User\Models\User;
@@ -268,5 +270,45 @@ describe('ZUFG8: handbook implementation behavior', function (): void {
         $handbook = Document::factory()->make(['type' => 'handbook']);
 
         expect($handbook->getAttribute('file_path'))->toBeNull();
+    });
+
+    test('ZUFG8-DD-HAND-001: handbook rules live on a dedicated immutable entity rather than on the shared document model', function (): void {
+        $handbook = Document::factory()->create([
+            'type' => 'handbook',
+            'metadata' => ['target_audience' => 'student'],
+            'is_active' => true,
+        ]);
+        $handbook->setRelation('media', collect([(object) ['id' => 1]]));
+
+        $entity = $handbook->asHandbook();
+
+        expect($entity)->toBeInstanceOf(HandbookEntity::class)
+            ->and($entity->isAvailable())->toBeTrue()
+            ->and($entity->audience())->toBe(HandbookAudience::STUDENT);
+    });
+
+    test('ZUFG8-DD-HAND-002: acknowledgments are recorded in the append-only activity trail rather than a dedicated table', function (): void {
+        $reader = handbookCoverageAdmin();
+        $handbook = Document::factory()->create(['type' => 'handbook', 'metadata' => ['target_audience' => 'all']]);
+
+        app(AcknowledgeHandbookAction::class)->execute($handbook, $reader);
+
+        expect(Activity::where('description', 'handbook_acknowledged')
+            ->where('subject_type', Document::class)
+            ->where('subject_id', $handbook->id)
+            ->where('causer_id', $reader->id)
+            ->exists())->toBeTrue();
+    });
+
+    test('ZUFG8-DD-HAND-003: cache invalidation runs synchronously in-request rather than deferred', function (): void {
+        $key = config('cache-keys.admin_dashboard_stats');
+        Cache::put($key, ['stat' => 123], 300);
+        expect(Cache::has($key))->toBeTrue();
+
+        $listener = app(ClearHandbookCache::class);
+        $handbook = Document::factory()->create(['type' => 'handbook']);
+        $listener->handle(new HandbookCreated($handbook));
+
+        expect(Cache::has($key))->toBeFalse();
     });
 });

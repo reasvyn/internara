@@ -12,7 +12,7 @@ afterEach(function (): void {
 });
 
 describe('E1MSJ system maintenance window', function (): void {
-    test('E1MSJ-FR-MAINT-001: opens with a reason and renders a translated notice', function (): void {
+    test('E1MSJ-FR-MAINT-001, E1MSJ-UC-MAINT-001: opens with a reason and renders a translated notice', function (): void {
         expect(Artisan::call('system:maintenance', [
             '--on' => true,
             '--reason' => 'Enrollment DB migration',

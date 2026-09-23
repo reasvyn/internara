@@ -64,7 +64,7 @@ describe('I1BCV: module discovery registry', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-010: discovery subsystems expose independent enabled switches', function (): void {
+    test('I1BCV-FR-MOD-010, I1BCV-UC-MOD-006: discovery subsystems expose independent enabled switches', function (): void {
         expect(config('module.livewire.enabled'))->toBeTrue()
             ->and(config('module.policies.enabled'))->toBeTrue()
             ->and(config('module.views.enabled'))->toBeTrue()
@@ -72,7 +72,7 @@ describe('I1BCV: module discovery registry', function (): void {
             ->and(config('module.policies.directory'))->toBe('Policies');
     });
 
-    test('I1BCV-FR-MOD-030/031/032/033: route inclusion derives lowercase module paths and skips missing files', function (): void {
+    test('I1BCV-FR-MOD-030, I1BCV-UC-MOD-004: route inclusion derives lowercase module paths and skips missing files', function (): void {
         $source = file_get_contents(base_path('routes/web.php'));
 
         expect($source)->toContain('ModuleManager::names()')

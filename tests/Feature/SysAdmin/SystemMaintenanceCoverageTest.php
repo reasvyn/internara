@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Modules\User\Domain\UserManagement\Actions\ArchiveStudentAccountsAction;
+use App\Modules\User\Domain\UserManagement\Console\Commands\AutoInactivateAccounts;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -53,5 +55,15 @@ describe('E1MSJ system maintenance', function (): void {
             ->and($dispatch)->toContain('ArchiveStudentAccountsJob::dispatch')
             ->and($job)->toContain('ShouldQueue')
             ->and($job)->toContain('tries');
+    });
+
+    test('E1MSJ-DD-MAINT-004: automation inactivates while only humans archive', function (): void {
+        $inactivateCommand = file_get_contents(base_path('app/Modules/User/Domain/UserManagement/Console/Commands/AutoInactivateAccounts.php'));
+        $archiveAction = file_get_contents(base_path('app/Modules/User/Domain/UserManagement/Actions/ArchiveStudentAccountsAction.php'));
+
+        expect($inactivateCommand)->toContain('AccountStatus::INACTIVE')
+            ->and($archiveAction)->toContain('AccountStatus::ARCHIVED')
+            ->and(class_exists(AutoInactivateAccounts::class))->toBeTrue()
+            ->and(class_exists(ArchiveStudentAccountsAction::class))->toBeTrue();
     });
 });

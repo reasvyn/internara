@@ -31,7 +31,7 @@ function clearModuleDiscoveryCaches(): void
 }
 
 describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
-    test('I1BCV-FR-MOD-011/012/013/014/015/016/017 and B114U-FR-MGR-015/016/019/020/021/022/023: Livewire discovery registers only valid registered components', function (): void {
+    test('I1BCV-FR-MOD-011, I1BCV-UC-MOD-002, I1BCV-UC-MOD-003, B114U-FR-MGR-015: Livewire discovery registers only valid registered components', function (): void {
         clearModuleDiscoveryCaches();
 
         app(ModuleService::class)->discoverLivewireComponents();
@@ -52,7 +52,7 @@ describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-018/019/020/021/022/023/024 and B114U-FR-MGR-017/020/024: policy discovery binds local models and preserves the explicit cross-module binding', function (): void {
+    test('I1BCV-FR-MOD-018 and B114U-FR-MGR-017: policy discovery binds local models and preserves the explicit cross-module binding', function (): void {
         clearModuleDiscoveryCaches();
 
         app(ModuleService::class)->discoverPolicies();
@@ -71,7 +71,7 @@ describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-025/026/027/028/029 and B114U-FR-MGR-018/025: view discovery registers only module namespaces and excludes shared directories', function (): void {
+    test('I1BCV-FR-MOD-025, I1BCV-UC-MOD-001, B114U-FR-MGR-018: view discovery registers only module namespaces and excludes shared directories', function (): void {
         clearModuleDiscoveryCaches();
 
         app(ModuleService::class)->registerBladeNamespaces();
@@ -89,7 +89,7 @@ describe('I1BCV/B114U: module discovery runtime contracts', function (): void {
         }
     });
 
-    test('I1BCV-FR-MOD-034/036/037 and B114U-FR-MGR-028/UC-MGR-003/NFR-MOD-002: module:discover clears every cache, rediscoveries, logs completion, and renders translated tasks', function (): void {
+    test('I1BCV-FR-MOD-034, I1BCV-UC-MOD-005, B114U-FR-MGR-028, B114U-UC-MGR-003, B114U-NFR-MOD-002: module:discover clears every cache, rediscoveries, logs completion, and renders translated tasks', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
         $this->actingAs($admin);

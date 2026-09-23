@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\User\Domain\Profile\Actions\UpdateProfileAction;
 use App\Modules\User\Domain\Profile\Data\UpdateProfileData;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Domain\UserManagement\Actions\ArchiveStudentAccountsAction;
 use App\Modules\User\Domain\UserManagement\Actions\BatchDeleteUserAction;
 use App\Modules\User\Domain\UserManagement\Actions\CreateUserAction;
+use App\Modules\User\Domain\UserManagement\Actions\DeleteUserAction;
 use App\Modules\User\Domain\UserManagement\Actions\RevokeUserActivationTokensAction;
 use App\Modules\User\Domain\UserManagement\Actions\SetUserStatusAction;
 use App\Modules\User\Domain\UserManagement\Actions\ToggleUserStatusAction;
@@ -18,12 +20,21 @@ use App\Modules\User\Domain\UserManagement\Data\SetUserStatusData;
 use App\Modules\User\Domain\UserManagement\Data\UpdateUserData;
 use App\Modules\User\Domain\UserManagement\Events\UserStatusChanged;
 use App\Modules\User\Domain\UserManagement\Events\UserUpdated;
+use App\Modules\User\Domain\UserManagement\Livewire\AdminManager;
+use App\Modules\User\Domain\UserManagement\Livewire\Forms\StudentForm;
+use App\Modules\User\Domain\UserManagement\Livewire\Forms\SupervisorForm;
+use App\Modules\User\Domain\UserManagement\Livewire\Forms\TeacherForm;
+use App\Modules\User\Domain\UserManagement\Livewire\Forms\UserForm;
+use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;
+use App\Modules\User\Domain\UserManagement\Livewire\SupervisorManager;
+use App\Modules\User\Domain\UserManagement\Livewire\TeacherManager;
 use App\Modules\User\Domain\UserManagement\Livewire\UserManager;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Livewire\Component;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -321,5 +332,82 @@ describe('95EVB: user NFR coverage', function (): void {
         expect(__('user.manager.success_updated'))->toBe('User updated successfully.');
         app()->setLocale('id');
         expect(__('user.manager.success_updated'))->toBe('Pengguna berhasil diperbarui.');
+    });
+
+    test('95EVB-NFR-USER-015: all manager input validates through Form Objects never inline rules', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        expect(class_exists(UserForm::class))->toBeTrue()
+            ->and(class_exists(StudentForm::class))->toBeTrue()
+            ->and(class_exists(TeacherForm::class))->toBeTrue()
+            ->and(class_exists(SupervisorForm::class))->toBeTrue();
+
+        $component = Livewire::test(UserManager::class)->instance();
+        $form = $component->form;
+        expect($form)->toBeInstanceOf(UserForm::class)
+            ->and($form->rules())->toBeArray()
+            ->and($form->rules())->toHaveKey('name')
+            ->and($form->rules())->toHaveKey('email');
+    });
+
+    test('95EVB-DD-USER-001: role-specific Livewire managers over one generic table', function (): void {
+        $managers = [
+            StudentManager::class,
+            TeacherManager::class,
+            SupervisorManager::class,
+            AdminManager::class,
+            UserManager::class,
+        ];
+
+        foreach ($managers as $manager) {
+            expect(class_exists($manager))->toBeTrue()
+                ->and(is_subclass_of($manager, Component::class))->toBeTrue();
+        }
+    });
+
+    test('95EVB-DD-USER-002: account status as an enum state machine with Entity-owned guards', function (): void {
+        $user = User::factory()->create(['status' => 'activated']);
+
+        expect($user->status)->toBe(AccountStatus::ACTIVATED)
+            ->and($user->status->canTransitionTo(AccountStatus::VERIFIED))->toBeTrue()
+            ->and($user->status->canTransitionTo(AccountStatus::PROVISIONED))->toBeFalse()
+            ->and($user->status->allowsLogin())->toBeTrue()
+            ->and(AccountStatus::ARCHIVED->isTerminal())->toBeTrue()
+            ->and(AccountStatus::ARCHIVED->canTransitionTo(AccountStatus::VERIFIED))->toBeFalse();
+    });
+
+    test('95EVB-DD-USER-003: super admin defended at four independent layers', function (): void {
+        $superAdmin = User::factory()->create(['status' => 'verified']);
+        $superAdmin->assignRole('super_admin');
+
+        // Layer 1: Entity/Model integrity
+        expect($superAdmin->asSuperAdminIntegrityRules()->canBeDeleted())->toBeFalse()
+            ->and($superAdmin->asSuperAdminIntegrityRules()->canBeLocked())->toBeFalse();
+
+        // Layer 2: Observer throws RejectedException
+        expect(fn () => $superAdmin->delete())
+            ->toThrow(RejectedException::class);
+
+        // Layer 3: Action checks super admin
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        expect(fn () => app(DeleteUserAction::class)->execute($superAdmin))
+            ->toThrow(RejectedException::class);
+
+        // Layer 4: Livewire UI guard
+        Livewire::test(UserManager::class)
+            ->call('editUser', $superAdmin->id)
+            ->assertDispatched('ts-ui:toast');
+    });
+
+    test('95EVB-DD-USER-004: mass operations walk chunked queries at 100 rows per chunk', function (): void {
+        $source = file_get_contents(base_path('app/Modules/User/Domain/UserManagement/Actions/ArchiveStudentAccountsAction.php'));
+
+        expect($source)->toContain('chunk(100')
+            ->and($source)->toContain('AccountStatus::ARCHIVED');
     });
 });

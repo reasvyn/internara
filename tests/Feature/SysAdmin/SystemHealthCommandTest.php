@@ -48,7 +48,7 @@ describe('J68GZ and E1MSJ: system health command', function (): void {
         }
     });
 
-    test('E1MSJ-FR-MAINT-002: machine-readable output always exits successfully', function (): void {
+    test('E1MSJ-FR-MAINT-002, E1MSJ-UC-MAINT-002: machine-readable output always exits successfully', function (): void {
         [$exit, $output] = runHealth(true);
         $rows = json_decode(trim($output), true);
 

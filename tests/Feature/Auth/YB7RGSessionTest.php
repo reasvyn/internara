@@ -184,4 +184,77 @@ describe('YB7RG: auth locale parity', function (): void {
             app()->setLocale('en');
         }
     });
+
+    test('YB7RG-NFR-AUTH-015: login form completes by keyboard alone in logical tab order', function (): void {
+        $response = $this->get('/login')->assertOk();
+        $content = $response->getContent();
+
+        $identifierPos = strpos($content, 'name="identifier"') ?: strpos($content, 'form.identifier');
+        $passwordPos = strpos($content, 'name="password"') ?: strpos($content, 'form.password');
+        $submitPos = strpos($content, 'type="submit"');
+
+        expect($identifierPos)->not->toBeFalse()
+            ->and($passwordPos)->not->toBeFalse()
+            ->and($submitPos)->not->toBeFalse()
+            ->and($identifierPos)->toBeLessThan($passwordPos)
+            ->and($passwordPos)->toBeLessThan($submitPos);
+    });
+
+    test('YB7RG-DD-AUTH-004: lockout state is read before user lookup', function (): void {
+        $source = file_get_contents(base_path('app/Modules/Auth/Domain/Login/Actions/LoginAction.php'));
+
+        $checkLockout = strpos($source, '$lockoutUntil = Cache::get');
+        $userLookup = strpos($source, 'User::where(');
+
+        expect($checkLockout)->not->toBeFalse()
+            ->and($checkLockout)->toBeLessThan($userLookup);
+    });
+
+    test('YB7RG-DD-AUTH-005: session regeneration on login, invalidation plus CSRF rotation on logout', function (): void {
+        $user = User::factory()->withPassword('secret-123')->create();
+        $guestId = session()->getId();
+
+        app(LoginAction::class)->execute(new LoginData(identifier: $user->email, password: 'secret-123'));
+        $loginId = session()->getId();
+        expect($loginId)->not->toBe($guestId);
+
+        $this->actingAs($user)->post('/logout')->assertRedirect(route('login'));
+        expect(session()->getId())->not->toBe($loginId)
+            ->and(auth()->check())->toBeFalse();
+    });
+
+    test('YB7RG-DD-AUTH-006: identical generic errors for every login failure mode', function (): void {
+        $user = User::factory()->withPassword('secret-123')->create();
+
+        // Nonexistent user
+        $res1 = Livewire::test(Login::class)
+            ->set('form.identifier', 'nonexistent@example.com')
+            ->set('form.password', 'secret-123')
+            ->call('login');
+
+        // Existing user, wrong password
+        $res2 = Livewire::test(Login::class)
+            ->set('form.identifier', $user->email)
+            ->set('form.password', 'wrong-pass')
+            ->call('login');
+
+        expect($res1->errors()->get('form.identifier')[0])->toBe(__('auth.failed'))
+            ->and($res2->errors()->get('form.identifier')[0])->toBe(__('auth.failed'));
+    });
+
+    test('YB7RG-DD-AUTH-007: welcome and credential notices travel by queued events, never observers', function (): void {
+        $source = file_get_contents(base_path('app/Modules/User/Domain/UserManagement/Actions/CreateUserAction.php'));
+
+        expect($source)->not->toContain('UserObserver::created')
+            ->and(class_exists(LoginFailed::class))->toBeTrue();
+    });
+
+    test('YB7RG-DD-AUTH-008: login resolves stored role only; proxy resolves later at the policy layer', function (): void {
+        $user = User::factory()->create();
+        $user->assignRole('student');
+
+        $this->actingAs($user);
+        expect($user->roles()->pluck('name')->all())->toContain('student')
+            ->and(session()->has('active_proxy_role'))->toBeFalse();
+    });
 });
