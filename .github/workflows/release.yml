@@ -1,19 +1,16 @@
 name: Release Pipeline
-# Comprehensive CI/CD orchestrator driven by SemVer tags. All QA stages run on
-# GitHub Actions (free, no VPS load), and each stage calls a dedicated reusable
-# script under .github/scripts/. Only the PRODUCTION stage deploys to the VPS.
+# Comprehensive CI/CD orchestrator driven by SemVer tags.
 #
-#   Triggering tag        -> Stage          -> Scripts run
+#   Triggering tag          -> Stage         -> Actions
 #   ----------------------------------------------------------------
-#   v<X>.<Y>.<Z>-dev.<N>  -> development    validate + lint + frontend build
-#   v<X>.<Y>.<Z>-beta.<N> -> testing/QA     validate + lint + test + frontend build + security audit
-#   v<X>.<Y>.<Z>-rc.<N>   -> staging/RC     validate + lint + test + guards + build + smoke + security
-#   v<X>.<Y>.<Z>          -> production     validate + all of the above, then deploy VPS
+#   v<X>.<Y>.<Z>-dev.<N>    -> development   validate + lint + frontend build
+#   v<X>.<Y>.<Z>-alpha.<N>  -> pre-release   validate + lint + test + frontend build -> deploy staging VPS (internara.reasvyn.web.id)
+#   v<X>.<Y>.<Z>-beta.<N>   -> pre-release   validate + lint + test + build + audit -> deploy staging VPS (internara.reasvyn.web.id)
+#   v<X>.<Y>.<Z>-rc.<N>     -> pre-release   validate + lint + test + guards + build + smoke + audit -> deploy staging VPS (internara.reasvyn.web.id)
+#   v<X>.<Y>.<Z>            -> release (GA)  validate + all QA gates + release notes -> deploy production VPS
 #
-# Releases are promoted upward: development -> testing -> staging -> production.
-# A final tag never deploys to the VPS unless every QA stage passes.
-# Standard industry flow: development (dev) -> QA/testing (beta) ->
-# pre-production (rc) -> production (final release).
+# Releases are promoted upward: development (dev) -> pre-release (alpha, beta, rc) -> release (production).
+# Pre-release stages deploy to https://internara.reasvyn.web.id via Docker Compose.
 
 on:
     push:
@@ -61,9 +58,10 @@ jobs:
                     VERSION="${TAG%-*}"
                     case "$WORD" in
                       dev)    STAGE="dev" ;;
-                      beta)   STAGE="testing" ;;
+                      alpha)  STAGE="alpha" ;;
+                      beta)   STAGE="beta" ;;
                       rc)     STAGE="staging" ;;
-                      *)      STAGE="dev" ;; # alpha, pre, etc -> fallback to dev
+                      *)      STAGE="alpha" ;; # fallback pre-release
                     esac
                   else
                     # Final tag: <version> without suffix
@@ -188,13 +186,73 @@ jobs:
                   NODE_ENV: production
 
     # ------------------------------------------------------------------ #
-    # TESTING / QA stage — full QA for -beta.* tags.
+    # ALPHA stage — QA (lint + test + frontend build) for -alpha.* tags.
     # ------------------------------------------------------------------ #
-    testing:
-        name: TESTING/QA - full suite
+    alpha:
+        name: ALPHA - lint & test
         runs-on: ubuntu-latest
         needs: [stage, validate]
-        if: needs.stage.outputs.stage == 'testing'
+        if: needs.stage.outputs.stage == 'alpha'
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: none
+                  tools: composer:v2
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
+
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+            - name: Setup Environment
+              run: |
+                  cp .env.example .env
+                  php artisan key:generate
+
+            - name: Cache npm dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: ${{ runner.os }}-npm-
+
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
+
+            - name: Lint (Pint)
+              run: bash .github/scripts/lint.sh
+
+            - name: Test suite
+              run: bash .github/scripts/test.sh
+
+            - name: Build frontend assets
+              run: npm run build
+              env:
+                  NODE_ENV: production
+
+    # ------------------------------------------------------------------ #
+    # BETA stage — QA (lint + test + coverage + build + audit) for -beta.* tags.
+    # ------------------------------------------------------------------ #
+    beta:
+        name: BETA - full QA & audit
+        runs-on: ubuntu-latest
+        needs: [stage, validate]
+        if: needs.stage.outputs.stage == 'beta'
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -412,6 +470,68 @@ jobs:
                   retention-days: 90
 
     # ------------------------------------------------------------------ #
+    # PRE-RELEASE DEPLOY — staging VPS (internara.reasvyn.web.id) via Docker.
+    # ------------------------------------------------------------------ #
+    deploy-prerelease:
+        name: Deploy pre-release to staging VPS (internara.reasvyn.web.id)
+        runs-on: ubuntu-latest
+        needs: [stage, validate, alpha, beta, staging]
+        if: |
+            always() &&
+            needs.validate.result == 'success' &&
+            contains(fromJSON('["alpha", "beta", "staging"]'), needs.stage.outputs.stage) &&
+            (
+                (needs.stage.outputs.stage == 'alpha' && needs.alpha.result == 'success') ||
+                (needs.stage.outputs.stage == 'beta' && needs.beta.result == 'success') ||
+                (needs.stage.outputs.stage == 'staging' && needs.staging.result == 'success')
+            )
+        env:
+            VERSION_TAG: ${{ needs.stage.outputs.version }}
+            VERSION: ${{ needs.validate.outputs.version }}
+            HEALTH_URL: https://internara.reasvyn.web.id
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Deploy via SSH to staging VPS
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.STAGING_VPS_HOST || secrets.VPS_HOST }}
+                  username: ${{ secrets.STAGING_VPS_USER || secrets.VPS_USER }}
+                  key: ${{ secrets.STAGING_VPS_SSH_KEY || secrets.VPS_SSH_KEY }}
+                  port: 22
+                  envs: VERSION_TAG,VERSION,HEALTH_URL
+                  script: |
+                      set -euo pipefail
+                      cd "${STAGING_DEPLOY_DIR:-$HOME/apps/internara}"
+                      echo "==> Deploying pre-release version: $VERSION (tag: $VERSION_TAG) to staging ($HEALTH_URL)"
+
+                      # Backup current deployment before changes
+                      echo "==> Creating backup"
+                      bash .github/scripts/backup.sh
+
+                      # Checkout and reset to the version tag
+                      echo "==> Checking out version tag"
+                      git fetch --quiet origin --tags
+                      git checkout --quiet "$VERSION_TAG"
+                      git reset --hard --quiet "$VERSION_TAG"
+                      echo "==> Checked out $VERSION_TAG"
+
+                      # Run deployment with staging health URL
+                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+
+            - name: Notify staging deployment success
+              if: success()
+              run: |
+                  echo "✓ Successfully deployed v${{ needs.validate.outputs.version }} to staging (https://internara.reasvyn.web.id)"
+
+            - name: Notify staging deployment failure
+              if: failure()
+              run: |
+                  echo "::error::Staging deployment failed for v${{ needs.validate.outputs.version }}"
+                  echo "Run rollback: ssh ${{ secrets.STAGING_VPS_USER || secrets.VPS_USER }}@${{ secrets.STAGING_VPS_HOST || secrets.VPS_HOST }} 'cd ${STAGING_DEPLOY_DIR:-\$HOME/apps/internara} && bash .github/scripts/rollback.sh'"
+
+    # ------------------------------------------------------------------ #
     # DEPLOY — production only, after the production QA stage passes.
     # ------------------------------------------------------------------ #
     deploy:
@@ -422,6 +542,7 @@ jobs:
         env:
             VERSION_TAG: ${{ needs.stage.outputs.version }}
             VERSION: ${{ needs.validate.outputs.version }}
+            HEALTH_URL: https://internara.web.id
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -439,7 +560,7 @@ jobs:
                   username: ${{ secrets.VPS_USER }}
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
-                  envs: VERSION_TAG,VERSION
+                  envs: VERSION_TAG,VERSION,HEALTH_URL
                   script: |
                       set -euo pipefail
                       cd "$HOME/apps/internara"
@@ -457,7 +578,7 @@ jobs:
                       echo "==> Checked out $VERSION_TAG"
 
                       # Run deployment
-                      VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
 
             - name: Notify deployment success
               if: success()
