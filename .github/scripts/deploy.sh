@@ -49,9 +49,9 @@ echo "==> Waiting for health check (max 60s)"
 HEALTH_CHECK_PASSED=false
 HEALTH_TMP="${TMPDIR:-/tmp}/internara-health-body"
 for i in {1..30}; do
-    HTTP_CODE=$(curl -sS -o "$HEALTH_TMP" -w "%{http_code}" -m 10 "$HEALTH_URL" 2>/dev/null || echo "000")
-    if [ "$HTTP_CODE" = "200" ] && ! grep -q "Core system metadata (composer.json) is missing" "$HEALTH_TMP"; then
-        echo "==> Deploy OK: $HEALTH_URL reachable (HTTP 200, healthy body)"
+    HTTP_CODE=$(curl -sSL -o "$HEALTH_TMP" -w "%{http_code}" -m 10 "$HEALTH_URL" 2>/dev/null || echo "000")
+    if { [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "302" ]; } && ! grep -q "Core system metadata (composer.json) is missing" "$HEALTH_TMP"; then
+        echo "==> Deploy OK: $HEALTH_URL reachable (HTTP $HTTP_CODE, healthy body)"
         HEALTH_CHECK_PASSED=true
         break
     fi

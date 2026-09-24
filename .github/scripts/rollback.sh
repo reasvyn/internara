@@ -46,7 +46,7 @@ docker compose up -d --remove-orphans --force-recreate
 echo "==> Waiting for health check..."
 for i in {1..30}; do
     HEALTH_URL="${HEALTH_URL:-https://internara.web.id}"
-    if curl -fsS -o /dev/null "$HEALTH_URL"; then
+    if curl -fsSL -o /dev/null "$HEALTH_URL"; then
         echo "==> Rollback successful: $HEALTH_URL reachable"
         exit 0
     fi
