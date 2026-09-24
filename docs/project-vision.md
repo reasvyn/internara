@@ -75,7 +75,7 @@ For ambiguous cases, open a Discussion, link this file, and record the decision 
 
 ## Roadmap — Now vs Next (link, not duplicate)
 
-- **Now (`v0.15.9 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + module-health tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
+- **Now (`v0.16.0 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + module-health tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
 - **Next:** Reports purification (grade-card only, thesis stays in `Assignment`), partnership slot-quota hardening, journal supervision-log deduplication — each with spec IDs in `docs/specs/index.md`.
 - **Later:** Dapodik export hardening, Dinas PKL regional forks, evaluation module scaffold (`Evaluation` is `Skeleton` today).
 

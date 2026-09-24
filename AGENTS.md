@@ -391,7 +391,7 @@ themselves. When a session produced a durable decision or recurring pattern:
 
 | Fact | Value |
 |---|---|
-| **Version** | v0.15.9 — Stabilization |
+| **Version** | v0.16.0 — Stabilization |
 | **Modules** | 19 = 17 business + UI + Core |
 | **Stack** | PHP 8.4 · Laravel 13 · Livewire 4 · TallstackUI v4 · Tailwind v4 · Alpine 3 · Pest 4 · Spatie (activitylog, medialibrary, model-status, permission) |
 | **DB** | SQLite default / MySQL 8 / MariaDB 10.6 / PostgreSQL 15 |

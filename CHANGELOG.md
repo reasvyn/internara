@@ -4,6 +4,21 @@ All notable changes to Internara are documented here. This file follows [Keep a 
 
 ## [Unreleased]
 
+## [0.16.0-dev.1] - 2026-09-24
+
+Internara v0.16.0 begins a new minor release cycle, introducing a unified 3-tier promotion
+pipeline (`dev` > `pre-release` > `release`) with automated staging deployment to
+`https://internara.reasvyn.web.id` via Docker Compose, and consolidated deployment specifications.
+
+### Added
+- `feat(ci)`: 3-tier release pipeline (`dev` > `pre-release` > `release`) in `.github/workflows/release.yml`
+- `feat(ci)`: automated Docker Compose deployment of pre-release tags (`alpha`, `beta`, `rc`) to staging VPS at `https://internara.reasvyn.web.id`
+- `feat(ci)`: dedicated `alpha`, `beta`, `staging` (rc), and `production` QA pipeline jobs
+
+### Changed
+- `refactor(deployment)`: consolidated deployment specs into `W8K2P-docker-vps-deployment` and `H9T4N-shared-hosting-deployment`
+- `docs(infra)`: updated CI/CD and deployment guides with staging lifecycle and Docker topology details
+
 ## [0.15.9] - 2026-09-02
 
 Internara v0.15.9 is a Stabilization release: core P0/P1 code smells removed, all

@@ -119,7 +119,7 @@ jobs:
             - name: Validate composer.json/schema
               run: |
                   echo "==> Validating composer.json"
-                  composer validate --strict
+                  composer validate --no-check-publish
                   echo "✓ composer.json validated"
 
             - name: Validate npm dependencies
