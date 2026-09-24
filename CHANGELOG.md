@@ -4,6 +4,19 @@ All notable changes to Internara are documented here. This file follows [Keep a 
 
 ## [Unreleased]
 
+## [0.16.0-alpha.1] - 2026-09-24
+
+Internara v0.16.0-alpha.1 marks the first pre-release deployment to the staging VPS
+environment at `https://internara.reasvyn.web.id` using Docker Compose, validating
+container orchestration, Nginx reverse proxy integration, and automated CI/CD deployment.
+
+### Added
+- `feat(deploy)`: automated staging deployment of `v0.16.0-alpha.1` to `https://internara.reasvyn.web.id`
+- `feat(ci)`: tag output propagation in release workflow for accurate version tag checkout
+
+### Changed
+- `docs(modules)`: synchronized all module technical references, commands, actions, and spec traceability
+
 ## [0.16.0-dev.1] - 2026-09-24
 
 Internara v0.16.0 begins a new minor release cycle, introducing a unified 3-tier promotion

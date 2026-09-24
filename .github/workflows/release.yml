@@ -41,6 +41,7 @@ jobs:
         outputs:
             stage: ${{ steps.detect.outputs.stage }}
             version: ${{ steps.detect.outputs.version }}
+            tag: ${{ steps.detect.outputs.tag }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -72,6 +73,7 @@ jobs:
                   echo "version=$VERSION"
                   echo "stage=$STAGE" >> "$GITHUB_OUTPUT"
                   echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
             - name: Show stage & version
               run: |
@@ -486,7 +488,7 @@ jobs:
                 (needs.stage.outputs.stage == 'staging' && needs.staging.result == 'success')
             )
         env:
-            VERSION_TAG: ${{ needs.stage.outputs.version }}
+            VERSION_TAG: ${{ needs.stage.outputs.tag }}
             VERSION: ${{ needs.validate.outputs.version }}
             HEALTH_URL: https://internara.reasvyn.web.id
         steps:
@@ -540,7 +542,7 @@ jobs:
         needs: [stage, validate, production]
         if: needs.stage.outputs.stage == 'production' && needs.production.result == 'success'
         env:
-            VERSION_TAG: ${{ needs.stage.outputs.version }}
+            VERSION_TAG: ${{ needs.stage.outputs.tag }}
             VERSION: ${{ needs.validate.outputs.version }}
             HEALTH_URL: https://internara.web.id
         steps:
