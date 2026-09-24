@@ -516,9 +516,9 @@ jobs:
 
                       # Checkout and reset to the version tag
                       echo "==> Checking out version tag"
-                      git fetch --quiet origin --tags
-                      git checkout --quiet "$VERSION_TAG"
-                      git reset --hard --quiet "$VERSION_TAG"
+                      git fetch --force --tags origin
+                      git checkout --force "$VERSION_TAG"
+                      git reset --hard "$VERSION_TAG"
                       echo "==> Checked out $VERSION_TAG"
 
                       # Run deployment with staging health URL
@@ -576,9 +576,9 @@ jobs:
 
                       # Checkout and reset to the version tag
                       echo "==> Checking out version tag"
-                      git fetch --quiet origin --tags
-                      git checkout --quiet "$VERSION_TAG"
-                      git reset --hard --quiet "$VERSION_TAG"
+                      git fetch --force --tags origin
+                      git checkout --force "$VERSION_TAG"
+                      git reset --hard "$VERSION_TAG"
                       echo "==> Checked out $VERSION_TAG"
 
                       # Run deployment
