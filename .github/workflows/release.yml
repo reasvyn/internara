@@ -504,6 +504,7 @@ jobs:
                   username: ${{ secrets.STAGING_VPS_USER || secrets.VPS_USER }}
                   key: ${{ secrets.STAGING_VPS_SSH_KEY || secrets.VPS_SSH_KEY }}
                   port: 22
+                  command_timeout: 30m
                   envs: VERSION_TAG,VERSION,HEALTH_URL
                   script: |
                       set -euo pipefail
@@ -564,6 +565,7 @@ jobs:
                   username: ${{ secrets.VPS_USER }}
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
+                  command_timeout: 30m
                   envs: VERSION_TAG,VERSION,HEALTH_URL
                   script: |
                       set -euo pipefail
