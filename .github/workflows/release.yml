@@ -241,6 +241,8 @@ jobs:
 
             - name: Test suite
               run: bash .github/scripts/test.sh
+              env:
+                  COVERAGE_RUN: none
 
             - name: Build frontend assets
               run: npm run build

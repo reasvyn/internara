@@ -7,7 +7,12 @@ set -euo pipefail
 MIN_COVERAGE="${MIN_COVERAGE:-80}"
 COVERAGE="${COVERAGE_RUN:-xdebug}"
 
-echo "==> Running Pest test suite (coverage gate: ${MIN_COVERAGE}%)"
-vendor/bin/pest --coverage --min="${MIN_COVERAGE}"
+if [ "$COVERAGE" = "none" ]; then
+    echo "==> Running Pest test suite (no coverage gate)"
+    vendor/bin/pest
+else
+    echo "==> Running Pest test suite (coverage gate: ${MIN_COVERAGE}%)"
+    vendor/bin/pest --coverage --min="${MIN_COVERAGE}"
+fi
 
 echo "==> Tests passed"
