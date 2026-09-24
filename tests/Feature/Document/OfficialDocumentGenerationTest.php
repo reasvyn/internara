@@ -16,6 +16,7 @@ use App\Modules\Document\Services\DocumentRenderer;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
+use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Models\User;
@@ -209,7 +210,11 @@ describe('7H5D6: official letter generation', function () {
             'registration_id' => $registration->id,
             'user_id' => $student->id,
         ]);
-        $placement = Placement::factory()->create(['internship_id' => $internship->id]);
+        $company = Company::factory()->create(['name' => 'PT Solusi Bangsa']);
+        $placement = Placement::factory()->create([
+            'internship_id' => $internship->id,
+            'company_id' => $company->id,
+        ]);
         $registration->update(['placement_id' => $placement->id]);
 
         $template = Document::factory()->create([

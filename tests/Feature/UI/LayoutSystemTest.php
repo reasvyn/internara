@@ -121,7 +121,7 @@ describe('8XMYS: Layout and UI System', function (): void {
     });
 
     test('8XMYS-FR-UI-016: x-ui::components.navbar-actions renders theme, language, and user controls', function (): void {
-        $admin = User::factory()->create();
+        $admin = User::factory()->create(['name' => 'Admin Test User']);
         $admin->assignRole('admin');
         $this->actingAs($admin);
 

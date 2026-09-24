@@ -64,7 +64,7 @@ describe('EWCZ0: account slips', function (): void {
     });
 
     test('EWCZ0-FR-ASLIP-007: slip renders from the account-slip-pdf view with user and code (also FR-ASLIP-008)', function (): void {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['name' => 'Budi Santoso']);
 
         $html = app(RenderAccountSlipAction::class)->execute($user);
 
