@@ -13,9 +13,12 @@ final class AddMemberToGroupAction extends BaseCommandAction
     public function execute(InternshipGroup $group, array $data): InternshipGroupMember
     {
         return $this->transaction(function () use ($group, $data) {
+            $registrationId = ! empty($data['registration_id']) ? $data['registration_id'] : null;
+            $userId = ! empty($data['user_id']) ? $data['user_id'] : (! empty($data['mentor_id']) ? $data['mentor_id'] : null);
+
             $member = $group->members()->create([
-                'registration_id' => $data['registration_id'] ?? null,
-                'user_id' => $data['user_id'] ?? $data['mentor_id'] ?? null,
+                'registration_id' => $registrationId,
+                'user_id' => $userId,
                 'role' => $data['role'],
                 'joined_at' => now(),
             ]);
