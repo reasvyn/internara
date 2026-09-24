@@ -113,7 +113,7 @@ A teacher staring at a pending logbook entry while the industry supervisor's pho
 | FR-RBAC-002 | Every user holds exactly one role; multi-role assignment is forbidden | P0 | F | Full |
 | FR-RBAC-003 | Role naming is normalized: code checks `super_admin` while Spatie stores `superadmin` (Role enum value) | P1 | U | Full |
 | FR-RBAC-004 | Three functional roles are derived at runtime via `Role::resolvesTo()` / `Role::functionalRolesFor()`: admin-group ← super_admin + admin; mentor ← teacher + supervisor; mentee ← student — never stored in the DB, never used in route middleware | P0 | U | Full |
-| FR-RBAC-005 | `$user->role->is(Role::ADMIN)` matches both super_admin and admin with no `||` branches in policies | P1 | U | Full |
+| FR-RBAC-005 | `$user->role->is(Role::ADMIN)` matches both super_admin and admin with no OR branches in policies | P1 | U | Full |
 | FR-RBAC-006 | Mentor/mentee relationships resolve through the `MentorEntity` bridge (`Registration::asMentorEntity()`) built from internship-group membership | P0 | U | Full |
 | FR-RBAC-007 | Route layer: `CheckRoleMiddleware` (`role:...`) verifies concrete roles before execution, redirecting guests to login and returning 401 for JSON/Livewire versus 403 for forbidden | P0 | F | Full |
 | FR-RBAC-008 | Livewire layer: components call `authorize()` so policy-driven visibility gates buttons (e.g. `@can('verify', $logbook)`); proxy UI shows an optional badge only when `session('proxy_mode')` is active | P0 | F | Full |

@@ -63,7 +63,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | `Domain/Department/Events/DepartmentDeleted.php` | `DepartmentDeleted` | `BaseEvent` |
 | `Domain/Department/Events/DepartmentUpdated.php` | `DepartmentUpdated` | `BaseEvent` |
 
-## Policies & Permission
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|

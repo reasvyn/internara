@@ -19,6 +19,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `Domain/Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseCommandAction` |
 | `Domain/Internship/Actions/ReadCloseReadinessAction.php` | `ReadCloseReadinessAction` | `BaseReadAction` |
 | `Domain/Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseCommandAction` |
+| `Domain/Internship/Actions/UnarchiveInternshipAction.php` | `UnarchiveInternshipAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/AddMembersToGroupAction.php` | `AddMembersToGroupAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseCommandAction` |

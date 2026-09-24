@@ -1,4 +1,4 @@
-# T657Z — Assignment Submission
+# Assignment Submission — Student Submissions & Uploads
 
 > **Spec ID:** T657B
 > **Status:** Planned
@@ -11,7 +11,7 @@ Submissions are the student side of coursework: one record per student per assig
 draft through submitted toward graded, with file attachments, deadline enforcement, and a revision
 loop that reuses the same record. The brief lifecycle (creation, publish, close) is owned by
 [assignment](T657Z-assignment.md); scoring and revision requests by
-[grading](T657Z-assignment-grading.md).
+[grading](T657C-assignment-grading.md).
 
 ---
 
@@ -61,7 +61,7 @@ same validation rigor as any other upload in the system.
 ### Non-Goals
 
 - **Brief authoring, publishing, closure**. *Why:* owned by [assignment](T657Z-assignment.md).
-- **Scoring, feedback, revision requests**. *Why:* owned by [grading](T657Z-assignment-grading.md).
+- **Scoring, feedback, revision requests**. *Why:* owned by [grading](T657C-assignment-grading.md).
 - **Submission version history**. *Why:* resubmission overwrites; audit timestamps record the when, not every past what.
 - **Plagiarism detection or similarity scoring**. *Why:* post-MVP engine depth; disputes are handled as incidents, not algorithms.
 - **Peer review or collaborative drafts**. *Why:* authorship is single-student by PKL regulation.
@@ -494,7 +494,7 @@ enforced windows. Scoring and the mentor's revision requests arrive via the grad
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [assignment-grading](T657Z-assignment-grading.md) | Mentors score submissions or return them for revision |
+| 1 | [assignment-grading](T657C-assignment-grading.md) | Mentors score submissions or return them for revision |
 | 2 | [assignment](T657Z-assignment.md) | Publish fan-out brings students to the submission door |
 
 ---
@@ -508,7 +508,7 @@ enforced windows. Scoring and the mentor's revision requests arrive via the grad
 ## Quick References
 
 - [Assignment](T657Z-assignment.md) — brief lifecycle, publish fan-out, closure
-- [Assignment grading](T657Z-assignment-grading.md) — scoring, revision requests, mentor scope
+- [Assignment grading](T657C-assignment-grading.md) — scoring, revision requests, mentor scope
 - [Placement](J9GBH-placement.md) — registration bridge and placed-status contract
 - [File uploads & media](WQGTP-file-uploads-media.md) — upload validation and storage contract
 - [RBAC & authorization](T4B26-rbac-and-authorization.md) — roles, ownership, cross-role proxy

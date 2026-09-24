@@ -10,8 +10,8 @@
 Assignments are the coursework backbone of the PKL period: a teacher or supervisor defines a task
 (project, report, essay) scoped to an internship, publishes it to enrolled students, and closes it
 when the window ends. This spec owns definition, lifecycle, and publishing only. How students submit
-work is owned by [assignment-submission](T657Z-assignment-submission.md); how mentors score it and
-request revision is owned by [assignment-grading](T657Z-assignment-grading.md).
+work is owned by [assignment-submission](T657B-assignment-submission.md); how mentors score it and
+request revision is owned by [assignment-grading](T657C-assignment-grading.md).
 
 ---
 
@@ -54,8 +54,8 @@ while the window shuts.
 
 ### Non-Goals
 
-- **Student submission mechanics**. *Why:* owned by [assignment-submission](T657Z-assignment-submission.md).
-- **Scoring, feedback, and revision**. *Why:* owned by [assignment-grading](T657Z-assignment-grading.md).
+- **Student submission mechanics**. *Why:* owned by [assignment-submission](T657B-assignment-submission.md).
+- **Scoring, feedback, and revision**. *Why:* owned by [assignment-grading](T657C-assignment-grading.md).
 - **Rubric-based grading**. *Why:* rubrics belong to the Assessment module ([ARDA6](ARDA6-assessment.md)).
 - **Plagiarism detection or auto-grading**. *Why:* post-MVP operational depth; no engine is integrated.
 - **Assignment templates or cloning**. *Why:* copy-across-periods is convenience, not MVP coursework flow.
@@ -488,8 +488,8 @@ submission window mechanics and scoring loop arrive via the siblings below.
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [assignment-submission](T657Z-assignment-submission.md) | Students submit work against published briefs |
-| 2 | [assignment-grading](T657Z-assignment-grading.md) | Mentors score submissions and request revision |
+| 1 | [assignment-submission](T657B-assignment-submission.md) | Students submit work against published briefs |
+| 2 | [assignment-grading](T657C-assignment-grading.md) | Mentors score submissions and request revision |
 | 3 | [document-templates](PKYX6-document-templates.md) | Grades feed report cards generated from templates |
 
 ---
@@ -502,8 +502,8 @@ submission window mechanics and scoring loop arrive via the siblings below.
 
 ## Quick References
 
-- [Assignment submission](T657Z-assignment-submission.md) — student submission lifecycle, late policy, uploads
-- [Assignment grading](T657Z-assignment-grading.md) — scoring, revision loop, mentor scope
+- [Assignment submission](T657B-assignment-submission.md) — student submission lifecycle, late policy, uploads
+- [Assignment grading](T657C-assignment-grading.md) — scoring, revision loop, mentor scope
 - [Internship lifecycle](7C5WM-internship-lifecycle.md) — the internship periods briefs scope to
 - [Placement](J9GBH-placement.md) — registration bridge submissions and scoping rely on
 - [Assessment](ARDA6-assessment.md) — rubric grading, outside assignment scope

@@ -104,6 +104,7 @@ logging, Pulse observability, and GDPR compliance.
 | `admin:recovery-path`    | `ShowRecoveryPathCommand`              | Shows recovery key file path                            |
 | `notifications:prune`    | `PruneNotificationsCommand`            | Prunes old notifications                                |
 | `backups:run`            | `SystemBackupCommand`                  | Runs manual database/storage backup                     |
+| `system:maintenance`    | `SystemMaintenanceCommand`             | Open or close the system maintenance window             |
 
 ## Pulse Recorders
 

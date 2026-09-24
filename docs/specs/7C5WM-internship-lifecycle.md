@@ -178,7 +178,7 @@ narratives; the table itself is the single source of requirement rows.
 | FR-LIFE-038 | Closure locks source records so archived programs are read-only at model, policy, and UI layers | P0 | F | Full |
 | FR-LIFE-039 | Archived student accounts move to `AccountStatus::ARCHIVED` with a read-only dashboard for certificates and grades and no registration, logbook, or attendance writes | P0 | F | Full |
 | FR-LIFE-040 | Exceptional un-archive from ARCHIVED to COMPLETED is restricted to super_admin and writes a full audit entry | P0 | F | Full |
-| FR-LIFE-041 | Archived data is retained indefinitely with no automatic deletion; post-expiry removal is manual and database-level | P1 | — | Full |
+| FR-LIFE-041 | Archived data is retained indefinitely with no automatic deletion; post-expiry removal is manual and database-level | P1 | A | Full |
 | FR-LIFE-042 | `InternshipManager` imports one CSV shape with name and description columns | P2 | F | Full |
 | FR-LIFE-043 | CSV import creates DRAFT internships dated to the active academic year | P2 | F | Full |
 | FR-LIFE-044 | `InternshipManager` exports the filtered internship list to CSV | P2 | F | Full |

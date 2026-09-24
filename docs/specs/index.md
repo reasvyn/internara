@@ -166,8 +166,8 @@ Scoring, feedback, coursework. Depends on Phase 7 (placement active).
 | ARDA6 | [Assessment](ARDA6-assessment.md) | Assessment | J9GBH | Full |
 | AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | J9GBH | Full |
 | T657Z | [Assignment](T657Z-assignment.md) | Assignment | J9GBH | Full |
-| T657B | [Assignment Submission](T657Z-assignment-submission.md) | Assignment | T657Z | Planned |
-| T657C | [Assignment Grading](T657Z-assignment-grading.md) | Assignment | T657Z, T657B | Planned |
+| T657B | [Assignment Submission](T657B-assignment-submission.md) | Assignment | T657Z | Planned |
+| T657C | [Assignment Grading](T657C-assignment-grading.md) | Assignment | T657Z, T657B | Planned |
 
 ### Phase 10 — Certification
 
@@ -199,7 +199,7 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | -- | ---- | ------ | ---------- | ------ |
 | 8FVZA | [Job & Queue Infrastructure](8FVZA-job-queue-infrastructure.md) | Core | SE5Q9, NUCY3 | Full |
 | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | NUCY3, T4B26, YB22J, TXR2H, 8FVZA | Full |
-| HBXC2 | [Backup Retention Cleanup](HBXCI-backup-retention-cleanup.md) | SysAdmin | HBXCI | Planned |
+| HBXC2 | [Backup Retention Cleanup](HBXC2-backup-retention-cleanup.md) | SysAdmin | HBXCI | Planned |
 | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | YB22J, 95EVB | Full |
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI | Full |
 | 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW | Planned |

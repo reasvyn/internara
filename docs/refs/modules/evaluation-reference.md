@@ -36,6 +36,7 @@ None — all components are directly under `app/Modules/Evaluation/`.
 | File | Class | Extends |
 |---|---|---|
 | `Models/EvaluationAnswer.php` | `EvaluationAnswer` | `BaseModel` |
+| `Models/EvaluationForm.php` | `EvaluationForm` | `BaseModel` |
 | `Models/EvaluationQuestion.php` | `EvaluationQuestion` | `BaseModel` |
 | `Models/EvaluationResponse.php` | `EvaluationResponse` | `BaseModel` |
 | `Models/EvaluationSection.php` | `EvaluationSection` | `BaseModel` |

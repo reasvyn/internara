@@ -55,6 +55,7 @@ Manages industrial partner companies and partnership agreements for internship p
 | `Domain/Company/Events/CompanyUpdated.php` | `CompanyUpdated` | `BaseEvent` |
 | `Domain/Partnership/Events/PartnershipCreated.php` | `PartnershipCreated` | `BaseEvent` |
 | `Domain/Partnership/Events/PartnershipDeleted.php` | `PartnershipDeleted` | `BaseEvent` |
+| `Domain/Partnership/Events/PartnershipExpired.php` | `PartnershipExpired` | `BaseEvent` |
 | `Domain/Partnership/Events/PartnershipRenewed.php` | `PartnershipRenewed` | `BaseEvent` |
 | `Domain/Partnership/Events/PartnershipTerminated.php` | `PartnershipTerminated` | `BaseEvent` |
 | `Domain/Partnership/Events/PartnershipUpdated.php` | `PartnershipUpdated` | `BaseEvent` |
@@ -67,7 +68,7 @@ Manages industrial partner companies and partnership agreements for internship p
 | `Domain/Partnership/Listeners/ClearDashboardOnPartnershipChange.php` | `ClearDashboardOnPartnershipChange` | — |
 | `Domain/Partnership/Listeners/NotifyOnPartnershipTerminated.php` | `NotifyOnPartnershipTerminated` | — |
 
-## Policies & Permission
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|

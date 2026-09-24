@@ -1,16 +1,16 @@
-# T657Z — Assignment Grading
+# Assignment Grading — Scoring & Revision Queue
 
 > **Spec ID:** T657C
 > **Status:** Planned
 > **Owner:** Assignment
-> **Depends on:** [T657Z](T657Z-assignment.md), [T657Z](T657Z-assignment-submission.md)
+> **Depends on:** [T657Z](T657Z-assignment.md), [T657B](T657B-assignment-submission.md)
 
 ## Description
 
 Grading is the mentor side of coursework: teachers and supervisors work a queue of submitted work,
 assign numeric scores with written feedback, return weak work for revision, and verify receipt
 where the workflow requires it. Brief authoring lives in [assignment](T657Z-assignment.md); the
-student submission loop in [submission](T657Z-assignment-submission.md).
+student submission loop in [submission](T657B-assignment-submission.md).
 
 ---
 
@@ -54,7 +54,7 @@ the number looks exactly like a legitimate one. Scope is a business invariant, n
 ### Non-Goals
 
 - **Rubric-based or multi-criterion scoring**. *Why:* weighted rubrics belong to Assessment ([ARDA6](ARDA6-assessment.md)); here one score, one feedback.
-- **Brief authoring and submission mechanics**. *Why:* owned by [assignment](T657Z-assignment.md) and [submission](T657Z-assignment-submission.md).
+- **Brief authoring and submission mechanics**. *Why:* owned by [assignment](T657Z-assignment.md) and [submission](T657B-assignment-submission.md).
 - **Auto-grading or plagiarism engines**. *Why:* post-MVP depth; originality disputes stay human-handled incidents.
 - **Peer or collaborative grading**. *Why:* PKL scoring authority rests with mentors, not classmates.
 
@@ -419,7 +419,7 @@ flow chose, for the same reason.
 
 | Spec | What It Provides |
 |------|-----------------|
-| [T657Z](T657Z-assignment-submission.md) | `Submission` model, `SubmissionStatus`, student submit/resubmit flow |
+| [T657Z](T657B-assignment-submission.md) | `Submission` model, `SubmissionStatus`, student submit/resubmit flow |
 | [TXR2H](TXR2H-notification-infrastructure.md) | Channel registration behind the feedback notification |
 
 ### Build Guide
@@ -445,7 +445,7 @@ revision, verify receipt, and proxy for quiet supervisors — every outcome noti
 ## Quick References
 
 - [Assignment](T657Z-assignment.md) — brief lifecycle, publish fan-out, closure
-- [Assignment submission](T657Z-assignment-submission.md) — student submit/resubmit loop, late policy, uploads
+- [Assignment submission](T657B-assignment-submission.md) — student submit/resubmit loop, late policy, uploads
 - [Assessment](ARDA6-assessment.md) — rubric scoring, outside single-score scope
 - [Placement](J9GBH-placement.md) — registration and mentorship bridge scope relies on
 - [RBAC & authorization](T4B26-rbac-and-authorization.md) — roles, ownership, cross-role proxy hierarchy

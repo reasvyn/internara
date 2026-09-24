@@ -113,7 +113,7 @@ The full base-class mandate — every architectural role extends or implements e
 | FR-BASE-037 | `AuthorizesRoles` trait — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` | P0 | A | Full |
 | FR-BASE-038 | `AuthorizesOwnership` trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` | P0 | A | Full |
 | FR-BASE-039 | DTO Start phase: `execute(array $data)` while the input shape is still changing | P1 | A | Full |
-| FR-BASE-040 | DTO Stabilize phase: `execute(Data\|array $data)` union; `BaseData::fromArray()` keeps legacy callers working | P1 | A | Full |
+| FR-BASE-040 | DTO Stabilize phase: `execute(Data or array $data)` union; `BaseData::fromArray()` keeps legacy callers working | P1 | A | Full |
 | FR-BASE-041 | DTO Final phase: `execute(Data $data)` once the shape settles — the DTO is the only contract | P0 | A | Full |
 | FR-BASE-042 | Entities may expose `static rules()` returning validation arrays shared by Form Objects and Form Requests (validation-centralization path) | P1 | A | Full |
 | FR-BASE-043 | Read Actions resolve cache keys through the `config/cache-keys.php` registry via `cacheKey()` — no inline key strings | P0 | A | Full |
@@ -322,7 +322,7 @@ Inline cache-key strings rot: two Reads caching under `slots` with different TTL
 | NFR-BASE-004 | Module discovery at runtime — no manual registration of Livewire/Policies/Views (see [module-discovery](I1BCV-module-discovery.md)) | N/A | P1 | A | Full |
 | NFR-BASE-005 | Base-class mandate covered by scans until arch tests are restored (naming, conventions, contracts) | Arch-guard batch green | P0 | A | Full |
 | NFR-BASE-006 | All user-facing messages in base classes use the `__()` translation helper (dual `en` + `id`) | 0 hardcoded user strings | P0 | A | Full |
-| NFR-BASE-007 | Error pages rendered by exception handlers meet WCAG 2.1 Level AA | AA | P2 | — | Full |
+| NFR-BASE-007 | Error pages rendered by exception handlers meet WCAG 2.1 Level AA | AA | P2 | B | Full |
 
 ### 5.1 Structural Integrity
 

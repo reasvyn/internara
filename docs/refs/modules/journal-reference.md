@@ -58,7 +58,7 @@ field monitoring visit scheduling/verification.
 | `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum` | — |
 | `Domain/SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | — |
 
-## Policies & Permission
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|

@@ -27,10 +27,10 @@ This guide is organized as a sequence of topic sections, each covering a complet
 
 | Step | Action | Module | Key Code Path |
 | ---- | ------ | ------ | ------------- |
-| 1 | Configure system settings (branding, locale, timezone) | [Settings](../refs/modules/settings.md) | `Setting::update()` |
-| 2 | Configure backup schedule | [Settings](../refs/modules/settings.md) | `BackupSetting` |
-| 3 | Create academic years | [Academics](../refs/modules/academics.md) | `AcademicYear` |
-| 4 | Add remaining departments | [Academics](../refs/modules/academics.md) | `Department` |
+| 1 | Configure system settings (branding, locale, timezone) | [Settings](../refs/modules/setting.md) | `Setting::update()` |
+| 2 | Configure backup schedule | [Settings](../refs/modules/setting.md) | `BackupSetting` |
+| 3 | Create academic years | [Academics](../refs/modules/academic.md) | `AcademicYear` |
+| 4 | Add remaining departments | [Academics](../refs/modules/academic.md) | `Department` |
 
 ---
 
@@ -38,8 +38,8 @@ This guide is organized as a sequence of topic sections, each covering a complet
 
 | Step | Action | Module | Key Code Path |
 | ---- | ------ | ------ | ------------- |
-| 5 | Register partner companies | [Partners](../refs/modules/partners.md) | `Company` |
-| 6 | Create partnership agreements (MoU) | [Partners](../refs/modules/partners.md) | `Partnership` |
+| 5 | Register partner companies | [Partners](../refs/modules/partner.md) | `Company` |
+| 6 | Create partnership agreements (MoU) | [Partners](../refs/modules/partner.md) | `Partnership` |
 | 7 | Create teacher/supervisor/student accounts | [User](../refs/modules/user.md) | `CreateUserAction` |
 | 8 | Assign mentor flags to teachers/supervisors | [User](../refs/modules/user.md) | `User.mentor_type` |
 
@@ -61,10 +61,10 @@ This guide is organized as a sequence of topic sections, each covering a complet
 | ---- | ------ | ------ | ------------ |
 | 12 | Approve student registrations | [Enrollment](../refs/modules/enrollment.md) | Registration status transitions |
 | 13 | Place students at companies | [Enrollment](../refs/modules/enrollment.md) | `Placement` |
-| 14 | Verify attendance workflow | [Journals](../refs/modules/journals.md) | Clock in/out flow |
-| 15 | Verify logbook workflow | [Journals](../refs/modules/journals.md) | Journal entry → mentor review |
+| 14 | Verify attendance workflow | [Journals](../refs/modules/journal.md) | Clock in/out flow |
+| 15 | Verify logbook workflow | [Journals](../refs/modules/journal.md) | Journal entry → mentor review |
 | 16 | Verify assignment workflow | [Assignment](../refs/modules/assignment.md) | Create → submit → grade |
-| 17 | Configure email notifications | [Settings](../refs/modules/settings.md) | SMTP settings |
+| 17 | Configure email notifications | [Settings](../refs/modules/setting.md) | SMTP settings |
 
 ---
 

@@ -76,6 +76,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/Mentor/Entities/MentorEntity.php` | `MentorEntity` | `BaseEntity` |
 | `Entities/AdminEntity.php` | `AdminEntity` | `BaseEntity` |
+| `Entities/Apprentice.php` | `Apprentice` | `BaseEntity` |
 | `Entities/StudentEntity.php` | `StudentEntity` | `BaseEntity` |
 | `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
 | `Entities/TeacherEntity.php` | `TeacherEntity` | `BaseEntity` |

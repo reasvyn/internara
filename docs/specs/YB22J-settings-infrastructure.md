@@ -134,7 +134,7 @@ surface (§4.5–§4.6) together form the complete settings surface. Every row b
 | FR-SET-011 | `SaveSystemSettingsAction` accepts `SystemSettingsData` and delegates to the batch action inside a transaction, activating the academic year when eligible | P0 | F | Full |
 | FR-SET-012 | Every cache key used by settings is registered in `config/cache-keys.php`; no ad-hoc key strings | P0 | A | Full |
 | FR-SET-013 | `SettingObserver` invalidates per-key, per-group, and global keys synchronously on created, updated, and deleted events, including theme and brand keys for theme-related settings | P0 | F | Full |
-| FR-SET-014 | `SystemSetting` page lives at `/admin/settings` behind `auth` plus `role:super_admin\|admin`, rendering general, branding, and mail sections with system info and logo sidebars | P0 | F | Full |
+| FR-SET-014 | `SystemSetting` page lives at `/admin/settings` behind `auth` plus `role:super_admin,admin`, rendering general, branding, and mail sections with system info and logo sidebars | P0 | F | Full |
 | FR-SET-015 | The three form objects validate independently and share rules with their Entity via `Entity::rules()` wherever the same entity is edited from two forms | P1 | F | Full |
 | FR-SET-016 | `TestMailSettingsAction` sends a test email with temporarily swapped config and restores the previous config afterward | P0 | F | Full |
 | FR-SET-017 | Feature flags live under the `features.*` namespace as `BOOLEAN` settings, readable via `feature($key, $default)`, documented in `config/settings.php`, writable only by `super_admin` | P1 | F | Full |

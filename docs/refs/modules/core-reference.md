@@ -40,7 +40,7 @@ depends on.
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
-- **Console Commands**: 1 (`module:discover`)
+- **Console Commands**: 3 (`module:discover`, `deploy:detect`, `deploy:configure`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
 - **Tests**: across Unit and Feature suites
@@ -287,6 +287,14 @@ None - Core provides base classes only.
 | `create_jobs_table`         | `jobs` (also creates `failed_jobs` + `job_batches`) |
 | `create_media_table`        | `media`        |
 | `create_pulse_tables`       | `pulse_*`      |
+
+## Console Commands
+
+| Command Signature | Class | Description |
+| ----------------- | ----- | ----------- |
+| `module:discover` | `ModuleDiscoverCommand` | Rediscover and register module components (Livewire, policies, views) |
+| `deploy:detect` | `DeployDetectCommand` | Probe server capabilities and recommend a deployment profile |
+| `deploy:configure` | `DeployConfigureCommand` | Apply deployment profile preset drivers to .env configuration |
 
 ---
 

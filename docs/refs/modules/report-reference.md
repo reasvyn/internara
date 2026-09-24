@@ -75,7 +75,7 @@ finalization.
 | `Domain/StudentReport/Listeners/LogStudentReportFinalized.php` | `LogStudentReportFinalized` | — |
 
 
-## Policies & Permission
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|

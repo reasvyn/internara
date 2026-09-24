@@ -188,7 +188,7 @@ and verified.
 | FR-ASLIP-037 | Single-slip route is `GET /admin/users/{user}/account-slip` → `download` | P0 | F | Full |
 | FR-ASLIP-038 | Batch route is `GET /admin/users/account-slips/download?ids=...` → `downloadBatch` | P0 | F | Full |
 | FR-ASLIP-039 | Both routes require `auth` middleware | P0 | F | Full |
-| FR-ASLIP-040 | Both routes require `role:super_admin\|admin` middleware | P0 | F | Full |
+| FR-ASLIP-040 | Both routes require `role:super_admin,admin` middleware | P0 | F | Full |
 | FR-ASLIP-041 | Route names are `admin.users.account-slip` and `admin.users.account-slips.batch` | P1 | F | Full |
 | FR-ASLIP-042 | Slip operations enforce dual-layer authorization: route/policy gating plus Action-level `RejectedException` refusal | P0 | A | Full |
 

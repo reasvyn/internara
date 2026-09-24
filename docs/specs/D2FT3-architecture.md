@@ -163,7 +163,7 @@ Global defaults every feature spec inherits. A feature spec may tighten but neve
 | FR-ARC-037 | Tier 1 (shared hosting, ≤500 users) runs on MySQL/MariaDB + file cache + sync queue + database session with zero external services | P1 | A | Full |
 | FR-ARC-038 | Tier 2 (VPS, 500–2000 users) and Tier 3 (HA, 2000+) transitions are `.env` swaps with zero code changes (e.g., `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, read replica) | P1 | A | Full |
 | FR-ARC-039 | Deferred until measured: Laravel Octane, horizontal auto-scaling, CDN for static assets, database sharding, queue job batching — only adopted when `docs/architecture.md` and Pulse show a bottleneck | P2 | A | Planned |
-| FR-ARC-040 | DTO adoption follows Start `array` → Stabilize `Data|array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration | P1 | A | Full |
+| FR-ARC-040 | DTO adoption follows Start `array` → Stabilize `Data or array` union → Final `Data` only, with `BaseData::fromArray()` preserving callers during migration | P1 | A | Full |
 | FR-ARC-041 | Cache invalidation follows Start `Cache::forget()` inline → Stabilize event+listener → Final `config/cache-keys.php` registry with listener-driven invalidation | P1 | A | Full |
 | FR-ARC-042 | Validation rules follow Start Form-Object-only → Stabilize `Entity::rules()` shared → Final centralized in Entities for full DRY | P1 | A | Full |
 | FR-ARC-043 | Every module implements at least one Command or Read Action exposing its public surface | P0 | A | Full |

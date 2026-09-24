@@ -157,7 +157,7 @@ Per-service behavior contracts. Defaults are Tier 1 (shared hosting, ≤500 user
 | FR-CORE-036 | Tier 0 no-regret optimizations are enforced at any scale: composite FK/activity-log indexes, cache-key registry, eager loading (no N+1), Read Actions avoiding transaction overhead | P0 | A | Full |
 | FR-CORE-037 | Tier 1 (shared hosting, ≤500 users) runs on MySQL/MariaDB + file cache + sync queue + database session + local disk with zero external services | P0 | A | Full |
 | FR-CORE-038 | Tier 2 (VPS, 500–2000 users) transitions are `.env` swaps with zero code changes (`CACHE_STORE=redis`, `QUEUE_CONNECTION=redis` + worker, `SESSION_DRIVER=redis`, optional `FILESYSTEM_DISK=s3`) | P1 | A | Full |
-| FR-CORE-039 | Deferred until measured: Octane, horizontal auto-scaling, CDN for static assets, sharding, queue batching — adopted only when Pulse shows a bottleneck | P2 | — | Planned |
+| FR-CORE-039 | Deferred until measured: Octane, horizontal auto-scaling, CDN for static assets, sharding, queue batching — adopted only when Pulse shows a bottleneck | P2 | A | Planned |
 | FR-CORE-040 | Redis, when enabled, is one shared server with distinct connections: `cache`, `queue`, `session`, `default` (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`) | P1 | A | Full |
 | FR-CORE-041 | `APP_KEY` is present and non-empty (`base64:`) in all environments — encryption at rest for sessions and data | P0 | A | Full |
 | FR-CORE-042 | Post-install defaults are asserted by config test: `queue=sync`, `cache=file`, `session=database` | P0 | A | Full |

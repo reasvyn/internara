@@ -12,7 +12,7 @@ and storage archives, a `CreateBackupAction` that orchestrates the backup lifecy
 (pending → running → completed/failed) with event dispatch, a `SystemBackupCommand` CLI with
 scheduled execution, a `BackupManager` Livewire component for admin-facing backup management, and
 failure notification to super admins. Backup retention and cleanup lives in the companion
-[backup-retention-cleanup](HBXCI-backup-retention-cleanup.md) spec.
+[backup-retention-cleanup](HBXC2-backup-retention-cleanup.md) spec.
 
 Recovery objectives for the whole product are fixed here: a 4-hour recovery point objective with
 under-1-hour recovery time, verified by periodic restore drills. Cross-cutting contracts come from
@@ -863,13 +863,13 @@ After implementing this spec, the backup system is fully operational: admins cre
 UI or CLI, view history with stats, delete old backups, and receive failure notifications. The
 backup command runs daily and respects the enabled flag. The runner handles MySQL, PostgreSQL,
 and SQLite with secure credential handling. Retention purging is the companion
-[backup-retention-cleanup](HBXCI-backup-retention-cleanup.md) spec.
+[backup-retention-cleanup](HBXC2-backup-retention-cleanup.md) spec.
 
 ### Next Steps
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [backup-retention-cleanup.md](HBXCI-backup-retention-cleanup.md) (HBXC2) | Retention cleanup purges expired completed backups |
+| 1 | [backup-retention-cleanup.md](HBXC2-backup-retention-cleanup.md) (HBXC2) | Retention cleanup purges expired completed backups |
 | 2 | [system-maintenance.md](E1MSJ-system-maintenance.md) (E1MSJ) | Backup health runs alongside system maintenance tasks |
 | 3 | [settings-infrastructure.md](YB22J-settings-infrastructure.md) (YB22J) | `backup.enabled`, `backup.retention_days` exposed in Admin → Settings UI |
 
@@ -886,7 +886,7 @@ and SQLite with secure credential handling. Retention purging is the companion
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
 - [Spec registry](index.md) — all feature specs grouped in 12 phases
-- [Backup retention cleanup](HBXCI-backup-retention-cleanup.md) — retention purging companion spec
+- [Backup retention cleanup](HBXC2-backup-retention-cleanup.md) — retention purging companion spec
 - [Job & queue infrastructure](8FVZA-job-queue-infrastructure.md) — queued notification delivery
 - [Architecture](D2FT3-architecture.md) — Action Triad, entities, module layout
 - [ADR: Self-hosted single-tenant](../adr/adr-self-hosted-single-tenant.md) — local-only backup rationale

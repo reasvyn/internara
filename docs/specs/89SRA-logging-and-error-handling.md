@@ -442,7 +442,7 @@ Because injection rides on `Log::withContext()`, Action code and SmartLogger cal
 | NFR-LOG-001 | No PII (passwords, tokens, emails, IPs) appears unmasked in any log channel | 0 unmasked occurrences | P0 | U | Full |
 | NFR-LOG-002 | Exception messages shown to users never contain SQL queries, file paths, or stack traces | 0 leak occurrences | P0 | F | Full |
 | NFR-LOG-003 | `InfrastructureException` is never user-facing (`isUserFacing() = false`) | `false` invariant | P0 | U | Full |
-| NFR-LOG-004 | Error pages display user-friendly messages, never technical details | 100% generic user surface | P1 | — | — |
+| NFR-LOG-004 | Error pages display user-friendly messages, never technical details | 100% generic user surface | P1 | B | Planned |
 | NFR-LOG-005 | Activity-log database failure never breaks the calling Action | Action succeeds | P0 | F | Full |
 | NFR-LOG-006 | Activity-log failure is logged to the system channel for diagnosis | 1 diagnostic entry | P0 | F | Full |
 | NFR-LOG-007 | System-log failure propagates instead of being swallowed | Exception surfaces | P0 | F | Full |
@@ -452,8 +452,8 @@ Because injection rides on `Log::withContext()`, Action code and SmartLogger cal
 | NFR-LOG-011 | Every exception class is a single file with a single responsibility | 1 class per file | P1 | A | Full |
 | NFR-LOG-012 | All user-facing error messages use the `__()` translation helper | 100% wrapped | P1 | A | Full |
 | NFR-LOG-013 | SmartLogger channel names are translatable via `__()` | 100% wrapped | P2 | A | Full |
-| NFR-LOG-014 | Error pages are keyboard-navigable and screen-reader accessible | Manual audit pass | P2 | — | — |
-| NFR-LOG-015 | Error-page status codes use semantic HTML (`<main>`, proper headings) | Manual audit pass | P2 | — | — |
+| NFR-LOG-014 | Error pages are keyboard-navigable and screen-reader accessible | Manual audit pass | P2 | B | Planned |
+| NFR-LOG-015 | Error-page status codes use semantic HTML (`<main>`, proper headings) | Manual audit pass | P2 | B | Planned |
 
 ### 5.1 Safety & Privacy
 

@@ -55,7 +55,7 @@ feature toggles.
 |---|---|---|
 | `Entities/SettingEntity.php` | `SettingEntity` | `BaseEntity` |
 
-## Policies & Permission
+## Policies & Permissions
 
 | File | Policy | Extends |
 |---|---|---|

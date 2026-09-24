@@ -115,8 +115,8 @@ lifecycle.
 System-wide configuration management — brand identity, color schemes, localization, mail services,
 and global feature toggles.
 
-- Overview: [settings.md](settings.md)
-- Reference: [settings-reference.md](settings-reference.md)
+- Overview: [setting.md](setting.md)
+- Reference: [setting-reference.md](setting-reference.md)
 
 **Key Concepts:** Setting key-value store, dynamic branding, color presets, cached resolution chain
 
@@ -132,8 +132,8 @@ and global feature toggles.
 
 Departments and academic calendar management.
 
-- Overview: [academics.md](academics.md)
-- Reference: [academics-reference.md](academics-reference.md)
+- Overview: [academic.md](academic.md)
+- Reference: [academic-reference.md](academic-reference.md)
 
 **Key Concepts:** Department, AcademicYear
 
@@ -228,8 +228,8 @@ Assignment management and submission tracking.
 Logbooks, attendance, absence requests, teacher supervision logs, and field monitoring visit
 scheduling/verification.
 
-- Overview: [journals.md](journals.md)
-- Reference: [journals-reference.md](journals-reference.md)
+- Overview: [journal.md](journal.md)
+- Reference: [journal-reference.md](journal-reference.md)
 
 **Key Concepts:** Logbook, Attendance, AbsenceRequest, SupervisionLog, MonitoringVisit
 
@@ -260,8 +260,8 @@ Incident reports and workplace concern documentation.
 
 Company management and partnership agreements.
 
-- Overview: [partners.md](partners.md)
-- Reference: [partners-reference.md](partners-reference.md)
+- Overview: [partner.md](partner.md)
+- Reference: [partner-reference.md](partner-reference.md)
 
 **Key Concepts:** Company, Partnership
 
@@ -290,8 +290,8 @@ Certificate generation and credential management.
 
 Final student grade compilation, score aggregation, and coordinator sign-off.
 
-- Overview: [reports.md](reports.md)
-- Reference: [reports-reference.md](reports-reference.md)
+- Overview: [report.md](report.md)
+- Reference: [report-reference.md](report-reference.md)
 
 **Key Concepts:** Grade Card, Final Grade Card, Score Aggregation
 

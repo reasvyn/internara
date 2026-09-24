@@ -143,7 +143,7 @@ implemented.
 | FR-SCH-013 | `logoPreviewUrl()` returns the pending-upload temporary URL or the current logo URL | P2 | F | Full |
 | FR-SCH-014 | The `school_entity` cache key is registered in `config/cache-keys.php` as `academics.school.entity` | P0 | A | Full |
 | FR-SCH-015 | Entity cache invalidates synchronously after every write; cached resolution completes within budget | P0 | F | Full |
-| FR-SCH-016 | The editor lives at `GET /admin/school` (name `sysadmin.school`) behind `auth` plus `role:super_admin\|admin` with all mutations policy-authorized | P0 | F | Full |
+| FR-SCH-016 | The editor lives at `GET /admin/school` (name `sysadmin.school`) behind `auth` plus `role:super_admin,admin` with all mutations policy-authorized | P0 | F | Full |
 
 ### 4.1 Entity and Reads
 
@@ -297,7 +297,7 @@ the role meets denial rather than compliance.
 | ID | Requirement | Target | Priority | Layer | Status |
 |----|-------------|--------|----------|-------|--------|
 | NFR-SCH-001 | School setting keys match the key pattern to prevent injection | zero non-matching keys | P0 | A | Full |
-| NFR-SCH-002 | Logo uploads validate MIME type and size server-side | 100% gated; `image\|max:2048` | P0 | F | Full |
+| NFR-SCH-002 | Logo uploads validate MIME type and size server-side | 100% gated; `image, max:2048` | P0 | F | Full |
 | NFR-SCH-003 | Editor mutations authorize via the `Setting` policy at mount and on every mutation | 100% of mutations gated | P0 | F | Full |
 | NFR-SCH-004 | Profile saves are atomic across all eight keys | zero partial saves | P0 | F | Full |
 | NFR-SCH-005 | Cache invalidation is synchronous, never queued | zero stale reads after save | P0 | F | Full |

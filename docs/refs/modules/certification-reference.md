@@ -19,6 +19,7 @@ internships.
 | `Domain/Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/ReadCertificateStatusAction.php` | `ReadCertificateStatusAction` | `BaseReadAction` |
 | `Domain/Certificate/Actions/RevokeCertificateAction.php` | `RevokeCertificateAction` | `BaseCommandAction` |
 
 ## Data / DTOs
@@ -26,6 +27,7 @@ internships.
 | File | Class | Extends |
 |---|---|---|
 | `Data/BatchIssueCertificatesData.php` | `BatchIssueCertificatesData` | `BaseData` |
+| `Domain/Certificate/Data/CertificateStatusView.php` | `CertificateStatusView` | `BaseData` |
 
 ## Jobs
 

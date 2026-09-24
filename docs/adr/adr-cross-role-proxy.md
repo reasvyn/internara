@@ -219,4 +219,4 @@ This replaces inline role checks with a single, testable source of truth.
 * [Entity-Model Separation](adr-entity-model-separation.md) — Entity pattern for MentorEntity
 * [Policy Pattern](../guides/arch/policy-pattern.md) — where proxy gates live
 * [Assessment Module](../refs/modules/assessment.md) — first proxy adopter
-* [Journals Module](../refs/modules/journals.md) — logbook verification use case
+* [Journal Module](../refs/modules/journal.md) — logbook verification use case

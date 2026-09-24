@@ -274,7 +274,7 @@ conformance row. Every row is implemented and verified.
 | FR-CSV-059 | Imported academic years start `INACTIVE`; activation is a separate admin act | P1 | F | Full |
 | FR-CSV-060 | Academic-year export columns are `name`, `start_date`, `end_date`, `status` | P1 | F | Full |
 | FR-CSV-061 | Academic-year filenames are `academic-years.csv`, `academic-years-selected.csv`, `academic-years-template.csv` | P1 | F | Full |
-| FR-CSV-062 | Row payloads follow the DTO migration phases: `array` today, `Data|array` union with `fromArray()` when stabilizing, `Data` only when settled — per the phase table in §6.5 | P1 | A | Full |
+| FR-CSV-062 | Row payloads follow the DTO migration phases: `array` today, `Data or array` union with `fromArray()` when stabilizing, `Data` only when settled — per the phase table in §6.5 | P1 | A | Full |
 
 ### 4.1 Shared Infrastructure
 
