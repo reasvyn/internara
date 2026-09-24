@@ -84,7 +84,7 @@ Use Cases are **optional** to test, like Design Decisions (§7). `Layer` / `Stat
 
 #### UC-CORE-001 — Deploy on Shared Hosting With Zero External Services
 
-A small SMK outside Semarang pays $5 a month for a shared-hosting account with no Redis, no Memcached, and no supervisor for workers. The operator clones the repo, runs `composer install`, copies `.env.example`, and runs `php artisan setup:install`. SQLite is created on disk, migrations run, cache resolves to `file`, sessions to `database`, queue to `sync`, and mail to `log`, and the application works end to end without any daemon to babysit. That zero-external-services promise is pinned by a config test asserting `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, and `SESSION_DRIVER=database` under FR-CORE-042 at layer `A`, and the same matrix is repeated in the deploy preset described in [shared-hosting-deployment](06IB6-shared-hosting-deployment.md).
+A small SMK outside Semarang pays $5 a month for a shared-hosting account with no Redis, no Memcached, and no supervisor for workers. The operator clones the repo, runs `composer install`, copies `.env.example`, and runs `php artisan setup:install`. SQLite is created on disk, migrations run, cache resolves to `file`, sessions to `database`, queue to `sync`, and mail to `log`, and the application works end to end without any daemon to babysit. That zero-external-services promise is pinned by a config test asserting `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, and `SESSION_DRIVER=database` under FR-CORE-042 at layer `A`, and the same matrix is repeated in the deploy preset described in [shared-hosting-deployment](H9T4N-shared-hosting-deployment.md).
 
 #### UC-CORE-002 — Cache Invalidates on Settings Change
 

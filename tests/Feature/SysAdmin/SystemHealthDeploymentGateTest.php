@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 uses(LazilyRefreshDatabase::class);
 
-describe('06IB6 deployment health gate via E1MSJ system health', function (): void {
-    test('FR-DEPL-023/NFR-DEPL-007/E1MSJ-FR-MAINT-002: health reports deployment subsystems as machine-readable results', function (): void {
+describe('W8K2P deployment health gate via E1MSJ system health', function (): void {
+    test('W8K2P-FR-DOCK-020/E1MSJ-FR-MAINT-002: health reports deployment subsystems as machine-readable results', function (): void {
         expect(Artisan::call('system:health', ['--json' => true]))->toBe(0);
 
         $results = json_decode(Artisan::output(), true, flags: JSON_THROW_ON_ERROR);

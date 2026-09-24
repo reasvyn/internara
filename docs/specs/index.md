@@ -203,9 +203,8 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | YB22J, 95EVB | Full |
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI | Full |
 | 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW | Planned |
-| 06IB6 | [Conditional Deployment](06IB6-deployment.md) | Core | J68GZ, 8NZAU, 8FVZA, E1MSJ | Full |
-| 06IB7 | [Docker VPS Deployment](06IB6-docker-vps-deployment.md) | Core | 06IB6, E1MSJ | Full |
-| 06IB8 | [Shared Hosting Deployment](06IB6-shared-hosting-deployment.md) | Core | 06IB6, 8NZAU, E1MSJ | Full |
+| W8K2P | [Docker VPS Deployment](W8K2P-docker-vps-deployment.md) | Core | E1MSJ | Full |
+| H9T4N | [Shared Hosting Deployment](H9T4N-shared-hosting-deployment.md) | Core | 8NZAU, E1MSJ | Full |
 | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | T4B26, 4HWSB, XW6F5, XI3LB, NTHQA, 7C5WM, IT0OE, MBB5R, J9GBH, 1KSWL, 2EHSE, 3RU9S, ARDA6, AXKZW, T657Z, J0M04, R6BMW | Full |
 
 ---

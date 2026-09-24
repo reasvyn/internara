@@ -230,7 +230,7 @@ def is_ui_requirement(req_id: str, spec_file: Path | None = None, line_text: str
 
     # 2. Spec file name signal — only for specs that are primarily UI
     #    (layout, branding, landing page). Profile (OCEMS) is mixed, so not UI-only.
-    ui_spec_ids = {"8XMYS", "52O1I", "K8HP1", "CKKZC", "06IB6"}  # layout, branding, landing, dashboard, deployment UI parts
+    ui_spec_ids = {"8XMYS", "52O1I", "K8HP1", "CKKZC"}  # layout, branding, landing, dashboard
     spec_id = spec_file.stem.split("-")[0] if spec_file and "-" in spec_file.stem else (spec_file.stem if spec_file else "")
     if spec_id in ui_spec_ids:
         # For UI-primary specs, still check line text before flagging — not all FRs in a UI spec are UI

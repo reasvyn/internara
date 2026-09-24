@@ -1,13 +1,13 @@
 # Shared Hosting Deployment — Conventional cPanel-Style Server Operations
 
-> **Spec ID:** 06IB8
+> **Spec ID:** H9T4N
 > **Status:** Full
 > **Owner:** Core
-> **Depends on:** [deployment](06IB6-deployment.md) (06IB6), [installation](8NZAU-installation.md) (8NZAU), [system-maintenance](E1MSJ-system-maintenance.md) (E1MSJ)
+> **Depends on:** [installation](8NZAU-installation.md) (8NZAU), [system-maintenance](E1MSJ-system-maintenance.md) (E1MSJ)
 
 ## Description
 
-Specifies the shared-hosting condition for Internara: conventional cPanel-style servers with PHP 8.4+, MySQL/MariaDB, and coarse cron. It pins the no-daemon constraints, the off-server build workflow, the `/cron/{secret}` webhook scheduler, and manual symlink creation. Profile selection, detection, and driver application belong to the parent [deployment](06IB6-deployment.md) spec (06IB6); this spec owns everything that makes the `shared-hosting` preset actually run on a constrained box.
+Specifies the shared-hosting condition for Internara: conventional cPanel-style servers with PHP 8.4+, MySQL/MariaDB, and coarse cron. It owns the shared-hosting profile definition, environment detection fallback, deploy:configure driver application for shared hosting, no-daemon constraints, the off-server build workflow, the `/cron/{secret}` webhook scheduler, and manual symlink creation.
 
 ---
 
@@ -56,12 +56,17 @@ The shared-hosting operator journey, verified end-to-end from upload through the
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
 | UC-HOST-001 | School IT staff deploys on cheap conventional shared hosting via off-server build, FTP upload, document root, symlink, env setup, provisioning, cron entry, and health gate | P0 | F | Full |
+| UC-HOST-002 | Operator on shared hosting runs detection and receives shared-hosting recommendation with safe defaults | P0 | F | Full |
 
 ### 3.1 Deploying Without a Shell
 
 #### UC-HOST-001 — An Evening Deploy Over FTP
 
 The IT teacher's evening starts on their laptop: install dependencies, compile assets, and pack a bundle — because the server at the other end has no toolchain, only a file manager and a cron page. Upload, point the document root at `public/`, hand-create the storage link the shell would normally make, copy the example env with real credentials and a fresh cron secret, provision, add the single cron entry that knocks on the webhook every few minutes, and finish with the health check. By the last step the constraint set has disappeared into routine: five hundred users' worth of school system running on hosting that costs less than lunch.
+
+#### UC-HOST-002 — Detection Names Shared Hosting
+
+When an operator runs `deploy:detect` on a shared cPanel box or unknown hosting, the command probes for container runtimes and Redis. Finding neither, it outputs a clean recommendation for `shared-hosting` and advises running `deploy:configure`. The operator applies it, and `.env` receives the safe driver keys with zero manual editing.
 
 ---
 
@@ -84,6 +89,11 @@ Shared-hosting scope, drivers, scheduler bridge, build workflow, and compatibili
 | FR-HOST-008 | Shared hosting supports a configurable document root pointed at `public/` | P0 | F | Full |
 | FR-HOST-009 | The `public/storage` symlink is creatable manually when SSH is unavailable | P0 | F | Full |
 | FR-HOST-010 | MySQL 8+ / MariaDB 10.6+ and SQLite are all supported as the database on shared hosting | P0 | F | Full |
+| FR-HOST-011 | System declares the `shared-hosting` preset in `config/deployment.php` with sync queue, file cache, database session, log broadcast, and webhook scheduler | P0 | A | Full |
+| FR-HOST-012 | `deploy:detect` probes server capabilities and recommends `shared-hosting` when container runtime and Redis are absent | P0 | F | Full |
+| FR-HOST-013 | `deploy:configure --profile=shared-hosting` applies preset drivers to `.env` idempotently, writing driver keys only and never altering secrets | P0 | F | Full |
+| FR-HOST-014 | Profile selection respects explicit `DEPLOY_PROFILE` environment variable override, falling back to `shared-hosting` when detection is inconclusive | P0 | F | Full |
+| FR-HOST-015 | `deploy:detect` is non-destructive, supports `--json` structured output, and exposes no credentials | P0 | F | Full |
 
 ### 4.1 Tier-1 Scope and Drivers
 
@@ -141,6 +151,8 @@ Cross-cutting constraints on the shared-hosting condition. `Target` holds the co
 | NFR-HOST-002 | A deployment is reproducible from documented commands alone | N/A | P1 | F | Full |
 | NFR-HOST-003 | The install guide describes the off-server build, FTP upload, symlink, and cron entry steps in order | N/A | P1 | A | Full |
 | NFR-HOST-004 | The `public/storage` link resolves and storage directories are writable after deploy, confirmed by the health gate | N/A | P0 | F | Full |
+| NFR-HOST-005 | `deploy:detect` and `deploy:configure` declare `strict_types=1` and provide translatable output | N/A | P1 | A | Full |
+| NFR-HOST-006 | Detection output exposes no credentials or secrets | N/A | P1 | F | Full |
 
 ### 5.1 Protection and Reproducibility
 
@@ -193,6 +205,7 @@ Recorded choices behind the shared-hosting condition. These rows carry no test l
 |----|-------------|----------|-------|--------|
 | DD-HOST-001 | The deployment artifact is built off-server before upload; no on-server Composer or Node, ever | P0 | — | Full |
 | DD-HOST-002 | The scheduler fires through the `/cron/{secret}` webhook instead of a resident `schedule:work` daemon | P0 | — | Full |
+| DD-HOST-003 | Shared hosting is the safe fallback default when detection is inconclusive | P0 | — | Full |
 
 ### 7.1 Constraints as Design
 
@@ -224,7 +237,6 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|------------------|
-| [deployment](06IB6-deployment.md) (06IB6) | Deployment profile catalog, `DEPLOY_PROFILE` variable, `deploy:detect`, `deploy:configure` |
 | [system-maintenance](E1MSJ-system-maintenance.md) (E1MSJ) | `system:health` command used as the deployment acceptance gate |
 | [installation](8NZAU-installation.md) (8NZAU) | `setup:install` provisioning, environment audit, `.env` handling, manual symlink |
 
@@ -236,7 +248,7 @@ After implementing this spec, school IT staff deploys by uploading a prebuilt ar
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [deployment](06IB6-deployment.md) (06IB6) | Profile detection and the `DEPLOY_PROFILE` variable apply the `shared-hosting` preset drivers (FR-HOST-001/004) |
+| 1 | [docker-vps-deployment](W8K2P-docker-vps-deployment.md) (W8K2P) | Tier-2 upgrade path to Docker VPS when school outgrows shared hosting |
 
 ---
 
@@ -249,9 +261,8 @@ After implementing this spec, school IT staff deploys by uploading a prebuilt ar
 
 ## Quick References
 
-- [Spec registry](index.md) — Maintenance phase: 06IB6 (Full), 06IB7 (Full), 06IB8 (Full), 3UOZP (Full)
-- [Conditional deployment](06IB6-deployment.md) — parent spec: profile catalog, detection, `deploy:configure`, health gate
-- [Docker VPS deployment](06IB6-docker-vps-deployment.md) — sibling 06IB7 per-condition spec
+- [Spec registry](index.md) — Maintenance phase: W8K2P (Full), H9T4N (Full), 3UOZP (Full)
+- [Docker VPS deployment](W8K2P-docker-vps-deployment.md) — companion VPS Docker spec
 - [Installation](8NZAU-installation.md) — `setup:install` provisioning and manual symlink
 - [System maintenance](E1MSJ-system-maintenance.md) — `system:health` acceptance gate
 - [Self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md) — why Tier-1 needs zero external services

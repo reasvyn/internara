@@ -572,7 +572,7 @@ Implement `Tests\Support\DummyData` (orchestrating the existing factories in dep
 
 ## Quick References
 
-- [Spec registry](index.md) — Maintenance phase: 06IB6 (Full), 06IB7 (Full), 06IB8 (Full), 3UOZP (Full)
+- [Spec registry](index.md) — Maintenance phase: W8K2P (Full), H9T4N (Full), 3UOZP (Full)
 - [RBAC & authorization](T4B26-rbac-and-authorization.md) — roles attached via `assignRole`, never recreated
 - [Registration](MBB5R-registration.md) — registration lifecycle and status states
 - [Placement](J9GBH-placement.md) — placement uniqueness constraint and `filled_quota` invariant

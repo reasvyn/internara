@@ -60,7 +60,7 @@ triggers for when each tier applies and an explicit list of what stays deferred 
 
 - **Multi-tenant database partitioning**. *Why:* single-tenant by product definition (per the self-hosted single-tenant ADR); one school per instance needs no tenant isolation.
 - **Custom ORM or query builder**. *Why:* Eloquent is the persistence layer; portability comes from avoiding raw module-specific SQL, not from a new abstraction.
-- **Container orchestration**. *Why:* Docker Compose only — no Kubernetes; the deployment matrix in [conditional-deployment.md](06IB6-deployment.md) stays at Compose plus shared hosting.
+- **Container orchestration**. *Why:* Docker Compose only — no Kubernetes; the deployment matrix in [docker-vps-deployment.md](W8K2P-docker-vps-deployment.md) stays at Compose plus shared hosting.
 - **Load-test CI gates (k6 thresholds, uptime-SLA monitoring)**. *Why:* post-MVP operational depth; the performance-optimization ADR defers optimization until Pulse measurement shows a bottleneck.
 
 ---
@@ -505,7 +505,7 @@ verified by manifest audit, migration smoke, and the health command rather than 
 - [Base classes](SE5Q9-base-classes.md) — contracts outside this spec's scope
 - [Module discovery](I1BCV-module-discovery.md) — registry built on this platform
 - [System maintenance](E1MSJ-system-maintenance.md) — full `system:health` command contract
-- [Conditional deployment](06IB6-deployment.md) — deployment matrix per tier
+- [Docker VPS deployment](W8K2P-docker-vps-deployment.md) — deployment matrix per tier
 - [ADR: Self-hosted single-tenant](../adr/adr-self-hosted-single-tenant.md) — zero-external-services defaults
 - [ADR: Performance optimization](../adr/adr-performance-optimization.md) — tier triggers and deferral list
 - [ADR: UUID primary keys](../adr/adr-uuid-primary-keys.md) — key-type rationale
