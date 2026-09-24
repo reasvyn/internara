@@ -30,13 +30,13 @@ fi
 PREVIOUS_REVISION=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
 echo "==> Current revision: $PREVIOUS_REVISION"
 
-# Use --no-cache to ensure the git tag change is picked up (Docker cache doesn't invalidate on tag change)
-# Also remove app_data volume that overlays /app/public (can hold stale public/index.php from previous version)
-echo "==> Cleaning previous build artifacts"
-docker volume rm -f "${COMPOSE_PROJECT_NAME:-internara}_app_data" >/dev/null 2>&1 || docker volume rm -f internara_app_data >/dev/null 2>&1 || true
+NO_CACHE_FLAG=""
+if [ "${NO_CACHE:-false}" = "true" ]; then
+  NO_CACHE_FLAG="--no-cache"
+fi
 
 echo "==> Building Docker images"
-docker compose build --no-cache --pull
+docker compose build --pull $NO_CACHE_FLAG
 
 echo "==> Starting containers"
 docker compose up -d --remove-orphans --force-recreate
