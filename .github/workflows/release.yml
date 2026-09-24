@@ -239,15 +239,15 @@ jobs:
             - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
-            - name: Test suite
-              run: bash .github/scripts/test.sh
-              env:
-                  COVERAGE_RUN: none
-
             - name: Build frontend assets
               run: npm run build
               env:
                   NODE_ENV: production
+
+            - name: Test suite
+              run: bash .github/scripts/test.sh
+              env:
+                  COVERAGE_RUN: none
 
     # ------------------------------------------------------------------ #
     # BETA stage — QA (lint + test + coverage + build + audit) for -beta.* tags.
@@ -301,13 +301,13 @@ jobs:
             - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
-            - name: Test suite (coverage gate)
-              run: bash .github/scripts/test.sh
-
             - name: Build frontend assets
               run: npm run build
               env:
                   NODE_ENV: production
+
+            - name: Test suite (coverage gate)
+              run: bash .github/scripts/test.sh
 
             - name: Composer security audit
               run: composer audit --format=json
@@ -365,16 +365,16 @@ jobs:
             - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
+            - name: Build frontend assets
+              run: npm run build
+              env:
+                  NODE_ENV: production
+
             - name: Test suite (coverage gate)
               run: bash .github/scripts/test.sh
 
             - name: Architecture guards
               run: bash .github/scripts/guards.sh
-
-            - name: Build frontend assets
-              run: npm run build
-              env:
-                  NODE_ENV: production
 
             - name: Smoke test (production build)
               run: bash .github/scripts/smoke.sh
@@ -441,16 +441,16 @@ jobs:
             - name: Lint (Pint)
               run: bash .github/scripts/lint.sh
 
+            - name: Build frontend assets
+              run: npm run build
+              env:
+                  NODE_ENV: production
+
             - name: Test suite (coverage gate)
               run: bash .github/scripts/test.sh
 
             - name: Architecture guards
               run: bash .github/scripts/guards.sh
-
-            - name: Build frontend assets
-              run: npm run build
-              env:
-                  NODE_ENV: production
 
             - name: Smoke test (production build)
               run: bash .github/scripts/smoke.sh
