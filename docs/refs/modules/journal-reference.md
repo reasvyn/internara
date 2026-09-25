@@ -58,6 +58,16 @@ field monitoring visit scheduling/verification.
 | `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum` | — |
 | `Domain/SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AbsenceRequest/Entities/AbsenceRequestState.php` | `AbsenceRequestState` | `BaseEntity` |
+| `Domain/Attendance/Entities/AttendanceState.php` | `AttendanceState` | `BaseEntity` |
+| `Domain/Logbook/Entities/LogbookState.php` | `LogbookState` | `BaseEntity` |
+| `Domain/MonitoringVisit/Entities/VisitState.php` | `VisitState` | `BaseEntity` |
+| `Domain/SupervisionLog/Entities/SupervisionLogState.php` | `SupervisionLogState` | `BaseEntity` |
+
 ## Policies & Permissions
 
 | File | Policy | Extends |

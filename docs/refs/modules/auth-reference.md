@@ -38,6 +38,16 @@ permissions.
 |---|---|---|---|
 | `Domain/Permissions/Enums/Role.php` | `Role` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/AccessToken/Entities/AccessTokenState.php` | `AccessTokenState` | `BaseEntity` |
+| `Domain/AccessToken/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
+| `Domain/Account/Entities/AccountActivation.php` | `AccountActivation` | `BaseEntity` |
+| `Domain/AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
+| `Domain/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
+
 ## Policies & Permissions
 
 | File | Policy | Extends |

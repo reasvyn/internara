@@ -49,6 +49,8 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 | File | Class | Extends |
 |---|---|---|
+| `Domain/AcademicYear/Entities/AcademicYearState.php` | `AcademicYearState` | `BaseEntity` |
+| `Domain/Department/Entities/DepartmentState.php` | `DepartmentState` | `BaseEntity` |
 | `Domain/School/Entities/SchoolEntity.php` | `SchoolEntity` | `BaseEntity` |
 
 ## Events

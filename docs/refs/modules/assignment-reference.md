@@ -37,6 +37,13 @@ Manages course assignments and submission tracking with grading and revision wor
 | `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum` | — |
 | `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Submission/Entities/SubmissionState.php` | `SubmissionState` | `BaseEntity` |
+| `Entities/AssignmentRules.php` | `AssignmentRules` | `BaseEntity` |
+
 ## Policies & Permissions
 
 | File | Policy | Extends |

@@ -42,6 +42,14 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `Domain/Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum` | — |
 | `Domain/InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Internship/Entities/InternshipPeriod.php` | `InternshipPeriod` | `BaseEntity` |
+| `Domain/Internship/Entities/InternshipState.php` | `InternshipState` | `BaseEntity` |
+| `Domain/InternshipGroup/Entities/InternshipGroupState.php` | `InternshipGroupState` | `BaseEntity` |
+
 ## Policies & Permissions
 
 | File | Policy | Extends |

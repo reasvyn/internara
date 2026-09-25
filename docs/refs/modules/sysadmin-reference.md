@@ -41,6 +41,13 @@ logging, Pulse observability, and GDPR compliance.
 | `Domain/Backups/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
 | `Domain/Backups/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Announcement/Entities/AnnouncementState.php` | `AnnouncementState` | `BaseEntity` |
+| `Domain/Backup/Entities/BackupState.php` | `BackupState` | `BaseEntity` |
+
 ## Policies & Permissions
 
 | File | Policy | Extends |

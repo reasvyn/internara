@@ -54,6 +54,14 @@ applications, and registration document uploads.
 | `Domain/Placement/Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `LabelEnum` | — |
 | `Domain/Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Placement/Entities/PlacementCapacity.php` | `PlacementCapacity` | `BaseEntity` |
+| `Domain/Placement/Entities/PlacementState.php` | `PlacementState` | `BaseEntity` |
+| `Domain/Registration/Entities/RegistrationState.php` | `RegistrationState` | `BaseEntity` |
+
 ## Events
 
 | File | Event | Extends |

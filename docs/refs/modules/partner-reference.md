@@ -39,6 +39,13 @@ Manages industrial partner companies and partnership agreements for internship p
 |---|---|---|---|
 | `Domain/Partnership/Enums/PartnershipStatus.php` | `PartnershipStatus` | `LabelEnum` | — |
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Company/Entities/CompanyState.php` | `CompanyState` | `BaseEntity` |
+| `Domain/Partnership/Entities/PartnershipState.php` | `PartnershipState` | `BaseEntity` |
+
 ## Data / DTOs
 
 | File | Class | Extends |
