@@ -11,6 +11,7 @@
 >
 <head>
     <x-ui::layouts.base.head :$title />
+    @livewireStyles
 
     {{-- Dynamic Branding Colors --}}
     @php
@@ -47,7 +48,7 @@
     <x-ts-toast />
     <x-ts-dialog />
 
-    <!-- Scripts -->
+    @livewireScripts
     @stack('scripts')
 </body>
 </html>
