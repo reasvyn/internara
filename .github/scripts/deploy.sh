@@ -41,14 +41,20 @@ if [ "${NO_CACHE:-false}" = "true" ]; then
 fi
 
 echo "==> Building Docker images"
-docker compose build --pull $NO_CACHE_FLAG
+# Keep the VPS build cache warm; release images are already selected through GIT_URL.
+# Set FORCE_PULL=true only when base image refresh is intentional.
+PULL_FLAG=""
+if [ "${FORCE_PULL:-false}" = "true" ]; then
+    PULL_FLAG="--pull"
+fi
+docker compose build $PULL_FLAG $NO_CACHE_FLAG
 
 echo "==> Starting containers"
-docker compose up -d --remove-orphans --force-recreate
+# Compose recreates only services whose image/config changed; the database stays up.
+docker compose up -d --remove-orphans
 
-echo "==> Cleaning up old images"
+echo "==> Cleaning up dangling images"
 docker image prune -f >/dev/null 2>&1 || true
-docker builder prune -f --keep-storage "$BUILD_CACHE_LIMIT" >/dev/null 2>&1 || true
 
 echo "==> Waiting for health check (max 60s)"
 HEALTH_CHECK_PASSED=false

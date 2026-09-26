@@ -164,10 +164,10 @@ jobs:
         run: |
           set -euo pipefail
           echo "==> Fetching origin branches"
-          git fetch origin staging:staging hotfix:hotfix
-          git checkout staging
+          git fetch origin staging hotfix
+          git checkout -B staging origin/staging
           echo "==> Merging hotfix into staging"
-          git merge hotfix -m "chore(sync): merge hotfix into staging" --no-edit || {
+          git merge origin/hotfix -m "chore(sync): merge hotfix into staging" --no-edit || {
             echo "::error::Merge conflict detected when merging hotfix into staging. Manual resolution required."
             exit 1
           }
