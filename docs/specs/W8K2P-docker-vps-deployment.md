@@ -7,7 +7,7 @@
 
 ## Description
 
-Specifies the Docker VPS hosting condition and deployment lifecycle for Internara: a minimal three-service Compose stack, entrypoint-managed scheduler and queue lifecycle, named-volume persistence, ordered healthchecks, and fail-fast startup. It governs the `vps-docker` profile in `config/deployment.php`, capability detection via `deploy:detect`, driver configuration via `deploy:configure`, and the three-tier promotion lifecycle (`dev` > `pre-release` > `release`) where pre-release (`alpha`, `beta`, `rc`) is deployed to `internara.reasvyn.web.id` via Docker.
+Specifies the Docker VPS hosting condition and deployment lifecycle for Internara: a minimal three-service Compose stack, entrypoint-managed scheduler and queue lifecycle, named-volume persistence, ordered healthchecks, and fail-fast startup. It governs the `vps-docker` profile in `config/deployment.php`, capability detection via `deploy:detect`, driver configuration via `deploy:configure`, and the three-tier promotion lifecycle (`dev` > `pre-release` > `release`) where pre-release (`alpha`, `beta`, `rc`) is deployed to `staging.internara.web.id` via Docker.
 
 ---
 
@@ -26,7 +26,7 @@ Unlike shared hosting, a VPS can host long-running processes — but only if som
 ### PS-3 — Promotion Lifecycle Lacks Staging Parity Without Dedicated Pre-Release Deploy
 
 Without automated pre-release deployments to a real VPS environment, release candidates (`alpha`, `beta`, `rc`) are tested only in synthetic CI environments. Volume mounts, reverse proxy headers, and container entrypoints can fail silently when first pushed to production.
-**→ Requirement:** FR-DOCK-014 (three-tier lifecycle), FR-DOCK-015 (pre-release deploy to `internara.reasvyn.web.id`), FR-DOCK-016 (production release).
+**→ Requirement:** FR-DOCK-014 (three-tier lifecycle), FR-DOCK-015 (pre-release deploy to `staging.internara.web.id`), FR-DOCK-016 (production release).
 
 ### PS-4 — VPS Environment Detection and Configuration
 
@@ -40,7 +40,7 @@ Operators deploying on VPS need automated capability probing and driver applicat
 ### Goals
 
 - **Minimal three-service stack** — `app`, `web`, `db`, nothing else by default. *Why:* a single-tenant school system must stay operable by staff who manage it alongside everything else.
-- **Pre-release deployment on internara.reasvyn.web.id** — every pre-release tag (`alpha`, `beta`, `rc`) deploys to this staging VPS host under domain `internara.reasvyn.web.id` using Docker Compose. *Why:* true staging parity validates containers and reverse proxy before production.
+- **Pre-release deployment on staging.internara.web.id** — every pre-release tag (`alpha`, `beta`, `rc`) deploys to this staging VPS host under domain `staging.internara.web.id` using Docker Compose. *Why:* true staging parity validates containers and reverse proxy before production.
 - **Entrypoint-owned background processes** — scheduler daemon and optional queue worker start via `RUN_SCHEDULER` / `RUN_QUEUE` flags. *Why:* reboots recover without operator checklists.
 - **Persistence across restarts** — application storage and compiled assets live on named volumes shared by `app` and `web`. *Why:* a container restart must never look like data loss.
 - **Ordered, healthchecked startup** — FPM ping for `app`, HTTP for `web`, Compose waits in chain. *Why:* first-boot races are the flakiest failures and the easiest to prevent.
@@ -63,7 +63,7 @@ VPS operator journeys, both verified against a running stack through compose lif
 |----|-------------|----------|-------|--------|
 | UC-DOCK-001 | Sysadmin deploys the full stack on a Docker VPS: compose up, in-container provisioning, setup wizard, health gate | P0 | F | Full |
 | UC-DOCK-002 | Sysadmin graduates to a Redis-backed queue via compose override and the queue flag, with jobs flowing through Redis | P1 | F | Full |
-| UC-DOCK-003 | Release team pushes a pre-release tag (alpha, beta, rc) triggering automated Docker deployment to internara.reasvyn.web.id with health gate verification | P0 | F | Full |
+| UC-DOCK-003 | Release team pushes a pre-release tag (alpha, beta, rc) triggering automated Docker deployment to staging.internara.web.id with health gate verification | P0 | F | Full |
 | UC-DOCK-004 | Sysadmin on a Docker VPS runs deploy:detect, confirms recommended vps-docker profile, and applies driver configuration | P0 | F | Full |
 
 ### 3.1 Operating the VPS Stack
@@ -76,9 +76,9 @@ The sysadmin starts with a bare VPS, Docker installed, two secrets in hand. One 
 
 Growth arrives as a symptom: certificate season slows responses because document jobs run inline. The fix is deliberately boring — add a Redis service through a compose override, flip one flag, restart. The entrypoint notices the flag and starts a worker consuming from Redis; nothing is rebuilt, no image changes. If Redis ever goes away, the flag flips back and the stack degrades to the same synchronous behavior the school started with, which is exactly what a reversible growth path should feel like.
 
-#### UC-DOCK-003 — Automated Pre-Release Staging on internara.reasvyn.web.id
+#### UC-DOCK-003 — Automated Pre-Release Staging on staging.internara.web.id
 
-During pre-release cycles, a maintainer cuts a tag such as `v1.0.0-beta.1` or `v1.0.0-rc.1`. The CI pipeline passes automated test gates and triggers an automated deployment to the VPS at `internara.reasvyn.web.id` using Docker Compose. The deployment runs migrations, starts the web, app, and db containers, and gates acceptance against `php artisan system:health` and an HTTP 200 check at `https://internara.reasvyn.web.id`. Testers and stakeholders can immediately test the exact containerized build on a live domain before production release.
+During pre-release cycles, a maintainer cuts a tag such as `v1.0.0-beta.1` or `v1.0.0-rc.1`. The CI pipeline passes automated test gates and triggers an automated deployment to the VPS at `staging.internara.web.id` using Docker Compose. The deployment runs migrations, starts the web, app, and db containers, and gates acceptance against `php artisan system:health` and an HTTP 200 check at `https://staging.internara.web.id`. Testers and stakeholders can immediately test the exact containerized build on a live domain before production release.
 
 #### UC-DOCK-004 — VPS Profile Detection & Configuration
 
@@ -108,13 +108,13 @@ VPS topology, lifecycle, persistence, drivers, and startup safety. `Priority` ra
 | FR-DOCK-011 | `app` exposes a healthcheck (`docker/fpm-healthcheck` against FPM port 9000) and `web` depends on `app` with `condition: service_healthy` | P0 | F | Full |
 | FR-DOCK-012 | `app` and `db` fail fast at start when `APP_KEY` or `DB_PASSWORD` is missing, and both use `restart: unless-stopped` | P0 | F | Full |
 | FR-DOCK-013 | The stack boots on Tier-1 drivers by default and graduates to Tier-2 Redis drivers through environment swaps plus compose override only, with zero application code changes | P1 | A | Full |
-| FR-DOCK-014 | System defines a three-tier deployment lifecycle: dev (local/CI), pre-release (staging deployment on internara.reasvyn.web.id via Docker), and release (production deployment) | P0 | A | Full |
-| FR-DOCK-015 | Pre-release stage is triggered by SemVer pre-release tags (*-alpha.*, *-beta.*, *-rc.*) and deploys to the staging host binding domain internara.reasvyn.web.id using Docker Compose | P0 | F | Full |
+| FR-DOCK-014 | System defines a three-tier deployment lifecycle: dev (local/CI), pre-release (staging deployment on staging.internara.web.id via Docker), and release (production deployment) | P0 | A | Full |
+| FR-DOCK-015 | Pre-release stage is triggered by SemVer pre-release tags (*-alpha.*, *-beta.*, *-rc.*) and deploys to the staging host binding domain staging.internara.web.id using Docker Compose | P0 | F | Full |
 | FR-DOCK-016 | Final release stage is triggered by stable SemVer tags (v*.*.* without suffix) and deploys to the designated production environment | P0 | F | Full |
 | FR-DOCK-017 | config/deployment.php declares the vps-docker preset mapping to QUEUE_CONNECTION=redis, CACHE_STORE=redis, SESSION_DRIVER=redis, BROADCAST_CONNECTION=log, and scheduler=daemon | P0 | A | Full |
 | FR-DOCK-018 | deploy:detect probes container runtime, Redis reachability, daemon capabilities, and composer, recommending vps-docker when container/redis and daemon exist | P0 | F | Full |
 | FR-DOCK-019 | deploy:configure applies the vps-docker preset drivers to .env idempotently, never touching application secrets, docker-compose.yml, or Dockerfile | P0 | F | Full |
-| FR-DOCK-020 | Post-deployment verification executes php artisan system:health and verifies HTTP 200 on HEALTH_URL (https://internara.reasvyn.web.id for pre-release) | P0 | F | Full |
+| FR-DOCK-020 | Post-deployment verification executes php artisan system:health and verifies HTTP 200 on HEALTH_URL (https://staging.internara.web.id for pre-release) | P0 | F | Full |
 
 ### 4.1 Service Topology
 
@@ -187,7 +187,7 @@ Cross-cutting constraints on the VPS stack. `Target` holds the concrete SLO wher
 | NFR-DOCK-001 | Docker services use healthchecks so Compose starts `app` after healthy `db`, and `web` after healthy `app` | N/A | P0 | F | Full |
 | NFR-DOCK-002 | A deployment is reproducible from documented commands alone | N/A | P1 | F | Full |
 | NFR-DOCK-003 | No secrets are committed; `.env` stays excluded via `.gitignore` | N/A | P0 | A | Full |
-| NFR-DOCK-004 | Pre-release host internara.reasvyn.web.id serves over HTTPS behind a reverse proxy forwarding X-Forwarded-Proto and enforces SESSION_SECURE_COOKIE=true | 100% HTTPS | P0 | F | Full |
+| NFR-DOCK-004 | Pre-release host staging.internara.web.id serves over HTTPS behind a reverse proxy forwarding X-Forwarded-Proto and enforces SESSION_SECURE_COOKIE=true | 100% HTTPS | P0 | F | Full |
 | NFR-DOCK-005 | Docker build, deploy, and detection scripts expose no credentials or secrets in output or logs | N/A | P0 | F | Full |
 
 ### 5.1 Reliability and Security
@@ -236,7 +236,7 @@ Recorded choices behind the stack. These rows carry no test layer — they expla
 |----|-------------|----------|-------|--------|
 | DD-DOCK-001 | Minimal three-service topology without Redis; scheduler and optional queue worker run inside the `app` container under entrypoint management | P0 | — | Full |
 | DD-DOCK-002 | Scheduler and optional queue worker run as entrypoint-managed subprocesses, not as separate containers | P0 | — | Full |
-| DD-DOCK-003 | Pre-release staging runs on internara.reasvyn.web.id using the exact same three-service Docker topology to guarantee environmental fidelity before production | P0 | — | Full |
+| DD-DOCK-003 | Pre-release staging runs on staging.internara.web.id using the exact same three-service Docker topology to guarantee environmental fidelity before production | P0 | — | Full |
 
 ### 7.1 Topology
 

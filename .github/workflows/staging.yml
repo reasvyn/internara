@@ -1,10 +1,10 @@
 name: Staging Deploy
 
 # Secure automatic deploy for the staging branch — bypasses the
-# SemVer tag pipeline directly to the staging area (https://internara.reasvyn.web.id).
+# SemVer tag pipeline directly to the staging area (https://staging.internara.web.id).
 #
 #   Trigger: push to staging (or manual dispatch)
-#   Flow:    lint → deploy VPS (VERSION_TAG=staging, HEALTH_URL=https://internara.reasvyn.web.id/up)
+#   Flow:    lint → deploy VPS (VERSION_TAG=staging, HEALTH_URL=https://staging.internara.web.id/up)
 #
 # Security:
 #   - Minimal permissions (contents:read)
@@ -89,7 +89,7 @@ jobs:
     if: github.ref == 'refs/heads/staging'
     env:
       VERSION_TAG: staging
-      HEALTH_URL: https://internara.reasvyn.web.id/up
+      HEALTH_URL: https://staging.internara.web.id/up
     steps:
       - name: Checkout staging
         uses: actions/checkout@v4
@@ -129,7 +129,7 @@ jobs:
 
       - name: Notify success
         if: success()
-        run: echo "✓ Staging ${{ github.sha }} deployed to https://internara.reasvyn.web.id"
+        run: echo "✓ Staging ${{ github.sha }} deployed to https://staging.internara.web.id"
 
       - name: Notify failure
         if: failure()

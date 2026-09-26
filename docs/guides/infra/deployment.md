@@ -486,15 +486,15 @@ orchestrator following a three-tier promotion lifecycle (`dev` > `pre-release` >
 is derived from the tag suffix:
 
 - `vX.Y.Z-dev.<N>` → **development**: Pint + frontend build (CI only)
-- `vX.Y.Z-alpha.<N>` → **pre-release (alpha)**: Pint + Pest + frontend build → deploy to staging VPS (`https://internara.reasvyn.web.id`)
-- `vX.Y.Z-beta.<N>` → **pre-release (beta)**: Pint + Pest suite with coverage gate + composer audit → deploy to staging VPS (`https://internara.reasvyn.web.id`)
-- `vX.Y.Z-rc.<N>` → **pre-release (staging/RC)**: Pint + Pest + architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test + release notes preview → deploy to staging VPS (`https://internara.reasvyn.web.id`)
+- `vX.Y.Z-alpha.<N>` → **pre-release (alpha)**: Pint + Pest + frontend build → deploy to staging VPS (`https://staging.internara.web.id`)
+- `vX.Y.Z-beta.<N>` → **pre-release (beta)**: Pint + Pest suite with coverage gate + composer audit → deploy to staging VPS (`https://staging.internara.web.id`)
+- `vX.Y.Z-rc.<N>` → **pre-release (staging/RC)**: Pint + Pest + architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test + release notes preview → deploy to staging VPS (`https://staging.internara.web.id`)
 - `vX.Y.Z` (final) → **release (production)**: all of the above + release notes artifact, then deploy to production VPS (`https://internara.web.id`)
 
 `deploy.sh` sets `GIT_URL=https://github.com/reasvyn/internara.git#${VERSION_TAG}`, runs
 `docker compose up -d --remove-orphans --force-recreate` (with `--no-cache` so a tag change is
 picked up), prunes the build cache under a `--keep-storage` limit (default `2g`), and gates success
-on a 60s health check against `HEALTH_URL` (`https://internara.reasvyn.web.id` for pre-release,
+on a 60s health check against `HEALTH_URL` (`https://staging.internara.web.id` for pre-release,
 `https://internara.web.id` for production).
 
 Only the workflow file and the credentials-free deploy script are committed here; production and

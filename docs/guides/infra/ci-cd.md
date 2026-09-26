@@ -26,7 +26,7 @@ This document is reference-oriented. For installation and setup procedures, see:
 
 The whole pipeline is triggered by pushing a SemVer tag (`v*.*.*`) to GitHub. The stage is derived
 from the tag suffix, following a three-tier promotion lifecycle: `dev` (development) > `pre-release`
-(`alpha`, `beta`, `rc`, deployed to staging VPS `internara.reasvyn.web.id`) > `release` (production,
+(`alpha`, `beta`, `rc`, deployed to staging VPS `staging.internara.web.id`) > `release` (production,
 deployed to `internara.web.id`).
 
 ```mermaid
@@ -37,7 +37,7 @@ flowchart LR
     D -->|vX.Y.Z-beta.N| BETA[beta: validate + lint + tests + build + audit]
     D -->|vX.Y.Z-rc.N| RC[rc: validate + lint + tests + guards + build + smoke + notes]
     D -->|vX.Y.Z| PROD[production: validate + all QA gates]
-    ALPHA -->|pass| STAGING_DEP[Deploy Staging VPS<br/>internara.reasvyn.web.id]
+    ALPHA -->|pass| STAGING_DEP[Deploy Staging VPS<br/>staging.internara.web.id]
     BETA -->|pass| STAGING_DEP
     RC -->|pass| STAGING_DEP
     PROD -->|pass| PROD_DEP[Deploy Production VPS<br/>internara.web.id]
@@ -50,13 +50,13 @@ flowchart LR
 | Pushed tag | Stage | Jobs run on GitHub Actions | Deploy Target |
 | ------------------------ | ------------ | ------------------------------------------------------------ | --------------------------------------------- |
 | `vX.Y.Z-dev.<N>` | Development (`dev`) | `validate` + `lint.sh` (Pint) + frontend build | None (CI only) |
-| `vX.Y.Z-alpha.<N>` | Pre-release (`alpha`) | + `test.sh` (Pest) + frontend build | Staging VPS (`internara.reasvyn.web.id`) |
-| `vX.Y.Z-beta.<N>` | Pre-release (`beta`) | + `test.sh` (Pest, coverage gate) + `composer audit` | Staging VPS (`internara.reasvyn.web.id`) |
-| `vX.Y.Z-rc.<N>` | Pre-release (`staging`) | + `guards.sh` (arch + security + conventions) + `smoke.sh` + release notes | Staging VPS (`internara.reasvyn.web.id`) |
+| `vX.Y.Z-alpha.<N>` | Pre-release (`alpha`) | + `test.sh` (Pest) + frontend build | Staging VPS (`staging.internara.web.id`) |
+| `vX.Y.Z-beta.<N>` | Pre-release (`beta`) | + `test.sh` (Pest, coverage gate) + `composer audit` | Staging VPS (`staging.internara.web.id`) |
+| `vX.Y.Z-rc.<N>` | Pre-release (`staging`) | + `guards.sh` (arch + security + conventions) + `smoke.sh` + release notes | Staging VPS (`staging.internara.web.id`) |
 | `vX.Y.Z` (final) | Release (`production`) | all of the above + release notes artifact | Production VPS (`internara.web.id`) |
 
 Releases are promoted upward: `development → pre-release (alpha/beta/rc) → release (production)`. Every QA stage runs in
-GitHub Actions (free, no VPS load). Pre-release stages deploy to `https://internara.reasvyn.web.id` using Docker Compose,
+GitHub Actions (free, no VPS load). Pre-release stages deploy to `https://staging.internara.web.id` using Docker Compose,
 and a final tag deploys to production only when all production QA gates pass.
 
 ### Hotfix branch — pipeline bypass
@@ -127,8 +127,8 @@ Single workflow, nine jobs:
    `smoke.sh` + `composer audit` + release notes generation.
 7. **`production`** — stage == `production`: all QA gates (same as staging) + release notes artifact upload.
 8. **`deploy-prerelease`** — `needs: [stage, validate, alpha, beta, staging]`, runs when any pre-release QA stage
-   succeeds: SSHs to staging VPS (`internara.reasvyn.web.id`), creates a backup, checkouts the tag, runs
-   `HEALTH_URL="https://internara.reasvyn.web.id" deploy.sh` with Docker Compose. Includes automatic rollback on failure.
+   succeeds: SSHs to staging VPS (`staging.internara.web.id`), creates a backup, checkouts the tag, runs
+   `HEALTH_URL="https://staging.internara.web.id" deploy.sh` with Docker Compose. Includes automatic rollback on failure.
 9. **`deploy`** — `needs: [stage, validate, production]`, runs only when production QA succeeded: SSHs to
    the production VPS (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`), creates a backup, `git checkout $VERSION_TAG` +
    `git reset --hard $VERSION_TAG`, then `HEALTH_URL="https://internara.web.id" VERSION_TAG=$VERSION_TAG bash .github/scripts/deploy.sh`.

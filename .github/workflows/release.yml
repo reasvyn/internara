@@ -4,13 +4,13 @@ name: Release Pipeline
 #   Triggering tag          -> Stage         -> Actions
 #   ----------------------------------------------------------------
 #   v<X>.<Y>.<Z>-dev.<N>    -> development   validate + lint + frontend build
-#   v<X>.<Y>.<Z>-alpha.<N>  -> pre-release   validate + lint + test + frontend build -> deploy staging VPS (internara.reasvyn.web.id)
-#   v<X>.<Y>.<Z>-beta.<N>   -> pre-release   validate + lint + test + build + audit -> deploy staging VPS (internara.reasvyn.web.id)
-#   v<X>.<Y>.<Z>-rc.<N>     -> pre-release   validate + lint + test + guards + build + smoke + audit -> deploy staging VPS (internara.reasvyn.web.id)
+#   v<X>.<Y>.<Z>-alpha.<N>  -> pre-release   validate + lint + test + frontend build -> deploy staging VPS (staging.internara.web.id)
+#   v<X>.<Y>.<Z>-beta.<N>   -> pre-release   validate + lint + test + build + audit -> deploy staging VPS (staging.internara.web.id)
+#   v<X>.<Y>.<Z>-rc.<N>     -> pre-release   validate + lint + test + guards + build + smoke + audit -> deploy staging VPS (staging.internara.web.id)
 #   v<X>.<Y>.<Z>            -> release (GA)  validate + all QA gates + release notes -> deploy production VPS
 #
 # Releases are promoted upward: development (dev) -> pre-release (alpha, beta, rc) -> release (production).
-# Pre-release stages deploy to https://internara.reasvyn.web.id via Docker Compose.
+# Pre-release stages deploy to https://staging.internara.web.id via Docker Compose.
 
 on:
     push:
@@ -474,10 +474,10 @@ jobs:
                   retention-days: 90
 
     # ------------------------------------------------------------------ #
-    # PRE-RELEASE DEPLOY — staging VPS (internara.reasvyn.web.id) via Docker.
+    # PRE-RELEASE DEPLOY — staging VPS (staging.internara.web.id) via Docker.
     # ------------------------------------------------------------------ #
     deploy-prerelease:
-        name: Deploy pre-release to staging VPS (internara.reasvyn.web.id)
+        name: Deploy pre-release to staging VPS (staging.internara.web.id)
         runs-on: ubuntu-latest
         needs: [stage, validate, alpha, beta, staging]
         if: |
@@ -492,7 +492,7 @@ jobs:
         env:
             VERSION_TAG: ${{ needs.stage.outputs.tag }}
             VERSION: ${{ needs.validate.outputs.version }}
-            HEALTH_URL: https://internara.reasvyn.web.id
+            HEALTH_URL: https://staging.internara.web.id
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -528,7 +528,7 @@ jobs:
             - name: Notify staging deployment success
               if: success()
               run: |
-                  echo "✓ Successfully deployed v${{ needs.validate.outputs.version }} to staging (https://internara.reasvyn.web.id)"
+                  echo "✓ Successfully deployed v${{ needs.validate.outputs.version }} to staging (https://staging.internara.web.id)"
 
             - name: Notify staging deployment failure
               if: failure()
