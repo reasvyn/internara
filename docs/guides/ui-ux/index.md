@@ -14,7 +14,7 @@ Complete documentation for Internara's UI system, built on the TALL stack:
 - **Interactivity — Alpine.js v3.x**: Lightweight reactivity for dropdowns, modals, toggles
 - **Full-Stack Components — Livewire v4.x**: Server-rendered reactive components, SPA-like experience
 - **Component Library — TallStackUI v4.x**: 80+ pre-built Blade components (forms, UI, interactions)
-- **Build Tool — Vite v5.x**: Fast HMR, production bundling, Tailwind integration
+- **Build Tool — Vite v8.x**: Fast HMR, production bundling, Tailwind integration
 
 ---
 
@@ -42,8 +42,8 @@ Complete documentation for Internara's UI system, built on the TALL stack:
 │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐     │ │
 │  │  │  TallStackUI │  │  Alpine.js  │  │   Tailwind  │     │ │
 │  │  │ Components   │  │  Dropdowns  │  │   Utilities │     │ │
-│  │  │ (x-modal,    │  │  Toggles    │  │   (flex,    │     │ │
-│  │  │  x-input)    │  │  Tooltips   │  │    grid)    │     │ │
+│  │  │ (x-ts-modal, │  │  Toggles    │  │   (flex,    │     │ │
+│  │  │  x-ts-input) │  │  Tooltips   │  │    grid)    │     │ │
 │  │  └─────────────┘  └─────────────┘  └─────────────┘     │ │
 │  └─────────────────────────────────────────────────────────┘ │
 │                            │ AJAX                             │
@@ -83,7 +83,7 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 
 ### Key Conventions
 
-- **Component prefix**: TallStackUI uses `x-` (e.g., `<x-modal>`) — consistent with Laravel Blade components
+- **Component prefix**: TallStackUI uses `x-ts-*` (e.g., `<x-ts-modal>`, `<x-ts-input>`) pinned via `config/tallstackui.php` (`'prefix' => 'ts-'`)
 - **Livewire binding**: `wire:model` for two-way, `wire:click` for actions — standard Livewire directives
 - **Tailwind config**: CSS-first via `@theme` in `app.css` — v4 standard, no `tailwind.config.js`
 - **Dark mode**: Class-based: `@custom-variant dark` — user-controllable theme toggle
@@ -172,7 +172,7 @@ Internara uses Tailwind's default palette with semantic aliases:
 
 ```css
 @theme {
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
@@ -223,5 +223,5 @@ Tailwind v4 uses a single `--spacing` value (default: `4px`) that drives all spa
 - **Tailwind CSS Docs**: https://tailwindcss.com/docs — Official Tailwind CSS 4 documentation
 - **TallStackUI Docs**: https://tallstackui.com/docs — Official TallStackUI 4 documentation
 - **Alpine.js Docs**: https://alpinejs.dev/start-here — Official Alpine.js 3 documentation
-- **Vite Docs**: https://vitejs.dev/guide/ — Official Vite 5 documentation
+- **Vite Docs**: https://vite.dev/guide/ — Official Vite documentation
 - **TALL Stack**: https://tallstack.dev/ — TALL stack overview

@@ -54,7 +54,7 @@ All components are namespaced with an optional prefix configurable globally:
 
 ```
 
-Set to `ts-` so components become `<x-ts-alert />`. Default (no prefix): `<x-modal />`, `<x-input />`.
+Set to `ts-` so components become `<x-ts-alert />`. Default (no prefix): `<x-ts-modal />`, `<x-ts-input />`.
 
 ### Component Anatomy
 
@@ -198,287 +198,287 @@ All form components share these conventions:
 - Size flags `xs | sm | md (default) | lg`
 - Color variations on checkbox/radio/toggle: full Tailwind palette
 
-### Input (`<x-input>`)
+### Input (`<x-ts-input>`)
 
 ```blade
-<x-input /> {{-- type=text --}}
-<x-input email /> {{-- type=email --}}
-<x-input label="Name" hint="Insert your name" />
-<x-input label="Name *" hint="Insert your name" /> {{-- asterisk indicator --}}
+<x-ts-input /> {{-- type=text --}}
+<x-ts-input email /> {{-- type=email --}}
+<x-ts-input label="Name" hint="Insert your name" />
+<x-ts-input label="Name *" hint="Insert your name" /> {{-- asterisk indicator --}}
 
 {{-- Icon --}}
-<x-input label="Name" icon="users" />
-<x-input label="Name" icon="cog" position="right" />
+<x-ts-input label="Name" icon="users" />
+<x-ts-input label="Name" icon="cog" position="right" />
 
 {{-- Prefix / Suffix --}}
-<x-input prefix="https://" label="Domain" />
-<x-input suffix="@gmail.com" label="E-mail" />
-<x-input>
+<x-ts-input prefix="https://" label="Domain" />
+<x-ts-input suffix="@gmail.com" label="E-mail" />
+<x-ts-input>
     <x-slot:prefix>Prefix</x-slot:prefix>
     <x-slot:suffix>Suffix</x-slot:suffix>
-</x-input>
+</x-ts-input>
 
 {{-- Buttons in prefix/suffix (addon mode) --}}
-<x-input label="Search">
+<x-ts-input label="Search">
     <x-slot:suffix button>
-        <x-button text="Go" sm />
+        <x-ts-button text="Go" sm />
     </x-slot:suffix>
-</x-input>
+</x-ts-input>
 
-<x-input value="TallStackUI" clearable />
-<x-input strip-zeros />
-<x-input label="Name" invalidate />
-<x-input label="Readonly" value="Readonly" readonly />
-<x-input label="Disabled" value="Disabled" disabled />
+<x-ts-input value="TallStackUI" clearable />
+<x-ts-input strip-zeros />
+<x-ts-input label="Name" invalidate />
+<x-ts-input label="Readonly" value="Readonly" readonly />
+<x-ts-input label="Disabled" value="Disabled" disabled />
 
 ```
 
 ### Select — Three Variants
 
-**Native (`<x-select.native>`)** — plain `<select>`:
+**Native (`<x-ts-select.native>`)** — plain `<select>`:
 
 ```blade
-<x-select.native :options="[1,2,3]" />
-<x-select.native label="Plan" hint="…" :options="[1,2,3]" />
-<x-select.native :options="[['label'=>'TALL','value'=>1], ['label'=>'LIVT','value'=>2]]" />
-<x-select.native :options="[['name'=>'TALL','id'=>1]]" select="label:name|value:id" />
+<x-ts-select.native :options="[1,2,3]" />
+<x-ts-select.native label="Plan" hint="…" :options="[1,2,3]" />
+<x-ts-select.native :options="[['label'=>'TALL','value'=>1], ['label'=>'LIVT','value'=>2]]" />
+<x-ts-select.native :options="[['name'=>'TALL','id'=>1]]" select="label:name|value:id" />
 
 ```
 
-**Styled (`<x-select.styled>`)** — custom Alpine floating UI:
+**Styled (`<x-ts-select.styled>`)** — custom Alpine floating UI:
 
 ```blade
-<x-select.styled :options="[1,2,3]" />
-<x-select.styled label="Select One" placeholder="Custom" hint="…" :options="[1,2,3]" />
-<x-select.styled :options="[1,2,3]" required />
-<x-select.styled :options="[1,2,3,4,5,6]" multiple />
+<x-ts-select.styled :options="[1,2,3]" />
+<x-ts-select.styled label="Select One" placeholder="Custom" hint="…" :options="[1,2,3]" />
+<x-ts-select.styled :options="[1,2,3]" required />
+<x-ts-select.styled :options="[1,2,3,4,5,6]" multiple />
 
 {{-- Disabled options --}}
-<x-select.styled :options="[ ['label'=>'TALL','value'=>1,'disabled'=>true], ['label'=>'LIVT','value'=>2] ]" />
+<x-ts-select.styled :options="[ ['label'=>'TALL','value'=>1,'disabled'=>true], ['label'=>'LIVT','value'=>2] ]" />
 
 {{-- Grouped options --}}
-<x-select.styled :options="[ ['label'=>'Brazil','description'=>'SA','value'=>[ ['label'=>'São Paulo','value'=>4], ['label'=>'Rio','value'=>5] ]], ['label'=>'USA','value'=>[ ['label'=>'NY','value'=>7], ['label'=>'LA','value'=>8] ]] ]" />
+<x-ts-select.styled :options="[ ['label'=>'Brazil','description'=>'SA','value'=>[ ['label'=>'São Paulo','value'=>4], ['label'=>'Rio','value'=>5] ]], ['label'=>'USA','value'=>[ ['label'=>'NY','value'=>7], ['label'=>'LA','value'=>8] ]] ]" />
 
-<x-select.styled :limit="2" :options="[…]" multiple />     {{-- multi-limit --}}
+<x-ts-select.styled :limit="2" :options="[…]" multiple />     {{-- multi-limit --}}
 
 {{-- Image + description --}}
-<x-select.styled :options="[
+<x-ts-select.styled :options="[
     ['label'=>'Taylor','value'=>1,'image'=>'https://unavatar.io/github/taylorotwell'],
     ['label'=>'Nuno','value'=>2,'description'=>'Creator of PestPHP'],
 ]" />
 
-<x-select.styled :options="[…]" searchable />
-<x-select.styled :options="[…30 items]" lazy="10" />     {{-- lazy load ≥ 10 --}}
+<x-ts-select.styled :options="[…]" searchable />
+<x-ts-select.styled :options="[…30 items]" lazy="10" />     {{-- lazy load ≥ 10 --}}
 
-<x-select.styled :options="[…]">
+<x-ts-select.styled :options="[…]">
     <x-slot:after>
-        <x-button x-on:click="show = false; $dispatch('confirmed', { term: search })">
+        <x-ts-button x-on:click="show = false; $dispatch('confirmed', { term: search })">
             <span x-html="`Create user <b>${search}</b>`"></span>
-        </x-button>
+        </x-ts-button>
     </x-slot:after>
-</x-select.styled>
+</x-ts-select.styled>
 
 {{-- Events --}}
-<x-select.styled :options="[…]" multiple x-on:select="alert(`Select: ${JSON.stringify($event.detail.select)}`)"
+<x-ts-select.styled :options="[…]" multiple x-on:select="alert(`Select: ${JSON.stringify($event.detail.select)}`)"
     x-on:remove="alert(`Remove: ${JSON.stringify($event.detail.select)}`)" />
 
 ```
 
 Events: `select` (option picked, detail: `{ select }`), `remove` (option removed, detail: `{ select }`).
 
-**Styled API (`<x-select.styled :request="…">`)** — fetches options from a URL:
+**Styled API (`<x-ts-select.styled :request="…">`)** — fetches options from a URL:
 
 ```blade
-<x-select.styled :request="route('api.users')" />
-<x-select.styled :request="route('api.users')" indicator="spinner" />
-<x-select.styled :request="route('api.users')" indicator="spinner.bars" />
-<x-select.styled :request="route('api.users')" unfiltered />
-<x-select.styled :request="[
+<x-ts-select.styled :request="route('api.users')" />
+<x-ts-select.styled :request="route('api.users')" indicator="spinner" />
+<x-ts-select.styled :request="route('api.users')" indicator="spinner.bars" />
+<x-ts-select.styled :request="route('api.users')" unfiltered />
+<x-ts-select.styled :request="[
     'url'    => route('api.users'),
     'method' => 'get',
     'params' => ['library' => 'TallStackUi'],
 ]" />
-<x-select.styled :request="route('api.users')" recycle />
+<x-ts-select.styled :request="route('api.users')" recycle />
 
 ```
 
 Backend contract — the route must return JSON `[{label, value}]` (or use `select="label:col|value:col"` to remap).
 
-### Textarea (`<x-textarea>`)
+### Textarea (`<x-ts-textarea>`)
 
 ```blade
-<x-textarea />
-<x-textarea label="Name" hint="Insert the description" />
-<x-textarea label="Description *" />
-<x-textarea resize />
-<x-textarea resize-auto />
-<x-textarea maxlength="10" count />
-<x-textarea count />       {{-- shows character count --}}
-<x-textarea label="Readonly" value="…" readonly />
-<x-textarea label="Disabled" value="…" disabled />
+<x-ts-textarea />
+<x-ts-textarea label="Name" hint="Insert the description" />
+<x-ts-textarea label="Description *" />
+<x-ts-textarea resize />
+<x-ts-textarea resize-auto />
+<x-ts-textarea maxlength="10" count />
+<x-ts-textarea count />       {{-- shows character count --}}
+<x-ts-textarea label="Readonly" value="…" readonly />
+<x-ts-textarea label="Disabled" value="…" disabled />
 
 ```
 
-### Checkbox (`<x-checkbox>` + `<x-checkbox.group>`)
+### Checkbox (`<x-ts-checkbox>` + `<x-ts-checkbox.group>`)
 
 **Single:**
 
 ```blade
-<x-checkbox />
-<x-checkbox label="Receive Alert" />
-<x-checkbox label="Receive Alert" position="left" />
-<x-checkbox label="Readonly" checked readonly />
-<x-checkbox label="Disabled" checked disabled />
-<x-checkbox>
+<x-ts-checkbox />
+<x-ts-checkbox label="Receive Alert" />
+<x-ts-checkbox label="Receive Alert" position="left" />
+<x-ts-checkbox label="Readonly" checked readonly />
+<x-ts-checkbox label="Disabled" checked disabled />
+<x-ts-checkbox>
     <x-slot:label>I agree to the <a href="#">terms</a></x-slot:label>
-</x-checkbox>
-<x-checkbox xs|sm|md|lg />
-<x-checkbox color="red" label="Red" />
+</x-ts-checkbox>
+<x-ts-checkbox xs|sm|md|lg />
+<x-ts-checkbox color="red" label="Red" />
 
 ```
 
-**Group (`<x-checkbox.group>`):**
+**Group (`<x-ts-checkbox.group>`):**
 
 ```blade
-<x-checkbox.group label="Features" :options="[
+<x-ts-checkbox.group label="Features" :options="[
     ['label'=>'Newsletter','value'=>'newsletter','description'=>'Weekly digest'],
     ['label'=>'Alerts','value'=>'alerts','description'=>'Real time'],
     ['label'=>'Reports','value'=>'reports','description'=>'Monthly'],
 ]" />
 
-<x-checkbox.group list|card|panel|inline :options="$features" />
-<x-checkbox.group card :columns="3" :options="$features" />
-<x-checkbox.group position="right" :options="$features" />
-<x-checkbox.group xs|sm|md|lg :options="$features" />
-<x-checkbox.group color="green" :options="$features" />
+<x-ts-checkbox.group list|card|panel|inline :options="$features" />
+<x-ts-checkbox.group card :columns="3" :options="$features" />
+<x-ts-checkbox.group position="right" :options="$features" />
+<x-ts-checkbox.group xs|sm|md|lg :options="$features" />
+<x-ts-checkbox.group color="green" :options="$features" />
 
 {{-- Remap array keys --}}
-<x-checkbox.group select="label:name|value:id|description:note" :options="$features" />
+<x-ts-checkbox.group select="label:name|value:id|description:note" :options="$features" />
 
 {{-- Custom body with @interact --}}
-<x-checkbox.group card :options="$addons">
+<x-ts-checkbox.group card :options="$addons">
     @interact('option', $option)
         <span class="font-semibold">{{ $option['name'] }}</span>
         <span class="font-mono">${{ $option['price'] }}</span>
     @endinteract
-</x-checkbox.group>
+</x-ts-checkbox.group>
 
 ```
 
-### Radio (`<x-radio>` + `<x-radio.group>`)
+### Radio (`<x-ts-radio>` + `<x-ts-radio.group>`)
 
 Same API as checkbox:
 
 ```blade
-<x-radio.group label="Plan" :options="[
+<x-ts-radio.group label="Plan" :options="[
     ['label'=>'Startup','value'=>'startup','description'=>'5 jobs','aside'=>'$29/mo'],
     ['label'=>'Business','value'=>'business','description'=>'25 jobs','aside'=>'$99/mo'],
     ['label'=>'Enterprise','value'=>'enterprise','description'=>'Unlimited','aside'=>'$249/mo'],
 ]" />
 
-<x-radio.group list|card|panel|inline :options="$plans" />
-<x-radio.group card :columns="3" :options="$plans" />
-<x-radio.group position="right" :options="$plans" />
+<x-ts-radio.group list|card|panel|inline :options="$plans" />
+<x-ts-radio.group card :columns="3" :options="$plans" />
+<x-ts-radio.group position="right" :options="$plans" />
 
 ```
 
-### Toggle (`<x-toggle>`)
+### Toggle (`<x-ts-toggle>`)
 
 ```blade
-<x-toggle />
-<x-toggle label="Receive Alert" />
-<x-toggle label="Receive Alert" position="left" />
-<x-toggle label="Readonly" checked readonly />
-<x-toggle label="Disabled" checked disabled />
-<x-toggle xs|sm|md|lg />
-<x-toggle color="red" label="Red" />
-<x-toggle>
+<x-ts-toggle />
+<x-ts-toggle label="Receive Alert" />
+<x-ts-toggle label="Receive Alert" position="left" />
+<x-ts-toggle label="Readonly" checked readonly />
+<x-ts-toggle label="Disabled" checked disabled />
+<x-ts-toggle xs|sm|md|lg />
+<x-ts-toggle color="red" label="Red" />
+<x-ts-toggle>
     <x-slot:label start>Align on Start</x-slot:label>
-</x-toggle>
+</x-ts-toggle>
 
 ```
 
-### Date (`<x-date>`)
+### Date (`<x-ts-date>`)
 
 Format tokens (Day.js): `YYYY MM MMM MMMM D DD d dd ddd dddd [escaped]` plus time tokens.
 Backend always receives `YYYY-MM-DD`.
 
 ```blade
-<x-date />
-<x-date label="Date" hint="Select your DoB" />
-<x-date label="Readonly" value="2026-08-13" readonly />
-<x-date format="YYYY-MM-DD" />
-<x-date format="DD [of] MMMM [of] YYYY" />
-<x-date helpers />
-<x-date :min-date="now()->subWeek()" :max-date="now()->addWeek()" />
-<x-date :min-year="2020" :max-year="2024" />
+<x-ts-date />
+<x-ts-date label="Date" hint="Select your DoB" />
+<x-ts-date label="Readonly" value="2026-08-13" readonly />
+<x-ts-date format="YYYY-MM-DD" />
+<x-ts-date format="DD [of] MMMM [of] YYYY" />
+<x-ts-date helpers />
+<x-ts-date :min-date="now()->subWeek()" :max-date="now()->addWeek()" />
+<x-ts-date :min-year="2020" :max-year="2024" />
 
 {{-- Disable dates --}}
-<x-date :disable="['2020-01-01','2020-01-02']" />
-<x-date :disable="[ ['2020-01-01','2020-01-03'], ['2020-01-04','2020-01-06'] ]" />
+<x-ts-date :disable="['2020-01-01','2020-01-02']" />
+<x-ts-date :disable="[ ['2020-01-01','2020-01-03'], ['2020-01-04','2020-01-06'] ]" />
 
 {{-- Disable specific weekdays --}}
-<x-date only="3" /> {{-- 0=Sunday, …, 6=Saturday --}}
-<x-date weekdays />
-<x-date weekends />
+<x-ts-date only="3" /> {{-- 0=Sunday, …, 6=Saturday --}}
+<x-ts-date weekdays />
+<x-ts-date weekends />
 
-<x-date range wire:model="date" /> {{-- public array $date = ['2021-01-01', '2021-01-31'] --}}
-<x-date multiple wire:model="date" />
-<x-date start="1" />          {{-- first day of week --}}
-<x-date month-year-only />
+<x-ts-date range wire:model="date" /> {{-- public array $date = ['2021-01-01', '2021-01-31'] --}}
+<x-ts-date multiple wire:model="date" />
+<x-ts-date start="1" />          {{-- first day of week --}}
+<x-ts-date month-year-only />
 
 {{-- Events --}}
-<x-date x-on:select="alert(`Selected: ${$event.detail.date}`)"
+<x-ts-date x-on:select="alert(`Selected: ${$event.detail.date}`)"
     x-on:clear="alert('Cleaned!')" />
 
 ```
 
-### Time (`<x-time>`)
+### Time (`<x-ts-time>`)
 
 ```blade
-<x-time />
-<x-time label="Time" hint="Select the hour" />
-<x-time label="Readonly" value="10:00 AM" readonly />
-<x-time :step-minute="5" />
-<x-time format="24" />
-<x-time :min-hour="5" :max-hour="10" />
-<x-time :min-minute="30" :max-minute="45" />
-<x-time required />
-<x-time helper />                                 {{-- "current time" button --}}
-<x-time :step-hour="3" :step-minute="15" />
-<x-time>
+<x-ts-time />
+<x-ts-time label="Time" hint="Select the hour" />
+<x-ts-time label="Readonly" value="10:00 AM" readonly />
+<x-ts-time :step-minute="5" />
+<x-ts-time format="24" />
+<x-ts-time :min-hour="5" :max-hour="10" />
+<x-ts-time :min-minute="30" :max-minute="45" />
+<x-ts-time required />
+<x-ts-time helper />                                 {{-- "current time" button --}}
+<x-ts-time :step-hour="3" :step-minute="15" />
+<x-ts-time>
     <x-slot:footer>Footer Slot</x-slot:footer>
-</x-time>
+</x-ts-time>
 
-<x-time x-on:hour="alert(`Hour: ${$event.detail.hour}`)"
+<x-ts-time x-on:hour="alert(`Hour: ${$event.detail.hour}`)"
     x-on:minute="alert(`Min: ${$event.detail.minute}`)"
     x-on:interval="alert(`Interval: ${$event.detail.interval}`)" />
 
 ```
 
-### Upload (`<x-upload>`)
+### Upload (`<x-ts-upload>`)
 
 Uses Livewire's normal `WithFileUploads` mechanism:
 
 ```blade
-<x-upload />
-<x-upload label="Screenshot" hint="…" tip="Drag and drop your screenshot here" />
-<x-upload close-after-upload />
-<x-upload delete />                    {{-- requires deleteUpload() method --}}
-<x-upload delete delete-method="deleting" />
-<x-upload multiple />                  {{-- property must be array --}}
-<x-upload accept="application/pdf" />
-<x-upload>
-    <x-slot:footer><x-button class="w-full">Save</x-button></x-slot:footer>
-</x-upload>
-<x-upload>
+<x-ts-upload />
+<x-ts-upload label="Screenshot" hint="…" tip="Drag and drop your screenshot here" />
+<x-ts-upload close-after-upload />
+<x-ts-upload delete />                    {{-- requires deleteUpload() method --}}
+<x-ts-upload delete delete-method="deleting" />
+<x-ts-upload multiple />                  {{-- property must be array --}}
+<x-ts-upload accept="application/pdf" />
+<x-ts-upload>
+    <x-slot:footer><x-ts-button class="w-full">Save</x-ts-button></x-slot:footer>
+</x-ts-upload>
+<x-ts-upload>
     <x-slot:footer when-uploaded>
-        <x-button class="w-full" wire:click="store">Save</x-button>
+        <x-ts-button class="w-full" wire:click="store">Save</x-ts-button>
     </x-slot:footer>
-</x-upload>
+</x-ts-upload>
 
-<x-upload x-on:upload="console.log($event.detail.files)" />
-<x-upload delete x-on:remove="console.log($event.detail.file)" />
+<x-ts-upload x-on:upload="console.log($event.detail.files)" />
+<x-ts-upload delete x-on:remove="console.log($event.detail.file)" />
 
 ```
 
@@ -506,150 +506,150 @@ public function deleteUpload(array $content): void
 
 | Component | Description |
 |-----------|-------------|
-| `<x-password>` | Text input with show/hide eye toggle |
-| `<x-number>` | Numeric input with up/down controls |
-| `<x-currency>` | Formatted currency input |
-| `<x-color>` | Color picker |
-| `<x-pin>` | OTP/PIN digit input |
-| `<x-range>` | Slider |
-| `<x-tag>` | Multi-tag entry |
+| `<x-ts-password>` | Text input with show/hide eye toggle |
+| `<x-ts-number>` | Numeric input with up/down controls |
+| `<x-ts-currency>` | Formatted currency input |
+| `<x-ts-color>` | Color picker |
+| `<x-ts-pin>` | OTP/PIN digit input |
+| `<x-ts-range>` | Slider |
+| `<x-ts-tag>` | Multi-tag entry |
 | `<x-autocomplete>` | Searchable suggestions |
-| `<x-upload.async>` | Resumable-style uploads with chunked progress |
+| `<x-ts-upload.async>` | Resumable-style uploads with chunked progress |
 
 ---
 
 ## UI Components
 
-### Modal (`<x-modal>`)
+### Modal (`<x-ts-modal>`)
 
 ```blade
-<x-modal>TallStackUI</x-modal>
+<x-ts-modal>TallStackUI</x-ts-modal>
 
-<x-modal>
+<x-ts-modal>
     <x-slot:title>TallStackUI</x-slot:title>
     TallStackUI
-</x-modal>
+</x-ts-modal>
 
 {{-- or via attrs --}}
-<x-modal title="TallStackUI">TallStackUI</x-modal>
-<x-modal footer="TallStackUI">…</x-modal>
+<x-ts-modal title="TallStackUI">TallStackUI</x-ts-modal>
+<x-ts-modal footer="TallStackUI">…</x-ts-modal>
 
-<x-modal scrollable>Long content…</x-modal>
-<x-modal blur>…</x-modal> {{-- sm/md/lg/xl blur --}}
+<x-ts-modal scrollable>Long content…</x-ts-modal>
+<x-ts-modal blur>…</x-ts-modal> {{-- sm/md/lg/xl blur --}}
 
 {{-- Sizes: sm md lg xl 2xl 3xl 4xl 5xl 6xl 7xl full --}}
-<x-modal size="2xl">…</x-modal>
+<x-ts-modal size="2xl">…</x-ts-modal>
 
-<x-modal center>…</x-modal>                                {{-- desktop only --}}
-<x-modal center="md">…</x-modal>                           {{-- bottom sheet< md, centered ≥ md --}}
-<x-modal persistent>…</x-modal>                            {{-- no outside-click close --}}
-<x-modal handle>…</x-modal>                                {{-- mobile drag handle --}}
-<x-modal paddingless>…</x-modal>
-<x-modal wire>…</x-modal>                                  {{-- boolean prop $modal --}}
-<x-modal wire="tallstackui">…</x-modal>                    {{-- custom prop --}}
+<x-ts-modal center>…</x-ts-modal>                                {{-- desktop only --}}
+<x-ts-modal center="md">…</x-ts-modal>                           {{-- bottom sheet< md, centered ≥ md --}}
+<x-ts-modal persistent>…</x-ts-modal>                            {{-- no outside-click close --}}
+<x-ts-modal handle>…</x-ts-modal>                                {{-- mobile drag handle --}}
+<x-ts-modal paddingless>…</x-ts-modal>
+<x-ts-modal wire>…</x-ts-modal>                                  {{-- boolean prop $modal --}}
+<x-ts-modal wire="tallstackui">…</x-ts-modal>                    {{-- custom prop --}}
 
-<x-modal id="modal-id">…</x-modal>
-<x-button x-on:click="$tsui.open.modal('modal-id')">Open</x-button>
-<x-button x-on:click="$tsui.close.modal('modal-id')">Close</x-button>
+<x-ts-modal id="modal-id">…</x-ts-modal>
+<x-ts-button x-on:click="$tsui.open.modal('modal-id')">Open</x-ts-button>
+<x-ts-button x-on:click="$tsui.close.modal('modal-id')">Close</x-ts-button>
 
-<x-modal x-on:open="alert('Opened!')" x-on:close="alert('Closed!')">…</x-modal>
+<x-ts-modal x-on:open="alert('Opened!')" x-on:close="alert('Closed!')">…</x-ts-modal>
 
 {{-- Focus helper --}}
-<x-modal id="modal-id" x-on:open="$tsui.focus('email')">
-    <x-input label="Email" id="email" />
-</x-modal>
+<x-ts-modal id="modal-id" x-on:open="$tsui.focus('email')">
+    <x-ts-input label="Email" id="email" />
+</x-ts-modal>
 
 {{-- Footer alignment --}}
-<x-modal>
+<x-ts-modal>
     TallStackUI
     <x-slot:footer between>
-        <x-button color="red">Delete</x-button>
-        <x-button>Save</x-button>
+        <x-ts-button color="red">Delete</x-ts-button>
+        <x-ts-button>Save</x-ts-button>
     </x-slot:footer>
-</x-modal>
+</x-ts-modal>
 
 ```
 
 Events: `open` (modal opens), `close` (modal closes).
 
-### Dropdown (`<x-dropdown>`)
+### Dropdown (`<x-ts-dropdown>`)
 
 ```blade
-<x-dropdown text="Menu" position="bottom-end">
-    <x-dropdown.items text="Settings" />
-    <x-dropdown.items text="Logout" separator />
-</x-dropdown>
+<x-ts-dropdown text="Menu" position="bottom-end">
+    <x-ts-dropdown.items text="Settings" />
+    <x-ts-dropdown.items text="Logout" separator />
+</x-ts-dropdown>
 
-<x-dropdown text="Open when hover" position="bottom-end" hover>…</x-dropdown>
+<x-ts-dropdown text="Open when hover" position="bottom-end" hover>…</x-ts-dropdown>
 
 {{-- Positions: bottom[-start|-end], top[-start|-end], left[-start|-end], right[-start|-end] --}}
-<x-dropdown text="Menu" position="bottom-start">…</x-dropdown>
+<x-ts-dropdown text="Menu" position="bottom-start">…</x-ts-dropdown>
 
-<x-dropdown icon="chevron-down" position="bottom-end">
-    <a href="https://google.com.br" target="_blank"><x-dropdown.items text="Google" /></a>
-</x-dropdown>
+<x-ts-dropdown icon="chevron-down" position="bottom-end">
+    <a href="https://google.com.br" target="_blank"><x-ts-dropdown.items text="Google" /></a>
+</x-ts-dropdown>
 
-<x-dropdown icon="chevron-down">…</x-dropdown>
-<x-dropdown icon="ellipsis-vertical" static>…</x-dropdown> {{-- no rotate animation --}}
+<x-ts-dropdown icon="chevron-down">…</x-ts-dropdown>
+<x-ts-dropdown icon="ellipsis-vertical" static>…</x-ts-dropdown> {{-- no rotate animation --}}
 
-<x-dropdown text="Account" xs|sm|md|lg>…</x-dropdown>
+<x-ts-dropdown text="Account" xs|sm|md|lg>…</x-ts-dropdown>
 
 {{-- Widths: xxs xs sm md lg xl 2xl --}}
-<x-dropdown text="xl" width="xl">…</x-dropdown>
+<x-ts-dropdown text="xl" width="xl">…</x-ts-dropdown>
 
-<x-dropdown text="Menu">
-    <x-slot:header><x-theme-switch block /></x-slot:header>
-    <x-dropdown.items icon="cog" text="Settings" />
-    <x-dropdown.items icon="arrow-left-on-rectangle" text="Logout" separator />
-</x-dropdown>
+<x-ts-dropdown text="Menu">
+    <x-slot:header><x-ts-theme-switch block /></x-slot:header>
+    <x-ts-dropdown.items icon="cog" text="Settings" />
+    <x-ts-dropdown.items icon="arrow-left-on-rectangle" text="Logout" separator />
+</x-ts-dropdown>
 
-<x-dropdown text="Menu" position="bottom-end">
-    <x-dropdown.items text="PHP" />
-    <x-dropdown.submenu text="Second Level">
-        <x-dropdown.items text="JavaScript" />
-        <x-dropdown.submenu text="Third Level" position="left-start">
-            <x-dropdown.items text="C++" />
-            <x-dropdown.items text="Golang" />
-        </x-dropdown.submenu>
-    </x-dropdown.submenu>
-</x-dropdown>
+<x-ts-dropdown text="Menu" position="bottom-end">
+    <x-ts-dropdown.items text="PHP" />
+    <x-ts-dropdown.submenu text="Second Level">
+        <x-ts-dropdown.items text="JavaScript" />
+        <x-ts-dropdown.submenu text="Third Level" position="left-start">
+            <x-ts-dropdown.items text="C++" />
+            <x-ts-dropdown.items text="Golang" />
+        </x-ts-dropdown.submenu>
+    </x-ts-dropdown.submenu>
+</x-ts-dropdown>
 
-<x-dropdown>
+<x-ts-dropdown>
     <x-slot:action>
-        <x-button x-on:click="show = !show" sm outline>Open</x-button>
+        <x-ts-button x-on:click="show = !show" sm outline>Open</x-ts-button>
     </x-slot:action>
-    <x-dropdown.items icon="cog" text="Settings" />
-</x-dropdown>
+    <x-ts-dropdown.items icon="cog" text="Settings" />
+</x-ts-dropdown>
 
-<x-dropdown x-on:open="alert(…)" x-on:select="alert('Selected')">…</x-dropdown>
+<x-ts-dropdown x-on:open="alert(…)" x-on:select="alert('Selected')">…</x-ts-dropdown>
 
 ```
 
 Events: `open {status}` (open/close), `select` (item clicked).
 
-### Tooltip (`<x-tooltip>`)
+### Tooltip (`<x-ts-tooltip>`)
 
 Dropped Tippy.js in v4 → smaller bundle.
 
 ```blade
-<x-tooltip text="TallStackUI" />
-<x-tooltip text="Top" position="top" icon="exclamation-circle" />
-<x-tooltip text="TallStackUI" xs|sm|md|lg />
-<x-tooltip><b>Tall</b><i>Stack</i><u>Ui</u></x-tooltip>
+<x-ts-tooltip text="TallStackUI" />
+<x-ts-tooltip text="Top" position="top" icon="exclamation-circle" />
+<x-ts-tooltip text="TallStackUI" xs|sm|md|lg />
+<x-ts-tooltip><b>Tall</b><i>Stack</i><u>Ui</u></x-ts-tooltip>
 
 {{-- Color applies to icon; balloon paints the balloon --}}
-<x-tooltip text="TallStackUI" color="red" />
-<x-tooltip text="TallStackUI" balloon="red" />
+<x-ts-tooltip text="TallStackUI" color="red" />
+<x-ts-tooltip text="TallStackUI" balloon="red" />
 
-<x-tooltip text="TallStackUI" delay="flash" />           {{-- slow | fast | faster | flash --}}
-<x-tooltip text="TallStackUI" scale="lg" />              {{-- sm | md | lg; balloon sizes --}}
+<x-ts-tooltip text="TallStackUI" delay="flash" />           {{-- slow | fast | faster | flash --}}
+<x-ts-tooltip text="TallStackUI" scale="lg" />              {{-- sm | md | lg; balloon sizes --}}
 
 {{-- On any HTML element via x-tooltip directive --}}
 <span x-data x-tooltip="TallStackUI" data-tooltip-delay="faster"></span>
 
 {{-- Disable reactively --}}
 <div x-data="{ disabled: false }">
-    <x-toggle x-model="disabled" label="Disable the tooltip" />
+    <x-ts-toggle x-model="disabled" label="Disable the tooltip" />
     <span x-data x-tooltip="TallStackUI" x-bind:data-tooltip-disabled="disabled">
         Hover me
     </span>
@@ -657,56 +657,56 @@ Dropped Tippy.js in v4 → smaller bundle.
 
 ```
 
-### Card (`<x-card>`)
+### Card (`<x-ts-card>`)
 
 ```blade
-<x-card>TallStackUI</x-card>
+<x-ts-card>TallStackUI</x-ts-card>
 
-<x-card header="TallStackUI">…</x-card>
-<x-card footer="TallStackUI">…</x-card>
+<x-ts-card header="TallStackUI">…</x-ts-card>
+<x-ts-card footer="TallStackUI">…</x-ts-card>
 
-<x-card header="TallStackUI" minimize>…</x-card>
-<x-card header="TallStackUI" minimize="mount">…</x-card>     {{-- start minimized --}}
+<x-ts-card header="TallStackUI" minimize>…</x-ts-card>
+<x-ts-card header="TallStackUI" minimize="mount">…</x-ts-card>     {{-- start minimized --}}
 
-<x-card image="https://picsum.photos/750/300">…</x-card>
-<x-card position="bottom" image="…">…</x-card>
+<x-ts-card image="https://picsum.photos/750/300">…</x-ts-card>
+<x-ts-card position="bottom" image="…">…</x-ts-card>
 
 {{-- Round: bare flag → default rounded-lg; xs sm md lg xl 2xl --}}
-<x-card round="sm">…</x-card>
+<x-ts-card round="sm">…</x-ts-card>
 
-<x-card header="TallStackUI" color="primary">…</x-card>
-<x-card header="TallStackUI" color="primary" light>…</x-card>
-<x-card header="TallStackUI" color="primary" accent>…</x-card>   {{-- colored top border --}}
+<x-ts-card header="TallStackUI" color="primary">…</x-ts-card>
+<x-ts-card header="TallStackUI" color="primary" light>…</x-ts-card>
+<x-ts-card header="TallStackUI" color="primary" accent>…</x-ts-card>   {{-- colored top border --}}
 
-<x-card shadowless>…</x-card>
-<x-card bordered>…</x-card>
-<x-card shadowless bordered>…</x-card>
-<x-card header="…" paddingless>…</x-card>
+<x-ts-card shadowless>…</x-ts-card>
+<x-ts-card bordered>…</x-ts-card>
+<x-ts-card shadowless bordered>…</x-ts-card>
+<x-ts-card header="…" paddingless>…</x-ts-card>
 
-<x-card>
+<x-ts-card>
     TallStackUI
     <x-slot:footer between>
-        <x-button color="red">Delete</x-button>
-        <x-button>Save</x-button>
+        <x-ts-button color="red">Delete</x-ts-button>
+        <x-ts-button>Save</x-ts-button>
     </x-slot:footer>
-</x-card>
+</x-ts-card>
 
-<x-card skeleton /> {{-- 3 body lines --}}
-<x-card skeleton="5" header="…" footer image round="xl" />
+<x-ts-card skeleton /> {{-- 3 body lines --}}
+<x-ts-card skeleton="5" header="…" footer image round="xl" />
 
-<x-card loading>…</x-card>
-<x-card loading="save" delay="longest">…</x-card>
+<x-ts-card loading>…</x-ts-card>
+<x-ts-card loading="save" delay="longest">…</x-ts-card>
 
-<x-card header="TallStackUI" minimize
+<x-ts-card header="TallStackUI" minimize
     x-on:minimize="alert('Minimized!')"
     x-on:maximize="alert('Maximized!')"
-    x-on:close="alert('Closed!')">…</x-card>
+    x-on:close="alert('Closed!')">…</x-ts-card>
 
 ```
 
 Events: `minimize`, `maximize`, `close`. Used inside `#[Lazy]` component `placeholder()` for skeleton.
 
-### Table (`<x-table>`)
+### Table (`<x-ts-table>`)
 
 Two data modes: simple array or Eloquent paginator (recommended).
 
@@ -729,118 +729,118 @@ new class extends Component {
 ```
 
 ```blade
-<x-table :$headers :$rows />
-<x-table :$headers :$rows headerless />
-<x-table :$headers :$rows striped />
+<x-ts-table :$headers :$rows />
+<x-ts-table :$headers :$rows headerless />
+<x-ts-table :$headers :$rows striped />
 
 {{-- Column alignment --}}
-<x-table :headers="[
+<x-ts-table :headers="[
     ['index' => 'name',     'label' => 'Product'],
     ['index' => 'quantity', 'label' => 'Quantity', 'align' => 'center'],
     ['index' => 'price',    'label' => 'Price',    'align' => 'right'],
 ]" :rows="[…]" />
 
 {{-- Search --}}
-<x-table :$headers :$rows searchable />
+<x-ts-table :$headers :$rows searchable />
 
 {{-- Loading --}}
-<x-table :$headers :$rows loading />
+<x-ts-table :$headers :$rows loading />
 
 {{-- Empty state --}}
-<x-table :$headers :$rows>
+<x-ts-table :$headers :$rows>
     <x-slot:empty>No records found</x-slot:empty>
-</x-table>
+</x-ts-table>
 
 {{-- Actions column --}}
-<x-table :$headers :$rows>
+<x-ts-table :$headers :$rows>
     <x-slot:actions>
-        <x-button sm>Edit</x-button>
+        <x-ts-button sm>Edit</x-ts-button>
     </x-slot:actions>
-</x-table>
+</x-ts-table>
 
 ```
 
-### Pagination (`<x-pagination>`)
+### Pagination (`<x-ts-pagination>`)
 
 ```blade
-<x-pagination :paginator="$users" />
-<x-pagination :paginator="$users" simple />
+<x-ts-pagination :paginator="$users" />
+<x-ts-pagination :paginator="$users" simple />
 
 ```
 
-### Badge (`<x-badge>`)
+### Badge (`<x-ts-badge>`)
 
 ```blade
-<x-badge text="Active" />
-<x-badge text="Active" color="green" />
-<x-badge text="Active" xs|sm|md|lg />
-<x-badge text="Active" round />
-<x-badge text="Active" light />
-<x-badge text="Active" outline />
-<x-badge icon="check" text="Verified" />
+<x-ts-badge text="Active" />
+<x-ts-badge text="Active" color="green" />
+<x-ts-badge text="Active" xs|sm|md|lg />
+<x-ts-badge text="Active" round />
+<x-ts-badge text="Active" light />
+<x-ts-badge text="Active" outline />
+<x-ts-badge icon="check" text="Verified" />
 
 ```
 
-### Alert (`<x-alert>`)
+### Alert (`<x-ts-alert>`)
 
 ```blade
-<x-alert>Default alert</x-alert>
-<x-alert color="green">Success message</x-alert>
-<x-alert color="red">Error message</x-alert>
-<x-alert color="yellow">Warning message</x-alert>
-<x-alert color="blue">Info message</x-alert>
+<x-ts-alert>Default alert</x-ts-alert>
+<x-ts-alert color="green">Success message</x-ts-alert>
+<x-ts-alert color="red">Error message</x-ts-alert>
+<x-ts-alert color="yellow">Warning message</x-ts-alert>
+<x-ts-alert color="blue">Info message</x-ts-alert>
 
-<x-alert close>Closable alert</x-alert>
-<x-alert icon="check-circle" color="green">With icon</x-alert>
+<x-ts-alert close>Closable alert</x-ts-alert>
+<x-ts-alert icon="check-circle" color="green">With icon</x-ts-alert>
 
 ```
 
-### Loading (`<x-loading>`)
+### Loading (`<x-ts-loading>`)
 
 ```blade
-<x-loading />
-<x-loading text="Loading…" />
-<x-loading color="primary" />
-<x-loading spinner="bars" />
+<x-ts-loading />
+<x-ts-loading text="Loading…" />
+<x-ts-loading color="primary" />
+<x-ts-loading spinner="bars" />
 
 ```
 
-### Button (`<x-button>`)
+### Button (`<x-ts-button>`)
 
 ```blade
-<x-button>Default</x-button>
-<x-button text="Save" />
-<x-button color="green">Success</x-button>
-<x-button color="red">Danger</x-button>
-<x-button color="yellow">Warning</x-button>
-<x-button color="blue">Info</x-button>
+<x-ts-button>Default</x-ts-button>
+<x-ts-button text="Save" />
+<x-ts-button color="green">Success</x-ts-button>
+<x-ts-button color="red">Danger</x-ts-button>
+<x-ts-button color="yellow">Warning</x-ts-button>
+<x-ts-button color="blue">Info</x-ts-button>
 
-<x-button sm>Small</x-button>
-<x-button lg>Large</x-button>
+<x-ts-button sm>Small</x-ts-button>
+<x-ts-button lg>Large</x-ts-button>
 
-<x-button outline>Outline</x-button>
-<x-button light>Light</x-button>
-<x-button circle>+</x-button>
+<x-ts-button outline>Outline</x-ts-button>
+<x-ts-button light>Light</x-ts-button>
+<x-ts-button circle>+</x-ts-button>
 
-<x-button icon="plus" />
-<x-button icon="pencil" sm>Edit</x-button>
+<x-ts-button icon="plus" />
+<x-ts-button icon="pencil" sm>Edit</x-ts-button>
 
-<x-button loading>Submit</x-button>
-<x-button disabled>Disabled</x-button>
+<x-ts-button loading>Submit</x-ts-button>
+<x-ts-button disabled>Disabled</x-ts-button>
 
-<x-button wire:click="save">Save</x-button>
-<x-button wire:loading wire:target="save">Saving…</x-button>
+<x-ts-button wire:click="save">Save</x-ts-button>
+<x-ts-button wire:loading wire:target="save">Saving…</x-ts-button>
 
 ```
 
-### Avatar (`<x-avatar>`)
+### Avatar (`<x-ts-avatar>`)
 
 ```blade
-<x-avatar :model="$user" />
-<x-avatar :model="$user" color="primary" />
-<x-avatar :model="$user" xs|sm|md|lg|xl />
-<x-avatar :model="$user" round />
-<x-avatar label="AB" /> {{-- Initials --}}
+<x-ts-avatar :model="$user" />
+<x-ts-avatar :model="$user" color="primary" />
+<x-ts-avatar :model="$user" xs|sm|md|lg|xl />
+<x-ts-avatar :model="$user" round />
+<x-ts-avatar label="AB" /> {{-- Initials --}}
 
 ```
 
@@ -848,74 +848,74 @@ new class extends Component {
 
 ## Interaction Components
 
-### Dialog (`<x-dialog>`)
+### Dialog (`<x-ts-dialog>`)
 
 Confirmation dialogs with async support:
 
 ```blade
-<x-dialog z-index="z-50" blur="sm">
-    <x-dialog.button color="red" wire:click="delete({{ $id }})">
+<x-ts-dialog z-index="z-50" blur="sm">
+    <x-ts-dialog.button color="red" wire:click="delete({{ $id }})">
         Delete
-    </x-dialog.button>
-</x-dialog>
+    </x-ts-dialog.button>
+</x-ts-dialog>
 
 {{-- Or programmatically --}}
-<x-button x-on:click="$tsui.interaction('dialog')
+<x-ts-button x-on:click="$tsui.interaction('dialog')
     ?.confirm('Are you sure?', 'This will delete the record', {
         accept: { label: 'Yes, delete', method: 'delete', params: {{ $id }} },
         reject: { label: 'Cancel' },
     })">
     Delete
-</x-button>
+</x-ts-button>
 
 ```
 
-### Slide (`<x-slide>`)
+### Slide (`<x-ts-slide>`)
 
 Side panel for forms or details:
 
 ```blade
-<x-slide id="slide-id" title="Details">
+<x-ts-slide id="slide-id" title="Details">
     Content here
-</x-slide>
+</x-ts-slide>
 
-<x-button x-on:click="$tsui.open.slide('slide-id')">Open</x-button>
-<x-button x-on:click="$tsui.close.slide('slide-id')">Close</x-button>
+<x-ts-button x-on:click="$tsui.open.slide('slide-id')">Open</x-ts-button>
+<x-ts-button x-on:click="$tsui.close.slide('slide-id')">Close</x-ts-button>
 
-<x-slide position="right" size="lg">…</x-slide>
-<x-slide persistent>…</x-slide> {{-- no outside-click close --}}
+<x-ts-slide position="right" size="lg">…</x-ts-slide>
+<x-ts-slide persistent>…</x-ts-slide> {{-- no outside-click close --}}
 
 ```
 
-### Toast (`<x-toast>`)
+### Toast (`<x-ts-toast>`)
 
 Notification messages:
 
 ```blade
-<x-toast position="top-right" />
+<x-ts-toast position="top-right" />
 
 {{-- Programmatically --}}
-<x-button x-on:click="$tsui.interaction('toast')
+<x-ts-button x-on:click="$tsui.interaction('toast')
     ?.success('Success!', 'Record created successfully')">
     Save
-</x-button>
+</x-ts-button>
 
-<x-button x-on:click="$tsui.interaction('toast')
+<x-ts-button x-on:click="$tsui.interaction('toast')
     ?.error('Error!', 'Something went wrong')">
     Delete
-</x-button>
+</x-ts-button>
 
 ```
 
-### Error (`<x-error>`)
+### Error (`<x-ts-error>`)
 
 Form error display:
 
 ```blade
-<x-error />
-<x-error :errors="$errors" />
-<x-error :errors="$errors" title="Please fix the following errors:" />
-<x-error :errors="$errors" color="red" />
+<x-ts-error />
+<x-ts-error :errors="$errors" />
+<x-ts-error :errors="$errors" title="Please fix the following errors:" />
+<x-ts-error :errors="$errors" color="red" />
 
 ```
 
@@ -928,9 +928,9 @@ Form error display:
 TallStackUI uses Heroicons by default:
 
 ```blade
-<x-input icon="users" />
-<x-button icon="plus">Add</x-button>
-<x-dropdown.items icon="cog" text="Settings" />
+<x-ts-input icon="users" />
+<x-ts-button icon="plus">Add</x-ts-button>
+<x-ts-dropdown.items icon="cog" text="Settings" />
 
 ```
 
@@ -996,43 +996,43 @@ class CustomButtonColor extends ButtonColor
 ### Wire Model Binding
 
 ```blade
-<x-input label="Name" wire:model="name" />
-<x-input label="Email" wire:model.live="email" />
-<x-select.styled wire:model="role" :options="$roles" />
-<x-checkbox label="Active" wire:model="active" />
-<x-toggle label="Notifications" wire:model="notifications" />
+<x-ts-input label="Name" wire:model="name" />
+<x-ts-input label="Email" wire:model.live="email" />
+<x-ts-select.styled wire:model="role" :options="$roles" />
+<x-ts-checkbox label="Active" wire:model="active" />
+<x-ts-toggle label="Notifications" wire:model="notifications" />
 
 ```
 
 ### Wire Loading States
 
 ```blade
-<x-button wire:click="save">
+<x-ts-button wire:click="save">
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
-</x-button>
+</x-ts-button>
 
 ```
 
 ### Wire Events
 
 ```blade
-<x-button wire:click="edit({{ $id }})">Edit</x-button>
-<x-button wire:click="delete({{ $id }})"
+<x-ts-button wire:click="edit({{ $id }})">Edit</x-ts-button>
+<x-ts-button wire:click="delete({{ $id }})"
     x-on:click="$tsui.interaction('dialog')?.confirm('Delete?', 'Are you sure?', {
         accept: { label: 'Yes', method: 'delete', params: {{ $id }} },
         reject: { label: 'Cancel' },
     })">
     Delete
-</x-button>
+</x-ts-button>
 
 ```
 
 ### Form Validation
 
 ```blade
-<x-input label="Name" wire:model="name" :errors="$errors" />
-<x-input label="Name" wire:model="name" invalidate /> {{-- hide errors --}}
+<x-ts-input label="Name" wire:model="name" :errors="$errors" />
+<x-ts-input label="Name" wire:model="name" invalidate /> {{-- hide errors --}}
 
 ```
 
@@ -1045,8 +1045,8 @@ class CustomButtonColor extends ButtonColor
 Use the same size across related components:
 
 ```blade
-<x-input sm label="Search" wire:model="search" />
-<x-button sm wire:click="filter">Filter</x-button>
+<x-ts-input sm label="Search" wire:model="search" />
+<x-ts-button sm wire:click="filter">Filter</x-ts-button>
 
 ```
 
@@ -1055,9 +1055,9 @@ Use the same size across related components:
 Use semantic colors for actions:
 
 ```blade
-<x-button color="green">Save</x-button>
-<x-button color="red">Delete</x-button>
-<x-button color="yellow">Edit</x-button>
+<x-ts-button color="green">Save</x-ts-button>
+<x-ts-button color="red">Delete</x-ts-button>
+<x-ts-button color="yellow">Edit</x-ts-button>
 
 ```
 
@@ -1066,10 +1066,10 @@ Use semantic colors for actions:
 Always provide loading feedback:
 
 ```blade
-<x-button wire:click="save">
+<x-ts-button wire:click="save">
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
-</x-button>
+</x-ts-button>
 
 ```
 
@@ -1078,13 +1078,13 @@ Always provide loading feedback:
 Use dialogs for destructive actions:
 
 ```blade
-<x-button color="red"
+<x-ts-button color="red"
     x-on:click="$tsui.interaction('dialog')?.confirm('Delete?', 'This cannot be undone', {
         accept: { label: 'Delete', method: 'delete', params: {{ $id }} },
         reject: { label: 'Cancel' },
     })">
     Delete
-</x-button>
+</x-ts-button>
 
 ```
 
@@ -1114,7 +1114,7 @@ public function save()
 Show validation errors consistently:
 
 ```blade
-<x-error :errors="$errors" />
+<x-ts-error :errors="$errors" />
 
 ```
 

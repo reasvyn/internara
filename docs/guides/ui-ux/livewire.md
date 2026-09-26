@@ -267,7 +267,7 @@ Always use `wire:key` in loops to help Livewire track DOM elements:
     @error('title') <span class="error">{{ $message }}</span> @enderror
 
     <button type="submit">
-        <x-loading wire:loading wire:target="save" />
+        <x-ts-loading wire:loading wire:target="save" />
         Save
     </button>
 </form>
@@ -378,7 +378,7 @@ public function save()
 ### Validation Error Display with TallStackUI
 
 ```blade
-<x-input label="Title" wire:model="title" :errors="$errors" />
+<x-ts-input label="Title" wire:model="title" :errors="$errors" />
 
 ```
 
@@ -531,7 +531,7 @@ public function save()
 ### TallStackUI Upload Component
 
 ```blade
-<x-upload label="Documents" wire:model="documents" multiple
+<x-ts-upload label="Documents" wire:model="documents" multiple
     accept="application/pdf,image/*" hint="Max 10MB per file" />
 
 ```

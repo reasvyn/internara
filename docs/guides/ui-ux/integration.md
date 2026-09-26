@@ -96,9 +96,9 @@ app/Modules/{Module}/Livewire/     # Livewire components per module
 Foundation layer — utility classes for layout, spacing, typography, colors:
 
 ```blade
-<div class="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Page Title</h2>
-    <x-button sm wire:click="create">New Record</x-button>
+<div class="flex items-center justify-between p-4 bg-base-100 rounded-xl border border-base-content/10 shadow-sm">
+    <h2 class="text-lg font-semibold text-base-content">Page Title</h2>
+    <x-ts-button sm wire:click="create">New Record</x-ts-button>
 </div>
 
 ```
@@ -108,15 +108,15 @@ Foundation layer — utility classes for layout, spacing, typography, colors:
 Pre-built components for common patterns:
 
 ```blade
-<x-card header="User Details" footer>
-    <x-input label="Name" wire:model="name" />
-    <x-input label="Email" wire:model="email" email />
+<x-ts-card header="User Details" footer>
+    <x-ts-input label="Name" wire:model="name" />
+    <x-ts-input label="Email" wire:model="email" email />
 
     <x-slot:footer between>
-        <x-button color="red" outline>Cancel</x-button>
-        <x-button color="green" wire:click="save">Save</x-button>
+        <x-ts-button color="red" outline>Cancel</x-ts-button>
+        <x-ts-button color="green" wire:click="save">Save</x-ts-button>
     </x-slot:footer>
-</x-card>
+</x-ts-card>
 
 ```
 
@@ -160,9 +160,9 @@ class UserList extends Component
 
 ```blade
 <div>
-    <x-input label="Search" wire:model.live.debounce.300ms="search" />
+    <x-ts-input label="Search" wire:model.live.debounce.300ms="search" />
 
-    <x-table :headers="['Name', 'Email', 'Actions']" :rows="$this->users" />
+    <x-ts-table :headers="['Name', 'Email', 'Actions']" :rows="$this->users" />
 </div>
 
 ```
@@ -174,57 +174,57 @@ class UserList extends Component
 ### Two-Way Data Binding (Livewire + TallStackUI)
 
 ```blade
-<x-input label="Title" wire:model="title" />
-<x-textarea label="Description" wire:model="description" />
-<x-select.styled label="Status" wire:model="status" :options="$statuses" />
-<x-checkbox label="Active" wire:model="active" />
-<x-toggle label="Notifications" wire:model="notifications" />
+<x-ts-input label="Title" wire:model="title" />
+<x-ts-textarea label="Description" wire:model="description" />
+<x-ts-select.styled label="Status" wire:model="status" :options="$statuses" />
+<x-ts-checkbox label="Active" wire:model="active" />
+<x-ts-toggle label="Notifications" wire:model="notifications" />
 
 ```
 
 ### One-Way Data Display
 
 ```blade
-<x-badge :text="$user->status->label()" :color="$user->status->color()" />
-<x-avatar :model="$user" />
+<x-ts-badge :text="$user->status->label()" :color="$user->status->color()" />
+<x-ts-avatar :model="$user" />
 
 ```
 
 ### Action Dispatch
 
 ```blade
-<x-button wire:click="save">Save</x-button>
-<x-button wire:click="edit({{ $id }})">Edit</x-button>
-<x-button color="red"
+<x-ts-button wire:click="save">Save</x-ts-button>
+<x-ts-button wire:click="edit({{ $id }})">Edit</x-ts-button>
+<x-ts-button color="red"
     x-on:click="$tsui.interaction('dialog')?.confirm('Delete?', 'Are you sure?', {
         accept: { label: 'Delete', method: 'delete', params: {{ $id }} },
         reject: { label: 'Cancel' },
     })">
     Delete
-</x-button>
+</x-ts-button>
 
 ```
 
 ### Loading States
 
 ```blade
-<x-button wire:click="save">
+<x-ts-button wire:click="save">
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">
-        <x-loading xs /> Saving…
+        <x-ts-loading xs /> Saving…
     </span>
-</x-button>
+</x-ts-button>
 
-<x-table :headers="$headers" :rows="$rows" loading wire:loading.delay.shortest />
+<x-ts-table :headers="$headers" :rows="$rows" loading wire:loading.delay.shortest />
 
 ```
 
 ### Error Display
 
 ```blade
-<x-error :errors="$errors" />
+<x-ts-error :errors="$errors" />
 
-<x-input label="Name" wire:model="name" :errors="$errors" />
+<x-ts-input label="Name" wire:model="name" :errors="$errors" />
 
 ```
 
@@ -235,28 +235,28 @@ class UserList extends Component
 ### Card with Header and Footer
 
 ```blade
-<x-card header="User Information">
+<x-ts-card header="User Information">
     <div class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
-            <x-input label="First Name" wire:model="firstName" />
-            <x-input label="Last Name" wire:model="lastName" />
+            <x-ts-input label="First Name" wire:model="firstName" />
+            <x-ts-input label="Last Name" wire:model="lastName" />
         </div>
-        <x-input label="Email" wire:model="email" email />
+        <x-ts-input label="Email" wire:model="email" email />
     </div>
 
     <x-slot:footer between>
-        <x-button color="red" outline wire:click="cancel">Cancel</x-button>
-        <x-button color="green" wire:click="save">Save Changes</x-button>
+        <x-ts-button color="red" outline wire:click="cancel">Cancel</x-ts-button>
+        <x-ts-button color="green" wire:click="save">Save Changes</x-ts-button>
     </x-slot:footer>
-</x-card>
+</x-ts-card>
 
 ```
 
 ### Data Table with Actions
 
 ```blade
-<x-card :paddingless="true">
-    <x-table :headers="[
+<x-ts-card :paddingless="true">
+    <x-ts-table :headers="[
         ['index' => 'name', 'label' => 'Name'],
         ['index' => 'email', 'label' => 'Email'],
         ['index' => 'role', 'label' => 'Role'],
@@ -264,18 +264,18 @@ class UserList extends Component
     ]" :rows="$this->users" searchable striped>
         <x-slot:actions>
             <div class="flex items-center justify-end gap-2">
-                <x-button sm outline wire:click="edit({{ $user->id }})">Edit</x-button>
-                <x-button sm color="red" outline
+                <x-ts-button sm outline wire:click="edit({{ $user->id }})">Edit</x-ts-button>
+                <x-ts-button sm color="red" outline
                     x-on:click="$tsui.interaction('dialog')?.confirm('Delete?', 'Are you sure?', {
                         accept: { label: 'Delete', method: 'delete', params: {{ $user->id }} },
                         reject: { label: 'Cancel' },
                     })">
                     Delete
-                </x-button>
+                </x-ts-button>
             </div>
         </x-slot:actions>
-    </x-table>
-</x-card>
+    </x-ts-table>
+</x-ts-card>
 
 ```
 
@@ -284,17 +284,17 @@ class UserList extends Component
 ```blade
 <div class="flex items-center gap-4 mb-6">
     <div class="flex-1">
-        <x-input placeholder="Search records…"
+        <x-ts-input placeholder="Search records…"
             wire:model.live.debounce.300ms="search"
             icon="magnifying-glass" />
     </div>
 
-    <x-select.styled wire:model="status" :options="$statuses" placeholder="All Statuses" />
+    <x-ts-select.styled wire:model="status" :options="$statuses" placeholder="All Statuses" />
 
-    <x-button wire:click="resetFilters" outline>
-        <x-icon name="arrow-path" class="w-4 h-4" />
+    <x-ts-button wire:click="resetFilters" outline>
+        <x-ts-icon name="arrow-path" class="w-4 h-4" />
         Reset
-    </x-button>
+    </x-ts-button>
 </div>
 
 ```
@@ -307,25 +307,25 @@ class UserList extends Component
 
 ```blade
 <form wire:submit="save" class="space-y-6">
-    <x-card header="Create User">
+    <x-ts-card header="Create User">
         <div class="grid grid-cols-2 gap-4">
-            <x-input label="Name" wire:model="name" required />
-            <x-input label="Email" wire:model="email" email required />
-            <x-input label="Password" wire:model="password" password required />
-            <x-select.styled label="Role" wire:model="role" :options="$roles" required />
+            <x-ts-input label="Name" wire:model="name" required />
+            <x-ts-input label="Email" wire:model="email" email required />
+            <x-ts-input label="Password" wire:model="password" password required />
+            <x-ts-select.styled label="Role" wire:model="role" :options="$roles" required />
         </div>
 
         <div class="mt-4">
-            <x-checkbox label="Send welcome email" wire:model="sendEmail" />
+            <x-ts-checkbox label="Send welcome email" wire:model="sendEmail" />
         </div>
-    </x-card>
+    </x-ts-card>
 
     <div class="flex justify-end gap-3">
-        <x-button color="gray" outline wire:click="cancel">Cancel</x-button>
-        <x-button color="green" type="submit">
+        <x-ts-button color="gray" outline wire:click="cancel">Cancel</x-ts-button>
+        <x-ts-button color="green" type="submit">
             <span wire:loading.remove wire:target="save">Create User</span>
             <span wire:loading wire:target="save">Creating…</span>
-        </x-button>
+        </x-ts-button>
     </div>
 </form>
 
@@ -353,33 +353,33 @@ class UserList extends Component
     </div>
 
     {{-- Step Content --}}
-    <x-card>
+    <x-ts-card>
         @switch($currentStep)
             @case(0)
-                <x-input label="First Name" wire:model="firstName" />
-                <x-input label="Last Name" wire:model="lastName" />
+                <x-ts-input label="First Name" wire:model="firstName" />
+                <x-ts-input label="Last Name" wire:model="lastName" />
                 @break
             @case(1)
-                <x-input label="Email" wire:model="email" email />
-                <x-input label="Phone" wire:model="phone" />
+                <x-ts-input label="Email" wire:model="email" email />
+                <x-ts-input label="Phone" wire:model="phone" />
                 @break
             @case(2)
-                <x-textarea label="Bio" wire:model="bio" />
-                <x-checkbox label="Agree to terms" wire:model="agreed" />
+                <x-ts-textarea label="Bio" wire:model="bio" />
+                <x-ts-checkbox label="Agree to terms" wire:model="agreed" />
                 @break
         @endswitch
-    </x-card>
+    </x-ts-card>
 
     {{-- Navigation --}}
     <div class="flex justify-between mt-6">
-        <x-button wire:click="prevStep" outline :disabled="$currentStep === 0">
+        <x-ts-button wire:click="prevStep" outline :disabled="$currentStep === 0">
             Previous
-        </x-button>
+        </x-ts-button>
 
         @if ($currentStep < count($steps) - 1)
-            <x-button wire:click="nextStep">Next</x-button>
+            <x-ts-button wire:click="nextStep">Next</x-ts-button>
         @else
-            <x-button color="green" wire:click="save">Complete</x-button>
+            <x-ts-button color="green" wire:click="save">Complete</x-ts-button>
         @endif
     </div>
 </div>
@@ -390,7 +390,7 @@ class UserList extends Component
 
 ```blade
 <div>
-    <x-upload label="Profile Photo"
+    <x-ts-upload label="Profile Photo"
         wire:model="photo"
         accept="image/*"
         hint="Max 2MB, JPG or PNG" />
@@ -415,7 +415,7 @@ class UserList extends Component
 ### Basic Table
 
 ```blade
-<x-table :headers="[
+<x-ts-table :headers="[
     ['index' => 'id', 'label' => '#'],
     ['index' => 'name', 'label' => 'Name'],
     ['index' => 'email', 'label' => 'Email'],
@@ -427,19 +427,19 @@ class UserList extends Component
 ### Searchable Table with Pagination
 
 ```blade
-<x-table :headers="$headers" :rows="$this->users"
+<x-ts-table :headers="$headers" :rows="$this->users"
     searchable
     :search="$search"
     @search="$set('search', $event.detail)" />
 
-<x-pagination :paginator="$this->users" />
+<x-ts-pagination :paginator="$this->users" />
 
 ```
 
 ### Table with Loading State
 
 ```blade
-<x-table :headers="$headers" :rows="$this->users"
+<x-ts-table :headers="$headers" :rows="$this->users"
     loading wire:loading
     wire:target="search,filter,sort" />
 
@@ -448,15 +448,15 @@ class UserList extends Component
 ### Table with Actions
 
 ```blade
-<x-table :headers="$headers" :rows="$this->users">
+<x-ts-table :headers="$headers" :rows="$this->users">
     <x-slot:actions>
         <div class="flex items-center gap-2">
-            <x-button sm outline wire:click="view({{ $row->id }})">View</x-button>
-            <x-button sm outline wire:click="edit({{ $row->id }})">Edit</x-button>
-            <x-button sm color="red" outline wire:click="delete({{ $row->id }})">Delete</x-button>
+            <x-ts-button sm outline wire:click="view({{ $row->id }})">View</x-ts-button>
+            <x-ts-button sm outline wire:click="edit({{ $row->id }})">Edit</x-ts-button>
+            <x-ts-button sm color="red" outline wire:click="delete({{ $row->id }})">Delete</x-ts-button>
         </div>
     </x-slot:actions>
-</x-table>
+</x-ts-table>
 
 ```
 
@@ -467,50 +467,50 @@ class UserList extends Component
 ### Simple Modal
 
 ```blade
-<x-modal id="create-modal" title="Create New Record">
-    <x-input label="Name" wire:model="name" />
-    <x-input label="Description" wire:model="description" />
+<x-ts-modal id="create-modal" title="Create New Record">
+    <x-ts-input label="Name" wire:model="name" />
+    <x-ts-input label="Description" wire:model="description" />
 
     <x-slot:footer>
-        <x-button color="green" wire:click="save">Save</x-button>
+        <x-ts-button color="green" wire:click="save">Save</x-ts-button>
     </x-slot:footer>
-</x-modal>
+</x-ts-modal>
 
-<x-button x-on:click="$tsui.open.modal('create-modal')">Create</x-button>
+<x-ts-button x-on:click="$tsui.open.modal('create-modal')">Create</x-ts-button>
 
 ```
 
 ### Confirmation Modal
 
 ```blade
-<x-dialog>
-    <x-dialog.button color="red">
+<x-ts-dialog>
+    <x-ts-dialog.button color="red">
         Delete Record
-    </x-dialog.button>
+    </x-ts-dialog.button>
 
-    <x-dialog.content title="Delete Confirmation">
+    <x-ts-dialog.content title="Delete Confirmation">
         <p>Are you sure you want to delete this record? This action cannot be undp>
 
         <x-slot:footer>
-            <x-button outline Cancel</x-button>
-            <x-button color="red" wire:click="delete({{ $id }})">Delete</x-button>
+            <x-ts-button outline Cancel</x-ts-button>
+            <x-ts-button color="red" wire:click="delete({{ $id }})">Delete</x-ts-button>
         </x-slot:footer>
-    </x-dialog.content>
-</x-dialog>
+    </x-ts-dialog.content>
+</x-ts-dialog>
 
 ```
 
 ### Slide Panel
 
 ```blade
-<x-slide id="edit-slide" title="Edit Record">
-    <x-input label="Name" wire:model="name" />
-    <x-input label="Description" wire:model="description" />
-</x-slide>
+<x-ts-slide id="edit-slide" title="Edit Record">
+    <x-ts-input label="Name" wire:model="name" />
+    <x-ts-input label="Description" wire:model="description" />
+</x-ts-slide>
 
-<x-button wire:click="loadEdit({{ $id }})" x-on:click="$tsui.open.slide('edit-slide')">
+<x-ts-button wire:click="loadEdit({{ $id }})" x-on:click="$tsui.open.slide('edit-slide')">
     Edit
-</x-button>
+</x-ts-button>
 
 ```
 
@@ -526,7 +526,7 @@ class UserList extends Component
     $tsui.interaction('toast')[type](message)
 }}"
 x-on:notify.window="showToast($event.detail.message, $event.detail.type)"
-<x-toast position="top-right" />
+<x-ts-toast position="top-right" />
 
 ```
 
@@ -549,7 +549,7 @@ public function delete()
 ### Inline Error Messages
 
 ```blade
-<x-error :errors="$errors" />
+<x-ts-error :errors="$errors" />
 
 @error('name')
     <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
@@ -561,11 +561,11 @@ public function delete()
 
 ```blade
 @if (session('success'))
-    <x-alert color="green" close>{{ session('success') }}</x-alert>
+    <x-ts-alert color="green" close>{{ session('success') }}</x-ts-alert>
 @endif
 
 @if (session('error'))
-    <x-alert color="red" close>{{ session('error') }}</x-alert>
+    <x-ts-alert color="red" close>{{ session('error') }}</x-ts-alert>
 @endif
 
 ```
@@ -578,31 +578,19 @@ public function delete()
 
 ```css
 /* resources/css/app.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 @import '../../vendor/tallstackui/tallstackui/css/v4.css';
 
-@plugin '@tailwindcss/forms';
-
-@source '../../vendor/tallstackui/tallstackui/**/*.php';
 @source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/tallstackui/tallstackui/**/*.php';
 
 /* Dark mode via class */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Theme tokens */
+/* Self-hosted Instrument Sans & Semantic Palette */
 @theme {
-  --color-primary: oklch(0.65 0.20 250);
-  --color-secondary: oklch(0.70 0.15 160);
-}
-
-:root {
-  --color-bg: var(--color-white);
-  --color-fg: var(--color-gray-900);
-}
-
-.dark {
-  --color-bg: var(--color-gray-950);
-  --color-fg: var(--color-gray-50);
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 }
 
 ```
@@ -618,7 +606,7 @@ public function delete()
         localStorage.theme = this.dark ? 'dark' : 'light';
     }
 }" x-init="$watch('dark', val => document.documentElement.classList.toggle('dark', val))">
-    <x-toggle x-model="dark" @change="toggle()" label="Dark Mode" />
+    <x-ts-toggle x-model="dark" @change="toggle()" label="Dark Mode" />
 </div>
 
 ```
@@ -626,14 +614,16 @@ public function delete()
 ### Semantic Color Usage
 
 ```blade
-<!-- Using semantic tokens -->
-<div class="bg-[var(--color-bg)] text-[var(--color-fg)]">
-    Themed content
+<!-- Recommended: Semantic palette tokens (auto dark-mode aware) -->
+<div class="bg-base-100 text-base-content border border-base-content/10 rounded-xl p-4">
+    Themed content with automatic dark mode contrast
 </div>
 
-<!-- Using Tailwind's dark: prefix -->
-<div class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-    Themed content
+<!-- Surface hierarchy (base-200 container -> base-100 card) -->
+<div class="bg-base-200 p-6 rounded-2xl">
+    <div class="bg-base-100 p-4 rounded-xl border border-base-content/10 shadow-sm">
+        Elevated card surface
+    </div>
 </div>
 
 ```
@@ -647,7 +637,7 @@ public function delete()
 ```blade
 {{-- Only load when visible --}}
 <div x-intersect="$wire.loadData()">
-    <x-card skeleton header footer />
+    <x-ts-card skeleton header footer />
 </div>
 
 ```
@@ -657,9 +647,9 @@ public function delete()
 ```blade
 {{-- Load after page is interactive --}}
 <div wire:init="loadChart">
-    <x-card loading wire:loading>
+    <x-ts-card loading wire:loading>
         <div class="h-64"></div>
-    </x-card>
+    </x-ts-card>
 </div>
 
 ```
@@ -668,7 +658,7 @@ public function delete()
 
 ```blade
 {{-- Debounce to reduce server requests --}}
-<x-input wire:model.live.debounce.300ms="search" placeholder="Search…" />
+<x-ts-input wire:model.live.debounce.300ms="search" placeholder="Search…" />
 
 ```
 
@@ -676,8 +666,8 @@ public function delete()
 
 ```blade
 {{-- Always paginate large datasets --}}
-<x-table :headers="$headers" :rows="$this->records" />
-<x-pagination :paginator="$this->records" />
+<x-ts-table :headers="$headers" :rows="$this->records" />
+<x-ts-pagination :paginator="$this->records" />
 
 ```
 
@@ -685,10 +675,10 @@ public function delete()
 
 ```blade
 {{-- Use wire:target to scope loading states --}}
-<x-button wire:click="save">
+<x-ts-button wire:click="save">
     <span wire:loading.remove wire:target="save">Save</span>
     <span wire:loading wire:target="save">Saving…</span>
-</x-button>
+</x-ts-button>
 
 ```
 
