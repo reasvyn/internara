@@ -1,8 +1,8 @@
 @props(['title' => null, 'error' => null])
 
 <x-ui::layouts.base :$title>
-    <div class="bg-base-100 flex min-h-screen flex-col">
-        <header class="border-base-content/10 border-b">
+    <div class="bg-base-200 flex min-h-screen flex-col">
+        <header class="bg-base-100/80 border-base-content/10 sticky top-0 z-50 border-b backdrop-blur-sm">
             <div class="mx-auto max-w-5xl px-6 lg:px-12">
                 <div class="flex h-16 items-center justify-between">
                     <x-ui::components.brand size="sm" :invert="false" />
@@ -20,50 +20,57 @@
 
         <main class="flex flex-1 items-center justify-center px-6 py-12">
             <div class="mx-auto w-full max-w-md">
-                <div class="mb-8 text-center">
-                    <div class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-full">
-                        <x-ts-icon name="key" class="size-7" />
+                <div class="bg-base-100 border-base-content/10 rounded-2xl border p-6 shadow-sm sm:p-10">
+                    <div class="mb-8 text-center">
+                        <div class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-2xl shadow-xs">
+                            <x-ts-icon name="key" class="size-7" />
+                        </div>
+                        <h1 class="text-base-content text-2xl font-bold tracking-tight">
+                            {{ __('setup.code_entry.title') }}
+                        </h1>
+                        <p class="text-base-content/60 mt-2 text-sm">{{ __('setup.code_entry.description') }}</p>
                     </div>
-                    <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.code_entry.title') }}</h1>
-                    <p class="text-base-content/60 mt-2 text-sm">{{ __('setup.code_entry.description') }}</p>
-                </div>
 
-                <form method="POST" action="{{ route('setup') }}" class="space-y-5">
-                    @csrf
+                    <form method="POST" action="{{ route('setup') }}" class="space-y-6">
+                        @csrf
 
-                    <div>
-                        <x-ts-input
-                            label="{{ __('setup.code_entry.code_label') }}"
-                            name="setup_token"
-                            placeholder="{{ __('setup.code_entry.placeholder') }}"
-                            required
-                            autofocus
-                            autocomplete="off"
+                        <div>
+                            <x-ts-input
+                                :label="__('setup.code_entry.code_label').' *'"
+                                name="setup_token"
+                                :placeholder="__('setup.code_entry.placeholder')"
+                                icon="key"
+                                required
+                                autofocus
+                                autocomplete="off"
+                            />
+                        </div>
+
+                        <x-ts-button
+                            type="submit"
+                            :text="__('setup.code_entry.submit')"
+                            icon-right="arrow-right"
+                            class="w-full"
+                            color="primary"
                         />
+
+                        @if ($error)
+                            <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
+                                <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                <span>{{ $error }}</span>
+                            </div>
+                        @elseif ($errors->any())
+                            <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
+                                <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                <span>{{ $errors->first() }}</span>
+                            </div>
+                        @endif
+                    </form>
+
+                    <div class="border-base-content/10 bg-base-200/40 mt-8 rounded-xl border p-4 text-center">
+                        <p class="text-base-content/60 text-xs leading-relaxed">{{ __('setup.code_entry.help') }}</p>
+                        <p class="text-base-content/40 mt-1 text-xs">{{ __('setup.code_entry.expiry_note') }}</p>
                     </div>
-
-                    <x-ts-button
-                        type="submit"
-                        text="{{ __('setup.code_entry.submit') }}"
-                        icon-right="arrow-right"
-                        class="w-full"
-                        color="primary"
-                    />
-
-                    @if ($error)
-                        <div class="bg-error/5 border-error/20 text-error rounded-lg border px-4 py-3 text-sm">
-                            {{ $error }}
-                        </div>
-                    @elseif ($errors->any())
-                        <div class="bg-error/5 border-error/20 text-error rounded-lg border px-4 py-3 text-sm">
-                            {{ $errors->first() }}
-                        </div>
-                    @endif
-                </form>
-
-                <div class="mt-8 text-center">
-                    <p class="text-base-content/40 text-xs leading-relaxed">{{ __('setup.code_entry.help') }}</p>
-                    <p class="text-base-content/40 mt-1 text-xs">{{ __('setup.code_entry.expiry_note') }}</p>
                 </div>
             </div>
         </main>
@@ -105,7 +112,7 @@
                             type="button"
                             x-on:click="showGuide = false"
                             aria-label="{{ __('common.actions.close') }}"
-                            class="btn btn-ghost btn-sm btn-square"
+                            class="text-base-content/50 hover:text-base-content hover:bg-base-200 flex size-8 items-center justify-center rounded-lg transition-colors"
                         >
                             <x-ts-icon name="x-mark" class="size-5" />
                         </button>
