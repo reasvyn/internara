@@ -32,6 +32,8 @@ Internara replaces those workflows with:
   logs, QR-verifiable certificates
 - **Instant reporting** — grade cards compiled in seconds, certificate verification via QR scan
 - **Data sovereignty** — self-hosted, no cloud dependency, works on a school LAN without internet
+- **Operational foundation** — backup, queue, maintenance, GDPR, archiving, observability, and
+  recovery workflows are built into the platform
 
 Deep-dive: [problem analysis & personas](docs/project-vision.md) · [design philosophy](docs/philosophy.md)
 
@@ -100,13 +102,17 @@ Open the signed URL printed by `setup:install` and complete the 6-step setup wiz
 
 ## Architecture
 
-Action-based MVC with vertical slicing: 17 business modules each own their complete stack
-(Models, Actions, Livewire, Events, Policies) colocated under `app/{Module}/`. Every mutation
+Action-based MVC with vertical slicing: 19 modules (17 business modules plus UI and Core) own their complete stack
+(Models, Actions, Livewire, Events, Policies) colocated under `app/Modules/`. Every mutation
 follows one path:
 
-```
+```text
 Livewire → Command Action → Entity (business rules) → Model → DB
 ```
+
+The platform includes module boundaries, layer rules, and a complete dependency map maintained in
+[`docs/architecture.md`](docs/architecture.md) and
+[`docs/refs/modules/index.md`](docs/refs/modules/index.md).
 
 Key patterns: Action Triad (Command/Read/Process), immutable Entities carrying business rules,
 DTO boundaries between layers, enum-driven state machines. Full model, layer diagram, and pattern
@@ -152,6 +158,9 @@ composer run test      # Full Pest test suite
 composer run quality   # Lint + tests
 vendor/bin/pint --dirty --format agent  # Code style fixer
 ```
+
+Architecture and documentation scanners remain available through `composer run arch`; their findings
+should be reviewed before release.
 
 Pest 4 with feature + unit coverage per Action, Laravel Pint. Architecture
 scanner toolkit (`tools/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
