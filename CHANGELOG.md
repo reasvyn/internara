@@ -4,6 +4,22 @@ All notable changes to Internara are documented here. This file follows [Keep a 
 
 ## [Unreleased]
 
+## [0.16.0-alpha.2] - 2026-09-26
+
+Internara v0.16.0-alpha.2 delivers a modern UI revamp for the setup wizard and activation
+flows, design system token alignment across all form inputs, and complete synchronization
+of technical documentation with TallStackUI v4 prefix and design token standards.
+
+### Added
+- `feat(setup)`: modern clean UI revamp for setup wizard and layout with ambient glow, glassmorphism header, and sleek progress stepper
+- `feat(setup)`: enhanced token entry card with responsive padding, icons, and design system tokens
+- `docs(ui-ux)`: form input design system specifications and token usage guidelines in `design-system.md`
+
+### Changed
+- `feat(setup)`: aligned all setup wizard form inputs (`admin-step`, `school-step`, `department-step`, `finalize-step`) with design system tokens
+- `docs(ui-ux)`: synchronized UI/UX guides (`tallstackui.md`, `integration.md`, `livewire.md`, `index.md`) with TallStackUI v4 prefix (`x-ts-*`)
+- `docs(modules)`: synchronized entity tables and contracts across module technical references
+
 ## [0.16.0-alpha.1] - 2026-09-24
 
 Internara v0.16.0-alpha.1 marks the first pre-release deployment to the staging VPS
