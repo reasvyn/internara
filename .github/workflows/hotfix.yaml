@@ -5,10 +5,10 @@ name: Hotfix Deploy
 # production patches.
 #
 #   Trigger: push to hotfix (or manual dispatch)
-#   Flow:    lint → deploy VPS (VERSION_TAG=hotfix)
+#   Flow:    lint → deploy VPS (VERSION_TAG=hotfix) → sync staging branch
 #
 # Security:
-#   - Minimal permissions (contents:read)
+#   - Minimal permissions (contents:read default, contents:write scoped to sync-staging)
 #   - Concurrency serialized (no parallel hotfix deploys)
 #   - Deploys only from the hotfix branch (branch filter + ref check)
 #   - SSH deploy uses pinned action, no secrets in logs, strict host
@@ -140,3 +140,37 @@ jobs:
         run: |
           echo "::error::Hotfix deploy failed for ${{ github.sha }}"
           echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \$HOME/apps/internara && bash .github/scripts/rollback.sh'"
+
+  sync-staging:
+    name: Sync hotfix to staging branch
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: github.ref == 'refs/heads/hotfix'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync hotfix into staging
+        run: |
+          set -euo pipefail
+          echo "==> Fetching origin branches"
+          git fetch origin staging:staging hotfix:hotfix
+          git checkout staging
+          echo "==> Merging hotfix into staging"
+          git merge hotfix -m "chore(sync): merge hotfix into staging" --no-edit || {
+            echo "::error::Merge conflict detected when merging hotfix into staging. Manual resolution required."
+            exit 1
+          }
+          echo "==> Pushing updated staging branch"
+          git push origin staging
+          echo "✓ Staging branch successfully synchronized with hotfix"
