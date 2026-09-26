@@ -18,7 +18,10 @@ describe('52O1I: LangSwitch livewire component', function (): void {
             ->assertSet('locale', 'en')
             ->assertSee('EN')
             ->assertSee(__('common.language.indonesian'))
-            ->assertSee(__('common.language.english'));
+            ->assertSee(__('common.language.english'))
+            ->assertSeeHtml('wire:click="changeLocale(\'id\')"')
+            ->assertSeeHtml('wire:click="changeLocale(\'en\')"')
+            ->assertDontSee('x-teleport');
     });
 
     test('52O1I-UC-BRAND-004: changes locale, sets cookie and session, and redirects safely', function (): void {
