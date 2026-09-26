@@ -9,6 +9,11 @@ ROLLBACK_ON_FAILURE="${ROLLBACK_ON_FAILURE:-true}"
 
 cd "$DEPLOY_DIR"
 
+# Serialize deployments on this host to prevent Docker container recreation conflicts
+LOCK_FILE="${TMPDIR:-/tmp}/internara-deploy.lock"
+exec 200>"$LOCK_FILE"
+flock -w 600 200 || { echo "==> Failed to acquire deploy lock after 600s" >&2; exit 1; }
+
 # Always use version tag for reproducible deploys.
 # If VERSION_TAG is set (from workflow), ensure GIT_URL points to that tag.
 if [ -n "$VERSION_TAG" ]; then
