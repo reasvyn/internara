@@ -27,9 +27,17 @@ class LangSwitch extends Component
 
         Locale::set($locale);
 
-        $this->dispatch('language-changed');
+        $this->dispatch('language-changed', locale: $locale);
 
-        $this->redirect(request()->fullUrl(), navigate: true);
+        $targetUrl = request()->header('referer');
+        if (! $targetUrl || str_contains($targetUrl, '/livewire/update')) {
+            $targetUrl = url()->previous();
+        }
+        if (! $targetUrl || str_contains($targetUrl, '/livewire/update')) {
+            $targetUrl = route('home');
+        }
+
+        $this->redirect($targetUrl, navigate: false);
     }
 
     public function render(): View

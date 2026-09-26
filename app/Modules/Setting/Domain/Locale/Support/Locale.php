@@ -23,6 +23,11 @@ final class Locale
         }
 
         Cookie::queue(Cookie::forever('locale', $locale));
+
+        if (session()->isStarted()) {
+            session()->put('locale', $locale);
+        }
+
         App::setLocale($locale);
 
         return true;
@@ -30,21 +35,33 @@ final class Locale
 
     public static function current(): string
     {
+        if (session()->isStarted()) {
+            $sessionLocale = session()->get('locale');
+            if (is_string($sessionLocale) && isset(self::SUPPORTED_LOCALES[$sessionLocale])) {
+                return $sessionLocale;
+            }
+        }
+
         $locale = Cookie::get('locale');
 
-        if (isset(self::SUPPORTED_LOCALES[$locale])) {
+        if (is_string($locale) && isset(self::SUPPORTED_LOCALES[$locale])) {
             return $locale;
+        }
+
+        $cookieFromRequest = request()->cookie('locale');
+        if (is_string($cookieFromRequest) && isset(self::SUPPORTED_LOCALES[$cookieFromRequest])) {
+            return $cookieFromRequest;
         }
 
         $stored = setting('default_locale');
 
-        if (isset(self::SUPPORTED_LOCALES[$stored])) {
-            return (string) $stored;
+        if (is_string($stored) && isset(self::SUPPORTED_LOCALES[$stored])) {
+            return $stored;
         }
 
         $config = config('app.locale', self::DEFAULT_LOCALE);
 
-        return isset(self::SUPPORTED_LOCALES[$config]) ? $config : self::DEFAULT_LOCALE;
+        return (is_string($config) && isset(self::SUPPORTED_LOCALES[$config])) ? $config : self::DEFAULT_LOCALE;
     }
 
     public static function all(): array

@@ -14,8 +14,23 @@ class SetLocaleMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->cookie('locale') ?? Locale::current();
-        if (! Locale::isSupported($locale)) {
+        $locale = null;
+
+        if ($request->hasSession() && $request->session()->has('locale')) {
+            $sessionLocale = $request->session()->get('locale');
+            if (is_string($sessionLocale) && Locale::isSupported($sessionLocale)) {
+                $locale = $sessionLocale;
+            }
+        }
+
+        if ($locale === null) {
+            $cookieLocale = $request->cookie('locale');
+            if (is_string($cookieLocale) && Locale::isSupported($cookieLocale)) {
+                $locale = $cookieLocale;
+            }
+        }
+
+        if ($locale === null) {
             $locale = Locale::current();
         }
 

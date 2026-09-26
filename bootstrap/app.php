@@ -52,6 +52,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->preventRequestForgery(except: ['setup']);
 
+        $middleware->encryptCookies(except: ['locale']);
+
         $middleware->web(
             append: [
                 SecurityHeadersMiddleware::class,
@@ -71,11 +73,13 @@ return Application::configure(basePath: dirname(__DIR__))
                 default => 500,
             };
 
-            $locale = null;
-            try {
-                $locale = app('encrypter')->decrypt($request->cookie('locale'), false);
-            } catch (Throwable) {
-                $locale = Cookie::get('locale');
+            $locale = $request->cookie('locale') ?? Cookie::get('locale');
+            if (is_string($locale) && ! in_array($locale, ['en', 'id'], true)) {
+                try {
+                    $locale = app('encrypter')->decrypt($locale, false);
+                } catch (Throwable) {
+                    $locale = null;
+                }
             }
 
             if (is_string($locale) && in_array($locale, ['en', 'id'], true)) {
