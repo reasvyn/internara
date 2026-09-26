@@ -25,13 +25,13 @@
                 <div>
                     <p class="text-base-content text-sm font-bold">{{ __('setup.wizard.system_requirements') }}</p>
                     <p class="text-base-content/60 text-xs">
-                        {{ __('setup.system.pass') }} — Lingkungan server memenuhi seluruh prasyarat instalasi.
+                        {{ __('setup.system.pass') }} — {{ __('setup.wizard.all_requirements_met') }}
                     </p>
                 </div>
             </div>
             <span class="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
                 <span class="bg-success size-1.5 animate-pulse rounded-full"></span>
-                100% Siap
+                {{ __('setup.wizard.fully_ready') }}
             </span>
         </div>
     @endif

@@ -9,10 +9,7 @@
         <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border">
             <x-ts-icon name="academic-cap" class="size-4" />
         </div>
-        <p class="text-base-content/70 pt-0.5">
-            Informasi sekolah ini akan digunakan sebagai identitas resmi institusi pada kop surat, laporan magang,
-            sertifikat siswa, dan slip akun pengguna.
-        </p>
+        <p class="text-base-content/70 pt-0.5">{{ __('setup.wizard.school_identity_notice') }}</p>
     </div>
 
     <div class="grid grid-cols-1 gap-5 md:grid-cols-2">

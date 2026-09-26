@@ -41,7 +41,7 @@
                 <h4 class="text-base-content text-sm font-bold">{{ __('setup.wizard.summary') }}</h4>
             </div>
             <span class="border-base-content/10 bg-base-100 text-base-content/60 rounded-full border px-2.5 py-0.5 font-mono text-[11px] font-semibold">
-                Audit Kesiapan
+                {{ __('setup.wizard.readiness_audit') }}
             </span>
         </div>
 

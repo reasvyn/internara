@@ -3,7 +3,7 @@
         <p class="text-base-content/60 text-sm leading-relaxed">{{ __('setup.guide.intro') }}</p>
 
         <div class="divide-base-content/10 border-base-content/10 bg-base-200/30 divide-y overflow-hidden rounded-2xl border">
-            @foreach (range(1, 6) as $step)
+            @foreach (range(1, 7) as $step)
                 <div class="hover:bg-base-200/50 flex items-start gap-4 p-4 transition-colors">
                     <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border font-mono text-xs font-bold shadow-2xs">
                         {{ $step }}

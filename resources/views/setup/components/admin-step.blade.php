@@ -65,7 +65,7 @@
                 <x-ts-icon name="key" class="size-4" />
             </div>
             <div class="flex-1">
-                <p class="text-base-content/80 mb-0.5 font-semibold">Ketentuan Kata Sandi</p>
+                <p class="text-base-content/80 mb-0.5 font-semibold">{{ __('setup.wizard.password_requirements') }}</p>
                 <p class="text-base-content/60 leading-relaxed">{{ __('setup.wizard.password_hint') }}</p>
             </div>
         </div>
