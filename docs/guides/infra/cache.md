@@ -289,9 +289,9 @@ first requests after deployment.
 - `config/cache-keys.php` — centralized cache key registry
 - `config/event.php` — event → listener mappings for cache invalidation
 - `config/settings.php` — theme cache invalidation keys
-- `app/Modules/Settings/Support/Settings.php` — settings caching layer
-- `app/Modules/Settings/Support/Brand.php` — brand value caching with auto-invalidation
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
+- `app/Modules/Setting/Services/Settings.php` — settings caching layer
+- `app/Modules/Setting/Support/Brand.php` — brand value caching with auto-invalidation
+- `app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 ---

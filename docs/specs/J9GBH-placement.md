@@ -472,7 +472,7 @@ rather than by a confused student.
 ### 6.1 Placement Model
 
 ```php
-// app/Modules/Enrollment/Placement/Models/Placement.php
+// app/Modules/Enrollment/Domain/Placement/Models/Placement.php
 // Table: placements
 // PK: id (uuid v7); FK: company_id → companies (cascade delete)
 // FK: internship_id → internships (cascade delete)
@@ -484,7 +484,7 @@ rather than by a confused student.
 ### 6.2 Placement Entities
 
 ```php
-// app/Modules/Enrollment/Placement/Entities/PlacementCapacity.php
+// app/Modules/Enrollment/Domain/Placement/Entities/PlacementCapacity.php
 final readonly class PlacementCapacity extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -493,7 +493,7 @@ final readonly class PlacementCapacity extends BaseEntity
     public function hasAvailableSlots(): bool; // availableSlots() > 0
 }
 
-// app/Modules/Enrollment/Placement/Entities/PlacementState.php
+// app/Modules/Enrollment/Domain/Placement/Entities/PlacementState.php
 final readonly class PlacementState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -519,7 +519,7 @@ final class DirectPlacementAction extends BaseCommandAction
 ### 6.4 PlacementChangeRequest Model
 
 ```php
-// app/Modules/Enrollment/Placement/Models/PlacementChangeRequest.php
+// app/Modules/Enrollment/Domain/Placement/Models/PlacementChangeRequest.php
 // Table: placement_change_requests
 // Fillable: registration_id, from_placement_id, to_placement_id, reason,
 //   requested_by, status, processed_by, processed_at, rejection_reason

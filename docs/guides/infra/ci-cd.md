@@ -59,40 +59,40 @@ Releases are promoted upward: `development → pre-release (alpha/beta/rc) → r
 GitHub Actions (free, no VPS load). Pre-release stages deploy to `https://staging.internara.web.id` using Docker Compose,
 and a final tag deploys to production only when all production QA gates pass.
 
-### Hotfix branch — pipeline bypass
+### Hotfix branch — automated fast-track deploy
 
-For fixes that must reach production immediately, the **`hotfix` branch** bypasses the tag-driven
-pipeline and deploys directly to the VPS. It skips all CI jobs (and the auto-rollback safety they
-provide), so it is a deliberate, higher-risk shortcut, not the default path.
+For critical fixes that must reach production immediately, pushing to the **`hotfix` branch** triggers
+an automated fast-track workflow (`.github/workflows/hotfix.yaml`). It runs PHP syntax validation, Pint,
+Prettier, and deploys directly to the production VPS with the standard health check and auto-rollback.
+Once deployment succeeds, it automatically merges `hotfix` into `staging` to prevent branch drift.
 
 | Aspect | Tag-driven release | `hotfix` branch |
 | --------------------- | ----------------------------- | ---------------------------------- |
-| Trigger | Push `v*.*.*` tag | `git push origin main:hotfix` |
-| QA | Full staged gates on CI | None (manual local checks only) |
-| Deploy | Via `deploy` job on Actions | Manual SSH + `deploy.sh` |
+| Trigger | Push `v*.*.*` tag | Push to `hotfix` branch |
+| QA | Full staged gates on CI | Fail-fast syntax + lint + format |
+| Deploy | Via `deploy` job in `release.yml` | Via `deploy` job in `hotfix.yaml` |
 | Version bump required | Yes | No |
-| Rollback | Automatic-on-failure | Manual (`rollback.sh` or redeploy) |
-| Use for | Features, releases | Emergency / fast bug fixes |
+| Rollback | Automatic-on-failure | Automatic-on-failure |
+| Staging sync | On next merge/tag | Automatic (`sync-staging` job) |
+| Use for | Features, releases | Emergency production patches |
 
-The full manual flow:
+The automated flow:
 
 ```bash
-# 1. Ship the fix (also on main so the next release carries it)
-git push origin main:hotfix
+# 1. Commit fix and push to hotfix (also keep main in sync)
+git checkout hotfix && git merge main
+git push origin hotfix
 
-# 2. Deploy on the VPS (reset against origin/hotfix, not the stale local branch)
-ssh $VPS_USER@$VPS_HOST 'cd $HOME/apps/internara \
-  && git fetch --all --prune \
-  && git checkout hotfix \
-  && git reset --hard origin/hotfix \
-  && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
-
+# 2. GitHub Actions (.github/workflows/hotfix.yaml) executes automatically:
+#    - Job 'lint': validates syntax and code formatting
+#    - Job 'deploy': SSH deploys hotfix with HEALTH_URL check and auto-rollback
+#    - Job 'sync-staging': automatically merges hotfix into staging and pushes
 ```
 
 Because `deploy.sh` builds from `GIT_URL=...#hotfix` and gates on the 60s `HEALTH_URL` check, a
 successful run guarantees the live site is serving the `hotfix` branch. Local quality gates still
-apply — run `vendor/bin/pint --test`, the targeted Pest tests, and the arch scanners before
-deploying. See [Deployment](deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes) for the
+apply — run `vendor/bin/pint --test`, targeted Pest tests, and arch scanners before
+pushing. See [Deployment](deployment.md#hotfix-branch--automated-fast-track-deploy) for the
 full procedure.
 
 ---

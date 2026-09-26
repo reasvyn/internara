@@ -4,6 +4,19 @@ All notable changes to Internara are documented here. This file follows [Keep a 
 
 ## [Unreleased]
 
+### Added
+- `ci(hotfix)`: automated synchronization of `staging` branch upon push to `hotfix` via GitHub Actions
+- `ci(deploy)`: direct staging VPS deployment pipeline (`staging.yml`) for `https://staging.internara.web.id`
+- `feat(setting)`: authentic country flag emojis (`🇮🇩`, `🇬🇧`) in `LangSwitch` (trigger button and dropdown items) across Livewire and static views
+
+### Changed
+- `ci(deploy)`: serialized host deployments with `flock` and unified `vps-deploy` concurrency group to eliminate concurrent deploy collisions
+- `feat(setup)`: modern clean redesign for wizard step pages, responsive card padding, and sleek progress stepper
+- `fix(setup)`: added smooth window scrolling to top on wizard step changes in `BaseWizard` (`nextStep`, `prevStep`, `goToStep`)
+- `fix(setup)`: standardized TallStackUI button props (`:text`, `icon`, `position="right"`) across all wizard steps
+- `fix(setup)`: parameter fallback for `SetupWizard::runAudit` supporting parameterless execution from Livewire actions
+- `fix(setting)`: resolved language switcher redirect and cookie persistence across locale switching
+
 ## [0.16.0-alpha.2] - 2026-09-26
 
 Internara v0.16.0-alpha.2 delivers a modern UI revamp for the setup wizard and activation

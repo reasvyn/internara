@@ -416,7 +416,7 @@ Non-negotiable precision — precise enough to implement against without asking.
 ### 6.1 AcademicYear Model
 
 ```php
-// app/Modules/Academics/AcademicYear/Models/AcademicYear.php
+// app/Modules/Academic/Domain/AcademicYear/Models/AcademicYear.php
 class AcademicYear extends BaseModel
 {
     #[Fillable(['name', 'start_date', 'end_date', 'is_active'])]
@@ -436,7 +436,7 @@ class AcademicYear extends BaseModel
 ### 6.2 AcademicYearState Entity
 
 ```php
-// app/Modules/Academics/AcademicYear/Entities/AcademicYearState.php
+// app/Modules/Academic/Domain/AcademicYear/Entities/AcademicYearState.php
 final readonly class AcademicYearState extends BaseEntity
 {
     public function __construct(
@@ -458,7 +458,7 @@ final readonly class AcademicYearState extends BaseEntity
 ### 6.3 AcademicYearData DTO
 
 ```php
-// app/Modules/Academics/AcademicYear/Data/AcademicYearData.php
+// app/Modules/Academic/Domain/AcademicYear/Data/AcademicYearData.php
 final readonly class AcademicYearData extends BaseData
 {
     public function __construct(
@@ -506,7 +506,7 @@ All extend `BaseEvent` with `eventName(): string`. The single
 consulting `canBeDeleted()` (FR-YEAR-013).
 
 ```php
-// app/Modules/Academics/AcademicYear/Support/AcademicYearPeriod.php
+// app/Modules/Academic/Domain/AcademicYear/Support/AcademicYearPeriod.php
 final class AcademicYearPeriod
 {
     public static function nameFor(Carbon $date): string;       // "2025/2026"

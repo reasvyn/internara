@@ -496,7 +496,7 @@ dark.
 ### 6.1 Registration Model
 
 ```php
-// app/Modules/Enrollment/Registration/Models/Registration.php
+// app/Modules/Enrollment/Domain/Registration/Models/Registration.php
 // Table: registrations
 // PK: id (uuid, cascade)
 // FK: student_id → users (cascade delete)
@@ -510,7 +510,7 @@ dark.
 ### 6.2 RegistrationState Entity
 
 ```php
-// app/Modules/Enrollment/Registration/Entities/RegistrationState.php
+// app/Modules/Enrollment/Domain/Registration/Entities/RegistrationState.php
 final readonly class RegistrationState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -532,7 +532,7 @@ final readonly class RegistrationState extends BaseEntity
 ### 6.3 RegistrationData DTO
 
 ```php
-// app/Modules/Enrollment/Registration/Data/RegistrationData.php
+// app/Modules/Enrollment/Domain/Registration/Data/RegistrationData.php
 final readonly class RegistrationData extends BaseData
 {
     public function __construct(
@@ -550,26 +550,26 @@ final readonly class RegistrationData extends BaseData
 ### 6.4 Registration Actions
 
 ```php
-// app/Modules/Enrollment/Registration/Actions/ReadRegistrationAvailabilityAction.php
+// app/Modules/Enrollment/Domain/Registration/Actions/ReadRegistrationAvailabilityAction.php
 final class ReadRegistrationAvailabilityAction extends BaseReadAction
 {
     public function execute(): array;
     // Returns: ['status' => 'not_configured'|'open'|'upcoming'|'closed']
 }
 
-// app/Modules/Enrollment/Registration/Actions/RegisterInternshipAction.php
+// app/Modules/Enrollment/Domain/Registration/Actions/RegisterInternshipAction.php
 final class RegisterInternshipAction extends BaseCommandAction
 {
     public function execute(RegistrationData $data, User $student): Registration;
 }
 
-// app/Modules/Enrollment/Registration/Actions/VerifyRegistrationAction.php
+// app/Modules/Enrollment/Domain/Registration/Actions/VerifyRegistrationAction.php
 final class VerifyRegistrationAction extends BaseCommandAction
 {
     public function execute(Registration $registration, Placement $placement, array $mentors = []): Registration;
 }
 
-// app/Modules/Enrollment/Registration/Actions/UploadRegistrationDocumentAction.php
+// app/Modules/Enrollment/Domain/Registration/Actions/UploadRegistrationDocumentAction.php
 final class UploadRegistrationDocumentAction extends BaseCommandAction
 {
     public function execute(Registration $registration, string $requiredDocumentId, UploadedFile $file): RegistrationDocument;
@@ -579,7 +579,7 @@ final class UploadRegistrationDocumentAction extends BaseCommandAction
 ### 6.5 RegistrationDocumentStatus Enum
 
 ```php
-// app/Modules/Enrollment/Registration/Enums/RegistrationDocumentStatus.php
+// app/Modules/Enrollment/Domain/Registration/Enums/RegistrationDocumentStatus.php
 enum RegistrationDocumentStatus: string implements LabelEnum, StatusEnum
 {
     case PENDING = 'pending';
@@ -594,7 +594,7 @@ enum RegistrationDocumentStatus: string implements LabelEnum, StatusEnum
 ### 6.6 Events
 
 ```php
-// app/Modules/Enrollment/Registration/Events/StudentRegistered.php
+// app/Modules/Enrollment/Domain/Registration/Events/StudentRegistered.php
 // Dispatched by: RegisterInternshipAction
 // Listener: ClearDashboardOnRegistration (clears dashboard cache)
 ```

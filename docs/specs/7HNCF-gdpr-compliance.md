@@ -222,7 +222,7 @@ Strict typing is declared on every compliance class, and mass assignment flows o
 ### 6.1 Deletion-Type Enum
 
 ```php
-// app/Modules/SysAdmin/Observability/GdprDeletionLog/Enums/GdprDeletionType.php
+// app/Modules/SysAdmin/Domain/Observability/GdprDeletionLog/Enums/GdprDeletionType.php
 enum GdprDeletionType: string implements LabelEnum
 {
     case ANONYMIZATION      = 'anonymization';
@@ -236,7 +236,7 @@ enum GdprDeletionType: string implements LabelEnum
 ### 6.2 Log-State Entity
 
 ```php
-// app/Modules/SysAdmin/Observability/GdprDeletionLog/Entities/GdprDeletionLogState.php
+// app/Modules/SysAdmin/Domain/Observability/GdprDeletionLog/Entities/GdprDeletionLogState.php
 final readonly class GdprDeletionLogState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -251,7 +251,7 @@ final readonly class GdprDeletionLogState extends BaseEntity
 ### 6.3 Deletion-Log Model
 
 ```php
-// app/Modules/SysAdmin/Observability/GdprDeletionLog/Models/GdprDeletionLog.php
+// app/Modules/SysAdmin/Domain/Observability/GdprDeletionLog/Models/GdprDeletionLog.php
 #[Fillable(['user_id', 'user_email', 'deletion_type', 'reason', 'metadata_snapshot', 'deleted_at', 'deleter_id'])]
 class GdprDeletionLog extends BaseModel
 {
@@ -281,7 +281,7 @@ Retained columns: `id` (UUID PK), `user_id` (orphaned UUID of the erased user), 
 ### 6.5 Erasure Action and Its Callers
 
 ```php
-// app/Modules/SysAdmin/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php
+// app/Modules/SysAdmin/Domain/Observability/GdprDeletionLog/Actions/DeleteUserGdprAction.php
 final class DeleteUserGdprAction extends BaseCommandAction
 {
     public function execute(

@@ -60,7 +60,7 @@ None — Setup uses Actions and Entities only, no persistent Eloquent models.
 | `Domain/SetupWizard/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `BaseFormView` |
 | `Domain/SetupWizard/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `BaseFormView` |
 | `Domain/SetupWizard/Livewire/Forms/SuperAdminForm.php` | `SuperAdminForm` | `BaseFormView` |
-| `Domain/SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
+| `Domain/SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `BaseWizard` |
 
 ## Middleware
 

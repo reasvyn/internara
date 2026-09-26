@@ -215,7 +215,7 @@ Every maintenance sentence a human might see, from the notice page to the thresh
 ### 6.2 Health Diagnostic
 
 ```php
-// app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php
+// app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemHealthCommand.php
 class SystemHealthCommand extends Command
 {
     protected $signature = 'system:health {--json : Output results as JSON}';
@@ -226,7 +226,7 @@ class SystemHealthCommand extends Command
 ### 6.3 Cleanup and Pruning
 
 ```php
-// app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php
+// app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemCleanupCommand.php
 class SystemCleanupCommand extends Command
 {
     protected $signature = 'system:cleanup
@@ -251,7 +251,7 @@ class SystemCleanupCommand extends Command
 ### 6.5 Cohort Archival
 
 ```php
-// app/Modules/User/UserManagement/Actions/ArchiveStudentAccountsAction.php
+// app/Modules/User/Domain/UserManagement/Actions/ArchiveStudentAccountsAction.php
 final class ArchiveStudentAccountsAction extends BaseCommandAction
 {
     public function execute(Builder $query): int;   // chunked at 100; returns archived count

@@ -79,7 +79,7 @@ student     → mentee
 This allows policy code to check `$user->role->is(Role::ADMIN)` instead of writing
 `$user->hasRole('super_admin') || $user->hasRole('admin')`.
 
-See `Role::resolvesTo()` and `Role::functionalRolesFor()` in `app/Modules/Auth/Permissions/Enums/Role.php`.
+See `Role::resolvesTo()` and `Role::functionalRolesFor()` in `app/Modules/Auth/Domain/Permission/Enums/Role.php`.
 
 ---
 
@@ -97,7 +97,7 @@ Permissions are checked at three independent layers (Defence in Depth). See the 
 
 ### CheckRoleMiddleware
 
-Route-level role verification at `app/Modules/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php`.
+Route-level role verification at `app/Modules/Auth/Domain/Permission/Http/Middleware/CheckRoleMiddleware.php`.
 After authentication, checks if the user has at least one required role. Pipe-delimited syntax:
 `role:super_admin|admin`. Returns 403 for unauthorized authenticated users, redirects to login for
 guests. Logs unauthorized access attempts.
@@ -144,8 +144,8 @@ See [Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
 
 | Component            | Path                                                           |
 | -------------------- | -------------------------------------------------------------- |
-| Role Enum            | `app/Modules/Auth/Permissions/Enums/Role.php`                          |
-| CheckRoleMiddleware  | `app/Modules/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` |
+| Role Enum            | `app/Modules/Auth/Domain/Permission/Enums/Role.php`                          |
+| CheckRoleMiddleware  | `app/Modules/Auth/Domain/Permission/Http/Middleware/CheckRoleMiddleware.php` |
 | BasePolicy           | `app/Modules/Core/Policies/BasePolicy.php`                             |
 | Gate::before config  | `config/permission.php`                                        |
 | RolePermissionSeeder | `database/seeders/RolePermissionSeeder.php`                    |

@@ -195,9 +195,9 @@ For system-level verification, run `php artisan system:health` and confirm all c
 
 ## Quick References
 
-- `app/Modules/Setup/Console/Commands/SetupInstallCommand.php` — Installer command
-- `app/Modules/Setup/Console/Commands/SetupResetTokenCommand.php` — Token regeneration
-- `app/Modules/Setup/Services/EnvironmentAuditor.php` — Environment audit logic
+- `app/Modules/Setup/Domain/Installation/Console/Commands/SetupInstallCommand.php` — Installer command
+- `app/Modules/Setup/Domain/Installation/Console/Commands/SetupResetTokenCommand.php` — Token regeneration
+- `app/Modules/SysAdmin/Domain/Observability/Services/EnvironmentAuditor.php` — Environment audit logic
 - `.env.example` — Default configuration template
 - [Setup Wizard](setup-wizard.md) — Next step after installation
 - [Post-Setup](post-setup.md) — Configuration after wizard completion

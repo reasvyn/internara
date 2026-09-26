@@ -327,7 +327,7 @@ Created (via Action/Event)
 
 - `app/Modules/Core/Channels/CustomDatabaseChannel.php` — custom database channel
 - `app/*/Notifications/` — notification classes organized by module
-- `app/Modules/User/Notifications/Actions/SendNotificationAction.php` — notification dispatch action
+- `app/Modules/User/Domain/Notify/Actions/SendNotificationAction.php` — notification dispatch action
 - `app/Modules/Core/Contracts/SendsNotifications.php` — notification contract (`execute(NotificationData $data): mixed`)
 - `app/Modules/Core/Channels/Data/NotificationData.php` — notification payload DTO
 - `app/Modules/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning

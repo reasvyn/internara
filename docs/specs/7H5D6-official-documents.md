@@ -304,7 +304,7 @@ Operators experience two speeds and both must feel right: a single letter appear
 ### OfficialDocumentType Enum
 
 ```php
-// app/Modules/Document/Enums/OfficialDocumentType.php
+// app/Modules/Document/Domain/OfficialDocument/Enums/OfficialDocumentType.php
 enum OfficialDocumentType: string implements LabelEnum
 {
     case INTRODUCTION_LETTER = 'introduction_letter';
@@ -335,7 +335,7 @@ enum OfficialDocumentType: string implements LabelEnum
 ### DocumentIssuance Model
 
 ```php
-// app/Modules/Document/Models/DocumentIssuance.php
+// app/Modules/Document/Domain/OfficialDocument/Models/DocumentIssuance.php
 #[Fillable([
     'official_document_type',
     'registration_id',
@@ -373,32 +373,32 @@ class DocumentIssuance extends BaseModel
 ### Action Signatures
 
 ```php
-// app/Modules/Document/Actions/GenerateOfficialDocumentAction.php
+// app/Modules/Document/Domain/OfficialDocument/Actions/GenerateOfficialDocumentAction.php
 class GenerateOfficialDocumentAction extends BaseCommandAction
 {
     public function execute(GenerateOfficialDocumentData $data): ActionResponse { /* ... */ }
 }
 
-// app/Modules/Document/Actions/BatchGenerateOfficialDocumentsAction.php
+// app/Modules/Document/Domain/OfficialDocument/Actions/BatchGenerateOfficialDocumentsAction.php
 class BatchGenerateOfficialDocumentsAction extends BaseCommandAction
 {
     public function execute(BatchGenerateOfficialDocumentsData $data): ActionResponse { /* ... */ }
 }
 
-// app/Modules/Document/Actions/UpdateDocumentStatusAction.php
+// app/Modules/Document/Domain/OfficialDocument/Actions/UpdateDocumentStatusAction.php
 class UpdateDocumentStatusAction extends BaseCommandAction
 {
     public function execute(UpdateDocumentStatusData $data): ActionResponse { /* ... */ }
 }
 
-// app/Modules/Document/Actions/ReadDocumentChecklistAction.php
+// app/Modules/Document/Domain/OfficialDocument/Actions/ReadDocumentChecklistAction.php
 class ReadDocumentChecklistAction extends BaseReadAction
 {
     // lock-free: no transaction(), no log()
     public function execute(string $registrationId): DocumentChecklistData { /* ... */ }
 }
 
-// app/Modules/Document/Actions/GenerateLetterNumberAction.php
+// app/Modules/Document/Domain/OfficialDocument/Actions/GenerateLetterNumberAction.php
 class GenerateLetterNumberAction extends BaseCommandAction
 {
     public function execute(GenerateLetterNumberData $data): ActionResponse { /* ... */ }

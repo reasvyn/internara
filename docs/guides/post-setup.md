@@ -107,7 +107,7 @@ For system-level verification, run `php artisan system:health` and confirm all c
 
 ## Quick References
 
-- `app/Modules/Settings/` — Settings CRUD and observer
+- `app/Modules/Setting/` — Settings CRUD and observer
 - `app/Modules/SysAdmin/Console/Commands/` — CLI commands for provisioning
 - [Installation](installation.md) — CLI provisioning
 - [Setup Wizard](setup-wizard.md) — Browser-based initial config

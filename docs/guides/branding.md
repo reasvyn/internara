@@ -122,11 +122,11 @@ Sans finishes loading.
 
 | Component                        | Path                                      |
 | -------------------------------- | ----------------------------------------- |
-| `brand()` / `app_info()` helpers | `app/Modules/Settings/Support/helpers.php`        |
-| Brand resolver                   | `app/Modules/Settings/Support/Brand.php`          |
-| Theme (color computation)        | `app/Modules/Settings/Theme/Support/Theme.php`    |
+| `brand()` / `app_info()` helpers | `app/Modules/Setting/Support/helpers.php`        |
+| Brand resolver                   | `app/Modules/Setting/Support/Brand.php`          |
+| Theme (color computation)        | `app/Modules/Setting/Domain/Theme/Support/Theme.php`    |
 | Color utility                    | `app/Modules/Core/Support/Color.php`              |
-| Admin branding form              | `app/Modules/Settings/Livewire/SystemSetting.php` |
+| Admin branding form              | `app/Modules/Setting/Livewire/SystemSetting.php` |
 | Color presets config             | `config/settings.php`                     |
 | Font files                       | `resources/fonts/`                        |
 | CSS entry point                  | `resources/css/app.css`                   |

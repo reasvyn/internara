@@ -628,7 +628,7 @@ system. Mirroring is verified, not assumed.
 ### 6.1 GenerateAccountSlipAction
 
 ```php
-// app/Modules/User/UserManagement/Actions/GenerateAccountSlipAction.php
+// app/Modules/User/Domain/UserManagement/Actions/GenerateAccountSlipAction.php
 final class GenerateAccountSlipAction extends BaseCommandAction
 {
     private const int CARD_W = 241; // mm
@@ -649,7 +649,7 @@ final class GenerateAccountSlipAction extends BaseCommandAction
 ### 6.2 DownloadsAccountSlips Trait
 
 ```php
-// app/Modules/User/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php
+// app/Modules/User/Domain/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php
 trait DownloadsAccountSlips
 {
     public bool $showAccountSlip = false;
@@ -680,7 +680,7 @@ final class AccountSlipController
 ### 6.4 ActivationCodeNotification
 
 ```php
-// app/Modules/User/UserManagement/Notifications/ActivationCodeNotification.php
+// app/Modules/User/Domain/UserManagement/Notifications/ActivationCodeNotification.php
 class ActivationCodeNotification extends Notification
 {
     public function __construct(public readonly User $user, public readonly string $code);

@@ -500,47 +500,38 @@ on a 60s health check against `HEALTH_URL` (`https://staging.internara.web.id` f
 Only the workflow file and the credentials-free deploy script are committed here; production and
 staging secrets live in GitHub Actions secrets, never in the repo.
 
-### Hotfix branch — pipeline bypass for fast fixes
+### Hotfix branch — automated fast-track deploy
 
 The tag-driven pipeline enforces full QA before production, which is right for ordinary releases but
-too slow when a bug needs to reach the live site immediately. For that case Internara keeps a **`hotfix`
-branch** that bypasses the pipeline entirely and deploys directly to the VPS in one command — no tag,
-no CI jobs, no version bump.
+takes several minutes when a critical bug needs to reach the live site immediately. For that case Internara
+provides an automated **`hotfix` workflow** (`.github/workflows/hotfix.yaml`) that fast-tracks the deploy
+directly to the production VPS — with automated syntax checks, code formatting, health-check verification,
+auto-rollback, and automatic synchronization into the `staging` branch.
 
-> **When to use `hotfix`:** a fix that must reach production *now* (e.g. a live-site outage or a
+> **When to use `hotfix`:** a critical fix that must reach production *now* (e.g. a live-site outage or a
 > regression blocking real users). **When NOT to use it:** for features, refactors, or anything that
 > should pass the staged QA gates — those belong on `main` and a regular `v*.*.*` release.
 
 The flow:
 
-1. **Commit the fix on `main`** (or any branch) and push it to the `hotfix` branch. `git push` a
-   non-merge fast-forward keeps `hotfix` aligned with `main`:
+1. **Commit the fix on `main`** and merge to `hotfix`:
 
    ```bash
-   git push origin main:hotfix
+   git checkout hotfix && git merge main
+   git push origin hotfix
    ```
 
-2. **On the VPS**, fetch, checkout `hotfix`, and reset hard against the *remote* branch (the local
-   `hotfix` can be stale after a fetch), then run the deploy script with `VERSION_TAG=hotfix`:
+2. **GitHub Actions executes automatically:**
+   - **`lint`**: Validates PHP syntax, Pint formatting, and Prettier assets.
+   - **`deploy`**: Deploys to the production VPS via SSH with `VERSION_TAG=hotfix` and health check.
+   - **`sync-staging`**: Merges `hotfix` into `staging` and pushes to `origin/staging` to prevent branch drift.
 
-   ```bash
-   ssh your-vps-user@your-vps 'cd $HOME/apps/internara \
-     && git fetch --all --prune \
-     && git checkout hotfix \
-     && git reset --hard origin/hotfix \
-     && VERSION_TAG=hotfix bash .github/scripts/deploy.sh'
-   ```
+3. **Verify:**
+   `deploy.sh` reports success once `HEALTH_URL` responds 200 within 60s. Auto-rollback kicks in if the health check fails.
 
-3. **Verify** the health gate (`Deploy OK: ... HTTP 200, healthy body`) — `deploy.sh` only reports
-   success once `HEALTH_URL` responds 200 within 60s.
-
-`deploy.sh` builds from `GIT_URL=...git#hotfix`, so the rebuilt image always reflects the current
-`hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is created. Because the fix is also
-committed to `main`, it is picked up by the next normal release — keep `main` and `hotfix` in sync by
-always pushing the same commit to both.
-
-> **Caveat:** the hotfix path intentionally skips CI. Run at least the targeted tests and the arch
-> scanners locally before deploying (see [CI/CD](ci-cd.md#local-quality-commands)).
+Because `deploy.sh` builds from `GIT_URL=...git#hotfix`, the rebuilt image always reflects the current
+`hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is required. Because the fix is also
+committed to `main` and automatically merged to `staging`, all branches remain in sync.
 
 ### Low-memory profile (1 GB RAM VPS)
 

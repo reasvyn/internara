@@ -280,7 +280,7 @@ The most expensive grade incident on record was a coordinator presenting draft n
 ### Report Model
 
 ```php
-// app/Modules/Reports/Models/Report.php
+// app/Modules/Report/Domain/StudentReport/Models/Report.php
 #[Fillable([
     'registration_id',
     'supervisor_score',
@@ -315,7 +315,7 @@ class Report extends BaseModel
 ### ReportStatus Enum
 
 ```php
-// app/Modules/Reports/Enums/ReportStatus.php
+// app/Modules/Report/Domain/StudentReport/Enums/ReportStatus.php
 enum ReportStatus: string implements LabelEnum
 {
     case DRAFT = 'draft';
@@ -336,7 +336,7 @@ enum ReportStatus: string implements LabelEnum
 ### Data Shapes
 
 ```php
-// app/Modules/Reports/Data/CreateReportData.php
+// app/Modules/Report/Domain/StudentReport/Data/CreateReportData.php
 final readonly class CreateReportData extends BaseData
 {
     public function __construct(public string $registrationId) {}
@@ -346,26 +346,26 @@ final readonly class CreateReportData extends BaseData
 ### Action Signatures
 
 ```php
-// app/Modules/Reports/Actions/CreateReportAction.php
+// app/Modules/Report/Domain/StudentReport/Actions/CreateReportAction.php
 class CreateReportAction extends BaseCommandAction
 {
     public function execute(CreateReportData $data): ActionResponse { /* ... */ }
 }
 
-// app/Modules/Reports/Actions/ReadReportAggregateAction.php
+// app/Modules/Report/Domain/StudentReport/Actions/ReadReportAggregateAction.php
 class ReadReportAggregateAction extends BaseReadAction
 {
     // lock-free: no transaction(), no log()
     public function execute(string $registrationId): ReportAggregateData { /* ... */ }
 }
 
-// app/Modules/Reports/Actions/CalculateFinalGradeAction.php
+// app/Modules/Report/Domain/StudentReport/Actions/CalculateFinalGradeAction.php
 class CalculateFinalGradeAction extends BaseCommandAction
 {
     public function execute(Report $report): ActionResponse { /* ... */ }
 }
 
-// app/Modules/Reports/Actions/FinalizeReportAction.php
+// app/Modules/Report/Domain/StudentReport/Actions/FinalizeReportAction.php
 class FinalizeReportAction extends BaseCommandAction
 {
     public function execute(Report $report, string $finalizedBy): ActionResponse { /* ... */ }
@@ -375,21 +375,21 @@ class FinalizeReportAction extends BaseCommandAction
 ### Events & Observer
 
 ```php
-// app/Modules/Reports/Events/GradeCalculated.php
+// app/Modules/Report/Domain/StudentReport/Events/GradeCalculated.php
 class GradeCalculated extends BaseEvent
 {
     public string $eventName = 'report.grade_calculated';
     public function __construct(public Report $report) {}
 }
 
-// app/Modules/Reports/Events/ReportFinalized.php
+// app/Modules/Report/Domain/StudentReport/Events/ReportFinalized.php
 class ReportFinalized extends BaseEvent
 {
     public string $eventName = 'report.finalized';
     public function __construct(public Report $report) {}
 }
 
-// app/Modules/Reports/Observers/ReportObserver.php
+// app/Modules/Report/Domain/StudentReport/Observers/ReportObserver.php
 class ReportObserver
 {
     public function saved(Report $report): void

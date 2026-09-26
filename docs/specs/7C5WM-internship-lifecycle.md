@@ -651,7 +651,7 @@ list. The former costs the team time forever.
 ### 6.1 InternshipStatus Enum
 
 ```php
-// app/Modules/Program/Internship/Enums/InternshipStatus.php
+// app/Modules/Program/Domain/Internship/Enums/InternshipStatus.php
 enum InternshipStatus: string implements LabelEnum, StatusEnum
 {
     case DRAFT = 'draft';
@@ -672,7 +672,7 @@ enum InternshipStatus: string implements LabelEnum, StatusEnum
 ### 6.2 Internship Model
 
 ```php
-// app/Modules/Program/Internship/Models/Internship.php
+// app/Modules/Program/Domain/Internship/Models/Internship.php
 class Internship extends BaseModel
 {
     // #[Fillable]: academic_year_id, name, start_date, end_date, description,
@@ -688,7 +688,7 @@ class Internship extends BaseModel
 ### 6.3 InternshipState Entity
 
 ```php
-// app/Modules/Program/Internship/Entities/InternshipState.php
+// app/Modules/Program/Domain/Internship/Entities/InternshipState.php
 final readonly class InternshipState extends BaseEntity
 {
     public int $placementCount;
@@ -702,7 +702,7 @@ final readonly class InternshipState extends BaseEntity
 ### 6.4 InternshipPeriod Entity
 
 ```php
-// app/Modules/Program/Internship/Entities/InternshipPeriod.php
+// app/Modules/Program/Domain/Internship/Entities/InternshipPeriod.php
 final readonly class InternshipPeriod extends BaseEntity
 {
     public ?InternshipStatus $status;
@@ -725,7 +725,7 @@ final readonly class InternshipPeriod extends BaseEntity
 ### 6.5 InternshipData DTO
 
 ```php
-// app/Modules/Program/Internship/Data/InternshipData.php
+// app/Modules/Program/Domain/Internship/Data/InternshipData.php
 final readonly class InternshipData extends BaseData
 {
     public function __construct(
@@ -744,37 +744,37 @@ final readonly class InternshipData extends BaseData
 ### 6.6 Actions
 
 ```php
-// app/Modules/Program/Internship/Actions/CreateInternshipAction.php
+// app/Modules/Program/Domain/Internship/Actions/CreateInternshipAction.php
 final class CreateInternshipAction extends BaseCommandAction
 {
     public function execute(InternshipData $data): Internship;
 }
 
-// app/Modules/Program/Internship/Actions/UpdateInternshipAction.php
+// app/Modules/Program/Domain/Internship/Actions/UpdateInternshipAction.php
 final class UpdateInternshipAction extends BaseCommandAction
 {
     public function execute(Internship $internship, InternshipData $data): Internship;
 }
 
-// app/Modules/Program/Internship/Actions/DeleteInternshipAction.php
+// app/Modules/Program/Domain/Internship/Actions/DeleteInternshipAction.php
 final class DeleteInternshipAction extends BaseCommandAction
 {
     public function execute(Internship $internship): void;
 }
 
-// app/Modules/Program/Internship/Actions/BatchUpdateInternshipStatusAction.php
+// app/Modules/Program/Domain/Internship/Actions/BatchUpdateInternshipStatusAction.php
 final class BatchUpdateInternshipStatusAction extends BaseCommandAction
 {
     public function execute(Builder $query, InternshipStatus $status): int;
 }
 
-// app/Modules/Program/Internship/Actions/ReadCloseReadinessAction.php
+// app/Modules/Program/Domain/Internship/Actions/ReadCloseReadinessAction.php
 final class ReadCloseReadinessAction extends BaseReadAction
 {
     public function execute(Internship $internship): array;
 }
 
-// app/Modules/Program/Internship/Actions/CloseProgramProcess.php
+// app/Modules/Program/Domain/Internship/Actions/CloseProgramProcess.php
 final class CloseProgramProcess extends BaseProcessAction
 {
     public function execute(Internship $internship): ActionResponse;
@@ -784,7 +784,7 @@ final class CloseProgramProcess extends BaseProcessAction
 ### 6.7 Validation Rule
 
 ```php
-// app/Modules/Program/Internship/Rules/OpenForRegistration.php
+// app/Modules/Program/Domain/Internship/Rules/OpenForRegistration.php
 final class OpenForRegistration implements ValidationRule
 {
     // Uses InternshipPeriod entity to validate registration eligibility
@@ -794,10 +794,10 @@ final class OpenForRegistration implements ValidationRule
 ### 6.8 Events and Listeners
 
 ```php
-// app/Modules/Program/Internship/Events/InternshipCreated.php
-// app/Modules/Program/Internship/Events/InternshipStatusBatchUpdated.php
-// app/Modules/Program/Internship/Events/ProgramArchived.php
-// app/Modules/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php
+// app/Modules/Program/Domain/Internship/Events/InternshipCreated.php
+// app/Modules/Program/Domain/Internship/Events/InternshipStatusBatchUpdated.php
+// app/Modules/Program/Domain/Internship/Events/ProgramArchived.php
+// app/Modules/Program/Domain/Internship/Listeners/NotifyAdminsInternshipCreated.php
 ```
 
 ### 6.9 Routes
@@ -815,10 +815,10 @@ Route::prefix('admin')
 ### 6.10 Livewire Components
 
 ```php
-// app/Modules/Program/Internship/Livewire/InternshipManager.php
+// app/Modules/Program/Domain/Internship/Livewire/InternshipManager.php
 // Features: CRUD, search, filter, CSV import/export, batch close, pre-close readiness check UI
 
-// app/Modules/Program/Internship/Livewire/Forms/InternshipForm.php
+// app/Modules/Program/Domain/Internship/Livewire/Forms/InternshipForm.php
 ```
 
 ---

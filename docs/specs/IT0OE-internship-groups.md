@@ -477,7 +477,7 @@ operability standard.
 ### 6.1 InternshipGroupRole Enum
 
 ```php
-// app/Modules/Program/InternshipGroup/Enums/InternshipGroupRole.php
+// app/Modules/Program/Domain/InternshipGroup/Enums/InternshipGroupRole.php
 enum InternshipGroupRole: string implements LabelEnum
 {
     case STUDENT = 'student';
@@ -491,7 +491,7 @@ enum InternshipGroupRole: string implements LabelEnum
 ### 6.2 InternshipGroup Model
 
 ```php
-// app/Modules/Program/InternshipGroup/Models/InternshipGroup.php
+// app/Modules/Program/Domain/InternshipGroup/Models/InternshipGroup.php
 #[Fillable(['name', 'internship_id', 'placement_id', 'description', 'is_active'])]
 class InternshipGroup extends BaseModel
 {
@@ -505,7 +505,7 @@ class InternshipGroup extends BaseModel
 ### 6.3 InternshipGroupMember Model
 
 ```php
-// app/Modules/Program/InternshipGroup/Models/InternshipGroupMember.php
+// app/Modules/Program/Domain/InternshipGroup/Models/InternshipGroupMember.php
 #[Fillable(['internship_group_id', 'registration_id', 'user_id', 'role', 'joined_at'])]
 class InternshipGroupMember extends BaseModel
 {
@@ -518,7 +518,7 @@ class InternshipGroupMember extends BaseModel
 ### 6.4 InternshipGroupState Entity
 
 ```php
-// app/Modules/Program/InternshipGroup/Entities/InternshipGroupState.php
+// app/Modules/Program/Domain/InternshipGroup/Entities/InternshipGroupState.php
 final readonly class InternshipGroupState extends BaseEntity
 {
     public function __construct(private int $memberCount, private bool $isActive) {}
@@ -533,7 +533,7 @@ final readonly class InternshipGroupState extends BaseEntity
 ### 6.5 InternshipGroupData DTO
 
 ```php
-// app/Modules/Program/InternshipGroup/Data/InternshipGroupData.php
+// app/Modules/Program/Domain/InternshipGroup/Data/InternshipGroupData.php
 final readonly class InternshipGroupData extends BaseData
 {
     public function __construct(
@@ -548,37 +548,37 @@ final readonly class InternshipGroupData extends BaseData
 ### 6.6 Action Signatures
 
 ```php
-// app/Modules/Program/InternshipGroup/Actions/CreateInternshipGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/CreateInternshipGroupAction.php
 final class CreateInternshipGroupAction extends BaseCommandAction
 {
     public function execute(array $data): InternshipGroup;
 }
 
-// app/Modules/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/UpdateInternshipGroupAction.php
 final class UpdateInternshipGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group, array $data): InternshipGroup;
 }
 
-// app/Modules/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/DeleteInternshipGroupAction.php
 final class DeleteInternshipGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group): void;
 }
 
-// app/Modules/Program/InternshipGroup/Actions/AddMemberToGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/AddMemberToGroupAction.php
 final class AddMemberToGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroup $group, array $data): InternshipGroupMember;
 }
 
-// app/Modules/Program/InternshipGroup/Actions/AddMembersToGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/AddMembersToGroupAction.php
 final class AddMembersToGroupAction extends BaseProcessAction
 {
     public function execute(InternshipGroup $group, array $rows): int;
 }
 
-// app/Modules/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php
+// app/Modules/Program/Domain/InternshipGroup/Actions/RemoveMemberFromGroupAction.php
 final class RemoveMemberFromGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroupMember $member): void;
@@ -588,7 +588,7 @@ final class RemoveMemberFromGroupAction extends BaseCommandAction
 ### 6.7 Policy
 
 ```php
-// app/Modules/Program/InternshipGroup/Policies/InternshipGroupPolicy.php
+// app/Modules/Program/Domain/InternshipGroup/Policies/InternshipGroupPolicy.php
 class InternshipGroupPolicy extends BasePolicy
 {
     public function viewAny(?User $user): bool;  // all users

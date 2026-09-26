@@ -226,9 +226,9 @@ See [Branding](../branding.md) for details.
 
 - All configuration files: `config/`
 - Environment template: `.env.example`
-- Settings model: `app/Modules/Settings/Models/Setting.php`
-- Settings resolver: `app/Modules/Settings/Support/Settings.php`
-- Brand resolver: `app/Modules/Settings/Support/Brand.php`
+- Settings model: `app/Modules/Setting/Models/Setting.php`
+- Settings resolver: `app/Modules/Setting/Services/Settings.php`
+- Brand resolver: `app/Modules/Setting/Support/Brand.php`
 - App info (composer.json): `app/Modules/Core/Services/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)
 ---

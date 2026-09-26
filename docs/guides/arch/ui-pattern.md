@@ -160,7 +160,7 @@ Tailwind v4 doctrine: **CSS is the config.** No `tailwind.config.js` exists nor 
 
 What components MUST use: semantic tokens (`bg-primary`, `text-success`, `border-warning`, `bg-info/10`, `bg-base-100`). Generates via `@theme` → utilities (`bg-*`, `text-*`, `border-*`, `fill-*`). OKLCH for semantic colors (`oklch(60% 0.55 250)`) gives perceptually even scales and safe `color-mix()` tints.
 
-**Theming bridge:** `app/Modules/Settings/Theme/Support/Theme.php::cssVariables()` injects inline `<style>` scoped to `html[data-theme='light']` / `html[data-theme='dark']` (light brand → 40% `Color::lighten()` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Components consume `var(--color-primary)` — never `brand('primary')` in CSS. `brand()` is for JS/meta only. New token requires entries in both `light` and `dark` scopes and `Color::isValid()` validation.
+**Theming bridge:** `app/Modules/Setting/Domain/Theme/Support/Theme.php::cssVariables()` injects inline `<style>` scoped to `html[data-theme='light']` / `html[data-theme='dark']` (light brand → 40% `Color::lighten()` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Components consume `var(--color-primary)` — never `brand('primary')` in CSS. `brand()` is for JS/meta only. New token requires entries in both `light` and `dark` scopes and `Color::isValid()` validation.
 
 **Do / Don't:**
 
@@ -236,7 +236,7 @@ Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shi
 - `resources/views/ui/layouts/base.blade.php` + `app.blade.php` + `sidebar.blade.php` + `header.blade.php` — app shell, `Theme::cssVariables()`, skip-link, focus reset
 - `resources/views/ui/components/record-manager.blade.php` — canonical CRUD scaffold (reference for every manager)
 - `resources/js/app.js` — `resolveTheme()`/`applyTheme()` dual-signal dark mode, `livewire:init` locale reload
-- `app/Modules/Settings/Theme/Support/Theme.php` + `app/Modules/Core/Support/Color.php` — runtime branding, contrast (`contrastColor()`), `computeDarkShades()`, `isValid()`
+- `app/Modules/Setting/Domain/Theme/Support/Theme.php` + `app/Modules/Core/Support/Color.php` — runtime branding, contrast (`contrastColor()`), `computeDarkShades()`, `isValid()`
 - `vite.config.js` + `package.json` — Vite 8.1, `@tailwindcss/vite` 4.3, `laravel-vite-plugin`
 - [Tailwind CSS v4.0](https://tailwindcss.com/blog/tailwindcss-v4) — CSS-first, `@theme`, `@source`, `@custom-variant`, `color-mix()`, container queries
 - [Tailwind Theme Variables](https://tailwindcss.com/docs/theme) — `@theme` generation of `bg-*`/`text-*`/`border-*`

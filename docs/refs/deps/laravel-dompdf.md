@@ -29,7 +29,7 @@ wrapper around the **DOMPDF v3.1.6** HTML-to-PDF renderer.
 
 ## How Internara Uses It
 
-- Certificate rendering: `app/Modules/Certification/Certificate/Services/CertificateRenderer.php`,
+- Certificate rendering: `app/Modules/Certification/Domain/Certificate/Services/CertificateRenderer.php`,
   download endpoint in the Certification module controller
 - Official document rendering: `app/Modules/Document/Services/DocumentRenderer.php` +
   `RenderDocumentAction`

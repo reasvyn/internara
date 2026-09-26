@@ -445,7 +445,7 @@ to report it politely; they just leave.
 ### 6.1 AccountApplication Model
 
 ```php
-// app/Modules/Enrollment/AccountApplication/Models/AccountApplication.php
+// app/Modules/Enrollment/Domain/AccountApplication/Models/AccountApplication.php
 // Table: account_applications
 // Fillable: name, email, student_id_number, department_id, form_data (json),
 //           status, processed_by, processed_at, rejection_reason
@@ -457,7 +457,7 @@ to report it politely; they just leave.
 ### 6.2 AccountApplicationStatus Enum
 
 ```php
-// app/Modules/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php
+// app/Modules/Enrollment/Domain/AccountApplication/Enums/AccountApplicationStatus.php
 enum AccountApplicationStatus: string implements LabelEnum, StatusEnum
 {
     case PENDING = 'pending';
@@ -474,7 +474,7 @@ enum AccountApplicationStatus: string implements LabelEnum, StatusEnum
 ### 6.3 Action Signatures
 
 ```php
-// app/Modules/Enrollment/AccountApplication/Actions/ApplyAccountAction.php
+// app/Modules/Enrollment/Domain/AccountApplication/Actions/ApplyAccountAction.php
 final class ApplyAccountAction extends BaseCommandAction
 {
     public function execute(array $data): AccountApplication;
@@ -483,7 +483,7 @@ final class ApplyAccountAction extends BaseCommandAction
     // Transactional on both paths; dispatches AccountApplicationSubmitted event
 }
 
-// app/Modules/Enrollment/AccountApplication/Actions/ApproveAccountApplicationAction.php
+// app/Modules/Enrollment/Domain/AccountApplication/Actions/ApproveAccountApplicationAction.php
 final class ApproveAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin): Registration;
@@ -493,7 +493,7 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
     // → create Registration (active) → dispatch AccountApplicationApproved
 }
 
-// app/Modules/Enrollment/AccountApplication/Actions/RejectAccountApplicationAction.php
+// app/Modules/Enrollment/Domain/AccountApplication/Actions/RejectAccountApplicationAction.php
 final class RejectAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin, string $reason): void;
@@ -505,7 +505,7 @@ final class RejectAccountApplicationAction extends BaseCommandAction
 ### 6.4 Policy
 
 ```php
-// app/Modules/Enrollment/AccountApplication/Policies/AccountApplicationPolicy.php
+// app/Modules/Enrollment/Domain/AccountApplication/Policies/AccountApplicationPolicy.php
 class AccountApplicationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool;                              // admin only
@@ -519,7 +519,7 @@ class AccountApplicationPolicy extends BasePolicy
 ### 6.5 Form Object
 
 ```php
-// app/Modules/Enrollment/AccountApplication/Livewire/Forms/AccountApplicationForm.php
+// app/Modules/Enrollment/Domain/AccountApplication/Livewire/Forms/AccountApplicationForm.php
 class AccountApplicationForm extends Form
 {
     // Fields: name, email, phone, address, national_id_number, student_id_number,

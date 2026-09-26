@@ -804,7 +804,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
 ### 6.2 Account Entity (Transition Owner)
 
 ```php
-// app/Modules/User/Entities/UserAccountState.php (final readonly)
+// app/Modules/User/Domain/Entities/UserAccountState.php (final readonly)
 final readonly class UserAccountState extends BaseEntity
 {
     public static function fromModel(Model $model): static;
@@ -873,7 +873,7 @@ final class RevokeUserActivationTokensAction extends BaseCommandAction
 // Entity bridges: asStudent(), asTeacher(), asSupervisor(), asAdmin(),
 //   asAccountActivation(), asSuperAdminIntegrityRules(), asAccountState()
 
-// app/Modules/User/Profile/Models/Profile.php — extends BaseModel (UUID v7).
+// app/Modules/User/Domain/Profile/Models/Profile.php — extends BaseModel (UUID v7).
 // #[Fillable]: user_id, phone, address, bio, gender, blood_type, pob, dob,
 //   emergency_contact, id_number, national_id_number, competence_field,
 //   employment_status, job_title, internal_notes, department_id, company_id

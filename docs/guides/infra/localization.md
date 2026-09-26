@@ -264,8 +264,8 @@ Before submitting, verify:
 
 - `config/app.php` — `locale`, `fallback_locale`, `available_locales`
 - `config/localization.php` — locale resolution configuration
-- `app/Modules/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — locale detection
-- `app/Modules/Settings/Livewire/LangSwitcher.php` — UI language toggle
+- `app/Modules/Setting/Domain/Locale/Http/Middleware/SetLocaleMiddleware.php` — locale detection
+- `app/Modules/Setting/Domain/Locale/Livewire/LangSwitch.php` — UI language toggle
 - `lang/` — translation files (module-level `{module}.php` and optional submodule `{submodule}.php`)
 - `app/Modules/Core/Contracts/LabelEnum.php` — enum label contract
 - `app/Modules/Core/Contracts/StatusEnum.php` — state machine enum contract

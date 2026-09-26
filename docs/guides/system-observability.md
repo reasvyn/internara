@@ -230,12 +230,12 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 
 ## Code Paths
 
-- `app/Modules/Core/Support/SmartLogger.php` — SmartLogger implementation
+- `app/Modules/Core/Services/SmartLogger.php` — SmartLogger implementation
 - `app/Modules/Core/Support/PiiMasker.php` — PII masking logic
 - `app/Modules/Core/Http/Middleware/LogContextMiddleware.php` — Log context enrichment
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — Health command
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — Cleanup command
-- `app/Modules/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming
+- `app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemHealthCommand.php` — Health command
+- `app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemCleanupCommand.php` — Cleanup command
+- `app/Modules/SysAdmin/Domain/Observability/Console/Commands/SystemCacheWarmCommand.php` — Cache warming
 - `config/pulse.php` — Pulse configuration
 - `config/activitylog.php` — Activity log configuration
 - `config/logging.php` — Logging channel configuration

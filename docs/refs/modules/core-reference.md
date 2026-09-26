@@ -196,7 +196,7 @@ ModuleException (abstract, extends RuntimeException)
 | `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
 | `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                       |
 
-The helpers `setting()` and `brand()` are defined in `app/Modules/Settings/Support/helpers.php`.
+The helpers `setting()` and `brand()` are defined in `app/Modules/Setting/Support/helpers.php`.
 
 ---
 

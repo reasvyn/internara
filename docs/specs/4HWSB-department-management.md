@@ -420,7 +420,7 @@ Non-negotiable precision — precise enough to implement against without asking.
 ### 6.1 Department Model
 
 ```php
-// app/Modules/Academics/Department/Models/Department.php
+// app/Modules/Academic/Department/Models/Department.php
 class Department extends BaseModel
 {
     use HasFactory;
@@ -436,7 +436,7 @@ class Department extends BaseModel
 ### 6.2 DepartmentState Entity
 
 ```php
-// app/Modules/Academics/Department/Entities/DepartmentState.php
+// app/Modules/Academic/Department/Entities/DepartmentState.php
 final readonly class DepartmentState extends BaseEntity
 {
     public function __construct(
@@ -455,7 +455,7 @@ final readonly class DepartmentState extends BaseEntity
 ### 6.3 DepartmentData DTO
 
 ```php
-// app/Modules/Academics/Department/Data/DepartmentData.php
+// app/Modules/Academic/Department/Data/DepartmentData.php
 final readonly class DepartmentData extends BaseData
 {
     public function __construct(
@@ -482,7 +482,7 @@ row (FR-DEPT-013).
 ### 6.5 Policy
 
 ```php
-// app/Modules/Academics/Department/Policies/DepartmentPolicy.php
+// app/Modules/Academic/Department/Policies/DepartmentPolicy.php
 class DepartmentPolicy extends BasePolicy
 {
     public function viewAny(?User $user): bool;                    // true
@@ -498,7 +498,7 @@ class DepartmentPolicy extends BasePolicy
 ### 6.6 Form Object
 
 ```php
-// app/Modules/Academics/Department/Livewire/Forms/DepartmentForm.php
+// app/Modules/Academic/Department/Livewire/Forms/DepartmentForm.php
 class DepartmentForm extends Form
 {
     public ?string $id = null;

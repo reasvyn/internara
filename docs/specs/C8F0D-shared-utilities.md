@@ -82,7 +82,7 @@ A vocational school in Cirebon once received a USB installer from a neighboring 
 
 #### UC-UTIL-003 — Developer Reads Setting / Brand Values
 
-Once the settings infrastructure is seeded, a call like `setting('key')` or `brand('key')` from `app/Modules/Settings/Support/helpers.php` travels a fixed path: the helper resolves the value through the cache-backed, group-scoped contract owned by [settings-infrastructure](YB22J-settings-infrastructure.md), never by querying the `Setting` model directly from another module. This spec asserts only that those two helpers exist and remain the single access vocabulary, so no direct `Setting` reads leak outside the settings module. The behavior itself — caching, grouping, fallbacks — is exercised by the owning spec's tests, which is why this row carries `—` and defers its code-testable consequence to [settings-infrastructure](YB22J-settings-infrastructure.md).
+Once the settings infrastructure is seeded, a call like `setting('key')` or `brand('key')` from `app/Modules/Setting/Support/helpers.php` travels a fixed path: the helper resolves the value through the cache-backed, group-scoped contract owned by [settings-infrastructure](YB22J-settings-infrastructure.md), never by querying the `Setting` model directly from another module. This spec asserts only that those two helpers exist and remain the single access vocabulary, so no direct `Setting` reads leak outside the settings module. The behavior itself — caching, grouping, fallbacks — is exercised by the owning spec's tests, which is why this row carries `—` and defers its code-testable consequence to [settings-infrastructure](YB22J-settings-infrastructure.md).
 
 ---
 
@@ -210,7 +210,7 @@ if (! function_exists('app_info')) {
 ```
 
 > **Note:** QLHDO §7.4 lists three global helpers. `app_info()` (FR-UTIL-002) is contracted
-> here; `setting()` and `brand()` live in `app/Modules/Settings/Support/helpers.php` and are
+> here; `setting()` and `brand()` live in `app/Modules/Setting/Support/helpers.php` and are
 > contracted in [settings-infrastructure](YB22J-settings-infrastructure.md) — see UC-UTIL-003.
 
 ### 6.3 Environment

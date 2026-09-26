@@ -202,11 +202,11 @@ ssh your-vps-user@your-vps 'cd $HOME/apps/internara \
 
 ```
 
-`deploy.sh` reports success only after `HEALTH_URL` responds 200 within 60s. Because the hotfix path
-skips CI, run the local quality gates first — Pint, the targeted Pest tests, and the arch scanners.
-The same `main` commit is picked up by the next normal versioned release, so a hotfix never forks the
-codebase permanently. Full command walkthrough and caveats:
-[Deployment](infra/deployment.md#hotfix-branch--pipeline-bypass-for-fast-fixes), [CI/CD](infra/ci-cd.md#hotfix-branch--pipeline-bypass).
+`deploy.sh` reports success only after `HEALTH_URL` responds 200 within 60s. The automated hotfix workflow
+runs syntax checks, formatting checks, deployment, health verification, auto-rollback, and staging sync.
+Run the local quality gates first — Pint, the targeted Pest tests, and the arch scanners. Full command
+walkthrough and caveats:
+[Deployment](infra/deployment.md#hotfix-branch--automated-fast-track-deploy), [CI/CD](infra/ci-cd.md#hotfix-branch--automated-fast-track-deploy).
 
 ---
 

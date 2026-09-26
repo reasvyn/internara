@@ -100,7 +100,7 @@ DB setting (cached forever) → Theme::defaults() from config → hardcoded fall
 
 ```
 
-`app/Modules/Settings/Domain/Theme/Support/Theme.php` exposes the chain:
+`app/Modules/Setting/Domain/Theme/Support/Theme.php` exposes the chain:
 
 - `defaults()` → `config('settings.colors.defaults')`
 - `get($key)` → `all()[key] ?? defaults()[key] ?? '#000000'`
@@ -110,7 +110,7 @@ DB setting (cached forever) → Theme::defaults() from config → hardcoded fall
 ### 3.3 Brand Color Schema (Configurable)
 
 Four brand colors are configurable in the admin panel (`SystemSetting` → Branding form;
-`app/Modules/Settings/Livewire/SystemSetting.php`), stored as **`*_color`** settings, validated as
+`app/Modules/Setting/Livewire/SystemSetting.php`), stored as **`*_color`** settings, validated as
 `#RRGGBB` hex in `BrandingForm`, and written via `SaveSystemSettingsAction`.
 
 **Default palette is green (Emerald) — `primary = #059669`:**
@@ -393,7 +393,7 @@ full rules.
 
 ### Language Switcher
 
-The `LangSwitcher` Livewire component (`app/Modules/Settings/Livewire/LangSwitcher.php`) toggles between
+The `LangSwitch` Livewire component (`app/Modules/Setting/Domain/Locale/Livewire/LangSwitch.php`) toggles between
 EN and ID (plain Tailwind trigger with globe icons; no TallstackUI built-in). Locale preference is stored in a cookie (`locale`) and applied via `SetLocale` middleware
 on every request.
 
@@ -587,15 +587,15 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | UI components     | `resources/views/ui/components/` (incl. `theme-switch.blade.php`) |
 | CSS entry point   | `resources/css/app.css` (`@import tallstackui/css/v4.css` + self-hosted palette + shims) |
 | JS entry point    | `resources/js/app.js` (theme + flatpickr + marked + choices bridge) |
-| Theme resolver    | `app/Modules/Settings/Domain/Theme/Support/Theme.php` (`cssVariables()`, `defaults()`, `presets()`, `all()`) |
+| Theme resolver    | `app/Modules/Setting/Domain/Theme/Support/Theme.php` (`cssVariables()`, `defaults()`, `presets()`, `all()`) |
 | Color utility     | `app/Modules/Core/Support/Color.php` (base shades, contrast, lighten/darken) |
 | Color presets     | `config/settings.php` (`colors.defaults` + `colors.presets`, `theme_cache_keys`) |
-| Branding form     | `app/Modules/Settings/Domain/Branding/Livewire/Forms/BrandingForm.php` (preset apply/detect) |
-| Admin color UI    | `app/Modules/Settings/Livewire/SystemSetting.php` |
+| Branding form     | `app/Modules/Setting/Domain/Branding/Livewire/Forms/BrandingForm.php` (preset apply/detect) |
+| Admin color UI    | `app/Modules/Setting/Livewire/SystemSetting.php` |
 | TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
 | Theme switcher    | `resources/views/setting/locale/theme-switch.blade.php` (`<x-ts-theme-switch>` TallstackUI) |
-| Language switcher | `app/Modules/Settings/Livewire/LangSwitcher.php`  |
+| Language switcher | `app/Modules/Setting/Domain/Locale/Livewire/LangSwitch.php`  |
 ---
 
 ## Troubleshooting
