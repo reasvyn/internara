@@ -439,6 +439,123 @@ All UI is built with TallstackUI v4 (`prefix ts-`, see `config/tallstackui.php`)
 
 Legacy DaisyUI class tokens (`.btn`, `.badge`, `.card`, `.table`, `.alert` etc.) remain as class names but are shimmed locally in `resources/css/app.css` `@layer components` — no DaisyUI npm package.
 
+### Form Input Design System
+
+Form inputs are the primary mutation surface across all 19 modules. All inputs must adhere to strict visual consistency, accessibility (WCAG 2.1 AA), and responsive behavior using TallStackUI primitives (`x-ts-*`).
+
+#### 1. Input Anatomy & Token Specifications
+
+Every input field is composed of five standard layers:
+
+| Layer | Token / Class | Description |
+|---|---|---|
+| **Label** | `text-xs font-semibold text-base-content/70` | Descriptive title above field; required fields append visual asterisk `*` |
+| **Input Surface** | `bg-base-100 border border-base-content/10 rounded-xl` | Neutral background, subtle border, rounded corners |
+| **Focus Ring** | `focus:ring-2 focus:ring-primary/20 focus:border-primary` | Visible focus indicator driven by semantic `--color-primary` (Emerald `#059669`) |
+| **Hint / Caption** | `text-xs text-base-content/50 mt-1` | Supplementary contextual help text below input |
+| **Validation Error** | `text-xs text-error mt-1` | High-contrast error message linked via `aria-describedby` |
+
+Touch target heights must maintain a minimum of 40px–44px (`h-10` to `h-11`) to satisfy WCAG 2.5.8 (Target Size Minimum).
+
+#### 2. Form Input Component Matrix
+
+Internara standardizes input fields using TallStackUI v4 components (`prefix ts-`):
+
+```blade
+{{-- 1. Standard Text Input with Icon --}}
+<x-ts-input
+    :label="__('academic_year.name')"
+    wire:model="form.name"
+    :placeholder="__('academic_year.name_placeholder')"
+    icon="academic-cap"
+/>
+
+{{-- 2. Search Field with Debounce and Clearable Button --}}
+<x-ts-input
+    :placeholder="__('common.search_placeholder')"
+    wire:model.live.debounce.300ms="search"
+    icon="magnifying-glass"
+    clearable
+/>
+
+{{-- 3. Date Input with Calendar Icon --}}
+<x-ts-input
+    type="date"
+    :label="__('academic_year.start_date')"
+    wire:model="form.start_date"
+    icon="calendar"
+/>
+
+{{-- 4. Native Select Dropdown --}}
+<x-ts-select.native
+    :label="__('journals.absence.reason_type')"
+    wire:model="reasonType"
+    :options="ts_options($reasonTypes, __('journals.absence.select_reason'))"
+/>
+
+{{-- 5. Textarea with Configurable Rows --}}
+<x-ts-textarea
+    :label="__('journals.absence.description')"
+    wire:model="reasonDescription"
+    rows="4"
+    :placeholder="__('journals.absence.description_placeholder')"
+/>
+
+{{-- 6. Boolean Toggle Switch --}}
+<x-ts-toggle
+    :label="__('user.is_active')"
+    wire:model="form.is_active"
+    color="primary"
+/>
+
+{{-- 7. File Upload Input --}}
+<x-ts-upload
+    :label="__('document.upload_file')"
+    wire:model="documentFile"
+    accept="application/pdf,image/png,image/jpeg"
+    hint="PDF, PNG, JPG (Maks. 5MB)"
+/>
+```
+
+#### 3. Standard Form Layout Patterns
+
+##### A. Modal Form (Create / Edit Dialogs)
+Used inside `x-ts-modal` for `BaseRecordManager` workflows:
+- **Spacing:** `space-y-4` container.
+- **Grid:** Single column for full-width fields; 2-column grid (`grid grid-cols-1 gap-4 sm:grid-cols-2`) for paired attributes (e.g., start date & end date, first name & last name).
+- **Footer Actions:** Right-aligned button group with `Cancel` (`color="slate" outline sm`) and `Save/Update` (`color="primary" sm loading="store"`).
+
+```blade
+<x-ts-modal wire="showModal" :title="$editingId ? __('common.edit') : __('common.create')" blur>
+    <div class="space-y-4">
+        <x-ts-input :label="__('module.title')" wire:model="form.title" icon="document-text" />
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <x-ts-input type="date" :label="__('module.start_date')" wire:model="form.start_date" />
+            <x-ts-input type="date" :label="__('module.end_date')" wire:model="form.end_date" />
+        </div>
+    </div>
+    <x-slot:footer>
+        <div class="flex justify-end gap-2">
+            <x-ts-button :text="__('common.actions.cancel')" color="slate" outline sm wire:click="$set('showModal', false)" />
+            <x-ts-button :text="__('common.actions.save')" color="primary" sm wire:click="store" loading="store" />
+        </div>
+    </x-slot:footer>
+</x-ts-modal>
+```
+
+##### B. Full Page Form (Multi-section / Wizard)
+Used for setup wizards, profile editors, and complex submission forms:
+- **Container:** Wrapped in `<x-ts-card shadowless class="border border-base-content/10 bg-base-100">` with `max-w-4xl mx-auto`.
+- **Sections:** Separated by section headings (`text-sm font-semibold text-base-content/80`) and dividers (`h-px bg-base-300 my-4`).
+- **Responsive Stacking:** Desktop 2-column or 3-column grids collapse to single-column at `<sm` (320px–640px) without horizontal scroll.
+
+#### 4. Interaction States & Validation Feedback
+
+- **Default:** Subtle border `border-base-content/10`, clean contrast, readable placeholder.
+- **Hover & Focus:** Border transitions to `border-primary` with subtle glow ring `focus:ring-2 focus:ring-primary/20`.
+- **Validation Failure:** Border turns `border-error` (`--color-error`), displays red helper text, and screen reader receives `aria-invalid="true"`.
+- **Submission Loading:** Submit button disables automatically and renders an animated spinner via `loading="submit"`, preventing double-submits.
+
 ---
 
 ## 11. Guide Component Pattern
