@@ -143,8 +143,10 @@ class SetupWizard extends BaseWizard
         }
     }
 
-    public function runAudit(EnvironmentAuditor $auditor): void
+    public function runAudit(?EnvironmentAuditor $auditor = null): void
     {
+        $auditor ??= app(EnvironmentAuditor::class);
+
         try {
             $report = $auditor->audit();
         } catch (\Throwable $e) {

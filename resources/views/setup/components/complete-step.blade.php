@@ -101,8 +101,9 @@
     </div>
 
     <x-ts-button
-        text="{{ __('setup.wizard.go_to_login') }}"
-        icon-right="arrow-right"
+        :text="__('setup.wizard.go_to_login')"
+        icon="arrow-right"
+        position="right"
         color="primary"
         wire:click="finishSession"
     />

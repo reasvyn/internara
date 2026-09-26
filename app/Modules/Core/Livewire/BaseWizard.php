@@ -42,12 +42,14 @@ abstract class BaseWizard extends Component
 
         $this->markStepCompleted($this->currentStep);
         $this->currentStep++;
+        $this->js('window.scrollTo({ top: 0, behavior: "smooth" });');
     }
 
     public function prevStep(): void
     {
         if ($this->currentStep > 1) {
             $this->currentStep--;
+            $this->js('window.scrollTo({ top: 0, behavior: "smooth" });');
         }
     }
 
@@ -59,6 +61,7 @@ abstract class BaseWizard extends Component
 
         if ($this->isStepAccessible($step)) {
             $this->currentStep = $step;
+            $this->js('window.scrollTo({ top: 0, behavior: "smooth" });');
         }
     }
 

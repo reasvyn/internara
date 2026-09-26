@@ -32,7 +32,7 @@
         </header>
 
         {{-- Content --}}
-        <main class="flex flex-1 flex-col py-8 sm:py-12" id="main-content">
+        <main class="flex flex-1 flex-col pt-8 pb-24 sm:pt-12 sm:pb-28" id="main-content">
             <div class="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">{{ $slot }}</div>
         </main>
 

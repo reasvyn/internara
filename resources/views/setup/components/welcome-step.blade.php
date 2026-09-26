@@ -146,8 +146,9 @@
     <div class="border-base-content/10 mt-10 flex items-center justify-end gap-3 border-t pt-6">
         @if ($auditPassed)
             <x-ts-button
-                text="{{ __('setup.wizard.start_setup') }}"
-                icon-right="arrow-right"
+                :text="__('setup.wizard.start_setup')"
+                icon="arrow-right"
+                position="right"
                 color="primary"
                 wire:click="nextStep"
                 loading="nextStep"
@@ -159,7 +160,7 @@
                     <p class="text-warning/60 mt-0.5 text-xs">{{ __('setup.wizard.audit_must_pass') }}</p>
                 </div>
                 <x-ts-button
-                    text="{{ __('setup.wizard.recheck') }}"
+                    :text="__('setup.wizard.recheck')"
                     icon="arrow-path"
                     color="yellow"
                     wire:click="runAudit"

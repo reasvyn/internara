@@ -47,7 +47,7 @@
                 class="btn btn-ghost {{ $sizeClasses }} rounded-full font-bold tracking-wider uppercase"
                 aria-label="{{ __('common.language.switch') }}"
             >
-                <x-ts-icon name="globe-alt" class="size-4 opacity-60" />
+                <x-ts-icon name="flag" class="size-4 opacity-60" />
                 <span aria-hidden="true">{{ strtoupper($current) }}</span>
             </button>
         </x-slot:action>
@@ -57,14 +57,14 @@
                 @if (isset($__livewire))
                     <x-ts-dropdown.items
                         :text="$meta['label']"
-                        icon="globe-alt"
+                        icon="flag"
                         wire:click="changeLocale('{{ $code }}')"
                         :active="$current === $code"
                     />
                 @else
                     <x-ts-dropdown.items
                         :text="$meta['label']"
-                        icon="globe-alt"
+                        icon="flag"
                         :href="route('locale.switch', $code)"
                         :active="$current === $code"
                     />

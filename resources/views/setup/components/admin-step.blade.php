@@ -75,7 +75,8 @@
         <x-ts-button :text="__('setup.wizard.back')" wire:click="prevStep" color="slate" outline sm icon="arrow-left" />
         <x-ts-button
             :text="__('setup.wizard.next_step')"
-            icon-right="arrow-right"
+            icon="arrow-right"
+            position="right"
             color="primary"
             sm
             wire:click="nextStep"

@@ -43,7 +43,7 @@
 <button
     type="button"
     wire:click="$set('showGuide', true)"
-    class="bg-primary text-primary-content ring-primary/20 fixed right-6 bottom-6 z-40 flex size-12 cursor-pointer items-center justify-center rounded-full shadow-lg ring-4 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:brightness-105 active:scale-95"
+    class="bg-primary text-primary-content ring-primary/20 fixed bottom-6 left-6 z-30 flex size-12 cursor-pointer items-center justify-center rounded-full shadow-lg ring-4 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:brightness-105 active:scale-95"
     wire:key="guide-button"
     aria-label="{{ __('setup.guide.title') }}"
 >

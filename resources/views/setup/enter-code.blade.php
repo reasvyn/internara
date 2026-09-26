@@ -62,7 +62,8 @@
                         <x-ts-button
                             type="submit"
                             :text="__('setup.code_entry.submit')"
-                            icon-right="arrow-right"
+                            icon="arrow-right"
+                            position="right"
                             class="w-full"
                             color="primary"
                         />
