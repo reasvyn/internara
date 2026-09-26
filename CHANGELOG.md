@@ -23,11 +23,11 @@ of technical documentation with TallStackUI v4 prefix and design token standards
 ## [0.16.0-alpha.1] - 2026-09-24
 
 Internara v0.16.0-alpha.1 marks the first pre-release deployment to the staging VPS
-environment at `https://internara.reasvyn.web.id` using Docker Compose, validating
+environment at `https://staging.internara.web.id` using Docker Compose, validating
 container orchestration, Nginx reverse proxy integration, and automated CI/CD deployment.
 
 ### Added
-- `feat(deploy)`: automated staging deployment of `v0.16.0-alpha.1` to `https://internara.reasvyn.web.id`
+- `feat(deploy)`: automated staging deployment of `v0.16.0-alpha.1` to `https://staging.internara.web.id`
 - `feat(ci)`: tag output propagation in release workflow for accurate version tag checkout
 
 ### Changed
@@ -37,11 +37,11 @@ container orchestration, Nginx reverse proxy integration, and automated CI/CD de
 
 Internara v0.16.0 begins a new minor release cycle, introducing a unified 3-tier promotion
 pipeline (`dev` > `pre-release` > `release`) with automated staging deployment to
-`https://internara.reasvyn.web.id` via Docker Compose, and consolidated deployment specifications.
+`https://staging.internara.web.id` via Docker Compose, and consolidated deployment specifications.
 
 ### Added
 - `feat(ci)`: 3-tier release pipeline (`dev` > `pre-release` > `release`) in `.github/workflows/release.yml`
-- `feat(ci)`: automated Docker Compose deployment of pre-release tags (`alpha`, `beta`, `rc`) to staging VPS at `https://internara.reasvyn.web.id`
+- `feat(ci)`: automated Docker Compose deployment of pre-release tags (`alpha`, `beta`, `rc`) to staging VPS at `https://staging.internara.web.id`
 - `feat(ci)`: dedicated `alpha`, `beta`, `staging` (rc), and `production` QA pipeline jobs
 
 ### Changed
