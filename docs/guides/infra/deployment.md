@@ -559,7 +559,9 @@ The default compose is tuned to run on a **1 GB RAM** VPS:
   are only rebuilt when a lockfile changes; BuildKit `--mount=type=cache` reuses the Composer and npm
   download caches between builds; `node_modules` is removed at the end of the builder stage so it never
   enters the runtime image. Without these, every source commit re-installs all dependencies and the
-  Docker build cache grows into the multi-GB range. Prune stale layers with `docker builder prune -af`.
+  Docker build cache is retained between releases and cleaned weekly by
+  `.github/workflows/docker-cache-cleanup.yml`. It removes only BuildKit cache and unused images
+  older than 168 hours, under the same deployment lock.
 
 To opt back in to background processing, export `RUN_SCHEDULER=true` (and add a `redis` service +
 `RUN_QUEUE=true` for async queues) when running compose.

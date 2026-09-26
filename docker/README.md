@@ -50,7 +50,9 @@ the build toolchain.
   builds, so repeated builds reuse already-downloaded packages.
 - `node_modules` is removed at the end of the **builder** stage, so it never enters the runtime image
   (deleting it in the runtime stage would still leave its bytes in an earlier layer).
-- Prune stale layers periodically: `docker builder prune -af` (or `docker buildx prune`).
+- Prune stale Docker build cache and unused images weekly with `.github/scripts/cleanup-docker-cache.sh`.
+  The scheduled workflow uses a 168-hour age filter and the deployment lock, so it cannot overlap
+  with a release or hotfix.
 
 See `docker-compose.yml` for service definitions. See `docs/guides/installation.md` for production setup
 guide.
