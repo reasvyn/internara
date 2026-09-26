@@ -6,6 +6,10 @@ if [ ! -f /app/artisan ]; then
     exit 1
 fi
 
+if [ ! -f /app/.env ]; then
+    printf '%s\n' '# Runtime configuration is injected by Docker Compose.' > /app/.env
+fi
+
 # /app/public is an app_data volume that persists between deploys; refresh it from
 # the image every boot. Runtime uploads (branding, media) remain in the volume.
 cp -a /opt/app-public/. /app/public/
