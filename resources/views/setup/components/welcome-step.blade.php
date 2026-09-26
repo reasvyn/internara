@@ -1,6 +1,6 @@
 @props(['auditResults', 'auditPassed'])
 
-<div class="p-6 sm:p-8">
+<div class="p-6 sm:p-10">
     <div class="mb-8 text-center">
         <div
             class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-full"
@@ -35,7 +35,7 @@
                                 <div
                                     role="listitem"
                                     @class([
-                                        'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
+                                        'flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm transition-colors',
                                         'border-success/20 bg-success/5' => $check['status'] === 'pass',
                                         'border-error/20 bg-error/5' => $check['status'] === 'fail',
                                         'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
@@ -90,7 +90,7 @@
         </section>
     @endif
 
-    <div class="border-base-content/10 flex items-center justify-end gap-3 border-t pt-6">
+    <div class="border-base-content/10 mt-10 flex items-center justify-end gap-3 border-t pt-6">
         @if ($auditPassed)
             <x-ts-button
                 text="{{ __('setup.wizard.start_setup') }}"

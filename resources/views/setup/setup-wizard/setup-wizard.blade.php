@@ -26,10 +26,10 @@
                 <div class="flex flex-1 flex-col items-center gap-1.5">
                     <div
                         @class([
-                            'size-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 shrink-0',
+                            'size-8 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0 shadow-xs',
                             'bg-primary text-primary-content' => $isCompleted,
-                            'bg-primary/20 text-primary ring-2 ring-primary' => $isCurrent,
-                            'bg-base-content/10 text-base-content/60' => ! $isCompleted && ! $isCurrent,
+                            'bg-primary text-primary-content ring-4 ring-primary/20 shadow-sm' => $isCurrent,
+                            'bg-base-200/80 text-base-content/50 border border-base-content/10' => ! $isCompleted && ! $isCurrent,
                         ])
                         @if ($isCurrent)
                             wire:key="step-indicator-{{ $stepNum }}"
@@ -43,7 +43,7 @@
                         @endif
                     </div>
                     <span @class([
-                        'text-[10px] font-medium uppercase tracking-wider transition-colors text-center leading-tight',
+                        'text-[10px] font-semibold uppercase tracking-wider transition-colors text-center leading-tight',
                         'text-primary' => $isCurrent,
                         'text-base-content/60' => ! $isCurrent && ! $isCompleted,
                         'text-base-content/50' => $isCompleted && ! $isCurrent,
@@ -67,7 +67,7 @@
 
     {{-- Step Content with Transition --}}
     <div
-        class="bg-base-100 border-base-content/10 relative rounded-xl border"
+        class="bg-base-100 border-base-content/10 relative overflow-hidden rounded-2xl border shadow-xs"
         x-data="{ loading: false }"
         x-on:finishing.window="loading = true"
         x-on:finished.window="loading = false"

@@ -217,6 +217,7 @@ return [
         'admin_subtitle' => 'Kredensial Akses Root',
         'full_name' => 'Nama Lengkap',
         'email_address' => 'Alamat Email',
+        'email_placeholder' => 'admin@sekolah.sch.id',
         'username' => 'Username Unik',
         'generated' => 'Digenerate',
         'username_notice' => 'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',

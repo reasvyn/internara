@@ -217,6 +217,7 @@ return [
         'admin_subtitle' => 'Root Access Credentials',
         'full_name' => 'Full Name',
         'email_address' => 'Email Address',
+        'email_placeholder' => 'admin@school.sch.id',
         'username' => 'Unique Username',
         'generated' => 'Generated',
         'username_notice' => 'This username is automatically generated for security and is permanent. You will use this to log in to the system.',
