@@ -1,6 +1,6 @@
 <div class="p-6 sm:p-10">
     <div class="mb-8">
-        <h2 class="text-base-content mb-1 text-xl font-bold tracking-tight">{{ __('setup.wizard.school_info') }}</h2>
+        <h2 class="text-base-content mb-1 text-2xl font-bold tracking-tight">{{ __('setup.wizard.school_info') }}</h2>
         <p class="text-base-content/60 text-sm">{{ __('setup.wizard.school_subtitle') }}</p>
     </div>
 

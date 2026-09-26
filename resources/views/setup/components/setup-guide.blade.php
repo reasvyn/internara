@@ -4,7 +4,7 @@
 
         @foreach (range(1, 6) as $step)
             <div class="flex gap-4">
-                <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-bold">
+                <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border text-xs font-bold shadow-2xs">
                     {{ $step }}
                 </div>
                 <div>
@@ -17,7 +17,7 @@
         @endforeach
 
         <div class="border-base-content/10 mt-6 flex gap-4 border-t pt-4">
-            <div class="bg-warning/10 text-warning mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
+            <div class="border-warning/20 bg-warning/10 text-warning mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border shadow-2xs">
                 <x-ts-icon name="light-bulb" class="size-4" />
             </div>
             <div>
@@ -41,7 +41,7 @@
 <button
     type="button"
     wire:click="$set('showGuide', true)"
-    class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
+    class="bg-primary text-primary-content ring-primary/20 fixed right-6 bottom-6 z-40 flex size-12 items-center justify-center rounded-full shadow-lg ring-4 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:brightness-105 active:scale-95"
     wire:key="guide-button"
     aria-label="{{ __('setup.guide.title') }}"
 >

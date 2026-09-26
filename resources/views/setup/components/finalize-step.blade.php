@@ -1,46 +1,48 @@
 <div class="p-6 sm:p-10">
     <div class="mb-8">
-        <h2 class="text-base-content mb-1 text-xl font-bold tracking-tight">{{ __('setup.wizard.finalize') }}</h2>
+        <h2 class="text-base-content mb-1 text-2xl font-bold tracking-tight">{{ __('setup.wizard.finalize') }}</h2>
         <p class="text-base-content/60 text-sm">{{ __('setup.wizard.finalize_subtitle') }}</p>
     </div>
 
     <div class="mb-8 space-y-4">
-        <div class="border-base-content/10 hover:border-primary/40 hover:bg-base-200/30 flex items-start gap-4 rounded-xl border p-5 transition-all">
+        <label class="border-base-content/10 bg-base-200/40 hover:border-primary/40 hover:bg-base-200/70 flex cursor-pointer items-start gap-4 rounded-2xl border p-5 shadow-2xs transition-all">
             <x-ts-checkbox wire:model.live="dataVerified" color="primary" class="mt-0.5" />
             <div class="select-none">
                 <span class="text-base-content mb-0.5 block text-sm font-semibold">{{ __('setup.wizard.data_verified') }}</span>
-                <span class="text-base-content/60 text-xs">{{ __('setup.wizard.data_verified_long') }}</span>
+                <span class="text-base-content/60 text-xs leading-relaxed">{{ __('setup.wizard.data_verified_long') }}</span>
             </div>
-        </div>
+        </label>
 
-        <div class="border-base-content/10 hover:border-primary/40 hover:bg-base-200/30 flex items-start gap-4 rounded-xl border p-5 transition-all">
+        <label class="border-base-content/10 bg-base-200/40 hover:border-primary/40 hover:bg-base-200/70 flex cursor-pointer items-start gap-4 rounded-2xl border p-5 shadow-2xs transition-all">
             <x-ts-checkbox wire:model.live="securityAware" color="primary" class="mt-0.5" />
             <div class="select-none">
                 <span class="text-base-content mb-0.5 block text-sm font-semibold">{{ __('setup.wizard.security_aware') }}</span>
-                <span class="text-base-content/60 text-xs">{{ __('setup.wizard.security_aware_long') }}</span>
+                <span class="text-base-content/60 text-xs leading-relaxed">{{ __('setup.wizard.security_aware_long') }}</span>
             </div>
-        </div>
+        </label>
     </div>
 
-    <div class="border-base-content/10 bg-base-200/30 mb-8 rounded-xl border p-5">
+    <div class="border-base-content/10 bg-base-200/50 mb-8 rounded-2xl border p-6 shadow-2xs">
         <div class="mb-4 flex items-center gap-2">
-            <x-ts-icon name="document-check" class="text-primary size-4" />
-            <h4 class="text-base-content/70 text-xs font-bold tracking-wider uppercase">
+            <div class="border-primary/20 bg-primary/10 text-primary flex size-7 items-center justify-center rounded-lg border">
+                <x-ts-icon name="document-check" class="size-4" />
+            </div>
+            <h4 class="text-base-content/80 text-xs font-bold tracking-wider uppercase">
                 {{ __('setup.wizard.summary') }}
             </h4>
         </div>
         <dl class="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            <div class="bg-base-100/60 border-base-content/5 flex items-center justify-between rounded-lg border px-3 py-2">
-                <dt class="text-base-content/50 text-xs">{{ __('setup.wizard.school_name') }}</dt>
-                <dd class="text-base-content font-medium">{{ $schoolForm->name ?: '—' }}</dd>
+            <div class="border-base-content/10 bg-base-100 flex items-center justify-between rounded-xl border px-4 py-3 shadow-2xs">
+                <dt class="text-base-content/50 text-xs font-medium">{{ __('setup.wizard.school_name') }}</dt>
+                <dd class="text-base-content font-bold">{{ $schoolForm->name ?: '—' }}</dd>
             </div>
-            <div class="bg-base-100/60 border-base-content/5 flex items-center justify-between rounded-lg border px-3 py-2">
-                <dt class="text-base-content/50 text-xs">{{ __('setup.wizard.department_name') }}</dt>
-                <dd class="text-base-content font-medium">{{ $departmentForm->name ?: '—' }}</dd>
+            <div class="border-base-content/10 bg-base-100 flex items-center justify-between rounded-xl border px-4 py-3 shadow-2xs">
+                <dt class="text-base-content/50 text-xs font-medium">{{ __('setup.wizard.department_name') }}</dt>
+                <dd class="text-base-content font-bold">{{ $departmentForm->name ?: '—' }}</dd>
             </div>
-            <div class="bg-base-100/60 border-base-content/5 flex items-center justify-between rounded-lg border px-3 py-2 sm:col-span-2">
-                <dt class="text-base-content/50 text-xs">{{ __('setup.wizard.full_name') }}</dt>
-                <dd class="text-base-content font-medium">{{ $superAdminForm->name }}</dd>
+            <div class="border-base-content/10 bg-base-100 flex items-center justify-between rounded-xl border px-4 py-3 shadow-2xs sm:col-span-2">
+                <dt class="text-base-content/50 text-xs font-medium">{{ __('setup.wizard.full_name') }}</dt>
+                <dd class="text-base-content font-bold">{{ $superAdminForm->name }}</dd>
             </div>
         </dl>
     </div>

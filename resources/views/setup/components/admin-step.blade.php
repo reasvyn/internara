@@ -1,22 +1,22 @@
 <div class="p-6 sm:p-10">
     <div class="mb-8">
-        <h2 class="text-base-content mb-1 text-xl font-bold tracking-tight">{{ __('setup.wizard.admin_account') }}</h2>
+        <h2 class="text-base-content mb-1 text-2xl font-bold tracking-tight">{{ __('setup.wizard.admin_account') }}</h2>
         <p class="text-base-content/60 text-sm">{{ __('setup.wizard.admin_subtitle') }}</p>
     </div>
 
-    <div class="border-base-content/10 bg-base-200/40 mb-3 flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4 sm:p-5">
-        <div class="flex items-center gap-3">
-            <div class="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl">
+    <div class="border-base-content/10 bg-base-200/50 mb-3 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4 shadow-2xs sm:p-5">
+        <div class="flex items-center gap-3.5">
+            <div class="border-primary/20 bg-primary/10 text-primary flex size-11 items-center justify-center rounded-xl border">
                 <x-ts-icon name="user" class="size-5" />
             </div>
             <div>
-                <p class="text-base-content/50 text-xs">{{ __('setup.wizard.full_name') }}</p>
-                <p class="text-base-content text-sm font-semibold">{{ $superAdminForm->name }}</p>
+                <p class="text-base-content/50 text-xs font-medium">{{ __('setup.wizard.full_name') }}</p>
+                <p class="text-base-content text-sm font-bold">{{ $superAdminForm->name }}</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
             <span class="text-base-content/50 text-xs">{{ __('setup.wizard.username') }}:</span>
-            <code class="bg-primary/10 text-primary border-primary/20 rounded-lg border px-2.5 py-1 font-mono text-xs font-bold">{{ $superAdminForm->username }}</code>
+            <code class="border-primary/20 bg-primary/10 text-primary rounded-lg border px-3 py-1 font-mono text-xs font-bold">{{ $superAdminForm->username }}</code>
         </div>
     </div>
     <p class="text-base-content/50 mb-8 text-xs leading-relaxed">{{ __('setup.wizard.username_notice') }}</p>

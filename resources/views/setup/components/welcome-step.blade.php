@@ -1,15 +1,19 @@
 @props(['auditResults', 'auditPassed'])
 
 <div class="p-6 sm:p-10">
-    <div class="mb-8 text-center">
+    <div class="mb-10 text-center">
         <div
-            class="bg-primary/10 text-primary mb-5 inline-flex size-14 items-center justify-center rounded-full"
+            class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl border shadow-xs ring-4"
             aria-hidden="true"
         >
-            <x-ts-icon name="rocket-launch" class="size-7" />
+            <x-ts-icon name="rocket-launch" class="size-8" />
         </div>
-        <h2 class="mb-2 text-xl font-bold">{{ __('setup.wizard.welcome') }}</h2>
-        <p class="text-base-content/60 mx-auto max-w-md text-sm">{{ __('setup.wizard.welcome_desc') }}</p>
+        <h2 class="text-base-content mb-2 text-2xl font-black tracking-tight sm:text-3xl">
+            {{ __('setup.wizard.welcome') }}
+        </h2>
+        <p class="text-base-content/60 mx-auto max-w-lg text-sm leading-relaxed">
+            {{ __('setup.wizard.welcome_desc') }}
+        </p>
     </div>
 
     @if (! empty($auditResults['categories']))
