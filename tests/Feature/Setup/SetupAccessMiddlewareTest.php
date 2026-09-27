@@ -47,6 +47,36 @@ describe('8NZAU and 2CF4Y: setup access middleware', function (): void {
             ->and($response->getContent())->toBe('wizard');
     });
 
+    test('2CF4Y-FR-MID-009: livewire and tallstackui dynamic assets are bypassed while uninstalled', function (): void {
+        markSetupInstalled(false);
+
+        $middleware = app(RequireSetupAccessMiddleware::class);
+
+        $livewireJs = $middleware->handle(
+            Request::create('/livewire/livewire.min.js', 'GET'),
+            fn () => response('console.log("livewire")', 200),
+        );
+        expect($livewireJs->getStatusCode())->toBe(200);
+
+        $tallstackJs = $middleware->handle(
+            Request::create('/tallstackui/script/core.js', 'GET'),
+            fn () => response('console.log("tallstackui")', 200),
+        );
+        expect($tallstackJs->getStatusCode())->toBe(200);
+
+        $livewireUpdate = $middleware->handle(
+            Request::create('/livewire/update', 'POST'),
+            fn () => response('{"effects":{}}', 200),
+        );
+        expect($livewireUpdate->getStatusCode())->toBe(200);
+
+        $setupSubpath = $middleware->handle(
+            Request::create('/setup/cleanup', 'POST'),
+            fn () => response('cleaned', 200),
+        );
+        expect($setupSubpath->getStatusCode())->toBe(200);
+    });
+
     test('2CF4Y-FR-MID-009: installed instances pass straight through', function (): void {
         markSetupInstalled(true);
 

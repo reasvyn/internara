@@ -29,7 +29,28 @@ class RequireSetupAccessMiddleware
             return $next($request);
         }
 
-        if ($request->hasHeader('X-Livewire') || $request->is('setup')) {
+        if (
+            $request->hasHeader('X-Livewire') ||
+            $request->hasHeader('X-Livewire-Navigated') ||
+            $request->is(
+                'setup',
+                'setup/*',
+                'livewire',
+                'livewire/*',
+                '_livewire',
+                '_livewire/*',
+                'tallstackui',
+                'tallstackui/*',
+                'build',
+                'build/*',
+                'assets',
+                'assets/*',
+                'up',
+                'health',
+                'favicon.ico',
+                'robots.txt',
+            )
+        ) {
             return $next($request);
         }
 

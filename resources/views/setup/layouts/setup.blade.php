@@ -1,13 +1,7 @@
 @props(['title' => null])
 
 <x-ui::layouts.base :$title>
-    <div
-        class="bg-base-200/60 text-base-content selection:bg-primary/20 selection:text-primary relative flex min-h-screen flex-col"
-        x-data
-        x-init="window.addEventListener('beforeunload', () => {
-            navigator.sendBeacon(@js(route('setup.cleanup')));
-        });"
-    >
+    <div class="bg-base-200/60 text-base-content selection:bg-primary/20 selection:text-primary relative flex min-h-screen flex-col">
         {{-- Ambient decorative background glow --}}
         <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
             <div class="bg-primary/5 absolute -top-40 left-1/2 size-[700px] -translate-x-1/2 rounded-full blur-3xl"></div>

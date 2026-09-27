@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Core\Enums\AuditCategory;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Setting\Models\Setting;
 use App\Modules\Setup\Domain\Installation\Actions\GenerateSetupTokenAction;
@@ -408,7 +409,7 @@ describe('8NZAU: provisioning state and hardening', function (): void {
 
         $exit = Artisan::call('setup:install', ['--check-only' => true]);
         expect($exit)->toBe(0)
-            ->and(Artisan::output())->toContain('Environment');
+            ->and(Artisan::output())->toContain(AuditCategory::REQUIREMENTS->label());
     });
 
     test('8NZAU-UC-INST-004: admin:recover command provides emergency access CLI bridge', function (): void {
