@@ -54,6 +54,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'setup',
             'setup/*',
             'livewire/*',
+            'livewire-*/*',
             '_livewire/*',
         ]);
 
