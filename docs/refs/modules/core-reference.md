@@ -24,12 +24,12 @@ depends on.
   3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
-- **Concrete Exceptions**: 3 (`RejectedException`, `UnauthorizedException`,
-  `ValidationFailedException`)
+- **Concrete Exceptions**: 4 (`RejectedException`, `UnauthorizedException`,
+  `ValidationFailedException`, `ActionFailedException`)
 - **Middleware**: 2 (`SecurityHeadersMiddleware`, `LogContextMiddleware`)
 - **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
   `PiiMasker`, `Spotlight`, `helpers.php`)
-- **Action Traits**: 1 (`HandlesActionErrors`)
+- **Action Traits**: 2 (`HandlesActionErrors`, `ResolvesModuleName`)
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
 - **Process Action Base**: 1 (`BaseProcessAction`)
@@ -143,6 +143,7 @@ AppException (abstract, extends RuntimeException)
 ├── ActionException (abstract) — business operation failed
 │   └── ValidationFailedException (422) — input validation
 ├── InfrastructureException (abstract) — external system failure
+│   └── ActionFailedException
 └── PresentationException (abstract) — HTTP-layer failure
     └── UnauthorizedException (403)
 
@@ -182,14 +183,15 @@ ModuleException (abstract, extends RuntimeException)
 | `Policies/Concerns/AuthorizesOwnership.php` | `AuthorizesOwnership` | `BasePolicy` |
 | `Policies/Concerns/AuthorizesRoles.php` | `AuthorizesRoles` | `BasePolicy` |
 
-## Support Classes
+## Support Classes & Action Traits
 
-| Class                 | Path                                       | Purpose                                            |
+| Class / Trait          | Path                                       | Purpose                                            |
 | --------------------- | ------------------------------------------ | -------------------------------------------------- |
 | `Color`               | `Support/Color.php`                        | Hex-to-RGB, HSL conversion, color manipulation     |
 | `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation |
 | `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)   |
 | `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions          |
+| `ResolvesModuleName`  | `Actions/Concerns/ResolvesModuleName.php`  | Extracts module name from action class namespace   |
 | `ModuleManager`       | `Support/ModuleManager.php`                | Static gateway for module config reads (`config('module.*')`) |
 | `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
 | `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |

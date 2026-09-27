@@ -68,6 +68,7 @@ internships.
 | File | Controller | Extends |
 |---|---|---|
 | `Domain/Certificate/Http/Controllers/CertificateDownloadController.php` | `CertificateDownloadController` | `BaseController` |
+| `Domain/Certificate/Http/Controllers/VerifyCertificateController.php` | `VerifyCertificateController` | `BaseController` |
 
 ## Livewire Components
 
@@ -87,7 +88,7 @@ internships.
 
 ## Routes
 
-File: `routes/web/certification.php` Named routes: `certificates.download`,
+File: `routes/web/certification.php` Named routes: `certificates.verify`, `certificates.download`,
 `student.certificates`, `sysadmin.certificates`, `sysadmin.certificates.templates`
 
 ## Views
