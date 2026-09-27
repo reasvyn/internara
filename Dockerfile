@@ -3,7 +3,7 @@ FROM php:8.4-fpm AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev libonig-dev libxml2-dev libpq-dev libzip-dev libicu-dev \
-    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl exif pcntl \
+    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl exif pcntl opcache \
     && pecl install redis && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -38,6 +38,7 @@ COPY --from=builder /app /app
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY docker/fpm-healthcheck /usr/local/bin/fpm-healthcheck
 COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY docker/php-fpm/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fpm-healthcheck \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage \
     && mkdir -p /opt/app-public \
