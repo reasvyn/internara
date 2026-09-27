@@ -135,6 +135,7 @@ for the testing conventions.
 | `create_internships_table`               | `internships`                 |
 | `add_registration_dates_to_internships_table` | `internships`             |
 | `create_internship_groups_table`         | `internship_groups` + `internship_group_members` |
+| `allow_multiple_group_roles_per_registration` | `internship_group_members`   |
 
 ---
 

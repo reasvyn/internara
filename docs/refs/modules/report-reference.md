@@ -83,7 +83,7 @@ finalization.
 
 ## Routes
 
-File: `routes/web/report.php` Only admin download route: `sysadmin.report.download`
+File: `routes/web/report.php` Named routes: `sysadmin.student-report.index`, `sysadmin.student-report.download`
 
 ## Tests
 

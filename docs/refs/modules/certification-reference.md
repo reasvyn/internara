@@ -113,6 +113,7 @@ Tests are located in `tests/{Type}/Certification/` (Arch, Unit, Feature, Browser
 | Migration                          | Table                 |
 | ---------------------------------- | --------------------- |
 | `create_certificates_table`        | `certificates`        |
+| `add_revoked_columns_to_certificates_table` | `certificates`        |
 | `create_certificate_templates_table` | `certificate_templates` |
 
 ---
