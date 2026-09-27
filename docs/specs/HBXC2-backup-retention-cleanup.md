@@ -1,7 +1,7 @@
 # Backup Retention Cleanup — Scheduled Backup Purging
 
 > **Spec ID:** HBXC2
-> **Status:** Planned
+> **Status:** Full
 > **Owner:** SysAdmin
 > **Depends on:** HBXCI
 

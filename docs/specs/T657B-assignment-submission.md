@@ -1,7 +1,7 @@
 # Assignment Submission — Student Submissions & Uploads
 
 > **Spec ID:** T657B
-> **Status:** Planned
+> **Status:** Full
 > **Owner:** Assignment
 > **Depends on:** [T657Z](T657Z-assignment.md), [J9GBH](J9GBH-placement.md)
 

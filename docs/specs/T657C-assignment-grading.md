@@ -1,7 +1,7 @@
 # Assignment Grading — Scoring & Revision Queue
 
 > **Spec ID:** T657C
-> **Status:** Planned
+> **Status:** Full
 > **Owner:** Assignment
 > **Depends on:** [T657Z](T657Z-assignment.md), [T657B](T657B-assignment-submission.md)
 
