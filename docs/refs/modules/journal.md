@@ -95,4 +95,23 @@ daily record.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Journal is where the internship becomes evidence. A student opens the day by clocking in — a
+record that captures both the time and, where permitted, the location — and closes it by writing
+what they actually did. Both halves matter for different reasons: attendance proves presence,
+the logbook proves work, and neither substitutes for the other.
+
+The logbook is a draft-first document. An entry is written, submitted, and only then reviewed by
+the industry supervisor; a mentor can send it back for revision, which returns it to draft rather
+than deleting it. One entry per student per day is a hard rule, not a convention, so a
+correction is an edit of the same entry. When a supervisor has gone inactive, a teacher can act
+in their place through the cross-role proxy, and that act is stamped so the record shows who
+really did it.
+
+Absences interrupt the pattern deliberately: a student declares them with a reason, and the
+approval decision sits with staff rather than with the student. Monitoring visits close the loop
+from the other side — a teacher or coordinator visits the workplace, and the visit is verified
+against the student's own record, so supervision is demonstrated rather than assumed.
+
+Once the grace period passes, attendance and submitted logbooks stop changing. That immutability
+is the point: a reviewable record has to stop moving, otherwise nothing built on it — reports,
+certificates, accreditation evidence — can be trusted.

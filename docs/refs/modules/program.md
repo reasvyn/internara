@@ -20,7 +20,8 @@ Out of scope: student enrollment (Enrollment), daily activity tracking (Journals
 
 ### Internship
 
-Core program entity with status lifecycle (`draft` → `active` → `closed`). Houses grading weight
+Core program entity with status lifecycle (`draft` → `published` → `active` → `completed` → `archived`, with
+`cancelled` reachable from any pre-completion state). Houses grading weight
 configuration (supervisor, teacher, exam percentages), phases JSON array (chronologically ordered,
 non-overlapping), required document template checklist, date bounds constrained by the active
 academic year, and capacity limits.
@@ -110,6 +111,28 @@ The readiness check returns a detailed report of blocking items with actionable 
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+A program is the agreement between a school and a cohort: which competencies are assessed, what
+share each evaluator carries, when each phase runs, which documents must be on file, and how many
+students it can take. Because those weights are configuration rather than code, the same platform
+can run a program graded mostly by the industry supervisor and another graded mostly by exam,
+without either being a special case in the code.
+
+A program's status is the real state machine of the module, and each state means something
+different. A draft is still being negotiated and is not visible to students. Publishing makes the
+program offerable and opens registration. Active is the period in which placement, journaling, and
+assessment happen. Completing stops the numbers moving so reports become final, and archiving
+preserves the finished cohort read-only. Cancellation is the escape hatch available at any point
+before completion — the realistic case being a company partnership collapsing mid-program.
+
+Because completion is what makes results final, the close path checks readiness across five areas
+before it will proceed — finalized assessments, graded submissions, complete supervision logs,
+attendance, and issued certificates — reporting totals and what is still pending for each. A
+coordinator therefore sees exactly which students are blocking the close, rather than discovering
+it after the fact.
+
+Groups are how the cohort is actually staffed. A group gathers the students sharing one company
+slot together with the two people responsible for them — an industry supervisor and a school
+teacher — so supervision has an explicit owner at all times. Group size is bounded by the slot
+quota, which means the roster can never promise more placements than the company agreed to host.
 - Journals (monitoring visits scope)
 

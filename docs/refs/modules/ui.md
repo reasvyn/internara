@@ -75,4 +75,19 @@ Components accept `items`, `links`, `breadcrumbs`, `title`, `actions` via `@prop
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+UI is a presentation-only module, and the discipline it keeps is what keeps it from drifting into
+a second Core. It owns the app shell — the layout, navigation, header, footer, and the theme and
+language switches — plus the reusable primitives that appear on every screen. It holds no business
+logic, owns no models, and imports no feature module; anything that needed to know what a
+"placement" is would be evidence that the component belongs in that module instead.
+
+Everything is props-driven for the same reason. A sidebar does not know its menu items; it is
+given them, with defaults read from configuration. That is what allows a module to add a page
+without editing the shell, and what makes the design system enforceable: colour comes from semantic
+tokens rather than hardcoded utilities, so re-skinning the application is a token change.
+
+The two switches are worth calling out because they are user-facing promises. Theme selection is
+applied through a document-level attribute and honoured by the underlying component library, so a
+choice survives navigation and reload. Language selection does the same through the locale
+resolution chain, and because every user-facing string goes through translation, the Indonesian
+interface is complete rather than partial.

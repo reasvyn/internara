@@ -94,4 +94,20 @@ username must match the config values, so a config change alone does not rename 
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Setup exists because a self-hosted system installed by a school technician, not a developer, has
+to reach a working state without a terminal full of artisan commands. The installer provisions the
+schema, seeds the five base roles, opens the first academic year, generates a cryptographically
+secure setup token, and marks the system installed — one command, no hidden steps.
+
+The token is the security model. Before installation the setup routes are reachable, and the
+wizard will not proceed without that token, so a school that puts a fresh install on a public
+server overnight is not quietly configured by a stranger. Once installation completes, those same
+routes close. The wizard itself is a multi-step form — school details, super admin, departments,
+confirm — and its partial state survives a reload, so a technician who loses connection
+mid-way does not restart the whole thing.
+
+A separate reset path exists for the case where a school has to re-run provisioning on an
+existing system, and demo data can be seeded explicitly during installation for evaluation or
+training, never silently. Throughout, the design assumption is that the person operating this is a
+school administrator, not an engineer: every step is expressed in the interface, and the CLI is
+there as an alternative rather than a prerequisite.

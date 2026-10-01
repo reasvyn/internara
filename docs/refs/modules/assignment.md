@@ -76,4 +76,18 @@ extensions that adjust the deadline for specific individuals.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+An assignment is course work that happens during the internship: a teacher defines a task against
+a program, sets a deadline and a point value, and optionally attaches a rubric so the marking
+standard is the same one used elsewhere. Individual students can hold a different deadline without
+the task being duplicated, and a deadline in the past is refused outright.
+
+The student's side is a draft-first document. Work is written and saved repeatedly, submitted once,
+checked by the teacher, and only then graded. A submission can be sent back for revision, which
+moves it to a revision-requested state rather than discarding it, and grading is terminal. Every
+transition writes an immutable snapshot, so the sequence of what was submitted and when survives
+even after the current version changes.
+
+The deliberate looseness is on lateness. A late submission is flagged and still accepted, because
+the record of the work has more value than the enforcement of a deadline — a teacher can always
+mark it down, whereas a blocked upload destroys the evidence entirely. Configurable, so a school
+that wants the stricter rule can have it.

@@ -70,4 +70,15 @@ All time-scoped features — programs, enrollments, report — reference the act
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+The school profile, the department tree, and the academic calendar are three independent records
+that everything else references. The profile is deliberately not a table of its own: it is stored
+as a set of namespaced settings so that branding, mail, and contact details all read through the
+same resolution path. Departments are the unit that scopes people and programs, and the academic
+year is the unit that scopes time — an internship program, a cohort, and a set of enrollment
+windows all hang off a year rather than off a wall clock.
+
+Creation and editing run through the ordinary record-manager screens, but deletion is guarded:
+a department that still carries programs, assigned users, or live placements cannot be removed,
+and the refusal names the blocking records so an administrator can resolve them in order.
+Activating an academic year is a distinct transition rather than a field edit, because it closes
+the previous year and cascades to the programs inside it.

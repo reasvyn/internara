@@ -130,4 +130,18 @@ Every module in the application.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Core is not a feature module — it is the reason the other seventeen stay small. Its job is to make
+the correct thing the easy thing, by supplying the base classes and contracts that a module extends
+so that cross-cutting behaviour is inherited rather than reimplemented nineteen times.
+
+The write path is the clearest example. A module's action wraps its work in a transaction that
+also logs the outcome and holds back any event until the transaction has actually committed, which
+removes an entire class of bug where a listener reacts to a change that later rolls back. Business
+rule violations are signalled with one dedicated exception type rather than a generic failure, so a
+form can tell the user "this placement is full" without parsing a message.
+
+Alongside that sit the pieces that would otherwise be reinvented per module: a record-manager base
+for the common list-and-edit screens, policy helpers for role and ownership checks, contracts for
+enums and notifications, and utilities for logging, caching, CSV, and PII masking. Core depends on
+nothing and is depended on by everything, which is the property that keeps the dependency graph
+acyclic.

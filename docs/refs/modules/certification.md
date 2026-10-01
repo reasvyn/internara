@@ -102,5 +102,21 @@ GET /verify/{hash}   (not yet implemented)
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+A certificate is the terminal artifact of the whole internship, and everything about its design
+follows from one requirement: a printed certificate has to be verifiable by a stranger, offline,
+years later. So the layout is frozen into the record at the moment of issuance — a later template
+change cannot retroactively alter what a graduate was handed — and the QR code encodes a hash
+derived from the student, the institution, the final score, and the issuer's key rather than a
+bare serial number. Verification therefore proves the certificate was issued by this school for
+this score, not merely that a row exists.
+
+Issuance is also gated on completion. A certificate cannot be produced until the student's grade
+card has been finalized, because a certificate asserting a result that is still being negotiated
+is worse than no certificate. Individual issuance is the exception path; batch issuance exists
+because a school finishing a cohort should not have to click through hundreds of students one at
+a time.
+
+Revocation is a status change, never a deletion. The certificate stays in the system with its
+record intact, and the public verification page reports the revocation — so a graduate holding a
+withdrawn certificate is caught by a scan, while the school's own history stays auditable.
 

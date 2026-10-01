@@ -89,5 +89,17 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Incident reporting exists for the cases the happy path cannot describe: injury, harassment,
+equipment failure, a dispute with a host employer. The record captures when and where it happened,
+what happened, how serious it is, and what was done about it — plus any evidence files.
+
+Severity is not decoration: it decides who is notified and how. A low-severity concern goes to the
+mentor in-app, while anything more serious escalates to the supervisor and adds email, so that
+urgency is carried by the system's behaviour rather than by whoever reads the list.
+
+The record is append-only. Reports are never deleted, only transitioned through their status
+lifecycle as they are investigated and resolved, and the reporter is always identified — there is
+no anonymous submission, because an untraceable incident report is not usable in a dispute or an
+accreditation review. Soft deletion on the company and student records the report points at
+preserves that history even when the underlying person or organization is later removed.
 

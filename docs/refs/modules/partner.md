@@ -81,4 +81,20 @@ attached MoU.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Partner is the supply side of the internship: without a company willing to host students and a
+signed agreement behind it, there is no placement to make. A company profile is the organization's
+identity — legal and trading name, address, industry classification, contacts — and it is kept
+separate from the agreements so that one company can hold several partnerships over the years
+without duplicating its details.
+
+The partnership is the agreement itself, and it has a life. It is active from a signed start date,
+expires on its own once the end date passes, or is terminated early by an administrator; both
+expiry and termination are final, because a lapsed agreement must not be reactivated as though it
+had never lapsed. Only an active partnership can receive new placements, which is the mechanism by
+which a company that stops hosting simply stops appearing in placement options — without anyone
+having to remember to hide it.
+
+Expiry is anticipated rather than discovered. A warning is raised ahead of the end date so a
+coordinator can renew in time, and renewing is an explicit act with its own record. Because both
+companies and partnerships are soft-deleted, a placement made three years ago still resolves to
+the company it referred to, even after that company has been archived.

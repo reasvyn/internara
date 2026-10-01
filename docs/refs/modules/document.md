@@ -96,5 +96,21 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Document is the module that turns the system's data into paperwork a school can actually hand to
+someone — a transmittal letter, a certificate request, a policy handbook — and its central
+decision is that correspondence is a template plus a set of substitutions, not a bespoke screen per
+document type. An administrator writes the layout once in Blade, marks the fields that vary, and
+the renderer fills them from a student's registration at generation time. Adding a new letter
+therefore means writing a template, not shipping a feature.
+
+Versioning is what keeps that safe. Editing a template produces a new version rather than
+overwriting, so a letter issued to a student last year still renders exactly as it did — which is
+the difference between a document archive that can be defended in an accreditation review and one
+that quietly rewrites itself.
+
+Handbooks take the same storage with a different behaviour: instead of being rendered, they are
+published to a chosen audience and tracked for acknowledgement. Publishing a revised handbook
+requires fresh acknowledgement, so "everyone has read the current policy" is a question the system
+can answer rather than one the school has to take on trust. Generation and acknowledgement both
+land in the shared activity log, keeping the audit trail in one place instead of per document type.
 

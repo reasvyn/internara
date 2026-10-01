@@ -72,4 +72,20 @@ are dual-logged via SmartLogger to both the system channel (detailed debug) and 
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+SysAdmin is the module a school administrator lives in, and its unifying concern is accountability
+rather than feature delivery. Every consequential action it takes — creating an account, locking
+one, publishing an announcement, running or deleting a backup — is written to the audit trail
+through the shared logger, so the answer to "who changed this" exists independently of anyone's
+memory.
+
+Account management is deliberately more cautious than a generic CRUD screen would be. The super
+admin is protected from deletion and duplication, admin-level accounts carry a recovery key so the
+school can get back in without a server console, and destructive actions are distinguished from
+ordinary ones rather than sitting in the same list as "edit".
+
+Operational safety is the other half. Backups are created on demand, retained on a schedule, and
+purged on a policy that an administrator can see and adjust, because a backup strategy nobody
+understands is not a backup strategy. Announcements are role-targeted and can be scheduled, which
+is how a school communicates a deadline without mailing every parent. And the compliance surfaces
+— audit logs, GDPR deletion records, account review — exist because accreditation and data
+protection both ask questions the system should be able to answer directly.

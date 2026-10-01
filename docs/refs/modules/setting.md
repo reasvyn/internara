@@ -89,7 +89,23 @@ Every module (via `setting()` and `brand()` helpers).
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Setting is the one module every other module reads from, which shapes everything about its design.
+Values are typed — a school administrator who stores `true` where a string is expected is told so
+rather than silently getting a coerced value — and reads are served from a cache that is
+invalidated on write, so a page that reads a dozen settings still costs one lookup.
+
+The resolution chain is what makes this usable offline. A value may come from an override, from the
+stored record, from configuration, or from a compiled-in default, and callers ask for a setting by
+name without knowing or caring which of those answered. That is why changing the school name or the
+primary colour does not require touching code, and why a fresh install still renders a complete
+interface before anyone has configured anything.
+
+Branding is the most visible consumer: colours, logos, and the site identity are read from the same
+store, so a school re-skins the whole application by uploading assets rather than by editing
+templates. Sensitive values — mail credentials, keys — are stored encrypted rather than in plain
+configuration, and mail settings can be tested from the settings screen before the school depends
+on them, so a misconfigured server is discovered by the administrator rather than by a student
+who never received their activation mail.
 
 ---
 

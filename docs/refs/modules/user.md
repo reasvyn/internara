@@ -78,4 +78,22 @@ All modules (via user foreign keys, morph relationships, or policy checks).
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+User separates the person from the login. Authentication identity — credentials, roles, status —
+lives apart from the profile a human being would recognise, so that a student changing their phone
+number never touches their access rights, and so that the two can be governed by different rules
+about who may edit them.
+
+The account's status is a guarded state machine rather than a boolean. A new account is provisioned
+before it is activated, activated before it is verified, and from there can be restricted,
+suspended, deactivated, or archived — with transitions refused when they make no sense, such as
+archiving a suspended account without reactivating it first. Every transition is written to the
+audit trail, because "why can this student no longer log in" is a question a school will be asked.
+
+Dashboards are role-shaped rather than uniform. A student sees their own progress, a supervisor sees
+the students they mentor, a teacher sees their department, and an administrator sees the whole
+institution — each derived from the same underlying records through read actions, so a student
+can never obtain a wider view by changing a query parameter.
+
+The notification surface is deliberately in-app first. A school on a school LAN cannot depend on
+external mail for day-to-day operation, so the notification centre is the primary channel and
+email is the supplement.

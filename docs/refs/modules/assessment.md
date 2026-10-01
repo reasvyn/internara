@@ -91,4 +91,19 @@ as proxy for supervisors via the Cross-Role Proxy mechanism (see
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Assessment answers a different question from Journal: not whether the student showed up, but
+whether they can do the job. The instrument is the rubric — a weighted tree of competencies, each
+broken into scored indicators — and it is authored once and reused across programs and rounds.
+Storing that tree as structured data rather than normalized tables means a rubric can change shape
+between subjects without a migration, and it means a historical score never has to agree with
+today's template, because a score points at an indicator key rather than at a live row.
+
+An assessment is therefore a filled-in instance: one evaluator, one student registration, one
+rubric, and a set of indicator scores plus a written comment. Several evaluators can assess the
+same student independently — a teacher and an industry supervisor both have a view — and the
+aggregate is computed rather than typed, so a grader cannot accidentally overrule the rubric's
+weighting by entering a different total.
+
+Finalization is the irreversible step. Until it happens a record is revisable; afterwards it is
+frozen, and a correction means opening a new round rather than editing history. That boundary is
+what allows reports and certificates to treat an assessment as settled fact.

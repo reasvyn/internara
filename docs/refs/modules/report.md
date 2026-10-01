@@ -87,4 +87,19 @@ transparency.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Report is where the internship becomes a result. Nothing here is entered by hand: the supervisor,
+teacher, and exam components are pulled from the assessments already recorded, and the composite is
+computed from the weight distribution the program defined. A coordinator's judgement enters as the
+written feedback and the sign-off, not as an override of the arithmetic — the system will not let a
+person quietly replace a weighted total with a number they preferred.
+
+Finalization is the point of no return, and it does two things at once. It locks the grade card,
+and it takes a full snapshot — the student's identity, the program, the host company, the
+department, the supervisor's name — so the record stands on its own afterwards. That matters
+because the sources are not permanent: a company can be archived, a supervisor can leave, an
+assessment record can be pruned by a retention policy, and a certificate still has to be
+defensible years later when a graduate claims a different result.
+
+Because the grade card is the prerequisite for certification, finalization is also the trigger the
+rest of the system waits on. Nothing downstream can produce a document for a student whose result
+is still being negotiated.

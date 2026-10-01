@@ -95,4 +95,20 @@ events).
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Auth treats "who are you" and "what may you do" as two separate problems, because conflating them
+is what makes permission systems unmaintainable. Identity is a login pipeline that validates in a
+fixed order — the identifier's shape, then whether it exists, then whether the account is in a
+state that permits login, and only then the password — so the failure message never reveals
+whether an account exists to someone probing the form. Attempts are throttled per address and
+identifier, and sustained failure locks the account rather than merely slowing an attacker down.
+
+Authorization is flat and role-based: five roles with no inheritance, resolved at request time.
+Super admin is not just the top of a hierarchy but a protected singleton — its identity is locked,
+it cannot be deleted, and it exists so that a school can never end up with nobody able to
+recover the system. That same guarantee is why recovery is a first-class flow: a recovery key, a
+redeemable slip, and a confirmation step exist for the day someone loses the account, and the
+super admin can be recovered from the server itself when nobody can log in at all.
+
+Every authentication event — success, failure, password change, recovery — is emitted and logged,
+so a school answering a parent who asks "was my child signed in" has an answer rather than a
+guess.

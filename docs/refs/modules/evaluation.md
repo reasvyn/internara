@@ -98,5 +98,26 @@ Once submitted, an evaluation response cannot be modified. The audit trail prese
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
+Evaluation is designed as the qualitative counterpart to Assessment. Where assessment scores
+competencies through a rubric, evaluation collects stakeholder perspective — how the mentor
+supervised, how the company treated the student, how the program ran — and blends it into a
+weighted overall that feeds the same certificate decision.
+
+The structure is deliberately flexible. Rather than one fixed questionnaire, an administrator
+composes a form from sections, each holding typed questions with their own weights: a scale, a
+choice, a constrained option list, or free text. Because weight is a property of the question, a
+review of mentoring guidance can outweigh a review of administration without any special-casing.
+A form can then be aimed at different subjects — a mentor, a program, a company — so one instrument
+serves every context instead of being cloned per target.
+
+Two properties make the resulting data trustworthy. A response freezes at submission, because
+feedback edited after seeing the aggregate has lost its evidentiary value. And answers are
+uniquely constrained per response and question, so two concurrent submits resolve to one stored
+answer rather than silently double-counting.
+
+**Current state:** the schema for all of the above is implemented and tested — five models, their
+factories and migrations, plus structure, response, traceability, localization, and hygiene tests.
+The module has no Actions, Policies, Livewire components, or route file, so form authoring,
+response submission, and weighted scoring do not yet run. The spec is tracked as `Partial`; see
+[AXKZW](../../specs/AXKZW-evaluation.md).
 

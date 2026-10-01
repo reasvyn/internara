@@ -79,9 +79,11 @@ restricted views.
 
 ## Used By
 
-- Journals (activity context per registration)
+- Journals (monitoring visits per registration)
 - Assessment (grading per registration)
 - Reports (grade card per registration)
+- Evaluation (feedback targets an internship or registration)
+- Certification (certificate eligibility per registration)
 
 ## Design Principles
 
@@ -92,5 +94,17 @@ restricted views.
 
 ## How It Works
 
-*Content to be added — verify against actual implementation.*
-- Journals (monitoring visits per registration)
+Enrollment is a two-stage funnel. A prospective student first applies without an account, and an
+administrator reviews the application. Approval is the hinge of the whole system: in one
+transaction it provisions the user account, opens the registration, and reserves the initial
+placement slot, then issues an activation link. A rejected application leaves no partial trace.
+
+Once registered, the student moves through verification of uploaded documents, then placement.
+Placement is a slot business — each company exposes a named location with a quota, and the
+system tracks how much of that quota is consumed. Direct placement by staff and student-initiated
+change requests both move a student between slots, and each change is a reviewed decision rather
+than an edit, so the history of a placement is always reconstructable.
+
+A student's registration status is the gate on everything downstream: journals, assignments, and
+assessments all key off an active registration, so withdrawing or archiving a student closes
+access without deleting their history.
