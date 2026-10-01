@@ -5,13 +5,13 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-09-07 |
-| Technical Story | Spec-driven testing refactor → MVP requirement triage across all 62 feature specs |
+| Technical Story | Spec-driven testing refactor → MVP requirement triage across all 66 feature specs |
 
 ## Context and Problem Statement
 
 Testing is spec-driven: every `FR-*`/`NFR-*`/`UC-*` in a spec must have a tracing test, and every
 test must trace to a requirement. The full spec corpus carries **2,004 FR + 778 NFR + 259 UC**
-requirement rows across 62 spec files. A meaningful portion describes operational depth that is
+requirement rows across 66 spec files. A meaningful portion describes operational depth that is
 over-engineered relative to what a *minimum viable product* needs — multi-driver database dumps,
 deep compliance subsystems, retention/archival pipelines, recovery-key ecosystems, notification
 fanout matrices, CLI/scheduling surface area, and micro-benchmark performance targets.
@@ -94,6 +94,6 @@ retention-policy automation or deletion engines may be deferred.
 
 ## Links
 
-* [Spec Index](../specs/index.md) — 62 feature specs affected by this decision
+* [Spec Index](../specs/index.md) — 66 feature specs affected by this decision
 * [Testing Pattern](../guides/arch/testing-pattern.md) — layer patterns referenced by Test Requirements sections
 * `tools/scan_spec_tests.py` — spec↔test coverage guard (uses FR/NFR/UC prefixes; `TR-*` IDs are exempt)

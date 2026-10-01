@@ -549,7 +549,7 @@ hand-maintained lists.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Module discovery](I1BCV-module-discovery.md) — roster ownership (FR-MOD-001/002), registry shape, conventions baseline
 - [Base classes](SE5Q9-base-classes.md) — Support-static vs Service-instance conventions
 - [Shared utilities](C8F0D-shared-utilities.md) — `SmartLogger` for discovery logging

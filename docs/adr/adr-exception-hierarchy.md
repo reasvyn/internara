@@ -9,7 +9,7 @@
 
 ## Context and Problem Statement
 
-Across 18 modules, failures across layers must be distinguishable by purpose, not just class
+Across 19 modules, failures across layers must be distinguishable by purpose, not just class
 name. A `RejectedException` from an Action and a `ValidationFailedException` from a FormRequest
 should be catchable independently — a controller catching module violations must not accidentally
 catch infrastructure errors. Early variants included `ConflictException`, `NotFoundException`,

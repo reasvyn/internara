@@ -24,7 +24,7 @@ system as a whole stays navigable.
 * Feature cohesion — one directory tree per business capability
 * Explicit module boundaries that can be reasoned about and tested
 * Mechanical addition of new modules without cross-cutting edits
-* Navigability: predictable path conventions across 18 modules
+* Navigability: predictable path conventions across 19 modules
 
 The 4 architectural layers framing every slice:
 

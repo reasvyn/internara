@@ -375,7 +375,7 @@ components enforce.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — FR-ARC-027 cross-module side effects as Events
 - [Base classes](SE5Q9-base-classes.md) — `BaseEvent` class and `dispatchEvent()` implementation
 - [Logging & error handling](89SRA-logging-and-error-handling.md) — SmartLogger dispatch+log

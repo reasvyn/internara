@@ -334,7 +334,7 @@ headers details, which extends the CSP and HSTS policies defined in this pipelin
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — layer model this pipeline enforces
 - [Security headers](1PGM4-security-headers.md) — header values applied by FR-MID-003
 - [RBAC & authorization](T4B26-rbac-and-authorization.md) — role semantics behind FR-MID-006

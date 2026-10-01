@@ -500,7 +500,7 @@ verified by manifest audit, migration smoke, and the health command rather than 
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Tech stack](FB792-tech-stack.md) — dependency pins this floor implements
 - [Base classes](SE5Q9-base-classes.md) — contracts outside this spec's scope
 - [Module discovery](I1BCV-module-discovery.md) — registry built on this platform

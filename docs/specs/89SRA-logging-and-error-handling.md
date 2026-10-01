@@ -814,7 +814,7 @@ references; this spec is the authoritative contract.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [ADR: SmartLogger dual-channel](../adr/adr-smartlogger-dual-channel.md) — why two channels + masking
 - [ADR: Exception hierarchy](../adr/adr-exception-hierarchy.md) — why sibling trees + selection guide
 - [ADR: Base-class mandate](../adr/adr-base-class-mandate.md) — `BaseAction`/`BaseModel` enforcement

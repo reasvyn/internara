@@ -354,7 +354,7 @@ solely on this — these utilities are used broadly.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — layer model and C4/D1 invariants
 - [Tech stack](FB792-tech-stack.md) — PHP 8.4 and Laravel classes these helpers build on
 - [Base classes](SE5Q9-base-classes.md) — contracts these utilities complement

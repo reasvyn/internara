@@ -124,7 +124,7 @@ Refer to the [Module Documentation Index](refs/modules/index.md) for the complet
 
 ## Architecture Decision Records
 
-Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, observability, quality, and strategic decisions.
+Refer to the [ADR Index](adr/index.md) for all 16 records covering foundation, observability, quality, proxy, and strategic decisions.
 
 ---
 

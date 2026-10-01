@@ -542,7 +542,7 @@ top of the same generation Action. No schema work is needed beyond the shared to
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Authentication](YB7RG-authentication.md) — `User` and `AccessToken` infrastructure this spec builds on
 - [Password Reset](D9TKW-password-reset.md) — the email recovery path this spec backs up
 - [Recovery Ecosystem](C9ZB6-recovery-ecosystem.md) — super-admin CLI recovery, explicitly out of scope here

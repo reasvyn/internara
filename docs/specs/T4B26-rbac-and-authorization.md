@@ -473,7 +473,7 @@ policies.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Base classes](SE5Q9-base-classes.md) — `BasePolicy` and trait contracts this spec consumes
 - [Module manager](B114U-module-manager.md) — owns policy auto-discovery mechanics
 - [Authentication](YB7RG-authentication.md) — login inside this role model

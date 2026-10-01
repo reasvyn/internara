@@ -708,7 +708,7 @@ center delivery reads correctly.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Notification Infrastructure](TXR2H-notification-infrastructure.md) — delivery backbone this spec fans out through
 - [RBAC & Authorization](T4B26-rbac-and-authorization.md) — role middleware and admin gating
 - [ADR: Cross-module communication](../adr/adr-cross-module-communication.md) — events vs delegation guidance

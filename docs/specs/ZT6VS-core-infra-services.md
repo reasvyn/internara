@@ -594,7 +594,7 @@ This spec governs configuration files (`config/cache.php`, `config/session.php`,
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — places these services in the Framework/Infra layer
 - [Tech stack](FB792-tech-stack.md) — dependency manifest these services are configured from
 - [Base classes](SE5Q9-base-classes.md) — BaseModel and Actions consuming these services

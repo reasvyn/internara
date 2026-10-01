@@ -596,7 +596,7 @@ authoritative contract.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture overview](../architecture.md) — 4-layer model, data-flow diagram, R1–R7 rules
 - [Conventions](../conventions.md) — C1–C8 and D1–D6 invariants referenced throughout
 - [Pattern catalog](../guides/arch/index.md) — one link per pattern (action, entity, data, model, event, policy, …)

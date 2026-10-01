@@ -764,7 +764,7 @@ incident dispatch only after the center renders correctly in isolation.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture](D2FT3-architecture.md) — module-first 4-layer model and Action Triad
 - [Event System](NUCY3-event-system.md) — `BaseEvent` contract and listener conventions
 - [Announcement System](3S55V-announcement-system.md) — largest consumer of this backbone

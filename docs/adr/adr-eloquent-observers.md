@@ -11,7 +11,7 @@
 
 Internara has two mechanisms for reacting to model changes: decoupled Events + Listeners
 (cross-module, fire-and-forget, queueable) and Eloquent Observers (single-model, synchronous).
-Most side effects use events (49 events, 20 listeners across 13 modules), but three use cases
+Most side effects use events (51 events, 22 listeners across 16 modules), but three use cases
 require tighter coupling: cache invalidation must complete before the response (events are
 deferred until after commit), snapshots must capture state at the exact status-change moment
 (event payload may be stale), and deletion guards must prevent the delete before it proceeds

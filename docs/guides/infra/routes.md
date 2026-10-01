@@ -56,9 +56,13 @@ parent module file unless the submodule has 5+ routes or belongs to a distinct b
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 17 module route files in dependency order. Modules with
+The master file `routes/web.php` `require`s 16 module route files in dependency order. Modules with
 submodules may additionally `require` submodule-specific route files (e.g., `auth.login.php`). If
 two files register the same route name, the later one wins.
+
+The three modules without a route file are `core` (no HTTP surface of its own), `evaluation`
+(models only, no UI yet), and `ui` (Blade components are resolved through the view namespace, not
+routes).
 
 ```mermaid
 flowchart LR
@@ -268,7 +272,7 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with `require`s in dependency order
-- `routes/web/` — 17 module route files (plus optional submodule files: `{submodule}.php`)
+- `routes/web/` — 16 module route files (plus optional submodule files: `{submodule}.php`)
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes

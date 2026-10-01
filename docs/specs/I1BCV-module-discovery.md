@@ -577,7 +577,7 @@ discovered surfaces run inside.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture spec](D2FT3-architecture.md) — FR-ARC-005/031 registry rules this spec implements
 - [Module manager spec](B114U-module-manager.md) — runtime `ModuleService`/`ModuleManager` API (§6.2)
 - [Logging spec](89SRA-logging-and-error-handling.md) — SmartLogger used by `module:discover`

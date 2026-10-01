@@ -344,7 +344,7 @@ infrastructure for async processing.
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — layer model and defense-in-depth (NFR-ARC-005)
 - [Middleware pipeline](2CF4Y-middleware-pipeline.md) — pipeline position of `SecurityHeadersMiddleware`
 - [Job & queue infrastructure](8FVZA-job-queue-infrastructure.md) — downstream consumer context

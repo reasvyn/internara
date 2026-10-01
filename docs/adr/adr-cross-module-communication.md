@@ -9,7 +9,7 @@
 
 ## Context and Problem Statement
 
-Internara organizes code into 18 modules, each owning a complete vertical slice (Models,
+Internara organizes code into 19 modules, each owning a complete vertical slice (Models,
 Actions, Livewire, Policies). Business processes naturally span modules — student registration
 touches Enrollment, Program, and User; closing a program touches Assessment, Certification,
 and Reports.

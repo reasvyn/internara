@@ -358,7 +358,7 @@ added here, versions are bumped here, and every other spec builds on the resulti
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — the layer model these dependencies serve
 - [Core & infrastructure services](ZT6VS-core-infra-services.md) — runtime behavior of these packages
 - [Base classes](SE5Q9-base-classes.md) — Action Triad and boundary objects on this platform

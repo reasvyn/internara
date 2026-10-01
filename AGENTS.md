@@ -40,8 +40,8 @@ conflict or the choice would change with history; contradictory history → repo
 | Coding conventions: PHP style, security, naming, perf, testing, i18n, theming | [`docs/conventions.md`](docs/conventions.md) | C1–C8, D1–D6 invariants, pre-commit & review checklists |
 | Pattern catalog (Action Triad, Entity/Model/DTO/Enum, Event, Cache, Logging, Livewire, Service, Support, Repository, Policy, UI/UX, Testing) | [`docs/guides/arch/index.md`](docs/guides/arch/index.md) | One link per pattern → deep-dive `*-pattern.md` |
 | Modular architecture deep-dive (SRP, base classes, contracts, naming, accessibility, localization) | [`docs/guides/arch/modular-pattern.md`](docs/guides/arch/modular-pattern.md) | §1–§23 pattern catalog |
-| Feature / module specs (62 + 2 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
-| ADRs — why each decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 6 groups |
+| Feature / module specs (66 + 1 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
+| ADRs — why each decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 5 groups |
 | Module conceptual + reference docs | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) | One conceptual + one reference per module |
 | Tooling — scanners, CLI flags, output schema, inventory | [`tools/README.md`](tools/README.md) | Full scanner reference; AGENTS.md keeps only the batch below (§5) |
 | Doc-type templates (skeleton + writing rules) | [`docs/templates/index.md`](docs/templates/index.md) | 10 templates — load the matching one when its concern is touched |
@@ -408,7 +408,7 @@ Module roster, dependency graph, and module health: `docs/refs/modules/index.md`
 - `docs/conventions.md` — C1–C8, D1–D6 invariants, pre-commit & code-review checklists
 - `docs/guides/arch/index.md` — pattern catalog (one link per pattern)
 - `docs/guides/arch/modular-pattern.md` — modular architecture deep-dive (§1–§23)
-- `docs/specs/index.md` — 62 feature specs + 2 meta, grouped in 12 phases
+- `docs/specs/index.md` — 66 feature specs + 1 meta, grouped in 12 phases
 - `docs/adr/index.md` — 16 ADRs across Foundation / Observability / Quality / Proxy / Strategy
 - `docs/philosophy.md` — 7 guiding principles + core values table
 - `docs/refs/modules/index.md` — module conceptual + reference doc index

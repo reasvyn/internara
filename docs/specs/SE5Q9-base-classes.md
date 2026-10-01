@@ -606,7 +606,7 @@ This spec defines the architectural vocabulary: Action Triad for business logic,
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture design](D2FT3-architecture.md) — the governing architecture these bases implement (FR-ARC-011–023)
 - [Core infra services](ZT6VS-core-infra-services.md) — runtime services the bases consume
 - [Base-class-mandate ADR](../adr/adr-base-class-mandate.md) — why one base per layer

@@ -14,7 +14,7 @@ notifications, queue workers, testing, security, scaling, localization, and deve
 - **[Caching Strategy](cache.md)** — Centralized key registry, invalidation, Redis, OpCache
 - **[Filesystem](filesystem.md)** — Storage architecture, Spatie Media Library integration, file locations, image conversions
 - **[Media Library](media-library.md)** — Collections, conversions, file size limits, queue integration, S3-compatible cloud storage
-- **[Routes & Middleware](routes.md)** — Route structure, 17 module-split route files, middleware groups, naming conventions
+- **[Routes & Middleware](routes.md)** — Route structure, 16 module-split route files, middleware groups, naming conventions
 - **[Session](session.md)** — Session configuration, drivers, security considerations
 - **[Notifications](notification.md)** — Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM
 - **[Queue & Workers](queue.md)** — Queue drivers, worker management, Supervisor configuration, job lifecycle, retry/backoff

@@ -13,7 +13,7 @@ fragmented, paper-and-chat workflow — WhatsApp + Excel + physical forms — wi
 record: placement, attendance, logbook, supervision, assessment, certification, and reporting.
 
 This is the **spec-zero** spec. It establishes the project boundary, role model, global requirements
-every feature spec inherits, and the MVP scope. All 62 feature specs are indexed in
+every feature spec inherits, and the MVP scope. All 66 feature specs are indexed in
 [docs/specs/index.md](index.md). The requirements here are project-global: each feature spec may
 tighten but never violate them. Research evidence that *informs* these requirements lives in
 [`../refs/articles/`](../refs/articles/) and is explicitly non-testable (DD-ARCH-004) — the
@@ -542,7 +542,7 @@ Items **not yet decided, explicitly deferred, or unverified** at the time of wri
 ## Quick References
 
 - [Spec template](../templates/spec-template.md) — the 10-section skeleton + requirement-ID rules
-- [Spec registry](index.md) — all 62 feature specs + 2 meta, grouped in 12 phases
+- [Spec registry](index.md) — all 66 feature specs + 1 meta, grouped in 12 phases
 - [Architecture](D2FT3-architecture.md) — module-first 4-layer architecture (governing spec for FR-GLB-007/008/009)
 - [PKL research](../refs/articles/pkl-operational-research.md) — field evidence, non-testable (input, not spec)
 - [Curriculum compliance](../refs/articles/curriculum-compliance.md) — regulatory mapping, non-testable (input, not spec)
