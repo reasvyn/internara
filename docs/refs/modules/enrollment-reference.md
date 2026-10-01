@@ -38,6 +38,7 @@ applications, and registration document uploads.
 | `Domain/Placement/Models/Placement.php` | `Placement` | `BaseModel` |
 | `Domain/Registration/Models/Registration.php` | `Registration` | `BaseModel` |
 | `Domain/Registration/Models/RegistrationDocument.php` | `RegistrationDocument` | `BaseModel` |
+| `Domain/Placement/Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` |
 
 ## Data / DTOs
 

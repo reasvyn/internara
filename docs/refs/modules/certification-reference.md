@@ -118,6 +118,14 @@ Tests are located in `tests/{Type}/Certification/` (Arch, Unit, Feature, Browser
 
 ---
 
+## Services
+
+| File | Service | Purpose |
+|---|---|---|
+| `Domain/Certificate/Services/CertificateRenderer.php` | `CertificateRenderer` | — |
+
+---
+
 ## Architectural Integration
 
 - **Submodules**: `Certificate`

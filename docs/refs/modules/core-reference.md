@@ -211,6 +211,8 @@ The helpers `setting()` and `brand()` are defined in `app/Modules/Setting/Suppor
 | `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseCommandAction` |
 | `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseCommandAction` |
 | `Actions/BaseReadAction.php` | `BaseReadAction` | `BaseCommandAction` |
+| `Actions/Concerns/HandlesActionErrors.php` | `HandlesActionErrors` | — |
+| `Actions/Concerns/ResolvesModuleName.php` | `ResolvesModuleName` | — |
 
 
 ## Models

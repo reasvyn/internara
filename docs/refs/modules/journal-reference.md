@@ -45,6 +45,7 @@ field monitoring visit scheduling/verification.
 | `Domain/Logbook/Models/Logbook.php` | `Logbook` | `BaseModel` |
 | `Domain/MonitoringVisit/Models/MonitoringVisit.php` | `MonitoringVisit` | `BaseModel` |
 | `Domain/SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` | `BaseModel` |
+| `Domain/AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` |
 
 ## Enums
 

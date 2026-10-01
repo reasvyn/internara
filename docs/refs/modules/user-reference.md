@@ -21,11 +21,11 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Domain/Dashboard/Actions/ReadStudentDashboardAction.php` | `ReadStudentDashboardAction` | `BaseReadAction` |
 | `Domain/Dashboard/Actions/ReadSupervisorDashboardAction.php` | `ReadSupervisorDashboardAction` | `BaseReadAction` |
 | `Domain/Dashboard/Actions/ReadTeacherDashboardAction.php` | `ReadTeacherDashboardAction` | `BaseReadAction` |
-| `Domain/Notifications/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseCommandAction` |
-| `Domain/Notifications/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseCommandAction` |
-| `Domain/Notifications/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseCommandAction` |
-| `Domain/Notifications/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseCommandAction` |
-| `Domain/Notifications/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseCommandAction` |
+| `Domain/Notify/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseCommandAction` |
+| `Domain/Notify/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseCommandAction` |
+| `Domain/Notify/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseCommandAction` |
+| `Domain/Notify/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseCommandAction` |
+| `Domain/Notify/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseCommandAction` |
 | `Domain/Profile/Actions/ReadProfileFormAction.php` | `ReadProfileFormAction` | `BaseReadAction` |
 | `Domain/Profile/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseCommandAction` |
 | `Domain/UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseCommandAction` |
@@ -56,7 +56,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Class | Extends |
 |---|---|---|
-| `Domain/Notifications/Models/Notification.php` | `Notification` | `BaseModel` |
+| `Domain/Notify/Models/Notification.php` | `Notification` | `BaseModel` |
 | `Domain/Profile/Models/Profile.php` | `Profile` | `BaseModel` |
 | `Models/User.php` | `User` | `BaseModel` |
 
@@ -85,7 +85,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Policy | Extends |
 |---|---|---|
-| `Domain/Notifications/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` |
+| `Domain/Notify/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` |
 | `Domain/Profile/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` |
 | `Policies/Concerns/HasMentorProxy.php` | `HasMentorProxy` | `BasePolicy` |
 
@@ -95,7 +95,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | — |
 | `Domain/Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` | `ClearDashboardCacheOnYearChange` | — |
-| `Domain/Notifications/Listeners/ClearUnreadNotificationCache.php` | `ClearUnreadNotificationCache` | — |
+| `Domain/Notify/Listeners/ClearUnreadNotificationCache.php` | `ClearUnreadNotificationCache` | — |
 | `Domain/Profile/Listeners/SendProfileChangedMail.php` | `SendProfileChangedMail` | — |
 | `Domain/UserManagement/Listeners/InvalidateUserCache.php` | `InvalidateUserCache` | — |
 
@@ -109,8 +109,8 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Domain/Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` |
 | `Domain/Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `Component` |
 | `Domain/Dashboard/Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
-| `Domain/Notifications/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
-| `Domain/Notifications/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` |
+| `Domain/Notify/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
+| `Domain/Notify/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` |
 | `Domain/Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `BaseFormView` |
 | `Domain/Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `BaseFormView` |
 | `Domain/Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` |
@@ -144,8 +144,8 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/AccountStatus/Events/UserAccountLocked.php` | `UserAccountLocked` | `BaseEvent` |
 | `Domain/AccountStatus/Events/UserAccountUnlocked.php` | `UserAccountUnlocked` | `BaseEvent` |
-| `Domain/Notifications/Events/NotificationRead.php` | `NotificationRead` | `BaseEvent` |
-| `Domain/Notifications/Events/NotificationSent.php` | `NotificationSent` | `BaseEvent` |
+| `Domain/Notify/Events/NotificationRead.php` | `NotificationRead` | `BaseEvent` |
+| `Domain/Notify/Events/NotificationSent.php` | `NotificationSent` | `BaseEvent` |
 | `Domain/Profile/Events/ProfileUpdated.php` | `ProfileUpdated` | `BaseEvent` |
 | `Domain/UserManagement/Events/UserCreated.php` | `UserCreated` | `BaseEvent` |
 | `Domain/UserManagement/Events/UserDeleted.php` | `UserDeleted` | `BaseEvent` |
@@ -231,6 +231,15 @@ conventions. Tests are spec-driven: each test traces to a spec requirement ID (`
 | `create_users_table`         | `users`         |
 | `create_profiles_table`      | `profiles`      |
 | `create_notifications_table` | `notifications` |
+
+---
+
+## Services
+
+| File | Service | Purpose |
+|---|---|---|
+| `Services/DashboardService.php` | `DashboardService` | Resolve dashboard route with proxy awareness |
+| `Services/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates unique usernames for new user accounts |
 
 ---
 

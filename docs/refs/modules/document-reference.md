@@ -164,6 +164,14 @@ for the testing conventions.
 
 ---
 
+## Services
+
+| File | Service | Purpose |
+|---|---|---|
+| `Services/DocumentRenderer.php` | `DocumentRenderer` | — |
+
+---
+
 ## Architectural Integration
 
 - **Submodules**: `OfficialDocument`, `Handbook`

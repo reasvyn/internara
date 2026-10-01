@@ -142,6 +142,14 @@ for the testing conventions. Tests are spec-driven: each test traces to a spec r
 
 ---
 
+## Services
+
+| File | Service | Purpose |
+|---|---|---|
+| `Services/Settings.php` | `Settings` | — |
+
+---
+
 ## Architectural Integration
 
 - **Submodules**: `Branding`, `Locale`, `Theme`

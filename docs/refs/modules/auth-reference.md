@@ -30,13 +30,13 @@ permissions.
 
 | File | Class | Extends |
 |---|---|---|
-| `Domain/AccessTokens/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
+| `Domain/AccessToken/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
 
 ## Enums
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Permissions/Enums/Role.php` | `Role` | `LabelEnum` | — |
+| `Domain/Permission/Enums/Role.php` | `Role` | `LabelEnum` | — |
 
 ## Entities
 
@@ -52,7 +52,7 @@ permissions.
 
 | File | Policy | Extends |
 |---|---|---|
-| `Domain/Permissions/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` |
+| `Domain/Permission/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` |
 
 ## Data / DTOs
 
@@ -115,13 +115,13 @@ permissions.
 | File                                                  | Middleware               | Purpose                    |
 | ----------------------------------------------------- | ------------------------ | -------------------------- |
 | `Login/Http/Middleware/AuthThrottleMiddleware.php`    | `AuthThrottleMiddleware` | Rate-limits login attempts |
-| `Permissions/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware`    | Route-level role gate      |
+| `Permission/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware`    | Route-level role gate      |
 
 ## Form Requests
 
 | File | Request | Purpose |
 |---|---|---|
-| `Domain/Permissions/Http/Requests/RoleRequest.php` | `RoleRequest` | — |
+| `Domain/Permission/Http/Requests/RoleRequest.php` | `RoleRequest` | — |
 
 ## Routes
 

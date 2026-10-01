@@ -124,6 +124,14 @@ None.
 
 ---
 
+## Services
+
+| File | Service | Purpose |
+|---|---|---|
+| `Domain/Installation/Services/SystemProvisioner.php` | `SystemProvisioner` | — |
+
+---
+
 ## Architectural Integration
 
 - **Submodules**: `Installation`, `SetupWizard`

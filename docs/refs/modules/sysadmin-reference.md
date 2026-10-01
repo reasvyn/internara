@@ -20,17 +20,17 @@ logging, Pulse observability, and GDPR compliance.
 | `Domain/Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
 | `Domain/Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseCommandAction` |
 | `Domain/Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseCommandAction` |
-| `Domain/Backups/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
-| `Domain/Backups/Actions/CreateBackupAction.php` | `CreateBackupAction` | `BaseCommandAction` |
-| `Domain/Backups/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
-| `Domain/Backups/Actions/ReadBackupStatsAction.php` | `ReadBackupStatsAction` | `BaseReadAction` |
+| `Domain/Backup/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
+| `Domain/Backup/Actions/CreateBackupAction.php` | `CreateBackupAction` | `BaseCommandAction` |
+| `Domain/Backup/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
+| `Domain/Backup/Actions/ReadBackupStatsAction.php` | `ReadBackupStatsAction` | `BaseReadAction` |
 
 ## Models
 
 | File | Class | Extends |
 |---|---|---|
 | `Domain/Announcement/Models/Announcement.php` | `Announcement` | `BaseModel` |
-| `Domain/Backups/Models/Backup.php` | `Backup` | `BaseModel` |
+| `Domain/Backup/Models/Backup.php` | `Backup` | `BaseModel` |
 | `Domain/Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` |
 
 ## Enums
@@ -38,8 +38,8 @@ logging, Pulse observability, and GDPR compliance.
 | File | Enum | Implements | Values |
 |---|---|---|---|
 | `Domain/Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum` | — |
-| `Domain/Backups/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
-| `Domain/Backups/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
+| `Domain/Backup/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
+| `Domain/Backup/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
 
 ## Entities
 
@@ -52,7 +52,7 @@ logging, Pulse observability, and GDPR compliance.
 
 | File | Policy | Extends |
 |---|---|---|
-| `Domain/Backups/Policies/BackupPolicy.php` | `BackupPolicy` | `BasePolicy` |
+| `Domain/Backup/Policies/BackupPolicy.php` | `BackupPolicy` | `BasePolicy` |
 | `Domain/Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` |
 
 ## Livewire Components
@@ -61,7 +61,7 @@ logging, Pulse observability, and GDPR compliance.
 |---|---|---|
 | `Domain/Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `BaseRecordManager` |
 | `Domain/Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `BaseFormView` |
-| `Domain/Backups/Livewire/BackupManager.php` | `BackupManager` | `BaseRecordManager` |
+| `Domain/Backup/Livewire/BackupManager.php` | `BackupManager` | `BaseRecordManager` |
 | `Domain/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
 | `Domain/Observability/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
 | `Domain/Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `BaseRecordManager` |
@@ -73,14 +73,14 @@ logging, Pulse observability, and GDPR compliance.
 
 | File | Event | Extends |
 |---|---|---|
-| `Domain/Backups/Events/BackupCompleted.php` | `BackupCompleted` | `BaseEvent` |
-| `Domain/Backups/Events/BackupFailed.php` | `BackupFailed` | `BaseEvent` |
+| `Domain/Backup/Events/BackupCompleted.php` | `BackupCompleted` | `BaseEvent` |
+| `Domain/Backup/Events/BackupFailed.php` | `BackupFailed` | `BaseEvent` |
 
 ## Services
 
 | File                                            | Service              | Purpose                       |
 | ----------------------------------------------- | -------------------- | ----------------------------- |
-| `Backups/Services/BackupRunner.php`             | `BackupRunner`       | Backup execution orchestration |
+| `Backup/Services/BackupRunner.php`             | `BackupRunner`       | Backup execution orchestration |
 | `Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
 | `Observability/Services/PulseGuard.php`         | `PulseGuard`         | Pulse monitoring guard        |
 
@@ -89,13 +89,13 @@ logging, Pulse observability, and GDPR compliance.
 | File                                                      | Notification               |
 | --------------------------------------------------------- | -------------------------- |
 | `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
-| `Backups/Notifications/BackupFailedNotification.php`      | `BackupFailedNotification` |
+| `Backup/Notifications/BackupFailedNotification.php`      | `BackupFailedNotification` |
 
 ## Listeners
 
 | File | Listener | Listens To |
 |---|---|---|
-| `Domain/Backups/Listeners/SendBackupFailedNotification.php` | `SendBackupFailedNotification` | — |
+| `Domain/Backup/Listeners/SendBackupFailedNotification.php` | `SendBackupFailedNotification` | — |
 
 ## Console Commands
 
