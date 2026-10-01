@@ -15,7 +15,7 @@
         "@alpinejs/anchor": "^3.17.1",
         "alpinejs": "^3.17.1",
         "concurrently": "^10.0",
-        "dompurify": "^3.4.14",
+        "dompurify": "^3.4.16",
         "flatpickr": "^4.6.13",
         "laravel-vite-plugin": "^3.1",
         "marked": "^18.0.7",
