@@ -1,9 +1,16 @@
 # AXKZW — Evaluation
 
 > **Spec ID:** AXKZW
-> **Status:** Full
+> **Status:** Partial
 > **Owner:** Evaluation
 > **Depends on:** J9GBH
+>
+> > **Decision:** Status corrected from `Full` to `Partial` on 2026-10-01. The schema layer is
+> > complete and tested (5 models, factories, migrations, model-level traceability tests), but
+> > the module ships **no Actions, Policies, Livewire components, or route file** — the entire
+> > Layer 3/Layer 4 surface (form authoring, response submission, weighted scoring, policy gates)
+> > is unimplemented. The per-requirement `Full` markers in §5 and §6 below describe intended
+> > target state, not verified delivery; they are corrected alongside the Actions landing.
 
 ## Description
 

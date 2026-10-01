@@ -164,7 +164,7 @@ Scoring, feedback, coursework. Depends on Phase 7 (placement active).
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
 | ARDA6 | [Assessment](ARDA6-assessment.md) | Assessment | J9GBH | Full |
-| AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | J9GBH | Full |
+| AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | J9GBH | Partial |
 | T657Z | [Assignment](T657Z-assignment.md) | Assignment | J9GBH | Full |
 | T657B | [Assignment Submission](T657B-assignment-submission.md) | Assignment | T657Z | Full |
 | T657C | [Assignment Grading](T657C-assignment-grading.md) | Assignment | T657Z, T657B | Full |

@@ -40,7 +40,8 @@ Manages workplace incident reports, severity classification, and resolution trac
 
 ## Events
 
-*Content to be added — verify against actual implementation.*
+None. The module dispatches no domain events; a submitted incident is delivered through
+`IncidentReportedNotification` rather than an event/listener pair.
 
 ## Notifications
 

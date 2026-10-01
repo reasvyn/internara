@@ -102,7 +102,13 @@ File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token
 
 ## Policies & Permissions
 
-*Content to be added — verify against actual implementation.*
+The module ships no Policy classes. Access is enforced by route middleware instead of
+model policies, because the wizard runs before any user exists:
+
+| Middleware                     | Guards                                                                                            |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `ProtectSetupRouteMiddleware`  | Requires a valid setup token and an authorized session; after installation it redirects away and rate-limits failed attempts |
+| `RequireSetupAccessMiddleware` | Allows only setup paths, Livewire endpoints, and public assets through while the system is unconfigured |
 
 ## Views
 
