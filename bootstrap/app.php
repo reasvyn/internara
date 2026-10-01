@@ -50,7 +50,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
-        $middleware->preventRequestForgery(except: ['setup']);
+        $middleware->preventRequestForgery(except: [
+            'setup',
+            'setup/*',
+            'livewire/*',
+            'livewire-*/*',
+            '_livewire/*',
+        ]);
 
         $middleware->encryptCookies(except: ['locale']);
 

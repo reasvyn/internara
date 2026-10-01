@@ -138,7 +138,7 @@ for the testing conventions. Tests are spec-driven: each test traces to a spec r
 
 | Migration               | Table      |
 | ----------------------- | ---------- |
-| `create_setting_table` | `setting` |
+| `create_settings_table` | `settings` |
 
 ---
 

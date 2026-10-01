@@ -1,7 +1,7 @@
 # Data Archiving & Retention — Full Archival Lifecycle
 
 > **Spec ID:** 9YUUK
-> **Status:** Planned
+> **Status:** Full
 > **Owner:** SysAdmin
 > **Depends on:** E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW
 

@@ -19,7 +19,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
       QUEUE_CONNECTION: sync
       CACHE_STORE: file
-      SESSION_DRIVER: database
+      SESSION_DRIVER: "${SESSION_DRIVER:-file}"
       SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-true}"
       BROADCAST_CONNECTION: log
       RUN_SCHEDULER: "${RUN_SCHEDULER:-false}"

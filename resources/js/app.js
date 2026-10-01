@@ -142,18 +142,27 @@ const bindChoicesEvents = () => {
 }
 
 /**
- * Initialize Alpine Components, Plugins, and Events
+ * Initialize Alpine Plugins, Components and Events
  *
  * Alpine is bundled and managed by Livewire 4.
  * Plugins and custom listeners must be registered during 'alpine:init'
  * without manually starting Alpine to avoid dual-instance collisions.
  */
-document.addEventListener('alpine:init', () => {
-    if (window.Alpine) {
+const initAlpinePlugins = () => {
+    if (window.Alpine && !window.__internaraAlpinePluginsRegistered) {
         window.Alpine.plugin(anchor)
+        window.__internaraAlpinePluginsRegistered = true
     }
+}
+
+document.addEventListener('alpine:init', () => {
+    initAlpinePlugins()
     bindChoicesEvents()
 })
+
+if (window.Alpine) {
+    initAlpinePlugins()
+}
 
 /**
  * Livewire & Theme Sync (CSP-compliant — previously inline in base.blade.php)

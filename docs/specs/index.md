@@ -97,7 +97,7 @@ Authentication, password management, profile, notifications, and dashboards. Dep
 | ID | Spec | Module | Depends On | Status |
 | -- | ---- | ------ | ---------- | ------ |
 | K8HP1 | [Public Landing Page](K8HP1-public-landing-page.md) | User | 52O1I, 8XMYS, MBB5R | Full |
-| 8XMYS | [Layout & UI System](8XMYS-layout-and-ui-system.md) | Core | SE5Q9, I1BCV, YB22J, 52O1I | Partial |
+| 8XMYS | [Layout & UI System](8XMYS-layout-and-ui-system.md) | Core | SE5Q9, I1BCV, YB22J, 52O1I | Full |
 | YB7RG | [Authentication](YB7RG-authentication.md) | Auth | SE5Q9, T4B26 | Full |
 | TXR2H | [Notification Infrastructure](TXR2H-notification-infrastructure.md) | User | SE5Q9, NUCY3 | Full |
 | 3S55V | [Announcement System](3S55V-announcement-system.md) | SysAdmin | YB22J, TXR2H | Full |
@@ -166,8 +166,8 @@ Scoring, feedback, coursework. Depends on Phase 7 (placement active).
 | ARDA6 | [Assessment](ARDA6-assessment.md) | Assessment | J9GBH | Full |
 | AXKZW | [Evaluation](AXKZW-evaluation.md) | Evaluation | J9GBH | Full |
 | T657Z | [Assignment](T657Z-assignment.md) | Assignment | J9GBH | Full |
-| T657B | [Assignment Submission](T657B-assignment-submission.md) | Assignment | T657Z | Planned |
-| T657C | [Assignment Grading](T657C-assignment-grading.md) | Assignment | T657Z, T657B | Planned |
+| T657B | [Assignment Submission](T657B-assignment-submission.md) | Assignment | T657Z | Full |
+| T657C | [Assignment Grading](T657C-assignment-grading.md) | Assignment | T657Z, T657B | Full |
 
 ### Phase 10 — Certification
 
@@ -178,7 +178,7 @@ Credentials, documents, handbooks, media, PDF. Depends on Phases 8–9.
 | PKYX6 | [Document Templates](PKYX6-document-templates.md) | Document | 8NZAU | Full |
 | ZUFG8 | [Handbooks](ZUFG8-handbooks.md) | Document | PKYX6 | Full |
 | J0M04 | [Certification](J0M04-certification.md) | Certification | ARDA6, AXKZW | Full |
-| J0M05 | [Certificate QR Verify](J0M05-certificate-qr-verify.md) | Certification | J0M04 | Planned |
+| J0M05 | [Certificate QR Verify](J0M05-certificate-qr-verify.md) | Certification | J0M04 | Full |
 | WQGTP | [File Uploads & Media](WQGTP-file-uploads-media.md) | Core | SE5Q9 | Full |
 | 7UB7S | [PDF Generation](7UB7S-pdf-generation.md) | Core | WQGTP | Full |
 
@@ -199,10 +199,10 @@ Backup, compliance, job queues, archiving, system cleanup, and demo/test data pr
 | -- | ---- | ------ | ---------- | ------ |
 | 8FVZA | [Job & Queue Infrastructure](8FVZA-job-queue-infrastructure.md) | Core | SE5Q9, NUCY3 | Full |
 | HBXCI | [Backup System](HBXCI-backup-system.md) | SysAdmin | NUCY3, T4B26, YB22J, TXR2H, 8FVZA | Full |
-| HBXC2 | [Backup Retention Cleanup](HBXC2-backup-retention-cleanup.md) | SysAdmin | HBXCI | Planned |
+| HBXC2 | [Backup Retention Cleanup](HBXC2-backup-retention-cleanup.md) | SysAdmin | HBXCI | Full |
 | 7HNCF | [GDPR Compliance](7HNCF-gdpr-compliance.md) | SysAdmin | YB22J, 95EVB | Full |
 | E1MSJ | [System Maintenance](E1MSJ-system-maintenance.md) | SysAdmin | 89SRA, T4B26, 8FVZA, HBXCI | Full |
-| 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW | Planned |
+| 9YUUK | [Data Archiving & Retention](9YUUK-data-archiving.md) | SysAdmin | E1MSJ, HBXCI, 7HNCF, 8FVZA, YB22J, R6BMW | Full |
 | W8K2P | [Docker VPS Deployment](W8K2P-docker-vps-deployment.md) | Core | E1MSJ | Full |
 | H9T4N | [Shared Hosting Deployment](H9T4N-shared-hosting-deployment.md) | Core | 8NZAU, E1MSJ | Full |
 | 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | Core | T4B26, 4HWSB, XW6F5, XI3LB, NTHQA, 7C5WM, IT0OE, MBB5R, J9GBH, 1KSWL, 2EHSE, 3RU9S, ARDA6, AXKZW, T657Z, J0M04, R6BMW | Full |

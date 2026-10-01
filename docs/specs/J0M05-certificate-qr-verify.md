@@ -1,7 +1,7 @@
 # Certificate QR Verification — Public Authenticity Check
 
 > **Spec ID:** J0M05
-> **Status:** Planned
+> **Status:** Full
 > **Owner:** Certification
 > **Depends on:** J0M04
 

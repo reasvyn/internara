@@ -55,9 +55,9 @@ finalization.
 
 ## Observers
 
-| File                                  | Observer         | Observes |
-| ------------------------------------- | ---------------- | -------- |
-| `Report/Observers/ReportObserver.php` | `ReportObserver` | `Report` |
+| File                                                      | Observer                | Observes        |
+| --------------------------------------------------------- | ----------------------- | --------------- |
+| `Domain/StudentReport/Observers/StudentReportObserver.php` | `StudentReportObserver` | `StudentReport` |
 
 
 ## Livewire Components
@@ -83,7 +83,7 @@ finalization.
 
 ## Routes
 
-File: `routes/web/report.php` Only admin download route: `sysadmin.report.download`
+File: `routes/web/report.php` Named routes: `sysadmin.student-report.index`, `sysadmin.student-report.download`
 
 ## Tests
 
@@ -92,15 +92,15 @@ for the testing conventions.
 
 ## Factories
 
-| Factory         | Model    |
-| --------------- | -------- |
-| `ReportFactory` | `Report` |
+| Factory                | Model           |
+| ---------------------- | --------------- |
+| `StudentReportFactory` | `StudentReport` |
 
 ## Migrations
 
 | Migration              | Table     |
 | ---------------------- | --------- |
-| `create_report_table` | `report` |
+| `create_reports_table` | `reports` |
 
 ---
 
