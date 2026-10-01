@@ -8,9 +8,9 @@ use Livewire\Form;
 
 class DepartmentForm extends Form
 {
-    public string $name = '';
+    public ?string $name = '';
 
-    public string $description = '';
+    public ?string $description = '';
 
     protected function rules(): array
     {

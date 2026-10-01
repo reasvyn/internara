@@ -37,7 +37,7 @@
         <x-ts-input
             :label="__('setup.wizard.email_address').' *'"
             type="email"
-            wire:model.live.debounce.500ms="superAdminForm.email"
+            wire:model="superAdminForm.email"
             icon="envelope"
             :placeholder="__('setup.wizard.email_placeholder')"
             autofocus
@@ -46,14 +46,14 @@
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
             <x-ts-password
                 :label="__('setup.wizard.password').' *'"
-                wire:model.live.debounce.500ms="superAdminForm.password"
+                wire:model="superAdminForm.password"
                 icon="lock-closed"
                 right
             />
 
             <x-ts-password
                 :label="__('setup.wizard.confirm_password').' *'"
-                wire:model.live.debounce.500ms="superAdminForm.password_confirmation"
+                wire:model="superAdminForm.password_confirmation"
                 icon="lock-closed"
                 right
             />

@@ -207,6 +207,8 @@ class SetupWizard extends BaseWizard
         }
 
         parent::nextStep();
+
+        $this->saveState();
     }
 
     protected function validateCurrentStep(): void

@@ -9,15 +9,15 @@ use Livewire\Form;
 
 class SuperAdminForm extends Form
 {
-    public string $name = '';
+    public ?string $name = '';
 
-    public string $username = '';
+    public ?string $username = '';
 
-    public string $email = '';
+    public ?string $email = '';
 
-    public string $password = '';
+    public ?string $password = '';
 
-    public string $password_confirmation = '';
+    public ?string $password_confirmation = '';
 
     protected function rules(): array
     {

@@ -8,15 +8,15 @@ use Livewire\Form;
 
 class SchoolForm extends Form
 {
-    public string $name = '';
+    public ?string $name = '';
 
-    public string $institutional_code = '';
+    public ?string $institutional_code = '';
 
-    public string $address = '';
+    public ?string $address = '';
 
-    public string $email = '';
+    public ?string $email = '';
 
-    public string $phone = '';
+    public ?string $phone = '';
 
     public ?string $website = null;
 
