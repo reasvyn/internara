@@ -55,10 +55,12 @@ ENTITY_FORBIDDEN_IMPORTS = [
     "Livewire\\",
     "Http\\Controllers\\",
 ]
-# The settings store (App\Modules\Settings\Services\Settings) is a data-access facade, not a
+# The settings store (App\Modules\Setting\Services\Settings) is a data-access facade, not a
 # business Service. Settings-backed entities (entity-pattern.md §10 & §11.5) may read from it via
 # a get() static factory — documented exemption, so its import must not be flagged as C5.
-SETTINGS_STORE_IMPORT = "App\\Modules\\Settings\\Services\\Settings;"
+# NB: module is `Setting` (singular) since the Settings -> Setting rename; a stale plural
+# namespace here silently disables the exemption and reports false positives.
+SETTINGS_STORE_IMPORT = "App\\Modules\\Setting\\Services\\Settings;"
 
 DTO_FORBIDDEN_IMPORTS = [
     "Models\\",
