@@ -2,7 +2,6 @@
  * UI Module Main Entry Point
  */
 
-import Alpine from 'alpinejs'
 import anchor from '@alpinejs/anchor'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.min.css'
@@ -143,9 +142,16 @@ const bindChoicesEvents = () => {
 }
 
 /**
- * Initialize Alpine Components and Events
+ * Initialize Alpine Components, Plugins, and Events
+ *
+ * Alpine is bundled and managed by Livewire 4.
+ * Plugins and custom listeners must be registered during 'alpine:init'
+ * without manually starting Alpine to avoid dual-instance collisions.
  */
 document.addEventListener('alpine:init', () => {
+    if (window.Alpine) {
+        window.Alpine.plugin(anchor)
+    }
     bindChoicesEvents()
 })
 
@@ -171,16 +177,3 @@ document.addEventListener('livewire:init', () => {
         })
     }
 })
-
-/**
- * Alpine — TALL stack bootstrap.
- *
- * Previous absence (0.15.x) left every x-data/x-cloak/x-show inert,
- * permanently hiding x-cloak'd UI (theme switch, dropdowns, flyouts) via
- * `[x-cloak]{display:none!important}`. Must be started AFTER the
- * `alpine:init` listeners (ours + tallstackui's) are registered so their
- * Alpine.data() calls land before the DOM walk.
- */
-window.Alpine = Alpine
-Alpine.plugin(anchor)
-Alpine.start()

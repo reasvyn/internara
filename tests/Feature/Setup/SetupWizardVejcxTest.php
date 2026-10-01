@@ -14,11 +14,13 @@ use App\Modules\Setup\Domain\SetupWizard\Actions\SetupDepartmentAction;
 use App\Modules\Setup\Domain\SetupWizard\Actions\SetupSchoolAction;
 use App\Modules\Setup\Domain\SetupWizard\Actions\SetupSuperAdminAction;
 use App\Modules\Setup\Domain\SetupWizard\Data\FinalizeSetupData;
+use App\Modules\Setup\Domain\SetupWizard\Livewire\SetupWizard;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -96,5 +98,33 @@ describe('VEJCX: Setup Wizard', function (): void {
         expect($window)->toBe(30)
             ->and(class_exists(ProtectSetupRouteMiddleware::class))->toBeTrue()
             ->and(class_exists(RequireSetupAccessMiddleware::class))->toBeTrue();
+    });
+
+    test('VEJCX-FR-WIZ-001/002 VEJCX-UC-WIZ-001: wizard component step navigation from welcome to account when audit passed', function (): void {
+        Setting::updateOrCreate(
+            ['key' => 'setup.is_installed'],
+            ['value' => false, 'group' => 'setup', 'type' => 'boolean']
+        );
+        Cache::flush();
+
+        Livewire::test(SetupWizard::class)
+            ->set('auditPassed', true)
+            ->assertSet('currentStep', 1)
+            ->call('nextStep')
+            ->assertSet('currentStep', 2);
+    });
+
+    test('VEJCX-FR-WIZ-001 VEJCX-UC-WIZ-001: wizard cannot advance from welcome step if audit has not passed', function (): void {
+        Setting::updateOrCreate(
+            ['key' => 'setup.is_installed'],
+            ['value' => false, 'group' => 'setup', 'type' => 'boolean']
+        );
+        Cache::flush();
+
+        Livewire::test(SetupWizard::class)
+            ->set('auditPassed', false)
+            ->assertSet('currentStep', 1)
+            ->call('nextStep')
+            ->assertSet('currentStep', 1);
     });
 });
