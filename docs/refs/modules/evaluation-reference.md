@@ -69,7 +69,7 @@ response components.
 | `EvaluationResponseTest`     | Feature | FR-EVAL-010, -011, -012, -013 — response targets, freeze         |
 | `EvaluationTraceabilityTest` | Feature | FR-EVAL-008 and further schema-contract requirements             |
 | `EvaluationLocalizationTest` | Feature | FR-EVAL-021 — EN/ID string and criteria-label parity              |
-| `AXKZWEvaluationHygieneTest` | Arch    | NFR-EVAL-008 — `strict_types` on every module file               |
+| `EvaluationHygieneTest`              | Arch    | NFR-EVAL-008 — `strict_types` on every module file               |
 
 ---
 

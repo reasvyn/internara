@@ -10,12 +10,14 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class Zt6vsFailingJob implements ShouldQueue
+class PingJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public static bool $handled = false;
+
     public function handle(): void
     {
-        throw new \RuntimeException('zt6vs probe failure');
+        static::$handled = true;
     }
 }

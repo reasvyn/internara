@@ -29,8 +29,8 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Command\Command;
-use Tests\Support\Zt6vsFailingJob;
-use Tests\Support\Zt6vsPingJob;
+use Tests\Support\FailingJob;
+use Tests\Support\PingJob;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -43,15 +43,15 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
     });
 
     test('ZT6VS-UC-CORE-001: fresh install works end to end on the sync queue without daemons', function (): void {
-        Zt6vsPingJob::$handled = false;
+        PingJob::$handled = false;
 
         try {
-            dispatch(new Zt6vsPingJob);
+            dispatch(new PingJob);
 
-            expect(Zt6vsPingJob::$handled)->toBeTrue()
+            expect(PingJob::$handled)->toBeTrue()
                 ->and(config('queue.default'))->toBe('sync');
         } finally {
-            Zt6vsPingJob::$handled = false;
+            PingJob::$handled = false;
         }
     });
 
@@ -215,7 +215,7 @@ describe('ZT6VS: core infrastructure runtime behavior', function (): void {
     test('ZT6VS-FR-CORE-025: failed database jobs keep the full exception trace', function (): void {
         config(['queue.default' => 'database']);
 
-        dispatch(new Zt6vsFailingJob);
+        dispatch(new FailingJob);
 
         Artisan::call('queue:work', ['--once' => true]);
 
