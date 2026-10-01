@@ -81,7 +81,7 @@ source of truth per package. The short version of how the stack divides up:
 | Interactive UI | `livewire/livewire` | All screens are Livewire components; no SPA, no JSON API |
 | UI primitives | `tallstackui/tallstackui` | Wrapped by the UI module, never used directly by feature modules |
 | Client behaviour | `alpinejs` | Bundled with Livewire |
-| Styling | `tailwindcss` | CSS-first `@theme` tokens; see [UI Pattern](../arch/ui-pattern.md) |
+| Styling | `tailwindcss` | CSS-first `@theme` tokens; see [UI Pattern](../../guides/arch/ui-pattern.md) |
 | Asset pipeline | `vite` | Build only — no dev-server dependency in production |
 | RBAC | `spatie/laravel-permission` | 5 flat roles; see [RBAC ADR](../../adr/adr-flat-rbac-with-functional-roles.md) |
 | File uploads | `spatie/laravel-medialibrary` | Server-side MIME, slugged filenames, conversions |
