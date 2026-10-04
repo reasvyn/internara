@@ -92,16 +92,16 @@
             "php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage --configuration=phpunit.coverage.xml"
         ],
         "arch": [
-            "python3 scripts/scan_doc_links.py --no-external --format summary",
-            "python3 scripts/scan_arch_patterns.py --format summary",
-            "python3 scripts/scan_module_boundaries.py --format summary",
-            "python3 scripts/scan_ui_consistency.py --format summary"
+            "python3 scripts/py/scan_doc_links.py --no-external --format summary",
+            "python3 scripts/py/scan_arch_patterns.py --format summary",
+            "python3 scripts/py/scan_module_boundaries.py --format summary",
+            "python3 scripts/py/scan_ui_consistency.py --format summary"
         ],
         "arch:strict": [
-            "python3 scripts/scan_doc_links.py --no-external --strict --format summary",
-            "python3 scripts/scan_arch_patterns.py --strict --format summary",
-            "python3 scripts/scan_module_boundaries.py --strict --format summary",
-            "python3 scripts/scan_ui_consistency.py --strict --format summary"
+            "python3 scripts/py/scan_doc_links.py --no-external --strict --format summary",
+            "python3 scripts/py/scan_arch_patterns.py --strict --format summary",
+            "python3 scripts/py/scan_module_boundaries.py --strict --format summary",
+            "python3 scripts/py/scan_ui_consistency.py --strict --format summary"
         ],
         "quality": [
             "@lint",

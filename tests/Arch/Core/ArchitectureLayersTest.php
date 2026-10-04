@@ -293,11 +293,12 @@ describe('D2FT3: architecture contracts', function (): void {
     });
 
     test('D2FT3-NFR-ARC-001, D2FT3-NFR-ARC-002, D2FT3-DD-ARC-007: architecture invariants ship automated enforcement', function (): void {
-        expect(file_exists(base_path('scripts/scan_violations.py')))->toBeTrue()
-            ->and(file_exists(base_path('scripts/scan_class_contracts.py')))->toBeTrue()
-            ->and(file_exists(base_path('scripts/scan_spec_tests.py')))->toBeTrue();
 
-        expect(File::get(base_path('scripts/scan_violations.py')))->toContain('C1');
+        expect(file_exists(base_path('scripts/py/scan_violations.py')))->toBeTrue()
+            ->and(file_exists(base_path('scripts/py/scan_class_contracts.py')))->toBeTrue()
+            ->and(file_exists(base_path('scripts/py/scan_spec_tests.py')))->toBeTrue();
+
+        expect(File::get(base_path('scripts/py/scan_violations.py')))->toContain('C1');
     });
 
     test('D2FT3-UC-ARC-003, D2FT3-FR-ARC-044: mutation flow traces structurally from UI to DTO to Command Action to Entity to Model to Event to ActionResponse', function (): void {
