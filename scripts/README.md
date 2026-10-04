@@ -1,7 +1,7 @@
 # Tools — Internal Devtools
 
 Focused automation scripts for Internara's AI agent workflows. Each script performs one job
-and outputs a timestamped JSON report to `tools/outputs/`.
+and outputs a timestamped JSON report to `scripts/outputs/`.
 
 ## Standard CLI
 
@@ -9,49 +9,49 @@ Every scanner shares the same interface:
 
 ```bash
 # Scan all modules
-python3 tools/{script}.py
+python3 scripts/{script}.py
 
 # Scan single module
-python3 tools/{script}.py --module Academics
+python3 scripts/{script}.py --module Academics
 
 # Custom output path
-python3 tools/{script}.py --output /tmp/custom-report.json
+python3 scripts/{script}.py --output /tmp/custom-report.json
 
 # Human-readable output instead of JSON file write
-python3 tools/{script}.py --format summary    # table summary to stdout
-python3 tools/{script}.py --format text       # plain text list of findings
-python3 tools/{script}.py --format html       # HTML report
-python3 tools/{script}.py --format markdown   # Markdown report
-python3 tools/{script}.py --json              # JSON dump to stdout
+python3 scripts/{script}.py --format summary    # table summary to stdout
+python3 scripts/{script}.py --format text       # plain text list of findings
+python3 scripts/{script}.py --format html       # HTML report
+python3 scripts/{script}.py --format markdown   # Markdown report
+python3 scripts/{script}.py --json              # JSON dump to stdout
 
 # Flags
-python3 tools/{script}.py --strict            # exit 1 when findings exist
-python3 tools/{script}.py --verbose           # extra detail
-python3 tools/{script}.py --quiet             # suppress stdout noise
-python3 tools/{script}.py --progress          # show progress bar
-python3 tools/{script}.py --no-cache          # disable file caching
-python3 tools/{script}.py --workers 4         # parallel workers (default: 8)
-python3 tools/{script}.py --baseline baseline.json  # ignore known findings
-python3 tools/{script}.py --severity high      # filter by minimum severity
+python3 scripts/{script}.py --strict            # exit 1 when findings exist
+python3 scripts/{script}.py --verbose           # extra detail
+python3 scripts/{script}.py --quiet             # suppress stdout noise
+python3 scripts/{script}.py --progress          # show progress bar
+python3 scripts/{script}.py --no-cache          # disable file caching
+python3 scripts/{script}.py --workers 4         # parallel workers (default: 8)
+python3 scripts/{script}.py --baseline baseline.json  # ignore known findings
+python3 scripts/{script}.py --severity high      # filter by minimum severity
 ```
 
-Default output: `tools/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
-(`tools/outputs/` is gitignored).
+Default output: `scripts/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
+(`scripts/outputs/` is gitignored).
 
 ### Pruning outputs
 
 ```bash
 # Keep only the latest timestamped output per category, delete the rest
-python3 tools/clean_outputs.py --prune
+python3 scripts/clean_outputs.py --prune
 
 # See what would be deleted first
-python3 tools/clean_outputs.py --prune --dry-run
+python3 scripts/clean_outputs.py --prune --dry-run
 
 # Keep latest plus show which file is retained per category
-python3 tools/clean_outputs.py --prune -v
+python3 scripts/clean_outputs.py --prune -v
 ```
 
-Categories come from `tools/tools.json`. Files that are not registered there, or whose
+Categories come from `scripts/tools.json`. Files that are not registered there, or whose
 filename does not match `{YYYYMMDDHHMMSS}-{category}.json`, are never deleted.
 
 ## Tool Runner
@@ -60,22 +60,22 @@ Orchestrate multiple scanners with shared cache and combined reporting:
 
 ```bash
 # Run all scanners
-python3 tools/tool_runner.py
+python3 scripts/tool_runner.py
 
 # Run specific scanners
-python3 tools/tool_runner.py --scanner violations,naming
+python3 scripts/tool_runner.py --scanner violations,naming
 
 # Run with module filter
-python3 tools/tool_runner.py --scanner violations --module Core
+python3 scripts/tool_runner.py --scanner violations --module Core
 
 # Generate HTML report
-python3 tools/tool_runner.py --format html --output report.html
+python3 scripts/tool_runner.py --format html --output report.html
 
 # Compare two reports
-python3 tools/tool_runner.py --compare old.json new.json
+python3 scripts/tool_runner.py --compare old.json new.json
 
 # List available scanners
-python3 tools/tool_runner.py --list
+python3 scripts/tool_runner.py --list
 ```
 
 ## Output Schema
@@ -149,24 +149,24 @@ contract source.
 Scanners cache file-level results based on modification time. Subsequent runs skip unchanged files:
 
 ```bash
-python3 tools/scan_violations.py --no-cache    # bypass cache
-python3 tools/scan_violations.py --progress     # show progress bar
-python3 tools/scan_violations.py --workers 16   # parallel workers
+python3 scripts/scan_violations.py --no-cache    # bypass cache
+python3 scripts/scan_violations.py --progress     # show progress bar
+python3 scripts/scan_violations.py --workers 16   # parallel workers
 ```
 
 ### Report Formats
 
 ```bash
-python3 tools/scan_violations.py --format html      # HTML report with styling
-python3 tools/scan_violations.py --format markdown  # Markdown report for GitHub
-python3 tools/scan_violations.py --format diff --compare old.json new.json  # Compare scans
+python3 scripts/scan_violations.py --format html      # HTML report with styling
+python3 scripts/scan_violations.py --format markdown  # Markdown report for GitHub
+python3 scripts/scan_violations.py --format diff --compare old.json new.json  # Compare scans
 ```
 
 ### Baseline & Filtering
 
 ```bash
-python3 tools/scan_violations.py --baseline baseline.json   # ignore known findings
-python3 tools/scan_violations.py --severity high            # only high/critical
+python3 scripts/scan_violations.py --baseline baseline.json   # ignore known findings
+python3 scripts/scan_violations.py --severity high            # only high/critical
 ```
 
 ## Calibration Notes

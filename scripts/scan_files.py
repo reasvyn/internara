@@ -256,10 +256,10 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python3 tools/scan_files.py
-  python3 tools/scan_files.py --module Assessment --verbose
-  python3 tools/scan_files.py --json | jq '.metadata.totals'
-  python3 tools/scan_files.py --strict
+  python3 scripts/scan_files.py
+  python3 scripts/scan_files.py --module Assessment --verbose
+  python3 scripts/scan_files.py --json | jq '.metadata.totals'
+  python3 scripts/scan_files.py --strict
         """
     )
     parser.add_argument("--module", "-m", help="Scan single module only")

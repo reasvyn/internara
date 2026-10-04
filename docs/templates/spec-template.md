@@ -172,7 +172,7 @@ the rest.
 
 A test file's name must match the spec ID and the requirement ID it verifies. Use
 `describe("{SpecID}: {spec-name}")` + `it("{SpecID}-{ReqID}: {behavior}")`. The traceability
-checker (`tools/scan_spec_tests.py`) flags any FR/NFR/UC row that has no matching test, so a
+checker (`scripts/scan_spec_tests.py`) flags any FR/NFR/UC row that has no matching test, so a
 missing test fails the spec gate. UC and DD rows are testable but optional — leave `Layer`/`Status`
 as `—` when not code-verified.
 
@@ -180,7 +180,7 @@ The four test layers and where they live:
 
 | Layer code | Directory | What it asserts | DB? |
 |------------|-----------|-----------------|-----|
-| `A` Arch | `tests/Arch/{Module}/` | Structure — namespace, base-class usage, no forbidden patterns. Covered also by `tools/scan_violations.py` + `tools/scan_class_contracts.py` in CI. | No |
+| `A` Arch | `tests/Arch/{Module}/` | Structure — namespace, base-class usage, no forbidden patterns. Covered also by `scripts/scan_violations.py` + `scripts/scan_class_contracts.py` in CI. | No |
 | `U` Unit | `tests/Unit/{Module}/` | Entities, Enums, DTOs, Policies, Support. Pure logic. | No |
 | `F` Feature | `tests/Feature/{Module}/` | `Action::execute()` end-to-end against a real DB (`LazilyRefreshDatabase`). Mock only framework boundary (`Http::fake()`, `Queue::fake()`, `Mail::fake()`). | Yes |
 | `B` Browser | `tests/Browser/{Module}/` | A real authenticated journey through the UI. One per major flow. | Yes |

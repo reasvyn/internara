@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Clean Old Outputs — Remove script output files based on age, date range, or prune.
-Deletes JSON files from tools/outputs/ based on file modification time.
+Deletes JSON files from scripts/outputs/ based on file modification time.
 
 Presets:  --yesterday, --3days, --7days (default), --2weeks, --1month
 Custom:   --older-than YYYY-MM-DD [--newer-than YYYY-MM-DD]
@@ -92,7 +92,7 @@ def parse_output_name(filepath: Path) -> tuple[datetime, str] | None:
 
 
 def load_script_categories() -> dict[str, dict[str, Any]]:
-    """Load output-category registry from tools/tools.json."""
+    """Load output-category registry from scripts/tools.json."""
     if not SCRIPTS_JSON.exists():
         return {}
     try:
@@ -150,7 +150,7 @@ def clean_outputs(
         try:
             mtime = datetime.fromtimestamp(filepath.stat().st_mtime)
             mtime_ts = mtime.timestamp()
-            rel = f"tools/outputs/{filepath.name}"
+            rel = f"scripts/outputs/{filepath.name}"
             should_delete = True
 
             if cutoff_ts is not None and mtime_ts >= cutoff_ts:
@@ -190,7 +190,7 @@ def prune_outputs(
 ) -> CleanupResult:
     """Delete all output files except the latest timestamped file per category.
 
-    Categories come from the tools/tools.json registry. Files whose
+    Categories come from the scripts/tools.json registry. Files whose
     category is not registered, or whose name is not a timestamped output,
     are kept untouched.
     """
@@ -217,13 +217,13 @@ def prune_outputs(
         parsed = parse_output_name(filepath)
         if parsed is None:
             result.kept.append(
-                f"tools/outputs/{filepath.name} (non-standard name, kept)"
+                f"scripts/outputs/{filepath.name} (non-standard name, kept)"
             )
             continue
         _, category = parsed
         if category not in grouped:
             result.kept.append(
-                f"tools/outputs/{filepath.name} (unknown category '{category}', kept)"
+                f"scripts/outputs/{filepath.name} (unknown category '{category}', kept)"
             )
             continue
         grouped[category].append((parsed[0], filepath))
@@ -240,12 +240,12 @@ def prune_outputs(
             if not dry_run:
                 filepath.unlink()
             result.deleted.append(
-                f"tools/outputs/{filepath.name} ({format_size(size)})"
+                f"scripts/outputs/{filepath.name} ({format_size(size)})"
             )
             total_deleted_size += size
         if verbose:
             result.kept.append(
-                f"tools/outputs/{keep_path.name} (latest {category})"
+                f"scripts/outputs/{keep_path.name} (latest {category})"
             )
 
     result.summary = {
@@ -317,14 +317,14 @@ numeric:
 
 prune:
   --prune                   Keep only the latest timestamped output per category
-                            (categories from tools/tools.json), delete the rest
+                            (categories from scripts/tools.json), delete the rest
 
 examples:
-  python3 tools/clean_outputs.py --yesterday --dry-run
-  python3 tools/clean_outputs.py --older-than 2026-07-01 --newer-than 2026-06-15
-  python3 tools/clean_outputs.py --days 3 -v
-  python3 tools/clean_outputs.py --prune --dry-run
-  python3 tools/clean_outputs.py --prune -v
+  python3 scripts/clean_outputs.py --yesterday --dry-run
+  python3 scripts/clean_outputs.py --older-than 2026-07-01 --newer-than 2026-06-15
+  python3 scripts/clean_outputs.py --days 3 -v
+  python3 scripts/clean_outputs.py --prune --dry-run
+  python3 scripts/clean_outputs.py --prune -v
 """,
     )
 

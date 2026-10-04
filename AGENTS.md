@@ -3,7 +3,7 @@
 Mental model and operating contract for AI agents working on Internara. This file is the
 **navigation hub + behavior contract**: it routes to the authoritative documentation under `docs/`
 and never restates it. Reference knowledge (patterns, commands, inventories) lives in `docs/` and
-`tools/README.md` — load the file it names; do not re-derive the rule from this hub.
+`scripts/README.md` — load the file it names; do not re-derive the rule from this hub.
 
 **Single Source of Truth (SSoT) priority** when sources conflict: `adr > specs > guides > code > refs`.
 Trust unambiguous ground truth directly. Check `git log --follow` / `git blame` only when sources
@@ -43,7 +43,7 @@ conflict or the choice would change with history; contradictory history → repo
 | Feature / module specs (66 + 1 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
 | ADRs — why each decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 5 groups |
 | Module conceptual + reference docs | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) | One conceptual + one reference per module |
-| Tooling — scanners, CLI flags, output schema, inventory | [`tools/README.md`](tools/README.md) | Full scanner reference; AGENTS.md keeps only the batch below (§5) |
+| Tooling — scanners, CLI flags, output schema, inventory | [`scripts/README.md`](scripts/README.md) | Full scanner reference; AGENTS.md keeps only the batch below (§5) |
 | Doc-type templates (skeleton + writing rules) | [`docs/templates/index.md`](docs/templates/index.md) | 10 templates — load the matching one when its concern is touched |
 
 ### 1.2 Pattern & Convention Quick Reference — One-Liners
@@ -180,7 +180,7 @@ grouping same-area edits; reorder only when a dependency forces it. Never spend 
 | Change type | Lightest verification first |
 |---|---|
 | Translation keys | `vendor/bin/pint --dirty --test` + tinker echo + `LangChecker` |
-| Config / docs / pure markdown | Visual inspection + `python3 tools/scan_doc_links.py` |
+| Config / docs / pure markdown | Visual inspection + `python3 scripts/scan_doc_links.py` |
 | Blade / CSS / JS | `npm run build` + `npx prettier --check <file>` |
 | Single method refactor | `php artisan test --compact --filter={ClassName}` |
 | Cross-module refactor | `vendor/bin/pest --testsuite={Module}` |
@@ -203,21 +203,21 @@ Default is targeted checks.
 
 ## 5. Tooling — Arch-Guard Scanners
 
-**Automation-First:** before manual or repeated work, check `tools/` and run the matching scanner.
+**Automation-First:** before manual or repeated work, check `scripts/` and run the matching scanner.
 Never redo by hand what a script does. If a recurring pattern has no script, add one
-(`tools/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:
-`tools/README.md`.
+(`scripts/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:
+`scripts/README.md`.
 
 **Standard batched run** (the §4 arch-guard gate):
 
 ```bash
-python3 tools/scan_violations.py          # C1–C8, D1–D6, P2, P5
-python3 tools/scan_class_contracts.py     # Action/Entity/DTO/Model/Enum/Event/Policy/Service/Listener
-python3 tools/scan_conventions.py         # D1 strict_types, D4 Fillable, D2 debug calls
-python3 tools/scan_naming.py              # file + class naming
-python3 tools/scan_security.py            # XSS, SQLi, CSRF, mass assignment, auth, secrets, uploads, rate limiting, dep audit
-python3 tools/scan_doc_links.py           # broken file/anchor links
-python3 tools/scan_spec_tests.py          # spec↔test traceability (FR/NFR/UC)
+python3 scripts/scan_violations.py         # C1–C8, D1–D6, P2, P5
+python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum/Event/Policy/Service/Listener
+python3 scripts/scan_conventions.py        # D1 strict_types, D4 Fillable, D2 debug calls
+python3 scripts/scan_naming.py             # file + class naming
+python3 scripts/scan_security.py           # XSS, SQLi, CSRF, mass assignment, auth, secrets, uploads, rate limiting, dep audit
+python3 scripts/scan_doc_links.py          # broken file/anchor links
+python3 scripts/scan_spec_tests.py         # spec↔test traceability (FR/NFR/UC)
 ```
 
 **Composer shortcuts:**
@@ -300,7 +300,7 @@ names; reference docs never explain rationale.
 | Entity description matches the methods? | Read the Entity class |
 | Enum cases in doc match the code? | Read the Enum class |
 | Migration descriptions match? | `ls database/migrations/` |
-| Cross-references still valid? | `python3 tools/scan_doc_links.py --no-external` |
+| Cross-references still valid? | `python3 scripts/scan_doc_links.py --no-external` |
 
 ### 7.3 Mismatch Resolution — Git History First
 
@@ -347,7 +347,7 @@ Commit format: `type(scope): description` — types `feat`, `fix`, `refactor`, `
 3. No content duplicated — cross-reference instead.
 4. Footer is `## Quick References` (not `## References`).
 
-Run `python3 tools/scan_doc_links.py --no-external` to validate.
+Run `python3 scripts/scan_doc_links.py --no-external` to validate.
 
 ---
 
@@ -413,7 +413,7 @@ Module roster, dependency graph, and module health: `docs/refs/modules/index.md`
 - `docs/philosophy.md` — 7 guiding principles + core values table
 - `docs/refs/modules/index.md` — module conceptual + reference doc index
 - `docs/templates/index.md` — 10 doc-type templates (load when a doc's concern is touched)
-- `tools/README.md` — scanner CLI flags, output schema, full scanner inventory
+- `scripts/README.md` — scanner CLI flags, output schema, full scanner inventory
 - `docs/guides/upgrading.md` — version-up checklist
 - `CHANGELOG.md` — release notes
 - `CONTRIBUTING.md` — contribution flow

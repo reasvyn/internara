@@ -2,17 +2,17 @@
 """
 tool_runner.py — Orchestrate multiple scan tools with shared cache and reporting.
 
-The registry of available scanners is loaded from `tools/tools.json` (the
+The registry of available scanners is loaded from `scripts/tools.json` (the
 single source of truth) at startup. If the file is missing or malformed, a
 hardcoded `FALLBACK_SCANNERS` dict is used so the tool still works offline.
 
 Usage:
-    python3 tools/tool_runner.py                          # Run all scanners
-    python3 tools/tool_runner.py --scanner violations      # Run single scanner
-    python3 tools/tool_runner.py --scanner violations,naming # Run multiple scanners
-    python3 tools/tool_runner.py --list                    # List available scanners
-    python3 tools/tool_runner.py --format html             # Generate HTML report
-    python3 tools/tool_runner.py --compare old.json new.json # Diff two reports
+    python3 scripts/tool_runner.py                          # Run all scanners
+    python3 scripts/tool_runner.py --scanner violations      # Run single scanner
+    python3 scripts/tool_runner.py --scanner violations,naming # Run multiple scanners
+    python3 scripts/tool_runner.py --list                    # List available scanners
+    python3 scripts/tool_runner.py --format html             # Generate HTML report
+    python3 scripts/tool_runner.py --compare old.json new.json # Diff two reports
 """
 
 from __future__ import annotations
@@ -28,30 +28,30 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
-TOOLS_DIR = ROOT / "tools"
+TOOLS_DIR = ROOT / "scripts"
 OUTPUT_DIR = TOOLS_DIR / "outputs"
 TOOLS_JSON = TOOLS_DIR / "tools.json"
 
 # Hardcoded fallback registry used when tools.json is missing or unreadable.
 # Last-resort safety net — the SSOT is tools.json.
 FALLBACK_SCANNERS: dict[str, str] = {
-    "project-summary": "tools/scan_project_summary.py",
-    "architecture": "tools/scan_architecture.py",
-    "arch-patterns": "tools/scan_arch_patterns.py",
-    "class-contracts": "tools/scan_class_contracts.py",
-    "conventions": "tools/scan_conventions.py",
-    "dead-code": "tools/scan_dead_code.py",
-    "doc-links": "tools/scan_doc_links.py",
-    "docs-template": "tools/scan_docs_template.py",
-    "files": "tools/scan_files.py",
-    "issues": "tools/scan_issues.py",
-    "module-boundaries": "tools/scan_module_boundaries.py",
-    "naming": "tools/scan_naming.py",
-    "security": "tools/scan_security.py",
-    "spec-tests": "tools/scan_spec_tests.py",
-    "tests": "tools/scan_tests.py",
-    "ui-consistency": "tools/scan_ui_consistency.py",
-    "violations": "tools/scan_violations.py",
+    "project-summary": "scripts/scan_project_summary.py",
+    "architecture": "scripts/scan_architecture.py",
+    "arch-patterns": "scripts/scan_arch_patterns.py",
+    "class-contracts": "scripts/scan_class_contracts.py",
+    "conventions": "scripts/scan_conventions.py",
+    "dead-code": "scripts/scan_dead_code.py",
+    "doc-links": "scripts/scan_doc_links.py",
+    "docs-template": "scripts/scan_docs_template.py",
+    "files": "scripts/scan_files.py",
+    "issues": "scripts/scan_issues.py",
+    "module-boundaries": "scripts/scan_module_boundaries.py",
+    "naming": "scripts/scan_naming.py",
+    "security": "scripts/scan_security.py",
+    "spec-tests": "scripts/scan_spec_tests.py",
+    "tests": "scripts/scan_tests.py",
+    "ui-consistency": "scripts/scan_ui_consistency.py",
+    "violations": "scripts/scan_violations.py",
 }
 
 # Description map (used by --list when tools.json is the source). Kept as a
@@ -82,7 +82,7 @@ class ScannerEntry:
     """A single scanner from the registry."""
 
     name: str
-    script: str  # Relative path, e.g. "tools/scan_x.py"
+    script: str  # Relative path, e.g. "scripts/scan_x.py"
     description: str = ""
 
 
@@ -112,7 +112,7 @@ def load_registry(force: bool = False) -> dict[str, ScannerEntry]:
                 script = cfg.get("script", "")
                 if not script:
                     continue
-                path = script if script.startswith("tools/") else f"tools/{script}"
+                path = script if script.startswith("scripts/") else f"scripts/{script}"
                 entries[name] = ScannerEntry(
                     name=name,
                     script=path,

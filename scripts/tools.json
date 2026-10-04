@@ -1,8 +1,8 @@
 {
-  "purpose": "Registry of tools/ scanners and the output category each writes to tools/outputs/{YYYYMMDDHHMMSS}-{category}.json. Consumed by clean_outputs.py --prune to keep only the latest timestamped output per category.",
+  "purpose": "Registry of scripts/ scanners and the output category each writes to scripts/outputs/{YYYYMMDDHHMMSS}-{category}.json. Consumed by clean_outputs.py --prune to keep only the latest timestamped output per category.",
   "version": "2.0.0",
   "features": {
-    "caching": "Mtime-based file cache in tools/outputs/cache/",
+    "caching": "Mtime-based file cache in scripts/outputs/cache/",
     "progress": "ProgressReporter for scan operations",
     "parallel": "ThreadPoolExecutor with configurable workers",
     "dedup": "Finding deduplication by file/rule/line",

@@ -1003,7 +1003,7 @@ def main() -> None:
     if not args.quiet:
         print("Pruning old outputs...")
     import subprocess
-    clean_script = ROOT / "tools" / "clean_outputs.py"
+    clean_script = ROOT / "scripts" / "clean_outputs.py"
     if clean_script.exists():
         subprocess.run(
             [sys.executable, str(clean_script), "--prune"],

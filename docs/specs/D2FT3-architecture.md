@@ -385,10 +385,10 @@ architecturally and verified via scans/tests rather than a runtime measurement.
 #### NFR-ARC-001 — Scan-enforced invariants
 Convention alone once let a Livewire component mutate a Model during a demo rush, and nobody noticed until the audit log gap surfaced. The C1–C8 and
 
-D1–D6 invariants now run as code: `python3 tools/scan_violations.py` is the CI gate, and the pre-commit baseline in AGENTS.md §4 keeps the arch-guard batch green before anything merges.
+D1–D6 invariants now run as code: `python3 scripts/scan_violations.py` is the CI gate, and the pre-commit baseline in AGENTS.md §4 keeps the arch-guard batch green before anything merges.
 
 #### NFR-ARC-002 — Class-contract scans
-A misbased Action or a mutable Entity used to survive review because the shape lived only in a guide. The `python3 tools/scan_class_contracts.py` run asserts Action, Entity, DTO, Model, and Enum contracts structurally, so the pre-commit arch-guard at layer `A` rejects the drift before human eyes ever need to.
+A misbased Action or a mutable Entity used to survive review because the shape lived only in a guide. The `python3 scripts/scan_class_contracts.py` run asserts Action, Entity, DTO, Model, and Enum contracts structurally, so the pre-commit arch-guard at layer `A` rejects the drift before human eyes ever need to.
 
 #### NFR-ARC-003 — No ad-hoc top-level dirs
 The morning someone adds `app/Helpers` for a single date function, the module boundary starts eroding.
@@ -542,7 +542,7 @@ Eloquent already answers the persistence question, so a repository layer would w
 Models stay directly usable by their owning module's Actions, and the owning-module rule under FR-ARC-029 and FR-ARC-030 provides the encapsulation a repository would promise. The full argument against the extra layer lives in [repository-pattern.md](../guides/arch/repository-pattern.md).
 
 #### DD-ARC-007 — Automated Architecture Enforcement
-A conventions document that nobody runs rots within a sprint; the `tools/` scans covering C1–C8, D1–D6, contracts, naming, and module boundaries run before commit and fail loudly instead. Deterministic checks beat manual review on speed and memory, which is the Automation-First doctrine applied to architecture itself. The standing cost is scan maintenance as the architecture evolves, a small owned burden next to the coupling it prevents.
+A conventions document that nobody runs rots within a sprint; the `scripts/` scans covering C1–C8, D1–D6, contracts, naming, and module boundaries run before commit and fail loudly instead. Deterministic checks beat manual review on speed and memory, which is the Automation-First doctrine applied to architecture itself. The standing cost is scan maintenance as the architecture evolves, a small owned burden next to the coupling it prevents.
 
 ---
 
@@ -551,9 +551,9 @@ A conventions document that nobody runs rots within a sprint; the `tools/` scans
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Module colocation | 100% of `app/` code inside modules/Core | `scan_naming.py` + directory audit |
-| Architecture violations | 0 | `python3 tools/scan_violations.py` |
-| Class-contract violations | 0 | `python3 tools/scan_class_contracts.py` |
-| Module-boundary violations | 0 | `python3 tools/scan_module_boundaries.py` |
+| Architecture violations | 0 | `python3 scripts/scan_violations.py` |
+| Class-contract violations | 0 | `python3 scripts/scan_class_contracts.py` |
+| Module-boundary violations | 0 | `python3 scripts/scan_module_boundaries.py` |
 | Circular dependencies | 0 | module graph in `config/module.php` + scan |
 | Mutations through Actions | 100% (no Livewire model mutation) | C1 scan in `scan_violations.py` |
 | Boundary purity (C5/C6) | 0 forbidden imports | `scan_violations.py` |
@@ -591,7 +591,7 @@ authoritative contract.
 | ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
 | -- | --------------------------------- | ------ | ----- | -------- |
 | R-1 | Arch-test guard removed due to `pest-plugin-arch` compatibility bug; boundary enforcement relies on code review until the guard is restored (per [action-based-mvc ADR](../adr/adr-action-based-mvc-architecture.md)) | Open | Maintainer | — |
-| A-1 | We assume `scan_module_boundaries.py` and the other `tools/` scans cover the ground the removed arch tests asserted | Accepted | Maintainer | — |
+| A-1 | We assume `scan_module_boundaries.py` and the other `scripts/` scans cover the ground the removed arch tests asserted | Accepted | Maintainer | — |
 
 ## Quick References
 

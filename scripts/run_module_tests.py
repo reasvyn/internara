@@ -6,11 +6,11 @@ Runs Pest/PHPUnit test suites one module at a time to minimize memory usage.
 This avoids the ~2GB+ RAM and 10+ minute runtime of the full suite.
 
 Usage:
-    python3 tools/run_module_tests.py                    # Run all modules sequentially
-    python3 tools/run_module_tests.py --module Core      # Run single module
-    python3 tools/run_module_tests.py --list             # List available modules
-    python3 tools/run_module_tests.py --failed-only      # Re-run only failed modules
-    python3 tools/run_module_tests.py --parallel 2       # Run N modules in parallel (experimental)
+    python3 scripts/run_module_tests.py                    # Run all modules sequentially
+    python3 scripts/run_module_tests.py --module Core      # Run single module
+    python3 scripts/run_module_tests.py --list             # List available modules
+    python3 scripts/run_module_tests.py --failed-only      # Re-run only failed modules
+    python3 scripts/run_module_tests.py --parallel 2       # Run N modules in parallel (experimental)
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = ROOT / "tools" / "outputs"
+OUTPUT_DIR = ROOT / "scripts" / "outputs"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Test suites from phpunit.xml (in build order per docs/specs/index.md).

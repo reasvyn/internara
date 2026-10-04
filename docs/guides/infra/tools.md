@@ -1,10 +1,10 @@
-# Developer Tools — Internal Devtools (`tools/`)
+# Developer Tools — Internal Devtools (`scripts/`)
 
 ## Description
 
-Python devtool scripts in `tools/` for codebase scanning, validation, and metrics.
+Python devtool scripts in `scripts/` for codebase scanning, validation, and metrics.
 Each script is self-contained, accepts `--module` and `--output` flags, and produces
-JSON output to `tools/outputs/{timestamp}-{scan_name}.json` (gitignored).
+JSON output to `scripts/outputs/{timestamp}-{scan_name}.json` (gitignored).
 
 Can be run standalone or piped to `jq`.
 
@@ -46,7 +46,7 @@ All scripts follow the same output schema:
 
 ```
 
-**Default output path:** `tools/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
+**Default output path:** `scripts/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
 
 ---
 
@@ -66,16 +66,16 @@ All scripts follow the same output schema:
 
 ```bash
 # Full scan, auto-named output
-python3 tools/scan_violations/cli.py
+python3 scripts/scan_violations.py
 
 # Module-specific, strict mode
-python3 tools/scan_violations/cli.py --module Student --strict
+python3 scripts/scan_violations.py --module Student --strict
 
 # Quiet summary only
-python3 tools/scan_violations/cli.py --quiet
+python3 scripts/scan_violations.py --quiet
 
 # Pipe to jq
-python3 tools/scan_violations/cli.py --json | jq '.summary'
+python3 scripts/scan_violations.py --json | jq '.summary'
 
 ```
 
@@ -102,8 +102,8 @@ python3 tools/scan_violations/cli.py --json | jq '.summary'
 | D4 | Missing `#[Fillable]` attribute on Models |
 
 ```bash
-python3 tools/scan_violations/cli.py
-python3 tools/scan_violations/cli.py --module Auth --strict
+python3 scripts/scan_violations.py
+python3 scripts/scan_violations.py --module Auth --strict
 
 ```
 
@@ -122,8 +122,8 @@ python3 tools/scan_violations/cli.py --module Auth --strict
 | Enums | Backing type, `label()`, `validTransitions()` for StatusEnums |
 
 ```bash
-python3 tools/scan_class_contracts/cli.py
-python3 tools/scan_class_contracts/cli.py --module Assessment
+python3 scripts/scan_class_contracts.py
+python3 scripts/scan_class_contracts.py --module Assessment
 
 ```
 
@@ -143,8 +143,8 @@ python3 tools/scan_class_contracts/cli.py --module Assessment
 | S9 | File uploads without validation |
 
 ```bash
-python3 tools/scan_security/cli.py
-python3 tools/scan_security/cli.py --module Auth
+python3 scripts/scan_security.py
+python3 scripts/scan_security.py --module Auth
 
 ```
 
@@ -163,8 +163,8 @@ python3 tools/scan_security/cli.py --module Auth
 | Method naming | Action return types, Entity question methods return `bool` |
 
 ```bash
-python3 tools/scan_naming/cli.py
-python3 tools/scan_naming/cli.py --module Journals
+python3 scripts/scan_naming.py
+python3 scripts/scan_naming.py --module Journals
 
 ```
 
@@ -184,7 +184,7 @@ python3 tools/scan_naming/cli.py --module Journals
 | Hardcoded user-facing strings (missing `__()`) |
 
 ```bash
-python3 tools/scan_conventions/cli.py
+python3 scripts/scan_conventions.py
 
 ```
 
@@ -202,7 +202,7 @@ python3 tools/scan_conventions/cli.py
 | Listeners without events |
 
 ```bash
-python3 tools/scan_dead_code/cli.py
+python3 scripts/scan_dead_code.py
 
 ```
 
@@ -219,7 +219,7 @@ python3 tools/scan_dead_code/cli.py
 | No broken cross-references |
 
 ```bash
-python3 tools/scan_doc_links/cli.py
+python3 scripts/scan_doc_links.py
 
 ```
 
@@ -239,8 +239,8 @@ python3 tools/scan_doc_links/cli.py
 | Total codebase statistics |
 
 ```bash
-python3 tools/scan_architecture/cli.py
-python3 tools/scan_architecture/cli.py --module Program
+python3 scripts/scan_architecture.py
+python3 scripts/scan_architecture.py --module Program
 
 ```
 
@@ -257,7 +257,7 @@ python3 tools/scan_architecture/cli.py --module Program
 | Total codebase size |
 
 ```bash
-python3 tools/scan_files/cli.py
+python3 scripts/scan_files.py
 
 ```
 
@@ -274,8 +274,8 @@ python3 tools/scan_files/cli.py
 | Failed test details |
 
 ```bash
-python3 tools/scan_tests/cli.py
-python3 tools/scan_tests/cli.py --module User
+python3 scripts/scan_tests.py
+python3 scripts/scan_tests.py --module User
 
 ```
 
@@ -292,7 +292,7 @@ python3 tools/scan_tests/cli.py --module User
 | Stale issues |
 
 ```bash
-python3 tools/scan_issues/cli.py
+python3 scripts/scan_issues.py
 
 ```
 
@@ -301,12 +301,12 @@ python3 tools/scan_issues/cli.py
 ## Adding New Scripts
 
 **Quick checklist:**
-1. Create `tools/scan_{name}.py` following existing script structure
+1. Create `scripts/scan_{name}.py` following existing script structure
 2. Accept standard CLI flags (`--module`, `--output`, `--format`, `--quiet`, `--strict`, `--json`)
 3. Produce JSON output matching the standard schema
-4. Output to `tools/outputs/{timestamp}-{scan_name}.json`
+4. Output to `scripts/outputs/{timestamp}-{scan_name}.json`
 5. Add entry to this document
-6. Test: `python3 tools/scan_{name}.py --module {Module}`
+6. Test: `python3 scripts/scan_{name}.py --module {Module}`
 7. Commit: `chore(scripts): add {name} scan`
 
 ---

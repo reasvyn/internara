@@ -262,10 +262,10 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python3 tools/scan_issues.py
-  python3 tools/scan_issues.py --module Assessment --verbose
-  python3 tools/scan_issues.py --json | jq '.metadata.by_severity'
-  python3 tools/scan_issues.py --strict
+  python3 scripts/scan_issues.py
+  python3 scripts/scan_issues.py --module Assessment --verbose
+  python3 scripts/scan_issues.py --json | jq '.metadata.by_severity'
+  python3 scripts/scan_issues.py --strict
         """
     )
     parser.add_argument("--module", "-m", help="Filter by module")
@@ -319,11 +319,11 @@ def main() -> None:
             rule="ISSUE_FETCH",
             severity="low",
             category="system",
-            file="tools/scan_issues.py",
+            file="scripts/scan_issues.py",
             line=0,
             message="Using stale cache: GitHub API unavailable",
             suggestion="Check gh auth status and network connectivity",
-            reference="tools/README.md",
+            reference="scripts/README.md",
         ))
     
     by_severity: dict[str, int] = {"p0": 0, "p1": 0, "p2": 0, "p3": 0, "unclassified": 0}

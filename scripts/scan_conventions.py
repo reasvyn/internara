@@ -340,10 +340,10 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python3 tools/scan_conventions.py
-  python3 tools/scan_conventions.py --module Assessment --verbose
-  python3 tools/scan_conventions.py --json | jq '.findings[] | select(.severity=="high")'
-  python3 tools/scan_conventions.py --strict --severity high
+  python3 scripts/scan_conventions.py
+  python3 scripts/scan_conventions.py --module Assessment --verbose
+  python3 scripts/scan_conventions.py --json | jq '.findings[] | select(.severity=="high")'
+  python3 scripts/scan_conventions.py --strict --severity high
         """
     )
     parser.add_argument("--module", "-m", help="Target specific module")

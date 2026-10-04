@@ -96,4 +96,4 @@ retention-policy automation or deletion engines may be deferred.
 
 * [Spec Index](../specs/index.md) — 66 feature specs affected by this decision
 * [Testing Pattern](../guides/arch/testing-pattern.md) — layer patterns referenced by Test Requirements sections
-* `tools/scan_spec_tests.py` — spec↔test coverage guard (uses FR/NFR/UC prefixes; `TR-*` IDs are exempt)
+* `scripts/scan_spec_tests.py` — spec↔test coverage guard (uses FR/NFR/UC prefixes; `TR-*` IDs are exempt)
