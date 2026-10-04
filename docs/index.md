@@ -109,7 +109,7 @@ This index provides a structured map of all documentation in the Internara proje
 - **[Testing Infrastructure](guides/infra/testing.md)** — Testing philosophy, scope isolation
 - **[Scaling Guide](guides/infra/scaling.md)** — MVP to 2000+ users, tier transitions
 - **[Localization](guides/infra/localization.md)** — Translations, locale resolution, contributing
-- **[Developer Tools](guides/infra/tools.md)** — Python scan scripts, CLI flags, output schema
+- **[Developer Scripts](guides/infra/tools.md)** — Python scan scripts, CLI flags, output schema
 
 ---
 

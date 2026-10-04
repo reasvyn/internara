@@ -186,7 +186,7 @@ written first. No behavior without a requirement. Verify the ID exists in the cu
 
 ### Deduplicate Before Filing
 
-Before creating an issue, run `python3 scripts/scan_issues.py` and search existing open issues for
+Before creating an issue, run `python3 scripts/py/scan_issues.py` and search existing open issues for
 the same concern/module. A match means either update the existing issue (add evidence) or link it
 in the Related section — never file a second copy. Only file new when the concern is genuinely
 untracked.
@@ -208,4 +208,4 @@ Priority); spec referenced with a requirement ID; every mandatory section filled
 - [`spec-template.md`](spec-template.md) — spec structure an issue traces to
 - [`doc-template.md`](doc-template.md) — shared documentation standards
 - [`index.md`](index.md) — template catalog hub
-- `scripts/scan_issues.py` — dedup & triage helper (`python3 scripts/scan_issues.py`)
+- `scripts/py/scan_issues.py` — dedup & triage helper (`python3 scripts/py/scan_issues.py`)

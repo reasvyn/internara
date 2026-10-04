@@ -22,7 +22,7 @@ notifications, queue workers, testing, security, scaling, localization, and deve
 - **[Security](security.md)** — Network hardening, security headers, rate limiting, PII handling, GDPR, scanning, production checklist
 - **[Scaling Guide](scaling.md)** — Scaling from MVP to 2000+ users, tier transitions, load testing, monitoring thresholds
 - **[Localization](localization.md)** — Supported languages, translation structure, locale resolution, community contribution guide
-- **[Developer Tools](tools.md)** — Python scan scripts, CLI flags, output schema
+- **[Developer Scripts](tools.md)** — Python scan scripts, CLI flags, output schema
 
 ## Rules
 

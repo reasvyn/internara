@@ -100,6 +100,7 @@ PHPStan/Larastan were dropped in favor of Pint/Prettier/Pest/arch-guard scanners
 
 ### Removed
 - PHPStan / Larastan static analysis (Pint, Prettier, Pest, and `scripts/scan_*`
+- PHPStan / Larastan static analysis (Pint, Prettier, Pest, and `scripts/py/scan_*`
   arch-guards remain the quality gates)
 - `scan_skills.py` meta-framework scanner
 - `.ai/` rules directory (migrated into the shared agent store, subsequently removed)

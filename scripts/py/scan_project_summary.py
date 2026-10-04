@@ -649,21 +649,12 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-<<<<<<<< HEAD:scripts/scan_project_summary.py
-  python3 scripts/scan_project_summary.py                    # dashboard (TTY) / json (pipe)
-  python3 scripts/scan_project_summary.py --format dashboard  # always use dashboard
-  python3 scripts/scan_project_summary.py --format json       # pipe to jq
-  python3 scripts/scan_project_summary.py --format compact    # one line per module
-  python3 scripts/scan_project_summary.py --module Enrollment # focused module view
-  python3 scripts/scan_project_summary.py --json              # shortcut for --format json
-========
   python3 scripts/py/scan_project_summary.py                    # dashboard (TTY) / json (pipe)
   python3 scripts/py/scan_project_summary.py --format dashboard  # always use dashboard
   python3 scripts/py/scan_project_summary.py --format json       # pipe to jq
   python3 scripts/py/scan_project_summary.py --format compact    # one line per module
   python3 scripts/py/scan_project_summary.py --module Enrollment # focused module view
   python3 scripts/py/scan_project_summary.py --json              # shortcut for --format json
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_project_summary.py
         """
     )
     parser.add_argument(

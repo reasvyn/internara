@@ -262,17 +262,10 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-<<<<<<<< HEAD:scripts/scan_issues.py
-  python3 scripts/scan_issues.py
-  python3 scripts/scan_issues.py --module Assessment --verbose
-  python3 scripts/scan_issues.py --json | jq '.metadata.by_severity'
-  python3 scripts/scan_issues.py --strict
-========
   python3 scripts/py/scan_issues.py
   python3 scripts/py/scan_issues.py --module Assessment --verbose
   python3 scripts/py/scan_issues.py --json | jq '.metadata.by_severity'
   python3 scripts/py/scan_issues.py --strict
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_issues.py
         """
     )
     parser.add_argument("--module", "-m", help="Filter by module")
@@ -326,11 +319,7 @@ def main() -> None:
             rule="ISSUE_FETCH",
             severity="low",
             category="system",
-<<<<<<<< HEAD:scripts/scan_issues.py
-            file="scripts/scan_issues.py",
-========
             file="scripts/py/scan_issues.py",
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_issues.py
             line=0,
             message="Using stale cache: GitHub API unavailable",
             suggestion="Check gh auth status and network connectivity",

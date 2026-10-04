@@ -180,7 +180,7 @@ grouping same-area edits; reorder only when a dependency forces it. Never spend 
 | Change type | Lightest verification first |
 |---|---|
 | Translation keys | `vendor/bin/pint --dirty --test` + tinker echo + `LangChecker` |
-| Config / docs / pure markdown | Visual inspection + `python3 scripts/scan_doc_links.py` |
+| Config / docs / pure markdown | Visual inspection + `python3 scripts/py/scan_doc_links.py` |
 | Blade / CSS / JS | `npm run build` + `npx prettier --check <file>` |
 | Single method refactor | `php artisan test --compact --filter={ClassName}` |
 | Cross-module refactor | `vendor/bin/pest --testsuite={Module}` |
@@ -206,18 +206,21 @@ Default is targeted checks.
 **Automation-First:** before manual or repeated work, check `scripts/` and run the matching scanner.
 Never redo by hand what a script does. If a recurring pattern has no script, add one
 (`scripts/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:
+**Automation-First:** before manual or repeated work, check `scripts/py/` and run the matching scanner.
+Never redo by hand what a script does. If a recurring pattern has no script, add one
+(`scripts/py/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:
 `scripts/README.md`.
 
 **Standard batched run** (the §4 arch-guard gate):
 
 ```bash
-python3 scripts/scan_violations.py         # C1–C8, D1–D6, P2, P5
-python3 scripts/scan_class_contracts.py    # Action/Entity/DTO/Model/Enum/Event/Policy/Service/Listener
-python3 scripts/scan_conventions.py        # D1 strict_types, D4 Fillable, D2 debug calls
-python3 scripts/scan_naming.py             # file + class naming
-python3 scripts/scan_security.py           # XSS, SQLi, CSRF, mass assignment, auth, secrets, uploads, rate limiting, dep audit
-python3 scripts/scan_doc_links.py          # broken file/anchor links
-python3 scripts/scan_spec_tests.py         # spec↔test traceability (FR/NFR/UC)
+python3 scripts/py/scan_violations.py          # C1–C8, D1–D6, P2, P5
+python3 scripts/py/scan_class_contracts.py     # Action/Entity/DTO/Model/Enum/Event/Policy/Service/Listener
+python3 scripts/py/scan_conventions.py         # D1 strict_types, D4 Fillable, D2 debug calls
+python3 scripts/py/scan_naming.py              # file + class naming
+python3 scripts/py/scan_security.py            # XSS, SQLi, CSRF, mass assignment, auth, secrets, uploads, rate limiting, dep audit
+python3 scripts/py/scan_doc_links.py           # broken file/anchor links
+python3 scripts/py/scan_spec_tests.py          # spec↔test traceability (FR/NFR/UC)
 ```
 
 **Composer shortcuts:**
@@ -300,7 +303,7 @@ names; reference docs never explain rationale.
 | Entity description matches the methods? | Read the Entity class |
 | Enum cases in doc match the code? | Read the Enum class |
 | Migration descriptions match? | `ls database/migrations/` |
-| Cross-references still valid? | `python3 scripts/scan_doc_links.py --no-external` |
+| Cross-references still valid? | `python3 scripts/py/scan_doc_links.py --no-external` |
 
 ### 7.3 Mismatch Resolution — Git History First
 
@@ -347,7 +350,7 @@ Commit format: `type(scope): description` — types `feat`, `fix`, `refactor`, `
 3. No content duplicated — cross-reference instead.
 4. Footer is `## Quick References` (not `## References`).
 
-Run `python3 scripts/scan_doc_links.py --no-external` to validate.
+Run `python3 scripts/py/scan_doc_links.py --no-external` to validate.
 
 ---
 

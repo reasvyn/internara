@@ -6,19 +6,11 @@ Runs Pest/PHPUnit test suites one module at a time to minimize memory usage.
 This avoids the ~2GB+ RAM and 10+ minute runtime of the full suite.
 
 Usage:
-<<<<<<<< HEAD:scripts/run_module_tests.py
-    python3 scripts/run_module_tests.py                    # Run all modules sequentially
-    python3 scripts/run_module_tests.py --module Core      # Run single module
-    python3 scripts/run_module_tests.py --list             # List available modules
-    python3 scripts/run_module_tests.py --failed-only      # Re-run only failed modules
-    python3 scripts/run_module_tests.py --parallel 2       # Run N modules in parallel (experimental)
-========
     python3 scripts/py/run_module_tests.py                    # Run all modules sequentially
     python3 scripts/py/run_module_tests.py --module Core      # Run single module
     python3 scripts/py/run_module_tests.py --list             # List available modules
     python3 scripts/py/run_module_tests.py --failed-only      # Re-run only failed modules
     python3 scripts/py/run_module_tests.py --parallel 2       # Run N modules in parallel (experimental)
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/run_module_tests.py
 """
 
 from __future__ import annotations
@@ -34,13 +26,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-<<<<<<<< HEAD:scripts/run_module_tests.py
-ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = ROOT / "scripts" / "outputs"
-========
 ROOT = Path(__file__).resolve().parent.parent.parent
 OUTPUT_DIR = ROOT / "tools" / "outputs"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/run_module_tests.py
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Test suites from phpunit.xml (in build order per docs/specs/index.md).

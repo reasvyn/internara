@@ -345,6 +345,7 @@ Manual registration of Livewire components, policies, and views across 18 module
 #### NFR-BASE-005 — Scan coverage of the mandate
 
 Losing the architecture tests to the `pest-plugin-arch` compatibility bug could have left the mandate in §6.1 on honor-system enforcement — exactly how contract drift begins. Until the plugin returns, blocking review plus the `scripts/` scan batch (naming, conventions, contracts) stands in as the enforcer, with the pre-commit arch-guard from AGENTS.md §4–§5 as the gate every change passes. A green batch is the standard met.
+Losing the architecture tests to the `pest-plugin-arch` compatibility bug could have left the mandate in §6.1 on honor-system enforcement — exactly how contract drift begins. Until the plugin returns, blocking review plus the `scripts/py/` scan batch (naming, conventions, contracts) stands in as the enforcer, with the pre-commit arch-guard from AGENTS.md §4–§5 as the gate every change passes. A green batch is the standard met.
 
 ### 5.2 Localization & Accessibility
 

@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 """
 Clean Old Outputs — Remove script output files based on age, date range, or prune.
-<<<<<<<< HEAD:scripts/clean_outputs.py
-Deletes JSON files from scripts/outputs/ based on file modification time.
-========
 Deletes JSON files from scripts/py/outputs/ based on file modification time.
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
 
 Presets:  --yesterday, --3days, --7days (default), --2weeks, --1month
 Custom:   --older-than YYYY-MM-DD [--newer-than YYYY-MM-DD]
@@ -96,11 +92,7 @@ def parse_output_name(filepath: Path) -> tuple[datetime, str] | None:
 
 
 def load_script_categories() -> dict[str, dict[str, Any]]:
-<<<<<<<< HEAD:scripts/clean_outputs.py
-    """Load output-category registry from scripts/tools.json."""
-========
     """Load output-category registry from scripts/py/config.json."""
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
     if not SCRIPTS_JSON.exists():
         return {}
     try:
@@ -158,11 +150,7 @@ def clean_outputs(
         try:
             mtime = datetime.fromtimestamp(filepath.stat().st_mtime)
             mtime_ts = mtime.timestamp()
-<<<<<<<< HEAD:scripts/clean_outputs.py
-            rel = f"scripts/outputs/{filepath.name}"
-========
             rel = f"scripts/py/outputs/{filepath.name}"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
             should_delete = True
 
             if cutoff_ts is not None and mtime_ts >= cutoff_ts:
@@ -202,11 +190,7 @@ def prune_outputs(
 ) -> CleanupResult:
     """Delete all output files except the latest timestamped file per category.
 
-<<<<<<<< HEAD:scripts/clean_outputs.py
-    Categories come from the scripts/tools.json registry. Files whose
-========
     Categories come from the scripts/py/config.json registry. Files whose
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
     category is not registered, or whose name is not a timestamped output,
     are kept untouched.
     """
@@ -233,21 +217,13 @@ def prune_outputs(
         parsed = parse_output_name(filepath)
         if parsed is None:
             result.kept.append(
-<<<<<<<< HEAD:scripts/clean_outputs.py
-                f"scripts/outputs/{filepath.name} (non-standard name, kept)"
-========
                 f"scripts/py/outputs/{filepath.name} (non-standard name, kept)"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
             )
             continue
         _, category = parsed
         if category not in grouped:
             result.kept.append(
-<<<<<<<< HEAD:scripts/clean_outputs.py
-                f"scripts/outputs/{filepath.name} (unknown category '{category}', kept)"
-========
                 f"scripts/py/outputs/{filepath.name} (unknown category '{category}', kept)"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
             )
             continue
         grouped[category].append((parsed[0], filepath))
@@ -264,20 +240,12 @@ def prune_outputs(
             if not dry_run:
                 filepath.unlink()
             result.deleted.append(
-<<<<<<<< HEAD:scripts/clean_outputs.py
-                f"scripts/outputs/{filepath.name} ({format_size(size)})"
-========
                 f"scripts/py/outputs/{filepath.name} ({format_size(size)})"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
             )
             total_deleted_size += size
         if verbose:
             result.kept.append(
-<<<<<<<< HEAD:scripts/clean_outputs.py
-                f"scripts/outputs/{keep_path.name} (latest {category})"
-========
                 f"scripts/py/outputs/{keep_path.name} (latest {category})"
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
             )
 
     result.summary = {
@@ -349,16 +317,6 @@ numeric:
 
 prune:
   --prune                   Keep only the latest timestamped output per category
-<<<<<<<< HEAD:scripts/clean_outputs.py
-                            (categories from scripts/tools.json), delete the rest
-
-examples:
-  python3 scripts/clean_outputs.py --yesterday --dry-run
-  python3 scripts/clean_outputs.py --older-than 2026-07-01 --newer-than 2026-06-15
-  python3 scripts/clean_outputs.py --days 3 -v
-  python3 scripts/clean_outputs.py --prune --dry-run
-  python3 scripts/clean_outputs.py --prune -v
-========
                             (categories from scripts/py/config.json), delete the rest
 
 examples:
@@ -367,7 +325,6 @@ examples:
   python3 scripts/py/clean_outputs.py --days 3 -v
   python3 scripts/py/clean_outputs.py --prune --dry-run
   python3 scripts/py/clean_outputs.py --prune -v
->>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/clean_outputs.py
 """,
     )
 

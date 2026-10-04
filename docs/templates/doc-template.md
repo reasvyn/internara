@@ -144,7 +144,7 @@ Documentation rots silently unless decay is made visible and repair is routine:
 - **Audit periodically.** Verify after batch changes:
 
 ```bash
-python3 scripts/scan_doc_links.py   # Links resolve (freshness via git log)
+python3 scripts/py/scan_doc_links.py   # Links resolve (freshness via git log)
 ```
 
 ---
@@ -157,7 +157,7 @@ python3 scripts/scan_doc_links.py   # Links resolve (freshness via git log)
 | Cannot classify content into one quadrant | Split it — mixed-type docs are rejected |
 | Restates a fact documented elsewhere | Link to the SSOT instead |
 | Edits doc content | Write a descriptive commit message; history via `git log --follow -- <file>` |
-| Finishes doc work | Run `python3 scripts/scan_doc_links.py` — zero findings required |
+| Finishes doc work | Run `python3 scripts/py/scan_doc_links.py` — zero findings required |
 
 ---
 

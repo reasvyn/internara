@@ -169,10 +169,13 @@ Same gates as CI, run locally:
 ```bash
 vendor/bin/pint --test                        # PHP code style
 vendor/bin/pest --coverage --min=80           # full test suite + coverage gate
-python3 scripts/scan_violations.py --strict   # C1-C8 / D1-D6 invariants
-python3 scripts/scan_security.py --strict     # security anti-patterns
-python3 scripts/scan_conventions.py --strict  # conventions
 npm run build                                 # Vite production build
+vendor/bin/pint --test                      # PHP code style
+vendor/bin/pest --coverage --min=80         # full test suite + coverage gate
+python3 scripts/py/scan_violations.py --strict   # C1-C8 / D1-D6 invariants
+python3 scripts/py/scan_security.py --strict     # security anti-patterns
+python3 scripts/py/scan_conventions.py --strict  # conventions
+npm run build                               # Vite production build
 
 ```
 

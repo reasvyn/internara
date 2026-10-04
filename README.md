@@ -164,6 +164,7 @@ should be reviewed before release.
 
 Pest 4 with feature + unit coverage per Action, Laravel Pint. Architecture
 scanner toolkit (`scripts/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
+scanner toolkit (`scripts/py/scan_*.py`): [`docs/guides/infra/tools.md`](docs/guides/infra/tools.md).
 
 ## Project Status
 
