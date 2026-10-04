@@ -110,13 +110,13 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          envs: VERSION_TAG,HEALTH_URL
+          envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR
           request_pty: false
           command_timeout: 30m
           script: |
             set -euo pipefail
             echo "==> Staging deploy: ${VERSION_TAG} @ ${{ github.sha }}"
-            cd "$HOME/app/internara"
+            cd "${DEPLOY_DIR:-$HOME/app}"
             # Ensure we are on staging and at the pushed commit
             git fetch --force origin staging
             git checkout --force staging
@@ -135,4 +135,4 @@ jobs:
         if: failure()
         run: |
           echo "::error::Staging deploy failed for ${{ github.sha }}"
-          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \$HOME/app/internara && bash .github/scripts/rollback.sh'"
+          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \${DEPLOY_DIR:-\$HOME/app} && bash .github/scripts/rollback.sh'"

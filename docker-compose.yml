@@ -1,7 +1,8 @@
 services:
   app:
+    # Build from the checkout that owns this compose file (override with BUILD_CONTEXT).
     build:
-      context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+      context: '${BUILD_CONTEXT:-.}'
       dockerfile: Dockerfile
     image: internara-app
     environment:
@@ -71,7 +72,7 @@ services:
 
   web:
     build:
-      context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+      context: '${BUILD_CONTEXT:-.}'
       dockerfile: .docker/nginx.Dockerfile
     image: internara-web
     ports:

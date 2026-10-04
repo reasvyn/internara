@@ -89,7 +89,7 @@ git push origin hotfix
 #    - Job 'sync-staging': automatically merges hotfix into staging and pushes
 ```
 
-Because `deploy.sh` builds from `GIT_URL=...#hotfix` and gates on the 60s `HEALTH_URL` check, a
+Because `deploy.sh` builds from the checkout and gates on the 60s `HEALTH_URL` check, a
 successful run guarantees the live site is serving the `hotfix` branch. Local quality gates still
 apply — run `vendor/bin/pint --test`, targeted Pest tests, and arch scanners before
 pushing. See [Deployment](deployment.md#hotfix-branch--automated-fast-track-deploy) for the
@@ -148,11 +148,12 @@ The deploy process includes automatic rollback on failure:
 1. **Before deploy**: `backup.sh` stores the current git revision and timestamp
 2. **During deploy**: `deploy.sh` builds and starts containers, then waits for health check
 3. **On failure**: If health check fails, `deploy.sh` automatically rolls back to the previous revision
-4. **Manual rollback**: Run `ssh user@vps 'cd $HOME/app/internara && bash .github/scripts/rollback.sh'`
+4. **Manual rollback**: Run `ssh user@vps 'cd $HOME/app && bash .github/scripts/rollback.sh'`
+   (or `cd $DEPLOY_DIR` when `DEPLOY_DIR` is set)
 
 ### Backup Retention
 
-- Backups are stored in `$HOME/app/internara/.backups/`
+- Backups are stored in `<repo>/.backups/`
 - Only the last 5 backups are retained (disk space management)
 - Each backup contains: timestamp, git revision, tag, creation date
 
@@ -191,7 +192,7 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
    git tag vX.Y.Z-rc.1 && git push origin vX.Y.Z-rc.1
    ```
 
-4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS (`$HOME/app/internara`).
+4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS checkout.
 5. Release notes are automatically generated and uploaded as artifacts.
 
 ### Secrets

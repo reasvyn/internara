@@ -113,14 +113,14 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           # Do not leak env values in logs; appleboy masks secrets automatically
-          envs: VERSION_TAG,HEALTH_URL
+          envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR
           # Fail fast, no pseudo-TTY — reduces surface
           request_pty: false
           command_timeout: 30m
           script: |
             set -euo pipefail
             echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
-            cd "$HOME/app/internara"
+            cd "${DEPLOY_DIR:-$HOME/app}"
             # Ensure we are on hotfix and at the pushed commit
             git fetch --quiet origin hotfix
             git checkout --quiet hotfix
@@ -139,7 +139,7 @@ jobs:
         if: failure()
         run: |
           echo "::error::Hotfix deploy failed for ${{ github.sha }}"
-          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \$HOME/app/internara && bash .github/scripts/rollback.sh'"
+          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \${DEPLOY_DIR:-\$HOME/app} && bash .github/scripts/rollback.sh'"
 
   sync-staging:
     name: Sync hotfix to staging branch

@@ -336,15 +336,15 @@ setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ## Deployment Path C: Docker
 
-### Git-based Docker Compose (zero-copy deploy)
+### Checkout-based Docker Compose
 
-The production `docker-compose.yml` supports building service images directly from the project's
-Git repository. This enables a "single-command" VPS deployment without cloning or uploading source
+The production `docker-compose.yml` builds service images directly from the checkout that owns the
+compose file. This enables a "single-command" deploy from any clone path without uploading source
 files manually.
 
 Key environment variables:
-- GIT_URL — repository URL with optional ref, e.g. `https://github.com/owner/repo.git#main` or
-  `git@github.com:owner/repo.git#main`. Defaults to the canonical repo.
+- BUILD_CONTEXT — build context for the `app` and `web` images. Defaults to `.` (the current
+  checkout); override to build from somewhere else (e.g. another local path).
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
 - DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
@@ -368,26 +368,18 @@ entrypoint runs `php artisan migrate --force` followed by
 roles, default settings, and academic year are seeded so the setup wizard can finalize) and starts
 the scheduler daemon only when
 `RUN_SCHEDULER=true`; set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
-added. Services that build from Git: `app` and `web`. The `web` image is built using
+added. Services built from the checkout: `app` and `web`. The `web` image is built using
 `.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
 host bind-mount is required.
 
-Important: Docker BuildKit is required to build directly from Git. Enable it in the shell:
+### Start the Stack
 
-```bash
-export DOCKER_BUILDKIT=1
-
-```
-
-### Start the Stack (public repo)
-
-1. Create an env file on the VPS with runtime secrets (recommended location `/etc/internara.env`):
+1. Create an env file with runtime secrets (recommended location `/etc/internara.env`):
 
 ```bash
 sudo tee /etc/internara.env > /dev/null <<'ENV'
 DB_PASSWORD=REPLACE_WITH_STRONG_PASSWORD
 APP_KEY=base64:REPLACE_WITH_APP_KEY
-GIT_URL=https://github.com/owner/repo.git#main
 ENV
 sudo chmod 600 /etc/internara.env
 
@@ -396,7 +388,7 @@ sudo chmod 600 /etc/internara.env
 2. Start the stack using the env file:
 
 ```bash
-DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+docker compose --env-file /etc/internara.env up --build -d
 
 ```
 
@@ -491,7 +483,8 @@ is derived from the tag suffix:
 - `vX.Y.Z-rc.<N>` → **pre-release (staging/RC)**: Pint + Pest + architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test + release notes preview → deploy to staging VPS (`https://staging.internara.web.id`)
 - `vX.Y.Z` (final) → **release (production)**: all of the above + release notes artifact, then deploy to production VPS (`https://internara.web.id`)
 
-`deploy.sh` sets `GIT_URL=https://github.com/reasvyn/internara.git#${VERSION_TAG}`, runs
+`deploy.sh` builds from the checkout it runs in (the deploy host must be on the tag the workflow
+checked out), runs
 `docker compose up -d --remove-orphans --force-recreate` (with `--no-cache` so a tag change is
 picked up), prunes the build cache under a `--keep-storage` limit (default `2g`), and gates success
 on a 60s health check against `HEALTH_URL` (`https://staging.internara.web.id` for pre-release,
@@ -529,7 +522,7 @@ The flow:
 3. **Verify:**
    `deploy.sh` reports success once `HEALTH_URL` responds 200 within 60s. Auto-rollback kicks in if the health check fails.
 
-Because `deploy.sh` builds from `GIT_URL=...git#hotfix`, the rebuilt image always reflects the current
+Because `deploy.sh` builds from the checkout, the rebuilt image always reflects the current
 `hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is required. Because the fix is also
 committed to `main` and automatically merged to `staging`, all branches remain in sync.
 
@@ -568,15 +561,14 @@ To opt back in to background processing, export `RUN_SCHEDULER=true` (and add a 
 
 ### Private repositories (SSH deploy key)
 
-For private repositories, create a read-only deploy key on GitHub and add the private key to the
-VPS (owner: root) at `~/.ssh/deploy_key` with permission 600. Then, before `docker compose` run the
-ssh-agent so the Docker build process can access the repo:
+The images build from the checkout, so a private repository only needs its clone on the deploy host
+with a read-only deploy key on GitHub. Add the private key to the host (owner: root) at
+`~/.ssh/deploy_key` with permission 600, then clone the repo normally:
 
 ```bash
 eval "$(ssh-agent -s)" && ssh-add ~/.ssh/deploy_key
-# Then run the compose command using SSH URL
-export GIT_URL='git@github.com:owner/repo.git#main'
-DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+git clone git@github.com:owner/repo.git
+cd repo && docker compose --env-file /etc/internara.env up --build -d
 
 ```
 

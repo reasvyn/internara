@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
+# Repo root derived from the script location so any clone path works.
+DEPLOY_DIR="${DEPLOY_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 CACHE_MAX_AGE="${CACHE_MAX_AGE:-168h}"
 LOCK_FILE="${TMPDIR:-/tmp}/internara-deploy.lock"
 

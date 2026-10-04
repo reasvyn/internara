@@ -194,7 +194,7 @@ no CI run, no version bump. Patches like this therefore ship faster than they ot
 git push origin main:hotfix
 
 # 2. Deploy on the VPS
-ssh your-vps-user@your-vps 'cd $HOME/app/internara \
+ssh your-vps-user@your-vps 'cd $HOME/app \
   && git fetch --all --prune \
   && git checkout hotfix \
   && git reset --hard origin/hotfix \

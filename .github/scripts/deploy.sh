@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
+# Deploy from this checkout: the repo root is derived from the script location,
+# so the same command works from any clone path (no hardcoded deploy dir).
+DEPLOY_DIR="${DEPLOY_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 HEALTH_URL="${HEALTH_URL:-https://internara.web.id}" # product demo; override via env for other domains
 BUILD_CACHE_LIMIT="${BUILD_CACHE_LIMIT:-2g}"
 VERSION_TAG="${VERSION_TAG:-}"
@@ -14,22 +16,15 @@ LOCK_FILE="${TMPDIR:-/tmp}/internara-deploy.lock"
 exec 200>"$LOCK_FILE"
 flock -w 600 200 || { echo "==> Failed to acquire deploy lock after 600s" >&2; exit 1; }
 
-# Always use version tag for reproducible deploys.
-# If VERSION_TAG is set (from workflow), ensure GIT_URL points to that tag.
-if [ -n "$VERSION_TAG" ]; then
-  export GIT_URL="https://github.com/reasvyn/internara.git#${VERSION_TAG}"
-  echo "==> Using version tag $VERSION_TAG (GIT_URL=$GIT_URL)"
-else
-  # Fallback: derive version from composer.json if no tag passed (e.g. manual SSH)
-  if [ -f composer.json ]; then
+# Build context is the checkout itself, so the version tag is informational only
+# (logging/traceability); no remote GIT_URL pinning is needed.
+if [ -z "$VERSION_TAG" ] && [ -f composer.json ]; then
     RAW_VERSION=$(jq -r .version composer.json 2>/dev/null || echo "")
     if [ -n "$RAW_VERSION" ] && [ "$RAW_VERSION" != "null" ]; then
-      VERSION_TAG="v${RAW_VERSION}"
-      export GIT_URL="https://github.com/reasvyn/internara.git#${VERSION_TAG}"
-      echo "==> Derived version tag $VERSION_TAG from composer.json (GIT_URL=$GIT_URL)"
+        VERSION_TAG="v${RAW_VERSION}"
     fi
-  fi
 fi
+echo "==> Deploying version: ${VERSION_TAG:-unversioned}"
 
 # Store current version for potential rollback
 PREVIOUS_REVISION=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
@@ -41,7 +36,7 @@ if [ "${NO_CACHE:-false}" = "true" ]; then
 fi
 
 echo "==> Building Docker images"
-# Keep the VPS build cache warm; release images are already selected through GIT_URL.
+# Keep the build cache warm; images are built from the current checkout.
 # Set FORCE_PULL=true only when base image refresh is intentional.
 PULL_FLAG=""
 if [ "${FORCE_PULL:-false}" = "true" ]; then

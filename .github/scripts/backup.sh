@@ -4,7 +4,8 @@
 # Runs on the VPS during deployment.
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
+# Repo root derived from the script location so any clone path works.
+DEPLOY_DIR="${DEPLOY_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 BACKUP_DIR="${DEPLOY_DIR}/.backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
