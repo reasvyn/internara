@@ -355,7 +355,7 @@ Run `python3 tools/scan_doc_links.py --no-external` to validate.
 
 The version that ships is the one on the VPS, not `composer.json`. Drift between local, tag, and
 VPS is the most common release bug. Compare `git describe --tags` locally vs
-`ssh internara-vps "git -C ~/apps/internara describe --tags"` and the Docker image (GIT_URL
+`ssh internara-vps "git -C ~/app/internara describe --tags"` and the Docker image (GIT_URL
 `#vX.Y.Z` in `docker-compose.yml`). Fix: bump `version`, tag `vX.Y.Z`, push the tag (deploys via
 `release.yml`). Full checklist: `docs/guides/upgrading.md`.
 

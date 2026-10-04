@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/apps/internara}"
+DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
 HEALTH_URL="${HEALTH_URL:-https://internara.web.id}" # product demo; override via env for other domains
 BUILD_CACHE_LIMIT="${BUILD_CACHE_LIMIT:-2g}"
 VERSION_TAG="${VERSION_TAG:-}"

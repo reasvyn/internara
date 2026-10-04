@@ -4,7 +4,7 @@
 # Run manually on the VPS if deployment fails.
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/apps/internara}"
+DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
 BACKUP_DIR="${DEPLOY_DIR}/.backups"
 
 cd "$DEPLOY_DIR"

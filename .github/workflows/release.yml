@@ -508,7 +508,7 @@ jobs:
                   envs: VERSION_TAG,VERSION,HEALTH_URL
                   script: |
                       set -euo pipefail
-                      cd "${STAGING_DEPLOY_DIR:-$HOME/apps/internara}"
+                      cd "${STAGING_DEPLOY_DIR:-$HOME/app/internara}"
                       echo "==> Deploying pre-release version: $VERSION (tag: $VERSION_TAG) to staging ($HEALTH_URL)"
 
                       # Backup current deployment before changes
@@ -534,7 +534,7 @@ jobs:
               if: failure()
               run: |
                   echo "::error::Staging deployment failed for v${{ needs.validate.outputs.version }}"
-                  echo "Run rollback: ssh ${{ secrets.STAGING_VPS_USER || secrets.VPS_USER }}@${{ secrets.STAGING_VPS_HOST || secrets.VPS_HOST }} 'cd ${STAGING_DEPLOY_DIR:-\$HOME/apps/internara} && bash .github/scripts/rollback.sh'"
+                  echo "Run rollback: ssh ${{ secrets.STAGING_VPS_USER || secrets.VPS_USER }}@${{ secrets.STAGING_VPS_HOST || secrets.VPS_HOST }} 'cd ${STAGING_DEPLOY_DIR:-\$HOME/app/internara} && bash .github/scripts/rollback.sh'"
 
     # ------------------------------------------------------------------ #
     # DEPLOY — production only, after the production QA stage passes.
@@ -569,7 +569,7 @@ jobs:
                   envs: VERSION_TAG,VERSION,HEALTH_URL
                   script: |
                       set -euo pipefail
-                      cd "$HOME/apps/internara"
+                      cd "$HOME/app/internara"
                       echo "==> Deploying version: $VERSION (tag: $VERSION_TAG)"
 
                       # Backup current deployment before changes
@@ -595,4 +595,4 @@ jobs:
               if: failure()
               run: |
                   echo "::error::Deployment failed for v${{ needs.validate.outputs.version }}"
-                  echo "Run rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd $HOME/apps/internara && bash .github/scripts/rollback.sh'"
+                  echo "Run rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd $HOME/app/internara && bash .github/scripts/rollback.sh'"

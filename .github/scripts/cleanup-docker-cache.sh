@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DEPLOY_DIR="${DEPLOY_DIR:-$HOME/apps/internara}"
+DEPLOY_DIR="${DEPLOY_DIR:-$HOME/app/internara}"
 CACHE_MAX_AGE="${CACHE_MAX_AGE:-168h}"
 LOCK_FILE="${TMPDIR:-/tmp}/internara-deploy.lock"
 

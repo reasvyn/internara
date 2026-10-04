@@ -148,11 +148,11 @@ The deploy process includes automatic rollback on failure:
 1. **Before deploy**: `backup.sh` stores the current git revision and timestamp
 2. **During deploy**: `deploy.sh` builds and starts containers, then waits for health check
 3. **On failure**: If health check fails, `deploy.sh` automatically rolls back to the previous revision
-4. **Manual rollback**: Run `ssh user@vps 'cd $HOME/apps/internara && bash .github/scripts/rollback.sh'`
+4. **Manual rollback**: Run `ssh user@vps 'cd $HOME/app/internara && bash .github/scripts/rollback.sh'`
 
 ### Backup Retention
 
-- Backups are stored in `$HOME/apps/internara/.backups/`
+- Backups are stored in `$HOME/app/internara/.backups/`
 - Only the last 5 backups are retained (disk space management)
 - Each backup contains: timestamp, git revision, tag, creation date
 
@@ -191,7 +191,7 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
    git tag vX.Y.Z-rc.1 && git push origin vX.Y.Z-rc.1
    ```
 
-4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS (`$HOME/apps/internara`).
+4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS (`$HOME/app/internara`).
 5. Release notes are automatically generated and uploaded as artifacts.
 
 ### Secrets
