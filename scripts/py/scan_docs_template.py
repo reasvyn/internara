@@ -44,7 +44,7 @@ from _common import (
 )
 
 # ─── Constants ────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DOCS_DIR = ROOT / "docs"
 TEMPLATES_DIR = DOCS_DIR / "templates"
 OUTPUT_DIR = Path(__file__).parent / "outputs"

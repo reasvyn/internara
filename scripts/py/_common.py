@@ -30,7 +30,7 @@ from typing import Any, Callable, Iterable
 
 # ─── Constants ───────────────────────────────────────────────────────────────
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 APP_DIR = ROOT / "app"
 MODULES_DIR = ROOT / "app" / "Modules"
 OUTPUT_DIR = Path(__file__).parent / "outputs"

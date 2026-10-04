@@ -33,7 +33,7 @@ from typing import Any
 
 # ─── Constants ──────────────────────────────────────────────────────────────
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 DOCS_DIR = ROOT / "docs"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "doc-links"

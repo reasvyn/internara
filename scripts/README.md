@@ -1,7 +1,24 @@
-# Tools — Internal Devtools
+# Scripts — Internal Devtools
 
 Focused automation scripts for Internara's AI agent workflows. Each script performs one job
-and outputs a timestamped JSON report to `scripts/outputs/`.
+and outputs a timestamped JSON report to `scripts/py/outputs/`.
+
+## Layout
+
+```text
+scripts/
+├── install.sh          # bash — flat in scripts/
+├── README.md           # this registry
+└── py/                 # Python scanners
+    ├── config.json     # scanner + output-category registry (SSOT)
+    ├── outputs/        # timestamped JSON reports (gitignored)
+    └── *.py            # scanners
+```
+
+**Placement rule:** bash scripts live directly in `scripts/`. Every other language is isolated in
+a language subdirectory — Python in `scripts/py/`, JavaScript/TypeScript in `scripts/js/`, Go in
+`scripts/go/`, PHP in `scripts/php/`, Ruby in `scripts/rb/`. Never mix languages in one directory.
+One-off or throwaway scripts belong in `/tmp` and are discarded.
 
 ## Standard CLI
 
@@ -9,34 +26,44 @@ Every scanner shares the same interface:
 
 ```bash
 # Scan all modules
-python3 scripts/{script}.py
 
 # Scan single module
-python3 scripts/{script}.py --module Academics
 
 # Custom output path
-python3 scripts/{script}.py --output /tmp/custom-report.json
 
 # Human-readable output instead of JSON file write
-python3 scripts/{script}.py --format summary    # table summary to stdout
-python3 scripts/{script}.py --format text       # plain text list of findings
-python3 scripts/{script}.py --format html       # HTML report
-python3 scripts/{script}.py --format markdown   # Markdown report
-python3 scripts/{script}.py --json              # JSON dump to stdout
 
 # Flags
-python3 scripts/{script}.py --strict            # exit 1 when findings exist
-python3 scripts/{script}.py --verbose           # extra detail
-python3 scripts/{script}.py --quiet             # suppress stdout noise
-python3 scripts/{script}.py --progress          # show progress bar
-python3 scripts/{script}.py --no-cache          # disable file caching
-python3 scripts/{script}.py --workers 4         # parallel workers (default: 8)
-python3 scripts/{script}.py --baseline baseline.json  # ignore known findings
-python3 scripts/{script}.py --severity high      # filter by minimum severity
 ```
 
-Default output: `scripts/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
-(`scripts/outputs/` is gitignored).
+python3 scripts/py/{script}.py
+
+# Scan single module
+python3 scripts/py/{script}.py --module Academics
+
+# Custom output path
+python3 scripts/py/{script}.py --output /tmp/custom-report.json
+
+# Human-readable output instead of JSON file write
+python3 scripts/py/{script}.py --format summary    # table summary to stdout
+python3 scripts/py/{script}.py --format text       # plain text list of findings
+python3 scripts/py/{script}.py --format html       # HTML report
+python3 scripts/py/{script}.py --format markdown   # Markdown report
+python3 scripts/py/{script}.py --json              # JSON dump to stdout
+
+# Flags
+python3 scripts/py/{script}.py --strict            # exit 1 when findings exist
+python3 scripts/py/{script}.py --verbose           # extra detail
+python3 scripts/py/{script}.py --quiet             # suppress stdout noise
+python3 scripts/py/{script}.py --progress          # show progress bar
+python3 scripts/py/{script}.py --no-cache          # disable file caching
+python3 scripts/py/{script}.py --workers 4         # parallel workers (default: 8)
+python3 scripts/py/{script}.py --baseline baseline.json  # ignore known findings
+python3 scripts/py/{script}.py --severity high      # filter by minimum severity
+```
+
+Default output: `scripts/py/outputs/{YYYYMMDDHHMMSS}-{scan_name}.json`
+(`scripts/py/outputs/` is gitignored).
 
 ### Pruning outputs
 
@@ -52,6 +79,16 @@ python3 scripts/clean_outputs.py --prune -v
 ```
 
 Categories come from `scripts/tools.json`. Files that are not registered there, or whose
+python3 scripts/py/clean_outputs.py --prune
+
+# See what would be deleted first
+python3 scripts/py/clean_outputs.py --prune --dry-run
+
+# Keep latest plus show which file is retained per category
+python3 scripts/py/clean_outputs.py --prune -v
+```
+
+Categories come from `scripts/py/config.json`. Files that are not registered there, or whose
 filename does not match `{YYYYMMDDHHMMSS}-{category}.json`, are never deleted.
 
 ## Tool Runner
@@ -76,6 +113,22 @@ python3 scripts/tool_runner.py --compare old.json new.json
 
 # List available scanners
 python3 scripts/tool_runner.py --list
+python3 scripts/py/tool_runner.py
+
+# Run specific scanners
+python3 scripts/py/tool_runner.py --scanner violations,naming
+
+# Run with module filter
+python3 scripts/py/tool_runner.py --scanner violations --module Core
+
+# Generate HTML report
+python3 scripts/py/tool_runner.py --format html --output report.html
+
+# Compare two reports
+python3 scripts/py/tool_runner.py --compare old.json new.json
+
+# List available scanners
+python3 scripts/py/tool_runner.py --list
 ```
 
 ## Output Schema
@@ -149,24 +202,24 @@ contract source.
 Scanners cache file-level results based on modification time. Subsequent runs skip unchanged files:
 
 ```bash
-python3 scripts/scan_violations.py --no-cache    # bypass cache
-python3 scripts/scan_violations.py --progress     # show progress bar
-python3 scripts/scan_violations.py --workers 16   # parallel workers
+python3 scripts/py/scan_violations.py --no-cache    # bypass cache
+python3 scripts/py/scan_violations.py --progress     # show progress bar
+python3 scripts/py/scan_violations.py --workers 16   # parallel workers
 ```
 
 ### Report Formats
 
 ```bash
-python3 scripts/scan_violations.py --format html      # HTML report with styling
-python3 scripts/scan_violations.py --format markdown  # Markdown report for GitHub
-python3 scripts/scan_violations.py --format diff --compare old.json new.json  # Compare scans
+python3 scripts/py/scan_violations.py --format html      # HTML report with styling
+python3 scripts/py/scan_violations.py --format markdown  # Markdown report for GitHub
+python3 scripts/py/scan_violations.py --format diff --compare old.json new.json  # Compare scans
 ```
 
 ### Baseline & Filtering
 
 ```bash
-python3 scripts/scan_violations.py --baseline baseline.json   # ignore known findings
-python3 scripts/scan_violations.py --severity high            # only high/critical
+python3 scripts/py/scan_violations.py --baseline baseline.json   # ignore known findings
+python3 scripts/py/scan_violations.py --severity high            # only high/critical
 ```
 
 ## Calibration Notes

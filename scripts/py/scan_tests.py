@@ -105,7 +105,11 @@ def run_tests_robust(filter_module: str | None = None, timeout: int = 300, retry
                     rule="TEST_EXECUTION",
                     severity="high",
                     category="system",
+<<<<<<<< HEAD:scripts/scan_tests.py
                     file="scripts/scan_tests.py",
+========
+                    file="scripts/py/scan_tests.py",
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_tests.py
                     line=0,
                     message=f"Test execution failed: {output[:200]}",
                     suggestion="Check PHP version, database, and artisan test setup",
@@ -143,7 +147,11 @@ def run_tests_robust(filter_module: str | None = None, timeout: int = 300, retry
                 rule="TEST_ENVIRONMENT",
                 severity="critical",
                 category="system",
+<<<<<<<< HEAD:scripts/scan_tests.py
                 file="scripts/scan_tests.py",
+========
+                file="scripts/py/scan_tests.py",
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_tests.py
                 line=0,
                 message="PHP not found: cannot run tests",
                 suggestion="Install PHP 8.4 and ensure 'php' is in PATH",
@@ -159,7 +167,11 @@ def run_tests_robust(filter_module: str | None = None, timeout: int = 300, retry
                 rule="TEST_EXECUTION",
                 severity="high",
                 category="system",
+<<<<<<<< HEAD:scripts/scan_tests.py
                 file="scripts/scan_tests.py",
+========
+                file="scripts/py/scan_tests.py",
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_tests.py
                 line=0,
                 message=f"Unexpected test error: {e}",
                 suggestion="Check test setup and artisan availability",
@@ -231,11 +243,19 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+<<<<<<<< HEAD:scripts/scan_tests.py
   python3 scripts/scan_tests.py
   python3 scripts/scan_tests.py --module Assessment --verbose
   python3 scripts/scan_tests.py --json | jq '.metadata.by_module'
   python3 scripts/scan_tests.py --strict
   timeout 60 python3 scripts/scan_tests.py --module User
+========
+  python3 scripts/py/scan_tests.py
+  python3 scripts/py/scan_tests.py --module Assessment --verbose
+  python3 scripts/py/scan_tests.py --json | jq '.metadata.by_module'
+  python3 scripts/py/scan_tests.py --strict
+  timeout 60 python3 scripts/py/scan_tests.py --module User
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_tests.py
         """
     )
     parser.add_argument("--module", help="Run tests for a single module")

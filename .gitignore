@@ -7,7 +7,7 @@
 /storage/*.key
 /storage/logs
 /storage/pail
-/scripts/outputs
+/scripts/py/outputs
 /temp
 /.phpunit.cache
 /.temp
@@ -45,7 +45,6 @@ yarn-error.log
 .phpunit.result.cache
 
 # Volatile Files
-/scripts/outputs
 
 # Docker Sail — only keep 8.4
 /docker/8.0/
@@ -72,8 +71,8 @@ yarn-error.log
 .gemini/
 
 # Tools
-/scripts/outputs/*.json
-/scripts/__pycache__/
+/scripts/py/outputs/*.json
+/scripts/py/__pycache__/
 
 # Backup Files
 /**/*.backup

@@ -2,17 +2,30 @@
 """
 tool_runner.py — Orchestrate multiple scan tools with shared cache and reporting.
 
+<<<<<<<< HEAD:scripts/tool_runner.py
 The registry of available scanners is loaded from `scripts/tools.json` (the
+========
+The registry of available scanners is loaded from `scripts/py/config.json` (the
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
 single source of truth) at startup. If the file is missing or malformed, a
 hardcoded `FALLBACK_SCANNERS` dict is used so the tool still works offline.
 
 Usage:
+<<<<<<<< HEAD:scripts/tool_runner.py
     python3 scripts/tool_runner.py                          # Run all scanners
     python3 scripts/tool_runner.py --scanner violations      # Run single scanner
     python3 scripts/tool_runner.py --scanner violations,naming # Run multiple scanners
     python3 scripts/tool_runner.py --list                    # List available scanners
     python3 scripts/tool_runner.py --format html             # Generate HTML report
     python3 scripts/tool_runner.py --compare old.json new.json # Diff two reports
+========
+    python3 scripts/py/tool_runner.py                          # Run all scanners
+    python3 scripts/py/tool_runner.py --scanner violations      # Run single scanner
+    python3 scripts/py/tool_runner.py --scanner violations,naming # Run multiple scanners
+    python3 scripts/py/tool_runner.py --list                    # List available scanners
+    python3 scripts/py/tool_runner.py --format html             # Generate HTML report
+    python3 scripts/py/tool_runner.py --compare old.json new.json # Diff two reports
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
 """
 
 from __future__ import annotations
@@ -27,14 +40,22 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+<<<<<<<< HEAD:scripts/tool_runner.py
 ROOT = Path(__file__).resolve().parent.parent
 TOOLS_DIR = ROOT / "scripts"
 OUTPUT_DIR = TOOLS_DIR / "outputs"
 TOOLS_JSON = TOOLS_DIR / "tools.json"
+========
+ROOT = Path(__file__).resolve().parent.parent.parent
+SCRIPTS_DIR = ROOT / "scripts" / "py"
+OUTPUT_DIR = SCRIPTS_DIR / "outputs"
+SCRIPTS_JSON = SCRIPTS_DIR / "config.json"
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
 
 # Hardcoded fallback registry used when tools.json is missing or unreadable.
 # Last-resort safety net — the SSOT is tools.json.
 FALLBACK_SCANNERS: dict[str, str] = {
+<<<<<<<< HEAD:scripts/tool_runner.py
     "project-summary": "scripts/scan_project_summary.py",
     "architecture": "scripts/scan_architecture.py",
     "arch-patterns": "scripts/scan_arch_patterns.py",
@@ -52,6 +73,25 @@ FALLBACK_SCANNERS: dict[str, str] = {
     "tests": "scripts/scan_tests.py",
     "ui-consistency": "scripts/scan_ui_consistency.py",
     "violations": "scripts/scan_violations.py",
+========
+    "project-summary": "scripts/py/scan_project_summary.py",
+    "architecture": "scripts/py/scan_architecture.py",
+    "arch-patterns": "scripts/py/scan_arch_patterns.py",
+    "class-contracts": "scripts/py/scan_class_contracts.py",
+    "conventions": "scripts/py/scan_conventions.py",
+    "dead-code": "scripts/py/scan_dead_code.py",
+    "doc-links": "scripts/py/scan_doc_links.py",
+    "docs-template": "scripts/py/scan_docs_template.py",
+    "files": "scripts/py/scan_files.py",
+    "issues": "scripts/py/scan_issues.py",
+    "module-boundaries": "scripts/py/scan_module_boundaries.py",
+    "naming": "scripts/py/scan_naming.py",
+    "security": "scripts/py/scan_security.py",
+    "spec-tests": "scripts/py/scan_spec_tests.py",
+    "tests": "scripts/py/scan_tests.py",
+    "ui-consistency": "scripts/py/scan_ui_consistency.py",
+    "violations": "scripts/py/scan_violations.py",
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
 }
 
 # Description map (used by --list when tools.json is the source). Kept as a
@@ -82,13 +122,17 @@ class ScannerEntry:
     """A single scanner from the registry."""
 
     name: str
+<<<<<<<< HEAD:scripts/tool_runner.py
     script: str  # Relative path, e.g. "scripts/scan_x.py"
+========
+    script: str  # Relative path, e.g. "scripts/py/scan_x.py"
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
     description: str = ""
 
 
 # Cached registry — populated on first access.
 _REGISTRY: dict[str, ScannerEntry] | None = None
-_REGISTRY_SOURCE: str = ""  # "tools.json" | "fallback" | "fallback+missing"
+_REGISTRY_SOURCE: str = ""  # "config.json" | "fallback" | "fallback+missing"
 
 
 def load_registry(force: bool = False) -> dict[str, ScannerEntry]:
@@ -105,24 +149,28 @@ def load_registry(force: bool = False) -> dict[str, ScannerEntry]:
     entries: dict[str, ScannerEntry] = {}
     source = "fallback"
 
-    if TOOLS_JSON.exists():
+    if SCRIPTS_JSON.exists():
         try:
-            data = json.loads(TOOLS_JSON.read_text(encoding="utf-8"))
+            data = json.loads(SCRIPTS_JSON.read_text(encoding="utf-8"))
             for name, cfg in (data.get("outputs") or {}).items():
                 script = cfg.get("script", "")
                 if not script:
                     continue
+<<<<<<<< HEAD:scripts/tool_runner.py
                 path = script if script.startswith("scripts/") else f"scripts/{script}"
+========
+                path = script if script.startswith("scripts/") else f"scripts/py/{script}"
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/tool_runner.py
                 entries[name] = ScannerEntry(
                     name=name,
                     script=path,
                     description=cfg.get("description", ""),
                 )
             if entries:
-                source = "tools.json"
+                source = "config.json"
         except (OSError, json.JSONDecodeError, ValueError) as exc:
             print(
-                f"Warning: failed to read {TOOLS_JSON.relative_to(ROOT)}: {exc}. "
+                f"Warning: failed to read {SCRIPTS_JSON.relative_to(ROOT)}: {exc}. "
                 f"Falling back to hardcoded registry.",
                 file=sys.stderr,
             )

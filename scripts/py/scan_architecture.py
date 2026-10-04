@@ -219,10 +219,17 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+<<<<<<<< HEAD:scripts/scan_architecture.py
   python3 scripts/scan_architecture.py
   python3 scripts/scan_architecture.py --module Assessment --verbose
   python3 scripts/scan_architecture.py --json | jq '.metadata'
   python3 scripts/scan_architecture.py --strict
+========
+  python3 scripts/py/scan_architecture.py
+  python3 scripts/py/scan_architecture.py --module Assessment --verbose
+  python3 scripts/py/scan_architecture.py --json | jq '.metadata'
+  python3 scripts/py/scan_architecture.py --strict
+>>>>>>>> 86665d74e (refactor(scripts)!: consolidate tools/ into scripts/ with per-language scoping):scripts/py/scan_architecture.py
         """
     )
     parser.add_argument("--module", "-m", help="Scan single module only")
