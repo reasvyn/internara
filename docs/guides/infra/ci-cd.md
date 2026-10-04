@@ -153,8 +153,11 @@ The deploy process includes automatic rollback on failure:
 
 ### Backup Retention
 
-- Backups are stored in `<repo>/.backups/`
-- Only the last 5 backups are retained (disk space management)
+- Backups live in `<repo>/.backups/` and are **purged automatically once the new release passes its
+  health check** — they only matter while a deploy is in flight.
+- `KEEP_BACKUPS=<N>` on `deploy.sh` retains the `N` newest `backup_*.json` files (default `0` = purge
+  everything). Scheduled database dumps under `storage/app/backup/*.sql.gz` are always purged.
+- `backup.sh` itself keeps only the last 5 files per run (disk space management)
 - Each backup contains: timestamp, git revision, tag, creation date
 
 ---

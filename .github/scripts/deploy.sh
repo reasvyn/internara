@@ -82,4 +82,24 @@ if [ "$HEALTH_CHECK_PASSED" = false ]; then
     exit 1
 fi
 
+rm -f "$HEALTH_TMP"
+
+# Backups only matter while a deploy is in flight; once the new release is healthy
+# they are stale by definition, so purge them. Set KEEP_BACKUPS to retain the N
+# newest deploy metadata files (0 = purge everything).
+KEEP_BACKUPS="${KEEP_BACKUPS:-0}"
+echo "==> Purging backup artifacts (KEEP_BACKUPS=$KEEP_BACKUPS)"
+purge_deploy_backups() {
+    BACKUP_DIR="$DEPLOY_DIR/.backups"
+    if [ -d "$BACKUP_DIR" ]; then
+        find "$BACKUP_DIR" -maxdepth 1 -name 'backup_*.json' -print0 \
+            | sort -zr \
+            | tail -z -n "+$((KEEP_BACKUPS + 1))" \
+            | xargs -0r rm -f
+    fi
+    # Scheduled database dumps produced by the backup command.
+    rm -f "$DEPLOY_DIR"/storage/app/backup/*.sql.gz
+}
+purge_deploy_backups
+
 echo "==> Deploy completed successfully"
