@@ -15,9 +15,9 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
-      DB_DATABASE: internara
-      DB_USERNAME: internara
-      DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
+      DB_DATABASE: "${DB_DATABASE:-internara}"
+      DB_USERNAME: "${DB_USERNAME:-internara}"
+      DB_PASSWORD: "${DB_PASSWORD:-}"
       QUEUE_CONNECTION: sync
       CACHE_STORE: file
       SESSION_DRIVER: "${SESSION_DRIVER:-file}"
@@ -44,10 +44,10 @@ services:
     image: mysql:8
     command: --innodb-buffer-pool-size=64M --performance-schema=OFF --max-connections=50 --table-open-cache=256 --innodb-log-buffer-size=16M --innodb-doublewrite=OFF --innodb-flush-log-at-trx-commit=2
     environment:
-      MYSQL_DATABASE: internara
-      MYSQL_USER: internara
-      MYSQL_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: "${DB_DATABASE:-internara}"
+      MYSQL_USER: "${DB_USERNAME:-internara}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-}"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
