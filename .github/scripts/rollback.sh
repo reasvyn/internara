@@ -48,12 +48,36 @@ if [ -z "$ENV_FILE" ]; then
     elif [ -f "/etc/internara.env" ]; then
         ENV_FILE="/etc/internara.env"
     fi
+elif [ ! -f "$ENV_FILE" ] && [ -f "$DEPLOY_DIR/$ENV_FILE" ]; then
+    ENV_FILE="$DEPLOY_DIR/$ENV_FILE"
+fi
+
+# If .env.production exists alongside .env on the host, backfill required secrets
+# (APP_KEY, DB_PASSWORD, etc.) from .env into .env.production if missing or blank.
+if [ -f "$DEPLOY_DIR/.env" ] && [ -f "$DEPLOY_DIR/.env.production" ]; then
+    for secret_var in APP_KEY DB_PASSWORD DB_DATABASE DB_USERNAME DB_HOST DB_PORT; do
+        VAL_PROD=$(grep -E "^${secret_var}=[^\s#]+" "$DEPLOY_DIR/.env.production" || true)
+        if [ -z "$VAL_PROD" ]; then
+            VAL_BASE=$(grep -E "^${secret_var}=[^\s#]+" "$DEPLOY_DIR/.env" || true)
+            if [ -n "$VAL_BASE" ]; then
+                echo "==> Backfilling ${secret_var} into .env.production from .env"
+                if grep -q "^${secret_var}=" "$DEPLOY_DIR/.env.production"; then
+                    sed -i "s|^${secret_var}=.*|$VAL_BASE|" "$DEPLOY_DIR/.env.production"
+                else
+                    echo "$VAL_BASE" >> "$DEPLOY_DIR/.env.production"
+                fi
+            fi
+        fi
+    done
 fi
 
 ENV_FILE_ARGS=()
-if [ -n "$ENV_FILE" ] && [ -f "$ENV_FILE" ]; then
+if [ -f "$DEPLOY_DIR/.env" ]; then
+    ENV_FILE_ARGS+=(--env-file "$DEPLOY_DIR/.env")
+fi
+if [ -n "$ENV_FILE" ] && [ -f "$ENV_FILE" ] && [ "$ENV_FILE" != "$DEPLOY_DIR/.env" ]; then
     echo "==> Using environment file: $ENV_FILE"
-    ENV_FILE_ARGS=(--env-file "$ENV_FILE")
+    ENV_FILE_ARGS+=(--env-file "$ENV_FILE")
 fi
 
 # Redeploy with the rolled-back version
