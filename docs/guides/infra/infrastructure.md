@@ -156,7 +156,7 @@ Internet
 +------------+  +------------+  |  alerts      |  |  reports     |
                                 +--------------+  +--------------+
 
-* SQLite only in development / testing, never in production
+* SQLite only in local development / testing, never in production / staging (which use MySQL)
 
 ```
 
@@ -234,12 +234,12 @@ Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`
 
 ### Default by Tier
 
-| Tier        | Engine                   | Configuration                              |
-| ----------- | ------------------------ | ------------------------------------------ |
-| Development | SQLite (file)            | Zero config, single file                   |
-| Testing     | SQLite (in-memory)       | Fast, auto-discarded                       |
-| Tier 1      | MySQL / MariaDB          | Shared hosting MySQL (limited connections) |
-| Tier 2+     | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned                           |
+| Tier                    | Engine                   | Configuration                              |
+| ----------------------- | ------------------------ | ------------------------------------------ |
+| Local / Development     | SQLite (file)            | Zero config, single file                   |
+| Testing                 | SQLite (in-memory)       | Fast, auto-discarded                       |
+| Staging / Tier 1 (Prod) | MySQL / MariaDB          | Standard MySQL (shared hosting / VPS)      |
+| Tier 2+ (Prod)          | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned                           |
 
 All tables use UUID v7 primary keys via Laravel's `HasUuids` trait. The `BaseModel` automatically
 provides this; `User` applies it manually since it extends `Authenticatable`.

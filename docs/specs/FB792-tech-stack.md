@@ -111,7 +111,7 @@ A manifest entry is a verifiable declaration: the constraint is in `composer.jso
 | FR-STACK-009 | Runtime installs use `composer install --locked --optimize-autoloader` | P0 | A | Full |
 | FR-STACK-010 | The JS toolchain (`package.json` + lockfile) is pinned and installed with `npm ci` | P0 | A | Full |
 | FR-STACK-011 | A dependency a module uses MUST be declared in the manifest — no undeclared direct packages | P1 | A | Full |
-| FR-STACK-012 | Tier-1 defaults run with zero external services: MySQL/MariaDB + file cache + sync queue + database session + local disk; Redis/S3/Reverb are optional `.env` overrides | P0 | A | Full |
+| FR-STACK-012 | Tier-1 defaults run with zero external services: MySQL (production/staging) and SQLite (local/dev/testing) + file cache + sync queue + database session + local disk; Redis/S3/Reverb are optional `.env` overrides | P0 | A | Full |
 | FR-STACK-013 | `composer audit` (and `npm audit`) run in CI and MUST be clean or explicitly accepted before release | P0 | A | Full |
 | FR-STACK-014 | `npm run build` MUST succeed without warnings for a production bundle | P1 | A | Full |
 
@@ -273,7 +273,7 @@ npm ci
 
 | Concern | Tier-1 Default | Tier-2/3 Override |
 | ------- | -------------- | ----------------- |
-| Database | MySQL/MariaDB (SQLite dev/test) | MySQL + read replica |
+| Database | MySQL (production/staging) / SQLite (local/dev/testing) | MySQL + read replica |
 | Queue | sync | `QUEUE_CONNECTION=redis` + worker |
 | Cache | file | `CACHE_STORE=redis` |
 | Session | database | `SESSION_DRIVER=redis` |

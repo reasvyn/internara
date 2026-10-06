@@ -37,7 +37,7 @@ staff.
 
 | Concern | Decision | Rationale |
 |---------|----------|-----------|
-| Database | SQLite dev/test, MySQL/MariaDB prod | Available on all shared hosting; SQLite for standalone dev |
+| Database | SQLite local/dev/testing, MySQL production/staging | Available on production/staging hosting; SQLite for local/testing |
 | Queue | sync default, Redis optional | No daemon required |
 | Cache | file/database default, Redis optional | Zero-config file cache |
 | Session | database default, Redis optional | Auto-created by migration |
@@ -64,7 +64,7 @@ the school's server; no telemetry, usage reporting, or external API calls for co
 
 * No cross-school management view; each admin operates independently
 * Manual per-instance updates (pull, migrate, rebuild assets)
-* SQLite unsuitable for production concurrency — shared hosting requires MySQL/MariaDB
+* SQLite unsuitable for production/staging concurrency — production/staging requires MySQL
 
 ## Links
 

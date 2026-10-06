@@ -48,8 +48,8 @@ The default database driver is SQLite. It requires zero configuration — no ser
 credentials, no port management. For development and testing, this eliminates operational friction.
 Testing also uses SQLite (in-memory mode), which makes the test suite fast and self-contained.
 
-SQLite is intended for development and testing only. In shared hosting production, use MySQL or
-MariaDB provided by your hosting service. Scale to PostgreSQL when exceeding 500 registered users
+SQLite is intended for local development and testing only. In production and staging environments, use MySQL (or
+compatible MariaDB provided by your hosting service). Scale to PostgreSQL when exceeding 500 registered users
 per PKL period. The application abstracts database access through Eloquent, so switching drivers
 requires changing only the environment variable.
 

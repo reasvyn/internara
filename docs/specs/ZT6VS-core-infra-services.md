@@ -15,7 +15,7 @@ Defines the runtime infrastructure services Internara consumes — database, cac
 
 ### PS-1 — Zero-Config Shared Hosting
 
-Indonesian vocational schools typically deploy on shared hosting or small VPS instances without Redis, Memcached, or dedicated queue workers. The default configuration must work with zero external dependencies — SQLite for database, file for cache, database for sessions, sync for queue, log for mail — and scaling any service must be a single `.env` change.
+Indonesian vocational schools typically deploy on shared hosting or small VPS instances without Redis, Memcached, or dedicated queue workers. The default configuration must work with zero external dependencies — SQLite for local, development, and testing, MySQL for production and staging environments, file for cache, database for sessions, sync for queue, log for mail — and scaling any service must be a single `.env` change.
 **→ Requirement:** FR-CORE-036 (Tier-1 defaults), FR-CORE-008/015/022/027/031 (per-service defaults).
 
 ### PS-2 — Cache Coherence
@@ -49,7 +49,7 @@ Previously the tech-stack spec mixed version pins with runtime behavior (drivers
 
 ### Goals
 
-- **Zero-config Tier-1 defaults** — SQLite/file/database-session/sync-queue/log-mail work out of the box with no external services. *Why:* schools deploy on $5 shared hosting; anything requiring Redis or a worker daemon on day one excludes them.
+- **Zero-config local/dev/testing defaults** — SQLite for local/dev/testing and MySQL for production/staging with file/database-session/sync-queue/log-mail working out of the box with zero external dependencies. *Why:* zero setup overhead locally and seamless operation on standard hosting.
 - **Every service overridable via `.env` without code changes** — cache, session, queue, mail, disk, and Redis all read driver and credential from environment. *Why:* Tier-2 growth must be a config swap, not a rewrite (per [performance-optimization ADR](../adr/adr-performance-optimization.md)).
 - **Centralized cache key registry in `config/cache-keys.php`** — every cached value resolves to a registered key. *Why:* greppable, auditable invalidation; stale keys become visible instead of silent.
 - **Secure session defaults** — encryption on, HTTP-only, SameSite=lax, 120-minute lifetime, ID regeneration on auth change. *Why:* sessions carry auth state; the default must be safe before any admin touches a setting.
@@ -119,8 +119,8 @@ Per-service behavior contracts. Defaults are Tier 1 (shared hosting, ≤500 user
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
-| FR-CORE-001 | Default connection is SQLite via `DB_CONNECTION=sqlite` (development and shared hosting) | P0 | A | Full |
-| FR-CORE-002 | Production supports MySQL ≥ 8.0, MariaDB ≥ 10.6, PostgreSQL ≥ 15 via `.env` | P0 | A | Full |
+| FR-CORE-001 | Default connection is SQLite via `DB_CONNECTION=sqlite` for local, development, and testing environments | P0 | A | Full |
+| FR-CORE-002 | Production and staging environments use MySQL (≥ 8.0) or compatible MariaDB (≥ 10.6) via `.env` (PostgreSQL ≥ 15 supported for larger deployments) | P0 | A | Full |
 | FR-CORE-003 | UTF-8 charset enforced: `DB_CHARSET=utf8mb4` (PostgreSQL: `utf8`) | P0 | A | Full |
 | FR-CORE-004 | UUID v7 primary keys via `HasUuids` — no auto-increment IDs ([uuid ADR](../adr/adr-uuid-primary-keys.md)) | P0 | A | Full |
 | FR-CORE-005 | SQLite runs with WAL journal mode and `busy_timeout` for concurrency safety | P1 | A | Full |
@@ -165,13 +165,13 @@ Per-service behavior contracts. Defaults are Tier 1 (shared hosting, ≤500 user
 
 ### 4.1 Database
 
-#### FR-CORE-001 — SQLite by default
+#### FR-CORE-001 — SQLite for local, development, and testing
 
-At boot Laravel reads `config/database.php`, which defaults to `DB_CONNECTION=sqlite`, while `.env.example` documents the MySQL and PostgreSQL overrides beside it for schools that outgrow the file. A layer `A` config default assertion guards that default so a careless edit cannot silently flip fresh installs to a driver with no server behind it.
+At boot Laravel reads `config/database.php`, which defaults to `DB_CONNECTION=sqlite` for local development and automated testing environments, while `.env.example` documents the MySQL configuration required for staging and production deployments. A layer `A` config default assertion guards that default so a careless edit cannot silently flip fresh local installs or tests to a driver with no server behind it.
 
-#### FR-CORE-002 — Production databases via .env
+#### FR-CORE-002 — Production and staging databases via .env
 
-A school that starts on SQLite and moves to MySQL, MariaDB, or PostgreSQL changes only connection, host, port, database, and credential keys. No application code branches on the driver name, which is why the same binary runs in both places.
+Production and staging deployments standardize on MySQL 8.0+ (or compatible MariaDB 10.6+). Moving an instance from local/dev SQLite to staging or production MySQL changes only connection, host, port, database, and credential keys in `.env`. No application code branches on the driver name, which is why the same binary runs across all environments.
 
 The one place this bites is charset: MySQL wants `utf8mb4` while PostgreSQL expects `utf8`, and a student name like "Siti Nurhaliza ♥" will corrupt if the wrong one leaks into a migration. That difference is resolved in config, never in migrations, and a layer `A` config review confirms no migration hardcodes a collation.
 
@@ -406,7 +406,7 @@ Skipping the warm step leaves the first teacher after a deploy waiting on a cold
 
 ```env
 # Database
-DB_CONNECTION=sqlite        # sqlite | mysql | mariadb | pgsql
+DB_CONNECTION=sqlite        # sqlite (local/dev/testing) | mysql (production/staging) | mariadb | pgsql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=internara
@@ -478,7 +478,7 @@ return [
 
 | Service | Tier 1 (default, zero external services) | Tier 2 (VPS growth, `.env` swap) |
 | ------- | ---------------------------------------- | -------------------------------- |
-| Database | SQLite (dev) / MySQL-MariaDB (prod) | MySQL + optional read replica |
+| Database | SQLite (local/dev/testing) / MySQL (production/staging) | MySQL + optional read replica |
 | Cache | `file` | `redis` |
 | Session | `database` | `redis` |
 | Queue | `sync` (no worker) | `redis` + `queue:work` |
@@ -527,7 +527,7 @@ Consider a fresh install with no supervisor and no worker: any queued job would 
 
 #### DD-CORE-004 — SQLite as Default Database
 
-The zero-config story demanded a database that is just a file. The default connection is SQLite for development and shared hosting, file-based and WAL-enabled per FR-CORE-001 and FR-CORE-005, while production uses MySQL 8, MariaDB 10.6, or PostgreSQL 15 through `.env` per FR-CORE-002. Single-writer limits are adequate for a single tenant with light concurrency.
+The zero-config story demanded a database that is just a file. The default connection is SQLite for local development, dev, and testing environments, file-based and WAL-enabled per FR-CORE-001 and FR-CORE-005, while production and staging environments use MySQL 8 (or compatible MariaDB 10.6, or PostgreSQL 15 for larger deployments) configured through `.env` per FR-CORE-002. Single-writer limits are adequate for single-developer and testing concurrency.
 
 #### DD-CORE-005 — SMTP Validation Gate
 

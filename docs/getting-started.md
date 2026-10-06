@@ -129,7 +129,7 @@ This command will:
    `APP_URL`:
 
     ```
-    https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4...
+    https://internara.sekolah.sch.id/setup?setup_token=A1B2C3
     ```
 
 After the command completes, you will see the URL printed in the terminal along with the token and

@@ -378,7 +378,7 @@ architecturally and verified via scans/tests rather than a runtime measurement.
 | NFR-ARC-004 | Actions eager-load relations; N+1 queries are an architecture defect (S3 — Pragmatic Scalability) | N/A | P1 | A | Full |
 | NFR-ARC-005 | Authorization is enforced at every layer: Policies guard Presentation; Actions/Entities enforce business authorization via `RejectedException` (C8) | N/A | P0 | A | Full |
 | NFR-ARC-006 | Clean-code/DRY: duplicated logic is extracted into shared, named units; modules reuse Core rather than copy (S2 — Sustained Maintainability) | N/A | P1 | A | Full |
-| NFR-ARC-007 | Single-tenant deployment matrix: SQLite (dev/test) / MySQL-MariaDB (prod) + file/database cache + sync queue + database session + local disk by default; Redis/S3/Reverb are optional `.env` overrides | N/A | P0 | A | Full |
+| NFR-ARC-007 | Single-tenant deployment matrix: SQLite (local/dev/testing) / MySQL (production/staging) + file/database cache + sync queue + database session + local disk by default; Redis/S3/Reverb are optional `.env` overrides | N/A | P0 | A | Full |
 
 ### 5.1 Architecture Integrity
 
@@ -409,7 +409,7 @@ Policies now gatekeep Presentation with 403s while Actions and Entities reject b
 Three modules once carried three copies of the same quota math, and a policy change fixed two of them. Duplicated logic now extracts into shared, named units, with Core as the reuse home rather than copy-paste under S2 Sustained Maintainability. The `scan_violations.py` run plus review catches the second copy before it becomes the third.
 
 #### NFR-ARC-007 — Default-zero-external-services matrix
-A school with no budget for Redis runs the same binary as the school with a VPS: SQLite for dev and test, MySQL or MariaDB in prod, file or database cache, sync queue, database session, and local disk by default, with Redis, S3, and Reverb waiting as `.env` overrides. No feature goes dark in any tier. The full matrix lives in the [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md), proven by a fresh deploy smoke on shared hosting.
+A school with no budget for Redis runs the same binary as the school with a VPS: SQLite for local/dev/testing, MySQL for production and staging, file or database cache, sync queue, database session, and local disk by default, with Redis, S3, and Reverb waiting as `.env` overrides. No feature goes dark in any tier. The full matrix lives in the [self-hosted single-tenant ADR](../adr/adr-self-hosted-single-tenant.md), proven by a fresh deploy smoke on shared hosting.
 
 ---
 

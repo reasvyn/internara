@@ -69,6 +69,7 @@ yarn-error.log
 .ai/
 .blackboxcli/
 .gemini/
+.opencode/
 
 # Tools
 /scripts/py/outputs/*.json
@@ -80,7 +81,4 @@ yarn-error.log
 /**/*.bk
 
 # Legacy Files
-/legacy
-
-# OpenCode legacy
-/.opencode
+legacy/

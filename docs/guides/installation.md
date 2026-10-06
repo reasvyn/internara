@@ -120,7 +120,7 @@ The installer performs:
 Output:
 
 ```
-https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4e5f6...
+https://internara.sekolah.sch.id/setup?setup_token=A1B2C3
 
 ```
 

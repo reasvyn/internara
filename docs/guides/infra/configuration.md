@@ -120,9 +120,9 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 
 ## Development vs Production
 
-| Aspect             | Development         | Production (Shared)              | Production (Tier 2+)    |
-| ------------------ | ------------------- | -------------------------------- | ----------------------- |
-| **Database**       | SQLite (file)       | MySQL / MariaDB                  | MySQL / PostgreSQL      |
+| Aspect             | Development / Testing | Production / Staging (Shared)    | Production (Tier 2+)    |
+| ------------------ | --------------------- | -------------------------------- | ----------------------- |
+| **Database**       | SQLite (file/memory)  | MySQL / MariaDB                  | MySQL / PostgreSQL      |
 | **Cache driver**   | `file`              | `file` or `database`             | `redis`                 |
 | **Queue driver**   | `sync`              | `sync`                           | `redis` (dual pipeline) |
 | **Session driver** | `database`          | `database`                       | `redis`                 |

@@ -297,7 +297,7 @@ via tests. NFRs deliberately deferred to post-MVP are tracked in §10 (R-1 … R
 | NFR-UX-001 | Responsive layout; WCAG AA contrast minimum on interactive elements; keyboard navigable on all forms and navigation · [8XMYS](8XMYS-layout-and-ui-system.md) | N/A | P1 | B | Planned |
 | NFR-UX-002 | Every non-trivial workflow has an associated guide page at `guides/{feature}-guide.blade.php` · [8XMYS](8XMYS-layout-and-ui-system.md) | N/A | P1 | A | Planned |
 | NFR-MOD-001 | 4-layer module-first architecture: all code under `app/Modules/`; shared logic in `Core` · [D2FT3](D2FT3-architecture.md) | N/A | P0 | A | Planned |
-| NFR-DATA-001 | SQLite (default) or MySQL; UUID PKs on all primary entities; migration-driven schema · [J68GZ](J68GZ-system-requirements.md) | N/A | P0 | A | Planned |
+| NFR-DATA-001 | SQLite (local/dev/testing) or MySQL (production/staging); UUID PKs on all primary entities; migration-driven schema · [J68GZ](J68GZ-system-requirements.md) | N/A | P0 | A | Planned |
 | NFR-I18N-001 | Indonesian primary + English secondary; locale stored in session and togglable at runtime · [YB22J](YB22J-settings-infrastructure.md), [52O1I](52O1I-branding-theme-locale.md) | N/A | P0 | F | Planned |
 | NFR-GDPR-001 | GDPR: deletion logging and data-erasure workflows exist and are functional · [7HNCF](7HNCF-gdpr-compliance.md) | N/A | P1 | F | Planned |
 | NFR-PERF-001 | Tier-0 no-regret performance always on (UUID v7 PKs, composite FK indexes, eager-loading, cache-key registry, lock-free Reads); Tier 2/3 growth via `.env` swaps only, never rewrites · [J68GZ](J68GZ-system-requirements.md) | N/A | P1 | A | Planned |
@@ -348,7 +348,7 @@ Every line of business code lives under `app/Modules/`, with shared infrastructu
 
 #### NFR-DATA-001 — DB & PK strategy
 
-The default install boots on SQLite while a larger school points the same migrations at MySQL, with UUID primary keys on every primary entity and no schema drift between the two. CI migrates fresh on both engines, and the layer `A` arch scan holds the UUID line. A migration that forgets the UUID shape fails long before it reaches a school server.
+The default install boots on SQLite for local development and automated testing, while production and staging environments standardize on MySQL, with UUID primary keys on every primary entity and no schema drift between the two. CI migrates fresh on both engines, and the layer `A` arch scan holds the UUID line. A migration that forgets the UUID shape fails long before it reaches a school server.
 
 ### 5.5 Globalization
 

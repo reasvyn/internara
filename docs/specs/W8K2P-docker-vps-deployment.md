@@ -100,7 +100,7 @@ VPS topology, lifecycle, persistence, drivers, and startup safety. `Priority` ra
 | FR-DOCK-003 | Entrypoint starts the queue worker when `RUN_QUEUE=true` (`php artisan queue:work --sleep=3 --tries=3`); the default uses `QUEUE_CONNECTION=sync` with no worker, Redis-backed work starts when a `redis` service is present | P0 | F | Full |
 | FR-DOCK-004 | Entrypoint starts the scheduler daemon when `RUN_SCHEDULER=true` (`php artisan schedule:work`) | P0 | F | Full |
 | FR-DOCK-005 | `web` is an nginx image built from `.docker/nginx.Dockerfile`, proxying to `app:9000` on port 80 (configurable via `NGINX_PORT`) | P0 | F | Full |
-| FR-DOCK-006 | `db` is `mysql:8` with a named volume and a healthcheck | P0 | F | Full |
+| FR-DOCK-006 | `db` is `mysql:8` with a named volume and a healthcheck (standard database for staging and production deployments) | P0 | F | Full |
 | FR-DOCK-007 | Redis stays optional and out of the default stack; the app image bundles the `phpredis` extension so a `redis:7-alpine` service joins later without rebuilding | P1 | A | Full |
 | FR-DOCK-008 | Application storage persists on the `storage_data` named volume and compiled public assets on the `app_data` named volume, both shared across `app` and `web` | P0 | F | Full |
 | FR-DOCK-009 | Default runtime drivers are non-Redis and match the shared-hosting preset (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`); Redis-backed drivers engage when a `redis` service is present | P0 | A | Full |
@@ -142,7 +142,7 @@ The web service does what it is good at — terminating HTTP, serving static ass
 
 #### FR-DOCK-006 — MySQL 8 With a Memory
 
-The database service pins its major version because minor-version drift across rebuilds is how collations silently change. Its named volume is the actual school record — everything else can be rebuilt from the repo, but that volume cannot. The healthcheck turns "database container exists" into "database answers queries," which is the only claim the app container is allowed to depend on.
+MySQL 8 is the database standard across staging and production VPS deployments. The database service pins its major version because minor-version drift across rebuilds is how collations silently change. Its named volume is the actual school record — everything else can be rebuilt from the repo, but that volume cannot. The healthcheck turns "database container exists" into "database answers queries," which is the only claim the app container is allowed to depend on.
 
 ### 4.3 Persistence and Drivers
 

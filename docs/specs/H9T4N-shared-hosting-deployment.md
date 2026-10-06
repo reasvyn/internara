@@ -38,7 +38,7 @@ Host cron fires every 5–15 minutes while the application scheduler expects min
 - **Webhook-driven scheduler** — the `/cron/{secret}` route fires scheduled work within host cron granularity. *Why:* coarse cron must still drive daily and weekly jobs reliably.
 - **FTP-uploadable artifact** — a prebuilt bundle moves over FTP/cPanel with no server-side tooling. *Why:* the upload channel on shared hosting is a file manager, not a terminal.
 - **SSH-free symlink path** — the `public/storage` link is creatable without a shell. *Why:* uploads break silently when storage is unreachable, and most plans offer no shell to fix it.
-- **Tier-1 database freedom** — MySQL 8+, MariaDB 10.6+, and SQLite all work. *Why:* schools take whatever database their plan includes.
+- **Tier-1 database standard** — MySQL 8+ (or MariaDB 10.6+) for production/staging, with SQLite for local/dev/testing. *Why:* production and staging rely on MySQL while local development and testing use zero-config SQLite.
 
 ### Non-Goals
 
@@ -88,7 +88,7 @@ Shared-hosting scope, drivers, scheduler bridge, build workflow, and compatibili
 | FR-HOST-007 | The deployable artifact is buildable off-server: `composer install --optimize-autoloader --no-dev` plus `npm run build` run before upload and are never required on the server | P0 | F | Full |
 | FR-HOST-008 | Shared hosting supports a configurable document root pointed at `public/` | P0 | F | Full |
 | FR-HOST-009 | The `public/storage` symlink is creatable manually when SSH is unavailable | P0 | F | Full |
-| FR-HOST-010 | MySQL 8+ / MariaDB 10.6+ and SQLite are all supported as the database on shared hosting | P0 | F | Full |
+| FR-HOST-010 | MySQL 8+ / MariaDB 10.6+ is used for production/staging, with SQLite supported for local/testing | P0 | F | Full |
 | FR-HOST-011 | System declares the `shared-hosting` preset in `config/deployment.php` with sync queue, file cache, database session, log broadcast, and webhook scheduler | P0 | A | Full |
 | FR-HOST-012 | `deploy:detect` probes server capabilities and recommends `shared-hosting` when container runtime and Redis are absent | P0 | F | Full |
 | FR-HOST-013 | `deploy:configure --profile=shared-hosting` applies preset drivers to `.env` idempotently, writing driver keys only and never altering secrets | P0 | F | Full |
@@ -135,9 +135,9 @@ Shared hosts serve whatever directory the panel says; pointing it at `public/` k
 
 Normally one artisan command creates the storage link; on shell-less hosting that command has nowhere to run. The manual path — a small PHP script over the file manager, or a panel-native link tool per the installation spec — produces the identical link. Uploads that 404 after deploy almost always trace back here, which is why the health gate checks storage reachability instead of trusting the step was done.
 
-#### FR-HOST-010 — Whatever Database the Plan Includes
+#### FR-HOST-010 — Production Database Standard and Local Portability
 
-MySQL 8 where offered, MariaDB 10.6 where that is what the panel ships, SQLite where the school wants zero database administration — migrations run clean on all three. UUID keys and portable schema discipline make this freedom possible; any migration using a database-specific trick breaks three schools at once and gets caught in review. The plan's database is a detail, never a blocker.
+MySQL 8 where offered, MariaDB 10.6 where that is what the panel ships, and SQLite for local development and testing — migrations run clean across all supported engines. UUID keys and portable schema discipline make this freedom possible; any migration using a database-specific trick breaks environments and gets caught in review. Production and staging environments standardize on MySQL/MariaDB, while local setups benefit from zero-config SQLite.
 
 ---
 

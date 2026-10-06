@@ -5,8 +5,8 @@
 ## Description
 
 Pins the runtime floor every Internara instance must meet: PHP 8.4 with required extensions, the
-locked Composer dependency manifest, and portable database support across SQLite, MySQL, MariaDB,
-and PostgreSQL. Tier-1 shared-hosting defaults run with zero external services while Tier-2/3
+locked Composer dependency manifest, and database support across SQLite (local/dev/testing)
+and MySQL (production/staging). Tier-1 shared-hosting defaults run with zero external services while Tier-2/3
 growth is a configuration-only switch, and a 15-point `system:health` check makes the floor
 verifiable at boot. Base classes, contracts, middleware, cache, and session are a separate
 initiative — see [base-classes.md](SE5Q9-base-classes.md).
@@ -32,9 +32,9 @@ message when the floor is not met rather than producing cryptic errors.
 
 ### PS-3 — Database Portability
 
-Different schools have different database capabilities: SQLite for zero-config development, MySQL
-or MariaDB for shared hosting, PostgreSQL for larger deployments. The system must work across all
-four without module-specific SQL — portable Eloquent queries and migrations only.
+Environments operate with clear separation: SQLite for zero-config local development and testing,
+MySQL for production and staging deployments, MariaDB or PostgreSQL for specific hosting environments.
+The system must work across all supported engines without module-specific SQL — portable Eloquent queries and migrations only.
 **→ Requirement:** FR-SYS-019/020/021/022 (engine support), FR-SYS-023/024 (UUID keys, FK behavior).
 
 ### PS-4 — Growth Without Rewrite
@@ -51,7 +51,7 @@ triggers for when each tier applies and an explicit list of what stays deferred 
 ### Goals
 
 - **Pinned runtime floor** — PHP 8.4 plus a required/recommended extension split with clear boot-time errors. *Why:* schools self-install on unknown hosting; an explicit floor turns cryptic fatals into actionable messages.
-- **Portable database** — SQLite default with MySQL, MariaDB, and PostgreSQL support via portable Eloquent only. *Why:* one codebase must run on shared hosting today and a larger database tomorrow.
+- **Portable database** — SQLite for local/dev/testing, MySQL for production/staging (with MariaDB and PostgreSQL supported via portable Eloquent). *Why:* one codebase runs zero-config locally/in tests and scales reliably on standard production engines.
 - **Locked dependency manifest** — every production package pinned with a committed lockfile. *Why:* reproducible builds across 19 modules; a drifting transitive dependency must never break an install silently.
 - **Tiered deployment** — Tier-1 shared-hosting defaults with zero external services; Tier-2/3 as configuration-only switches. *Why:* MVP velocity now, growth without rewrites later (per the performance-optimization ADR).
 - **Verifiable health** — a 15-point `system:health` check covering environment, database, cache, queue, and storage. *Why:* the floor is only real if a single command can prove it on any instance.
@@ -118,15 +118,15 @@ The edge case this journey owns is the misleading failure: PHP 8.3 installed whe
 | FR-SYS-016 | `laravel/pulse` * — performance monitoring dashboard | P1 | A | Full |
 | FR-SYS-017 | `tallstackui/tallstackui` ^4.0 — UI kit (TallstackUI-only; replaces DaisyUI/MaryUI/PHPFlasher per FB792) | P0 | A | Full |
 | FR-SYS-018 | `laravel/tinker` ^3.0 — REPL for debugging; `composer.lock` committed for reproducible builds | P1 | A | Full |
-| FR-SYS-019 | SQLite is the default zero-config database (WAL mode, busy_timeout=5000, FK constraints on) | P0 | F | Full |
-| FR-SYS-020 | MySQL 8.0+ is supported for shared-hosting deployments | P0 | F | Full |
+| FR-SYS-019 | SQLite is the default database for local, development, and testing environments (WAL mode, busy_timeout=5000, FK constraints on) | P0 | F | Full |
+| FR-SYS-020 | MySQL 8.0+ is the standard database for production and staging deployments | P0 | F | Full |
 | FR-SYS-021 | MariaDB 10.6+ is supported | P1 | F | Full |
 | FR-SYS-022 | PostgreSQL 15+ is supported for larger deployments via portable Eloquent only | P1 | F | Planned |
 | FR-SYS-023 | All models use UUID v7 primary keys (time-ordered, via `HasUuids`) | P0 | A | Full |
 | FR-SYS-024 | All foreign keys define explicit `onDelete` and `onUpdate` behavior (D6 invariant) | P0 | A | Full |
 | FR-SYS-025 | Migrations are organized in sequential layers: Foundation → Auth → Config → Internship Core → Grouping → Evaluation | P1 | A | Full |
 | FR-SYS-026 | Full schema ships both domain tables and package tables (framework, Spatie, Sanctum, Pulse) in one database | P0 | A | Full |
-| FR-SYS-027 | Tier 1 (shared hosting, ≤500 users) runs on MySQL/MariaDB + file cache + sync queue + database session + local disk with zero external services | P0 | A | Full |
+| FR-SYS-027 | Tier 1 (shared hosting / standard production, ≤500 users) runs on MySQL (or MariaDB 10.6+) + file cache + sync queue + database session + local disk with zero external services | P0 | A | Full |
 | FR-SYS-028 | Tier 2 (VPS, 500–2000 users) is a configuration-only switch: `QUEUE_CONNECTION=redis`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis`, optional S3 disk | P1 | A | Full |
 | FR-SYS-029 | Tier 3 (HA, 2000+ users) is a configuration-only switch: read replica, S3+CDN, Redis cluster, PHP-FPM tuning, user-aware rate limiting | P2 | A | Planned |
 | FR-SYS-030 | Tier transitions require zero code changes; no feature is disabled in any tier | P0 | A | Full |
@@ -213,13 +213,13 @@ If the lockfile is missing, Tuesday's deploy installs different transitive versi
 
 ### 4.3 Database Portability
 
-#### FR-SYS-019 — SQLite default
+#### FR-SYS-019 — SQLite default for local, development, and testing
 
-A vocational school in Sintuk Toboh Gadang ran its pilot on a borrowed laptop with no database server and no administrator password, yet attendance for sixty students had to be recorded that same morning. SQLite with WAL journal mode, `busy_timeout=5000`, and enforced foreign keys (`DB_FOREIGN_KEYS=true`) handles that single-tenant Tier-1 concurrency with no DBA involved. The honest edge is that SQLite never serves Tier-1 production write concurrency — production runs MySQL or MariaDB — and `config/database.php` audit plus a migrate smoke run (layer F) prove the settings hold.
+SQLite serves local development, developer workflows, and automated test suites with zero configuration. WAL journal mode, `busy_timeout=5000`, and enforced foreign keys (`DB_FOREIGN_KEYS=true`) provide fast, isolated operations without requiring external database services. The honest boundary is that SQLite is reserved for local, development, and testing environments — production and staging run on MySQL (or compatible MariaDB) — and `config/database.php` audit plus a migrate smoke run (layer F) prove the settings hold.
 
-#### FR-SYS-020 — MySQL support
+#### FR-SYS-020 — MySQL support for production and staging
 
-Shared-hosting panels in Indonesia overwhelmingly offer MySQL and nothing else, so Tier-1 production has to live there or schools cannot deploy at all. MySQL 8.0 and newer is that production engine. A full migration run against MySQL (layer F) proves the schema lands cleanly on the engine schools actually have.
+MySQL 8.0 and newer is the designated database standard for production and staging environments, providing robust multi-user concurrency and transaction isolation required for live operations. Shared-hosting panels in Indonesia and standard VPS topologies overwhelmingly offer MySQL as the primary engine. A full migration run against MySQL (layer F) proves the schema lands cleanly on the engine running in production and staging.
 
 #### FR-SYS-021 — MariaDB support
 
@@ -350,7 +350,7 @@ SQLite silently accepts orphan rows when foreign-key enforcement is off, and the
 // config/database.php — key settings
 'default' => env('DB_CONNECTION', 'sqlite'),
 
-// SQLite (default)
+// SQLite (default for local/dev/testing; production/staging uses MySQL)
 'sqlite' => [
     'foreign_key_constraints' => true,
     'busy_timeout' => 5000,
@@ -369,7 +369,7 @@ SQLite silently accepts orphan rows when foreign-key enforcement is off, and the
 
 | Tier | Users | Database | Queue | Cache | Session | Storage | Trigger |
 |------|-------|----------|-------|-------|---------|---------|---------|
-| 1 Shared | ≤ 500 | MySQL/MariaDB | sync | file | database | local | default |
+| 1 Shared / Staging | ≤ 500 | MySQL/MariaDB | sync | file | database | local | default |
 | 2 VPS | 500–2000 | MySQL | redis | redis | redis | local + S3 | sustained > 500 users or P95 > 1s |
 | 3 HA | 2000+ | MySQL + replica | redis | redis cluster | redis cluster | S3 | sustained > 2000 users or DB write > 50ms |
 
@@ -434,7 +434,7 @@ Decisions are recorded rationale, not test rows — `Layer`/`Status` stay `—`.
 
 #### DD-SYS-001 — SQLite as Default Database
 
-At SMKN 1 Bangil the only machine available for a pilot was an old staff laptop with no database server installed, and the intern-student who volunteered to set things up had never created a MySQL user. That is the exact situation SQLite as default exists for: zero-config development and hosting where no DBA exists, with WAL journal mode carrying concurrent reads comfortably up to about 500 single-tenant users. The cost is honest — no connection pooling and limited concurrent writes — so any deployment that outgrows Tier 1 follows the documented migration path to MySQL or PostgreSQL under FR-SYS-020 and FR-SYS-022 rather than stretching SQLite past its shape.
+SQLite exists as the zero-config database engine for local development, dev environments, and automated testing suites, with WAL journal mode carrying reads comfortably without external database setup. The operational boundary is clear and intentional: SQLite is never used for production or staging concurrency — production and staging environments standardize on MySQL (or compatible MariaDB) under FR-SYS-020, with larger high-availability deployments migrating to PostgreSQL or clustered MySQL under FR-SYS-022.
 
 #### DD-SYS-002 — UUID v7 Primary Keys
 
