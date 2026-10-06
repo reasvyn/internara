@@ -119,12 +119,14 @@ jobs:
             echo "==> Staging deploy: ${VERSION_TAG} @ ${{ github.sha }}"
             DEPLOY_PATH="${DEPLOY_DIR:-}"
             if [ -z "$DEPLOY_PATH" ]; then
-                if [ -d "$HOME/app/internara" ]; then
+                if [ -d "$HOME/apps/internara" ]; then
+                    DEPLOY_PATH="$HOME/apps/internara"
+                elif [ -d "$HOME/app/internara" ]; then
                     DEPLOY_PATH="$HOME/app/internara"
                 elif [ -d "$HOME/app" ]; then
                     DEPLOY_PATH="$HOME/app"
                 else
-                    DEPLOY_PATH="$HOME/app/internara"
+                    DEPLOY_PATH="$HOME/apps/internara"
                 fi
             fi
             cd "$DEPLOY_PATH"
