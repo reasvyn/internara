@@ -33,13 +33,19 @@
     </div>
 
     <div class="border-base-content/10 mt-10 flex items-center justify-between border-t pt-6">
-        <x-ts-button :text="__('setup.wizard.back')" wire:click="prevStep" color="slate" outline sm icon="arrow-left" />
+        <x-ts-button
+            :text="__('setup.wizard.back')"
+            icon="arrow-left"
+            color="slate"
+            outline
+            wire:click="prevStep"
+            loading="prevStep"
+        />
         <x-ts-button
             :text="__('setup.wizard.next_step')"
             icon="arrow-right"
             position="right"
             color="primary"
-            sm
             wire:click="nextStep"
             loading="nextStep"
         />
