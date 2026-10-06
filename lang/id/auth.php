@@ -62,7 +62,7 @@ return [
         'username' => 'Nama Pengguna',
         'username_placeholder' => 'nama_pengguna',
         'recovery_code' => 'Kode Pemulihan',
-        'recovery_code_placeholder' => 'ABC2X5K9M7P1',
+        'recovery_code_placeholder' => 'ABC2X5K9',
         'new_password' => 'Kata Sandi Baru',
         'confirm_password' => 'Konfirmasi Kata Sandi Baru',
         'submit' => 'Pulihkan Akun',

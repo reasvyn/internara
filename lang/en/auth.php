@@ -62,7 +62,7 @@ return [
         'username' => 'Username',
         'username_placeholder' => 'username',
         'recovery_code' => 'Recovery Code',
-        'recovery_code_placeholder' => 'ABC2X5K9M7P1',
+        'recovery_code_placeholder' => 'ABC2X5K9',
         'new_password' => 'New Password',
         'confirm_password' => 'Confirm New Password',
         'submit' => 'Recover Account',

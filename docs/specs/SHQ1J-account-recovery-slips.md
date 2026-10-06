@@ -117,7 +117,7 @@ spec is implemented and verified.
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
 | FR-SLIP-001 | GenerateRecoverySlipAction revokes all existing account_recovery tokens for the user before minting a new set | P0 | F | Full |
-| FR-SLIP-002 | Generation mints exactly ten random twelve-character uppercase alphanumeric codes | P0 | F | Full |
+| FR-SLIP-002 | Generation mints exactly ten random eight-character uppercase alphanumeric codes | P0 | F | Full |
 | FR-SLIP-003 | Each code persists as a hashed AccessToken with token_type account_recovery and a long break-glass expiry | P0 | F | Full |
 | FR-SLIP-004 | Generation dispatches RecoverySlipGenerated carrying the user and the code count | P1 | F | Full |
 | FR-SLIP-005 | Generation returns the plaintext set with the first-code RecoveryCodeData DTO | P1 | F | Full |
@@ -145,7 +145,7 @@ from a clean slate rather than accumulating live codes across semesters.
 #### FR-SLIP-002 — Ten codes in a fixed, typable alphabet
 
 Five codes felt fragile once students started losing slips to rain and motorbike gloveboxes,
-while twenty made the printout look like a wall nobody would transcribe. Ten twelve-character
+while twenty made the printout look like a wall nobody would transcribe. Ten eight-character
 uppercase alphanumerics split the difference: enough redundancy to survive losing half the
 slip, constrained enough to read aloud over a phone without ambiguity between similar glyphs.
 The fixed count also makes the iteration bound in redemption predictable, keeping hash-check
@@ -180,7 +180,7 @@ and widening it to any second accessor would break the once-only promise.
 
 #### FR-SLIP-006 — Throttle that treats guessing as the threat
 
-An unthrottled twelve-character code field invites scripted guessing, especially since usernames
+An unthrottled eight-character code field invites scripted guessing, especially since usernames
 at a school follow predictable patterns. Three attempts per five minutes per IP slows a guessing
 campaign to irrelevance while letting a legitimate user mistype twice and succeed on the third
 without noticing the limit. The throttle engages before any user lookup, so even the timing of
@@ -478,7 +478,7 @@ the table.
 
 Requiring authentication to recover authentication is a circle with no entry, so the redemption
 page deliberately stands outside the auth gate. The openness is paid for with the IP throttle
-plus the knowledge requirement of username and a twelve-character code, a combination that
+plus the knowledge requirement of username and an eight-character code, a combination that
 resists guessing while staying usable at midnight without staff help. All other admin and
 profile surfaces in this flow remain authenticated, keeping the guest exception as narrow as
 the purpose demands.

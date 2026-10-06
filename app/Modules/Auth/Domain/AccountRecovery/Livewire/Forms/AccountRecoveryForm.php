@@ -20,7 +20,7 @@ class AccountRecoveryForm extends Form
     {
         return [
             'username' => 'required|string',
-            'recoveryCode' => 'required|string|size:12',
+            'recoveryCode' => 'required|string|size:8',
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string',
         ];

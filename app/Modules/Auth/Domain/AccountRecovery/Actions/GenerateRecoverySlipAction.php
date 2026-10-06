@@ -16,6 +16,8 @@ final class GenerateRecoverySlipAction extends BaseCommandAction
 {
     public const int CODE_COUNT = 10;
 
+    public const int CODE_LENGTH = 8;
+
     public function execute(User $user): ActionResponse
     {
         return $this->transaction(function () use ($user) {
@@ -25,7 +27,7 @@ final class GenerateRecoverySlipAction extends BaseCommandAction
             $firstCode = null;
 
             for ($i = 0; $i < self::CODE_COUNT; $i++) {
-                $plaintext = strtoupper(str()->random(12));
+                $plaintext = strtoupper(str()->random(self::CODE_LENGTH));
                 $hashed = Hash::make($plaintext);
 
                 $recoveryCode = RecoveryCodeData::from([

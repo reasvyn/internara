@@ -49,7 +49,7 @@ describe('SHQ1J: account recovery slips', function (): void {
             ->and($revokedCount)->toBe(10);
     });
 
-    test('SHQ1J-FR-SLIP-002: generation mints exactly ten random 12-char uppercase alphanumeric codes', function (): void {
+    test('SHQ1J-FR-SLIP-002: generation mints exactly ten random 8-char uppercase alphanumeric codes', function (): void {
         $user = User::factory()->create();
         $action = app(GenerateRecoverySlipAction::class);
         $response = $action->execute($user);
@@ -58,8 +58,8 @@ describe('SHQ1J: account recovery slips', function (): void {
         expect($codes)->toHaveCount(10);
 
         foreach ($codes as $code) {
-            expect(strlen($code))->toBe(12)
-                ->and($code)->toMatch('/^[A-Z0-9]{12}$/');
+            expect(strlen($code))->toBe(8)
+                ->and($code)->toMatch('/^[A-Z0-9]{8}$/');
         }
     });
 
@@ -112,7 +112,7 @@ describe('SHQ1J: account recovery slips', function (): void {
 
         Livewire::test(AccountRecovery::class)
             ->set('form.username', 'lockeduser')
-            ->set('form.recoveryCode', 'INVALIDCODE12')
+            ->set('form.recoveryCode', 'INVALD08')
             ->set('form.password', 'NewValidPass123!')
             ->set('form.password_confirmation', 'NewValidPass123!')
             ->call('redeem')
