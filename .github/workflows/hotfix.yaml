@@ -124,35 +124,39 @@ jobs:
                       set -euo pipefail
                       echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
                       DEPLOY_PATH="${DEPLOY_DIR:-}"
-                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -f "$DEPLOY_PATH/.github/scripts/deploy.sh" ]; then
                           for candidate in \
                               "$HOME/apps/internara" \
                               "$HOME/app/internara" \
                               "$HOME/app" \
                               "$HOME/internara" \
+                              "$HOME/workspace/reasvyn/apps/internara" \
+                              "/home/reasvyn/workspace/reasvyn/apps/internara" \
+                              "/home/reasvyn/apps/internara" \
+                              "/home/reasvyn/app/internara" \
                               "/home/andreas/apps/internara" \
                               "/home/andreas/app/internara" \
                               "/home/andreas/app" \
                               "/home/andreas/internara" \
                               "/var/www/internara" \
                               "/srv/internara"; do
-                              if [ -d "$candidate/.git" ]; then
+                              if [ -f "$candidate/.github/scripts/deploy.sh" ]; then
                                   DEPLOY_PATH="$candidate"
                                   break
                               fi
                           done
                       fi
-                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
-                          DETECTED=$(find "$HOME" /home /var/www /srv -maxdepth 3 -name ".git" -type d 2>/dev/null | head -n 1 || true)
-                          if [ -n "$DETECTED" ]; then
-                              DEPLOY_PATH="$(dirname "$DETECTED")"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -f "$DEPLOY_PATH/.github/scripts/deploy.sh" ]; then
+                          DETECTED_SCRIPT=$(find "$HOME" /home /var/www /srv -maxdepth 5 -path "*/.github/scripts/deploy.sh" 2>/dev/null | head -n 1 || true)
+                          if [ -n "$DETECTED_SCRIPT" ]; then
+                              DEPLOY_PATH="$(dirname "$(dirname "$(dirname "$DETECTED_SCRIPT")")")"
                           fi
                       fi
-                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
-                          echo "::error::Could not find deployment repository directory"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -f "$DEPLOY_PATH/.github/scripts/deploy.sh" ]; then
+                          echo "::error::Could not find Internara deployment repository directory (.github/scripts/deploy.sh not found)"
                           echo "Current user: $(whoami), PWD: $(pwd), HOME: $HOME"
                           ls -la "$HOME" 2>/dev/null || true
-                          ls -la /home 2>/dev/null || true
+                          find "$HOME" -maxdepth 3 -type d 2>/dev/null || true
                           exit 1
                       fi
                       echo "==> Deploying in: $DEPLOY_PATH"
