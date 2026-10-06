@@ -35,4 +35,7 @@ return [
     'audit_log_users' => 'audit_log.users',
     'user_single' => 'user.',
     'users_count' => 'users.count',
+    'concurrency_user_lock' => 'core.concurrency.user.',
+    'concurrency_guest_lock' => 'core.concurrency.guest.',
+    'concurrency_global_lock' => 'core.concurrency.global',
 ];

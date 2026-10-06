@@ -75,6 +75,7 @@ Core technology, architectural base classes, and shared utilities. Everything el
 | T4B26 | [RBAC & Authorization](T4B26-rbac-and-authorization.md) | Core | SE5Q9 | Full |
 | 2CF4Y | [Middleware Pipeline](2CF4Y-middleware-pipeline.md) | Core | SE5Q9 | Full |
 | 1PGM4 | [Security Headers](1PGM4-security-headers.md) | Core | 2CF4Y | Full |
+| C7Q9R | [Concurrency Gateway](C7Q9R-concurrency-gateway.md) | Core | 2CF4Y, SE5Q9 | Full |
 | B114U | [Module Manager & Service](B114U-module-manager.md) | Core | SE5Q9, C8F0D, I1BCV | Full |
 
 ### Phase 2 — Configuration

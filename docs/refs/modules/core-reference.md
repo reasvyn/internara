@@ -26,7 +26,7 @@ depends on.
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 4 (`RejectedException`, `UnauthorizedException`,
   `ValidationFailedException`, `ActionFailedException`)
-- **Middleware**: 2 (`SecurityHeadersMiddleware`, `LogContextMiddleware`)
+- **Middleware**: 3 (`SecurityHeadersMiddleware`, `LogContextMiddleware`, `ConcurrencyGateMiddleware`)
 - **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
   `PiiMasker`, `Spotlight`, `helpers.php`)
 - **Action Traits**: 2 (`HandlesActionErrors`, `ResolvesModuleName`)
@@ -42,7 +42,7 @@ depends on.
 - **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
 - **Console Commands**: 3 (`module:discover`, `deploy:detect`, `deploy:configure`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
-- **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
+- **Config Files**: 2 (`config/cache-keys.php` — centralized cache key registry, `config/concurrency.php` — concurrency gate)
 - **Tests**: across Unit and Feature suites
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
@@ -160,6 +160,7 @@ ModuleException (abstract, extends RuntimeException)
 | ---------------------- | ----------------------------------------- | --------------------------------------------------------- |
 | `SecurityHeadersMiddleware` | `Http/Middleware/SecurityHeadersMiddleware.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy |
 | `LogContextMiddleware` | `Http/Middleware/LogContextMiddleware.php` | Request tracing: request_id, method, URL, IP, user_id     |
+| `ConcurrencyGateMiddleware` | `Http/Middleware/ConcurrencyGateMiddleware.php` | Request serialization per user/session for multi-device concurrent writes (C7Q9R) |
 
 ---
 

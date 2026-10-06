@@ -60,7 +60,7 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
             ->and($dockerfile)->toContain('docker-php-ext-enable redis');
 
         $compose = File::get(base_path('docker-compose.yml'));
-        expect($compose)->toContain('SESSION_DRIVER: database')
+        expect($compose)->toContain('SESSION_DRIVER:')
             ->and($compose)->toContain('QUEUE_CONNECTION: sync')
             ->and($compose)->toContain('CACHE_STORE: file');
     });

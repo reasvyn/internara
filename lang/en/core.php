@@ -33,5 +33,6 @@ return [
     'exceptions' => [
         'unauthorized_hint' => 'You are not authorized to perform this action.',
         'validation_failed_hint' => 'Please review the provided data and try again.',
+        'concurrency_too_many_requests' => 'Too many concurrent requests. Please retry in a moment.',
     ],
 ];

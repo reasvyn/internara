@@ -33,5 +33,6 @@ return [
     'exceptions' => [
         'unauthorized_hint' => 'Anda tidak memiliki izin untuk melakukan aksi ini.',
         'validation_failed_hint' => 'Periksa kembali data yang Anda masukkan dan coba lagi.',
+        'concurrency_too_many_requests' => 'Terlalu banyak permintaan bersamaan. Silakan coba sesaat lagi.',
     ],
 ];

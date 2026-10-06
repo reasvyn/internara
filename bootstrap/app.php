@@ -8,6 +8,7 @@ use App\Modules\Core\Exceptions\AppException;
 use App\Modules\Core\Exceptions\ModuleException;
 use App\Modules\Core\Exceptions\UnauthorizedException;
 use App\Modules\Core\Exceptions\ValidationFailedException;
+use App\Modules\Core\Http\Middleware\ConcurrencyGateMiddleware;
 use App\Modules\Core\Http\Middleware\LogContextMiddleware;
 use App\Modules\Core\Http\Middleware\SecurityHeadersMiddleware;
 use App\Modules\Setting\Domain\Locale\Http\Middleware\SetLocaleMiddleware;
@@ -46,6 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'setup.protected' => ProtectSetupRouteMiddleware::class,
             'role' => CheckRoleMiddleware::class,
             'auth.throttle' => AuthThrottleMiddleware::class,
+            'concurrency.gate' => ConcurrencyGateMiddleware::class,
         ]);
 
         $middleware->trustProxies(at: '*');
@@ -66,6 +68,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 LogContextMiddleware::class,
                 RequireSetupAccessMiddleware::class,
                 SetLocaleMiddleware::class,
+                ConcurrencyGateMiddleware::class,
             ],
         );
     })
