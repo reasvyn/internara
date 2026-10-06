@@ -170,7 +170,7 @@ return [
         'title' => 'Masukkan Kode Setup',
         'description' => 'Masukkan token setup yang dihasilkan saat menjalankan php artisan setup:install.',
         'code_label' => 'Kode / Token Setup',
-        'placeholder' => 'contoh: a1b2c3d4e5f6g7h8i9j0...',
+        'placeholder' => 'contoh: XXXXXX',
         'submit' => 'Verifikasi dan Lanjutkan',
         'help' => 'Jalankan php artisan setup:install di server untuk menghasilkan token baru jika tidak memilikinya.',
         'expiry_note' => 'Token kedaluwarsa 60 menit setelah dibuat.',

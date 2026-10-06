@@ -33,7 +33,9 @@ final class ValidateSetupTokenAction extends BaseCommandAction
                 throw new RejectedException(__('setup.token_malformed'));
             }
 
-            if (! hash_equals($decrypted, $token)) {
+            $normalizedToken = strtoupper(trim($token));
+
+            if (! hash_equals($decrypted, $normalizedToken)) {
                 throw new RejectedException(__('setup.token_mismatch'));
             }
 

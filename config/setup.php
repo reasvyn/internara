@@ -36,7 +36,8 @@ return [
     */
 
     'token' => [
-        'length' => 64,
+        'length' => 6,
+        'charset' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
         'expiry_minutes' => 60,
     ],
 

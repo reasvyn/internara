@@ -34,7 +34,8 @@ school profile (name, NPSN, address) → department (name, description) → fina
 
 ### Setup Token
 
-Single-use, time-limited (default 60 minutes), cryptographically random token stored encrypted in the
+Single-use, time-limited (default 60 minutes), 6-character random uppercase alphanumeric (`XXXXXX`, A–Z, 0–9)
+cryptographically random token stored encrypted in the
 database. Required to access any setup route. Can be regenerated via
 `php artisan setup:reset-token` only if installation is not yet finalized.
 

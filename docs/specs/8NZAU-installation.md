@@ -120,7 +120,7 @@ One table holds every functional requirement; each row's detail lives under its 
 | FR-INST-008 | Provisioning finishes with storage symlink, cache clearing, and module discovery | P0 | F | Full |
 | FR-INST-009 | A fresh install runs on Tier-1 zero-service defaults with no external dependency | P0 | F | Full |
 | FR-INST-010 | Provisioning is atomic; any failure rolls back and surfaces a `RejectedException` | P0 | F | Full |
-| FR-INST-011 | Setup token is a 6-character uppercase alphanumeric string (A–Z, 0–9), encrypted at rest, expiring after 60 minutes | P0 | F | Full |
+| FR-INST-011 | Setup token is a 6-character random uppercase alphanumeric string (`XXXXXX`, A–Z, 0–9), encrypted at rest, expiring after 60 minutes | P0 | F | Full |
 | FR-INST-012 | Token is single-use with versioned invalidation of stale sessions | P0 | F | Full |
 | FR-INST-013 | Token validation is rate-limited at 20 attempts per IP per 60 seconds with throttled logging | P0 | F | Full |
 | FR-INST-014 | Token generation is lock-guarded and safe to re-run without duplicating state | P0 | F | Full |
@@ -172,7 +172,7 @@ The last mile of provisioning is unglamorous and load-bearing: the storage symli
 
 #### FR-INST-009 — Zero-Service Tier-1 Defaults
 
-The same binary serves a 400-student school on shared hosting and an 1,800-student school on a VPS — that promise from the [performance ADR](../adr/adr-performance-optimization.md) starts here, at install. Out of the box the instance uses MySQL/MariaDB (SQLite for dev), file cache, sync queue, database sessions, and local disk. No Redis to provision, no daemon to supervise, no object storage to pay for. Growth later is a configuration swap, never a reinstall, because every framework call already goes through the drivers. An installer on $5 hosting should never meet a screen demanding infrastructure they do not have.
+The same binary serves a 400-student school on shared hosting and an 1,800-student school on a VPS — that promise from the [performance ADR](../adr/adr-performance-optimization.md) starts here, at install. Out of the box the instance uses SQLite for local development and testing, MySQL (or compatible MariaDB) for production and staging, file cache, sync queue, database sessions, and local disk. No Redis to provision, no daemon to supervise, no object storage to pay for. Growth later is a configuration swap, never a reinstall, because every framework call already goes through the drivers. An installer on $5 hosting should never meet a screen demanding infrastructure they do not have.
 
 #### FR-INST-010 — Atomic Provisioning
 
@@ -244,7 +244,7 @@ One table holds every non-functional constraint; `Target` carries the concrete n
 
 | ID | Requirement | Target | Priority | Layer | Status |
 |----|-------------|--------|----------|-------|--------|
-| NFR-INST-001 | Setup token is cryptographically random, encrypted at rest, and single-use | 6 uppercase alphanumeric chars (A–Z, 0–9), encrypted | P0 | F | Full |
+| NFR-INST-001 | Setup token is cryptographically random, encrypted at rest, and single-use | 6 random uppercase alphanumeric chars (`XXXXXX`, A–Z, 0–9), encrypted | P0 | F | Full |
 | NFR-INST-002 | Session identifier regenerates on token validation; validation throttled per IP | 20 attempts / 60 s | P0 | F | Full |
 | NFR-INST-003 | Secrets on disk (`.env`, recovery-key file) are owner-only | 0600 | P0 | F | Full |
 | NFR-INST-004 | Super admin credentials meet password rules and the account is PROTECTED | 8+ chars, mixed case, numbers | P0 | F | Full |

@@ -170,7 +170,7 @@ return [
         'title' => 'Enter Setup Code',
         'description' => 'Enter the setup token that was generated when you ran php artisan setup:install.',
         'code_label' => 'Setup Code / Token',
-        'placeholder' => 'e.g., a1b2c3d4e5f6g7h8i9j0...',
+        'placeholder' => 'e.g., XXXXXX',
         'submit' => 'Verify and Continue',
         'help' => 'Run php artisan setup:install on the server to generate a new token if you don\'t have one.',
         'expiry_note' => 'The token expires 60 minutes after generation.',

@@ -262,7 +262,7 @@ describe('8NZAU: provisioning state and hardening', function (): void {
         $lock->release();
 
         $token = app(GenerateSetupTokenAction::class)->execute();
-        expect(strlen($token->plaintext))->toBe(64);
+        expect($token->plaintext)->toMatch('/^[A-Z0-9]{6}$/');
     });
 
     test('8NZAU-NFR-INST-010: setup code follows Action Triad with pure readonly entity', function (): void {

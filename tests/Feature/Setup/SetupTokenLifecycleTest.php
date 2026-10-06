@@ -25,7 +25,7 @@ function instStoredTokenRaw(): ?string
 }
 
 describe('8NZAU: setup token lifecycle', function (): void {
-    test('8NZAU-FR-INST-011, 8NZAU-NFR-INST-001: generated token is 64-char random, encrypted at rest, expiring in 60 minutes', function (): void {
+    test('8NZAU-FR-INST-011, 8NZAU-NFR-INST-001: generated token is 6-char uppercase alphanumeric, encrypted at rest, expiring in 60 minutes', function (): void {
         // tests/TestCase.php seeds setup.is_installed=true; installation specs need pre-install state.
         $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
         Cache::flush();
@@ -34,7 +34,7 @@ describe('8NZAU: setup token lifecycle', function (): void {
         $data = app(GenerateSetupTokenAction::class)->execute();
         Cache::flush();
 
-        expect(strlen($data->plaintext))->toBe(64)
+        expect($data->plaintext)->toMatch('/^[A-Z0-9]{6}$/')
             ->and($data->expiresAt->isFuture())->toBeTrue()
             ->and(abs($data->expiresAt->diffInMinutes(now())))->toBeGreaterThanOrEqual(59);
 
@@ -62,6 +62,20 @@ describe('8NZAU: setup token lifecycle', function (): void {
         expect(SetupEntity::get()->hasStoredToken())->toBeFalse();
         expect(fn () => app(ValidateSetupTokenAction::class)->execute($data->plaintext))
             ->toThrow(RejectedException::class);
+    });
+
+    test('8NZAU-FR-INST-011: token validation normalizes lowercase and whitespace input', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        Cache::flush();
+
+        $data = app(GenerateSetupTokenAction::class)->execute();
+        Cache::flush();
+
+        // Pass lowercase with leading/trailing whitespace
+        app(ValidateSetupTokenAction::class)->execute('  '.strtolower($data->plaintext).'  ');
+        Cache::flush();
+
+        expect(SetupEntity::get()->hasStoredToken())->toBeFalse();
     });
 
     test('8NZAU-FR-INST-011: wrong, expired, and missing tokens are rejected with translatable messages', function (): void {
