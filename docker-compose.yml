@@ -1,93 +1,97 @@
 services:
-  app:
-    # Build from the checkout that owns this compose file (override with BUILD_CONTEXT).
-    build:
-      context: '${BUILD_CONTEXT:-.}'
-      dockerfile: Dockerfile
-    image: internara-app
-    environment:
-      APP_ENV: "${APP_ENV:-production}"
-      APP_URL: "${APP_URL:-https://internara.web.id}"
-      APP_KEY: "${APP_KEY:?APP_KEY is required}"
-      APP_LOCALE: "${APP_LOCALE:-id}"
-      APP_FAKER_LOCALE: "${APP_FAKER_LOCALE:-id_ID}"
-      APP_TIMEZONE: "${APP_TIMEZONE:-Asia/Jakarta}"
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: "${DB_DATABASE:-internara}"
-      DB_USERNAME: "${DB_USERNAME:-internara}"
-      DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      QUEUE_CONNECTION: sync
-      CACHE_STORE: file
-      SESSION_DRIVER: "${SESSION_DRIVER:-file}"
-      SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-true}"
-      BROADCAST_CONNECTION: log
-      RUN_SCHEDULER: "${RUN_SCHEDULER:-false}"
-    volumes:
-      - storage_data:/app/storage
-      - app_data:/app/public
-    depends_on:
-      db:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/fpm-healthcheck"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 90s
-    restart: unless-stopped
-    mem_limit: 384m
-    cpus: 1.0
+    app:
+        # Build from the checkout that owns this compose file (override with BUILD_CONTEXT).
+        build:
+            context: '${BUILD_CONTEXT:-.}'
+            dockerfile: Dockerfile
+        image: internara-app
+        environment:
+            APP_ENV: '${APP_ENV:-production}'
+            APP_URL: '${APP_URL:-https://internara.web.id}'
+            APP_KEY: '${APP_KEY:?APP_KEY is required}'
+            APP_LOCALE: '${APP_LOCALE:-id}'
+            APP_FAKER_LOCALE: '${APP_FAKER_LOCALE:-id_ID}'
+            APP_TIMEZONE: '${APP_TIMEZONE:-Asia/Jakarta}'
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: '${DB_DATABASE:-internara}'
+            DB_USERNAME: '${DB_USERNAME:-internara}'
+            DB_PASSWORD: '${DB_PASSWORD:?DB_PASSWORD is required}'
+            QUEUE_CONNECTION: sync
+            CACHE_STORE: file
+            SESSION_DRIVER: '${SESSION_DRIVER:-file}'
+            SESSION_SECURE_COOKIE: '${SESSION_SECURE_COOKIE:-true}'
+            BROADCAST_CONNECTION: log
+            RUN_SCHEDULER: '${RUN_SCHEDULER:-false}'
+        volumes:
+            - storage_data:/app/storage
+            - app_data:/app/public
+        depends_on:
+            db:
+                condition: service_healthy
+        healthcheck:
+            test: ['CMD', '/usr/local/bin/fpm-healthcheck']
+            interval: 5s
+            timeout: 3s
+            retries: 20
+            start_period: 90s
+        restart: unless-stopped
+        mem_limit: 384m
+        cpus: 1.0
 
-  db:
-    image: mysql:8
-    command: --innodb-buffer-pool-size=64M --performance-schema=OFF --max-connections=50 --table-open-cache=256 --innodb-log-buffer-size=16M --innodb-doublewrite=OFF --innodb-flush-log-at-trx-commit=2
-    environment:
-      MYSQL_DATABASE: "${DB_DATABASE:-internara}"
-      MYSQL_USER: "${DB_USERNAME:-internara}"
-      MYSQL_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "mysqladmin",
-          "ping",
-          "-h",
-          "localhost",
-          "-u",
-          "internara",
-          "-p${DB_PASSWORD}",
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    restart: unless-stopped
-    mem_limit: 384m
-    cpus: 1.0
+    db:
+        image: mysql:8
+        command:
+            --init-file=/etc/mysql/init.sql --innodb-buffer-pool-size=64M --performance-schema=OFF
+            --max-connections=50 --table-open-cache=256 --innodb-log-buffer-size=16M
+            --innodb-doublewrite=OFF --innodb-flush-log-at-trx-commit=2
+        environment:
+            MYSQL_DATABASE: '${DB_DATABASE:-internara}'
+            MYSQL_USER: '${DB_USERNAME:-internara}'
+            MYSQL_PASSWORD: '${DB_PASSWORD:?DB_PASSWORD is required}'
+            MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+        volumes:
+            - mysql_data:/var/lib/mysql
+            - ./.docker/mysql/init.sql:/etc/mysql/init.sql:ro
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    'mysqladmin',
+                    'ping',
+                    '-h',
+                    'localhost',
+                    '-u',
+                    'internara',
+                    '-p${DB_PASSWORD}',
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+            start_period: 10s
+        restart: unless-stopped
+        mem_limit: 384m
+        cpus: 1.0
 
-  web:
-    build:
-      context: '${BUILD_CONTEXT:-.}'
-      dockerfile: .docker/nginx.Dockerfile
-    image: internara-web
-    ports:
-      - "${NGINX_PORT:-80}:80"
-    volumes:
-      - app_data:/app/public:ro
-      - storage_data:/app/storage:ro
-    depends_on:
-      app:
-        condition: service_healthy
-    restart: unless-stopped
-    mem_limit: 96m
-    cpus: 0.5
+    web:
+        build:
+            context: '${BUILD_CONTEXT:-.}'
+            dockerfile: .docker/nginx.Dockerfile
+        image: internara-web
+        ports:
+            - '${NGINX_PORT:-80}:80'
+        volumes:
+            - app_data:/app/public:ro
+            - storage_data:/app/storage:ro
+        depends_on:
+            app:
+                condition: service_healthy
+        restart: unless-stopped
+        mem_limit: 96m
+        cpus: 0.5
 
 volumes:
-  mysql_data:
-  storage_data:
-  app_data:
+    mysql_data:
+    storage_data:
+    app_data:

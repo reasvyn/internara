@@ -108,7 +108,44 @@ fi
 
 # Redeploy with the rolled-back version
 echo "==> Redeploying..."
+echo "==> Preparing database initialization and credential synchronization"
+DB_PASS_SYNC="${DB_PASSWORD:-Password321}"
+DB_USER_SYNC="${DB_USERNAME:-internara}"
+DB_NAME_SYNC="${DB_DATABASE:-internara}"
+if [ -f "$DEPLOY_DIR/.env.production" ]; then
+    VAL_P=$(grep -E '^DB_PASSWORD=[^[:space:]#]+' "$DEPLOY_DIR/.env.production" | cut -d= -f2- || true)
+    if [ -n "$VAL_P" ]; then DB_PASS_SYNC="$VAL_P"; fi
+    VAL_U=$(grep -E '^DB_USERNAME=[^[:space:]#]+' "$DEPLOY_DIR/.env.production" | cut -d= -f2- || true)
+    if [ -n "$VAL_U" ]; then DB_USER_SYNC="$VAL_U"; fi
+    VAL_D=$(grep -E '^DB_DATABASE=[^[:space:]#]+' "$DEPLOY_DIR/.env.production" | cut -d= -f2- || true)
+    if [ -n "$VAL_D" ]; then DB_NAME_SYNC="$VAL_D"; fi
+fi
+
+mkdir -p "$DEPLOY_DIR/.docker/mysql"
+cat <<EOF > "$DEPLOY_DIR/.docker/mysql/init.sql"
+CREATE DATABASE IF NOT EXISTS \`${DB_NAME_SYNC}\`;
+CREATE USER IF NOT EXISTS '${DB_USER_SYNC}'@'%' IDENTIFIED BY '${DB_PASS_SYNC}';
+ALTER USER '${DB_USER_SYNC}'@'%' IDENTIFIED BY '${DB_PASS_SYNC}';
+CREATE USER IF NOT EXISTS '${DB_USER_SYNC}'@'localhost' IDENTIFIED BY '${DB_PASS_SYNC}';
+ALTER USER '${DB_USER_SYNC}'@'localhost' IDENTIFIED BY '${DB_PASS_SYNC}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME_SYNC}\`.* TO '${DB_USER_SYNC}'@'%';
+GRANT ALL PRIVILEGES ON \`${DB_NAME_SYNC}\`.* TO '${DB_USER_SYNC}'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+
 docker compose "${ENV_FILE_ARGS[@]}" build --no-cache --pull
+docker compose "${ENV_FILE_ARGS[@]}" up -d --force-recreate db
+for i in {1..30}; do
+    DB_CID=$(docker compose "${ENV_FILE_ARGS[@]}" ps -q db 2>/dev/null || true)
+    if [ -n "$DB_CID" ]; then
+        HEALTH=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$DB_CID" 2>/dev/null || true)
+        if [ "$HEALTH" = "healthy" ]; then
+            echo "==> Database service is healthy"
+            break
+        fi
+    fi
+    sleep 1
+done
 docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
 
 echo "==> Waiting for health check..."
