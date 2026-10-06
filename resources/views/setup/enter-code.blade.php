@@ -44,19 +44,83 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="{{ route('setup') }}" class="space-y-6">
+                    <form
+                        method="POST"
+                        action="{{ route('setup') }}"
+                        class="space-y-6"
+                        x-data="{
+                            digits: [
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 0, 1)) }}',
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 1, 1)) }}',
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 2, 1)) }}',
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 3, 1)) }}',
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 4, 1)) }}',
+                                '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 5, 1)) }}',
+                            ],
+                            get fullToken() {
+                                return this.digits.join('');
+                            },
+                            handleInput(index, event) {
+                                const val = event.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                                this.digits[index] = val ? val.slice(-1) : '';
+                                if (this.digits[index] && index < 5) {
+                                    this.$refs['digit' + (index + 1)].focus();
+                                    this.$refs['digit' + (index + 1)].select();
+                                }
+                            },
+                            handleKeydown(index, event) {
+                                if (event.key === 'Backspace' && ! this.digits[index] && index > 0) {
+                                    this.$refs['digit' + (index - 1)].focus();
+                                } else if (event.key === 'ArrowLeft' && index > 0) {
+                                    this.$refs['digit' + (index - 1)].focus();
+                                } else if (event.key === 'ArrowRight' && index < 5) {
+                                    this.$refs['digit' + (index + 1)].focus();
+                                }
+                            },
+                            handlePaste(event) {
+                                event.preventDefault();
+                                const text = (event.clipboardData || window.clipboardData).getData('text') || '';
+                                const cleaned = text.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 6);
+                                if (! cleaned) return;
+                                for (let i = 0; i < 6; i++) {
+                                    this.digits[i] = cleaned[i] || '';
+                                }
+                                const targetIdx = cleaned.length < 6 ? cleaned.length : 5;
+                                this.$nextTick(() => {
+                                    this.$refs['digit' + targetIdx]?.focus();
+                                    this.$refs['digit' + targetIdx]?.select();
+                                });
+                            }
+                        }"
+                    >
                         @csrf
+                        <input type="hidden" name="setup_token" :value="fullToken" />
 
-                        <div>
-                            <x-ts-input
-                                :label="__('setup.code_entry.code_label').' *'"
-                                name="setup_token"
-                                :placeholder="__('setup.code_entry.placeholder')"
-                                icon="key"
-                                required
-                                autofocus
-                                autocomplete="off"
-                            />
+                        <div class="space-y-3">
+                            <label class="text-base-content/80 block text-center text-xs font-semibold tracking-wider uppercase">
+                                {{ __('setup.code_entry.code_label') }} <span class="text-error">*</span>
+                            </label>
+
+                            <div class="flex items-center justify-center gap-2 sm:gap-3" @paste="handlePaste($event)">
+                                @for ($i = 0; $i < 6; $i++)
+                                    <input
+                                        type="text"
+                                        maxlength="1"
+                                        inputmode="text"
+                                        autocomplete="off"
+                                        autocapitalize="characters"
+                                        spellcheck="false"
+                                        x-ref="digit{{ $i }}"
+                                        x-model="digits[{{ $i }}]"
+                                        @input="handleInput({{ $i }}, $event)"
+                                        @keydown="handleKeydown({{ $i }}, $event)"
+                                        @focus="$event.target.select()"
+                                        @if ($i === 0) autofocus @endif
+                                        aria-label="{{ __('setup.code_entry.code_label') }} {{ $i + 1 }}"
+                                        class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-11 rounded-xl border text-center font-mono text-xl font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-13 sm:text-2xl"
+                                    />
+                                @endfor
+                            </div>
                         </div>
 
                         <x-ts-button
