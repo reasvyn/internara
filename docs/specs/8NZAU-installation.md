@@ -120,7 +120,7 @@ One table holds every functional requirement; each row's detail lives under its 
 | FR-INST-008 | Provisioning finishes with storage symlink, cache clearing, and module discovery | P0 | F | Full |
 | FR-INST-009 | A fresh install runs on Tier-1 zero-service defaults with no external dependency | P0 | F | Full |
 | FR-INST-010 | Provisioning is atomic; any failure rolls back and surfaces a `RejectedException` | P0 | F | Full |
-| FR-INST-011 | Setup token is a 64-character random string, encrypted at rest, expiring after 60 minutes | P0 | F | Full |
+| FR-INST-011 | Setup token is a 6-character uppercase alphanumeric string (A–Z, 0–9), encrypted at rest, expiring after 60 minutes | P0 | F | Full |
 | FR-INST-012 | Token is single-use with versioned invalidation of stale sessions | P0 | F | Full |
 | FR-INST-013 | Token validation is rate-limited at 20 attempts per IP per 60 seconds with throttled logging | P0 | F | Full |
 | FR-INST-014 | Token generation is lock-guarded and safe to re-run without duplicating state | P0 | F | Full |
@@ -182,7 +182,7 @@ A power cut halfway through provisioning must not leave a school with tables but
 
 #### FR-INST-011 — Token Birth and Death
 
-The bridge between the CLI and the browser is a 64-character cryptographic random string, encrypted before it ever touches the settings table, with a sixty-minute life configurable in `config/setup.php`. Sixty minutes is a human number: long enough for the SSH person to message the URL to the form-filling person, short enough that a leaked chat log has a brief half-life. Encryption at rest means a database dump alone never yields a live token.
+The bridge between the CLI and the browser is a six-character uppercase alphanumeric string — the shape `XXXXXX`, drawn from `A–Z` and `0–9` by the shared `Token::generate()` helper — encrypted before it ever touches the settings table, with a sixty-minute life configurable in `config/setup.php`. Six characters is a deliberate human-factors choice: the code fits on a sticky note, survives a chat message intact, and can be dictated over the phone to a school with one laptop without transcription fatigue. What the short format gives up in raw entropy (about 35 bits over a 36^6 space) is repaid by the controls around it: single-use redemption (FR-INST-012), per-IP throttling (FR-INST-013), and encryption at rest — a database dump alone never yields a live token, and an online guessing script never gets enough attempts to matter inside the sixty-minute window. Sixty minutes is a human number: long enough for the SSH person to message the URL to the form-filling person, short enough that a leaked chat log has a brief half-life.
 
 #### FR-INST-012 — Single Use With Versioning
 
@@ -190,7 +190,7 @@ The moment a token validates, it is cleared — replaying it from browser histor
 
 #### FR-INST-013 — Throttled Guessing
 
-Twenty validation attempts per IP per minute is generous to a human mistyping from a printed URL and brutal to a script guessing a 64-character secret. Past the limit the client is throttled, and every failure is logged — not with the attempted token, which would turn the log into an oracle, but with the fact of the attempt. The log line exists for the morning-after forensics, when someone asks whether that burst of 404s at 3 a.m. was an attack.
+Twenty validation attempts per IP per minute is generous to a human mistyping a six-character code from a printed URL and brutal to a script that needs billions of guesses: at the throttle's ceiling an attacker burns the entire sixty-minute token lifetime on a few thousand attempts against a 36^6 space. Past the limit the client is throttled, and every failure is logged — not with the attempted token, which would turn the log into an oracle, but with the fact of the attempt. The log line exists for the morning-after forensics, when someone asks whether that burst of 404s at 3 a.m. was an attack.
 
 #### FR-INST-014 — Lock-Guarded, Re-Runnable Generation
 
@@ -244,7 +244,7 @@ One table holds every non-functional constraint; `Target` carries the concrete n
 
 | ID | Requirement | Target | Priority | Layer | Status |
 |----|-------------|--------|----------|-------|--------|
-| NFR-INST-001 | Setup token is cryptographically random, encrypted at rest, and single-use | 64 chars, encrypted | P0 | F | Full |
+| NFR-INST-001 | Setup token is cryptographically random, encrypted at rest, and single-use | 6 uppercase alphanumeric chars (A–Z, 0–9), encrypted | P0 | F | Full |
 | NFR-INST-002 | Session identifier regenerates on token validation; validation throttled per IP | 20 attempts / 60 s | P0 | F | Full |
 | NFR-INST-003 | Secrets on disk (`.env`, recovery-key file) are owner-only | 0600 | P0 | F | Full |
 | NFR-INST-004 | Super admin credentials meet password rules and the account is PROTECTED | 8+ chars, mixed case, numbers | P0 | F | Full |
@@ -261,7 +261,7 @@ One table holds every non-functional constraint; `Target` carries the concrete n
 
 #### NFR-INST-001 — Token Secrecy Properties
 
-Randomness, encryption, and single-use are three independent properties and the token needs all three the way a door needs a lock, a frame, and hinges. Randomness defeats guessing, encryption defeats database theft, single-use defeats replay — remove any one and the other two stop mattering. Sixty-four characters from the cryptographic generator is the concrete floor; anything shorter would be negotiating with brute force.
+Randomness, encryption, and single-use are three independent properties and the token needs all three the way a door needs a lock, a frame, and hinges. Randomness defeats guessing, encryption defeats database theft, single-use defeats replay — remove any one and the other two stop mattering. The concrete floor is six characters from the uppercase alphanumeric charset (about 35 bits), minted by the shared `Token::generate()` helper. The shorter format is a deliberate human-factors trade whose slack is taken up by the compensating controls that are requirements in their own right: the per-IP rate limiter (NFR-INST-002), the sixty-minute expiry, and single-use clearing. Anything shorter than six characters, or any weakening of those controls, reopens brute force and is a spec regression.
 
 #### NFR-INST-002 — Session and Throttle Discipline
 
@@ -383,6 +383,8 @@ final readonly class SetupTokenData extends BaseData
 
 ```php
 // GenerateSetupTokenAction
+// Plaintext is minted by the shared Core Support helper Token::generate()
+// (uppercase alphanumeric charset, length from config('setup.token.*')).
 class GenerateSetupTokenAction extends BaseCommandAction
 {
     public function execute(): SetupTokenData;
@@ -436,7 +438,8 @@ class SetupFinalized extends BaseEvent
         'recommended_extensions' => ['redis', 'pcntl', 'posix'],
     ],
     'token' => [
-        'length' => 64,
+        'length' => 6,
+        'charset' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
         'expiry_minutes' => 60,
     ],
     'recovery_key' => [
@@ -573,6 +576,7 @@ After this spec, the system provisions itself from zero: audited environment, mi
 |----|----------------------------------|--------|-------|----------|
 | R-1 | Production recovery without OTP relies on SSH trust alone; if SMTP becomes universally available, revisit second-factor recovery | Open | Maintainer | — |
 | R-2 | The setup route's CSRF exemption is safe only while token validation stays the sole credential there; any additional setup endpoint must re-prove this | Open | Maintainer | — |
+| R-3 | The 6-character token (~35 bits) leans entirely on rate limit + single-use + short expiry; a distributed guessing campaign that spreads across many IPs bypasses the per-IP throttle and is the residual threat | Open | Maintainer | — |
 | A-1 | We assume the installer has shell access to the host; fully panel-only hosting without terminal access cannot run the CLI path | Accepted | Maintainer | — |
 | A-2 | We assume `config/setup.php` remains the single source for audit thresholds; no check reads hardcoded values elsewhere | Accepted | Maintainer | — |
 
