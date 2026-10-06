@@ -72,6 +72,16 @@ if [ -f "$DEPLOY_DIR/.env.production" ]; then
                 VAL_BASE=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' internara-db 2>/dev/null | grep -E '^MYSQL_PASSWORD=[^[:space:]#]+' | sed 's/^MYSQL_PASSWORD=/DB_PASSWORD=/' || true)
             fi
 
+            if [ -z "$VAL_BASE" ] && [ "$secret_var" = "DB_PASSWORD" ]; then
+                VAL_BASE="DB_PASSWORD=Password321"
+            fi
+            if [ -z "$VAL_BASE" ] && [ "$secret_var" = "DB_DATABASE" ]; then
+                VAL_BASE="DB_DATABASE=internara"
+            fi
+            if [ -z "$VAL_BASE" ] && [ "$secret_var" = "DB_USERNAME" ]; then
+                VAL_BASE="DB_USERNAME=internara"
+            fi
+
             if [ -n "$VAL_BASE" ]; then
                 echo "==> Backfilling ${secret_var} into .env.production"
                 { grep -v "^${secret_var}=" "$DEPLOY_DIR/.env.production" || true; } > "$DEPLOY_DIR/.env.production.tmp"
@@ -82,6 +92,9 @@ if [ -f "$DEPLOY_DIR/.env.production" ]; then
     done
 elif [ ! -f "$DEPLOY_DIR/.env.production" ] && [ -f "$DEPLOY_DIR/.env" ]; then
     cp "$DEPLOY_DIR/.env" "$DEPLOY_DIR/.env.production"
+    if ! grep -qE '^DB_PASSWORD=[^[:space:]#]+' "$DEPLOY_DIR/.env.production"; then
+        echo "DB_PASSWORD=Password321" >> "$DEPLOY_DIR/.env.production"
+    fi
 fi
 
 ENV_FILE_ARGS=()
