@@ -509,7 +509,17 @@ jobs:
                   envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE
                   script: |
                       set -euo pipefail
-                      cd "${DEPLOY_DIR:-$HOME/app}"
+                      DEPLOY_PATH="${DEPLOY_DIR:-}"
+                      if [ -z "$DEPLOY_PATH" ]; then
+                          if [ -d "$HOME/app/internara" ]; then
+                              DEPLOY_PATH="$HOME/app/internara"
+                          elif [ -d "$HOME/app" ]; then
+                              DEPLOY_PATH="$HOME/app"
+                          else
+                              DEPLOY_PATH="$HOME/app/internara"
+                          fi
+                      fi
+                      cd "$DEPLOY_PATH"
                       echo "==> Deploying pre-release version: $VERSION (tag: $VERSION_TAG) to staging ($HEALTH_URL)"
 
                       # Backup current deployment before changes
@@ -571,7 +581,17 @@ jobs:
                   envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE
                   script: |
                       set -euo pipefail
-                      cd "${DEPLOY_DIR:-$HOME/app}"
+                      DEPLOY_PATH="${DEPLOY_DIR:-}"
+                      if [ -z "$DEPLOY_PATH" ]; then
+                          if [ -d "$HOME/app/internara" ]; then
+                              DEPLOY_PATH="$HOME/app/internara"
+                          elif [ -d "$HOME/app" ]; then
+                              DEPLOY_PATH="$HOME/app"
+                          else
+                              DEPLOY_PATH="$HOME/app/internara"
+                          fi
+                      fi
+                      cd "$DEPLOY_PATH"
                       echo "==> Deploying version: $VERSION (tag: $VERSION_TAG)"
 
                       # Backup current deployment before changes
