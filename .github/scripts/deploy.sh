@@ -45,23 +45,36 @@ elif [ ! -f "$ENV_FILE" ] && [ -f "$DEPLOY_DIR/$ENV_FILE" ]; then
     ENV_FILE="$DEPLOY_DIR/$ENV_FILE"
 fi
 
-# If .env.production exists alongside .env on the host, backfill required secrets
-# (APP_KEY, DB_PASSWORD, etc.) from .env into .env.production if missing or blank.
-if [ -f "$DEPLOY_DIR/.env" ] && [ -f "$DEPLOY_DIR/.env.production" ]; then
+# If .env.production exists alongside .env or container secrets on the host, backfill required compose secrets
+# (APP_KEY, DB_PASSWORD, etc.) into .env.production if missing or blank.
+if [ -f "$DEPLOY_DIR/.env.production" ]; then
     for secret_var in APP_KEY DB_PASSWORD DB_DATABASE DB_USERNAME DB_HOST DB_PORT; do
-        VAL_PROD=$(grep -E "^${secret_var}=[^\s#]+" "$DEPLOY_DIR/.env.production" || true)
+        VAL_PROD=$(grep -E "^${secret_var}=[^[:space:]#]+" "$DEPLOY_DIR/.env.production" || true)
         if [ -z "$VAL_PROD" ]; then
-            VAL_BASE=$(grep -E "^${secret_var}=[^\s#]+" "$DEPLOY_DIR/.env" || true)
+            VAL_BASE=""
+            if [ -f "$DEPLOY_DIR/.env" ]; then
+                VAL_BASE=$(grep -E "^${secret_var}=[^[:space:]#]+" "$DEPLOY_DIR/.env" || true)
+            fi
+            if [ -z "$VAL_BASE" ] && [ -f "/etc/internara.env" ]; then
+                VAL_BASE=$(grep -E "^${secret_var}=[^[:space:]#]+" "/etc/internara.env" || true)
+            fi
+            if [ -z "$VAL_BASE" ]; then
+                VAL_BASE=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' internara-app 2>/dev/null | grep -E "^${secret_var}=[^[:space:]#]+" || true)
+            fi
+            if [ -z "$VAL_BASE" ] && [ "$secret_var" = "DB_PASSWORD" ]; then
+                VAL_BASE=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' internara-db 2>/dev/null | grep -E '^MYSQL_PASSWORD=[^[:space:]#]+' | sed 's/^MYSQL_PASSWORD=/DB_PASSWORD=/' || true)
+            fi
+
             if [ -n "$VAL_BASE" ]; then
-                echo "==> Backfilling ${secret_var} into .env.production from .env"
-                if grep -q "^${secret_var}=" "$DEPLOY_DIR/.env.production"; then
-                    sed -i "s|^${secret_var}=.*|$VAL_BASE|" "$DEPLOY_DIR/.env.production"
-                else
-                    echo "$VAL_BASE" >> "$DEPLOY_DIR/.env.production"
-                fi
+                echo "==> Backfilling ${secret_var} into .env.production"
+                { grep -v "^${secret_var}=" "$DEPLOY_DIR/.env.production" || true; } > "$DEPLOY_DIR/.env.production.tmp"
+                echo "$VAL_BASE" >> "$DEPLOY_DIR/.env.production.tmp"
+                mv "$DEPLOY_DIR/.env.production.tmp" "$DEPLOY_DIR/.env.production"
             fi
         fi
     done
+elif [ ! -f "$DEPLOY_DIR/.env.production" ] && [ -f "$DEPLOY_DIR/.env" ]; then
+    cp "$DEPLOY_DIR/.env" "$DEPLOY_DIR/.env.production"
 fi
 
 ENV_FILE_ARGS=()
