@@ -91,6 +91,7 @@ jobs:
             VERSION_TAG: staging
             HEALTH_URL: https://staging.internara.web.id/up
             ENV_FILE: .env.production
+            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         steps:
             - name: Checkout staging
               uses: actions/checkout@v4
@@ -111,7 +112,7 @@ jobs:
                   username: ${{ secrets.VPS_USER }}
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
-                  envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE
+                  envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE,DB_PASSWORD
                   request_pty: false
                   command_timeout: 30m
                   script: |
@@ -162,7 +163,7 @@ jobs:
                       git reset --hard "origin/staging"
                       echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
                       # Run deploy path targeting staging domain
-                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
+                      DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
                       echo "==> Staging deploy finished"
 
             - name: Notify success

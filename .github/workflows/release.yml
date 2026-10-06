@@ -587,6 +587,7 @@ jobs:
             VERSION: ${{ needs.validate.outputs.version }}
             HEALTH_URL: https://internara.web.id
             ENV_FILE: .env.production
+            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -605,7 +606,7 @@ jobs:
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
                   command_timeout: 30m
-                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE
+                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE,DB_PASSWORD
                   script: |
                       set -euo pipefail
                       DEPLOY_PATH="${DEPLOY_DIR:-}"
@@ -660,7 +661,7 @@ jobs:
                       echo "==> Checked out $VERSION_TAG"
 
                       # Run deployment with production env file
-                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
+                      DB_PASSWORD="${DB_PASSWORD:-}" HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
 
             - name: Notify deployment success
               if: success()
