@@ -484,14 +484,13 @@ is derived from the tag suffix:
 - `vX.Y.Z` (final) → **release (production)**: all of the above + release notes artifact, then deploy to production VPS (`https://internara.web.id`)
 
 `deploy.sh` builds from the checkout it runs in (the deploy host must be on the tag the workflow
-checked out), runs
-`docker compose up -d --remove-orphans --force-recreate` (with `--no-cache` so a tag change is
-picked up), prunes the build cache under a `--keep-storage` limit (default `2g`), and gates success
+checked out), resolves environment variables via `--env-file .env.production` (or `.env`), runs
+`docker compose up -d --remove-orphans`, prunes dangling images, and gates success
 on a 60s health check against `HEALTH_URL` (`https://staging.internara.web.id` for pre-release,
 `https://internara.web.id` for production).
 
 Only the workflow file and the credentials-free deploy script are committed here; production and
-staging secrets live in GitHub Actions secrets, never in the repo.
+staging secrets live in GitHub Actions secrets, while host runtime configs live in uncommitted `.env.production` files on the VPS.
 
 ### Hotfix branch — automated fast-track deploy
 

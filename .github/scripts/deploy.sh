@@ -30,6 +30,25 @@ echo "==> Deploying version: ${VERSION_TAG:-unversioned}"
 PREVIOUS_REVISION=$(git rev-parse HEAD 2>/dev/null || echo "unknown")
 echo "==> Current revision: $PREVIOUS_REVISION"
 
+# Determine environment file for Docker Compose: prioritize explicit ENV_FILE,
+# then .env.production on production/staging hosts, falling back to .env or /etc/internara.env.
+ENV_FILE="${ENV_FILE:-}"
+if [ -z "$ENV_FILE" ]; then
+    if [ -f "$DEPLOY_DIR/.env.production" ]; then
+        ENV_FILE="$DEPLOY_DIR/.env.production"
+    elif [ -f "$DEPLOY_DIR/.env" ]; then
+        ENV_FILE="$DEPLOY_DIR/.env"
+    elif [ -f "/etc/internara.env" ]; then
+        ENV_FILE="/etc/internara.env"
+    fi
+fi
+
+ENV_FILE_ARGS=()
+if [ -n "$ENV_FILE" ] && [ -f "$ENV_FILE" ]; then
+    echo "==> Using environment file: $ENV_FILE"
+    ENV_FILE_ARGS=(--env-file "$ENV_FILE")
+fi
+
 NO_CACHE_FLAG=""
 if [ "${NO_CACHE:-false}" = "true" ]; then
   NO_CACHE_FLAG="--no-cache"
@@ -42,11 +61,11 @@ PULL_FLAG=""
 if [ "${FORCE_PULL:-false}" = "true" ]; then
     PULL_FLAG="--pull"
 fi
-docker compose build $PULL_FLAG $NO_CACHE_FLAG
+docker compose "${ENV_FILE_ARGS[@]}" build $PULL_FLAG $NO_CACHE_FLAG
 
 echo "==> Starting containers"
 # Compose recreates only services whose image/config changed; the database stays up.
-docker compose up -d --remove-orphans
+docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans
 
 echo "==> Cleaning up dangling images"
 docker image prune -f >/dev/null 2>&1 || true
@@ -71,12 +90,12 @@ if [ "$HEALTH_CHECK_PASSED" = false ]; then
         echo "==> Initiating automatic rollback to $PREVIOUS_REVISION"
         git checkout --quiet "$PREVIOUS_REVISION"
         git reset --hard --quiet "$PREVIOUS_REVISION"
-        docker compose build --no-cache --pull
-        docker compose up -d --remove-orphans --force-recreate
+        docker compose "${ENV_FILE_ARGS[@]}" build --no-cache --pull
+        docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
         echo "==> Rollback completed"
     else
         echo "==> Automatic rollback disabled or no previous revision available"
-        docker compose ps
+        docker compose "${ENV_FILE_ARGS[@]}" ps
     fi
 
     exit 1

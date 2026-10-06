@@ -106,9 +106,9 @@ full procedure.
 | `guards.sh` | `scan_violations` / `scan_security` / `scan_conventions` (all `--strict`) | 3 |
 | `smoke.sh` | migrate + `route:list` on a clean SQLite DB (boot sanity) | 4 |
 | `release-notes.sh` | Extract changelog from CHANGELOG.md or generate from git log | — |
-| `deploy.sh` | VPS-side: compose up + prune + health check + auto-rollback | — |
+| `deploy.sh` | VPS-side: compose up with `.env.production` + prune + health check + auto-rollback | — |
 | `backup.sh` | VPS-side: create backup metadata before deploy | — |
-| `rollback.sh` | VPS-side: restore previous version and redeploy | — |
+| `rollback.sh` | VPS-side: restore previous version and redeploy with `.env.production` | — |
 
 ---
 
@@ -201,10 +201,14 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
 4. The pipeline runs QA; on a final tag, the deploy job ships `vX.Y.Z` to the VPS checkout.
 5. Release notes are automatically generated and uploaded as artifacts.
 
-### Secrets
+### Secrets & Environment Configuration
 
 Deploy secrets (`VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) live in GitHub Actions secrets, never in the
 repo. `deploy.sh` requires no credentials — the SSH key authenticates on the runner.
+
+Runtime configuration for production/staging lives in `.env.production` (or `.env`) on the VPS host
+filesystem, never committed to git (strictly enforced by `.gitignore`). `deploy.sh` and `rollback.sh`
+automatically detect `$DEPLOY_DIR/.env.production` and invoke Docker Compose with `--env-file .env.production`.
 
 ---
 

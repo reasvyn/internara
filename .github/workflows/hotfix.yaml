@@ -92,6 +92,7 @@ jobs:
     env:
       VERSION_TAG: hotfix
       HEALTH_URL: https://internara.web.id/up
+      ENV_FILE: .env.production
     steps:
       - name: Checkout hotfix
         uses: actions/checkout@v4
@@ -113,7 +114,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           # Do not leak env values in logs; appleboy masks secrets automatically
-          envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR
+          envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE
           # Fail fast, no pseudo-TTY — reduces surface
           request_pty: false
           command_timeout: 30m
@@ -128,7 +129,7 @@ jobs:
             git reset --hard --quiet "origin/hotfix"
             echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
             # Run the same deploy path as release production (health-gated, auto-rollback)
-            HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+            HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
             echo "==> Hotfix deploy finished"
 
       - name: Notify success

@@ -37,12 +37,29 @@ echo "==> Backup from: $BACKUP_TIMESTAMP"
 git checkout --quiet "$BACKUP_REVISION"
 git reset --hard --quiet "$BACKUP_REVISION"
 
-echo "==> Rolled back to $BACKUP_TAG"
+# Determine environment file for Docker Compose: prioritize explicit ENV_FILE,
+# then .env.production on production/staging hosts, falling back to .env or /etc/internara.env.
+ENV_FILE="${ENV_FILE:-}"
+if [ -z "$ENV_FILE" ]; then
+    if [ -f "$DEPLOY_DIR/.env.production" ]; then
+        ENV_FILE="$DEPLOY_DIR/.env.production"
+    elif [ -f "$DEPLOY_DIR/.env" ]; then
+        ENV_FILE="$DEPLOY_DIR/.env"
+    elif [ -f "/etc/internara.env" ]; then
+        ENV_FILE="/etc/internara.env"
+    fi
+fi
+
+ENV_FILE_ARGS=()
+if [ -n "$ENV_FILE" ] && [ -f "$ENV_FILE" ]; then
+    echo "==> Using environment file: $ENV_FILE"
+    ENV_FILE_ARGS=(--env-file "$ENV_FILE")
+fi
 
 # Redeploy with the rolled-back version
 echo "==> Redeploying..."
-docker compose build --no-cache --pull
-docker compose up -d --remove-orphans --force-recreate
+docker compose "${ENV_FILE_ARGS[@]}" build --no-cache --pull
+docker compose "${ENV_FILE_ARGS[@]}" up -d --remove-orphans --force-recreate
 
 echo "==> Waiting for health check..."
 for i in {1..30}; do

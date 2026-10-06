@@ -493,6 +493,7 @@ jobs:
             VERSION_TAG: ${{ needs.stage.outputs.tag }}
             VERSION: ${{ needs.validate.outputs.version }}
             HEALTH_URL: https://staging.internara.web.id
+            ENV_FILE: .env.production
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -505,7 +506,7 @@ jobs:
                   key: ${{ secrets.STAGING_VPS_SSH_KEY || secrets.VPS_SSH_KEY }}
                   port: 22
                   command_timeout: 30m
-                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR
+                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE
                   script: |
                       set -euo pipefail
                       cd "${DEPLOY_DIR:-$HOME/app}"
@@ -522,8 +523,8 @@ jobs:
                       git reset --hard "$VERSION_TAG"
                       echo "==> Checked out $VERSION_TAG"
 
-                      # Run deployment with staging health URL
-                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+                      # Run deployment with staging health URL and env file
+                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
 
             - name: Notify staging deployment success
               if: success()
@@ -548,6 +549,7 @@ jobs:
             VERSION_TAG: ${{ needs.stage.outputs.tag }}
             VERSION: ${{ needs.validate.outputs.version }}
             HEALTH_URL: https://internara.web.id
+            ENV_FILE: .env.production
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -566,7 +568,7 @@ jobs:
                   key: ${{ secrets.VPS_SSH_KEY }}
                   port: 22
                   command_timeout: 30m
-                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR
+                  envs: VERSION_TAG,VERSION,HEALTH_URL,DEPLOY_DIR,ENV_FILE
                   script: |
                       set -euo pipefail
                       cd "${DEPLOY_DIR:-$HOME/app}"
@@ -583,8 +585,8 @@ jobs:
                       git reset --hard "$VERSION_TAG"
                       echo "==> Checked out $VERSION_TAG"
 
-                      # Run deployment
-                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" bash .github/scripts/deploy.sh
+                      # Run deployment with production env file
+                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
 
             - name: Notify deployment success
               if: success()
