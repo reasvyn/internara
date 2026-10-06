@@ -79,7 +79,11 @@ class ProtectSetupRouteMiddleware
                     ->systemOnly()
                     ->save();
 
-                return $this->throttleOrReject($request, $key, $rateAttempts, $rateDecay);
+                if ($request->hasSession()) {
+                    $request->flashOnly(['setup_token']);
+                }
+
+                return $this->throttleOrReject($request, $key, $rateAttempts, $rateDecay, true, $e->getMessage());
             }
         }
 
@@ -114,6 +118,7 @@ class ProtectSetupRouteMiddleware
         int $maxAttempts,
         int $decaySeconds,
         bool $hasInvalidToken = true,
+        ?string $errorMessage = null,
     ): Response {
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
@@ -136,10 +141,10 @@ class ProtectSetupRouteMiddleware
             );
         }
 
-        RateLimiter::hit($key, $decaySeconds);
-
         if ($hasInvalidToken) {
-            return $this->rejectToken($request, __('setup.invalid_token'));
+            RateLimiter::hit($key, $decaySeconds);
+
+            return $this->rejectToken($request, $errorMessage ?? __('setup.invalid_token'));
         }
 
         if ($request->expectsJson() || $request->hasHeader('X-Livewire')) {

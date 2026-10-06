@@ -70,7 +70,7 @@ final class SetupResetTokenCommand extends Command
         );
 
         $this->newLine();
-        $remainingMinutes = max(1, $result->expiresAt->diffInUTCMinutes(now()));
+        $remainingMinutes = max(1, (int) now()->diffInMinutes($result->expiresAt));
         $this->line(
             '  '.
                 __('setup.cli.token_expires').

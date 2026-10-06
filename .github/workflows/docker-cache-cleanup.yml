@@ -1,47 +1,68 @@
 name: Docker Cache Cleanup
 
 on:
-  schedule:
-    # Sunday 03:30 UTC / 10:30 WIB, outside the normal release window.
-    - cron: '30 3 * * 0'
-  workflow_dispatch:
+    schedule:
+        # Sunday 03:30 UTC / 10:30 WIB, outside the normal release window.
+        - cron: '30 3 * * 0'
+    workflow_dispatch:
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: docker-cache-cleanup
-  cancel-in-progress: false
+    group: docker-cache-cleanup
+    cancel-in-progress: false
 
 jobs:
-  cleanup:
-    name: Prune stale Docker cache on VPS
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Cleanup Docker cache via SSH
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          command_timeout: 15m
-          request_pty: false
-          envs: DEPLOY_DIR
-          script: |
-            set -euo pipefail
-            DEPLOY_PATH="${DEPLOY_DIR:-}"
-            if [ -z "$DEPLOY_PATH" ]; then
-                if [ -d "$HOME/apps/internara" ]; then
-                    DEPLOY_PATH="$HOME/apps/internara"
-                elif [ -d "$HOME/app/internara" ]; then
-                    DEPLOY_PATH="$HOME/app/internara"
-                elif [ -d "$HOME/app" ]; then
-                    DEPLOY_PATH="$HOME/app"
-                else
-                    DEPLOY_PATH="$HOME/apps/internara"
-                fi
-            fi
-            cd "$DEPLOY_PATH"
-            bash .github/scripts/cleanup-docker-cache.sh
+    cleanup:
+        name: Prune stale Docker cache on VPS
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - name: Cleanup Docker cache via SSH
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: 22
+                  command_timeout: 15m
+                  request_pty: false
+                  envs: DEPLOY_DIR
+                  script: |
+                      set -euo pipefail
+                      DEPLOY_PATH="${DEPLOY_DIR:-}"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          for candidate in \
+                              "$HOME/apps/internara" \
+                              "$HOME/app/internara" \
+                              "$HOME/app" \
+                              "$HOME/internara" \
+                              "/home/andreas/apps/internara" \
+                              "/home/andreas/app/internara" \
+                              "/home/andreas/app" \
+                              "/home/andreas/internara" \
+                              "/var/www/internara" \
+                              "/srv/internara"; do
+                              if [ -d "$candidate/.git" ]; then
+                                  DEPLOY_PATH="$candidate"
+                                  break
+                              fi
+                          done
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          DETECTED=$(find "$HOME" /home /var/www /srv -maxdepth 3 -name ".git" -type d 2>/dev/null | head -n 1 || true)
+                          if [ -n "$DETECTED" ]; then
+                              DEPLOY_PATH="$(dirname "$DETECTED")"
+                          fi
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          echo "::error::Could not find deployment repository directory"
+                          echo "Current user: $(whoami), PWD: $(pwd), HOME: $HOME"
+                          ls -la "$HOME" 2>/dev/null || true
+                          ls -la /home 2>/dev/null || true
+                          exit 1
+                      fi
+                      echo "==> Cleaning cache in: $DEPLOY_PATH"
+                      cd "$DEPLOY_PATH"
+                      bash .github/scripts/cleanup-docker-cache.sh

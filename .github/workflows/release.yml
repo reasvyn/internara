@@ -510,17 +510,38 @@ jobs:
                   script: |
                       set -euo pipefail
                       DEPLOY_PATH="${DEPLOY_DIR:-}"
-                      if [ -z "$DEPLOY_PATH" ]; then
-                          if [ -d "$HOME/apps/internara" ]; then
-                              DEPLOY_PATH="$HOME/apps/internara"
-                          elif [ -d "$HOME/app/internara" ]; then
-                              DEPLOY_PATH="$HOME/app/internara"
-                          elif [ -d "$HOME/app" ]; then
-                              DEPLOY_PATH="$HOME/app"
-                          else
-                              DEPLOY_PATH="$HOME/apps/internara"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          for candidate in \
+                              "$HOME/apps/internara" \
+                              "$HOME/app/internara" \
+                              "$HOME/app" \
+                              "$HOME/internara" \
+                              "/home/andreas/apps/internara" \
+                              "/home/andreas/app/internara" \
+                              "/home/andreas/app" \
+                              "/home/andreas/internara" \
+                              "/var/www/internara" \
+                              "/srv/internara"; do
+                              if [ -d "$candidate/.git" ]; then
+                                  DEPLOY_PATH="$candidate"
+                                  break
+                              fi
+                          done
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          DETECTED=$(find "$HOME" /home /var/www /srv -maxdepth 3 -name ".git" -type d 2>/dev/null | head -n 1 || true)
+                          if [ -n "$DETECTED" ]; then
+                              DEPLOY_PATH="$(dirname "$DETECTED")"
                           fi
                       fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          echo "::error::Could not find deployment repository directory"
+                          echo "Current user: $(whoami), PWD: $(pwd), HOME: $HOME"
+                          ls -la "$HOME" 2>/dev/null || true
+                          ls -la /home 2>/dev/null || true
+                          exit 1
+                      fi
+                      echo "==> Deploying in: $DEPLOY_PATH"
                       cd "$DEPLOY_PATH"
                       echo "==> Deploying pre-release version: $VERSION (tag: $VERSION_TAG) to staging ($HEALTH_URL)"
 
@@ -584,17 +605,38 @@ jobs:
                   script: |
                       set -euo pipefail
                       DEPLOY_PATH="${DEPLOY_DIR:-}"
-                      if [ -z "$DEPLOY_PATH" ]; then
-                          if [ -d "$HOME/apps/internara" ]; then
-                              DEPLOY_PATH="$HOME/apps/internara"
-                          elif [ -d "$HOME/app/internara" ]; then
-                              DEPLOY_PATH="$HOME/app/internara"
-                          elif [ -d "$HOME/app" ]; then
-                              DEPLOY_PATH="$HOME/app"
-                          else
-                              DEPLOY_PATH="$HOME/apps/internara"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          for candidate in \
+                              "$HOME/apps/internara" \
+                              "$HOME/app/internara" \
+                              "$HOME/app" \
+                              "$HOME/internara" \
+                              "/home/andreas/apps/internara" \
+                              "/home/andreas/app/internara" \
+                              "/home/andreas/app" \
+                              "/home/andreas/internara" \
+                              "/var/www/internara" \
+                              "/srv/internara"; do
+                              if [ -d "$candidate/.git" ]; then
+                                  DEPLOY_PATH="$candidate"
+                                  break
+                              fi
+                          done
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          DETECTED=$(find "$HOME" /home /var/www /srv -maxdepth 3 -name ".git" -type d 2>/dev/null | head -n 1 || true)
+                          if [ -n "$DETECTED" ]; then
+                              DEPLOY_PATH="$(dirname "$DETECTED")"
                           fi
                       fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          echo "::error::Could not find deployment repository directory"
+                          echo "Current user: $(whoami), PWD: $(pwd), HOME: $HOME"
+                          ls -la "$HOME" 2>/dev/null || true
+                          ls -la /home 2>/dev/null || true
+                          exit 1
+                      fi
+                      echo "==> Deploying in: $DEPLOY_PATH"
                       cd "$DEPLOY_PATH"
                       echo "==> Deploying version: $VERSION (tag: $VERSION_TAG)"
 

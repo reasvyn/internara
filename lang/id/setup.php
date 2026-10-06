@@ -12,6 +12,7 @@ return [
     'token_expired' => 'Token setup sudah kedaluwarsa.',
     'token_malformed' => 'Token setup rusak atau tidak valid.',
     'token_mismatch' => 'Token setup yang diberikan tidak cocok.',
+    'superadmin_immutable' => 'Super admin sudah ada dan tidak dapat diinisialisasi ulang.',
 
     'checks' => [
         'php_version' => 'Versi PHP >= :required',

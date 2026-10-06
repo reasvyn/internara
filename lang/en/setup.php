@@ -12,6 +12,7 @@ return [
     'token_expired' => 'Setup token has expired.',
     'token_malformed' => 'Setup token is malformed or corrupted.',
     'token_mismatch' => 'The provided setup token does not match.',
+    'superadmin_immutable' => 'Super admin already exists and cannot be re-initialized.',
 
     'checks' => [
         'php_version' => 'PHP Version >= :required',

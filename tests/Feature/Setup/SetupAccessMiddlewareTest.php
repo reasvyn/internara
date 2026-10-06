@@ -161,4 +161,41 @@ describe('8NZAU and 2CF4Y: setup access middleware', function (): void {
 
         expect($limited->getStatusCode())->toBe(429);
     });
+
+    test('8NZAU-FR-INST-013: normal visits without token do not consume rate limit attempts', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        flushSetupCaches();
+        config()->set('setup.security.rate_limit_attempts', 2);
+        config()->set('setup.security.rate_limit_decay_seconds', 60);
+
+        $middleware = app(ProtectSetupRouteMiddleware::class);
+
+        // Visit without token multiple times
+        for ($i = 0; $i < 5; $i++) {
+            $response = $middleware->handle(
+                Request::create('/setup', 'GET'),
+                fn () => response('wizard', 200),
+            );
+            expect($response->getStatusCode())->toBe(200);
+        }
+    });
+
+    test('8NZAU-FR-INST-013: failed token attempts flash input for form re-population', function (): void {
+        $this->seedSetting('setup.is_installed', false, 'setup', 'boolean');
+        flushSetupCaches();
+
+        $request = Request::create('/setup', 'POST', ['setup_token' => 'BADTOK']);
+        $session = app('session.store');
+        $request->setLaravelSession($session);
+
+        try {
+            app(ProtectSetupRouteMiddleware::class)->handle(
+                $request,
+                fn () => response('wizard', 200),
+            );
+        } catch (HttpException) {
+        }
+
+        expect($session->getOldInput('setup_token'))->toBe('BADTOK');
+    });
 });

@@ -9,6 +9,7 @@ use App\Modules\Core\Data\AuditReport;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Setup\Domain\Installation\Data\SetupTokenData;
 use App\Modules\Setup\Domain\Installation\Services\SystemProvisioner;
+use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\SysAdmin\Domain\Observability\Services\EnvironmentAuditor;
 
 /**
@@ -41,7 +42,9 @@ final class InstallSystemAction extends BaseCommandAction
 
             $token = $this->generateToken->execute();
 
-            $this->log('system_installed', null, ['token_id' => $token->token ?? null]);
+            $this->log('system_installed', null, [
+                'token_version' => SetupEntity::get()->tokenVersion(),
+            ]);
 
             return $token;
         });

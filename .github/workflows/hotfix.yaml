@@ -16,174 +16,197 @@ name: Hotfix Deploy
 #   - ROLLBACK_ON_FAILURE=true in deploy.sh auto-rolls back on health failure
 
 on:
-  push:
-    branches: [hotfix]
-  workflow_dispatch:
+    push:
+        branches: [hotfix]
+    workflow_dispatch:
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: vps-deploy
-  cancel-in-progress: false
+    group: vps-deploy
+    cancel-in-progress: false
 
 jobs:
-  lint:
-    name: Lint hotfix
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout hotfix
-        uses: actions/checkout@v4
-        with:
-          ref: hotfix
+    lint:
+        name: Lint hotfix
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout hotfix
+              uses: actions/checkout@v4
+              with:
+                  ref: hotfix
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
-          coverage: none
-          tools: composer:v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.4'
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite
+                  coverage: none
+                  tools: composer:v2
 
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+            - name: Cache Composer dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-npm-
+            - name: Cache npm dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: ${{ runner.os }}-npm-
 
-      - name: Install frontend dependencies
-        run: npm ci --legacy-peer-deps
+            - name: Install frontend dependencies
+              run: npm ci --legacy-peer-deps
 
-      - name: Validate PHP syntax
-        run: |
-          set -euo pipefail
-          echo "==> Validate PHP syntax"
-          find app config database routes tests -name '*.php' -exec php -l {} \; 2>&1 | grep -v "No syntax errors" || true
-          echo "✓ syntax ok"
+            - name: Validate PHP syntax
+              run: |
+                  set -euo pipefail
+                  echo "==> Validate PHP syntax"
+                  find app config database routes tests -name '*.php' -exec php -l {} \; 2>&1 | grep -v "No syntax errors" || true
+                  echo "✓ syntax ok"
 
-      - name: Format code (Pint - fix on run, includes Blade)
-        run: vendor/bin/pint
+            - name: Format code (Pint - fix on run, includes Blade)
+              run: vendor/bin/pint
 
-      - name: Format assets (Prettier - non-PHP only, fix on run)
-        run: npx prettier --write . 2>&1 | head -20 || echo "::warning::Prettier fix completed with warnings"
+            - name: Format assets (Prettier - non-PHP only, fix on run)
+              run:
+                  npx prettier --write . 2>&1 | head -20 || echo "::warning::Prettier fix completed
+                  with warnings"
 
-  deploy:
-    name: Deploy hotfix to VPS
-    runs-on: ubuntu-latest
-    needs: lint
-    if: github.ref == 'refs/heads/hotfix'
-    # Uncomment to require manual approval in GitHub Environments:
-    # environment: production
-    env:
-      VERSION_TAG: hotfix
-      HEALTH_URL: https://internara.web.id/up
-      ENV_FILE: .env.production
-    steps:
-      - name: Checkout hotfix
-        uses: actions/checkout@v4
-        with:
-          ref: hotfix
+    deploy:
+        name: Deploy hotfix to VPS
+        runs-on: ubuntu-latest
+        needs: lint
+        if: github.ref == 'refs/heads/hotfix'
+        # Uncomment to require manual approval in GitHub Environments:
+        # environment: production
+        env:
+            VERSION_TAG: hotfix
+            HEALTH_URL: https://internara.web.id/up
+            ENV_FILE: .env.production
+        steps:
+            - name: Checkout hotfix
+              uses: actions/checkout@v4
+              with:
+                  ref: hotfix
 
-      - name: Verify hotfix ref
-        run: |
-          set -euo pipefail
-          echo "Deploying ref: ${{ github.ref }} (${{ github.sha }})"
-          [ "${{ github.ref }}" = "refs/heads/hotfix" ] || { echo "::error::Ref is not hotfix"; exit 1; }
-          git log --oneline -3
+            - name: Verify hotfix ref
+              run: |
+                  set -euo pipefail
+                  echo "Deploying ref: ${{ github.ref }} (${{ github.sha }})"
+                  [ "${{ github.ref }}" = "refs/heads/hotfix" ] || { echo "::error::Ref is not hotfix"; exit 1; }
+                  git log --oneline -3
 
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: 22
-          # Do not leak env values in logs; appleboy masks secrets automatically
-          envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE
-          # Fail fast, no pseudo-TTY — reduces surface
-          request_pty: false
-          command_timeout: 30m
-          script: |
-            set -euo pipefail
-            echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
-            DEPLOY_PATH="${DEPLOY_DIR:-}"
-            if [ -z "$DEPLOY_PATH" ]; then
-                if [ -d "$HOME/apps/internara" ]; then
-                    DEPLOY_PATH="$HOME/apps/internara"
-                elif [ -d "$HOME/app/internara" ]; then
-                    DEPLOY_PATH="$HOME/app/internara"
-                elif [ -d "$HOME/app" ]; then
-                    DEPLOY_PATH="$HOME/app"
-                else
-                    DEPLOY_PATH="$HOME/apps/internara"
-                fi
-            fi
-            cd "$DEPLOY_PATH"
-            # Ensure we are on hotfix and at the pushed commit
-            git fetch --quiet origin hotfix
-            git checkout --quiet hotfix
-            # Reset to the exact commit GitHub just pushed (prevents TOCTOU)
-            git reset --hard --quiet "origin/hotfix"
-            echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
-            # Run the same deploy path as release production (health-gated, auto-rollback)
-            HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
-            echo "==> Hotfix deploy finished"
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: 22
+                  # Do not leak env values in logs; appleboy masks secrets automatically
+                  envs: VERSION_TAG,HEALTH_URL,DEPLOY_DIR,ENV_FILE
+                  # Fail fast, no pseudo-TTY — reduces surface
+                  request_pty: false
+                  command_timeout: 30m
+                  script: |
+                      set -euo pipefail
+                      echo "==> Hotfix deploy: ${VERSION_TAG} @ ${{ github.sha }}"
+                      DEPLOY_PATH="${DEPLOY_DIR:-}"
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          for candidate in \
+                              "$HOME/apps/internara" \
+                              "$HOME/app/internara" \
+                              "$HOME/app" \
+                              "$HOME/internara" \
+                              "/home/andreas/apps/internara" \
+                              "/home/andreas/app/internara" \
+                              "/home/andreas/app" \
+                              "/home/andreas/internara" \
+                              "/var/www/internara" \
+                              "/srv/internara"; do
+                              if [ -d "$candidate/.git" ]; then
+                                  DEPLOY_PATH="$candidate"
+                                  break
+                              fi
+                          done
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          DETECTED=$(find "$HOME" /home /var/www /srv -maxdepth 3 -name ".git" -type d 2>/dev/null | head -n 1 || true)
+                          if [ -n "$DETECTED" ]; then
+                              DEPLOY_PATH="$(dirname "$DETECTED")"
+                          fi
+                      fi
+                      if [ -z "$DEPLOY_PATH" ] || [ ! -d "$DEPLOY_PATH" ]; then
+                          echo "::error::Could not find deployment repository directory"
+                          echo "Current user: $(whoami), PWD: $(pwd), HOME: $HOME"
+                          ls -la "$HOME" 2>/dev/null || true
+                          ls -la /home 2>/dev/null || true
+                          exit 1
+                      fi
+                      echo "==> Deploying in: $DEPLOY_PATH"
+                      cd "$DEPLOY_PATH"
+                      # Ensure we are on hotfix and at the pushed commit
+                      git fetch --quiet origin hotfix
+                      git checkout --quiet hotfix
+                      # Reset to the exact commit GitHub just pushed (prevents TOCTOU)
+                      git reset --hard --quiet "origin/hotfix"
+                      echo "==> Checked out $(git rev-parse --short HEAD) on $(git branch --show-current)"
+                      # Run the same deploy path as release production (health-gated, auto-rollback)
+                      HEALTH_URL="$HEALTH_URL" VERSION_TAG="$VERSION_TAG" ENV_FILE="$ENV_FILE" bash .github/scripts/deploy.sh
+                      echo "==> Hotfix deploy finished"
 
-      - name: Notify success
-        if: success()
-        run: echo "✓ Hotfix ${{ github.sha }} deployed to ${{ secrets.VPS_HOST }}"
+            - name: Notify success
+              if: success()
+              run: echo "✓ Hotfix ${{ github.sha }} deployed to ${{ secrets.VPS_HOST }}"
 
-      - name: Notify failure
-        if: failure()
-        run: |
-          echo "::error::Hotfix deploy failed for ${{ github.sha }}"
-          echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \${DEPLOY_DIR:-\$HOME/app} && bash .github/scripts/rollback.sh'"
+            - name: Notify failure
+              if: failure()
+              run: |
+                  echo "::error::Hotfix deploy failed for ${{ github.sha }}"
+                  echo "Manual rollback: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'cd \${DEPLOY_DIR:-\$HOME/app} && bash .github/scripts/rollback.sh'"
 
-  sync-staging:
-    name: Sync hotfix to staging branch
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: github.ref == 'refs/heads/hotfix'
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+    sync-staging:
+        name: Sync hotfix to staging branch
+        runs-on: ubuntu-latest
+        needs: deploy
+        if: github.ref == 'refs/heads/hotfix'
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+            - name: Configure Git identity
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Sync hotfix into staging
-        run: |
-          set -euo pipefail
-          echo "==> Fetching origin branches"
-          git fetch origin staging hotfix
-          git checkout -B staging origin/staging
-          echo "==> Merging hotfix into staging"
-          git merge origin/hotfix -m "chore(sync): merge hotfix into staging" --no-edit || {
-            echo "::error::Merge conflict detected when merging hotfix into staging. Manual resolution required."
-            exit 1
-          }
-          echo "==> Pushing updated staging branch"
-          git push origin staging
-          echo "✓ Staging branch successfully synchronized with hotfix"
+            - name: Sync hotfix into staging
+              run: |
+                  set -euo pipefail
+                  echo "==> Fetching origin branches"
+                  git fetch origin staging hotfix
+                  git checkout -B staging origin/staging
+                  echo "==> Merging hotfix into staging"
+                  git merge origin/hotfix -m "chore(sync): merge hotfix into staging" --no-edit || {
+                    echo "::error::Merge conflict detected when merging hotfix into staging. Manual resolution required."
+                    exit 1
+                  }
+                  echo "==> Pushing updated staging branch"
+                  git push origin staging
+                  echo "✓ Staging branch successfully synchronized with hotfix"

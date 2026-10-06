@@ -148,6 +148,7 @@ describe('8NZAU: provisioning state and hardening', function (): void {
             'setup.token_expired',
             'setup.token_missing',
             'setup.invalid_token',
+            'setup.superadmin_immutable',
             'setup.cli.already_installed',
             'setup.cli.force_restricted',
         ];

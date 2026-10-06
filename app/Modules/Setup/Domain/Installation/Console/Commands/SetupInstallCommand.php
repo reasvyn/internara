@@ -294,7 +294,7 @@ final class SetupInstallCommand extends Command
         $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$token}</>");
 
         $this->newLine();
-        $remainingMinutes = max(1, $expiresAt->diffInUTCMinutes(now()));
+        $remainingMinutes = max(1, (int) now()->diffInMinutes($expiresAt));
         $this->line(
             '  '.
                 __('setup.cli.token_expires').

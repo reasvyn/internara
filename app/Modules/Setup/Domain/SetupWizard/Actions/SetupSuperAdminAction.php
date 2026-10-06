@@ -36,7 +36,7 @@ final class SetupSuperAdminAction extends BaseCommandAction
 
                 if ($integrity->isImmutable()) {
                     throw new RejectedException(
-                        'Super admin already exists and cannot be re-initialized.',
+                        __('setup.superadmin_immutable'),
                     );
                 }
             }
