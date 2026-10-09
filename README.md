@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://img.shields.io/badge/version-0.16.0-blue?style=flat-square" alt="Version 0.16.0">
+    <img src="https://img.shields.io/badge/version-0.16.1--dev.1-blue?style=flat-square" alt="Version 0.16.1-dev.1">
     <img src="https://github.com/reasvyn/internara/actions/workflows/release.yml/badge.svg" alt="CI">
     <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
     <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
@@ -167,7 +167,7 @@ scanner toolkit (`scripts/py/scan_*.py`): [`docs/guides/infra/tools.md`](docs/gu
 
 ## Project Status
 
-**v0.16.0** (`composer.json`) / **v0.16.0** (`package.json`) — all 19 modules (17 business + UI + Core) have a full stack; known issues are tracked in
+**v0.16.1-dev.1** (`composer.json`) / **v0.16.1-dev.1** (`package.json`) — all 19 modules (17 business + UI + Core) have a full stack; known issues are tracked in
 [GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 ## Contributing

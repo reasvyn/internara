@@ -53,7 +53,7 @@ SCAN_NAME = "docs-template"
 # Exclude templates and special docs from being scanned as regular docs
 EXCLUDED_FILES = {
     "AGENTS.md", "README.md", "CONTRIBUTING.md", "SECURITY.md",
-    "CODE_OF_CONDUCT.md", "CHANGELOG.md"
+    "CODE_OF_CONDUCT.md"
 }
 EXCLUDED_DIRS = {"templates", "refs/articles"}  # templates: structural docs; refs/articles: standalone articles
 

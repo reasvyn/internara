@@ -31,7 +31,7 @@ must handle all three while warning about breaking changes.
 | Step | Action | Command |
 | ---- | ------ | ------- |
 | 1 | Check current version | `php artisan about \| grep version` or `grep '"version"' composer.json` |
-| 2 | Read release notes | Check CHANGELOG.md / GitHub releases for breaking changes |
+| 2 | Read release notes | Check GitHub releases for breaking changes |
 | 3 | Backup database | See §3 below |
 | 4 | Backup uploaded files | `tar -czf storage-backup-$(date +%Y%m%d).tar.gz storage/app/` |
 | 5 | Backup environment | `cp .env .env.backup-$(date +%Y%m%d)` |
@@ -155,7 +155,7 @@ Internara follows [Semantic Versioning](https://semver.org/):
 | **Minor** | 1.0 → 1.1 | New features, no breaking changes |
 | **Patch** | 1.0.0 → 1.0.1 | Bug fixes, safe to upgrade |
 
-Current version: **0.16.0** (TallstackUI-only, DaisyUI/maryUI/PHPFlasher removed).
+Current version: **0.16.1-dev.1** (TallstackUI-only, DaisyUI/maryUI/PHPFlasher removed).
 
 ---
 

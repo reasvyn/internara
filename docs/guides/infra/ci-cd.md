@@ -105,7 +105,7 @@ full procedure.
 | `test.sh` | `vendor/bin/pest --coverage --min=<MIN_COVERAGE>` (default 80) | 2 |
 | `guards.sh` | `scan_violations` / `scan_security` / `scan_conventions` (all `--strict`) | 3 |
 | `smoke.sh` | migrate + `route:list` on a clean SQLite DB (boot sanity) | 4 |
-| `release-notes.sh` | Extract changelog from CHANGELOG.md or generate from git log | — |
+| `release-notes.sh` | Generate release notes from git log | — |
 | `deploy.sh` | VPS-side: compose up with `.env.production` + prune + health check + auto-rollback | — |
 | `backup.sh` | VPS-side: create backup metadata before deploy | — |
 | `rollback.sh` | VPS-side: restore previous version and redeploy with `.env.production` | — |
@@ -189,8 +189,7 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
 
 1. Bump `composer.json` `version` to `X.Y.Z` (and sync `package.json`, `README.md` badge,
    `docs/project-vision.md`, `docs/guides/upgrading.md`).
-2. Update `CHANGELOG.md` with the new version section.
-3. Push the final tag (or pre-release tags to run QA tiers first):
+2. Push the final tag (or pre-release tags to run QA tiers first):
 
    ```bash
    git tag vX.Y.Z && git push origin vX.Y.Z
