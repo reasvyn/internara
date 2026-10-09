@@ -8,6 +8,13 @@ return [
     'complete' => 'Data dummy berhasil disemai.',
     'demo_accounts' => 'Akun demo (password: :password)',
     'summary_header' => 'Ringkasan penyemaian',
+    'rollback_title' => 'Rollback Data Dummy',
+    'rollback_starting' => 'Membersihkan data dummy...',
+    'rollback_complete' => 'Data dummy berhasil dibersihkan.',
+    'rollback_none' => 'Tidak ada data dummy yang ditemukan untuk dibersihkan.',
+    'rollback_summary_header' => 'Ringkasan pembersihan',
+    'production_warning' => 'Tidak dapat dijalankan di lingkungan produksi tanpa flag --force.',
+    'helper_missing' => 'Helper data dummy (Tests\Support\DummyData) tidak tersedia.',
 
     'entities' => [
         'academic_years' => 'Tahun akademik',

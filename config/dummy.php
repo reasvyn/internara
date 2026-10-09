@@ -16,6 +16,8 @@ return [
 
     'password' => 'password',
 
+    'id_prefix' => env('DUMMY_ID_PREFIX', 'd0000000-'),
+
     'accounts' => [
         'admin_email' => 'admin@example.com',
         'teacher_count' => 4,

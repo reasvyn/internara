@@ -40,7 +40,7 @@ depends on.
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
-- **Console Commands**: 3 (`module:discover`, `deploy:detect`, `deploy:configure`)
+- **Console Commands**: 5 (`module:discover`, `deploy:detect`, `deploy:configure`, `dummy:seed`, `dummy:rollback`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 2 (`config/cache-keys.php` — centralized cache key registry, `config/concurrency.php` — concurrency gate)
 - **Tests**: across Unit and Feature suites
@@ -300,6 +300,8 @@ None - Core provides base classes only.
 | `module:discover` | `ModuleDiscoverCommand` | Rediscover and register module components (Livewire, policies, views) |
 | `deploy:detect` | `DeployDetectCommand` | Probe server capabilities and recommend a deployment profile |
 | `deploy:configure` | `DeployConfigureCommand` | Apply deployment profile preset drivers to .env configuration |
+| `dummy:seed` | `DummySeedCommand` | Seed the database with isolated demo and dummy records |
+| `dummy:rollback` | `DummyRollbackCommand` | Rollback and purge all isolated demo and dummy records from the database |
 
 ---
 

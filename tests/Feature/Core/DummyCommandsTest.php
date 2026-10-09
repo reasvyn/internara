@@ -1,0 +1,92 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\User\Models\User;
+use Database\Seeders\AcademicYearSeeder;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Tests\Support\DummyData;
+
+uses(LazilyRefreshDatabase::class);
+
+beforeEach(function (): void {
+    $this->seed(AcademicYearSeeder::class);
+});
+
+describe('3UOZP: dummy:seed and dummy:rollback console commands', function (): void {
+    test('dummy:seed populates dummy records with prefixed IDs and prints summary', function (): void {
+        $exitCode = Artisan::call('dummy:seed');
+
+        expect($exitCode)->toBe(0);
+
+        $output = Artisan::output();
+        expect($output)->toContain((string) __('dummy.complete'))
+            ->and($output)->toContain('admin@example.com');
+
+        $prefix = (string) config('dummy.id_prefix', 'd0000000-');
+        $dummyUsers = User::where('id', 'like', "{$prefix}%")->get();
+
+        expect($dummyUsers)->not->toBeEmpty();
+
+        $adminUser = User::where('email', 'admin@example.com')->first();
+        expect($adminUser)->not->toBeNull()
+            ->and(str_starts_with($adminUser->id, $prefix))->toBeTrue()
+            ->and(DummyData::isDummyId($adminUser->id))->toBeTrue();
+    });
+
+    test('dummy:rollback purges dummy records and preserves base data', function (): void {
+        // Create an authentic user without dummy prefix
+        $realUser = User::factory()->create([
+            'email' => 'real-admin@example.com',
+            'username' => 'realadmin',
+        ]);
+
+        expect(DummyData::isDummyId($realUser->id))->toBeFalse();
+
+        Artisan::call('dummy:seed');
+
+        $prefix = (string) config('dummy.id_prefix', 'd0000000-');
+        expect(User::where('id', 'like', "{$prefix}%")->count())->toBeGreaterThan(0);
+
+        $exitCode = Artisan::call('dummy:rollback');
+
+        expect($exitCode)->toBe(0);
+
+        $output = Artisan::output();
+        expect($output)->toContain((string) __('dummy.rollback_complete'))
+            ->and($output)->toContain((string) __('dummy.rollback_summary_header'));
+
+        // All dummy users purged
+        expect(User::where('id', 'like', "{$prefix}%")->count())->toBe(0)
+            ->and(User::where('email', 'admin@example.com')->exists())->toBeFalse();
+
+        // Real user and base academic year preserved
+        expect(User::where('id', $realUser->id)->exists())->toBeTrue()
+            ->and(AcademicYear::count())->toBeGreaterThan(0);
+    });
+
+    test('dummy:rollback handles empty state gracefully', function (): void {
+        $exitCode = Artisan::call('dummy:rollback');
+
+        expect($exitCode)->toBe(0);
+
+        $output = Artisan::output();
+        expect($output)->toContain((string) __('dummy.rollback_none'));
+    });
+
+    test('dummy:seed and dummy:rollback require --force flag in production environment', function (): void {
+        app()['env'] = 'production';
+
+        $seedExit = Artisan::call('dummy:seed');
+        expect($seedExit)->toBe(1)
+            ->and(Artisan::output())->toContain((string) __('dummy.production_warning'));
+
+        $rollbackExit = Artisan::call('dummy:rollback');
+        expect($rollbackExit)->toBe(1)
+            ->and(Artisan::output())->toContain((string) __('dummy.production_warning'));
+
+        app()['env'] = 'testing';
+    });
+});

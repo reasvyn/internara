@@ -8,6 +8,13 @@ return [
     'complete' => 'Dummy data seeded successfully.',
     'demo_accounts' => 'Demo accounts (password: :password)',
     'summary_header' => 'Seed summary',
+    'rollback_title' => 'Dummy Data Rollback',
+    'rollback_starting' => 'Purging dummy data...',
+    'rollback_complete' => 'Dummy data purged successfully.',
+    'rollback_none' => 'No dummy data found to purge.',
+    'rollback_summary_header' => 'Rollback summary',
+    'production_warning' => 'Cannot run in production without --force flag.',
+    'helper_missing' => 'Dummy data helper (Tests\Support\DummyData) is not available.',
 
     'entities' => [
         'academic_years' => 'Academic years',

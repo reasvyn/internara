@@ -378,13 +378,28 @@ Every factory state exists because a requirement names the status it represents;
 
 ## 6. API / Data Contracts
 
-### 6.1 Entry Point
+### 6.1 Entry Points and Commands
 
 ```text
+php artisan dummy:seed [--force]
+php artisan dummy:rollback [--force]
 php artisan db:seed --class=DummySeeder
 ```
 
 ```text
+App\Modules\Core\Console\Commands\DummySeedCommand extends Command
+    handle(): int
+        → refuse when production environment without --force flag
+        → check Tests\Support\DummyData availability
+        → delegate to Database\Seeders\DummySeeder
+
+App\Modules\Core\Console\Commands\DummyRollbackCommand extends Command
+    handle(): int
+        → refuse when production environment without --force flag
+        → check Tests\Support\DummyData availability
+        → call Tests\Support\DummyData::rollback()
+        → print bilingual purge summary via $this->line(__('...'))
+
 Database\Seeders\DummySeeder extends Seeder
     run(): void
         → refuse when production environment without explicit demo flag (FR-SEED-007)
@@ -397,6 +412,19 @@ Database\Seeders\DummySeeder extends Seeder
 
 ```text
 Tests\Support\DummyData (final, stateless)
+    public const ID_PREFIX = 'd0000000-';
+
+    public static function dummyId(): string
+        // Generates valid RFC 4122 UUID prefixed with ID_PREFIX ('d0000000-...')
+
+    public static function isDummyId(?string $id): bool
+        // Checks if given UUID begins with ID_PREFIX
+
+    public static function rollback(): array
+        // Purges all demo/dummy records in reverse dependency order inside DB::transaction()
+        // Preserves authentic base data (active academic year, superadmin, settings)
+        // Returns ['incident_reports' => n, ..., 'users' => n] count of purged rows
+
     public function run(): array
         // Wraps the entire generation in a single DB::transaction() (FR-SEED-020, NFR-SEED-007).
         // Any exception aborts the closure and rolls back all inserts.

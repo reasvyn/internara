@@ -122,9 +122,128 @@ final class DummyData
     /** @var Collection<int, Document> */
     private Collection $documents;
 
+    public const string ID_PREFIX = 'd0000000-';
+
     public static function make(): self
     {
         return new self;
+    }
+
+    /**
+     * Mint a deterministic or unique dummy ID carrying the configured prefix.
+     */
+    public static function dummyId(): string
+    {
+        $prefix = (string) config('dummy.id_prefix', self::ID_PREFIX);
+        $prefixLen = strlen($prefix);
+        $uuid = (string) Str::uuid();
+
+        return $prefix.substr($uuid, $prefixLen);
+    }
+
+    /**
+     * Check if a given record ID belongs to the dummy dataset.
+     */
+    public static function isDummyId(?string $id): bool
+    {
+        if ($id === null) {
+            return false;
+        }
+
+        $prefix = (string) config('dummy.id_prefix', self::ID_PREFIX);
+
+        return str_starts_with($id, $prefix);
+    }
+
+    /**
+     * Purges all dummy records matching the dummy ID prefix.
+     *
+     * @return array<string, int> Counts of purged records per entity
+     */
+    public static function rollback(): array
+    {
+        $prefix = (string) config('dummy.id_prefix', self::ID_PREFIX);
+
+        return DB::transaction(function () use ($prefix): array {
+            $purged = [];
+
+            // 1. Incidents
+            $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")->delete();
+
+            // 2. Sysadmin data
+            $purged['placement_change_requests'] = PlacementChangeRequest::where('id', 'like', "{$prefix}%")->delete();
+            $purged['account_applications'] = AccountApplication::where('id', 'like', "{$prefix}%")->delete();
+            $purged['notifications'] = Notification::where('id', 'like', "{$prefix}%")->delete();
+            $purged['announcements'] = Announcement::where('id', 'like', "{$prefix}%")->delete();
+
+            // 3. Finalization & Assessments
+            $purged['submissions'] = Submission::where('id', 'like', "{$prefix}%")->delete();
+            $purged['certificates'] = Certificate::where('id', 'like', "{$prefix}%")->delete();
+            $purged['reports'] = StudentReport::where('id', 'like', "{$prefix}%")->delete();
+            $purged['assessments'] = Assessment::where('id', 'like', "{$prefix}%")->delete();
+
+            // 4. Daily operations
+            $purged['monitoring_visits'] = MonitoringVisit::where('id', 'like', "{$prefix}%")->delete();
+            $purged['supervision_logs'] = SupervisionLog::where('id', 'like', "{$prefix}%")->delete();
+            $purged['absence_requests'] = AbsenceRequest::where('id', 'like', "{$prefix}%")->delete();
+            $purged['attendances'] = Attendance::where('id', 'like', "{$prefix}%")->delete();
+            $purged['logbooks'] = Logbook::where('id', 'like', "{$prefix}%")->delete();
+
+            // 5. Evaluation & Rubrics & Assignments
+            EvaluationAnswer::where('id', 'like', "{$prefix}%")->delete();
+            EvaluationResponse::where('id', 'like', "{$prefix}%")->delete();
+            EvaluationQuestion::where('id', 'like', "{$prefix}%")->delete();
+            EvaluationSection::where('id', 'like', "{$prefix}%")->delete();
+            $purged['evaluation_forms'] = EvaluationForm::where('id', 'like', "{$prefix}%")->delete();
+
+            $purged['assignments'] = Assignment::where('id', 'like', "{$prefix}%")->delete();
+            $purged['rubrics'] = Rubric::where('id', 'like', "{$prefix}%")->delete();
+
+            // 6. Groups & Documents
+            InternshipGroupMember::where('id', 'like', "{$prefix}%")->delete();
+            $purged['registration_documents'] = RegistrationDocument::where('id', 'like', "{$prefix}%")->delete();
+            $purged['documents'] = Document::where('id', 'like', "{$prefix}%")->delete();
+            $purged['groups'] = InternshipGroup::where('id', 'like', "{$prefix}%")->delete();
+
+            // 7. Registrations & Placements & Internships
+            $purged['registrations'] = Registration::where('id', 'like', "{$prefix}%")->delete();
+            $purged['placements'] = Placement::where('id', 'like', "{$prefix}%")->delete();
+            $purged['internships'] = Internship::where('id', 'like', "{$prefix}%")->delete();
+
+            // 8. Partnerships & Companies
+            $purged['partnerships'] = Partnership::where('id', 'like', "{$prefix}%")->delete();
+            $purged['companies'] = Company::where('id', 'like', "{$prefix}%")->delete();
+
+            // 9. Profiles & Users
+            $purged['profiles'] = Profile::where('id', 'like', "{$prefix}%")->delete();
+
+            $dummyUsers = User::where('id', 'like', "{$prefix}%")
+                ->orWhereIn('email', self::demoAccounts())
+                ->get();
+
+            $dummyUserIds = $dummyUsers->pluck('id')->all();
+            if (! empty($dummyUserIds)) {
+                DB::table('model_has_roles')->whereIn('model_id', $dummyUserIds)->delete();
+                DB::table('model_has_permissions')->whereIn('model_id', $dummyUserIds)->delete();
+                $purged['users'] = User::whereIn('id', $dummyUserIds)->delete();
+            } else {
+                $purged['users'] = 0;
+            }
+
+            // 10. Departments
+            $purged['departments'] = Department::where('id', 'like', "{$prefix}%")->delete();
+
+            // 11. Past Academic Year (only if dummy ID)
+            $purged['academic_years'] = AcademicYear::where('id', 'like', "{$prefix}%")->delete();
+
+            // 12. Clean up any orphaned activity log entries
+            DB::table('activity_log')
+                ->where('subject_id', 'like', "{$prefix}%")
+                ->orWhere('causer_id', 'like', "{$prefix}%")
+                ->delete();
+
+            return array_filter($purged, fn (int $count): bool => $count > 0);
+        });
     }
 
     /**
@@ -1218,6 +1337,7 @@ final class DummyData
 
         if ($user === null) {
             $user = User::factory()->create([
+                'id' => self::dummyId(),
                 'name' => $name ?? fake()->name(),
                 'email' => $email,
                 'username' => Str::before($email, '@'),
@@ -1264,7 +1384,7 @@ final class DummyData
             return $existing;
         }
 
-        $record = $factory->create($values);
+        $record = $factory->create(array_merge(['id' => self::dummyId()], $values));
 
         if ($countKey !== null) {
             $this->bump($countKey);
