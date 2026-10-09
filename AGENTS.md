@@ -40,7 +40,7 @@ conflict or the choice would change with history; contradictory history → repo
 | Coding conventions: PHP style, security, naming, perf, testing, i18n, theming | [`docs/conventions.md`](docs/conventions.md) | C1–C8, D1–D6 invariants, pre-commit & review checklists |
 | Pattern catalog (Action Triad, Entity/Model/DTO/Enum, Event, Cache, Logging, Livewire, Service, Support, Repository, Policy, UI/UX, Testing) | [`docs/guides/arch/index.md`](docs/guides/arch/index.md) | One link per pattern → deep-dive `*-pattern.md` |
 | Modular architecture deep-dive (SRP, base classes, contracts, naming, accessibility, localization) | [`docs/guides/arch/modular-pattern.md`](docs/guides/arch/modular-pattern.md) | §1–§23 pattern catalog |
-| Feature / module specs (66 + 1 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
+| Feature / module specs (67 + 1 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
 | ADRs — why each decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 5 groups |
 | Module conceptual + reference docs | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) | One conceptual + one reference per module |
 | Tooling — scanners, CLI flags, output schema, inventory | [`scripts/README.md`](scripts/README.md) | Full scanner reference; AGENTS.md keeps only the batch below (§5) |
@@ -203,9 +203,6 @@ Default is targeted checks.
 
 ## 5. Tooling — Arch-Guard Scanners
 
-**Automation-First:** before manual or repeated work, check `scripts/` and run the matching scanner.
-Never redo by hand what a script does. If a recurring pattern has no script, add one
-(`scripts/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:
 **Automation-First:** before manual or repeated work, check `scripts/py/` and run the matching scanner.
 Never redo by hand what a script does. If a recurring pattern has no script, add one
 (`scripts/py/scan_*.py`). Full CLI flags, output schema, and per-scanner inventory:

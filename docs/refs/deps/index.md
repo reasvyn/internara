@@ -77,22 +77,22 @@ source of truth per package. The short version of how the stack divides up:
 
 | Concern | Package | Note |
 | ------- | ------- | ---- |
-| Application skeleton, ORM, queues, cache, mail | `laravel/framework` | The substrate; see [Architecture](../../architecture.md) for the layering built on top |
-| Interactive UI | `livewire/livewire` | All screens are Livewire components; no SPA, no JSON API |
-| UI primitives | `tallstackui/tallstackui` | Wrapped by the UI module, never used directly by feature modules |
-| Client behaviour | `alpinejs` | Bundled with Livewire |
-| Styling | `tailwindcss` | CSS-first `@theme` tokens; see [UI Pattern](../../guides/arch/ui-pattern.md) |
-| Asset pipeline | `vite` | Build only — no dev-server dependency in production |
-| RBAC | `spatie/laravel-permission` | 5 flat roles; see [RBAC ADR](../../adr/adr-flat-rbac-with-functional-roles.md) |
-| File uploads | `spatie/laravel-medialibrary` | Server-side MIME, slugged filenames, conversions |
-| Audit trail | `spatie/laravel-activitylog` | Feeds SmartLogger's second channel |
-| Model status | `spatie/laravel-model-status` | **Deprecated upstream (#419)** — replacement tracked, do not adopt in new code |
-| PDF output | `barryvdh/laravel-dompdf` | Certificates and official documents |
-| Monitoring | `laravel/pulse` | Health and performance metrics |
-| Translations | `laravel-lang/lang` | Validation and date formats beyond the two shipped locales |
-| Date picking | `flatpickr` | Date inputs |
-| Markdown | `marked` + `dompurify` | Render-then-sanitize; never the reverse |
-| Formatting | `prettier` + plugins | Blade and Tailwind class sorting |
+| Application skeleton, ORM, queues, cache, mail | [`laravel/framework`](laravel.md) | The substrate; see [Architecture](../../architecture.md) for the layering built on top |
+| Interactive UI | [`livewire/livewire`](livewire.md) | All screens are Livewire components; no SPA, no JSON API |
+| UI primitives | [`tallstackui/tallstackui`](tallstackui.md) | Wrapped by the UI module, never used directly by feature modules |
+| Client behaviour | [`alpinejs`](alpinejs.md) | Bundled with Livewire |
+| Styling | [`tailwindcss`](tailwindcss.md) | CSS-first `@theme` tokens; see [UI Pattern](../../guides/arch/ui-pattern.md) |
+| Asset pipeline | [`vite`](vite.md) | Build only — no dev-server dependency in production |
+| RBAC | [`spatie/laravel-permission`](spatie-laravel-permission.md) | 5 flat roles; see [RBAC ADR](../../adr/adr-flat-rbac-with-functional-roles.md) |
+| File uploads | [`spatie/laravel-medialibrary`](spatie-laravel-medialibrary.md) | Server-side MIME, slugged filenames, conversions |
+| Audit trail | [`spatie/laravel-activitylog`](spatie-laravel-activitylog.md) | Feeds SmartLogger's second channel |
+| Model status | [`spatie/laravel-model-status`](spatie-laravel-model-status.md) | **Deprecated upstream (#419)** — replacement tracked, do not adopt in new code |
+| PDF output | [`barryvdh/laravel-dompdf`](laravel-dompdf.md) | Certificates and official documents |
+| Monitoring | [`laravel/pulse`](laravel-pulse.md) | Health and performance metrics |
+| Translations | [`laravel-lang/lang`](laravel-lang.md) | Validation and date formats beyond the two shipped locales |
+| Date picking | [`flatpickr`](flatpickr.md) | Date inputs |
+| Markdown | [`marked`](marked.md) + `dompurify` | Render-then-sanitize; never the reverse |
+| Formatting | [`prettier`](prettier.md) + plugins | Blade and Tailwind class sorting |
 
 ---
 

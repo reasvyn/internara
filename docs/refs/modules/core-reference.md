@@ -196,7 +196,7 @@ ModuleException (abstract, extends RuntimeException)
 | `ModuleManager`       | `Support/ModuleManager.php`                | Static gateway for module config reads (`config('module.*')`) |
 | `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
 | `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |
-| `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
+| `Token`               | `Support/Token.php`                        | Cryptographically secure random token generator (`Token::generate()`) |
 | `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                       |
 
 The helpers `setting()` and `brand()` are defined in `app/Modules/Setting/Support/helpers.php`.

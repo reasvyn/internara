@@ -102,8 +102,7 @@ File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token
 
 ## Policies & Permissions
 
-The module ships no Policy classes. Access is enforced by route middleware instead of
-model policies, because the wizard runs before any user exists:
+The module ships no Policy classes. Access is enforced by route middleware:
 
 | Middleware                     | Guards                                                                                            |
 | ------------------------------ | ------------------------------------------------------------------------------------------------- |

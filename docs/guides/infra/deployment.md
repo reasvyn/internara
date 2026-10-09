@@ -347,6 +347,8 @@ Key environment variables:
   checkout); override to build from somewhere else (e.g. another local path).
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
 - DB_PASSWORD — required. Compose fails fast when missing.
+- DB_DATABASE — database name (defaults to `internara`).
+- DB_USERNAME — database user (defaults to `internara`).
 - NGINX_PORT — host port for the nginx service (default 80)
 - SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `true`**
   because the default `APP_URL` is `https://internara.web.id` (product demo, HTTPS). Set it to `false` only for

@@ -145,20 +145,25 @@ return [
 
 ## 7. Design Decisions
 
-| ID | Decision | Priority |
-|----|----------|----------|
-| DD-CCG-001 | Mutex locking by user ID rather than IP address | P0 |
+| ID | Requirement | Priority | Layer | Status |
+|----|-------------|----------|-------|--------|
+| DD-CCG-001 | Mutex locking by user ID rather than IP address | P0 | — | — |
+| DD-CCG-002 | Read-bypass architecture | P0 | — | — |
 
-*Rationale:* 50 workstations in a school computer lab share the same public NAT IP address.
+### 7.1 Locking Strategy
+
+#### DD-CCG-001 — Mutex locking by user ID rather than IP address
+
+50 workstations in a school computer lab share the same public NAT IP address.
 Locking by IP would inappropriately serialize mutations across different distinct students.
 Locking by authenticated user ID serializes multi-session usage of the *same* account without
 interfering with independent students.
 
-| ID | Decision | Priority |
-|----|----------|----------|
-| DD-CCG-002 | Read-bypass architecture | P0 |
+### 7.2 Performance & Bypass
 
-*Rationale:* 90%+ of dashboard web traffic is read-only. Bypassing GET/HEAD/OPTIONS ensures
+#### DD-CCG-002 — Read-bypass architecture
+
+90%+ of dashboard web traffic is read-only. Bypassing GET/HEAD/OPTIONS ensures
 zero queuing latency for navigating pages or rendering assets.
 
 ---
@@ -171,8 +176,25 @@ zero queuing latency for navigating pages or rendering assets.
 
 ---
 
-## 9. Dependencies & Traceability
+## 9. Roadmap
+
+### Prerequisites
+
+| Spec | What it provides |
+|------|-----------------|
+| [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md) | Pipeline runner, HTTP kernel registration |
+| [SE5Q9-base-classes](SE5Q9-base-classes.md) | `AppException`, core middleware contracts |
+
+### Traceability
 
 - **Parent Spec:** [2CF4Y-middleware-pipeline](2CF4Y-middleware-pipeline.md)
 - **Architecture:** [architecture](../architecture.md)
 - **Cache Pattern:** [cache-pattern](../guides/arch/cache-pattern.md)
+
+---
+
+## 10. Risks & Assumptions
+
+| ID | Risk / Assumption / Open Question | Status | Owner | GH Issue |
+|----|-----------------------------------|--------|-------|----------|
+| A-1 | Cache store supports atomic locks (`Cache::lock()`) across supported backends | Accepted | Maintainer | — |

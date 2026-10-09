@@ -69,7 +69,7 @@ Admin → RecoverySlipManager (admin/recovery-slips)
   ├── Select user
   ├── Generate Recovery Slip
   │   └── GenerateRecoverySlipAction::execute(user)
-  │       ├── 10 random codes (12 chars, uppercase, alphanumeric)
+  │       ├── 10 random codes (8 chars, uppercase, alphanumeric)
   │       ├── Each hashed with Hash::make()
   │       ├── No expiry (valid indefinitely until used)
   │       └── Logged: recovery_slips_generated
