@@ -165,63 +165,240 @@ final class DummyData
         $prefix = (string) config('dummy.id_prefix', self::ID_PREFIX);
 
         return DB::transaction(function () use ($prefix): array {
-            $purged = [];
-
-            // 1. Incidents
-            $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")->delete();
-
-            // 2. Sysadmin data
-            $purged['placement_change_requests'] = PlacementChangeRequest::where('id', 'like', "{$prefix}%")->delete();
-            $purged['account_applications'] = AccountApplication::where('id', 'like', "{$prefix}%")->delete();
-            $purged['notifications'] = Notification::where('id', 'like', "{$prefix}%")->delete();
-            $purged['announcements'] = Announcement::where('id', 'like', "{$prefix}%")->delete();
-
-            // 3. Finalization & Assessments
-            $purged['submissions'] = Submission::where('id', 'like', "{$prefix}%")->delete();
-            $purged['certificates'] = Certificate::where('id', 'like', "{$prefix}%")->delete();
-            $purged['reports'] = StudentReport::where('id', 'like', "{$prefix}%")->delete();
-            $purged['assessments'] = Assessment::where('id', 'like', "{$prefix}%")->delete();
-
-            // 4. Daily operations
-            $purged['monitoring_visits'] = MonitoringVisit::where('id', 'like', "{$prefix}%")->delete();
-            $purged['supervision_logs'] = SupervisionLog::where('id', 'like', "{$prefix}%")->delete();
-            $purged['absence_requests'] = AbsenceRequest::where('id', 'like', "{$prefix}%")->delete();
-            $purged['attendances'] = Attendance::where('id', 'like', "{$prefix}%")->delete();
-            $purged['logbooks'] = Logbook::where('id', 'like', "{$prefix}%")->delete();
-
-            // 5. Evaluation & Rubrics & Assignments
-            EvaluationAnswer::where('id', 'like', "{$prefix}%")->delete();
-            EvaluationResponse::where('id', 'like', "{$prefix}%")->delete();
-            EvaluationQuestion::where('id', 'like', "{$prefix}%")->delete();
-            EvaluationSection::where('id', 'like', "{$prefix}%")->delete();
-            $purged['evaluation_forms'] = EvaluationForm::where('id', 'like', "{$prefix}%")->delete();
-
-            $purged['assignments'] = Assignment::where('id', 'like', "{$prefix}%")->delete();
-            $purged['rubrics'] = Rubric::where('id', 'like', "{$prefix}%")->delete();
-
-            // 6. Groups & Documents
-            InternshipGroupMember::where('id', 'like', "{$prefix}%")->delete();
-            $purged['registration_documents'] = RegistrationDocument::where('id', 'like', "{$prefix}%")->delete();
-            $purged['documents'] = Document::where('id', 'like', "{$prefix}%")->delete();
-            $purged['groups'] = InternshipGroup::where('id', 'like', "{$prefix}%")->delete();
-
-            // 7. Registrations & Placements & Internships
-            $purged['registrations'] = Registration::where('id', 'like', "{$prefix}%")->delete();
-            $purged['placements'] = Placement::where('id', 'like', "{$prefix}%")->delete();
-            $purged['internships'] = Internship::where('id', 'like', "{$prefix}%")->delete();
-
-            // 8. Partnerships & Companies
-            $purged['partnerships'] = Partnership::where('id', 'like', "{$prefix}%")->delete();
-            $purged['companies'] = Company::where('id', 'like', "{$prefix}%")->delete();
-
-            // 9. Profiles & Users
-            $purged['profiles'] = Profile::where('id', 'like', "{$prefix}%")->delete();
-
+            // 1. Resolve base dummy entities
             $dummyUsers = User::where('id', 'like', "{$prefix}%")
                 ->orWhereIn('email', self::demoAccounts())
                 ->get();
-
             $dummyUserIds = $dummyUsers->pluck('id')->all();
+
+            $dummyAcademicYearIds = AcademicYear::where('id', 'like', "{$prefix}%")->pluck('id')->all();
+            $dummyDepartmentIds = Department::where('id', 'like', "{$prefix}%")->pluck('id')->all();
+            $dummyCompanyIds = Company::where('id', 'like', "{$prefix}%")->pluck('id')->all();
+
+            // 2. Resolve affiliated internships & placements
+            $dummyInternshipIds = Internship::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyAcademicYearIds), fn ($q) => $q->orWhereIn('academic_year_id', $dummyAcademicYearIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyPlacementIds = Placement::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyCompanyIds), fn ($q) => $q->orWhereIn('company_id', $dummyCompanyIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('teacher_id', $dummyUserIds)->orWhereIn('company_supervisor_id', $dummyUserIds))
+                ->pluck('id')
+                ->all();
+
+            // 3. Resolve affiliated registrations
+            $dummyRegistrationIds = Registration::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('student_id', $dummyUserIds))
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('placement_id', $dummyPlacementIds))
+                ->pluck('id')
+                ->all();
+
+            // 4. Resolve affiliated groups, assignments, rubrics, forms, documents
+            $dummyGroupIds = InternshipGroup::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('placement_id', $dummyPlacementIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyAssignmentIds = Assignment::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyRubricIds = Rubric::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyFormIds = EvaluationForm::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->pluck('id')
+                ->all();
+
+            $dummySectionIds = EvaluationSection::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyQuestionIds = EvaluationQuestion::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummySectionIds), fn ($q) => $q->orWhereIn('section_id', $dummySectionIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyResponseIds = EvaluationResponse::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('evaluator_id', $dummyUserIds))
+                ->pluck('id')
+                ->all();
+
+            $dummyDocumentIds = Document::where('id', 'like', "{$prefix}%")->pluck('id')->all();
+
+            $purged = [];
+
+            // 1. Incidents
+            $purged['incident_reports'] = IncidentReport::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('reported_by', $dummyUserIds)->orWhereIn('resolved_by', $dummyUserIds))
+                ->delete();
+
+            // 2. Sysadmin requests & notifications
+            $purged['placement_change_requests'] = PlacementChangeRequest::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('from_placement_id', $dummyPlacementIds)->orWhereIn('to_placement_id', $dummyPlacementIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('requested_by', $dummyUserIds)->orWhereIn('processed_by', $dummyUserIds))
+                ->delete();
+
+            $purged['account_applications'] = AccountApplication::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyDepartmentIds), fn ($q) => $q->orWhereIn('department_id', $dummyDepartmentIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('processed_by', $dummyUserIds))
+                ->delete();
+
+            $purged['notifications'] = Notification::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhere(fn ($sub) => $sub->where('notifiable_type', User::class)->whereIn('notifiable_id', $dummyUserIds)))
+                ->delete();
+
+            $purged['announcements'] = Announcement::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->delete();
+
+            // 3. Finalization & Assessments
+            $purged['submissions'] = Submission::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyAssignmentIds), fn ($q) => $q->orWhereIn('assignment_id', $dummyAssignmentIds))
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('student_id', $dummyUserIds)->orWhereIn('graded_by', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds))
+                ->delete();
+
+            $purged['certificates'] = Certificate::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('issued_by', $dummyUserIds))
+                ->delete();
+
+            $purged['reports'] = StudentReport::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('finalized_by', $dummyUserIds))
+                ->delete();
+
+            $purged['assessments'] = Assessment::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('evaluator_id', $dummyUserIds))
+                ->when(! empty($dummyRubricIds), fn ($q) => $q->orWhereIn('rubric_id', $dummyRubricIds))
+                ->delete();
+
+            // 4. Daily operations
+            $purged['monitoring_visits'] = MonitoringVisit::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('teacher_id', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds))
+                ->delete();
+
+            $purged['supervision_logs'] = SupervisionLog::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('supervisor_id', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds)->orWhereIn('reviewed_by', $dummyUserIds))
+                ->delete();
+
+            $purged['absence_requests'] = AbsenceRequest::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds)->orWhereIn('absence_processed_by', $dummyUserIds))
+                ->delete();
+
+            $purged['attendances'] = Attendance::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds)->orWhereIn('absence_processed_by', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds))
+                ->delete();
+
+            $purged['logbooks'] = Logbook::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds)->orWhereIn('verified_by', $dummyUserIds)->orWhereIn('supervisor_id', $dummyUserIds))
+                ->delete();
+
+            // 5. Evaluation & Rubrics & Assignments
+            EvaluationAnswer::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyResponseIds), fn ($q) => $q->orWhereIn('response_id', $dummyResponseIds))
+                ->when(! empty($dummyQuestionIds), fn ($q) => $q->orWhereIn('question_id', $dummyQuestionIds))
+                ->delete();
+
+            EvaluationResponse::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('evaluator_id', $dummyUserIds))
+                ->delete();
+
+            EvaluationQuestion::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummySectionIds), fn ($q) => $q->orWhereIn('section_id', $dummySectionIds))
+                ->delete();
+
+            EvaluationSection::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyFormIds), fn ($q) => $q->orWhereIn('form_id', $dummyFormIds))
+                ->delete();
+
+            $purged['evaluation_forms'] = EvaluationForm::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->delete();
+
+            $purged['assignments'] = Assignment::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->delete();
+
+            $purged['rubrics'] = Rubric::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('created_by', $dummyUserIds))
+                ->delete();
+
+            // 6. Groups & Documents
+            InternshipGroupMember::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyGroupIds), fn ($q) => $q->orWhereIn('internship_group_id', $dummyGroupIds))
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds))
+                ->delete();
+
+            $purged['registration_documents'] = RegistrationDocument::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyRegistrationIds), fn ($q) => $q->orWhereIn('registration_id', $dummyRegistrationIds))
+                ->when(! empty($dummyDocumentIds), fn ($q) => $q->orWhereIn('document_id', $dummyDocumentIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('verified_by', $dummyUserIds))
+                ->delete();
+
+            $purged['documents'] = Document::where('id', 'like', "{$prefix}%")->delete();
+
+            $purged['groups'] = InternshipGroup::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('placement_id', $dummyPlacementIds))
+                ->delete();
+
+            // 7. Registrations & Placements & Internships
+            $purged['registrations'] = Registration::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('student_id', $dummyUserIds))
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyPlacementIds), fn ($q) => $q->orWhereIn('placement_id', $dummyPlacementIds))
+                ->delete();
+
+            $purged['placements'] = Placement::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyInternshipIds), fn ($q) => $q->orWhereIn('internship_id', $dummyInternshipIds))
+                ->when(! empty($dummyCompanyIds), fn ($q) => $q->orWhereIn('company_id', $dummyCompanyIds))
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('teacher_id', $dummyUserIds)->orWhereIn('company_supervisor_id', $dummyUserIds))
+                ->delete();
+
+            $purged['internships'] = Internship::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyAcademicYearIds), fn ($q) => $q->orWhereIn('academic_year_id', $dummyAcademicYearIds))
+                ->delete();
+
+            // 8. Partnerships & Companies
+            $purged['partnerships'] = Partnership::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyCompanyIds), fn ($q) => $q->orWhereIn('company_id', $dummyCompanyIds))
+                ->delete();
+
+            $purged['companies'] = Company::where('id', 'like', "{$prefix}%")->delete();
+
+            // 9. Profiles & Users
+            $purged['profiles'] = Profile::where('id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('user_id', $dummyUserIds))
+                ->delete();
+
             if (! empty($dummyUserIds)) {
                 DB::table('model_has_roles')->whereIn('model_id', $dummyUserIds)->delete();
                 DB::table('model_has_permissions')->whereIn('model_id', $dummyUserIds)->delete();
@@ -236,10 +413,33 @@ final class DummyData
             // 11. Past Academic Year (only if dummy ID)
             $purged['academic_years'] = AcademicYear::where('id', 'like', "{$prefix}%")->delete();
 
-            // 12. Clean up any orphaned activity log entries
+            // 12. Media Cleanups
+            $allDeletedIds = array_filter(array_merge(
+                $dummyUserIds,
+                $dummyAcademicYearIds,
+                $dummyDepartmentIds,
+                $dummyCompanyIds,
+                $dummyInternshipIds,
+                $dummyPlacementIds,
+                $dummyRegistrationIds,
+                $dummyGroupIds,
+                $dummyAssignmentIds,
+                $dummyRubricIds,
+                $dummyFormIds,
+                $dummyDocumentIds,
+            ));
+
+            DB::table('media')
+                ->where('model_id', 'like', "{$prefix}%")
+                ->when(! empty($allDeletedIds), fn ($q) => $q->orWhereIn('model_id', $allDeletedIds))
+                ->delete();
+
+            // 13. Clean up any orphaned activity log entries
             DB::table('activity_log')
                 ->where('subject_id', 'like', "{$prefix}%")
                 ->orWhere('causer_id', 'like', "{$prefix}%")
+                ->when(! empty($dummyUserIds), fn ($q) => $q->orWhereIn('causer_id', $dummyUserIds))
+                ->when(! empty($allDeletedIds), fn ($q) => $q->orWhereIn('subject_id', $allDeletedIds))
                 ->delete();
 
             return array_filter($purged, fn (int $count): bool => $count > 0);

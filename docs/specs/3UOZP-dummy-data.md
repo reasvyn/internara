@@ -422,8 +422,9 @@ Tests\Support\DummyData (final, stateless)
         // Checks if given UUID begins with ID_PREFIX
 
     public static function rollback(): array
-        // Purges all demo/dummy records in reverse dependency order inside DB::transaction()
-        // Preserves authentic base data (active academic year, superadmin, settings)
+        // Purges all demo/dummy records and user-created affiliated records in reverse dependency order inside DB::transaction()
+        // Cascades through affiliated placements, registrations, logbooks, attendances, assessments, submissions, etc.
+        // Preserves authentic base data (active academic year, superadmin, non-dummy user accounts, settings)
         // Returns ['incident_reports' => n, ..., 'users' => n] count of purged rows
 
     public function run(): array
