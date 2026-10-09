@@ -69,7 +69,6 @@ class NotificationCenter extends BaseRecordManager
                 'index' => 'created_at',
                 'label' => __('notifications.ui.received_col'),
                 'sortable' => true,
-                'class' => 'max-sm:hidden',
             ],
             ['index' => 'action', 'label' => '', 'sortable' => false],
         ];

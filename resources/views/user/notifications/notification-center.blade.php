@@ -199,12 +199,17 @@
                 @endinteract
 
                 @interact('column_created_at', $notification)
-                    <time
-                        datetime="{{ $notification->created_at->toIso8601String() }}"
-                        class="text-base-content/60 text-xs whitespace-nowrap max-sm:hidden"
-                    >
-                        {{ $notification->created_at->diffForHumans() }}
-                    </time>
+                    <div class="flex flex-col">
+                        <time
+                            datetime="{{ $notification->created_at?->toIso8601String() }}"
+                            class="dark:text-dark-200 text-xs font-medium whitespace-nowrap text-gray-700"
+                        >
+                            {{ $notification->created_at?->diffForHumans() }}
+                        </time>
+                        <span class="dark:text-dark-400 text-[11px] whitespace-nowrap text-gray-400">
+                            {{ $notification->created_at?->translatedFormat('d M Y, H:i') }}
+                        </span>
+                    </div>
                 @endinteract
 
                 @interact('column_action', $notification)

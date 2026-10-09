@@ -307,4 +307,18 @@ describe('TXR2H: notification center and bell', function (): void {
         $bell->dispatch('notifications-read');
         expect($bell->get('unreadCount'))->toBe(1);
     });
+
+    test('TXR2H-FR-NOTIF-010: received column renders relative and formatted time clearly', function (): void {
+        $user = User::factory()->create();
+        $notif = Notification::factory()->unread()->create([
+            'user_id' => $user->id,
+            'title' => 'Judul Waktu Notifikasi',
+            'created_at' => now()->subMinutes(15),
+        ]);
+        $this->actingAs($user);
+
+        Livewire::test(NotificationCenter::class)
+            ->assertSee($notif->created_at->diffForHumans())
+            ->assertSee($notif->created_at->translatedFormat('d M Y, H:i'));
+    });
 });
