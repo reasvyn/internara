@@ -116,14 +116,14 @@ Entry point, generation discipline, and dataset composition. `Priority` ranks cr
 | FR-SEED-021 | The helper treats base-seeded data as read-only input: it reuses the active academic year, roles, and settings and only supplements records the base seeders do not provide | P0 | F | Full |
 | FR-SEED-022 | Academic years: the `active` year from `AcademicYearSeeder` is reused as-is and never duplicated; the helper adds exactly one past (inactive) year | P0 | F | Full |
 | FR-SEED-023 | Departments: at least three vocational majors | P0 | F | Full |
-| FR-SEED-024 | Companies: 6–8 across diverse industry sectors | P0 | F | Full |
+| FR-SEED-024 | Companies: at least 10 across diverse industry sectors (one per internship group) | P0 | F | Full |
 | FR-SEED-025 | Partnerships: one per company, at least one `active` and one `expired` | P0 | F | Full |
 | FR-SEED-026 | Internships: one `active` (current year, linked to the base active academic year) and one `completed` (past year, linked to the helper-added past year) | P0 | F | Full |
-| FR-SEED-027 | Placements: one per company per internship with quotas (6–8 placements per internship), honoring the placement uniqueness constraint | P0 | F | Full |
-| FR-SEED-028 | Users: one `admin`, 3–5 teachers, 4–8 supervisors, 20–30 students; no `superadmin` — that account comes exclusively from `SetupSuperAdminAction` | P0 | F | Full |
+| FR-SEED-027 | Placements: one per company per internship with quotas (at least 10 placements per internship), honoring the placement uniqueness constraint | P0 | F | Full |
+| FR-SEED-028 | Users: one `admin`, 10 teachers, 10 supervisors, 50+ students; no `superadmin` — that account comes exclusively from `SetupSuperAdminAction` | P0 | F | Full |
 | FR-SEED-029 | Profiles: every user has a profile; student profiles carry department plus national id; supervisor profiles carry company plus employment status | P0 | F | Full |
 | FR-SEED-030 | Registrations: at least 80% of students registered, majority `active` with placement, remainder `pending` | P0 | F | Full |
-| FR-SEED-031 | Internship groups: 3–6 groups whose members cover the placed students | P1 | F | Full |
+| FR-SEED-031 | Internship groups: at least 10 groups, each consisting of 5 students, 1 teacher, 1 industry supervisor, and 1 company | P1 | F | Full |
 | FR-SEED-032 | Documents and registration documents: policy/handbook docs with mixed verification states | P1 | F | Full |
 | FR-SEED-033 | Rubrics: 1–2 per internship; assignments: 3–5 published per internship with submitted and graded submissions | P1 | F | Full |
 | FR-SEED-034 | Logbooks: 5–10 per `active` registration with mixed statuses (`draft`, `submitted`, `verified`) | P0 | F | Full |
@@ -234,7 +234,7 @@ A single department makes every grouping screen trivial and every filter meaning
 
 #### FR-SEED-024 — A Believable Industry Mix
 
-Six to eight companies across different sectors — manufacturing, services, tech, hospitality — make the partnership list look like a real school's portfolio instead of a single employer's roster. Sector diversity exercises category filters and gives placement distribution its characteristic unevenness: some industries absorb many students, others few. A demo with one sector invites the question nobody wants: is this data real.
+At least ten companies across diverse industry sectors — technology, manufacturing, finance, healthcare, retail, education, logistics, creative media, agriculture, construction — make the partnership list look like a real school's comprehensive portfolio. Sector diversity exercises category filters and anchors distinct placements for each internship group.
 
 #### FR-SEED-025 — Partnerships Alive and Lapsed
 
@@ -246,11 +246,11 @@ The active internship anchors the present — current year, current students, da
 
 #### FR-SEED-027 — One Placement Per Company Per Internship
 
-The uniqueness constraint on company-plus-internship is a schema fact, so the dataset honors it: each company hosts one placement per internship, yielding six to eight placements per cycle. Quotas on those placements still demonstrate saturation and competition for slots — the demo narrative needs scarcity, not multiplicity. More placements would require relaxing a deliberate constraint for cosmetic gain, which is never a good trade.
+The uniqueness constraint on company-plus-internship is a schema fact, so the dataset honors it: each company hosts one placement per internship, yielding ten placements per cycle matching the ten internship groups. Quotas on those placements demonstrate capacity and placement assignments.
 
 #### FR-SEED-028 — A School in Miniature
 
-One admin, a handful of teachers and supervisors, twenty-odd students: the smallest population in which every role interaction is observable. Teachers have multiple mentees, supervisors span companies, students fill groups — the social graph is dense enough to feel real. The absent superadmin is deliberate: that singleton belongs to installation integrity rules, and seeding one would either duplicate it or violate its immutability contract. Presenters get full-access demos through the admin account instead.
+One admin, 10 teachers, 10 industry supervisors, and 50+ students: the balanced population in which every role interaction and group cohort is observable. Teachers have assigned groups and mentees, supervisors span companies 1:1, students fill group rosters — the social graph is dense and realistic. The absent superadmin is deliberate: that singleton belongs to installation integrity rules, and seeding one would either duplicate it or violate its immutability contract. Presenters get full-access demos through the admin account instead.
 
 #### FR-SEED-029 — Everybody Gets a Profile
 
@@ -258,11 +258,11 @@ A user without a profile breaks nothing technically and everything presentationa
 
 #### FR-SEED-030 — Enrollment That Looks Like Enrollment
 
-Eighty percent registration with a majority placed mirrors a real intake week: most students settled, a tail still pending. The pending remainder is not filler — it gives verification queues, approval actions, and pending badges their demo rows. A hundred percent placement would leave the enrollment module's most important workflow (handling the stragglers) with nothing to show.
+Fifty active students placed in groups mirrors a fully operational cohort, with an additional pending tail for demo workflows. The pending remainder is not filler — it gives verification queues, approval actions, and pending badges their demo rows.
 
-#### FR-SEED-031 — Groups Covering the Placed
+#### FR-SEED-031 — Groups Covering the Placed Cohort
 
-Three to six internship groups whose membership covers the placed students make group screens, group supervision, and group reports demonstrable end to end. Coverage matters: a placed student in no group is a gap the group module cannot explain away. Small groups also mirror reality, where mentors track clusters rather than the whole cohort at once.
+At least ten internship groups whose membership covers the placed students make group screens, group supervision, and group reports demonstrable end to end. Each group represents a complete, cohesive mentoring unit: exactly 5 students, 1 school teacher, 1 industry supervisor, and 1 company partner (via placement). Small, well-defined groups mirror real-world vocational internships where teachers and industry mentors oversee manageable student pods.
 
 #### FR-SEED-032 — Documents Mid-Process
 

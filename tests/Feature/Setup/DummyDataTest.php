@@ -11,6 +11,7 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Evaluation\Models\EvaluationForm;
 use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
 use App\Modules\User\Models\User;
 use Database\Seeders\AcademicYearSeeder;
@@ -35,8 +36,7 @@ describe('3UOZP: dummy dataset', function (): void {
         expect($counts)->toBeArray()
             ->and($counts['users'] ?? 0)->toBeGreaterThan(30)
             ->and(Department::count())->toBeGreaterThanOrEqual(3)
-            ->and(Company::count())->toBeGreaterThanOrEqual(6)
-            ->and(Company::count())->toBeLessThanOrEqual(8);
+            ->and(Company::count())->toBeGreaterThanOrEqual(10);
     });
 
     test('3UOZP-FR-SEED-012 3UOZP-UC-SEED-003 3UOZP-NFR-SEED-005/006: reruns add no duplicates', function (): void {
@@ -138,6 +138,28 @@ describe('3UOZP: dummy dataset', function (): void {
             ->and(DB::table('logbooks')->count())->toBeGreaterThan(0)
             ->and(DB::table('certificates')->count())->toBeGreaterThan(0)
             ->and(DB::table('incident_reports')->count())->toBeGreaterThan(0);
+    });
+
+    test('dummy dataset provisions at least 10 groups each with 5 students, 1 teacher, 1 supervisor, and 1 company', function (): void {
+        DummyData::make()->run();
+
+        $groups = InternshipGroup::with(['placement.company', 'members'])->get();
+
+        expect($groups->count())->toBeGreaterThanOrEqual(10);
+
+        foreach ($groups as $group) {
+            expect($group->placement)->not->toBeNull()
+                ->and($group->placement->company)->not->toBeNull();
+
+            $members = $group->members;
+            $students = $members->where('role', 'student');
+            $teachers = $members->where('role', 'school_teacher');
+            $supervisors = $members->where('role', 'industry_supervisor');
+
+            expect($students->count())->toBe(5)
+                ->and($teachers->count())->toBe(1)
+                ->and($supervisors->count())->toBe(1);
+        }
     });
 
     test('3UOZP-DD-SEED-001/002/003/004/005/006/007/008/009/010/011: non-functional and design decision contracts', function (): void {

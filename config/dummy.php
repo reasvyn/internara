@@ -20,8 +20,8 @@ return [
 
     'accounts' => [
         'admin_email' => 'admin@example.com',
-        'teacher_count' => 4,
-        'supervisor_count' => 6,
-        'student_count' => 24,
+        'teacher_count' => 10,
+        'supervisor_count' => 10,
+        'student_count' => 54,
     ],
 ];

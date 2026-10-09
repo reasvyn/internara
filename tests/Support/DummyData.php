@@ -597,7 +597,10 @@ final class DummyData
             ['name' => 'RS Harapan Sehat', 'sector' => 'Healthcare'],
             ['name' => 'PT Ritel Maju Jaya', 'sector' => 'Retail'],
             ['name' => 'CV Edukasi Cerdas', 'sector' => 'Education'],
-            ['name' => 'PT Perkasa Logistik', 'sector' => 'General'],
+            ['name' => 'PT Perkasa Logistik', 'sector' => 'Logistics'],
+            ['name' => 'PT Media Kreasi Utama', 'sector' => 'Technology'],
+            ['name' => 'PT Agro Prima Lestari', 'sector' => 'Manufacturing'],
+            ['name' => 'PT Konstruksi Mandiri Jaya', 'sector' => 'General'],
         ];
 
         foreach ($companies as $company) {
@@ -757,15 +760,18 @@ final class DummyData
      */
     private function seedRegistrations(): void
     {
-        // Current internship: students 1-16 active with placement, 17-20 pending.
-        foreach ($this->students->take(16) as $index => $student) {
+        // Current internship: 50 active students distributed across 10 placements (5 students per placement), plus 4 pending.
+        foreach ($this->students->take(50) as $index => $student) {
+            $placementIndex = intdiv($index, 5);
+            $placement = $this->activePlacements->get($placementIndex % $this->activePlacements->count());
+
             $registration = $this->firstOrCreate(
                 Registration::factory(),
                 ['student_id' => $student->id, 'internship_id' => $this->activeInternship->id],
                 [
                     'student_id' => $student->id,
                     'internship_id' => $this->activeInternship->id,
-                    'placement_id' => $this->activePlacements->get($index % $this->activePlacements->count())->id,
+                    'placement_id' => $placement->id,
                     'start_date' => $this->activeInternship->start_date->toDateString(),
                     'end_date' => $this->activeInternship->end_date->toDateString(),
                     'status' => 'active',
@@ -775,7 +781,7 @@ final class DummyData
             $this->activeRegistrations->push($registration);
         }
 
-        foreach ($this->students->slice(16, 4) as $index => $student) {
+        foreach ($this->students->slice(50, 4) as $index => $student) {
             $company = $this->companies->get($index % $this->companies->count());
             $registration = $this->firstOrCreate(
                 Registration::factory(),
@@ -835,14 +841,23 @@ final class DummyData
      */
     private function seedGroupsAndDocuments(): void
     {
-        $groupNames = ['Kelompok 1', 'Kelompok 2', 'Kelompok 3', 'Kelompok 4'];
-
+        $groupCount = 10;
         $groups = collect();
-        foreach ($groupNames as $index => $name) {
+
+        for ($index = 0; $index < $groupCount; $index++) {
+            $name = 'Kelompok '.($index + 1);
+            $placement = $this->activePlacements->get($index % $this->activePlacements->count());
+            $company = $this->companies->get($index % $this->companies->count());
+
             $group = $this->firstOrCreate(
                 InternshipGroup::factory(),
                 ['name' => $name, 'internship_id' => $this->activeInternship->id],
-                ['name' => $name, 'internship_id' => $this->activeInternship->id],
+                [
+                    'name' => $name,
+                    'internship_id' => $this->activeInternship->id,
+                    'placement_id' => $placement->id,
+                    'description' => "Kelompok PKL di {$company->name}",
+                ],
                 'groups',
             );
             $groups->push($group);
@@ -852,11 +867,15 @@ final class DummyData
 
             $this->ensureGroupMember($group, ['user_id' => $teacher->id], InternshipGroupRole::SCHOOL_TEACHER->value);
             $this->ensureGroupMember($group, ['user_id' => $supervisor->id], InternshipGroupRole::INDUSTRY_SUPERVISOR->value);
-        }
 
-        foreach ($this->activeRegistrations as $index => $registration) {
-            $group = $groups->get($index % $groups->count());
-            $this->ensureGroupMember($group, ['registration_id' => $registration->id], InternshipGroupRole::STUDENT->value);
+            // Exactly 5 students placed in this company/placement
+            $placedStudents = $this->activeRegistrations
+                ->where('placement_id', $placement->id)
+                ->take(5);
+
+            foreach ($placedStudents as $registration) {
+                $this->ensureGroupMember($group, ['registration_id' => $registration->id], InternshipGroupRole::STUDENT->value);
+            }
         }
 
         $documents = [
@@ -1224,8 +1243,9 @@ final class DummyData
      */
     private function seedSupervisionAndVisits(Registration $registration, int $index): void
     {
-        $supervisor = $this->supervisors->get($index % $this->supervisors->count());
-        $teacher = $this->teachers->get($index % $this->teachers->count());
+        $groupIndex = intdiv($index, 5);
+        $supervisor = $this->supervisors->get($groupIndex % $this->supervisors->count());
+        $teacher = $this->teachers->get($groupIndex % $this->teachers->count());
 
         $statuses = [
             SupervisionLogStatus::DRAFT->value,
@@ -1295,8 +1315,9 @@ final class DummyData
     private function seedAssessments(Registration $registration, int $index): void
     {
         $rubric = Rubric::where('internship_id', $this->activeInternship->id)->first();
-        $teacher = $this->teachers->get($index % $this->teachers->count());
-        $supervisor = $this->supervisors->get($index % $this->supervisors->count());
+        $groupIndex = intdiv($index, 5);
+        $teacher = $this->teachers->get($groupIndex % $this->teachers->count());
+        $supervisor = $this->supervisors->get($groupIndex % $this->supervisors->count());
 
         $evaluations = [
             ['type' => 'midterm', 'evaluator' => $teacher, 'finalized' => false],
