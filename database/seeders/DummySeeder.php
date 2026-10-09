@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Core\Support\DummyData;
 use App\Modules\Setting\Models\Setting;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use Tests\Support\DummyData;
 
 /**
  * Opt-in entry point for the factory-driven demo dataset.

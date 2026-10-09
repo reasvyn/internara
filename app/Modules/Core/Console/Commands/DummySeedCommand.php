@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Console\Commands;
 
+use App\Modules\Core\Support\DummyData;
 use App\Modules\Setup\Entities\SetupEntity;
 use Database\Seeders\DummySeeder;
 use Illuminate\Console\Command;
-use Tests\Support\DummyData;
 
 class DummySeedCommand extends Command
 {

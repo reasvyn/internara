@@ -14,7 +14,7 @@ return [
     'rollback_none' => 'Tidak ada data dummy yang ditemukan untuk dibersihkan.',
     'rollback_summary_header' => 'Ringkasan pembersihan',
     'production_warning' => 'Tidak dapat dijalankan di lingkungan produksi tanpa flag --force.',
-    'helper_missing' => 'Helper data dummy (Tests\Support\DummyData) tidak tersedia.',
+    'helper_missing' => 'Helper data dummy (App\Modules\Core\Support\DummyData) tidak tersedia.',
     'not_installed' => 'Data dummy hanya dapat disemai setelah aplikasi diinstal.',
     'rollback_not_installed' => 'Rollback data dummy hanya dapat dijalankan setelah aplikasi diinstal.',
 
