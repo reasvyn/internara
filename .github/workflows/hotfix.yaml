@@ -131,7 +131,9 @@ jobs:
                               "$HOME/app/internara" \
                               "$HOME/app" \
                               "$HOME/internara" \
+                              "$HOME/workspace/reasvyn/internara" \
                               "$HOME/workspace/reasvyn/apps/internara" \
+                              "/home/reasvyn/workspace/reasvyn/internara" \
                               "/home/reasvyn/workspace/reasvyn/apps/internara" \
                               "/home/reasvyn/apps/internara" \
                               "/home/reasvyn/app/internara" \
@@ -148,7 +150,7 @@ jobs:
                           done
                       fi
                       if [ -z "$DEPLOY_PATH" ] || [ ! -f "$DEPLOY_PATH/.github/scripts/deploy.sh" ]; then
-                          DETECTED_SCRIPT=$(find "$HOME" /home /var/www /srv -maxdepth 5 -path "*/.github/scripts/deploy.sh" 2>/dev/null | head -n 1 || true)
+                          DETECTED_SCRIPT=$(find "$HOME" /home /var/www /srv -maxdepth 8 -path "*/.github/scripts/deploy.sh" 2>/dev/null | head -n 1 || true)
                           if [ -n "$DETECTED_SCRIPT" ]; then
                               DEPLOY_PATH="$(dirname "$(dirname "$(dirname "$DETECTED_SCRIPT")")")"
                           fi
