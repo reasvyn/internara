@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Console\Commands;
 
+use App\Modules\Setup\Entities\SetupEntity;
 use Database\Seeders\DummySeeder;
 use Illuminate\Console\Command;
 use Tests\Support\DummyData;
@@ -15,7 +16,7 @@ class DummySeedCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'dummy:seed {--force : Force the operation to run when in production}';
+    protected $signature = 'dummy:seed {--force : Force the operation to run}';
 
     /**
      * The console command description.
@@ -29,8 +30,8 @@ class DummySeedCommand extends Command
      */
     public function handle(): int
     {
-        if (app()->isProduction() && ! $this->option('force')) {
-            $this->error(__('dummy.production_warning'));
+        if (! SetupEntity::get()->isInstalled()) {
+            $this->error(__('dummy.not_installed'));
 
             return self::FAILURE;
         }

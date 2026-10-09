@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Core\Console\Commands;
 
+use App\Modules\Setup\Entities\SetupEntity;
 use Illuminate\Console\Command;
 use Tests\Support\DummyData;
 
@@ -14,7 +15,7 @@ class DummyRollbackCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'dummy:rollback {--force : Force the operation to run when in production}';
+    protected $signature = 'dummy:rollback {--force : Force the operation to run}';
 
     /**
      * The console command description.
@@ -28,8 +29,8 @@ class DummyRollbackCommand extends Command
      */
     public function handle(): int
     {
-        if (app()->isProduction() && ! $this->option('force')) {
-            $this->error(__('dummy.production_warning'));
+        if (! SetupEntity::get()->isInstalled()) {
+            $this->error(__('dummy.rollback_not_installed'));
 
             return self::FAILURE;
         }

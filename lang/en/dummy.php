@@ -15,6 +15,8 @@ return [
     'rollback_summary_header' => 'Rollback summary',
     'production_warning' => 'Cannot run in production without --force flag.',
     'helper_missing' => 'Dummy data helper (Tests\Support\DummyData) is not available.',
+    'not_installed' => 'Cannot seed dummy data before the application is installed.',
+    'rollback_not_installed' => 'Cannot rollback dummy data before the application is installed.',
 
     'entities' => [
         'academic_years' => 'Academic years',

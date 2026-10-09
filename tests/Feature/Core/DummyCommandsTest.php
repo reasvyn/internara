@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
+use App\Modules\Setting\Models\Setting;
 use App\Modules\User\Models\User;
 use Database\Seeders\AcademicYearSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -16,6 +17,30 @@ beforeEach(function (): void {
 });
 
 describe('3UOZP: dummy:seed and dummy:rollback console commands', function (): void {
+    test('dummy:seed fails when application is not installed', function (): void {
+        Setting::updateOrCreate(
+            ['key' => 'setup.is_installed'],
+            ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+        );
+
+        $exitCode = Artisan::call('dummy:seed');
+
+        expect($exitCode)->toBe(1)
+            ->and(Artisan::output())->toContain((string) __('dummy.not_installed'));
+    });
+
+    test('dummy:rollback fails when application is not installed', function (): void {
+        Setting::updateOrCreate(
+            ['key' => 'setup.is_installed'],
+            ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+        );
+
+        $exitCode = Artisan::call('dummy:rollback');
+
+        expect($exitCode)->toBe(1)
+            ->and(Artisan::output())->toContain((string) __('dummy.rollback_not_installed'));
+    });
+
     test('dummy:seed populates dummy records with prefixed IDs and prints summary', function (): void {
         $exitCode = Artisan::call('dummy:seed');
 
@@ -76,16 +101,16 @@ describe('3UOZP: dummy:seed and dummy:rollback console commands', function (): v
         expect($output)->toContain((string) __('dummy.rollback_none'));
     });
 
-    test('dummy:seed and dummy:rollback require --force flag in production environment', function (): void {
+    test('dummy:seed and dummy:rollback can run in production environment when installed', function (): void {
         app()['env'] = 'production';
 
         $seedExit = Artisan::call('dummy:seed');
-        expect($seedExit)->toBe(1)
-            ->and(Artisan::output())->toContain((string) __('dummy.production_warning'));
+        expect($seedExit)->toBe(0)
+            ->and(Artisan::output())->toContain((string) __('dummy.complete'));
 
         $rollbackExit = Artisan::call('dummy:rollback');
-        expect($rollbackExit)->toBe(1)
-            ->and(Artisan::output())->toContain((string) __('dummy.production_warning'));
+        expect($rollbackExit)->toBe(0)
+            ->and(Artisan::output())->toContain((string) __('dummy.rollback_complete'));
 
         app()['env'] = 'testing';
     });

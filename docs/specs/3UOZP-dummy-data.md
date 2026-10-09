@@ -389,20 +389,21 @@ php artisan db:seed --class=DummySeeder
 ```text
 App\Modules\Core\Console\Commands\DummySeedCommand extends Command
     handle(): int
-        → refuse when production environment without --force flag
+        → refuse if application is not installed (SetupEntity::get()->isInstalled())
         → check Tests\Support\DummyData availability
+        → allowed in any environment including production (isolated via d0000000- UUID prefix)
         → delegate to Database\Seeders\DummySeeder
 
 App\Modules\Core\Console\Commands\DummyRollbackCommand extends Command
     handle(): int
-        → refuse when production environment without --force flag
+        → refuse if application is not installed (SetupEntity::get()->isInstalled())
         → check Tests\Support\DummyData availability
+        → allowed in any environment including production
         → call Tests\Support\DummyData::rollback()
         → print bilingual purge summary via $this->line(__('...'))
 
 Database\Seeders\DummySeeder extends Seeder
     run(): void
-        → refuse when production environment without explicit demo flag (FR-SEED-007)
         → call RolePermissionSeeder / AppSettingSeeder / AcademicYearSeeder when base data absent
         → Tests\Support\DummyData::make()->run()
         → print bilingual summary via $this->command->info(__('...'))
