@@ -116,6 +116,7 @@ return [
         'subtitle' => 'Tetap terinformasi dengan aktivitas sistem',
         'refresh' => 'Segarkan',
         'mark_all_read' => 'Tandai Semua Dibaca',
+        'mark_read' => 'Tandai Dibaca',
         'delete_selected' => 'Hapus Terpilih',
         'are_you_sure' => 'Apakah Anda yakin?',
         'all_status' => 'Semua Status',
@@ -127,6 +128,7 @@ return [
         'success_mark_selected' => 'Notifikasi terpilih telah ditandai sebagai dibaca.',
         'mark_read_batch' => 'Tandai Dibaca',
         'selected_count' => '{0} notifikasi dipilih|{1} notifikasi dipilih|[2,*] notifikasi dipilih',
+        'help_guide' => 'Panduan',
     ],
 
     'view_details' => 'Lihat detail',

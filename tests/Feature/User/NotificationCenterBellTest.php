@@ -135,6 +135,7 @@ describe('TXR2H: notification center and bell', function (): void {
         Livewire::test(NotificationCenter::class)
             ->set('selectedIds', [$mine[0]->id, $mine[1]->id, $foreign->id])
             ->call('confirmAction')
+            ->assertDispatched('notifications-read')
             ->assertSet('selectedIds', []);
 
         expect(Notification::where('id', $mine[0]->id)->exists())->toBeFalse();
@@ -260,6 +261,7 @@ describe('TXR2H: notification center and bell', function (): void {
         Livewire::test(NotificationCenter::class)
             ->set('selectedIds', [...$obsolete, $foreign->id])
             ->call('confirmAction')
+            ->assertDispatched('notifications-read')
             ->assertSet('selectedIds', []);
 
         foreach ($obsolete as $id) {
@@ -267,5 +269,42 @@ describe('TXR2H: notification center and bell', function (): void {
         }
         expect(Notification::where('id', $foreign->id)->exists())->toBeTrue();
         expect(Notification::where('user_id', $supervisor->id)->count())->toBe(3);
+    });
+
+    test('TXR2H-FR-NOTIF-011: notification center UI renders search input, status filter, and guide modal controls', function (): void {
+        $user = User::factory()->create();
+        Notification::factory()->unread()->create([
+            'user_id' => $user->id,
+            'title' => 'Judul Uji Notifikasi',
+            'link' => 'https://example.com/test-link',
+        ]);
+        $this->actingAs($user);
+
+        Livewire::test(NotificationCenter::class)
+            ->assertSeeHtml('wire:model.live.debounce.300ms="search"')
+            ->assertSeeHtml('wire:model.live="filters.status"')
+            ->assertSee(__('notifications.guide.title'))
+            ->set('showGuide', true)
+            ->assertSet('showGuide', true)
+            ->call('closeGuide')
+            ->assertSet('showGuide', false)
+            ->assertSeeHtml('href="https://example.com/test-link"');
+    });
+
+    test('TXR2H-FR-NOTIF-014: deleting unread notifications refreshes the bell unread count', function (): void {
+        $user = User::factory()->create();
+        $notifs = Notification::factory()->unread()->count(3)->create(['user_id' => $user->id]);
+        $this->actingAs($user);
+
+        $bell = Livewire::test(NotificationBell::class);
+        expect($bell->get('unreadCount'))->toBe(3);
+
+        Livewire::test(NotificationCenter::class)
+            ->set('selectedIds', [$notifs[0]->id, $notifs[1]->id])
+            ->call('confirmAction')
+            ->assertDispatched('notifications-read');
+
+        $bell->dispatch('notifications-read');
+        expect($bell->get('unreadCount'))->toBe(1);
     });
 });

@@ -22,6 +22,8 @@ class NotificationCenter extends BaseRecordManager
 
     public bool $showViewer = false;
 
+    public bool $showGuide = false;
+
     public ?string $viewingNotificationId = null;
 
     public function viewNotification(string $id, MarkAsReadAction $action): void
@@ -41,6 +43,11 @@ class NotificationCenter extends BaseRecordManager
     {
         $this->showViewer = false;
         $this->viewingNotificationId = null;
+    }
+
+    public function closeGuide(): void
+    {
+        $this->showGuide = false;
     }
 
     public function getViewedNotificationProperty(): ?Notification
@@ -64,7 +71,7 @@ class NotificationCenter extends BaseRecordManager
                 'sortable' => true,
                 'class' => 'max-sm:hidden',
             ],
-            ['index' => 'actions', 'label' => '', 'sortable' => false],
+            ['index' => 'action', 'label' => '', 'sortable' => false],
         ];
     }
 
@@ -144,6 +151,8 @@ class NotificationCenter extends BaseRecordManager
                     $action->execute($notification);
                 }
             });
+
+            $this->dispatch('notifications-read');
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }

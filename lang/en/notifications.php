@@ -116,6 +116,7 @@ return [
         'subtitle' => 'Stay updated with system activities',
         'refresh' => 'Refresh',
         'mark_all_read' => 'Mark All as Read',
+        'mark_read' => 'Mark as Read',
         'delete_selected' => 'Delete Selected',
         'are_you_sure' => 'Are you sure?',
         'all_status' => 'All Status',
@@ -127,6 +128,7 @@ return [
         'success_mark_selected' => 'Selected notifications marked as read.',
         'mark_read_batch' => 'Mark as Read',
         'selected_count' => '{0} notifications selected|{1} notification selected|[2,*] notifications selected',
+        'help_guide' => 'Guide',
     ],
 
     'view_details' => 'View details',

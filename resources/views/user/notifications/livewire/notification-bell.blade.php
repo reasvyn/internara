@@ -8,7 +8,7 @@
         href="{{ route('notifications') }}"
     >
         @if ($unreadCount > 0)
-            <span class="badge badge-error badge-xs absolute top-0 right-0 animate-pulse">{{ $unreadCount }}</span>
+            <span class="badge badge-error badge-xs absolute top-0 right-0 animate-pulse">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
         @endif
     </x-ts-button>
 </div>

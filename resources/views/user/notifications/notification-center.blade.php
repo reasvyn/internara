@@ -5,18 +5,28 @@
     </div>
 
     <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-        <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <x-ts-select.native
-                wire:model.live="filters.status"
-                :options="ts_options([
-                    ['id' => 'unread', 'name' => __('notifications.ui.unread')],
-                    ['id' => 'read', 'name' => __('notifications.ui.read')],
-                ], __('notifications.ui.all_status'))"
-                clearable
-                class="sm:max-w-xs"
-                aria-label="{{ __('notifications.ui.all_status') }}"
-            />
-            <div class="flex items-center gap-2">
+        <div class="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
+            <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
+                <x-ts-input
+                    wire:model.live.debounce.300ms="search"
+                    :placeholder="__('common.actions.search')"
+                    icon="magnifying-glass"
+                    clearable
+                    class="w-full sm:max-w-xs"
+                    aria-label="{{ __('common.actions.search') }}"
+                />
+                <x-ts-select.native
+                    wire:model.live="filters.status"
+                    :options="ts_options([
+                        ['id' => 'unread', 'name' => __('notifications.ui.unread')],
+                        ['id' => 'read', 'name' => __('notifications.ui.read')],
+                    ], __('notifications.ui.all_status'))"
+                    clearable
+                    class="w-full sm:max-w-xs"
+                    aria-label="{{ __('notifications.ui.all_status') }}"
+                />
+            </div>
+            <div class="flex flex-wrap items-center justify-end gap-2">
                 <x-ts-button
                     :text="__('notifications.ui.mark_all_read')"
                     icon="check-badge"
@@ -32,6 +42,14 @@
                     sm
                     wire:click="$refresh"
                     :aria-label="__('notifications.ui.refresh')"
+                />
+                <x-ts-button
+                    icon="question-mark-circle"
+                    class="btn-square"
+                    color="white"
+                    sm
+                    wire:click="$set('showGuide', true)"
+                    :aria-label="__('notifications.guide.title')"
                 />
             </div>
         </div>
@@ -79,11 +97,15 @@
             >
                 @interact('column_title', $notification)
                     @php $isRead = $notification->is_read; @endphp
-                    <div x-data="{ read: {{ $isRead ? 'true' : 'false' }} }">
+                    <div
+                        wire:key="notification-title-{{ $notification->id }}"
+                        x-data="{ read: {{ $isRead ? 'true' : 'false' }}, open: false }"
+                    >
                         @if ($notification->message)
                             <details
                                 class="group py-2"
-                                x-on:toggle="if($el.open && ! read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
+                                x-bind:open="open"
+                                x-on:toggle="open = $el.open; if (open && ! read) { read = true; $wire.markAsRead('{{ $notification->id }}'); }"
                             >
                                 <summary class="[&::-webkit-details-marker]:hidden flex cursor-pointer list-none items-start gap-3">
                                     <div
@@ -112,10 +134,13 @@
                                             ></span>
                                         </div>
                                         <div
-                                            x-bind:class="read ? 'text-base-content/60' : 'text-base-content/60'"
-                                            class="line-clamp-1 max-w-none truncate text-xs break-words"
+                                            x-bind:class="read ? 'text-base-content/50' : 'text-base-content/70'"
+                                            class="line-clamp-1 text-xs break-words"
                                         >
                                             {{ $notification->message }}
+                                        </div>
+                                        <div class="text-base-content/50 mt-0.5 text-[11px] sm:hidden">
+                                            {{ $notification->created_at->diffForHumans() }}
                                         </div>
                                     </div>
                                     <div
@@ -150,18 +175,23 @@
                                     <x-ts-icon x-show="! read" name="envelope" class="size-4" />
                                     <x-ts-icon x-show="read" name="envelope-open" class="size-4" />
                                 </div>
-                                <div class="flex min-w-0 items-center gap-2">
-                                    <span
-                                        x-bind:class="read ? 'text-base-content/50' : 'text-base-content'"
-                                        class="text-sm font-medium"
-                                    >
-                                        {{ $notification->title }}
-                                    </span>
-                                    <span
-                                        x-show="! read"
-                                        class="bg-error size-1.5 shrink-0 rounded-full"
-                                        aria-label="{{ __('notifications.ui.unread') }}"
-                                    ></span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span
+                                            x-bind:class="read ? 'text-base-content/50' : 'text-base-content'"
+                                            class="text-sm font-medium"
+                                        >
+                                            {{ $notification->title }}
+                                        </span>
+                                        <span
+                                            x-show="! read"
+                                            class="bg-error size-1.5 shrink-0 rounded-full"
+                                            aria-label="{{ __('notifications.ui.unread') }}"
+                                        ></span>
+                                    </div>
+                                    <div class="text-base-content/50 mt-0.5 text-[11px] sm:hidden">
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </div>
                                 </div>
                             </div>
                         @endif
@@ -178,14 +208,15 @@
                 @endinteract
 
                 @interact('column_action', $notification)
-                    <div class="flex justify-end gap-1">
+                    <div class="flex justify-end gap-1" wire:key="notification-actions-{{ $notification->id }}">
                         @if ($notification->link)
                             <x-ts-button
                                 icon="arrow-top-right-on-square"
                                 color="white"
                                 sm
-                                :link="$notification->link"
-                                x-on:click.prevent="$wire.markAsRead('{{ $notification->id }}'); window.open('{{ $notification->link }}', '_blank')"
+                                :href="$notification->link"
+                                target="_blank"
+                                wire:click="markAsRead('{{ $notification->id }}')"
                                 :aria-label="__('notifications.view_details')"
                             />
                         @endif
@@ -193,8 +224,8 @@
                             icon="eye"
                             color="white"
                             sm
-                            x-on:click="$wire.viewNotification('{{ $notification->id }}')"
-                            :aria-label="__('notifications.ui.read')"
+                            wire:click="viewNotification('{{ $notification->id }}')"
+                            :aria-label="__('notifications.view_details')"
                         />
                         @if (! $notification->is_read)
                             <x-ts-button
@@ -202,8 +233,8 @@
                                 class="text-success"
                                 color="white"
                                 sm
-                                x-on:click="$wire.markAsRead('{{ $notification->id }}')"
-                                :aria-label="__('notifications.ui.mark_all_read')"
+                                wire:click="markAsRead('{{ $notification->id }}')"
+                                :aria-label="__('notifications.ui.mark_read')"
                             />
                         @endif
                     </div>
@@ -211,10 +242,10 @@
             </x-ts-table>
         </div>
 
-        {{-- Notification Viewer Modal --}}
-
+        {{-- Notification Viewer Guide Modal --}}
         @include('user.notifications.components.notification-guide')
     </x-ts-card>
+
     <x-ts-modal wire="showViewer" title="{{ $this->viewedNotification?->title ?? '' }}" blur size="lg">
         @if ($this->viewedNotification)
             <div class="space-y-4">
@@ -233,7 +264,8 @@
                 <x-ts-button
                     :text="__('notifications.view_details')"
                     icon="arrow-top-right-on-square"
-                    :link="$this->viewedNotification->link"
+                    :href="$this->viewedNotification->link"
+                    target="_blank"
                     class="btn-primary btn-sm"
                 />
             @endif

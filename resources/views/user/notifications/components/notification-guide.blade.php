@@ -1,88 +1,59 @@
-<div x-data="{ showGuide: false }">
-    <button
-        type="button"
-        x-on:click="showGuide = true"
-        class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
-        aria-label="{{ __('notifications.guide.title') }}"
-    >
-        <x-ts-icon name="question-mark-circle" class="size-6" />
-    </button>
+<x-ts-modal wire="showGuide" :title="__('notifications.guide.title')" separator blur size="lg">
+    <div class="space-y-4">
+        <p class="text-base-content/60 text-sm leading-relaxed">{{ __('notifications.guide.intro') }}</p>
 
-    <template x-teleport="body">
-        <div
-            x-show="showGuide"
-            x-cloak
-            x-on:keydown.escape.window="showGuide = false"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="guide-title"
-            class="fixed inset-0 z-[60] flex items-center justify-center"
-        >
-            <div x-on:click="showGuide = false" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-            <div class="bg-base-100 border-base-content/10 relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border shadow-2xl">
-                <div class="bg-base-100 border-base-content/10 sticky top-0 flex items-center justify-between rounded-t-2xl border-b px-6 py-4">
-                    <h3 id="guide-title" class="text-lg font-bold">{{ __('notifications.guide.title') }}</h3>
-                    <button
-                        type="button"
-                        x-on:click="showGuide = false"
-                        aria-label="{{ __('common.actions.close') }}"
-                        class="btn btn-ghost btn-sm btn-square"
-                    >
-                        <x-ts-icon name="x-mark" class="size-5" />
-                    </button>
+        <div class="divide-base-content/10 border-base-content/10 bg-base-200/30 divide-y overflow-hidden rounded-2xl border">
+            <div class="hover:bg-base-200/50 flex items-start gap-4 p-4 transition-colors">
+                <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border shadow-2xs">
+                    <x-ts-icon name="envelope-open" class="size-4" />
                 </div>
-                <div class="space-y-5 p-6">
-                    <p class="text-base-content/60 text-sm">{{ __('notifications.guide.intro') }}</p>
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-base-content text-sm font-bold">{{ __('notifications.guide.read_title') }}</h4>
+                    <p class="text-base-content/60 mt-0.5 text-xs leading-relaxed">
+                        {{ __('notifications.guide.read_desc') }}
+                    </p>
+                </div>
+            </div>
 
-                    <div class="flex gap-4">
-                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-ts-icon name="envelope-open" class="size-4" />
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-semibold">{{ __('notifications.guide.read_title') }}</h4>
-                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
-                                {{ __('notifications.guide.read_desc') }}
-                            </p>
-                        </div>
-                    </div>
+            <div class="hover:bg-base-200/50 flex items-start gap-4 p-4 transition-colors">
+                <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border shadow-2xs">
+                    <x-ts-icon name="check-badge" class="size-4" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-base-content text-sm font-bold">{{ __('notifications.guide.mark_title') }}</h4>
+                    <p class="text-base-content/60 mt-0.5 text-xs leading-relaxed">
+                        {{ __('notifications.guide.mark_desc') }}
+                    </p>
+                </div>
+            </div>
 
-                    <div class="flex gap-4">
-                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-ts-icon name="check-badge" class="size-4" />
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-semibold">{{ __('notifications.guide.mark_title') }}</h4>
-                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
-                                {{ __('notifications.guide.mark_desc') }}
-                            </p>
-                        </div>
-                    </div>
+            <div class="hover:bg-base-200/50 flex items-start gap-4 p-4 transition-colors">
+                <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border shadow-2xs">
+                    <x-ts-icon name="square-2-stack" class="size-4" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-base-content text-sm font-bold">{{ __('notifications.guide.batch_title') }}</h4>
+                    <p class="text-base-content/60 mt-0.5 text-xs leading-relaxed">
+                        {{ __('notifications.guide.batch_desc') }}
+                    </p>
+                </div>
+            </div>
 
-                    <div class="flex gap-4">
-                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-ts-icon name="square-2-stack" class="size-4" />
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-semibold">{{ __('notifications.guide.batch_title') }}</h4>
-                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
-                                {{ __('notifications.guide.batch_desc') }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <div class="bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full">
-                            <x-ts-icon name="bell" class="size-4" />
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-semibold">{{ __('notifications.guide.bell_title') }}</h4>
-                            <p class="text-base-content/60 mt-1 text-xs leading-relaxed">
-                                {{ __('notifications.guide.bell_desc') }}
-                            </p>
-                        </div>
-                    </div>
+            <div class="hover:bg-base-200/50 flex items-start gap-4 p-4 transition-colors">
+                <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border shadow-2xs">
+                    <x-ts-icon name="bell" class="size-4" />
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h4 class="text-base-content text-sm font-bold">{{ __('notifications.guide.bell_title') }}</h4>
+                    <p class="text-base-content/60 mt-0.5 text-xs leading-relaxed">
+                        {{ __('notifications.guide.bell_desc') }}
+                    </p>
                 </div>
             </div>
         </div>
-    </template>
-</div>
+    </div>
+
+    <x-slot:footer>
+        <x-ts-button :text="__('common.actions.close')" wire:click="closeGuide" color="slate" outline sm />
+    </x-slot:footer>
+</x-ts-modal>
