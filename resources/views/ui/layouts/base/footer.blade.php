@@ -8,7 +8,7 @@
 <footer
     {{
         $attributes->merge([
-            'class' => 'mt-auto border-t bg-base-100 border-base-content/10',
+            'class' => 'mt-auto border-t bg-white border-gray-200 dark:bg-dark-800 dark:border-dark-700',
         ])
     }}
     role="contentinfo"
@@ -18,9 +18,9 @@
         'container max-w-7xl' => ! $fullWidth,
         'w-full' => $fullWidth,
     ])>
-        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-center">
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             {{-- Left: brand + links --}}
-            <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
+            <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <a
                     href="{{ route('dashboard') }}"
                     wire:navigate
@@ -33,7 +33,7 @@
                 @if ($links)
                     <nav
                         aria-label="{{ __('common.footer_navigation') }}"
-                        class="text-base-content/60 flex flex-wrap items-center gap-4 text-xs"
+                        class="dark:text-dark-400 flex flex-wrap items-center gap-4 text-xs text-gray-500"
                     >
                         @foreach ($links as $link)
                             <a
@@ -51,10 +51,10 @@
 
             {{-- Right: credit --}}
             @if ($showCredit)
-                <div class="text-base-content/50 flex w-full items-center justify-start gap-3 text-xs sm:w-auto sm:justify-center">
+                <div class="dark:text-dark-400 flex w-full items-center justify-start gap-3 text-xs text-gray-400 sm:w-auto sm:justify-end">
                     <x-ui::components.credit
                         :show-version="app()->environment('local')"
-                        class="w-full justify-start sm:w-auto sm:justify-center"
+                        class="w-full justify-start sm:w-auto sm:justify-end"
                     />
                 </div>
             @endif

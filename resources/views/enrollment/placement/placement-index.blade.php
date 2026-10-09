@@ -51,7 +51,8 @@
                     color="primary"
                     sm
                     :text="__('common.actions.bulk_actions')"
-                / x-on:click="show = ! show">
+                    x-on:click="show = ! show"
+                />
             </x-slot:action>
             <div class="w-48 p-1.5">
                 <x-ts-dropdown.items

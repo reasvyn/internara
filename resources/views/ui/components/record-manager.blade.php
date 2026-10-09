@@ -22,7 +22,8 @@
                             color="white"
                             sm
                             :aria-label="__('common.actions.more')"
-                        / x-on:click="show = ! show">
+                            x-on:click="show = ! show"
+                        />
                     </x-slot:action>
                     <div class="w-48 p-1.5">{{ $extraMenu }}</div>
                 </x-ts-dropdown>

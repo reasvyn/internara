@@ -15,20 +15,21 @@
             <x-ui::layouts.header :$header />
         </x-slot:header>
 
-        <div class="flex flex-1 flex-col">
-            <div class="container mx-auto flex max-w-7xl flex-1 flex-col px-4 py-5 md:px-6 lg:px-8">
-                @if ($context)
-                    <nav aria-label="Breadcrumb" class="text-base-content/60 mb-5 flex items-center gap-2 text-xs">
-                        <a wire:navigate href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">
-                            {{ brand('name') }}
-                        </a>
-                        <span class="text-base-content/60">/</span>
-                        <span class="text-primary font-medium"> {{ __($context) }} </span>
-                    </nav>
-                @endif
+        <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col">
+            @if ($context)
+                <nav
+                    aria-label="Breadcrumb"
+                    class="dark:text-dark-400 mb-5 flex items-center gap-2 text-xs text-gray-500"
+                >
+                    <a wire:navigate href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">
+                        {{ brand('name') }}
+                    </a>
+                    <span class="opacity-40">/</span>
+                    <span class="text-primary font-medium"> {{ __($context) }} </span>
+                </nav>
+            @endif
 
-                <div class="flex-1" aria-live="polite" aria-atomic="false">{{ $slot }}</div>
-            </div>
+            <div class="flex-1" aria-live="polite" aria-atomic="false">{{ $slot }}</div>
         </div>
 
         <x-slot:footer>

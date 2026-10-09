@@ -76,7 +76,13 @@
     <x-slot:selectionBar>
         <x-ts-dropdown>
             <x-slot:action>
-                <x-ts-button icon="chevron-down" color="primary" sm :text="__('common.actions.bulk_actions')" / x-on:click="show = ! show">
+                <x-ts-button
+                    icon="chevron-down"
+                    color="primary"
+                    sm
+                    :text="__('common.actions.bulk_actions')"
+                    x-on:click="show = ! show"
+                />
             </x-slot:action>
             <div class="w-52 p-1.5">
                 <x-ts-dropdown.items

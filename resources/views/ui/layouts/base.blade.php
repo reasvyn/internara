@@ -21,13 +21,14 @@
     @endphp
     <style>
         html[data-theme='light'],
-        html:not([data-theme='dark']) {
+        html:not(.dark):not([data-theme='dark']) {
             @foreach ($themeVars['light'] as $var => $value)
                     {{ $var }}: {{ $value }};
                 @endforeach
         }
 
-        html[data-theme='dark'] {
+        html[data-theme='dark'],
+        html.dark {
             @foreach ($themeVars['dark'] as $var => $value)
                     {{ $var }}: {{ $value }};
                 @endforeach

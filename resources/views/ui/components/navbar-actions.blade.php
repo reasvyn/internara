@@ -33,22 +33,24 @@
         @endif
         {{-- User Dropdown --}}
         @if ($showUser)
-            <div class="bg-base-content/10 h-6 w-px self-center"></div>
+            <div class="dark:bg-dark-700 h-6 w-px self-center bg-gray-200"></div>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
                     <button
-                        class="btn btn-ghost btn-sm flex items-center gap-2 rounded-lg px-2"
+                        type="button"
+                        class="focus:ring-primary dark:text-dark-200 dark:hover:bg-dark-700 flex items-center gap-2 rounded-lg p-1.5 text-gray-700 transition-colors hover:bg-gray-100 focus:ring-2 focus:outline-none"
                         x-on:click="show = ! show"
+                        aria-label="{{ auth()->user()->name }}"
                     >
                         <span class="hidden text-sm font-medium sm:inline">{{ auth()->user()->name }}</span>
                         <x-ui::components.avatar :user="auth()->user()" size="size-8" />
                     </button>
                 </x-slot:action>
 
-                <div class="bg-base-100 border-base-content/10 w-56 rounded-xl border p-1.5 shadow-lg">
-                    <div class="bg-base-200/50 mb-1 rounded-lg px-3 py-3">
-                        <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
-                        <p class="text-base-content/50 truncate text-xs">{{ auth()->user()->email }}</p>
+                <div class="dark:border-dark-700 dark:bg-dark-800 w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg">
+                    <div class="dark:bg-dark-700/50 mb-1 rounded-lg bg-gray-50 px-3 py-3">
+                        <p class="dark:text-dark-100 text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</p>
+                        <p class="dark:text-dark-400 truncate text-xs text-gray-500">{{ auth()->user()->email }}</p>
                     </div>
 
                     <x-ts-dropdown.items

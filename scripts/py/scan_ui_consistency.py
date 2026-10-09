@@ -47,7 +47,7 @@ SCAN_NAME = "ui-consistency"
 RE_BLADE_ECHO = re.compile(r"\{\{\s*__\(")
 RE_HARDCODED_STRING = re.compile(r">([A-Z][a-zA-Z0-9 ,.'\"!?\-]{3,})</")
 RE_HARDCODED_COLOR = re.compile(r"class=\"[^\"]*\b(bg|text|border)-(red|blue|green|yellow|purple|pink|gray|slate|zinc)-(?:50|100|200|300|400|500|600|700|800|900)\b")
-RE_IMG = re.compile(r"<img\s[^>]*>", re.I)
+RE_IMG = re.compile(r"<img\s+(?:\"[^\"]*\"|'[^']*'|\{\{.*?\}\}|@\w+\((?:[^()]|\([^()]*\))*\)|[^>\"'])+>", re.I | re.S)
 RE_IMG_ALT = re.compile(r"\balt\s*=", re.I)
 RE_INPUT = re.compile(r"<input\s[^>]*>", re.I)
 RE_LABEL_FOR = re.compile(r"<label\s[^>]*\bfor\s*=", re.I)

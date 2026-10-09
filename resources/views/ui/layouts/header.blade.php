@@ -33,7 +33,7 @@
             @if ($breadcrumbs)
                 <nav
                     aria-label="Breadcrumb"
-                    class="text-base-content/60 mb-0.5 hidden items-center gap-1.5 text-xs sm:flex"
+                    class="dark:text-dark-400 mb-0.5 hidden items-center gap-1.5 text-xs text-gray-500 sm:flex"
                 >
                     @foreach ($breadcrumbs as $crumb)
                         @if (! $loop->last && ! empty($crumb['url']))
@@ -53,11 +53,11 @@
             @if ($header)
                 <h1 class="truncate text-lg leading-tight font-semibold" tabindex="-1">{{ $header }}</h1>
                 @if ($subheader)
-                    <p class="text-base-content/60 truncate text-xs">{{ $subheader }}</p>
+                    <p class="dark:text-dark-400 truncate text-xs text-gray-500">{{ $subheader }}</p>
                 @endif
             @else
                 {{-- Fallback mobile brand ketika tidak ada title --}}
-                <div class="flex items-center gap-2 lg:hidden">
+                <div class="flex items-center gap-2 md:hidden">
                     <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
                         <x-ui::components.logo size="5" />
                     </a>
@@ -87,7 +87,7 @@
                         <x-slot:action>
                             <button
                                 type="button"
-                                class="btn btn-ghost btn-sm"
+                                class="focus:ring-primary dark:text-dark-400 dark:hover:bg-dark-700 dark:hover:text-dark-200 flex size-9 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus:ring-2 focus:outline-none"
                                 aria-label="{{ __('common.actions.label') }}"
                             >
                                 <x-ts-icon name="ellipsis-vertical" class="size-5" />

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50 dark:bg-slate-900">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-base-200 dark:bg-dark-900 h-full">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ __('certificate.verify.title') }} — {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="flex h-full flex-col items-center justify-center p-4 text-slate-800 antialiased dark:text-slate-100">
-    <div class="w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800">
-        <div class="border-b border-slate-100 p-6 text-center dark:border-slate-700/60">
+<body class="dark:text-dark-100 flex h-full flex-col items-center justify-center p-4 text-gray-800 antialiased">
+    <div class="dark:border-dark-700 dark:bg-dark-800 w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+        <div class="dark:border-dark-700/60 border-b border-gray-100 p-6 text-center">
             <h1 class="text-xl font-bold tracking-tight">{{ __('certificate.verify.title') }}</h1>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('certificate.verify.subtitle') }}</p>
+            <p class="dark:text-dark-400 mt-1 text-sm text-gray-500">{{ __('certificate.verify.subtitle') }}</p>
         </div>
 
         <div class="space-y-6 p-6">
@@ -47,23 +47,23 @@
             @endif
 
             @if ($verification->status !== 'not_found')
-                <dl class="divide-y divide-slate-100 text-sm dark:divide-slate-700/60">
+                <dl class="dark:divide-dark-700/60 divide-y divide-gray-100 text-sm">
                     <div class="flex justify-between py-2.5">
-                        <dt class="text-slate-500 dark:text-slate-400">{{ __('certificate.verify.holder') }}</dt>
+                        <dt class="dark:text-dark-400 text-gray-500">{{ __('certificate.verify.holder') }}</dt>
                         <dd class="text-right font-medium">{{ $verification->studentName }}</dd>
                     </div>
                     <div class="flex justify-between py-2.5">
-                        <dt class="text-slate-500 dark:text-slate-400">{{ __('certificate.verify.school') }}</dt>
+                        <dt class="dark:text-dark-400 text-gray-500">{{ __('certificate.verify.school') }}</dt>
                         <dd class="text-right font-medium">{{ $verification->schoolName }}</dd>
                     </div>
                     <div class="flex justify-between py-2.5">
-                        <dt class="text-slate-500 dark:text-slate-400">{{ __('certificate.verify.number') }}</dt>
+                        <dt class="dark:text-dark-400 text-gray-500">{{ __('certificate.verify.number') }}</dt>
                         <dd class="text-right font-mono text-xs font-semibold">
                             {{ $verification->certificateNumber }}
                         </dd>
                     </div>
                     <div class="flex justify-between py-2.5">
-                        <dt class="text-slate-500 dark:text-slate-400">{{ __('certificate.verify.issued_at') }}</dt>
+                        <dt class="dark:text-dark-400 text-gray-500">{{ __('certificate.verify.issued_at') }}</dt>
                         <dd class="text-right font-medium">{{ $verification->issuedAt }}</dd>
                     </div>
                     @if ($verification->revokedAt)
@@ -76,8 +76,8 @@
             @endif
         </div>
 
-        <div class="border-t border-slate-100 bg-slate-50 px-6 py-4 text-center dark:border-slate-700/60 dark:bg-slate-800/50">
-            <span class="text-xs text-slate-400 dark:text-slate-500">
+        <div class="dark:border-dark-700/60 dark:bg-dark-800/50 border-t border-gray-100 bg-gray-50 px-6 py-4 text-center">
+            <span class="dark:text-dark-400 text-xs text-gray-400">
                 {{ config('app.name') }} &bull; {{ date('Y') }}
             </span>
         </div>

@@ -8,7 +8,12 @@
         <x-slot:actions>
             <x-ts-dropdown>
                 <x-slot:action>
-                    <x-ts-button text="{{ __('backup.create_button') }}" icon="arrow-path" color="primary" / x-on:click="show = ! show">
+                    <x-ts-button
+                        text="{{ __('backup.create_button') }}"
+                        icon="arrow-path"
+                        color="primary"
+                        x-on:click="show = ! show"
+                    />
                 </x-slot:action>
                 <x-ts-dropdown.items
                     text="{{ BackupType::DATABASE->label() }}"

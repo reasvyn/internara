@@ -7,7 +7,7 @@
         type="button"
         x-on:click="open = ! open"
         x-bind:aria-expanded="open"
-        class="hover:bg-base-200 flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider uppercase transition dark:hover:bg-neutral-800"
+        class="focus:ring-primary dark:text-dark-200 dark:hover:bg-dark-700 flex cursor-pointer items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wider text-gray-700 uppercase transition hover:bg-gray-100 focus:ring-2 focus:outline-none"
         aria-haspopup="menu"
         aria-label="{{ __('common.language.switch') }}"
     >
@@ -20,14 +20,14 @@
         x-show="open"
         x-transition
         role="menu"
-        class="absolute top-full right-0 z-50 mt-1 min-w-40 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+        class="dark:border-dark-700 dark:bg-dark-800 absolute top-full right-0 z-50 mt-1 min-w-40 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg"
     >
         <button
             type="button"
             role="menuitem"
             wire:click="changeLocale('id')"
             x-on:click="open = false"
-            class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-600 transition-colors hover:bg-gray-100 focus:bg-gray-100 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+            class="dark:text-dark-200 dark:hover:bg-dark-700 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none"
         >
             <span class="text-base leading-none" aria-hidden="true">🇮🇩</span>
             <span>{{ __('common.language.indonesian') }}</span>
@@ -37,7 +37,7 @@
             role="menuitem"
             wire:click="changeLocale('en')"
             x-on:click="open = false"
-            class="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-600 transition-colors hover:bg-gray-100 focus:bg-gray-100 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:bg-gray-700"
+            class="dark:text-dark-200 dark:hover:bg-dark-700 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none"
         >
             <span class="text-base leading-none" aria-hidden="true">🇬🇧</span>
             <span>{{ __('common.language.english') }}</span>

@@ -18,7 +18,14 @@
             />
             <x-ts-dropdown>
                 <x-slot:action>
-                    <x-ts-button icon="adjustments-horizontal" color="slate" outline sm :text="__('common.actions.filters')" / x-on:click="show = ! show">
+                    <x-ts-button
+                        icon="adjustments-horizontal"
+                        color="slate"
+                        outline
+                        sm
+                        :text="__('common.actions.filters')"
+                        x-on:click="show = ! show"
+                    />
                 </x-slot:action>
                 <div class="w-72 space-y-4 p-4">
                     <x-ts-select.native

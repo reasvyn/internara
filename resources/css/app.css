@@ -89,7 +89,8 @@
 }
 
 /* Static dark values for non-branding tokens; base-*/ /* primary/secondary/accent switch dynamically via Theme::cssVariables() under html[data-theme='dark']. */
-[data-theme='dark'] {
+[data-theme='dark'],
+.dark {
     --color-neutral: oklch(30% 0 0);
     --color-neutral-content: oklch(95% 0 0);
     --color-info: oklch(70% 0.14 250);

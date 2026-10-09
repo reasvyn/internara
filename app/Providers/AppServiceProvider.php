@@ -110,7 +110,12 @@ class AppServiceProvider extends ServiceProvider
             ->sideBar('separator')
             ->block('line-right.base')
             ->replace('text-primary-600', 'text-neutral-800')
-            ->replace('dark:text-dark-100', 'dark:text-white');
+            ->replace('dark:text-dark-100', 'dark:text-white')
+            ->and()
+            // Layout: responsive main padding (p-4 mobile, p-6 tablet, p-8 desktop) instead of hardcoded p-10
+            ->layout()
+            ->block('main')
+            ->replace('p-10', 'p-4 md:p-6 lg:p-8');
     }
 
     protected function service(): ModuleService
