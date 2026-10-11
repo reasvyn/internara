@@ -41,7 +41,7 @@ class LangSwitch extends Component
     }
 
     /**
-     * @return array<string, array{code: string, label: string, short: string, flag: string}>
+     * @return array<string, array{code: string, label: string, short: string, flag: string, country_code: string}>
      */
     public function getAvailableLocalesProperty(): array
     {
@@ -52,6 +52,7 @@ class LangSwitch extends Component
                 'label' => Locale::label((string) $code),
                 'short' => strtoupper((string) $code),
                 'flag' => Locale::flag((string) $code),
+                'country_code' => Locale::countryCode((string) $code),
             ];
         }
 
@@ -63,6 +64,7 @@ class LangSwitch extends Component
         return view('setting.livewire.lang-switch', [
             'availableLocales' => $this->availableLocales,
             'currentFlag' => Locale::flag($this->locale),
+            'currentCountryCode' => Locale::countryCode($this->locale),
         ]);
     }
 }

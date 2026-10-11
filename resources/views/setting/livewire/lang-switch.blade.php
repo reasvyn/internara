@@ -11,7 +11,10 @@
         aria-haspopup="menu"
         aria-label="{{ __('common.language.switch') }}"
     >
-        <span class="text-sm leading-none" aria-hidden="true">{{ $currentFlag }}</span>
+        <span
+            class="fi fi-{{ $currentCountryCode }} rounded-xs shadow-xs text-sm leading-none"
+            aria-hidden="true"
+        ></span>
         <span aria-hidden="true">{{ strtoupper($locale) }}</span>
     </button>
 
@@ -30,7 +33,10 @@
                 x-on:click="open = false"
                 class="text-base-content hover:bg-base-200 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm transition-colors focus:outline-none"
             >
-                <span class="text-base leading-none" aria-hidden="true">{{ $item['flag'] }}</span>
+                <span
+                    class="fi fi-{{ $item['country_code'] }} rounded-xs shadow-xs text-base leading-none"
+                    aria-hidden="true"
+                ></span>
                 <span>{{ $item['label'] }}</span>
             </button>
         @endforeach

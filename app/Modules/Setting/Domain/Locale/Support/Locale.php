@@ -142,6 +142,57 @@ final class Locale
         return '🌐';
     }
 
+    public static function countryCode(string $locale): string
+    {
+        $meta = self::metadata($locale);
+        if (isset($meta['country_code']) && is_string($meta['country_code']) && $meta['country_code'] !== '') {
+            return strtolower($meta['country_code']);
+        }
+
+        $countryMap = [
+            'en' => 'gb',
+            'id' => 'id',
+            'ja' => 'jp',
+            'ko' => 'kr',
+            'zh' => 'cn',
+            'da' => 'dk',
+            'el' => 'gr',
+            'cs' => 'cz',
+            'sv' => 'se',
+            'uk' => 'ua',
+            'vi' => 'vn',
+            'hi' => 'in',
+            'ar' => 'sa',
+            'pt' => 'pt',
+            'bn' => 'bd',
+            'ur' => 'pk',
+            'fa' => 'ir',
+            'ms' => 'my',
+            'tl' => 'ph',
+            'th' => 'th',
+            'nl' => 'nl',
+            'pl' => 'pl',
+            'tr' => 'tr',
+            'it' => 'it',
+            'de' => 'de',
+            'es' => 'es',
+            'fr' => 'fr',
+            'ru' => 'ru',
+        ];
+
+        $lowerLocale = strtolower($locale);
+        if (isset($countryMap[$lowerLocale])) {
+            return $countryMap[$lowerLocale];
+        }
+
+        // If locale is format 'en_US' or 'en-GB'
+        if (preg_match('/[_-]([a-zA-Z]{2})$/', $locale, $matches)) {
+            return strtolower($matches[1]);
+        }
+
+        return strlen($locale) === 2 ? $lowerLocale : 'xx';
+    }
+
     public static function label(string $locale): string
     {
         $meta = self::metadata($locale);

@@ -1,6 +1,7 @@
 /* TailwindCSS */
 @import 'tailwindcss';
 @import '../../vendor/tallstackui/tallstackui/css/v4.css';
+@import 'flag-icons/css/flag-icons.min.css';
 
 /* Manually defined to avoid Lightning CSS warning from nested @property */
 @property --radialprogress {

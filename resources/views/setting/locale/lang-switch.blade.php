@@ -11,6 +11,7 @@
             'label' => \App\Modules\Setting\Domain\Locale\Support\Locale::label((string) $code),
             'short' => strtoupper((string) $code),
             'flag' => \App\Modules\Setting\Domain\Locale\Support\Locale::flag((string) $code),
+            'country_code' => \App\Modules\Setting\Domain\Locale\Support\Locale::countryCode((string) $code),
         ];
     }
     $sizeClasses = match ($size) {
@@ -38,7 +39,8 @@
                 class="px-3 py-1 text-xs font-bold rounded-full transition {{ $current === $code ? 'bg-primary text-primary-content shadow-sm' : 'text-base-content/60 hover:text-base-content' }}"
                 :aria-current="$current === $code ? 'true' : 'false'"
             >
-                <span class="mr-1" aria-hidden="true">{{ $meta['flag'] }}</span>{{ $meta['short'] }}
+                <span class="fi fi-{{ $meta['country_code'] }} mr-1 rounded-xs shadow-xs" aria-hidden="true"></span
+                >{{ $meta['short'] }}
             </button>
         @endforeach
     </div>
@@ -52,9 +54,9 @@
                 aria-label="{{ __('common.language.switch') }}"
             >
                 <span
-                    class="text-sm leading-none"
+                    class="fi fi-{{ $locales[$current]['country_code'] ?? 'gb' }} text-sm leading-none rounded-xs shadow-xs"
                     aria-hidden="true"
-                >{{ $locales[$current]['flag'] ?? ($current === 'id' ? '🇮🇩' : '🇬🇧') }}</span>
+                ></span>
                 <span aria-hidden="true">{{ strtoupper($current) }}</span>
             </button>
         </x-slot:action>
@@ -64,14 +66,20 @@
                 @if (isset($__livewire))
                     <x-ts-dropdown.items wire:click="changeLocale('{{ $code }}')" :active="$current === $code">
                         <span class="inline-flex items-center gap-2">
-                            <span class="text-base leading-none" aria-hidden="true">{{ $meta['flag'] }}</span>
+                            <span
+                                class="fi fi-{{ $meta['country_code'] }} text-base leading-none rounded-xs shadow-xs"
+                                aria-hidden="true"
+                            ></span>
                             <span>{{ $meta['label'] }}</span>
                         </span>
                     </x-ts-dropdown.items>
                 @else
                     <x-ts-dropdown.items :href="route('locale.switch', $code)" :active="$current === $code">
                         <span class="inline-flex items-center gap-2">
-                            <span class="text-base leading-none" aria-hidden="true">{{ $meta['flag'] }}</span>
+                            <span
+                                class="fi fi-{{ $meta['country_code'] }} text-base leading-none rounded-xs shadow-xs"
+                                aria-hidden="true"
+                            ></span>
                             <span>{{ $meta['label'] }}</span>
                         </span>
                     </x-ts-dropdown.items>

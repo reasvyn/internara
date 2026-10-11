@@ -17,8 +17,8 @@ describe('52O1I: LangSwitch livewire component', function (): void {
         Livewire::test(LangSwitch::class)
             ->assertSet('locale', 'en')
             ->assertSee('EN')
-            ->assertSee('🇬🇧')
-            ->assertSee('🇮🇩')
+            ->assertSeeHtml('fi fi-gb')
+            ->assertSeeHtml('fi fi-id')
             ->assertSee(__('common.language.indonesian'))
             ->assertSee(__('common.language.english'))
             ->assertSeeHtml('wire:click="changeLocale(\'id\')"')
@@ -57,7 +57,7 @@ describe('52O1I: LangSwitch livewire component', function (): void {
         ]);
 
         Livewire::test(LangSwitch::class)
-            ->assertSee('🇯🇵')
+            ->assertSeeHtml('fi fi-jp')
             ->assertSee('日本語')
             ->assertSeeHtml('wire:click="changeLocale(\'ja\')"')
             ->call('changeLocale', 'ja')
