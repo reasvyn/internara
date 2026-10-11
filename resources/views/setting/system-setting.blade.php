@@ -277,6 +277,7 @@
                                         <button
                                             type="button"
                                             wire:click="$set('confirmTarget', 'removeBrandLogo'); $set('showConfirm', true)"
+                                            aria-label="{{ __('common.actions.remove') }}"
                                             class="bg-error text-error-content absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full opacity-0 shadow-sm transition-transform group-hover:opacity-100 hover:scale-110"
                                         >
                                             <x-ts-icon name="x-mark" class="size-3" />
@@ -325,6 +326,7 @@
                                         <button
                                             type="button"
                                             wire:click="$set('confirmTarget', 'removeFavicon'); $set('showConfirm', true)"
+                                            aria-label="{{ __('common.actions.remove') }}"
                                             class="bg-error text-error-content absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full opacity-0 shadow-sm transition-transform group-hover:opacity-100 hover:scale-110"
                                         >
                                             <x-ts-icon name="x-mark" class="size-3" />

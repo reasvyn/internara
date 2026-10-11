@@ -229,6 +229,7 @@
                             <button
                                 type="button"
                                 wire:click="$set('showConfirm', true)"
+                                aria-label="{{ __('common.actions.remove') }}"
                                 class="bg-error text-error-content absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full opacity-0 transition-transform group-hover:opacity-100 hover:scale-110"
                             >
                                 <x-ts-icon name="x-mark" class="size-3" />

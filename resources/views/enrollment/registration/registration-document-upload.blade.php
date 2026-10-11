@@ -19,6 +19,7 @@
                                 <input
                                     type="file"
                                     wire:model="uploads.{{ $document->id }}"
+                                    aria-label="{{ $document->title }}"
                                     class="file-input file-input-bordered file-input-sm mt-2 w-full"
                                     accept=".pdf,.jpg,.jpeg,.png"
                                 />

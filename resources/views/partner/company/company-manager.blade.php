@@ -5,7 +5,14 @@
 
     <x-slot:extraMenu>
         <x-ts-dropdown.items :text="__('common.actions.import')" x-on:click="$refs.importCsvInput.click()" />
-        <input x-ref="importCsvInput" type="file" accept=".csv" wire:model="importFile" class="sr-only" />
+        <input
+            x-ref="importCsvInput"
+            type="file"
+            accept=".csv"
+            wire:model="importFile"
+            class="sr-only"
+            aria-label="{{ __('common.actions.import') }}"
+        />
         <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
         <x-ts-dropdown.items
             :text="__('common.actions.template')"
@@ -43,6 +50,7 @@
             wire:model.live="filters.industry_sector"
             type="text"
             placeholder="{{ __('company.industry_sector_placeholder') }}"
+            aria-label="{{ __('company.industry_sector') }}"
             class="input input-bordered input-sm w-full text-sm"
         />
 
@@ -51,6 +59,7 @@
             wire:model.live="filters.phone"
             type="text"
             placeholder="{{ __('company.phone_placeholder') }}"
+            aria-label="{{ __('company.phone') }}"
             class="input input-bordered input-sm w-full text-sm"
         />
 

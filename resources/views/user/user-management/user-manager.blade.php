@@ -8,7 +8,14 @@
             :text="__('common.actions.import')"
             @click="document.getElementById('import-csv').click()"
         />
-        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="sr-only" />
+        <input
+            id="import-csv"
+            type="file"
+            accept=".csv"
+            wire:model="importFile"
+            class="sr-only"
+            aria-label="{{ __('common.actions.import') }}"
+        />
         <x-ts-dropdown.items :text="__('common.actions.export')" icon="arrow-down-tray" wire:click="export" />
         <x-ts-dropdown.items
             :text="__('common.actions.template')"
@@ -66,11 +73,17 @@
         <input
             wire:model.live="filters.created_from"
             type="date"
+            aria-label="{{ __('user.manager.created_from') }}"
             class="input input-bordered input-sm w-full text-sm"
         />
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.manager.created_to') }}</label>
-        <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
+        <input
+            wire:model.live="filters.created_to"
+            type="date"
+            aria-label="{{ __('user.manager.created_to') }}"
+            class="input input-bordered input-sm w-full text-sm"
+        />
     </x-slot:filters>
 
     <x-slot:selectionBar>

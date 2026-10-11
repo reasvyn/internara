@@ -12,11 +12,17 @@
         <input
             wire:model.live="filters.created_from"
             type="date"
+            aria-label="{{ __('user.teacher.created_from') }}"
             class="input input-bordered input-sm w-full text-sm"
         />
 
         <label class="text-base-content/50 text-xs font-semibold tracking-wider uppercase">{{ __('user.teacher.created_to') }}</label>
-        <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
+        <input
+            wire:model.live="filters.created_to"
+            type="date"
+            aria-label="{{ __('user.teacher.created_to') }}"
+            class="input input-bordered input-sm w-full text-sm"
+        />
     </x-slot:filters>
 
     <x-ui::components.selection-bar>

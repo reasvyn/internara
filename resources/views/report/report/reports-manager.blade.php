@@ -22,6 +22,7 @@
                             type="text"
                             wire:model.debounce.300ms="search"
                             placeholder="{{ __('report.search_placeholder') }}"
+                            aria-label="{{ __('report.search_placeholder') }}"
                             class="w-full border-0 bg-transparent focus:border-0 focus:ring-0"
                         />
                     </label>
