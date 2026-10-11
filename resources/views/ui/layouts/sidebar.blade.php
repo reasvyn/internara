@@ -43,52 +43,96 @@
     @endif
 
     @auth
-        @foreach ($groups as $group)
+        @foreach ($groups as $groupKey => $group)
             @if (auth()->user()->hasRole($group['roles'] ?? []))
-                <div class="space-y-1">
+                @php
+                    $groupItems = $group['items'] ?? [];
+                    $hasActiveItem = false;
+                    foreach ($groupItems as $checkItem) {
+                        if (! ($checkItem['disabled'] ?? false) && ! empty($checkItem['route']) && request()->routeIs($checkItem['route'])) {
+                            $hasActiveItem = true;
+                            break;
+                        }
+                    }
+                    $groupId = is_string($groupKey) ? $groupKey : 'group-'.$loop->index;
+                    $storageKey = 'sidebar_group_'.$groupId;
+                @endphp
+                <div
+                    class="space-y-1"
+                    x-data="{
+                        open: {{ $hasActiveItem ? 'true' : "localStorage.getItem('{$storageKey}') !== 'false'" }},
+                        toggle() {
+                            this.open = ! this.open;
+                            localStorage.setItem('{{ $storageKey }}', this.open);
+                        }
+                    }"
+                >
                     @if (! empty($group['title']))
-                        <x-ts-side-bar.separator :text="__($group['title'])" class="text-base-content font-semibold" />
-                    @endif
-                    @foreach ($group['items'] ?? [] as $item)
-                        @php
-                            $itemRoles = $item['roles'] ?? $group['roles'] ?? [];
-                            $disabled = $item['disabled'] ?? false;
-                            $active = ! $disabled && request()->routeIs($item['route'] ?? '');
-                            $url = '#';
-                            if (! $disabled && ! empty($item['route'])) {
-                                try {
-                                    if (\Illuminate\Support\Facades\Route::has($item['route'])) {
-                                        $url = route($item['route']);
-                                    }
-                                } catch (\Throwable) {
-                                    $url = '#';
-                                }
-                            }
-                            $rawIcon = $item['icon'] ?? null;
-                            $icon = $rawIcon ? (str_starts_with($rawIcon, 'o-') ? substr($rawIcon, 2) : (str_starts_with($rawIcon, 's-') ? substr($rawIcon, 2) : $rawIcon)) : null;
-                        @endphp
-                        @if (empty($itemRoles) || auth()->user()->hasRole($itemRoles))
-                            @if ($disabled)
-                                <div
-                                    class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm opacity-40"
-                                    aria-disabled="true"
+                        {{-- In collapsed/railed desktop mode: separator renders simple line or hidden.
+                             When expanded: button toggle with title and chevron --}}
+                        <div class="px-2 pt-2 pb-1" x-show="! railed">
+                            <button
+                                type="button"
+                                x-on:click="toggle()"
+                                x-bind:aria-expanded="open"
+                                class="text-base-content/70 hover:text-base-content flex w-full cursor-pointer items-center justify-between text-xs font-semibold tracking-wider uppercase transition-colors focus:outline-none"
+                            >
+                                <span class="truncate">{{ __($group['title']) }}</span>
+                                <span
+                                    class="inline-flex transition-transform duration-200"
+                                    x-bind:class="open ? 'rotate-0' : '-rotate-90'"
                                 >
-                                    @if ($icon)
-                                        <x-ts-icon :name="$icon" class="size-4 shrink-0" />
-                                    @endif
-                                    <span class="truncate">{{ __($item['label'] ?? '') }}</span>
-                                </div>
-                            @else
-                                <x-ts-side-bar.item
-                                    :text="__($item['label'] ?? '')"
-                                    :route="$url"
-                                    :icon="$icon"
-                                    :current="$active"
-                                    class="text-base-content/80 hover:text-base-content"
-                                />
+                                    <x-ts-icon name="chevron-down" class="size-3.5" />
+                                </span>
+                            </button>
+                        </div>
+                        <div x-show="railed" x-cloak>
+                            <x-ts-side-bar.separator />
+                        </div>
+                    @endif
+
+                    <div x-show="open || railed" x-collapse class="space-y-1">
+                        @foreach ($groupItems as $item)
+                            @php
+                                $itemRoles = $item['roles'] ?? $group['roles'] ?? [];
+                                $disabled = $item['disabled'] ?? false;
+                                $active = ! $disabled && request()->routeIs($item['route'] ?? '');
+                                $url = '#';
+                                if (! $disabled && ! empty($item['route'])) {
+                                    try {
+                                        if (\Illuminate\Support\Facades\Route::has($item['route'])) {
+                                            $url = route($item['route']);
+                                        }
+                                    } catch (\Throwable) {
+                                        $url = '#';
+                                    }
+                                }
+                                $rawIcon = $item['icon'] ?? null;
+                                $icon = $rawIcon ? (str_starts_with($rawIcon, 'o-') ? substr($rawIcon, 2) : (str_starts_with($rawIcon, 's-') ? substr($rawIcon, 2) : $rawIcon)) : null;
+                            @endphp
+                            @if (empty($itemRoles) || auth()->user()->hasRole($itemRoles))
+                                @if ($disabled)
+                                    <div
+                                        class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm opacity-40"
+                                        aria-disabled="true"
+                                    >
+                                        @if ($icon)
+                                            <x-ts-icon :name="$icon" class="size-4 shrink-0" />
+                                        @endif
+                                        <span class="truncate">{{ __($item['label'] ?? '') }}</span>
+                                    </div>
+                                @else
+                                    <x-ts-side-bar.item
+                                        :text="__($item['label'] ?? '')"
+                                        :route="$url"
+                                        :icon="$icon"
+                                        :current="$active"
+                                        class="text-base-content/80 hover:text-base-content"
+                                    />
+                                @endif
                             @endif
-                        @endif
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             @endif
         @endforeach

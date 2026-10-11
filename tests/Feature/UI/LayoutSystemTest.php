@@ -264,6 +264,13 @@ describe('8XMYS: Layout and UI System', function (): void {
         expect(config('menu.groups'))->toHaveKey('dashboard');
     });
 
+    test('8XMYS-FR-UI-035: sidebar categories are collapsible with keyboard and aria-expanded', function (): void {
+        $sidebar = File::get(resource_path('views/ui/layouts/sidebar.blade.php'));
+        expect($sidebar)->toContain('x-bind:aria-expanded="open"')
+            ->and($sidebar)->toContain('x-collapse')
+            ->and($sidebar)->toContain('localStorage');
+    });
+
     test('8XMYS-UC-UI-004: developer renders record management page', function (): void {
         expect(File::exists(resource_path('views/ui/components/record-manager.blade.php')))->toBeTrue();
     });
