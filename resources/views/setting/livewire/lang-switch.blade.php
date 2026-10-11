@@ -11,7 +11,7 @@
         aria-haspopup="menu"
         aria-label="{{ __('common.language.switch') }}"
     >
-        <span class="text-sm leading-none" aria-hidden="true">{{ $locale === 'id' ? '🇮🇩' : '🇬🇧' }}</span>
+        <span class="text-sm leading-none" aria-hidden="true">{{ $currentFlag }}</span>
         <span aria-hidden="true">{{ strtoupper($locale) }}</span>
     </button>
 
@@ -22,25 +22,17 @@
         role="menu"
         class="dark:border-dark-700 dark:bg-dark-800 absolute top-full right-0 z-50 mt-1 min-w-40 overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg"
     >
-        <button
-            type="button"
-            role="menuitem"
-            wire:click="changeLocale('id')"
-            x-on:click="open = false"
-            class="dark:text-dark-200 dark:hover:bg-dark-700 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none"
-        >
-            <span class="text-base leading-none" aria-hidden="true">🇮🇩</span>
-            <span>{{ __('common.language.indonesian') }}</span>
-        </button>
-        <button
-            type="button"
-            role="menuitem"
-            wire:click="changeLocale('en')"
-            x-on:click="open = false"
-            class="dark:text-dark-200 dark:hover:bg-dark-700 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none"
-        >
-            <span class="text-base leading-none" aria-hidden="true">🇬🇧</span>
-            <span>{{ __('common.language.english') }}</span>
-        </button>
+        @foreach ($availableLocales as $code => $item)
+            <button
+                type="button"
+                role="menuitem"
+                wire:click="changeLocale('{{ $code }}')"
+                x-on:click="open = false"
+                class="dark:text-dark-200 dark:hover:bg-dark-700 flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none"
+            >
+                <span class="text-base leading-none" aria-hidden="true">{{ $item['flag'] }}</span>
+                <span>{{ $item['label'] }}</span>
+            </button>
+        @endforeach
     </div>
 </div>

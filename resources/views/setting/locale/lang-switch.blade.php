@@ -5,10 +5,14 @@
 
 @php
     $current = app()->getLocale();
-    $locales = [
-        'en' => ['label' => __('common.language.english'), 'short' => 'EN', 'flag' => '🇬🇧'],
-        'id' => ['label' => __('common.language.indonesian'), 'short' => 'ID', 'flag' => '🇮🇩'],
-    ];
+    $locales = [];
+    foreach (\App\Modules\Setting\Domain\Locale\Support\Locale::all() as $code => $meta) {
+        $locales[$code] = [
+            'label' => \App\Modules\Setting\Domain\Locale\Support\Locale::label((string) $code),
+            'short' => strtoupper((string) $code),
+            'flag' => \App\Modules\Setting\Domain\Locale\Support\Locale::flag((string) $code),
+        ];
+    }
     $sizeClasses = match ($size) {
         'xs' => 'btn-xs text-xs',
         'sm' => 'btn-sm text-xs',

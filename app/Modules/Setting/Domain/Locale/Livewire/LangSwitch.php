@@ -40,8 +40,29 @@ class LangSwitch extends Component
         $this->redirect($targetUrl, navigate: false);
     }
 
+    /**
+     * @return array<string, array{code: string, label: string, short: string, flag: string}>
+     */
+    public function getAvailableLocalesProperty(): array
+    {
+        $locales = [];
+        foreach (Locale::all() as $code => $meta) {
+            $locales[$code] = [
+                'code' => (string) $code,
+                'label' => Locale::label((string) $code),
+                'short' => strtoupper((string) $code),
+                'flag' => Locale::flag((string) $code),
+            ];
+        }
+
+        return $locales;
+    }
+
     public function render(): View
     {
-        return view('setting.livewire.lang-switch');
+        return view('setting.livewire.lang-switch', [
+            'availableLocales' => $this->availableLocales,
+            'currentFlag' => Locale::flag($this->locale),
+        ]);
     }
 }

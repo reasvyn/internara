@@ -48,4 +48,22 @@ describe('52O1I: LangSwitch livewire component', function (): void {
 
         expect(App::getLocale())->toBe('en');
     });
+
+    test('52O1I-FR-BRAND-016: renders dynamically added supported locales with flag emoji', function (): void {
+        config([
+            'app.supported_locales' => [
+                'ja' => ['name' => 'Japanese', 'native' => '日本語', 'flag' => '🇯🇵'],
+            ],
+        ]);
+
+        Livewire::test(LangSwitch::class)
+            ->assertSee('🇯🇵')
+            ->assertSee('日本語')
+            ->assertSeeHtml('wire:click="changeLocale(\'ja\')"')
+            ->call('changeLocale', 'ja')
+            ->assertSet('locale', 'ja')
+            ->assertDispatched('language-changed', locale: 'ja');
+
+        expect(App::getLocale())->toBe('ja');
+    });
 });
