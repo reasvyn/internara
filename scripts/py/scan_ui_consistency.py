@@ -54,7 +54,7 @@ RE_LABEL_FOR = re.compile(r"<label\s[^>]*\bfor\s*=", re.I)
 RE_ARIA_LABEL = re.compile(r"aria-label\s*=", re.I)
 RE_ICON_BUTTON = re.compile(r"<button[^>]*>\s*<svg[^>]*>.*?</svg>\s*</button>", re.I | re.S)
 RE_DUPLICATE_NAV = re.compile(r"<nav[^>]*>.*?</nav>", re.I | re.S)
-RE_CORE_COMPONENTS = re.compile(r"<x-core::(layouts|ui)\.")
+RE_CORE_COMPONENTS = re.compile(r"<x-(core|ui)::(layouts|ui)\.")
 
 
 def discover_core_components() -> list[str]:
@@ -168,9 +168,9 @@ def check_blade(path: Path) -> list[Finding]:
                         context={"tag": block[:120]},
                     ))
 
-    # UI-COMPONENT: raw <nav> without Core component — informational only, not mandatory.
+    # UI-COMPONENT: raw <nav> without UI/Core component — informational only, not mandatory.
     # Not every component must use Core; this is a suggestion for app-shell layouts only.
-    if "<nav" in content and "x-core::" not in content and "core/layouts" not in rel:
+    if "<nav" in content and "x-core::" not in content and "x-ui::" not in content and "core/layouts" not in rel and "ui/layouts" not in rel:
         # Only suggest for files that look like layout/shell (not generic content components)
         is_shell_candidate = any(k in rel for k in ["layouts", "app.blade", "base.blade"]) or "resources/views/layouts" in rel
         if not is_shell_candidate:

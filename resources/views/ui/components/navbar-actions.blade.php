@@ -33,12 +33,12 @@
         @endif
         {{-- User Dropdown --}}
         @if ($showUser)
-            <div class="dark:bg-dark-700 h-6 w-px self-center bg-gray-200"></div>
+            <div class="bg-base-content/10 h-6 w-px self-center"></div>
             <x-ts-dropdown position="bottom-end">
                 <x-slot:action>
                     <button
                         type="button"
-                        class="focus:ring-primary dark:text-dark-200 dark:hover:bg-dark-700 flex items-center gap-2 rounded-lg p-1.5 text-gray-700 transition-colors hover:bg-gray-100 focus:ring-2 focus:outline-none"
+                        class="focus:ring-primary text-base-content hover:bg-base-200 flex items-center gap-2 rounded-lg p-1.5 transition-colors focus:ring-2 focus:outline-none"
                         x-on:click="show = ! show"
                         aria-label="{{ auth()->user()->name }}"
                     >
@@ -47,10 +47,10 @@
                     </button>
                 </x-slot:action>
 
-                <div class="dark:border-dark-700 dark:bg-dark-800 w-56 rounded-xl border border-gray-200 bg-white p-1.5 shadow-lg">
-                    <div class="dark:bg-dark-700/50 mb-1 rounded-lg bg-gray-50 px-3 py-3">
-                        <p class="dark:text-dark-100 text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</p>
-                        <p class="dark:text-dark-400 truncate text-xs text-gray-500">{{ auth()->user()->email }}</p>
+                <div class="border-base-content/10 bg-base-100 w-56 rounded-xl border p-1.5 shadow-lg">
+                    <div class="bg-base-200/50 mb-1 rounded-lg px-3 py-3">
+                        <p class="text-base-content text-sm font-semibold">{{ auth()->user()->name }}</p>
+                        <p class="text-base-content/60 truncate text-xs">{{ auth()->user()->email }}</p>
                     </div>
 
                     <x-ts-dropdown.items

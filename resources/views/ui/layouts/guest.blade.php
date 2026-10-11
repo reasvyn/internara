@@ -1,8 +1,8 @@
 @props(['title' => null, 'header' => null, 'footer' => null])
 
 <x-ui::layouts.base :$title>
-    <div class="dark:bg-dark-900 flex min-h-screen flex-col bg-gray-50">
-        <header class="dark:border-dark-700 dark:bg-dark-800/80 sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
+    <div class="bg-base-200/50 flex min-h-screen flex-col">
+        <header class="border-base-content/10 bg-base-100/80 sticky top-0 z-50 border-b backdrop-blur-sm">
             <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="flex h-16 items-center justify-between">
                     <a wire:navigate href="/" class="flex items-center gap-3">
@@ -21,7 +21,7 @@
 
         <main id="main-content" class="flex flex-1 flex-col">{{ $slot }}</main>
 
-        <footer class="dark:border-dark-700 mt-auto border-t border-gray-200 py-8">
+        <footer class="border-base-content/10 mt-auto border-t py-8">
             <div class="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                 @isset($footer)
                     {{ $footer }}

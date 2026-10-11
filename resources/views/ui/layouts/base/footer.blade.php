@@ -8,7 +8,7 @@
 <footer
     {{
         $attributes->merge([
-            'class' => 'mt-auto border-t bg-white border-gray-200 dark:bg-dark-800 dark:border-dark-700',
+            'class' => 'mt-auto border-t bg-base-100 border-base-content/10',
         ])
     }}
     role="contentinfo"
@@ -33,7 +33,7 @@
                 @if ($links)
                     <nav
                         aria-label="{{ __('common.footer_navigation') }}"
-                        class="dark:text-dark-400 flex flex-wrap items-center gap-4 text-xs text-gray-500"
+                        class="text-base-content/60 flex flex-wrap items-center gap-4 text-xs"
                     >
                         @foreach ($links as $link)
                             <a
@@ -51,7 +51,7 @@
 
             {{-- Right: credit --}}
             @if ($showCredit)
-                <div class="dark:text-dark-400 flex w-full items-center justify-start gap-3 text-xs text-gray-400 sm:w-auto sm:justify-end">
+                <div class="text-base-content/50 flex w-full items-center justify-start gap-3 text-xs sm:w-auto sm:justify-end">
                     <x-ui::components.credit
                         :show-version="app()->environment('local')"
                         class="w-full justify-start sm:w-auto sm:justify-end"

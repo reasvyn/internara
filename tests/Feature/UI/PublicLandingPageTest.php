@@ -61,7 +61,7 @@ describe('K8HP1: public landing page lifecycle', function (): void {
     test('K8HP1-FR-LAND-008: base shell provides locale and theme signals', function (): void {
         $response = $this->get(route('home'));
         $response->assertOk()
-            ->assertSee('lang="en"', false);
+            ->assertSee('lang="'.str_replace('_', '-', app()->getLocale()).'"', false);
     });
 
     test('K8HP1-FR-LAND-009: hero section renders branded gradient backdrop with hidden decorative blobs', function (): void {

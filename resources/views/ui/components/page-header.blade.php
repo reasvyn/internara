@@ -9,7 +9,7 @@
         <div class="min-w-0">
             <h1 class="text-2xl font-black tracking-tight">{{ $title }}</h1>
             @if ($description)
-                <p class="dark:text-dark-400 mt-1 text-sm text-gray-500">{{ $description }}</p>
+                <p class="text-base-content/60 mt-1 text-sm">{{ $description }}</p>
             @endif
         </div>
         @if ($actions)

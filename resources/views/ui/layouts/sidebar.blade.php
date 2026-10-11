@@ -24,7 +24,7 @@
 >
     <x-slot:brand>
         @if ($brand)
-            <div class="dark:border-dark-700 flex h-16 shrink-0 items-center gap-3 border-b border-gray-200 px-6">
+            <div class="border-base-content/10 flex h-16 shrink-0 items-center gap-3 border-b px-6">
                 <a class="flex min-w-0 items-center gap-3" wire:navigate href="{{ route('dashboard') }}">
                     <x-ui::components.brand size="md" :with-tagline="false" :invert="false" />
                 </a>
@@ -34,7 +34,7 @@
 
     @if ($collapsible)
         <x-slot:brand-collapsed>
-            <div class="dark:border-dark-700 flex h-16 shrink-0 items-center justify-center border-b border-gray-200 px-2">
+            <div class="border-base-content/10 flex h-16 shrink-0 items-center justify-center border-b px-2">
                 <a wire:navigate href="{{ route('dashboard') }}" aria-label="{{ brand('name') }}">
                     <x-ui::components.logo size="7" />
                 </a>
@@ -47,10 +47,7 @@
             @if (auth()->user()->hasRole($group['roles'] ?? []))
                 <div class="space-y-1">
                     @if (! empty($group['title']))
-                        <x-ts-side-bar.separator
-                            :text="__($group['title'])"
-                            class="dark:text-dark-100 font-semibold text-gray-900"
-                        />
+                        <x-ts-side-bar.separator :text="__($group['title'])" class="text-base-content font-semibold" />
                     @endif
                     @foreach ($group['items'] ?? [] as $item)
                         @php
@@ -87,7 +84,7 @@
                                     :route="$url"
                                     :icon="$icon"
                                     :current="$active"
-                                    class="dark:text-dark-200 text-gray-700 hover:text-gray-900 dark:hover:text-white"
+                                    class="text-base-content/80 hover:text-base-content"
                                 />
                             @endif
                         @endif
@@ -100,7 +97,7 @@
     {{ $slot ?? '' }}
 
     <x-slot:footer>
-        <div class="dark:border-dark-700 space-y-3 border-t border-gray-200 p-3">
+        <div class="border-base-content/10 space-y-3 border-t p-3">
             {{-- Mobile-only: theme + lang --}}
             <div class="flex items-center justify-between gap-2 md:hidden">
                 <x-setting::locale.theme-switch size="sm" />
@@ -116,7 +113,7 @@
                     type="button"
                     x-on:click="$store['tsui.side-bar'].toggle()"
                     x-bind:aria-expanded="! $store['tsui.side-bar'].collapsed"
-                    class="dark:text-dark-400 dark:hover:bg-dark-700 dark:hover:text-dark-200 hidden w-full items-center rounded-lg px-2 py-1.5 text-xs text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 md:flex"
+                    class="text-base-content/60 hover:bg-base-200 hover:text-base-content hidden w-full items-center rounded-lg px-2 py-1.5 text-xs transition-colors md:flex"
                     x-bind:class="$store['tsui.side-bar'].collapsed ? 'justify-center' : 'justify-between'"
                     aria-label="{{ __('common.collapse') }}"
                 >
