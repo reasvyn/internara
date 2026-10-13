@@ -203,7 +203,7 @@ ssh your-vps-user@your-vps 'cd $HOME/app \
 ```
 
 `deploy.sh` reports success only after `HEALTH_URL` responds 200 within 60s. The automated hotfix workflow
-runs syntax checks, formatting checks, deployment, health verification, auto-rollback, and staging sync.
+runs syntax checks, formatting checks, deployment, health verification, and auto-rollback.
 Run the local quality gates first — Pint, the targeted Pest tests, and the arch scanners. Full command
 walkthrough and caveats:
 [Deployment](infra/deployment.md#hotfix-branch--automated-fast-track-deploy), [CI/CD](infra/ci-cd.md#hotfix-branch--automated-fast-track-deploy).

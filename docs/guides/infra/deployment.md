@@ -475,24 +475,24 @@ curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # asset
 
 ### Continuous deployment (tag-driven release pipeline)
 
-Pushing a SemVer tag (`v*.*.*`) triggers `.github/workflows/release.yml` — a single tiered CI/CD
-orchestrator following a three-tier promotion lifecycle (`dev` > `pre-release` > `release`). The stage
-is derived from the tag suffix:
+Pushing a SemVer tag (`v*.*.*`) triggers `.github/workflows/release.yml` — a CI/CD orchestrator
+following a two-tier release lifecycle: `development` (`vX.Y.Z-dev.N`) and `production` (`vX.Y.Z`).
+Tags with `alpha`, `beta`, or `rc` suffixes indicate testing versions that are not yet fully verified
+and run QA checks on CI without deploying:
 
 - `vX.Y.Z-dev.<N>` → **development**: Pint + frontend build (CI only)
-- `vX.Y.Z-alpha.<N>` → **pre-release (alpha)**: Pint + Pest + frontend build → deploy to staging VPS (`https://staging.internara.web.id`)
-- `vX.Y.Z-beta.<N>` → **pre-release (beta)**: Pint + Pest suite with coverage gate + composer audit → deploy to staging VPS (`https://staging.internara.web.id`)
-- `vX.Y.Z-rc.<N>` → **pre-release (staging/RC)**: Pint + Pest + architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test + release notes preview → deploy to staging VPS (`https://staging.internara.web.id`)
+- `vX.Y.Z-alpha.<N>` → **testing (alpha)**: Pint + Pest + frontend build (CI milestone only)
+- `vX.Y.Z-beta.<N>` → **testing (beta)**: Pint + Pest suite with coverage gate + composer audit (CI milestone only)
+- `vX.Y.Z-rc.<N>` → **testing (RC)**: Pint + Pest + architecture guards (`scan_violations`/`scan_security`/`scan_conventions`) + smoke test + release notes preview (CI milestone only)
 - `vX.Y.Z` (final) → **release (production)**: all of the above + release notes artifact, then deploy to production VPS (`https://internara.web.id`)
 
 `deploy.sh` builds from the checkout it runs in (the deploy host must be on the tag the workflow
 checked out), resolves environment variables via `--env-file .env.production` (or `.env`), runs
 `docker compose up -d --remove-orphans`, prunes dangling images, and gates success
-on a 60s health check against `HEALTH_URL` (`https://staging.internara.web.id` for pre-release,
-`https://internara.web.id` for production).
+on a 60s health check against `HEALTH_URL` (`https://internara.web.id` for production).
 
-Only the workflow file and the credentials-free deploy script are committed here; production and
-staging secrets live in GitHub Actions secrets, while host runtime configs live in uncommitted `.env.production` files on the VPS.
+Only the workflow file and the credentials-free deploy script are committed here; production
+secrets live in GitHub Actions secrets, while host runtime configs live in uncommitted `.env.production` files on the VPS.
 
 ### Hotfix branch — automated fast-track deploy
 
@@ -500,7 +500,7 @@ The tag-driven pipeline enforces full QA before production, which is right for o
 takes several minutes when a critical bug needs to reach the live site immediately. For that case Internara
 provides an automated **`hotfix` workflow** (`.github/workflows/hotfix.yaml`) that fast-tracks the deploy
 directly to the production VPS — with automated syntax checks, code formatting, health-check verification,
-auto-rollback, and automatic synchronization into the `staging` branch.
+and auto-rollback.
 
 > **When to use `hotfix`:** a critical fix that must reach production *now* (e.g. a live-site outage or a
 > regression blocking real users). **When NOT to use it:** for features, refactors, or anything that
@@ -518,7 +518,6 @@ The flow:
 2. **GitHub Actions executes automatically:**
    - **`lint`**: Validates PHP syntax, Pint formatting, and Prettier assets.
    - **`deploy`**: Deploys to the production VPS via SSH with `VERSION_TAG=hotfix` and health check.
-   - **`sync-staging`**: Merges `hotfix` into `staging` and pushes to `origin/staging` to prevent branch drift.
 
 3. **Verify:**
    `deploy.sh` reports success once `HEALTH_URL` responds 200 within 60s. Auto-rollback kicks in if the health check fails.

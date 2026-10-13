@@ -25,9 +25,9 @@ This document is reference-oriented. For installation and setup procedures, see:
 ## Pipeline Overview
 
 The whole pipeline is triggered by pushing a SemVer tag (`v*.*.*`) to GitHub. The stage is derived
-from the tag suffix, following a three-tier promotion lifecycle: `dev` (development) > `pre-release`
-(`alpha`, `beta`, `rc`, deployed to staging VPS `staging.internara.web.id`) > `release` (production,
-deployed to `internara.web.id`).
+from the tag suffix, following a two-tier release lifecycle: `development` (`vX.Y.Z-dev.N`) and
+`production` (`vX.Y.Z`). Tags with `alpha`, `beta`, or `rc` suffixes indicate testing versions that
+are not yet fully verified and run QA checks on CI without deploying to any host.
 
 ```mermaid
 flowchart LR
@@ -37,11 +37,7 @@ flowchart LR
     D -->|vX.Y.Z-beta.N| BETA[beta: validate + lint + tests + build + audit]
     D -->|vX.Y.Z-rc.N| RC[rc: validate + lint + tests + guards + build + smoke + notes]
     D -->|vX.Y.Z| PROD[production: validate + all QA gates]
-    ALPHA -->|pass| STAGING_DEP[Deploy Staging VPS<br/>staging.internara.web.id]
-    BETA -->|pass| STAGING_DEP
-    RC -->|pass| STAGING_DEP
     PROD -->|pass| PROD_DEP[Deploy Production VPS<br/>internara.web.id]
-    STAGING_DEP -->|fail| STAGING_ROLL[Auto-rollback]
     PROD_DEP -->|fail| PROD_ROLL[Auto-rollback]
 ```
 
@@ -50,14 +46,14 @@ flowchart LR
 | Pushed tag | Stage | Jobs run on GitHub Actions | Deploy Target |
 | ------------------------ | ------------ | ------------------------------------------------------------ | --------------------------------------------- |
 | `vX.Y.Z-dev.<N>` | Development (`dev`) | `validate` + `lint.sh` (Pint) + frontend build | None (CI only) |
-| `vX.Y.Z-alpha.<N>` | Pre-release (`alpha`) | + `test.sh` (Pest) + frontend build | Staging VPS (`staging.internara.web.id`) |
-| `vX.Y.Z-beta.<N>` | Pre-release (`beta`) | + `test.sh` (Pest, coverage gate) + `composer audit` | Staging VPS (`staging.internara.web.id`) |
-| `vX.Y.Z-rc.<N>` | Pre-release (`staging`) | + `guards.sh` (arch + security + conventions) + `smoke.sh` + release notes | Staging VPS (`staging.internara.web.id`) |
+| `vX.Y.Z-alpha.<N>` | Testing (`alpha`) | + `test.sh` (Pest) + frontend build | None (CI only milestone) |
+| `vX.Y.Z-beta.<N>` | Testing (`beta`) | + `test.sh` (Pest, coverage gate) + `composer audit` | None (CI only milestone) |
+| `vX.Y.Z-rc.<N>` | Testing (`rc`) | + `guards.sh` (arch + security + conventions) + `smoke.sh` + release notes | None (CI only milestone) |
 | `vX.Y.Z` (final) | Release (`production`) | all of the above + release notes artifact | Production VPS (`internara.web.id`) |
 
-Releases are promoted upward: `development → pre-release (alpha/beta/rc) → release (production)`. Every QA stage runs in
-GitHub Actions (free, no VPS load). Pre-release stages deploy to `https://staging.internara.web.id` using Docker Compose,
-and a final tag deploys to production only when all production QA gates pass.
+Release stages operate in two tiers: `development (vX.Y.Z-dev.N) → release (vX.Y.Z)`. The `alpha`,
+`beta`, and `rc` tags mark testing stages for code not yet fully verified. Only a final stable tag
+deploys to production once all production QA gates pass.
 
 ### Hotfix branch — automated fast-track deploy
 
@@ -114,22 +110,19 @@ full procedure.
 
 ## GitHub Actions workflow (`.github/workflows/release.yml`)
 
-Single workflow, nine jobs:
+Single workflow, eight jobs:
 
 1. **`stage`** — derives stage & version from the pushed tag (regex on the suffix: `dev` → dev;
-   `alpha`/`beta`/`rc` → pre-release; no suffix → production).
+   `alpha`/`beta`/`rc` → testing tag; no suffix → production).
 2. **`validate`** — ensures `composer.json` version matches the tag, validates PHP syntax,
    `composer.json` schema, and runs npm audit. Runs for all stages (fail-fast).
 3. **`dev`** — runs only when stage == `dev`: `lint.sh` + `npm run build` (with dependency caching).
 4. **`alpha`** — stage == `alpha`: `lint.sh` + `test.sh` + `npm run build`.
 5. **`beta`** — stage == `beta`: `lint.sh` + `test.sh` (with coverage) + build + `composer audit`.
-6. **`staging`** — stage == `staging` (for `-rc.*` tags): `lint.sh` + `test.sh` + `guards.sh` + build +
-   `smoke.sh` + `composer audit` + release notes generation.
-7. **`production`** — stage == `production`: all QA gates (same as staging) + release notes artifact upload.
-8. **`deploy-prerelease`** — `needs: [stage, validate, alpha, beta, staging]`, runs when any pre-release QA stage
-   succeeds: SSHs to staging VPS (`staging.internara.web.id`), creates a backup, checkouts the tag, runs
-   `HEALTH_URL="https://staging.internara.web.id" deploy.sh` with Docker Compose. Includes automatic rollback on failure.
-9. **`deploy`** — `needs: [stage, validate, production]`, runs only when production QA succeeded: SSHs to
+6. **`rc`** — stage == `rc`: `lint.sh` + `test.sh` + `guards.sh` + build +
+   `smoke.sh` + `composer audit` + release notes preview.
+7. **`production`** — stage == `production`: all QA gates + release notes artifact upload.
+8. **`deploy`** — `needs: [stage, validate, production]`, runs only when production QA succeeded: SSHs to
    the production VPS (`VPS_HOST`/`VPS_USER`/`VPS_SSH_KEY`), creates a backup, `git checkout $VERSION_TAG` +
    `git reset --hard $VERSION_TAG`, then `HEALTH_URL="https://internara.web.id" VERSION_TAG=$VERSION_TAG bash .github/scripts/deploy.sh`.
    Includes automatic rollback on failure.

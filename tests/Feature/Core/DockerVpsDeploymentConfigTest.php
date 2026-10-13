@@ -75,22 +75,25 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
             ->and($compose)->toContain(':ro');
     });
 
-    test('W8K2P-FR-DOCK-014 W8K2P-FR-DOCK-016: system defines three-tier deployment lifecycle with production release', function (): void {
+    test('W8K2P-FR-DOCK-014 W8K2P-FR-DOCK-016: system defines two-tier deployment lifecycle with production release', function (): void {
         $workflow = File::get(base_path('.github/workflows/release.yml'));
         expect($workflow)->toContain('dev')
-            ->and($workflow)->toContain('production');
+            ->and($workflow)->toContain('production')
+            ->and($workflow)->not->toContain('deploy-prerelease');
     });
 
-    test('W8K2P-FR-DOCK-015 W8K2P-UC-DOCK-003 W8K2P-NFR-DOCK-004 W8K2P-DD-DOCK-003: pre-release deploys to staging.internara.web.id via docker', function (): void {
+    test('W8K2P-FR-DOCK-015 W8K2P-UC-DOCK-003 W8K2P-NFR-DOCK-004 W8K2P-DD-DOCK-003: pre-release tags alpha beta rc serve as non-deployed testing milestones', function (): void {
         $cache = json_decode(file_get_contents(base_path('scripts/py/outputs/.spec_issues_cache.json')), true);
         $issue = collect($cache)->firstWhere('number', 507);
         $spec = $issue['body'] ?? '';
 
-        expect($spec)->toContain('staging.internara.web.id')
-            ->and($spec)->toContain('FR-DOCK-015');
+        expect($spec)->toContain('FR-DOCK-015');
 
-        $compose = File::get(base_path('docker-compose.yml'));
-        expect($compose)->toContain('SESSION_SECURE_COOKIE');
+        $workflow = File::get(base_path('.github/workflows/release.yml'));
+        expect($workflow)->toContain('alpha')
+            ->and($workflow)->toContain('beta')
+            ->and($workflow)->toContain('rc')
+            ->and($workflow)->not->toContain('staging.internara.web.id');
     });
 
     test('W8K2P-FR-DOCK-017 W8K2P-UC-DOCK-004: config/deployment.php declares vps-docker preset', function (): void {
