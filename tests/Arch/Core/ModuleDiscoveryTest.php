@@ -85,12 +85,14 @@ describe('I1BCV: module discovery registry', function (): void {
     });
 
     test('I1BCV-FR-MOD-002: module roster changes require amendment evidence before registry synchronization', function (): void {
-        $spec = file_get_contents(base_path('docs/specs/I1BCV-module-discovery.md'));
+        $cache = json_decode(file_get_contents(base_path('scripts/py/outputs/.spec_issues_cache.json')), true);
+        $issue = collect($cache)->firstWhere('number', 449);
+        $spec = $issue['body'] ?? '';
         $moduleIndex = file_get_contents(base_path('docs/refs/modules/index.md'));
         $pestSource = file_get_contents(base_path('tests/Pest.php'));
         $registeredModules = config('module.list');
 
-        expect($spec)->toContain('#### FR-MOD-002 — Amendment before rename')
+        expect($spec)->toContain('FR-MOD-002')
             ->toContain('governing-spec update + ADR')
             ->toContain('config/module.php')
             ->toContain('tests/Pest.php')

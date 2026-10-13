@@ -82,7 +82,10 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
     });
 
     test('W8K2P-FR-DOCK-015 W8K2P-UC-DOCK-003 W8K2P-NFR-DOCK-004 W8K2P-DD-DOCK-003: pre-release deploys to staging.internara.web.id via docker', function (): void {
-        $spec = File::get(base_path('docs/specs/W8K2P-docker-vps-deployment.md'));
+        $cache = json_decode(file_get_contents(base_path('scripts/py/outputs/.spec_issues_cache.json')), true);
+        $issue = collect($cache)->firstWhere('number', 507);
+        $spec = $issue['body'] ?? '';
+
         expect($spec)->toContain('staging.internara.web.id')
             ->and($spec)->toContain('FR-DOCK-015');
 

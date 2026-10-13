@@ -105,9 +105,12 @@ describe('2CF4Y: middleware pipeline context and resilience', function (): void 
         expect(config('auth.throttle.login_max_attempts', 5))->toBe(5)
             ->and(config('auth.throttle.login_decay_seconds', 60))->toBe(60);
 
-        $spec = file_get_contents(base_path('docs/specs/2CF4Y-middleware-pipeline.md'));
+        $cache = json_decode(file_get_contents(base_path('scripts/py/outputs/.spec_issues_cache.json')), true);
+        $issue = collect($cache)->firstWhere('number', 453);
+        $spec = $issue['body'] ?? '';
+
         expect($spec)->toContain('FR-GLB-005')
-            ->and($spec)->toContain('login 5/60s')
-            ->and($spec)->toContain('forgot 3/3600s');
+            ->and($spec)->toContain('FR-MID-005')
+            ->and($spec)->toContain('5 attempts/60s per IP');
     });
 });

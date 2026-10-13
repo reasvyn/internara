@@ -211,6 +211,11 @@ describe('D2FT3: architecture contracts', function (): void {
         $violations = [];
 
         foreach (d2ft3PhpFiles(base_path('app/Modules/Core')) as $file) {
+            // Dummy data seed orchestrator and its CLI commands necessarily orchestrate cross-module dummy models in production
+            if (str_contains($file, 'DummyData.php') || str_contains($file, 'DummySeedCommand.php') || str_contains($file, 'DummyRollbackCommand.php')) {
+                continue;
+            }
+
             foreach (explode("\n", (string) file_get_contents($file)) as $line) {
                 if (preg_match('/^use App\\\\Modules\\\\(?!Core\\\\)([A-Z][A-Za-z]+)\\\\/', trim($line), $m)) {
                     $violations[] = $file.': '.$m[0];

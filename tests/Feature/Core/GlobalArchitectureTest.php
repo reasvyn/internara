@@ -161,8 +161,8 @@ describe('QLHDO: Project Architecture & Global Requirements', function (): void 
         expect(config('app.locale'))->toBeIn(['id', 'en']);
     });
 
-    test('QLHDO-DD-ARCH-004: spec-first testable requirements in docs/specs', function (): void {
-        expect(File::isDirectory(base_path('docs/specs')))->toBeTrue();
+    test('QLHDO-DD-ARCH-004: spec-first testable requirements via GitHub spec issues cache', function (): void {
+        expect(File::exists(base_path('scripts/py/outputs/.spec_issues_cache.json')))->toBeTrue();
     });
 
     test('QLHDO-DD-ARCH-005: clean schema without tenant overhead', function (): void {

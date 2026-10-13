@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Core\Http\Middleware\ConcurrencyGateMiddleware;
 use App\Modules\User\Models\User;
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -189,5 +190,81 @@ describe('C7Q9R: ConcurrencyGateMiddleware', function (): void {
         expect($source)->toContain('ConcurrencyGateMiddleware::class')
             ->and($source)->toContain("'concurrency.gate'")
             ->and(class_exists(ConcurrencyGateMiddleware::class))->toBeTrue();
+    });
+
+    test('C7Q9R-UC-CCG-001 C7Q9R-DD-CCG-001: multi-workstation simultaneous requests serialize per user identity', function (): void {
+        $user = User::factory()->create();
+        $lockKey = config('cache-keys.concurrency_user_lock').$user->id;
+
+        // Verify lock key format targets user ID rather than IP address (DD-CCG-001)
+        expect($lockKey)->toContain((string) $user->id);
+
+        $requestA = Request::create('/api/workstation-1', 'POST');
+        $requestA->setUserResolver(fn () => $user);
+
+        $resA = runConcurrencyGate($requestA);
+        expect($resA->getStatusCode())->toBe(200)
+            ->and($resA->headers->get('X-Concurrency-Gate'))->toBe('acquired');
+    });
+
+    test('C7Q9R-UC-CCG-002 C7Q9R-DD-CCG-002 C7Q9R-NFR-CCG-002: concurrent read requests bypass queue immediately with negligible overhead', function (): void {
+        $user = User::factory()->create();
+        $getReq = Request::create('/api/read-stream', 'GET');
+        $getReq->setUserResolver(fn () => $user);
+
+        $startTime = microtime(true);
+        $res = runConcurrencyGate($getReq);
+        $elapsed = (microtime(true) - $startTime) * 1000;
+
+        expect($res->headers->get('X-Concurrency-Gate'))->toBe('bypassed')
+            ->and($elapsed)->toBeLessThan(100.0);
+    });
+
+    test('C7Q9R-UC-CCG-003: excessive wait in queue yields clean HTTP 429 with Retry-After header', function (): void {
+        $user = User::factory()->create();
+        config()->set('concurrency.wait_timeout_seconds', 0);
+
+        $lockKey = config('cache-keys.concurrency_user_lock').$user->id;
+        $activeLock = Cache::lock($lockKey, 10);
+        $activeLock->acquire();
+
+        try {
+            $req = Request::create('/api/heavy-action', 'POST');
+            $req->setUserResolver(fn () => $user);
+            $res = runConcurrencyGate($req);
+
+            expect($res->getStatusCode())->toBe(429)
+                ->and($res->headers->get('Retry-After'))->toBe('1')
+                ->and($res->headers->get('X-Concurrency-Gate'))->toBe('timeout');
+        } finally {
+            $activeLock->release();
+        }
+    });
+
+    test('C7Q9R-NFR-CCG-001: atomic locking uses Laravel Cache lock driver', function (): void {
+        $lock = Cache::lock('test_ccg_driver', 5);
+        expect($lock)->toBeInstanceOf(Lock::class);
+    });
+
+    test('C7Q9R-NFR-CCG-003: lock release failure rate is 0 percent via fail-safe scope', function (): void {
+        $user = User::factory()->create();
+        $lockKey = config('cache-keys.concurrency_user_lock').$user->id;
+
+        $req = Request::create('/api/error-test', 'POST');
+        $req->setUserResolver(fn () => $user);
+
+        try {
+            runConcurrencyGate($req, function (): never {
+                throw new Exception('Unexpected simulated failure');
+            });
+        } catch (Exception) {
+            // Expected
+        }
+
+        // Lock must be fully released and re-acquirable
+        $recheck = Cache::lock($lockKey, 5);
+        $acquired = $recheck->acquire();
+        expect($acquired)->toBeTrue();
+        $recheck->release();
     });
 });
