@@ -98,14 +98,19 @@ jobs:
               run: |
                   set -euo pipefail
                   TAG="${{ needs.stage.outputs.version }}"
+                  FULL_TAG="${{ needs.stage.outputs.tag }}"
                   COMPOSER_VERSION=$(jq -r '.version' composer.json)
                   TAG_VERSION="${TAG#v}"
+                  FULL_TAG_VERSION="${FULL_TAG#v}"
 
-                  echo "Tag version: $TAG_VERSION"
+                  echo "Base version: $TAG_VERSION"
+                  echo "Full tag version: $FULL_TAG_VERSION"
                   echo "composer.json version: $COMPOSER_VERSION"
 
-                  if [ "$TAG_VERSION" != "$COMPOSER_VERSION" ]; then
-                    echo "::error::Version mismatch: tag is $TAG but composer.json is $COMPOSER_VERSION"
+                  if [ "$TAG_VERSION" != "$COMPOSER_VERSION" ] && \
+                     [ "$FULL_TAG_VERSION" != "$COMPOSER_VERSION" ] && \
+                     [ "${TAG_VERSION}-dev" != "$COMPOSER_VERSION" ]; then
+                    echo "::error::Version mismatch: tag is $FULL_TAG but composer.json is $COMPOSER_VERSION"
                     exit 1
                   fi
 

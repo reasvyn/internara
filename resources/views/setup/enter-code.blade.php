@@ -44,10 +44,7 @@
                         </p>
                     </div>
 
-                    <form
-                        method="POST"
-                        action="{{ route('setup') }}"
-                        class="space-y-6"
+                    <div
                         x-data="{
                             digits: [
                                 '{{ strtoupper(substr(old('setup_token', request('setup_token', '')), 0, 1)) }}',
@@ -69,11 +66,12 @@
                                 }
                             },
                             handleKeydown(index, event) {
-                                if (event.key === 'Backspace' && ! this.digits[index] && index > 0) {
+                                const k = event.key.toLowerCase();
+                                if (k === 'backspace' && ! this.digits[index] && index > 0) {
                                     this.$refs['digit' + (index - 1)].focus();
-                                } else if (event.key === 'ArrowLeft' && index > 0) {
+                                } else if (k === 'arrowleft' && index > 0) {
                                     this.$refs['digit' + (index - 1)].focus();
-                                } else if (event.key === 'ArrowRight' && index < 5) {
+                                } else if (k === 'arrowright' && index < 5) {
                                     this.$refs['digit' + (index + 1)].focus();
                                 }
                             },
@@ -93,57 +91,62 @@
                             }
                         }"
                     >
-                        @csrf
-                        <input type="hidden" name="setup_token" :value="fullToken" />
+                        <form method="POST" action="{{ route('setup') }}" class="space-y-6">
+                            @csrf
+                            <input type="hidden" name="setup_token" :value="fullToken" />
 
-                        <div class="space-y-3">
-                            <label class="text-base-content/80 block text-center text-xs font-semibold tracking-wider uppercase">
-                                {{ __('setup.code_entry.code_label') }} <span class="text-error">*</span>
-                            </label>
+                            <div class="space-y-3">
+                                <label class="text-base-content/80 block text-center text-xs font-semibold tracking-wider uppercase">
+                                    {{ __('setup.code_entry.code_label') }} <span class="text-error">*</span>
+                                </label>
 
-                            <div class="flex items-center justify-center gap-2 sm:gap-3" @paste="handlePaste($event)">
-                                @for ($i = 0; $i < 6; $i++)
-                                    <input
-                                        type="text"
-                                        maxlength="1"
-                                        inputmode="text"
-                                        autocomplete="off"
-                                        autocapitalize="characters"
-                                        spellcheck="false"
-                                        x-ref="digit{{ $i }}"
-                                        x-model="digits[{{ $i }}]"
-                                        @input="handleInput({{ $i }}, $event)"
-                                        @keydown="handleKeydown({{ $i }}, $event)"
-                                        @focus="$event.target.select()"
-                                        @if ($i === 0) autofocus @endif
-                                        aria-label="{{ __('setup.code_entry.code_label') }} {{ $i + 1 }}"
-                                        class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-11 rounded-xl border text-center font-mono text-xl font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-13 sm:text-2xl"
-                                    />
-                                @endfor
+                                <div
+                                    class="flex items-center justify-center gap-2 sm:gap-3"
+                                    @paste="handlePaste($event)"
+                                >
+                                    @for ($i = 0; $i < 6; $i++)
+                                        <input
+                                            type="text"
+                                            maxlength="1"
+                                            inputmode="text"
+                                            autocomplete="off"
+                                            autocapitalize="characters"
+                                            spellcheck="false"
+                                            x-ref="digit{{ $i }}"
+                                            x-model="digits[{{ $i }}]"
+                                            @input="handleInput({{ $i }}, $event)"
+                                            @keydown="handleKeydown({{ $i }}, $event)"
+                                            @focus="$event.target.select()"
+                                            @if ($i === 0) autofocus @endif
+                                            aria-label="{{ __('setup.code_entry.code_label') }} {{ $i + 1 }}"
+                                            class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-11 rounded-xl border text-center font-mono text-xl font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-13 sm:text-2xl"
+                                        />
+                                    @endfor
+                                </div>
                             </div>
-                        </div>
 
-                        <x-ts-button
-                            type="submit"
-                            :text="__('setup.code_entry.submit')"
-                            icon="arrow-right"
-                            position="right"
-                            class="w-full"
-                            color="primary"
-                        />
+                            <x-ts-button
+                                type="submit"
+                                :text="__('setup.code_entry.submit')"
+                                icon="arrow-right"
+                                position="right"
+                                class="w-full"
+                                color="primary"
+                            />
 
-                        @if ($error)
-                            <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
-                                <x-ts-icon name="x-circle" class="size-5 shrink-0" />
-                                <span>{{ $error }}</span>
-                            </div>
-                        @elseif ($errors->any())
-                            <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
-                                <x-ts-icon name="x-circle" class="size-5 shrink-0" />
-                                <span>{{ $errors->first() }}</span>
-                            </div>
-                        @endif
-                    </form>
+                            @if ($error)
+                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
+                                    <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                    <span>{{ $error }}</span>
+                                </div>
+                            @elseif ($errors->any())
+                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
+                                    <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                    <span>{{ $errors->first() }}</span>
+                                </div>
+                            @endif
+                        </form>
+                    </div>
 
                     <div class="border-base-content/10 bg-base-200/40 mt-8 rounded-xl border p-4 text-center">
                         <p class="text-base-content/60 text-xs leading-relaxed">{{ __('setup.code_entry.help') }}</p>

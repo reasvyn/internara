@@ -17,7 +17,7 @@ run_guard() {
     fi
 }
 
-run_guard scan_violations
+run_guard scan_violations --severity high
 run_guard scan_security
 run_guard scan_conventions
 

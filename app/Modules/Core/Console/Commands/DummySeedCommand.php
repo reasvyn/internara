@@ -28,7 +28,7 @@ class DummySeedCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(DummySeeder $seeder): int
     {
         if (! SetupEntity::get()->isInstalled()) {
             $this->error(__('dummy.not_installed'));
@@ -42,8 +42,6 @@ class DummySeedCommand extends Command
             return self::FAILURE;
         }
 
-        /** @var DummySeeder $seeder */
-        $seeder = app(DummySeeder::class);
         $seeder->setCommand($this);
         $seeder->run();
 
