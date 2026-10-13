@@ -17,11 +17,11 @@ conflict or the choice would change with history; contradictory history → repo
 > scope/size changes, an L-size split (see "session" below), one M-size pre-commit checkpoint, and
 > the final report.
 >
-> **Spec-first doctrine:** behavior changes need a requirement ID from a governing spec in
-> `docs/specs/`; if none exists, write the spec first — never fix-first. Exemption: mechanical
-> fixes (typos, formatting, lint, renamed symbols) skip the spec. If spec and code disagree, fix
-> code to spec; if the spec is demonstrably wrong, correct it (one-line `> Decision:` note) before
-> aligning code and tests.
+> **Spec-first doctrine:** behavior changes need a requirement ID from a governing spec issue
+> on GitHub (label: `spec`, #442–#509); if none exists, open the spec issue first — never fix-first.
+> Exemption: mechanical fixes (typos, formatting, lint, renamed symbols) skip the spec. If spec and
+> code disagree, fix code to spec; if the spec is demonstrably wrong, correct it via GitHub Issue
+> (one-line `> Decision:` note) before aligning code and tests.
 >
 > **Commit discipline:** commit at the end of **every completed scope** — do not wait to be asked.
 > A scope is one self-contained change (stage 5). Run the pre-commit baseline (§4) first, stage
@@ -40,7 +40,7 @@ conflict or the choice would change with history; contradictory history → repo
 | Coding conventions: PHP style, security, naming, perf, testing, i18n, theming | [`docs/conventions.md`](docs/conventions.md) | C1–C8, D1–D6 invariants, pre-commit & review checklists |
 | Pattern catalog (Action Triad, Entity/Model/DTO/Enum, Event, Cache, Logging, Livewire, Service, Support, Repository, Policy, UI/UX, Testing) | [`docs/guides/arch/index.md`](docs/guides/arch/index.md) | One link per pattern → deep-dive `*-pattern.md` |
 | Modular architecture deep-dive (SRP, base classes, contracts, naming, accessibility, localization) | [`docs/guides/arch/modular-pattern.md`](docs/guides/arch/modular-pattern.md) | §1–§23 pattern catalog |
-| Feature / module specs (67 + 1 meta; FR/NFR/UC per spec) | [`docs/specs/index.md`](docs/specs/index.md) | Specs grouped in 12 phases; spec template is `docs/templates/spec-template.md` |
+| Feature / module specs (68 specs; FR/NFR/UC per spec) | GitHub Issues (`label: spec`, #442–#509) | Specs tracked across 12 phases with native progress checklists; query via `gh issue list --label spec` or `scan_spec_tests.py` |
 | ADRs — why each decision was made | [`docs/adr/index.md`](docs/adr/index.md) | 16 ADRs in 5 groups |
 | Module conceptual + reference docs | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) | One conceptual + one reference per module |
 | Tooling — scanners, CLI flags, output schema, inventory | [`scripts/README.md`](scripts/README.md) | Full scanner reference; AGENTS.md keeps only the batch below (§5) |
@@ -90,7 +90,7 @@ list lives in `docs/conventions.md` and `docs/guides/arch/*-pattern.md`.
 | Config | `config/{module}.php` |
 | Routes | `routes/web/{module}.php` (subdomain → `{domain}.php`, no module prefix) |
 | Translations | `lang/{en,id}/{module}.php` and `lang/{en,id}/{domain}.php` (no subdirs) |
-| ADRs / Specs | `docs/adr/adr-{topic}.md` · `docs/specs/{ID}-{feature}.md` |
+| ADRs / Specs | `docs/adr/adr-{topic}.md` · GitHub Issues (label: `spec`, #442–#509) |
 
 A module's **primary domain** lives flat at `app/Modules/{Module}/` (`Module/Domain/Module` avoided);
 separate domains go under `Domain/{Domain}/`. Split/collapse rules: §1.6 of
@@ -148,7 +148,7 @@ Context files (factories, listeners, observers, configs, seeds, sibling docs) ar
 assertion in the change depends on their exact behavior — otherwise **grep first**. Exceeding the
 budget while hunting for "context" is a signal to **Split**, not to keep reading.
 
-**Classify before acting** — phase (`docs/specs/index.md`) and size (above) gate the verification
+**Classify before acting** — phase (GitHub Spec Issues) and size (above) gate the verification
 depth and checkpoint cadence. Classify in Stage 1; if already M/L, state it before reading further.
 
 **Checkpoint** (M) = show `git status` + `git diff --stat` + intended-files list before committing.
@@ -161,14 +161,38 @@ pre-commit baseline (§4), stage only intended files (never secrets), commit wit
 
 ---
 
-## 3. Phase Classification
+## 3. Phase Classification & Progress Tracking via GitHub Issues
 
-Phase → spec-ID → module mapping and status live in `docs/specs/index.md` (12 phases, Spec-zero
-through Maintenance). Locate the phase, then the spec ID, then the FR/NFR/UC IDs (each spec lists
-them in §5 FR, §6 NFR, §4 UC per `docs/templates/spec-template.md`).
+Feature specifications live as **GitHub Issues** (labeled `spec`, `feature`, `medium`, `P2`, numbers #442–#509)
+spanning 12 lifecycle phases (Spec-Zero through Maintenance). Each spec issue acts as the **live progress tracker**
+and authoritative specification for developers and AI agents.
 
-**Instruction ordering** when a message batches multiple instructions: follow the user's sequence,
-grouping same-area edits; reorder only when a dependency forces it. Never spend effort scoring.
+### 3.1 Progress Tracking Rules
+
+1. **Locate Before Implementing**:
+   - Query the governing spec issue by Spec ID or module:
+     ```bash
+     gh issue list --label spec --search "[{SPEC_ID}]"
+     python3 scripts/py/scan_spec_tests.py --module {Module}
+     ```
+   - Inspect requirement checklists (`- [ ]` / `- [x]`) in the issue body for User Stories (`UC-*`),
+     Functional Requirements (`FR-*`), Non-Functional Requirements (`NFR-*`), and Design Decisions (`DD-*`).
+
+2. **Update Progress Checklists**:
+   - When a requirement is implemented and verified by tests, update the task checkbox (`- [ ]` → `- [x]`)
+     in the GitHub Issue body using `gh issue edit {number} --body "..."` or GitHub UI.
+   - GitHub automatically updates the visual progress bar (e.g. `15 of 20 tasks`) on the issue and milestone dashboards.
+
+3. **Commit & PR Traceability**:
+   - Every commit and PR must trace to its Spec ID and requirement ID: `type(module): [SPEC_ID] implement REQ_ID (ref #ISSUE_NO)`.
+   - Never close a spec issue until 100% of its task checklists are completed (`[x]`) and verified by `scan_spec_tests.py`.
+
+4. **Offline & Scanner Cache**:
+   - Scanners (`scan_spec_tests.py`, `scan_project_summary.py`) read from cached issues in `scripts/py/outputs/.spec_issues_cache.json`.
+   - Run `python3 scripts/py/scan_spec_tests.py --refresh` to sync local cache with the latest GitHub Issue states.
+
+5. **Instruction Ordering**:
+   - When a message batches multiple instructions: follow the user's sequence, grouping same-area edits; reorder only when a dependency forces it. Never spend effort scoring.
 
 ---
 
@@ -408,7 +432,7 @@ Module roster, dependency graph, and module health: `docs/refs/modules/index.md`
 - `docs/conventions.md` — C1–C8, D1–D6 invariants, pre-commit & code-review checklists
 - `docs/guides/arch/index.md` — pattern catalog (one link per pattern)
 - `docs/guides/arch/modular-pattern.md` — modular architecture deep-dive (§1–§23)
-- `docs/specs/index.md` — 66 feature specs + 1 meta, grouped in 12 phases
+- GitHub Issues (`label: spec`) — 68 feature specs (#442–#509), grouped in 12 phases with live progress tracking
 - `docs/adr/index.md` — 16 ADRs across Foundation / Observability / Quality / Proxy / Strategy
 - `docs/philosophy.md` — 7 guiding principles + core values table
 - `docs/refs/modules/index.md` — module conceptual + reference doc index
