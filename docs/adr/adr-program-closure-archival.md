@@ -5,7 +5,7 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-08-16 |
-| Technical Story | [Internship Lifecycle Spec](../specs/7C5WM-internship-lifecycle.md) and [Action Pattern](../guides/arch/action-pattern.md) § Process Actions |
+| Technical Story | Internship lifecycle spec `[7C5WM]` (`gh issue list --label spec --search "[7C5WM]"`, #477) and [Action Pattern](../guides/arch/action-pattern.md) § Process Actions |
 
 ## Context and Problem Statement
 
@@ -93,6 +93,6 @@ expiry deletion is manual, database-level, documented but not automated.
 
 ## Links
 
-* [Internship Lifecycle Spec](../specs/7C5WM-internship-lifecycle.md) — lifecycle requirements
+* Internship lifecycle spec `[7C5WM]` (#477, `label:spec`) — lifecycle requirements
 * [Action Pattern](../guides/arch/action-pattern.md) — Process Action coordination
 * [Architecture Overview](../architecture.md) — where archival sits in the 4-layer model

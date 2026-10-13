@@ -5,7 +5,7 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-08-16 |
-| Technical Story | [Event Pattern](../guides/arch/event-pattern.md) and [Event System Spec](../specs/NUCY3-event-system.md) |
+| Technical Story | [Event Pattern](../guides/arch/event-pattern.md) and event system spec `[NUCY3]` (`gh issue list --label spec --search "[NUCY3]"`, #451) |
 
 ## Context and Problem Statement
 
@@ -75,5 +75,5 @@ when ALL three criteria hold; otherwise use Events + Listeners.
 ## Links
 
 * [Event Pattern](../guides/arch/event-pattern.md) — alternative mechanism and conventions
-* [Event System Spec](../specs/NUCY3-event-system.md) — full event catalog
+* Event system spec `[NUCY3]` (#451, `label:spec`) — full event catalog
 * [Actions Guide](../guides/arch/action-pattern.md) — where events are dispatched from

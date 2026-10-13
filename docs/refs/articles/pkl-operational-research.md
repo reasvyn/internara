@@ -209,4 +209,4 @@ by the workplace leader. `[VERIFIED]`
 - [curriculum-compliance.md](curriculum-compliance.md) — regulation mapping (companion article)
 - [`../index.md`](../index.md) — refs index
 - [`../../index.md`](../../index.md) — full documentation catalog
-- Relevant specs feeding feature priorities: [`7C5WM-internship-lifecycle`](../../specs/7C5WM-internship-lifecycle.md), [`1KSWL-daily-activity`](../../specs/1KSWL-daily-activity.md), [`2EHSE-supervision`](../../specs/2EHSE-supervision.md), [`J9GBH-placement`](../../specs/J9GBH-placement.md), [`ARDA6-assessment`](../../specs/ARDA6-assessment.md)
+- Relevant specs feeding feature priorities (GitHub Issues `label:spec`): `[7C5WM]` (#477), `[1KSWL]` (#485), `[2EHSE]` (#486), `[J9GBH]` (#480), `[ARDA6]` (#488)

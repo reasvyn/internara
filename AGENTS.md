@@ -324,7 +324,7 @@ names; reference docs never explain rationale.
 | Entity description matches the methods? | Read the Entity class |
 | Enum cases in doc match the code? | Read the Enum class |
 | Migration descriptions match? | `ls database/migrations/` |
-| Cross-references still valid? | `python3 scripts/py/scan_doc_links.py --no-external` |
+| Cross-references still valid? | `python3 scripts/py/scan_doc_links.py` (full incl. external; add `--no-external` for offline/fast mode) |
 
 ### 7.3 Mismatch Resolution — Git History First
 
@@ -371,7 +371,7 @@ Commit format: `type(scope): description` — types `feat`, `fix`, `refactor`, `
 3. No content duplicated — cross-reference instead.
 4. Footer is `## Quick References` (not `## References`).
 
-Run `python3 scripts/py/scan_doc_links.py --no-external` to validate.
+Run `python3 scripts/py/scan_doc_links.py` to validate (add `--no-external` for offline/fast mode).
 
 ---
 

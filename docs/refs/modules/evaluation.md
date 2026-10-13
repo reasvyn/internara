@@ -118,6 +118,6 @@ answer rather than silently double-counting.
 **Current state:** the schema for all of the above is implemented and tested — five models, their
 factories and migrations, plus structure, response, traceability, localization, and hygiene tests.
 The module has no Actions, Policies, Livewire components, or route file, so form authoring,
-response submission, and weighted scoring do not yet run. The spec is tracked as `Partial`; see
-[AXKZW](../../specs/AXKZW-evaluation.md).
+response submission, and weighted scoring do not yet run. Progress is tracked live in
+evaluation spec `[AXKZW]` (`gh issue list --label spec --search "[AXKZW]"`, #489).
 

@@ -5,7 +5,7 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-08-16 |
-| Technical Story | [RBAC Guide](../guides/rbac.md) and [Permissions Spec](../specs/T4B26-rbac-and-authorization.md) |
+| Technical Story | [RBAC Guide](../guides/rbac.md) and permissions spec `[T4B26]` (`gh issue list --label spec --search "[T4B26]"`, #452) |
 
 ## Context and Problem Statement
 

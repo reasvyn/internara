@@ -207,7 +207,7 @@ Follow the [Setup Wizard](guides/setup-wizard.md) guide for a detailed walkthrou
 ## Quick References
 
 - [Documentation index](index.md) — Browse all documentation
-- [Feature spec index](specs/index.md) — All feature specifications
+- [Feature spec issues](https://github.com/reasvyn/internara/issues?q=label%3Aspec) — All feature specifications (#442–#509)
 - [Architecture Decision Records](adr/index.md) — Why-key decisions
 - [Guides index](guides/index.md) — Operational how-tos
 - [Module reference index](refs/modules/index.md) — Module API reference

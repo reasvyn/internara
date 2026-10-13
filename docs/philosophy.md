@@ -130,7 +130,7 @@ supervisors.
 ## Quick References
 
 - [index.md](index.md) — Documentation index
-- [specs/index.md](specs/index.md) — Feature spec index
+- [spec issues](https://github.com/reasvyn/internara/issues?q=label%3Aspec) — Feature spec issues (#442–#509)
 - [adr/index.md](adr/index.md) — Architecture Decision Records
 - [guides/index.md](guides/index.md) — Guides index
 - [refs/modules/index.md](refs/modules/index.md) — Module reference index

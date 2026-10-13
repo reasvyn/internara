@@ -5,7 +5,7 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-08-16 |
-| Technical Story | [Flat RBAC](adr-flat-rbac-with-functional-roles.md) and [Assessment Spec](../specs/ARDA6-assessment.md) |
+| Technical Story | [Flat RBAC](adr-flat-rbac-with-functional-roles.md) and assessment spec `[ARDA6]` (`gh issue list --label spec --search "[ARDA6]"`, #488) |
 
 ## Context and Problem Statement
 

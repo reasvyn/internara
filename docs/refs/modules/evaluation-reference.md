@@ -110,6 +110,6 @@ response components.
 - **Testing**: `tests/{Arch,Feature}/Evaluation/`
 - **Dependencies**: Core, User, Enrollment
 - **Used By**: Reports, Certification
-- **Spec status**: `Partial` — see [AXKZW](../../specs/AXKZW-evaluation.md)
+- **Governing spec**: `[AXKZW]` (#489, `label:spec`)
 
 _For overview and business context, see [evaluation.md](evaluation.md)._

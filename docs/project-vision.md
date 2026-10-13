@@ -76,10 +76,10 @@ For ambiguous cases, open a Discussion, link this file, and record the decision 
 ## Roadmap — Now vs Next (link, not duplicate)
 
 - **Now (`v0.17.0 Stabilization`):** Fix P0 runtime crashes in `Assessment`, `Certification`, `Document` (see `README.md#Project Status` + module-health tiers), improve domain test coverage, docs sync. Tracked in GitHub Issues labeled `critical`/`high`.
-- **Next:** Reports purification (grade-card only, thesis stays in `Assignment`), partnership slot-quota hardening, journal supervision-log deduplication — each with spec IDs in `docs/specs/index.md`.
+- **Next:** Reports purification (grade-card only, thesis stays in `Assignment`), partnership slot-quota hardening, journal supervision-log deduplication — each with spec IDs in the spec issues (`label:spec`, #442–#509).
 - **Later:** Dapodik export hardening, Dinas PKL regional forks, evaluation module scaffold (`Evaluation` is `Skeleton` today).
 
-Detailed build order lives in `docs/specs/index.md` (spec implementation matrix) and `README.md#What's Next`; this file does not duplicate them.
+Detailed build order lives in the spec issues (`label:spec`, #442–#509) and `README.md#What's Next`; this file does not duplicate them.
 
 ## Where to Find It
 
@@ -87,7 +87,7 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 |------|-----|
 | Product scope, personas, boundary, deployment, module landscape | `README.md` |
 | Guiding principles, values, “what we do not do” in depth | `philosophy.md` |
-| Requirements (FR/NFR/UC) that vision traces to | `docs/specs/index.md` → `docs/specs/QLHDO-project-initialization.md` |
+| Requirements (FR/NFR/UC) that vision traces to | Spec issues (`label:spec`, #442–#509) → [QLHDO](https://github.com/reasvyn/internara/issues/442) |
 | Architecture that makes vision buildable | `architecture.md` (4-layer, Action Triad) |
 | How we build & ship (quality gates, version tags) | `AGENTS.md` (workflow 5-step), `.github/workflows/release.yml` (tag-driven 4-stage release pipeline), `infrastructure/deployment.md` |
 | Current health & where to contribute | Module-health tiers (agent memory) + `CONTRIBUTING.md` |
@@ -95,7 +95,7 @@ Detailed build order lives in `docs/specs/index.md` (spec implementation matrix)
 ## Quick References
 
 - [Documentation index](index.md) — Browse all documentation
-- [Feature spec index](specs/index.md) — All feature specifications
+- [Feature spec issues](https://github.com/reasvyn/internara/issues?q=label%3Aspec) — All feature specifications (#442–#509)
 - [Architecture Decision Records](adr/index.md) — Why-key decisions
 - [Guides index](guides/index.md) — Operational how-tos
 - [Module reference index](refs/modules/index.md) — Module API reference

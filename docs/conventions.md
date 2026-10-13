@@ -59,7 +59,7 @@ Every change — feature, refactor, bug fix — begins with documentation. Befor
 of code, the relevant docs must be updated to describe the intended outcome. This applies at all
 scales:
 
-- **New feature** → document the feature in `docs/specs/`, update the module's conceptual doc
+- **New feature** → open/update the governing spec issue (`label:spec`, #442–#509), update the module's conceptual doc
   (`{module}.md`) and API reference (`{module}-reference.md`)
 - **Architecture change** → update `architecture.md` and any affected ADRs
 - **Bug fix** → if the fix changes behavior, update the affected docs
@@ -662,10 +662,10 @@ methods where the container is not available (e.g., `database/factories/`).
 ### 12.2 Spec-Driven Coverage
 
 Tests verify the spec — nothing more. A test exists because a requirement in
-`docs/specs/{ID}-{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
+a spec issue (`label:spec`, #442–#509; `FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
 Test descriptions use the `{SpecID}-{ReqID}: Test description...` format, grouped under
-`describe("{SpecID}: Test description...")`. The ID appears in the filename
-(`{ID}-{feature}.md`), the file's `> **Spec ID:**` metadata line, and the index `ID` column.
+`describe("{SpecID}: Test description...")`. The ID appears in the spec issue title
+(`[{ID}]`), the test description, and the traceability report (`scan_spec_tests.py`).
 
 **Minimalism by design:** write only the tests the spec requires, then stop. This speeds up
 development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the full suite),
@@ -917,7 +917,7 @@ remain in `activity.php` under their original names.
 ## Quick References
 
 - [Documentation index](index.md) — Browse all documentation
-- [Feature spec index](specs/index.md) — All feature specifications
+- [Feature spec issues](https://github.com/reasvyn/internara/issues?q=label%3Aspec) — All feature specifications (#442–#509)
 - [Architecture Decision Records](adr/index.md) — Why-key decisions
 - [Guides index](guides/index.md) — Operational how-tos
 - [Module reference index](refs/modules/index.md) — Module API reference

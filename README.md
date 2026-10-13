@@ -135,7 +135,7 @@ code required. Production checklist and per-path guides:
 Bilingual EN/ID: English for code and docs, Indonesian as preferred UI language. Every
 user-facing string goes through `__()`; locale is togglable via Settings. Domain terminology
 (NISN, NPSN, DUDI, PKL, …) is mapped in the
-[umbrella spec glossary](docs/specs/QLHDO-project-initialization.md).
+[umbrella spec glossary](https://github.com/reasvyn/internara/issues/442) (`[QLHDO]`, `label:spec`).
 
 ## Documentation
 

@@ -3,7 +3,8 @@
 ## Description
 
 > **Authoritative spec:** The governing architecture contract is
-> [D2FT3 — Architecture Design](specs/D2FT3-architecture.md). This document is the living
+> spec `[D2FT3] — Architecture Design` (GitHub Issue `label:spec`, #443;
+> `gh issue list --label spec --search "[D2FT3]"`). This document is the living
 > reference (patterns, data flow, naming) for that spec; when they disagree, the spec wins.
 
 > **Pattern deep-dives:** For focused documentation on specific domains, see the dedicated pattern
@@ -319,7 +320,7 @@ See [Cross-Module Communication Discipline](adr/adr-cross-module-communication.m
 ## Quick References
 
 - [Documentation index](index.md) — Browse all documentation
-- [Feature spec index](specs/index.md) — All feature specifications
+- [Feature spec issues](https://github.com/reasvyn/internara/issues?q=label%3Aspec) — All feature specifications (#442–#509)
 - [Architecture Decision Records](adr/index.md) — Why-key decisions
 - [Guides index](guides/index.md) — Operational how-tos
 - [Module reference index](refs/modules/index.md) — Module API reference

@@ -32,7 +32,7 @@ user needs. Mixing types in one document is the root cause of most documentation
 | Reference | [`refs/modules/{module}-reference.md`](../refs/modules/index.md) (API reference), [`guides/infra/`](../guides/infra/index.md) technical topics (queue, cache, routes) |
 | Explanation | [`architecture.md`](../architecture.md) + [`guides/arch/*-pattern.md`](../guides/arch/index.md), [`philosophy.md`](../philosophy.md), [`project-vision.md`](../project-vision.md), [`adr/`](../adr/index.md), conceptual [`refs/modules/{module}.md`](../refs/modules/index.md) |
 
-Feature specs ([`specs/`](../specs/index.md)) are the requirements SSOT — they feed all four
+Feature specs (GitHub Issues [`label:spec`](https://github.com/reasvyn/internara/issues?q=label%3Aspec), #442–#509) are the requirements SSOT — they feed all four
 quadrants but are not themselves user documentation.
 
 ### Where Does My Content Belong?

@@ -7,7 +7,7 @@ RBAC, authentication flows, system operations, and deployment. Product scope and
 live in the root **[README.md](../../README.md)**.
 
 - **[README — Product & Project Status](../../README.md)** — Product scope, design principles, user personas, system boundary, deployment model, localization, licensing, and project status (merged from `product-definition.md` + `project-overview.md`)
-- **[Internara Project Spec](../specs/QLHDO-project-initialization.md)** — Functional and non-functional requirements
+- **[Internara Project Spec](https://github.com/reasvyn/internara/issues/442)** (`[QLHDO]`, `label:spec`) — Functional and non-functional requirements
   for Indonesian SMA/SMK PKL management, UI/UX standards, scalability targets, and compliance
 - **[RBAC & Authentication](rbac.md)** — Authentication flow, flat role hierarchy, functional roles,
   permissions model, Gate::before bypass
@@ -20,7 +20,7 @@ live in the root **[README.md](../../README.md)**.
   - [Integration](ui-ux/integration.md) — How all UI technologies work together
 - **[Branding](branding.md)** — Dynamic theming, color system, presets, logo management, font
   strategy
-- **[Schema Design Philosophy](../specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — Domain table design decisions and package/framework tables
+- **[Schema Design Philosophy](https://github.com/reasvyn/internara/issues/448)** (`[J68GZ]`, `label:spec`) — Domain table design decisions and package/framework tables
 - **[Account Recovery](account-recovery.md)** — Recovery slip flow, recovery codes,
   administrative-mediated recovery, CLI super admin recovery
 
