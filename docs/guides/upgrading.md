@@ -155,7 +155,7 @@ Internara follows [Semantic Versioning](https://semver.org/):
 | **Minor** | 1.0 → 1.1 | New features, no breaking changes |
 | **Patch** | 1.0.0 → 1.0.1 | Bug fixes, safe to upgrade |
 
-Current version: **0.16.1-dev.2** (TallstackUI-only, DaisyUI/maryUI/PHPFlasher removed).
+Current version: **0.17.0** (TallstackUI-only, DaisyUI/maryUI/PHPFlasher removed).
 
 ---
 
