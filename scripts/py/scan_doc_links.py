@@ -365,62 +365,13 @@ def validate_external_links(
 # ─── Spec convention validation ──────────────────────────────────────────────
 
 def validate_spec_conventions(findings: list[Finding]) -> int:
-    """Enforce the XXXXX-description.md spec-ID convention (see spec-writing skill).
+    """Retired: specs migrated from docs/specs/*.md to GitHub issues (label:spec, #442-#509).
 
-    Rules:
-      S-1  spec filename matches ^[A-Z0-9]{5}-[a-z0-9-]+\\.md$
-      S-2  the file's `> **Spec ID:**` metadata line matches the filename ID
-    Returns the number of spec-related findings added.
+    Kept as a no-op so the SPEC_ID / SPEC_ID_METADATA rules stay registered but
+    never fire. Spec traceability now lives in scan_spec_tests.py (FR/NFR/UC
+    against the issue cache). See commit f305ae9de.
     """
-    added = 0
-    if not SPECS_DIR.exists():
-        return added
-
-    # Non-spec docs living in specs/ (registry index, implementation matrix, copy-paste
-    # templates) are not governed by the spec-ID filename convention.
-    non_spec_files = {"index.md", "implementation-matrix.md"}
-
-    for p in sorted(SPECS_DIR.glob("*.md")):
-        if p.name in non_spec_files or p.name.endswith("-template.md"):
-            continue
-        rel = relative_path(p)
-        m = SPEC_FILE_PATTERN.match(p.name)
-        if not m:
-            findings.append(Finding(
-                id=f"SPEC-{len(findings)+1:03d}",
-                rule="SPEC_ID",
-                severity="medium",
-                category="documentation",
-                file=rel,
-                line=1,
-                message=f"Spec file '{p.name}' does not follow the XXXXX-description.md naming convention",
-                suggestion="Rename to docs/specs/{ID}-{description}.md where {ID} is a unique 5-char A-Z0-9 ID",
-                reference="docs/templates/spec-template.md §Spec IDs",
-            ))
-            added += 1
-            continue
-        spec_id = m.group(1)
-        content = p.read_text(encoding="utf-8", errors="replace")
-        meta_match = SPEC_ID_LINE.search(content)
-        meta_id = meta_match.group(1) if meta_match else None
-        if meta_id != spec_id:
-            findings.append(Finding(
-                id=f"SPEC-{len(findings)+1:03d}",
-                rule="SPEC_ID_METADATA",
-                severity="medium",
-                category="documentation",
-                file=rel,
-                line=3,
-                message=(
-                    f"Spec ID metadata mismatch in '{p.name}': filename ID '{spec_id}' "
-                    f"{'but metadata is missing' if meta_id is None else f'vs metadata ID {meta_id}'}"
-                ),
-                suggestion=f"Add/align the `> **Spec ID:** {spec_id}` metadata line",
-                reference="docs/templates/spec-template.md §Spec IDs",
-            ))
-            added += 1
-
-    return added
+    return 0
 
 
 # ─── Doc freshness (removed) ──────────────────────────────────────────────

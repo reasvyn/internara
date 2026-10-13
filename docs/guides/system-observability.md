@@ -252,7 +252,7 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 - [System Health](system-health.md) — Health check, troubleshooting, diagnostic commands
 - [Backup & Recovery](backup-recovery.md) — Backup management and restoration
 - `docs/guides/system-observability.md` — Architecture-level observability design
-- `docs/specs/J68GZ-system-requirements.md` — Database and dependency requirements
+- Spec `[J68GZ]` (#448, `label:spec`) — Database and dependency requirements
 
 
 ## Verification

@@ -112,4 +112,4 @@ For system-level verification, run `php artisan system:health` and confirm all c
 - [Installation](installation.md) — CLI provisioning
 - [Setup Wizard](setup-wizard.md) — Browser-based initial config
 - [System Health](system-health.md) — Post-setup verification
-- `docs/specs/QLHDO-project-initialization.md` — Full feature inventory
+- Spec `[QLHDO]` (#442, `label:spec`) — Full feature inventory

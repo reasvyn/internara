@@ -65,7 +65,7 @@ Every requirement follows the same three-step cycle:
 ### Test-First Workflow
 
 ```bash
-# 1. Read the spec requirement (docs/specs/{feature}.md, e.g., FR-INT1)
+# 1. Read the spec requirement (spec issue, label:spec, e.g. [7C5WM] FR-INT1)
 # 2. Write a failing test
 php artisan make:test --pest CreateInternshipActionTest
 
@@ -277,7 +277,7 @@ The `composer run coverage` script handles this automatically.
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
 - `package.json` — `test:browser` script for headless runs
-- `docs/specs/index.md`, `docs/specs/{feature}.md` — the source of truth for what tests must exist
+- Spec issues (`label:spec`, #442–#509) — the source of truth for what tests must exist
 - `docs/conventions.md` — Section 12 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
 ---

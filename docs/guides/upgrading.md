@@ -217,7 +217,7 @@ walkthrough and caveats:
 
 ## Quick References
 
-- `docs/specs/8NZAU-installation.md` — Installation feature specification
+- Spec `[8NZAU]` (#457, `label:spec`) — Installation feature specification
 - [Installation](installation.md) — Initial setup
 - [System Health](system-health.md) — Health check reference
 - [System Observability](system-observability.md) — Backup management

@@ -44,7 +44,7 @@ quadrants but are not themselves user documentation.
 | Complete list of Actions/Routes/Models/Policies of a module | `refs/modules/{module}-reference.md` | Reference | [`module-reference-template.md`](module-reference-template.md) |
 | What a module does, its boundary, design principles | `refs/modules/{module}.md` | Explanation | [`module-template.md`](module-template.md) |
 | Why a pattern exists and when to apply it | `guides/arch/{pattern}-pattern.md` | Explanation | [`pattern-template.md`](pattern-template.md) |
-| Feature requirements with traceable IDs | `specs/{ID}-{feature}.md` | Spec (SSOT) | [`spec-template.md`](spec-template.md) |
+| Feature requirements with traceable IDs | Spec issue `[{ID}]` (#NNN, `label:spec`) | Spec (SSOT) | [`spec-template.md`](spec-template.md) |
 | Environment variables, config options | `guides/infra/configuration.md` | Reference | — |
 | A recorded architectural decision with context | `adr/adr-{slug}.md` | Explanation | [`adr-template.md`](adr-template.md) |
 | A per-dependency reference | `refs/deps/{package}.md` | Reference | [`dep-template.md`](dep-template.md) |
@@ -134,7 +134,7 @@ apply.
 
 Documentation rots silently unless decay is made visible and repair is routine:
 
-- **Document first.** Behavior changes start in docs/specs, then code follows — never the reverse
+- **Document first.** Behavior changes start in the governing spec issue (`label:spec`), then code follows — never the reverse
   ([conventions.md](../conventions.md)).
 - **Docs ship with code.** A PR that changes behavior without updating affected docs is incomplete
   and must not merge.

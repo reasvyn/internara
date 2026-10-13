@@ -56,7 +56,7 @@ Prerequisites: PHP 8.4+, Composer 2.x, Node.js 20+, npm 10+ (full list in
 | Architecture — 4-layer model, Action Triad | [`docs/architecture.md`](docs/architecture.md) |
 | Coding conventions & invariants (C1–C8, D1–D6) | [`docs/conventions.md`](docs/conventions.md) |
 | Module map | [`docs/refs/modules/index.md`](docs/refs/modules/index.md) |
-| Feature specs (requirements source of truth) | [`docs/specs/index.md`](docs/specs/index.md) |
+| Feature specs (requirements source of truth) | [GitHub Issues `label:spec`](https://github.com/reasvyn/internara/issues?q=label%3Aspec) (#442–#509) |
 
 ---
 
@@ -109,7 +109,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 ## Testing
 
 Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*` / `UC-*`) in
-`docs/specs/{ID}-{feature}.md`. No spec requirement means no test (no orphan tests, no padding).
+its spec issue (`label:spec`, #442–#509). No spec requirement means no test (no orphan tests, no padding).
 
 ```bash
 composer run test                                # Full test suite

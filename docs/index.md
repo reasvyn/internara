@@ -148,7 +148,7 @@ Refer to the [ADR Index](adr/index.md) for all 16 records covering foundation, o
 ```mermaid
 flowchart LR
     A[CONTRIBUTING.md] --> B[../README.md]
-    B --> C[specs/index.md]
+    B --> C[spec issues label:spec]
     C --> D[philosophy.md]
     D --> E[getting-started.md]
     E --> F[architecture.md]

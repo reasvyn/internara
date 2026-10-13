@@ -10,7 +10,7 @@
 
 Hard rules. Violations are architecture violations.
 
-1. **Every testable spec requirement must have tests.** Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code.
+1. **Every testable spec requirement must have tests.** Tests exist because a requirement in a spec issue (`label:spec`, `FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code.
 
 2. **Requirement-first (Spec → Test → Implementation).** Write the spec requirement, then the test for it, then the minimum implementation that makes it pass. The test stays green throughout refactoring.
 
@@ -95,7 +95,7 @@ Tests should be:
 
 - `docs/conventions.md` §Testing Conventions — test structure, naming, strategies
 - `docs/guides/infra/testing.md` — complete testing infrastructure
-- `docs/specs/index.md` — spec index with requirement IDs
+- Spec issues (`label:spec`, #442–#509) — requirement IDs with traceability via `scan_spec_tests.py`
 - [TDD by Kent Beck](https://www.amazon.com/Test-Driven-Development-Kent-Beck/dp/0321146530) — TDD methodology
 - [Testing Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) — test distribution
 - [AAA Pattern](https://martinfowler.com/bliki/GivenWhenThen.html) — Arrange-Act-Assert
