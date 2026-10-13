@@ -1,40 +1,41 @@
 #!/usr/bin/env python3
 """
-scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v3.0)
+scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v3.1)
 
-Validates that every FR/NFR/UC requirement in docs/specs/*.md has a
-corresponding Pest test that traces to it (spec-driven testing), and
-that no test traces to a non-existent requirement (orphan).
+Validates that every FR/NFR/UC requirement in GitHub specification issues
+(labeled 'spec') has a corresponding Pest test that traces to it (spec-driven testing),
+and that no test traces to a non-existent requirement (orphan).
 
 Features:
-  - Dynamic module discovery from docs/specs/index.md
+  - Dynamic discovery from GitHub Issues (label: 'spec') via gh CLI & caching
   - Module-scoped scanning (--module)
   - Coverage score calculation
   - --list-modules to show available modules
+  - --refresh to fetch fresh issues from GitHub
   - Placeholder test detection (empty/trivially true bodies)
   - Scanner-gaming test detection (spec ID with only existence checks)
 
 Rules:
-  SPEC_TEST_UNCOVERED  Requirement ID in spec but not found in any test (medium)
-  SPEC_TEST_ORPHAN     Requirement ID in test but not found in any spec (low)
-  SPEC_TEST_MISSING_FILE  Spec file has FR/NFR/UC but no test file mentions its Spec ID (high)
-  SPEC_TEST_PLACEHOLDER  Test body is empty or only has trivially true assertions (medium)
-  SPEC_TEST_GAMING    Test has spec ID but body only checks existence, not behavior (medium)
-
-Uses dynamic discovery — no hardcoded spec lists.
-Follows _common helpers for parallel execution, JSON report, and CLI flags.
+  SPEC_TEST_UNCOVERED     Requirement ID in spec issue but not found in any test (medium)
+  SPEC_TEST_ORPHAN        Requirement ID in test but not found in any spec issue (low)
+  SPEC_TEST_MISSING_FILE  Spec issue has FR/NFR/UC but no test file mentions its Spec ID (high)
+  SPEC_TEST_PLACEHOLDER   Test body is empty or only has trivially true assertions (medium)
+  SPEC_TEST_GAMING        Test has spec ID but body only checks existence, not behavior (medium)
+  SPEC_TEST_LAYER_MISSING Requirement needs specific test layer(s) not covered by existing tests (medium)
+  SPEC_TEST_NON_TESTABLE  Requirement marked non-testable (info)
 
 References:
   docs/guides/arch/testing-pattern.md
-  docs/templates/spec-template.md
-  docs/index.md
+  docs/conventions.md
 """
 
 from __future__ import annotations
 
+import argparse
 import re
 import sys
 import time
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -44,7 +45,7 @@ from _common import (  # noqa: E402
     Finding,
     ScanResult,
     build_report,
-    parse_args_with_common,
+    fetch_spec_issues,
     print_summary,
     read_file,
     relative_path,
@@ -60,17 +61,142 @@ SCAN_NAME = "spec-tests"
 
 # ─── Regex — dynamic, no hardcoding ─────────────────────────────────
 
-# FR-AUTH-001, NFR-AUTH-002, UC-AUTH-003, DD-AUTH-001 — {SCOPE} 1-8 alnum + 3-digit running number; optional non-testable markers
-RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC|DD)-(?:X-)?[A-Z0-9]{1,8}-[0-9]{3}(?:\*|~|!|-(?:NT|X))?(?=\s|$|[|,.;:)\]])")
-# For spec-prefixed refs like 81SMS-FR-AUTH-001
+# FR-AUTH-001, NFR-AUTH-002, UC-AUTH-003, DD-AUTH-001
+RE_REQUIREMENT = re.compile(r"\b(?:FR|NFR|UC|DD)-(?:X-)?[A-Z0-9]{1,8}-[0-9]{3}(?:\*|~|!|-(?:NT|X))?(?=\s|$|[*,.;:)<>\]`])")
+# For spec-prefixed refs like 81SMS-FR-AUTH-001 in tests
 RE_SPEC_REF = re.compile(r"\b([A-Z0-9]{3,})-(FR|NFR|UC|DD)-(?:X-)?[A-Z0-9]{1,8}-[0-9]{3}(?:\*|~|!|-(?:NT|X))?\b")
-# Spec ID from header: > **Spec ID:** 81SMS
-RE_SPEC_ID = re.compile(r"Spec ID:\W*([A-Z0-9]{3,})")
+# Spec ID from header or issue title: feature: Core — [81SMS] School Profile
+RE_SPEC_ID_IN_TITLE = re.compile(r"\[([A-Z0-9]{3,})\]")
+RE_SPEC_ID_IN_BODY = re.compile(r"Spec ID:\W*`?([A-Z0-9]{3,})`?")
+RE_MODULE_IN_TITLE = re.compile(r"^feature:\s*([A-Za-z0-9]+)")
+RE_MODULE_IN_BODY = re.compile(r"- \*\*Module:\*\*\s*`?([A-Za-z0-9]+)`?")
+
 # Non-testable marker check
 RE_NON_TESTABLE = re.compile(r"(?:\*|~|!|-X\b|-NT\b|(?:^|\b)(?:FR|NFR|UC)-X-)")
 
-# Module mapping from spec index: | ID | [Name](file) | Module | ... |
-RE_SPEC_INDEX_ROW = re.compile(r"^\|\s*([A-Z0-9]{3,})\s*\|.*\|\s*(\w+)\s*\|")
+# ─── Data Structures ────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class SpecTarget:
+    spec_id: str
+    number: int
+    title: str
+    module: str
+    url: str
+    body: str
+    status: str = "Full"
+
+    @property
+    def name(self) -> str:
+        return f"GH-#{self.number} [{self.spec_id}]"
+
+    @property
+    def display_name(self) -> str:
+        return f"GH-#{self.number} [{self.spec_id}] {self.title}"
+
+    @property
+    def file_path(self) -> str:
+        return f".github/issues/{self.number}"
+
+
+def load_spec_targets(refresh: bool = False) -> list[SpecTarget]:
+    """Load and parse specification issues from GitHub (cached)."""
+    raw_issues = fetch_spec_issues(use_cache=True, refresh=refresh)
+    targets: list[SpecTarget] = []
+
+    for issue in raw_issues:
+        title = issue.get("title", "")
+        body = issue.get("body", "") or ""
+        num = issue.get("number", 0)
+        url = issue.get("url", f"https://github.com/reasvyn/internara/issues/{num}")
+
+        # Spec ID
+        sid_m = RE_SPEC_ID_IN_TITLE.search(title)
+        if not sid_m:
+            sid_m = RE_SPEC_ID_IN_BODY.search(body)
+        spec_id = sid_m.group(1) if sid_m else f"ISSUE-{num}"
+
+        # Module
+        mod_m = RE_MODULE_IN_TITLE.search(title)
+        if not mod_m:
+            mod_m = RE_MODULE_IN_BODY.search(body)
+        module = mod_m.group(1) if mod_m else "Core"
+
+        # Status
+        st_m = re.search(r"- \*\*Current Spec Status:\*\*\s*`?([A-Za-z0-9]+)`?", body)
+        status = st_m.group(1) if st_m else "Full"
+
+        targets.append(SpecTarget(
+            spec_id=spec_id,
+            number=num,
+            title=title,
+            module=module,
+            url=url,
+            body=body,
+            status=status,
+        ))
+
+    return targets
+
+
+def load_module_spec_mapping(targets: list[SpecTarget] | None = None) -> dict[str, list[str]]:
+    """Build module -> [spec_ids] mapping from specification issues."""
+    if targets is None:
+        targets = load_spec_targets()
+
+    mapping: dict[str, list[str]] = {}
+    for t in targets:
+        mapping.setdefault(t.module, []).append(t.spec_id)
+
+    return mapping
+
+
+def get_all_modules(targets: list[SpecTarget] | None = None) -> list[str]:
+    """Return sorted list of all modules from spec targets."""
+    mapping = load_module_spec_mapping(targets)
+    return sorted(mapping.keys())
+
+
+def filter_specs_by_module(
+    targets: list[SpecTarget],
+    module: str,
+) -> list[SpecTarget]:
+    """Filter spec targets to only those belonging to the given module."""
+    module_lower = module.lower()
+    return [t for t in targets if t.module.lower() == module_lower or module_lower in t.module.lower()]
+
+
+def extract_requirements_from_spec(spec: SpecTarget) -> tuple[str, list[tuple[str, int]]]:
+    """Return (spec_id, [(req_id, line_no)]) for a spec target."""
+    reqs: list[tuple[str, int]] = []
+    lines = spec.body.splitlines()
+
+    for idx, line in enumerate(lines, start=1):
+        line_str = line.strip()
+        # Scan checklist lines, table lines, or lines with requirement tags
+        is_relevant = (
+            line_str.startswith("- [")
+            or line_str.startswith("|")
+            or "FR-" in line_str
+            or "NFR-" in line_str
+            or "UC-" in line_str
+            or "DD-" in line_str
+        )
+        if not is_relevant:
+            continue
+
+        # Clean markdown bold or backticks
+        cleaned = re.sub(r"\*\*([A-Z0-9~*!-]+)\*\*", r"\1", line)
+        cleaned = re.sub(r"`([A-Z0-9~*!-]+)`", r"\1", cleaned)
+
+        for match in RE_REQUIREMENT.finditer(cleaned):
+            req_id = match.group(0)
+            if len(req_id) >= 4:
+                reqs.append((req_id, idx))
+
+    return spec.spec_id, reqs
+
 
 # ─── Placeholder & Gaming Detection ─────────────────────────────────
 
@@ -86,20 +212,18 @@ RE_TRIVIAL = re.compile(
     r"expect\s*\(\s*true\s*\)->toBeTrue|1\s*===\s*1",
 )
 
-# Structural / existence-only checks (no behavioral substance)
-# These are pure class/trait/interface/reflection checks — never behavioral alone
+# Structural / existence-only checks
 RE_EXISTENCE_ONLY = re.compile(
     r"class_exists\s*\(|is_subclass_of\s*\(|is_a\s*\(|method_exists\s*\(|"
     r"ReflectionClass\s*\(|trait_exists\s*\(|interface_exists\s*\(|enum_exists\s*\(",
 )
 
-# Config existence checks (weak — only behavioral if combined with domain code)
+# Config existence checks
 RE_CONFIG_ONLY = re.compile(
     r"config\s*\(\s*['\"]\s*\)\s*\)|toHaveKey\s*\(|toBeArray\s*\(\s*\)",
 )
 
-# Behavioral code indicators — ANY of these means the test exercises real code
-# Covers: static calls (::), new instantiation, method calls (->), fakes, assertions, helpers
+# Behavioral code indicators
 RE_BEHAVIORAL = re.compile(
     r"::factory\s*\(\s*\)|::create\s*\(\s*\)|->execute\s*\(\s*\)|"
     r"assertModelExists\s*\(|assertDatabaseHas\s*\(|actingAs\s*\(|"
@@ -147,16 +271,24 @@ def is_non_testable(req_id: str) -> bool:
 def classify_required_layers(
     req_id: str,
     line_text: str,
-    spec_file: Path | None = None,
+    spec: SpecTarget | None = None,
 ) -> set[str]:
-    """Infer the minimum test layers from the requirement's declared behavior.
-
-    The scanner is intentionally conservative: feature is the default for executable
-    application behavior, while unit/arch/browser are added only when the requirement
-    names the corresponding boundary. This is guidance, not a substitute for review.
-    """
-    text = f"{req_id} {line_text} {(spec_file.name if spec_file else '')}".lower()
+    """Infer the minimum test layers from the requirement's declared behavior."""
+    text = f"{req_id} {line_text} {(spec.title if spec else '')}".lower()
     layers: set[str] = set()
+
+    # Direct layer tag check: *(...Layer: A...)*
+    layer_tag_m = re.search(r"Layer:\s*([A-Za-z]+)", line_text, re.IGNORECASE)
+    if layer_tag_m:
+        tag = layer_tag_m.group(1).upper()
+        if "A" in tag or "ARCH" in tag:
+            layers.add("arch")
+        if "U" in tag or "UNIT" in tag:
+            layers.add("unit")
+        if "B" in tag or "BROWSER" in tag:
+            layers.add("browser")
+        if "F" in tag or "FEATURE" in tag:
+            layers.add("feature")
 
     architecture_terms = (
         "architecture", "module boundary", "dependency rule", "contract",
@@ -180,12 +312,11 @@ def classify_required_layers(
         layers.add("arch")
     if any(term in text for term in unit_terms):
         layers.add("unit")
-    if any(term in text for term in browser_terms) or is_ui_requirement(req_id, spec_file, line_text):
+    if any(term in text for term in browser_terms) or is_ui_requirement(req_id, spec, line_text):
         layers.add("browser")
     if any(term in text for term in feature_terms):
         layers.add("feature")
 
-    # Executable requirements without a stronger signal belong in feature tests.
     if not layers:
         layers.add("feature")
     return layers
@@ -201,94 +332,48 @@ def test_layer(path: Path, browser_files: set[Path]) -> str:
     return "unknown"
 
 
-def is_ui_requirement(req_id: str, spec_file: Path | None = None, line_text: str | None = None) -> bool:
-    """
-    Heuristic: UI/client-side requirements are those whose spec or ID
-    suggests a view, layout, theme, or interaction. They are best
-    verified by browser tests (tests/Browser) in addition to Pest.
-
-    Fix 2026-09: previous heuristic used first 3000 chars of the whole spec
-    as signal, causing false positives (e.g., OCEMS FR-UP flagged as UI
-    because spec snippet contains "Livewire" even though FR-UP is a Command
-    Action business logic). Now we check only:
-      - requirement ID itself (e.g., FR-UI, FR-L for layout)
-      - spec file name (only for known UI specs like 8XMYS, 52O1I, K8HP1)
-      - the specific requirement row text (not whole spec)
-
-    Justification: UI/client requirements are those where the requirement's
-    own description or ID explicitly mentions UI concepts, not where the spec
-    happens to mention Livewire elsewhere. This aligns with
-    docs/guides/infra/testing.md#browser-tests (Browser tests for critical
-    journeys: login, navigation, theme, sidebar; Pest for Action/Livewire).
-    """
-    # 1. Check requirement ID pattern for UI-ish prefixes
-    #    e.g., FR-UI, FR-L (layout), FR-R (responsive), FR-S (shell), FR-A (a11y)
-    #    But FR-UP, FR-RP, FR-PE are profile business logic, not UI
-    ui_id_prefixes = ("FR-UI", "FR-L", "FR-R", "FR-S", "FR-A", "FR-C", "FR-N", "FR-SH", "FR-VD", "FR-P", "FR-D")
-    # Only treat as UI if the requirement's own row text contains UI keywords
-    # (checked below), not just ID prefix alone — ID prefix is weak signal.
-
-    # 2. Spec file name signal — only for specs that are primarily UI
-    #    (layout, branding, landing page). Profile (OCEMS) is mixed, so not UI-only.
-    ui_spec_ids = {"8XMYS", "52O1I", "K8HP1", "CKKZC"}  # layout, branding, landing, dashboard
-    spec_id = spec_file.stem.split("-")[0] if spec_file and "-" in spec_file.stem else (spec_file.stem if spec_file else "")
-    if spec_id in ui_spec_ids:
-        # For UI-primary specs, still check line text before flagging — not all FRs in a UI spec are UI
-        # Fall through to line-text check
+def is_ui_requirement(req_id: str, spec: SpecTarget | None = None, line_text: str | None = None) -> bool:
+    """Heuristic for UI/client-side requirements."""
+    ui_spec_ids = {"8XMYS", "52O1I", "K8HP1", "CKKZC"}
+    if spec and spec.spec_id in ui_spec_ids:
         pass
-    elif spec_file and any(kw in spec_file.name.lower() for kw in ["layout", "ui-system", "branding", "landing", "deployment"]):
-        # File name suggests UI, but still need line-text confirmation
+    elif spec and any(kw in spec.title.lower() for kw in ["layout", "ui", "branding", "landing"]):
         pass
     else:
-        # Not a UI-primary spec; require stronger line-text evidence
         if line_text is None:
-            # No line context — be conservative, assume not UI (Pest-testable)
             return False
 
-    # 3. Check the specific requirement row text (most precise signal)
     if line_text is not None:
         hints = (req_id + " " + line_text).lower()
     else:
         hints = req_id.lower()
-        if spec_file:
-            hints += " " + spec_file.name.lower()
+        if spec:
+            hints += " " + spec.title.lower()
 
     ui_keywords = [
         "ui", "view", "layout", "theme", "style", "css", "blade", "tailwind",
         "sidebar", "header", "dashboard", "navigation", "component", "alpine",
         "toast", "modal", "dropdown", "dark", "x-ts-", "wire:navigate",
     ]
-    # Note: "livewire" removed from generic UI list — many non-UI specs mention Livewire
-    # as implementation detail (e.g., ProfileEditor) but the requirement is business logic
-    # tested via Pest Livewire, not Browser. Only flag Livewire as UI when combined
-    # with explicit view/layout keywords in the row text.
     has_ui_kw = any(kw in hints for kw in ui_keywords)
-    # Special case: if row explicitly says "Livewire" AND mentions view/component, treat as UI
     if "livewire" in hints.lower() and has_ui_kw:
         return True
     return has_ui_kw
 
 
-# ─── Placeholder & Gaming Analysis ──────────────────────────────────
-
 def extract_test_bodies(content: str) -> list[tuple[str, int, str]]:
-    """
-    Extract individual test bodies from a test file.
-    Returns list of (test_name, start_line, body_text).
-    """
+    """Extract individual test bodies from a test file."""
     tests = []
     lines = content.splitlines()
     i = 0
     while i < len(lines):
         line = lines[i]
-        # Match test/it definition
         m = RE_TEST_DEF.search(line)
         if not m:
             i += 1
             continue
         test_name = m.group(1)
-        start_line = i + 1  # 1-indexed
-        # Find the closing of the function body by tracking braces
+        start_line = i + 1
         body_lines = []
         brace_count = 0
         found_open = False
@@ -310,13 +395,8 @@ def extract_test_bodies(content: str) -> list[tuple[str, int, str]]:
 
 
 def classify_test_body(body_text: str) -> dict[str, bool]:
-    """
-    Classify a test body by what patterns it contains.
-    Returns dict with flags: has_trivial, has_existence_only, has_config_only, has_behavioral.
-    """
-    # Strip the test definition line itself (first line usually)
+    """Classify a test body by what patterns it contains."""
     lines = body_text.splitlines()
-    # Find content after the opening brace
     content_start = 0
     for idx, line in enumerate(lines):
         if "{" in line:
@@ -340,10 +420,7 @@ def classify_test_body(body_text: str) -> dict[str, bool]:
 def detect_placeholder_tests(
     test_files: list[Path],
 ) -> list[tuple[Path, str, int, str]]:
-    """
-    Scan test files for placeholder tests (empty/trivially true bodies).
-    Returns list of (file, test_name, line_no, reason).
-    """
+    """Scan test files for placeholder tests (empty/trivially true bodies)."""
     results = []
     for tf in test_files:
         content = read_file(tf)
@@ -352,15 +429,12 @@ def detect_placeholder_tests(
         tests = extract_test_bodies(content)
         for test_name, line_no, body in tests:
             classification = classify_test_body(body)
-            # Placeholder: body is empty or only has trivially true assertions
             lines = body.splitlines()
-            # Find content after opening brace
             content_lines = []
             in_body = False
             for line in lines:
                 if "{" in line:
                     in_body = True
-                    # Check if there's content after the brace on the same line
                     after_brace = line.split("{", 1)[1].strip()
                     if after_brace and after_brace != "}":
                         content_lines.append(after_brace)
@@ -369,7 +443,6 @@ def detect_placeholder_tests(
                     stripped = line.strip()
                     if stripped and stripped != "}":
                         content_lines.append(stripped)
-            # Remove closing brace
             content_lines = [l for l in content_lines if l != "}"]
             if not content_lines:
                 results.append((tf, test_name, line_no, "empty body"))
@@ -381,12 +454,7 @@ def detect_placeholder_tests(
 def detect_gaming_tests(
     test_files: list[Path],
 ) -> list[tuple[Path, str, int, str]]:
-    """
-    Scan test files for scanner-gaming tests (spec ID with only existence checks).
-    A test is gaming if it has a spec ID prefix but body contains ONLY existence/structural
-    checks and NO behavioral code.
-    Returns list of (file, test_name, line_no, reason).
-    """
+    """Scan test files for scanner-gaming tests."""
     results = []
     for tf in test_files:
         content = read_file(tf)
@@ -394,112 +462,16 @@ def detect_gaming_tests(
             continue
         tests = extract_test_bodies(content)
         for test_name, line_no, body in tests:
-            # Only check tests with spec ID prefix
             if not RE_SPEC_REF.search(test_name):
                 continue
             classification = classify_test_body(body)
-            # Gaming: has existence checks OR config-only, but NO behavioral code
-            has_structural = classification["has_existence_only"] or classification["has_config_only"]
-            if has_structural and not classification["has_behavioral"]:
-                # Determine the specific reason
-                reasons = []
-                if classification["has_existence_only"]:
-                    reasons.append("existence/class checks only")
-                if classification["has_config_only"] and not classification["has_existence_only"]:
-                    reasons.append("config/key existence checks only")
+            if classification["has_existence_only"] and not classification["has_behavioral"]:
+                reasons = ["existence checks only"]
+                if classification["has_config_only"]:
+                    reasons.append("config only")
                 reason = " + ".join(reasons) if reasons else "structural checks only"
                 results.append((tf, test_name, line_no, reason))
     return results
-
-
-def load_module_spec_mapping() -> dict[str, list[str]]:
-    """
-    Parse docs/specs/index.md to build module -> [spec_ids] mapping.
-    Returns dict like {'Core': ['QLHDO', 'D2FT3', ...], 'Auth': [...], ...}
-    """
-    index_path = ROOT / "docs" / "specs" / "index.md"
-    content = read_file(index_path)
-    if not content:
-        return {}
-
-    mapping: dict[str, list[str]] = {}
-    for line in content.splitlines():
-        m = RE_SPEC_INDEX_ROW.match(line)
-        if m:
-            spec_id = m.group(1)
-            module = m.group(2)
-            # Skip non-module rows (like header separators)
-            if module in {"Depends", "On"}:
-                continue
-            mapping.setdefault(module, []).append(spec_id)
-
-    return mapping
-
-
-def get_all_modules() -> list[str]:
-    """Return sorted list of all modules from spec index."""
-    mapping = load_module_spec_mapping()
-    return sorted(mapping.keys())
-
-
-def filter_specs_by_module(
-    spec_files: list[Path],
-    module: str,
-) -> list[Path]:
-    """
-    Filter spec files to only those belonging to the given module.
-    Uses the spec index mapping.
-    """
-    mapping = load_module_spec_mapping()
-    module_lower = module.lower()
-
-    # Find matching module names (case-insensitive)
-    matching_modules = [m for m in mapping if m.lower() == module_lower]
-    if not matching_modules:
-        # Try partial match
-        matching_modules = [m for m in mapping if module_lower in m.lower()]
-
-    if not matching_modules:
-        return []
-
-    # Collect all spec IDs for matching modules
-    spec_ids: set[str] = set()
-    for m in matching_modules:
-        spec_ids.update(mapping[m])
-
-    # Filter spec files by ID (filename starts with ID)
-    filtered: list[Path] = []
-    for sf in spec_files:
-        stem = sf.stem  # e.g., "81SMS-school-profile"
-        spec_id = stem.split("-")[0] if "-" in stem else stem
-        if spec_id in spec_ids:
-            filtered.append(sf)
-
-    return filtered
-
-
-def extract_requirements_from_spec(path: Path) -> tuple[str | None, list[tuple[str, int]]]:
-    """Return (spec_id, [(req_id, line_no)]) for a spec file."""
-    content = read_file(path)
-    if not content:
-        return None, []
-    lines = content.splitlines()
-    spec_id: str | None = None
-    m = RE_SPEC_ID.search(content)
-    if m:
-        spec_id = m.group(1)
-
-    reqs: list[tuple[str, int]] = []
-    for idx, line in enumerate(lines, start=1):
-        is_requirement_row = line.strip().startswith("|") and ("FR-" in line or "NFR-" in line or "UC-" in line)
-        if not is_requirement_row:
-            if "|" not in line:
-                continue
-        for match in RE_REQUIREMENT.finditer(line):
-            req_id = match.group(0)
-            if len(req_id) >= 4:
-                reqs.append((req_id, idx))
-    return spec_id, reqs
 
 
 def extract_requirements_from_test(path: Path) -> list[tuple[str, int]]:
@@ -514,15 +486,11 @@ def extract_requirements_from_test(path: Path) -> list[tuple[str, int]]:
             if len(req_id) >= 4:
                 reqs.append((req_id, idx))
 
-        # Tests conventionally use the full `SPECID-FR-...` traceability label.
-        # Normalize that form to the bare requirement ID used by spec tables.
         for match in RE_SPEC_REF.finditer(line):
             req_id = match.group(0).split('-', 1)[1]
             if req_id not in {requirement for requirement, _ in reqs}:
                 reqs.append((req_id, idx))
 
-            # Allow the compact `SPEC-FR-ABC-001/002/003` form used by the
-            # test suite while keeping the spec tables normalized to bare IDs.
             requirement_prefix, first_number = req_id.rsplit('-', 1)
             suffixes = re.match(r'(?:/(\d{3}))+', line[match.end():])
             if suffixes:
@@ -534,12 +502,7 @@ def extract_requirements_from_test(path: Path) -> list[tuple[str, int]]:
 
 
 def get_requirement_priority(req_id: str) -> tuple[str, int]:
-    """
-    Score a requirement ID by priority for spec-gap triage.
-    Returns (priority_label, score) where higher score = more critical.
-    High-impact, low-effort items (core business logic) score highest.
-    """
-    # FR-A* (Actions), FR-L* (Livewire), FR-M* (Models) are core - high impact
+    """Score a requirement ID by priority for spec-gap triage."""
     if re.match(r"FR-[ALM]\d*", req_id):
         return ("critical", 10)
     if re.match(r"FR-[AE]\d*", req_id):
@@ -562,10 +525,7 @@ def calculate_coverage_score(
     covered_reqs: int,
     non_testable_reqs: int = 0,
 ) -> dict[str, Any]:
-    """
-    Calculate coverage score.
-    Returns dict with score, percentage, grade, and breakdown.
-    """
+    """Calculate coverage score. Returns dict with score, percentage, and grade."""
     if total_reqs == 0:
         return {
             "score": 0,
@@ -591,7 +551,6 @@ def calculate_coverage_score(
 
     percentage = (covered_reqs / testable) * 100
 
-    # Grade scale
     if percentage >= 95:
         grade = "A+"
     elif percentage >= 90:
@@ -617,23 +576,15 @@ def calculate_coverage_score(
 
 
 def calculate_module_breakdown(
-    spec_files: list[Path],
-    req_to_specs: dict[str, list[tuple[Path, int]]],
+    targets: list[SpecTarget],
+    req_to_specs: dict[str, list[tuple[SpecTarget, int]]],
     test_req_set: set[str],
 ) -> dict[str, dict[str, Any]]:
     """Calculate per-module coverage breakdown for prioritization."""
-    mapping = load_module_spec_mapping()
-    # Reverse: spec_id -> module
-    spec_to_module: dict[str, str] = {}
-    for mod, sids in mapping.items():
-        for sid in sids:
-            spec_to_module[sid] = mod
-
     module_stats: dict[str, dict[str, Any]] = {}
-    for sf in spec_files:
-        spec_id = sf.stem.split("-")[0] if "-" in sf.stem else sf.stem
-        module = spec_to_module.get(spec_id, "Unknown")
-        _, reqs = extract_requirements_from_spec(sf)
+    for spec in targets:
+        module = spec.module
+        _, reqs = extract_requirements_from_spec(spec)
         total = len([r for r, _ in reqs if not is_non_testable(r)])
         if total == 0:
             continue
@@ -649,18 +600,38 @@ def calculate_module_breakdown(
     for mod, stats in module_stats.items():
         pct = (stats["covered"] / stats["total"] * 100) if stats["total"] else 0
         stats["coverage"] = round(pct, 1)
-        stats["grade"] = "F" if pct < 60 else "D" if pct < 70 else "C" if pct < 80 else "B" if pct < 90 else "A" if pct < 95 else "A+"
+        if pct >= 95:
+            stats["grade"] = "A+"
+        elif pct >= 80:
+            stats["grade"] = "B"
+        else:
+            stats["grade"] = "C"
 
     return module_stats
 
 
-def main() -> None:
-    # Check for --list-modules first (before standard parsing)
-    if "--list-modules" in sys.argv:
-        modules = get_all_modules()
-        print("\nAvailable modules from docs/specs/index.md:")
+def main():
+    parser = argparse.ArgumentParser(description="Spec ↔ Tests Coverage Guard (via GitHub Issues)")
+    parser.add_argument("--module", help="Filter scan to a specific module")
+    parser.add_argument("--list-modules", action="store_true", help="List all available modules and exit")
+    parser.add_argument("--refresh", action="store_true", help="Fetch fresh issues from GitHub API")
+    parser.add_argument("--json", action="store_true", help="Output JSON report")
+    parser.add_argument("--output", help="Save output to file")
+    parser.add_argument("--quiet", action="store_true", help="Suppress non-error output")
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
+    parser.add_argument("--strict", action="store_true", help="Fail if any findings exist")
+    parser.add_argument("--ci", action="store_true", help="CI mode (exit 1 on medium+ findings)")
+
+    args = parser.parse_args()
+
+    # ─── Load Spec Targets from GitHub Issues ─────────────────────────
+    spec_targets = load_spec_targets(refresh=args.refresh)
+
+    if args.list_modules:
+        modules = get_all_modules(spec_targets)
+        print("\nAvailable modules from GitHub Spec Issues:")
         print("=" * 50)
-        mapping = load_module_spec_mapping()
+        mapping = load_module_spec_mapping(spec_targets)
         for mod in modules:
             specs = mapping[mod]
             spec_preview = ", ".join(specs[:3])
@@ -670,21 +641,13 @@ def main() -> None:
         print(f"\nTotal: {len(modules)} modules")
         return
 
-    args = parse_args_with_common("Spec ↔ Tests Coverage Guard — FR/NFR/UC traceability with module support")
-
     start = time.time()
     findings: list[Finding] = []
 
-    # ─── Discover spec files dynamically ──────────────────────────────
-    specs_dir = ROOT / "docs" / "specs"
-    spec_files = sorted(specs_dir.glob("*.md")) if specs_dir.exists() else []
-    # Filter out template and index
-    spec_files = [p for p in spec_files if p.name not in {"spec-template.md", "index.md", "implementation-matrix.md"} and not p.name.startswith("_")]
-
     # ─── Apply module filter ──────────────────────────────────────────
     if args.module:
-        spec_files = filter_specs_by_module(spec_files, args.module)
-        if not spec_files:
+        spec_targets = filter_specs_by_module(spec_targets, args.module)
+        if not spec_targets:
             print(f"No specs found for module '{args.module}'. Use --list-modules to see available modules.")
             sys.exit(1)
 
@@ -695,37 +658,38 @@ def main() -> None:
     if tests_dir.exists():
         test_files = sorted(tests_dir.rglob("*.php"))
         test_files = [p for p in test_files if p.is_file()]
-        # Browser tests (headless): tests/Browser/**/*.mjs, *.js
         browser_dir = tests_dir / "Browser"
         if browser_dir.exists():
             browser_files = sorted(browser_dir.rglob("*.mjs")) + sorted(browser_dir.rglob("*.js"))
             browser_files = [p for p in browser_files if p.is_file()]
 
     # ─── Build maps ───────────────────────────────────────────────────
-    spec_id_to_file: dict[str, Path] = {}
-    req_to_specs: dict[str, list[tuple[Path, int]]] = {}
+    spec_id_to_target: dict[str, SpecTarget] = {}
+    req_to_specs: dict[str, list[tuple[SpecTarget, int]]] = {}
     req_to_layers: dict[str, set[str]] = {}
-    spec_req_counts: dict[Path, int] = {}
+    spec_req_counts: dict[SpecTarget, int] = {}
     spec_ids_in_specs: set[str] = set()
 
-    non_testable_entries: list[tuple[Path, str, int]] = []
+    non_testable_entries: list[tuple[SpecTarget, str, int]] = []
     non_testable_reqs: set[str] = set()
 
-    for sf in spec_files:
-        spec_id, reqs = extract_requirements_from_spec(sf)
+    for spec in spec_targets:
+        spec_id, reqs = extract_requirements_from_spec(spec)
         if spec_id:
-            spec_id_to_file[spec_id] = sf
+            spec_id_to_target[spec_id] = spec
             spec_ids_in_specs.add(spec_id)
-        spec_req_counts[sf] = len(reqs)
+        spec_req_counts[spec] = len(reqs)
+
+        lines = spec.body.splitlines()
         for req_id, line in reqs:
             if is_non_testable(req_id):
                 non_testable_reqs.add(req_id)
-                non_testable_entries.append((sf, req_id, line))
+                non_testable_entries.append((spec, req_id, line))
             else:
-                req_to_specs.setdefault(req_id, []).append((sf, line))
-                row = read_file(sf).splitlines()[line - 1]
+                req_to_specs.setdefault(req_id, []).append((spec, line))
+                row = lines[line - 1] if 1 <= line <= len(lines) else ""
                 req_to_layers.setdefault(req_id, set()).update(
-                    classify_required_layers(req_id, row, sf)
+                    classify_required_layers(req_id, row, spec)
                 )
 
     all_spec_reqs: set[str] = set(req_to_specs.keys())
@@ -760,44 +724,34 @@ def main() -> None:
                 spec_ref_in_tests.add(sid)
 
     # ─── Rule: SPEC_TEST_NON_TESTABLE (info) ────────────────────────
-    for spec_file, req_id, line in non_testable_entries:
-        rel = relative_path(spec_file)
+    for spec, req_id, line in non_testable_entries:
         findings.append(Finding(
             id="SPEC-0000",
             rule="SPEC_TEST_NON_TESTABLE",
             severity="low",
             category="convention",
-            file=rel,
+            file=spec.file_path,
             line=line,
             message=f"Requirement {req_id} marked non-testable (marker *~/!/-X/-NT) — no test required",
             suggestion="No test needed; marker indicates manual verification, UI/UX, or infra requirement.",
-            reference="docs/guides/arch/testing-pattern.md",
-            context={"requirement": req_id, "spec": spec_file.name},
+            reference=spec.url,
+            context={"requirement": req_id, "spec": spec.name, "url": spec.url},
         ))
 
-    # ─── Rule: SPEC_TEST_UNCOVERED (with priority + UI hint) ─────
+    # ─── Rule: SPEC_TEST_UNCOVERED ─────────────────────────────────
     uncovered = sorted(all_spec_reqs - test_req_set)
-    # Score and sort by priority (high-impact first)
     scored_uncovered = sorted(
         uncovered,
         key=lambda r: (get_requirement_priority(r)[1], r),
         reverse=True,
     )
     for req_id in scored_uncovered:
-        spec_file, line = req_to_specs[req_id][0]
-        rel = relative_path(spec_file)
+        spec, line = req_to_specs[req_id][0]
         priority, _ = get_requirement_priority(req_id)
-        # Map priority to severity for triage
         severity = {"critical": "high", "high": "high", "medium": "medium", "low": "low"}[priority]
-        # Retrieve the specific requirement row text for precise UI heuristic (fix false positives)
-        line_text = None
-        try:
-            lines = read_file(spec_file).splitlines()
-            if 1 <= line <= len(lines):
-                line_text = lines[line - 1]
-        except Exception:
-            line_text = None
-        is_ui = is_ui_requirement(req_id, spec_file, line_text)
+        lines = spec.body.splitlines()
+        line_text = lines[line - 1] if 1 <= line <= len(lines) else None
+        is_ui = is_ui_requirement(req_id, spec, line_text)
         if is_ui:
             suggestion = f"Add Browser test (tests/Browser, puppeteer-core) that traces to {req_id} — UI requirement ({priority})"
         else:
@@ -807,39 +761,38 @@ def main() -> None:
             rule="SPEC_TEST_UNCOVERED",
             severity=severity,
             category="convention",
-            file=rel,
+            file=spec.file_path,
             line=line,
-            message=f"Requirement {req_id} in {spec_file.name} has no test coverage [{priority} priority{' — UI/client' if is_ui else ''}]",
+            message=f"Requirement {req_id} in {spec.name} has no test coverage [{priority} priority{' — UI/client' if is_ui else ''}]",
             suggestion=suggestion,
-            reference="docs/guides/arch/testing-pattern.md" if not is_ui else "docs/guides/infra/testing.md#browser-tests",
-            context={"requirement": req_id, "spec": spec_file.name, "priority": priority, "is_ui": is_ui},
+            reference=spec.url,
+            context={"requirement": req_id, "spec": spec.name, "priority": priority, "is_ui": is_ui, "url": spec.url},
         ))
 
     # ─── Rule: SPEC_TEST_LAYER_MISSING ──────────────────────────────
-    # A requirement can be traceable yet still be tested at the wrong boundary.
     for req_id in sorted(all_spec_reqs):
         required = req_to_layers.get(req_id, {"feature"})
         covered_layers = req_to_test_layers.get(req_id, set())
         missing_layers = sorted(required - covered_layers)
         if not missing_layers:
             continue
-        spec_file, line = req_to_specs[req_id][0]
-        rel = relative_path(spec_file)
+        spec, line = req_to_specs[req_id][0]
         findings.append(Finding(
             id="SPEC-0000",
             rule="SPEC_TEST_LAYER_MISSING",
             severity="medium" if req_id in test_req_set else "high",
             category="convention",
-            file=rel,
+            file=spec.file_path,
             line=line,
             message=f"Requirement {req_id} needs {', '.join(missing_layers)} test layer(s); covered by {', '.join(sorted(covered_layers)) or 'none'}",
             suggestion=f"Add a traceable test under tests/{missing_layers[0].title()}/ for {req_id}",
-            reference="docs/guides/arch/testing-pattern.md",
+            reference=spec.url,
             context={
                 "requirement": req_id,
                 "required_layers": sorted(required),
                 "covered_layers": sorted(covered_layers),
                 "missing_layers": missing_layers,
+                "url": spec.url,
             },
         ))
 
@@ -855,9 +808,9 @@ def main() -> None:
             category="convention",
             file=rel,
             line=line,
-            message=f"Test traces to {req_id} but no spec defines it (orphan test)",
-            suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec",
-            reference="docs/templates/spec-template.md",
+            message=f"Test traces to {req_id} but no spec issue defines it (orphan test)",
+            suggestion="Verify requirement ID spelling or add the missing FR/NFR/UC to the governing spec issue",
+            reference="https://github.com/reasvyn/internara/issues?q=label%3Aspec",
             context={"requirement": req_id, "test": rel},
         ))
 
@@ -873,7 +826,7 @@ def main() -> None:
             file=rel,
             line=line_no,
             message=f"Placeholder test '{test_name}' ({reason}) — not testing real behavior",
-            suggestion="Replace with a test that exercises domain code (Action/Entity/DTO/Model) or remove if the spec requirement was dropped",
+            suggestion="Replace with a test that exercises domain code (Action/Entity/DTO/Model)",
             reference="docs/guides/arch/testing-pattern.md",
             context={"test": test_name, "reason": reason, "file": rel},
         ))
@@ -882,7 +835,6 @@ def main() -> None:
     gaming_tests = detect_gaming_tests(test_files)
     for tf, test_name, line_no, reason in gaming_tests:
         rel = relative_path(tf)
-        # Check if this test also has a spec ID — if so, it's gaming the tracer
         has_spec_id = bool(RE_SPEC_REF.search(test_name))
         findings.append(Finding(
             id="SPEC-0000",
@@ -892,34 +844,31 @@ def main() -> None:
             file=rel,
             line=line_no,
             message=f"Scanner-gaming test '{test_name}' ({reason}) — satisfies traceability but tests no behavior",
-            suggestion="Add behavioral assertions (Action::execute, Model operations, event dispatch) or remove the spec ID if the requirement is architectural-only",
+            suggestion="Add behavioral assertions (Action::execute, Model operations, event dispatch)",
             reference="docs/guides/arch/testing-pattern.md",
             context={"test": test_name, "reason": reason, "has_spec_id": has_spec_id, "file": rel},
         ))
 
     # ─── Rule: SPEC_TEST_MISSING_FILE ───────────────────────────────
-    for sf in spec_files:
-        spec_id, reqs = extract_requirements_from_spec(sf)
-        if not spec_id:
-            continue
-        if not reqs:
+    for spec in spec_targets:
+        spec_id, reqs = extract_requirements_from_spec(spec)
+        if not spec_id or not reqs:
             continue
         if spec_id not in spec_ref_in_tests:
-            skip_specs = {"implementation-matrix", "spec-template", "index", "D2FT3", "architecture"}
-            if any(skip in sf.name for skip in skip_specs):
+            skip_specs = {"D2FT3", "architecture", "QLHDO"}
+            if spec_id in skip_specs:
                 continue
-            rel = relative_path(sf)
             findings.append(Finding(
                 id="SPEC-0000",
                 rule="SPEC_TEST_MISSING_FILE",
                 severity="high",
                 category="convention",
-                file=rel,
+                file=spec.file_path,
                 line=1,
-                message=f"Spec {spec_id} ({sf.name}) has {len(reqs)} requirements but no test file references it",
-                suggestion=f"Create tests that trace to {spec_id}",
-                reference="docs/guides/arch/testing-pattern.md",
-                context={"spec_id": spec_id, "requirements": len(reqs), "spec": sf.name},
+                message=f"Spec issue {spec.name} has {len(reqs)} requirements but no test file references it",
+                suggestion=f"Create tests that trace to {spec.spec_id}",
+                reference=spec.url,
+                context={"spec_id": spec_id, "requirements": len(reqs), "spec": spec.name, "url": spec.url},
             ))
 
     # ─── Sort and re-id deterministically ───────────────────────────
@@ -934,7 +883,7 @@ def main() -> None:
         covered_reqs=covered_reqs,
         non_testable_reqs=len(non_testable_reqs),
     )
-    module_breakdown = calculate_module_breakdown(spec_files, req_to_specs, test_req_set)
+    module_breakdown = calculate_module_breakdown(spec_targets, req_to_specs, test_req_set)
     layer_breakdown: dict[str, dict[str, int]] = {}
     for req_id in sorted(all_spec_reqs):
         for layer in sorted(req_to_layers.get(req_id, {"feature"})):
@@ -944,7 +893,7 @@ def main() -> None:
                 stats["covered"] += 1
             else:
                 stats["missing"] += 1
-    # Prioritize modules by uncovered count (high-impact first)
+
     top_gaps = sorted(
         [(mod, s) for mod, s in module_breakdown.items() if s["uncovered"] > 0],
         key=lambda x: (x[1]["uncovered"], 100 - x[1]["coverage"]),
@@ -953,8 +902,8 @@ def main() -> None:
 
     # ─── Build report ───────────────────────────────────────────────
     metadata = {
-        "total_files": len(spec_files) + len(test_files),
-        "spec_files": len(spec_files),
+        "total_files": len(spec_targets) + len(test_files),
+        "spec_issues": len(spec_targets),
         "test_files": len(test_files),
         "spec_requirements": len(all_spec_reqs),
         "test_requirements": len(test_req_set),
@@ -968,14 +917,14 @@ def main() -> None:
         "layer_breakdown": layer_breakdown,
         "top_gaps": [{"module": m, **s} for m, s in top_gaps],
     }
-    total_checks = len(all_spec_reqs) + len([sf for sf in spec_files if spec_req_counts.get(sf, 0) > 0])
+    total_checks = len(all_spec_reqs) + len([s for s in spec_targets if spec_req_counts.get(s, 0) > 0])
     result = build_report(findings, SCAN_NAME, "full" if not args.module else "module", args.module, start, metadata, total_checks=total_checks or len(findings) or 1)
 
     # ─── Print coverage summary ─────────────────────────────────────
     if not args.quiet:
         print(f"\n{'='*60}")
         print(f"  Coverage Score: {coverage['percentage']}% (Grade: {coverage['grade']})")
-        print(f"  Total Requirements: {coverage['total_requirements']}")
+        print(f"  Total Requirements (from GitHub Issues): {coverage['total_requirements']}")
         print(f"  Testable: {coverage['testable_requirements']}")
         print(f"  Covered: {coverage['covered_requirements']}")
         print(f"  Non-Testable: {coverage['non_testable_requirements']}")
@@ -990,13 +939,12 @@ def main() -> None:
                 stats = layer_breakdown.get(layer)
                 if stats:
                     print(f"    {layer:<8} {stats['missing']} missing / {stats['required']} required ({stats['covered']} covered)")
-        # Show top 5 uncovered critical/high priority
         critical_uncovered = [r for r in scored_uncovered if get_requirement_priority(r)[0] in ("critical", "high")][:5]
         if critical_uncovered:
             print(f"\n  Top 5 critical/high uncovered (high-impact, low-effort first):")
             for req_id in critical_uncovered:
-                sf, _ = req_to_specs[req_id][0]
-                print(f"    {req_id:<20} in {sf.name}")
+                spec, _ = req_to_specs[req_id][0]
+                print(f"    {req_id:<20} in {spec.name}")
         print(f"{'='*60}")
 
     # ─── Prune old outputs before writing new one ───────────────────

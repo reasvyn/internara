@@ -177,7 +177,7 @@ def classify_issue_advanced(raw: dict) -> tuple[dict, list[Finding]]:
             line=0,
             message=f"Issue #{number} has no module classification: '{title[:50]}...'",
             suggestion=f"Add module label ({', '.join(KNOWN_MODULES[:5])}...) or mention module in title",
-            reference="docs/specs/index.md",
+            reference="https://github.com/reasvyn/internara/issues?q=label%3Aspec",
             context={"title": title, "labels": labels},
         ))
 

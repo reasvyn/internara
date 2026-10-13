@@ -20,6 +20,7 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -576,3 +577,64 @@ def filter_by_severity(findings: list[Finding], min_severity: str | None) -> lis
     order = {"low": 0, "medium": 1, "high": 2, "critical": 3}
     min_level = order.get(min_severity, 0)
     return [f for f in findings if order.get(f.severity, 0) >= min_level]
+
+
+# ─── Spec Issues Helpers ───────────────────────────────────────────────────
+
+SPEC_ISSUES_CACHE = OUTPUT_DIR / ".spec_issues_cache.json"
+
+
+def fetch_spec_issues(
+    use_cache: bool = True,
+    refresh: bool = False,
+    max_retries: int = 3,
+) -> list[dict]:
+    """Fetch GitHub issues labeled 'spec' with caching and fallback.
+
+    Returns list of dicts with: number, title, labels, body, state, url, createdAt, updatedAt.
+    """
+    if use_cache and not refresh and SPEC_ISSUES_CACHE.exists():
+        try:
+            data = json.loads(SPEC_ISSUES_CACHE.read_text(encoding="utf-8"))
+            if isinstance(data, list) and len(data) > 0:
+                return data
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    for attempt in range(max_retries):
+        try:
+            proc = subprocess.run(
+                [
+                    "gh", "issue", "list",
+                    "--label", "spec",
+                    "--limit", "100",
+                    "--json", "number,title,labels,body,state,url,createdAt,updatedAt",
+                ],
+                capture_output=True,
+                text=True,
+                cwd=str(ROOT),
+                timeout=30,
+            )
+            if proc.returncode == 0:
+                data = json.loads(proc.stdout)
+                try:
+                    SPEC_ISSUES_CACHE.parent.mkdir(parents=True, exist_ok=True)
+                    SPEC_ISSUES_CACHE.write_text(json.dumps(data, indent=2), encoding="utf-8")
+                except OSError:
+                    pass
+                return data
+            if "rate limit" in proc.stderr.lower():
+                time.sleep(2 ** attempt)
+                continue
+        except Exception:
+            pass
+
+    # Fallback to cache if command failed
+    if SPEC_ISSUES_CACHE.exists():
+        try:
+            return json.loads(SPEC_ISSUES_CACHE.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    return []
+

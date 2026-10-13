@@ -29,10 +29,11 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from _common import ROOT, MODULES_DIR, APP_DIR, SCAN_VERSION
+    from _common import ROOT, MODULES_DIR, APP_DIR, SCAN_VERSION, fetch_spec_issues
 except ImportError:
     import sys as _sys
     _sys.path.insert(0, str(Path(__file__).parent))
+    from _common import fetch_spec_issues  # noqa: F401
     ROOT = Path(__file__).resolve().parent.parent.parent
     MODULES_DIR = ROOT / "app" / "Modules"
     APP_DIR = ROOT / "app"
@@ -734,7 +735,8 @@ def main() -> None:
     totals["events"] = comp_totals.get("events", 0)
 
     # ── Documentation ───────────────────────────────────────────────────────
-    spec_count = count_md_glob(ROOT / "docs" / "specs")
+    spec_issues = fetch_spec_issues()
+    spec_count = len(spec_issues) if spec_issues else count_md_glob(ROOT / "docs" / "specs")
     adr_count = count_md_glob(ROOT / "docs" / "adr")
     pattern_count = count_md_glob(ROOT / "docs" / "guides" / "arch")
     lang_en_dir = ROOT / "lang" / "en"
