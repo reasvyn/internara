@@ -4,8 +4,9 @@
 
 The structure for every index document in the repo: the hub that catalogs a set of sibling
 documents and gives readers the orientation to navigate them. Live indexes include
-`docs/specs/index.md`, `docs/templates/index.md`, `docs/guides/arch/index.md`,
-`docs/refs/modules/index.md`, and `docs/refs/deps/index.md`.
+`docs/templates/index.md`, `docs/guides/arch/index.md`,
+`docs/refs/modules/index.md`, and `docs/refs/deps/index.md` (specs are tracked as
+GitHub issues with `label:spec`, not a local index).
 
 ## The Skeleton
 

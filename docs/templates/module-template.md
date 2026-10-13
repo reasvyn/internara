@@ -34,7 +34,7 @@ schemas — those belong in `{module}-reference.md`.
 ## Quick References
 
 - `{module}-reference.md` — full API reference (markdown link in the real doc)
-- `../../specs/{ID}-{feature}.md` — governing spec (markdown link in the real doc)
+- Spec issue `[XXXXX]` (#NNN, `label:spec`) — governing spec (link to the GitHub issue in the real doc)
 ```
 
 ## What Belongs Here vs. the Reference Doc

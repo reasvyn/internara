@@ -2,16 +2,16 @@
 
 ## Description
 
-The fixed section skeleton every spec in `docs/specs/` follows: the 10 numbered sections.
+The fixed section skeleton every spec issue (`label:spec`, #442–#509) follows: the 10 numbered sections.
 Specs are the requirements SSOT — implementation and tests
 trace back to the requirement IDs defined here. Section-by-section content rules are documented
 inline in §Writing Discipline below.
 
 ## The Skeleton
 
-Copy everything inside the fence into `docs/specs/{ID}-{feature}.md`, where `{ID}` is a fresh
-5-character alphanumeric registry key, unique under `docs/specs/` and registered in
-`docs/specs/index.md` (see §Spec IDs below).
+Copy everything inside the fence into a new spec issue body (`label:spec`), where `{ID}` is a fresh
+5-character alphanumeric registry key, unique across spec issues and present in
+the issue title as `[{ID}]` (see §Spec IDs below).
 
 ```markdown
 # {ID} — {Feature Name}
@@ -59,7 +59,7 @@ governing-spec links. No set format. Every requirement row gets one, right after
 A Functional Requirement is a verifiable behavior the system must support. `Priority` ranks
 criticality on a P0–P3 scale. `Layer` declares the test layer that will verify it (legend below),
 so testers know where to look. `Status` tracks implementation of this specific requirement
-(independent of the spec's overall status in `docs/specs/index.md`).
+(independent of the spec's overall progress checklist in its issue body).
 
 | ID | Requirement | Priority | Layer | Status |
 |----|-------------|----------|-------|--------|
@@ -151,9 +151,9 @@ is updated when the issue closes. This section is the **spec-side counterpart** 
 
 ## Spec IDs
 
-- **Format:** `{ID}-{feature}.md` where `{ID}` is a unique 5-character `A-Z0-9` key (e.g.
-  `D2FT3-architecture.md`). Allocation order is irrelevant; uniqueness and registry entry are not.
-- **Registry:** every spec is registered in `docs/specs/index.md` with the same ID.
+- **Format:** `[{ID}] Title` where `{ID}` is a unique 5-character `A-Z0-9` key (e.g.
+  `[D2FT3]`). Allocation order is irrelevant; uniqueness and title entry are not.
+- **Registry:** every spec is a GitHub issue with `label:spec` carrying the same ID in its title.
 - **Requirement IDs:** stable per spec — format `{FR|NFR|UC|DD}-{SCOPE}-{XXX}` (e.g.
   `FR-AUTH-001`, `NFR-AUTH-002`, `UC-AUTH-003`); tests and implementation reference them verbatim.
   - `{FR|NFR|UC|DD}` — the requirement/decision type (Functional / Non-Functional / Use Case /
@@ -203,9 +203,9 @@ traceability check for that one row — it does not exempt a logic-level rule fr
 - One initiative = one spec; split oversized specs rather than growing them unbounded.
 - **Non-testable marker (short):** If a requirement cannot be code-tested (manual verification, UX, infra), mark it with a short non-testable suffix/prefix: `*` (canonical), `~`, `!`, `-X`, `-NT`, or `X-` prefix (e.g., `FR-{SCOPE}-001*`, `NFR-{SCOPE}-002~`). The marker is auditability, not a license to hide testable logic.
 - **Status consistency:** `Status` is always one of `Planned` / `Partial` / `Full`. It tracks the
-  *requirement itself*, independent of the spec's overall status in `docs/specs/index.md`.
+  *requirement itself*, independent of the spec's overall progress checklist in its issue body.
 
 ## Quick References
 
 - [`doc-template.md`](doc-template.md) — shared documentation standards (Diátaxis, principles)
-- [`specs/index.md`](../specs/index.md) — spec registry and build order
+- [`issue-template.md`](issue-template.md) — spec issues live on GitHub (`label:spec`); this skeleton fills the issue body

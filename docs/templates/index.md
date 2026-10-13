@@ -20,7 +20,7 @@ not duplicate these rules.
 | Template | Applies to | What it governs |
 |----------|-----------|-----------------|
 | [`doc-template.md`](doc-template.md) | Any general markdown doc | Shared doc standards: Description block, skeleton rule, writing discipline, Quick References footer |
-| [`spec-template.md`](spec-template.md) | Feature / module specs in `docs/specs/` | Spec IDs (FR/NFR/UC), problem statement, user stories, data contracts, design decisions, success metrics |
+| [`spec-template.md`](spec-template.md) | Spec issue bodies (`label:spec`, #442–#509) | Spec IDs (FR/NFR/UC), problem statement, user stories, data contracts, design decisions, success metrics |
 | [`adr-template.md`](adr-template.md) | Architecture Decision Records | Decision context, options, chosen path, consequences; ADR registry linkage |
 | [`guide-template.md`](guide-template.md) | How-to guides | Prerequisites, step-by-step, verification of the outcome |
 | [`pattern-template.md`](pattern-template.md) | Architecture patterns in `docs/guides/arch/` | Pattern problem, structure, contract, invariants (C1-C8, D1-D6) |

@@ -27,8 +27,8 @@ depends on.
 - **Concrete Exceptions**: 4 (`RejectedException`, `UnauthorizedException`,
   `ValidationFailedException`, `ActionFailedException`)
 - **Middleware**: 3 (`SecurityHeadersMiddleware`, `LogContextMiddleware`, `ConcurrencyGateMiddleware`)
-- **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
-  `PiiMasker`, `Spotlight`, `helpers.php`)
+- **Support Classes**: 9 (`ModuleManager`, `Color`, `CsvHandler`, `DummyData`, `Environment`, `PasswordRules`,
+  `PiiMasker`, `Token`, `helpers.php`) + 2 action traits (`HandlesActionErrors`, `ResolvesModuleName` in `Actions/Concerns/`)
 - **Action Traits**: 2 (`HandlesActionErrors`, `ResolvesModuleName`)
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
@@ -190,9 +190,8 @@ ModuleException (abstract, extends RuntimeException)
 | --------------------- | ------------------------------------------ | -------------------------------------------------- |
 | `Color`               | `Support/Color.php`                        | Hex-to-RGB, HSL conversion, color manipulation     |
 | `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation |
+| `DummyData`           | `Support/DummyData.php`                    | Factory-driven demo dataset generator (dev-only)   |
 | `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)   |
-| `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions          |
-| `ResolvesModuleName`  | `Actions/Concerns/ResolvesModuleName.php`  | Extracts module name from action class namespace   |
 | `ModuleManager`       | `Support/ModuleManager.php`                | Static gateway for module config reads (`config('module.*')`) |
 | `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
 | `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |
@@ -208,10 +207,10 @@ The helpers `setting()` and `brand()` are defined in `app/Modules/Setting/Suppor
 
 | File | Class | Extends |
 |---|---|---|
-| `Actions/BaseAction.php` | `BaseAction` | `BaseCommandAction` |
-| `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseCommandAction` |
-| `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseCommandAction` |
-| `Actions/BaseReadAction.php` | `BaseReadAction` | `BaseCommandAction` |
+| `Actions/BaseAction.php` | `BaseAction` | — (abstract root) |
+| `Actions/BaseCommandAction.php` | `BaseCommandAction` | `BaseAction` |
+| `Actions/BaseProcessAction.php` | `BaseProcessAction` | `BaseAction` |
+| `Actions/BaseReadAction.php` | `BaseReadAction` | — (standalone) |
 | `Actions/Concerns/HandlesActionErrors.php` | `HandlesActionErrors` | — |
 | `Actions/Concerns/ResolvesModuleName.php` | `ResolvesModuleName` | — |
 
