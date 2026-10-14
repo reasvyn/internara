@@ -375,13 +375,27 @@ Run `python3 scripts/py/scan_doc_links.py` to validate (add `--no-external` for 
 
 ---
 
-## 8. Version Senses
+## 8. Version Senses & Versioning Contract
 
 The version that ships is the one on the deploy host, not `composer.json`. Drift between local, tag,
 and the deployed checkout is the most common release bug. Compare `git describe --tags` locally vs
 the deploy host checkout (`ssh host "git -C ${DEPLOY_DIR:-$HOME/app} describe --tags"`) and the
-running image. Fix: bump `version`, tag `vX.Y.Z`, push the tag (deploys via
-`release.yml`). Full checklist: `docs/guides/upgrading.md`.
+running image. Full checklist: `docs/guides/upgrading.md`.
+
+### 8.1 Non-Negotiable Versioning Rules
+
+1. **Repository Version Files (`composer.json` & `package.json`):**
+   - Track **ONLY stable release versions** (e.g., `"0.17.0"`, `"0.17.1"`).
+   - **STRICTLY FORBIDDEN** to write, commit, or push pre-release or dev suffixes (`-dev`, `-dev.N`, `-alpha.*`, `-beta.*`, `-rc.*`) into `composer.json` or `package.json`. These files must remain clean at the stable baseline.
+2. **Dev & Pre-Release Increments (Git Tags Only):**
+   - Dev versions (`vX.Y.Z-dev.N`) and testing versions (`vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N`, `vX.Y.Z-rc.N`) exist **purely as Git tags on GitHub**.
+   - Creating a dev release requires only creating and pushing the Git tag (e.g. `git tag v0.17.1-dev.1 && git push origin v0.17.1-dev.1`). Never edit `composer.json` for dev iterations.
+3. **CI/CD Pipeline Contract (`release.yml`):**
+   - Consistency validation between Git tag and `composer.json` is enforced **ONLY for `production` stage** (final tags like `vX.Y.Z`).
+   - For `dev`, `alpha`, `beta`, and `rc` stages, the pipeline validates and executes QA purely against the pushed Git tag without demanding changes in `composer.json`.
+4. **Runtime Resolution & Zero Persistent Cache:**
+   - Applications resolve the running version via runtime environment (`APP_VERSION` or `VERSION_TAG` injected at deploy), falling back to `composer.json` when unset.
+   - `AppInfo` caches metadata only in-memory per request lifecycle (`self::$metadata`). Never cache metadata permanently in disk/Redis stores. Deploy scripts and entrypoints must execute `php artisan optimize:clear`.
 
 ---
 

@@ -145,7 +145,7 @@ php artisan up
 
 ---
 
-## 7. Version Numbering
+## 7. Version Numbering & SSoT Contract
 
 Internara follows [Semantic Versioning](https://semver.org/):
 
@@ -155,7 +155,19 @@ Internara follows [Semantic Versioning](https://semver.org/):
 | **Minor** | 1.0 → 1.1 | New features, no breaking changes |
 | **Patch** | 1.0.0 → 1.0.1 | Bug fixes, safe to upgrade |
 
-Current version: **0.17.0** (TallstackUI-only, DaisyUI/maryUI/PHPFlasher removed).
+Current version: **0.17.0**.
+
+### 7.1 Version SSoT Rules (composer.json vs Git Tags)
+
+1. **`composer.json` & `package.json` track ONLY stable versions:**
+   - Pre-release and development suffixes (`-dev`, `-alpha`, `-beta`, `-rc`) must **never** be committed into `composer.json` or `package.json`.
+   - Modifying `composer.json` version occurs strictly when cutting a stable release (`production`).
+2. **Dev Versions are Git Tags Only:**
+   - Dev builds use Git tags (`vX.Y.Z-dev.N`). Creating a dev release is performed solely by tagging: `git tag vX.Y.Z-dev.N && git push origin vX.Y.Z-dev.N`.
+   - The CI pipeline (`release.yml`) validates dev and testing stages from the tag itself without altering repository files.
+3. **Runtime Version Sensing:**
+   - The running application senses its version via `APP_VERSION` / `VERSION_TAG` injected at deploy time, falling back to `composer.json` if unset.
+   - Application metadata is cached only in-memory per request (`AppInfo`) and never persisted permanently across container recreations.
 
 ---
 

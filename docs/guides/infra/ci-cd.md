@@ -55,6 +55,20 @@ Release stages operate in two tiers: `development (vX.Y.Z-dev.N) → release (vX
 `beta`, and `rc` tags mark testing stages for code not yet fully verified. Only a final stable tag
 deploys to production once all production QA gates pass.
 
+### Versioning Rules & SSoT Contract
+
+Internara enforces strict separation between repository configuration files and Git release tags:
+
+1. **`composer.json` & `package.json` track ONLY stable versions:**
+   - The `"version"` field in `composer.json` and `package.json` represents the current stable baseline release (e.g., `0.17.0`).
+   - **Never commit or push pre-release or dev suffixes** (`-dev`, `-dev.N`, `-alpha`, `-beta`, `-rc`) into `composer.json` or `package.json`.
+2. **Dev and Pre-release Versions are Git Tags only:**
+   - Any interim development build or pre-release is created purely as a Git tag: `git tag vX.Y.Z-dev.N && git push origin vX.Y.Z-dev.N`.
+   - The CI pipeline (`release.yml`) recognizes dev and testing stages from the tag pattern without modifying repository files.
+3. **Validation Gate Enforcement:**
+   - Stage `production`: `composer.json` must exactly match the release tag (`0.17.0` ↔ `v0.17.0`).
+   - Stages `dev`, `alpha`, `beta`, `rc`: `composer.json` remains on the stable baseline and is not checked for pre-release suffixes.
+
 ### Hotfix branch — automated fast-track deploy
 
 For critical fixes that must reach production immediately, pushing to the **`hotfix` branch** triggers

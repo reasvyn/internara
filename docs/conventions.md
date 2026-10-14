@@ -745,6 +745,22 @@ refactor(setup): move dispatchEvent inside transaction callback
 
 ```
 
+### 12.4 Versioning & Release Conventions
+
+Internara follows Semantic Versioning with a strict separation between code repository files and Git release tags:
+
+1. **`composer.json` & `package.json` track ONLY stable versions:**
+   - The `"version"` field in `composer.json` and `package.json` represents the current stable release (e.g., `0.17.0`).
+   - **Never commit or push pre-release or development suffixes** (`-dev`, `-alpha`, `-beta`, `-rc`) to `composer.json` or `package.json`.
+   - Modifying version in `composer.json` occurs strictly when releasing a final stable version (`production`).
+2. **Development & Pre-Release Versions are Git Tags Only:**
+   - Development builds use Git tags (`vX.Y.Z-dev.N`). Creating a dev release requires only tagging: `git tag vX.Y.Z-dev.N && git push origin vX.Y.Z-dev.N`.
+   - Pre-release tags (`-alpha.N`, `-beta.N`, `-rc.N`) mark testing milestones without altering repository files.
+   - The CI pipeline (`release.yml`) validates dev and pre-release stages from the Git tag alone and passes through without demanding `composer.json` changes.
+3. **Runtime Version Sensing:**
+   - Runtime version resolution prioritizes environment injection (`APP_VERSION` / `VERSION_TAG`), falling back to `composer.json`.
+   - `AppInfo` caches metadata strictly in-memory per request (`self::$metadata`); never persist application metadata indefinitely in disk/Redis cache.
+
 ### 10.4 Technical Debt Annotation
 
 Use these annotations in code comments for tracking technical debt:
