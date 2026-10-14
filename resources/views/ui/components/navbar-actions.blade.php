@@ -24,6 +24,17 @@
         </div>
     @endif
 
+    {{-- About Link --}}
+    <a
+        wire:navigate
+        href="{{ route('about') }}"
+        class="text-base-content/60 hover:text-primary hover:bg-base-200 hidden size-9 items-center justify-center rounded-lg transition-colors md:flex"
+        title="{{ __('about.title') }}"
+        aria-label="{{ __('about.title') }}"
+    >
+        <x-ts-icon name="information-circle" class="size-5" />
+    </a>
+
     @auth
         {{-- Notification Bell --}}
         @if ($showNotifications)
@@ -57,6 +68,13 @@
                         :text="__('profile.title')"
                         icon="user"
                         :href="route('profile')"
+                        wire:navigate
+                    />
+
+                    <x-ts-dropdown.items
+                        :text="__('about.title')"
+                        icon="information-circle"
+                        :href="route('about')"
                         wire:navigate
                     />
 

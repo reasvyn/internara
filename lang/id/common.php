@@ -168,6 +168,7 @@ return [
         'certificate_templates' => 'Template Sertifikat',
         'account_lifecycle' => 'Siklus Akun',
         'gdpr_logs' => 'Log GDPR',
+        'information' => 'Informasi',
         'system' => 'Sistem',
         'handbooks' => 'Buku Panduan',
         'schedules' => 'Jadwal',

@@ -9,7 +9,15 @@
                         <x-ui::components.brand size="sm" :invert="false" />
                     </a>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-4">
+                        <a
+                            wire:navigate
+                            href="{{ route('about') }}"
+                            class="text-base-content/70 hover:text-primary text-sm font-medium transition-colors"
+                        >
+                            {{ __('about.title') }}
+                        </a>
+
                         <div class="inline-flex">
                             <x-setting::locale.theme-switch />
                         </div>
@@ -26,7 +34,17 @@
                 @isset($footer)
                     {{ $footer }}
                 @else
-                    <x-ui::components.credits />
+                    <div class="flex flex-col items-center gap-4">
+                        <nav
+                            aria-label="{{ __('common.footer_navigation') }}"
+                            class="text-base-content/60 flex items-center gap-6 text-xs"
+                        >
+                            <a wire:navigate href="{{ route('about') }}" class="hover:text-primary transition-colors">
+                                {{ __('about.title') }}
+                            </a>
+                        </nav>
+                        <x-ui::components.credits />
+                    </div>
                 @endisset
             </div>
         </footer>

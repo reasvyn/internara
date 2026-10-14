@@ -168,6 +168,7 @@ return [
         'certificate_templates' => 'Certificate Templates',
         'account_lifecycle' => 'Account Lifecycle',
         'gdpr_logs' => 'GDPR Logs',
+        'information' => 'Information',
         'system' => 'System',
         'handbooks' => 'Handbooks',
         'schedules' => 'Schedules',

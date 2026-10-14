@@ -45,7 +45,14 @@
 
         {{-- Default actions if no slot provided --}}
         @if (! isset($actions))
-            <div class="hidden items-center gap-2 md:flex">
+            <div class="hidden items-center gap-3 md:flex">
+                <a
+                    wire:navigate
+                    href="{{ route('about') }}"
+                    class="text-base-content/70 hover:text-primary text-xs font-medium transition-colors"
+                >
+                    {{ __('about.title') }}
+                </a>
                 <x-setting::locale.theme-switch size="sm" />
                 <livewire:setting.locale.lang-switch />
             </div>
@@ -83,6 +90,13 @@
     >
         <div class="flex flex-col gap-2">
             {{ $slot }}
+            <a
+                wire:navigate
+                href="{{ route('about') }}"
+                class="text-base-content/70 hover:text-primary text-xs font-medium transition-colors"
+            >
+                {{ __('about.title') }}
+            </a>
             <div class="border-base-content/10 mt-2 flex items-center justify-between border-t pt-3">
                 <div class="flex items-center gap-2">
                     <x-setting::locale.theme-switch size="sm" />

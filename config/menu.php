@@ -364,5 +364,18 @@ return [
                 ],
             ],
         ],
+
+        // Information
+        'information' => [
+            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor', 'student'],
+            'title' => 'common.sidebar.information',
+            'items' => [
+                [
+                    'route' => 'about',
+                    'icon' => 'o-information-circle',
+                    'label' => 'about.title',
+                ],
+            ],
+        ],
     ],
 ];

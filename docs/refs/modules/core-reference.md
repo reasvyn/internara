@@ -35,8 +35,8 @@ depends on.
 - **Process Action Base**: 1 (`BaseProcessAction`)
 - **Models**: 1 concrete (`ActivityLog`) + 2 abstract (`BaseModel`, `BaseAuthenticatable`)
 - **Events**: 1 (`BaseEvent`, abstract)
-- **Livewire Components**: 5 (`BaseRecordManager`, `BaseRecordEntry`, `BaseRecordList`,
-  `BaseFormView`, `BaseWizard`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
+- **Livewire Components**: 6 (`BaseRecordManager`, `BaseRecordEntry`, `BaseRecordList`,
+  `BaseFormView`, `BaseWizard`, `AboutPage`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
@@ -44,7 +44,7 @@ depends on.
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 2 (`config/cache-keys.php` — centralized cache key registry, `config/concurrency.php` — concurrency gate)
 - **Tests**: across Unit and Feature suites
-- **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
+- **Routes**: 1 (`GET /about` in `routes/web/user.php`)
 
 ---
 
@@ -168,6 +168,7 @@ ModuleException (abstract, extends RuntimeException)
 
 | File | Component | Extends |
 |---|---|---|
+| `Livewire/AboutPage.php` | `AboutPage` | `Component` |
 | `Livewire/BaseFormView.php` | `BaseFormView` | `BaseFormView` |
 | `Livewire/BaseRecordEntry.php` | `BaseRecordEntry` | `BaseRecordEntry` |
 | `Livewire/BaseRecordList.php` | `BaseRecordList` | `BaseRecordManager` |

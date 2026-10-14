@@ -30,11 +30,11 @@
                     <span>{{ brand('name') }}</span>
                 </a>
 
-                @if ($links)
-                    <nav
-                        aria-label="{{ __('common.footer_navigation') }}"
-                        class="text-base-content/60 flex flex-wrap items-center gap-4 text-xs"
-                    >
+                <nav
+                    aria-label="{{ __('common.footer_navigation') }}"
+                    class="text-base-content/60 flex flex-wrap items-center gap-4 text-xs"
+                >
+                    @if ($links)
                         @foreach ($links as $link)
                             <a
                                 href="{{ $link['url'] }}"
@@ -43,8 +43,16 @@
                                 {{ $link['label'] }}
                             </a>
                         @endforeach
-                    </nav>
-                @endif
+                    @endif
+
+                    <a
+                        href="{{ route('about') }}"
+                        wire:navigate
+                        class="hover:text-primary underline-offset-4 transition-colors hover:underline"
+                    >
+                        {{ __('about.title') }}
+                    </a>
+                </nav>
 
                 {{ $slot }}
             </div>
