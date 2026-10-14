@@ -189,7 +189,7 @@ return [
         'progress_label' => 'Progres Setup',
         'progress_aria' => 'Langkah :current dari :total',
         'welcome' => 'Selamat Datang di Internara',
-        'welcome_desc' => 'Kami akan membantu Anda menyiapkan sistem manajemen magang profesional Anda hanya dalam beberapa langkah.',
+        'welcome_desc' => 'Kami akan membantu Anda menyiapkan sistem manajemen PKL Anda hanya dalam beberapa langkah.',
         'audit_results' => 'Hasil Audit Sistem',
         'system_requirements' => 'Persyaratan Sistem',
         'start_setup' => 'Mulai Setup',

@@ -9,7 +9,7 @@ return [
         'database' => 'Akun Anda telah dibuat. Lengkapi profil Anda untuk memulai.',
         'mail_subject' => 'Selamat Datang di Sistem',
         'mail_greeting' => 'Halo :name!',
-        'mail_line1' => 'Akun Anda untuk Sistem Manajemen Magang telah dibuat.',
+        'mail_line1' => 'Akun Anda untuk Sistem Manajemen PKL telah dibuat.',
         'mail_username' => 'Username: :username',
         'mail_password' => 'Kata Sandi Sementara: :password',
         'mail_line2' => 'Silakan ganti kata sandi Anda setelah masuk.',
@@ -84,7 +84,7 @@ return [
     ],
     'system_installed' => [
         'title' => 'Sistem Terinstal',
-        'message' => 'Sistem manajemen magang telah berhasil diinstal. Selamat bergabung!',
+        'message' => 'Sistem manajemen PKL telah berhasil diinstal. Selamat bergabung!',
     ],
     'welcome_to_dashboard' => [
         'title' => 'Selamat Datang di Dashboard!',
