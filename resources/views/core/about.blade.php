@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-200">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
                         <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
                             <x-ts-icon name="academic-cap" class="size-5" />
                         </div>
@@ -113,7 +113,7 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-200">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
                         <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
                             <x-ts-icon name="wrench-screwdriver" class="size-5" />
                         </div>
@@ -125,7 +125,7 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-200">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
                         <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
                             <x-ts-icon name="cube" class="size-5" />
                         </div>
@@ -137,7 +137,7 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-200">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200">
                         <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
                             <x-ts-icon name="shield-check" class="size-5" />
                         </div>
@@ -149,7 +149,7 @@
                         </p>
                     </div>
 
-                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-2xl border p-6 transition-all duration-200 md:col-span-2">
+                    <div class="bg-base-100 border-base-content/10 hover:border-primary/30 rounded-xl border p-6 transition-all duration-200 md:col-span-2">
                         <div class="bg-primary/10 text-primary mb-3.5 flex size-10 items-center justify-center rounded-xl">
                             <x-ts-icon name="arrow-path" class="size-5" />
                         </div>
@@ -216,7 +216,7 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {{-- System Diagnostics Card --}}
                 <div
-                    class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-2xl border p-6"
+                    class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-xl border p-6"
                     x-data="{
                         copied: false,
                         snippet: @js($diagnosticSnippet),
@@ -289,7 +289,7 @@
                 </div>
 
                 {{-- Open Source & License Card --}}
-                <div class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-2xl border p-6">
+                <div class="bg-base-100 border-base-content/10 flex flex-col justify-between rounded-xl border p-6">
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <div class="bg-primary/10 text-primary flex size-8 items-center justify-center rounded-lg">
