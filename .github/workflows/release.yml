@@ -97,25 +97,31 @@ jobs:
               id: validate
               run: |
                   set -euo pipefail
+                  STAGE="${{ needs.stage.outputs.stage }}"
                   TAG="${{ needs.stage.outputs.version }}"
                   FULL_TAG="${{ needs.stage.outputs.tag }}"
                   COMPOSER_VERSION=$(jq -r '.version' composer.json)
                   TAG_VERSION="${TAG#v}"
                   FULL_TAG_VERSION="${FULL_TAG#v}"
 
-                  echo "Base version: $TAG_VERSION"
+                  echo "Release stage: $STAGE"
+                  echo "Base tag version: $TAG_VERSION"
                   echo "Full tag version: $FULL_TAG_VERSION"
                   echo "composer.json version: $COMPOSER_VERSION"
 
-                  if [ "$TAG_VERSION" != "$COMPOSER_VERSION" ] && \
-                     [ "$FULL_TAG_VERSION" != "$COMPOSER_VERSION" ] && \
-                     [ "${TAG_VERSION}-dev" != "$COMPOSER_VERSION" ]; then
-                    echo "::error::Version mismatch: tag is $FULL_TAG but composer.json is $COMPOSER_VERSION"
-                    exit 1
+                  if [ "$STAGE" = "production" ]; then
+                    if [ "$TAG_VERSION" != "$COMPOSER_VERSION" ] && [ "$FULL_TAG_VERSION" != "$COMPOSER_VERSION" ]; then
+                      echo "::error::Version mismatch: production tag is $FULL_TAG but composer.json is $COMPOSER_VERSION"
+                      exit 1
+                    fi
+                    echo "✓ Production version validated: $COMPOSER_VERSION"
+                  else
+                    # Development and pre-release iterations are governed by Git tags alone.
+                    # composer.json and package.json remain untouched tracking the base release.
+                    echo "✓ Pre-release / dev tag ($FULL_TAG) accepted without modifying composer.json (current: $COMPOSER_VERSION)"
                   fi
 
                   echo "version=$TAG_VERSION" >> "$GITHUB_OUTPUT"
-                  echo "✓ Version validated: $COMPOSER_VERSION"
 
             - name: Validate PHP syntax
               run: |
