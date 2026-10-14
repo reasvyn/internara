@@ -105,9 +105,7 @@ final class AppInfo
 
     private static function load(): array
     {
-        return Cache::rememberForever(self::cacheKey(), function () {
-            return self::readFromComposer();
-        });
+        return self::readFromComposer();
     }
 
     private static function readFromComposer(): array

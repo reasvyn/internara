@@ -17,6 +17,9 @@ cp -a /opt/app-public/. /app/public/
 mkdir -p /app/storage/framework/cache/data /app/storage/framework/sessions /app/storage/framework/views /app/storage/logs /app/bootstrap/cache
 chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage
 
+echo "[entrypoint] clearing application cache"
+su -s /bin/sh www-data -c "php /app/artisan optimize:clear"
+
 echo "[entrypoint] running migrations"
 su -s /bin/sh www-data -c "php /app/artisan migrate --force"
 

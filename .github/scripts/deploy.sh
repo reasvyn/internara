@@ -164,6 +164,9 @@ fi
 echo "==> Cleaning up dangling images"
 docker image prune -f >/dev/null 2>&1 || true
 
+echo "==> Clearing application and view cache"
+docker compose "${ENV_FILE_ARGS[@]}" exec -T app php artisan optimize:clear || true
+
 echo "==> Waiting for health check (max 60s)"
 HEALTH_CHECK_PASSED=false
 HEALTH_TMP="${TMPDIR:-/tmp}/internara-health-body"
