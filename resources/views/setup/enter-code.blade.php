@@ -177,7 +177,7 @@
         <button
             type="button"
             x-on:click="showGuide = true"
-            class="bg-primary text-primary-content ring-primary/20 fixed right-6 bottom-6 z-40 flex size-12 items-center justify-center rounded-full shadow-lg ring-4 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:brightness-105 active:scale-95"
+            class="bg-primary text-primary-content ring-primary/20 hover:bg-primary/80 fixed right-6 bottom-6 z-40 flex size-12 items-center justify-center rounded-full shadow-lg ring-4 transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95"
             aria-label="{{ __('setup.guide.title') }}"
         >
             <x-ts-icon name="question-mark-circle" class="size-6" />

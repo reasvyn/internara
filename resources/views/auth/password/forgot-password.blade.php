@@ -16,8 +16,9 @@
                     href="{{ route('login') }}"
                     :text="__('auth.login.back_to_login')"
                     icon="arrow-left"
-                    class="btn-outline w-full"
+                    class="w-full"
                     color="primary"
+                    outline
                     wire:navigate
                 />
             </div>

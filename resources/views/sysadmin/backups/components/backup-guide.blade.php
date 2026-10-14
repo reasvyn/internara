@@ -2,7 +2,7 @@
     <button
         type="button"
         x-on:click="showGuide = true"
-        class="bg-primary text-primary-content hover:bg-primary-focus fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
+        class="bg-primary text-primary-content hover:bg-primary/80 fixed right-6 bottom-6 z-50 flex size-12 items-center justify-center rounded-full shadow-xl transition-all duration-200 hover:scale-110 active:scale-95"
         aria-label="{{ __('sysadmin.guide.backup_title') }}"
     >
         <x-ts-icon name="question-mark-circle" class="size-6" />

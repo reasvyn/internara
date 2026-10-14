@@ -129,13 +129,34 @@
     .btn-ghost { background: transparent; color: var(--color-base-content); border-color: transparent; }
     .btn-ghost:hover { background: var(--color-base-200); }
     .btn-primary { background: var(--color-primary); color: var(--color-primary-content); border-color: var(--color-primary); }
-    .btn-secondary { background: var(--color-secondary); color: var(--color-secondary-content); }
-    .btn-accent { background: var(--color-accent); color: var(--color-accent-content); }
-    .btn-success { background: var(--color-success); color: var(--color-success-content); }
-    .btn-warning { background: var(--color-warning); color: var(--color-warning-content); }
-    .btn-error, .btn-danger { background: var(--color-error); color: var(--color-error-content); }
-    .btn-info { background: var(--color-info); color: var(--color-info-content); }
+    .btn-primary:hover { background: color-mix(in srgb, var(--color-primary) 80%, transparent); }
+    .btn-secondary { background: var(--color-secondary); color: var(--color-secondary-content); border-color: var(--color-secondary); }
+    .btn-secondary:hover { background: color-mix(in srgb, var(--color-secondary) 80%, transparent); }
+    .btn-accent { background: var(--color-accent); color: var(--color-accent-content); border-color: var(--color-accent); }
+    .btn-accent:hover { background: color-mix(in srgb, var(--color-accent) 80%, transparent); }
+    .btn-success { background: var(--color-success); color: var(--color-success-content); border-color: var(--color-success); }
+    .btn-success:hover { background: color-mix(in srgb, var(--color-success) 80%, transparent); }
+    .btn-warning { background: var(--color-warning); color: var(--color-warning-content); border-color: var(--color-warning); }
+    .btn-warning:hover { background: color-mix(in srgb, var(--color-warning) 80%, transparent); }
+    .btn-error, .btn-danger { background: var(--color-error); color: var(--color-error-content); border-color: var(--color-error); }
+    .btn-error:hover, .btn-danger:hover { background: color-mix(in srgb, var(--color-error) 80%, transparent); }
+    .btn-info { background: var(--color-info); color: var(--color-info-content); border-color: var(--color-info); }
+    .btn-info:hover { background: color-mix(in srgb, var(--color-info) 80%, transparent); }
     .btn-outline { background: transparent; border-color: currentColor; }
+    .btn-outline.btn-primary { color: var(--color-primary); border-color: var(--color-primary); background: transparent; }
+    .btn-outline.btn-primary:hover { background: var(--color-primary); color: var(--color-primary-content); }
+    .btn-outline.btn-secondary { color: var(--color-secondary); border-color: var(--color-secondary); background: transparent; }
+    .btn-outline.btn-secondary:hover { background: var(--color-secondary); color: var(--color-secondary-content); }
+    .btn-outline.btn-accent { color: var(--color-accent); border-color: var(--color-accent); background: transparent; }
+    .btn-outline.btn-accent:hover { background: var(--color-accent); color: var(--color-accent-content); }
+    .btn-outline.btn-success { color: var(--color-success); border-color: var(--color-success); background: transparent; }
+    .btn-outline.btn-success:hover { background: var(--color-success); color: var(--color-success-content); }
+    .btn-outline.btn-warning { color: var(--color-warning); border-color: var(--color-warning); background: transparent; }
+    .btn-outline.btn-warning:hover { background: var(--color-warning); color: var(--color-warning-content); }
+    .btn-outline.btn-error, .btn-outline.btn-danger { color: var(--color-error); border-color: var(--color-error); background: transparent; }
+    .btn-outline.btn-error:hover, .btn-outline.btn-danger:hover { background: var(--color-error); color: var(--color-error-content); }
+    .btn-outline.btn-info { color: var(--color-info); border-color: var(--color-info); background: transparent; }
+    .btn-outline.btn-info:hover { background: var(--color-info); color: var(--color-info-content); }
     .table { width: 100%; border-collapse: collapse; }
     .table :where(th, td) { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--color-base-300); }
     .table-sm :where(th, td) { padding: 0.5rem 0.75rem; font-size: 0.875rem; }

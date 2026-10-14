@@ -65,7 +65,7 @@
         <p class="text-base-content/50 text-xs">{{ __('auth.login.no_account') }}</p>
         <a
             href="{{ route('activate') }}"
-            class="text-primary hover:text-primary-focus mt-0.5 inline-flex items-center text-xs font-medium transition-colors"
+            class="text-primary hover:text-primary/80 mt-0.5 inline-flex items-center text-xs font-medium transition-colors"
             wire:navigate
         >
             <x-ts-icon name="rocket-launch" class="mr-1 size-3" />
