@@ -817,6 +817,24 @@ Every form field MUST include an icon for visual clarity:
 
 Icons use Heroicons via TallstackUI `x-ts-icon` (or inline SVG with `heroicon-*`). Pair icons with labels — never use icons as the sole indicator for accessibility.
 
+### Curvature & Soft Shapes (Tanpa Sudut Tajam)
+
+Sharp 90-degree corners and `rounded-none` are strictly prohibited on all UI elements:
+
+- **Cards & structural surfaces**: `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px)
+- **Interactive inputs, selects, textareas, buttons, and alerts**: `rounded-xl` (0.75rem / 12px)
+- **Badges, status indicators, avatar circles, and mode switchers**: `rounded-full` (9999px)
+- **Checkboxes**: `rounded-md` (0.375rem / 6px)
+
+### Compact Hierarchy & Viewport Responsiveness
+
+Interfaces must avoid decorative vertical bloat and excessive paddings:
+
+- **Compact forms**: `space-y-3.5` (mobile) to `space-y-4` (desktop)
+- **Card padding**: `p-5 sm:p-6` (main/auth cards) or `p-4 sm:p-5` (stat/feature cards)
+- **Viewport efficiency**: Auth screens and overview workflows must fit comfortably in standard viewports without forcing unnecessary vertical scrolling
+- **Three-tier responsiveness**: Small (<640px) uses single-column reflow (`w-full`); medium (640px–1024px) uses balanced two-column (`sm:grid-cols-2`); large (≥1024px) uses multi-column density (`lg:grid-cols-3` or `lg:grid-cols-4`).
+
 ---
 
 ## 14. Frontend & Blade Presentation

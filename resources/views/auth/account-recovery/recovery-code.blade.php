@@ -1,37 +1,37 @@
 <div>
-    <div class="mb-6 flex items-center gap-4">
-        <div class="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-xl">
-            <x-ts-icon name="key" class="size-6" />
+    <div class="mb-5 flex items-center gap-3.5 sm:mb-6">
+        <div class="bg-primary/10 text-primary flex size-11 shrink-0 items-center justify-center rounded-2xl sm:size-12">
+            <x-ts-icon name="key" class="size-5 sm:size-6" />
         </div>
         <div>
-            <h2 class="text-xl font-bold">{{ __('profile.recovery.title') }}</h2>
-            <p class="text-base-content/60 mt-0.5 text-sm">{{ __('profile.recovery.subtitle') }}</p>
+            <h2 class="text-lg font-bold sm:text-xl">{{ __('profile.recovery.title') }}</h2>
+            <p class="text-base-content/60 mt-0.5 text-xs sm:text-sm">{{ __('profile.recovery.subtitle') }}</p>
         </div>
     </div>
 
     <div class="mx-auto max-w-lg">
-        <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
+        <x-ts-card shadowless class="bg-base-100 border-base-content/10 rounded-2xl border">
             @if (! empty($codes))
-                <div class="space-y-5 text-center">
-                    <div class="bg-success/10 text-success mx-auto flex size-14 items-center justify-center rounded-full">
-                        <x-ts-icon name="document-text" class="size-7" />
+                <div class="space-y-4 text-center sm:space-y-5">
+                    <div class="bg-success/10 text-success mx-auto flex size-12 items-center justify-center rounded-full sm:size-14">
+                        <x-ts-icon name="document-text" class="size-6 sm:size-7" />
                     </div>
 
                     <div>
-                        <h3 class="font-semibold">{{ __('profile.recovery.generated_title') }}</h3>
+                        <h3 class="text-sm font-semibold sm:text-base">{{ __('profile.recovery.generated_title') }}</h3>
                         <p class="text-base-content/60 mt-1 text-xs">{{ __('profile.recovery.generated_desc') }}</p>
                     </div>
 
-                    <div class="bg-base-200 space-y-2 rounded-xl p-5 text-left">
+                    <div class="bg-base-200 space-y-2 rounded-2xl p-4 text-left sm:p-5">
                         @foreach ($codes as $index => $code)
-                            <div class="bg-base-100 border-base-content/10 flex items-center gap-3 rounded-lg border px-4 py-2.5 font-mono text-sm font-bold tracking-wider select-all">
+                            <div class="bg-base-100 border-base-content/10 flex items-center gap-3 rounded-xl border px-3.5 py-2 font-mono text-xs font-bold tracking-wider select-all sm:px-4 sm:py-2.5 sm:text-sm">
                                 <span class="text-base-content/60 w-6 shrink-0 font-mono text-xs">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
                                 <span class="flex-1">{{ $code }}</span>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="bg-warning/5 border-warning/20 space-y-2 rounded-xl border p-4 text-left text-xs">
+                    <div class="bg-warning/5 border-warning/20 space-y-2 rounded-2xl border p-4 text-left text-xs">
                         <p class="flex items-start gap-2">
                             <x-ts-icon name="shield-exclamation" class="mt-0.5 size-3 shrink-0" />
                             {{ __('profile.recovery.one_time_per_code') }}
@@ -42,7 +42,7 @@
                         </p>
                     </div>
 
-                    <div class="flex flex-col gap-3">
+                    <div class="flex flex-col gap-2.5 sm:gap-3">
                         <x-ts-button
                             :text="__('profile.recovery.download_pdf')"
                             icon="arrow-down-tray"
@@ -62,17 +62,17 @@
                     </div>
                 </div>
             @else
-                <div class="space-y-5 text-center">
-                    <div class="bg-base-200 text-base-content/30 mx-auto flex size-14 items-center justify-center rounded-full">
-                        <x-ts-icon name="key" class="size-7" />
+                <div class="space-y-4 text-center sm:space-y-5">
+                    <div class="bg-base-200 text-base-content/30 mx-auto flex size-12 items-center justify-center rounded-full sm:size-14">
+                        <x-ts-icon name="key" class="size-6 sm:size-7" />
                     </div>
 
                     <div>
-                        <h3 class="font-semibold">{{ __('profile.recovery.empty_title') }}</h3>
+                        <h3 class="text-sm font-semibold sm:text-base">{{ __('profile.recovery.empty_title') }}</h3>
                         <p class="text-base-content/60 mt-1 text-xs">{{ __('profile.recovery.empty_desc') }}</p>
                     </div>
 
-                    <div class="bg-info/5 border-info/20 rounded-xl border p-4 text-left">
+                    <div class="bg-info/5 border-info/20 rounded-2xl border p-4 text-left">
                         <p class="text-info mb-2 text-xs font-semibold">{{ __('profile.recovery.how_it_works') }}</p>
                         <ol class="text-base-content/60 list-inside list-decimal space-y-1 text-xs">
                             <li>{{ __('profile.recovery.step_1') }}</li>

@@ -28,12 +28,12 @@
 <div {{ $attributes->merge(['class' => 'flex items-center gap-3 group min-w-0']) }}>
     <img
         src="{{ brand('logo') }}"
+        alt="{{ brand('name') }}"
         @class([
             'object-contain transition-transform group-hover:scale-110 duration-500',
             'brightness-0 invert' => $invert,
             $sizeClasses,
         ])
-        alt="{{ brand('name') }}"
     />
 
     @if ($withName)

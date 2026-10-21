@@ -1,6 +1,7 @@
 @props([
     'fullWidth' => false,
     'showCredit' => true,
+    'compact' => false,
     'links' => null, // array of ['label' => '', 'url' => '']
 ])
 
@@ -14,7 +15,9 @@
     role="contentinfo"
 >
     <div @class([
-        'mx-auto px-4 sm:px-6 lg:px-8 py-6',
+        'mx-auto px-4 sm:px-6 lg:px-8',
+        'py-3 sm:py-4' => $compact,
+        'py-6' => ! $compact,
         'container max-w-7xl' => ! $fullWidth,
         'w-full' => $fullWidth,
     ])>

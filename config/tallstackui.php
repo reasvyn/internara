@@ -211,7 +211,7 @@ return [
             |
             */
             [
-                'round' => false,
+                'round' => true,
             ],
         ],
         'banner' => Components\Banner\Component::class,
@@ -244,7 +244,7 @@ return [
                 | spinner: controls the default wire:loading spinner variant. (Allowed: null, ring, throbber, gradient, ping, dots, pulse, typing, bars, wave).
                 |
                 */
-                'round' => false,
+                'round' => 'xl',
                 'spinner' => null,
             ],
         ],
@@ -282,7 +282,7 @@ return [
             [
                 'shadowless' => false,
                 'bordered' => false,
-                'round' => false,
+                'round' => '2xl',
             ],
         ],
         'chart' => [

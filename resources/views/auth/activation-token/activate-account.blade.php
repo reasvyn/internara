@@ -1,11 +1,11 @@
 <div>
-    <div class="bg-base-100 border-base-content/10 rounded-xl border p-6">
-        <div class="mb-6 text-center">
-            <h2 class="text-lg font-bold">{{ __('auth.activate.title') }}</h2>
-            <p class="text-base-content/50 mt-1 text-sm">{{ __('auth.activate.subtitle') }}</p>
+    <div class="bg-base-100 border-base-content/10 rounded-xl border p-5 shadow-xs sm:p-6">
+        <div class="mb-4 text-center sm:mb-5">
+            <h2 class="text-base font-bold sm:text-lg">{{ __('auth.activate.title') }}</h2>
+            <p class="text-base-content/60 mt-0.5 text-xs sm:text-sm">{{ __('auth.activate.subtitle') }}</p>
         </div>
 
-        <form wire:submit="activate" class="space-y-5">
+        <form wire:submit="activate" class="space-y-3.5 sm:space-y-4">
             <x-ts-input
                 wire:model="email"
                 type="email"
@@ -38,7 +38,7 @@
                 right
             />
 
-            <div class="border-base-content/10 border-t pt-5">
+            <div class="border-base-content/10 border-t pt-4">
                 <x-ts-button
                     type="submit"
                     :text="__('auth.activate.submit')"
@@ -49,12 +49,13 @@
             </div>
         </form>
 
-        <div class="mt-5 text-center">
+        <div class="mt-4 text-center">
             <a
                 href="{{ route('login') }}"
-                class="text-base-content/50 hover:text-primary text-xs transition-colors"
+                class="text-base-content/60 hover:text-primary inline-flex items-center text-xs transition-colors"
                 wire:navigate
             >
+                <x-ts-icon name="arrow-left" class="mr-1.5 size-3" />
                 {{ __('auth.activate.back_to_login') }}
             </a>
         </div>

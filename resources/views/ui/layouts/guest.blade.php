@@ -4,16 +4,16 @@
     <div class="bg-base-200/50 flex min-h-screen flex-col">
         <header class="border-base-content/10 bg-base-100/80 sticky top-0 z-50 border-b backdrop-blur-sm">
             <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-16 items-center justify-between">
+                <div class="flex h-14 items-center justify-between sm:h-16">
                     <a wire:navigate href="/" class="flex items-center gap-3">
                         <x-ui::components.brand size="sm" :invert="false" />
                     </a>
 
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4">
                         <a
                             wire:navigate
                             href="{{ route('about') }}"
-                            class="text-base-content/70 hover:text-primary text-sm font-medium transition-colors"
+                            class="text-base-content/70 hover:text-primary text-xs font-medium transition-colors sm:text-sm"
                         >
                             {{ __('about.title') }}
                         </a>
@@ -28,7 +28,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('dashboard') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3.5 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.dashboard.title') }}
                                 </a>
@@ -36,7 +36,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('login') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3.5 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.home.login_action') }}
                                 </a>
@@ -49,7 +49,7 @@
 
         <main id="main-content" class="flex flex-1 flex-col">{{ $slot }}</main>
 
-        <footer class="border-base-content/10 mt-auto border-t py-8">
+        <footer class="border-base-content/10 mt-auto border-t py-5 sm:py-6">
             <div class="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                 @isset($footer)
                     {{ $footer }}

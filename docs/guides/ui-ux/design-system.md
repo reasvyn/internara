@@ -31,8 +31,31 @@ Internara's interface is built on three layers:
 | **Self-hosted palette**| Semantic color bridge      | `--color-base-100/200/300`, `--color-primary/secondary/accent`, `info/success/warning/error` — mirrors legacy DaisyUI tokens via `@theme` + `@layer components` shims in `resources/css/app.css` (no DaisyUI plugin) |
 
 Livewire manages server-side state; Alpine.js handles client-side behavior. The visual language is
-clean and professional: neutral monochrome base, single accent brand color, low-saturation
-backgrounds, subtle borders, bold typography, minimal shadows.
+clean, compact, minimalist, and modern: neutral monochrome base, single accent brand color, low-saturation
+backgrounds, subtle borders, bold typography, minimal shadows, and soft fluid curvature with **zero sharp corners**.
+
+### 1.1 Core Aesthetic Principles
+
+#### 1. Compact Rhythm & Viewport Efficiency
+- Interfaces prioritize vertical efficiency without feeling cramped. Excessive hero heights, bloated paddings, and arbitrary white space are eliminated.
+- Authentication screens, modal dialogues, and overview cards are designed to fit comfortably within the standard viewport on desktop and laptop screens (768px–900px height) without requiring unnecessary vertical scrolling to reach primary action buttons.
+- Standard form spacing is consolidated to `space-y-3.5` (mobile) / `space-y-4` (desktop).
+- Card padding adheres to `p-5 sm:p-6` (main cards) or `p-4 sm:p-5` (feature/stat cards).
+
+#### 2. Modern Minimalism
+- Clutter-free visual hierarchy: content-first layouts, subtle micro-interactions, and low-contrast surface dividers (`border-base-content/10`) instead of heavy box shadows or busy graphic dividers.
+- Elevation relies on delicate border definition (`border border-base-content/10`) coupled with soft shadows (`shadow-xs` or `shadow-sm`), reserving deeper shadows (`shadow-xl`) strictly for floating overlays (modals, dropdown menus).
+
+#### 3. Soft Fluid Curvature — Zero Sharp Corners ("Tanpa Sudut Tajam")
+Every structural container, surface, input, button, badge, and interactive element across Internara MUST feature smooth rounded curvature. **Sharp 90-degree corners and `rounded-none` are strictly prohibited**.
+
+| Component Category | Token / Class | Curvature Purpose |
+| ------------------ | ------------- | ----------------- |
+| **Elevated Surfaces & Cards** | `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px) | Soft, modern card surfaces and modal bodies. |
+| **Interactive Controls** | `rounded-xl` (0.75rem / 12px) | Form inputs, selects, textareas, alert banners, and standard buttons. |
+| **Pills & Status Indicators** | `rounded-full` (9999px) | Badges, status pills, avatars, theme/language switches, and tag selectors. |
+| **Checkboxes & Small Toggles** | `rounded-md` (0.375rem / 6px) | Form checkboxes and compact toggles for ergonomic accessibility. |
+| **Subtle Transitions** | `rounded-t-2xl sm:rounded-t-3xl` | Section separators and bottom sheets transitioning across surface contrasts. |
 
 ---
 
@@ -220,13 +243,31 @@ Dual-signal dark mode with a three-state switcher (light / dark / system):
 
 ## 4. Responsive Strategy
 
-Mobile-first layout:
+Internara employs a strict mobile-first responsive architecture designed to render seamlessly across small, medium, and large screens without layout jitter, horizontal scrolling, or truncated interactions.
 
-- Small screens: sidebar hidden, accessed via hamburger toggle
-- Desktop (≥1024px): sidebar always visible
-- Tables: responsive classes hide secondary columns on mobile
-- Stat grids: single column → multi-column as viewport increases
-- Container: `max-w-7xl` for normal pages, `max-w-5xl` for setup/guest pages
+### 4.1 Screen Classification & Adaptive Rules
+
+| Screen Class | Breakpoint | Target Devices | Layout & Sizing Invariants |
+| ------------ | ---------- | -------------- | -------------------------- |
+| **Small (Mobile)** | `< 640px` (base) | Smartphones (320px–639px) | • 100% full-width cards (`w-full`) with `px-4`.<br>• Single column stacks (`grid-cols-1`, `flex-col`).<br>• Compact sticky headers (`h-14`) with hamburger navigation.<br>• Minimum touch target size ≥ 44×44px.<br>• Zero horizontal scrolling at 320px viewport width (WCAG 1.4.10 Reflow).<br>• Secondary table columns hidden via `hidden sm:table-cell`. |
+| **Medium (Tablet)** | `640px – 1023px` (`sm:` & `md:`) | Tablets, iPad, foldable devices (640px–1023px) | • Balanced two-column grid (`sm:grid-cols-2`).<br>• Comfortable fluid horizontal padding (`px-6`).<br>• Form and button actions transition from stacked to horizontal inline clusters (`sm:flex-row`, `sm:w-auto`).<br>• Reading measure constrained to optimal line length (`max-w-xl` / `max-w-2xl`).<br>• Drawer sidebar with backdrop overlay on tablet portrait. |
+| **Large (Desktop)** | `≥ 1024px` (`lg:` & `xl:`) | Laptops, desktops, ultrawide monitors (≥1024px) | • Multi-column layouts (`lg:grid-cols-3` or `lg:grid-cols-4`).<br>• Persistent sidebar navigation (`lg:drawer-open`).<br>• Compact, viewport-optimized vertical rhythm (`py-6 sm:py-8 lg:py-10`) so key workflows fit within a single screen without vertical scroll.<br>• Max containers: `max-w-7xl` for main application portals, `max-w-md` for auth views, and `max-w-4xl` for landing/guest flows. |
+
+### 4.2 Form & Card Adaptability
+
+1. **Authentication & Solo Cards:**
+   - `<sm`: Full screen width with `px-4`, form fields full width, actions stacked.
+   - `sm`: Centered with `max-w-md`, comfortable card padding `p-6`, horizontal remember-me and action links.
+   - `lg`: Stays compact (`max-w-md`) with soft shadow, centered vertically within the viewport.
+
+2. **Dashboard & Feature Grids:**
+   - `<sm`: `grid-cols-1 gap-3.5`.
+   - `sm`: `sm:grid-cols-2 gap-4`.
+   - `lg`: `lg:grid-cols-3` or `lg:grid-cols-4` with `gap-5`.
+
+3. **Tables & Complex Datagrids:**
+   - Tables are wrapped inside `<div class="overflow-x-auto rounded-2xl border border-base-content/10">`.
+   - Primary identifier stays visible on all screens; auxiliary metadata columns collapse on `<md`.
 
 ---
 

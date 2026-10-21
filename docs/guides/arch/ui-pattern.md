@@ -26,7 +26,11 @@ Hard rules. Violations are architecture violations.
 
 7. **Touch & focus minima** — Interactive targets ≥44×44px (WCAG 2.5.8 Minimum, Apple HIG 44pt). Icon-only buttons use `size-10`+ or `p-2` + `aria-label`. Every focusable element has a visible `focus:ring` — never `outline-none` without replacement.
 
-8. **No inline shadows sprawl** — Elevation is `border border-base-content/10` + `rounded-xl` for cards, `shadow-xl` only for floating layers (modal, dropdown, popover). Max two shadow levels.
+8. **No inline shadows sprawl** — Elevation is `border border-base-content/10` + `rounded-2xl` for cards, `shadow-xl` only for floating layers (modal, dropdown, popover). Max two shadow levels.
+
+9. **Soft fluid curvature (Zero sharp corners)** — Sharp 90-degree corners and `rounded-none` are strictly prohibited on UI elements. Elevated cards and structural surfaces MUST use `rounded-2xl` (1rem / 16px) or `rounded-3xl` (1.5rem / 24px); interactive form inputs, alerts, and buttons use `rounded-xl` (0.75rem / 12px); status badges, pills, search inputs, avatars, and mode switches use `rounded-full` (9999px); checkboxes use `rounded-md`.
+
+10. **Compact & viewport-efficient rhythm** — Interfaces must eliminate vertical bloat and excessive paddings/margins. Authentication screens, overview cards, and modal dialogs must fit comfortably within standard viewport heights (768px–900px) without forcing unnecessary vertical scroll to access primary action buttons. Form gaps follow compact spacing (`space-y-3.5` to `space-y-4`), card bodies use `p-5 sm:p-6`, headers maintain sleek `h-14 sm:h-16`.
 
 ---
 
@@ -50,13 +54,13 @@ Limit to Instrument Sans `400/500/600` + `900` for display `h1`. Line length `ma
 **Whitespace as separator (Material 3 baseline 4dp / 8-point grid).**
 
 ```blade
-{{-- ✅ Correct — 8-point grid, border over heavy shadow --}}
-<div class="rounded-xl border border-base-content/10 bg-base-100 p-5">
+{{-- ✅ Correct — 8-point grid, soft curvature, border over heavy shadow --}}
+<div class="rounded-2xl border border-base-content/10 bg-base-100 p-5 shadow-xs">
   <h2 class="text-sm font-semibold">{{ $title }}</h2>
   <p class="text-xs text-base-content/60">{{ $description }}</p>
 </div>
 
-{{-- ❌ Wrong — arbitrary spacing, hardcoded shadow/color --}}
+{{-- ❌ Wrong — arbitrary spacing, hardcoded shadow/color, sharp corners --}}
 <div style="margin:12px; box-shadow:0 2px 11px rgba(0,0,0,.12); background:#fff">
 
 ```
@@ -123,7 +127,7 @@ Follow **Atomic Design** (Brad Frost) + **W3C Design Tokens** + Material 3 Compo
 **Consistency contract:**
 
 - Every form field MUST have `label` + Heroicon (`o-user`, `o-envelope`, `o-calendar`, `o-clock`, `o-magnifying-glass`, `o-chevron-down`) — never icon as sole indicator (WCAG 1.4.1). Icons via `x-ts-icon` or `x-ts-*` `icon` prop.
-- Cards: `rounded-xl border border-base-content/10 bg-base-100 p-5`; floating: `rounded-xl border shadow-xl mt-2 w-80 p-4`.
+- Cards: `rounded-2xl border border-base-content/10 bg-base-100 p-5 sm:p-6`; floating: `rounded-2xl border shadow-xl mt-2 w-80 p-4`.
 - Do not duplicate a molecule — extract to `resources/views/ui/components/` or `resources/views/{module}/components/` and reuse. Three similar blocks → extract.
 
 ### 4. Tailwind CSS v4 — CSS-First & Design Tokens
@@ -221,6 +225,8 @@ Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shi
 | `@if ($user->role === 'admin' && $stats['x']>0)` in Blade | `public bool $isSuperAdmin` / `@hasrole('super_admin')` / Alpine `x-show` | Business logic in view |
 | `<button><x-ts-icon name="trash" /></button>` (icon-only, no label) | `<x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />` | WCAG 4.1.2 Name/Role/Value |
 | `class="outline-none"` without `focus:ring` replacement | Keep Tailwind `focus:ring` / TallStackUI default | WCAG 2.4.7 Focus Visible |
+| Sharp corners (`rounded-none`, 90° boxy elements) | `rounded-2xl` for cards, `rounded-xl` for inputs/buttons, `rounded-full` for badges | Curvature invariant violation ("tanpa sudut tajam") |
+| Giant heroes / bloated paddings (`pt-32 pb-24`) | Compact rhythm (`pt-10 pb-8 sm:pt-14`), viewport efficiency | Density bloat, forces unnecessary scroll |
 | New `.btn .badge .alert` custom CSS | `<x-ts-button>` / `<x-ts-badge>` / `x-ts-alert` | DaisyUI shim misuse, should use TallStackUI primitive |
 | Inline `<script>` in Blade | Alpine `x-data` / `@entangle` + CSP-allowed external | CSP violation (`SecurityHeadersMiddleware`) |
 | Hardcoded English `"Record created"` in Blade/PHP | `__('{module}.{entity}.created')` | Localization (`conventions.md` §15) |
