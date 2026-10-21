@@ -94,7 +94,7 @@
                         wire:model="batchIssueFilter"
                         :options="ts_options(['active' => __('certificate.filter_active_registrations'), 'completed' => __('certificate.filter_completed_registrations')])"
                     />
-                    <div class="bg-base-200 rounded-lg p-3 text-sm">
+                    <div class="bg-base-200/50 rounded-xl p-3 text-sm">
                         <p class="text-base-content/70">{{ __('certificate.batch_issue_info') }}</p>
                     </div>
                 </div>

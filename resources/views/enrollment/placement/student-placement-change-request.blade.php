@@ -18,7 +18,7 @@
                 <x-ts-icon name="clock" class="text-warning mx-auto mb-3 h-12 w-12" />
                 <h3 class="mb-1 text-lg font-semibold">{{ __('placement_change.pending_title') }}</h3>
                 <p class="text-base-content/60">{{ __('placement_change.pending_message') }}</p>
-                <div class="bg-base-200 mt-3 rounded-lg p-3 text-left text-sm">
+                <div class="bg-base-200 mt-3 rounded-xl p-3 text-left text-sm">
                     <p><strong>{{ __('placement_change.reason') }}:</strong> {{ $pendingRequest->reason }}</p>
                     <p class="mt-1">
                         <strong>{{ __('placement_change.status') }}:</strong>
@@ -30,7 +30,7 @@
 
     @else
         <x-ts-card shadowless>
-            <div class="bg-base-200 mb-4 rounded-lg p-4">
+            <div class="bg-base-200 mb-4 rounded-xl p-4">
                 <h3 class="mb-2 font-semibold">{{ __('placement_change.current_placement') }}</h3>
                 <p class="text-sm">{{ $registration->placement?->company?->name ?? '—' }}</p>
                 <p class="text-base-content/50 text-xs">{{ $registration->internship?->name }}</p>

@@ -15,7 +15,7 @@
 
         <div class="space-y-6 p-6">
             @if ($verification->status === 'issued')
-                <div class="border-success/30 bg-success/10 text-success flex items-center gap-3 rounded-lg border p-4">
+                <div class="border-success/30 bg-success/10 text-success flex items-center gap-3 rounded-xl border p-4">
                     <span class="bg-success/20 inline-flex h-8 w-8 items-center justify-center rounded-full font-bold">✓</span>
                     <div>
                         <div class="text-sm font-semibold">{{ __('certificate.verify.status_issued') }}</div>
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             @elseif ($verification->status === 'revoked')
-                <div class="border-warning/30 bg-warning/10 text-warning flex items-center gap-3 rounded-lg border p-4">
+                <div class="border-warning/30 bg-warning/10 text-warning flex items-center gap-3 rounded-xl border p-4">
                     <span class="bg-warning/20 inline-flex h-8 w-8 items-center justify-center rounded-full font-bold">!</span>
                     <div>
                         <div class="text-sm font-semibold">{{ __('certificate.verify.status_revoked') }}</div>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             @else
-                <div class="border-error/30 bg-error/10 text-error flex items-center gap-3 rounded-lg border p-4">
+                <div class="border-error/30 bg-error/10 text-error flex items-center gap-3 rounded-xl border p-4">
                     <span class="bg-error/20 inline-flex h-8 w-8 items-center justify-center rounded-full font-bold">✕</span>
                     <div>
                         <div class="text-sm font-semibold">{{ __('certificate.verify.status_not_found') }}</div>

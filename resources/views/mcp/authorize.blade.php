@@ -36,7 +36,7 @@
     <div class="flex min-h-screen items-center justify-center p-4">
         <div class="w-full max-w-md">
             <!-- Card Container -->
-            <div class="bg-card text-card-foreground rounded-lg border shadow-sm">
+            <div class="bg-card text-card-foreground border-base-content/10 rounded-2xl border shadow-sm">
                 <!-- Header -->
                 <div class="flex flex-col space-y-1.5 p-6">
                     <div class="mb-4 flex items-center justify-center">
@@ -58,7 +58,7 @@
                 <!-- Content -->
                 <div class="space-y-4 p-6 pt-0">
                     <!-- User Info -->
-                    <div class="bg-muted/50 rounded-lg border p-4">
+                    <div class="bg-muted/50 border-base-content/10 rounded-xl border p-4">
                         <p class="text-muted-foreground mb-2 text-sm">Logged in as:</p>
                         <p class="font-medium">{{ $user->email }}</p>
                     </div>

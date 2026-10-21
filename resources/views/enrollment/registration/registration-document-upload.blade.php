@@ -7,7 +7,7 @@
 
             <div class="space-y-4">
                 @foreach ($documents as $document)
-                    <div class="bg-base-200/30 border-base-content/10 flex items-start gap-4 rounded-lg border p-4">
+                    <div class="bg-base-200/30 border-base-content/10 flex items-start gap-4 rounded-xl border p-4">
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-medium">{{ $document->title }}</p>
                             @php
