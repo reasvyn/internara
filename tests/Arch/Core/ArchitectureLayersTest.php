@@ -22,6 +22,12 @@ use App\Modules\Enrollment\Domain\Registration\Events\StudentRegistered;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Enums\InternshipStatus;
 use App\Modules\SysAdmin\Domain\Backup\Actions\ReadBackupStatsAction;
+use App\Modules\UI\Livewire\AboutPage;
+use App\Modules\UI\Livewire\BaseFormView;
+use App\Modules\UI\Livewire\BaseRecordEntry;
+use App\Modules\UI\Livewire\BaseRecordList;
+use App\Modules\UI\Livewire\BaseRecordManager;
+use App\Modules\UI\Livewire\BaseWizard;
 use App\Modules\User\Domain\UserManagement\Actions\GenerateAccountSlipAction;
 use App\Modules\User\Domain\UserManagement\Actions\RenderAccountSlipAction;
 use App\Modules\User\Domain\UserManagement\Data\CreateUserData;
@@ -372,5 +378,16 @@ describe('D2FT3: architecture contracts', function (): void {
     test('D2FT3-NFR-ARC-006: clean-code and DRY principles share foundation through Core', function (): void {
         expect(is_subclass_of(BaseCommandAction::class, BaseAction::class))->toBeTrue()
             ->and((new ReflectionClass(BaseReadAction::class))->isAbstract())->toBeTrue();
+    });
+
+    test('D2FT3-FR-ARC-050: Core module contains zero UI layers and presentation resides in UI module', function (): void {
+        expect(is_dir(base_path('app/Modules/Core/Livewire')))->toBeFalse()
+            ->and(is_dir(resource_path('views/core')))->toBeFalse()
+            ->and(class_exists(BaseRecordManager::class))->toBeTrue()
+            ->and(class_exists(BaseRecordList::class))->toBeTrue()
+            ->and(class_exists(BaseFormView::class))->toBeTrue()
+            ->and(class_exists(BaseRecordEntry::class))->toBeTrue()
+            ->and(class_exists(BaseWizard::class))->toBeTrue()
+            ->and(class_exists(AboutPage::class))->toBeTrue();
     });
 });
