@@ -62,7 +62,11 @@ class Setting extends BaseModel implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(200)->format('webp');
+        $conversion = $this->addMediaConversion('thumb')->width(200)->nonQueued();
+
+        if (function_exists('imagewebp')) {
+            $conversion->format('webp');
+        }
     }
 
     protected static function newFactory(): SettingFactory

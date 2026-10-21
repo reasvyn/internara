@@ -18,18 +18,20 @@ final class RemoveBrandAssetAction extends BaseCommandAction
     {
         $this->transaction(function () use ($type) {
             $collection = $type === 'favicon' ? MediaCollection::FAVICON : MediaCollection::LOGO;
-            $settingKey = $type === 'favicon' ? 'brand_favicon_ref' : 'brand_logo_ref';
+            $refKey = $type === 'favicon' ? 'brand_favicon_ref' : 'brand_logo_ref';
             $settingKey = $type === 'favicon' ? 'site_favicon' : 'brand_logo';
 
-            $setting = Setting::firstOrCreate(['key' => $settingKey]);
+            $setting = Setting::where('key', $refKey)->first();
 
-            $medias = $setting->getMedia($collection->value);
-            foreach ($medias as $media) {
-                $properties = $media->getCustomProperties();
-                if ($type === 'logo' && ($properties['type'] ?? '') !== 'logo') {
-                    continue;
+            if ($setting !== null) {
+                $medias = $setting->getMedia($collection->value);
+                foreach ($medias as $media) {
+                    $mediaType = $media->getCustomProperty('type');
+                    if ($type === 'logo' && $mediaType !== null && $mediaType !== 'logo') {
+                        continue;
+                    }
+                    $media->delete();
                 }
-                $media->delete();
             }
 
             $this->setSetting->execute(new SettingData(
@@ -38,7 +40,7 @@ final class RemoveBrandAssetAction extends BaseCommandAction
                 group: 'branding',
             ));
 
-            $this->log('brand_asset_removed', $setting, ['type' => $type]);
+            $this->log('brand_asset_removed', $setting ?? Setting::firstOrCreate(['key' => $settingKey]), ['type' => $type]);
         });
     }
 }

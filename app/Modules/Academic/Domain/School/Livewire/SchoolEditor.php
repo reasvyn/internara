@@ -44,6 +44,10 @@ class SchoolEditor extends BaseFormView
         $this->validate(['logo_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
 
         $this->handleSave(function () use ($uploadBrand, $setSetting): void {
+            if (! $this->logo_file) {
+                return;
+            }
+
             $url = $uploadBrand->execute($this->logo_file);
 
             $setSetting->execute(new SettingData(
@@ -92,6 +96,7 @@ class SchoolEditor extends BaseFormView
 
             Settings::forget('brand_logo');
             $this->logo_file = null;
+            $this->showConfirm = false;
             $this->toast()->success(__('school.logo_removed'))->send();
         });
     }
@@ -105,14 +110,21 @@ class SchoolEditor extends BaseFormView
     {
         $setting = Setting::find('brand_logo_ref');
 
-        if (! $setting) {
-            return null;
+        if ($setting !== null) {
+            try {
+                $url = $setting->getFirstMediaUrl('brand_logo', 'thumb')
+                    ?: $setting->getFirstMediaUrl('brand_logo');
+
+                if (! empty($url)) {
+                    return $url;
+                }
+            } catch (\Throwable) {
+                // fallback to setting value below
+            }
         }
 
-        try {
-            return $setting->getFirstMediaUrl('brand_logo', 'thumb') ?: null;
-        } catch (\Throwable) {
-            return null;
-        }
+        $settingValue = Settings::get('brand_logo');
+
+        return ! empty($settingValue) ? (string) $settingValue : null;
     }
 }
