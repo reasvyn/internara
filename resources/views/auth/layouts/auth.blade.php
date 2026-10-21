@@ -1,28 +1,36 @@
-@props(['title' => null])
+@props(['title' => null, 'footer' => null])
 
-<x-ui::layouts.base :$title bodyClass="min-h-screen bg-base-200 flex items-center justify-center py-8">
-    <div class="w-full max-w-sm px-4">
-        <div class="mb-8 text-center">
-            <a class="group inline-flex flex-col items-center gap-3" href="{{ route('dashboard') }}" wire:navigate>
-                <div class="bg-base-200 flex size-14 items-center justify-center rounded-xl transition-transform group-hover:scale-105">
-                    <x-ui::components.logo size="8" />
-                </div>
-                <div class="flex flex-col items-center">
-                    <span class="text-base-content group-hover:text-primary text-xl font-bold transition-colors">
-                        {{ brand('name') }}
-                    </span>
-                    <span class="text-base-content/40 text-[10px] font-medium tracking-wider uppercase">
-                        {{ __('auth.title') }}
-                    </span>
-                </div>
-            </a>
+<x-ui::layouts.base :$title bodyClass="min-h-screen bg-base-200 flex flex-col antialiased">
+    <main id="main-content" class="flex flex-1 items-center justify-center py-8 sm:py-12">
+        <div class="w-full max-w-sm px-4">
+            <div class="mb-8 text-center">
+                <a class="group inline-flex flex-col items-center gap-3" href="{{ route('dashboard') }}" wire:navigate>
+                    <div class="bg-base-200 flex size-14 items-center justify-center rounded-xl transition-transform group-hover:scale-105">
+                        <x-ui::components.logo size="8" />
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-base-content group-hover:text-primary text-xl font-bold transition-colors">
+                            {{ brand('name') }}
+                        </span>
+                        <span class="text-base-content/40 text-[10px] font-medium tracking-wider uppercase">
+                            {{ __('auth.title') }}
+                        </span>
+                    </div>
+                </a>
+            </div>
+
+            {{ $slot }}
+
+            <div class="mt-8 flex items-center justify-center gap-3 text-center">
+                <div class="inline-flex"><x-setting::locale.theme-switch /></div>
+                <livewire:setting.locale.lang-switch />
+            </div>
         </div>
+    </main>
 
-        {{ $slot }}
-
-        <div class="mt-8 flex items-center justify-center gap-3 text-center">
-            <div class="inline-flex"><x-setting::locale.theme-switch /></div>
-            <livewire:setting.locale.lang-switch />
-        </div>
-    </div>
+    @isset($footer)
+        {{ $footer }}
+    @else
+        <x-ui::layouts.base.footer />
+    @endisset
 </x-ui::layouts.base>
