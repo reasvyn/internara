@@ -1,35 +1,37 @@
 @props(['auditResults', 'auditPassed'])
 
-<div class="p-6 sm:p-10 lg:p-12">
-    <div class="mb-10 text-center">
+<div class="p-4.5 sm:p-6 lg:p-7">
+    <div class="mb-4 text-center sm:mb-5">
         <div
-            class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-5 flex size-18 items-center justify-center rounded-3xl border shadow-xs ring-4"
+            class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mx-auto mb-2.5 flex size-12 items-center justify-center rounded-2xl border shadow-xs ring-4 sm:mb-3 sm:size-14 sm:rounded-3xl"
             aria-hidden="true"
         >
-            <x-ts-icon name="rocket-launch" class="size-9" />
+            <x-ts-icon name="rocket-launch" class="size-6 sm:size-7" />
         </div>
-        <h2 class="text-base-content mb-2 text-2xl font-black tracking-tight sm:text-3xl">
+        <h2 class="text-base-content mb-1 text-lg font-black tracking-tight sm:text-2xl">
             {{ __('setup.wizard.welcome') }}
         </h2>
-        <p class="text-base-content/60 mx-auto max-w-lg text-sm leading-relaxed">
+        <p class="text-base-content/60 mx-auto max-w-lg text-xs leading-relaxed sm:text-sm">
             {{ __('setup.wizard.welcome_desc') }}
         </p>
     </div>
 
     @if ($auditPassed)
-        <div class="border-success/20 bg-success/5 mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border p-4.5 sm:p-5">
-            <div class="flex items-center gap-3.5">
-                <div class="border-success/20 bg-success/10 text-success flex size-10 shrink-0 items-center justify-center rounded-xl border">
-                    <x-ts-icon name="check-badge" class="size-5" />
+        <div class="border-success/20 bg-success/5 mb-3.5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 sm:mb-4.5 sm:p-3.5">
+            <div class="flex items-center gap-3">
+                <div class="border-success/20 bg-success/10 text-success flex size-8 shrink-0 items-center justify-center rounded-xl border sm:size-9">
+                    <x-ts-icon name="check-badge" class="size-4 sm:size-5" />
                 </div>
                 <div>
-                    <p class="text-base-content text-sm font-bold">{{ __('setup.wizard.system_requirements') }}</p>
-                    <p class="text-base-content/60 text-xs">
+                    <p class="text-base-content text-xs font-bold sm:text-sm">
+                        {{ __('setup.wizard.system_requirements') }}
+                    </p>
+                    <p class="text-base-content/60 text-[11px] sm:text-xs">
                         {{ __('setup.system.pass') }} — {{ __('setup.wizard.all_requirements_met') }}
                     </p>
                 </div>
             </div>
-            <span class="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-bold">
+            <span class="border-success/20 bg-success/10 text-success inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold">
                 <span class="bg-success size-1.5 animate-pulse rounded-full"></span>
                 {{ __('setup.wizard.fully_ready') }}
             </span>
@@ -37,7 +39,11 @@
     @endif
 
     @if (! empty($auditResults['categories']))
-        <section aria-label="{{ __('setup.wizard.audit_results') }}" aria-live="polite" class="mb-8 space-y-3">
+        <section
+            aria-label="{{ __('setup.wizard.audit_results') }}"
+            aria-live="polite"
+            class="mb-3.5 space-y-2 sm:mb-4.5"
+        >
             @foreach ($auditResults['categories'] as $key => $category)
                 <x-ts-accordion shadowless class="border-base-content/10 overflow-hidden rounded-2xl border">
                     <x-ts-accordion.items :open="$category['has_issue']" :id="'audit-'.$key">
@@ -143,7 +149,7 @@
         </section>
     @endif
 
-    <div class="border-base-content/10 mt-10 flex items-center justify-end gap-3 border-t pt-6">
+    <div class="border-base-content/10 mt-6 flex items-center justify-end gap-3 border-t pt-4 sm:mt-8 sm:pt-5">
         @if ($auditPassed)
             <x-ts-button
                 :text="__('setup.wizard.start_setup')"
@@ -155,9 +161,11 @@
             />
         @else
             <div class="flex w-full items-center gap-3" role="alert">
-                <div class="bg-warning/5 border-warning/20 flex-1 rounded-2xl border px-4 py-3">
+                <div class="bg-warning/5 border-warning/20 flex-1 rounded-2xl border px-3.5 py-2.5">
                     <p class="text-warning/80 text-xs font-medium">{{ __('setup.wizard.requirements_not_met') }}</p>
-                    <p class="text-warning/60 mt-0.5 text-xs">{{ __('setup.wizard.audit_must_pass') }}</p>
+                    <p class="text-warning/60 mt-0.5 text-[11px] sm:text-xs">
+                        {{ __('setup.wizard.audit_must_pass') }}
+                    </p>
                 </div>
                 <x-ts-button
                     :text="__('setup.wizard.recheck')"

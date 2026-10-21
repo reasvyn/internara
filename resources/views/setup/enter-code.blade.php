@@ -10,13 +10,13 @@
 
         <header class="border-base-content/10 bg-base-100/80 sticky top-0 z-30 border-b backdrop-blur-md transition-all">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-                <div class="flex h-16 items-center justify-between">
+                <div class="flex h-13 items-center justify-between sm:h-14">
                     <x-ui::components.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <div class="border-base-content/10 bg-base-100/90 flex items-center gap-1.5 rounded-full border px-2.5 py-1 shadow-xs">
+                        <div class="border-base-content/10 bg-base-100/90 flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 shadow-xs sm:py-1">
                             <x-setting::locale.theme-switch size="xs" />
-                            <div class="bg-base-content/10 h-4 w-px"></div>
+                            <div class="bg-base-content/10 h-3.5 w-px sm:h-4"></div>
                             <livewire:setting.locale.lang-switch class="px-1" />
                         </div>
                     </div>
@@ -24,22 +24,22 @@
             </div>
         </header>
 
-        <main class="flex flex-1 items-center justify-center px-4 py-12 sm:px-6">
+        <main class="flex flex-1 items-center justify-center px-4 py-6 sm:px-6">
             <div class="mx-auto w-full max-w-md">
-                <div class="border-base-content/10 bg-base-100 relative overflow-hidden rounded-2xl border p-6 shadow-sm sm:p-10">
+                <div class="border-base-content/10 bg-base-100 relative overflow-hidden rounded-2xl border p-5 shadow-sm sm:p-7">
                     <div
                         class="from-primary via-primary/80 to-primary/40 absolute inset-x-0 top-0 h-1 bg-gradient-to-r"
                         aria-hidden="true"
                     ></div>
 
-                    <div class="mb-8 text-center">
-                        <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mb-5 inline-flex size-16 items-center justify-center rounded-2xl border shadow-xs ring-4">
-                            <x-ts-icon name="key" class="size-8" />
+                    <div class="mb-5 text-center sm:mb-6">
+                        <div class="border-primary/20 bg-primary/10 text-primary ring-primary/10 mb-3.5 inline-flex size-12 items-center justify-center rounded-2xl border shadow-xs ring-4 sm:mb-4 sm:size-14">
+                            <x-ts-icon name="key" class="size-6 sm:size-7" />
                         </div>
-                        <h1 class="text-base-content text-2xl font-black tracking-tight sm:text-3xl">
+                        <h1 class="text-base-content text-xl font-black tracking-tight sm:text-2xl">
                             {{ __('setup.code_entry.title') }}
                         </h1>
-                        <p class="text-base-content/60 mt-2 text-sm leading-relaxed">
+                        <p class="text-base-content/60 mt-1 text-xs leading-relaxed sm:mt-1.5 sm:text-sm">
                             {{ __('setup.code_entry.description') }}
                         </p>
                     </div>
@@ -91,17 +91,17 @@
                             }
                         }"
                     >
-                        <form method="POST" action="{{ route('setup') }}" class="space-y-6">
+                        <form method="POST" action="{{ route('setup') }}" class="space-y-4 sm:space-y-5">
                             @csrf
                             <input type="hidden" name="setup_token" :value="fullToken" />
 
-                            <div class="space-y-3">
+                            <div class="space-y-2.5">
                                 <label class="text-base-content/80 block text-center text-xs font-semibold tracking-wider uppercase">
                                     {{ __('setup.code_entry.code_label') }} <span class="text-error">*</span>
                                 </label>
 
                                 <div
-                                    class="flex items-center justify-center gap-2 sm:gap-3"
+                                    class="flex items-center justify-center gap-1.5 sm:gap-2.5"
                                     @paste="handlePaste($event)"
                                 >
                                     @for ($i = 0; $i < 6; $i++)
@@ -119,7 +119,7 @@
                                             @focus="$event.target.select()"
                                             @if ($i === 0) autofocus @endif
                                             aria-label="{{ __('setup.code_entry.code_label') }} {{ $i + 1 }}"
-                                            class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-11 rounded-xl border text-center font-mono text-xl font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-13 sm:text-2xl"
+                                            class="bg-base-100 border-base-content/20 text-base-content focus:border-primary focus:ring-primary/20 size-10.5 rounded-xl border text-center font-mono text-lg font-black uppercase shadow-xs transition-all focus:ring-4 focus:outline-hidden sm:size-12 sm:text-xl"
                                         />
                                     @endfor
                                 </div>
@@ -135,35 +135,35 @@
                             />
 
                             @if ($error)
-                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
-                                    <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-3 text-xs sm:text-sm">
+                                    <x-ts-icon name="x-circle" class="size-4 shrink-0 sm:size-5" />
                                     <span>{{ $error }}</span>
                                 </div>
                             @elseif ($errors->any())
-                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-4 text-xs sm:text-sm">
-                                    <x-ts-icon name="x-circle" class="size-5 shrink-0" />
+                                <div class="bg-error/5 border-error/20 text-error flex items-center gap-2 rounded-xl border p-3 text-xs sm:text-sm">
+                                    <x-ts-icon name="x-circle" class="size-4 shrink-0 sm:size-5" />
                                     <span>{{ $errors->first() }}</span>
                                 </div>
                             @endif
                         </form>
                     </div>
 
-                    <div class="border-base-content/10 bg-base-200/40 mt-8 rounded-xl border p-4 text-center">
+                    <div class="border-base-content/10 bg-base-200/40 mt-5 rounded-xl border p-3 text-center sm:mt-6 sm:p-3.5">
                         <p class="text-base-content/60 text-xs leading-relaxed">{{ __('setup.code_entry.help') }}</p>
-                        <p class="text-base-content/40 mt-1 text-xs">{{ __('setup.code_entry.expiry_note') }}</p>
+                        <p class="text-base-content/40 mt-0.5 text-xs">{{ __('setup.code_entry.expiry_note') }}</p>
                     </div>
                 </div>
             </div>
         </main>
 
-        <footer class="border-base-content/10 bg-base-100/50 mt-auto border-t py-6 backdrop-blur-xs">
+        <footer class="border-base-content/10 bg-base-100/50 mt-auto border-t py-2.5 backdrop-blur-xs sm:py-3">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col items-center justify-between gap-3 text-center sm:flex-row sm:text-left">
+                <div class="flex flex-col items-center justify-between gap-2 text-center sm:flex-row sm:text-left">
                     <p class="text-base-content/50 text-xs">
                         &copy; {{ date('Y') }} {{ brand('author.name') }}. {{ __('All rights reserved.') }}
                     </p>
                     <div class="flex items-center gap-2">
-                        <span class="border-base-content/10 bg-base-100 text-base-content/70 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-xs shadow-xs">
+                        <span class="border-base-content/10 bg-base-100 text-base-content/70 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 font-mono text-[11px] shadow-xs">
                             <span class="bg-success size-1.5 rounded-full"></span>
                             v{{ app_info('version') }}
                         </span>

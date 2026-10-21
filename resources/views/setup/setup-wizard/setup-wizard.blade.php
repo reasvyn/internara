@@ -1,21 +1,21 @@
 <div>
     {{-- Progress Stepper Header --}}
-    <div class="mb-8" role="group" aria-label="{{ __('setup.wizard.progress_label') }}">
-        <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="mb-3.5 sm:mb-5" role="group" aria-label="{{ __('setup.wizard.progress_label') }}">
+        <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2.5 sm:mb-3.5 sm:gap-4">
             <div>
-                <h1 class="text-base-content text-2xl font-black tracking-tight sm:text-3xl">
+                <h1 class="text-base-content text-lg font-black tracking-tight sm:text-2xl">
                     {{ __('setup.wizard.title') }}
                 </h1>
-                <p class="text-base-content/50 mt-1 text-xs font-medium">
+                <p class="text-base-content/50 mt-0.5 text-xs font-medium">
                     {{ $appName }}
-                    <span class="bg-base-content/10 text-base-content/70 rounded-md px-1.5 py-0.5 font-mono text-[11px]">v{{ $appVersion }}</span>
+                    <span class="bg-base-content/10 text-base-content/70 rounded-md px-1.5 py-0.5 font-mono text-[10px] sm:text-[11px]">v{{ $appVersion }}</span>
                 </p>
             </div>
             <div
-                class="border-base-content/10 bg-base-100/90 text-base-content/70 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-semibold shadow-2xs backdrop-blur-xs"
+                class="border-base-content/10 bg-base-100/90 text-base-content/70 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold shadow-2xs backdrop-blur-xs sm:gap-2 sm:px-3.5"
                 aria-live="polite"
             >
-                <span class="bg-primary size-2 animate-pulse rounded-full"></span>
+                <span class="bg-primary size-1.5 animate-pulse rounded-full sm:size-2"></span>
                 {{ __('setup.wizard.step_of', ['current' => $currentStep, 'total' => count($stepKeys)]) }}
             </div>
         </div>
@@ -47,12 +47,12 @@
                     $label = __('setup.wizard.step_labels.'.$stepKey);
                     $icon = $stepIcons[$stepKey] ?? 'circle-stack';
                 @endphp
-                <div class="flex flex-1 flex-col items-center gap-2">
+                <div class="flex flex-1 flex-col items-center gap-1 sm:gap-1.5">
                     <div
                         @class([
-                            'size-10 rounded-2xl flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0',
-                            'bg-primary text-primary-content shadow-xs ring-4 ring-primary/10' => $isCompleted,
-                            'bg-primary text-primary-content ring-4 ring-primary/25 shadow-md scale-105' => $isCurrent,
+                            'size-7.5 sm:size-8.5 rounded-xl sm:rounded-2xl flex items-center justify-center text-xs font-bold transition-all duration-300 shrink-0',
+                            'bg-primary text-primary-content shadow-xs ring-2 sm:ring-4 ring-primary/10' => $isCompleted,
+                            'bg-primary text-primary-content ring-2 sm:ring-4 ring-primary/25 shadow-md scale-105' => $isCurrent,
                             'bg-base-100 text-base-content/40 border border-base-content/15 shadow-2xs' => ! $isCompleted && ! $isCurrent,
                         ])
                         @if ($isCurrent)
@@ -61,15 +61,15 @@
                         role="status"
                     >
                         @if ($isCompleted)
-                            <x-ts-icon name="check" class="size-4 stroke-[2.5]" />
+                            <x-ts-icon name="check" class="size-3.5 stroke-[2.5] sm:size-4" />
                         @elseif ($isCurrent)
-                            <x-ts-icon :name="$icon" class="size-4" />
+                            <x-ts-icon :name="$icon" class="size-3.5 sm:size-4" />
                         @else
-                            <span class="font-mono text-xs">{{ $stepNum }}</span>
+                            <span class="font-mono text-[11px] sm:text-xs">{{ $stepNum }}</span>
                         @endif
                     </div>
                     <span @class([
-                        'text-[11px] font-bold tracking-tight transition-colors text-center leading-tight hidden sm:block',
+                        'text-[10px] sm:text-[11px] font-bold tracking-tight transition-colors text-center leading-tight hidden sm:block',
                         'text-primary' => $isCurrent,
                         'text-base-content/70' => $isCompleted,
                         'text-base-content/40' => ! $isCurrent && ! $isCompleted,
@@ -80,7 +80,7 @@
                 @if (! $loop->last)
                     <div
                         @class([
-                            'flex-1 h-0.5 mx-2 transition-colors duration-300 sm:-mt-6 -mt-1 rounded-full',
+                            'flex-1 h-0.5 mx-1.5 sm:mx-2 transition-colors duration-300 sm:-mt-5 -mt-1 rounded-full',
                             'bg-primary' => $isCompleted,
                             'bg-base-content/10' => ! $isCompleted,
                         ])

@@ -1,18 +1,22 @@
-<div class="p-6 sm:p-10 lg:p-12">
-    <div class="mb-8">
-        <h2 class="text-base-content mb-1 text-2xl font-bold tracking-tight">{{ __('setup.wizard.school_info') }}</h2>
-        <p class="text-base-content/60 text-sm">{{ __('setup.wizard.school_subtitle') }}</p>
+<div class="p-4.5 sm:p-6 lg:p-7">
+    <div class="mb-4 sm:mb-5">
+        <h2 class="text-base-content mb-1 text-lg font-bold tracking-tight sm:text-2xl">
+            {{ __('setup.wizard.school_info') }}
+        </h2>
+        <p class="text-base-content/60 text-xs sm:text-sm">{{ __('setup.wizard.school_subtitle') }}</p>
     </div>
 
     {{-- Identity Context Banner --}}
-    <div class="border-base-content/10 bg-base-200/40 mb-8 flex items-start gap-3.5 rounded-2xl border p-4 text-xs leading-relaxed shadow-2xs sm:p-4.5">
-        <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl border">
+    <div class="border-base-content/10 bg-base-200/40 mb-4 flex items-start gap-3 rounded-2xl border p-3 text-xs leading-relaxed shadow-2xs sm:mb-5 sm:p-3.5">
+        <div class="border-primary/20 bg-primary/10 text-primary mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-xl border sm:size-8">
             <x-ts-icon name="academic-cap" class="size-4" />
         </div>
-        <p class="text-base-content/70 pt-0.5">{{ __('setup.wizard.school_identity_notice') }}</p>
+        <p class="text-base-content/70 pt-0.5 text-[11px] sm:text-xs">
+            {{ __('setup.wizard.school_identity_notice') }}
+        </p>
     </div>
 
-    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-3 sm:gap-3.5 md:grid-cols-2">
         <div class="md:col-span-2">
             <x-ts-input
                 :label="__('setup.wizard.school_name').' *'"
@@ -68,12 +72,12 @@
                 :label="__('setup.wizard.school_address')"
                 placeholder="{{ __('setup.wizard.school_address_placeholder') }}"
                 wire:model.live.debounce.500ms="schoolForm.address"
-                rows="3"
+                rows="2"
             />
         </div>
     </div>
 
-    <div class="border-base-content/10 mt-10 flex items-center justify-between border-t pt-6">
+    <div class="border-base-content/10 mt-6 flex items-center justify-between border-t pt-4 sm:mt-8 sm:pt-5">
         <x-ts-button
             :text="__('setup.wizard.back')"
             icon="arrow-left"
