@@ -35,8 +35,7 @@ depends on.
 - **Process Action Base**: 1 (`BaseProcessAction`)
 - **Models**: 1 concrete (`ActivityLog`) + 2 abstract (`BaseModel`, `BaseAuthenticatable`)
 - **Events**: 1 (`BaseEvent`, abstract)
-- **Livewire Components**: 6 (`BaseRecordManager`, `BaseRecordEntry`, `BaseRecordList`,
-  `BaseFormView`, `BaseWizard`, `AboutPage`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
+- **UI Layer**: 0 (all UI components reside in `UI` module; Core has zero presentation dependencies)
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`) + 1 channel DTO (`NotificationData` in `Channels/Data`)
@@ -89,11 +88,11 @@ Located in `app/Modules/Core/`:
 | `BaseProcessAction` | `Actions/BaseProcessAction.php`       | Process action contract: multi-step orchestration with transaction + logging | Process Actions                                                  |
 | `BaseEntity`        | `Entities/BaseEntity.php`             | `final readonly`, zero framework dependencies, `fromModel()` bridge          | All entities                                                     |
 | `BasePolicy`        | `Policies/BasePolicy.php`             | Superadmin `before()` bypass, role checks, ownership checks                  | All policies                                                     |
-| `BaseRecordManager` | `Livewire/BaseRecordManager.php`      | Sysadmin CRUD: search, sort, filter, paginate, bulk actions, row selection   | All admin CRUD tables                                            |
-| `BaseRecordEntry`   | `Livewire/BaseRecordEntry.php`        | User-facing CRUD: form modal, file upload, error handling                    | Non-admin create/edit forms (e.g., LogbookEntry)                 |
-| `BaseRecordList`    | `Livewire/BaseRecordList.php`         | Read-only list: paginated, searchable, no mutations                          | Read-only record displays                                        |
-| `BaseFormView`      | `Livewire/BaseFormView.php`           | Full-page/tab form: dirty tracking, file upload, RejectedException handling  | Profile editor, settings pages                                   |
-| `BaseWizard`        | `Livewire/BaseWizard.php`             | Multi-step wizard: step navigation, progress tracking, step validation       | SetupWizard                                                      |
+| `BaseRecordManager` | `app/Modules/UI/Livewire/BaseRecordManager.php` | Sysadmin CRUD: search, sort, filter, paginate, bulk actions, row selection   | All admin CRUD tables                                            |
+| `BaseRecordEntry`   | `app/Modules/UI/Livewire/BaseRecordEntry.php`   | User-facing CRUD: form modal, file upload, error handling                    | Non-admin create/edit forms (e.g., LogbookEntry)                 |
+| `BaseRecordList`    | `app/Modules/UI/Livewire/BaseRecordList.php`    | Read-only list: paginated, searchable, no mutations                          | Read-only record displays                                        |
+| `BaseFormView`      | `app/Modules/UI/Livewire/BaseFormView.php`      | Full-page/tab form: dirty tracking, file upload, RejectedException handling  | Profile editor, settings pages                                   |
+| `BaseWizard`        | `app/Modules/UI/Livewire/BaseWizard.php`        | Multi-step wizard: step navigation, progress tracking, step validation       | SetupWizard                                                      |
 | `BaseController`    | `Http/Controllers/BaseController.php` | Common controller utilities                                                  | All HTTP controllers                                             |
 | `BaseFormRequest`   | `Http/Requests/BaseFormRequest.php`   | Validation without redirect, throws `ValidationFailedException`              | All form requests                                                |
 | `BaseData`          | `Data/BaseData.php`                   | Abstract readonly DTO with `fromArray()`, `toArray()`, `from()`              | All DTOs                                                         |
@@ -166,16 +165,7 @@ ModuleException (abstract, extends RuntimeException)
 
 ## Livewire Components
 
-| File | Component | Extends |
-|---|---|---|
-| `Livewire/AboutPage.php` | `AboutPage` | `Component` |
-| `Livewire/BaseFormView.php` | `BaseFormView` | `BaseFormView` |
-| `Livewire/BaseRecordEntry.php` | `BaseRecordEntry` | `BaseRecordEntry` |
-| `Livewire/BaseRecordList.php` | `BaseRecordList` | `BaseRecordManager` |
-| `Livewire/BaseRecordManager.php` | `BaseRecordManager` | `BaseRecordManager` |
-| `Livewire/BaseWizard.php` | `BaseWizard` | `Component` |
-| `Livewire/Concerns/WithRecordSelection.php` | `WithRecordSelection` | `Component` |
-| `Livewire/Concerns/WithSorting.php` | `WithSorting` | `Component` |
+Core has zero Livewire components. Reusable Livewire base classes and concerns (`BaseRecordManager`, `BaseRecordEntry`, `BaseRecordList`, `BaseFormView`, `BaseWizard`, `AboutPage`, `WithRecordSelection`, `WithSorting`) reside in `app/Modules/UI/Livewire/`.
 
 ## Policies & Permissions
 

@@ -33,8 +33,7 @@ SendsNotifications, SettingsStore).
 
 **Concrete implementations** (reusable across all modules): `Data/ActionResponse`,
 `Data/AuditCheck`, `Data/AuditReport`, `Enums/` (CsvRowResult, AuditCategory, AuditStatus),
-`Exceptions/` (full dual hierarchy with HasExceptionContext), `Livewire/BaseRecordManager` and
-concerns (WithSorting, WithRecordSelection), `Policies/Concerns/` (AuthorizesRoles,
+`Exceptions/` (full dual hierarchy with HasExceptionContext), `Policies/Concerns/` (AuthorizesRoles,
 AuthorizesOwnership), `Http/Middleware/` (SecurityHeadersMiddleware, LogContextMiddleware),
 `Support/` (Color,
 CsvHandler, Environment, ModuleManager, PasswordRules, PiiMasker, Spotlight).
@@ -57,7 +56,7 @@ provide runtime settings and branding access.
 
 Core provides abstract contracts and base classes alongside concrete implementations. The distinction
 prevents framework-level abstractions from being polluted with application-specific defaults. The
-concrete layer (Data, Enums, Exceptions, Livewire, Policies/Concerns, Support) contains reusable
+concrete layer (Data, Enums, Exceptions, Policies/Concerns, Support) contains reusable
 classes, while the abstract layer (Contracts, base classes) provides the infrastructure every module
 builds on.
 

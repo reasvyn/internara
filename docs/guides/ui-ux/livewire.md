@@ -67,7 +67,7 @@ Browser (Blade + wire:* directives)
 // app/Modules/Enrollment/Livewire/Registration/ListRecords.php
 namespace App\Modules\Enrollment\Livewire\Registration;
 
-use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 
 class ListRecords extends BaseRecordManager

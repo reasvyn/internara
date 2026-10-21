@@ -14,7 +14,7 @@ Hard rules. Violations are architecture violations.
 
 1. **Tokens over literals** — Never hardcode `style="color:#123456"`, `bg-[#...]`, `w-[930px]`, or arbitrary `11px`. Every color, spacing, radius, shadow, and font value MUST come from `@theme` CSS variables (`--color-primary`, `--spacing-*`, `--radius-*`) and their generated utilities (`bg-primary`, `p-4`, `rounded-xl`). Arbitrary values require explicit justification in review.
 
-2. **CSS-first, no JS config** — Tailwind v4 is CSS-first. Do NOT create `tailwind.config.js`. All customization lives in `resources/css/app.css` via `@import 'tailwindcss'`, `@theme`, `@custom-variant dark`, `@layer`, and `@source`. Runtime brand overrides live in `Theme::cssVariables()` → inline `<style>` in `core::layouts.base`, never in a build-time config.
+2. **CSS-first, no JS config** — Tailwind v4 is CSS-first. Do NOT create `tailwind.config.js`. All customization lives in `resources/css/app.css` via `@import 'tailwindcss'`, `@theme`, `@custom-variant dark`, `@layer`, and `@source`. Runtime brand overrides live in `Theme::cssVariables()` → inline `<style>` in `ui::layouts.base`, never in a build-time config. Core module owns zero UI layers.
 
 3. **Semantic palette only** — Use `base-100/200/300/content`, `primary/secondary/accent/neutral`, `info/success/warning/error` (and their `-content` pairs). Never `bg-blue-500`, `text-red-500`, `bg-[#059669]` for decorative color. The palette is pre-validated for WCAG AA contrast (4.5:1 text, 3:1 large/UI, 3:1 non-text contrast per WCAG 1.4.3 / 1.4.11).
 
@@ -42,7 +42,7 @@ Hard rules. Violations are architecture violations.
 
 | Role | Utility | Example |
 |------|---------|---------|
-| Page `h1` | `text-2xl font-black tracking-tight` | `core::ui.page-header` |
+| Page `h1` | `text-2xl font-black tracking-tight` | `ui::components.page-header` |
 | Section `h2` | `text-lg font-semibold` | Card or modal title |
 | Card title | `text-sm font-semibold` | `stat-card` title |
 | Body | `text-sm leading-relaxed` (1.6) | Descriptions, table cells |
@@ -82,7 +82,7 @@ Use `p-2/p-4/p-6`, `gap-2/gap-4`, `space-y-6`, `py-4/py-5` for page rhythm; `gap
 
 ```
 
-12-column mental model. Never fixed `w-[930px]`. Sidebar: `lg:drawer-open` with overlay label; hamburger only `lg:hidden` (see `core::layouts.sidebar`).
+12-column mental model. Never fixed `w-[930px]`. Sidebar: `lg:drawer-open` with overlay label; hamburger only `lg:hidden` (see `ui::layouts.sidebar`).
 
 **Color hierarchy (Material 3 roles → Internara tokens).**
 
@@ -121,8 +121,8 @@ Author mobile first, enhance upward. This is MDN Responsive Design + WCAG 1.4.10
 Follow **Atomic Design** (Brad Frost) + **W3C Design Tokens** + Material 3 Component Spec.
 
 - **Atoms** → `x-ts-button`, `x-ts-badge`, `x-ts-icon` (Heroicons `heroicon-o-*` via `blade-heroicons`, prefix `heroicon`).
-- **Molecules** → `core::widgets.stat-card`, `core::widgets.empty-state`, `core::ui.page-header` (composes atoms, no business logic).
-- **Organisms** → `core::ui.record-manager` (canonical CRUD scaffold: header, stats `grid-cols-2 lg:grid-cols-4`, search `wire:model.live.debounce.300ms`, `perPage`, Alpine `filtersOpen` with `x-trap`+`x-cloak`, `selectionBar` with `@entangle`, table `overflow-x-auto`, emptyState/modal slots).
+- **Molecules** → `ui::widgets.stat-card`, `ui::widgets.empty-state`, `ui::components.page-header` (composes atoms, no business logic).
+- **Organisms** → `ui::components.record-manager` (canonical CRUD scaffold: header, stats `grid-cols-2 lg:grid-cols-4`, search `wire:model.live.debounce.300ms`, `perPage`, Alpine `filtersOpen` with `x-trap`+`x-cloak`, `selectionBar` with `@entangle`, table `overflow-x-auto`, emptyState/modal slots).
 
 **Consistency contract:**
 
@@ -197,15 +197,15 @@ Prevent drift: ESLint/Prettier checks, code review flags arbitrary values (`[val
 
 **Forms:** `x-ts-input`/`x-ts-select.native`/`x-ts-textarea`/`x-ts-file` with `label` prop (auto `for` association). `required` prop for required fields (not just visual asterisk). Errors via TallStackUI `aria-live` — do not suppress. Layout `space-y-4` inside modal, `grid grid-cols-1 md:grid-cols-2 gap-4` for two-column forms.
 
-**Tables:** `x-ts-table` with `headers` array (`label`, `field`, `sortable` → auto `aria-sort`). Wrap in `overflow-x-auto rounded-xl border`. Bulk checkbox header needs `aria-label="Select all rows"`. Density `table-sm`, zebra `table-zebra`. Empty state via `core::widgets.empty-state` slot, not bare text.
+**Tables:** `x-ts-table` with `headers` array (`label`, `field`, `sortable` → auto `aria-sort`). Wrap in `overflow-x-auto rounded-xl border`. Bulk checkbox header needs `aria-label="Select all rows"`. Density `table-sm`, zebra `table-zebra`. Empty state via `ui::widgets.empty-state` slot, not bare text.
 
-**Modals/Dialogs:** `x-ts-modal` (`wire="showModal"`), `separator blur size="lg"` for guides. Focus traps automatically; focus moves to first focusable on open, returns to trigger on close. Confirm destructive via two-step `ask{Action}()` → `confirm{Action}()` + shared `core::ui.confirm` (`wire="showConfirm"`), never bare `wire:confirm`. Cancel via `Escape`.
+**Modals/Dialogs:** `x-ts-modal` (`wire="showModal"`), `separator blur size="lg"` for guides. Focus traps automatically; focus moves to first focusable on open, returns to trigger on close. Confirm destructive via two-step `ask{Action}()` → `confirm{Action}()` + shared `ui::components.confirm` (`wire="showConfirm"`), never bare `wire:confirm`. Cancel via `Escape`.
 
-**Navigation:** App shell `core::layouts.app` → `<x-ts-layout>` with `menu` (sidebar `x-ts-side-bar navigate smart collapsible` reading `config/menu.php` role-filtered), `header` (`h1[tabindex=-1]` for focus management), `footer`, `max-w-7xl mx-auto px-4 md:px-6 lg:px-8`, breadcrumb `nav[aria-label]`, content `aria-live="polite"`. SPA `wire:navigate` with focus reset `x-init="$nextTick(() => $el.querySelector('h1,[autofocus]')?.focus())"` in `core::layouts.base`. Skip link as first focusable element (`<a href="#main">`).
+**Navigation:** App shell `ui::layouts.app` → `<x-ts-layout>` with `menu` (sidebar `x-ts-side-bar navigate smart collapsible` reading `config/menu.php` role-filtered), `header` (`h1[tabindex=-1]` for focus management), `footer`, `max-w-7xl mx-auto px-4 md:px-6 lg:px-8`, breadcrumb `nav[aria-label]`, content `aria-live="polite"`. SPA `wire:navigate` with focus reset `x-init="$nextTick(() => $el.querySelector('h1,[autofocus]')?.focus())"` in `ui::layouts.base`. Skip link as first focusable element (`<a href="#main">`).
 
 ### 8. Performance & Asset Delivery
 
-Tailwind v4 engine: 5× full builds, 100× incremental (µs) via `@tailwindcss/vite`. Vite 8.1 + `laravel-vite-plugin` with entries `resources/css/app.css`, `resources/js/app.js` (see `vite.config.js`). Head order in `core::layouts.base/head`: `preconnect`+`dns-prefetch`, `viewport`, `csrf-token`, `<tallstackui:script/>` **before** `@vite` (required). `@source` covers `resources/views` + TallStackUI vendor. Verify with `npm run build`; no external font/script without CSP `default-src`/`script-src`/`img-src` allowance.
+Tailwind v4 engine: 5× full builds, 100× incremental (µs) via `@tailwindcss/vite`. Vite 8.1 + `laravel-vite-plugin` with entries `resources/css/app.css`, `resources/js/app.js` (see `vite.config.js`). Head order in `ui::layouts.base/head`: `preconnect`+`dns-prefetch`, `viewport`, `csrf-token`, `<tallstackui:script/>` **before** `@vite` (required). `@source` covers `resources/views` + TallStackUI vendor. Verify with `npm run build`; no external font/script without CSP `default-src`/`script-src`/`img-src` allowance.
 
 Apply performance heuristics: avoid `@apply` bloat, keep `@layer components` shims minimal, prefer utilities over custom CSS where possible, lazy-load heavy JS (`flatpickr`, `marked+DOMPurify`, Choices bridge) already in `resources/js/app.js`.
 

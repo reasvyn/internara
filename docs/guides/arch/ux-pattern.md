@@ -14,7 +14,7 @@ Hard rules. Violations are architecture or accessibility violations.
 
 1. **WCAG 2.2 Level AA is a design constraint, not a backlog item.** Every user-facing surface MUST meet WCAG 2.2 AA across the four principles — Perceivable, Operable, Understandable, Robust. 4.5:1 text contrast, 3:1 large/UI contrast, keyboard operability, visible focus, `lang` attribute, form labels, `aria-live` for dynamic content, semantic landmarks. No audit-after-ship. See §2.
 
-2. **Dual-signal theming — no bare `bg-white` without `dark:`.** Theme is `data-theme="light|dark"` (palette variables) **plus** `.dark` class (Tailwind `dark:` variant). `resources/js/app.js` `applyTheme()` sets both; cookie `theme` mirrors for SSR to avoid FOUC. Every surface MUST have a dark counterpart — no bare `bg-white`/`text-black` without `dark:bg-base-100` or token equivalent. Use `<x-core::ui.theme-switch>` (`<x-ts-theme-switch>`), never hand-roll toggle.
+2. **Dual-signal theming — no bare `bg-white` without `dark:`.** Theme is `data-theme="light|dark"` (palette variables) **plus** `.dark` class (Tailwind `dark:` variant). `resources/js/app.js` `applyTheme()` sets both; cookie `theme` mirrors for SSR to avoid FOUC. Every surface MUST have a dark counterpart — no bare `bg-white`/`text-black` without `dark:bg-base-100` or token equivalent. Use `<x-ui::components.theme-switch>` (`<x-ts-theme-switch>`), never hand-roll toggle.
 
 3. **Semantic tokens only for theme.** New colors require entries in both `Theme::cssVariables()` `light` and `dark` scopes and `Color::isValid()` validation. Never hardcode hex in Blade/CSS. Always `bg-primary`, `text-success`, `border-warning`, `bg-info/10` — never `bg-blue-500` or `bg-[#059669]`.
 
@@ -24,7 +24,7 @@ Hard rules. Violations are architecture or accessibility violations.
 
 6. **Guide on every non-trivial flow.** Every page with a non-trivial workflow MUST include `resources/views/{module}/components/{page-name}-guide.blade.php` — floating FAB `fixed right-6 bottom-6 z-50 size-12 rounded-full` + `<x-ts-modal separator blur size="lg">` with intro, numbered steps (title + desc), and tip. All strings via `__()`, keyboard-accessible, ARIA-announced. See `livewire-pattern.md` §11.
 
-7. **Error prevention over error recovery.** Destructive actions use two-step `ask{Action}()` → `confirm{Action}()` with shared `core::ui.confirm` (`wire="showConfirm"`), never bare `wire:confirm`. Validate inline (`$this->validate()`) + authoritatively in Action; catch `RejectedException` → `$this->toast()->error($e->getMessage())->send()`. No silent failures, no `RuntimeException` for business rejection (C8).
+7. **Error prevention over error recovery.** Destructive actions use two-step `ask{Action}()` → `confirm{Action}()` with shared `ui::components.confirm` (`wire="showConfirm"`), never bare `wire:confirm`. Validate inline (`$this->validate()`) + authoritatively in Action; catch `RejectedException` → `$this->toast()->error($e->getMessage())->send()`. No silent failures, no `RuntimeException` for business rejection (C8).
 
 ---
 
@@ -44,7 +44,7 @@ Three layers, single source of truth in `resources/css/app.css` + `Theme::cssVar
 | Semantic (purpose) | Intent — what components consume | `@theme` semantic + `Theme` runtime | `bg-primary`, `text-primary-content`, `bg-base-100`, `border-warning` |
 | Component (variant) | Component API | TallStackUI props | `<x-ts-button color="primary">`, `.badge-success` |
 
-Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::layouts.base` scoped to `html[data-theme='light']` and `html[data-theme='dark']`. Changing Settings → next request reflects, no `npm run build`. Four configurable brand colors (`primary`, `secondary`, `accent`, `base` per `docs/guides/branding.md` §2) + `*-content` contrast (`Color::contrastColor()` luminance >0.5 → `#1a1a1a` else `#f0f0f0`), `base-200/300` shades, dark equivalents (light brand → `Color::lighten(40%)` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Cache key `theme_css_variables` TTL 3600 (`config/cache-keys.php`).
+Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `ui::layouts.base` scoped to `html[data-theme='light']` and `html[data-theme='dark']`. Changing Settings → next request reflects, no `npm run build`. Four configurable brand colors (`primary`, `secondary`, `accent`, `base` per `docs/guides/branding.md` §2) + `*-content` contrast (`Color::contrastColor()` luminance >0.5 → `#1a1a1a` else `#f0f0f0`), `base-200/300` shades, dark equivalents (light brand → `Color::lighten(40%)` for dark, base → `Color::computeDarkShades()` returns fixed black shades `#262626/#171717/#0a0a0a`). Cache key `theme_css_variables` TTL 3600 (`config/cache-keys.php`).
 
 ```css
 /* resources/css/app.css — @theme is the SSOT */
@@ -66,7 +66,7 @@ Runtime branding: `Theme::cssVariables()` generates inline `<style>` in `core::l
   <x-ts-badge color="success" :text="__('common.verified')" />
 </div>
 {{-- Theme switch — always this component --}}
-<x-core::ui.theme-switch />
+<x-ui::components.theme-switch />
 
 ```
 
@@ -95,7 +95,7 @@ Commitment: **WCAG 2.2 Level AA** per `modular-pattern.md` §22 + `livewire-patt
 
 - **2.1.1 Keyboard & 2.1.2 No Keyboard Trap & 2.4.3 Focus Order:** Every interactive element (button, link, input, modal, dropdown, tabs) reachable and operable via keyboard alone. Tab order follows logical reading order. `WithRecordSelection` / `WithSorting` concerns preserve order.
 - **2.4.7 Focus Visible & 2.4.11/2.4.12 Focus Not Obscured & 2.4.13 Focus Appearance:** Every focusable has visible `focus:ring`. Never `outline-none` without replacement. TallStackUI provides `focus:ring` — do not suppress. Focused element never hidden behind sticky header/footer (check `z-50` FAB + modal `z-50` stacking).
-- **2.4.1 Bypass Blocks:** Skip link as first focusable element (`<a href="#main-content" class="sr-only focus:not-sr-only">Skip to main content</a>` in `core::layouts.base`). `main` has `id="main-content"` and `tabindex="-1"` on `h1` for programmatic focus after `wire:navigate`.
+- **2.4.1 Bypass Blocks:** Skip link as first focusable element (`<a href="#main-content" class="sr-only focus:not-sr-only">Skip to main content</a>` in `ui::layouts.base`). `main` has `id="main-content"` and `tabindex="-1"` on `h1` for programmatic focus after `wire:navigate`.
 - **2.5.8 Target Size (Minimum) — WCAG 2.2 new:** ≥24×24px minimum (AA), ≥44×44px preferred (AAA / Apple HIG 44pt). Enforce 44px for primary actions; 24px floor for dense tables (add `p-2` to `btn-square`).
 - **Modals & dropdowns:** `x-ts-modal` traps focus, Esc closes, focus returns to trigger (`x-on:close.window`). Dropdown `x-trap` + `x-cloak`. Alpine `x-trap` for filter panels in `record-manager`.
 
@@ -120,7 +120,7 @@ Commitment: **WCAG 2.2 Level AA** per `modular-pattern.md` §22 + `livewire-patt
 
 #### 2.3 Understandable (WCAG Principle 3)
 
-- **3.1.1 Language of Page & 3.1.2 Language of Parts:** `<html lang="{{ str_replace('_','-',app()->getLocale()) }}">` in `core::layouts.base`. If a passage is in a different language (e.g., Arabic quote), wrap with `lang="ar"`.
+- **3.1.1 Language of Page & 3.1.2 Language of Parts:** `<html lang="{{ str_replace('_','-',app()->getLocale()) }}">` in `ui::layouts.base`. If a passage is in a different language (e.g., Arabic quote), wrap with `lang="ar"`.
 - **3.3.1 Error Identification & 3.3.3 Error Suggestion & 3.3.2 Labels or Instructions:** Every input has `<label>` via `x-ts-input label="..."` (never placeholder as label). Required via `required` prop. Errors announced via `aria-live` (TallStackUI built-in). Server validation in `Form` `rules()` + Action authoritative check; client `$this->validate()` for inline feedback only.
 - **3.2.1 On Focus & 3.2.2 On Input & 3.2.3 Consistent Navigation & 3.2.4 Consistent Identification & 3.2.6 Consistent Help:** No context change on focus/input without user request. Sidebar `config/menu.php` order stable across pages; same control = same label everywhere (`common.actions.save` reused). Help (guide FAB) in same corner (fixed `right-6 bottom-6`) on every guide-bearing page.
 - **3.3.7 Redundant Entry & 3.3.8 Accessible Authentication:** Do not ask for same info twice in a flow; remember prior answers. Auth supports paste for passwords, no cognitive test that blocks AT.
@@ -193,12 +193,12 @@ Every **state** of a flow is designed, not just the happy path. Inspired by Mate
 
 | State | Pattern | Implementation |
 |-------|---------|----------------|
-| **Entry / empty** | `core::widgets.empty-state` with icon + title + description + primary CTA | `@include('core.widgets.empty-state', ['title' => __('module.empty_title'), 'action' => 'create'])` |
+| **Entry / empty** | `ui::widgets.empty-state` with icon + title + description + primary CTA | `@include('ui.widgets.empty-state', ['title' => __('module.empty_title'), 'action' => 'create'])` |
 | **Loading** | `wire:loading` + `aria-busy`, skeleton or spinner, disable inputs `wire:loading.attr="disabled"` | Confirm modal uses `wire:loading.attr="disabled"`; table wrapper `aria-busy="{{ $isLoading }}"` |
 | **Success** | `$this->toast()->success(__('{module}.{entity}.created'))->send()` (TallStackUI Interactions) | Never `flash()->` / maryUI `$this->success()` (removed) |
 | **Error (validation)** | Inline field error via `x-ts-input` `aria-live`; summary focus to first error via `dispatch('focus-error')` | `RejectedException` → `$this->toast()->error($e->getMessage())->send()` |
 | **Error (empty selection)** | `toast()->warning(__('common.no_selection'))` | `performBulkAction()` already warns |
-| **Confirm** | Two-step `askDelete()` → `confirmDelete(DeleteAction)` + `core::ui.confirm` (`wire="showConfirm"`) | Never `wire:confirm` bare |
+| **Confirm** | Two-step `askDelete()` → `confirmDelete(DeleteAction)` + `ui::components.confirm` (`wire="showConfirm"`) | Never `wire:confirm` bare |
 | **Help** | `*-guide.blade.php` FAB + modal (see §4.3) | One per non-trivial page |
 
 #### 4.3 Guide Pattern (Help & Documentation — NN/g Heuristic #10)
@@ -254,11 +254,11 @@ Canonical: `resources/views/setup/components/setup-guide.blade.php` (now `<x-ts-
 |----------|---------------|-----------|
 | `bg-white text-black` without `dark:` counterpart | `bg-base-100 dark:bg-base-100 text-base-content` or semantic token pair | Dual-signal dark mode, FOUC / unreadable in dark |
 | New hex `#123456` in Blade/CSS or `bg-blue-500` decorative | `@theme --color-*` + `Theme::cssVariables()` light+dark + `bg-info` semantic | Token drift, fails contrast gate |
-| Hand-rolled theme toggle `onclick="toggleDark()"` | `<x-core::ui.theme-switch />` / `<x-ts-theme-switch>` | Breaks SSR cookie sync, `.dark` + `data-theme` dual-signal |
+| Hand-rolled theme toggle `onclick="toggleDark()"` | `<x-ui::components.theme-switch />` / `<x-ts-theme-switch>` | Breaks SSR cookie sync, `.dark` + `data-theme` dual-signal |
 | `<input placeholder="Name">` without `label` | `<x-ts-input label="{{ __('common.name') }}" required />` | WCAG 3.3.2 Labels, 1.3.1 Info & Relationships |
 | `style="outline:none"` without `focus:ring` | Keep TallStackUI `focus:ring` (default) | WCAG 2.4.7 Focus Visible |
 | Icon-only `<button><svg>…</svg></button>` | `<x-ts-button icon="trash" aria-label="{{ __('common.delete') }}" />` | WCAG 4.1.2 Name/Role/Value |
-| `wire:confirm="Delete?"` bare for destructive | `askDelete()` → `confirmDelete(DeleteAction)` + `core::ui.confirm wire="showConfirm"` + `RejectedException` catch | Error prevention (Heuristic #5, §1 Non-Negotiable #7) |
+| `wire:confirm="Delete?"` bare for destructive | `askDelete()` → `confirmDelete(DeleteAction)` + `ui::components.confirm wire="showConfirm"` + `RejectedException` catch | Error prevention (Heuristic #5, §1 Non-Negotiable #7) |
 | Hardcoded `"Record created successfully"` | `$this->toast()->success(__('{module}.{entity}.created'))->send()` | i18n, dual locale missing |
 | `__('module.title')` added only to `lang/en/` | Add to `lang/en/` **and** `lang/id/` same commit | `LangChecker` completeness |
 | `'Hello ' . $name . ', you have ' . $n . ' items'` | `__('common.hello_items', ['name' => $name, 'count' => $n])` | Concatenation, breaks word order / ICU plural |

@@ -24,7 +24,7 @@ Hard rules. Violations are architecture violations.
 
 6. **DTO for 3+ params (C7).** When passing 3+ values to an Action, build a DTO from validated form data. Never pass raw arrays with 3+ keys.
 
-7. **Two-step confirmation for destructive actions.** Never use bare `wire:confirm`. Use `ask{Action}()` → `confirm{Action}()` pattern with `<x-core::ui.confirm />`.
+7. **Two-step confirmation for destructive actions.** Never use bare `wire:confirm`. Use `ask{Action}()` → `confirm{Action}()` pattern with `<x-ui::components.confirm />`.
 
 ---
 

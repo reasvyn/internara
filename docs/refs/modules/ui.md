@@ -30,8 +30,10 @@ UI has no submodules. Code is organized by presentation layer:
 **Widgets** (`resources/views/ui/widgets` → `x-ui::widgets.*`):
 `stat-card.blade.php`, `action-button.blade.php`, `empty-state.blade.php`, `profile-summary.blade.php`, `quick-link.blade.php`.
 
-**PHP support**: Helper utilities for semantic color resolution and UI view detection, plus
-future-typed view components. No business code.
+**Livewire Base Classes & Concerns** (`app/Modules/UI/Livewire/`):
+`BaseRecordManager.php`, `BaseRecordList.php`, `BaseFormView.php`, `BaseRecordEntry.php`, `BaseWizard.php`, `AboutPage.php`, and concerns `Concerns/WithRecordSelection.php`, `Concerns/WithSorting.php`.
+
+**PHP support**: Helper utilities (`Support/UiHelper.php`) for semantic color resolution and UI view detection. No business code.
 
 ## Key Concepts
 
