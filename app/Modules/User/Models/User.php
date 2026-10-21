@@ -246,7 +246,11 @@ class User extends BaseAuthenticatable implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(200)->height(200)->format('webp')->nonQueued();
+        $conversion = $this->addMediaConversion('thumb')->width(200)->height(200)->nonQueued();
+
+        if (function_exists('imagewebp')) {
+            $conversion->format('webp');
+        }
     }
 
     public function initials(): string

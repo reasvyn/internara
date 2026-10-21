@@ -167,6 +167,7 @@ class SystemSetting extends BaseFormView
         $this->handleSave(function () use ($action): void {
             $action->execute('logo');
 
+            Settings::forget('brand_logo');
             $this->brandingForm->current_logo_url = null;
             $this->brandingForm->brand_logo = null;
 
@@ -181,6 +182,7 @@ class SystemSetting extends BaseFormView
         $this->handleSave(function () use ($action): void {
             $action->execute('favicon');
 
+            Settings::forget('site_favicon');
             $this->brandingForm->current_favicon_url = null;
             $this->brandingForm->site_favicon = null;
 
@@ -188,11 +190,11 @@ class SystemSetting extends BaseFormView
         });
     }
 
-    public function confirmAction(): void
+    public function confirmAction(RemoveBrandAssetAction $action): void
     {
         match ($this->confirmTarget) {
-            'removeBrandLogo' => $this->confirmRemoveBrandLogo(),
-            'removeFavicon' => $this->confirmRemoveFavicon(),
+            'removeBrandLogo' => $this->confirmRemoveBrandLogo($action),
+            'removeFavicon' => $this->confirmRemoveFavicon($action),
             default => null,
         };
 

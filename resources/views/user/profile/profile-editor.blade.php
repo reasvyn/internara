@@ -202,9 +202,12 @@
                                 class="sr-only"
                             />
                             <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
-                                @if ($this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb'))
+                                @php
+                                    $currentAvatar = $this->avatarPreviewUrl() ?: ($user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar'));
+                                @endphp
+                                @if ($currentAvatar)
                                     <img
-                                        src="{{ $this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') }}"
+                                        src="{{ $currentAvatar }}"
                                         alt="{{ __('common.avatar') }}"
                                         class="size-full object-cover"
                                     />

@@ -4,7 +4,7 @@
 ])
 
 @php
-    $avatarUrl = $user->getFirstMediaUrl('avatar', 'thumb');
+    $avatarUrl = $user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar');
 @endphp
 
 <div {{ $attributes->merge(['class' => $size . ' rounded-lg bg-base-200 flex items-center justify-center shrink-0 overflow-hidden']) }}>

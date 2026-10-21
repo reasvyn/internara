@@ -80,7 +80,11 @@ class Partnership extends BaseModel implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')->width(400)->format('webp')->nonQueued();
+        $conversion = $this->addMediaConversion('thumb')->width(400)->nonQueued();
+
+        if (function_exists('imagewebp')) {
+            $conversion->format('webp');
+        }
     }
 
     public function company(): BelongsTo
