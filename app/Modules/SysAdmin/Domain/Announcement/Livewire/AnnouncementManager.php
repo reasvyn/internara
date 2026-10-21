@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\SysAdmin\Domain\Announcement\Livewire;
 
 use App\Modules\Auth\Domain\Permission\Enums\Role;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\DeleteAnnouncementAction;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\PublishAnnouncementAction;
 use App\Modules\SysAdmin\Domain\Announcement\Actions\SendAnnouncementAction;
 use App\Modules\SysAdmin\Domain\Announcement\Enums\AnnouncementStatus;
 use App\Modules\SysAdmin\Domain\Announcement\Livewire\Forms\AnnouncementForm;
 use App\Modules\SysAdmin\Domain\Announcement\Models\Announcement;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;

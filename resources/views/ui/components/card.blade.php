@@ -1,19 +1,19 @@
 @props([
     'header' => null,
     'footer' => null,
-    'round' => 'xl',
+    'round' => '2xl',
 ])
 
 {{--
     UI Wrapper: Card
     Wraps TallStackUI card (<x-ts-card>), enforcing the canonical Internara card spec:
-    rounded-xl, border-base-content/10, background-base-100, and non-sharp corners.
+    rounded-2xl, border-base-content/10, background-base-100, and non-sharp corners.
 --}}
 <x-ts-card
     :round="$round"
     {{
         $attributes->class([
-            'rounded-xl border border-base-content/10 bg-base-100 shadow-2xs',
+            'rounded-2xl border border-base-content/10 bg-base-100 shadow-2xs',
         ])
     }}
 >

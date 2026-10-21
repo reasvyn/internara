@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Document\Domain\Handbook\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Document\Domain\Handbook\Actions\CreateHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\DeleteHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\UpdateHandbookAction;
@@ -14,6 +13,7 @@ use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
 use App\Modules\Document\Domain\Handbook\Livewire\Forms\HandbookForm;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;

@@ -17,7 +17,7 @@
     <div @class([
         'mx-auto px-4 sm:px-6 lg:px-8',
         'py-3 sm:py-4' => $compact,
-        'py-6' => ! $compact,
+        'py-4 sm:py-5' => ! $compact,
         'container max-w-7xl' => ! $fullWidth,
         'w-full' => $fullWidth,
     ])>

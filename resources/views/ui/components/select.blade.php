@@ -22,7 +22,7 @@
     :multiple="$multiple"
     {{
         $attributes->class([
-            'rounded-lg' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-xl' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 />

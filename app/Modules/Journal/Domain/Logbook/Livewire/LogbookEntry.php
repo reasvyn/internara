@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Journal\Domain\Logbook\Livewire;
 
-use App\Modules\Core\Livewire\BaseRecordEntry;
 use App\Modules\Journal\Domain\Logbook\Actions\SubmitLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
+use App\Modules\UI\Livewire\BaseRecordEntry;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;

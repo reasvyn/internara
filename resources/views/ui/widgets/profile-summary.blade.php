@@ -8,7 +8,7 @@
 @endphp
 
 <x-ts-card color="white">
-    <div class="flex flex-col items-center py-4 text-center">
+    <div class="flex flex-col items-center py-2 text-center sm:py-3">
         <x-ui::components.avatar :user="$user" size="size-16" class="mb-3" />
         <h3 class="font-semibold">{{ $user->name }}</h3>
         <p class="text-base-content/50 mt-0.5 text-xs">{{ $user->getRoleNames()->first() }}</p>

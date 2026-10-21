@@ -7,7 +7,7 @@
     $avatarUrl = $user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar');
 @endphp
 
-<div {{ $attributes->merge(['class' => $size . ' rounded-lg bg-base-200 flex items-center justify-center shrink-0 overflow-hidden']) }}>
+<div {{ $attributes->merge(['class' => $size . ' rounded-full bg-base-200 flex items-center justify-center shrink-0 overflow-hidden']) }}>
     @if ($avatarUrl)
         <img src="{{ $avatarUrl }}" alt="{{ $user->name }}" class="size-full object-cover" />
     @else

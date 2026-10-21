@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Core\Livewire;
+namespace App\Modules\UI\Livewire;
 
 use App\Modules\Core\Services\AppInfo;
 use Illuminate\View\View;
@@ -50,7 +50,7 @@ final class AboutPage extends Component
         $layout = auth()->check() ? 'ui::layouts.app' : 'ui::layouts.guest';
         $title = __('about.about_app', ['app' => $appData['appName']]);
 
-        return view('core.about', $appData)
+        return view('ui::about', $appData)
             ->layout($layout, [
                 'title' => $title,
                 'header' => $title,

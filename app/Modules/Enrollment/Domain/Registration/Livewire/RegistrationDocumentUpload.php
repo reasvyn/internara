@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\Registration\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Registration\Actions\UploadRegistrationDocumentAction;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;

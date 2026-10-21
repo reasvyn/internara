@@ -13,7 +13,7 @@
 <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
     <x-slot:header>
         <div class="flex items-center gap-2">
-            <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-md">
+            <div class="bg-primary/10 text-primary flex size-6 items-center justify-center rounded-xl">
                 <x-ts-icon name="information-circle" class="size-3.5" />
             </div>
             <span class="text-sm font-semibold">{{ __('dashboard.app_info.title') }}</span>

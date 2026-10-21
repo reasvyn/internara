@@ -28,7 +28,7 @@
     <a
         wire:navigate
         href="{{ route('about') }}"
-        class="text-base-content/60 hover:text-primary hover:bg-base-200 hidden size-9 items-center justify-center rounded-lg transition-colors md:flex"
+        class="text-base-content/60 hover:text-primary hover:bg-base-200 hidden size-9 items-center justify-center rounded-xl transition-colors md:flex"
         title="{{ __('about.title') }}"
         aria-label="{{ __('about.title') }}"
     >
@@ -49,7 +49,7 @@
                 <x-slot:action>
                     <button
                         type="button"
-                        class="focus:ring-primary text-base-content hover:bg-base-200 flex items-center gap-2 rounded-lg p-1.5 transition-colors focus:ring-2 focus:outline-none"
+                        class="focus:ring-primary text-base-content hover:bg-base-200 flex items-center gap-2 rounded-xl p-1.5 transition-colors focus:ring-2 focus:outline-none"
                         x-on:click="show = ! show"
                         aria-label="{{ auth()->user()->name }}"
                     >
@@ -58,8 +58,8 @@
                     </button>
                 </x-slot:action>
 
-                <div class="border-base-content/10 bg-base-100 w-56 rounded-xl border p-1.5 shadow-lg">
-                    <div class="bg-base-200/50 mb-1 rounded-lg px-3 py-3">
+                <div class="border-base-content/10 bg-base-100 w-56 rounded-2xl border p-1.5 shadow-md">
+                    <div class="bg-base-200/50 mb-1 rounded-xl px-3 py-2.5">
                         <p class="text-base-content text-sm font-semibold">{{ auth()->user()->name }}</p>
                         <p class="text-base-content/60 truncate text-xs">{{ auth()->user()->email }}</p>
                     </div>

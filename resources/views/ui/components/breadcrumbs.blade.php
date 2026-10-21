@@ -9,7 +9,7 @@
 @if ($context)
     <nav
         aria-label="Breadcrumb"
-        {{ $attributes->merge(['class' => 'text-base-content/60 mb-5 flex items-center gap-2 text-xs']) }}
+        {{ $attributes->merge(['class' => 'text-base-content/60 mb-3.5 sm:mb-4 flex items-center gap-2 text-xs']) }}
     >
         <a wire:navigate href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">
             {{ brand('name') }}
@@ -18,5 +18,5 @@
         <span class="text-primary font-medium"> {{ __($context) }} </span>
     </nav>
 @else
-    <x-ts-breadcrumbs {{ $attributes->class(['rounded-lg']) }} />
+    <x-ts-breadcrumbs {{ $attributes->class(['rounded-xl']) }} />
 @endif

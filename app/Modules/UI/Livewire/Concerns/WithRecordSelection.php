@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Core\Livewire\Concerns;
+namespace App\Modules\UI\Livewire\Concerns;
 
 use Livewire\Attributes\Computed;
 

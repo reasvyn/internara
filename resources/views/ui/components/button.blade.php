@@ -1,14 +1,14 @@
 @props([
     'text' => null,
     'color' => 'primary',
-    'round' => false,
+    'round' => 'xl',
     'circle' => false,
 ])
 
 {{--
     UI Wrapper: Button
     Wraps TallStackUI button (<x-ts-button>), enforcing design system tokens
-    (canonical rounded-lg, standardized color palette, and accessible minimums).
+    (canonical rounded-xl, standardized color palette, and accessible minimums).
 --}}
 <x-ts-button
     :text="$text"
@@ -17,7 +17,7 @@
     :circle="$circle"
     {{
         $attributes->class([
-            'rounded-lg' => ! $round && ! $circle && ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-xl' => ! $circle && ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 >

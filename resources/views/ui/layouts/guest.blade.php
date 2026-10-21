@@ -28,7 +28,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('dashboard') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-xl border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.dashboard.title') }}
                                 </a>
@@ -36,7 +36,7 @@
                                 <a
                                     wire:navigate
                                     href="{{ route('login') }}"
-                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-lg border px-3 py-1.5 text-xs font-semibold shadow-xs transition-colors sm:inline-flex"
+                                    class="border-primary bg-primary text-primary-content hover:bg-primary/80 hidden rounded-xl border px-3 py-1.5 text-xs font-semibold shadow-2xs transition-colors sm:inline-flex"
                                 >
                                     {{ __('user.home.login_action') }}
                                 </a>
@@ -49,7 +49,7 @@
 
         <main id="main-content" class="flex flex-1 flex-col">{{ $slot }}</main>
 
-        <footer class="border-base-content/10 mt-auto border-t py-5 sm:py-6">
+        <footer class="border-base-content/10 mt-auto border-t py-4 sm:py-5">
             <div class="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                 @isset($footer)
                     {{ $footer }}

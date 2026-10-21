@@ -16,7 +16,7 @@
     $tsIcon = str_starts_with($icon, 'o-') ? substr($icon, 2) : $icon;
 @endphp
 
-<x-ts-modal wire="showConfirm" :title="$title" blur>
+<x-ts-modal wire="showConfirm" :title="$title" blur class="rounded-2xl">
     <div class="flex items-start gap-4">
         <x-ts-icon :name="$tsIcon" class="text-warning mt-0.5 size-6 shrink-0" />
         <p class="text-base-content/80 text-sm">{{ $message }}</p>

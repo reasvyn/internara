@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Setup\Domain\SetupWizard\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseWizard;
 use App\Modules\Core\Services\AppInfo;
 use App\Modules\Core\Services\SmartLogger;
 use App\Modules\Setup\Domain\SetupWizard\Actions\FinalizeSetupAction;
@@ -15,6 +14,7 @@ use App\Modules\Setup\Domain\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Modules\Setup\Domain\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\SysAdmin\Domain\Observability\Services\EnvironmentAuditor;
+use App\Modules\UI\Livewire\BaseWizard;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Features\SupportRedirects\Redirector;

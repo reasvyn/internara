@@ -4,7 +4,7 @@
     'description' => '',
 ])
 
-<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-12 text-base-content/60']) }}>
+<div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-8 sm:py-10 text-center px-4 text-base-content/60']) }}>
     @php $tsIcon = str_starts_with($icon, 'o-') ? substr($icon, 2) : (str_starts_with($icon, 's-') ? substr($icon, 2) : $icon); @endphp
     <x-ts-icon :name="$tsIcon" class="mb-3 size-12" />
     @if ($title)

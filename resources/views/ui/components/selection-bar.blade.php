@@ -4,7 +4,7 @@
     x-data="{}"
     x-show="$wire.selectedIds.length > 0"
     x-cloak
-    class="bg-primary/5 border-primary/20 flex items-center justify-between gap-3 rounded-xl border px-4 py-3 transition-all duration-200"
+    class="bg-primary/5 border-primary/20 flex items-center justify-between gap-3 rounded-2xl border px-3.5 py-2.5 transition-all duration-200 sm:px-4 sm:py-3"
     role="status"
     aria-live="polite"
 >

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Enrollment\Domain\Placement\Actions\RequestPlacementChangeAction;
 use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\PlacementChangeForm;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

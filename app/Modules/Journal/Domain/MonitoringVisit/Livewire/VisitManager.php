@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\Journal\Domain\MonitoringVisit\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Journal\Domain\MonitoringVisit\Actions\CreateVisitAction;
 use App\Modules\Journal\Domain\MonitoringVisit\Actions\VerifyVisitAction;
 use App\Modules\Journal\Domain\MonitoringVisit\Data\CreateVisitData;
 use App\Modules\Journal\Domain\MonitoringVisit\Enums\VisitMethod;
 use App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;

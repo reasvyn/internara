@@ -87,13 +87,15 @@
                         <x-slot:action>
                             <button
                                 type="button"
-                                class="focus:ring-primary text-base-content/70 hover:bg-base-200 hover:text-base-content flex size-9 items-center justify-center rounded-lg transition-colors focus:ring-2 focus:outline-none"
+                                class="focus:ring-primary text-base-content/70 hover:bg-base-200 hover:text-base-content flex size-9 items-center justify-center rounded-xl transition-colors focus:ring-2 focus:outline-none"
                                 aria-label="{{ __('common.actions.label') }}"
                             >
                                 <x-ts-icon name="ellipsis-vertical" class="size-5" />
                             </button>
                         </x-slot:action>
-                        <div class="p-2">{{ $actions }}</div>
+                        <div class="bg-base-100 border-base-content/10 w-48 rounded-2xl border p-2 shadow-md">
+                            {{ $actions }}
+                        </div>
                     </x-ts-dropdown>
                 </div>
             @endisset

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Modules\Core\Livewire\AboutPage;
+use App\Modules\UI\Livewire\AboutPage;
 use App\Modules\Core\Services\AppInfo;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -173,7 +173,7 @@ describe('AB0UT: About page and author attribution', function (): void {
 
         Livewire::test(AboutPage::class)
             ->assertOk()
-            ->assertViewIs('core.about');
+            ->assertViewIs('ui::about');
 
         $response = $this->get(route('about'));
         $response->assertOk()

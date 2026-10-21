@@ -8,7 +8,7 @@
 
 {{--
     UI Wrapper: Alert
-    Wraps TallStackUI alert (<x-ts-alert>), enforcing canonical rounded-xl border styling.
+    Wraps TallStackUI alert (<x-ts-alert>), enforcing canonical rounded-2xl border styling.
 --}}
 <x-ts-alert
     :title="$title"
@@ -18,7 +18,7 @@
     :light="$light"
     {{
         $attributes->class([
-            'rounded-xl border shadow-2xs',
+            'rounded-2xl border shadow-2xs',
         ])
     }}
 >

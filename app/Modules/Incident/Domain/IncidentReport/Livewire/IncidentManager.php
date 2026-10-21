@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\Incident\Domain\IncidentReport\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Incident\Domain\IncidentReport\Actions\ResolveIncidentAction;
 use App\Modules\Incident\Domain\IncidentReport\Actions\UpdateIncidentAction;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentSeverity;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentStatus;
 use App\Modules\Incident\Domain\IncidentReport\Enums\IncidentType;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;

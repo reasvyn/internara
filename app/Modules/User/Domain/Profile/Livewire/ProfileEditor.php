@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\User\Domain\Profile\Livewire;
 
 use App\Modules\Auth\Domain\Password\Actions\UpdateUserPasswordAction;
-use App\Modules\Core\Livewire\BaseFormView;
+use App\Modules\UI\Livewire\BaseFormView;
 use App\Modules\User\Domain\Profile\Actions\ReadProfileFormAction;
 use App\Modules\User\Domain\Profile\Actions\UpdateProfileAction;
 use App\Modules\User\Domain\Profile\Data\UpdateProfileData;

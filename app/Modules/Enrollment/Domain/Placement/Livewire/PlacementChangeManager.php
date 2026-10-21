@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Placement\Actions\ApprovePlacementChangeAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\RejectPlacementChangeAction;
 use App\Modules\Enrollment\Domain\Placement\Models\PlacementChangeRequest;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

@@ -5,14 +5,14 @@
 
 {{--
     UI Wrapper: Checkbox
-    Wraps TallStackUI checkbox (<x-ts-checkbox>), ensuring rounded-xs corners.
+    Wraps TallStackUI checkbox (<x-ts-checkbox>), ensuring rounded-md corners.
 --}}
 <x-ts-checkbox
     :label="$label"
     :hint="$hint"
     {{
         $attributes->class([
-            'rounded-xs' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-md' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 />

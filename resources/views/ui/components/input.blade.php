@@ -6,7 +6,7 @@
 
 {{--
     UI Wrapper: Input
-    Wraps TallStackUI input (<x-ts-input>), ensuring canonical rounded-lg corners.
+    Wraps TallStackUI input (<x-ts-input>), ensuring canonical rounded-xl corners.
 --}}
 <x-ts-input
     :label="$label"
@@ -14,7 +14,7 @@
     :icon="$icon"
     {{
         $attributes->class([
-            'rounded-lg' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-xl' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 />

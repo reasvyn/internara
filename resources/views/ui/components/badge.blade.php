@@ -1,12 +1,12 @@
 @props([
     'text' => null,
     'color' => 'primary',
-    'round' => false,
+    'round' => true,
 ])
 
 {{--
     UI Wrapper: Badge
-    Wraps TallStackUI badge (<x-ts-badge>), ensuring non-sharp rounded corners.
+    Wraps TallStackUI badge (<x-ts-badge>), ensuring non-sharp rounded corners (pill).
 --}}
 <x-ts-badge
     :text="$text"
@@ -14,7 +14,7 @@
     :round="$round"
     {{
         $attributes->class([
-            'rounded-md' => ! $round && ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-full' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 >

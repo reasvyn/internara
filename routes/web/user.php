@@ -8,7 +8,7 @@ use App\Modules\Auth\Domain\AccountRecovery\Livewire\RecoverySlipManager;
 use App\Modules\Auth\Domain\Password\Livewire\ConfirmPassword;
 use App\Modules\Auth\Domain\Password\Livewire\ForgotPassword;
 use App\Modules\Auth\Domain\Password\Livewire\ResetPassword;
-use App\Modules\Core\Livewire\AboutPage;
+use App\Modules\UI\Livewire\AboutPage;
 use App\Modules\User\Domain\AccountStatus\Livewire\AccountLifecycleManager;
 use App\Modules\User\Domain\Dashboard\Livewire\AdminDashboard;
 use App\Modules\User\Domain\Dashboard\Livewire\StudentDashboard;

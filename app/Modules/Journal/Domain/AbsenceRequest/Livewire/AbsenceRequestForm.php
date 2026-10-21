@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Modules\Journal\Domain\AbsenceRequest\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Journal\Domain\AbsenceRequest\Actions\SubmitAbsenceAction;
 use App\Modules\Journal\Domain\AbsenceRequest\Data\SubmitAbsenceData;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journal\Domain\AbsenceRequest\Models\AbsenceRequest;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;

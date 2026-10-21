@@ -3,7 +3,7 @@
     'subtitle' => null,
 ])
 
-<div class="space-y-6 py-4">
+<div class="space-y-4 py-3 sm:space-y-5 sm:py-4">
     {{-- Header --}}
     <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div>
@@ -25,7 +25,9 @@
                             x-on:click="show = ! show"
                         />
                     </x-slot:action>
-                    <div class="w-48 p-1.5">{{ $extraMenu }}</div>
+                    <div class="bg-base-100 border-base-content/10 w-48 rounded-2xl border p-1.5 shadow-md">
+                        {{ $extraMenu }}
+                    </div>
                 </x-ts-dropdown>
             @endif
         </div>
@@ -33,11 +35,11 @@
 
     {{-- Stats --}}
     @if (isset($stats))
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">{{ $stats }}</div>
+        <div class="grid grid-cols-2 gap-3.5 sm:gap-4 lg:grid-cols-4">{{ $stats }}</div>
     @endif
 
     {{-- Search + Filters --}}
-    <div class="bg-base-100 border-base-content/10 flex flex-col items-start justify-between gap-4 rounded-xl border p-4 sm:flex-row sm:items-center">
+    <div class="bg-base-100 border-base-content/10 flex flex-col items-start justify-between gap-3.5 rounded-2xl border p-3.5 shadow-2xs sm:flex-row sm:items-center sm:gap-4 sm:p-4">
         <x-ts-input
             wire:model.live.debounce.300ms="search"
             :placeholder="__('common.actions.search')"
@@ -69,7 +71,7 @@
                     <div
                         x-show="filtersOpen"
                         x-on:click.outside="filtersOpen = false"
-                        class="bg-base-100 border-base-content/10 absolute right-0 z-50 mt-2 w-80 space-y-4 rounded-xl border p-4 shadow-xl"
+                        class="bg-base-100 border-base-content/10 absolute right-0 z-50 mt-2 w-80 space-y-4 rounded-2xl border p-4 shadow-xl"
                         x-cloak
                         x-trap="filtersOpen"
                     >
@@ -96,7 +98,7 @@
             x-data="{ show: @entangle('selectedIds') }"
             x-show="show.length > 0"
             x-cloak
-            class="bg-primary/5 border-primary/20 flex items-center justify-between rounded-xl border px-4 py-3"
+            class="bg-primary/5 border-primary/20 flex items-center justify-between rounded-2xl border px-3.5 py-2.5 sm:px-4 sm:py-3"
         >
             <span
                 class="text-primary text-sm font-medium"
@@ -107,7 +109,7 @@
     @endif
 
     {{-- Table --}}
-    <div class="border-base-content/10 overflow-x-auto rounded-xl border">{{ $slot }}</div>
+    <div class="border-base-content/10 bg-base-100 overflow-x-auto rounded-2xl border shadow-2xs">{{ $slot }}</div>
 
     {{-- Empty State --}}
     @if (isset($emptyState))

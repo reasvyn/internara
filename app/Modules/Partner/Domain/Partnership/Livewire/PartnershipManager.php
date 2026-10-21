@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Partner\Domain\Partnership\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Partner\Domain\Partnership\Actions\CreatePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\DeletePartnershipAction;
@@ -15,6 +14,7 @@ use App\Modules\Partner\Domain\Partnership\Data\PartnershipData;
 use App\Modules\Partner\Domain\Partnership\Enums\PartnershipStatus;
 use App\Modules\Partner\Domain\Partnership\Livewire\Forms\PartnershipForm;
 use App\Modules\Partner\Domain\Partnership\Models\Partnership;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;

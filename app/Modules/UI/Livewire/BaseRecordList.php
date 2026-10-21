@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Core\Livewire;
+namespace App\Modules\UI\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;

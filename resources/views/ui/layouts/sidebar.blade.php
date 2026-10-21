@@ -113,7 +113,7 @@
                             @if (empty($itemRoles) || auth()->user()->hasRole($itemRoles))
                                 @if ($disabled)
                                     <div
-                                        class="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm opacity-40"
+                                        class="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2 text-sm opacity-40"
                                         aria-disabled="true"
                                     >
                                         @if ($icon)
@@ -157,7 +157,7 @@
                     type="button"
                     x-on:click="$store['tsui.side-bar'].toggle()"
                     x-bind:aria-expanded="! $store['tsui.side-bar'].collapsed"
-                    class="text-base-content/60 hover:bg-base-200 hover:text-base-content hidden w-full items-center rounded-lg px-2 py-1.5 text-xs transition-colors md:flex"
+                    class="text-base-content/60 hover:bg-base-200 hover:text-base-content hidden w-full items-center rounded-xl px-2 py-1.5 text-xs transition-colors md:flex"
                     x-bind:class="$store['tsui.side-bar'].collapsed ? 'justify-center' : 'justify-between'"
                     aria-label="{{ __('common.collapse') }}"
                 >

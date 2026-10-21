@@ -17,7 +17,10 @@
 
         <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col">
             @if ($context)
-                <nav aria-label="Breadcrumb" class="text-base-content/60 mb-5 flex items-center gap-2 text-xs">
+                <nav
+                    aria-label="Breadcrumb"
+                    class="text-base-content/60 mb-3.5 flex items-center gap-2 text-xs sm:mb-4"
+                >
                     <a wire:navigate href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">
                         {{ brand('name') }}
                     </a>

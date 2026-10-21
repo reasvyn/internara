@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Incident\Domain\IncidentReport\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Incident\Domain\IncidentReport\Actions\ReportIncidentAction;
 use App\Modules\Incident\Domain\IncidentReport\Models\IncidentReport;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;

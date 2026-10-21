@@ -6,7 +6,7 @@ namespace App\Modules\Certification\Domain\Certificate\Livewire;
 
 use App\Modules\Certification\Domain\Certificate\Actions\CreateCertificateTemplateAction;
 use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
-use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;

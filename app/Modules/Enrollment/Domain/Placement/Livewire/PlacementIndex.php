@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Placement\Actions\CreatePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\DeletePlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Actions\UpdatePlacementAction;
@@ -13,6 +12,7 @@ use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\PlacementForm;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

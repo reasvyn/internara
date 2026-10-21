@@ -5,11 +5,11 @@
 
 {{--
     UI Wrapper: Dropdown
-    Wraps TallStackUI dropdown (<x-ts-dropdown>), ensuring rounded-xl container.
+    Wraps TallStackUI dropdown (<x-ts-dropdown>), ensuring rounded-2xl container.
 --}}
 <x-ts-dropdown :position="$position" {{
     $attributes->class([
-        'rounded-xl',
+        'rounded-2xl',
     ])
 }}>
     @isset($action)

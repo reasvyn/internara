@@ -24,6 +24,6 @@
     :href="$link"
     :color="$tsColor"
     :outline="$isOutline"
-    class="h-20 w-full rounded-xl font-medium shadow-none"
+    class="h-14 w-full rounded-2xl font-medium shadow-2xs transition-all duration-200 hover:shadow-xs sm:h-16"
     wire:navigate
 />

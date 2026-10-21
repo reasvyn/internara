@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\Enrollment\Domain\AccountApplication\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Enrollment\Domain\AccountApplication\Actions\ApplyAccountAction;
 use App\Modules\Enrollment\Domain\AccountApplication\Livewire\Forms\AccountApplicationForm;
 use App\Modules\Enrollment\Domain\AccountApplication\Models\AccountApplication;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Program\Domain\Internship\Models\Internship;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;

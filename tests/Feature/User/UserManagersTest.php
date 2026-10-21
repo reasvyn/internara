@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Modules\Academic\Domain\Department\Models\Department;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Domain\Profile\Models\Profile;
 use App\Modules\User\Domain\UserManagement\Livewire\AdminManager;
 use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;

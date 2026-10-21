@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Modules\Core\Livewire;
+namespace App\Modules\UI\Livewire;
 
-use App\Modules\Core\Livewire\Concerns\WithRecordSelection;
-use App\Modules\Core\Livewire\Concerns\WithSorting;
+use App\Modules\UI\Livewire\Concerns\WithRecordSelection;
+use App\Modules\UI\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Schema;

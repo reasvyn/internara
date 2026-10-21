@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Enums\InternshipGroupRole;
 use App\Modules\Program\Domain\InternshipGroup\Livewire\InternshipGroupManager;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Gate;

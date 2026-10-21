@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Domain\Backup\Livewire;
 
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\SysAdmin\Domain\Backup\Actions\CreateBackupAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\DeleteBackupAction;
 use App\Modules\SysAdmin\Domain\Backup\Actions\ReadBackupStatsAction;
 use App\Modules\SysAdmin\Domain\Backup\Enums\BackupType;
 use App\Modules\SysAdmin\Domain\Backup\Models\Backup;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

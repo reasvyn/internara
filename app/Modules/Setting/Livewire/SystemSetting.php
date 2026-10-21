@@ -6,7 +6,6 @@ namespace App\Modules\Setting\Livewire;
 
 use App\Modules\Academic\Domain\AcademicYear\Actions\ActivateAcademicYearAction;
 use App\Modules\Academic\Domain\AcademicYear\Support\AcademicYearPeriod;
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Setting\Actions\ReadAcademicYearAction;
 use App\Modules\Setting\Actions\SaveSystemSettingsAction;
 use App\Modules\Setting\Actions\SetSettingAction;
@@ -21,6 +20,7 @@ use App\Modules\Setting\Livewire\Forms\GeneralSettingsForm;
 use App\Modules\Setting\Livewire\Forms\MailSettingsForm;
 use App\Modules\Setting\Models\Setting;
 use App\Modules\Setting\Services\Settings;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\Journal\Domain\SupervisionLog\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Journal\Domain\SupervisionLog\Actions\ReviewLogAction;
 use App\Modules\Journal\Domain\SupervisionLog\Data\ReviewLogData;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Layout;

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Modules\Enrollment\Domain\Placement\Livewire;
 
 use App\Modules\Auth\Domain\Permission\Enums\Role;
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Enrollment\Domain\Placement\Actions\DirectPlacementAction;
 use App\Modules\Enrollment\Domain\Placement\Livewire\Forms\DirectPlacementForm;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\UI\Livewire\BaseFormView;
 use App\Modules\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Modules\Journal\Domain\Attendance\Livewire;
 
-use App\Modules\Core\Livewire\BaseFormView;
 use App\Modules\Journal\Domain\Attendance\Actions\ClockInAction;
 use App\Modules\Journal\Domain\Attendance\Actions\ClockOutAction;
 use App\Modules\Journal\Domain\Attendance\Actions\ReadUnaccountedDatesAction;
 use App\Modules\Journal\Domain\Attendance\Data\ClockInData;
 use App\Modules\Journal\Domain\Attendance\Data\ClockOutData;
 use App\Modules\Journal\Domain\Attendance\Models\Attendance;
+use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use TallStackUi\Traits\Interactions;

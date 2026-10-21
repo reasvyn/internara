@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\UI;
 
-use App\Modules\Core\Livewire\BaseRecordManager;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Blade;

@@ -6,7 +6,6 @@ namespace App\Modules\Partner\Domain\Company\Livewire;
 
 use App\Modules\Core\Enums\CsvRowResult;
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Core\Support\CsvHandler;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Partner\Domain\Company\Actions\BatchDeleteCompanyAction;
@@ -16,6 +15,7 @@ use App\Modules\Partner\Domain\Company\Actions\UpdateCompanyAction;
 use App\Modules\Partner\Domain\Company\Data\CompanyData;
 use App\Modules\Partner\Domain\Company\Livewire\Forms\CompanyForm;
 use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;

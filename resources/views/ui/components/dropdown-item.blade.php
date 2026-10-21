@@ -10,7 +10,7 @@
 --}}
 <x-ts-dropdown.items :text="$text" :icon="$icon" :href="$href" {{
     $attributes->class([
-        'rounded-lg',
+        'rounded-xl',
     ])
 }}>
     {{ $slot }}

@@ -5,7 +5,7 @@
     $author = app_info('author');
 @endphp
 
-<div class="border-base-content/5 mt-8 border-t py-6 text-center">
+<div class="border-base-content/10 mt-4 border-t py-3 text-center sm:mt-6 sm:py-4">
     <div class="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4">
         <div class="flex items-center gap-2">
             <span class="text-base-content/60 text-[10px] font-black tracking-widest uppercase">&copy; {{ date('Y') }}</span>

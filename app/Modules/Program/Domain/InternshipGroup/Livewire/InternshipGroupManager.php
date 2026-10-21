@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Program\Domain\InternshipGroup\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Actions\AddMembersToGroupAction;
 use App\Modules\Program\Domain\InternshipGroup\Actions\CreateInternshipGroupAction;
@@ -16,6 +15,7 @@ use App\Modules\Program\Domain\InternshipGroup\Enums\InternshipGroupRole;
 use App\Modules\Program\Domain\InternshipGroup\Livewire\Forms\InternshipGroupForm;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

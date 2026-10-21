@@ -6,7 +6,7 @@
 
 {{--
     UI Wrapper: Textarea
-    Wraps TallStackUI textarea (<x-ts-textarea>), ensuring canonical rounded-lg corners.
+    Wraps TallStackUI textarea (<x-ts-textarea>), ensuring canonical rounded-xl corners.
 --}}
 <x-ts-textarea
     :label="$label"
@@ -14,7 +14,7 @@
     :rows="$rows"
     {{
         $attributes->class([
-            'rounded-lg' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
+            'rounded-xl' => ! str_contains((string) $attributes->get('class'), 'rounded-'),
         ])
     }}
 />

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Livewire;
 
-use App\Modules\Core\Livewire\Concerns\WithSorting;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Models\GdprDeletionLog;
+use App\Modules\UI\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Modules\Journal\Domain\Logbook\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
-use App\Modules\Core\Livewire\BaseRecordManager;
 use App\Modules\Journal\Domain\Logbook\Actions\CreateLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Actions\DeleteLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Actions\UpdateLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Livewire\Forms\LogbookForm;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;

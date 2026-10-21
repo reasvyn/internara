@@ -4,7 +4,7 @@
     'actions' => null,
 ])
 
-<div class="mb-6">
+<div class="mb-4 sm:mb-5">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="min-w-0">
             <h1 class="text-2xl font-black tracking-tight">{{ $title }}</h1>

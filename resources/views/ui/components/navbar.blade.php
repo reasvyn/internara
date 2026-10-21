@@ -11,7 +11,7 @@
     {{
         $attributes->merge([
             'class' => collect([
-                'flex h-16 items-center justify-between gap-4 border-b px-4 sm:px-6 lg:px-8',
+                'flex h-14 sm:h-16 items-center justify-between gap-4 border-b px-4 sm:px-6 lg:px-8',
                 $transparent ? 'bg-transparent border-transparent' : 'bg-base-100 border-base-content/10 backdrop-blur supports-[backdrop-filter]:bg-base-100/80',
                 $sticky ? 'sticky top-0 z-30' : '',
             ])->filter()->implode(' '),
@@ -64,7 +64,7 @@
         <button
             type="button"
             @click="mobileOpen = ! mobileOpen"
-            class="btn btn-ghost btn-sm lg:hidden"
+            class="focus:ring-primary text-base-content/70 hover:bg-base-200 hover:text-base-content flex size-9 items-center justify-center rounded-xl transition-colors focus:ring-2 focus:outline-none lg:hidden"
             :aria-expanded="mobileOpen.toString()"
             aria-controls="navbar-mobile"
             aria-label="{{ __('common.menu') }}"
@@ -85,7 +85,7 @@
         x-transition:leave-end="opacity-0 -translate-y-2"
         x-cloak
         id="navbar-mobile"
-        class="bg-base-100 border-base-content/10 absolute top-full right-0 left-0 border-t p-4 shadow-lg lg:hidden"
+        class="bg-base-100 border-base-content/10 absolute top-full right-0 left-0 rounded-b-2xl border-t border-b p-4 shadow-lg lg:hidden"
         @click.outside="mobileOpen = false"
     >
         <div class="flex flex-col gap-2">
