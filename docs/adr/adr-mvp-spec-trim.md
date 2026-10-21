@@ -5,11 +5,11 @@
 | Status | Accepted |
 | Deciders | Reas Vyn |
 | Date | 2026-09-07 |
-| Technical Story | Spec-driven testing refactor → MVP requirement triage across all 66 feature specs |
+| Technical Story | Testing refactor → MVP requirement triage across all 66 feature specs |
 
 ## Context and Problem Statement
 
-Testing is spec-driven: every `FR-*`/`NFR-*`/`UC-*` in a spec must have a tracing test, and every
+Testing is requirement-based: every `FR-*`/`NFR-*`/`UC-*` in a spec must have a tracing test, and every
 test must trace to a requirement. The full spec corpus carries **2,004 FR + 778 NFR + 259 UC**
 requirement rows across 66 spec files. A meaningful portion describes operational depth that is
 over-engineered relative to what a *minimum viable product* needs — multi-driver database dumps,
@@ -23,7 +23,7 @@ requirements (Arch / Unit / Feature / Browser) to each spec that remain so tests
 
 **Decision Drivers:**
 
-* Spec-driven minimalism — tests verify the spec, nothing more; coverage = requirements covered
+* Requirement verification minimalism — tests verify the spec, nothing more; coverage = requirements covered
 * MVP focus — the first production release serves the core PKL lifecycle, not operational depth
 * SSoT discipline — specs are authoritative; test effort must follow spec scope, not code reality
 

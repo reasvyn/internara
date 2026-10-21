@@ -54,7 +54,7 @@ return [
         'tallstackui' => 'TallstackUI v4 accessible component library',
         'tailwind' => 'Tailwind CSS v4 modern utility engine',
         'alpine' => 'Alpine.js 3 lightweight client reactivity',
-        'pest' => 'Pest 4 spec-driven testing framework',
+        'pest' => 'Pest 4 testing framework',
     ],
     'diagnostics' => [
         'heading' => 'System Diagnostics',

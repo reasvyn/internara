@@ -258,7 +258,7 @@ python3 scripts/py/scan_spec_tests.py          # spec↔test traceability (FR/NF
 
 ---
 
-## 6. Testing — Spec-Driven Minimalism
+## 6. Testing — Requirement Verification Minimalism
 
 **Coverage = spec requirements covered, not lines of code.** A requirement with no test is a
 **spec gap** (fill it). A test with no requirement is **orphan noise** (remove it). Legacy

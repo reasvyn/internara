@@ -14,7 +14,7 @@
           tests/Browser/{Module}/*.php — Browser / E2E tests (Node runner, no PHP)
 
         Build order (docs/specs/index.md §Build Order). All modules are
-        registered even when their spec-driven suites are not yet rewritten;
+        registered even when their test suites are not yet rewritten;
         empty directories simply discover no tests.
     -->
     <testsuites>

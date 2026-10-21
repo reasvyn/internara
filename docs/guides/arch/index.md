@@ -36,7 +36,7 @@ Design patterns and conventions that govern the Internara codebase. See
 ## Infrastructure Patterns
 
 - **[Modular Architecture](modular-pattern.md)** — Modular Monolith, Clean Architecture, Hexagonal Architecture, SOLID, DRY
-- **[Testing](testing-pattern.md)** — TDD, Testing Pyramid, AAA, FIRST, Four Phase Test, spec-driven testing
+- **[Testing](testing-pattern.md)** — TDD, Testing Pyramid, AAA, FIRST, Four Phase Test, requirement-based testing
 
 ## Rules
 

@@ -635,7 +635,7 @@ methods where the container is not available (e.g., `database/factories/`).
 
 ## 12. Testing Conventions
 
-> 📖 Pattern reference: [Testing Pattern](guides/arch/testing-pattern.md) — full spec-driven strategy, scope isolation, and layer-by-layer entry points.
+> 📖 Pattern reference: [Testing Pattern](guides/arch/testing-pattern.md) — full testing strategy, scope isolation, and layer-by-layer entry points.
 
 ### 12.1 Mocking Strategy
 
@@ -659,7 +659,7 @@ methods where the container is not available (e.g., `database/factories/`).
 - Business logic in Actions is tested with real dependencies — only infrastructure boundaries are
   mocked.
 
-### 12.2 Spec-Driven Coverage
+### 12.2 Requirement-Based Coverage
 
 Tests verify the spec — nothing more. A test exists because a requirement in
 a spec issue (`label:spec`, #442–#509; `FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.

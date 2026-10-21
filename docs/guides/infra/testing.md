@@ -1,4 +1,4 @@
-# Testing — Spec-Driven Testing Strategy & Infrastructure
+# Testing — Testing Strategy & Infrastructure
 
 ## Description
 
@@ -20,7 +20,7 @@ This document is reference-oriented. For installation and setup procedures, see:
 
 ## Testing Philosophy
 
-> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable rules on spec-driven tests (every requirement has a test, no padding), requirement-first order, and traceability prefixes.
+> 📖 Authoritative reference: [Testing Pattern](../arch/testing-pattern.md) — Non-Negotiable rules on requirement-based tests (every requirement has a test, no padding), requirement-first order, and traceability prefixes.
 
 **Write only the tests the spec requires.** The minimalism is the point, not a side effect:
 spec-scoped tests run fast (seconds vs. 10+ minutes), consume far fewer resources (~2GB+ RAM for the

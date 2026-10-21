@@ -361,7 +361,7 @@ Data Transfer Objects provide type safety for Action parameters. Instead of pass
 
 ---
 
-### 14. Testing Actions — Spec-Driven Verification
+### 14. Testing Actions — Requirement Verification
 
 Tests are organized by type then module scope (`tests/{Type}/{Module}/{SubModule}/{Name}Test.php`, with {Type} ∈ {Arch, Unit, Feature, Browser}). An Action is tested when its behavior implements a spec requirement — the test is named after the requirement ID. One class → one test file for spec-defined behavior.
 

@@ -1,4 +1,4 @@
-# Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
+# Testing Pattern Reference — Testing Strategy & Scope Isolation
 
 ## Description
 

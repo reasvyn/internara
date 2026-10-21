@@ -3,7 +3,7 @@
 scan_spec_tests.py — Spec ↔ Tests Coverage Guard (v3.1)
 
 Validates that every FR/NFR/UC requirement in GitHub specification issues
-(labeled 'spec') has a corresponding Pest test that traces to it (spec-driven testing),
+(labeled 'spec') has a corresponding Pest test that traces to it (requirement-based testing),
 and that no test traces to a non-existent requirement (orphan).
 
 Features:

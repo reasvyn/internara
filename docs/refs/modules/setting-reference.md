@@ -124,7 +124,7 @@ system.
 ## Tests
 
 Tests are located in `tests/{Type}/Setting/` (Arch, Unit, Feature, Browser). See [Testing](../../guides/infra/testing.md)
-for the testing conventions. Tests are spec-driven: each test traces to a spec requirement ID
+for the testing conventions. Tests are requirement-traceable: each test traces to a spec requirement ID
 (`FR-*` / `NFR-*` / `UC-*`) using the `test("{SpecID}-{ReqID}: Test description...")` convention
 (grouped under `describe("{SpecID}: Test description...")`); there is no one-test-per-class mandate.
 
