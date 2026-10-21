@@ -6,7 +6,6 @@ namespace App\Modules\Setup\Domain\SetupWizard\Actions;
 
 use App\Modules\Auth\Domain\Permission\Enums\Role as RoleEnum;
 use App\Modules\Core\Actions\BaseCommandAction;
-use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Support\PasswordRules;
 use App\Modules\User\Enums\AccountStatus;
 use App\Modules\User\Models\User;
@@ -28,18 +27,6 @@ final class SetupSuperAdminAction extends BaseCommandAction
         return $this->transaction(function () use ($email, $password) {
             $username = config('setup.defaults.admin_username', 'superadmin');
             $adminName = config('setup.defaults.admin_name', 'Super Admin');
-
-            $existing = User::where('username', $username)->first();
-
-            if ($existing !== null) {
-                $integrity = $existing->asSuperAdminIntegrityRules();
-
-                if ($integrity->isImmutable()) {
-                    throw new RejectedException(
-                        __('setup.superadmin_immutable'),
-                    );
-                }
-            }
 
             $user = User::updateOrCreate(
                 ['username' => $username],

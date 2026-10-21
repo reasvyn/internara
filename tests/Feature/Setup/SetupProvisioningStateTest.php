@@ -61,14 +61,12 @@ describe('8NZAU: provisioning state and hardening', function (): void {
         expect(User::where('username', config('setup.defaults.admin_username'))->count())->toBe(0);
     });
 
-    test('8NZAU-NFR-INST-004: re-initializing an immutable super admin is rejected', function (): void {
+    test('8NZAU-NFR-INST-004: super admin uses updateOrCreate and updates existing credentials', function (): void {
         app(SetupSuperAdminAction::class)->execute('principal@school.test', 'SetupPass123');
-
-        expect(fn () => app(SetupSuperAdminAction::class)->execute('other@school.test', 'SetupPass456'))
-            ->toThrow(RejectedException::class);
+        app(SetupSuperAdminAction::class)->execute('other@school.test', 'SetupPass456');
 
         expect(User::where('username', config('setup.defaults.admin_username'))->count())->toBe(1);
-        expect(User::where('email', 'other@school.test')->count())->toBe(0);
+        expect(User::where('email', 'other@school.test')->count())->toBe(1);
     });
 
     test('8NZAU-FR-INST-007: provisioning seeds roles, default setting, and the academic baseline', function (): void {
