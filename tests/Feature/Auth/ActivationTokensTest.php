@@ -5,11 +5,13 @@ declare(strict_types=1);
 use App\Modules\Auth\Domain\AccessToken\Models\AccessToken;
 use App\Modules\Auth\Domain\Account\Actions\ActivateAccountAction;
 use App\Modules\Auth\Domain\Account\Data\ActivateAccountData;
+use App\Modules\Auth\Domain\Account\Livewire\ActivateAccount;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -87,5 +89,34 @@ describe('YB7RG: activation and access-token lifecycle', function (): void {
             ->and(AccessToken::where('user_id', $expiredRecovery->id)->first()->revoked_at)->not->toBeNull()
             ->and(AccessToken::where('user_id', $stillValid->id)->first()->revoked_at)->toBeNull()
             ->and(AccessToken::verify($stillValid->fresh(), 'activation', $valid['plain_text']))->toBeTrue();
+    });
+
+    test('YB7RG-FR-AUTH-039: ActivateAccount Livewire component validates and activates account', function (): void {
+        $user = User::factory()->create([
+            'email' => 'provisioned@school.test',
+            'status' => 'provisioned',
+        ]);
+        $generated = AccessToken::generateFor($user, 'activation');
+
+        // Validation failure
+        Livewire::test(ActivateAccount::class)
+            ->set('email', 'not-an-email')
+            ->set('code', 'short')
+            ->set('password', '123')
+            ->set('password_confirmation', 'mismatch')
+            ->call('activate', app(ActivateAccountAction::class))
+            ->assertHasErrors(['email', 'code', 'password']);
+
+        // Success flow
+        Livewire::test(ActivateAccount::class)
+            ->set('email', 'provisioned@school.test')
+            ->set('code', $generated['plain_text'])
+            ->set('password', 'ValidPassword123!')
+            ->set('password_confirmation', 'ValidPassword123!')
+            ->call('activate', app(ActivateAccountAction::class))
+            ->assertHasNoErrors()
+            ->assertRedirect(route('dashboard'));
+
+        expect(auth()->id())->toBe($user->id);
     });
 });
