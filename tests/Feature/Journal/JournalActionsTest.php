@@ -12,10 +12,15 @@ use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Modules\Journal\Domain\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Modules\Journal\Domain\Attendance\Actions\ClockInAction;
 use App\Modules\Journal\Domain\Attendance\Actions\ClockOutAction;
+use App\Modules\Journal\Domain\Attendance\Actions\CreateAttendanceAction;
+use App\Modules\Journal\Domain\Attendance\Actions\DeleteAttendanceAction;
+use App\Modules\Journal\Domain\Attendance\Actions\ReadUnaccountedDatesAction;
+use App\Modules\Journal\Domain\Attendance\Actions\UpdateAttendanceAction;
 use App\Modules\Journal\Domain\Attendance\Data\ClockInData;
 use App\Modules\Journal\Domain\Attendance\Data\ClockOutData;
 use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Journal\Domain\Logbook\Actions\CreateLogbookAction;
+use App\Modules\Journal\Domain\Logbook\Actions\DeleteLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Actions\SubmitLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Actions\UpdateLogbookAction;
 use App\Modules\Journal\Domain\Logbook\Enums\LogbookStatus;
@@ -36,6 +41,7 @@ use App\Modules\Journal\Domain\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\User\Models\User;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
@@ -285,5 +291,122 @@ describe('Journal command actions', function (): void {
         expect($log->status)->toBe(SupervisionLogStatus::DRAFT)
             ->and($log->registration_id)->toBe($this->registration->id)
             ->and($log->supervisor_id)->toBe($this->supervisor->id);
+    });
+
+    test('1KSWL-FR-DAILY-007 / 1KSWL-FR-DAILY-014: creates attendance directly and verifies actor and audit', function (): void {
+        $attendance = app(CreateAttendanceAction::class)->execute($this->admin, [
+            'user_id' => $this->student->id,
+            'registration_id' => $this->registration->id,
+            'date' => today()->toDateString(),
+            'clock_in' => '08:00:00',
+            'clock_out' => '17:00:00',
+            'status' => 'present',
+            'notes' => 'Manual entry by admin',
+            'is_verified' => true,
+        ]);
+
+        expect($attendance->exists)->toBeTrue()
+            ->and($attendance->user_id)->toBe($this->student->id)
+            ->and($attendance->is_verified)->toBeTrue()
+            ->and($attendance->verified_by)->toBe($this->admin->id)
+            ->and($attendance->verified_at)->not->toBeNull()
+            ->and($attendance->notes)->toBe('Manual entry by admin');
+
+        $this->assertDatabaseHas('attendances', [
+            'id' => $attendance->id,
+            'user_id' => $this->student->id,
+            'is_verified' => 1,
+            'verified_by' => $this->admin->id,
+        ]);
+    });
+
+    test('1KSWL-FR-DAILY-010 / 1KSWL-FR-DAILY-014: updates attendance attributes and verified state', function (): void {
+        $this->actingAs($this->admin);
+        $attendance = Attendance::factory()->create([
+            'registration_id' => $this->registration->id,
+            'user_id' => $this->student->id,
+            'status' => 'present',
+            'is_verified' => false,
+            'notes' => 'Original note',
+        ]);
+
+        $updated = app(UpdateAttendanceAction::class)->execute($attendance, [
+            'notes' => 'Updated note by admin',
+            'is_verified' => true,
+        ]);
+
+        expect($updated->notes)->toBe('Updated note by admin')
+            ->and($updated->is_verified)->toBeTrue()
+            ->and($updated->verified_by)->toBe($this->admin->id)
+            ->and($updated->verified_at)->not->toBeNull();
+
+        $this->assertDatabaseHas('attendances', [
+            'id' => $attendance->id,
+            'notes' => 'Updated note by admin',
+            'is_verified' => 1,
+        ]);
+    });
+
+    test('1KSWL-FR-DAILY-016: deletes attendance record from database', function (): void {
+        $attendance = Attendance::factory()->create([
+            'registration_id' => $this->registration->id,
+            'user_id' => $this->student->id,
+        ]);
+
+        app(DeleteAttendanceAction::class)->execute($attendance);
+
+        $this->assertDatabaseMissing('attendances', [
+            'id' => $attendance->id,
+        ]);
+    });
+
+    test('1KSWL-FR-DAILY-014: reads unaccounted working dates excluding weekends and accounted days', function (): void {
+        // Assume registration from 10 days ago until today
+        $referenceToday = CarbonImmutable::parse('2026-03-20'); // Friday
+        $startDate = $referenceToday->subDays(4); // Monday 2026-03-16
+
+        $this->registration->update([
+            'start_date' => $startDate->toDateString(),
+            'end_date' => $referenceToday->addMonth()->toDateString(),
+        ]);
+
+        // Student attended on Tuesday (2026-03-17)
+        Attendance::factory()->create([
+            'registration_id' => $this->registration->id,
+            'user_id' => $this->student->id,
+            'date' => '2026-03-17',
+        ]);
+
+        $unaccounted = app(ReadUnaccountedDatesAction::class)->execute(
+            $this->registration->fresh(),
+            $referenceToday,
+        );
+
+        $dateStrings = $unaccounted->map(fn (CarbonImmutable $d) => $d->toDateString())->all();
+
+        // Closed days before today (March 20) are Mon 16, Tue 17, Wed 18, Thu 19.
+        // Tue 17 is attended.
+        // Therefore missing work days are Mon 16, Wed 18, Thu 19.
+        expect($dateStrings)->toContain('2026-03-16')
+            ->not->toContain('2026-03-17')
+            ->toContain('2026-03-18')
+            ->toContain('2026-03-19')
+            ->not->toContain('2026-03-20') // Today is not closed
+            ->not->toContain('2026-03-21') // Weekend
+            ->not->toContain('2026-03-22'); // Weekend
+    });
+
+    test('1KSWL-FR-DAILY-011: deletes logbook entry from database', function (): void {
+        $entry = Logbook::factory()->create([
+            'registration_id' => $this->registration->id,
+            'user_id' => $this->student->id,
+            'content' => 'Entry to be deleted',
+        ]);
+
+        app(DeleteLogbookAction::class)->execute($entry);
+
+        $this->assertDatabaseMissing('logbooks', [
+            'id' => $entry->id,
+        ]);
     });
 });
