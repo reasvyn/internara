@@ -7,6 +7,7 @@ namespace Tests\Arch\UI;
 use App\Modules\UI\Support\UiHelper;
 use Illuminate\Support\Facades\File;
 use Livewire\Component;
+use Livewire\Form;
 use ReflectionClass;
 
 describe('8XMYS: UI Layer Architectural Invariants', function (): void {
@@ -67,6 +68,30 @@ describe('8XMYS: UI Layer Architectural Invariants', function (): void {
             expect($content)->not->toContain('DB::raw("INSERT')
                 ->and($content)->not->toContain('DB::raw("UPDATE')
                 ->and($content)->not->toContain('DB::raw("DELETE');
+        }
+    });
+
+    test('8XMYS-ARC-UI-007: all Livewire Form objects extend Livewire\Form and declare strict_types', function (): void {
+        $formFiles = File::glob(app_path('Modules/*/Livewire/Forms/*Form.php'));
+        $domainFormFiles = File::glob(app_path('Modules/*/Domain/*/Livewire/Forms/*Form.php'));
+        $allForms = array_merge($formFiles, $domainFormFiles);
+
+        expect(count($allForms))->toBeGreaterThanOrEqual(30);
+
+        foreach ($allForms as $formPath) {
+            $content = File::get($formPath);
+            expect($content)->toContain('declare(strict_types=1);');
+
+            preg_match('/namespace\s+([^;]+);/', $content, $ns);
+            preg_match('/class\s+(\w+)/', $content, $cls);
+
+            if (! empty($ns[1]) && ! empty($cls[1])) {
+                $fqcn = $ns[1].'\\'.$cls[1];
+                if (class_exists($fqcn)) {
+                    $ref = new ReflectionClass($fqcn);
+                    expect($ref->isSubclassOf(Form::class))->toBeTrue();
+                }
+            }
         }
     });
 });

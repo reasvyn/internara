@@ -114,4 +114,111 @@ describe('8XMYS: Reusable UI Blade Components and Widgets', function (): void {
 
         expect($rendered)->toContain('Internara');
     });
+
+    test('8XMYS-FR-UI-040-K: page-header component renders title, description, and action slots', function (): void {
+        $rendered = (string) Blade::render(
+            '<x-ui::components.page-header title="Student Management" description="Manage all enrolled student accounts">
+                <x-slot:actions><button>Add Student</button></x-slot:actions>
+            </x-ui::components.page-header>'
+        );
+
+        expect($rendered)->toContain('Student Management')
+            ->and($rendered)->toContain('Manage all enrolled student accounts')
+            ->and($rendered)->toContain('Add Student');
+    });
+
+    test('8XMYS-FR-UI-040-L: badge component renders with rounded pill contour', function (): void {
+        $rendered = (string) Blade::render(
+            '<x-ui::components.badge text="Active" color="green" />'
+        );
+
+        expect($rendered)->toContain('Active')
+            ->and($rendered)->toContain('rounded-full');
+    });
+
+    test('8XMYS-FR-UI-040-M: avatar component renders user initials when avatar media is absent', function (): void {
+        $user = User::factory()->create(['name' => 'Budi Santoso']);
+
+        $rendered = (string) Blade::render(
+            '<x-ui::components.avatar :user="$user" />',
+            ['user' => $user]
+        );
+
+        expect($rendered)->toContain('rounded-full')
+            ->and($rendered)->toContain($user->initials());
+    });
+
+    test('8XMYS-FR-UI-040-N: brand component renders brand name and logo image with size variants', function (): void {
+        $rendered = (string) Blade::render(
+            '<x-ui::components.brand size="lg" :withTagline="true" />'
+        );
+
+        expect($rendered)->toContain('size-14')
+            ->and($rendered)->toContain('<img')
+            ->and($rendered)->toContain(brand('name'));
+    });
+
+    test('8XMYS-FR-UI-040-O: display-field component renders label, value, and icon with rounded container', function (): void {
+        $rendered = (string) Blade::render(
+            '<x-ui::components.display-field label="NISN" value="1234567890" icon="identification" />'
+        );
+
+        expect($rendered)->toContain('NISN')
+            ->and($rendered)->toContain('1234567890')
+            ->and($rendered)->toContain('rounded-xl')
+            ->and($rendered)->toContain('<svg');
+    });
+
+    test('8XMYS-FR-UI-040-P: confirm partial dialog contains modal structure and action bindings', function (): void {
+        $viewContent = file_get_contents(resource_path('views/ui/components/confirm.blade.php'));
+
+        expect($viewContent)->toContain('wire="showConfirm"')
+            ->and($viewContent)->toContain('confirmAction')
+            ->and($viewContent)->toContain('rounded-2xl');
+    });
+
+    test('8XMYS-FR-UI-040-Q: action-button widget renders quick tile with icon and navigation link', function (): void {
+        $rendered = (string) Blade::render(
+            '<x-ui::widgets.action-button label="Submit Report" icon="document-text" link="/reports/submit" color="primary" />'
+        );
+
+        expect($rendered)->toContain('Submit Report')
+            ->and($rendered)->toContain('href="/reports/submit"')
+            ->and($rendered)->toContain('rounded-2xl')
+            ->and($rendered)->toContain('wire:navigate');
+    });
+
+    test('8XMYS-FR-UI-040-R: form input wrappers render with canonical rounded contours', function (): void {
+        $input = (string) Blade::render(
+            '<x-ui::components.input label="Full Name" />'
+        );
+        expect($input)->toContain('Full Name')
+            ->and($input)->toContain('rounded-xl');
+
+        $textarea = (string) Blade::render(
+            '<x-ui::components.textarea label="Detailed Notes" rows="4" />'
+        );
+        expect($textarea)->toContain('Detailed Notes')
+            ->and($textarea)->toContain('rounded-xl');
+
+        $checkbox = (string) Blade::render(
+            '<x-ui::components.checkbox label="Accept Terms" />'
+        );
+        expect($checkbox)->toContain('Accept Terms')
+            ->and($checkbox)->toContain('rounded-md');
+
+        $tooltip = (string) Blade::render(
+            '<x-ui::components.tooltip text="Help info" />'
+        );
+        expect($tooltip)->toContain('Help info')
+            ->and($tooltip)->toContain('rounded-xl');
+    });
+
+    test('8XMYS-FR-UI-040-S: table component renders modern overflow-x-auto container with rounded contour', function (): void {
+        $table = (string) Blade::render(
+            '<x-ui::components.table :headers="[[\'index\' => \'id\', \'label\' => \'ID\']]" :rows="collect([])" />'
+        );
+        expect($table)->toContain('overflow-x-auto')
+            ->and($table)->toContain('rounded-2xl');
+    });
 });
