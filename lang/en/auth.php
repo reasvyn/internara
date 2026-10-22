@@ -19,6 +19,7 @@ return [
         'submit' => 'Go to Dashboard',
         'welcome_back' => 'Welcome back, :name!',
         'back_to_login' => 'Back to login',
+        'back_to_home' => 'Back to home',
         'no_account' => 'Have an activation code?',
         'claim_account' => 'Activate your account',
         'recover_account' => 'Recover your account',

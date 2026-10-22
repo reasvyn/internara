@@ -72,4 +72,15 @@
             {{ __('auth.login.claim_account') }}
         </a>
     </div>
+
+    <div class="mt-4 text-center">
+        <a
+            href="{{ route('home') }}"
+            class="text-base-content/60 hover:text-primary inline-flex items-center text-xs transition-colors"
+            wire:navigate
+        >
+            <x-ts-icon name="arrow-left" class="mr-1.5 size-3.5" />
+            {{ __('auth.login.back_to_home') }}
+        </a>
+    </div>
 </div>

@@ -257,4 +257,11 @@ describe('YB7RG: auth locale parity', function (): void {
         expect($user->roles()->pluck('name')->all())->toContain('student')
             ->and(session()->has('active_proxy_role'))->toBeFalse();
     });
+
+    test('YB7RG-FR-AUTH-025: login page renders link returning to home page', function (): void {
+        Livewire::test(Login::class)
+            ->assertOk()
+            ->assertSeeHtml(route('home'))
+            ->assertSee(__('auth.login.back_to_home'));
+    });
 });

@@ -19,6 +19,7 @@ return [
         'submit' => 'Masuk',
         'welcome_back' => 'Selamat datang kembali, :name!',
         'back_to_login' => 'Kembali ke halaman masuk',
+        'back_to_home' => 'Kembali ke beranda',
         'no_account' => 'Punya kode aktivasi?',
         'claim_account' => 'Aktivasi Akun di sini',
         'recover_account' => 'Pulihkan akun Anda',
