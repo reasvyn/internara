@@ -7,11 +7,15 @@ namespace Tests\Feature\Document;
 use App\Modules\Document\Domain\Handbook\Enums\HandbookAudience;
 use App\Modules\Document\Domain\Handbook\Livewire\HandbookManager;
 use App\Modules\Document\Domain\Handbook\Livewire\StudentHandbookList;
+use App\Modules\Document\Domain\OfficialDocument\Actions\DeleteReportAction;
+use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
+use App\Modules\Document\Domain\OfficialDocument\Livewire\ReportsManager;
 use App\Modules\Document\Domain\OfficialDocument\Livewire\TemplateManager;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -87,5 +91,26 @@ describe('7H5D6 / ZUFG8: Document Livewire UI Components', function (): void {
         expect(collect($test->instance()->headers())->pluck('index')->all())
             ->toContain('title', 'type', 'is_active', 'created_at')
             ->and($test->instance()->categories())->toBeArray();
+    });
+
+    test('7H5D6-FR-DOC-004: ReportsManager generates and deletes official reports', function (): void {
+        Storage::fake('local');
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $test = Livewire::test(ReportsManager::class);
+        $test->assertOk();
+
+        // Generate report
+        $test->call('generateReport', 'internship_completion', app(GenerateReportAction::class));
+
+        $generated = Document::where('type', 'report')->first();
+        expect($generated)->not->toBeNull()
+            ->and($generated->title)->toBe('Internship Completion Summary');
+
+        // Delete report
+        $test->call('deleteReport', $generated, app(DeleteReportAction::class));
+        expect(Document::where('id', $generated->id)->exists())->toBeFalse();
     });
 });
