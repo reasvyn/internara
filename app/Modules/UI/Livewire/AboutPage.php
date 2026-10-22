@@ -18,7 +18,7 @@ final class AboutPage extends Component
             : AppInfo::gitUrl();
 
         $appData = [
-            'appName' => brand('name') ?: config('app.name', 'Internara'),
+            'appName' => config('app.name') ?: AppInfo::name(),
             'tagline' => brand('tagline') ?: __('common.app_tagline'),
             'version' => AppInfo::version(),
             'description' => AppInfo::description(),

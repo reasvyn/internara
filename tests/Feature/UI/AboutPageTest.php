@@ -80,7 +80,7 @@ describe('AB0UT: About page and author attribution', function (): void {
     });
 
     test('AB0UT-FR-ABOUT-002: the page displays dynamic application branding including app name tagline and version badge', function (): void {
-        $appName = brand('name') ?: config('app.name', 'Internara');
+        $appName = config('app.name') ?: AppInfo::name();
         $version = AppInfo::version();
 
         $response = $this->get(route('about'));
@@ -168,7 +168,7 @@ describe('AB0UT: About page and author attribution', function (): void {
     });
 
     test('AB0UT-FR-ABOUT-010: the view integrates with layouts providing valid title and header', function (): void {
-        $appName = brand('name') ?: config('app.name', 'Internara');
+        $appName = config('app.name') ?: AppInfo::name();
         $expectedTitle = __('about.about_app', ['app' => $appName]);
 
         Livewire::test(AboutPage::class)
@@ -178,6 +178,16 @@ describe('AB0UT: About page and author attribution', function (): void {
         $response = $this->get(route('about'));
         $response->assertOk()
             ->assertSee($expectedTitle);
+    });
+
+    test('AB0UT-FR-ABOUT-011: uses app name instead of brand name even when brand name setting is configured', function (): void {
+        $this->seedSetting('brand.name', 'Custom Brand Name School', 'brand');
+        $appName = config('app.name') ?: AppInfo::name();
+
+        $response = $this->get(route('about'));
+        $response->assertOk()
+            ->assertSee($appName)
+            ->assertDontSee('Custom Brand Name School');
     });
 
     test('AB0UT-NFR-ABOUT-001: the About page renders with page response time under 200ms on a local SQLite environment', function (): void {
