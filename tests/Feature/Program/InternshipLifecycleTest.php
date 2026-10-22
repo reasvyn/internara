@@ -15,6 +15,7 @@ use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\Program\Domain\Internship\Actions\BatchUpdateInternshipStatusAction;
 use App\Modules\Program\Domain\Internship\Actions\CreateInternshipAction;
+use App\Modules\Program\Domain\Internship\Actions\DeleteInternshipAction;
 use App\Modules\Program\Domain\Internship\Actions\ReadCloseReadinessAction;
 use App\Modules\Program\Domain\Internship\Actions\UnarchiveInternshipAction;
 use App\Modules\Program\Domain\Internship\Actions\UpdateInternshipAction;
@@ -698,5 +699,35 @@ describe('7C5WM: internship lifecycle feature gaps', function (): void {
         expect($internship->asInternshipPeriod())->toBeInstanceOf(InternshipPeriod::class)
             ->and($internship->asInternshipState())->toBeInstanceOf(InternshipState::class)
             ->and($internship->phases)->toBeArray();
+    });
+
+    test('7C5WM-FR-LIFE-039: deletes unattached internship and audits deletion', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $internship = Internship::factory()->create([
+            'name' => 'Temporary Internship Program',
+        ]);
+
+        app(DeleteInternshipAction::class)->execute($internship);
+
+        expect(Internship::find($internship->id))->toBeNull();
+        $this->assertDatabaseMissing('internships', ['id' => $internship->id]);
+
+        $audit = Activity::query()->where('event', 'internship_deleted')->latest()->first();
+        expect($audit)->not->toBeNull()
+            ->and($audit->causer_id)->toBe($admin->id)
+            ->and($audit->properties['payload']['name'])->toContain('Program');
+    });
+
+    test('7C5WM-FR-LIFE-039: rejects deletion when placements or registrations exist', function (): void {
+        $internship = Internship::factory()->create();
+        $internship->placements_count = 1;
+
+        expect(fn () => app(DeleteInternshipAction::class)->execute($internship))
+            ->toThrow(RejectedException::class, 'Cannot delete internship with active placements or registrations.');
+
+        expect(Internship::find($internship->id))->not->toBeNull();
     });
 });

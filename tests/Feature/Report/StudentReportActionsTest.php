@@ -8,6 +8,7 @@ use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Report\Domain\StudentReport\Actions\CalculateFinalGradeAction;
 use App\Modules\Report\Domain\StudentReport\Actions\CreateStudentReportAction;
+use App\Modules\Report\Domain\StudentReport\Actions\DeleteStudentReportAction;
 use App\Modules\Report\Domain\StudentReport\Actions\DownloadStudentReportAction;
 use App\Modules\Report\Domain\StudentReport\Actions\FinalizeStudentReportAction;
 use App\Modules\Report\Domain\StudentReport\Data\CreateStudentReportData;
@@ -17,6 +18,7 @@ use App\Modules\Report\Domain\StudentReport\Events\StudentReportFinalized;
 use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
 use App\Modules\Report\Domain\StudentReport\Policies\StudentReportPolicy;
 use App\Modules\User\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
 
@@ -184,5 +186,43 @@ describe('R6BMW student report actions', function (): void {
     test('R6BMW-UC-RPT-001/002/003/004: user journeys for grade calculation and viewing', function (): void {
         $report = StudentReport::factory()->create(['final_score' => 90]);
         expect($report->final_score)->toBe(90.0);
+    });
+
+    test('R6BMW-FR-RPT-016: rejects deletion of finalized terminal student report', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $report = StudentReport::factory()->finalized()->create();
+
+        expect(fn () => app(DeleteStudentReportAction::class)->execute($report))
+            ->toThrow(RejectedException::class, __('report.cannot_delete_finalized'));
+
+        expect(StudentReport::find($report->id))->not->toBeNull();
+    });
+
+    test('R6BMW-FR-RPT-016: rejects deletion when actor lacks admin role', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
+
+        $report = StudentReport::factory()->create();
+
+        expect(fn () => app(DeleteStudentReportAction::class)->execute($report))
+            ->toThrow(AuthorizationException::class);
+    });
+
+    test('R6BMW-FR-RPT-016: authorized admin deletes draft student report from database', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $report = StudentReport::factory()->create();
+
+        app(DeleteStudentReportAction::class)->execute($report);
+
+        $this->assertDatabaseMissing('reports', [
+            'id' => $report->id,
+        ]);
     });
 });
