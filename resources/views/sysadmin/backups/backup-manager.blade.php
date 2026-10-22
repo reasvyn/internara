@@ -99,7 +99,7 @@
             @endinteract
 
             @interact('column_action', $backup)
-                <div class="flex gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @if ($backup->asBackupState()->isDeletable())
                         <x-ts-button
                             aria-label="{{ __('common.actions.delete') }}"

@@ -138,7 +138,7 @@
                 @endinteract
 
                 @interact('column_action', $entry)
-                    <div class="flex justify-end gap-1">
+                    <div class="\&quot;flex" items-center justify-center gap-1\">
                         @if (auth()->user()?->hasRole('supervisor'))
                             <x-ts-button
                                 icon="chat-bubble-bottom-center-text"

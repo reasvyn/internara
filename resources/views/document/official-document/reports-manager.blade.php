@@ -30,7 +30,7 @@
             :rows="$reports"
         >
             @interact('column_action', $report)
-                <div class="flex gap-2">
+                <div class="\&quot;flex" items-center justify-center gap-2\">
                     <a href="{{ $report->getFirstMediaUrl('file') }}" class="btn btn-sm btn-primary" target="_blank">
                         <x-ts-icon name="arrow-down-tray" class="size-4" />
                         {{ __('document.download') }}

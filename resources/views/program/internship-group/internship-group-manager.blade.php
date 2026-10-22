@@ -22,7 +22,7 @@
             @endinteract
 
             @interact('column_action', $group)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     <x-ts-button
                         icon="users"
                         color="white"

@@ -49,7 +49,7 @@
                     @endinteract
 
                     @interact('column_action', $journal)
-                        <div class="flex justify-end gap-2">
+                        <div class="\&quot;flex" items-center justify-center gap-2\">
                             @if (! $journal->is_verified)
                                 <x-ts-button
                                     aria-label="{{ __('common.actions.edit') }}"

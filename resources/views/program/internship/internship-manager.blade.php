@@ -142,7 +142,7 @@
             @endinteract
 
             @interact('column_action', $internship)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     <x-ts-button
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"

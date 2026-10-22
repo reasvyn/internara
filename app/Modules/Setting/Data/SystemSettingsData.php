@@ -13,6 +13,7 @@ final readonly class SystemSettingsData extends BaseData
         public string $brandName = '',
         public string $siteTitle = '',
         public string $defaultLocale = 'id',
+        public string $defaultTheme = 'system',
         public string $activeAcademicYear = '',
         public string $primaryColor = '',
         public string $secondaryColor = '',

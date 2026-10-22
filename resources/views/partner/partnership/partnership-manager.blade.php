@@ -126,7 +126,7 @@
             @endinteract
 
             @interact('column_action', $p)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @if ($p->status->value === 'active')
                         <x-ts-button
                             icon="x-circle"

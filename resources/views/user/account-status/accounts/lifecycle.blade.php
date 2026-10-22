@@ -62,7 +62,7 @@
                 @endinteract
 
                 @interact('column_action', $user)
-                    <div class="flex gap-2">
+                    <div class="\&quot;flex" items-center justify-center gap-2\">
                         @if ($user->locked_at)
                             <x-ts-button
                                 aria-label="{{ __('common.actions.unlock') }}"

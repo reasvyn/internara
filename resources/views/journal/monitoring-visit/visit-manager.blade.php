@@ -28,7 +28,7 @@
             @endinteract
 
             @interact('column_action', $v)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @can('verify', App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
                             <x-ts-button.circle

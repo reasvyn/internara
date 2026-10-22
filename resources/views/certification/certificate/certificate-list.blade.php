@@ -37,7 +37,7 @@
             @endinteract
 
             @interact('column_action', $c)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @if ($c->status->value === 'issued')
                         <x-ts-button
                             icon="x-circle"

@@ -102,8 +102,10 @@
                                 if ($headerLabel === '' && in_array($header['index'] ?? '', ['action', 'actions'], true)) {
                                     $headerLabel = __('common.actions.label');
                                 }
+                                $isActionCol = in_array($header['index'] ?? '', ['action', 'actions'], true);
+                                $alignClass = $isActionCol ? 'text-center' : $customization['table.align.'.$alignment($header)];
                             @endphp
-                            <th scope="col" @class([$customization['table.th'] => ! $compact, $customization['table.th-compact'] => $compact, $customization['table.align.'.$alignment($header)]])>
+                            <th scope="col" @class([$customization['table.th'] => ! $compact, $customization['table.th-compact'] => $compact, $alignClass])>
                                 <a @if ($sortable($header))
                                        class="{{ $customization['table.th-sort-wrapper'] }} cursor-pointer"
                                        @if ($livewire)
@@ -187,13 +189,15 @@
                                     } elseif ($columnSlot === null && $row === 'action' && isset($column_actions)) {
                                         $columnSlot = $column_actions;
                                     }
+                                    $isActionCol = in_array($header['index'] ?? '', ['action', 'actions'], true);
+                                    $alignClass = $isActionCol ? 'text-center' : $customization['table.align.'.$alignment($header)];
                                 @endphp
                                 @if ($columnSlot)
-                                    <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $customization['table.align.'.$alignment($header)], $customization['cell-clickable'] => $clickable])>
+                                    <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $alignClass, $customization['cell-clickable'] => $clickable])>
                                         {{ $columnSlot($value) }}
                                     </td>
                                 @else
-                                    <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $customization['table.align.'.$alignment($header)], $customization['cell-clickable'] => $clickable])>
+                                    <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $alignClass, $customization['cell-clickable'] => $clickable])>
                                         @php
                                             // Local change: a Carbon cell stringifies as
                                             // "2026-09-23 00:00:00". Render dates readably and

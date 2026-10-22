@@ -28,8 +28,9 @@ final class UploadBrandAssetAction extends BaseCommandAction
                 ->withCustomProperties(['type' => $type])
                 ->toMediaCollection($collection->value);
 
-            $url = $setting->getFirstMediaUrl($collection->value, 'thumb')
-                ?: $setting->getFirstMediaUrl($collection->value);
+            $url = $type === 'favicon'
+                ? $setting->getFirstMediaUrl($collection->value)
+                : ($setting->getFirstMediaUrl($collection->value, 'thumb') ?: $setting->getFirstMediaUrl($collection->value));
 
             $this->log('brand_asset_uploaded', $setting, ['type' => $type, 'url' => $url]);
 

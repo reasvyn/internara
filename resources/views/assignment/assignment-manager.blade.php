@@ -132,7 +132,7 @@
                 @endinteract
 
                 @interact('column_action', $assignment)
-                    <div class="flex items-center justify-end gap-1 py-2">
+                    <div class="\&quot;flex" items-center justify-center gap-1 py-2\">
                         @if ($assignment->status->value === 'draft')
                             <x-ts-button
                                 icon="paper-airplane"

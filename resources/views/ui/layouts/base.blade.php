@@ -6,8 +6,8 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    data-theme="{{ request()->cookie('theme', 'system') }}"
-    @if (request()->cookie('theme') === 'dark') class="dark" @endif
+    data-theme="{{ request()->cookie('theme', setting('default_theme', 'system')) }}"
+    @if (request()->cookie('theme', setting('default_theme', 'system')) === 'dark') class="dark" @endif
 >
 <head>
     <x-ui::layouts.base.head :$title />

@@ -27,6 +27,7 @@ return [
         'brand_logo' => 'Brand Logo',
         'site_favicon' => 'Site Favicon',
         'default_locale' => 'Default Language',
+        'default_theme' => 'Default Theme Mode',
         'active_academic_year' => 'Active Academic Year',
         'support_email' => 'Technical Support Email',
 

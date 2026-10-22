@@ -148,6 +148,7 @@ describe('YB22J: SystemSettingsData DTO', function (): void {
 
         expect($dto->brandName)->toBe('');
         expect($dto->defaultLocale)->toBe('id');
+        expect($dto->defaultTheme)->toBe('system');
         expect($dto->mailPort)->toBe('587');
         expect($dto->mailEncryption)->toBe('tls');
         expect($dto->brandLogo)->toBeNull();

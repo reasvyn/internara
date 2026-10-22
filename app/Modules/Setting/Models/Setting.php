@@ -62,7 +62,10 @@ class Setting extends BaseModel implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $conversion = $this->addMediaConversion('thumb')->width(200)->nonQueued();
+        $conversion = $this->addMediaConversion('thumb')
+            ->width(200)
+            ->nonQueued()
+            ->performOnCollections(MediaCollection::LOGO->value);
 
         if (function_exists('imagewebp')) {
             $conversion->format('webp');

@@ -94,7 +94,7 @@
                 @endinteract
 
                 @interact('column_action', $department)
-                    <div class="flex justify-end gap-1">
+                    <div class="\&quot;flex" items-center justify-center gap-1\">
                         <x-ts-button.circle
                             icon="pencil"
                             color="white"

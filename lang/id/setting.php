@@ -27,6 +27,7 @@ return [
         'brand_logo' => 'Logo Brand',
         'site_favicon' => 'Favicon Situs',
         'default_locale' => 'Bahasa Default',
+        'default_theme' => 'Tema Tampilan Default',
         'active_academic_year' => 'Tahun Akademik Aktif',
         'support_email' => 'Email Dukungan Teknis',
 

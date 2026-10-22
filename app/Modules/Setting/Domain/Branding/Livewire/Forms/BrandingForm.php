@@ -35,7 +35,7 @@ class BrandingForm extends Form
             'accent_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'base_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
             'brand_logo' => 'nullable|image|max:1024',
-            'site_favicon' => 'nullable|image|max:512',
+            'site_favicon' => ['nullable', 'file', 'mimes:ico,png,jpg,jpeg,svg,webp', 'max:512'],
         ];
     }
 

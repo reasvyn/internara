@@ -17,7 +17,7 @@
         @endinteract
 
         @interact('column_action', $l)
-            <div class="flex justify-end gap-1">
+            <div class="\&quot;flex" items-center justify-center gap-1\">
                 @if ($l->status->value === 'submitted')
                     <x-ts-button
                         :text="__('journals.review')"

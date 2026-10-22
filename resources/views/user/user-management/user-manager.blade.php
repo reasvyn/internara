@@ -196,11 +196,11 @@
 
         @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
-                <div class="flex justify-end">
+                <div class="\&quot;flex" items-center justify-center\">
                     <span class="text-base-content/40 text-xs italic">{{ __('user.manager.protected') }}</span>
                 </div>
             @else
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     <x-ts-button
                         icon="pencil"
                         color="white"

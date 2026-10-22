@@ -41,7 +41,7 @@
                 @endinteract
 
                 @interact('column_action', $app)
-                    <div class="flex justify-end gap-2">
+                    <div class="\&quot;flex" items-center justify-center gap-2\">
                         <x-ts-button
                             :text="__('internship.applications.approve')"
                             wire:click="approve('{{ $app->id }}')"

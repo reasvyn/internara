@@ -213,7 +213,13 @@
                 @endinteract
 
                 @interact('column_action', $notification)
-                    <div class="flex justify-end gap-1" wire:key="notification-actions-{{ $notification->id }}">
+                    <div
+                        class="\&quot;flex"
+                        items-center
+                        justify-center
+                        gap-1\"
+                        wire:key=\"notification-actions-{{ $notification->id }}\"
+                    >
                         @if ($notification->link)
                             <x-ts-button
                                 icon="arrow-top-right-on-square"

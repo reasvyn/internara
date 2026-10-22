@@ -32,7 +32,7 @@
             @endinteract
 
             @interact('column_action', $r)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @if ($r->status->value === 'pending')
                         <x-ts-button
                             aria-label="{{ __('common.actions.approve') }}"

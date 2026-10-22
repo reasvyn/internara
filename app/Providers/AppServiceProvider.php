@@ -73,6 +73,22 @@ class AppServiceProvider extends ServiceProvider
 
         StudentReport::observe(StudentReportObserver::class);
 
+        try {
+            if ($mailHost = Settings::get('mail_host')) {
+                config([
+                    'mail.mailers.smtp.host' => $mailHost,
+                    'mail.mailers.smtp.port' => (int) Settings::get('mail_port', 587),
+                    'mail.mailers.smtp.encryption' => Settings::get('mail_encryption', 'tls'),
+                    'mail.mailers.smtp.username' => Settings::get('mail_username'),
+                    'mail.mailers.smtp.password' => Settings::get('mail_password'),
+                    'mail.from.address' => Settings::get('mail_from_address', config('mail.from.address')),
+                    'mail.from.name' => Settings::get('mail_from_name', config('mail.from.name')),
+                ]);
+            }
+        } catch (\Throwable) {
+            // Ignore during early bootstrap or tests without setting tables
+        }
+
         // Sidebar: labels neutral-800, icons primary (semantic from setting).
         TallStackUi::customize()
             ->sideBar('separator')

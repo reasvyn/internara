@@ -61,7 +61,7 @@
             @endinteract
 
             @interact('column_action', $i)
-                <div class="flex justify-end gap-1">
+                <div class="\&quot;flex" items-center justify-center gap-1\">
                     @can('update', $i)
                         <x-ts-button
                             icon="pencil"

@@ -50,9 +50,18 @@ class SystemSetting extends BaseFormView
 
     private ?ReadAcademicYearAction $readYearAction = null;
 
-    public function boot(ReadAcademicYearAction $action): void
-    {
+    private ?UploadBrandAssetAction $uploadBrandAction = null;
+
+    private ?SetSettingAction $setSettingAction = null;
+
+    public function boot(
+        ReadAcademicYearAction $action,
+        UploadBrandAssetAction $uploadBrand,
+        SetSettingAction $setSetting,
+    ): void {
         $this->readYearAction = $action;
+        $this->uploadBrandAction = $uploadBrand;
+        $this->setSettingAction = $setSetting;
     }
 
     public function mount(): void
@@ -67,6 +76,7 @@ class SystemSetting extends BaseFormView
         $this->generalForm->brand_name = Settings::get('brand_name', brand('name'));
         $this->generalForm->site_title = Settings::get('site_title', brand('site_title'));
         $this->generalForm->default_locale = Settings::get('default_locale', 'id');
+        $this->generalForm->default_theme = Settings::get('default_theme', 'system');
         $this->generalForm->active_academic_year = Settings::get(
             'active_academic_year',
             AcademicYearPeriod::nameFor(now()),
@@ -116,17 +126,15 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->applyPreset($key);
     }
 
-    public function updatedBrandingFormBrandLogo(
-        UploadBrandAssetAction $uploadBrand,
-        SetSettingAction $setSetting,
-    ): void {
+    public function updatedBrandingFormBrandLogo(): void
+    {
         $this->authorize('update', Setting::class);
         $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
 
-        if ($this->brandingForm->brand_logo instanceof UploadedFile) {
-            $this->handleSave(function () use ($uploadBrand, $setSetting): void {
-                $url = $uploadBrand->execute($this->brandingForm->brand_logo);
-                $setSetting->execute(new SettingData(
+        if ($this->brandingForm->brand_logo instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
+            $this->handleSave(function (): void {
+                $url = $this->uploadBrandAction->execute($this->brandingForm->brand_logo);
+                $this->setSettingAction->execute(new SettingData(
                     key: 'brand_logo',
                     value: $url,
                     group: 'branding',
@@ -138,17 +146,17 @@ class SystemSetting extends BaseFormView
         }
     }
 
-    public function updatedBrandingFormSiteFavicon(
-        UploadBrandAssetAction $uploadBrand,
-        SetSettingAction $setSetting,
-    ): void {
+    public function updatedBrandingFormSiteFavicon(): void
+    {
         $this->authorize('update', Setting::class);
-        $this->brandingForm->validate(['site_favicon' => 'nullable|image|max:512']);
+        $this->brandingForm->validate([
+            'site_favicon' => ['nullable', 'file', 'mimes:ico,png,jpg,jpeg,svg,webp', 'max:512'],
+        ]);
 
-        if ($this->brandingForm->site_favicon instanceof UploadedFile) {
-            $this->handleSave(function () use ($uploadBrand, $setSetting): void {
-                $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
-                $setSetting->execute(new SettingData(
+        if ($this->brandingForm->site_favicon instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
+            $this->handleSave(function (): void {
+                $url = $this->uploadBrandAction->execute($this->brandingForm->site_favicon, 'favicon');
+                $this->setSettingAction->execute(new SettingData(
                     key: 'site_favicon',
                     value: $url,
                     group: 'branding',
@@ -218,6 +226,7 @@ class SystemSetting extends BaseFormView
                 siteTitle: $this->generalForm->site_title,
                 supportEmail: $this->generalForm->support_email,
                 defaultLocale: $this->generalForm->default_locale,
+                defaultTheme: $this->generalForm->default_theme,
                 activeAcademicYear: $this->generalForm->active_academic_year,
                 primaryColor: $this->brandingForm->primary_color,
                 secondaryColor: $this->brandingForm->secondary_color,
