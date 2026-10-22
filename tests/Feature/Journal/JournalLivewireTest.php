@@ -12,14 +12,19 @@ use App\Modules\Journal\Domain\Logbook\Livewire\LogbookEntry;
 use App\Modules\Journal\Domain\Logbook\Livewire\LogbookManager;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use App\Modules\Journal\Domain\MonitoringVisit\Enums\VisitMethod;
+use App\Modules\Journal\Domain\MonitoringVisit\Livewire\StudentVisitList;
 use App\Modules\Journal\Domain\MonitoringVisit\Livewire\VisitManager;
 use App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit;
+use App\Modules\Journal\Domain\SupervisionLog\Actions\CreateSupervisionLogAction;
 use App\Modules\Journal\Domain\SupervisionLog\Livewire\StudentLogManager;
+use App\Modules\Journal\Domain\SupervisionLog\Livewire\SupervisionManager;
+use App\Modules\Journal\Domain\SupervisionLog\Livewire\SupervisorLogManager;
 use App\Modules\Journal\Domain\SupervisionLog\Livewire\SupervisorReviewManager;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Collection;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -168,4 +173,33 @@ test('1KSWL-FR-DAILY-022: AbsenceRequestForm validates required reason and descr
         ->set('reasonDescription', 'Short')
         ->call('submit', app(SubmitAbsenceAction::class))
         ->assertHasErrors(['reasonType' => 'required', 'reasonDescription' => 'min']);
+});
+
+test('2EHSE-FR-SUPV-015: StudentVisitList renders monitoring visits for active student registration', function (): void {
+    $this->actingAs($this->student);
+
+    $test = Livewire::test(StudentVisitList::class);
+    $test->assertOk();
+    expect($test->instance()->visits)->toBeInstanceOf(Collection::class);
+});
+
+test('2EHSE-FR-SUPV-016: SupervisionManager mounts active registration and renders supervision logs', function (): void {
+    $this->actingAs($this->student);
+
+    $test = Livewire::test(SupervisionManager::class);
+    $test->assertOk();
+    expect($test->get('registration')->id)->toBe($this->registration->id);
+});
+
+test('2EHSE-FR-SUPV-017: SupervisorLogManager creates modal state and validates save requirements', function (): void {
+    $this->actingAs($this->supervisor);
+
+    $test = Livewire::test(SupervisorLogManager::class);
+    $test->assertOk()
+        ->assertSet('showModal', false)
+        ->call('create')
+        ->assertSet('showModal', true);
+
+    $test->call('save', app(CreateSupervisionLogAction::class))
+        ->assertHasErrors(['registrationId', 'topic', 'notes']);
 });

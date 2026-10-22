@@ -39,7 +39,7 @@ class SupervisionLogPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('student');
+        return $this->hasAnyOfRoles($user, ['student', 'supervisor']);
     }
 
     public function update(User $user, SupervisionLog $log): bool
