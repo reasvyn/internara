@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\User;
 
 use App\Modules\Core\Models\ActivityLog;
+use App\Modules\User\Actions\ReadActivityLogAction;
 use App\Modules\User\Domain\AccountStatus\Actions\DetectUserAccountCloneAction;
 use App\Modules\User\Domain\AccountStatus\Actions\LockUserAccountAction;
 use App\Modules\User\Domain\AccountStatus\Actions\UnlockUserAccountAction;
@@ -122,5 +123,39 @@ describe('95EVB: User Activity, Dashboard, and Lifecycle Livewire UI Components'
 
         Livewire::actingAs($student)->test(AccountLifecycleManager::class)
             ->assertForbidden();
+    });
+
+    test('95EVB-FR-USER-042: ReadActivityLogAction paginates activities for a user in descending chronological order', function (): void {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        ActivityLog::create([
+            'log_name' => 'default',
+            'description' => 'first_action',
+            'causer_type' => User::class,
+            'causer_id' => $user->id,
+            'created_at' => now()->subHours(2),
+        ]);
+
+        ActivityLog::create([
+            'log_name' => 'default',
+            'description' => 'second_action',
+            'causer_type' => User::class,
+            'causer_id' => $user->id,
+            'created_at' => now()->subHour(),
+        ]);
+
+        ActivityLog::create([
+            'log_name' => 'default',
+            'description' => 'other_user_action',
+            'causer_type' => User::class,
+            'causer_id' => $otherUser->id,
+        ]);
+
+        $paginator = app(ReadActivityLogAction::class)->execute((string) $user->id, 10);
+
+        expect($paginator->total())->toBe(2)
+            ->and($paginator->items()[0]->description)->toBe('second_action')
+            ->and($paginator->items()[1]->description)->toBe('first_action');
     });
 });

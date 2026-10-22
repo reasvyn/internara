@@ -6,7 +6,9 @@ use App\Modules\Assessment\Actions\AutoCalculateAssessmentAction;
 use App\Modules\Assessment\Actions\FinalizeAssessmentAction;
 use App\Modules\Assessment\Actions\InitializeAssessmentAction;
 use App\Modules\Assessment\Actions\ScoreIndicatorAction;
+use App\Modules\Assessment\Actions\UpdateAssessmentScoresAction;
 use App\Modules\Assessment\Data\ScoreIndicatorData;
+use App\Modules\Assessment\Data\UpdateAssessmentScoresData;
 use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
 use App\Modules\Assessment\Entities\AssessmentResult;
 use App\Modules\Assessment\Events\AssessmentFinalized;
@@ -199,5 +201,42 @@ describe('ARDA6 assessment actions', function (): void {
 
         $assessment = Assessment::factory()->create(['rubric_id' => $rubric->id]);
         expect($assessment->asAssessmentResult())->toBeInstanceOf(AssessmentResult::class);
+    });
+
+    test('ARDA6-FR-ASM-011: updates indicator score and unsets when negative or null', function (): void {
+        $teacher = User::factory()->create();
+        $this->actingAs($teacher);
+
+        $assessment = Assessment::factory()->create([
+            'scores_data' => [
+                'competencies' => [
+                    'comp-1' => [
+                        'indicators' => ['ind-1' => 85],
+                    ],
+                ],
+            ],
+        ]);
+
+        $response = app(UpdateAssessmentScoresAction::class)->execute($assessment, new UpdateAssessmentScoresData(
+            competencyId: 'comp-1',
+            indicatorId: 'ind-2',
+            score: 90,
+        ));
+
+        expect($response->success)->toBeTrue();
+        $fresh = $assessment->fresh();
+        expect($fresh->scores_data['competencies']['comp-1']['indicators']['ind-2'])->toBe(90)
+            ->and($fresh->scores_data['competencies']['comp-1']['evaluator_id'])->toBe($teacher->id);
+
+        // Unsetting score by passing null or < 0
+        app(UpdateAssessmentScoresAction::class)->execute($assessment, new UpdateAssessmentScoresData(
+            competencyId: 'comp-1',
+            indicatorId: 'ind-1',
+            score: -1,
+        ));
+
+        $unsetData = $assessment->fresh()->scores_data;
+        expect(isset($unsetData['competencies']['comp-1']['indicators']['ind-1']))->toBeFalse()
+            ->and(isset($unsetData['competencies']['comp-1']['indicators']['ind-2']))->toBeTrue();
     });
 });

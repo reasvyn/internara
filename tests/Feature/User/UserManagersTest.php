@@ -6,6 +6,7 @@ use App\Modules\Academic\Domain\Department\Models\Department;
 use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\UI\Livewire\BaseRecordManager;
 use App\Modules\User\Domain\Profile\Models\Profile;
+use App\Modules\User\Domain\UserManagement\Actions\ReadUserManagerStatsAction;
 use App\Modules\User\Domain\UserManagement\Livewire\AdminManager;
 use App\Modules\User\Domain\UserManagement\Livewire\StudentManager;
 use App\Modules\User\Domain\UserManagement\Livewire\SupervisorManager;
@@ -242,5 +243,26 @@ describe('95EVB: user Livewire managers', function (): void {
         foreach ($managers as $manager) {
             expect(Livewire::test($manager)->instance())->toBeNull();
         }
+    });
+
+    test('95EVB-FR-USER-046: reads aggregated user manager statistics', function (): void {
+        $admin = User::factory()->create(['status' => AccountStatus::VERIFIED]);
+        $admin->assignRole('admin');
+
+        $superAdmin = User::factory()->create(['status' => AccountStatus::VERIFIED]);
+        $superAdmin->assignRole('super_admin');
+
+        $pendingStudent = User::factory()->create(['status' => AccountStatus::PROVISIONED]);
+        $pendingStudent->assignRole('student');
+
+        $activeStudent = User::factory()->create(['status' => AccountStatus::VERIFIED]);
+        $activeStudent->assignRole('student');
+
+        $stats = app(ReadUserManagerStatsAction::class)->execute();
+
+        expect($stats['total'])->toBeGreaterThanOrEqual(4)
+            ->and($stats['admins'])->toBeGreaterThanOrEqual(2)
+            ->and($stats['active'])->toBeGreaterThanOrEqual(3)
+            ->and($stats['pending'])->toBeGreaterThanOrEqual(1);
     });
 });

@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Modules\Academic\Domain\AcademicYear\Models\AcademicYear;
 use App\Modules\Setting\Actions\DeleteSettingAction;
+use App\Modules\Setting\Actions\ReadAcademicYearAction;
 use App\Modules\Setting\Actions\SaveSystemSettingsAction;
 use App\Modules\Setting\Actions\SetSettingAction;
 use App\Modules\Setting\Actions\TestMailSettingsAction;
@@ -331,5 +333,29 @@ describe('YB22J: setting update action', function (): void {
 
     test('YB22J-DD-SET-006: shared validation rules exist for setting entities', function (): void {
         expect(SettingEntity::rules())->toBeArray();
+    });
+
+    test('YB22J-FR-SET-007: reads academic years ordered by start date and finds by name', function (): void {
+        AcademicYear::factory()->create([
+            'name' => '2024/2025',
+            'start_date' => '2024-07-01',
+            'end_date' => '2025-06-30',
+        ]);
+        AcademicYear::factory()->create([
+            'name' => '2025/2026',
+            'start_date' => '2025-07-01',
+            'end_date' => '2026-06-30',
+        ]);
+
+        $years = app(ReadAcademicYearAction::class)->execute();
+        expect($years->count())->toBeGreaterThanOrEqual(2)
+            ->and($years->first()->name)->toBe('2025/2026');
+
+        $found = app(ReadAcademicYearAction::class)->findByName('2024/2025');
+        expect($found)->not->toBeNull()
+            ->and($found->name)->toBe('2024/2025');
+
+        $missing = app(ReadAcademicYearAction::class)->findByName('Nonexistent Year');
+        expect($missing)->toBeNull();
     });
 });
