@@ -183,7 +183,7 @@ class StudentReportsManager extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('report.report.reports-manager', [
+        return view('report.student-report.reports-manager', [
             'statuses' => StudentReportStatus::cases(),
         ]);
     }

@@ -1,4 +1,4 @@
-{{-- resources/views/reports/report/reports-manager.blade.php --}}
+{{-- resources/views/report/student-report/reports-manager.blade.php --}}
 <div class="w-full">
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
