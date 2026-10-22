@@ -60,7 +60,7 @@ class StudentReportsManager extends Component
     }
 
     #[Computed]
-    public function report()
+    public function reports()
     {
         return StudentReport::query()
             ->with(['registration.student.profile', 'registration.internship', 'finalizedBy'])
@@ -183,7 +183,7 @@ class StudentReportsManager extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        return view('report.report.report-manager', [
+        return view('report.report.reports-manager', [
             'statuses' => StudentReportStatus::cases(),
         ]);
     }
