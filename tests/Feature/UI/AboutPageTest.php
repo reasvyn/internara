@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Modules\UI\Livewire\AboutPage;
 use App\Modules\Core\Services\AppInfo;
+use App\Modules\UI\Livewire\AboutPage;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Route;
