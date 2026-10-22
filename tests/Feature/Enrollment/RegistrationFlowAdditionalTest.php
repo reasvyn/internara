@@ -5,14 +5,18 @@ declare(strict_types=1);
 use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Actions\UploadRegistrationDocumentAction;
+use App\Modules\Enrollment\Domain\Registration\Actions\VerifyRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Entities\RegistrationState;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationCenter;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationDocumentUpload;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationVerification;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationWizard;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Lang;
@@ -96,7 +100,7 @@ test('MBB5R-NFR-REG-007: registration page renders translated title text', funct
     $student->assignRole('student');
     test()->actingAs($student);
 
-    expect(test()->get('/registration')->assertOk()->getContent())->toContain(__('registration.center_title'));
+    expect(test()->get('/registration')->assertOk()->getContent())->toContain(__('registration.center.title'));
 });
 
 test('MBB5R-NFR-REG-008: registration status translations are mirrored', function (): void {
@@ -162,4 +166,52 @@ test('MBB5R-FR-REG-005: registration state calculates remaining and total durati
     $state = RegistrationState::fromModel($registration);
 
     expect($state->daysRemaining(Carbon::today()))->toBe(5)->and($state->totalDuration())->toBe(10);
+});
+
+test('MBB5R-FR-REG-030: RegistrationCenter authorizes authenticated user and computes open internships', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $test = Livewire::actingAs($admin)->test(RegistrationCenter::class);
+    $test->assertOk();
+    expect($test->instance()->openInternships)->toBeInstanceOf(Collection::class);
+});
+
+test('MBB5R-FR-REG-031: RegistrationVerification controls verification modal and processes placement', function (): void {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $student = User::factory()->create();
+    $student->assignRole('student');
+
+    $internship = Internship::factory()->create();
+    $placement = Placement::factory()->create(['internship_id' => $internship->id]);
+
+    $registration = Registration::factory()->create([
+        'student_id' => $student->id,
+        'internship_id' => $internship->id,
+        'placement_id' => null,
+        'status' => 'pending',
+    ]);
+
+    $test = Livewire::actingAs($admin)->test(RegistrationVerification::class);
+    $test->assertOk();
+    expect($test->instance()->pendingRegistrations->count())->toBeGreaterThanOrEqual(1);
+
+    // Open process modal
+    $test->call('process', (string) $registration->id);
+    expect($test->get('showProcessModal'))->toBeTrue()
+        ->and($test->get('processId'))->toBe((string) $registration->id);
+
+    // Validation failure on empty placement
+    $test->call('confirmProcess', app(VerifyRegistrationAction::class))
+        ->assertHasErrors(['placement_id' => 'required']);
+
+    // Successfully assign placement and verify
+    $test->set('placement_id', (string) $placement->id)
+        ->call('confirmProcess', app(VerifyRegistrationAction::class))
+        ->assertHasNoErrors();
+
+    expect($test->get('showProcessModal'))->toBeFalse()
+        ->and($registration->fresh()->placement_id)->toBe($placement->id);
 });
