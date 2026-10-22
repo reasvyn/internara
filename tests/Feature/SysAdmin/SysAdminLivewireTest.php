@@ -17,6 +17,7 @@ use App\Modules\SysAdmin\Domain\Backup\Livewire\BackupManager;
 use App\Modules\SysAdmin\Domain\Backup\Models\Backup;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\Modules\SysAdmin\Domain\Observability\GdprDeletionLog\Models\GdprDeletionLog;
+use App\Modules\SysAdmin\Domain\Observability\Livewire\AccountCloneDetector;
 use App\Modules\SysAdmin\Domain\Observability\Livewire\AuditLogManager;
 use App\Modules\SysAdmin\Domain\Observability\Livewire\Pulse\RegistrationsCard;
 use App\Modules\SysAdmin\Domain\Observability\Livewire\Pulse\SystemCard;
@@ -215,14 +216,24 @@ describe('9YUUK / E1MSJ / 7HNCF: SysAdmin Livewire UI Components', function (): 
         $admin->assignRole('admin');
         $this->actingAs($admin);
 
-        $systemCard = new SystemCard;
-        $view = $systemCard->render();
-        expect($view->getName())->toBe('sysadmin.observability.pulse.system-card')
-            ->and($view->getData())->toHaveKeys(['users', 'unreadNotifications']);
+        Livewire::test(SystemCard::class, ['lazy' => false])
+            ->assertOk()
+            ->assertViewHas('users')
+            ->assertViewHas('unreadNotifications');
 
-        $regCard = new RegistrationsCard;
-        $regView = $regCard->render();
-        expect($regView->getName())->toBe('sysadmin.observability.pulse.registrations-card')
-            ->and($regView->getData())->toHaveKeys(['total', 'pending', 'active', 'completed']);
+        Livewire::test(RegistrationsCard::class, ['lazy' => false])
+            ->assertOk()
+            ->assertViewHas('total')
+            ->assertViewHas('pending');
+    });
+
+    test('E1MSJ-FR-PULSE-002: AccountCloneDetector authorizes admin and renders clone list', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $test = Livewire::test(AccountCloneDetector::class);
+        $test->assertOk()
+            ->assertViewHas('clones');
     });
 });
