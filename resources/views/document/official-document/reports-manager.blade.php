@@ -26,7 +26,7 @@
         <h3 class="mb-4 text-sm font-bold">{{ __('document.generated_reports') }}</h3>
 
         <x-ts-table
-            :headers="[['index' => 'name', 'label' => __('document.name')], ['index' => 'created_at', 'label' => __('document.generated')]]"
+            :headers="[['index' => 'name', 'label' => __('document.name')], ['index' => 'created_at', 'label' => __('document.generated')], ['index' => 'actions', 'label' => '']]"
             :rows="$reports"
         >
             @interact('column_action', $report)

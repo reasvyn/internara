@@ -97,6 +97,12 @@
                             </th>
                         @endif
                         @foreach ($headers as $header)
+                            @php
+                                $headerLabel = $header['label'] ?? '';
+                                if ($headerLabel === '' && in_array($header['index'] ?? '', ['action', 'actions'], true)) {
+                                    $headerLabel = __('common.actions.label');
+                                }
+                            @endphp
                             <th scope="col" @class([$customization['table.th'] => ! $compact, $customization['table.th-compact'] => $compact, $customization['table.align.'.$alignment($header)]])>
                                 <a @if ($sortable($header))
                                        class="{{ $customization['table.th-sort-wrapper'] }} cursor-pointer"
@@ -107,9 +113,9 @@
                                        @endif
                                         @endif>
                                     @if ($header['unescaped'] ?? false)
-                                        {!! $header['label'] ?? '' !!}
+                                        {!! $headerLabel !!}
                                     @else
-                                        {{ $header['label'] ?? '' }}
+                                        {{ $headerLabel }}
                                     @endif
                                     @if ($sortable($header))
                                         <x-dynamic-component :component="TallStackUi::prefix('icon')"
@@ -175,10 +181,16 @@
                                     $row = str_replace('.', '_', $header['index']);
                                     $url = $href($value);
                                     $clickable = $link !== null;
+                                    $columnSlot = ${"column_".$row} ?? null;
+                                    if ($columnSlot === null && $row === 'actions' && isset($column_action)) {
+                                        $columnSlot = $column_action;
+                                    } elseif ($columnSlot === null && $row === 'action' && isset($column_actions)) {
+                                        $columnSlot = $column_actions;
+                                    }
                                 @endphp
-                                @isset(${"column_".$row})
+                                @if ($columnSlot)
                                     <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $customization['table.align.'.$alignment($header)], $customization['cell-clickable'] => $clickable])>
-                                        {{ ${"column_".$row}($value) }}
+                                        {{ $columnSlot($value) }}
                                     </td>
                                 @else
                                     <td @if ($clickable) x-on:click.prevent="redirect(@js($url), @js($blank))" @endif @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact, $customization['table.align.'.$alignment($header)], $customization['cell-clickable'] => $clickable])>
@@ -196,7 +208,7 @@
                                         @endphp
                                         {{ $cell }}
                                     </td>
-                                @endisset
+                                @endif
                             @endforeach
                         </tr>
                         @if ($expandable)

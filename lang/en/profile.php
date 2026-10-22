@@ -15,6 +15,7 @@ return [
     'avatar_removed' => 'Avatar removed successfully.',
     'avatar_remove_confirm' => 'Are you sure you want to remove your profile picture?',
     'avatar_upload_failed' => 'Avatar upload failed. Please try again.',
+    'avatar_hint' => 'Recommended square image. Max 2MB (JPG, PNG, WEBP).',
     'cannot_change_super_admin_name' => 'Cannot change super admin name.',
     'cannot_change_super_admin_username' => 'Cannot change super admin username.',
 

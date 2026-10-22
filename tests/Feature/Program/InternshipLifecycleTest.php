@@ -411,7 +411,9 @@ describe('7C5WM: internship lifecycle feature gaps', function (): void {
             ->assertSee('2026/2027')
             ->assertSee('01 Jul 2026')
             ->assertSee('31 Dec 2026')
-            ->assertSee(__('internship.statuses.published'));
+            ->assertSee(__('internship.statuses.published'))
+            ->assertSee(__('common.actions.label'))
+            ->assertSeeHtml("wire:click=\"edit('{$internship->id}')\"");
 
         expect($component->instance()->headers())->toBe([
             ['index' => 'name', 'label' => __('internship.batch_name'), 'sortable' => true],

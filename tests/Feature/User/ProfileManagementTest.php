@@ -429,4 +429,15 @@ describe('OCEMS: user profile management', function (): void {
     test('OCEMS-DD-PROF-003: profile data lives in dedicated profiles table', function (): void {
         expect(Schema::hasTable('profiles'))->toBeTrue();
     });
+
+    test('OCEMS-FR-PROF-018: profile editor renders avatar upload trigger, camera affordance, and format hint', function (): void {
+        $student = User::factory()->create();
+        $student->assignRole('student');
+
+        Livewire::actingAs($student)
+            ->test(ProfileEditor::class)
+            ->assertSeeHtml('id="avatar-upload"')
+            ->assertSeeHtml('for="avatar-upload"')
+            ->assertSee(__('profile.avatar_hint'));
+    });
 });

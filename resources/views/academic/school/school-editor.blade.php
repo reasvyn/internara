@@ -98,7 +98,9 @@
                             <x-ts-button
                                 :text="__('school.discard')"
                                 link="{{ url()->previous() }}"
-                                class="btn-ghost btn-sm"
+                                color="slate"
+                                outline
+                                sm
                             />
                             <x-ts-button
                                 :text="__('school.save_changes')"

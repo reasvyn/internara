@@ -39,6 +39,7 @@ class TemplateManager extends Component
             ['index' => 'type', 'label' => 'Category'],
             ['index' => 'is_active', 'label' => 'Active'],
             ['index' => 'created_at', 'label' => 'Created', 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
 

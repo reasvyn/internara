@@ -190,10 +190,8 @@
         <div class="space-y-6">
             <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
                 <div class="flex flex-col items-center py-6">
-                    <div class="group relative mb-3">
-                        {{-- Avatar upload — label-based trigger lebih andal daripada @click JS pada input hidden (display:none diblokir browser).
-                             Sr-only menjaga input tetap focusable untuk Livewire file upload. --}}
-                        <label for="avatar-upload" class="relative cursor-pointer">
+                    <div class="flex flex-col items-center">
+                        <div class="group relative mb-2">
                             <input
                                 id="avatar-upload"
                                 type="file"
@@ -201,43 +199,49 @@
                                 accept="image/png,image/jpeg,image/jpg,image/webp"
                                 class="sr-only"
                             />
-                            <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
-                                @php
-                                    $currentAvatar = $this->avatarPreviewUrl() ?: ($user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar'));
-                                @endphp
-                                @if ($currentAvatar)
-                                    <img
-                                        src="{{ $currentAvatar }}"
-                                        alt="{{ __('common.avatar') }}"
-                                        class="size-full object-cover"
-                                    />
-                                @else
-                                    <span class="text-base-content/60 text-2xl font-bold">{{ $user->initials() }}</span>
-                                @endif
-                                {{-- Loading overlay saat upload --}}
-                                <div
-                                    wire:loading
-                                    wire:target="avatar"
-                                    class="bg-base-100/80 absolute inset-0 flex items-center justify-center"
-                                >
-                                    <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
+                            <label for="avatar-upload" class="relative block cursor-pointer">
+                                <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
+                                    @php
+                                        $currentAvatar = $this->avatarPreviewUrl() ?: ($user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar'));
+                                    @endphp
+                                    @if ($currentAvatar)
+                                        <img
+                                            src="{{ $currentAvatar }}"
+                                            alt="{{ __('common.avatar') }}"
+                                            class="size-full object-cover"
+                                        />
+                                    @else
+                                        <span class="text-base-content/60 text-2xl font-bold">{{ $user->initials() }}</span>
+                                    @endif
+                                    {{-- Loading overlay saat upload --}}
+                                    <div
+                                        wire:loading
+                                        wire:target="avatar"
+                                        class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-full"
+                                    >
+                                        <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                                <x-ts-icon name="camera" class="text-base-100 size-6" />
-                            </div>
-                        </label>
-                        <x-ts-error :name="'avatar'" />
-                        @if ($user->getFirstMediaUrl('avatar'))
-                            <button
-                                type="button"
-                                wire:click="$set('showConfirm', true)"
-                                aria-label="{{ __('common.actions.remove') }}"
-                                class="bg-error text-error-content absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full opacity-0 transition-transform group-hover:opacity-100 hover:scale-110"
-                            >
-                                <x-ts-icon name="x-mark" class="size-3" />
-                            </button>
-                        @endif
+                                <div class="bg-base-content/60 absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                    <x-ts-icon name="camera" class="text-base-100 size-6" />
+                                </div>
+                                <div class="bg-primary text-primary-content border-base-100 absolute -right-1 -bottom-1 flex size-7 items-center justify-center rounded-full border-2 shadow-sm transition-transform group-hover:scale-110">
+                                    <x-ts-icon name="camera" class="size-3.5" />
+                                </div>
+                            </label>
+                            @if ($user->getFirstMediaUrl('avatar'))
+                                <button
+                                    type="button"
+                                    wire:click="$set('showConfirm', true)"
+                                    aria-label="{{ __('common.actions.remove') }}"
+                                    class="bg-error text-error-content border-base-100 absolute -top-1 -right-1 z-10 flex size-6 items-center justify-center rounded-full border-2 shadow-sm transition-transform hover:scale-110"
+                                >
+                                    <x-ts-icon name="x-mark" class="size-3.5" />
+                                </button>
+                            @endif
+                        </div>
+                        <x-ts-error name="avatar" />
+                        <p class="text-base-content/40 text-center text-[11px]">{{ __('profile.avatar_hint') }}</p>
                     </div>
 
                     <h3 class="mt-2 text-lg font-semibold">{{ $user->name }}</h3>

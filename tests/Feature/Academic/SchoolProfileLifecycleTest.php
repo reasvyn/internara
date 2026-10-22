@@ -390,4 +390,13 @@ describe('81SMS: school profile lifecycle', function (): void {
     test('81SMS-DD-SCH-005: school_entity cache key is present in config', function (): void {
         expect(config('cache-keys.school_entity'))->not->toBeNull();
     });
+
+    test('81SMS-FR-SCH-017: SchoolEditor renders discard button with secondary outline styling', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        Livewire::actingAs($admin)
+            ->test(SchoolEditor::class)
+            ->assertSee(__('school.discard'));
+    });
 });

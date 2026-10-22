@@ -128,6 +128,16 @@ describe('4HWSB: departments', function (): void {
             ->assertDontSee('RPL');
     });
 
+    test('4HWSB-FR-DEPT-017: the manager renders action column header and row action buttons', function (): void {
+        hwsbAdmin($this);
+        $dept = Department::factory()->create(['name' => 'RPL']);
+
+        Livewire::test(DepartmentManager::class)
+            ->assertSee(__('common.actions.label'))
+            ->assertSeeHtml("wire:click=\"edit('{$dept->id}')\"")
+            ->assertSeeHtml("wire:click=\"askDelete('{$dept->id}')\"");
+    });
+
     test('4HWSB-FR-DEPT-013: bulk delete separates deleted from blocked rows (also UC-DEPT-005, NFR-DEPT-005, DD-DEPT-004)', function (): void {
         hwsbAdmin($this);
         $gone = Department::factory()->create(['name' => 'RPL']);
