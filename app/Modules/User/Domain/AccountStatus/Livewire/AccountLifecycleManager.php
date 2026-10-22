@@ -10,6 +10,7 @@ use App\Modules\User\Domain\AccountStatus\Actions\LockUserAccountAction;
 use App\Modules\User\Domain\AccountStatus\Actions\UnlockUserAccountAction;
 use App\Modules\User\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -77,7 +78,7 @@ class AccountLifecycleManager extends Component
         $this->confirmMessage = '';
     }
 
-    public function detectClones(DetectUserAccountCloneAction $action): array
+    public function detectClones(DetectUserAccountCloneAction $action): Collection
     {
         Gate::authorize('viewLifecycleDashboard', User::class);
 
