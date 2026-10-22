@@ -212,7 +212,7 @@
                                 color="green"
                                 wire:click="verify('{{ $selectedSubmission->id }}')"
                                 wire:confirm="{{ __('submission.confirm_verify') }}"
-                                spinner="verify"
+                                loading="verify"
                             />
                         @endif
                         <x-ts-button
