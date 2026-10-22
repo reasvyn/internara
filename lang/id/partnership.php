@@ -57,6 +57,7 @@ return [
     'terminate_success' => 'Kemitraan berhasil diakhiri.',
     'terminate_confirm' => 'Akhiri kemitraan ini? Tindakan ini tidak dapat dibatalkan.',
     'terminate_blocked' => 'Hanya kemitraan aktif yang dapat diakhiri.',
+    'expire_blocked' => 'Hanya kemitraan aktif yang dapat kedaluwarsa.',
 
     'guide' => [
         'title' => 'Panduan Kemitraan',

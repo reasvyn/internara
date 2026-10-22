@@ -7,17 +7,20 @@ use App\Modules\Partner\Domain\Company\Models\Company;
 use App\Modules\Partner\Domain\Partnership\Actions\BatchDeletePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\CreatePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\DeletePartnershipAction;
+use App\Modules\Partner\Domain\Partnership\Actions\ExpirePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\RenewPartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\TerminatePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Actions\UpdatePartnershipAction;
 use App\Modules\Partner\Domain\Partnership\Data\PartnershipData;
 use App\Modules\Partner\Domain\Partnership\Entities\PartnershipState;
 use App\Modules\Partner\Domain\Partnership\Enums\PartnershipStatus;
+use App\Modules\Partner\Domain\Partnership\Events\PartnershipExpired;
 use App\Modules\Partner\Domain\Partnership\Models\Partnership;
 use App\Modules\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
@@ -339,5 +342,40 @@ describe('NTHQA: partnership lifecycle, CRUD, renewal and guards', function (): 
         $admin->assignRole('admin');
         $this->actingAs($admin);
         $this->get('/admin/companies/partnerships')->assertOk();
+    });
+
+    test('NTHQA-FR-PART-009: expires active partnership, records status, and emits event', function (): void {
+        Event::fake([PartnershipExpired::class]);
+
+        $partnership = Partnership::factory()->create([
+            'status' => PartnershipStatus::ACTIVE->value,
+        ]);
+
+        $expired = app(ExpirePartnershipAction::class)->execute($partnership);
+
+        expect($expired->status)->toBe(PartnershipStatus::EXPIRED);
+
+        $this->assertDatabaseHas('partnerships', [
+            'id' => $partnership->id,
+            'status' => PartnershipStatus::EXPIRED->value,
+        ]);
+
+        Event::assertDispatched(PartnershipExpired::class, fn (PartnershipExpired $e) => $e->partnership->id === $partnership->id);
+    });
+
+    test('NTHQA-FR-PART-009: rejects expiring an already expired or terminated partnership', function (): void {
+        $expired = Partnership::factory()->create([
+            'status' => PartnershipStatus::EXPIRED->value,
+        ]);
+
+        expect(fn () => app(ExpirePartnershipAction::class)->execute($expired))
+            ->toThrow(RejectedException::class, __('partnership.expire_blocked'));
+
+        $terminated = Partnership::factory()->create([
+            'status' => PartnershipStatus::TERMINATED->value,
+        ]);
+
+        expect(fn () => app(ExpirePartnershipAction::class)->execute($terminated))
+            ->toThrow(RejectedException::class, __('partnership.expire_blocked'));
     });
 });

@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Data\AuditCheck;
+use App\Modules\Core\Data\AuditReport;
 use App\Modules\Core\Enums\AuditCategory;
 use App\Modules\Core\Enums\AuditStatus;
+use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Setup\Domain\Installation\Actions\GenerateSetupTokenAction;
+use App\Modules\Setup\Domain\Installation\Actions\InstallSystemAction;
+use App\Modules\Setup\Domain\Installation\Data\SetupTokenData;
+use App\Modules\Setup\Domain\Installation\Services\SystemProvisioner;
 use App\Modules\Setup\Entities\SetupEntity;
 use App\Modules\SysAdmin\Domain\Observability\Services\EnvironmentAuditor;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -140,5 +147,35 @@ describe('8NZAU: installation audit and CLI guards', function (): void {
         Cache::flush();
         expect(SetupEntity::get()->isInstalled())->toBeTrue();
         expect(SetupEntity::get()->hasStoredToken())->toBeFalse();
+    });
+
+    test('8NZAU-FR-INST-014: install system action refuses when environment audit fails', function (): void {
+        $failingReport = new AuditReport([
+            new AuditCheck(
+                category: AuditCategory::DATABASE,
+                nameKey: 'database_connection',
+                status: AuditStatus::FAIL,
+                messageKey: 'failed',
+            ),
+        ]);
+
+        expect(fn () => app(InstallSystemAction::class)->execute(false, $failingReport))
+            ->toThrow(RejectedException::class, __('setup.audit_failed'));
+    });
+
+    test('8NZAU-FR-INST-014 / 8NZAU-FR-INST-015: install system action executes provisioning and mints setup token', function (): void {
+        $provisioner = Mockery::mock(SystemProvisioner::class);
+        $provisioner->shouldReceive('executeAll')->once()->with(false);
+
+        $action = new InstallSystemAction(
+            app(EnvironmentAuditor::class),
+            $provisioner,
+            app(GenerateSetupTokenAction::class),
+        );
+
+        $tokenData = $action->execute(false);
+
+        expect($tokenData)->toBeInstanceOf(SetupTokenData::class)
+            ->and($tokenData->plaintext)->not->toBeEmpty();
     });
 });
