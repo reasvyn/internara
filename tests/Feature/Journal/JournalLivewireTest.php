@@ -3,9 +3,13 @@
 declare(strict_types=1);
 
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
+use App\Modules\Journal\Domain\AbsenceRequest\Actions\SubmitAbsenceAction;
+use App\Modules\Journal\Domain\AbsenceRequest\Livewire\AbsenceRequestForm;
+use App\Modules\Journal\Domain\Attendance\Livewire\AttendanceManager;
 use App\Modules\Journal\Domain\Attendance\Livewire\StudentClockIn;
 use App\Modules\Journal\Domain\Attendance\Models\Attendance;
 use App\Modules\Journal\Domain\Logbook\Livewire\LogbookEntry;
+use App\Modules\Journal\Domain\Logbook\Livewire\LogbookManager;
 use App\Modules\Journal\Domain\Logbook\Models\Logbook;
 use App\Modules\Journal\Domain\MonitoringVisit\Enums\VisitMethod;
 use App\Modules\Journal\Domain\MonitoringVisit\Livewire\VisitManager;
@@ -129,4 +133,39 @@ test('2EHSE-UC-SUPV-002 / 2EHSE-FR-SUPV-004: supervisor review Livewire persists
 
     expect($log->fresh()->status->value)->toBe('reviewed')
         ->and($log->fresh()->supervisor_feedback)->toBe('Please include the safety evidence next time.');
+});
+
+test('1KSWL-FR-DAILY-020: LogbookManager renders headers and handles supervisor note modal state', function (): void {
+    $this->actingAs($this->admin);
+
+    $test = Livewire::test(LogbookManager::class);
+    $test->assertOk()
+        ->assertSet('showModal', false)
+        ->assertSet('showSupervisorNoteModal', false);
+
+    expect(collect($test->instance()->headers())->pluck('index')->all())
+        ->toContain('user.name', 'date', 'content', 'status', 'is_verified');
+});
+
+test('1KSWL-FR-DAILY-021: AttendanceManager mounts with current date and computes student attendance records', function (): void {
+    $this->actingAs($this->teacher);
+
+    $test = Livewire::test(AttendanceManager::class);
+    $test->assertOk()
+        ->assertSet('tab', 'attendance')
+        ->assertSet('date', now()->toDateString());
+
+    expect($test->instance()->students)->not->toBeNull()
+        ->and($test->instance()->pendingAbsences)->not->toBeNull();
+});
+
+test('1KSWL-FR-DAILY-022: AbsenceRequestForm validates required reason and description fields', function (): void {
+    $this->actingAs($this->student);
+
+    Livewire::test(AbsenceRequestForm::class)
+        ->set('startDate', today()->toDateString())
+        ->set('reasonType', '')
+        ->set('reasonDescription', 'Short')
+        ->call('submit', app(SubmitAbsenceAction::class))
+        ->assertHasErrors(['reasonType' => 'required', 'reasonDescription' => 'min']);
 });
