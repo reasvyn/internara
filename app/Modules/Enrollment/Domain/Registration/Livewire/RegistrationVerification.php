@@ -7,6 +7,7 @@ namespace App\Modules\Enrollment\Domain\Registration\Livewire;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Actions\VerifyRegistrationAction;
+use App\Modules\Enrollment\Domain\Registration\Data\VerifyRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -99,10 +100,11 @@ class RegistrationVerification extends Component
         ]);
 
         try {
-            $action->execute($this->processId, [
-                'placement_id' => $this->placement_id,
-                'mentor_ids' => $this->mentor_ids,
-            ]);
+            $action->execute(new VerifyRegistrationData(
+                registrationId: $this->processId,
+                placementId: $this->placement_id,
+                mentorIds: $this->mentor_ids,
+            ));
 
             $this->toast()->success(__('registration.verification.success'))->send();
             $this->showProcessModal = false;

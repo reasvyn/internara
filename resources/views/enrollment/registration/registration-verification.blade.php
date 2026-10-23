@@ -20,7 +20,7 @@
                             <th>{{ __('registration.verification.program') }}</th>
                             <th>{{ __('registration.verification.documents') }}</th>
                             <th>{{ __('registration.verification.submitted') }}</th>
-                            <th>{{ __('registration.verification.subtitle') }}</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

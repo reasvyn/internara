@@ -7,23 +7,29 @@ namespace App\Modules\Enrollment\Domain\Registration\Actions;
 use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Registration\Data\VerifyRegistrationData;
+use App\Modules\Enrollment\Domain\Registration\Events\RegistrationVerified;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
 
 final class VerifyRegistrationAction extends BaseCommandAction
 {
-    public function execute(string $registrationId, array $data): Registration
+    public function execute(VerifyRegistrationData $data): Registration
     {
-        return $this->transaction(function () use ($registrationId, $data) {
-            $registration = Registration::with('student', 'internship')->findOrFail(
-                $registrationId,
+        return $this->transaction(function () use ($data) {
+            $registration = Registration::with('student', 'internship', 'documents')->findOrFail(
+                $data->registrationId,
             );
 
             if (! $registration->hasStatus('pending')) {
                 throw new RejectedException(__('registration.not_pending'));
             }
 
-            $placement = Placement::findOrFail($data['placement_id']);
+            if ($registration->documents->isNotEmpty() && $registration->documents->contains(fn ($doc) => ! $doc->status->isVerified())) {
+                throw new RejectedException(__('registration.documents_not_verified'));
+            }
+
+            $placement = Placement::findOrFail($data->placementId);
 
             if ($placement->asPlacementCapacity()->isFull()) {
                 throw new RejectedException(__('placement.quota_full'));
@@ -31,8 +37,8 @@ final class VerifyRegistrationAction extends BaseCommandAction
 
             $registration->update([
                 'placement_id' => $placement->id,
-                'start_date' => $data['start_date'] ?? $placement->internship->start_date,
-                'end_date' => $data['end_date'] ?? $placement->internship->end_date,
+                'start_date' => $data->startDate ?? $placement->internship->start_date,
+                'end_date' => $data->endDate ?? $placement->internship->end_date,
             ]);
 
             $registration->setStatus(
@@ -42,8 +48,8 @@ final class VerifyRegistrationAction extends BaseCommandAction
 
             $placement->increment('filled_quota');
 
-            if (! empty($data['mentor_ids'])) {
-                $mentors = User::whereIn('id', $data['mentor_ids'])->get();
+            if ($data->mentorIds !== []) {
+                $mentors = User::whereIn('id', $data->mentorIds)->get();
                 $attachData = [];
                 foreach ($mentors as $mentor) {
                     $attachData[$mentor->id] = ['role' => $mentor->hasRole('supervisor') ? 'supervisor' : 'teacher'];
@@ -51,7 +57,9 @@ final class VerifyRegistrationAction extends BaseCommandAction
                 $registration->mentors()->attach($attachData);
             }
 
-            $this->log('registration_verified_and_placed', $registration, $data);
+            $this->log('registration_verified_and_placed', $registration, $data->toArray());
+
+            $this->dispatchEvent(new RegistrationVerified($registration));
 
             return $registration;
         });

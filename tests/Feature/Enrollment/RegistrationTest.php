@@ -10,6 +10,7 @@ use App\Modules\Enrollment\Domain\Registration\Actions\RegisterInternshipAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\UploadRegistrationDocumentAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\VerifyRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Data\RegistrationData;
+use App\Modules\Enrollment\Domain\Registration\Data\VerifyRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus;
 use App\Modules\Enrollment\Domain\Registration\Events\StudentRegistered;
 use App\Modules\Enrollment\Domain\Registration\Listeners\ClearDashboardOnRegistration;
@@ -160,7 +161,7 @@ describe('MBB5R: registrations', function (): void {
         $registration = Registration::factory()->create(['status' => 'active']);
         $placement = Placement::factory()->create();
 
-        expect(fn () => app(VerifyRegistrationAction::class)->execute($registration->id, ['placement_id' => $placement->id]))
+        expect(fn () => app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id)))
             ->toThrow(RejectedException::class);
     });
 
@@ -171,7 +172,7 @@ describe('MBB5R: registrations', function (): void {
         $placement = Placement::factory()->create(['quota' => 5, 'filled_quota' => 0]);
         $registration = Registration::factory()->create(['placement_id' => null, 'status' => 'pending']);
 
-        $verified = app(VerifyRegistrationAction::class)->execute($registration->id, ['placement_id' => $placement->id]);
+        $verified = app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id));
 
         expect($verified->placement_id)->toBe($placement->id)
             ->and($verified->status)->toBe('active')
@@ -185,7 +186,7 @@ describe('MBB5R: registrations', function (): void {
         $placement = Placement::factory()->full()->create();
         $registration = Registration::factory()->create(['placement_id' => null, 'status' => 'pending']);
 
-        expect(fn () => app(VerifyRegistrationAction::class)->execute($registration->id, ['placement_id' => $placement->id]))
+        expect(fn () => app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id)))
             ->toThrow(RejectedException::class);
     });
 
@@ -269,7 +270,7 @@ describe('MBB5R: registrations', function (): void {
         $placement = Placement::factory()->create(['quota' => 5, 'filled_quota' => 0]);
         $registration = Registration::factory()->create(['placement_id' => null, 'status' => 'pending']);
 
-        app(VerifyRegistrationAction::class)->execute($registration->id, ['placement_id' => $placement->id]);
+        app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id));
 
         expect(DB::table('activity_log')->where('description', 'registration_verified_and_placed')->exists())->toBeTrue();
     });
