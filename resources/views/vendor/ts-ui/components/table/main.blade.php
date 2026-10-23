@@ -3,6 +3,7 @@
 @endphp
 
 <div x-data="tallstackui_table({!! $entangle !!}, @js($selectable))"
+     @if ($selectable) @clear-selection.window="model = []; checked()" @endif
      @if ($anchored) id="{{ $anchor }}" @endif
      @if ($selectable) data-ids='@json($ids())' @endif
      @if ($persistent === true) x-ref="persist" @endif>
@@ -151,7 +152,11 @@
                             $customization['table.tr'],
                             $customization['row.striped'] => $striped && $loop->index % 2 === 0 && ! $highlighted($value),
                             $highlighted($value),
-                        ]) @if ($livewire) wire:key="{{ $id }}" @endif>
+                        ])
+                        @if ($selectable)
+                            :class="{ 'bg-primary/5 font-medium transition-colors duration-150': Array.isArray(model) && model.map(String).includes('{{ (string) data_get($value, $selectableProperty) }}') }"
+                        @endif
+                        @if ($livewire) wire:key="{{ $id }}" @endif>
                             @if ($expandable)
                                 <td @class([$customization['table.td'] => ! $compact, $customization['table.td-compact'] => $compact])>
                                     @isset($sub_table)

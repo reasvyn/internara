@@ -92,7 +92,7 @@
                 :sort-by="$sortBy"
                 with-pagination
                 selectable
-                wire:model="selectedIds"
+                wire:model.live="selectedIds"
                 class="table-sm max-sm:table-xs"
             >
                 @interact('column_title', $notification)

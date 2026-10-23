@@ -49,6 +49,13 @@ class ProfileEditor extends BaseFormView
     /** @var string[] */
     public array $staffFields = [];
 
+    protected UpdateProfileAction $updateProfile;
+
+    public function boot(UpdateProfileAction $updateProfile): void
+    {
+        $this->updateProfile = $updateProfile;
+    }
+
     public function mount(ReadProfileFormAction $action): void
     {
         $this->user = auth()
@@ -84,14 +91,14 @@ class ProfileEditor extends BaseFormView
         return __('profile.id_number');
     }
 
-    public function updatedAvatar(UpdateProfileAction $updateProfile): void
+    public function updatedAvatar(): void
     {
         $this->authorize('update', $this->user);
 
         $this->validate(['avatar' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
 
-        $this->handleSave(function () use ($updateProfile): void {
-            $updateProfile->execute(new UpdateProfileData(
+        $this->handleSave(function (): void {
+            $this->updateProfile->execute(new UpdateProfileData(
                 userId: (string) $this->user->id,
                 profile: [],
                 avatar: $this->avatar,

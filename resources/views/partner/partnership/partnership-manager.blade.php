@@ -98,7 +98,7 @@
             :sort-by="$sortBy"
             with-pagination
             selectable
-            wire:model="selectedIds"
+            wire:model.live="selectedIds"
             class="table-sm"
         >
             @interact('column_company_name', $p)

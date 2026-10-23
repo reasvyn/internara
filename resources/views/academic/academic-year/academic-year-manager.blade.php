@@ -58,7 +58,10 @@
     </x-ui::components.selection-bar>
 
     {{-- List --}}
-    <div class="bg-base-100 border-base-content/10 overflow-hidden rounded-xl border">
+    <div
+        class="bg-base-100 border-base-content/10 overflow-hidden rounded-xl border"
+        x-data="{ selectedIds: @entangle('selectedIds').live }"
+    >
         @if ($years->count())
             <div class="bg-base-200/50 border-base-content/10 flex items-center gap-3 border-b px-6 py-3">
                 <x-ts-checkbox
@@ -78,7 +81,10 @@
 
         <div class="divide-base-content/10 divide-y">
             @forelse ($years as $year)
-                <div class="flex items-center justify-between px-6 py-4 @if (in_array($year->id, $selectedIds)) bg-primary/5 @endif">
+                <div
+                    class="flex items-center justify-between px-6 py-4 transition-colors duration-150"
+                    :class="{ 'bg-primary/5 font-medium': (selectedIds || []).map(String).includes('{{ (string) $year->id }}') }"
+                >
                     <div class="flex min-w-0 items-center gap-4">
                         <x-ts-checkbox :value="$year->id" wire:model.live="selectedIds" />
                         @if ($year->is_active)

@@ -95,7 +95,7 @@
                 :sort-by="$sortBy"
                 with-pagination
                 selectable
-                wire:model="selectedIds"
+                wire:model.live="selectedIds"
                 class="table-md w-full whitespace-nowrap"
             >
                 @interact('column_title', $assignment)

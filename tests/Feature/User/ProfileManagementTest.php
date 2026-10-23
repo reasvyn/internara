@@ -440,4 +440,18 @@ describe('OCEMS: user profile management', function (): void {
             ->assertSeeHtml('for="avatar-upload"')
             ->assertSee(__('profile.avatar_hint'));
     });
+
+    test('OCEMS-FR-PROF-021: authenticated user can upload avatar image', function (): void {
+        Storage::fake('public');
+        $user = User::factory()->create();
+        $user->assignRole('student');
+        $file = UploadedFile::fake()->image('avatar.jpg', 100, 100);
+
+        Livewire::actingAs($user)
+            ->test(ProfileEditor::class)
+            ->set('avatar', $file);
+
+        $user->refresh();
+        expect($user->getFirstMediaUrl('avatar'))->not->toBeEmpty();
+    });
 });

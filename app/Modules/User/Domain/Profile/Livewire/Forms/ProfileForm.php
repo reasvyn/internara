@@ -9,17 +9,17 @@ use Livewire\Form;
 
 class ProfileForm extends Form
 {
-    public string $name = '';
+    public ?string $name = '';
 
-    public string $email = '';
+    public ?string $email = '';
 
-    public string $username = '';
+    public ?string $username = '';
 
-    public string $phone = '';
+    public ?string $phone = null;
 
-    public string $address = '';
+    public ?string $address = null;
 
-    public string $bio = '';
+    public ?string $bio = null;
 
     public ?string $employment_status = null;
 

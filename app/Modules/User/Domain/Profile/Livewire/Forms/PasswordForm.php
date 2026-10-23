@@ -9,11 +9,11 @@ use Livewire\Form;
 
 class PasswordForm extends Form
 {
-    public string $current_password = '';
+    public ?string $current_password = null;
 
-    public string $password = '';
+    public ?string $password = null;
 
-    public string $password_confirmation = '';
+    public ?string $password_confirmation = null;
 
     protected function rules(): array
     {
@@ -25,8 +25,8 @@ class PasswordForm extends Form
 
     public function resetForm(): void
     {
-        $this->current_password = '';
-        $this->password = '';
-        $this->password_confirmation = '';
+        $this->current_password = null;
+        $this->password = null;
+        $this->password_confirmation = null;
     }
 }

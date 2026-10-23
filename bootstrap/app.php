@@ -55,8 +55,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->preventRequestForgery(except: [
             'setup',
             'setup/*',
+            'livewire',
             'livewire/*',
+            'livewire-*',
             'livewire-*/*',
+            '_livewire',
             '_livewire/*',
         ]);
 
