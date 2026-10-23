@@ -49,14 +49,14 @@
                     @endinteract
 
                     @interact('column_action', $journal)
-                        <div class="\&quot;flex" items-center justify-center gap-2\">
+                        <div class="flex items-center justify-center gap-2">
                             @if (! $journal->is_verified)
-                                <x-ts-button
+                                <x-ts-button.circle
                                     aria-label="{{ __('common.actions.edit') }}"
                                     icon="pencil-square"
                                     class="text-primary transition-transform hover:scale-110"
                                     color="white"
-                                    sm
+                                    xs
                                     wire:click="edit('{{ $journal->id }}')"
                                 />
                             @else

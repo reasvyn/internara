@@ -62,23 +62,23 @@
                 @endinteract
 
                 @interact('column_action', $user)
-                    <div class="\&quot;flex" items-center justify-center gap-2\">
+                    <div class="flex items-center justify-center gap-2">
                         @if ($user->locked_at)
-                            <x-ts-button
+                            <x-ts-button.circle
                                 aria-label="{{ __('common.actions.unlock') }}"
                                 icon="lock-open"
                                 class="text-success"
                                 color="white"
-                                sm
+                                xs
                                 wire:click="askUnlock('{{ $user->id }}')"
                             />
                         @else
-                            <x-ts-button
+                            <x-ts-button.circle
                                 aria-label="{{ __('common.actions.lock') }}"
                                 icon="lock-closed"
                                 class="text-warning"
                                 color="white"
-                                sm
+                                xs
                                 wire:click="askLock('{{ $user->id }}')"
                             />
                         @endif

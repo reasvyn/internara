@@ -28,13 +28,13 @@
         @endinteract
 
         @interact('column_action', $l)
-            <div class="\&quot;flex" items-center justify-center gap-1\">
+            <div class="flex items-center justify-center gap-1">
                 @if ($l->status->value === 'draft')
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="trash"
                         class="text-error"
                         color="white"
-                        sm
+                        xs
                         wire:click="askDelete('{{ $l->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />

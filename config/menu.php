@@ -50,12 +50,12 @@ return [
                     'label' => 'common.sidebar.groups',
                 ],
                 [
-                    'route' => 'partners.companies',
+                    'route' => 'partner.companies',
                     'icon' => 'o-building-office',
                     'label' => 'company.title',
                 ],
                 [
-                    'route' => 'partners.partnerships',
+                    'route' => 'partner.partnerships',
                     'icon' => 'o-hand-raised',
                     'label' => 'common.sidebar.partnerships',
                 ],

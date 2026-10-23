@@ -214,36 +214,33 @@
 
                 @interact('column_action', $notification)
                     <div
-                        class="\&quot;flex"
-                        items-center
-                        justify-center
-                        gap-1\"
-                        wire:key=\"notification-actions-{{ $notification->id }}\"
+                        class="flex items-center justify-center gap-1"
+                        wire:key="notification-actions-{{ $notification->id }}"
                     >
                         @if ($notification->link)
-                            <x-ts-button
+                            <x-ts-button.circle
                                 icon="arrow-top-right-on-square"
                                 color="white"
-                                sm
+                                xs
                                 :href="$notification->link"
                                 target="_blank"
                                 wire:click="markAsRead('{{ $notification->id }}')"
                                 :aria-label="__('notifications.view_details')"
                             />
                         @endif
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="eye"
                             color="white"
-                            sm
+                            xs
                             wire:click="viewNotification('{{ $notification->id }}')"
                             :aria-label="__('notifications.view_details')"
                         />
                         @if (! $notification->is_read)
-                            <x-ts-button
+                            <x-ts-button.circle
                                 icon="check"
                                 class="text-success"
                                 color="white"
-                                sm
+                                xs
                                 wire:click="markAsRead('{{ $notification->id }}')"
                                 :aria-label="__('notifications.ui.mark_read')"
                             />

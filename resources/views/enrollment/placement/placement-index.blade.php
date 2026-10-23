@@ -76,33 +76,46 @@
             class="table-sm"
         >
             @interact('column_quota', $placement)
-                <span class="font-medium">{{ $placement->quota }}</span>
+                @php
+                    $isFull = $placement->quota > 0 && $placement->filled_quota >= $placement->quota;
+                @endphp
+                <div class="inline-flex items-center font-mono text-xs font-semibold px-2 py-0.5 rounded-md {{ $isFull ? 'bg-error/10 text-error' : 'bg-base-200 text-base-content' }}">
+                    <span>{{ $placement->filled_quota }}</span>
+                    <span class="text-base-content/40 mx-0.5">/</span>
+                    <span>{{ $placement->quota }}</span>
+                </div>
             @endinteract
 
             @interact('column_filled_quota', $placement)
-                <div class="flex items-center gap-2">
-                    <x-ts-progress
-                        percent="{{ ($placement->filled_quota / $placement->quota) * 100 }}"
-                        class="progress-primary h-2 w-16"
-                    />
-                    <span class="font-mono text-xs">{{ $placement->filled_quota }}</span>
+                @php
+                    $quota = max(1, (int) $placement->quota);
+                    $filled = (int) $placement->filled_quota;
+                    $percent = min(100, (int) round(($filled / $quota) * 100));
+                    $colorClass = match (true) {
+                        $percent >= 100 => 'progress-error',
+                        $percent >= 80 => 'progress-warning',
+                        default => 'progress-primary',
+                    };
+                @endphp
+                <div class="flex min-w-[130px] items-center gap-2.5">
+                    <progress class="progress {{ $colorClass }} h-2 flex-1" value="{{ $percent }}" max="100"></progress>
+                    <span class="text-base-content/70 w-10 text-right font-mono text-xs font-semibold tabular-nums">{{ $percent }}%</span>
                 </div>
             @endinteract
 
             @interact('column_action', $placement)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         icon="pencil"
-                        color="white"
-                        sm
+                        color="slate"
+                        xs
                         wire:click="edit('{{ $placement->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="trash"
-                        class="text-error"
-                        color="white"
-                        sm
+                        color="red"
+                        xs
                         wire:click="askDelete('{{ $placement->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />

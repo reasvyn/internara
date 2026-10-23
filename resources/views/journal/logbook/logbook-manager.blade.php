@@ -138,47 +138,47 @@
                 @endinteract
 
                 @interact('column_action', $entry)
-                    <div class="\&quot;flex" items-center justify-center gap-1\">
+                    <div class="flex items-center justify-center gap-1">
                         @if (auth()->user()?->hasRole('supervisor'))
-                            <x-ts-button
+                            <x-ts-button.circle
                                 icon="chat-bubble-bottom-center-text"
                                 class="text-info"
                                 color="white"
-                                sm
+                                xs
                                 wire:click="editSupervisorNote('{{ $entry->id }}')"
                                 tooltip="{{ __('logbook.edit_supervisor_note') }}"
                             />
                         @endif
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="check"
                             class="text-success"
                             color="white"
-                            sm
+                            xs
                             wire:click="verify('{{ $entry->id }}')"
                             tooltip="{{ __('logbook.toggle_verify') }}"
                         />
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="pencil"
                             class="text-primary"
                             color="white"
-                            sm
+                            xs
                             wire:click="edit('{{ $entry->id }}')"
                             tooltip="{{ __('common.actions.edit') }}"
                         />
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="document-arrow-down"
                             class="text-secondary"
                             color="white"
-                            sm
+                            xs
                             :href="route('sysadmin.logbook.report', $entry->registration_id)"
                             external
                             tooltip="{{ __('logbook.download_report') }}"
                         />
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="trash"
                             class="text-error"
                             color="white"
-                            sm
+                            xs
                             wire:click="askDelete('{{ $entry->id }}')"
                             tooltip="{{ __('common.actions.delete') }}"
                         />

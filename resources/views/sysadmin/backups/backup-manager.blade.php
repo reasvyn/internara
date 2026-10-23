@@ -99,14 +99,14 @@
             @endinteract
 
             @interact('column_action', $backup)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @if ($backup->asBackupState()->isDeletable())
-                        <x-ts-button
+                        <x-ts-button.circle
                             aria-label="{{ __('common.actions.delete') }}"
                             icon="trash"
                             class="text-error"
                             color="white"
-                            sm
+                            xs
                             wire:click="confirmDelete('{{ $backup->id }}')"
                             wire:loading.attr="disabled"
                         />

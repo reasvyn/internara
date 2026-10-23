@@ -61,23 +61,23 @@
             @endinteract
 
             @interact('column_action', $i)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @can('update', $i)
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="pencil"
                             class="text-primary"
                             color="white"
-                            sm
+                            xs
                             wire:click="edit('{{ $i->id }}')"
                             :aria-label="__('common.actions.edit')"
                         />
                     @endcan
                     @if (! $i->status->isTerminal())
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="check-circle"
                             class="text-success"
                             color="white"
-                            sm
+                            xs
                             wire:click="resolve('{{ $i->id }}')"
                             :aria-label="__('incident.resolve')"
                         />

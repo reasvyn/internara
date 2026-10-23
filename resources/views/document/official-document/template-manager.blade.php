@@ -34,7 +34,7 @@
 
             @interact('column_action', $template)
                 <div class="flex items-center justify-center">
-                    <x-ts-button
+                    <x-ts-button.circle
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
                         wire:click="editTemplate('{{ $template->id }}')"

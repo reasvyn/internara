@@ -61,27 +61,27 @@
             @endinteract
 
             @interact('column_action', $user)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         icon="pencil"
                         color="white"
-                        sm
+                        xs
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="key"
                         class="text-primary"
                         color="white"
-                        sm
+                        xs
                         wire:click="showSlip('{{ $user->id }}')"
                         :aria-label="__('user.manager.account_slip')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="trash"
                         class="text-error"
                         color="white"
-                        sm
+                        xs
                         wire:click="askDelete('{{ $user->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />

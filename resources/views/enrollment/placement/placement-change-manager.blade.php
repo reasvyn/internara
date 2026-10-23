@@ -15,41 +15,56 @@
             class="table-sm"
         >
             @interact('column_status', $r)
+                @php
+                    $statusConfig = match ($r->status->value) {
+                        'pending' => ['color' => 'amber', 'icon' => 'clock'],
+                        'approved' => ['color' => 'emerald', 'icon' => 'check-circle'],
+                        'rejected' => ['color' => 'rose', 'icon' => 'x-circle'],
+                        default => ['color' => 'slate', 'icon' => 'question-mark-circle'],
+                    };
+                @endphp
                 <x-ts-badge
                     :text="$r->status->label()"
-                    :class="match($r->status->value) {
-                    'pending' => 'badge-warning', 'approved' => 'badge-success', 'rejected' => 'badge-error', default => 'badge-ghost',
-                }"
+                    :color="$statusConfig['color']"
+                    :icon="$statusConfig['icon']"
+                    light
+                    round
+                    xs
                 />
             @endinteract
 
             @interact('column_created_at', $r)
-                <span class="text-sm">{{ $r->created_at?->format('d M Y H:i') ?? '—' }}</span>
+                <div class="text-xs">
+                    <span class="text-base-content font-medium">{{ $r->created_at?->translatedFormat('d M Y') ?? '—' }}</span>
+                    <span class="text-base-content/50 block text-[11px]">{{ $r->created_at?->format('H:i') }}</span>
+                </div>
             @endinteract
 
             @interact('column_reason', $r)
-                <span class="text-sm">{{ $r->reason }}</span>
+                <div class="text-base-content/80 line-clamp-2 max-w-xs text-xs" title="{{ $r->reason }}">
+                    {{ $r->reason }}
+                </div>
             @endinteract
 
             @interact('column_action', $r)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @if ($r->status->value === 'pending')
-                        <x-ts-button
-                            aria-label="{{ __('common.actions.approve') }}"
+                        <x-ts-button.circle
+                            :aria-label="__('common.actions.approve')"
                             icon="check"
-                            class="text-success"
-                            color="white"
-                            sm
+                            color="green"
+                            xs
                             wire:click="approve('{{ $r->id }}')"
                         />
-                        <x-ts-button
-                            aria-label="{{ __('common.actions.reject') }}"
+                        <x-ts-button.circle
+                            :aria-label="__('common.actions.reject')"
                             icon="x-mark"
-                            class="text-error"
-                            color="white"
-                            sm
+                            color="red"
+                            xs
                             wire:click="rejectConfirm('{{ $r->id }}')"
                         />
+                    @else
+                        <span class="text-base-content/30 text-xs">—</span>
                     @endif
                 </div>
             @endinteract

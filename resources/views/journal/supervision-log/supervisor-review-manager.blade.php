@@ -17,7 +17,7 @@
         @endinteract
 
         @interact('column_action', $l)
-            <div class="\&quot;flex" items-center justify-center gap-1\">
+            <div class="flex items-center justify-center gap-1">
                 @if ($l->status->value === 'submitted')
                     <x-ts-button
                         :text="__('journals.review')"
@@ -25,7 +25,7 @@
                         class="text-success"
                         color="slate"
                         outline
-                        sm
+                        xs
                         wire:click="askReview('{{ $l->id }}')"
                     />
                 @endif

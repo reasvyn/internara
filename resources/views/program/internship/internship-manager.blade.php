@@ -142,20 +142,20 @@
             @endinteract
 
             @interact('column_action', $internship)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
                         color="white"
-                        sm
+                        xs
                         wire:click="edit('{{ $internship->id }}')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         aria-label="{{ __('common.actions.delete') }}"
                         icon="trash"
                         class="text-error"
                         color="white"
-                        sm
+                        xs
                         wire:click="askDelete('{{ $internship->id }}')"
                     />
                 </div>

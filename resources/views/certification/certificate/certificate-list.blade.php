@@ -37,13 +37,13 @@
             @endinteract
 
             @interact('column_action', $c)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @if ($c->status->value === 'issued')
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="x-circle"
                             class="text-error"
                             color="white"
-                            sm
+                            xs
                             wire:click="askRevoke('{{ $c->id }}')"
                             :aria-label="__('certificate.revoke')"
                         />

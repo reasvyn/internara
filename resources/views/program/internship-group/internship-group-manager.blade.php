@@ -22,26 +22,25 @@
             @endinteract
 
             @interact('column_action', $group)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         icon="users"
-                        color="white"
-                        sm
+                        color="primary"
+                        xs
                         wire:click="manageMembers('{{ $group->id }}')"
                         :aria-label="__('internship.manage_members')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="pencil"
-                        color="white"
-                        sm
+                        color="slate"
+                        xs
                         wire:click="edit('{{ $group->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="trash"
-                        class="text-error"
-                        color="white"
-                        sm
+                        color="red"
+                        xs
                         wire:click="askDelete('{{ $group->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />
@@ -93,74 +92,203 @@
             </form>
         </x-ts-modal>
 
-        {{-- Add Members --}}
-        <x-ts-modal wire="showMemberModal" :title="__('internship.manage_members')" separator blur>
-            <div class="space-y-4">
-                <div class="space-y-3">
-                    @foreach ($memberFormData as $index => $memberRow)
-                        <div class="bg-base-200/30 border-base-content/10 relative rounded-xl border p-5">
-                            @if (count($memberFormData) > 1)
-                                <button
-                                    type="button"
-                                    wire:click="removeMemberRow({{ $index }})"
-                                    class="text-error btn btn-ghost btn-sm btn-square absolute top-3 right-3"
-                                    :aria-label="__('internship.remove_member_row')"
-                                >
-                                    <x-ts-icon name="x-mark" class="size-4" />
-                                </button>
-                            @endif
-                            <p class="text-base-content/50 mb-4 text-xs font-semibold tracking-wider uppercase">
-                                {{ __('internship.member') }} #{{ $index + 1 }}
-                            </p>
-                            <x-ts-select.native
-                                :label="__('internship.member_role')"
-                                wire:model="memberFormData.{{ $index }}.role"
-                                :options="ts_options($this->roleOptions)"
-                                icon="user"
-                            />
-                            <x-ts-input
-                                :label="__('internship.registration_id')"
-                                wire:model="memberFormData.{{ $index }}.registration_id"
-                                :placeholder="__('internship.registration_id_placeholder')"
-                                icon="document-text"
-                                class="mt-4"
-                            />
-                            <x-ts-input
-                                :label="__('internship.mentor_id')"
-                                wire:model="memberFormData.{{ $index }}.mentor_id"
-                                :placeholder="__('internship.mentor_id_placeholder')"
-                                icon="identification"
-                                class="mt-4"
-                            />
+        {{-- Manage Members Modal --}}
+        <x-ts-modal
+            wire="showMemberModal"
+            :title="__('internship.manage_members').($this->currentGroup ? ' — '.$this->currentGroup->name : '')"
+            separator
+            blur
+            size="2xl"
+        >
+            <div class="space-y-6">
+                @if ($this->currentGroup)
+                    {{-- Section 1: Current Members --}}
+                    <div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-base-content/70 text-xs font-semibold tracking-wider uppercase">
+                                {{ __('internship.current_members') }}
+                                <span class="badge badge-sm badge-neutral ml-1">{{ $this->currentGroup->members->count() }}</span>
+                            </h4>
                         </div>
-                    @endforeach
 
-                    <x-ts-button
-                        :text="__('internship.add_member_row')"
-                        icon="plus"
-                        wire:click="addMemberRow"
-                        class="w-full border border-dashed"
-                        color="slate"
-                        outline
-                        sm
-                    />
-                </div>
+                        @if ($this->currentGroup->members->isEmpty())
+                            <div class="border-base-content/20 text-base-content/60 rounded-xl border border-dashed p-6 text-center text-xs">
+                                {{ __('internship.no_members') }}
+                            </div>
+                        @else
+                            <div class="border-base-content/10 bg-base-200/20 overflow-x-auto rounded-xl border">
+                                <table class="table-sm table w-full">
+                                    <thead>
+                                        <tr class="border-base-content/10 text-base-content/60 border-b text-xs">
+                                            <th>{{ __('internship.member') }}</th>
+                                            <th>{{ __('internship.member_role') }}</th>
+                                            <th>{{ __('internship.joined_at') }}</th>
+                                            @can('update', $this->currentGroup)
+                                                <th class="text-center">{{ __('common.actions.title') }}</th>
+                                            @endcan
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-base-content/5 divide-y">
+                                        @foreach ($this->currentGroup->members as $member)
+                                            <tr>
+                                                <td>
+                                                    <div class="text-xs font-medium">
+                                                        @if ($member->registration?->student)
+                                                            {{ $member->registration->student->name }}
+                                                            <span class="text-base-content/50 block text-[11px] font-normal">
+                                                                {{ $member->registration->student->email }}
+                                                            </span>
+                                                        @elseif ($member->user)
+                                                            {{ $member->user->name }}
+                                                            <span class="text-base-content/50 block text-[11px] font-normal">
+                                                                {{ $member->user->email }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-base-content/40 italic">{{ __('internship.unassigned_member') }}</span>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    @php
+                                                        $roleEnum = \App\Modules\Program\Domain\InternshipGroup\Enums\InternshipGroupRole::tryFrom($member->role ?? '');
+                                                        $badgeColor = match ($member->role) {
+                                                            'student' => 'primary',
+                                                            'school_teacher' => 'purple',
+                                                            'industry_supervisor' => 'teal',
+                                                            default => 'gray',
+                                                        };
+                                                    @endphp
+                                                    <x-ts-badge
+                                                        :text="$roleEnum?->label() ?? $member->role"
+                                                        :color="$badgeColor"
+                                                        light
+                                                        round
+                                                        xs
+                                                    />
+                                                </td>
+                                                <td class="text-base-content/60 text-xs whitespace-nowrap">
+                                                    {{ $member->joined_at?->format('d M Y') ?? '—' }}
+                                                </td>
+                                                @can('update', $this->currentGroup)
+                                                    <td class="text-center">
+                                                        <x-ts-button.circle
+                                                            icon="trash"
+                                                            color="red"
+                                                            xs
+                                                            wire:click="removeMember('{{ $member->id }}')"
+                                                            wire:confirm="{{ __('internship.confirm_remove_member') }}"
+                                                            :aria-label="__('common.actions.delete')"
+                                                        />
+                                                    </td>
+                                                @endcan
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Section 2: Add Members Form --}}
+                    @can('update', $this->currentGroup)
+                        <div class="border-base-content/10 border-t pt-4">
+                            <h4 class="text-base-content/70 mb-3 text-xs font-semibold tracking-wider uppercase">
+                                {{ __('internship.add_members') }}
+                            </h4>
+
+                            <div class="space-y-3">
+                                @foreach ($memberFormData as $index => $memberRow)
+                                    <div class="bg-base-200/30 border-base-content/10 relative rounded-xl border p-4">
+                                        @if (count($memberFormData) > 1)
+                                            <button
+                                                type="button"
+                                                wire:click="removeMemberRow({{ $index }})"
+                                                class="text-error btn btn-ghost btn-xs btn-square absolute top-3 right-3"
+                                                :aria-label="__('internship.remove_member_row')"
+                                            >
+                                                <x-ts-icon name="x-mark" class="size-4" />
+                                            </button>
+                                        @endif
+                                        <p class="text-base-content/50 mb-3 text-xs font-semibold tracking-wider uppercase">
+                                            {{ __('internship.member') }} #{{ $index + 1 }}
+                                        </p>
+
+                                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                            <x-ts-select.native
+                                                :label="__('internship.member_role')"
+                                                wire:model.live="memberFormData.{{ $index }}.role"
+                                                :options="ts_options($this->roleOptions)"
+                                                icon="user"
+                                            />
+
+                                            @if (($memberRow['role'] ?? 'student') === 'student')
+                                                @if (! empty($this->availableRegistrations))
+                                                    <x-ts-select.native
+                                                        :label="__('internship.select_student')"
+                                                        wire:model="memberFormData.{{ $index }}.registration_id"
+                                                        :options="ts_options($this->availableRegistrations, __('internship.select_student'))"
+                                                        icon="academic-cap"
+                                                    />
+                                                @else
+                                                    <x-ts-input
+                                                        :label="__('internship.registration_id')"
+                                                        wire:model="memberFormData.{{ $index }}.registration_id"
+                                                        :placeholder="__('internship.registration_id_placeholder')"
+                                                        icon="document-text"
+                                                    />
+                                                @endif
+                                            @else
+                                                @if (! empty($this->availableMentors))
+                                                    <x-ts-select.native
+                                                        :label="__('internship.select_mentor')"
+                                                        wire:model="memberFormData.{{ $index }}.mentor_id"
+                                                        :options="ts_options($this->availableMentors, __('internship.select_mentor'))"
+                                                        icon="identification"
+                                                    />
+                                                @else
+                                                    <x-ts-input
+                                                        :label="__('internship.mentor_id')"
+                                                        wire:model="memberFormData.{{ $index }}.mentor_id"
+                                                        :placeholder="__('internship.mentor_id_placeholder')"
+                                                        icon="identification"
+                                                    />
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                                <x-ts-button
+                                    :text="__('internship.add_member_row')"
+                                    icon="plus"
+                                    wire:click="addMemberRow"
+                                    class="w-full border border-dashed"
+                                    color="slate"
+                                    outline
+                                    xs
+                                />
+                            </div>
+                        </div>
+                    @endcan
+                @endif
 
                 <x-slot:footer>
                     <x-ts-button
-                        :text="__('common.actions.cancel')"
+                        :text="__('common.actions.close')"
                         wire:click="$set('showMemberModal', false)"
                         color="slate"
                         outline
                         sm
                     />
-                    <x-ts-button
-                        :text="__('internship.add_members')"
-                        wire:click="addMembers"
-                        color="primary"
-                        sm
-                        loading="addMembers"
-                    />
+                    @if ($this->currentGroup && auth()->user()?->can('update', $this->currentGroup))
+                        <x-ts-button
+                            :text="__('internship.add_members')"
+                            wire:click="addMembers"
+                            color="primary"
+                            sm
+                            loading="addMembers"
+                        />
+                    @endif
                 </x-slot:footer>
             </div>
         </x-ts-modal>

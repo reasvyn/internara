@@ -126,29 +126,29 @@
             @endinteract
 
             @interact('column_action', $p)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @if ($p->status->value === 'active')
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="x-circle"
                             class="text-warning"
                             color="white"
-                            sm
+                            xs
                             wire:click="askTerminate('{{ $p->id }}')"
                             :aria-label="__('partnership.terminate')"
                         />
                     @endif
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="pencil"
                         color="white"
-                        sm
+                        xs
                         wire:click="edit('{{ $p->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="trash"
                         class="text-error"
                         color="white"
-                        sm
+                        xs
                         wire:click="askDelete('{{ $p->id }}')"
                         :aria-label="__('common.actions.delete')"
                     />

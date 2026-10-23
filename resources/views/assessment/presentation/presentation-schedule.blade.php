@@ -43,13 +43,13 @@
             @endinteract
 
             @interact('column_action', $p)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @if ($p->status->value === 'scheduled')
-                        <x-ts-button
+                        <x-ts-button.circle
                             aria-label="{{ __('common.actions.edit') }}"
                             icon="pencil"
                             color="white"
-                            sm
+                            xs
                             wire:click="setupScoring('{{ $p->id }}')"
                         />
                     @endif

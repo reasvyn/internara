@@ -47,24 +47,24 @@
 
         @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
-                <div class="\&quot;flex" items-center justify-center\">
+                <div class="flex items-center justify-center">
                     <span class="text-base-content/40 text-xs italic">{{ __('user.admin.protected') }}</span>
                 </div>
             @else
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         icon="pencil"
                         color="white"
-                        sm
+                        xs
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
                     @if ($user->id !== auth()->id())
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="trash"
                             class="text-error"
                             color="white"
-                            sm
+                            xs
                             wire:click="askDelete('{{ $user->id }}')"
                             :aria-label="__('common.actions.delete')"
                         />

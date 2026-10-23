@@ -28,13 +28,13 @@
             @endinteract
 
             @interact('column_action', $v)
-                <div class="\&quot;flex" items-center justify-center gap-1\">
+                <div class="flex items-center justify-center gap-1">
                     @can('verify', App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
                             <x-ts-button.circle
                                 icon="check"
                                 color="green"
-                                sm
+                                xs
                                 wire:click="verify('{{ $v->id }}')"
                                 aria-label="{{ __('journals.verify') }}"
                             />

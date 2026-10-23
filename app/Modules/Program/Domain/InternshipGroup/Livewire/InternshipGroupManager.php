@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Program\Domain\InternshipGroup\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Actions\AddMembersToGroupAction;
 use App\Modules\Program\Domain\InternshipGroup\Actions\CreateInternshipGroupAction;
@@ -16,6 +17,7 @@ use App\Modules\Program\Domain\InternshipGroup\Livewire\Forms\InternshipGroupFor
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroup;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\UI\Livewire\BaseRecordManager;
+use App\Modules\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -251,6 +253,77 @@ class InternshipGroupManager extends BaseRecordManager
         return collect(InternshipGroupRole::cases())
             ->map(fn ($r) => ['id' => $r->value, 'name' => $r->label()])
             ->toArray();
+    }
+
+    #[Computed]
+    public function currentGroup(): ?InternshipGroup
+    {
+        if (! $this->memberGroupId) {
+            return null;
+        }
+
+        return InternshipGroup::with(['members.registration.student', 'members.user', 'internship'])->find($this->memberGroupId);
+    }
+
+    #[Computed]
+    public function availableRegistrations(): array
+    {
+        if (! $this->memberGroupId) {
+            return [];
+        }
+
+        $group = InternshipGroup::find($this->memberGroupId);
+        if (! $group) {
+            return [];
+        }
+
+        $existingRegistrationIds = InternshipGroupMember::where('internship_group_id', $group->id)
+            ->whereNotNull('registration_id')
+            ->pluck('registration_id')
+            ->toArray();
+
+        $query = Registration::query()
+            ->whereNotIn('id', $existingRegistrationIds)
+            ->with('student');
+
+        if ($group->internship_id) {
+            $hasInInternship = (clone $query)->where('internship_id', $group->internship_id)->exists();
+            if ($hasInInternship) {
+                $query->where('internship_id', $group->internship_id);
+            }
+        }
+
+        return $query->orderBy('created_at', 'desc')
+            ->limit(100)
+            ->get()
+            ->map(function ($reg) {
+                $studentName = $reg->student?->name ?? 'Student #'.substr($reg->id, 0, 8);
+                $email = $reg->student?->email ? " ({$reg->student->email})" : '';
+
+                return [
+                    'id' => $reg->id,
+                    'name' => "{$studentName}{$email}",
+                ];
+            })
+            ->toArray();
+    }
+
+    #[Computed]
+    public function availableMentors(): array
+    {
+        $users = User::whereHas('roles', fn (Builder $q) => $q->whereIn('name', ['teacher', 'supervisor', 'admin']))
+            ->orderBy('name')
+            ->limit(100)
+            ->get(['id', 'name', 'email']);
+
+        if ($users->isEmpty()) {
+            $users = User::orderBy('name')->limit(50)->get(['id', 'name', 'email']);
+        }
+
+        return $users->map(fn ($u) => [
+            'id' => $u->id,
+            'name' => "{$u->name} ({$u->email})",
+        ])->toArray();
     }
 
     public function render(): View

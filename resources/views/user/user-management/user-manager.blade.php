@@ -196,51 +196,51 @@
 
         @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
-                <div class="\&quot;flex" items-center justify-center\">
+                <div class="flex items-center justify-center">
                     <span class="text-base-content/40 text-xs italic">{{ __('user.manager.protected') }}</span>
                 </div>
             @else
-                <div class="\&quot;flex" items-center justify-center gap-1\">
-                    <x-ts-button
+                <div class="flex items-center justify-center gap-1">
+                    <x-ts-button.circle
                         icon="pencil"
                         color="white"
-                        sm
+                        xs
                         wire:click="editUser('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
                     />
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="shield-check"
                         class="text-warning"
                         color="white"
-                        sm
+                        xs
                         wire:click="askChangeStatus('{{ $user->id }}')"
                         :aria-label="__('user.manager.change_status')"
                     />
                     @if (in_array($user->status?->value, ['verified', 'suspended']))
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="arrow-path"
                             color="white"
-                            sm
+                            xs
                             wire:click="toggleStatus('{{ $user->id }}')"
                             :aria-label="__('user.manager.toggle_status')"
                             :tooltip="__('user.manager.toggle_status')"
                             spinner="toggleStatus"
                         />
                     @endif
-                    <x-ts-button
+                    <x-ts-button.circle
                         icon="key"
                         class="text-primary"
                         color="white"
-                        sm
+                        xs
                         wire:click="showSlip('{{ $user->id }}')"
                         :aria-label="__('user.manager.account_slip')"
                     />
                     @if ($user->id !== auth()->id())
-                        <x-ts-button
+                        <x-ts-button.circle
                             icon="trash"
                             class="text-error"
                             color="white"
-                            sm
+                            xs
                             wire:click="askDeleteUser('{{ $user->id }}')"
                             :aria-label="__('common.actions.delete')"
                         />

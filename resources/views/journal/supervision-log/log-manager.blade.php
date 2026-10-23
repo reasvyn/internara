@@ -50,7 +50,7 @@
                             class="text-success"
                             color="slate"
                             outline
-                            sm
+                            xs
                             wire:click="verify('{{ $log->id }}')"
                         />
                     @endif
