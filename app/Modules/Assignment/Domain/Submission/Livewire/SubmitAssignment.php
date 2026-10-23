@@ -29,6 +29,13 @@ class SubmitAssignment extends BaseFormView
 
     public ?Assignment $selectedAssignment = null;
 
+    protected ?SubmitAssignmentAction $submitAction = null;
+
+    public function boot(SubmitAssignmentAction $action): void
+    {
+        $this->submitAction = $action;
+    }
+
     public function viewDetail(Assignment $assignment): void
     {
         $this->selectedAssignment = $assignment->load(['document']);
@@ -42,9 +49,19 @@ class SubmitAssignment extends BaseFormView
         $this->selectedAssignment = null;
     }
 
-    public function submit(SubmitAssignmentAction $action): void
-    {
+    public function submit(
+        mixed $actionOrId = null,
+        ?SubmitAssignmentAction $action = null,
+    ): void {
         $this->authorize('create', Submission::class);
+
+        if (is_string($actionOrId) && $actionOrId !== '') {
+            $this->assignmentId = $actionOrId;
+        }
+
+        $action = ($actionOrId instanceof SubmitAssignmentAction)
+            ? $actionOrId
+            : ($action ?? ($this->submitAction ?? app(SubmitAssignmentAction::class)));
 
         $this->validate([
             'content' => 'required|string|min:20',
@@ -57,7 +74,10 @@ class SubmitAssignment extends BaseFormView
             $action->execute(
                 student: Auth::user(),
                 assignment: $assignment,
-                data: new SubmitAssignmentData(content: $this->content),
+                data: new SubmitAssignmentData(
+                    content: $this->content,
+                    file: $this->file,
+                ),
             );
 
             $this->reset(['content', 'file', 'assignmentId']);
