@@ -48,6 +48,10 @@ class SystemSetting extends BaseFormView
 
     public ?string $confirmTarget = null;
 
+    public $brand_logo = null;
+
+    public $site_favicon = null;
+
     private ?ReadAcademicYearAction $readYearAction = null;
 
     private ?UploadBrandAssetAction $uploadBrandAction = null;
@@ -126,14 +130,40 @@ class SystemSetting extends BaseFormView
         $this->brandingForm->applyPreset($key);
     }
 
-    public function updatedBrandingFormBrandLogo(): void
+    public function brandLogoPreviewUrl(): ?string
+    {
+        if ($this->brand_logo) {
+            try {
+                return $this->brand_logo->temporaryUrl();
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return $this->brandingForm->current_logo_url;
+    }
+
+    public function faviconPreviewUrl(): ?string
+    {
+        if ($this->site_favicon) {
+            try {
+                return $this->site_favicon->temporaryUrl();
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return $this->brandingForm->current_favicon_url;
+    }
+
+    public function updatedBrandLogo(): void
     {
         $this->authorize('update', Setting::class);
-        $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
+        $this->validate(['brand_logo' => 'nullable|image|max:1024']);
 
-        if ($this->brandingForm->brand_logo instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
+        if ($this->brand_logo instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
             $this->handleSave(function (): void {
-                $url = $this->uploadBrandAction->execute($this->brandingForm->brand_logo);
+                $url = $this->uploadBrandAction->execute($this->brand_logo);
                 $this->setSettingAction->execute(new SettingData(
                     key: 'brand_logo',
                     value: $url,
@@ -141,21 +171,22 @@ class SystemSetting extends BaseFormView
                 ));
                 $this->brandingForm->current_logo_url = $url;
                 $this->brandingForm->brand_logo = null;
+                $this->brand_logo = null;
                 $this->toast()->success(__('setting.messages.logo_saved'))->send();
             });
         }
     }
 
-    public function updatedBrandingFormSiteFavicon(): void
+    public function updatedSiteFavicon(): void
     {
         $this->authorize('update', Setting::class);
-        $this->brandingForm->validate([
+        $this->validate([
             'site_favicon' => ['nullable', 'file', 'mimes:ico,png,jpg,jpeg,svg,webp', 'max:512'],
         ]);
 
-        if ($this->brandingForm->site_favicon instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
+        if ($this->site_favicon instanceof UploadedFile && $this->uploadBrandAction && $this->setSettingAction) {
             $this->handleSave(function (): void {
-                $url = $this->uploadBrandAction->execute($this->brandingForm->site_favicon, 'favicon');
+                $url = $this->uploadBrandAction->execute($this->site_favicon, 'favicon');
                 $this->setSettingAction->execute(new SettingData(
                     key: 'site_favicon',
                     value: $url,
@@ -163,9 +194,20 @@ class SystemSetting extends BaseFormView
                 ));
                 $this->brandingForm->current_favicon_url = $url;
                 $this->brandingForm->site_favicon = null;
+                $this->site_favicon = null;
                 $this->toast()->success(__('setting.messages.favicon_saved'))->send();
             });
         }
+    }
+
+    public function updatedBrandingFormBrandLogo(): void
+    {
+        $this->updatedBrandLogo();
+    }
+
+    public function updatedBrandingFormSiteFavicon(): void
+    {
+        $this->updatedSiteFavicon();
     }
 
     public function confirmRemoveBrandLogo(RemoveBrandAssetAction $action): void
@@ -232,8 +274,8 @@ class SystemSetting extends BaseFormView
                 secondaryColor: $this->brandingForm->secondary_color,
                 accentColor: $this->brandingForm->accent_color,
                 baseColor: $this->brandingForm->base_color,
-                brandLogo: $this->brandingForm->brand_logo,
-                siteFavicon: $this->brandingForm->site_favicon,
+                brandLogo: $this->brand_logo ?: $this->brandingForm->brand_logo,
+                siteFavicon: $this->site_favicon ?: $this->brandingForm->site_favicon,
                 mailFromAddress: $this->mailSettingsForm->mail_from_address,
                 mailFromName: $this->mailSettingsForm->mail_from_name,
                 mailHost: $this->mailSettingsForm->mail_host,
@@ -258,6 +300,8 @@ class SystemSetting extends BaseFormView
             // Clear file handles setelah sukses agar tidak re-upload
             $this->brandingForm->brand_logo = null;
             $this->brandingForm->site_favicon = null;
+            $this->brand_logo = null;
+            $this->site_favicon = null;
 
             $this->toast()->success(__('setting.messages.saved'))->send();
         });

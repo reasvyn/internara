@@ -267,14 +267,14 @@
                                 <input
                                     id="brand-logo-upload"
                                     type="file"
-                                    wire:model="brandingForm.brand_logo"
+                                    wire:model="brand_logo"
                                     accept="image/png,image/jpeg,image/jpg,image/webp"
                                     class="sr-only"
                                 />
                                 <label for="brand-logo-upload" class="relative block cursor-pointer">
                                     @if ($this->brandingForm->brandLogoPreviewUrl() ?? $brandingForm->current_logo_url)
                                         <img
-                                            src="{{ $this->brandingForm->brandLogoPreviewUrl() ?? $brandingForm->current_logo_url }}"
+                                            src="{{ $this->brandLogoPreviewUrl() }}"
                                             alt="{{ __('setting.fields.brand_logo') }}"
                                             class="border-base-content/10 size-24 rounded-xl border object-contain"
                                         />
@@ -288,13 +288,13 @@
                                     </div>
                                     <div
                                         wire:loading
-                                        wire:target="brandingForm.brand_logo"
+                                        wire:target="brand_logo"
                                         class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-xl"
                                     >
                                         <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
                                     </div>
                                 </label>
-                                <x-ts-error name="brandingForm.brand_logo" />
+                                <x-ts-error name="brand_logo" />
                                 @if ($brandingForm->current_logo_url)
                                     <button
                                         type="button"
@@ -316,14 +316,14 @@
                                 <input
                                     id="favicon-upload"
                                     type="file"
-                                    wire:model="brandingForm.site_favicon"
+                                    wire:model="site_favicon"
                                     accept="image/png,image/jpeg,image/jpg,image/x-icon,image/webp,image/svg+xml,.ico,.png,.jpg,.jpeg,.svg"
                                     class="sr-only"
                                 />
                                 <label for="favicon-upload" class="relative block cursor-pointer">
                                     @if ($this->brandingForm->faviconPreviewUrl() ?? $brandingForm->current_favicon_url)
                                         <img
-                                            src="{{ $this->brandingForm->faviconPreviewUrl() ?? $brandingForm->current_favicon_url }}"
+                                            src="{{ $this->faviconPreviewUrl() }}"
                                             alt="{{ __('setting.fields.site_favicon') }}"
                                             class="border-base-content/10 size-12 rounded-lg border object-contain"
                                         />
@@ -337,13 +337,13 @@
                                     </div>
                                     <div
                                         wire:loading
-                                        wire:target="brandingForm.site_favicon"
+                                        wire:target="site_favicon"
                                         class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-lg"
                                     >
                                         <x-ts-icon name="arrow-path" class="size-5 animate-spin" />
                                     </div>
                                 </label>
-                                <x-ts-error name="brandingForm.site_favicon" />
+                                <x-ts-error name="site_favicon" />
                                 @if ($brandingForm->current_favicon_url)
                                     <button
                                         type="button"

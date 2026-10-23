@@ -8,6 +8,8 @@ use App\Modules\Setting\Domain\Locale\Livewire\LangSwitch;
 use App\Modules\Setting\Livewire\SystemSetting;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -35,5 +37,24 @@ describe('52O1I: Setting Livewire UI Components', function (): void {
             ->assertDispatched('language-changed', locale: 'id');
 
         expect($test->get('locale'))->toBe('id');
+    });
+
+    test('52O1I-FR-SET-003: SystemSetting uploads and persists brand logo and favicon', function (): void {
+        Storage::fake('public');
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $logo = UploadedFile::fake()->image('brand_logo.png', 200, 200);
+        $favicon = UploadedFile::fake()->image('favicon.png', 32, 32);
+
+        $test = Livewire::test(SystemSetting::class)
+            ->set('brand_logo', $logo)
+            ->set('site_favicon', $favicon)
+            ->call('save');
+
+        $test->assertOk();
+        expect(setting('brand_logo'))->not->toBeNull()
+            ->and(setting('site_favicon'))->not->toBeNull();
     });
 });
