@@ -13,6 +13,7 @@ use App\Modules\Core\Actions\BaseCommandAction;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
+use Illuminate\Http\UploadedFile;
 
 final class SubmitAssignmentAction extends BaseCommandAction
 {
@@ -48,6 +49,11 @@ final class SubmitAssignmentAction extends BaseCommandAction
                     'feedback' => null,
                 ]);
 
+                if ($data->file instanceof UploadedFile) {
+                    $existing->clearMediaCollection('file');
+                    $existing->addMedia($data->file)->toMediaCollection('file');
+                }
+
                 $this->log('assignment_submitted', $existing, [
                     'assignment_title' => $assignment->title,
                     'user_id' => $student->id,
@@ -68,6 +74,10 @@ final class SubmitAssignmentAction extends BaseCommandAction
                 'status' => SubmissionStatus::SUBMITTED->value,
                 'submitted_at' => now(),
             ]);
+
+            if ($data->file instanceof UploadedFile) {
+                $submission->addMedia($data->file)->toMediaCollection('file');
+            }
 
             $this->log('assignment_submitted', $submission, [
                 'assignment_title' => $assignment->title,

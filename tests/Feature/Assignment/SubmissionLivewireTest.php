@@ -13,6 +13,8 @@ use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -86,5 +88,33 @@ describe('T657B / T657Z: Submission Livewire UI Components', function (): void {
             ->set('content', 'Too short')
             ->call('submit', app(SubmitAssignmentAction::class))
             ->assertHasErrors(['content' => 'min']);
+    });
+
+    test('T657B-FR-SUB-004: SubmitAssignment persists uploaded file attachment into submission media collection', function (): void {
+        Storage::fake('public');
+        $student = User::factory()->create();
+        $student->assignRole('student');
+        $this->actingAs($student);
+
+        $internship = Internship::factory()->create();
+        $assignment = Assignment::factory()->published()->create(['internship_id' => $internship->id]);
+
+        Registration::factory()->create([
+            'student_id' => $student->id,
+            'internship_id' => $internship->id,
+            'status' => 'active',
+        ]);
+
+        $file = UploadedFile::fake()->create('report.pdf', 500, 'application/pdf');
+
+        Livewire::test(SubmitAssignment::class)
+            ->set('assignmentId', (string) $assignment->id)
+            ->set('content', 'This is a sufficiently long report submission content with file.')
+            ->set('file', $file)
+            ->call('submit');
+
+        $submission = Submission::where('student_id', $student->id)->where('assignment_id', $assignment->id)->first();
+        expect($submission)->not->toBeNull()
+            ->and($submission->getFirstMedia('file'))->not->toBeNull();
     });
 });
