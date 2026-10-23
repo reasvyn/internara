@@ -63,6 +63,7 @@ return [
     'activity_photos_hint' => 'Capture photos from your camera or upload from your device as evidence of your daily activities.',
     'take_photo' => 'Take Photo',
     'upload_photos' => 'Upload Photos',
+    'uploading_photos' => 'Uploading photos...',
     'supported_formats' => 'Supported formats: JPEG, PNG, WebP, HEIC. Max 10 MB per photo.',
     'discard' => 'Discard',
     'save_activity' => 'Save Activity',

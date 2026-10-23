@@ -29,8 +29,11 @@ class LogbookEntry extends BaseRecordEntry
 
     public array $photos = [];
 
-    public function boot(): void
+    protected SubmitLogbookAction $submitJournal;
+
+    public function boot(SubmitLogbookAction $submitJournal): void
     {
+        $this->submitJournal = $submitJournal;
         $this->authorize('create', Logbook::class);
     }
 
@@ -53,10 +56,11 @@ class LogbookEntry extends BaseRecordEntry
         $this->date = $journal->date->toDateString();
         $this->content = $journal->content;
         $this->learning_outcomes = $journal->learning_outcomes ?? '';
+        $this->photos = [];
         $this->showModal = true;
     }
 
-    public function save(SubmitLogbookAction $submitJournal): void
+    public function save(?SubmitLogbookAction $submitJournal = null): void
     {
         $this->authorize('create', Logbook::class);
 
@@ -67,8 +71,10 @@ class LogbookEntry extends BaseRecordEntry
             'photos.*' => 'nullable|image|max:10240',
         ]);
 
-        $this->handleError(function () use ($submitJournal) {
-            $submitJournal->execute(auth()->user(), [
+        $action = $submitJournal ?? $this->submitJournal;
+
+        $this->handleError(function () use ($action) {
+            $action->execute(auth()->user(), [
                 'date' => $this->date,
                 'content' => $this->content,
                 'learning_outcomes' => $this->learning_outcomes,
@@ -76,6 +82,7 @@ class LogbookEntry extends BaseRecordEntry
             ]);
 
             $this->showModal = false;
+            $this->reset(['photos']);
             $this->toast()->success(__('logbook.success_saved'))->send();
         });
     }
@@ -83,6 +90,7 @@ class LogbookEntry extends BaseRecordEntry
     public function removePhoto(int $index): void
     {
         unset($this->photos[$index]);
+        $this->photos = array_values($this->photos);
     }
 
     #[Layout('ui::layouts.app')]

@@ -24,7 +24,9 @@ use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -77,6 +79,25 @@ test('1KSWL-UC-DAILY-001 / 1KSWL-FR-DAILY-015: logbook Livewire validates and su
 
     expect(Logbook::where('user_id', $this->student->id)->whereDate('date', today())->value('status')->value)
         ->toBe('submitted');
+});
+
+test('1KSWL-FR-DAILY-017: logbook Livewire uploads multiple photo evidence attachments', function (): void {
+    Storage::fake('public');
+    $this->actingAs($this->student);
+
+    $photo1 = UploadedFile::fake()->image('evidence1.jpg');
+    $photo2 = UploadedFile::fake()->image('evidence2.png');
+
+    Livewire::test(LogbookEntry::class)
+        ->set('content', 'Recorded photo evidence during quality inspection.')
+        ->set('learning_outcomes', 'Learned visual inspection standards.')
+        ->set('photos', [$photo1, $photo2])
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $logbook = Logbook::where('user_id', $this->student->id)->whereDate('date', today())->first();
+    expect($logbook)->not->toBeNull()
+        ->and($logbook->getMedia('photos'))->toHaveCount(2);
 });
 
 test('1KSWL-FR-DAILY-014 / 1KSWL-FR-DAILY-016: logbook Livewire renders only the signed-in student records', function (): void {

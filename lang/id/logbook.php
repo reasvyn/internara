@@ -63,6 +63,7 @@ return [
     'activity_photos_hint' => 'Ambil foto dari kamera Anda atau unggah dari perangkat sebagai bukti kegiatan harian Anda.',
     'take_photo' => 'Ambil Foto',
     'upload_photos' => 'Unggah Foto',
+    'uploading_photos' => 'Mengunggah foto...',
     'supported_formats' => 'Format didukung: JPEG, PNG, WebP, HEIC. Maks 10 MB per foto.',
     'discard' => 'Buang',
     'save_activity' => 'Simpan Kegiatan',
