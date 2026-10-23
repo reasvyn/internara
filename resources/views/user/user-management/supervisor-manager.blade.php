@@ -61,31 +61,35 @@
             @endinteract
 
             @interact('column_action', $user)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         icon="pencil"
-                        color="white"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     <x-ts-button.circle
                         icon="key"
-                        class="text-primary"
-                        color="white"
+                        color="blue"
+                        outline
                         xs
                         wire:click="showSlip('{{ $user->id }}')"
                         :aria-label="__('user.manager.account_slip')"
+                        tooltip="{{ __('user.manager.account_slip') }}"
                     />
                     <x-ts-button.circle
                         icon="trash"
-                        class="text-error"
-                        color="white"
+                        color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $user->id }}')"
                         :aria-label="__('common.actions.delete')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

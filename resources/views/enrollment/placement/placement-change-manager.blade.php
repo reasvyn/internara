@@ -47,26 +47,30 @@
             @endinteract
 
             @interact('column_action', $r)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @if ($r->status->value === 'pending')
                         <x-ts-button.circle
                             :aria-label="__('common.actions.approve')"
                             icon="check"
                             color="green"
+                            outline
                             xs
                             wire:click="approve('{{ $r->id }}')"
+                            tooltip="{{ __('common.actions.approve') }}"
                         />
                         <x-ts-button.circle
                             :aria-label="__('common.actions.reject')"
                             icon="x-mark"
                             color="red"
+                            outline
                             xs
                             wire:click="rejectConfirm('{{ $r->id }}')"
+                            tooltip="{{ __('common.actions.reject') }}"
                         />
                     @else
                         <span class="text-base-content/30 text-xs">—</span>
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

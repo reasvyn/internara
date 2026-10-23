@@ -43,17 +43,19 @@
             @endinteract
 
             @interact('column_action', $p)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @if ($p->status->value === 'scheduled')
                         <x-ts-button.circle
                             aria-label="{{ __('common.actions.edit') }}"
                             icon="pencil"
-                            color="white"
+                            color="primary"
+                            outline
                             xs
                             wire:click="setupScoring('{{ $p->id }}')"
+                            tooltip="{{ __('common.actions.edit') }}"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

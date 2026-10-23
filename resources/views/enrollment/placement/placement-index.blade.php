@@ -104,22 +104,26 @@
             @endinteract
 
             @interact('column_action', $placement)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         icon="pencil"
-                        color="slate"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $placement->id }}')"
                         :aria-label="__('common.actions.edit')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     <x-ts-button.circle
                         icon="trash"
                         color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $placement->id }}')"
                         :aria-label="__('common.actions.delete')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

@@ -49,20 +49,21 @@
                     @endinteract
 
                     @interact('column_action', $journal)
-                        <div class="flex items-center justify-center gap-2">
+                        <x-ui::components.table-actions>
                             @if (! $journal->is_verified)
                                 <x-ts-button.circle
                                     aria-label="{{ __('common.actions.edit') }}"
                                     icon="pencil-square"
-                                    class="text-primary transition-transform hover:scale-110"
-                                    color="white"
+                                    color="primary"
+                                    outline
                                     xs
                                     wire:click="edit('{{ $journal->id }}')"
+                                    tooltip="{{ __('common.actions.edit') }}"
                                 />
                             @else
                                 <x-ts-icon name="check-badge" class="text-success/40 size-5" />
                             @endif
-                        </div>
+                        </x-ui::components.table-actions>
                     @endinteract
                 </x-ts-table>
             </div>

@@ -138,51 +138,56 @@
                 @endinteract
 
                 @interact('column_action', $entry)
-                    <div class="flex items-center justify-center gap-1">
+                    <x-ui::components.table-actions>
                         @if (auth()->user()?->hasRole('supervisor'))
                             <x-ts-button.circle
                                 icon="chat-bubble-bottom-center-text"
-                                class="text-info"
-                                color="white"
+                                color="blue"
+                                outline
                                 xs
                                 wire:click="editSupervisorNote('{{ $entry->id }}')"
+                                :aria-label="__('logbook.edit_supervisor_note')"
                                 tooltip="{{ __('logbook.edit_supervisor_note') }}"
                             />
                         @endif
                         <x-ts-button.circle
                             icon="check"
-                            class="text-success"
-                            color="white"
+                            color="green"
+                            outline
                             xs
                             wire:click="verify('{{ $entry->id }}')"
+                            :aria-label="__('logbook.toggle_verify')"
                             tooltip="{{ __('logbook.toggle_verify') }}"
                         />
                         <x-ts-button.circle
                             icon="pencil"
-                            class="text-primary"
-                            color="white"
+                            color="primary"
+                            outline
                             xs
                             wire:click="edit('{{ $entry->id }}')"
+                            :aria-label="__('common.actions.edit')"
                             tooltip="{{ __('common.actions.edit') }}"
                         />
                         <x-ts-button.circle
                             icon="document-arrow-down"
-                            class="text-secondary"
-                            color="white"
+                            color="secondary"
+                            outline
                             xs
                             :href="route('sysadmin.logbook.report', $entry->registration_id)"
                             external
+                            :aria-label="__('logbook.download_report')"
                             tooltip="{{ __('logbook.download_report') }}"
                         />
                         <x-ts-button.circle
                             icon="trash"
-                            class="text-error"
-                            color="white"
+                            color="red"
+                            outline
                             xs
                             wire:click="askDelete('{{ $entry->id }}')"
+                            :aria-label="__('common.actions.delete')"
                             tooltip="{{ __('common.actions.delete') }}"
                         />
-                    </div>
+                    </x-ui::components.table-actions>
                 @endinteract
             </x-ts-table>
         </div>

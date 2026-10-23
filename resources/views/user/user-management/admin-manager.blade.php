@@ -47,29 +47,32 @@
 
         @interact('column_action', $user)
             @if ($user->hasRole('super_admin'))
-                <div class="flex items-center justify-center">
+                <x-ui::components.table-actions>
                     <span class="text-base-content/40 text-xs italic">{{ __('user.admin.protected') }}</span>
-                </div>
+                </x-ui::components.table-actions>
             @else
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         icon="pencil"
-                        color="white"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $user->id }}')"
                         :aria-label="__('common.actions.edit')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     @if ($user->id !== auth()->id())
                         <x-ts-button.circle
                             icon="trash"
-                            class="text-error"
-                            color="white"
+                            color="red"
+                            outline
                             xs
                             wire:click="askDelete('{{ $user->id }}')"
                             :aria-label="__('common.actions.delete')"
+                            tooltip="{{ __('common.actions.delete') }}"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endif
         @endinteract
     </x-ts-table>

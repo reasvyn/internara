@@ -22,29 +22,35 @@
             @endinteract
 
             @interact('column_action', $group)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         icon="users"
-                        color="primary"
+                        color="blue"
+                        outline
                         xs
                         wire:click="manageMembers('{{ $group->id }}')"
                         :aria-label="__('internship.manage_members')"
+                        tooltip="{{ __('internship.manage_members') }}"
                     />
                     <x-ts-button.circle
                         icon="pencil"
-                        color="slate"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $group->id }}')"
                         :aria-label="__('common.actions.edit')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     <x-ts-button.circle
                         icon="trash"
                         color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $group->id }}')"
                         :aria-label="__('common.actions.delete')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

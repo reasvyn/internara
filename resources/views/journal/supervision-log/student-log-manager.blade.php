@@ -28,18 +28,19 @@
         @endinteract
 
         @interact('column_action', $l)
-            <div class="flex items-center justify-center gap-1">
+            <x-ui::components.table-actions>
                 @if ($l->status->value === 'draft')
                     <x-ts-button.circle
                         icon="trash"
-                        class="text-error"
-                        color="white"
+                        color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $l->id }}')"
                         :aria-label="__('common.actions.delete')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
                 @endif
-            </div>
+            </x-ui::components.table-actions>
         @endinteract
     </x-ts-table>
 

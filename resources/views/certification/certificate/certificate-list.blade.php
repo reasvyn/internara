@@ -37,18 +37,19 @@
             @endinteract
 
             @interact('column_action', $c)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @if ($c->status->value === 'issued')
                         <x-ts-button.circle
                             icon="x-circle"
-                            class="text-error"
-                            color="white"
+                            color="red"
+                            outline
                             xs
                             wire:click="askRevoke('{{ $c->id }}')"
                             :aria-label="__('certificate.revoke')"
+                            tooltip="{{ __('certificate.revoke') }}"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

@@ -42,19 +42,18 @@
             @endinteract
 
             @interact('column_action', $log)
-                <div class="flex items-center justify-center">
+                <x-ui::components.table-actions>
                     @if (! $log->is_verified)
                         <x-ts-button
                             :text="__('journals.verify')"
                             icon="check"
-                            class="text-success"
-                            color="slate"
+                            color="green"
                             outline
                             xs
                             wire:click="verify('{{ $log->id }}')"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
 

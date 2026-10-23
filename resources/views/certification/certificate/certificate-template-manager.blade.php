@@ -23,15 +23,17 @@
             @endinteract
 
             @interact('column_action', $t)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
-                        color="white"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $t->id }}')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

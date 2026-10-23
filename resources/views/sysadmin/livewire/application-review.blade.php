@@ -41,22 +41,24 @@
                 @endinteract
 
                 @interact('column_action', $app)
-                    <div class="flex items-center justify-center gap-2">
+                    <x-ui::components.table-actions>
                         <x-ts-button
                             :text="__('internship.applications.approve')"
                             wire:click="approve('{{ $app->id }}')"
                             icon="check"
                             color="green"
-                            sm
+                            outline
+                            xs
                         />
                         <x-ts-button
                             :text="__('internship.applications.reject')"
                             wire:click="confirmReject('{{ $app->id }}')"
                             icon="x-mark"
                             color="red"
-                            sm
+                            outline
+                            xs
                         />
-                    </div>
+                    </x-ui::components.table-actions>
                 @endinteract
             </x-ts-table>
         @endif

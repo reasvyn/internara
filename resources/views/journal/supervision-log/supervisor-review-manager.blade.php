@@ -17,19 +17,18 @@
         @endinteract
 
         @interact('column_action', $l)
-            <div class="flex items-center justify-center gap-1">
+            <x-ui::components.table-actions>
                 @if ($l->status->value === 'submitted')
                     <x-ts-button
                         :text="__('journals.review')"
                         icon="check"
-                        class="text-success"
-                        color="slate"
+                        color="green"
                         outline
                         xs
                         wire:click="askReview('{{ $l->id }}')"
                     />
                 @endif
-            </div>
+            </x-ui::components.table-actions>
         @endinteract
     </x-ts-table>
 

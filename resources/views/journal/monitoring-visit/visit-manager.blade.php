@@ -28,19 +28,21 @@
             @endinteract
 
             @interact('column_action', $v)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @can('verify', App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
                             <x-ts-button.circle
                                 icon="check"
                                 color="green"
+                                outline
                                 xs
                                 wire:click="verify('{{ $v->id }}')"
                                 aria-label="{{ __('journals.verify') }}"
+                                tooltip="{{ __('journals.verify') }}"
                             />
                         @endif
                     @endcan
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

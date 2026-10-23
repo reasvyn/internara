@@ -62,27 +62,29 @@
                 @endinteract
 
                 @interact('column_action', $user)
-                    <div class="flex items-center justify-center gap-2">
+                    <x-ui::components.table-actions>
                         @if ($user->locked_at)
                             <x-ts-button.circle
                                 aria-label="{{ __('common.actions.unlock') }}"
                                 icon="lock-open"
-                                class="text-success"
-                                color="white"
+                                color="green"
+                                outline
                                 xs
                                 wire:click="askUnlock('{{ $user->id }}')"
+                                tooltip="{{ __('common.actions.unlock') }}"
                             />
                         @else
                             <x-ts-button.circle
                                 aria-label="{{ __('common.actions.lock') }}"
                                 icon="lock-closed"
-                                class="text-warning"
-                                color="white"
+                                color="amber"
+                                outline
                                 xs
                                 wire:click="askLock('{{ $user->id }}')"
+                                tooltip="{{ __('common.actions.lock') }}"
                             />
                         @endif
-                    </div>
+                    </x-ui::components.table-actions>
                 @endinteract
             </x-ts-table>
         @endif

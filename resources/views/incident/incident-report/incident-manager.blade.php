@@ -61,28 +61,30 @@
             @endinteract
 
             @interact('column_action', $i)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @can('update', $i)
                         <x-ts-button.circle
                             icon="pencil"
-                            class="text-primary"
-                            color="white"
+                            color="primary"
+                            outline
                             xs
                             wire:click="edit('{{ $i->id }}')"
                             :aria-label="__('common.actions.edit')"
+                            tooltip="{{ __('common.actions.edit') }}"
                         />
                     @endcan
                     @if (! $i->status->isTerminal())
                         <x-ts-button.circle
                             icon="check-circle"
-                            class="text-success"
-                            color="white"
+                            color="green"
+                            outline
                             xs
                             wire:click="resolve('{{ $i->id }}')"
                             :aria-label="__('incident.resolve')"
+                            tooltip="{{ __('incident.resolve') }}"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

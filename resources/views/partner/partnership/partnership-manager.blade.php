@@ -126,33 +126,37 @@
             @endinteract
 
             @interact('column_action', $p)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @if ($p->status->value === 'active')
                         <x-ts-button.circle
                             icon="x-circle"
-                            class="text-warning"
-                            color="white"
+                            color="amber"
+                            outline
                             xs
                             wire:click="askTerminate('{{ $p->id }}')"
                             :aria-label="__('partnership.terminate')"
+                            tooltip="{{ __('partnership.terminate') }}"
                         />
                     @endif
                     <x-ts-button.circle
                         icon="pencil"
-                        color="white"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $p->id }}')"
                         :aria-label="__('common.actions.edit')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     <x-ts-button.circle
                         icon="trash"
-                        class="text-error"
-                        color="white"
+                        color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $p->id }}')"
                         :aria-label="__('common.actions.delete')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

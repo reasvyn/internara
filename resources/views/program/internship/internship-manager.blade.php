@@ -142,23 +142,26 @@
             @endinteract
 
             @interact('column_action', $internship)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     <x-ts-button.circle
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
-                        color="white"
+                        color="primary"
+                        outline
                         xs
                         wire:click="edit('{{ $internship->id }}')"
+                        tooltip="{{ __('common.actions.edit') }}"
                     />
                     <x-ts-button.circle
                         aria-label="{{ __('common.actions.delete') }}"
                         icon="trash"
-                        class="text-error"
-                        color="white"
+                        color="red"
+                        outline
                         xs
                         wire:click="askDelete('{{ $internship->id }}')"
+                        tooltip="{{ __('common.actions.delete') }}"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </div>

@@ -99,19 +99,20 @@
             @endinteract
 
             @interact('column_action', $backup)
-                <div class="flex items-center justify-center gap-1">
+                <x-ui::components.table-actions>
                     @if ($backup->asBackupState()->isDeletable())
                         <x-ts-button.circle
                             aria-label="{{ __('common.actions.delete') }}"
                             icon="trash"
-                            class="text-error"
-                            color="white"
+                            color="red"
+                            outline
                             xs
                             wire:click="confirmDelete('{{ $backup->id }}')"
+                            tooltip="{{ __('common.actions.delete') }}"
                             wire:loading.attr="disabled"
                         />
                     @endif
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
 
