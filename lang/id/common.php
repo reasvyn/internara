@@ -62,6 +62,7 @@ return [
     'confirm_delete' => 'Yakin ingin menghapus data ini?',
 
     'actions' => [
+        'title' => 'Aksi',
         'done' => 'Selesai',
         'label' => 'Aksi',
         'save' => 'Simpan',
