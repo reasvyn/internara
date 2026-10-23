@@ -11,7 +11,6 @@ use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
 use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\UploadedFile;
 use Livewire\WithFileUploads;
 use TallStackUi\Traits\Interactions;
 
@@ -22,22 +21,34 @@ class RegistrationDocumentUpload extends BaseFormView
 
     public ?Registration $registration = null;
 
-    public function boot(): void
+    protected UploadRegistrationDocumentAction $action;
+
+    public function boot(UploadRegistrationDocumentAction $action): void
     {
+        $this->action = $action;
         $this->authorize('create', RegistrationDocument::class);
     }
 
-    /** @var array<string, UploadedFile> */
+    /** @var array<string, mixed> */
     public array $uploads = [];
 
-    public function mount(): void
+    public function mount(?Registration $registration = null): void
     {
-        $this->registration =
-            auth()->user()->getActiveRegistration() ??
-            auth()->user()->registrations()->get()->first(fn ($reg) => $reg->hasStatus('pending'));
+        if ($registration) {
+            $this->registration = $registration;
+
+            return;
+        }
+
+        $user = auth()->user();
+        if ($user) {
+            $this->registration =
+                $user->getActiveRegistration() ??
+                $user->registrations()->get()->first(fn ($reg) => $reg->hasStatus('pending'));
+        }
     }
 
-    public function upload(UploadRegistrationDocumentAction $action): void
+    public function upload(?UploadRegistrationDocumentAction $action = null): void
     {
         if (! $this->registration) {
             $this->toast()->error(__('registration.document_upload.no_registration'))->send();
@@ -50,15 +61,31 @@ class RegistrationDocumentUpload extends BaseFormView
         $documentIds = $this->registration->internship->required_document_ids ?? [];
         $documents = Document::whereIn('id', $documentIds)->get();
 
+        $existingDocIds = RegistrationDocument::where('registration_id', $this->registration->id)
+            ->pluck('document_id')
+            ->all();
+
+        $activeUploads = array_filter($this->uploads, fn ($val) => ! empty($val));
+
+        if (empty($activeUploads)) {
+            $this->toast()->error(__('registration.document_upload.no_files_selected'))->send();
+
+            return;
+        }
+
         $rules = [];
-        foreach ($documents as $doc) {
-            $rules["uploads.{$doc->id}"] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+        foreach ($activeUploads as $docId => $file) {
+            if (in_array($docId, $documentIds, true)) {
+                $rules["uploads.{$docId}"] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
+            }
         }
 
         $this->validate($rules);
 
-        $this->handleSave(function () use ($action) {
-            $action->execute($this->registration, $this->uploads);
+        $uploader = $action ?? $this->action;
+
+        $this->handleSave(function () use ($uploader, $activeUploads) {
+            $uploader->execute($this->registration, $activeUploads);
             $this->uploads = [];
             $this->toast()->success(__('registration.document_upload.success'))->send();
         });

@@ -23,6 +23,20 @@
                                     class="file-input file-input-bordered file-input-sm mt-2 w-full"
                                     accept=".pdf,.jpg,.jpeg,.png"
                                 />
+                                <div
+                                    wire:loading
+                                    wire:target="uploads.{{ $document->id }}"
+                                    class="text-primary mt-1 flex items-center gap-2 text-xs"
+                                >
+                                    <span class="loading loading-spinner loading-xs"></span>
+                                    <span>{{ __('registration.document_upload.uploading') }}</span>
+                                </div>
+                                @if (isset($uploads[$document->id]) && is_object($uploads[$document->id]))
+                                    <p class="text-base-content/70 mt-1 flex items-center gap-1 text-xs">
+                                        <x-ts-icon name="paper-clip" class="text-primary size-3.5" />
+                                        <span>{{ method_exists($uploads[$document->id], 'getClientOriginalName') ? $uploads[$document->id]->getClientOriginalName() : 'File selected' }}</span>
+                                    </p>
+                                @endif
                                 @error("uploads.{$document->id}")
                                     <p class="text-error mt-1 text-xs">{{ $message }}</p>
                                 @enderror
@@ -33,7 +47,12 @@
 
                 @if ($documents->isNotEmpty())
                     <div class="flex justify-end">
-                        <x-ts-button wire:click="upload" :text="__('common.submit')" color="primary" />
+                        <x-ts-button
+                            wire:click="upload"
+                            wire:loading.attr="disabled"
+                            :text="__('common.submit')"
+                            color="primary"
+                        />
                     </div>
                 @else
                     <div class="text-base-content/50 py-6 text-center text-sm">

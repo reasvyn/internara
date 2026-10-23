@@ -129,6 +129,59 @@ test('MBB5R-FR-REG-023: uploaded document starts in pending state', function ():
     expect(RegistrationDocument::firstOrFail()->status->value)->toBe('pending');
 });
 
+test('MBB5R-FR-REG-032: RegistrationDocumentUpload persists multiple valid uploaded documents into media collection', function (): void {
+    Storage::fake('public');
+    $student = additionalRegistrationStudent();
+    $doc1 = Document::factory()->create(['type' => 'template', 'title' => 'Doc 1']);
+    $doc2 = Document::factory()->create(['type' => 'template', 'title' => 'Doc 2']);
+    $internship = Internship::factory()->create(['required_document_ids' => [$doc1->id, $doc2->id]]);
+    $registration = Registration::factory()->create([
+        'student_id' => $student->id,
+        'internship_id' => $internship->id,
+        'status' => 'pending',
+    ]);
+
+    $file1 = UploadedFile::fake()->create('doc1.pdf', 100, 'application/pdf');
+    $file2 = UploadedFile::fake()->create('doc2.png', 100, 'image/png');
+
+    Livewire::test(RegistrationDocumentUpload::class, ['registration' => $registration])
+        ->set("uploads.{$doc1->id}", $file1)
+        ->set("uploads.{$doc2->id}", $file2)
+        ->call('upload')
+        ->assertHasNoErrors();
+
+    $regDocs = RegistrationDocument::where('registration_id', $registration->id)->get();
+    expect($regDocs)->toHaveCount(2);
+    foreach ($regDocs as $regDoc) {
+        expect($regDoc->getMedia('file'))->toHaveCount(1);
+    }
+});
+
+test('MBB5R-FR-REG-033: RegistrationDocumentUpload error on one document retains other uploads in component state', function (): void {
+    Storage::fake('public');
+    $student = additionalRegistrationStudent();
+    $docValid = Document::factory()->create(['type' => 'template', 'title' => 'Valid Doc']);
+    $docInvalid = Document::factory()->create(['type' => 'template', 'title' => 'Invalid Doc']);
+    $internship = Internship::factory()->create(['required_document_ids' => [$docValid->id, $docInvalid->id]]);
+    $registration = Registration::factory()->create([
+        'student_id' => $student->id,
+        'internship_id' => $internship->id,
+        'status' => 'pending',
+    ]);
+
+    $validFile = UploadedFile::fake()->create('valid.pdf', 100, 'application/pdf');
+    $invalidFile = UploadedFile::fake()->create('invalid.txt', 50, 'text/plain');
+
+    $component = Livewire::test(RegistrationDocumentUpload::class, ['registration' => $registration])
+        ->set("uploads.{$docValid->id}", $validFile)
+        ->set("uploads.{$docInvalid->id}", $invalidFile)
+        ->call('upload')
+        ->assertHasErrors(["uploads.{$docInvalid->id}"]);
+
+    expect($component->get("uploads.{$docValid->id}"))->not->toBeNull()
+        ->and(RegistrationDocument::where('registration_id', $registration->id)->exists())->toBeFalse();
+});
+
 test('MBB5R-FR-REG-003: registration state exposes active, pending, ongoing, and ended predicates', function (): void {
     $registration = Registration::factory()->create([
         'status' => 'active',

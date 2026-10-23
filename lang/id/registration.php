@@ -99,6 +99,8 @@ return [
     'document_upload' => [
         'no_registration' => 'Tidak ditemukan pendaftaran aktif atau tertunda.',
         'success' => 'Dokumen berhasil diunggah.',
+        'uploading' => 'Mengunggah dokumen...',
+        'no_files_selected' => 'Pilih setidaknya satu dokumen untuk diunggah.',
     ],
 
     'already_registered' => 'Anda sudah memiliki pendaftaran aktif atau tertunda.',

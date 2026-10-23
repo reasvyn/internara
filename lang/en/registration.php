@@ -102,6 +102,8 @@ return [
         'required' => 'Document requirements not met.',
         'no_registration' => 'No active or pending registration found.',
         'success' => 'Documents uploaded successfully.',
+        'uploading' => 'Uploading document...',
+        'no_files_selected' => 'Please select at least one document to upload.',
     ],
 
     'already_registered' => 'You already have an active or pending registration.',
