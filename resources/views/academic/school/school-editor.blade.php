@@ -125,14 +125,14 @@
                         {{ __('school.logo') }}
                     </p>
                     <div class="group relative mb-2">
+                        <input
+                            id="school-logo-upload"
+                            type="file"
+                            wire:model="logo_file"
+                            accept="image/png,image/jpeg,image/jpg,image/webp"
+                            class="sr-only"
+                        />
                         <label for="school-logo-upload" class="relative cursor-pointer">
-                            <input
-                                id="school-logo-upload"
-                                type="file"
-                                wire:model="logo_file"
-                                accept="image/png,image/jpeg,image/jpg,image/webp"
-                                class="sr-only"
-                            />
                             @if ($this->logoPreviewUrl())
                                 <img
                                     src="{{ $this->logoPreviewUrl() }}"

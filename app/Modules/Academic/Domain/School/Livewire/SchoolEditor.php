@@ -29,6 +29,18 @@ class SchoolEditor extends BaseFormView
 
     public bool $showConfirm = false;
 
+    protected UploadBrandAssetAction $uploadBrand;
+
+    protected SetSettingAction $setSetting;
+
+    public function boot(
+        UploadBrandAssetAction $uploadBrand,
+        SetSettingAction $setSetting,
+    ): void {
+        $this->uploadBrand = $uploadBrand;
+        $this->setSetting = $setSetting;
+    }
+
     public function mount(GetSchoolEntityAction $getEntity): void
     {
         $this->authorize('update', Setting::class);
@@ -37,11 +49,14 @@ class SchoolEditor extends BaseFormView
     }
 
     public function updatedLogoFile(
-        UploadBrandAssetAction $uploadBrand,
-        SetSettingAction $setSetting,
+        mixed $uploadBrand = null,
+        ?SetSettingAction $setSetting = null,
     ): void {
         $this->authorize('update', Setting::class);
         $this->validate(['logo_file' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048']]);
+
+        $uploadBrand = ($uploadBrand instanceof UploadBrandAssetAction) ? $uploadBrand : ($this->uploadBrand ?? app(UploadBrandAssetAction::class));
+        $setSetting = ($setSetting instanceof SetSettingAction) ? $setSetting : ($this->setSetting ?? app(SetSettingAction::class));
 
         $this->handleSave(function () use ($uploadBrand, $setSetting): void {
             if (! $this->logo_file) {
@@ -67,7 +82,8 @@ class SchoolEditor extends BaseFormView
         $this->validate();
 
         $this->handleSave(function () use ($action, $getEntity): void {
-            $action->execute(data: $this->form->toPayload());
+            $action->execute(data: $this->form->toPayload(), logoFile: $this->logo_file);
+            $this->logo_file = null;
             $this->form->loadFromEntity($getEntity->execute());
             $this->toast()->success(__('school.save_success'))->send();
             $this->dispatch('saved');

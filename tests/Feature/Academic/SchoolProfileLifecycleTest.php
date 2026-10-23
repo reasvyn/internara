@@ -399,4 +399,21 @@ describe('81SMS: school profile lifecycle', function (): void {
             ->test(SchoolEditor::class)
             ->assertSee(__('school.discard'));
     });
+
+    test('81SMS-FR-SCH-018: SchoolEditor persists pending logo file when form is saved', function (): void {
+        Storage::fake('public');
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $logo = UploadedFile::fake()->image('school_new_logo.png', 200, 200);
+
+        Livewire::actingAs($admin)
+            ->test(SchoolEditor::class)
+            ->set('logo_file', $logo)
+            ->set('form.name', 'SMK Unggulan')
+            ->call('save')
+            ->assertDispatched('saved');
+
+        expect(setting('brand_logo'))->not->toBeNull()
+            ->and(setting('school.name'))->toBe('SMK Unggulan');
+    });
 });
