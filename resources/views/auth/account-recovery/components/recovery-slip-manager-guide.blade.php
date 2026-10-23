@@ -24,14 +24,14 @@
                     <h3 id="guide-title" class="text-lg font-bold">
                         {{ __('profile.guide_recovery.slip_manager_title') }}
                     </h3>
-                    <button
-                        type="button"
+                    <x-ts-button.circle
                         x-on:click="showGuide = false"
                         aria-label="{{ __('common.actions.close') }}"
-                        class="btn btn-ghost btn-sm btn-square"
-                    >
-                        <x-ts-icon name="x-mark" class="size-5" />
-                    </button>
+                        icon="x-mark"
+                        color="secondary"
+                        flat
+                        sm
+                    />
                 </div>
                 <div class="space-y-5 p-6">
                     <p class="text-base-content/60 text-sm">{{ __('profile.guide_recovery.slip_manager_intro') }}</p>

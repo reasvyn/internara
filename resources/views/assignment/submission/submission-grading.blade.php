@@ -154,14 +154,14 @@
                             </p>
                         </div>
                     </div>
-                    <a
+                    <x-ts-button
                         href="{{ $media->getUrl() }}"
                         target="_blank"
-                        class="btn btn-primary btn-sm shadow-primary/20 rounded-[1.5rem] px-6 text-[10px] font-black tracking-wider uppercase shadow-lg"
-                    >
-                        <x-ts-icon name="arrow-down-tray" class="size-4" />
-                        {{ __('submission.download') }}
-                    </a>
+                        icon="arrow-down-tray"
+                        :text="__('submission.download')"
+                        color="primary"
+                        sm
+                    />
                 </div>
             @endif
 

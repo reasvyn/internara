@@ -34,7 +34,7 @@
                                 @if (isset($uploads[$document->id]) && is_object($uploads[$document->id]))
                                     <p class="text-base-content/70 mt-1 flex items-center gap-1 text-xs">
                                         <x-ts-icon name="paper-clip" class="text-primary size-3.5" />
-                                        <span>{{ method_exists($uploads[$document->id], 'getClientOriginalName') ? $uploads[$document->id]->getClientOriginalName() : 'File selected' }}</span>
+                                        <span>{{ method_exists($uploads[$document->id], 'getClientOriginalName') ? $uploads[$document->id]->getClientOriginalName() : __('registration.doc_file_selected') }}</span>
                                     </p>
                                 @endif
                                 @error("uploads.{$document->id}")

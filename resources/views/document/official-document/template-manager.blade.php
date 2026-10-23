@@ -38,7 +38,9 @@
                         aria-label="{{ __('common.actions.edit') }}"
                         icon="pencil"
                         wire:click="editTemplate('{{ $template->id }}')"
-                        class="btn-sm btn-ghost"
+                        color="secondary"
+                        flat
+                        sm
                     />
                 </div>
             @endinteract

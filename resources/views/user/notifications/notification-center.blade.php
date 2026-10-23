@@ -35,18 +35,18 @@
                     sm
                     wire:click="markAllAsRead"
                 />
-                <x-ts-button
+                <x-ts-button.circle
                     icon="arrow-path"
-                    class="btn-square"
-                    color="white"
+                    color="secondary"
+                    outline
                     sm
                     wire:click="$refresh"
                     :aria-label="__('notifications.ui.refresh')"
                 />
-                <x-ts-button
+                <x-ts-button.circle
                     icon="question-mark-circle"
-                    class="btn-square"
-                    color="white"
+                    color="secondary"
+                    outline
                     sm
                     wire:click="$set('showGuide', true)"
                     :aria-label="__('notifications.guide.title')"
@@ -274,7 +274,8 @@
                     icon="arrow-top-right-on-square"
                     :href="$this->viewedNotification->link"
                     target="_blank"
-                    class="btn-primary btn-sm"
+                    color="primary"
+                    sm
                 />
             @endif
         </x-slot:footer>

@@ -116,6 +116,7 @@ return [
 
     'doc_upload_title' => 'Upload Required Documents',
     'doc_uploaded' => 'Uploaded',
+    'doc_file_selected' => 'File selected',
     'doc_no_requirements' => 'No document requirements for this internship.',
     'doc_no_registration' => 'You have no active or pending registration.',
 ];

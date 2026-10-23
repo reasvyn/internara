@@ -31,15 +31,21 @@
         >
             @interact('column_action', $report)
                 <div class="flex items-center justify-center gap-2">
-                    <a href="{{ $report->getFirstMediaUrl('file') }}" class="btn btn-sm btn-primary" target="_blank">
-                        <x-ts-icon name="arrow-down-tray" class="size-4" />
-                        {{ __('document.download') }}
-                    </a>
+                    <x-ts-button
+                        href="{{ $report->getFirstMediaUrl('file') }}"
+                        target="_blank"
+                        icon="arrow-down-tray"
+                        :text="__('document.download')"
+                        color="primary"
+                        sm
+                    />
                     <x-ts-button.circle
                         aria-label="{{ __('common.actions.delete') }}"
                         wire:click="deleteReport('{{ $report->id }}')"
                         icon="trash"
-                        class="btn-sm btn-ghost text-error"
+                        color="red"
+                        flat
+                        sm
                     />
                 </div>
             @endinteract

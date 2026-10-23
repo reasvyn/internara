@@ -5,10 +5,7 @@
             <h1 class="text-base-content text-2xl font-semibold">{{ __('report.management') }}</h1>
             <p class="text-base-content/70 mt-1">{{ __('report.management_subtitle') }}</p>
         </div>
-        <button wire:click="openCreateModal" class="btn btn-primary">
-            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            {{ __('report.create_new') }}
-        </button>
+        <x-ts-button wire:click="openCreateModal" icon="plus" :text="__('report.create_new')" color="primary" />
     </div>
 
     {{-- Search and Filter --}}
@@ -91,36 +88,44 @@
                             <td class="px-4 py-3 text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     @if ($report->status->value === 'draft')
-                                        <button
+                                        <x-ts-button.circle
                                             wire:click="openCalculateModal('{{ $report->id }}')"
-                                            class="btn btn-sm btn-outline btn-primary"
+                                            icon="calculator"
+                                            color="primary"
+                                            outline
+                                            xs
+                                            aria-label="{{ __('report.calculate_grades') }}"
                                             title="{{ __('report.calculate_grades') }}"
-                                        >
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                                        </button>
-                                        <button
+                                        />
+                                        <x-ts-button.circle
                                             wire:click="openFinalizeModal('{{ $report->id }}')"
-                                            class="btn btn-sm btn-outline btn-success"
+                                            icon="check-circle"
+                                            color="green"
+                                            outline
+                                            xs
+                                            aria-label="{{ __('report.finalize_grade_card') }}"
                                             title="{{ __('report.finalize_grade_card') }}"
-                                        >
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                        </button>
+                                        />
                                     @endif
-                                    <a
+                                    <x-ts-button.circle
                                         href="{{ route('sysadmin.student-reports.download', $report) }}"
-                                        class="btn btn-sm btn-outline"
+                                        icon="arrow-down-tray"
+                                        color="secondary"
+                                        outline
+                                        xs
+                                        aria-label="{{ __('report.download') }}"
                                         title="{{ __('report.download') }}"
-                                    >
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                                    </a>
+                                    />
                                     @if ($report->status->value === 'draft')
-                                        <button
+                                        <x-ts-button.circle
                                             wire:click="askDelete('{{ $report->id }}')"
-                                            class="btn btn-sm btn-outline btn-error"
+                                            icon="trash"
+                                            color="red"
+                                            outline
+                                            xs
+                                            aria-label="{{ __('common.actions.delete') }}"
                                             title="{{ __('common.actions.delete') }}"
-                                        >
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v10M7 7h10"></path></svg>
-                                        </button>
+                                        />
                                     @endif
                                 </div>
                             </td>

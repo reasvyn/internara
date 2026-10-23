@@ -70,7 +70,8 @@
                                         :text="__('registration.verification.process')"
                                         wire:click="process('{{ $reg->id }}')"
                                         icon="chevron-right"
-                                        class="btn-primary btn-sm"
+                                        color="primary"
+                                        sm
                                     />
                                 </td>
                             </tr>

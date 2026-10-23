@@ -61,24 +61,30 @@
                             @endif
                         </div>
                         <div class="flex gap-1">
-                            <x-ts-button
+                            <x-ts-button.circle
                                 aria-label="{{ __('assessment.add_indicator') }}"
                                 icon="plus"
+                                color="secondary"
+                                flat
+                                xs
                                 wire:click="addIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}')"
-                                class="btn-xs btn-ghost"
                                 :title="__('assessment.add_indicator')"
                             />
-                            <x-ts-button
+                            <x-ts-button.circle
                                 aria-label="{{ __('common.actions.edit') }}"
                                 icon="pencil"
+                                color="secondary"
+                                flat
+                                xs
                                 wire:click="editCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')"
-                                class="btn-xs btn-ghost"
                             />
-                            <x-ts-button
+                            <x-ts-button.circle
                                 aria-label="{{ __('common.actions.delete') }}"
                                 icon="trash"
+                                color="red"
+                                flat
+                                xs
                                 wire:click="askRemoveCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')"
-                                class="btn-xs btn-ghost text-error"
                             />
                         </div>
                     </div>
@@ -92,17 +98,21 @@
                                         <span class="text-base-content/40 text-xs">(max {{ $indicator['max_score'] }}, {{ $indicator['weight'] }}%)</span>
                                     </div>
                                     <div class="flex gap-1">
-                                        <x-ts-button
+                                        <x-ts-button.circle
                                             aria-label="{{ __('common.actions.edit') }}"
                                             icon="pencil"
+                                            color="secondary"
+                                            flat
+                                            xs
                                             wire:click="editIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')"
-                                            class="btn-xs btn-ghost"
                                         />
-                                        <x-ts-button
+                                        <x-ts-button.circle
                                             aria-label="{{ __('common.actions.delete') }}"
                                             icon="trash"
+                                            color="red"
+                                            flat
+                                            xs
                                             wire:click="askRemoveIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')"
-                                            class="btn-xs btn-ghost text-error"
                                         />
                                     </div>
                                 </div>
@@ -116,7 +126,8 @@
                     <x-ts-button
                         :text="__('assessment.add_competency')"
                         wire:click="addCompetency('{{ $rubric->id }}')"
-                        class="btn-xs btn-primary"
+                        color="primary"
+                        xs
                     />
                 </div>
             @endforelse
@@ -127,7 +138,9 @@
                         :text="__('assessment.add_competency')"
                         icon="plus"
                         wire:click="addCompetency('{{ $rubric->id }}')"
-                        class="btn-sm btn-ghost"
+                        color="secondary"
+                        flat
+                        sm
                     />
                 </div>
             @endif

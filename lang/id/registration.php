@@ -113,6 +113,7 @@ return [
 
     'doc_upload_title' => 'Unggah Dokumen yang Diperlukan',
     'doc_uploaded' => 'Terunggah',
+    'doc_file_selected' => 'Berkas dipilih',
     'doc_no_requirements' => 'Tidak ada persyaratan dokumen untuk magang ini.',
     'doc_no_registration' => 'Anda tidak memiliki pendaftaran aktif atau tertunda.',
 ];

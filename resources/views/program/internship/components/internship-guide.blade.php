@@ -22,14 +22,14 @@
             <div class="bg-base-100 border-base-content/10 relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl border shadow-2xl">
                 <div class="bg-base-100 border-base-content/10 sticky top-0 flex items-center justify-between rounded-t-2xl border-b px-6 py-4">
                     <h3 id="guide-title" class="text-lg font-bold">{{ __('internship.guide.title') }}</h3>
-                    <button
-                        type="button"
+                    <x-ts-button.circle
                         x-on:click="showGuide = false"
                         aria-label="{{ __('common.actions.close') }}"
-                        class="btn btn-ghost btn-sm btn-square"
-                    >
-                        <x-ts-icon name="x-mark" class="size-5" />
-                    </button>
+                        icon="x-mark"
+                        color="secondary"
+                        flat
+                        sm
+                    />
                 </div>
                 <div class="space-y-5 p-6">
                     <p class="text-base-content/60 text-sm">{{ __('internship.guide.intro') }}</p>

@@ -50,7 +50,7 @@
             <button
                 type="button"
                 x-on:click="show = ! show"
-                class="btn btn-ghost {{ $sizeClasses }} rounded-full font-bold tracking-wider uppercase"
+                class="hover:bg-base-200 focus-visible:outline-primary inline-flex items-center gap-1.5 {{ $sizeClasses }} rounded-full font-bold tracking-wider uppercase transition-colors focus-visible:outline-2"
                 aria-label="{{ __('common.language.switch') }}"
             >
                 <span

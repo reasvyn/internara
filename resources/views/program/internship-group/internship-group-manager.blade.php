@@ -200,14 +200,16 @@
                                 @foreach ($memberFormData as $index => $memberRow)
                                     <div class="bg-base-200/30 border-base-content/10 relative rounded-xl border p-4">
                                         @if (count($memberFormData) > 1)
-                                            <button
+                                            <x-ts-button.circle
                                                 type="button"
                                                 wire:click="removeMemberRow({{ $index }})"
-                                                class="text-error btn btn-ghost btn-xs btn-square absolute top-3 right-3"
-                                                :aria-label="__('internship.remove_member_row')"
-                                            >
-                                                <x-ts-icon name="x-mark" class="size-4" />
-                                            </button>
+                                                icon="x-mark"
+                                                color="red"
+                                                flat
+                                                xs
+                                                class="absolute top-3 right-3"
+                                                aria-label="{{ __('internship.remove_member_row') }}"
+                                            />
                                         @endif
                                         <p class="text-base-content/50 mb-3 text-xs font-semibold tracking-wider uppercase">
                                             {{ __('internship.member') }} #{{ $index + 1 }}

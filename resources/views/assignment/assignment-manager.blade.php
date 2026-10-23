@@ -136,8 +136,8 @@
                         @if ($assignment->status->value === 'draft')
                             <x-ts-button.circle
                                 icon="paper-airplane"
-                                class="btn-circle text-success hover:bg-success/10 transition-colors"
-                                color="white"
+                                color="green"
+                                flat
                                 xs
                                 wire:click="publish('{{ $assignment->id }}')"
                                 tooltip="{{ __('assignment.publish_tooltip') }}"
@@ -146,8 +146,8 @@
                         <x-ts-button.circle
                             aria-label="{{ __('common.actions.edit') }}"
                             icon="pencil"
-                            class="btn-circle text-primary hover:bg-primary/10 transition-colors"
-                            color="white"
+                            color="primary"
+                            flat
                             xs
                             wire:click="edit('{{ $assignment->id }}')"
                             tooltip="{{ __('assignment.edit_tooltip') }}"
@@ -155,8 +155,8 @@
                         <x-ts-button.circle
                             aria-label="{{ __('common.actions.delete') }}"
                             icon="trash"
-                            class="btn-circle text-error hover:bg-error/10 transition-colors"
-                            color="white"
+                            color="red"
+                            flat
                             xs
                             wire:click="askDelete('{{ $assignment->id }}')"
                             tooltip="{{ __('assignment.delete_tooltip') }}"
