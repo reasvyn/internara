@@ -78,8 +78,9 @@ final class ScoreIndicatorAction extends BaseCommandAction
         $scoresData['competencies'] ??= [];
         $evaluatedAt = now()->toIso8601String();
 
-        foreach ($scoresData['competencies'] as &$competency) {
-            if (($competency['id'] ?? null) !== $data->competencyId) {
+        foreach ($scoresData['competencies'] as $key => &$competency) {
+            $compId = $competency['id'] ?? (is_string($key) ? $key : null);
+            if ($compId !== $data->competencyId) {
                 continue;
             }
 

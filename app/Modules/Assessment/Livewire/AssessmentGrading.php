@@ -7,9 +7,10 @@ namespace App\Modules\Assessment\Livewire;
 use App\Modules\Assessment\Actions\AutoCalculateAssessmentAction;
 use App\Modules\Assessment\Actions\FinalizeAssessmentAction;
 use App\Modules\Assessment\Actions\InitializeAssessmentAction;
-use App\Modules\Assessment\Actions\UpdateAssessmentScoresAction;
-use App\Modules\Assessment\Data\UpdateAssessmentScoresData;
+use App\Modules\Assessment\Actions\ScoreIndicatorAction;
+use App\Modules\Assessment\Data\ScoreIndicatorData;
 use App\Modules\Assessment\Models\Assessment;
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\UI\Livewire\BaseFormView;
 use Illuminate\Contracts\View\View;
@@ -45,7 +46,14 @@ class AssessmentGrading extends BaseFormView
 
         $content = $assessment->scores_data ?? [];
         $competencies = $content['competencies'] ?? [];
-        foreach ($competencies as $compId => $compData) {
+        foreach ($competencies as $key => $compData) {
+            if (! is_array($compData)) {
+                continue;
+            }
+            $compId = $compData['id'] ?? (is_string($key) ? $key : null);
+            if ($compId === null) {
+                continue;
+            }
             foreach ($compData['indicators'] ?? [] as $indId => $score) {
                 $this->scores[$compId][$indId] = (string) $score;
             }
@@ -155,7 +163,7 @@ class AssessmentGrading extends BaseFormView
         return new Collection($readOnly->all());
     }
 
-    public function updatedScores($value, string $key, UpdateAssessmentScoresAction $action): void
+    public function updatedScores($value, string $key, ScoreIndicatorAction $action): void
     {
         if ($this->isFinalized) {
             return;
@@ -169,17 +177,33 @@ class AssessmentGrading extends BaseFormView
         [$competencyId, $indicatorId] = $parts;
 
         $assessment = $this->assessment;
-        if ($assessment === null) {
+        if ($assessment === null || $assessment->rubric === null) {
             return;
         }
 
-        $score = is_numeric($value) ? (float) $value : null;
+        if (! is_numeric($value)) {
+            return;
+        }
 
-        $action->execute($assessment, new UpdateAssessmentScoresData(
-            competencyId: $competencyId,
-            indicatorId: $indicatorId,
-            score: $score,
-        ));
+        $user = auth()->user();
+        if ($user === null) {
+            return;
+        }
+
+        try {
+            $action->execute(
+                $assessment,
+                $assessment->rubric,
+                new ScoreIndicatorData(
+                    competencyId: $competencyId,
+                    indicatorId: $indicatorId,
+                    score: (float) $value,
+                ),
+                $user,
+            );
+        } catch (RejectedException $e) {
+            $this->toast()->error($e->getMessage())->send();
+        }
     }
 
     public function autoImport(AutoCalculateAssessmentAction $action): void

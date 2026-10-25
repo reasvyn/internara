@@ -90,7 +90,21 @@ final readonly class AssessmentResult extends BaseEntity
             return [];
         }
 
-        return $this->scoresData['competencies'] ?? [];
+        $competencies = $this->scoresData['competencies'] ?? [];
+        $normalized = [];
+
+        foreach ($competencies as $key => $competency) {
+            if (! is_array($competency)) {
+                continue;
+            }
+
+            $id = $competency['id'] ?? (is_string($key) ? $key : null);
+            if ($id !== null) {
+                $normalized[$id] = $competency;
+            }
+        }
+
+        return $normalized;
     }
 
     /**
