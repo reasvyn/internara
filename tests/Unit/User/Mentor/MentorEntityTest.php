@@ -91,6 +91,73 @@ describe('T4B26: mentor entity', function (): void {
         expect($entity->canVerifyAttendance($teacher))->toBeFalse();
     });
 
+    test('T4B26-FR-CRP4, T4B26-FR-RBAC-019: teacher cannot proxy when supervisor was active within inactivity window', function () use ($makeUser, $makeEntity): void {
+        $teacher = $makeUser('teacher-1', ['teacher']);
+        $supervisor = $makeUser('supervisor-1', ['supervisor']);
+        $admin = $makeUser('admin-1', ['admin']);
+
+        // Active 2 hours ago (within 48h window)
+        $entity = $makeEntity($teacher, $supervisor)->withSupervisorActivity(
+            lastActiveAt: Carbon::now()->subHours(2),
+            inactivityHours: 48,
+        );
+
+        expect($entity->canProxyAsSupervisor($teacher))->toBeFalse();
+        expect($entity->canVerifyLogbook($teacher))->toBeFalse();
+        expect($entity->canReviewSupervisionLog($teacher))->toBeFalse();
+        expect($entity->canScoreCompetency($teacher, 'supervisor'))->toBeFalse();
+
+        // Supervisor can always act as supervisor regardless of window
+        expect($entity->canVerifyLogbook($supervisor))->toBeTrue();
+        // Super admin and admin bypass inactivity guard
+        expect($entity->canProxyAsSupervisor($admin))->toBeTrue();
+    });
+
+    test('T4B26-FR-CRP4, T4B26-FR-RBAC-019: teacher can proxy when supervisor has been inactive beyond inactivity window', function () use ($makeUser, $makeEntity): void {
+        $teacher = $makeUser('teacher-1', ['teacher']);
+        $supervisor = $makeUser('supervisor-1', ['supervisor']);
+
+        // Active 72 hours ago (> 48h window)
+        $entity = $makeEntity($teacher, $supervisor)->withSupervisorActivity(
+            lastActiveAt: Carbon::now()->subHours(72),
+            inactivityHours: 48,
+        );
+
+        expect($entity->canProxyAsSupervisor($teacher))->toBeTrue();
+        expect($entity->canVerifyLogbook($teacher))->toBeTrue();
+        expect($entity->canReviewSupervisionLog($teacher))->toBeTrue();
+    });
+
+    test('T4B26-FR-CRP4, T4B26-FR-RBAC-019: configurable inactivity window is respected', function () use ($makeUser, $makeEntity): void {
+        $teacher = $makeUser('teacher-1', ['teacher']);
+        $supervisor = $makeUser('supervisor-1', ['supervisor']);
+
+        // Custom window: 24 hours
+        $entity = $makeEntity($teacher, $supervisor)->withSupervisorActivity(
+            lastActiveAt: Carbon::parse('2026-03-10 10:00:00'),
+            inactivityHours: 24,
+        );
+
+        // Active 20 hours ago -> within 24h window -> proxy refused
+        expect($entity->canProxyAsSupervisor($teacher, Carbon::parse('2026-03-11 06:00:00')))->toBeFalse();
+
+        // Active 30 hours ago -> beyond 24h window -> proxy permitted
+        expect($entity->canProxyAsSupervisor($teacher, Carbon::parse('2026-03-11 16:00:00')))->toBeTrue();
+    });
+
+    test('T4B26-FR-CRP4, T4B26-FR-RBAC-019: teacher can proxy when no supervisor activity exists', function () use ($makeUser, $makeEntity): void {
+        $teacher = $makeUser('teacher-1', ['teacher']);
+        $supervisor = $makeUser('supervisor-1', ['supervisor']);
+
+        // No activity timestamp recorded (e.g. supervisor never logged in)
+        $entity = $makeEntity($teacher, $supervisor)->withSupervisorActivity(
+            lastActiveAt: null,
+            inactivityHours: 48,
+        );
+
+        expect($entity->canProxyAsSupervisor($teacher))->toBeTrue();
+    });
+
     test('T4B26-FR-RBAC-018: logbook verification honours supervisors and their proxies', function () use ($makeUser, $makeEntity): void {
         $teacher = $makeUser('teacher-1', ['teacher']);
         $supervisor = $makeUser('supervisor-1', ['supervisor']);

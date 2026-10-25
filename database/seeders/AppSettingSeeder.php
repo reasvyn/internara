@@ -218,6 +218,13 @@ class AppSettingSeeder extends Seeder
                 'description' => 'Time after which a student is marked as late.',
                 'group' => 'operational',
             ],
+            [
+                'key' => 'journals.proxy_inactivity_hours',
+                'value' => 48,
+                'type' => 'integer',
+                'description' => 'Hours of supervisor inactivity required before teacher proxy is permitted.',
+                'group' => 'operational',
+            ],
 
             // Internship phase definitions
             [

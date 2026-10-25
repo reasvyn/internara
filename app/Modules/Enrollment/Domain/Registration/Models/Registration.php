@@ -16,6 +16,7 @@ use App\Modules\Program\Domain\Internship\Models\Internship;
 use App\Modules\Program\Domain\InternshipGroup\Models\InternshipGroupMember;
 use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
 use App\Modules\Setting\Models\Setting;
+use App\Modules\Setting\Services\Settings;
 use App\Modules\User\Domain\Mentor\Entities\MentorEntity;
 use App\Modules\User\Models\User;
 use Carbon\Carbon;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Spatie\Activitylog\Models\Activity;
 
 /**
  * @property string $id
@@ -110,7 +112,16 @@ class Registration extends BaseModel
 
     public function asMentorEntity(): MentorEntity
     {
-        return MentorEntity::fromModel($this);
+        $entity = MentorEntity::fromModel($this);
+
+        if ($this->getAttribute('supervisor_last_active_at') !== null) {
+            return $entity;
+        }
+
+        return $entity->withSupervisorActivity(
+            lastActiveAt: $this->resolveSupervisorLastActivity(),
+            inactivityHours: $this->resolveProxyInactivityHours(),
+        );
     }
 
     public function student(): BelongsTo
@@ -191,5 +202,40 @@ class Registration extends BaseModel
         $defaults = Setting::where('key', 'internship_phases')->value('value');
 
         return is_array($defaults) ? $defaults : [];
+    }
+
+    public function resolveSupervisorLastActivity(): ?Carbon
+    {
+        $mentors = $this->relationLoaded('mentors')
+            ? $this->mentors
+            : $this->mentors()->get();
+
+        $supervisorIds = $mentors
+            ->filter(fn (User $user) => $user->hasRole('supervisor'))
+            ->pluck('id');
+
+        if ($supervisorIds->isEmpty()) {
+            return null;
+        }
+
+        try {
+            $lastActive = Activity::whereIn('causer_id', $supervisorIds)
+                ->where('causer_type', (new User)->getMorphClass())
+                ->latest('created_at')
+                ->value('created_at');
+
+            return $lastActive ? Carbon::parse($lastActive) : null;
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    public function resolveProxyInactivityHours(): int
+    {
+        try {
+            return (int) Settings::get('journals.proxy_inactivity_hours', 48);
+        } catch (\Throwable) {
+            return 48;
+        }
     }
 }

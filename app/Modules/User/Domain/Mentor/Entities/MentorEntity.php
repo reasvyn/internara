@@ -6,6 +6,7 @@ namespace App\Modules\User\Domain\Mentor\Entities;
 
 use App\Modules\Core\Entities\BaseEntity;
 use App\Modules\User\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,8 @@ final readonly class MentorEntity extends BaseEntity
     public function __construct(
         private string $registrationId,
         private Collection $mentors,
+        private ?Carbon $supervisorLastActiveAt = null,
+        private int $inactivityHours = 48,
     ) {}
 
     public static function fromModel(Model $model): static
@@ -22,10 +25,30 @@ final readonly class MentorEntity extends BaseEntity
             ? $model->mentors
             : $model->mentors()->get();
 
+        $supervisorLastActiveAt = $model->getAttribute('supervisor_last_active_at');
+        if (is_string($supervisorLastActiveAt)) {
+            $supervisorLastActiveAt = Carbon::parse($supervisorLastActiveAt);
+        }
+
+        $inactivityHours = $model->getAttribute('proxy_inactivity_hours');
+
         return new self(
             registrationId: $model->id,
             mentors: $mentors,
+            supervisorLastActiveAt: $supervisorLastActiveAt instanceof Carbon ? $supervisorLastActiveAt : null,
+            inactivityHours: $inactivityHours !== null ? (int) $inactivityHours : 48,
         );
+    }
+
+    public function withSupervisorActivity(?Carbon $lastActiveAt, ?int $inactivityHours = null): static
+    {
+        $updated = $this->with('supervisorLastActiveAt', $lastActiveAt);
+
+        if ($inactivityHours !== null) {
+            $updated = $updated->with('inactivityHours', $inactivityHours);
+        }
+
+        return $updated;
     }
 
     // ---- Role Queries ----
@@ -51,7 +74,7 @@ final readonly class MentorEntity extends BaseEntity
 
     // ---- Cross-Role Proxy ----
 
-    public function canProxyAsSupervisor(User $user): bool
+    public function canProxyAsSupervisor(User $user, ?Carbon $now = null): bool
     {
         if ($user->hasRole('super_admin')) {
             return true;
@@ -61,11 +84,20 @@ final readonly class MentorEntity extends BaseEntity
             return true;
         }
 
-        if ($user->hasRole('teacher') && $this->isTeacher($user)) {
-            return true;
+        if (! ($user->hasRole('teacher') && $this->isTeacher($user))) {
+            return false;
         }
 
-        return false;
+        if ($this->supervisorLastActiveAt !== null) {
+            $currentTime = $now ?? Carbon::now();
+            $threshold = $currentTime->copy()->subHours($this->inactivityHours);
+
+            if ($this->supervisorLastActiveAt->isAfter($threshold)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function canProxyAsTeacher(User $user): bool
@@ -150,5 +182,15 @@ final readonly class MentorEntity extends BaseEntity
     public function mentors(): Collection
     {
         return $this->mentors;
+    }
+
+    public function supervisorLastActiveAt(): ?Carbon
+    {
+        return $this->supervisorLastActiveAt;
+    }
+
+    public function inactivityHours(): int
+    {
+        return $this->inactivityHours;
     }
 }
