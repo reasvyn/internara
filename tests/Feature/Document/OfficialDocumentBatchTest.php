@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
+use App\Modules\Document\Domain\OfficialDocument\Actions\DispatchBatchDocumentGenerationAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateDocumentAction;
 use App\Modules\Document\Jobs\GenerateDocumentJob;
 use App\Modules\Document\Models\Document;
@@ -15,6 +16,16 @@ use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
 describe('7H5D6: batched official letters', function () {
+    test('ZT6VS-FR-Q6, 7H5D6-FR-GW1: DispatchBatchDocumentGenerationAction routes batch to documents queue', function (): void {
+        Queue::fake();
+
+        $action = app(DispatchBatchDocumentGenerationAction::class);
+        $action->execute(['doc-1', 'doc-2', 'doc-3']);
+
+        Queue::assertPushedOn('documents', GenerateDocumentJob::class);
+        expect(Queue::pushed(GenerateDocumentJob::class))->toHaveCount(3);
+    });
+
     test('7H5D6-UC-OFFD-004: supervisor batch queues one job per letter on the documents queue', function (): void {
         Queue::fake();
 
