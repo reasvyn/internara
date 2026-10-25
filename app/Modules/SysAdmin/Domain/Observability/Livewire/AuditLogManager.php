@@ -14,6 +14,20 @@ use Spatie\Activitylog\Models\Activity;
 
 class AuditLogManager extends BaseRecordManager
 {
+    public ?string $filterUser = null;
+
+    public ?string $filterModule = null;
+
+    public ?string $filterAction = null;
+
+    public function resetFilters(): void
+    {
+        parent::resetFilters();
+        $this->filterUser = null;
+        $this->filterModule = null;
+        $this->filterAction = null;
+    }
+
     public function headers(): array
     {
         return [
@@ -42,10 +56,14 @@ class AuditLogManager extends BaseRecordManager
 
     protected function applyFilters(Builder $query): Builder
     {
+        $user = $this->filters['user'] ?? $this->filterUser;
+        $module = $this->filters['module'] ?? $this->filterModule;
+        $action = $this->filters['action'] ?? $this->filterAction;
+
         return $query
-            ->when($this->filters['user'] ?? null, fn ($q, $u) => $q->where('causer_id', $u)->where('causer_type', User::class))
-            ->when($this->filters['module'] ?? null, fn ($q, $m) => $q->where('log_name', $m))
-            ->when($this->filters['action'] ?? null, fn ($q, $a) => $q->where('description', $a));
+            ->when($user, fn ($q, $u) => $q->where('causer_id', $u)->where('causer_type', User::class))
+            ->when($module, fn ($q, $m) => $q->where('log_name', $m))
+            ->when($action, fn ($q, $a) => $q->where('description', $a));
     }
 
     #[Layout('ui::layouts.app')]

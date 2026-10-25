@@ -119,6 +119,8 @@
             </x-slot:footer>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::components.record-manager>
 
-@include('sysadmin.backups.components.backup-guide')
+    <x-slot:auxiliary>
+        @include('sysadmin.backups.components.backup-guide')
+    </x-slot:auxiliary>
+</x-ui::components.record-manager>

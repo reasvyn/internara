@@ -120,4 +120,9 @@
     @if (isset($modal))
         {{ $modal }}
     @endif
+
+    {{-- Auxiliary (Guides, Floating Actions) --}}
+    @if (isset($auxiliary))
+        {{ $auxiliary }}
+    @endif
 </div>

@@ -246,6 +246,8 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::components.record-manager>
 
-@include('assessment.rubric.components.rubric-guide')
+    <x-slot:auxiliary>
+        @include('assessment.rubric.components.rubric-guide')
+    </x-slot:auxiliary>
+</x-ui::components.record-manager>

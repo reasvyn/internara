@@ -66,6 +66,8 @@
             :description="__('sysadmin.activity_adjust_filters')"
         />
     </x-slot:emptyState>
-</x-ui::components.record-manager>
 
-@include('sysadmin.observability.components.audit-log-guide')
+    <x-slot:auxiliary>
+        @include('sysadmin.observability.components.audit-log-guide')
+    </x-slot:auxiliary>
+</x-ui::components.record-manager>

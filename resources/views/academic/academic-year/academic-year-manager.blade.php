@@ -145,6 +145,8 @@
             </x-slot:footer>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::components.record-manager>
 
-@include('setup.components.academic-year-guide')
+    <x-slot:auxiliary>
+        @include('setup.components.academic-year-guide')
+    </x-slot:auxiliary>
+</x-ui::components.record-manager>

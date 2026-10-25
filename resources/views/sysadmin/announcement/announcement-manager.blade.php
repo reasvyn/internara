@@ -92,12 +92,12 @@
 
                 <div class="border-base-content/10 space-y-4 border-t pt-4">
                     <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
-                    <x-ts-radio
+                    <x-ts-radio.group
                         wire:model.live="form.status"
                         :options="[
-                            ['id' => 'draft', 'name' => __('announcement.status.draft')],
-                            ['id' => 'scheduled', 'name' => __('announcement.status.scheduled')],
-                            ['id' => 'published', 'name' => __('announcement.status.published')],
+                            ['value' => 'draft', 'label' => __('announcement.status.draft')],
+                            ['value' => 'scheduled', 'label' => __('announcement.status.scheduled')],
+                            ['value' => 'published', 'label' => __('announcement.status.published')],
                         ]"
                     />
 
@@ -139,6 +139,8 @@
             </form>
         </x-ts-modal>
     </x-slot:modal>
-</x-ui::components.record-manager>
 
-@include('sysadmin.announcement.components.announcement-guide')
+    <x-slot:auxiliary>
+        @include('sysadmin.announcement.components.announcement-guide')
+    </x-slot:auxiliary>
+</x-ui::components.record-manager>
