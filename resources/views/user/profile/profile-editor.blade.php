@@ -200,7 +200,7 @@
                                 class="sr-only"
                             />
                             <label for="avatar-upload" class="relative block cursor-pointer">
-                                <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
+                                <div class="bg-base-200 border-base-content/10 ring-primary/10 group-hover:ring-primary/30 relative flex size-24 items-center justify-center overflow-hidden rounded-full border-2 ring-2 transition-all">
                                     @php
                                         $currentAvatar = $this->avatarPreviewUrl() ?: ($user->getFirstMediaUrl('avatar', 'thumb') ?: $user->getFirstMediaUrl('avatar'));
                                     @endphp
@@ -215,9 +215,9 @@
                                     @endif
                                     {{-- Loading overlay saat upload --}}
                                     <div
-                                        wire:loading
+                                        wire:loading.flex
                                         wire:target="avatar"
-                                        class="bg-base-100/80 absolute inset-0 flex items-center justify-center rounded-full"
+                                        class="bg-base-100/80 text-primary absolute inset-0 items-center justify-center rounded-full"
                                     >
                                         <x-ts-icon name="arrow-path" class="size-6 animate-spin" />
                                     </div>

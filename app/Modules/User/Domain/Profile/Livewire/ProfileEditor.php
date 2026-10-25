@@ -105,7 +105,7 @@ class ProfileEditor extends BaseFormView
             ));
 
             // Refresh user agar getFirstMediaUrl('avatar') terbaru langsung tampil
-            $this->user->refresh()->load(['profile', 'roles']);
+            $this->user->refresh()->load(['media', 'profile', 'roles']);
             $this->avatar = null;
 
             $this->toast()->success(__('profile.avatar_saved'))->send();
@@ -119,7 +119,7 @@ class ProfileEditor extends BaseFormView
         $this->handleSave(function (): void {
             $this->user->clearMediaCollection('avatar');
             $this->avatar = null;
-            $this->user->refresh()->load(['profile', 'roles']);
+            $this->user->refresh()->load(['media', 'profile', 'roles']);
 
             $this->toast()->success(__('profile.avatar_removed'))->send();
         });
