@@ -9,14 +9,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 describe('W8K2P: docker vps deployment topology, configuration, and pre-release lifecycle', function (): void {
-    test('W8K2P-FR-DOCK-001 W8K2P-UC-DOCK-001: docker-compose defines app, web, and db services', function (): void {
+    test('W8K2P-FR-DOCK-001 W8K2P-UC-DOCK-001: docker-compose defines app service for fastcgi proxy and sqlite persistence', function (): void {
         $path = base_path('docker-compose.yml');
         expect(File::exists($path))->toBeTrue();
 
         $compose = File::get($path);
         expect($compose)->toContain('app:')
-            ->and($compose)->toContain('web:')
-            ->and($compose)->toContain('db:');
+            ->and($compose)->toContain('127.0.0.1:9000:9000');
     });
 
     test('W8K2P-FR-DOCK-002 W8K2P-FR-DOCK-005: app and web build from repository dockerfiles', function (): void {
@@ -25,24 +24,21 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
             ->and(File::exists(base_path('.docker/nginx.conf')))->toBeTrue();
     });
 
-    test('W8K2P-FR-DOCK-006: db service uses mysql 8 with healthcheck', function (): void {
+    test('W8K2P-FR-DOCK-006: database configuration uses sqlite persistence without requiring a standalone db daemon', function (): void {
         $compose = File::get(base_path('docker-compose.yml'));
-        expect($compose)->toContain('image: mysql:8')
-            ->and($compose)->toContain('mysqladmin')
-            ->and($compose)->toContain('ping');
+        expect($compose)->toContain('DB_CONNECTION: sqlite')
+            ->and($compose)->toContain('DB_DATABASE: /app/storage/database.sqlite');
     });
 
     test('W8K2P-FR-DOCK-008: persistent named volumes storage_data and app_data are declared', function (): void {
         $compose = File::get(base_path('docker-compose.yml'));
         expect($compose)->toContain('storage_data:')
-            ->and($compose)->toContain('app_data:')
-            ->and($compose)->toContain('mysql_data:');
+            ->and($compose)->toContain('app_data:');
     });
 
     test('W8K2P-FR-DOCK-011 W8K2P-FR-DOCK-012: services define health checks and restart policies', function (): void {
         $compose = File::get(base_path('docker-compose.yml'));
         expect($compose)->toContain('fpm-healthcheck')
-            ->and($compose)->toContain('service_healthy')
             ->and($compose)->toContain('restart: unless-stopped');
     });
 
@@ -71,8 +67,7 @@ describe('W8K2P: docker vps deployment topology, configuration, and pre-release 
 
         $compose = File::get(base_path('docker-compose.yml'));
         expect($compose)->not->toContain('APP_KEY=base64')
-            ->and($compose)->toContain('${APP_KEY:?APP_KEY is required}')
-            ->and($compose)->toContain(':ro');
+            ->and($compose)->toContain('${APP_KEY:?APP_KEY is required}');
     });
 
     test('W8K2P-FR-DOCK-014 W8K2P-FR-DOCK-016: system defines two-tier deployment lifecycle with production release', function (): void {
