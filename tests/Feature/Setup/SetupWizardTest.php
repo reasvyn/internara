@@ -127,4 +127,16 @@ describe('VEJCX: Setup Wizard', function (): void {
             ->call('nextStep')
             ->assertSet('currentStep', 1);
     });
+
+    test('VEJCX-FR-WIZ-020: completion step renders direct login link to avoid 419 page expired', function (): void {
+        Setting::updateOrCreate(
+            ['key' => 'setup.is_installed'],
+            ['value' => false, 'group' => 'setup', 'type' => 'boolean']
+        );
+        Cache::flush();
+
+        Livewire::test(SetupWizard::class)
+            ->set('currentStep', 6)
+            ->assertSeeHtml('href="'.route('login').'"');
+    });
 });

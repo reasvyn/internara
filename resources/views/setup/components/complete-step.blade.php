@@ -105,6 +105,6 @@
         icon="arrow-right"
         position="right"
         color="primary"
-        wire:click="finishSession"
+        :href="route('login')"
     />
 </div>
