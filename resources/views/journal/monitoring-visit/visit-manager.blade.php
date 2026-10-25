@@ -31,14 +31,10 @@
                 <x-ui::components.table-actions>
                     @can('verify', App\Modules\Journal\Domain\MonitoringVisit\Models\MonitoringVisit::class)
                         @if (! $v->is_verified)
-                            <x-ts-button.circle
-                                icon="check"
-                                color="green"
-                                outline
-                                xs
+                            <x-ui::components.table-action
+                                action="verify"
                                 wire:click="verify('{{ $v->id }}')"
-                                aria-label="{{ __('journals.verify') }}"
-                                tooltip="{{ __('journals.verify') }}"
+                                :label="__('journals.verify')"
                             />
                         @endif
                     @endcan

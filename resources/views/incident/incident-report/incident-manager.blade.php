@@ -63,25 +63,15 @@
             @interact('column_action', $i)
                 <x-ui::components.table-actions>
                     @can('update', $i)
-                        <x-ts-button.circle
-                            icon="pencil"
-                            color="primary"
-                            outline
-                            xs
-                            wire:click="edit('{{ $i->id }}')"
-                            :aria-label="__('common.actions.edit')"
-                            tooltip="{{ __('common.actions.edit') }}"
-                        />
+                        <x-ui::components.table-action action="edit" wire:click="edit('{{ $i->id }}')" />
                     @endcan
                     @if (! $i->status->isTerminal())
-                        <x-ts-button.circle
+                        <x-ui::components.table-action
+                            action="custom"
                             icon="check-circle"
                             color="green"
-                            outline
-                            xs
                             wire:click="resolve('{{ $i->id }}')"
-                            :aria-label="__('incident.resolve')"
-                            tooltip="{{ __('incident.resolve') }}"
+                            :label="__('incident.resolve')"
                         />
                     @endif
                 </x-ui::components.table-actions>

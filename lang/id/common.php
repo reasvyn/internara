@@ -74,6 +74,7 @@ return [
         'create' => 'Buat',
         'update' => 'Perbarui',
         'view' => 'Lihat',
+        'verify' => 'Verifikasi',
         'download' => 'Unduh',
         'search' => 'Cari',
         'filter' => 'Filter',

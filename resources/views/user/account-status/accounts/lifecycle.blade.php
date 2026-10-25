@@ -64,24 +64,20 @@
                 @interact('column_action', $user)
                     <x-ui::components.table-actions>
                         @if ($user->locked_at)
-                            <x-ts-button.circle
-                                aria-label="{{ __('common.actions.unlock') }}"
+                            <x-ui::components.table-action
+                                action="custom"
                                 icon="lock-open"
                                 color="green"
-                                outline
-                                xs
                                 wire:click="askUnlock('{{ $user->id }}')"
-                                tooltip="{{ __('common.actions.unlock') }}"
+                                :label="__('common.actions.unlock')"
                             />
                         @else
-                            <x-ts-button.circle
-                                aria-label="{{ __('common.actions.lock') }}"
+                            <x-ui::components.table-action
+                                action="custom"
                                 icon="lock-closed"
                                 color="amber"
-                                outline
-                                xs
                                 wire:click="askLock('{{ $user->id }}')"
-                                tooltip="{{ __('common.actions.lock') }}"
+                                :label="__('common.actions.lock')"
                             />
                         @endif
                     </x-ui::components.table-actions>

@@ -45,15 +45,7 @@
             @interact('column_action', $p)
                 <x-ui::components.table-actions>
                     @if ($p->status->value === 'scheduled')
-                        <x-ts-button.circle
-                            aria-label="{{ __('common.actions.edit') }}"
-                            icon="pencil"
-                            color="primary"
-                            outline
-                            xs
-                            wire:click="setupScoring('{{ $p->id }}')"
-                            tooltip="{{ __('common.actions.edit') }}"
-                        />
+                        <x-ui::components.table-action action="edit" wire:click="setupScoring('{{ $p->id }}')" />
                     @endif
                 </x-ui::components.table-actions>
             @endinteract

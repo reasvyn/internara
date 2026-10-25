@@ -33,16 +33,13 @@
             @endinteract
 
             @interact('column_action', $template)
-                <div class="flex items-center justify-center">
-                    <x-ts-button.circle
-                        aria-label="{{ __('common.actions.edit') }}"
-                        icon="pencil"
+                <x-ui::components.table-actions>
+                    <x-ui::components.table-action
+                        action="edit"
                         wire:click="editTemplate('{{ $template->id }}')"
-                        color="secondary"
-                        flat
-                        sm
+                        :label="__('common.actions.edit').' '.$template->name"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </x-ts-card>

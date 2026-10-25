@@ -210,9 +210,8 @@
                                 icon="shield-check"
                                 class="h-12 rounded-[2rem] px-10 text-[10px] font-black tracking-[0.2em] uppercase"
                                 color="green"
-                                wire:click="verify('{{ $selectedSubmission->id }}')"
-                                wire:confirm="{{ __('submission.confirm_verify') }}"
-                                loading="verify"
+                                wire:click="askVerify('{{ $selectedSubmission->id }}')"
+                                loading="confirmVerify"
                             />
                         @endif
                         <x-ts-button

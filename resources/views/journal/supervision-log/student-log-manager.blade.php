@@ -30,15 +30,7 @@
         @interact('column_action', $l)
             <x-ui::components.table-actions>
                 @if ($l->status->value === 'draft')
-                    <x-ts-button.circle
-                        icon="trash"
-                        color="red"
-                        outline
-                        xs
-                        wire:click="askDelete('{{ $l->id }}')"
-                        :aria-label="__('common.actions.delete')"
-                        tooltip="{{ __('common.actions.delete') }}"
-                    />
+                    <x-ui::components.table-action action="delete" wire:click="askDelete('{{ $l->id }}')" />
                 @endif
             </x-ui::components.table-actions>
         @endinteract

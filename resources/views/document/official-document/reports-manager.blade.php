@@ -30,24 +30,19 @@
             :rows="$reports"
         >
             @interact('column_action', $report)
-                <div class="flex items-center justify-center gap-2">
-                    <x-ts-button
+                <x-ui::components.table-actions>
+                    <x-ui::components.table-action
+                        action="download"
                         href="{{ $report->getFirstMediaUrl('file') }}"
                         target="_blank"
-                        icon="arrow-down-tray"
-                        :text="__('document.download')"
-                        color="primary"
-                        sm
+                        :label="__('document.download').' '.$report->name"
                     />
-                    <x-ts-button.circle
-                        aria-label="{{ __('common.actions.delete') }}"
-                        wire:click="deleteReport('{{ $report->id }}')"
-                        icon="trash"
-                        color="red"
-                        flat
-                        sm
+                    <x-ui::components.table-action
+                        action="delete"
+                        wire:click="askDeleteReport('{{ $report->id }}')"
+                        :label="__('common.actions.delete').' '.$report->name"
                     />
-                </div>
+                </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
     </x-ts-card>

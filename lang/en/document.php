@@ -31,4 +31,5 @@ return [
     'template_saved' => 'Template saved successfully.',
     'report_generated' => "Report ':name' generated. Use download to retrieve it.",
     'report_deleted' => 'Report deleted.',
+    'confirm_delete_report' => 'Are you sure you want to delete this report?',
 ];

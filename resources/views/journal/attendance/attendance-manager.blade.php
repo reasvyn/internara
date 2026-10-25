@@ -82,13 +82,10 @@
                                             </x-ts-select.native>
                                         @endcan
                                         @can('delete', $attendance)
-                                            <x-ts-button.circle
-                                                aria-label="{{ __('common.actions.delete') }}"
-                                                wire:click="deleteAttendance('{{ $attendance->id }}')"
-                                                wire:confirm="{{ __('journals.attendance.confirm_delete') }}"
-                                                icon="trash"
-                                                color="red"
-                                                sm
+                                            <x-ui::components.table-action
+                                                action="delete"
+                                                wire:click="askDeleteAttendance('{{ $attendance->id }}')"
+                                                :label="__('common.actions.delete')"
                                             />
                                         @endcan
                                     </div>

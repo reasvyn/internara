@@ -58,32 +58,22 @@
 
             @interact('column_action', $user)
                 <x-ui::components.table-actions>
-                    <x-ts-button.circle
-                        icon="pencil"
-                        color="primary"
-                        outline
-                        xs
+                    <x-ui::components.table-action
+                        action="edit"
                         wire:click="edit('{{ $user->id }}')"
-                        :aria-label="__('common.actions.edit')"
-                        tooltip="{{ __('common.actions.edit') }}"
+                        :label="__('common.actions.edit').' '.$user->name"
                     />
-                    <x-ts-button.circle
+                    <x-ui::components.table-action
+                        action="custom"
                         icon="key"
                         color="blue"
-                        outline
-                        xs
                         wire:click="showSlip('{{ $user->id }}')"
-                        :aria-label="__('user.manager.account_slip')"
-                        tooltip="{{ __('user.manager.account_slip') }}"
+                        :label="__('user.manager.account_slip')"
                     />
-                    <x-ts-button.circle
-                        icon="trash"
-                        color="red"
-                        outline
-                        xs
+                    <x-ui::components.table-action
+                        action="delete"
                         wire:click="askDelete('{{ $user->id }}')"
-                        :aria-label="__('common.actions.delete')"
-                        tooltip="{{ __('common.actions.delete') }}"
+                        :label="__('common.actions.delete').' '.$user->name"
                     />
                 </x-ui::components.table-actions>
             @endinteract

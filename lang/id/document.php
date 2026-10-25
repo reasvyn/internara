@@ -31,4 +31,5 @@ return [
     'template_saved' => 'Template berhasil disimpan.',
     'report_generated' => "Laporan ':name' berhasil dibuat. Gunakan unduhan untuk mengambilnya.",
     'report_deleted' => 'Laporan berhasil dihapus.',
+    'confirm_delete_report' => 'Apakah Anda yakin ingin menghapus laporan ini?',
 ];

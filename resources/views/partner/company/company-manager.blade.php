@@ -129,24 +129,8 @@
 
             @interact('column_action', $company)
                 <x-ui::components.table-actions>
-                    <x-ts-button.circle
-                        icon="pencil"
-                        color="primary"
-                        outline
-                        xs
-                        wire:click="edit('{{ $company->id }}')"
-                        :aria-label="__('common.actions.edit')"
-                        tooltip="{{ __('common.actions.edit') }}"
-                    />
-                    <x-ts-button.circle
-                        icon="trash"
-                        color="red"
-                        outline
-                        xs
-                        wire:click="askDelete('{{ $company->id }}')"
-                        :aria-label="__('common.actions.delete')"
-                        tooltip="{{ __('common.actions.delete') }}"
-                    />
+                    <x-ui::components.table-action action="edit" wire:click="edit('{{ $company->id }}')" />
+                    <x-ui::components.table-action action="delete" wire:click="askDelete('{{ $company->id }}')" />
                 </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>

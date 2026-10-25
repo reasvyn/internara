@@ -215,36 +215,26 @@
                 @interact('column_action', $notification)
                     <x-ui::components.table-actions wire:key="notification-actions-{{ $notification->id }}">
                         @if ($notification->link)
-                            <x-ts-button.circle
+                            <x-ui::components.table-action
+                                action="custom"
                                 icon="arrow-top-right-on-square"
                                 color="blue"
-                                outline
-                                xs
                                 :href="$notification->link"
                                 target="_blank"
                                 wire:click="markAsRead('{{ $notification->id }}')"
-                                :aria-label="__('notifications.view_details')"
-                                tooltip="{{ __('notifications.view_details') }}"
+                                :label="__('notifications.view_details')"
                             />
                         @endif
-                        <x-ts-button.circle
-                            icon="eye"
-                            color="secondary"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="view"
                             wire:click="viewNotification('{{ $notification->id }}')"
-                            :aria-label="__('notifications.view_details')"
-                            tooltip="{{ __('notifications.view_details') }}"
+                            :label="__('notifications.view_details')"
                         />
                         @if (! $notification->is_read)
-                            <x-ts-button.circle
-                                icon="check"
-                                color="green"
-                                outline
-                                xs
+                            <x-ui::components.table-action
+                                action="verify"
                                 wire:click="markAsRead('{{ $notification->id }}')"
-                                :aria-label="__('notifications.ui.mark_read')"
-                                tooltip="{{ __('notifications.ui.mark_read') }}"
+                                :label="__('notifications.ui.mark_read')"
                             />
                         @endif
                     </x-ui::components.table-actions>

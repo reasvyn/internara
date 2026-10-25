@@ -1,13 +1,13 @@
 @props([
-    'align' => 'center',
+    'align' => 'end',
     'gap' => '1.5',
 ])
 
 @php
     $alignmentClass = match ($align) {
         'start' => 'justify-start',
-        'end' => 'justify-end',
-        default => 'justify-center',
+        'center' => 'justify-center',
+        default => 'justify-end',
     };
 @endphp
 

@@ -51,15 +51,7 @@
                     @interact('column_action', $journal)
                         <x-ui::components.table-actions>
                             @if (! $journal->is_verified)
-                                <x-ts-button.circle
-                                    aria-label="{{ __('common.actions.edit') }}"
-                                    icon="pencil-square"
-                                    color="primary"
-                                    outline
-                                    xs
-                                    wire:click="edit('{{ $journal->id }}')"
-                                    tooltip="{{ __('common.actions.edit') }}"
-                                />
+                                <x-ui::components.table-action action="edit" wire:click="edit('{{ $journal->id }}')" />
                             @else
                                 <x-ts-icon name="check-badge" class="text-success/40 size-5" />
                             @endif

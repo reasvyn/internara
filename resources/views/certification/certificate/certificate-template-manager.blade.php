@@ -24,15 +24,7 @@
 
             @interact('column_action', $t)
                 <x-ui::components.table-actions>
-                    <x-ts-button.circle
-                        aria-label="{{ __('common.actions.edit') }}"
-                        icon="pencil"
-                        color="primary"
-                        outline
-                        xs
-                        wire:click="edit('{{ $t->id }}')"
-                        tooltip="{{ __('common.actions.edit') }}"
-                    />
+                    <x-ui::components.table-action action="edit" wire:click="edit('{{ $t->id }}')" />
                 </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>

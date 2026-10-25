@@ -74,6 +74,7 @@ return [
         'create' => 'Create',
         'update' => 'Update',
         'view' => 'View',
+        'verify' => 'Verify',
         'download' => 'Download',
         'search' => 'Search',
         'filter' => 'Filter',

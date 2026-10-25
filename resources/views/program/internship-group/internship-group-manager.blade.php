@@ -23,33 +23,15 @@
 
             @interact('column_action', $group)
                 <x-ui::components.table-actions>
-                    <x-ts-button.circle
+                    <x-ui::components.table-action
+                        action="custom"
                         icon="users"
                         color="blue"
-                        outline
-                        xs
                         wire:click="manageMembers('{{ $group->id }}')"
-                        :aria-label="__('internship.manage_members')"
-                        tooltip="{{ __('internship.manage_members') }}"
+                        :label="__('internship.manage_members')"
                     />
-                    <x-ts-button.circle
-                        icon="pencil"
-                        color="primary"
-                        outline
-                        xs
-                        wire:click="edit('{{ $group->id }}')"
-                        :aria-label="__('common.actions.edit')"
-                        tooltip="{{ __('common.actions.edit') }}"
-                    />
-                    <x-ts-button.circle
-                        icon="trash"
-                        color="red"
-                        outline
-                        xs
-                        wire:click="askDelete('{{ $group->id }}')"
-                        :aria-label="__('common.actions.delete')"
-                        tooltip="{{ __('common.actions.delete') }}"
-                    />
+                    <x-ui::components.table-action action="edit" wire:click="edit('{{ $group->id }}')" />
+                    <x-ui::components.table-action action="delete" wire:click="askDelete('{{ $group->id }}')" />
                 </x-ui::components.table-actions>
             @endinteract
         </x-ts-table>
@@ -177,13 +159,10 @@
                                                 </td>
                                                 @can('update', $this->currentGroup)
                                                     <td class="text-center">
-                                                        <x-ts-button.circle
-                                                            icon="trash"
-                                                            color="red"
-                                                            xs
-                                                            wire:click="removeMember('{{ $member->id }}')"
-                                                            wire:confirm="{{ __('internship.confirm_remove_member') }}"
-                                                            :aria-label="__('common.actions.delete')"
+                                                        <x-ui::components.table-action
+                                                            action="delete"
+                                                            wire:click="askRemoveMember('{{ $member->id }}')"
+                                                            :label="__('common.actions.delete')"
                                                         />
                                                     </td>
                                                 @endcan

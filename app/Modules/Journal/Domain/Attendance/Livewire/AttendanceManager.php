@@ -121,6 +121,28 @@ class AttendanceManager extends Component
         }
     }
 
+    public ?string $deletingAttendanceId = null;
+
+    public function askDeleteAttendance(string $id): void
+    {
+        $this->deletingAttendanceId = $id;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), __('journals.attendance.confirm_delete'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmDeleteAttendance')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmDeleteAttendance(DeleteAttendanceAction $action): void
+    {
+        if ($this->deletingAttendanceId === null) {
+            return;
+        }
+
+        $this->deleteAttendance($this->deletingAttendanceId, $action);
+        $this->deletingAttendanceId = null;
+    }
+
     public function deleteAttendance(string $id, DeleteAttendanceAction $action): void
     {
         $attendance = Attendance::findOrFail($id);

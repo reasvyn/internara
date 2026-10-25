@@ -201,54 +201,40 @@
                 </x-ui::components.table-actions>
             @else
                 <x-ui::components.table-actions>
-                    <x-ts-button.circle
-                        icon="pencil"
-                        color="primary"
-                        outline
-                        xs
+                    <x-ui::components.table-action
+                        action="edit"
                         wire:click="editUser('{{ $user->id }}')"
-                        :aria-label="__('common.actions.edit')"
-                        tooltip="{{ __('common.actions.edit') }}"
+                        :label="__('common.actions.edit').' '.$user->name"
                     />
-                    <x-ts-button.circle
+                    <x-ui::components.table-action
+                        action="custom"
                         icon="shield-check"
                         color="amber"
-                        outline
-                        xs
                         wire:click="askChangeStatus('{{ $user->id }}')"
-                        :aria-label="__('user.manager.change_status')"
-                        tooltip="{{ __('user.manager.change_status') }}"
+                        :label="__('user.manager.change_status')"
                     />
                     @if (in_array($user->status?->value, ['verified', 'suspended']))
-                        <x-ts-button.circle
+                        <x-ui::components.table-action
+                            action="custom"
                             icon="arrow-path"
                             color="secondary"
-                            outline
-                            xs
                             wire:click="toggleStatus('{{ $user->id }}')"
-                            :aria-label="__('user.manager.toggle_status')"
-                            :tooltip="__('user.manager.toggle_status')"
+                            :label="__('user.manager.toggle_status')"
                             spinner="toggleStatus"
                         />
                     @endif
-                    <x-ts-button.circle
+                    <x-ui::components.table-action
+                        action="custom"
                         icon="key"
                         color="blue"
-                        outline
-                        xs
                         wire:click="showSlip('{{ $user->id }}')"
-                        :aria-label="__('user.manager.account_slip')"
-                        tooltip="{{ __('user.manager.account_slip') }}"
+                        :label="__('user.manager.account_slip')"
                     />
                     @if ($user->id !== auth()->id())
-                        <x-ts-button.circle
-                            icon="trash"
-                            color="red"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="delete"
                             wire:click="askDeleteUser('{{ $user->id }}')"
-                            :aria-label="__('common.actions.delete')"
-                            tooltip="{{ __('common.actions.delete') }}"
+                            :label="__('common.actions.delete').' '.$user->name"
                         />
                     @endif
                 </x-ui::components.table-actions>

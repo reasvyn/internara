@@ -140,52 +140,36 @@
                 @interact('column_action', $entry)
                     <x-ui::components.table-actions>
                         @if (auth()->user()?->hasRole('supervisor'))
-                            <x-ts-button.circle
+                            <x-ui::components.table-action
+                                action="custom"
                                 icon="chat-bubble-bottom-center-text"
                                 color="blue"
-                                outline
-                                xs
                                 wire:click="editSupervisorNote('{{ $entry->id }}')"
-                                :aria-label="__('logbook.edit_supervisor_note')"
-                                tooltip="{{ __('logbook.edit_supervisor_note') }}"
+                                :label="__('logbook.edit_supervisor_note')"
                             />
                         @endif
-                        <x-ts-button.circle
-                            icon="check"
-                            color="green"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="verify"
                             wire:click="verify('{{ $entry->id }}')"
-                            :aria-label="__('logbook.toggle_verify')"
-                            tooltip="{{ __('logbook.toggle_verify') }}"
+                            :label="__('logbook.toggle_verify')"
                         />
-                        <x-ts-button.circle
-                            icon="pencil"
-                            color="primary"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="edit"
                             wire:click="edit('{{ $entry->id }}')"
-                            :aria-label="__('common.actions.edit')"
-                            tooltip="{{ __('common.actions.edit') }}"
+                            :label="__('common.actions.edit')"
                         />
-                        <x-ts-button.circle
+                        <x-ui::components.table-action
+                            action="custom"
                             icon="document-arrow-down"
                             color="secondary"
-                            outline
-                            xs
                             :href="route('sysadmin.logbook.report', $entry->registration_id)"
-                            external
-                            :aria-label="__('logbook.download_report')"
-                            tooltip="{{ __('logbook.download_report') }}"
+                            target="_blank"
+                            :label="__('logbook.download_report')"
                         />
-                        <x-ts-button.circle
-                            icon="trash"
-                            color="red"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="delete"
                             wire:click="askDelete('{{ $entry->id }}')"
-                            :aria-label="__('common.actions.delete')"
-                            tooltip="{{ __('common.actions.delete') }}"
+                            :label="__('common.actions.delete')"
                         />
                     </x-ui::components.table-actions>
                 @endinteract

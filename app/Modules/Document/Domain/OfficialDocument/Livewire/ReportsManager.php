@@ -35,6 +35,29 @@ class ReportsManager extends Component
         $this->toast()->success(__('document.report_generated', ['name' => $report->name]))->send();
     }
 
+    public ?string $deletingReportId = null;
+
+    public function askDeleteReport(string $id): void
+    {
+        $this->deletingReportId = $id;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), __('document.confirm_delete_report'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmDeleteReport')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmDeleteReport(DeleteReportAction $action): void
+    {
+        if ($this->deletingReportId === null) {
+            return;
+        }
+
+        $report = Document::findOrFail($this->deletingReportId);
+        $this->deleteReport($report, $action);
+        $this->deletingReportId = null;
+    }
+
     public function deleteReport(Document $report, DeleteReportAction $action): void
     {
         $action->execute($report);

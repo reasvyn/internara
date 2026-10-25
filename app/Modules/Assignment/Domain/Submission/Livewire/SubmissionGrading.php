@@ -91,6 +91,28 @@ class SubmissionGrading extends Component
         $this->back();
     }
 
+    public ?string $verifyingSubmissionId = null;
+
+    public function askVerify(string $submissionId): void
+    {
+        $this->verifyingSubmissionId = $submissionId;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), __('submission.confirm_verify'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmVerify')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmVerify(VerifySubmissionAction $action): void
+    {
+        if ($this->verifyingSubmissionId === null) {
+            return;
+        }
+
+        $this->verify($this->verifyingSubmissionId, $action);
+        $this->verifyingSubmissionId = null;
+    }
+
     public function verify(string $submissionId, VerifySubmissionAction $action): void
     {
         $submission = Submission::findOrFail($submissionId);

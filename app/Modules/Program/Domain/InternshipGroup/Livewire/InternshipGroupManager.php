@@ -226,6 +226,28 @@ class InternshipGroupManager extends BaseRecordManager
         $this->toast()->success(__('internship.members_added', ['count' => count($this->memberFormData)]))->send();
     }
 
+    public ?string $removingMemberId = null;
+
+    public function askRemoveMember(string $memberId): void
+    {
+        $this->removingMemberId = $memberId;
+        $this->dialog()
+            ->question(__('common.actions.confirm_action'), __('internship.confirm_remove_member'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmRemoveMember')
+            ->cancel(text: __('common.actions.cancel'))
+            ->send();
+    }
+
+    public function confirmRemoveMember(RemoveMemberFromGroupAction $action): void
+    {
+        if ($this->removingMemberId === null) {
+            return;
+        }
+
+        $this->removeMember($this->removingMemberId, $action);
+        $this->removingMemberId = null;
+    }
+
     public function removeMember(string $memberId, RemoveMemberFromGroupAction $action): void
     {
         $member = InternshipGroupMember::findOrFail($memberId);

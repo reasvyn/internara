@@ -95,23 +95,15 @@
 
                 @interact('column_action', $department)
                     <x-ui::components.table-actions>
-                        <x-ts-button.circle
-                            icon="pencil"
-                            color="primary"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="edit"
                             wire:click="edit('{{ $department->id }}')"
-                            :aria-label="__('common.actions.edit')"
-                            tooltip="{{ __('common.actions.edit') }}"
+                            :label="__('department.edit').' '.$department->name"
                         />
-                        <x-ts-button.circle
-                            icon="trash"
-                            color="red"
-                            outline
-                            xs
+                        <x-ui::components.table-action
+                            action="delete"
                             wire:click="askDelete('{{ $department->id }}')"
-                            :aria-label="__('common.actions.delete')"
-                            tooltip="{{ __('common.actions.delete') }}"
+                            :label="__('common.actions.delete').' '.$department->name"
                         />
                     </x-ui::components.table-actions>
                 @endinteract
