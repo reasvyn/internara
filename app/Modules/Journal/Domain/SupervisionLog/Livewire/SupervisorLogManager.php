@@ -9,18 +9,14 @@ use App\Modules\Journal\Domain\SupervisionLog\Actions\CreateSupervisionLogAction
 use App\Modules\Journal\Domain\SupervisionLog\Actions\VerifySupervisionLogAction;
 use App\Modules\Journal\Domain\SupervisionLog\Data\CreateSupervisionLogData;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
+use App\Modules\UI\Livewire\BaseRecordManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
-use TallStackUi\Traits\Interactions;
 
-class SupervisorLogManager extends Component
+class SupervisorLogManager extends BaseRecordManager
 {
-    use Interactions;
-    use WithPagination;
-
     public bool $showModal = false;
 
     public string $registrationId = '';
@@ -36,6 +32,33 @@ class SupervisorLogManager extends Component
     public function mount(): void
     {
         $this->date = now()->toDateString();
+    }
+
+    public function headers(): array
+    {
+        return [
+            ['index' => 'date', 'label' => __('journals.date'), 'sortable' => true],
+            ['index' => 'registration.student.name', 'label' => __('journals.student')],
+            ['index' => 'type', 'label' => __('journals.supervision.type')],
+            ['index' => 'topic', 'label' => __('journals.topic'), 'sortable' => true],
+            ['index' => 'status', 'label' => __('journals.status')],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return SupervisionLog::query()
+            ->where('supervisor_id', auth()->id())
+            ->with(['registration.student']);
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q): void {
+            $q->where('topic', 'like', "%{$this->search}%")
+                ->orWhereHas('registration.student', fn ($s) => $s->where('name', 'like', "%{$this->search}%"));
+        });
     }
 
     #[Computed]
@@ -92,14 +115,8 @@ class SupervisorLogManager extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        $logs = SupervisionLog::query()
-            ->where('supervisor_id', auth()->id())
-            ->with(['registration.student'])
-            ->latest('date')
-            ->paginate(10);
-
         return view('journal.supervision-log.log-manager', [
-            'logs' => $logs,
+            'logs' => $this->rows(),
         ]);
     }
 }

@@ -13,24 +13,17 @@ use App\Modules\Report\Domain\StudentReport\Actions\FinalizeStudentReportAction;
 use App\Modules\Report\Domain\StudentReport\Data\CreateStudentReportData;
 use App\Modules\Report\Domain\StudentReport\Enums\StudentReportStatus;
 use App\Modules\Report\Domain\StudentReport\Models\StudentReport;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
-use TallStackUi\Traits\Interactions;
 
-class StudentReportsManager extends Component
+class StudentReportsManager extends BaseRecordManager
 {
-    use Interactions;
-    use WithPagination;
-
     /** @var bool Whether the shared confirm dialog is open (see ui.components.confirm). */
     public bool $showConfirm = false;
-
-    public string $search = '';
-
-    public ?string $statusFilter = null;
 
     public bool $createModal = false;
 
@@ -49,6 +42,41 @@ class StudentReportsManager extends Component
     public ?string $confirmReportId = null;
 
     #[Computed]
+    public function reports(): LengthAwarePaginator
+    {
+        return $this->rows();
+    }
+
+    public function headers(): array
+    {
+        return [
+            ['index' => 'student', 'label' => __('report.student'), 'sortable' => false],
+            ['index' => 'registration', 'label' => __('report.registration'), 'sortable' => false],
+            ['index' => 'status', 'label' => __('report.status'), 'sortable' => true],
+            ['index' => 'final_score', 'label' => __('report.final_score'), 'sortable' => true],
+            ['index' => 'grade_letter', 'label' => __('report.grade_letter'), 'sortable' => true],
+            ['index' => 'finalized_at', 'label' => __('report.finalized_at'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return StudentReport::query()
+            ->with(['registration.student.profile', 'registration.internship', 'registration.placement.company', 'finalizedBy']);
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->whereHas('registration.student', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        return $query->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v));
+    }
+
+    #[Computed]
     public function registrations()
     {
         return Registration::query()
@@ -57,17 +85,6 @@ class StudentReportsManager extends Component
             ->with(['student.profile', 'internship', 'placement.company'])
             ->latest()
             ->get();
-    }
-
-    #[Computed]
-    public function reports()
-    {
-        return StudentReport::query()
-            ->with(['registration.student.profile', 'registration.internship', 'finalizedBy'])
-            ->when($this->search, fn ($q) => $q->whereHas('registration.student', fn ($q) => $q->where('name', 'like', "%{$this->search}%")))
-            ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
-            ->latest()
-            ->paginate(15);
     }
 
     public function openCreateModal(): void
@@ -79,23 +96,25 @@ class StudentReportsManager extends Component
 
     public function createReport(CreateStudentReportAction $action): void
     {
-        $this->validate([
-            'selectedRegistrationId' => 'required|string|exists:registrations,id',
-        ]);
-
         $this->authorize('create', StudentReport::class);
 
+        $this->validate([
+            'selectedRegistrationId' => ['required', 'exists:registrations,id'],
+        ]);
+
+        $registration = Registration::findOrFail($this->selectedRegistrationId);
+
         try {
-            $action->execute(new CreateStudentReportData(
-                registrationId: $this->selectedRegistrationId,
+            $report = $action->execute(new CreateStudentReportData(
+                registrationId: $registration->id,
             ));
 
             $this->toast()->success(__('report.created'))->send();
+            $this->createModal = false;
+            $this->selectedRegistrationId = null;
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
-
-        $this->createModal = false;
     }
 
     public function openCalculateModal(string $reportId): void
@@ -107,14 +126,14 @@ class StudentReportsManager extends Component
 
     public function calculateGrades(CalculateFinalGradeAction $action): void
     {
-        $this->authorize('calculate', StudentReport::class);
+        $this->authorize('update', StudentReport::class);
 
         $report = StudentReport::findOrFail($this->calculateReportId);
 
         try {
             $action->execute($report);
 
-            $this->toast()->success(__('report.grade_calculated'))->send();
+            $this->toast()->success(__('report.grades_calculated'))->send();
         } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
@@ -157,8 +176,8 @@ class StudentReportsManager extends Component
         $this->confirmAction = 'delete';
         $this->confirmReportId = $reportId;
         $this->dialog()
-            ->question(__('common.actions.confirm_action'), $this->confirmMessage ?? __('common.actions.confirm_message'))
-            ->confirm(text: __('common.actions.confirm'), method: 'confirmAction')
+            ->question(__('common.actions.confirm_action'), __('common.actions.confirm_message'))
+            ->confirm(text: __('common.actions.confirm'), method: 'confirmDelete')
             ->cancel(text: __('common.actions.cancel'))
             ->send();
     }

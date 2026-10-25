@@ -1,4 +1,4 @@
-<div class="p-8">
+<div class="space-y-4 py-3 sm:space-y-5 sm:py-4">
     <x-ui::components.page-header
         :title="__('auth.recovery_slip.title')"
         :description="__('auth.recovery_slip.subtitle')"

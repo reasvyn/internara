@@ -7,20 +7,12 @@ namespace App\Modules\Document\Domain\OfficialDocument\Livewire;
 use App\Modules\Document\Domain\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Livewire\Component;
-use Livewire\WithPagination;
-use TallStackUi\Traits\Interactions;
 
-class TemplateManager extends Component
+class TemplateManager extends BaseRecordManager
 {
-    use Interactions;
-    use WithPagination;
-
-    public string $search = '';
-
     public bool $templateModal = false;
 
     public array $templateData = [
@@ -43,13 +35,14 @@ class TemplateManager extends Component
         ];
     }
 
-    public function templates(): LengthAwarePaginator
+    protected function query(): Builder
     {
-        return Document::query()
-            ->where('type', '!=', 'report')
-            ->when($this->search, fn (Builder $q) => $q->where('title', 'like', "%{$this->search}%"))
-            ->latest()
-            ->paginate(10);
+        return Document::query()->where('type', '!=', 'report');
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('title', 'like', "%{$this->search}%");
     }
 
     public function categories(): array
@@ -59,13 +52,15 @@ class TemplateManager extends Component
                 'id' => $category->value,
                 'name' => $category->label(),
             ],
-            DocumentCategory::cases(),
+            array_filter(
+                DocumentCategory::cases(),
+                fn (DocumentCategory $c): bool => $c !== DocumentCategory::REPORT
+            )
         );
     }
 
     public function createTemplate(): void
     {
-        $this->resetErrorBag();
         $this->templateData = [
             'id' => null,
             'title' => '',
@@ -77,16 +72,16 @@ class TemplateManager extends Component
         $this->templateModal = true;
     }
 
-    public function editTemplate(Document $template): void
+    public function editTemplate(string $id): void
     {
-        $this->resetErrorBag();
+        $doc = Document::findOrFail($id);
         $this->templateData = [
-            'id' => $template->id,
-            'title' => $template->title,
-            'type' => $template->type,
-            'description' => $template->metadata['description'] ?? '',
-            'content' => (string) $template->content,
-            'is_active' => (bool) $template->is_active,
+            'id' => $doc->id,
+            'title' => $doc->title,
+            'type' => $doc->type,
+            'description' => $doc->metadata['description'] ?? '',
+            'content' => $doc->content,
+            'is_active' => $doc->is_active,
         ];
         $this->templateModal = true;
     }
@@ -101,14 +96,14 @@ class TemplateManager extends Component
 
         $action->execute($this->templateData);
 
-        $this->toast()->success(__('document.template_saved'))->send();
         $this->templateModal = false;
+        $this->toast()->success(__('document.template_saved'))->send();
     }
 
     public function render(): View
     {
         return view('document.official-document.template-manager', [
-            'templates' => $this->templates(),
+            'templates' => $this->rows(),
             'headers' => $this->headers(),
         ]);
     }

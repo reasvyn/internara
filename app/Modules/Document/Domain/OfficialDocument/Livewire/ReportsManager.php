@@ -7,23 +7,38 @@ namespace App\Modules\Document\Domain\OfficialDocument\Livewire;
 use App\Modules\Document\Domain\OfficialDocument\Actions\DeleteReportAction;
 use App\Modules\Document\Domain\OfficialDocument\Actions\GenerateReportAction;
 use App\Modules\Document\Models\Document;
+use App\Modules\UI\Livewire\BaseRecordManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithPagination;
-use TallStackUi\Traits\Interactions;
 
-class ReportsManager extends Component
+class ReportsManager extends BaseRecordManager
 {
-    use Interactions;
-    use WithPagination;
-
     public array $reportTypes = [
         'internship_completion' => 'Internship Completion Summary',
         'student_performance' => 'Student Performance Report',
         'company_participation' => 'Company Participation Record',
         'mentor_evaluation' => 'Mentor Evaluation Summary',
     ];
+
+    public function headers(): array
+    {
+        return [
+            ['index' => 'name', 'label' => __('document.name'), 'sortable' => true],
+            ['index' => 'created_at', 'label' => __('document.generated'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return Document::query()->where('type', 'report');
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', "%{$this->search}%");
+    }
 
     public function generateReport(string $type, GenerateReportAction $action): void
     {
@@ -67,10 +82,8 @@ class ReportsManager extends Component
     #[Layout('ui::layouts.app')]
     public function render(): View
     {
-        $reports = Document::query()->where('type', 'report')->latest()->paginate(10);
-
         return view('document.official-document.reports-manager', [
-            'reports' => $reports,
+            'reports' => $this->rows(),
             'types' => $this->reportTypes,
         ]);
     }

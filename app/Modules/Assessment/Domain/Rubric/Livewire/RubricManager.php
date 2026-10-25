@@ -23,15 +23,32 @@ use App\Modules\Assessment\Domain\Rubric\Data\UpdateRubricData;
 use App\Modules\Assessment\Domain\Rubric\Models\Rubric;
 use App\Modules\Assessment\Enums\EvaluatorRole;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\UI\Livewire\BaseRecordManager;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
-use TallStackUi\Traits\Interactions;
 
-class RubricManager extends Component
+class RubricManager extends BaseRecordManager
 {
-    use Interactions;
+    public function headers(): array
+    {
+        return [
+            ['index' => 'name', 'label' => __('common.name'), 'sortable' => true],
+            ['index' => 'is_active', 'label' => __('assessment.status'), 'sortable' => true],
+            ['index' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return Rubric::query()->latest();
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('name', 'like', "%{$this->search}%");
+    }
 
     public bool $rubricModal = false;
 

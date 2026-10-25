@@ -1,10 +1,10 @@
-<div>
+<div class="space-y-4 py-3 sm:space-y-5 sm:py-4">
     <x-ui::components.page-header
         :title="__('placement.direct_placement.title')"
         :description="__('placement.direct_placement.subtitle')"
     />
 
-    <x-ts-card shadowless>
+    <div class="border-base-content/10 bg-base-100 rounded-2xl border p-6 shadow-2xs">
         <form wire:submit="submit">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <x-ts-select.native
@@ -46,8 +46,9 @@
                     type="submit"
                     icon="check"
                     color="primary"
+                    sm
                 />
             </div>
         </form>
-    </x-ts-card>
+    </div>
 </div>
