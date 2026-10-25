@@ -108,6 +108,13 @@ docker image prune -f >/dev/null 2>&1 || true
 echo "==> Clearing application and view cache"
 docker compose "${ENV_FILE_ARGS[@]}" exec -T app php artisan optimize:clear || true
 
+echo "==> Syncing compiled public assets to host public/build"
+APP_CONTAINER_ID=$(docker compose "${ENV_FILE_ARGS[@]}" ps -q app 2>/dev/null || true)
+if [ -n "$APP_CONTAINER_ID" ]; then
+    mkdir -p "$DEPLOY_DIR/public/build"
+    docker cp "$APP_CONTAINER_ID:/app/public/build/." "$DEPLOY_DIR/public/build/" || true
+fi
+
 echo "==> Waiting for health check (max 60s)"
 HEALTH_CHECK_PASSED=false
 HEALTH_TMP="${TMPDIR:-/tmp}/internara-health-body"

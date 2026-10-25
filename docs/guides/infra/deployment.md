@@ -462,7 +462,18 @@ location /storage/ {
     alias /var/lib/docker/volumes/internara_storage_data/_data/app/public/;
 }
 
+# Dynamic scripts must bypass static-asset regex caching:
+location ^~ /tallstackui/ {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+location ^~ /livewire/ {
+    try_files $uri $uri/ /index.php?$query_string;
+}
 ```
+
+> [!IMPORTANT]
+> If your host Nginx configures static asset caching (e.g. `location ~* \.(?:css|js)$ { try_files $uri =404; }`), you MUST explicitly bypass `/tallstackui/` and `/livewire/` with `location ^~ /tallstackui/` and `location ^~ /livewire/` so dynamic scripts served by PHP controllers are not intercepted with 404s.
 
 Adjust the `/var/lib/docker/volumes/...` prefixes to the paths printed by `docker volume inspect`.
 Compiled assets are served from the `app_data` volume; uploaded media lives in `storage_data`
