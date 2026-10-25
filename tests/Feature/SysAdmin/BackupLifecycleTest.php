@@ -684,6 +684,7 @@ describe('HBXCI: backup operator workflows', function (): void {
     });
 
     test('HBXC2-FR-RET-006: cleanup flag runs retention after a successful backup using configured days', function (): void {
+        app()->setLocale('en');
         config()->set('backup.enabled', true);
         config()->set('backup.retention_days', 14);
         $runner = new HbxStubBackupRunner;

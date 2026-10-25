@@ -46,6 +46,7 @@ return [
     'starting' => 'Starting :type backup...',
     'completed_info' => 'Backup completed. Size: :size',
     'cleanup_completed' => 'Cleanup completed. :count old backup(s) removed.',
+    'old_backups_removed' => ':count old backup(s) removed.',
 
     'notification_failed' => 'System backup failed (:type). Check the backup logs for details.',
 ];
