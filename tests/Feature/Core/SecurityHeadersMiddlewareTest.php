@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Core\Http\Middleware\SecurityHeadersMiddleware;
+use App\Modules\Setup\Domain\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
@@ -15,17 +16,81 @@ function runSecurityHeaders(Request $request): Response
     );
 }
 
-describe('1PGM4: SecurityHeadersMiddleware', function (): void {
-    test('1PGM4-FR-SEC-001, 1PGM4-FR-SEC-002, 1PGM4-FR-SEC-003: CSP header baseline and script-src', function (): void {
-        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+function secureRequest(): Request
+{
+    return Request::create('https://internara.test/dashboard', 'GET');
+}
 
-        $csp = $response->headers->get('Content-Security-Policy');
+function cspDirective(string $directive): string
+{
+    $csp = (string) runSecurityHeaders(Request::create('/dashboard', 'GET'))->headers->get('Content-Security-Policy');
+
+    preg_match('/'.preg_quote($directive, '/').'\s+([^;]*);/', $csp, $matches);
+
+    return trim($matches[1] ?? '');
+}
+
+describe('1PGM4: SecurityHeadersMiddleware', function (): void {
+    test('1PGM4-FR-SEC-001, 1PGM4-FR-SEC-002: CSP header carries the self baseline', function (): void {
+        $csp = runSecurityHeaders(Request::create('/dashboard', 'GET'))->headers->get('Content-Security-Policy');
+
         expect($csp)->not->toBeNull()
-            ->and($csp)->toContain("default-src 'self'")
-            ->and($csp)->toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
+            ->and($csp)->toContain("default-src 'self'");
     });
 
-    test('1PGM4-FR-SEC-004: style-src keeps unsafe-inline for Tailwind', function (): void {
+    test('1PGM4-FR-SEC-003, 1PGM4-FR-SEC-015: script-src uses a per-request nonce instead of unsafe-inline', function (): void {
+        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+        $scriptSrc = cspDirective('script-src');
+        $csp = (string) $response->headers->get('Content-Security-Policy');
+
+        expect($scriptSrc)->toContain("'self'")
+            ->and($scriptSrc)->toContain("'unsafe-eval'")
+            ->and($scriptSrc)->toMatch("/'nonce-[A-Za-z0-9+\\/=]+'/")
+            ->and($scriptSrc)->not->toContain("'unsafe-inline'")
+            ->and($csp)->not->toContain("script-src 'self' 'unsafe-inline'");
+    });
+
+    test('1PGM4-FR-SEC-015: every request gets a different nonce', function (): void {
+        preg_match(
+            "/'nonce-([^']+)'/",
+            cspDirective('script-src'),
+            $first,
+        );
+        preg_match(
+            "/'nonce-([^']+)'/",
+            cspDirective('script-src'),
+            $second,
+        );
+
+        expect($first[1])->not->toBe($second[1]);
+    });
+
+    test('1PGM4-FR-SEC-015, 1PGM4-NFR-SEC-001: rendered markup carries the same nonce as the header', function (): void {
+        $this->withoutMiddleware(RequireSetupAccessMiddleware::class);
+
+        $response = $this->get(route('login'));
+
+        $response->assertOk();
+
+        $csp = (string) $response->headers->get('Content-Security-Policy');
+
+        expect($csp)->toMatch("/'nonce-([^']+)'/");
+
+        preg_match("/'nonce-([^']+)'/", $csp, $matches);
+
+        expect($response->getContent())->toContain('nonce="'.$matches[1].'"');
+    });
+
+    test('1PGM4-FR-SEC-003, 1PGM4-NFR-SEC-001: inline scripts without the nonce are not allowlisted', function (): void {
+        config()->set('security-headers.csp_nonce_enabled', false);
+
+        $scriptSrc = cspDirective('script-src');
+
+        expect($scriptSrc)->not->toContain("'unsafe-inline'")
+            ->and($scriptSrc)->not->toContain('nonce-');
+    });
+
+    test('1PGM4-FR-SEC-004, 1PGM4-DD-SEC-002: style-src keeps unsafe-inline for style attributes', function (): void {
         $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
 
         expect($response->headers->get('Content-Security-Policy'))
@@ -42,10 +107,46 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
     test('1PGM4-FR-SEC-006: HSTS carries one-year max-age with subdomains when enabled', function (): void {
         config()->set('security-headers.hsts_enabled', true);
 
-        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+        $response = runSecurityHeaders(secureRequest());
 
         expect($response->headers->get('Strict-Transport-Security'))
             ->toBe('max-age=31536000; includeSubDomains');
+    });
+
+    test('1PGM4-FR-SEC-016: HSTS is withheld on plain-HTTP requests even when enabled', function (): void {
+        config()->set('security-headers.hsts_enabled', true);
+
+        $response = runSecurityHeaders(Request::create('http://internara.test/dashboard', 'GET'));
+
+        expect($response->headers->has('Strict-Transport-Security'))->toBeFalse();
+    });
+
+    test('1PGM4-FR-SEC-011, 1PGM4-DD-SEC-003: HSTS defaults on in production and off elsewhere', function (): void {
+        $environment = $_SERVER['APP_ENV'] ?? null;
+        $putenvEnvironment = getenv('APP_ENV');
+
+        try {
+            $_SERVER['APP_ENV'] = 'production';
+            putenv('APP_ENV=production');
+            $production = require config_path('security-headers.php');
+
+            $_SERVER['APP_ENV'] = 'local';
+            putenv('APP_ENV=local');
+            $local = require config_path('security-headers.php');
+        } finally {
+            if ($environment === null) {
+                unset($_SERVER['APP_ENV']);
+            } else {
+                $_SERVER['APP_ENV'] = $environment;
+            }
+
+            $putenvEnvironment === false
+                ? putenv('APP_ENV')
+                : putenv('APP_ENV='.$putenvEnvironment);
+        }
+
+        expect($production['hsts_enabled'])->toBeTrue()
+            ->and($local['hsts_enabled'])->toBeFalse();
     });
 
     test('1PGM4-FR-SEC-007 1PGM4-FR-SEC-013: X-Frame-Options denies framing and present on responses', function (): void {
@@ -82,7 +183,7 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
     test('1PGM4-FR-SEC-011 1PGM4-DD-SEC-003: HSTS omitted by default when disabled', function (): void {
         config()->set('security-headers.hsts_enabled', false);
 
-        $response = runSecurityHeaders(Request::create('/dashboard', 'GET'));
+        $response = runSecurityHeaders(secureRequest());
 
         expect($response->headers->has('Strict-Transport-Security'))->toBeFalse();
     });
@@ -119,8 +220,11 @@ describe('1PGM4: SecurityHeadersMiddleware', function (): void {
             ->and($response->headers->has('Permissions-Policy'))->toBeTrue();
     });
 
-    test('1PGM4-DD-SEC-001, 1PGM4-DD-SEC-002: middleware-based injection and inline style allowance', function (): void {
+    test('1PGM4-DD-SEC-001, 1PGM4-DD-SEC-004: middleware-based injection with a nonce-based script policy', function (): void {
         $csp = config('security-headers.csp');
-        expect($csp)->toContain("style-src 'self' 'unsafe-inline'");
+
+        expect($csp)->toContain("style-src 'self' 'unsafe-inline'")
+            ->and($csp)->toContain("script-src 'self' 'unsafe-eval'")
+            ->and($csp)->not->toContain("script-src 'self' 'unsafe-inline'");
     });
 });
