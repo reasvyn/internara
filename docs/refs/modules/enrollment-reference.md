@@ -46,6 +46,7 @@ applications, and registration document uploads.
 |---|---|---|
 | `Domain/AccountApplication/Data/RejectAccountApplicationData.php` | `RejectAccountApplicationData` | `BaseData` |
 | `Domain/Registration/Data/RegistrationData.php` | `RegistrationData` | `BaseData` |
+| `Domain/Registration/Data/VerifyRegistrationData.php` | `VerifyRegistrationData` | — |
 
 ## Enums
 
@@ -70,6 +71,7 @@ applications, and registration document uploads.
 | `Domain/AccountApplication/Events/AccountApplicationApproved.php` | `AccountApplicationApproved` | `BaseEvent` |
 | `Domain/AccountApplication/Events/AccountApplicationRejected.php` | `AccountApplicationRejected` | `BaseEvent` |
 | `Domain/Registration/Events/StudentRegistered.php` | `StudentRegistered` | `BaseEvent` |
+| `Domain/Registration/Events/RegistrationVerified.php` | `RegistrationVerified` | `BaseEvent` |
 
 ## Listeners
 

@@ -121,7 +121,7 @@ Author mobile first, enhance upward. This is MDN Responsive Design + WCAG 1.4.10
 Follow **Atomic Design** (Brad Frost) + **W3C Design Tokens** + Material 3 Component Spec.
 
 - **Atoms** → `x-ts-button`, `x-ts-badge`, `x-ts-icon` (Heroicons `heroicon-o-*` via `blade-heroicons`, prefix `heroicon`).
-- **Molecules** → `ui::widgets.stat-card`, `ui::widgets.empty-state`, `ui::components.page-header` (composes atoms, no business logic).
+- **Molecules** → `ui::widgets.stat-card`, `ui::widgets.empty-state`, `ui::components.page-header`, `ui::components.table-actions` (canonical row-action cluster: `align` `start|center|end`, `gap` prop, wraps `x-ts-button` links/buttons with consistent spacing). Every table row MUST use it instead of hand-rolled action divs.
 - **Organisms** → `ui::components.record-manager` (canonical CRUD scaffold: header, stats `grid-cols-2 lg:grid-cols-4`, search `wire:model.live.debounce.300ms`, `perPage`, Alpine `filtersOpen` with `x-trap`+`x-cloak`, `selectionBar` with `@entangle`, table `overflow-x-auto`, emptyState/modal slots).
 
 **Consistency contract:**

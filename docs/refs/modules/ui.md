@@ -25,10 +25,12 @@ UI has no submodules. Code is organized by presentation layer:
 `layouts/app.blade.php` (app shell: `x-ts-layout` + menu/header/footer slots), `layouts/base.blade.php` (HTML shell, `data-theme`, branding CSS vars, `skip-to-content`, toast/dialog), `layouts/base/head.blade.php`, `layouts/base/footer.blade.php`, `layouts/header.blade.php`, `layouts/sidebar.blade.php`, `layouts/guest.blade.php`.
 
 **UI primitives** (`resources/views/ui/components` → `x-ui::components.*`):
-`navbar.blade.php`, `navbar-actions.blade.php`, `theme-switch.blade.php`, `lang-switch.blade.php`, `page-header.blade.php`, `record-manager.blade.php`, `selection-bar.blade.php`, `brand.blade.php`, `logo.blade.php`, `avatar.blade.php`, `app-signature.blade.php`, etc.
+`navbar.blade.php`, `navbar-actions.blade.php`, `page-header.blade.php`, `breadcrumbs.blade.php`, `record-manager.blade.php`, `selection-bar.blade.php`, `table.blade.php`, `table-actions.blade.php`, `button.blade.php`, `card.blade.php`, `badge.blade.php`, `alert.blade.php`, `confirm.blade.php`, `modal.blade.php`, `dialog.blade.php`, `dropdown.blade.php`, `dropdown-item.blade.php`, `input.blade.php`, `select.blade.php`, `textarea.blade.php`, `checkbox.blade.php`, `toggle.blade.php`, `tooltip.blade.php`, `icon.blade.php`, `loading.blade.php`, `markdown-editor.blade.php`, `display-field.blade.php`, `brand.blade.php`, `logo.blade.php`, `avatar.blade.php`, `app-signature.blade.php`, `credit.blade.php`, `credits.blade.php`.
+
+Theme and language switches are **not** UI primitives — they render from Setting (`resources/views/setting/locale/theme-switch.blade.php` and `lang-switch.blade.php`) because they persist to settings.
 
 **Widgets** (`resources/views/ui/widgets` → `x-ui::widgets.*`):
-`stat-card.blade.php`, `action-button.blade.php`, `empty-state.blade.php`, `profile-summary.blade.php`, `quick-link.blade.php`.
+`stat-card.blade.php`, `action-button.blade.php`, `empty-state.blade.php`, `profile-summary.blade.php`, `quick-link.blade.php`, `app-info.blade.php`.
 
 **Livewire Base Classes & Concerns** (`app/Modules/UI/Livewire/`):
 `BaseRecordManager.php`, `BaseRecordList.php`, `BaseFormView.php`, `BaseRecordEntry.php`, `BaseWizard.php`, `AboutPage.php`, and concerns `Concerns/WithRecordSelection.php`, `Concerns/WithSorting.php`.
