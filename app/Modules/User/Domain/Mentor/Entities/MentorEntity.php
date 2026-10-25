@@ -172,6 +172,49 @@ final readonly class MentorEntity extends BaseEntity
         return $this->canProxyAsTeacher($user);
     }
 
+    /**
+     * Resolve proxy metadata for activity logging (T4B26-FR-CRP6, FR-RBAC-021).
+     *
+     * @return array{proxy_role?: string, proxy_reason?: string}
+     */
+    public function resolveProxyMetadata(User $actor, string $targetRole): array
+    {
+        if ($targetRole === 'supervisor') {
+            if ($this->isSupervisor($actor) && $actor->hasRole('supervisor')) {
+                return [];
+            }
+
+            if ($actor->hasRole('teacher') && $this->isTeacher($actor)) {
+                return [
+                    'proxy_role' => 'supervisor',
+                    'proxy_reason' => 'mentor-proxy-for-supervisor',
+                ];
+            }
+
+            if ($actor->hasRole('admin') || $actor->hasRole('super_admin')) {
+                return [
+                    'proxy_role' => 'supervisor',
+                    'proxy_reason' => 'admin-proxy-for-supervisor',
+                ];
+            }
+        }
+
+        if ($targetRole === 'teacher') {
+            if ($this->isTeacher($actor) && $actor->hasRole('teacher')) {
+                return [];
+            }
+
+            if ($actor->hasRole('admin') || $actor->hasRole('super_admin')) {
+                return [
+                    'proxy_role' => 'teacher',
+                    'proxy_reason' => 'admin-proxy-for-teacher',
+                ];
+            }
+        }
+
+        return [];
+    }
+
     // ---- Accessors ----
 
     public function registrationId(): string

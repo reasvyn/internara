@@ -31,16 +31,23 @@ final class ScoreIndicatorAction extends BaseCommandAction
             throw new RejectedException("Score must be between 0 and {$indicator['max_score']}.");
         }
 
-        return $this->transaction(function () use ($assessment, $data, $evaluator): ActionResponse {
+        $allowedRole = $competency['evaluator_role'];
+
+        return $this->transaction(function () use ($assessment, $data, $evaluator, $allowedRole): ActionResponse {
             $assessment->update([
                 'scores_data' => $this->recordScore($assessment, $data, $evaluator),
             ]);
 
-            $this->log('indicator_scored', $assessment, [
+            $mentorEntity = $assessment->registration?->asMentorEntity();
+            $proxyMeta = $mentorEntity !== null
+                ? $mentorEntity->resolveProxyMetadata($evaluator, $allowedRole)
+                : [];
+
+            $this->log('indicator_scored', $assessment, array_merge([
                 'competency_id' => $data->competencyId,
                 'indicator_id' => $data->indicatorId,
                 'score' => $data->score,
-            ]);
+            ], $proxyMeta), $evaluator);
 
             return ActionResponse::updated($assessment->fresh());
         });
@@ -112,19 +119,26 @@ final class ScoreIndicatorAction extends BaseCommandAction
 
         $allowedRole = $competency['evaluator_role'];
 
-        if (! $evaluator->hasRole($allowedRole)) {
-            throw new RejectedException(__('assessment.not_authorized'));
+        if ($evaluator->hasRole($allowedRole)) {
+            $isAssignedToRegistration = $assessment
+                ->registration
+                ?->mentors()
+                ->where('user_id', $evaluator->id)
+                ->where('internship_group_members.role', $allowedRole)
+                ->exists();
+
+            if (! $isAssignedToRegistration) {
+                throw new RejectedException(__('assessment.not_assigned_mentor'));
+            }
+
+            return;
         }
 
-        $isAssignedToRegistration = $assessment
-            ->registration
-            ->mentors()
-            ->where('user_id', $evaluator->id)
-            ->where('internship_group_members.role', $allowedRole)
-            ->exists();
-
-        if (! $isAssignedToRegistration) {
-            throw new RejectedException(__('assessment.not_assigned_mentor'));
+        $mentorEntity = $assessment->registration?->asMentorEntity();
+        if ($mentorEntity !== null && $mentorEntity->canScoreCompetency($evaluator, $allowedRole)) {
+            return;
         }
+
+        throw new RejectedException(__('assessment.not_authorized'));
     }
 }

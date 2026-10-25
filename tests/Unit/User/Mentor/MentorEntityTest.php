@@ -202,4 +202,30 @@ describe('T4B26: mentor entity', function (): void {
         expect($entity->canVerifyAttendance($supervisor))->toBeFalse();
         expect($entity->canVerifyAttendance($admin))->toBeTrue();
     });
+
+    test('T4B26-FR-CRP6, T4B26-FR-RBAC-021: resolveProxyMetadata returns proxy metadata when proxying and empty when acting directly', function () use ($makeUser, $makeEntity): void {
+        $teacher = $makeUser('teacher-1', ['teacher']);
+        $supervisor = $makeUser('supervisor-1', ['supervisor']);
+        $admin = $makeUser('admin-1', ['admin']);
+
+        $entity = $makeEntity($teacher, $supervisor);
+
+        expect($entity->resolveProxyMetadata($supervisor, 'supervisor'))->toBe([]);
+        expect($entity->resolveProxyMetadata($teacher, 'teacher'))->toBe([]);
+
+        expect($entity->resolveProxyMetadata($teacher, 'supervisor'))->toBe([
+            'proxy_role' => 'supervisor',
+            'proxy_reason' => 'mentor-proxy-for-supervisor',
+        ]);
+
+        expect($entity->resolveProxyMetadata($admin, 'supervisor'))->toBe([
+            'proxy_role' => 'supervisor',
+            'proxy_reason' => 'admin-proxy-for-supervisor',
+        ]);
+
+        expect($entity->resolveProxyMetadata($admin, 'teacher'))->toBe([
+            'proxy_role' => 'teacher',
+            'proxy_reason' => 'admin-proxy-for-teacher',
+        ]);
+    });
 });

@@ -283,13 +283,20 @@ final class SmartLogger
 
             [$ip, $ua] = $this->resolveRequestMetadata();
 
-            $activity->event($eventName ?? $this->face)->withProperties(
-                array_filter([
-                    'payload' => $this->payload !== [] ? $this->payload : null,
-                    'ip_address' => $ip,
-                    'user_agent' => $ua,
-                ]),
-            );
+            $properties = array_filter([
+                'payload' => $this->payload !== [] ? $this->payload : null,
+                'ip_address' => $ip,
+                'user_agent' => $ua,
+            ]);
+
+            if (isset($this->payload['proxy_role'])) {
+                $properties['proxy_role'] = $this->payload['proxy_role'];
+            }
+            if (isset($this->payload['proxy_reason'])) {
+                $properties['proxy_reason'] = $this->payload['proxy_reason'];
+            }
+
+            $activity->event($eventName ?? $this->face)->withProperties($properties);
 
             if ($this->module !== null) {
                 $activity->useLog($this->module);

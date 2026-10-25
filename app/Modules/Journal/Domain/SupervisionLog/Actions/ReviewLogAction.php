@@ -9,6 +9,7 @@ use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Journal\Domain\SupervisionLog\Data\ReviewLogData;
 use App\Modules\Journal\Domain\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Modules\Journal\Domain\SupervisionLog\Models\SupervisionLog;
+use App\Modules\User\Models\User;
 
 final class ReviewLogAction extends BaseCommandAction
 {
@@ -28,9 +29,15 @@ final class ReviewLogAction extends BaseCommandAction
                 'reviewed_at' => now(),
             ]);
 
-            $this->log('supervision_log_reviewed', $log, [
+            $reviewer = User::find($data->supervisorId) ?? auth()->user();
+            $mentorEntity = $log->registration?->asMentorEntity();
+            $proxyMeta = ($reviewer !== null && $mentorEntity !== null)
+                ? $mentorEntity->resolveProxyMetadata($reviewer, 'supervisor')
+                : [];
+
+            $this->log('supervision_log_reviewed', $log, array_merge([
                 'reviewed_by' => $data->supervisorId,
-            ]);
+            ], $proxyMeta), $reviewer);
 
             return $log->fresh();
         });

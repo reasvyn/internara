@@ -27,7 +27,14 @@ final class VerifySupervisionLogAction extends BaseCommandAction
                 'verified_by' => $verifier->id,
             ]);
 
-            $this->log('supervision_log_verified', $log, ['verifier' => $verifier->name]);
+            $mentorEntity = $log->registration?->asMentorEntity();
+            $proxyMeta = $mentorEntity !== null
+                ? $mentorEntity->resolveProxyMetadata($verifier, 'supervisor')
+                : [];
+
+            $this->log('supervision_log_verified', $log, array_merge([
+                'verifier' => $verifier->name,
+            ], $proxyMeta), $verifier);
 
             return $log;
         });

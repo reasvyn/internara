@@ -28,7 +28,14 @@ final class FinalizeAssessmentAction extends BaseCommandAction
                 'evaluator_id' => $finalizer->id,
             ]);
 
-            $this->log('assessment_finalized', $assessment, ['final_score' => $finalScore]);
+            $mentorEntity = $assessment->registration?->asMentorEntity();
+            $proxyMeta = $mentorEntity !== null
+                ? $mentorEntity->resolveProxyMetadata($finalizer, 'teacher')
+                : [];
+
+            $this->log('assessment_finalized', $assessment, array_merge([
+                'final_score' => $finalScore,
+            ], $proxyMeta), $finalizer);
 
             event(new AssessmentFinalized($assessment));
 

@@ -89,15 +89,20 @@ abstract class BaseAction
     /**
      * @param array<string, mixed> $payload
      */
-    protected function log(string $action, ?Model $subject = null, array $payload = []): void
+    protected function log(string $action, ?Model $subject = null, array $payload = [], ?Model $causer = null): void
     {
-        SmartLogger::info($action)
+        $logger = SmartLogger::info($action)
             ->event($action)
             ->module($this->moduleName())
             ->about($subject)
             ->withPayload($payload)
             ->withPiiMasking()
-            ->both()
-            ->save();
+            ->both();
+
+        if ($causer !== null) {
+            $logger->for($causer);
+        }
+
+        $logger->save();
     }
 }
