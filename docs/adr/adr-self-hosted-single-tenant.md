@@ -35,9 +35,13 @@ staff.
 
 **Chosen option: Self-hosted single-tenant** — every architectural concern follows:
 
+> **Amendment (2026-10-25):** the production `docker-compose.yml` was simplified to a single `app`
+> container with SQLite; the earlier `app` + `web` + `db` (MySQL) topology is retired. The table
+> below reflects the current topology.
+
 | Concern | Decision | Rationale |
 |---------|----------|-----------|
-| Database | SQLite local/dev/testing, MySQL production/staging | Available on production/staging hosting; SQLite for local/testing |
+| Database | SQLite local/dev/testing + single-container Docker, MySQL/MariaDB on shared hosting, PostgreSQL for Tier 3 | SQLite needs no server and lives on a persistent volume; hosting tiers that provide MySQL use it |
 | Queue | sync default, Redis optional | No daemon required |
 | Cache | file/database default, Redis optional | Zero-config file cache |
 | Session | database default, Redis optional | Auto-created by migration |
@@ -57,14 +61,14 @@ the school's server; no telemetry, usage reporting, or external API calls for co
 ### Positive Consequences
 
 * No multi-tenant infrastructure (middleware, scoped queries, per-tenant config)
-* Zero external services beyond MySQL/MariaDB at default — file cache + sync queue
+* Zero external services at default — SQLite file, file cache, and sync queue need no daemon; MySQL/MariaDB only when the hosting tier provides it
 * Absolute data sovereignty and performance isolation
 
 ### Negative Consequences
 
 * No cross-school management view; each admin operates independently
 * Manual per-instance updates (pull, migrate, rebuild assets)
-* SQLite unsuitable for production/staging concurrency — production/staging requires MySQL
+* SQLite serialises writes — the single-container deployment must keep `QUEUE_CONNECTION=sync` and low write concurrency; shared hosting and scaled VPS tiers use MySQL/MariaDB or PostgreSQL
 
 ## Links
 
