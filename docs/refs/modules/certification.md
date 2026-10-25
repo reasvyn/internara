@@ -50,6 +50,13 @@ no-op. Re-issuance requires a new serial number and a new certificate record.
 
 Certificate layouts (portrait/landscape orientation, background seals, text placeholders) are rendered dynamically at issuance time and frozen as immutable HTML snapshots within the certificate record. This ensures certificates always render exactly as they were at issuance, even if templates change later.
 
+### PDF Generation Defers to First Download
+
+Batch issuance never renders PDFs. The first authorized download renders and stores the PDF; every
+later download serves that stored file untouched, so the artifact a graduate received never changes
+underneath them. Generation is idempotent — a missing file is produced once, an existing file is
+reused — which keeps cohort issuance fast and the served document immutable.
+
 ### Verification API
 
 Planned but not yet routed. Each certificate carries a QR code with a SHA-256 hash; a public

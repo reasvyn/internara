@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Certification\Domain\Certificate\Actions\GenerateCertificatePdfAction;
 use App\Modules\Certification\Domain\Certificate\Actions\RevokeCertificateAction;
 use App\Modules\Certification\Domain\Certificate\Livewire\CertificateList;
 use App\Modules\Certification\Domain\Certificate\Livewire\CertificateTemplateManager;
@@ -115,6 +116,23 @@ describe('J0M04: certificate access and policy guards', function (): void {
 
         $this->get(route('certificates.download', $certificate->fresh()))->assertOk();
         Storage::disk('local')->assertExists('certificates/certificate_'.$certificate->certificate_number.'.pdf');
+    });
+
+    test('J0M04-FR-CERT-016: the PDF action generates once and serves the stored file on repeat', function (): void {
+        Storage::fake('local');
+        $admin = j0m04eRole('admin');
+        $this->actingAs($admin);
+        $certificate = j0m04eCertificate();
+
+        $path = app(GenerateCertificatePdfAction::class)->execute($certificate);
+
+        expect($path)->toBe('certificates/certificate_'.$certificate->certificate_number.'.pdf')
+            ->and(Storage::disk('local')->exists($path))->toBeTrue();
+
+        $content = Storage::disk('local')->get($path);
+
+        expect(app(GenerateCertificatePdfAction::class)->execute($certificate))->toBe($path)
+            ->and(Storage::disk('local')->get($path))->toBe($content);
     });
 
     test('J0M04-FR-CERT-019: list headers expose serial, student, status, and issue date', function (): void {
