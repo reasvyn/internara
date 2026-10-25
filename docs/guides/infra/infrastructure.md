@@ -156,7 +156,7 @@ Internet
 +------------+  +------------+  |  alerts      |  |  reports     |
                                 +--------------+  +--------------+
 
-* SQLite only in local development / testing, never in production / staging (which use MySQL)
+* SQLite is the default for local development / testing and the single-container Docker deployment; MySQL / PostgreSQL for shared hosting and scaled VPS tiers
 
 ```
 
@@ -238,7 +238,7 @@ Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`
 | ----------------------- | ------------------------ | ------------------------------------------ |
 | Local / Development     | SQLite (file)            | Zero config, single file                   |
 | Testing                 | SQLite (in-memory)       | Fast, auto-discarded                       |
-| Staging / Tier 1 (Prod) | MySQL / MariaDB          | Standard MySQL (shared hosting / VPS)      |
+| Tier 1 (Prod)           | SQLite / MySQL / MariaDB | SQLite on a persistent volume (Docker) or shared-hosting MySQL |
 | Tier 2+ (Prod)          | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned                           |
 
 All tables use UUID v7 primary keys via Laravel's `HasUuids` trait. The `BaseModel` automatically

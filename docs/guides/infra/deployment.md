@@ -338,41 +338,46 @@ setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ### Checkout-based Docker Compose
 
-The production `docker-compose.yml` builds service images directly from the checkout that owns the
-compose file. This enables a "single-command" deploy from any clone path without uploading source
+The production `docker-compose.yml` builds the application image directly from the checkout that owns
+the compose file. This enables a "single-command" deploy from any clone path without uploading source
 files manually.
 
 Key environment variables:
-- BUILD_CONTEXT — build context for the `app` and `web` images. Defaults to `.` (the current
-  checkout); override to build from somewhere else (e.g. another local path).
+- BUILD_CONTEXT — build context for the `app` image. Defaults to `.` (the current checkout);
+  override to build from somewhere else (e.g. another local path).
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
-- DB_PASSWORD — required. Compose fails fast when missing.
-- DB_DATABASE — database name (defaults to `internara`).
-- DB_USERNAME — database user (defaults to `internara`).
-- NGINX_PORT — host port for the nginx service (default 80)
+- APP_ENV — defaults to `production`.
+- APP_URL — the public origin of the app. **Defaults to `https://internara.web.id` (product demo)**;
+  override with `${APP_URL:-...}` semantics for other domains.
+- APP_LOCALE / APP_FAKER_LOCALE / APP_TIMEZONE — default to `id`, `id_ID`, and `Asia/Jakarta`.
+- SESSION_DRIVER — defaults to `file`.
 - SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `true`**
-  because the default `APP_URL` is `https://internara.web.id` (product demo, HTTPS). Set it to `false` only for
-  plain-HTTP deployments (`http://host:port`) — with HTTPS enabled, browsers drop non-secure cookies
-  and every request starts a fresh session.
-- APP_URL — the public origin of the app. **Defaults to `https://internara.web.id` (product demo)**; override with
-  `${APP_URL:-...}` semantics for other domains.
+  because the default `APP_URL` is `https://internara.web.id` (product demo, HTTPS). Set it to
+  `false` only for plain-HTTP deployments (`http://host:port`) — with HTTPS enabled, browsers drop
+  non-secure cookies and every request starts a fresh session.
 - RUN_SCHEDULER — set to `true` to start the scheduler daemon inside the `app` container. **Defaults
   to `false`** so the stack idles at a very low memory footprint (fits a 1 GB RAM VPS). For a demo
-  deployment, keep it `false` — no background processing runs at all (`QUEUE_CONNECTION=sync` means
-  jobs run inline). Enable it only when scheduled tasks (announcements, backups, cache warm) are
-  needed.
+  deployment, keep it `false` — no background processing runs (`QUEUE_CONNECTION=sync` means jobs
+  run inline). Enable it only when scheduled tasks (announcements, backups, cache warm) are needed.
+- RUN_QUEUE — set to `true` to start a queue worker inside the same container. Only useful after
+  switching `QUEUE_CONNECTION` away from `sync`.
 
-The stack is minimal: three services — `app`, `web`, and `db`. There is no Redis by default; the app
-runs the shared-hosting drivers (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
-`SESSION_DRIVER=database`), which is sufficient for single-tenant low-volume workloads. The `app`
-entrypoint runs `php artisan migrate --force` followed by
-`php artisan db:seed --class=Database\Seeders\SetupSeeder --force` on start (both idempotent — the
-roles, default settings, and academic year are seeded so the setup wizard can finalize) and starts
-the scheduler daemon only when
-`RUN_SCHEDULER=true`; set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
-added. Services built from the checkout: `app` and `web`. The `web` image is built using
-`.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
-host bind-mount is required.
+The stack is a **single `app` service** — there is no separate `web`, `db`, or `redis` container.
+The compose file pins the shared-hosting drivers (`DB_CONNECTION=sqlite`,
+`DB_DATABASE=/app/storage/database.sqlite`, `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
+`BROADCAST_CONNECTION=log`), so the SQLite database, uploads, and logs live in the `storage_data`
+volume while compiled frontend assets live in the `app_data` volume (`/app/public`). The container
+caps itself at `mem_limit: 384m` / `cpus: 1.0` and restarts `unless-stopped`.
+
+The runtime image is built from the repo-root `Dockerfile` (multi-stage `php:8.4-fpm`): the builder
+stage runs `composer install --no-dev`, `npm ci`, and `npm run build`; the runtime stage ships
+`/app` plus `docker/entrypoint.sh`, `docker/fpm-healthcheck`, `docker/php-fpm/www.conf`, and
+`docker/php-fpm/opcache.ini`. On every start the entrypoint writes a stub `/app/.env` when missing,
+refreshes `/app/public` from the image snapshot in `/opt/app-public`, repairs storage ownership,
+runs `php artisan optimize:clear`, then `php artisan migrate --force` followed by
+`php artisan db:seed --class=Database\Seeders\SetupSeeder --force` (both idempotent — roles, default
+settings, and academic year are seeded so the setup wizard can finalize), and finally starts the
+scheduler and/or queue worker when `RUN_SCHEDULER` / `RUN_QUEUE` are `true`.
 
 ### Start the Stack
 
@@ -380,8 +385,9 @@ host bind-mount is required.
 
 ```bash
 sudo tee /etc/internara.env > /dev/null <<'ENV'
-DB_PASSWORD=REPLACE_WITH_STRONG_PASSWORD
 APP_KEY=base64:REPLACE_WITH_APP_KEY
+# Optional overrides (defaults are the product demo values)
+APP_URL=https://your-school.sch.id
 ENV
 sudo chmod 600 /etc/internara.env
 
@@ -394,19 +400,24 @@ docker compose --env-file /etc/internara.env up --build -d
 
 ```
 
-### Serving on a domain over HTTPS (behind a reverse proxy)
+### Serving on a domain over HTTPS
 
-The compose stack's `web` service is an nginx container, but in production you typically front it
-with a host-level reverse proxy (aaPanel/BT Panel, Caddy, Nginx on the host) that terminates TLS.
-The steps below use the Internara product demo setup (aaPanel vhost `internara.web.id` — product demo — proxying to
-`http://127.0.0.1:8080`) as the reference.
+The compose stack ships **no web-server container**. The `app` service publishes PHP-FPM
+(FastCGI) on `127.0.0.1:9000`, so a host-level web server (aaPanel/BT Panel, Nginx, Caddy) must
+terminate TLS and speak FastCGI to that port.
+
+> **FastCGI, not HTTP.** Do not `proxy_pass` to `127.0.0.1:9000` — that port speaks the FastCGI
+> protocol, not HTTP. Use `fastcgi_pass` from a host Nginx vhost, or add your own nginx sidecar
+> that shares the `app_data` / `storage_data` volumes.
+
+The steps below use the Internara product demo setup (aaPanel vhost `internara.web.id`) as the
+reference.
 
 **1. Environment on the VPS (product demo):**
 
 ```env
 APP_URL=https://internara.web.id  # product demo; override for your domain
 SESSION_SECURE_COOKIE=true
-NGINX_PORT=8080
 
 ```
 
@@ -414,30 +425,48 @@ NGINX_PORT=8080
 overridden when the domain differs. `SESSION_SECURE_COOKIE=true` is the default; never use
 `false` when serving over HTTPS.
 
-**2. aaPanel vhost → Docker:**
+**2. aaPanel vhost → container FastCGI:**
 
-Edit `/www/server/panel/vhost/nginx/{domain}.conf`. The `server_name` must list every hostname that
-should reach the app (apex + `www`), and the proxy location must forward the original scheme so
+Resolve the volume mount points once (the project prefix matches the compose project directory):
+
+```bash
+docker volume inspect internara_app_data    -f '{{ .Mountpoint }}'   # /app/public
+docker volume inspect internara_storage_data -f '{{ .Mountpoint }}'  # /app/storage
+
+```
+
+Then edit `/www/server/panel/vhost/nginx/{domain}.conf`. `server_name` must list every hostname
+that should reach the app (apex + `www`), and the FastCGI params must forward the original scheme so
 Laravel generates HTTPS URLs:
 
 ```nginx
 server_name internara.web.id www.internara.web.id;
 
-location ^~ / {
-    proxy_pass http://127.0.0.1:8080;
-    proxy_set_header Host $http_host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;   # required for HTTPS URL generation
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
+root /var/lib/docker/volumes/internara_app_data/_data;
+index index.php;
+
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+location ~ \.php$ {
+    fastcgi_pass 127.0.0.1:9000;
+    fastcgi_param SCRIPT_FILENAME /app/public/index.php;
+    fastcgi_param SCRIPT_NAME /index.php;
+    fastcgi_param HTTPS on;
+    fastcgi_param HTTP_X_FORWARDED_PROTO https;
+    include fastcgi_params;
+}
+
+location /storage/ {
+    alias /var/lib/docker/volumes/internara_storage_data/_data/app/public/;
 }
 
 ```
 
-If the vhost declares a `proxy_cache_path`, create its directory before reloading nginx
-(`mkdir -p /www/wwwroot/{domain}/proxy_cache_dir`) or `nginx -t` will fail.
+Adjust the `/var/lib/docker/volumes/...` prefixes to the paths printed by `docker volume inspect`.
+Compiled assets are served from the `app_data` volume; uploaded media lives in `storage_data`
+(`/app/storage/app/public`), which the `/storage/` alias exposes directly.
 
 **3. TLS certificate covering apex + `www`:**
 
@@ -523,24 +552,26 @@ The flow:
    `deploy.sh` reports success once `HEALTH_URL` responds 200 within 60s. Auto-rollback kicks in if the health check fails.
 
 Because `deploy.sh` builds from the checkout, the rebuilt image always reflects the current
-`hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is required. Because the fix is also
-committed to `main` and automatically merged to `staging`, all branches remain in sync.
+`hotfix` branch; no `composer.json` version bump or `v*.*.*` tag is required. The fix is still
+committed to `main` first so the branch does not drift.
 
 ### Low-memory profile (1 GB RAM VPS)
 
 The default compose is tuned to run on a **1 GB RAM** VPS:
 
+- **Single container.** There is no MySQL, Redis, nginx, or queue container — PHP-FPM runs in the
+  `app` service and the database is a SQLite file in the `storage_data` volume.
 - **No background processes.** `RUN_SCHEDULER` defaults to `false` and `QUEUE_CONNECTION=sync` runs
   jobs inline — the `app` container only runs PHP-FPM. Enable the scheduler only if scheduled tasks
   are actually needed.
-- **MySQL is memory-capped.** The `db` service overrides MySQL defaults (`innodb_buffer_pool_size=64M`,
-  `performance_schema=OFF`, `max_connections=50`, etc.) cutting idle memory from ~460 MB to ~125 MB.
-- **Per-service memory limits.** `app` is capped at `256m`, `db` at `384m`, `web` at `64m` — the total
-  hard ceiling (~700 MB) plus the host OS fits comfortably in 1 GB and no service can OOM the host.
-- **PHP-FPM is worker-capped.** `docker/php-fpm/www.conf` limits the pool to `pm.max_children=6`
-  (start 2, max spare 3) — 6 workers stay within the 256 MB `app` cap (~20-40 MB each) while
-  absorbing burst traffic that saturated the previous `max_children=2` pool. Each worker's
+- **Container memory cap.** `app` is capped at `384m` with `cpus: 1.0`, so a runaway request cannot
+  OOM the host; the cap plus the host OS fits comfortably in 1 GB.
+- **PHP-FPM is worker-capped.** `docker/php-fpm/www.conf` limits the pool to `pm.max_children=4`
+  (start 3, min spare 2, max spare 3). Each worker's
   `php_admin_value[memory_limit] = 128M` bounds a single request's ceiling.
+- **OpCache is tuned.** `docker/php-fpm/opcache.ini` enables OpCache with a 64 MB shared segment and
+  `validate_timestamps=1` (revalidate every request), so image rebuilds take effect without a
+  container restart.
 - **Storage permissions are repaired at boot.** The entrypoint creates the framework dirs
   (`storage/framework/cache/data`, `sessions`, `views`, `logs`, `bootstrap/cache`) and `chown`s
   `/app/storage` to `www-data` before PHP-FPM starts, fixing the intermittent cache write
@@ -551,13 +582,12 @@ The default compose is tuned to run on a **1 GB RAM** VPS:
   dependency layers are copied and installed from lockfiles **before** the rest of the source, so they
   are only rebuilt when a lockfile changes; BuildKit `--mount=type=cache` reuses the Composer and npm
   download caches between builds; `node_modules` is removed at the end of the builder stage so it never
-  enters the runtime image. Without these, every source commit re-installs all dependencies and the
-  Docker build cache is retained between releases and cleaned weekly by
-  `.github/workflows/docker-cache-cleanup.yml`. It removes only BuildKit cache and unused images
+  enters the runtime image. The Docker build cache is cleaned weekly by
+  `.github/workflows/docker-cache-cleanup.yml`, which removes only BuildKit cache and unused images
   older than 168 hours, under the same deployment lock.
 
-To opt back in to background processing, export `RUN_SCHEDULER=true` (and add a `redis` service +
-`RUN_QUEUE=true` for async queues) when running compose.
+To opt back in to background processing, export `RUN_SCHEDULER=true` (and `RUN_QUEUE=true` after
+changing `QUEUE_CONNECTION` away from `sync`) when running compose.
 
 ### Private repositories (SSH deploy key)
 
@@ -575,41 +605,44 @@ cd repo && docker compose --env-file /etc/internara.env up --build -d
 If using a CI/CD runner or systemd unit to start the stack on boot, ensure the ssh-agent is available
 to the docker build process (or use a build service with repository access).
 
-### DB_PASSWORD and secrets management
+### Secrets management
 
 Recommended: store environment secrets in a file outside the project (e.g. `/etc/internara.env`) with
 mode 600 and owner root. The compose command above loads that file. Alternatives:
 - Docker Secrets (requires swarm/kubernetes)
 - External secrets manager (Vault, AWS Secrets Manager)
 
-Generate a secure password on the VPS:
+Generate the application key on the VPS:
 
 ```bash
-DB_PASSWORD=$(openssl rand -base64 32)
+APP_KEY=$(php -r "echo 'base64:'.base64_encode(random_bytes(32));")
 
 ```
 
-Do not commit `/etc/internara.env` or other secret files to Git.
+Since the container uses SQLite, no database password is required. Do not commit
+`/etc/internara.env` or other secret files to Git.
 
 ### Notes & caveats
 
-- The `web` image now builds from the repository and expects `./.docker/nginx.conf` to exist in the
-  repo. If you prefer a host-provided nginx.conf, revert to the previous bind-mount approach.
+- The stack no longer builds a separate `web` image. `.docker/nginx.conf` and `.docker/nginx.Dockerfile`
+  remain in the repo as a reference sidecar config, but the production compose publishes FastCGI on
+  `127.0.0.1:9000` and expects a host web server to terminate TLS.
 - Build from Git pulls the repository at build-time — changes in the running container won't persist
-  unless stored in mounted volumes (e.g. `storage_data` volume is used for uploaded files).
+  unless stored in mounted volumes (`storage_data` holds the SQLite database, uploads, and logs;
+  `app_data` holds `/app/public`).
 - The compose-based deployment requires Docker Engine and a reasonably recent Docker Compose that
-  supports BuildKit git contexts.
+  supports BuildKit.
 
 ### Development with Laravel Sail
 
 ```bash
-# Start Sail environment (SQLite + queue)
+# Start Sail environment (SQLite + database queue worker)
 ./vendor/bin/sail up -d
 
-# Or with MySQL instead of SQLite:
-./vendor/bin/sail up -d -s mysql
-
 ```
+
+`docker-compose.dev.yml` defines two services — `laravel.test` (PHP 8.4, port `APP_PORT`, default 80)
+and `queue` (`queue:work` against the database queue). Both use SQLite; there is no MySQL service.
 
 See `docker-compose.dev.yml` for the Sail configuration.
 
@@ -623,7 +656,7 @@ See `docker-compose.dev.yml` for the Sail configuration.
 - [ ] Database migrated: `php artisan migrate --force` (runs automatically via the Docker entrypoint)
 - [ ] Public storage link exists: `php artisan storage:link` (created in the Docker build)
 - [ ] Scheduler running: set `RUN_SCHEDULER=true` in the Docker env when scheduled tasks are needed (default is `false` — see low-memory profile); or system cron/webhook on shared hosting
-- [ ] Queue: `QUEUE_CONNECTION=sync` is the default — no worker needed; enable `RUN_QUEUE=true` + Redis for async workers (Tier 2+)
+- [ ] Queue: `QUEUE_CONNECTION=sync` is the default — no worker needed; add a queue backend and set `RUN_QUEUE=true` for async workers (Tier 2+)
 - [ ] OpCache enabled and configured
 - [ ] All caches warmed: `php artisan optimize`
 - [ ] Frontend assets built: `npm run build`
@@ -649,3 +682,11 @@ See `docker-compose.dev.yml` for the Sail configuration.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
+| `502 Bad Gateway` from the host web server | Host nginx cannot reach the container's FastCGI port | Check `docker compose ps` shows `app` healthy, then confirm `fastcgi_pass 127.0.0.1:9000` and that port `9000` is published |
+| Assets return 404 while pages render | `root` in the host vhost does not point at the `app_data` volume | Resolve it with `docker volume inspect internara_app_data -f '{{ .Mountpoint }}'` and use that path |
+| "Database is locked" | SQLite concurrent writes | Keep `QUEUE_CONNECTION=sync`, reduce concurrent writers, or move to MySQL/PostgreSQL |
+| Sessions reset on every request | `SESSION_SECURE_COOKIE=true` served over plain HTTP | Serve over HTTPS or set `SESSION_SECURE_COOKIE=false` for HTTP-only demos |
+| `419 Page Expired` | Session cookie not persisted (driver, domain, or secure flag) | Verify `SESSION_DRIVER`, `APP_URL`, and `SESSION_SECURE_COOKIE` match the public origin |
+| `Permission denied` writing to `storage/` | Volume created root-owned | Restart the container (entrypoint re-`chown`s `/app/storage`) or fix ownership on the volume |
+| Stale config/views after a deploy | Cached config or compiled views | The entrypoint runs `optimize:clear`; run it manually with `docker compose exec app php artisan optimize:clear` |
+| Uploads 404 but exist in storage | Host nginx only serves `app_data` | Add the `/storage/` alias to the `storage_data` volume (see the HTTPS section above) |

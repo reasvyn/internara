@@ -2,7 +2,7 @@
 
 ## Description
 
-Route structure, middleware stack, named route conventions, module split across 17 route files, and
+Route structure, middleware stack, named route conventions, module split across 16 route files, and
 URL design.
 
 
@@ -56,9 +56,10 @@ parent module file unless the submodule has 5+ routes or belongs to a distinct b
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 16 module route files in dependency order. Modules with
-submodules may additionally `require` submodule-specific route files (e.g., `auth.login.php`). If
-two files register the same route name, the later one wins.
+The master file `routes/web.php` iterates the module registry (`ModuleManager::names()`) and
+`require`s each `routes/web/{lowercase_module}.php` that exists, so load order follows
+`config/module.php`. Modules with submodules may additionally `require` submodule-specific route
+files. If two files register the same route name, the later one wins.
 
 The three modules without a route file are `core` (no HTTP surface of its own), `evaluation`
 (models only, no UI yet), and `ui` (Blade components are resolved through the view namespace, not
@@ -71,8 +72,9 @@ flowchart LR
         web_php[routes/web.php]
         web[web/]
         console[console.php]
-        ai[ai.php]
-        channels[channels.php<br/>(not implemented)]
+        channels[channels.php]
+        breadcrumbs[breadcrumbs.php]
+        ai[ai.php<br/>(not implemented)]
     end
 
     web_php --> web
@@ -81,44 +83,38 @@ flowchart LR
         direction TB
         setup[setup.php]
         auth[auth.php]
-        login[login.php<br/>submodule]
         user[user.php]
         sysadmin[sysadmin.php]
         document[document.php]
-        academics[academics.php]
-        partners[partners.php]
+        academic[academic.php]
+        partner[partner.php]
         program[program.php]
         enrollment[enrollment.php]
         assignment[assignment.php]
         assessment[assessment.php]
-        evaluation[evaluation.php]
-        journals[journals.php]
+        journal[journal.php]
         incident[incident.php]
         certification[certification.php]
-        reports[reports.php]
-        settings[settings.php]
-        locale[locale.php<br/>submodule]
+        report[report.php]
+        setting[setting.php]
     end
 
     web --> setup
     web --> auth
-    web --> login
     web --> user
     web --> sysadmin
     web --> document
-    web --> academics
-    web --> partners
+    web --> academic
+    web --> partner
     web --> program
     web --> enrollment
     web --> assignment
     web --> assessment
-    web --> evaluation
-    web --> journals
+    web --> journal
     web --> incident
     web --> certification
-    web --> reports
-    web --> settings
-    web --> locale
+    web --> report
+    web --> setting
 
 ```
 
@@ -138,11 +134,12 @@ Two route types exist:
 
 Additional route files outside `web/`:
 
-| File           | Purpose                          | Status          |
-| -------------- | -------------------------------- | --------------- |
-| `console.php`  | Artisan command registrations    | Active          |
-| `ai.php`       | AI integration routes            | Active          |
-| `channels.php` | Broadcasting channel definitions | Not implemented |
+| File              | Purpose                                                              | Status          |
+| ----------------- | -------------------------------------------------------------------- | --------------- |
+| `console.php`     | Artisan command registrations                                        | Active          |
+| `channels.php`    | Broadcasting channel definitions (registered in `bootstrap/app.php`) | Active          |
+| `breadcrumbs.php` | TallStackUI breadcrumb definitions (loaded via `config/tallstackui.php`) | Active       |
+| `ai.php`          | MCP route scaffold — `Mcp::web(...)` is commented out                | Not implemented |
 
 ---
 
@@ -157,7 +154,8 @@ flowchart LR
     C --> D[LogContextMiddleware]
     D --> E[RequireSetupAccessMiddleware]
     E --> F[SetLocaleMiddleware]
-    F --> G[Route Handler]
+    F --> G[ConcurrencyGateMiddleware]
+    G --> H[Route Handler]
 
 ```
 
@@ -167,7 +165,8 @@ flowchart LR
 4. `RequireSetupAccessMiddleware` — redirects unauthenticated visitors to `/setup` when the system
    has not been installed yet. Allows bypass for Livewire subrequests and the `/setup` route itself.
 5. `SetLocaleMiddleware` — language preference from session/database
-6. Route handler — Livewire or Controller routes
+6. `ConcurrencyGateMiddleware` — blocks concurrent writes from multiple devices for the same account
+7. Route handler — Livewire or Controller routes
 
 Global middleware is registered in `bootstrap/app.php`:
 
@@ -178,6 +177,7 @@ $middleware->web(
         LogContextMiddleware::class,
         RequireSetupAccessMiddleware::class,
         SetLocaleMiddleware::class,
+        ConcurrencyGateMiddleware::class,
     ],
 );
 
@@ -196,6 +196,7 @@ These middleware are applied per-route or per-group:
 | `auth`            | Laravel core                  | Most application routes                                                    | Requires authenticated session                                                      |
 | `auth.throttle`   | `AuthThrottleMiddleware`      | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints                    |
 | `role:{roles}`    | `CheckRoleMiddleware`         | Admin, teacher, supervisor routes                                          | Aborts 403 if user lacks required role                                              |
+| `concurrency.gate`| `ConcurrencyGateMiddleware`   | Write routes that must not run from two devices at once                    | Rejects a second concurrent write session for the same account                      |
 
 ---
 

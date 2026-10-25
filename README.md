@@ -124,7 +124,7 @@ reference: [`docs/architecture.md`](docs/architecture.md).
 |-------|----------|-------|
 | **Shared hosting** | Budget deployments | PHP-FPM + SQLite, sync queue, cron endpoint |
 | **VPS / VM** | Most schools (**recommended**) | PHP-FPM + Nginx, SQLite/MySQL, optional Redis |
-| **Docker Compose** | Tech-savvy operators | app + queue + scheduler + Redis containers |
+| **Docker Compose** | Tech-savvy operators | single PHP-FPM + SQLite container, host nginx FastCGI |
 
 SQLite is the zero-config default; switching to MySQL/MariaDB/PostgreSQL is a `.env` change, no
 code required. Production checklist and per-path guides:

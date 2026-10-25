@@ -74,7 +74,7 @@ Internara enforces strict separation between repository configuration files and 
 For critical fixes that must reach production immediately, pushing to the **`hotfix` branch** triggers
 an automated fast-track workflow (`.github/workflows/hotfix.yaml`). It runs PHP syntax validation, Pint,
 Prettier, and deploys directly to the production VPS with the standard health check and auto-rollback.
-Once deployment succeeds, it automatically merges `hotfix` into `staging` to prevent branch drift.
+The fix must already be committed to `main` first so the branches do not drift.
 
 | Aspect | Tag-driven release | `hotfix` branch |
 | --------------------- | ----------------------------- | ---------------------------------- |
@@ -83,7 +83,6 @@ Once deployment succeeds, it automatically merges `hotfix` into `staging` to pre
 | Deploy | Via `deploy` job in `release.yml` | Via `deploy` job in `hotfix.yaml` |
 | Version bump required | Yes | No |
 | Rollback | Automatic-on-failure | Automatic-on-failure |
-| Staging sync | On next merge/tag | Automatic (`sync-staging` job) |
 | Use for | Features, releases | Emergency production patches |
 
 The automated flow:
@@ -96,7 +95,6 @@ git push origin hotfix
 # 2. GitHub Actions (.github/workflows/hotfix.yaml) executes automatically:
 #    - Job 'lint': validates syntax and code formatting
 #    - Job 'deploy': SSH deploys hotfix with HEALTH_URL check and auto-rollback
-#    - Job 'sync-staging': automatically merges hotfix into staging and pushes
 ```
 
 Because `deploy.sh` builds from the checkout and gates on the 60s `HEALTH_URL` check, a
@@ -212,7 +210,7 @@ See [Deployment](deployment.md) for the full VPS/CI/CD operational details.
 Deploy secrets (`VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`) live in GitHub Actions secrets, never in the
 repo. `deploy.sh` requires no credentials — the SSH key authenticates on the runner.
 
-Runtime configuration for production/staging lives in `.env.production` (or `.env`) on the VPS host
+Runtime configuration for production lives in `.env.production` (or `.env`) on the VPS host
 filesystem, never committed to git (strictly enforced by `.gitignore`). `deploy.sh` and `rollback.sh`
 automatically detect `$DEPLOY_DIR/.env.production` and invoke Docker Compose with `--env-file .env.production`.
 

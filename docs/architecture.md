@@ -76,7 +76,7 @@ only on layers below it — never the reverse.
 │  Entities (final readonly — pure business rules)                            │
 │  DTOs (BaseData — immutable boundary objects)                               │
 │  Enums (LabelEnum, StatusEnum, ColorableEnum)                               │
-│  Database: SQLite (local/dev/testing) / MySQL (production/staging)          │
+│  Database: SQLite (dev/test + Docker) / MySQL (hosting / VPS tier)          │
 │  Config: .env, config/*.php, Runtime settings table                         │
 │  Files: Spatie Media Library  Cache  Queue  Session                         │
 │                                                                             │

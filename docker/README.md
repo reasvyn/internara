@@ -5,7 +5,7 @@ Internara provides three Docker environments for different use cases.
 
 ## 1. Development (Laravel Sail)
 
-Full-featured development environment with queue worker, Reverb, and Vite HMR.
+Full-featured development environment with a database queue worker and Vite HMR.
 
 ```bash
 # Start with Sail
@@ -21,23 +21,26 @@ docker compose -f docker-compose.dev.yml exec laravel.test php artisan migrate -
 docker compose -f docker-compose.dev.yml exec laravel.test npm run dev
 ```
 
-**Includes:** Queue worker, Reverb WebSocket, PHP 8.4, SQLite, Composer, Node.js.
-**URL:** http://localhost
+**Includes:** `laravel.test` (PHP 8.4) + `queue` worker, SQLite, Composer, Node.js.
+**URL:** http://localhost (override with `APP_PORT`)
 
 ## 2. Production (Docker Compose)
 
-Multi-service production environment with MySQL, Redis, Nginx, and Supervisor.
+Single-container production environment: PHP-FPM + SQLite, no MySQL/Redis/Nginx containers.
 
 ```bash
-docker compose up -d
+docker compose --env-file /etc/internara.env up --build -d
 ```
 
-**Low-memory by default (runs on a 1 GB RAM VPS):** the scheduler is **off** unless
-`RUN_SCHEDULER=true` (no background processing — `QUEUE_CONNECTION=sync` runs jobs inline), MySQL
-runs with capped memory (`innodb_buffer_pool_size=64M`, `performance_schema=OFF`, etc.), each service
-has a `mem_limit` (`app` 256m, `db` 384m, `web` 64m), and PHP-FPM is capped at 2 workers
-(`docker/php-fpm/www.conf`). The runtime `app` image is multi-stage — it excludes `node_modules` and
-the build toolchain.
+**Low-memory by default (runs on a 1 GB RAM VPS):** one `app` service capped at `mem_limit: 384m`
+/ `cpus: 1.0`, with `DB_CONNECTION=sqlite`, `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, and the
+scheduler **off** unless `RUN_SCHEDULER=true`. PHP-FPM is capped at 4 workers
+(`docker/php-fpm/www.conf`) with a 128 MB per-request `memory_limit`. The runtime `app` image is
+multi-stage — it excludes `node_modules` and the build toolchain.
+
+The app publishes **FastCGI on `127.0.0.1:9000`** (not HTTP), so a host web server must terminate
+TLS and `fastcgi_pass` to that port. `storage_data` holds the SQLite database, uploads, and logs;
+`app_data` holds `/app/public`. See `docs/guides/infra/deployment.md` for the host nginx vhost.
 
 **Build cache stays small (no multi-GB bloat):**
 
@@ -54,8 +57,8 @@ the build toolchain.
   The scheduled workflow uses a 168-hour age filter and the deployment lock, so it cannot overlap
   with a release or hotfix.
 
-See `docker-compose.yml` for service definitions. See `docs/guides/installation.md` for production setup
-guide.
+See `docker-compose.yml` for service definitions. See `docs/guides/infra/deployment.md` for the
+production setup guide.
 
 ## 3. Shared Hosting Simulation
 

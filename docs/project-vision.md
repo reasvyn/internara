@@ -24,7 +24,7 @@ Internara is not a school management system. It is a *single-purpose, deep* syst
 | **P2 — Zero-Admin Operations** | Teacher and supervisor actions are one-tap, offline-resilient, and self-explanatory; coordinator dashboards show placement rate, slot capacity, and anomalies in real time | Grade-card compilation 2–3 weeks → instant; logbook review <2 min per entry |
 | **P3 — Security & Trust First (S1)** | Authorization at every layer, PII masking, immutable activity logs, GPS-tagged attendance, QR-verifiable certificates | `scan_security.py` 0 high, `scan_violations.py` C1–C8 clean; external audit 0 critical |
 | **P4 — Sustained Maintainability (S2)** | Module colocation (19 modules own their stack), Action Triad (one `execute()`), Entity/DTO boundaries — a new contributor ships a feature after reading `architecture.md` + `conventions.md` | `scan_class_contracts.py` 0 high, bus factor >2 per module |
-| **P5 — Pragmatic Scalability (S3)** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad keeps read/write paths decoupled — system “does not collapse as features are added” | Handles 1,000 active students / 300 companies on VPS 1 vCPU / 1.9G RAM (current prod) without queue saturation (`pm.max_children=6`) |
+| **P5 — Pragmatic Scalability (S3)** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad keeps read/write paths decoupled — system “does not collapse as features are added” | Handles 1,000 active students / 300 companies on VPS 1 vCPU / 1.9G RAM (current prod) without queue saturation (`pm.max_children=4`) |
 
 ## Personas — Future State
 
