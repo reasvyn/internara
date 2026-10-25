@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Modules\Assessment\Entities\AssessmentResult;
+use App\Modules\Core\Exceptions\RejectedException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -86,5 +87,88 @@ describe('ARDA6: assessment result', function (): void {
 
         expect($a->equals($b))->toBeTrue();
         expect($a->equals($c))->toBeFalse();
+    });
+
+    test('ARDA6-FR-ASM-016: normalizes indicators then applies indicator and competency weights', function (): void {
+        $competencies = [
+            [
+                'id' => 'c-1',
+                'weight' => 60,
+                'indicators' => [
+                    ['id' => 'i-1', 'max_score' => 20, 'weight' => 25],
+                    ['id' => 'i-2', 'max_score' => 10, 'weight' => 75],
+                ],
+            ],
+            [
+                'id' => 'c-2',
+                'weight' => 40,
+                'indicators' => [['id' => 'i-3', 'max_score' => 100, 'weight' => 100]],
+            ],
+        ];
+
+        $result = AssessmentResult::fromArray([
+            'finalizedAt' => null,
+            'scoresData' => ['competencies' => [
+                'c-1' => ['indicators' => ['i-1' => 10, 'i-2' => 5]],
+                'c-2' => ['indicators' => ['i-3' => 80]],
+            ]],
+            'score' => 0.0,
+        ]);
+
+        expect($result->calculateFinalScore($competencies))->toBe(62.0);
+    });
+
+    test('ARDA6-FR-ASM-016: redistributes unscored competency weight across the scored set', function (): void {
+        $competencies = [
+            ['id' => 'teacher', 'weight' => 60, 'indicators' => [['id' => 't-indicator', 'max_score' => 10, 'weight' => 100]]],
+            ['id' => 'supervisor', 'weight' => 40, 'indicators' => [['id' => 's-indicator', 'max_score' => 20, 'weight' => 100]]],
+        ];
+
+        $result = AssessmentResult::fromArray([
+            'finalizedAt' => null,
+            'scoresData' => ['competencies' => [
+                'teacher' => ['indicators' => ['t-indicator' => 8]],
+            ]],
+            'score' => 0.0,
+        ]);
+
+        expect($result->calculateFinalScore($competencies))->toBe(80.0);
+    });
+
+    test('ARDA6-NFR-ASM-002: identical inputs always produce the identical score', function (): void {
+        $competencies = [
+            ['id' => 'c-1', 'weight' => 100, 'indicators' => [['id' => 'i-1', 'max_score' => 100, 'weight' => 100]]],
+        ];
+        $result = AssessmentResult::fromArray([
+            'finalizedAt' => null,
+            'scoresData' => ['competencies' => ['c-1' => ['indicators' => ['i-1' => 73.4]]]],
+            'score' => 0.0,
+        ]);
+
+        expect($result->calculateFinalScore($competencies))
+            ->toBe(73.4)
+            ->toBe($result->calculateFinalScore($competencies));
+    });
+
+    test('ARDA6-FR-ASM-015: refuses to score when nothing is scored or all weights are zero', function (): void {
+        $unscored = AssessmentResult::fromArray([
+            'finalizedAt' => null,
+            'scoresData' => ['competencies' => []],
+            'score' => 0.0,
+        ]);
+
+        expect(fn (): float => $unscored->calculateFinalScore([
+            ['id' => 'c-1', 'weight' => 100, 'indicators' => [['id' => 'i-1', 'max_score' => 10, 'weight' => 100]]],
+        ]))->toThrow(RejectedException::class);
+
+        $zeroWeight = AssessmentResult::fromArray([
+            'finalizedAt' => null,
+            'scoresData' => ['competencies' => ['c-1' => ['indicators' => ['i-1' => 5]]]],
+            'score' => 0.0,
+        ]);
+
+        expect(fn (): float => $zeroWeight->calculateFinalScore([
+            ['id' => 'c-1', 'weight' => 0, 'indicators' => [['id' => 'i-1', 'max_score' => 10, 'weight' => 100]]],
+        ]))->toThrow(RejectedException::class);
     });
 });
