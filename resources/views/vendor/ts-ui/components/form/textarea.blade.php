@@ -1,5 +1,6 @@
 @php
     $customization = $classes();
+    $inputBase = str_replace('py-1.5', 'px-3 py-2', $customization['input.base']);
 @endphp
 
 <x-dynamic-component :component="TallStackUi::prefix('wrapper.input')" :$id :$property :$error :$label :$hint
@@ -18,7 +19,7 @@
                       @if ($resizeAuto) x-on:input="resize()" @endif
                     {{ $attributes->class([
                         'resize-none' => !$resize && !$resizeAuto,
-                        $customization['input.base'],
+                        $inputBase,
                     ])->merge(['rows' => 3]) }}>{{ $attributes->get('value', $slot) }}</textarea>
         </div>
         @if ($count)
