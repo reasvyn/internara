@@ -2,18 +2,27 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Channels\Data\NotificationData;
+use App\Modules\Core\Contracts\SendsNotifications;
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Enrollment\Domain\Registration\Actions\ReadRegistrationAvailabilityAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\RegisterInternshipAction;
+use App\Modules\Enrollment\Domain\Registration\Actions\RejectRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\UploadRegistrationDocumentAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\VerifyRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Data\RegistrationData;
+use App\Modules\Enrollment\Domain\Registration\Data\RejectRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Data\VerifyRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Enums\RegistrationDocumentStatus;
+use App\Modules\Enrollment\Domain\Registration\Events\RegistrationRejected;
+use App\Modules\Enrollment\Domain\Registration\Events\RegistrationVerified;
 use App\Modules\Enrollment\Domain\Registration\Events\StudentRegistered;
 use App\Modules\Enrollment\Domain\Registration\Listeners\ClearDashboardOnRegistration;
+use App\Modules\Enrollment\Domain\Registration\Listeners\NotifyStudentOnRegistrationRejected;
+use App\Modules\Enrollment\Domain\Registration\Listeners\NotifyStudentOnRegistrationVerified;
+use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationVerification;
 use App\Modules\Enrollment\Domain\Registration\Livewire\RegistrationWizard;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\Enrollment\Domain\Registration\Models\RegistrationDocument;
@@ -179,6 +188,69 @@ describe('MBB5R: registrations', function (): void {
             ->and($placement->fresh()->filled_quota)->toBe(1);
     });
 
+    test('MBB5R-FR-REG-037: verification dispatches the event and notifies the student', function (): void {
+        Event::fake([RegistrationVerified::class]);
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $placement = Placement::factory()->create(['quota' => 5, 'filled_quota' => 0]);
+        $registration = Registration::factory()->create(['placement_id' => null, 'status' => 'pending']);
+
+        app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id));
+
+        Event::assertDispatched(RegistrationVerified::class);
+
+        $mockSender = Mockery::mock(SendsNotifications::class);
+        $mockSender->shouldReceive('execute')
+            ->once()
+            ->withArgs(fn (NotificationData $data): bool => $data->userId === $registration->student_id
+                && $data->type === 'registration_verified');
+
+        (new NotifyStudentOnRegistrationVerified($mockSender))
+            ->handle(new RegistrationVerified($registration->fresh()));
+    });
+
+    test('MBB5R-FR-REG-038: verification refuses registrations with unverified documents', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $placement = Placement::factory()->create(['quota' => 5, 'filled_quota' => 0]);
+        $registration = Registration::factory()->create(['placement_id' => null, 'status' => 'pending']);
+        RegistrationDocument::factory()->create([
+            'registration_id' => $registration->id,
+            'status' => RegistrationDocumentStatus::PENDING,
+        ]);
+
+        expect(fn () => app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(
+            registrationId: $registration->id,
+            placementId: $placement->id,
+        )))->toThrow(RejectedException::class);
+
+        expect($registration->fresh()->status)->toBe('pending')
+            ->and($registration->fresh()->placement_id)->toBeNull()
+            ->and($placement->fresh()->filled_quota)->toBe(0);
+    });
+
+    test('MBB5R-FR-REG-038: the pending queue surfaces per-document verification status', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $registration = Registration::factory()->pending()->create();
+        RegistrationDocument::factory()->create([
+            'registration_id' => $registration->id,
+            'status' => RegistrationDocumentStatus::VERIFIED,
+        ]);
+        RegistrationDocument::factory()->create([
+            'registration_id' => $registration->id,
+            'status' => RegistrationDocumentStatus::PENDING,
+        ]);
+
+        $html = Livewire::test(RegistrationVerification::class)->html();
+
+        expect($html)->toContain('1 '.__('registration.verification.verified'))
+            ->and($html)->toContain('1 '.__('registration.verification.pending'));
+    });
+
     test('MBB5R-FR-REG-016: verification refuses full placements', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -273,5 +345,76 @@ describe('MBB5R: registrations', function (): void {
         app(VerifyRegistrationAction::class)->execute(new VerifyRegistrationData(registrationId: $registration->id, placementId: $placement->id));
 
         expect(DB::table('activity_log')->where('description', 'registration_verified_and_placed')->exists())->toBeTrue();
+    });
+
+    test('MBB5R-FR-REG-034: rejection marks the registration rejected with a reason and dispatches the event (also UC-REG-004)', function (): void {
+        Event::fake([RegistrationRejected::class]);
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $registration = Registration::factory()->pending()->create();
+
+        $rejected = app(RejectRegistrationAction::class)->execute(new RejectRegistrationData(
+            registrationId: $registration->id,
+            reason: 'Documents are incomplete.',
+        ));
+
+        expect($rejected->status)->toBe('rejected')
+            ->and($rejected->rejection_reason)->toBe('Documents are incomplete.')
+            ->and(DB::table('activity_log')->where('description', 'registration_rejected')->exists())->toBeTrue();
+
+        Event::assertDispatched(RegistrationRejected::class);
+    });
+
+    test('MBB5R-FR-REG-034: rejection requires a pending registration (also NFR-REG-005)', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $registration = Registration::factory()->active()->create();
+
+        expect(fn () => app(RejectRegistrationAction::class)->execute(new RejectRegistrationData(
+            registrationId: $registration->id,
+            reason: 'Too late.',
+        )))->toThrow(RejectedException::class);
+
+        expect($registration->fresh()->status)->toBe('active')
+            ->and($registration->fresh()->rejection_reason)->toBeNull();
+    });
+
+    test('MBB5R-FR-REG-034: rejection notifies the student with the reason', function (): void {
+        $registration = Registration::factory()->pending()->create();
+
+        $mockSender = Mockery::mock(SendsNotifications::class);
+        $mockSender->shouldReceive('execute')
+            ->once()
+            ->withArgs(fn (NotificationData $data): bool => $data->userId === $registration->student_id
+                && $data->type === 'registration_rejected'
+                && ($data->data['reason'] ?? null) === 'Documents are incomplete.');
+
+        (new NotifyStudentOnRegistrationRejected($mockSender))
+            ->handle(new RegistrationRejected($registration, 'Documents are incomplete.'));
+    });
+
+    test('MBB5R-FR-REG-036: the verification queue rejects a pending registration with a required reason (also FR-REG-035)', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        $registration = Registration::factory()->pending()->create();
+
+        Livewire::test(RegistrationVerification::class)
+            ->call('rejectConfirm', $registration->id)
+            ->assertSet('showRejectModal', true)
+            ->call('confirmReject')
+            ->assertHasErrors(['rejectionReason']);
+
+        Livewire::test(RegistrationVerification::class)
+            ->call('rejectConfirm', $registration->id)
+            ->set('rejectionReason', 'Documents are incomplete.')
+            ->call('confirmReject')
+            ->assertHasNoErrors()
+            ->assertSet('showRejectModal', false);
+
+        expect($registration->fresh()->status)->toBe('rejected')
+            ->and($registration->fresh()->rejection_reason)->toBe('Documents are incomplete.');
     });
 });

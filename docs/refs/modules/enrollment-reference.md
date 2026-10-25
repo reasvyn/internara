@@ -27,6 +27,7 @@ applications, and registration document uploads.
 | `Domain/Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseCommandAction` |
 | `Domain/Registration/Actions/ReadRegistrationAvailabilityAction.php` | `ReadRegistrationAvailabilityAction` | `BaseReadAction` |
 | `Domain/Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | `BaseCommandAction` |
+| `Domain/Registration/Actions/RejectRegistrationAction.php` | `RejectRegistrationAction` | `BaseCommandAction` |
 | `Domain/Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseCommandAction` |
 | `Domain/Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseCommandAction` |
 
@@ -45,6 +46,7 @@ applications, and registration document uploads.
 | File | Class | Extends |
 |---|---|---|
 | `Domain/AccountApplication/Data/RejectAccountApplicationData.php` | `RejectAccountApplicationData` | `BaseData` |
+| `Domain/Registration/Data/RejectRegistrationData.php` | `RejectRegistrationData` | `BaseData` |
 | `Domain/Registration/Data/RegistrationData.php` | `RegistrationData` | `BaseData` |
 | `Domain/Registration/Data/VerifyRegistrationData.php` | `VerifyRegistrationData` | — |
 
@@ -71,6 +73,7 @@ applications, and registration document uploads.
 | `Domain/AccountApplication/Events/AccountApplicationApproved.php` | `AccountApplicationApproved` | `BaseEvent` |
 | `Domain/AccountApplication/Events/AccountApplicationRejected.php` | `AccountApplicationRejected` | `BaseEvent` |
 | `Domain/Registration/Events/StudentRegistered.php` | `StudentRegistered` | `BaseEvent` |
+| `Domain/Registration/Events/RegistrationRejected.php` | `RegistrationRejected` | `BaseEvent` |
 | `Domain/Registration/Events/RegistrationVerified.php` | `RegistrationVerified` | `BaseEvent` |
 
 ## Listeners
@@ -78,6 +81,8 @@ applications, and registration document uploads.
 | File | Listener | Listens To |
 |---|---|---|
 | `Domain/Registration/Listeners/ClearDashboardOnRegistration.php` | `ClearDashboardOnRegistration` | — |
+| `Domain/Registration/Listeners/NotifyStudentOnRegistrationRejected.php` | `NotifyStudentOnRegistrationRejected` | `RegistrationRejected` |
+| `Domain/Registration/Listeners/NotifyStudentOnRegistrationVerified.php` | `NotifyStudentOnRegistrationVerified` | `RegistrationVerified` |
 
 ## Livewire Components
 
@@ -140,6 +145,7 @@ testing conventions.
 | Migration                                | Table                       |
 | ---------------------------------------- | --------------------------- |
 | `create_registrations_table`             | `registrations`             |
+| `add_rejection_reason_to_registrations_table` | `registrations`        |
 | `create_registration_documents_table`    | `registration_documents`    |
 | `create_placements_table`                | `placements`                |
 | `create_placement_change_requests_table` | `placement_change_requests` |

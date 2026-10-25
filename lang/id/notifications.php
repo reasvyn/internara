@@ -30,6 +30,14 @@ return [
         'mail_subject' => 'Pembaruan Pendaftaran Magang',
         'mail_line1' => "Pendaftaran Anda untuk ':internship' telah diperbarui menjadi: :status",
     ],
+    'registration_rejected' => [
+        'title' => 'Pendaftaran Ditolak',
+        'message' => "Pendaftaran Anda untuk ':internship' ditolak. Alasan: :reason",
+    ],
+    'registration_verified' => [
+        'title' => 'Pendaftaran Diverifikasi',
+        'message' => "Pendaftaran Anda untuk ':internship' telah diverifikasi dan Anda telah ditempatkan. Periksa dasbor Anda untuk detailnya.",
+    ],
     'assignment' => [
         'title' => 'Tugas Baru Diterbitkan',
         'broadcast' => "Tugas baru ':title' untuk :internship",

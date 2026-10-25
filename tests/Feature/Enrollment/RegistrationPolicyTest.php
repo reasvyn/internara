@@ -66,6 +66,22 @@ describe('MBB5R: RegistrationPolicy', function () {
         expect(Gate::allows('approve', $registration))->toBeFalse();
     });
 
+    test('MBB5R-FR-REG-035: reserves rejection to admins', function () {
+        $registration = Registration::factory()->pending()->create();
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+        expect(Gate::allows('reject', $registration))->toBeTrue();
+
+        foreach (['teacher', 'supervisor', 'student'] as $role) {
+            $user = User::factory()->create();
+            $user->assignRole($role);
+            $this->actingAs($user);
+            expect(Gate::allows('reject', $registration))->toBeFalse();
+        }
+    });
+
     test('MBB5R-FR-REG-018: admin can update any registration', function () {
         $registration = Registration::factory()->create();
         $admin = User::factory()->create();

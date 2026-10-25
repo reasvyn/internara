@@ -23,8 +23,12 @@ use App\Modules\Document\Domain\Handbook\Events\HandbookCreated;
 use App\Modules\Document\Domain\Handbook\Events\HandbookDeleted;
 use App\Modules\Document\Domain\Handbook\Events\HandbookUpdated;
 use App\Modules\Document\Domain\Handbook\Listeners\ClearHandbookCache;
+use App\Modules\Enrollment\Domain\Registration\Events\RegistrationRejected;
+use App\Modules\Enrollment\Domain\Registration\Events\RegistrationVerified;
 use App\Modules\Enrollment\Domain\Registration\Events\StudentRegistered;
 use App\Modules\Enrollment\Domain\Registration\Listeners\ClearDashboardOnRegistration;
+use App\Modules\Enrollment\Domain\Registration\Listeners\NotifyStudentOnRegistrationRejected;
+use App\Modules\Enrollment\Domain\Registration\Listeners\NotifyStudentOnRegistrationVerified;
 use App\Modules\Partner\Domain\Company\Events\CompanyCreated;
 use App\Modules\Partner\Domain\Company\Events\CompanyDeleted;
 use App\Modules\Partner\Domain\Company\Events\CompanyUpdated;
@@ -119,6 +123,10 @@ return [
         InternshipCreated::class => [NotifyAdminsInternshipCreated::class],
 
         StudentRegistered::class => [ClearDashboardOnRegistration::class],
+
+        RegistrationRejected::class => [NotifyStudentOnRegistrationRejected::class],
+
+        RegistrationVerified::class => [NotifyStudentOnRegistrationVerified::class],
 
         LoginSucceeded::class => [SendRoleWelcomeNotification::class],
 

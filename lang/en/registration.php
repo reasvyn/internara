@@ -65,6 +65,11 @@ return [
         'cancel' => 'Cancel',
         'verify_place' => 'Verify & Place',
         'success' => 'Registration verified and student placed successfully.',
+        'reject' => 'Reject',
+        'reject_title' => 'Reject Registration',
+        'rejection_reason' => 'Rejection Reason',
+        'reject_hint' => 'The student will be notified with this reason.',
+        'reject_success' => 'Registration rejected and the student notified.',
     ],
 
     'account_application' => [
@@ -110,6 +115,7 @@ return [
     'application_exists' => 'You already have an application for this internship.',
     'application_not_pending' => 'The application is no longer pending.',
     'not_pending' => 'The registration is no longer in a pending state.',
+    'documents_not_verified' => 'All required documents must be verified before the registration can be placed.',
     'validation' => [
         'missing_internship' => 'An internship program must be selected.',
     ],

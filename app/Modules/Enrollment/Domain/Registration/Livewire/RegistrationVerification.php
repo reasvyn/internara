@@ -6,7 +6,9 @@ namespace App\Modules\Enrollment\Domain\Registration\Livewire;
 
 use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
+use App\Modules\Enrollment\Domain\Registration\Actions\RejectRegistrationAction;
 use App\Modules\Enrollment\Domain\Registration\Actions\VerifyRegistrationAction;
+use App\Modules\Enrollment\Domain\Registration\Data\RejectRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Data\VerifyRegistrationData;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
@@ -36,6 +38,12 @@ class RegistrationVerification extends Component
 
     public bool $showProcessModal = false;
 
+    public ?string $rejectId = null;
+
+    public string $rejectionReason = '';
+
+    public bool $showRejectModal = false;
+
     #[Computed]
     public function pendingRegistrations(): Collection
     {
@@ -54,6 +62,16 @@ class RegistrationVerification extends Component
         }
 
         return Registration::with('internship')->find($this->processId);
+    }
+
+    #[Computed]
+    public function rejectingRegistration(): ?Registration
+    {
+        if ($this->rejectId === null) {
+            return null;
+        }
+
+        return Registration::with(['internship', 'mentee.user'])->find($this->rejectId);
     }
 
     #[Computed]
@@ -111,6 +129,40 @@ class RegistrationVerification extends Component
             $this->processId = null;
             $this->placement_id = '';
             $this->mentor_ids = [];
+        } catch (RejectedException|\RuntimeException $e) {
+            $this->toast()->error($e->getMessage())->send();
+        }
+    }
+
+    public function rejectConfirm(string $id): void
+    {
+        $this->resetErrorBag();
+        $this->rejectionReason = '';
+
+        $registration = Registration::findOrFail($id);
+
+        $this->authorize('reject', $registration);
+
+        $this->rejectId = $id;
+        $this->showRejectModal = true;
+    }
+
+    public function confirmReject(RejectRegistrationAction $action): void
+    {
+        $this->validate([
+            'rejectionReason' => 'required|string|max:500',
+        ]);
+
+        try {
+            $action->execute(new RejectRegistrationData(
+                registrationId: $this->rejectId,
+                reason: $this->rejectionReason,
+            ));
+
+            $this->toast()->success(__('registration.verification.reject_success'))->send();
+            $this->showRejectModal = false;
+            $this->rejectId = null;
+            $this->rejectionReason = '';
         } catch (RejectedException|\RuntimeException $e) {
             $this->toast()->error($e->getMessage())->send();
         }

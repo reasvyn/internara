@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $internship_id
  * @property string $placement_id
  * @property string $status
+ * @property string|null $rejection_reason
  * @property-read User|null $student
  * @property-read Internship|null $internship
  * @property-read Placement|null $placement
@@ -59,6 +60,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
         'start_date',
         'end_date',
         'status',
+        'rejection_reason',
         'proposed_company_details',
     ]),
 ]

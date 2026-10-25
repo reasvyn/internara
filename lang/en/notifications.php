@@ -30,6 +30,14 @@ return [
         'mail_subject' => 'Internship Registration Update',
         'mail_line1' => "Your registration for ':internship' has been updated to: :status",
     ],
+    'registration_rejected' => [
+        'title' => 'Registration Rejected',
+        'message' => "Your registration for ':internship' was rejected. Reason: :reason",
+    ],
+    'registration_verified' => [
+        'title' => 'Registration Verified',
+        'message' => "Your registration for ':internship' was verified and you have been placed. Check your dashboard for details.",
+    ],
     'assignment' => [
         'title' => 'New Assignment Published',
         'broadcast' => "New assignment ':title' for :internship",

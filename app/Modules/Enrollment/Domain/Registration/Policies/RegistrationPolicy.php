@@ -53,6 +53,11 @@ class RegistrationPolicy extends BasePolicy
         return $this->isAdmin($user);
     }
 
+    public function reject(User $user, Registration $registration): bool
+    {
+        return $this->isAdmin($user);
+    }
+
     public function delete(User $user, Registration $registration): bool
     {
         if ($this->isAdmin($user)) {

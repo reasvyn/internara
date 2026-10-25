@@ -27,9 +27,9 @@
                         @foreach ($this->pendingRegistrations as $reg)
                             @php
                                 $total = $reg->documents->count();
-                                $verified = $reg->documents->where('status', 'verified')->count();
-                                $pending = $reg->documents->where('status', 'pending')->count();
-                                $rejected = $reg->documents->where('status', 'rejected')->count();
+                                $verified = $reg->documents->filter(fn ($doc) => $doc->status->isVerified())->count();
+                                $pending = $reg->documents->filter(fn ($doc) => $doc->status->isPending())->count();
+                                $rejected = $reg->documents->filter(fn ($doc) => $doc->status->isRejected())->count();
                             @endphp
                             <tr>
                                 <td>
@@ -66,13 +66,24 @@
                                 </td>
                                 <td>{{ $reg->created_at->diffForHumans() }}</td>
                                 <td>
-                                    <x-ts-button
-                                        :text="__('registration.verification.process')"
-                                        wire:click="process('{{ $reg->id }}')"
-                                        icon="chevron-right"
-                                        color="primary"
-                                        sm
-                                    />
+                                    <div class="flex items-center gap-1">
+                                        <x-ts-button
+                                            :text="__('registration.verification.process')"
+                                            wire:click="process('{{ $reg->id }}')"
+                                            icon="chevron-right"
+                                            color="primary"
+                                            sm
+                                        />
+                                        <x-ts-button.circle
+                                            :aria-label="__('registration.verification.reject')"
+                                            icon="x-mark"
+                                            color="red"
+                                            outline
+                                            xs
+                                            wire:click="rejectConfirm('{{ $reg->id }}')"
+                                            tooltip="{{ __('registration.verification.reject') }}"
+                                        />
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -114,6 +125,39 @@
                         type="submit"
                         icon="check"
                         color="primary"
+                    />
+                </div>
+            </form>
+        @endif
+    </x-ts-modal>
+    <x-ts-modal wire="showRejectModal" :title="__('registration.verification.reject_title')">
+        @if ($this->rejectingRegistration)
+            <div class="bg-base-200 rounded-box mb-4 p-3">
+                <p class="font-medium">{{ $this->rejectingRegistration->mentee?->user?->name }}</p>
+                <p class="text-base-content/50 text-sm">{{ $this->rejectingRegistration->internship?->name }}</p>
+            </div>
+
+            <form wire:submit="confirmReject">
+                <x-ts-textarea
+                    :label="__('registration.verification.rejection_reason')"
+                    :hint="__('registration.verification.reject_hint')"
+                    wire:model="rejectionReason"
+                    rows="3"
+                    maxlength="500"
+                    count
+                />
+
+                <div class="mt-6 flex justify-end gap-2">
+                    <x-ts-button
+                        :text="__('registration.verification.cancel')"
+                        wire:click="$set('showRejectModal', false)"
+                    />
+                    <x-ts-button
+                        :text="__('registration.verification.reject')"
+                        type="submit"
+                        icon="x-mark"
+                        color="red"
+                        loading="confirmReject"
                     />
                 </div>
             </form>

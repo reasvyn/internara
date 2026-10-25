@@ -65,6 +65,11 @@ return [
         'cancel' => 'Batal',
         'verify_place' => 'Verifikasi & Tempatkan',
         'success' => 'Pendaftaran diverifikasi dan siswa berhasil ditempatkan.',
+        'reject' => 'Tolak',
+        'reject_title' => 'Tolak Pendaftaran',
+        'rejection_reason' => 'Alasan Penolakan',
+        'reject_hint' => 'Siswa akan diberitahu dengan alasan ini.',
+        'reject_success' => 'Pendaftaran ditolak dan siswa telah diberitahu.',
     ],
 
     'account_application' => [
@@ -107,6 +112,7 @@ return [
     'application_exists' => 'Anda sudah memiliki pengajuan untuk magang ini.',
     'application_not_pending' => 'Pengajuan tidak lagi berstatus menunggu.',
     'not_pending' => 'Pendaftaran tidak lagi berstatus menunggu.',
+    'documents_not_verified' => 'Semua dokumen wajib harus diverifikasi sebelum pendaftaran dapat ditempatkan.',
     'validation' => [
         'missing_internship' => 'Program magang harus dipilih.',
     ],

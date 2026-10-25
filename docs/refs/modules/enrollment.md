@@ -100,6 +100,8 @@ transaction it provisions the user account, opens the registration, and reserves
 placement slot, then issues an activation link. A rejected application leaves no partial trace.
 
 Once registered, the student moves through verification of uploaded documents, then placement.
+Verification activates the registration; rejection closes it with a recorded reason and notifies
+the student, so an invalid registration never sits in the queue indefinitely.
 Placement is a slot business — each company exposes a named location with a quota, and the
 system tracks how much of that quota is consumed. Direct placement by staff and student-initiated
 change requests both move a student between slots, and each change is a reviewed decision rather
