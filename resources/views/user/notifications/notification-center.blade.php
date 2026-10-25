@@ -5,7 +5,7 @@
     </div>
 
     <x-ts-card shadowless class="bg-base-100 border-base-content/10 border">
-        <div class="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
+        <div class="mb-4 flex flex-col items-stretch justify-between gap-4 sm:mb-5 md:flex-row md:items-center">
             <div class="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
                 <x-ts-input
                     wire:model.live.debounce.300ms="search"
@@ -56,7 +56,7 @@
 
         @if ($this->selected_count() > 0)
             <div
-                class="bg-base-200/50 border-base-content/10 my-4 flex items-center justify-between gap-4 rounded-xl border p-4"
+                class="bg-base-200/50 border-base-content/10 mb-4 flex items-center justify-between gap-4 rounded-xl border p-4 sm:mb-5"
                 role="status"
                 aria-live="polite"
             >
