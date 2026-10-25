@@ -469,6 +469,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--quiet", "-q", action="store_true")
     parser.add_argument("--strict", "-s", action="store_true")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--no-cache", action="store_true", help="Disable file caching")
     parser.add_argument(
         "--no-external",
         action="store_true",

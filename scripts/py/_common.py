@@ -83,34 +83,50 @@ class ScanResult:
 
 # ─── File Cache ─────────────────────────────────────────────────────────────
 
+def compute_tools_source_hash() -> str:
+    """Compute sha256 fingerprint of all Python scripts in the tooling directory."""
+    h = hashlib.sha256()
+    py_dir = Path(__file__).resolve().parent
+    for py_file in sorted(py_dir.glob("*.py")):
+        try:
+            h.update(py_file.name.encode())
+            h.update(py_file.read_bytes())
+        except Exception:
+            pass
+    return h.hexdigest()[:16]
+
+
 class FileCache:
-    """Mtime-based file cache for scanner results."""
+    """Mtime-based file cache for scanner results with source code invalidation."""
     
     def __init__(self, cache_dir: Path | None = None):
         self.cache_dir = cache_dir or (OUTPUT_DIR / "cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.source_hash = compute_tools_source_hash()
     
     def _get_cache_path(self, key: str) -> Path:
-        safe_key = hashlib.sha256(key.encode()).hexdigest()[:16]
+        safe_key = hashlib.sha256(f"{self.source_hash}:{key}".encode()).hexdigest()[:16]
         return self.cache_dir / f"{safe_key}.json"
     
-    def get(self, key: str) -> list[Finding] | None:
-        """Get cached findings if file mtime hasn't changed."""
+    def get(self, key: str, file_path: Path | str | None = None) -> list[Finding] | None:
+        """Get cached findings if file mtime and scanner source haven't changed."""
         cache_path = self._get_cache_path(key)
         if not cache_path.exists():
             return None
         
         try:
             data = json.loads(cache_path.read_text(encoding="utf-8"))
+            if data.get("source_hash") != self.source_hash:
+                return None
             cached_mtime = data.get("mtime")
             if cached_mtime is None:
                 return None
             
             # Verify file still exists and mtime matches
-            file_path = Path(key)
-            if not file_path.exists():
+            target_path = Path(file_path if file_path is not None else key)
+            if not target_path.exists():
                 return None
-            current_mtime = file_path.stat().st_mtime
+            current_mtime = target_path.stat().st_mtime
             if abs(current_mtime - cached_mtime) > 0.001:
                 return None
             
@@ -118,13 +134,14 @@ class FileCache:
         except Exception:
             return None
     
-    def set(self, key: str, findings: list[Finding]) -> None:
-        """Cache findings with file mtime."""
+    def set(self, key: str, findings: list[Finding], file_path: Path | str | None = None) -> None:
+        """Cache findings with file mtime and scanner source hash."""
         cache_path = self._get_cache_path(key)
         try:
-            file_path = Path(key)
-            mtime = file_path.stat().st_mtime if file_path.exists() else 0
+            target_path = Path(file_path if file_path is not None else key)
+            mtime = target_path.stat().st_mtime if target_path.exists() else 0
             data = {
+                "source_hash": self.source_hash,
                 "mtime": mtime,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "findings": [asdict(f) for f in findings],
@@ -323,16 +340,19 @@ def find_files_parallel(
     max_workers: int = 8,
     progress: ProgressReporter | None = None,
     use_cache: bool = True,
+    cache_key_prefix: str = "",
 ) -> list[Finding]:
     """Process files in parallel with per-file error isolation and caching."""
     findings: list[Finding] = []
     errors: list[tuple[Path, Exception]] = []
     cache = get_file_cache() if use_cache else None
+    prefix = cache_key_prefix or getattr(processor, "__name__", "")
     
     def process_file(path: Path) -> list[Finding]:
+        key = f"{prefix}:{path}" if prefix else str(path)
         # Check cache first
         if cache is not None:
-            cached = cache.get(str(path))
+            cached = cache.get(key, file_path=path)
             if cached is not None:
                 if progress:
                     progress.update()
@@ -341,9 +361,9 @@ def find_files_parallel(
         # Process file
         result = processor(path)
         
-        # Cache result
-        if cache is not None and result:
-            cache.set(str(path), result)
+        # Cache result (including empty findings for clean files)
+        if cache is not None:
+            cache.set(key, result, file_path=path)
         
         if progress:
             progress.update()

@@ -1193,19 +1193,22 @@ def main() -> None:
     # Run scanners with progress and caching
     workers = getattr(args, "workers", 8)
     for scanner_func in scanner_funcs:
+        func_name = getattr(scanner_func, "__name__", "scanner")
         if "models" in scanner_func.__code__.co_varnames:
             result = find_files_parallel(
-                files, lambda f: scanner_func([f], args.module, models),
+                files, lambda f, sf=scanner_func: sf([f], args.module, models),
                 max_workers=workers,
                 progress=progress,
                 use_cache=use_cache,
+                cache_key_prefix=func_name,
             )
         else:
             result = find_files_parallel(
-                files, lambda f: scanner_func([f], args.module),
+                files, lambda f, sf=scanner_func: sf([f], args.module),
                 max_workers=workers,
                 progress=progress,
                 use_cache=use_cache,
+                cache_key_prefix=func_name,
             )
         findings.extend(result)
 

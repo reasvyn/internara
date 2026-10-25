@@ -510,6 +510,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--json", action="store_true")
     parser.add_argument("--severity", choices=["critical", "high", "medium", "low"], help="Filter by minimum severity")
     parser.add_argument("--baseline", type=Path, help="Baseline file to ignore known findings")
+    parser.add_argument("--no-cache", action="store_true", help="Disable file caching")
     return parser.parse_args()
 
 
