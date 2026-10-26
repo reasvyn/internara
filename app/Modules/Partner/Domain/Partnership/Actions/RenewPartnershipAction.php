@@ -18,9 +18,7 @@ final class RenewPartnershipAction extends BaseCommandAction
     public function execute(Partnership $oldPartnership, PartnershipData $newData): Partnership
     {
         if ($oldPartnership->asPartnershipState()->isActive()) {
-            throw new RejectedException(
-                'Active partnerships must be terminated or expired before renewal.',
-            );
+            throw new RejectedException(__('partnership.renew_blocked'));
         }
 
         return $this->transaction(function () use ($oldPartnership, $newData) {

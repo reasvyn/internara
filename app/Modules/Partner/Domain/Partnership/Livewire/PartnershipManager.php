@@ -255,7 +255,7 @@ class PartnershipManager extends BaseRecordManager
                 'delete_selected' => $this->executeDeleteSelected($batchDelete),
                 default => null,
             };
-        } catch (RejectedException|\RuntimeException $e) {
+        } catch (RejectedException $e) {
             $this->toast()->error($e->getMessage())->send();
         }
         $this->confirmTarget = null;
