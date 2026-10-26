@@ -11,6 +11,7 @@ use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
@@ -138,12 +139,27 @@ describe('J0M05: Certificate QR Verification', function (): void {
             ->and($cacheControl)->toContain('no-cache');
     });
 
-    test('J0M05-NFR-QR-001, J0M05-DD-QR-002: route definition includes throttling middleware and public access', function (): void {
+    test('J0M05-NFR-QR-001, J0M05-DD-QR-002: route is public and throttled at the requirement budget', function (): void {
         $route = Route::getRoutes()->getByName('certificates.verify');
 
         expect($route)->not->toBeNull()
-            ->and($route->middleware())->toContain('throttle:30,1')
-            ->and($route->middleware())->not->toContain('auth');
+            ->and($route->middleware())->not->toContain('auth')
+            ->and($route->middleware())->toContain('throttle:5,1');
+    });
+
+    test('J0M05-NFR-QR-001: the sixth anonymous verification within a minute is refused', function (): void {
+        RateLimiter::clear('certificates.verify');
+
+        $certificate = Certificate::factory()->create([
+            'qr_hash' => 'throttle0123456789abcdef0123456789abcdef012',
+            'status' => CertificateStatus::ISSUED,
+        ]);
+
+        foreach (range(1, 5) as $attempt) {
+            $this->get(route('certificates.verify', $certificate->qr_hash))->assertStatus(200);
+        }
+
+        $this->get(route('certificates.verify', $certificate->qr_hash))->assertStatus(429);
     });
 
     test('J0M05-NFR-QR-003: verification interface supports bilingual rendering in en and id', function (): void {

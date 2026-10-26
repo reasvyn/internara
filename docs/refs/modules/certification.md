@@ -78,7 +78,7 @@ reused — which keeps cohort issuance fast and the served document immutable.
 Implemented as an anonymous `GET /verify/{qr_hash}` route named `certificates.verify`:
 `VerifyCertificateController` → `ReadCertificateStatusAction` → the `certification.verify` Blade
 view. The route carries no auth middleware, is constrained to `[A-Za-z0-9]{32,64}`, and is limited
-by `throttle:30,1` (30 requests per minute per IP).
+by `throttle:5,1` (5 requests per minute per IP, matching NFR-QR-001).
 
 The answer is an **HTML page, not a JSON API**. The action validates the hash shape with the same
 pattern and returns `CertificateStatusView::notFound()` for malformed or unknown input, so a bad

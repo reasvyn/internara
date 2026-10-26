@@ -11,7 +11,7 @@ use App\Modules\Certification\Domain\Certificate\Livewire\StudentCertificates;
 Route::get('/verify/{qr_hash}', VerifyCertificateController::class)
     ->name('certificates.verify')
     ->where('qr_hash', '[A-Za-z0-9]{32,64}')
-    ->middleware('throttle:30,1');
+    ->middleware('throttle:5,1');
 
 Route::middleware('auth')->group(function () {
     Route::get('/certificates/{certificate}/download', CertificateDownloadController::class)->name(
