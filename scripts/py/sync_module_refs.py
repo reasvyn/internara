@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Sync module reference docs with the real filesystem inventory.
 
-Three repair passes, all deterministic and idempotent:
+Four repair passes, all deterministic and idempotent:
 
 1. PATH_FIXES   — rewrite stale path prefixes left behind by domain renames
                   (e.g. `Domain/Backups/` -> `Domain/Backup/`).
@@ -9,8 +9,12 @@ Three repair passes, all deterministic and idempotent:
                   module but are absent from the doc's table.
 3. MISSING_SECTIONS — insert a whole `## <Kind>` section (with a generated
                   table) for a component directory the doc never documented.
+4. PARENT_CELLS — rewrite the `Extends` / `Implements` cell of an existing row
+                  to the base class or contract the file actually declares, so
+                  a refactor that changes a parent never leaves the reference
+                  doc describing the old one.
 
-Run with --dry-run to preview; --check to exit 1 when drift remains.
+Run with --dry-run to preview; --check to exit 1 when drift remains (read-only).
 """
 
 from __future__ import annotations
@@ -67,13 +71,24 @@ PATH_FIXES: list[tuple[str, str]] = [
     (r"Domain/Notifications/", "Domain/Notify/"),
 ]
 
-EXTENDS_RE = re.compile(
-    r"^\s*(?:final\s+|abstract\s+)?(?:class|enum|interface|trait)\s+\w+[^\n]*?\bextends\s+(\w+)", re.M
-)
-IMPLEMENTS_RE = re.compile(
-    r"^\s*(?:final\s+|abstract\s+)?(?:class|enum|interface|trait)\s+\w+[^\n]*?\bimplements\s+([^\n{]+)", re.M
-)
 PROPERTY_RE = re.compile(r"protected\s+string\s+\$signature\s*=\s*'([^']+)'")
+
+# Parent-class parsing — allows `readonly` modifiers and fully qualified names
+# (`extends \Spatie\Activitylog\Models\Activity`).
+DECL_EXTENDS_RE = re.compile(
+    r"^\s*(?:final\s+|abstract\s+|readonly\s+)*(?:class|enum|interface|trait)\s+\w+[^\n{]*?\bextends\s+([\w\\]+)",
+    re.M,
+)
+DECL_IMPLEMENTS_RE = re.compile(
+    r"^\s*(?:final\s+|abstract\s+|readonly\s+)*(?:class|enum|interface|trait)\s+\w+[^\n{]*?\bimplements\s+([^\n{]+)",
+    re.M,
+)
+
+# `Extends` / `Implements` cells we are willing to rewrite: bare class names,
+# optionally comma-separated. Anything with prose (e.g. "LabelEnum (all, ...)")
+# is left untouched for a human to review.
+PARENT_CELL_RE = re.compile(r"^[A-Za-z_]\w*(?:\s*,\s*[A-Za-z_]\w*)*$")
+PARENT_HEADERS = {"extends", "implements"}
 
 
 def module_dirs() -> dict[str, Path]:
@@ -122,13 +137,73 @@ def describe(rel: Path, source: str, headers: list[str] | None = None) -> list[s
         sig = PROPERTY_RE.search(source)
         return [f"`{name}`", f"`{sig.group(1)}`" if sig else purpose]
     if rel.parts[-2] == "Enums":
-        impl = IMPLEMENTS_RE.search(source)
-        names = re.findall(r"(\w+)", impl.group(1)) if impl else []
-        return [f"`{name}`", ", ".join(f"`{n}`" for n in names) or "—"]
-    ext = EXTENDS_RE.search(source)
-    if ext:
-        return [f"`{name}`", f"`{ext.group(1)}`"]
+        parent, contracts = declared_parents(source)
+        return [f"`{name}`", ", ".join(f"`{c}`" for c in contracts) or "—"]
+    parent, _contracts = declared_parents(source)
+    if parent:
+        return [f"`{name}`", f"`{parent}`"]
     return [f"`{name}`", purpose]
+
+
+def resolve_module_file(module: Path, token: str) -> Path | None:
+    """Resolve a doc path token against the module (optionally via `Domain/`)."""
+    for candidate in (module / token, module / "Domain" / token):
+        if candidate.is_file():
+            return candidate
+    hits = [p for p in module.rglob(Path(token).name) if p.is_file()]
+    return hits[0] if len(hits) == 1 else None
+
+
+def declared_parents(source: str) -> tuple[str | None, list[str]]:
+    """Return (extends, implements) as short class names declared in `source`."""
+    ext = DECL_EXTENDS_RE.search(source)
+    impl = DECL_IMPLEMENTS_RE.search(source)
+    parent = ext.group(1).split("\\")[-1] if ext else None
+    contracts = [n.strip().split("\\")[-1] for n in impl.group(1).split(",")] if impl else []
+    return parent, [c for c in contracts if c]
+
+
+def sync_parent_cells(text: str, module: Path) -> tuple[str, list[str]]:
+    """Pass 4 — align `Extends` / `Implements` cells with the real declaration."""
+    notes: list[str] = []
+    lines = text.split("\n")
+    header: list[str] | None = None
+    for index, line in enumerate(lines):
+        if not line.startswith("|"):
+            header = None
+            continue
+        raw = line.split("|")
+        cells = [c.strip().strip("`") for c in raw[1:-1]]
+        if header is None:
+            header = [c.lower() for c in cells]
+            continue
+        if all(set(c) <= set("-: ") for c in cells):
+            continue
+        column = next((i for i, h in enumerate(header) if h in PARENT_HEADERS), None)
+        if column is None or column >= len(cells):
+            continue
+        token, claim = cells[0], cells[column]
+        if not token.endswith(".php") or not PARENT_CELL_RE.match(claim):
+            continue
+        target = resolve_module_file(module, token)
+        if target is None:
+            continue
+        parent, contracts = declared_parents(target.read_text(encoding="utf-8"))
+        desired = parent if header[column] == "extends" else (", ".join(contracts) or None)
+        if not desired or desired == claim:
+            continue
+        if header[column] == "implements" and set(desired.split(", ")) == set(claim.split(", ")):
+            continue
+        cell_index = column + 1
+        cell = raw[cell_index]
+        raw[cell_index] = (
+            cell.replace(f"`{claim}`", f"`{desired}`", 1)
+            if f"`{claim}`" in cell
+            else f" {desired} "
+        )
+        lines[index] = "|".join(raw)
+        notes.append(f"parent~ {token}: {claim} -> {desired}")
+    return "\n".join(lines), notes
 
 
 def has_table(section: str) -> bool:
@@ -247,6 +322,10 @@ def repair(text: str, mod: Path) -> tuple[str, list[str]]:
         notes.extend(f"row+ {heading}: {r}" for r in absent)
         text = text[: m.start(1)] + section + text[m.end(1) :]
 
+    # Pass 4 — parent/contract cells must match the real declaration.
+    text, parent_notes = sync_parent_cells(text, mod)
+    notes.extend(parent_notes)
+
     return text, notes
 
 
@@ -274,7 +353,7 @@ def main() -> int:
         print(f"\n== {name} ({len(notes)} repair(s))")
         for note in notes:
             print(f"   {note}")
-        if not args.dry_run:
+        if not args.dry_run and not args.check:
             doc.write_text(updated, encoding="utf-8")
 
     print(f"\ntotal repairs: {total}")

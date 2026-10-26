@@ -174,6 +174,7 @@ contract source.
 
 | Script | Focus | Findings rules | Used by |
 |--------|-------|----------------|---------|
+| `run_module_tests.py` | Run Pest/PHPUnit suites one module at a time (`--module`, `--failed-only`, `--parallel`) to stay under the full-suite memory cost | — (test runner) | pest-testing |
 | `scan_project_summary.py` | Project orientation dashboard: module inventory, component counts, domain structure, LOC, test suite, docs, translations | — (informational dashboard) | onboarding, orientation, arch-guard |
 | `scan_architecture.py` | Component counts per module, submodule structure | — (metadata only) | arch-guard |
 | `scan_arch_patterns.py` | Architecture pattern detection | `ARCH_*` | arch-guard |
@@ -191,6 +192,7 @@ contract source.
 | `scan_tests.py` | Run test suite, parse per-module results | — (data fetch) | pest-testing, test-writing |
 | `scan_ui_consistency.py` | UI consistency checks | `UI_*` | arch-guard |
 | `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `C1`–`C8`, `D1`–`D6`, `P2`, `P5` | arch-guard |
+| `sync_module_refs.py` | Repair module reference docs from the real filesystem: stale path prefixes, missing rows/sections, and stale `Extends`/`Implements` cells (`--dry-run`, `--check` read-only, `--module`) | — (doc writes; `--check` exits 1 while drift remains) | sync-docs, doc-writing |
 | `tool_runner.py` | Orchestrate multiple scanners with shared cache | — | maintenance, arch-guard |
 | `clean_outputs.py` | Remove old JSON output files by age/date range, or `--prune` (keep latest per category) | — | maintenance |
 | `tools.json` | Registry mapping each scanner to its output category (used by `clean_outputs.py --prune`) | — | maintenance |
