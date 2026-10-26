@@ -291,6 +291,24 @@ describe('J0M04: certification implementation behavior', function (): void {
         expect(Certificate::count())->toBe(0);
     });
 
+    test('J0M04-NFR-CERT-002: batch refuses an ineligible student and keeps issuing the eligible ones', function (): void {
+        $this->actingAs(j0m04cAdmin());
+        $template = j0m04cTemplate();
+        $eligible = Registration::factory()->eligible()->create();
+        $ineligible = Registration::factory()->create();
+
+        $result = app(BatchIssueCertificateAction::class)->execute(
+            [$eligible->id, $ineligible->id],
+            $template,
+        );
+
+        expect($result['success'])->toBe(1)
+            ->and($result['failed'])->toBe(1)
+            ->and($result['errors'][0])->toContain($ineligible->id)
+            ->and(Certificate::where('registration_id', $eligible->id)->exists())->toBeTrue()
+            ->and(Certificate::where('registration_id', $ineligible->id)->exists())->toBeFalse();
+    });
+
     test('J0M04-NFR-CERT-004: local certificate storage is outside the public disk', function (): void {
         $certificate = Certificate::factory()->create();
         Storage::fake('local');
