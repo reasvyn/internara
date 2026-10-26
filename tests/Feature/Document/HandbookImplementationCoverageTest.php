@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\CreateHandbookAction;
 use App\Modules\Document\Domain\Handbook\Actions\DeleteHandbookAction;
@@ -113,6 +114,28 @@ describe('ZUFG8: handbook implementation behavior', function (): void {
         activity()->causedBy($reader)->performedOn($handbook)->withProperties(['version' => 1])->event('acknowledged')->log('handbook_acknowledged');
 
         expect($handbook->asHandbook()->isNewerThan(Activity::latest()->first()))->toBeTrue();
+    });
+
+    test('ZUFG8-FR-HAND-012, ZUFG8-NFR-HAND-002: an acknowledgment written by the action is readable back at its stored version', function (): void {
+        $reader = handbookCoverageAdmin();
+        $handbook = Document::factory()->create([
+            'type' => 'handbook',
+            'version' => 1,
+            'is_active' => true,
+            'metadata' => ['target_audience' => 'all'],
+        ]);
+
+        app(AcknowledgeHandbookAction::class)->execute($handbook, $reader);
+
+        $acknowledgment = Activity::causedBy($reader)->forEvent('acknowledged')->latest()->first();
+
+        expect($handbook->asHandbook()->isNewerThan($acknowledgment))->toBeFalse();
+        expect(fn () => app(AcknowledgeHandbookAction::class)->execute($handbook, $reader))
+            ->toThrow(RejectedException::class, __('handbook.already_acknowledged'));
+
+        $handbook->update(['version' => 2]);
+
+        expect($handbook->fresh()->asHandbook()->isNewerThan($acknowledgment))->toBeTrue();
     });
 
     test('ZUFG8-FR-HAND-013: acknowledgment lookup is keyed by the handbook subject', function (): void {

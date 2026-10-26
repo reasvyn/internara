@@ -60,7 +60,11 @@ final readonly class HandbookEntity extends BaseEntity
             return true;
         }
 
-        $acknowledgedVersion = (int) ($lastAcknowledgment->properties['version'] ?? 0);
+        // SmartLogger stores the action payload under properties.payload, so the
+        // version the reader accepted lives one level deep. The flat fallback keeps
+        // older rows readable.
+        $properties = $lastAcknowledgment->properties ?? [];
+        $acknowledgedVersion = (int) ($properties['payload']['version'] ?? $properties['version'] ?? 0);
 
         return $this->version > $acknowledgedVersion;
     }
