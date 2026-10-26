@@ -2,16 +2,17 @@
 
 ## Description
 
-Certificate generation, serial numbering, digital QR signature, public verification, and credential
-revocation.
+Certificate generation, serial numbering, QR verification hash, public verification page, and
+credential revocation.
 
 ## Purpose & Boundary
 
-Certification manages the issuance of internship completion certificates. Certificates are awarded
-after a student's final grade card is finalized and locked in the Reports module. Each certificate
-embeds a QR code carrying a verification hash that resolves to a public status page, so a holder
-can be checked against the school's own record. Certificates can be revoked with an audit trail,
-and revocation is terminal — serial numbers are permanently retired.
+Certification manages the issuance of internship completion certificates. A certificate is the
+terminal artifact of a completed internship: the Report module holds the grade, and this module
+converts it into a serialized, publicly verifiable credential. Each certificate embeds a QR code
+carrying a verification hash that resolves to a public status page, so a holder can be checked
+against the school's own record. Certificates can be revoked with an audit trail, and revocation is
+terminal — serial numbers are permanently retired.
 
 Out of scope: grade calculation (Reports), document templates (Document), evaluation feedback
 (Evaluation).
@@ -20,10 +21,11 @@ Out of scope: grade calculation (Reports), document templates (Document), evalua
 
 ### Certificate
 
-Core entity: serial number (auto-generated), recipient name, program details, issue date, embedded
-HTML layout snapshot (frozen at issuance for tamper-proof rendering), QR code hash, and status
-(`issued` | `revoked`). Linked to the Registration record and the admin who authorized issuance.
-Batch issuance for entire cohorts via `BatchIssueCertificateAction`.
+Certificate record: serial number (auto-generated), registration link, frozen template-content
+snapshot (`template_content`), QR verification hash, status (`issued` | `revoked`), and the
+issuing/revoking admin with their timestamps. Recipient and program details are not copied onto the
+row — they are read through the Registration relation when the certificate is rendered. Batch
+issuance for entire cohorts via `BatchIssueCertificateAction`.
 
 ## Key Concepts
 
@@ -55,9 +57,14 @@ is rejected — `RevokeCertificateAction` throws a `RejectedException` carrying
 `certificate.already_revoked`, which the Livewire confirms as an error toast. Re-issuance requires a
 new serial number and a new certificate record.
 
-### Embedded Layout Snapshots
+### Frozen Template Snapshots
 
-Certificate layouts (portrait/landscape orientation, background seals, text placeholders) are rendered dynamically at issuance time and frozen as immutable HTML snapshots within the certificate record. This ensures certificates always render exactly as they were at issuance, even if templates change later.
+At issuance the active template's `template_content` is copied onto the certificate row, so later
+edits to the shared template never alter an already-issued certificate. Rendering happens on
+demand: `CertificateRenderer::resolvePlaceholders()` fills the canonical `{placeholder}` set from
+the live registration (student, school, department, company, internship dates, score/letter,
+certificate number, supervisor) and the result is rendered through Blade at download time. The
+snapshot is therefore a frozen *template*, not frozen HTML.
 
 ### PDF Generation Defers to First Download
 
@@ -99,10 +106,10 @@ revocation is visible on the next scan.
 ## Dependencies
 
 - Core (base classes, SmartLogger)
-- Reports (finalized grade card prerequisite)
 - Enrollment (registration context)
+- Reports (report score feeds the verification hash; finalization is not enforced)
+- Settings (`school.name` feeds the verification hash)
 - User (recipient and issuer identity)
-- Settings (institution code for hash generation)
 
 ## Used By
 
@@ -113,17 +120,18 @@ revocation is visible on the next scan.
 - **Eligibility gating is specified but not yet enforced** — FR-CERT-010/011 require assessment completion, placement verification, and handbook acknowledgment to be checked before issuance. Today `IssueCertificateAction` issues without that gate and only the UI filters candidate registrations. Do not describe certificates as eligibility-gated until the Action rejects ineligible registrations with `RejectedException`.
 - **The verification hash is a fingerprint, not a signature** — the QR code encodes a SHA-256 digest over student ID, school name, report score, issuing admin ID, and certificate number. Because there is no private key and the digest is not reproducible by the verifier, verification requires the server-side `qr_hash` row; the database row is the truth.
 - **Revocation is terminal, and a second attempt is rejected** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke raises `RejectedException` (`certificate.already_revoked`) instead of silently succeeding; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
-- **Frozen layout snapshots** — at issuance, the rendered HTML layout is snapshotted into the certificate record. Later template edits must never alter already-issued certificates; the snapshot is the legal artifact. Treat issuance as a write-once event.
+- **Frozen template snapshots** — at issuance, the active template's content is copied into the certificate row (`template_content`). Later template edits must never alter an already-issued certificate; rendering from that snapshot at download time is the legal artifact. Treat issuance as a write-once event.
 
 ## How It Works
 
 A certificate is the terminal artifact of the whole internship, and everything about its design
 follows from one requirement: a printed certificate has to be verifiable by a stranger, years
-later. So the layout is frozen into the record at the moment of issuance — a later template change
-cannot retroactively alter what a graduate was handed — and the QR code encodes a digest derived
-from the student, the school, the final score, the issuing admin, and the certificate number rather
-than a bare serial number. Scanning it resolves to an authoritative status answer from the school's
-own record: issued, revoked, or not found.
+later. So the template content is frozen into the record at the moment of issuance — a later
+template change cannot retroactively alter what a graduate was handed — and the QR code encodes a
+digest derived from the student, the school name, the final score, the issuing admin, and the
+certificate number rather than a bare serial number. Scanning it resolves to an authoritative
+status answer from the school's own record: issued, revoked, or not found. Because the digest is
+not reproducible without the server-side row, the record is the truth, not the paper.
 
 Eligibility gating is the intended next step, not a current invariant: the specification requires a
 finalized grade card and completed prerequisites, but the Action does not yet reject ineligible
