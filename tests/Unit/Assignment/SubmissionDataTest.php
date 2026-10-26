@@ -35,9 +35,10 @@ describe('T657Z: SubmitAssignmentData DTO', function (): void {
     test('T657Z-FR-SUBM-013: toArray, only, except, and merge shape the payload', function (): void {
         $dto = new SubmitAssignmentData(content: 'Draf awal');
 
-        expect($dto->toArray())->toBe(['content' => 'Draf awal']);
+        // BaseData::toArray() keeps every declared property, nulls included, so the shape is stable.
+        expect($dto->toArray())->toBe(['content' => 'Draf awal', 'file' => null]);
         expect($dto->only('content'))->toBe(['content' => 'Draf awal']);
-        expect($dto->except('content'))->toBe([]);
+        expect($dto->except('content'))->toBe(['file' => null]);
 
         $merged = $dto->merge(['content' => 'Revisi final']);
 

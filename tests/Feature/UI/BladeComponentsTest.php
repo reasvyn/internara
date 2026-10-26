@@ -7,8 +7,27 @@ namespace Tests\Feature\UI;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Component;
+use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
+
+final class Se8xSelectionBarHost extends Component
+{
+    /** @var list<string> */
+    public array $selectedIds = ['row-1'];
+
+    public function render(): string
+    {
+        return <<<'BLADE'
+        <div>
+            <x-ui::components.selection-bar>
+                <button>Bulk Delete</button>
+            </x-ui::components.selection-bar>
+        </div>
+        BLADE;
+    }
+}
 
 describe('8XMYS: Reusable UI Blade Components and Widgets', function (): void {
     test('8XMYS-FR-UI-040-A: stat-card widget renders title, value, icon, and rounded-2xl contour', function (): void {
@@ -76,14 +95,12 @@ describe('8XMYS: Reusable UI Blade Components and Widgets', function (): void {
     });
 
     test('8XMYS-FR-UI-040-G: selection-bar component renders action slot and live status', function (): void {
-        $rendered = (string) Blade::render(
-            '<x-ui::components.selection-bar><button>Bulk Delete</button></x-ui::components.selection-bar>'
-        );
-
-        expect($rendered)->toContain('Bulk Delete')
-            ->and($rendered)->toContain('role="status"')
-            ->and($rendered)->toContain('rounded-2xl')
-            ->and($rendered)->toContain('wire:click="clearSelection"');
+        // The bar entangles the host's selectedIds, so it only renders inside a Livewire component.
+        Livewire::test(Se8xSelectionBarHost::class)
+            ->assertSee('Bulk Delete')
+            ->assertSee('role="status"', false)
+            ->assertSee('rounded-2xl')
+            ->assertSee('wire:click="clearSelection"', false);
     });
 
     test('8XMYS-FR-UI-040-H: button component forwards attributes and renders with rounded contours', function (): void {
