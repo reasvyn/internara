@@ -6,6 +6,7 @@ use App\Modules\Certification\Domain\Certificate\Actions\BatchIssueCertificateAc
 use App\Modules\Certification\Domain\Certificate\Actions\CreateCertificateTemplateAction;
 use App\Modules\Certification\Domain\Certificate\Actions\IssueCertificateAction;
 use App\Modules\Certification\Domain\Certificate\Actions\RevokeCertificateAction;
+use App\Modules\Certification\Domain\Certificate\Entities\CertificateEntity;
 use App\Modules\Certification\Domain\Certificate\Events\CertificateIssued;
 use App\Modules\Certification\Domain\Certificate\Livewire\CertificateList;
 use App\Modules\Certification\Domain\Certificate\Livewire\CertificateTemplateManager;
@@ -131,6 +132,25 @@ describe('J0M04: certificate issuance', function (): void {
             ->and($second->qr_hash)->not->toBeEmpty();
         $this->assertDatabaseHas('certificates', ['id' => $first->id]);
         $this->assertDatabaseHas('certificates', ['id' => $second->id]);
+    });
+
+    test('J0M04-FR-CERT-006: a serial already on record is refused by the entity, not the database', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('en');
+
+        $registration = j0m04aRegistration();
+        $prefix = CertificateEntity::composePrefix((string) $registration->internship?->name);
+        $collidingSerial = $prefix.'/'.now()->year.'/0002';
+
+        Certificate::factory()->create([
+            'certificate_number' => $collidingSerial,
+            'qr_hash' => str_repeat('f', 64),
+        ]);
+
+        expect(fn () => j0m04aIssue($registration, j0m04aTemplate()))
+            ->toThrow(RejectedException::class, "Certificate number {$collidingSerial} is already on record.");
+
+        expect(Certificate::count())->toBe(1);
     });
 
     test('J0M04-FR-CERT-007: issued certificates keep the template content frozen at issuance', function (): void {

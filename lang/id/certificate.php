@@ -49,6 +49,8 @@ return [
     'already_revoked' => 'Sertifikat ini sudah dicabut.',
 
     'ineligible' => 'Sertifikat tidak dapat diterbitkan: :conditions.',
+    'serial_taken' => 'Nomor sertifikat :number sudah tercatat.',
+    'hash_taken' => 'Terjadi tabrakan hash verifikasi. Ulangi penerbitan.',
     'gate' => [
         'assessment' => 'penilaian akhir belum difinalisasi',
         'placement' => 'penempatan belum terverifikasi',

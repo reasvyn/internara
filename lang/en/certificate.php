@@ -49,6 +49,8 @@ return [
     'already_revoked' => 'This certificate has already been revoked.',
 
     'ineligible' => 'Certificate cannot be issued: :conditions.',
+    'serial_taken' => 'Certificate number :number is already on record.',
+    'hash_taken' => 'Verification hash collision detected. Retry the issuance.',
     'gate' => [
         'assessment' => 'final assessment not finalized',
         'placement' => 'placement not verified',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Certification\Domain\Certificate\Actions;
 
 use App\Modules\Certification\Domain\Certificate\Data\CertificateEligibility;
+use App\Modules\Certification\Domain\Certificate\Entities\CertificateEntity;
 use App\Modules\Certification\Domain\Certificate\Events\CertificateIssued;
 use App\Modules\Certification\Domain\Certificate\Models\Certificate;
 use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
@@ -29,43 +30,52 @@ final class IssueCertificateAction extends BaseCommandAction
         }
 
         return $this->transaction(function () use ($registration, $template) {
-            $prefix = strtoupper(
-                substr(
-                    preg_replace('/[^A-Z0-9]/', '', $registration->internship?->name ?? 'PKL'),
-                    0,
-                    6,
+            $year = (int) now()->year;
+
+            // lockForUpdate on the year's serials: concurrent workers take turns, and
+            // the entity below rejects a serial or hash already on record (FR-CERT-006).
+            $issued = Certificate::whereYear('created_at', $year)
+                ->lockForUpdate()
+                ->get(['certificate_number', 'qr_hash']);
+
+            $number = CertificateEntity::composeSerial(
+                (string) ($registration->internship?->name ?? ''),
+                $year,
+                $issued->count() + 1,
+            );
+
+            $draft = CertificateEntity::forIssuance(
+                certificateNumber: $number,
+                qrHash: CertificateEntity::composeQrHash(
+                    studentId: (string) ($registration->mentee?->user?->id ?? ''),
+                    schoolName: (string) setting('school.name', ''),
+                    score: (string) ($registration->report?->score ?? ''),
+                    issuerId: (string) auth()->id(),
+                    certificateNumber: $number,
                 ),
             );
 
-            $count = Certificate::whereYear('created_at', now()->year)
-                ->lockForUpdate()
-                ->count() + 1;
-            $certificateNumber =
-                "{$prefix}/".now()->year.'/'.str_pad((string) $count, 4, '0', STR_PAD_LEFT);
-
-            $report = $registration->report;
-
-            $qrHash = hash('sha256', implode('|', [
-                $registration->mentee?->user?->id ?? '',
-                setting('school.name', ''),
-                (string) ($report?->score ?? ''),
-                (string) auth()->id(),
-                $certificateNumber,
-            ]));
+            // The digest embeds the serial, and the serial embeds the year, so a
+            // cross-year duplicate cannot exist; checking this year's rows is enough.
+            $draft->assertUniqueAgainst(
+                $issued->pluck('certificate_number')->all(),
+                $issued->pluck('qr_hash')->all(),
+            );
 
             $certificate = Certificate::create([
                 'registration_id' => $registration->id,
-                'certificate_number' => $certificateNumber,
+                'certificate_number' => $draft->certificateNumber(),
                 'template_content' => $template->content_template,
                 'issued_by' => auth()->id(),
                 'issued_at' => now(),
-                'qr_hash' => $qrHash,
+                'qr_hash' => $draft->qrHash(),
             ]);
 
-            $this->log('certificate_issued', $certificate, [
-                'certificate_number' => $certificateNumber,
-                'registration_id' => $registration->id,
-            ]);
+            $this->log(
+                'certificate_issued',
+                $certificate,
+                CertificateEntity::fromModel($certificate)->auditMetadata(),
+            );
 
             event(new CertificateIssued($certificate));
 

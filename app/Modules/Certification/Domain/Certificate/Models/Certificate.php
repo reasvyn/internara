@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Certification\Domain\Certificate\Models;
 
+use App\Modules\Certification\Domain\Certificate\Entities\CertificateEntity;
 use App\Modules\Certification\Domain\Certificate\Enums\CertificateStatus;
 use App\Modules\Core\Models\BaseModel;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
@@ -66,6 +67,15 @@ class Certificate extends BaseModel
     public function issuer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'issued_by');
+    }
+
+    /**
+     * Bridge to the certificate's business rules (serial format, uniqueness,
+     * revocability) — see CertificateEntity (FR-CERT-006).
+     */
+    public function asCertificateEntity(): CertificateEntity
+    {
+        return CertificateEntity::fromModel($this);
     }
 
     protected static function newFactory(): CertificateFactory

@@ -129,6 +129,14 @@ Tests are located in `tests/{Type}/Certification/` (Arch, Unit, Feature, Browser
 
 ---
 
+## Entities
+
+| File | Class | Extends |
+|---|---|---|
+| `Domain/Certificate/Entities/CertificateEntity.php` | `CertificateEntity` | `BaseEntity` |
+
+---
+
 ## Architectural Integration
 
 - **Submodules**: `Certificate`

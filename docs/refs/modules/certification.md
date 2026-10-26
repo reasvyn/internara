@@ -110,7 +110,7 @@ revocation is visible on the next scan.
 - **Eligibility Gate**: `ReadCertificateEligibilityAction` (Read Action) → `CertificateEligibility` DTO, enforced by `IssueCertificateAction` — see "Eligibility Gates" above
 - **Single issuance**: `IssueCertificateAction` (Command Action) — transaction, audit log, then `CertificateIssued`
 - **Batch**: `BatchIssueCertificateAction` (Process Action) composes single issuance per registration, collecting per-student failures instead of aborting the cohort; `DispatchBatchIssueCertificatesAction` queues it
-- **Serial Number Management**: Auto-generated from internship prefix + year + zero-padded count, unique by domain generation and database constraint, permanently retired on revocation
+- **Serial Number Management**: `CertificateEntity::composeSerial()` builds `<PREFIX>/<YEAR>/<0001>`; the entity refuses a serial or hash already on record before the write (FR-CERT-006), the unique indexes remain the concurrency backstop, and a revoked serial is permanently retired
 - **Event**: `CertificateIssued` is dispatched after the transaction; no listener is registered yet (recorded as intentional in `config/event.php`)
 - **Cache**: Verification hash caching (`certificate.verify.{hash}`) is not implemented — the key is not registered in `config/cache-keys.php`; every verification hits the database
 
@@ -130,6 +130,7 @@ revocation is visible on the next scan.
 
 ## Design Principles
 
+- **Duplicate serials are refused in the domain, not caught from the database** — `CertificateEntity::assertUniqueAgainst()` compares the proposed serial and hash against the rows the Action read inside the transaction and throws `RejectedException` (`certificate.serial_taken` / `certificate.hash_taken`). The unique indexes stay as the backstop for concurrent workers, so a collision surfaces as a named rejection the admin can act on, never as a raw constraint error.
 - **Eligibility is enforced by the Action, never by the screen** — `IssueCertificateAction` evaluates the three gates through `ReadCertificateEligibilityAction` and rejects with `RejectedException` naming every unmet condition. UI filters are conveniences; a caller that bypasses them still cannot issue an ineligible certificate.
 - **The verification hash is a fingerprint, not a signature** — the QR code encodes a SHA-256 digest over student ID, school name, report score, issuing admin ID, and certificate number. Because there is no private key and the digest is not reproducible by the verifier, verification requires the server-side `qr_hash` row; the database row is the truth.
 - **Revocation is terminal, and a second attempt is rejected** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke raises `RejectedException` (`certificate.already_revoked`) instead of silently succeeding; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
@@ -153,6 +154,11 @@ that is still open, so the rejection doubles as a graduation-readiness checklist
 is the exception path; batch issuance exists because a school finishing a cohort should not have to
 click through hundreds of students one at a time, and a Process Action collects per-student failures
 instead of aborting the run.
+
+A serial is the school's registry number for one graduate, so it is composed by the domain — prefix
+from the internship, year, zero-padded sequence — and validated by the entity against the serials and
+verification hashes already on record before any insert. The database indexes are the second line,
+not the first.
 
 Revocation is a status change, never a deletion. The certificate stays in the system with its
 record intact, and the public verification page reports the revocation — so a graduate holding a
