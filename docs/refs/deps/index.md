@@ -50,7 +50,6 @@ code sits.
 | [spatie-laravel-permission.md](spatie-laravel-permission.md) | spatie/laravel-permission | 8.3.0 |
 | [spatie-laravel-medialibrary.md](spatie-laravel-medialibrary.md) | spatie/laravel-medialibrary | 11.23.6 |
 | [spatie-laravel-activitylog.md](spatie-laravel-activitylog.md) | spatie/laravel-activitylog | 5.1.0 |
-| [spatie-laravel-model-status.md](spatie-laravel-model-status.md) | spatie/laravel-model-status | 1.20.0 — **deprecated (#419)** |
 
 ## Laravel Ecosystem
 
@@ -86,7 +85,6 @@ source of truth per package. The short version of how the stack divides up:
 | RBAC | [`spatie/laravel-permission`](spatie-laravel-permission.md) | 5 flat roles; see [RBAC ADR](../../adr/adr-flat-rbac-with-functional-roles.md) |
 | File uploads | [`spatie/laravel-medialibrary`](spatie-laravel-medialibrary.md) | Server-side MIME, slugged filenames, conversions |
 | Audit trail | [`spatie/laravel-activitylog`](spatie-laravel-activitylog.md) | Feeds SmartLogger's second channel |
-| Model status | [`spatie/laravel-model-status`](spatie-laravel-model-status.md) | **Deprecated upstream (#419)** — replacement tracked, do not adopt in new code |
 | PDF output | [`barryvdh/laravel-dompdf`](laravel-dompdf.md) | Certificates and official documents |
 | Monitoring | [`laravel/pulse`](laravel-pulse.md) | Health and performance metrics |
 | Translations | [`laravel-lang/lang`](laravel-lang.md) | Validation and date formats beyond the two shipped locales |

@@ -431,7 +431,7 @@ themselves. When a session produced a durable decision or recurring pattern:
 |---|---|
 | **Version** | v0.17.0 — Stabilization |
 | **Modules** | 19 = 17 business + UI + Core |
-| **Stack** | PHP 8.4 · Laravel 13 · Livewire 4 · TallstackUI v4 · Tailwind v4 · Alpine 3 · Pest 4 · Spatie (activitylog, medialibrary, model-status, permission) |
+| **Stack** | PHP 8.4 · Laravel 13 · Livewire 4 · TallstackUI v4 · Tailwind v4 · Alpine 3 · Pest 4 · Spatie (activitylog, medialibrary, permission) |
 | **DB** | SQLite default / MySQL 8 / MariaDB 10.6 / PostgreSQL 15 |
 | **Deploy** | Shared hosting ($5/mo) or VPS / Docker Compose |
 | **License** | MIT · single-tenant (no `tenant_id` — one instance per school) |

@@ -23,7 +23,7 @@ describe('J68GZ: System Requirements, Dependencies, Platform & Database', functi
             ->and((string) config('app.key'))->not->toBeEmpty();
     });
 
-    test('J68GZ-FR-SYS-008/009/010/011/012/013/014/015/016/017/018: framework and package pins', function (): void {
+    test('J68GZ-FR-SYS-008/009/010/011/012/014/015/016/017/018: framework and package pins', function (): void {
         $composer = json_decode(file_get_contents(base_path('composer.json')), true);
 
         expect($composer['require']['laravel/framework'])->toBe('^13.0')
@@ -31,11 +31,17 @@ describe('J68GZ: System Requirements, Dependencies, Platform & Database', functi
             ->and($composer['require']['spatie/laravel-permission'])->toBe('^8.0')
             ->and($composer['require']['spatie/laravel-activitylog'])->toBe('^5.0')
             ->and($composer['require']['spatie/laravel-medialibrary'])->toBe('^11.17')
-            ->and($composer['require']['spatie/laravel-model-status'])->toBe('^1.18')
             ->and($composer['require']['laravel-lang/lang'])->toBe('^15.26')
             ->and($composer['require']['barryvdh/laravel-dompdf'])->toBe('^3.1')
             ->and($composer['require']['tallstackui/tallstackui'])->toBe('^4.0')
             ->and(file_exists(base_path('composer.lock')))->toBeTrue();
+    });
+
+    test('J68GZ-FR-SYS-013: the unused model-status package stays out of the dependency floor', function (): void {
+        $composer = json_decode(file_get_contents(base_path('composer.json')), true);
+
+        expect($composer['require'])->not->toHaveKey('spatie/laravel-model-status')
+            ->and(file_exists(base_path('config/model-status.php')))->toBeFalse();
     });
 
     test('J68GZ-FR-SYS-019/020/021/022/023/024/025/026: database portability and schema', function (): void {

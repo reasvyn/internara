@@ -91,8 +91,8 @@ Framework capability → project convention that shapes its use:
 | Laravel Pulse | Production observability dashboard |
 
 Ecosystem packages pinned alongside the framework (versions resolved in `composer.lock`):
-Livewire 4, TallStackUI 4, spatie packages (permission, media-library, activitylog,
-model-status), barryvdh/laravel-dompdf, laravel-lang/lang, Laravel Pulse, Laravel Tinker.
+Livewire 4, TallStackUI 4, spatie packages (permission, media-library, activitylog),
+barryvdh/laravel-dompdf, laravel-lang/lang, Laravel Pulse, Laravel Tinker.
 
 ---
 
