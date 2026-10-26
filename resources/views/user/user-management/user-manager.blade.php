@@ -220,7 +220,7 @@
                             color="secondary"
                             wire:click="toggleStatus('{{ $user->id }}')"
                             :label="__('user.manager.toggle_status')"
-                            spinner="toggleStatus"
+                            loading="toggleStatus"
                         />
                     @endif
                     <x-ui::components.table-action
