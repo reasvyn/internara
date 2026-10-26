@@ -64,7 +64,7 @@ All setting reads are cached forever. Cache invalidation happens via `SettingObs
 responds to Eloquent model events (`created`, `updated`, `deleted`) and clears affected cache keys
 synchronously. Brand color cache (`brand.colors`) and theme CSS variable cache
 (`theme.css_variables`) are invalidated when relevant setting change, driven by
-`config('setting.theme_cache_keys')`.
+`config('settings.theme_cache_keys')`.
 
 ### Superadmin-Only Mutations
 
@@ -83,7 +83,7 @@ Every module (via `setting()` and `brand()` helpers).
 ## Design Principles
 
 - **Setting is the single runtime configuration store** — every module reads from `setting()` and `brand()` helpers, never from `.env` at runtime. Environment-specific overrides belong in `.env`; all runtime config belongs in the database-backed setting store. This keeps config accessible without code deployment.
-- **Caching is aggressive but invalidation is automatic** — all reads use `rememberForever`. Writes trigger `SettingObserver` to clear the affected cache key synchronously. Brand color and theme CSS variable caches are driven by `config('setting.theme_cache_keys')`. There is no stale-read risk because invalidation is event-driven, not TTL-based.
+- **Caching is aggressive but invalidation is automatic** — all reads use `rememberForever`. Writes trigger `SettingObserver` to clear the affected cache key synchronously. Brand color and theme CSS variable caches are driven by `config('settings.theme_cache_keys')`. There is no stale-read risk because invalidation is event-driven, not TTL-based.
 - **Encrypted values stay encrypted at rest and in transit** — SMTP passwords, API keys, and any value with `encrypted` type are stored via `Crypt::encryptString()` and never exposed in logs, errors, or API responses. Decryption happens only at the point of use.
 - **Mutations are superadmin-gated and audit-logged** — only `super_admin` can create, update, or delete setting. All mutations are logged via SmartLogger. Even read access is auditable via SmartLogger if configured; the design prioritises traceability for compliance.
 

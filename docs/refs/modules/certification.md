@@ -9,8 +9,9 @@ revocation.
 
 Certification manages the issuance of internship completion certificates. Certificates are awarded
 after a student's final grade card is finalized and locked in the Reports module. Each certificate
-includes a cryptographically signed QR code for offline forgery detection. Certificates can be
-revoked with an audit trail, and revocation is terminal — serial numbers are permanently retired.
+embeds a QR code carrying a verification hash that resolves to a public status page, so a holder
+can be checked against the school's own record. Certificates can be revoked with an audit trail,
+and revocation is terminal — serial numbers are permanently retired.
 
 Out of scope: grade calculation (Reports), document templates (Document), evaluation feedback
 (Evaluation).
@@ -26,25 +27,33 @@ Batch issuance for entire cohorts via `BatchIssueCertificateAction`.
 
 ## Key Concepts
 
-### QR Cryptographic Verification
+### QR Verification Hash
 
-Each printed certificate displays a QR code encoding a verification URL with a cryptographic hash.
-The hash is generated using SHA-256 over student ID, institutional code, final score, and issuer
-private key (`qr_hash` column). This enables offline forgery detection without requiring database
-access at the verification point.
+Each printed certificate displays a QR code encoding a verification URL carrying a 64-character
+hash. The hash is a SHA-256 digest — `hash('sha256', student id | school name | report score |
+issuing admin id | certificate number)` — persisted in the `qr_hash` column. It is a deterministic
+fingerprint of the issuance facts, not a signature: there is no private key, and verifying a
+certificate requires the server-side row, because the hash alone cannot be recomputed by the
+verifier. A QR code therefore proves the holder has a certificate the school issued, and the
+lookup against `qr_hash` is what answers "genuine and current".
 
-### Final Grade Prerequisite
+### Eligibility Gates (specified, not yet enforced)
 
-Certificates cannot be issued unless the student's registration has a corresponding finalized Report
-card record. This enforcement is at the Action layer — `IssueCertificateAction` checks for a
-finalized report before proceeding. If missing, a `RejectedException` informs the operator which
-students are ineligible.
+FR-CERT-010/011 require issuance to evaluate assessment completion, placement verification, and
+handbook acknowledgment before a certificate is produced. That gate is **not implemented** in
+`IssueCertificateAction`: the Action reads `$registration->report?->score` (nullable) into the hash
+input and issues regardless of report finalization. The only current filter is UI-level — the
+single-issue picker lists registrations with `status = 'active'` and the batch picker further
+excludes registrations that already have a certificate. Treat eligibility as a spec gap, not as an
+existing invariant.
 
 ### Revocation is Terminal
 
 Once a certificate is revoked, its status is permanently set to `revoked` and its serial number is
-retired. Double revocation is idempotent — attempting to revoke an already-revoked certificate is a
-no-op. Re-issuance requires a new serial number and a new certificate record.
+retired. Revocation is terminal, not idempotent: a second attempt on an already-revoked certificate
+is rejected — `RevokeCertificateAction` throws a `RejectedException` carrying
+`certificate.already_revoked`, which the Livewire confirms as an error toast. Re-issuance requires a
+new serial number and a new certificate record.
 
 ### Embedded Layout Snapshots
 
@@ -57,36 +66,35 @@ later download serves that stored file untouched, so the artifact a graduate rec
 underneath them. Generation is idempotent — a missing file is produced once, an existing file is
 reused — which keeps cohort issuance fast and the served document immutable.
 
-### Verification API
+### Public Verification Page
 
-Planned but not yet routed. Each certificate carries a QR code with a SHA-256 hash; a public
-verification endpoint has not been implemented:
+Implemented as an anonymous `GET /verify/{qr_hash}` route named `certificates.verify`:
+`VerifyCertificateController` → `ReadCertificateStatusAction` → the `certification.verify` Blade
+view. The route carries no auth middleware, is constrained to `[A-Za-z0-9]{32,64}`, and is limited
+by `throttle:30,1` (30 requests per minute per IP).
 
-```
-GET /verify/{hash}   (not yet implemented)
+The answer is an **HTML page, not a JSON API**. The action validates the hash shape with the same
+pattern and returns `CertificateStatusView::notFound()` for malformed or unknown input, so a bad
+link renders a clean not-found panel rather than an error:
 
-```
+| Status       | Rendered panel                                                            |
+| ------------ | ------------------------------------------------------------------------- |
+| `issued`     | success panel + holder, school, certificate number, issuance date         |
+| `revoked`    | warning panel + revocation date, no success styling                       |
+| `not_found`  | error panel only — no existence hints                                     |
 
-**Planned response (JSON):**
-
-```json
-{
-    "valid": true,
-    "recipient": "John Doe",
-    "program": "PKL 2025/2026",
-    "issued_at": "2026-06-15T10:00:00Z",
-    "status": "issued"
-}
-
-```
+Exposed fields are limited to holder name, school name, certificate number, issuance date, and
+revocation date. Responses set `Cache-Control: no-store, no-cache, must-revalidate, max-age=0` so a
+revocation is visible on the next scan.
 
 ### Integration Patterns
 
-- **Reports Gate**: `IssueCertificateAction` checks for finalized Report record — throws `RejectedException` if missing
-- **Batch**: `BatchIssueCertificateAction` issues certificates for an entire cohort in a single process action
-- **Serial Number Management**: Auto-generated sequential numbers, unique, permanently retired on revocation
-- **Event**: `CertificateIssued` event triggers notification to student and updates Pulse metrics
-- **Cache**: Verification hash caching (`certificate.verify.{hash}`) is not yet implemented — the key is not registered in `config/cache-keys.php`
+- **Eligibility Gate**: specified by FR-CERT-010/011 but not enforced — see "Eligibility Gates" above
+- **Single issuance**: `IssueCertificateAction` (Command Action) — transaction, audit log, then `CertificateIssued`
+- **Batch**: `BatchIssueCertificateAction` (Process Action) composes single issuance per registration, collecting per-student failures instead of aborting the cohort; `DispatchBatchIssueCertificatesAction` queues it
+- **Serial Number Management**: Auto-generated from internship prefix + year + zero-padded count, unique by domain generation and database constraint, permanently retired on revocation
+- **Event**: `CertificateIssued` is dispatched after the transaction; no listener is registered yet (recorded as intentional in `config/event.php`)
+- **Cache**: Verification hash caching (`certificate.verify.{hash}`) is not implemented — the key is not registered in `config/cache-keys.php`; every verification hits the database
 
 ## Dependencies
 
@@ -102,26 +110,26 @@ GET /verify/{hash}   (not yet implemented)
 
 ## Design Principles
 
-- **Certificate issuance is gated by a finalized grade card** — no certificate may be issued without a corresponding finalized Report card. `IssueCertificateAction` is the single gate; reject with `RejectedException` and enumerate ineligible students rather than silently skipping.
-- **Cryptographic hash is the verification primitive** — the QR code encodes a SHA-256 hash over student ID, institutional code, final score, and issuer private key. Verification must remain possible offline (no DB lookup required at the verification point); the hash is the truth, not the database row.
-- **Revocation is terminal and idempotent** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke is a no-op; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
+- **Eligibility gating is specified but not yet enforced** — FR-CERT-010/011 require assessment completion, placement verification, and handbook acknowledgment to be checked before issuance. Today `IssueCertificateAction` issues without that gate and only the UI filters candidate registrations. Do not describe certificates as eligibility-gated until the Action rejects ineligible registrations with `RejectedException`.
+- **The verification hash is a fingerprint, not a signature** — the QR code encodes a SHA-256 digest over student ID, school name, report score, issuing admin ID, and certificate number. Because there is no private key and the digest is not reproducible by the verifier, verification requires the server-side `qr_hash` row; the database row is the truth.
+- **Revocation is terminal, and a second attempt is rejected** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke raises `RejectedException` (`certificate.already_revoked`) instead of silently succeeding; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
 - **Frozen layout snapshots** — at issuance, the rendered HTML layout is snapshotted into the certificate record. Later template edits must never alter already-issued certificates; the snapshot is the legal artifact. Treat issuance as a write-once event.
 
 ## How It Works
 
 A certificate is the terminal artifact of the whole internship, and everything about its design
-follows from one requirement: a printed certificate has to be verifiable by a stranger, offline,
-years later. So the layout is frozen into the record at the moment of issuance — a later template
-change cannot retroactively alter what a graduate was handed — and the QR code encodes a hash
-derived from the student, the institution, the final score, and the issuer's key rather than a
-bare serial number. Verification therefore proves the certificate was issued by this school for
-this score, not merely that a row exists.
+follows from one requirement: a printed certificate has to be verifiable by a stranger, years
+later. So the layout is frozen into the record at the moment of issuance — a later template change
+cannot retroactively alter what a graduate was handed — and the QR code encodes a digest derived
+from the student, the school, the final score, the issuing admin, and the certificate number rather
+than a bare serial number. Scanning it resolves to an authoritative status answer from the school's
+own record: issued, revoked, or not found.
 
-Issuance is also gated on completion. A certificate cannot be produced until the student's grade
-card has been finalized, because a certificate asserting a result that is still being negotiated
-is worse than no certificate. Individual issuance is the exception path; batch issuance exists
-because a school finishing a cohort should not have to click through hundreds of students one at
-a time.
+Eligibility gating is the intended next step, not a current invariant: the specification requires a
+finalized grade card and completed prerequisites, but the Action does not yet reject ineligible
+registrations. Individual issuance is the exception path; batch issuance exists because a school
+finishing a cohort should not have to click through hundreds of students one at a time, and a
+Process Action collects per-student failures instead of aborting the run.
 
 Revocation is a status change, never a deletion. The certificate stays in the system with its
 record intact, and the public verification page reports the revocation — so a graduate holding a
