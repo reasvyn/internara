@@ -99,6 +99,8 @@ describe('NTHQA: partnership advanced traceability', function (): void {
     });
 
     test('NTHQA-NFR-PART-009: status display uses enum label with text and icon, never color alone', function (): void {
+        app()->setLocale('en');
+
         expect(PartnershipStatus::ACTIVE->label())->toBe('Active')
             ->and(PartnershipStatus::EXPIRED->label())->toBe('Expired')
             ->and(PartnershipStatus::TERMINATED->label())->toBe('Terminated');

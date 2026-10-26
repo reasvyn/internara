@@ -96,6 +96,7 @@ test('J9GBH-NFR-PLACE-005: placement pages provide keyboard-operable action labe
 });
 
 test('J9GBH-NFR-PLACE-006: direct placement inputs have associated labels', function (): void {
+    app()->setLocale('en');
     $this->actingAs(additionalPlacementAdmin());
     $html = test()->get(route('enrollment.internships.placements.direct'))->assertOk()->getContent();
 
