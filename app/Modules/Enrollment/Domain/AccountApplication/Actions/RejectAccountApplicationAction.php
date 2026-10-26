@@ -22,17 +22,19 @@ final class RejectAccountApplicationAction extends BaseCommandAction
             throw new RejectedException(__('registration.application_not_pending'));
         }
 
-        $application->update([
-            'status' => AccountApplicationStatus::REJECTED->value,
-            'processed_by' => auth()->id(),
-            'processed_at' => now(),
-            'rejection_reason' => $data->reason,
-        ]);
+        return $this->transaction(function () use ($application, $data) {
+            $application->update([
+                'status' => AccountApplicationStatus::REJECTED->value,
+                'processed_by' => auth()->id(),
+                'processed_at' => now(),
+                'rejection_reason' => $data->reason,
+            ]);
 
-        $this->log('account_application_rejected', $application, ['reason' => $data->reason]);
+            $this->log('account_application_rejected', $application, ['reason' => $data->reason]);
 
-        event(new AccountApplicationRejected($application));
+            $this->dispatchEvent(new AccountApplicationRejected($application));
 
-        return ActionResponse::ok();
+            return ActionResponse::ok();
+        });
     }
 }

@@ -88,7 +88,7 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
                 'registration_id' => $registration->id,
             ]);
 
-            event(new AccountApplicationApproved($application));
+            $this->dispatchEvent(new AccountApplicationApproved($application));
 
             return $registration;
         });

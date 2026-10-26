@@ -26,7 +26,7 @@ final class PublishAssignmentAction extends BaseCommandAction
 
             $this->log('assignment_published', $assignment, ['title' => $assignment->title]);
 
-            event(new AssignmentPublished($assignment));
+            $this->dispatchEvent(new AssignmentPublished($assignment));
 
             $students = Registration::where('internship_id', $assignment->internship_id)
                 ->with('student')

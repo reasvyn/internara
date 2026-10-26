@@ -33,7 +33,7 @@ final class UpdatePartnershipAction extends BaseCommandAction
                 'agreement_number' => $partnership->agreement_number,
             ]);
 
-            event(new PartnershipUpdated($partnership));
+            $this->dispatchEvent(new PartnershipUpdated($partnership));
 
             return $partnership->fresh();
         });

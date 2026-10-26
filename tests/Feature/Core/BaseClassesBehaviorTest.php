@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -68,6 +69,9 @@ final class Se5q9FCreateDept extends BaseCommandAction
 
 final class Se5q9FExplodingDept extends BaseCommandAction
 {
+    /** Toggle so one instance can fail once and then succeed, proving pending events are discarded. */
+    public bool $explode = true;
+
     public function execute(array $data): ActionResponse
     {
         return $this->transaction(function () use ($data) {
@@ -75,7 +79,11 @@ final class Se5q9FExplodingDept extends BaseCommandAction
 
             $this->dispatchEvent(new Se5q9FDeptCreated($department));
 
-            throw new RuntimeException('boom after write');
+            if ($this->explode) {
+                throw new RuntimeException('boom after write');
+            }
+
+            return $this->respond($department->toArray(), 'stored', true);
         });
     }
 }
@@ -234,6 +242,47 @@ describe('SE5Q9: command action transactions and events', function (): void {
 
         expect(Department::where('name', 'Ghost')->exists())->toBeFalse();
         Event::assertNotDispatched(Se5q9FDeptCreated::class);
+    });
+
+    test('SE5Q9-FR-BASE-006: a queued event reaches listeners only after the transaction commits', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $levels = [];
+        Event::listen(Se5q9FDeptCreated::class, function () use (&$levels): void {
+            $levels[] = DB::transactionLevel();
+        });
+
+        // The test harness already holds an outer transaction, so "committed" means the
+        // listener observes the same level the Action started from — not that it is 0.
+        $baseline = DB::transactionLevel();
+
+        (new Se5q9FCreateDept)->execute(['name' => 'TKJ']);
+
+        expect($levels)->toHaveCount(1)
+            ->and($levels[0])->toBe($baseline);
+    });
+
+    test('SE5Q9-FR-BASE-006: a rolled-back event is discarded before the instance is reused', function (): void {
+        Event::fake([Se5q9FDeptCreated::class]);
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        $action = new Se5q9FExplodingDept;
+
+        try {
+            $action->execute(['name' => 'Ghost']);
+        } catch (RuntimeException) {
+            // expected — the write rolls back
+        }
+
+        $action->explode = false;
+        $action->execute(['name' => 'Phoenix']);
+
+        expect(Department::where('name', 'Phoenix')->exists())->toBeTrue();
+        Event::assertDispatchedTimes(Se5q9FDeptCreated::class, 1);
     });
 
     test('SE5Q9-FR-BASE-007: successful mutations leave an audit trail', function (): void {

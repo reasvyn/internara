@@ -25,7 +25,7 @@ final class TerminatePartnershipAction extends BaseCommandAction
                 'agreement_number' => $partnership->agreement_number,
             ]);
 
-            event(new PartnershipTerminated($partnership));
+            $this->dispatchEvent(new PartnershipTerminated($partnership));
 
             return $partnership->fresh();
         });

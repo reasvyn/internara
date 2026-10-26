@@ -35,7 +35,7 @@ final class CreatePartnershipAction extends BaseCommandAction
                 'company_id' => $partnership->company_id,
             ]);
 
-            event(new PartnershipCreated($partnership));
+            $this->dispatchEvent(new PartnershipCreated($partnership));
 
             return $partnership;
         });

@@ -22,7 +22,7 @@ final class DeletePartnershipAction extends BaseCommandAction
                 'agreement_number' => $partnership->agreement_number,
             ]);
 
-            event(new PartnershipDeleted($partnership));
+            $this->dispatchEvent(new PartnershipDeleted($partnership));
 
             $partnership->delete();
         });

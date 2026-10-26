@@ -29,7 +29,7 @@ final class RequestSubmissionRevisionAction extends BaseCommandAction
                 'student_id' => $submission->student_id,
             ]);
 
-            event(new SubmissionRevisionRequested($submission));
+            $this->dispatchEvent(new SubmissionRevisionRequested($submission));
 
             return $submission->fresh();
         });

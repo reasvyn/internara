@@ -44,7 +44,7 @@ final class RenewPartnershipAction extends BaseCommandAction
 
             $newPartnership = $this->createPartnership->execute($data);
 
-            event(new PartnershipRenewed($newPartnership, $oldPartnership));
+            $this->dispatchEvent(new PartnershipRenewed($newPartnership, $oldPartnership));
 
             $this->log('partnership_renewed', $newPartnership, [
                 'old_partnership_id' => $oldPartnership->id,

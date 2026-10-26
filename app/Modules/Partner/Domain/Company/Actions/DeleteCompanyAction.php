@@ -22,7 +22,7 @@ final class DeleteCompanyAction extends BaseCommandAction
         $this->transaction(function () use ($company) {
             $this->log('company_deleted', $company, ['name' => $company->name]);
 
-            event(new CompanyDeleted($company));
+            $this->dispatchEvent(new CompanyDeleted($company));
 
             $company->delete();
         });

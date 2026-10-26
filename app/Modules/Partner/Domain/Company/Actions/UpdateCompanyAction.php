@@ -26,7 +26,7 @@ final class UpdateCompanyAction extends BaseCommandAction
 
             $this->log('company_updated', $company, ['name' => $company->name]);
 
-            event(new CompanyUpdated($company));
+            $this->dispatchEvent(new CompanyUpdated($company));
 
             return $company;
         });

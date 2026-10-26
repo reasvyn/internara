@@ -11,6 +11,7 @@ use App\Modules\Core\Exceptions\RejectedException;
 use App\Modules\Core\Services\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 abstract class BaseAction
 {
@@ -26,12 +27,19 @@ abstract class BaseAction
     {
         $this->beforeExecute();
 
-        $result = DB::transaction(function () use ($callback) {
-            $result = $callback();
-            $this->dispatchPendingEvents();
+        try {
+            $result = DB::transaction(fn () => $callback(), $attempts);
+        } catch (Throwable $e) {
+            // A rolled-back write must never leave its event queued: a reused Action
+            // instance would otherwise replay it on the next successful call.
+            $this->pendingEvents = [];
 
-            return $result;
-        }, $attempts);
+            throw $e;
+        }
+
+        // Flushed outside DB::transaction(): an event must never reach a listener
+        // while the write it describes is still uncommitted (see dispatchEvent()).
+        $this->dispatchPendingEvents();
 
         $this->afterExecute($result);
 
