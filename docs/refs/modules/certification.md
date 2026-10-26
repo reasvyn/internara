@@ -39,15 +39,26 @@ certificate requires the server-side row, because the hash alone cannot be recom
 verifier. A QR code therefore proves the holder has a certificate the school issued, and the
 lookup against `qr_hash` is what answers "genuine and current".
 
-### Eligibility Gates (specified, not yet enforced)
+### Eligibility Gates
 
-FR-CERT-010/011 require issuance to evaluate assessment completion, placement verification, and
-handbook acknowledgment before a certificate is produced. That gate is **not implemented** in
-`IssueCertificateAction`: the Action reads `$registration->report?->score` (nullable) into the hash
-input and issues regardless of report finalization. The only current filter is UI-level — the
-single-issue picker lists registrations with `status = 'active'` and the batch picker further
-excludes registrations that already have a certificate. Treat eligibility as a spec gap, not as an
-existing invariant.
+FR-CERT-010/011 require issuance to clear three gates before a certificate exists.
+`ReadCertificateEligibilityAction` evaluates them from live state and returns a
+`CertificateEligibility` DTO; `IssueCertificateAction` throws `RejectedException` when any gate is
+unmet, and the message names every unmet condition in the caller's locale
+(`certificate.ineligible` + `certificate.gate.*`).
+
+| Gate         | Passes when                                                                                                                                      |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `assessment` | the registration has an `Assessment` row with a non-null `finalized_at` — an open assessment means the result is still negotiable                |
+| `placement`  | the registration carries a `placement_id` — a proposal alone is not a placement                                                                  |
+| `handbook`   | the active handbook targeted at the student is not newer than the student's latest `acknowledged` activity; no published handbook passes the gate |
+
+The gate is recomputed on every attempt (no cached flag), so a newly finalized assessment, a late
+placement, or a fresh acknowledgment is honored immediately. A handbook revision re-opens the
+handbook gate until the new version is acknowledged. Batch issuance inherits the gate per student:
+`BatchIssueCertificateAction` catches each rejection and reports it in the `errors` list instead of
+aborting the cohort. The UI-level filter (active registrations, no existing certificate) remains a
+convenience, not the enforcement point.
 
 ### Revocation is Terminal
 
@@ -96,7 +107,7 @@ revocation is visible on the next scan.
 
 ### Integration Patterns
 
-- **Eligibility Gate**: specified by FR-CERT-010/011 but not enforced — see "Eligibility Gates" above
+- **Eligibility Gate**: `ReadCertificateEligibilityAction` (Read Action) → `CertificateEligibility` DTO, enforced by `IssueCertificateAction` — see "Eligibility Gates" above
 - **Single issuance**: `IssueCertificateAction` (Command Action) — transaction, audit log, then `CertificateIssued`
 - **Batch**: `BatchIssueCertificateAction` (Process Action) composes single issuance per registration, collecting per-student failures instead of aborting the cohort; `DispatchBatchIssueCertificatesAction` queues it
 - **Serial Number Management**: Auto-generated from internship prefix + year + zero-padded count, unique by domain generation and database constraint, permanently retired on revocation
@@ -107,7 +118,9 @@ revocation is visible on the next scan.
 
 - Core (base classes, SmartLogger)
 - Enrollment (registration context)
-- Reports (report score feeds the verification hash; finalization is not enforced)
+- Assessment (finalized assessment clears the first eligibility gate)
+- Document (active handbook and its acknowledgment trail feed the third gate)
+- Reports (report score feeds the verification hash; report finalization is not a gate)
 - Settings (`school.name` feeds the verification hash)
 - User (recipient and issuer identity)
 
@@ -117,7 +130,7 @@ revocation is visible on the next scan.
 
 ## Design Principles
 
-- **Eligibility gating is specified but not yet enforced** — FR-CERT-010/011 require assessment completion, placement verification, and handbook acknowledgment to be checked before issuance. Today `IssueCertificateAction` issues without that gate and only the UI filters candidate registrations. Do not describe certificates as eligibility-gated until the Action rejects ineligible registrations with `RejectedException`.
+- **Eligibility is enforced by the Action, never by the screen** — `IssueCertificateAction` evaluates the three gates through `ReadCertificateEligibilityAction` and rejects with `RejectedException` naming every unmet condition. UI filters are conveniences; a caller that bypasses them still cannot issue an ineligible certificate.
 - **The verification hash is a fingerprint, not a signature** — the QR code encodes a SHA-256 digest over student ID, school name, report score, issuing admin ID, and certificate number. Because there is no private key and the digest is not reproducible by the verifier, verification requires the server-side `qr_hash` row; the database row is the truth.
 - **Revocation is terminal, and a second attempt is rejected** — once revoked, a certificate stays revoked and its serial number is permanently retired. Double-revoke raises `RejectedException` (`certificate.already_revoked`) instead of silently succeeding; re-issuance requires a new serial number and a new record. Never mutate revocation state; it is one-way.
 - **Frozen template snapshots** — at issuance, the active template's content is copied into the certificate row (`template_content`). Later template edits must never alter an already-issued certificate; rendering from that snapshot at download time is the legal artifact. Treat issuance as a write-once event.
@@ -133,11 +146,13 @@ certificate number rather than a bare serial number. Scanning it resolves to an 
 status answer from the school's own record: issued, revoked, or not found. Because the digest is
 not reproducible without the server-side row, the record is the truth, not the paper.
 
-Eligibility gating is the intended next step, not a current invariant: the specification requires a
-finalized grade card and completed prerequisites, but the Action does not yet reject ineligible
-registrations. Individual issuance is the exception path; batch issuance exists because a school
-finishing a cohort should not have to click through hundreds of students one at a time, and a
-Process Action collects per-student failures instead of aborting the run.
+Eligibility is a property of the student's record, not of the issuance screen. Before a certificate
+row exists, the Action asks a Read Action whether the final assessment is finalized, the placement is
+real, and the current handbook has been acknowledged — and refuses with a message naming every gate
+that is still open, so the rejection doubles as a graduation-readiness checklist. Individual issuance
+is the exception path; batch issuance exists because a school finishing a cohort should not have to
+click through hundreds of students one at a time, and a Process Action collects per-student failures
+instead of aborting the run.
 
 Revocation is a status change, never a deletion. The certificate stays in the system with its
 record intact, and the public verification page reports the revocation — so a graduate holding a

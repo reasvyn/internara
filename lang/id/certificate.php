@@ -48,6 +48,13 @@ return [
     'layout_landscape' => 'Lanskap',
     'already_revoked' => 'Sertifikat ini sudah dicabut.',
 
+    'ineligible' => 'Sertifikat tidak dapat diterbitkan: :conditions.',
+    'gate' => [
+        'assessment' => 'penilaian akhir belum difinalisasi',
+        'placement' => 'penempatan belum terverifikasi',
+        'handbook' => 'buku panduan terbaru belum diakui',
+    ],
+
     'batch_queued' => 'Penerbitan massal antrean. Sertifikat akan dibuat di latar belakang.',
     'batch_empty' => 'Tidak ada registrasi yang memenuhi syarat untuk filter yang dipilih.',
 

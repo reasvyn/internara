@@ -48,6 +48,13 @@ return [
     'layout_landscape' => 'Landscape',
     'already_revoked' => 'This certificate has already been revoked.',
 
+    'ineligible' => 'Certificate cannot be issued: :conditions.',
+    'gate' => [
+        'assessment' => 'final assessment not finalized',
+        'placement' => 'placement not verified',
+        'handbook' => 'current handbook not acknowledged',
+    ],
+
     'batch_queued' => 'Batch issuance queued. Certificates will be generated in the background.',
     'batch_empty' => 'No eligible registrations found for the selected filter.',
 

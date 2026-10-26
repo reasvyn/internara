@@ -115,9 +115,14 @@ class CertificateList extends BaseRecordManager
 
         $registration = Registration::findOrFail($this->issueRegistrationId);
         $template = CertificateTemplate::findOrFail($this->issueTemplateId);
-        $issueAction->execute($registration, $template);
-        $this->toast()->success(__('certificate.issued'))->send();
-        $this->showIssueModal = false;
+
+        try {
+            $issueAction->execute($registration, $template);
+            $this->toast()->success(__('certificate.issued'))->send();
+            $this->showIssueModal = false;
+        } catch (RejectedException $e) {
+            $this->toast()->error($e->getMessage())->send();
+        }
     }
 
     public function batchIssue(): void

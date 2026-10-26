@@ -20,6 +20,7 @@ internships.
 | `Domain/Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/GenerateCertificatePdfAction.php` | `GenerateCertificatePdfAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/ReadCertificateEligibilityAction.php` | `ReadCertificateEligibilityAction` | `BaseReadAction` |
 | `Domain/Certificate/Actions/ReadCertificateStatusAction.php` | `ReadCertificateStatusAction` | `BaseReadAction` |
 | `Domain/Certificate/Actions/RevokeCertificateAction.php` | `RevokeCertificateAction` | `BaseCommandAction` |
 
@@ -28,6 +29,7 @@ internships.
 | File | Class | Extends |
 |---|---|---|
 | `Data/BatchIssueCertificatesData.php` | `BatchIssueCertificatesData` | `BaseData` |
+| `Domain/Certificate/Data/CertificateEligibility.php` | `CertificateEligibility` | `BaseData` |
 | `Domain/Certificate/Data/CertificateStatusView.php` | `CertificateStatusView` | `BaseData` |
 
 ## Jobs

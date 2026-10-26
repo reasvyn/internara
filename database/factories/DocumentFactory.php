@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Modules\Document\Enums\DocumentCategory;
 use App\Modules\Document\Models\Document;
 use App\Modules\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -33,5 +34,19 @@ class DocumentFactory extends Factory
     public function inactive(): static
     {
         return $this->state(fn () => ['is_active' => false]);
+    }
+
+    /**
+     * A handbook document targeted at a role, used by the certificate eligibility
+     * gate (FR-CERT-010) and the acknowledgment flow.
+     */
+    public function handbook(int $version = 1, string $audience = 'all'): static
+    {
+        return $this->state(fn () => [
+            'type' => DocumentCategory::HANDBOOK->value,
+            'version' => $version,
+            'is_active' => true,
+            'metadata' => ['target_audience' => $audience],
+        ]);
     }
 }

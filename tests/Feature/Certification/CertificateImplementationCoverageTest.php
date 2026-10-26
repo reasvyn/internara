@@ -112,7 +112,7 @@ describe('J0M04: certification implementation behavior', function (): void {
     test('J0M04-FR-CERT-005: issuance numbers contain a year and padded sequence', function (): void {
         $this->actingAs(j0m04cAdmin());
 
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
 
         expect($certificate->certificate_number)->toMatch('/^.+\/'.now()->year.'\/\d{4}$/');
     });
@@ -120,7 +120,7 @@ describe('J0M04: certification implementation behavior', function (): void {
     test('J0M04-FR-CERT-005: issuance generates a 64-character verification hash', function (): void {
         $this->actingAs(j0m04cAdmin());
 
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
 
         expect($certificate->qr_hash)->toMatch('/^[a-f0-9]{64}$/');
     });
@@ -129,13 +129,13 @@ describe('J0M04: certification implementation behavior', function (): void {
         $this->actingAs(j0m04cAdmin());
         $template = j0m04cTemplate(['content_template' => '']);
 
-        $certificate = j0m04cIssue(Registration::factory()->create(), $template);
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), $template);
 
         expect($certificate->template_content)->toBe('');
     });
 
     test('J0M04-FR-CERT-008: an unauthenticated issuance leaves the issuer nullable', function (): void {
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
 
         expect($certificate->issued_by)->toBeNull()
             ->and($certificate->issuer)->toBeNull();
@@ -145,7 +145,7 @@ describe('J0M04: certification implementation behavior', function (): void {
         Event::fake();
         $this->actingAs(j0m04cAdmin());
 
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
 
         Event::assertDispatched(function (CertificateIssued $event) use ($certificate): bool {
             return $event->certificate->exists && $event->certificate->is($certificate);
@@ -154,7 +154,7 @@ describe('J0M04: certification implementation behavior', function (): void {
 
     test('J0M04-FR-CERT-012: batch reports an unknown registration as failed', function (): void {
         $this->actingAs(j0m04cAdmin());
-        $valid = Registration::factory()->create();
+        $valid = Registration::factory()->eligible()->create();
         $template = j0m04cTemplate();
 
         $result = app(BatchIssueCertificateAction::class)->execute([
@@ -188,7 +188,7 @@ describe('J0M04: certification implementation behavior', function (): void {
     test('J0M04-FR-CERT-017: revocation records actor, timestamp, and terminal status', function (): void {
         $admin = j0m04cAdmin();
         $this->actingAs($admin);
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
 
         $revoked = app(RevokeCertificateAction::class)->execute($certificate);
 
@@ -200,7 +200,7 @@ describe('J0M04: certification implementation behavior', function (): void {
     test('J0M04-FR-CERT-018: a second revocation is rejected in Indonesian', function (): void {
         app()->setLocale('id');
         $this->actingAs(j0m04cAdmin());
-        $certificate = j0m04cIssue(Registration::factory()->create(), j0m04cTemplate());
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), j0m04cTemplate());
         $revoked = app(RevokeCertificateAction::class)->execute($certificate);
 
         expect(fn () => app(RevokeCertificateAction::class)->execute($revoked))
@@ -267,7 +267,7 @@ describe('J0M04: certification implementation behavior', function (): void {
     test('J0M04-FR-CERT-024: deleting a template does not delete its issued snapshot', function (): void {
         $this->actingAs(j0m04cAdmin());
         $template = j0m04cTemplate(['content_template' => '<p>Frozen</p>']);
-        $certificate = j0m04cIssue(Registration::factory()->create(), $template);
+        $certificate = j0m04cIssue(Registration::factory()->eligible()->create(), $template);
 
         $template->delete();
 

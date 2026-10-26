@@ -14,6 +14,8 @@ use App\Modules\Certification\Domain\Certificate\Models\CertificateTemplate;
 use App\Modules\Certification\Domain\Certificate\Services\CertificateRenderer;
 use App\Modules\Certification\Jobs\BatchIssueCertificatesJob;
 use App\Modules\Core\Exceptions\RejectedException;
+use App\Modules\Document\Domain\Handbook\Actions\AcknowledgeHandbookAction;
+use App\Modules\Document\Models\Document;
 use App\Modules\Enrollment\Domain\Registration\Models\Registration;
 use App\Modules\User\Models\User;
 use Illuminate\Database\QueryException;
@@ -45,7 +47,12 @@ function j0m04aTemplate(array $overrides = []): CertificateTemplate
 
 function j0m04aRegistration(): Registration
 {
-    return Registration::factory()->create();
+    return Registration::factory()->eligible()->create();
+}
+
+function j0m04aHandbook(int $version = 1): Document
+{
+    return Document::factory()->handbook(version: $version)->create();
 }
 
 function j0m04aIssue(Registration $registration, CertificateTemplate $template): Certificate
@@ -224,6 +231,8 @@ describe('J0M04: certificate issuance', function (): void {
             ->and(__('certificate.already_revoked'))->toBe('Sertifikat ini sudah dicabut.')
             ->and(__('certificate.status.issued'))->toBe('Diterbitkan')
             ->and(__('certificate.status.revoked'))->toBe('Dicabut');
+
+        app()->setLocale('en');
     });
 
     test('J0M04-NFR-CERT-007: English and Indonesian catalogues expose the same keys', function (): void {
@@ -341,8 +350,8 @@ describe('J0M04: certificate issuance', function (): void {
         $admin = j0m04aAdmin();
         $this->actingAs($admin);
         $template = j0m04aTemplate();
-        $fresh = Registration::factory()->count(2)->create(['status' => 'active']);
-        $already = Registration::factory()->create(['status' => 'active']);
+        $fresh = Registration::factory()->count(2)->eligible()->create();
+        $already = Registration::factory()->eligible()->create();
         j0m04aIssue($already, $template);
 
         $job = new BatchIssueCertificatesJob(
@@ -403,7 +412,7 @@ describe('J0M04: certificate issuance', function (): void {
     test('J0M04-NFR-CERT-005: batch issuance completes the cohort with per-student outcomes', function (): void {
         $this->actingAs(j0m04aAdmin());
         $template = j0m04aTemplate();
-        $ids = Registration::factory()->count(15)->create()->pluck('id')->all();
+        $ids = Registration::factory()->count(15)->eligible()->create()->pluck('id')->all();
 
         $results = app(BatchIssueCertificateAction::class)->execute($ids, $template);
 
@@ -414,17 +423,114 @@ describe('J0M04: certificate issuance', function (): void {
         expect(Certificate::count())->toBe(15);
     });
 
-    test('J0M04-FR-CERT-010, J0M04-FR-CERT-011: graduate eligibility evaluates registration prerequisites', function (): void {
+    test('J0M04-FR-CERT-010: a placed, assessed graduate clears every gate', function (): void {
+        $this->actingAs(j0m04aAdmin());
+
+        $certificate = j0m04aIssue(j0m04aRegistration(), j0m04aTemplate());
+
+        expect($certificate->exists)->toBeTrue()
+            ->and($certificate->status->value)->toBe('issued');
+    });
+
+    test('J0M04-FR-CERT-010, J0M04-FR-CERT-011: an unfinalized assessment blocks issuance and is named', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('en');
+
+        $registration = Registration::factory()
+            ->placed()
+            ->assessed(finalized: false)
+            ->create();
+
+        expect(fn () => j0m04aIssue($registration, j0m04aTemplate()))
+            ->toThrow(RejectedException::class, 'final assessment not finalized');
+
+        expect(Certificate::count())->toBe(0);
+    });
+
+    test('J0M04-FR-CERT-010, J0M04-FR-CERT-011: an unplaced registration blocks issuance and is named', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('en');
+
+        $registration = Registration::factory()->assessed()->create();
+
+        expect(fn () => j0m04aIssue($registration, j0m04aTemplate()))
+            ->toThrow(RejectedException::class, 'placement not verified');
+
+        expect(Certificate::count())->toBe(0);
+    });
+
+    test('J0M04-FR-CERT-010: an unpublished handbook passes the acknowledgment gate', function (): void {
+        $this->actingAs(j0m04aAdmin());
+
+        expect(Document::query()->count())->toBe(0);
+        expect(j0m04aIssue(j0m04aRegistration(), j0m04aTemplate())->exists)->toBeTrue();
+    });
+
+    test('J0M04-FR-CERT-010, J0M04-FR-CERT-011: an unacknowledged active handbook blocks issuance', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('en');
+        j0m04aHandbook();
+
+        expect(fn () => j0m04aIssue(j0m04aRegistration(), j0m04aTemplate()))
+            ->toThrow(RejectedException::class, 'current handbook not acknowledged');
+
+        expect(Certificate::count())->toBe(0);
+    });
+
+    test('J0M04-FR-CERT-010: acknowledging the current handbook version clears the gate', function (): void {
         $admin = j0m04aAdmin();
         $this->actingAs($admin);
 
-        $template = j0m04aTemplate();
+        $handbook = j0m04aHandbook();
         $registration = j0m04aRegistration();
 
-        // Valid registration with template issues successfully
-        $certificate = app(IssueCertificateAction::class)->execute($registration, $template);
-        expect($certificate->exists)->toBeTrue()
-            ->and($certificate->status->value)->toBe('issued');
+        app(AcknowledgeHandbookAction::class)->execute($handbook, $registration->student);
+
+        expect(j0m04aIssue($registration, j0m04aTemplate())->exists)->toBeTrue();
+    });
+
+    test('J0M04-FR-CERT-010: a handbook revision re-opens the acknowledgment gate', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('en');
+
+        $registration = j0m04aRegistration();
+        $handbook = j0m04aHandbook(version: 1);
+
+        app(AcknowledgeHandbookAction::class)->execute($handbook, $registration->student);
+
+        $handbook->update(['version' => 2]);
+
+        expect(fn () => j0m04aIssue($registration, j0m04aTemplate()))
+            ->toThrow(RejectedException::class, 'current handbook not acknowledged');
+    });
+
+    test('J0M04-FR-CERT-011: the rejection names every unmet gate in the admin language', function (): void {
+        $this->actingAs(j0m04aAdmin());
+        app()->setLocale('id');
+
+        expect(fn () => j0m04aIssue(Registration::factory()->create(), j0m04aTemplate()))
+            ->toThrow(
+                RejectedException::class,
+                'penilaian akhir belum difinalisasi, penempatan belum terverifikasi',
+            );
+
+        app()->setLocale('en');
+    });
+
+    test('J0M04-FR-CERT-011: the issuance screen surfaces the rejection without creating a certificate', function (): void {
+        $this->actingAs(j0m04aAdmin());
+
+        $registration = Registration::factory()->create();
+        $template = j0m04aTemplate();
+
+        Livewire::test(CertificateList::class)
+            ->call('issue')
+            ->set('issueRegistrationId', $registration->id)
+            ->set('issueTemplateId', $template->id)
+            ->call('saveIssue')
+            ->assertHasNoErrors();
+
+        expect(Certificate::count())->toBe(0);
     });
 
     test('J0M04-NFR-CERT-006, J0M04-DD-CERT-005: alumni certificate retrieval remains available read-only after closure', function (): void {
