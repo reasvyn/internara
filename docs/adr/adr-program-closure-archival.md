@@ -16,7 +16,7 @@ immutable, read-only record. Closure must verify completeness (assessments, subm
 attendance, supervision logs, certificates), compute and lock final grades, trigger Program
 Quality Evaluation, and transition to `ARCHIVED`. Regulation then demands no deletion,
 immutable preservation, and continued read-only access — including certificate retrieval for
-alumni. Existing pieces include `CheckCloseReadinessAction`, `ArchiveStudentAccountsAction`,
+alumni. Existing pieces include `ReadCloseReadinessAction`, `ArchiveStudentAccountsAction`,
 `AccountStatus::ARCHIVED`, and `InternshipStatus::COMPLETED`; missing are a coordinating
 Process, snapshot mechanism, archive UI, `InternshipStatus::ARCHIVED`, and cohort alumni
 marking.
@@ -43,10 +43,10 @@ marking.
 
 ```
 CloseProgramProcess
-  ├─ 1. CheckCloseReadinessAction — verify assessments, submissions, attendance, certificates
+  ├─ 1. ReadCloseReadinessAction — verify assessments, submissions, attendance, certificates
   ├─ 2. Trigger Program Quality Evaluation (Evaluation module) — required before proceeding
-  ├─ 3. FinalizeAssessmentsAction — compute weighted grades, freeze scores
-  ├─ 4. IssueCertificatesAction — batch-issue any remaining certificates
+  ├─ 3. FinalizeAssessmentAction — compute weighted grades, freeze scores
+  ├─ 4. BatchIssueCertificateAction — batch-issue any remaining certificates
   ├─ 5. ArchiveProgramAction — snapshot + lock records, transition to ARCHIVED
   ├─ 6. ArchiveStudentAccountsAction — mark active students as alumni (read-only)
   └─ 7. GenerateArchiveReportAction — summary document for school records
