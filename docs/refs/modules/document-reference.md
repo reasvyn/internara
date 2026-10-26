@@ -24,6 +24,7 @@ and compliance acknowledgements.
 | `Domain/OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseCommandAction` |
 | `Domain/OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseCommandAction` |
 | `Domain/OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseCommandAction` |
+| `Domain/OfficialDocument/Actions/DispatchBatchDocumentGenerationAction.php` | `DispatchBatchDocumentGenerationAction` | `BaseCommandAction` |
 
 ## Models
 
@@ -60,9 +61,9 @@ and compliance acknowledgements.
 
 | File | Component | Extends |
 |---|---|---|
-| `Domain/Handbook/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `BaseFormView` |
+| `Domain/Handbook/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `Form` |
 | `Domain/Handbook/Livewire/HandbookManager.php` | `HandbookManager` | `BaseRecordManager` |
-| `Domain/Handbook/Livewire/StudentHandbookList.php` | `StudentHandbookList` | `BaseRecordManager` |
+| `Domain/Handbook/Livewire/StudentHandbookList.php` | `StudentHandbookList` | `Component` |
 | `Domain/OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `BaseRecordManager` |
 | `Domain/OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `BaseRecordManager` |
 

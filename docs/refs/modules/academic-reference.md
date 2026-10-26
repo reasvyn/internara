@@ -22,7 +22,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | `Domain/Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseCommandAction` |
 | `Domain/Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseCommandAction` |
 | `Domain/Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseCommandAction` |
-| `Domain/School/Actions/GetSchoolEntityAction.php` | `GetSchoolEntityAction` | `BaseCommandAction` |
+| `Domain/School/Actions/GetSchoolEntityAction.php` | `GetSchoolEntityAction` | `BaseReadAction` |
 | `Domain/School/Actions/SaveSchoolProfileAction.php` | `SaveSchoolProfileAction` | `BaseCommandAction` |
 
 ## Models
@@ -77,11 +77,11 @@ Manages educational structure: academic years, departments (jurusan), and school
 | File | Component | Extends |
 |---|---|---|
 | `Domain/AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
-| `Domain/AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `BaseFormView` |
+| `Domain/AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `Form` |
 | `Domain/Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` |
-| `Domain/Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `BaseFormView` |
-| `Domain/School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `BaseFormView` |
-| `Domain/School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` |
+| `Domain/Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `Form` |
+| `Domain/School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `Form` |
+| `Domain/School/Livewire/SchoolEditor.php` | `SchoolEditor` | `BaseFormView` |
 
 ## Routes
 

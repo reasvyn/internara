@@ -16,7 +16,7 @@ internships.
 | File | Class | Extends |
 |---|---|---|
 | `Actions/DispatchBatchIssueCertificatesAction.php` | `DispatchBatchIssueCertificatesAction` | `BaseCommandAction` |
-| `Domain/Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseCommandAction` |
+| `Domain/Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseProcessAction` |
 | `Domain/Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/GenerateCertificatePdfAction.php` | `GenerateCertificatePdfAction` | `BaseCommandAction` |
 | `Domain/Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseCommandAction` |
@@ -49,7 +49,7 @@ internships.
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum` | — |
+| `Domain/Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `StatusEnum` | — |
 
 ## Events
 

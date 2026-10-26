@@ -19,7 +19,7 @@ logging, Pulse observability, and GDPR compliance.
 | `Domain/Announcement/Actions/DeleteAnnouncementAction.php` | `DeleteAnnouncementAction` | `BaseCommandAction` |
 | `Domain/Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
 | `Domain/Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseCommandAction` |
-| `Domain/Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseCommandAction` |
+| `Domain/Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseProcessAction` |
 | `Domain/Backup/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
 | `Domain/Backup/Actions/CreateBackupAction.php` | `CreateBackupAction` | `BaseCommandAction` |
 | `Domain/Backup/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
@@ -37,8 +37,8 @@ logging, Pulse observability, and GDPR compliance.
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum` | — |
-| `Domain/Backup/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | — |
+| `Domain/Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `StatusEnum` | — |
+| `Domain/Backup/Enums/BackupStatus.php` | `BackupStatus` | `StatusEnum` | — |
 | `Domain/Backup/Enums/BackupType.php` | `BackupType` | `LabelEnum` | — |
 
 ## Entities
@@ -60,13 +60,13 @@ logging, Pulse observability, and GDPR compliance.
 | File | Component | Extends |
 |---|---|---|
 | `Domain/Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `BaseRecordManager` |
-| `Domain/Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `BaseFormView` |
+| `Domain/Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `Form` |
 | `Domain/Backup/Livewire/BackupManager.php` | `BackupManager` | `BaseRecordManager` |
 | `Domain/Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
 | `Domain/Observability/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
 | `Domain/Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `BaseRecordManager` |
-| `Domain/Observability/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Component` |
-| `Domain/Observability/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Component` |
+| `Domain/Observability/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Card` |
+| `Domain/Observability/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Card` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 
 ## Events
@@ -110,7 +110,7 @@ logging, Pulse observability, and GDPR compliance.
 | `admin:recovery-show`    | `ShowRecoveryKeyCommand`               | Displays current recovery key                           |
 | `admin:recovery-path`    | `ShowRecoveryPathCommand`              | Shows recovery key file path                            |
 | `notifications:prune`    | `PruneNotificationsCommand`            | Prunes old notifications                                |
-| `backups:run`            | `SystemBackupCommand`                  | Runs manual database/storage backup                     |
+| `system:backup`          | `SystemBackupCommand`                  | Runs manual database/storage backup                     |
 | `system:maintenance`    | `SystemMaintenanceCommand`             | Open or close the system maintenance window             |
 
 ## Pulse Recorders

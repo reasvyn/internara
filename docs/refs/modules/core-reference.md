@@ -19,7 +19,7 @@ depends on.
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`,
   `SettingsStore`)
-- **Base Classes**: 16 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
+- **Base Classes**: 17 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
   `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`) +
   3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
@@ -81,7 +81,8 @@ Located in `app/Modules/Core/`:
 
 | Class               | Path                                  | Purpose                                                                      | Mandatory For                                                    |
 | ------------------- | ------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `BaseModel`         | `Models/BaseModel.php`                | UUID PKs, HasFactory, soft-delete, global scopes                             | All models (User extends `Authenticatable` with manual HasUuids) |
+| `BaseModel`         | `Models/BaseModel.php`                | UUID PKs, HasFactory, soft-delete, global scopes                             | Models without auth (`BaseAuthenticatable` covers the rest)       |
+| `BaseAuthenticatable` | `Models/BaseAuthenticatable.php`    | `Illuminate\Foundation\Auth\User` + UUID PKs + common scopes                  | Authenticatable models (e.g. `User`)                              |
 | `BaseAction`        | `Actions/BaseAction.php`              | Transaction management, activity logging, error handling                     | All Command & Process Actions                                    |
 | `BaseCommandAction` | `Actions/BaseCommandAction.php`       | Command action contract: wraps mutations in transaction + logging            | Command Actions                                                  |
 | `BaseReadAction`    | `Actions/BaseReadAction.php`          | Read action contract: query-only, no transaction or logging                  | Read Actions                                                     |
@@ -172,8 +173,8 @@ Core has zero Livewire components. Reusable Livewire base classes and concerns (
 | File | Policy | Extends |
 |---|---|---|
 | `Policies/BasePolicy.php` | `BasePolicy` | `BasePolicy` |
-| `Policies/Concerns/AuthorizesOwnership.php` | `AuthorizesOwnership` | `BasePolicy` |
-| `Policies/Concerns/AuthorizesRoles.php` | `AuthorizesRoles` | `BasePolicy` |
+| `Policies/Concerns/AuthorizesOwnership.php` | `AuthorizesOwnership` | — |
+| `Policies/Concerns/AuthorizesRoles.php` | `AuthorizesRoles` | — |
 
 ## Support Classes & Action Traits
 
@@ -210,10 +211,10 @@ The helpers `setting()` and `brand()` are defined in `app/Modules/Setting/Suppor
 
 | File | Class | Extends |
 |---|---|---|
-| `Models/ActivityLog.php` | `ActivityLog` | `BaseModel` |
-| `Models/BaseAuthenticatable.php` | `BaseAuthenticatable` | `BaseModel` |
-| `Models/BaseModel.php` | `BaseModel` | `BaseModel` |
-| `Models/Concerns/HasCommonScopes.php` | `HasCommonScopes` | `BaseModel` |
+| `Models/ActivityLog.php` | `ActivityLog` | `Activity` |
+| `Models/BaseAuthenticatable.php` | `BaseAuthenticatable` | `Authenticatable` |
+| `Models/BaseModel.php` | `BaseModel` | `Model` |
+| `Models/Concerns/HasCommonScopes.php` | `HasCommonScopes` | — |
 
 
 ## Data / DTOs

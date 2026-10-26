@@ -74,7 +74,7 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | File | Component | Extends |
 |---|---|---|
 | `Domain/Rubric/Livewire/RubricManager.php` | `RubricManager` | `BaseRecordManager` |
-| `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` |
+| `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `BaseFormView` |
 | `Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
 
 ## Events

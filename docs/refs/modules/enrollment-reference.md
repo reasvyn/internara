@@ -54,9 +54,9 @@ applications, and registration document uploads.
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/AccountApplication/Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `LabelEnum` | — |
-| `Domain/Placement/Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `LabelEnum` | — |
-| `Domain/Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum` | — |
+| `Domain/AccountApplication/Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `LabelEnum, StatusEnum` | — |
+| `Domain/Placement/Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `LabelEnum, StatusEnum` | — |
+| `Domain/Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum, StatusEnum` | — |
 
 ## Entities
 
@@ -88,18 +88,18 @@ applications, and registration document uploads.
 
 | File | Component | Extends |
 |---|---|---|
-| `Domain/AccountApplication/Livewire/ApplyPage.php` | `ApplyPage` | `Component` |
-| `Domain/AccountApplication/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` | `BaseFormView` |
-| `Domain/Placement/Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `BaseRecordManager` |
-| `Domain/Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` | `BaseFormView` |
-| `Domain/Placement/Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` | `BaseFormView` |
-| `Domain/Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `BaseFormView` |
+| `Domain/AccountApplication/Livewire/ApplyPage.php` | `ApplyPage` | `BaseFormView` |
+| `Domain/AccountApplication/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` | `Form` |
+| `Domain/Placement/Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `BaseFormView` |
+| `Domain/Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` | `Form` |
+| `Domain/Placement/Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` | `Form` |
+| `Domain/Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `Form` |
 | `Domain/Placement/Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `BaseRecordManager` |
 | `Domain/Placement/Livewire/PlacementIndex.php` | `PlacementIndex` | `BaseRecordManager` |
-| `Domain/Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` |
-| `Domain/Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `BaseFormView` |
+| `Domain/Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `BaseFormView` |
+| `Domain/Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `Form` |
 | `Domain/Registration/Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` |
-| `Domain/Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` |
+| `Domain/Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `BaseFormView` |
 | `Domain/Registration/Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` |
 | `Domain/Registration/Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` |
 

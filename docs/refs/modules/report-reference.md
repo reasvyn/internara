@@ -16,10 +16,10 @@ finalization.
 | File | Class | Extends |
 |---|---|---|
 | `Domain/StudentReport/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseCommandAction` |
-| `Domain/StudentReport/Actions/CaptureStudentReportSnapshotAction.php` | `CaptureStudentReportSnapshotAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/CaptureStudentReportSnapshotAction.php` | `CaptureStudentReportSnapshotAction` | `BaseProcessAction` |
 | `Domain/StudentReport/Actions/CreateStudentReportAction.php` | `CreateStudentReportAction` | `BaseCommandAction` |
 | `Domain/StudentReport/Actions/DeleteStudentReportAction.php` | `DeleteStudentReportAction` | `BaseCommandAction` |
-| `Domain/StudentReport/Actions/DownloadStudentReportAction.php` | `DownloadStudentReportAction` | `BaseCommandAction` |
+| `Domain/StudentReport/Actions/DownloadStudentReportAction.php` | `DownloadStudentReportAction` | `BaseProcessAction` |
 | `Domain/StudentReport/Actions/FinalizeStudentReportAction.php` | `FinalizeStudentReportAction` | `BaseCommandAction` |
 
 ## Data / DTOs
@@ -38,7 +38,7 @@ finalization.
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/StudentReport/Enums/StudentReportStatus.php` | `StudentReportStatus` | `LabelEnum` | — |
+| `Domain/StudentReport/Enums/StudentReportStatus.php` | `StudentReportStatus` | `LabelEnum, StatusEnum` | — |
 
 ## Events
 

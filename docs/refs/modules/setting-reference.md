@@ -65,11 +65,11 @@ feature toggles.
 
 | File | Component | Extends |
 |---|---|---|
-| `Domain/Branding/Livewire/Forms/BrandingForm.php` | `BrandingForm` | `BaseFormView` |
-| `Livewire/Forms/GeneralSettingsForm.php` | `GeneralSettingsForm` | `BaseFormView` |
-| `Livewire/Forms/MailSettingsForm.php` | `MailSettingsForm` | `BaseFormView` |
+| `Domain/Branding/Livewire/Forms/BrandingForm.php` | `BrandingForm` | `Form` |
+| `Livewire/Forms/GeneralSettingsForm.php` | `GeneralSettingsForm` | `Form` |
+| `Livewire/Forms/MailSettingsForm.php` | `MailSettingsForm` | `Form` |
 | `Domain/Locale/Livewire/LangSwitch.php` | `LangSwitch` | `Component` |
-| `Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
+| `Livewire/SystemSetting.php` | `SystemSetting` | `BaseFormView` |
 
 ## Casts
 
@@ -91,14 +91,13 @@ feature toggles.
 
 ## Support
 
-| File                        | Class      | Purpose                                                                                      |
-| --------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
-| `Services/Setting.php`     | `Setting` | Runtime setting manager with cached reads (note: includes write path that bypasses Actions) |
-| `Support/Brand.php`         | `Brand`    | Dynamic branding values from database                                                        |
-| `Support/SettingCaster.php` | `SettingCaster` | Type casting logic for setting values                                                   |
-| `Support/helpers.php`       | —          | `setting()`, `brand()` global helpers                                                        |
-| `Locale/Support/Locale.php` | `Locale`   | Locale management                                                                            |
-| `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)                                                                 |
+| File                        | Class      | Purpose                                                         |
+| --------------------------- | ---------- | --------------------------------------------------------------- |
+| `Support/Brand.php`         | `Brand`    | Dynamic branding values from database                           |
+| `Support/SettingCaster.php` | `SettingCaster` | Type casting logic for setting values                        |
+| `Support/helpers.php`       | —          | `setting()`, `brand()` global helpers                           |
+| `Locale/Support/Locale.php` | `Locale`   | Locale management                                               |
+| `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)                                    |
 
 ## Observers
 
@@ -146,7 +145,7 @@ for the testing conventions. Tests are requirement-traceable: each test traces t
 
 | File | Service | Purpose |
 |---|---|---|
-| `Services/Settings.php` | `Settings` | — |
+| `Services/Settings.php` | `Settings` | Static runtime setting reader with per-key caching (`get`, `set`, `forget`); the write path bypasses Actions by design |
 
 ---
 

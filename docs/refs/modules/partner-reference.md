@@ -37,7 +37,7 @@ Manages industrial partner companies and partnership agreements for internship p
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Partnership/Enums/PartnershipStatus.php` | `PartnershipStatus` | `LabelEnum` | — |
+| `Domain/Partnership/Enums/PartnershipStatus.php` | `PartnershipStatus` | `LabelEnum, StatusEnum` | — |
 
 ## Entities
 
@@ -87,8 +87,8 @@ Manages industrial partner companies and partnership agreements for internship p
 | File | Component | Extends |
 |---|---|---|
 | `Domain/Company/Livewire/CompanyManager.php` | `CompanyManager` | `BaseRecordManager` |
-| `Domain/Company/Livewire/Forms/CompanyForm.php` | `CompanyForm` | `BaseFormView` |
-| `Domain/Partnership/Livewire/Forms/PartnershipForm.php` | `PartnershipForm` | `BaseFormView` |
+| `Domain/Company/Livewire/Forms/CompanyForm.php` | `CompanyForm` | `Form` |
+| `Domain/Partnership/Livewire/Forms/PartnershipForm.php` | `PartnershipForm` | `Form` |
 | `Domain/Partnership/Livewire/PartnershipManager.php` | `PartnershipManager` | `BaseRecordManager` |
 
 ## Routes

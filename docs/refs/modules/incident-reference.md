@@ -29,7 +29,7 @@ Manages workplace incident reports, severity classification, and resolution trac
 | File | Enum | Implements | Values |
 |---|---|---|---|
 | `Domain/IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum` | — |
-| `Domain/IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `LabelEnum` | — |
+| `Domain/IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `StatusEnum` | — |
 | `Domain/IncidentReport/Enums/IncidentType.php` | `IncidentType` | `LabelEnum` | — |
 
 ## Policies & Permissions

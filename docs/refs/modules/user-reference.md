@@ -15,7 +15,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | File | Class | Extends |
 |---|---|---|
 | `Actions/ReadActivityLogAction.php` | `ReadActivityLogAction` | `BaseReadAction` |
-| `Domain/AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseCommandAction` |
+| `Domain/AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseReadAction` |
 | `Domain/AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseCommandAction` |
 | `Domain/AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseCommandAction` |
 | `Domain/Dashboard/Actions/ReadStudentDashboardAction.php` | `ReadStudentDashboardAction` | `BaseReadAction` |
@@ -34,10 +34,10 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Domain/UserManagement/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseCommandAction` |
 | `Domain/UserManagement/Actions/DispatchArchiveStudentAccountsAction.php` | `DispatchArchiveStudentAccountsAction` | `BaseCommandAction` |
 | `Domain/UserManagement/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseCommandAction` |
-| `Domain/UserManagement/Actions/GenerateAccountSlipBatchAction.php` | `GenerateAccountSlipBatchAction` | `BaseCommandAction` |
+| `Domain/UserManagement/Actions/GenerateAccountSlipBatchAction.php` | `GenerateAccountSlipBatchAction` | `BaseProcessAction` |
 | `Domain/UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseReadAction` |
 | `Domain/UserManagement/Actions/ReadUserManagerStatsAction.php` | `ReadUserManagerStatsAction` | `BaseReadAction` |
-| `Domain/UserManagement/Actions/RenderAccountSlipAction.php` | `RenderAccountSlipAction` | `BaseCommandAction` |
+| `Domain/UserManagement/Actions/RenderAccountSlipAction.php` | `RenderAccountSlipAction` | `BaseProcessAction` |
 | `Domain/UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseCommandAction` |
 | `Domain/UserManagement/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseCommandAction` |
 | `Domain/UserManagement/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseCommandAction` |
@@ -58,13 +58,13 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/Notify/Models/Notification.php` | `Notification` | `BaseModel` |
 | `Domain/Profile/Models/Profile.php` | `Profile` | `BaseModel` |
-| `Models/User.php` | `User` | `BaseModel` |
+| `Models/User.php` | `User` | `BaseAuthenticatable` |
 
 ## Enums
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Enums/AccountStatus.php` | `AccountStatus` | `LabelEnum` | — |
+| `Enums/AccountStatus.php` | `AccountStatus` | `ColorableEnum, StatusEnum` | — |
 | `Enums/BloodType.php` | `BloodType` | `LabelEnum` | — |
 | `Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | — |
 | `Enums/Gender.php` | `Gender` | `LabelEnum` | — |
@@ -87,7 +87,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 |---|---|---|
 | `Domain/Notify/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` |
 | `Domain/Profile/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` |
-| `Policies/Concerns/HasMentorProxy.php` | `HasMentorProxy` | `BasePolicy` |
+| `Policies/Concerns/HasMentorProxy.php` | `HasMentorProxy` | — |
 
 ## Listeners
 
@@ -103,31 +103,31 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Component | Extends |
 |---|---|---|
-| `Domain/AccountStatus/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `BaseRecordManager` |
-| `Domain/Dashboard/Livewire/AdminDashboard.php` | `AdminDashboard` | `Component` |
-| `Domain/Dashboard/Livewire/StudentDashboard.php` | `StudentDashboard` | `Component` |
-| `Domain/Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` |
-| `Domain/Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `Component` |
+| `Domain/AccountStatus/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` |
+| `Domain/Dashboard/Livewire/AdminDashboard.php` | `AdminDashboard` | `UserDashboard` |
+| `Domain/Dashboard/Livewire/StudentDashboard.php` | `StudentDashboard` | `UserDashboard` |
+| `Domain/Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `UserDashboard` |
+| `Domain/Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `UserDashboard` |
 | `Domain/Dashboard/Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
 | `Domain/Notify/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
-| `Domain/Notify/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` |
-| `Domain/Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `BaseFormView` |
-| `Domain/Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `BaseFormView` |
-| `Domain/Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` |
+| `Domain/Notify/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` |
+| `Domain/Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `Form` |
+| `Domain/Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` |
+| `Domain/Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `BaseFormView` |
 | `Domain/UserManagement/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
-| `Domain/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | `Component` |
-| `Domain/UserManagement/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` | `BaseFormView` |
-| `Domain/UserManagement/Livewire/Forms/StudentForm.php` | `StudentForm` | `BaseFormView` |
-| `Domain/UserManagement/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` | `BaseFormView` |
-| `Domain/UserManagement/Livewire/Forms/TeacherForm.php` | `TeacherForm` | `BaseFormView` |
-| `Domain/UserManagement/Livewire/Forms/UserForm.php` | `UserForm` | `BaseFormView` |
+| `Domain/UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | — |
+| `Domain/UserManagement/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` | `Form` |
+| `Domain/UserManagement/Livewire/Forms/StudentForm.php` | `StudentForm` | `Form` |
+| `Domain/UserManagement/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` | `Form` |
+| `Domain/UserManagement/Livewire/Forms/TeacherForm.php` | `TeacherForm` | `Form` |
+| `Domain/UserManagement/Livewire/Forms/UserForm.php` | `UserForm` | `Form` |
 | `Domain/UserManagement/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
 | `Domain/UserManagement/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
 | `Domain/UserManagement/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
 | `Domain/UserManagement/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
-| `Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `BaseRecordManager` |
+| `Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` |
 | `Livewire/HomePage.php` | `HomePage` | `Component` |
-| `Livewire/RecentActivityList.php` | `RecentActivityList` | `BaseRecordManager` |
+| `Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` |
 
 ## Data / DTOs
 
@@ -156,9 +156,9 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File                                                          | Notification                 |
 | ------------------------------------------------------------- | ---------------------------- |
-| `Notifications/GeneralNotification.php`                       | `GeneralNotification`        |
-| `Notifications/WelcomeNotification.php`                       | `WelcomeNotification`        |
-| `Notifications/TestMailNotification.php`                      | `TestMailNotification`       |
+| `Domain/Notify/GeneralNotification.php`                       | `GeneralNotification`        |
+| `Domain/Notify/WelcomeNotification.php`                       | `WelcomeNotification`        |
+| `Domain/Notify/TestMailNotification.php`                      | `TestMailNotification`       |
 | `AccountStatus/Notifications/AccountStatusNotification.php`   | `AccountStatusNotification`  |
 | `UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
 

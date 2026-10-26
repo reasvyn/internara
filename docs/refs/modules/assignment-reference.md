@@ -34,8 +34,8 @@ Manages course assignments and submission tracking with grading and revision wor
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum` | — |
-| `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum` | — |
+| `Domain/Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum, StatusEnum` | — |
+| `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum, StatusEnum` | — |
 
 ## Entities
 
@@ -85,7 +85,7 @@ Manages course assignments and submission tracking with grading and revision wor
 | File | Component | Extends |
 |---|---|---|
 | `Domain/Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component` |
-| `Domain/Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `Component` |
+| `Domain/Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `BaseFormView` |
 | `Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
 
 ## Form Requests

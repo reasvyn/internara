@@ -15,7 +15,7 @@ field monitoring visit scheduling/verification.
 
 | File | Class | Extends |
 |---|---|---|
-| `Domain/AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseProcessAction` |
+| `Domain/AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseCommandAction` |
 | `Domain/AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseCommandAction` |
@@ -24,7 +24,7 @@ field monitoring visit scheduling/verification.
 | `Domain/Attendance/Actions/ReadUnaccountedDatesAction.php` | `ReadUnaccountedDatesAction` | `BaseReadAction` |
 | `Domain/Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseCommandAction` |
 | `Domain/Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseCommandAction` |
-| `Domain/Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | `BaseCommandAction` |
+| `Domain/Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | `BaseReadAction` |
 | `Domain/Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseCommandAction` |
 | `Domain/Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseCommandAction` |
 | `Domain/Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseCommandAction` |
@@ -52,11 +52,11 @@ field monitoring visit scheduling/verification.
 | File | Enum | Implements | Values |
 |---|---|---|---|
 | `Domain/AbsenceRequest/Enums/AbsenceReasonType.php` | `AbsenceReasonType` | `LabelEnum` | — |
-| `Domain/AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum` | — |
-| `Domain/Attendance/Enums/AttendanceStatus.php` | `AttendanceStatus` | `LabelEnum` | — |
-| `Domain/Logbook/Enums/LogbookStatus.php` | `LogbookStatus` | `LabelEnum` | — |
+| `Domain/AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum, StatusEnum` | — |
+| `Domain/Attendance/Enums/AttendanceStatus.php` | `AttendanceStatus` | `LabelEnum, StatusEnum` | — |
+| `Domain/Logbook/Enums/LogbookStatus.php` | `LogbookStatus` | `LabelEnum, StatusEnum` | — |
 | `Domain/MonitoringVisit/Enums/VisitMethod.php` | `VisitMethod` | `LabelEnum` | — |
-| `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum` | — |
+| `Domain/SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum, StatusEnum` | — |
 | `Domain/SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | — |
 
 ## Entities
@@ -91,15 +91,15 @@ field monitoring visit scheduling/verification.
 | File | Component | Extends |
 |---|---|---|
 | `Domain/AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `BaseFormView` |
-| `Domain/Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `BaseRecordManager` |
-| `Domain/Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
-| `Domain/Logbook/Livewire/Forms/LogbookForm.php` | `LogbookForm` | `BaseFormView` |
+| `Domain/Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `Component` |
+| `Domain/Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `BaseFormView` |
+| `Domain/Logbook/Livewire/Forms/LogbookForm.php` | `LogbookForm` | `Form` |
 | `Domain/Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `BaseRecordEntry` |
 | `Domain/Logbook/Livewire/LogbookManager.php` | `LogbookManager` | `BaseRecordManager` |
-| `Domain/MonitoringVisit/Livewire/StudentVisitList.php` | `StudentVisitList` | `BaseRecordManager` |
+| `Domain/MonitoringVisit/Livewire/StudentVisitList.php` | `StudentVisitList` | `Component` |
 | `Domain/MonitoringVisit/Livewire/VisitManager.php` | `VisitManager` | `BaseRecordManager` |
 | `Domain/SupervisionLog/Livewire/StudentLogManager.php` | `StudentLogManager` | `BaseRecordManager` |
-| `Domain/SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `BaseRecordManager` |
+| `Domain/SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `Component` |
 | `Domain/SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
 | `Domain/SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `BaseRecordManager` |
 

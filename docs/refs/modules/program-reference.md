@@ -21,7 +21,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `Domain/Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseCommandAction` |
 | `Domain/Internship/Actions/UnarchiveInternshipAction.php` | `UnarchiveInternshipAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseCommandAction` |
-| `Domain/InternshipGroup/Actions/AddMembersToGroupAction.php` | `AddMembersToGroupAction` | `BaseCommandAction` |
+| `Domain/InternshipGroup/Actions/AddMembersToGroupAction.php` | `AddMembersToGroupAction` | `BaseProcessAction` |
 | `Domain/InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseCommandAction` |
 | `Domain/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseCommandAction` |
@@ -39,7 +39,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 | File | Enum | Implements | Values |
 |---|---|---|---|
-| `Domain/Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum` | — |
+| `Domain/Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum, StatusEnum` | — |
 | `Domain/InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum` | — |
 
 ## Entities
@@ -88,9 +88,9 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 | File | Component | Extends |
 |---|---|---|
-| `Domain/Internship/Livewire/Forms/InternshipForm.php` | `InternshipForm` | `BaseFormView` |
+| `Domain/Internship/Livewire/Forms/InternshipForm.php` | `InternshipForm` | `Form` |
 | `Domain/Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
-| `Domain/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` | `InternshipGroupForm` | `BaseFormView` |
+| `Domain/InternshipGroup/Livewire/Forms/InternshipGroupForm.php` | `InternshipGroupForm` | `Form` |
 | `Domain/InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
 
 ## Rules

@@ -90,16 +90,16 @@ permissions.
 |---|---|---|
 | `Domain/Account/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` |
 | `Domain/AccountRecovery/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` |
-| `Domain/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` | `BaseFormView` |
+| `Domain/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` | `Form` |
 | `Domain/AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
-| `Domain/AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `BaseRecordManager` |
-| `Domain/Login/Livewire/Forms/LoginForm.php` | `LoginForm` | `BaseFormView` |
+| `Domain/AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
+| `Domain/Login/Livewire/Forms/LoginForm.php` | `LoginForm` | `Form` |
 | `Domain/Login/Livewire/Login.php` | `Login` | `Component` |
 | `Domain/Password/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` |
 | `Domain/Password/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` |
-| `Domain/Password/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` | `BaseFormView` |
-| `Domain/Password/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` | `BaseFormView` |
-| `Domain/Password/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` | `BaseFormView` |
+| `Domain/Password/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` | `Form` |
+| `Domain/Password/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` | `Form` |
+| `Domain/Password/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` | `Form` |
 | `Domain/Password/Livewire/ResetPassword.php` | `ResetPassword` | `Component` |
 
 ## Notifications
