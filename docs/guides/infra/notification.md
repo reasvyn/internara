@@ -77,7 +77,7 @@ public function toCustomDatabase($notifiable): array
         'type' => 'internship_created',
         'title' => 'New Internship Program',
         'message' => 'Summer Internship 2026 has been published.',
-        'link' => route('admin.internships.show', $this->internshipId),
+        'link' => route('sysadmin.internships'),
         'data' => [
             'internship_id' => $this->internshipId,
             'published_by' => $this->publishedBy,

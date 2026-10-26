@@ -275,8 +275,8 @@ php artisan route:cache
 - `routes/web.php` — master file with `require`s in dependency order
 - `routes/web/` — 16 module route files (plus optional submodule files: `{submodule}.php`)
 - `routes/console.php` — Artisan command registrations
-- `routes/channels.php` — broadcasting channel definitions (not implemented)
-- `routes/ai.php` — AI integration routes
+- `routes/channels.php` — broadcasting channel definitions (driver defaults to `log`; no realtime broadcaster wired)
+- `routes/ai.php` — MCP route scaffold (`Mcp::web(...)` is still commented out)
 - `bootstrap/app.php` — global middleware registration
 - `app/Modules/Core/Http/Middleware/` — global middleware classes
 - `app/Modules/Auth/Domain/Permission/Http/Middleware/` — role-check middleware (CheckRole)

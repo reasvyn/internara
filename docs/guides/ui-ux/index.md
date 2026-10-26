@@ -128,16 +128,22 @@ php artisan vendor:publish --tag=tallstackui.config
 
 ```
 
-### Layout Setup (`resources/views/layouts/app.blade.php`)
+### Layout Setup (`resources/views/ui/layouts/base.blade.php`)
+
+Internara ships the HTML shell as the `ui` view namespace, so a module layout extends
+`<x-ui::layouts.base>` rather than re-declaring `<html>`. An excerpt of the shell:
 
 ```blade
-<html>
+{{-- resources/views/ui/layouts/base.blade.php --}}
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      data-theme="{{ request()->cookie('theme', setting('default_theme', 'system')) }}">
 <head>
-    <tallstackui:script />
+    <x-ui::layouts.base.head :$title />
     @livewireStyles
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Theme::cssVariables() injected as CSS custom properties --}}
 </head>
-<body>
+<body class="{{ $bodyClass }}">
     {{ $slot }}
     @livewireScripts
 </body>

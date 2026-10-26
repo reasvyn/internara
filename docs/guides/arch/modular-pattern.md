@@ -13,9 +13,24 @@ business modules.
 
 ## Non-Negotiable
 
-Hard rules for this pattern. Violations are architecture violations.
+Hard rules for this pattern. Violations are architecture violations, and
+`scripts/py/scan_module_boundaries.py` reports them as `MOD_*` findings.
 
-- [TODO: Add module boundary non-negotiables here]
+- **Core depends on nothing business** — no `App\Modules\{Business}\…` import may appear anywhere
+  under `app/Modules/Core/`. Shared code moves into Core; business code never leaks into it
+  (`MOD_CORE_IMPORT`).
+- **Cross-module imports use the public surface only** — `Actions`, `Entities`, `Data`, `Events`,
+  `Enums`, `Contracts`, `Exceptions`, `Models`. Importing another module's `Livewire`, `Http`,
+  `Services`, or `Policies` internals is a boundary violation (`MOD_XMOD_INTERNAL`).
+- **No circular module dependencies** — if A imports B, B must not import A; break the cycle with an
+  event or move the shared contract to Core (`MOD_CIRCULAR`).
+- **UI never writes to Models** — Layer 4 persistence goes through Command Actions; direct
+  `Model::create()` / `update()` in Livewire is a violation of R3 (see `docs/architecture.md`).
+- **Each module owns its full stack** — Models, Actions, Livewire, Events, Policies, Services live
+  under the module (flat for the primary domain, `Domain/{Domain}/` for the rest); nothing is
+  duplicated in a second module.
+- **Direct cross-module Model use is tolerated only for relations and type-hints** — operations
+  delegate to the owning module's Read/Command Action (`MOD_XMOD_MODEL`, informational).
 
 ## How to Apply
 

@@ -435,7 +435,7 @@ Examples:
 - [ ] Redis cluster provisioned (3+ nodes)
 - [ ] S3 bucket created and permissions verified
 - [ ] `FILESYSTEM_DISK=s3` configured in `.env`
-- [ ] Existing media migrated via `php artisan media:migrate-to-s3`
+- [ ] Existing media copied to the bucket with the S3 disk configured (no bulk migration command ships — copy `storage/app/public` with `aws s3 sync` or equivalent, then verify media URLs resolve through the S3 disk)
 - [ ] 2+ app servers provisioned and load-balanced
 - [ ] Supervisor configured per app server (dual pipelines)
 - [ ] Rate limiting switched to user-based

@@ -231,8 +231,11 @@ without `php artisan cache:clear`.
 
 Dual-signal dark mode with a three-state switcher (light / dark / system):
 
-- **Component:** `resources/views/ui/components/theme-switch.blade.php` wraps TallstackUI's
-  `<x-ts-dropdown>` (Alpine scope drives the button icon/label); it is **not** a Livewire component.
+- **Component:** `resources/views/setting/locale/theme-switch.blade.php`, consumed as
+  `<x-setting::locale.theme-switch>`; it wraps TallstackUI's `<x-ts-dropdown>` with Alpine's
+  `tallstackui_darkTheme()` scope (button icon/label follow the current mode) and is **not** a
+  Livewire component. It lives in the Setting module's `Locale` domain because the choice persists
+  beyond the shell.
 - **Persistence:** the three dropdown items set `mode` and `$dispatch('theme', { mode })`; `app.js`
   `applyTheme()` stores the preference in `localStorage` `dark-theme` (`light`/`dark`/`system` plus
   legacy `true`/`false`) and sets `data-theme` + `.dark` + the `theme` cookie.
@@ -625,7 +628,8 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | Asset             | Path                                      |
 | ----------------- | ----------------------------------------- |
 | Layout templates  | `resources/views/ui/layouts/`           |
-| UI components     | `resources/views/ui/components/` (incl. `theme-switch.blade.php`) |
+| UI components     | `resources/views/ui/components/`          |
+| Theme switcher    | `resources/views/setting/locale/theme-switch.blade.php` (`<x-setting::locale.theme-switch>`) |
 | CSS entry point   | `resources/css/app.css` (`@import tallstackui/css/v4.css` + self-hosted palette + shims) |
 | JS entry point    | `resources/js/app.js` (theme + flatpickr + marked + choices bridge) |
 | Theme resolver    | `app/Modules/Setting/Domain/Theme/Support/Theme.php` (`cssVariables()`, `defaults()`, `presets()`, `all()`) |
@@ -635,7 +639,6 @@ Implementation reference: `resources/views/setup/components/setup-guide.blade.ph
 | Admin color UI    | `app/Modules/Setting/Livewire/SystemSetting.php` |
 | TallstackUI config| `config/tallstackui.php` (`prefix ts-`)   |
 | Sidebar menu      | `config/menu.php`                         |
-| Theme switcher    | `resources/views/setting/locale/theme-switch.blade.php` (`<x-ts-theme-switch>` TallstackUI) |
 | Language switcher | `app/Modules/Setting/Domain/Locale/Livewire/LangSwitch.php`  |
 ---
 

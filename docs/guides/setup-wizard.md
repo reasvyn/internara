@@ -109,13 +109,17 @@ A 64-character random key is displayed exactly once. The key is:
 
 ## CLI Alternatives
 
-When the wizard cannot be used (e.g., headless deployment):
+The wizard collects school identity, academic year, and the first department interactively; there
+is no per-field CLI replacement for those screens. On a headless host, complete provisioning with
+`setup:install` and then finish the school/department/settings data through the wizard (or the
+settings UI) once the app is reachable.
 
 | Action | CLI Command |
 | ------ | ----------- |
-| Create super admin | `php artisan admin:create` |
-| Create department | `php artisan department:create` |
-| Set school settings | `php artisan setting:set school_name "..."` |
+| Provision app (migrate + seed roles) | `php artisan setup:install` |
+| Create super admin | `php artisan admin:create [email] [password]` |
+| Regenerate the setup token | `php artisan setup:reset-token` |
+| Verify environment before/after | `php artisan setup:install --check-only` |
 
 See [Backup & Recovery](backup-recovery.md) for admin account CLI commands.
 
