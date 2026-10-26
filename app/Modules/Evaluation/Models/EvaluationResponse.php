@@ -39,7 +39,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
         'registration_id',
         'overall_score',
         'notes',
-        'submitted_at',
     ]),
 ]
 class EvaluationResponse extends BaseModel

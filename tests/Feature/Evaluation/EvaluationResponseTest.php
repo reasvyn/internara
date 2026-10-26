@@ -104,7 +104,15 @@ describe('AXKZW evaluation responses', function (): void {
         ]);
 
         expect($response->fresh()->submitted_at)->not->toBeNull();
+
         $this->assertDatabaseHas('evaluation_responses', ['id' => $response->id]);
+    });
+
+    test('AXKZW-FR-EVAL-013: the submission timestamp is not mass-assignable', function (): void {
+        $response = new EvaluationResponse;
+        $response->fill(['submitted_at' => now()->subYear()]);
+
+        expect($response->submitted_at)->toBeNull();
     });
 
     test('AXKZW-FR-EVAL-013 and AXKZW-NFR-EVAL-003: a second answer for the same response and question is rejected', function (): void {
