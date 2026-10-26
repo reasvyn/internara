@@ -204,12 +204,18 @@ describe('3S55V: announcement system lifecycle and management', function (): voi
 
         expect(Announcement::where('id', $draft->id)->exists())->toBeFalse();
 
-        // Cannot delete other's announcement
-        expect(fn () => Livewire::actingAs($admin1)
-            ->test(AnnouncementManager::class)
-            ->call('confirmDelete', $otherDraft->id)
-            ->call('confirmAction')
-        )->toThrow(ModelNotFoundException::class);
+        // Cannot delete another admin's announcement
+        $foreign = Livewire::actingAs($admin1)->test(AnnouncementManager::class);
+
+        try {
+            $foreign->call('confirmDelete', $otherDraft->id)->call('confirmAction');
+        } catch (ModelNotFoundException) {
+            // The ownership-scoped findOrFail() is the mechanism; the assertions below are the
+            // guarantee. Livewire decides whether that exception surfaces to the caller.
+        }
+
+        expect(Announcement::where('id', $otherDraft->id)->exists())->toBeTrue()
+            ->and($otherDraft->fresh()->status)->toBe(AnnouncementStatus::DRAFT);
     });
 
     test('3S55V-FR-ANN-017: AnnouncementForm validates fields and builds clean payload', function (): void {

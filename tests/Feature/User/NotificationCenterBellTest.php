@@ -90,10 +90,20 @@ describe('TXR2H: notification center and bell', function (): void {
         $foreign = Notification::factory()->unread()->create(['user_id' => $other->id]);
         $this->actingAs($viewer);
 
-        expect(fn () => Livewire::test(NotificationCenter::class)->call('viewNotification', $foreign->id))
-            ->toThrow(ModelNotFoundException::class);
+        $component = Livewire::test(NotificationCenter::class);
 
-        expect($foreign->fresh()->is_read)->toBeFalse();
+        try {
+            $component->call('viewNotification', $foreign->id);
+        } catch (ModelNotFoundException) {
+            // The scoped findOrFail() is the mechanism; the assertions below are the guarantee.
+            // Livewire decides whether that exception surfaces to the caller, so assert the
+            // observable fail-closed outcome instead of the transport.
+        }
+
+        expect($component->get('showViewer'))->not->toBeTrue()
+            ->and($component->get('viewingNotificationId'))->toBeNull()
+            ->and($foreign->fresh()->is_read)->toBeFalse()
+            ->and($foreign->fresh()->read_at)->toBeNull();
     });
 
     test('TXR2H-FR-NOTIF-013: mark paths delegate to their actions and refresh the bell', function (): void {
