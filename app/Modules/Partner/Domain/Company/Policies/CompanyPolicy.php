@@ -32,7 +32,9 @@ class CompanyPolicy extends BasePolicy
 
     public function delete(User $user, Company $company): bool
     {
-        return $this->isAdmin($user) && ! $company->placements()->exists();
+        return $this->isAdmin($user)
+            && ! $company->placements()->exists()
+            && ! $company->partnerships()->exists();
     }
 
     public function forceDelete(User $user, Company $company): bool

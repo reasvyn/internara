@@ -8,6 +8,7 @@ uses(LazilyRefreshDatabase::class);
 
 use App\Modules\Enrollment\Domain\Placement\Models\Placement;
 use App\Modules\Partner\Domain\Company\Models\Company;
+use App\Modules\Partner\Domain\Partnership\Models\Partnership;
 use App\Modules\User\Models\User;
 use Illuminate\Support\Facades\Gate;
 
@@ -70,6 +71,17 @@ describe('XI3LB: CompanyPolicy', function () {
         $teacher = User::factory()->create();
         $teacher->assignRole('teacher');
         $this->actingAs($teacher);
+        expect(Gate::allows('delete', $company))->toBeFalse();
+    });
+
+    test('XI3LB-FR-COMP-015: admin cannot delete a company that has partnerships', function () {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $company = Company::factory()->create();
+        Partnership::factory()->create(['company_id' => $company->id]);
+
+        $this->actingAs($admin);
+
         expect(Gate::allows('delete', $company))->toBeFalse();
     });
 
