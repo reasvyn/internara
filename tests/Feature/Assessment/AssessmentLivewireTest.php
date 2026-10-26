@@ -70,6 +70,35 @@ describe('ARDA6: Assessment Livewire UI Components', function (): void {
             ->and($test->get('rubricForm')['name'])->toBe('');
     });
 
+    test('ARDA6-FR-ASS-003: RubricManager renders the evaluator role badge for a rubric competency', function (): void {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+        $this->actingAs($admin);
+
+        Rubric::create([
+            'name' => 'Evaluator Badge Rubric',
+            'is_active' => true,
+            'structure' => [
+                'competencies' => [
+                    [
+                        'id' => 'comp-badge',
+                        'name' => 'Technical Skills',
+                        'description' => 'Hands-on competence',
+                        'weight' => 100,
+                        'evaluator_role' => 'teacher',
+                        'order' => 1,
+                        'indicators' => [],
+                    ],
+                ],
+            ],
+        ]);
+
+        Livewire::test(RubricManager::class)
+            ->assertOk()
+            ->assertSee('Technical Skills')
+            ->assertSee(__('common.enums.teacher'));
+    });
+
     test('ARDA6-FR-AS5, ARDA6-FR-AS6, ARDA6-FR-AS7: AssessmentGrading wires ScoreIndicatorAction on score update and enforces authorization', function (): void {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
